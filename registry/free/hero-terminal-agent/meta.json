@@ -20,8 +20,62 @@
   ],
   "theme": "dark",
   "previewHeight": 860,
-  "usage": "wip",
-  "props": [],
-  "added": "2026-10-07",
-  "status": "draft"
+  "usage": "import { HeroTerminalAgent } from \"@/components/design-for-ai/hero-terminal-agent\";\n\n<HeroTerminalAgent\n  brand=\"Northwind CLI\"\n  headline=\"Ship the change, skip the chores.\"\n  emphasis=\"skip the chores.\"\n  installCommand=\"npx northwind@latest init\"\n/>",
+  "props": [
+    {
+      "name": "brand",
+      "type": "string",
+      "default": "\"Relay\"",
+      "description": "Product name beside the mark."
+    },
+    {
+      "name": "headline",
+      "type": "string",
+      "description": "The headline."
+    },
+    {
+      "name": "emphasis",
+      "type": "string",
+      "default": "\"boring parts\"",
+      "description": "Substring of the headline set at 45% opacity."
+    },
+    {
+      "name": "body",
+      "type": "string",
+      "description": "Supporting paragraph."
+    },
+    {
+      "name": "primary",
+      "type": "{ label: string; href: string }",
+      "description": "Main call to action."
+    },
+    {
+      "name": "installCommand",
+      "type": "string",
+      "default": "\"npx relay@latest init\"",
+      "description": "Command in the copyable chip."
+    },
+    {
+      "name": "facts",
+      "type": "string[]",
+      "description": "Short mono facts under the actions."
+    },
+    {
+      "name": "announcement",
+      "type": "{ label: string; href: string }",
+      "description": "Release link, top right."
+    },
+    {
+      "name": "session",
+      "type": "AgentSession",
+      "description": "The terminal script: command, plan, files, tests and PR."
+    },
+    {
+      "name": "loopPause",
+      "type": "number",
+      "default": "5200",
+      "description": "Milliseconds the finished session stays before replaying."
+    }
+  ],
+  "added": "2026-10-07"
 }

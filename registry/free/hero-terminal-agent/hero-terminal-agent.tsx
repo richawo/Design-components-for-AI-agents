@@ -195,7 +195,12 @@ export function HeroTerminalAgent({
   const [pre, post] = splitOnce(headline, emphasis);
 
   return (
-    <section className="relative isolate overflow-hidden bg-[#141311] text-[#f2eee6]">
+    <section className="relative isolate overflow-hidden bg-[#070708] text-[#f2eee6]">
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:56px_56px] [mask-image:radial-gradient(ellipse_80%_70%_at_70%_40%,#000_20%,transparent_75%)]"
+      />
+      <div aria-hidden="true" className="absolute right-[-10%] top-[18%] -z-10 h-[520px] w-[720px] max-w-[90vw] rounded-full bg-[radial-gradient(closest-side,rgba(212,255,58,0.10),transparent)] blur-2xl" />
       <div className="mx-auto grid max-w-7xl gap-x-12 gap-y-14 px-5 pb-16 pt-8 sm:gap-y-20 sm:px-8 sm:pb-20 lg:grid-cols-12 lg:items-center lg:gap-y-24 lg:px-12 lg:pb-28 lg:pt-10">
         {/* Top row */}
         <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4 lg:col-span-12">
@@ -253,7 +258,8 @@ export function HeroTerminalAgent({
         </div>
 
         {/* Terminal */}
-        <div className="min-w-0 lg:col-span-6">
+        <div className="relative min-w-0 lg:col-span-6">
+          <div aria-hidden="true" className="absolute -inset-px -z-10 rounded-[15px] bg-gradient-to-b from-white/[0.14] via-white/[0.04] to-transparent" />
           <Terminal session={session} tabTitle={tabTitle} version={version} loopPause={loopPause} />
         </div>
       </div>
