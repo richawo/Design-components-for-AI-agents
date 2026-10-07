@@ -208,10 +208,23 @@ if (hasProSource) {
   proMetas = fs.existsSync(proManifestPath) ? JSON.parse(fs.readFileSync(proManifestPath, "utf8")) : [];
 }
 
+// The gallery opens with the flagships, mixing free and Pro, then everything
+// else alphabetically. Slugs missing from a build are simply skipped.
+const FEATURED = [
+  "chart-candlestick", "three-globe-arcs", "chart-portfolio", "three-particle-sphere",
+  "pixel-agent-status", "three-wave-field", "chart-allocation", "hero-terminal-agent",
+  "pixel-matrix-display", "pricing-receipt", "cta-horizon", "command-palette",
+  "work-index-hover", "chat-thread", "mobile-wallet-stack", "streaming-text",
+  "feature-sticky-scroll", "navbar-floating", "mobile-chat", "cart-drawer",
+];
+const rank = (slug) => {
+  const i = FEATURED.indexOf(slug);
+  return i === -1 ? FEATURED.length : i;
+};
 const entries = [
   ...free.map((c) => ({ ...c.meta, hasSource: true })),
   ...proMetas.map((m) => ({ ...m, hasSource: hasProSource })),
-].sort((a, b) => a.name.localeCompare(b.name));
+].sort((a, b) => rank(a.slug) - rank(b.slug) || a.name.localeCompare(b.name));
 
 // Write in place (several agents may run this while a dev server is compiling)
 // and prune files for components that no longer exist.
