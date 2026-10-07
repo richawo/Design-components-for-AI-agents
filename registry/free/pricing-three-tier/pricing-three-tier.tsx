@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useId, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
 import { AnimatePresence, LayoutGroup, motion, useReducedMotion } from "motion/react";
 
 type Billing = "monthly" | "annual";
@@ -45,7 +45,8 @@ export type PricingThreeTierProps = {
   defaultBilling?: Billing;
 };
 
-const ease = [0.2, 0.8, 0.2, 1] as const;
+const ease = [0.22, 1, 0.36, 1] as const;
+const springUi = { type: "spring", stiffness: 500, damping: 40 } as const;
 
 const defaultPlans: PricingPlan[] = [
   {
@@ -118,6 +119,8 @@ export function PricingThreeTier({
   defaultBilling = "annual",
 }: PricingThreeTierProps) {
   const [billing, setBilling] = useState<Billing>(defaultBilling);
+  // Footnote under the pointer or keyboard focus, so marker and note light up together.
+  const [hotNote, setHotNote] = useState<number | null>(null);
   const reduce = useReducedMotion() ?? false;
   const uid = useId();
 
@@ -143,14 +146,18 @@ export function PricingThreeTier({
 
         {/* Plans */}
         <ul className="mt-14 grid gap-4 lg:mt-16 lg:grid-cols-3 lg:items-stretch">
-          {plans.map((plan) => (
+          {plans.map((plan, i) => (
             <li key={plan.name} className={plan.featured ? "relative lg:-my-4" : "relative"}>
               <PlanCard
                 plan={plan}
+                index={i}
                 billing={billing}
                 currency={currency}
                 featuredLabel={featuredLabel}
                 reduce={reduce}
+                uid={uid}
+                hotNote={hotNote}
+                onNote={setHotNote}
               />
             </li>
           ))}
@@ -160,8 +167,8 @@ export function PricingThreeTier({
         {footnotes.length > 0 && (
           <ol className="mt-14 grid gap-2 border-t border-white/[0.08] pt-6 text-[13px] leading-relaxed text-white/45 md:grid-cols-2 md:gap-10 lg:mt-16">
             {footnotes.map((f, n) => (
-              <li key={f} className="flex gap-3">
-                <span className="font-mono text-[11px] leading-[1.9] text-white/30">{String(n + 1).padStart(2, "0")}</span>
+              <li key={f} id={`${uid}-fn-${n + 1}`} className={`flex scroll-mt-24 gap-3 transition-colors duration-150 ${hotNote === n + 1 ? "text-white/80" : ""}`}>
+                <span className={`font-mono text-[11px] leading-[1.9] transition-colors duration-150 ${hotNote === n + 1 ? "text-[#6ee7b7]" : "text-white/30"}`}>{String(n + 1).padStart(2, "0")}</span>
                 <span className="max-w-[60ch]">{f}</span>
               </li>
             ))}
@@ -217,7 +224,7 @@ function BillingToggle({
                 tabIndex={active ? 0 : -1}
                 data-value={o.value}
                 onClick={() => onChange(o.value)}
-                className={`relative h-10 rounded-full px-5 text-[14px] font-medium transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${
+                className={`relative h-10 rounded-full px-5 text-[14px] font-medium transition-[color,transform] duration-150 active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${
                   active ? "text-black" : "text-white/55 hover:text-white"
                 }`}
               >
@@ -225,7 +232,7 @@ function BillingToggle({
                   <motion.span
                     layoutId="indicator"
                     className="absolute inset-0 rounded-full bg-white shadow-[0_4px_16px_-4px_rgba(255,255,255,0.5)]"
-                    transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 420, damping: 36 }}
+                    transition={reduce ? { duration: 0 } : springUi}
                   />
                 )}
                 <span className="relative">{o.label}</span>
@@ -236,7 +243,14 @@ function BillingToggle({
       </LayoutGroup>
       <p className="flex items-center gap-2 text-[13px] text-white/50">
         Pay annually, get
-        <span className="rounded-full bg-[#34d399]/10 px-2 py-0.5 font-medium text-[#6ee7b7] ring-1 ring-inset ring-[#34d399]/25">{saving}</span>
+        {/* The badge is "earned" when annual is on, and only offered when it isn't. */}
+        <motion.span
+          animate={billing === "annual" ? { scale: [1, 1.06, 1] } : { scale: 1 }}
+          transition={reduce ? { duration: 0 } : { duration: 0.32, ease }}
+          className={`rounded-full px-2 py-0.5 font-medium ring-1 ring-inset transition-colors duration-200 ${billing === "annual" ? "bg-[#34d399]/12 text-[#6ee7b7] ring-[#34d399]/30" : "bg-white/[0.03] text-white/45 ring-white/10"}`}
+        >
+          {saving}
+        </motion.span>
       </p>
     </div>
   );
@@ -244,17 +258,33 @@ function BillingToggle({
 
 function PlanCard({
   plan,
+  index,
   billing,
   currency,
   featuredLabel,
   reduce,
+  uid,
+  hotNote,
+  onNote,
 }: {
   plan: PricingPlan;
+  index: number;
   billing: Billing;
   currency: string;
   featuredLabel: string;
   reduce: boolean;
+  uid: string;
+  hotNote: number | null;
+  onNote: (n: number | null) => void;
 }) {
+  // Pointer-tracked light: written to CSS variables so moving never re-renders.
+  const ref = useRef<HTMLElement>(null);
+  const onMove = (e: ReactPointerEvent) => {
+    if (e.pointerType !== "mouse" || !ref.current) return;
+    const r = ref.current.getBoundingClientRect();
+    ref.current.style.setProperty("--x", `${e.clientX - r.left}px`);
+    ref.current.style.setProperty("--y", `${e.clientY - r.top}px`);
+  };
   const dark = !!plan.featured;
   const price = billing === "annual" ? plan.annual : plan.monthly;
   const yearly = plan.annual * 12;
@@ -264,14 +294,38 @@ function PlanCard({
       : "Billed monthly, cancel anytime";
 
   return (
-    <article
+    <motion.article
+      ref={ref}
+      onPointerMove={onMove}
       aria-label={`${plan.name} plan`}
-      className={`relative isolate flex h-full flex-col overflow-hidden rounded-[22px] p-7 sm:p-8 md:grid md:grid-cols-2 md:gap-x-10 lg:flex lg:gap-0 ${
+      initial={reduce ? { opacity: 0 } : { opacity: 0, y: 18 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.25 }}
+      transition={{ duration: reduce ? 0.15 : 0.6, ease, delay: reduce ? 0 : index * 0.07 }}
+      style={{ "--x": "50%", "--y": "0px" } as CSSProperties}
+      className={`group/card relative isolate flex h-full flex-col overflow-hidden rounded-[22px] p-7 sm:p-8 md:grid md:grid-cols-2 md:gap-x-10 lg:flex lg:gap-0 ${
         dark
           ? "bg-[linear-gradient(180deg,rgba(52,211,153,0.10),rgba(255,255,255,0.02)_42%,rgba(255,255,255,0.02))] shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_0_0_1px_rgba(52,211,153,0.28),0_40px_100px_-30px_rgba(52,211,153,0.28)] lg:px-9 lg:py-12"
           : "bg-[linear-gradient(180deg,rgba(255,255,255,0.045),rgba(255,255,255,0.015))] shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_0_0_1px_rgba(255,255,255,0.08)]"
       }`}
     >
+      {/* Spotlight on the surface and a brighter arc on the edge, both following the pointer. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 -z-10 opacity-0 transition-opacity duration-300 group-hover/card:opacity-100"
+        style={{ background: `radial-gradient(420px circle at var(--x) var(--y), ${dark ? "rgba(110,231,183,0.08)" : "rgba(255,255,255,0.05)"}, transparent 45%)` }}
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 rounded-[inherit] p-px opacity-0 transition-opacity duration-300 group-hover/card:opacity-100"
+        style={{
+          background: `radial-gradient(240px circle at var(--x) var(--y), ${dark ? "rgba(110,231,183,0.55)" : "rgba(255,255,255,0.3)"}, transparent 60%)`,
+          WebkitMask: "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
+          mask: "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
+          WebkitMaskComposite: "xor",
+          maskComposite: "exclude",
+        }}
+      />
       {dark && (
         <>
           <div aria-hidden="true" className="absolute inset-x-8 top-0 -z-10 h-px bg-gradient-to-r from-transparent via-[#6ee7b7] to-transparent" />
@@ -300,7 +354,23 @@ function PlanCard({
         <span aria-hidden="true" className="font-sans text-[clamp(3.25rem,2.6rem+2vw,4.25rem)] font-semibold leading-none tracking-[-0.055em]">
           <RollingNumber value={price} reduce={reduce} />
         </span>
-        <span aria-hidden="true" className="ml-2 self-end pb-2 text-[14px] text-white/40">
+        <span aria-hidden="true" className="ml-2 flex flex-col items-start self-end pb-2 text-[14px] leading-tight text-white/40">
+          {/* On annual, show what the monthly plan would have cost. */}
+          <AnimatePresence initial={false}>
+            {billing === "annual" && plan.monthly !== plan.annual && (
+              <motion.s
+                key="was"
+                initial={reduce ? { opacity: 0 } : { opacity: 0, y: 4, filter: "blur(2px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                exit={reduce ? { opacity: 0 } : { opacity: 0, y: -4, filter: "blur(2px)", transition: { duration: 0.16, ease: [0.4, 0, 1, 1] } }}
+                transition={{ duration: 0.24, ease }}
+                className="text-[13px] text-white/30 decoration-white/40"
+              >
+                {currency}
+                {plan.monthly}
+              </motion.s>
+            )}
+          </AnimatePresence>
           {plan.unit ?? "/ mo"}
         </span>
       </div>
@@ -308,10 +378,10 @@ function PlanCard({
         <AnimatePresence mode="popLayout" initial={false}>
           <motion.p
             key={note}
-            initial={reduce ? false : { y: 14, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={reduce ? { opacity: 0 } : { y: -14, opacity: 0 }}
-            transition={{ duration: 0.35, ease }}
+            initial={reduce ? false : { y: 8, opacity: 0, filter: "blur(3px)" }}
+            animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+            exit={reduce ? { opacity: 0 } : { y: -8, opacity: 0, filter: "blur(3px)", transition: { duration: 0.2, ease: [0.4, 0, 1, 1] } }}
+            transition={{ duration: 0.3, ease }}
           >
             {note}
           </motion.p>
@@ -320,14 +390,14 @@ function PlanCard({
 
       <a
         href={plan.cta.href}
-        className={`group mt-8 inline-flex h-11 items-center justify-center gap-2 rounded-full px-5 text-[14px] font-medium transition-[background-color,box-shadow,color] duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${
+        className={`group mt-8 inline-flex h-11 items-center justify-center gap-2 rounded-full px-5 text-[14px] font-medium transition-[background-color,box-shadow,color,transform] duration-150 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${
           dark
-            ? "bg-white text-black shadow-[0_10px_30px_-10px_rgba(255,255,255,0.55)] hover:bg-white/90"
+            ? "bg-white text-black shadow-[0_10px_30px_-10px_rgba(255,255,255,0.55)] hover:shadow-[0_14px_44px_-8px_rgba(255,255,255,0.75)]"
             : "bg-white/[0.06] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_0_0_1px_rgba(255,255,255,0.1)] hover:bg-white/[0.1]"
         }`}
       >
         {plan.cta.label}
-        <svg viewBox="0 0 16 16" className="size-3.5 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" aria-hidden="true">
+        <svg viewBox="0 0 16 16" className="size-3.5 transition-transform duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-[3px]" fill="none" aria-hidden="true">
           <path d="M3 8h10m0 0L8.5 3.5M13 8l-4.5 4.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </a>
@@ -339,22 +409,39 @@ function PlanCard({
           <p className="text-[13px] text-white/45">{plan.lead}</p>
         )}
         <ul className="mt-4 space-y-3">
-          {plan.features.map((f) => (
-            <li key={f.text} className="flex gap-3 text-[14px] leading-snug">
+          {plan.features.map((f, fi) => (
+            <motion.li
+              key={f.text}
+              initial={reduce ? false : { opacity: 0, y: 8 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.6 }}
+              transition={{ duration: 0.5, ease, delay: 0.15 + index * 0.07 + fi * 0.045 }}
+              className="flex gap-3 text-[14px] leading-snug"
+            >
               <Check dark={dark} />
               <span className="text-white/80">
                 {f.text}
                 {f.note ? (
-                  <sup className={`ml-0.5 font-mono text-[10px] ${dark ? "text-[#6ee7b7]" : "text-white/40"}`}>
-                    {String(f.note).padStart(2, "0")}
+                  <sup className="ml-0.5">
+                    <a
+                      href={`#${uid}-fn-${f.note}`}
+                      aria-label={`Footnote ${f.note}`}
+                      onPointerEnter={() => onNote(f.note!)}
+                      onPointerLeave={() => onNote(null)}
+                      onFocus={() => onNote(f.note!)}
+                      onBlur={() => onNote(null)}
+                      className={`rounded-[3px] px-0.5 font-mono text-[10px] transition-colors duration-150 focus-visible:outline-1 focus-visible:outline-white ${hotNote === f.note ? "bg-[#34d399]/15 text-[#6ee7b7]" : dark ? "text-[#6ee7b7]" : "text-white/40 hover:text-white/70"}`}
+                    >
+                      {String(f.note).padStart(2, "0")}
+                    </a>
                   </sup>
                 ) : null}
               </span>
-            </li>
+            </motion.li>
           ))}
         </ul>
       </div>
-    </article>
+    </motion.article>
   );
 }
 
@@ -388,7 +475,7 @@ function Digit({ digit, delay, reduce }: { digit: number; delay: number; reduce:
         className="absolute inset-x-0 top-0 flex flex-col items-center"
         initial={false}
         animate={{ y: `${-digit * 1.1}em` }}
-        transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 140, damping: 20, mass: 0.9, delay }}
+        transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 160, damping: 25, mass: 0.9, delay }}
       >
         {Array.from({ length: 10 }, (_, n) => (
           <span key={n} className="block h-[1.1em] leading-[1.1]">

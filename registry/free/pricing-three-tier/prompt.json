@@ -2,7 +2,12 @@
   "component": "PricingThreeTier",
   "intent": "Premium dark three-plan pricing with a softly glowing featured plan, odometer prices and a sliding billing toggle.",
   "platform": "web",
-  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "animation": "motion/react", "fonts": "font-sans (Geist), font-mono (Geist Mono)" },
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4",
+    "animation": "motion/react",
+    "fonts": "font-sans (Geist), font-mono (Geist Mono)"
+  },
   "layout": {
     "container": "max-w-7xl, px 20/32/48px, py 64-96px",
     "header": "eyebrow, two-tone title, then body (left) + billing toggle (right) on desktop",
@@ -10,21 +15,79 @@
     "footnotes": "2 columns under a hairline"
   },
   "typography": {
-    "title": { "font": "sans", "weight": 600, "size": "clamp(2.25rem, 1.3rem + 3.6vw, 4.5rem)", "leading": 1, "tracking": "-0.05em", "firstClause": "white→white/60 vertical gradient", "secondClause": "white/40" },
-    "price": { "size": "clamp(3.25rem, 2.6rem + 2vw, 4.25rem)", "weight": 600, "tracking": "-0.055em", "numerals": "tabular, odometer digits" },
-    "planName": { "size": "18px", "weight": 500 },
-    "eyebrow": { "font": "mono", "size": "11px", "tracking": "0.18em", "color": "white/45" }
+    "title": {
+      "font": "sans",
+      "weight": 600,
+      "size": "clamp(2.25rem, 1.3rem + 3.6vw, 4.5rem)",
+      "leading": 1,
+      "tracking": "-0.05em",
+      "firstClause": "white→white/60 vertical gradient",
+      "secondClause": "white/40"
+    },
+    "price": {
+      "size": "clamp(3.25rem, 2.6rem + 2vw, 4.25rem)",
+      "weight": 600,
+      "tracking": "-0.055em",
+      "numerals": "tabular, odometer digits"
+    },
+    "planName": {
+      "size": "18px",
+      "weight": 500
+    },
+    "eyebrow": {
+      "font": "mono",
+      "size": "11px",
+      "tracking": "0.18em",
+      "color": "white/45"
+    }
   },
-  "color": { "background": "#050506", "text": "#ffffff", "accent": "#34d399", "accentText": "#6ee7b7", "glow": "rgba(52,211,153,0.16) radial at top", "cardFill": "white 4.5%→1.5% vertical gradient", "cardRing": "white/8%", "featuredRing": "emerald 28%" },
+  "color": {
+    "background": "#050506",
+    "text": "#ffffff",
+    "accent": "#34d399",
+    "accentText": "#6ee7b7",
+    "glow": "rgba(52,211,153,0.16) radial at top",
+    "cardFill": "white 4.5%→1.5% vertical gradient",
+    "cardRing": "white/8%",
+    "featuredRing": "emerald 28%"
+  },
   "motion": {
-    "toggle": "layoutId spring stiffness 420 damping 36",
-    "price": "per-digit odometer, spring stiffness 140 damping 20, 70ms stagger",
-    "billingNote": "vertical crossfade 350ms ease [0.2,0.8,0.2,1]",
-    "cta": "arrow translates 2px on hover",
-    "reducedMotion": "instant swaps"
+    "tokens": "ease-out [0.22,1,0.36,1]; ease-in [0.4,0,1,1] for exits; spring.ui stiffness 500 damping 40",
+    "toggle": "layoutId spring.ui; options scale 0.97 on press; the saving pill pulses once to 1.06 when annual turns on and turns neutral on monthly",
+    "price": "per-digit odometer, critically damped spring stiffness 160 damping 25, 70ms stagger; on annual the monthly price appears struck through above the unit (4px rise, 2px blur, 240ms)",
+    "billingNote": "in from 8px with 3px blur over 300ms, out upward in 200ms ease-in",
+    "cta": "arrow nudges 3px on hover (200ms); press scales to 0.98; the white CTA deepens its glow instead of greying",
+    "pointer": "per-card spotlight (420px radial) and edge arc (240px, masked to the 1px border) tracked through CSS variables; mouse only",
+    "reveal": "cards rise 18px over 600ms staggered 70ms; feature rows 45ms apart; once",
+    "footnotes": "markers link to their note; hover or focus lights both in 150ms",
+    "reducedMotion": "instant swaps, opacity-only reveals, no pointer light"
   },
-  "responsive": { "mobile": "stacked cards, toggle under body, full-width CTAs", "md": "cards split into price | features", "lg": "three columns, featured lifted" },
-  "accessibility": ["section aria-labelledby the title", "radiogroup toggle with arrow keys", "sr-only price sentence", "visible focus rings"],
-  "content": { "plans": ["Sole $12/$10", "Practice $36/$30 (featured)", "Firm $84/$70"], "saving": "2 months free", "footnotes": 2 },
-  "avoid": ["rotated stickers", "hand-drawn arrows", "serif italic accents", "neon highlighter tags", "bright gradient text", "identical cards"]
+  "responsive": {
+    "mobile": "stacked cards, toggle under body, full-width CTAs",
+    "md": "cards split into price | features",
+    "lg": "three columns, featured lifted"
+  },
+  "accessibility": [
+    "section aria-labelledby the title",
+    "radiogroup toggle with arrow keys",
+    "sr-only price sentence",
+    "visible focus rings"
+  ],
+  "content": {
+    "plans": [
+      "Sole $12/$10",
+      "Practice $36/$30 (featured)",
+      "Firm $84/$70"
+    ],
+    "saving": "2 months free",
+    "footnotes": 2
+  },
+  "avoid": [
+    "rotated stickers",
+    "hand-drawn arrows",
+    "serif italic accents",
+    "neon highlighter tags",
+    "bright gradient text",
+    "identical cards"
+  ]
 }
