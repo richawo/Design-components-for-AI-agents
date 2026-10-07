@@ -3,7 +3,10 @@
 //
 //   node scripts/rec.mjs <slug> [--steps="..."] [--width=1440] [--height=900]
 //        [--base=http://localhost:3100] [--out=dir] [--fps=12] [--every=200]
-//        [--focus=<selector>] [--cols=3]
+//        [--focus=<selector>] [--cols=3] [--from=ms]
+//
+// --from starts the contact sheet that many ms into the recording, so a long
+// set-up doesn't use up the frames.
 //
 // --focus crops the GIF and contact sheet to that element (plus a margin), so
 // small hover and press states are big enough to judge.
@@ -48,6 +51,7 @@ const fps = Number(flag("fps", "12"));
 const every = Number(flag("every", "200"));
 const focus = flag("focus", "");
 const cols = Number(flag("cols", "3"));
+const from = Number(flag("from", "0")) / 1000;
 const steps = flag("steps", "wait:1200;tab:5;wait:400;move:0.2,0.35;move:0.5,0.5;move:0.8,0.4;move:0.6,0.7;wait:600");
 
 function executablePath() {
@@ -174,10 +178,10 @@ const srcW = crop ? crop.w : width;
 const scale = Math.min(crop ? 960 : 720, srcW);
 execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-ss", trim.toFixed(2), "-i", webm, "-vf", `${cropF}fps=${fps},scale=${scale}:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=128[p];[b][p]paletteuse=dither=bayer:bayer_scale=4`, gif]);
 // Contact sheet: one frame every `every` ms, `cols` across.
-const dur = (Number(execFileSync("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", webm]).toString().trim()) || 4) - trim;
+const dur = -from + (Number(execFileSync("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", webm]).toString().trim()) || 4) - trim;
 const frames = Math.min(64, Math.max(1, Math.ceil((dur * 1000) / every)));
 const rows = Math.ceil(frames / cols);
 const cell = Math.round(Math.min(srcW, 1500 / cols));
-execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-ss", trim.toFixed(2), "-i", webm, "-vf", `${cropF}fps=${1000 / every},scale=${cell}:-1,tile=${cols}x${rows}:padding=4:color=0x333333`, "-frames:v", "1", sheet]);
+execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-ss", (trim + from).toFixed(2), "-i", webm, "-vf", `${cropF}fps=${1000 / every},scale=${cell}:-1,tile=${cols}x${rows}:padding=4:color=0x333333`, "-frames:v", "1", sheet]);
 
 console.log(`${webm}\n${gif}\n${sheet}${errs.length ? `\n  errors: ${errs.slice(0, 3).join(" | ")}` : ""}`);
