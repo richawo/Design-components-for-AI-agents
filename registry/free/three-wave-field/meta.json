@@ -1,0 +1,56 @@
+{
+  "slug": "three-wave-field",
+  "name": "Wave Field",
+  "tier": "free",
+  "platform": "web",
+  "category": "three-d",
+  "description": "A Three.js field of points rolling toward the viewer in long noise swells, like contour lines of the sea. The pointer lifts the surface and a click drops a ripple.",
+  "tags": [
+    "three.js",
+    "webgl",
+    "3d",
+    "waves",
+    "particles",
+    "hero",
+    "background",
+    "shader"
+  ],
+  "dependencies": [
+    "three"
+  ],
+  "theme": "dark",
+  "previewHeight": 760,
+  "usage": "import { ThreeWaveField } from \"@/components/design-for-ai/three-wave-field\";\n\n<section className=\"relative isolate min-h-[720px] bg-black\">\n  <div className=\"absolute inset-0 -z-10\">\n    <ThreeWaveField colors={[\"#e6f0ff\", \"#4cc3ff\", \"#0b2440\"]} amplitude={0.8} />\n  </div>\n  {/* hero copy */}\n</section>",
+  "props": [
+    {
+      "name": "colors",
+      "type": "[string, string, string]",
+      "default": "[\"#e9e4dc\", \"#ff7a45\", \"#5b1a2e\"]",
+      "description": "Base dot colour, crest highlight and the deepest trough."
+    },
+    {
+      "name": "amplitude",
+      "type": "number",
+      "default": "1",
+      "description": "Wave height multiplier."
+    },
+    {
+      "name": "speed",
+      "type": "number",
+      "default": "1",
+      "description": "Animation speed multiplier."
+    },
+    {
+      "name": "interactive",
+      "type": "boolean",
+      "default": "true",
+      "description": "Pointer lifts the surface; click or tap drops a ripple."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "description": "Classes for the host element, which fills its parent."
+    }
+  ],
+  "added": "2026-10-07"
+}
