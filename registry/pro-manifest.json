@@ -1,5 +1,73 @@
 [
   {
+    "slug": "chart-allocation",
+    "name": "Allocation Donut",
+    "tier": "pro",
+    "platform": "web",
+    "category": "charts",
+    "description": "A portfolio allocation donut that morphs between asset class, region and sector, with target-drift ticks, a live centre readout and a synced legend.",
+    "tags": [
+      "donut chart",
+      "allocation",
+      "portfolio",
+      "finance",
+      "wealth",
+      "rebalancing",
+      "svg",
+      "dashboard"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 680,
+    "usage": "import { ChartAllocation } from \"@/components/design-for-ai/chart-allocation\";\n\n<ChartAllocation\n  title=\"Household portfolio\"\n  currency=\"GBP\"\n  locale=\"en-GB\"\n  tolerance={2}\n  views={[\n    {\n      key: \"asset\",\n      label: \"Asset class\",\n      slices: [\n        { name: \"Global equities\", value: 412_000, target: 60, change: 0.006 },\n        { name: \"Gilts\", value: 188_000, target: 30, change: -0.001 },\n        { name: \"Cash\", value: 61_000, target: 10 },\n      ],\n    },\n  ]}\n/>",
+    "props": [
+      {
+        "name": "views",
+        "type": "{ key: string; label: string; slices: AllocationSlice[] }[]",
+        "default": "Asset class, Region, Sector demo",
+        "description": "Groupings to switch between. Slices: { name, value, target?, change? }, up to 8, largest first so the accent lands on the biggest."
+      },
+      {
+        "name": "defaultView",
+        "type": "string",
+        "description": "Key of the view shown first; defaults to the first."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Allocation\"",
+        "description": "Card title."
+      },
+      {
+        "name": "tolerance",
+        "type": "number",
+        "default": "1.5",
+        "description": "Drift in percentage points before a slice gets a drift chip."
+      },
+      {
+        "name": "palette",
+        "type": "string[]",
+        "default": "accent-to-warm-grey ramp",
+        "description": "Slice colours in order."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"USD\"",
+        "description": "ISO currency for values."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-US\"",
+        "description": "Locale for number formatting."
+      }
+    ],
+    "added": "2026-10-07"
+  },
+  {
     "slug": "chart-candlestick",
     "name": "Candlestick Chart",
     "tier": "pro",
