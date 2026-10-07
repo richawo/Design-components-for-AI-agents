@@ -2,13 +2,24 @@
   "component": "PixelStatus",
   "intent": "A small, characterful status language for AI agents: eight animated 9×9 dot-matrix glyphs that read at 16px inline and still look crafted at 96px. Pixel art with discipline: one colour per state, a faint unlit grid and 10fps motion.",
   "platform": "web",
-  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "rendering": "inline SVG rects; no canvas, no dependencies", "animation": "setInterval at 10fps driving a frame counter; each glyph is a pure function of the frame" },
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4",
+    "rendering": "inline SVG rects; no canvas, no dependencies",
+    "animation": "setInterval at 10fps driving a frame counter; each glyph is a pure function of the frame; motion/react for the gallery's text swaps"
+  },
   "layout": {
     "glyph": "9×9 grid in a 90×90 viewBox; dots 7.6 units (8.4 under 28px) with radius 1.8 (1.2 small); unlit dots at currentColor 7% when grid=true; a blurred copy of lit cells at 55% for glow at 40px and up",
     "gallery": "card #0b0b0c, radius 22px; header with eyebrow, title and a live inline run pill; 4×2 grid of tiles (2×4 in narrow containers) separated by 1px gaps, each with a 96px glyph, name, colour dot, note and a mono state attribute"
   },
   "typography": {
-    "title": { "font": "Geist", "weight": 500, "size": "clamp(1.5rem, 1.2rem + 1.2vw, 2rem)", "tracking": "-0.035em", "wrap": "balance" },
+    "title": {
+      "font": "Geist",
+      "weight": 500,
+      "size": "clamp(1.5rem, 1.2rem + 1.2vw, 2rem)",
+      "tracking": "-0.035em",
+      "wrap": "balance"
+    },
     "tileName": "14px medium white/90",
     "note": "12.5px white/45",
     "code": "mono 10.5px white/30"
@@ -34,13 +45,36 @@
     "error": "the exclamation shakes ±1px for 6 frames every 3 seconds",
     "idle": "a 4×4 z rises and fades over 2.2s, then rests",
     "clock": "10fps, paused offscreen (IntersectionObserver) and in hidden tabs",
-    "reducedMotion": "a representative still per state"
+    "reducedMotion": "a representative still per state",
+    "gallery": "tiles are buttons: hover/focus replays the glyph, scales it 1.04 and draws a state-colour hairline; click copies the snippet with a sliding 'Copied snippet' confirmation; press scales 0.985",
+    "run": "run steps cross-fade with a 10px slide and 3px blur"
   },
   "responsive": {
     "sizes": "works from 14px to 128px; under 28px dots grow slightly and the glow is dropped so it stays crisp",
     "gallery": "container queries: 2 columns by default, 4 from @2xl; the run pill sits under the title in narrow containers"
   },
-  "accessibility": ["each glyph is role=img with a label (Thinking, Searching, … Needs attention)", "the inline run row is aria-live=polite", "colour is paired with a shape and a text label", "reduced motion shows stills"],
-  "content": { "agent": "Atlas", "run": ["Planning the migration", "Reading the Postgres 17 release notes", "Writing 0042_split_orders.sql", "Pushing branch orders-split", "Migration ready for review"] },
-  "avoid": ["sprite sheets or GIFs", "emoji", "sparkle icons for AI", "more than one colour inside a glyph", "smooth tweening that breaks the pixel feel", "looping the done state"]
+  "accessibility": [
+    "each glyph is role=img with a label (Thinking, Searching, … Needs attention)",
+    "the inline run row is aria-live=polite",
+    "colour is paired with a shape and a text label",
+    "reduced motion shows stills"
+  ],
+  "content": {
+    "agent": "Atlas",
+    "run": [
+      "Planning the migration",
+      "Reading the Postgres 17 release notes",
+      "Writing 0042_split_orders.sql",
+      "Pushing branch orders-split",
+      "Migration ready for review"
+    ]
+  },
+  "avoid": [
+    "sprite sheets or GIFs",
+    "emoji",
+    "sparkle icons for AI",
+    "more than one colour inside a glyph",
+    "smooth tweening that breaks the pixel feel",
+    "looping the done state"
+  ]
 }

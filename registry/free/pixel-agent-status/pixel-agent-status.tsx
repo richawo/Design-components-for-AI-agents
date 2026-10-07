@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState, type RefObject } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
 export type AgentState = "thinking" | "searching" | "writing" | "listening" | "syncing" | "done" | "error" | "idle";
 
@@ -14,6 +15,8 @@ export type PixelStatusProps = {
   grid?: boolean;
   /** Accessible label; defaults to the state name. */
   label?: string;
+  /** Change this value to replay the animation from its first frame. */
+  replay?: number;
   className?: string;
 };
 
@@ -168,7 +171,7 @@ function glyph(state: AgentState, f: number): Px {
 const STILL: Record<AgentState, number> = { thinking: 3, searching: 2, writing: 11, listening: 4, syncing: 3, done: 99, error: 10, idle: 11 };
 
 /** One shared 10fps clock per mounted glyph, paused offscreen and in hidden tabs. */
-function useFrame(ref: RefObject<Element | null>, state: AgentState) {
+function useFrame(ref: RefObject<Element | null>, state: AgentState, replay = 0) {
   const [f, setF] = useState(0);
   useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -187,13 +190,13 @@ function useFrame(ref: RefObject<Element | null>, state: AgentState) {
       window.clearInterval(id);
       io.disconnect();
     };
-  }, [ref, state]);
+  }, [ref, state, replay]);
   return f;
 }
 
-export function PixelStatus({ state, size = 24, color, grid = true, label, className = "" }: PixelStatusProps) {
+export function PixelStatus({ state, size = 24, color, grid = true, label, replay = 0, className = "" }: PixelStatusProps) {
   const ref = useRef<SVGSVGElement>(null);
-  const f = useFrame(ref, state);
+  const f = useFrame(ref, state, replay);
   const lit = glyph(state, f);
   const c = color ?? STATE_COLORS[state];
   const id = useId().replace(/:/g, "");
@@ -261,6 +264,7 @@ const RUN: { state: AgentState; text: string }[] = [
 ];
 
 export function PixelAgentStatus() {
+  const reduce = !!useReducedMotion();
   const [step, setStep] = useState(0);
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -277,32 +281,91 @@ export function PixelAgentStatus() {
           <h2 className="mt-2 text-balance font-sans text-[clamp(1.5rem,1.2rem+1.2vw,2rem)] font-medium tracking-[-0.035em]">Eight states your agent can be in.</h2>
         </div>
         {/* Inline usage: the glyph at text size in a live run row. */}
-        <div className="flex min-w-0 items-center gap-3 rounded-full border border-white/[0.08] bg-white/[0.03] py-2 pl-2.5 pr-4 @2xl:max-w-[60%]" aria-live="polite">
+        <div className="flex min-w-0 items-center gap-3 overflow-hidden rounded-full border border-white/[0.08] bg-white/[0.03] py-2 pl-2.5 pr-4 @2xl:max-w-[60%]" aria-live="polite">
           <PixelStatus state={current.state} size={18} grid={false} />
-          <span className="truncate text-[13px] text-white/75">
-            <span className="text-white/40">Atlas · </span>
-            {current.text}
-            {current.state !== "done" ? "…" : ""}
+          <span className="text-[13px] text-white/40">Atlas ·</span>
+          <span className="relative block min-w-0 flex-1">
+            {/* Each step slides up and out of focus as the next arrives. */}
+            <AnimatePresence mode="popLayout" initial={false}>
+              <motion.span
+                key={current.text}
+                initial={reduce ? { opacity: 0 } : { opacity: 0, y: 10, filter: "blur(3px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                exit={reduce ? { opacity: 0 } : { opacity: 0, y: -10, filter: "blur(3px)", transition: { duration: 0.2, ease: [0.4, 0, 1, 1] } }}
+                transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+                className="block truncate text-[13px] text-white/75"
+              >
+                {current.text}
+                {current.state !== "done" ? "…" : ""}
+              </motion.span>
+            </AnimatePresence>
           </span>
         </div>
       </header>
 
       <ul className="mt-7 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.06] @2xl:grid-cols-4">
         {STATES.map(({ state, note }) => (
-          <li key={state} className="group relative flex flex-col bg-[#0b0b0c] p-4 transition-colors hover:bg-[#0f0f11] @xl:p-5">
-            <div className="flex aspect-[5/4] items-center justify-center text-white">
-              <PixelStatus state={state} size={96} />
-            </div>
-            <div className="mt-3 flex items-baseline justify-between gap-2">
-              <p className="text-[14px] font-medium tracking-[-0.01em] text-white/90">{LABELS[state]}</p>
-              <span className="size-1.5 shrink-0 rounded-full" style={{ background: STATE_COLORS[state] }} aria-hidden="true" />
-            </div>
-            <p className="mt-1 text-[12.5px] leading-snug text-white/45">{note}</p>
-            <code className="mt-3 font-mono text-[10.5px] text-white/30">state=&quot;{state}&quot;</code>
+          <li key={state} className="bg-[#0b0b0c]">
+            <Tile state={state} note={note} reduce={reduce} />
           </li>
         ))}
       </ul>
     </section>
+  );
+}
+
+/** A gallery tile: hover replays the glyph, click copies its usage. */
+function Tile({ state, note, reduce }: { state: AgentState; note: string; reduce: boolean }) {
+  const [replay, setReplay] = useState(0);
+  const [copied, setCopied] = useState(false);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => {
+    if (timer.current) clearTimeout(timer.current);
+  }, []);
+  const snippet = `<PixelStatus state="${state}" />`;
+  return (
+    <button
+      type="button"
+      onPointerEnter={(e) => e.pointerType === "mouse" && setReplay((r) => r + 1)}
+      onFocus={() => setReplay((r) => r + 1)}
+      onClick={() => {
+        void navigator.clipboard?.writeText(snippet).catch(() => undefined);
+        setCopied(true);
+        setReplay((r) => r + 1);
+        if (timer.current) clearTimeout(timer.current);
+        timer.current = setTimeout(() => setCopied(false), 1400);
+      }}
+      aria-label={`${LABELS[state]}: copy ${snippet}`}
+      className="group relative flex w-full flex-col p-4 text-left transition-[background-color,transform] duration-150 hover:bg-[#101012] focus-visible:z-10 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-white/70 active:scale-[0.985] @xl:p-5"
+    >
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-6 top-0 h-px opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+        style={{ background: `linear-gradient(90deg, transparent, ${STATE_COLORS[state]}, transparent)` }}
+      />
+      <span className="flex aspect-[5/4] items-center justify-center text-white transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]">
+        <PixelStatus state={state} size={96} replay={replay} />
+      </span>
+      <span className="mt-3 flex items-baseline justify-between gap-2">
+        <span className="text-[14px] font-medium tracking-[-0.01em] text-white/90">{LABELS[state]}</span>
+        <span className="size-1.5 shrink-0 rounded-full" style={{ background: STATE_COLORS[state] }} aria-hidden="true" />
+      </span>
+      <span className="mt-1 text-[12.5px] leading-snug text-white/45">{note}</span>
+      <span className="relative mt-3 block h-4 overflow-hidden font-mono text-[10.5px]" aria-live="polite">
+        <AnimatePresence mode="popLayout" initial={false}>
+          <motion.span
+            key={copied ? "copied" : "code"}
+            initial={reduce ? { opacity: 0 } : { opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={reduce ? { opacity: 0 } : { opacity: 0, y: -8 }}
+            transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            className={`block ${copied ? "text-[#34d399]" : "text-white/30 transition-colors group-hover:text-white/55"}`}
+          >
+            {copied ? "Copied snippet" : `state="${state}"`}
+          </motion.span>
+        </AnimatePresence>
+      </span>
+    </button>
   );
 }
 

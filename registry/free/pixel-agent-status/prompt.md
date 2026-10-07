@@ -38,6 +38,11 @@ Build a pixel status set for AI agents in React + Tailwind CSS v4: eight animate
 - A live run pill shows the glyph at 18px with no grid next to "Atlas · Reading the Postgres 17 release notes…". It cycles through a five-step run every 2.6s and is aria-live polite.
 - Below, a 4×2 grid of tiles (2×4 in narrow containers) with 1px gaps. Each tile has a 96px glyph, its name, a colour dot, a short note and a mono `state="…"`.
 
+**Gallery feel**
+- Each tile is a button. Hovering or focusing it replays its glyph from frame one (a `replay` prop), scales the glyph to 1.04 (300ms, ease-out), lifts the tile surface a step and draws a hairline in the state colour across its top edge.
+- Clicking copies `<PixelStatus state="…" />`; the mono line slides up to a green "Copied snippet" for 1.4s, then back. Tiles scale to 0.985 while pressed.
+- In the live run pill, each step slides up out of focus (10px, 3px blur, 200ms ease-in) as the next slides in (320ms ease-out).
+
 **Accessibility**
 - Each glyph is `role="img"` with a label: Thinking, Searching, … Needs attention.
 - Shape and text always accompany colour.

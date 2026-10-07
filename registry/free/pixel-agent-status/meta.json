@@ -15,7 +15,9 @@
     "svg",
     "dot matrix"
   ],
-  "dependencies": [],
+  "dependencies": [
+    "motion"
+  ],
   "theme": "dark",
   "previewHeight": 720,
   "usage": "import { PixelStatus } from \"@/components/design-for-ai/pixel-agent-status\";\n\n<p className=\"flex items-center gap-2 text-sm text-white/70\">\n  <PixelStatus state=\"searching\" size={16} grid={false} />\n  Reading the docs…\n</p>",
@@ -46,6 +48,11 @@
       "name": "label",
       "type": "string",
       "description": "Accessible label; defaults to the state name."
+    },
+    {
+      "name": "replay",
+      "type": "number",
+      "description": "Change it to replay the animation from frame one (e.g. on hover)."
     },
     {
       "name": "className",
