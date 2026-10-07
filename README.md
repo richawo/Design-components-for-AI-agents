@@ -48,6 +48,10 @@ claude mcp add design-for-ai -- npx -y design-for-ai-mcp
 
 Then ask: *"Find a Design for AI chart component and add it to the dashboard."*
 
+### Claude skill
+
+Copy [`skills/design-for-ai`](skills/design-for-ai) into `.claude/skills/` (one project) or `~/.claude/skills/` (every project). It teaches your agent when to reach for a component, how to adapt one without flattening it, and the checklist to run before it says it's done.
+
 ### Paste the brief
 
 Open any component page, hit **Copy for agent**, and paste it into your chat. You get the install command, the design brief and the source in one message.
@@ -68,6 +72,8 @@ registry/pro/           Pro components, cloned from a private repo at build time
 registry/pro-manifest.json   Public metadata for Pro components
 content/                Docs and blog posts (Markdown)
 scripts/                Registry build, screenshots, Pro sync
+packages/mcp/           design-for-ai-mcp, the MCP server
+skills/design-for-ai/   Claude skill: find, adapt and review against the principles
 docs/COMPONENT_SPEC.md  The bar every component is held to
 ```
 

@@ -14,11 +14,11 @@ These are the rules every Design for AI component is built and reviewed against.
 If an interface has three or more of these, people will assume a machine made it:
 
 - Purple-to-blue gradients, especially as gradient text on the headline.
-- A soft blurred "blob" glowing behind the hero.
+- A soft blurred "blob" glowing behind the hero for no reason, with nothing on the page that explains the light.
 - A centred hero with a pill badge saying "✨ Introducing…".
 - Three identical feature cards, each an icon in a rounded square, a title and two grey lines.
 - Emoji used as icons or bullet points.
-- Glassmorphism and glows on everything.
+- Glassmorphism and glows on everything, so nothing stands out.
 - One border radius and one shadow, applied to every element.
 - Copy that says nothing: "Unlock", "Supercharge", "Seamless", "Elevate", "Next-generation".
 - Inter at default tracking, at every size.
@@ -38,23 +38,27 @@ Make big type big: display headlines up to 6–9rem with `clamp()`, tracking −
 
 Pick one neutral family (warm paper and ink, cool zinc, or true black) and one or two accents, used on purpose. Every text colour passes WCAG AA.
 
-### 4. Use space as a material
+### 4. Earn your gradients and depth
+
+Gradients, grain, glow and depth make an interface feel expensive when they're disciplined and cheap when they're everywhere. Keep a gradient inside one hue family (warm white to orange to rose, not purple to blue). Put a fine noise layer over large gradients so they don't band. Give light a source: a horizon, a lit edge or a focused element, never a blob floating behind the text. Build depth from hairline borders, an inset top highlight and layered surfaces a few percent apart, not heavy drop shadows. Reserve the strongest effect for one thing per screen.
+
+### 5. Use space as a material
 
 Generous, deliberate whitespace on a 4/8px rhythm. Everything aligns to something. Asymmetry is allowed, but it has to look intended.
 
-### 5. Motion should explain something
+### 6. Motion should explain something
 
 Animate to show a change of state, direct attention, or reward an interaction. Use ease-out curves at 200–700ms, and springs for anything that gets dragged. Respect `prefers-reduced-motion` every time.
 
-### 6. Do the states
+### 7. Do the states
 
 Hover, focus-visible, active, disabled, loading, empty and error. Use tabular numbers for figures, real punctuation (’ “ ” — ×), and optically aligned icons. The details nobody notices are the ones people feel.
 
-### 7. Write like a person
+### 8. Write like a person
 
 Make the copy specific and human, with fictional but plausible names, numbers and dates. A good test: could this sentence appear on a competitor's site unchanged? If so, rewrite it.
 
-### 8. Design every breakpoint
+### 9. Design every breakpoint
 
 Check 320, 390, 768, 1024, 1440 and 1920px. "Doesn't break" isn't the bar; *designed* is. Never allow horizontal overflow. Touch targets are at least 44px, and nothing depends on hover alone.
 
@@ -64,9 +68,10 @@ Copy this into your agent's instructions:
 
 ```markdown
 Before finishing any UI work, check:
-- [ ] No gradient text, no glow blobs, no glassmorphism by default
+- [ ] No purple-to-blue gradients; any gradient stays in one hue family and carries grain
+- [ ] Glow has a visible source; at most one strong effect per screen
 - [ ] No emoji as icons; no sparkle icon for "AI"
-- [ ] Not a centred hero with a pill badge
+- [ ] Not a centred hero with a "✨ Introducing" pill badge
 - [ ] Feature sections are not three identical icon cards
 - [ ] Display type uses clamp() with tight tracking (≤ -0.03em)
 - [ ] One neutral family + at most two accents; all text passes AA
