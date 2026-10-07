@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useRef, type PointerEvent as ReactPointerEvent } from "react";
-import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from "motion/react";
+import { motion, useMotionValue, useReducedMotion, useSpring, useTransform, type MotionValue } from "motion/react";
 
 type Link = { label: string; href: string };
 
@@ -20,7 +20,7 @@ export type CtaHorizonProps = {
   glow?: [string, string, string];
 };
 
-const ease = [0.2, 0.8, 0.2, 1] as const;
+const ease = [0.22, 1, 0.36, 1] as const;
 
 export function CtaHorizon({
   eyebrow = "Ready when you are",
@@ -34,14 +34,24 @@ export function CtaHorizon({
 }: CtaHorizonProps) {
   const reduce = useReducedMotion();
   const uid = useId().replace(/:/g, "");
+  // The horizon's light leans toward the pointer, so it has a source.
+  const lean = useMotionValue(0);
+  const leanX = useSpring(lean, { stiffness: 60, damping: 20 });
   const i = headline.indexOf(muted);
   const pre = i >= 0 ? headline.slice(0, i) : headline;
   const post = i >= 0 ? headline.slice(i + muted.length) : "";
 
   return (
     <section className="bg-black p-3 sm:p-5 lg:p-6">
-      <div className="relative isolate mx-auto max-w-[1440px] overflow-hidden rounded-[24px] bg-[#09090b] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_0_0_1px_rgba(255,255,255,0.06)] sm:rounded-[32px]">
-        <Horizon id={uid} glow={glow} reduce={!!reduce} />
+      <div
+        onPointerMove={(e) => {
+          if (reduce || e.pointerType !== "mouse") return;
+          const r = e.currentTarget.getBoundingClientRect();
+          lean.set(((e.clientX - r.left) / r.width - 0.5) * 120);
+        }}
+        onPointerLeave={() => lean.set(0)}
+        className="relative isolate mx-auto max-w-[1440px] overflow-hidden rounded-[24px] bg-[#09090b] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_0_0_1px_rgba(255,255,255,0.06)] sm:rounded-[32px]">
+        <Horizon id={uid} glow={glow} reduce={!!reduce} leanX={leanX} />
         {/* Fine grain keeps the gradient from banding and gives the surface tooth. */}
         <div
           aria-hidden="true"
@@ -87,7 +97,7 @@ export function CtaHorizon({
             <MagneticButton href={primary.href} label={primary.label} reduce={!!reduce} />
             <a
               href={secondary.href}
-              className="inline-flex h-12 w-full items-center justify-center rounded-full bg-white/[0.06] px-6 text-[15px] font-medium text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_0_0_1px_rgba(255,255,255,0.1)] backdrop-blur transition-colors hover:bg-white/[0.1] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:w-auto"
+              className="inline-flex h-12 w-full items-center justify-center rounded-full bg-white/[0.06] px-6 text-[15px] font-medium text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_0_0_1px_rgba(255,255,255,0.1)] backdrop-blur transition-[background-color,transform] duration-150 hover:bg-white/[0.1] active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:w-auto"
             >
               {secondary.label}
             </a>
@@ -95,10 +105,17 @@ export function CtaHorizon({
 
           <ul className="mt-auto grid w-full max-w-4xl gap-3 pt-20 text-[13px] text-white/55 sm:grid-cols-3 sm:gap-6">
             {notes.map((n, k) => (
-              <li key={n} className="flex items-center justify-center gap-2.5">
+              <motion.li
+                key={n}
+                initial={reduce ? { opacity: 0 } : { opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.8 }}
+                transition={{ duration: 0.6, ease, delay: 0.25 + k * 0.08 }}
+                className="flex items-center justify-center gap-2.5"
+              >
                 <span className="font-mono text-[10px] text-white/30">{String(k + 1).padStart(2, "0")}</span>
                 {n}
-              </li>
+              </motion.li>
             ))}
           </ul>
         </div>
@@ -111,10 +128,11 @@ export function CtaHorizon({
 /* Horizon: a luminous arc rising from the bottom edge                 */
 /* ------------------------------------------------------------------ */
 
-function Horizon({ id, glow, reduce }: { id: string; glow: [string, string, string]; reduce: boolean }) {
+function Horizon({ id, glow, reduce, leanX }: { id: string; glow: [string, string, string]; reduce: boolean; leanX: MotionValue<number> }) {
   return (
     <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-20">
       {/* Bloom */}
+      <motion.div style={{ x: leanX }} className="absolute inset-0">
       <motion.div
         initial={reduce ? false : { opacity: 0, y: 60 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -123,6 +141,7 @@ function Horizon({ id, glow, reduce }: { id: string; glow: [string, string, stri
         className="absolute bottom-[-48%] left-1/2 aspect-square w-[170%] -translate-x-1/2 rounded-full sm:bottom-[-74%] sm:w-[110%]"
         style={{ background: `radial-gradient(closest-side, ${glow[0]} 0%, ${glow[1]}cc 22%, ${glow[2]}55 45%, transparent 70%)`, filter: "blur(48px)", opacity: 0.8 }}
       />
+      </motion.div>
       {/* Planet edge: dark disc with a lit rim */}
       <svg viewBox="0 0 1000 500" preserveAspectRatio="xMidYMax slice" className="absolute inset-x-0 bottom-0 h-[34%] w-full sm:h-[40%]">
         <defs>
@@ -182,7 +201,7 @@ function MagneticButton({ href, label, reduce }: { href: string; label: string; 
       <motion.a
         href={href}
         style={{ x, y }}
-        className="group relative inline-flex h-12 w-full items-center justify-center gap-2.5 rounded-full bg-white px-6 text-[15px] font-medium text-black shadow-[0_0_0_1px_rgba(255,255,255,0.2),0_12px_40px_-8px_rgba(255,255,255,0.45)] transition-colors hover:bg-white/90 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white active:scale-[0.98] sm:w-auto"
+        className="group relative inline-flex h-12 w-full items-center justify-center gap-2.5 rounded-full bg-white px-6 text-[15px] font-medium text-black shadow-[0_0_0_1px_rgba(255,255,255,0.2),0_12px_40px_-8px_rgba(255,255,255,0.45)] transition-[box-shadow,scale] duration-150 hover:shadow-[0_0_0_1px_rgba(255,255,255,0.3),0_16px_48px_-6px_rgba(255,255,255,0.6)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white active:[scale:0.97] sm:w-auto"
       >
         <motion.span style={{ x: lx, y: ly }}>{label}</motion.span>
         <motion.span style={{ x: lx, y: ly }} className="inline-flex">

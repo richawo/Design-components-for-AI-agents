@@ -32,3 +32,9 @@ Build a closing call-to-action section in React + Tailwind CSS v4 with `motion/r
 **Don't**
 - No flat saturated background, concentric target rings over the copy, yellow-on-blue or sparkles.
 - The glow is light falling on a surface, not a purple-blue blob.
+
+**Feel**
+- The horizon bloom drifts up to 60px toward a mouse pointer on a slow spring (stiffness 60, damping 20), so the light seems to follow you across the planet edge.
+- The magnetic primary button keeps its pull and also presses to 0.97 (the `scale` property, so it composes with the magnetic transform); on hover it stays white and its glow deepens.
+- The secondary button presses to 0.97.
+- The three notes reveal once in sequence (10px rise, 600ms, 80ms apart) after the headline.

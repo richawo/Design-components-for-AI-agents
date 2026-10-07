@@ -2,22 +2,78 @@
   "component": "CtaHorizon",
   "intent": "Cinematic closing CTA: dark panel, luminous planet-edge horizon from the bottom, two-tone headline, magnetic primary button.",
   "platform": "web",
-  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "animation": "motion/react (whileInView, useSpring, useMotionValue)", "fonts": "font-display (Geist), font-mono" },
-  "layout": { "page": "black, padding 12/20/24px", "panel": "#09090b, radius 24/32px, min-height 560/640/700px, centred column", "notes": "pinned to bottom with mt-auto, 3 columns from sm" },
-  "typography": {
-    "headline": { "font": "display", "weight": 600, "size": "clamp(2.5rem, 1.4rem + 4.6vw, 5.75rem)", "leading": 0.98, "tracking": "-0.055em", "maxWidth": "16ch", "leadClause": "white→white/70 gradient", "mutedClause": "white/45" },
-    "body": { "size": "16-17px", "color": "white/60", "maxWidth": "50ch" },
-    "eyebrow": { "font": "mono", "size": "11px", "tracking": "0.18em", "case": "uppercase" }
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4",
+    "animation": "motion/react (whileInView, useSpring, useMotionValue)",
+    "fonts": "font-display (Geist), font-mono"
   },
-  "color": { "panel": "#09090b", "glowCore": "#ffe2c4", "glowMid": "#ff7a45", "glowOuter": "#ff4d6d", "rim": "horizontal gradient hottest at centre", "grain": "feTurbulence 8% overlay" },
+  "layout": {
+    "page": "black, padding 12/20/24px",
+    "panel": "#09090b, radius 24/32px, min-height 560/640/700px, centred column",
+    "notes": "pinned to bottom with mt-auto, 3 columns from sm"
+  },
+  "typography": {
+    "headline": {
+      "font": "display",
+      "weight": 600,
+      "size": "clamp(2.5rem, 1.4rem + 4.6vw, 5.75rem)",
+      "leading": 0.98,
+      "tracking": "-0.055em",
+      "maxWidth": "16ch",
+      "leadClause": "white→white/70 gradient",
+      "mutedClause": "white/45"
+    },
+    "body": {
+      "size": "16-17px",
+      "color": "white/60",
+      "maxWidth": "50ch"
+    },
+    "eyebrow": {
+      "font": "mono",
+      "size": "11px",
+      "tracking": "0.18em",
+      "case": "uppercase"
+    }
+  },
+  "color": {
+    "panel": "#09090b",
+    "glowCore": "#ffe2c4",
+    "glowMid": "#ff7a45",
+    "glowOuter": "#ff4d6d",
+    "rim": "horizontal gradient hottest at centre",
+    "grain": "feTurbulence 8% overlay"
+  },
   "motion": {
     "bloom": "rise 60px + fade, 1.6s ease [0.2,0.8,0.2,1], once in view",
     "headline": "blur 8px→0, y 24→0, opacity, 0.9s",
     "magnetic": "±18px x, ±12px y, spring stiffness 220 damping 18; inner content ×0.4 extra",
-    "reducedMotion": "no entrance, no magnetic lean"
+    "reducedMotion": "no entrance, no magnetic lean",
+    "lean": "bloom translates up to ±60px toward the pointer on a slow spring (60/20)",
+    "press": "both buttons press to 0.97; primary deepens its glow on hover",
+    "notes": "notes reveal once, 10px rise, 80ms stagger"
   },
-  "responsive": { "mobile": "buttons full width and stacked; notes stacked; bloom 130% wide", "sm+": "buttons inline; notes in 3 columns" },
-  "accessibility": ["decorative layers aria-hidden", "magnetic effect mouse-only", "white focus rings", "AA contrast for all copy"],
-  "content": { "headline": "Ship the version you’d be proud to demo.", "muted": "proud to demo.", "primary": "Book a call", "secondary": "See pricing" },
-  "avoid": ["flat saturated backgrounds", "target rings behind copy", "purple-blue blobs", "sparkles", "yellow on blue"]
+  "responsive": {
+    "mobile": "buttons full width and stacked; notes stacked; bloom 130% wide",
+    "sm+": "buttons inline; notes in 3 columns"
+  },
+  "accessibility": [
+    "decorative layers aria-hidden",
+    "magnetic effect mouse-only",
+    "white focus rings",
+    "AA contrast for all copy"
+  ],
+  "content": {
+    "headline": "Ship the version you’d be proud to demo.",
+    "muted": "proud to demo.",
+    "primary": "Book a call",
+    "secondary": "See pricing"
+  },
+  "avoid": [
+    "flat saturated backgrounds",
+    "target rings behind copy",
+    "purple-blue blobs",
+    "sparkles",
+    "yellow on blue"
+  ]
 }
