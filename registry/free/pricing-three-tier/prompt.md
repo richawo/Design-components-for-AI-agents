@@ -1,46 +1,40 @@
-Build a three-tier pricing section in React + Tailwind CSS v4 with `motion/react`, for a fictional accounting tool called Ledgerly. It should feel calm, exact and a little dry-witted, like a good accountant: light stone neutrals, one inverted dark plan, and prices that roll like an odometer when the billing period changes.
+Build a three-plan pricing section in React + Tailwind CSS v4 with `motion/react`, for a fictional accounting product ("Ledgerly"). It should feel like a premium financial product: dark, exact and calm. The middle plan glows quietly rather than shouting.
 
-**Layout**
-- Background `#f3f1ec`, ink `#1c1a17`. Container `max-w-7xl`, padding 20/32/48px, 64–96px top and bottom.
-- Header, left-aligned: a mono eyebrow ("Pricing"), then a two-line headline (max ~1040px, `text-balance`) — "Priced like a good accountant: *no surprises.*" Below it, a row: body copy left (max 52ch) and the billing toggle right-aligned (stacked under the body below `lg`).
-- Plans: a 3-column grid at `lg` with 16px gaps; stacked with 32px gaps below that. Each plan is a card with 22px radius and 28–32px padding.
-  - Regular cards: `#faf9f6` with a 1px border at 10% ink.
-  - The featured (middle) card is inverted — `#1c1a17` with stone text — and slightly taller: `-my-5` at `lg` plus extra padding (36px sides, 48px top/bottom) and a soft long shadow `0 30px 60px -30px rgba(28,26,23,.55)`.
-  - A lime sticker (`#d7f25c`) reading "Most teams pick this" hangs over the featured card's top edge, rotated −2.5°, with a 2px hard ink drop shadow and a tiny four-point star.
-- Card anatomy: plan name (display 26px semibold) → one-line audience (14px, 60% ink) → price → billing note → CTA → 1px rule → lead line ("Everything in Sole, plus:") → feature list.
-- At `md` (stacked, wide cards) each card splits into two columns: name, price and CTA left; features right, with a vertical rule instead of the horizontal one. At `lg` it returns to a single column.
-- Footnotes: a 1px rule, then a 2-column ordered list of numbered notes (mono numbers "01", "02"), 13px at 60% ink. Features that need a caveat carry a matching mono superscript.
+**Surface**
+- Section `#050506`, white text.
+- A soft emerald radial glow (`rgba(52,211,153,0.16)`, ~1100×520px) centred on the top edge, with a 1px hairline across the top fading out at both ends.
 
-**Typography**
-- Headline: display, 700, `clamp(2.4rem, 1.3rem + 4.4vw, 5.25rem)`, line-height 0.95, tracking −0.045em. The ending is Instrument Serif italic, 400, tracking −0.02em.
-- Price: display, 600, `clamp(3.6rem, 2.8rem + 2.4vw, 4.75rem)`, line-height 1, tracking −0.05em, tabular numerals. Currency symbol 22px at 70% opacity, top-aligned; "/ mo" 15px at 55%, bottom-aligned.
-- Body 16–17px, leading relaxed. Features 15px (14px at `md`), leading snug.
-
-**Colour**
-- Stone `#f3f1ec` page, `#faf9f6` cards, `#e8e5de` toggle track, ink `#1c1a17`.
-- Lime `#d7f25c` is the only accent: sticker, featured CTA, featured check marks, footnote markers in the dark card and the "2 months free" highlight.
+**Header**
+- Eyebrow: a 6px emerald dot with a glow, then "PRICING" in mono 11px, 0.18em tracking, white/45.
+- Title: Geist, semibold, `clamp(2.25rem, 1.3rem + 3.6vw, 4.5rem)`, leading 1, tracking −0.05em, max ~900px wide.
+- The first clause uses a white-to-white/60 vertical gradient; the second clause ("no surprises.") sits in solid white/40. Two tones, one weight. No serif and no italic.
+- Below it: body copy (16px, white/60, max 52ch) on the left, and the billing toggle on the right on desktop (stacked on mobile).
 
 **Billing toggle**
-- A pill-shaped radiogroup (track `#e8e5de`, 1px border), two 44px-tall buttons, "Monthly" and "Annual". An ink pill slides behind the active one using a shared `layoutId` (spring: stiffness 420, damping 36), scoped with `LayoutGroup id={useId()}` so two instances don't fight.
-- Under it: a small hand-drawn arrow and "Pay annually, get **2 months free**", the saving in a lime highlight. Annual price = monthly × 10 ⁄ 12.
+- A pill radiogroup: `white/3%` fill, `white/8%` border, inset top highlight.
+- The active option is a white pill with black text and a soft white glow, sliding with a motion `layoutId` spring (stiffness 420, damping 36). Arrow keys switch it.
+- Underneath: "Pay annually, get [2 months free]", where the tag is an emerald-tinted pill (`#34d399` at 10% fill, 25% ring, `#6ee7b7` text).
 
-**Motion**
-- Prices are odometers: each digit is a 0–9 column inside a 1.1em overflow-hidden window, animated to `y: -digit × 1.1em` with a spring (stiffness 140, damping 20), staggered 70ms left to right. Key digits from the right so units stay units. A 10% top/bottom mask softens the window edges.
-- The billing note ("$360 billed once a year" ↔ "Billed monthly, cancel anytime") slides up 14px and fades, 350ms, ease [0.2, 0.8, 0.2, 1].
-- CTAs lift 2px on hover; the arrow chip nudges right.
-- Reduced motion: no springs or slides; values swap instantly.
+**Cards** (3 columns at lg; stacked below; at md each card splits into price and features columns)
+- Standard card: vertical white gradient (4.5% → 1.5%), 1px `white/8%` ring, inset top highlight, 22px radius.
+- Featured card:
+  - an emerald-tinted top gradient (10%), a 1px emerald ring at 28%;
+  - a 1px emerald hairline across the top, a blurred emerald bloom just above the card, and a large soft emerald drop glow;
+  - 16px taller than the others (negative margin at lg);
+  - a small mono uppercase label top-right ("Most teams pick this") in the emerald pill style.
+- Plan name: 18px, medium, then the audience line in white/50.
+- Price: a small white/50 currency, a 52–68px semibold number (tracking −0.055em) that rolls digit by digit like an odometer (spring, staggered 70ms per digit), and "/ mo" in white/40.
+- Under the price, a billing note crossfades vertically when the toggle changes.
+- CTA: full width, 44px pill. Featured is solid white with black text and a white glow; standard is a `white/6%` glass fill with a hairline ring. Each has an arrow that nudges right on hover.
+- Features sit below a `white/8%` rule: a lead line in white/45, then 14px items in white/80, each with a fine 1.6px check (emerald on the featured plan, white/35 elsewhere) and optional mono superscript footnote markers.
 
-**Check marks**
-- Custom SVG: an 18px rounded square (lime in the featured card, 7% ink elsewhere) with a slightly hand-drawn ink tick — not a library check icon.
+**Footnotes**
+- A rule, then two columns of numbered notes (mono "01"), 13px, white/45.
 
 **Accessibility**
-- The section is labelled by its heading. Each card is an `article` named after its plan.
-- The toggle is `role="radiogroup"` with `role="radio"` buttons, `aria-checked`, roving tabindex and arrow-key switching.
-- The odometer is `aria-hidden`; an `sr-only` span reads "$30 per month, $360 billed once a year".
-- Visible `focus-visible` outlines on the toggle and CTAs. All text meets AA.
+- The section is labelled by the title. The price has an sr-only full sentence. With reduced motion, prices swap instantly.
 
 **Don't**
-- No gradient "popular" border, no glow and no "Best value!" badge in a rounded rectangle.
-- Don't make all three cards identical with only the button colour changed.
-- No literal checkmark emoji or icon-font ticks, no crossed-out features on the cheap plan.
-- Don't animate the whole number as a fade; the digit roll is the idea.
+- No rotated stickers, hand-drawn arrows, serif-italic accents or neon highlighter tags.
+- No three identical cards (the featured one must differ in light, not just colour).
+- No gradient text in a bright hue.

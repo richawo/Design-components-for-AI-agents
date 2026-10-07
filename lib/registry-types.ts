@@ -50,6 +50,8 @@ export interface ComponentMeta {
   usage: string;
   props: PropDoc[];
   added: string;
+  /** Drafts are hidden from the site and registry until they meet the bar. */
+  status?: "draft";
 }
 
 /** The contents of a component's prompt.json. */

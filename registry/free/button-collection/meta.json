@@ -5,20 +5,68 @@
   "platform": "web",
   "category": "primitives",
   "description": "Eleven refined buttons laid out like a type specimen in three sizes: split, loading, magnetic and hold-to-confirm included, every state accessible.",
-  "tags": ["button", "buttons", "primitives", "split button", "loading", "hold to confirm", "magnetic", "specimen"],
-  "dependencies": ["motion", "lucide-react"],
+  "tags": [
+    "button",
+    "buttons",
+    "primitives",
+    "split button",
+    "loading",
+    "hold to confirm",
+    "magnetic",
+    "specimen"
+  ],
+  "dependencies": [
+    "motion",
+    "lucide-react"
+  ],
   "theme": "light",
   "previewHeight": 1500,
   "usage": "import { Button, SplitButton, HoldToConfirmButton } from \"@/components/design-for-ai/button-collection\";\n\nexport function Toolbar() {\n  return (\n    <div className=\"flex gap-3\">\n      <Button variant=\"secondary\">Preview</Button>\n      <SplitButton options={[{ id: \"publish\", label: \"Publish\", hint: \"Goes live now.\" }]} onAction={publish} />\n      <HoldToConfirmButton label=\"Hold to delete\" onConfirm={remove} />\n    </div>\n  );\n}",
   "props": [
-    { "name": "kicker", "type": "string", "default": "\"Specimen № 04\"", "description": "Mono label at the top left of the sheet." },
-    { "name": "edition", "type": "string", "description": "Mono label at the top right." },
-    { "name": "title", "type": "string", "default": "\"Buttons,\"", "description": "First line of the display headline." },
-    { "name": "titleItalic", "type": "string", "default": "\"pressed with care.\"", "description": "Second line, set in italic serif in ultramarine." },
-    { "name": "intro", "type": "string", "description": "Paragraph beside the headline." },
-    { "name": "notes", "type": "Partial<Record<RowId, string>>", "description": "Override the one-line note under any specimen row." },
-    { "name": "splitOptions", "type": "{ id: string; label: string; hint: string }[]", "description": "Options in the split button's menu. The first is the default action." },
-    { "name": "footnote", "type": "string", "description": "Token summary under the sheet." }
+    {
+      "name": "kicker",
+      "type": "string",
+      "default": "\"Specimen \u2116 04\"",
+      "description": "Mono label at the top left of the sheet."
+    },
+    {
+      "name": "edition",
+      "type": "string",
+      "description": "Mono label at the top right."
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "default": "\"Buttons,\"",
+      "description": "First line of the display headline."
+    },
+    {
+      "name": "titleItalic",
+      "type": "string",
+      "default": "\"pressed with care.\"",
+      "description": "Second line, set in italic serif in ultramarine."
+    },
+    {
+      "name": "intro",
+      "type": "string",
+      "description": "Paragraph beside the headline."
+    },
+    {
+      "name": "notes",
+      "type": "Partial<Record<RowId, string>>",
+      "description": "Override the one-line note under any specimen row."
+    },
+    {
+      "name": "splitOptions",
+      "type": "{ id: string; label: string; hint: string }[]",
+      "description": "Options in the split button's menu. The first is the default action."
+    },
+    {
+      "name": "footnote",
+      "type": "string",
+      "description": "Token summary under the sheet."
+    }
   ],
-  "added": "2026-10-07"
+  "added": "2026-10-07",
+  "status": "draft"
 }

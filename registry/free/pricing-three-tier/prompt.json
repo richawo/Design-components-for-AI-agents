@@ -1,48 +1,30 @@
 {
   "component": "PricingThreeTier",
-  "intent": "Three-plan pricing section for a fictional accounting tool, Ledgerly: light stone neutrals, an inverted taller featured card, a sliding monthly/annual toggle and odometer prices.",
+  "intent": "Premium dark three-plan pricing with a softly glowing featured plan, odometer prices and a sliding billing toggle.",
   "platform": "web",
-  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "animation": "motion/react", "fonts": "font-display (Bricolage Grotesque), font-serif (Instrument Serif), font-sans (Geist), font-mono (Geist Mono)" },
+  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "animation": "motion/react", "fonts": "font-sans (Geist), font-mono (Geist Mono)" },
   "layout": {
     "container": "max-w-7xl, px 20/32/48px, py 64-96px",
-    "header": ["mono eyebrow", "two-line headline, max ~1040px, text-balance", "row: body (max 52ch) left, billing toggle right; stacked below lg"],
-    "plans": "3-col grid at lg (gap 16px), stacked below (gap 32px); featured card -my-5 at lg with larger padding so it stands taller",
-    "card": ["name", "audience", "price + unit", "billing note", "CTA", "rule", "lead line", "features with custom checks"],
-    "mdCard": "at md each card is 2 columns: name/price/CTA left, features right with a vertical rule",
-    "footnotes": "rule, then 2-col ordered list with mono 01/02 markers"
+    "header": "eyebrow, two-tone title, then body (left) + billing toggle (right) on desktop",
+    "plans": "3 columns at lg (featured -16px vertical margin); stacked on mobile; at md each card is 2 columns (price | features)",
+    "footnotes": "2 columns under a hairline"
   },
   "typography": {
-    "headline": { "font": "display", "weight": 700, "size": "clamp(2.4rem, 1.3rem + 4.4vw, 5.25rem)", "leading": 0.95, "tracking": "-0.045em", "accent": "serif italic 400, tracking -0.02em" },
-    "price": { "font": "display", "weight": 600, "size": "clamp(3.6rem, 2.8rem + 2.4vw, 4.75rem)", "leading": 1, "tracking": "-0.05em", "numerals": "tabular" },
-    "planName": { "font": "display", "weight": 600, "size": "26px", "tracking": "-0.03em" },
-    "body": "16-17px, leading relaxed, 70% ink",
-    "features": "15px (14px at md), leading snug",
-    "meta": "mono 11-12px uppercase, tracking 0.16em"
+    "title": { "font": "sans", "weight": 600, "size": "clamp(2.25rem, 1.3rem + 3.6vw, 4.5rem)", "leading": 1, "tracking": "-0.05em", "firstClause": "white→white/60 vertical gradient", "secondClause": "white/40" },
+    "price": { "size": "clamp(3.25rem, 2.6rem + 2vw, 4.25rem)", "weight": 600, "tracking": "-0.055em", "numerals": "tabular, odometer digits" },
+    "planName": { "size": "18px", "weight": 500 },
+    "eyebrow": { "font": "mono", "size": "11px", "tracking": "0.18em", "color": "white/45" }
   },
-  "color": { "background": "#f3f1ec", "card": "#faf9f6", "toggleTrack": "#e8e5de", "ink": "#1c1a17", "featuredCard": "#1c1a17", "accent": "#d7f25c", "rules": "ink at 10-12%" },
+  "color": { "background": "#050506", "text": "#ffffff", "accent": "#34d399", "accentText": "#6ee7b7", "glow": "rgba(52,211,153,0.16) radial at top", "cardFill": "white 4.5%→1.5% vertical gradient", "cardRing": "white/8%", "featuredRing": "emerald 28%" },
   "motion": {
-    "toggleIndicator": "shared layoutId pill, spring stiffness 420 damping 36, scoped by LayoutGroup id",
-    "price": "odometer: per-digit 0-9 column, y = -digit * 1.1em, spring stiffness 140 damping 20, 70ms stagger, keyed from the right",
-    "billingNote": "slide 14px + fade, 350ms, ease [0.2, 0.8, 0.2, 1]",
-    "cta": "lift 2px on hover; arrow chip nudges right",
-    "reducedMotion": "instant swaps, no springs"
+    "toggle": "layoutId spring stiffness 420 damping 36",
+    "price": "per-digit odometer, spring stiffness 140 damping 20, 70ms stagger",
+    "billingNote": "vertical crossfade 350ms ease [0.2,0.8,0.2,1]",
+    "cta": "arrow translates 2px on hover",
+    "reducedMotion": "instant swaps"
   },
-  "responsive": {
-    "mobile": "stacked cards, toggle under body, featured card stays inverted with its sticker",
-    "md": "cards split into two inner columns",
-    "lg": "three columns, featured card taller"
-  },
-  "accessibility": ["section aria-labelledby the heading", "toggle is role=radiogroup with role=radio, aria-checked, roving tabindex and arrow keys", "odometer aria-hidden with an sr-only price sentence", "each card is an article named after its plan", "visible focus-visible outlines", "AA contrast"],
-  "content": {
-    "title": "Priced like a good accountant: no surprises.",
-    "plans": [
-      { "name": "Sole", "monthly": 12, "annual": 10, "audience": "For freelancers and sole traders" },
-      { "name": "Practice", "monthly": 36, "annual": 30, "audience": "For small teams with a real payroll", "featured": true },
-      { "name": "Firm", "monthly": 84, "annual": 70, "audience": "For accountants running many books" }
-    ],
-    "saving": "2 months free",
-    "featuredLabel": "Most teams pick this",
-    "footnotes": "2 numbered caveats referenced by superscripts"
-  },
-  "avoid": ["gradient borders or glows on the popular plan", "three identical cards", "emoji or icon-font checks", "crossed-out features", "fading the whole price instead of rolling digits", "'Best value!' badges"]
+  "responsive": { "mobile": "stacked cards, toggle under body, full-width CTAs", "md": "cards split into price | features", "lg": "three columns, featured lifted" },
+  "accessibility": ["section aria-labelledby the title", "radiogroup toggle with arrow keys", "sr-only price sentence", "visible focus rings"],
+  "content": { "plans": ["Sole $12/$10", "Practice $36/$30 (featured)", "Firm $84/$70"], "saving": "2 months free", "footnotes": 2 },
+  "avoid": ["rotated stickers", "hand-drawn arrows", "serif italic accents", "neon highlighter tags", "bright gradient text", "identical cards"]
 }

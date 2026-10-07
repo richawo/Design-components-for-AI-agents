@@ -32,13 +32,13 @@ export type PricingPlan = {
 export type PricingThreeTierProps = {
   eyebrow?: string;
   title?: string;
-  /** The italic serif ending of the title. */
+  /** The muted second clause of the title. */
   titleAccent?: string;
   body?: string;
   plans?: PricingPlan[];
   /** Small note beside the billing toggle. */
   saving?: string;
-  /** Sticker on the featured plan. */
+  /** Label on the featured plan. */
   featuredLabel?: string;
   currency?: string;
   footnotes?: string[];
@@ -122,27 +122,29 @@ export function PricingThreeTier({
   const uid = useId();
 
   return (
-    <section aria-labelledby={`${uid}-title`} className="relative isolate overflow-hidden bg-[#f3f1ec] text-[#1c1a17]">
+    <section aria-labelledby={`${uid}-title`} className="relative isolate overflow-hidden bg-[#050506] text-white">
+      <div aria-hidden="true" className="absolute left-1/2 top-0 -z-10 h-[520px] w-[1100px] max-w-[160%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(52,211,153,0.16),transparent)]" />
+      <div aria-hidden="true" className="absolute inset-x-0 top-0 -z-10 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
       <div className="mx-auto max-w-7xl px-5 pb-16 pt-16 sm:px-8 sm:pt-20 lg:px-12 lg:pb-24 lg:pt-24">
         {/* Header */}
         <div>
-          <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-[#1c1a17]/55 sm:text-xs">{eyebrow}</p>
+          <p className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-white/45"><span className="size-1.5 rounded-full bg-[#34d399] shadow-[0_0_10px_#34d399]" />{eyebrow}</p>
           <h2
             id={`${uid}-title`}
-            className="mt-5 max-w-[1040px] text-balance font-display text-[clamp(2.4rem,1.3rem+4.4vw,5.25rem)] font-bold leading-[0.95] tracking-[-0.045em]"
+            className="mt-5 max-w-[900px] text-balance font-sans text-[clamp(2.25rem,1.3rem+3.6vw,4.5rem)] font-semibold leading-[1] tracking-[-0.05em]"
           >
-            {title} <span className="font-serif font-normal italic tracking-[-0.02em]">{titleAccent}</span>
+            <span className="bg-gradient-to-b from-white via-white to-white/60 bg-clip-text text-transparent">{title}</span> <span className="text-white/40">{titleAccent}</span>
           </h2>
           <div className="mt-8 flex flex-col gap-8 lg:mt-10 lg:flex-row lg:items-end lg:justify-between">
-            <p className="max-w-[52ch] text-[16px] leading-relaxed text-[#1c1a17]/70 sm:text-[17px]">{body}</p>
+            <p className="max-w-[52ch] text-[16px] leading-relaxed text-white/60">{body}</p>
             <BillingToggle billing={billing} onChange={setBilling} saving={saving} uid={uid} reduce={reduce} />
           </div>
         </div>
 
         {/* Plans */}
-        <ul className="mt-14 grid gap-8 lg:mt-20 lg:grid-cols-3 lg:items-stretch lg:gap-4">
+        <ul className="mt-14 grid gap-4 lg:mt-16 lg:grid-cols-3 lg:items-stretch">
           {plans.map((plan) => (
-            <li key={plan.name} className={plan.featured ? "relative lg:-my-5" : "relative"}>
+            <li key={plan.name} className={plan.featured ? "relative lg:-my-4" : "relative"}>
               <PlanCard
                 plan={plan}
                 billing={billing}
@@ -156,10 +158,10 @@ export function PricingThreeTier({
 
         {/* Footnotes */}
         {footnotes.length > 0 && (
-          <ol className="mt-14 grid gap-2 border-t border-[#1c1a17]/12 pt-6 text-[13px] leading-relaxed text-[#1c1a17]/60 md:grid-cols-2 md:gap-10 lg:mt-20">
+          <ol className="mt-14 grid gap-2 border-t border-white/[0.08] pt-6 text-[13px] leading-relaxed text-white/45 md:grid-cols-2 md:gap-10 lg:mt-16">
             {footnotes.map((f, n) => (
               <li key={f} className="flex gap-3">
-                <span className="font-mono text-[11px] leading-[1.9] text-[#1c1a17]/45">{String(n + 1).padStart(2, "0")}</span>
+                <span className="font-mono text-[11px] leading-[1.9] text-white/30">{String(n + 1).padStart(2, "0")}</span>
                 <span className="max-w-[60ch]">{f}</span>
               </li>
             ))}
@@ -193,7 +195,7 @@ function BillingToggle({
         <div
           role="radiogroup"
           aria-label="Billing period"
-          className="relative inline-flex rounded-full border border-[#1c1a17]/12 bg-[#e8e5de] p-1"
+          className="relative inline-flex rounded-full border border-white/[0.08] bg-white/[0.03] p-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
           onKeyDown={(e) => {
             if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(e.key)) {
               e.preventDefault();
@@ -215,14 +217,14 @@ function BillingToggle({
                 tabIndex={active ? 0 : -1}
                 data-value={o.value}
                 onClick={() => onChange(o.value)}
-                className={`relative h-11 rounded-full px-6 text-[14px] font-semibold transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1c1a17] ${
-                  active ? "text-[#f3f1ec]" : "text-[#1c1a17]/65 hover:text-[#1c1a17]"
+                className={`relative h-10 rounded-full px-5 text-[14px] font-medium transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${
+                  active ? "text-black" : "text-white/55 hover:text-white"
                 }`}
               >
                 {active && (
                   <motion.span
                     layoutId="indicator"
-                    className="absolute inset-0 rounded-full bg-[#1c1a17] shadow-[0_1px_2px_rgba(28,26,23,0.25)]"
+                    className="absolute inset-0 rounded-full bg-white shadow-[0_4px_16px_-4px_rgba(255,255,255,0.5)]"
                     transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 420, damping: 36 }}
                   />
                 )}
@@ -232,14 +234,9 @@ function BillingToggle({
           })}
         </div>
       </LayoutGroup>
-      <p className="flex items-center gap-2 text-[13px] text-[#1c1a17]/65">
-        <svg viewBox="0 0 34 20" className="h-4 w-7 text-[#1c1a17]/55" fill="none" aria-hidden="true">
-          <path d="M2 16c8 2 20 1 27-9m0 0-6 1m6-1 1 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-        <span>
-          Pay annually, get{" "}
-          <span className="rounded-[4px] bg-[#d7f25c] px-1.5 py-0.5 font-semibold text-[#1c1a17]">{saving}</span>
-        </span>
+      <p className="flex items-center gap-2 text-[13px] text-white/50">
+        Pay annually, get
+        <span className="rounded-full bg-[#34d399]/10 px-2 py-0.5 font-medium text-[#6ee7b7] ring-1 ring-inset ring-[#34d399]/25">{saving}</span>
       </p>
     </div>
   );
@@ -269,26 +266,27 @@ function PlanCard({
   return (
     <article
       aria-label={`${plan.name} plan`}
-      className={`relative flex h-full flex-col rounded-[22px] p-7 sm:p-8 md:grid md:grid-cols-2 md:gap-x-10 lg:flex lg:gap-0 ${
+      className={`relative isolate flex h-full flex-col overflow-hidden rounded-[22px] p-7 sm:p-8 md:grid md:grid-cols-2 md:gap-x-10 lg:flex lg:gap-0 ${
         dark
-          ? "bg-[#1c1a17] text-[#f3f1ec] shadow-[0_30px_60px_-30px_rgba(28,26,23,0.55)] lg:px-9 lg:py-12"
-          : "border border-[#1c1a17]/10 bg-[#faf9f6] text-[#1c1a17]"
+          ? "bg-[linear-gradient(180deg,rgba(52,211,153,0.10),rgba(255,255,255,0.02)_42%,rgba(255,255,255,0.02))] shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_0_0_1px_rgba(52,211,153,0.28),0_40px_100px_-30px_rgba(52,211,153,0.28)] lg:px-9 lg:py-12"
+          : "bg-[linear-gradient(180deg,rgba(255,255,255,0.045),rgba(255,255,255,0.015))] shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_0_0_1px_rgba(255,255,255,0.08)]"
       }`}
     >
       {dark && (
-        <span className="absolute -top-3.5 left-7 inline-flex -rotate-[2.5deg] items-center gap-2 rounded-full bg-[#d7f25c] px-3.5 py-1.5 font-mono text-[11px] font-medium uppercase tracking-[0.12em] text-[#1c1a17] shadow-[0_2px_0_#1c1a17] sm:left-8 lg:left-9">
-          <svg viewBox="0 0 12 12" className="size-2.5" aria-hidden="true">
-            <path d="M6 0l1.5 4.5L12 6 7.5 7.5 6 12 4.5 7.5 0 6l4.5-1.5z" fill="currentColor" />
-          </svg>
-          {featuredLabel}
-        </span>
+        <>
+          <div aria-hidden="true" className="absolute inset-x-8 top-0 -z-10 h-px bg-gradient-to-r from-transparent via-[#6ee7b7] to-transparent" />
+          <div aria-hidden="true" className="absolute -top-24 left-1/2 -z-10 h-48 w-3/4 -translate-x-1/2 rounded-full bg-[#34d399]/20 blur-3xl" />
+          <span className="absolute right-6 top-7 inline-flex items-center gap-1.5 rounded-full bg-[#34d399]/10 px-2.5 py-1 font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-[#6ee7b7] ring-1 ring-inset ring-[#34d399]/30 sm:right-8 lg:right-9 lg:top-12">
+            {featuredLabel}
+          </span>
+        </>
       )}
 
       <div className="flex flex-col">
       <header className="flex items-baseline justify-between gap-4">
-        <h3 className="font-display text-[26px] font-semibold tracking-[-0.03em]">{plan.name}</h3>
+        <h3 className="font-sans text-[18px] font-medium tracking-[-0.02em]">{plan.name}</h3>
       </header>
-      <p className={`mt-1.5 text-[14px] ${dark ? "text-[#f3f1ec]/60" : "text-[#1c1a17]/60"}`}>{plan.audience}</p>
+      <p className="mt-1 text-[14px] text-white/50">{plan.audience}</p>
 
       {/* Price */}
       <div className="mt-8 flex items-start">
@@ -296,17 +294,17 @@ function PlanCard({
           {currency}
           {price} per month, {note}
         </span>
-        <span aria-hidden="true" className="mt-[0.55em] mr-1 font-display text-[22px] font-medium tracking-[-0.02em] opacity-70">
+        <span aria-hidden="true" className="mr-1 mt-[0.45em] font-sans text-[22px] font-medium tracking-[-0.02em] text-white/50">
           {currency}
         </span>
-        <span aria-hidden="true" className="font-display text-[clamp(3.6rem,2.8rem+2.4vw,4.75rem)] font-semibold leading-none tracking-[-0.05em]">
+        <span aria-hidden="true" className="font-sans text-[clamp(3.25rem,2.6rem+2vw,4.25rem)] font-semibold leading-none tracking-[-0.055em]">
           <RollingNumber value={price} reduce={reduce} />
         </span>
-        <span aria-hidden="true" className={`ml-2 self-end pb-2 text-[15px] ${dark ? "text-[#f3f1ec]/55" : "text-[#1c1a17]/55"}`}>
+        <span aria-hidden="true" className="ml-2 self-end pb-2 text-[14px] text-white/40">
           {plan.unit ?? "/ mo"}
         </span>
       </div>
-      <div aria-hidden="true" className={`relative mt-2 h-5 overflow-hidden text-[13px] ${dark ? "text-[#f3f1ec]/55" : "text-[#1c1a17]/55"}`}>
+      <div aria-hidden="true" className="relative mt-2 h-5 overflow-hidden text-[13px] text-white/40">
         <AnimatePresence mode="popLayout" initial={false}>
           <motion.p
             key={note}
@@ -322,38 +320,32 @@ function PlanCard({
 
       <a
         href={plan.cta.href}
-        className={`group mt-8 inline-flex h-12 items-center justify-between rounded-full pl-6 pr-1.5 text-[15px] font-semibold transition-[transform,background-color,color] duration-300 ease-[cubic-bezier(.2,.8,.2,1)] hover:-translate-y-0.5 active:translate-y-0 focus-visible:outline-2 focus-visible:outline-offset-2 ${
+        className={`group mt-8 inline-flex h-11 items-center justify-center gap-2 rounded-full px-5 text-[14px] font-medium transition-[background-color,box-shadow,color] duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${
           dark
-            ? "bg-[#d7f25c] text-[#1c1a17] focus-visible:outline-[#d7f25c]"
-            : "border border-[#1c1a17]/80 text-[#1c1a17] hover:bg-[#1c1a17] hover:text-[#f3f1ec] focus-visible:outline-[#1c1a17]"
+            ? "bg-white text-black shadow-[0_10px_30px_-10px_rgba(255,255,255,0.55)] hover:bg-white/90"
+            : "bg-white/[0.06] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_0_0_1px_rgba(255,255,255,0.1)] hover:bg-white/[0.1]"
         }`}
       >
         {plan.cta.label}
-        <span
-          className={`flex size-9 items-center justify-center rounded-full transition-transform duration-500 ease-[cubic-bezier(.2,.8,.2,1)] group-hover:translate-x-0.5 ${
-            dark ? "bg-[#1c1a17] text-[#d7f25c]" : "bg-[#1c1a17] text-[#f3f1ec] group-hover:bg-[#f3f1ec] group-hover:text-[#1c1a17]"
-          }`}
-        >
-          <svg viewBox="0 0 16 16" className="size-4" fill="none" aria-hidden="true">
-            <path d="M3 8h10m0 0L8.5 3.5M13 8l-4.5 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </span>
+        <svg viewBox="0 0 16 16" className="size-3.5 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" aria-hidden="true">
+          <path d="M3 8h10m0 0L8.5 3.5M13 8l-4.5 4.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
       </a>
 
       </div>
 
-      <div className={`mt-8 border-t pt-7 md:mt-0 md:border-l md:border-t-0 md:pl-10 md:pt-1 lg:mt-8 lg:border-l-0 lg:border-t lg:pl-0 lg:pt-7 ${dark ? "border-[#f3f1ec]/12" : "border-[#1c1a17]/10"}`}>
+      <div className="mt-8 border-t border-white/[0.08] pt-7 md:mt-0 md:border-l md:border-t-0 md:pl-10 md:pt-1 lg:mt-8 lg:border-l-0 lg:border-t lg:pl-0 lg:pt-7">
         {plan.lead && (
-          <p className={`text-[13px] font-medium ${dark ? "text-[#f3f1ec]/75" : "text-[#1c1a17]/75"}`}>{plan.lead}</p>
+          <p className="text-[13px] text-white/45">{plan.lead}</p>
         )}
         <ul className="mt-4 space-y-3">
           {plan.features.map((f) => (
-            <li key={f.text} className="flex gap-3 text-[15px] leading-snug md:text-[14px] lg:text-[15px]">
+            <li key={f.text} className="flex gap-3 text-[14px] leading-snug">
               <Check dark={dark} />
-              <span className={dark ? "text-[#f3f1ec]/90" : "text-[#1c1a17]/85"}>
+              <span className="text-white/80">
                 {f.text}
                 {f.note ? (
-                  <sup className={`ml-0.5 font-mono text-[10px] ${dark ? "text-[#d7f25c]" : "text-[#1c1a17]/50"}`}>
+                  <sup className={`ml-0.5 font-mono text-[10px] ${dark ? "text-[#6ee7b7]" : "text-white/40"}`}>
                     {String(f.note).padStart(2, "0")}
                   </sup>
                 ) : null}
@@ -366,18 +358,10 @@ function PlanCard({
   );
 }
 
-/** A slightly hand-drawn tick in a ledger-ruled square. */
 function Check({ dark }: { dark: boolean }) {
   return (
-    <svg viewBox="0 0 20 20" className="mt-[1px] size-[18px] shrink-0" fill="none" aria-hidden="true">
-      <rect x="1" y="1" width="18" height="18" rx="5" className={dark ? "fill-[#d7f25c]" : "fill-[#1c1a17]/[0.07]"} />
-      <path
-        d="M5.6 10.4c1 .7 1.9 1.6 2.6 2.7 1.4-3.1 3.4-5.4 6.2-7"
-        stroke={dark ? "#1c1a17" : "#1c1a17"}
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+    <svg viewBox="0 0 16 16" className={`mt-[1px] size-4 shrink-0 ${dark ? "text-[#6ee7b7]" : "text-white/35"}`} fill="none" aria-hidden="true">
+      <path d="M3.5 8.4l2.8 2.8 6.2-6.4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }

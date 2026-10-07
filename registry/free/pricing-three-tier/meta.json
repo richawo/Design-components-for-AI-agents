@@ -4,23 +4,81 @@
   "tier": "free",
   "platform": "web",
   "category": "pricing",
-  "description": "Three plans on light stone with an inverted, taller featured card, a sliding monthly/annual toggle and prices that roll digit by digit.",
-  "tags": ["pricing", "plans", "billing toggle", "saas", "odometer", "comparison", "subscription"],
-  "dependencies": ["motion"],
-  "theme": "light",
+  "description": "Premium dark pricing with a softly glowing featured plan, odometer-rolling prices, a sliding monthly/annual toggle and footnoted features.",
+  "tags": [
+    "pricing",
+    "pricing table",
+    "saas",
+    "dark",
+    "billing toggle",
+    "odometer",
+    "plans"
+  ],
+  "dependencies": [
+    "motion"
+  ],
+  "theme": "dark",
   "previewHeight": 1180,
   "usage": "import { PricingThreeTier } from \"@/components/design-for-ai/pricing-three-tier\";\n\nexport default function Page() {\n  return (\n    <PricingThreeTier\n      title=\"Pick a plan.\"\n      titleAccent=\"Change it whenever.\"\n      defaultBilling=\"monthly\"\n      plans={[\n        { name: \"Starter\", audience: \"For one person\", monthly: 9, annual: 7, cta: { label: \"Start free\", href: \"/signup\" }, features: [{ text: \"1 project\" }] },\n        { name: \"Team\", audience: \"For small teams\", monthly: 29, annual: 24, featured: true, cta: { label: \"Start free\", href: \"/signup?plan=team\" }, features: [{ text: \"Unlimited projects\" }] },\n        { name: \"Studio\", audience: \"For agencies\", monthly: 79, annual: 66, cta: { label: \"Talk to us\", href: \"/contact\" }, features: [{ text: \"Client workspaces\" }] }\n      ]}\n    />\n  );\n}",
   "props": [
-    { "name": "plans", "type": "PricingPlan[]", "default": "Sole, Practice, Firm", "description": "Plans in display order. Each has name, audience, monthly and annual prices, a CTA, an optional lead line and features. Set featured on one." },
-    { "name": "title", "type": "string", "default": "\"Priced like a good accountant:\"", "description": "Headline, set in the display face." },
-    { "name": "titleAccent", "type": "string", "default": "\"no surprises.\"", "description": "Italic serif ending of the headline." },
-    { "name": "body", "type": "string", "description": "Supporting paragraph under the headline." },
-    { "name": "eyebrow", "type": "string", "default": "\"Pricing\"", "description": "Mono label above the headline." },
-    { "name": "saving", "type": "string", "default": "\"2 months free\"", "description": "Highlighted saving beside the billing toggle." },
-    { "name": "featuredLabel", "type": "string", "default": "\"Most teams pick this\"", "description": "Sticker on the featured plan." },
-    { "name": "currency", "type": "string", "default": "\"$\"", "description": "Currency symbol before every price." },
-    { "name": "footnotes", "type": "string[]", "description": "Numbered notes under the plans. Reference them from a feature with note: 1, 2…" },
-    { "name": "defaultBilling", "type": "\"monthly\" | \"annual\"", "default": "\"annual\"", "description": "Billing period selected on first render." }
+    {
+      "name": "plans",
+      "type": "PricingPlan[]",
+      "default": "Sole, Practice, Firm",
+      "description": "Plans in display order. Each has name, audience, monthly and annual prices, a CTA, an optional lead line and features. Set featured on one."
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "default": "\"Priced like a good accountant:\"",
+      "description": "Headline, set in the display face."
+    },
+    {
+      "name": "titleAccent",
+      "type": "string",
+      "default": "\"no surprises.\"",
+      "description": "Italic serif ending of the headline."
+    },
+    {
+      "name": "body",
+      "type": "string",
+      "description": "Supporting paragraph under the headline."
+    },
+    {
+      "name": "eyebrow",
+      "type": "string",
+      "default": "\"Pricing\"",
+      "description": "Mono label above the headline."
+    },
+    {
+      "name": "saving",
+      "type": "string",
+      "default": "\"2 months free\"",
+      "description": "Highlighted saving beside the billing toggle."
+    },
+    {
+      "name": "featuredLabel",
+      "type": "string",
+      "default": "\"Most teams pick this\"",
+      "description": "Sticker on the featured plan."
+    },
+    {
+      "name": "currency",
+      "type": "string",
+      "default": "\"$\"",
+      "description": "Currency symbol before every price."
+    },
+    {
+      "name": "footnotes",
+      "type": "string[]",
+      "description": "Numbered notes under the plans. Reference them from a feature with note: 1, 2\u2026"
+    },
+    {
+      "name": "defaultBilling",
+      "type": "\"monthly\" | \"annual\"",
+      "default": "\"annual\"",
+      "description": "Billing period selected on first render."
+    }
   ],
   "added": "2026-10-07"
 }

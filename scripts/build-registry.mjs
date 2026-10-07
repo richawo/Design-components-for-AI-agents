@@ -151,8 +151,12 @@ function writeJson(p, data) {
 
 // In dev, a half-finished component is skipped so it can't break the others.
 // With --strict (prebuild, CI) any problem fails the build.
-const free = readComponents("free").filter((c) => !broken.has(c.meta.slug));
-const pro = readComponents("pro").filter((c) => !broken.has(c.meta.slug));
+// Drafts ("status": "draft") are hidden unless SHOW_DRAFTS=1, so a component
+// can live in the repo while it's being brought up to the bar.
+const SHOW_DRAFTS = process.env.SHOW_DRAFTS === "1";
+const visible = (c) => !broken.has(c.meta.slug) && (SHOW_DRAFTS || c.meta.status !== "draft");
+const free = readComponents("free").filter(visible);
+const pro = readComponents("pro").filter(visible);
 const proManifestPath = path.join(registryDir, "pro-manifest.json");
 const hasProSource = pro.length > 0;
 
@@ -172,7 +176,8 @@ if (errors.length) {
 let proMetas;
 if (hasProSource) {
   proMetas = pro.map((c) => c.meta).sort((a, b) => a.slug.localeCompare(b.slug));
-  writeJson(proManifestPath, proMetas);
+  // The committed manifest only ever lists published Pro components.
+  writeJson(proManifestPath, proMetas.filter((m) => m.status !== "draft"));
 } else {
   proMetas = fs.existsSync(proManifestPath) ? JSON.parse(fs.readFileSync(proManifestPath, "utf8")) : [];
 }
