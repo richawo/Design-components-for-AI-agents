@@ -1009,9 +1009,9 @@
     "props": [
       {
         "name": "routes",
-        "type": "{ from: [lat, lon]; to: [lat, lon] }[]",
+        "type": "{ from: [lat, lon]; to: [lat, lon]; fromLabel?: string; toLabel?: string }[]",
         "default": "11 global routes",
-        "description": "Great-circle arcs with a travelling comet. Unique endpoints get a pulsing marker."
+        "description": "Great-circle arcs with a travelling comet. Unique endpoints get a pulsing marker; labels show on hover or tap."
       },
       {
         "name": "colors",
