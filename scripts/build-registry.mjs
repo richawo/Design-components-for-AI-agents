@@ -127,6 +127,9 @@ function validateCompleteness(slug, m, prompt, promptJson, code) {
   if ((promptJson ?? "").trim().length < 600) fail(slug, "prompt.json is too thin (min 600 chars)");
   if ((m.usage ?? "").trim().length < 40) fail(slug, "usage example is a placeholder");
   if (!Array.isArray(m.props) || m.props.length === 0) fail(slug, "document at least one prop");
+  // Catch placeholder metadata: runs of one character, or throwaway tags.
+  if (/(.)\1{7,}/.test(m.description ?? "") || (m.description ?? "").split(/\s+/).length < 8) fail(slug, "description looks like a placeholder");
+  if ((m.tags ?? []).length < 3 || (m.tags ?? []).some((t) => t.length < 2)) fail(slug, "tags look like placeholders (need 3+, each 2+ chars)");
 }
 
 function registryItem(c) {

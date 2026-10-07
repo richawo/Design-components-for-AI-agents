@@ -892,11 +892,16 @@
     "tier": "pro",
     "platform": "web",
     "category": "portfolio",
-    "description": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "description": "A studio work index in huge display type. On desktop a cover card follows the cursor on springs and tilts with its velocity, while the other rows dim away.",
     "tags": [
-      "a",
-      "b",
-      "c"
+      "portfolio",
+      "work index",
+      "case studies",
+      "hover preview",
+      "cursor follow",
+      "agency",
+      "studio",
+      "dark"
     ],
     "dependencies": [
       "motion"
