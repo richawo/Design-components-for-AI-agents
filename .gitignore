@@ -1,0 +1,13 @@
+node_modules
+.next
+out
+next-env.d.ts
+*.tsbuildinfo
+.env*
+!.env.example
+.DS_Store
+# Pro components live in a private repository and are cloned here at build time.
+registry/pro/
+registry/__generated__
+test-results
+public/r

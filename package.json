@@ -1,0 +1,51 @@
+{
+  "name": "design-for-ai",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Design components for AI agents. Code, prompt and JSON prompt for every component.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "registry": "node scripts/build-registry.mjs",
+    "predev": "node scripts/build-registry.mjs",
+    "dev": "next dev",
+    "prebuild": "node scripts/build-registry.mjs --strict",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "screenshots": "node scripts/screenshot.mjs",
+    "pro:sync": "node scripts/sync-pro.mjs"
+  },
+  "dependencies": {
+    "@fontsource-variable/bricolage-grotesque": "^5.3.0",
+    "@fontsource-variable/geist": "^5.3.0",
+    "@fontsource-variable/geist-mono": "^5.3.0",
+    "@fontsource/bricolage-grotesque": "^5.3.0",
+    "@fontsource/instrument-serif": "^5.3.0",
+    "gray-matter": "^4.0.3",
+    "lucide-react": "^1.52.0",
+    "marked": "^18.1.0",
+    "motion": "^14.0.0",
+    "next": "^16.4.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "react-native-web": "^0.21.3",
+    "server-only": "^0.0.1",
+    "shiki": "^4.5.0",
+    "three": "^0.186.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^26.6.4",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@types/three": "^0.186.0",
+    "playwright-core": "^1.63.0",
+    "postcss": "^8.5.29",
+    "react-native": "^0.87.1",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.3"
+  }
+}

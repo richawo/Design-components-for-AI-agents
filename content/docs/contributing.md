@@ -1,0 +1,42 @@
+---
+title: Contributing
+description: How to propose and build a free component that meets the Design for AI bar, from the four-file contract to the visual QA loop.
+order: 7
+section: About
+---
+
+Design for AI's free library is open source and contributions are welcome. The bar is high on purpose, because the library's value is that *every* component is good.
+
+## The contract
+
+Each component is a folder in `registry/free/` with four files:
+
+```
+registry/free/your-component/
+  your-component.tsx   one self-contained file
+  meta.json            name, category, description, tags, props…
+  prompt.md            the design brief, in prose
+  prompt.json          the same brief, as data
+```
+
+The full spec, including allowed imports, theming, accessibility and the "never" list, is in [`docs/COMPONENT_SPEC.md`](https://github.com/richawo/Design-components-for-AI-agents/blob/main/docs/COMPONENT_SPEC.md).
+
+## The loop
+
+```bash
+npm install
+npm run dev                     # http://localhost:3000
+node scripts/build-registry.mjs # validates every component
+node scripts/shot.mjs your-component --base=http://localhost:3000
+```
+
+The screenshot script captures your preview at 1440, 768 and 390px and warns about horizontal overflow and console errors. Look at every screenshot as a demanding design director would, then fix and re-shoot.
+
+## What gets merged
+
+- It has an idea, and it's not a reskin of something already in the library.
+- It works at 320px and at 1920px, by keyboard, and with reduced motion.
+- Its prompts are specific enough that a model can rebuild it without seeing the code.
+- It passes `npm run typecheck` and `npm test`.
+
+Open an issue first if you're planning something big. We're happy to help shape it.
