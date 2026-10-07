@@ -34,7 +34,6 @@ export function ComponentCard({ c, priority = false }: { c: CardData; priority?:
         ) : (
           <div className="absolute inset-0 site-dots opacity-60" />
         )}
-        <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#0a0a0b] to-transparent opacity-60" />
       </div>
       <div className="flex flex-1 flex-col gap-1.5 px-4 py-3.5">
         <div className="flex items-center justify-between gap-3">
