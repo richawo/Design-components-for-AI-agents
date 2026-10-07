@@ -916,6 +916,68 @@
     "added": "2026-10-07"
   },
   {
+    "slug": "three-globe-arcs",
+    "name": "Route Globe",
+    "tier": "pro",
+    "platform": "web",
+    "category": "three-d",
+    "description": "A dotted Three.js globe built from real coastlines, with comet arcs flying between cities, pulsing markers, a soft atmosphere and drag-to-spin inertia.",
+    "tags": [
+      "three.js",
+      "webgl",
+      "globe",
+      "3d",
+      "arcs",
+      "map",
+      "network",
+      "hero"
+    ],
+    "dependencies": [
+      "three"
+    ],
+    "theme": "dark",
+    "previewHeight": 760,
+    "usage": "import { ThreeGlobeArcs } from \"@/components/design-for-ai/three-globe-arcs\";\n\n<div className=\"relative aspect-square w-full max-w-[720px]\">\n  <ThreeGlobeArcs\n    focus={[40, -40]}\n    colors={{ dots: \"#e6f0ff\", arc: \"#4cc3ff\", glow: \"#6fb8ff\" }}\n    routes={[{ from: [51.5, -0.12], to: [40.71, -74.0] }]}\n  />\n</div>",
+    "props": [
+      {
+        "name": "routes",
+        "type": "{ from: [lat, lon]; to: [lat, lon] }[]",
+        "default": "11 global routes",
+        "description": "Great-circle arcs with a travelling comet. Unique endpoints get a pulsing marker."
+      },
+      {
+        "name": "colors",
+        "type": "{ dots?: string; arc?: string; glow?: string }",
+        "default": "{ dots: \"#f4efe9\", arc: \"#ff7a45\", glow: \"#ff9a6b\" }",
+        "description": "Land dots, the accent for arcs, markers and twinkles, and the atmosphere."
+      },
+      {
+        "name": "focus",
+        "type": "[number, number]",
+        "default": "[24, 10]",
+        "description": "Latitude and longitude that face the camera on mount."
+      },
+      {
+        "name": "speed",
+        "type": "number",
+        "default": "1",
+        "description": "Multiplier for rotation and comet speed; 0 stops auto-rotation."
+      },
+      {
+        "name": "interactive",
+        "type": "boolean",
+        "default": "true",
+        "description": "Drag to spin with inertia and tilt."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Classes for the host element, which fills its parent."
+      }
+    ],
+    "added": "2026-10-07"
+  },
+  {
     "slug": "three-particle-sphere",
     "name": "Particle Sphere",
     "tier": "pro",
