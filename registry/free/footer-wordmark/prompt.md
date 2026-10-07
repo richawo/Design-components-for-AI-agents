@@ -11,7 +11,7 @@ Build a big studio footer in React + Tailwind CSS (v4) with `motion/react`. It's
 - Closing line: display 700, `clamp(2.4rem, 1.3rem + 4.4vw, 5.5rem)`, leading 0.95, tracking −0.05em.
 - Email: display 600, `clamp(1.25rem, 0.9rem + 1.6vw, 2.25rem)`, tracking −0.035em, with a 2px underline drawn as a background that retracts to the right on hover.
 - Column titles: mono 11px uppercase, tracking 0.16em, 60% ink. Links: 17px medium, tracking −0.015em, at least 36px tall, with a 1.5px underline that grows from the left on hover. External links get ↗, which nudges up and right on hover.
-- Newsletter title in italic serif at 30px ("Low Tide"), body 15px at 75% ink, max 40ch.
+- Newsletter title in semibold sans at 26px, tracking −0.035em ("Low Tide"), body 15px at 75% ink, max 40ch.
 - Clock: a mono label ("Local time · BST") with a pinging ink dot, then "London 19:27" in display 22px semibold with tabular figures and a pulsing colon.
 - Wordmark: display 800, tracking −0.06em, lowercase.
 

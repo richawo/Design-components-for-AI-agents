@@ -2,7 +2,7 @@
   "component": "CartDrawer",
   "intent": "A slide-over shopping bag with drawn thumbnails, steppers, inline undo, an animated free-shipping bar and an upsell, becoming a full-height bottom sheet on phones.",
   "platform": "web",
-  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "animation": "motion/react", "icons": "lucide-react", "fonts": "font-display, font-serif, font-sans, font-mono" },
+  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "animation": "motion/react", "icons": "lucide-react", "fonts": "font-display, font-sans, font-mono" },
   "layout": {
     "desktop": "440px right panel, full height, scrim #0d1a12/45",
     "mobile": "bottom sheet from top 12px, 22px top radius, 40x4 drag handle",

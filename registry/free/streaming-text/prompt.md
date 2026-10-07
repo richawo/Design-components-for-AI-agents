@@ -9,7 +9,7 @@ Build a streaming AI answer card in React + Tailwind CSS (v4), using `motion/rea
 - Sources: an ordered list between hairlines. Each row is a 3-column grid (2rem number, title over publisher, arrow-up-right icon), at least 48px tall.
 
 **Typography**
-- Question: serif (Instrument Serif), `clamp(2rem, 1.3rem + 2.6vw, 3.25rem)`, leading 1.02, tracking −0.02em, max 26ch, `text-balance`.
+- Question: Geist semibold, `clamp(1.75rem, 1.2rem + 2.2vw, 2.75rem)`, leading 1.05, tracking −0.04em, max 26ch, `text-balance`.
 - Answer: sans (Geist) at 17.5px (16.5px on phones), leading 1.72, 84% ink, measure 64ch, 1.1em between paragraphs, `text-pretty`. **Bold** goes full ink at weight 600.
 - Labels and disclaimer: mono, 11px, uppercase, tracking 0.14em, 50–55% ink. The status line is mono 12px in sentence case at 60% ink with tabular numbers ("155 words in 5.9s").
 - Citations: superscript pills, 17px tall, min 17px wide, mono 10px weight 500, raised −0.45em.

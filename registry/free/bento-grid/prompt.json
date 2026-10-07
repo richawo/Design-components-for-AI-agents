@@ -2,7 +2,7 @@
   "component": "BentoGrid",
   "intent": "Feature section for an analytics product: a hairline bento grid of six tiles, each with a live illustration built in markup.",
   "platform": "web",
-  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "animation": "motion/react", "icons": "lucide-react (Search)", "fonts": "font-display, font-serif, font-sans, font-mono" },
+  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "animation": "motion/react", "icons": "lucide-react (Search)", "fonts": "font-display, font-sans, font-mono" },
   "layout": {
     "container": "max-w-7xl, px 20/32/48px, py 64/80/112px",
     "header": "12-col: eyebrow + heading (7 cols), intro + link bottom-aligned (5 cols)",
@@ -13,7 +13,7 @@
     "tile": "padding 24/32px; mono label, 22-24px display title, 15px body; illustration pushed down with mt-auto"
   },
   "typography": {
-    "heading": { "font": "display", "weight": 600, "size": "clamp(2.5rem, 1.4rem + 4.6vw, 5.25rem)", "leading": 0.95, "tracking": "-0.045em", "italicEnding": "serif italic 400" },
+    "heading": { "font": "display", "weight": 600, "size": "clamp(2.5rem, 1.4rem + 4.6vw, 5.25rem)", "leading": 0.95, "tracking": "-0.045em", "secondClause": "same font, 40% opacity" },
     "stat": { "size": "clamp(5.5rem, 4rem + 5vw, 8.5rem)", "tracking": "-0.06em", "unit": "about a third of the number's size" },
     "tileTitle": "display 600, 22-24px, tracking -0.03em",
     "label": "mono 10-11px uppercase, tracking 0.06-0.16em",

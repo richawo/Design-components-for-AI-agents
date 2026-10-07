@@ -9,7 +9,7 @@ Build a floating pill navbar in React + Tailwind CSS (v4) with `motion/react`. I
 - The mobile sheet is `fixed inset-0` in cobalt `#2b2bf5`, sitting under the pill (the pill stays on top, so its button becomes "Close"). It has 112px top padding and 20px sides. It holds: the links at `clamp(2.75rem, 13vw, 4.5rem)` display bold, leading 0.95, tracking −0.05em, each in a row with a 20% white bottom rule and a mono index ("01") on the right; then, pushed to the bottom, a full-width 56px pink CTA, a two-column `dl` of contact details (mono 11px uppercase labels at 60% white) and a row of text social links with ↗.
 
 **Typography**
-- Display (Bricolage Grotesque) for the wordmark and sheet links, sans (Geist) for the links, mono (Geist Mono) for counts, indices and labels.
+- Display (Geist at tight tracking) for the wordmark and sheet links, sans (Geist) for the links, mono (Geist Mono) for counts, indices and labels.
 
 **Colour**
 - Pill `#111111`, text `#f5f3ef`, hover highlight `rgba(255,255,255,0.13)`, accent pink `#ff9bd2` (CTA, active dot, focus rings), cobalt `#2b2bf5` sheet.

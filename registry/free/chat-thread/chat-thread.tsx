@@ -289,7 +289,7 @@ function Caret() {
 function AssistantMark({ name }: { name: string }) {
   return (
     <span aria-hidden="true" className="relative flex size-7 shrink-0 items-center justify-center rounded-full bg-[#1d1a16] text-[#f7f4ee]">
-      <span className="font-serif text-[17px] italic leading-none">{name.charAt(0)}</span>
+      <span className="font-sans text-[14px] font-semibold leading-none">{name.charAt(0)}</span>
       <span className="absolute -right-0.5 -bottom-0.5 size-2.5 rounded-full border-2 border-[#f7f4ee] bg-[#b4532a]" />
     </span>
   );

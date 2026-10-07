@@ -2,7 +2,7 @@
   "component": "ToastStack",
   "intent": "A provider-free stacked toast system (useToasts hook + Toaster) whose cards fan out on hover, swipe away, pause while read and resolve promises in place.",
   "platform": "web",
-  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "animation": "motion/react", "icons": "lucide-react", "state": "module store + useSyncExternalStore", "fonts": "font-display, font-serif, font-sans, font-mono" },
+  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "animation": "motion/react", "icons": "lucide-react", "state": "module store + useSyncExternalStore", "fonts": "font-display, font-sans, font-mono" },
   "layout": {
     "toaster": "fixed or absolute; bottom-right/left/center from 640px; full-width bottom with 16px insets on mobile; width 360px",
     "collapsed": "y = -i*14px, scale = 1 - i*0.05, origin top centre; max 3 visible; back cards take the front card's height and hide their content",
@@ -11,7 +11,7 @@
   },
   "typography": {
     "headline": { "font": "display", "weight": 700, "size": "clamp(2.6rem, 1.6rem + 3vw, 4rem)", "leading": 0.95, "tracking": "-0.045em" },
-    "headlineItalic": { "font": "serif italic", "color": "#f5c451" },
+    "headlineSecondClause": { "font": "same as headline", "color": "#f4f4f5 at 40%" },
     "toastTitle": { "size": "14px", "weight": 500, "color": "#f4f4f5" },
     "toastDescription": { "size": "13px", "color": "#a1a1aa" },
     "meta": { "font": "mono", "size": "10-11px", "case": "uppercase", "tracking": "0.12-0.16em" }

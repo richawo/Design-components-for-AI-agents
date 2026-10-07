@@ -23,7 +23,7 @@ Every web component uses four Tailwind font roles, which keeps them consistent w
 
 | Role | Default | Used for |
 | --- | --- | --- |
-| `font-display` | Bricolage Grotesque | Headlines, big numbers |
+| `font-display` | Geist (tight tracking) | Headlines, big numbers |
 | `font-serif` | Instrument Serif | Italic accents, quotes |
 | `font-sans` | Geist | Body copy, UI |
 | `font-mono` | Geist Mono | Metadata, code, labels |
@@ -32,14 +32,13 @@ The registry's `theme` item adds them to your CSS. To do it by hand in Tailwind 
 
 ```css
 @import "tailwindcss";
-@import "@fontsource-variable/bricolage-grotesque";
 @import "@fontsource/instrument-serif/400.css";
 @import "@fontsource/instrument-serif/400-italic.css";
 @import "@fontsource-variable/geist";
 @import "@fontsource-variable/geist-mono";
 
 @theme {
-  --font-display: "Bricolage Grotesque Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Instrument Serif", ui-serif, Georgia, serif;
   --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Geist Mono Variable", ui-monospace, monospace;

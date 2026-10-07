@@ -2,7 +2,7 @@
   "component": "NavbarFloating",
   "intent": "A solid black floating pill navbar for a studio or product site that narrows and drops its wordmark on scroll, with a sliding hover highlight and a full-screen big-type menu on mobile.",
   "platform": "web",
-  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "animation": "motion/react (useScroll, useMotionValueEvent, LayoutGroup, AnimatePresence)", "fonts": "font-display (Bricolage Grotesque), font-sans (Geist), font-mono (Geist Mono)" },
+  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "animation": "motion/react (useScroll, useMotionValueEvent, LayoutGroup, AnimatePresence)", "fonts": "font-display (Geist, tight tracking), font-sans (Geist), font-mono (Geist Mono)" },
   "layout": {
     "header": "fixed inset-x-0 top-0, pointer-events-none, padding 12px (20px from sm), centres the pill",
     "pill": "w-full, maxWidth 1200px -> 720px when condensed, rounded-full, #111111, padding 8px/16px/8px/8px",

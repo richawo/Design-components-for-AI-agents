@@ -25,7 +25,7 @@ Build a stacked toast system in React + Tailwind CSS (v4) with `motion/react` an
 - With reduced motion, no drag, no springs, and opacity-only enter and exit.
 
 **Demo**
-- Background `#0b0b0c`, max width 76rem. Left (5 of 12 columns): a mono kicker, then the display headline "Toasts that *know their place.*" with the italic serif in butter `#f5c451`, a 16px intro, and a ruled list of five trigger rows (mono index, coloured dot, label, sample title, a "Fire" pill). Right (7 columns): an editor mock-up (`#131315`, 18px radius) showing a document title, two initials avatars, a live toast count, and an article ("Notes from a slow kitchen") in serif. The toaster renders inside it with `strategy="absolute"`.
+- Background `#0b0b0c`, max width 76rem. Left (5 of 12 columns): a mono kicker, then the display headline "Toasts that *know their place.*" with the second clause in the same font at 40% white (two tones, no italic), a 16px intro, and a ruled list of five trigger rows (mono index, coloured dot, label, sample title, a "Fire" pill). Right (7 columns): an editor mock-up (`#131315`, 18px radius) showing a document title, two initials avatars, a live toast count, and an article ("Notes from a slow kitchen") in serif. The toaster renders inside it with `strategy="absolute"`.
 - Three toasts are seeded on mount, 320ms apart. Copy should sound like a real product: "Draft saved — 1,284 words, all of them yours.", "Couldn’t reach the printer" with "Retry now", "Moved 3 drafts to the bin" with "Undo", and a promise that ends "Published. Go and make a coffee."
 
 **Accessibility**

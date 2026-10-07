@@ -665,7 +665,7 @@ export function CartDrawerDemo(props: CartDrawerProps) {
       <header className="flex items-center justify-between gap-4 border-b border-[#14261c]/10 px-5 py-4 sm:px-8">
         <div className="flex items-baseline gap-8">
           <p className="font-display text-[22px] font-bold tracking-[-0.04em]">
-            Fieldwork<span className="font-serif text-[24px] font-normal italic tracking-normal"> Supply</span>
+            Fieldwork<span className="font-normal opacity-45"> Supply</span>
           </p>
           <nav aria-label="Shop" className="hidden gap-6 text-[14px] text-[#14261c]/70 md:flex">
             <a href="#paper" className="hover:text-[#14261c]">

@@ -5,11 +5,23 @@
   "platform": "web",
   "category": "hero",
   "description": "A dark split hero for a dev tool: confident copy and a copyable install chip beside a terminal where an agent plans, writes files, passes tests and opens a PR.",
-  "tags": ["hero", "developer tool", "terminal", "ai agent", "dark", "cli", "landing page", "typing animation"],
-  "dependencies": ["motion"],
+  "tags": [
+    "hero",
+    "developer tool",
+    "terminal",
+    "ai agent",
+    "dark",
+    "cli",
+    "landing page",
+    "typing animation"
+  ],
+  "dependencies": [
+    "motion"
+  ],
   "theme": "dark",
   "previewHeight": 860,
   "usage": "wip",
   "props": [],
-  "added": "2026-10-07"
+  "added": "2026-10-07",
+  "status": "draft"
 }

@@ -290,7 +290,7 @@ function Newsletter({
     <div className="col-span-2 sm:col-span-4 sm:grid sm:grid-cols-2 sm:gap-x-8 lg:col-span-4 lg:col-start-9 lg:block">
       <div>
       <h3 className="font-mono text-[11px] uppercase tracking-[0.16em] text-[#0f0f0e]/60">Newsletter</h3>
-      <p className="mt-4 font-serif text-[30px] italic leading-none tracking-[-0.01em]">{title}</p>
+      <p className="mt-4 font-sans text-[26px] font-semibold leading-none tracking-[-0.035em]">{title}</p>
       <p className="mt-2 max-w-[40ch] text-[15px] leading-relaxed text-[#0f0f0e]/75">{body}</p>
       </div>
       <div className="mt-5 min-h-[56px] sm:mt-9 lg:mt-5">

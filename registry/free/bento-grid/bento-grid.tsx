@@ -135,7 +135,7 @@ export function BentoGrid({
               id="bento-grid-heading"
               className="mt-5 font-display text-[clamp(2.5rem,1.4rem+4.6vw,5.25rem)] font-semibold leading-[0.95] tracking-[-0.045em]"
             >
-              {heading} <span className="font-serif font-normal italic tracking-[-0.02em]">{headingItalic}</span>
+              {heading} <span className="opacity-40">{headingItalic}</span>
             </h2>
           </div>
           <div className="md:col-span-5 md:pb-2">

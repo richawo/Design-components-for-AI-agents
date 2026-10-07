@@ -2,7 +2,7 @@
   "component": "CommandPalette",
   "intent": "A precise, monochrome ⌘K command palette with grouped results, fuzzy matching shown as highlighter-pen marks, full keyboard control and correct combobox ARIA.",
   "platform": "web",
-  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "animation": "motion/react", "icons": "lucide-react", "fonts": "font-sans (Geist) for labels and input, font-mono (Geist Mono) for group labels, hints, keycaps and footer, font-display (Bricolage Grotesque) for the background app" },
+  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "animation": "motion/react", "icons": "lucide-react", "fonts": "font-sans (Geist) for labels and input, font-mono (Geist Mono) for group labels, hints, keycaps and footer, font-display (Geist, tight tracking) for the background app" },
   "layout": {
     "section": "720px min-height, #f5f5f3, with a demo app behind: 240px sidebar (md+), 56px top bar with title and trigger, six issue rows",
     "trigger": "40px white field, 288px wide from sm, search icon + 'Search or jump to…' + ⌘ K keycaps; icon and keycaps only on phones",

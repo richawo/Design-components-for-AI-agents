@@ -46,8 +46,8 @@ Broken components are skipped (and reported) in dev; `--strict` fails CI.
 - **Colours:** Tailwind's default palette or arbitrary values (`bg-[#f4f0e8]`).
   Never `site-*` tokens: those belong to the website, not to components.
 - **Fonts:** only `font-display`, `font-serif`, `font-sans` and `font-mono`.
-  These roles come from `public/r/theme.json`: Bricolage Grotesque, Instrument
-  Serif, Geist and Geist Mono. Mobile components use the system font and
+  These roles come from `public/r/theme.json`: Geist (display), Instrument Serif,
+  Geist and Geist Mono. Mobile components use the system font and
   don't set `fontFamily`, except `fontFamily: "Menlo"`/monospace where mono is
   the point.
 - **Keyframes:** Tailwind ships `spin`, `ping`, `pulse` and `bounce`. For

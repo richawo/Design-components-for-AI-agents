@@ -44,7 +44,7 @@ export type HeroTerminalAgentProps = {
   brand?: string;
   /** Small release note above the headline. */
   announcement?: Link;
-  /** The headline. The `emphasis` substring is set in italic serif. */
+  /** The headline. The `emphasis` substring is set in a muted tone. */
   headline?: string;
   emphasis?: string;
   body?: string;
@@ -221,7 +221,7 @@ export function HeroTerminalAgent({
             {pre}
             {emphasis && post !== null ? (
               <>
-                <span className="whitespace-nowrap font-serif font-normal italic tracking-[-0.02em] text-[#f2eee6]/80">{emphasis}</span>
+                <span className="whitespace-nowrap text-[#f2eee6]/45">{emphasis}</span>
                 {post}
               </>
             ) : null}

@@ -2,17 +2,17 @@
   "component": "StreamingText",
   "intent": "An answer card that streams a cited answer in natural, uneven chunks, then reveals its sources, with Stop / Regenerate / Copy controls.",
   "platform": "web",
-  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "animation": "motion/react", "icons": "lucide-react", "fonts": "font-serif (Instrument Serif) for the question, font-sans (Geist) for the answer, font-mono (Geist Mono) for status and labels" },
+  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "animation": "motion/react", "icons": "lucide-react", "fonts": "font-sans (Geist, semibold) for the question, font-sans (Geist) for the answer, font-mono (Geist Mono) for status and labels" },
   "layout": {
     "section": "#e5e8e2, px 16/32px, py 48/80px",
     "card": "max-w 820px, #fbfbf8, radius 24px, 1px ring at 7% ink, soft shadow; three bands split by 1px rules: header, answer, footer",
-    "header": "mono 'Asked by' line with a 20px forest hairline, then the serif question",
+    "header": "mono 'Asked by' line with a 20px forest hairline, then the semibold question",
     "answer": "24px status row, body with min-height 12rem, then sources",
     "sources": "ol between hairlines; rows are grid [2rem number | title + publisher | arrow], min 48px tall",
     "footer": "mono disclaimer left; Stop/Regenerate and Copy right; wraps on phones"
   },
   "typography": {
-    "question": { "font": "serif", "size": "clamp(2rem, 1.3rem + 2.6vw, 3.25rem)", "leading": 1.02, "tracking": "-0.02em", "maxWidth": "26ch", "wrap": "balance" },
+    "question": { "font": "sans", "weight": 600, "size": "clamp(1.75rem, 1.2rem + 2.2vw, 2.75rem)", "leading": 1.05, "tracking": "-0.04em", "maxWidth": "26ch", "wrap": "balance" },
     "answer": { "font": "sans", "size": "17.5px (16.5px mobile)", "leading": 1.72, "opacity": 0.84, "measure": "64ch", "paragraphGap": "1.1em" },
     "meta": { "font": "mono", "size": "11px", "case": "uppercase", "tracking": "0.12–0.14em", "numbers": "tabular" },
     "citation": { "font": "mono", "size": "10px", "weight": 500, "shape": "17px pill raised -0.45em" }

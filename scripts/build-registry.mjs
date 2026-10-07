@@ -76,6 +76,7 @@ function readComponents(tier) {
           fail(slug, `prompt.json is not valid JSON (${e.message})`);
         }
       }
+      validateCompleteness(slug, meta, fs.existsSync(promptPath) ? fs.readFileSync(promptPath, "utf8") : "", promptJson);
       return {
         meta,
         tier,
@@ -106,6 +107,15 @@ function validateMeta(slug, tier, m) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(m.added ?? "")) fail(slug, "added must be YYYY-MM-DD");
 }
 
+/** Published components must ship real briefs, not placeholders. */
+function validateCompleteness(slug, m, prompt, promptJson) {
+  if (m.status === "draft") return;
+  if ((prompt ?? "").trim().length < 600) fail(slug, "prompt.md is too short to rebuild the component (min 600 chars)");
+  if ((promptJson ?? "").trim().length < 600) fail(slug, "prompt.json is too thin (min 600 chars)");
+  if ((m.usage ?? "").trim().length < 40) fail(slug, "usage example is a placeholder");
+  if (!Array.isArray(m.props) || m.props.length === 0) fail(slug, "document at least one prop");
+}
+
 function registryItem(c) {
   const m = c.meta;
   const target = m.platform === "mobile" ? `components/design-for-ai/native/${m.slug}.tsx` : `components/design-for-ai/${m.slug}.tsx`;
@@ -130,10 +140,10 @@ const THEME_ITEM = {
   type: "registry:theme",
   title: "Design for AI theme",
   description: "Font roles used by every Design for AI component: display, serif, sans and mono. Swap the families for your brand's.",
-  dependencies: ["@fontsource-variable/bricolage-grotesque", "@fontsource/instrument-serif", "@fontsource-variable/geist", "@fontsource-variable/geist-mono"],
+  dependencies: ["@fontsource/instrument-serif", "@fontsource-variable/geist", "@fontsource-variable/geist-mono"],
   cssVars: {
     theme: {
-      "font-display": '"Bricolage Grotesque Variable", "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif',
+      "font-display": '"Geist Variable", "Geist", ui-sans-serif, system-ui, sans-serif',
       "font-serif": '"Instrument Serif", ui-serif, Georgia, serif',
       "font-sans": '"Geist Variable", "Geist", ui-sans-serif, system-ui, sans-serif',
       "font-mono": '"Geist Mono Variable", "Geist Mono", ui-monospace, SFMono-Regular, monospace',

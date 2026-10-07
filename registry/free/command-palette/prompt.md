@@ -11,7 +11,7 @@ Build a ⌘K command palette in React + Tailwind CSS (v4), using `motion/react` 
 - Keycaps: 22px tall, min 22px wide, radius 5px, a 1px border at 12% ink, white with a 1px bottom shadow, mono 11px.
 
 **Typography**
-- Labels 14.5px sans (Geist). The search input is 17px with −0.01em tracking. Mono (Geist Mono) for group labels, hints, keycaps and the footer. Display (Bricolage Grotesque) only for the app title and workspace name in the background.
+- Labels 14.5px sans (Geist). The search input is 17px with −0.01em tracking. Mono (Geist Mono) for group labels, hints, keycaps and the footer. Display (Geist at tight tracking) only for the app title and workspace name in the background.
 
 **Colour**
 - Ink `#18181b`: text at 80% (100% when selected), and metadata at 45–55%. Surfaces are white, `#f5f5f3`, `#efefec` and `#fafaf9`. The selected row is `#f1f0ec` with a 3px ink marker on its left edge, and its icon tile inverts to ink with a white icon.

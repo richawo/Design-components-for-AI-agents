@@ -2,7 +2,7 @@
   "component": "FooterWordmark",
   "intent": "A bold chartreuse studio footer that closes the page with a big line, link columns, a newsletter, a live local clock, and a giant wordmark measured to span the container exactly and cut off above its baseline.",
   "platform": "web",
-  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "animation": "motion/react", "fonts": "font-display (Bricolage Grotesque), font-serif (Instrument Serif), font-sans (Geist), font-mono (Geist Mono)" },
+  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "animation": "motion/react", "fonts": "font-display (Geist, tight tracking), font-sans (Geist), font-mono (Geist Mono)" },
   "layout": {
     "container": "max-w-[1440px], px 20/32/48, pt 64/80/96",
     "rows": [
@@ -17,7 +17,7 @@
     "email": { "font": "display", "weight": 600, "size": "clamp(1.25rem, 0.9rem + 1.6vw, 2.25rem)", "tracking": "-0.035em" },
     "columnTitle": { "font": "mono", "size": "11px", "case": "uppercase", "tracking": "0.16em", "opacity": 0.6 },
     "links": { "font": "sans", "size": "17px", "weight": 500, "tracking": "-0.015em" },
-    "newsletterTitle": { "font": "serif italic", "size": "30px" },
+    "newsletterTitle": { "font": "sans", "weight": 600, "size": "26px", "tracking": "-0.035em" },
     "clock": { "font": "display", "size": "22px", "weight": 600, "numerals": "tabular" },
     "wordmark": { "font": "display", "weight": 800, "tracking": "-0.06em", "case": "lowercase", "size": "fitted to container width" }
   },

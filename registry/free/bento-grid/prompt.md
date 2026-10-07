@@ -16,7 +16,7 @@ Build a live bento grid feature section in React + Tailwind CSS (v4) + `motion/r
 6. Map (dark `#141412`): a title block plus a live total (40px display) with a pinging lime dot. The dot-matrix world comes from rough continent outlines (lon/lat polygons) sampled every 2.5° with point-in-polygon tests: 0.82-radius dots at 20% cream. Cities are lime dots with expanding rings. Footer: the top four cities in a 2/4-col list with mono lime counts.
 
 **Typography**
-- Heading: display 600, `clamp(2.5rem, 1.4rem + 4.6vw, 5.25rem)`, leading 0.95, tracking −0.045em; the italic ending is Instrument Serif, weight 400.
+- Heading: display 600, `clamp(2.5rem, 1.4rem + 4.6vw, 5.25rem)`, leading 0.95, tracking −0.045em; the closing clause sits in the same font at 40% opacity (two tones, no italic).
 - Labels: mono 10–11px uppercase, tracking 0.06–0.16em. All figures use tabular numerals.
 
 **Colour**

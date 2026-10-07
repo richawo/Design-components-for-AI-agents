@@ -211,7 +211,7 @@ export function StreamingText({
             <span aria-hidden="true" className="h-px w-5 bg-[#2f6b4f]" />
             {askedBy}
           </p>
-          <h2 className="mt-4 max-w-[26ch] font-serif text-[clamp(2rem,1.3rem+2.6vw,3.25rem)] leading-[1.02] tracking-[-0.02em] text-balance">{question}</h2>
+          <h2 className="mt-4 max-w-[26ch] font-sans text-[clamp(1.75rem,1.2rem+2.2vw,2.75rem)] font-semibold leading-[1.05] tracking-[-0.04em] text-balance">{question}</h2>
         </header>
 
         <div className="border-t border-[#141a17]/[0.08] px-6 py-7 sm:px-12 sm:py-9">

@@ -2,7 +2,7 @@
   "component": "SettingsPanel",
   "intent": "A dark account settings page with scroll-spy section nav, custom switches and segmented controls, an avatar uploader, a typed-confirm danger zone and a sticky bar that counts unsaved changes.",
   "platform": "web",
-  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "animation": "motion/react (layout, layoutId, AnimatePresence)", "icons": "lucide-react", "fonts": "font-display (Bricolage Grotesque), font-sans (Geist), font-mono (Geist Mono)" },
+  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "animation": "motion/react (layout, layoutId, AnimatePresence)", "icons": "lucide-react", "fonts": "font-display (Geist, tight tracking), font-sans (Geist), font-mono (Geist Mono)" },
   "layout": {
     "container": "max-w 1120px, px 16/32/48, pt 40→80px",
     "header": "mono breadcrumb, display heading, one-line description (max 68ch)",

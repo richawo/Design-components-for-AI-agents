@@ -5,11 +5,23 @@
   "platform": "web",
   "category": "hero",
   "description": "An International Typographic Style hero for a design conference: visible 12-column guides, a huge lowercase headline, a red quarter circle and a numbered index.",
-  "tags": ["hero", "swiss style", "grid", "conference", "event", "typography", "minimal", "light"],
-  "dependencies": ["motion"],
+  "tags": [
+    "hero",
+    "swiss style",
+    "grid",
+    "conference",
+    "event",
+    "typography",
+    "minimal",
+    "light"
+  ],
+  "dependencies": [
+    "motion"
+  ],
   "theme": "light",
   "previewHeight": 1080,
   "usage": "wip",
   "props": [],
-  "added": "2026-10-07"
+  "added": "2026-10-07",
+  "status": "draft"
 }

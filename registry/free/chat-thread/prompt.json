@@ -2,7 +2,7 @@
   "component": "ChatThread",
   "intent": "A calm, characterful AI chat thread: document-style assistant replies with code and sources, compact ink user bubbles, a streaming final answer and a working composer.",
   "platform": "web",
-  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "animation": "motion/react", "icons": "lucide-react", "fonts": "font-display (Bricolage Grotesque) for the title, font-sans (Geist) for messages, font-mono (Geist Mono) for metadata and code" },
+  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "animation": "motion/react", "icons": "lucide-react", "fonts": "font-display (Geist, tight tracking) for the title, font-sans (Geist) for messages, font-mono (Geist Mono) for metadata and code" },
   "layout": {
     "frame": "stone #e9e3d8 section; window max-w 1040px, 820px tall (100dvh, 620–880px on phones), radius 22px, 1px ring at 8% ink, long soft shadow; full-bleed with no radius below sm",
     "header": "64px; title + mono subtitle left, 44px New thread icon button right; 1px bottom rule",

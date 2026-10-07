@@ -5,11 +5,19 @@
   "platform": "mobile",
   "category": "mobile",
   "description": "A floating React Native tab bar for a running club app: drawn icons, a lime indicator that springs between tabs and a raised centre button that records a run.",
-  "tags": ["tab bar", "bottom navigation", "react native", "fitness", "dark", "floating action button"],
+  "tags": [
+    "tab bar",
+    "bottom navigation",
+    "react native",
+    "fitness",
+    "dark",
+    "floating action button"
+  ],
   "dependencies": [],
   "theme": "dark",
   "previewHeight": 900,
   "usage": "x",
   "props": [],
-  "added": "2026-10-07"
+  "added": "2026-10-07",
+  "status": "draft"
 }

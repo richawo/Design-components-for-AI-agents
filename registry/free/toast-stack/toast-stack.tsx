@@ -560,7 +560,7 @@ export function ToastStack({
         <div className="lg:col-span-5">
           <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-[#a1a1aa]">{kicker}</p>
           <h2 className="mt-6 font-display text-[clamp(2.6rem,1.6rem+3vw,4rem)] font-bold leading-[0.95] tracking-[-0.045em]">
-            {title} <span className="font-serif font-normal italic tracking-[-0.02em] text-[#f5c451]">{titleItalic}</span>
+            {title} <span className="text-[#f4f4f5]/40">{titleItalic}</span>
           </h2>
           <p className="mt-6 max-w-[42ch] text-[16px] leading-[1.6] text-[#a1a1aa]">{intro}</p>
 
@@ -616,7 +616,7 @@ export function ToastStack({
             </div>
             <article className="px-6 pt-10 sm:px-10 lg:px-14" aria-hidden="true">
               <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#71717a]">Food · 8 min read</p>
-              <h3 className="mt-4 max-w-[16ch] font-serif text-[clamp(2rem,1.4rem+2vw,3rem)] leading-[1.02] tracking-[-0.01em] text-[#f4f4f5]">Notes from a slow kitchen</h3>
+              <h3 className="mt-4 max-w-[16ch] font-sans text-[clamp(1.75rem,1.3rem+1.6vw,2.5rem)] font-semibold leading-[1.02] tracking-[-0.04em] text-[#f4f4f5]">Notes from a slow kitchen</h3>
               <p className="mt-6 max-w-[52ch] text-[15px] leading-[1.7] text-[#a1a1aa]">
                 The stock had been going since Tuesday. Nobody remembered starting it, and nobody was brave enough to stop. By Friday it had become
                 a kind of household weather: always there, faintly reassuring, smelling of bay.
