@@ -111,6 +111,68 @@
     "added": "2026-10-07"
   },
   {
+    "slug": "feature-sticky-scroll",
+    "name": "Sticky Scroll Story",
+    "tier": "pro",
+    "platform": "web",
+    "category": "features",
+    "description": "A scroll-driven feature story on deep navy: a sticky product panel crossfades through four CSS-drawn states as the steps scroll past.",
+    "tags": [
+      "features",
+      "scroll",
+      "sticky",
+      "storytelling",
+      "product tour",
+      "dark",
+      "invoicing"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 900,
+    "usage": "import { FeatureStickyScroll } from \"@/components/design-for-ai/feature-sticky-scroll\";\n\n<FeatureStickyScroll\n  brand=\"Ledgerly\"\n  heading=\"Bookkeeping that\"\n  headingItalic=\"does itself.\"\n/>",
+    "props": [
+      {
+        "name": "heading",
+        "type": "string",
+        "description": "First clause of the heading."
+      },
+      {
+        "name": "headingItalic",
+        "type": "string",
+        "description": "Muted second clause of the heading."
+      },
+      {
+        "name": "intro",
+        "type": "string",
+        "description": "Intro paragraph."
+      },
+      {
+        "name": "steps",
+        "type": "{ tab; title; body; detail }[]",
+        "description": "Four steps, each driving one panel state."
+      },
+      {
+        "name": "brand",
+        "type": "string",
+        "default": "\"Ferry\"",
+        "description": "Product name in the panel."
+      },
+      {
+        "name": "items",
+        "type": "{ label; qty; amount }[]",
+        "description": "Invoice line items."
+      },
+      {
+        "name": "pots",
+        "type": "{ label; share }[]",
+        "description": "Set-aside shares for the final state."
+      }
+    ],
+    "added": "2026-10-07"
+  },
+  {
     "slug": "hero-kinetic-type",
     "name": "Kinetic Type Hero",
     "tier": "pro",
@@ -259,6 +321,64 @@
         "name": "thread",
         "type": "{ title; messages; moved; placeholder }",
         "description": "Comment card data."
+      }
+    ],
+    "added": "2026-10-07"
+  },
+  {
+    "slug": "pricing-comparison-matrix",
+    "name": "Comparison Matrix",
+    "tier": "pro",
+    "platform": "web",
+    "category": "pricing",
+    "description": "A full plan comparison table with a sticky price header, collapsible feature groups, tooltips and a teal recommended column that becomes a plan switcher on mobile.",
+    "tags": [
+      "pricing",
+      "comparison table",
+      "feature matrix",
+      "plans",
+      "sticky header",
+      "tooltips",
+      "saas"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "light",
+    "previewHeight": 1400,
+    "usage": "import { PricingComparisonMatrix } from \"@/components/design-for-ai/pricing-comparison-matrix\";\n\n<PricingComparisonMatrix\n  plans={plans}        // { id, name, price, unit, blurb, cta }[]\n  groups={groups}      // { name, features: { name, hint?, values }[] }[]\n  recommendedId=\"team\"\n/>",
+    "props": [
+      {
+        "name": "plans",
+        "type": "MatrixPlan[]",
+        "description": "Plans in column order: id, name, price, unit, blurb, cta."
+      },
+      {
+        "name": "groups",
+        "type": "MatrixGroup[]",
+        "description": "Collapsible feature groups; values are boolean or a string per plan."
+      },
+      {
+        "name": "recommendedId",
+        "type": "string",
+        "default": "\"team\"",
+        "description": "Plan id that gets the highlighted column."
+      },
+      {
+        "name": "recommendedLabel",
+        "type": "string",
+        "default": "\"Recommended\"",
+        "description": "Label above the recommended plan."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Headline."
+      },
+      {
+        "name": "footnote",
+        "type": "string",
+        "description": "Fine print under the table."
       }
     ],
     "added": "2026-10-07"
@@ -427,6 +547,55 @@
         "type": "boolean",
         "default": "true",
         "description": "Show the orbiting particle ring."
+      }
+    ],
+    "added": "2026-10-07"
+  },
+  {
+    "slug": "work-index-hover",
+    "name": "Hover Work Index",
+    "tier": "pro",
+    "platform": "web",
+    "category": "portfolio",
+    "description": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "tags": [
+      "a",
+      "b",
+      "c"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 1100,
+    "usage": "import { WorkIndexHover } from \"@/components/design-for-ai/work-index-hover\";\n\n<WorkIndexHover\n  title=\"Recent work\"\n  projects={[{ year: \"2026\", client: \"Acme\", discipline: \"Brand\", href: \"/work/acme\", cover: \"ferry\", color: \"#ffb43b\" }]}\n/>",
+    "props": [
+      {
+        "name": "projects",
+        "type": "Project[]",
+        "description": "year, client, discipline, href, cover art key and accent colour."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Selected work\"",
+        "description": "Section title."
+      },
+      {
+        "name": "eyebrow",
+        "type": "string",
+        "description": "Mono label above the title."
+      },
+      {
+        "name": "intro",
+        "type": "string",
+        "description": "Short intro beside the title."
+      },
+      {
+        "name": "previewLabel",
+        "type": "string",
+        "default": "\"View case\"",
+        "description": "Chip label on the floating card."
       }
     ],
     "added": "2026-10-07"
