@@ -206,11 +206,16 @@ export function PixelMatrixDisplay({
     st.changedAt = performance.now();
   }, [index]);
 
+  // Hovering holds the current scene; the progress line pauses with it.
+  const [hovering, setHovering] = useState(false);
+  const holding = paused || hovering;
+  const pointerRef = useRef({ x: -99, y: -99, on: false, k: 0 });
+
   useEffect(() => {
-    if (paused || scenes.length < 2) return;
+    if (holding || scenes.length < 2) return;
     const id = setInterval(() => setIndex((i) => (i + 1) % scenes.length), interval);
     return () => clearInterval(id);
-  }, [paused, interval, scenes.length]);
+  }, [holding, interval, scenes.length, index]);
 
   useEffect(() => {
     const canvas = canvasRef.current!;
@@ -256,17 +261,31 @@ export function PixelMatrixDisplay({
       ctx.clearRect(0, 0, cols * pitch, rows * pitch);
       const r = pitch * 0.34;
       const off = new Path2D();
+      // Pointer glow: unlit dots near the cursor warm up, lit ones step up a level.
+      const pt = pointerRef.current;
+      pt.k += ((pt.on && !reduce ? 1 : 0) - pt.k) * 0.12;
+      const near: Path2D[] = [new Path2D(), new Path2D(), new Path2D()];
+      const reach = 4.2;
       const lit: Path2D[] = Array.from({ length: levels }, () => new Path2D());
       for (let y = 0; y < rows; y++) {
         for (let x = 0; x < cols; x++) {
           const n = noise[y * cols + x];
-          const v = prev && n > mix ? prev(x, y) : cur(x, y);
+          let v = prev && n > mix ? prev(x, y) : cur(x, y);
           const cx = (x + 0.5) * pitch;
           const cy = (y + 0.5) * pitch;
+          const d = pt.k > 0.01 ? Math.hypot(x + 0.5 - pt.x, y + 0.5 - pt.y) : 99;
+          const heat = d < reach ? (1 - d / reach) * pt.k : 0;
           if (v <= 0.02) {
-            off.moveTo(cx + r, cy);
-            off.arc(cx, cy, r, 0, Math.PI * 2);
+            if (heat > 0.08) {
+              const lv = Math.min(2, Math.floor(heat * 3));
+              near[lv].moveTo(cx + r, cy);
+              near[lv].arc(cx, cy, r, 0, Math.PI * 2);
+            } else {
+              off.moveTo(cx + r, cy);
+              off.arc(cx, cy, r, 0, Math.PI * 2);
+            }
           } else {
+            v = Math.min(1, v + heat * 0.35);
             const lv = Math.min(levels - 1, Math.floor(v * levels));
             lit[lv].moveTo(cx + r, cy);
             lit[lv].arc(cx, cy, r, 0, Math.PI * 2);
@@ -276,6 +295,12 @@ export function PixelMatrixDisplay({
       ctx.shadowBlur = 0;
       ctx.fillStyle = "rgba(255,255,255,0.055)";
       ctx.fill(off);
+      ctx.fillStyle = color;
+      for (let l = 0; l < 3; l++) {
+        ctx.globalAlpha = 0.18 + l * 0.15;
+        ctx.fill(near[l]);
+      }
+      ctx.globalAlpha = 1;
       ctx.fillStyle = color;
       ctx.shadowColor = color;
       for (let l = 0; l < levels; l++) {
@@ -301,22 +326,49 @@ export function PixelMatrixDisplay({
       <div
         className="relative overflow-hidden rounded-[20px] border border-white/[0.08] bg-[#070707] p-[clamp(12px,2.4vw,22px)] shadow-[inset_0_1px_0_rgba(255,255,255,0.06),inset_0_0_40px_rgba(0,0,0,0.9),0_30px_80px_-30px_rgba(0,0,0,0.9)]"
       >
-        <div ref={wrapRef} className="w-full">
+        <div
+          ref={wrapRef}
+          className="w-full"
+          onPointerMove={(e) => {
+            if (e.pointerType !== "mouse") return;
+            const rect = e.currentTarget.getBoundingClientRect();
+            const pt = pointerRef.current;
+            pt.x = ((e.clientX - rect.left) / rect.width) * cols;
+            pt.y = ((e.clientY - rect.top) / rect.height) * rows;
+            pt.on = true;
+          }}
+          onPointerEnter={(e) => e.pointerType === "mouse" && setHovering(true)}
+          onPointerLeave={() => {
+            pointerRef.current.on = false;
+            setHovering(false);
+          }}
+        >
           <canvas ref={canvasRef} role="img" aria-label={`Dot-matrix display showing ${defsForLabels[current].label.toLowerCase()}${current === "marquee" ? `: ${text.trim()}` : ""}`} className="block" />
         </div>
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 rounded-[20px] bg-[linear-gradient(180deg,rgba(255,255,255,0.05),transparent_38%)]" />
       </div>
+      <style>{`@keyframes pmd-progress{from{transform:scaleX(0)}to{transform:scaleX(1)}}@keyframes pmd-label{from{opacity:0;transform:translateY(6px);filter:blur(2px)}to{opacity:1;transform:none;filter:none}}`}</style>
       {chrome && (
         <div className="mt-3 flex items-center justify-between gap-4 px-1 font-mono text-[11px] uppercase tracking-[0.16em] text-white/40">
-          <span className="tabular-nums">
-            {String(index + 1).padStart(2, "0")} / {String(scenes.length).padStart(2, "0")} · {defsForLabels[current].label}
+          <span className="flex min-w-0 items-center gap-3 tabular-nums">
+            <span className="relative block h-px w-10 shrink-0 overflow-hidden bg-white/10" aria-hidden="true">
+              {/* Fills over the scene's duration; pauses while held. */}
+              <span
+                key={`${index}-${sceneKey}`}
+                className="absolute inset-y-0 left-0 w-full origin-left bg-white/60 motion-reduce:hidden"
+                style={{ animation: `pmd-progress ${interval}ms linear forwards`, animationPlayState: holding ? "paused" : "running" }}
+              />
+            </span>
+            <span key={index} className="truncate animate-[pmd-label_320ms_cubic-bezier(0.22,1,0.36,1)] motion-reduce:animate-none">
+              {String(index + 1).padStart(2, "0")} / {String(scenes.length).padStart(2, "0")} · {defsForLabels[current].label}
+            </span>
           </span>
           <div className="flex items-center gap-1">
             <button
               type="button"
               aria-label="Previous scene"
               onClick={() => setIndex((i) => (i - 1 + scenes.length) % scenes.length)}
-              className="flex size-8 items-center justify-center rounded-full text-white/60 transition hover:bg-white/[0.06] hover:text-white"
+              className="flex size-8 items-center justify-center rounded-full text-white/60 transition-[color,background-color,transform] duration-150 hover:bg-white/[0.06] hover:text-white focus-visible:outline-2 focus-visible:outline-white/70 active:scale-90"
             >
               <svg viewBox="0 0 16 16" className="size-3.5" fill="none" aria-hidden="true">
                 <path d="M10 3.5 5.5 8l4.5 4.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
@@ -326,7 +378,7 @@ export function PixelMatrixDisplay({
               type="button"
               aria-label={paused ? "Resume" : "Pause"}
               onClick={() => setPaused((p) => !p)}
-              className="flex size-8 items-center justify-center rounded-full text-white/60 transition hover:bg-white/[0.06] hover:text-white"
+              className="flex size-8 items-center justify-center rounded-full text-white/60 transition-[color,background-color,transform] duration-150 hover:bg-white/[0.06] hover:text-white focus-visible:outline-2 focus-visible:outline-white/70 active:scale-90"
             >
               {paused ? (
                 <svg viewBox="0 0 16 16" className="size-3.5" aria-hidden="true">
@@ -343,7 +395,7 @@ export function PixelMatrixDisplay({
               type="button"
               aria-label="Next scene"
               onClick={() => setIndex((i) => (i + 1) % scenes.length)}
-              className="flex size-8 items-center justify-center rounded-full text-white/60 transition hover:bg-white/[0.06] hover:text-white"
+              className="flex size-8 items-center justify-center rounded-full text-white/60 transition-[color,background-color,transform] duration-150 hover:bg-white/[0.06] hover:text-white focus-visible:outline-2 focus-visible:outline-white/70 active:scale-90"
             >
               <svg viewBox="0 0 16 16" className="size-3.5" fill="none" aria-hidden="true">
                 <path d="M6 3.5 10.5 8 6 12.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />

@@ -35,3 +35,10 @@ Build a dot-matrix LED display in React + Tailwind CSS v4, drawn on a single `<c
 - No rainbow colours, CRT scanline kitsch or emoji.
 - No DOM node per dot.
 - No blur per dot.
+
+**Feel**
+- The panel answers the pointer like a real LED board: unlit dots within about four dots of a mouse cursor warm up in the display colour (three levels by distance) and lit dots step up a level. The effect eases in and out (12% per frame).
+- Hovering the display holds the current scene, so it can be watched; the auto-advance resumes on leave.
+- A 40px progress line beside the scene counter fills over each scene's duration (a linear scaleX animation) and pauses whenever the scene is held or paused.
+- The scene label slides in (6px, 2px blur, 320ms) on every change.
+- Control buttons scale to 0.9 while pressed and have a focus ring.
