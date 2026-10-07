@@ -12,7 +12,7 @@
   "layout": {
     "section": "black, px 16/32px, py 48/80px",
     "card": "max-w 820px, #0b0b0c, radius 24px, 1px ring white/8%, inset top highlight, deep black shadow; three bands split by 1px white/8% rules: header, answer, footer",
-    "header": "mono 'Asked by' line with a 20px forest hairline, then the semibold question",
+    "header": "mono 'Asked by' line with a 20px accent hairline, then the semibold question",
     "answer": "24px status row, body with min-height 12rem, then sources",
     "sources": "ol between hairlines; rows are grid [2rem number | title + publisher | arrow], min 48px tall",
     "footer": "mono disclaimer left; Stop/Regenerate and Copy right; wraps on phones"
@@ -60,7 +60,7 @@
     "reading": "900ms: pinging dot, 'Reading N sources', pulsing dots, three breathing skeleton lines",
     "tokenising": "word tokens with whitespace; citations and bold runs atomic",
     "pacing": "1–3 tokens per tick; 14–48ms between words, 50–120ms after , ; —, 110–270ms after sentences, 260–480ms between paragraphs, 4% chance of a 180–380ms hesitation; `pace` multiplies all delays",
-    "caret": "3px × 1.1em forest bar, opacity 0.9→0.2→0.9 over 1s",
+    "caret": "3px × 1.1em accent bar, opacity 0.9→0.2→0.9 over 1s",
     "citations": "pop from scale 0.6 / opacity 0 over 300ms",
     "sources": "fade up 8px over 550ms, rows slide 6px from the left staggered 60ms, ease [0.2, 0.8, 0.2, 1]",
     "linking": "hovering or focusing a citation highlights its source and vice versa",
@@ -75,7 +75,7 @@
     "answer region aria-live=polite with aria-busy while reading/streaming",
     "citations are links to the source anchors with aria-label 'Source n: title'",
     "sources are an ordered list under an h3",
-    "text-labelled buttons with 2px forest focus rings; Copy disabled while streaming",
+    "text-labelled buttons with 2px accent focus rings; Copy disabled while streaming",
     "reduced motion renders the finished answer"
   ],
   "content": {

@@ -18,9 +18,9 @@ Build a streaming AI answer card in React + Tailwind CSS (v4), using `motion/rea
 - Background black, card `#0b0b0c`, white type (answer at 76%, metadata at 50–55%), and warm peach `#ff9a6b` as the only accent: caret, citation pills (12% tint with peach text; solid with black text when active), status dot, source numbers and focus rings (offset against the card colour).
 
 **Motion**
-- **Reading** (900ms): a pinging forest dot, "Reading 5 sources" and three pulsing dots, with three skeleton lines (92%, 100%, 76% wide) breathing in the body.
+- **Reading** (900ms): a pinging accent dot, "Reading 5 sources" and three pulsing dots, with three skeleton lines (92%, 100%, 76% wide) breathing in the body.
 - **Streaming**: tokenise into words (keeping whitespace), with each citation and each bold run kept intact. Emit 1–3 tokens per tick (55% one, then 70% two). Wait 14–48ms between ordinary words, 50–120ms after commas, semicolons and dashes, 110–270ms after a sentence, 260–480ms between paragraphs, and 4% of the time add a 180–380ms hesitation. Average out around 5 seconds for 155 words. A `pace` prop multiplies every delay.
-- Soft caret: a 3px × 1.1em rounded forest bar at the live end of the last paragraph, breathing between 90% and 20% opacity over 1s.
+- Soft caret: a 3px × 1.1em rounded accent bar at the live end of the last paragraph, breathing between 90% and 20% opacity over 1s.
 - Each citation pill pops in from scale 0.6 and opacity 0 over 300ms.
 - When it finishes, the sources block fades up 8px over 550ms, and rows slide in 6px from the left, 60ms apart, with ease [0.2, 0.8, 0.2, 1]. The status becomes "155 words in 5.9s".
 - Hovering or focusing a citation highlights its source row, and the reverse.
@@ -30,7 +30,7 @@ Build a streaming AI answer card in React + Tailwind CSS (v4), using `motion/rea
 **Accessibility**
 - The answer region is `aria-live="polite"` with `aria-busy` while reading or streaming, so assistive tech announces the finished answer once rather than every token.
 - Citations are links to `#streaming-text-src-n` with `aria-label="Source n: title"`. The sources are an `ol` under an `h3`.
-- Buttons have visible text, are 44px tall on phones (40px from `sm`) and show a 2px forest focus ring. Copy is disabled while streaming.
+- Buttons have visible text, are 44px tall on phones (40px from `sm`) and show a 2px accent focus ring. Copy is disabled while streaming.
 
 **Don't**
 - No blinking block cursor at a constant rate, and no constant-speed typewriter.
