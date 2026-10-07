@@ -660,7 +660,7 @@ function AlertsTile({ label, title, body, settings, preview, className = "" }: N
               >
                 <span aria-hidden="true" className="flex size-8 shrink-0 items-center justify-center rounded-[8px] bg-[#141412]">
                   <svg viewBox="0 0 16 16" className="size-3.5 text-[#d5f56a]" fill="currentColor">
-                    <path d="M8 0l1.6 6.4L16 8l-6.4 1.6L8 16l-1.6-6.4L0 8l6.4-1.6z" />
+                    <path d="M8 1.5 13.5 14 8 10.6 2.5 14Z" />
                   </svg>
                 </span>
                 <div className="min-w-0">
