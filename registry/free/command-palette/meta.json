@@ -7,7 +7,7 @@
   "description": "A ⌘K command palette with grouped results, fuzzy search with highlighter-pen matches, keyboard navigation, shortcut hints and proper combobox ARIA.",
   "tags": ["command palette", "cmdk", "search", "keyboard", "combobox", "launcher", "shortcuts", "fuzzy search"],
   "dependencies": ["motion", "lucide-react"],
-  "theme": "light",
+  "theme": "dark",
   "previewHeight": 720,
   "usage": "import { CommandPalette } from \"@/components/design-for-ai/command-palette\";\nimport { Inbox, Plus } from \"lucide-react\";\n\nexport default function App() {\n  return (\n    <CommandPalette\n      workspace=\"Fieldwork\"\n      groups={[\n        { id: \"nav\", label: \"Navigation\", items: [{ id: \"inbox\", label: \"Go to Inbox\", shortcut: [\"G\", \"I\"], icon: Inbox }] },\n        { id: \"do\", label: \"Actions\", items: [{ id: \"new\", label: \"New brief\", keywords: [\"create\"], icon: Plus }] },\n      ]}\n      onSelect={(item) => router.push(`/${item.id}`)}\n    />\n  );\n}",
   "props": [

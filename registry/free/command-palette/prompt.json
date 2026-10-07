@@ -1,36 +1,63 @@
 {
   "component": "CommandPalette",
-  "intent": "A precise, monochrome ⌘K command palette with grouped results, fuzzy matching shown as highlighter-pen marks, full keyboard control and correct combobox ARIA.",
+  "intent": "A precise ⌘K command palette on near-black: grouped results, fuzzy matches marked with a warm accent, full keyboard control and correct combobox ARIA.",
   "platform": "web",
-  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "animation": "motion/react", "icons": "lucide-react", "fonts": "font-sans (Geist) for labels and input, font-mono (Geist Mono) for group labels, hints, keycaps and footer, font-display (Geist, tight tracking) for the background app" },
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4",
+    "animation": "motion/react",
+    "icons": "lucide-react",
+    "fonts": "font-sans (Geist) for labels and input, font-mono (Geist Mono) for group labels, hints, keycaps and footer, font-display (Geist, tight tracking) for the background app"
+  },
   "layout": {
-    "section": "720px min-height, #f5f5f3, with a demo app behind: 240px sidebar (md+), 56px top bar with title and trigger, six issue rows",
-    "trigger": "40px white field, 288px wide from sm, search icon + 'Search or jump to…' + ⌘ K keycaps; icon and keycaps only on phones",
-    "scrim": "ink at 18%, click to close",
-    "palette": "max-w 640px, inset 12/24px, top 76/112px, white, radius 16px, 1px ring 8% ink, shadow 0 24px 64px -12px",
+    "section": "720px min-height, #09090b, with a demo app behind: 240px sidebar #0c0c0e (md+), 56px top bar with title and trigger, six issue rows",
+    "trigger": "40px field, white/3% with white/10 border and inset highlight, 288px wide from sm, search icon + 'Search or jump to…' + ⌘ K keycaps; icon and keycaps only on phones",
+    "scrim": "black at 55% with a 2px backdrop blur, click to close",
+    "palette": "max-w 640px, inset 12/24px, top 76/112px, solid #111113 (no glass), radius 16px, 1px ring white/9%, inset top highlight white/7%, shadow 0 24px 80px -12px black/90%",
     "search": "60px row: 18px icon, borderless input, esc keycap (sm+)",
     "results": "max-h min(400px, 100dvh - 240px); groups with mono labels, hairline between groups; rows ≥44px, radius 10px: 28px icon tile, label, hint, shortcut keycaps (sm+)",
-    "footer": "44px, #fafaf9: ↑↓ navigate, ↵ open, esc close; live result count right",
-    "keycap": "22px, radius 5px, 1px border 12% ink, white, 1px bottom shadow, mono 11px"
+    "footer": "44px, white/2%: ↑↓ navigate, ↵ open, esc close; live result count right",
+    "keycap": "22px, radius 5px, 1px border white/10, white/4% fill with inset highlight, mono 11px white/60"
   },
   "typography": {
-    "input": { "font": "sans", "size": "17px (16px mobile)", "tracking": "-0.01em" },
-    "row": { "font": "sans", "size": "14.5px" },
-    "groupLabel": { "font": "mono", "size": "10.5px", "case": "uppercase", "tracking": "0.14em", "opacity": 0.45 },
-    "meta": { "font": "mono", "size": "11px" }
+    "input": {
+      "font": "sans",
+      "size": "17px (16px mobile)",
+      "tracking": "-0.01em"
+    },
+    "row": {
+      "font": "sans",
+      "size": "14.5px"
+    },
+    "groupLabel": {
+      "font": "mono",
+      "size": "10.5px",
+      "case": "uppercase",
+      "tracking": "0.14em",
+      "opacity": "white/45"
+    },
+    "meta": {
+      "font": "mono",
+      "size": "11px"
+    }
   },
   "color": {
-    "ink": "#18181b (80% rows, 100% selected, 45–55% metadata)",
-    "surfaces": ["#ffffff", "#f5f5f3", "#efefec", "#fafaf9"],
-    "selected": "#f1f0ec row with 3px ink left marker; icon tile inverts to ink",
-    "highlight": "#ffe680 behind matched characters",
-    "secondaryYellow": "#ffd84d for empty-state underlines and toast dot"
+    "text": "white: 75% rows, 100% selected, 45–55% metadata",
+    "surfaces": [
+      "#09090b",
+      "#0c0c0e",
+      "#111113"
+    ],
+    "selected": "white/6% row with a 3px #ff7a45 left marker; icon tile inverts to white with a black icon",
+    "highlight": "#ff7a45 at 25% behind matched characters, text #ffd3b8",
+    "accent": "#ff7a45 for empty-state underlines and the toast dot; nothing else is coloured",
+    "toast": "white pill, black text"
   },
   "motion": {
     "open": "y -10px, scale 0.98 → 1, opacity, 220ms, ease [0.2, 0.8, 0.2, 1]; exit y -6px",
     "scrim": "fade 200ms",
     "selection": "shared layoutId marker slides between rows, 180ms",
-    "toast": "dark pill rises 12px, holds 2.2s",
+    "toast": "white pill rises 12px, holds 2.2s",
     "reducedMotion": "opacity only; no marker travel"
   },
   "responsive": {
@@ -49,10 +76,33 @@
   "content": {
     "workspace": "Northdesk",
     "groups": {
-      "Navigation": ["Go to Inbox (G I)", "Go to My issues (G M)", "Go to Projects (G P)", "Go to Roadmap (G R)", "Open Settings (G S)"],
-      "Actions": ["Create issue (C)", "Invite a teammate", "Switch to dark theme (⌘⇧L)", "Copy link to this page (⌘⇧C)", "Log time (T)"],
-      "Recent": ["CSV export drops the last row · OPS-412", "Q4 pricing page rewrite · Project", "Onboarding interviews, round 3 · Doc"]
+      "Navigation": [
+        "Go to Inbox (G I)",
+        "Go to My issues (G M)",
+        "Go to Projects (G P)",
+        "Go to Roadmap (G R)",
+        "Open Settings (G S)"
+      ],
+      "Actions": [
+        "Create issue (C)",
+        "Invite a teammate",
+        "Switch to light theme (⌘⇧L)",
+        "Copy link to this page (⌘⇧C)",
+        "Log time (T)"
+      ],
+      "Recent": [
+        "CSV export drops the last row · OPS-412",
+        "Q4 pricing page rewrite · Project",
+        "Onboarding interviews, round 3 · Doc"
+      ]
     }
   },
-  "avoid": ["glassmorphism panel", "gradient borders or glows", "sparkle 'Ask AI' rows", "bold-only match highlighting", "moving DOM focus into the list", "tiny unlabeled icon rows"]
+  "avoid": [
+    "glass panel (the scrim may blur; the palette stays solid)",
+    "gradient borders or glows",
+    "sparkle 'Ask AI' rows",
+    "bold-only match highlighting",
+    "moving DOM focus into the list",
+    "tiny unlabeled icon rows"
+  ]
 }
