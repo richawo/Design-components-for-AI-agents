@@ -72,7 +72,9 @@
     "sources": "fade up 6px over 450ms, ease [0.2, 0.8, 0.2, 1], after the stream ends",
     "userBubble": "rise 8px and fade in over 350ms",
     "stop": "send button becomes Stop while streaming; stopping freezes text and labels the byline 'stopped'",
-    "reducedMotion": "render every message complete; no caret, dots or entrances"
+    "reducedMotion": "render every message complete; no caret, dots or entrances",
+    "send": "sent bubble springs from the composer (16px, 0.96 scale from bottom-right, 420/34); send/stop swap with a pop and press to 0.92; arrow lifts 2px when the draft has text",
+    "press": "icon buttons 0.9, copy controls 0.95"
   },
   "responsive": {
     "mobile": "full-bleed window, 16px gutters, 44px touch targets, key hint and disclaimer hidden, assistant content not indented",

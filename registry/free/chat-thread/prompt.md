@@ -35,3 +35,8 @@ Build an AI chat thread in React + Tailwind CSS (v4), using `motion/react` for t
 - No grey-on-grey: keep secondary text as white at an opacity.
 - Don't stream character by character at a constant rate. It reads as a typewriter, not a model.
 - Don't let the page scroll horizontally: code scrolls inside its own block.
+
+**Feel**
+- A sent message springs up from the composer: 16px rise and 96% scale from its bottom-right corner (spring stiffness 420, damping 34).
+- Send and stop swap in place with a pop (60% → 100% on a stiff spring); both press to 0.92. The send arrow sits 2px low while the draft is empty and lifts when there's something to send.
+- Every icon button and copy control presses (0.9–0.95) and transitions in 150ms.

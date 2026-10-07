@@ -251,7 +251,7 @@ function CodeBlock({ block, limit, done }: { block: Extract<ChatBlock, { type: "
           onClick={() => copy(block.code)}
           disabled={!done}
           aria-label={copied ? "Copied" : "Copy code"}
-          className="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-[8px] px-2.5 font-mono text-[11.5px] text-white/65 transition-colors hover:bg-white/[0.07] hover:text-white disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f0a37f]"
+          className="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-[8px] px-2.5 font-mono text-[11.5px] text-white/65 transition-[background-color,color,transform] duration-150 hover:bg-white/[0.07] active:scale-95 hover:text-white disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f0a37f]"
         >
           <AnimatePresence mode="wait" initial={false}>
             <motion.span
@@ -441,7 +441,7 @@ function AssistantMessage({
             <button
               type="button"
               onClick={() => copy(plain)}
-              className={`inline-flex h-9 items-center gap-1.5 rounded-[8px] px-2 font-mono text-[11px] transition-colors hover:bg-white/[0.05] hover:text-white ${focusRing}`}
+              className={`inline-flex h-9 items-center gap-1.5 rounded-[8px] px-2 font-mono text-[11px] transition-[background-color,color,transform] duration-150 hover:bg-white/[0.05] hover:text-white active:scale-95 ${focusRing}`}
             >
               {copied ? <Check className="size-3.5 text-[#34d399]" aria-hidden="true" /> : <Copy className="size-3.5" aria-hidden="true" />}
               {copied ? "Copied" : "Copy"}
@@ -457,9 +457,10 @@ function UserMessage({ message, reduce }: { message: Extract<ChatMessage, { role
   return (
     <motion.article
       aria-label="You said"
-      initial={reduce ? false : { opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, ease: [0.2, 0.8, 0.2, 1] }}
+      initial={reduce ? false : { opacity: 0, y: 16, scale: 0.96 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ type: "spring", stiffness: 420, damping: 34 }}
+      style={{ transformOrigin: "100% 100%" }}
       className="flex flex-col items-end"
     >
       <p className="max-w-[min(82%,30rem)] whitespace-pre-wrap break-words rounded-[18px] rounded-br-[6px] bg-[#1c1c1f] px-4 py-2.5 text-[15px] leading-[1.55] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
@@ -569,7 +570,7 @@ export function ChatThread({
           <button
             type="button"
             aria-label="New thread"
-            className={`flex size-11 shrink-0 items-center justify-center rounded-full text-white/60 transition-colors hover:bg-white/[0.06] hover:text-white ${focusRing}`}
+            className={`flex size-11 shrink-0 items-center justify-center rounded-full text-white/60 transition-[background-color,color,transform] duration-150 hover:bg-white/[0.06] hover:text-white active:scale-90 ${focusRing}`}
           >
             <SquarePen className="size-[18px]" aria-hidden="true" />
           </button>
@@ -621,7 +622,7 @@ export function ChatThread({
                         type="button"
                         aria-label={`Remove ${f}`}
                         onClick={() => setFiles((fs) => fs.filter((x) => x !== f))}
-                        className={`flex size-6 shrink-0 items-center justify-center rounded-[6px] text-white/50 hover:bg-white/[0.08] hover:text-white ${focusRing}`}
+                        className={`flex size-6 shrink-0 items-center justify-center rounded-[6px] text-white/50 transition-[background-color,color,transform] duration-150 hover:bg-white/[0.08] hover:text-white active:scale-90 ${focusRing}`}
                       >
                         <X className="size-3.5" aria-hidden="true" />
                       </button>
@@ -662,7 +663,7 @@ export function ChatThread({
                   type="button"
                   aria-label="Attach a file"
                   onClick={() => fileInput.current?.click()}
-                  className={`flex size-11 shrink-0 items-center justify-center rounded-full text-white/55 transition-colors hover:bg-white/[0.06] hover:text-white sm:size-9 ${focusRing}`}
+                  className={`flex size-11 shrink-0 items-center justify-center rounded-full text-white/55 transition-[background-color,color,transform] duration-150 hover:bg-white/[0.06] hover:text-white active:scale-90 sm:size-9 ${focusRing}`}
                 >
                   <Paperclip className="size-[18px]" aria-hidden="true" />
                 </button>
@@ -675,25 +676,43 @@ export function ChatThread({
                 <span className="hidden font-mono text-[10.5px] text-white/40 md:inline">
                   <kbd className="font-mono">↵</kbd> send · <kbd className="font-mono">⇧↵</kbd> new line
                 </span>
-                {streaming ? (
-                  <button
-                    type="button"
-                    aria-label="Stop generating"
-                    onClick={() => setStreamingId(null)}
-                    className={`flex size-11 items-center justify-center rounded-full bg-white text-black transition-transform active:scale-95 sm:size-9 ${focusRing}`}
-                  >
-                    <Square className="size-3.5 fill-current" aria-hidden="true" />
-                  </button>
-                ) : (
-                  <button
-                    type="submit"
-                    aria-label="Send message"
-                    disabled={!canSend}
-                    className={`flex size-11 items-center justify-center rounded-full bg-white text-black transition-[transform,opacity,background-color] hover:bg-[#ff9a6b] active:scale-95 disabled:cursor-not-allowed disabled:bg-white/15 disabled:text-white/40 disabled:hover:bg-white/15 sm:size-9 ${focusRing}`}
-                  >
-                    <ArrowUp className="size-[18px]" strokeWidth={2.2} aria-hidden="true" />
-                  </button>
-                )}
+                {/* Send and stop swap in place with a quick pop. */}
+                <span className="relative grid size-11 place-items-center sm:size-9">
+                  <AnimatePresence mode="popLayout" initial={false}>
+                    {streaming ? (
+                      <motion.button
+                        key="stop"
+                        type="button"
+                        aria-label="Stop generating"
+                        onClick={() => setStreamingId(null)}
+                        initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.6 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.6, transition: { duration: 0.1 } }}
+                        transition={{ type: "spring", stiffness: 600, damping: 32 }}
+                        whileTap={reduce ? undefined : { scale: 0.92 }}
+                        className={`flex size-11 items-center justify-center rounded-full bg-white text-black sm:size-9 ${focusRing}`}
+                      >
+                        <Square className="size-3.5 fill-current" aria-hidden="true" />
+                      </motion.button>
+                    ) : (
+                      <motion.button
+                        key="send"
+                        type="submit"
+                        aria-label="Send message"
+                        disabled={!canSend}
+                        initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.6 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.6, transition: { duration: 0.1 } }}
+                        transition={{ type: "spring", stiffness: 600, damping: 32 }}
+                        whileTap={reduce || !canSend ? undefined : { scale: 0.92 }}
+                        className={`flex size-11 items-center justify-center rounded-full bg-white text-black transition-colors duration-150 hover:bg-[#ff9a6b] disabled:cursor-not-allowed disabled:bg-white/15 disabled:text-white/40 disabled:hover:bg-white/15 sm:size-9 ${focusRing}`}
+                      >
+                        {/* The arrow lifts when there's something to send. */}
+                        <ArrowUp className={`size-[18px] transition-transform duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] ${canSend ? "translate-y-0" : "translate-y-[2px]"}`} strokeWidth={2.2} aria-hidden="true" />
+                      </motion.button>
+                    )}
+                  </AnimatePresence>
+                </span>
               </div>
             </div>
           </form>
