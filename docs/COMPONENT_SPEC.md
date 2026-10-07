@@ -168,7 +168,87 @@ something a senior product designer would put in their portfolio.
 
 ---
 
-## 3. Responsive by default
+## 3. Interaction and feel
+
+A component is judged in motion, not in a screenshot. Every component should
+feel calm, immediate and physical: it answers the pointer within a frame,
+moves only when there is a reason, and never fights the person using it.
+Minimal is not the same as static. The polish is in the states.
+
+### Motion tokens
+
+| Token | Value | Use |
+| --- | --- | --- |
+| `ease-out` | `cubic-bezier(0.22, 1, 0.36, 1)` | entrances, state changes, anything arriving |
+| `ease-in-out` | `cubic-bezier(0.65, 0, 0.35, 1)` | morphs and things travelling across the screen |
+| `ease-in` | `cubic-bezier(0.4, 0, 1, 1)` | exits only |
+| micro | 120–160ms | hover, press, colour, icon nudges |
+| small | 180–240ms | toggles, tooltips, popovers, tabs |
+| medium | 280–420ms | panels, drawers, chart morphs, accordions |
+| large | 500–800ms | first-view reveals and section entrances |
+| `spring.ui` | stiffness 500, damping 40 | selection pills, indicators, layout moves: snappy, no bounce |
+| `spring.drag` | stiffness 320, damping 30, carry release velocity | anything dragged, flung or thrown |
+| `spring.soft` | stiffness 180, damping 22 | magnetic pulls, cursor followers, tilt |
+
+Exits run at about two thirds of the entrance duration. Playful components
+may show one visible overshoot; nothing else bounces.
+
+### Every interactive element has all of these
+
+- **Hover** (pointer devices only): one clear step, not three. The surface
+  lifts by 3–4% white (or darkens on light), the text goes to full strength,
+  and directional icons nudge 1–2px toward the action. Micro duration.
+- **Press:** scale 0.97–0.98 for buttons and cards (or 1px down for pills),
+  80–100ms in, springing back on release. Colour alone is not press
+  feedback. Press feedback is mandatory on touch.
+- **Focus-visible:** a 2px ring offset against the surface it sits on, shown
+  instantly (no transition on the ring), keyboard only, never on click.
+- **Selected:** indicators travel between options with a shared layout
+  animation (`layoutId`) on `spring.ui`. They never jump.
+- **Disabled:** 35–45% opacity, `cursor-not-allowed`, no hover response.
+- **Loading and success:** the control keeps its size; a spinner, progress
+  or check replaces the label inside the same box, then settles back.
+- **Empty and error:** designed, written and animated like any other state.
+
+### Feel rules
+
+1. **Respond within a frame.** Hover and press feedback has no delay.
+   Tooltips are the only delayed thing: 300–500ms to open, instant to close,
+   instant when moving between neighbours.
+2. **Nothing moves unless the user caused it,** except one ambient signal
+   per component (a live dot, a slow drift, a ticking value), which pauses
+   offscreen and in hidden tabs.
+3. **Everything is interruptible.** State animations use motion values or
+   springs, so a reversed hover or a second click reverses mid-flight
+   instead of finishing first. CSS keyframes are for ambient loops only.
+4. **Continuity over cuts.** Elements that persist between states morph
+   (layout animation). Swapped content cross-fades with a 4–8px offset and a
+   2–4px blur, so the eye can follow it.
+5. **Numbers count.** Changing figures tween to their new value with
+   tabular numerals; they never jump or reflow.
+6. **Surfaces know where the pointer is.** Cards and panels may carry a
+   pointer-tracked spotlight or edge light (a radial gradient at 6–10%
+   white). Primary actions may pull magnetically, at most 6–8px and at most
+   one per view.
+7. **Reveal once.** Scroll reveals run once, at 20–30% visibility, with a
+   12–24px offset over 500–700ms and a 40–80ms stagger. Nothing
+   re-animates on the way back up.
+8. **Touch is first-class.** Every hover reveal has a tap equivalent. Drags
+   use pointer capture and the right `touch-action`, and never trap the
+   page's vertical scroll.
+9. **No theatre.** No rotate-ins, no bouncing entrances, no infinite pulses
+   on content, no animation longer than 800ms that the user has to wait for.
+10. **Reduced motion keeps meaning.** Opacity changes stay (150ms or less);
+    transforms, parallax, magnetism, tilt and loops go.
+
+### Checking the feel
+
+Record it. `node scripts/rec.mjs <slug> --steps="..."` drives the preview
+with a pointer and keyboard and writes a video and a GIF, so hover, press,
+focus and state changes can be reviewed frame by frame. A component isn't
+done until its recording feels right at full speed.
+
+## 4. Responsive by default
 
 - **Respond to the container, not the viewport.** Put `@container` on the root
   and use container variants (`@md:`, `@2xl:`) so a component works in a
@@ -185,7 +265,7 @@ something a senior product designer would put in their portfolio.
   must work from 360 to 430pt wide. They respect the safe area by padding
   the top 54pt or so in the demo, and they never hard-code a device height.
 
-## 4. Accessibility
+## 5. Accessibility
 
 - Semantic elements first: `button` for actions, `a` for navigation, plus
   headings in order, lists, `nav`, `section` with labels.
@@ -201,7 +281,7 @@ something a senior product designer would put in their portfolio.
 - Mobile: `accessibilityRole`, `accessibilityLabel` and
   `accessibilityState` on Pressables.
 
-## 5. Visual QA loop (required)
+## 6. Visual QA loop (required)
 
 A dev server runs at `http://localhost:3100`. Every component is visible at
 `/preview/<slug>`.
@@ -228,7 +308,7 @@ Fix and re-shoot until the answer is an unqualified yes. For interactive states
 throwaway Playwright script that clicks, hovers or types, and screenshot that
 state too.
 
-## 6. Licence
+## 7. Licence
 
 - `registry/free/**` is MIT.
 - `registry/pro/**` is proprietary (see `LICENSE-PRO.md` in the private
