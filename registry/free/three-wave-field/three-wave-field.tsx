@@ -223,8 +223,18 @@ export function ThreeWaveField({
       host.addEventListener("pointerdown", onDown);
     }
 
+    // Entrance: the canvas fades up while the sea rises from flat.
+    renderer.domElement.style.opacity = reduce ? "1" : "0";
+    renderer.domElement.style.transition = "opacity 900ms cubic-bezier(0.22, 1, 0.36, 1)";
+    let rise = reduce ? 1 : 0;
     let visible = true;
-    const io = new IntersectionObserver(([e]) => (visible = e.isIntersecting), { threshold: 0 });
+    const io = new IntersectionObserver(
+      ([e]) => {
+        visible = e.isIntersecting;
+        if (visible) renderer.domElement.style.opacity = "1";
+      },
+      { threshold: 0.1 },
+    );
     io.observe(host);
 
     const clock = new THREE.Clock();
@@ -236,6 +246,10 @@ export function ThreeWaveField({
       if (!visible || document.hidden) return;
       t += dt * speed;
       uniforms.uTime.value = t;
+      if (rise < 1) {
+        rise = Math.min(1, rise + dt / 1.6);
+        uniforms.uAmp.value = amplitude * (1 - Math.pow(1 - rise, 3));
+      }
       uniforms.uPointer.value.lerp(target, 0.08);
       uniforms.uPointerStrength.value += (wantStrength - uniforms.uPointerStrength.value) * 0.05;
       if (uniforms.uRippleAge.value >= 0) uniforms.uRippleAge.value += dt;
@@ -287,10 +301,10 @@ export default function ThreeWaveFieldDemo() {
           2,400 buoys streaming swell height, period and direction every four seconds, with forecasts your harbour master will trust.
         </p>
         <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-          <a href="#start" className="inline-flex h-11 items-center justify-center rounded-full bg-white px-5 text-[14px] font-medium text-black transition-colors hover:bg-white/90 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
+          <a href="#start" className="inline-flex h-11 items-center justify-center rounded-full bg-white px-5 text-[14px] font-medium text-black shadow-[0_10px_30px_-12px_rgba(255,255,255,0.5)] transition-[box-shadow,transform] duration-150 hover:shadow-[0_14px_40px_-10px_rgba(255,255,255,0.7)] active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
             Open the live map
           </a>
-          <a href="#docs" className="inline-flex h-11 items-center justify-center rounded-full px-5 text-[14px] font-medium text-white/80 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.14)] transition-colors hover:bg-white/[0.06] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
+          <a href="#docs" className="inline-flex h-11 items-center justify-center rounded-full px-5 text-[14px] font-medium text-white/80 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.14)] transition-[background-color,transform] duration-150 hover:bg-white/[0.06] active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
             Read the API docs
           </a>
         </div>

@@ -2,7 +2,11 @@
   "component": "ThreeWaveField",
   "intent": "A field of light points rolling toward the viewer in long swells: a calm, expensive-looking hero background that responds to the pointer without ever competing with the copy.",
   "platform": "web",
-  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "3d": "three (plain Three.js, one Points mesh, custom ShaderMaterial with 2D simplex noise)" },
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4",
+    "3d": "three (plain Three.js, one Points mesh, custom ShaderMaterial with 2D simplex noise)"
+  },
   "layout": {
     "component": "fills its parent (absolute inset-0 behind a hero works best)",
     "field": "a grid 18 units wide and 14 deep, dense along x and spaced along z so it reads as contour lines of swell: 380×80 points on desktop, 200×96 under 640px",
@@ -10,7 +14,13 @@
     "demo": "centred hero: mono eyebrow with an accent dot, display headline with a white/45 second clause, body, two pill buttons; a black-to-transparent gradient over the top half keeps the copy clean; a faint warm radial wash sits behind the horizon"
   },
   "typography": {
-    "headline": { "font": "display (Geist)", "weight": 600, "size": "clamp(2.75rem, 1.6rem + 4.6vw, 5.75rem)", "tracking": "-0.055em", "leading": 0.98 },
+    "headline": {
+      "font": "display (Geist)",
+      "weight": 600,
+      "size": "clamp(2.75rem, 1.6rem + 4.6vw, 5.75rem)",
+      "tracking": "-0.055em",
+      "leading": 0.98
+    },
     "body": "16–17px, white/60, max 46ch",
     "hint": "mono 10.5px uppercase tracking 0.18em white/40 in a black/60 pill"
   },
@@ -25,14 +35,32 @@
     "waves": "two sine swells, a broad simplex noise drifting toward the viewer and a fine chop; speed multiplier prop",
     "pointer": "the pointer is ray-cast onto the y=0 plane and lifts a Gaussian mound (0.38) that follows it with 0.08 lerp; strength eases in and out over about a second",
     "ripple": "pointerdown drops a ring that travels outward at 3.2 units/s and decays over about 3s",
-    "reducedMotion": "single static frame, no pointer response"
+    "reducedMotion": "single static frame, no pointer response",
+    "entrance": "canvas fades in 900ms while amplitude rises from 0 over 1.6s ease-out",
+    "buttons": "white pill deepens its glow on hover; pills scale 0.97 on press"
   },
   "responsive": {
     "density": "fewer points under 640px, and the field starts 1.5 units further from the camera so near rows don't spread",
     "lens": "wider fov on portrait boxes so the field still spans the frame",
     "performance": "DPR capped at 2; one draw call; pauses offscreen and in hidden tabs"
   },
-  "accessibility": ["canvas is aria-hidden; the hero copy carries the meaning", "decorative motion stops under prefers-reduced-motion", "hint copy switches for touch devices", "copy sits over a gradient so contrast never depends on the animation"],
-  "content": { "brand": "Tidewater", "headline": "Read the sea before it reaches the shore.", "body": "2,400 buoys streaming swell height, period and direction every four seconds…" },
-  "avoid": ["wireframe meshes", "rainbow or purple-blue gradients", "fast, choppy motion", "bloom post-processing", "letting the field run behind body copy without a gradient", "OrbitControls"]
+  "accessibility": [
+    "canvas is aria-hidden; the hero copy carries the meaning",
+    "decorative motion stops under prefers-reduced-motion",
+    "hint copy switches for touch devices",
+    "copy sits over a gradient so contrast never depends on the animation"
+  ],
+  "content": {
+    "brand": "Tidewater",
+    "headline": "Read the sea before it reaches the shore.",
+    "body": "2,400 buoys streaming swell height, period and direction every four seconds…"
+  },
+  "avoid": [
+    "wireframe meshes",
+    "rainbow or purple-blue gradients",
+    "fast, choppy motion",
+    "bloom post-processing",
+    "letting the field run behind body copy without a gradient",
+    "OrbitControls"
+  ]
 }

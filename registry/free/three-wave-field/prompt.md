@@ -23,6 +23,10 @@ Build a wave-field hero background in React + plain Three.js: a field of light p
 - Alpha combines fog (depth 5→16), a near-camera fade, the edge fade, the spotlight and a crest boost.
 - Additive blending with depthWrite off, so dense crests bloom without post-processing.
 
+**Entrance and buttons**
+- First view: the canvas fades up over 900ms while the amplitude rises from flat to full over 1.6s (ease-out), so the sea swells into place.
+- The white pill keeps its colour on hover and deepens its glow; both pills scale to 0.97 while pressed.
+
 **Behaviour**
 - Pause offscreen (IntersectionObserver) and in hidden tabs.
 - Under `prefers-reduced-motion`, render one static frame with no pointer response.
