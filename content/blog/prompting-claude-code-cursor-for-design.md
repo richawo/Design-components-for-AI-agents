@@ -1,7 +1,7 @@
 ---
 title: How to prompt Claude Code and Cursor for good design
 slug: prompting-claude-code-cursor-for-design
-description: A practical workflow for getting well-designed interfaces out of AI coding agents, covering the brief, references, constraints, the screenshot loop and the review, with prompts you can copy.
+description: "A practical workflow for getting well-designed interfaces out of AI coding agents: the brief, references, constraints, the screenshot loop and the review."
 excerpt: A five-step workflow, with copyable prompts, that turns an AI coding agent from a template machine into a decent junior designer.
 date: 2026-10-05
 dateModified: 2026-10-07

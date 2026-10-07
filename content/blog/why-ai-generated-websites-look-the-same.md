@@ -1,7 +1,7 @@
 ---
 title: Why AI-generated websites all look the same (and how to fix it)
 slug: why-ai-generated-websites-look-the-same
-description: Purple gradients, sparkle badges, three identical cards. Here's why AI coding agents converge on the same design, and the concrete changes that make their output look designed instead.
+description: Purple gradients, sparkle badges, three identical cards. Why AI coding agents converge on the same design, and the changes that make their output look designed.
 excerpt: The "AI slop" look isn't a bug in any one model. It's what averaging produces. Here's the mechanism, the tells, and how to break the pattern.
 date: 2026-10-07
 dateModified: 2026-10-07

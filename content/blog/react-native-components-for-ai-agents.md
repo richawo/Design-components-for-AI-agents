@@ -1,7 +1,7 @@
 ---
 title: React Native components that AI agents can actually use
 slug: react-native-components-for-ai-agents
-description: Why most mobile UI kits break when an AI agent installs them, and how Design for AI's React Native components are built to drop into any Expo or bare app with zero extra dependencies.
+description: Why mobile UI kits break when an AI agent installs them, and how React Native components can drop into any Expo or bare app with zero extra dependencies.
 excerpt: Native UI kits come with a dependency tree that agents trip over. Ours come with none, and you can preview every one on the web.
 date: 2026-10-04
 dateModified: 2026-10-07
