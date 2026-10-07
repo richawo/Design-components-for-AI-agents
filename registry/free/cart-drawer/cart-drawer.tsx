@@ -241,18 +241,18 @@ export function CartDrawer({
         onClick={() => setOpen(true)}
         aria-haspopup="dialog"
         aria-expanded={open}
-        className="inline-flex h-11 items-center gap-2.5 rounded-full bg-[#14261c] pl-4 pr-2 text-[14px] font-medium text-[#f7f3ea] outline-none transition-transform hover:-translate-y-px focus-visible:ring-2 focus-visible:ring-[#14261c] focus-visible:ring-offset-2 focus-visible:ring-offset-[#efe9dc]"
+        className="inline-flex h-11 items-center gap-2.5 rounded-full bg-white pl-4 pr-2 text-[14px] font-medium text-black outline-none transition-transform hover:-translate-y-px focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#efe9dc]"
       >
         <ShoppingBag size={16} strokeWidth={2} aria-hidden="true" />
         Bag
-        <span className="flex h-7 min-w-7 items-center justify-center rounded-full bg-[#d7e3a4] px-2 font-mono text-[12px] tabular-nums text-[#14261c]">{count}</span>
+        <span className="flex h-7 min-w-7 items-center justify-center rounded-full bg-[#d7e3a4] px-2 font-mono text-[12px] tabular-nums text-black">{count}</span>
       </button>
 
       <AnimatePresence>
         {open && (
           <motion.div
             key="scrim"
-            className={`${pos} inset-0 z-40 bg-[#0d1a12]/45`}
+            className={`${pos} inset-0 z-40 bg-black/60 backdrop-blur-[2px]`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -278,7 +278,7 @@ export function CartDrawer({
             dragConstraints={{ top: 0, bottom: 0 }}
             dragElastic={{ top: 0, bottom: 0.7 }}
             onDragEnd={onSheetDragEnd}
-            className={`${pos} inset-x-0 outline-none bottom-0 top-3 z-50 flex flex-col overflow-hidden rounded-t-[22px] bg-[#f7f3ea] text-[#14261c] shadow-[0_-20px_60px_-20px_rgba(13,26,18,0.5)] sm:inset-y-0 sm:left-auto sm:right-0 sm:top-0 sm:w-[440px] sm:rounded-none sm:shadow-[-24px_0_60px_-24px_rgba(13,26,18,0.45)]`}
+            className={`${pos} inset-x-0 outline-none bottom-0 top-3 z-50 flex flex-col overflow-hidden rounded-t-[22px] bg-[#0b0b0c] text-white shadow-[0_-20px_60px_-20px_rgba(0,0,0,0.9),inset_1px_0_0_rgba(255,255,255,0.08)] sm:inset-y-0 sm:left-auto sm:right-0 sm:top-0 sm:w-[440px] sm:rounded-none sm:shadow-[-24px_0_60px_-24px_rgba(13,26,18,0.45)]`}
           >
             <SheetHandle mobile={mobile} reduce={!!reduce} controls={dragControls} />
 
@@ -288,7 +288,7 @@ export function CartDrawer({
                 <h2 id={titleId} className="font-display text-[28px] font-bold leading-none tracking-[-0.035em]">
                   {title}
                 </h2>
-                <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.14em] text-[#14261c]/55">
+                <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.14em] text-white/55">
                   {count} {count === 1 ? "item" : "items"} · ships from Hebden Bridge
                 </p>
               </div>
@@ -296,18 +296,18 @@ export function CartDrawer({
                 type="button"
                 onClick={() => setOpen(false)}
                 aria-label="Close bag"
-                className="-mr-2 -mt-1 flex size-11 items-center justify-center rounded-full text-[#14261c] outline-none transition-colors hover:bg-[#14261c]/[0.07] focus-visible:ring-2 focus-visible:ring-[#14261c]"
+                className="-mr-2 -mt-1 flex size-11 items-center justify-center rounded-full text-white outline-none transition-colors hover:bg-white/[0.07] focus-visible:ring-2 focus-visible:ring-white"
               >
                 <X size={20} strokeWidth={2} aria-hidden="true" />
               </button>
             </div>
 
             {/* Free shipping */}
-            <div id={statusId} className="mx-5 rounded-[14px] bg-[#ece5d4] px-4 py-3.5 sm:mx-7">
+            <div id={statusId} className="mx-5 rounded-[14px] bg-white/[0.04] px-4 py-3.5 sm:mx-7">
               <p className="flex items-center gap-2 text-[13px] leading-snug" aria-live="polite">
                 {unlocked ? (
                   <>
-                    <span className="flex size-5 items-center justify-center rounded-full bg-[#2f6b3a] text-[#f7f3ea]">
+                    <span className="flex size-5 items-center justify-center rounded-full bg-[#d7e3a4] text-black">
                       <Check size={12} strokeWidth={3} aria-hidden="true" />
                     </span>
                     <span>
@@ -321,7 +321,7 @@ export function CartDrawer({
                 )}
               </p>
               <div
-                className="relative mt-3 h-2 rounded-full bg-[#14261c]/[0.1]"
+                className="relative mt-3 h-2 rounded-full bg-white/[0.1]"
                 role="progressbar"
                 aria-label="Progress to free shipping"
                 aria-valuemin={0}
@@ -329,13 +329,13 @@ export function CartDrawer({
                 aria-valuenow={Math.min(subtotal, freeShippingThreshold)}
               >
                 <motion.div
-                  className={`absolute inset-y-0 left-0 rounded-full ${unlocked ? "bg-[#2f6b3a]" : "bg-[#14261c]"}`}
+                  className={`absolute inset-y-0 left-0 rounded-full ${unlocked ? "bg-[#d7e3a4]" : "bg-white"}`}
                   initial={false}
                   animate={{ width: `${progress * 100}%` }}
                   transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 120, damping: 20 }}
                 />
                 <motion.div
-                  className="absolute top-1/2 flex size-7 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#f7f3ea] text-[#14261c] shadow-[0_0_0_1.5px_#14261c]"
+                  className="absolute top-1/2 flex size-7 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#0b0b0c] text-white shadow-[0_0_0_1.5px_#ffffff]"
                   initial={false}
                   animate={{ left: `${Math.max(progress, 0.04) * 100}%`, rotate: unlocked ? [0, -8, 0] : 0 }}
                   transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 120, damping: 20 }}
@@ -344,7 +344,7 @@ export function CartDrawer({
                   <Truck size={14} strokeWidth={2} />
                 </motion.div>
               </div>
-              <div className="mt-2.5 flex justify-between font-mono text-[10px] uppercase tracking-[0.12em] text-[#14261c]/50 tabular-nums">
+              <div className="mt-2.5 flex justify-between font-mono text-[10px] uppercase tracking-[0.12em] text-white/50 tabular-nums">
                 <span>{money(0)}</span>
                 <span>Free over {money(freeShippingThreshold)}</span>
               </div>
@@ -354,12 +354,12 @@ export function CartDrawer({
             <div className="mt-2 flex-1 overflow-y-auto overscroll-contain px-5 sm:px-7">
               {items.length === 0 ? (
                 <div className="flex h-full flex-col items-center justify-center py-16 text-center">
-                  <ShoppingBag size={28} strokeWidth={1.5} aria-hidden="true" className="text-[#14261c]/40" />
+                  <ShoppingBag size={28} strokeWidth={1.5} aria-hidden="true" className="text-white/40" />
                   <p className="mt-4 font-display text-[20px] font-semibold tracking-[-0.02em]">Nothing in here yet.</p>
-                  <p className="mt-1 text-[14px] text-[#14261c]/60">The notebooks are a good place to start.</p>
+                  <p className="mt-1 text-[14px] text-white/60">The notebooks are a good place to start.</p>
                 </div>
               ) : (
-                <ul className="divide-y divide-[#14261c]/10">
+                <ul className="divide-y divide-white/10">
                   <AnimatePresence initial={false}>
                     {items.map((item) =>
                       removed[item.id] ? (
@@ -380,7 +380,7 @@ export function CartDrawer({
                               <div className="flex items-start justify-between gap-3">
                                 <div className="min-w-0">
                                   <p className="text-[15px] font-semibold leading-snug tracking-[-0.01em]">{item.name}</p>
-                                  <p className="mt-0.5 text-[13px] text-[#14261c]/60">{item.variant}</p>
+                                  <p className="mt-0.5 text-[13px] text-white/60">{item.variant}</p>
                                 </div>
                                 <Price value={item.price * item.qty} format={money} reduce={!!reduce} />
                               </div>
@@ -389,7 +389,7 @@ export function CartDrawer({
                                 <button
                                   type="button"
                                   onClick={() => remove(item.id)}
-                                  className="h-11 rounded-full px-2 text-[13px] text-[#14261c]/60 underline decoration-[#14261c]/25 underline-offset-4 outline-none transition-colors hover:text-[#14261c] hover:decoration-[#14261c] focus-visible:ring-2 focus-visible:ring-[#14261c] sm:h-9"
+                                  className="h-11 rounded-full px-2 text-[13px] text-white/60 underline decoration-white/25 underline-offset-4 outline-none transition-colors hover:text-white hover:decoration-white focus-visible:ring-2 focus-visible:ring-white sm:h-9"
                                   aria-label={`Remove ${item.name}`}
                                 >
                                   Remove
@@ -414,17 +414,17 @@ export function CartDrawer({
                     transition={{ duration: 0.3, ease }}
                     className="mb-5 overflow-hidden"
                   >
-                    <div className="flex items-center gap-3.5 rounded-[14px] border border-dashed border-[#14261c]/25 p-3">
+                    <div className="flex items-center gap-3.5 rounded-[14px] border border-dashed border-white/25 p-3">
                       <Thumb art={upsell.art} color={upsell.color} small />
                       <div className="min-w-0 flex-1">
-                        <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#2f6b3a]">Pairs well</p>
+                        <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#d7e3a4]">Pairs well</p>
                         <p className="mt-0.5 text-[14px] font-semibold leading-snug">{upsell.name}</p>
-                        <p className="text-[12px] leading-snug text-[#14261c]/60">{upsell.pitch}</p>
+                        <p className="text-[12px] leading-snug text-white/60">{upsell.pitch}</p>
                       </div>
                       <button
                         type="button"
                         onClick={addUpsell}
-                        className="inline-flex h-11 shrink-0 items-center gap-1.5 rounded-full bg-[#14261c]/[0.07] px-3.5 text-[13px] font-semibold outline-none transition-colors hover:bg-[#14261c] hover:text-[#f7f3ea] focus-visible:ring-2 focus-visible:ring-[#14261c] sm:h-9"
+                        className="inline-flex h-11 shrink-0 items-center gap-1.5 rounded-full bg-white/[0.07] px-3.5 text-[13px] font-semibold outline-none transition-colors hover:bg-white hover:text-black focus-visible:ring-2 focus-visible:ring-white sm:h-9"
                         aria-label={`Add ${upsell.name} for ${money(upsell.price)}`}
                       >
                         <Plus size={14} strokeWidth={2.5} aria-hidden="true" />
@@ -437,34 +437,34 @@ export function CartDrawer({
             </div>
 
             {/* Footer */}
-            <div className="border-t border-[#14261c]/10 bg-[#f7f3ea] px-5 pb-[max(20px,env(safe-area-inset-bottom))] pt-4 sm:px-7 sm:pb-7">
+            <div className="border-t border-white/10 bg-[#0b0b0c] px-5 pb-[max(20px,env(safe-area-inset-bottom))] pt-4 sm:px-7 sm:pb-7">
               <dl className="space-y-1.5 text-[14px]">
                 <div className="flex justify-between">
-                  <dt className="text-[#14261c]/65">Subtotal</dt>
+                  <dt className="text-white/65">Subtotal</dt>
                   <dd className="tabular-nums">
                     <Price value={subtotal} format={money} reduce={!!reduce} plain />
                   </dd>
                 </div>
                 <div className="flex justify-between">
-                  <dt className="text-[#14261c]/65">Shipping</dt>
-                  <dd className="tabular-nums">{subtotal === 0 ? "—" : unlocked ? <span className="font-medium text-[#2f6b3a]">Free</span> : money(shippingFee)}</dd>
+                  <dt className="text-white/65">Shipping</dt>
+                  <dd className="tabular-nums">{subtotal === 0 ? "—" : unlocked ? <span className="font-medium text-[#d7e3a4]">Free</span> : money(shippingFee)}</dd>
                 </div>
               </dl>
               <button
                 type="button"
                 disabled={live.length === 0}
                 onClick={() => onCheckout?.(live)}
-                className="group mt-4 flex h-14 w-full items-center justify-between rounded-full bg-[#14261c] pl-6 pr-2 text-[15px] font-semibold text-[#f7f3ea] outline-none transition-[background-color,transform] hover:bg-[#1d3527] focus-visible:ring-2 focus-visible:ring-[#14261c] focus-visible:ring-offset-2 focus-visible:ring-offset-[#f7f3ea] active:translate-y-px disabled:opacity-40"
+                className="group mt-4 flex h-14 w-full items-center justify-between rounded-full bg-white pl-6 pr-2 text-[15px] font-semibold text-black outline-none transition-[background-color,transform] hover:bg-white/90 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b0b0c] active:translate-y-px disabled:opacity-40"
               >
                 <span className="flex items-center gap-2">
                   <Lock size={15} strokeWidth={2.25} aria-hidden="true" />
                   Checkout
                 </span>
-                <span className="flex h-10 items-center rounded-full bg-[#d7e3a4] px-4 tabular-nums text-[#14261c]">
+                <span className="flex h-10 items-center rounded-full bg-[#d7e3a4] px-4 tabular-nums text-black">
                   {money(subtotal + (unlocked || subtotal === 0 ? 0 : shippingFee))}
                 </span>
               </button>
-              <p className="mt-3 text-center text-[12px] text-[#14261c]/55">VAT included. Free returns within 60 days, no questions.</p>
+              <p className="mt-3 text-center text-[12px] text-white/55">VAT included. Free returns within 60 days, no questions.</p>
             </div>
             <span className="sr-only" aria-live="polite">
               {announce}
@@ -490,16 +490,16 @@ function SheetHandle({ mobile, reduce, controls }: { mobile: boolean; reduce: bo
       }}
       aria-hidden="true"
     >
-      <span className="h-1 w-10 rounded-full bg-[#14261c]/25" />
+      <span className="h-1 w-10 rounded-full bg-white/25" />
     </div>
   );
 }
 
 function Stepper({ value, name, onChange }: { value: number; name: string; onChange: (v: number) => void }) {
   const btn =
-    "flex size-11 items-center justify-center rounded-full text-[#14261c] outline-none transition-colors hover:bg-[#14261c]/[0.08] focus-visible:ring-2 focus-visible:ring-[#14261c] disabled:opacity-30 sm:size-9";
+    "flex size-11 items-center justify-center rounded-full text-white outline-none transition-colors hover:bg-white/[0.08] focus-visible:ring-2 focus-visible:ring-white disabled:opacity-30 sm:size-9";
   return (
-    <div className="flex items-center rounded-full bg-white shadow-[inset_0_0_0_1px_rgba(20,38,28,0.14)]" role="group" aria-label={`Quantity of ${name}`}>
+    <div className="flex items-center rounded-full bg-white/[0.04] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1)]" role="group" aria-label={`Quantity of ${name}`}>
       <button type="button" className={btn} onClick={() => onChange(value - 1)} aria-label={value === 1 ? `Remove ${name}` : `Decrease quantity of ${name}`}>
         <Minus size={14} strokeWidth={2.25} aria-hidden="true" />
       </button>
@@ -556,14 +556,14 @@ function UndoRow({ item, seconds, onUndo, onExpire, reduce }: { item: CartItem; 
       onFocus={() => setPaused(true)}
       onBlur={() => setPaused(false)}
     >
-      <div className="relative my-3 flex items-center justify-between gap-3 overflow-hidden rounded-[12px] bg-[#14261c] py-2 pl-4 pr-2 text-[#f7f3ea]">
+      <div className="relative my-3 flex items-center justify-between gap-3 overflow-hidden rounded-[12px] bg-[#1c1c1f] py-2 pl-4 pr-2 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
         <p className="min-w-0 truncate text-[13px]">
           Removed <span className="font-semibold">{item.name}</span>
         </p>
         <button
           type="button"
           onClick={onUndo}
-          className="h-9 shrink-0 rounded-full bg-[#d7e3a4] px-4 text-[13px] font-semibold text-[#14261c] outline-none focus-visible:ring-2 focus-visible:ring-[#d7e3a4] focus-visible:ring-offset-2 focus-visible:ring-offset-[#14261c]"
+          className="h-9 shrink-0 rounded-full bg-[#d7e3a4] px-4 text-[13px] font-semibold text-black outline-none focus-visible:ring-2 focus-visible:ring-[#d7e3a4] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1c1c1f]"
         >
           Undo
         </button>
@@ -638,7 +638,7 @@ function Thumb({ art, color, small = false }: { art: CartArt; color: string; sma
     );
   }
   return (
-    <div className={`${box} shrink-0 overflow-hidden rounded-[10px] bg-[#e7dfcc]`} aria-hidden="true">
+    <div className={`${box} shrink-0 overflow-hidden rounded-[10px] bg-[#161618]`} aria-hidden="true">
       <svg viewBox="0 0 76 84" className="size-full">
         <defs>
           <linearGradient id={`${id}-sheen`} x1="0" x2="1" y1="0" y2="0">
@@ -660,24 +660,24 @@ function Thumb({ art, color, small = false }: { art: CartArt; color: string; sma
 
 export function CartDrawerDemo(props: CartDrawerProps) {
   return (
-    <div className="relative h-dvh min-h-[720px] overflow-hidden bg-[#efe9dc] text-[#14261c]">
+    <div className="relative h-dvh min-h-[720px] overflow-hidden bg-[#09090b] text-white">
       <style>{`@keyframes tm-cart-drawer-undo { from { transform: scaleX(1); } to { transform: scaleX(0); } }`}</style>
-      <header className="flex items-center justify-between gap-4 border-b border-[#14261c]/10 px-5 py-4 sm:px-8">
+      <header className="flex items-center justify-between gap-4 border-b border-white/10 px-5 py-4 sm:px-8">
         <div className="flex items-baseline gap-8">
           <p className="font-display text-[22px] font-bold tracking-[-0.04em]">
             Fieldwork<span className="font-normal opacity-45"> Supply</span>
           </p>
-          <nav aria-label="Shop" className="hidden gap-6 text-[14px] text-[#14261c]/70 md:flex">
-            <a href="#paper" className="hover:text-[#14261c]">
+          <nav aria-label="Shop" className="hidden gap-6 text-[14px] text-white/70 md:flex">
+            <a href="#paper" className="hover:text-white">
               Paper
             </a>
-            <a href="#camp" className="hover:text-[#14261c]">
+            <a href="#camp" className="hover:text-white">
               Camp
             </a>
-            <a href="#wear" className="hover:text-[#14261c]">
+            <a href="#wear" className="hover:text-white">
               Wear
             </a>
-            <a href="#journal" className="hover:text-[#14261c]">
+            <a href="#journal" className="hover:text-white">
               Journal
             </a>
           </nav>
@@ -685,7 +685,7 @@ export function CartDrawerDemo(props: CartDrawerProps) {
         <CartDrawer strategy="absolute" {...props} />
       </header>
       <main className="px-5 pt-10 sm:px-8" aria-hidden="true">
-        <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-[#14261c]/55">Autumn field kit · 24 pieces</p>
+        <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-white/55">Autumn field kit · 24 pieces</p>
         <h1 className="mt-3 max-w-[14ch] font-display text-[clamp(2.5rem,1.4rem+4vw,4.75rem)] font-bold leading-[0.95] tracking-[-0.045em]">Goods for long walks and short notes.</h1>
         <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-4">
           {[
@@ -694,7 +694,7 @@ export function CartDrawerDemo(props: CartDrawerProps) {
             ["#b65a32", "socks"],
             ["#c79a3c", "pencil"],
           ].map(([c, a]) => (
-            <div key={a} className="flex aspect-[4/5] items-center justify-center rounded-[16px] bg-[#e7dfcc]">
+            <div key={a} className="flex aspect-[4/5] items-center justify-center rounded-[16px] bg-[#161618]">
               <div className="scale-[1.9]">
                 <Thumb art={a as CartArt} color={c} />
               </div>

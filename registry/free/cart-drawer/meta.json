@@ -7,7 +7,7 @@
   "description": "A slide-over cart with drawn thumbnails, quantity steppers, remove-with-undo, an animated free-shipping bar and an upsell. Turns into a bottom sheet on phones.",
   "tags": ["cart", "drawer", "commerce", "checkout", "bottom sheet", "ecommerce", "shopping bag", "free shipping"],
   "dependencies": ["motion", "lucide-react"],
-  "theme": "light",
+  "theme": "dark",
   "previewHeight": 820,
   "usage": "import { CartDrawer } from \"@/components/design-for-ai/cart-drawer\";\n\nexport function Header({ cart }) {\n  return (\n    <header className=\"flex justify-between p-4\">\n      <Logo />\n      <CartDrawer\n        items={cart.items}\n        defaultOpen={false}\n        freeShippingThreshold={75}\n        onCheckout={(items) => router.push(\"/checkout\")}\n      />\n    </header>\n  );\n}",
   "props": [

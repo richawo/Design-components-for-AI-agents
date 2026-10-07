@@ -2,21 +2,60 @@
   "component": "CartDrawer",
   "intent": "A slide-over shopping bag with drawn thumbnails, steppers, inline undo, an animated free-shipping bar and an upsell, becoming a full-height bottom sheet on phones.",
   "platform": "web",
-  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "animation": "motion/react", "icons": "lucide-react", "fonts": "font-display, font-sans, font-mono" },
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4",
+    "animation": "motion/react",
+    "icons": "lucide-react",
+    "fonts": "font-display, font-sans, font-mono"
+  },
   "layout": {
-    "desktop": "440px right panel, full height, scrim #0d1a12/45",
+    "desktop": "440px right panel, full height, scrim black/60 with 2px blur",
     "mobile": "bottom sheet from top 12px, 22px top radius, 40x4 drag handle",
-    "sections": ["header: title + mono meta + 44px close", "free-shipping card with track, fill and riding truck disc", "scrolling items with 1px dividers", "dashed upsell card", "footer: subtotal/shipping dl + 56px checkout pill with total capsule + reassurance line"],
+    "sections": [
+      "header: title + mono meta + 44px close",
+      "free-shipping card with track, fill and riding truck disc",
+      "scrolling items with 1px dividers",
+      "dashed upsell card",
+      "footer: subtotal/shipping dl + 56px checkout pill with total capsule + reassurance line"
+    ],
     "item": "72x84 thumbnail, name/variant left, line price right, stepper + Remove along the bottom"
   },
   "typography": {
-    "title": { "font": "display", "size": "28px", "weight": 700, "tracking": "-0.035em", "leading": 1 },
-    "itemName": { "size": "15px", "weight": 600 },
-    "variant": { "size": "13px", "opacity": 0.6 },
-    "meta": { "font": "mono", "size": "10-11px", "case": "uppercase", "tracking": "0.12-0.14em" },
+    "title": {
+      "font": "display",
+      "size": "28px",
+      "weight": 700,
+      "tracking": "-0.035em",
+      "leading": 1
+    },
+    "itemName": {
+      "size": "15px",
+      "weight": 600
+    },
+    "variant": {
+      "size": "13px",
+      "opacity": 0.6
+    },
+    "meta": {
+      "font": "mono",
+      "size": "10-11px",
+      "case": "uppercase",
+      "tracking": "0.12-0.14em"
+    },
     "numbers": "tabular-nums everywhere money appears"
   },
-  "color": { "panel": "#f7f3ea", "ink": "#14261c", "shippingCard": "#ece5d4", "success": "#2f6b3a", "lime": "#d7e3a4", "thumbBg": "#e7dfcc", "storeBg": "#efe9dc", "scrim": "#0d1a12 at 45%" },
+  "color": {
+    "panel": "#0b0b0c",
+    "text": "white at measured opacities",
+    "shippingCard": "white/4%",
+    "accent": "#d7e3a4 lime (count chip, success, total capsule, undo pill)",
+    "primary": "white pill with black text",
+    "undoBar": "#1c1c1f",
+    "thumbBg": "#161618",
+    "storeBg": "#09090b",
+    "scrim": "black at 60%, 2px blur"
+  },
   "motion": {
     "panel": "spring stiffness 340 damping 36; x 100% -> 0 desktop, y 100% -> 0 mobile",
     "shipping": "fill width + truck left on spring stiffness 120 damping 20; truck rotates [0,-8,0] on unlock",
@@ -40,9 +79,19 @@
   ],
   "content": {
     "brand": "Fieldwork Supply",
-    "items": ["Waxed field notebook — A5 · Olive · Dot grid — £18 × 2", "Enamel camp mug — 350 ml · Bone — £16", "Merino trail socks — Rust · Size M — £14"],
+    "items": [
+      "Waxed field notebook — A5 · Olive · Dot grid — £18 × 2",
+      "Enamel camp mug — 350 ml · Bone — £16",
+      "Merino trail socks — Rust · Size M — £14"
+    ],
     "upsell": "Brass bullet pencil — Lives in the notebook’s spine. — £12",
     "threshold": "Free shipping over £75; £4.95 otherwise"
   },
-  "avoid": ["product photos or grey boxes", "undo hidden in a distant toast", "gradient checkout buttons", "fake scarcity copy", "hover-only remove controls"]
+  "avoid": [
+    "product photos or grey boxes",
+    "undo hidden in a distant toast",
+    "gradient checkout buttons",
+    "fake scarcity copy",
+    "hover-only remove controls"
+  ]
 }
