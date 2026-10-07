@@ -1,0 +1,25 @@
+{
+  "slug": "case-study-hero",
+  "name": "Case Study Hero",
+  "tier": "free",
+  "platform": "web",
+  "category": "portfolio",
+  "description": "A case-study header with a huge title, a meta grid, CSS-drawn laptop and phone mockups on a bold colour field, and a row of three result stats.",
+  "tags": ["case study", "portfolio", "hero", "device mockup", "laptop", "phone", "stats", "agency"],
+  "dependencies": ["motion"],
+  "theme": "light",
+  "previewHeight": 1200,
+  "usage": "import { CaseStudyHero } from \"@/components/design-for-ai/case-study-hero\";\n\nexport default function CaseStudy() {\n  return (\n    <CaseStudyHero\n      eyebrow=\"Case study — Tidepool\"\n      index=\"03 / 09\"\n      title=\"Swim timetables people actually read.\"\n      emphasis=\"actually read.\"\n      coverColor=\"#2643e9\"\n      stats={[\n        { value: \"62\", unit: \"%\", label: \"More off-peak bookings in the first quarter.\" },\n        { value: \"9\", unit: \"sec\", label: \"Median time to book a lane.\" },\n        { value: \"14\", label: \"Council pools on the platform by September.\" },\n      ]}\n    />\n  );\n}",
+  "props": [
+    { "name": "eyebrow", "type": "string", "default": "\"Case study — Larder\"", "description": "Mono line above the title, led by a dot in the cover colour." },
+    { "name": "index", "type": "string", "default": "\"07 / 12\"", "description": "Position in the series, top right." },
+    { "name": "title", "type": "string", "default": "\"The weekly shop, done in four minutes.\"", "description": "The huge title." },
+    { "name": "emphasis", "type": "string", "default": "\"four minutes.\"", "description": "Part of the title set in italic serif in the cover colour. Must appear in title verbatim." },
+    { "name": "intro", "type": "string", "description": "Lead paragraph beside the meta grid." },
+    { "name": "meta", "type": "{ label: string; value: string | string[] }[]", "description": "Client, year, role, deliverables. Array values render one per line." },
+    { "name": "stats", "type": "{ value: string; unit?: string; label: string }[]", "description": "Three results. unit is set small in italic serif after the number." },
+    { "name": "back", "type": "{ label: string; href: string }", "default": "{ label: \"All work\", href: \"#work\" }", "description": "Back link, top left." },
+    { "name": "coverColor", "type": "string", "default": "\"#1b8a4f\"", "description": "The cover field and accent colour (title emphasis, units, eyebrow dot)." }
+  ],
+  "added": "2026-10-07"
+}

@@ -1,0 +1,563 @@
+[
+  {
+    "slug": "dashboard-analytics",
+    "name": "Analytics Dashboard",
+    "tier": "pro",
+    "platform": "web",
+    "category": "app",
+    "description": "A calm store dashboard: KPI cards that drive a morphing SVG area chart with crosshair, 7/30/90-day ranges, channel bars and an orders table that turns into cards.",
+    "tags": [
+      "dashboard",
+      "analytics",
+      "chart",
+      "kpi",
+      "sparkline",
+      "admin",
+      "sidebar",
+      "table",
+      "ecommerce"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "light",
+    "previewHeight": 1180,
+    "usage": "import { DashboardAnalytics } from \"@/components/design-for-ai/dashboard-analytics\";\n\nexport default function Page() {\n  return (\n    <DashboardAnalytics\n      storeName=\"Kiln & Co.\"\n      title=\"Good morning, Inès\"\n      days={days} // [{ date: \"2026-10-06\", revenue: 9412, orders: 151, sessions: 5120 }, …]\n      defaultRange=\"30d\"\n      currency=\"EUR\"\n      locale=\"fr-FR\"\n    />\n  );\n}",
+    "props": [
+      {
+        "name": "days",
+        "type": "DashboardDay[]",
+        "default": "180 seeded demo days",
+        "description": "Daily { date, revenue, orders, sessions }, oldest first. Supply twice the longest range so every KPI has a previous period to compare with."
+      },
+      {
+        "name": "defaultRange",
+        "type": "\"7d\" | \"30d\" | \"90d\"",
+        "default": "\"30d\"",
+        "description": "Range selected on first render."
+      },
+      {
+        "name": "defaultMetric",
+        "type": "\"revenue\" | \"orders\" | \"aov\" | \"conversion\"",
+        "default": "\"revenue\"",
+        "description": "KPI the main chart shows first. Clicking a KPI card switches it."
+      },
+      {
+        "name": "channels",
+        "type": "{ name: string; share: Record<Range, number> }[]",
+        "description": "Revenue share per channel for each range (0–1). Amounts are derived from the period's revenue."
+      },
+      {
+        "name": "orders",
+        "type": "DashboardOrder[]",
+        "description": "Recent orders: id, customer, items, channel, status (Paid | Fulfilled | Pending | Refunded), total, placed."
+      },
+      {
+        "name": "nav",
+        "type": "{ label: string; icon: DashboardNavIcon; href: string; badge?: string; active?: boolean }[]",
+        "description": "Sidebar links. Icons are keys: overview, orders, products, customers, analytics, marketing, settings."
+      },
+      {
+        "name": "channelsNav",
+        "type": "string[]",
+        "description": "Secondary sidebar list under 'Sales channels'."
+      },
+      {
+        "name": "payout",
+        "type": "{ label: string; amount: string; note: string }",
+        "description": "The payout card pinned to the bottom of the sidebar."
+      },
+      {
+        "name": "storeName",
+        "type": "string",
+        "default": "\"Kiln & Co.\"",
+        "description": "Workspace name in the sidebar and mobile top bar."
+      },
+      {
+        "name": "storeUrl",
+        "type": "string",
+        "description": "Secondary line under the store name."
+      },
+      {
+        "name": "user",
+        "type": "{ name: string; role: string }",
+        "description": "Signed-in person at the foot of the sidebar."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Good morning, Inès\"",
+        "description": "Page heading."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "description": "Date and freshness line under the heading."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"USD\"",
+        "description": "ISO currency code for Intl.NumberFormat."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-US\"",
+        "description": "Locale for number formatting."
+      }
+    ],
+    "added": "2026-10-07"
+  },
+  {
+    "slug": "feature-sticky-scroll",
+    "name": "Sticky Scroll Story",
+    "tier": "pro",
+    "platform": "web",
+    "category": "features",
+    "description": "A scroll-driven feature story on deep navy: a sticky product panel crossfades through four CSS-drawn states as the steps scroll past.",
+    "tags": [
+      "features",
+      "scroll",
+      "sticky",
+      "storytelling",
+      "product tour",
+      "dark",
+      "invoicing"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 900,
+    "usage": "TODO",
+    "props": [],
+    "added": "2026-10-07"
+  },
+  {
+    "slug": "hero-kinetic-type",
+    "name": "Kinetic Type Hero",
+    "tier": "pro",
+    "platform": "web",
+    "category": "hero",
+    "description": "A type foundry hero where every letter of a giant word stack gains weight and leans toward the cursor, with a slow wave on touch and a services marquee.",
+    "tags": [
+      "hero",
+      "kinetic typography",
+      "variable font",
+      "type foundry",
+      "interactive",
+      "marquee",
+      "light"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "light",
+    "previewHeight": 960,
+    "usage": "wip",
+    "props": [],
+    "added": "2026-10-07"
+  },
+  {
+    "slug": "hero-product-stack",
+    "name": "Product Stack Hero",
+    "tier": "pro",
+    "platform": "web",
+    "category": "hero",
+    "description": "A SaaS hero with three CSS-drawn app windows (calendar, burndown, comment thread) layered in real 3D depth that tilts toward the cursor on springs.",
+    "tags": [
+      "hero",
+      "saas",
+      "product shot",
+      "3d tilt",
+      "app ui",
+      "calendar",
+      "landing page"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "light",
+    "previewHeight": 880,
+    "usage": "wip",
+    "props": [],
+    "added": "2026-10-07"
+  },
+  {
+    "slug": "mobile-bottom-sheet",
+    "name": "Delivery Bottom Sheet",
+    "tier": "pro",
+    "platform": "mobile",
+    "category": "mobile",
+    "description": "A draggable React Native bottom sheet with three snap points and rubber-banding, tracking a grocery courier over a hand-drawn street map with a live route.",
+    "tags": [
+      "bottom sheet",
+      "draggable",
+      "react native",
+      "map",
+      "delivery",
+      "panresponder"
+    ],
+    "dependencies": [],
+    "theme": "light",
+    "previewHeight": 900,
+    "usage": "x",
+    "props": [],
+    "added": "2026-10-07"
+  },
+  {
+    "slug": "mobile-chat",
+    "name": "Assistant Chat",
+    "tier": "pro",
+    "platform": "mobile",
+    "category": "mobile",
+    "description": "A React Native chat with an AI plant-care assistant: grouped bubbles with tails, an animated typing indicator, quick-reply chips and a live composer.",
+    "tags": [
+      "chat",
+      "ai assistant",
+      "messaging",
+      "react native",
+      "typing indicator",
+      "quick replies",
+      "dark"
+    ],
+    "dependencies": [],
+    "theme": "dark",
+    "previewHeight": 900,
+    "usage": "x",
+    "props": [],
+    "added": "2026-10-07"
+  },
+  {
+    "slug": "mobile-paywall",
+    "name": "Night Sky Paywall",
+    "tier": "pro",
+    "platform": "mobile",
+    "category": "mobile",
+    "description": "A React Native subscription paywall for a sleep app: a drawn moon over hills, checked benefits, annual and monthly plan cards with a savings tag, and trial copy.",
+    "tags": [
+      "paywall",
+      "subscription",
+      "react native",
+      "pricing",
+      "in-app purchase",
+      "dark"
+    ],
+    "dependencies": [],
+    "theme": "dark",
+    "previewHeight": 900,
+    "usage": "x",
+    "props": [],
+    "added": "2026-10-07"
+  },
+  {
+    "slug": "mobile-swipe-list",
+    "name": "Swipe Inbox",
+    "tier": "pro",
+    "platform": "mobile",
+    "category": "mobile",
+    "description": "A React Native inbox whose rows swipe left to archive or delete and right to pin, with snap points, a full-swipe delete and an undo toast.",
+    "tags": [
+      "swipe",
+      "inbox",
+      "list",
+      "react native",
+      "gestures",
+      "panresponder",
+      "undo",
+      "email"
+    ],
+    "dependencies": [],
+    "theme": "light",
+    "previewHeight": 900,
+    "usage": "x",
+    "props": [],
+    "added": "2026-10-07"
+  },
+  {
+    "slug": "mobile-wallet-stack",
+    "name": "Wallet Card Stack",
+    "tier": "pro",
+    "platform": "mobile",
+    "category": "mobile",
+    "description": "A React Native wallet of payment, membership, coffee and transit cards drawn from layered shapes. Tap one to lift it and open its activity.",
+    "tags": [
+      "wallet",
+      "cards",
+      "payments",
+      "react native",
+      "animated",
+      "stack",
+      "fintech",
+      "dark"
+    ],
+    "dependencies": [],
+    "theme": "dark",
+    "previewHeight": 900,
+    "usage": "x",
+    "props": [],
+    "added": "2026-10-07"
+  },
+  {
+    "slug": "pricing-comparison-matrix",
+    "name": "Comparison Matrix",
+    "tier": "pro",
+    "platform": "web",
+    "category": "pricing",
+    "description": "A full plan comparison table with a sticky price header, collapsible feature groups, tooltips and a teal recommended column that becomes a plan switcher on mobile.",
+    "tags": [
+      "pricing",
+      "comparison table",
+      "feature matrix",
+      "plans",
+      "sticky header",
+      "tooltips",
+      "saas"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "light",
+    "previewHeight": 1400,
+    "usage": "import { PricingComparisonMatrix } from \"@/components/design-for-ai/pricing-comparison-matrix\";\n\nexport default function Page() {\n  return (\n    <PricingComparisonMatrix\n      recommendedId=\"pro\"\n      plans={[\n        { id: \"free\", name: \"Free\", price: \"$0\", unit: \"forever\", blurb: \"For trying it out.\", cta: { label: \"Start free\", href: \"/signup\" } },\n        { id: \"pro\", name: \"Pro\", price: \"$18\", unit: \"per seat / month\", blurb: \"For teams.\", cta: { label: \"Start trial\", href: \"/signup?plan=pro\" } }\n      ]}\n      groups={[\n        { name: \"Basics\", features: [{ name: \"Projects\", values: [\"3\", \"Unlimited\"] }, { name: \"API access\", hint: \"REST and GraphQL.\", values: [false, true] }] }\n      ]}\n    />\n  );\n}",
+    "props": [
+      {
+        "name": "plans",
+        "type": "MatrixPlan[]",
+        "default": "Hobby, Team, Business, Enterprise",
+        "description": "Columns, in order: id, name, display price, unit, blurb and CTA."
+      },
+      {
+        "name": "groups",
+        "type": "MatrixGroup[]",
+        "description": "Collapsible sections. Each feature has a name, an optional hint (tooltip) and one value per plan: true, false or a string."
+      },
+      {
+        "name": "recommendedId",
+        "type": "string",
+        "default": "\"team\"",
+        "description": "The plan whose column is highlighted. Also the plan shown first on mobile."
+      },
+      {
+        "name": "recommendedLabel",
+        "type": "string",
+        "default": "\"Recommended\"",
+        "description": "Label above the highlighted plan."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Every line of the contract, in one table.\"",
+        "description": "Section headline."
+      },
+      {
+        "name": "eyebrow",
+        "type": "string",
+        "default": "\"Compare plans\"",
+        "description": "Teal mono label above the headline."
+      },
+      {
+        "name": "body",
+        "type": "string",
+        "description": "Paragraph under the headline."
+      },
+      {
+        "name": "footnote",
+        "type": "string",
+        "description": "Small print under the table."
+      }
+    ],
+    "added": "2026-10-07"
+  },
+  {
+    "slug": "pricing-receipt",
+    "name": "Receipt Pricing",
+    "tier": "pro",
+    "platform": "web",
+    "category": "pricing",
+    "description": "Lifetime pricing printed as a thermal receipt on deep green: torn edges, line items, a stamped total, a barcode and ticket tabs that re-print it.",
+    "tags": [
+      "pricing",
+      "receipt",
+      "lifetime deal",
+      "one-time purchase",
+      "tabs",
+      "thermal printer",
+      "skeuomorphic"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 1040,
+    "usage": "import { PricingReceipt } from \"@/components/design-for-ai/pricing-receipt\";\n\nexport default function Page() {\n  return (\n    <PricingReceipt\n      brand=\"LUMEN\"\n      title=\"Buy it once.\"\n      titleAccent=\"Own it for good.\"\n      options={[\n        {\n          id: \"solo\", label: \"Solo\", caption: \"1 seat\", total: 89, licence: \"SOLO\", order: \"L-1007-0001\",\n          lines: [{ qty: \"1\", item: \"Lumen for macOS\", amount: 89 }, { qty: \"∞\", item: \"Monthly fees\", amount: 0 }],\n          summary: [{ label: \"NEXT BILL\", value: \"NEVER\" }],\n          cta: { label: \"Buy Lumen\", href: \"/checkout\" }\n        }\n      ]}\n    />\n  );\n}",
+    "props": [
+      {
+        "name": "options",
+        "type": "ReceiptOption[]",
+        "default": "Solo, Team",
+        "description": "One receipt per licence: id, tab label and caption, total, licence and order codes, line items, summary rows and a CTA."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Pay once.\"",
+        "description": "First line of the headline, in the display face."
+      },
+      {
+        "name": "titleAccent",
+        "type": "string",
+        "default": "\"Keep the receipt.\"",
+        "description": "Second line, italic serif in pale mint."
+      },
+      {
+        "name": "body",
+        "type": "string",
+        "description": "Paragraph under the headline."
+      },
+      {
+        "name": "brand",
+        "type": "string",
+        "default": "\"QUIRE\"",
+        "description": "Wordmark printed at the top of the receipt."
+      },
+      {
+        "name": "brandTagline",
+        "type": "string",
+        "description": "Line under the wordmark."
+      },
+      {
+        "name": "storeLine",
+        "type": "string",
+        "description": "Address-style line under the tagline."
+      },
+      {
+        "name": "date",
+        "type": "string",
+        "default": "\"07 OCT 2026\"",
+        "description": "Printed date."
+      },
+      {
+        "name": "time",
+        "type": "string",
+        "default": "\"14:32\"",
+        "description": "Printed time."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"$\"",
+        "description": "Currency symbol."
+      },
+      {
+        "name": "stamp",
+        "type": "string",
+        "default": "\"Paid once\"",
+        "description": "Red rubber stamp across the total."
+      },
+      {
+        "name": "totalNote",
+        "type": "string",
+        "description": "Line printed under the total."
+      },
+      {
+        "name": "thanks",
+        "type": "string",
+        "default": "\"Thank you for not subscribing\"",
+        "description": "Sign-off at the foot of the receipt."
+      },
+      {
+        "name": "finePrint",
+        "type": "string",
+        "description": "Small print under the CTA."
+      }
+    ],
+    "added": "2026-10-07"
+  },
+  {
+    "slug": "three-particle-sphere",
+    "name": "Particle Sphere",
+    "tier": "pro",
+    "platform": "web",
+    "category": "three-d",
+    "description": "A Three.js sphere of 14,000 shader-lit particles breathing with simplex noise, wrapped in a tilted orbit. Pointer parallax, responsive, offscreen-aware.",
+    "tags": [
+      "three.js",
+      "webgl",
+      "3d",
+      "particles",
+      "shader",
+      "glsl",
+      "hero",
+      "background"
+    ],
+    "dependencies": [
+      "three"
+    ],
+    "theme": "dark",
+    "previewHeight": 720,
+    "usage": "import { ThreeParticleSphere } from \"@/components/design-for-ai/three-particle-sphere\";\n\n<div className=\"relative h-[560px]\">\n  <ThreeParticleSphere colors={[\"#e8f6ff\", \"#4cc3ff\", \"#0b2440\"]} density={10000} />\n</div>",
+    "props": [
+      {
+        "name": "colors",
+        "type": "[string, string, string]",
+        "default": "[\"#fff1e4\", \"#ff7a45\", \"#5b1a2e\"]",
+        "description": "Rim highlight, mid-tone and core colours."
+      },
+      {
+        "name": "density",
+        "type": "number",
+        "default": "14000",
+        "description": "Particles on desktop; halved under 640px."
+      },
+      {
+        "name": "speed",
+        "type": "number",
+        "default": "1",
+        "description": "Animation speed multiplier."
+      },
+      {
+        "name": "turbulence",
+        "type": "number",
+        "default": "1",
+        "description": "Noise displacement strength, 0–1."
+      },
+      {
+        "name": "interactive",
+        "type": "boolean",
+        "default": "true",
+        "description": "Tilt toward the pointer."
+      },
+      {
+        "name": "ring",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show the orbiting particle ring."
+      }
+    ],
+    "added": "2026-10-07"
+  },
+  {
+    "slug": "work-index-hover",
+    "name": "Hover Work Index",
+    "tier": "pro",
+    "platform": "web",
+    "category": "portfolio",
+    "description": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "tags": [
+      "a",
+      "b",
+      "c"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 1100,
+    "usage": "TODO",
+    "props": [],
+    "added": "2026-10-07"
+  }
+]

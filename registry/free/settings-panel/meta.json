@@ -1,0 +1,25 @@
+{
+  "slug": "settings-panel",
+  "name": "Settings Panel",
+  "tier": "free",
+  "platform": "web",
+  "category": "app",
+  "description": "A dark account settings page with scroll-spy section nav, spring toggles, segmented controls, avatar upload, a typed-confirm danger zone and an unsaved-changes bar.",
+  "tags": ["settings", "preferences", "form", "toggle", "segmented control", "account", "dark", "app"],
+  "dependencies": ["motion", "lucide-react"],
+  "theme": "dark",
+  "previewHeight": 1000,
+  "usage": "import { SettingsPanel } from \"@/components/design-for-ai/settings-panel\";\n\nexport default function Page() {\n  return (\n    <SettingsPanel\n      usernamePrefix=\"acme.app/\"\n      email=\"ada@acme.app\"\n      initialValues={{ name: \"Ada Byrne\", username: \"ada\", theme: \"system\" }}\n      onSave={async (values) => {\n        await fetch(\"/api/settings\", { method: \"PUT\", body: JSON.stringify(values) });\n      }}\n    />\n  );\n}",
+  "props": [
+    { "name": "initialValues", "type": "Partial<SettingsValues>", "description": "Saved values to start from. Anything you change is compared against these to drive the unsaved-changes bar." },
+    { "name": "onSave", "type": "(values: SettingsValues) => Promise<void> | void", "description": "Called on Save or ⌘S. Return a promise to keep the saving spinner up until it resolves. Defaults to a 900ms fake save." },
+    { "name": "title", "type": "string", "default": "\"Settings\"", "description": "Page heading." },
+    { "name": "description", "type": "string", "description": "One line under the heading." },
+    { "name": "usernamePrefix", "type": "string", "default": "\"fieldnote.app/\"", "description": "Fixed prefix inside the username field." },
+    { "name": "email", "type": "string", "default": "\"mika@fieldnote.app\"", "description": "Where notifications go; also used in the deletion confirmation." },
+    { "name": "pronounOptions", "type": "string[]", "description": "Options for the pronouns select." },
+    { "name": "timezoneOptions", "type": "string[]", "description": "Options for the time zone select." },
+    { "name": "bioLimit", "type": "number", "default": "160", "description": "Character limit for the bio, with a live counter." }
+  ],
+  "added": "2026-10-07"
+}

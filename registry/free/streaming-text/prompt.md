@@ -1,0 +1,38 @@
+Build a streaming AI answer card in React + Tailwind CSS (v4), using `motion/react` for the caret, citations and source reveal and `lucide-react` for the control icons. It should read like a well-edited reference answer arriving live, calm and legible, with the sources treated as first-class rather than an afterthought.
+
+**Layout**
+- Section on pale sage-grey `#e5e8e2`, 16px gutters (32px from `sm`), 48px vertical padding (80px from `sm`).
+- One card, max-width 820px, centred: off-white `#fbfbf8`, radius 24px, a 1px ring at 7% ink and a soft drop shadow (`0 24px 48px -28px` at 28% ink). It has three bands split by 1px rules at 8% ink:
+  1. **Header** (28/44px top padding, 24/48px sides): a mono line ("Asked by Noor · 09:14") led by a 20px forest-green hairline, then the question as the headline.
+  2. **Answer**: a 24px-tall status row, the answer body (min-height 12rem so the card doesn't jump), then the sources list.
+  3. **Footer**: a small mono disclaimer on the left, Stop or Regenerate plus Copy on the right. Wraps on phones.
+- Sources: an ordered list between hairlines. Each row is a 3-column grid (2rem number, title over publisher, arrow-up-right icon), at least 48px tall.
+
+**Typography**
+- Question: serif (Instrument Serif), `clamp(2rem, 1.3rem + 2.6vw, 3.25rem)`, leading 1.02, tracking −0.02em, max 26ch, `text-balance`.
+- Answer: sans (Geist) at 17.5px (16.5px on phones), leading 1.72, 84% ink, measure 64ch, 1.1em between paragraphs, `text-pretty`. **Bold** goes full ink at weight 600.
+- Labels and disclaimer: mono, 11px, uppercase, tracking 0.14em, 50–55% ink. The status line is mono 12px in sentence case at 60% ink with tabular numbers ("155 words in 5.9s").
+- Citations: superscript pills, 17px tall, min 17px wide, mono 10px weight 500, raised −0.45em.
+
+**Colour**
+- Background `#e5e8e2`, card `#fbfbf8`, ink `#141a17` (text at 84%, metadata at 50–55%), forest `#2f6b4f` as the only accent: caret, citation pills (12% tint with forest text; solid with white text when active), status dot, source numbers, focus rings.
+
+**Motion**
+- **Reading** (900ms): a pinging forest dot, "Reading 5 sources" and three pulsing dots, with three skeleton lines (92%, 100%, 76% wide) breathing in the body.
+- **Streaming**: tokenise into words (keeping whitespace), with each citation and each bold run kept intact. Emit 1–3 tokens per tick (55% one, then 70% two). Wait 14–48ms between ordinary words, 50–120ms after commas, semicolons and dashes, 110–270ms after a sentence, 260–480ms between paragraphs, and 4% of the time add a 180–380ms hesitation. Average out around 5 seconds for 155 words. A `pace` prop multiplies every delay.
+- Soft caret: a 3px × 1.1em rounded forest bar at the live end of the last paragraph, breathing between 90% and 20% opacity over 1s.
+- Each citation pill pops in from scale 0.6 and opacity 0 over 300ms.
+- When it finishes, the sources block fades up 8px over 550ms, and rows slide in 6px from the left, 60ms apart, with ease [0.2, 0.8, 0.2, 1]. The status becomes "155 words in 5.9s".
+- Hovering or focusing a citation highlights its source row, and the reverse.
+- **Stop** freezes the text and shows "Stopped after 2.3s". **Regenerate** restarts from Reading. **Copy** copies plain text (bold markers stripped) and shows a check and "Copied" for 1.6s.
+- Reduced motion: render the full answer and sources immediately, with no caret, skeleton or ping.
+
+**Accessibility**
+- The answer region is `aria-live="polite"` with `aria-busy` while reading or streaming, so assistive tech announces the finished answer once rather than every token.
+- Citations are links to `#streaming-text-src-n` with `aria-label="Source n: title"`. The sources are an `ol` under an `h3`.
+- Buttons have visible text, are 44px tall on phones (40px from `sm`) and show a 2px forest focus ring. Copy is disabled while streaming.
+
+**Don't**
+- No blinking block cursor at a constant rate, and no constant-speed typewriter.
+- No gradient "AI" headers, sparkles or purple. No chat bubble around the answer.
+- Don't hide the sources behind a toggle, and don't render citations as bracketed text.

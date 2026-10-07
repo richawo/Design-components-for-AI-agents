@@ -1,0 +1,23 @@
+{
+  "slug": "command-palette",
+  "name": "Command Palette",
+  "tier": "free",
+  "platform": "web",
+  "category": "ai",
+  "description": "A ⌘K command palette with grouped results, fuzzy search with highlighter-pen matches, keyboard navigation, shortcut hints and proper combobox ARIA.",
+  "tags": ["command palette", "cmdk", "search", "keyboard", "combobox", "launcher", "shortcuts", "fuzzy search"],
+  "dependencies": ["motion", "lucide-react"],
+  "theme": "light",
+  "previewHeight": 720,
+  "usage": "import { CommandPalette } from \"@/components/design-for-ai/command-palette\";\nimport { Inbox, Plus } from \"lucide-react\";\n\nexport default function App() {\n  return (\n    <CommandPalette\n      workspace=\"Fieldwork\"\n      groups={[\n        { id: \"nav\", label: \"Navigation\", items: [{ id: \"inbox\", label: \"Go to Inbox\", shortcut: [\"G\", \"I\"], icon: Inbox }] },\n        { id: \"do\", label: \"Actions\", items: [{ id: \"new\", label: \"New brief\", keywords: [\"create\"], icon: Plus }] },\n      ]}\n      onSelect={(item) => router.push(`/${item.id}`)}\n    />\n  );\n}",
+  "props": [
+    { "name": "groups", "type": "{ id: string; label: string; items: CommandItem[] }[]", "default": "Navigation, Actions, Recent", "description": "Result groups in order. Items take id, label, keywords, shortcut, hint and a lucide icon." },
+    { "name": "defaultOpen", "type": "boolean", "default": "true", "description": "Open on first render. ⌘K or Ctrl+K toggles it after that." },
+    { "name": "autoFocus", "type": "boolean", "default": "false", "description": "Focus the search field on first render. Later opens always focus it." },
+    { "name": "placeholder", "type": "string", "default": "\"Search or type a command…\"", "description": "Search field placeholder." },
+    { "name": "workspace", "type": "string", "default": "\"Northdesk\"", "description": "Name in the demo app drawn behind the palette." },
+    { "name": "onSelect", "type": "(item: CommandItem) => void", "description": "Called with the chosen item on Enter or click." },
+    { "name": "className", "type": "string", "description": "Extra classes on the outer section." }
+  ],
+  "added": "2026-10-07"
+}

@@ -1,0 +1,26 @@
+{
+  "slug": "chat-thread",
+  "name": "Chat Thread",
+  "tier": "free",
+  "platform": "web",
+  "category": "ai",
+  "description": "A warm, document-style AI chat: typeset replies with code and sources, ink user bubbles, a streaming last answer and a composer that really sends.",
+  "tags": ["ai", "chat", "assistant", "streaming", "composer", "code block", "llm", "conversation"],
+  "dependencies": ["motion", "lucide-react"],
+  "theme": "light",
+  "previewHeight": 900,
+  "usage": "import { ChatThread } from \"@/components/design-for-ai/chat-thread\";\n\nexport default function Page() {\n  return (\n    <ChatThread\n      title=\"Quarterly plan, second draft\"\n      assistantName=\"Wren\"\n      model=\"Wren 2 · Balanced\"\n      onSend={(text) => console.log(text)}\n      reply={(text) => [{ type: \"p\", text: `You said: ${text}` }]}\n    />\n  );\n}",
+  "props": [
+    { "name": "messages", "type": "ChatMessage[]", "default": "demo thread", "description": "User messages ({ role: \"user\", text }) and assistant messages ({ role: \"assistant\", blocks, sources })." },
+    { "name": "streamLast", "type": "boolean", "default": "true", "description": "Stream the final assistant message in on mount." },
+    { "name": "reply", "type": "(text: string) => ChatBlock[]", "description": "Returns the blocks streamed back after a send. Blocks are paragraphs, lists or code with **bold** and `code` inline." },
+    { "name": "onSend", "type": "(text: string) => void", "description": "Called with the text whenever the user sends." },
+    { "name": "title", "type": "string", "default": "\"Search box fires on every keystroke\"", "description": "Thread title in the header." },
+    { "name": "subtitle", "type": "string", "description": "Mono metadata line under the title." },
+    { "name": "assistantName", "type": "string", "default": "\"Wren\"", "description": "Assistant name; its first letter becomes the avatar mark." },
+    { "name": "model", "type": "string", "default": "\"Wren 2 · Balanced\"", "description": "Model label in the composer." },
+    { "name": "placeholder", "type": "string", "default": "\"Reply to Wren…\"", "description": "Composer placeholder." },
+    { "name": "className", "type": "string", "description": "Extra classes on the outer section." }
+  ],
+  "added": "2026-10-07"
+}

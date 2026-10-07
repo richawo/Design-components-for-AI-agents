@@ -1,0 +1,85 @@
+{
+  "slug": "bento-grid",
+  "name": "Live Bento Grid",
+  "tier": "free",
+  "platform": "web",
+  "category": "features",
+  "description": "A hairline bento grid for an analytics product: six tiles, each with a live illustration in markup, from a self-drawing chart to a pulsing dot-map.",
+  "tags": [
+    "bento",
+    "features",
+    "grid",
+    "analytics",
+    "dashboard",
+    "live",
+    "world map",
+    "heatmap"
+  ],
+  "dependencies": [
+    "motion",
+    "lucide-react"
+  ],
+  "theme": "light",
+  "previewHeight": 1500,
+  "usage": "import { BentoGrid } from \"@/components/design-for-ai/bento-grid\";\n\nexport default function Page() {\n  return (\n    <BentoGrid\n      heading=\"Metrics that\"\n      headingItalic=\"talk back.\"\n      link={{ label: \"Book a demo\", href: \"/demo\" }}\n    />\n  );\n}",
+  "props": [
+    {
+      "name": "heading",
+      "type": "string",
+      "default": "\"Analytics that\"",
+      "description": "Plain part of the section heading."
+    },
+    {
+      "name": "headingItalic",
+      "type": "string",
+      "default": "\"answer back.\"",
+      "description": "Italic serif ending of the heading."
+    },
+    {
+      "name": "eyebrow",
+      "type": "string",
+      "description": "Mono label above the heading."
+    },
+    {
+      "name": "intro",
+      "type": "string",
+      "description": "Paragraph beside the heading."
+    },
+    {
+      "name": "link",
+      "type": "{ label: string; href: string }",
+      "description": "Underlined link under the intro."
+    },
+    {
+      "name": "trend",
+      "type": "TileCopy & { dates; metrics: { name; total; delta; points: number[] }[] }",
+      "description": "Line-chart tile. The chart draws itself, then morphs between metrics every 4.2s until someone picks one."
+    },
+    {
+      "name": "stat",
+      "type": "TileCopy & { value: number; unit: string; comparison }",
+      "description": "Accent tile: one number that counts up, plus two comparison bars."
+    },
+    {
+      "name": "heatmap",
+      "type": "TileCopy & { peakLabel: string }",
+      "description": "Weekday × hour heatmap tile; cells keep ticking while visible."
+    },
+    {
+      "name": "search",
+      "type": "TileCopy & { queries: { q; answer; detail }[] }",
+      "description": "Search tile that types each question and then shows its answer."
+    },
+    {
+      "name": "alerts",
+      "type": "TileCopy & { settings: { label; detail; on }[]; preview }",
+      "description": "Settings card of real switches that flip themselves until touched; the preview message follows the watched switch."
+    },
+    {
+      "name": "map",
+      "type": "TileCopy & { liveLabel: string; cities: { name; lon; lat; visitors }[] }",
+      "description": "Dark tile: dot-matrix world map with pulsing cities, a live total and the top four cities."
+    }
+  ],
+  "added": "2026-10-07"
+}

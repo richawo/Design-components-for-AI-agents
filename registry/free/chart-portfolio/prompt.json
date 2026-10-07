@@ -1,0 +1,31 @@
+{
+  "component": "ChartPortfolio",
+  "intent": "Brokerage-grade price chart: precise, calm at rest, rich under the cursor. Hand-drawn SVG, responsive, keyboard accessible.",
+  "platform": "web",
+  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "animation": "motion/react (range pill) + requestAnimationFrame (line morph)", "charting": "none: hand-written SVG" },
+  "layout": {
+    "card": "bg #0b0b0c, border white/8%, radius 22px, inset top highlight, padding 20/28px",
+    "header": "identity + price + delta left; range segmented control right (full width on mobile)",
+    "plot": "ResizeObserver width; height 320px (230px < 520px); 56px right gutter for y labels (none on mobile); 40px volume band; 22px x-axis band",
+    "footer": "4-col stat grid (2-col mobile) with 1px gaps: Open, High, Low, Volume"
+  },
+  "typography": {
+    "price": { "font": "sans (Geist)", "weight": 500, "size": "clamp(2rem, 1.6rem + 1.6vw, 2.75rem)", "tracking": "-0.04em", "numerals": "tabular" },
+    "labels": { "font": "mono", "size": "10.5-11px", "color": "white/35" },
+    "name": { "size": "14px", "color": "white/80" }
+  },
+  "color": { "surface": "#0b0b0c", "up": "#34d399", "down": "#fb7185", "grid": "white/6%", "openLine": "white/22% dashed 2 4", "future": "white/70% at 32% opacity", "glow": "trend colour, blur-3xl, opacity .16" },
+  "motion": {
+    "rangeMorph": "resample all series to 140 points; tween values 650ms ease-out quart",
+    "rangePill": "layoutId spring stiffness 500 damping 40",
+    "restPoint": "last point pings",
+    "reducedMotion": "instant swaps, no ping"
+  },
+  "responsive": {
+    "mobile": "range control full width; plot 72% height; no y gutter; 3 x labels; stats 2-up",
+    "desktop": "y labels in gutter; 5 x labels; stats 4-up"
+  },
+  "accessibility": ["plot is focusable with role=img and a summary aria-label", "ArrowLeft/Right inspect points, Shift for 10, Escape clears", "range control is a radiogroup", "touch drag works (touch-action none)"],
+  "content": { "name": "Northwind Growth Index", "ticker": "NWGI", "data": "{ t: epoch ms, v: price, vol: volume }[] per range; demo data is a seeded random walk" },
+  "avoid": ["chart libraries", "thick strokes", "multiple bright series", "tooltips covering the line", "gradient price text", "3D or skeuomorphic effects", "default browser fonts in axis labels"]
+}

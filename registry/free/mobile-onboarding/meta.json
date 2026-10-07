@@ -1,0 +1,15 @@
+{
+  "slug": "mobile-onboarding",
+  "name": "Onboarding Carousel",
+  "tier": "free",
+  "platform": "mobile",
+  "category": "mobile",
+  "description": "A three-slide React Native onboarding for a habit app: drawn poster illustrations, colour that blends as you swipe and a Next button that grows into Get started.",
+  "tags": ["onboarding", "carousel", "react native", "pagination", "walkthrough", "habit app"],
+  "dependencies": [],
+  "theme": "light",
+  "previewHeight": 900,
+  "usage": "x",
+  "props": [],
+  "added": "2026-10-07"
+}

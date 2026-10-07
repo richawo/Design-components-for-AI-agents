@@ -1,0 +1,39 @@
+{
+  "component": "CaseStudyHero",
+  "intent": "A portfolio case-study header: huge title with a serif-italic emphasis, a meta grid, a big cover of CSS-drawn laptop and phone mockups on a bold colour field, and three result stats.",
+  "platform": "web",
+  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4 (container queries, cqw units)", "animation": "motion/react", "fonts": "font-display (Bricolage Grotesque), font-serif (Instrument Serif), font-sans (Geist), font-mono (Geist Mono)" },
+  "layout": {
+    "container": "max-w-[1440px], px 20/32/48",
+    "rows": ["back link + series index", "eyebrow with colour dot", "title, max 14ch", "1px rule; 12-col: intro (1-5) + 4-col meta dl (6-12)", "cover figure: aspect 1/1 -> 4/3 (sm) -> 16/9 (lg), radius 24/32px", "results: mono heading + 3 stat columns with 2px top rules"],
+    "cover": { "laptop": "lg: 64% wide, left 11%, top 11%; mobile: 118% wide, bleeding right", "phone": "lg: 17% wide, right 12%, bottom 7%, rotate 5deg; mobile 37%", "backdrop": "yolk circle off the top-right, 22px dot grid at 14%, mono caption top-left (sm+)" }
+  },
+  "typography": {
+    "title": { "font": "display", "weight": 800, "size": "clamp(3rem, 1.2rem + 7.2vw, 8.75rem)", "leading": 0.9, "tracking": "-0.055em" },
+    "emphasis": { "font": "serif italic", "weight": 400, "tracking": "-0.035em", "color": "coverColor" },
+    "intro": { "size": "17-18px", "leading": 1.6, "opacity": 0.8, "maxWidth": "46ch" },
+    "metaLabel": { "font": "mono", "size": "11px", "case": "uppercase", "tracking": "0.14em", "opacity": 0.55 },
+    "stat": { "font": "display", "weight": 800, "size": "clamp(3.5rem, 2.4rem + 3.6vw, 6.5rem)", "tracking": "-0.06em", "numerals": "tabular", "unit": "serif italic 0.5em in coverColor" }
+  },
+  "color": { "page": "#fbfaf6", "ink": "#141414", "cover": "#1b8a4f", "yolk": "#ffd43b", "appCream": "#fff8ec", "appPaper": "#fffdf8", "appInk": "#1d2b22", "radish": "#ff7a8a", "mint": "#9fd8b4", "appLine": "#eadfca", "deviceBezel": "#121412", "laptopBase": "#d9d6cf" },
+  "motion": {
+    "header": "eyebrow, title, meta rise 12-24px + fade, 0.8s ease [0.2,0.8,0.2,1], staggered 0-140ms",
+    "cover": "figure rises 40px at 200ms; laptop y 8% -> 0 at 350ms; phone y 18% -> 0 and rotate 0 -> 5deg at 500ms",
+    "stats": "rise 16px from 550ms, staggered 80ms",
+    "reducedMotion": "static; phone already rotated 5deg"
+  },
+  "responsive": {
+    "mobile": "title ~48px; meta 2 cols; square cover with the laptop bleeding off the right behind the phone; stats stack",
+    "sm": "4/3 cover; meta 4 cols; stats 3 cols",
+    "lg": "16/9 cover; intro and meta side by side; title up to 140px"
+  },
+  "accessibility": ["section aria-labelledby the h1 (useId)", "figure with sr-only figcaption; mockups aria-hidden", "stats under an h2", "visible focus on the back link", "AA contrast for all real text"],
+  "content": {
+    "project": "Larder, a meal-planning grocery app",
+    "title": "The weekly shop, done in four minutes.",
+    "meta": { "Client": "Larder Foods Ltd", "Year": "2025—2026", "Role": ["Brand identity", "Product design", "Prototyping"], "Deliverables": ["iOS & Android app", "Web planner", "Design system", "Launch campaign"] },
+    "stats": ["4 min median weekly shop (from 22)", "31% less food binned across 2,400 pilot households", "4.8/5 from 12,300 App Store reviews"],
+    "screens": "laptop: weekly meal planner with ingredients, spend chart and basket; phone: basket checklist, slot and checkout"
+  },
+  "avoid": ["PNG device frames or screenshots", "empty grey placeholder UI", "gradient cover backgrounds", "glassmorphism", "centred title", "random stats with no story"]
+}

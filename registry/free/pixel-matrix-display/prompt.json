@@ -1,0 +1,14 @@
+{
+  "component": "PixelMatrixDisplay",
+  "intent": "Minimal premium dot-matrix display that adds character: cycles scenes with a per-dot dissolve.",
+  "platform": "web",
+  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "rendering": "single <canvas> 2D, Path2D batching", "dependencies": "none" },
+  "layout": { "panel": "#070707, border white/8%, radius 20px, padding clamp(12px,2.4vw,22px)", "matrix": "72x16 default; pitch = width/cols; dpr capped at 2", "caption": "scene counter + label left, prev/pause/next right" },
+  "typography": { "bitmapFont": "5x7, A–Z 0–9 : . - / % +, 1px glyph gap, 2x scale when rows >= 16", "caption": { "font": "mono", "size": "11px", "case": "uppercase", "tracking": "0.16em", "color": "white/40" } },
+  "color": { "panel": "#070707", "dotOff": "white/5.5%", "dotOn": "#f5f5f0 (prop)", "bloom": "shadowBlur in dot colour, grows with brightness level" },
+  "motion": { "sceneInterval": 4800, "dissolve": "per-dot stable random threshold vs 700ms progress", "marqueeSpeed": "14 dots/s", "clockColon": "1Hz blink, width-stable", "reducedMotion": "freeze scene time" },
+  "responsive": { "all": "matrix scales to container width; dot count stays constant so the art never reflows" },
+  "accessibility": ["canvas role=img with aria-label naming the scene (and marquee text)", "controls are labelled buttons", "pauses offscreen"],
+  "content": { "text": "DESIGN FOR AI", "scenes": ["marquee", "clock", "equalizer", "pulse", "orbit"] },
+  "avoid": ["multiple colours", "CRT scanlines", "a DOM node per dot", "shadowBlur per dot", "emoji", "jittering clock digits"]
+}

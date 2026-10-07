@@ -1,0 +1,23 @@
+{
+  "slug": "navbar-floating",
+  "name": "Floating Pill Navbar",
+  "tier": "free",
+  "platform": "web",
+  "category": "navigation",
+  "description": "A black floating pill nav with a sliding hover highlight that tucks itself in on scroll, plus a full-screen cobalt menu sheet on mobile.",
+  "tags": ["navbar", "header", "navigation", "floating", "pill", "mobile menu", "sticky", "studio"],
+  "dependencies": ["motion"],
+  "theme": "light",
+  "previewHeight": 760,
+  "usage": "import { NavbarFloating } from \"@/components/design-for-ai/navbar-floating\";\n\nexport default function Layout({ children }: { children: React.ReactNode }) {\n  return (\n    <>\n      <NavbarFloating\n        brand={{ name: \"Fathom\", href: \"/\" }}\n        links={[\n          { label: \"Work\", href: \"/work\", count: \"18\" },\n          { label: \"About\", href: \"/about\" },\n          { label: \"Notes\", href: \"/notes\" },\n        ]}\n        cta={{ label: \"Get in touch\", href: \"/contact\" }}\n      />\n      {children}\n    </>\n  );\n}",
+  "props": [
+    { "name": "brand", "type": "{ name: string; href: string }", "default": "{ name: \"Kiln\", href: \"#\" }", "description": "Wordmark beside the logo mark. Folds away when the bar tucks in." },
+    { "name": "links", "type": "{ label: string; href: string; count?: string }[]", "default": "Work, Studio, Services, Journal", "description": "Nav links. count renders as a small mono superscript." },
+    { "name": "activeIndex", "type": "number", "default": "0", "description": "Link for the current page: pink dot and aria-current=\"page\"." },
+    { "name": "cta", "type": "{ label: string; href: string }", "default": "{ label: \"Start a project\", … }", "description": "Pink pill on the right (desktop) and the bottom of the mobile sheet." },
+    { "name": "contact", "type": "{ email: string; phone: string; address: string[] }", "description": "Contact details shown in the mobile sheet." },
+    { "name": "socials", "type": "{ label: string; href: string }[]", "description": "Text links at the foot of the mobile sheet." },
+    { "name": "condenseAt", "type": "number", "default": "80", "description": "Scroll distance in px after which the pill narrows and drops its wordmark." }
+  ],
+  "added": "2026-10-07"
+}

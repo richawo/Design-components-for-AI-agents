@@ -1,0 +1,22 @@
+{
+  "slug": "mobile-settings",
+  "name": "Warm Settings Screen",
+  "tier": "free",
+  "platform": "mobile",
+  "category": "mobile",
+  "description": "A warm React Native settings screen for a journaling app: profile card, springy switches, value rows and a Light/Dark/Auto control that recolours the screen.",
+  "tags": [
+    "settings",
+    "react native",
+    "switch",
+    "segmented control",
+    "dark mode",
+    "profile"
+  ],
+  "dependencies": [],
+  "theme": "light",
+  "previewHeight": 900,
+  "usage": "x",
+  "props": [],
+  "added": "2026-10-07"
+}

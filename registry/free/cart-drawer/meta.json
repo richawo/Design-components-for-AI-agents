@@ -1,0 +1,26 @@
+{
+  "slug": "cart-drawer",
+  "name": "Cart Drawer",
+  "tier": "free",
+  "platform": "web",
+  "category": "commerce",
+  "description": "A slide-over cart with drawn thumbnails, quantity steppers, remove-with-undo, an animated free-shipping bar and an upsell. Turns into a bottom sheet on phones.",
+  "tags": ["cart", "drawer", "commerce", "checkout", "bottom sheet", "ecommerce", "shopping bag", "free shipping"],
+  "dependencies": ["motion", "lucide-react"],
+  "theme": "light",
+  "previewHeight": 820,
+  "usage": "import { CartDrawer } from \"@/components/design-for-ai/cart-drawer\";\n\nexport function Header({ cart }) {\n  return (\n    <header className=\"flex justify-between p-4\">\n      <Logo />\n      <CartDrawer\n        items={cart.items}\n        defaultOpen={false}\n        freeShippingThreshold={75}\n        onCheckout={(items) => router.push(\"/checkout\")}\n      />\n    </header>\n  );\n}",
+  "props": [
+    { "name": "items", "type": "CartItem[]", "description": "Line items: id, name, variant, price, qty, art (notebook | mug | socks | pencil) and colour for the drawn thumbnail." },
+    { "name": "upsell", "type": "CartUpsell | null", "description": "One suggested add-on shown under the items. Pass null to hide." },
+    { "name": "freeShippingThreshold", "type": "number", "default": "75", "description": "Subtotal that unlocks free shipping. Drives the progress bar." },
+    { "name": "shippingFee", "type": "number", "default": "4.95", "description": "Charged below the threshold." },
+    { "name": "currency / locale", "type": "string", "default": "\"GBP\" / \"en-GB\"", "description": "Passed to Intl.NumberFormat for every price." },
+    { "name": "title", "type": "string", "default": "\"Your bag\"", "description": "Drawer heading." },
+    { "name": "open / defaultOpen / onOpenChange", "type": "boolean / boolean / (open: boolean) => void", "default": "— / true / —", "description": "Controlled or uncontrolled open state. The built-in trigger button always reopens it." },
+    { "name": "onCheckout", "type": "(items: CartItem[]) => void", "description": "Called with the live items when Checkout is pressed." },
+    { "name": "strategy", "type": "\"fixed\" | \"absolute\"", "default": "\"fixed\"", "description": "Cover the viewport, or stay inside the nearest positioned parent (as in the demo)." },
+    { "name": "undoSeconds", "type": "number", "default": "5", "description": "How long a removed item can be restored." }
+  ],
+  "added": "2026-10-07"
+}

@@ -1,0 +1,55 @@
+{
+  "component": "ToastStack",
+  "intent": "A provider-free stacked toast system (useToasts hook + Toaster) whose cards fan out on hover, swipe away, pause while read and resolve promises in place.",
+  "platform": "web",
+  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "animation": "motion/react", "icons": "lucide-react", "state": "module store + useSyncExternalStore", "fonts": "font-display, font-serif, font-sans, font-mono" },
+  "layout": {
+    "toaster": "fixed or absolute; bottom-right/left/center from 640px; full-width bottom with 16px insets on mobile; width 360px",
+    "collapsed": "y = -i*14px, scale = 1 - i*0.05, origin top centre; max 3 visible; back cards take the front card's height and hide their content",
+    "expanded": "y = -(sum of heights in front + 10px gaps), scale 1; triggered by hover, focus-within or tap",
+    "demo": "12-col grid: copy + trigger list (5 cols), editor mock-up with the toaster inside (7 cols)"
+  },
+  "typography": {
+    "headline": { "font": "display", "weight": 700, "size": "clamp(2.6rem, 1.6rem + 3vw, 4rem)", "leading": 0.95, "tracking": "-0.045em" },
+    "headlineItalic": { "font": "serif italic", "color": "#f5c451" },
+    "toastTitle": { "size": "14px", "weight": 500, "color": "#f4f4f5" },
+    "toastDescription": { "size": "13px", "color": "#a1a1aa" },
+    "meta": { "font": "mono", "size": "10-11px", "case": "uppercase", "tracking": "0.12-0.16em" }
+  },
+  "color": {
+    "page": "#0b0b0c",
+    "panel": "#131315",
+    "toast": "#1c1c1f with 8% white inset ring",
+    "text": "#f4f4f5 / #a1a1aa / #71717a",
+    "success": "#3ddc97",
+    "error": "#ff6b5e",
+    "info": "#8ab8ff",
+    "accent": "#f5c451"
+  },
+  "motion": {
+    "enter": "y 56 -> stack position, opacity 0 -> 1",
+    "layout": "spring stiffness 380 damping 34 mass 0.9",
+    "exit": "scale 0.94, opacity 0, 200ms",
+    "swipe": "drag x, elastic 0.85, opacity fades to 0 at ±220px; dismiss past 90px or 600px/s with a fly-out",
+    "timer": "1px line scaling X 1 -> 0 over the duration; animation-play-state paused with the JS timer",
+    "iconSwap": "scale 0.4 -> 1 when loading turns into success or error",
+    "reducedMotion": "no drag, no springs, opacity only"
+  },
+  "responsive": {
+    "mobile": "stack spans the bottom with 16px insets; tap to expand, tap outside to collapse; demo stacks copy above the editor",
+    "sm": "360px stack anchored to the chosen corner",
+    "lg": "two-column demo"
+  },
+  "accessibility": [
+    "labelled region; Alt+T focuses the newest toast",
+    "role=status (role=alert for errors) with aria-live and a full aria-label",
+    "Esc, Delete or Backspace dismisses the focused toast",
+    "close and action buttons are real buttons with visible focus rings",
+    "timers pause on hover, focus and hidden tabs"
+  ],
+  "content": {
+    "brand": "Quire, an editorial CMS",
+    "triggers": ["Success: Draft saved — 1,284 words, all of them yours.", "Error: Couldn’t reach the printer — Retry now", "Info: Maya Okafor left a comment", "Promise: Publishing to 4,120 readers… -> Published. Go and make a coffee.", "With action: Moved 3 drafts to the bin — Undo"]
+  },
+  "avoid": ["full-bleed coloured toasts", "glassmorphism", "emoji icons", "a flat vertical list", "timers that run while hovered or focused", "hover-only expansion with no touch equivalent"]
+}

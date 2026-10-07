@@ -1,0 +1,38 @@
+{
+  "component": "HeroEditorial",
+  "intent": "Oversized editorial landing hero for a design studio or founder-led product, with one rotating word as the only animation.",
+  "platform": "web",
+  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "animation": "motion/react", "fonts": "font-display (Bricolage Grotesque), font-serif (Instrument Serif), font-mono (Geist Mono)" },
+  "layout": {
+    "container": "max-w-7xl, px 20/32/48px, min-height 640px (760px at lg)",
+    "rows": ["status row: live dot + status left, location right", "headline block with spinning badge top-right", "1px rule, then 12-col grid: body (6/5 cols) + actions (6/7 cols, right-aligned)", "client wordmarks row"],
+    "alignment": "left-aligned and asymmetric; never centred"
+  },
+  "typography": {
+    "headline": { "font": "display", "weight": 800, "size": "clamp(2.9rem, 1.2rem + 7.4vw, 8.25rem)", "leading": 0.92, "tracking": "-0.055em", "maxWidth": "15ch" },
+    "rotatingWord": { "font": "serif italic", "weight": 400, "tracking": "-0.03em", "color": "#ff4f1f" },
+    "meta": { "font": "mono", "size": "11-12px", "case": "uppercase", "tracking": "0.14em", "opacity": 0.6 },
+    "body": { "size": "17-18px", "leading": "relaxed", "maxWidth": "44ch", "opacity": 0.75 }
+  },
+  "color": { "background": "#f4f0e8", "ink": "#16130f", "accent": "#ff4f1f", "badge": "#ffd23f", "live": "#1fb26b", "rules": "ink at 15%" },
+  "motion": {
+    "rotatingWord": { "type": "mask slide", "enter": "y 105% -> 0", "exit": "y 0 -> -105%", "duration": 0.7, "ease": [0.2, 0.8, 0.2, 1], "interval": 2200 },
+    "badge": "rotate 360deg every 18s, linear",
+    "cta": "arrow chip rotates -45deg on hover; button lifts 2px",
+    "reducedMotion": "disable rotation, spin and ping entirely"
+  },
+  "responsive": {
+    "mobile": "status row wraps; headline ~46px; badge hidden; body and actions stack; client names wrap",
+    "md": "badge visible at 144px; grid splits body/actions",
+    "lg": "headline up to 132px; badge 176px"
+  },
+  "accessibility": ["sr-only full headline including every word; animated copy aria-hidden", "visible focus on links", "AA contrast on all text", "no motion when prefers-reduced-motion"],
+  "content": {
+    "lead": "We design products people",
+    "words": ["remember.", "recommend.", "pay for.", "brag about."],
+    "status": "Booking projects for January",
+    "body": "One or two sentences, specific and human. Mention who it's for and what you do.",
+    "clients": "5 fictional or real client names"
+  },
+  "avoid": ["gradient text", "glassmorphism", "centred hero", "emoji", "stock 3D blobs", "generic SaaS copy like 'Supercharge your workflow'", "more than one animated element in the headline"]
+}

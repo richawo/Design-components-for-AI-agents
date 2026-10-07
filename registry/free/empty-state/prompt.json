@@ -1,0 +1,39 @@
+{
+  "component": "EmptyState",
+  "intent": "One empty-state component with three variants (inbox zero, no search results, first project), each with a bespoke ink-line SVG scene, personable copy and clear actions.",
+  "platform": "web",
+  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "animation": "motion/react", "icons": "lucide-react", "fonts": "font-display, font-serif, font-sans, font-mono" },
+  "layout": {
+    "emptyState": "centred column; py 40px; illustration min(256px, 76%) wide (240x160 viewBox); meta, title, body, extras, actions",
+    "searchExtras": "suggestion chips (36px pills) between body and actions",
+    "projectExtras": "dashed rule, then 'Or start from a template' chips with geometric glyphs",
+    "demo": "header grid (headline 7 cols, intro 5 cols) + three app frames; 1 col below 1024px, 3 cols from 1024px up"
+  },
+  "typography": {
+    "title": { "font": "display", "weight": 600, "size": "clamp(1.375rem, 1.2rem + 0.6vw, 1.625rem)", "leading": 1.15, "tracking": "-0.025em", "wrap": "balance", "maxWidth": "22ch" },
+    "query": { "font": "serif italic", "size": "1.12em" },
+    "body": { "size": "15px", "leading": 1.6, "opacity": 0.65, "maxWidth": "38ch" },
+    "meta": { "font": "mono", "size": "11px", "case": "uppercase", "tracking": "0.14em" },
+    "demoHeadline": { "font": "display", "weight": 700, "size": "clamp(2.75rem, 1.6rem + 4.4vw, 5.5rem)", "leading": 0.92, "tracking": "-0.05em" }
+  },
+  "color": { "page": "#f4f1ea", "frame": "#fffdf9", "ink": "#1d1c1a", "accent": "#ef8f4a", "accentTint": "#fde3cc", "accentText": "#c9601e", "shade": "#ebe6dc" },
+  "motion": {
+    "steam": "y 4 -> -4, opacity 0 -> 1 -> 0, 2.6s loop, 0.9s stagger",
+    "plane": "3px bob over 4s",
+    "magnifier": "x -14 -> 18, rotate ±4deg, 6s loop",
+    "marchingAnts": "stroke-dashoffset 0 -> -16, 1.6s linear loop",
+    "reducedMotion": "all illustration motion off"
+  },
+  "responsive": {
+    "mobile": "frames stack full-width; illustration scales to 76% of the frame",
+    "md": "header splits into headline and intro",
+    "lg": "three frames side by side"
+  },
+  "accessibility": ["role=region labelled by the heading", "illustrations aria-hidden", "real buttons with visible focus rings", "suggestions are a labelled list", "role=search form with a labelled input in the demo"],
+  "content": {
+    "inbox": { "meta": "Inbox · 0 unread", "title": "Inbox zero. Genuinely.", "actions": ["Write something", "See snoozed (4)"] },
+    "search": { "meta": "0 of 2,731 items", "title": "Nothing matches “quarterly vibes”", "suggestions": ["quarterly review", "Q3 report", "vibe check"], "actions": ["Search all workspaces", "Clear search"] },
+    "project": { "meta": "Projects · none yet", "title": "Every project starts as a blank page.", "templates": ["Product launch", "Editorial calendar", "Hiring loop"], "actions": ["New project", "Import a file"] }
+  },
+  "avoid": ["clip-art or stock illustrations", "a grey box icon with 'No data'", "mixed illustration styles", "gradients", "emoji", "guilt-trip copy"]
+}

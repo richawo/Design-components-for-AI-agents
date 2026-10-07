@@ -1,0 +1,59 @@
+{
+  "component": "ChatThread",
+  "intent": "A calm, characterful AI chat thread: document-style assistant replies with code and sources, compact ink user bubbles, a streaming final answer and a working composer.",
+  "platform": "web",
+  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "animation": "motion/react", "icons": "lucide-react", "fonts": "font-display (Bricolage Grotesque) for the title, font-sans (Geist) for messages, font-mono (Geist Mono) for metadata and code" },
+  "layout": {
+    "frame": "stone #e9e3d8 section; window max-w 1040px, 820px tall (100dvh, 620–880px on phones), radius 22px, 1px ring at 8% ink, long soft shadow; full-bleed with no radius below sm",
+    "header": "64px; title + mono subtitle left, 44px New thread icon button right; 1px bottom rule",
+    "column": "max-w 720px centred, 16/32px gutters, 36px between messages, scrolls inside the window and follows the stream while pinned to the bottom",
+    "userMessage": "right-aligned ink bubble, max-w min(82%, 30rem), radius 18px with 6px bottom-right corner, mono time under it",
+    "assistantMessage": "no bubble; 28px avatar + name + time byline; content indented 38px from sm; paragraphs, dash-marker lists, code block, sources cards, Copy action",
+    "codeBlock": "ink panel, radius 14px, 44px caption with language tag, filename and Copy/Copied button; 13px mono at 1.75 leading; scrolls horizontally inside itself",
+    "composer": "cream card radius 20px; attachment chips, auto-growing textarea (52–208px), toolbar with attach, model label, key hint (md+) and round send button; mono disclaimer under it"
+  },
+  "typography": {
+    "title": { "font": "display", "size": "16–17px", "weight": 600, "tracking": "-0.02em" },
+    "assistantBody": { "font": "sans", "size": "16px (15.5px on phones)", "leading": 1.7, "measure": "64ch", "opacity": 0.86 },
+    "userBubble": { "font": "sans", "size": "15px", "leading": 1.55 },
+    "meta": { "font": "mono", "size": "10.5–11px", "tracking": "0.12–0.14em when uppercase", "opacity": "0.4–0.55" },
+    "code": { "font": "mono", "size": "12.5–13px", "leading": 1.75 }
+  },
+  "color": {
+    "stone": "#e9e3d8",
+    "paper": "#f7f4ee",
+    "cream": "#fffdf9",
+    "ink": "#1d1a16",
+    "clay": "#b4532a (only accent: caret, list dashes, status dot, send hover, focus ring)",
+    "syntax": { "comment": "#8f8778", "string": "#b9d2a5", "number": "#f2c38b", "keyword": "#f0a37f", "type": "#f2d9a6" }
+  },
+  "motion": {
+    "thinking": "three 6px dots pulsing opacity 0.25→1, staggered 150ms, for 420ms before the first token",
+    "streaming": "uneven chunks of 2–6 characters (12% chance of a 10–22 burst) every 18–52ms, occasional 160–340ms pause",
+    "caret": "clay block 0.5em × 1.05em, opacity 1→0.25→1 over 1.1s, at the live end of a paragraph, list item or code",
+    "sources": "fade up 6px over 450ms, ease [0.2, 0.8, 0.2, 1], after the stream ends",
+    "userBubble": "rise 8px and fade in over 350ms",
+    "stop": "send button becomes Stop while streaming; stopping freezes text and labels the byline 'stopped'",
+    "reducedMotion": "render every message complete; no caret, dots or entrances"
+  },
+  "responsive": {
+    "mobile": "full-bleed window, 16px gutters, 44px touch targets, key hint and disclaimer hidden, assistant content not indented",
+    "sm": "framed window with radius and shadow, 32px gutters, content indented 38px under the byline",
+    "md": "keyboard hint shows in the composer toolbar"
+  },
+  "accessibility": [
+    "message list is role=log; each message is an article labelled 'You said' / '<name> said'",
+    "aria-busy on a message while it streams",
+    "visually hidden label on the textarea; aria-label on attach, send, stop, copy and new-thread buttons",
+    "Enter sends, Shift+Enter inserts a newline, IME composition is respected",
+    "send disabled when empty or while streaming",
+    "2px clay focus-visible rings with a paper offset",
+    "reduced motion renders everything complete"
+  ],
+  "content": {
+    "assistant": "Wren, model 'Wren 2 · Balanced'",
+    "thread": "A developer asks how to stop a search box firing on every keystroke; Wren answers with a debounce hook, a three-item list and three fictional sources, then streams a short follow-up about pressing Enter early",
+    "cannedReply": "an honest placeholder that quotes the user's message and shows the shape a real answer would take"
+  },
+  "avoid": ["bubbles around assistant replies", "sparkle or robot icons", "purple or blue gradients", "constant-rate typewriter streaming", "page-level horizontal scroll from code", "grey text that isn't ink at an opacity", "rounded-2xl + shadow-lg on every element"]
+}

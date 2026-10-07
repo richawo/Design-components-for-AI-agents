@@ -1,0 +1,28 @@
+{
+  "slug": "footer-wordmark",
+  "name": "Wordmark Footer",
+  "tier": "free",
+  "platform": "web",
+  "category": "navigation",
+  "description": "A chartreuse studio footer with link columns, a newsletter form, a live local clock and a giant wordmark fitted edge to edge and cut at the floor.",
+  "tags": ["footer", "navigation", "wordmark", "newsletter", "studio", "big type", "local time"],
+  "dependencies": ["motion"],
+  "theme": "light",
+  "previewHeight": 1060,
+  "usage": "import { FooterWordmark } from \"@/components/design-for-ai/footer-wordmark\";\n\nexport default function SiteFooter() {\n  return (\n    <FooterWordmark\n      wordmark=\"fathom\"\n      email=\"studio@fathom.works\"\n      city=\"Lisbon\"\n      timeZone=\"Europe/Lisbon\"\n      onSubscribe={(email) => fetch(\"/api/subscribe\", { method: \"POST\", body: JSON.stringify({ email }) })}\n    />\n  );\n}",
+  "props": [
+    { "name": "wordmark", "type": "string", "default": "\"saltmarsh\"", "description": "The giant word. Measured on the client and fitted to the container width exactly. Words without descenders read best." },
+    { "name": "headline", "type": "string", "default": "\"Got a brief, a hunch or a half-built thing?\"", "description": "Closing line above the email link." },
+    { "name": "email", "type": "string", "default": "\"hello@saltmarsh.studio\"", "description": "Large mailto link with an arrow chip." },
+    { "name": "columns", "type": "{ title: string; links: { label; href; note?; external? }[] }[]", "description": "Link columns. note renders as a small black tag (\"2 open\"); external adds ↗ and opens a new tab." },
+    { "name": "address", "type": "string[]", "description": "Address lines in the Visit column." },
+    { "name": "city", "type": "string", "default": "\"London\"", "description": "Label before the live time." },
+    { "name": "timeZone", "type": "string", "default": "\"Europe/London\"", "description": "IANA time zone for the clock, which ticks every second." },
+    { "name": "newsletter", "type": "{ title; body; placeholder; button; success: string }", "description": "Copy for the newsletter block and its success state." },
+    { "name": "onSubscribe", "type": "(email: string) => void", "description": "Called with a valid address on submit." },
+    { "name": "legal", "type": "string", "description": "Company line in the legal bar." },
+    { "name": "legalLinks", "type": "{ label: string; href: string }[]", "description": "Privacy, cookies and similar links." },
+    { "name": "clip", "type": "number", "default": "0.14", "description": "How much of the wordmark's cap height the bottom edge cuts off (0–0.3)." }
+  ],
+  "added": "2026-10-07"
+}

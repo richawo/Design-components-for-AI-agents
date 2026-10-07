@@ -1,0 +1,28 @@
+{
+  "slug": "empty-state",
+  "name": "Empty States",
+  "tier": "free",
+  "platform": "web",
+  "category": "primitives",
+  "description": "Three empty states in one component: inbox zero, no search results and first project, each with a hand-drawn SVG scene, real copy and clear next steps.",
+  "tags": ["empty state", "primitives", "illustration", "zero state", "no results", "onboarding", "inbox"],
+  "dependencies": ["motion", "lucide-react"],
+  "theme": "light",
+  "previewHeight": 900,
+  "usage": "import { EmptyState } from \"@/components/design-for-ai/empty-state\";\n\nexport function Results({ query, items }) {\n  if (items.length) return <List items={items} />;\n  return (\n    <EmptyState\n      variant=\"search\"\n      query={query}\n      suggestions={[\"invoices\", \"Q3 report\"]}\n      onSuggestion={setQuery}\n      secondary={{ label: \"Clear search\", onClick: () => setQuery(\"\") }}\n    />\n  );\n}",
+  "props": [
+    { "name": "variant", "type": "\"inbox\" | \"search\" | \"project\"", "default": "\"inbox\"", "description": "Which empty state, illustration and default copy to show." },
+    { "name": "meta", "type": "string", "description": "Small mono line above the title, e.g. \"Inbox · 0 unread\"." },
+    { "name": "title", "type": "string", "description": "Headline. For search it defaults to “Nothing matches” followed by the query in italic serif." },
+    { "name": "body", "type": "string", "description": "One or two sentences under the title." },
+    { "name": "primary", "type": "{ label: string; onClick?: () => void }", "description": "Main action, a dark pill." },
+    { "name": "secondary", "type": "{ label: string; onClick?: () => void }", "description": "Quiet text action beside it." },
+    { "name": "query", "type": "string", "default": "\"quarterly vibes\"", "description": "Search variant: the query that found nothing." },
+    { "name": "suggestions", "type": "string[]", "description": "Search variant: alternative queries shown as chips." },
+    { "name": "onSuggestion", "type": "(s: string) => void", "description": "Called when a suggestion chip is pressed." },
+    { "name": "templates", "type": "string[]", "description": "Project variant: templates shown as chips under a dashed rule." },
+    { "name": "onTemplate", "type": "(t: string) => void", "description": "Called when a template chip is pressed." },
+    { "name": "illustration", "type": "boolean", "default": "true", "description": "Hide the drawing in tight spaces." }
+  ],
+  "added": "2026-10-07"
+}

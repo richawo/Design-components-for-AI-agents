@@ -1,0 +1,56 @@
+{
+  "component": "ButtonCollection",
+  "intent": "A type-specimen-style sheet of eleven refined buttons in three sizes, doubling as a copy-paste button system with split, loading, magnetic and hold-to-confirm patterns.",
+  "platform": "web",
+  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "animation": "motion/react", "icons": "lucide-react", "fonts": "font-display (Bricolage Grotesque), font-serif (Instrument Serif), font-sans (Geist), font-mono (Geist Mono)" },
+  "layout": {
+    "container": "max-w-[76rem], px 20/32/48px, pt 40/56px",
+    "masthead": "mono row on a 1px solid ink rule: kicker left, edition right",
+    "header": "12-col grid: headline 8 cols, intro 4 cols bottom-aligned",
+    "table": "grid minmax(0,15rem) + 3 x minmax(0,1fr), gap-x 24px; column heads Small 32/13, Medium 40/14, Large 48/15",
+    "rows": ["Primary", "Secondary", "Ghost", "Destructive", "Icon only", "Leading icon", "Trailing icon", "Loading", "Split", "Magnetic", "Hold to confirm"],
+    "row": "two-digit mono index, display name 19px, 13px note; 1px rule at 10% ink; py 28px"
+  },
+  "typography": {
+    "headline": { "font": "display", "weight": 700, "size": "clamp(3rem, 1.6rem + 5.6vw, 6.75rem)", "leading": 0.9, "tracking": "-0.05em" },
+    "headlineItalic": { "font": "serif italic", "weight": 400, "tracking": "-0.03em", "color": "#2b45ff" },
+    "rowName": { "font": "display", "size": "19px", "weight": 600, "tracking": "-0.02em" },
+    "meta": { "font": "mono", "size": "10-12px", "case": "uppercase", "tracking": "0.14em" },
+    "button": { "font": "sans", "weight": 500, "tracking": "-0.01em", "sizes": { "sm": "13px", "md": "14px", "lg": "15px" } }
+  },
+  "color": {
+    "paper": "#ecebe6",
+    "ink": "#111113",
+    "primary": "#2b45ff (hover #2238e6, split divider #1a2fd0)",
+    "destructive": "#d23a2c (hover #bb3023, text on pale #b52a1e)",
+    "secondary": "#ffffff with 12% ink inset ring",
+    "focus": "2px #2b45ff outline, 2px offset"
+  },
+  "motion": {
+    "ease": [0.2, 0.8, 0.2, 1],
+    "press": "translateY 1px on :active, 150ms",
+    "loading": "label opacity 0, spinner absolutely centred; width unchanged",
+    "splitMenu": "opacity + y -4px + scale 0.98 -> 1 over 160ms",
+    "magnetic": "button follows pointer x0.32, label a further x0.22; springs stiffness 260 damping 18 mass 0.6; mouse only",
+    "hold": "clip-path reveal of a solid copy, 1200ms linear; release rewinds over 350ms; resets 2.2s after completion",
+    "reducedMotion": "no magnetic movement; menu fades only"
+  },
+  "responsive": {
+    "mobile": "column heads hidden; specimens wrap in a flex row indented 40px with mono size captions",
+    "md": "4-column specimen grid with column heads",
+    "lg": "wider padding; headline reaches 108px"
+  },
+  "accessibility": [
+    "native buttons with type=button and visible focus-visible rings",
+    "icon-only buttons carry aria-label; icons aria-hidden",
+    "loading sets aria-busy and announces through a polite live region",
+    "split trigger: aria-haspopup=menu, aria-expanded, aria-controls; menuitemradio with roving tabindex, arrows/Home/End/Esc",
+    "hold-to-confirm works with Space/Enter held; accessible name explains the gesture; completion announced assertively"
+  ],
+  "content": {
+    "title": "Buttons, / pressed with care.",
+    "labels": ["Publish issue", "Preview", "Cancel", "Delete issue", "Copy link / Share / Settings", "Export CSV", "Continue", "Save changes", "Publish ▾", "Start a project", "Hold to delete"],
+    "splitOptions": ["Publish — Goes live to 4,120 subscribers now.", "Schedule — Thursday 9:00, when they open things.", "Save draft — Keep it to yourself a little longer."]
+  },
+  "avoid": ["gradient buttons", "glow shadows", "one radius at every size", "loading states that change width", "hover-only affordances", "a grid of identical cards instead of a specimen"]
+}

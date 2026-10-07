@@ -1,0 +1,41 @@
+{
+  "component": "NavbarFloating",
+  "intent": "A solid black floating pill navbar for a studio or product site that narrows and drops its wordmark on scroll, with a sliding hover highlight and a full-screen big-type menu on mobile.",
+  "platform": "web",
+  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "animation": "motion/react (useScroll, useMotionValueEvent, LayoutGroup, AnimatePresence)", "fonts": "font-display (Bricolage Grotesque), font-sans (Geist), font-mono (Geist Mono)" },
+  "layout": {
+    "header": "fixed inset-x-0 top-0, pointer-events-none, padding 12px (20px from sm), centres the pill",
+    "pill": "w-full, maxWidth 1200px -> 720px when condensed, rounded-full, #111111, padding 8px/16px/8px/8px",
+    "groups": ["logo: 36px cream circle with arch mark + 22px wordmark", "links centred, 44px tall", "pink CTA pill with arrow chip"],
+    "mobile": "below md: links and CTA hidden, Menu button shown; sheet is fixed inset-0, cobalt, pt 112px, links stacked with rules and mono indices, CTA + contact dl + socials pinned to the bottom"
+  },
+  "typography": {
+    "wordmark": { "font": "display", "size": "22px", "weight": 700, "tracking": "-0.05em" },
+    "links": { "font": "sans", "size": "15px", "weight": 500, "tracking": "-0.01em" },
+    "count": { "font": "mono", "size": "10px", "position": "superscript", "opacity": 0.55 },
+    "sheetLinks": { "font": "display", "size": "clamp(2.75rem, 13vw, 4.5rem)", "weight": 700, "leading": 0.95, "tracking": "-0.05em" },
+    "labels": { "font": "mono", "size": "11px", "case": "uppercase", "tracking": "0.14em" }
+  },
+  "color": { "pill": "#111111", "text": "#f5f3ef", "hoverHighlight": "rgba(255,255,255,0.13)", "accent": "#ff9bd2", "sheet": "#2b2bf5", "demoPage": "#f5f3ef" },
+  "motion": {
+    "hoverPill": "shared layoutId inside LayoutGroup(useId), spring 500/40, follows hover and focus, fades out on list leave",
+    "condense": "past 80px scroll: maxWidth 1200 -> 720, padding 8 -> 6, wordmark width -> 0, shadow on; spring 380/36",
+    "menuIcon": "two bars 7px apart rotate to +45/-45deg, 0.35s ease [0.2,0.8,0.2,1]; label slides Menu -> Close",
+    "sheet": "clipPath inset(0 0 100% 0) -> inset(0) 0.6s; links rise from y 100% staggered 60ms from 180ms; footer fades up at 450ms",
+    "reducedMotion": "instant transitions; sheet fades instead of wiping"
+  },
+  "responsive": {
+    "mobile": "pill shows logo + Menu button; full-screen sheet with 44-72px links",
+    "md": "links and CTA inline; sheet closes itself if the viewport crosses 768px",
+    "lg": "links get 20px padding; pill up to 1200px"
+  },
+  "accessibility": ["nav aria-label=\"Main\"", "menu button aria-expanded + aria-controls", "sheet role=dialog aria-modal, focus trapped inside the header, Esc closes and returns focus", "page scroll locked while open", "aria-current on the active link", "visible focus rings, 44px targets", "wordmark kept as sr-only text when folded"],
+  "content": {
+    "brand": "Kiln",
+    "links": ["Work (24)", "Studio", "Services", "Journal"],
+    "cta": "Start a project",
+    "contact": { "email": "hello@kiln.studio", "phone": "+44 20 7946 0321", "address": "Unit 4, Cremer Street, London E2 8HD" },
+    "socials": ["Instagram", "Are.na", "LinkedIn"]
+  },
+  "avoid": ["glassmorphism or backdrop blur", "underline hover effects instead of the sliding pill", "a small dropdown list for mobile", "several separately animated highlight elements", "gradient fills on the pill or CTA"]
+}

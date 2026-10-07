@@ -1,0 +1,25 @@
+{
+  "slug": "toast-stack",
+  "name": "Toast Stack",
+  "tier": "free",
+  "platform": "web",
+  "category": "primitives",
+  "description": "A stacked toast system with a useToasts hook: cards fan out on hover, swipe to dismiss, pause while read, and promise toasts that resolve in place.",
+  "tags": ["toast", "notifications", "primitives", "snackbar", "hook", "swipe to dismiss", "promise", "dark"],
+  "dependencies": ["motion", "lucide-react"],
+  "theme": "dark",
+  "previewHeight": 860,
+  "usage": "import { Toaster, useToasts } from \"@/components/design-for-ai/toast-stack\";\n\n// Once, near the root of your app:\n<Toaster position=\"bottom-right\" />\n\n// Anywhere below it:\nfunction SaveButton() {\n  const { success, promise } = useToasts();\n  return (\n    <button onClick={() => promise(save(), { loading: \"Saving…\", success: \"Saved\", error: \"Couldn’t save\" })}>\n      Save\n    </button>\n  );\n}",
+  "props": [
+    { "name": "Toaster.strategy", "type": "\"fixed\" | \"absolute\"", "default": "\"fixed\"", "description": "Pin the stack to the viewport, or keep it inside the nearest positioned parent." },
+    { "name": "Toaster.position", "type": "\"bottom-right\" | \"bottom-left\" | \"bottom-center\"", "default": "\"bottom-right\"", "description": "Where the stack sits from 640px up. Below that it spans the bottom edge." },
+    { "name": "Toaster.label", "type": "string", "default": "\"Notifications\"", "description": "Accessible name of the region." },
+    { "name": "Toaster.hotkey", "type": "string", "default": "\"t\"", "description": "Alt plus this key focuses the newest toast." },
+    { "name": "useToasts()", "type": "{ toasts, toast, success, error, info, promise, dismiss }", "description": "The live list plus creators. Each creator takes (title, { description, action, duration }) and returns an id." },
+    { "name": "promise(p, messages)", "type": "(p: Promise<T>, { loading, success, error }) => Promise<T>", "description": "Shows a loading toast that turns into success or error when the promise settles." },
+    { "name": "title / titleItalic / intro", "type": "string", "description": "Demo copy beside the editor mock-up." },
+    { "name": "triggers", "type": "ToastStackDemoTrigger[]", "description": "The demo's trigger rows: kind, label, title, description, resolved and actionLabel." },
+    { "name": "seed", "type": "boolean", "default": "true", "description": "Fire three toasts on mount so the stack is visible straight away." }
+  ],
+  "added": "2026-10-07"
+}

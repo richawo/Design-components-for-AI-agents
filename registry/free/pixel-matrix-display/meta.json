@@ -1,0 +1,23 @@
+{
+  "slug": "pixel-matrix-display",
+  "name": "Pixel Matrix Display",
+  "tier": "free",
+  "platform": "web",
+  "category": "pixel",
+  "description": "A glowing dot-matrix display that dissolves between a marquee, a live clock, an equaliser, a heartbeat trace and an orbit loader. Canvas, zero deps.",
+  "tags": ["pixel art", "dot matrix", "led", "canvas", "animation", "marquee", "clock", "loader"],
+  "dependencies": [],
+  "theme": "dark",
+  "previewHeight": 480,
+  "usage": "import { PixelMatrixDisplay } from \"@/components/design-for-ai/pixel-matrix-display\";\n\n<PixelMatrixDisplay\n  text=\"NOW SHIPPING V2   \"\n  scenes={[\"marquee\", \"clock\", \"orbit\"]}\n  color=\"#ffb38a\"\n/>",
+  "props": [
+    { "name": "text", "type": "string", "default": "\"DESIGN FOR AI   \"", "description": "Marquee text. A–Z, 0–9 and : . - / % + render; trailing spaces add a gap." },
+    { "name": "scenes", "type": "(\"marquee\"|\"clock\"|\"equalizer\"|\"pulse\"|\"orbit\")[]", "description": "Scenes to cycle, in order." },
+    { "name": "color", "type": "string", "default": "\"#f5f5f0\"", "description": "Lit dot colour; also tints the bloom." },
+    { "name": "cols", "type": "number", "default": "72", "description": "Matrix columns." },
+    { "name": "rows", "type": "number", "default": "16", "description": "Matrix rows. 16+ renders type at 2×." },
+    { "name": "interval", "type": "number", "default": "4800", "description": "Milliseconds per scene." },
+    { "name": "chrome", "type": "boolean", "default": "true", "description": "Show the scene caption and prev/pause/next controls." }
+  ],
+  "added": "2026-10-07"
+}
