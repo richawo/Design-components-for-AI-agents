@@ -164,14 +164,18 @@ export function ChartPortfolio({
               {ticker} · {exchange}
             </span>
           </div>
-          <p className="mt-3 font-sans text-[clamp(2rem,1.6rem+1.6vw,2.75rem)] font-medium leading-none tracking-[-0.04em] tabular-nums">{money.format(value)}</p>
+          <p className="mt-3 font-sans text-[clamp(2rem,1.6rem+1.6vw,2.75rem)] font-medium leading-none tracking-[-0.04em] tabular-nums">
+            {/* Scrubbing is instant; range changes count to the new value. */}
+            <Ticker value={value} instant={hover !== null || !!reduce} format={(v) => money.format(v)} />
+          </p>
           <p className="mt-2.5 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-sm tabular-nums">
             <span className="inline-flex items-center gap-1 font-medium" style={{ color: up ? UP : DOWN }}>
               <svg viewBox="0 0 10 10" className={`size-2.5 ${up ? "" : "rotate-180"}`} aria-hidden="true">
                 <path d="M5 1.5 9 8H1z" fill="currentColor" />
               </svg>
-              {money.format(Math.abs(delta))} ({up ? "+" : "−"}
-              {Math.abs(pct).toFixed(2)}%)
+              <Ticker value={Math.abs(delta)} instant={hover !== null || !!reduce} format={(v) => money.format(v)} /> ({up ? "+" : "−"}
+              <Ticker value={Math.abs(pct)} instant={hover !== null || !!reduce} format={(v) => v.toFixed(2)} />
+              %)
             </span>
             <span className="text-white/40">{hover === null ? caption : formatTime(target[hover].t, range, locale, true)}</span>
           </p>
@@ -187,7 +191,7 @@ export function ChartPortfolio({
                 setHover(null);
                 setRange(r.key);
               }}
-              className={`relative h-8 flex-1 rounded-full px-3 font-mono text-[11px] font-medium transition-colors @2xl:flex-none ${range === r.key ? "text-black" : "text-white/55 hover:text-white"}`}
+              className={`relative h-8 flex-1 rounded-full px-3 font-mono text-[11px] font-medium transition-[color,transform] duration-150 active:scale-[0.95] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white @2xl:flex-none ${range === r.key ? "text-black" : "text-white/55 hover:text-white"}`}
             >
               {range === r.key && (
                 <motion.span
@@ -309,30 +313,63 @@ export function ChartPortfolio({
         </svg>
 
         {hover !== null && (
-          <div
+          <motion.div
+            initial={reduce ? false : { opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.16, ease: [0.22, 1, 0.36, 1] }}
             className="pointer-events-none absolute -top-1 -translate-x-1/2 rounded-md border border-white/10 bg-[#161618]/95 px-2 py-1 font-mono text-[10.5px] text-white/80 shadow-[0_8px_24px_rgba(0,0,0,0.5)] backdrop-blur"
             style={{ left: tipLeft }}
           >
             {formatTime(target[hover].t, range, locale, true)}
-          </div>
+          </motion.div>
         )}
       </div>
 
       <footer className="relative mt-5 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-white/[0.06] bg-white/[0.06] @xl:grid-cols-4">
-        {[
-          ["Open", money.format(open)],
-          ["High", money.format(Math.max(...target.map((p) => p.v)))],
-          ["Low", money.format(Math.min(...target.map((p) => p.v)))],
-          ["Volume", new Intl.NumberFormat(locale, { notation: "compact", maximumFractionDigits: 1 }).format(target.reduce((a, p) => a + p.vol, 0))],
-        ].map(([k, v]) => (
+        {(
+          [
+            ["Open", open, (v: number) => money.format(v)],
+            ["High", Math.max(...target.map((p) => p.v)), (v: number) => money.format(v)],
+            ["Low", Math.min(...target.map((p) => p.v)), (v: number) => money.format(v)],
+            ["Volume", target.reduce((a, p) => a + p.vol, 0), (v: number) => new Intl.NumberFormat(locale, { notation: "compact", maximumFractionDigits: 1 }).format(v)],
+          ] as const
+        ).map(([k, n, fmt]) => (
           <div key={k} className="bg-[#0b0b0c] px-4 py-3">
             <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-white/35">{k}</p>
-            <p className="mt-1 text-sm font-medium tabular-nums text-white/85">{v}</p>
+            <p className="mt-1 text-sm font-medium tabular-nums text-white/85">
+              <Ticker value={n} instant={!!reduce} format={fmt} />
+            </p>
           </div>
         ))}
       </footer>
     </section>
   );
+}
+
+/** A figure that counts to each new value (450ms ease-out) unless `instant`. */
+function Ticker({ value, instant, format }: { value: number; instant: boolean; format: (v: number) => string }) {
+  const [shown, setShown] = useState(value);
+  const ref = useRef(value);
+  useEffect(() => {
+    if (instant) {
+      ref.current = value;
+      setShown(value);
+      return;
+    }
+    const from = ref.current;
+    let raf = 0;
+    const t0 = performance.now();
+    const step = (now: number) => {
+      const k = Math.min(1, (now - t0) / 450);
+      const v = from + (value - from) * (1 - Math.pow(1 - k, 3));
+      ref.current = v;
+      setShown(v);
+      if (k < 1) raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [value, instant]);
+  return <>{format(shown)}</>;
 }
 
 /* ----------------------------------------------------------------- utils */

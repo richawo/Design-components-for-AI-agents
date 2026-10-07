@@ -37,3 +37,8 @@ Build a financial-grade portfolio price chart in React + Tailwind CSS v4 (`motio
 - No chart library, no rainbow series, no 3D, no thick strokes.
 - No tooltip box covering the line.
 - No gradient on the price text.
+
+**Feel**
+- Scrubbing updates the headline price, delta and date instantly; a range change or leaving the chart counts every figure (price, delta, percentage and the four stats) to its new value over 450ms, so nothing snaps.
+- The date pill above the crosshair rises 4px and fades in over 160ms.
+- Range pills scale to 0.95 while pressed and carry a 2px focus ring.
