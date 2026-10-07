@@ -1,0 +1,57 @@
+{
+  "slug": "pixel-agent-status",
+  "name": "Pixel Agent Status",
+  "tier": "free",
+  "platform": "web",
+  "category": "pixel",
+  "description": "Eight animated 9×9 pixel glyphs for what an AI agent is doing: thinking, searching, writing, listening, syncing, done, error and idle.",
+  "tags": [
+    "pixel art",
+    "status",
+    "loader",
+    "ai agent",
+    "icons",
+    "animation",
+    "svg",
+    "dot matrix"
+  ],
+  "dependencies": [],
+  "theme": "dark",
+  "previewHeight": 720,
+  "usage": "import { PixelStatus } from \"@/components/design-for-ai/pixel-agent-status\";\n\n<p className=\"flex items-center gap-2 text-sm text-white/70\">\n  <PixelStatus state=\"searching\" size={16} grid={false} />\n  Reading the docs…\n</p>",
+  "props": [
+    {
+      "name": "state",
+      "type": "\"thinking\" | \"searching\" | \"writing\" | \"listening\" | \"syncing\" | \"done\" | \"error\" | \"idle\"",
+      "description": "Which glyph to animate."
+    },
+    {
+      "name": "size",
+      "type": "number",
+      "default": "24",
+      "description": "Rendered size in px. Under 28px dots thicken and the glow drops so it stays crisp."
+    },
+    {
+      "name": "color",
+      "type": "string",
+      "description": "Override the state's default colour (see STATE_COLORS)."
+    },
+    {
+      "name": "grid",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show the faint unlit dots behind the glyph."
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "description": "Accessible label; defaults to the state name."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "description": "Classes for the svg element."
+    }
+  ],
+  "added": "2026-10-07"
+}
