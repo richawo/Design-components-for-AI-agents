@@ -111,6 +111,159 @@
     "added": "2026-10-07"
   },
   {
+    "slug": "hero-kinetic-type",
+    "name": "Kinetic Type Hero",
+    "tier": "pro",
+    "platform": "web",
+    "category": "hero",
+    "description": "A type foundry hero where every letter of a giant word stack gains weight and leans toward the cursor, with a slow wave on touch and a services marquee.",
+    "tags": [
+      "hero",
+      "kinetic typography",
+      "variable font",
+      "type foundry",
+      "interactive",
+      "marquee",
+      "light"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "light",
+    "previewHeight": 960,
+    "usage": "import { HeroKineticType } from \"@/components/design-for-ai/hero-kinetic-type\";\n\n<HeroKineticType\n  brand=\"Fieldwork Type\"\n  lines={[\"Bold\", \"moves.\"]}\n  primary={{ label: \"Try the fonts\", href: \"/trials\" }}\n/>",
+    "props": [
+      {
+        "name": "brand",
+        "type": "string",
+        "default": "\"Ondine Type Co.\"",
+        "description": "Foundry name, top left."
+      },
+      {
+        "name": "lines",
+        "type": "string[]",
+        "default": "[\"Type\", \"with a\", \"pulse.\"]",
+        "description": "The giant stack, one short line each."
+      },
+      {
+        "name": "specimen",
+        "type": "string",
+        "description": "Specimen label in the readout."
+      },
+      {
+        "name": "hint",
+        "type": "string",
+        "description": "Hint under the readout."
+      },
+      {
+        "name": "services",
+        "type": "string[]",
+        "description": "Words in the marquee strip."
+      },
+      {
+        "name": "primary",
+        "type": "{ label: string; href: string }",
+        "description": "Blue CTA pill."
+      },
+      {
+        "name": "secondary",
+        "type": "{ label: string; href: string }",
+        "description": "Underlined text link."
+      },
+      {
+        "name": "minWeight",
+        "type": "number",
+        "default": "200",
+        "description": "Lightest weight on the axis."
+      },
+      {
+        "name": "maxWeight",
+        "type": "number",
+        "default": "800",
+        "description": "Heaviest weight on the axis."
+      }
+    ],
+    "added": "2026-10-07"
+  },
+  {
+    "slug": "hero-product-stack",
+    "name": "Product Stack Hero",
+    "tier": "pro",
+    "platform": "web",
+    "category": "hero",
+    "description": "A light SaaS hero whose three CSS-drawn app windows (a calendar, a burndown and a comment thread) tilt toward the pointer in real 3D.",
+    "tags": [
+      "hero",
+      "saas",
+      "product shot",
+      "3d tilt",
+      "app ui",
+      "calendar",
+      "landing page"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "light",
+    "previewHeight": 880,
+    "usage": "import { HeroProductStack } from \"@/components/design-for-ai/hero-product-stack\";\n\n<HeroProductStack\n  brand=\"Northstar\"\n  headline=\"Roadmaps your team will actually read.\"\n  strike=\"actually\"\n  primary={{ label: \"Try it free\", href: \"/signup\" }}\n/>",
+    "props": [
+      {
+        "name": "brand",
+        "type": "string",
+        "default": "\"Cadence\"",
+        "description": "Product name."
+      },
+      {
+        "name": "headline",
+        "type": "string",
+        "description": "Headline."
+      },
+      {
+        "name": "strike",
+        "type": "string",
+        "default": "\"hate\"",
+        "description": "Word set in the accent gradient."
+      },
+      {
+        "name": "body",
+        "type": "string",
+        "description": "Supporting paragraph."
+      },
+      {
+        "name": "primary",
+        "type": "{ label: string; href: string }",
+        "description": "Black CTA pill."
+      },
+      {
+        "name": "secondary",
+        "type": "{ label: string; href: string }",
+        "description": "Tour link with play button."
+      },
+      {
+        "name": "rating",
+        "type": "{ score: string; note: string }",
+        "description": "Rating line under the actions."
+      },
+      {
+        "name": "events",
+        "type": "CalendarEvent[]",
+        "description": "Calendar blocks: day, start, hours, title, tone."
+      },
+      {
+        "name": "sprint",
+        "type": "{ name; left; status; actual: number[]; total }",
+        "description": "Burndown card data."
+      },
+      {
+        "name": "thread",
+        "type": "{ title; messages; moved; placeholder }",
+        "description": "Comment card data."
+      }
+    ],
+    "added": "2026-10-07"
+  },
+  {
     "slug": "pricing-receipt",
     "name": "Receipt Pricing",
     "tier": "pro",
