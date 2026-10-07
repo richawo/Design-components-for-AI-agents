@@ -1,31 +1,69 @@
 {
   "component": "ChatThread",
-  "intent": "A calm, characterful AI chat thread: document-style assistant replies with code and sources, compact ink user bubbles, a streaming final answer and a working composer.",
+  "intent": "A calm, characterful AI chat thread on near-black: document-style assistant replies with code and sources, compact raised user bubbles, a streaming final answer and a working composer.",
   "platform": "web",
-  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "animation": "motion/react", "icons": "lucide-react", "fonts": "font-display (Geist, tight tracking) for the title, font-sans (Geist) for messages, font-mono (Geist Mono) for metadata and code" },
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4",
+    "animation": "motion/react",
+    "icons": "lucide-react",
+    "fonts": "font-display (Geist, tight tracking) for the title, font-sans (Geist) for messages, font-mono (Geist Mono) for metadata and code"
+  },
   "layout": {
-    "frame": "stone #e9e3d8 section; window max-w 1040px, 820px tall (100dvh, 620–880px on phones), radius 22px, 1px ring at 8% ink, long soft shadow; full-bleed with no radius below sm",
+    "frame": "black section; window #0b0b0c, max-w 1040px, 820px tall (100dvh, 620–880px on phones), radius 22px, 1px ring white/8%, inset highlight, deep black shadow; full-bleed with no radius below sm",
     "header": "64px; title + mono subtitle left, 44px New thread icon button right; 1px bottom rule",
     "column": "max-w 720px centred, 16/32px gutters, 36px between messages, scrolls inside the window and follows the stream while pinned to the bottom",
-    "userMessage": "right-aligned ink bubble, max-w min(82%, 30rem), radius 18px with 6px bottom-right corner, mono time under it",
+    "userMessage": "right-aligned #1c1c1f bubble with inset highlight, white text, max-w min(82%, 30rem), radius 18px with 6px bottom-right corner, mono time under it",
     "assistantMessage": "no bubble; 28px avatar + name + time byline; content indented 38px from sm; paragraphs, dash-marker lists, code block, sources cards, Copy action",
-    "codeBlock": "ink panel, radius 14px, 44px caption with language tag, filename and Copy/Copied button; 13px mono at 1.75 leading; scrolls horizontally inside itself",
-    "composer": "cream card radius 20px; attachment chips, auto-growing textarea (52–208px), toolbar with attach, model label, key hint (md+) and round send button; mono disclaimer under it"
+    "codeBlock": "#050506 panel with white/8% ring, radius 14px, 44px caption with language tag, filename and Copy/Copied button; 13px mono at 1.75 leading; scrolls horizontally inside itself",
+    "composer": "#111113 card radius 20px with white/10% border; attachment chips, auto-growing textarea (52–208px), toolbar with attach, model label, key hint (md+) and round white send button; mono disclaimer under it"
   },
   "typography": {
-    "title": { "font": "display", "size": "16–17px", "weight": 600, "tracking": "-0.02em" },
-    "assistantBody": { "font": "sans", "size": "16px (15.5px on phones)", "leading": 1.7, "measure": "64ch", "opacity": 0.86 },
-    "userBubble": { "font": "sans", "size": "15px", "leading": 1.55 },
-    "meta": { "font": "mono", "size": "10.5–11px", "tracking": "0.12–0.14em when uppercase", "opacity": "0.4–0.55" },
-    "code": { "font": "mono", "size": "12.5–13px", "leading": 1.75 }
+    "title": {
+      "font": "display",
+      "size": "16–17px",
+      "weight": 600,
+      "tracking": "-0.02em"
+    },
+    "assistantBody": {
+      "font": "sans",
+      "size": "16px (15.5px on phones)",
+      "leading": 1.7,
+      "measure": "64ch",
+      "opacity": 0.86
+    },
+    "userBubble": {
+      "font": "sans",
+      "size": "15px",
+      "leading": 1.55
+    },
+    "meta": {
+      "font": "mono",
+      "size": "10.5–11px",
+      "tracking": "0.12–0.14em when uppercase",
+      "opacity": "0.4–0.55"
+    },
+    "code": {
+      "font": "mono",
+      "size": "12.5–13px",
+      "leading": 1.75
+    }
   },
   "color": {
-    "stone": "#e9e3d8",
-    "paper": "#f7f4ee",
-    "cream": "#fffdf9",
-    "ink": "#1d1a16",
-    "clay": "#b4532a (only accent: caret, list dashes, status dot, send hover, focus ring)",
-    "syntax": { "comment": "#8f8778", "string": "#b9d2a5", "number": "#f2c38b", "keyword": "#f0a37f", "type": "#f2d9a6" }
+    "syntax": {
+      "comment": "#8f8778",
+      "string": "#b9d2a5",
+      "number": "#f2c38b",
+      "keyword": "#f0a37f",
+      "type": "#f2d9a6"
+    },
+    "stage": "#000000",
+    "window": "#0b0b0c",
+    "raised": "#111113 composer, white/3% source cards",
+    "userBubble": "#1c1c1f",
+    "code": "#050506",
+    "text": "white at measured opacities (body 80%, metadata 45–60%)",
+    "accent": "#ff9a6b (only accent: caret, list dashes, status dot, send hover, focus ring)"
   },
   "motion": {
     "thinking": "three 6px dots pulsing opacity 0.25→1, staggered 150ms, for 420ms before the first token",
@@ -47,7 +85,7 @@
     "visually hidden label on the textarea; aria-label on attach, send, stop, copy and new-thread buttons",
     "Enter sends, Shift+Enter inserts a newline, IME composition is respected",
     "send disabled when empty or while streaming",
-    "2px clay focus-visible rings with a paper offset",
+    "2px peach focus-visible rings offset against the window colour",
     "reduced motion renders everything complete"
   ],
   "content": {
@@ -55,5 +93,13 @@
     "thread": "A developer asks how to stop a search box firing on every keystroke; Wren answers with a debounce hook, a three-item list and three fictional sources, then streams a short follow-up about pressing Enter early",
     "cannedReply": "an honest placeholder that quotes the user's message and shows the shape a real answer would take"
   },
-  "avoid": ["bubbles around assistant replies", "sparkle or robot icons", "purple or blue gradients", "constant-rate typewriter streaming", "page-level horizontal scroll from code", "grey text that isn't ink at an opacity", "rounded-2xl + shadow-lg on every element"]
+  "avoid": [
+    "bubbles around assistant replies",
+    "sparkle or robot icons",
+    "purple or blue gradients",
+    "constant-rate typewriter streaming",
+    "page-level horizontal scroll from code",
+    "grey text that isn't white at an opacity",
+    "rounded-2xl + shadow-lg on every element"
+  ]
 }

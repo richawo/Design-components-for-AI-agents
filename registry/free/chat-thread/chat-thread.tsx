@@ -172,10 +172,10 @@ function Inline({ text, limit }: { text: string; limit: number }) {
     if (left <= 0) return;
     const t = s.text.slice(0, left);
     left -= t.length;
-    if (s.kind === "bold") nodes.push(<strong key={i} className="font-semibold text-[#1d1a16]">{t}</strong>);
+    if (s.kind === "bold") nodes.push(<strong key={i} className="font-semibold text-white">{t}</strong>);
     else if (s.kind === "code")
       nodes.push(
-        <code key={i} className="rounded-[5px] bg-[#1d1a16]/[0.06] px-[0.35em] py-[0.1em] font-mono text-[0.86em] text-[#1d1a16]">
+        <code key={i} className="rounded-[5px] bg-white/[0.06] px-[0.35em] py-[0.1em] font-mono text-[0.86em] text-white">
           {t}
         </code>,
       );
@@ -234,13 +234,13 @@ function useCopy(timeout = 1600) {
   return { copied, copy };
 }
 
-const focusRing = "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b4532a] focus-visible:ring-offset-2 focus-visible:ring-offset-[#f7f4ee]";
+const focusRing = "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff9a6b] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b0b0c]";
 
 function CodeBlock({ block, limit, done }: { block: Extract<ChatBlock, { type: "code" }>; limit: number; done: boolean }) {
   const { copied, copy } = useCopy();
   const shown = block.code.slice(0, limit);
   return (
-    <figure className="overflow-hidden rounded-[14px] bg-[#1d1a16] text-[#ebe5d8] ring-1 ring-black/5">
+    <figure className="overflow-hidden rounded-[14px] bg-[#050506] text-[#ebe5d8] ring-1 ring-white/[0.08]">
       <figcaption className="flex h-11 items-center justify-between gap-3 border-b border-white/[0.07] pl-4 pr-1.5">
         <span className="flex min-w-0 items-center gap-2.5 font-mono text-[11.5px]">
           <span className="rounded-[4px] bg-white/[0.08] px-1.5 py-0.5 uppercase tracking-[0.08em] text-[#f0a37f]">{block.lang}</span>
@@ -279,7 +279,7 @@ function Caret() {
   return (
     <motion.span
       aria-hidden="true"
-      className="ml-[2px] inline-block h-[1.05em] w-[0.5em] translate-y-[0.18em] rounded-[2px] bg-[#b4532a]"
+      className="ml-[2px] inline-block h-[1.05em] w-[0.5em] translate-y-[0.18em] rounded-[2px] bg-[#ff9a6b]"
       animate={{ opacity: [1, 0.25, 1] }}
       transition={{ duration: 1.1, repeat: Infinity, ease: "easeInOut" }}
     />
@@ -288,9 +288,9 @@ function Caret() {
 
 function AssistantMark({ name }: { name: string }) {
   return (
-    <span aria-hidden="true" className="relative flex size-7 shrink-0 items-center justify-center rounded-full bg-[#1d1a16] text-[#f7f4ee]">
+    <span aria-hidden="true" className="relative flex size-7 shrink-0 items-center justify-center rounded-full bg-white text-black">
       <span className="font-sans text-[14px] font-semibold leading-none">{name.charAt(0)}</span>
-      <span className="absolute -right-0.5 -bottom-0.5 size-2.5 rounded-full border-2 border-[#f7f4ee] bg-[#b4532a]" />
+      <span className="absolute -right-0.5 -bottom-0.5 size-2.5 rounded-full border-2 border-[#0b0b0c] bg-[#ff9a6b]" />
     </span>
   );
 }
@@ -353,12 +353,12 @@ function AssistantMessage({
       <header className="mb-3 flex items-center gap-2.5">
         <AssistantMark name={name} />
         <span className="text-[14px] font-semibold tracking-[-0.01em]">{name}</span>
-        {message.time ? <time className="font-mono text-[11px] tabular-nums text-[#1d1a16]/45">{message.time}</time> : null}
-        {!done ? <span className="font-mono text-[11px] text-[#b4532a]">writing…</span> : null}
-        {stopped ? <span className="font-mono text-[11px] text-[#1d1a16]/45">stopped</span> : null}
+        {message.time ? <time className="font-mono text-[11px] tabular-nums text-white/45">{message.time}</time> : null}
+        {!done ? <span className="font-mono text-[11px] text-[#ff9a6b]">writing…</span> : null}
+        {stopped ? <span className="font-mono text-[11px] text-white/45">stopped</span> : null}
       </header>
 
-      <div className="space-y-4 text-[15.5px] leading-[1.7] text-[#1d1a16]/[0.86] sm:pl-[38px] sm:text-[16px]">
+      <div className="space-y-4 text-[15.5px] leading-[1.7] text-white/[0.8] sm:pl-[38px] sm:text-[16px]">
         {message.blocks.map((b, i) => {
           if (left <= 0) return null;
           const len = blockLength(b);
@@ -383,7 +383,7 @@ function AssistantMessage({
                   l -= n;
                   return (
                     <li key={j} className="relative pl-6">
-                      <span aria-hidden="true" className="absolute left-1 top-[0.72em] h-[2px] w-2.5 rounded-full bg-[#b4532a]" />
+                      <span aria-hidden="true" className="absolute left-1 top-[0.72em] h-[2px] w-2.5 rounded-full bg-[#ff9a6b]" />
                       <Inline text={it} limit={n} />
                       {isLive && l <= 0 ? <Caret /> : null}
                     </li>
@@ -399,7 +399,7 @@ function AssistantMessage({
             {[0, 1, 2].map((d) => (
               <motion.span
                 key={d}
-                className="size-1.5 rounded-full bg-[#1d1a16]/40"
+                className="size-1.5 rounded-full bg-white/40"
                 animate={{ opacity: [0.25, 1, 0.25] }}
                 transition={{ duration: 1, repeat: Infinity, delay: d * 0.15 }}
               />
@@ -415,18 +415,18 @@ function AssistantMessage({
               transition={{ duration: 0.45, ease: [0.2, 0.8, 0.2, 1] }}
               className="pt-1"
             >
-              <p className="mb-2 font-mono text-[10.5px] uppercase tracking-[0.14em] text-[#1d1a16]/50">Sources</p>
+              <p className="mb-2 font-mono text-[10.5px] uppercase tracking-[0.14em] text-white/50">Sources</p>
               <ol className="flex flex-wrap gap-2">
                 {message.sources.map((s, i) => (
                   <li key={s.href + i} className="min-w-0 max-w-full">
                     <a
                       href={s.href}
-                      className={`group/src flex min-h-11 max-w-full items-center gap-2.5 rounded-[10px] border border-[#1d1a16]/10 bg-[#fffdf9] py-1.5 pl-1.5 pr-3 transition-colors hover:border-[#1d1a16]/25 ${focusRing}`}
+                      className={`group/src flex min-h-11 max-w-full items-center gap-2.5 rounded-[10px] border border-white/10 bg-white/[0.03] py-1.5 pl-1.5 pr-3 transition-colors hover:border-white/25 ${focusRing}`}
                     >
-                      <span className="flex size-6 shrink-0 items-center justify-center rounded-[6px] bg-[#1d1a16]/[0.06] font-mono text-[11px] tabular-nums text-[#1d1a16]/70">{i + 1}</span>
+                      <span className="flex size-6 shrink-0 items-center justify-center rounded-[6px] bg-white/[0.06] font-mono text-[11px] tabular-nums text-white/70">{i + 1}</span>
                       <span className="min-w-0 leading-tight">
-                        <span className="block truncate text-[13px] font-medium text-[#1d1a16] group-hover/src:underline group-hover/src:decoration-[#b4532a] group-hover/src:underline-offset-2">{s.title}</span>
-                        <span className="block truncate font-mono text-[10.5px] text-[#1d1a16]/50">{s.domain}</span>
+                        <span className="block truncate text-[13px] font-medium text-white group-hover/src:underline group-hover/src:decoration-[#ff9a6b] group-hover/src:underline-offset-2">{s.title}</span>
+                        <span className="block truncate font-mono text-[10.5px] text-white/50">{s.domain}</span>
                       </span>
                     </a>
                   </li>
@@ -437,13 +437,13 @@ function AssistantMessage({
         </AnimatePresence>
 
         {done ? (
-          <div className="-ml-2 flex items-center gap-0.5 text-[#1d1a16]/50">
+          <div className="-ml-2 flex items-center gap-0.5 text-white/50">
             <button
               type="button"
               onClick={() => copy(plain)}
-              className={`inline-flex h-9 items-center gap-1.5 rounded-[8px] px-2 font-mono text-[11px] transition-colors hover:bg-[#1d1a16]/[0.05] hover:text-[#1d1a16] ${focusRing}`}
+              className={`inline-flex h-9 items-center gap-1.5 rounded-[8px] px-2 font-mono text-[11px] transition-colors hover:bg-white/[0.05] hover:text-white ${focusRing}`}
             >
-              {copied ? <Check className="size-3.5 text-[#4d7a3a]" aria-hidden="true" /> : <Copy className="size-3.5" aria-hidden="true" />}
+              {copied ? <Check className="size-3.5 text-[#34d399]" aria-hidden="true" /> : <Copy className="size-3.5" aria-hidden="true" />}
               {copied ? "Copied" : "Copy"}
             </button>
           </div>
@@ -462,10 +462,10 @@ function UserMessage({ message, reduce }: { message: Extract<ChatMessage, { role
       transition={{ duration: 0.35, ease: [0.2, 0.8, 0.2, 1] }}
       className="flex flex-col items-end"
     >
-      <p className="max-w-[min(82%,30rem)] whitespace-pre-wrap break-words rounded-[18px] rounded-br-[6px] bg-[#1d1a16] px-4 py-2.5 text-[15px] leading-[1.55] text-[#f7f4ee]">
+      <p className="max-w-[min(82%,30rem)] whitespace-pre-wrap break-words rounded-[18px] rounded-br-[6px] bg-[#1c1c1f] px-4 py-2.5 text-[15px] leading-[1.55] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
         {message.text}
       </p>
-      {message.time ? <time className="mr-1 mt-1.5 font-mono text-[10.5px] tabular-nums text-[#1d1a16]/40">{message.time}</time> : null}
+      {message.time ? <time className="mr-1 mt-1.5 font-mono text-[10.5px] tabular-nums text-white/40">{message.time}</time> : null}
     </motion.article>
   );
 }
@@ -558,18 +558,18 @@ export function ChatThread({
   };
 
   return (
-    <section className={`bg-[#e9e3d8] text-[#1d1a16] sm:flex sm:min-h-[100dvh] sm:items-center sm:px-6 sm:py-8 lg:py-10 ${className}`}>
-      <div className="mx-auto flex h-[100dvh] min-h-[620px] w-full max-w-[1040px] flex-col overflow-hidden bg-[#f7f4ee] sm:h-[820px] sm:rounded-[22px] sm:shadow-[0_1px_0_rgba(29,26,22,0.04),0_30px_60px_-30px_rgba(29,26,22,0.35)] sm:ring-1 sm:ring-[#1d1a16]/[0.08]">
+    <section className={`bg-black text-white sm:flex sm:min-h-[100dvh] sm:items-center sm:px-6 sm:py-8 lg:py-10 ${className}`}>
+      <div className="mx-auto flex h-[100dvh] min-h-[620px] w-full max-w-[1040px] flex-col overflow-hidden bg-[#0b0b0c] sm:h-[820px] sm:rounded-[22px] sm:shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_30px_80px_-30px_rgba(0,0,0,0.9)] sm:ring-1 sm:ring-white/[0.08]">
         {/* Header */}
-        <header className="flex h-16 shrink-0 items-center justify-between gap-4 border-b border-[#1d1a16]/[0.08] px-4 sm:px-6">
+        <header className="flex h-16 shrink-0 items-center justify-between gap-4 border-b border-white/[0.08] px-4 sm:px-6">
           <div className="min-w-0">
             <h2 className="truncate font-display text-[16px] font-semibold tracking-[-0.02em] sm:text-[17px]">{title}</h2>
-            <p className="truncate font-mono text-[10.5px] uppercase tracking-[0.12em] text-[#1d1a16]/50">{subtitle}</p>
+            <p className="truncate font-mono text-[10.5px] uppercase tracking-[0.12em] text-white/50">{subtitle}</p>
           </div>
           <button
             type="button"
             aria-label="New thread"
-            className={`flex size-11 shrink-0 items-center justify-center rounded-full text-[#1d1a16]/60 transition-colors hover:bg-[#1d1a16]/[0.06] hover:text-[#1d1a16] ${focusRing}`}
+            className={`flex size-11 shrink-0 items-center justify-center rounded-full text-white/60 transition-colors hover:bg-white/[0.06] hover:text-white ${focusRing}`}
           >
             <SquarePen className="size-[18px]" aria-hidden="true" />
           </button>
@@ -597,13 +597,13 @@ export function ChatThread({
 
         {/* Composer */}
         <div className="relative shrink-0 px-3 pb-3 sm:px-8 sm:pb-6">
-          <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 -top-8 h-8 bg-gradient-to-t from-[#f7f4ee] to-transparent" />
+          <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 -top-8 h-8 bg-gradient-to-t from-[#0b0b0c] to-transparent" />
           <form
             onSubmit={(e) => {
               e.preventDefault();
               send();
             }}
-            className="mx-auto max-w-[720px] rounded-[20px] border border-[#1d1a16]/[0.12] bg-[#fffdf9] shadow-[0_1px_2px_rgba(29,26,22,0.05),0_12px_28px_-18px_rgba(29,26,22,0.3)] transition-[border-color,box-shadow] focus-within:border-[#1d1a16]/30 focus-within:shadow-[0_1px_2px_rgba(29,26,22,0.05),0_16px_32px_-18px_rgba(29,26,22,0.4)]"
+            className="mx-auto max-w-[720px] rounded-[20px] border border-white/[0.1] bg-[#111113] shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_12px_28px_-18px_rgba(0,0,0,0.8)] transition-[border-color,box-shadow] focus-within:border-white/30 focus-within:shadow-[0_1px_2px_rgba(0,0,0,0.12),0_16px_32px_-18px_rgba(0,0,0,0.90)]"
           >
             <AnimatePresence initial={false}>
               {files.length ? (
@@ -614,14 +614,14 @@ export function ChatThread({
                   className="flex flex-wrap gap-1.5 overflow-hidden px-3 pt-3"
                 >
                   {files.map((f) => (
-                    <li key={f} className="flex h-8 max-w-full items-center gap-1.5 rounded-[8px] bg-[#1d1a16]/[0.05] pl-2.5 pr-1 text-[12.5px]">
-                      <Paperclip className="size-3.5 shrink-0 text-[#1d1a16]/50" aria-hidden="true" />
+                    <li key={f} className="flex h-8 max-w-full items-center gap-1.5 rounded-[8px] bg-white/[0.05] pl-2.5 pr-1 text-[12.5px]">
+                      <Paperclip className="size-3.5 shrink-0 text-white/50" aria-hidden="true" />
                       <span className="truncate">{f}</span>
                       <button
                         type="button"
                         aria-label={`Remove ${f}`}
                         onClick={() => setFiles((fs) => fs.filter((x) => x !== f))}
-                        className={`flex size-6 shrink-0 items-center justify-center rounded-[6px] text-[#1d1a16]/50 hover:bg-[#1d1a16]/[0.08] hover:text-[#1d1a16] ${focusRing}`}
+                        className={`flex size-6 shrink-0 items-center justify-center rounded-[6px] text-white/50 hover:bg-white/[0.08] hover:text-white ${focusRing}`}
                       >
                         <X className="size-3.5" aria-hidden="true" />
                       </button>
@@ -641,7 +641,7 @@ export function ChatThread({
               onChange={(e) => setDraft(e.target.value)}
               onKeyDown={onKeyDown}
               placeholder={placeholder}
-              className="block max-h-52 min-h-[52px] w-full resize-none bg-transparent px-4 pb-1 pt-[15px] text-[16px] leading-[1.5] text-[#1d1a16] placeholder:text-[#1d1a16]/40 focus:outline-none"
+              className="block max-h-52 min-h-[52px] w-full resize-none bg-transparent px-4 pb-1 pt-[15px] text-[16px] leading-[1.5] text-white placeholder:text-white/40 focus:outline-none"
             />
             <div className="flex items-center justify-between gap-2 px-2 pb-2">
               <div className="flex min-w-0 items-center gap-1">
@@ -662,17 +662,17 @@ export function ChatThread({
                   type="button"
                   aria-label="Attach a file"
                   onClick={() => fileInput.current?.click()}
-                  className={`flex size-11 shrink-0 items-center justify-center rounded-full text-[#1d1a16]/55 transition-colors hover:bg-[#1d1a16]/[0.06] hover:text-[#1d1a16] sm:size-9 ${focusRing}`}
+                  className={`flex size-11 shrink-0 items-center justify-center rounded-full text-white/55 transition-colors hover:bg-white/[0.06] hover:text-white sm:size-9 ${focusRing}`}
                 >
                   <Paperclip className="size-[18px]" aria-hidden="true" />
                 </button>
-                <span className="flex min-w-0 items-center gap-1.5 truncate rounded-full px-2 font-mono text-[11px] text-[#1d1a16]/55">
-                  <span aria-hidden="true" className="size-1.5 shrink-0 rounded-full bg-[#b4532a]" />
+                <span className="flex min-w-0 items-center gap-1.5 truncate rounded-full px-2 font-mono text-[11px] text-white/55">
+                  <span aria-hidden="true" className="size-1.5 shrink-0 rounded-full bg-[#ff9a6b]" />
                   <span className="truncate">{model}</span>
                 </span>
               </div>
               <div className="flex shrink-0 items-center gap-3">
-                <span className="hidden font-mono text-[10.5px] text-[#1d1a16]/40 md:inline">
+                <span className="hidden font-mono text-[10.5px] text-white/40 md:inline">
                   <kbd className="font-mono">↵</kbd> send · <kbd className="font-mono">⇧↵</kbd> new line
                 </span>
                 {streaming ? (
@@ -680,7 +680,7 @@ export function ChatThread({
                     type="button"
                     aria-label="Stop generating"
                     onClick={() => setStreamingId(null)}
-                    className={`flex size-11 items-center justify-center rounded-full bg-[#1d1a16] text-[#f7f4ee] transition-transform active:scale-95 sm:size-9 ${focusRing}`}
+                    className={`flex size-11 items-center justify-center rounded-full bg-white text-black transition-transform active:scale-95 sm:size-9 ${focusRing}`}
                   >
                     <Square className="size-3.5 fill-current" aria-hidden="true" />
                   </button>
@@ -689,7 +689,7 @@ export function ChatThread({
                     type="submit"
                     aria-label="Send message"
                     disabled={!canSend}
-                    className={`flex size-11 items-center justify-center rounded-full bg-[#1d1a16] text-[#f7f4ee] transition-[transform,opacity,background-color] hover:bg-[#b4532a] active:scale-95 disabled:cursor-not-allowed disabled:bg-[#1d1a16]/15 disabled:text-[#1d1a16]/40 disabled:hover:bg-[#1d1a16]/15 sm:size-9 ${focusRing}`}
+                    className={`flex size-11 items-center justify-center rounded-full bg-white text-black transition-[transform,opacity,background-color] hover:bg-[#ff9a6b] active:scale-95 disabled:cursor-not-allowed disabled:bg-white/15 disabled:text-white/40 disabled:hover:bg-white/15 sm:size-9 ${focusRing}`}
                   >
                     <ArrowUp className="size-[18px]" strokeWidth={2.2} aria-hidden="true" />
                   </button>
@@ -697,7 +697,7 @@ export function ChatThread({
               </div>
             </div>
           </form>
-          <p className="mx-auto mt-2 hidden max-w-[720px] text-center font-mono text-[10.5px] text-[#1d1a16]/40 sm:block">
+          <p className="mx-auto mt-2 hidden max-w-[720px] text-center font-mono text-[10.5px] text-white/40 sm:block">
             {assistantName} can be confidently wrong. Check anything that matters.
           </p>
         </div>

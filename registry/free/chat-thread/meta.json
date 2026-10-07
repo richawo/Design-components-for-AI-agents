@@ -7,7 +7,7 @@
   "description": "A warm, document-style AI chat: typeset replies with code and sources, ink user bubbles, a streaming last answer and a composer that really sends.",
   "tags": ["ai", "chat", "assistant", "streaming", "composer", "code block", "llm", "conversation"],
   "dependencies": ["motion", "lucide-react"],
-  "theme": "light",
+  "theme": "dark",
   "previewHeight": 900,
   "usage": "import { ChatThread } from \"@/components/design-for-ai/chat-thread\";\n\nexport default function Page() {\n  return (\n    <ChatThread\n      title=\"Quarterly plan, second draft\"\n      assistantName=\"Wren\"\n      model=\"Wren 2 · Balanced\"\n      onSend={(text) => console.log(text)}\n      reply={(text) => [{ type: \"p\", text: `You said: ${text}` }]}\n    />\n  );\n}",
   "props": [
