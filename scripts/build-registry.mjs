@@ -80,7 +80,7 @@ function readComponents(tier) {
           fail(slug, `prompt.json is not valid JSON (${e.message})`);
         }
       }
-      validateCompleteness(slug, meta, fs.existsSync(promptPath) ? fs.readFileSync(promptPath, "utf8") : "", promptJson);
+      validateCompleteness(slug, meta, fs.existsSync(promptPath) ? fs.readFileSync(promptPath, "utf8") : "", promptJson, fs.existsSync(codePath) ? fs.readFileSync(codePath, "utf8") : "");
       return {
         meta,
         tier,
@@ -112,8 +112,17 @@ function validateMeta(slug, tier, m) {
 }
 
 /** Published components must ship real briefs, not placeholders. */
-function validateCompleteness(slug, m, prompt, promptJson) {
+function validateCompleteness(slug, m, prompt, promptJson, code) {
   if (m.status === "draft") return;
+  // The usage example must import a name the file actually exports.
+  const named = /import\s*\{([^}]+)\}\s*from/.exec(m.usage ?? "");
+  if (named) {
+    for (const name of named[1].split(",").map((x) => x.trim().split(/\s+as\s+/)[0]).filter(Boolean)) {
+      if (!new RegExp(`export\\s+(function|const|class|type)\\s+${name}\\b`).test(code)) fail(slug, `usage imports { ${name} } but the file doesn't export it`);
+    }
+  } else if (/import\s+\w+\s+from/.test(m.usage ?? "")) {
+    fail(slug, "usage should use the named export; the default export is the demo");
+  }
   if ((prompt ?? "").trim().length < 600) fail(slug, "prompt.md is too short to rebuild the component (min 600 chars)");
   if ((promptJson ?? "").trim().length < 600) fail(slug, "prompt.json is too thin (min 600 chars)");
   if ((m.usage ?? "").trim().length < 40) fail(slug, "usage example is a placeholder");

@@ -16,7 +16,7 @@
   "dependencies": [],
   "theme": "light",
   "previewHeight": 900,
-  "usage": "import MobileOnboarding from \"@/components/design-for-ai/native/mobile-onboarding\";\n\nexport default function Welcome({ navigation }) {\n  return <MobileOnboarding brand=\"lumen\" onFinish={() => navigation.replace(\"Home\")} />;\n}",
+  "usage": "import { MobileOnboarding } from \"@/components/design-for-ai/native/mobile-onboarding\";\n\nexport default function Welcome({ navigation }) {\n  return <MobileOnboarding brand=\"lumen\" onFinish={() => navigation.replace(\"Home\")} />;\n}",
   "props": [
     {
       "name": "brand",

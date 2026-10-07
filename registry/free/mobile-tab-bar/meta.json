@@ -16,7 +16,7 @@
   "dependencies": [],
   "theme": "dark",
   "previewHeight": 900,
-  "usage": "import MobileTabBar from \"@/components/design-for-ai/native/mobile-tab-bar\";\n\n<MobileTabBar\n  runnerName=\"Sam\"\n  weeklyGoalKm={30}\n  onRecordChange={(recording) => recording ? startRun() : stopRun()}\n/>",
+  "usage": "import { MobileTabBar } from \"@/components/design-for-ai/native/mobile-tab-bar\";\n\n<MobileTabBar\n  runnerName=\"Sam\"\n  weeklyGoalKm={30}\n  onRecordChange={(recording) => recording ? startRun() : stopRun()}\n/>",
   "props": [
     {
       "name": "tabs",

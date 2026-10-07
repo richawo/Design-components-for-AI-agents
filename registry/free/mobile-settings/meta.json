@@ -16,7 +16,7 @@
   "dependencies": [],
   "theme": "light",
   "previewHeight": 900,
-  "usage": "import MobileSettings from \"@/components/design-for-ai/native/mobile-settings\";\n\n<MobileSettings\n  appName=\"Inkwell\"\n  initialAppearance=\"auto\"\n  onAppearanceChange={setTheme}\n  onSignOut={signOut}\n/>",
+  "usage": "import { MobileSettings } from \"@/components/design-for-ai/native/mobile-settings\";\n\n<MobileSettings\n  appName=\"Inkwell\"\n  initialAppearance=\"auto\"\n  onAppearanceChange={setTheme}\n  onSignOut={signOut}\n/>",
   "props": [
     {
       "name": "appName",
