@@ -16,8 +16,40 @@
   "dependencies": [],
   "theme": "light",
   "previewHeight": 900,
-  "usage": "x",
-  "props": [],
-  "added": "2026-10-07",
-  "status": "draft"
+  "usage": "import MobileSettings from \"@/components/design-for-ai/native/mobile-settings\";\n\n<MobileSettings\n  appName=\"Inkwell\"\n  initialAppearance=\"auto\"\n  onAppearanceChange={setTheme}\n  onSignOut={signOut}\n/>",
+  "props": [
+    {
+      "name": "appName",
+      "type": "string",
+      "default": "\"Folio\"",
+      "description": "App name in the footer."
+    },
+    {
+      "name": "version",
+      "type": "string",
+      "description": "Version string in the footer."
+    },
+    {
+      "name": "profile",
+      "type": "SettingsProfile",
+      "description": "Name, email, plan, renewal and stats."
+    },
+    {
+      "name": "initialAppearance",
+      "type": "\"light\" | \"dark\" | \"auto\"",
+      "default": "\"light\"",
+      "description": "Starting theme."
+    },
+    {
+      "name": "onAppearanceChange",
+      "type": "(value) => void",
+      "description": "Fired when the segmented control changes."
+    },
+    {
+      "name": "onSignOut",
+      "type": "() => void",
+      "description": "Fired by the Sign out row."
+    }
+  ],
+  "added": "2026-10-07"
 }

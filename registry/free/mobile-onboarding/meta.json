@@ -16,8 +16,36 @@
   "dependencies": [],
   "theme": "light",
   "previewHeight": 900,
-  "usage": "x",
-  "props": [],
-  "added": "2026-10-07",
-  "status": "draft"
+  "usage": "import MobileOnboarding from \"@/components/design-for-ai/native/mobile-onboarding\";\n\nexport default function Welcome({ navigation }) {\n  return <MobileOnboarding brand=\"lumen\" onFinish={() => navigation.replace(\"Home\")} />;\n}",
+  "props": [
+    {
+      "name": "brand",
+      "type": "string",
+      "default": "\"grove\"",
+      "description": "Wordmark in the top bar."
+    },
+    {
+      "name": "slides",
+      "type": "OnboardingSlide[]",
+      "description": "Kicker, title, body, background, accent and art (seed | chain | steps) per slide."
+    },
+    {
+      "name": "skipLabel",
+      "type": "string",
+      "default": "\"Skip\"",
+      "description": "Top-right skip label."
+    },
+    {
+      "name": "finishLabel",
+      "type": "string",
+      "default": "\"Get started\"",
+      "description": "Label on the final pill button."
+    },
+    {
+      "name": "onFinish",
+      "type": "() => void",
+      "description": "Called by Get started, or Skip on the last slide."
+    }
+  ],
+  "added": "2026-10-07"
 }

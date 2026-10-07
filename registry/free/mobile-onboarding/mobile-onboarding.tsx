@@ -300,7 +300,7 @@ function SeedArt({ accent, size, shift }: { accent: string; size: number; shift:
         </View>
       </Animated.View>
       {/* ticket */}
-      <Animated.View style={[styles.ticket, { top: size * 0.06, right: -4, transform: [{ translateX: shift(0.55) }, { rotate: "8deg" }] }]}>
+      <Animated.View style={[styles.ticket, { top: size * 0.06, right: -4, transform: [{ translateX: shift(0.55) }, { rotate: "3deg" }] }]}>
         <Text style={styles.ticketBig}>2</Text>
         <Text style={styles.ticketSmall}>MIN{"\n"}COUNTS</Text>
       </Animated.View>
@@ -332,7 +332,7 @@ function ChainArt({ accent, size, shift }: { accent: string; size: number; shift
           height: size * 0.72,
           borderRadius: 28,
           backgroundColor: accent,
-          transform: [{ translateX: shift(0.1) }, { rotate: "6deg" }],
+          transform: [{ translateX: shift(0.1) }, { rotate: "2deg" }],
         }}
       />
       <Animated.View style={[styles.calendar, { width: size * 0.9, transform: [{ translateX: shift(0.22) }, { rotate: "-3deg" }] }]}>
@@ -370,7 +370,7 @@ function ChainArt({ accent, size, shift }: { accent: string; size: number; shift
           </View>
         ))}
       </Animated.View>
-      <Animated.View style={[styles.sticker, { backgroundColor: CREAM, right: 0, bottom: size * 0.02, transform: [{ translateX: shift(0.5) }, { rotate: "-10deg" }] }]}>
+      <Animated.View style={[styles.sticker, { backgroundColor: CREAM, right: 0, bottom: size * 0.02, transform: [{ translateX: shift(0.5) }, { rotate: "-3deg" }] }]}>
         <Text style={[styles.stickerNum, { color: accent }]}>24</Text>
         <Text style={styles.stickerLabel}>DAY STREAK</Text>
       </Animated.View>
@@ -435,7 +435,7 @@ function StepsArt({ accent, size, shift }: { accent: string; size: number; shift
         <View style={{ width: 3, height: size * 0.17, backgroundColor: INK, borderRadius: 2 }} />
         <View style={{ position: "absolute", left: 3, top: 0, width: size * 0.13, height: size * 0.08, backgroundColor: accent, borderTopRightRadius: 4, borderBottomRightRadius: 14 }} />
       </Animated.View>
-      <Animated.View style={{ position: "absolute", left: 0, top: size * 0.41, transform: [{ translateX: shift(0.5) }, { rotate: "-6deg" }] }}>
+      <Animated.View style={{ position: "absolute", left: 0, top: size * 0.41, transform: [{ translateX: shift(0.5) }, { rotate: "-2deg" }] }}>
         <View style={[styles.chip, { backgroundColor: CREAM }]}>
           <Text style={[styles.chipText, { color: INK }]}>+18% this month</Text>
         </View>

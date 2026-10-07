@@ -1,1 +1,14 @@
-{"component":"","intent":"","platform":"mobile","stack":{},"layout":{},"typography":{},"color":{},"motion":{},"responsive":{},"accessibility":[],"content":{},"avoid":[]}
+{
+  "component": "MobileTabBar",
+  "intent": "Floating dark tab bar with a sliding lime indicator, rising active icons and a raised record button, switching four designed running-app screens.",
+  "platform": "mobile",
+  "stack": { "framework": "React Native (core only)", "apis": ["Animated.spring", "Animated.timing", "Animated.loop", "Pressable", "StyleSheet"], "web": "react-native-web compatible" },
+  "layout": { "bar": "floating pill radius 34pt, inset 16pt; 4 tabs + raised 64pt centre button", "screens": "Today (greeting, weekly km card, next workout, shoe mileage), Routes, Club, You" },
+  "typography": { "greeting": { "size": 32, "weight": "800", "letterSpacing": -1 }, "bigStat": { "size": 64, "weight": "800" }, "meta": { "font": "Menlo/monospace", "size": 11, "case": "uppercase" }, "tabLabel": { "size": 11, "weight": "700" } },
+  "color": { "background": "#0E0F0B", "surface": "#1A1B16", "raised": "#23241E", "line": "rgba(242,241,234,0.08)", "text": "#F2F1EA", "muted": "rgba(242,241,234,0.56)", "accent": "#D4FF3A" },
+  "motion": { "indicator": "spring stiffness 320 damping 24 mass 0.9", "activeIcon": "translateY 7→0 + label fade, spring 300/22", "screen": "opacity + translateY 12→0, 320ms bezier(0.2,0.8,0.2,1)", "recordPulse": "loop 1.6s ease-out", "reducedMotion": "no springs or pulse" },
+  "responsive": { "width": "360-430pt; bar inset scales with width" },
+  "accessibility": ["tabs use accessibilityRole tab + selected state", "record button label reflects state", "reduced motion respected"],
+  "content": { "runner": "Adaeze", "weeklyGoalKm": 40, "week": "M T W T F S S with today highlighted", "tabs": ["Today", "Routes", "Club", "You"] },
+  "avoid": ["icon fonts", "emoji", "stock tab bar", "multiple accent colours", "SVG libraries"]
+}

@@ -16,8 +16,46 @@
   "dependencies": [],
   "theme": "dark",
   "previewHeight": 900,
-  "usage": "x",
-  "props": [],
-  "added": "2026-10-07",
-  "status": "draft"
+  "usage": "import MobileTabBar from \"@/components/design-for-ai/native/mobile-tab-bar\";\n\n<MobileTabBar\n  runnerName=\"Sam\"\n  weeklyGoalKm={30}\n  onRecordChange={(recording) => recording ? startRun() : stopRun()}\n/>",
+  "props": [
+    {
+      "name": "tabs",
+      "type": "{ key: TabKey; label: string }[]",
+      "description": "The four tabs."
+    },
+    {
+      "name": "initialTab",
+      "type": "TabKey",
+      "default": "\"today\"",
+      "description": "Tab shown first."
+    },
+    {
+      "name": "runnerName",
+      "type": "string",
+      "default": "\"Adaeze\"",
+      "description": "Name in the greeting."
+    },
+    {
+      "name": "weeklyGoalKm",
+      "type": "number",
+      "default": "40",
+      "description": "Weekly distance goal."
+    },
+    {
+      "name": "week",
+      "type": "{ day: string; km: number }[]",
+      "description": "Seven days of distance."
+    },
+    {
+      "name": "routes",
+      "type": "RouteItem[]",
+      "description": "Saved routes with elevation shapes."
+    },
+    {
+      "name": "onRecordChange",
+      "type": "(recording: boolean) => void",
+      "description": "Fired when the centre button starts or stops a run."
+    }
+  ],
+  "added": "2026-10-07"
 }
