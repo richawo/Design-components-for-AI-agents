@@ -7,7 +7,7 @@
   "description": "An answer card that streams in natural, uneven chunks with a soft caret, inline citation numbers, sources that fade in and Stop, Regenerate and Copy.",
   "tags": ["ai", "streaming", "citations", "answer", "llm", "search", "sources", "typewriter"],
   "dependencies": ["motion", "lucide-react"],
-  "theme": "light",
+  "theme": "dark",
   "previewHeight": 1040,
   "usage": "import { StreamingText } from \"@/components/design-for-ai/streaming-text\";\n\nexport default function Answer() {\n  return (\n    <StreamingText\n      question=\"Is it worth replacing our cron jobs with a queue?\"\n      askedBy=\"Asked by Sam · 16:02\"\n      answer={[\n        \"Probably, once retries matter more than timing.[1] A queue gives you backpressure for free.[2]\",\n      ]}\n      sources={[\n        { title: \"Retries without regret\", publisher: \"Ops Weekly\", href: \"/r/1\" },\n        { title: \"Backpressure, explained slowly\", publisher: \"Systems Field Guide\", href: \"/r/2\" },\n      ]}\n    />\n  );\n}",
   "props": [

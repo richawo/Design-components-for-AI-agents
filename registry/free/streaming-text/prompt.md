@@ -1,21 +1,21 @@
 Build a streaming AI answer card in React + Tailwind CSS (v4), using `motion/react` for the caret, citations and source reveal and `lucide-react` for the control icons. It should read like a well-edited reference answer arriving live, calm and legible, with the sources treated as first-class rather than an afterthought.
 
 **Layout**
-- Section on pale sage-grey `#e5e8e2`, 16px gutters (32px from `sm`), 48px vertical padding (80px from `sm`).
-- One card, max-width 820px, centred: off-white `#fbfbf8`, radius 24px, a 1px ring at 7% ink and a soft drop shadow (`0 24px 48px -28px` at 28% ink). It has three bands split by 1px rules at 8% ink:
-  1. **Header** (28/44px top padding, 24/48px sides): a mono line ("Asked by Noor · 09:14") led by a 20px forest-green hairline, then the question as the headline.
+- Section on pure black, 16px gutters (32px from `sm`), 48px vertical padding (80px from `sm`).
+- One card, max-width 820px, centred: `#0b0b0c`, radius 24px, a 1px ring at white/8%, an inset top highlight at white/6% and a deep shadow (`0 30px 80px -30px` black at 90%). It has three bands split by 1px rules at white/8%:
+  1. **Header** (28/44px top padding, 24/48px sides): a mono line ("Asked by Noor · 09:14") led by a 20px accent hairline, then the question as the headline.
   2. **Answer**: a 24px-tall status row, the answer body (min-height 12rem so the card doesn't jump), then the sources list.
   3. **Footer**: a small mono disclaimer on the left, Stop or Regenerate plus Copy on the right. Wraps on phones.
 - Sources: an ordered list between hairlines. Each row is a 3-column grid (2rem number, title over publisher, arrow-up-right icon), at least 48px tall.
 
 **Typography**
 - Question: Geist semibold, `clamp(1.75rem, 1.2rem + 2.2vw, 2.75rem)`, leading 1.05, tracking −0.04em, max 26ch, `text-balance`.
-- Answer: sans (Geist) at 17.5px (16.5px on phones), leading 1.72, 84% ink, measure 64ch, 1.1em between paragraphs, `text-pretty`. **Bold** goes full ink at weight 600.
-- Labels and disclaimer: mono, 11px, uppercase, tracking 0.14em, 50–55% ink. The status line is mono 12px in sentence case at 60% ink with tabular numbers ("155 words in 5.9s").
+- Answer: sans (Geist) at 17.5px (16.5px on phones), leading 1.72, white at 76%, measure 64ch, 1.1em between paragraphs, `text-pretty`. **Bold** goes full white at weight 600.
+- Labels and disclaimer: mono, 11px, uppercase, tracking 0.14em, white/50–55. The status line is mono 12px in sentence case at white/60 with tabular numbers ("155 words in 5.9s").
 - Citations: superscript pills, 17px tall, min 17px wide, mono 10px weight 500, raised −0.45em.
 
 **Colour**
-- Background `#e5e8e2`, card `#fbfbf8`, ink `#141a17` (text at 84%, metadata at 50–55%), forest `#2f6b4f` as the only accent: caret, citation pills (12% tint with forest text; solid with white text when active), status dot, source numbers, focus rings.
+- Background black, card `#0b0b0c`, white type (answer at 76%, metadata at 50–55%), and warm peach `#ff9a6b` as the only accent: caret, citation pills (12% tint with peach text; solid with black text when active), status dot, source numbers and focus rings (offset against the card colour).
 
 **Motion**
 - **Reading** (900ms): a pinging forest dot, "Reading 5 sources" and three pulsing dots, with three skeleton lines (92%, 100%, 76% wide) breathing in the body.

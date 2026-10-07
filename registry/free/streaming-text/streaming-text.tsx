@@ -179,7 +179,7 @@ export function StreamingText({
           t.kind === "cite" ? (
             <Cite key={ti} n={t.n} source={sources[t.n - 1]} active={hover === t.n} onHover={setHover} reduce={reduce} />
           ) : t.bold ? (
-            <strong key={ti} className="font-semibold text-[#141a17]">
+            <strong key={ti} className="font-semibold text-white">
               {t.text}
             </strong>
           ) : (
@@ -204,31 +204,31 @@ export function StreamingText({
             : `${words} words in ${seconds}s`;
 
   return (
-    <section className={`min-h-dvh bg-[#e5e8e2] px-4 py-12 text-[#141a17] sm:px-8 sm:py-20 ${className}`}>
-      <article className="mx-auto max-w-[820px] rounded-[24px] bg-[#fbfbf8] shadow-[0_1px_0_rgba(20,26,23,0.04),0_24px_48px_-28px_rgba(20,26,23,0.28)] ring-1 ring-[#141a17]/[0.07]">
+    <section className={`min-h-dvh bg-black px-4 py-12 text-white sm:px-8 sm:py-20 ${className}`}>
+      <article className="mx-auto max-w-[820px] relative rounded-[24px] bg-[#0b0b0c] shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_30px_80px_-30px_rgba(0,0,0,0.9)] ring-1 ring-white/[0.08]">
         <header className="px-6 pb-6 pt-7 sm:px-12 sm:pb-8 sm:pt-11">
-          <p className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-[#141a17]/55">
-            <span aria-hidden="true" className="h-px w-5 bg-[#2f6b4f]" />
+          <p className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-white/55">
+            <span aria-hidden="true" className="h-px w-5 bg-[#ff9a6b]" />
             {askedBy}
           </p>
           <h2 className="mt-4 max-w-[26ch] font-sans text-[clamp(1.75rem,1.2rem+2.2vw,2.75rem)] font-semibold leading-[1.05] tracking-[-0.04em] text-balance">{question}</h2>
         </header>
 
-        <div className="border-t border-[#141a17]/[0.08] px-6 py-7 sm:px-12 sm:py-9">
+        <div className="border-t border-white/[0.08] px-6 py-7 sm:px-12 sm:py-9">
           {/* Status line */}
-          <div className="mb-5 flex h-6 items-center gap-2.5 font-mono text-[12px] text-[#141a17]/60">
+          <div className="mb-5 flex h-6 items-center gap-2.5 font-mono text-[12px] text-white/60">
             <StatusMark phase={phase} />
             <span className="tabular-nums">{status}</span>
             {phase === "reading" ? <ReadingDots /> : null}
           </div>
 
-          <div aria-live="polite" aria-busy={live} className="min-h-[12rem] space-y-[1.1em] text-[16.5px] leading-[1.72] text-[#141a17]/[0.84] sm:text-[17.5px]">
+          <div aria-live="polite" aria-busy={live} className="min-h-[12rem] space-y-[1.1em] text-[16.5px] leading-[1.72] text-white/[0.76] sm:text-[17.5px]">
             {phase === "reading" ? (
               <div aria-hidden="true" className="space-y-3 pt-1.5">
                 {[92, 100, 76].map((w, i) => (
                   <motion.div
                     key={i}
-                    className="h-3 rounded-full bg-[#141a17]/[0.06]"
+                    className="h-3 rounded-full bg-white/[0.06]"
                     style={{ width: `${w}%` }}
                     animate={{ opacity: [0.5, 1, 0.5] }}
                     transition={{ duration: 1.4, repeat: Infinity, delay: i * 0.12 }}
@@ -251,8 +251,8 @@ export function StreamingText({
                 transition={{ duration: 0.55, ease: [0.2, 0.8, 0.2, 1] }}
                 className="mt-9"
               >
-                <h3 className="mb-3 font-mono text-[11px] uppercase tracking-[0.14em] text-[#141a17]/55">Sources</h3>
-                <ol className="divide-y divide-[#141a17]/[0.07] border-y border-[#141a17]/[0.07]">
+                <h3 className="mb-3 font-mono text-[11px] uppercase tracking-[0.14em] text-white/55">Sources</h3>
+                <ol className="divide-y divide-white/[0.07] border-y border-white/[0.07]">
                   {sources.map((s, i) => (
                     <motion.li
                       key={s.title}
@@ -267,14 +267,14 @@ export function StreamingText({
                         onMouseLeave={() => setHover(null)}
                         onFocus={() => setHover(i + 1)}
                         onBlur={() => setHover(null)}
-                        className={`group grid min-h-12 grid-cols-[2rem_1fr_auto] items-center gap-3 rounded-[8px] px-1 py-2.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2f6b4f] ${hover === i + 1 ? "bg-[#2f6b4f]/[0.06]" : ""}`}
+                        className={`group grid min-h-12 grid-cols-[2rem_1fr_auto] items-center gap-3 rounded-[8px] px-1 py-2.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff9a6b] ${hover === i + 1 ? "bg-[#ff9a6b]/[0.06]" : ""}`}
                       >
-                        <span className={`flex size-6 items-center justify-center rounded-full font-mono text-[11px] tabular-nums transition-colors ${hover === i + 1 ? "bg-[#2f6b4f] text-white" : "bg-[#2f6b4f]/10 text-[#2f6b4f]"}`}>{i + 1}</span>
+                        <span className={`flex size-6 items-center justify-center rounded-full font-mono text-[11px] tabular-nums transition-colors ${hover === i + 1 ? "bg-[#ff9a6b] text-black" : "bg-[#ff9a6b]/10 text-[#ff9a6b]"}`}>{i + 1}</span>
                         <span className="min-w-0">
-                          <span className="block text-[14.5px] font-medium leading-snug text-[#141a17] sm:truncate">{s.title}</span>
-                          <span className="block truncate text-[12.5px] text-[#141a17]/55">{s.publisher}</span>
+                          <span className="block text-[14.5px] font-medium leading-snug text-white sm:truncate">{s.title}</span>
+                          <span className="block truncate text-[12.5px] text-white/55">{s.publisher}</span>
                         </span>
-                        <ArrowUpRight className="size-4 text-[#141a17]/35 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[#2f6b4f]" aria-hidden="true" />
+                        <ArrowUpRight className="size-4 text-white/35 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[#ff9a6b]" aria-hidden="true" />
                       </a>
                     </motion.li>
                   ))}
@@ -285,8 +285,8 @@ export function StreamingText({
         </div>
 
         {/* Controls */}
-        <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-[#141a17]/[0.08] px-4 py-3 sm:px-10">
-          <p className="pl-2 font-mono text-[11px] text-[#141a17]/50 sm:pl-2">Answers can be wrong. Check the sources.</p>
+        <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-white/[0.08] px-4 py-3 sm:px-10">
+          <p className="pl-2 font-mono text-[11px] text-white/50 sm:pl-2">Answers can be wrong. Check the sources.</p>
           <div className="flex items-center gap-1">
             {live ? (
               <ControlButton onClick={stop} label="Stop">
@@ -326,7 +326,7 @@ function Cite({ n, source, active, onHover, reduce }: { n: number; source?: Stre
         onMouseLeave={() => onHover(null)}
         onFocus={() => onHover(n)}
         onBlur={() => onHover(null)}
-        className={`inline-flex h-[17px] min-w-[17px] items-center justify-center rounded-full px-[5px] font-mono text-[10px] font-medium tabular-nums transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2f6b4f] focus-visible:ring-offset-1 ${active ? "bg-[#2f6b4f] text-white" : "bg-[#2f6b4f]/[0.12] text-[#2f6b4f] hover:bg-[#2f6b4f]/20"}`}
+        className={`inline-flex h-[17px] min-w-[17px] items-center justify-center rounded-full px-[5px] font-mono text-[10px] font-medium tabular-nums transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff9a6b] focus-visible:ring-offset-1 focus-visible:ring-offset-[#0b0b0c] ${active ? "bg-[#ff9a6b] text-black" : "bg-[#ff9a6b]/[0.12] text-[#ff9a6b] hover:bg-[#ff9a6b]/20"}`}
       >
         {n}
       </a>
@@ -338,7 +338,7 @@ function SoftCaret() {
   return (
     <motion.span
       aria-hidden="true"
-      className="ml-[3px] inline-block h-[1.1em] w-[3px] translate-y-[0.2em] rounded-full bg-[#2f6b4f]"
+      className="ml-[3px] inline-block h-[1.1em] w-[3px] translate-y-[0.2em] rounded-full bg-[#ff9a6b]"
       animate={{ opacity: [0.9, 0.2, 0.9] }}
       transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
     />
@@ -351,7 +351,7 @@ function ReadingDots() {
       {[0, 1, 2].map((i) => (
         <motion.span
           key={i}
-          className="size-1 rounded-full bg-[#141a17]/50"
+          className="size-1 rounded-full bg-white/50"
           animate={{ opacity: [0.2, 1, 0.2] }}
           transition={{ duration: 0.9, repeat: Infinity, delay: i * 0.15 }}
         />
@@ -361,12 +361,12 @@ function ReadingDots() {
 }
 
 function StatusMark({ phase }: { phase: Phase }) {
-  if (phase === "done") return <span aria-hidden="true" className="size-2 rounded-full bg-[#2f6b4f]" />;
-  if (phase === "stopped") return <span aria-hidden="true" className="size-2 rounded-[2px] bg-[#141a17]/40" />;
+  if (phase === "done") return <span aria-hidden="true" className="size-2 rounded-full bg-[#ff9a6b]" />;
+  if (phase === "stopped") return <span aria-hidden="true" className="size-2 rounded-[2px] bg-white/40" />;
   return (
     <span aria-hidden="true" className="relative flex size-2">
-      <span className="absolute inline-flex size-full animate-ping rounded-full bg-[#2f6b4f] opacity-50 motion-reduce:hidden" />
-      <span className="relative inline-flex size-2 rounded-full bg-[#2f6b4f]" />
+      <span className="absolute inline-flex size-full animate-ping rounded-full bg-[#ff9a6b] opacity-50 motion-reduce:hidden" />
+      <span className="relative inline-flex size-2 rounded-full bg-[#ff9a6b]" />
     </span>
   );
 }
@@ -378,7 +378,7 @@ function ControlButton({ children, label, onClick, disabled, pressed }: { childr
       onClick={onClick}
       disabled={disabled}
       aria-live={pressed !== undefined ? "polite" : undefined}
-      className={`inline-flex h-11 items-center gap-2 rounded-full px-4 text-[13.5px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2f6b4f] disabled:cursor-not-allowed disabled:opacity-35 sm:h-10 ${pressed ? "text-[#2f6b4f]" : "text-[#141a17]/75 hover:bg-[#141a17]/[0.05] hover:text-[#141a17]"}`}
+      className={`inline-flex h-11 items-center gap-2 rounded-full px-4 text-[13.5px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff9a6b] disabled:cursor-not-allowed disabled:opacity-35 sm:h-10 ${pressed ? "text-[#ff9a6b]" : "text-white/75 hover:bg-white/[0.05] hover:text-white"}`}
     >
       {children}
       {label}
