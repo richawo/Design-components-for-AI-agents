@@ -26,7 +26,9 @@ Build a ⌘K command palette in React + Tailwind CSS (v4), using `motion/react` 
 
 **Motion**
 - The palette enters from y −10px and scale 0.98 over 220ms with ease [0.2, 0.8, 0.2, 1], and exits to y −6px. The scrim fades over 200ms.
-- The selection marker slides between rows with a shared `layoutId` over 180ms. Row backgrounds change in 100ms.
+- One highlight (white/6%) and the accent marker glide between rows together on a shared `layoutId` spring (stiffness 600, damping 44); rows never light up individually.
+- Choosing an item (Enter or click) flashes its row (scale 0.985, highlight to white/10%) for 130ms before the palette closes, so the choice registers.
+- Rows and the trigger press to 0.99/0.98. The empty state fades up 6px over 240ms.
 - Reduced motion: opacity only, no movement, and no marker travel.
 
 **Accessibility**

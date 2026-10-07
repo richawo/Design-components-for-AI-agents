@@ -161,7 +161,7 @@ function Highlight({ text, indices }: { text: string; indices: number[] }) {
 /* Component                                                            */
 /* ------------------------------------------------------------------ */
 
-const ease = [0.2, 0.8, 0.2, 1] as const;
+const ease = [0.22, 1, 0.36, 1] as const;
 
 export function CommandPalette({
   groups = defaultGroups,
@@ -177,6 +177,8 @@ export function CommandPalette({
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
   const [toast, setToast] = useState<string | null>(null);
+  // The chosen row flashes before the palette closes, so the choice registers.
+  const [pressed, setPressed] = useState<string | null>(null);
   const input = useRef<HTMLInputElement>(null);
   const list = useRef<HTMLDivElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
@@ -246,11 +248,19 @@ export function CommandPalette({
   }, []);
 
   const choose = (item: CommandItem) => {
-    onSelect?.(item);
-    setToast(item.label.replace(/^Go to |^Open /, ""));
-    if (toastTimer.current) clearTimeout(toastTimer.current);
-    toastTimer.current = setTimeout(() => setToast(null), 2200);
-    close();
+    if (pressed) return;
+    setPressed(item.id);
+    setTimeout(
+      () => {
+        setPressed(null);
+        onSelect?.(item);
+        setToast(item.label.replace(/^Go to |^Open /, ""));
+        if (toastTimer.current) clearTimeout(toastTimer.current);
+        toastTimer.current = setTimeout(() => setToast(null), 2200);
+        close();
+      },
+      reduce ? 0 : 130,
+    );
   };
 
   const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -362,11 +372,19 @@ export function CommandPalette({
                           onMouseMove={() => active !== i && setActive(i)}
                           onMouseDown={(e) => e.preventDefault()}
                           onClick={() => choose(item)}
-                          className={`relative flex min-h-11 cursor-pointer items-center gap-3 rounded-[10px] px-3 py-1.5 text-[14.5px] transition-colors duration-100 ${selected ? "bg-white/[0.06] text-white" : "text-white/75"}`}
+                          className={`relative isolate flex min-h-11 cursor-pointer items-center gap-3 rounded-[10px] px-3 py-1.5 text-[14.5px] transition-[color,transform] duration-100 active:scale-[0.99] ${selected ? "text-white" : "text-white/75"} ${pressed === item.id ? "scale-[0.985]" : ""}`}
                         >
-                          {selected ? <motion.span layoutId={`${uid}-marker`} transition={{ duration: reduce ? 0 : 0.18, ease }} className="absolute inset-y-2.5 left-0 w-[3px] rounded-full bg-[#ff7a45]" /> : null}
+                          {/* One highlight glides between rows rather than each row lighting up. */}
+                          {selected ? (
+                            <motion.span
+                              layoutId={`${uid}-hl`}
+                              transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 600, damping: 44 }}
+                              className={`absolute inset-0 -z-10 rounded-[10px] transition-colors duration-100 ${pressed === item.id ? "bg-white/[0.1]" : "bg-white/[0.06]"}`}
+                            />
+                          ) : null}
+                          {selected ? <motion.span layoutId={`${uid}-marker`} transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 600, damping: 44 }} className="absolute inset-y-2.5 left-0 w-[3px] rounded-full bg-[#ff7a45]" /> : null}
                           <span
-                            className={`flex size-7 shrink-0 items-center justify-center rounded-[7px] transition-colors ${selected ? "bg-white text-black" : "bg-white/[0.05] text-white/55"}`}
+                            className={`flex size-7 shrink-0 items-center justify-center rounded-[7px] transition-colors duration-100 ${selected ? "bg-white text-black" : "bg-white/[0.05] text-white/55"}`}
                           >
                             <ItemIcon className="size-[15px]" aria-hidden="true" />
                           </span>
@@ -389,7 +407,13 @@ export function CommandPalette({
               })}
 
               {flat.length === 0 ? (
-                <div role="status" className="flex flex-col items-center px-6 py-12 text-center">
+                <motion.div
+                  role="status"
+                  initial={reduce ? { opacity: 0 } : { opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.24, ease }}
+                  className="flex flex-col items-center px-6 py-12 text-center"
+                >
                   <span aria-hidden="true" className="mb-4 flex size-11 items-center justify-center rounded-full border border-dashed border-white/20 text-white/40">
                     <Search className="size-[18px]" />
                   </span>
@@ -405,7 +429,7 @@ export function CommandPalette({
                     </button>
                     .
                   </p>
-                </div>
+                </motion.div>
               ) : null}
             </div>
 
@@ -511,7 +535,7 @@ function BackdropApp({ workspace, triggerRef, onOpen }: { workspace: string; tri
             onClick={onOpen}
             aria-label="Open command palette"
             aria-keyshortcuts="Meta+K Control+K"
-            className="flex h-10 min-w-0 items-center gap-2.5 rounded-[10px] border border-white/10 bg-white/[0.03] pl-3 pr-1.5 text-[13.5px] text-white/45 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] transition-colors hover:border-white/20 hover:text-white/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white sm:w-72"
+            className="flex h-10 min-w-0 items-center gap-2.5 rounded-[10px] border border-white/10 bg-white/[0.03] pl-3 pr-1.5 text-[13.5px] text-white/45 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] transition-[color,border-color,transform] duration-150 hover:border-white/20 hover:text-white/70 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white sm:w-72"
           >
             <Search className="size-4 shrink-0" aria-hidden="true" />
             <span className="hidden flex-1 truncate text-left sm:block">Search or jump to…</span>

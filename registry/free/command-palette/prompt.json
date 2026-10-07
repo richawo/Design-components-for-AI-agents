@@ -56,9 +56,11 @@
   "motion": {
     "open": "y -10px, scale 0.98 → 1, opacity, 220ms, ease [0.2, 0.8, 0.2, 1]; exit y -6px",
     "scrim": "fade 200ms",
-    "selection": "shared layoutId marker slides between rows, 180ms",
+    "selection": "a single highlight and the accent marker glide between rows on a shared layoutId spring (600/44)",
     "toast": "white pill rises 12px, holds 2.2s",
-    "reducedMotion": "opacity only; no marker travel"
+    "reducedMotion": "opacity only; no marker travel",
+    "choose": "chosen row flashes (0.985 scale, brighter highlight) for 130ms before close",
+    "press": "rows 0.99, trigger 0.98; empty state fades up 6px"
   },
   "responsive": {
     "mobile": "palette 12px from edges, 76px from top; shortcuts and esc hidden; trigger collapses; footer drops 'esc close'",
