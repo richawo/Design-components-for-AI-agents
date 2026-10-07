@@ -59,6 +59,10 @@ function readComponents(tier) {
         fail(slug, `meta.json is not valid JSON (${e.message})`);
         return null;
       }
+      // Only the four contract files may live in a component folder. Anything
+      // else is a scratch file, and in the public tree it could leak Pro code.
+      const allowed = new Set([`${slug}.tsx`, "meta.json", "prompt.md", "prompt.json"]);
+      for (const f of fs.readdirSync(base)) if (!allowed.has(f)) fail(slug, `unexpected file "${f}" (only ${[...allowed].join(", ")})`);
       const codePath = path.join(base, `${slug}.tsx`);
       const promptPath = path.join(base, "prompt.md");
       const jsonPath = path.join(base, "prompt.json");
