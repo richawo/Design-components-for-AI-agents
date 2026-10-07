@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { motion, useInView, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion, useInView, useMotionValue, useReducedMotion, useSpring, type Variants } from "motion/react";
 
 type Link = { label: string; href: string };
 
@@ -62,7 +62,12 @@ export type HeroTerminalAgentProps = {
 };
 
 const LIME = "#d4ff3a";
-const ease = [0.2, 0.8, 0.2, 1] as const;
+const ease = [0.22, 1, 0.36, 1] as const;
+
+// Copy column arrives in order: headline, body, actions, facts.
+const stagger: Variants = { show: { transition: { staggerChildren: 0.07, delayChildren: 0.05 } } };
+const rise: Variants = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.65, ease } } };
+const fade: Variants = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { duration: 0.2 } } };
 const SPIN = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
 
 const defaultSession: AgentSession = {
@@ -193,6 +198,8 @@ export function HeroTerminalAgent({
   loopPause = 5200,
 }: HeroTerminalAgentProps) {
   const [pre, post] = splitOnce(headline, emphasis);
+  const reduce = useReducedMotion();
+  const item = reduce ? fade : rise;
 
   return (
     <section className="relative isolate overflow-hidden bg-[#070708] text-[#f2eee6]">
@@ -221,8 +228,8 @@ export function HeroTerminalAgent({
         </div>
 
         {/* Copy */}
-        <div className="lg:col-span-6">
-          <h1 className="max-w-[12ch] text-balance font-display text-[clamp(2.75rem,1.5rem+4.8vw,5.5rem)] font-bold leading-[0.95] tracking-[-0.05em]">
+        <motion.div className="lg:col-span-6" variants={stagger} initial="hidden" animate="show">
+          <motion.h1 variants={item} className="max-w-[12ch] text-balance font-display text-[clamp(2.75rem,1.5rem+4.8vw,5.5rem)] font-bold leading-[0.95] tracking-[-0.05em]">
             {pre}
             {emphasis && post !== null ? (
               <>
@@ -230,32 +237,32 @@ export function HeroTerminalAgent({
                 {post}
               </>
             ) : null}
-          </h1>
+          </motion.h1>
 
-          <p className="mt-7 max-w-[46ch] text-[17px] leading-[1.6] text-[#f2eee6]/65">{body}</p>
+          <motion.p variants={item} className="mt-7 max-w-[46ch] text-[17px] leading-[1.6] text-[#f2eee6]/65">{body}</motion.p>
 
-          <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+          <motion.div variants={item} className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
             <a
               href={primary.href}
-              className="group inline-flex h-12 items-center justify-center gap-2.5 rounded-[10px] bg-[#f2eee6] px-5 text-[15px] font-semibold text-[#141311] transition-[transform,background-color] duration-300 ease-out hover:-translate-y-0.5 hover:bg-white active:translate-y-0 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[#d4ff3a]"
+              className="group inline-flex h-12 items-center justify-center gap-2.5 rounded-[10px] bg-[#f2eee6] px-5 text-[15px] font-semibold text-[#141311] shadow-[0_10px_30px_-14px_rgba(242,238,230,0.6)] transition-[transform,background-color,box-shadow] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:bg-white hover:shadow-[0_16px_40px_-12px_rgba(242,238,230,0.75)] active:translate-y-0 active:scale-[0.98] active:duration-100 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[#d4ff3a]"
             >
               {primary.label}
-              <svg viewBox="0 0 16 16" className="size-4 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" aria-hidden="true">
+              <svg viewBox="0 0 16 16" className="size-4 transition-transform duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-[3px]" fill="none" aria-hidden="true">
                 <path d="M3 8h10m0 0L8.5 3.5M13 8l-4.5 4.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </a>
             <CopyCommand command={installCommand} />
-          </div>
+          </motion.div>
 
-          <ul className="mt-9 flex flex-wrap gap-x-5 gap-y-2 font-mono text-[11px] uppercase tracking-[0.12em] text-[#f2eee6]/45">
+          <motion.ul variants={item} className="mt-9 flex flex-wrap gap-x-5 gap-y-2 font-mono text-[11px] uppercase tracking-[0.12em] text-[#f2eee6]/45">
             {facts.map((f) => (
               <li key={f} className="flex items-center gap-2">
                 <span className="h-px w-3 bg-[#f2eee6]/30" aria-hidden="true" />
                 {f}
               </li>
             ))}
-          </ul>
-        </div>
+          </motion.ul>
+        </motion.div>
 
         {/* Terminal */}
         <div className="relative min-w-0 lg:col-span-6">
@@ -301,7 +308,7 @@ function CopyCommand({ command }: { command: string }) {
     <button
       type="button"
       onClick={copy}
-      className="group inline-flex h-12 min-w-0 items-center justify-between gap-4 rounded-[10px] border border-[#f2eee6]/15 bg-[#0c0b0a] pl-4 pr-2 font-mono text-[13.5px] text-[#f2eee6]/85 transition-colors duration-300 hover:border-[#f2eee6]/30 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[#d4ff3a]"
+      className="group inline-flex h-12 min-w-0 items-center justify-between gap-4 rounded-[10px] border border-[#f2eee6]/15 bg-[#0c0b0a] pl-4 pr-2 font-mono text-[13.5px] text-[#f2eee6]/85 transition-[border-color,transform] duration-150 hover:border-[#f2eee6]/30 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[#d4ff3a]"
       aria-label={`Copy install command: ${command}`}
     >
       <span className="truncate">
@@ -309,20 +316,32 @@ function CopyCommand({ command }: { command: string }) {
         {command}
       </span>
       <span
-        className={`flex h-8 shrink-0 items-center gap-1.5 rounded-[7px] px-2.5 font-sans text-[12px] font-medium transition-colors duration-300 ${
+        className={`flex h-8 shrink-0 items-center gap-1.5 rounded-[7px] px-2.5 font-sans text-[12px] font-medium transition-colors duration-200 ${
           copied ? "bg-[#d4ff3a] text-[#141311]" : "bg-[#f2eee6]/[0.07] text-[#f2eee6]/70 group-hover:bg-[#f2eee6]/[0.12] group-hover:text-[#f2eee6]"
         }`}
       >
-        {copied ? (
-          <svg viewBox="0 0 16 16" className="size-3.5" fill="none" aria-hidden="true">
-            <path d="M3 8.5l3.2 3L13 4.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        ) : (
-          <svg viewBox="0 0 16 16" className="size-3.5" fill="none" aria-hidden="true">
-            <rect x="5.5" y="5.5" width="8" height="8" rx="1.6" stroke="currentColor" strokeWidth="1.5" />
-            <path d="M10.5 3.5v-.4A1.1 1.1 0 0 0 9.4 2H3.6A1.1 1.1 0 0 0 2.5 3.1v5.8a1.1 1.1 0 0 0 1.1 1.1H4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          </svg>
-        )}
+        {/* Icon and label swap with a quick pop so the copy registers. */}
+        <AnimatePresence mode="popLayout" initial={false}>
+          <motion.span
+            key={copied ? "y" : "n"}
+            initial={{ opacity: 0, scale: 0.6 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.6, transition: { duration: 0.1 } }}
+            transition={{ type: "spring", stiffness: 600, damping: 32 }}
+            className="inline-flex"
+          >
+            {copied ? (
+              <svg viewBox="0 0 16 16" className="size-3.5" fill="none" aria-hidden="true">
+                <path d="M3 8.5l3.2 3L13 4.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 16 16" className="size-3.5" fill="none" aria-hidden="true">
+                <rect x="5.5" y="5.5" width="8" height="8" rx="1.6" stroke="currentColor" strokeWidth="1.5" />
+                <path d="M10.5 3.5v-.4A1.1 1.1 0 0 0 9.4 2H3.6A1.1 1.1 0 0 0 2.5 3.1v5.8a1.1 1.1 0 0 0 1.1 1.1H4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+              </svg>
+            )}
+          </motion.span>
+        </AnimatePresence>
         <span aria-live="polite">{copied ? "Copied" : "Copy"}</span>
       </span>
     </button>
@@ -340,10 +359,17 @@ function Terminal({ session, tabTitle, version, loopPause }: { session: AgentSes
   const inView = useInView(frameRef, { amount: 0.25 });
   const { rows, total } = useMemo(() => buildTimeline(session), [session]);
   const [now, setNow] = useState(0);
+  // The pause button holds the session so a line can be read.
+  const [held, setHeld] = useState(false);
+  // A slight tilt toward the pointer gives the window weight.
+  const rx = useMotionValue(0);
+  const ry = useMotionValue(0);
+  const rotateX = useSpring(rx, { stiffness: 180, damping: 22 });
+  const rotateY = useSpring(ry, { stiffness: 180, damping: 22 });
 
-  // One clock drives the whole session. It pauses off-screen and never runs with reduced motion.
+  // One clock drives the whole session. It pauses off-screen, while held, and never runs with reduced motion.
   useEffect(() => {
-    if (reduce || !inView) return;
+    if (reduce || !inView || held) return;
     let last = performance.now();
     const id = setInterval(() => {
       const t = performance.now();
@@ -352,7 +378,7 @@ function Terminal({ session, tabTitle, version, loopPause }: { session: AgentSes
       setNow((n) => (n + dt > total + loopPause ? 0 : n + dt));
     }, 40);
     return () => clearInterval(id);
-  }, [reduce, inView, total, loopPause]);
+  }, [reduce, inView, held, total, loopPause]);
 
   const time = reduce ? Number.POSITIVE_INFINITY : now;
   const visible = rows.filter((r) => r.at <= time);
@@ -378,15 +404,40 @@ function Terminal({ session, tabTitle, version, loopPause }: { session: AgentSes
       initial={reduce ? false : { opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease, delay: 0.1 }}
+      style={{ rotateX, rotateY, transformPerspective: 1400 }}
+      onPointerMove={(e) => {
+        if (reduce || e.pointerType !== "mouse") return;
+        const r = e.currentTarget.getBoundingClientRect();
+        ry.set(((e.clientX - r.left) / r.width - 0.5) * 3);
+        rx.set(-((e.clientY - r.top) / r.height - 0.5) * 3);
+      }}
+      onPointerLeave={() => {
+        rx.set(0);
+        ry.set(0);
+      }}
       className="relative overflow-hidden rounded-[14px] border border-white/[0.09] bg-[#0c0b0a] shadow-[0_1px_0_0_rgba(255,255,255,0.06)_inset,0_50px_100px_-40px_rgba(0,0,0,0.9),0_20px_40px_-20px_rgba(0,0,0,0.6)]"
     >
       {/* Header: a tab, not traffic lights */}
       <div className="flex h-11 items-stretch justify-between border-b border-white/[0.07] pr-3 font-mono text-[12px] text-[#f2eee6]/50">
         <div className="flex min-w-0 items-stretch">
-          <div className="flex items-center gap-[3px] border-r border-white/[0.07] px-4" aria-hidden="true">
-            <span className="h-3 w-[3px] rounded-full bg-[#f2eee6]/25" />
-            <span className="h-3 w-[3px] rounded-full bg-[#f2eee6]/25" />
-          </div>
+          <button
+            type="button"
+            onClick={() => setHeld((h) => !h)}
+            disabled={!!reduce}
+            aria-label={held ? "Resume session" : "Pause session"}
+            aria-pressed={held}
+            className="group/p flex items-center justify-center border-r border-white/[0.07] px-4 transition-colors duration-150 hover:bg-white/[0.04] focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[#d4ff3a] disabled:pointer-events-none"
+          >
+            <span className="relative flex h-3 w-3 items-center justify-center transition-transform duration-100 group-active/p:scale-90">
+              <span className={`absolute flex gap-[3px] transition-[opacity,scale] duration-200 ${held ? "scale-50 opacity-0" : "opacity-100"}`}>
+                <span className="h-3 w-[3px] rounded-full bg-[#f2eee6]/40 transition-colors group-hover/p:bg-[#f2eee6]/80" />
+                <span className="h-3 w-[3px] rounded-full bg-[#f2eee6]/40 transition-colors group-hover/p:bg-[#f2eee6]/80" />
+              </span>
+              <svg viewBox="0 0 12 12" className={`absolute size-3 text-[#d4ff3a] transition-[opacity,scale] duration-200 ${held ? "opacity-100" : "scale-50 opacity-0"}`} aria-hidden="true">
+                <path d="M3 1.8v8.4L10 6z" fill="currentColor" />
+              </svg>
+            </span>
+          </button>
           <div className="relative flex min-w-0 items-center gap-2.5 border-r border-white/[0.07] bg-white/[0.03] px-4 text-[#f2eee6]/85">
             <span className="truncate">{tabTitle}</span>
             <span className="hidden text-[#f2eee6]/35 sm:inline">— relay ship</span>
@@ -401,6 +452,14 @@ function Terminal({ session, tabTitle, version, loopPause }: { session: AgentSes
             <>
               <span className="size-1.5 rounded-full" style={{ background: LIME }} />
               <span className="text-[#f2eee6]/70">done</span>
+            </>
+          ) : held ? (
+            <>
+              <span className="flex gap-[2px]">
+                <span className="h-2 w-[2px] rounded-full bg-[#f2eee6]/60" />
+                <span className="h-2 w-[2px] rounded-full bg-[#f2eee6]/60" />
+              </span>
+              <span className="text-[#f2eee6]/70">paused</span>
             </>
           ) : (
             <>

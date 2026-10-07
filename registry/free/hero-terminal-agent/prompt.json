@@ -2,28 +2,88 @@
   "component": "HeroTerminalAgent",
   "intent": "Devtool hero: two-tone headline left, a terminal right where an AI agent reads, plans, writes, tests and opens a PR on a loop.",
   "platform": "web",
-  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "animation": "motion/react (useInView, useReducedMotion) + timeline clock", "fonts": "font-display, font-sans, font-mono (Geist family)" },
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4",
+    "animation": "motion/react (useInView, useReducedMotion) + timeline clock",
+    "fonts": "font-display, font-sans, font-mono (Geist family)"
+  },
   "layout": {
     "container": "max-w-7xl, 12-col grid at lg; copy 6 cols, terminal 6 cols; stacked on mobile",
     "topRow": "brand mark + name left, mono release link right",
     "terminal": "tab bar 44px, body 380/440/480px with internal scroll, status bar"
   },
   "typography": {
-    "headline": { "font": "display", "weight": 700, "size": "clamp(2.75rem, 1.5rem + 4.8vw, 5.5rem)", "leading": 0.95, "tracking": "-0.05em", "maxWidth": "12ch", "emphasis": "same font at 45% opacity, nowrap" },
-    "body": { "size": "17px", "leading": 1.6, "opacity": 0.65, "maxWidth": "46ch" },
-    "terminal": { "font": "mono", "size": "12-13px", "leading": 1.75 },
-    "meta": { "font": "mono", "size": "11px", "case": "uppercase", "tracking": "0.12-0.14em" }
+    "headline": {
+      "font": "display",
+      "weight": 700,
+      "size": "clamp(2.75rem, 1.5rem + 4.8vw, 5.5rem)",
+      "leading": 0.95,
+      "tracking": "-0.05em",
+      "maxWidth": "12ch",
+      "emphasis": "same font at 45% opacity, nowrap"
+    },
+    "body": {
+      "size": "17px",
+      "leading": 1.6,
+      "opacity": 0.65,
+      "maxWidth": "46ch"
+    },
+    "terminal": {
+      "font": "mono",
+      "size": "12-13px",
+      "leading": 1.75
+    },
+    "meta": {
+      "font": "mono",
+      "size": "11px",
+      "case": "uppercase",
+      "tracking": "0.12-0.14em"
+    }
   },
-  "color": { "background": "#070708", "text": "#f2eee6", "terminal": "#0c0b0a", "accent": "#d4ff3a", "running": "#ffb547", "removed": "rose", "grid": "white/3.5% 56px, radial mask", "glow": "rgba(212,255,58,0.10)" },
+  "color": {
+    "background": "#070708",
+    "text": "#f2eee6",
+    "terminal": "#0c0b0a",
+    "accent": "#d4ff3a",
+    "running": "#ffb547",
+    "removed": "rose",
+    "grid": "white/3.5% 56px, radial mask",
+    "glow": "rgba(212,255,58,0.10)"
+  },
   "motion": {
     "typing": "per-character 26-60ms jittered deterministically, +40ms on spaces",
     "spinner": "braille frames ⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏",
     "reveal": "plan 230ms apart, files 170ms apart, tests run for their own duration",
     "loop": "pause 5200ms then replay; only while in view",
-    "reducedMotion": "render the finished session, no loop"
+    "reducedMotion": "render the finished session, no loop",
+    "entrance": "copy column staggers in (16px, 650ms, 70ms apart)",
+    "terminal": "tilts ≤1.5° toward the pointer on a soft spring; header grip is a pause/resume button that holds the clock",
+    "buttons": "CTA lifts 2px with deeper glow, press 0.98, arrow nudges 3px; copy chip presses 0.98 and pops its icon on a spring"
   },
-  "responsive": { "mobile": "terminal under copy, 380px tall, 12px type, tab subtitle hidden; actions stack full width", "lg": "side by side, terminal 480px" },
-  "accessibility": ["terminal aria-hidden (decorative)", "copy chip is a button with Copied state", "visible focus rings in lime", "no motion with prefers-reduced-motion"],
-  "content": { "brand": "Relay", "headline": "The agent that does the boring parts of shipping.", "emphasis": "boring parts", "install": "npx relay@latest init", "session": "rate-limit /v1/checkout and /v1/refunds → PR #482" },
-  "avoid": ["traffic-light dots", "hacker green-on-black", "gradient headline", "page-level horizontal overflow", "fake progress bars", "emoji in the terminal"]
+  "responsive": {
+    "mobile": "terminal under copy, 380px tall, 12px type, tab subtitle hidden; actions stack full width",
+    "lg": "side by side, terminal 480px"
+  },
+  "accessibility": [
+    "terminal aria-hidden (decorative)",
+    "copy chip is a button with Copied state",
+    "visible focus rings in lime",
+    "no motion with prefers-reduced-motion"
+  ],
+  "content": {
+    "brand": "Relay",
+    "headline": "The agent that does the boring parts of shipping.",
+    "emphasis": "boring parts",
+    "install": "npx relay@latest init",
+    "session": "rate-limit /v1/checkout and /v1/refunds → PR #482"
+  },
+  "avoid": [
+    "traffic-light dots",
+    "hacker green-on-black",
+    "gradient headline",
+    "page-level horizontal overflow",
+    "fake progress bars",
+    "emoji in the terminal"
+  ]
 }

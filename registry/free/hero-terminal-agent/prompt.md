@@ -46,3 +46,10 @@ Build a developer-tool hero in React + Tailwind CSS v4 with `motion/react`. On t
 **Don't**
 - No macOS traffic lights, no neon green-on-black hacker cliché and no typing sound gimmicks.
 - No gradient headline, and no horizontal page scroll from long terminal lines.
+
+**Feel**
+- On load the copy column arrives in order (headline, body, actions, facts): 16px rise over 650ms, 70ms apart, ease `[0.22, 1, 0.36, 1]`. Reduced motion fades only.
+- The terminal tilts up to 1.5° toward a mouse pointer on a soft spring (stiffness 180, damping 22) and levels out on leave.
+- The grip in the terminal header is a pause button: pressing it holds the session clock, morphs the two bars into a lime play triangle and shows "paused" in the header; pressing again resumes.
+- The primary CTA lifts 2px with a deeper glow on hover, scales to 0.98 on press, and its arrow nudges 3px.
+- The install chip scales to 0.98 on press; its icon pops between copy and check on a spring (stiffness 600, damping 32) while the label turns lime.
