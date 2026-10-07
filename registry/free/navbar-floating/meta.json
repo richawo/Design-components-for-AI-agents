@@ -1,68 +1,63 @@
 {
   "slug": "navbar-floating",
-  "name": "Floating Pill Navbar",
+  "name": "Floating Glass Navbar",
   "tier": "free",
   "platform": "web",
   "category": "navigation",
-  "description": "A black floating pill nav with a sliding hover highlight that tucks itself in on scroll, plus a full-screen cobalt menu sheet on mobile.",
+  "description": "A floating glass pill navbar with a sliding hover pill, a scroll-condensing width and a full-screen mobile sheet with a proper focus trap.",
   "tags": [
     "navbar",
-    "header",
     "navigation",
-    "floating",
-    "pill",
-    "mobile menu",
+    "header",
+    "glass",
     "sticky",
-    "studio"
+    "mobile menu",
+    "dark"
   ],
   "dependencies": [
     "motion"
   ],
-  "theme": "light",
+  "theme": "dark",
   "previewHeight": 760,
-  "usage": "import { NavbarFloating } from \"@/components/design-for-ai/navbar-floating\";\n\nexport default function Layout({ children }: { children: React.ReactNode }) {\n  return (\n    <>\n      <NavbarFloating\n        brand={{ name: \"Fathom\", href: \"/\" }}\n        links={[\n          { label: \"Work\", href: \"/work\", count: \"18\" },\n          { label: \"About\", href: \"/about\" },\n          { label: \"Notes\", href: \"/notes\" },\n        ]}\n        cta={{ label: \"Get in touch\", href: \"/contact\" }}\n      />\n      {children}\n    </>\n  );\n}",
+  "usage": "import { NavbarFloating } from \"@/components/design-for-ai/navbar-floating\";\n\n<NavbarFloating\n  brand={{ name: \"Acme\", href: \"/\" }}\n  links={[{ label: \"Docs\", href: \"/docs\" }, { label: \"Pricing\", href: \"/pricing\" }]}\n  activeIndex={0}\n  cta={{ label: \"Sign up\", href: \"/signup\" }}\n/>",
   "props": [
     {
       "name": "brand",
       "type": "{ name: string; href: string }",
-      "default": "{ name: \"Kiln\", href: \"#\" }",
-      "description": "Wordmark beside the logo mark. Folds away when the bar tucks in."
+      "description": "Wordmark and home link."
     },
     {
       "name": "links",
       "type": "{ label: string; href: string; count?: string }[]",
-      "default": "Work, Studio, Services, Journal",
-      "description": "Nav links. count renders as a small mono superscript."
+      "description": "Nav links; count renders as a mono superscript."
     },
     {
       "name": "activeIndex",
       "type": "number",
       "default": "0",
-      "description": "Link for the current page: pink dot and aria-current=\"page\"."
+      "description": "Current page link: underline and aria-current."
     },
     {
       "name": "cta",
       "type": "{ label: string; href: string }",
-      "default": "{ label: \"Start a project\", \u2026 }",
-      "description": "Pink pill on the right (desktop) and the bottom of the mobile sheet."
+      "description": "White call-to-action pill."
     },
     {
       "name": "contact",
       "type": "{ email: string; phone: string; address: string[] }",
-      "description": "Contact details shown in the mobile sheet."
+      "description": "Shown in the mobile sheet."
     },
     {
       "name": "socials",
       "type": "{ label: string; href: string }[]",
-      "description": "Text links at the foot of the mobile sheet."
+      "description": "Social links in the mobile sheet."
     },
     {
       "name": "condenseAt",
       "type": "number",
       "default": "80",
-      "description": "Scroll distance in px after which the pill narrows and drops its wordmark."
+      "description": "Scroll distance in px before the bar condenses."
     }
   ],
-  "added": "2026-10-07",
-  "status": "draft"
+  "added": "2026-10-07"
 }
