@@ -1,1 +1,23 @@
-{"component": "", "intent": "", "platform": "", "stack": "", "layout": "", "typography": "", "color": "", "motion": "", "responsive": "", "accessibility": "", "content": "", "avoid": ""}
+{
+  "component": "HeroSwissGrid",
+  "intent": "International Typographic Style conference hero: visible 12-column grid, giant lowercase headline, signal-red quarter circle, numbered index.",
+  "platform": "web",
+  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "animation": "motion/react (one entrance)", "fonts": "font-sans (Geist), font-mono" },
+  "layout": {
+    "grid": "4 cols gap 16px mobile; 12 cols gap 24px md+; guides rendered on the same grid",
+    "rows": ["meta: 4 cells × 3 cols, rule below", "headline cols 1-8 + quarter circle cols 9-12", "intro 1-4, actions 5-8, notes 9-11", "index nav: No. | Track (5) | Speaker (3) | When (3)"],
+    "container": "max-w 1440px, px 20/32/48px"
+  },
+  "typography": {
+    "headline": { "font": "sans", "weight": 700, "case": "lowercase", "size": "clamp(3.6rem, 0.9rem + 12.2vw, 11.5rem); 19vw on mobile", "leading": 0.86, "tracking": "-0.065em" },
+    "trackTitle": { "weight": 600, "size": "clamp(1.35rem, 1rem + 1.4vw, 2.25rem)", "tracking": "-0.035em" },
+    "meta": { "font": "mono", "size": "11px", "case": "uppercase", "tracking": "0.08em" },
+    "body": { "size": "17px", "leading": 1.55, "maxWidth": "38ch" }
+  },
+  "color": { "background": "#ffffff", "ink": "#0a0a0a", "accent": "#e10600", "guides": "ink 6% borders + 1.2% fill", "rules": "ink 100% (major), 25% (rows)" },
+  "motion": { "quarterCircle": "scale 0→1, rotate -90→0 from top-right, 1.2s ease [0.7,0,0.2,1], delay 0.25s", "hover": "red underline grows 0→100% (500ms); arrow slides in; button turns red", "reducedMotion": "no entrance" },
+  "responsive": { "mobile": "4-col grid, quarter circle above the headline (cols 3-4), headline 19vw, index rows stack speaker/time", "md+": "12-col grid as specified" },
+  "accessibility": ["h1 headline", "nav + ordered list of links for the index", "red focus outlines", "decorative shape aria-hidden"],
+  "content": { "meta": ["Raster 2027", "34. Konferenz für Gestaltung", "Kongresshaus, Zürich", "14–16 May 2027"], "lines": ["the grid", "sets you", "free."], "primary": "Tickets, CHF 680", "items": 4 },
+  "avoid": ["centred text", "rounded corners", "shadows or gradients", "more than one accent colour", "stock photography", "elements off the grid"]
+}

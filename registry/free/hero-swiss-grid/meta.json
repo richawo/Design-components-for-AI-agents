@@ -20,8 +20,55 @@
   ],
   "theme": "light",
   "previewHeight": 1080,
-  "usage": "wip",
-  "props": [],
-  "added": "2026-10-07",
-  "status": "draft"
+  "usage": "import { HeroSwissGrid } from \"@/components/design-for-ai/hero-swiss-grid\";\n\n<HeroSwissGrid\n  meta={[\"Form 2027\", \"Design summit\", \"Barbican, London\", \"9\u201311 June\"]}\n  lines={[\"less, but\", \"better.\"]}\n  primary={{ label: \"Get tickets\", href: \"/tickets\" }}\n/>",
+  "props": [
+    {
+      "name": "meta",
+      "type": "[string, string, string, string]",
+      "description": "Four metadata cells across the top."
+    },
+    {
+      "name": "lines",
+      "type": "string[]",
+      "default": "[\"the grid\", \"sets you\", \"free.\"]",
+      "description": "Headline lines, lowercase, kept short."
+    },
+    {
+      "name": "intro",
+      "type": "string",
+      "description": "Intro paragraph."
+    },
+    {
+      "name": "primary",
+      "type": "{ label: string; href: string }",
+      "description": "Square black button."
+    },
+    {
+      "name": "secondary",
+      "type": "{ label: string; href: string }",
+      "description": "Underlined secondary link."
+    },
+    {
+      "name": "notes",
+      "type": "string[]",
+      "description": "Mono notes beside the actions."
+    },
+    {
+      "name": "items",
+      "type": "{ title; speaker; when; href }[]",
+      "description": "Numbered index rows."
+    },
+    {
+      "name": "columns",
+      "type": "[string, string, string, string]",
+      "description": "Index column headers on wide screens."
+    },
+    {
+      "name": "showGrid",
+      "type": "boolean",
+      "default": "true",
+      "description": "Render the visible 12-column guides."
+    }
+  ],
+  "added": "2026-10-07"
 }
