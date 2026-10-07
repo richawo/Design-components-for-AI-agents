@@ -1,5 +1,97 @@
 [
   {
+    "slug": "chart-candlestick",
+    "name": "Candlestick Chart",
+    "tier": "pro",
+    "platform": "web",
+    "category": "charts",
+    "description": "A trading-desk candlestick chart with a snapping crosshair, two moving averages, volume, live ticks, drag and pinch zoom and a draggable range navigator.",
+    "tags": [
+      "candlestick",
+      "ohlc",
+      "trading",
+      "crypto",
+      "finance",
+      "chart",
+      "crosshair",
+      "svg"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 760,
+    "usage": "import { ChartCandlestick } from \"@/components/design-for-ai/chart-candlestick\";\n\n<ChartCandlestick\n  name=\"Bitcoin\"\n  pair=\"BTC / USD\"\n  venue=\"Kraken\"\n  data={{ \"1H\": hourly, \"1D\": daily }} // { t, o, h, l, c, v }[] oldest first\n  defaultInterval=\"1H\"\n  maFast={9}\n  maSlow={21}\n/>",
+    "props": [
+      {
+        "name": "data",
+        "type": "Partial<Record<\"15m\" | \"1H\" | \"4H\" | \"1D\", Candle[]>>",
+        "description": "Candles per interval: { t: epoch ms, o, h, l, c, v }, oldest first. Missing intervals fall back to demo data."
+      },
+      {
+        "name": "defaultInterval",
+        "type": "Interval",
+        "default": "\"4H\"",
+        "description": "Interval selected on mount."
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "default": "\"Ethereum\"",
+        "description": "Asset name in the header."
+      },
+      {
+        "name": "pair",
+        "type": "string",
+        "default": "\"ETH / USD\"",
+        "description": "Pair shown in the mono chip."
+      },
+      {
+        "name": "venue",
+        "type": "string",
+        "default": "\"Coinbase\"",
+        "description": "Exchange or data source, hidden in narrow containers."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"USD\"",
+        "description": "ISO currency for the headline price."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-US\"",
+        "description": "Locale for numbers and dates."
+      },
+      {
+        "name": "maFast",
+        "type": "number",
+        "default": "20",
+        "description": "Fast moving-average period. 0 hides it."
+      },
+      {
+        "name": "maSlow",
+        "type": "number",
+        "default": "50",
+        "description": "Slow moving-average period. 0 hides it."
+      },
+      {
+        "name": "height",
+        "type": "number",
+        "default": "380",
+        "description": "Plot height in px; plots under 560px wide use 70%."
+      },
+      {
+        "name": "live",
+        "type": "boolean",
+        "default": "true",
+        "description": "Tick the last candle every 1.4s. Ignored under reduced motion."
+      }
+    ],
+    "added": "2026-10-07"
+  },
+  {
     "slug": "dashboard-analytics",
     "name": "Analytics Dashboard",
     "tier": "pro",
