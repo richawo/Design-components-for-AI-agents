@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 // Screenshot component previews for visual review.
 //
-//   node scripts/shot.mjs <slug...> [--widths=1440,768,390] [--out=dir] [--base=http://localhost:3100] [--wait=1200]
+//   node scripts/shot.mjs <slug...> [--widths=1440,768,390] [--out=dir] [--base=http://localhost:3100] [--wait=1200] [--hover=0.6,0.45]
+//
+// --hover moves the mouse to that fraction of the viewport before the shot and
+// writes <slug>-<width>-hover.png, for checking crosshairs and hover states.
 //
 // Writes <out>/<slug>-<width>.png (full page). Mobile components are captured
 // once at 390x844. Requires a running dev or prod server.
@@ -19,6 +22,7 @@ const widths = flag("widths", "1440,768,390").split(",").map(Number);
 const out = path.resolve(flag("out", "test-results/shots"));
 const base = flag("base", process.env.PREVIEW_BASE || "http://localhost:3100");
 const wait = Number(flag("wait", "1500"));
+const hover = flag("hover", "")?.split(",").map(Number);
 const index = JSON.parse(fs.readFileSync(new URL("../registry/__generated__/index.json", import.meta.url), "utf8"));
 
 function executablePath() {
@@ -45,8 +49,13 @@ for (const slug of slugs) {
     page.on("console", (m) => m.type() === "error" && errs.push(m.text()));
     await page.goto(`${base}/preview/${slug}`, { waitUntil: "networkidle", timeout: 120000 });
     await page.waitForTimeout(wait);
-    const file = path.join(out, `${slug}-${w}.png`);
-    await page.screenshot({ path: file, fullPage: entry?.platform !== "mobile" });
+    if (hover?.length === 2) {
+      const vp = page.viewportSize();
+      await page.mouse.move(vp.width * hover[0], vp.height * hover[1], { steps: 4 });
+      await page.waitForTimeout(400);
+    }
+    const file = path.join(out, `${slug}-${w}${hover?.length === 2 ? "-hover" : ""}.png`);
+    await page.screenshot({ path: file, fullPage: entry?.platform !== "mobile" && !(hover?.length === 2) });
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     console.log(`${file}${overflow > 1 ? `  ⚠ horizontal overflow ${overflow}px` : ""}${errs.length ? `\n  errors: ${errs.slice(0, 5).join(" | ")}` : ""}`);
     await page.close();
