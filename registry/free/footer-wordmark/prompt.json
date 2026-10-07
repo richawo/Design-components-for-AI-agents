@@ -1,13 +1,13 @@
 {
   "component": "FooterWordmark",
-  "intent": "A bold chartreuse studio footer that closes the page with a big line, link columns, a newsletter, a live local clock, and a giant wordmark measured to span the container exactly and cut off above its baseline.",
+  "intent": "A dark, premium studio footer that closes the page with a big line, link columns, a newsletter, a live local clock, and a giant wordmark measured to span the container exactly and cut off above its baseline.",
   "platform": "web",
   "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "animation": "motion/react", "fonts": "font-display (Geist, tight tracking), font-sans (Geist), font-mono (Geist Mono)" },
   "layout": {
     "container": "max-w-[1440px], px 20/32/48, pt 64/80/96",
     "rows": [
       "closing line + large mailto link; back-to-top ring button on the right from md",
-      "2px ink rule; grid 2 -> 4 (sm) -> 12 (lg): Studio, Work, Elsewhere, Visit (2 cols each) + newsletter (cols 9-12; full row split in two at sm-md)",
+      "2px white/15% rule; grid 2 -> 4 (sm) -> 12 (lg): Studio, Work, Elsewhere, Visit (2 cols each) + newsletter (cols 9-12; full row split in two at sm-md)",
       "1px rule; legal line + legal links in mono",
       "fitted wordmark flush to both container edges, cut 14% above the baseline"
     ]
@@ -19,9 +19,9 @@
     "links": { "font": "sans", "size": "17px", "weight": 500, "tracking": "-0.015em" },
     "newsletterTitle": { "font": "sans", "weight": 600, "size": "26px", "tracking": "-0.035em" },
     "clock": { "font": "display", "size": "22px", "weight": 600, "numerals": "tabular" },
-    "wordmark": { "font": "display", "weight": 800, "tracking": "-0.06em", "case": "lowercase", "size": "fitted to container width" }
+    "wordmark": { "font": "display", "weight": 600, "tracking": "-0.065em", "case": "lowercase", "size": "fitted to container width", "fill": "vertical gradient white 90% → #a1a1aa 50% → #3f3f46 5%" }
   },
-  "color": { "field": "#d4f53c", "ink": "#0f0f0e", "inputFocus": "#e2fa75", "errorBorder": "#b3261e", "errorText": "#8c1d17", "muted": "ink at 60-75%" },
+  "color": { "field": "#050506", "text": "#ffffff", "buttons": "white with black text", "input": "white/4% → 7% on focus, border white/15%", "errorBorder": "#f87171", "errorText": "#fca5a5", "muted": "white at 45-60%", "light": "white radial 8% from below, hairline top" },
   "motion": {
     "wordmark": "fades in and rises 24px over 0.8s, ease [0.2,0.8,0.2,1], once measured",
     "links": "background-size underline grows from the left (300ms); the email underline retracts to the right (500ms)",
@@ -46,5 +46,5 @@
     "clock": "London, Europe/London",
     "newsletter": "Low Tide: a short letter every other Thursday"
   },
-  "avoid": ["sizing the wordmark with a guessed vw value", "social icon rows", "grey low-contrast footer", "gradients or drop shadows", "equal-weight tiny link columns with no hierarchy"]
+  "avoid": ["sizing the wordmark with a guessed vw value", "social icon rows", "grey low-contrast footer", "saturated slabs", "equal-weight tiny link columns with no hierarchy"]
 }

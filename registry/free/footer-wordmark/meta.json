@@ -4,7 +4,7 @@
   "tier": "free",
   "platform": "web",
   "category": "navigation",
-  "description": "A chartreuse studio footer with link columns, a newsletter form, a live local clock and a giant wordmark fitted edge to edge and cut at the floor.",
+  "description": "A dark studio footer with a closing line, link columns, a live local clock, a newsletter and a giant metallic wordmark measured to span the width.",
   "tags": [
     "footer",
     "navigation",
@@ -17,7 +17,7 @@
   "dependencies": [
     "motion"
   ],
-  "theme": "light",
+  "theme": "dark",
   "previewHeight": 1060,
   "usage": "import { FooterWordmark } from \"@/components/design-for-ai/footer-wordmark\";\n\nexport default function SiteFooter() {\n  return (\n    <FooterWordmark\n      wordmark=\"fathom\"\n      email=\"studio@fathom.works\"\n      city=\"Lisbon\"\n      timeZone=\"Europe/Lisbon\"\n      onSubscribe={(email) => fetch(\"/api/subscribe\", { method: \"POST\", body: JSON.stringify({ email }) })}\n    />\n  );\n}",
   "props": [
@@ -88,6 +88,5 @@
       "description": "How much of the wordmark's cap height the bottom edge cuts off (0\u20130.3)."
     }
   ],
-  "added": "2026-10-07",
-  "status": "draft"
+  "added": "2026-10-07"
 }
