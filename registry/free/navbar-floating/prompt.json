@@ -2,13 +2,81 @@
   "component": "NavbarFloating",
   "intent": "Floating glass pill nav for dark sites: sliding hover pill, condenses on scroll, full-screen mobile sheet with focus trap.",
   "platform": "web",
-  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "animation": "motion/react (useScroll, useMotionValueEvent, LayoutGroup, AnimatePresence)", "fonts": "font-display (Geist), font-sans, font-mono" },
-  "layout": { "position": "fixed top, inset 12/20px, centred", "bar": "max-w 1200px → 720px condensed; logo left, links centre (md+), CTA right", "sheet": "fixed inset-0, pt-28, links → CTA → contact → socials" },
-  "typography": { "wordmark": { "size": "17px", "weight": 600, "tracking": "-0.03em" }, "links": { "size": "14px", "color": "white/70 → white" }, "sheetLinks": { "size": "clamp(2.25rem, 11vw, 3.5rem)", "weight": 600, "tracking": "-0.05em" }, "meta": { "font": "mono", "size": "9.5-11px" } },
-  "color": { "bar": "#0c0c0e at 70% + backdrop blur", "ring": "white/8%", "hoverPill": "white/8%", "cta": "white with black text", "sheet": "#050506 + radial white 8% at top", "logoTile": "linear #ffffff → #a1a1aa" },
-  "motion": { "hoverPill": "layoutId spring 500/40", "condense": "maxWidth + padding spring 380/36 after 80px", "wordmark": "width → 0 + fade", "sheet": "clipPath inset(0 0 100% 0) → inset(0) 0.6s", "sheetLinks": "y 100% → 0, 60ms stagger", "reducedMotion": "instant/fade only" },
-  "responsive": { "mobile": "Menu pill + sheet; links and CTA hidden", "md+": "inline links and CTA; sheet auto-closes" },
-  "accessibility": ["nav aria-label", "aria-current on active link", "menu button aria-expanded + aria-controls", "dialog aria-modal with Tab trap", "Esc closes and restores focus", "scroll lock while open"],
-  "content": { "brand": "Meridian", "links": ["Product", "Customers (1.2k)", "Pricing", "Changelog"], "cta": "Start free" },
-  "avoid": ["saturated full-width bars", "pink or neon accents", "thick borders", "icon-font hamburgers", "edge-to-edge desktop bar"]
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4",
+    "animation": "motion/react (useScroll, useMotionValueEvent, LayoutGroup, AnimatePresence)",
+    "fonts": "font-display (Geist), font-sans, font-mono"
+  },
+  "layout": {
+    "position": "fixed top, inset 12/20px, centred",
+    "bar": "max-w 1200px → 720px condensed; logo left, links centre (md+), CTA right",
+    "sheet": "fixed inset-0, pt-28, links → CTA → contact → socials"
+  },
+  "typography": {
+    "wordmark": {
+      "size": "17px",
+      "weight": 600,
+      "tracking": "-0.03em"
+    },
+    "links": {
+      "size": "14px",
+      "color": "white/70 → white"
+    },
+    "sheetLinks": {
+      "size": "clamp(2.25rem, 11vw, 3.5rem)",
+      "weight": 600,
+      "tracking": "-0.05em"
+    },
+    "meta": {
+      "font": "mono",
+      "size": "9.5-11px"
+    }
+  },
+  "color": {
+    "bar": "#0c0c0e at 70% + backdrop blur",
+    "ring": "white/8%",
+    "hoverPill": "white/8%",
+    "cta": "white with black text",
+    "sheet": "#050506 + radial white 8% at top",
+    "logoTile": "linear #ffffff → #a1a1aa"
+  },
+  "motion": {
+    "hoverPill": "layoutId spring 500/40",
+    "condense": "maxWidth + padding spring 380/36 after 80px",
+    "wordmark": "width → 0 + fade",
+    "sheet": "clipPath inset(0 0 100% 0) → inset(0) 0.6s",
+    "sheetLinks": "y 100% → 0, 60ms stagger",
+    "reducedMotion": "instant/fade only",
+    "press": "links and buttons press to 0.96; CTA deepens glow on hover, arrow nudges 3px; menu label rolls over 260ms"
+  },
+  "responsive": {
+    "mobile": "Menu pill + sheet; links and CTA hidden",
+    "md+": "inline links and CTA; sheet auto-closes"
+  },
+  "accessibility": [
+    "nav aria-label",
+    "aria-current on active link",
+    "menu button aria-expanded + aria-controls",
+    "dialog aria-modal with Tab trap",
+    "Esc closes and restores focus",
+    "scroll lock while open"
+  ],
+  "content": {
+    "brand": "Meridian",
+    "links": [
+      "Product",
+      "Customers (1.2k)",
+      "Pricing",
+      "Changelog"
+    ],
+    "cta": "Start free"
+  },
+  "avoid": [
+    "saturated full-width bars",
+    "pink or neon accents",
+    "thick borders",
+    "icon-font hamburgers",
+    "edge-to-edge desktop bar"
+  ]
 }

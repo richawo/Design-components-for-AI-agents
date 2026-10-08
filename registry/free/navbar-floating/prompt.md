@@ -33,3 +33,6 @@ Build a floating glass navigation bar in React + Tailwind CSS v4 with `motion/re
 **Don't**
 - No saturated brand-colour bar, pink accents, thick borders or hamburger icon fonts.
 - Never let the bar span edge to edge on desktop.
+
+**Press feel**
+- Nav links press to 0.96 under the gliding hover pill. The CTA stays white, deepens its glow on hover, nudges its arrow 3px and presses to 0.96. The menu button presses to 0.96 while its label rolls between Menu and Close (260ms, ease-out).

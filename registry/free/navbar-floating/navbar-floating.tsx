@@ -134,7 +134,7 @@ export function NavbarFloating({
                   onMouseEnter={() => setHovered(n)}
                   onFocus={() => setHovered(n)}
                   onBlur={() => setHovered(null)}
-                  className="relative flex h-10 items-center rounded-full px-4 text-[14px] text-white/70 outline-none transition-colors hover:text-white focus-visible:ring-2 focus-visible:ring-white/60 aria-[current=page]:text-white lg:px-4"
+                  className="relative flex h-10 items-center rounded-full px-4 text-[14px] text-white/70 outline-none transition-[color,transform] duration-150 hover:text-white active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-white/60 aria-[current=page]:text-white lg:px-4"
                 >
                   <AnimatePresence>
                     {hovered === n ? (
@@ -162,10 +162,10 @@ export function NavbarFloating({
         <div className="flex items-center gap-2">
           <a
             href={cta.href}
-            className="group hidden h-9 items-center gap-1.5 rounded-full bg-white px-4 text-[14px] font-medium text-black shadow-[0_8px_24px_-8px_rgba(255,255,255,0.45)] outline-none transition-colors hover:bg-white/90 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black md:inline-flex"
+            className="group hidden h-9 items-center gap-1.5 rounded-full bg-white px-4 text-[14px] font-medium text-black shadow-[0_8px_24px_-8px_rgba(255,255,255,0.45)] outline-none transition-[box-shadow,transform] duration-150 hover:shadow-[0_10px_30px_-6px_rgba(255,255,255,0.65)] active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black md:inline-flex"
           >
             {cta.label}
-            <span className="transition-transform duration-300 group-hover:translate-x-0.5">
+            <span className="transition-transform duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-[3px]">
               <Arrow />
             </span>
           </a>
@@ -178,11 +178,11 @@ export function NavbarFloating({
             aria-expanded={open}
             aria-controls={sheetId}
             onClick={() => setOpen((o) => !o)}
-            className="flex h-10 items-center gap-3 rounded-full bg-white/[0.07] pl-4 pr-3 text-[14px] font-medium outline-none ring-1 ring-inset ring-white/10 transition-colors hover:bg-white/[0.12] focus-visible:ring-2 focus-visible:ring-white/60 md:hidden"
+            className="flex h-10 items-center gap-3 rounded-full bg-white/[0.07] pl-4 pr-3 text-[14px] font-medium outline-none ring-1 ring-inset ring-white/10 transition-[background-color,transform] duration-150 hover:bg-white/[0.12] active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-white/60 md:hidden"
           >
             <span className="relative inline-grid overflow-hidden">
-              <span className={`col-start-1 row-start-1 transition-transform duration-300 ${open ? "-translate-y-full" : ""}`}>Menu</span>
-              <span className={`col-start-1 row-start-1 transition-transform duration-300 ${open ? "" : "translate-y-full"}`} aria-hidden={!open}>
+              <span className={`col-start-1 row-start-1 transition-transform duration-[260ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${open ? "-translate-y-full" : ""}`}>Menu</span>
+              <span className={`col-start-1 row-start-1 transition-transform duration-[260ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${open ? "" : "translate-y-full"}`} aria-hidden={!open}>
                 Close
               </span>
             </span>
