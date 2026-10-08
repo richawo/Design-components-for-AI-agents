@@ -50,15 +50,19 @@ Generous, deliberate whitespace on a 4/8px rhythm. Everything aligns to somethin
 
 Animate to show a change of state, direct attention, or reward an interaction. Use ease-out curves at 200–700ms, and springs for anything that gets dragged. Respect `prefers-reduced-motion` every time.
 
-### 7. Do the states
+### 7. Make it feel physical
+
+Premium is mostly how a thing responds. Hover and press answer within a frame; buttons press to about 0.97 and spring back. Selection indicators glide instead of jumping, figures count instead of snapping, and swapped content cross-fades with a few pixels of travel. Surfaces can know where the pointer is (a soft spotlight, a lean, a pull of a few pixels), but only one thing per view moves on its own. Everything is interruptible, nothing bounces, and nothing makes you wait longer than 800ms.
+
+### 8. Do the states
 
 Hover, focus-visible, active, disabled, loading, empty and error. Use tabular numbers for figures, real punctuation (’ “ ” — ×), and optically aligned icons. The details nobody notices are the ones people feel.
 
-### 8. Write like a person
+### 9. Write like a person
 
 Make the copy specific and human, with fictional but plausible names, numbers and dates. A good test: could this sentence appear on a competitor's site unchanged? If so, rewrite it.
 
-### 9. Design every breakpoint
+### 10. Design every breakpoint
 
 Check 320, 390, 768, 1024, 1440 and 1920px. "Doesn't break" isn't the bar; *designed* is. Never allow horizontal overflow. Touch targets are at least 44px, and nothing depends on hover alone.
 
@@ -77,6 +81,7 @@ Before finishing any UI work, check:
 - [ ] One neutral family + at most two accents; all text passes AA
 - [ ] Copy contains no: unlock, supercharge, seamless, elevate, leverage, effortless
 - [ ] Hover, focus-visible, disabled, loading and empty states exist
+- [ ] Buttons press (~0.97) and spring back; indicators glide; changing numbers count
 - [ ] Works at 320px with zero horizontal overflow
 - [ ] prefers-reduced-motion is respected
 ```

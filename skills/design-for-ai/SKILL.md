@@ -54,9 +54,10 @@ Every Design for AI component follows these. Hold your own UI to them too.
 4. **Earn your gradients and depth.** Keep gradients within one hue family, with fine grain to stop banding. Light needs a visible source (a horizon, a lit edge, a focused element). Build depth from hairlines, inset highlights and surfaces a few percent apart. Use one strong effect per screen.
 5. **Use space as a material.** Keep to a 4/8px rhythm and make everything align to something.
 6. **Motion explains something.** Use ease-out at 200–700ms, and springs for anything dragged. Always respect `prefers-reduced-motion`.
-7. **Do the states.** Cover hover, focus-visible, active, disabled, loading, empty and error. Use tabular numbers and real punctuation (’ “ ” — ×).
-8. **Write like a person.** Be specific and plausible. If a competitor could use the sentence unchanged, rewrite it.
-9. **Design every breakpoint.** Check 320, 390, 768, 1024, 1440 and 1920px. Never allow horizontal overflow. Make touch targets at least 44px, and never rely on hover alone.
+7. **Make it feel physical.** Hover and press respond within a frame; buttons press to ~0.97 and spring back; selection glides on a spring; numbers count; content cross-fades with a little travel; only one ambient motion per view; nothing bounces or makes you wait over 800ms.
+8. **Do the states.** Cover hover, focus-visible, active, disabled, loading, empty and error. Use tabular numbers and real punctuation (’ “ ” — ×).
+9. **Write like a person.** Be specific and plausible. If a competitor could use the sentence unchanged, rewrite it.
+10. **Design every breakpoint.** Check 320, 390, 768, 1024, 1440 and 1920px. Never allow horizontal overflow. Make touch targets at least 44px, and never rely on hover alone.
 
 ## The tells of AI slop
 
@@ -83,6 +84,7 @@ If a page has three or more of these, rework it:
 - [ ] One neutral family and at most two accents; all text passes AA
 - [ ] None of the banned words in the copy
 - [ ] Hover, focus-visible, disabled, loading and empty states exist
+- [ ] Buttons press and spring back; indicators glide; changing numbers count
 - [ ] Works at 320px with zero horizontal overflow
 - [ ] `prefers-reduced-motion` is respected
 
