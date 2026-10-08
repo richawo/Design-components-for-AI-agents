@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const VIEWPORTS = [
   { key: "desktop", label: "Desktop", width: "100%", icon: "M2 3h12v8H2zM6 14h4" },
@@ -27,6 +27,19 @@ export function PreviewFrame({
   const ref = useRef<HTMLIFrameElement>(null);
   const width = platform === "mobile" ? "100%" : VIEWPORTS.find((v) => v.key === vp)!.width;
   const frameHeight = platform === "mobile" ? 940 : height;
+
+  // The iframe is in the server HTML, so it often finishes loading before
+  // React hydrates and attaches onLoad. Check its document after mount (and
+  // after every reload) so the preview never stays hidden behind the spinner.
+  useEffect(() => {
+    const frame = ref.current;
+    try {
+      const doc = frame?.contentDocument;
+      if (doc && doc.readyState === "complete" && frame.contentWindow?.location.href !== "about:blank") setLoaded(true);
+    } catch {
+      setLoaded(true);
+    }
+  }, [key]);
 
   return (
     <div className="overflow-hidden rounded-[20px] border border-white/[0.08] bg-[#0a0a0b] shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_40px_100px_-40px_rgba(0,0,0,0.9)]">
