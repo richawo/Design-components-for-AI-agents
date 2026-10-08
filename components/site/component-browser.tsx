@@ -23,7 +23,7 @@ export function ComponentBrowser({ cards, categories }: { cards: CardData[]; cat
 
   return (
     <div className="grid gap-10 lg:grid-cols-[220px_1fr]">
-      <aside className="lg:sticky lg:top-24 lg:self-start">
+      <aside className="min-w-0 lg:sticky lg:top-24 lg:self-start">
         <p className="hidden font-mono text-[11px] uppercase tracking-[0.16em] text-site-fg-3 lg:block">Categories</p>
         <ul className="-mx-5 flex gap-1.5 overflow-x-auto px-5 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:px-0 lg:mt-4 lg:flex-col lg:gap-0.5">
           <CatItem active={cat === "all"} onClick={() => setCat("all")} label="All components" count={cards.length} />

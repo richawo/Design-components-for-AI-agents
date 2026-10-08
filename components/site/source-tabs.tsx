@@ -48,8 +48,10 @@ export function SourceTabs({
     fetch(`/api/pro/source/${slug}`, { credentials: "same-origin" })
       .then(async (r) => {
         if (!live) return;
-        if (!r.ok) return setStatus("locked");
-        setSource((await r.json()) as SourcePayload);
+        const data = r.ok ? ((await r.json()) as SourcePayload | { locked: true }) : null;
+        if (!live) return;
+        if (!data || "locked" in data) return setStatus("locked");
+        setSource(data);
         setStatus("ready");
       })
       .catch(() => live && setStatus("locked"));

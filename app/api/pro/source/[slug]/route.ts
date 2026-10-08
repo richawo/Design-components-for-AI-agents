@@ -1,5 +1,5 @@
 import { highlight } from "@/lib/highlight";
-import { requireLicense, unauthorized } from "@/lib/license";
+import { requireLicense } from "@/lib/license";
 import { getComponent, readSource } from "@/lib/registry";
 
 export async function GET(req: Request, { params }: { params: Promise<{ slug: string }> }) {
@@ -8,7 +8,10 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
   if (!entry) return Response.json({ error: "Not found" }, { status: 404 });
   if (entry.tier === "pro") {
     const v = requireLicense(req);
-    if (!v.ok) return unauthorized(v.reason);
+    // The site's own source panel calls this on every Pro page. A signed-out
+    // visitor is the normal case, so answer 200 with a locked flag rather
+    // than an error status that shows up red in every browser console.
+    if (!v.ok) return Response.json({ locked: true, reason: v.reason }, { headers: { "Cache-Control": "private, no-store" } });
   }
   const src = readSource(slug);
   if (!src) return Response.json({ error: "Source not available in this build" }, { status: 404 });

@@ -19,7 +19,12 @@ const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..")
 const registryDir = path.join(root, "registry");
 const outDir = path.join(registryDir, "__generated__");
 const publicR = path.join(root, "public", "r");
-const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://design.yaps.ai").replace(/\/$/, "");
+// Same resolution as next.config.ts: explicit URL, then the Vercel production URL.
+const SITE_URL = (
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "") ||
+  "https://design.yaps.ai"
+).replace(/\/$/, "");
 
 const CATEGORIES = [
   "charts", "three-d", "pixel", "hero", "pricing", "features", "social-proof", "cta", "navigation", "content",
