@@ -187,7 +187,7 @@ export function SettingsPanel({
                         go(s.id);
                       }}
                       aria-current={on ? "true" : undefined}
-                      className={`relative flex h-10 items-center rounded-lg px-3 text-[14px] transition-colors lg:h-9 ${focusRing} ${
+                      className={`relative flex h-10 items-center rounded-lg px-3 text-[14px] transition-[color,background-color,border-color,box-shadow,transform] lg:h-9 duration-150 active:scale-[0.97] ${focusRing} ${
                         on ? "text-[#f2f2f0]" : "text-[#9a9aa2] hover:text-[#f2f2f0]"
                       } ${s.id === "danger" && !on ? "lg:text-[#ff8a7a]/80" : ""}`}
                     >
@@ -358,7 +358,7 @@ export function SettingsPanel({
                           type="button"
                           onClick={discard}
                           disabled={status === "saving"}
-                          className={`h-10 shrink-0 rounded-lg px-3.5 text-[14px] text-[#c4c4ca] transition-colors hover:bg-[#25252a] hover:text-[#f2f2f0] disabled:opacity-40 ${focusRing}`}
+                          className={`h-10 shrink-0 rounded-lg px-3.5 text-[14px] text-[#c4c4ca] transition-[color,background-color,border-color,box-shadow,transform] hover:bg-[#25252a] hover:text-[#f2f2f0] disabled:opacity-40 duration-150 active:scale-[0.97] ${focusRing}`}
                         >
                           Discard
                         </button>
@@ -451,7 +451,7 @@ function Toggle({ checked, onChange, label, reduce }: { checked: boolean; onChan
       aria-checked={checked}
       aria-label={label}
       onClick={() => onChange(!checked)}
-      className={`relative flex h-[26px] w-[46px] shrink-0 items-center rounded-full p-[3px] transition-colors duration-200 ${focusRing} ${
+      className={`relative flex h-[26px] w-[46px] shrink-0 items-center rounded-full p-[3px] transition-[color,background-color,border-color,box-shadow,transform] duration-200 active:scale-[0.97] ${focusRing} ${
         checked ? "justify-end bg-[#d4f25c]" : "justify-start bg-[#2c2c32] hover:bg-[#35353c]"
       }`}
     >
@@ -505,7 +505,7 @@ function Segmented<T extends string>({
             tabIndex={on ? 0 : -1}
             onClick={() => onChange(o.value)}
             onKeyDown={(e) => onKey(e, i)}
-            className={`relative h-9 rounded-md px-4 text-[13px] font-medium transition-colors ${focusRing} ${on ? "text-[#0e0e10]" : "text-[#9a9aa2] hover:text-[#f2f2f0]"}`}
+            className={`relative h-9 rounded-md px-4 text-[13px] font-medium transition-[color,background-color,border-color,box-shadow,transform] duration-150 active:scale-[0.97] ${focusRing} ${on ? "text-[#0e0e10]" : "text-[#9a9aa2] hover:text-[#f2f2f0]"}`}
           >
             {on && (
               <motion.span
@@ -545,7 +545,7 @@ function AvatarField({ value, initials, onChange }: { value: string | null; init
         type="button"
         onClick={() => input.current?.click()}
         aria-label="Upload a new photo"
-        className={`group relative flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-full transition-shadow ${focusRing} ${
+        className={`group relative flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-full transition-[box-shadow,transform] duration-150 active:scale-[0.97] ${focusRing} ${
           over ? "shadow-[0_0_0_2px_#d4f25c]" : "shadow-[0_0_0_1px_#2a2a30]"
         }`}
       >
@@ -562,12 +562,12 @@ function AvatarField({ value, initials, onChange }: { value: string | null; init
         <button
           type="button"
           onClick={() => input.current?.click()}
-          className={`h-10 rounded-lg border border-[#2f2f36] bg-[#1d1d21] px-3.5 text-[13px] font-medium transition-colors hover:border-[#3a3a42] hover:bg-[#232328] ${focusRing}`}
+          className={`h-10 rounded-lg border border-[#2f2f36] bg-[#1d1d21] px-3.5 text-[13px] font-medium transition-[color,background-color,border-color,box-shadow,transform] hover:border-[#3a3a42] hover:bg-[#232328] duration-150 active:scale-[0.97] ${focusRing}`}
         >
           Upload new
         </button>
         {value && (
-          <button type="button" onClick={() => onChange(null)} className={`h-10 rounded-lg px-3 text-[13px] text-[#9a9aa2] transition-colors hover:text-[#f2f2f0] ${focusRing}`}>
+          <button type="button" onClick={() => onChange(null)} className={`h-10 rounded-lg px-3 text-[13px] text-[#9a9aa2] transition-[color,background-color,border-color,box-shadow,transform] hover:text-[#f2f2f0] duration-150 active:scale-[0.97] ${focusRing}`}>
             Remove
           </button>
         )}
@@ -610,7 +610,7 @@ function DangerZone({ id, username, email, reduce }: { id: string; username: str
           </div>
           <button
             type="button"
-            className={`inline-flex h-10 shrink-0 items-center gap-2 self-start rounded-lg border border-[#2f2f36] bg-[#1d1d21] px-3.5 text-[13px] font-medium transition-colors hover:bg-[#232328] sm:self-auto ${focusRing}`}
+            className={`inline-flex h-10 shrink-0 items-center gap-2 self-start rounded-lg border border-[#2f2f36] bg-[#1d1d21] px-3.5 text-[13px] font-medium transition-[color,background-color,border-color,box-shadow,transform] hover:bg-[#232328] sm:self-auto duration-150 active:scale-[0.97] ${focusRing}`}
           >
             <Download className="size-4" strokeWidth={1.75} aria-hidden="true" />
             Export .zip
@@ -627,7 +627,7 @@ function DangerZone({ id, username, email, reduce }: { id: string; username: str
                 type="button"
                 onClick={() => setOpen(true)}
                 aria-expanded={open}
-                className="inline-flex h-10 shrink-0 items-center self-start rounded-lg border border-[#6b2b25] bg-[#2a1513] px-3.5 text-[13px] font-medium text-[#ff8a7a] transition-colors hover:border-[#8a352d] hover:bg-[#341917] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff8a7a] sm:self-auto"
+                className="inline-flex h-10 shrink-0 items-center self-start rounded-lg border border-[#6b2b25] bg-[#2a1513] px-3.5 text-[13px] font-medium text-[#ff8a7a] transition-[color,background-color,border-color,box-shadow,transform] hover:border-[#8a352d] hover:bg-[#341917] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff8a7a] sm:self-auto duration-150 active:scale-[0.97]"
               >
                 Delete account
               </button>
@@ -672,14 +672,14 @@ function DangerZone({ id, username, email, reduce }: { id: string; username: str
                           setOpen(false);
                           setTyped("");
                         }}
-                        className={`h-10 flex-1 rounded-lg px-3.5 text-[13px] text-[#9a9aa2] hover:text-[#f2f2f0] sm:flex-none ${focusRing}`}
+                        className={`h-10 flex-1 rounded-lg px-3.5 text-[13px] text-[#9a9aa2] hover:text-[#f2f2f0] sm:flex-none transition-transform duration-150 active:scale-[0.97] ${focusRing}`}
                       >
                         Cancel
                       </button>
                       <button
                         type="submit"
                         disabled={!match}
-                        className="h-10 flex-1 rounded-lg bg-[#ff6b5a] px-3.5 text-[13px] font-semibold text-[#160b0a] transition-opacity hover:bg-[#ff7d6e] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff8a7a] disabled:cursor-not-allowed disabled:opacity-35 sm:flex-none"
+                        className="h-10 flex-1 rounded-lg bg-[#ff6b5a] px-3.5 text-[13px] font-semibold text-[#160b0a] transition-[opacity,transform] hover:bg-[#ff7d6e] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff8a7a] disabled:cursor-not-allowed disabled:opacity-35 sm:flex-none duration-150 active:scale-[0.97]"
                       >
                         Delete forever
                       </button>

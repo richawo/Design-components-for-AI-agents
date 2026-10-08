@@ -36,3 +36,6 @@ Build a Swiss (International Typographic Style) conference hero in React + Tailw
 - No centred text, rounded buttons, extra colours, shadows or gradients.
 - No stock "conference" photography.
 - Nothing off the grid.
+
+**Press feel**
+- Every button and link presses: 0.97 for buttons and links, 0.99 for full-width rows, in 150ms, springing back on release. Colour, background and transform share one transition so nothing snaps. Hover changes are a single step, and focus rings appear instantly.

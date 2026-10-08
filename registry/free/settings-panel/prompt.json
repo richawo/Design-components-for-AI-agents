@@ -2,21 +2,49 @@
   "component": "SettingsPanel",
   "intent": "A dark account settings page with scroll-spy section nav, custom switches and segmented controls, an avatar uploader, a typed-confirm danger zone and a sticky bar that counts unsaved changes.",
   "platform": "web",
-  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "animation": "motion/react (layout, layoutId, AnimatePresence)", "icons": "lucide-react", "fonts": "font-display (Geist, tight tracking), font-sans (Geist), font-mono (Geist Mono)" },
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4",
+    "animation": "motion/react (layout, layoutId, AnimatePresence)",
+    "icons": "lucide-react",
+    "fonts": "font-display (Geist, tight tracking), font-sans (Geist), font-mono (Geist Mono)"
+  },
   "layout": {
     "container": "max-w 1120px, px 16/32/48, pt 40→80px",
     "header": "mono breadcrumb, display heading, one-line description (max 68ch)",
     "desktop": "180px sticky section nav + content column, 56px gap",
     "mobile": "nav becomes a sticky horizontal scrolling tab strip",
-    "sections": ["Profile: avatar, display name, username with prefix, bio with counter, pronouns, time zone", "Notifications: 4 switches + delivery segmented", "Appearance: theme + density segmented, week start select", "Danger zone: export, delete with typed confirmation"],
+    "sections": [
+      "Profile: avatar, display name, username with prefix, bio with counter, pronouns, time zone",
+      "Notifications: 4 switches + delivery segmented",
+      "Appearance: theme + density segmented, week start select",
+      "Danger zone: export, delete with typed confirmation"
+    ],
     "rows": "label + hint left, control right (2fr/3fr) at ≥768px; switches always right-aligned",
     "saveBar": "sticky bottom of the content column, max 560px, count + Discard + Save ⌘S"
   },
   "typography": {
-    "heading": { "font": "display", "size": "clamp(2.5rem, 1.8rem + 3vw, 4.25rem)", "weight": 600, "tracking": "-0.045em", "leading": 0.95 },
-    "sectionHeading": { "font": "display", "size": "22px", "weight": 600, "tracking": "-0.03em" },
-    "label": { "size": "14px", "weight": 500 },
-    "hint": { "size": "13px", "color": "muted" },
+    "heading": {
+      "font": "display",
+      "size": "clamp(2.5rem, 1.8rem + 3vw, 4.25rem)",
+      "weight": 600,
+      "tracking": "-0.045em",
+      "leading": 0.95
+    },
+    "sectionHeading": {
+      "font": "display",
+      "size": "22px",
+      "weight": 600,
+      "tracking": "-0.03em"
+    },
+    "label": {
+      "size": "14px",
+      "weight": 500
+    },
+    "hint": {
+      "size": "13px",
+      "color": "muted"
+    },
     "mono": "breadcrumb 11px 0.16em uppercase; username 13px; counter 11px"
   },
   "color": {
@@ -29,7 +57,12 @@
     "faint": "#6e6e76",
     "accent": "#d4f25c",
     "segmentedSelected": "#f2f2f0 with dark text",
-    "danger": { "text": "#ff8a7a", "button": "#ff6b5a", "surface": "#171213", "border": "#4a2421" },
+    "danger": {
+      "text": "#ff8a7a",
+      "button": "#ff6b5a",
+      "surface": "#171213",
+      "border": "#4a2421"
+    },
     "colorScheme": "dark"
   },
   "motion": {
@@ -37,7 +70,8 @@
     "pills": "shared layoutId springs for nav and segmented controls",
     "saveBar": "y 96 → 0 spring (380/34); message cross-fade unsaved ↔ saved",
     "dangerConfirm": "height auto, 0.35s, ease [0.2, 0.8, 0.2, 1]",
-    "reducedMotion": "fades only; no springs; no ping"
+    "reducedMotion": "fades only; no springs; no ping",
+    "press": "buttons and links press to 0.97, full-width rows to 0.99, 150ms; one shared transition for colour and transform"
   },
   "responsive": {
     "390": "tab strip nav; rows stack; segmented controls full width; danger buttons below their text",
@@ -56,8 +90,19 @@
     "app": "Fieldnote, a research notes app",
     "person": "Mika Korhonen, @mika, she/her, Europe/Helsinki",
     "bio": "Field researcher. I collect interview notes, bad puns and good coffee.",
-    "hints": ["Monday morning: what changed in notes you follow.", "New features, about once a month. No “we miss you”.", "Compact fits about 30% more notes on screen."],
+    "hints": [
+      "Monday morning: what changed in notes you follow.",
+      "New features, about once a month. No “we miss you”.",
+      "Compact fits about 30% more notes on screen."
+    ],
     "danger": "Type your username to confirm; afterwards: a last-chance link is emailed, account goes in 48 hours"
   },
-  "avoid": ["glassmorphism", "gradients or neon glow", "toasts covering the form", "div-based fake selects without semantics", "modal 'Are you sure?' for deletion", "grey-on-grey hints below AA"]
+  "avoid": [
+    "glassmorphism",
+    "gradients or neon glow",
+    "toasts covering the form",
+    "div-based fake selects without semantics",
+    "modal 'Are you sure?' for deletion",
+    "grey-on-grey hints below AA"
+  ]
 }

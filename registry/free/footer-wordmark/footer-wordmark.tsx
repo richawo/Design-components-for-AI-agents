@@ -93,12 +93,12 @@ export function FooterWordmark({
             <h2 className="max-w-[17ch] font-display text-[clamp(2.4rem,1.3rem+4.4vw,5.5rem)] font-bold leading-[0.95] tracking-[-0.05em]">{headline}</h2>
             <a
               href={`mailto:${email}`}
-              className="group mt-8 inline-flex max-w-full items-center gap-3 font-display text-[clamp(1.25rem,0.9rem+1.6vw,2.25rem)] font-semibold tracking-[-0.035em] outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-4 focus-visible:ring-offset-black"
+              className="group mt-8 inline-flex max-w-full items-center gap-3 font-display text-[clamp(1.25rem,0.9rem+1.6vw,2.25rem)] font-semibold tracking-[-0.035em] outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-4 focus-visible:ring-offset-black transition-transform duration-150 active:scale-[0.99]"
             >
-              <span className="truncate bg-[linear-gradient(currentColor,currentColor)] bg-[length:100%_2px] bg-bottom bg-no-repeat pb-1 transition-[background-size] duration-500 ease-[cubic-bezier(.2,.8,.2,1)] group-hover:bg-[length:0%_2px] group-hover:bg-right-bottom">
+              <span className="truncate bg-[linear-gradient(currentColor,currentColor)] bg-[length:100%_2px] bg-bottom bg-no-repeat pb-1 transition-[background-size] duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:bg-[length:0%_2px] group-hover:bg-right-bottom">
                 {email}
               </span>
-              <span aria-hidden="true" className="flex size-10 shrink-0 items-center justify-center rounded-full bg-white text-black transition-transform duration-500 ease-[cubic-bezier(.2,.8,.2,1)] group-hover:rotate-[-45deg] sm:size-12">
+              <span aria-hidden="true" className="flex size-10 shrink-0 items-center justify-center rounded-full bg-white text-black transition-transform duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:rotate-[-45deg] sm:size-12">
                 <svg viewBox="0 0 16 16" className="size-4 sm:size-5" fill="none">
                   <path d="M3 8h10m0 0L8.5 3.5M13 8l-4.5 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
@@ -120,7 +120,7 @@ export function FooterWordmark({
                       href={l.href}
                       target={l.external ? "_blank" : undefined}
                       rel={l.external ? "noreferrer" : undefined}
-                      className="group inline-flex min-h-9 items-center gap-1.5 text-[17px] font-medium tracking-[-0.015em] outline-none focus-visible:underline focus-visible:decoration-2 focus-visible:underline-offset-4"
+                      className="group inline-flex min-h-9 items-center gap-1.5 text-[17px] font-medium tracking-[-0.015em] outline-none focus-visible:underline focus-visible:decoration-2 focus-visible:underline-offset-4 transition-transform duration-150 active:scale-[0.97]"
                     >
                       <span className="bg-[linear-gradient(currentColor,currentColor)] bg-[length:0%_1.5px] bg-left-bottom bg-no-repeat transition-[background-size] duration-300 group-hover:bg-[length:100%_1.5px]">
                         {l.label}
@@ -160,7 +160,7 @@ export function FooterWordmark({
           <ul className="flex flex-wrap gap-x-5 gap-y-1">
             {legalLinks.map((l) => (
               <li key={l.label}>
-                <a href={l.href} className="inline-flex min-h-8 items-center outline-none hover:text-white focus-visible:underline">
+                <a href={l.href} className="inline-flex min-h-8 items-center outline-none hover:text-white focus-visible:underline transition-transform duration-150 active:scale-[0.97]">
                   {l.label}
                 </a>
               </li>
@@ -366,10 +366,10 @@ function BackToTop({ reduce }: { reduce: boolean }) {
     <button
       type="button"
       onClick={() => window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" })}
-      className="group flex shrink-0 items-center gap-3 self-start text-[15px] font-semibold outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-4 focus-visible:ring-offset-black md:flex-col md:items-end md:self-end"
+      className="group flex shrink-0 items-center gap-3 self-start text-[15px] font-semibold outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-4 focus-visible:ring-offset-black md:flex-col md:items-end md:self-end transition-transform duration-150 active:scale-[0.97]"
     >
       <span className="flex size-14 items-center justify-center overflow-hidden rounded-full border-2 border-white/15 lg:size-20">
-        <svg viewBox="0 0 16 16" className="size-5 transition-transform duration-500 ease-[cubic-bezier(.2,.8,.2,1)] group-hover:-translate-y-1 lg:size-6" fill="none" aria-hidden="true">
+        <svg viewBox="0 0 16 16" className="size-5 transition-transform duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-1 lg:size-6" fill="none" aria-hidden="true">
           <path d="M8 13V3m0 0L3.5 7.5M8 3l4.5 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </span>

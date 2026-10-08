@@ -45,3 +45,6 @@ Build an account settings page in React + Tailwind CSS (v4) with `motion/react` 
 - No toasts that cover the form; the save bar is the only feedback.
 - No browser-default selects or checkboxes, but don't replace native semantics with divs either.
 - No "Are you sure?" modal for deletion; typed confirmation inline is the point.
+
+**Press feel**
+- Every button and link presses: 0.97 for buttons and links, 0.99 for full-width rows, in 150ms, springing back on release. Colour, background and transform share one transition so nothing snaps. Hover changes are a single step, and focus rings appear instantly.

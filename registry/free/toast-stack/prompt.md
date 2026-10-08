@@ -35,3 +35,6 @@ Build a stacked toast system in React + Tailwind CSS (v4) with `motion/react` an
 **Don't**
 - No coloured full-bleed toasts, no glassmorphism blur, no emoji icons.
 - Don't stack toasts as a plain vertical list, and never let a timer run out while someone is reading.
+
+**Press feel**
+- Every button and link presses: 0.97 for buttons and links, 0.99 for full-width rows, in 150ms, springing back on release. Colour, background and transform share one transition so nothing snaps. Hover changes are a single step, and focus rings appear instantly.

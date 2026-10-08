@@ -430,7 +430,7 @@ function ToastItem({
                   dismiss(t.id);
                 }}
                 onPointerDownCapture={(e) => e.stopPropagation()}
-                className="mt-2.5 inline-flex h-8 items-center rounded-[8px] bg-[#f4f4f5] px-3 text-[13px] font-medium text-[#0b0b0c] outline-none transition-colors hover:bg-white focus-visible:ring-2 focus-visible:ring-[#8ab8ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1c1c1f]"
+                className="mt-2.5 inline-flex h-8 items-center rounded-[8px] bg-[#f4f4f5] px-3 text-[13px] font-medium text-[#0b0b0c] outline-none transition-[color,background-color,border-color,box-shadow,transform] hover:bg-white focus-visible:ring-2 focus-visible:ring-[#8ab8ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1c1c1f] duration-150 active:scale-[0.97]"
               >
                 {t.action.label}
               </button>
@@ -442,7 +442,7 @@ function ToastItem({
           aria-label="Dismiss notification"
           onClick={() => dismiss(t.id)}
           onPointerDownCapture={(e) => e.stopPropagation()}
-          className={`absolute right-1.5 top-1.5 flex size-8 items-center justify-center rounded-[8px] text-[#a1a1aa] outline-none transition-colors hover:bg-white/[0.06] hover:text-[#f4f4f5] focus-visible:ring-2 focus-visible:ring-[#8ab8ff] ${!expanded && !front ? "opacity-0" : ""}`}
+          className={`absolute right-1.5 top-1.5 flex size-8 items-center justify-center rounded-[8px] text-[#a1a1aa] outline-none transition-[color,background-color,border-color,box-shadow,transform] hover:bg-white/[0.06] hover:text-[#f4f4f5] focus-visible:ring-2 focus-visible:ring-[#8ab8ff] duration-150 active:scale-[0.97] ${!expanded && !front ? "opacity-0" : ""}`}
         >
           <X size={14} strokeWidth={2.25} aria-hidden="true" />
         </button>
@@ -570,7 +570,7 @@ export function ToastStack({
                 <button
                   type="button"
                   onClick={() => fire(tr)}
-                  className="group flex w-full items-center gap-4 py-3.5 text-left outline-none focus-visible:bg-white/[0.04]"
+                  className="group flex w-full items-center gap-4 py-3.5 text-left outline-none focus-visible:bg-white/[0.04] transition-transform duration-150 active:scale-[0.99]"
                 >
                   <span className="w-6 font-mono text-[11px] tabular-nums text-[#71717a]">{String(i + 1).padStart(2, "0")}</span>
                   <span className={`size-2 shrink-0 rounded-full ${kindDot[tr.kind]}`} aria-hidden="true" />

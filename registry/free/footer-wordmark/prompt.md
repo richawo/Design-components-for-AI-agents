@@ -38,3 +38,6 @@ Build a big studio footer in React + Tailwind CSS (v4) with `motion/react`. It's
 - No grey footer with four equal columns of small links. Scale and the lit wordmark are the point.
 - No social icon row. Socials are text links.
 - No gradients and no drop shadows.
+
+**Press feel**
+- Every button and link presses: 0.97 for buttons and links, 0.99 for full-width rows, in 150ms, springing back on release. Colour, background and transform share one transition so nothing snaps. Hover changes are a single step, and focus rings appear instantly.

@@ -42,3 +42,6 @@ Build a live bento grid feature section in React + Tailwind CSS (v4) + `motion/r
 - No three identical icon cards, gradients, glows, glass or drop shadows on tiles. Hairlines only.
 - No screenshots or images. Every illustration is live markup.
 - Don’t use more than one accent colour, and don’t let every tile animate on a loop when reduced motion is on.
+
+**Press feel**
+- Every button and link presses: 0.97 for buttons and links, 0.99 for full-width rows, in 150ms, springing back on release. Colour, background and transform share one transition so nothing snaps. Hover changes are a single step, and focus rings appear instantly.

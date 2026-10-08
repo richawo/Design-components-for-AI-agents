@@ -103,7 +103,7 @@ export function HeroSwissGrid({
             <div className="col-span-4 flex flex-col items-start gap-4 md:col-span-4 md:col-start-5">
               <a
                 href={primary.href}
-                className="group inline-flex h-14 items-center gap-6 bg-[#0a0a0a] pl-5 pr-4 text-[15px] font-semibold text-white transition-colors duration-200 hover:bg-[#e10600] focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[#e10600]"
+                className="group inline-flex h-14 items-center gap-6 bg-[#0a0a0a] pl-5 pr-4 text-[15px] font-semibold text-white transition-[color,background-color,border-color,box-shadow,transform] duration-200 hover:bg-[#e10600] focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[#e10600] active:scale-[0.97]"
               >
                 {primary.label}
                 <svg viewBox="0 0 16 16" className="size-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" aria-hidden="true">
@@ -112,7 +112,7 @@ export function HeroSwissGrid({
               </a>
               <a
                 href={secondary.href}
-                className="text-[15px] font-medium underline decoration-1 underline-offset-[5px] transition-colors hover:text-[#e10600] focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[#e10600]"
+                className="text-[15px] font-medium underline decoration-1 underline-offset-[5px] transition-[color,background-color,border-color,box-shadow,transform] hover:text-[#e10600] focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[#e10600] duration-150 active:scale-[0.97]"
               >
                 {secondary.label}
               </a>
@@ -138,13 +138,13 @@ export function HeroSwissGrid({
                 <li key={it.title}>
                   <a
                     href={it.href}
-                    className={`group ${cols} items-baseline border-b border-[#0a0a0a]/25 py-4 transition-colors focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#e10600] md:py-5`}
+                    className={`group transition-[transform,color,background-color,border-color] duration-150 active:scale-[0.99] ${cols} items-baseline border-b border-[#0a0a0a]/25 py-4 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#e10600] md:py-5`}
                   >
                     <span className="col-span-1 font-mono text-[13px] tabular-nums transition-colors group-hover:text-[#e10600]">
                       {String(i + 1).padStart(2, "0")}
                     </span>
                     <span className="col-span-3 font-sans text-[clamp(1.35rem,1rem+1.4vw,2.25rem)] font-semibold leading-[1.05] tracking-[-0.035em] md:col-span-5">
-                      <span className="bg-[linear-gradient(#e10600,#e10600)] bg-[length:0%_2px] bg-left-bottom bg-no-repeat pb-0.5 transition-[background-size] duration-500 ease-[cubic-bezier(.2,.8,.2,1)] group-hover:bg-[length:100%_2px]">
+                      <span className="bg-[linear-gradient(#e10600,#e10600)] bg-[length:0%_2px] bg-left-bottom bg-no-repeat pb-0.5 transition-[background-size] duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:bg-[length:100%_2px]">
                         {it.title}
                       </span>
                     </span>

@@ -142,7 +142,7 @@ export function BentoGrid({
             <p className="max-w-[46ch] text-[16px] leading-[1.6] text-[#141412]/70">{intro}</p>
             <a
               href={link.href}
-              className="group mt-5 inline-flex items-center gap-2 text-[15px] font-semibold underline decoration-[#141412]/25 decoration-[1.5px] underline-offset-[6px] transition-colors hover:decoration-[#141412] focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#141412]"
+              className="group mt-5 inline-flex items-center gap-2 text-[15px] font-semibold underline decoration-[#141412]/25 decoration-[1.5px] underline-offset-[6px] transition-[color,background-color,border-color,box-shadow,transform] hover:decoration-[#141412] focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#141412] duration-150 active:scale-[0.97]"
             >
               {link.label}
               <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1">
@@ -285,7 +285,7 @@ function TrendTile({ label, title, body, dates, metrics, className = "" }: NonNu
                 setActive(i);
                 setTouched(true);
               }}
-              className="relative h-9 rounded-full px-3.5 text-[13px] font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#141412]"
+              className="relative h-9 rounded-full px-3.5 text-[13px] font-medium transition-[color,background-color,border-color,box-shadow,transform] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#141412] duration-150 active:scale-[0.97]"
             >
               {i === active && (
                 <motion.span
@@ -697,7 +697,7 @@ function AlertsTile({ label, title, body, settings, preview, className = "" }: N
                 setTouched(true);
                 setState((st) => st.map((v, j) => (j === i ? !v : v)));
               }}
-              className="flex min-h-[60px] w-full items-center justify-between gap-4 border-t border-[#141412]/[0.08] px-4 py-3 text-left transition-colors first:border-t-0 hover:bg-[#f6f5f2] focus-visible:bg-[#f6f5f2] focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[#141412]"
+              className="flex min-h-[60px] w-full items-center justify-between gap-4 border-t border-[#141412]/[0.08] px-4 py-3 text-left transition-[color,background-color,border-color,box-shadow,transform] first:border-t-0 hover:bg-[#f6f5f2] focus-visible:bg-[#f6f5f2] focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[#141412] duration-150 active:scale-[0.99]"
             >
               <span className="min-w-0">
                 <span className="block text-[14px] font-medium leading-tight">{s.label}</span>
