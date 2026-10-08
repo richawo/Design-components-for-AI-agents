@@ -10,6 +10,9 @@ import {
   View,
   useColorScheme,
   type LayoutChangeEvent,
+  type PressableProps,
+  type StyleProp,
+  type ViewStyle,
 } from "react-native";
 
 export type Appearance = "light" | "dark" | "auto";
@@ -68,6 +71,42 @@ const ThemeCtx = createContext<Col>(() => new Animated.Value(0).interpolate({ in
 const useCol = () => useContext(ThemeCtx);
 
 const native = Platform.OS !== "web";
+
+/* ------------------------------------------------------------------ */
+/* Squish: a Pressable that springs down while held and back on release. */
+/* ------------------------------------------------------------------ */
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
+type SquishProps = Omit<PressableProps, "style"> & {
+  /** Scale while pressed: ~0.95 for buttons, ~0.985 for rows and cards. */
+  to?: number;
+  style?: StyleProp<ViewStyle> | ((state: { pressed: boolean }) => StyleProp<ViewStyle>);
+};
+
+function Squish({ to = 0.96, style, onPressIn, onPressOut, ...rest }: SquishProps) {
+  const reduce = useReducedMotion();
+  const scale = useRef(new Animated.Value(1)).current;
+  const [pressed, setPressed] = useState(false);
+  const go = (v: number) => Animated.spring(scale, { toValue: v, stiffness: 520, damping: 30, mass: 1, useNativeDriver: true }).start();
+  const base = typeof style === "function" ? style({ pressed }) : style;
+  return (
+    <AnimatedPressable
+      {...rest}
+      onPressIn={(e) => {
+        setPressed(true);
+        if (!reduce) go(to);
+        onPressIn?.(e);
+      }}
+      onPressOut={(e) => {
+        setPressed(false);
+        go(1);
+        onPressOut?.(e);
+      }}
+      style={[base, { transform: [{ scale }] }]}
+    />
+  );
+}
 
 function useReducedMotion() {
   const [reduced, setReduced] = useState(false);
@@ -131,9 +170,9 @@ export function MobileSettings({
             <Animated.Text style={[styles.title, { color: col("ink") }]} accessibilityRole="header">
               Settings
             </Animated.Text>
-            <Pressable accessibilityRole="button" accessibilityLabel="Done" hitSlop={8} style={({ pressed }) => [styles.done, pressed && { opacity: 0.5 }]}>
+            <Squish to={0.95} accessibilityRole="button" accessibilityLabel="Done" hitSlop={8} style={({ pressed }) => [styles.done, pressed && { opacity: 0.85 }]}>
               <Animated.Text style={[styles.doneText, { color: col("accent") }]}>Done</Animated.Text>
-            </Pressable>
+            </Squish>
           </View>
 
           <ProfileCard profile={profile} />
@@ -167,9 +206,9 @@ export function MobileSettings({
           </Group>
 
           <Animated.View style={[styles.card, styles.signOutCard, { backgroundColor: col("card"), borderColor: col("line") }]}>
-            <Pressable onPress={onSignOut} accessibilityRole="button" accessibilityLabel="Sign out" style={({ pressed }) => [styles.signOut, pressed && { opacity: 0.55 }]}>
+            <Squish to={0.95} onPress={onSignOut} accessibilityRole="button" accessibilityLabel="Sign out" style={({ pressed }) => [styles.signOut, pressed && { opacity: 0.85 }]}>
               <Animated.Text style={[styles.signOutText, { color: col("danger") }]}>Sign out</Animated.Text>
-            </Pressable>
+            </Squish>
           </Animated.View>
 
           <Animated.Text style={[styles.footer, { color: col("sub") }]}>
@@ -193,7 +232,7 @@ function ProfileCard({ profile }: { profile: SettingsProfile }) {
     .join("");
   return (
     <Animated.View style={[styles.card, styles.profile, { backgroundColor: col("card"), borderColor: col("line") }]}>
-      <Pressable accessibilityRole="button" accessibilityLabel={`${profile.name}, edit profile`} style={({ pressed }) => [styles.profileTop, pressed && { opacity: 0.7 }]}>
+      <Squish to={0.985} accessibilityRole="button" accessibilityLabel={`${profile.name}, edit profile`} style={({ pressed }) => [styles.profileTop, pressed && { opacity: 0.85 }]}>
         <Animated.View style={[styles.avatar, { backgroundColor: col("accentSoft") }]}>
           <Animated.Text style={[styles.avatarText, { color: col("accent") }]}>{initials}</Animated.Text>
           <Animated.View style={[styles.avatarBadge, { backgroundColor: col("accent"), borderColor: col("card") }]}>
@@ -208,7 +247,7 @@ function ProfileCard({ profile }: { profile: SettingsProfile }) {
           </Animated.View>
         </View>
         <Chevron />
-      </Pressable>
+      </Squish>
       <Animated.View style={[styles.stats, { borderTopColor: col("line") }]}>
         {profile.stats.map((s, i) => (
           <Animated.View key={s.label} style={[styles.stat, i > 0 && { borderLeftWidth: 1, borderLeftColor: col("line") }]}>
@@ -258,9 +297,9 @@ function Row({ icon, label, detail, value, right, last }: { icon: ReactNode; lab
   );
   if (right) return <View style={styles.row}>{content}</View>;
   return (
-    <Pressable accessibilityRole="button" accessibilityLabel={value ? `${label}, ${value}` : label} style={({ pressed }) => [styles.row, pressed && { opacity: 0.6 }]}>
+    <Squish to={0.985} accessibilityRole="button" accessibilityLabel={value ? `${label}, ${value}` : label} style={({ pressed }) => [styles.row, pressed && { opacity: 0.85 }]}>
       {content}
-    </Pressable>
+    </Squish>
   );
 }
 
@@ -340,7 +379,7 @@ function Segmented({ value, onChange, reduced }: { value: Appearance; onChange: 
         </Animated.View>
       ) : null}
       {options.map((o) => (
-        <Pressable
+        <Squish to={0.95}
           key={o.key}
           onPress={() => onChange(o.key)}
           accessibilityRole="radio"
@@ -350,7 +389,7 @@ function Segmented({ value, onChange, reduced }: { value: Appearance; onChange: 
         >
           <SegmentGlyph kind={o.key} active={value === o.key} />
           <Animated.Text style={[styles.segmentText, { color: value === o.key ? col("ink") : col("sub") }]}>{o.label}</Animated.Text>
-        </Pressable>
+        </Squish>
       ))}
     </Animated.View>
   );

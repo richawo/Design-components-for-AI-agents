@@ -9,6 +9,9 @@ import {
   Text,
   View,
   type LayoutChangeEvent,
+  type PressableProps,
+  type StyleProp,
+  type ViewStyle,
 } from "react-native";
 
 export type OnboardingSlide = {
@@ -65,6 +68,42 @@ const DEFAULT_SLIDES: OnboardingSlide[] = [
 ];
 
 const native = Platform.OS !== "web";
+
+/* ------------------------------------------------------------------ */
+/* Squish: a Pressable that springs down while held and back on release. */
+/* ------------------------------------------------------------------ */
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
+type SquishProps = Omit<PressableProps, "style"> & {
+  /** Scale while pressed: ~0.95 for buttons, ~0.985 for rows and cards. */
+  to?: number;
+  style?: StyleProp<ViewStyle> | ((state: { pressed: boolean }) => StyleProp<ViewStyle>);
+};
+
+function Squish({ to = 0.96, style, onPressIn, onPressOut, ...rest }: SquishProps) {
+  const reduce = useReducedMotion();
+  const scale = useRef(new Animated.Value(1)).current;
+  const [pressed, setPressed] = useState(false);
+  const go = (v: number) => Animated.spring(scale, { toValue: v, stiffness: 520, damping: 30, mass: 1, useNativeDriver: true }).start();
+  const base = typeof style === "function" ? style({ pressed }) : style;
+  return (
+    <AnimatedPressable
+      {...rest}
+      onPressIn={(e) => {
+        setPressed(true);
+        if (!reduce) go(to);
+        onPressIn?.(e);
+      }}
+      onPressOut={(e) => {
+        setPressed(false);
+        go(1);
+        onPressOut?.(e);
+      }}
+      style={[base, { transform: [{ scale }] }]}
+    />
+  );
+}
 
 function useReducedMotion() {
   const [reduced, setReduced] = useState(false);
@@ -151,15 +190,15 @@ export function MobileOnboarding({
           <Text style={styles.brandText}>{brand}</Text>
         </View>
         <Animated.View style={{ opacity: skipFade }} pointerEvents={index === last ? "none" : "auto"}>
-          <Pressable
+          <Squish to={0.95}
             onPress={() => goTo(last)}
             accessibilityRole="button"
             accessibilityLabel={`${skipLabel} to the last slide`}
             hitSlop={8}
-            style={({ pressed }) => [styles.skip, pressed && { opacity: 0.5 }]}
+            style={({ pressed }) => [styles.skip, pressed && { opacity: 0.85 }]}
           >
             <Text style={styles.skipText}>{skipLabel}</Text>
-          </Pressable>
+          </Squish>
         </Animated.View>
       </View>
 
@@ -230,7 +269,7 @@ export function MobileOnboarding({
         </Animated.View>
 
         <Animated.View style={[styles.ctaWrap, { width: ctaWidth }]}>
-          <Pressable
+          <Squish to={0.95}
             onPress={next}
             accessibilityRole="button"
             accessibilityLabel={index === last ? finishLabel : nextLabel}
@@ -242,7 +281,7 @@ export function MobileOnboarding({
             <View style={styles.arrowSlot}>
               <Arrow />
             </View>
-          </Pressable>
+          </Squish>
         </Animated.View>
       </View>
     </Animated.View>

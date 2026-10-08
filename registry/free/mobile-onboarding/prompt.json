@@ -2,13 +2,95 @@
   "component": "MobileOnboarding",
   "intent": "Three-slide React Native onboarding with blended slide colours, parallax View-built illustrations and a stretchy pagination pill.",
   "platform": "mobile",
-  "stack": { "framework": "React Native (core only)", "apis": ["ScrollView pagingEnabled", "Animated (scroll-driven interpolation)", "Pressable", "StyleSheet", "useWindowDimensions", "AccessibilityInfo"], "web": "react-native-web compatible" },
-  "layout": { "topBar": "54pt top padding; brand left, Skip right", "slide": "illustration upper half; kicker, headline, body below", "bottomBar": "pagination left, 64pt round next button right; last slide → 'Get started' pill" },
-  "typography": { "brand": { "size": 22, "weight": "800", "letterSpacing": -0.8 }, "headline": { "size": "36-40", "weight": "800", "letterSpacing": -1.4 }, "body": { "size": 16, "lineHeight": 1.45, "opacity": 0.75 }, "kicker": { "font": "monospace", "size": 11, "case": "uppercase" } },
-  "color": { "ink": "#1A1712", "cream": "#FFF8EE", "slides": [{ "bg": "#FFDCC4", "accent": "#FF5B24" }, { "bg": "#D4E5CC", "accent": "#1F6B45" }, { "bg": "#F6E2A2", "accent": "#D9441E" }], "background": "interpolated from scroll x" },
-  "motion": { "parallax": "each layer translateX = scroll × rate", "pagination": "active dot width 8→28pt by scroll interpolation", "next": "animated scrollTo", "reducedMotion": "no parallax, instant jumps" },
-  "responsive": { "width": "slide width = window width (360–430pt)", "illustrationSize": "derived from width" },
-  "accessibility": ["buttons have accessibilityRole and labels", "slide position announced", "reduced motion respected", "no colour-only meaning"],
-  "content": { "brand": "grove", "slides": ["Start embarrassingly small.", "Bend the chain. Don’t break it.", "Your future self says thanks."] },
-  "avoid": ["Expo modules", "SVG or Lottie", "emoji", "stock illustrations", "tilts over 3°", "default iOS grey"]
+  "stack": {
+    "framework": "React Native (core only)",
+    "apis": [
+      "ScrollView pagingEnabled",
+      "Animated (scroll-driven interpolation)",
+      "Pressable",
+      "StyleSheet",
+      "useWindowDimensions",
+      "AccessibilityInfo"
+    ],
+    "web": "react-native-web compatible"
+  },
+  "layout": {
+    "topBar": "54pt top padding; brand left, Skip right",
+    "slide": "illustration upper half; kicker, headline, body below",
+    "bottomBar": "pagination left, 64pt round next button right; last slide → 'Get started' pill"
+  },
+  "typography": {
+    "brand": {
+      "size": 22,
+      "weight": "800",
+      "letterSpacing": -0.8
+    },
+    "headline": {
+      "size": "36-40",
+      "weight": "800",
+      "letterSpacing": -1.4
+    },
+    "body": {
+      "size": 16,
+      "lineHeight": 1.45,
+      "opacity": 0.75
+    },
+    "kicker": {
+      "font": "monospace",
+      "size": 11,
+      "case": "uppercase"
+    }
+  },
+  "color": {
+    "ink": "#1A1712",
+    "cream": "#FFF8EE",
+    "slides": [
+      {
+        "bg": "#FFDCC4",
+        "accent": "#FF5B24"
+      },
+      {
+        "bg": "#D4E5CC",
+        "accent": "#1F6B45"
+      },
+      {
+        "bg": "#F6E2A2",
+        "accent": "#D9441E"
+      }
+    ],
+    "background": "interpolated from scroll x"
+  },
+  "motion": {
+    "parallax": "each layer translateX = scroll × rate",
+    "pagination": "active dot width 8→28pt by scroll interpolation",
+    "next": "animated scrollTo",
+    "reducedMotion": "no parallax, instant jumps",
+    "press": "Squish wrapper: Animated Pressable springs to ~0.95 (buttons) or 0.985 (rows, cards) while held, stiffness 520 damping 30, native driver; skipped under reduced motion"
+  },
+  "responsive": {
+    "width": "slide width = window width (360–430pt)",
+    "illustrationSize": "derived from width"
+  },
+  "accessibility": [
+    "buttons have accessibilityRole and labels",
+    "slide position announced",
+    "reduced motion respected",
+    "no colour-only meaning"
+  ],
+  "content": {
+    "brand": "grove",
+    "slides": [
+      "Start embarrassingly small.",
+      "Bend the chain. Don’t break it.",
+      "Your future self says thanks."
+    ]
+  },
+  "avoid": [
+    "Expo modules",
+    "SVG or Lottie",
+    "emoji",
+    "stock illustrations",
+    "tilts over 3°",
+    "default iOS grey"
+  ]
 }

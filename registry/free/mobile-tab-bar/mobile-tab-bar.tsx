@@ -10,6 +10,9 @@ import {
   Text,
   View,
   type LayoutChangeEvent,
+  type PressableProps,
+  type StyleProp,
+  type ViewStyle,
 } from "react-native";
 
 export type TabKey = "today" | "routes" | "club" | "you";
@@ -85,6 +88,42 @@ const DEFAULT_BESTS: PersonalBest[] = [
   { label: "10K", time: "47:09", date: "Aug 03" },
   { label: "Half", time: "1:46:30", date: "Apr 27" },
 ];
+
+/* ------------------------------------------------------------------ */
+/* Squish: a Pressable that springs down while held and back on release. */
+/* ------------------------------------------------------------------ */
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
+type SquishProps = Omit<PressableProps, "style"> & {
+  /** Scale while pressed: ~0.95 for buttons, ~0.985 for rows and cards. */
+  to?: number;
+  style?: StyleProp<ViewStyle> | ((state: { pressed: boolean }) => StyleProp<ViewStyle>);
+};
+
+function Squish({ to = 0.96, style, onPressIn, onPressOut, ...rest }: SquishProps) {
+  const reduce = useReducedMotion();
+  const scale = useRef(new Animated.Value(1)).current;
+  const [pressed, setPressed] = useState(false);
+  const go = (v: number) => Animated.spring(scale, { toValue: v, stiffness: 520, damping: 30, mass: 1, useNativeDriver: true }).start();
+  const base = typeof style === "function" ? style({ pressed }) : style;
+  return (
+    <AnimatedPressable
+      {...rest}
+      onPressIn={(e) => {
+        setPressed(true);
+        if (!reduce) go(to);
+        onPressIn?.(e);
+      }}
+      onPressOut={(e) => {
+        setPressed(false);
+        go(1);
+        onPressOut?.(e);
+      }}
+      style={[base, { transform: [{ scale }] }]}
+    />
+  );
+}
 
 function useReducedMotion() {
   const [reduced, setReduced] = useState(false);
@@ -204,12 +243,12 @@ function TabButton({ item, active, onPress, reduced }: { item: TabItem; active: 
   }, [active, reduced, t]);
   const color = active ? LIME : MUTED;
   return (
-    <Pressable
+    <Squish to={0.95}
       onPress={onPress}
       accessibilityRole="tab"
       accessibilityLabel={item.label}
       accessibilityState={{ selected: active }}
-      style={({ pressed }) => [styles.slot, pressed && { opacity: 0.6 }]}
+      style={({ pressed }) => [styles.slot, pressed && { opacity: 0.85 }]}
     >
       <Animated.View style={{ transform: [{ translateY: t.interpolate({ inputRange: [0, 1], outputRange: [7, 0] }) }] }}>
         <TabIcon kind={item.key} color={color} />
@@ -222,7 +261,7 @@ function TabButton({ item, active, onPress, reduced }: { item: TabItem; active: 
       >
         {item.label}
       </Animated.Text>
-    </Pressable>
+    </Squish>
   );
 }
 
@@ -230,7 +269,7 @@ function RecordButton({ recording, armed, onPress }: { recording: boolean; armed
   const label = armed ? (recording ? "Stop run" : "Start run") : "Record a run";
   return (
     <View style={styles.recordWell} pointerEvents="box-none">
-      <Pressable
+      <Squish to={0.95}
         onPress={onPress}
         accessibilityRole="button"
         accessibilityLabel={label}
@@ -242,7 +281,7 @@ function RecordButton({ recording, armed, onPress }: { recording: boolean; armed
         ) : (
           <View style={styles.playGlyph} />
         )}
-      </Pressable>
+      </Squish>
     </View>
   );
 }
@@ -422,7 +461,7 @@ function RoutesScreen({ routes }: { routes: RouteItem[] }) {
       </Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chips} contentContainerStyle={{ gap: 8 }}>
         {filters.map((f) => (
-          <Pressable
+          <Squish to={0.9}
             key={f}
             onPress={() => setFilter(f)}
             accessibilityRole="button"
@@ -430,12 +469,12 @@ function RoutesScreen({ routes }: { routes: RouteItem[] }) {
             style={[styles.chip, filter === f && styles.chipOn]}
           >
             <Text style={[styles.chipText, filter === f && { color: BG }]}>{f}</Text>
-          </Pressable>
+          </Squish>
         ))}
       </ScrollView>
       <View style={{ gap: 10 }}>
         {routes.map((r) => (
-          <Pressable
+          <Squish to={0.985}
             key={r.name}
             accessibilityRole="button"
             accessibilityLabel={`${r.name}, ${r.km} kilometres, ${r.climb} metres of climb`}
@@ -451,7 +490,7 @@ function RoutesScreen({ routes }: { routes: RouteItem[] }) {
                 <Text style={styles.routeStat}>↑ {r.climb} m</Text>
               </View>
             </View>
-          </Pressable>
+          </Squish>
         ))}
       </View>
     </View>

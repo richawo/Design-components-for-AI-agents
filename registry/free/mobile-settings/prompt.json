@@ -2,16 +2,93 @@
   "component": "MobileSettings",
   "intent": "Warm grouped settings screen whose Light/Dark/Auto control crossfades every colour via one animated theme value.",
   "platform": "mobile",
-  "stack": { "framework": "React Native (core only)", "apis": ["Animated (colour interpolation via context)", "Pressable", "ScrollView", "StyleSheet", "AccessibilityInfo"], "web": "react-native-web compatible" },
-  "layout": { "header": "34pt title + Done", "profile": "avatar, name, email, plan chip, chevron; 3-up stats row", "groups": ["Appearance (segmented + rows)", "Writing (switches + values)", "Privacy & data", "Account (Sign out)"], "footer": "centred version" },
-  "typography": { "title": { "size": 34, "weight": "800", "letterSpacing": -1.2 }, "name": { "size": 20, "weight": "800" }, "groupHeading": { "size": 12, "weight": "700", "letterSpacing": 1.2, "case": "uppercase" }, "row": { "size": 16, "weight": "600" } },
-  "color": {
-    "light": { "bg": "#F4EEE4", "card": "#FFFCF7", "ink": "#2B2420", "sub": "#857868", "line": "#ECE3D6", "accent": "#C4572E", "danger": "#B4321F" },
-    "dark": { "bg": "#191512", "card": "#241F1B", "ink": "#F3EBE0", "sub": "#A69885", "line": "#342D27", "accent": "#E2794C", "danger": "#F07A62" }
+  "stack": {
+    "framework": "React Native (core only)",
+    "apis": [
+      "Animated (colour interpolation via context)",
+      "Pressable",
+      "ScrollView",
+      "StyleSheet",
+      "AccessibilityInfo"
+    ],
+    "web": "react-native-web compatible"
   },
-  "motion": { "theme": "one Animated.Value 0→1 drives every colour", "segmented": "thumb slides with spring", "switch": "track colour + thumb spring 380/30", "reducedMotion": "instant" },
-  "responsive": { "width": "360-430pt; cards full width with 16pt gutters" },
-  "accessibility": ["switch role with checked state", "segmented control as radio group", "rows are labelled Pressables", "reduced motion respected"],
-  "content": { "app": "Folio", "profile": "Inês Marlowe · Folio Plus · 412 entries · 38 day streak · 96k words" },
-  "avoid": ["iOS system grey", "emoji icons", "external switch libraries", "hard-coded single theme"]
+  "layout": {
+    "header": "34pt title + Done",
+    "profile": "avatar, name, email, plan chip, chevron; 3-up stats row",
+    "groups": [
+      "Appearance (segmented + rows)",
+      "Writing (switches + values)",
+      "Privacy & data",
+      "Account (Sign out)"
+    ],
+    "footer": "centred version"
+  },
+  "typography": {
+    "title": {
+      "size": 34,
+      "weight": "800",
+      "letterSpacing": -1.2
+    },
+    "name": {
+      "size": 20,
+      "weight": "800"
+    },
+    "groupHeading": {
+      "size": 12,
+      "weight": "700",
+      "letterSpacing": 1.2,
+      "case": "uppercase"
+    },
+    "row": {
+      "size": 16,
+      "weight": "600"
+    }
+  },
+  "color": {
+    "light": {
+      "bg": "#F4EEE4",
+      "card": "#FFFCF7",
+      "ink": "#2B2420",
+      "sub": "#857868",
+      "line": "#ECE3D6",
+      "accent": "#C4572E",
+      "danger": "#B4321F"
+    },
+    "dark": {
+      "bg": "#191512",
+      "card": "#241F1B",
+      "ink": "#F3EBE0",
+      "sub": "#A69885",
+      "line": "#342D27",
+      "accent": "#E2794C",
+      "danger": "#F07A62"
+    }
+  },
+  "motion": {
+    "theme": "one Animated.Value 0→1 drives every colour",
+    "segmented": "thumb slides with spring",
+    "switch": "track colour + thumb spring 380/30",
+    "reducedMotion": "instant",
+    "press": "Squish wrapper: Animated Pressable springs to ~0.95 (buttons) or 0.985 (rows, cards) while held, stiffness 520 damping 30, native driver; skipped under reduced motion"
+  },
+  "responsive": {
+    "width": "360-430pt; cards full width with 16pt gutters"
+  },
+  "accessibility": [
+    "switch role with checked state",
+    "segmented control as radio group",
+    "rows are labelled Pressables",
+    "reduced motion respected"
+  ],
+  "content": {
+    "app": "Folio",
+    "profile": "Inês Marlowe · Folio Plus · 412 entries · 38 day streak · 96k words"
+  },
+  "avoid": [
+    "iOS system grey",
+    "emoji icons",
+    "external switch libraries",
+    "hard-coded single theme"
+  ]
 }

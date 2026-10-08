@@ -26,3 +26,7 @@ Build a custom bottom tab bar for a fictional running app in React Native using 
 
 **Don't**
 - No icon fonts, emoji, default iOS tab bar look or more than one accent colour.
+
+**Press feel**
+- Every button, chip, plan card and row presses on a spring through a small `Squish` wrapper (an Animated Pressable): it scales to about 0.95 for buttons and 0.985 for rows and cards while held (stiffness 520, damping 30, native driver) and springs back on release. Scale carries the feedback, so any remaining opacity dim is kept light (85%).
+- Under reduced motion the scale is skipped and only the colour or opacity change remains.
