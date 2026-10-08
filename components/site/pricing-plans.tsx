@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -39,9 +40,16 @@ export function PricingPlans({ counts, prices }: { counts: Counts; prices: Recor
               role="radio"
               aria-checked={cadence === c}
               onClick={() => setCadence(c)}
-              className={`relative h-10 rounded-full px-5 text-[14px] font-medium transition-colors ${cadence === c ? "bg-white text-black" : "text-site-fg-2 hover:text-site-fg"}`}
+              className={`relative h-10 rounded-full px-5 text-[14px] font-medium transition-colors duration-300 ${cadence === c ? "text-black" : "text-site-fg-2 hover:text-site-fg"}`}
             >
-              {c === "lifetime" ? "Pay once, keep forever" : "Yearly"}
+              {cadence === c && (
+                <motion.span
+                  layoutId="pricing-cadence"
+                  className="absolute inset-0 rounded-full bg-white shadow-[0_6px_20px_-8px_rgba(255,255,255,0.6)]"
+                  transition={{ type: "spring", stiffness: 420, damping: 36 }}
+                />
+              )}
+              <span className="relative inline-block transition-transform duration-150 active:scale-95">{c === "lifetime" ? "Pay once, keep forever" : "Yearly"}</span>
             </button>
           ))}
         </div>
@@ -61,7 +69,7 @@ export function PricingPlans({ counts, prices }: { counts: Counts; prices: Recor
             "Use in unlimited commercial projects",
           ]}
           cta={
-            <Link href="/components" className="flex h-11 items-center justify-center rounded-full border border-white/12 text-[14px] font-medium text-site-fg transition hover:border-white/25 hover:bg-white/[0.03]">
+            <Link href="/components" className="flex h-11 items-center justify-center rounded-full border border-white/12 text-[14px] font-medium text-site-fg transition duration-200 hover:border-white/25 hover:bg-white/[0.04] active:scale-[0.98] active:duration-75">
               Browse free components
             </Link>
           }
@@ -85,8 +93,10 @@ export function PricingPlans({ counts, prices }: { counts: Counts; prices: Recor
               type="button"
               disabled={busy !== null}
               onClick={() => checkout(pro)}
-              className="flex h-11 w-full items-center justify-center rounded-full bg-white text-[14px] font-medium text-black shadow-[0_10px_30px_-10px_rgba(255,255,255,0.5)] transition hover:bg-white/90 disabled:opacity-60"
+              aria-busy={busy === pro}
+              className="flex h-11 w-full items-center justify-center gap-2 rounded-full bg-white text-[14px] font-medium text-black shadow-[0_10px_30px_-10px_rgba(255,255,255,0.5)] transition duration-200 ease-[cubic-bezier(.2,.8,.2,1)] hover:-translate-y-px hover:shadow-[0_14px_36px_-10px_rgba(255,179,138,0.65)] active:translate-y-0 active:scale-[0.98] active:duration-75 disabled:pointer-events-none disabled:opacity-70"
             >
+              {busy === pro && <Spinner />}
               {busy === pro ? "Opening checkout…" : `Get Pro ${cadence === "lifetime" ? "for life" : "yearly"}`}
             </button>
           }
@@ -108,15 +118,17 @@ export function PricingPlans({ counts, prices }: { counts: Counts; prices: Recor
               type="button"
               disabled={busy !== null}
               onClick={() => checkout(team)}
-              className="flex h-11 w-full items-center justify-center rounded-full border border-white/12 text-[14px] font-medium text-site-fg transition hover:border-white/25 hover:bg-white/[0.03] disabled:opacity-60"
+              aria-busy={busy === team}
+              className="flex h-11 w-full items-center justify-center gap-2 rounded-full border border-white/12 text-[14px] font-medium text-site-fg transition duration-200 hover:border-white/25 hover:bg-white/[0.04] active:scale-[0.98] active:duration-75 disabled:pointer-events-none disabled:opacity-70"
             >
+              {busy === team && <Spinner />}
               {busy === team ? "Opening checkout…" : "Get Team"}
             </button>
           }
         />
       </div>
       {error && (
-        <p role="alert" className="mx-auto mt-6 max-w-xl rounded-xl border border-[#ff7a45]/30 bg-[#ff7a45]/10 px-5 py-3 text-center text-[14px] text-site-glow">
+        <p role="alert" className="site-rise mx-auto mt-6 max-w-xl rounded-xl border border-[#ff7a45]/30 bg-[#ff7a45]/10 px-5 py-3 text-center text-[14px] text-site-glow">
           {error}
         </p>
       )}
@@ -152,10 +164,35 @@ function Card({
       )}
       <h3 className="text-[15px] font-medium text-site-fg">{name}</h3>
       <p className="mt-4 flex items-baseline gap-2">
-        <span className="text-5xl font-semibold tracking-[-0.05em] tabular-nums text-site-fg">{price}</span>
-        <span className="text-[14px] text-site-fg-3">{suffix}</span>
+        {/* The figure rolls when the billing toggle changes it. */}
+        <span className="relative inline-flex overflow-hidden text-5xl font-semibold tracking-[-0.05em] tabular-nums text-site-fg">
+          <AnimatePresence initial={false} mode="popLayout">
+            <motion.span
+              key={price}
+              initial={{ y: "70%", opacity: 0, filter: "blur(4px)" }}
+              animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+              exit={{ y: "-70%", opacity: 0, filter: "blur(4px)" }}
+              transition={{ type: "spring", stiffness: 380, damping: 32 }}
+              className="inline-block"
+            >
+              {price}
+            </motion.span>
+          </AnimatePresence>
+        </span>
+        <AnimatePresence initial={false} mode="popLayout">
+          <motion.span
+            key={suffix}
+            initial={{ opacity: 0, x: -4 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="text-[14px] text-site-fg-3"
+          >
+            {suffix}
+          </motion.span>
+        </AnimatePresence>
       </p>
-      <p className="mt-3 text-[14px] leading-relaxed text-site-fg-2">{blurb}</p>
+      <p className="mt-3 text-[14px] leading-relaxed text-site-fg-2 lg:min-h-[2lh]">{blurb}</p>
       <ul className="mt-7 flex-1 space-y-3 border-t border-white/[0.07] pt-7">
         {features.map((f) => (
           <li key={f} className="flex gap-3 text-[14px] text-site-fg-2">
@@ -169,4 +206,8 @@ function Card({
       <div className="mt-8">{cta}</div>
     </div>
   );
+}
+
+function Spinner() {
+  return <span aria-hidden="true" className="size-3.5 animate-spin rounded-full border-[1.5px] border-current border-r-transparent opacity-70" />;
 }

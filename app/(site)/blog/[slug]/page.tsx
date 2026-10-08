@@ -107,10 +107,10 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         </p>
         <p className="mt-3 max-w-[52ch] text-[16px] leading-relaxed text-site-fg-2">Every Design for AI component ships with its code, a prompt and a JSON prompt. Most are free.</p>
         <div className="mt-7 flex flex-wrap gap-3">
-          <Link href="/components" className="inline-flex h-12 items-center rounded-full bg-white px-6 font-semibold text-site-fg">
+          <Link href="/components" className="inline-flex h-12 items-center rounded-full bg-white px-6 font-semibold text-black transition duration-200 ease-[cubic-bezier(.2,.8,.2,1)] hover:-translate-y-px hover:shadow-[0_0_0_1px_rgba(255,255,255,0.2),0_14px_36px_-10px_rgba(255,179,138,0.6)] active:translate-y-0 active:scale-[0.97] active:duration-75">
             Browse components
           </Link>
-          <Link href="/docs/agents" className="inline-flex h-12 items-center rounded-full border border-white/25 px-6 font-semibold">
+          <Link href="/docs/agents" className="inline-flex h-12 items-center rounded-full border border-white/15 px-6 font-semibold transition duration-200 hover:border-white/30 hover:bg-white/[0.04] active:scale-[0.97] active:duration-75">
             Connect your agent
           </Link>
         </div>

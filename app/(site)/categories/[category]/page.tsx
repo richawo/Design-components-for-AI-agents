@@ -75,7 +75,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
         <ul className="mt-5 flex flex-wrap gap-2">
           {others.map((o) => (
             <li key={o.key}>
-              <Link href={`/categories/${o.key}`} className="inline-flex h-9 items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.02] px-4 text-[13px] text-site-fg-2 transition hover:border-white/20 hover:text-site-fg">
+              <Link href={`/categories/${o.key}`} className="inline-flex h-9 items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.02] px-4 text-[13px] text-site-fg-2 transition duration-200 hover:border-white/20 hover:bg-white/[0.04] active:scale-[0.97] active:duration-75 hover:text-site-fg">
                 {o.label} <span className="font-mono text-[10px] text-site-fg-3">{o.count}</span>
               </Link>
             </li>

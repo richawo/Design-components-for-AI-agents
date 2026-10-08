@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { Logo } from "./logo";
 import { site } from "@/lib/site";
@@ -17,6 +18,7 @@ export function SiteHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [hovered, setHovered] = useState<string | null>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -36,16 +38,40 @@ export function SiteHeader() {
       <div className="mx-auto flex h-16 max-w-[80rem] items-center justify-between gap-6 px-5 sm:px-8">
         <div className="flex items-center gap-10">
           <Logo />
-          <nav aria-label="Main" className="hidden items-center gap-1 md:flex">
+          <nav aria-label="Main" className="hidden items-center gap-1 md:flex" onMouseLeave={() => setHovered(null)}>
             {NAV.map((item) => {
               const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`rounded-full px-3.5 py-1.5 text-[14px] transition-colors ${active ? "text-site-fg" : "text-site-fg-2 hover:text-site-fg"}`}
+                  aria-current={active ? "page" : undefined}
+                  onMouseEnter={() => setHovered(item.href)}
+                  onFocus={() => setHovered(item.href)}
+                  onBlur={() => setHovered(null)}
+                  className={`relative isolate rounded-full px-3.5 py-1.5 text-[14px] transition-[color,scale] duration-200 active:scale-[0.96] ${active ? "text-site-fg" : "text-site-fg-2 hover:text-site-fg"}`}
                 >
+                  <AnimatePresence>
+                    {hovered === item.href && (
+                      <motion.span
+                        layoutId="site-nav-hover"
+                        className="absolute inset-0 -z-10 rounded-full bg-white/[0.07] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0, transition: { duration: 0.18 } }}
+                        transition={{ type: "spring", stiffness: 520, damping: 40, mass: 0.6 }}
+                      />
+                    )}
+                  </AnimatePresence>
                   {item.label}
+                  {active && (
+                    <motion.span
+                      layoutId="site-nav-active"
+                      aria-hidden="true"
+                      className="absolute inset-x-3.5 -bottom-[15px] h-px bg-gradient-to-r from-transparent via-[#ff7a45] to-transparent"
+                      transition={{ type: "spring", stiffness: 380, damping: 34 }}
+                    />
+                  )}
                 </Link>
               );
             })}
@@ -54,24 +80,24 @@ export function SiteHeader() {
         <div className="hidden items-center gap-2 md:flex">
           <a
             href={site.github}
-            className="inline-flex h-9 items-center gap-2 rounded-full px-3 text-[14px] text-site-fg-2 transition-colors hover:text-site-fg"
+            className="inline-flex h-9 items-center gap-2 rounded-full px-3 text-[14px] text-site-fg-2 transition duration-200 hover:bg-white/[0.05] hover:text-site-fg active:scale-[0.96]"
           >
             <GitHubMark className="size-4" />
             GitHub
           </a>
-          <Link href="/account" className="inline-flex h-9 items-center rounded-full px-3 text-[14px] text-site-fg-2 transition-colors hover:text-site-fg">
+          <Link href="/account" className="inline-flex h-9 items-center rounded-full px-3 text-[14px] text-site-fg-2 transition duration-200 hover:bg-white/[0.05] hover:text-site-fg active:scale-[0.96]">
             Sign in
           </Link>
           <Link
             href="/pricing"
-            className="inline-flex h-9 items-center rounded-full bg-white px-4 text-[14px] font-medium text-black shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_8px_24px_-8px_rgba(255,255,255,0.35)] transition hover:bg-white/90"
+            className="inline-flex h-9 items-center rounded-full bg-white px-4 text-[14px] font-medium text-black shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_8px_24px_-8px_rgba(255,255,255,0.35)] transition duration-200 ease-[cubic-bezier(.2,.8,.2,1)] hover:-translate-y-px hover:shadow-[0_0_0_1px_rgba(255,255,255,0.2),0_12px_32px_-8px_rgba(255,179,138,0.55)] active:translate-y-0 active:scale-[0.96] active:duration-75"
           >
             Get Pro
           </Link>
         </div>
         <button
           type="button"
-          className="relative flex size-10 items-center justify-center rounded-full border border-white/10 md:hidden"
+          className="relative flex size-10 items-center justify-center rounded-full border border-white/10 transition duration-200 active:scale-90 active:bg-white/[0.06] md:hidden"
           aria-expanded={open}
           aria-controls="mobile-nav"
           aria-label={open ? "Close menu" : "Open menu"}
@@ -99,10 +125,10 @@ export function SiteHeader() {
           ))}
         </nav>
         <div className="mt-auto grid grid-cols-2 gap-3">
-          <a href={site.github} className="flex h-12 items-center justify-center gap-2 rounded-full border border-white/12 text-[15px] text-site-fg">
+          <a href={site.github} className="flex h-12 items-center justify-center gap-2 rounded-full border border-white/12 text-[15px] text-site-fg transition duration-150 active:scale-[0.97] active:bg-white/[0.05]">
             <GitHubMark className="size-4" /> GitHub
           </a>
-          <Link href="/pricing" className="flex h-12 items-center justify-center rounded-full bg-white text-[15px] font-medium text-black">
+          <Link href="/pricing" className="flex h-12 items-center justify-center rounded-full bg-white text-[15px] font-medium text-black transition duration-150 active:scale-[0.97] active:bg-white/90">
             Get Pro
           </Link>
         </div>

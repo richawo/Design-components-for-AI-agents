@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
 const VIEWPORTS = [
@@ -64,9 +65,16 @@ export function PreviewFrame({
                   aria-label={v.label}
                   title={v.label}
                   onClick={() => setVp(v.key)}
-                  className={`flex h-7 w-8 items-center justify-center rounded-md transition-colors ${vp === v.key ? "bg-white/[0.1] text-site-fg" : "text-site-fg-3 hover:text-site-fg-2"}`}
+                  className={`relative flex h-7 w-8 items-center justify-center rounded-md transition-colors ${vp === v.key ? "text-site-fg" : "text-site-fg-3 hover:text-site-fg-2"}`}
                 >
-                  <svg viewBox="0 0 16 16" className="size-4" fill="none" aria-hidden="true">
+                  {vp === v.key && (
+                    <motion.span
+                      layoutId={`preview-vp-${slug}`}
+                      className="absolute inset-0 rounded-md bg-white/[0.1] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
+                      transition={{ type: "spring", stiffness: 520, damping: 40 }}
+                    />
+                  )}
+                  <svg viewBox="0 0 16 16" className="relative size-4 transition-transform duration-150 active:scale-90" fill="none" aria-hidden="true">
                     <path d={v.icon} stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" strokeLinecap="round" />
                   </svg>
                 </button>
@@ -81,9 +89,15 @@ export function PreviewFrame({
             }}
             aria-label="Reload preview"
             title="Reload"
-            className="flex size-8 items-center justify-center rounded-md text-site-fg-3 transition-colors hover:bg-white/[0.05] hover:text-site-fg"
+            className="flex size-8 items-center justify-center rounded-md text-site-fg-3 transition duration-200 hover:bg-white/[0.05] hover:text-site-fg active:scale-90"
           >
-            <svg viewBox="0 0 16 16" className="size-4" fill="none" aria-hidden="true">
+            <svg
+              viewBox="0 0 16 16"
+              className="size-4 transition-transform duration-700 ease-[cubic-bezier(.2,.8,.2,1)] motion-reduce:transition-none"
+              style={{ transform: `rotate(${key * 360}deg)` }}
+              fill="none"
+              aria-hidden="true"
+            >
               <path d="M13.5 8a5.5 5.5 0 1 1-1.6-3.9M13.5 2.5v3h-3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
@@ -93,9 +107,9 @@ export function PreviewFrame({
             rel="noreferrer"
             aria-label="Open preview in a new tab"
             title="Open in new tab"
-            className="flex size-8 items-center justify-center rounded-md text-site-fg-3 transition-colors hover:bg-white/[0.05] hover:text-site-fg"
+            className="group/open flex size-8 items-center justify-center rounded-md text-site-fg-3 transition duration-200 hover:bg-white/[0.05] hover:text-site-fg active:scale-90"
           >
-            <svg viewBox="0 0 16 16" className="size-4" fill="none" aria-hidden="true">
+            <svg viewBox="0 0 16 16" className="size-4 transition-transform duration-300 ease-[cubic-bezier(.2,.8,.2,1)] group-hover/open:-translate-y-px group-hover/open:translate-x-px" fill="none" aria-hidden="true">
               <path d="M9 2.5h4.5V7M13.5 2.5L7.5 8.5M11.5 9.5v3a1 1 0 0 1-1 1h-7a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1h3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </a>

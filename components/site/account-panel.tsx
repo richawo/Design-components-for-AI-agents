@@ -18,6 +18,7 @@ export function AccountPanel({ welcome }: { welcome: boolean }) {
   const [state, setState] = useState<State>({ status: "loading" });
   const [key, setKey] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
 
   async function load() {
     const r = await fetch("/api/license/me", { cache: "no-store" });
@@ -32,13 +33,20 @@ export function AccountPanel({ welcome }: { welcome: boolean }) {
   async function activate(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-    const r = await fetch("/api/license/activate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token: key }) });
-    if (r.ok) {
-      setKey("");
-      await load();
-    } else {
-      const j = await r.json().catch(() => ({}));
-      setError(j.reason === "expired" ? "That licence has expired. Renew it from your receipt email." : "That doesn't look like a valid licence key.");
+    setBusy(true);
+    try {
+      const r = await fetch("/api/license/activate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token: key.trim() }) });
+      if (r.ok) {
+        setKey("");
+        await load();
+      } else {
+        const j = await r.json().catch(() => ({}));
+        setError(j.reason === "expired" ? "That licence has expired. Renew from the pricing page to get a fresh key." : "That doesn't look like a valid licence key. Check you copied all of it.");
+      }
+    } catch {
+      setError("Couldn't reach the server. Check your connection and try again.");
+    } finally {
+      setBusy(false);
     }
   }
 
@@ -56,7 +64,7 @@ export function AccountPanel({ welcome }: { welcome: boolean }) {
       <div className="grid gap-6 lg:grid-cols-2">
         <form onSubmit={activate} className="rounded-[28px] border border-white/[0.08] bg-[#0a0a0b] p-7 sm:p-8">
           <h2 className="text-2xl font-bold tracking-[-0.03em]">Activate a licence on this device</h2>
-          <p className="mt-2 text-[15px] leading-relaxed text-site-fg-2">Paste the key from your receipt email. It starts with <code className="rounded bg-white/[0.04] px-1.5 font-mono text-[13px]">dfa_</code>.</p>
+          <p className="mt-2 text-[15px] leading-relaxed text-site-fg-2">Paste the key from your account page on the device you bought on. It starts with <code className="rounded bg-white/[0.04] px-1.5 font-mono text-[13px]">dfa_</code>.</p>
           <label htmlFor="licence" className="sr-only">
             Licence key
           </label>
@@ -67,15 +75,18 @@ export function AccountPanel({ welcome }: { welcome: boolean }) {
             rows={3}
             spellCheck={false}
             placeholder="dfa_eyJ2IjoxLCJpZCI6…"
-            className="mt-5 w-full resize-none rounded-2xl border border-white/[0.08] bg-black px-4 py-3 font-mono text-[13px] outline-none focus:border-white/20"
+            aria-invalid={error ? true : undefined}
+            aria-describedby={error ? "licence-error" : undefined}
+            className={`mt-5 w-full resize-none rounded-2xl border bg-black px-4 py-3 font-mono text-[13px] outline-none transition duration-200 placeholder:text-site-fg-3 hover:border-white/[0.14] focus:border-white/20 focus:shadow-[0_0_0_4px_rgba(255,122,69,0.12)] ${error ? "border-[#ff7a45]/50" : "border-white/[0.08]"}`}
           />
           {error && (
-            <p role="alert" className="mt-2 text-sm text-[#c2360f]">
+            <p id="licence-error" role="alert" className="site-rise mt-2 text-sm text-[#ff9a7a]">
               {error}
             </p>
           )}
-          <button type="submit" disabled={!key.trim()} className="mt-4 h-11 rounded-full bg-white px-6 text-[14px] font-medium text-black disabled:opacity-40">
-            Activate
+          <button type="submit" disabled={!key.trim() || busy} aria-busy={busy} className="mt-4 inline-flex h-11 items-center gap-2 rounded-full bg-white px-6 text-[14px] font-medium text-black transition duration-200 ease-[cubic-bezier(.2,.8,.2,1)] hover:-translate-y-px hover:shadow-[0_0_0_1px_rgba(255,255,255,0.2),0_14px_36px_-10px_rgba(255,179,138,0.6)] active:translate-y-0 active:scale-[0.97] active:duration-75 disabled:pointer-events-none disabled:opacity-40">
+            {busy && <span aria-hidden="true" className="size-3.5 animate-spin rounded-full border-[1.5px] border-current border-r-transparent opacity-70" />}
+            {busy ? "Checking…" : "Activate"}
           </button>
         </form>
         <div className="site-surface flex flex-col justify-between rounded-[24px] p-7 sm:p-8">
@@ -83,7 +94,7 @@ export function AccountPanel({ welcome }: { welcome: boolean }) {
             <h2 className="text-2xl font-bold tracking-[-0.03em]">No licence yet?</h2>
             <p className="mt-2 text-[15px] leading-relaxed text-site-fg-2">Pro unlocks every component, the Pro prompts and the private registry. Pay once and keep it forever.</p>
           </div>
-          <Link href="/pricing" className="mt-8 inline-flex h-12 w-fit items-center rounded-full bg-white px-6 font-semibold text-site-fg">
+          <Link href="/pricing" className="mt-8 inline-flex h-12 w-fit items-center rounded-full bg-white px-6 font-semibold text-black transition duration-200 ease-[cubic-bezier(.2,.8,.2,1)] hover:-translate-y-px hover:shadow-[0_0_0_1px_rgba(255,255,255,0.2),0_14px_36px_-10px_rgba(255,179,138,0.6)] active:translate-y-0 active:scale-[0.97] active:duration-75">
             See pricing
           </Link>
         </div>
@@ -110,7 +121,7 @@ export function AccountPanel({ welcome }: { welcome: boolean }) {
               {license.exp ? `renews ${new Date(license.exp * 1000).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}` : "never expires"}
             </p>
           </div>
-          <button onClick={logout} className="h-10 rounded-full border border-white/[0.08] px-4 text-sm font-semibold hover:border-white/20">
+          <button onClick={logout} className="h-10 rounded-full border border-white/[0.08] px-4 text-sm font-semibold transition duration-200 hover:border-white/20 hover:bg-white/[0.04] active:scale-[0.97] active:duration-75">
             Sign out of this device
           </button>
         </div>

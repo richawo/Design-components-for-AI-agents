@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "motion/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { CopyButton } from "./copy-button";
@@ -76,10 +77,16 @@ export function SourceTabs({
               aria-selected={tab === t.key}
               aria-controls={`panel-${t.key}`}
               onClick={() => setTab(t.key)}
-              className={`relative shrink-0 px-3.5 pb-3 pt-2.5 text-[13px] font-medium transition-colors ${tab === t.key ? "text-site-fg" : "text-site-fg-3 hover:text-site-fg-2"}`}
+              className={`group relative shrink-0 px-3.5 pb-3 pt-2.5 text-[13px] font-medium transition-colors ${tab === t.key ? "text-site-fg" : "text-site-fg-3 hover:text-site-fg-2"}`}
             >
-              {t.label}
-              {tab === t.key && <span className="absolute inset-x-3 -bottom-px h-px bg-gradient-to-r from-[#ffb38a] via-[#ff7a45] to-[#ff4d6d] shadow-[0_0_12px_#ff7a45]" />}
+              <span className="relative inline-block transition-transform duration-150 group-active:scale-[0.95]">{t.label}</span>
+              {tab === t.key && (
+                <motion.span
+                  layoutId={`source-tab-${slug}`}
+                  className="absolute inset-x-3 -bottom-px h-px bg-gradient-to-r from-[#ffb38a] via-[#ff7a45] to-[#ff4d6d] shadow-[0_0_12px_#ff7a45]"
+                  transition={{ type: "spring", stiffness: 480, damping: 38 }}
+                />
+              )}
             </button>
           ))}
         </div>
@@ -99,7 +106,7 @@ export function SourceTabs({
         {tab === "code" ? fileName : TABS.find((t) => t.key === tab)!.hint}
       </p>
 
-      <div role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`} className="relative">
+      <div key={`${tab}-${status}`} role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`} className="site-rise relative">
         {tab === "install" ? (
           <Scroll html={installHtml} />
         ) : status === "loading" ? (
@@ -169,10 +176,10 @@ function Locked({ name, tab }: { name: string; tab: Tab }) {
             One licence unlocks every Pro component, its prompts and the private registry, for good. Every new component is included too.
           </p>
           <div className="mt-5 flex flex-wrap justify-center gap-2">
-            <Link href="/pricing" className="inline-flex h-10 items-center rounded-full bg-white px-5 text-[14px] font-medium text-black">
+            <Link href="/pricing" className="inline-flex h-10 items-center rounded-full bg-white px-5 text-[14px] font-medium text-black shadow-[0_10px_30px_-12px_rgba(255,255,255,0.5)] transition duration-200 ease-[cubic-bezier(.2,.8,.2,1)] hover:-translate-y-px hover:shadow-[0_14px_34px_-12px_rgba(255,179,138,0.6)] active:translate-y-0 active:scale-[0.96] active:duration-75">
               Get Pro
             </Link>
-            <Link href="/account" className="inline-flex h-10 items-center rounded-full border border-white/12 px-5 text-[14px] font-medium">
+            <Link href="/account" className="inline-flex h-10 items-center rounded-full border border-white/12 px-5 text-[14px] font-medium transition duration-200 hover:border-white/25 hover:bg-white/[0.04] active:scale-[0.96] active:duration-75">
               I have a licence
             </Link>
           </div>

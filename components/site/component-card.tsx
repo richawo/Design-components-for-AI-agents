@@ -20,7 +20,7 @@ export function ComponentCard({ c, priority = false }: { c: CardData; priority?:
   return (
     <Link
       href={`/components/${c.slug}`}
-      className="group relative flex flex-col overflow-hidden rounded-[18px] border border-white/[0.08] bg-[#0a0a0b] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] transition duration-500 ease-[cubic-bezier(.2,.8,.2,1)] hover:-translate-y-0.5 hover:border-white/[0.16] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_24px_60px_-24px_rgba(255,122,69,0.25)]"
+      className="group relative flex w-full flex-col overflow-hidden rounded-[18px] border border-white/[0.08] bg-[#0a0a0b] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] transition duration-500 ease-[cubic-bezier(.2,.8,.2,1)] hover:-translate-y-0.5 hover:border-white/[0.16] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_24px_60px_-24px_rgba(255,122,69,0.25)] active:translate-y-0 active:scale-[0.985] active:duration-150"
     >
       <div className="relative aspect-[16/10] overflow-hidden border-b border-white/[0.06] bg-[#050505]">
         {c.thumb ? (
@@ -47,7 +47,12 @@ export function ComponentCard({ c, priority = false }: { c: CardData; priority?:
             <TierBadge tier={c.tier} />
           </div>
         </div>
-        <p className="font-mono text-[11px] text-site-fg-3">{CATEGORIES[c.category].label}</p>
+        <p className="flex items-center justify-between font-mono text-[11px] text-site-fg-3">
+          {CATEGORIES[c.category].label}
+          <span aria-hidden="true" className="-translate-x-1 text-site-fg-2 opacity-0 transition duration-300 ease-[cubic-bezier(.2,.8,.2,1)] group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:opacity-100">
+            View →
+          </span>
+        </p>
       </div>
     </Link>
   );
