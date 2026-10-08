@@ -64,7 +64,8 @@
     "citations": "pop from scale 0.6 / opacity 0 over 300ms",
     "sources": "fade up 8px over 550ms, rows slide 6px from the left staggered 60ms, ease [0.2, 0.8, 0.2, 1]",
     "linking": "hovering or focusing a citation highlights its source and vice versa",
-    "reducedMotion": "full answer and sources render immediately; no caret, skeleton or ping"
+    "reducedMotion": "full answer and sources render immediately; no caret, skeleton or ping",
+    "controls": "buttons press 0.96; regenerate arrow rotates −180° on hover; copy icon pops to a check on a spring; source rows press 0.99"
   },
   "responsive": {
     "mobile": "16px gutters, card padding 24px, answer 16.5px, footer wraps, 44px buttons",

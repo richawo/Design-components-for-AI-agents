@@ -267,7 +267,7 @@ export function StreamingText({
                         onMouseLeave={() => setHover(null)}
                         onFocus={() => setHover(i + 1)}
                         onBlur={() => setHover(null)}
-                        className={`group grid min-h-12 grid-cols-[2rem_1fr_auto] items-center gap-3 rounded-[8px] px-1 py-2.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff9a6b] ${hover === i + 1 ? "bg-[#ff9a6b]/[0.06]" : ""}`}
+                        className={`group grid min-h-12 grid-cols-[2rem_1fr_auto] items-center gap-3 rounded-[8px] px-1 py-2.5 transition-[background-color,transform] duration-150 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff9a6b] ${hover === i + 1 ? "bg-[#ff9a6b]/[0.06]" : ""}`}
                       >
                         <span className={`flex size-6 items-center justify-center rounded-full font-mono text-[11px] tabular-nums transition-colors ${hover === i + 1 ? "bg-[#ff9a6b] text-black" : "bg-[#ff9a6b]/10 text-[#ff9a6b]"}`}>{i + 1}</span>
                         <span className="min-w-0">
@@ -294,11 +294,23 @@ export function StreamingText({
               </ControlButton>
             ) : (
               <ControlButton onClick={regenerate} label="Regenerate">
-                <RotateCcw className="size-3.5" aria-hidden="true" />
+                {/* The arrow winds back a turn on hover, a hint of what it does. */}
+                <RotateCcw className="size-3.5 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/btn:-rotate-180" aria-hidden="true" />
               </ControlButton>
             )}
             <ControlButton onClick={copy} label={copied ? "Copied" : "Copy"} disabled={live} pressed={copied}>
-              {copied ? <Check className="size-3.5" aria-hidden="true" /> : <Copy className="size-3.5" aria-hidden="true" />}
+              <AnimatePresence mode="popLayout" initial={false}>
+                <motion.span
+                  key={copied ? "y" : "n"}
+                  initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.6 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.6, transition: { duration: 0.1 } }}
+                  transition={{ type: "spring", stiffness: 600, damping: 32 }}
+                  className="inline-flex"
+                >
+                  {copied ? <Check className="size-3.5" aria-hidden="true" /> : <Copy className="size-3.5" aria-hidden="true" />}
+                </motion.span>
+              </AnimatePresence>
             </ControlButton>
           </div>
         </footer>
@@ -378,7 +390,7 @@ function ControlButton({ children, label, onClick, disabled, pressed }: { childr
       onClick={onClick}
       disabled={disabled}
       aria-live={pressed !== undefined ? "polite" : undefined}
-      className={`inline-flex h-11 items-center gap-2 rounded-full px-4 text-[13.5px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff9a6b] disabled:cursor-not-allowed disabled:opacity-35 sm:h-10 ${pressed ? "text-[#ff9a6b]" : "text-white/75 hover:bg-white/[0.05] hover:text-white"}`}
+      className={`group/btn inline-flex h-11 items-center gap-2 rounded-full px-4 text-[13.5px] font-medium transition-[color,background-color,transform] duration-150 active:scale-[0.96] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff9a6b] disabled:cursor-not-allowed disabled:opacity-35 sm:h-10 ${pressed ? "text-[#ff9a6b]" : "text-white/75 hover:bg-white/[0.05] hover:text-white"}`}
     >
       {children}
       {label}

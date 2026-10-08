@@ -36,3 +36,7 @@ Build a streaming AI answer card in React + Tailwind CSS (v4), using `motion/rea
 - No blinking block cursor at a constant rate, and no constant-speed typewriter.
 - No gradient "AI" headers, sparkles or purple. No chat bubble around the answer.
 - Don't hide the sources behind a toggle, and don't render citations as bracketed text.
+
+**Feel**
+- Control buttons press to 0.96. Regenerate's arrow winds back half a turn on hover (500ms, ease-out). Copy's icon pops to a check on a stiff spring.
+- Source rows press to 0.99.
