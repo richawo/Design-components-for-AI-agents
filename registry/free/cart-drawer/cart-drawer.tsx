@@ -454,14 +454,14 @@ export function CartDrawer({
                 type="button"
                 disabled={live.length === 0}
                 onClick={() => onCheckout?.(live)}
-                className="group mt-4 flex h-14 w-full items-center justify-between rounded-full bg-white pl-6 pr-2 text-[15px] font-semibold text-black outline-none transition-[background-color,transform] hover:bg-white/90 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b0b0c] active:translate-y-px disabled:opacity-40"
+                className="group mt-4 flex h-14 w-full items-center justify-between rounded-full bg-white pl-6 pr-2 text-[15px] font-semibold text-black shadow-[0_12px_32px_-14px_rgba(255,255,255,0.5)] outline-none transition-[box-shadow,transform] duration-150 hover:shadow-[0_16px_40px_-10px_rgba(255,255,255,0.65)] focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b0b0c] active:scale-[0.98] disabled:opacity-40 disabled:active:scale-100"
               >
                 <span className="flex items-center gap-2">
                   <Lock size={15} strokeWidth={2.25} aria-hidden="true" />
                   Checkout
                 </span>
                 <span className="flex h-10 items-center rounded-full bg-[#d7e3a4] px-4 tabular-nums text-black">
-                  {money(subtotal + (unlocked || subtotal === 0 ? 0 : shippingFee))}
+                  <Price value={subtotal + (unlocked || subtotal === 0 ? 0 : shippingFee)} format={money} reduce={!!reduce} plain />
                 </span>
               </button>
               <p className="mt-3 text-center text-[12px] text-white/55">VAT included. Free returns within 60 days, no questions.</p>
@@ -497,14 +497,33 @@ function SheetHandle({ mobile, reduce, controls }: { mobile: boolean; reduce: bo
 
 function Stepper({ value, name, onChange }: { value: number; name: string; onChange: (v: number) => void }) {
   const btn =
-    "flex size-11 items-center justify-center rounded-full text-white outline-none transition-colors hover:bg-white/[0.08] focus-visible:ring-2 focus-visible:ring-white disabled:opacity-30 sm:size-9";
+    "flex size-11 items-center justify-center rounded-full text-white outline-none transition-[background-color,transform] duration-150 hover:bg-white/[0.08] active:scale-90 focus-visible:ring-2 focus-visible:ring-white disabled:opacity-30 disabled:active:scale-100 sm:size-9";
+  // The number rolls up or down with the change, so the direction reads.
+  const prev = useRef(value);
+  const dir = value >= prev.current ? 1 : -1;
+  useEffect(() => {
+    prev.current = value;
+  }, [value]);
   return (
     <div className="flex items-center rounded-full bg-white/[0.04] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1)]" role="group" aria-label={`Quantity of ${name}`}>
       <button type="button" className={btn} onClick={() => onChange(value - 1)} aria-label={value === 1 ? `Remove ${name}` : `Decrease quantity of ${name}`}>
         <Minus size={14} strokeWidth={2.25} aria-hidden="true" />
       </button>
-      <span className="w-6 text-center font-mono text-[13px] tabular-nums" aria-live="off">
-        {value}
+      <span className="relative h-5 w-6 overflow-hidden text-center font-mono text-[13px] leading-5 tabular-nums" aria-live="off">
+        <AnimatePresence mode="popLayout" initial={false} custom={dir}>
+          <motion.span
+            key={value}
+            custom={dir}
+            variants={{ enter: (d: number) => ({ y: d * 14, opacity: 0 }), center: { y: 0, opacity: 1 }, exit: (d: number) => ({ y: d * -14, opacity: 0 }) }}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            className="block"
+          >
+            {value}
+          </motion.span>
+        </AnimatePresence>
       </span>
       <button type="button" className={btn} onClick={() => onChange(value + 1)} disabled={value >= 9} aria-label={`Increase quantity of ${name}`}>
         <Plus size={14} strokeWidth={2.25} aria-hidden="true" />

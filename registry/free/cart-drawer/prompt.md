@@ -30,3 +30,7 @@ Build a slide-over cart drawer in React + Tailwind CSS (v4) with `motion/react` 
 - No product photos or grey placeholder boxes. Draw the goods.
 - No toast-only undo hidden somewhere else. Undo lives where the item was.
 - Don't use a gradient checkout button or a "Hurry, only 2 left!" pressure line.
+
+**Feel**
+- Quantity numbers roll in the direction of the change (14px, 200ms); stepper buttons press to 0.9.
+- The checkout total rolls to each new amount like the subtotal. Checkout stays white, deepens its glow on hover and presses to 0.98.

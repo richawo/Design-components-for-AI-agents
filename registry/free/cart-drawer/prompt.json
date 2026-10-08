@@ -63,7 +63,9 @@
     "rows": "height auto <-> 0, 300ms, ease [0.2,0.8,0.2,1]",
     "undo": "2px line drains over 5s (CSS keyframes tm-cart-drawer-undo), pauses on hover/focus",
     "sheetDrag": "handle-only drag; close past 140px or 700px/s",
-    "reducedMotion": "opacity fades only; no drag"
+    "reducedMotion": "opacity fades only; no drag",
+    "stepper": "quantity rolls up/down 14px over 200ms in the direction of change; buttons press 0.9",
+    "checkout": "total rolls like the subtotal; checkout deepens glow on hover, presses 0.98"
   },
   "responsive": {
     "mobile": "bottom sheet, 44px touch targets, safe-area bottom padding",
