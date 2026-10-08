@@ -11,3 +11,7 @@ registry/pro
 registry/__generated__
 test-results
 public/r
+.open-next
+.wrangler
+.dev.vars*
+cloudflare-env.d.ts

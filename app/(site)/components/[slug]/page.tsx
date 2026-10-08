@@ -47,7 +47,7 @@ export default async function ComponentPage({ params }: { params: Promise<{ slug
   // Pro source is never rendered into the page. The client fetches it with a licence.
   let initial: SourcePayload | null = null;
   if (e.tier === "free") {
-    const src = readSource(slug);
+    const src = await readSource(slug);
     if (src) {
       initial = {
         code: src.code,

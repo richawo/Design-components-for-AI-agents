@@ -15,7 +15,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
     const v = requireLicense(req);
     if (!v.ok) return unauthorized(v.reason);
   }
-  const src = readSource(slug);
+  const src = await readSource(slug);
   if (!src) return Response.json({ error: "Source not available in this build" }, { status: 404 });
   const cache = entry.tier === "pro" ? "private, no-store" : "public, max-age=300, s-maxage=3600";
   if (new URL(req.url).searchParams.get("format") === "raw") {

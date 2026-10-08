@@ -48,7 +48,7 @@ export default async function HomePage() {
   const lifetime = PLANS.find((p) => p.id === "pro-lifetime")!;
   const install = `npx shadcn@latest add ${site.url}/r/chart-portfolio.json`;
 
-  const ref = readSource("chart-portfolio");
+  const ref = await readSource("chart-portfolio");
   const codeExcerpt = ref ? ref.code.split("\n").slice(86, 104).join("\n") : "";
   const jsonExcerpt = ref ? JSON.stringify({ motion: JSON.parse(ref.promptJson).motion, color: JSON.parse(ref.promptJson).color }, null, 2).split("\n").slice(0, 18).join("\n") : "";
   const promptExcerpt = ref ? ref.prompt.split("\n").slice(9, 17).join("\n") : "";
@@ -87,7 +87,7 @@ export default async function HomePage() {
         <div className="mx-auto max-w-[80rem] px-5 pb-16 pt-20 text-center sm:px-8 sm:pt-28 lg:pb-20">
           <Link
             href="/categories/three-d"
-            className="group inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] py-1 pl-1 pr-3.5 text-[13px] text-site-fg-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition hover:border-white/20 hover:text-site-fg"
+            className="group inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] py-1 pl-1 pr-3.5 text-[13px] text-site-fg-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition duration-200 hover:border-white/20 hover:bg-white/[0.04] active:scale-[0.97] active:duration-75 hover:text-site-fg"
           >
             <span className="rounded-full bg-white/[0.08] px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-site-fg">New</span>
             Three.js, charts and pixel components
@@ -107,7 +107,7 @@ export default async function HomePage() {
           <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
               href="/components"
-              className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-white px-6 text-[15px] font-medium text-black shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_10px_30px_-10px_rgba(255,255,255,0.45)] transition hover:bg-white/90 sm:w-auto"
+              className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-white px-6 text-[15px] font-medium text-black shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_10px_30px_-10px_rgba(255,255,255,0.45)] transition duration-200 ease-[cubic-bezier(.2,.8,.2,1)] hover:-translate-y-px hover:shadow-[0_0_0_1px_rgba(255,255,255,0.2),0_14px_36px_-10px_rgba(255,179,138,0.6)] active:translate-y-0 active:scale-[0.97] active:duration-75 sm:w-auto"
             >
               Browse {s.total} components
               <svg viewBox="0 0 16 16" className="size-4" fill="none" aria-hidden="true">
@@ -116,7 +116,7 @@ export default async function HomePage() {
             </Link>
             <Link
               href="/pricing"
-              className="site-surface inline-flex h-12 w-full items-center justify-center rounded-full px-6 text-[15px] font-medium text-site-fg transition hover:border-white/20 sm:w-auto"
+              className="site-surface inline-flex h-12 w-full items-center justify-center rounded-full px-6 text-[15px] font-medium text-site-fg transition duration-200 hover:border-white/20 hover:bg-white/[0.04] active:scale-[0.97] active:duration-75 sm:w-auto"
             >
               Get Pro · ${lifetime.price} once
             </Link>
@@ -314,10 +314,10 @@ export default async function HomePage() {
                 </p>
               </div>
               <div className="flex flex-col gap-3 sm:flex-row lg:col-span-5 lg:justify-end">
-                <Link href="/pricing" className="inline-flex h-12 items-center justify-center rounded-full bg-white px-6 text-[15px] font-medium text-black transition hover:bg-white/90">
+                <Link href="/pricing" className="inline-flex h-12 items-center justify-center rounded-full bg-white px-6 text-[15px] font-medium text-black transition duration-200 ease-[cubic-bezier(.2,.8,.2,1)] hover:-translate-y-px hover:shadow-[0_0_0_1px_rgba(255,255,255,0.2),0_14px_36px_-10px_rgba(255,179,138,0.6)] active:translate-y-0 active:scale-[0.97] active:duration-75">
                   See pricing
                 </Link>
-                <Link href="/components" className="inline-flex h-12 items-center justify-center rounded-full border border-white/12 px-6 text-[15px] font-medium text-site-fg transition hover:border-white/25">
+                <Link href="/components" className="inline-flex h-12 items-center justify-center rounded-full border border-white/12 px-6 text-[15px] font-medium text-site-fg transition duration-200 hover:border-white/25 hover:bg-white/[0.04] active:scale-[0.97] active:duration-75">
                   Start free
                 </Link>
               </div>

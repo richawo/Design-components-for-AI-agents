@@ -1,9 +1,11 @@
 import "server-only";
-import fs from "node:fs";
-import path from "node:path";
 import matter from "gray-matter";
 import { Marked, type Tokens } from "marked";
 import { highlight } from "./highlight";
+// content/**/*.md, bundled by scripts/build-registry.mjs so request-time routes
+// (the Markdown twins) work on Cloudflare Workers, which have no filesystem.
+// Edited a post in dev? Re-run `npm run registry`.
+import bundled from "@/registry/__generated__/content.json";
 
 /**
  * Markdown content for the blog and docs. Mirrors the yaps.ai blog setup:
@@ -30,7 +32,7 @@ export type PostMeta = {
 
 export type DocMeta = { slug: string; title: string; description: string; order: number; section: string };
 
-const ROOT = path.join(process.cwd(), "content");
+const FILES = bundled as { blog: Record<string, string>; docs: Record<string, string> };
 
 const slugify = (s: string) =>
   s
@@ -99,10 +101,12 @@ function extractFaqs(html: string): QA[] {
     .filter((x) => x.q && x.a);
 }
 
-function readDir(dir: string) {
-  const d = path.join(ROOT, dir);
-  if (!fs.existsSync(d)) return [];
-  return fs.readdirSync(d).filter((f) => f.endsWith(".md"));
+function readDir(dir: "blog" | "docs") {
+  return Object.keys(FILES[dir]);
+}
+
+function readFile(dir: "blog" | "docs", file: string) {
+  return Object.hasOwn(FILES[dir], file) ? FILES[dir][file] : null;
 }
 
 // ------------------------------------------------------------------ blog
@@ -110,7 +114,7 @@ function readDir(dir: string) {
 export function allPosts(): PostMeta[] {
   return readDir("blog")
     .map((f) => {
-      const raw = fs.readFileSync(path.join(ROOT, "blog", f), "utf8");
+      const raw = readFile("blog", f)!;
       const { data, content } = matter(raw);
       const words = content.split(/\s+/).filter(Boolean).length;
       return {
@@ -135,7 +139,7 @@ export function allPosts(): PostMeta[] {
 export function rawPost(slug: string) {
   const file = readDir("blog").find((f) => f.replace(/\.md$/, "") === slug);
   if (!file) return null;
-  return matter(fs.readFileSync(path.join(ROOT, "blog", file), "utf8"));
+  return matter(readFile("blog", file)!);
 }
 
 export async function getPost(slug: string) {
@@ -159,7 +163,7 @@ export function relatedPosts(slug: string, n = 2) {
 export function allDocs(): DocMeta[] {
   return readDir("docs")
     .map((f) => {
-      const { data } = matter(fs.readFileSync(path.join(ROOT, "docs", f), "utf8"));
+      const { data } = matter(readFile("docs", f)!);
       return { slug: f.replace(/\.md$/, ""), title: data.title, description: data.description, order: data.order ?? 99, section: data.section ?? "Guides" };
     })
     .sort((a, b) => a.order - b.order);
@@ -168,7 +172,7 @@ export function allDocs(): DocMeta[] {
 export async function getDoc(slug: string) {
   const meta = allDocs().find((d) => d.slug === slug);
   if (!meta) return null;
-  const { content } = matter(fs.readFileSync(path.join(ROOT, "docs", `${slug}.md`), "utf8"));
+  const { content } = matter(readFile("docs", `${slug}.md`) ?? "");
   const { html, headings } = await render(content);
   return { meta, html, headings, markdown: content };
 }

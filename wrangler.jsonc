@@ -1,0 +1,32 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  // Its own Worker, like launch-yaps and post-yaps: the main yaps-site Worker
+  // and the apex domain are untouched.
+  "name": "design-yaps",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-09-30",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "workers_dev": true,
+  "preview_urls": true,
+  "routes": [
+    {
+      "pattern": "design.yaps.ai",
+      "custom_domain": true
+    }
+  ],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "vars": {
+    "NEXT_PUBLIC_SITE_URL": "https://design.yaps.ai"
+  },
+  // Secrets (wrangler secret put, or the dashboard): LICENSE_SECRET,
+  // STRIPE_SECRET_KEY, STRIPE_PRICE_PRO_YEARLY, STRIPE_PRICE_PRO_LIFETIME,
+  // STRIPE_PRICE_TEAM_YEARLY, STRIPE_PRICE_TEAM_LIFETIME and, optionally,
+  // LICENSE_REVOKED. PRO_REPO_TOKEN is a build variable, not a secret here.
+  "observability": {
+    "enabled": true
+  },
+  "upload_source_maps": true
+}

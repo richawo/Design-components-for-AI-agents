@@ -8,7 +8,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ slug: s
   const { slug } = await params;
   const e = getComponent(slug);
   if (!e) return new Response("Not found", { status: 404 });
-  const src = e.tier === "free" ? readSource(slug) : null;
+  const src = e.tier === "free" ? await readSource(slug) : null;
   const md = [
     "---",
     `title: ${JSON.stringify(e.name)}`,

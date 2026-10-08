@@ -86,6 +86,8 @@ node scripts/build-registry.mjs               # validate every component
 node scripts/shot.mjs <slug> --base=http://localhost:3000   # screenshots at 1440/768/390
 ```
 
+Production runs on Cloudflare Workers (`design-yaps`, on `design.yaps.ai`) via OpenNext; see [`docs/DEPLOY.md`](docs/DEPLOY.md). `npm run preview` runs the built Worker locally.
+
 The site builds without the Pro source: Pro components render as locked cards using `registry/pro-manifest.json`. With access to the private repo, `npm run pro:sync` (needs `PRO_REPO_TOKEN`) clones it into `registry/pro/`.
 
 ## Contributing

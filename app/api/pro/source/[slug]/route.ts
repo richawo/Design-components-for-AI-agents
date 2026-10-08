@@ -13,7 +13,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
     // than an error status that shows up red in every browser console.
     if (!v.ok) return Response.json({ locked: true, reason: v.reason }, { headers: { "Cache-Control": "private, no-store" } });
   }
-  const src = readSource(slug);
+  const src = await readSource(slug);
   if (!src) return Response.json({ error: "Source not available in this build" }, { status: 404 });
   return Response.json(
     {
