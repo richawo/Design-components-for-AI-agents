@@ -20,7 +20,13 @@
   },
   "vars": {
     "NEXT_PUBLIC_SITE_URL": "https://design.yaps.ai",
-    "EMAIL_FROM": "Design for AI <hello@yaps.ai>"
+    "EMAIL_FROM": "Design for AI <hello@yaps.ai>",
+    "STRIPE_PRICE_PRO_YEARLY": "price_1UOn9DGf6SO9vB2D2Op2WIg7",
+    "STRIPE_PRICE_PRO_LIFETIME": "price_1UOn9EGf6SO9vB2DP9SoOfOz",
+    "STRIPE_PRICE_TEAM_YEARLY": "price_1UOn9FGf6SO9vB2DshMCKSbG",
+    "STRIPE_PRICE_TEAM_LIFETIME": "price_1UOn9GGf6SO9vB2DwKTCOarP",
+    "STRIPE_PORTAL_CONFIGURATION": "bpc_1UOnNbGf6SO9vB2DP2VXN7io",
+    "STRIPE_AUTOMATIC_TAX": "false"
   },
   "d1_databases": [{
     "binding": "COMMERCE_DB",
@@ -28,10 +34,9 @@
     "database_id": "d1a4a9fc-8234-45c1-a524-f44614c62b3b",
     "migrations_dir": "migrations"
   }],
-  // Secrets (wrangler secret put, or the dashboard): LICENSE_SECRET,
-  // STRIPE_SECRET_KEY, STRIPE_PRICE_PRO_YEARLY, STRIPE_PRICE_PRO_LIFETIME,
-  // STRIPE_PRICE_TEAM_YEARLY, STRIPE_PRICE_TEAM_LIFETIME and, optionally,
-  // LICENSE_REVOKED. PRO_REPO_TOKEN is a build variable, not a secret here.
+  // Encrypted runtime secrets: LICENSE_SECRET, AUTH_SECRET, STRIPE_SECRET_KEY,
+  // STRIPE_WEBHOOK_SECRET, RESEND_API_KEY and, optionally, LICENSE_REVOKED.
+  // PRO_REPO_SSH_KEY belongs to Workers Builds, not the runtime.
   "observability": {
     "enabled": true
   },
