@@ -1133,71 +1133,146 @@
   },
   {
     "slug": "mobile-bottom-sheet",
-    "name": "Delivery Bottom Sheet",
+    "name": "Live Delivery Sheet",
     "tier": "pro",
     "platform": "mobile",
     "category": "mobile",
-    "description": "A draggable React Native bottom sheet with three snap points and rubber-banding, tracking a grocery courier over a hand-drawn street map with a live route.",
+    "description": "A glass React Native bottom sheet over a night-mode SVG city map: a courier rides the route, and the sheet morphs from ETA pill to courier card to full order.",
     "tags": [
       "bottom sheet",
       "draggable",
       "react native",
       "map",
-      "delivery",
-      "panresponder"
+      "delivery tracking",
+      "glassmorphism",
+      "panresponder",
+      "svg"
     ],
-    "dependencies": [],
-    "theme": "light",
-    "previewHeight": 900,
-    "usage": "import { MobileBottomSheet } from \"@/components/design-for-ai/native/mobile-bottom-sheet\";\n\n<MobileBottomSheet\n  brand=\"Parcelo\"\n  orderNumber=\"#9021\"\n  etaMinutes={8}\n  initialSnap=\"peek\"\n  onSnapChange={(snap) => analytics.track(\"sheet\", { snap })}\n/>",
+    "dependencies": [
+      "expo-blur",
+      "expo-linear-gradient",
+      "react-native-svg"
+    ],
+    "theme": "dark",
+    "previewHeight": 940,
+    "usage": "import { MobileBottomSheet } from \"@/components/design-for-ai/native/mobile-bottom-sheet\";\n\n// Bare React Native apps: run `npx install-expo-modules` once for expo-blur and expo-linear-gradient.\n<MobileBottomSheet\n  restaurant=\"Bao Bao Kitchen\"\n  orderNumber=\"4417\"\n  etaMinutes={9}\n  etaClock=\"7:42 pm\"\n  progress={0.46}\n  initialSnap=\"half\"\n  onSnapChange={(snap) => analytics.track(\"sheet\", { snap })}\n  onCall={() => Linking.openURL(\"tel:+442071234567\")}\n/>",
     "props": [
       {
-        "name": "brand",
+        "name": "restaurant",
         "type": "string",
-        "default": "\"Hatch\"",
-        "description": "Brand in the order pill."
+        "default": "\"Bao Bao Kitchen\"",
+        "description": "Shown in the glass top chip and beside the kitchen pin."
       },
       {
         "name": "orderNumber",
         "type": "string",
-        "description": "Order number."
+        "default": "\"4417\"",
+        "description": "Order number for the chip and the order card."
       },
       {
         "name": "etaMinutes",
         "type": "number",
-        "default": "12",
-        "description": "Minutes until arrival."
+        "default": "9",
+        "description": "Minutes to arrival at `progress`; counts down as the courier rides, with a rolling digit."
       },
       {
         "name": "etaClock",
         "type": "string",
+        "default": "\"7:42 pm\"",
         "description": "Arrival clock time."
       },
       {
-        "name": "step",
+        "name": "routeKm",
         "type": "number",
-        "description": "Current progress step index."
+        "default": "2.6",
+        "description": "Whole route length, for the live “km away” figure."
+      },
+      {
+        "name": "progress",
+        "type": "number",
+        "default": "0.46",
+        "description": "How far along the route the courier is, 0–1. Drives the marker, trail, ring and timeline."
+      },
+      {
+        "name": "live",
+        "type": "boolean",
+        "default": "true",
+        "description": "Simulate the courier riding on (paused under reduced motion)."
       },
       {
         "name": "courier",
         "type": "Courier",
-        "description": "Name, rating, vehicle and stats."
+        "description": "Name, rating, vehicle and delivery count."
+      },
+      {
+        "name": "steps",
+        "type": "TrackingStep[]",
+        "description": "Four timeline steps with times; the last is the arrival."
       },
       {
         "name": "items",
         "type": "OrderLine[]",
-        "description": "Order lines with quantity and price."
+        "description": "Order lines: qty, name, optional detail, unit price."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"£\"",
+        "description": "Currency symbol."
+      },
+      {
+        "name": "deliveryFee",
+        "type": "number",
+        "default": "2.49",
+        "description": "Delivery fee."
+      },
+      {
+        "name": "serviceFee",
+        "type": "number",
+        "default": "0.99",
+        "description": "Service fee."
+      },
+      {
+        "name": "address",
+        "type": "string",
+        "description": "Delivery address."
+      },
+      {
+        "name": "note",
+        "type": "string",
+        "description": "Courier note, shown in quotes."
+      },
+      {
+        "name": "tips",
+        "type": "number[]",
+        "default": "[1, 2, 3]",
+        "description": "Tip amounts for the sliding segmented picker; the total tweens."
       },
       {
         "name": "initialSnap",
-        "type": "\"peek\" | \"half\" | \"full\"",
+        "type": "\"collapsed\" | \"half\" | \"full\"",
         "default": "\"half\"",
-        "description": "Starting snap point."
+        "description": "Snap point the sheet springs up to on mount."
       },
       {
         "name": "onSnapChange",
-        "type": "(snap) => void",
-        "description": "Fired after the sheet settles."
+        "type": "(snap: SheetSnap) => void",
+        "description": "Fired when a snap is chosen."
+      },
+      {
+        "name": "onBack",
+        "type": "() => void",
+        "description": "Back button."
+      },
+      {
+        "name": "onMessage",
+        "type": "() => void",
+        "description": "Message the courier."
+      },
+      {
+        "name": "onCall",
+        "type": "() => void",
+        "description": "Call the courier."
       }
     ],
     "added": "2026-10-07"
@@ -1645,58 +1720,89 @@
     "tier": "pro",
     "platform": "mobile",
     "category": "mobile",
-    "description": "A React Native inbox whose rows swipe left to archive or delete and right to pin, with snap points, a full-swipe delete and an undo toast.",
+    "description": "A React Native inbox whose rows follow the finger: icons fill as you cross each threshold, a full swipe archives with glass undo, long-press reorders, and pull refreshes.",
     "tags": [
       "swipe",
       "inbox",
       "list",
       "react native",
       "gestures",
-      "panresponder",
-      "undo",
-      "email"
+      "reorder",
+      "pull to refresh",
+      "undo"
     ],
-    "dependencies": [],
+    "dependencies": [
+      "expo-blur",
+      "expo-linear-gradient",
+      "react-native-svg"
+    ],
     "theme": "light",
-    "previewHeight": 900,
-    "usage": "import { MobileSwipeList } from \"@/components/design-for-ai/native/mobile-swipe-list\";\n\n<MobileSwipeList\n  items={threads}\n  onArchive={archive}\n  onDelete={remove}\n  onPinChange={(item, pinned) => setPinned(item.id, pinned)}\n/>",
+    "previewHeight": 940,
+    "usage": "import { MobileSwipeList } from \"@/components/design-for-ai/native/mobile-swipe-list\";\n\n// Bare React Native apps: run `npx install-expo-modules` once for expo-blur and expo-linear-gradient.\n<MobileSwipeList\n  items={threads}\n  onArchive={(item) => api.archive(item.id)}\n  onUndo={(item) => api.unarchive(item.id)}\n  onPinChange={(item, pinned) => api.pin(item.id, pinned)}\n  onReadChange={(item, unread) => api.markUnread(item.id, unread)}\n  onReorder={(section, ids) => api.saveOrder(section, ids)}\n  onRefresh={refetch}\n/>",
     "props": [
       {
         "name": "items",
-        "type": "InboxItem[]",
-        "description": "Rows: sender, subject, preview, time, unread, pinned."
+        "type": "MailItem[]",
+        "description": "Rows: id, sender, subject, preview, time, unread, pinned, attachment, avatar tone."
       },
       {
         "name": "title",
         "type": "string",
         "default": "\"Inbox\"",
-        "description": "Header title."
+        "description": "Large title, which condenses into the glass bar on scroll."
+      },
+      {
+        "name": "dateLine",
+        "type": "string",
+        "default": "\"Friday 9 October\"",
+        "description": "Line under the title until the first refresh."
+      },
+      {
+        "name": "incoming",
+        "type": "MailItem",
+        "description": "The message that arrives after a pull to refresh."
       },
       {
         "name": "undoWindow",
         "type": "number",
-        "description": "Milliseconds the undo toast stays up."
+        "default": "5000",
+        "description": "Milliseconds the undo toast stays up; its ring counts down."
       },
       {
         "name": "hint",
         "type": "boolean",
         "default": "true",
-        "description": "Nudge the first row on mount to teach the gesture."
+        "description": "Nudge the first Today row once on mount to show the actions underneath."
       },
       {
         "name": "onArchive",
         "type": "(item) => void",
-        "description": "Fired on archive."
+        "description": "Fired when a row is archived (full swipe or the Archive action)."
       },
       {
-        "name": "onDelete",
+        "name": "onUndo",
         "type": "(item) => void",
-        "description": "Fired when a row is deleted; Undo restores it locally."
+        "description": "Fired when Undo restores a row."
       },
       {
         "name": "onPinChange",
         "type": "(item, pinned) => void",
-        "description": "Fired when pin toggles."
+        "description": "Fired when a row moves in or out of Pinned."
+      },
+      {
+        "name": "onReadChange",
+        "type": "(item, unread) => void",
+        "description": "Fired by the leading swipe."
+      },
+      {
+        "name": "onReorder",
+        "type": "(section, ids) => void",
+        "description": "Fired after a long-press reorder within Pinned or Today."
+      },
+      {
+        "name": "onRefresh",
+        "type": "() => void",
+        "description": "Fired when a pull passes the threshold."
       },
       {
         "name": "onOpen",
