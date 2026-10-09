@@ -1,42 +1,43 @@
 {
   "component": "TestimonialWall",
-  "intent": "Endless vertical columns of testimonial cards drifting at different speeds, masked top and bottom. Hovering or focusing a column eases it to a stop; the card under the pointer lifts with a spotlight border.",
+  "intent": "Endless vertical columns of greyscale testimonial cards drifting at different speeds, masked top and bottom. Cards cascade in from a blur in reading order, the drift sets off from rest, and hovering or focusing a column eases it to a stop.",
   "platform": "web",
   "stack": {
     "framework": "React 19",
     "styling": "Tailwind CSS v4",
-    "animation": "requestAnimationFrame per column writing transforms directly; motion/react for the entrance and useReducedMotion"
+    "animation": "requestAnimationFrame per column writing transforms directly; motion/react animate() for the imperative first-view cascade, useInView and useReducedMotion"
   },
   "layout": {
     "root": "@container section, fixed height 720px (one column caps at 600px)",
     "columns": "ResizeObserver on root: 3 from 900px, 2 from 560px, else 1; testimonials dealt round-robin; gap 16px (20px @3xl)",
     "viewport": "overflow hidden; mask linear-gradient(to bottom, transparent, #000 18%, #000 82%, transparent)",
     "track": "three copies of the set (clone, real, clone); one set height including trailing gap = period P; repeat items if P < viewport height",
-    "card": "figure, radius 16px, padding 20px (24px @3xl); quote then caption row with 36px avatar",
-    "pause": "32px round button with a 44px hit area, bottom-right"
+    "card": "figure, radius 16px, padding 20px (24px @3xl); quote then caption row with a 32px initials disc inside a 36px hairline ring",
+    "pause": "32px round button with a 44px hit area, bottom-right",
+    "structure": "sub-components Column, StaticColumn, Card, Quote, Avatar, VerifiedSeal, PauseButton; hooks useColumnCount, useOnScreen, useCascade"
   },
   "typography": {
-    "quote": "15px, leading 1.6, tracking -0.005em, white/55, text-wrap pretty; **phrase** at white/90",
-    "name": "14px, weight 500, tracking -0.01em, white/90",
-    "role": "13px, white/40, 'Role, Company', truncated",
-    "initials": "mono 11px, weight 500"
+    "quote": "15px, leading 1.6, tracking -0.005em, body grey, text-wrap pretty; **phrase** in ink",
+    "name": "14px, weight 500, tracking -0.01em, ink",
+    "role": "13px, meta grey, 'Role, Company', truncated",
+    "initials": "mono 10.5px, weight 500"
   },
   "color": {
-    "card": "#0c0c0d, inset 1px white/7%, top highlight white/5%; hover #111113",
-    "spotlight": "surface radial 320px at 5.5% white; border radial 180px at 42% white via mask-composite exclude",
-    "avatar": "radial hsl(h 32% 26%) to hsl(h 30% 12%), text hsl(h 70% 84%), ring hsl(h 50% 70% / .18); h hashed from name",
-    "verified": "#8ab8ff eight-lobed seal with #0b0b0c check",
-    "pause": "#141416 with inset white/10 ring, icon white/60 to white"
+    "approach": "monochrome first; tokens in one PALETTE object exposed as --wall-* CSS variables; theme prop dark (default) | light",
+    "dark": "card #0c0c0d (hover #111113), hairline white/7%, top highlight white/5%, ink #f4f4f5, quote #94949a, meta #7c7c84, avatar #2c2c30→#151517 with #d4d4d8 initials, ring white/22%, spotlight white 5.5%, border arc white 42%, pause #141416",
+    "light": "card #ffffff, hairline rgba(24,24,27,.08), ink #18181b, quote #5b5b63, meta #71717a, avatar #f4f4f5→#e4e4e7 with #3f3f46 initials, spotlight rgba(24,24,27,.035), arc .28, grey lift shadow",
+    "accent": "one accent prop (default theme ink): the verified seal; check colour black or white by luminance",
+    "never": "hue-per-person avatars, blue badges, tinted cards"
   },
   "motion": {
-    "drift": "per-column speeds 24, 30, 20 px/s; odd columns down, even up; phase offset P * ((i*0.37 + 0.11) mod 1)",
+    "drift": "per-column speeds 24, 30, 20 px/s; odd columns down, even up; phase offset P * ((i*0.37 + 0.11) mod 1); columns start at rest and set off 0.85s after the entrance",
     "velocityEasing": "v += (goal - v) * (1 - exp(-dt / tau)); tau 0.32s when stopping (hover/focus/paused), 0.7s when resuming",
     "wrap": "y modulo P; seamless because copies are identical",
     "focusGlide": "focused card moves fully into view, margin max(56px, 15% height), exponential follow tau 0.11s",
     "cardHover": "lift 3px, surface #111113, deep shadow, spotlight fades in; 200ms cubic-bezier(0.22,1,0.36,1)",
-    "entrance": "once at 20% in view: columns rise 16px and fade in, 700ms ease-out, 70ms stagger",
+    "entrance": "once at 20% in view: each on-screen card rises 14px out of an 8px blur over 0.5s ease-out [0.22,1,0.36,1]; delay = column*50ms + (top / column height)*260ms (reading order); the avatar ring draws (dashoffset 1→0, pathLength 1) 160ms after its card lands over 0.55s; pause button rises 6px from a 4px blur at 0.62s; imperative animate(0,1,{onUpdate}) per card because the track is moved directly; unmount completes running tweens",
     "offscreen": "loops stop when out of view or the tab is hidden",
-    "reducedMotion": "static grid at natural height: no masks, clones, drift or lift"
+    "reducedMotion": "static grid at natural height: no masks, clones, drift or lift; 150ms fade in"
   },
   "responsive": {
     "wide": "3 columns from 900px container width",
@@ -49,8 +50,9 @@
     "cards are focusable figures with blockquote + figcaption; focus stops the column and brings the card into view",
     "scrollTop reset so focus never scrolls the clipped column",
     "clones aria-hidden and inert; repeated items tabindex -1",
-    "pause/play button with aria-pressed and a descriptive label",
-    "verified mark has sr-only '(verified customer)'"
+    "pause/play button (scale 0.94 when pressed) with aria-pressed and a descriptive label",
+    "verified mark has sr-only '(verified customer)'",
+    "focus ring: 2px ink outline, 2px offset"
   ],
   "content": {
     "product": "Kiln, a deploy platform",
@@ -62,6 +64,8 @@
     "photos or network avatars",
     "gradient borders at rest",
     "more than one highlighted phrase per quote",
-    "a headline or section chrome around the wall"
+    "a headline or section chrome around the wall",
+    "hue-from-name avatars or coloured verified badges",
+    "cards popping in all at once"
   ]
 }

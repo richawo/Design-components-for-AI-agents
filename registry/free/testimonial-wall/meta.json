@@ -4,19 +4,72 @@
   "tier": "free",
   "platform": "web",
   "category": "social-proof",
-  "description": "Drifting columns of testimonial cards at different speeds that ease to a stop under the pointer, with spotlight borders, initials avatars and verified marks.",
-  "tags": ["testimonials", "social proof", "marquee", "reviews", "wall of love", "cards", "dark", "infinite scroll"],
-  "dependencies": ["motion"],
+  "description": "Drifting columns of testimonial cards that cascade in from a blur, set off gently and glide to a stop under the pointer. Greyscale, dark or light, one accent.",
+  "tags": [
+    "testimonials",
+    "social proof",
+    "marquee",
+    "reviews",
+    "wall of love",
+    "cards",
+    "dark",
+    "infinite scroll",
+    "monochrome"
+  ],
+  "dependencies": [
+    "motion"
+  ],
   "theme": "dark",
   "previewHeight": 860,
-  "usage": "import { TestimonialWall } from \"@/components/design-for-ai/testimonial-wall\";\n\n<TestimonialWall\n  label=\"What customers say about Acme\"\n  height={680}\n  speeds={[22, 30, 18]}\n  testimonials={[\n    { quote: \"Setup took ten minutes. **We shipped the same afternoon.**\", name: \"Ana Ruiz\", role: \"CTO\", company: \"Lumen\", verified: true },\n    // …at least 6 for a full wall\n  ]}\n/>",
+  "usage": "import { TestimonialWall } from \"@/components/design-for-ai/testimonial-wall\";\n\n<TestimonialWall\n  label=\"What customers say about Acme\"\n  height={680}\n  speeds={[22, 30, 18]}\n  theme=\"dark\"\n  accent=\"#7dd3fc\" // optional: the verified seal\n  testimonials={[\n    { quote: \"Setup took ten minutes. **We shipped the same afternoon.**\", name: \"Ana Ruiz\", role: \"CTO\", company: \"Lumen\", verified: true },\n    // …at least 6 for a full wall\n  ]}\n/>",
   "props": [
-    { "name": "testimonials", "type": "Testimonial[]", "default": "12 Kiln customers", "description": "{ quote, name, role, company, verified? }. Wrap one phrase of the quote in **…** to set it at full strength. Dealt round-robin into columns." },
-    { "name": "height", "type": "number", "default": "720", "description": "Wall height in px at two or three columns; one column uses at most 600px." },
-    { "name": "speeds", "type": "number[]", "default": "[24, 30, 20]", "description": "Drift speed per column in px/s. Columns alternate direction." },
-    { "name": "label", "type": "string", "default": "\"What teams say about Kiln\"", "description": "Accessible name of the region." },
-    { "name": "pauseControl", "type": "boolean", "default": "true", "description": "Shows a small pause / play button in the corner." },
-    { "name": "className", "type": "string", "description": "Extra classes for the root." }
+    {
+      "name": "testimonials",
+      "type": "Testimonial[]",
+      "default": "12 Kiln customers",
+      "description": "{ quote, name, role, company, verified? }. Wrap one phrase of the quote in **…** to set it at full strength. Dealt round-robin into columns."
+    },
+    {
+      "name": "height",
+      "type": "number",
+      "default": "720",
+      "description": "Wall height in px at two or three columns; one column uses at most 600px."
+    },
+    {
+      "name": "speeds",
+      "type": "number[]",
+      "default": "[24, 30, 20]",
+      "description": "Drift speed per column in px/s. Columns alternate direction."
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "default": "\"What teams say about Kiln\"",
+      "description": "Accessible name of the region."
+    },
+    {
+      "name": "pauseControl",
+      "type": "boolean",
+      "default": "true",
+      "description": "Shows a small pause / play button in the corner."
+    },
+    {
+      "name": "accent",
+      "type": "string",
+      "default": "theme ink",
+      "description": "The one accent: the verified seal (its check is black or white by luminance)."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Dark near-black cards on black, or white cards for a light page."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "description": "Extra classes for the root."
+    }
   ],
   "added": "2026-10-09"
 }
