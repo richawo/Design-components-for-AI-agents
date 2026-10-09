@@ -1,0 +1,35 @@
+{
+  "name": "design-for-ai",
+  "version": "0.1.0",
+  "description": "Search, read and add Design for AI components (premium React, Tailwind and React Native components with design prompts) from your terminal or agent.",
+  "type": "module",
+  "bin": {
+    "design-for-ai": "./index.mjs"
+  },
+  "files": [
+    "index.mjs",
+    "README.md"
+  ],
+  "keywords": [
+    "design components",
+    "ui components",
+    "ai agents",
+    "react",
+    "tailwind",
+    "react native",
+    "shadcn",
+    "claude code",
+    "cursor",
+    "cli"
+  ],
+  "license": "MIT",
+  "homepage": "https://design.yaps.ai/docs/agents",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/richawo/Design-components-for-AI-agents.git",
+    "directory": "packages/cli"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -135,8 +135,8 @@ export function AccountPanel({ welcome }: { welcome: boolean }) {
       </div>
       <div className="grid gap-6 md:grid-cols-3">
         {[
-          { t: "Environment", c: `export DESIGN_FOR_AI_LICENSE="${token.slice(0, 18)}…"`, d: "The MCP server, shadcn registry and API read this variable." },
-          { t: "MCP server", c: "npx -y design-for-ai-mcp", d: "Add it to Claude Code, Cursor or Windsurf. Pro tools unlock automatically." },
+          { t: "CLI", c: "npx design-for-ai login <your key>", d: "Then npx design-for-ai add <slug> works for Pro components too. Or set DESIGN_FOR_AI_LICENSE." },
+          { t: "MCP server", c: "claude mcp add --transport http design-for-ai https://design.yaps.ai/mcp --header \"Authorization: Bearer $DESIGN_FOR_AI_LICENSE\"", d: "Remote, nothing to install. Cursor and Windsurf take the same URL and header." },
           { t: "shadcn", c: "npx shadcn@latest add @design-for-ai-pro/<slug>", d: "After adding the Pro registry to components.json (see Docs)." },
         ].map((x) => (
           <div key={x.t} className="rounded-[22px] border border-white/[0.08] bg-[#0a0a0b] p-5">

@@ -1,9 +1,19 @@
 ---
 title: Installation
-description: Install components with the shadcn CLI, set up the four font roles, add the authenticated Pro registry, and use React Native components.
+description: Install components with the Design for AI CLI or the shadcn CLI, set up the four font roles, add the authenticated Pro registry, and use React Native components.
 order: 2
 section: Getting started
 ---
+
+## With the Design for AI CLI
+
+No setup, works in any React or React Native project:
+
+```bash
+npx design-for-ai add pricing-plan-toggle
+```
+
+It writes `components/design-for-ai/pricing-plan-toggle.tsx` (or under `src/` when you have one) and installs the component's npm dependencies with your package manager. `npx design-for-ai search <query>` finds components, and `npx design-for-ai prompt <slug>` prints the design brief to hand to your agent. For Pro, run `npx design-for-ai login <key>` once.
 
 ## With the shadcn CLI
 

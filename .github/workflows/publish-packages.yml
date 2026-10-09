@@ -1,0 +1,40 @@
+# Publishes the CLI and the local MCP server to npm when a version tag is pushed:
+#   git tag cli-v0.1.0 && git push origin cli-v0.1.0
+#   git tag mcp-v0.2.0 && git push origin mcp-v0.2.0
+# Needs an npm automation token in the repository secret NPM_TOKEN.
+name: Publish packages
+
+on:
+  push:
+    tags: ["cli-v*", "mcp-v*"]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+      - name: Pick the package from the tag
+        id: pkg
+        run: |
+          case "$GITHUB_REF_NAME" in
+            cli-v*) echo "dir=packages/cli" >> "$GITHUB_OUTPUT"; echo "version=${GITHUB_REF_NAME#cli-v}" >> "$GITHUB_OUTPUT" ;;
+            mcp-v*) echo "dir=packages/mcp" >> "$GITHUB_OUTPUT"; echo "version=${GITHUB_REF_NAME#mcp-v}" >> "$GITHUB_OUTPUT" ;;
+          esac
+      - name: Check the tag matches package.json
+        working-directory: ${{ steps.pkg.outputs.dir }}
+        run: test "$(node -p "require('./package.json').version")" = "${{ steps.pkg.outputs.version }}"
+      - name: Publish
+        working-directory: ${{ steps.pkg.outputs.dir }}
+        run: |
+          [ -f package-lock.json ] && npm ci || true
+          npm publish --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

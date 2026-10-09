@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 // Design for AI MCP server.
 //
-// Gives agents five tools: search_components, get_component, list_categories,
-// get_principles and install_command. Everything goes through the public JSON
+// Gives agents six tools: search_components, get_component, list_categories,
+// get_principles, install_command and get_page. Everything goes through the public JSON
 // API, so there is nothing to keep in sync. Pro components need a licence key
 // in DESIGN_FOR_AI_LICENSE.
 //
@@ -48,7 +48,7 @@ function line(c) {
 const proMessage = (slug) =>
   `"${slug}" is a Pro component. Set DESIGN_FOR_AI_LICENSE in this MCP server's environment to unlock it (get a licence at ${BASE}/pricing). The free components work without one; use search_components with tier "free" to find alternatives.`;
 
-const server = new McpServer({ name: "design-for-ai", version: "0.1.0" });
+const server = new McpServer({ name: "design-for-ai", version: "0.2.0" });
 
 server.tool(
   "search_components",
@@ -139,6 +139,17 @@ server.tool(
       if (e.code === "PRO") return text(proMessage(slug));
       throw e;
     }
+  },
+);
+
+server.tool(
+  "get_page",
+  "Any page of design.yaps.ai as Markdown, e.g. 'pricing', 'docs/installation', 'docs/agents', 'categories/auth', 'components'.",
+  { path: z.string().describe("Page path without the domain or .md") },
+  async ({ path: page }) => {
+    const p = page.replace(/^\/+|\/+$/g, "").replace(/\.md$/, "") || "index";
+    const res = await fetch(`${BASE}/${p}.md`, { headers: { Accept: "text/markdown" } });
+    return text(res.ok ? await res.text() : `No page "${page}". Try 'components', 'pricing' or 'docs/installation'.`);
   },
 );
 

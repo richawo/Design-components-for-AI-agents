@@ -1,6 +1,6 @@
 {
   "name": "design-for-ai-mcp",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "MCP server for Design for AI: search, read and install design components (code, prompt and JSON prompt) from Claude Code, Cursor, Windsurf and other agents.",
   "type": "module",
   "bin": {
@@ -9,7 +9,8 @@
   "files": [
     "index.mjs",
     "principles.md",
-    "README.md"
+    "README.md",
+    "server.json"
   ],
   "keywords": [
     "mcp",
@@ -39,5 +40,6 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.32.1",
     "zod": "^4.6.5"
-  }
+  },
+  "mcpName": "io.github.richawo/design-for-ai"
 }

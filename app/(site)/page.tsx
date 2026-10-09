@@ -36,7 +36,7 @@ export default async function HomePage() {
     highlight(codeExcerpt, "tsx"),
     highlight(jsonExcerpt, "json"),
     highlight(
-      JSON.stringify({ mcpServers: { "design-for-ai": { command: "npx", args: ["-y", "design-for-ai-mcp"], env: { DESIGN_FOR_AI_LICENSE: "dfa_…" } } } }, null, 2),
+      JSON.stringify({ mcpServers: { "design-for-ai": { url: absoluteUrl("/mcp"), headers: { Authorization: "Bearer ${DESIGN_FOR_AI_LICENSE}" } } } }, null, 2),
       "json",
     ),
   ]);
@@ -223,14 +223,14 @@ export default async function HomePage() {
                   Your agent finds, reads and <span className="text-site-fg-3">installs it.</span>
                 </>
               }
-              body="An MCP server, a shadcn registry, llms.txt and a JSON API. Your agent searches the library and pulls code and prompts directly, no scraping."
+              body="A remote MCP server, a CLI, a shadcn registry and a Markdown version of every page. Your agent searches the library and pulls code and briefs directly, no scraping."
             />
             <ul className="mt-10 space-y-4">
               {[
-                ["MCP server", "Search, fetch and install from Claude Code, Cursor or Windsurf."],
+                ["Remote MCP", "One line in Claude Code, Cursor or Windsurf. Nothing to install or update."],
+                ["CLI", "npx design-for-ai search, add and prompt, from your terminal or your agent's."],
                 ["shadcn registry", "Every component is a registry item. Pro sits behind your licence key."],
-                ["llms.txt", "A map of the library for language models, plus every free prompt in one file."],
-                ["Agent skill", "A drop-in Claude skill that teaches the design rules."],
+                ["Markdown everywhere", "Add .md to any URL. llms.txt maps the library for language models."],
               ].map(([t, d]) => (
                 <li key={t} className="flex gap-4">
                   <span className="mt-2 size-1.5 shrink-0 rounded-full bg-site-accent shadow-[0_0_12px_#ff7a45]" />

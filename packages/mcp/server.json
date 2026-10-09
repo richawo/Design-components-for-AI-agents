@@ -1,0 +1,45 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json",
+  "name": "io.github.richawo/design-for-ai",
+  "title": "Design for AI",
+  "description": "Premium React, Tailwind and React Native components with design prompts. Search, read and install them from your agent.",
+  "version": "0.2.0",
+  "websiteUrl": "https://design.yaps.ai",
+  "repository": {
+    "url": "https://github.com/richawo/Design-components-for-AI-agents",
+    "source": "github",
+    "subfolder": "packages/mcp"
+  },
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://design.yaps.ai/mcp",
+      "headers": [
+        {
+          "name": "Authorization",
+          "description": "Optional: 'Bearer <licence key>' to unlock Pro components",
+          "isRequired": false,
+          "isSecret": true
+        }
+      ]
+    }
+  ],
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "design-for-ai-mcp",
+      "version": "0.2.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "DESIGN_FOR_AI_LICENSE",
+          "description": "Optional Pro licence key",
+          "isRequired": false,
+          "isSecret": true
+        }
+      ]
+    }
+  ]
+}
