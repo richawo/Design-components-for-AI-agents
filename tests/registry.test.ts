@@ -45,9 +45,12 @@ describe("free registry", () => {
     });
 
     if (meta.platform === "mobile") {
-      it("uses only React Native core", () => {
+      it("uses only React Native core and the allowed native libraries", () => {
+        const allowed = ["react", "react-native", "expo-blur", "expo-linear-gradient", "react-native-svg"];
         const mods = [...code.matchAll(/from ["']([^"']+)["']/g)].map((m) => m[1]);
-        for (const m of mods) expect(["react", "react-native"]).toContain(m);
+        for (const m of mods) expect(allowed).toContain(m);
+        // Whatever it imports beyond core is declared, so install commands include it.
+        for (const m of new Set(mods)) if (!["react", "react-native"].includes(m)) expect(meta.dependencies ?? []).toContain(m);
       });
     }
   });
