@@ -1,0 +1,105 @@
+{
+  "slug": "footer-newsletter",
+  "name": "Newsletter Footer",
+  "tier": "free",
+  "platform": "web",
+  "category": "footers",
+  "description": "A warm paper footer built around one email capture that morphs from field to spinner to check, with kind validation, typo hints and retry.",
+  "tags": [
+    "footer",
+    "newsletter",
+    "email",
+    "form",
+    "subscribe",
+    "validation",
+    "light",
+    "morph"
+  ],
+  "dependencies": [
+    "motion"
+  ],
+  "theme": "light",
+  "previewHeight": 720,
+  "usage": "import { FooterNewsletter } from \"@/components/design-for-ai/footer-newsletter\";\n\nexport default function SiteFooter() {\n  return (\n    <FooterNewsletter\n      title=\"One good email, every Thursday.\"\n      onSubscribe={async (email) => {\n        const res = await fetch(\"/api/subscribe\", { method: \"POST\", body: JSON.stringify({ email }) });\n        if (res.status === 409) return \"already-subscribed\";\n        if (!res.ok) throw new Error(String(res.status));\n        return \"subscribed\";\n      }}\n    />\n  );\n}",
+  "props": [
+    {
+      "name": "onSubscribe",
+      "type": "(email: string) => Promise<\"subscribed\" | \"already-subscribed\" | void>",
+      "description": "Called with a validated address. Resolve \"already-subscribed\" for known readers; reject to show the error state with Retry."
+    },
+    {
+      "name": "alreadySubscribed",
+      "type": "boolean",
+      "default": "false",
+      "description": "Start in the already-subscribed state, e.g. for a signed-in reader."
+    },
+    {
+      "name": "kicker",
+      "type": "string",
+      "default": "\"The Thursday Letter · Issue 112\"",
+      "description": "Mono line above the title."
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "default": "\"One good email, every Thursday.\"",
+      "description": "Serif title, balanced across lines."
+    },
+    {
+      "name": "body",
+      "type": "string",
+      "description": "What the reader gets, max 46ch."
+    },
+    {
+      "name": "placeholder",
+      "type": "string",
+      "default": "\"you@work.com\"",
+      "description": "Input placeholder."
+    },
+    {
+      "name": "buttonLabel",
+      "type": "string",
+      "default": "\"Subscribe\"",
+      "description": "Submit button label."
+    },
+    {
+      "name": "successText",
+      "type": "string",
+      "default": "\"You’re on the list. First issue Thursday.\"",
+      "description": "Copy that morphs in word by word inside the pill on success."
+    },
+    {
+      "name": "alreadyText",
+      "type": "string",
+      "description": "Copy for the already-subscribed state."
+    },
+    {
+      "name": "errorText",
+      "type": "string",
+      "default": "\"Couldn’t reach our mail server.\"",
+      "description": "Copy inside the pill when onSubscribe rejects."
+    },
+    {
+      "name": "note",
+      "type": "string",
+      "default": "\"Join 4,812 readers. Unsubscribe whenever.\"",
+      "description": "Quiet mono line under the field when nothing else needs saying."
+    },
+    {
+      "name": "socials",
+      "type": "{ label: string; href: string; external?: boolean }[]",
+      "description": "Slim row of social links; an item labelled RSS gets a drawn feed icon."
+    },
+    {
+      "name": "legal",
+      "type": "string",
+      "description": "Legal line in the bottom row."
+    },
+    {
+      "name": "legalLinks",
+      "type": "{ label: string; href: string }[]",
+      "description": "Privacy, terms and similar."
+    }
+  ],
+  "added": "2026-10-09"
+}

@@ -1,0 +1,95 @@
+{
+  "component": "FooterNewsletter",
+  "intent": "A minimal warm-paper footer centred on one email capture whose shell morphs field → circle spinner → dark success pill, with kind validation, typo hints, already-subscribed and error-with-retry states.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 with container queries",
+    "animation": "motion/react: shared layout shell, AnimatePresence popLayout, useAnimate shake, pathLength check",
+    "icons": "hand-drawn inline SVG"
+  },
+  "layout": {
+    "root": "footer @container; bg #f4f2ed; ink/10 top border; max-w 1200px; gutters 20/40px; pt 64→96px",
+    "column": "centred, max-w 560px: kicker, serif title, body (46ch), form 36px below",
+    "shell": "max-w 460px × 56px, radius 28px, white, inset ink/13% ring; input 16px with 20px left pad; 44px ink submit pill",
+    "messageLine": "reserves 44px under the shell for note / hint / error / status",
+    "bottomRow": "ink/10 rule; socials left (RSS icon, external ↗), legal + Privacy/Terms right; stacked and centred below @3xl"
+  },
+  "typography": {
+    "title": {
+      "font": "serif (Instrument Serif)",
+      "size": "clamp(2.5rem, 1.7rem + 3.2vw, 3.9rem)",
+      "leading": 0.98,
+      "tracking": "-0.02em",
+      "wrap": "balance"
+    },
+    "body": {
+      "font": "sans (Geist)",
+      "size": "16px",
+      "leading": 1.6,
+      "color": "ink/65"
+    },
+    "meta": {
+      "font": "mono",
+      "size": "11px",
+      "case": "uppercase",
+      "tracking": "0.12–0.16em",
+      "color": "ink/45–50"
+    },
+    "success": {
+      "size": "15px",
+      "weight": 500,
+      "tracking": "-0.01em",
+      "color": "paper"
+    }
+  },
+  "color": {
+    "paper": "#f4f2ed",
+    "ink": "#141413",
+    "field": "#ffffff",
+    "error": "#b42318 (ring 60%, halo 8%, text)",
+    "hover": "#2b2b29"
+  },
+  "motion": {
+    "focus": "ring ink/32 + 4px ink/7 halo, instant",
+    "invalid": "x [0,-7,6,-4,2,0] 420ms; ring turns rose; specific message",
+    "loading": "shell layout to 56px circle, 500ms cubic-bezier(.65,0,.35,1); field blurs out 180ms; spinner fades in at 320ms; minimum 700ms",
+    "success": "circle grows to auto-width ink pill; badge spring 500/32; check pathLength 380ms; words in with 5px rise + 4px blur, 360ms, 35ms stagger from 280ms",
+    "error": "white pill with rose ring, message + Retry; retry icon −90° on hover",
+    "messageLine": "cross-fade 6px offset + 3px blur, 300ms in / 160ms out",
+    "press": "0.97 on pills; links 1px down",
+    "reducedMotion": "no shake, blur or offsets; instant layout; opacity only"
+  },
+  "responsive": {
+    "desktop": "centred column; bottom row split left/right",
+    "mobile": "shell full width; success copy wraps inside the pill; bottom row stacked and centred; 44px targets"
+  },
+  "accessibility": [
+    "real form with visually hidden label, type=email, autocomplete=email",
+    "aria-invalid and aria-describedby to the message line",
+    "message line is aria-live=polite",
+    "focus moves to Retry on error and to the message line on success",
+    "Use a different email clears and refocuses the field",
+    "2px ink focus outline, keyboard only",
+    "disabled submit while empty"
+  ],
+  "content": {
+    "kicker": "The Thursday Letter · Issue 112",
+    "title": "One good email, every Thursday.",
+    "body": "Field notes on making software people keep. Four minutes to read, no tracking pixels, one-click unsubscribe.",
+    "success": "You’re on the list. First issue Thursday.",
+    "already": "You’re already on the list. See you Thursday.",
+    "error": "Couldn’t reach our mail server.",
+    "note": "Join 4,812 readers. Unsubscribe whenever.",
+    "legal": "© 2026 Pressroom Labs ApS. Written in Copenhagen.",
+    "onSubscribe": "(email) => Promise<'subscribed' | 'already-subscribed' | void>; reject for the error state"
+  },
+  "avoid": [
+    "modals, confetti or toasts for success",
+    "generic 'Invalid email' copy",
+    "red borders before the first submit",
+    "gradient buttons or glassmorphism",
+    "a social icon grid",
+    "a spinner that resizes the control"
+  ]
+}
