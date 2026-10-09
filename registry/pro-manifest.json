@@ -1806,7 +1806,7 @@
     "tier": "pro",
     "platform": "mobile",
     "category": "mobile",
-    "description": "An iOS-style lock screen with a glass delivery Live Activity and a Dynamic Island that springs open, with rolling ETA digits and a courier riding the route.",
+    "description": "A dark iOS lock screen: neutral-glass delivery Live Activity, a springing Dynamic Island, one lime accent, ETA counting up and a route that draws to the courier.",
     "tags": [
       "live activity",
       "dynamic island",
@@ -1815,7 +1815,9 @@
       "eta",
       "react native",
       "glassmorphism",
-      "dark"
+      "dark",
+      "monochrome",
+      "animated entrance"
     ],
     "dependencies": [
       "expo-blur",
@@ -1867,6 +1869,18 @@
         "description": "Which update to start on."
       },
       {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#b9f26a\"",
+        "description": "The one brand colour: app mark, route, courier, ETA. Everything else stays neutral."
+      },
+      {
+        "name": "nearbyAccent",
+        "type": "string",
+        "default": "\"#ffc35a\"",
+        "description": "Semantic colour the accent warms to while the courier is nearby."
+      },
+      {
         "name": "showDemoControl",
         "type": "boolean",
         "default": "true",
@@ -1897,7 +1911,7 @@
     "tier": "pro",
     "platform": "mobile",
     "category": "mobile",
-    "description": "A React Native Now Playing screen whose generative cover tints a blurred, breathing background, with a growing scrubber, morphing play button and synced lyrics.",
+    "description": "A dark React Native Now Playing screen: near-black glass lit by the cover's colours, white controls, a choreographed entrance, a growing scrubber and synced lyrics.",
     "tags": [
       "music player",
       "now playing",
@@ -1906,7 +1920,9 @@
       "glassmorphism",
       "react native",
       "scrubber",
-      "dark"
+      "dark",
+      "monochrome",
+      "animated entrance"
     ],
     "dependencies": [
       "expo-blur",
@@ -1920,7 +1936,7 @@
       {
         "name": "tracks",
         "type": "NowPlayingTrack[]",
-        "description": "Queue: title, artist, album, duration, cover style, palette (base + four glow colours) and timed lyrics or an instrumental note."
+        "description": "Queue: title, artist, album, duration, cover style, palette (four glow colours, used as dim ambient light) and timed lyrics or an instrumental note."
       },
       {
         "name": "source",
@@ -1951,6 +1967,18 @@
         "type": "boolean",
         "default": "true",
         "description": "Start playing on mount."
+      },
+      {
+        "name": "initialVolume",
+        "type": "number",
+        "default": "0.64",
+        "description": "Starting volume, 0–1."
+      },
+      {
+        "name": "ambience",
+        "type": "number",
+        "default": "0.62",
+        "description": "How strongly the cover lights the screen, from 0 (pure black glass) to 1."
       },
       {
         "name": "devices",
@@ -1988,6 +2016,11 @@
         "name": "onDeviceChange",
         "type": "(device) => void",
         "description": "A different AirPlay device was chosen."
+      },
+      {
+        "name": "onVolumeChange",
+        "type": "(volume) => void",
+        "description": "Volume dragged or stepped, 0–1."
       }
     ],
     "added": "2026-10-09"
