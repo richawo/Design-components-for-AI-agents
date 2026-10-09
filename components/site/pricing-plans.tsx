@@ -25,8 +25,9 @@ export function PricingPlans({ counts, prices }: { counts: Counts; prices: Recor
     setError(null);
     try {
       const res = await fetch("/api/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ plan }) });
-      const json = (await res.json()) as { url?: string; error?: string };
-      if (json.url) window.location.href = json.url;
+      const json = (await res.json()) as { url?: string; signInUrl?: string; error?: string };
+      if (res.status === 401 && json.signInUrl) window.location.href = json.signInUrl;
+      else if (json.url) window.location.href = json.url;
       else setError(json.error ?? "Checkout is unavailable right now.");
     } catch {
       setError("Checkout is unavailable right now.");
