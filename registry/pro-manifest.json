@@ -1283,62 +1283,97 @@
     "tier": "pro",
     "platform": "mobile",
     "category": "mobile",
-    "description": "A React Native chat with an AI plant-care assistant: grouped bubbles with tails, an animated typing indicator, quick-reply chips and a live composer.",
+    "description": "A React Native AI assistant chat: glass header and composer over a moss-dark thread, replies that stream word by word, and an inline SVG watering schedule.",
     "tags": [
       "chat",
       "ai assistant",
       "messaging",
       "react native",
+      "streaming",
+      "glassmorphism",
       "typing indicator",
       "quick replies",
       "dark"
     ],
-    "dependencies": [],
+    "dependencies": [
+      "expo-blur",
+      "expo-linear-gradient",
+      "react-native-svg"
+    ],
     "theme": "dark",
-    "previewHeight": 900,
-    "usage": "import { MobileChat } from \"@/components/design-for-ai/native/mobile-chat\";\n\n<MobileChat\n  assistantName=\"Sage\"\n  assistantRole=\"Cooking\"\n  onSend={(text) => api.ask(text)}\n/>",
+    "previewHeight": 940,
+    "usage": "import { MobileChat } from \"@/components/design-for-ai/native/mobile-chat\";\n\n// Bare React Native apps: run `npx install-expo-modules` once for expo-blur and expo-linear-gradient.\n<MobileChat\n  assistantName=\"Moss\"\n  assistantRole=\"Plant care\"\n  onSend={(text) => api.ask(text)}\n  onStop={() => api.cancel()}\n/>",
     "props": [
       {
         "name": "assistantName",
         "type": "string",
         "default": "\"Moss\"",
-        "description": "Assistant name in the header."
+        "description": "Name in the glass header and accessibility labels."
       },
       {
         "name": "assistantRole",
         "type": "string",
         "default": "\"Plant care\"",
-        "description": "Role after the online dot."
+        "description": "Shown after the live dot; swaps to Thinking… / Writing… while replying."
+      },
+      {
+        "name": "dayLabel",
+        "type": "string",
+        "default": "\"Today\"",
+        "description": "Day separator above the thread."
       },
       {
         "name": "messages",
         "type": "ChatMessage[]",
-        "description": "Initial thread."
+        "description": "Initial thread. An assistant message may carry a `schedule` (CareSchedule) rendered as an inline SVG card."
       },
       {
         "name": "quickReplies",
         "type": "QuickReply[]",
-        "description": "Tappable reply chips."
+        "description": "Glass chips above the composer; each sends its label and streams its reply."
       },
       {
         "name": "fallbackReplies",
         "type": "string[]",
-        "description": "Canned replies used in order for typed messages."
+        "description": "Replies used in order for anything typed."
       },
       {
         "name": "placeholder",
         "type": "string",
+        "default": "\"Ask Moss about a plant\"",
         "description": "Composer placeholder."
       },
       {
-        "name": "typingDelay",
+        "name": "thinkingMs",
         "type": "number",
-        "description": "Milliseconds the typing indicator shows."
+        "default": "1100",
+        "description": "How long the shimmering typing indicator shows before streaming starts."
+      },
+      {
+        "name": "wordMs",
+        "type": "number",
+        "default": "55",
+        "description": "Base delay between streamed words (punctuation pauses longer)."
       },
       {
         "name": "onSend",
         "type": "(text: string) => void",
-        "description": "Fired when you send."
+        "description": "Fired when a message or chip is sent."
+      },
+      {
+        "name": "onStop",
+        "type": "() => void",
+        "description": "Fired when the stop button interrupts a reply."
+      },
+      {
+        "name": "onBack",
+        "type": "() => void",
+        "description": "Back button in the header."
+      },
+      {
+        "name": "onAction",
+        "type": "(schedule: CareSchedule) => void",
+        "description": "Fired by the schedule card’s reminder button."
       }
     ],
     "added": "2026-10-07"
@@ -1854,47 +1889,63 @@
     "tier": "pro",
     "platform": "mobile",
     "category": "mobile",
-    "description": "A React Native wallet of payment, membership, coffee and transit cards drawn from layered shapes. Tap one to lift it and open its activity.",
+    "description": "A React Native wallet of engraved, textured cards drawn in SVG. Tap one to lift it to the top with its activity; drag to tilt it under the light.",
     "tags": [
       "wallet",
       "cards",
       "payments",
       "react native",
-      "animated",
-      "stack",
+      "shared element",
+      "glassmorphism",
       "fintech",
+      "gestures",
       "dark"
     ],
-    "dependencies": [],
+    "dependencies": [
+      "expo-blur",
+      "expo-linear-gradient",
+      "react-native-svg"
+    ],
     "theme": "dark",
-    "previewHeight": 900,
-    "usage": "import { MobileWalletStack } from \"@/components/design-for-ai/native/mobile-wallet-stack\";\n\n<MobileWalletStack cards={myCards} onAdd={() => navigation.navigate(\"AddCard\")} />",
+    "previewHeight": 940,
+    "usage": "import { MobileWalletStack } from \"@/components/design-for-ai/native/mobile-wallet-stack\";\n\n// Bare React Native apps: run `npx install-expo-modules` once for expo-blur and expo-linear-gradient.\n<MobileWalletStack\n  cards={myCards}\n  onAdd={(kind) => navigation.navigate(\"AddCard\", { kind })}\n  onOpenCard={(card) => analytics.track(\"card_opened\", { id: card.id })}\n/>",
     "props": [
       {
         "name": "cards",
         "type": "WalletCard[]",
-        "description": "Cards with art style, wordmark, type, details and transactions."
+        "description": "Cards and passes: issuer, label, peek field, kind, pattern (guilloche | contour | rings | halftone | brushed), 3–4 gradient stops, ink, accent, figure, meta and transactions."
       },
       {
         "name": "title",
         "type": "string",
         "default": "\"Wallet\"",
-        "description": "Header title."
+        "description": "Large title."
       },
       {
         "name": "subtitle",
         "type": "string",
+        "default": "\"5 cards and passes\"",
         "description": "Line under the title."
       },
       {
         "name": "summary",
-        "type": "{ label; value; note; bars: number[] }",
-        "description": "Monthly spend summary."
+        "type": "WalletSummary",
+        "description": "Collapsed-state spend summary: label, value, note and bar heights (0–1)."
       },
       {
         "name": "onAdd",
-        "type": "() => void",
-        "description": "Fired by the add button."
+        "type": "(kind: \"payment\" | \"transit\" | \"pass\") => void",
+        "description": "Fired from the glass add menu."
+      },
+      {
+        "name": "onOpenCard",
+        "type": "(card: WalletCard) => void",
+        "description": "Fired when a card lifts out of the stack."
+      },
+      {
+        "name": "onSeeAll",
+        "type": "(card: WalletCard) => void",
+        "description": "Fired by See all in the detail view."
       }
     ],
     "added": "2026-10-07"
