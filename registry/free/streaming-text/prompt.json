@@ -1,6 +1,6 @@
 {
   "component": "StreamingText",
-  "intent": "An answer card that streams a cited answer in natural, uneven chunks, then reveals its sources, with Stop / Regenerate / Copy controls.",
+  "intent": "A monochrome answer card that streams a cited answer in uneven chunks that settle like ink, reads its sources first, then lists them, with Stop / Regenerate / Copy.",
   "platform": "web",
   "stack": {
     "framework": "React 19",
@@ -10,18 +10,18 @@
     "fonts": "font-sans (Geist, semibold) for the question, font-sans (Geist) for the answer, font-mono (Geist Mono) for status and labels"
   },
   "layout": {
-    "section": "black, px 16/32px, py 48/80px",
-    "card": "max-w 820px, #0b0b0c, radius 24px, 1px ring white/8%, inset top highlight, deep black shadow; three bands split by 1px white/8% rules: header, answer, footer",
-    "header": "mono 'Asked by' line with a 20px accent hairline, then the semibold question",
-    "answer": "24px status row, body with min-height 12rem, then sources",
-    "sources": "ol between hairlines; rows are grid [2rem number | title + publisher | arrow], min 48px tall",
-    "footer": "mono disclaimer left; Stop/Regenerate and Copy right; wraps on phones"
+    "root": "@container article; the demo centres it on a black stage, max-w 820px",
+    "card": "surface #0e0e10, radius 24px, 1px #232327 border, inset top highlight white/5%, shadow 0 32px 80px -32px black/90%; three bands split by 1px rules: header, answer, footer",
+    "header": "mono 'Asked by' line led by a 20px hairline that draws in, then the semibold question",
+    "answer": "24px status row, body with min-height 12rem (the reading list, then the answer), then sources",
+    "sources": "ol between #1b1b1e hairlines; rows are grid [2rem number | title + publisher | arrow], min 48px tall",
+    "footer": "mono disclaimer left; Stop/Regenerate and Copy right; wraps in narrow containers"
   },
   "typography": {
     "question": {
       "font": "sans",
       "weight": 600,
-      "size": "clamp(1.75rem, 1.2rem + 2.2vw, 2.75rem)",
+      "size": "clamp(1.75rem, 1.2rem + 2.6cqi, 2.75rem)",
       "leading": 1.05,
       "tracking": "-0.04em",
       "maxWidth": "26ch",
@@ -50,34 +50,37 @@
     }
   },
   "color": {
-    "background": "#000000",
-    "card": "#0b0b0c",
-    "text": "white (answer 76%, metadata 50–55%)",
-    "accent": "#ff9a6b (caret, citation pills, status dot, source numbers, focus); active pills are solid with black text",
-    "rules": "white at 7–8%"
+    "palette": "PALETTE.dark / PALETTE.light tokens written to --st-* CSS variables; theme prop picks one",
+    "dark": "surface #0e0e10, line #232327, rule #1b1b1e, ink #f4f4f5, body #c6c6cc, muted #a1a1aa, faint #8a8a93, pill #202024",
+    "light": "surface #ffffff, line #e4e4e7, rule #efeff1, ink #18181b, body #3f3f46, muted #52525b, faint #71717a, pill #f0f0f2",
+    "accent": "one prop, default #ff9a6b, used only for the citation being pointed at and its linked source number (solid fill, contrast-picked ink). Everything else is greyscale: citation pills rest on the pill grey, the caret and live dot are ink, focus rings are ink.",
+    "stage": "#000 (demo only)"
   },
   "motion": {
-    "reading": "900ms: pinging dot, 'Reading N sources', pulsing dots, three breathing skeleton lines",
+    "tokens": "EASE_OUT [0.22,1,0.36,1], SPRING_UI 500/40, MOTION object holds every duration",
+    "entrance": "once 20% in view: card rises 12px out of an 8px blur (500ms), then asked-by (60ms, its hairline draws scaleX 0→1), question (120ms), status row (180ms), the reading list rows (260ms + 50ms each), footer (400ms)",
+    "reading": "after a 350ms lead, 900ms × pace of 'Reading 5 sources' with the five publishers listed in mono; they leave upward with a 4px blur when writing starts. No skeleton bars.",
     "tokenising": "word tokens with whitespace; citations and bold runs atomic",
-    "pacing": "1–3 tokens per tick; 14–48ms between words, 50–120ms after , ; —, 110–270ms after sentences, 260–480ms between paragraphs, 4% chance of a 180–380ms hesitation; `pace` multiplies all delays",
-    "caret": "3px × 1.1em accent bar, opacity 0.9→0.2→0.9 over 1s",
-    "citations": "pop from scale 0.6 / opacity 0 over 300ms",
-    "sources": "fade up 8px over 550ms, rows slide 6px from the left staggered 60ms, ease [0.2, 0.8, 0.2, 1]",
-    "linking": "hovering or focusing a citation highlights its source and vice versa",
-    "reducedMotion": "full answer and sources render immediately; no caret, skeleton or ping",
-    "controls": "buttons press 0.96; regenerate arrow rotates −180° on hover; copy icon pops to a check on a spring; source rows press 0.99"
+    "pacing": "1–3 tokens per tick; 14–48ms between words, 50–120ms after , ; —, 110–270ms after sentences, 260–480ms between paragraphs, 4% chance of a 180–380ms hesitation; `pace` multiplies all delays; one timer at a time, cleared on unmount",
+    "ink": "every emitted token (and citation) settles from opacity 0 and a 4px blur over 420ms, no movement, via one namespaced CSS keyframe (st-ink) — hundreds of one-shot fades are cheaper in CSS than a motion node each",
+    "status": "live word count ticks with tabular numerals ('Writing · 42 words'), then '156 words in 6.2s'",
+    "caret": "2px × 1.05em ink bar, opacity 0.85→0.2→0.85 over 1.1s",
+    "sources": "when done: heading then rows rise from blur, 50ms apart",
+    "linking": "hovering or focusing a citation highlights its source and vice versa, in the accent",
+    "reducedMotion": "full answer and sources render immediately; entrances are 150ms fades; no ink settle, caret or ping",
+    "controls": "buttons press 0.96; regenerate arrow rotates −180° on hover; copy icon pops to a check on spring.ui; source rows press 0.99"
   },
   "responsive": {
-    "mobile": "16px gutters, card padding 24px, answer 16.5px, footer wraps, 44px buttons",
-    "sm": "card padding 48px, answer 17.5px, 40px buttons",
-    "lg": "question reaches 3.25rem; card stays 820px max"
+    "narrow": "card padding 24px, answer 16.5px, footer wraps, 44px buttons",
+    "@xl (576px container)": "card padding 48px, answer 17.5px, 40px buttons, source titles truncate"
   },
   "accessibility": [
     "answer region aria-live=polite with aria-busy while reading/streaming",
     "citations are links to the source anchors with aria-label 'Source n: title'",
     "sources are an ordered list under an h3",
-    "text-labelled buttons with 2px accent focus rings; Copy disabled while streaming",
-    "reduced motion renders the finished answer"
+    "text-labelled buttons with 2px ink focus rings; Copy disabled while streaming; a polite live region says 'Answer copied'",
+    "reduced motion renders the finished answer",
+    "source anchors use useId so two cards never collide"
   ],
   "content": {
     "question": "Why does my sourdough collapse when it goes in the oven?",
@@ -90,6 +93,9 @@
     "bracketed [1] citations as plain text",
     "gradient AI headers or sparkles",
     "chat bubble around the answer",
-    "hiding sources behind a toggle"
+    "hiding sources behind a toggle",
+    "skeleton bars while reading",
+    "coloured citation pills at rest, accent carets or accent rules",
+    "a colour per source"
   ]
 }

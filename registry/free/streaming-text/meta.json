@@ -4,20 +4,76 @@
   "tier": "free",
   "platform": "web",
   "category": "ai",
-  "description": "An answer card that streams in natural, uneven chunks with a soft caret, inline citation numbers, sources that fade in and Stop, Regenerate and Copy.",
-  "tags": ["ai", "streaming", "citations", "answer", "llm", "search", "sources", "typewriter"],
-  "dependencies": ["motion", "lucide-react"],
+  "description": "A monochrome answer card: reads its sources, streams words that settle like ink, links numbered citations to sources, with Stop, Regenerate and Copy.",
+  "tags": [
+    "ai",
+    "streaming",
+    "citations",
+    "answer",
+    "llm",
+    "search",
+    "sources",
+    "monochrome"
+  ],
+  "dependencies": [
+    "motion",
+    "lucide-react"
+  ],
   "theme": "dark",
   "previewHeight": 1040,
   "usage": "import { StreamingText } from \"@/components/design-for-ai/streaming-text\";\n\nexport default function Answer() {\n  return (\n    <StreamingText\n      question=\"Is it worth replacing our cron jobs with a queue?\"\n      askedBy=\"Asked by Sam · 16:02\"\n      answer={[\n        \"Probably, once retries matter more than timing.[1] A queue gives you backpressure for free.[2]\",\n      ]}\n      sources={[\n        { title: \"Retries without regret\", publisher: \"Ops Weekly\", href: \"/r/1\" },\n        { title: \"Backpressure, explained slowly\", publisher: \"Systems Field Guide\", href: \"/r/2\" },\n      ]}\n    />\n  );\n}",
   "props": [
-    { "name": "question", "type": "string", "default": "\"Why does my sourdough collapse…\"", "description": "The question, set as the serif headline." },
-    { "name": "askedBy", "type": "string", "default": "\"Asked by Noor · 09:14\"", "description": "Mono line above the question." },
-    { "name": "answer", "type": "string[]", "description": "Paragraphs. **bold** for emphasis; [n] for a citation pointing at sources[n − 1]." },
-    { "name": "sources", "type": "{ title: string; publisher: string; href: string }[]", "description": "Numbered sources listed after the answer finishes." },
-    { "name": "autoStart", "type": "boolean", "default": "true", "description": "Stream on mount. When false the finished answer shows until Regenerate is pressed." },
-    { "name": "pace", "type": "number", "default": "1", "description": "Multiplies every delay; 0.5 streams twice as fast." },
-    { "name": "className", "type": "string", "description": "Extra classes on the outer section." }
+    {
+      "name": "question",
+      "type": "string",
+      "default": "\"Why does my sourdough collapse…\"",
+      "description": "The question, set as the semibold headline."
+    },
+    {
+      "name": "askedBy",
+      "type": "string",
+      "default": "\"Asked by Noor · 09:14\"",
+      "description": "Mono line above the question."
+    },
+    {
+      "name": "answer",
+      "type": "string[]",
+      "description": "Paragraphs. **bold** for emphasis; [n] for a citation pointing at sources[n − 1]."
+    },
+    {
+      "name": "sources",
+      "type": "{ title: string; publisher: string; href: string }[]",
+      "description": "Numbered sources listed after the answer finishes."
+    },
+    {
+      "name": "autoStart",
+      "type": "boolean",
+      "default": "true",
+      "description": "Stream once in view. When false the finished answer shows until Regenerate is pressed."
+    },
+    {
+      "name": "pace",
+      "type": "number",
+      "default": "1",
+      "description": "Multiplies every delay; 0.5 streams twice as fast."
+    },
+    {
+      "name": "accent",
+      "type": "string",
+      "default": "\"#ff9a6b\"",
+      "description": "The one accent: the citation being pointed at and its source."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Palette. Both are greyscale apart from the accent."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "description": "Extra classes on the root article."
+    }
   ],
   "added": "2026-10-07"
 }
