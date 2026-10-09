@@ -4,7 +4,7 @@
   "tier": "free",
   "platform": "web",
   "category": "hero",
-  "description": "An International Typographic Style hero for a design conference: visible 12-column guides, a huge lowercase headline, a red quarter circle and a numbered index.",
+  "description": "A Swiss-style conference hero on a black poster: drawn 12-column guides, a huge lowercase headline, one red quarter circle and a numbered index.",
   "tags": [
     "hero",
     "swiss style",
@@ -13,14 +13,14 @@
     "event",
     "typography",
     "minimal",
-    "light"
+    "dark"
   ],
   "dependencies": [
     "motion"
   ],
-  "theme": "light",
+  "theme": "dark",
   "previewHeight": 1080,
-  "usage": "import { HeroSwissGrid } from \"@/components/design-for-ai/hero-swiss-grid\";\n\n<HeroSwissGrid\n  meta={[\"Form 2027\", \"Design summit\", \"Barbican, London\", \"9\u201311 June\"]}\n  lines={[\"less, but\", \"better.\"]}\n  primary={{ label: \"Get tickets\", href: \"/tickets\" }}\n/>",
+  "usage": "import { HeroSwissGrid } from \"@/components/design-for-ai/hero-swiss-grid\";\n\n<HeroSwissGrid\n  meta={[\"Form 2027\", \"Design summit\", \"Barbican, London\", \"9–11 June\"]}\n  lines={[\"less, but\", \"better.\"]}\n  primary={{ label: \"Get tickets\", href: \"/tickets\" }}\n  theme=\"light\"\n/>",
   "props": [
     {
       "name": "meta",
@@ -68,6 +68,18 @@
       "type": "boolean",
       "default": "true",
       "description": "Render the visible 12-column guides."
+    },
+    {
+      "name": "accent",
+      "type": "string",
+      "default": "\"#e10600\"",
+      "description": "The one signal colour: quarter circle, hover underline, arrow and focus rings."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Black poster or white paper; both use the same grid and accent."
     }
   ],
   "added": "2026-10-07"

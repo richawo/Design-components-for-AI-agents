@@ -1,35 +1,35 @@
 {
   "component": "HeroSwissGrid",
-  "intent": "International Typographic Style conference hero: visible 12-column grid, giant lowercase headline, signal-red quarter circle, numbered index.",
+  "intent": "Swiss conference hero on a black poster (theme prop for white paper): drawn 12-column guides, giant lowercase headline, one accent quarter circle, numbered index.",
   "platform": "web",
   "stack": {
     "framework": "React 19",
     "styling": "Tailwind CSS v4",
-    "animation": "motion/react (one entrance)",
+    "animation": "motion/react variants (entrance, useInView once)",
     "fonts": "font-sans (Geist), font-mono"
   },
   "layout": {
-    "grid": "4 cols gap 16px mobile; 12 cols gap 24px md+; guides rendered on the same grid",
+    "grid": "4 cols gap 16px; 12 cols gap 24px from @3xl; guides rendered on the same grid",
     "rows": [
       "meta: 4 cells × 3 cols, rule below",
       "headline cols 1-8 + quarter circle cols 9-12",
       "intro 1-4, actions 5-8, notes 9-11",
       "index nav: No. | Track (5) | Speaker (3) | When (3)"
     ],
-    "container": "max-w 1440px, px 20/32/48px"
+    "container": "@container root; max-w 1440px, px 20/32/48px (@xl, @5xl); 12 cols from @3xl"
   },
   "typography": {
     "headline": {
       "font": "sans",
       "weight": 700,
       "case": "lowercase",
-      "size": "clamp(3.6rem, 0.9rem + 12.2vw, 11.5rem); 19vw on mobile",
+      "size": "clamp(3.6rem, 0.9rem + 12.2cqi, 11.5rem) from @3xl; 19cqi below",
       "leading": 0.86,
       "tracking": "-0.065em"
     },
     "trackTitle": {
       "weight": 600,
-      "size": "clamp(1.35rem, 1rem + 1.4vw, 2.25rem)",
+      "size": "clamp(1.35rem, 1rem + 1.4cqi, 2.25rem)",
       "tracking": "-0.035em"
     },
     "meta": {
@@ -45,27 +45,42 @@
     }
   },
   "color": {
-    "background": "#ffffff",
-    "ink": "#0a0a0a",
-    "accent": "#e10600",
-    "guides": "ink 6% borders + 1.2% fill",
+    "tokens": "one PALETTE object written to CSS variables (--sg-bg, --sg-ink, --sg-on-ink, --sg-accent)",
+    "dark": {
+      "background": "#0a0a0a",
+      "ink": "#f4f4f2",
+      "onInk": "#0a0a0a"
+    },
+    "light": {
+      "background": "#ffffff",
+      "ink": "#0a0a0a",
+      "onInk": "#ffffff"
+    },
+    "accent": "#e10600 via the accent prop: quarter circle, hover underline/arrow/number, button hover fill, focus rings only",
+    "guides": "ink 7% borders + 1.5% fill",
     "rules": "ink 100% (major), 25% (rows)"
   },
   "motion": {
-    "quarterCircle": "scale 0→1, rotate -90→0 from top-right, 1.2s ease [0.7,0,0.2,1], delay 0.25s",
-    "hover": "red underline grows 0→100% (500ms); arrow slides in; button turns red",
-    "reducedMotion": "no entrance",
-    "press": "buttons and links press to 0.97, full-width rows to 0.99, 150ms; one shared transition for colour and transform"
+    "trigger": "useInView once at 20%; ease [0.22,1,0.36,1]",
+    "containers": "12 guides scaleY 0→1 from top + fade, 700ms, 20ms apart; meta rule scaleX 0→1 from left",
+    "text": "meta cells then headline lines rise 12px from blur(8px), 600ms, 60–72ms apart",
+    "figure": "quarter circle scale 0→1 from its top-right corner, 700ms at 0.38s, no rotation",
+    "introRow": "intro, actions, notes rise from blur at 0.44s, 60ms apart",
+    "index": "header rule draws, labels fade up, rows rise from blur 60ms apart while each hairline draws from the left",
+    "hover": "accent underline grows 0→100% (400ms); arrow slides in; button fills with accent",
+    "reducedMotion": "one 150ms opacity fade for everything; no transforms, blur or stagger",
+    "press": "buttons and links 0.97, rows 0.99, 150ms; one shared transition for colour and transform"
   },
   "responsive": {
-    "mobile": "4-col grid, quarter circle above the headline (cols 3-4), headline 19vw, index rows stack speaker/time",
-    "md+": "12-col grid as specified"
+    "narrow": "4-col grid, quarter circle above the headline (cols 3-4), headline 19cqi, index rows stack speaker/time",
+    "@3xl+": "12-col grid as specified"
   },
   "accessibility": [
     "h1 headline",
     "nav + ordered list of links for the index",
-    "red focus outlines",
-    "decorative shape aria-hidden"
+    "2px accent focus outlines, instant",
+    "decorative shape and guides aria-hidden",
+    "reduced motion: fades only"
   ],
   "content": {
     "meta": [
@@ -87,7 +102,9 @@
     "rounded corners",
     "shadows or gradients",
     "more than one accent colour",
+    "rotate-in or bouncing shape",
     "stock photography",
-    "elements off the grid"
+    "elements off the grid",
+    "inline hex in class names"
   ]
 }

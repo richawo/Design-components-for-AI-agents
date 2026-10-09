@@ -1,6 +1,7 @@
 "use client";
 
-import { motion, useReducedMotion } from "motion/react";
+import { useRef, type CSSProperties, type ReactNode } from "react";
+import { motion, useInView, useReducedMotion, type Variants } from "motion/react";
 
 type Link = { label: string; href: string };
 
@@ -28,9 +29,76 @@ export type HeroSwissGridProps = {
   columns?: [string, string, string, string];
   /** Show the 12-column guides. */
   showGrid?: boolean;
+  /** The one signal colour: quarter circle, hovers and focus rings. */
+  accent?: string;
+  /** Black poster (default) or white paper. */
+  theme?: "dark" | "light";
 };
 
-const RED = "#e10600";
+/* ------------------------------------------------------------------ */
+/* Tokens                                                              */
+/* ------------------------------------------------------------------ */
+
+const PALETTE = {
+  dark: { bg: "#0a0a0a", ink: "#f4f4f2", onInk: "#0a0a0a" },
+  light: { bg: "#ffffff", ink: "#0a0a0a", onInk: "#ffffff" },
+} as const;
+
+const SWISS_RED = "#e10600";
+
+const EASE = [0.22, 1, 0.36, 1] as const;
+
+// One timeline, in seconds, so the order reads top to bottom:
+// guides (containers) → meta → headline → shape → intro row → index.
+const T = {
+  guides: 0,
+  guideStep: 0.02,
+  metaRule: 0.04,
+  meta: 0.08,
+  headline: 0.16,
+  shape: 0.38,
+  intro: 0.44,
+  index: 0.56,
+  step: 0.06,
+  dur: 0.6,
+  rule: 0.7,
+} as const;
+
+/** Rise 12px out of an 8px blur; `custom` is the start time in seconds. */
+const reveal: Variants = {
+  hidden: { opacity: 0, y: 12, filter: "blur(8px)" },
+  show: (delay: number) => ({ opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: T.dur, ease: EASE, delay } }),
+};
+/** Hairline rules draw from the left edge. */
+const drawX: Variants = {
+  hidden: { scaleX: 0 },
+  show: (delay: number) => ({ scaleX: 1, transition: { duration: T.rule, ease: EASE, delay } }),
+};
+/** Column guides drop from the top edge. */
+const drawY: Variants = {
+  hidden: { scaleY: 0, opacity: 0 },
+  show: (delay: number) => ({ scaleY: 1, opacity: 1, transition: { duration: T.rule, ease: EASE, delay } }),
+};
+/** The quarter circle grows out of its own corner: no rotation, no overshoot. */
+const grow: Variants = {
+  hidden: { scale: 0 },
+  show: (delay: number) => ({ scale: 1, transition: { duration: 0.7, ease: EASE, delay } }),
+};
+/** Reduced motion: one short fade for everything, no transforms, blur or stagger. */
+const fade: Variants = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { duration: 0.15 } },
+};
+
+// Content and guides share one grid, so everything visibly sits on it.
+const COLS = "grid grid-cols-4 gap-x-4 @3xl:grid-cols-12 @3xl:gap-x-6";
+const GUTTER = "px-5 @xl:px-8 @5xl:px-12";
+const MONO = "font-mono text-[11px] uppercase tracking-[0.08em]";
+const FOCUS = "focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-(--sg-accent)";
+
+/* ------------------------------------------------------------------ */
+/* Component                                                           */
+/* ------------------------------------------------------------------ */
 
 export function HeroSwissGrid({
   meta = ["Raster 2027", "34. Konferenz für Gestaltung", "Kongresshaus, Zürich", "14–16 May 2027"],
@@ -48,121 +116,193 @@ export function HeroSwissGrid({
   ],
   columns = ["No.", "Track", "Speaker", "When"],
   showGrid = true,
+  accent = SWISS_RED,
+  theme = "dark",
 }: HeroSwissGridProps) {
-  const reduce = useReducedMotion();
-  const cols = "grid grid-cols-4 gap-x-4 md:grid-cols-12 md:gap-x-6";
+  const rootRef = useRef<HTMLElement>(null);
+  const reduce = !!useReducedMotion();
+  // Reveal once, when a fifth of the hero is on screen.
+  const inView = useInView(rootRef, { once: true, amount: 0.2 });
+  const p = PALETTE[theme];
+  const vars = { "--sg-bg": p.bg, "--sg-ink": p.ink, "--sg-on-ink": p.onInk, "--sg-accent": accent } as CSSProperties;
+  const v = (variants: Variants) => (reduce ? fade : variants);
 
   return (
-    <section className="relative isolate overflow-hidden bg-white text-[#0a0a0a]">
-      <div className="relative mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12">
-        {/* Column guides: the same grid as the content, so everything visibly sits on it */}
-        {showGrid ? (
-          <div className={`pointer-events-none absolute inset-y-0 left-5 right-5 sm:left-8 sm:right-8 lg:left-12 lg:right-12 ${cols}`} aria-hidden="true">
-            {Array.from({ length: 12 }, (_, i) => (
-              <span key={i} className={`border-x border-[#0a0a0a]/[0.06] bg-[#0a0a0a]/[0.012] ${i >= 4 ? "hidden md:block" : ""}`} />
-            ))}
-          </div>
-        ) : null}
+    <motion.section
+      ref={rootRef}
+      style={vars}
+      initial="hidden"
+      animate={inView ? "show" : "hidden"}
+      className="@container relative isolate overflow-hidden bg-(--sg-bg) text-(--sg-ink)"
+    >
+      <div className={`relative mx-auto max-w-[1440px] ${GUTTER}`}>
+        {showGrid ? <Guides variants={v(drawY)} /> : null}
 
         <div className="relative">
           {/* Meta row */}
-          <div className={`${cols} gap-y-1 border-b border-[#0a0a0a] pb-4 pt-6 font-mono text-[11px] uppercase leading-[1.4] tracking-[0.08em] md:pt-8`}>
+          <div className={`${COLS} relative gap-y-1 pb-4 pt-6 ${MONO} leading-[1.4] @3xl:pt-8`}>
             {meta.map((m, i) => (
-              <p key={m} className={`col-span-2 md:col-span-3 ${i === 0 ? "font-semibold" : "text-[#0a0a0a]/70"}`}>
+              <motion.p key={m} variants={v(reveal)} custom={T.meta + i * T.step} className={`col-span-2 @3xl:col-span-3 ${i === 0 ? "font-semibold" : "text-(--sg-ink)/70"}`}>
                 {m}
-              </p>
+              </motion.p>
             ))}
+            <Rule variants={v(drawX)} delay={T.metaRule} className="bottom-0 bg-(--sg-ink)" />
           </div>
 
-          {/* Headline + red quarter circle */}
-          <div className={`${cols} pt-6 md:pt-8`}>
-            <div className="relative col-span-2 col-start-3 row-start-1 aspect-square md:col-span-4 md:col-start-9" aria-hidden="true">
-              <motion.svg
-                viewBox="0 0 100 100"
-                className="absolute inset-0 size-full"
-                initial={reduce ? false : { scale: 0, rotate: -90 }}
-                animate={{ scale: 1, rotate: 0 }}
-                transition={{ duration: 1.2, ease: [0.7, 0, 0.2, 1], delay: 0.25 }}
-                style={{ transformOrigin: "100% 0%" }}
-              >
-                <path d="M100 0V100A100 100 0 0 1 0 0Z" fill={RED} />
+          {/* Headline + quarter circle */}
+          <div className={`${COLS} pt-6 @3xl:pt-8`}>
+            <div className="relative col-span-2 col-start-3 row-start-1 aspect-square @3xl:col-span-4 @3xl:col-start-9" aria-hidden="true">
+              <motion.svg viewBox="0 0 100 100" className="absolute inset-0 size-full origin-top-right" variants={v(grow)} custom={T.shape}>
+                {/* Centre at the top-right corner, radius = the cell. */}
+                <path d="M100 0V100A100 100 0 0 1 0 0Z" className="fill-(--sg-accent)" />
               </motion.svg>
             </div>
-            <h1 className="col-span-4 row-start-2 -ml-[0.04em] -mt-[7vw] font-sans text-[19vw] font-bold lowercase leading-[0.86] tracking-[-0.065em] md:col-span-8 md:col-start-1 md:row-start-1 md:mt-0 md:text-[clamp(3.6rem,0.9rem+12.2vw,11.5rem)]">
+            <h1 className="col-span-4 row-start-2 -ml-[0.04em] -mt-[7cqi] font-sans text-[19cqi] font-bold lowercase leading-[0.86] tracking-[-0.065em] @3xl:col-span-8 @3xl:col-start-1 @3xl:row-start-1 @3xl:mt-0 @3xl:text-[clamp(3.6rem,0.9rem+12.2cqi,11.5rem)]">
               {lines.map((l, i) => (
-                <span key={i} className="block">
+                <motion.span key={i} variants={v(reveal)} custom={T.headline + i * T.step * 1.2} className="block">
                   {l}
-                </span>
+                </motion.span>
               ))}
             </h1>
           </div>
 
           {/* Intro, actions, notes */}
-          <div className={`${cols} gap-y-8 pb-12 pt-12 md:pb-16 md:pt-16`}>
-            <p className="col-span-4 max-w-[38ch] text-[17px] leading-[1.55] md:col-span-4">{intro}</p>
-            <div className="col-span-4 flex flex-col items-start gap-4 md:col-span-4 md:col-start-5">
-              <a
-                href={primary.href}
-                className="group inline-flex h-14 items-center gap-6 bg-[#0a0a0a] pl-5 pr-4 text-[15px] font-semibold text-white transition-[color,background-color,border-color,box-shadow,transform] duration-200 hover:bg-[#e10600] focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[#e10600] active:scale-[0.97]"
-              >
-                {primary.label}
-                <svg viewBox="0 0 16 16" className="size-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" aria-hidden="true">
-                  <path d="M2 8h12m0 0L9 3m5 5-5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="square" />
-                </svg>
-              </a>
+          <div className={`${COLS} gap-y-8 pb-12 pt-12 @3xl:pb-16 @3xl:pt-16`}>
+            <motion.p variants={v(reveal)} custom={T.intro} className="col-span-4 max-w-[38ch] text-[17px] leading-[1.55]">
+              {intro}
+            </motion.p>
+            <motion.div variants={v(reveal)} custom={T.intro + T.step} className="col-span-4 flex flex-col items-start gap-4 @3xl:col-start-5">
+              <PrimaryButton link={primary} />
               <a
                 href={secondary.href}
-                className="text-[15px] font-medium underline decoration-1 underline-offset-[5px] transition-[color,background-color,border-color,box-shadow,transform] hover:text-[#e10600] focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[#e10600] duration-150 active:scale-[0.97]"
+                className={`text-[15px] font-medium underline decoration-1 underline-offset-[5px] transition-[color,transform] duration-150 hover:text-(--sg-accent) active:scale-[0.97] ${FOCUS}`}
               >
                 {secondary.label}
               </a>
-            </div>
-            <ul className="col-span-4 space-y-1 font-mono text-[11px] uppercase leading-[1.5] tracking-[0.08em] text-[#0a0a0a]/70 md:col-span-3 md:col-start-9">
+            </motion.div>
+            <motion.ul
+              variants={v(reveal)}
+              custom={T.intro + T.step * 2}
+              className={`col-span-4 space-y-1 ${MONO} leading-[1.5] text-(--sg-ink)/70 @3xl:col-span-3 @3xl:col-start-9`}
+            >
               {notes.map((n) => (
                 <li key={n}>{n}</li>
               ))}
-            </ul>
+            </motion.ul>
           </div>
 
-          {/* Index */}
-          <nav aria-label={indexLabel} className="pb-12 md:pb-16">
-            <div className={`${cols} border-b border-[#0a0a0a] pb-3 font-mono text-[11px] uppercase tracking-[0.08em]`}>
-              <p className="col-span-1 font-semibold">{indexLabel}</p>
-              <p className="col-span-3 text-[#0a0a0a]/60 md:hidden">{items.length} tracks</p>
-              <p className="hidden text-[#0a0a0a]/60 md:col-span-5 md:block">{columns[1]}</p>
-              <p className="hidden text-[#0a0a0a]/60 md:col-span-3 md:block">{columns[2]}</p>
-              <p className="hidden text-[#0a0a0a]/60 md:col-span-3 md:block">{columns[3]}</p>
-            </div>
-            <ol>
-              {items.map((it, i) => (
-                <li key={it.title}>
-                  <a
-                    href={it.href}
-                    className={`group transition-[transform,color,background-color,border-color] duration-150 active:scale-[0.99] ${cols} items-baseline border-b border-[#0a0a0a]/25 py-4 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#e10600] md:py-5`}
-                  >
-                    <span className="col-span-1 font-mono text-[13px] tabular-nums transition-colors group-hover:text-[#e10600]">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <span className="col-span-3 font-sans text-[clamp(1.35rem,1rem+1.4vw,2.25rem)] font-semibold leading-[1.05] tracking-[-0.035em] md:col-span-5">
-                      <span className="bg-[linear-gradient(#e10600,#e10600)] bg-[length:0%_2px] bg-left-bottom bg-no-repeat pb-0.5 transition-[background-size] duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:bg-[length:100%_2px]">
-                        {it.title}
-                      </span>
-                    </span>
-                    <span className="col-span-3 col-start-2 mt-1 text-[15px] text-[#0a0a0a]/75 md:col-span-3 md:col-start-auto md:mt-0">{it.speaker}</span>
-                    <span className="col-span-3 col-start-2 font-mono text-[11px] uppercase tracking-[0.08em] text-[#0a0a0a]/60 md:col-span-3 md:col-start-auto md:flex md:items-baseline md:justify-between">
-                      {it.when}
-                      <span aria-hidden="true" className="hidden translate-x-[-6px] text-[15px] text-[#e10600] opacity-0 transition-[opacity,transform] duration-300 group-hover:translate-x-0 group-hover:opacity-100 md:inline">
-                        →
-                      </span>
-                    </span>
-                  </a>
-                </li>
-              ))}
-            </ol>
-          </nav>
+          <Index label={indexLabel} items={items} columns={columns} reduce={reduce} />
         </div>
       </div>
-    </section>
+    </motion.section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Parts                                                               */
+/* ------------------------------------------------------------------ */
+
+/** Full-height column guides on the content grid; four on narrow containers, twelve from 48rem. */
+function Guides({ variants }: { variants: Variants }) {
+  return (
+    <div className={`pointer-events-none absolute inset-y-0 left-5 right-5 @xl:left-8 @xl:right-8 @5xl:left-12 @5xl:right-12 ${COLS}`} aria-hidden="true">
+      {Array.from({ length: 12 }, (_, i) => (
+        <motion.span
+          key={i}
+          variants={variants}
+          custom={T.guides + i * T.guideStep}
+          className={`origin-top border-x border-(--sg-ink)/[0.07] bg-(--sg-ink)/[0.015] ${i >= 4 ? "hidden @3xl:block" : ""}`}
+        />
+      ))}
+    </div>
+  );
+}
+
+/** A 1px rule that draws left to right. */
+function Rule({ variants, delay, className }: { variants: Variants; delay: number; className: string }) {
+  return <motion.span aria-hidden="true" variants={variants} custom={delay} className={`absolute inset-x-0 h-px origin-left ${className}`} />;
+}
+
+function PrimaryButton({ link }: { link: Link }) {
+  return (
+    <a
+      href={link.href}
+      className={`group inline-flex h-14 items-center gap-6 bg-(--sg-ink) pl-5 pr-4 text-[15px] font-semibold text-(--sg-on-ink) transition-[color,background-color,transform] duration-150 hover:bg-(--sg-accent) hover:text-white active:scale-[0.97] ${FOCUS}`}
+    >
+      {link.label}
+      <svg viewBox="0 0 16 16" className="size-4 transition-transform duration-150 group-hover:translate-x-1" fill="none" aria-hidden="true">
+        <path d="M2 8h12m0 0L9 3m5 5-5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="square" />
+      </svg>
+    </a>
+  );
+}
+
+function Index({
+  label,
+  items,
+  columns,
+  reduce,
+}: {
+  label: string;
+  items: SwissIndexItem[];
+  columns: [string, string, string, string];
+  reduce: boolean;
+}) {
+  const v = (variants: Variants) => (reduce ? fade : variants);
+  const head = (i: number, children: ReactNode, className: string) => (
+    <motion.p variants={v(reveal)} custom={T.index + i * T.step * 0.5} className={className}>
+      {children}
+    </motion.p>
+  );
+
+  return (
+    <nav aria-label={label} className="pb-12 @3xl:pb-16">
+      <div className={`${COLS} relative pb-3 ${MONO}`}>
+        {head(0, label, "col-span-1 font-semibold")}
+        {head(1, `${items.length} tracks`, "col-span-3 text-(--sg-ink)/60 @3xl:hidden")}
+        {head(1, columns[1], "hidden text-(--sg-ink)/60 @3xl:col-span-5 @3xl:block")}
+        {head(2, columns[2], "hidden text-(--sg-ink)/60 @3xl:col-span-3 @3xl:block")}
+        {head(3, columns[3], "hidden text-(--sg-ink)/60 @3xl:col-span-3 @3xl:block")}
+        <Rule variants={v(drawX)} delay={T.index} className="bottom-0 bg-(--sg-ink)" />
+      </div>
+      <ol>
+        {items.map((it, i) => (
+          <IndexRow key={it.title} item={it} n={i + 1} delay={T.index + T.step * (i + 1)} reduce={reduce} />
+        ))}
+      </ol>
+    </nav>
+  );
+}
+
+function IndexRow({ item, n, delay, reduce }: { item: SwissIndexItem; n: number; delay: number; reduce: boolean }) {
+  return (
+    <li className="relative">
+      <motion.a
+        href={item.href}
+        variants={reduce ? fade : reveal}
+        custom={delay}
+        className={`group ${COLS} items-baseline py-4 transition-transform duration-150 active:scale-[0.99] focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-(--sg-accent) @3xl:py-5`}
+      >
+        <span className="col-span-1 font-mono text-[13px] tabular-nums transition-colors duration-150 group-hover:text-(--sg-accent)">{String(n).padStart(2, "0")}</span>
+        <span className="col-span-3 font-sans text-[clamp(1.35rem,1rem+1.4cqi,2.25rem)] font-semibold leading-[1.05] tracking-[-0.035em] @3xl:col-span-5">
+          {/* The underline is a background so it can grow from the left on hover. */}
+          <span className="bg-[linear-gradient(var(--sg-accent),var(--sg-accent))] bg-[length:0%_2px] bg-left-bottom bg-no-repeat pb-0.5 transition-[background-size] duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:bg-[length:100%_2px]">
+            {item.title}
+          </span>
+        </span>
+        <span className="col-span-3 col-start-2 mt-1 text-[15px] text-(--sg-ink)/75 @3xl:col-span-3 @3xl:col-start-auto @3xl:mt-0">{item.speaker}</span>
+        <span className="col-span-3 col-start-2 font-mono text-[11px] uppercase tracking-[0.08em] text-(--sg-ink)/60 @3xl:col-span-3 @3xl:col-start-auto @3xl:flex @3xl:items-baseline @3xl:justify-between">
+          {item.when}
+          <span
+            aria-hidden="true"
+            className="hidden -translate-x-1.5 text-[15px] text-(--sg-accent) opacity-0 transition-[opacity,transform] duration-200 group-hover:translate-x-0 group-hover:opacity-100 @3xl:inline"
+          >
+            →
+          </span>
+        </span>
+      </motion.a>
+      <Rule variants={reduce ? fade : drawX} delay={delay + 0.04} className="bottom-0 bg-(--sg-ink)/25" />
+    </li>
   );
 }
 
