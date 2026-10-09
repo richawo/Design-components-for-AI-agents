@@ -1,93 +1,80 @@
 {
   "component": "PricingThreeTier",
-  "intent": "Premium dark three-plan pricing with a softly glowing featured plan, odometer prices and a sliding billing toggle.",
+  "intent": "Dark, monochrome three-plan pricing: a billing toggle and three cards that rise from blur, prices counting up on a mechanical odometer, checks drawing row by row, and the recommended plan marked by light and one accent.",
   "platform": "web",
   "stack": {
     "framework": "React 19",
-    "styling": "Tailwind CSS v4",
-    "animation": "motion/react",
+    "styling": "Tailwind CSS v4 (@container, CSS variables)",
+    "animation": "motion/react (variants with custom delays, useInView, useMotionValue, useTransform, useVelocity, animate, AnimatePresence, LayoutGroup)",
     "fonts": "font-sans (Geist), font-mono (Geist Mono)"
   },
   "layout": {
-    "container": "max-w-7xl, px 20/32/48px, py 64-96px",
-    "header": "eyebrow, two-tone title, then body (left) + billing toggle (right) on desktop",
-    "plans": "3 columns at lg (featured -16px vertical margin); stacked on mobile; at md each card is 2 columns (price | features)",
-    "footnotes": "2 columns under a hairline"
+    "container": "@container root, max-w 1280px, px 20/32/48px, py 56/80px",
+    "toggle": "centred row: radiogroup pill + saving note (stacked below @xl)",
+    "plans": "stacked; @2xl each card splits price | features with a vertical hairline; @5xl three columns, featured card -16px top and bottom",
+    "card": "20px radius, 28/32px padding; featured 36px x 48px y at @5xl",
+    "footnotes": "hairline, then 2 columns from @2xl"
   },
   "typography": {
-    "title": {
-      "font": "sans",
-      "weight": 600,
-      "size": "clamp(2.25rem, 1.3rem + 3.6vw, 4.5rem)",
-      "leading": 1,
-      "tracking": "-0.05em",
-      "firstClause": "white→white/60 vertical gradient",
-      "secondClause": "white/40"
-    },
-    "price": {
-      "size": "clamp(3.25rem, 2.6rem + 2vw, 4.25rem)",
-      "weight": 600,
-      "tracking": "-0.055em",
-      "numerals": "tabular, odometer digits"
-    },
-    "planName": {
-      "size": "18px",
-      "weight": 500
-    },
-    "eyebrow": {
-      "font": "mono",
-      "size": "11px",
-      "tracking": "0.18em",
-      "color": "white/45"
-    }
+    "planName": "18px medium, tracking -0.02em",
+    "audience": "14px, ink/50",
+    "price": { "size": "clamp(3.25rem, 2.8rem + 1.6cqi, 4.25rem)", "weight": 600, "tracking": "-0.055em", "numerals": "tabular" },
+    "label": "mono 10px uppercase, tracking 0.12em",
+    "features": "14px, ink/80, leading snug",
+    "footnotes": "13px, ink/45; mono 11px numbers"
   },
   "color": {
-    "background": "#050506",
-    "text": "#ffffff",
-    "accent": "#34d399",
-    "accentText": "#6ee7b7",
-    "glow": "rgba(52,211,153,0.16) radial at top",
-    "cardFill": "white 4.5%→1.5% vertical gradient",
-    "cardRing": "white/8%",
-    "featuredRing": "emerald 28%"
+    "tokens": "PALETTE.dark / PALETTE.light → --pt-page, --pt-card, --pt-lifted, --pt-ink, --pt-on-ink, --pt-ring, --pt-shadow, --pt-lifted-shadow, --pt-spot, --pt-edge, --pt-accent",
+    "dark": { "page": "#08080a", "card": "#0e0e10", "lifted": "#151518", "ink": "#f4f4f5" },
+    "light": { "page": "#f4f4f5", "card": "#fafafa", "lifted": "#ffffff", "ink": "#111113" },
+    "accent": "#34d399 via the accent prop: featured top hairline, featured label dot, saving pill once annual is on. Nothing else.",
+    "featured": "lifted surface, brighter ring, deep two-stage shadow, ink-at-6% radial light from the top edge",
+    "checks": "ink on featured, ink/40 elsewhere",
+    "focus": "2px ink rings, offset 2px"
   },
   "motion": {
-    "tokens": "ease-out [0.22,1,0.36,1]; ease-in [0.4,0,1,1] for exits; spring.ui stiffness 500 damping 40",
-    "toggle": "layoutId spring.ui; options scale 0.97 on press; the saving pill pulses once to 1.06 when annual turns on and turns neutral on monthly",
-    "price": "per-digit odometer, critically damped spring stiffness 160 damping 25, 70ms stagger; on annual the monthly price appears struck through above the unit (4px rise, 2px blur, 240ms)",
-    "billingNote": "in from 8px with 3px blur over 300ms, out upward in 200ms ease-in",
-    "cta": "arrow nudges 3px on hover (200ms); press scales to 0.98; the white CTA deepens its glow instead of greying",
-    "pointer": "per-card spotlight (420px radial) and edge arc (240px, masked to the 1px border) tracked through CSS variables; mouse only",
-    "reveal": "cards rise 18px over 600ms staggered 70ms; feature rows 45ms apart; once",
-    "footnotes": "markers link to their note; hover or focus lights both in 150ms",
-    "reducedMotion": "instant swaps, opacity-only reveals, no pointer light"
+    "timeline": "T object in seconds: toggle 0, cards 0.08 + 0.07 each, then per card head +0.08, price +0.12 (count 0.65s), note +0.18, CTA +0.22, divider +0.26, features +0.30 at 35ms, accent edge +0.42",
+    "reveal": "rise 12px (cards 20px) from blur(8px), 500ms (cards 650ms), ease [0.22, 1, 0.36, 1]; filter dropped at rest",
+    "triggers": "toggle row on the section at 15%; each card at 25% of itself; footnotes at 50%",
+    "odometer": "one motion value per price; counts from 0 on first view, tweens 500ms to each toggled price; units column turns continuously, higher columns move only while the column below rolls 9→0; leading columns fold to 0 width; blur min(2.2, |velocity|/14) px",
+    "checks": "pathLength 0→1 over 360ms, 60ms after each row lands",
+    "toggle": "layoutId thumb on spring 500/40; saving pill one 6% pulse when annual",
+    "billingNote": "in from y 8px + blur 3px (300ms), out to y -8px (200ms ease-in)",
+    "pointer": "neutral spotlight + edge arc via CSS variables, mouse only",
+    "reducedMotion": "single 150ms fade, prices set instantly, no blur or transforms"
   },
   "responsive": {
-    "mobile": "stacked cards, toggle under body, full-width CTAs",
-    "md": "cards split into price | features",
-    "lg": "three columns, featured lifted"
+    "narrow": "stacked cards, toggle and saving stacked, cards land as they scroll in",
+    "@2xl": "each card two columns",
+    "@5xl": "three columns, featured taller"
   },
   "accessibility": [
-    "section aria-labelledby the title",
-    "radiogroup toggle with arrow keys",
-    "sr-only price sentence",
-    "visible focus rings"
+    "section aria-label \"Pricing plans\"; each card an article labelled by its plan",
+    "billing radiogroup with roving tabindex and arrow keys",
+    "visual price aria-hidden; sr-only sentence with price and billing note",
+    "footnote markers are links to their note; hover/focus lights both",
+    "2px ink focus-visible rings, instant",
+    "reduced motion: fades only, numbers set instantly"
   ],
   "content": {
     "plans": [
-      "Sole $12/$10",
-      "Practice $36/$30 (featured)",
-      "Firm $84/$70"
+      { "name": "Sole", "audience": "For freelancers and sole traders", "monthly": 12, "annual": 10 },
+      { "name": "Practice", "audience": "For small teams with a real payroll", "monthly": 36, "annual": 30, "featured": true },
+      { "name": "Firm", "audience": "For accountants running many books", "monthly": 84, "annual": 70 }
     ],
     "saving": "2 months free",
-    "footnotes": 2
+    "featuredLabel": "Most teams pick this",
+    "footnotes": [
+      "Bank feeds via open banking in the UK, EU, US and Canada. Everywhere else, CSV import works fine.",
+      "Need more than 40? We’ll price it per book, not per seat. All prices exclude sales tax."
+    ]
   },
   "avoid": [
-    "rotated stickers",
-    "hand-drawn arrows",
-    "serif italic accents",
-    "neon highlighter tags",
-    "bright gradient text",
-    "identical cards"
+    "headline, eyebrow or marketing copy inside the component",
+    "emerald glow blobs, tinted featured gradients, gradient text",
+    "coloured checks or a hue per plan",
+    "per-frame React state for the counting prices",
+    "three identical cards: the featured one differs in light and lift",
+    "horizontal page scroll"
   ]
 }

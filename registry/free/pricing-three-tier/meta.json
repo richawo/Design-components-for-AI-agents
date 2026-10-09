@@ -4,7 +4,7 @@
   "tier": "free",
   "platform": "web",
   "category": "pricing",
-  "description": "Premium dark pricing with a softly glowing featured plan, odometer-rolling prices, a sliding monthly/annual toggle and footnoted features.",
+  "description": "Dark, monochrome three-plan pricing: cards rise from blur, prices count up on a mechanical odometer, checks draw row by row, and one accent marks the pick.",
   "tags": [
     "pricing",
     "pricing table",
@@ -12,55 +12,33 @@
     "dark",
     "billing toggle",
     "odometer",
-    "plans"
+    "plans",
+    "monochrome"
   ],
   "dependencies": [
     "motion"
   ],
   "theme": "dark",
   "previewHeight": 1180,
-  "usage": "import { PricingThreeTier } from \"@/components/design-for-ai/pricing-three-tier\";\n\nexport default function Page() {\n  return (\n    <PricingThreeTier\n      title=\"Pick a plan.\"\n      titleAccent=\"Change it whenever.\"\n      defaultBilling=\"monthly\"\n      plans={[\n        { name: \"Starter\", audience: \"For one person\", monthly: 9, annual: 7, cta: { label: \"Start free\", href: \"/signup\" }, features: [{ text: \"1 project\" }] },\n        { name: \"Team\", audience: \"For small teams\", monthly: 29, annual: 24, featured: true, cta: { label: \"Start free\", href: \"/signup?plan=team\" }, features: [{ text: \"Unlimited projects\" }] },\n        { name: \"Studio\", audience: \"For agencies\", monthly: 79, annual: 66, cta: { label: \"Talk to us\", href: \"/contact\" }, features: [{ text: \"Client workspaces\" }] }\n      ]}\n    />\n  );\n}",
+  "usage": "import { PricingThreeTier } from \"@/components/design-for-ai/pricing-three-tier\";\n\nexport default function Page() {\n  return (\n    <PricingThreeTier\n      accent=\"#7c9cff\"\n      defaultBilling=\"monthly\"\n      plans={[\n        { name: \"Starter\", audience: \"For one person\", monthly: 9, annual: 7, cta: { label: \"Start free\", href: \"/signup\" }, features: [{ text: \"1 project\" }] },\n        { name: \"Team\", audience: \"For small teams\", monthly: 29, annual: 24, featured: true, cta: { label: \"Start free\", href: \"/signup?plan=team\" }, features: [{ text: \"Unlimited projects\" }] },\n        { name: \"Studio\", audience: \"For agencies\", monthly: 79, annual: 66, cta: { label: \"Talk to us\", href: \"/contact\" }, features: [{ text: \"Client workspaces\" }] }\n      ]}\n    />\n  );\n}",
   "props": [
     {
       "name": "plans",
       "type": "PricingPlan[]",
       "default": "Sole, Practice, Firm",
-      "description": "Plans in display order. Each has name, audience, monthly and annual prices, a CTA, an optional lead line and features. Set featured on one."
-    },
-    {
-      "name": "title",
-      "type": "string",
-      "default": "\"Priced like a good accountant:\"",
-      "description": "Headline, set in the display face."
-    },
-    {
-      "name": "titleAccent",
-      "type": "string",
-      "default": "\"no surprises.\"",
-      "description": "Italic serif ending of the headline."
-    },
-    {
-      "name": "body",
-      "type": "string",
-      "description": "Supporting paragraph under the headline."
-    },
-    {
-      "name": "eyebrow",
-      "type": "string",
-      "default": "\"Pricing\"",
-      "description": "Mono label above the headline."
+      "description": "Plans in display order: name, audience, whole-number monthly and annual prices, a CTA, an optional lead line and features. Set featured on one."
     },
     {
       "name": "saving",
       "type": "string",
       "default": "\"2 months free\"",
-      "description": "Highlighted saving beside the billing toggle."
+      "description": "Saving beside the billing toggle; it takes the accent once annual is on."
     },
     {
       "name": "featuredLabel",
       "type": "string",
       "default": "\"Most teams pick this\"",
-      "description": "Sticker on the featured plan."
+      "description": "Label on the featured plan."
     },
     {
       "name": "currency",
@@ -71,13 +49,25 @@
     {
       "name": "footnotes",
       "type": "string[]",
-      "description": "Numbered notes under the plans. Reference them from a feature with note: 1, 2\u2026"
+      "description": "Fine print under the plans. Reference a note from a feature with note: 1, 2…; marker and note light up together."
     },
     {
       "name": "defaultBilling",
       "type": "\"monthly\" | \"annual\"",
       "default": "\"annual\"",
       "description": "Billing period selected on first render."
+    },
+    {
+      "name": "accent",
+      "type": "string",
+      "default": "\"#34d399\"",
+      "description": "The one signal colour: the featured plan's top edge and label dot, and the earned saving."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Near-black or near-white surfaces; both are tuned."
     }
   ],
   "added": "2026-10-07"
