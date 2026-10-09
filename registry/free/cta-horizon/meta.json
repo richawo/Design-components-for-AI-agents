@@ -4,21 +4,73 @@
   "tier": "free",
   "platform": "web",
   "category": "cta",
-  "description": "A closing call to action on a dark panel with a luminous planet-edge horizon, grain, a two-tone headline and a magnetic button.",
-  "tags": ["cta", "call to action", "dark", "gradient", "glow", "magnetic button", "closing section"],
-  "dependencies": ["motion"],
+  "description": "A closing call to action where a sunrise is drawn in ordered (Bayer) dither: light quantised into three colours, a crisp horizon hairline and a scanline reflection.",
+  "tags": [
+    "cta",
+    "call to action",
+    "dark",
+    "dither",
+    "bayer",
+    "pixel",
+    "sunrise",
+    "canvas",
+    "closing section"
+  ],
+  "dependencies": [
+    "motion"
+  ],
   "theme": "dark",
   "previewHeight": 760,
   "usage": "import { CtaHorizon } from \"@/components/design-for-ai/cta-horizon\";\n\n<CtaHorizon\n  headline=\"Start your free trial today.\"\n  muted=\"today.\"\n  primary={{ label: \"Start free\", href: \"/signup\" }}\n  glow={[\"#d9f1ff\", \"#4cc3ff\", \"#3d5afe\"]}\n/>",
   "props": [
-    { "name": "headline", "type": "string", "description": "The headline." },
-    { "name": "muted", "type": "string", "default": "\"proud to demo.\"", "description": "Substring of the headline set at 45% white." },
-    { "name": "eyebrow", "type": "string", "description": "Label in the pill above the headline." },
-    { "name": "body", "type": "string", "description": "Supporting sentence under the headline." },
-    { "name": "primary", "type": "{ label: string; href: string }", "description": "White magnetic button." },
-    { "name": "secondary", "type": "{ label: string; href: string }", "description": "Glass secondary button." },
-    { "name": "notes", "type": "[string, string, string]", "description": "Three reassurance notes along the bottom." },
-    { "name": "glow", "type": "[string, string, string]", "default": "[\"#ffe2c4\", \"#ff7a45\", \"#ff4d6d\"]", "description": "Horizon colours: hot core, mid, outer." }
+    {
+      "name": "headline",
+      "type": "string",
+      "description": "The headline."
+    },
+    {
+      "name": "muted",
+      "type": "string",
+      "default": "\"proud to demo.\"",
+      "description": "Substring of the headline set at 45% white."
+    },
+    {
+      "name": "eyebrow",
+      "type": "string",
+      "description": "Label in the pill above the headline."
+    },
+    {
+      "name": "body",
+      "type": "string",
+      "description": "Supporting sentence under the headline."
+    },
+    {
+      "name": "primary",
+      "type": "{ label: string; href: string }",
+      "description": "White primary button. Hover warms a glow beneath it and nudges the arrow 2px; nothing jumps."
+    },
+    {
+      "name": "secondary",
+      "type": "{ label: string; href: string }",
+      "description": "Dark glass secondary button that stays legible over the light."
+    },
+    {
+      "name": "notes",
+      "type": "[string, string, string]",
+      "description": "Three reassurance notes along the bottom."
+    },
+    {
+      "name": "glow",
+      "type": "[string, string, string]",
+      "default": "[\"#ffe2c4\", \"#ff7a45\", \"#ff4d6d\"]",
+      "description": "Light colours, hottest first: core, mid, outer. The dither quantises between them."
+    },
+    {
+      "name": "cell",
+      "type": "number",
+      "default": "3",
+      "description": "Dither cell size in CSS px. 3 reads as texture, 5 as pixel art."
+    }
   ],
   "added": "2026-10-07"
 }

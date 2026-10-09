@@ -1,17 +1,18 @@
 {
   "component": "CtaHorizon",
-  "intent": "Cinematic closing CTA: dark panel, luminous planet-edge horizon from the bottom, two-tone headline, magnetic primary button.",
+  "intent": "A closing call to action on a dark panel where a sunrise is drawn in ordered (Bayer) dither: light quantised into a few colours, a crisp horizon hairline and a scanline reflection. Calm, graphic, premium.",
   "platform": "web",
-  "stack": {
-    "framework": "React 19",
-    "styling": "Tailwind CSS v4",
-    "animation": "motion/react (whileInView, useSpring, useMotionValue)",
-    "fonts": "font-display (Geist), font-mono"
-  },
+  "stack": [
+    "React 19",
+    "Tailwind CSS v4",
+    "motion/react",
+    "Canvas 2D (ImageData, no WebGL)"
+  ],
   "layout": {
-    "page": "black, padding 12/20/24px",
-    "panel": "#09090b, radius 24/32px, min-height 560/640/700px, centred column",
-    "notes": "pinned to bottom with mt-auto, 3 columns from sm"
+    "page": "black, 12\u201324px padding",
+    "panel": "rounded 24px (32px sm+), #09090b, inset top highlight, 1px white/6% ring, min-height 560/640/700px",
+    "content": "centred column; notes pinned to the bottom with mt-auto",
+    "horizon": "40px above the first note, re-measured every frame"
   },
   "typography": {
     "headline": {
@@ -21,7 +22,7 @@
       "leading": 0.98,
       "tracking": "-0.055em",
       "maxWidth": "16ch",
-      "leadClause": "white→white/70 gradient",
+      "leadClause": "white\u2192white/70 gradient",
       "mutedClause": "white/45"
     },
     "body": {
@@ -38,20 +39,23 @@
   },
   "color": {
     "panel": "#09090b",
-    "glowCore": "#ffe2c4",
-    "glowMid": "#ff7a45",
-    "glowOuter": "#ff4d6d",
-    "rim": "horizontal gradient hottest at centre",
-    "grain": "feTurbulence 8% overlay"
+    "glow": {
+      "core": "#ffe2c4",
+      "mid": "#ff7a45",
+      "outer": "#ff4d6d"
+    },
+    "levels": "panel black \u2192 outer at 45% \u2192 outer \u2192 mid \u2192 core, chosen per cell with an 8\u00d78 Bayer threshold",
+    "hairline": "white up to 70% under the sun, fading to 0 within 38% of the width either side",
+    "copyFade": "#09090b \u2192 92% at 42% \u2192 transparent at 72%"
   },
   "motion": {
-    "bloom": "rise 60px + fade, 1.6s ease [0.2,0.8,0.2,1], once in view",
-    "headline": "blur 8px→0, y 24→0, opacity, 0.9s",
-    "magnetic": "±18px x, ±12px y, spring stiffness 220 damping 18; inner content ×0.4 extra",
-    "reducedMotion": "no entrance, no magnetic lean",
-    "lean": "bloom translates up to ±60px toward the pointer on a slow spring (60/20)",
-    "press": "both buttons press to 0.97; primary deepens its glow on hover",
-    "notes": "notes reveal once, 10px rise, 80ms stagger"
+    "rise": "sun rises over 1.8s on first view, ease-out expo",
+    "shimmer": "multiplies existing light \u00b114% with two slow sines; never adds light to dark areas",
+    "lean": "up to 6% of the width toward a mouse pointer, eased",
+    "fps": "30, paused offscreen and in hidden tabs",
+    "copy": "headline blur 8px\u21920 + 18px rise over 0.9s; body +120ms, buttons +200ms, notes 80ms apart after 500ms",
+    "primaryHover": "a blurred accent glow fades in beneath the button and the arrow nudges 2px; press 0.98; no magnetism or lift",
+    "reducedMotion": "one still frame (redrawn on resize); no entrances"
   },
   "responsive": {
     "mobile": "buttons full width and stacked; notes stacked; bloom 130% wide",
@@ -64,16 +68,17 @@
     "AA contrast for all copy"
   ],
   "content": {
-    "headline": "Ship the version you’d be proud to demo.",
+    "headline": "Ship the version you\u2019d be proud to demo.",
     "muted": "proud to demo.",
     "primary": "Book a call",
     "secondary": "See pricing"
   },
   "avoid": [
-    "flat saturated backgrounds",
-    "target rings behind copy",
-    "purple-blue blobs",
-    "sparkles",
-    "yellow on blue"
+    "glowing planet arcs or purple-blue blobs",
+    "concentric rings, sparkles",
+    "magnetic or jumping buttons",
+    "light reaching the headline or body copy",
+    "dither noise in dark areas (shimmer must be multiplicative)",
+    "blurred/smoothed scaling of the dither canvas"
   ]
 }
