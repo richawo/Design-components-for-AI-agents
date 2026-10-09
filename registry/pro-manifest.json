@@ -5,7 +5,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "auth",
-    "description": "A six-digit verification code input that rolls digits in, ripples on paste, shakes wrong codes away and fuses into a single Verified pill on success.",
+    "description": "A dark one-time-code card: cells stagger in from blur, each digit settles, paste ripples, wrong codes shake away and success fuses the row into one Verified pill.",
     "tags": [
       "otp",
       "one-time code",
@@ -14,7 +14,8 @@
       "auth",
       "pin input",
       "magic code",
-      "form"
+      "form",
+      "dark"
     ],
     "dependencies": [
       "motion"
@@ -94,6 +95,23 @@
         "type": "boolean",
         "default": "true",
         "description": "Focus the code on mount."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "theme ink",
+        "description": "The one accent: the active-cell ring, the caret, the Send button and the emphasised Resend after a lockout."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface palette. Both are tuned; success and error tones shift to stay AA."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
       }
     ],
     "added": "2026-10-09"
@@ -104,7 +122,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "auth",
-    "description": "A work-email sign-in that reads the domain as you type: the password folds away, the button becomes Continue with Okta, and shared domains get a workspace picker.",
+    "description": "A dark work-email sign-in that reads the domain as you type: the password folds away, the button becomes Continue with Okta, shared domains get a picker.",
     "tags": [
       "auth",
       "sso",
@@ -114,12 +132,12 @@
       "enterprise",
       "workspace picker",
       "form",
-      "light"
+      "dark"
     ],
     "dependencies": [
       "motion"
     ],
-    "theme": "light",
+    "theme": "dark",
     "previewHeight": 900,
     "usage": "import { AuthSsoDetect } from \"@/components/design-for-ai/auth-sso-detect\";\n\n<AuthSsoDetect\n  brand=\"Acme\"\n  title=\"Sign in to Acme\"\n  detect={async (domain) => {\n    const res = await fetch(`/api/sso/lookup?domain=${domain}`);\n    return res.json(); // SsoWorkspace[]: [] means password sign-in\n  }}\n  onSsoContinue={async (workspace, email) => {\n    window.location.assign(`/api/sso/start?ws=${workspace.id}&login_hint=${encodeURIComponent(email)}`);\n  }}\n  onPasswordSignIn={async (email, password) => {\n    const res = await fetch(\"/api/login\", { method: \"POST\", body: JSON.stringify({ email, password }) });\n    if (!res.ok) throw new Error(\"That password doesn’t match.\");\n  }}\n/>",
     "props": [
@@ -192,6 +210,23 @@
         "type": "string",
         "default": "\"#\"",
         "description": "Target of the “Start a free trial” link."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "theme ink",
+        "description": "The one accent: the primary button and the selected workspace ring and dot. Provider marks keep their brand colours."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface palette. The light theme keeps the original warm-grey paper look."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
       }
     ],
     "added": "2026-10-09"
@@ -1369,7 +1404,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "ai",
-    "description": "A prompt composer with file chips, a model picker, slash commands, live mic levels and token hints. While the agent thinks, a comet of light circles the border.",
+    "description": "A monochrome prompt composer: grey file chips, model picker, slash commands, live mic levels and token hints; while the agent thinks, one comet of light rings it.",
     "tags": [
       "ai",
       "prompt",
@@ -1380,7 +1415,7 @@
       "model picker",
       "voice input",
       "file upload",
-      "dark"
+      "monochrome"
     ],
     "dependencies": [
       "motion"
@@ -1453,8 +1488,8 @@
       },
       {
         "name": "onUpload",
-        "type": "(file: File, onProgress: (p: number) => void) => Promise<void>",
-        "description": "Upload one file and report progress 0–1. Reject to show an error chip with Retry. Defaults to a simulated upload."
+        "type": "(file: File, onProgress: (p: number) => void, signal: AbortSignal) => Promise<void>",
+        "description": "Upload one file and report progress 0–1; honour the signal (aborted on remove, retry and unmount). Reject to show an error chip with Retry. Defaults to a simulated upload."
       },
       {
         "name": "defaultAttachments",
@@ -1476,6 +1511,23 @@
         "name": "placeholder",
         "type": "string",
         "description": "Textarea placeholder."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ff9d5c\"",
+        "description": "The one accent: the comet of light that travels the border while the agent works."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Greyscale palette; warning and error tones stay semantic."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
       }
     ],
     "added": "2026-10-09"
