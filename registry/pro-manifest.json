@@ -1640,55 +1640,76 @@
     "tier": "pro",
     "platform": "mobile",
     "category": "mobile",
-    "description": "A React Native subscription paywall for a sleep app: a drawn moon over hills, checked benefits, annual and monthly plan cards with a savings tag, and trial copy.",
+    "description": "A React Native sleep-app paywall: a glowing moon over drifting stars and a lake, a glass plan picker with a gliding highlight, rolling prices and calm end states.",
     "tags": [
       "paywall",
       "subscription",
       "react native",
       "pricing",
       "in-app purchase",
+      "glassmorphism",
       "dark"
     ],
-    "dependencies": [],
+    "dependencies": [
+      "expo-blur",
+      "expo-linear-gradient",
+      "react-native-svg"
+    ],
     "theme": "dark",
-    "previewHeight": 900,
-    "usage": "import { MobilePaywall } from \"@/components/design-for-ai/native/mobile-paywall\";\n\n<MobilePaywall\n  appName=\"Drift Plus\"\n  annualPrice={29.99}\n  monthlyPrice={3.99}\n  onSubscribe={(plan) => purchase(plan)}\n  onClose={close}\n/>",
+    "previewHeight": 940,
+    "usage": "// Expo: npx expo install expo-blur expo-linear-gradient react-native-svg\n// Bare React Native: npx install-expo-modules, then install the three packages.\nimport { MobilePaywall } from \"@/components/design-for-ai/native/mobile-paywall\";\n\n<MobilePaywall\n  annualPrice={35.99}\n  monthlyPrice={4.99}\n  trialEnds=\"16 Oct\"\n  onSubscribe={(plan) => purchase(plan)}   // resolve → success, reject(new Error(msg)) → error\n  onRestore={() => restorePurchases()}     // resolve(true) when something was restored\n  onClose={close}\n  onContinue={() => navigation.replace(\"WindDown\")}\n/>",
     "props": [
       {
-        "name": "appName",
+        "name": "kicker",
         "type": "string",
-        "description": "Product name in the kicker."
+        "default": "\"Nightjar Plus\"",
+        "description": "Mono kicker beside the moon mark."
       },
       {
         "name": "title",
         "type": "string",
-        "description": "Headline."
+        "default": "\"Sleep like you mean it.\"",
+        "description": "Headline over the sky."
       },
       {
-        "name": "benefits",
-        "type": "string[]",
-        "description": "Benefit rows."
+        "name": "subtitle",
+        "type": "string",
+        "description": "One-sentence promise under the headline (hidden under 800pt tall)."
+      },
+      {
+        "name": "features",
+        "type": "PaywallFeature[]",
+        "description": "Rows of { icon: sound | alarm | story | offline, title }, drawn on in a stagger."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"$\"",
+        "description": "Currency symbol."
       },
       {
         "name": "annualPrice",
         "type": "number",
-        "description": "Annual price."
+        "default": "35.99",
+        "description": "Yearly price; the per-month figure and the savings badge are derived from it."
       },
       {
         "name": "monthlyPrice",
         "type": "number",
+        "default": "4.99",
         "description": "Monthly price."
       },
       {
         "name": "trialDays",
         "type": "number",
         "default": "7",
-        "description": "Free trial length."
+        "description": "Free trial on the yearly plan."
       },
       {
         "name": "trialEnds",
         "type": "string",
-        "description": "Human date the trial ends."
+        "default": "\"16 Oct\"",
+        "description": "Human date the trial ends, used in the terms line and success copy."
       },
       {
         "name": "initialPlan",
@@ -1698,18 +1719,33 @@
       },
       {
         "name": "onSubscribe",
-        "type": "(plan) => void",
-        "description": "Fired by the CTA."
+        "type": "(plan) => Promise<void> | void",
+        "description": "Drives loading → success; a rejection shows the error state with its message."
       },
       {
         "name": "onRestore",
-        "type": "() => void",
-        "description": "Fired by Restore purchase."
+        "type": "() => Promise<boolean> | void",
+        "description": "Restore purchases; the link reads Restoring…, then Restored or Nothing to restore."
       },
       {
         "name": "onClose",
         "type": "() => void",
-        "description": "Fired by the close button."
+        "description": "Close button."
+      },
+      {
+        "name": "onTerms",
+        "type": "() => void",
+        "description": "Terms link."
+      },
+      {
+        "name": "onPrivacy",
+        "type": "() => void",
+        "description": "Privacy link."
+      },
+      {
+        "name": "onContinue",
+        "type": "() => void",
+        "description": "The button after a successful purchase."
       }
     ],
     "added": "2026-10-07"
