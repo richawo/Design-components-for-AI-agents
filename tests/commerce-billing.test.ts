@@ -179,7 +179,7 @@ describe("recoverable account keys", () => {
     expect((await verifiedStoredKey(f.env, expired)).ok).toBe(true);
     f.sql.prepare("INSERT INTO users VALUES (?, ?, NULL, ?)").run("usr_member", "member@example.invalid", Date.now());
     f.sql.prepare("UPDATE licences SET seats=10, plan='team-yearly'").run();
-    f.sql.prepare("INSERT INTO team_members VALUES (?, ?, ?)").run(row!.id, "member@example.invalid", Date.now());
+    f.sql.prepare("INSERT INTO team_members(licence_id, email, created_at) VALUES (?, ?, ?)").run(row!.id, "member@example.invalid", Date.now());
     const memberKey = signLicense({ id: row!.id, email: "member@example.invalid", userId: "usr_member", plan: "pro-yearly", seats: 1, exp: row!.expires_at }, 2);
     expect((await verifiedStoredKey(f.env, memberKey)).ok).toBe(true);
     const wrongId = signLicense({ id: row!.id, email: "member@example.invalid", userId: "usr_other", plan: "pro-yearly", seats: 1, exp: row!.expires_at }, 2);
