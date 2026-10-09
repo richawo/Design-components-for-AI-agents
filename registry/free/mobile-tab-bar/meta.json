@@ -4,7 +4,7 @@
   "tier": "free",
   "platform": "mobile",
   "category": "mobile",
-  "description": "A floating glass tab bar for a running app: icons that morph outline to filled, a lens that stretches as it glides, rolling badges and a raised button with an arc menu.",
+  "description": "A floating glass tab bar for a monochrome running app: morphing icons, a stretching lens, rolling badges, an arc menu and four tabs that blur, count and draw in.",
   "tags": [
     "tab bar",
     "bottom navigation",
@@ -12,8 +12,10 @@
     "glassmorphism",
     "fitness",
     "dark",
+    "monochrome",
     "floating action button",
-    "radial menu"
+    "radial menu",
+    "animated charts"
   ],
   "dependencies": ["expo-blur", "expo-linear-gradient", "react-native-svg"],
   "theme": "dark",
@@ -27,6 +29,7 @@
     { "name": "goalKm", "type": "number", "default": "40", "description": "Weekly distance goal for the hero ring." },
     { "name": "week", "type": "WeekDay[]", "description": "Seven days of distance with done, today or planned state." },
     { "name": "actions", "type": "QuickAction[]", "description": "Up to three arc-menu actions with toast copy and optional kilometres to add." },
+    { "name": "accent", "type": "string", "default": "\"#FF6B3D\"", "description": "The one colour: centre action, selected tab, the week ring and today's bar." },
     { "name": "onTabChange", "type": "(key: TabKey) => void", "description": "Fired when a tab is selected." },
     { "name": "onAction", "type": "(key: string) => void", "description": "Fired when a quick action is picked." }
   ],

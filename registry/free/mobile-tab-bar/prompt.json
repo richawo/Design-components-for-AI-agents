@@ -1,61 +1,129 @@
 {
   "component": "MobileTabBar",
-  "intent": "Floating glass tab bar for a running app: outline-to-filled icon morphs, a selection lens that stretches toward where it's going, rolling badges and a raised ember action that opens an arc of quick actions.",
+  "intent": "Floating glass tab bar for a monochrome running app: outline-to-filled icon morphs, a selection lens that stretches toward where it's going, rolling badges and a raised accent action with an arc of quick actions; every tab is a finished screen whose blocks blur in, numbers count up and charts draw on each visit.",
   "platform": "mobile",
   "stack": {
     "framework": "React Native",
-    "libraries": ["expo-blur", "expo-linear-gradient", "react-native-svg"],
-    "apis": ["Animated.spring", "Animated.timing", "Animated.stagger", "Pressable", "ScrollView", "AccessibilityInfo"],
+    "libraries": [
+      "expo-blur",
+      "expo-linear-gradient",
+      "react-native-svg"
+    ],
+    "apis": [
+      "Animated.spring",
+      "Animated.timing",
+      "Animated.stagger",
+      "Pressable",
+      "ScrollView",
+      "AccessibilityInfo"
+    ],
     "web": "react-native-web compatible; keep opacity animations off the BlurView's ancestors"
   },
   "layout": {
-    "stage": "#09090C, content in a ScrollView with 58pt top, 16pt sides, 150pt bottom padding so it scrolls under the bar",
+    "stage": "#0A0A0A with a 6% white radial glow top right; ScrollView with 58pt top, 16pt sides, 12pt gaps, 150pt bottom padding so it scrolls under the bar",
     "bar": "absolute, 14pt sides, 26pt bottom, 68pt tall, radius 34; five equal slots, the middle one reserved",
     "centreAction": "60pt circle standing 18pt above the bar",
     "arcMenu": "three 58pt items on a 118pt radius at 150°, 90°, 30° with labels below",
-    "toast": "glass pill 16pt from sides, 52pt from top"
+    "toast": "glass pill 16pt from sides, 52pt from top",
+    "screens": {
+      "today": "greeting + avatar; hero card with 32.4 km of 40, 92pt ring, seven day bars; pace tile with sparkline; 12-day streak meter of 14 bars; last-run card with four stats and a drawn street map; up-next card with stacked avatars",
+      "routes": "featured map card (one marker where the loop closes) with three stats; four saved routes with drawn thumbnails and elevation sparklines (52pt wide under 380pt, 76pt above)",
+      "club": "club goal 1,846/2,500 km with a 6pt bar; kudos card with stacked greyscale avatars (20% overlap, ringed in the card colour); five-row leaderboard with thin bars, your row lifted 5%",
+      "you": "84pt avatar with an accent year-goal ring and 86% pill; three-up year stats; four personal-best tiles; shoe mileage with an 8pt bar"
+    }
   },
   "typography": {
-    "greeting": { "size": 32, "weight": "700", "letterSpacing": -1 },
-    "heroNumber": { "size": 58, "weight": "700", "letterSpacing": -2.4, "fontVariant": "tabular-nums" },
-    "cardTitle": { "size": 19, "weight": "700", "letterSpacing": -0.4 },
-    "eyebrow": { "font": "Menlo/monospace", "size": 10.5, "weight": "600", "letterSpacing": 1.3, "case": "uppercase" },
-    "tabLabel": { "size": 10.5, "weight": "600 → 700 when selected" }
+    "greeting": {
+      "size": 32,
+      "weight": "700",
+      "letterSpacing": -1
+    },
+    "heroNumber": {
+      "size": 58,
+      "weight": "700",
+      "letterSpacing": -2.4,
+      "fontVariant": "tabular-nums"
+    },
+    "cardTitle": {
+      "size": 19,
+      "weight": "700",
+      "letterSpacing": -0.4
+    },
+    "eyebrow": {
+      "font": "Menlo/monospace",
+      "size": 10.5,
+      "weight": "600",
+      "letterSpacing": 1.3,
+      "case": "uppercase"
+    },
+    "tabLabel": {
+      "size": 10.5,
+      "weight": "600 → 700 when selected"
+    },
+    "screenTitle": {
+      "size": 32,
+      "weight": "700",
+      "letterSpacing": -1
+    },
+    "tileNumber": {
+      "size": 28,
+      "weight": "700",
+      "fontVariant": "tabular-nums"
+    }
   },
   "color": {
-    "background": "#09090C",
-    "text": "#F6F3EE",
-    "secondary": "rgba(246,243,238,0.6)",
-    "faint": "rgba(246,243,238,0.38)",
-    "ember": "#FF6B3D",
-    "emberHighlight": "#FFA06A",
-    "emberDeep": "#E5402F",
-    "volt": "#D9F36A (streak and route start only)",
-    "heroGradient": ["#FF8C52", "#F65F3A", "#DB3E36", "#A82A3C"],
-    "card": ["#1B1B21", "#141418", "#101013"],
+    "approach": "monochrome first: one neutral family plus a single accent prop; no decorative colour",
+    "background": "#0A0A0A",
+    "text": "#F5F5F5",
+    "secondary": "rgba(245,245,245,0.64)",
+    "faint": "rgba(245,245,245,0.5)",
+    "hairline": "rgba(255,255,255,0.08)",
+    "card": [
+      "#1A1A1A",
+      "#141414",
+      "#101010"
+    ],
+    "heroCard": [
+      "#202020",
+      "#171717",
+      "#111111"
+    ],
+    "accent": "#FF6B3D (prop `accent`): centre action, selected tab icon, week ring, today's bar, You ring; nowhere else",
+    "data": "routes, sparklines, streak and progress bars in white and greys",
+    "milk": [
+      "#FFFFFF",
+      "#EDEDED",
+      "#D6D6D6"
+    ],
+    "avatars": "greyscale gradients; yours inverted (white disc, black initials)",
     "glass": "BlurView 100 dark + white sheen 12%→2% + 4pt dot dither + hairline 26% top / 10% sides / 5% bottom"
   },
   "motion": {
     "lens": "left and right edges spring separately: leading 520/46, trailing 210/29 (both critically damped); scaleY 1→0.86 while stretched",
     "iconMorph": "outline fades and shrinks to 0.78; filled grows from 0.55 on spring 360/18 (one overshoot); deselect 500/44",
-    "content": "fade out 110ms ease-in, fade in + rise 10pt 280ms cubic-bezier(0.22,1,0.36,1)",
     "centrePress": "translateY 2.5 + scale 0.92, glow dims and shrinks; spring 700/40 in, 420/18 out",
     "menuOpen": "plus rotates 135°, disc crossfades to milk, scrim fades in, content scales to 0.965, items stagger 50ms on spring 400/25 from scale 0.35",
     "menuClose": "reverse stagger 30ms, 170ms ease-in",
-    "numbers": "hero km, ring and today's bar tween over 760ms when an action adds distance",
+    "numbers": "later changes (a logged run) tween from the previous value over 640ms with a half blur",
     "badge": "digits roll 11pt over 280ms, one tick to 1.22 on arrival; clears 650ms after opening Club",
     "ambient": "a kudo arrives every 6.5s (max three) while another tab is open",
     "press": "cards and rows spring to 0.97–0.98",
-    "reducedMotion": "120ms fades only, no stretch, no ambient badge, numbers jump"
+    "reducedMotion": "entrances become 150ms fades, numbers and charts appear at their values, no springs, stretch or ambient badge",
+    "entrance": "per tab, on every visit: blocks in reading order fade in, rise 12pt and clear an 8px blur over 520ms ease-out, 55ms apart (rows 45ms); iOS settles from scale 0.98 instead of blur",
+    "figures": "150ms after their block: numbers count up from 0 over 680ms with a 5px blur settling; lines, routes and rings draw via strokeDashoffset (680–800ms); sparkline areas fade in behind the stroke; bars grow from the baseline with a 30ms stagger; dots and avatars pop last (spring 400/28, one overshoot)",
+    "progress": "progress bars fill 300ms after their block lands, over 520ms; whole sequence under ~900ms",
+    "tabSwitch": "old view fades, lifts 6pt and blurs out over 130ms ease-in, then the new view remounts and replays its entrance; a tap mid-exit only retargets",
+    "barEntrance": "bar and centre action rise 36pt on spring 260/28 at first view"
   },
   "responsive": {
-    "width": "360–430pt; slots are measured with onLayout, so the lens and arc scale with the bar"
+    "width": "360–430pt; slots are measured with onLayout so the lens and arc scale with the bar; route rows narrow their elevation chart under 380pt"
   },
   "accessibility": [
     "Tabs use accessibilityRole tab with selected state and a label that includes the badge count",
     "Centre action is a button with an expanded state and a label that flips between open and close",
     "The scrim is a labelled close button",
     "The toast is a polite live region",
+    "Charts carry text labels (daily distances, streak)",
     "SVG icons are aria-hidden",
     "Reduced motion respected via AccessibilityInfo"
   ],
@@ -63,16 +131,32 @@
     "runner": "Adaeze Okafor",
     "dateLine": "THU 9 OCT · WEEK 41",
     "week": "32.4 of 40 km; M 6.2, T 12.0, W 6.1, T 8.1 (today), F–S planned",
-    "tabs": ["Today", "Routes", "Club (3 kudos)", "You"],
-    "actions": ["Outdoor run → GPS locked", "Intervals → 6 × 800 m loaded", "Log treadmill → adds 5.0 km"]
+    "tabs": [
+      "Today",
+      "Routes",
+      "Club (3 kudos)",
+      "You"
+    ],
+    "actions": [
+      "Outdoor run → GPS locked",
+      "Intervals → 6 × 800 m loaded",
+      "Log treadmill → adds 5.0 km"
+    ],
+    "screens": [
+      "Today",
+      "Routes: Hackney Marshes loop + 4 saved routes",
+      "Club: Hackney Harriers goal, kudos, leaderboard",
+      "You: year 1,284/1,500 km, PBs 21:48 / 45:12 / 1:41:30, shoes 412/650 km"
+    ]
   },
   "avoid": [
+    "Decorative colour: gradient hero cards, tinted washes, coloured avatars, rainbow tiles",
+    "A second accent competing with the one accent",
     "A flat translucent grey bar with no real blur",
     "Opacity animations on the BlurView's ancestors",
     "Icon fonts, icon packs or emoji",
+    "Tab content that pops in unanimated, or a 'lighter' unfinished screen",
     "An indicator that jumps or wobbles",
-    "Content that cuts between tabs",
-    "More than one bounce on anything",
-    "A second accent competing with ember"
+    "More than one bounce on anything"
   ]
 }
