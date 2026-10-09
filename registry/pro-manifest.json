@@ -2361,7 +2361,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "pricing",
-    "description": "A full plan comparison table with a sticky price header, collapsible feature groups, tooltips and a teal recommended column that becomes a plan switcher on mobile.",
+    "description": "A dark plan comparison table: headers stagger in with counting prices, rows rise group by group as checks draw, and a lit column marks the pick. Mobile plan switcher.",
     "tags": [
       "pricing",
       "comparison table",
@@ -2369,19 +2369,21 @@
       "plans",
       "sticky header",
       "tooltips",
-      "saas"
+      "saas",
+      "dark",
+      "monochrome"
     ],
     "dependencies": [
       "motion"
     ],
-    "theme": "light",
+    "theme": "dark",
     "previewHeight": 1400,
     "usage": "import { PricingComparisonMatrix } from \"@/components/design-for-ai/pricing-comparison-matrix\";\n\n<PricingComparisonMatrix\n  plans={plans}        // { id, name, price, unit, blurb, cta }[]\n  groups={groups}      // { name, features: { name, hint?, values }[] }[]\n  recommendedId=\"team\"\n/>",
     "props": [
       {
         "name": "plans",
         "type": "MatrixPlan[]",
-        "description": "Plans in column order: id, name, price, unit, blurb, cta."
+        "description": "Plans in column order: id, name, price (a number inside it counts up), unit, blurb, cta."
       },
       {
         "name": "groups",
@@ -2392,7 +2394,7 @@
         "name": "recommendedId",
         "type": "string",
         "default": "\"team\"",
-        "description": "Plan id that gets the highlighted column."
+        "description": "Plan id that gets the lit column, the accent edge and the solid CTA."
       },
       {
         "name": "recommendedLabel",
@@ -2409,6 +2411,29 @@
         "name": "footnote",
         "type": "string",
         "description": "Fine print under the table."
+      },
+      {
+        "name": "eyebrow",
+        "type": "string",
+        "default": "\"Compare plans\"",
+        "description": "Mono label above the headline."
+      },
+      {
+        "name": "body",
+        "type": "string",
+        "description": "One sentence under the headline."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#2dd4bf\"",
+        "description": "The one signal colour: the recommended column's top edge and label dot."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Near-black or white surfaces; both are tuned."
       }
     ],
     "added": "2026-10-07"
@@ -2419,7 +2444,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "pricing",
-    "description": "An isolated pricing block: tear-off licence tickets, a thermal-printed receipt that prints each plan line by line, and a buy button that counts to the total.",
+    "description": "An isolated lifetime-pricing block: tear-off licence tickets and a thermal receipt that feeds out of a printer in 0.7s, with a buy button that counts to the total.",
     "tags": [
       "pricing",
       "receipt",
@@ -2427,7 +2452,8 @@
       "one-time purchase",
       "tabs",
       "thermal printer",
-      "skeuomorphic"
+      "skeuomorphic",
+      "dark"
     ],
     "dependencies": [
       "motion"
