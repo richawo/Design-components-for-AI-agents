@@ -114,7 +114,7 @@ export default async function HomePage() {
           <div className="grid gap-4 lg:grid-cols-12">
             <ShowcaseTile href="/components/three-particle-sphere" label="3D & WebGL" name="Particle Sphere" tier="Pro" className="lg:col-span-7 lg:row-span-2">
               <div className="relative h-[380px] sm:h-[460px] lg:h-full lg:min-h-[640px]">
-                <div aria-hidden="true" className="absolute left-1/2 top-1/2 size-[70%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#ff7a45] opacity-[0.08] blur-[90px]" />
+                <div aria-hidden="true" className="absolute left-1/2 top-1/2 size-[70%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white opacity-[0.05] blur-[90px]" />
                 <div className="absolute inset-0">
                   <LiveSlot
                     slug="three-particle-sphere"
