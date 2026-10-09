@@ -1,18 +1,29 @@
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { CATEGORIES } from "@/lib/registry-types";
 import type { CardData } from "@/lib/registry";
 
+/** Cards that can be on screen at first paint. They arrive with the page; the rest reveal on scroll. */
+export const FIRST_VIEW_CARDS = 6;
+
+/** Entrance for the card at `index` in a grid, its stagger continuing from `step` (the blocks above it). */
+export function cardEntrance(index: number, step: number): { className: string; style?: CSSProperties } {
+  if (index >= FIRST_VIEW_CARDS) return { className: "site-reveal" };
+  return { className: "site-in", style: { "--i": index + step } as CSSProperties };
+}
+
+const CHIP = "inline-flex h-5 items-center rounded-full px-2 font-mono text-[10px] font-medium uppercase tracking-[0.12em] ring-1 ring-inset";
+
+/** Small mono label. The accent marks Pro, and only Pro. */
+export function Chip({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return <span className={`${CHIP} bg-white/[0.04] text-site-fg-2 ring-white/[0.08] ${className}`}>{children}</span>;
+}
+
 export function TierBadge({ tier, className = "" }: { tier: "free" | "pro"; className?: string }) {
   return tier === "pro" ? (
-    <span
-      className={`inline-flex h-5 items-center rounded-full bg-gradient-to-b from-[#ff8a52]/25 to-[#ff4d6d]/15 px-2 font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-site-glow ring-1 ring-inset ring-[#ff7a45]/30 ${className}`}
-    >
-      Pro
-    </span>
+    <span className={`${CHIP} bg-site-accent/12 text-site-accent ring-site-accent/30 ${className}`}>Pro</span>
   ) : (
-    <span className={`inline-flex h-5 items-center rounded-full bg-white/[0.06] px-2 font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-site-fg-2 ring-1 ring-inset ring-white/10 ${className}`}>
-      Free
-    </span>
+    <Chip className={className}>Free</Chip>
   );
 }
 
@@ -20,16 +31,16 @@ export function ComponentCard({ c, priority = false }: { c: CardData; priority?:
   return (
     <Link
       href={`/components/${c.slug}`}
-      className="group relative flex w-full flex-col overflow-hidden rounded-[18px] border border-white/[0.08] bg-[#0a0a0b] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] transition duration-500 ease-[cubic-bezier(.2,.8,.2,1)] hover:-translate-y-0.5 hover:border-white/[0.16] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_24px_60px_-24px_rgba(255,122,69,0.25)] active:translate-y-0 active:scale-[0.985] active:duration-150"
+      className="group relative flex w-full flex-col overflow-hidden rounded-[18px] border border-white/[0.08] bg-site-raised shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] transition-[border-color,background-color,scale] duration-150 ease-site hover:border-white/[0.16] hover:bg-site-raised-2 active:scale-[0.98] active:duration-75"
     >
-      <div className="relative aspect-[16/10] overflow-hidden border-b border-white/[0.06] bg-[#050505]">
+      <div className="relative aspect-[16/10] overflow-hidden border-b border-white/[0.06] bg-site-sunken">
         {c.thumb ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={c.thumb}
             alt={`${c.name} preview`}
             loading={priority ? "eager" : "lazy"}
-            className={`absolute inset-0 size-full transition duration-700 ease-[cubic-bezier(.2,.8,.2,1)] group-hover:scale-[1.025] ${c.platform === "mobile" ? "object-contain py-3" : "object-cover object-top"}`}
+            className={`absolute inset-0 size-full transition-transform duration-500 ease-site group-hover:scale-[1.02] ${c.platform === "mobile" ? "object-contain py-3" : "object-cover object-top"}`}
           />
         ) : (
           <div className="absolute inset-0 site-dots opacity-60" />
@@ -39,17 +50,13 @@ export function ComponentCard({ c, priority = false }: { c: CardData; priority?:
         <div className="flex items-center justify-between gap-3">
           <h3 className="truncate text-[15px] font-medium tracking-[-0.015em] text-site-fg">{c.name}</h3>
           <div className="flex shrink-0 items-center gap-1.5">
-            {c.platform === "mobile" && (
-              <span className="inline-flex h-5 items-center rounded-full bg-white/[0.06] px-2 font-mono text-[10px] uppercase tracking-[0.12em] text-site-fg-2 ring-1 ring-inset ring-white/10">
-                Native
-              </span>
-            )}
+            {c.platform === "mobile" && <Chip>Native</Chip>}
             <TierBadge tier={c.tier} />
           </div>
         </div>
         <p className="flex items-center justify-between font-mono text-[11px] text-site-fg-3">
           {CATEGORIES[c.category].label}
-          <span aria-hidden="true" className="-translate-x-1 text-site-fg-2 opacity-0 transition duration-300 ease-[cubic-bezier(.2,.8,.2,1)] group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:opacity-100">
+          <span aria-hidden="true" className="-translate-x-1 text-site-fg-2 opacity-0 transition duration-200 ease-site group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:opacity-100">
             View →
           </span>
         </p>

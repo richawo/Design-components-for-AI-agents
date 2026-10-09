@@ -1,6 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { TierBadge } from "@/components/site/component-card";
 import { CopyButton } from "@/components/site/copy-button";
+import { CountUp } from "@/components/site/count-up";
 import { DitherGlow } from "@/components/site/dither-glow";
 import { Faq, faqJsonLd } from "@/components/site/faq";
 import { HOME_FAQ } from "@/lib/copy";
@@ -19,8 +21,17 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-
 const AGENTS = ["Claude Code", "Cursor", "v0", "Windsurf", "Codex", "Lovable", "Bolt"];
+
+const AGENT_SURFACES = [
+  ["Remote MCP", "One line in Claude Code, Cursor or Windsurf. Nothing to install or update."],
+  ["CLI", "npx design-for-ai search, add and prompt, from your terminal or your agent’s."],
+  ["shadcn registry", "Every component is a registry item. Pro sits behind your licence key."],
+  ["Markdown everywhere", "Add .md to any URL. llms.txt maps the library for language models."],
+] as const;
+
+/** The category grid is 2 columns from `sm` and 4 from `lg`; the closing tile fills each last row. */
+const LIBRARY_TILE_SPAN = ["lg:hidden", "lg:flex lg:col-span-1", "lg:flex lg:col-span-2", "lg:flex lg:col-span-3"];
 
 export default async function HomePage() {
   const s = stats();
@@ -67,42 +78,33 @@ export default async function HomePage() {
         <div className="mx-auto max-w-[80rem] px-5 pb-16 pt-20 text-center sm:px-8 sm:pt-28 lg:pb-20">
           <Link
             href="/categories/auth"
-            className="group inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] py-1 pl-1 pr-3.5 text-[13px] text-site-fg-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition duration-200 hover:border-white/20 hover:bg-white/[0.04] active:scale-[0.97] active:duration-75 hover:text-site-fg"
+            className="site-in group inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] py-1 pl-1 pr-3.5 text-[13px] text-site-fg-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition-[border-color,background-color,color,scale] duration-150 ease-site hover:border-white/20 hover:bg-white/[0.05] hover:text-site-fg active:scale-[0.97] active:duration-75"
           >
             <span className="rounded-full bg-white/[0.08] px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-site-fg">New</span>
             Auth, headers, footers and new 3D scenes
-            <svg viewBox="0 0 16 16" className="size-3.5 transition-transform group-hover:translate-x-0.5" fill="none" aria-hidden="true">
-              <path d="M6 3.5 10.5 8 6 12.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+            <Chevron className="transition-transform duration-150 ease-site group-hover:translate-x-0.5" />
           </Link>
 
-          <h1 className="mx-auto mt-8 max-w-[16ch] text-balance text-[clamp(2.75rem,1rem+6.2vw,6rem)] font-semibold leading-[0.95] tracking-[-0.055em]">
-            <span className="site-silver-text">Design components</span>{" "}
-            <span className="site-gradient-text">for AI agents.</span>
+          <h1 className="site-in mx-auto mt-8 max-w-[16ch] text-balance text-[clamp(2.75rem,1rem+6.2vw,6rem)] font-semibold leading-[0.95] tracking-[-0.055em] [--i:1]">
+            <span className="site-silver-text">Design components</span> <span className="text-site-fg-3">for AI agents.</span>
           </h1>
-          <p className="mx-auto mt-7 max-w-[56ch] text-balance text-[17px] leading-relaxed text-site-fg-2 sm:text-lg">
+          <p className="site-in mx-auto mt-7 max-w-[56ch] text-balance text-[17px] leading-relaxed text-site-fg-2 [--i:2] sm:text-lg">
             Precise, responsive components for React, Tailwind and React Native. Every one ships with the code, a prompt and a JSON prompt, so what your agent builds looks designed, not generated.
           </p>
 
-          <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Link
-              href="/components"
-              className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-white px-6 text-[15px] font-medium text-black shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_10px_30px_-10px_rgba(255,255,255,0.45)] transition duration-200 ease-[cubic-bezier(.2,.8,.2,1)] hover:-translate-y-px hover:shadow-[0_0_0_1px_rgba(255,255,255,0.2),0_14px_36px_-10px_rgba(255,179,138,0.6)] active:translate-y-0 active:scale-[0.97] active:duration-75 sm:w-auto"
-            >
+          <div className="site-in mt-10 flex flex-col items-center justify-center gap-3 [--i:3] sm:flex-row">
+            <Link href="/components" className="site-btn site-btn-primary group h-12 w-full px-6 text-[15px] sm:w-auto">
               Browse {s.total} components
-              <svg viewBox="0 0 16 16" className="size-4" fill="none" aria-hidden="true">
+              <svg viewBox="0 0 16 16" className="size-4 transition-transform duration-150 ease-site group-hover:translate-x-0.5" fill="none" aria-hidden="true">
                 <path d="M3 8h10m0 0L8.5 3.5M13 8l-4.5 4.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </Link>
-            <Link
-              href="/pricing"
-              className="site-surface inline-flex h-12 w-full items-center justify-center rounded-full px-6 text-[15px] font-medium text-site-fg transition duration-200 hover:border-white/20 hover:bg-white/[0.04] active:scale-[0.97] active:duration-75 sm:w-auto"
-            >
+            <Link href="/pricing" className="site-btn site-btn-secondary h-12 w-full px-6 text-[15px] sm:w-auto">
               Get Pro · ${lifetime.price} once
             </Link>
           </div>
 
-          <div className="mx-auto mt-6 flex w-full max-w-xl items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.02] py-1.5 pl-4 pr-1.5 text-left">
+          <div className="site-in mx-auto mt-6 flex w-full max-w-xl items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.02] py-1.5 pl-4 pr-1.5 text-left [--i:4]">
             <span className="font-mono text-[12px] text-site-fg-3">$</span>
             <code className="min-w-0 flex-1 truncate font-mono text-[12px] text-site-fg-2">{install}</code>
             <CopyButton text={install} label="Copy" />
@@ -112,7 +114,7 @@ export default async function HomePage() {
         {/* Live showcase */}
         <div className="mx-auto max-w-[80rem] px-5 pb-24 sm:px-8">
           <div className="grid gap-4 lg:grid-cols-12">
-            <ShowcaseTile href="/components/three-particle-sphere" label="3D & WebGL" name="Particle Sphere" tier="Pro" className="lg:col-span-7 lg:row-span-2">
+            <ShowcaseTile href="/components/three-particle-sphere" label="3D & WebGL" name="Particle Sphere" tier="pro" className="site-in [--i:5] lg:col-span-7 lg:row-span-2">
               <div className="relative h-[380px] sm:h-[460px] lg:h-full lg:min-h-[640px]">
                 <div aria-hidden="true" className="absolute left-1/2 top-1/2 size-[70%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white opacity-[0.05] blur-[90px]" />
                 <div className="absolute inset-0">
@@ -124,12 +126,12 @@ export default async function HomePage() {
                 </div>
               </div>
             </ShowcaseTile>
-            <ShowcaseTile href="/components/chart-portfolio" label="Charts & data" name="Portfolio Chart" tier="Free" className="lg:col-span-5">
+            <ShowcaseTile href="/components/chart-portfolio" label="Charts & data" name="Portfolio Chart" tier="free" className="site-in [--i:6] lg:col-span-5">
               <div className="p-3 sm:p-4 [&_section]:rounded-[16px] [&_section]:border-white/[0.06] [&_section]:shadow-none">
                 <ChartPortfolioMini />
               </div>
             </ShowcaseTile>
-            <ShowcaseTile href="/components/pixel-matrix-display" label="Pixel & generative" name="Pixel Matrix Display" tier="Free" className="lg:col-span-5">
+            <ShowcaseTile href="/components/pixel-matrix-display" label="Pixel & generative" name="Pixel Matrix Display" tier="free" className="site-in [--i:7] lg:col-span-5">
               <div className="flex h-full items-center p-4 sm:p-6">
                 <PixelMatrixDisplay chrome={false} cols={56} rows={14} text="SHIP IT   " />
               </div>
@@ -141,10 +143,10 @@ export default async function HomePage() {
       {/* -------------------------------------------------------- Agent strip */}
       <section className="border-y border-white/[0.07]">
         <div className="mx-auto flex max-w-[80rem] flex-col items-center gap-6 px-5 py-10 sm:px-8 lg:flex-row lg:justify-between">
-          <p className="text-[13px] text-site-fg-3">Works with the agents you already use</p>
+          <p className="site-reveal text-[13px] text-site-fg-3">Works with the agents you already use</p>
           <ul className="flex flex-wrap items-center justify-center gap-x-9 gap-y-3">
             {AGENTS.map((a) => (
-              <li key={a} className="text-[15px] font-medium tracking-[-0.02em] text-site-fg-2">
+              <li key={a} className="site-reveal text-[15px] font-medium tracking-[-0.02em] text-site-fg-2">
                 {a}
               </li>
             ))}
@@ -191,22 +193,30 @@ export default async function HomePage() {
           />
           <ul className="mt-14 grid gap-px overflow-hidden rounded-[22px] border border-white/[0.08] bg-white/[0.08] sm:grid-cols-2 lg:grid-cols-4">
             {categories.map((c) => (
-              <li key={c.key}>
-                <Link href={`/categories/${c.key}`} className="group flex h-full flex-col bg-black p-6 transition-colors hover:bg-[#0b0b0c]">
-                  <div className="flex items-baseline justify-between">
+              <li key={c.key} className="flex bg-site-bg">
+                <Link href={`/categories/${c.key}`} className="site-reveal group flex w-full flex-col p-6 transition-colors duration-150 hover:bg-white/[0.035] focus-visible:-outline-offset-2 active:bg-white/[0.05]">
+                  <div className="flex items-baseline justify-between gap-4">
                     <span className="text-[17px] font-medium tracking-[-0.02em] text-site-fg">{c.label}</span>
-                    <span className="font-mono text-[11px] tabular-nums text-site-fg-3">{String(c.count).padStart(2, "0")}</span>
+                    <CountUp value={c.count} pad={2} delay={0.2} className="font-mono text-[11px] text-site-fg-3" />
                   </div>
-                  <p className="mt-3 text-[14px] leading-relaxed text-site-fg-3 transition-colors group-hover:text-site-fg-2">{c.blurb}</p>
-                  <span className="mt-6 inline-flex items-center gap-1.5 text-[13px] text-site-fg-2 opacity-0 transition-opacity group-hover:opacity-100">
+                  <p className="mt-3 text-[14px] leading-relaxed text-site-fg-3 transition-colors duration-150 group-hover:text-site-fg-2">{c.blurb}</p>
+                  <span className="mt-auto inline-flex items-center gap-1.5 pt-6 text-[13px] text-site-fg-3 transition-colors duration-150 group-hover:text-site-fg">
                     Explore
-                    <svg viewBox="0 0 16 16" className="size-3.5" fill="none" aria-hidden="true">
-                      <path d="M6 3.5 10.5 8 6 12.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
+                    <Chevron className="transition-transform duration-150 ease-site group-hover:translate-x-0.5" />
                   </span>
                 </Link>
               </li>
             ))}
+            <li className={`flex bg-site-bg ${categories.length % 2 ? "sm:flex" : "sm:hidden"} ${LIBRARY_TILE_SPAN[(4 - (categories.length % 4)) % 4]}`}>
+              <Link href="/components" className="site-reveal group flex w-full items-end justify-between gap-4 p-6 transition-colors duration-150 hover:bg-white/[0.035] focus-visible:-outline-offset-2 active:bg-white/[0.05]">
+                <span className="text-[17px] font-medium tracking-[-0.02em] text-site-fg-2 transition-colors duration-150 group-hover:text-site-fg">
+                  Browse all {s.total}
+                </span>
+                <span className="flex size-9 items-center justify-center rounded-full border border-white/10 text-site-fg-2 transition duration-150 ease-site group-hover:border-white/25 group-hover:text-site-fg">
+                  <Chevron className="transition-transform duration-150 ease-site group-hover:translate-x-0.5" />
+                </span>
+              </Link>
+            </li>
           </ul>
         </div>
       </section>
@@ -226,29 +236,24 @@ export default async function HomePage() {
               body="A remote MCP server, a CLI, a shadcn registry and a Markdown version of every page. Your agent searches the library and pulls code and briefs directly, no scraping."
             />
             <ul className="mt-10 space-y-4">
-              {[
-                ["Remote MCP", "One line in Claude Code, Cursor or Windsurf. Nothing to install or update."],
-                ["CLI", "npx design-for-ai search, add and prompt, from your terminal or your agent's."],
-                ["shadcn registry", "Every component is a registry item. Pro sits behind your licence key."],
-                ["Markdown everywhere", "Add .md to any URL. llms.txt maps the library for language models."],
-              ].map(([t, d]) => (
-                <li key={t} className="flex gap-4">
-                  <span className="mt-2 size-1.5 shrink-0 rounded-full bg-site-accent shadow-[0_0_12px_#ff7a45]" />
+              {AGENT_SURFACES.map(([t, d]) => (
+                <li key={t} className="site-reveal flex gap-4">
+                  <span aria-hidden="true" className="mt-[9px] size-1.5 shrink-0 rounded-full bg-site-fg-3" />
                   <p className="text-[15px] leading-relaxed text-site-fg-2">
                     <span className="font-medium text-site-fg">{t}.</span> {d}
                   </p>
                 </li>
               ))}
             </ul>
-            <Link href="/docs/agents" className="mt-10 inline-flex items-center gap-2 text-[15px] font-medium text-site-fg hover:text-site-glow">
+            <Link href="/docs/agents" className="site-reveal group mt-10 inline-flex items-center gap-2 rounded-md text-[15px] font-medium text-site-fg transition-colors duration-150 hover:text-white">
               Connect your agent
-              <svg viewBox="0 0 16 16" className="size-4" fill="none" aria-hidden="true">
+              <svg viewBox="0 0 16 16" className="size-4 text-site-fg-2 transition duration-150 ease-site group-hover:translate-x-0.5 group-hover:text-site-fg" fill="none" aria-hidden="true">
                 <path d="M3 8h10m0 0L8.5 3.5M13 8l-4.5 4.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </Link>
           </div>
-          <div className="lg:col-span-7">
-            <div className="site-surface site-beam overflow-hidden rounded-[22px]">
+          <div className="site-reveal lg:col-span-7">
+            <div className="site-surface overflow-hidden rounded-[22px]">
               <div className="flex items-center justify-between border-b border-white/[0.07] px-5 py-3">
                 <span className="flex gap-1.5" aria-hidden="true">
                   <span className="size-2.5 rounded-full bg-white/15" />
@@ -262,13 +267,13 @@ export default async function HomePage() {
               <div className="border-t border-white/[0.07] px-5 py-4 font-mono text-[12px] leading-relaxed">
                 <p className="text-site-fg-3">› Add a pricing section that suits this brand</p>
                 <p className="mt-2 text-site-fg-2">
-                  <span className="text-[#34d399]">✓</span> search_components <span className="text-site-fg-3">category:pricing</span>
+                  <span className="text-site-ok">✓</span> search_components <span className="text-site-fg-3">category:pricing</span>
                 </p>
                 <p className="text-site-fg-2">
-                  <span className="text-[#34d399]">✓</span> get_component <span className="text-site-fg-3">pricing-three-tier</span>
+                  <span className="text-site-ok">✓</span> get_component <span className="text-site-fg-3">pricing-three-tier</span>
                 </p>
-                <p className="text-site-fg-2">
-                  <span className="text-site-accent">●</span> Adapting colour and copy to your palette…
+                <p className="text-site-fg">
+                  <span className="text-site-fg-2">●</span> Adapting colour and copy to your palette…
                 </p>
               </div>
             </div>
@@ -279,25 +284,27 @@ export default async function HomePage() {
       {/* ------------------------------------------------------------- Pricing */}
       <section className="border-t border-white/[0.07]">
         <div className="mx-auto max-w-[80rem] px-5 py-24 sm:px-8 lg:py-32">
-          <div className="site-surface relative overflow-hidden rounded-[28px] p-8 sm:p-14">
-            <div aria-hidden="true" className="absolute -right-32 -top-32 size-[28rem] rounded-full bg-[radial-gradient(closest-side,rgba(255,122,69,0.25),transparent)] blur-2xl" />
+          <div className="site-surface site-reveal relative overflow-hidden rounded-[28px] p-8 sm:p-14">
+            <div aria-hidden="true" className="absolute -right-32 -top-32 size-[28rem] rounded-full bg-[radial-gradient(closest-side,rgba(255,255,255,0.08),transparent)] blur-2xl" />
             <div className="relative grid gap-10 lg:grid-cols-12 lg:items-end">
               <div className="lg:col-span-7">
                 <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-site-fg-3">Pricing</p>
                 <h2 className="mt-4 text-[clamp(2rem,1.2rem+3vw,3.5rem)] font-semibold leading-[1] tracking-[-0.05em]">
-                  <span className="site-silver-text">{s.free} free, forever.</span>
+                  <span className="text-site-fg-3">
+                    <CountUp value={s.free} delay={0.3} /> free, forever.
+                  </span>
                   <br />
-                  <span className="site-gradient-text">Everything, once.</span>
+                  <span className="site-silver-text">Everything, once.</span>
                 </h2>
                 <p className="mt-5 max-w-[48ch] text-[16px] leading-relaxed text-site-fg-2">
                   Pro unlocks all {s.total} components, the Pro prompts, the private registry and every future release, for ${lifetime.price} once. Or yearly, or for your team.
                 </p>
               </div>
               <div className="flex flex-col gap-3 sm:flex-row lg:col-span-5 lg:justify-end">
-                <Link href="/pricing" className="inline-flex h-12 items-center justify-center rounded-full bg-white px-6 text-[15px] font-medium text-black transition duration-200 ease-[cubic-bezier(.2,.8,.2,1)] hover:-translate-y-px hover:shadow-[0_0_0_1px_rgba(255,255,255,0.2),0_14px_36px_-10px_rgba(255,179,138,0.6)] active:translate-y-0 active:scale-[0.97] active:duration-75">
+                <Link href="/pricing" className="site-btn site-btn-primary h-12 px-6 text-[15px]">
                   See pricing
                 </Link>
-                <Link href="/components" className="inline-flex h-12 items-center justify-center rounded-full border border-white/12 px-6 text-[15px] font-medium text-site-fg transition duration-200 hover:border-white/25 hover:bg-white/[0.04] active:scale-[0.97] active:duration-75">
+                <Link href="/components" className="site-btn site-btn-secondary h-12 px-6 text-[15px]">
                   Start free
                 </Link>
               </div>
@@ -308,9 +315,9 @@ export default async function HomePage() {
 
       {/* ----------------------------------------------------------------- FAQ */}
       <section className="mx-auto grid max-w-[80rem] gap-12 px-5 pb-28 sm:px-8 lg:grid-cols-12 [&>*]:min-w-0">
-        <div className="lg:col-span-4">
+        <div className="site-reveal lg:col-span-4">
           <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-site-fg-3">FAQ</p>
-          <h2 className="mt-4 text-[clamp(1.75rem,1.2rem+2vw,2.5rem)] font-semibold tracking-[-0.045em]">Questions, answered.</h2>
+          <h2 className="mt-4 text-[clamp(1.75rem,1.2rem+2vw,2.5rem)] font-semibold leading-[1.05] tracking-[-0.045em]">Questions, answered.</h2>
         </div>
         <div className="lg:col-span-8">
           <Faq items={HOME_FAQ} />
@@ -327,14 +334,14 @@ function ChartPortfolioMini() {
 function SectionHead({ eyebrow, title, body, align = "center" }: { eyebrow: string; title: React.ReactNode; body: string; align?: "center" | "left" }) {
   return (
     <div className={align === "center" ? "mx-auto max-w-3xl text-center" : ""}>
-      <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-site-fg-3">{eyebrow}</p>
-      <h2 className="mt-4 text-balance text-[clamp(2rem,1.2rem+3vw,3.5rem)] font-semibold leading-[1.02] tracking-[-0.05em] text-site-fg">{title}</h2>
-      <p className={`mt-5 text-balance text-[16px] leading-relaxed text-site-fg-2 ${align === "center" ? "mx-auto max-w-[56ch]" : "max-w-[46ch]"}`}>{body}</p>
+      <p className="site-reveal font-mono text-[11px] uppercase tracking-[0.18em] text-site-fg-3">{eyebrow}</p>
+      <h2 className="site-reveal mt-4 text-balance text-[clamp(2rem,1.2rem+3vw,3.5rem)] font-semibold leading-[1.02] tracking-[-0.05em] text-site-fg">{title}</h2>
+      <p className={`site-reveal mt-5 text-balance text-[16px] leading-relaxed text-site-fg-2 ${align === "center" ? "mx-auto max-w-[56ch]" : "max-w-[46ch]"}`}>{body}</p>
     </div>
   );
 }
 
-function ShowcaseTile({ href, label, name, tier, className = "", children }: { href: string; label: string; name: string; tier: "Free" | "Pro"; className?: string; children: React.ReactNode }) {
+function ShowcaseTile({ href, label, name, tier, className = "", children }: { href: string; label: string; name: string; tier: "free" | "pro"; className?: string; children: React.ReactNode }) {
   return (
     <div className={`site-surface group relative flex flex-col overflow-hidden rounded-[22px] ${className}`}>
       <div className="relative z-10 flex items-center justify-between gap-4 border-b border-white/[0.06] px-5 py-3.5">
@@ -342,19 +349,31 @@ function ShowcaseTile({ href, label, name, tier, className = "", children }: { h
           <span className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-site-fg-3">{label}</span>
           <span className="truncate text-[14px] font-medium text-site-fg">{name}</span>
         </div>
-        <Link href={href} className="inline-flex shrink-0 items-center gap-1.5 text-[13px] text-site-fg-2 transition-colors hover:text-site-fg">
-          <span className={`rounded-full px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] ${tier === "Pro" ? "bg-site-accent/15 text-site-glow" : "bg-white/[0.06] text-site-fg-2"}`}>{tier}</span>
-          View
-        </Link>
+        <div className="flex shrink-0 items-center gap-3">
+          <TierBadge tier={tier} />
+          <Link href={href} className="group/view inline-flex items-center gap-1 rounded-md text-[13px] text-site-fg-2 transition-colors duration-150 hover:text-site-fg">
+            View
+            <Chevron className="transition-transform duration-150 ease-site group-hover/view:translate-x-0.5" />
+            <span className="sr-only">{name}</span>
+          </Link>
+        </div>
       </div>
       <div className="relative flex-1">{children}</div>
     </div>
   );
 }
 
+function Chevron({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 16 16" className={`size-3.5 ${className}`} fill="none" aria-hidden="true">
+      <path d="M6 3.5 10.5 8 6 12.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 function FormatCard({ n, title, body, children }: { n: string; title: string; body: string; children: React.ReactNode }) {
   return (
-    <div className="site-surface flex flex-col overflow-hidden rounded-[22px]">
+    <div className="site-surface site-reveal flex flex-col overflow-hidden rounded-[22px]">
       <div className="p-6">
         <div className="flex items-baseline justify-between">
           <h3 className="text-[19px] font-medium tracking-[-0.025em]">{title}</h3>

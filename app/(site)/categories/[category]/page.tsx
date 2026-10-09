@@ -1,7 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { ComponentCard } from "@/components/site/component-card";
+import { cardEntrance, ComponentCard, FIRST_VIEW_CARDS } from "@/components/site/component-card";
+import { CountUp } from "@/components/site/count-up";
 import { JsonLd } from "@/components/site/json-ld";
 import { categoriesWithCounts, componentsIn, toCard } from "@/lib/registry";
 import { CATEGORIES, type Category } from "@/lib/registry-types";
@@ -49,34 +50,47 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
           },
         }}
       />
-      <nav aria-label="Breadcrumb" className="pt-10 text-[13px] text-site-fg-3">
-        <Link href="/components" className="transition-colors hover:text-site-fg">
-          Components
-        </Link>
-        <span className="mx-2 text-site-fg-3/60">/</span>
-        <span className="text-site-fg-2">{c.label}</span>
+      <nav aria-label="Breadcrumb" className="site-in pt-10 text-[13px] text-site-fg-3">
+        <ol className="flex flex-wrap items-center gap-2">
+          <li>
+            <Link href="/components" className="rounded-sm transition-colors duration-150 hover:text-site-fg">
+              Components
+            </Link>
+          </li>
+          <li aria-hidden="true" className="opacity-60">
+            /
+          </li>
+          <li aria-current="page" className="text-site-fg-2">
+            {c.label}
+          </li>
+        </ol>
       </nav>
       <section className="grid gap-6 pb-12 pt-6 lg:grid-cols-12 lg:items-end lg:pb-14">
-        <h1 className="text-[clamp(2.25rem,1.4rem+3.4vw,4rem)] font-semibold leading-[1] tracking-[-0.05em] lg:col-span-7">
+        <h1 className="site-in text-[clamp(2.25rem,1.4rem+3.4vw,4rem)] font-semibold leading-[1] tracking-[-0.05em] [--i:1] lg:col-span-7">
           <span className="site-silver-text">{c.label}</span>
-          <span className="ml-3 align-top font-mono text-sm font-normal tracking-normal text-site-fg-3">{String(items.length).padStart(2, "0")}</span>
+          <CountUp value={items.length} pad={2} delay={0.3} className="ml-3 align-top font-mono text-sm font-normal tracking-normal text-site-fg-3" />
         </h1>
-        <p className="max-w-[48ch] text-[16px] leading-relaxed text-site-fg-2 lg:col-span-5">
+        <p className="site-in max-w-[48ch] text-[16px] leading-relaxed text-site-fg-2 [--i:2] lg:col-span-5">
           {c.blurb} Every {c.noun} comes with its code, a prompt and a JSON prompt.
         </p>
       </section>
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {items.map((e, i) => (
-          <ComponentCard key={e.slug} c={toCard(e)} priority={i < 3} />
-        ))}
+        {items.map((e, i) => {
+          const entrance = cardEntrance(i, 3);
+          return (
+            <div key={e.slug} className={`flex ${entrance.className}`} style={entrance.style}>
+              <ComponentCard c={toCard(e)} priority={i < FIRST_VIEW_CARDS} />
+            </div>
+          );
+        })}
       </div>
-      <section className="mt-20 border-t border-white/[0.07] pt-10">
+      <section className="site-reveal mt-20 border-t border-white/[0.07] pt-10">
         <h2 className="font-mono text-[11px] uppercase tracking-[0.16em] text-site-fg-3">Other categories</h2>
         <ul className="mt-5 flex flex-wrap gap-2">
           {others.map((o) => (
             <li key={o.key}>
-              <Link href={`/categories/${o.key}`} className="inline-flex h-9 items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.02] px-4 text-[13px] text-site-fg-2 transition duration-200 hover:border-white/20 hover:bg-white/[0.04] active:scale-[0.97] active:duration-75 hover:text-site-fg">
-                {o.label} <span className="font-mono text-[10px] text-site-fg-3">{o.count}</span>
+              <Link href={`/categories/${o.key}`} className="site-btn site-btn-secondary h-9 gap-2 px-4 text-[13px] font-normal text-site-fg-2 hover:text-site-fg">
+                {o.label} <span className="font-mono text-[10px] tabular-nums text-site-fg-3">{o.count}</span>
               </Link>
             </li>
           ))}

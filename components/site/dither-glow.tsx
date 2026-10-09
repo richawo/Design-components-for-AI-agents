@@ -13,12 +13,13 @@ const BAYER = Float32Array.from(
   (v) => (v + 0.5) / 64,
 );
 
-// Dark → light: near-black, deep ember, accent, glow. Alphas keep it a whisper.
+// Dark → light: four steps of white light. Alphas keep it a whisper; the
+// texture is in the dither, not in colour.
 const LEVELS: [number, number, number, number][] = [
-  [0, 0, 0, 0],
-  [255, 77, 109, 0.13],
-  [255, 122, 69, 0.22],
-  [255, 179, 138, 0.32],
+  [255, 255, 255, 0],
+  [255, 255, 255, 0.035],
+  [255, 255, 255, 0.07],
+  [255, 255, 255, 0.115],
 ];
 
 export function DitherGlow({ cell = 3, className = "" }: { cell?: number; className?: string }) {
@@ -71,6 +72,8 @@ export function DitherGlow({ cell = 3, className = "" }: { cell?: number; classN
     };
 
     draw();
+    // The light comes up once it exists, rather than snapping on at hydration.
+    canvas.style.opacity = "1";
     let frame = 0;
     const ro = new ResizeObserver(() => {
       cancelAnimationFrame(frame);
@@ -85,7 +88,7 @@ export function DitherGlow({ cell = 3, className = "" }: { cell?: number; classN
 
   return (
     <div aria-hidden="true" className={`pointer-events-none absolute inset-0 overflow-hidden ${className}`}>
-      <canvas ref={ref} className="absolute left-0 top-0 [image-rendering:pixelated]" />
+      <canvas ref={ref} className="absolute left-0 top-0 opacity-0 transition-opacity duration-[1200ms] ease-site [image-rendering:pixelated] motion-reduce:duration-150" />
     </div>
   );
 }

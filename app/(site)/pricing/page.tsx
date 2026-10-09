@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { CountUp } from "@/components/site/count-up";
 import { DitherGlow } from "@/components/site/dither-glow";
 import { Faq, faqJsonLd } from "@/components/site/faq";
 import { PRICING_FAQ } from "@/lib/copy";
@@ -14,7 +15,6 @@ export const metadata: Metadata = {
     "Design for AI is free and MIT licensed. Pro adds showpiece components, Pro prompts and the private registry: yearly or one payment for life, for one person or a team of 10.",
   alternates: { canonical: "/pricing" },
 };
-
 
 export default function PricingPage() {
   const s = stats();
@@ -46,23 +46,23 @@ export default function PricingPage() {
         ]}
       />
       <section className="mx-auto max-w-3xl pb-14 pt-16 text-center lg:pt-24">
-        <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-site-fg-3">Pricing</p>
-        <h1 className="mt-5 text-balance text-[clamp(2.5rem,1.5rem+4vw,4.5rem)] font-semibold leading-[0.98] tracking-[-0.055em]">
-          <span className="site-silver-text">Free to start.</span> <span className="site-gradient-text">Pay once for the rest.</span>
+        <p className="site-in font-mono text-[11px] uppercase tracking-[0.18em] text-site-fg-3">Pricing</p>
+        <h1 className="site-in mt-5 text-balance text-[clamp(2.5rem,1.5rem+4vw,4.5rem)] font-semibold leading-[0.98] tracking-[-0.055em] [--i:1]">
+          <span className="site-silver-text">Free to start.</span> <span className="text-site-fg-3">Pay once for the rest.</span>
         </h1>
-        <p className="mx-auto mt-6 max-w-[54ch] text-[16px] leading-relaxed text-site-fg-2">
-          {s.free} components are free and always will be. Pro unlocks the other {s.pro}, their prompts and the private registry, yearly or with one payment that covers every future release.
+        <p className="site-in mx-auto mt-6 max-w-[54ch] text-balance text-[16px] leading-relaxed text-site-fg-2 [--i:2]">
+          <CountUp value={s.free} delay={0.3} /> components are free and always will be. Pro unlocks the other <CountUp value={s.pro} delay={0.35} />, their prompts and the private registry, yearly or with one payment that covers every future release.
         </p>
       </section>
 
       <PricingPlans counts={s} prices={prices} />
 
-      <p className="mt-10 text-center font-mono text-[11px] uppercase tracking-[0.14em] text-site-fg-3">Prices in USD · VAT where applicable · 14-day refunds</p>
+      <p className="site-in mt-10 text-center font-mono text-[11px] uppercase tracking-[0.14em] text-site-fg-3 [--i:8]">Prices in USD · VAT where applicable · 14-day refunds</p>
 
       <section className="mx-auto mt-28 grid max-w-6xl gap-12 lg:grid-cols-12">
-        <div className="lg:col-span-4">
+        <div className="site-reveal lg:col-span-4">
           <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-site-fg-3">FAQ</p>
-          <h2 className="mt-4 text-[clamp(1.75rem,1.2rem+2vw,2.5rem)] font-semibold tracking-[-0.045em]">Questions, answered.</h2>
+          <h2 className="mt-4 text-[clamp(1.75rem,1.2rem+2vw,2.5rem)] font-semibold leading-[1.05] tracking-[-0.045em]">Questions, answered.</h2>
         </div>
         <div className="lg:col-span-8">
           <Faq items={PRICING_FAQ} />

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { ComponentCard, TierBadge } from "@/components/site/component-card";
+import { Chip, ComponentCard, TierBadge } from "@/components/site/component-card";
 import { JsonLd } from "@/components/site/json-ld";
 import { PreviewFrame } from "@/components/site/preview-frame";
 import { SourceTabs, type SourcePayload } from "@/components/site/source-tabs";
@@ -95,16 +95,16 @@ export default async function ComponentPage({ params }: { params: Promise<{ slug
         ]}
       />
 
-      <nav aria-label="Breadcrumb" className="pt-10 text-[13px] text-site-fg-3">
+      <nav aria-label="Breadcrumb" className="site-in pt-10 text-[13px] text-site-fg-3">
         <ol className="flex flex-wrap items-center gap-2">
           <li>
-            <Link href="/components" className="transition-colors hover:text-site-fg">
+            <Link href="/components" className="rounded-sm transition-colors duration-150 hover:text-site-fg">
               Components
             </Link>
           </li>
           <li aria-hidden="true" className="opacity-60">/</li>
           <li>
-            <Link href={`/categories/${e.category}`} className="transition-colors hover:text-site-fg">
+            <Link href={`/categories/${e.category}`} className="rounded-sm transition-colors duration-150 hover:text-site-fg">
               {cat.label}
             </Link>
           </li>
@@ -117,51 +117,51 @@ export default async function ComponentPage({ params }: { params: Promise<{ slug
 
       <header className="grid gap-8 pb-10 pt-6 lg:grid-cols-12 lg:items-end">
         <div className="lg:col-span-8">
-          <div className="flex flex-wrap items-center gap-1.5">
+          <div className="site-in flex flex-wrap items-center gap-1.5 [--i:1]">
             <TierBadge tier={e.tier} />
-            <span className="inline-flex h-5 items-center rounded-full bg-white/[0.04] px-2 font-mono text-[10px] uppercase tracking-[0.12em] text-site-fg-3 ring-1 ring-inset ring-white/[0.08]">
-              {e.platform === "mobile" ? "React Native" : "React · Tailwind v4"}
-            </span>
+            <Chip className="text-site-fg-3">{e.platform === "mobile" ? "React Native" : "React · Tailwind v4"}</Chip>
             {e.dependencies.map((d) => (
-              <span key={d} className="inline-flex h-5 items-center rounded-full bg-white/[0.04] px-2 font-mono text-[10px] text-site-fg-3 ring-1 ring-inset ring-white/[0.08]">
+              <Chip key={d} className="normal-case tracking-normal text-site-fg-3">
                 {d}
-              </span>
+              </Chip>
             ))}
           </div>
-          <h1 className="mt-5 text-[clamp(2.25rem,1.5rem+3vw,3.75rem)] font-semibold leading-[1] tracking-[-0.05em]">
+          <h1 className="site-in mt-5 text-[clamp(2.25rem,1.5rem+3vw,3.75rem)] font-semibold leading-[1] tracking-[-0.05em] [--i:2]">
             <span className="site-silver-text">{e.name}</span>
           </h1>
-          <p className="mt-4 max-w-[62ch] text-[16px] leading-relaxed text-site-fg-2">{e.description}</p>
+          <p className="site-in mt-4 max-w-[62ch] text-[16px] leading-relaxed text-site-fg-2 [--i:3]">{e.description}</p>
         </div>
-        <dl className="grid grid-cols-3 gap-px overflow-hidden rounded-[16px] border border-white/[0.08] bg-white/[0.08] lg:col-span-4">
+        <dl className="site-in grid grid-cols-3 gap-px overflow-hidden rounded-[16px] border border-white/[0.08] bg-white/[0.08] [--i:4] lg:col-span-4">
           {[
             ["Category", cat.label],
             ["Added", new Date(e.added).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })],
             ["Licence", e.tier === "free" ? "MIT" : "Pro"],
           ].map(([k, v]) => (
-            <div key={k} className="bg-[#0a0a0b] px-4 py-3.5">
+            <div key={k} className="min-w-0 bg-site-raised px-4 py-3.5">
               <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-site-fg-3">{k}</dt>
-              <dd className="mt-1.5 truncate text-[14px] font-medium text-site-fg">{v}</dd>
+              <dd className="mt-1.5 text-[14px] font-medium leading-snug text-site-fg">{v}</dd>
             </div>
           ))}
         </dl>
       </header>
 
-      {e.hasSource ? (
-        <PreviewFrame slug={slug} name={e.name} height={e.previewHeight} platform={e.platform} theme={e.theme} />
-      ) : (
-        <div className="relative overflow-hidden rounded-[20px] border border-white/[0.08] bg-[#0a0a0b]">
-          {thumb ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={thumb} alt={`${e.name} preview`} className="w-full" />
-          ) : (
-            <div className="site-dots flex h-80 items-center justify-center text-[14px] text-site-fg-3">Live preview available on {site.url.replace("https://", "")}</div>
-          )}
-        </div>
-      )}
+      <div className="site-in [--i:5]">
+        {e.hasSource ? (
+          <PreviewFrame slug={slug} name={e.name} height={e.previewHeight} platform={e.platform} theme={e.theme} />
+        ) : (
+          <div className="relative overflow-hidden rounded-[20px] border border-white/[0.08] bg-site-raised">
+            {thumb ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={thumb} alt={`${e.name} preview`} className="w-full" />
+            ) : (
+              <div className="site-dots flex h-80 items-center justify-center text-[14px] text-site-fg-3">Live preview available on {site.url.replace("https://", "")}</div>
+            )}
+          </div>
+        )}
+      </div>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-12">
-        <div className="min-w-0 lg:col-span-8">
+        <div className="site-reveal min-w-0 lg:col-span-8">
           <SourceTabs
             slug={slug}
             name={e.name}
@@ -173,14 +173,14 @@ export default async function ComponentPage({ params }: { params: Promise<{ slug
           />
         </div>
         <aside className="flex min-w-0 flex-col gap-4 lg:col-span-4">
-          <section className="site-surface rounded-[20px] p-5">
+          <section className="site-surface site-reveal rounded-[20px] p-5">
             <h2 className="font-mono text-[11px] uppercase tracking-[0.14em] text-site-fg-3">Usage</h2>
             <div
               className="mt-3 overflow-x-auto rounded-xl border border-white/[0.06] bg-black/50 p-4 font-mono text-[12px] leading-[1.7] [&_pre]:!bg-transparent"
               dangerouslySetInnerHTML={{ __html: usageHtml }}
             />
           </section>
-          <section className="site-surface rounded-[20px] p-5">
+          <section className="site-surface site-reveal rounded-[20px] p-5">
             <h2 className="font-mono text-[11px] uppercase tracking-[0.14em] text-site-fg-3">Ships with</h2>
             <ul className="mt-4 space-y-3.5 text-[14px] leading-relaxed text-site-fg-2">
               {[
@@ -189,7 +189,7 @@ export default async function ComponentPage({ params }: { params: Promise<{ slug
                 ["JSON prompt", "The same brief as data: layout, type, colour, motion, and what to avoid."],
               ].map(([t, d]) => (
                 <li key={t} className="flex gap-3">
-                  <span className="mt-[7px] size-1.5 shrink-0 rounded-full bg-site-accent shadow-[0_0_10px_#ff7a45]" />
+                  <span aria-hidden="true" className="mt-[9px] size-1.5 shrink-0 rounded-full bg-site-fg-3" />
                   <span>
                     <span className="font-medium text-site-fg">{t}.</span> {d}
                   </span>
@@ -197,7 +197,7 @@ export default async function ComponentPage({ params }: { params: Promise<{ slug
               ))}
             </ul>
           </section>
-          <section className="site-surface rounded-[20px] p-5">
+          <section className="site-surface site-reveal rounded-[20px] p-5">
             <h2 className="font-mono text-[11px] uppercase tracking-[0.14em] text-site-fg-3">Tags</h2>
             <ul className="mt-3 flex flex-wrap gap-1.5">
               {e.tags.map((t) => (
@@ -212,8 +212,8 @@ export default async function ComponentPage({ params }: { params: Promise<{ slug
 
       {e.props.length > 0 && (
         <section className="mt-16">
-          <h2 className="text-2xl font-semibold tracking-[-0.04em]">Props</h2>
-          <div className="mt-5 overflow-x-auto rounded-[20px] border border-white/[0.08] bg-[#0a0a0b]">
+          <h2 className="site-reveal text-2xl font-semibold tracking-[-0.04em]">Props</h2>
+          <div className="site-reveal mt-5 overflow-x-auto rounded-[20px] border border-white/[0.08] bg-site-raised">
             <table className="w-full min-w-[640px] text-left text-sm">
               <thead>
                 <tr className="border-b border-white/[0.06] font-mono text-[10px] uppercase tracking-[0.14em] text-site-fg-3">
@@ -227,7 +227,7 @@ export default async function ComponentPage({ params }: { params: Promise<{ slug
                 {e.props.map((p) => (
                   <tr key={p.name} className="border-b border-white/[0.05] last:border-0">
                     <td className="px-5 py-3.5 font-mono text-[13px] text-site-fg">{p.name}</td>
-                    <td className="px-5 py-3.5 font-mono text-[12px] text-site-glow/90">{p.type}</td>
+                    <td className="px-5 py-3.5 font-mono text-[12px] text-site-fg-2">{p.type}</td>
                     <td className="px-5 py-3.5 font-mono text-[12px] text-site-fg-3">{p.default ?? "—"}</td>
                     <td className="px-5 py-3.5 text-site-fg-2">{p.description}</td>
                   </tr>
@@ -240,15 +240,20 @@ export default async function ComponentPage({ params }: { params: Promise<{ slug
 
       {related.length > 0 && (
         <section className="mt-16">
-          <div className="flex items-end justify-between gap-4">
+          <div className="site-reveal flex items-end justify-between gap-4">
             <h2 className="text-2xl font-semibold tracking-[-0.04em]">More {cat.label.toLowerCase()}</h2>
-            <Link href={`/categories/${e.category}`} className="text-[14px] text-site-fg-2 transition-colors hover:text-site-fg">
+            <Link href={`/categories/${e.category}`} className="group inline-flex items-center gap-1 rounded-md text-[14px] text-site-fg-2 transition-colors duration-150 hover:text-site-fg">
               See all
+              <span aria-hidden="true" className="transition-transform duration-150 ease-site group-hover:translate-x-0.5">
+                →
+              </span>
             </Link>
           </div>
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {related.map((r) => (
-              <ComponentCard key={r.slug} c={toCard(r)} />
+              <div key={r.slug} className="site-reveal flex">
+                <ComponentCard c={toCard(r)} />
+              </div>
             ))}
           </div>
         </section>

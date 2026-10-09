@@ -33,10 +33,10 @@ const COLUMNS: { title: string; links: { href: string; label: string }[] }[] = [
 
 export function SiteFooter() {
   return (
-    <footer className="relative overflow-hidden border-t border-white/[0.07] bg-black">
+    <footer className="relative overflow-hidden border-t border-white/[0.07] bg-site-bg">
       <div className="mx-auto max-w-[80rem] px-5 pt-16 sm:px-8 lg:pt-20">
         <div className="grid gap-12 lg:grid-cols-12">
-          <div className="lg:col-span-5">
+          <div className="site-reveal lg:col-span-5">
             <LogoMark className="size-8" />
             <p className="mt-5 max-w-[34ch] text-[15px] leading-relaxed text-site-fg-2">
               Design components for AI agents. Code, prompt and JSON prompt for every one, so what your agent ships looks designed.
@@ -45,12 +45,12 @@ export function SiteFooter() {
           </div>
           <div className="grid grid-cols-2 gap-10 sm:grid-cols-3 lg:col-span-7">
             {COLUMNS.map((col) => (
-              <div key={col.title}>
+              <div key={col.title} className="site-reveal">
                 <h2 className="text-[13px] font-medium text-site-fg">{col.title}</h2>
                 <ul className="mt-4 space-y-2.5">
                   {col.links.map((l) => (
                     <li key={l.href}>
-                      <Link href={l.href} className="text-[14px] text-site-fg-2 transition-colors hover:text-site-fg">
+                      <Link href={l.href} className="rounded-sm text-[14px] text-site-fg-2 transition-colors duration-150 hover:text-site-fg">
                         {l.label}
                       </Link>
                     </li>
@@ -62,7 +62,7 @@ export function SiteFooter() {
         </div>
         <div className="mt-16 flex flex-col justify-between gap-3 border-t border-white/[0.07] py-6 text-[13px] text-site-fg-3 sm:flex-row">
           <p>© 2026 Design for AI. Free components MIT licensed.</p>
-          <MarkdownLink className="font-mono text-[11px] uppercase tracking-[0.16em] transition-colors hover:text-site-fg" />
+          <MarkdownLink className="rounded-sm font-mono text-[11px] uppercase tracking-[0.16em] transition-colors duration-150 hover:text-site-fg" />
         </div>
       </div>
       <p

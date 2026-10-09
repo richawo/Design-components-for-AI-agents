@@ -66,7 +66,7 @@ export function SourceTabs({
     : "";
 
   return (
-    <div className="overflow-hidden rounded-[20px] border border-white/[0.08] bg-[#0a0a0b] text-site-fg shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+    <div className="overflow-hidden rounded-[20px] border border-white/[0.08] bg-site-raised text-site-fg shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
       <div className="flex flex-col gap-3 border-b border-white/[0.06] px-3 pt-2 sm:flex-row sm:items-center sm:justify-between sm:px-4">
         <div role="tablist" aria-label="Component source" className="-mb-px flex gap-1 overflow-x-auto [scrollbar-width:none]">
           {TABS.map((t) => (
@@ -77,14 +77,14 @@ export function SourceTabs({
               aria-selected={tab === t.key}
               aria-controls={`panel-${t.key}`}
               onClick={() => setTab(t.key)}
-              className={`group relative shrink-0 px-3.5 pb-3 pt-2.5 text-[13px] font-medium transition-colors ${tab === t.key ? "text-site-fg" : "text-site-fg-3 hover:text-site-fg-2"}`}
+              className={`group relative shrink-0 px-3.5 pb-3 pt-2.5 text-[13px] font-medium transition-colors duration-150 ${tab === t.key ? "text-site-fg" : "text-site-fg-3 hover:text-site-fg-2"}`}
             >
               <span className="relative inline-block transition-transform duration-150 group-active:scale-[0.95]">{t.label}</span>
               {tab === t.key && (
                 <motion.span
                   layoutId={`source-tab-${slug}`}
-                  className="absolute inset-x-3 -bottom-px h-px bg-gradient-to-r from-[#ffb38a] via-[#ff7a45] to-[#ff4d6d] shadow-[0_0_12px_#ff7a45]"
-                  transition={{ type: "spring", stiffness: 480, damping: 38 }}
+                  className="absolute inset-x-3 -bottom-px h-px bg-site-accent"
+                  transition={{ type: "spring", stiffness: 500, damping: 40 }}
                 />
               )}
             </button>
@@ -126,7 +126,10 @@ export function SourceTabs({
         )}
       </div>
       {tier === "pro" && status === "ready" && (
-        <p className="border-t border-white/[0.06] px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-site-glow/80">Pro licence active</p>
+        <p className="flex items-center gap-2 border-t border-white/[0.06] px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-site-fg-3">
+          <span aria-hidden="true" className="size-1.5 rounded-full bg-site-accent" />
+          Pro licence active
+        </p>
       )}
     </div>
   );
@@ -161,9 +164,9 @@ function Locked({ name, tab }: { name: string; tab: Tab }) {
         {"\n"}
         {FAKE.join("\n")}
       </pre>
-      <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-b from-[#0a0a0b]/40 via-[#0a0a0b]/85 to-[#0a0a0b] p-6">
-        <div className="max-w-sm text-center">
-          <span className="mx-auto flex size-11 items-center justify-center rounded-xl bg-gradient-to-b from-[#ffb38a] to-[#ff6a3d] text-black shadow-[0_0_30px_-4px_#ff7a45]">
+      <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-b from-site-raised/40 via-site-raised/85 to-site-raised p-6">
+        <div className="site-rise max-w-sm text-center">
+          <span className="site-surface mx-auto flex size-11 items-center justify-center rounded-xl text-site-fg">
             <svg viewBox="0 0 20 20" className="size-5" fill="none" aria-hidden="true">
               <rect x="4" y="9" width="12" height="8.5" rx="2" stroke="currentColor" strokeWidth="1.8" />
               <path d="M7 9V6.5a3 3 0 0 1 6 0V9" stroke="currentColor" strokeWidth="1.8" />
@@ -176,10 +179,10 @@ function Locked({ name, tab }: { name: string; tab: Tab }) {
             One licence unlocks every Pro component, its prompts and the private registry, for good. Every new component is included too.
           </p>
           <div className="mt-5 flex flex-wrap justify-center gap-2">
-            <Link href="/pricing" className="inline-flex h-10 items-center rounded-full bg-white px-5 text-[14px] font-medium text-black shadow-[0_10px_30px_-12px_rgba(255,255,255,0.5)] transition duration-200 ease-[cubic-bezier(.2,.8,.2,1)] hover:-translate-y-px hover:shadow-[0_14px_34px_-12px_rgba(255,179,138,0.6)] active:translate-y-0 active:scale-[0.96] active:duration-75">
+            <Link href="/pricing" className="site-btn site-btn-accent h-10 px-5 text-[14px]">
               Get Pro
             </Link>
-            <Link href="/account" className="inline-flex h-10 items-center rounded-full border border-white/12 px-5 text-[14px] font-medium transition duration-200 hover:border-white/25 hover:bg-white/[0.04] active:scale-[0.96] active:duration-75">
+            <Link href="/account" className="site-btn site-btn-secondary h-10 px-5 text-[14px]">
               I have a licence
             </Link>
           </div>

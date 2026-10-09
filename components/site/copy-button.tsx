@@ -19,9 +19,9 @@ export function CopyButton({
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
   useEffect(() => () => clearTimeout(timer.current), []);
   const styles = {
-    dark: "bg-white/[0.07] text-site-fg shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] hover:bg-white/[0.12]",
-    light: "bg-white text-black hover:bg-white/90",
-    accent: "bg-gradient-to-b from-[#ff8a52] to-[#ff6a3d] text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] hover:brightness-110",
+    dark: "bg-white/[0.07] text-site-fg shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] hover:bg-white/[0.11]",
+    light: "site-btn-primary",
+    accent: "site-btn-accent",
   }[variant];
   return (
     <button
@@ -41,7 +41,7 @@ export function CopyButton({
         clearTimeout(timer.current);
         timer.current = setTimeout(() => setCopied(false), 1600);
       }}
-      className={`inline-flex h-8 select-none items-center gap-1.5 rounded-full px-3.5 text-xs font-semibold transition duration-200 ease-[cubic-bezier(.2,.8,.2,1)] active:scale-[0.95] active:duration-75 ${styles} ${className}`}
+      className={`site-btn h-8 gap-1.5 px-3.5 text-xs font-semibold ${styles} ${className}`}
       aria-live="polite"
     >
       {copied ? (

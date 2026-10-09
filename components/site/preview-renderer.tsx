@@ -22,7 +22,7 @@ export function PreviewRenderer({ slug, platform, theme }: { slug: string; platf
   if (platform === "mobile") {
     return (
       <div className="flex min-h-dvh items-center justify-center bg-black p-0 sm:p-8">
-        <div className="relative h-dvh w-full overflow-hidden bg-white sm:h-[844px] sm:w-[390px] sm:rounded-[54px] sm:shadow-[0_0_0_10px_#1a1a1c,0_0_0_11px_#2e2e33,0_40px_120px_-20px_rgba(255,122,69,0.18)]">
+        <div className="relative h-dvh w-full overflow-hidden bg-white sm:h-[844px] sm:w-[390px] sm:rounded-[54px] sm:shadow-[0_0_0_10px_#1a1a1c,0_0_0_11px_#2e2e33,0_40px_120px_-20px_rgba(0,0,0,0.9)]">
           <div className="flex h-full w-full flex-col">{Comp ? <Comp /> : null}</div>
           <div className="pointer-events-none absolute left-1/2 top-[11px] hidden h-[34px] w-[122px] -translate-x-1/2 rounded-full bg-black sm:block" />
         </div>

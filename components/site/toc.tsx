@@ -48,8 +48,8 @@ export function Toc({ headings, label = "On this page" }: { headings: Heading[];
               <motion.span
                 layoutId="toc-active"
                 aria-hidden="true"
-                className="absolute -left-px inset-y-0 w-0.5 rounded-full bg-site-accent shadow-[0_0_10px_#ff7a45]"
-                transition={{ type: "spring", stiffness: 420, damping: 38 }}
+                className="absolute inset-y-0 -left-px w-0.5 rounded-full bg-site-accent"
+                transition={{ type: "spring", stiffness: 500, damping: 40 }}
               />
             )}
             <a

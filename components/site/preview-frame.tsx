@@ -43,12 +43,12 @@ export function PreviewFrame({
   }, [key]);
 
   return (
-    <div className="overflow-hidden rounded-[20px] border border-white/[0.08] bg-[#0a0a0b] shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_40px_100px_-40px_rgba(0,0,0,0.9)]">
+    <div className="overflow-hidden rounded-[20px] border border-white/[0.08] bg-site-raised shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_40px_100px_-40px_rgba(0,0,0,0.9)]">
       <div className="flex items-center justify-between gap-3 border-b border-white/[0.06] px-3 py-2 sm:px-4">
         <div className="flex min-w-0 items-center gap-2.5">
           <span className="relative flex size-2" aria-hidden="true">
-            <span className="absolute inline-flex size-full animate-ping rounded-full bg-[#34d399] opacity-50 motion-reduce:hidden" />
-            <span className="relative inline-flex size-2 rounded-full bg-[#34d399]" />
+            <span className="absolute inline-flex size-full animate-ping rounded-full bg-site-ok opacity-50 motion-reduce:hidden" />
+            <span className="relative inline-flex size-2 rounded-full bg-site-ok" />
           </span>
           <span className="truncate font-mono text-[11px] uppercase tracking-[0.14em] text-site-fg-3">
             {platform === "mobile" ? "Live · React Native via react-native-web" : "Live preview"}
@@ -65,13 +65,13 @@ export function PreviewFrame({
                   aria-label={v.label}
                   title={v.label}
                   onClick={() => setVp(v.key)}
-                  className={`relative flex h-7 w-8 items-center justify-center rounded-md transition-colors ${vp === v.key ? "text-site-fg" : "text-site-fg-3 hover:text-site-fg-2"}`}
+                  className={`relative flex h-7 w-8 items-center justify-center rounded-md transition-colors duration-150 ${vp === v.key ? "text-site-fg" : "text-site-fg-3 hover:text-site-fg-2"}`}
                 >
                   {vp === v.key && (
                     <motion.span
                       layoutId={`preview-vp-${slug}`}
                       className="absolute inset-0 rounded-md bg-white/[0.1] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
-                      transition={{ type: "spring", stiffness: 520, damping: 40 }}
+                      transition={{ type: "spring", stiffness: 500, damping: 40 }}
                     />
                   )}
                   <svg viewBox="0 0 16 16" className="relative size-4 transition-transform duration-150 active:scale-90" fill="none" aria-hidden="true">
@@ -89,11 +89,11 @@ export function PreviewFrame({
             }}
             aria-label="Reload preview"
             title="Reload"
-            className="flex size-8 items-center justify-center rounded-md text-site-fg-3 transition duration-200 hover:bg-white/[0.05] hover:text-site-fg active:scale-90"
+            className="flex size-8 items-center justify-center rounded-md text-site-fg-3 transition duration-150 hover:bg-white/[0.05] hover:text-site-fg active:scale-95"
           >
             <svg
               viewBox="0 0 16 16"
-              className="size-4 transition-transform duration-700 ease-[cubic-bezier(.2,.8,.2,1)] motion-reduce:transition-none"
+              className="size-4 transition-transform duration-700 ease-site motion-reduce:transition-none"
               style={{ transform: `rotate(${key * 360}deg)` }}
               fill="none"
               aria-hidden="true"
@@ -107,15 +107,15 @@ export function PreviewFrame({
             rel="noreferrer"
             aria-label="Open preview in a new tab"
             title="Open in new tab"
-            className="group/open flex size-8 items-center justify-center rounded-md text-site-fg-3 transition duration-200 hover:bg-white/[0.05] hover:text-site-fg active:scale-90"
+            className="group/open flex size-8 items-center justify-center rounded-md text-site-fg-3 transition duration-150 hover:bg-white/[0.05] hover:text-site-fg active:scale-95"
           >
-            <svg viewBox="0 0 16 16" className="size-4 transition-transform duration-300 ease-[cubic-bezier(.2,.8,.2,1)] group-hover/open:-translate-y-px group-hover/open:translate-x-px" fill="none" aria-hidden="true">
+            <svg viewBox="0 0 16 16" className="size-4 transition-transform duration-150 ease-site group-hover/open:-translate-y-px group-hover/open:translate-x-px" fill="none" aria-hidden="true">
               <path d="M9 2.5h4.5V7M13.5 2.5L7.5 8.5M11.5 9.5v3a1 1 0 0 1-1 1h-7a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1h3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </a>
         </div>
       </div>
-      <div className="site-dots relative flex justify-center bg-[#050505]">
+      <div className="site-dots relative flex justify-center bg-site-sunken">
         {!loaded && (
           <div className="absolute inset-0 flex items-center justify-center">
             <span className="size-5 animate-spin rounded-full border-2 border-white/10 border-t-white/50" aria-label="Loading preview" />
@@ -129,7 +129,7 @@ export function PreviewFrame({
           allow="microphone; clipboard-write"
           onLoad={() => setLoaded(true)}
           style={{ width, height: frameHeight, maxWidth: "100%" }}
-          className={`block transition-[width,opacity] duration-500 ease-[cubic-bezier(.2,.8,.2,1)] ${theme === "dark" ? "bg-black" : "bg-white"} ${loaded ? "opacity-100" : "opacity-0"} ${vp !== "desktop" && platform === "web" ? "border-x border-white/10" : ""}`}
+          className={`block transition-[width,opacity] duration-500 ease-site ${theme === "dark" ? "bg-black" : "bg-white"} ${loaded ? "opacity-100" : "opacity-0"} ${vp !== "desktop" && platform === "web" ? "border-x border-white/10" : ""}`}
         />
       </div>
     </div>

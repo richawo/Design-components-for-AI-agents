@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { CopyButton } from "./copy-button";
 
 type License = { email: string; plan: string; seats: number; exp: number | null; id: string };
@@ -56,15 +56,26 @@ export function AccountPanel({ welcome }: { welcome: boolean }) {
   }
 
   if (state.status === "loading") {
-    return <div className="h-72 animate-pulse rounded-[28px] bg-white/[0.04]" />;
+    // The same two panels the signed-out view lands in, so nothing jumps when it resolves.
+    return (
+      <div className="grid gap-6 lg:grid-cols-2" aria-busy="true" aria-label="Checking for a licence">
+        {[0, 1].map((i) => (
+          <div key={i} className="site-surface h-72 rounded-[24px] p-7 sm:p-8">
+            <div className="h-6 w-3/5 rounded-md bg-white/[0.05]" />
+            <div className="mt-4 h-3 w-4/5 rounded bg-white/[0.04]" />
+            <div className="mt-2.5 h-3 w-2/3 rounded bg-white/[0.04]" />
+          </div>
+        ))}
+      </div>
+    );
   }
 
   if (state.status === "none") {
     return (
       <div className="grid gap-6 lg:grid-cols-2">
-        <form onSubmit={activate} className="rounded-[28px] border border-white/[0.08] bg-[#0a0a0b] p-7 sm:p-8">
-          <h2 className="text-2xl font-bold tracking-[-0.03em]">Activate a licence on this device</h2>
-          <p className="mt-2 text-[15px] leading-relaxed text-site-fg-2">Paste the key from your account page on the device you bought on. It starts with <code className="rounded bg-white/[0.04] px-1.5 font-mono text-[13px]">dfa_</code>.</p>
+        <form onSubmit={activate} className="site-surface site-in rounded-[24px] p-7 [--i:2] sm:p-8">
+          <h2 className="text-2xl font-semibold tracking-[-0.035em]">Activate a licence on this device</h2>
+          <p className="mt-2 text-[15px] leading-relaxed text-site-fg-2">Paste the key from your account page on the device you bought on. It starts with <code className="rounded-md border border-white/[0.08] bg-white/[0.05] px-1.5 py-px font-mono text-[13px] text-site-fg">dfa_</code>.</p>
           <label htmlFor="licence" className="sr-only">
             Licence key
           </label>
@@ -77,25 +88,25 @@ export function AccountPanel({ welcome }: { welcome: boolean }) {
             placeholder="dfa_eyJ2IjoxLCJpZCI6…"
             aria-invalid={error ? true : undefined}
             aria-describedby={error ? "licence-error" : undefined}
-            className={`mt-5 w-full resize-none rounded-2xl border bg-black px-4 py-3 font-mono text-[13px] outline-none transition duration-200 placeholder:text-site-fg-3 hover:border-white/[0.14] focus:border-white/20 focus:shadow-[0_0_0_4px_rgba(255,122,69,0.12)] ${error ? "border-[#ff7a45]/50" : "border-white/[0.08]"}`}
+            className={`mt-5 w-full resize-none rounded-2xl border bg-site-bg px-4 py-3 font-mono text-[13px] text-site-fg outline-none transition-colors duration-150 placeholder:text-site-fg-3 hover:border-white/[0.14] focus:border-white/25 ${error ? "border-site-danger/50" : "border-white/[0.08]"}`}
           />
           {error && (
-            <p id="licence-error" role="alert" className="site-rise mt-2 text-sm text-[#ff9a7a]">
+            <p id="licence-error" role="alert" className="site-rise mt-2 text-sm text-site-danger">
               {error}
             </p>
           )}
-          <button type="submit" disabled={!key.trim() || busy} aria-busy={busy} className="mt-4 inline-flex h-11 items-center gap-2 rounded-full bg-white px-6 text-[14px] font-medium text-black transition duration-200 ease-[cubic-bezier(.2,.8,.2,1)] hover:-translate-y-px hover:shadow-[0_0_0_1px_rgba(255,255,255,0.2),0_14px_36px_-10px_rgba(255,179,138,0.6)] active:translate-y-0 active:scale-[0.97] active:duration-75 disabled:pointer-events-none disabled:opacity-40">
+          <button type="submit" disabled={!key.trim() || busy} aria-busy={busy} className="site-btn site-btn-primary mt-4 h-11 min-w-28 px-6 text-[14px]">
             {busy && <span aria-hidden="true" className="size-3.5 animate-spin rounded-full border-[1.5px] border-current border-r-transparent opacity-70" />}
             {busy ? "Checking…" : "Activate"}
           </button>
         </form>
-        <div className="site-surface flex flex-col justify-between rounded-[24px] p-7 sm:p-8">
+        <div className="site-surface site-in flex flex-col justify-between rounded-[24px] p-7 [--i:3] sm:p-8">
           <div>
-            <h2 className="text-2xl font-bold tracking-[-0.03em]">No licence yet?</h2>
+            <h2 className="text-2xl font-semibold tracking-[-0.035em]">No licence yet?</h2>
             <p className="mt-2 text-[15px] leading-relaxed text-site-fg-2">Pro unlocks every component, the Pro prompts and the private registry. Pay once and keep it forever.</p>
           </div>
-          <Link href="/pricing" className="mt-8 inline-flex h-12 w-fit items-center rounded-full bg-white px-6 font-semibold text-black transition duration-200 ease-[cubic-bezier(.2,.8,.2,1)] hover:-translate-y-px hover:shadow-[0_0_0_1px_rgba(255,255,255,0.2),0_14px_36px_-10px_rgba(255,179,138,0.6)] active:translate-y-0 active:scale-[0.97] active:duration-75">
-            See pricing
+          <Link href="/pricing" className="site-btn site-btn-accent mt-8 h-11 w-fit px-6 text-[14px]">
+            See Pro pricing
           </Link>
         </div>
       </div>
@@ -106,12 +117,19 @@ export function AccountPanel({ welcome }: { welcome: boolean }) {
   return (
     <div className="space-y-6">
       {welcome && (
-        <div className="rounded-[28px] bg-[linear-gradient(135deg,rgba(255,122,69,0.18),rgba(255,77,109,0.08))] ring-1 ring-inset ring-white/10 p-7 sm:p-8">
-          <p className="text-3xl font-semibold tracking-[-0.04em]">You have taste. Officially.</p>
-          <p className="mt-2 max-w-[60ch] text-[15px] leading-relaxed text-site-fg-2">Your Pro licence is active on this device. Your key is below; keep it somewhere safe and give it to your agents.</p>
+        <div className="site-surface site-in flex gap-5 rounded-[24px] p-7 [--i:2] sm:p-8">
+          <span aria-hidden="true" className="flex size-10 shrink-0 items-center justify-center rounded-full bg-site-accent text-black">
+            <svg viewBox="0 0 16 16" className="size-4" fill="none">
+              <path className="site-draw" d="M3 8.5l3 3 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </span>
+          <div>
+            <p className="text-3xl font-semibold tracking-[-0.04em]">You have taste. Officially.</p>
+            <p className="mt-2 max-w-[60ch] text-[15px] leading-relaxed text-site-fg-2">Your Pro licence is active on this device. Your key is below; keep it somewhere safe and give it to your agents.</p>
+          </div>
         </div>
       )}
-      <div className="rounded-[28px] border border-white/[0.08] bg-[#0a0a0b] p-7 sm:p-8">
+      <div className="site-surface site-in rounded-[24px] p-7 [--i:3] sm:p-8">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-site-fg-3">Licence</p>
@@ -121,11 +139,11 @@ export function AccountPanel({ welcome }: { welcome: boolean }) {
               {license.exp ? `renews ${new Date(license.exp * 1000).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}` : "never expires"}
             </p>
           </div>
-          <button onClick={logout} className="h-10 rounded-full border border-white/[0.08] px-4 text-sm font-semibold transition duration-200 hover:border-white/20 hover:bg-white/[0.04] active:scale-[0.97] active:duration-75">
+          <button type="button" onClick={logout} className="site-btn site-btn-secondary h-10 px-4 text-sm">
             Sign out of this device
           </button>
         </div>
-        <div className="mt-6 rounded-2xl border border-white/[0.06] bg-black/60 p-4">
+        <div className="mt-6 rounded-2xl border border-white/[0.06] bg-site-bg/60 p-4">
           <div className="flex items-center justify-between gap-3">
             <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-site-fg-2">Your licence key</p>
             <CopyButton text={token} label="Copy key" />
@@ -138,8 +156,8 @@ export function AccountPanel({ welcome }: { welcome: boolean }) {
           { t: "CLI", c: "npx design-for-ai login <your key>", d: "Then npx design-for-ai add <slug> works for Pro components too. Or set DESIGN_FOR_AI_LICENSE." },
           { t: "MCP server", c: "claude mcp add --transport http design-for-ai https://design.yaps.ai/mcp --header \"Authorization: Bearer $DESIGN_FOR_AI_LICENSE\"", d: "Remote, nothing to install. Cursor and Windsurf take the same URL and header." },
           { t: "shadcn", c: "npx shadcn@latest add @design-for-ai-pro/<slug>", d: "After adding the Pro registry to components.json (see Docs)." },
-        ].map((x) => (
-          <div key={x.t} className="rounded-[22px] border border-white/[0.08] bg-[#0a0a0b] p-5">
+        ].map((x, i) => (
+          <div key={x.t} className="site-surface site-in min-w-0 rounded-[20px] p-5" style={{ "--i": 4 + i } as CSSProperties}>
             <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-site-fg-3">{x.t}</p>
             <p className="mt-3 overflow-x-auto whitespace-nowrap rounded-xl bg-white/[0.04] px-3 py-2 font-mono text-[12px]">{x.c}</p>
             <p className="mt-3 text-sm leading-relaxed text-site-fg-2">{x.d}</p>
