@@ -20,11 +20,12 @@ Build a text decode effect in React + Tailwind CSS v4 (`motion/react` only for `
 - `hover`: pointer enter and `:focus-visible` focus on the nearest `a`, `button` or `[data-decode-trigger]` ancestor (or the element itself). A scramble band sweeps through the visible text. Ignored while a decode is running.
 - Changing `text` morphs the old value into the new one: characters that are unchanged at the same index stay put; each changed old character holds its place until the wave reaches it, then scrambles into the new one. A ticking status line only decodes the part that changed. `replayKey` replays on demand.
 
-**Demo (dark stage, `#000`)**
-- Max width 960px, left aligned. Mono eyebrow 11px uppercase, tracking 0.18em, white/45: "Observation log · Dish 04 / 07".
-- Heading in the display face, `clamp(2.75rem, 1.1rem + 6.2vw, 6.5rem)`, weight 500, leading 0.95, tracking −0.045em: "Signal found / at 1420 MHz." (view, 26 cps, 160ms delay).
-- Status line in mono 13px white/60 with a mint `#7dd3a8` live dot, binary glyphs; it takes a new reading every 4.2s (paused offscreen and in hidden tabs) and decodes it.
-- Hairline `white/9%` rule, then a nav of four mono uppercase links (12px, tracking 0.14em, white/55 → white, numbered 01–04 in white/25 → mint) that decode with `symbols` on hover/focus; 44px tall targets. A ghost "Replay" pill on the right.
+**Demo (dark stage, `#000`), choreographed as a whole frame**
+- Max width 960px, left aligned, the stage is the `@container`. Mono eyebrow 11px uppercase, tracking 0.18em, white/45: "Observation log · Dish 04 / 07".
+- Heading in the display face, `clamp(2.75rem, 1.1rem + 6.2cqi, 6.5rem)`, weight 500, leading 0.95, tracking −0.045em: "Signal found / at 1420 MHz." (view, 26 cps, 160ms delay).
+- Status line in mono 13px white/60 with a mint `#7dd3a8` live dot (the only colour, and it means "live"), binary glyphs (520ms delay); it takes a new reading every 4.2s (paused offscreen and in hidden tabs) and decodes only what changed.
+- Hairline `white/9%` rule, then a nav of four mono uppercase links (12px, tracking 0.14em, white/55 → white, numbered 01–04 in white/25 → white/60, tabular) that decode with `symbols` on hover/focus; 44px tall targets. A ghost "Replay" pill on the right (press 0.97).
+- Entrance: the decodes are the type's entrance (eyebrow at 0, heading at 160ms, status at 520ms). The rest of the frame follows on one timeline, triggered by the same 30% in-view: the live dot pops in (scale .3 → 1) at 600ms, the rule draws left to right (scaleX, 800ms) at 620ms, the nav items rise 10px out of a 6px blur from 700ms, 50ms apart, and the Replay pill lands last at 920ms. Ease `cubic-bezier(0.22, 1, 0.36, 1)`, 550ms. Reduced motion: 150ms fades, no ping.
 
 **Accessibility**
 - Screen readers get the full text once from an `sr-only` span; the per-character layer is `aria-hidden`.

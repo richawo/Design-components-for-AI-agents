@@ -1,7 +1,7 @@
 "use client";
 
-import { createElement, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
-import { useReducedMotion } from "motion/react";
+import { createElement, useEffect, useMemo, useRef, useState, type CSSProperties, type RefObject } from "react";
+import { motion, useInView, useReducedMotion, type Variants } from "motion/react";
 
 /* ------------------------------------------------------------------ */
 /* Glyph sets                                                           */
@@ -362,31 +362,68 @@ const readings = [
 
 const links = ["Archive", "Observations", "Instruments", "Contact"];
 
-function TextDecodeDemo() {
-  const [replay, setReplay] = useState(0);
-  const [reading, setReading] = useState(0);
-  const reduce = useReducedMotion() ?? false;
-  const stageRef = useRef<HTMLDivElement>(null);
+/** Semantic only: the status line is live. Everything else is white at stepped opacities. */
+const LIVE = "#7dd3a8";
+const EASE = [0.22, 1, 0.36, 1] as const;
+const READING_MS = 4200;
 
-  // The one ambient signal: the status line takes a new reading every few seconds, and decodes it.
+/**
+ * Demo timeline, in seconds. The decodes are the entrance for the type
+ * (eyebrow, then heading, then the status line); the rest of the frame follows
+ * once the heading has mostly resolved: the live dot, the rule, the nav and
+ * the replay control.
+ */
+const DEMO_T = { heading: 0.16, status: 0.52, dot: 0.6, rule: 0.62, nav: 0.7, navStep: 0.05, replay: 0.92 } as const;
+
+const rise: Variants = {
+  hidden: { opacity: 0, y: 10, filter: "blur(6px)" },
+  show: (delay: number) => ({ opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.55, ease: EASE, delay }, transitionEnd: { filter: "none" } }),
+};
+const drawX: Variants = {
+  hidden: { scaleX: 0 },
+  show: (delay: number) => ({ scaleX: 1, transition: { duration: 0.8, ease: EASE, delay } }),
+};
+const pop: Variants = {
+  hidden: { opacity: 0, scale: 0.3 },
+  show: (delay: number) => ({ opacity: 1, scale: 1, transition: { duration: 0.4, ease: EASE, delay } }),
+};
+const fade: Variants = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { duration: 0.15 } },
+};
+
+/** The one ambient signal: the status line takes a new reading every few seconds (paused offscreen and in hidden tabs). */
+function useReadings(ref: RefObject<HTMLElement | null>) {
+  const [reading, setReading] = useState(0);
   useEffect(() => {
-    const el = stageRef.current;
+    const el = ref.current;
     if (!el) return;
     let visible = true;
     const io = new IntersectionObserver(([e]) => (visible = e.isIntersecting));
     io.observe(el);
     const id = window.setInterval(() => {
       if (visible && !document.hidden) setReading((r) => (r + 1) % readings.length);
-    }, 4200);
+    }, READING_MS);
     return () => {
       io.disconnect();
       window.clearInterval(id);
     };
-  }, []);
+  }, [ref]);
+  return readings[reading];
+}
+
+function TextDecodeDemo() {
+  const [replay, setReplay] = useState(0);
+  const reduce = useReducedMotion() ?? false;
+  const stageRef = useRef<HTMLDivElement>(null);
+  const reading = useReadings(stageRef);
+  // Same threshold as the decodes, so the frame and the type start together.
+  const inView = useInView(stageRef, { once: true, amount: 0.3 });
+  const v = reduce ? fade : rise;
 
   return (
     <div className="flex min-h-dvh w-full items-center justify-center bg-black px-5 py-16 text-white sm:px-10">
-      <div ref={stageRef} className="@container w-full max-w-[960px]">
+      <motion.div ref={stageRef} initial="hidden" animate={inView ? "show" : "hidden"} className="@container w-full max-w-[960px]">
         <TextDecode
           as="p"
           text="Observation log · Dish 04 / 07"
@@ -399,51 +436,54 @@ function TextDecodeDemo() {
           as="h2"
           text={"Signal found\nat 1420 MHz."}
           trigger="view"
-          delay={160}
+          delay={DEMO_T.heading * 1000}
           speed={26}
           replayKey={replay}
-          className="mt-6 font-display text-[clamp(2.75rem,1.1rem+6.2vw,6.5rem)] font-medium leading-[0.95] tracking-[-0.045em] text-white"
+          className="mt-6 font-display text-[clamp(2.75rem,1.1rem+6.2cqi,6.5rem)] font-medium leading-[0.95] tracking-[-0.045em] text-white"
         />
 
         <p className="mt-9 flex items-start gap-3 font-mono text-[12.5px] leading-[1.6] text-white/60 @xl:text-[13px]">
-          <span aria-hidden="true" className="relative mt-[7px] flex size-1.5 shrink-0">
-            {!reduce && <span className="absolute inset-0 animate-ping rounded-full bg-[#7dd3a8] opacity-60" />}
-            <span className="relative size-1.5 rounded-full bg-[#7dd3a8]" />
-          </span>
-          <TextDecode text={readings[reading]} trigger="view" glyphs="binary" delay={520} speed={60} replayKey={replay} />
+          <motion.span aria-hidden="true" variants={reduce ? fade : pop} custom={DEMO_T.dot} className="relative mt-[7px] flex size-1.5 shrink-0">
+            {!reduce && <span className="absolute inset-0 animate-ping rounded-full opacity-60" style={{ background: LIVE }} />}
+            <span className="relative size-1.5 rounded-full" style={{ background: LIVE }} />
+          </motion.span>
+          <TextDecode text={reading} trigger="view" glyphs="binary" delay={DEMO_T.status * 1000} speed={60} replayKey={replay} />
         </p>
 
-        <div className="mt-14 flex flex-col gap-6 border-t border-white/[0.09] pt-5 @xl:flex-row @xl:items-center @xl:justify-between">
+        <div className="relative mt-14 flex flex-col gap-6 pt-5 @xl:flex-row @xl:items-center @xl:justify-between">
+          <motion.span aria-hidden="true" variants={reduce ? fade : drawX} custom={DEMO_T.rule} className="absolute inset-x-0 top-0 h-px origin-left bg-white/[0.09]" />
           <nav aria-label="Observatory">
             <ul className="-mx-2 grid grid-cols-2 gap-x-2 gap-y-1 @md:flex @md:flex-wrap @md:gap-x-4">
               {links.map((l, i) => (
-                <li key={l}>
+                <motion.li key={l} variants={v} custom={DEMO_T.nav + i * DEMO_T.navStep}>
                   <a
                     href={`#${l.toLowerCase()}`}
-                    className="group inline-flex h-11 items-center gap-2.5 rounded-[6px] px-2 font-mono text-[12px] uppercase tracking-[0.14em] text-white/55 outline-none transition-colors duration-150 hover:text-white focus-visible:text-white focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                    className="group inline-flex h-11 items-center gap-2.5 rounded-[6px] px-2 font-mono text-[12px] uppercase tracking-[0.14em] text-white/55 outline-none transition-colors duration-150 hover:text-white focus-visible:text-white focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black active:translate-y-px"
                   >
-                    <span aria-hidden="true" className="text-white/25 transition-colors duration-150 group-hover:text-[#7dd3a8]">
+                    <span aria-hidden="true" className="tabular-nums text-white/25 transition-colors duration-150 group-hover:text-white/60">
                       {String(i + 1).padStart(2, "0")}
                     </span>
                     <TextDecode text={l} trigger="hover" glyphs="symbols" speed={40} />
                   </a>
-                </li>
+                </motion.li>
               ))}
             </ul>
           </nav>
-          <button
+          <motion.button
             type="button"
+            variants={v}
+            custom={DEMO_T.replay}
             onClick={() => setReplay((r) => r + 1)}
-            className="group inline-flex h-11 items-center gap-2 self-start rounded-full px-4 font-mono text-[11px] uppercase tracking-[0.16em] text-white/55 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)] outline-none transition-[color,background-color,transform] duration-150 hover:bg-white/[0.04] hover:text-white focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black active:scale-[0.97] @xl:self-auto"
+            className="group inline-flex h-11 items-center gap-2 self-start rounded-full px-4 font-mono text-[11px] uppercase tracking-[0.16em] text-white/55 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)] outline-none transition-[color,background-color,scale] duration-150 hover:bg-white/[0.04] hover:text-white focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black active:scale-[0.97] @xl:self-auto"
           >
             <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" className="size-3.5 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-rotate-45">
               <path d="M2.75 8a5.25 5.25 0 1 0 1.6-3.77" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
               <path d="M2.5 2.5v2.75h2.75" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
             Replay
-          </button>
+          </motion.button>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

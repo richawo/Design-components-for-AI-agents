@@ -23,7 +23,7 @@
     "text": "inherits currentColor",
     "scramble": "currentColor at 50% opacity",
     "flash": "#ffffff with text-shadow 0 0 12px at 30% via color-mix (flashColor prop)",
-    "accent": "#7dd3a8 live dot and hovered nav index",
+    "accent": "#7dd3a8 on the live dot only (semantic: live); nav index goes white/25 → white/60 on hover",
     "rule": "white/9%"
   },
   "motion": {
@@ -35,7 +35,8 @@
     "hover": "pointerenter or :focus-visible on nearest a/button/[data-decode-trigger]; sweeps a scramble band through visible text; ignored while running",
     "textChange": "unchanged characters (same index) stay put; changed old characters hold their place until the edge reaches them, then scramble into the new value",
     "ambient": "demo status line takes a new reading every 4.2s, paused offscreen and in hidden tabs",
-    "reducedMotion": "final text immediately; no scramble on hover, replay or text change"
+    "reducedMotion": "final text immediately; no scramble on hover, replay or text change; the frame fades in 150ms; no ping",
+    "demoEntrance": "decodes are the type's entrance (eyebrow 0, heading 160ms, status 520ms); same 30% in-view triggers the frame: live dot pops 600ms, rule draws (scaleX 800ms) 620ms, nav items rise 10px out of 6px blur from 700ms 50ms apart, Replay pill 920ms; 550ms cubic-bezier(0.22,1,0.36,1)"
   },
   "responsive": {
     "all": "pure inline text, so it works at any width; status line wraps under its dot",
@@ -51,7 +52,12 @@
     "eyebrow": "Observation log · Dish 04 / 07",
     "heading": "Signal found\\nat 1420 MHz.",
     "status": "Hydrogen line · drift corrected 0.003 Hz · 04:12:51 UTC (cycles through four readings)",
-    "nav": ["Archive", "Observations", "Instruments", "Contact"]
+    "nav": [
+      "Archive",
+      "Observations",
+      "Instruments",
+      "Contact"
+    ]
   },
   "avoid": [
     "random Unicode, emoji or katakana rain",
@@ -59,6 +65,7 @@
     "any layout shift while scrambling",
     "React state updates per frame",
     "colour cycling, blur or persistent glow",
-    "scrambling punctuation in auto mode"
+    "scrambling punctuation in auto mode",
+    "colour on hover states or decoration; the mint dot is the only colour and it means live"
   ]
 }
