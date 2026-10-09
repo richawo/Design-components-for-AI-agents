@@ -1,55 +1,34 @@
 {
   "slug": "mobile-settings",
-  "name": "Warm Settings Screen",
+  "name": "Glass Settings Screen",
   "tier": "free",
   "platform": "mobile",
   "category": "mobile",
-  "description": "A warm React Native settings screen for a journaling app: profile card, springy switches, value rows and a Light/Dark/Auto control that recolours the screen.",
+  "description": "An iOS-grade settings screen for a journaling app: a large title that folds into a glass nav bar, springy switches, a gliding segmented control and a size slider.",
   "tags": [
     "settings",
     "react native",
     "switch",
     "segmented control",
-    "dark mode",
-    "profile"
+    "slider",
+    "glassmorphism",
+    "large title",
+    "action sheet"
   ],
-  "dependencies": [],
+  "dependencies": ["expo-blur", "expo-linear-gradient", "react-native-svg"],
   "theme": "light",
-  "previewHeight": 900,
-  "usage": "import { MobileSettings } from \"@/components/design-for-ai/native/mobile-settings\";\n\n<MobileSettings\n  appName=\"Inkwell\"\n  initialAppearance=\"auto\"\n  onAppearanceChange={setTheme}\n  onSignOut={signOut}\n/>",
+  "previewHeight": 940,
+  "usage": "// Bare React Native apps: run `npx install-expo-modules` once for expo-blur and expo-linear-gradient.\nimport { MobileSettings } from \"@/components/design-for-ai/native/mobile-settings\";\n\n<MobileSettings\n  appName=\"Inkwell\"\n  initial={{ paper: \"night\", textSize: 18 }}\n  onChange={(settings) => save(settings)}\n  onDeleteAll={moveEntriesToTrash}\n  onDone={navigation.goBack}\n/>",
   "props": [
-    {
-      "name": "appName",
-      "type": "string",
-      "default": "\"Folio\"",
-      "description": "App name in the footer."
-    },
-    {
-      "name": "version",
-      "type": "string",
-      "description": "Version string in the footer."
-    },
-    {
-      "name": "profile",
-      "type": "SettingsProfile",
-      "description": "Name, email, plan, renewal and stats."
-    },
-    {
-      "name": "initialAppearance",
-      "type": "\"light\" | \"dark\" | \"auto\"",
-      "default": "\"light\"",
-      "description": "Starting theme."
-    },
-    {
-      "name": "onAppearanceChange",
-      "type": "(value) => void",
-      "description": "Fired when the segmented control changes."
-    },
-    {
-      "name": "onSignOut",
-      "type": "() => void",
-      "description": "Fired by the Sign out row."
-    }
+    { "name": "appName", "type": "string", "default": "\"Folio\"", "description": "App name in the colophon." },
+    { "name": "version", "type": "string", "default": "\"4.2 (1180)\"", "description": "Version string in the colophon." },
+    { "name": "profile", "type": "SettingsProfile", "description": "Name, email, plan, renewal, entries, streak and word count." },
+    { "name": "initial", "type": "Partial<SettingsState>", "description": "Starting paper, text size, reminder, time, prompts, Face ID and sync values." },
+    { "name": "reminderTimes", "type": "string[]", "description": "Four reminder times shown when the row expands." },
+    { "name": "sample", "type": "{ date: string; text: string }", "description": "Journal excerpt shown in the reading preview." },
+    { "name": "onChange", "type": "(state: SettingsState) => void", "description": "Fired with the full state after any change." },
+    { "name": "onDeleteAll", "type": "() => void", "description": "Fired when deletion is confirmed in the sheet." },
+    { "name": "onDone", "type": "() => void", "description": "Fired by the Done button." }
   ],
   "added": "2026-10-07"
 }

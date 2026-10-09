@@ -1,94 +1,78 @@
 {
   "component": "MobileSettings",
-  "intent": "Warm grouped settings screen whose Light/Dark/Auto control crossfades every colour via one animated theme value.",
+  "intent": "An Apple-grade settings screen for a journaling app: a large title that folds into a glass nav bar, grouped inset sections, physical switches, a gliding segmented control, a snapping slider with a value bubble, a row that expands in place and a glass confirm sheet.",
   "platform": "mobile",
   "stack": {
-    "framework": "React Native (core only)",
-    "apis": [
-      "Animated (colour interpolation via context)",
-      "Pressable",
-      "ScrollView",
-      "StyleSheet",
-      "AccessibilityInfo"
-    ],
-    "web": "react-native-web compatible"
+    "framework": "React Native",
+    "libraries": ["expo-blur", "expo-linear-gradient", "react-native-svg"],
+    "apis": ["Animated.ScrollView", "Animated.event", "Animated.spring", "PanResponder", "AccessibilityInfo", "useWindowDimensions"],
+    "web": "react-native-web compatible; animate opacity on the BlurView itself, not a parent"
   },
   "layout": {
-    "header": "34pt title + Done",
-    "profile": "avatar, name, email, plan chip, chevron; 3-up stats row",
-    "groups": [
-      "Appearance (segmented + rows)",
-      "Writing (switches + values)",
-      "Privacy & data",
-      "Account (Sign out)"
-    ],
-    "footer": "centred version"
+    "nav": "absolute, 54pt status + 44pt bar, Done pill on the right",
+    "scroll": "98pt top padding, 16pt sides; large title 34pt",
+    "profile": "68pt avatar with gradient ring, name, email, plan pill, three-up stats strip",
+    "groups": "26pt apart; 13pt uppercase header; radius-18 card; 52pt rows with 30pt tiles and inset hairline separators",
+    "sections": ["Reading: segmented paper, text size slider, live preview", "Writing: reminder switch, expandable time row, prompts", "Privacy & sync: Face ID, iCloud sync, Export", "Destructive: delete all entries"],
+    "sheet": "inset 10pt, radius 34, icon disc, title, body, destructive and cancel buttons"
   },
   "typography": {
-    "title": {
-      "size": 34,
-      "weight": "800",
-      "letterSpacing": -1.2
-    },
-    "name": {
-      "size": 20,
-      "weight": "800"
-    },
-    "groupHeading": {
-      "size": 12,
-      "weight": "700",
-      "letterSpacing": 1.2,
-      "case": "uppercase"
-    },
-    "row": {
-      "size": 16,
-      "weight": "600"
-    }
+    "largeTitle": { "size": 34, "weight": "700", "letterSpacing": -0.9 },
+    "navTitle": { "size": 17, "weight": "600" },
+    "row": { "size": 16, "letterSpacing": -0.3 },
+    "subtitle": { "size": 13 },
+    "groupHeader": { "size": 13, "weight": "600", "case": "uppercase" },
+    "stat": { "size": 18, "weight": "700", "fontVariant": "tabular-nums" },
+    "preview": { "font": "Georgia", "size": "14–22 (slider)", "lineHeight": 1.45 }
   },
   "color": {
-    "light": {
-      "bg": "#F4EEE4",
-      "card": "#FFFCF7",
-      "ink": "#2B2420",
-      "sub": "#857868",
-      "line": "#ECE3D6",
-      "accent": "#C4572E",
-      "danger": "#B4321F"
-    },
-    "dark": {
-      "bg": "#191512",
-      "card": "#241F1B",
-      "ink": "#F3EBE0",
-      "sub": "#A69885",
-      "line": "#342D27",
-      "accent": "#E2794C",
-      "danger": "#F07A62"
-    }
+    "background": "#F2F1EE with peach #FBD3B8 and sage #CFE6DA radial washes",
+    "ink": "#18171C",
+    "secondary": "#6C6872",
+    "faint": "#A9A6AE",
+    "separator": "rgba(60,58,67,0.12)",
+    "card": "#FFFFFF → #FAF9F7, 7% hairline, warm two-layer shadow",
+    "accent": "#21A06B (highlight #3CC287)",
+    "destructive": "#E5484D",
+    "papers": { "white": ["#FFFFFF", "#1C1B1F"], "sepia": ["#F5EAD7", "#4A3A28"], "night": ["#1A1A1F", "#ECE9E3"] },
+    "navGlass": "BlurView 100 light + rgba(250,249,247,.62→.42) + hairline rgba(40,36,30,.16)"
   },
   "motion": {
-    "theme": "one Animated.Value 0→1 drives every colour",
-    "segmented": "thumb slides with spring",
-    "switch": "track colour + thumb spring 380/30",
-    "reducedMotion": "instant",
-    "press": "Squish wrapper: Animated Pressable springs to ~0.95 (buttons) or 0.985 (rows, cards) while held, stiffness 520 damping 30, native driver; skipped under reduced motion"
+    "navGlass": "blur, wash and hairline fade in over the first 36pt of scroll; small title fades and rises 6pt between 30 and 48pt",
+    "largeTitle": "pull-down scales it to 1.12 from its left edge",
+    "rowPress": "6% highlight in 90ms, out 320ms; tile springs to 0.9",
+    "switch": "knob spring 520/26 with one small landing; stretches to 33pt while held; fill fades in",
+    "segmented": "thumb spring 500/40, squeezes to 0.95 while held; preview papers crossfade 340ms",
+    "slider": "1:1 drag, rubber-band past the ends, velocity-aware snap (420/30), 1.16 tick pulse, value bubble",
+    "expand": "measured height 380ms ease-out open / 260ms close, content fades and drops 8pt, chevron rotates 90°",
+    "sheet": "springs up 340/34, drag to dismiss, spinner then check with a 1.04 overshoot; counts tween to 0",
+    "reducedMotion": "no springs or scale; instant height; 120ms fades"
   },
   "responsive": {
-    "width": "360-430pt; cards full width with 16pt gutters"
+    "width": "360–430pt; time chips align to the text column from 380pt and take the full row below that"
   },
   "accessibility": [
-    "switch role with checked state",
-    "segmented control as radio group",
-    "rows are labelled Pressables",
-    "reduced motion respected"
+    "Switches use role switch with checked state; the whole row also toggles",
+    "Segmented control is a tablist with selected tabs",
+    "Slider is adjustable with min, max, now, a spoken value and increment/decrement actions",
+    "Time chips are radios",
+    "The expanding row reports expanded; the confirm button reports busy",
+    "The large title is a header; SVG icons are hidden",
+    "Reduced motion respected via AccessibilityInfo"
   ],
   "content": {
-    "app": "Folio",
-    "profile": "Inês Marlowe · Folio Plus · 412 entries · 38 day streak · 96k words"
+    "profile": "Inês Marlowe, ines@marlowe.studio, Folio Plus renews 2 Mar, 412 entries, 38-day streak, 96k words",
+    "sample": "Thursday, 9 October: Rain on the tram windows all the way to Graça…",
+    "reminderTimes": ["7:00 am", "12:30 pm", "8:30 pm", "10:00 pm"],
+    "colophon": "Folio 4.2 (1180) · Made slowly in Lisbon"
   },
   "avoid": [
-    "iOS system grey",
-    "emoji icons",
-    "external switch libraries",
-    "hard-coded single theme"
+    "A flat translucent grey nav bar",
+    "Default platform switches or sliders",
+    "Rows that cut open instead of animating height",
+    "Opacity animated on a BlurView's parent",
+    "Emoji or icon packs",
+    "A second accent colour",
+    "Lorem or placeholder copy"
   ]
 }
