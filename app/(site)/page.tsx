@@ -163,7 +163,7 @@ export default async function HomePage() {
           }
           body="Every component ships as code, as a designer’s prompt, and as structured JSON, so your agent can drop it in or rebuild it in your brand without losing what makes it good."
         />
-        <div className="mt-14 grid gap-4 lg:grid-cols-3">
+        <div className="mt-14 grid gap-4 lg:grid-cols-3 [&>*]:min-w-0">
           <FormatCard n="01" title="Code" body="One self-contained file. React 19 with Tailwind v4, or React Native core. No providers, no wrappers.">
             <div className="h-60 overflow-hidden px-5 pt-4 font-mono text-[11.5px] leading-[1.75] [&_pre]:!bg-transparent" dangerouslySetInnerHTML={{ __html: codeHtml }} />
           </FormatCard>
@@ -213,7 +213,7 @@ export default async function HomePage() {
 
       {/* ---------------------------------------------------------- For agents */}
       <section className="border-t border-white/[0.07]">
-        <div className="mx-auto grid max-w-[80rem] gap-14 px-5 py-24 sm:px-8 lg:grid-cols-12 lg:items-center lg:py-32">
+        <div className="mx-auto grid max-w-[80rem] gap-14 px-5 py-24 sm:px-8 lg:grid-cols-12 lg:items-center lg:py-32 [&>*]:min-w-0">
           <div className="lg:col-span-5">
             <SectionHead
               align="left"
@@ -307,7 +307,7 @@ export default async function HomePage() {
       </section>
 
       {/* ----------------------------------------------------------------- FAQ */}
-      <section className="mx-auto grid max-w-[80rem] gap-12 px-5 pb-28 sm:px-8 lg:grid-cols-12">
+      <section className="mx-auto grid max-w-[80rem] gap-12 px-5 pb-28 sm:px-8 lg:grid-cols-12 [&>*]:min-w-0">
         <div className="lg:col-span-4">
           <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-site-fg-3">FAQ</p>
           <h2 className="mt-4 text-[clamp(1.75rem,1.2rem+2vw,2.5rem)] font-semibold tracking-[-0.045em]">Questions, answered.</h2>
