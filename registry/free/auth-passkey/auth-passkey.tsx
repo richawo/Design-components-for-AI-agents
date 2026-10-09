@@ -497,8 +497,8 @@ function FingerprintGlyph({ uid, status, reduce }: { uid: string; status: Passke
             transition={{ type: "spring", stiffness: 500, damping: 30 }}
             className="absolute bottom-[6px] right-[6px] grid size-10 place-items-center rounded-full bg-[#2a1214] text-[#ff8a8a] shadow-[0_0_0_5px_#0b0b0c,inset_0_0_0_1px_rgba(255,138,138,0.35)] @[360px]:bottom-[8px] @[360px]:right-[8px]"
           >
-            <svg viewBox="0 0 24 24" className="size-[16px]" fill="none" stroke={ROSE} strokeWidth={2.4} strokeLinecap="round">
-              <path d="M12 7v6M12 17h.01" />
+            <svg viewBox="0 0 24 24" className="size-[20px]" fill="none" stroke={ROSE} strokeWidth={2.6} strokeLinecap="round">
+              <path d="M12 6v7.5M12 18h.01" />
             </svg>
           </motion.div>
         )}
@@ -606,7 +606,7 @@ export default function AuthPasskeyDemo() {
         onFallback={() => setNote("onFallback fired. Show your email sign-in.")}
       />
       <div className="flex w-full max-w-[400px] flex-col items-center gap-3">
-        <div role="radiogroup" aria-label="Demo outcome" className="flex max-w-full flex-wrap justify-center gap-1 rounded-full border border-white/[0.07] p-1">
+        <div role="radiogroup" aria-label="Demo outcome" className="flex max-w-full justify-center overflow-x-auto rounded-full border border-white/[0.07] p-1 [scrollbar-width:none]">
           {OUTCOMES.map((o) => {
             const on = o.id === outcome;
             return (
@@ -616,7 +616,7 @@ export default function AuthPasskeyDemo() {
                 role="radio"
                 aria-checked={on}
                 onClick={() => pick(o.id)}
-                className={`relative h-8 rounded-full px-3 font-mono text-[11px] tracking-[0.02em] transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-white active:translate-y-px ${on ? "text-white" : "text-white/45 hover:text-white/80"}`}
+                className={`relative h-8 shrink-0 rounded-full px-2.5 font-mono text-[11px] tracking-[0.02em] transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-white active:translate-y-px ${on ? "text-white" : "text-white/45 hover:text-white/80"}`}
               >
                 {on && <motion.span layoutId={`${uid}-pill`} className="absolute inset-0 rounded-full bg-white/[0.09]" transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 500, damping: 40 }} />}
                 <span className="relative">{o.label}</span>
