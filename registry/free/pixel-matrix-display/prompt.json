@@ -11,10 +11,12 @@
   "layout": {
     "panel": "#070707, border white/8%, radius 20px, padding clamp(12px,2.4vw,22px)",
     "matrix": "72x16 default; pitch = width/cols; dpr capped at 2",
-    "caption": "scene counter + label left, prev/pause/next right"
+    "caption": "scene counter + label left, prev/pause/next right",
+    "structure": "hooks useSceneCycle, useMicrophone, useMatrixCanvas; sub-components Caption, IconButton, MicButton; runtime state the draw loop reads (scene index, dissolve start, sweep start, pointer) lives in one ref, never React state",
+    "root": "@container root; panel padding clamp(12px, 2.6cqi, 22px)"
   },
   "typography": {
-    "bitmapFont": "5x7, A\u2013Z 0\u20139 : . - / % +, 1px glyph gap, 2x scale when rows >= 16",
+    "bitmapFont": "5x7, A–Z 0–9 : . - / % +, 1px glyph gap, 2x scale when rows >= 16",
     "caption": {
       "font": "mono",
       "size": "11px",
@@ -27,20 +29,27 @@
     "panel": "#070707",
     "dotOff": "white/5.5%",
     "dotOn": "#f5f5f0 (prop)",
-    "bloom": "shadowBlur in dot colour, grows with brightness level"
+    "bloom": "shadowBlur in dot colour, grows with brightness level",
+    "tokens": "PALETTE: panel #070707, line white/8%, off dots white/5.5%, caption white/45%, controls white/60% (hover white, bg white/6%), progress track white/10% fill white/60%, mic blocked #f87171; exposed as --pmd-* CSS variables",
+    "accent": "color prop (default #f5f5f0) is the one accent: lit dots, bloom and the live mic dot"
   },
   "motion": {
     "sceneInterval": 4800,
     "dissolve": "per-dot stable random threshold vs 700ms progress",
     "marqueeSpeed": "14 dots/s",
-    "clockColon": "always rasterised (width-stable); breathes with a 1Hz cosine fade 22\u2013100%",
-    "reducedMotion": "freeze scene time",
+    "clockColon": "always rasterised (width-stable); breathes with a 1Hz cosine fade 22–100%",
+    "reducedMotion": "no autoplay (prev/next still work), no sweep or pointer glow, 150ms fades; each scene freezes on a representative still (marquee and clock at t=0, others at t=2)",
     "pointer": "dots within ~4 of the cursor warm up (unlit) or step up a level (lit); eases 12% per frame",
     "hold": "hover holds the scene; a progress line fills over the interval and pauses while held",
-    "chrome": "label slides in 6px with 2px blur over 320ms; buttons press to 0.9"
+    "chrome": "label swaps with AnimatePresence: in 6px/2px blur over 320ms, out up 6px in 160ms ease-in; buttons press to 0.9",
+    "powerOn": "once at 30% in view: the panel rises 12px out of an 8px blur (0.5s ease-out [0.22,1,0.36,1]); at 0.22s the dots power on in a bright column sweeping left to right over 0.75s (front = x/cols with 3.5% per-dot jitter, band 5% wide drawn at full brightness; dots ahead of it are dark, behind it show the scene); the marquee text starts at the left edge and holds still while the sweep writes it in, and scene time starts once the sweep has passed; caption and controls follow at 0.5s and 0.56s; scenes begin to cycle only after power-on",
+    "marquee": "starts with the text at the left edge (ox = cols − ((t·14 + cols) mod total)), scrolls left and wraps in from the right",
+    "cycle": "one progress motion value animates 0→1 linearly over the interval and advances the scene on complete; the same value is the caption progress line's scaleX, so holding (hover, pause, mic) stops both and resuming continues",
+    "equaliserVoice": "unchanged from the approved version: log-spaced frequency bands from an AnalyserNode (fftSize 256) drive the bars with fast attack / slow release and falling peak dots"
   },
   "responsive": {
-    "all": "matrix scales to container width; dot count stays constant so the art never reflows"
+    "all": "matrix scales to container width; dot count stays constant so the art never reflows",
+    "narrow": "below @md the mic control shrinks to its dot (aria-label keeps the meaning) so the caption never wraps"
   },
   "accessibility": [
     "canvas role=img with aria-label naming the scene (and marquee text)",
@@ -63,7 +72,9 @@
     "a DOM node per dot",
     "shadowBlur per dot",
     "emoji",
-    "jittering clock digits"
+    "jittering clock digits",
+    "CSS keyframe progress lines or label animations",
+    "a display that pops in fully lit"
   ],
   "interaction": {
     "microphone": "Opt-in 'Use mic' toggle: getUserMedia + AnalyserNode (fftSize 256), log-spaced bands to bars, fast attack / slow release, falling peak-hold dots; holds the equaliser scene; stops all tracks on toggle, scene change or unmount; blocked permission shows 'Mic blocked'."

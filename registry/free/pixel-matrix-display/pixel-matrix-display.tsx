@@ -1,6 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode, type RefObject } from "react";
+import { AnimatePresence, animate, motion, useInView, useMotionValue, useReducedMotion, type MotionValue } from "motion/react";
+
+/* ------------------------------------------------------------------ */
+/* Types                                                                */
+/* ------------------------------------------------------------------ */
 
 export type SceneKey = "marquee" | "clock" | "equalizer" | "pulse" | "orbit";
 
@@ -9,7 +14,7 @@ export type PixelMatrixDisplayProps = {
   text?: string;
   /** Scenes to cycle through, in order. */
   scenes?: SceneKey[];
-  /** Lit-dot colour. */
+  /** Lit-dot colour: the display’s one accent. Also tints the bloom. */
   color?: string;
   /** Matrix size. 16 rows renders type at 2× scale. */
   cols?: number;
@@ -22,6 +27,59 @@ export type PixelMatrixDisplayProps = {
   microphone?: boolean;
   className?: string;
 };
+
+/* ------------------------------------------------------------------ */
+/* Tokens                                                               */
+/* ------------------------------------------------------------------ */
+
+const PALETTE = {
+  panel: "#070707",
+  line: "rgba(255,255,255,0.08)",
+  off: "rgba(255,255,255,0.055)", // unlit dots
+  caption: "rgba(255,255,255,0.45)",
+  control: "rgba(255,255,255,0.6)",
+  controlHover: "rgba(255,255,255,0.06)",
+  track: "rgba(255,255,255,0.1)",
+  progress: "rgba(255,255,255,0.6)",
+  blocked: "#f87171",
+} as const;
+
+const EASE_OUT = [0.22, 1, 0.36, 1] as const;
+const EASE_IN = [0.4, 0, 1, 1] as const;
+
+/** One place for the choreography. Seconds unless noted. */
+const MOTION = {
+  rise: 12, // px
+  blur: 8, // px
+  panel: 0.5,
+  sweepAt: 0.22, // the dots power on once the panel has nearly landed…
+  sweep: 0.75, // …in a bright column that crosses left to right
+  sweepBand: 0.05, // width of the bright front, as a share of the panel
+  sweepJitter: 0.035, // per-dot noise so the front is ragged, like real LEDs warming up
+  captionAt: 0.5,
+  captionStep: 0.06,
+  dissolveMs: 700, // scene change: each dot switches as progress passes its own threshold
+  pointerEase: 0.12, // per frame
+  fade: 0.15, // reduced motion
+} as const;
+
+const DOT = { radius: 0.34, levels: 5, reach: 4.2, bloom: 0.4, bloomStep: 0.18, nearLevels: 3 } as const;
+const MARQUEE_SPEED = 14; // dots per second
+
+function cssVars(): CSSProperties {
+  const vars: Record<string, string> = {};
+  for (const [k, v] of Object.entries(PALETTE)) vars[`--pmd-${k}`] = v;
+  return vars as CSSProperties;
+}
+
+/** Scene time (s) for the reduced-motion still of each scene. */
+const STILL_TIME: Record<SceneKey, number> = { marquee: 0, clock: 0, equalizer: 2, pulse: 2, orbit: 2 };
+
+const SCENE_LABELS: Record<SceneKey, string> = { marquee: "Marquee", clock: "Clock", equalizer: "Equaliser", pulse: "Pulse", orbit: "Orbit" };
+
+/* ------------------------------------------------------------------ */
+/* Font and scenes                                                      */
+/* ------------------------------------------------------------------ */
 
 /* 5×7 bitmap font. Each glyph is 7 rows; width is the row length. */
 const FONT: Record<string, string[]> = {
@@ -96,169 +154,184 @@ function textField(bits: number[][], width: number, ox: number, oy: number, s: n
 
 type AudioState = { live: boolean; levels: Uint8Array; peaks: number[]; shown: number[]; lastT: number };
 
-function makeScenes(text: string, audio: AudioState = { live: false, levels: new Uint8Array(0), peaks: [], shown: [], lastT: 0 }): Record<SceneKey, { label: string; scene: Scene }> {
+/** Every scene, closed over the marquee text and the shared audio meter state. */
+function makeScenes(text: string, audio: AudioState): Record<SceneKey, Scene> {
   const msg = rasterise(text);
   return {
-    marquee: {
-      label: "Marquee",
-      scene: (t, cols, rows) => {
-        const s = rows >= 16 ? 2 : 1;
-        const total = msg.width * s + cols;
-        const ox = cols - ((t * 14) % total);
-        return textField(msg.bits, msg.width, Math.round(ox), Math.floor((rows - 7 * s) / 2), s);
-      },
+    marquee: (t, cols, rows) => {
+      const s = rows >= 16 ? 2 : 1;
+      const total = msg.width * s + cols;
+      // Starts with the text at the left edge, so the power-on sweep writes it in; then scrolls and wraps in from the right.
+      const ox = cols - ((t * MARQUEE_SPEED + cols) % total);
+      return textField(msg.bits, msg.width, Math.round(ox), Math.floor((rows - 7 * s) / 2), s);
     },
-    clock: {
-      label: "Clock",
-      scene: (t, cols, rows) => {
-        const d = new Date();
-        const hh = String(d.getHours()).padStart(2, "0");
-        const mm = String(d.getMinutes()).padStart(2, "0");
-        // The colon is always rasterised, so the minutes never move. It
-        // breathes instead of blinking: a soft 1 Hz fade, never fully off.
-        const r = rasterise(`${hh}:${mm}`);
-        const s = rows >= 16 ? 2 : 1;
-        const ox = Math.floor((cols - r.width * s) / 2);
-        const oy = Math.floor((rows - 7 * s) / 2);
-        const colonFrom = ox + (FONT[hh[0]][0].length + 1 + FONT[hh[1]][0].length + 1) * s;
-        const colonTo = colonFrom + FONT[":"][0].length * s;
-        const colon = 0.22 + 0.78 * (0.5 + 0.5 * Math.cos(t * Math.PI * 2));
-        const field = textField(r.bits, r.width, ox, oy, s);
-        return (x, y) => {
-          const v = field(x, y);
-          return v && x >= colonFrom && x < colonTo ? v * colon : v;
-        };
-      },
+    clock: (t, cols, rows) => {
+      const d = new Date();
+      const hh = String(d.getHours()).padStart(2, "0");
+      const mm = String(d.getMinutes()).padStart(2, "0");
+      // The colon is always rasterised, so the minutes never move. It
+      // breathes instead of blinking: a soft 1 Hz fade, never fully off.
+      const r = rasterise(`${hh}:${mm}`);
+      const s = rows >= 16 ? 2 : 1;
+      const ox = Math.floor((cols - r.width * s) / 2);
+      const oy = Math.floor((rows - 7 * s) / 2);
+      const colonFrom = ox + (FONT[hh[0]][0].length + 1 + FONT[hh[1]][0].length + 1) * s;
+      const colonTo = colonFrom + FONT[":"][0].length * s;
+      const colon = 0.22 + 0.78 * (0.5 + 0.5 * Math.cos(t * Math.PI * 2));
+      const field = textField(r.bits, r.width, ox, oy, s);
+      return (x, y) => {
+        const v = field(x, y);
+        return v && x >= colonFrom && x < colonTo ? v * colon : v;
+      };
     },
-    equalizer: {
-      label: "Equaliser",
-      scene: (t, cols, rows) => {
-        const bars = Math.floor(cols / 3);
-        const live = audio.live && audio.levels.length > 0;
-        if (audio.peaks.length !== bars) {
-          audio.peaks = new Array(bars).fill(0);
-          audio.shown = new Array(bars).fill(0);
+    equalizer: (t, cols, rows) => {
+      const bars = Math.floor(cols / 3);
+      const live = audio.live && audio.levels.length > 0;
+      if (audio.peaks.length !== bars) {
+        audio.peaks = new Array(bars).fill(0);
+        audio.shown = new Array(bars).fill(0);
+      }
+      const dt = Math.min(0.05, Math.max(0, t - audio.lastT));
+      audio.lastT = t;
+      const heights = Array.from({ length: bars }, (_, i) => {
+        let v: number;
+        if (live) {
+          // Log-spaced bands: low bars get the voice's fundamentals,
+          // high bars its sibilance.
+          const n = audio.levels.length;
+          const a = Math.floor(Math.pow(n, i / bars));
+          const b = Math.max(a + 1, Math.floor(Math.pow(n, (i + 1) / bars)));
+          let sum = 0;
+          for (let k = a; k < b && k < n; k++) sum += audio.levels[k];
+          v = Math.min(1, Math.pow((sum / (b - a)) / 255, 1.4) * 1.6);
+        } else {
+          v = 0.55 + 0.45 * Math.sin(t * 3.1 + i * 0.7) * Math.sin(t * 1.3 + i * 0.23) + 0.2 * Math.sin(t * 7 + i * 1.9);
         }
-        const dt = Math.min(0.05, Math.max(0, t - audio.lastT));
-        audio.lastT = t;
-        const heights = Array.from({ length: bars }, (_, i) => {
-          let v: number;
-          if (live) {
-            // Log-spaced bands: low bars get the voice's fundamentals,
-            // high bars its sibilance.
-            const n = audio.levels.length;
-            const a = Math.floor(Math.pow(n, i / bars));
-            const b = Math.max(a + 1, Math.floor(Math.pow(n, (i + 1) / bars)));
-            let sum = 0;
-            for (let k = a; k < b && k < n; k++) sum += audio.levels[k];
-            v = Math.min(1, Math.pow((sum / (b - a)) / 255, 1.4) * 1.6);
-          } else {
-            v = 0.55 + 0.45 * Math.sin(t * 3.1 + i * 0.7) * Math.sin(t * 1.3 + i * 0.23) + 0.2 * Math.sin(t * 7 + i * 1.9);
-          }
-          v = Math.min(1, Math.max(0, v));
-          // Fast attack, slower release, like a real meter.
-          const prev = audio.shown[i];
-          const shown = v > prev ? prev + (v - prev) * 0.6 : prev + (v - prev) * Math.min(1, dt * 7);
-          audio.shown[i] = shown;
-          // Peak dots hold, then fall.
-          audio.peaks[i] = shown >= audio.peaks[i] ? shown : Math.max(shown, audio.peaks[i] - dt * 0.45);
-          return Math.max(1, Math.round(shown * rows));
-        });
-        return (x, y) => {
-          const b = Math.floor(x / 3);
-          if (x % 3 === 2 || b >= bars) return 0;
-          const h = heights[b];
-          const fromBottom = rows - 1 - y;
-          const peak = Math.min(rows - 1, Math.round(audio.peaks[b] * rows));
-          if (fromBottom < h - 1) return 0.55 + 0.45 * (fromBottom / rows);
-          if (fromBottom === h - 1) return 1;
-          return fromBottom === peak && peak > h ? 0.7 : 0;
-        };
-      },
+        v = Math.min(1, Math.max(0, v));
+        // Fast attack, slower release, like a real meter.
+        const prev = audio.shown[i];
+        const shown = v > prev ? prev + (v - prev) * 0.6 : prev + (v - prev) * Math.min(1, dt * 7);
+        audio.shown[i] = shown;
+        // Peak dots hold, then fall.
+        audio.peaks[i] = shown >= audio.peaks[i] ? shown : Math.max(shown, audio.peaks[i] - dt * 0.45);
+        return Math.max(1, Math.round(shown * rows));
+      });
+      return (x, y) => {
+        const b = Math.floor(x / 3);
+        if (x % 3 === 2 || b >= bars) return 0;
+        const h = heights[b];
+        const fromBottom = rows - 1 - y;
+        const peak = Math.min(rows - 1, Math.round(audio.peaks[b] * rows));
+        if (fromBottom < h - 1) return 0.55 + 0.45 * (fromBottom / rows);
+        if (fromBottom === h - 1) return 1;
+        return fromBottom === peak && peak > h ? 0.7 : 0;
+      };
     },
-    pulse: {
-      label: "Pulse",
-      scene: (t, cols, rows) => {
-        const head = (t * 26) % (cols + 12);
-        const mid = Math.floor(rows / 2);
-        const ecg = (x: number) => {
-          const p = ((x % 28) + 28) % 28;
-          if (p === 10) return -2;
-          if (p === 11) return -Math.floor(rows * 0.42);
-          if (p === 12) return Math.floor(rows * 0.3);
-          if (p === 13) return -1;
-          if (p >= 18 && p <= 20) return -1;
-          return 0;
-        };
-        return (x, y) => {
-          const age = head - x;
-          if (age < 0 || age > cols * 0.7) return 0;
-          const fade = 1 - age / (cols * 0.7);
-          const yy = mid + ecg(x);
-          const prev = mid + ecg(x - 1);
-          const lo = Math.min(yy, prev);
-          const hi = Math.max(yy, prev);
-          return y >= lo && y <= hi ? fade : 0;
-        };
-      },
+    pulse: (t, cols, rows) => {
+      const head = (t * 26) % (cols + 12);
+      const mid = Math.floor(rows / 2);
+      const ecg = (x: number) => {
+        const p = ((x % 28) + 28) % 28;
+        if (p === 10) return -2;
+        if (p === 11) return -Math.floor(rows * 0.42);
+        if (p === 12) return Math.floor(rows * 0.3);
+        if (p === 13) return -1;
+        if (p >= 18 && p <= 20) return -1;
+        return 0;
+      };
+      return (x, y) => {
+        const age = head - x;
+        if (age < 0 || age > cols * 0.7) return 0;
+        const fade = 1 - age / (cols * 0.7);
+        const yy = mid + ecg(x);
+        const prev = mid + ecg(x - 1);
+        const lo = Math.min(yy, prev);
+        const hi = Math.max(yy, prev);
+        return y >= lo && y <= hi ? fade : 0;
+      };
     },
-    orbit: {
-      label: "Orbit",
-      scene: (t, cols, rows) => {
-        const cx = cols / 2 - 0.5;
-        const cy = rows / 2 - 0.5;
-        const r = rows * 0.38;
-        const a = t * 4.2;
-        return (x, y) => {
-          const dx = (x - cx) / 1.0;
-          const dy = y - cy;
-          const d = Math.hypot(dx, dy);
-          if (Math.abs(d - r) > 0.75) return d < 1.2 ? 0.35 + 0.35 * Math.sin(t * 6) : 0;
-          let ang = a - Math.atan2(dy, dx);
-          ang = ((ang % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
-          return ang < 2.4 ? 1 - ang / 2.4 : 0.06;
-        };
-      },
+    orbit: (t, cols, rows) => {
+      const cx = cols / 2 - 0.5;
+      const cy = rows / 2 - 0.5;
+      const r = rows * 0.38;
+      const a = t * 4.2;
+      return (x, y) => {
+        const dx = x - cx;
+        const dy = y - cy;
+        const d = Math.hypot(dx, dy);
+        if (Math.abs(d - r) > 0.75) return d < 1.2 ? 0.35 + 0.35 * Math.sin(t * 6) : 0;
+        let ang = a - Math.atan2(dy, dx);
+        ang = ((ang % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+        return ang < 2.4 ? 1 - ang / 2.4 : 0.06;
+      };
     },
   };
 }
 
-export function PixelMatrixDisplay({
-  text = "DESIGN FOR AI   ",
-  scenes = ["marquee", "clock", "equalizer", "pulse", "orbit"],
-  color = "#f5f5f0",
-  cols = 72,
-  rows = 16,
-  interval = 4800,
-  chrome = true,
-  microphone = true,
-  className = "",
-}: PixelMatrixDisplayProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const wrapRef = useRef<HTMLDivElement>(null);
-  const [index, setIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
-  const stateRef = useRef({ index: 0, from: 0, changedAt: 0 });
-  const sceneKey = scenes.join(",");
-  const audioRef = useRef<AudioState>({ live: false, levels: new Uint8Array(0), peaks: [], shown: [], lastT: 0 });
-  const [mic, setMic] = useState<"off" | "asking" | "on" | "blocked">("off");
-  const micRef = useRef<{ stream: MediaStream; ctx: AudioContext; analyser: AnalyserNode } | null>(null);
 
-  const stopMic = () => {
-    const m = micRef.current;
-    micRef.current = null;
-    audioRef.current.live = false;
+/* ------------------------------------------------------------------ */
+/* Runtime state shared with the draw loop (refs, never React state)    */
+/* ------------------------------------------------------------------ */
+
+type Live = {
+  index: number;
+  from: number;
+  changedAt: number;
+  /** performance.now() when the power-on sweep began; null until the display has arrived. */
+  sweepStart: number | null;
+  pointer: { x: number; y: number; on: boolean; k: number };
+};
+
+type Mic = { stream: MediaStream; ctx: AudioContext; analyser: AnalyserNode };
+
+/* ------------------------------------------------------------------ */
+/* Hooks                                                                */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Advances scenes on a progress motion value: the same value fills the caption’s progress
+ * line, so pausing stops both together and resuming continues from where it was.
+ */
+function useSceneCycle(count: number, interval: number, running: boolean) {
+  const [index, setIndex] = useState(0);
+  const progress = useMotionValue(0);
+
+  useEffect(() => {
+    progress.set(0);
+  }, [index, progress]);
+
+  useEffect(() => {
+    if (!running || count < 2) return;
+    const run = animate(progress, 1, {
+      duration: ((1 - progress.get()) * interval) / 1000,
+      ease: "linear",
+      onComplete: () => setIndex((i) => (i + 1) % count),
+    });
+    return () => run.stop();
+  }, [running, index, interval, count, progress]);
+
+  return { index, setIndex, progress };
+}
+
+/** Opt-in microphone → AnalyserNode. Stops every track on toggle-off and on unmount. */
+function useMicrophone(audio: RefObject<AudioState>) {
+  const [state, setState] = useState<"off" | "asking" | "on" | "blocked">("off");
+  const mic = useRef<Mic | null>(null);
+
+  const stop = useCallback(() => {
+    const m = mic.current;
+    mic.current = null;
+    audio.current.live = false;
     m?.stream.getTracks().forEach((tr) => tr.stop());
     m?.ctx.close().catch(() => {});
-  };
+    setState((s) => (s === "on" ? "off" : s));
+  }, [audio]);
 
-  const toggleMic = async () => {
-    if (mic === "on") {
-      stopMic();
-      setMic("off");
-      return;
-    }
-    setMic("asking");
+  useEffect(() => stop, [stop]);
+
+  const toggle = async () => {
+    if (state === "on") return stop();
+    setState("asking");
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
       const ctx = new AudioContext();
@@ -266,47 +339,57 @@ export function PixelMatrixDisplay({
       analyser.fftSize = 256;
       analyser.smoothingTimeConstant = 0.55;
       ctx.createMediaStreamSource(stream).connect(analyser);
-      micRef.current = { stream, ctx, analyser };
-      audioRef.current.levels = new Uint8Array(analyser.frequencyBinCount);
-      audioRef.current.peaks = [];
-      audioRef.current.live = true;
-      const eq = scenes.indexOf("equalizer");
-      if (eq >= 0) setIndex(eq);
-      setMic("on");
+      mic.current = { stream, ctx, analyser };
+      audio.current.levels = new Uint8Array(analyser.frequencyBinCount);
+      audio.current.peaks = [];
+      audio.current.live = true;
+      setState("on");
     } catch {
-      setMic("blocked");
+      setState("blocked");
     }
   };
 
-  useEffect(() => stopMic, []);
+  return { state, toggle, stop, mic };
+}
 
+/**
+ * The canvas: sizes itself to its wrapper, then draws every frame while on screen. Lit dots
+ * are batched into one Path2D per brightness level (bloom via shadowBlur per level, never per dot).
+ */
+function useMatrixCanvas({
+  canvas: canvasRef,
+  wrap: wrapRef,
+  live: liveRef,
+  audio: audioRef,
+  mic: micRef,
+  text,
+  sceneKey,
+  color,
+  cols,
+  rows,
+  reduce,
+}: {
+  canvas: RefObject<HTMLCanvasElement | null>;
+  wrap: RefObject<HTMLDivElement | null>;
+  live: RefObject<Live>;
+  audio: RefObject<AudioState>;
+  mic: RefObject<Mic | null>;
+  text: string;
+  sceneKey: string;
+  color: string;
+  cols: number;
+  rows: number;
+  reduce: boolean;
+}) {
   useEffect(() => {
-    const st = stateRef.current;
-    st.from = st.index;
-    st.index = index;
-    st.changedAt = performance.now();
-  }, [index]);
-
-  // Hovering holds the current scene; the progress line pauses with it.
-  const [hovering, setHovering] = useState(false);
-  const holding = paused || hovering || mic === "on";
-  const pointerRef = useRef({ x: -99, y: -99, on: false, k: 0 });
-
-  useEffect(() => {
-    if (holding || scenes.length < 2) return;
-    const id = setInterval(() => setIndex((i) => (i + 1) % scenes.length), interval);
-    return () => clearInterval(id);
-  }, [holding, interval, scenes.length, index]);
-
-  useEffect(() => {
-    const canvas = canvasRef.current!;
-    const wrap = wrapRef.current!;
-    const ctx = canvas.getContext("2d")!;
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const canvas = canvasRef.current;
+    const wrap = wrapRef.current;
+    const ctx = canvas?.getContext("2d");
+    if (!canvas || !wrap || !ctx) return;
     const defs = makeScenes(text, audioRef.current);
     const list = sceneKey.split(",") as SceneKey[];
-    // A stable random threshold per dot drives the dissolve between scenes.
-    const noise = new Float32Array(cols * rows).map((_, i) => (Math.sin(i * 91.17) * 43758.5453) % 1).map(Math.abs);
+    // A stable random threshold per dot drives the dissolve between scenes and the ragged sweep front.
+    const noise = new Float32Array(cols * rows).map((_, i) => Math.abs((Math.sin(i * 91.17 + 1.7) * 43758.5453) % 1));
     let pitch = 10;
     let dpr = 1;
 
@@ -326,71 +409,80 @@ export function PixelMatrixDisplay({
     const io = new IntersectionObserver(([e]) => (visible = e.isIntersecting));
     io.observe(canvas);
 
-    const levels = 5;
-    const start = performance.now();
     let raf = 0;
     const draw = (now: number) => {
       raf = requestAnimationFrame(draw);
       if (!visible) return;
-      const t = (now - start) / 1000;
-      const st = stateRef.current;
+      const live = liveRef.current;
+      // Scene time starts once the sweep has passed, so the marquee holds still while it is written in.
+      const t = live.sweepStart === null ? 0 : Math.max(0, now - live.sweepStart - MOTION.sweep * 1000) / 1000;
+      // Reduced motion freezes each scene on a representative still.
+      const at = (k: SceneKey) => (reduce ? STILL_TIME[k] : t);
       const m = micRef.current;
       if (m) m.analyser.getByteFrequencyData(audioRef.current.levels as Uint8Array<ArrayBuffer>);
-      const mix = Math.min(1, (now - st.changedAt) / 700);
-      const cur = defs[list[st.index] ?? "marquee"].scene(reduce ? 2 : t, cols, rows);
-      const prev = mix < 1 ? defs[list[st.from] ?? "marquee"].scene(reduce ? 2 : t, cols, rows) : null;
 
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.clearRect(0, 0, cols * pitch, rows * pitch);
-      const r = pitch * 0.34;
+      const power = live.sweepStart === null ? 0 : reduce ? Infinity : ((now - live.sweepStart) / (MOTION.sweep * 1000)) * (1 + MOTION.sweepBand + MOTION.sweepJitter);
+      const mix = Math.min(1, (now - live.changedAt) / MOTION.dissolveMs);
+      const curKey = list[live.index] ?? "marquee";
+      const prevKey = list[live.from] ?? "marquee";
+      const cur = defs[curKey](at(curKey), cols, rows);
+      const prev = mix < 1 ? defs[prevKey](at(prevKey), cols, rows) : null;
+
+      const pt = live.pointer;
+      pt.k += ((pt.on && !reduce ? 1 : 0) - pt.k) * MOTION.pointerEase;
+
+      const r = pitch * DOT.radius;
       const off = new Path2D();
-      // Pointer glow: unlit dots near the cursor warm up, lit ones step up a level.
-      const pt = pointerRef.current;
-      pt.k += ((pt.on && !reduce ? 1 : 0) - pt.k) * 0.12;
-      const near: Path2D[] = [new Path2D(), new Path2D(), new Path2D()];
-      const reach = 4.2;
-      const lit: Path2D[] = Array.from({ length: levels }, () => new Path2D());
+      const near = Array.from({ length: DOT.nearLevels }, () => new Path2D());
+      const lit = Array.from({ length: DOT.levels }, () => new Path2D());
+      const dotAt = (p: Path2D, cx: number, cy: number) => {
+        p.moveTo(cx + r, cy);
+        p.arc(cx, cy, r, 0, Math.PI * 2);
+      };
+
       for (let y = 0; y < rows; y++) {
         for (let x = 0; x < cols; x++) {
           const n = noise[y * cols + x];
-          let v = prev && n > mix ? prev(x, y) : cur(x, y);
           const cx = (x + 0.5) * pitch;
           const cy = (y + 0.5) * pitch;
+          // Power-on: dark until the front reaches this dot, full bright while it passes.
+          const front = (x / cols) * (1 - MOTION.sweepJitter) + n * MOTION.sweepJitter;
+          if (power < front) continue;
+          if (power < front + MOTION.sweepBand) {
+            dotAt(lit[DOT.levels - 1], cx, cy);
+            continue;
+          }
+          let v = prev && n > mix ? prev(x, y) : cur(x, y);
+          // Pointer glow: unlit dots near the cursor warm up, lit ones step up a level.
           const d = pt.k > 0.01 ? Math.hypot(x + 0.5 - pt.x, y + 0.5 - pt.y) : 99;
-          const heat = d < reach ? (1 - d / reach) * pt.k : 0;
+          const heat = d < DOT.reach ? (1 - d / DOT.reach) * pt.k : 0;
           if (v <= 0.02) {
-            if (heat > 0.08) {
-              const lv = Math.min(2, Math.floor(heat * 3));
-              near[lv].moveTo(cx + r, cy);
-              near[lv].arc(cx, cy, r, 0, Math.PI * 2);
-            } else {
-              off.moveTo(cx + r, cy);
-              off.arc(cx, cy, r, 0, Math.PI * 2);
-            }
+            if (heat > 0.08) dotAt(near[Math.min(DOT.nearLevels - 1, Math.floor(heat * DOT.nearLevels))], cx, cy);
+            else dotAt(off, cx, cy);
           } else {
             v = Math.min(1, v + heat * 0.35);
-            const lv = Math.min(levels - 1, Math.floor(v * levels));
-            lit[lv].moveTo(cx + r, cy);
-            lit[lv].arc(cx, cy, r, 0, Math.PI * 2);
+            dotAt(lit[Math.min(DOT.levels - 1, Math.floor(v * DOT.levels))], cx, cy);
           }
         }
       }
+
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, cols * pitch, rows * pitch);
       ctx.shadowBlur = 0;
-      ctx.fillStyle = "rgba(255,255,255,0.055)";
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = PALETTE.off;
       ctx.fill(off);
       ctx.fillStyle = color;
-      for (let l = 0; l < 3; l++) {
+      near.forEach((p, l) => {
         ctx.globalAlpha = 0.18 + l * 0.15;
-        ctx.fill(near[l]);
-      }
-      ctx.globalAlpha = 1;
-      ctx.fillStyle = color;
+        ctx.fill(p);
+      });
       ctx.shadowColor = color;
-      for (let l = 0; l < levels; l++) {
-        ctx.globalAlpha = 0.25 + (0.75 * (l + 1)) / levels;
-        ctx.shadowBlur = pitch * (0.4 + l * 0.18);
-        ctx.fill(lit[l]);
-      }
+      lit.forEach((p, l) => {
+        ctx.globalAlpha = 0.25 + (0.75 * (l + 1)) / DOT.levels;
+        ctx.shadowBlur = pitch * (DOT.bloom + l * DOT.bloomStep);
+        ctx.fill(p);
+      });
       ctx.globalAlpha = 1;
     };
     raf = requestAnimationFrame(draw);
@@ -399,15 +491,93 @@ export function PixelMatrixDisplay({
       ro.disconnect();
       io.disconnect();
     };
-  }, [text, sceneKey, color, cols, rows]);
+  }, [canvasRef, wrapRef, liveRef, audioRef, micRef, text, sceneKey, color, cols, rows, reduce]);
+}
 
-  const defsForLabels = makeScenes("");
-  const current = scenes[index] ?? scenes[0];
+function enter(play: boolean, delay: number, reduce: boolean) {
+  if (reduce) return { initial: { opacity: 0 }, animate: { opacity: play ? 1 : 0 }, transition: { duration: MOTION.fade } };
+  return {
+    initial: { opacity: 0, y: MOTION.rise, filter: `blur(${MOTION.blur}px)` },
+    animate: play ? { opacity: 1, y: 0, filter: "blur(0px)", transitionEnd: { filter: "none" } } : undefined,
+    transition: { duration: MOTION.panel, ease: EASE_OUT, delay },
+  };
+}
+
+/* ------------------------------------------------------------------ */
+/* Component                                                            */
+/* ------------------------------------------------------------------ */
+
+export function PixelMatrixDisplay({
+  text = "DESIGN FOR AI   ",
+  scenes = ["marquee", "clock", "equalizer", "pulse", "orbit"],
+  color = "#f5f5f0",
+  cols = 72,
+  rows = 16,
+  interval = 4800,
+  chrome = true,
+  microphone = true,
+  className = "",
+}: PixelMatrixDisplayProps) {
+  const reduce = useReducedMotion() ?? false;
+  const root = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const play = useInView(root, { once: true, amount: 0.3 });
+  const liveRef = useRef<Live>({ index: 0, from: 0, changedAt: 0, sweepStart: null, pointer: { x: -99, y: -99, on: false, k: 0 } });
+  const audioRef = useRef<AudioState>({ live: false, levels: new Uint8Array(0), peaks: [], shown: [], lastT: 0 });
+  const sceneKey = scenes.join(",");
+
+  const [paused, setPaused] = useState(false);
+  const [hovering, setHovering] = useState(false); // hovering holds the current scene so it can be watched
+  const [poweredOn, setPoweredOn] = useState(false);
+  const mic = useMicrophone(audioRef);
+  // Reduced motion: no autoplay; the controls still step through scenes.
+  const running = poweredOn && !reduce && !paused && !hovering && mic.state !== "on";
+  const cycle = useSceneCycle(scenes.length, interval, running);
+
+  // Listening holds the equaliser on screen.
+  const { setIndex } = cycle;
+  useEffect(() => {
+    if (mic.state !== "on") return;
+    const eq = sceneKey.split(",").indexOf("equalizer");
+    if (eq >= 0) setIndex(eq);
+  }, [mic.state, sceneKey, setIndex]);
+
+  useMatrixCanvas({ canvas: canvasRef, wrap: wrapRef, live: liveRef, audio: audioRef, mic: mic.mic, text, sceneKey, color, cols, rows, reduce });
+
+  // Arrival: the panel lands, then the dots power on in a sweep, then scenes begin to cycle.
+  useEffect(() => {
+    if (!play) return;
+    const delay = reduce ? 0 : MOTION.sweepAt;
+    const begin = setTimeout(() => (liveRef.current.sweepStart = performance.now()), delay * 1000);
+    const done = setTimeout(() => setPoweredOn(true), (reduce ? 0 : delay + MOTION.sweep) * 1000);
+    return () => {
+      clearTimeout(begin);
+      clearTimeout(done);
+    };
+  }, [play, reduce]);
+
+  useEffect(() => {
+    const live = liveRef.current;
+    live.from = live.index;
+    live.index = cycle.index;
+    live.changedAt = performance.now();
+  }, [cycle.index]);
+
+  const step = (by: number) => {
+    mic.stop();
+    cycle.setIndex((i) => (i + by + scenes.length) % scenes.length);
+  };
+
+  const current = scenes[cycle.index] ?? scenes[0];
+  const label = SCENE_LABELS[current];
 
   return (
-    <div className={`w-full ${className}`}>
-      <div
-        className="relative overflow-hidden rounded-[20px] border border-white/[0.08] bg-[#070707] p-[clamp(12px,2.4vw,22px)] shadow-[inset_0_1px_0_rgba(255,255,255,0.06),inset_0_0_40px_rgba(0,0,0,0.9),0_30px_80px_-30px_rgba(0,0,0,0.9)]"
+    <div ref={root} className={`@container w-full font-sans ${className}`} style={cssVars()}>
+      <motion.div
+        {...enter(play, 0, reduce)}
+        className="relative overflow-hidden rounded-[20px] border p-[clamp(12px,2.6cqi,22px)] shadow-[inset_0_1px_0_rgba(255,255,255,0.06),inset_0_0_40px_rgba(0,0,0,0.9),0_30px_80px_-30px_rgba(0,0,0,0.9)]"
+        style={{ background: PALETTE.panel, borderColor: PALETTE.line }}
       >
         <div
           ref={wrapRef}
@@ -415,116 +585,157 @@ export function PixelMatrixDisplay({
           onPointerMove={(e) => {
             if (e.pointerType !== "mouse") return;
             const rect = e.currentTarget.getBoundingClientRect();
-            const pt = pointerRef.current;
+            const pt = liveRef.current.pointer;
             pt.x = ((e.clientX - rect.left) / rect.width) * cols;
             pt.y = ((e.clientY - rect.top) / rect.height) * rows;
             pt.on = true;
           }}
           onPointerEnter={(e) => e.pointerType === "mouse" && setHovering(true)}
           onPointerLeave={() => {
-            pointerRef.current.on = false;
+            liveRef.current.pointer.on = false;
             setHovering(false);
           }}
         >
-          <canvas ref={canvasRef} role="img" aria-label={`Dot-matrix display showing ${defsForLabels[current].label.toLowerCase()}${current === "marquee" ? `: ${text.trim()}` : ""}`} className="block" />
+          <canvas ref={canvasRef} role="img" aria-label={`Dot-matrix display showing ${label.toLowerCase()}${current === "marquee" ? `: ${text.trim()}` : ""}`} className="block" />
         </div>
+        {/* A faint glass sheen over the dots. */}
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 rounded-[20px] bg-[linear-gradient(180deg,rgba(255,255,255,0.05),transparent_38%)]" />
-      </div>
-      <style>{`@keyframes pmd-progress{from{transform:scaleX(0)}to{transform:scaleX(1)}}@keyframes pmd-label{from{opacity:0;transform:translateY(6px);filter:blur(2px)}to{opacity:1;transform:none;filter:none}}`}</style>
+      </motion.div>
+
       {chrome && (
-        <div className="mt-3 flex items-center justify-between gap-4 px-1 font-mono text-[11px] uppercase tracking-[0.16em] text-white/40">
-          <span className="flex min-w-0 items-center gap-3 tabular-nums">
-            <span className="relative block h-px w-10 shrink-0 overflow-hidden bg-white/10" aria-hidden="true">
-              {/* Fills over the scene's duration; pauses while held. */}
-              <span
-                key={`${index}-${sceneKey}`}
-                className="absolute inset-y-0 left-0 w-full origin-left bg-white/60 motion-reduce:hidden"
-                style={{ animation: `pmd-progress ${interval}ms linear forwards`, animationPlayState: holding ? "paused" : "running" }}
-              />
-            </span>
-            <span key={index} className="truncate animate-[pmd-label_320ms_cubic-bezier(0.22,1,0.36,1)] motion-reduce:animate-none">
-              {String(index + 1).padStart(2, "0")} / {String(scenes.length).padStart(2, "0")} · {defsForLabels[current].label}
-              {mic === "on" && current === "equalizer" ? " · live" : ""}
-            </span>
-          </span>
-          <div className="flex items-center gap-1">
-            {microphone && scenes.includes("equalizer") && (
-              <button
-                type="button"
-                aria-pressed={mic === "on"}
-                aria-label={mic === "on" ? "Stop listening" : "Drive the equaliser with your microphone"}
-                title={mic === "blocked" ? "Microphone blocked. Allow it in your browser to try again." : undefined}
-                onClick={toggleMic}
-                disabled={mic === "asking"}
-                className={`mr-1 flex h-8 items-center gap-2 rounded-full px-3 font-mono text-[10px] uppercase tracking-[0.16em] transition-[color,background-color,box-shadow,transform] duration-200 focus-visible:outline-2 focus-visible:outline-white/70 active:scale-95 disabled:opacity-60 ${
-                  mic === "on"
-                    ? "bg-white/[0.08] text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.14)]"
-                    : mic === "blocked"
-                      ? "text-[#ff9a7a] hover:bg-white/[0.05]"
-                      : "text-white/55 hover:bg-white/[0.06] hover:text-white"
-                }`}
-              >
-                <span className="relative flex size-2" aria-hidden="true">
-                  {mic === "on" && <span className="absolute inline-flex size-full animate-ping rounded-full opacity-60 motion-reduce:hidden" style={{ background: color }} />}
-                  <span className="relative inline-flex size-2 rounded-full" style={{ background: mic === "on" ? color : "currentColor", opacity: mic === "on" ? 1 : 0.6 }} />
-                </span>
-                {mic === "on" ? "Listening" : mic === "asking" ? "Allow mic…" : mic === "blocked" ? "Mic blocked" : "Use mic"}
-              </button>
+        <Caption
+          play={play}
+          reduce={reduce}
+          index={cycle.index}
+          count={scenes.length}
+          label={label}
+          live={mic.state === "on" && current === "equalizer"}
+          progress={cycle.progress}
+          showProgress={!reduce && scenes.length > 1}
+        >
+          {microphone && scenes.includes("equalizer") && <MicButton state={mic.state} color={color} onToggle={() => void mic.toggle()} />}
+          <IconButton label="Previous scene" onClick={() => step(-1)}>
+            <path d="M10 3.5 5.5 8l4.5 4.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+          </IconButton>
+          <IconButton label={paused ? "Resume" : "Pause"} pressed={paused} onClick={() => setPaused((p) => !p)}>
+            {paused ? (
+              <path d="M5 3.5v9l7-4.5z" fill="currentColor" />
+            ) : (
+              <>
+                <rect x="4" y="3.5" width="2.6" height="9" rx="0.8" fill="currentColor" />
+                <rect x="9.4" y="3.5" width="2.6" height="9" rx="0.8" fill="currentColor" />
+              </>
             )}
-            <button
-              type="button"
-              aria-label="Previous scene"
-              onClick={() => {
-                if (mic === "on") (stopMic(), setMic("off"));
-                setIndex((i) => (i - 1 + scenes.length) % scenes.length);
-              }}
-              className="flex size-8 items-center justify-center rounded-full text-white/60 transition-[color,background-color,transform] duration-150 hover:bg-white/[0.06] hover:text-white focus-visible:outline-2 focus-visible:outline-white/70 active:scale-90"
-            >
-              <svg viewBox="0 0 16 16" className="size-3.5" fill="none" aria-hidden="true">
-                <path d="M10 3.5 5.5 8l4.5 4.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-            <button
-              type="button"
-              aria-label={paused ? "Resume" : "Pause"}
-              onClick={() => setPaused((p) => !p)}
-              className="flex size-8 items-center justify-center rounded-full text-white/60 transition-[color,background-color,transform] duration-150 hover:bg-white/[0.06] hover:text-white focus-visible:outline-2 focus-visible:outline-white/70 active:scale-90"
-            >
-              {paused ? (
-                <svg viewBox="0 0 16 16" className="size-3.5" aria-hidden="true">
-                  <path d="M5 3.5v9l7-4.5z" fill="currentColor" />
-                </svg>
-              ) : (
-                <svg viewBox="0 0 16 16" className="size-3.5" aria-hidden="true">
-                  <rect x="4" y="3.5" width="2.6" height="9" rx="0.8" fill="currentColor" />
-                  <rect x="9.4" y="3.5" width="2.6" height="9" rx="0.8" fill="currentColor" />
-                </svg>
-              )}
-            </button>
-            <button
-              type="button"
-              aria-label="Next scene"
-              onClick={() => {
-                if (mic === "on") (stopMic(), setMic("off"));
-                setIndex((i) => (i + 1) % scenes.length);
-              }}
-              className="flex size-8 items-center justify-center rounded-full text-white/60 transition-[color,background-color,transform] duration-150 hover:bg-white/[0.06] hover:text-white focus-visible:outline-2 focus-visible:outline-white/70 active:scale-90"
-            >
-              <svg viewBox="0 0 16 16" className="size-3.5" fill="none" aria-hidden="true">
-                <path d="M6 3.5 10.5 8 6 12.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-          </div>
-        </div>
+          </IconButton>
+          <IconButton label="Next scene" onClick={() => step(1)}>
+            <path d="M6 3.5 10.5 8 6 12.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+          </IconButton>
+        </Caption>
       )}
     </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Caption and controls                                                 */
+/* ------------------------------------------------------------------ */
+
+function Caption({
+  play,
+  reduce,
+  index,
+  count,
+  label,
+  live,
+  progress,
+  showProgress,
+  children,
+}: {
+  play: boolean;
+  reduce: boolean;
+  index: number;
+  count: number;
+  label: string;
+  live: boolean;
+  progress: MotionValue<number>;
+  showProgress: boolean;
+  children: ReactNode;
+}) {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return (
+    <div className="mt-3 flex items-center justify-between gap-2 px-1 @md:gap-4 font-mono text-[11px] uppercase tracking-[0.16em]" style={{ color: PALETTE.caption }}>
+      <motion.span {...enter(play, MOTION.captionAt, reduce)} className="flex min-w-0 items-center gap-3 tabular-nums">
+        {showProgress && (
+          <span className="relative block h-px w-10 shrink-0 overflow-hidden" style={{ background: PALETTE.track }} aria-hidden="true">
+            {/* Fills over the scene’s duration; holds while the scene is held. */}
+            <motion.span className="absolute inset-0 origin-left" style={{ scaleX: progress, background: PALETTE.progress }} />
+          </span>
+        )}
+        <span className="relative min-w-0 truncate" aria-live="polite">
+          <AnimatePresence mode="popLayout" initial={false}>
+            <motion.span
+              key={index}
+              initial={reduce ? { opacity: 0 } : { opacity: 0, y: 6, filter: "blur(2px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              exit={reduce ? { opacity: 0 } : { opacity: 0, y: -6, filter: "blur(2px)", transition: { duration: 0.16, ease: EASE_IN } }}
+              transition={{ duration: 0.32, ease: EASE_OUT }}
+              className="block truncate"
+            >
+              {pad(index + 1)} / {pad(count)} · {label}
+              {live ? " · live" : ""}
+            </motion.span>
+          </AnimatePresence>
+        </span>
+      </motion.span>
+      <motion.div {...enter(play, MOTION.captionAt + MOTION.captionStep, reduce)} className="flex items-center gap-1">
+        {children}
+      </motion.div>
+    </div>
+  );
+}
+
+const controlCls =
+  "flex items-center justify-center rounded-full transition-[color,background-color,transform] duration-150 hover:bg-[var(--pmd-controlHover)] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-white/70 active:scale-90";
+
+function IconButton({ label, pressed, onClick, children }: { label: string; pressed?: boolean; onClick: () => void; children: ReactNode }) {
+  return (
+    <button type="button" aria-label={label} aria-pressed={pressed} onClick={onClick} className={`size-8 text-[var(--pmd-control)] ${controlCls}`}>
+      <svg viewBox="0 0 16 16" className="size-3.5" aria-hidden="true">
+        {children}
+      </svg>
+    </button>
+  );
+}
+
+function MicButton({ state, color, onToggle }: { state: "off" | "asking" | "on" | "blocked"; color: string; onToggle: () => void }) {
+  const on = state === "on";
+  return (
+    <button
+      type="button"
+      aria-pressed={on}
+      aria-label={on ? "Stop listening" : "Drive the equaliser with your microphone"}
+      title={state === "blocked" ? "Microphone blocked. Allow it in your browser to try again." : undefined}
+      onClick={onToggle}
+      disabled={state === "asking"}
+      className={`mr-1 h-8 min-w-8 gap-2 whitespace-nowrap px-2.5 font-mono @md:px-3 text-[10px] uppercase tracking-[0.16em] disabled:opacity-60 ${controlCls} ${
+        on ? "bg-white/[0.08] text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.14)]" : state === "blocked" ? "text-[var(--pmd-blocked)]" : "text-[var(--pmd-control)]"
+      }`}
+    >
+      <span className="relative flex size-2" aria-hidden="true">
+        {/* The one ambient signal while listening: a live dot in the display colour. */}
+        {on && <span className="absolute inline-flex size-full animate-ping rounded-full opacity-60 motion-reduce:hidden" style={{ background: color }} />}
+        <span className="relative inline-flex size-2 rounded-full" style={{ background: on ? color : "currentColor", opacity: on ? 1 : 0.6 }} />
+      </span>
+      {/* Narrow containers keep just the dot; the aria-label carries the meaning. */}
+      <span className="hidden @md:inline">{on ? "Listening" : state === "asking" ? "Allow mic…" : state === "blocked" ? "Mic blocked" : "Use mic"}</span>
+    </button>
   );
 }
 
 /** Demo: the display on a black stage. */
 export default function PixelMatrixDisplayDemo() {
   return (
-    <div className="flex min-h-[440px] w-full items-center justify-center bg-black px-4 py-12 sm:px-10">
+    <div className="flex min-h-dvh w-full items-center justify-center bg-black px-4 py-12 sm:px-10">
       <div className="w-full max-w-3xl">
         <PixelMatrixDisplay />
       </div>
