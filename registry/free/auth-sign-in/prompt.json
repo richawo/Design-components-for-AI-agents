@@ -1,19 +1,20 @@
 {
   "component": "AuthSignIn",
-  "intent": "An email-and-password sign-in card whose focus ring is drawn by a point of light that runs once around the field from where you clicked, then settles. Every auth state is designed: invalid, loading, success, lockout with countdown, caps lock, SSO in flight.",
+  "intent": "A dark, monochrome email-and-password sign-in card that rises from blur and staggers its contents in reading order; its focus ring is drawn by a point of light that runs once around the field from where you clicked. Every auth state is designed: invalid, loading, success, lockout with countdown, caps lock, SSO in flight.",
   "platform": "web",
   "stack": {
     "framework": "React 19",
-    "styling": "Tailwind CSS v4 (container queries)",
-    "animation": "motion/react (motion values, AnimatePresence, imperative animate for shakes)",
+    "styling": "Tailwind CSS v4 (container queries); colour tokens in one PALETTE object as --si-* CSS variables",
+    "animation": "motion/react: motion values + useTransform for the focus light and wipe (no per-frame setState), AnimatePresence for swaps, imperative animate for shakes (stopped on unmount)",
     "icons": "inline SVG only: Google, GitHub and Apple marks, eye, lock, alert"
   },
   "layout": {
-    "card": "max-width 400px, #0a0a0b, radius 20px, inset 1px ring 8% white, 6% top highlight, padding 36/32/32 from 384px container up, 28/24/24 below",
+    "card": "max-width 400px, radius 20px, surface + inset hairline + top highlight + deep shadow; padding 36/32/32 from 384px container up, 28/24/24 below",
     "order": "brand tile 40px → heading → subtitle → banner (lockout/error) → SSO grid → divider → email → password (Forgot? on label row) → remember-me → submit → sign-up line",
-    "sso": "equal-column grid, 8px gap, 44px tall, radius 11px, 3% white fill, 9% inset ring",
-    "fields": "44px, radius 11px, 2.5% white fill, 10% inset ring (17% hover); label 13px/500 8px above",
-    "submit": "44px full width, #ededef on #0a0a0b, radius 11px"
+    "sso": "equal-column grid, 8px gap, 44px tall, radius 11px, faint field fill, hairline inset ring",
+    "fields": "44px, radius 11px, faint fill, hairline inset ring (stronger on hover); label 13px/500 8px above",
+    "submit": "44px full width, accent fill with black-or-white text by contrast, radius 11px, 7% text-colour wash on hover",
+    "code": "hooks useTimeouts, useLockout, useShake, useBox; sub-components Banner, SsoRow, Divider, EmailField, PasswordField, FieldShell, FocusLight, PasswordInput, RevealButton, Checkbox, SubmitButton"
   },
   "typography": {
     "heading": {
@@ -26,30 +27,53 @@
     "subtitle": {
       "size": "14.5px",
       "leading": 1.55,
-      "color": "#a0a0a8"
+      "color": "muted token"
     },
     "input": "16px under 384px container (no iOS zoom), 15px above",
-    "divider": "10.5px Geist Mono uppercase, tracking 0.16em, #6e6e76",
+    "divider": "10.5px Geist Mono uppercase, tracking 0.16em, faint token",
     "messages": "13px / 1.45"
   },
   "color": {
-    "surface": "#0a0a0b",
-    "text": "#ededef",
-    "secondary": "#a0a0a8",
-    "muted": "#6e6e76",
-    "error": "#ff6b5e (text #ff8f84)",
-    "warning": "#f5c451",
-    "success": "#3ddc97 on #04140c",
-    "focusRing": "white 62% at rest after the light passes"
+    "approach": "monochrome; one accent prop (default = theme ink) on the submit button and the checked box; colour otherwise only for meaning (error, warning) and the Google mark",
+    "dark": {
+      "surface": "#0a0a0b",
+      "tile": "#141416",
+      "ink": "#ededef",
+      "label": "#cfcfd4",
+      "muted": "#a0a0a8",
+      "faint": "#7d7d86",
+      "placeholder": "#5c5c64",
+      "hairline": "rgba(255,255,255,0.1) / 0.18 hover",
+      "focusRing": "rgba(255,255,255,0.62)",
+      "error": "#ff6b5e (text #ff8f84)",
+      "warning": "#f5c451"
+    },
+    "light": {
+      "surface": "#ffffff",
+      "tile": "#f4f4f5",
+      "ink": "#18181b",
+      "label": "#3f3f46",
+      "muted": "#52525b",
+      "faint": "#71717a",
+      "placeholder": "#a1a1aa",
+      "hairline": "rgba(24,24,27,0.14) / 0.26 hover",
+      "focusRing": "rgba(24,24,27,0.7)",
+      "error": "#dc2626 (text #b91c1c)",
+      "warning": "#b45309"
+    },
+    "washes": "color-mix() of error/warning at 5–8% with a 24–26% inset ring",
+    "success": "no green: the button keeps its accent and draws a check",
+    "providers": "Google keeps its four brand colours; GitHub and Apple marks take the ink"
   },
   "motion": {
     "focusLight": "SVG rounded-rect path measured with ResizeObserver; t 0→1 over 800ms cubic-bezier(.65,0,.35,1); ring dasharray t·P/(P−t·P) offset −start; comet = 6 stacked dashes ending at the head (tails 84/46/22px at .14/.28/.55, halo 16px×8px at .07 and 13px×4.5px at .16, core 10px×2.25px at 1); comet fades over the last 18%; start = pointer x on top edge minus radius, else top-left",
     "invalid": "field shakes once x 0,−7,6,−4,2,0 over 420ms; message height auto + y −6→0 over 300ms ease-out",
     "reveal": "eye lids flatten, pupil shrinks, slash draws with a mask gap (320ms); a ghost input holding the old rendering and the real input get complementary mask gradients with a 16% soft edge, sweeping left→right over 500ms",
-    "submit": "label → spinner → drawn check in the same 44px box; 8px offset + 3px blur cross-fade; green on success",
+    "submit": "label → spinner → drawn check in the same 44px box; 8px offset + 3px blur cross-fade (220ms); stays accent on success; onSuccess after 700ms",
     "countdown": "lockout digits roll (enter from −70%, exit to +70%, 320ms)",
-    "entrance": "card y 12→0, blur 4→0, 600ms ease-out, once",
-    "reducedMotion": "ring appears without travel, no shakes or wipes, opacity-only swaps ≤150ms"
+    "entrance": "once at 30% in view: card y 16→0 + blur 10→0 over 600ms; then mark → heading → subtitle → SSO buttons (30ms apart) → divider (hairlines scaleX outward) → email → password → remember → submit → sign-up, 45ms apart from 120ms, each opacity + 10px rise + 6px blur clearing over 450ms; ≈900ms total",
+    "reducedMotion": "150ms fades only; ring appears without travel; no shakes or wipes",
+    "cleanup": "every timeout via useTimeouts (cleared on unmount); lockout interval cleared; shake and lap animations stopped on unmount"
   },
   "responsive": {
     "390px": "three SSO buttons still fit with labels; 24px card padding; 16px inputs",
@@ -62,7 +86,7 @@
     "eye toggle is aria-pressed with the label 'Show password' and keeps the caret in the field on pointer toggles",
     "caps lock detected with getModifierState and announced",
     "SSO buttons labelled 'Continue with Google' etc; aria-busy while loading",
-    "2px #ededef focus-visible outline, offset 2px, no transition; presses scale .97–.98"
+    "2px ink focus-visible outline, offset 2px, no transition; presses scale .97–.98"
   ],
   "content": {
     "product": "Halyard",
@@ -84,6 +108,9 @@
     "a greyed-out disabled button for the lockout",
     "outline-none on buttons (kills Tailwind v4 focus rings)",
     "SVG blur filters on the comet (artifacts); use layered strokes",
-    "network images for provider logos"
+    "network images for provider logos",
+    "a green success fill",
+    "inline hex outside the palette",
+    "timeouts that outlive the component"
   ]
 }
