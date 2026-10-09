@@ -155,9 +155,31 @@ something a senior product designer would put in their portfolio.
   `clamp()` up to 6–9rem) with tight tracking (−0.03 to −0.06em) and leading of
   0.9–1.05 on display sizes. Body runs at 15–18px, leading 1.5–1.7, measure
   45–70ch. Mono, small and uppercase, carries metadata.
-- **Keep the palette restrained.** One neutral family (warm paper and ink,
-  cool zinc, or true black), plus one or two accents used with intent.
-  Contrast meets WCAG AA.
+- **Monochrome first.** These are general components that people restyle,
+  so the default palette is black, white and greys: true black or near-black
+  surfaces, neutral greys, white ink (or the light inverse). Colour is an
+  intentional divergence, used only where it carries meaning: one strong
+  brand accent on the primary action or the selection, the colour of the
+  thing the content depicts (a payment card, an album cover, an activity
+  ring, a map route), data series, and semantic states (success, error). If
+  a colour isn't doing one of those jobs, it's grey. Expose the accent as one
+  prop or token so a user rebrands in one place. Contrast meets WCAG AA.
+- **Polish the whole frame, not just the subject.** Everything visible is
+  held to the same bar as the thing the component is named for. The
+  content around a tab bar, a sheet or a header is never filler: it is
+  choreographed like the component itself. On first view, and on every
+  tab or view switch:
+  - blocks stagger in (opacity, 8–16px rise, a 6–8px blur that clears;
+    40–70ms apart), in reading order;
+  - numbers count up from zero (or from their previous value) with
+    tabular numerals and a light blur that clears as they land;
+  - charts draw: lines stroke in, bars grow from the baseline, rings and
+    avatar rings draw along their path;
+  - progress bars and meters fill once their block has landed, not before;
+  - the order is containers, then text, then figures, then data and
+    progress, so the eye is led rather than flooded.
+  Every view a component can show (each tab, each step, each state) gets
+  this treatment, not only the first one.
 - **Use space as a material.** Generous, deliberate whitespace. Stick to a
   4/8px rhythm and align everything to something.
 - **Make motion meaningful.** Animate to explain state, guide attention or
@@ -174,7 +196,9 @@ something a senior product designer would put in their portfolio.
 
 - Purple-to-blue gradients, gradient text on headlines, and the
   "AI-gradient blob" behind the hero.
-- Glassmorphism as a default, or a glow around everything.
+- Glassmorphism as a default, or a glow around everything. Colour as
+  decoration: rainbow icon tiles, a different hue per card, tinted
+  backgrounds that don't mean anything.
 - A centred hero with a pill badge saying "✨ Introducing …".
 - Emoji as icons or bullets. Sparkle icons for "AI".
 - Three identical feature cards with an icon in a rounded square, a title and
