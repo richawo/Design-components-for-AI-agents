@@ -1,63 +1,67 @@
 {
   "component": "HeroAppTilt",
-  "intent": "Dark product hero: headline, sub and CTAs above a markup-drawn mail app window that starts tilted back 22deg and flattens as it scrolls into place while a spotlight behind it brightens.",
+  "intent": "Dark-first product hero: headline, sub and CTAs above a markup-drawn mail app window that starts tilted back 22deg and flattens as it scrolls into place, with every part of the window choreographed in and its counts ticking up.",
   "platform": "web",
   "stack": {
     "framework": "React 19",
-    "styling": "Tailwind CSS v4 (container queries, including a named @container/win)",
-    "animation": "motion/react: useScroll on the window frame, useSpring, useTransform"
+    "styling": "Tailwind CSS v4 (container queries, including a named @container/win; CSS variables for theme tokens)",
+    "animation": "motion/react: useScroll on the window frame, useSpring, useTransform, useInView, animate() into motion values, variants with a custom start time"
   },
   "layout": {
     "copy": "centred column, max-w 1240px, pt 80/112px",
     "stage": "mt 56/80px; perspective 1200px wrapper with bottom mask (#000 52% -> transparent 96%)",
-    "spotlight": "absolute, -top-44, h 620px radial white 20% -> 6% -> 0",
-    "window": "radius 14/18px; title bar 44px; body 440/520/600px; sidebar 212px (>= @4xl/win); list 340-372px (full width < @2xl/win); detail flex-1 (>= @2xl/win)"
+    "spotlight": "absolute, -top-44, h 620px radial <spot> -> transparent 70%",
+    "window": "radius 14/18px; title bar 44px; body 440/520/600px; sidebar 212px (>= @4xl/win) with the overnight card directly under the three triage folders; list 340-372px (full width < @2xl/win); detail flex-1 (>= @2xl/win)"
   },
   "typography": {
-    "headline": { "font": "display", "weight": 600, "size": "clamp(2.6rem, 1.1rem + 5.4cqw, 5.75rem)", "leading": 0.97, "tracking": "-0.055em", "muted": "white/45" },
-    "body": { "size": "16/17px", "leading": 1.6, "color": "white/60", "maxWidth": "50ch" },
+    "headline": { "font": "display", "weight": 600, "size": "clamp(2.6rem, 1.1rem + 5.4cqw, 5.75rem)", "leading": 0.97, "tracking": "-0.055em", "muted": "ink/45, its own inline-block" },
+    "body": { "size": "16/17px", "leading": 1.6, "color": "ink/60", "maxWidth": "50ch" },
     "eyebrow": { "font": "mono", "size": "11px", "tracking": "0.2em" },
-    "app": "rows 13/12.5/12px, detail body 13.5px leading 1.65, subject 19-21px semibold, mono 10-10.5px labels"
+    "app": "one scale: mono 10px labels, 11.5px meta, 12.5px UI, 13px rows, 13.5px/1.65 prose, subject 19-21px semibold; all figures tabular-nums"
   },
   "color": {
-    "background": "#000",
-    "window": "#0a0a0b, ring white/9%, hairlines white/5-7%",
-    "text": "white at 90/70/60/35%",
-    "accent": "#f2c46d (eyebrow dot, Draft chips, draft label, progress bar only)",
-    "avatars": "tinted greys #2b2621, #20262b, #26232b, #222823, #2b2224, #24252a"
+    "approach": "monochrome first; every tone is ink at an opacity; one accent prop",
+    "dark": { "page": "#000000", "window": "#0a0a0b", "ink": "#ffffff", "avatar": "#1d1d20" },
+    "light": { "page": "#ececee", "window": "#ffffff", "ink": "#0b0b0c", "avatar": "#ececef" },
+    "accent": "prop, default #f2c46d, meaning 'Tern prepared this': eyebrow dot, the dot inside Draft marks, the dot before 'Drafted by Tern', the overnight meter fill. Never text or fills.",
+    "avatars": "one neutral grey for everyone; label swatches differ by grey weight"
   },
   "motion": {
-    "scroll": "useScroll target window frame, offset ['start end','start 20%']; rescaled by p0 = (vh - top)/(0.8 vh) so it starts fully tilted on load",
-    "spring": "stiffness 170, damping 32, mass 0.5; jump on first measure",
-    "mapping": "rotateX (1-p)*22deg, scale 0.94->1, y 24->0px, origin 50% 0%; spotlight opacity 0.22->1; top edge light 0.15->0.4->1",
-    "entrance": "eyebrow, headline (blur 8px), body and CTAs fade up 600-800ms with 80ms steps; window fades in over 900ms at 300ms",
+    "scroll": "useScrollFlatten hook: useScroll target window frame, offset ['start end','start 20%']; rescaled by p0 = min(0.85, (vh - top)/(0.8 vh)) so it starts fully tilted on load",
+    "spring": "stiffness 170, damping 32, mass 0.5; jump on first value",
+    "mapping": "rotateX (1-p)*tilt, scale 0.94->1, y 24->0px, origin 50% 0%; spotlight opacity 0.22->1; top edge light 0.15->0.4->1",
+    "entrance": "one T timeline. Copy: eyebrow 0, headline 0.06 + muted 0.13, body 0.20, CTAs 0.26/0.31 (opacity, y 12, blur 8px, 600ms). Window on its own useInView (15%): shell blur-fade 0.28, title bar 0.38, sidebar items every 25ms from 0.44, list header 0.46, rows every 45ms from 0.52 (selected bar draws scaleY after its row), subject 0.54, sender 0.59, body 0.60+, draft card 0.72, draft text 0.80+ (y 8, blur 6px, 500ms)",
+    "numbers": "folder counts, list count and 'done of triaged' count up from 0 over 700ms with a 3px blur clearing; motion values only, no per-frame setState",
+    "progress": "overnight meter scaleX 0 -> done/triaged at 0.92s for 700ms, after its card lands",
     "buttons": "150ms hover, press 0.97 in 75ms, icon nudges 2px",
-    "reducedMotion": "window flat, spotlight full, no blur, opacity-only fades"
+    "reducedMotion": "window flat, spotlight full, 150ms opacity fades, numbers and meter set instantly"
   },
   "responsive": {
-    "phone": "CTAs stacked full width; window shows the list only",
+    "phone": "CTAs stacked full width; window shows the list only and choreographs when scrolled into view",
     "tablet": "list + detail",
     "desktop": "sidebar + list + detail"
   },
   "accessibility": [
     "window is a figure with role img and a descriptive aria-label; its contents are illustrative",
-    "CTAs are links with 2px white focus-visible ring offset 4px",
-    "reduced motion shows the window flat",
-    "no scroll hijacking: the page scrolls normally"
+    "CTAs are links with a 2px ink focus-visible ring offset 4px",
+    "reduced motion shows the window flat with opacity-only fades",
+    "no scroll hijacking: the page scrolls normally",
+    "accent is never the only carrier of meaning: Draft marks are labelled"
   ],
   "content": {
     "eyebrow": "Tern 2.4 · Now on Windows",
     "headline": "Your inbox, triaged before coffee.",
     "body": "Tern reads the overnight pile, sorts it into Reply, Read later and Ignored, and drafts the boring answers in your voice. You just press send.",
     "ctas": ["Download for Mac", "See how triage works"],
-    "app": "7 threads (Priya Raman: renewal 40 seats; Jonas Lindqvist: offer letter; Halcyon Capital: Q3 update; ...), open thread with a reply drafted by Tern"
+    "app": "7 threads (Priya Raman: renewal 40 seats; Jonas Lindqvist: offer letter; Halcyon Capital: Q3 update; ...), overnight 182 of 251 sorted, open thread with a reply drafted by Tern and Northwind_order_40.pdf attached"
   },
   "avoid": [
     "screenshots or images of UI",
-    "coloured traffic lights and rainbow avatars",
+    "coloured traffic lights and hue-per-person avatars",
+    "gold text, gold chips or gold fills; the accent is a dot or a meter",
     "glow or gradient borders around the window",
-    "scroll-jacking or pinning",
-    "tilting past flat or re-tilting jitter",
-    "more than one accent colour"
+    "the window popping in as one block",
+    "progress filling before its card lands",
+    "scroll-jacking, pinning, or re-tilting jitter"
   ]
 }

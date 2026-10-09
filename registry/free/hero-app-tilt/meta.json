@@ -4,7 +4,7 @@
   "tier": "free",
   "platform": "web",
   "category": "hero",
-  "description": "A product hero whose markup-drawn mail app window starts tilted back 22° and flattens as you scroll, while a soft spotlight behind it brightens.",
+  "description": "A dark product hero: a markup-drawn mail app tilted back 22° flattens as you scroll, while its sidebar, rows and draft stagger in and the counts tick up.",
   "tags": [
     "hero",
     "saas",
@@ -13,14 +13,16 @@
     "3d tilt",
     "app ui",
     "email",
-    "dark"
+    "dark",
+    "light",
+    "stagger"
   ],
   "dependencies": [
     "motion"
   ],
   "theme": "dark",
   "previewHeight": 900,
-  "usage": "import { HeroAppTilt } from \"@/components/design-for-ai/hero-app-tilt\";\n\n<HeroAppTilt\n  headline=\"Your inbox, triaged before coffee.\"\n  muted=\"before coffee.\"\n  primary={{ label: \"Download for Mac\", href: \"/download\" }}\n  tilt={18}\n/>",
+  "usage": "import { HeroAppTilt } from \"@/components/design-for-ai/hero-app-tilt\";\n\n<HeroAppTilt\n  headline=\"Your inbox, triaged before coffee.\"\n  muted=\"before coffee.\"\n  primary={{ label: \"Download for Mac\", href: \"/download\" }}\n  accent=\"#f2c46d\"\n  theme=\"dark\"\n  tilt={18}\n/>",
   "props": [
     {
       "name": "eyebrow",
@@ -38,7 +40,7 @@
       "name": "muted",
       "type": "string",
       "default": "\"before coffee.\"",
-      "description": "Substring of the headline set at 45% white."
+      "description": "Substring of the headline set at 45% ink; it lands as its own beat after the first part."
     },
     {
       "name": "body",
@@ -69,7 +71,7 @@
     {
       "name": "folders",
       "type": "{ label; count?; icon }[]",
-      "description": "Sidebar folders; the first is selected and its count heads the list."
+      "description": "Sidebar folders. The first three are the triage buckets (the first is selected and heads the list); counts tick up from zero."
     },
     {
       "name": "labels",
@@ -85,7 +87,7 @@
     {
       "name": "threads",
       "type": "{ from; initials; subject; preview; time; unread?; drafted? }[]",
-      "description": "Rows in the list; drafted rows get a gold Draft chip."
+      "description": "Rows in the list; drafted rows get a Draft mark with an accent dot. Rows stagger in 45ms apart."
     },
     {
       "name": "selected",
@@ -95,14 +97,32 @@
     },
     {
       "name": "message",
-      "type": "{ subject; from; fromEmail; to; time; body: string[]; draft: string[] }",
+      "type": "{ subject; from; fromEmail; to; time; body: string[]; draft: string[]; attachment? }",
       "description": "The open thread and the reply Tern drafted for it."
+    },
+    {
+      "name": "overnight",
+      "type": "{ triaged: number; done: number }",
+      "default": "{ triaged: 251, done: 182 }",
+      "description": "Sidebar summary; its accent meter fills to done / triaged after the card lands."
     },
     {
       "name": "tilt",
       "type": "number",
       "default": "22",
       "description": "Starting tilt in degrees; flattens to 0 as the window scrolls into place."
+    },
+    {
+      "name": "accent",
+      "type": "string",
+      "default": "\"#f2c46d\"",
+      "description": "The one signal colour: things Tern prepared (eyebrow dot, Draft marks, draft label, overnight meter)."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Black stage or a daylight grey one with a white window."
     }
   ],
   "added": "2026-10-09"
