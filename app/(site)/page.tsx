@@ -66,11 +66,11 @@ export default async function HomePage() {
 
         <div className="mx-auto max-w-[80rem] px-5 pb-16 pt-20 text-center sm:px-8 sm:pt-28 lg:pb-20">
           <Link
-            href="/categories/three-d"
+            href="/categories/auth"
             className="group inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] py-1 pl-1 pr-3.5 text-[13px] text-site-fg-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition duration-200 hover:border-white/20 hover:bg-white/[0.04] active:scale-[0.97] active:duration-75 hover:text-site-fg"
           >
             <span className="rounded-full bg-white/[0.08] px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-site-fg">New</span>
-            Three.js, charts and pixel components
+            Auth, headers, footers and new 3D scenes
             <svg viewBox="0 0 16 16" className="size-3.5 transition-transform group-hover:translate-x-0.5" fill="none" aria-hidden="true">
               <path d="M6 3.5 10.5 8 6 12.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
