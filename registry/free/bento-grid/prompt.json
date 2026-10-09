@@ -1,6 +1,6 @@
 {
   "component": "BentoGrid",
-  "intent": "Feature section for an analytics product: a hairline bento grid of six tiles, each with a live illustration built in markup.",
+  "intent": "One focused feature grid for an analytics product: a hairline bento of six live tiles drawn in markup, monochrome with one signal accent, dark first, every tile choreographed on entrance.",
   "platform": "web",
   "stack": {
     "framework": "React 19",
@@ -10,15 +10,14 @@
     "fonts": "font-display, font-sans, font-mono"
   },
   "layout": {
-    "container": "max-w-7xl, px 20/32/48px, py 64/80/112px",
-    "header": "12-col: eyebrow + heading (7 cols), intro + link bottom-aligned (5 cols)",
-    "grid": "gap-px on ink/9% background, 1px border, radius 22px; tiles #fbfaf8, square corners",
+    "root": "section with @container and theme tokens as CSS variables; max-w-7xl inner, px 16/32/48, py 40/64/80. No marketing header by default: an optional header (eyebrow, heading + muted clause, intro, link) renders only when `heading` is passed.",
+    "grid": "gap-px, no backing colour; each tile carries a 1px ring in a solid rule colour that fills the gap, so rules arrive with their tiles; 1px outer border, radius 22px, overflow hidden",
     "columns": {
       "base": 1,
-      "md": 2,
-      "lg": 6
+      "@3xl": 2,
+      "@5xl": 6
     },
-    "spans_lg": {
+    "spans_@5xl": {
       "trend": 4,
       "stat": 2,
       "heatmap": 3,
@@ -26,12 +25,13 @@
       "alerts": 2,
       "map": 4
     },
-    "spans_md": {
+    "spans_@3xl": {
       "trend": 2,
       "map": 2,
       "others": 1
     },
-    "tile": "padding 24/32px; mono label, 22-24px display title, 15px body; illustration pushed down with mt-auto"
+    "tile": "padding 24/32px; mono label, 22-24px display title, 15px body; illustration pushed down with mt-auto",
+    "composition": "tiles are exported; <BentoGrid> with children renders them inside the themed hairline sheet"
   },
   "typography": {
     "heading": {
@@ -52,35 +52,54 @@
     "numbers": "tabular-nums everywhere"
   },
   "color": {
-    "paper": "#f6f5f2",
-    "tile": "#fbfaf8",
-    "ink": "#141412",
-    "accent": "#d5f56a",
-    "hairline": "ink at 9%",
-    "body": "ink at 68-75%",
-    "darkTileText": "#f6f5f2 at 55-85%"
+    "approach": "monochrome first: black, white and greys; one accent prop for live/peak signals only",
+    "dark": {
+      "page": "#0a0a0a",
+      "tile": "#101010",
+      "ink": "#f4f4f2",
+      "rule": "#222222",
+      "statTile": "inverted: #f4f4f2 with #0a0a0a ink",
+      "mapTile": "#060606",
+      "field": "#161616",
+      "answerCard": "#1b1b1b"
+    },
+    "light": {
+      "page": "#f6f5f2",
+      "tile": "#fbfaf8",
+      "ink": "#141412",
+      "rule": "#e2e1dd",
+      "statTile": "inverted: #141412 with #f6f5f2 ink",
+      "mapTile": "#141412",
+      "field": "#ffffff",
+      "answerCard": "#141412"
+    },
+    "accent": "#d5f56a by default (prop): trend end dot, heatmap peak cell, live dot, city dots and rings, the answer's last mini-bar. Nothing else.",
+    "inkScale": "text 50-85% ink; heat levels 6/16/34/60/100% ink; switches ink track with surface-coloured knob",
+    "tokens": "one PALETTE object per theme, written to --bn-* variables; tiles re-point --bn-ink locally to invert or deepen"
   },
   "motion": {
     "ease": [
-      0.2,
-      0.8,
-      0.2,
+      0.22,
+      1,
+      0.36,
       1
     ],
-    "trend": "clipPath rect reveals the line over 1.6s (not pathLength); d morphs over 0.9s; metrics rotate every 4.2s until clicked",
-    "stat": "count 0 to value over 1.6s; comparison bars 0.4s and 2.4s linear",
-    "heatmap": "stagger-in 25ms/hour + 40ms/day; random cell pops every 650ms",
-    "search": "types at 38-88ms per char, holds the answer 2.6s, deletes 3 chars per 18ms, next query",
-    "alerts": "a switch flips every 1.7s until the user touches one; spring knob (600/34); preview message follows the watched switch",
-    "map": "rings r 1.6 to 7, fading over 2.4s, staggered; random city pops and counts tick every 1.1s; top-4 list re-sorts with layout",
-    "staging": "entrances play only for tiles at least 30% on screen at mount or approaching later; otherwise render the finished state",
-    "reducedMotion": "final states, no loops, no typing, no counting",
-    "press": "buttons and links press to 0.97, full-width rows to 0.99, 150ms; one shared transition for colour and transform"
+    "timeline": "per tile, seconds after the tile starts: tile lands 0 (opacity + 16px rise, no blur, 0.6s) → label/title/body 0.08/0.13/0.18 (12px rise out of 8px blur) → figures 0.24 (count up from 0 over 0.9s with an 8px blur that clears) → data 0.30 (chart/map draw 0.7s, cells wave in, bars grow) → progress 0.62 (meters fill, top-city list). Tiles in a row start 70ms apart; rows lower in the viewport start up to 220ms later.",
+    "trend": "line revealed by widening a clipPath rect (non-scaling stroke, not pathLength); end dot springs in as the line arrives; d morphs over 0.9s; metrics cycle every 4.2s while on screen until clicked; each new total re-counts from zero",
+    "stat": "184 counts up out of a blur; Northstar meter fills in 0.35s, the warehouse meter crawls 1.4s linear (the joke)",
+    "heatmap": "168 plain spans with CSS opacity/scale transitions delayed in a diagonal wave (12ms per step); then a random cell pops every 650ms",
+    "search": "types 38-88ms per char, holds the answer 2.6s, erases 3 chars per 18ms; answer card cross-fades with a 4px blur; mini-bars grow from the baseline",
+    "alerts": "preview, then switch rows stagger 50ms; a switch flips every 1.7s until touched; knob on spring 500/40",
+    "map": "total counts up; dot world sweeps in west to east via a clipPath; each city springs in as the sweep passes; rings expand r 1.6→7 over 2.4s only after the sweep; counts tick every 1.1s; top-4 list re-sorts with layout",
+    "implementation": "figures are motion values rendered as children (no per-frame setState); loops run only while the tile is on screen",
+    "staging": "everything starts hidden in server HTML; tiles at least 25% on screen at mount play; tiles 320px below the fold at mount render finished and replay when they approach; anything else (deep links, full-page screenshots) renders finished",
+    "reducedMotion": "final states immediately, no loops, no typing, no counting",
+    "press": "buttons 0.97, links 0.97; focus rings instant"
   },
   "responsive": {
-    "mobile": "single column; segmented control wraps under the title; map shows its total under the title; top cities in 2 columns",
-    "md": "2 columns; trend and map full width",
-    "lg": "6 columns stepping 4/2, 3/3, 2/4"
+    "base": "single column; segmented control under the title; map total under the title; top cities in 2 columns",
+    "@3xl": "2 columns; trend and map full width",
+    "@5xl": "6 columns stepping 4/2, 3/3, 2/4"
   },
   "accessibility": [
     "section aria-labelledby the h2; tiles are articles with h3s",
@@ -109,12 +128,14 @@
     ]
   },
   "avoid": [
-    "three identical icon cards",
-    "gradients, glows, glassmorphism",
-    "shadows on tiles",
-    "screenshots or images",
+    "a marketing headline baked into the component",
+    "tinted tiles or a coloured stat tile",
     "more than one accent colour",
+    "gradients, glows, glassmorphism",
+    "skeleton placeholder bars",
+    "a grey backing slab that shows while tiles fade in",
     "pathLength on non-scaling strokes",
-    "looping animation under reduced motion"
+    "per-frame React state for counting",
+    "loops running off screen or under reduced motion"
   ]
 }

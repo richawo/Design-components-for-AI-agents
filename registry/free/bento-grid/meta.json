@@ -4,7 +4,7 @@
   "tier": "free",
   "platform": "web",
   "category": "features",
-  "description": "A hairline bento grid for an analytics product: six tiles, each with a live illustration in markup, from a self-drawing chart to a pulsing dot-map.",
+  "description": "A hairline bento grid for an analytics product: six live tiles in black and white, from a self-drawing chart to a dot-map, staggering in with counting figures.",
   "tags": [
     "bento",
     "features",
@@ -13,27 +13,39 @@
     "dashboard",
     "live",
     "world map",
-    "heatmap"
+    "heatmap",
+    "dark",
+    "monochrome"
   ],
   "dependencies": [
     "motion",
     "lucide-react"
   ],
-  "theme": "light",
-  "previewHeight": 1500,
-  "usage": "import { BentoGrid } from \"@/components/design-for-ai/bento-grid\";\n\nexport default function Page() {\n  return (\n    <BentoGrid\n      heading=\"Metrics that\"\n      headingItalic=\"talk back.\"\n      link={{ label: \"Book a demo\", href: \"/demo\" }}\n    />\n  );\n}",
+  "theme": "dark",
+  "previewHeight": 1720,
+  "usage": "import { BentoGrid, TrendTile, MapTile } from \"@/components/design-for-ai/bento-grid\";\n\nexport default function Page() {\n  return (\n    <>\n      {/* The default six tiles, with an optional header */}\n      <BentoGrid heading=\"Metrics that\" headingMuted=\"talk back.\" link={{ label: \"Book a demo\", href: \"/demo\" }} />\n\n      {/* Or compose your own grid from the exported tiles */}\n      <BentoGrid theme=\"light\" accent=\"#ff5a1f\">\n        <TrendTile {...trend} className=\"@3xl:col-span-2 @5xl:col-span-4\" />\n        <MapTile {...map} className=\"@3xl:col-span-2 @5xl:col-span-2\" />\n      </BentoGrid>\n    </>\n  );\n}",
   "props": [
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Near-black surfaces with white ink, or warm paper with near-black ink. The stat tile always inverts; the map tile sinks to the darkest surface."
+    },
+    {
+      "name": "accent",
+      "type": "string",
+      "default": "\"#d5f56a\"",
+      "description": "The one signal colour: the chart’s “now” dot, the heatmap peak, live cities and the answer’s latest bar."
+    },
     {
       "name": "heading",
       "type": "string",
-      "default": "\"Analytics that\"",
-      "description": "Plain part of the section heading."
+      "description": "Optional section header. Omit it (the default) and the grid stands on its own."
     },
     {
-      "name": "headingItalic",
+      "name": "headingMuted",
       "type": "string",
-      "default": "\"answer back.\"",
-      "description": "Italic serif ending of the heading."
+      "description": "Second clause of the heading at 40% ink."
     },
     {
       "name": "eyebrow",
@@ -52,33 +64,38 @@
     },
     {
       "name": "trend",
-      "type": "TileCopy & { dates; metrics: { name; total; delta; points: number[] }[] }",
-      "description": "Line-chart tile. The chart draws itself, then morphs between metrics every 4.2s until someone picks one."
+      "type": "TrendTileProps",
+      "description": "Line-chart tile. The line draws in, then morphs between metrics every 4.2s until someone picks one; each new total counts up."
     },
     {
       "name": "stat",
-      "type": "TileCopy & { value: number; unit: string; comparison }",
-      "description": "Accent tile: one number that counts up, plus two comparison bars."
+      "type": "StatTileProps",
+      "description": "Inverted tile: one number that counts up out of a blur, then two meters that fill."
     },
     {
       "name": "heatmap",
-      "type": "TileCopy & { peakLabel: string }",
-      "description": "Weekday × hour heatmap tile; cells keep ticking while visible."
+      "type": "HeatmapTileProps",
+      "description": "Weekday × hour heatmap; cells fill in a diagonal wave, then keep ticking while on screen."
     },
     {
       "name": "search",
-      "type": "TileCopy & { queries: { q; answer; detail }[] }",
+      "type": "SearchTileProps",
       "description": "Search tile that types each question and then shows its answer."
     },
     {
       "name": "alerts",
-      "type": "TileCopy & { settings: { label; detail; on }[]; preview }",
+      "type": "AlertsTileProps",
       "description": "Settings card of real switches that flip themselves until touched; the preview message follows the watched switch."
     },
     {
       "name": "map",
-      "type": "TileCopy & { liveLabel: string; cities: { name; lon; lat; visitors }[] }",
-      "description": "Dark tile: dot-matrix world map with pulsing cities, a live total and the top four cities."
+      "type": "MapTileProps",
+      "description": "Deep tile: a dot-matrix world that sweeps in west to east, pulsing cities, a live total and the top four cities."
+    },
+    {
+      "name": "children",
+      "type": "ReactNode",
+      "description": "Compose your own grid from the exported tiles (TrendTile, StatTile, HeatmapTile, SearchTile, AlertsTile, MapTile) instead of the default six."
     }
   ],
   "added": "2026-10-07"
