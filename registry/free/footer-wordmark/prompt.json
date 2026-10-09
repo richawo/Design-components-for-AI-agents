@@ -1,19 +1,19 @@
 {
   "component": "FooterWordmark",
-  "intent": "A dark, premium studio footer that closes the page with a big line, link columns, a newsletter, a live local clock, and a giant wordmark measured to span the container exactly and cut off above its baseline.",
+  "intent": "A dark, premium studio footer that closes the page with a big line, link columns, a newsletter, a live local clock, and a giant wordmark measured to span the container exactly and cut off above its baseline. It reveals once on scroll: rules draw, words and columns stagger out of a blur, the clock counts up, and the wordmark rises out of the floor.",
   "platform": "web",
   "stack": {
     "framework": "React 19",
-    "styling": "Tailwind CSS v4",
-    "animation": "motion/react",
+    "styling": "Tailwind CSS v4 with container queries (@container on the footer)",
+    "animation": "motion/react: variants on one shared reveal timeline (useInView per block), pathLength rings, motion-value clock",
     "fonts": "font-display (Geist, tight tracking), font-sans (Geist), font-mono (Geist Mono)"
   },
   "layout": {
-    "container": "max-w-[1440px], px 20/32/48, pt 64/80/96",
+    "container": "footer is the @container; inner max-w-[1440px], px 20/32/48, pt 64/80/96",
     "rows": [
-      "closing line + large mailto link; back-to-top ring button on the right from md",
-      "2px white/15% rule; grid 2 -> 4 (sm) -> 12 (lg): Studio, Work, Elsewhere, Visit (2 cols each) + newsletter (cols 9-12; full row split in two at sm-md)",
-      "1px rule; legal line + legal links in mono",
+      "closing line + large mailto link; back-to-top ring button on the right from @3xl (768px)",
+      "2px white/15% rule; grid 2 -> 4 (@2xl) -> 12 (@6xl, 1152px): Studio, Work, Elsewhere, Visit (2 cols each) + newsletter (cols 9-12; full row split copy/form at @2xl-@5xl)",
+      "1px white/8% rule; legal line + legal links in mono, split from @5xl",
       "fitted wordmark flush to both container edges, cut 14% above the baseline"
     ]
   },
@@ -67,6 +67,7 @@
     }
   },
   "color": {
+    "tokens": "one COLORS object exposed as CSS variables",
     "field": "#050506",
     "text": "#ffffff",
     "buttons": "white with black text",
@@ -74,22 +75,27 @@
     "errorBorder": "#f87171",
     "errorText": "#fca5a5",
     "muted": "white at 45-60%",
-    "light": "white radial 8% from below, hairline top"
+    "wordmark": "vertical metal gradient #ffffff 90% → #a1a1aa 50% → #3f3f46 5% (gradient id from useId)",
+    "hairline": "top hairline fading out at both ends; no glow, no radial light, no accent colour"
   },
   "motion": {
-    "wordmark": "fades in and rises 24px over 0.8s, ease [0.2,0.8,0.2,1], once measured",
-    "links": "background-size underline grows from the left (300ms); the email underline retracts to the right (500ms)",
-    "chips": "arrow chips rotate -45deg on hover; back-to-top arrow lifts 4px",
-    "newsletter": "AnimatePresence mode=wait: form exits up 8px, success pill rises 8px over 0.4s",
-    "clock": "ticks every second; colon pulses; live dot pings",
-    "reducedMotion": "no rise, ping or pulse; back-to-top scrolls instantly",
-    "press": "buttons and links press to 0.97, full-width rows to 0.99, 150ms; one shared transition for colour and transform"
+    "reveal": "four blocks (closing line, column grid, wordmark, legal bar), each once at 25% visible; a shared clock keeps blocks that arrive together in order while one scrolled to later starts at once. Items rise 12px out of an 8px blur, 600ms cubic-bezier(0.22,1,0.36,1)",
+    "lead": "top hairline draws from the centre; headline words 35ms apart; email at 300ms with its underline drawing left→right; arrow chip pops (scale .6→1) at 420ms; back-to-top ring draws along its path (pathLength, 700ms) from 240ms, arrow and label follow",
+    "grid": "slot 320ms: the 2px rule draws; each column 60ms after the last, its title then links 30ms apart; Visit: address, then the live dot pops and starts pinging, then the clock counts from 00:00 to local time over 700ms with tabular figures and a 3px blur settle; the newsletter lands last",
+    "wordmark": "slot 500ms: rises from fully below the floor (translate in viewBox units) and sharpens from an 8px blur over 900ms, once measured",
+    "legal": "slot 620ms: rule draws, legal line, links 30ms apart",
+    "links": "background-size underline grows from the left (300ms); the email underline retracts to the right on hover (400ms)",
+    "chips": "arrow chip rotates -45deg on hover; back-to-top arrow lifts 4px",
+    "newsletter": "AnimatePresence mode=wait: form exits up 8px, success pill rises 8px out of a 4px blur over 0.4s and its check draws",
+    "clock": "ticks on each minute boundary (one timeout, no per-second polling); the dot's ping is the one ambient signal and only runs while on screen",
+    "reducedMotion": "150ms fades only; clock set instantly; no rise, blur, ping; back-to-top scrolls instantly",
+    "press": "buttons and links press to 0.97, the email to 0.99, 150ms"
   },
   "responsive": {
     "mobile": "2-col link grid, newsletter full width, back-to-top row under the email, wordmark about 50px tall at 390px",
-    "sm": "4-col links; newsletter split copy/form",
-    "md": "back-to-top moves to the right of the closing line",
-    "lg": "12-col grid; legal bar splits left/right; wordmark about 190px tall at 1440px"
+    "@2xl": "4-col links; newsletter split copy/form",
+    "@3xl": "back-to-top moves to the right of the closing line",
+    "@6xl": "12-col grid; wordmark about 190px tall at 1440px"
   },
   "accessibility": [
     "each link column is a nav with aria-label",
@@ -131,7 +137,9 @@
     "sizing the wordmark with a guessed vw value",
     "social icon rows",
     "grey low-contrast footer",
-    "saturated slabs",
-    "equal-weight tiny link columns with no hierarchy"
+    "saturated slabs, glow or radial light",
+    "equal-weight tiny link columns with no hierarchy",
+    "a pulsing clock colon (one ambient signal only)",
+    "revealing the whole footer as one block"
   ]
 }

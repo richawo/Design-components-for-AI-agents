@@ -4,7 +4,7 @@
   "tier": "free",
   "platform": "web",
   "category": "footers",
-  "description": "A dark studio footer with a closing line, link columns, a live local clock, a newsletter and a giant metallic wordmark measured to span the width.",
+  "description": "A dark studio footer that reveals on scroll: closing line, drawn rules, staggered link columns, a counting local clock, a newsletter and a wordmark rising from the floor.",
   "tags": [
     "footer",
     "navigation",
@@ -12,7 +12,9 @@
     "newsletter",
     "studio",
     "big type",
-    "local time"
+    "local time",
+    "dark",
+    "scroll reveal"
   ],
   "dependencies": [
     "motion"
@@ -25,7 +27,7 @@
       "name": "wordmark",
       "type": "string",
       "default": "\"saltmarsh\"",
-      "description": "The giant word. Measured on the client and fitted to the container width exactly. Words without descenders read best."
+      "description": "The giant word. Measured on the client and fitted to the container width exactly; rises out of the floor on reveal. Words without descenders read best."
     },
     {
       "name": "headline",
@@ -42,7 +44,7 @@
     {
       "name": "columns",
       "type": "{ title: string; links: { label; href; note?; external? }[] }[]",
-      "description": "Link columns. note renders as a small black tag (\"2 open\"); external adds \u2197 and opens a new tab."
+      "description": "Link columns. note renders as a small mono tag (\"2 open\"); external adds ↗ and opens a new tab. Links stagger in lightly within each column."
     },
     {
       "name": "address",
@@ -59,7 +61,7 @@
       "name": "timeZone",
       "type": "string",
       "default": "\"Europe/London\"",
-      "description": "IANA time zone for the clock, which ticks every second."
+      "description": "IANA time zone for the clock, which counts up from 00:00 on reveal and then ticks each minute."
     },
     {
       "name": "newsletter",
@@ -85,7 +87,7 @@
       "name": "clip",
       "type": "number",
       "default": "0.14",
-      "description": "How much of the wordmark's cap height the bottom edge cuts off (0\u20130.3)."
+      "description": "How much of the wordmark's cap height the bottom edge cuts off (0–0.3)."
     }
   ],
   "added": "2026-10-07"
