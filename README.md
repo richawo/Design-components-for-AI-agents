@@ -40,13 +40,23 @@ Every component is responsive (to its container, not just the viewport), keyboar
 npx shadcn@latest add https://design.yaps.ai/r/chart-portfolio.json
 ```
 
-### MCP server (Claude Code, Cursor, Windsurf)
+### MCP server (Claude Code, Cursor, Windsurf, VS Code)
+
+The site is a remote MCP server; nothing to install:
 
 ```bash
-claude mcp add design-for-ai -- npx -y design-for-ai-mcp
+claude mcp add --transport http design-for-ai https://design.yaps.ai/mcp
 ```
 
-Then ask: *"Find a Design for AI chart component and add it to the dashboard."*
+Then ask: *"Find a Design for AI chart component and add it to the dashboard."* Prefer a local process? `npx -y design-for-ai-mcp`.
+
+### CLI
+
+```bash
+npx design-for-ai search sign in
+npx design-for-ai add auth-sign-in      # writes the file, installs its dependencies
+npx design-for-ai prompt auth-sign-in   # the design brief, for your agent
+```
 
 ### Claude skill
 
@@ -58,6 +68,7 @@ Open any component page, hit **Copy for agent**, and paste it into your chat. Yo
 
 ### For language models
 
+- Every page has a Markdown twin: add `.md` to any URL ([`/index.md`](https://design.yaps.ai/index.md), [`/pricing.md`](https://design.yaps.ai/pricing.md))
 - [`/llms.txt`](https://design.yaps.ai/llms.txt): a map of the library
 - [`/llms-full.txt`](https://design.yaps.ai/llms-full.txt): every free component's prompt and JSON prompt
 - [`/api/registry`](https://design.yaps.ai/api/registry): a JSON index of everything
@@ -72,7 +83,9 @@ registry/pro/           Pro components, cloned from a private repo at build time
 registry/pro-manifest.json   Public metadata for Pro components
 content/                Docs and blog posts (Markdown)
 scripts/                Registry build, screenshots, Pro sync
-packages/mcp/           design-for-ai-mcp, the MCP server
+packages/mcp/           design-for-ai-mcp, the local (stdio) MCP server
+packages/cli/           design-for-ai, the CLI
+lib/mcp.ts, app/mcp/    the remote MCP server at /mcp
 skills/design-for-ai/   Claude skill: find, adapt and review against the principles
 docs/COMPONENT_SPEC.md  The bar every component is held to
 ```
