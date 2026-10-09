@@ -917,7 +917,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "headers",
-    "description": "A black pill header that morphs like a dynamic island into search, a live deploy notification and an account menu, with a blob spring and blurred content swaps.",
+    "description": "A dark pill header that morphs like a dynamic island into search, a live deploy notification and an account menu: one blob spring, staggered contents.",
     "tags": [
       "dynamic island",
       "header",
@@ -925,20 +925,22 @@
       "search",
       "notification",
       "morphing",
-      "command k"
+      "command k",
+      "dark",
+      "monochrome"
     ],
     "dependencies": [
       "motion"
     ],
-    "theme": "light",
-    "previewHeight": 560,
+    "theme": "dark",
+    "previewHeight": 640,
     "usage": "import { HeaderIsland } from \"@/components/design-for-ai/header-island\";\n\n<HeaderIsland\n  brand={{ name: \"Acme\", href: \"/\" }}\n  links={[{ label: \"Home\", href: \"/\" }, { label: \"Projects\", href: \"/projects\" }, { label: \"Docs\", href: \"/docs\" }]}\n  notification={deploy}\n  onNotificationClose={() => setDeploy(null)}\n  onSelect={(item) => runCommand(item.id)}\n/>",
     "props": [
       {
         "name": "brand",
         "type": "{ name: string; href: string }",
         "default": "{ name: \"Kiln\", href: \"#\" }",
-        "description": "Home link; the mark sits in a white 30px circle."
+        "description": "Home link; the mark sits in a white 30px circle and lands first."
       },
       {
         "name": "links",
@@ -964,7 +966,7 @@
       {
         "name": "account",
         "type": "{ name, email, initials, plan?, usage? }",
-        "description": "Avatar, the menu header and an optional usage meter (0–1)."
+        "description": "Avatar (its ring draws on first view), the menu header and an optional usage meter (0–1) that fills and counts up."
       },
       {
         "name": "accountItems",
@@ -1002,7 +1004,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "headers",
-    "description": "A Stripe-style header whose single dropdown panel morphs its width, height and position between menus, with direction-aware content and a springing caret.",
+    "description": "A Stripe-style header whose one dropdown panel morphs size and position between menus, rows staggering in and art drawing; dark by default, with a light theme.",
     "tags": [
       "mega menu",
       "header",
@@ -1010,13 +1012,15 @@
       "dropdown",
       "navigation",
       "morphing",
-      "light"
+      "dark",
+      "light",
+      "monochrome"
     ],
     "dependencies": [
       "motion"
     ],
-    "theme": "light",
-    "previewHeight": 640,
+    "theme": "dark",
+    "previewHeight": 680,
     "usage": "import { HeaderMorphMega } from \"@/components/design-for-ai/header-morph-mega\";\n\n<HeaderMorphMega\n  brand={{ name: \"Acme\", href: \"/\" }}\n  sections={[\n    { label: \"Product\", columns: [{ heading: \"Build\", links: [{ label: \"Docs\", href: \"/docs\", glyph: \"docs\" }] }] },\n  ]}\n  cta={{ label: \"Get started\", href: \"/signup\" }}\n/>",
     "props": [
       {
@@ -1046,7 +1050,7 @@
         "name": "cta",
         "type": "{ label: string; href: string }",
         "default": "{ label: \"Start now\", href: \"#signup\" }",
-        "description": "Ink pill button."
+        "description": "Pill button in the theme's ink; lands last in the entrance."
       },
       {
         "name": "snippet",
@@ -1056,7 +1060,7 @@
       {
         "name": "defaultOpenIndex",
         "type": "number",
-        "description": "Open this section on first render (desktop only). The demo opens Products."
+        "description": "Opens this section once the bar has landed (~620ms, desktop only). The demo opens Products."
       },
       {
         "name": "openDelay",
@@ -1069,6 +1073,12 @@
         "type": "number",
         "default": "200",
         "description": "Grace period after the pointer leaves before the panel closes, in ms."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Colour theme. Every colour is a CSS variable set from one palette per theme."
       },
       {
         "name": "className",
