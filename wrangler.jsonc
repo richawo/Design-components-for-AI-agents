@@ -19,8 +19,15 @@
     "binding": "ASSETS"
   },
   "vars": {
-    "NEXT_PUBLIC_SITE_URL": "https://design.yaps.ai"
+    "NEXT_PUBLIC_SITE_URL": "https://design.yaps.ai",
+    "EMAIL_FROM": "Design for AI <hello@yaps.ai>"
   },
+  "d1_databases": [{
+    "binding": "COMMERCE_DB",
+    "database_name": "design-yaps-commerce",
+    "database_id": "d1a4a9fc-8234-45c1-a524-f44614c62b3b",
+    "migrations_dir": "migrations"
+  }],
   // Secrets (wrangler secret put, or the dashboard): LICENSE_SECRET,
   // STRIPE_SECRET_KEY, STRIPE_PRICE_PRO_YEARLY, STRIPE_PRICE_PRO_LIFETIME,
   // STRIPE_PRICE_TEAM_YEARLY, STRIPE_PRICE_TEAM_LIFETIME and, optionally,
