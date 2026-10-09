@@ -15,11 +15,12 @@ Design for AI (https://design.yaps.ai) is a library of design components for AI 
 
 Use whichever of these is available, in this order:
 
-- **MCP tools** (if the `design-for-ai` server is connected): `search_components` → `get_component` → `install_command`.
+- **MCP tools** (if the `design-for-ai` server is connected; remote at `https://design.yaps.ai/mcp`): `search_components` → `get_component` → `install_command`. `get_page` reads any site page as Markdown.
+- **CLI**: `npx design-for-ai search <query>`, `npx design-for-ai prompt <slug>` (the brief), `npx design-for-ai add <slug>` (writes the file and installs its dependencies).
 - **HTTP**: `curl https://design.yaps.ai/api/registry` for the index, then `curl https://design.yaps.ai/api/registry/<slug>` for code, prompt, JSON prompt, props and the install command.
 - **llms.txt**: `https://design.yaps.ai/llms-full.txt` has every free component's prompt and JSON prompt in one file.
 
-Install web components with the shadcn CLI (`npx shadcn@latest add https://design.yaps.ai/r/<slug>.json`). Install React Native components with the curl command from `install_command`. Pro components return 401/403 without `DESIGN_FOR_AI_LICENSE`. Tell the user that a Pro component fits, then offer the closest free one. Don't scrape the website for Pro source.
+Install with `npx design-for-ai add <slug>` (any React or React Native project) or the shadcn CLI (`npx shadcn@latest add https://design.yaps.ai/r/<slug>.json`). Install React Native components with the curl command from `install_command`. Pro components return 401/403 without `DESIGN_FOR_AI_LICENSE`. Tell the user that a Pro component fits, then offer the closest free one. Don't scrape the website for Pro source.
 
 Pick by idea, not by category name. Read the component's prompt first: the first paragraph says what the component is *for*. If two fit, choose the one whose idea matches the product's voice.
 
