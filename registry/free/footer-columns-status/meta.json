@@ -19,7 +19,7 @@
     "motion"
   ],
   "theme": "dark",
-  "previewHeight": 620,
+  "previewHeight": 480,
   "usage": "import { FooterColumnsStatus } from \"@/components/design-for-ai/footer-columns-status\";\n\nexport default function SiteFooter() {\n  const status = useStatus(); // \"ok\" | \"degraded\" | \"outage\"\n  return (\n    <FooterColumnsStatus\n      brand={{ name: \"Halyard\", href: \"/\" }}\n      status={status}\n      statusHref=\"https://status.halyard.dev\"\n      onThemeChange={(t) => setTheme(t)}\n      onLocaleChange={(code) => router.push(`/${code}`)}\n    />\n  );\n}",
   "props": [
     {

@@ -1,1 +1,104 @@
-{"component": "draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft ", "intent": "draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft ", "platform": "draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft ", "stack": "draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft ", "layout": "draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft ", "typography": "draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft ", "color": "draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft ", "motion": "draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft ", "responsive": "draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft ", "accessibility": ["draft", "draft", "draft"], "content": "draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft ", "avoid": ["draft", "draft", "draft"]}
+{
+  "component": "FooterColumnsStatus",
+  "intent": "A refined dark product footer: hairline link grid lit from inside by the pointer, a breathing status pill, a gliding 3-way theme switch and a locale listbox. Collapses to an accordion on narrow containers.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 with container queries",
+    "animation": "motion/react (layoutId thumbs, accordion, popover) + one rAF loop writing CSS variables for the light",
+    "icons": "hand-drawn inline SVG"
+  },
+  "layout": {
+    "root": "footer is the @container; bg #050505; full-bleed top border white/8%; content max-w 1280px, gutters 20/32/40px",
+    "grid": "@5xl: minmax(0,1.5fr) repeat(4,minmax(0,1fr)); @2xl: brand row full width (brand left, release pill right) over 4 equal columns; <640px: accordion",
+    "hairlines": "white/9% 1px: frame sides, a divider before each link column, rule under brand row at @2xl only; bottom rule spans 100cqw",
+    "brandCell": "24px mark + 18px name; 15px description max 30ch; release pill pinned to bottom with margin-top auto; padding 40/32/48",
+    "column": "padding 32/24/40; mono 11px heading; 20px gap; 32px link rows",
+    "bottomBar": "status pill + mono copyright left; locale + theme right; 20px vertical padding",
+    "mobile": "56px disclosure rows with plus→minus; open list is a 2-col grid of 44px links; bottom bar stacks status, then locale+theme (50px tall), then copyright"
+  },
+  "typography": {
+    "brand": {
+      "font": "display (Geist)",
+      "size": "18px",
+      "weight": 600,
+      "tracking": "-0.025em"
+    },
+    "description": {
+      "size": "15px",
+      "leading": 1.6,
+      "color": "white/55"
+    },
+    "heading": {
+      "font": "mono",
+      "size": "11px",
+      "case": "uppercase",
+      "tracking": "0.14em",
+      "color": "white/40"
+    },
+    "link": {
+      "size": "14.5px",
+      "tracking": "-0.005em",
+      "color": "white/60, hover white"
+    },
+    "copyright": {
+      "font": "mono",
+      "size": "11px",
+      "case": "uppercase",
+      "tracking": "0.12em",
+      "color": "white/40"
+    }
+  },
+  "color": {
+    "surface": "#050505",
+    "hairline": "white/9%",
+    "text": "white at 100/75/60/55/40%",
+    "status": {
+      "ok": "#34d399",
+      "degraded": "#fbbf24",
+      "outage": "#f87171"
+    },
+    "popover": "#0d0d0e with white/9% inset ring and 0 24px 60px -12px rgba(0,0,0,.9)"
+  },
+  "motion": {
+    "light": "mouse only; rAF lerp 0.2 position, 0.12 intensity; each cell paints radial-gradient(400px circle at pointer-minus-offset: white/10% → 4.5% at 32% → 1.2% at 58% → transparent 75%); hovered cell 100%, others 32% (eased 0.16); vertical dividers overlay a 150px white/50% radial; top/bottom rules glow along x; cached offsets; loop stops when settled",
+    "linkHover": "siblings dim to white/40 via group-has-[a:hover]; 150ms colour; press 1px down",
+    "status": "breathing halo scale 1→2.6, opacity .55→0; 3.2s ok, 2.2s degraded, 1.4s outage; dot colour tween 400ms; label cross-fade 6px + 3px blur",
+    "themeSwitch": "layoutId thumb, spring stiffness 500 damping 40; press 0.94",
+    "locale": "opens upward: opacity + 6px rise + scale .97→1, 220ms ease-out; exit 140ms ease-in; option highlight glides via layoutId; chevron rotates 180° in 220ms",
+    "accordion": "height auto↔0 360ms ease-out; opacity 300/180ms; plus stroke rotates 90° and fades",
+    "reveal": "once at 25% in view: cells rise 14px + fade, 600ms, 60ms stagger",
+    "reducedMotion": "no reveal, no breathing, light snaps, instant accordion and popover"
+  },
+  "responsive": {
+    "desktop": "brand cell + 4 columns in one row (≥1024px container)",
+    "tablet": "brand row over 4 columns (640–1023px)",
+    "mobile": "accordion below 640px; 44px+ targets; theme buttons 44px; light disabled for touch"
+  },
+  "accessibility": [
+    "each column is a nav labelled by its heading",
+    "disclosure buttons use aria-expanded and aria-controls; collapsed lists are inert",
+    "theme switch is a radiogroup with roving tabindex and arrow keys",
+    "locale is a button with aria-haspopup=listbox and a listbox with aria-activedescendant; Escape returns focus",
+    "status label is aria-live=polite",
+    "2px white/70 focus outline, keyboard only",
+    "external links announce (opens in a new tab)"
+  ],
+  "content": {
+    "brand": "Halyard: queues, cron and webhooks that retry until they land",
+    "release": "v4.12 · Durable timers are here",
+    "columns": "Product (Queues, Cron, Webhooks, Workflows [New], Pricing); Developers (Documentation, API reference, CLI, Changelog, GitHub ↗); Company (About, Customers, Careers [4 open], Blog, Contact); Legal (Terms, Privacy, DPA, Sub-processors, Security)",
+    "status": "All systems normal / Degraded performance / Partial outage",
+    "locales": "en-US, en-GB, de-DE, fr-FR, es-MX, pt-BR, ja-JP",
+    "copyright": "© 2026 Halyard Labs, Inc."
+  },
+  "avoid": [
+    "a glow around the whole footer",
+    "light that ignores the hairlines",
+    "gradient text",
+    "an alarm-like pinging status dot",
+    "a native select for locale",
+    "a two-state checkbox for a three-way theme",
+    "social icon soup"
+  ]
+}
