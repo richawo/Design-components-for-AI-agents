@@ -159,7 +159,7 @@ export function HeaderHairline({
         className="@container relative mx-auto flex w-full max-w-[1280px] items-center px-4 sm:px-6"
         style={{ height: TALL }}
       >
-        <div className="grid w-full grid-cols-[1fr_auto] items-center gap-4 @4xl:grid-cols-[auto_1fr_auto] @min-[1200px]:grid-cols-[1fr_auto_1fr]">
+        <div className="grid w-full grid-cols-[1fr_auto] items-center gap-4 @min-[896px]:grid-cols-[auto_1fr_auto] @min-[1200px]:grid-cols-[1fr_auto_1fr]">
           {/* Wordmark */}
           <a
             href={brand.href}

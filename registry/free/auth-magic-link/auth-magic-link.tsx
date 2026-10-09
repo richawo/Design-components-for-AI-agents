@@ -240,7 +240,7 @@ export function AuthMagicLink({
             <AnimatePresence mode="popLayout" initial={false}>
               {view === "form" ? (
                 <motion.div key="form" {...swap} transition={{ duration: 0.36, ease: EASE_OUT }}>
-                  <Mark />
+                  {showExpired ? <ExpiredGlyph /> : <Mark />}
                   <h1 className="mt-6 text-[clamp(1.375rem,1.2rem+0.6cqi,1.5rem)] font-semibold leading-[1.15] tracking-[-0.025em]">
                     {showExpired ? "That link has expired" : title}
                   </h1>
@@ -457,7 +457,7 @@ function Envelope({ reduce }: { reduce: boolean }) {
 
   useEffect(() => {
     if (reduce) return;
-    const c = animate(fold, 1, { duration: 0.42 * 8, delay: 0.62 * 8, ease: EASE_IN_OUT, onComplete: () => setPhase("closed") });
+    const c = animate(fold, 1, { duration: 0.42, delay: 0.62, ease: EASE_IN_OUT, onComplete: () => setPhase("closed") });
     return () => c.stop();
   }, [fold, reduce]);
 
@@ -471,7 +471,7 @@ function Envelope({ reduce }: { reduce: boolean }) {
         className="h-[104px] w-[132px] overflow-visible"
         initial={false}
         animate={phase === "closed" && !reduce ? { x: [0, 7, 0] } : { x: 0 }}
-        transition={{ duration: 0.6 * 8, ease: EASE_OUT }}
+        transition={{ duration: 0.6, ease: EASE_OUT }}
       >
         {/* sent trail */}
         {!reduce &&
@@ -484,7 +484,7 @@ function Envelope({ reduce }: { reduce: boolean }) {
               strokeLinecap="round"
               initial={{ pathLength: 0, opacity: 0 }}
               animate={phase === "closed" ? { pathLength: [0, 1, 1], opacity: [0, 0.55, 0], x: [6, 0, -8] } : { pathLength: 0, opacity: 0 }}
-              transition={{ duration: 0.7 * 8, delay: i * 0.05 * 8, ease: EASE_OUT }}
+              transition={{ duration: 0.7, delay: i * 0.05, ease: EASE_OUT }}
             />
           ))}
         {/* back of envelope */}
@@ -498,12 +498,12 @@ function Envelope({ reduce }: { reduce: boolean }) {
           style={{ scaleY: fold, opacity: backOpacity, originX: "50%", originY: "0%", transformBox: "fill-box" }}
         />
         {/* the letter */}
-        <motion.g initial={reduce ? { y: 0 } : { y: -34 }} animate={{ y: 0 }} transition={{ duration: 0.5 * 8, delay: 0.14 * 8, ease: EASE_IN_OUT }}>
+        <motion.g initial={reduce ? { y: 0 } : { y: -34 }} animate={{ y: 0 }} transition={{ duration: 0.5, delay: 0.14, ease: EASE_IN_OUT }}>
           <rect x="26" y="34" width="68" height="48" rx="4" fill="#ededef" />
           <path d="M36 46 H70 M36 54 H82 M36 62 H62" stroke="#a6a6ad" strokeWidth="2.4" strokeLinecap="round" />
         </motion.g>
         {/* front pocket */}
-        <path d="M14.5 36 L60 64 L105.5 36 V80 A7.5 7.5 0 0 1 98 87.5 H22 A7.5 7.5 0 0 1 14.5 80 Z" fill="#161618" stroke="rgba(255,255,255,0.14)" strokeLinejoin="round" />
+        <path d="M14.5 31 L60 61.5 L105.5 31 V80 A7.5 7.5 0 0 1 98 87.5 H22 A7.5 7.5 0 0 1 14.5 80 Z" fill="#161618" stroke="rgba(255,255,255,0.14)" strokeLinejoin="round" />
         {/* closed flap (in front) */}
         <motion.path
           d={`${flap} Z`}
@@ -520,7 +520,7 @@ function Envelope({ reduce }: { reduce: boolean }) {
           fill="#ededef"
           initial={reduce ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
           animate={phase === "closed" ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
-          transition={{ duration: 0.28 * 8, ease: EASE_OUT }}
+          transition={{ duration: 0.28, ease: EASE_OUT }}
           style={{ originX: "50%", originY: "50%", transformBox: "fill-box" }}
         />
       </motion.svg>
@@ -666,6 +666,19 @@ function Mark() {
         <path d="M9.2 2.5 V15 H3.2 Z" fill="#ededef" />
         <path d="M10.8 5.5 L16.6 15 H10.8 Z" fill="#ededef" fillOpacity="0.45" />
         <path d="M2.5 17.2 H17.5" stroke="#ededef" strokeWidth="1.5" strokeLinecap="round" />
+      </svg>
+    </span>
+  );
+}
+
+function ExpiredGlyph() {
+  return (
+    <span className="flex size-10 items-center justify-center rounded-[11px] bg-[#f5c451]/[0.08] shadow-[inset_0_0_0_1px_rgba(245,196,81,0.25)]" aria-hidden="true">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#f5c451" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M5.5 2.75 H14.5 M5.5 17.25 H14.5" />
+        <path d="M6.5 2.75 V5.2 C6.5 6.6 8 7.9 10 10 C12 7.9 13.5 6.6 13.5 5.2 V2.75" />
+        <path d="M6.5 17.25 V14.8 C6.5 13.4 8 12.1 10 10 C12 12.1 13.5 13.4 13.5 14.8 V17.25" />
+        <path d="M8.2 15.6 H11.8" />
       </svg>
     </span>
   );

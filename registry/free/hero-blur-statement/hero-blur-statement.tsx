@@ -162,7 +162,7 @@ export function HeroBlurStatement({
     <section
       ref={rootRef}
       aria-label="Introduction"
-      className="relative isolate overflow-hidden bg-black text-[#f5f5f4]"
+      className="@container relative isolate overflow-hidden bg-black text-[#f5f5f4]"
     >
       {/* Film grain: static, faint, never on top of the copy's contrast budget. */}
       <div

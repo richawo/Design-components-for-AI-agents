@@ -8,7 +8,7 @@ export type Announcement = {
   /** Small pill before the text, e.g. "New". It shimmers once each time it rolls in. */
   badge?: string;
   text: string;
-  /** Shorter text for narrow containers (under 672px). Falls back to `text`. */
+  /** Shorter text for narrow containers (under 896px). Falls back to `text`. */
   short?: string;
   link?: { label: string; href: string };
 };
@@ -206,8 +206,8 @@ export function HeaderAnnouncement({
                   >
                     {current.badge ? <Badge label={current.badge} reduce={reduce} /> : null}
                     <p className="min-w-0 truncate text-[13px] leading-none tracking-[-0.005em] text-white/80">
-                      <span className="@2xl:hidden">{current.short ?? current.text}</span>
-                      <span className="hidden @2xl:inline">{current.text}</span>
+                      <span className="@4xl:hidden">{current.short ?? current.text}</span>
+                      <span className="hidden @4xl:inline">{current.text}</span>
                     </p>
                     {current.link ? (
                       <a
