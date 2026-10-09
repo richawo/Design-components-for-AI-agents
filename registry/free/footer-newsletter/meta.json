@@ -4,7 +4,7 @@
   "tier": "free",
   "platform": "web",
   "category": "footers",
-  "description": "A warm paper footer built around one email capture that morphs from field to spinner to check, with kind validation, typo hints and retry.",
+  "description": "A near-black footer built around one email capture that morphs field → spinner → check, with kind validation, typo hints, retry and a light theme.",
   "tags": [
     "footer",
     "newsletter",
@@ -12,15 +12,16 @@
     "form",
     "subscribe",
     "validation",
-    "light",
-    "morph"
+    "dark",
+    "morph",
+    "scroll reveal"
   ],
   "dependencies": [
     "motion"
   ],
-  "theme": "light",
+  "theme": "dark",
   "previewHeight": 720,
-  "usage": "import { FooterNewsletter } from \"@/components/design-for-ai/footer-newsletter\";\n\nexport default function SiteFooter() {\n  return (\n    <FooterNewsletter\n      title=\"One good email, every Thursday.\"\n      onSubscribe={async (email) => {\n        const res = await fetch(\"/api/subscribe\", { method: \"POST\", body: JSON.stringify({ email }) });\n        if (res.status === 409) return \"already-subscribed\";\n        if (!res.ok) throw new Error(String(res.status));\n        return \"subscribed\";\n      }}\n    />\n  );\n}",
+  "usage": "import { FooterNewsletter } from \"@/components/design-for-ai/footer-newsletter\";\n\nexport default function SiteFooter() {\n  return (\n    <FooterNewsletter\n      title=\"One good email, every Thursday.\"\n      readers={4812}\n      onSubscribe={async (email) => {\n        const res = await fetch(\"/api/subscribe\", { method: \"POST\", body: JSON.stringify({ email }) });\n        if (res.status === 409) return \"already-subscribed\";\n        if (!res.ok) throw new Error(String(res.status));\n        return \"subscribed\";\n      }}\n    />\n  );\n}",
   "props": [
     {
       "name": "onSubscribe",
@@ -82,8 +83,14 @@
     {
       "name": "note",
       "type": "string",
-      "default": "\"Join 4,812 readers. Unsubscribe whenever.\"",
-      "description": "Quiet mono line under the field when nothing else needs saying."
+      "default": "\"Join {readers} readers. Unsubscribe whenever.\"",
+      "description": "Quiet mono line under the field. {readers} is replaced by the readers count, which counts up once the line has landed."
+    },
+    {
+      "name": "readers",
+      "type": "number",
+      "default": "4812",
+      "description": "Reader count shown in the note; counts up from zero with tabular figures on reveal."
     },
     {
       "name": "socials",
@@ -99,6 +106,17 @@
       "name": "legalLinks",
       "type": "{ label: string; href: string }[]",
       "description": "Privacy, terms and similar."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Near-black (default) or warm paper. Every colour comes from one palette object."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "description": "Extra classes on the footer element."
     }
   ],
   "added": "2026-10-09"
