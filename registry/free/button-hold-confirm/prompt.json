@@ -1,0 +1,70 @@
+{
+  "component": "HoldConfirmButton",
+  "intent": "A destructive-action button you have to hold. A fill sweeps left to right with the label inverting exactly at its edge, springs back if you let go, and confirms with a small shake.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4",
+    "animation": "motion/react (motion value for progress, springs, useAnimate for the shake, AnimatePresence for label swaps)"
+  },
+  "layout": {
+    "button": "CSS grid; all label states stacked invisibly in one cell so width = longest state and never changes",
+    "sm": "36px tall, radius 9px, padding 0 12px, 13px text, 14px icon, gap 6px, ::before extends hit area to 44px",
+    "md": "44px tall, radius 11px, padding 0 18px, 14px text, 16px icon, gap 8px",
+    "fill": "absolute full-size layer clipped with inset(0 (1-p)*100% 0 0); contains an inverse-coloured copy of the label",
+    "edge": "1px line + 24px gradient trail positioned at p, hidden at 0 and 1",
+    "hint": "tooltip above, 8px gap, 12px text, 7px radius, with a 6px rotated-square arrow",
+    "demo": "600px card: header, three project rows with sm buttons, empty state, footer with md workspace button"
+  },
+  "typography": {
+    "label": "Geist (font-sans) 500, tracking -0.01em, 13px (sm) / 14px (md)",
+    "demoRowName": "mono 13px white/90",
+    "demoMeta": "12.5px white/40",
+    "hint": "12px 500"
+  },
+  "color": {
+    "dangerSurface": "#150a0b, inset ring rgba(248,113,113,0.2); hover #1e0e10, ring 0.32",
+    "dangerLabel": "#ff9b9b",
+    "dangerFill": "#e5484d with edge #ffb3b0 and white inverse label",
+    "neutralSurface": "white/5, ring white/12; hover white/8, ring white/18",
+    "neutralLabel": "white/80",
+    "neutralFill": "#ececee with white edge and #0b0b0c inverse label",
+    "focus": "2px outline (#ff9b9b danger, white neutral) offset 2px, so the gap shows the parent surface",
+    "tooltip": "#f4f4f5 background, #0b0b0c text"
+  },
+  "motion": {
+    "hold": "pointer down or Space/Enter down: scale 0.98 (100ms); p animates linearly to 1 over (1-p)*duration, default 1200ms",
+    "release": "p springs to 0, stiffness 420, damping 40; also on blur, pointercancel or moving >16px off the button",
+    "quickTap": "under 260ms: fill nudges to 10% and back over 500ms, tooltip shows for 1.7s",
+    "confirm": "navigator.vibrate(12); shake x [0,-3,3,-2,2,-1,0] over 340ms; call onConfirm",
+    "pending": "spinner + pendingLabel while the returned promise is unsettled",
+    "labelSwap": "in from y 7px, blur 3px, 260ms ease-out; out to y -7px in 160ms ease-in",
+    "done": "check path draws in over 340ms; after resetAfter (2400ms) the fill drains over 450ms",
+    "error": "shake, fill springs back, alert icon + errorLabel for 2.6s",
+    "reducedMotion": "fill still tracks the hold; no shake, spring or blur; 150ms fades"
+  },
+  "responsive": {
+    "button": "intrinsic width; sm keeps a 44px touch target",
+    "demo": "card is fluid to 600px; workspace footer stacks below @md (28rem) and sits in a row above"
+  },
+  "accessibility": [
+    "aria-describedby: 'Press and hold for N seconds to confirm.'",
+    "role=status live region announces success (announcement prop) or the error",
+    "Space and Enter hold from the keyboard; implicit click prevented; key repeat ignored",
+    "aria-busy while pending; disabled is 40% opacity with cursor-not-allowed",
+    "touch-action manipulation, no selection, no iOS callout, context menu suppressed"
+  ],
+  "content": {
+    "defaults": { "label": "Hold to delete", "pendingLabel": "Deleting…", "doneLabel": "Deleted", "errorLabel": "Couldn’t delete", "hint": "Press and hold" },
+    "demoRows": ["halcyon-web · 212 deploys · 2h ago", "ledger-sync · 38 deploys · yesterday", "atlas-staging · Idle for 41 days (Archive, neutral)"],
+    "demoFooter": "Delete workspace: Removes every project, preview and domain in Northwind. There’s no undo. Error: Detach 2 domains first"
+  },
+  "avoid": [
+    "percentage or countdown text",
+    "the button changing width between states",
+    "confetti, glow or sparkles on success",
+    "a confirm modal on top of the hold",
+    "animating progress with CSS transitions (it must reverse mid-flight)",
+    "triggering on key repeat"
+  ]
+}

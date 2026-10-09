@@ -1,0 +1,29 @@
+{
+  "slug": "button-hold-confirm",
+  "name": "Hold to Confirm Button",
+  "tier": "free",
+  "platform": "web",
+  "category": "primitives",
+  "description": "A hold-to-confirm button for destructive actions: a fill sweeps across with the label inverting at its edge, springs back if released early and shakes on confirm.",
+  "tags": ["button", "hold to confirm", "destructive", "delete", "long press", "primitives", "progress", "dark"],
+  "dependencies": ["motion"],
+  "theme": "dark",
+  "previewHeight": 640,
+  "usage": "import { HoldConfirmButton } from \"@/components/design-for-ai/button-hold-confirm\";\n\n<HoldConfirmButton\n  label=\"Hold to delete project\"\n  doneLabel=\"Deleted\"\n  duration={1200}\n  onConfirm={() => api.projects.delete(id)} // return a promise for pending + error states\n/>\n\n<HoldConfirmButton variant=\"neutral\" size=\"sm\" label=\"Archive\" doneLabel=\"Archived\" />",
+  "props": [
+    { "name": "label", "type": "string", "default": "\"Hold to delete\"", "description": "Resting label." },
+    { "name": "onConfirm", "type": "() => void | Promise<unknown>", "description": "Runs at 100%. Return a promise to show the pending state; reject it to show the error state." },
+    { "name": "duration", "type": "number", "default": "1200", "description": "How long to hold, in ms." },
+    { "name": "variant", "type": "\"danger\" | \"neutral\"", "default": "\"danger\"", "description": "Red fill for destructive actions, near-white fill for reversible ones." },
+    { "name": "size", "type": "\"sm\" | \"md\"", "default": "\"md\"", "description": "36px or 44px tall. sm keeps a 44px hit area." },
+    { "name": "pendingLabel", "type": "string", "default": "\"Deleting…\"", "description": "Label while an async onConfirm is in flight." },
+    { "name": "doneLabel", "type": "string", "default": "\"Deleted\"", "description": "Label once confirmed, with a drawn check." },
+    { "name": "errorLabel", "type": "string", "default": "\"Couldn’t delete\"", "description": "Label when onConfirm rejects." },
+    { "name": "hint", "type": "string", "default": "\"Press and hold\"", "description": "Tooltip after a quick tap, so people learn it's a hold." },
+    { "name": "announcement", "type": "string", "description": "Read to screen readers on success. Defaults to doneLabel." },
+    { "name": "icon", "type": "ReactNode | null", "description": "Leading icon. Defaults to a trash can (danger) or archive box (neutral); null hides it." },
+    { "name": "resetAfter", "type": "number | null", "default": "2400", "description": "Ms after success before it resets; null stays confirmed." },
+    { "name": "disabled", "type": "boolean", "default": "false", "description": "Disables the button." }
+  ],
+  "added": "2026-10-09"
+}

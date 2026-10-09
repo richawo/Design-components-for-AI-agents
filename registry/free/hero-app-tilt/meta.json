@@ -1,0 +1,33 @@
+{
+  "slug": "hero-app-tilt",
+  "name": "App Tilt Hero",
+  "tier": "free",
+  "platform": "web",
+  "category": "hero",
+  "description": "A product hero whose markup-drawn mail app window starts tilted back 22° and flattens as you scroll, while a soft spotlight behind it brightens.",
+  "tags": [
+    "hero",
+    "saas",
+    "product shot",
+    "scroll",
+    "3d tilt",
+    "app ui",
+    "email",
+    "dark"
+  ],
+  "dependencies": [
+    "motion"
+  ],
+  "theme": "dark",
+  "previewHeight": 900,
+  "usage": "import { HeroAppTilt } from \"@/components/design-for-ai/hero-app-tilt\";\n\n<HeroAppTilt\n  headline=\"Your inbox, triaged before coffee.\"\n  muted=\"before coffee.\"\n  primary={{ label: \"Download for Mac\", href: \"/download\" }}\n  tilt={18}\n/>",
+  "props": [
+    {
+      "name": "tilt",
+      "type": "number",
+      "default": "22",
+      "description": "Starting tilt in degrees."
+    }
+  ],
+  "added": "2026-10-09"
+}

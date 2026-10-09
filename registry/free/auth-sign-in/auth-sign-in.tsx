@@ -90,7 +90,7 @@ const C = {
 
 const PROVIDER_LABEL: Record<SsoProvider, string> = { google: "Google", github: "GitHub", apple: "Apple" };
 
-const focusRing = "outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ededef]";
+const focusRing = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ededef]";
 
 function emailProblem(v: string): string | null {
   const s = v.trim();
@@ -344,8 +344,8 @@ export function AuthSignIn({
                 </span>
                 {locked ? (
                   <p className="min-w-0 text-[#e9e2cf]">
-                    <span className="font-medium text-[#f5c451]">Sign-in paused.</span> Too many wrong passwords, so we’re giving this account a breather. Try again in{" "}
-                    <RollingText value={fmtClock(lockLeft)} reduce={reduce} className="font-medium tabular-nums text-[#ededef]" />.
+                    <span className="font-medium text-[#f5c451]">Sign-in paused.</span> Too many wrong passwords, so we’re giving this account a short breather. Your email
+                    stays put.
                   </p>
                 ) : (
                   <p className="min-w-0 text-[#f2d6d2]">{banner?.text}</p>
@@ -463,6 +463,9 @@ export function AuthSignIn({
             label={
               locked ? (
                 <>
+                  <span className="mr-2 flex opacity-80">
+                    <LockGlyph color="currentColor" />
+                  </span>
                   Try again in&nbsp;
                   <RollingText value={fmtClock(lockLeft)} reduce={reduce} />
                 </>
@@ -472,6 +475,7 @@ export function AuthSignIn({
             }
             labelKey={locked ? "locked" : "idle"}
             disabled={locked || ssoBusy !== null || ssoDone !== null}
+            locked={locked}
             reduce={reduce}
           />
         </form>
@@ -528,7 +532,6 @@ function FieldShell({ focused, invalid, disabled, reduce, children }: { focused:
  * ring behind it, then fades, leaving the ring settled.
  */
 function FocusLight({ active, invalid, startX, reduce }: { active: boolean; invalid: boolean; startX: MutableRefObject<number | null>; reduce: boolean }) {
-  const uid = useId().replace(/[^a-zA-Z0-9_-]/g, "");
   const [box, setBox] = useState({ w: 0, h: 0 });
   const t = useMotionValue(0);
   const start = useMotionValue(0);
@@ -567,17 +570,14 @@ function FocusLight({ active, invalid, startX, reduce }: { active: boolean; inva
       return;
     }
     t.set(0);
-    const c = animate(t, 1, { duration: 0.78, ease: EASE_IN_OUT });
+    const c = animate(t, 1, { duration: 0.8, ease: EASE_IN_OUT });
     return () => c.stop();
   }, [active, reduce, t, start, startX]);
 
   const ringDash = useTransform([t, per], ([v, L]: number[]) => `${v * L} ${L - v * L + 0.001}`);
   const ringOffset = useTransform(start, (s) => -s);
-  const tailLen = Math.min(64, P / 3);
-  const tailDash = `${tailLen} ${P}`;
-  const headDash = `12 ${P}`;
-  const tailOffset = useTransform([t, start, per], ([v, s, L]: number[]) => -(s + v * L - Math.min(64, L / 3)));
-  const headOffset = useTransform([t, start, per], ([v, s, L]: number[]) => -(s + v * L - 12));
+  // Comet: a soft tail of fading segments, then a hot head with a halo, all ending at the same point.
+  const head = useTransform([t, start, per], ([v, s0, L]: number[]) => s0 + v * L);
   const cometOpacity = useTransform(t, [0, 0.06, 0.82, 1], [0, 1, 1, 0]);
 
   const d = `M${i + r} ${i} H${w - i - r} A${r} ${r} 0 0 1 ${w - i} ${i + r} V${h - i - r} A${r} ${r} 0 0 1 ${w - i - r} ${h - i} H${i + r} A${r} ${r} 0 0 1 ${i} ${h - i - r} V${i + r} A${r} ${r} 0 0 1 ${i + r} ${i} Z`;
@@ -597,39 +597,33 @@ function FocusLight({ active, invalid, startX, reduce }: { active: boolean; inva
           animate={{ opacity: active ? 1 : 0 }}
           transition={{ duration: active ? 0 : 0.18 }}
         >
-          <defs>
-            <filter id={`${uid}-glow`} x="-20%" y="-50%" width="140%" height="200%">
-              <feGaussianBlur stdDeviation="3" />
-            </filter>
-          </defs>
           <motion.path d={d} fill="none" stroke={ring} strokeWidth={sw} style={{ strokeDasharray: ringDash, strokeDashoffset: ringOffset }} />
           {!reduce && (
             <motion.g style={{ opacity: cometOpacity }}>
-              <motion.path
-                d={d}
-                fill="none"
-                stroke={light}
-                strokeOpacity={0.35}
-                strokeWidth={sw}
-                strokeLinecap="round"
-                style={{ strokeDasharray: tailDash, strokeDashoffset: tailOffset }}
-              />
-              <motion.path
-                d={d}
-                fill="none"
-                stroke={light}
-                strokeWidth={5}
-                strokeLinecap="round"
-                filter={`url(#${uid}-glow)`}
-                style={{ strokeDasharray: headDash, strokeDashoffset: headOffset }}
-              />
-              <motion.path d={d} fill="none" stroke={light} strokeWidth={2} strokeLinecap="round" style={{ strokeDasharray: headDash, strokeDashoffset: headOffset }} />
+              {COMET.map(([len, width, alpha], k) => (
+                <CometLayer key={k} d={d} head={head} len={Math.min(len, P / 3)} P={P} width={width} alpha={alpha} color={light} />
+              ))}
             </motion.g>
           )}
         </motion.svg>
       )}
     </span>
   );
+}
+
+/** [length px, stroke width, opacity]: tail segments first, then halo and core. */
+const COMET: [number, number, number][] = [
+  [84, 1.5, 0.14],
+  [46, 1.5, 0.28],
+  [22, 1.75, 0.55],
+  [16, 8, 0.07],
+  [13, 4.5, 0.16],
+  [10, 2.25, 1],
+];
+
+function CometLayer({ d, head, len, P, width, alpha, color }: { d: string; head: MotionValue<number>; len: number; P: number; width: number; alpha: number; color: string }) {
+  const offset = useTransform(head, (h) => -(h - len));
+  return <motion.path d={d} fill="none" stroke={color} strokeOpacity={alpha} strokeWidth={width} strokeLinecap="round" style={{ strokeDasharray: `${len} ${P}`, strokeDashoffset: offset }} />;
 }
 
 function FieldMessage({ id, text, tone, reduce }: { id: string; text?: string; tone: "error" | "warn"; reduce: boolean }) {
@@ -718,7 +712,7 @@ function PasswordInput({
     if (reduce || !value) return;
     setGhost((g) => ({ type: revealed ? "password" : "text", n: (g?.n ?? 0) + 1 }));
     p.set(0);
-    const c = animate(p, 1, { duration: 0.46, ease: EASE_IN_OUT, onComplete: () => setGhost(null) });
+    const c = animate(p, 1, { duration: 0.5, ease: EASE_IN_OUT, onComplete: () => setGhost(null) });
     return () => c.stop();
     // value intentionally excluded: only the toggle starts a wipe
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -779,8 +773,9 @@ function PasswordInput({
 
 function useMask(p: MotionValue<number>, inverse: boolean) {
   return useTransform(p, (v) => {
-    const a = v * 140 - 20;
-    return inverse ? `linear-gradient(90deg, transparent ${a - 20}%, #000 ${a + 20}%)` : `linear-gradient(90deg, #000 ${a - 20}%, transparent ${a + 20}%)`;
+    // A soft 16%-wide edge sweeps left to right; the ghost (old rendering) gives way exactly where the new one arrives.
+    const a = v * 120 - 10;
+    return inverse ? `linear-gradient(90deg, transparent ${a - 8}%, #000 ${a + 8}%)` : `linear-gradient(90deg, #000 ${a - 8}%, transparent ${a + 8}%)`;
   });
 }
 
@@ -885,12 +880,14 @@ function SubmitButton({
   label,
   labelKey,
   disabled,
+  locked,
   reduce,
 }: {
   state: "idle" | "loading" | "success";
   label: ReactNode;
   labelKey: string;
   disabled: boolean;
+  locked: boolean;
   reduce: boolean;
 }) {
   const swap = reduce
@@ -906,10 +903,12 @@ function SubmitButton({
       type="submit"
       disabled={disabled}
       aria-disabled={busy || undefined}
-      className={`relative mt-5 flex h-11 w-full items-center justify-center overflow-hidden rounded-[11px] text-[14.5px] font-medium tracking-[-0.005em] transition-[background-color,color,transform,box-shadow] duration-150 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40 disabled:active:scale-100 ${focusRing} ${
-        state === "success"
+      className={`relative mt-5 flex h-11 w-full items-center justify-center overflow-hidden rounded-[11px] text-[14.5px] font-medium tracking-[-0.005em] transition-[background-color,color,transform,box-shadow] duration-150 active:scale-[0.98] disabled:cursor-not-allowed disabled:active:scale-100 ${focusRing} ${
+        locked
+          ? "bg-white/[0.05] text-[#a0a0a8] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]"
+          : state === "success"
           ? "bg-[#3ddc97] text-[#04140c] shadow-[inset_0_1px_0_rgba(255,255,255,0.35)]"
-          : "bg-[#ededef] text-[#0a0a0b] shadow-[inset_0_1px_0_rgba(255,255,255,0.6),inset_0_-1px_0_rgba(0,0,0,0.12)] enabled:hover:bg-white"
+          : "bg-[#ededef] text-[#0a0a0b] shadow-[inset_0_1px_0_rgba(255,255,255,0.6),inset_0_-1px_0_rgba(0,0,0,0.12)] enabled:hover:bg-white disabled:opacity-40"
       } ${busy ? "pointer-events-none" : ""}`}
     >
       <AnimatePresence mode="popLayout" initial={false}>
@@ -1078,9 +1077,9 @@ function ProviderMark({ provider }: { provider: SsoProvider }) {
   );
 }
 
-function LockGlyph() {
+function LockGlyph({ color = "#f5c451" }: { color?: string }) {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#f5c451" strokeWidth="1.5" strokeLinecap="round">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round">
       <rect x="3" y="7" width="10" height="7" rx="2" />
       <path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" />
     </svg>

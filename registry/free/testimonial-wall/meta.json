@@ -1,0 +1,22 @@
+{
+  "slug": "testimonial-wall",
+  "name": "Testimonial Wall",
+  "tier": "free",
+  "platform": "web",
+  "category": "social-proof",
+  "description": "Drifting columns of testimonial cards at different speeds that ease to a stop under the pointer, with spotlight borders, initials avatars and verified marks.",
+  "tags": ["testimonials", "social proof", "marquee", "reviews", "wall of love", "cards", "dark", "infinite scroll"],
+  "dependencies": ["motion"],
+  "theme": "dark",
+  "previewHeight": 860,
+  "usage": "import { TestimonialWall } from \"@/components/design-for-ai/testimonial-wall\";\n\n<TestimonialWall\n  label=\"What customers say about Acme\"\n  height={680}\n  speeds={[22, 30, 18]}\n  testimonials={[\n    { quote: \"Setup took ten minutes. **We shipped the same afternoon.**\", name: \"Ana Ruiz\", role: \"CTO\", company: \"Lumen\", verified: true },\n    // …at least 6 for a full wall\n  ]}\n/>",
+  "props": [
+    { "name": "testimonials", "type": "Testimonial[]", "default": "12 Kiln customers", "description": "{ quote, name, role, company, verified? }. Wrap one phrase of the quote in **…** to set it at full strength. Dealt round-robin into columns." },
+    { "name": "height", "type": "number", "default": "720", "description": "Wall height in px at two or three columns; one column uses at most 600px." },
+    { "name": "speeds", "type": "number[]", "default": "[24, 30, 20]", "description": "Drift speed per column in px/s. Columns alternate direction." },
+    { "name": "label", "type": "string", "default": "\"What teams say about Kiln\"", "description": "Accessible name of the region." },
+    { "name": "pauseControl", "type": "boolean", "default": "true", "description": "Shows a small pause / play button in the corner." },
+    { "name": "className", "type": "string", "description": "Extra classes for the root." }
+  ],
+  "added": "2026-10-09"
+}

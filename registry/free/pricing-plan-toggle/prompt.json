@@ -1,0 +1,74 @@
+{
+  "component": "PricingPlanToggle",
+  "intent": "One plan card under a monthly/annual switch. The thumb glides, each price digit spins like a slot reel with motion blur, a save badge springs in, and an optional seats stepper tweens the total.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4",
+    "animation": "motion/react (layoutId, motion values, useVelocity, springs, AnimatePresence)"
+  },
+  "layout": {
+    "root": "@container column, max-width 420px, centred; switch 20px above the card",
+    "card": "#0b0b0c, radius 22px, padding 24px (28px @sm); header, price, note, seats panel, CTA, hairline, features, footnote",
+    "switch": "inline-grid 2 columns, 4px padding, each option min 104px x 36px",
+    "seatsPanel": "radius 14px, stepper row + total row split by a hairline",
+    "stepperButtons": "32px with 44px hit areas"
+  },
+  "typography": {
+    "price": "Geist 600, clamp(3.25rem, 2.6rem + 3cqi, 4rem), tracking -0.05em, tabular-nums",
+    "currency": "22px 500 white/45, top aligned",
+    "unit": "13px white/45, two lines, bottom aligned",
+    "name": "16px 500, tracking -0.015em",
+    "description": "14px, leading 1.5, white/50, max 30ch",
+    "badge": "mono 11px uppercase, tracking 0.08em",
+    "features": "14px, leading 1.45, white/75",
+    "footnote": "mono 11px white/30"
+  },
+  "color": {
+    "stage": "#000000",
+    "card": "#0b0b0c with inset white/8% hairline and white/6% top highlight",
+    "thumb": "#f4f4f5, active label #0b0b0c, inactive white/55",
+    "accent": "#7dd3a8 (checks, badge ring and fill at 12%), badge text #9be7c0",
+    "cta": "#f4f4f5 to #ffffff on hover, text #0b0b0c",
+    "seatsPanel": "white/2.5% with inset white/6%"
+  },
+  "motion": {
+    "thumb": "layoutId spring stiffness 500, damping 40",
+    "reels": "strip 0-9 x5, 1.1em cells; all reels spin up when price rises, down when it falls; spring stiffness 120, damping 19; 55ms stagger; silent jump back to the middle copy on settle",
+    "motionBlur": "blur(min(2.4, |velocity in digits/s| / 9) px) on each reel",
+    "digitCount": "columns keyed from the right; new ones grow from width 0 over 300ms",
+    "badge": "spring stiffness 520, damping 20, from scale 0.6 and y 4px, origin right; exit 140ms ease-in",
+    "note": "cross-fade: in y 8px + blur 3px over 300ms, out y -8px over 180ms",
+    "seats": "count rolls 10px in the direction of change over 220ms; total tweens 450ms ease-out",
+    "checks": "pathLength draw 450ms, 70ms stagger, once in view",
+    "cta": "hover arrow +2px; press 0.98; loading spinner; success check draws 340ms; resets after 2.6s",
+    "reducedMotion": "reels jump, no blur, fades only (150ms), checks pre-drawn"
+  },
+  "responsive": {
+    "all": "fluid up to 420px; price size uses cqi so it scales with the card; padding steps up at @sm",
+    "touch": "stepper buttons and switch options keep 44px-equivalent targets"
+  },
+  "accessibility": [
+    "billing switch is a radiogroup with roving tabindex and arrow keys",
+    "visual price aria-hidden; sr-only sentence with price, unit and note",
+    "polite live region summarising billing, seats and total",
+    "stepper is a labelled group; buttons labelled 'Add a seat' / 'Remove a seat' and disabled at limits",
+    "CTA aria-busy while loading plus a status message",
+    "2px white focus outlines offset 2px"
+  ],
+  "content": {
+    "plan": "Team: For product teams who write things down and can find them again.",
+    "prices": { "monthly": 24, "annual": 19, "unit": "per seat / month", "save": "Save 20%" },
+    "features": ["Unlimited docs, with full version history", "Comments, approvals and @-mentions", "Guests at no extra cost, with per-page access", "SSO with Google and Okta", "Support from people who use it daily"],
+    "cta": "Start 14-day trial / Setting up your trial… / Check your inbox",
+    "footnote": "Prices in USD. Tax added at checkout."
+  },
+  "avoid": [
+    "a three-plan section or marketing headline",
+    "a 'Most popular' ribbon or glow",
+    "strikethrough prices",
+    "digits that cross-fade instead of rolling",
+    "reels spinning in mixed directions",
+    "layout shift when the total or unit changes"
+  ]
+}

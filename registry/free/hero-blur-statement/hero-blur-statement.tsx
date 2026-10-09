@@ -129,7 +129,7 @@ export function HeroBlurStatement({
     let last = performance.now();
     let raf = 0;
     const tick = (now: number) => {
-      const dt = Math.min(now - last, 64);
+      const dt = Math.min(now - last, 250);
       last = now;
       if (!pausedRef.current && visible && !document.hidden) {
         elapsed += dt;
@@ -162,7 +162,7 @@ export function HeroBlurStatement({
     <section
       ref={rootRef}
       aria-label="Introduction"
-      className="@container relative isolate overflow-hidden bg-black text-[#f5f5f4]"
+      className="relative isolate overflow-hidden bg-black text-[#f5f5f4]"
     >
       {/* Film grain: static, faint, never on top of the copy's contrast budget. */}
       <div
@@ -176,7 +176,7 @@ export function HeroBlurStatement({
         className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(120%_90%_at_20%_0%,rgba(255,255,255,0.035),transparent_60%)]"
       />
 
-      <div className="mx-auto flex min-h-[clamp(640px,100svh,980px)] max-w-[1440px] flex-col px-5 pb-8 pt-6 @md:px-8 @md:pb-10 @md:pt-8 @5xl:px-14 @5xl:pb-14 @5xl:pt-12">
+      <div className="@container mx-auto flex min-h-[clamp(640px,100svh,980px)] max-w-[1440px] flex-col px-5 pb-8 pt-6 @md:px-8 @md:pb-10 @md:pt-8 @5xl:px-14 @5xl:pb-14 @5xl:pt-12">
         <motion.div
           initial={reduce ? false : { opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
@@ -194,7 +194,7 @@ export function HeroBlurStatement({
           <h1
             onPointerEnter={(e) => e.pointerType === "mouse" && setHovering(true)}
             onPointerLeave={() => setHovering(false)}
-            className="relative font-display text-[clamp(2.9rem,0.6rem+7cqw,8rem)] font-medium leading-[0.96] tracking-[-0.058em] [text-wrap:pretty]"
+            className="relative font-display text-[clamp(2.9rem,0.6rem+7.6cqw,8.75rem)] font-medium leading-[0.96] tracking-[-0.058em] [text-wrap:pretty]"
           >
             <span className="sr-only">{fullSentence}</span>
             <motion.span aria-hidden="true" initial="hidden" animate="show" className="block">
@@ -329,7 +329,7 @@ export function HeroBlurStatement({
                 {pad(index + 1)}
                 <span className="text-white/30"> / {pad(n)}</span>
               </span>
-              <span aria-hidden="true" className="relative h-px w-8 shrink-0 overflow-hidden bg-white/15 @md:w-10">
+              <span aria-hidden="true" className={`relative h-px w-8 shrink-0 overflow-hidden bg-white/15 @md:w-10 ${reduce ? "hidden" : ""}`}>
                 <span ref={barRef} className="absolute inset-0 origin-left scale-x-0 bg-white/70" />
               </span>
               <span className="relative grid min-w-0 [&>*]:col-start-1 [&>*]:row-start-1">
