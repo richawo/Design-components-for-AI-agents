@@ -1,8 +1,12 @@
 {
   "component": "HeaderAnnouncement",
-  "intent": "A slim announcement strip above a site header: rotating messages roll vertically, a badge shimmers once, and dismissing collapses the height so the page glides up.",
+  "intent": "A slim monochrome announcement strip above a site header: it unfolds on first view, rotating messages roll vertically, a badge shimmers once, and dismissing collapses the height so the page glides up.",
   "platform": "web",
-  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4 (container queries)", "animation": "motion/react (AnimatePresence, motion values, height auto)" },
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 (container queries)",
+    "animation": "motion/react (AnimatePresence, motion values, height auto, variants with custom delays)"
+  },
   "layout": {
     "strip": "section, overflow hidden, bg #0b0b0c, border-b white/8%; inner max-w 1280px is the @container",
     "height": "40px (44px under 672px container)",
@@ -16,20 +20,22 @@
     "badge": "font-mono 10px uppercase, tracking 0.08em, 20px pill"
   },
   "color": {
+    "approach": "monochrome; the badge can take one optional accent prop, nothing else is coloured; tokens in one COLOR object",
     "strip": "#0b0b0c on #000",
-    "badge": "text #ffa375, fill #ff8a4c/12%, inset ring rgba(255,138,76,0.28)",
-    "shimmer": "100° gradient to rgba(255,220,200,0.55), mix-blend plus-lighter",
+    "badge": "ink #ffffff (or accent); fill = ink at 10% via color-mix; inset ring = ink at 22%",
+    "shimmer": "100° gradient to rgba(255,255,255,0.5), mix-blend plus-lighter",
     "pager": "16×3px segments, track white/16%, fill white/90 (white/55 paused)",
     "dismiss": "white/45 → white, hover surface white/6%"
   },
   "motion": {
     "roll": "keyed AnimatePresence; enter y ±100% + blur 4px → 0, exit the other way; 500ms cubic-bezier(0.22,1,0.36,1); direction-aware when jumping back",
     "shimmer": "single sweep x -110% → 110%, 900ms ease-in-out, 350ms delay; never loops",
-    "timer": "rAF accumulates elapsed (5200ms default) into a motion value driving the active segment scaleX; pauses on hover, focus, offscreen, hidden tab",
+    "timer": "useRotationTimer: rAF accumulates elapsed (5200ms default, steps capped at 100ms) into a motion value driving the active segment scaleX — no React render per frame; pauses on hover, focus, offscreen (IntersectionObserver), hidden tab",
     "linkArrow": "2px nudge on hover, 150ms",
     "dismiss": "content fades 140ms, then height → 0 over 320ms cubic-bezier(0.65,0,0.35,1)",
     "press": "dismiss scale 0.94",
-    "reducedMotion": "no autoplay, opacity-only swaps, no shimmer, instant collapse"
+    "reducedMotion": "no autoplay, 150ms opacity-only swaps and entrance, no shimmer, instant unfold and collapse",
+    "entrance": "first view: strip height 0 → auto 360ms; pager segment tracks draw (scaleX 0 → 1 from the left, 400ms) 40ms apart from 140ms; the first message rolls up from y 100% + blur 4px at 180ms; the badge shimmer follows 350ms later; dismiss lands last at 360ms (opacity, y 8px, blur 6px, 450ms); the rotation timer starts at 700ms so the first segment fills only after everything has landed. The strip mounts per showing, so bringing it back replays this."
   },
   "responsive": {
     "1440": "pager left, centred long message, link label",
@@ -51,13 +57,16 @@
       "Event — Incident Week, 14–16 November: four talks, zero slide decks. Save a seat",
       "Beta — The Terraform provider now manages on-call rotas as code. View the docs"
     ],
-    "demo": "strip over a minimal header silhouette on black, with a 'Bring the strip back' stage button after dismissal"
+    "demo": "the strip above a wordmark-only header row and the 3.0 release note it points to (eyebrow, headline, lead, three numbered hairline rows), all staggered in after the strip; a 'Bring the strip back' button after dismissal"
   },
   "avoid": [
     "brand gradient bars or marquee scrolling",
     "looping shimmer or pulsing badges",
     "removing the strip without animating its height",
     "emoji or sparkle icons",
-    "autoplay under reduced motion"
+    "autoplay under reduced motion",
+    "an orange or brand-tinted badge by default",
+    "skeleton bars or a fake nav as the demo stage",
+    "per-frame React state for the timer"
   ]
 }
