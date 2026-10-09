@@ -1269,6 +1269,198 @@
     "added": "2026-10-07"
   },
   {
+    "slug": "mobile-live-activity",
+    "name": "Delivery Live Activity",
+    "tier": "pro",
+    "platform": "mobile",
+    "category": "mobile",
+    "description": "An iOS-style lock screen with a glass delivery Live Activity and a Dynamic Island that springs open, with rolling ETA digits and a courier riding the route.",
+    "tags": [
+      "live activity",
+      "dynamic island",
+      "lock screen",
+      "delivery",
+      "eta",
+      "react native",
+      "glassmorphism",
+      "dark"
+    ],
+    "dependencies": [
+      "expo-blur",
+      "expo-linear-gradient",
+      "react-native-svg"
+    ],
+    "theme": "dark",
+    "previewHeight": 940,
+    "usage": "import { MobileLiveActivity } from \"@/components/design-for-ai/native/mobile-live-activity\";\n\n// Bare React Native apps: run `npx install-expo-modules` once for expo-blur and expo-linear-gradient.\n<MobileLiveActivity\n  appName=\"Larder\"\n  courierName=\"Amara\"\n  updates={deliveryUpdates}\n  showDemoControl={false}\n  onOpenApp={() => navigation.navigate(\"Order\")}\n/>",
+    "props": [
+      {
+        "name": "updates",
+        "type": "DeliveryUpdate[]",
+        "description": "The delivery's states in order: stage, ETA minutes, clock, route progress (0–1), headline and detail."
+      },
+      {
+        "name": "stops",
+        "type": "RouteStop[]",
+        "description": "Labelled points on the route, e.g. Picked up at 0, Nearby at 0.8, Arrived at 1."
+      },
+      {
+        "name": "appName",
+        "type": "string",
+        "default": "\"Larder\"",
+        "description": "App shown on the card."
+      },
+      {
+        "name": "courierName",
+        "type": "string",
+        "default": "\"Amara\"",
+        "description": "Courier's name, used in labels."
+      },
+      {
+        "name": "courierInitials",
+        "type": "string",
+        "default": "\"AO\"",
+        "description": "Initials in the avatar."
+      },
+      {
+        "name": "date",
+        "type": "string",
+        "default": "\"Friday 9 October\"",
+        "description": "Lock-screen date line."
+      },
+      {
+        "name": "initialStep",
+        "type": "number",
+        "default": "0",
+        "description": "Which update to start on."
+      },
+      {
+        "name": "showDemoControl",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show the small Next update pill that steps through updates."
+      },
+      {
+        "name": "alertSeconds",
+        "type": "number",
+        "default": "3.2",
+        "description": "How long the island stays open after a stage change."
+      },
+      {
+        "name": "onOpenApp",
+        "type": "() => void",
+        "description": "Card tapped."
+      },
+      {
+        "name": "onStepChange",
+        "type": "(step, update) => void",
+        "description": "Fires when the demo control advances."
+      }
+    ],
+    "added": "2026-10-09"
+  },
+  {
+    "slug": "mobile-now-playing",
+    "name": "Now Playing",
+    "tier": "pro",
+    "platform": "mobile",
+    "category": "mobile",
+    "description": "A React Native Now Playing screen whose generative cover tints a blurred, breathing background, with a growing scrubber, morphing play button and synced lyrics.",
+    "tags": [
+      "music player",
+      "now playing",
+      "lyrics",
+      "audio",
+      "glassmorphism",
+      "react native",
+      "scrubber",
+      "dark"
+    ],
+    "dependencies": [
+      "expo-blur",
+      "expo-linear-gradient",
+      "react-native-svg"
+    ],
+    "theme": "dark",
+    "previewHeight": 940,
+    "usage": "import { MobileNowPlaying } from \"@/components/design-for-ai/native/mobile-now-playing\";\n\n// Bare React Native apps: run `npx install-expo-modules` once for expo-blur and expo-linear-gradient.\n<MobileNowPlaying\n  tracks={queue}\n  source=\"Late Ferry\"\n  onDismiss={() => navigation.goBack()}\n  onDeviceChange={(d) => player.route(d.id)}\n/>",
+    "props": [
+      {
+        "name": "tracks",
+        "type": "NowPlayingTrack[]",
+        "description": "Queue: title, artist, album, duration, cover style, palette (base + four glow colours) and timed lyrics or an instrumental note."
+      },
+      {
+        "name": "source",
+        "type": "string",
+        "default": "\"Late Ferry\"",
+        "description": "Playlist or album the queue plays from."
+      },
+      {
+        "name": "sourceLabel",
+        "type": "string",
+        "default": "\"Playing from playlist\"",
+        "description": "Small caps line above the source."
+      },
+      {
+        "name": "initialIndex",
+        "type": "number",
+        "default": "0",
+        "description": "Track to start on."
+      },
+      {
+        "name": "initialTime",
+        "type": "number",
+        "default": "52",
+        "description": "Seconds into the first track."
+      },
+      {
+        "name": "autoPlay",
+        "type": "boolean",
+        "default": "true",
+        "description": "Start playing on mount."
+      },
+      {
+        "name": "devices",
+        "type": "AirPlayDevice[]",
+        "description": "Rows in the AirPlay popover: name, detail and kind (phone, speaker, mini, display)."
+      },
+      {
+        "name": "initialDeviceId",
+        "type": "string",
+        "default": "\"iphone\"",
+        "description": "Device playing at mount; the first device is treated as local."
+      },
+      {
+        "name": "qualityBadge",
+        "type": "string",
+        "default": "\"Lossless\"",
+        "description": "Badge under the scrubber. Pass \"\" to hide it."
+      },
+      {
+        "name": "onDismiss",
+        "type": "() => void",
+        "description": "Chevron in the header."
+      },
+      {
+        "name": "onMore",
+        "type": "(track) => void",
+        "description": "Ellipsis button in the header."
+      },
+      {
+        "name": "onFavoriteChange",
+        "type": "(track, favorite) => void",
+        "description": "Star toggled."
+      },
+      {
+        "name": "onDeviceChange",
+        "type": "(device) => void",
+        "description": "A different AirPlay device was chosen."
+      }
+    ],
+    "added": "2026-10-09"
+  },
+  {
     "slug": "mobile-paywall",
     "name": "Night Sky Paywall",
     "tier": "pro",
