@@ -228,15 +228,19 @@ async function add(slugs) {
   const have = installedDeps(cwd);
   const missing = [...needed].filter((d) => !have || !have.has(d));
   if (missing.length) {
-    const pm = detectPackageManager(cwd);
-    const cmd = pm === "npm" ? ["install", ...missing] : ["add", ...missing];
+    // In Expo apps, `expo install` picks versions that match the app's SDK.
+    const expo = have?.has("expo");
+    const pm = expo ? "npx" : detectPackageManager(cwd);
+    const cmd = expo ? ["expo", "install", ...missing] : pm === "npm" ? ["install", ...missing] : ["add", ...missing];
     if (!have || flags["no-install"]) {
       out(`\n${dim("Also install:")} ${accent(`${pm} ${cmd.join(" ")}`)}`);
     } else {
-      out(`\n${dim("Installing")} ${missing.join(", ")} ${dim(`with ${pm}…`)}`);
+      out(`\n${dim("Installing")} ${missing.join(", ")} ${dim(`with ${pm === "npx" ? "expo install" : pm}…`)}`);
       const r = spawnSync(pm, cmd, { stdio: "inherit", cwd, shell: process.platform === "win32" });
-      if (r.status !== 0) err(`${red("✕")} ${pm} failed. Run it yourself: ${pm} ${cmd.join(" ")}`);
+      if (r.status !== 0) err(`${red("✕")} Install failed. Run it yourself: ${pm} ${cmd.join(" ")}`);
     }
+    if (!expo && missing.some((d) => d.startsWith("expo-")))
+      out(dim(`Not an Expo app? Run ${accent("npx install-expo-modules")} once so expo-blur and expo-linear-gradient work in bare React Native.`));
   }
   const web = slugs.some((s) => all.find((x) => x.slug === s)?.platform === "web");
   if (web) out(dim(`\nComponents use the font roles font-display, font-serif, font-sans and font-mono.\nOnce per project: npx shadcn@latest add ${BASE}/r/theme.json (or map them in your Tailwind theme).`));

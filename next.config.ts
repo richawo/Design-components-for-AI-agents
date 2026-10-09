@@ -4,12 +4,16 @@ const config: NextConfig = {
   // Mobile components are written in React Native. On the web we render
   // them through react-native-web so every preview is the real code.
   turbopack: {
-    resolveAlias: { "react-native": "react-native-web" },
-    resolveExtensions: [".web.tsx", ".web.ts", ".tsx", ".ts", ".jsx", ".js", ".mjs", ".json"],
+    resolveAlias: {
+      "react-native": "react-native-web",
+      // react-native-svg's web build looks up bundled assets; previews have none.
+      "@react-native/assets-registry/registry": "./lib/shims/assets-registry.js",
+    },
+    resolveExtensions: [".web.tsx", ".web.ts", ".web.jsx", ".web.js", ".web.mjs", ".tsx", ".ts", ".jsx", ".js", ".mjs", ".json"],
   },
   devIndicators: false,
   agentRules: false,
-  transpilePackages: ["react-native-web"],
+  transpilePackages: ["react-native-web", "react-native-svg", "expo-blur", "expo-linear-gradient", "expo-modules-core"],
   async rewrites() {
     return [
       // Markdown companions for agents: /components/hero-editorial.md

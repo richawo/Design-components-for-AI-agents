@@ -2,14 +2,18 @@ import type { RegistryEntry } from "./registry-types";
 import { site } from "./site";
 
 /** The install instructions shown on a component page and served to agents. */
-export function installText(e: Pick<RegistryEntry, "slug" | "tier" | "platform">): string {
+export function installText(e: Pick<RegistryEntry, "slug" | "tier" | "platform"> & { dependencies?: string[] }): string {
   const { slug, tier, platform } = e;
   if (platform === "mobile") {
     const auth = tier === "pro" ? ` \\\n  -H "Authorization: Bearer $DESIGN_FOR_AI_LICENSE"` : "";
+    const deps = e.dependencies ?? [];
     return [
-      "# React Native: one file, core APIs only, no extra dependencies",
+      "# React Native: one file",
       `curl --create-dirs -o components/design-for-ai/native/${slug}.tsx${auth} \\`,
       `  "${site.url}/api/registry/${slug}?format=raw"`,
+      ...(deps.length
+        ? ["", "# Its dependencies (Expo; in a bare React Native app run `npx install-expo-modules` first)", `npx expo install ${deps.join(" ")}`]
+        : []),
       "",
       "# Or ask your agent (with the Design for AI MCP server installed):",
       `#   "Add the Design for AI component ${slug}"`,

@@ -29,13 +29,25 @@ Broken components are skipped (and reported) in dev; `--strict` fails CI.
   into any React 19 + Tailwind v4 project and have it work.
 - **Allowed imports (web):** `react`, `motion/react`, `lucide-react` and `three`
   (plain Three.js; no react-three-fiber). Nothing else. List any you use in `meta.dependencies`.
-- **Allowed imports (mobile):** `react` and `react-native` core APIs only
-  (`View`, `Text`, `Pressable`, `ScrollView`, `TextInput`, `Animated`,
-  `PanResponder`, `StyleSheet`, `useWindowDimensions`, `Easing`, …). No Expo
-  modules, Reanimated, gesture-handler, SVG or icon packages. Previews run
-  the real code through react-native-web, so anything that isn't core
-  breaks the preview. Draw icons from `View`s, or use plain Unicode
-  glyphs, not emoji.
+- **Allowed imports (mobile):** `react`, `react-native` core APIs (`View`,
+  `Text`, `Pressable`, `ScrollView`, `TextInput`, `Animated`, `PanResponder`,
+  `StyleSheet`, `useWindowDimensions`, `Easing`, …) and three widely used
+  libraries that render in Expo, bare React Native and the web previews:
+  - `expo-blur` (`BlurView`) for real frosted glass over content;
+  - `expo-linear-gradient` (`LinearGradient`) for surfaces, sheens and fades;
+  - `react-native-svg` for icons, illustrations, rings, charts and radial
+    gradients. Draw icons yourself with it; no icon packages.
+  Nothing else: no Reanimated, gesture-handler, Skia or other Expo modules.
+  Animate with `Animated` and `useNativeDriver: true` wherever the property
+  allows it, and drag with `PanResponder`. List the libraries you use in
+  `meta.dependencies`. No emoji as icons. Bare React Native apps need
+  `npx install-expo-modules` once for the two Expo packages; say so in usage.
+- **Mobile is held to the same premium bar as web, not a lower one:** real
+  glass where it earns its place (a `BlurView` over moving content, a
+  hairline light edge, a faint inner gradient), layered surfaces with soft
+  coloured shadows (`boxShadow` strings work in React Native 0.76+), subtle
+  textured gradients rather than flat fills, springs on every press, and
+  continuous transitions between states (shared elements move, nothing cuts).
 - **Default export renders a complete, beautiful demo with zero props.** Also
   export the component by name (`export function HeroEditorial`) and its props
   type (`export type HeroEditorialProps`).
