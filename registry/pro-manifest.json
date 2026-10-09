@@ -793,7 +793,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "hero",
-    "description": "A type foundry hero where every letter of a giant word stack gains weight and leans toward the cursor, with a slow wave on touch and a services marquee.",
+    "description": "A type-foundry hero on black: a giant variable-font stack fills out from hairline, then every letter gains weight and leans toward the cursor.",
     "tags": [
       "hero",
       "kinetic typography",
@@ -801,21 +801,15 @@
       "type foundry",
       "interactive",
       "marquee",
-      "light"
+      "dark"
     ],
     "dependencies": [
       "motion"
     ],
-    "theme": "light",
-    "previewHeight": 960,
-    "usage": "import { HeroKineticType } from \"@/components/design-for-ai/hero-kinetic-type\";\n\n<HeroKineticType\n  brand=\"Fieldwork Type\"\n  lines={[\"Bold\", \"moves.\"]}\n  primary={{ label: \"Try the fonts\", href: \"/trials\" }}\n/>",
+    "theme": "dark",
+    "previewHeight": 1080,
+    "usage": "import { HeroKineticType } from \"@/components/design-for-ai/hero-kinetic-type\";\n\n<HeroKineticType\n  lines={[\"Bold\", \"moves.\"]}\n  specimen=\"Fieldwork Sans Variable\"\n  primary={{ label: \"Try the fonts\", href: \"/trials\" }}\n  theme=\"light\"\n/>",
     "props": [
-      {
-        "name": "brand",
-        "type": "string",
-        "default": "\"Ondine Type Co.\"",
-        "description": "Foundry name, top left."
-      },
       {
         "name": "lines",
         "type": "string[]",
@@ -838,9 +832,19 @@
         "description": "Words in the marquee strip."
       },
       {
+        "name": "meta",
+        "type": "string[]",
+        "description": "Mono facts in the meta row under the band."
+      },
+      {
+        "name": "metaLink",
+        "type": "{ label: string; href: string }",
+        "description": "Underlined catalogue link at the end of the meta row."
+      },
+      {
         "name": "primary",
         "type": "{ label: string; href: string }",
-        "description": "Blue CTA pill."
+        "description": "Solid accent CTA pill with a white arrow chip."
       },
       {
         "name": "secondary",
@@ -858,6 +862,18 @@
         "type": "number",
         "default": "800",
         "description": "Heaviest weight on the axis."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#4353ff\"",
+        "description": "The one signal colour: the final full stop, the weight meter, the CTA and focus rings."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Ink on black, or ink on white paper; the marquee band inverts either way."
       }
     ],
     "added": "2026-10-07"
@@ -942,7 +958,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "hero",
-    "description": "A light SaaS hero whose three CSS-drawn app windows (a calendar, a burndown and a comment thread) tilt toward the pointer in real 3D.",
+    "description": "A dark SaaS hero: headline lines blur in, then three CSS-drawn app windows assemble in a pointer-tilted 3D stack, the burndown draws and one block moves.",
     "tags": [
       "hero",
       "saas",
@@ -950,31 +966,27 @@
       "3d tilt",
       "app ui",
       "calendar",
+      "dark",
       "landing page"
     ],
     "dependencies": [
       "motion"
     ],
-    "theme": "light",
+    "theme": "dark",
     "previewHeight": 880,
-    "usage": "import { HeroProductStack } from \"@/components/design-for-ai/hero-product-stack\";\n\n<HeroProductStack\n  brand=\"Northstar\"\n  headline=\"Roadmaps your team will actually read.\"\n  strike=\"actually\"\n  primary={{ label: \"Try it free\", href: \"/signup\" }}\n/>",
+    "usage": "import { HeroProductStack } from \"@/components/design-for-ai/hero-product-stack\";\n\n<HeroProductStack\n  headline={[\"Roadmaps\", \"your team will\", \"actually read.\"]}\n  emphasis=\"actually\"\n  primary={{ label: \"Try it free\", href: \"/signup\" }}\n  accent=\"#3d7bff\"\n/>",
     "props": [
       {
-        "name": "brand",
-        "type": "string",
-        "default": "\"Cadence\"",
-        "description": "Product name."
-      },
-      {
         "name": "headline",
-        "type": "string",
-        "description": "Headline."
+        "type": "string[]",
+        "default": "[\"Planning\", \"for teams\", \"who hate\", \"planning.\"]",
+        "description": "Headline, one string per line; each line blurs in on its own beat."
       },
       {
-        "name": "strike",
+        "name": "emphasis",
         "type": "string",
         "default": "\"hate\"",
-        "description": "Word set in the accent gradient."
+        "description": "Word set in serif italic (emphasis by voice, not colour)."
       },
       {
         "name": "body",
@@ -984,32 +996,67 @@
       {
         "name": "primary",
         "type": "{ label: string; href: string }",
-        "description": "Black CTA pill."
+        "description": "Solid ink CTA pill."
       },
       {
         "name": "secondary",
         "type": "{ label: string; href: string }",
-        "description": "Tour link with play button."
+        "description": "Tour link with a play button."
       },
       {
         "name": "rating",
         "type": "{ score: string; note: string }",
-        "description": "Rating line under the actions."
+        "description": "Rating line; a numeric score counts up from zero."
+      },
+      {
+        "name": "weekLabel",
+        "type": "string",
+        "default": "\"Week 41 · 5–9 Oct\"",
+        "description": "Calendar window title."
+      },
+      {
+        "name": "days",
+        "type": "string[]",
+        "description": "Day column labels."
+      },
+      {
+        "name": "today",
+        "type": "number",
+        "default": "2",
+        "description": "Index of today in `days`."
+      },
+      {
+        "name": "now",
+        "type": "number",
+        "default": "12.6",
+        "description": "Current time as a decimal hour, for the now line."
       },
       {
         "name": "events",
         "type": "CalendarEvent[]",
-        "description": "Calendar blocks: day, start, hours, title, tone."
+        "description": "Calendar blocks: day, start, hours, title, tone (solid, muted, hatch, accent). The accent block is the one the thread moved and lands last."
       },
       {
         "name": "sprint",
-        "type": "{ name; left; status; actual: number[]; total }",
-        "description": "Burndown card data."
+        "type": "{ name; status; actual: number[]; total; days }",
+        "description": "Burndown data; the line draws and the points-left figure tracks its tip."
       },
       {
         "name": "thread",
         "type": "{ title; messages; moved; placeholder }",
-        "description": "Comment card data."
+        "description": "Comment card data; `moved` is the chip on the last message."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ff6a3d\"",
+        "description": "The one signal colour: now line, moved block and chip, focus rings."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Near-black stage with graphite windows, or cool grey with white windows."
       }
     ],
     "added": "2026-10-07"
