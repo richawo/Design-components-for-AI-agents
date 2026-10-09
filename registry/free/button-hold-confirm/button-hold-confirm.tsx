@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useId, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useId, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import {
   AnimatePresence,
   animate,
   motion,
   useAnimate,
+  useInView,
   useMotionValue,
   useReducedMotion,
   useTransform,
@@ -41,41 +42,84 @@ export type HoldConfirmButtonProps = {
   onConfirm?: () => void | Promise<unknown>;
   /** Ms after success before the button resets. null keeps it confirmed. */
   resetAfter?: number | null;
+  /** The fill colour. Defaults to red for danger and the theme’s ink for neutral. */
+  accent?: string;
+  /** The surface the button sits on, so its label and tints keep their contrast. */
+  theme?: "dark" | "light";
   disabled?: boolean;
   className?: string;
 };
 
 /* ------------------------------------------------------------------ */
-/* Look                                                                 */
+/* Tokens                                                               */
 /* ------------------------------------------------------------------ */
 
-const ease = [0.22, 1, 0.36, 1] as const;
-
-const tones = {
-  danger: {
-    surface: "bg-[#150a0b] shadow-[inset_0_0_0_1px_rgba(248,113,113,0.2),inset_0_1px_0_rgba(255,255,255,0.04)]",
-    hover: "hover:bg-[#1e0e10] hover:shadow-[inset_0_0_0_1px_rgba(248,113,113,0.32),inset_0_1px_0_rgba(255,255,255,0.05)]",
-    text: "text-[#ff9b9b]",
-    fill: "#e5484d",
-    edge: "#ffb3b0",
-    inverse: "text-white",
-    ring: "focus-visible:outline-[#ff9b9b]",
-  },
-  neutral: {
-    surface: "bg-white/[0.05] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12),inset_0_1px_0_rgba(255,255,255,0.05)]",
-    hover: "hover:bg-white/[0.08] hover:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.18),inset_0_1px_0_rgba(255,255,255,0.06)]",
-    text: "text-white/80",
-    fill: "#ececee",
-    edge: "#ffffff",
-    inverse: "text-[#0b0b0c]",
-    ring: "focus-visible:outline-white",
-  },
+/** Ink per theme, the default danger fill, and the neutral fill (the theme’s own ink, near enough). */
+const PALETTE = {
+  dark: { ink: "#f4f4f5", danger: "#e5484d", neutral: "#ececee", tip: "#f4f4f5", onTip: "#0b0b0c" },
+  light: { ink: "#18181b", danger: "#dc2626", neutral: "#18181b", tip: "#18181b", onTip: "#ffffff" },
 } as const;
 
-const sizes = {
-  sm: { box: "h-9 rounded-[9px] px-3 text-[13px]", gap: "gap-1.5", icon: 14 },
-  md: { box: "h-11 rounded-[11px] px-[18px] text-[14px]", gap: "gap-2", icon: 16 },
+const EASE_OUT = [0.22, 1, 0.36, 1] as const;
+const EASE_IN = [0.4, 0, 1, 1] as const;
+const EASE_IN_OUT = [0.65, 0, 0.35, 1] as const;
+
+/** One place for the feel. Seconds unless noted. */
+const MOTION = {
+  tapMs: 260, // a release sooner than this was a tap, not a hold
+  nudge: 0.1, // a tap pushes the fill this far, then lets it go
+  nudgeFor: 0.5,
+  drainFor: 0.45, // the soft drain after success
+  hintMs: 1700,
+  errorMs: 2600,
+  slip: 16, // px off the button before a held pointer counts as letting go
+  shake: [0, -3, 3, -2, 2, -1, 0],
+  shakeFor: 0.34,
+  swap: 0.26, // label cross-fade
+  swapExit: 0.16,
+  check: 0.34,
+  fade: 0.15, // reduced motion
 } as const;
+const SPRING_BACK = { type: "spring", stiffness: 420, damping: 40 } as const;
+
+/**
+ * Every colour derives from two variables: the tint (the fill for danger, the ink for neutral)
+ * and the ink. Mixing with `transparent` keeps the surface honest on whatever it sits on.
+ */
+const SURFACE =
+  "bg-[color-mix(in_srgb,var(--hc-tint)_8%,transparent)] shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--hc-tint)_24%,transparent),inset_0_1px_0_rgba(255,255,255,0.04)] text-[color-mix(in_srgb,var(--hc-tint)_62%,var(--hc-ink))] focus-visible:outline-[color-mix(in_srgb,var(--hc-tint)_62%,var(--hc-ink))]";
+const SURFACE_HOVER =
+  "hover:bg-[color-mix(in_srgb,var(--hc-tint)_12%,transparent)] hover:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--hc-tint)_36%,transparent),inset_0_1px_0_rgba(255,255,255,0.05)]";
+
+const SIZES = {
+  sm: { box: "h-9 rounded-[9px] px-3 text-[13px]", pad: "px-3", gap: "gap-1.5", icon: 14 },
+  md: { box: "h-11 rounded-[11px] px-[18px] text-[14px]", pad: "px-[18px]", gap: "gap-2", icon: 16 },
+} as const;
+
+function inkOn(hex: string) {
+  const v = hex.replace("#", "");
+  const full = v.length === 3 ? [...v].map((c) => c + c).join("") : v.slice(0, 6);
+  const [r, g, b] = [0, 2, 4].map((i) => parseInt(full.slice(i, i + 2), 16) / 255).map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b > 0.4 ? "#0a0a0b" : "#ffffff";
+}
+
+/* ------------------------------------------------------------------ */
+/* Hooks                                                                */
+/* ------------------------------------------------------------------ */
+
+/** setTimeout that is cleared on unmount, so a late callback never lands on a dead component. */
+function useTimers() {
+  const ids = useRef<number[]>([]);
+  useEffect(() => () => ids.current.forEach(clearTimeout), []);
+  const later = useCallback((fn: () => void, ms: number) => {
+    ids.current.push(window.setTimeout(fn, ms));
+  }, []);
+  const clear = useCallback(() => {
+    ids.current.forEach(clearTimeout);
+    ids.current = [];
+  }, []);
+  return { later, clear };
+}
 
 /* ------------------------------------------------------------------ */
 /* Component                                                            */
@@ -94,13 +138,24 @@ export function HoldConfirmButton({
   icon,
   onConfirm,
   resetAfter = 2400,
+  accent,
+  theme = "dark",
   disabled = false,
   className = "",
 }: HoldConfirmButtonProps) {
   const reduce = useReducedMotion() ?? false;
   const uid = useId();
-  const tone = tones[variant];
-  const dim = sizes[size];
+  const dim = SIZES[size];
+  const palette = PALETTE[theme];
+  const fill = accent ?? (variant === "danger" ? palette.danger : palette.neutral);
+  const vars = {
+    "--hc-ink": palette.ink,
+    "--hc-tint": variant === "danger" ? fill : palette.ink,
+    "--hc-fill": fill,
+    "--hc-on-fill": inkOn(fill),
+    "--hc-tip": palette.tip,
+    "--hc-on-tip": palette.onTip,
+  } as CSSProperties;
 
   const [phase, setPhaseState] = useState<Phase>("idle");
   const phaseRef = useRef<Phase>("idle");
@@ -111,6 +166,7 @@ export function HoldConfirmButton({
   const [hintOn, setHintOn] = useState(false);
   const [said, setSaid] = useState("");
 
+  // One motion value drives the clip, the inverted label and the hot edge: no render per frame.
   const progress = useMotionValue(0);
   const clip = useTransform(progress, (v) => `inset(0 ${(1 - Math.min(1, Math.max(0, v))) * 100}% 0 0)`);
   const edgeX = useTransform(progress, (v) => `${Math.min(1, Math.max(0, v)) * 100}%`);
@@ -118,39 +174,22 @@ export function HoldConfirmButton({
 
   const run = useRef<AnimationPlaybackControls | null>(null);
   const startedAt = useRef(0);
-  const timers = useRef<number[]>([]);
-  const alive = useRef(true);
+  const { later, clear } = useTimers();
   const [scope, animateScope] = useAnimate();
 
-  useEffect(() => {
-    alive.current = true;
-    return () => {
-      alive.current = false;
-      run.current?.stop();
-      timers.current.forEach(clearTimeout);
-    };
-  }, []);
-
-  const later = (fn: () => void, ms: number) => {
-    timers.current.push(window.setTimeout(() => alive.current && fn(), ms));
-  };
+  useEffect(() => () => run.current?.stop(), []);
 
   const shake = () => {
     if (reduce || !scope.current) return;
-    animateScope(scope.current, { x: [0, -3, 3, -2, 2, -1, 0] }, { duration: 0.34, ease: "easeOut" });
+    animateScope(scope.current, { x: [...MOTION.shake] }, { duration: MOTION.shakeFor, ease: "easeOut" });
   };
 
   const drain = (soft = false) => {
     run.current?.stop();
-    run.current = animate(
-      progress,
-      0,
-      reduce ? { duration: 0.15 } : soft ? { duration: 0.45, ease } : { type: "spring", stiffness: 420, damping: 40 },
-    );
+    run.current = animate(progress, 0, reduce ? { duration: MOTION.fade } : soft ? { duration: MOTION.drainFor, ease: EASE_OUT } : SPRING_BACK);
   };
 
   const finish = (ok: boolean) => {
-    if (!alive.current) return;
     if (ok) {
       setPhase("done");
       setSaid(announcement ?? doneLabel);
@@ -160,18 +199,17 @@ export function HoldConfirmButton({
           setPhase("idle");
           setSaid("");
         }, resetAfter);
-    } else {
-      setPhase("error");
-      setSaid(errorLabel);
-      shake();
-      drain();
-      later(() => {
-        if (phaseRef.current === "error") {
-          setPhase("idle");
-          setSaid("");
-        }
-      }, 2600);
+      return;
     }
+    setPhase("error");
+    setSaid(errorLabel);
+    shake();
+    drain();
+    later(() => {
+      if (phaseRef.current !== "error") return;
+      setPhase("idle");
+      setSaid("");
+    }, MOTION.errorMs);
   };
 
   const complete = () => {
@@ -187,9 +225,10 @@ export function HoldConfirmButton({
     }
     if (result && typeof (result as Promise<unknown>).then === "function") {
       setPhase("pending");
+      // The scope ref empties on unmount: a promise that settles after that is ignored.
       (result as Promise<unknown>).then(
-        () => finish(true),
-        () => finish(false),
+        () => scope.current && finish(true),
+        () => scope.current && finish(false),
       );
     } else finish(true);
   };
@@ -197,12 +236,12 @@ export function HoldConfirmButton({
   const begin = () => {
     const p = phaseRef.current;
     if (disabled || p === "pending" || p === "done" || p === "holding") return;
-    timers.current.forEach(clearTimeout);
-    timers.current = [];
+    clear();
     setHintOn(false);
     setPhase("holding");
     startedAt.current = performance.now();
     run.current?.stop();
+    // A re-grab continues from wherever the fill has drained to.
     const remaining = (1 - progress.get()) * duration;
     run.current = animate(progress, 1, { duration: remaining / 1000, ease: "linear", onComplete: complete });
   };
@@ -212,13 +251,13 @@ export function HoldConfirmButton({
     setPhase("idle");
     drain();
     // A quick tap gets a hint (and a little nudge of the fill) instead of nothing.
-    if (performance.now() - startedAt.current < 260) {
+    if (performance.now() - startedAt.current < MOTION.tapMs) {
       if (!reduce) {
         run.current?.stop();
-        run.current = animate(progress, [progress.get(), 0.1, 0], { duration: 0.5, times: [0, 0.35, 1], ease: "easeOut" });
+        run.current = animate(progress, [progress.get(), MOTION.nudge, 0], { duration: MOTION.nudgeFor, times: [0, 0.35, 1], ease: "easeOut" });
       }
       setHintOn(true);
-      later(() => setHintOn(false), 1700);
+      later(() => setHintOn(false), MOTION.hintMs);
     }
   };
 
@@ -233,14 +272,14 @@ export function HoldConfirmButton({
     return { key: "idle", node: lead, text: label };
   };
   const current = view(phase);
-  const all: Phase[] = ["idle", "pending", "done", "error"];
+  const sizers: Phase[] = ["idle", "pending", "done", "error"];
 
   /** One layer of label content. Rendered twice: in the button colour, and inverted inside the fill. */
   const layer = (
     <>
       {/* Every label sits invisibly in the same grid cell, so the button is as wide as its longest state and never resizes. */}
       <span aria-hidden="true" className="invisible col-start-1 row-start-1 grid">
-        {all.map((p) => {
+        {sizers.map((p) => {
           const v = view(p);
           return (
             <span key={p} className={`col-start-1 row-start-1 flex items-center justify-center whitespace-nowrap ${dim.gap}`}>
@@ -255,8 +294,8 @@ export function HoldConfirmButton({
           key={current.key}
           initial={reduce ? { opacity: 0 } : { opacity: 0, y: 7, filter: "blur(3px)" }}
           animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-          exit={reduce ? { opacity: 0, transition: { duration: 0.1 } } : { opacity: 0, y: -7, filter: "blur(3px)", transition: { duration: 0.16, ease: [0.4, 0, 1, 1] } }}
-          transition={{ duration: reduce ? 0.12 : 0.26, ease }}
+          exit={reduce ? { opacity: 0, transition: { duration: 0.1 } } : { opacity: 0, y: -7, filter: "blur(3px)", transition: { duration: MOTION.swapExit, ease: EASE_IN } }}
+          transition={{ duration: reduce ? MOTION.fade : MOTION.swap, ease: EASE_OUT }}
           className={`col-start-1 row-start-1 flex items-center justify-center whitespace-nowrap ${dim.gap}`}
         >
           {current.node}
@@ -267,7 +306,7 @@ export function HoldConfirmButton({
   );
 
   return (
-    <motion.span ref={scope} className={`relative inline-flex ${className}`}>
+    <motion.span ref={scope} className={`relative inline-flex ${className}`} style={vars}>
       <button
         type="button"
         disabled={disabled}
@@ -285,7 +324,7 @@ export function HoldConfirmButton({
           // Sliding well off the button counts as letting go.
           if (phaseRef.current !== "holding") return;
           const r = e.currentTarget.getBoundingClientRect();
-          const m = 16;
+          const m = MOTION.slip;
           if (e.clientX < r.left - m || e.clientX > r.right + m || e.clientY < r.top - m || e.clientY > r.bottom + m) release();
         }}
         onKeyDown={(e) => {
@@ -300,21 +339,21 @@ export function HoldConfirmButton({
         }}
         onBlur={release}
         onContextMenu={(e) => e.preventDefault()}
-        className={`group relative isolate grid touch-manipulation select-none place-items-center font-sans font-medium tracking-[-0.01em] [-webkit-touch-callout:none] [-webkit-tap-highlight-color:transparent] transition-[background-color,box-shadow,scale,opacity] ease-out focus-visible:outline-2 focus-visible:outline-offset-2 before:absolute before:inset-x-0 before:-inset-y-1 before:content-[''] disabled:cursor-not-allowed disabled:opacity-40 ${dim.box} ${tone.surface} ${tone.text} ${tone.ring} ${
-          busy || disabled ? "" : tone.hover
+        className={`group relative isolate grid touch-manipulation select-none place-items-center font-sans font-medium tracking-[-0.01em] [-webkit-touch-callout:none] [-webkit-tap-highlight-color:transparent] transition-[background-color,box-shadow,scale,opacity] ease-out focus-visible:outline-2 focus-visible:outline-offset-2 before:absolute before:inset-x-0 before:-inset-y-1 before:content-[''] disabled:cursor-not-allowed disabled:opacity-40 ${dim.box} ${SURFACE} ${
+          busy || disabled ? "" : SURFACE_HOVER
         } ${phase === "holding" ? "scale-[0.98] duration-100" : "scale-100 duration-150"} ${busy ? "cursor-default" : "cursor-pointer"}`}
       >
         {layer}
 
         {/* The fill and its inverted label share one clip, so the text changes colour exactly at the edge. */}
         <span aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]">
-          <motion.span className="absolute inset-0 grid place-items-center" style={{ clipPath: clip, background: tone.fill }}>
-            <span className={`grid place-items-center ${size === "sm" ? "px-3" : "px-[18px]"} ${tone.inverse}`}>{layer}</span>
+          <motion.span className="absolute inset-0 grid place-items-center bg-[var(--hc-fill)]" style={{ clipPath: clip }}>
+            <span className={`grid place-items-center text-[var(--hc-on-fill)] ${dim.pad}`}>{layer}</span>
           </motion.span>
           {/* A hot leading edge: a hairline plus a short soft trail, so the fill reads as moving. */}
           <motion.span className="absolute inset-y-0 -ml-6 w-6" style={{ left: edgeX, opacity: edgeOpacity }}>
-            <span className="absolute inset-0" style={{ background: `linear-gradient(90deg, transparent, ${tone.edge}55)` }} />
-            <span className="absolute inset-y-0 right-0 w-px" style={{ background: tone.edge }} />
+            <span className="absolute inset-0 bg-[linear-gradient(90deg,transparent,color-mix(in_srgb,var(--hc-fill)_45%,white))] opacity-35" />
+            <span className="absolute inset-y-0 right-0 w-px bg-[color-mix(in_srgb,var(--hc-fill)_45%,white)]" />
           </motion.span>
         </span>
       </button>
@@ -326,11 +365,11 @@ export function HoldConfirmButton({
             initial={reduce ? { opacity: 0 } : { opacity: 0, y: 4, filter: "blur(2px)" }}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             exit={{ opacity: 0, transition: { duration: 0.12 } }}
-            transition={{ duration: 0.18, ease }}
-            className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 -translate-x-1/2 whitespace-nowrap rounded-[7px] bg-[#f4f4f5] px-2 py-1 font-sans text-[12px] font-medium text-[#0b0b0c] shadow-[0_8px_24px_-8px_rgba(0,0,0,0.8)]"
+            transition={{ duration: 0.18, ease: EASE_OUT }}
+            className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 -translate-x-1/2 whitespace-nowrap rounded-[7px] bg-[var(--hc-tip)] px-2 py-1 font-sans text-[12px] font-medium text-[var(--hc-on-tip)] shadow-[0_8px_24px_-8px_rgba(0,0,0,0.8)]"
           >
             {hint}
-            <span aria-hidden="true" className="absolute left-1/2 top-full -mt-[3px] size-1.5 -translate-x-1/2 rotate-45 bg-[#f4f4f5]" />
+            <span aria-hidden="true" className="absolute left-1/2 top-full -mt-[3px] size-1.5 -translate-x-1/2 rotate-45 bg-[var(--hc-tip)]" />
           </motion.span>
         )}
       </AnimatePresence>
@@ -376,7 +415,7 @@ function CheckIcon({ size, reduce }: { size: number; reduce: boolean }) {
         strokeLinejoin="round"
         initial={{ pathLength: reduce ? 1 : 0 }}
         animate={{ pathLength: 1 }}
-        transition={{ duration: 0.34, ease, delay: 0.06 }}
+        transition={{ duration: MOTION.check, ease: EASE_OUT, delay: 0.06 }}
       />
     </svg>
   );
@@ -402,96 +441,128 @@ function Spinner({ size }: { size: number }) {
 }
 
 /* ------------------------------------------------------------------ */
-/* Demo                                                                 */
+/* Demo: a project list where deleting takes a deliberate hold          */
 /* ------------------------------------------------------------------ */
 
-type DemoProject = { id: string; name: string; meta: string; mono: string; tint: string; action: "delete" | "archive" };
+/** The demo’s card; not part of the component. Greyscale: the red belongs to the buttons alone. */
+const STAGE = { backdrop: "#000000", card: "#0b0b0c", line: "rgba(255,255,255,0.08)", rule: "rgba(255,255,255,0.07)", ink: "#f4f4f5", muted: "#8a8a93", monoBg: "#18181b", monoInk: "#a1a1aa" } as const;
 
-const demoProjects: DemoProject[] = [
-  { id: "halcyon", name: "halcyon-web", meta: "212 deploys · 2h ago", mono: "HW", tint: "#f5c451", action: "delete" },
-  { id: "ledger", name: "ledger-sync", meta: "38 deploys · yesterday", mono: "LS", tint: "#7dd3a8", action: "delete" },
-  { id: "atlas", name: "atlas-staging", meta: "Idle for 41 days", mono: "AS", tint: "#8ab8ff", action: "archive" },
+const DEMO_MOTION = {
+  rise: 12,
+  blur: 8,
+  block: 0.5,
+  step: 0.06,
+  rowsAt: 0.16,
+  footerAt: 0.4,
+  hintAt: 0.52,
+  count: 0.6,
+  removeAfterMs: 700, // let “Deleted” and its check land before the row folds away
+  collapse: 0.32,
+  refocusMs: 1150, // once the row has gone, hand focus to the next thing to act on
+} as const;
+
+type DemoProject = { id: string; name: string; meta: string; mono: string; action: "delete" | "archive" };
+
+const DEMO_PROJECTS: DemoProject[] = [
+  { id: "halcyon", name: "halcyon-web", meta: "212 deploys · 2h ago", mono: "HW", action: "delete" },
+  { id: "ledger", name: "ledger-sync", meta: "38 deploys · yesterday", mono: "LS", action: "delete" },
+  { id: "atlas", name: "atlas-staging", meta: "Idle for 41 days", mono: "AS", action: "archive" },
 ];
 
-function HoldConfirmButtonDemo() {
-  const [projects, setProjects] = useState(demoProjects);
-  const [leaving, setLeaving] = useState<string[]>([]);
-  const reduce = useReducedMotion() ?? false;
+function enter(play: boolean, delay: number, reduce: boolean) {
+  if (reduce) return { initial: { opacity: 0 }, animate: { opacity: play ? 1 : 0 }, transition: { duration: MOTION.fade } };
+  return {
+    initial: { opacity: 0, y: DEMO_MOTION.rise, filter: `blur(${DEMO_MOTION.blur}px)` },
+    animate: play ? { opacity: 1, y: 0, filter: "blur(0px)", transitionEnd: { filter: "none" } } : undefined,
+    transition: { duration: DEMO_MOTION.block, ease: EASE_OUT, delay },
+  };
+}
 
+/** “3 of 3” counts up on first view and ticks down as rows go, with a blur that clears as it lands. */
+function Count({ value, total, play, reduce }: { value: number; total: number; play: boolean; reduce: boolean }) {
+  const n = useMotionValue(0);
+  const blur = useMotionValue(0);
+  const text = useTransform(n, (v) => `${Math.round(v)} of ${total}`);
+  const filter = useTransform(blur, (b) => `blur(${b}px)`);
+  const first = useRef(true);
+  useEffect(() => {
+    if (!play) return;
+    if (reduce) {
+      n.set(value);
+      return;
+    }
+    const delay = first.current ? DEMO_MOTION.step * 2 : 0;
+    first.current = false;
+    blur.set(3);
+    const runs = [animate(n, value, { duration: DEMO_MOTION.count, ease: EASE_OUT, delay }), animate(blur, 0, { duration: DEMO_MOTION.count, ease: EASE_OUT, delay })];
+    return () => runs.forEach((r) => r.stop());
+  }, [value, play, reduce, n, blur]);
+  return (
+    <>
+      <motion.span aria-hidden="true" style={{ filter }} className="inline-block tabular-nums">
+        {text}
+      </motion.span>
+      <span className="sr-only">
+        {value} of {total}
+      </span>
+    </>
+  );
+}
+
+export default function HoldConfirmButtonDemo() {
+  const reduce = useReducedMotion() ?? false;
+  const uid = useId();
   const cardRef = useRef<HTMLElement>(null);
+  const play = useInView(cardRef, { once: true, amount: 0.3 });
+  const [projects, setProjects] = useState(DEMO_PROJECTS);
+  const [leaving, setLeaving] = useState<string[]>([]);
+  const { later } = useTimers();
 
   const remove = (id: string) => {
-    window.setTimeout(() => setLeaving((l) => [...l, id]), 700);
-    window.setTimeout(() => setProjects((ps) => ps.filter((p) => p.id !== id)), 760);
-    // Once the row has gone, hand keyboard focus to the next thing to act on instead of dropping it on <body>.
-    window.setTimeout(() => {
+    // Clip the row only as it leaves, so the hint tooltip isn’t cut off while it’s still there.
+    later(() => setLeaving((l) => [...l, id]), DEMO_MOTION.removeAfterMs);
+    later(() => setProjects((ps) => ps.filter((p) => p.id !== id)), DEMO_MOTION.removeAfterMs + 60);
+    later(() => {
       const active = document.activeElement;
       if (active && active !== document.body && cardRef.current?.contains(active)) return;
       cardRef.current?.querySelector<HTMLButtonElement>("ul button, [data-restore]")?.focus();
-    }, 1150);
+    }, DEMO_MOTION.refocusMs);
+  };
+
+  const restore = () => {
+    setLeaving([]);
+    setProjects(DEMO_PROJECTS);
   };
 
   return (
-    <div className="flex min-h-dvh w-full items-center justify-center bg-black px-4 py-16 text-white sm:px-8">
+    <div className="flex min-h-dvh w-full items-center justify-center px-4 py-16 font-sans antialiased sm:px-8" style={{ background: STAGE.backdrop, color: STAGE.ink }}>
       <div className="@container w-full max-w-[600px]">
-        <section
+        <motion.section
           ref={cardRef}
-          aria-labelledby="hcb-projects"
-          className="rounded-[18px] bg-[#0b0b0c] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08),inset_0_1px_0_rgba(255,255,255,0.05),0_40px_80px_-40px_rgba(0,0,0,0.9)]"
+          aria-labelledby={`${uid}-title`}
+          {...enter(play, 0, reduce)}
+          className="rounded-[18px]"
+          style={{ background: STAGE.card, boxShadow: `inset 0 0 0 1px ${STAGE.line}, inset 0 1px 0 rgba(255,255,255,0.05), 0 40px 80px -40px rgba(0,0,0,0.9)` }}
         >
-          <header className="flex items-center justify-between px-5 pb-3 pt-5 @md:px-6">
-            <h2 id="hcb-projects" className="text-[14px] font-medium tracking-[-0.01em] text-white/90">
+          <motion.header {...enter(play, DEMO_MOTION.step, reduce)} className="flex items-center justify-between px-5 pb-3 pt-5 @md:px-6">
+            <h2 id={`${uid}-title`} className="text-[14px] font-medium tracking-[-0.01em]">
               Projects
             </h2>
-            <span className="font-mono text-[11px] tabular-nums text-white/35">{projects.length} of 3</span>
-          </header>
+            <span className="font-mono text-[11px]" style={{ color: STAGE.muted }}>
+              <Count value={projects.length} total={DEMO_PROJECTS.length} play={play} reduce={reduce} />
+            </span>
+          </motion.header>
 
           <ul className="px-2 pb-2">
-            <AnimatePresence initial={false}>
-              {projects.map((p) => (
+            <AnimatePresence>
+              {projects.map((p, i) => (
                 <motion.li
                   key={p.id}
-                  exit={reduce ? { opacity: 0, transition: { duration: 0.15 } } : { opacity: 0, height: 0, transition: { duration: 0.32, ease: [0.65, 0, 0.35, 1] } }}
+                  {...enter(play, DEMO_MOTION.rowsAt + i * DEMO_MOTION.step, reduce)}
+                  exit={reduce ? { opacity: 0, transition: { duration: MOTION.fade } } : { opacity: 0, height: 0, transition: { duration: DEMO_MOTION.collapse, ease: EASE_IN_OUT } }}
                   className={leaving.includes(p.id) ? "overflow-hidden" : ""}
                 >
-                  <div className="flex items-center gap-3 rounded-[12px] px-3 py-3 transition-colors duration-150 hover:bg-white/[0.025] @md:px-4">
-                    <span
-                      aria-hidden="true"
-                      className="grid size-9 shrink-0 place-items-center rounded-[9px] font-mono text-[11px] font-medium"
-                      style={{ background: `${p.tint}14`, color: p.tint, boxShadow: `inset 0 0 0 1px ${p.tint}2e` }}
-                    >
-                      {p.mono}
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate font-mono text-[13px] text-white/90">{p.name}</span>
-                      <span className="mt-0.5 block truncate text-[12.5px] text-white/40">{p.meta}</span>
-                    </span>
-                    {p.action === "delete" ? (
-                      <HoldConfirmButton
-                        size="sm"
-                        label="Delete"
-                        doneLabel="Deleted"
-                        errorLabel="Failed"
-                        announcement={`${p.name} deleted`}
-                        duration={1000}
-                        resetAfter={null}
-                        onConfirm={() => remove(p.id)}
-                      />
-                    ) : (
-                      <HoldConfirmButton
-                        size="sm"
-                        variant="neutral"
-                        label="Archive"
-                        pendingLabel="Archiving…"
-                        doneLabel="Archived"
-                        errorLabel="Failed"
-                        announcement={`${p.name} archived`}
-                        duration={800}
-                        resetAfter={null}
-                        onConfirm={() => remove(p.id)}
-                      />
-                    )}
-                  </div>
+                  <ProjectRow project={p} onRemove={() => remove(p.id)} />
                 </motion.li>
               ))}
             </AnimatePresence>
@@ -500,21 +571,21 @@ function HoldConfirmButtonDemo() {
           <AnimatePresence initial={false}>
             {projects.length === 0 && (
               <motion.div
-                initial={reduce ? { opacity: 0 } : { opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, ease, delay: 0.15 }}
+                initial={reduce ? { opacity: 0 } : { opacity: 0, y: 8, filter: "blur(4px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                exit={{ opacity: 0, transition: { duration: MOTION.fade } }}
+                transition={{ duration: 0.4, ease: EASE_OUT, delay: 0.15 }}
                 className="flex flex-col items-center px-6 pb-9 pt-4 text-center"
               >
-                <p className="text-[14px] text-white/80">Nothing left to delete.</p>
-                <p className="mt-1 text-[13px] text-white/40">Thorough. The demo can put them back.</p>
+                <p className="text-[14px]">Nothing left to delete.</p>
+                <p className="mt-1 text-[13px]" style={{ color: STAGE.muted }}>
+                  Thorough. The demo can put them back.
+                </p>
                 <button
                   type="button"
                   data-restore
-                  onClick={() => {
-                    setLeaving([]);
-                    setProjects(demoProjects);
-                  }}
-                  className="mt-5 inline-flex h-9 items-center rounded-[9px] px-3.5 text-[13px] font-medium text-white/80 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)] outline-none transition-[background-color,color,scale] duration-150 hover:bg-white/[0.05] hover:text-white focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b0b0c] active:scale-[0.97]"
+                  onClick={restore}
+                  className="mt-5 inline-flex h-9 items-center rounded-[9px] px-3.5 text-[13px] font-medium text-white/80 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)] transition-[background-color,color,scale] duration-150 hover:bg-white/[0.05] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white active:scale-[0.97]"
                 >
                   Restore projects
                 </button>
@@ -522,10 +593,14 @@ function HoldConfirmButtonDemo() {
             )}
           </AnimatePresence>
 
-          <div className="flex flex-col gap-4 border-t border-white/[0.07] px-5 py-5 @md:flex-row @md:items-center @md:justify-between @md:px-6">
+          <motion.div
+            {...enter(play, DEMO_MOTION.footerAt, reduce)}
+            className="flex flex-col gap-4 border-t px-5 py-5 @md:flex-row @md:items-center @md:justify-between @md:px-6"
+            style={{ borderColor: STAGE.rule }}
+          >
             <div className="min-w-0">
-              <p className="text-[14px] font-medium text-white/90">Delete workspace</p>
-              <p className="mt-1 max-w-[38ch] text-[13px] leading-[1.5] text-white/45">
+              <p className="text-[14px] font-medium">Delete workspace</p>
+              <p className="mt-1 max-w-[38ch] text-[13px] leading-[1.5]" style={{ color: STAGE.muted }}>
                 Removes every project, preview and domain in Northwind. There’s no undo.
               </p>
             </div>
@@ -537,12 +612,48 @@ function HoldConfirmButtonDemo() {
               className="self-start @md:self-auto"
               onConfirm={() => new Promise((_, reject) => window.setTimeout(() => reject(new Error("domains")), 1100))}
             />
-          </div>
-        </section>
-        <p className="mt-4 text-center font-mono text-[11px] text-white/30">Hold Space or Enter to confirm from the keyboard.</p>
+          </motion.div>
+        </motion.section>
+        <motion.p {...enter(play, DEMO_MOTION.hintAt, reduce)} className="mt-4 text-center font-mono text-[11px]" style={{ color: STAGE.muted }}>
+          Hold Space or Enter to confirm from the keyboard.
+        </motion.p>
       </div>
     </div>
   );
 }
 
-export default HoldConfirmButtonDemo;
+function ProjectRow({ project: p, onRemove }: { project: DemoProject; onRemove: () => void }) {
+  return (
+    <div className="flex items-center gap-3 rounded-[12px] px-3 py-3 transition-colors duration-150 hover:bg-white/[0.025] @md:px-4">
+      <span
+        aria-hidden="true"
+        className="grid size-9 shrink-0 place-items-center rounded-[9px] font-mono text-[11px] font-medium shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]"
+        style={{ background: STAGE.monoBg, color: STAGE.monoInk }}
+      >
+        {p.mono}
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block truncate font-mono text-[13px]">{p.name}</span>
+        <span className="mt-0.5 block truncate text-[12.5px]" style={{ color: STAGE.muted }}>
+          {p.meta}
+        </span>
+      </span>
+      {p.action === "delete" ? (
+        <HoldConfirmButton size="sm" label="Delete" doneLabel="Deleted" errorLabel="Failed" announcement={`${p.name} deleted`} duration={1000} resetAfter={null} onConfirm={onRemove} />
+      ) : (
+        <HoldConfirmButton
+          size="sm"
+          variant="neutral"
+          label="Archive"
+          pendingLabel="Archiving…"
+          doneLabel="Archived"
+          errorLabel="Failed"
+          announcement={`${p.name} archived`}
+          duration={800}
+          resetAfter={null}
+          onConfirm={onRemove}
+        />
+      )}
+    </div>
+  );
+}

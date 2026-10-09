@@ -9,10 +9,12 @@ Build a hold-to-confirm button for destructive actions in React + Tailwind CSS v
 - The fill is a full-size layer clipped with `clip-path: inset(0 (1 − p)·100% 0 0)`, driven by one motion value `p`. Inside it sits a second copy of the label in the inverse colour, so the text changes colour exactly where the fill is, character by character.
 - A hot leading edge rides `p`: a 1px line in the edge colour plus a 24px gradient trail (edge colour at 33%) behind it, hidden at 0 and 100%.
 
-**Colour**
-- Danger: surface `#150a0b`, inset ring `rgba(248,113,113,.2)` (hover `#1e0e10`, ring .32), label `#ff9b9b`, fill `#e5484d`, edge `#ffb3b0`, inverse label white, focus outline `#ff9b9b`.
-- Neutral: surface white/5, ring white/12 (hover white/8, ring .18), label white/80, fill `#ececee`, edge white, inverse label `#0b0b0c`, focus outline white.
+**Colour (monochrome first; the red is the one accent)**
+- Every colour is mixed in CSS from two variables so one `accent` prop rebrands it: `--hc-tint` (the fill for danger, the ink for neutral) and `--hc-ink` (`#f4f4f5` dark, `#18181b` light, from a `theme` prop).
+- Surface `color-mix(tint 8%, transparent)` with an inset ring at 24% (hover 12% / 36%), so it sits on any background. Label and focus outline `color-mix(tint 62%, ink)`.
+- Fill: danger `#e5484d` (`#dc2626` on light), neutral the theme's ink (`#ececee` dark, `#18181b` light); the inverted label is black or white by luminance. Edge `color-mix(fill 45%, white)`.
 - Focus: a 2px outline with a 2px offset (an outline, not a ring, so the gap shows whatever surface the button sits on), keyboard only.
+- Tokens (PALETTE, MOTION, SIZES) live in one place at the top of the file.
 
 **Motion**
 - Press (pointer down or Space/Enter down, ignoring key repeat): scale 0.98 in 100ms, and `p` animates linearly to 1 over the remaining `(1 − p) × duration` (default 1200ms), so a re-grab continues from where the fill is.
@@ -28,9 +30,11 @@ Build a hold-to-confirm button for destructive actions in React + Tailwind CSS v
 - Space and Enter hold from the keyboard; the implicit click is prevented. `aria-busy` while pending. Disabled is 40% opacity and `cursor-not-allowed`.
 - `touch-action: manipulation`, no text selection, no iOS callout, context menu suppressed so a long press doesn't open it.
 
-**Demo (true black stage)**
-- A 600px card (`#0b0b0c`, 18px radius, hairline inset ring) titled "Projects" with a mono count. Three rows: a tinted two-letter monogram tile, mono name, a meta line, and a `sm` button (two "Delete", one neutral "Archive"). On confirm the row collapses (height + opacity, 320ms in-out). When none are left: "Nothing left to delete." and a "Restore projects" button.
-- Footer "Delete workspace" with a `md` "Hold to delete workspace" (1500ms) whose promise rejects to show "Detach 2 domains first".
+**Demo (true black stage, greyscale: the red belongs to the buttons alone)**
+- A 600px card (`#0b0b0c`, 18px radius, hairline inset ring) titled "Projects" with a mono "3 of 3" that counts up from zero on first view (tabular, blur clearing) and ticks down as rows go. Three rows: a grey two-letter monogram tile (`#18181b`, `#a1a1aa` initials, hairline), mono name, a `#8a8a93` meta line, and a `sm` button (two "Delete", one neutral "Archive"). On confirm the row collapses (height + opacity, 320ms in-out) after the "Deleted" check lands. When none are left: "Nothing left to delete." and a "Restore projects" button; restored rows stagger back in.
+- Footer "Delete workspace" with a `md` "Hold to delete workspace" (1500ms) whose promise rejects to show "Detach 2 domains first". A mono keyboard hint sits under the card.
+- Entrance (once at 30% in view, ease-out `[0.22, 1, 0.36, 1]`): card rises 12px out of an 8px blur (0.5s), header at 60ms, rows from 0.16s 60ms apart, footer at 0.4s, hint at 0.52s. Reduced motion: 150ms fades.
+- All demo timers go through a `useTimers` hook that clears them on unmount; ids come from `useId`.
 
 **Don't**
-- No progress percentage, no countdown numbers, no confetti, no red glow. No width change between states. No click-to-confirm modal.
+- No progress percentage, no countdown numbers, no confetti, no red glow, no tinted monogram tiles. No width change between states. No click-to-confirm modal.

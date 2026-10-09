@@ -5,7 +5,7 @@
   "stack": {
     "framework": "React 19",
     "styling": "Tailwind CSS v4",
-    "animation": "motion/react (motion value for progress, springs, useAnimate for the shake, AnimatePresence for label swaps)"
+    "animation": "motion/react (one motion value for progress, springs, useAnimate for the shake, AnimatePresence for label swaps, useInView for the demo entrance)"
   },
   "layout": {
     "button": "CSS grid; all label states stacked invisibly in one cell so width = longest state and never changes",
@@ -14,23 +14,22 @@
     "fill": "absolute full-size layer clipped with inset(0 (1-p)*100% 0 0); contains an inverse-coloured copy of the label",
     "edge": "1px line + 24px gradient trail positioned at p, hidden at 0 and 1",
     "hint": "tooltip above, 8px gap, 12px text, 7px radius, with a 6px rotated-square arrow",
-    "demo": "600px card: header, three project rows with sm buttons, empty state, footer with md workspace button"
+    "demo": "600px card: header with a counting '3 of 3', three project rows with grey monograms and sm buttons, empty state, footer with md workspace button; sub-component ProjectRow, hooks useTimers"
   },
   "typography": {
     "label": "Geist (font-sans) 500, tracking -0.01em, 13px (sm) / 14px (md)",
-    "demoRowName": "mono 13px white/90",
-    "demoMeta": "12.5px white/40",
+    "demoRowName": "mono 13px ink",
+    "demoMeta": "12.5px #8a8a93",
     "hint": "12px 500"
   },
   "color": {
-    "dangerSurface": "#150a0b, inset ring rgba(248,113,113,0.2); hover #1e0e10, ring 0.32",
-    "dangerLabel": "#ff9b9b",
-    "dangerFill": "#e5484d with edge #ffb3b0 and white inverse label",
-    "neutralSurface": "white/5, ring white/12; hover white/8, ring white/18",
-    "neutralLabel": "white/80",
-    "neutralFill": "#ececee with white edge and #0b0b0c inverse label",
-    "focus": "2px outline (#ff9b9b danger, white neutral) offset 2px, so the gap shows the parent surface",
-    "tooltip": "#f4f4f5 background, #0b0b0c text"
+    "approach": "monochrome first: the red fill is the one accent (accent prop). Every button colour is mixed in CSS from two variables, --hc-tint (the fill for danger, the ink for neutral) and --hc-ink, with color-mix against transparent so it sits on any surface",
+    "surface": "tint 8% over transparent, inset ring tint 24%; hover 12% / 36%",
+    "label": "color-mix(tint 62%, ink); focus outline the same colour",
+    "fill": "danger #e5484d (light theme #dc2626) or neutral = theme ink (#ececee dark, #18181b light); inverse label black or white by luminance",
+    "edge": "color-mix(fill 45%, white) hairline plus a 24px gradient trail at 35%",
+    "ink": "dark #f4f4f5, light #18181b; tooltip ink background with the opposite text",
+    "demo": "#000 stage, #0b0b0c card, white/8% ring, #8a8a93 meta, grey #18181b monogram tiles with #a1a1aa initials (no tinted tiles)"
   },
   "motion": {
     "hold": "pointer down or Space/Enter down: scale 0.98 (100ms); p animates linearly to 1 over (1-p)*duration, default 1200ms",
@@ -41,7 +40,8 @@
     "labelSwap": "in from y 7px, blur 3px, 260ms ease-out; out to y -7px in 160ms ease-in",
     "done": "check path draws in over 340ms; after resetAfter (2400ms) the fill drains over 450ms",
     "error": "shake, fill springs back, alert icon + errorLabel for 2.6s",
-    "reducedMotion": "fill still tracks the hold; no shake, spring or blur; 150ms fades"
+    "reducedMotion": "fill still tracks the hold; no shake, spring or blur; 150ms fades; demo blocks fade in over 150ms and numbers set instantly",
+    "demoEntrance": "once at 30% in view: card rises 12px out of an 8px blur (0.5s ease-out [0.22,1,0.36,1]), header at 60ms with '0 of 3' counting up to '3 of 3' (0.6s, blur clearing), rows from 0.16s 60ms apart, footer at 0.4s, keyboard hint at 0.52s; restored rows stagger back in the same way; every timer is cleared on unmount"
   },
   "responsive": {
     "button": "intrinsic width; sm keeps a 44px touch target",
@@ -55,8 +55,18 @@
     "touch-action manipulation, no selection, no iOS callout, context menu suppressed"
   ],
   "content": {
-    "defaults": { "label": "Hold to delete", "pendingLabel": "Deleting…", "doneLabel": "Deleted", "errorLabel": "Couldn’t delete", "hint": "Press and hold" },
-    "demoRows": ["halcyon-web · 212 deploys · 2h ago", "ledger-sync · 38 deploys · yesterday", "atlas-staging · Idle for 41 days (Archive, neutral)"],
+    "defaults": {
+      "label": "Hold to delete",
+      "pendingLabel": "Deleting…",
+      "doneLabel": "Deleted",
+      "errorLabel": "Couldn’t delete",
+      "hint": "Press and hold"
+    },
+    "demoRows": [
+      "halcyon-web · 212 deploys · 2h ago",
+      "ledger-sync · 38 deploys · yesterday",
+      "atlas-staging · Idle for 41 days (Archive, neutral)"
+    ],
     "demoFooter": "Delete workspace: Removes every project, preview and domain in Northwind. There’s no undo. Error: Detach 2 domains first"
   },
   "avoid": [
@@ -65,6 +75,8 @@
     "confetti, glow or sparkles on success",
     "a confirm modal on top of the hold",
     "animating progress with CSS transitions (it must reverse mid-flight)",
-    "triggering on key repeat"
+    "triggering on key repeat",
+    "tinted per-project monogram tiles",
+    "hard-coded colours that ignore the accent prop"
   ]
 }
