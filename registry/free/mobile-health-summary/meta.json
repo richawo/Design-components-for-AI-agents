@@ -4,16 +4,17 @@
   "tier": "free",
   "platform": "mobile",
   "category": "mobile",
-  "description": "A React Native daily health summary: three gradient activity rings that draw in and lap past 100%, tap-to-isolate readout, glass metric cards and a gliding week picker.",
+  "description": "A monochrome React Native health summary: activity rings that draw in and lap past 100%, figures that count up from a blur, drawn charts and a gliding week picker.",
   "tags": [
     "health",
     "fitness",
     "activity rings",
     "react native",
     "dashboard",
-    "glassmorphism",
+    "monochrome",
     "sparkline",
-    "dark"
+    "dark",
+    "count up"
   ],
   "dependencies": [
     "expo-blur",
@@ -32,12 +33,18 @@
     {
       "name": "rings",
       "type": "HealthRing[]",
-      "description": "Move, Exercise and Stand: label, unit, goal, first-lap gradient and the deeper second-lap gradient."
+      "description": "Move, Exercise and Stand: label, unit, goal, first-lap gradient and the deeper second-lap gradient. The only multi-hue colour in the component."
     },
     {
       "name": "initialDay",
       "type": "number",
       "description": "Index of the day selected on mount. Defaults to the last day that isn't in the future."
+    },
+    {
+      "name": "accent",
+      "type": "string",
+      "default": "\"#FF3D6E\"",
+      "description": "The one brand colour outside the rings: the step sparkline's \"now\" dot and the heartbeat comet. Everything else is greyscale."
     },
     {
       "name": "title",

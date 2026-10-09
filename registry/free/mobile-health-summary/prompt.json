@@ -1,30 +1,31 @@
 {
   "component": "MobileHealthSummary",
-  "intent": "Dark, luminous daily health summary: three gradient activity rings that draw in, lap past 100% into a deeper shade and isolate on tap, over glass metric cards and a gliding week selector.",
+  "intent": "Dark, monochrome daily health summary: three activity rings that draw in, lap past 100% into a deeper shade and isolate on tap, over graphite metric cards and a gliding week selector, with the whole frame choreographed on first view.",
   "platform": "mobile",
   "stack": {
     "framework": "React Native",
     "libraries": [
-      "expo-blur (BlurView)",
+      "expo-blur (BlurView: entrance veils, status-bar glass)",
       "expo-linear-gradient",
       "react-native-svg (Mask, Pattern, RadialGradient)"
     ],
     "apis": [
       "Animated",
+      "Animated.ScrollView",
       "Easing",
       "Pressable",
-      "ScrollView",
-      "AccessibilityInfo"
+      "AccessibilityInfo",
+      "useId"
     ],
     "web": "react-native-web compatible"
   },
   "layout": {
-    "padding": "16pt gutters, 58pt top",
-    "header": "uppercase date line over a 34pt 'Summary', 40pt initials avatar in a gradient ring",
-    "week": "glass bar, 7 columns (letter + 30pt mini rings), gliding glass pill, future days disabled",
+    "padding": "16pt gutters, 56pt top",
+    "header": "uppercase date line over a 34pt 'Summary'; 42pt avatar: 34pt graphite disc with initials inside a 1.6pt white-gradient ring that draws in",
+    "week": "graphite surface (radius 22), 7 columns (letter + 30pt mini rings), gliding pill, future days disabled",
     "rings": "264pt box, stroke 22, gap 3, padding 6; centre readout: micro label (TODAY or weekday), 34pt value + muted suffix, sub line",
-    "legend": "3 columns: swatch, label, 19pt value in ring colour with muted goal; doubles as ring buttons",
-    "cards": "Steps (flex 1.18, sparkline) + Heart (flex 1, beat line); Sleep full width with stacked stage bar and 4-column key"
+    "legend": "3 columns: ring-colour swatch, grey label, 19pt white value with muted goal; doubles as ring buttons",
+    "cards": "Steps (flex 1.18, sparkline) + Heart (flex 1, ECG trace); Sleep full width with stacked stage bar and 4-column key; labels and icons in 56% white"
   },
   "typography": {
     "title": {
@@ -60,16 +61,29 @@
     }
   },
   "color": {
-    "background": [
-      "#0B0C12",
-      "#0E1018",
-      "#08090D"
+    "approach": "monochrome first: one true-neutral family; colour only for the rings (data), a focused ring's centre label, and one accent; focus halo and tip shadows are neutral",
+    "page": [
+      "#0D0D0D",
+      "#0A0A0A",
+      "#060606"
     ],
-    "glows": {
-      "rose": "#FF3D6E",
-      "cyan": "#1FD2F4",
-      "blue": "#4C94FF",
-      "amber": "#FF8B52"
+    "pageTexture": "white top light 7% + 4x4 dither at 2.5–4.5%",
+    "surface": {
+      "fill": [
+        "#191919",
+        "#141414",
+        "#111111"
+      ],
+      "edge": "1px 6% white, top 14%",
+      "shadow": "0 18px 40px -18px rgba(0,0,0,.85)"
+    },
+    "ink": "#F5F5F5",
+    "secondary": "rgba(255,255,255,0.56)",
+    "faint": "rgba(255,255,255,0.34)",
+    "accent": {
+      "prop": "accent",
+      "default": "#FF3D6E",
+      "use": "sparkline 'now' dot, heartbeat comet"
     },
     "rings": {
       "move": {
@@ -103,26 +117,32 @@
         ]
       }
     },
-    "ink": "#F4F5F8",
-    "secondary": "rgba(235,238,245,0.56)",
-    "sleep": {
-      "deep": "#4B57E6",
-      "core": "#4C94FF",
-      "rem": "#6FE2DD",
-      "awake": "#FFB27A"
+    "charts": {
+      "sparkline": "white line 30%→95% left to right over a 12%→0 white fill",
+      "ecg": "20% white trace",
+      "sleep": "white ramp: Deep 94%, Core 60%, REM 36%, Awake 16%"
     },
-    "glass": "BlurView 42 dark + white gradient 8.5%→3%→1.5% + 1px border 5.5% (top 17%)"
+    "statusBar": "scrim at rest; BlurView 50 dark + hairline fades in on scroll",
+    "veil": "BlurView tint systemChromeMaterialDark, intensity 40→0"
   },
   "motion": {
-    "entrance": "sections rise 14pt + fade, stagger 60ms, 620ms ease-out (0.22,1,0.36,1)",
-    "ringsDrawIn": "after 280ms, stagger 140ms, 1250ms + 250ms per lap, ease-out; dash offset on an SVG mask",
-    "overshoot": "second lap in a deeper gradient; the tip dot's colour is interpolated from progress to match the arc, with a glow and a forward shadow onto lap one",
-    "daySwitch": "pill spring 500/40; rings ease from current to new values (820ms, 0.65,0,0.35,1, stagger 70ms); numbers tween; sparkline redraws; sleep segments re-flex",
-    "isolate": "others dim to 10% and scale 0.985 (spring 300/34), a halo in the ring's colour fades in around the rings, label crossfades with 5pt rise, value tweens to %",
-    "ambient": "heart comet travels the ECG path at the resting rate",
+    "cues": "one CUE table in ms from mount, reading order: date 0, title 50, week 100 (mini rings 190 + 40/day), rings 150 (draw from 220), legend 240/290/340, steps 300, heart 350, sleep 400; figures +120, charts +180; avatar pop 480, avatar ring 560",
+    "blockReveal": "opacity 0→1, 12pt rise, BlurView veil intensity 40→0, 560ms ease-out (0.22,1,0.36,1); veil unmounts and the transform drops once landed",
+    "figures": "count up from 0 (760ms ease-out), tabular, fade + 5pt lift + 4px filter blur clearing (no filter on iOS); later changes count from the previous value (620ms) with a light settle",
+    "ringsDrawIn": "stagger 70ms, 720ms + 160ms per lap, ease-out; dash offset on an SVG mask",
+    "charts": "sparkline strokes in left to right (840ms) then fill and accent dot; ECG trace strokes in (640ms) then the comet starts; sleep segments grow from the left 70ms apart",
+    "avatar": "disc pops 0.8→1 with one small overshoot (bezier 0.34,1.45,0.64,1), then the ring draws along its path",
+    "overshoot": "second lap in a deeper gradient; tip dot colour interpolated from progress, with a neutral forward shadow onto lap one (no coloured glow)",
+    "daySwitch": "lighter replay: pill spring 500/40; rings ease from current to new values (820ms, 0.65,0,0.35,1, stagger 60ms); figures recount; old sparkline and ECG fade out (110ms), new ones draw in 60ms later; sleep segments re-flex; date and bed times crossfade with 5pt rise; containers stay",
+    "isolate": "others dim to 10% and scale 0.985 (spring 300/34), a neutral white halo (7% peak) fades in, label crossfades, value counts to %",
+    "ambient": "accent comet travels the ECG trace at the resting rate",
     "press": "spring to 0.90–0.97, release with a single small overshoot",
-    "reducedMotion": "values set instantly, beat line static, crossfades instant",
-    "glassFade": "fade BlurView, sheen, content and edge individually; an ancestor with opacity < 1 cuts backdrop blur off on the web"
+    "reducedMotion": "every entrance a 150ms fade (no rise, no veil); figures and rings set instantly; comet off; crossfades instant",
+    "platformNotes": [
+      "start each animation a frame after mount",
+      "memoise interpolations",
+      "fade a BlurView's own opacity, never an ancestor's"
+    ]
   },
   "responsive": {
     "width": "360–430pt; rings fixed at 264pt, centred; cards flex; week columns divide the bar width",
@@ -133,19 +153,26 @@
     "ring area is a button whose label reads all three values; legend columns are buttons with selected state",
     "sleep bar has a spoken summary of every stage",
     "tabular numerals on every figure",
-    "reduced motion respected via AccessibilityInfo"
+    "reduced motion respected via AccessibilityInfo",
+    "avatar is a 'Profile' button"
   ],
   "content": {
     "person": "NA",
-    "today": "Friday, 9 October: Move 612/540 kcal (113%), Exercise 38/30 min, Stand 9/12 hr; 8,412 steps, 6.1 km; resting 59 bpm (52–148); slept 6h 52m (in bed 23:12–06:41)",
+    "today": "Friday, 9 October: Move 612/540 kcal (113%), Exercise 38/30 min, Stand 9/12 hr; 8,412 steps, 6.1 km; resting 59 bpm (52–148); slept 6h 52m (in bed 23:27–06:41)",
     "week": "Mon 5 – Sun 11 October; Saturday and Sunday are future and disabled"
   },
   "avoid": [
+    "tinted page or cards, coloured card icons, a hue per sleep stage, coloured background glows",
     "one linear gradient on a full circle (it seams)",
-    "flat translucent grey cards with no blur",
     "rings that redraw from zero on every day switch",
     "numbers that jump",
+    "any block that pops in unanimated",
     "emoji or icon-pack icons",
     "Apple's exact ring palette"
+  ],
+  "code": [
+    "small named pieces: useCue, Reveal + Veil, useCount + CountUp, Swap, Squish, Surface, Avatar, WeekSelector, RingStage, Legend, StepsCard, HeartCard, SleepCard",
+    "tokens in COLOR, MOTION and CUE",
+    "SVG ids from useId"
   ]
 }
