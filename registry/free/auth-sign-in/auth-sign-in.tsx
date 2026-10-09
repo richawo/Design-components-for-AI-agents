@@ -312,7 +312,7 @@ export function AuthSignIn({
         initial={reduce ? { opacity: 0 } : { opacity: 0, y: 12, filter: "blur(4px)" }}
         animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
         transition={{ duration: reduce ? 0.15 : 0.6, ease: EASE_OUT }}
-        className="relative rounded-[20px] bg-[#0a0a0b] px-5 pb-6 pt-7 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08),inset_0_1px_0_0_rgba(255,255,255,0.06),0_32px_80px_-32px_rgba(0,0,0,0.9)] @[22rem]:px-7 @sm:px-8 @sm:pb-8 @sm:pt-9"
+        className="relative rounded-[20px] bg-[#0a0a0b] px-5 pb-6 pt-7 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08),inset_0_1px_0_0_rgba(255,255,255,0.06),0_32px_80px_-32px_rgba(0,0,0,0.9)] @[22rem]:px-6 @sm:px-8 @sm:pb-8 @sm:pt-9"
       >
         {/* Brand + heading */}
         <Mark />
@@ -601,7 +601,7 @@ function FocusLight({ active, invalid, startX, reduce }: { active: boolean; inva
           {!reduce && (
             <motion.g style={{ opacity: cometOpacity }}>
               {COMET.map(([len, width, alpha], k) => (
-                <CometLayer key={k} d={d} head={head} len={Math.min(len, P / 3)} P={P} width={width} alpha={alpha} color={light} />
+                <CometLayer key={k} d={d} head={head} start={start} len={Math.min(len, P / 3)} P={P} width={width} alpha={alpha} color={light} />
               ))}
             </motion.g>
           )}
@@ -621,9 +621,32 @@ const COMET: [number, number, number][] = [
   [10, 2.25, 1],
 ];
 
-function CometLayer({ d, head, len, P, width, alpha, color }: { d: string; head: MotionValue<number>; len: number; P: number; width: number; alpha: number; color: string }) {
-  const offset = useTransform(head, (h) => -(h - len));
-  return <motion.path d={d} fill="none" stroke={color} strokeOpacity={alpha} strokeWidth={width} strokeLinecap="round" style={{ strokeDasharray: `${len} ${P}`, strokeDashoffset: offset }} />;
+function CometLayer({
+  d,
+  head,
+  start,
+  len,
+  P,
+  width,
+  alpha,
+  color,
+}: {
+  d: string;
+  head: MotionValue<number>;
+  start: MotionValue<number>;
+  len: number;
+  P: number;
+  width: number;
+  alpha: number;
+  color: string;
+}) {
+  // A tail never reaches back past where the light started.
+  const dash = useTransform([head, start], ([h, s0]: number[]) => {
+    const l = Math.max(0.01, Math.min(len, h - s0));
+    return `${l} ${P}`;
+  });
+  const offset = useTransform([head, start], ([h, s0]: number[]) => -(h - Math.max(0.01, Math.min(len, h - s0))));
+  return <motion.path d={d} fill="none" stroke={color} strokeOpacity={alpha} strokeWidth={width} strokeLinecap="round" style={{ strokeDasharray: dash, strokeDashoffset: offset }} />;
 }
 
 function FieldMessage({ id, text, tone, reduce }: { id: string; text?: string; tone: "error" | "warn"; reduce: boolean }) {

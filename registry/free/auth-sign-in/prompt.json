@@ -1,1 +1,89 @@
-{"component": "AuthSignIn", "intent": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "platform": "web", "stack": {}, "layout": {}, "typography": {}, "color": {}, "motion": {}, "responsive": {}, "accessibility": ["x"], "content": {}, "avoid": ["x"]}
+{
+  "component": "AuthSignIn",
+  "intent": "An email-and-password sign-in card whose focus ring is drawn by a point of light that runs once around the field from where you clicked, then settles. Every auth state is designed: invalid, loading, success, lockout with countdown, caps lock, SSO in flight.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 (container queries)",
+    "animation": "motion/react (motion values, AnimatePresence, imperative animate for shakes)",
+    "icons": "inline SVG only: Google, GitHub and Apple marks, eye, lock, alert"
+  },
+  "layout": {
+    "card": "max-width 400px, #0a0a0b, radius 20px, inset 1px ring 8% white, 6% top highlight, padding 36/32/32 from 384px container up, 28/24/24 below",
+    "order": "brand tile 40px → heading → subtitle → banner (lockout/error) → SSO grid → divider → email → password (Forgot? on label row) → remember-me → submit → sign-up line",
+    "sso": "equal-column grid, 8px gap, 44px tall, radius 11px, 3% white fill, 9% inset ring",
+    "fields": "44px, radius 11px, 2.5% white fill, 10% inset ring (17% hover); label 13px/500 8px above",
+    "submit": "44px full width, #ededef on #0a0a0b, radius 11px"
+  },
+  "typography": {
+    "heading": {
+      "font": "Geist (font-sans)",
+      "size": "clamp(1.375rem, 1.2rem + .6cqi, 1.5rem)",
+      "weight": 600,
+      "tracking": "-0.025em",
+      "leading": 1.15
+    },
+    "subtitle": {
+      "size": "14.5px",
+      "leading": 1.55,
+      "color": "#a0a0a8"
+    },
+    "input": "16px under 384px container (no iOS zoom), 15px above",
+    "divider": "10.5px Geist Mono uppercase, tracking 0.16em, #6e6e76",
+    "messages": "13px / 1.45"
+  },
+  "color": {
+    "surface": "#0a0a0b",
+    "text": "#ededef",
+    "secondary": "#a0a0a8",
+    "muted": "#6e6e76",
+    "error": "#ff6b5e (text #ff8f84)",
+    "warning": "#f5c451",
+    "success": "#3ddc97 on #04140c",
+    "focusRing": "white 62% at rest after the light passes"
+  },
+  "motion": {
+    "focusLight": "SVG rounded-rect path measured with ResizeObserver; t 0→1 over 800ms cubic-bezier(.65,0,.35,1); ring dasharray t·P/(P−t·P) offset −start; comet = 6 stacked dashes ending at the head (tails 84/46/22px at .14/.28/.55, halo 16px×8px at .07 and 13px×4.5px at .16, core 10px×2.25px at 1); comet fades over the last 18%; start = pointer x on top edge minus radius, else top-left",
+    "invalid": "field shakes once x 0,−7,6,−4,2,0 over 420ms; message height auto + y −6→0 over 300ms ease-out",
+    "reveal": "eye lids flatten, pupil shrinks, slash draws with a mask gap (320ms); a ghost input holding the old rendering and the real input get complementary mask gradients with a 16% soft edge, sweeping left→right over 500ms",
+    "submit": "label → spinner → drawn check in the same 44px box; 8px offset + 3px blur cross-fade; green on success",
+    "countdown": "lockout digits roll (enter from −70%, exit to +70%, 320ms)",
+    "entrance": "card y 12→0, blur 4→0, 600ms ease-out, once",
+    "reducedMotion": "ring appears without travel, no shakes or wipes, opacity-only swaps ≤150ms"
+  },
+  "responsive": {
+    "390px": "three SSO buttons still fit with labels; 24px card padding; 16px inputs",
+    "1440px": "card centred on black, 32px padding"
+  },
+  "accessibility": [
+    "form noValidate with type=email, autocomplete=username and current-password, inputMode=email, autocapitalize=none",
+    "labels via htmlFor; aria-invalid and aria-describedby link each field to its message",
+    "field errors role=alert; a polite live region announces signing in / signed in / lock lifted",
+    "eye toggle is aria-pressed with the label 'Show password' and keeps the caret in the field on pointer toggles",
+    "caps lock detected with getModifierState and announced",
+    "SSO buttons labelled 'Continue with Google' etc; aria-busy while loading",
+    "2px #ededef focus-visible outline, offset 2px, no transition; presses scale .97–.98"
+  ],
+  "content": {
+    "product": "Halyard",
+    "title": "Sign in to Halyard",
+    "subtitle": "Welcome back. The backlog didn’t groom itself.",
+    "errors": [
+      "That’s missing an @. Emails need one.",
+      "Add the domain, like name@company.com.",
+      "That password doesn’t match. 2 tries left.",
+      "Sign-in paused. Too many wrong passwords, so we’re giving this account a short breather."
+    ],
+    "result": "onSubmit resolves {ok:true} | {ok:false, reason:'invalid_credentials', attemptsLeft} | {ok:false, reason:'unknown_email'} | {ok:false, reason:'locked', retryAfter}; throwing = network failure",
+    "demo": "password correct-horse; three misses lock for 30s"
+  },
+  "avoid": [
+    "floating labels that jump",
+    "glow around the card",
+    "gradient or glassy buttons",
+    "a greyed-out disabled button for the lockout",
+    "outline-none on buttons (kills Tailwind v4 focus rings)",
+    "SVG blur filters on the comet (artifacts); use layered strokes",
+    "network images for provider logos"
+  ]
+}

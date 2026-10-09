@@ -1,1 +1,75 @@
-{"component": "AuthMagicLink", "intent": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "platform": "web", "stack": {}, "layout": {}, "typography": {}, "color": {}, "motion": {}, "responsive": {}, "accessibility": ["x"], "content": {}, "avoid": ["x"]}
+{
+  "component": "AuthMagicLink",
+  "intent": "Passwordless email sign-in where the card morphs into a 'Check your inbox' state: a letter slides into a drawn envelope, the flap folds shut, a faint trail follows, and the right webmail button appears for the address's domain.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 (container queries)",
+    "animation": "motion/react (measured auto-height, AnimatePresence popLayout, shared layoutId button, motion-value flap fold)"
+  },
+  "layout": {
+    "card": "max-width 400px, #0a0a0b, radius 20px, overflow hidden, inset ring 8% white, padding 36/32/32 from 384px container up, 28/24/24 below",
+    "form": "brand tile (amber hourglass when expired) → heading → subtitle → error banner → label + 44px field → error/typo suggestion → 44px primary button → 'Use a password instead'",
+    "sent": "132×104 envelope → centred heading → copy max 34ch → 'Open {provider}' button or quiet sender note → hairline → '← Use a different email' + resend control (44px)"
+  },
+  "typography": {
+    "heading": {
+      "size": "clamp(1.375rem, 1.2rem + .6cqi, 1.5rem)",
+      "weight": 600,
+      "tracking": "-0.025em"
+    },
+    "body": {
+      "size": "14.5px",
+      "leading": 1.55,
+      "color": "#a0a0a8"
+    },
+    "input": "16px under 384px container, 15px above",
+    "messages": "13px"
+  },
+  "color": {
+    "surface": "#0a0a0b",
+    "text": "#ededef",
+    "secondary": "#a0a0a8",
+    "muted": "#6e6e76",
+    "primary": "#ededef on #0a0a0b",
+    "error": "#ff6b5e (text #ff8f84)",
+    "expired": "#f5c451",
+    "envelope": "back #121214, pocket #161618, flap #1d1d21, strokes 14–18% white, paper #ededef, lines #a6a6ad"
+  },
+  "motion": {
+    "morph": "height follows content via ResizeObserver (420ms in-out); views cross-fade y 10→0 / 0→−8 with 4px blur; primary button shares a layoutId",
+    "envelope": "paper slides in from −34px (500ms, delay 140ms); flap scaleY −1→1 around its top edge (420ms, delay 620ms) drawn as a back copy (negative) and a front copy (positive); seal scales in; envelope nudges 7px right and back; three trail lines draw and fade (700ms, 50ms stagger); resend replays",
+    "invalid": "field shakes x 0,−7,6,−4,2,0 over 420ms; message slides down 300ms",
+    "resend": "countdown digits roll; wait → Resend link → Sending… → Sent again ✓ → new countdown",
+    "reducedMotion": "envelope static and closed; opacity-only swaps"
+  },
+  "responsive": {
+    "390px": "24px card padding, copy wraps to two centred lines, back + resend share one row",
+    "1440px": "card centred on black with demo controls under it"
+  },
+  "accessibility": [
+    "form noValidate, type=email, autocomplete=email, inputMode=email",
+    "aria-invalid and aria-describedby to the error or typo suggestion",
+    "errors and banner role=alert; polite live region for sending, sent and resent",
+    "provider buttons are real links with target=_blank rel=noopener noreferrer",
+    "returning to the form focuses and selects the prefilled address",
+    "focus-visible 2px #ededef outline offset 2px; presses at .97–.98"
+  ],
+  "content": {
+    "title": "Sign in with a link",
+    "subtitle": "No password to forget. We’ll email you a link that signs you straight in.",
+    "sent": "We sent a sign-in link to {email}. It works once and expires in 15 minutes.",
+    "expired": "That link has expired — Sign-in links work once and last 15 minutes, so this one’s retired. We’ll send you a fresh one.",
+    "providers": "Gmail (search deep link), Outlook, Proton, iCloud Mail, Yahoo Mail, Fastmail, HEY; providers prop extends",
+    "typos": "gmial/gmal/gamil/gnail → gmail.com, hotmial → hotmail.com, outlok → outlook.com, yahooo → yahoo.com, porton.me → proton.me",
+    "demo": "New visit / Expired link segmented control; @example.com fails"
+  },
+  "avoid": [
+    "paper-plane icon",
+    "confetti or success toasts",
+    "mailto: buttons",
+    "hard cuts between states",
+    "paper visible under a closed flap",
+    "network images for provider logos"
+  ]
+}
