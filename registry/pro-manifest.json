@@ -1486,7 +1486,7 @@
     "tier": "pro",
     "platform": "mobile",
     "category": "mobile",
-    "description": "A glass React Native bottom sheet over a night-mode SVG city map: a courier rides the route, and the sheet morphs from ETA pill to courier card to full order.",
+    "description": "A frosted React Native bottom sheet over a monochrome night map: an amber route draws in, the ETA counts up, and the sheet morphs from ETA pill to full order.",
     "tags": [
       "bottom sheet",
       "draggable",
@@ -1494,7 +1494,9 @@
       "map",
       "delivery tracking",
       "glassmorphism",
-      "panresponder",
+      "monochrome",
+      "dark",
+      "entrance animation",
       "svg"
     ],
     "dependencies": [
@@ -1547,6 +1549,12 @@
         "type": "boolean",
         "default": "true",
         "description": "Simulate the courier riding on (paused under reduced motion)."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#FFB547\"",
+        "description": "The one brand colour: route, courier, progress, Call and the tip thumb. Everything else is greyscale."
       },
       {
         "name": "courier",
@@ -2205,7 +2213,7 @@
     "tier": "pro",
     "platform": "mobile",
     "category": "mobile",
-    "description": "A React Native inbox whose rows follow the finger: icons fill as you cross each threshold, a full swipe archives with glass undo, long-press reorders, and pull refreshes.",
+    "description": "A monochrome, dark-first React Native inbox: rows rise from blur, swipe actions fill at their thresholds, a full swipe archives with glass undo, and new mail lands.",
     "tags": [
       "swipe",
       "inbox",
@@ -2214,21 +2222,23 @@
       "gestures",
       "reorder",
       "pull to refresh",
-      "undo"
+      "undo",
+      "monochrome",
+      "dark"
     ],
     "dependencies": [
       "expo-blur",
       "expo-linear-gradient",
       "react-native-svg"
     ],
-    "theme": "light",
+    "theme": "dark",
     "previewHeight": 940,
-    "usage": "import { MobileSwipeList } from \"@/components/design-for-ai/native/mobile-swipe-list\";\n\n// Bare React Native apps: run `npx install-expo-modules` once for expo-blur and expo-linear-gradient.\n<MobileSwipeList\n  items={threads}\n  onArchive={(item) => api.archive(item.id)}\n  onUndo={(item) => api.unarchive(item.id)}\n  onPinChange={(item, pinned) => api.pin(item.id, pinned)}\n  onReadChange={(item, unread) => api.markUnread(item.id, unread)}\n  onReorder={(section, ids) => api.saveOrder(section, ids)}\n  onRefresh={refetch}\n/>",
+    "usage": "import { MobileSwipeList } from \"@/components/design-for-ai/native/mobile-swipe-list\";\n\n// Bare React Native apps: run `npx install-expo-modules` once for expo-blur and expo-linear-gradient.\n<MobileSwipeList\n  theme=\"dark\"\n  accent=\"#3D8BFF\"\n  items={threads}\n  onArchive={(item) => api.archive(item.id)}\n  onUndo={(item) => api.unarchive(item.id)}\n  onPinChange={(item, pinned) => api.pin(item.id, pinned)}\n  onReadChange={(item, unread) => api.markUnread(item.id, unread)}\n  onReorder={(section, ids) => api.saveOrder(section, ids)}\n  onRefresh={refetch}\n/>",
     "props": [
       {
         "name": "items",
         "type": "MailItem[]",
-        "description": "Rows: id, sender, subject, preview, time, unread, pinned, attachment, avatar tone."
+        "description": "Rows: id, sender, subject, preview, time, unread, pinned, attachment. Avatars are greyscale initials."
       },
       {
         "name": "title",
@@ -2248,6 +2258,18 @@
         "description": "The message that arrives after a pull to refresh."
       },
       {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Dark by default; the light palette is tuned separately, not inverted."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#3D8BFF\"",
+        "description": "The one colour: unread dots, links, the Read action and the lifted row's ring. Everything else is greyscale."
+      },
+      {
         "name": "undoWindow",
         "type": "number",
         "default": "5000",
@@ -2257,7 +2279,7 @@
         "name": "hint",
         "type": "boolean",
         "default": "true",
-        "description": "Nudge the first Today row once on mount to show the actions underneath."
+        "description": "Nudge the first Today row once after the entrance to show the actions underneath."
       },
       {
         "name": "onArchive",
