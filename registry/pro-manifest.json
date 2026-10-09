@@ -884,7 +884,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "pricing",
-    "description": "Lifetime pricing printed as a thermal receipt on deep green: torn edges, line items, a stamped total, a barcode and ticket tabs that re-print it.",
+    "description": "An isolated pricing block: tear-off licence tickets, a thermal-printed receipt that prints each plan line by line, and a buy button that counts to the total.",
     "tags": [
       "pricing",
       "receipt",
@@ -898,31 +898,20 @@
       "motion"
     ],
     "theme": "dark",
-    "previewHeight": 1040,
-    "usage": "import { PricingReceipt } from \"@/components/design-for-ai/pricing-receipt\";\n\nexport default function Page() {\n  return (\n    <PricingReceipt\n      brand=\"LUMEN\"\n      title=\"Buy it once.\"\n      titleAccent=\"Own it for good.\"\n      options={[\n        {\n          id: \"solo\", label: \"Solo\", caption: \"1 seat\", total: 89, licence: \"SOLO\", order: \"L-1007-0001\",\n          lines: [{ qty: \"1\", item: \"Lumen for macOS\", amount: 89 }, { qty: \"∞\", item: \"Monthly fees\", amount: 0 }],\n          summary: [{ label: \"NEXT BILL\", value: \"NEVER\" }],\n          cta: { label: \"Buy Lumen\", href: \"/checkout\" }\n        }\n      ]}\n    />\n  );\n}",
+    "previewHeight": 1180,
+    "usage": "import { PricingReceipt } from \"@/components/design-for-ai/pricing-receipt\";\n\nexport default function Page() {\n  return (\n    <PricingReceipt\n      brand=\"LUMEN\"\n      options={[\n        {\n          id: \"solo\", label: \"Solo\", caption: \"1 seat\", total: 89, licence: \"SOLO\", order: \"L-1007-0001\",\n          lines: [{ qty: \"1\", item: \"Lumen for macOS\", amount: 89 }, { qty: \"∞\", item: \"Monthly fees\", amount: 0 }],\n          summary: [{ label: \"NEXT BILL\", value: \"NEVER\" }],\n          cta: { label: \"Buy Lumen\", href: \"/checkout\" }\n        }\n      ]}\n    />\n  );\n}",
     "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "default": "\"Quire pricing\"",
+        "description": "Accessible name for the block (visually hidden)."
+      },
       {
         "name": "options",
         "type": "ReceiptOption[]",
         "default": "Solo, Team",
         "description": "One receipt per licence: id, tab label and caption, total, licence and order codes, line items, summary rows and a CTA."
-      },
-      {
-        "name": "title",
-        "type": "string",
-        "default": "\"Pay once.\"",
-        "description": "First line of the headline, in the display face."
-      },
-      {
-        "name": "titleAccent",
-        "type": "string",
-        "default": "\"Keep the receipt.\"",
-        "description": "Second line, italic serif in pale mint."
-      },
-      {
-        "name": "body",
-        "type": "string",
-        "description": "Paragraph under the headline."
       },
       {
         "name": "brand",
@@ -979,6 +968,11 @@
         "name": "finePrint",
         "type": "string",
         "description": "Small print under the CTA."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Classes on the outer block (max width 420px, centred)."
       }
     ],
     "added": "2026-10-07"
