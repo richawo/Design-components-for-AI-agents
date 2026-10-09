@@ -2,6 +2,7 @@ import Link from "next/link";
 import { CATEGORIES, type Category } from "@/lib/registry-types";
 import { site } from "@/lib/site";
 import { LogoMark } from "./logo";
+import { MarkdownLink } from "./markdown-link";
 
 const COLUMNS: { title: string; links: { href: string; label: string }[] }[] = [
   {
@@ -61,7 +62,7 @@ export function SiteFooter() {
         </div>
         <div className="mt-16 flex flex-col justify-between gap-3 border-t border-white/[0.07] py-6 text-[13px] text-site-fg-3 sm:flex-row">
           <p>© 2026 Design for AI. Free components MIT licensed.</p>
-          <p className="font-mono text-[11px] uppercase tracking-[0.16em]">All systems normal</p>
+          <MarkdownLink className="font-mono text-[11px] uppercase tracking-[0.16em] transition-colors hover:text-site-fg" />
         </div>
       </div>
       <p

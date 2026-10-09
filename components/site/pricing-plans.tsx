@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { useState } from "react";
+import { planFeatures } from "@/lib/copy";
 
 type Counts = { free: number; pro: number; mobile: number; total: number };
 
@@ -29,6 +30,7 @@ export function PricingPlans({ counts, prices }: { counts: Counts; prices: Recor
   const pro = cadence === "lifetime" ? "pro-lifetime" : "pro-yearly";
   const team = cadence === "lifetime" ? "team-lifetime" : "team-yearly";
   const suffix = cadence === "lifetime" ? "once" : "/ year";
+  const features = planFeatures(counts, cadence);
 
   return (
     <div>
@@ -61,13 +63,7 @@ export function PricingPlans({ counts, prices }: { counts: Counts; prices: Recor
           price="$0"
           suffix="forever"
           blurb="The open core. MIT licensed, no account, no email."
-          features={[
-            `${counts.free} free components`,
-            "Code, prompt and JSON prompt for each",
-            "shadcn registry and MCP server",
-            "llms.txt and Markdown docs for agents",
-            "Use in unlimited commercial projects",
-          ]}
+          features={features.free}
           cta={
             <Link href="/components" className="flex h-11 items-center justify-center rounded-full border border-white/12 text-[14px] font-medium text-site-fg transition duration-200 hover:border-white/25 hover:bg-white/[0.04] active:scale-[0.98] active:duration-75">
               Browse free components
@@ -80,14 +76,7 @@ export function PricingPlans({ counts, prices }: { counts: Counts; prices: Recor
           price={`$${prices[pro]}`}
           suffix={suffix}
           blurb="Every component, including the showpieces. For one person."
-          features={[
-            `Everything in Free, plus ${counts.pro} Pro components`,
-            "Pro prompts and JSON prompts",
-            "Private shadcn registry and MCP access",
-            "React Native Pro screens",
-            cadence === "lifetime" ? "Every future Pro release, no renewal" : "Every release while subscribed",
-            "Unlimited personal and client projects",
-          ]}
+          features={features.pro}
           cta={
             <button
               type="button"
@@ -106,13 +95,7 @@ export function PricingPlans({ counts, prices }: { counts: Counts; prices: Recor
           price={`$${prices[team]}`}
           suffix={suffix}
           blurb="Pro for up to 10 people, one invoice."
-          features={[
-            "Everything in Pro",
-            "Up to 10 seats",
-            "One shared licence key for your agents and CI",
-            "Invoice and VAT receipt",
-            "Priority requests for new components",
-          ]}
+          features={features.team}
           cta={
             <button
               type="button"

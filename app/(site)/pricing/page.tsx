@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DitherGlow } from "@/components/site/dither-glow";
-import { Faq, faqJsonLd, type QA } from "@/components/site/faq";
+import { Faq, faqJsonLd } from "@/components/site/faq";
+import { PRICING_FAQ } from "@/lib/copy";
 import { JsonLd } from "@/components/site/json-ld";
 import { PricingPlans } from "@/components/site/pricing-plans";
 import { PLANS } from "@/lib/pricing";
@@ -14,32 +15,6 @@ export const metadata: Metadata = {
   alternates: { canonical: "/pricing" },
 };
 
-const FAQ: QA[] = [
-  {
-    q: "What do I actually get with Pro?",
-    a: "Every Pro component's code, natural-language prompt and JSON prompt; access to the private shadcn registry and the Pro tools in the MCP server; and every Pro component we release while your licence is active. Lifetime means exactly that: no renewal.",
-  },
-  {
-    q: "Can I use components in client work and products I sell?",
-    a: "Yes. Free components are MIT. Pro components can be used in unlimited personal and commercial projects, including client work. What you can't do is redistribute or resell the components themselves, or put them in a competing component library or template marketplace.",
-  },
-  {
-    q: "How do my AI agents get Pro components?",
-    a: "Your licence key works everywhere: set DESIGN_FOR_AI_LICENSE in your environment and the MCP server, the shadcn registry and the API all unlock. Agents in Claude Code, Cursor, Windsurf or v0 fetch the code and prompts directly.",
-  },
-  {
-    q: "Why are some components free and others not?",
-    a: "The free core is genuinely useful on its own: heroes, pricing, AI chat, dashboards and mobile screens. Pro pays for the showpieces that take days to get right, like kinetic type, 3D product stacks, drag-and-drop boards and native gestures, and keeps the free library maintained.",
-  },
-  {
-    q: "Do you offer refunds?",
-    a: "Yes. If Pro isn't for you, email within 14 days of purchase and we'll refund you in full, no questions asked.",
-  },
-  {
-    q: "Is there a student or open-source discount?",
-    a: "Maintainers of active open-source projects and students get 50% off. Email us from your university address or with a link to your project.",
-  },
-];
 
 export default function PricingPage() {
   const s = stats();
@@ -51,7 +26,7 @@ export default function PricingPage() {
       </div>
       <JsonLd
         data={[
-          faqJsonLd(FAQ),
+          faqJsonLd(PRICING_FAQ),
           {
             "@context": "https://schema.org",
             "@type": "Product",
@@ -90,7 +65,7 @@ export default function PricingPage() {
           <h2 className="mt-4 text-[clamp(1.75rem,1.2rem+2vw,2.5rem)] font-semibold tracking-[-0.045em]">Questions, answered.</h2>
         </div>
         <div className="lg:col-span-8">
-          <Faq items={FAQ} />
+          <Faq items={PRICING_FAQ} />
         </div>
       </section>
     </div>

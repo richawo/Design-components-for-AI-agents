@@ -2,7 +2,8 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { CopyButton } from "@/components/site/copy-button";
 import { DitherGlow } from "@/components/site/dither-glow";
-import { Faq, faqJsonLd, type QA } from "@/components/site/faq";
+import { Faq, faqJsonLd } from "@/components/site/faq";
+import { HOME_FAQ } from "@/lib/copy";
 import { JsonLd } from "@/components/site/json-ld";
 import { LiveSlot } from "@/components/site/live-slot";
 import { highlight } from "@/lib/highlight";
@@ -18,28 +19,6 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-const FAQ: QA[] = [
-  {
-    q: "What is Design for AI?",
-    a: "A library of design components made for AI coding agents. Each one ships as a self-contained React + Tailwind (or React Native) file, plus a natural-language prompt and a JSON prompt that describe exactly how it's designed, so an agent can install it or rebuild it in your brand without falling back on generic defaults.",
-  },
-  {
-    q: "How do I stop AI tools generating generic-looking UI?",
-    a: "Give the agent something specific to work from. Point it at a component and its prompt (exact type scale, palette, spacing, motion and a list of things to avoid) and it stops guessing. Our design principles also work as a standalone system prompt.",
-  },
-  {
-    q: "Which agents and tools does it work with?",
-    a: "Anything that can read a URL or run a command: Claude Code, Cursor, Windsurf, Codex, v0, Lovable, Bolt and Replit. Install with the shadcn CLI, connect the MCP server, or paste the prompt.",
-  },
-  {
-    q: "What kinds of components are there?",
-    a: "Marketing sections, product UI, AI interfaces, financial-grade charts, Three.js scenes, pixel and dot-matrix animation, and React Native screens. Every one is responsive and accessible, and respects reduced motion.",
-  },
-  {
-    q: "Is it free?",
-    a: "The free components are MIT licensed, with code and prompts included. Pro unlocks the showpieces, their prompts and the private registry, yearly or once for life.",
-  },
-];
 
 const AGENTS = ["Claude Code", "Cursor", "v0", "Windsurf", "Codex", "Lovable", "Bolt"];
 
@@ -75,7 +54,7 @@ export default async function HomePage() {
             potentialAction: { "@type": "SearchAction", target: `${absoluteUrl("/components")}?q={query}`, "query-input": "required name=query" },
           },
           { "@context": "https://schema.org", "@type": "Organization", name: site.name, url: site.url, logo: absoluteUrl("/icon.svg"), sameAs: [site.github] },
-          faqJsonLd(FAQ),
+          faqJsonLd(HOME_FAQ),
         ]}
       />
 
@@ -334,7 +313,7 @@ export default async function HomePage() {
           <h2 className="mt-4 text-[clamp(1.75rem,1.2rem+2vw,2.5rem)] font-semibold tracking-[-0.045em]">Questions, answered.</h2>
         </div>
         <div className="lg:col-span-8">
-          <Faq items={FAQ} />
+          <Faq items={HOME_FAQ} />
         </div>
       </section>
     </>

@@ -15,6 +15,10 @@ const config: NextConfig = {
       // Markdown companions for agents: /components/hero-editorial.md
       { source: "/components/:slug.md", destination: "/md/components/:slug" },
       { source: "/blog/:slug.md", destination: "/md/blog/:slug" },
+      // ...and of every other page: /index.md, /pricing.md, /docs/agents.md, /categories/charts.md
+      { source: "/index.md", destination: "/md/page/index" },
+      { source: "/:page.md", destination: "/md/page/:page" },
+      { source: "/:section/:page.md", destination: "/md/page/:section/:page" },
     ];
   },
 };
