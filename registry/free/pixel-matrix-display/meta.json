@@ -17,7 +17,8 @@
     { "name": "cols", "type": "number", "default": "72", "description": "Matrix columns." },
     { "name": "rows", "type": "number", "default": "16", "description": "Matrix rows. 16+ renders type at 2×." },
     { "name": "interval", "type": "number", "default": "4800", "description": "Milliseconds per scene." },
-    { "name": "chrome", "type": "boolean", "default": "true", "description": "Show the scene caption and prev/pause/next controls." }
+    { "name": "chrome", "type": "boolean", "default": "true", "description": "Show the scene caption and prev/pause/next controls." },
+    { "name": "microphone", "type": "boolean", "default": "true", "description": "Offer a 'Use mic' toggle that drives the equaliser from live microphone levels (opt-in, asks permission, stops on toggle or unmount)." }
   ],
   "added": "2026-10-07"
 }

@@ -126,6 +126,7 @@ export function PreviewFrame({
           ref={ref}
           src={`/preview/${slug}`}
           title={`${name} live preview`}
+          allow="microphone; clipboard-write"
           onLoad={() => setLoaded(true)}
           style={{ width, height: frameHeight, maxWidth: "100%" }}
           className={`block transition-[width,opacity] duration-500 ease-[cubic-bezier(.2,.8,.2,1)] ${theme === "dark" ? "bg-black" : "bg-white"} ${loaded ? "opacity-100" : "opacity-0"} ${vp !== "desktop" && platform === "web" ? "border-x border-white/10" : ""}`}

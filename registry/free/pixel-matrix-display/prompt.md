@@ -15,8 +15,8 @@ Build a dot-matrix LED display in React + Tailwind CSS v4, drawn on a single `<c
 
 **Scenes** (each a function `(t, cols, rows) → (x, y) → brightness 0–1`)
 1. **Marquee:** text scrolls right to left at 14 dots/s.
-2. **Clock:** HH:MM, centred, with a colon blinking at 1Hz. Use a constant width so the digits never shift.
-3. **Equaliser:** 2-dot bars with 1-dot gaps, heights from layered sines, a brighter peak dot on top, and a brightness gradient up the bar.
+2. **Clock:** HH:MM, centred. Always rasterise the colon so the minutes never move; let it breathe (a 1Hz cosine fade from 22% to 100%) rather than blink on and off.
+3. **Equaliser:** 2-dot bars with 1-dot gaps, a brighter cap dot, a brightness gradient up the bar, and peak-hold dots that hang and then fall. Bars use a meter's ballistics: fast attack, slower release. Idle, heights come from layered sines. A "Use mic" toggle (opt-in, `getUserMedia` + an `AnalyserNode`, fftSize 256) drives the bars from live audio, mapping log-spaced frequency bands to bars so the voice's fundamentals sit on the left; it holds the equaliser scene while listening, shows "Listening" with a pulsing dot, handles a blocked permission gracefully, and stops every track on toggle, scene change or unmount.
 4. **Pulse:** an ECG trace drawing left to right with a fading tail.
 5. **Orbit:** a comet arc running round a ring, with a gently breathing centre dot.
 

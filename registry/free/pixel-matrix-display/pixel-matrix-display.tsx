@@ -18,6 +18,8 @@ export type PixelMatrixDisplayProps = {
   interval?: number;
   /** Show the caption bar and controls. */
   chrome?: boolean;
+  /** Offer a microphone toggle that drives the equaliser from live audio. */
+  microphone?: boolean;
   className?: string;
 };
 
@@ -92,7 +94,9 @@ function textField(bits: number[][], width: number, ox: number, oy: number, s: n
   };
 }
 
-function makeScenes(text: string): Record<SceneKey, { label: string; scene: Scene }> {
+type AudioState = { live: boolean; levels: Uint8Array; peaks: number[]; shown: number[]; lastT: number };
+
+function makeScenes(text: string, audio: AudioState = { live: false, levels: new Uint8Array(0), peaks: [], shown: [], lastT: 0 }): Record<SceneKey, { label: string; scene: Scene }> {
   const msg = rasterise(text);
   return {
     marquee: {
@@ -108,30 +112,67 @@ function makeScenes(text: string): Record<SceneKey, { label: string; scene: Scen
       label: "Clock",
       scene: (t, cols, rows) => {
         const d = new Date();
-        const blink = Math.floor(t * 2) % 2 === 0;
-        const str = `${String(d.getHours()).padStart(2, "0")}${blink ? ":" : " "}${String(d.getMinutes()).padStart(2, "0")}`;
-        const r = rasterise(str);
+        const hh = String(d.getHours()).padStart(2, "0");
+        const mm = String(d.getMinutes()).padStart(2, "0");
+        // The colon is always rasterised, so the minutes never move. It
+        // breathes instead of blinking: a soft 1 Hz fade, never fully off.
+        const r = rasterise(`${hh}:${mm}`);
         const s = rows >= 16 ? 2 : 1;
-        // Colon and space share a width so the digits never jump.
-        const w = rasterise(str.replace(" ", ":")).width;
-        return textField(r.bits, r.width, Math.floor((cols - w * s) / 2), Math.floor((rows - 7 * s) / 2), s);
+        const ox = Math.floor((cols - r.width * s) / 2);
+        const oy = Math.floor((rows - 7 * s) / 2);
+        const colonFrom = ox + (FONT[hh[0]][0].length + 1 + FONT[hh[1]][0].length + 1) * s;
+        const colonTo = colonFrom + FONT[":"][0].length * s;
+        const colon = 0.22 + 0.78 * (0.5 + 0.5 * Math.cos(t * Math.PI * 2));
+        const field = textField(r.bits, r.width, ox, oy, s);
+        return (x, y) => {
+          const v = field(x, y);
+          return v && x >= colonFrom && x < colonTo ? v * colon : v;
+        };
       },
     },
     equalizer: {
       label: "Equaliser",
       scene: (t, cols, rows) => {
         const bars = Math.floor(cols / 3);
+        const live = audio.live && audio.levels.length > 0;
+        if (audio.peaks.length !== bars) {
+          audio.peaks = new Array(bars).fill(0);
+          audio.shown = new Array(bars).fill(0);
+        }
+        const dt = Math.min(0.05, Math.max(0, t - audio.lastT));
+        audio.lastT = t;
         const heights = Array.from({ length: bars }, (_, i) => {
-          const v = 0.55 + 0.45 * Math.sin(t * 3.1 + i * 0.7) * Math.sin(t * 1.3 + i * 0.23) + 0.2 * Math.sin(t * 7 + i * 1.9);
-          return Math.max(1, Math.round(Math.min(1, Math.max(0, v)) * rows));
+          let v: number;
+          if (live) {
+            // Log-spaced bands: low bars get the voice's fundamentals,
+            // high bars its sibilance.
+            const n = audio.levels.length;
+            const a = Math.floor(Math.pow(n, i / bars));
+            const b = Math.max(a + 1, Math.floor(Math.pow(n, (i + 1) / bars)));
+            let sum = 0;
+            for (let k = a; k < b && k < n; k++) sum += audio.levels[k];
+            v = Math.min(1, Math.pow((sum / (b - a)) / 255, 1.4) * 1.6);
+          } else {
+            v = 0.55 + 0.45 * Math.sin(t * 3.1 + i * 0.7) * Math.sin(t * 1.3 + i * 0.23) + 0.2 * Math.sin(t * 7 + i * 1.9);
+          }
+          v = Math.min(1, Math.max(0, v));
+          // Fast attack, slower release, like a real meter.
+          const prev = audio.shown[i];
+          const shown = v > prev ? prev + (v - prev) * 0.6 : prev + (v - prev) * Math.min(1, dt * 7);
+          audio.shown[i] = shown;
+          // Peak dots hold, then fall.
+          audio.peaks[i] = shown >= audio.peaks[i] ? shown : Math.max(shown, audio.peaks[i] - dt * 0.45);
+          return Math.max(1, Math.round(shown * rows));
         });
         return (x, y) => {
           const b = Math.floor(x / 3);
           if (x % 3 === 2 || b >= bars) return 0;
           const h = heights[b];
           const fromBottom = rows - 1 - y;
+          const peak = Math.min(rows - 1, Math.round(audio.peaks[b] * rows));
           if (fromBottom < h - 1) return 0.55 + 0.45 * (fromBottom / rows);
-          return fromBottom === h - 1 ? 1 : 0;
+          if (fromBottom === h - 1) return 1;
+          return fromBottom === peak && peak > h ? 0.7 : 0;
         };
       },
     },
@@ -190,6 +231,7 @@ export function PixelMatrixDisplay({
   rows = 16,
   interval = 4800,
   chrome = true,
+  microphone = true,
   className = "",
 }: PixelMatrixDisplayProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -198,6 +240,45 @@ export function PixelMatrixDisplay({
   const [paused, setPaused] = useState(false);
   const stateRef = useRef({ index: 0, from: 0, changedAt: 0 });
   const sceneKey = scenes.join(",");
+  const audioRef = useRef<AudioState>({ live: false, levels: new Uint8Array(0), peaks: [], shown: [], lastT: 0 });
+  const [mic, setMic] = useState<"off" | "asking" | "on" | "blocked">("off");
+  const micRef = useRef<{ stream: MediaStream; ctx: AudioContext; analyser: AnalyserNode } | null>(null);
+
+  const stopMic = () => {
+    const m = micRef.current;
+    micRef.current = null;
+    audioRef.current.live = false;
+    m?.stream.getTracks().forEach((tr) => tr.stop());
+    m?.ctx.close().catch(() => {});
+  };
+
+  const toggleMic = async () => {
+    if (mic === "on") {
+      stopMic();
+      setMic("off");
+      return;
+    }
+    setMic("asking");
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
+      const ctx = new AudioContext();
+      const analyser = ctx.createAnalyser();
+      analyser.fftSize = 256;
+      analyser.smoothingTimeConstant = 0.55;
+      ctx.createMediaStreamSource(stream).connect(analyser);
+      micRef.current = { stream, ctx, analyser };
+      audioRef.current.levels = new Uint8Array(analyser.frequencyBinCount);
+      audioRef.current.peaks = [];
+      audioRef.current.live = true;
+      const eq = scenes.indexOf("equalizer");
+      if (eq >= 0) setIndex(eq);
+      setMic("on");
+    } catch {
+      setMic("blocked");
+    }
+  };
+
+  useEffect(() => stopMic, []);
 
   useEffect(() => {
     const st = stateRef.current;
@@ -208,7 +289,7 @@ export function PixelMatrixDisplay({
 
   // Hovering holds the current scene; the progress line pauses with it.
   const [hovering, setHovering] = useState(false);
-  const holding = paused || hovering;
+  const holding = paused || hovering || mic === "on";
   const pointerRef = useRef({ x: -99, y: -99, on: false, k: 0 });
 
   useEffect(() => {
@@ -222,7 +303,7 @@ export function PixelMatrixDisplay({
     const wrap = wrapRef.current!;
     const ctx = canvas.getContext("2d")!;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const defs = makeScenes(text);
+    const defs = makeScenes(text, audioRef.current);
     const list = sceneKey.split(",") as SceneKey[];
     // A stable random threshold per dot drives the dissolve between scenes.
     const noise = new Float32Array(cols * rows).map((_, i) => (Math.sin(i * 91.17) * 43758.5453) % 1).map(Math.abs);
@@ -253,6 +334,8 @@ export function PixelMatrixDisplay({
       if (!visible) return;
       const t = (now - start) / 1000;
       const st = stateRef.current;
+      const m = micRef.current;
+      if (m) m.analyser.getByteFrequencyData(audioRef.current.levels as Uint8Array<ArrayBuffer>);
       const mix = Math.min(1, (now - st.changedAt) / 700);
       const cur = defs[list[st.index] ?? "marquee"].scene(reduce ? 2 : t, cols, rows);
       const prev = mix < 1 ? defs[list[st.from] ?? "marquee"].scene(reduce ? 2 : t, cols, rows) : null;
@@ -361,13 +444,40 @@ export function PixelMatrixDisplay({
             </span>
             <span key={index} className="truncate animate-[pmd-label_320ms_cubic-bezier(0.22,1,0.36,1)] motion-reduce:animate-none">
               {String(index + 1).padStart(2, "0")} / {String(scenes.length).padStart(2, "0")} · {defsForLabels[current].label}
+              {mic === "on" && current === "equalizer" ? " · live" : ""}
             </span>
           </span>
           <div className="flex items-center gap-1">
+            {microphone && scenes.includes("equalizer") && (
+              <button
+                type="button"
+                aria-pressed={mic === "on"}
+                aria-label={mic === "on" ? "Stop listening" : "Drive the equaliser with your microphone"}
+                title={mic === "blocked" ? "Microphone blocked. Allow it in your browser to try again." : undefined}
+                onClick={toggleMic}
+                disabled={mic === "asking"}
+                className={`mr-1 flex h-8 items-center gap-2 rounded-full px-3 font-mono text-[10px] uppercase tracking-[0.16em] transition-[color,background-color,box-shadow,transform] duration-200 focus-visible:outline-2 focus-visible:outline-white/70 active:scale-95 disabled:opacity-60 ${
+                  mic === "on"
+                    ? "bg-white/[0.08] text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.14)]"
+                    : mic === "blocked"
+                      ? "text-[#ff9a7a] hover:bg-white/[0.05]"
+                      : "text-white/55 hover:bg-white/[0.06] hover:text-white"
+                }`}
+              >
+                <span className="relative flex size-2" aria-hidden="true">
+                  {mic === "on" && <span className="absolute inline-flex size-full animate-ping rounded-full opacity-60 motion-reduce:hidden" style={{ background: color }} />}
+                  <span className="relative inline-flex size-2 rounded-full" style={{ background: mic === "on" ? color : "currentColor", opacity: mic === "on" ? 1 : 0.6 }} />
+                </span>
+                {mic === "on" ? "Listening" : mic === "asking" ? "Allow mic…" : mic === "blocked" ? "Mic blocked" : "Use mic"}
+              </button>
+            )}
             <button
               type="button"
               aria-label="Previous scene"
-              onClick={() => setIndex((i) => (i - 1 + scenes.length) % scenes.length)}
+              onClick={() => {
+                if (mic === "on") (stopMic(), setMic("off"));
+                setIndex((i) => (i - 1 + scenes.length) % scenes.length);
+              }}
               className="flex size-8 items-center justify-center rounded-full text-white/60 transition-[color,background-color,transform] duration-150 hover:bg-white/[0.06] hover:text-white focus-visible:outline-2 focus-visible:outline-white/70 active:scale-90"
             >
               <svg viewBox="0 0 16 16" className="size-3.5" fill="none" aria-hidden="true">
@@ -394,7 +504,10 @@ export function PixelMatrixDisplay({
             <button
               type="button"
               aria-label="Next scene"
-              onClick={() => setIndex((i) => (i + 1) % scenes.length)}
+              onClick={() => {
+                if (mic === "on") (stopMic(), setMic("off"));
+                setIndex((i) => (i + 1) % scenes.length);
+              }}
               className="flex size-8 items-center justify-center rounded-full text-white/60 transition-[color,background-color,transform] duration-150 hover:bg-white/[0.06] hover:text-white focus-visible:outline-2 focus-visible:outline-white/70 active:scale-90"
             >
               <svg viewBox="0 0 16 16" className="size-3.5" fill="none" aria-hidden="true">

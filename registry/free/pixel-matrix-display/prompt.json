@@ -14,7 +14,7 @@
     "caption": "scene counter + label left, prev/pause/next right"
   },
   "typography": {
-    "bitmapFont": "5x7, A–Z 0–9 : . - / % +, 1px glyph gap, 2x scale when rows >= 16",
+    "bitmapFont": "5x7, A\u2013Z 0\u20139 : . - / % +, 1px glyph gap, 2x scale when rows >= 16",
     "caption": {
       "font": "mono",
       "size": "11px",
@@ -33,7 +33,7 @@
     "sceneInterval": 4800,
     "dissolve": "per-dot stable random threshold vs 700ms progress",
     "marqueeSpeed": "14 dots/s",
-    "clockColon": "1Hz blink, width-stable",
+    "clockColon": "always rasterised (width-stable); breathes with a 1Hz cosine fade 22\u2013100%",
     "reducedMotion": "freeze scene time",
     "pointer": "dots within ~4 of the cursor warm up (unlit) or step up a level (lit); eases 12% per frame",
     "hold": "hover holds the scene; a progress line fills over the interval and pauses while held",
@@ -64,5 +64,8 @@
     "shadowBlur per dot",
     "emoji",
     "jittering clock digits"
-  ]
+  ],
+  "interaction": {
+    "microphone": "Opt-in 'Use mic' toggle: getUserMedia + AnalyserNode (fftSize 256), log-spaced bands to bars, fast attack / slow release, falling peak-hold dots; holds the equaliser scene; stops all tracks on toggle, scene change or unmount; blocked permission shows 'Mic blocked'."
+  }
 }
