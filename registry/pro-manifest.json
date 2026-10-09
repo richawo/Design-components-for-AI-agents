@@ -2028,6 +2028,18 @@
         "description": "Press ⌘K once by itself the first time the caps come into view."
       },
       {
+        "name": "listen",
+        "type": "boolean",
+        "default": "true",
+        "description": "Mirror the physical keyboard while the caps are on screen (ignored while typing in a field)."
+      },
+      {
+        "name": "captureShortcuts",
+        "type": "boolean",
+        "default": "false",
+        "description": "Prevent the default action of a completed chord (e.g. ⌘K). Off by default so the host page's own shortcuts still work."
+      },
+      {
         "name": "className",
         "type": "string",
         "description": "Classes for the root, which fills its parent."
