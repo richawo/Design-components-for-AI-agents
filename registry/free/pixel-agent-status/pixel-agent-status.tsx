@@ -151,16 +151,18 @@ function glyph(state: AgentState, f: number): Px {
       break;
     }
     case "idle": {
-      // A z rises and fades, then a beat of rest.
-      const p = (f % 30) / 22;
-      if (p <= 1) {
-        const ox = 1 + Math.round(p * 3);
-        const oy = 5 - Math.round(p * 4);
-        const a = Math.sin(Math.PI * p) * 0.95;
-        for (const [x, y] of Z) put(m, ox + x, oy + y, a);
+      // A sleep light: a soft core that breathes in and out every 4s, with a
+      // halo that only appears near the top of the breath. Calm, unmistakably
+      // "on but waiting", and never fully dark.
+      const b = 0.5 - 0.5 * Math.cos((2 * Math.PI * (f % 40)) / 40);
+      const core = 0.22 + 0.78 * b;
+      put(m, 4, 4, core);
+      for (const [x, y] of [[3, 4], [5, 4], [4, 3], [4, 5]] as const) put(m, x, y, core * 0.62);
+      for (const [x, y] of [[3, 3], [5, 3], [3, 5], [5, 5]] as const) put(m, x, y, core * 0.32);
+      if (b > 0.55) {
+        const halo = (b - 0.55) / 0.45;
+        for (const [x, y] of [[2, 4], [6, 4], [4, 2], [4, 6]] as const) put(m, x, y, halo * 0.22);
       }
-      put(m, 1, 7, 0.35);
-      put(m, 2, 7, 0.35);
       break;
     }
   }
@@ -168,7 +170,7 @@ function glyph(state: AgentState, f: number): Px {
 }
 
 /** A representative still for reduced motion. */
-const STILL: Record<AgentState, number> = { thinking: 3, searching: 2, writing: 11, listening: 4, syncing: 3, done: 99, error: 10, idle: 11 };
+const STILL: Record<AgentState, number> = { thinking: 3, searching: 2, writing: 11, listening: 4, syncing: 3, done: 99, error: 10, idle: 20 };
 
 /** One shared 10fps clock per mounted glyph, paused offscreen and in hidden tabs. */
 function useFrame(ref: RefObject<Element | null>, state: AgentState, replay = 0) {

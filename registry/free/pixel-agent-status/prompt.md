@@ -25,7 +25,7 @@ Build a pixel status set for AI agents in React + Tailwind CSS v4: eight animate
 - Syncing: two 6-cell arcs with bright heads chasing round a 16-cell ring.
 - Done: the check draws one pixel per frame, a ring flashes for 6 frames, then it holds. It never loops.
 - Error: a centred exclamation that shakes ±1px for 6 frames every 3 seconds.
-- Idle: a 4×4 "z" rises diagonally and fades on a sine envelope over 2.2s, then rests.
+- Idle: a sleep light. A soft core (centre dot, its four neighbours at 62%, diagonals at 32%) breathes on a 4s cosine from 22% to 100%; a faint four-dot halo appears only near the top of each breath. Never fully dark.
 
 **Colour**
 - Work in progress is warm: thinking and listening `#ff7a45`, searching `#ffb38a`, writing `#f4efe9`.

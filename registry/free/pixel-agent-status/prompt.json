@@ -43,7 +43,7 @@
     "syncing": "two 6-cell arcs chase each other round a 16-cell ring",
     "done": "the check draws one pixel per frame, a ring flashes once, then it holds (never loops)",
     "error": "the exclamation shakes ±1px for 6 frames every 3 seconds",
-    "idle": "a 4×4 z rises and fades over 2.2s, then rests",
+    "idle": "sleep light: soft plus-shaped core breathing on a 4s cosine 22–100%, faint halo near the peak, never fully dark",
     "clock": "10fps, paused offscreen (IntersectionObserver) and in hidden tabs",
     "reducedMotion": "a representative still per state",
     "gallery": "tiles are buttons: hover/focus replays the glyph, scales it 1.04 and draws a state-colour hairline; click copies the snippet with a sliding 'Copied snippet' confirmation; press scales 0.985",
