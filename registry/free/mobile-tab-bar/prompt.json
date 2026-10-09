@@ -1,83 +1,78 @@
 {
   "component": "MobileTabBar",
-  "intent": "Floating dark tab bar with a sliding lime indicator, rising active icons and a raised record button, switching four designed running-app screens.",
+  "intent": "Floating glass tab bar for a running app: outline-to-filled icon morphs, a selection lens that stretches toward where it's going, rolling badges and a raised ember action that opens an arc of quick actions.",
   "platform": "mobile",
   "stack": {
-    "framework": "React Native (core only)",
-    "apis": [
-      "Animated.spring",
-      "Animated.timing",
-      "Animated.loop",
-      "Pressable",
-      "StyleSheet"
-    ],
-    "web": "react-native-web compatible"
+    "framework": "React Native",
+    "libraries": ["expo-blur", "expo-linear-gradient", "react-native-svg"],
+    "apis": ["Animated.spring", "Animated.timing", "Animated.stagger", "Pressable", "ScrollView", "AccessibilityInfo"],
+    "web": "react-native-web compatible; keep opacity animations off the BlurView's ancestors"
   },
   "layout": {
-    "bar": "floating pill radius 34pt, inset 16pt; 4 tabs + raised 64pt centre button",
-    "screens": "Today (greeting, weekly km card, next workout, shoe mileage), Routes, Club, You"
+    "stage": "#09090C, content in a ScrollView with 58pt top, 16pt sides, 150pt bottom padding so it scrolls under the bar",
+    "bar": "absolute, 14pt sides, 26pt bottom, 68pt tall, radius 34; five equal slots, the middle one reserved",
+    "centreAction": "60pt circle standing 18pt above the bar",
+    "arcMenu": "three 58pt items on a 118pt radius at 150°, 90°, 30° with labels below",
+    "toast": "glass pill 16pt from sides, 52pt from top"
   },
   "typography": {
-    "greeting": {
-      "size": 32,
-      "weight": "800",
-      "letterSpacing": -1
-    },
-    "bigStat": {
-      "size": 64,
-      "weight": "800"
-    },
-    "meta": {
-      "font": "Menlo/monospace",
-      "size": 11,
-      "case": "uppercase"
-    },
-    "tabLabel": {
-      "size": 11,
-      "weight": "700"
-    }
+    "greeting": { "size": 32, "weight": "700", "letterSpacing": -1 },
+    "heroNumber": { "size": 58, "weight": "700", "letterSpacing": -2.4, "fontVariant": "tabular-nums" },
+    "cardTitle": { "size": 19, "weight": "700", "letterSpacing": -0.4 },
+    "eyebrow": { "font": "Menlo/monospace", "size": 10.5, "weight": "600", "letterSpacing": 1.3, "case": "uppercase" },
+    "tabLabel": { "size": 10.5, "weight": "600 → 700 when selected" }
   },
   "color": {
-    "background": "#0E0F0B",
-    "surface": "#1A1B16",
-    "raised": "#23241E",
-    "line": "rgba(242,241,234,0.08)",
-    "text": "#F2F1EA",
-    "muted": "rgba(242,241,234,0.56)",
-    "accent": "#D4FF3A"
+    "background": "#09090C",
+    "text": "#F6F3EE",
+    "secondary": "rgba(246,243,238,0.6)",
+    "faint": "rgba(246,243,238,0.38)",
+    "ember": "#FF6B3D",
+    "emberHighlight": "#FFA06A",
+    "emberDeep": "#E5402F",
+    "volt": "#D9F36A (streak and route start only)",
+    "heroGradient": ["#FF8C52", "#F65F3A", "#DB3E36", "#A82A3C"],
+    "card": ["#1B1B21", "#141418", "#101013"],
+    "glass": "BlurView 100 dark + white sheen 12%→2% + 4pt dot dither + hairline 26% top / 10% sides / 5% bottom"
   },
   "motion": {
-    "indicator": "spring stiffness 320 damping 24 mass 0.9",
-    "activeIcon": "translateY 7→0 + label fade, spring 300/22",
-    "screen": "opacity + translateY 12→0, 320ms bezier(0.2,0.8,0.2,1)",
-    "recordPulse": "loop 1.6s ease-out",
-    "reducedMotion": "no springs or pulse",
-    "press": "Squish wrapper: Animated Pressable springs to ~0.95 (buttons) or 0.985 (rows, cards) while held, stiffness 520 damping 30, native driver; skipped under reduced motion"
+    "lens": "left and right edges spring separately: leading 520/46, trailing 210/29 (both critically damped); scaleY 1→0.86 while stretched",
+    "iconMorph": "outline fades and shrinks to 0.78; filled grows from 0.55 on spring 360/18 (one overshoot); deselect 500/44",
+    "content": "fade out 110ms ease-in, fade in + rise 10pt 280ms cubic-bezier(0.22,1,0.36,1)",
+    "centrePress": "translateY 2.5 + scale 0.92, glow dims and shrinks; spring 700/40 in, 420/18 out",
+    "menuOpen": "plus rotates 135°, disc crossfades to milk, scrim fades in, content scales to 0.965, items stagger 50ms on spring 400/25 from scale 0.35",
+    "menuClose": "reverse stagger 30ms, 170ms ease-in",
+    "numbers": "hero km, ring and today's bar tween over 760ms when an action adds distance",
+    "badge": "digits roll 11pt over 280ms, one tick to 1.22 on arrival; clears 650ms after opening Club",
+    "ambient": "a kudo arrives every 6.5s (max three) while another tab is open",
+    "press": "cards and rows spring to 0.97–0.98",
+    "reducedMotion": "120ms fades only, no stretch, no ambient badge, numbers jump"
   },
   "responsive": {
-    "width": "360-430pt; bar inset scales with width"
+    "width": "360–430pt; slots are measured with onLayout, so the lens and arc scale with the bar"
   },
   "accessibility": [
-    "tabs use accessibilityRole tab + selected state",
-    "record button label reflects state",
-    "reduced motion respected"
+    "Tabs use accessibilityRole tab with selected state and a label that includes the badge count",
+    "Centre action is a button with an expanded state and a label that flips between open and close",
+    "The scrim is a labelled close button",
+    "The toast is a polite live region",
+    "SVG icons are aria-hidden",
+    "Reduced motion respected via AccessibilityInfo"
   ],
   "content": {
-    "runner": "Adaeze",
-    "weeklyGoalKm": 40,
-    "week": "M T W T F S S with today highlighted",
-    "tabs": [
-      "Today",
-      "Routes",
-      "Club",
-      "You"
-    ]
+    "runner": "Adaeze Okafor",
+    "dateLine": "THU 9 OCT · WEEK 41",
+    "week": "32.4 of 40 km; M 6.2, T 12.0, W 6.1, T 8.1 (today), F–S planned",
+    "tabs": ["Today", "Routes", "Club (3 kudos)", "You"],
+    "actions": ["Outdoor run → GPS locked", "Intervals → 6 × 800 m loaded", "Log treadmill → adds 5.0 km"]
   },
   "avoid": [
-    "icon fonts",
-    "emoji",
-    "stock tab bar",
-    "multiple accent colours",
-    "SVG libraries"
+    "A flat translucent grey bar with no real blur",
+    "Opacity animations on the BlurView's ancestors",
+    "Icon fonts, icon packs or emoji",
+    "An indicator that jumps or wobbles",
+    "Content that cuts between tabs",
+    "More than one bounce on anything",
+    "A second accent competing with ember"
   ]
 }

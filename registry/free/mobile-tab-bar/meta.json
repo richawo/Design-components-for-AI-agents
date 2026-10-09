@@ -1,61 +1,34 @@
 {
   "slug": "mobile-tab-bar",
-  "name": "Raised Tab Bar",
+  "name": "Glass Tab Bar",
   "tier": "free",
   "platform": "mobile",
   "category": "mobile",
-  "description": "A floating React Native tab bar for a running club app: drawn icons, a lime indicator that springs between tabs and a raised centre button that records a run.",
+  "description": "A floating glass tab bar for a running app: icons that morph outline to filled, a lens that stretches as it glides, rolling badges and a raised button with an arc menu.",
   "tags": [
     "tab bar",
     "bottom navigation",
     "react native",
+    "glassmorphism",
     "fitness",
     "dark",
-    "floating action button"
+    "floating action button",
+    "radial menu"
   ],
-  "dependencies": [],
+  "dependencies": ["expo-blur", "expo-linear-gradient", "react-native-svg"],
   "theme": "dark",
-  "previewHeight": 900,
-  "usage": "import { MobileTabBar } from \"@/components/design-for-ai/native/mobile-tab-bar\";\n\n<MobileTabBar\n  runnerName=\"Sam\"\n  weeklyGoalKm={30}\n  onRecordChange={(recording) => recording ? startRun() : stopRun()}\n/>",
+  "previewHeight": 940,
+  "usage": "// Bare React Native apps: run `npx install-expo-modules` once for expo-blur and expo-linear-gradient.\nimport { MobileTabBar } from \"@/components/design-for-ai/native/mobile-tab-bar\";\n\n<MobileTabBar\n  runnerName=\"Sam Achebe\"\n  goalKm={30}\n  onTabChange={(tab) => navigation.navigate(tab)}\n  onAction={(key) => key === \"run\" && startRun()}\n/>",
   "props": [
-    {
-      "name": "tabs",
-      "type": "{ key: TabKey; label: string }[]",
-      "description": "The four tabs."
-    },
-    {
-      "name": "initialTab",
-      "type": "TabKey",
-      "default": "\"today\"",
-      "description": "Tab shown first."
-    },
-    {
-      "name": "runnerName",
-      "type": "string",
-      "default": "\"Adaeze\"",
-      "description": "Name in the greeting."
-    },
-    {
-      "name": "weeklyGoalKm",
-      "type": "number",
-      "default": "40",
-      "description": "Weekly distance goal."
-    },
-    {
-      "name": "week",
-      "type": "{ day: string; km: number }[]",
-      "description": "Seven days of distance."
-    },
-    {
-      "name": "routes",
-      "type": "RouteItem[]",
-      "description": "Saved routes with elevation shapes."
-    },
-    {
-      "name": "onRecordChange",
-      "type": "(recording: boolean) => void",
-      "description": "Fired when the centre button starts or stops a run."
-    }
+    { "name": "tabs", "type": "TabItem[]", "description": "Four tabs ({ key, label, badge? }); the centre slot is reserved for the action button." },
+    { "name": "initialTab", "type": "TabKey", "default": "\"today\"", "description": "Tab shown first." },
+    { "name": "runnerName", "type": "string", "default": "\"Adaeze Okafor\"", "description": "Full name: first name greets, initials fill the avatars." },
+    { "name": "dateLine", "type": "string", "default": "\"THU 9 OCT · WEEK 41\"", "description": "Mono line above the greeting." },
+    { "name": "goalKm", "type": "number", "default": "40", "description": "Weekly distance goal for the hero ring." },
+    { "name": "week", "type": "WeekDay[]", "description": "Seven days of distance with done, today or planned state." },
+    { "name": "actions", "type": "QuickAction[]", "description": "Up to three arc-menu actions with toast copy and optional kilometres to add." },
+    { "name": "onTabChange", "type": "(key: TabKey) => void", "description": "Fired when a tab is selected." },
+    { "name": "onAction", "type": "(key: string) => void", "description": "Fired when a quick action is picked." }
   ],
   "added": "2026-10-07"
 }
