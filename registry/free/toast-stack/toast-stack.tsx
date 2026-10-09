@@ -1,11 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
-import { AnimatePresence, animate, motion, useMotionValue, useReducedMotion, useTransform, type PanInfo } from "motion/react";
-import { Check, LoaderCircle, X } from "lucide-react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState, useSyncExternalStore, type CSSProperties, type RefObject } from "react";
+import { AnimatePresence, animate, motion, useInView, useMotionValue, useReducedMotion, useTransform, type PanInfo } from "motion/react";
+import { LoaderCircle, X } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
-/* Store                                                               */
+/* Store: a module-level list read with useSyncExternalStore            */
 /* ------------------------------------------------------------------ */
 
 export type ToastType = "success" | "error" | "info" | "loading";
@@ -37,8 +37,7 @@ type PromiseMessages<T> = {
   description?: { loading?: string; success?: string; error?: string };
 };
 
-const MAX_TOASTS = 5;
-const DEFAULT_DURATION = 5000;
+const LIMITS = { max: 5, duration: 5000, errorDuration: 8000 } as const;
 
 let toasts: ToastData[] = [];
 let nextId = 1;
@@ -65,11 +64,11 @@ function push(type: ToastType, title: string, opts: ToastOptions = {}) {
     title,
     description: opts.description,
     action: opts.action,
-    duration: opts.duration ?? (type === "error" ? 8000 : DEFAULT_DURATION),
+    duration: opts.duration ?? (type === "error" ? LIMITS.errorDuration : LIMITS.duration),
     version: 0,
   };
   // Newest first. Anything past the cap is dropped from the back.
-  emit([t, ...toasts].slice(0, MAX_TOASTS));
+  emit([t, ...toasts].slice(0, LIMITS.max));
   return id;
 }
 
@@ -89,14 +88,14 @@ function promise<T>(p: Promise<T>, m: PromiseMessages<T>, opts: ToastOptions = {
         type: "success",
         title: typeof m.success === "function" ? m.success(v) : m.success,
         description: m.description?.success,
-        duration: opts.duration ?? DEFAULT_DURATION,
+        duration: opts.duration ?? LIMITS.duration,
       }),
     (e: unknown) =>
       update(id, {
         type: "error",
         title: typeof m.error === "function" ? m.error(e) : m.error,
         description: m.description?.error,
-        duration: opts.duration ?? 8000,
+        duration: opts.duration ?? LIMITS.errorDuration,
       }),
   );
   return p;
@@ -114,22 +113,157 @@ export const toast = Object.assign((title: string, opts?: ToastOptions) => push(
 /** The live list of toasts plus the functions that create and dismiss them. */
 export function useToasts() {
   const list = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
-  return useMemo(
-    () => ({
-      toasts: list,
-      toast,
-      success: toast.success,
-      error: toast.error,
-      info: toast.info,
-      promise: toast.promise,
-      dismiss,
-    }),
-    [list],
-  );
+  return useMemo(() => ({ toasts: list, toast, success: toast.success, error: toast.error, info: toast.info, promise: toast.promise, dismiss }), [list]);
 }
 
 /* ------------------------------------------------------------------ */
-/* Toaster                                                             */
+/* Tokens                                                               */
+/* ------------------------------------------------------------------ */
+
+const PALETTE = {
+  dark: {
+    card: "#1c1c1f",
+    line: "rgba(255,255,255,0.08)",
+    sheen: "rgba(255,255,255,0.06)",
+    ink: "#f4f4f5",
+    muted: "#a1a1aa",
+    timer: "rgba(255,255,255,0.25)",
+    hover: "rgba(255,255,255,0.06)",
+    info: "#48484f",
+    onInfo: "#f4f4f5",
+    success: "#3ddc97",
+    onSuccess: "#06291a",
+    error: "#ff6b5e",
+    onError: "#3a0904",
+    shadow: "0 16px 40px -12px rgba(0,0,0,0.7), 0 2px 6px rgba(0,0,0,0.35)",
+  },
+  light: {
+    card: "#ffffff",
+    line: "rgba(24,24,27,0.08)",
+    sheen: "rgba(255,255,255,0)",
+    ink: "#18181b",
+    muted: "#52525b",
+    timer: "rgba(24,24,27,0.22)",
+    hover: "rgba(24,24,27,0.05)",
+    info: "#e4e4e7",
+    onInfo: "#3f3f46",
+    success: "#16a34a",
+    onSuccess: "#ffffff",
+    error: "#dc2626",
+    onError: "#ffffff",
+    shadow: "0 16px 40px -16px rgba(24,24,27,0.24), 0 2px 6px rgba(24,24,27,0.06)",
+  },
+} as const;
+
+type Palette = Record<keyof (typeof PALETTE)["dark"], string>;
+
+const EASE_OUT = [0.22, 1, 0.36, 1] as const;
+const EASE_IN = [0.4, 0, 1, 1] as const;
+/** Cards settle like a hand being dealt: quick, no overshoot. */
+const SPRING_STACK = { type: "spring", stiffness: 380, damping: 34, mass: 0.9 } as const;
+const SPRING_HOME = { type: "spring", stiffness: 500, damping: 35 } as const;
+
+/** One place for the choreography. Seconds unless noted. */
+const MOTION = {
+  enterFrom: 56, // px below the stack a new toast rises from
+  inner: 0.06, // icon, title, description, action follow the card in, this far apart
+  innerRise: 6, // px
+  innerBlur: 4, // px
+  innerDuration: 0.34,
+  timerAfter: 0.35, // the countdown line starts once the card has landed
+  check: 0.32,
+  exit: 0.2,
+  height: 0.35,
+  fade: 0.15, // reduced motion
+} as const;
+
+const STACK = { gap: 10, peek: 14, visible: 3, shrink: 0.05, fallbackHeight: 68 } as const;
+const SWIPE = { distance: 90, velocity: 600, fadeAt: 220, flyTo: 420, flyFor: 0.22 } as const;
+
+/* ------------------------------------------------------------------ */
+/* Helpers                                                              */
+/* ------------------------------------------------------------------ */
+
+function inkOn(hex: string) {
+  const v = hex.replace("#", "");
+  const full = v.length === 3 ? [...v].map((c) => c + c).join("") : v.slice(0, 6);
+  const [r, g, b] = [0, 2, 4].map((i) => parseInt(full.slice(i, i + 2), 16) / 255).map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b > 0.4 ? "#0a0a0b" : "#ffffff";
+}
+
+function cssVars(p: Palette, accent: string): CSSProperties {
+  const vars: Record<string, string> = { "--ts-accent": accent, "--ts-on-accent": inkOn(accent) };
+  for (const [k, v] of Object.entries(p)) vars[`--ts-${k}`] = v;
+  return vars as CSSProperties;
+}
+
+/** Entrance for an inner block: rises out of a light blur. Reduced motion: a short fade. */
+function rise(delay: number, reduce: boolean, distance: number = MOTION.innerRise, blur: number = MOTION.innerBlur, duration: number = MOTION.innerDuration) {
+  if (reduce) return { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: MOTION.fade } };
+  return {
+    initial: { opacity: 0, y: distance, filter: `blur(${blur}px)` },
+    animate: { opacity: 1, y: 0, filter: "blur(0px)", transitionEnd: { filter: "none" } },
+    transition: { duration, ease: EASE_OUT, delay },
+  };
+}
+
+const focusRing = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ts-ink)]";
+
+/* ------------------------------------------------------------------ */
+/* Hooks                                                                */
+/* ------------------------------------------------------------------ */
+
+/** Alt + key focuses the newest toast. */
+function useFocusHotkey(hotkey: string, listRef: RefObject<HTMLOListElement | null>) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.altKey && e.key.toLowerCase() === hotkey.toLowerCase()) {
+        e.preventDefault();
+        listRef.current?.querySelector<HTMLElement>("[data-toast]")?.focus();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [hotkey, listRef]);
+}
+
+function useTabHidden() {
+  const [hidden, setHidden] = useState(false);
+  useEffect(() => {
+    const onVis = () => setHidden(document.visibilityState === "hidden");
+    document.addEventListener("visibilitychange", onVis);
+    return () => document.removeEventListener("visibilitychange", onVis);
+  }, []);
+  return hidden;
+}
+
+/**
+ * A toast’s remaining life as a motion value (1 → 0). It drives the countdown line and
+ * dismisses the toast when it runs out. Pausing stops the tween; resuming continues from
+ * wherever it stopped. Each update (a promise settling) refills it.
+ */
+function useLifetime(t: ToastData, running: boolean) {
+  const life = useMotionValue(1);
+  const fresh = useRef(true);
+
+  useEffect(() => {
+    life.set(1);
+    fresh.current = true;
+  }, [t.version, life]);
+
+  useEffect(() => {
+    if (!running) return;
+    const delay = fresh.current ? MOTION.timerAfter : 0;
+    fresh.current = false;
+    const run = animate(life, 0, { duration: (life.get() * t.duration) / 1000, ease: "linear", delay, onComplete: () => dismiss(t.id) });
+    return () => run.stop();
+  }, [running, t.id, t.version, t.duration, life]);
+
+  return life;
+}
+
+/* ------------------------------------------------------------------ */
+/* Toaster                                                              */
 /* ------------------------------------------------------------------ */
 
 export type ToasterProps = {
@@ -140,42 +274,32 @@ export type ToasterProps = {
   label?: string;
   /** Alt + this key moves focus to the newest toast. */
   hotkey?: string;
+  /** The one accent: the action button. Defaults to the theme’s ink. */
+  accent?: string;
+  theme?: "dark" | "light";
 };
 
-const GAP = 10;
-const PEEK = 14;
-const VISIBLE = 3;
-const ease = [0.2, 0.8, 0.2, 1] as const;
+const PLACE = {
+  "bottom-center": "sm:left-1/2 sm:right-auto sm:-translate-x-1/2",
+  "bottom-left": "sm:left-6 sm:right-auto",
+  "bottom-right": "sm:left-auto sm:right-6",
+} as const;
 
-export function Toaster({ strategy = "fixed", position = "bottom-right", label = "Notifications", hotkey = "t" }: ToasterProps) {
+export function Toaster({ strategy = "fixed", position = "bottom-right", label = "Notifications", hotkey = "t", accent, theme = "dark" }: ToasterProps) {
   const { toasts: list } = useToasts();
+  const reduce = useReducedMotion() ?? false;
+  const listRef = useRef<HTMLOListElement>(null);
   const [hovered, setHovered] = useState(false);
   const [focused, setFocused] = useState(false);
   const [pinned, setPinned] = useState(false); // tap-to-expand on touch
-  const [hidden, setHidden] = useState(false);
   const [heights, setHeights] = useState<Record<number, number>>({});
-  const listRef = useRef<HTMLOListElement>(null);
-  const reduce = useReducedMotion();
+  const hidden = useTabHidden();
+  const palette = PALETTE[theme];
+
+  useFocusHotkey(hotkey, listRef);
 
   const expanded = (hovered || focused || pinned) && list.length > 1;
   const paused = hovered || focused || pinned || hidden;
-
-  useEffect(() => {
-    const onVis = () => setHidden(document.visibilityState === "hidden");
-    document.addEventListener("visibilitychange", onVis);
-    return () => document.removeEventListener("visibilitychange", onVis);
-  }, []);
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.altKey && e.key.toLowerCase() === hotkey.toLowerCase()) {
-        e.preventDefault();
-        listRef.current?.querySelector<HTMLElement>("[data-toast]")?.focus();
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [hotkey]);
 
   // Collapse a tap-expanded stack when the user taps elsewhere or it empties.
   useEffect(() => {
@@ -194,34 +318,24 @@ export function Toaster({ strategy = "fixed", position = "bottom-right", label =
     setHeights((prev) => (prev[id] === h ? prev : { ...prev, [id]: h }));
   }, []);
 
-  const h = (id: number) => heights[id] ?? 68;
+  const h = (id: number) => heights[id] ?? STACK.fallbackHeight;
   const frontH = list[0] ? h(list[0].id) : 0;
-  const offsets: number[] = [];
-  list.reduce((acc, t, i) => {
-    offsets[i] = acc;
-    return acc + h(t.id) + GAP;
-  }, 0);
+  const offsets = list.map((_, i) => list.slice(0, i).reduce((acc, t) => acc + h(t.id) + STACK.gap, 0));
   const stackH = expanded
-    ? list.reduce((acc, t) => acc + h(t.id), 0) + GAP * Math.max(0, list.length - 1)
-    : frontH + PEEK * Math.min(Math.max(0, list.length - 1), VISIBLE - 1);
-
-  const place =
-    position === "bottom-center"
-      ? "sm:left-1/2 sm:right-auto sm:-translate-x-1/2"
-      : position === "bottom-left"
-        ? "sm:left-6 sm:right-auto"
-        : "sm:left-auto sm:right-6";
+    ? list.reduce((acc, t) => acc + h(t.id), 0) + STACK.gap * Math.max(0, list.length - 1)
+    : frontH + STACK.peek * Math.min(Math.max(0, list.length - 1), STACK.visible - 1);
 
   return (
     <section
       aria-label={`${label} (Alt+${hotkey.toUpperCase()})`}
-      className={`${strategy === "fixed" ? "fixed" : "absolute"} bottom-4 left-4 right-4 z-50 sm:bottom-6 sm:w-[360px] ${place}`}
+      style={cssVars(palette, accent ?? palette.ink)}
+      className={`${strategy === "fixed" ? "fixed" : "absolute"} bottom-4 left-4 right-4 z-50 font-sans antialiased sm:bottom-6 sm:w-[360px] ${PLACE[position]}`}
     >
       <motion.ol
         ref={listRef}
         className="relative m-0 list-none p-0"
         animate={{ height: stackH }}
-        transition={reduce ? { duration: 0 } : { duration: 0.35, ease }}
+        transition={reduce ? { duration: 0 } : { duration: MOTION.height, ease: EASE_OUT }}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         onFocus={() => setFocused(true)}
@@ -234,18 +348,7 @@ export function Toaster({ strategy = "fixed", position = "bottom-right", label =
       >
         <AnimatePresence initial={false}>
           {list.map((t, i) => (
-            <ToastItem
-              key={t.id}
-              toast={t}
-              index={i}
-              count={list.length}
-              expanded={expanded}
-              paused={paused}
-              offset={offsets[i]}
-              frontHeight={frontH}
-              reduce={!!reduce}
-              onHeight={setHeight}
-            />
+            <ToastItem key={t.id} toast={t} index={i} count={list.length} expanded={expanded} paused={paused} offset={offsets[i]} frontHeight={frontH} reduce={reduce} onHeight={setHeight} />
           ))}
         </AnimatePresence>
       </motion.ol>
@@ -254,41 +357,42 @@ export function Toaster({ strategy = "fixed", position = "bottom-right", label =
 }
 
 /* ------------------------------------------------------------------ */
-/* One toast                                                           */
+/* One toast                                                            */
 /* ------------------------------------------------------------------ */
 
-const tone: Record<ToastType, { ring: string; icon: ReactNode; label: string }> = {
-  success: {
-    ring: "bg-[#3ddc97] text-[#06291a]",
-    icon: <Check size={12} strokeWidth={3.2} aria-hidden="true" />,
-    label: "Success",
-  },
-  error: {
-    ring: "bg-[#ff6b5e] text-[#3a0904]",
-    icon: (
-      <svg viewBox="0 0 12 12" className="size-3" aria-hidden="true">
-        <path d="M6 2.6v4" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
-        <circle cx="6" cy="9.2" r="1.05" fill="currentColor" />
-      </svg>
-    ),
-    label: "Error",
-  },
-  info: {
-    ring: "bg-[#8ab8ff] text-[#071a3a]",
-    icon: (
-      <svg viewBox="0 0 12 12" className="size-3" aria-hidden="true">
-        <circle cx="6" cy="2.9" r="1.05" fill="currentColor" />
-        <path d="M6 5.4v4" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
-      </svg>
-    ),
-    label: "Info",
-  },
-  loading: {
-    ring: "bg-transparent text-[#e4e4e7]",
-    icon: <LoaderCircle size={16} strokeWidth={2.4} className="animate-spin" aria-hidden="true" />,
-    label: "In progress",
-  },
+const TONE: Record<ToastType, { disc: string; label: string }> = {
+  success: { disc: "bg-[var(--ts-success)] text-[var(--ts-onSuccess)]", label: "Success" },
+  error: { disc: "bg-[var(--ts-error)] text-[var(--ts-onError)]", label: "Error" },
+  info: { disc: "bg-[var(--ts-info)] text-[var(--ts-onInfo)]", label: "Info" },
+  loading: { disc: "bg-transparent text-[var(--ts-muted)]", label: "In progress" },
 };
+
+function ToastGlyph({ type, reduce }: { type: ToastType; reduce: boolean }) {
+  if (type === "loading") return <LoaderCircle size={16} strokeWidth={2.4} className="animate-spin motion-reduce:animate-none" aria-hidden="true" />;
+  if (type === "success")
+    return (
+      <svg viewBox="0 0 12 12" className="size-3" fill="none" aria-hidden="true">
+        <motion.path
+          d="M2.6 6.3l2.2 2.2 4.6-4.9"
+          stroke="currentColor"
+          strokeWidth="1.9"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          initial={{ pathLength: reduce ? 1 : 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: MOTION.check, ease: EASE_OUT, delay: MOTION.inner * 2 }}
+        />
+      </svg>
+    );
+  // “!” for errors, “i” for info: the same two strokes, flipped.
+  const bang = type === "error";
+  return (
+    <svg viewBox="0 0 12 12" className="size-3" aria-hidden="true">
+      <path d={bang ? "M6 2.6v4" : "M6 5.4v4"} stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
+      <circle cx="6" cy={bang ? 9.2 : 2.9} r="1.05" fill="currentColor" />
+    </svg>
+  );
+}
 
 function ToastItem({
   toast: t,
@@ -315,10 +419,11 @@ function ToastItem({
   const [height, setHeight] = useState(0);
   const [dragging, setDragging] = useState(false);
   const x = useMotionValue(0);
-  const fade = useTransform(x, [-220, 0, 220], [0, 1, 0]);
+  const fade = useTransform(x, [-SWIPE.fadeAt, 0, SWIPE.fadeAt], [0, 1, 0]);
   const front = index === 0;
+  const tucked = !expanded && !front; // behind the front card: only its top sliver shows
   const timed = t.type !== "loading" && Number.isFinite(t.duration);
-  const stopped = paused || dragging;
+  const life = useLifetime(t, timed && !paused && !dragging);
 
   // Measure the natural height so the stack can lay itself out.
   useEffect(() => {
@@ -333,49 +438,36 @@ function ToastItem({
     return () => ro.disconnect();
   }, [t.id, onHeight]);
 
-  // Auto-dismiss, pausing on hover, focus, drag and hidden tabs.
-  const remaining = useRef(t.duration);
-  useEffect(() => {
-    remaining.current = t.duration;
-  }, [t.version, t.duration]);
-  useEffect(() => {
-    if (!timed || stopped) return;
-    const started = performance.now();
-    const id = setTimeout(() => dismiss(t.id), remaining.current);
-    return () => {
-      clearTimeout(id);
-      remaining.current = Math.max(0, remaining.current - (performance.now() - started));
-    };
-  }, [timed, stopped, t.id, t.version]);
-
   const onDragEnd = (_: unknown, info: PanInfo) => {
     setDragging(false);
-    const out = Math.abs(info.offset.x) > 90 || Math.abs(info.velocity.x) > 600;
+    const out = Math.abs(info.offset.x) > SWIPE.distance || Math.abs(info.velocity.x) > SWIPE.velocity;
     if (out) {
       const dir = Math.sign(info.offset.x || info.velocity.x) || 1;
-      animate(x, dir * 420, { duration: 0.22, ease: "easeOut" }).then(() => dismiss(t.id));
+      animate(x, dir * SWIPE.flyTo, { duration: SWIPE.flyFor, ease: EASE_OUT }).then(() => dismiss(t.id));
     } else {
-      animate(x, 0, { type: "spring", stiffness: 500, damping: 35 });
+      animate(x, 0, SPRING_HOME);
     }
   };
 
-  const collapsedScale = 1 - index * 0.05;
-  const visible = index < VISIBLE;
-  const target = expanded ? { y: -offset, scale: 1, opacity: 1 } : { y: -index * PEEK, scale: collapsedScale, opacity: visible ? 1 : 0 };
+  const target = expanded
+    ? { y: -offset, scale: 1, opacity: 1 }
+    : { y: -index * STACK.peek, scale: 1 - index * STACK.shrink, opacity: index < STACK.visible ? 1 : 0 };
   // Cards behind the front one borrow its height while collapsed, so nothing peeks out underneath.
   const cardHeight = expanded || front ? height : frontHeight;
-
-  const t1 = tone[t.type];
+  const tone = TONE[t.type];
+  // Text swaps (a promise settling) cross-fade with a small offset and blur.
+  const swap = reduce
+    ? { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 } }
+    : { initial: { opacity: 0, y: 6, filter: "blur(3px)" }, animate: { opacity: 1, y: 0, filter: "blur(0px)" }, exit: { opacity: 0, y: -6, filter: "blur(3px)", transition: { duration: 0.14, ease: EASE_IN } } };
 
   return (
     <motion.li
-      layout={false}
-      initial={reduce ? { opacity: 0 } : { opacity: 0, y: 56, scale: 1 }}
+      initial={reduce ? { opacity: 0 } : { opacity: 0, y: MOTION.enterFrom, scale: 1 }}
       animate={target}
-      exit={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.94, transition: { duration: 0.2, ease } }}
-      transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 380, damping: 34, mass: 0.9 }}
+      exit={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.94, transition: { duration: MOTION.exit, ease: EASE_IN } }}
+      transition={reduce ? { duration: MOTION.fade } : SPRING_STACK}
       style={{ zIndex: count - index, transformOrigin: "50% 0%" }}
-      className={`absolute inset-x-0 bottom-0 ${!expanded && !front ? "pointer-events-none" : ""}`}
+      className={`absolute inset-x-0 bottom-0 ${tucked ? "pointer-events-none" : ""}`}
     >
       <motion.div
         data-toast
@@ -383,7 +475,7 @@ function ToastItem({
         role={t.type === "error" ? "alert" : "status"}
         aria-live={t.type === "error" ? "assertive" : "polite"}
         aria-atomic="true"
-        aria-label={`${t1.label}: ${t.title}${t.description ? `. ${t.description}` : ""}`}
+        aria-label={`${tone.label}: ${t.title}${t.description ? `. ${t.description}` : ""}`}
         drag={reduce ? false : "x"}
         dragConstraints={{ left: 0, right: 0 }}
         dragElastic={0.85}
@@ -397,43 +489,57 @@ function ToastItem({
           }
         }}
         animate={cardHeight ? { height: cardHeight } : undefined}
-        transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 380, damping: 34, mass: 0.9 }}
+        transition={reduce ? { duration: 0 } : SPRING_STACK}
         style={{ x, opacity: fade }}
-        className="group relative cursor-grab touch-pan-y overflow-hidden rounded-[14px] bg-[#1c1c1f] text-left shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08),inset_0_1px_0_rgba(255,255,255,0.06),0_16px_40px_-12px_rgba(0,0,0,0.7),0_2px_6px_rgba(0,0,0,0.35)] outline-none focus-visible:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08),0_0_0_2px_#0b0b0c,0_0_0_4px_#8ab8ff] active:cursor-grabbing"
+        className={`group relative cursor-grab touch-pan-y overflow-hidden rounded-[14px] bg-[var(--ts-card)] text-left shadow-[inset_0_0_0_1px_var(--ts-line),inset_0_1px_0_var(--ts-sheen),var(--ts-shadow)] active:cursor-grabbing ${focusRing}`}
       >
-        <div
-          ref={inner}
-          className={`flex items-start gap-3 py-3.5 pl-4 pr-10 transition-opacity duration-200 ${!expanded && !front ? "opacity-0" : "opacity-100"}`}
-        >
-          <span className={`mt-[1px] flex size-[18px] shrink-0 items-center justify-center rounded-full ${t1.ring}`}>
+        <div ref={inner} className={`flex items-start gap-3 py-3.5 pl-4 pr-10 transition-opacity duration-200 ${tucked ? "opacity-0" : "opacity-100"}`}>
+          <motion.span
+            initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.4 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={reduce ? { duration: MOTION.fade } : { ...SPRING_HOME, delay: MOTION.inner }}
+            className={`mt-[1px] flex size-[18px] shrink-0 items-center justify-center rounded-full transition-colors duration-200 ${tone.disc}`}
+          >
             <AnimatePresence mode="wait" initial={false}>
               <motion.span
                 key={t.type}
-                initial={reduce ? false : { scale: 0.4, opacity: 0 }}
+                initial={reduce ? { opacity: 0 } : { scale: 0.4, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                exit={reduce ? undefined : { scale: 0.4, opacity: 0 }}
-                transition={{ duration: 0.18, ease }}
+                exit={reduce ? { opacity: 0 } : { scale: 0.4, opacity: 0 }}
+                transition={{ duration: 0.18, ease: EASE_OUT }}
                 className="flex items-center justify-center"
               >
-                {t1.icon}
+                <ToastGlyph type={t.type} reduce={reduce} />
               </motion.span>
             </AnimatePresence>
-          </span>
+          </motion.span>
           <div className="min-w-0 flex-1">
-            <p className="text-[14px] font-medium leading-[1.35] tracking-[-0.005em] text-[#f4f4f5]">{t.title}</p>
-            {t.description && <p className="mt-0.5 text-[13px] leading-[1.45] text-[#a1a1aa]">{t.description}</p>}
+            <motion.div {...rise(MOTION.inner, reduce)} className="relative">
+              <AnimatePresence mode="popLayout" initial={false}>
+                <motion.p key={t.title} {...swap} transition={{ duration: 0.24, ease: EASE_OUT }} className="text-[14px] font-medium leading-[1.35] tracking-[-0.005em] text-[var(--ts-ink)]">
+                  {t.title}
+                </motion.p>
+              </AnimatePresence>
+            </motion.div>
+            {t.description && (
+              <motion.p {...rise(MOTION.inner * 2, reduce)} className="mt-0.5 text-[13px] leading-[1.45] text-[var(--ts-muted)]">
+                {t.description}
+              </motion.p>
+            )}
             {t.action && (
-              <button
-                type="button"
-                onClick={() => {
-                  t.action?.onClick();
-                  dismiss(t.id);
-                }}
-                onPointerDownCapture={(e) => e.stopPropagation()}
-                className="mt-2.5 inline-flex h-8 items-center rounded-[8px] bg-[#f4f4f5] px-3 text-[13px] font-medium text-[#0b0b0c] outline-none transition-[color,background-color,border-color,box-shadow,transform] hover:bg-white focus-visible:ring-2 focus-visible:ring-[#8ab8ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1c1c1f] duration-150 active:scale-[0.97]"
-              >
-                {t.action.label}
-              </button>
+              <motion.div {...rise(MOTION.inner * 3, reduce)}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    t.action?.onClick();
+                    dismiss(t.id);
+                  }}
+                  onPointerDownCapture={(e) => e.stopPropagation()}
+                  className={`mt-2.5 inline-flex h-8 items-center rounded-[8px] bg-[var(--ts-accent)] px-3 text-[13px] font-medium text-[var(--ts-on-accent)] transition-[filter,transform] duration-150 hover:brightness-110 active:scale-[0.97] ${focusRing}`}
+                >
+                  {t.action.label}
+                </button>
+              </motion.div>
             )}
           </div>
         </div>
@@ -442,195 +548,146 @@ function ToastItem({
           aria-label="Dismiss notification"
           onClick={() => dismiss(t.id)}
           onPointerDownCapture={(e) => e.stopPropagation()}
-          className={`absolute right-1.5 top-1.5 flex size-8 items-center justify-center rounded-[8px] text-[#a1a1aa] outline-none transition-[color,background-color,border-color,box-shadow,transform] hover:bg-white/[0.06] hover:text-[#f4f4f5] focus-visible:ring-2 focus-visible:ring-[#8ab8ff] duration-150 active:scale-[0.97] ${!expanded && !front ? "opacity-0" : ""}`}
+          className={`absolute right-1.5 top-1.5 flex size-8 items-center justify-center rounded-[8px] text-[var(--ts-muted)] transition-[color,background-color,transform] duration-150 hover:bg-[var(--ts-hover)] hover:text-[var(--ts-ink)] active:scale-[0.97] focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--ts-ink)] ${tucked ? "opacity-0" : ""}`}
         >
           <X size={14} strokeWidth={2.25} aria-hidden="true" />
         </button>
-        {timed && (
-          <span
-            key={t.version}
-            aria-hidden="true"
-            className="absolute inset-x-0 bottom-0 h-px origin-left bg-white/25"
-            style={{
-              animation: `tm-toast-stack-timer ${t.duration}ms linear forwards`,
-              animationPlayState: stopped ? "paused" : "running",
-            }}
-          />
-        )}
+        {timed && <motion.span aria-hidden="true" className="absolute inset-x-0 bottom-0 h-px origin-left bg-[var(--ts-timer)]" style={{ scaleX: life }} />}
       </motion.div>
     </motion.li>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/* Demo                                                                */
+/* Demo: a draft’s actions, each answered by a toast                    */
 /* ------------------------------------------------------------------ */
 
-export type ToastStackDemoTrigger = {
-  kind: "success" | "error" | "info" | "promise" | "action";
-  label: string;
-  title: string;
-  description?: string;
-  /** Title once the promise resolves (promise only). */
-  resolved?: string;
-  actionLabel?: string;
-};
+/** The demo’s quiet backdrop and card; not part of the component. */
+const STAGE = { backdrop: "#0a0a0b", card: "#111113", line: "#232327", rule: "#1c1c1f", ink: "#f4f4f5", muted: "#a1a1aa", faint: "#8a8a93" } as const;
+const DEMO_MOTION = { block: 0.5, step: 0.06, buttonsAt: 0.24, hintAt: 0.5, count: 0.9, seedAt: 0.75, seedStep: 0.32 } as const;
+const WORDS = 1284;
 
-export type ToastStackProps = {
-  kicker?: string;
-  title?: string;
-  titleItalic?: string;
-  intro?: string;
-  triggers?: ToastStackDemoTrigger[];
-  /** Fire a few toasts on mount so the stack is visible straight away. */
-  seed?: boolean;
-  documentTitle?: string;
-};
+type DemoAction = { id: string; label: string; hint: string; fire: () => void };
 
-const kindDot: Record<ToastStackDemoTrigger["kind"], string> = {
-  success: "bg-[#3ddc97]",
-  error: "bg-[#ff6b5e]",
-  info: "bg-[#8ab8ff]",
-  promise: "bg-[#e4e4e7]",
-  action: "bg-[#f5c451]",
-};
-
-const defaultTriggers: ToastStackDemoTrigger[] = [
-  { kind: "success", label: "Success", title: "Draft saved", description: "1,284 words, all of them yours." },
-  { kind: "error", label: "Error", title: "Couldn’t reach the printer", description: "The proofs are safe. We’ll try again in a minute.", actionLabel: "Retry now" },
-  { kind: "info", label: "Info", title: "Maya Okafor left a comment", description: "“Cut the second paragraph. Trust me.”" },
-  { kind: "promise", label: "Promise", title: "Publishing to 4,120 readers…", resolved: "Published. Go and make a coffee." },
-  { kind: "action", label: "With action", title: "Moved 3 drafts to the bin", description: "They’ll stay there for 30 days.", actionLabel: "Undo" },
-];
-
-export function ToastStack({
-  kicker = "Quire / Notifications",
-  title = "Toasts that",
-  titleItalic = "know their place.",
-  intro = "They stack like a hand of cards, fan out when you hover, wait while you read and leave when you swipe them away. Fire a few and see.",
-  triggers = defaultTriggers,
-  seed = true,
-  documentTitle = "The Autumn Issue — draft 7",
-}: ToastStackProps) {
-  const { success, error, info, promise: runPromise, toasts: list } = useToasts();
-  const reduce = useReducedMotion();
-
-  const fire = useCallback(
-    (tr: ToastStackDemoTrigger) => {
-      switch (tr.kind) {
-        case "success":
-          return success(tr.title, { description: tr.description });
-        case "error":
-          return error(tr.title, {
-            description: tr.description,
-            action: tr.actionLabel ? { label: tr.actionLabel, onClick: () => success("Proofs sent to the printer") } : undefined,
-          });
-        case "info":
-          return info(tr.title, { description: tr.description });
-        case "promise":
-          return runPromise(new Promise<void>((r) => setTimeout(r, 2200)), {
-            loading: tr.title,
-            success: tr.resolved ?? "Done",
-            error: "That didn’t work",
-          });
-        case "action":
-          return info(tr.title, {
-            description: tr.description,
-            action: { label: tr.actionLabel ?? "Undo", onClick: () => success("Restored 3 drafts") },
-          });
-      }
+function demoActions(): DemoAction[] {
+  return [
+    { id: "save", label: "Save draft", hint: "Success", fire: () => toast.success("Draft saved", { description: "1,284 words, all of them yours." }) },
+    {
+      id: "publish",
+      label: "Publish",
+      hint: "Promise",
+      fire: () => void toast.promise(new Promise<void>((r) => setTimeout(r, 2200)), { loading: "Publishing to 4,120 readers…", success: "Published. Go and make a coffee.", error: "That didn’t work" }),
     },
-    [success, error, info, runPromise],
-  );
+    {
+      id: "proofs",
+      label: "Send proofs",
+      hint: "Error",
+      fire: () =>
+        toast.error("Couldn’t reach the printer", {
+          description: "The proofs are safe. We’ll try again in a minute.",
+          action: { label: "Retry now", onClick: () => toast.success("Proofs sent to the printer") },
+        }),
+    },
+    {
+      id: "bin",
+      label: "Move to bin",
+      hint: "Undo",
+      fire: () => toast.info("Moved 3 drafts to the bin", { description: "They’ll stay there for 30 days.", action: { label: "Undo", onClick: () => toast.success("Restored 3 drafts") } }),
+    },
+  ];
+}
 
+function demoEnter(play: boolean, delay: number, reduce: boolean) {
+  if (reduce) return { initial: { opacity: 0 }, animate: { opacity: play ? 1 : 0 }, transition: { duration: MOTION.fade } };
+  return {
+    initial: { opacity: 0, y: 12, filter: "blur(8px)" },
+    animate: play ? { opacity: 1, y: 0, filter: "blur(0px)", transitionEnd: { filter: "none" } } : undefined,
+    transition: { duration: DEMO_MOTION.block, ease: EASE_OUT, delay },
+  };
+}
+
+/** The word count ticks up from zero as the card lands; a motion value, so no re-render per frame. */
+function WordCount({ play, reduce }: { play: boolean; reduce: boolean }) {
+  const value = useMotionValue(0);
+  const text = useTransform(value, (v) => Math.round(v).toLocaleString("en-GB"));
   useEffect(() => {
-    if (!seed) return;
-    const picks = [triggers.find((t) => t.kind === "info"), triggers.find((t) => t.kind === "action"), triggers.find((t) => t.kind === "success")].filter(
-      (t): t is ToastStackDemoTrigger => !!t,
-    );
-    const ids = picks.map((p, i) => setTimeout(() => fire(p), reduce ? 0 : 250 + i * 320));
-    return () => ids.forEach(clearTimeout);
-  }, [seed, triggers, fire, reduce]);
-
+    if (!play) return;
+    if (reduce) {
+      value.set(WORDS);
+      return;
+    }
+    const run = animate(value, WORDS, { duration: DEMO_MOTION.count, ease: EASE_OUT, delay: DEMO_MOTION.step * 2 });
+    return () => run.stop();
+  }, [play, reduce, value]);
   return (
-    <section className="bg-[#0b0b0c] text-[#f4f4f5]">
-      <style>{`@keyframes tm-toast-stack-timer { from { transform: scaleX(1); } to { transform: scaleX(0); } }`}</style>
-      <div className="mx-auto grid max-w-[76rem] gap-10 px-5 py-12 sm:px-8 lg:grid-cols-12 lg:gap-12 lg:px-12 lg:py-20">
-        {/* Copy + triggers */}
-        <div className="lg:col-span-5">
-          <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-[#a1a1aa]">{kicker}</p>
-          <h2 className="mt-6 font-display text-[clamp(2.6rem,1.6rem+3vw,4rem)] font-bold leading-[0.95] tracking-[-0.045em]">
-            {title} <span className="text-[#f4f4f5]/40">{titleItalic}</span>
-          </h2>
-          <p className="mt-6 max-w-[42ch] text-[16px] leading-[1.6] text-[#a1a1aa]">{intro}</p>
-
-          <ul className="mt-10 border-t border-white/10">
-            {triggers.map((tr, i) => (
-              <li key={tr.label} className="border-b border-white/10">
-                <button
-                  type="button"
-                  onClick={() => fire(tr)}
-                  className="group flex w-full items-center gap-4 py-3.5 text-left outline-none focus-visible:bg-white/[0.04] transition-transform duration-150 active:scale-[0.99]"
-                >
-                  <span className="w-6 font-mono text-[11px] tabular-nums text-[#71717a]">{String(i + 1).padStart(2, "0")}</span>
-                  <span className={`size-2 shrink-0 rounded-full ${kindDot[tr.kind]}`} aria-hidden="true" />
-                  <span className="min-w-0 flex-1">
-                    <span className="block text-[15px] font-medium text-[#f4f4f5]">{tr.label}</span>
-                    <span className="block truncate text-[13px] text-[#a1a1aa]">{tr.title}</span>
-                  </span>
-                  <span className="inline-flex h-9 shrink-0 items-center rounded-full px-3.5 font-mono text-[11px] uppercase tracking-[0.12em] text-[#d4d4d8] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.14)] transition-colors group-hover:bg-[#f4f4f5] group-hover:text-[#0b0b0c] group-focus-visible:bg-[#f4f4f5] group-focus-visible:text-[#0b0b0c]">
-                    Fire
-                  </span>
-                </button>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-5 font-mono text-[11px] uppercase leading-[1.7] tracking-[0.12em] text-[#71717a]">
-            Hover to fan out · Swipe to dismiss · Alt+T to focus
-          </p>
-        </div>
-
-        {/* Faux editor, with the toaster living inside it */}
-        <div className="lg:col-span-7">
-          <div className="relative h-[560px] overflow-hidden rounded-[18px] bg-[#131315] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.07)] lg:h-full lg:min-h-[600px]">
-            <div className="flex items-center justify-between gap-4 border-b border-white/[0.07] px-5 py-3.5">
-              <div className="flex min-w-0 items-center gap-3">
-                <span className="flex size-6 shrink-0 items-center justify-center rounded-[6px] bg-[#f5c451] font-display text-[13px] font-bold text-[#0b0b0c]">Q</span>
-                <p className="truncate text-[13px] text-[#d4d4d8]">{documentTitle}</p>
-              </div>
-              <div className="flex shrink-0 items-center gap-3">
-                <div className="hidden -space-x-0.5 sm:flex" aria-hidden="true">
-                  {[
-                    ["MO", "bg-[#8ab8ff] text-[#071a3a]"],
-                    ["JR", "bg-[#3ddc97] text-[#06291a]"],
-                  ].map(([n, c]) => (
-                    <span key={n} className={`flex size-6 items-center justify-center rounded-full text-[10px] font-semibold ring-2 ring-[#131315] ${c}`}>
-                      {n}
-                    </span>
-                  ))}
-                </div>
-                <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#71717a]" aria-live="polite">
-                  {list.length} {list.length === 1 ? "toast" : "toasts"}
-                </span>
-              </div>
-            </div>
-            <article className="px-6 pt-10 sm:px-10 lg:px-14" aria-hidden="true">
-              <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#71717a]">Food · 8 min read</p>
-              <h3 className="mt-4 max-w-[16ch] font-sans text-[clamp(1.75rem,1.3rem+1.6vw,2.5rem)] font-semibold leading-[1.02] tracking-[-0.04em] text-[#f4f4f5]">Notes from a slow kitchen</h3>
-              <p className="mt-6 max-w-[52ch] text-[15px] leading-[1.7] text-[#a1a1aa]">
-                The stock had been going since Tuesday. Nobody remembered starting it, and nobody was brave enough to stop. By Friday it had become
-                a kind of household weather: always there, faintly reassuring, smelling of bay.
-              </p>
-              <p className="mt-4 max-w-[52ch] text-[15px] leading-[1.7] text-[#71717a]">
-                Slow cooking isn’t a technique so much as a temperament. You have to be willing to let something happen without you.
-              </p>
-            </article>
-            <Toaster strategy="absolute" position="bottom-right" />
-          </div>
-        </div>
-      </div>
-    </section>
+    <>
+      <motion.span aria-hidden="true" className="tabular-nums">
+        {text}
+      </motion.span>
+      <span className="sr-only">{WORDS.toLocaleString("en-GB")}</span>
+    </>
   );
 }
 
-export default ToastStack;
+export default function ToastStackDemo() {
+  const reduce = useReducedMotion() ?? false;
+  const uid = useId();
+  const card = useRef<HTMLElement>(null);
+  const play = useInView(card, { once: true, amount: 0.3 });
+  const actions = useMemo(demoActions, []);
+
+  // Three toasts arrive once the card has landed, so the stack is there to play with.
+  useEffect(() => {
+    if (!play) return;
+    const seed = [actions[3].fire, () => toast.info("Maya Okafor left a comment", { description: "“Cut the second paragraph. Trust me.”" }), actions[0].fire];
+    const timers = seed.map((fire, i) => setTimeout(fire, reduce ? 0 : (DEMO_MOTION.seedAt + i * DEMO_MOTION.seedStep) * 1000));
+    return () => {
+      timers.forEach(clearTimeout);
+      toast.dismiss();
+    };
+  }, [play, reduce, actions]);
+
+  return (
+    <div className="@container flex min-h-dvh w-full flex-col items-center justify-center px-4 pb-48 pt-12 font-sans sm:pb-12 text-[#f4f4f5] antialiased sm:px-8" style={{ background: STAGE.backdrop }}>
+      <motion.section
+        ref={card}
+        aria-labelledby={`${uid}-title`}
+        {...demoEnter(play, 0, reduce)}
+        className="w-full max-w-[460px] overflow-hidden rounded-[16px] border"
+        style={{ background: STAGE.card, borderColor: STAGE.line, boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04), 0 32px 64px -32px rgba(0,0,0,0.9)" }}
+      >
+        <header className="px-5 pb-5 pt-5">
+          <motion.p {...demoEnter(play, DEMO_MOTION.step, reduce)} className="font-mono text-[11px] uppercase tracking-[0.14em]" style={{ color: STAGE.faint }}>
+            Quire · Draft 7
+          </motion.p>
+          <motion.h2 {...demoEnter(play, DEMO_MOTION.step * 2, reduce)} id={`${uid}-title`} className="mt-2 font-display text-[22px] font-semibold leading-tight tracking-[-0.03em]">
+            The Autumn Issue
+          </motion.h2>
+          <motion.p {...demoEnter(play, DEMO_MOTION.step * 3, reduce)} className="mt-1 text-[13px]" style={{ color: STAGE.muted }}>
+            <WordCount play={play} reduce={reduce} /> words · edited 2 minutes ago
+          </motion.p>
+        </header>
+        <ul className="grid grid-cols-2 gap-px border-t" style={{ borderColor: STAGE.line, background: STAGE.rule }}>
+          {actions.map((a, i) => (
+            <motion.li key={a.id} {...demoEnter(play, DEMO_MOTION.buttonsAt + i * DEMO_MOTION.step, reduce)} style={{ background: STAGE.card }}>
+              <button
+                type="button"
+                onClick={a.fire}
+                className="group flex h-16 w-full flex-col items-start justify-center px-5 text-left transition-[background-color,transform] duration-150 hover:bg-white/[0.03] active:scale-[0.98] focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-white"
+              >
+                <span className="text-[14px] font-medium">{a.label}</span>
+                <span className="font-mono text-[10.5px] uppercase tracking-[0.12em] transition-colors duration-150 group-hover:text-[#d4d4d8]" style={{ color: STAGE.faint }}>
+                  {a.hint}
+                </span>
+              </button>
+            </motion.li>
+          ))}
+        </ul>
+      </motion.section>
+      <motion.p {...demoEnter(play, DEMO_MOTION.hintAt, reduce)} className="mt-5 text-center font-mono text-[11px] uppercase leading-[1.7] tracking-[0.12em]" style={{ color: STAGE.faint }}>
+        Hover the stack to fan out · Swipe to dismiss<span className="hidden @lg:inline"> · Alt+T</span>
+      </motion.p>
+      <Toaster />
+    </div>
+  );
+}

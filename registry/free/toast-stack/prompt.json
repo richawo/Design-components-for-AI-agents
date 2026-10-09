@@ -1,6 +1,6 @@
 {
-  "component": "ToastStack",
-  "intent": "A provider-free stacked toast system (useToasts hook + Toaster) whose cards fan out on hover, swipe away, pause while read and resolve promises in place.",
+  "component": "Toaster",
+  "intent": "A provider-free stacked toast system (useToasts hook, toast object and the Toaster component) whose greyscale cards are dealt in, fan out on hover, swipe away, pause while read and resolve promises in place.",
   "platform": "web",
   "stack": {
     "framework": "React 19",
@@ -14,60 +14,56 @@
     "toaster": "fixed or absolute; bottom-right/left/center from 640px; full-width bottom with 16px insets on mobile; width 360px",
     "collapsed": "y = -i*14px, scale = 1 - i*0.05, origin top centre; max 3 visible; back cards take the front card's height and hide their content",
     "expanded": "y = -(sum of heights in front + 10px gaps), scale 1; triggered by hover, focus-within or tap",
-    "demo": "12-col grid: copy + trigger list (5 cols), editor mock-up with the toaster inside (7 cols)"
+    "demo": "quiet #0a0a0b stage; one centred 460px draft card (eyebrow, title, meta with counting word count, 2x2 grid of four action cells) plus a mono hint line; the real Toaster fixed bottom-right of the viewport",
+    "structure": "Toaster, ToastItem, ToastGlyph; hooks useLifetime, useFocusHotkey, useTabHidden"
   },
   "typography": {
-    "headline": {
-      "font": "display",
-      "weight": 700,
-      "size": "clamp(2.6rem, 1.6rem + 3vw, 4rem)",
-      "leading": 0.95,
-      "tracking": "-0.045em"
-    },
-    "headlineSecondClause": {
-      "font": "same as headline",
-      "color": "#f4f4f5 at 40%"
-    },
     "toastTitle": {
       "size": "14px",
       "weight": 500,
-      "color": "#f4f4f5"
+      "color": "ink"
     },
     "toastDescription": {
       "size": "13px",
-      "color": "#a1a1aa"
+      "color": "muted"
+    },
+    "demoTitle": {
+      "font": "display",
+      "size": "22px",
+      "weight": 600,
+      "tracking": "-0.03em"
     },
     "meta": {
       "font": "mono",
-      "size": "10-11px",
+      "size": "10.5-11px",
       "case": "uppercase",
-      "tracking": "0.12-0.16em"
+      "tracking": "0.12-0.14em"
     }
   },
   "color": {
-    "page": "#0b0b0c",
-    "panel": "#131315",
-    "toast": "#1c1c1f with 8% white inset ring",
-    "text": "#f4f4f5 / #a1a1aa / #71717a",
-    "success": "#3ddc97",
-    "error": "#ff6b5e",
-    "info": "#8ab8ff",
-    "accent": "#f5c451"
+    "approach": "monochrome first; tokens in one PALETTE object as --ts-* CSS variables; theme prop dark (default) | light",
+    "dark": "card #1c1c1f, hairline white/8%, highlight white/6%, ink #f4f4f5, muted #a1a1aa, timer white/25%, info disc #48484f/#f4f4f5, success #3ddc97/#06291a, error #ff6b5e/#3a0904",
+    "light": "card #ffffff, hairline rgba(24,24,27,.08), ink #18181b, muted #52525b, timer rgba(24,24,27,.22), info disc #e4e4e7/#3f3f46, success #16a34a/#fff, error #dc2626/#fff",
+    "accent": "one accent prop (default theme ink): the action button; text black or white by luminance",
+    "semantic": "green success and red error only; info is grey",
+    "demoStage": "#0a0a0b backdrop, #111113 card, #232327 lines, #8a8a93 faint mono"
   },
   "motion": {
-    "enter": "y 56 -> stack position, opacity 0 -> 1",
-    "layout": "spring stiffness 380 damping 34 mass 0.9",
-    "exit": "scale 0.94, opacity 0, 200ms",
-    "swipe": "drag x, elastic 0.85, opacity fades to 0 at ±220px; dismiss past 90px or 600px/s with a fly-out",
-    "timer": "1px line scaling X 1 -> 0 over the duration; animation-play-state paused with the JS timer",
-    "iconSwap": "scale 0.4 -> 1 when loading turns into success or error",
-    "reducedMotion": "no drag, no springs, opacity only",
-    "press": "buttons and links press to 0.97, full-width rows to 0.99, 150ms; one shared transition for colour and transform"
+    "easing": "ease-out [0.22,1,0.36,1]; exits ease-in [0.4,0,1,1]; timings in one MOTION object",
+    "enter": "card rises from y 56, opacity 0, spring stiffness 380 damping 34 mass 0.9",
+    "inner": "60ms apart: icon disc pops (scale 0.4->1, spring 500/35), title, description and action rise 6px out of a 4px blur over 0.34s; success check draws (pathLength 0.32s)",
+    "timer": "useLifetime: a life motion value 1->0 animated linearly over the remaining time, starting 0.35s after the card lands, dismissing on complete; stopped on hover, focus, drag and hidden tab, resumed from where it stopped; refilled on each update; bound to the line's scaleX",
+    "promiseSettle": "disc colour cross-fades, icon swaps (scale 0.4, 180ms), title cross-fades with 6px offset and 3px blur",
+    "stackHeight": "ol height animates 0.35s ease-out",
+    "exit": "scale 0.94, opacity 0, 200ms ease-in",
+    "swipe": "drag x, elastic 0.85, opacity fades to 0 at ±220px; past 90px or 600px/s flies 420px out over 0.22s then dismisses; else springs home 500/35",
+    "demo": "card rises 12px from an 8px blur (0.5s); eyebrow, title, meta 60ms apart; word count counts up 0->1,284 (0.9s); action cells from 0.24s, 60ms apart; hint at 0.5s; three toasts dealt in from 0.75s, 320ms apart",
+    "reducedMotion": "no drag, no springs, 150ms fades; numbers set instantly; countdown still runs",
+    "press": "buttons 0.97, demo cells 0.98, 150ms"
   },
   "responsive": {
-    "mobile": "stack spans the bottom with 16px insets; tap to expand, tap outside to collapse; demo stacks copy above the editor",
-    "sm": "360px stack anchored to the chosen corner",
-    "lg": "two-column demo"
+    "mobile": "stack spans the bottom with 16px insets; tap to expand, tap outside to collapse; demo card full width, hint drops the Alt+T clause",
+    "sm": "360px stack anchored to the chosen corner"
   },
   "accessibility": [
     "labelled region; Alt+T focuses the newest toast",
@@ -78,13 +74,13 @@
   ],
   "content": {
     "brand": "Quire, an editorial CMS",
-    "triggers": [
-      "Success: Draft saved — 1,284 words, all of them yours.",
-      "Error: Couldn’t reach the printer — Retry now",
-      "Info: Maya Okafor left a comment",
-      "Promise: Publishing to 4,120 readers… -> Published. Go and make a coffee.",
-      "With action: Moved 3 drafts to the bin — Undo"
-    ]
+    "actions": [
+      "Save draft -> Draft saved — 1,284 words, all of them yours.",
+      "Publish -> Publishing to 4,120 readers… -> Published. Go and make a coffee.",
+      "Send proofs -> Couldn’t reach the printer — Retry now",
+      "Move to bin -> Moved 3 drafts to the bin — Undo"
+    ],
+    "seeded": "Moved 3 drafts to the bin; Maya Okafor left a comment (“Cut the second paragraph. Trust me.”); Draft saved"
   },
   "avoid": [
     "full-bleed coloured toasts",
@@ -92,6 +88,9 @@
     "emoji icons",
     "a flat vertical list",
     "timers that run while hovered or focused",
-    "hover-only expansion with no touch equivalent"
+    "hover-only expansion with no touch equivalent",
+    "a blue info hue or a yellow brand tile",
+    "CSS keyframe timers",
+    "a marketing headline or fake editor around the demo"
   ]
 }

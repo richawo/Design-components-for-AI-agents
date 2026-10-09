@@ -1,40 +1,44 @@
-Build a stacked toast system in React + Tailwind CSS (v4) with `motion/react` and `lucide-react`. One file exports a `useToasts()` hook, a `toast` object usable outside React, and a `<Toaster>`. Toasts stack like a hand of cards and fan out on hover. The demo is a dark editorial CMS ("Quire") with the toaster living inside an editor mock-up.
+Build a stacked toast system in React + Tailwind CSS v4 with `motion/react` and `lucide-react`. One file exports a `useToasts()` hook, a `toast` object usable outside React, and the component itself: `<Toaster>`. Toasts are dealt in like cards, stack like a hand, fan out on hover and leave when swiped. Greyscale and dark by default (a `theme` prop gives a light version); colour only for success and error. The demo is a minimal real trigger context, not a page: one draft card whose four actions each answer with a toast.
 
 **Store and API**
 - A tiny module-level store read with `useSyncExternalStore`, so no provider is needed. Newest first, capped at 5.
 - `toast.success / error / info(title, { description, action: { label, onClick }, duration })` return an id. `toast.promise(p, { loading, success, error })` shows a loading toast and updates the same toast in place when the promise settles. `dismiss(id?)`.
 - `useToasts()` returns `{ toasts, toast, success, error, info, promise, dismiss }`.
-- Default duration 5000ms (errors 8000ms). Loading toasts never time out. Every update bumps a `version`, which restarts the timer.
+- Default duration 5000ms (errors 8000ms). Loading toasts never time out. Every update bumps a `version`, which refills the timer.
 
 **Toaster layout**
-- `strategy`: "fixed" (viewport) or "absolute" (nearest positioned parent). `position`: bottom-right, bottom-left or bottom-center from 640px up. Below that it spans the bottom edge with 16px insets.
-- Width 360px. Each toast is absolutely positioned at the bottom of an `ol` whose height animates to fit the stack.
+- Props: `strategy` "fixed" (viewport) or "absolute" (nearest positioned parent); `position` bottom-right, bottom-left or bottom-center from 640px up (below that it spans the bottom edge with 16px insets); `accent`; `theme`; `label`; `hotkey`.
+- Width 360px. Each toast is absolutely positioned at the bottom of an `ol` whose height animates to fit the stack (0.35s ease-out).
 - Collapsed: toast *i* sits at `y = −i × 14px` with `scale = 1 − i × 0.05` and transform-origin at top centre, so a 14px sliver of the cards behind peeks above the front one. Only 3 are visible. Cards behind borrow the front card's height and fade their content to 0, so nothing peeks out below.
-- Expanded (on hover, focus-within, or a tap on touch): every toast moves to `y = −(sum of the heights in front + 10px gaps)` at scale 1. Heights are measured with ResizeObserver.
+- Expanded (hover, focus-within, or a tap on touch): every toast moves to `y = −(sum of the heights in front + 10px gaps)` at scale 1. Heights are measured with ResizeObserver.
+- Sub-components `ToastItem`, `ToastGlyph`; hooks `useLifetime`, `useFocusHotkey`, `useTabHidden`.
 
 **Toast design**
-- Card `#1c1c1f`, 14px radius, inset 1px ring at 8% white, 6% top highlight, and a deep shadow `0 16px 40px −12px rgba(0,0,0,.7)`.
-- Padding 14px 40px 14px 16px. An 18px icon disc: success `#3ddc97` with a check, error `#ff6b5e` with "!", info `#8ab8ff` with an "i". Loading is a spinning `LoaderCircle`, and the icon pops (scale 0.4 → 1) when the type changes.
-- Title 14px, weight 500, `#f4f4f5`. Description 13px `#a1a1aa`. The optional action is a 32px light button (`#f4f4f5` on dark). A 32px close button sits in the top-right corner.
-- A 1px timer line at 25% white runs along the bottom edge (CSS keyframes `tm-toast-stack-timer` scaling X from 1 to 0) and pauses with `animation-play-state` whenever the timer pauses.
+- Card 14px radius, inset 1px hairline, top highlight and a deep shadow. Padding 14px 40px 14px 16px.
+- An 18px icon disc: success green with a check that draws, error red with "!", info a neutral grey disc with an "i", loading a spinning `LoaderCircle` (no disc).
+- Title 14px/500 in ink, description 13px muted. The optional action is a 32px button in the accent (default: the theme's ink, so white on dark). A 32px close button sits in the top-right corner.
+- A 1px countdown line at the bottom edge: `scaleX` bound to a `life` motion value.
 
-**Motion**
-- Enter from `y: 56`, opacity 0. Layout moves use a spring (stiffness 380, damping 34, mass 0.9). Exit to scale 0.94 and opacity 0 over 200ms.
-- Swipe: `drag="x"` with elastic 0.85, and opacity falls to 0 at ±220px. Release past 90px or 600px/s and the toast flies out in that direction, then dismisses. Otherwise it springs home.
-- Timers pause on hover, focus, drag and hidden tabs, and resume with the remaining time.
-- With reduced motion, no drag, no springs, and opacity-only enter and exit.
+**Colour (monochrome first; tokens in one PALETTE object as `--ts-*` CSS variables)**
+- Dark (default): card `#1c1c1f`, hairline white/8%, top highlight white/6%, ink `#f4f4f5`, muted `#a1a1aa`, timer white/25%, info disc `#48484f` with `#f4f4f5`, success `#3ddc97` with `#06291a`, error `#ff6b5e` with `#3a0904`, shadow `0 16px 40px −12px rgba(0,0,0,.7), 0 2px 6px rgba(0,0,0,.35)`.
+- Light: card `#ffffff`, hairline `rgba(24,24,27,.08)`, ink `#18181b`, muted `#52525b`, timer `rgba(24,24,27,.22)`, info disc `#e4e4e7` with `#3f3f46`, success `#16a34a` and error `#dc2626` with white, a soft grey shadow.
+- One `accent` prop: the action button; text on it is black or white by luminance. Focus: 2px ink outline. No blue or yellow anywhere.
 
-**Demo**
-- Background `#0b0b0c`, max width 76rem. Left (5 of 12 columns): a mono kicker, then the display headline "Toasts that *know their place.*" with the second clause in the same font at 40% white (two tones, no italic), a 16px intro, and a ruled list of five trigger rows (mono index, coloured dot, label, sample title, a "Fire" pill). Right (7 columns): an editor mock-up (`#131315`, 18px radius) showing a document title, two initials avatars, a live toast count, and an article ("Notes from a slow kitchen") in serif. The toaster renders inside it with `strategy="absolute"`.
-- Three toasts are seeded on mount, 320ms apart. Copy should sound like a real product: "Draft saved — 1,284 words, all of them yours.", "Couldn’t reach the printer" with "Retry now", "Moved 3 drafts to the bin" with "Undo", and a promise that ends "Published. Go and make a coffee."
+**Motion (ease-out `[0.22, 1, 0.36, 1]`, exits ease-in `[0.4, 0, 1, 1]`; timings in one MOTION object)**
+- Arrive: the card rises from `y: 56`, opacity 0, on a spring (stiffness 380, damping 34, mass 0.9; no overshoot). Inside, 60ms apart: the icon disc pops (scale 0.4 → 1, spring 500/35), the title, the description and the action each rise 6px out of a 4px blur (0.34s). A success check draws (pathLength, 0.32s).
+- The countdown line starts 0.35s after the card lands. `useLifetime` animates `life` 1 → 0 linearly over the remaining time and dismisses on complete; hover, focus, drag and hidden tabs stop the tween, and resuming continues from where it stopped. No setTimeout, no CSS keyframes.
+- Promise settles: the disc colour cross-fades, the icon swaps (scale 0.4, 180ms) and the title cross-fades with a 6px offset and 3px blur.
+- Exit: scale 0.94 and fade over 200ms ease-in.
+- Swipe: `drag="x"` with elastic 0.85; opacity falls to 0 at ±220px. Release past 90px or 600px/s and the toast flies 420px out in that direction over 0.22s, then dismisses; otherwise it springs home (500/35).
+- Reduced motion: no drag or springs; 150ms opacity fades; the countdown still runs.
+
+**Demo (quiet `#0a0a0b` stage, centred)**
+- A 460px draft card (`#111113`, 1px `#232327`, 16px radius): mono eyebrow "Quire · Draft 7", "The Autumn Issue" (display 22px/600, −0.03em), "1,284 words · edited 2 minutes ago" with the count ticking up from zero (a motion value, tabular numerals). Below a hairline, a 2×2 grid of 64px action cells (label + mono hint): Save draft (success: "Draft saved — 1,284 words, all of them yours."), Publish (promise: "Publishing to 4,120 readers…" → "Published. Go and make a coffee."), Send proofs (error "Couldn’t reach the printer" with "Retry now"), Move to bin (info "Moved 3 drafts to the bin" with "Undo").
+- Card rises 12px out of an 8px blur (0.5s), then eyebrow, title and meta 60ms apart, the four cells from 0.24s, and a mono hint line at 0.5s. Three toasts are dealt in from 0.75s, 320ms apart, once the card has landed. The real `<Toaster />` is fixed to the viewport, bottom-right.
 
 **Accessibility**
 - A labelled `section` region ("Notifications (Alt+T)"). Alt+T focuses the newest toast. Each toast is focusable, with `role="status"` (errors use `role="alert"`) and a full aria-label. Esc, Delete or Backspace dismisses the focused toast.
-- Close and action buttons are real buttons with focus rings. Swiping always has a button alternative.
+- Close and action buttons are real buttons with focus rings; swiping always has a button alternative. Buttons press to 0.97, demo cells to 0.98.
 
 **Don't**
-- No coloured full-bleed toasts, no glassmorphism blur, no emoji icons.
-- Don't stack toasts as a plain vertical list, and never let a timer run out while someone is reading.
-
-**Press feel**
-- Every button and link presses: 0.97 for buttons and links, 0.99 for full-width rows, in 150ms, springing back on release. Colour, background and transform share one transition so nothing snaps. Hover changes are a single step, and focus rings appear instantly.
+- No coloured full-bleed toasts, no glass blur, no emoji icons, no hue for "info". No marketing headline or fake editor around the demo. Don't stack toasts as a plain vertical list, and never let a timer run out while someone is reading.
