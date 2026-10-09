@@ -1,0 +1,151 @@
+{
+  "component": "MobileHealthSummary",
+  "intent": "Dark, luminous daily health summary: three gradient activity rings that draw in, lap past 100% into a deeper shade and isolate on tap, over glass metric cards and a gliding week selector.",
+  "platform": "mobile",
+  "stack": {
+    "framework": "React Native",
+    "libraries": [
+      "expo-blur (BlurView)",
+      "expo-linear-gradient",
+      "react-native-svg (Mask, Pattern, RadialGradient)"
+    ],
+    "apis": [
+      "Animated",
+      "Easing",
+      "Pressable",
+      "ScrollView",
+      "AccessibilityInfo"
+    ],
+    "web": "react-native-web compatible"
+  },
+  "layout": {
+    "padding": "16pt gutters, 58pt top",
+    "header": "uppercase date line over a 34pt 'Summary', 40pt initials avatar in a gradient ring",
+    "week": "glass bar, 7 columns (letter + 30pt mini rings), gliding glass pill, future days disabled",
+    "rings": "264pt box, stroke 22, gap 3, padding 6; centre readout: micro label (TODAY or weekday), 34pt value + muted suffix, sub line",
+    "legend": "3 columns: swatch, label, 19pt value in ring colour with muted goal; doubles as ring buttons",
+    "cards": "Steps (flex 1.18, sparkline) + Heart (flex 1, beat line); Sleep full width with stacked stage bar and 4-column key"
+  },
+  "typography": {
+    "title": {
+      "size": 34,
+      "weight": "700",
+      "letterSpacing": -1.1
+    },
+    "dateLine": {
+      "size": 12,
+      "weight": "600",
+      "letterSpacing": 1.1,
+      "case": "uppercase"
+    },
+    "centreValue": {
+      "size": 34,
+      "weight": "700",
+      "letterSpacing": -1.2,
+      "tabular": true
+    },
+    "legendValue": {
+      "size": 19,
+      "weight": "700"
+    },
+    "cardValue": {
+      "size": 26,
+      "weight": "700",
+      "letterSpacing": -0.9
+    },
+    "micro": {
+      "size": 10.5,
+      "weight": "700",
+      "letterSpacing": 1.4
+    }
+  },
+  "color": {
+    "background": [
+      "#0B0C12",
+      "#0E1018",
+      "#08090D"
+    ],
+    "glows": {
+      "rose": "#FF3D6E",
+      "cyan": "#1FD2F4",
+      "blue": "#4C94FF",
+      "amber": "#FF8B52"
+    },
+    "rings": {
+      "move": {
+        "lap1": [
+          "#FF3D6E",
+          "#FF8B52"
+        ],
+        "lap2": [
+          "#B3123F",
+          "#D4521F"
+        ]
+      },
+      "exercise": {
+        "lap1": [
+          "#7DEB3A",
+          "#D9FF5C"
+        ],
+        "lap2": [
+          "#3F9612",
+          "#93C21A"
+        ]
+      },
+      "stand": {
+        "lap1": [
+          "#1FD2F4",
+          "#62A6FF"
+        ],
+        "lap2": [
+          "#0B87AE",
+          "#2C64D8"
+        ]
+      }
+    },
+    "ink": "#F4F5F8",
+    "secondary": "rgba(235,238,245,0.56)",
+    "sleep": {
+      "deep": "#4B57E6",
+      "core": "#4C94FF",
+      "rem": "#6FE2DD",
+      "awake": "#FFB27A"
+    },
+    "glass": "BlurView 42 dark + white gradient 8.5%→3%→1.5% + 1px border 5.5% (top 17%)"
+  },
+  "motion": {
+    "entrance": "sections rise 14pt + fade, stagger 60ms, 620ms ease-out (0.22,1,0.36,1)",
+    "ringsDrawIn": "after 280ms, stagger 140ms, 1250ms + 250ms per lap, ease-out; dash offset on an SVG mask",
+    "overshoot": "second lap in a deeper gradient; the tip dot's colour is interpolated from progress to match the arc, with a glow and a forward shadow onto lap one",
+    "daySwitch": "pill spring 500/40; rings ease from current to new values (820ms, 0.65,0,0.35,1, stagger 70ms); numbers tween; sparkline redraws; sleep segments re-flex",
+    "isolate": "others dim to 10% and scale 0.985 (spring 300/34), a halo in the ring's colour fades in around the rings, label crossfades with 5pt rise, value tweens to %",
+    "ambient": "heart comet travels the ECG path at the resting rate",
+    "press": "spring to 0.90–0.97, release with a single small overshoot",
+    "reducedMotion": "values set instantly, beat line static, crossfades instant",
+    "glassFade": "fade BlurView, sheen, content and edge individually; an ancestor with opacity < 1 cuts backdrop blur off on the web"
+  },
+  "responsive": {
+    "width": "360–430pt; rings fixed at 264pt, centred; cards flex; week columns divide the bar width",
+    "height": "never hard-coded; content scrolls"
+  },
+  "accessibility": [
+    "week days are tabs with selected and disabled state",
+    "ring area is a button whose label reads all three values; legend columns are buttons with selected state",
+    "sleep bar has a spoken summary of every stage",
+    "tabular numerals on every figure",
+    "reduced motion respected via AccessibilityInfo"
+  ],
+  "content": {
+    "person": "NA",
+    "today": "Friday, 9 October: Move 612/540 kcal (113%), Exercise 38/30 min, Stand 9/12 hr; 8,412 steps, 6.1 km; resting 59 bpm (52–148); slept 6h 52m (in bed 23:12–06:41)",
+    "week": "Mon 5 – Sun 11 October; Saturday and Sunday are future and disabled"
+  },
+  "avoid": [
+    "one linear gradient on a full circle (it seams)",
+    "flat translucent grey cards with no blur",
+    "rings that redraw from zero on every day switch",
+    "numbers that jump",
+    "emoji or icon-pack icons",
+    "Apple's exact ring palette"
+  ]
+}

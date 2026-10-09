@@ -1,0 +1,66 @@
+{
+  "slug": "mobile-health-summary",
+  "name": "Health Summary Rings",
+  "tier": "free",
+  "platform": "mobile",
+  "category": "mobile",
+  "description": "A React Native daily health summary: three gradient activity rings that draw in and lap past 100%, tap-to-isolate readout, glass metric cards and a gliding week picker.",
+  "tags": [
+    "health",
+    "fitness",
+    "activity rings",
+    "react native",
+    "dashboard",
+    "glassmorphism",
+    "sparkline",
+    "dark"
+  ],
+  "dependencies": [
+    "expo-blur",
+    "expo-linear-gradient",
+    "react-native-svg"
+  ],
+  "theme": "dark",
+  "previewHeight": 940,
+  "usage": "import { MobileHealthSummary } from \"@/components/design-for-ai/native/mobile-health-summary\";\n\n// npm i expo-blur expo-linear-gradient react-native-svg\n// (bare React Native: run `npx install-expo-modules` once)\n<MobileHealthSummary\n  days={week}\n  initials=\"NA\"\n  onRingSelect={(ring) => analytics.track(\"ring_focus\", { ring })}\n/>",
+  "props": [
+    {
+      "name": "days",
+      "type": "HealthDay[]",
+      "description": "Seven days with ring values, steps, hourly steps, resting heart rate, sleep stages and bed/wake times. Future days render as empty tracks and can't be picked."
+    },
+    {
+      "name": "rings",
+      "type": "HealthRing[]",
+      "description": "Move, Exercise and Stand: label, unit, goal, first-lap gradient and the deeper second-lap gradient."
+    },
+    {
+      "name": "initialDay",
+      "type": "number",
+      "description": "Index of the day selected on mount. Defaults to the last day that isn't in the future."
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "default": "\"Summary\"",
+      "description": "Large title."
+    },
+    {
+      "name": "initials",
+      "type": "string",
+      "default": "\"NA\"",
+      "description": "Initials in the avatar."
+    },
+    {
+      "name": "onDayChange",
+      "type": "(index: number, day: HealthDay) => void",
+      "description": "Fired when the week selector moves."
+    },
+    {
+      "name": "onRingSelect",
+      "type": "(ring: RingKey | null) => void",
+      "description": "Fired when a ring is isolated, or cleared."
+    }
+  ],
+  "added": "2026-10-09"
+}
