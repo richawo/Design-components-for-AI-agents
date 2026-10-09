@@ -1,4 +1,4 @@
-import { requireLicense } from "@/lib/license";
+import { requireCommerceLicense } from "@/lib/commerce/licences";
 import { handleMessage } from "@/lib/mcp";
 
 /**
@@ -36,7 +36,7 @@ export async function POST(req: Request) {
     return Response.json({ jsonrpc: "2.0", id: null, error: { code: -32700, message: "Parse error" } }, { status: 400, headers: CORS });
   }
   // A missing or malformed key just means free components, never an error.
-  const license = requireLicense(req);
+  const license = await requireCommerceLicense(req);
   const ctx = { license };
   const batch = Array.isArray(body);
   const messages = (batch ? body : [body]) as Parameters<typeof handleMessage>[0][];

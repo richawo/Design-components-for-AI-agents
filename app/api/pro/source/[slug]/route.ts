@@ -1,5 +1,5 @@
 import { highlight } from "@/lib/highlight";
-import { requireLicense } from "@/lib/license";
+import { requireCommerceLicense } from "@/lib/commerce/licences";
 import { getComponent, readSource } from "@/lib/registry";
 
 export async function GET(req: Request, { params }: { params: Promise<{ slug: string }> }) {
@@ -7,7 +7,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
   const entry = getComponent(slug);
   if (!entry) return Response.json({ error: "Not found" }, { status: 404 });
   if (entry.tier === "pro") {
-    const v = requireLicense(req);
+    const v = await requireCommerceLicense(req);
     // The site's own source panel calls this on every Pro page. A signed-out
     // visitor is the normal case, so answer 200 with a locked flag rather
     // than an error status that shows up red in every browser console.

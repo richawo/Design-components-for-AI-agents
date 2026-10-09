@@ -6,16 +6,16 @@ import crypto from "node:crypto";
  *
  *   dfa_<base64url(payload)>.<base64url(hmac-sha256(payload, LICENSE_SECRET))>
  *
- * No database is needed to verify one. Yearly plans carry an expiry and the
- * Stripe subscription id, so /api/license/me can renew them while the
- * subscription is active. Revoke a key by adding its `id` to LICENSE_REVOKED
- * (comma separated), or move to a KV store when that list grows.
+ * Version 1 manual keys carry their original expiry. Version 2 account keys
+ * additionally require a live commerce database check for paid access and
+ * team membership. Their signed identity survives a yearly renewal, so CLI
+ * and MCP clients do not need to rotate a key each year.
  */
 
 export type Plan = "pro-yearly" | "pro-lifetime" | "team-yearly" | "team-lifetime";
 
 export type LicensePayload = {
-  v: 1;
+  v: 1 | 2;
   id: string;
   email: string;
   plan: Plan;
@@ -25,6 +25,8 @@ export type LicensePayload = {
   exp: number | null;
   /** Stripe subscription id for yearly plans. */
   subId?: string;
+  /** Version 2 keys are bound to a recoverable account and checked against billing state. */
+  userId?: string;
 };
 
 export const LICENSE_COOKIE = "dfa_license";
@@ -40,8 +42,8 @@ function secret() {
 
 const b64 = (buf: Buffer | string) => Buffer.from(buf).toString("base64url");
 
-export function signLicense(p: Omit<LicensePayload, "v" | "id" | "iat"> & { id?: string }): string {
-  const payload: LicensePayload = { v: 1, id: p.id ?? crypto.randomUUID(), iat: Math.floor(Date.now() / 1000), ...p } as LicensePayload;
+export function signLicense(p: Omit<LicensePayload, "v" | "id" | "iat"> & { id?: string; iat?: number }, version: 1 | 2 = 1): string {
+  const payload: LicensePayload = { v: version, id: p.id ?? crypto.randomUUID(), iat: Math.floor(Date.now() / 1000), ...p } as LicensePayload;
   const body = b64(JSON.stringify(payload));
   const sig = b64(crypto.createHmac("sha256", secret()).update(body).digest());
   return `dfa_${body}.${sig}`;
@@ -65,9 +67,15 @@ export function verifyLicense(token: string | null | undefined): Verified {
   } catch {
     return { ok: false, reason: "malformed" };
   }
+  if (!license || ![1, 2].includes(license.v) || typeof license.id !== "string" || typeof license.email !== "string" ||
+      !["pro-yearly", "pro-lifetime", "team-yearly", "team-lifetime"].includes(license.plan) ||
+      !Number.isInteger(license.seats) || license.seats < 1 || !Number.isFinite(license.iat) ||
+      (license.exp !== null && !Number.isFinite(license.exp)) || (license.v === 2 && typeof license.userId !== "string")) {
+    return { ok: false, reason: "malformed" };
+  }
   const revoked = (process.env.LICENSE_REVOKED ?? "").split(",").map((s) => s.trim()).filter(Boolean);
   if (revoked.includes(license.id)) return { ok: false, reason: "revoked", license };
-  if (license.exp && license.exp * 1000 < Date.now()) return { ok: false, reason: "expired", license };
+  if (license.exp !== null && license.exp * 1000 <= Date.now()) return { ok: false, reason: "expired", license };
   return { ok: true, license };
 }
 
@@ -77,7 +85,9 @@ export function licenseFromRequest(req: Request): string | null {
   if (auth?.toLowerCase().startsWith("bearer ")) return auth.slice(7).trim();
   const cookie = req.headers.get("cookie") ?? "";
   const hit = cookie.split(/;\s*/).find((c) => c.startsWith(`${LICENSE_COOKIE}=`));
-  return hit ? decodeURIComponent(hit.slice(LICENSE_COOKIE.length + 1)) : null;
+  if (!hit) return null;
+  try { return decodeURIComponent(hit.slice(LICENSE_COOKIE.length + 1)); }
+  catch { return "invalid-cookie"; }
 }
 
 export function licenseCookie(token: string) {
@@ -90,10 +100,6 @@ export function licenseCookie(token: string) {
     path: "/",
     maxAge: 60 * 60 * 24 * 400,
   };
-}
-
-export function requireLicense(req: Request): Verified {
-  return verifyLicense(licenseFromRequest(req));
 }
 
 export const unauthorized = (reason: string) =>

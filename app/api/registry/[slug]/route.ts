@@ -1,5 +1,6 @@
 import { fileNameFor, installText } from "@/lib/install";
-import { requireLicense, unauthorized } from "@/lib/license";
+import { unauthorized } from "@/lib/license";
+import { requireCommerceLicense } from "@/lib/commerce/licences";
 import { getComponent, readSource } from "@/lib/registry";
 
 /**
@@ -12,7 +13,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
   const entry = getComponent(slug);
   if (!entry) return Response.json({ error: "Not found" }, { status: 404 });
   if (entry.tier === "pro") {
-    const v = requireLicense(req);
+    const v = await requireCommerceLicense(req);
     if (!v.ok) return unauthorized(v.reason);
   }
   const src = await readSource(slug);

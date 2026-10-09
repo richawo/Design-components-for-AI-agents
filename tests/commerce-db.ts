@@ -5,7 +5,10 @@ import type { CommerceEnv } from "@/lib/commerce/env";
 
 export function commerceFixture() {
   const sql = new DatabaseSync(":memory:");
-  sql.exec(fs.readFileSync(path.join(import.meta.dirname, "../migrations/0001_commerce.sql"), "utf8"));
+  const migrations = path.join(import.meta.dirname, "../migrations");
+  for (const file of fs.readdirSync(migrations).filter((file) => file.endsWith(".sql")).sort()) {
+    sql.exec(fs.readFileSync(path.join(migrations, file), "utf8"));
+  }
   const prepare = (query: string) => {
     let args: (string | number | null)[] = [];
     const result = {
