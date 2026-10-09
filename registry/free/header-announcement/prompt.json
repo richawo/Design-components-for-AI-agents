@@ -1,1 +1,63 @@
-{"component": "X", "intent": "draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft ", "platform": "web", "stack": {}, "layout": {}, "typography": {}, "color": {}, "motion": {}, "responsive": {}, "accessibility": [], "content": {}, "avoid": []}
+{
+  "component": "HeaderAnnouncement",
+  "intent": "A slim announcement strip above a site header: rotating messages roll vertically, a badge shimmers once, and dismissing collapses the height so the page glides up.",
+  "platform": "web",
+  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4 (container queries)", "animation": "motion/react (AnimatePresence, motion values, height auto)" },
+  "layout": {
+    "strip": "section, overflow hidden, bg #0b0b0c, border-b white/8%; inner max-w 1280px is the @container",
+    "height": "40px (44px under 672px container)",
+    "desktop": "grid 96px | 1fr | 96px, px 24px: pager | centred message | dismiss",
+    "mobile": "grid 1fr | auto, left-aligned message, pager hidden, whole row is the link",
+    "message": "badge, one-line text with ellipsis, link + arrow; `short` text under 896px"
+  },
+  "typography": {
+    "text": "13px, tracking -0.005em, white/80",
+    "link": "13px / 500, white",
+    "badge": "font-mono 10px uppercase, tracking 0.08em, 20px pill"
+  },
+  "color": {
+    "strip": "#0b0b0c on #000",
+    "badge": "text #ffa375, fill #ff8a4c/12%, inset ring rgba(255,138,76,0.28)",
+    "shimmer": "100° gradient to rgba(255,220,200,0.55), mix-blend plus-lighter",
+    "pager": "16×3px segments, track white/16%, fill white/90 (white/55 paused)",
+    "dismiss": "white/45 → white, hover surface white/6%"
+  },
+  "motion": {
+    "roll": "keyed AnimatePresence; enter y ±100% + blur 4px → 0, exit the other way; 500ms cubic-bezier(0.22,1,0.36,1); direction-aware when jumping back",
+    "shimmer": "single sweep x -110% → 110%, 900ms ease-in-out, 350ms delay; never loops",
+    "timer": "rAF accumulates elapsed (5200ms default) into a motion value driving the active segment scaleX; pauses on hover, focus, offscreen, hidden tab",
+    "linkArrow": "2px nudge on hover, 150ms",
+    "dismiss": "content fades 140ms, then height → 0 over 320ms cubic-bezier(0.65,0,0.35,1)",
+    "press": "dismiss scale 0.94",
+    "reducedMotion": "no autoplay, opacity-only swaps, no shimmer, instant collapse"
+  },
+  "responsive": {
+    "1440": "pager left, centred long message, link label",
+    "768": "short message, pager still visible",
+    "390": "badge + short text + arrow, 44px dismiss, whole row tappable"
+  },
+  "accessibility": [
+    "section aria-label=Announcements aria-roledescription=carousel",
+    "slides labelled 'n of N'",
+    "aria-live off while rotating, polite when paused",
+    "pager buttons labelled 'Announcement n of N' with aria-current",
+    "icon-only dismiss labelled 'Dismiss announcements'",
+    "rotation pauses whenever focus is inside the strip"
+  ],
+  "content": {
+    "brand": "Outpost (incident management)",
+    "messages": [
+      "New — Outpost 3.0 is here: incidents now draft their own postmortems. Read the release",
+      "Event — Incident Week, 14–16 November: four talks, zero slide decks. Save a seat",
+      "Beta — The Terraform provider now manages on-call rotas as code. View the docs"
+    ],
+    "demo": "strip over a minimal header silhouette on black, with a 'Bring the strip back' stage button after dismissal"
+  },
+  "avoid": [
+    "brand gradient bars or marquee scrolling",
+    "looping shimmer or pulsing badges",
+    "removing the strip without animating its height",
+    "emoji or sparkle icons",
+    "autoplay under reduced motion"
+  ]
+}

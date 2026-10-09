@@ -1,1 +1,66 @@
-{"component": "HeaderHairline", "intent": "draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft ", "platform": "web", "stack": {}, "layout": {}, "typography": {}, "color": {}, "motion": {}, "responsive": {}, "accessibility": [], "content": {}, "avoid": []}
+{
+  "component": "HeaderHairline",
+  "intent": "A Geist-calibre site header: transparent at rest, a hairline and blur fade in on scroll and the bar condenses 64 → 56px; one hover highlight glides between links and stretches toward its destination.",
+  "platform": "web",
+  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4 (container queries)", "animation": "motion/react (motion values + animate, layoutId for the current-route dot)" },
+  "layout": {
+    "header": "sticky top-0, full width; bar max-w 1280px, px 16/24px, is the @container",
+    "height": "64px at rest, 56px after condenseAt (8px) of scroll",
+    "desktop": "≥896px container: grid auto|1fr|auto; ≥1200px: 1fr|auto|1fr so links are centred on the page",
+    "right": "search chip (h-8, kbd ⌘K), Sign in text link, white primary button; gap 8px; whitespace-nowrap",
+    "mobile": "<896px: wordmark, 44px search icon, primary button from 672px, 44px burger; full-height menu under the bar with 56px rows and two 48px buttons at the bottom"
+  },
+  "typography": {
+    "wordmark": "font-display 17px / 600 / -0.04em",
+    "links": "13.5px, tracking -0.005em, white/55 → white on hover and when current",
+    "kbd": "font-mono 11px, ⌘K on Apple platforms, Ctrl K elsewhere",
+    "mobileRows": "20px / 500 / -0.025em"
+  },
+  "color": {
+    "page": "#000000",
+    "surface": "black/72 + backdrop-blur-xl + saturate-150 + border-b white/9%; solid black while the menu is open",
+    "highlight": "white/7.5%, radius 8px, 32px tall",
+    "currentDot": "4px white circle under the current link",
+    "searchChip": "inset ring white/10% (16% hover); kbd white/6% with an inset lower lip",
+    "primary": "#ffffff with black text, hover #e8e8ea"
+  },
+  "motion": {
+    "surface": "separate layer, opacity 0→1 240ms ease-out, out 160ms ease-in",
+    "condense": "height 64→56px, 320ms cubic-bezier(0.22,1,0.36,1)",
+    "highlight": "two motion values (left/right edge); appear in place on first hover; leading edge spring 660/46, trailing edge spring 320/31 so it stretches toward the next link; fade out 160ms on leave",
+    "currentDot": "layoutId on spring 500/40",
+    "kbd": "⌘K / Ctrl K presses the chip 1px while held, then calls onSearch",
+    "burger": "two 1.5px lines ±3.5px → ±45°, spring 500/34",
+    "menu": "fade 200ms; rows stagger 40ms (y -8→0, blur 4→0, 360ms ease-out)",
+    "press": "scale 0.97",
+    "reducedMotion": "highlight jumps, no height tween, opacity-only menu"
+  },
+  "responsive": {
+    "1440": "links centred on the page, search chip with label",
+    "1024": "auto|1fr|auto grid, chip shows only ⌘K",
+    "768": "burger menu, primary button stays in the bar",
+    "390": "wordmark, search icon, burger; 44px targets"
+  },
+  "accessibility": [
+    "nav aria-label=Main with aria-current=page on the current link",
+    "search chip aria-label names the shortcut, plus aria-keyshortcuts",
+    "burger has aria-expanded, aria-controls and a label that switches",
+    "menu is role=dialog aria-modal: scroll lock, Tab trapped, Escape closes and refocuses the burger, auto-closes at desktop width",
+    "highlight follows :focus-visible as well as the pointer",
+    "2px white/70 focus ring with a black offset; never on click"
+  ],
+  "content": {
+    "brand": "Kestrel (a deploy platform)",
+    "links": ["Product", "Docs", "Customers", "Pricing", "Changelog"],
+    "search": "Search docs  ⌘K",
+    "actions": ["Sign in", "Start deploying"],
+    "demo": "black stage with faint skeleton rows to scroll past"
+  },
+  "avoid": [
+    "a floating glass pill or glow behind the button",
+    "a rigid layoutId hover block without the edge stretch",
+    "transitioning backdrop-filter directly",
+    "wrapping right-cluster labels",
+    "gradient wordmark or coloured accents"
+  ]
+}

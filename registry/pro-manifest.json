@@ -645,7 +645,61 @@
       {
         "name": "brand",
         "type": "{ name: string; href: string }",
-        "description": "x"
+        "default": "{ name: \"Kiln\", href: \"#\" }",
+        "description": "Home link; the mark sits in a white 30px circle."
+      },
+      {
+        "name": "links",
+        "type": "{ label: string; href: string }[]",
+        "description": "Three links in the idle pill."
+      },
+      {
+        "name": "activeIndex",
+        "type": "number",
+        "default": "0",
+        "description": "Current link: full white and aria-current."
+      },
+      {
+        "name": "searchItems",
+        "type": "{ id, label, kind: \"command\" | \"project\" | \"doc\", hint?, href?, keywords? }[]",
+        "description": "What search filters. Five results show at a time."
+      },
+      {
+        "name": "onSelect",
+        "type": "(item) => void",
+        "description": "Called when a result is chosen (Enter or click). The island folds back afterwards."
+      },
+      {
+        "name": "account",
+        "type": "{ name, email, initials, plan?, usage? }",
+        "description": "Avatar, the menu header and an optional usage meter (0–1)."
+      },
+      {
+        "name": "accountItems",
+        "type": "{ label, href, hint?, tone?: \"danger\" }[]",
+        "description": "Account menu items; a danger item gets a divider above it."
+      },
+      {
+        "name": "notification",
+        "type": "{ id, status: \"running\" | \"success\" | \"error\", title, detail?, progress?, action? } | null",
+        "description": "When set and nobody is searching or in the menu, the island morphs to show it."
+      },
+      {
+        "name": "onNotificationClose",
+        "type": "(id: string) => void",
+        "description": "Called on dismiss, Escape, or once a success has been up for successHold."
+      },
+      {
+        "name": "successHold",
+        "type": "number",
+        "default": "3200",
+        "description": "Milliseconds a success stays before folding away. Hovering holds it."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "default": "\"\"",
+        "description": "Extra classes on the header."
       }
     ],
     "added": "2026-10-09"
@@ -678,6 +732,57 @@
         "type": "{ name: string; href: string }",
         "default": "{ name: \"Ledgerline\", href: \"#\" }",
         "description": "Wordmark and home link."
+      },
+      {
+        "name": "sections",
+        "type": "MegaSection[]",
+        "description": "Menu triggers and their panels: { label, columns: { heading, links: { label, description?, href, glyph?, badge?, live? }[] }[], feature?, footer? }."
+      },
+      {
+        "name": "links",
+        "type": "{ label: string; href: string }[]",
+        "default": "[{ label: \"Pricing\", href: \"#pricing\" }]",
+        "description": "Plain links after the triggers. Hovering one closes the panel."
+      },
+      {
+        "name": "signIn",
+        "type": "{ label: string; href: string }",
+        "default": "{ label: \"Sign in\", href: \"#login\" }",
+        "description": "Quiet text link on the right."
+      },
+      {
+        "name": "cta",
+        "type": "{ label: string; href: string }",
+        "default": "{ label: \"Start now\", href: \"#signup\" }",
+        "description": "Ink pill button."
+      },
+      {
+        "name": "snippet",
+        "type": "string",
+        "description": "Code shown on a feature card with art \"code\"; its Copy button shows Copied or Blocked."
+      },
+      {
+        "name": "defaultOpenIndex",
+        "type": "number",
+        "description": "Open this section on first render (desktop only). The demo opens Products."
+      },
+      {
+        "name": "openDelay",
+        "type": "number",
+        "default": "80",
+        "description": "Hover intent before the panel opens, in ms. Moving between triggers while open is instant."
+      },
+      {
+        "name": "closeDelay",
+        "type": "number",
+        "default": "200",
+        "description": "Grace period after the pointer leaves before the panel closes, in ms."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "default": "\"\"",
+        "description": "Extra classes on the header."
       }
     ],
     "added": "2026-10-09"
@@ -1901,7 +2006,31 @@
       {
         "name": "rows",
         "type": "KeycapDef[][]",
-        "description": "x"
+        "default": "esc ⌘ K ↵ / ⇧ ⌥ space",
+        "description": "Rows of caps, back row first (up to 10 caps). Each: id, label or glyph, sub word, KeyboardEvent codes, width in units, tone."
+      },
+      {
+        "name": "chords",
+        "type": "KeyChord[]",
+        "default": "⌘K, ⇧⌘K, ⌘↵, ⌥Space, esc, ⇧↵",
+        "description": "Key-id combinations that light together and show a caption."
+      },
+      {
+        "name": "palette",
+        "type": "{ alpha?, mod?, accent?, legend?, accentLegend?, glow? }",
+        "default": "{ alpha: \"#34353a\", mod: \"#232428\", accent: \"#e9572b\", legend: \"#e7e3da\", glow: \"#ffa25a\" }",
+        "description": "Cap colours, legends and the LED light that bleeds from beneath."
+      },
+      {
+        "name": "demo",
+        "type": "boolean",
+        "default": "true",
+        "description": "Press ⌘K once by itself the first time the caps come into view."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Classes for the root, which fills its parent."
       }
     ],
     "added": "2026-10-09"

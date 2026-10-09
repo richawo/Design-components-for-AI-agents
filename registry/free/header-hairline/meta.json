@@ -5,23 +5,85 @@
   "platform": "web",
   "category": "headers",
   "description": "A Geist-calibre site header: transparent at rest, a hairline and blur fade in on scroll, and one hover highlight that stretches as it glides between links.",
-  "tags": ["header", "navbar", "navigation", "sticky", "hover highlight", "mobile menu", "command k", "dark"],
-  "dependencies": ["motion"],
+  "tags": [
+    "header",
+    "navbar",
+    "navigation",
+    "sticky",
+    "hover highlight",
+    "mobile menu",
+    "command k",
+    "dark"
+  ],
+  "dependencies": [
+    "motion"
+  ],
   "theme": "dark",
   "previewHeight": 640,
   "usage": "import { HeaderHairline } from \"@/components/design-for-ai/header-hairline\";\n\n<HeaderHairline\n  brand={{ name: \"Acme\", href: \"/\" }}\n  links={[{ label: \"Docs\", href: \"/docs\" }, { label: \"Pricing\", href: \"/pricing\" }]}\n  activeIndex={0}\n  onSearch={() => setPaletteOpen(true)}\n  cta={{ label: \"Get started\", href: \"/signup\" }}\n/>",
   "props": [
-    { "name": "brand", "type": "{ name: string; href: string }", "default": "{ name: \"Kestrel\", href: \"#\" }", "description": "Wordmark text and home link." },
-    { "name": "links", "type": "{ label: string; href: string }[]", "description": "Centre links. Five read best on desktop." },
-    { "name": "activeIndex", "type": "number", "description": "Controlled current route: white text, a 4px dot and aria-current. Omit to let the header track clicks." },
-    { "name": "defaultActiveIndex", "type": "number", "default": "1", "description": "Starting route when uncontrolled." },
-    { "name": "onNavigate", "type": "(index: number, link) => void", "description": "Called when a link is chosen." },
-    { "name": "searchLabel", "type": "string", "default": "\"Search docs\"", "description": "Search chip text, shown from 1152px of container width." },
-    { "name": "onSearch", "type": "() => void", "description": "Fired by the chip and by ⌘K / Ctrl K anywhere on the page. Open your command palette here." },
-    { "name": "signIn", "type": "{ label: string; href: string }", "default": "{ label: \"Sign in\", href: \"#login\" }", "description": "Quiet text link on the right." },
-    { "name": "cta", "type": "{ label: string; href: string }", "default": "{ label: \"Start deploying\", href: \"#signup\" }", "description": "White primary button." },
-    { "name": "condenseAt", "type": "number", "default": "8", "description": "Scroll distance in px before the hairline and blur appear and the bar condenses from 64 to 56px." },
-    { "name": "className", "type": "string", "default": "\"\"", "description": "Extra classes on the header element." }
+    {
+      "name": "brand",
+      "type": "{ name: string; href: string }",
+      "default": "{ name: \"Kestrel\", href: \"#\" }",
+      "description": "Wordmark text and home link."
+    },
+    {
+      "name": "links",
+      "type": "{ label: string; href: string }[]",
+      "description": "Centre links. Five read best on desktop."
+    },
+    {
+      "name": "activeIndex",
+      "type": "number",
+      "description": "Controlled current route: white text, a 4px dot and aria-current. Omit to let the header track clicks."
+    },
+    {
+      "name": "defaultActiveIndex",
+      "type": "number",
+      "default": "1",
+      "description": "Starting route when uncontrolled."
+    },
+    {
+      "name": "onNavigate",
+      "type": "(index: number, link) => void",
+      "description": "Called when a link is chosen."
+    },
+    {
+      "name": "searchLabel",
+      "type": "string",
+      "default": "\"Search docs\"",
+      "description": "Search chip text, shown from 1200px of container width."
+    },
+    {
+      "name": "onSearch",
+      "type": "() => void",
+      "description": "Fired by the chip and by ⌘K / Ctrl K anywhere on the page. Open your command palette here."
+    },
+    {
+      "name": "signIn",
+      "type": "{ label: string; href: string }",
+      "default": "{ label: \"Sign in\", href: \"#login\" }",
+      "description": "Quiet text link on the right."
+    },
+    {
+      "name": "cta",
+      "type": "{ label: string; href: string }",
+      "default": "{ label: \"Start deploying\", href: \"#signup\" }",
+      "description": "White primary button."
+    },
+    {
+      "name": "condenseAt",
+      "type": "number",
+      "default": "8",
+      "description": "Scroll distance in px before the hairline and blur appear and the bar condenses from 64 to 56px."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "\"\"",
+      "description": "Extra classes on the header element."
+    }
   ],
   "added": "2026-10-09"
 }
