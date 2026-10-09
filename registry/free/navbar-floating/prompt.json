@@ -1,11 +1,11 @@
 {
   "component": "NavbarFloating",
-  "intent": "Floating glass pill nav for dark sites: sliding hover pill, condenses on scroll, full-screen mobile sheet with focus trap.",
+  "intent": "Monochrome floating glass pill nav for dark sites: unfolds on first view, sliding hover pill, tucks in on scroll, full-screen mobile sheet with focus trap.",
   "platform": "web",
   "stack": {
     "framework": "React 19",
     "styling": "Tailwind CSS v4",
-    "animation": "motion/react (useScroll, useMotionValueEvent, LayoutGroup, AnimatePresence)",
+    "animation": "motion/react (useScroll, useMotionValueEvent, useInView, LayoutGroup, AnimatePresence, variants with custom delays)",
     "fonts": "font-display (Geist), font-sans, font-mono"
   },
   "layout": {
@@ -14,41 +14,31 @@
     "sheet": "fixed inset-0, pt-28, links → CTA → contact → socials"
   },
   "typography": {
-    "wordmark": {
-      "size": "17px",
-      "weight": 600,
-      "tracking": "-0.03em"
-    },
-    "links": {
-      "size": "14px",
-      "color": "white/70 → white"
-    },
-    "sheetLinks": {
-      "size": "clamp(2.25rem, 11vw, 3.5rem)",
-      "weight": 600,
-      "tracking": "-0.05em"
-    },
-    "meta": {
-      "font": "mono",
-      "size": "9.5-11px"
-    }
+    "wordmark": { "size": "17px", "weight": 600, "tracking": "-0.03em" },
+    "links": { "size": "14px", "color": "white/70 → white" },
+    "sheetLinks": { "size": "clamp(2.25rem, 11vw, 3.5rem)", "weight": 600, "tracking": "-0.05em" },
+    "meta": { "font": "mono", "size": "9.5-12px", "numerals": "tabular" }
   },
   "color": {
-    "bar": "#0c0c0e at 70% + backdrop blur",
+    "approach": "monochrome: black, white and greys only; tokens in one COLOR/SHADOW object",
+    "page": "#050506",
+    "bar": "rgba(12,12,14,0.72) + backdrop blur",
     "ring": "white/8%",
     "hoverPill": "white/8%",
-    "cta": "white with black text",
-    "sheet": "#050506 + radial white 8% at top",
-    "logoTile": "linear #ffffff → #a1a1aa"
+    "cta": "white with black text, hover #ececee, no glow",
+    "sheet": "#050506 + radial white 6% at top",
+    "logoTile": "linear #ffffff → #a1a1aa, inset light/shade, no glow"
   },
   "motion": {
-    "hoverPill": "layoutId spring 500/40",
-    "condense": "maxWidth + padding spring 380/36 after 80px",
-    "wordmark": "width → 0 + fade",
-    "sheet": "clipPath inset(0 0 100% 0) → inset(0) 0.6s",
-    "sheetLinks": "y 100% → 0, 60ms stagger",
-    "reducedMotion": "instant/fade only",
-    "press": "links and buttons press to 0.96; CTA deepens glow on hover, arrow nudges 3px; menu label rolls over 260ms"
+    "tokens": "ease-out cubic-bezier(0.22,1,0.36,1); spring.ui 500/40",
+    "entrance": "pill: opacity 300ms, y -10 → 0 500ms, max-width 640 → 1200 tween 650ms; logo at 100ms, links from 160ms 50ms apart, action cluster at 420ms; each block opacity + y 8px + blur 6px → 0 over 450ms",
+    "activeUnderline": "scaleX 0 → 1, 400ms, after its link lands",
+    "hoverPill": "layoutId spring.ui; fades out 150ms ease-in",
+    "condense": "max-width + padding on spring.ui after 80px; wordmark width → 0 + fade",
+    "sheet": "clipPath inset(0 0 100% 0) → inset(0) 600ms; links rise from masks 60ms apart from 180ms; CTA, contact columns, socials rise from blur 60ms apart from 420ms",
+    "demo": "changelog blocks stagger 70ms after the bar; entries reveal once at 25% visibility, waiting for the page intro when already on screen",
+    "reducedMotion": "150ms fades only; no unfold, no springs, sheet fades",
+    "press": "links and buttons 0.96; CTA arrow nudges 3px; menu label rolls 260ms"
   },
   "responsive": {
     "mobile": "Menu pill + sheet; links and CTA hidden",
@@ -60,23 +50,24 @@
     "menu button aria-expanded + aria-controls",
     "dialog aria-modal with Tab trap",
     "Esc closes and restores focus",
-    "scroll lock while open"
+    "scroll lock while open",
+    "reduced motion: fades only"
   ],
   "content": {
     "brand": "Meridian",
-    "links": [
-      "Product",
-      "Customers (1.2k)",
-      "Pricing",
-      "Changelog"
-    ],
-    "cta": "Start free"
+    "links": ["Product", "Customers (1.2k)", "Pricing", "Changelog"],
+    "cta": "Start free",
+    "demoPage": "Changelog: 'Small releases, every week.' + v4.12–v4.9 entries"
   },
   "avoid": [
+    "coloured glow fields or a hue per card",
+    "gradient text",
+    "glow behind the CTA or logo",
     "saturated full-width bars",
-    "pink or neon accents",
     "thick borders",
     "icon-font hamburgers",
-    "edge-to-edge desktop bar"
+    "edge-to-edge desktop bar",
+    "filter/transform on an ancestor of the fixed sheet",
+    "a fake landing page behind the bar"
   ]
 }

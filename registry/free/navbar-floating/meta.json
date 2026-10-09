@@ -4,7 +4,7 @@
   "tier": "free",
   "platform": "web",
   "category": "headers",
-  "description": "A floating glass pill navbar with a sliding hover pill, a scroll-condensing width and a full-screen mobile sheet with a proper focus trap.",
+  "description": "A floating glass pill navbar that unfolds on load, tucks in as you scroll, slides a hover pill between links and opens a full-screen mobile sheet.",
   "tags": [
     "navbar",
     "navigation",
@@ -12,7 +12,9 @@
     "glass",
     "sticky",
     "mobile menu",
-    "dark"
+    "scroll condense",
+    "dark",
+    "monochrome"
   ],
   "dependencies": [
     "motion"
@@ -35,12 +37,12 @@
       "name": "activeIndex",
       "type": "number",
       "default": "0",
-      "description": "Current page link: underline and aria-current."
+      "description": "Current page link: an underline that draws in, plus aria-current."
     },
     {
       "name": "cta",
       "type": "{ label: string; href: string }",
-      "description": "White call-to-action pill."
+      "description": "White call-to-action pill; lands last in the entrance."
     },
     {
       "name": "contact",
