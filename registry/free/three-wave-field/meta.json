@@ -4,29 +4,30 @@
   "tier": "free",
   "platform": "web",
   "category": "three-d",
-  "description": "A Three.js field of points rolling toward the viewer in long noise swells, like contour lines of the sea. The pointer lifts the surface and a click drops a ripple.",
+  "description": "A Three.js field of grey points rolling toward the viewer in noise swells. It rises from flat on first view; the pointer lifts the sea and a click drops an accent ripple.",
   "tags": [
     "three.js",
     "webgl",
     "3d",
     "waves",
     "particles",
-    "hero",
     "background",
-    "shader"
+    "shader",
+    "monochrome"
   ],
   "dependencies": [
-    "three"
+    "three",
+    "motion"
   ],
   "theme": "dark",
   "previewHeight": 760,
-  "usage": "import { ThreeWaveField } from \"@/components/design-for-ai/three-wave-field\";\n\n<section className=\"relative isolate min-h-[720px] bg-black\">\n  <div className=\"absolute inset-0 -z-10\">\n    <ThreeWaveField colors={[\"#e6f0ff\", \"#4cc3ff\", \"#0b2440\"]} amplitude={0.8} />\n  </div>\n  {/* hero copy */}\n</section>",
+  "usage": "import { ThreeWaveField } from \"@/components/design-for-ai/three-wave-field\";\n\n<div className=\"relative h-[640px] bg-black\">\n  <div className=\"absolute inset-0\">\n    <ThreeWaveField accent=\"#4cc3ff\" amplitude={0.8} />\n  </div>\n</div>",
   "props": [
     {
-      "name": "colors",
-      "type": "[string, string, string]",
-      "default": "[\"#e9e4dc\", \"#ff7a45\", \"#5b1a2e\"]",
-      "description": "Base dot colour, crest highlight and the deepest trough."
+      "name": "accent",
+      "type": "string",
+      "default": "\"#ff7a45\"",
+      "description": "The one colour in the field: the mound under the pointer and the ring a click or tap drops. Everything else is grey."
     },
     {
       "name": "amplitude",

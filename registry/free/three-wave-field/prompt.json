@@ -1,66 +1,66 @@
 {
   "component": "ThreeWaveField",
-  "intent": "A field of light points rolling toward the viewer in long swells: a calm, expensive-looking hero background that responds to the pointer without ever competing with the copy.",
+  "intent": "A field of grey points rolling toward the viewer in long swells, like contour lines of the sea: one monochrome 3D object on black whose only colour appears where the visitor touches the water.",
   "platform": "web",
   "stack": {
     "framework": "React 19",
     "styling": "Tailwind CSS v4",
-    "3d": "three (plain Three.js, one Points mesh, custom ShaderMaterial with 2D simplex noise)"
+    "3d": "three (plain Three.js, one Points mesh, custom ShaderMaterial with 2D simplex noise)",
+    "motion": "motion/react for the demo caption (variants, motion values for count-ups)"
   },
   "layout": {
-    "component": "fills its parent (absolute inset-0 behind a hero works best)",
-    "field": "a grid 18 units wide and 14 deep, dense along x and spaced along z so it reads as contour lines of swell: 380×80 points on desktop, 200×96 under 640px",
-    "camera": "PerspectiveCamera fov 42 (58 on portrait boxes) at (0, 1.2, 5.2) looking at (0, 0.75, −3), so the horizon sits just below the middle of the frame",
-    "demo": "centred hero: mono eyebrow with an accent dot, display headline with a white/45 second clause, body, two pill buttons; a black-to-transparent gradient over the top half keeps the copy clean; a faint warm radial wash sits behind the horizon"
+    "component": "fills its parent (absolute inset-0 in a sized box)",
+    "field": "a grid 18 units wide and 14 deep, dense along x and spaced along z so it reads as contour lines: 380×80 points on desktop, 200×96 under 640px",
+    "camera": "PerspectiveCamera at (0, 1.45, 5.2); landscape fov 42 looking at (0, −0.4, −3), portrait fov 58 looking at (0, −1.1, −3), so the horizon sits in the upper third",
+    "demo": "black 760px stage with @container; a buoy readout bottom-left over a 224px black-to-transparent gradient (eyebrow + three readings), hint bottom-right, stacked under 672px; no headline or buttons"
   },
   "typography": {
-    "headline": {
-      "font": "display (Geist)",
-      "weight": 600,
-      "size": "clamp(2.75rem, 1.6rem + 4.6vw, 5.75rem)",
-      "tracking": "-0.055em",
-      "leading": 0.98
-    },
-    "body": "16–17px, white/60, max 46ch",
-    "hint": "mono 10.5px uppercase tracking 0.18em white/40 in a black/60 pill"
+    "eyebrow": "mono 11px uppercase tracking 0.2em white/45",
+    "readingLabel": "mono 10.5px uppercase tracking 0.18em white/40",
+    "readingValue": "display (Geist) 500, clamp(1.5rem, 1.2rem + 1.4cqi, 2.25rem), tracking −0.04em, tabular numerals; unit at 0.55em white/45 (° sits tight at full size)",
+    "hint": "mono 10.5px uppercase tracking 0.18em white/35, text-balance"
   },
   "color": {
-    "base": "#e9e4dc warm white",
-    "crest": "#ff7a45, blended in as height rises from 0.04 to 0.42",
-    "trough": "#5b1a2e, a deep warm shadow in the lowest troughs",
+    "base": "#c2c2c2 grey points",
+    "crest": "#ffffff, blended in as height rises from 0.04 to 0.42",
+    "trough": "#333333 in the lowest troughs",
+    "accent": "prop, default #ff7a45: mixed in only by the pointer mound and the dropped ring",
     "blending": "additive, depthWrite off, so dense crests bloom naturally",
-    "fade": "fog between depth 5 and 16, a near-camera fade, a 45%→100% spotlight down the centre, and soft left/right edges"
+    "fade": "fog between depth 5 and 16, a near-camera fade, a 45%→100% spotlight down the centre, soft left/right edges",
+    "stage": "pure black; no radial glow"
   },
   "motion": {
     "waves": "two sine swells, a broad simplex noise drifting toward the viewer and a fine chop; speed multiplier prop",
-    "pointer": "the pointer is ray-cast onto the y=0 plane and lifts a Gaussian mound (0.38) that follows it with 0.08 lerp; strength eases in and out over about a second",
+    "pointer": "ray-cast onto the y=0 plane; a Gaussian mound (0.38) follows with 0.08 lerp per 60 fps frame, scaled by dt; strength eases in and out",
     "ripple": "pointerdown drops a ring that travels outward at 3.2 units/s and decays over about 3s",
-    "reducedMotion": "single static frame, no pointer response",
-    "entrance": "canvas fades in 900ms while amplitude rises from 0 over 1.6s ease-out",
-    "buttons": "white pill deepens its glow on hover; pills scale 0.97 on press"
+    "reveal": "uReveal 0→1 over 1.6s wall clock from first visibility; per row local = clamp(uReveal·1.6 − row·0.6), height × (1 − (1 − local)³), alpha × smoothstep(0, 0.4, local); the travelling front gets +35% white",
+    "caption": "eyebrow, readings and hint rise 12px from blur(8px) over 600ms, from 350ms, 60ms apart; figures count from 0 over 900ms with a 4px blur clearing",
+    "reducedMotion": "single still frame with the reveal complete, no pointer response; caption fades in ≤150ms, numbers set instantly"
   },
   "responsive": {
-    "density": "fewer points under 640px, and the field starts 1.5 units further from the camera so near rows don't spread",
-    "lens": "wider fov on portrait boxes so the field still spans the frame",
-    "performance": "DPR capped at 2; one draw call; pauses offscreen and in hidden tabs"
+    "density": "fewer points under 640px, and the field starts 1.5 units further back",
+    "lens": "wider fov and a steeper look-down on portrait boxes",
+    "performance": "DPR capped at 2; one draw call; the rAF loop only runs while visible and the tab is shown"
   },
   "accessibility": [
-    "canvas is aria-hidden; the hero copy carries the meaning",
+    "canvas is aria-hidden; the readout carries the meaning in text",
+    "touch-action pan-y so the field never traps page scroll",
     "decorative motion stops under prefers-reduced-motion",
     "hint copy switches for touch devices",
-    "copy sits over a gradient so contrast never depends on the animation"
+    "the readout sits over a gradient so contrast never depends on the animation"
   ],
   "content": {
-    "brand": "Tidewater",
-    "headline": "Read the sea before it reaches the shore.",
-    "body": "2,400 buoys streaming swell height, period and direction every four seconds…"
+    "eyebrow": "Tidewater buoy 41 · Rockall Trough",
+    "readings": ["Swell 2.4 m", "Period 11.2 s", "Heading 248°"],
+    "hint": "Move to lift the swell · click to drop a stone"
   },
   "avoid": [
+    "coloured points at rest, tinted washes or a glow blob behind the horizon",
+    "a hero headline or buttons inside the component",
+    "a CSS opacity fade in place of the shader reveal",
     "wireframe meshes",
-    "rainbow or purple-blue gradients",
-    "fast, choppy motion",
     "bloom post-processing",
-    "letting the field run behind body copy without a gradient",
+    "fast, choppy motion",
     "OrbitControls"
   ]
 }
