@@ -1,23 +1,23 @@
 {
   "component": "CommandPalette",
-  "intent": "A precise ⌘K command palette on near-black: grouped results, fuzzy matches marked with a warm accent, full keyboard control and correct combobox ARIA.",
+  "intent": "A precise, monochrome ⌘K command palette: it opens in a staggered cascade over its own trigger, with fuzzy matches marked by a highlighter-pen accent, full keyboard control and correct combobox ARIA.",
   "platform": "web",
   "stack": {
     "framework": "React 19",
     "styling": "Tailwind CSS v4",
     "animation": "motion/react",
     "icons": "lucide-react",
-    "fonts": "font-sans (Geist) for labels and input, font-mono (Geist Mono) for group labels, hints, keycaps and footer, font-display (Geist, tight tracking) for the background app"
+    "fonts": "font-sans (Geist) for labels and input, font-mono (Geist Mono) for group labels, hints, keycaps and footer"
   },
   "layout": {
-    "section": "720px min-height, #09090b, with a demo app behind: 240px sidebar #0c0c0e (md+), 56px top bar with title and trigger, six issue rows",
-    "trigger": "40px field, white/3% with white/10 border and inset highlight, 288px wide from sm, search icon + 'Search or jump to…' + ⌘ K keycaps; icon and keycaps only on phones",
-    "scrim": "black at 55% with a 2px backdrop blur, click to close",
-    "palette": "max-w 640px, inset 12/24px, top 76/112px, solid #111113 (no glass), radius 16px, 1px ring white/9%, inset top highlight white/7%, shadow 0 24px 80px -12px black/90%",
-    "search": "60px row: 18px icon, borderless input, esc keycap (sm+)",
-    "results": "max-h min(400px, 100dvh - 240px); groups with mono labels, hairline between groups; rows ≥44px, radius 10px: 28px icon tile, label, hint, shortcut keycaps (sm+)",
-    "footer": "44px, white/2%: ↑↓ navigate, ↵ open, esc close; live result count right",
-    "keycap": "22px, radius 5px, 1px border white/10, white/4% fill with inset highlight, mono 11px white/60"
+    "root": "@container, relative; the caller gives it a height (the demo: max(720px, 100dvh) on #0a0a0b). Holds the trigger, the scrim, the palette and the toast; no fake app behind it.",
+    "trigger": "48px field centred 64px from the top (96px from a 672px container), max-w 640px: field fill, 1px line border, inset highlight, search icon + 'Search or jump to…' + ⌘ K keycaps",
+    "scrim": "covers the root: black at 55% (light: #f4f4f5 at 60%) with a 2px backdrop blur; click to close",
+    "palette": "opens over the trigger: max-w 640px, inset 12/24px, top 56/88px, solid panel (no glass), radius 16px, 1px line border, inset top highlight, shadow 0 24px 80px -12px black/90%",
+    "search": "60px row: 18px icon, borderless input, esc keycap (from a 512px container)",
+    "results": "max-h min(400px, 100dvh - 240px); groups with mono labels, a rule between groups; rows ≥44px, radius 10px: 28px icon tile, label, hint, shortcut keycaps (from 512px)",
+    "footer": "44px, ink at 2%: ↑↓ navigate, ↵ open, esc close; live result count right",
+    "keycap": "22px, radius 5px, 1px line border, field fill with inset highlight, mono 11px muted"
   },
   "typography": {
     "input": {
@@ -34,7 +34,7 @@
       "size": "10.5px",
       "case": "uppercase",
       "tracking": "0.14em",
-      "opacity": "white/45"
+      "opacity": "faint token"
     },
     "meta": {
       "font": "mono",
@@ -42,30 +42,29 @@
     }
   },
   "color": {
-    "text": "white: 75% rows, 100% selected, 45–55% metadata",
-    "surfaces": [
-      "#09090b",
-      "#0c0c0e",
-      "#111113"
-    ],
-    "selected": "white/6% row with a 3px #ff7a45 left marker; icon tile inverts to white with a black icon",
-    "highlight": "#ff7a45 at 25% behind matched characters, text #ffd3b8",
-    "accent": "#ff7a45 for empty-state underlines and the toast dot; nothing else is coloured",
-    "toast": "white pill, black text"
+    "palette": "PALETTE.dark / PALETTE.light written to --cp-* CSS variables; theme prop picks one",
+    "dark": "panel #111113, field #141416, line #232327, rule #1c1c1f, ink #f4f4f5, body #c4c4ca, muted #a1a1aa, faint #8a8a93, tile #1b1b1e, hover white/6%, press white/10%",
+    "light": "panel #ffffff, field #fafafa, line #e4e4e7, rule #efeff1, ink #18181b, body #3f3f46, muted #52525b, faint #71717a, tile #f1f1f3",
+    "selected": "hover-tint row with a 3px accent marker on its left edge; the icon tile inverts to ink with a panel-coloured icon",
+    "accent": "one prop, default #ff7a45: the selection marker, and the highlighter behind matched characters (accent at 30% via color-mix, text stays ink). Nothing else is coloured.",
+    "toast": "ink pill with panel-coloured text and a check"
   },
   "motion": {
-    "open": "y -10px, scale 0.98 → 1, opacity, 220ms, ease [0.2, 0.8, 0.2, 1]; exit y -6px",
-    "scrim": "fade 200ms",
-    "selection": "a single highlight and the accent marker glide between rows on a shared layoutId spring (600/44)",
-    "toast": "white pill rises 12px, holds 2.2s",
-    "reducedMotion": "opacity only; no marker travel",
-    "choose": "chosen row flashes (0.985 scale, brighter highlight) for 130ms before close",
-    "press": "rows 0.99, trigger 0.98; empty state fades up 6px"
+    "tokens": "EASE_OUT [0.22,1,0.36,1], EASE_IN [0.4,0,1,1], SPRING_UI 500/40; every duration lives in one MOTION object",
+    "firstView": "once 20% in view the trigger rises 10px out of an 8px blur (420ms); 160ms later the palette opens",
+    "open": "every open replays the cascade: panel from y −10px, scale 0.98 and an 8px blur (320ms, origin top); search row at 50ms; then each group label and row in reading order from a 6px rise and blur, 25ms apart from 100ms, capped at 10 so long lists never drag (360ms each); footer last. Whole open lands by ~800ms.",
+    "typing": "rows that appear as you type settle from a 3px blur in 180ms, without a stagger",
+    "exit": "y −6px, scale 0.985, 4px blur, 160ms ease-in; scrim fades",
+    "selection": "one highlight and the accent marker glide between rows on a shared layoutId (spring.ui)",
+    "choose": "the chosen row flashes (scale 0.985, press tint) for 130ms, then the palette closes and focus returns to the trigger",
+    "toast": "ink pill rises 12px out of a blur, holds 2.2s; every timer is cleared on re-schedule and unmount",
+    "reducedMotion": "150ms opacity fades only; no marker travel, no press delay",
+    "press": "rows 0.99, trigger 0.99, esc keycap 1px down; empty state's icon and two lines stagger in"
   },
   "responsive": {
-    "mobile": "palette 12px from edges, 76px from top; shortcuts and esc hidden; trigger collapses; footer drops 'esc close'",
-    "sm": "palette 112px from top, shortcuts and esc keycap visible, trigger 288px",
-    "md": "sidebar appears in the background app"
+    "narrow": "palette 12px from the edges, input 16px (no iOS zoom), keycaps and esc hidden",
+    "@lg (512px)": "palette 24px from the edges, input 17px, shortcuts and esc visible",
+    "@2xl (672px)": "trigger and palette sit lower (96/88px)"
   },
   "accessibility": [
     "palette is role=dialog with aria-label",
@@ -76,7 +75,6 @@
     "result count and empty state are polite live regions"
   ],
   "content": {
-    "workspace": "Northdesk",
     "groups": {
       "Navigation": [
         "Go to Inbox (G I)",
@@ -97,7 +95,12 @@
         "Q4 pricing page rewrite · Project",
         "Onboarding interviews, round 3 · Doc"
       ]
-    }
+    },
+    "trigger": "Search or jump to…",
+    "emptySuggestions": [
+      "invite",
+      "theme"
+    ]
   },
   "avoid": [
     "glass panel (the scrim may blur; the palette stays solid)",
@@ -105,6 +108,9 @@
     "sparkle 'Ask AI' rows",
     "bold-only match highlighting",
     "moving DOM focus into the list",
-    "tiny unlabeled icon rows"
+    "tiny unlabeled icon rows",
+    "a fake app or skeleton behind the palette",
+    "coloured icon tiles or a colour per group",
+    "the whole palette dropping in as one block"
   ]
 }

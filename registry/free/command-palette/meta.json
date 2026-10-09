@@ -4,20 +4,83 @@
   "tier": "free",
   "platform": "web",
   "category": "ai",
-  "description": "A ⌘K command palette with grouped results, fuzzy search with highlighter-pen matches, keyboard navigation, shortcut hints and proper combobox ARIA.",
-  "tags": ["command palette", "cmdk", "search", "keyboard", "combobox", "launcher", "shortcuts", "fuzzy search"],
-  "dependencies": ["motion", "lucide-react"],
+  "description": "A ⌘K command palette that opens in a staggered cascade: fuzzy search with highlighter-pen matches, a gliding selection, shortcut hints and combobox ARIA.",
+  "tags": [
+    "command palette",
+    "cmdk",
+    "search",
+    "keyboard",
+    "combobox",
+    "launcher",
+    "shortcuts",
+    "fuzzy search"
+  ],
+  "dependencies": [
+    "motion",
+    "lucide-react"
+  ],
   "theme": "dark",
   "previewHeight": 720,
-  "usage": "import { CommandPalette } from \"@/components/design-for-ai/command-palette\";\nimport { Inbox, Plus } from \"lucide-react\";\n\nexport default function App() {\n  return (\n    <CommandPalette\n      workspace=\"Fieldwork\"\n      groups={[\n        { id: \"nav\", label: \"Navigation\", items: [{ id: \"inbox\", label: \"Go to Inbox\", shortcut: [\"G\", \"I\"], icon: Inbox }] },\n        { id: \"do\", label: \"Actions\", items: [{ id: \"new\", label: \"New brief\", keywords: [\"create\"], icon: Plus }] },\n      ]}\n      onSelect={(item) => router.push(`/${item.id}`)}\n    />\n  );\n}",
+  "usage": "import { CommandPalette } from \"@/components/design-for-ai/command-palette\";\nimport { Inbox, Plus } from \"lucide-react\";\n\nexport default function App() {\n  return (\n    <CommandPalette\n      groups={[\n        { id: \"nav\", label: \"Navigation\", items: [{ id: \"inbox\", label: \"Go to Inbox\", shortcut: [\"G\", \"I\"], icon: Inbox }] },\n        { id: \"do\", label: \"Actions\", items: [{ id: \"new\", label: \"New brief\", keywords: [\"create\"], icon: Plus }] },\n      ]}\n      onSelect={(item) => router.push(`/${item.id}`)}\n    />\n  );\n}",
   "props": [
-    { "name": "groups", "type": "{ id: string; label: string; items: CommandItem[] }[]", "default": "Navigation, Actions, Recent", "description": "Result groups in order. Items take id, label, keywords, shortcut, hint and a lucide icon." },
-    { "name": "defaultOpen", "type": "boolean", "default": "true", "description": "Open on first render. ⌘K or Ctrl+K toggles it after that." },
-    { "name": "autoFocus", "type": "boolean", "default": "false", "description": "Focus the search field on first render. Later opens always focus it." },
-    { "name": "placeholder", "type": "string", "default": "\"Search or type a command…\"", "description": "Search field placeholder." },
-    { "name": "workspace", "type": "string", "default": "\"Northdesk\"", "description": "Name in the demo app drawn behind the palette." },
-    { "name": "onSelect", "type": "(item: CommandItem) => void", "description": "Called with the chosen item on Enter or click." },
-    { "name": "className", "type": "string", "description": "Extra classes on the outer section." }
+    {
+      "name": "groups",
+      "type": "{ id: string; label: string; items: CommandItem[] }[]",
+      "default": "Navigation, Actions, Recent",
+      "description": "Result groups in order. Items take id, label, keywords, shortcut, hint and a lucide icon."
+    },
+    {
+      "name": "defaultOpen",
+      "type": "boolean",
+      "default": "true",
+      "description": "Open once the trigger has landed on first view. ⌘K or Ctrl+K toggles it after that."
+    },
+    {
+      "name": "autoFocus",
+      "type": "boolean",
+      "default": "false",
+      "description": "Focus the search field on first render. Later opens always focus it."
+    },
+    {
+      "name": "placeholder",
+      "type": "string",
+      "default": "\"Search or type a command…\"",
+      "description": "Search field placeholder."
+    },
+    {
+      "name": "onSelect",
+      "type": "(item: CommandItem) => void",
+      "description": "Called with the chosen item on Enter or click."
+    },
+    {
+      "name": "triggerLabel",
+      "type": "string",
+      "default": "\"Search or jump to…\"",
+      "description": "Text on the ⌘K trigger field the palette opens over."
+    },
+    {
+      "name": "suggestions",
+      "type": "[string, string]",
+      "default": "[\"invite\", \"theme\"]",
+      "description": "Two queries offered in the empty state."
+    },
+    {
+      "name": "accent",
+      "type": "string",
+      "default": "\"#ff7a45\"",
+      "description": "The one accent: the selection marker and the highlighter behind matched letters."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Greyscale palette for the trigger, panel and scrim."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "description": "Extra classes on the root; give it a height (the scrim covers it)."
+    }
   ],
   "added": "2026-10-07"
 }

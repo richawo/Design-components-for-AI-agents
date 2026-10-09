@@ -1,24 +1,24 @@
 "use client";
 
-import { useCallback, useEffect, useId, useMemo, useRef, useState, type ComponentType, type KeyboardEvent, type ReactNode, type RefObject } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import {
-  ArrowRight,
-  CircleDot,
-  Clock,
-  FileText,
-  FolderKanban,
-  Inbox,
-  Link2,
-  Map as MapIcon,
-  Plus,
-  Search,
-  Settings,
-  Sun,
-  Timer,
-  UserPlus,
-  UserRound,
-} from "lucide-react";
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+  type ComponentType,
+  type CSSProperties,
+  type KeyboardEvent as ReactKeyboardEvent,
+  type ReactNode,
+  type RefObject,
+} from "react";
+import { AnimatePresence, motion, useInView, useReducedMotion } from "motion/react";
+import { ArrowRight, Check, CircleDot, FileText, FolderKanban, Inbox, Link2, Map as MapIcon, Plus, Search, Settings, Sun, Timer, UserPlus, UserRound } from "lucide-react";
+
+/* ------------------------------------------------------------------ */
+/* Types                                                                */
+/* ------------------------------------------------------------------ */
 
 type Icon = ComponentType<{ className?: string; "aria-hidden"?: boolean | "true" }>;
 
@@ -38,19 +38,96 @@ export type CommandGroup = { id: string; label: string; items: CommandItem[] };
 
 export type CommandPaletteProps = {
   groups?: CommandGroup[];
-  /** Open on first render. The demo opens by default. */
+  /** Open on first view. The demo opens by default. */
   defaultOpen?: boolean;
-  /** Focus the search field when the palette opens on first render. */
+  /** Focus the search field when the palette opens on first view. */
   autoFocus?: boolean;
   placeholder?: string;
-  /** Workspace name drawn in the demo app behind the palette. */
-  workspace?: string;
+  /** Text on the ⌘K trigger field. */
+  triggerLabel?: string;
+  /** Two queries offered when nothing matches. */
+  suggestions?: [string, string];
   /** Called with the chosen item. */
   onSelect?: (item: CommandItem) => void;
+  /** The one accent: the selection marker and the highlighter behind matched letters. */
+  accent?: string;
+  theme?: "dark" | "light";
   className?: string;
 };
 
-const defaultGroups: CommandGroup[] = [
+/* ------------------------------------------------------------------ */
+/* Tokens                                                               */
+/* ------------------------------------------------------------------ */
+
+const PALETTE = {
+  dark: {
+    panel: "#111113",
+    field: "#141416",
+    line: "#232327",
+    rule: "#1c1c1f",
+    ink: "#f4f4f5",
+    body: "#c4c4ca",
+    muted: "#a1a1aa",
+    faint: "#8a8a93",
+    tile: "#1b1b1e",
+    hover: "rgba(255,255,255,0.06)",
+    press: "rgba(255,255,255,0.1)",
+    scrim: "rgba(0,0,0,0.55)",
+    shadow: "inset 0 1px 0 rgba(255,255,255,0.06), 0 24px 80px -12px rgba(0,0,0,0.9)",
+  },
+  light: {
+    panel: "#ffffff",
+    field: "#fafafa",
+    line: "#e4e4e7",
+    rule: "#efeff1",
+    ink: "#18181b",
+    body: "#3f3f46",
+    muted: "#52525b",
+    faint: "#71717a",
+    tile: "#f1f1f3",
+    hover: "rgba(24,24,27,0.05)",
+    press: "rgba(24,24,27,0.09)",
+    scrim: "rgba(244,244,245,0.6)",
+    shadow: "0 1px 2px rgba(24,24,27,0.05), 0 24px 64px -16px rgba(24,24,27,0.28)",
+  },
+} as const;
+
+type Palette = Record<keyof (typeof PALETTE)["dark"], string>;
+
+const DEFAULT_ACCENT = "#ff7a45";
+
+/** The demo’s quiet backdrop; not part of the component. */
+const STAGE = "#0a0a0b";
+
+const EASE_OUT = [0.22, 1, 0.36, 1] as const;
+const EASE_IN = [0.4, 0, 1, 1] as const;
+const SPRING_UI = { type: "spring", stiffness: 500, damping: 40 } as const;
+
+/** One place for the choreography. Seconds unless noted. */
+const MOTION = {
+  rise: 10, // px
+  blur: 8, // px
+  block: 0.42,
+  openAt: 0.16, // the demo’s first open waits for the trigger to land
+  panel: 0.32, // the panel itself
+  step: 0.05, // the search row, just after the panel starts
+  rowsAt: 0.1, // first group label, once the search row is down
+  row: 0.025, // row to row while the palette opens
+  rowCap: 10, // rows past the fold share the last delay, so a long list never drags
+  rowBlock: 0.36,
+  footer: 0.08, // after the last row starts
+  settle: 0.18, // rows that appear while typing
+  exit: 0.16,
+  press: 130, // ms: the chosen row flashes before the palette closes
+  toastFor: 2200, // ms
+  fade: 0.15, // reduced motion
+} as const;
+
+/* ------------------------------------------------------------------ */
+/* Demo content: Northdesk, an issue tracker                            */
+/* ------------------------------------------------------------------ */
+
+const DEMO_GROUPS: CommandGroup[] = [
   {
     id: "nav",
     label: "Navigation",
@@ -85,15 +162,38 @@ const defaultGroups: CommandGroup[] = [
 ];
 
 /* ------------------------------------------------------------------ */
+/* Helpers                                                              */
+/* ------------------------------------------------------------------ */
+
+function cssVars(p: Palette, accent: string): CSSProperties {
+  const vars: Record<string, string> = { "--cp-accent": accent };
+  for (const [k, v] of Object.entries(p)) vars[`--cp-${k}`] = v;
+  return vars as CSSProperties;
+}
+
+/** Entrance props for a block: rises out of a blur. Reduced motion: a short fade. */
+function enter(play: boolean, delay: number, reduce: boolean, rise: number = MOTION.rise, duration: number = MOTION.block) {
+  if (reduce) return { initial: { opacity: 0 }, animate: { opacity: play ? 1 : 0 }, transition: { duration: MOTION.fade } };
+  return {
+    initial: { opacity: 0, y: rise, filter: `blur(${MOTION.blur}px)` },
+    animate: play ? { opacity: 1, y: 0, filter: "blur(0px)", transitionEnd: { filter: "none" } } : undefined,
+    transition: { duration, ease: EASE_OUT, delay },
+  };
+}
+
+const focusRing = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cp-ink)]";
+
+/* ------------------------------------------------------------------ */
 /* Fuzzy matching                                                       */
 /* ------------------------------------------------------------------ */
 
 type Match = { score: number; indices: number[] };
+type Result = { item: CommandItem; match: Match };
+type ResultGroup = CommandGroup & { results: Result[] };
 
 /**
  * Subsequence match: every query character must appear in order. Consecutive
- * runs and word starts score higher, so "gi" ranks "Go to Inbox" above
- * "Log time".
+ * runs and word starts score higher, so "gi" ranks "Go to Inbox" above "Log time".
  */
 function fuzzy(query: string, text: string): Match | null {
   const q = query.toLowerCase().replace(/\s+/g, "");
@@ -101,16 +201,16 @@ function fuzzy(query: string, text: string): Match | null {
   if (!q) return { score: 0, indices: [] };
   const indices: number[] = [];
   let score = 0;
-  let ti = 0;
+  let from = 0;
   let prev = -2;
   for (const ch of q) {
-    const found = t.indexOf(ch, ti);
+    const found = t.indexOf(ch, from);
     if (found === -1) return null;
     const wordStart = found === 0 || /[\s\-_/,.]/.test(t[found - 1]);
-    score += 1 + (found === prev + 1 ? 4 : 0) + (wordStart ? 3 : 0) - Math.min(found - ti, 6) * 0.15;
+    score += 1 + (found === prev + 1 ? 4 : 0) + (wordStart ? 3 : 0) - Math.min(found - from, 6) * 0.15;
     indices.push(found);
     prev = found;
-    ti = found + 1;
+    from = found + 1;
   }
   return { score: score - t.length * 0.01, indices };
 }
@@ -126,172 +226,383 @@ function matchItem(query: string, item: CommandItem): Match | null {
   return null;
 }
 
+/** Groups with their matching items, best first; empty groups drop out. */
+function useCommandSearch(groups: CommandGroup[], query: string) {
+  return useMemo(() => {
+    const q = query.trim();
+    const results: ResultGroup[] = groups
+      .map((g) => {
+        const items = g.items.map((item) => ({ item, match: matchItem(q, item) })).filter((r): r is Result => r.match !== null);
+        if (q) items.sort((a, b) => b.match.score - a.match.score);
+        return { ...g, results: items };
+      })
+      .filter((g) => g.results.length > 0);
+    return { results, flat: results.flatMap((g) => g.results) };
+  }, [groups, query]);
+}
+
+/* ------------------------------------------------------------------ */
+/* Hooks                                                                */
+/* ------------------------------------------------------------------ */
+
+/** ⌘K / Ctrl+K from anywhere, without re-binding on every render. */
+function useHotkey(key: string, run: () => void) {
+  const latest = useRef(run);
+  useEffect(() => {
+    latest.current = run;
+  }, [run]);
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === key) {
+        e.preventDefault();
+        latest.current();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [key]);
+}
+
+/** A setTimeout that is always cleared: on re-schedule and on unmount. */
+function useTimer() {
+  const id = useRef<number | undefined>(undefined);
+  useEffect(() => () => window.clearTimeout(id.current), []);
+  return useCallback((fn: () => void, ms: number) => {
+    window.clearTimeout(id.current);
+    id.current = window.setTimeout(fn, ms);
+  }, []);
+}
+
+/* ------------------------------------------------------------------ */
+/* Pieces                                                               */
+/* ------------------------------------------------------------------ */
+
+function Kbd({ children }: { children: ReactNode }) {
+  return (
+    <kbd className="inline-flex h-[22px] min-w-[22px] items-center justify-center rounded-[5px] border border-[var(--cp-line)] bg-[var(--cp-field)] px-1.5 font-mono text-[11px] leading-none text-[var(--cp-muted)] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+      {children}
+    </kbd>
+  );
+}
+
+/** Matched letters sit on a highlighter-pen stroke of the accent. */
 function Highlight({ text, indices }: { text: string; indices: number[] }) {
   if (!indices.length) return <>{text}</>;
-  const set = new Set(indices);
-  const out: ReactNode[] = [];
-  let run = "";
-  let runHit = false;
-  const flush = (k: number) => {
-    if (!run) return;
-    out.push(
-      runHit ? (
-        <mark key={k} className="rounded-[3px] bg-[#ff7a45]/25 px-[1px] text-[#ffd3b8] [box-decoration-break:clone]">
-          {run}
-        </mark>
-      ) : (
-        <span key={k}>{run}</span>
-      ),
-    );
-    run = "";
-  };
+  const hits = new Set(indices);
+  const runs: { text: string; hit: boolean }[] = [];
   for (let i = 0; i < text.length; i++) {
-    const hit = set.has(i);
-    if (hit !== runHit) {
-      flush(i);
-      runHit = hit;
-    }
-    run += text[i];
+    const hit = hits.has(i);
+    const last = runs[runs.length - 1];
+    if (last && last.hit === hit) last.text += text[i];
+    else runs.push({ text: text[i], hit });
   }
-  flush(text.length);
-  return <>{out}</>;
+  return (
+    <>
+      {runs.map((r, i) =>
+        r.hit ? (
+          <mark key={i} className="rounded-[3px] bg-[color-mix(in_srgb,var(--cp-accent)_30%,transparent)] px-[1px] text-[var(--cp-ink)] [box-decoration-break:clone]">
+            {r.text}
+          </mark>
+        ) : (
+          <span key={i}>{r.text}</span>
+        ),
+      )}
+    </>
+  );
+}
+
+function Trigger({ label, triggerRef, onOpen, play, reduce }: { label: string; triggerRef: RefObject<HTMLButtonElement | null>; onOpen: () => void; play: boolean; reduce: boolean }) {
+  return (
+    <motion.button
+      ref={triggerRef}
+      type="button"
+      onClick={onOpen}
+      aria-label="Open command palette"
+      aria-keyshortcuts="Meta+K Control+K"
+      {...enter(play, 0, reduce)}
+      className={`mx-auto flex h-12 w-full max-w-[640px] items-center gap-3 rounded-[12px] border border-[var(--cp-line)] bg-[var(--cp-field)] pl-4 pr-2 text-[14.5px] text-[var(--cp-faint)] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition-[color,border-color,transform] duration-150 hover:border-[color-mix(in_srgb,var(--cp-ink)_22%,transparent)] hover:text-[var(--cp-muted)] active:scale-[0.99] ${focusRing}`}
+    >
+      <Search className="size-4 shrink-0" aria-hidden="true" />
+      <span className="min-w-0 flex-1 truncate text-left">{label}</span>
+      <span className="flex items-center gap-1">
+        <Kbd>⌘</Kbd>
+        <Kbd>K</Kbd>
+      </span>
+    </motion.button>
+  );
+}
+
+function ResultRow({
+  result,
+  selected,
+  pressed,
+  optionId,
+  layoutPrefix,
+  delay,
+  staggered,
+  reduce,
+  onHover,
+  onChoose,
+}: {
+  result: Result;
+  selected: boolean;
+  pressed: boolean;
+  optionId: string;
+  layoutPrefix: string;
+  delay: number;
+  /** True while the palette is opening: rows stagger in. Rows that appear later, as you type, just settle. */
+  staggered: boolean;
+  reduce: boolean;
+  onHover: () => void;
+  onChoose: () => void;
+}) {
+  const { item, match } = result;
+  const ItemIcon = item.icon ?? ArrowRight;
+  const entrance = staggered
+    ? enter(true, delay, reduce, 6, MOTION.rowBlock)
+    : { initial: reduce ? { opacity: 0 } : { opacity: 0, filter: "blur(3px)" }, animate: { opacity: 1, filter: "blur(0px)" }, transition: { duration: reduce ? MOTION.fade : MOTION.settle, ease: EASE_OUT } };
+  return (
+    <motion.div
+      {...entrance}
+      id={optionId}
+      data-id={item.id}
+      role="option"
+      aria-selected={selected}
+      onMouseMove={() => !selected && onHover()}
+      onMouseDown={(e) => e.preventDefault()}
+      onClick={onChoose}
+      className={`relative isolate flex min-h-11 cursor-pointer items-center gap-3 rounded-[10px] px-3 py-1.5 text-[14.5px] transition-[color,scale] duration-100 active:scale-[0.99] ${selected ? "text-[var(--cp-ink)]" : "text-[var(--cp-body)]"} ${pressed ? "scale-[0.985]" : ""}`}
+    >
+      {/* One highlight and one marker glide between rows, rather than each row lighting up. */}
+      {selected ? (
+        <>
+          <motion.span
+            layoutId={`${layoutPrefix}-hl`}
+            transition={reduce ? { duration: 0 } : SPRING_UI}
+            className={`absolute inset-0 -z-10 rounded-[10px] transition-colors duration-100 ${pressed ? "bg-[var(--cp-press)]" : "bg-[var(--cp-hover)]"}`}
+          />
+          <motion.span layoutId={`${layoutPrefix}-marker`} transition={reduce ? { duration: 0 } : SPRING_UI} className="absolute inset-y-2.5 left-0 w-[3px] rounded-full bg-[var(--cp-accent)]" />
+        </>
+      ) : null}
+      <span
+        className={`flex size-7 shrink-0 items-center justify-center rounded-[7px] transition-colors duration-100 ${selected ? "bg-[var(--cp-ink)] text-[var(--cp-panel)]" : "bg-[var(--cp-tile)] text-[var(--cp-faint)]"}`}
+      >
+        <ItemIcon className="size-[15px]" aria-hidden="true" />
+      </span>
+      <span className="min-w-0 flex-1 truncate">
+        <Highlight text={item.label} indices={match.indices} />
+      </span>
+      {item.hint ? <span className="shrink-0 font-mono text-[11px] text-[var(--cp-faint)]">{item.hint}</span> : null}
+      {item.shortcut ? (
+        <span className="hidden shrink-0 items-center gap-1 @lg:flex">
+          {item.shortcut.map((k, i) => (
+            <Kbd key={i}>{k}</Kbd>
+          ))}
+        </span>
+      ) : null}
+    </motion.div>
+  );
+}
+
+function EmptyState({ query, suggestions, onSuggest, reduce }: { query: string; suggestions: [string, string]; onSuggest: (q: string) => void; reduce: boolean }) {
+  const suggestion = (q: string) => (
+    <button
+      type="button"
+      onClick={() => onSuggest(q)}
+      className={`rounded-[3px] font-medium text-[var(--cp-ink)] underline decoration-[var(--cp-faint)] decoration-2 underline-offset-[3px] transition-colors duration-150 hover:decoration-[var(--cp-ink)] ${focusRing}`}
+    >
+      {q}
+    </button>
+  );
+  return (
+    <div role="status" className="flex flex-col items-center px-6 py-12 text-center">
+      <motion.span {...enter(true, 0, reduce, 6)} aria-hidden="true" className="mb-4 flex size-11 items-center justify-center rounded-full border border-dashed border-[var(--cp-line)] text-[var(--cp-faint)]">
+        <Search className="size-[18px]" />
+      </motion.span>
+      <motion.p {...enter(true, MOTION.step, reduce, 6)} className="text-[15px] font-medium text-[var(--cp-ink)]">
+        Nothing matches “{query.trim()}”
+      </motion.p>
+      <motion.p {...enter(true, MOTION.step * 2, reduce, 6)} className="mt-1 max-w-[36ch] text-[13.5px] leading-relaxed text-[var(--cp-muted)]">
+        Try a shorter word, or something like {suggestion(suggestions[0])} or {suggestion(suggestions[1])}.
+      </motion.p>
+    </div>
+  );
+}
+
+function Footer({ count, delay, reduce }: { count: number; delay: number; reduce: boolean }) {
+  return (
+    <motion.div
+      {...enter(true, delay, reduce, 4)}
+      className="flex h-11 items-center justify-between gap-4 border-t border-[var(--cp-line)] bg-[color-mix(in_srgb,var(--cp-ink)_2%,transparent)] px-4 font-mono text-[11px] text-[var(--cp-faint)] @lg:px-5"
+    >
+      <div className="flex items-center gap-4">
+        <span className="flex items-center gap-1.5">
+          <Kbd>↑</Kbd>
+          <Kbd>↓</Kbd>
+          <span className="ml-0.5">navigate</span>
+        </span>
+        <span className="flex items-center gap-1.5">
+          <Kbd>↵</Kbd>
+          <span className="ml-0.5">open</span>
+        </span>
+        <span className="hidden items-center gap-1.5 @lg:flex">
+          <Kbd>esc</Kbd>
+          <span className="ml-0.5">close</span>
+        </span>
+      </div>
+      <span className="tabular-nums" aria-live="polite">
+        {count} {count === 1 ? "result" : "results"}
+      </span>
+    </motion.div>
+  );
+}
+
+function Toast({ text, reduce }: { text: string; reduce: boolean }) {
+  return (
+    <motion.div
+      role="status"
+      initial={reduce ? { opacity: 0 } : { opacity: 0, y: 12, filter: "blur(6px)" }}
+      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      exit={reduce ? { opacity: 0 } : { opacity: 0, y: 8, filter: "blur(4px)", transition: { duration: MOTION.exit, ease: EASE_IN } }}
+      transition={{ duration: reduce ? MOTION.fade : 0.3, ease: EASE_OUT }}
+      className="absolute bottom-6 left-1/2 z-30 flex -translate-x-1/2 items-center gap-2.5 whitespace-nowrap rounded-full bg-[var(--cp-ink)] py-2.5 pl-3 pr-4 text-[13.5px] text-[var(--cp-panel)] shadow-[0_12px_40px_-12px_rgba(0,0,0,0.6)]"
+    >
+      <Check className="size-3.5" strokeWidth={2.5} aria-hidden="true" />
+      Ran “{text}”
+      <span className="font-mono text-[11px] opacity-55">⌘K to reopen</span>
+    </motion.div>
+  );
 }
 
 /* ------------------------------------------------------------------ */
 /* Component                                                            */
 /* ------------------------------------------------------------------ */
 
-const ease = [0.22, 1, 0.36, 1] as const;
-
 export function CommandPalette({
-  groups = defaultGroups,
+  groups = DEMO_GROUPS,
   defaultOpen = true,
   autoFocus = false,
   placeholder = "Search or type a command…",
-  workspace = "Northdesk",
+  triggerLabel = "Search or jump to…",
+  suggestions = ["invite", "theme"],
   onSelect,
+  accent = DEFAULT_ACCENT,
+  theme = "dark",
   className = "",
 }: CommandPaletteProps) {
-  const reduce = useReducedMotion();
-  const [open, setOpen] = useState(defaultOpen);
-  const [query, setQuery] = useState("");
-  const [active, setActive] = useState(0);
-  const [toast, setToast] = useState<string | null>(null);
-  // The chosen row flashes before the palette closes, so the choice registers.
-  const [pressed, setPressed] = useState<string | null>(null);
+  const reduce = useReducedMotion() ?? false;
+  const uid = useId().replace(/[^a-zA-Z0-9_-]/g, "");
+  const root = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLInputElement>(null);
   const list = useRef<HTMLDivElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
-  const firstOpen = useRef(true);
-  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const uid = useId();
-  const listId = `${uid}-list`;
+  const play = useInView(root, { once: true, amount: 0.2 });
+
+  const [open, setOpen] = useState(false);
+  const [opens, setOpens] = useState(0); // each open replays the stagger
+  const [staggering, setStaggering] = useState(false);
+  const [query, setQuery] = useState("");
+  const [active, setActive] = useState(0);
+  const [pressed, setPressed] = useState<string | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
+  const firstView = useRef(true);
+  const later = useTimer();
+  const toastTimer = useTimer();
+  const staggerTimer = useTimer();
+
+  const { results, flat } = useCommandSearch(groups, query);
+  const activeItem = flat[Math.min(active, flat.length - 1)]?.item;
   const optionId = (id: string) => `${uid}-opt-${id}`;
 
-  const results = useMemo(() => {
-    const q = query.trim();
-    return groups
-      .map((g) => {
-        const items = g.items
-          .map((item) => ({ item, match: matchItem(q, item) }))
-          .filter((r): r is { item: CommandItem; match: Match } => r.match !== null);
-        if (q) items.sort((a, b) => b.match.score - a.match.score);
-        return { ...g, results: items };
-      })
-      .filter((g) => g.results.length > 0);
-  }, [groups, query]);
-
-  const flat = useMemo(() => results.flatMap((g) => g.results), [results]);
-  const activeItem = flat[Math.min(active, flat.length - 1)]?.item;
-
-  useEffect(() => setActive(0), [query]);
-
-  // Focus the field whenever the palette opens (but not on page load unless asked).
-  useEffect(() => {
-    if (!open) return;
-    if (firstOpen.current && !autoFocus) {
-      firstOpen.current = false;
-      return;
-    }
-    firstOpen.current = false;
-    input.current?.focus({ preventScroll: true });
-  }, [open, autoFocus]);
-
-  // ⌘K / Ctrl+K toggles from anywhere.
-  useEffect(() => {
-    const onKey = (e: globalThis.KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
-        e.preventDefault();
-        setOpen((o) => !o);
-        setQuery("");
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, []);
-
-  // Keep the active option in view.
-  useEffect(() => {
-    if (!activeItem) return;
-    const el = list.current?.querySelector<HTMLElement>(`[data-id="${activeItem.id}"]`);
-    el?.scrollIntoView({ block: "nearest" });
-  }, [activeItem]);
-
-  useEffect(() => () => {
-    if (toastTimer.current) clearTimeout(toastTimer.current);
+  const show = useCallback(() => {
+    setQuery("");
+    setActive(0);
+    setOpen(true);
+    setStaggering(true);
+    setOpens((n) => n + 1);
   }, []);
 
   const close = useCallback(() => {
     setOpen(false);
     setQuery("");
-    requestAnimationFrame(() => trigger.current?.focus({ preventScroll: true }));
   }, []);
+
+  // The demo opens itself once the trigger has landed.
+  useEffect(() => {
+    if (!play || !defaultOpen) return;
+    later(show, reduce ? 0 : MOTION.openAt * 1000);
+  }, [play, defaultOpen, reduce, later, show]);
+
+  // While the palette opens, rows stagger; afterwards new rows (from typing) just settle.
+  useEffect(() => {
+    if (!opens) return;
+    staggerTimer(() => setStaggering(false), (MOTION.rowsAt + MOTION.rowCap * MOTION.row + MOTION.rowBlock) * 1000);
+  }, [opens, staggerTimer]);
+
+  // Opening focuses the field (not on page load unless asked); closing hands focus back to the trigger.
+  useEffect(() => {
+    if (open) {
+      if (!firstView.current || autoFocus) input.current?.focus({ preventScroll: true });
+      firstView.current = false;
+    } else if (opens > 0 && root.current?.contains(document.activeElement ?? null) !== false) {
+      trigger.current?.focus({ preventScroll: true });
+    }
+  }, [open, opens, autoFocus]);
+
+  useHotkey("k", () => (open ? close() : show()));
+  useEffect(() => setActive(0), [query]);
+
+  // Keep the active option in view.
+  useEffect(() => {
+    if (!activeItem) return;
+    list.current?.querySelector<HTMLElement>(`[data-id="${CSS.escape(activeItem.id)}"]`)?.scrollIntoView({ block: "nearest" });
+  }, [activeItem]);
 
   const choose = (item: CommandItem) => {
     if (pressed) return;
     setPressed(item.id);
-    setTimeout(
+    // The row flashes first, so the choice registers before the palette leaves.
+    later(
       () => {
         setPressed(null);
         onSelect?.(item);
         setToast(item.label.replace(/^Go to |^Open /, ""));
-        if (toastTimer.current) clearTimeout(toastTimer.current);
-        toastTimer.current = setTimeout(() => setToast(null), 2200);
+        toastTimer(() => setToast(null), MOTION.toastFor);
         close();
       },
-      reduce ? 0 : 130,
+      reduce ? 0 : MOTION.press,
     );
   };
 
-  const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+  const onKeyDown = (e: ReactKeyboardEvent<HTMLInputElement>) => {
     const n = flat.length;
-    if (e.key === "ArrowDown") {
-      e.preventDefault();
-      if (n) setActive((a) => (a + 1) % n);
-    } else if (e.key === "ArrowUp") {
-      e.preventDefault();
-      if (n) setActive((a) => (a - 1 + n) % n);
-    } else if (e.key === "Home" && n) {
-      e.preventDefault();
-      setActive(0);
-    } else if (e.key === "End" && n) {
-      e.preventDefault();
-      setActive(n - 1);
-    } else if (e.key === "Enter") {
-      e.preventDefault();
-      if (activeItem) choose(activeItem);
-    } else if (e.key === "Escape") {
-      e.preventDefault();
-      if (query) setQuery("");
-      else close();
-    }
+    const keys: Record<string, () => void> = {
+      ArrowDown: () => n && setActive((a) => (a + 1) % n),
+      ArrowUp: () => n && setActive((a) => (a - 1 + n) % n),
+      Home: () => n && setActive(0),
+      End: () => n && setActive(n - 1),
+      Enter: () => activeItem && choose(activeItem),
+      Escape: () => (query ? setQuery("") : close()),
+    };
+    const run = keys[e.key];
+    if (!run) return;
+    e.preventDefault();
+    run();
   };
 
-  let index = -1;
+  // Row delays follow reading order: the search row, then each group’s label and rows.
+  let order = 0;
+  const rowDelay = () => MOTION.rowsAt + Math.min(order++, MOTION.rowCap) * MOTION.row;
 
   return (
-    <section className={`relative isolate min-h-[720px] overflow-hidden bg-[#09090b] text-white ${className}`}>
-      <BackdropApp workspace={workspace} triggerRef={trigger} onOpen={() => setOpen(true)} />
+    <div
+      ref={root}
+      style={cssVars(PALETTE[theme], accent)}
+      className={`@container relative isolate w-full font-sans antialiased ${theme === "dark" ? "[color-scheme:dark]" : "[color-scheme:light]"} ${className}`}
+    >
+      <div className="px-3 pt-16 @lg:px-6 @2xl:pt-24">
+        <Trigger label={triggerLabel} triggerRef={trigger} onOpen={show} play={play} reduce={reduce} />
+      </div>
 
       <AnimatePresence>
         {open ? (
@@ -301,9 +612,9 @@ export function CommandPalette({
             onClick={close}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: reduce ? 0 : 0.2 }}
-            className="absolute inset-0 z-10 bg-black/55 backdrop-blur-[2px]"
+            exit={{ opacity: 0, transition: { duration: MOTION.exit } }}
+            transition={{ duration: reduce ? MOTION.fade : 0.24 }}
+            className="absolute inset-0 z-10 bg-[var(--cp-scrim)] backdrop-blur-[2px]"
           />
         ) : null}
       </AnimatePresence>
@@ -311,23 +622,24 @@ export function CommandPalette({
       <AnimatePresence>
         {open ? (
           <motion.div
-            key="palette"
+            key={`palette-${opens}`}
             role="dialog"
             aria-label="Command palette"
-            initial={reduce ? { opacity: 0 } : { opacity: 0, y: -10, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={reduce ? { opacity: 0 } : { opacity: 0, y: -6, scale: 0.985 }}
-            transition={{ duration: reduce ? 0 : 0.22, ease }}
-            className="absolute inset-x-3 top-[76px] z-20 mx-auto max-w-[640px] overflow-hidden rounded-[16px] bg-[#111113] shadow-[inset_0_1px_0_rgba(255,255,255,0.07),0_0_0_1px_rgba(255,255,255,0.09),0_24px_80px_-12px_rgba(0,0,0,0.9)] sm:inset-x-6 sm:top-[112px]"
+            initial={reduce ? { opacity: 0 } : { opacity: 0, y: -10, scale: 0.98, filter: `blur(${MOTION.blur}px)` }}
+            animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)", transitionEnd: { filter: "none" } }}
+            exit={reduce ? { opacity: 0 } : { opacity: 0, y: -6, scale: 0.985, filter: "blur(4px)", transition: { duration: MOTION.exit, ease: EASE_IN } }}
+            transition={{ duration: reduce ? MOTION.fade : MOTION.panel, ease: EASE_OUT }}
+            style={{ transformOrigin: "50% 0%" }}
+            className="absolute inset-x-3 top-14 z-20 mx-auto max-w-[640px] overflow-hidden rounded-[16px] border border-[var(--cp-line)] bg-[var(--cp-panel)] text-[var(--cp-ink)] shadow-[var(--cp-shadow)] @lg:inset-x-6 @2xl:top-[88px]"
           >
             {/* Search */}
-            <div className="flex h-[60px] items-center gap-3 border-b border-white/[0.08] px-4 sm:px-5">
-              <Search className="size-[18px] shrink-0 text-white/45" aria-hidden="true" />
+            <motion.div {...enter(true, MOTION.step, reduce, 4)} className="flex h-[60px] items-center gap-3 border-b border-[var(--cp-line)] px-4 @lg:px-5">
+              <Search className="size-[18px] shrink-0 text-[var(--cp-faint)]" aria-hidden="true" />
               <input
                 ref={input}
                 role="combobox"
                 aria-expanded={flat.length > 0}
-                aria-controls={listId}
+                aria-controls={`${uid}-list`}
                 aria-autocomplete="list"
                 aria-activedescendant={activeItem ? optionId(activeItem.id) : undefined}
                 aria-label="Search commands"
@@ -337,227 +649,62 @@ export function CommandPalette({
                 placeholder={placeholder}
                 spellCheck={false}
                 autoComplete="off"
-                className="h-full min-w-0 flex-1 bg-transparent text-[16px] tracking-[-0.01em] text-white placeholder:text-white/40 focus:outline-none sm:text-[17px]"
+                className="h-full min-w-0 flex-1 bg-transparent text-[16px] tracking-[-0.01em] text-[var(--cp-ink)] outline-none placeholder:text-[var(--cp-faint)] @lg:text-[17px]"
               />
               <button
                 type="button"
                 onClick={close}
-                className="hidden h-7 items-center rounded-[6px] border border-white/10 px-2 font-mono text-[11px] text-white/55 transition-colors hover:bg-white/[0.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white sm:inline-flex"
+                className={`hidden h-7 items-center rounded-[6px] border border-[var(--cp-line)] px-2 font-mono text-[11px] text-[var(--cp-muted)] transition-[background-color,color] duration-150 hover:bg-[var(--cp-hover)] hover:text-[var(--cp-ink)] active:translate-y-px @lg:inline-flex ${focusRing}`}
               >
                 esc
               </button>
-            </div>
+            </motion.div>
 
             {/* Results */}
-            <div ref={list} id={listId} role="listbox" aria-label="Commands" className="max-h-[min(400px,calc(100dvh-240px))] overflow-y-auto overscroll-contain p-2">
-              {results.map((g) => {
-                const headingId = `${uid}-group-${g.id}`;
-                return (
-                  <div key={g.id} role="group" aria-labelledby={headingId} className="pb-1 [&+&]:mt-1 [&+&]:border-t [&+&]:border-white/[0.06] [&+&]:pt-1">
-                    <p id={headingId} className="px-3 pb-1.5 pt-2.5 font-mono text-[10.5px] uppercase tracking-[0.14em] text-white/45">
-                      {g.label}
-                    </p>
-                    {g.results.map(({ item, match }) => {
-                      index += 1;
-                      const i = index;
-                      const selected = activeItem?.id === item.id;
-                      const ItemIcon = item.icon ?? ArrowRight;
-                      return (
-                        <div
-                          key={item.id}
-                          id={optionId(item.id)}
-                          data-id={item.id}
-                          role="option"
-                          aria-selected={selected}
-                          onMouseMove={() => active !== i && setActive(i)}
-                          onMouseDown={(e) => e.preventDefault()}
-                          onClick={() => choose(item)}
-                          className={`relative isolate flex min-h-11 cursor-pointer items-center gap-3 rounded-[10px] px-3 py-1.5 text-[14.5px] transition-[color,transform] duration-100 active:scale-[0.99] ${selected ? "text-white" : "text-white/75"} ${pressed === item.id ? "scale-[0.985]" : ""}`}
-                        >
-                          {/* One highlight glides between rows rather than each row lighting up. */}
-                          {selected ? (
-                            <motion.span
-                              layoutId={`${uid}-hl`}
-                              transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 600, damping: 44 }}
-                              className={`absolute inset-0 -z-10 rounded-[10px] transition-colors duration-100 ${pressed === item.id ? "bg-white/[0.1]" : "bg-white/[0.06]"}`}
-                            />
-                          ) : null}
-                          {selected ? <motion.span layoutId={`${uid}-marker`} transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 600, damping: 44 }} className="absolute inset-y-2.5 left-0 w-[3px] rounded-full bg-[#ff7a45]" /> : null}
-                          <span
-                            className={`flex size-7 shrink-0 items-center justify-center rounded-[7px] transition-colors duration-100 ${selected ? "bg-white text-black" : "bg-white/[0.05] text-white/55"}`}
-                          >
-                            <ItemIcon className="size-[15px]" aria-hidden="true" />
-                          </span>
-                          <span className="min-w-0 flex-1 truncate">
-                            <Highlight text={item.label} indices={match.indices} />
-                          </span>
-                          {item.hint ? <span className="shrink-0 font-mono text-[11px] text-white/45">{item.hint}</span> : null}
-                          {item.shortcut ? (
-                            <span className="hidden shrink-0 items-center gap-1 sm:flex">
-                              {item.shortcut.map((k, ki) => (
-                                <Kbd key={ki}>{k}</Kbd>
-                              ))}
-                            </span>
-                          ) : null}
-                        </div>
-                      );
-                    })}
-                  </div>
-                );
-              })}
-
-              {flat.length === 0 ? (
-                <motion.div
-                  role="status"
-                  initial={reduce ? { opacity: 0 } : { opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.24, ease }}
-                  className="flex flex-col items-center px-6 py-12 text-center"
-                >
-                  <span aria-hidden="true" className="mb-4 flex size-11 items-center justify-center rounded-full border border-dashed border-white/20 text-white/40">
-                    <Search className="size-[18px]" />
-                  </span>
-                  <p className="text-[15px] font-medium text-white">Nothing matches “{query.trim()}”</p>
-                  <p className="mt-1 max-w-[36ch] text-[13.5px] leading-relaxed text-white/55">
-                    Try a shorter word, or something like{" "}
-                    <button type="button" onClick={() => setQuery("invite")} className="font-medium text-white underline decoration-[#ff7a45] decoration-2 underline-offset-[3px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">
-                      invite
-                    </button>{" "}
-                    or{" "}
-                    <button type="button" onClick={() => setQuery("theme")} className="font-medium text-white underline decoration-[#ff7a45] decoration-2 underline-offset-[3px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">
-                      theme
-                    </button>
-                    .
-                  </p>
-                </motion.div>
-              ) : null}
+            <div ref={list} id={`${uid}-list`} role="listbox" aria-label="Commands" className="max-h-[min(400px,calc(100dvh-240px))] overflow-y-auto overscroll-contain p-2">
+              {results.map((g) => (
+                <div key={g.id} role="group" aria-labelledby={`${uid}-group-${g.id}`} className="pb-1 [&+&]:mt-1 [&+&]:border-t [&+&]:border-[var(--cp-rule)] [&+&]:pt-1">
+                  <motion.p
+                    id={`${uid}-group-${g.id}`}
+                    {...(staggering ? enter(true, rowDelay(), reduce, 4, MOTION.rowBlock) : {})}
+                    className="px-3 pb-1.5 pt-2.5 font-mono text-[10.5px] uppercase tracking-[0.14em] text-[var(--cp-faint)]"
+                  >
+                    {g.label}
+                  </motion.p>
+                  {g.results.map((r) => (
+                    <ResultRow
+                      key={r.item.id}
+                      result={r}
+                      selected={activeItem?.id === r.item.id}
+                      pressed={pressed === r.item.id}
+                      optionId={optionId(r.item.id)}
+                      layoutPrefix={uid}
+                      delay={rowDelay()}
+                      staggered={staggering}
+                      reduce={reduce}
+                      onHover={() => setActive(flat.indexOf(r))}
+                      onChoose={() => choose(r.item)}
+                    />
+                  ))}
+                </div>
+              ))}
+              {flat.length === 0 ? <EmptyState query={query} suggestions={suggestions} onSuggest={setQuery} reduce={reduce} /> : null}
             </div>
 
-            {/* Footer */}
-            <div className="flex h-11 items-center justify-between gap-4 border-t border-white/[0.08] bg-white/[0.02] px-4 font-mono text-[11px] text-white/50 sm:px-5">
-              <div className="flex items-center gap-4">
-                <span className="flex items-center gap-1.5">
-                  <Kbd>↑</Kbd>
-                  <Kbd>↓</Kbd>
-                  <span className="ml-0.5">navigate</span>
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <Kbd>↵</Kbd>
-                  <span className="ml-0.5">open</span>
-                </span>
-                <span className="hidden items-center gap-1.5 sm:flex">
-                  <Kbd>esc</Kbd>
-                  <span className="ml-0.5">close</span>
-                </span>
-              </div>
-              <span className="tabular-nums" aria-live="polite">
-                {flat.length} {flat.length === 1 ? "result" : "results"}
-              </span>
-            </div>
+            <Footer count={flat.length} delay={staggering ? rowDelay() + MOTION.footer : 0} reduce={reduce} />
           </motion.div>
         ) : null}
       </AnimatePresence>
 
-      {/* Confirmation */}
-      <AnimatePresence>
-        {toast ? (
-          <motion.div
-            key={toast}
-            role="status"
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 8 }}
-            transition={{ duration: reduce ? 0 : 0.25, ease }}
-            className="absolute bottom-6 left-1/2 z-30 flex -translate-x-1/2 items-center gap-2.5 whitespace-nowrap rounded-full bg-white py-2.5 pl-3 pr-4 text-[13.5px] text-black shadow-[0_12px_40px_-8px_rgba(255,255,255,0.25)]"
-          >
-            <span className="size-1.5 rounded-full bg-[#ff7a45]" aria-hidden="true" />
-            Ran “{toast}”
-            <span className="font-mono text-[11px] text-black/45">⌘K to reopen</span>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
-    </section>
-  );
-}
-
-function Kbd({ children }: { children: ReactNode }) {
-  return (
-    <kbd className="inline-flex h-[22px] min-w-[22px] items-center justify-center rounded-[5px] border border-white/10 bg-white/[0.04] px-1.5 font-mono text-[11px] leading-none text-white/60 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
-      {children}
-    </kbd>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* The quiet app behind the palette                                     */
-/* ------------------------------------------------------------------ */
-
-const backdropRows = [
-  { key: "OPS-418", title: "Webhook retries hammer the billing API", who: "MO", state: "In progress" },
-  { key: "OPS-412", title: "CSV export drops the last row", who: "JT", state: "In review" },
-  { key: "WEB-207", title: "Pricing page: annual toggle remembers choice", who: "AK", state: "Todo" },
-  { key: "WEB-199", title: "Footer links wrap badly at 1024px", who: "RS", state: "Todo" },
-  { key: "OPS-405", title: "Rotate the staging database password", who: "MO", state: "Done" },
-  { key: "WEB-188", title: "Empty state for saved views", who: "AK", state: "Done" },
-];
-
-function BackdropApp({ workspace, triggerRef, onOpen }: { workspace: string; triggerRef: RefObject<HTMLButtonElement | null>; onOpen: () => void }) {
-  return (
-    <div className="flex min-h-[720px]">
-      <aside className="hidden w-60 shrink-0 flex-col gap-1 border-r border-white/[0.06] bg-[#0c0c0e] p-4 md:flex" aria-hidden="true">
-        <div className="mb-5 flex items-center gap-2.5 px-2">
-          <span className="flex size-6 items-center justify-center rounded-[6px] bg-white font-display text-[12px] font-bold text-black">{workspace.charAt(0)}</span>
-          <span className="font-display text-[15px] font-semibold tracking-[-0.02em]">{workspace}</span>
-        </div>
-        {[
-          ["Inbox", Inbox, "4"],
-          ["My issues", UserRound, ""],
-          ["Projects", FolderKanban, ""],
-          ["Roadmap", MapIcon, ""],
-          ["Recent", Clock, ""],
-        ].map(([label, I, count], i) => {
-          const IconC = I as Icon;
-          return (
-            <div key={label as string} className={`flex h-8 items-center gap-2.5 rounded-[7px] px-2 text-[13.5px] ${i === 0 ? "bg-white/[0.06] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" : "text-white/50"}`}>
-              <IconC className="size-4" aria-hidden="true" />
-              <span className="flex-1">{label as string}</span>
-              {count ? <span className="font-mono text-[11px] text-white/45">{count as string}</span> : null}
-            </div>
-          );
-        })}
-      </aside>
-      <div className="min-w-0 flex-1">
-        <header className="flex h-14 items-center justify-between gap-3 border-b border-white/[0.07] px-4 sm:px-8">
-          <h2 className="font-display text-[17px] font-semibold tracking-[-0.02em]">Inbox</h2>
-          <button
-            ref={triggerRef}
-            type="button"
-            onClick={onOpen}
-            aria-label="Open command palette"
-            aria-keyshortcuts="Meta+K Control+K"
-            className="flex h-10 min-w-0 items-center gap-2.5 rounded-[10px] border border-white/10 bg-white/[0.03] pl-3 pr-1.5 text-[13.5px] text-white/45 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] transition-[color,border-color,transform] duration-150 hover:border-white/20 hover:text-white/70 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white sm:w-72"
-          >
-            <Search className="size-4 shrink-0" aria-hidden="true" />
-            <span className="hidden flex-1 truncate text-left sm:block">Search or jump to…</span>
-            <span className="flex items-center gap-0.5">
-              <Kbd>⌘</Kbd>
-              <Kbd>K</Kbd>
-            </span>
-          </button>
-        </header>
-        <ul className="px-2 py-3 sm:px-6" aria-hidden="true">
-          {backdropRows.map((r) => (
-            <li key={r.key} className="flex h-12 items-center gap-4 rounded-[8px] px-2 text-[14px] sm:px-3">
-              <span className="w-[4.5rem] shrink-0 font-mono text-[11.5px] text-white/45">{r.key}</span>
-              <span className="min-w-0 flex-1 truncate text-white/85">{r.title}</span>
-              <span className="hidden shrink-0 font-mono text-[11px] text-white/45 sm:block">{r.state}</span>
-              <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-white/[0.08] font-mono text-[9.5px] font-medium text-white/70">{r.who}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <AnimatePresence>{toast ? <Toast key={toast} text={toast} reduce={reduce} /> : null}</AnimatePresence>
     </div>
   );
 }
 
-export default CommandPalette;
+export default function CommandPaletteDemo() {
+  return (
+    <div className="min-h-dvh" style={{ background: STAGE }}>
+      <CommandPalette className="min-h-[max(720px,100dvh)]" />
+    </div>
+  );
+}

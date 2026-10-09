@@ -1,42 +1,43 @@
-Build a ⌘K command palette in React + Tailwind CSS (v4), using `motion/react` for the open/close and the selection marker and `lucide-react` for icons. It should feel like a precise, quiet tool on near-black: white type at measured opacities, one solid raised panel and a single warm accent that marks matches and the selection.
+Build a ⌘K command palette in React + Tailwind CSS (v4), using `motion/react` for the cascade, the selection and the toast and `lucide-react` for icons. It should feel like a precise, quiet tool: greyscale throughout, one solid raised panel, and a single warm accent that marks the selection and the matched letters.
 
 **Layout**
-- A 720px-tall section (`#09090b`) holds a quiet demo app behind the palette: a 240px sidebar (`#0c0c0e`, from `md` up) with a workspace mark and five nav rows, a 56px top bar with the page title and the trigger button, and six issue rows (mono key, title, state, initials avatar).
-- The trigger is a 40px field (white at 3% with a white/10 border and an inset top highlight), 288px wide from `sm`: search icon, "Search or jump to…" and ⌘ K keycaps. Below `sm` it collapses to the icon plus the keycaps.
-- A black scrim at 55% with a 2px blur covers the app while the palette is open. Clicking it closes.
-- The palette is max 640px wide, 12px from the edges on phones (24px from `sm`), 76px from the top (112px from `sm`). Solid `#111113` (not glass), radius 16px, a 1px ring at white/9%, an inset top highlight at white/7% and a deep shadow (`0 24px 80px -12px` black at 90%).
-  - **Search row**: 60px tall, an 18px search icon, a borderless 17px input (16px on phones so iOS doesn't zoom) and an `esc` keycap button from `sm`. 1px rule under it.
-  - **Results**: max-height min(400px, 100dvh − 240px), 8px padding. Each group has a mono label (10.5px, uppercase, 0.14em tracking, white/45), and groups after the first sit under a white/6% hairline. Rows are at least 44px tall with radius 10px: a 28px icon tile, the label (truncates), an optional mono hint (an issue key or "Project") and shortcut keycaps (from `sm`).
-  - **Footer**: 44px, white at 2%, mono 11px: ↑ ↓ navigate, ↵ open, esc close (from `sm`) on the left, a live result count on the right.
-- Keycaps: 22px tall, min 22px wide, radius 5px, a 1px white/10 border, white at 4% with an inset top highlight, mono 11px at white/60.
+- The component is one `@container` root that the caller gives a height (the demo: `max(720px, 100dvh)` on `#0a0a0b`). It holds only real parts: the trigger, the scrim, the palette and the toast. No fake app behind it.
+- **Trigger**: a 48px field centred 64px from the top (96px from a 672px container), max 640px wide: field fill, a 1px line border, an inset top highlight, a search icon, "Search or jump to…" and ⌘ K keycaps.
+- **Scrim** over the root: black at 55% with a 2px backdrop blur (light theme: `#f4f4f5` at 60%). Clicking it closes.
+- **Palette** opens over its own trigger: max 640px wide, 12px from the edges (24px from a 512px container), 56px from the top (88px from 672px). Solid panel, not glass; radius 16px, a 1px line border, an inset top highlight and a deep shadow (`0 24px 80px -12px` black at 90%).
+  - **Search row**: 60px, an 18px search icon, a borderless input (16px, 17px from 512px so iOS never zooms) and an `esc` keycap button from 512px. A rule under it.
+  - **Results**: max-height `min(400px, 100dvh − 240px)`, 8px padding. Each group has a mono label (10.5px, uppercase, 0.14em tracking); groups after the first sit under a rule. Rows are at least 44px tall, radius 10px: a 28px icon tile, the label (truncates), an optional mono hint ("OPS-412", "Project") and shortcut keycaps (from 512px).
+  - **Footer**: 44px, ink at 2%, mono 11px: ↑ ↓ navigate, ↵ open, esc close on the left, a live result count on the right.
+- Keycaps: 22px tall, min 22px wide, radius 5px, a 1px line border, field fill with an inset highlight, mono 11px in the muted grey.
 
-**Typography**
-- Labels 14.5px sans (Geist). The search input is 17px with −0.01em tracking. Mono (Geist Mono) for group labels, hints, keycaps and the footer. Display (Geist at tight tracking) only for the app title and workspace name in the background.
-
-**Colour**
-- White type: rows at 75% (100% when selected), metadata at 45–55%. Surfaces are `#09090b` (stage), `#0c0c0e` (sidebar) and `#111113` (palette). The selected row is white at 6% with a 3px accent marker on its left edge, and its icon tile inverts to white with a black icon.
-- Accent `#ff7a45`: matched characters sit on it at 25% with the text in pale peach `#ffd3b8` (radius 3px). It also marks the selection, the empty-state suggestion underlines and the toast dot. Nothing else is coloured.
+**Colour** (one `PALETTE` object written to `--cp-*` CSS variables; `theme="dark" | "light"`)
+- Dark: panel `#111113`, field `#141416`, line `#232327`, rule `#1c1c1f`, ink `#f4f4f5`, body `#c4c4ca`, muted `#a1a1aa`, faint `#8a8a93`, tile `#1b1b1e`, hover white/6%, press white/10%. Light: `#ffffff`, `#fafafa`, `#e4e4e7`, `#efeff1`, `#18181b`, `#3f3f46`, `#52525b`, `#71717a`, `#f1f1f3`.
+- Rows read in the body grey, the selected row in ink on the hover tint, its icon tile inverted (ink tile, panel-coloured icon).
+- One `accent` prop (default `#ff7a45`): the 3px selection marker on the row's left edge, and the highlighter-pen stroke behind matched characters (accent at 30% via `color-mix`, radius 3px, text stays ink). Nothing else is coloured. The toast is an ink pill with a check.
 
 **Behaviour**
-- Fuzzy subsequence matching: each query character must appear in order. Score +1 per character, +4 when it follows the previous match directly, +3 at a word start, minus a small penalty for gaps and long labels. A match on `keywords` (e.g. "light mode" for the theme switch) counts but ranks 3 points lower and highlights nothing. Sort within each group by score, and hide empty groups.
-- ↑/↓ wrap around, Home and End jump, Enter runs the active item, and Esc clears the query first and then closes. Moving the mouse over a row makes it active. The active row scrolls into view (`block: nearest`).
-- ⌘K / Ctrl+K toggles from anywhere. Opening focuses the input. Closing returns focus to the trigger. The demo opens by default but doesn't steal focus on page load (`autoFocus` prop).
-- Running an item closes the palette and shows a white pill toast at the bottom: an accent dot, "Ran “Inbox”" and a mono "⌘K to reopen", for 2.2s.
-- Empty state: a dashed 44px circle with a search icon, "Nothing matches “xyz”" and two suggestion buttons ("invite", "theme") that fill the query.
+- Fuzzy subsequence matching: each query character must appear in order. +1 per character, +4 when it follows the previous match, +3 at a word start, minus a small penalty for gaps and long labels. `keywords` matches count but rank 3 lower and highlight nothing. Sort within groups; hide empty groups.
+- ↑/↓ wrap, Home/End jump, Enter runs the active row, Esc clears the query and then closes. Hovering a row activates it; the active row scrolls into view (`block: nearest`).
+- ⌘K / Ctrl+K toggles from anywhere. Opening focuses the input (the demo's first open doesn't steal focus unless `autoFocus`). Closing returns focus to the trigger.
+- Running an item flashes its row, closes the palette and shows "Ran “Inbox” · ⌘K to reopen" for 2.2s.
+- Empty state: a dashed 44px circle with a search icon, "Nothing matches “xyz”" and two suggestion buttons (`suggestions` prop) that fill the query.
 
-**Motion**
-- The palette enters from y −10px and scale 0.98 over 220ms with ease [0.2, 0.8, 0.2, 1], and exits to y −6px. The scrim fades over 200ms.
-- One highlight (white/6%) and the accent marker glide between rows together on a shared `layoutId` spring (stiffness 600, damping 44); rows never light up individually.
-- Choosing an item (Enter or click) flashes its row (scale 0.985, highlight to white/10%) for 130ms before the palette closes, so the choice registers.
-- Rows and the trigger press to 0.99/0.98. The empty state fades up 6px over 240ms.
-- Reduced motion: opacity only, no movement, and no marker travel.
+**Motion** (one `MOTION` object; ease-out `[0.22, 1, 0.36, 1]`, ease-in `[0.4, 0, 1, 1]`, `spring.ui` 500/40)
+- First view (20% visible): the trigger rises 10px out of an 8px blur over 420ms, then the palette opens 160ms later.
+- **Every open** is a cascade, not one block: the panel comes from y −10px, scale 0.98 and an 8px blur (320ms, origin top); the search row follows at 50ms; then each group label and row, in reading order, from a 6px rise and blur, 25ms apart from 100ms, capped at 10 steps so long lists never drag (360ms each); the footer lands last. Everything is down by about 800ms.
+- Rows that appear later, while typing, settle from a 3px blur in 180ms with no stagger.
+- Exit: y −6px, scale 0.985, a 4px blur, 160ms ease-in. The scrim fades.
+- One highlight and the accent marker glide between rows together on a shared `layoutId` (`spring.ui`); rows never light up individually.
+- Choosing flashes the row (scale 0.985, press tint) for 130ms before the palette leaves. The toast rises 12px out of a blur.
+- Every timer goes through one helper that clears on re-schedule and unmount.
+- Reduced motion: 150ms opacity fades only, no marker travel, no press delay.
 
 **Accessibility**
-- The palette is `role="dialog"` with a label. The input is `role="combobox"` with `aria-controls`, `aria-expanded`, `aria-autocomplete="list"` and `aria-activedescendant`, so focus never leaves the input.
-- The results container is `role="listbox"`, each group is `role="group"` labelled by its heading, and each row is `role="option"` with `aria-selected`.
-- The result count and the empty state are polite live regions. The trigger has `aria-keyshortcuts`.
+- The palette is `role="dialog"` with a label. The input is `role="combobox"` with `aria-controls`, `aria-expanded`, `aria-autocomplete="list"` and `aria-activedescendant`, so focus never leaves the input. Ids come from `useId`.
+- The results are `role="listbox"`, each group `role="group"` labelled by its heading, each row `role="option"` with `aria-selected`.
+- The result count and the empty state are polite live regions. The trigger has `aria-keyshortcuts`. Focus rings: 2px ink, offset 2px, keyboard only.
 
 **Don't**
-- No glassy blurred panel (the scrim may blur; the panel stays solid), no gradient border, and no sparkle "Ask AI" row.
-- Don't highlight matches with bold or colour alone; the highlighter is the idea.
-- Don't move focus into the list. Don't let the background page scroll while you arrow through.
+- No fake app, sidebar or skeleton behind the palette. No glass panel (the scrim may blur), no gradient border, no sparkle "Ask AI" row.
+- No coloured icon tiles or a colour per group. Don't highlight matches with bold or colour alone; the highlighter is the idea.
+- Don't drop the palette in as one block, and don't move focus into the list.
