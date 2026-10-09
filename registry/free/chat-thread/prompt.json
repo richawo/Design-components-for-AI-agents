@@ -1,6 +1,6 @@
 {
   "component": "ChatThread",
-  "intent": "A calm, characterful AI chat thread on near-black: document-style assistant replies with code and sources, compact raised user bubbles, a streaming final answer and a working composer.",
+  "intent": "A calm, monochrome AI chat thread: the conversation staggers in, document-style replies stream in chunks that settle like ink, code is highlighted in greys, and one accent marks the send button and the live dot.",
   "platform": "web",
   "stack": {
     "framework": "React 19",
@@ -10,13 +10,14 @@
     "fonts": "font-display (Geist, tight tracking) for the title, font-sans (Geist) for messages, font-mono (Geist Mono) for metadata and code"
   },
   "layout": {
-    "frame": "black section; window #0b0b0c, max-w 1040px, 820px tall (100dvh, 620–880px on phones), radius 22px, 1px ring white/8%, inset highlight, deep black shadow; full-bleed with no radius below sm",
+    "frame": "@container root that fills its parent's height (the demo: 820px, 100dvh on phones, max-w 1040px on black). Window #0e0e10; from a 576px container: radius 22px, 1px #232327 border, inset highlight, deep shadow; full-bleed below it",
     "header": "64px; title + mono subtitle left, 44px New thread icon button right; 1px bottom rule",
     "column": "max-w 720px centred, 16/32px gutters, 36px between messages, scrolls inside the window and follows the stream while pinned to the bottom",
-    "userMessage": "right-aligned #1c1c1f bubble with inset highlight, white text, max-w min(82%, 30rem), radius 18px with 6px bottom-right corner, mono time under it",
-    "assistantMessage": "no bubble; 28px avatar + name + time byline; content indented 38px from sm; paragraphs, dash-marker lists, code block, sources cards, Copy action",
-    "codeBlock": "#050506 panel with white/8% ring, radius 14px, 44px caption with language tag, filename and Copy/Copied button; 13px mono at 1.75 leading; scrolls horizontally inside itself",
-    "composer": "#111113 card radius 20px with white/10% border; attachment chips, auto-growing textarea (52–208px), toolbar with attach, model label, key hint (md+) and round white send button; mono disclaimer under it"
+    "userMessage": "right-aligned #1c1c1f bubble with inset highlight, ink text, max-w min(82%, 30rem), radius 18px with 6px bottom-right corner, mono time under it",
+    "assistantMessage": "no bubble; 28px ink avatar with the initial (an accent dot only while writing) + name + time byline; content indented 38px from 576px; paragraphs, grey dash-marker lists, code block, source cards, Copy action",
+    "codeBlock": "#08080a panel with 1px line border, radius 14px, 44px caption with an ink language tag, faint filename and Copy/Copied button; 13px mono at 1.75; scrolls horizontally inside itself",
+    "composer": "#141416 card radius 20px with 1px line border (ink 30% on focus-within); attachment chips, auto-growing textarea (52–208px), toolbar with attach, mono model label, key hint (from 768px) and the round accent send button; mono disclaimer under it",
+    "emptyState": "New thread clears to a centred stack: mono 'NEW THREAD', 'What are we working on?' (display, clamp 1.5–2rem), one muted line"
   },
   "typography": {
     "title": {
@@ -30,7 +31,7 @@
       "size": "16px (15.5px on phones)",
       "leading": 1.7,
       "measure": "64ch",
-      "opacity": 0.86
+      "opacity": "body token #cfcfd4"
     },
     "userBubble": {
       "font": "sans",
@@ -41,7 +42,7 @@
       "font": "mono",
       "size": "10.5–11px",
       "tracking": "0.12–0.14em when uppercase",
-      "opacity": "0.4–0.55"
+      "opacity": "faint token #8a8a93"
     },
     "code": {
       "font": "mono",
@@ -50,36 +51,30 @@
     }
   },
   "color": {
-    "syntax": {
-      "comment": "#8f8778",
-      "string": "#b9d2a5",
-      "number": "#f2c38b",
-      "keyword": "#f0a37f",
-      "type": "#f2d9a6"
-    },
-    "stage": "#000000",
-    "window": "#0b0b0c",
-    "raised": "#111113 composer, white/3% source cards",
-    "userBubble": "#1c1c1f",
-    "code": "#050506",
-    "text": "white at measured opacities (body 80%, metadata 45–60%)",
-    "accent": "#ff9a6b (only accent: caret, list dashes, status dot, send hover, focus ring)"
+    "palette": "PALETTE.dark / PALETTE.light written to --ct-* CSS variables; theme prop picks one",
+    "dark": "window #0e0e10, raised #141416, bubble #1c1c1f, code #08080a, line #232327, rule #1b1b1e, ink #f4f4f5, body #cfcfd4, muted #a1a1aa, faint #8a8a93",
+    "light": "window #ffffff, raised #fafafa, bubble #f1f1f3, code #f7f7f8, line #e4e4e7, rule #efeff1, ink #18181b, body #3f3f46, muted #52525b, faint #71717a",
+    "syntax": "luminance only. Dark: base #bdbdc4, keyword #f4f4f5 weight 500, type #e4e4e7, number #d4d4d8, string #9d9da6, comment #75757e italic. Light: #52525b, #18181b, #27272a, #3f3f46, #71717a, #8a8a93",
+    "accent": "one prop, default #ff9a6b: the send button fill (contrast-picked arrow) when there is something to send, and the dot on the assistant's avatar while it writes. List dashes, carets, focus rings, copied checks and the model label are greyscale.",
+    "stage": "#000000 (demo only)"
   },
   "motion": {
-    "thinking": "three 6px dots pulsing opacity 0.25→1, staggered 150ms, for 420ms before the first token",
-    "streaming": "uneven chunks of 2–6 characters (12% chance of a 10–22 burst) every 18–52ms, occasional 160–340ms pause",
-    "caret": "clay block 0.5em × 1.05em, opacity 1→0.25→1 over 1.1s, at the live end of a paragraph, list item or code",
-    "sources": "fade up 6px over 450ms, ease [0.2, 0.8, 0.2, 1], after the stream ends",
-    "userBubble": "rise 8px and fade in over 350ms",
-    "stop": "send button becomes Stop while streaming; stopping freezes text and labels the byline 'stopped'",
-    "reducedMotion": "render every message complete; no caret, dots or entrances",
-    "send": "sent bubble springs from the composer (16px, 0.96 scale from bottom-right, 420/34); send/stop swap with a pop and press to 0.92; arrow lifts 2px when the draft has text",
-    "press": "icon buttons 0.9, copy controls 0.95"
+    "tokens": "EASE_OUT [0.22,1,0.36,1], SPRING_UI 500/40, SPRING_SEND 420/34; one MOTION object holds every timing",
+    "entrance": "once 20% in view: the window rises 16px out of an 8px blur (500ms); header title, subtitle and New-thread button at 50ms steps; each message in reading order from a 12px rise and 8px blur, 60ms apart from 160ms; then the composer, its four controls 40ms apart, and the disclaimer",
+    "thinking": "the last reply waits for its block to land, then three grey dots pulse for 420ms",
+    "streaming": "uneven chunks of 2–6 characters (12% chance of a 10–22 burst) every 18–52ms, occasional 160–340ms pause; one timer at a time, cleared on unmount and Stop",
+    "ink": "each chunk is its own span keyed by its character offset and settles from opacity 0 and a 3px blur over 380ms (namespaced CSS keyframe ct-ink), across paragraphs, lists, inline code and highlighted code alike",
+    "caret": "2px × 1.05em ink bar breathing 0.85→0.2 over 1.1s at the live end",
+    "sources": "after the stream: the label, then each card rising out of a blur 50ms apart, then Copy",
+    "send": "a sent bubble springs up out of the composer (16px, scale 0.96 from bottom-right, 6px blur, SPRING_SEND); the reply's byline enters and streams; send and stop swap with a pop on spring.ui and press to 0.92; the arrow lifts 2px once the draft has text",
+    "stop": "stopping freezes the text and labels the byline 'stopped'",
+    "reducedMotion": "every message renders complete; entrances are 150ms fades; no ink, caret or dots",
+    "press": "icon buttons 0.9, copy controls 0.95, source cards 0.98"
   },
   "responsive": {
-    "mobile": "full-bleed window, 16px gutters, 44px touch targets, key hint and disclaimer hidden, assistant content not indented",
-    "sm": "framed window with radius and shadow, 32px gutters, content indented 38px under the byline",
-    "md": "keyboard hint shows in the composer toolbar"
+    "narrow": "full-bleed window, 16px gutters, 44px touch targets, disclaimer hidden, assistant content not indented",
+    "@xl (576px)": "framed window, 32px gutters, 36px buttons, content indented 38px under the byline",
+    "@3xl (768px)": "keyboard hint shows in the composer toolbar"
   },
   "accessibility": [
     "message list is role=log; each message is an article labelled 'You said' / '<name> said'",
@@ -87,7 +82,7 @@
     "visually hidden label on the textarea; aria-label on attach, send, stop, copy and new-thread buttons",
     "Enter sends, Shift+Enter inserts a newline, IME composition is respected",
     "send disabled when empty or while streaming",
-    "2px peach focus-visible rings offset against the window colour",
+    "2px ink focus-visible rings, offset 2px, keyboard only",
     "reduced motion renders everything complete"
   ],
   "content": {
@@ -102,6 +97,9 @@
     "constant-rate typewriter streaming",
     "page-level horizontal scroll from code",
     "grey text that isn't white at an opacity",
-    "rounded-2xl + shadow-lg on every element"
+    "rounded-2xl + shadow-lg on every element",
+    "colourful syntax themes",
+    "accent-coloured carets, bullets or focus rings",
+    "a static thread that just appears"
   ]
 }
