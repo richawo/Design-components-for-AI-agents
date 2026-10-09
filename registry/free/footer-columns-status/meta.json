@@ -4,7 +4,7 @@
   "tier": "free",
   "platform": "web",
   "category": "footers",
-  "description": "A refined dark product footer: hairline link grid lit from inside by the pointer, a breathing status pill, a gliding theme switch and a locale menu.",
+  "description": "A dark product footer: a hairline link grid that draws in and lights from inside, a status pill whose dot and uptime land last, a theme switch and locale menu.",
   "tags": [
     "footer",
     "navigation",
@@ -13,7 +13,8 @@
     "locale",
     "spotlight",
     "accordion",
-    "saas"
+    "saas",
+    "scroll reveal"
   ],
   "dependencies": [
     "motion"
@@ -60,6 +61,12 @@
       "type": "string",
       "default": "\"#status\"",
       "description": "Where the status pill links."
+    },
+    {
+      "name": "uptime",
+      "type": "number | null",
+      "default": "99.98",
+      "description": "90-day uptime in percent, shown in the status pill. Counts up from zero once the pill lands; null hides it."
     },
     {
       "name": "theme / defaultTheme",

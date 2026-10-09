@@ -9,12 +9,12 @@
     "icons": "hand-drawn inline SVG"
   },
   "layout": {
-    "root": "footer is the @container; bg #050505; full-bleed top border white/8%; content max-w 1280px, gutters 20/32/40px",
-    "grid": "@5xl: minmax(0,1.5fr) repeat(4,minmax(0,1fr)); @2xl: brand row full width (brand left, release pill right) over 4 equal columns; <640px: accordion",
+    "root": "footer is the @container; bg #050505; full-bleed top rule white/8% (drawn span, 100cqw); content max-w 1280px, gutters 20/32/40px",
+    "grid": "@6xl (1152px): minmax(0,1.5fr) repeat(4,minmax(0,1fr)); @2xl–@6xl: brand row full width (brand left, release pill right) over 4 equal columns; <640px: accordion",
     "hairlines": "white/9% 1px: frame sides, a divider before each link column, rule under brand row at @2xl only; bottom rule spans 100cqw",
     "brandCell": "24px mark + 18px name; 15px description max 30ch; release pill pinned to bottom with margin-top auto; padding 40/32/48",
     "column": "padding 32/24/40; mono 11px heading; 20px gap; 32px link rows",
-    "bottomBar": "status pill + mono copyright left; locale + theme right; 20px vertical padding",
+    "bottomBar": "status pill (dot, label, hairline divider, mono tabular uptime) + mono copyright left; locale + theme right; 20px vertical padding",
     "mobile": "56px disclosure rows with plus→minus; open list is a 2-col grid of 44px links; bottom bar stacks status, then locale+theme (50px tall), then copyright"
   },
   "typography": {
@@ -58,17 +58,19 @@
       "degraded": "#fbbf24",
       "outage": "#f87171"
     },
-    "popover": "#0d0d0e with white/9% inset ring and 0 24px 60px -12px rgba(0,0,0,.9)"
+    "popover": "#0d0d0e with white/9% inset ring and 0 24px 60px -12px rgba(0,0,0,.9)",
+    "tokens": "one COLORS object (bg, popover, status); status colours are semantic and the only hues"
   },
   "motion": {
     "light": "mouse only; rAF lerp 0.2 position, 0.12 intensity; each cell paints radial-gradient(400px circle at pointer-minus-offset: white/10% → 4.5% at 32% → 1.2% at 58% → transparent 75%); hovered cell 100%, others 32% (eased 0.16); vertical dividers overlay a 150px white/50% radial; top/bottom rules glow along x; cached offsets; loop stops when settled",
     "linkHover": "siblings dim to white/40 via group-has-[a:hover]; 150ms colour; press 1px down",
-    "status": "breathing halo scale 1→2.6, opacity .55→0; 3.2s ok, 2.2s degraded, 1.4s outage; dot colour tween 400ms; label cross-fade 6px + 3px blur",
+    "status": "breathing halo scale 1→2.6, opacity .55→0; 3.2s ok, 2.2s degraded, 1.4s outage; dot colour tween 400ms; label cross-fade 6px + 3px blur; breathing pauses offscreen; longhand animation properties",
     "themeSwitch": "layoutId thumb, spring stiffness 500 damping 40; press 0.94",
     "locale": "opens upward: opacity + 6px rise + scale .97→1, 220ms ease-out; exit 140ms ease-in; option highlight glides via layoutId; chevron rotates 180° in 220ms",
     "accordion": "height auto↔0 360ms ease-out; opacity 300/180ms; plus stroke rotates 90° and fades",
-    "reveal": "once at 25% in view: cells rise 14px + fade, 600ms, 60ms stagger",
-    "reducedMotion": "no reveal, no breathing, light snaps, instant accordion and popover"
+    "reveal": "once per block at 25% visible, two blocks on one shared clock (blocks arriving together play in order; one scrolled to later starts at once). Items rise 12px out of an 8px blur, 600ms cubic-bezier(0.22,1,0.36,1)",
+    "reducedMotion": "150ms fades only; uptime set instantly; no breathing; light snaps; instant accordion and popover",
+    "timeline": "grid at 0: top/bottom rules draw from centre (scaleX 800ms), frame edges and dividers draw down (scaleY), 60ms apart; cells from 80ms, 60ms apart: mark pops, name, description, release 50ms apart; column heading then links 25ms apart. Bottom bar at 500ms, lands last: pill, copyright, locale, theme 50ms apart; dot pops at +220ms then breathes; uptime counts 0→99.98% from +300ms over 800ms with a 3px blur settle"
   },
   "responsive": {
     "desktop": "brand cell + 4 columns in one row (≥1024px container)",
@@ -82,7 +84,8 @@
     "locale is a button with aria-haspopup=listbox and a listbox with aria-activedescendant; Escape returns focus",
     "status label is aria-live=polite",
     "2px white/70 focus outline, keyboard only",
-    "external links announce (opens in a new tab)"
+    "external links announce (opens in a new tab)",
+    "counting uptime is aria-hidden with an sr-only '99.98% uptime over 90 days'"
   ],
   "content": {
     "brand": "Halyard: queues, cron and webhooks that retry until they land",
@@ -90,7 +93,8 @@
     "columns": "Product (Queues, Cron, Webhooks, Workflows [New], Pricing); Developers (Documentation, API reference, CLI, Changelog, GitHub ↗); Company (About, Customers, Careers [4 open], Blog, Contact); Legal (Terms, Privacy, DPA, Sub-processors, Security)",
     "status": "All systems normal / Degraded performance / Partial outage",
     "locales": "en-US, en-GB, de-DE, fr-FR, es-MX, pt-BR, ja-JP",
-    "copyright": "© 2026 Halyard Labs, Inc."
+    "copyright": "© 2026 Halyard Labs, Inc.",
+    "uptime": 99.98
   },
   "avoid": [
     "a glow around the whole footer",
@@ -99,6 +103,8 @@
     "an alarm-like pinging status dot",
     "a native select for locale",
     "a two-state checkbox for a three-way theme",
-    "social icon soup"
+    "social icon soup",
+    "revealing the footer as one block or letting the bottom bar land before the grid",
+    "per-frame React state for the uptime count"
   ]
 }
