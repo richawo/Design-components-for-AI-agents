@@ -1330,7 +1330,7 @@
     "tier": "pro",
     "platform": "mobile",
     "category": "mobile",
-    "description": "A React Native AI assistant chat: glass header and composer over a moss-dark thread, replies that stream word by word, and an inline SVG watering schedule.",
+    "description": "A monochrome dark React Native assistant chat: glass header and composer, one accent, replies that stream word by word, and a schedule card that draws in.",
     "tags": [
       "chat",
       "ai assistant",
@@ -1340,6 +1340,7 @@
       "glassmorphism",
       "typing indicator",
       "quick replies",
+      "monochrome",
       "dark"
     ],
     "dependencies": [
@@ -1372,7 +1373,7 @@
       {
         "name": "messages",
         "type": "ChatMessage[]",
-        "description": "Initial thread. An assistant message may carry a `schedule` (CareSchedule) rendered as an inline SVG card."
+        "description": "Initial thread. An assistant message may carry a `schedule` (CareSchedule) rendered as an inline card with a drawn SVG chart."
       },
       {
         "name": "quickReplies",
@@ -1389,6 +1390,12 @@
         "type": "string",
         "default": "\"Ask Moss about a plant\"",
         "description": "Composer placeholder."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#cdf27e\"",
+        "description": "The one brand colour (6-digit hex): your bubbles, the send button and the chart’s key line. Everything else is neutral."
       },
       {
         "name": "thinkingMs",
@@ -1421,6 +1428,16 @@
         "name": "onAction",
         "type": "(schedule: CareSchedule) => void",
         "description": "Fired by the schedule card’s reminder button."
+      },
+      {
+        "name": "onAttach",
+        "type": "() => void",
+        "description": "The composer’s + button."
+      },
+      {
+        "name": "onOpenLog",
+        "type": "() => void",
+        "description": "The header’s care-log button."
       }
     ],
     "added": "2026-10-07"
@@ -1944,7 +1961,7 @@
     "tier": "pro",
     "platform": "mobile",
     "category": "mobile",
-    "description": "A React Native wallet of engraved, textured cards drawn in SVG. Tap one to lift it to the top with its activity; drag to tilt it under the light.",
+    "description": "A React Native wallet of engraved cards drawn in code on a neutral dark stage: they deal in, a tapped card lifts to the top and its balance and activity count in.",
     "tags": [
       "wallet",
       "cards",
@@ -1954,6 +1971,7 @@
       "glassmorphism",
       "fintech",
       "gestures",
+      "monochrome",
       "dark"
     ],
     "dependencies": [
@@ -1968,7 +1986,7 @@
       {
         "name": "cards",
         "type": "WalletCard[]",
-        "description": "Cards and passes: issuer, label, peek field, kind, pattern (guilloche | contour | rings | halftone | brushed), 3–4 gradient stops, ink, accent, figure, meta and transactions."
+        "description": "Cards and passes: issuer, label, peek field, kind, pattern (guilloche | contour | rings | halftone | brushed), face colours (3–4 gradient stops, ink, accent), figure, meta and transactions. Card faces are the only colour on screen."
       },
       {
         "name": "title",
@@ -1985,7 +2003,7 @@
       {
         "name": "summary",
         "type": "WalletSummary",
-        "description": "Collapsed-state spend summary: label, value, note and bar heights (0–1)."
+        "description": "Collapsed-state month summary: label, value (a number that counts up, with prefix and decimals), note, daily bar heights (0–1, last is today) and a day letter per bar."
       },
       {
         "name": "onAdd",
