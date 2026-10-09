@@ -1,16 +1,17 @@
 {
   "component": "AuthMagicLink",
-  "intent": "Passwordless email sign-in where the card morphs into a 'Check your inbox' state: a letter slides into a drawn envelope, the flap folds shut, a faint trail follows, and the right webmail button appears for the address's domain.",
+  "intent": "A dark, monochrome passwordless sign-in card that rises from blur and staggers its contents in reading order, then morphs into a 'Check your inbox' state that staggers in its own right: a letter slides into a drawn envelope, the flap folds shut, a faint trail follows, and the right webmail button appears for the address's domain.",
   "platform": "web",
   "stack": {
     "framework": "React 19",
-    "styling": "Tailwind CSS v4 (container queries)",
-    "animation": "motion/react (measured auto-height, AnimatePresence popLayout, shared layoutId button, motion-value flap fold)"
+    "styling": "Tailwind CSS v4 (container queries); one PALETTE object (dark + light, envelope included) → --ml-* CSS variables",
+    "animation": "motion/react (enter() helper for staggered blocks, measured auto-height, AnimatePresence popLayout, shared layoutId button, motion-value flap fold); every timeout via a useTimeouts hook that clears on unmount"
   },
   "layout": {
-    "card": "max-width 400px, #0a0a0b, radius 20px, overflow hidden, inset ring 8% white, padding 36/32/32 from 384px container up, 28/24/24 below",
+    "card": "max-width 400px, radius 20px, overflow hidden, surface + inset hairline + deep shadow, padding 36/32/32 from 384px container up, 28/24/24 below",
     "form": "brand tile (amber hourglass when expired) → heading → subtitle → error banner → label + 44px field → error/typo suggestion → 44px primary button → 'Use a password instead'",
-    "sent": "132×104 envelope → centred heading → copy max 34ch → 'Open {provider}' button or quiet sender note → hairline → '← Use a different email' + resend control (44px)"
+    "sent": "132×104 envelope → centred heading → copy max 34ch → 'Open {provider}' button or quiet sender note → hairline → '← Use a different email' + resend control (44px)",
+    "code": "hooks useTimeouts, useCooldown, useShake; FormView and SentView sub-components; AutoHeight, Collapse, Envelope, PrimaryButton, ResendButton"
   },
   "typography": {
     "heading": {
@@ -21,27 +22,47 @@
     "body": {
       "size": "14.5px",
       "leading": 1.55,
-      "color": "#a0a0a8"
+      "color": "muted token"
     },
     "input": "16px under 384px container, 15px above",
     "messages": "13px"
   },
   "color": {
-    "surface": "#0a0a0b",
-    "text": "#ededef",
-    "secondary": "#a0a0a8",
-    "muted": "#6e6e76",
-    "primary": "#ededef on #0a0a0b",
-    "error": "#ff6b5e (text #ff8f84)",
-    "expired": "#f5c451",
-    "envelope": "back #121214, pocket #161618, flap #1d1d21, strokes 14–18% white, paper #ededef, lines #a6a6ad"
+    "approach": "monochrome; one accent prop (default = theme ink) on the primary button; colour only for meaning: error, the expired warning tile and the 'Sent again' check",
+    "dark": {
+      "surface": "#0a0a0b",
+      "tile": "#141416",
+      "ink": "#ededef",
+      "label": "#cfcfd4",
+      "muted": "#a0a0a8",
+      "faint": "#7d7d86",
+      "hairline": "rgba(255,255,255,0.1)",
+      "error": "#ff6b5e (text #ff8f84)",
+      "warning": "#f5c451",
+      "ok": "#3ddc97",
+      "envelope": "back #121214, pocket #161618, open flap #1a1a1d, flap #1d1d21, strokes 15% white, paper #ededef, lines #a6a6ad"
+    },
+    "light": {
+      "surface": "#ffffff",
+      "tile": "#f4f4f5",
+      "ink": "#18181b",
+      "muted": "#52525b",
+      "faint": "#71717a",
+      "hairline": "rgba(24,24,27,0.14)",
+      "error": "#dc2626 (text #b91c1c)",
+      "warning": "#b45309",
+      "ok": "#15803d",
+      "envelope": "back #e4e4e7, pocket #f4f4f5, flap #fafafa, strokes 16% ink, paper #ffffff, lines #a1a1aa"
+    },
+    "primary": "accent fill with black-or-white label by contrast; hover lays a 7% wash of the label colour"
   },
   "motion": {
-    "morph": "height follows content via ResizeObserver (420ms in-out); views cross-fade y 10→0 / 0→−8 with 4px blur; primary button shares a layoutId",
+    "morph": "height follows content via ResizeObserver (420ms in-out); the old view exits y −8 with 4px blur (200ms ease-in) while the new view's blocks stagger in (envelope → heading → copy → button label → footer row, 50ms apart from 140ms); the primary button shares a layoutId so it travels instead of re-entering",
     "envelope": "paper slides in from −34px (500ms, delay 140ms); flap scaleY −1→1 around its top edge (420ms, delay 620ms) drawn as a back copy (negative) and a front copy (positive); seal scales in; envelope nudges 7px right and back; three trail lines draw and fade (700ms, 50ms stagger); resend replays",
     "invalid": "field shakes x 0,−7,6,−4,2,0 over 420ms; message slides down 300ms",
     "resend": "countdown digits roll; wait → Resend link → Sending… → Sent again ✓ → new countdown",
-    "reducedMotion": "envelope static and closed; opacity-only swaps"
+    "reducedMotion": "150ms opacity fades; envelope static and closed; no shake",
+    "entrance": "once at 30% in view: card y 16→0 + blur 10→0 (600ms); then mark → heading → subtitle → field → button → alternate link, 50ms apart from 120ms, each opacity + 10px rise + 6px blur clearing (450ms)"
   },
   "responsive": {
     "390px": "24px card padding, copy wraps to two centred lines, back + resend share one row",
@@ -53,7 +74,7 @@
     "errors and banner role=alert; polite live region for sending, sent and resent",
     "provider buttons are real links with target=_blank rel=noopener noreferrer",
     "returning to the form focuses and selects the prefilled address",
-    "focus-visible 2px #ededef outline offset 2px; presses at .97–.98"
+    "focus-visible 2px ink outline offset 2px; presses at .97–.98"
   ],
   "content": {
     "title": "Sign in with a link",
@@ -70,6 +91,9 @@
     "mailto: buttons",
     "hard cuts between states",
     "paper visible under a closed flap",
-    "network images for provider logos"
+    "network images for provider logos",
+    "green or tinted primary buttons",
+    "inline hex outside the palette",
+    "timeouts that outlive the component"
   ]
 }
