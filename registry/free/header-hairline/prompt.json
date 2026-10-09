@@ -2,7 +2,11 @@
   "component": "HeaderHairline",
   "intent": "A Geist-calibre site header: transparent at rest, a hairline and blur fade in on scroll and the bar condenses 64 → 56px; one hover highlight glides between links and stretches toward its destination.",
   "platform": "web",
-  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4 (container queries)", "animation": "motion/react (motion values + animate, layoutId for the current-route dot)" },
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 (container queries)",
+    "animation": "motion/react (motion values + animate for the highlight edges, layoutId for the current-route dot, variants with custom delays for the entrance, useInView for the demo's reveal-once)"
+  },
   "layout": {
     "header": "sticky top-0, full width; bar max-w 1280px, px 16/24px, is the @container",
     "height": "64px at rest, 56px after condenseAt (8px) of scroll",
@@ -22,18 +26,21 @@
     "highlight": "white/7.5%, radius 8px, 32px tall",
     "currentDot": "4px white circle under the current link",
     "searchChip": "inset ring white/10% (16% hover); kbd white/6% with an inset lower lip",
-    "primary": "#ffffff with black text, hover #e8e8ea"
+    "primary": "#ffffff with black text, hover #e8e8ea",
+    "approach": "monochrome: black, white and greys only; surface/page/menu colours in one COLOR token object"
   },
   "motion": {
     "surface": "separate layer, opacity 0→1 240ms ease-out, out 160ms ease-in",
     "condense": "height 64→56px, 320ms cubic-bezier(0.22,1,0.36,1)",
     "highlight": "two motion values (left/right edge); appear in place on first hover; leading edge spring 660/46, trailing edge spring 320/31 so it stretches toward the next link; fade out 160ms on leave",
-    "currentDot": "layoutId on spring 500/40",
+    "currentDot": "pops in once (scale 0→1, 300ms) after its link lands; afterwards layoutId on spring.ui 500/40 glides it between routes",
     "kbd": "⌘K / Ctrl K presses the chip 1px while held, then calls onSearch",
     "burger": "two 1.5px lines ±3.5px → ±45°, spring 500/34",
-    "menu": "fade 200ms; rows stagger 40ms (y -8→0, blur 4→0, 360ms ease-out)",
+    "menu": "fade 200ms; rows stagger 45ms (y 8→0, blur 6→0, 450ms ease-out), buttons follow",
     "press": "scale 0.97",
-    "reducedMotion": "highlight jumps, no height tween, opacity-only menu"
+    "reducedMotion": "150ms fades instead of rises; highlight jumps, no height tween, opacity-only menu",
+    "entrance": "first view ≤ 800ms: wordmark at 40ms, links from 120ms 45ms apart, then search chip, Sign in, primary button (or burger) from 360ms 45ms apart; each block opacity 0→1, y 8px→0, blur 6px→0, 450ms cubic-bezier(0.22,1,0.36,1)",
+    "demo": "docs article: breadcrumb, headline, lead, meta stagger 60ms from 340ms; later sections reveal once at 25% visibility, waiting for the page intro if already on screen"
   },
   "responsive": {
     "1440": "links centred on the page, search chip with label",
@@ -51,16 +58,27 @@
   ],
   "content": {
     "brand": "Kestrel (a deploy platform)",
-    "links": ["Product", "Docs", "Customers", "Pricing", "Changelog"],
+    "links": [
+      "Product",
+      "Docs",
+      "Customers",
+      "Pricing",
+      "Changelog"
+    ],
     "search": "Search docs  ⌘K",
-    "actions": ["Sign in", "Start deploying"],
-    "demo": "black stage with faint skeleton rows to scroll past"
+    "actions": [
+      "Sign in",
+      "Start deploying"
+    ],
+    "demo": "a Kestrel docs article, 'Roll back a deploy in one command': breadcrumb, headline, lead, meta line, a CLI block and two short sections"
   },
   "avoid": [
     "a floating glass pill or glow behind the button",
     "a rigid layoutId hover block without the edge stretch",
     "transitioning backdrop-filter directly",
     "wrapping right-cluster labels",
-    "gradient wordmark or coloured accents"
+    "gradient wordmark or coloured accents",
+    "measuring link offsetLeft through an ancestor that carries a filter or transform (it becomes the offsetParent); measure the list items",
+    "skeleton bars or a fake landing page as the demo stage"
   ]
 }

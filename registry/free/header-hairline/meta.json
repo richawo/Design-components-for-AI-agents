@@ -4,7 +4,7 @@
   "tier": "free",
   "platform": "web",
   "category": "headers",
-  "description": "A Geist-calibre site header: transparent at rest, a hairline and blur fade in on scroll, and one hover highlight that stretches as it glides between links.",
+  "description": "A Geist-calibre site header: items land in reading order, a hairline and blur fade in on scroll, and one hover highlight stretches as it glides between links.",
   "tags": [
     "header",
     "navbar",
@@ -13,7 +13,8 @@
     "hover highlight",
     "mobile menu",
     "command k",
-    "dark"
+    "dark",
+    "monochrome"
   ],
   "dependencies": [
     "motion"
@@ -36,7 +37,7 @@
     {
       "name": "activeIndex",
       "type": "number",
-      "description": "Controlled current route: white text, a 4px dot and aria-current. Omit to let the header track clicks."
+      "description": "Controlled current route: white text, a 4px dot (pops in on first view, then glides) and aria-current. Omit to let the header track clicks."
     },
     {
       "name": "defaultActiveIndex",
