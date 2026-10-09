@@ -357,115 +357,366 @@
     "added": "2026-10-07"
   },
   {
-    "slug": "dashboard-analytics",
-    "name": "Analytics Dashboard",
+    "slug": "chart-channel-breakdown",
+    "name": "Channel Breakdown",
     "tier": "pro",
     "platform": "web",
-    "category": "app",
-    "description": "A calm store dashboard: KPI cards that drive a morphing SVG area chart with crosshair, 7/30/90-day ranges, channel bars and an orders table that turns into cards.",
+    "category": "charts",
+    "description": "A dark ranked breakdown: a share strip grows segment by segment, rows land with counting figures, bars fill, and switching period re-sorts rows on a spring.",
     "tags": [
+      "chart",
+      "bar chart",
+      "breakdown",
+      "channels",
+      "share",
+      "ranking",
       "dashboard",
       "analytics",
-      "chart",
-      "kpi",
-      "sparkline",
-      "admin",
-      "sidebar",
-      "table",
-      "ecommerce"
+      "dark"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
-    "theme": "light",
-    "previewHeight": 1180,
-    "usage": "import { DashboardAnalytics } from \"@/components/design-for-ai/dashboard-analytics\";\n\nexport default function Page() {\n  return (\n    <DashboardAnalytics\n      storeName=\"Kiln & Co.\"\n      title=\"Good morning, Inès\"\n      days={days} // [{ date: \"2026-10-06\", revenue: 9412, orders: 151, sessions: 5120 }, …]\n      defaultRange=\"30d\"\n      currency=\"EUR\"\n      locale=\"fr-FR\"\n    />\n  );\n}",
+    "theme": "dark",
+    "previewHeight": 640,
+    "usage": "import { ChartChannelBreakdown } from \"@/components/design-for-ai/chart-channel-breakdown\";\n\nexport default function Channels() {\n  return (\n    <ChartChannelBreakdown\n      title=\"Revenue by channel\"\n      periods={[\n        {\n          key: \"30d\",\n          label: \"30D\",\n          caption: \"Last 30 days\",\n          channels: [\n            { name: \"Online store\", value: 106853, previous: 98110 },\n            { name: \"Instagram\", value: 59639, previous: 48870 },\n          ],\n        },\n      ]}\n      accent=\"#7dd3fc\"\n    />\n  );\n}",
     "props": [
       {
-        "name": "days",
-        "type": "DashboardDay[]",
-        "default": "180 seeded demo days",
-        "description": "Daily { date, revenue, orders, sessions }, oldest first. Supply twice the longest range so every KPI has a previous period to compare with."
+        "name": "periods",
+        "type": "{ key: string; label: string; caption?: string; channels: { name: string; value: number; previous?: number }[] }[]",
+        "default": "7D / 30D / 90D of a ceramics shop",
+        "description": "One entry per period. Channels are ranked by value; shares are computed from the period total. previous adds a small delta."
       },
       {
-        "name": "defaultRange",
-        "type": "\"7d\" | \"30d\" | \"90d\"",
+        "name": "defaultPeriod",
+        "type": "string",
         "default": "\"30d\"",
-        "description": "Range selected on first render."
+        "description": "Period key shown first."
       },
       {
-        "name": "defaultMetric",
-        "type": "\"revenue\" | \"orders\" | \"aov\" | \"conversion\"",
-        "default": "\"revenue\"",
-        "description": "KPI the main chart shows first. Clicking a KPI card switches it."
-      },
-      {
-        "name": "channels",
-        "type": "{ name: string; share: Record<Range, number> }[]",
-        "description": "Revenue share per channel for each range (0–1). Amounts are derived from the period's revenue."
-      },
-      {
-        "name": "orders",
-        "type": "DashboardOrder[]",
-        "description": "Recent orders: id, customer, items, channel, status (Paid | Fulfilled | Pending | Refunded), total, placed."
-      },
-      {
-        "name": "nav",
-        "type": "{ label: string; icon: DashboardNavIcon; href: string; badge?: string; active?: boolean }[]",
-        "description": "Sidebar links. Icons are keys: overview, orders, products, customers, analytics, marketing, settings."
-      },
-      {
-        "name": "channelsNav",
-        "type": "string[]",
-        "description": "Secondary sidebar list under 'Sales channels'."
-      },
-      {
-        "name": "payout",
-        "type": "{ label: string; amount: string; note: string }",
-        "description": "The payout card pinned to the bottom of the sidebar."
-      },
-      {
-        "name": "storeName",
-        "type": "string",
-        "default": "\"Kiln & Co.\"",
-        "description": "Workspace name in the sidebar and mobile top bar."
-      },
-      {
-        "name": "storeUrl",
-        "type": "string",
-        "description": "Secondary line under the store name."
-      },
-      {
-        "name": "user",
-        "type": "{ name: string; role: string }",
-        "description": "Signed-in person at the foot of the sidebar."
+        "name": "onPeriodChange",
+        "type": "(key: string) => void",
+        "description": "Called when the period changes."
       },
       {
         "name": "title",
         "type": "string",
-        "default": "\"Good morning, Inès\"",
-        "description": "Page heading."
+        "default": "\"Revenue by channel\"",
+        "description": "Label above the total."
       },
       {
-        "name": "subtitle",
+        "name": "format",
+        "type": "\"currency\" | \"number\"",
+        "default": "\"currency\"",
+        "description": "How values and the total are written."
+      },
+      {
+        "name": "accent",
         "type": "string",
-        "description": "Date and freshness line under the heading."
+        "default": "theme ink",
+        "description": "The one accent: the leading channel's segment and bar. The rest step down a grey ramp."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface palette."
       },
       {
         "name": "currency",
         "type": "string",
         "default": "\"USD\"",
-        "description": "ISO currency code for Intl.NumberFormat."
+        "description": "ISO currency code."
       },
       {
         "name": "locale",
         "type": "string",
         "default": "\"en-US\"",
-        "description": "Locale for number formatting."
+        "description": "Locale for figures."
       }
     ],
-    "added": "2026-10-07"
+    "added": "2026-10-09"
+  },
+  {
+    "slug": "chart-revenue-trend",
+    "name": "Revenue Trend",
+    "tier": "pro",
+    "platform": "web",
+    "category": "charts",
+    "description": "A dark period-over-period area chart: the line strokes in, its fill rises from the baseline, the total counts up and a spring crosshair reads any day.",
+    "tags": [
+      "chart",
+      "area chart",
+      "line chart",
+      "revenue",
+      "analytics",
+      "crosshair",
+      "dashboard",
+      "svg",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 640,
+    "usage": "import { ChartRevenueTrend } from \"@/components/design-for-ai/chart-revenue-trend\";\n\nexport default function Revenue({ days }: { days: { date: string; value: number }[] }) {\n  return (\n    <ChartRevenueTrend\n      title=\"Revenue\"\n      data={days} // oldest first, at least 2× the longest range\n      defaultRange=\"30d\"\n      currency=\"EUR\"\n      locale=\"fr-FR\"\n      accent=\"#7dd3fc\"\n    />\n  );\n}",
+    "props": [
+      {
+        "name": "data",
+        "type": "{ date: string; value: number }[]",
+        "default": "180 seeded days",
+        "description": "Daily values, oldest first (ISO dates). Supply at least twice the longest range so every range has a previous period to compare with."
+      },
+      {
+        "name": "ranges",
+        "type": "{ key: string; label: string; days: number }[]",
+        "default": "7D / 30D / 90D",
+        "description": "Range switcher options. The switcher hides with one range."
+      },
+      {
+        "name": "defaultRange",
+        "type": "string",
+        "default": "\"30d\"",
+        "description": "Range key shown first."
+      },
+      {
+        "name": "onRangeChange",
+        "type": "(key: string) => void",
+        "description": "Called when the range changes."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Revenue\"",
+        "description": "Metric name above the total."
+      },
+      {
+        "name": "unit",
+        "type": "string",
+        "default": "\"per day\"",
+        "description": "Muted suffix after the title."
+      },
+      {
+        "name": "format",
+        "type": "\"currency\" | \"number\" | \"percent\"",
+        "default": "\"currency\"",
+        "description": "How figures and axis labels are written."
+      },
+      {
+        "name": "decimals",
+        "type": "number",
+        "default": "0",
+        "description": "Fraction digits for the total and tooltip."
+      },
+      {
+        "name": "aggregate",
+        "type": "\"sum\" | \"average\"",
+        "default": "\"sum\"",
+        "description": "Whether the headline is the period's total or its mean."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "theme ink",
+        "description": "The one accent: this period's line, fill and crosshair dot. Monochrome by default."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface palette."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"USD\"",
+        "description": "ISO currency code."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-US\"",
+        "description": "Locale for every figure."
+      }
+    ],
+    "added": "2026-10-09"
+  },
+  {
+    "slug": "dashboard-kpi-cards",
+    "name": "KPI Cards",
+    "tier": "pro",
+    "platform": "web",
+    "category": "app",
+    "description": "A dark row of selectable KPI cards: figures count up out of a blur, sparklines stroke in, deltas tick, and a 7/30/90-day switch re-counts and morphs every card.",
+    "tags": [
+      "kpi",
+      "stat cards",
+      "dashboard",
+      "sparkline",
+      "metrics",
+      "analytics",
+      "count up",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 560,
+    "usage": "import { DashboardKpiCards } from \"@/components/design-for-ai/dashboard-kpi-cards\";\n\nexport default function Overview() {\n  return (\n    <DashboardKpiCards\n      title=\"Store overview\"\n      periods={[\n        {\n          key: \"30d\",\n          label: \"30D\",\n          caption: \"7 Sep – 6 Oct · vs the 30 days before\",\n          stats: [{ key: \"revenue\", label: \"Revenue\", format: \"currency\", value: 284120, previous: 252930, series: daily }],\n        },\n      ]}\n      onSelect={(key) => setChartMetric(key)}\n      accent=\"#7dd3fc\"\n    />\n  );\n}",
+    "props": [
+      {
+        "name": "periods",
+        "type": "{ key: string; label: string; caption?: string; stats: KpiStat[] }[]",
+        "default": "7D / 30D / 90D of a seeded ceramics shop",
+        "description": "One entry per range. Each stat is { key, label, value, previous, format?: \"currency\" | \"number\" | \"percent\", decimals?, series: number[], invert? }. The switcher hides with a single period."
+      },
+      {
+        "name": "defaultPeriod",
+        "type": "string",
+        "default": "\"30d\"",
+        "description": "Period key shown first."
+      },
+      {
+        "name": "onPeriodChange",
+        "type": "(key: string) => void",
+        "description": "Called when the period switch changes."
+      },
+      {
+        "name": "selected",
+        "type": "string",
+        "description": "Controlled selected stat key, e.g. the metric a neighbouring chart shows. Omit to let the cards manage it."
+      },
+      {
+        "name": "defaultSelected",
+        "type": "string",
+        "default": "first stat",
+        "description": "Initially selected stat when uncontrolled."
+      },
+      {
+        "name": "onSelect",
+        "type": "(key: string) => void",
+        "description": "Called with a stat key when a card is pressed."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Store overview\"",
+        "description": "Heading above the row."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "theme ink",
+        "description": "The one accent: selection ring, selected sparkline and dot. Monochrome by default."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface palette."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"USD\"",
+        "description": "ISO currency for currency stats."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-US\"",
+        "description": "Locale for every figure."
+      }
+    ],
+    "added": "2026-10-09"
+  },
+  {
+    "slug": "dashboard-orders-table",
+    "name": "Orders Table",
+    "tier": "pro",
+    "platform": "web",
+    "category": "app",
+    "description": "A dark recent-orders table: rows rise in with drawn avatar rings and counting totals, status tabs re-filter on a spring, and it folds into cards in narrow columns.",
+    "tags": [
+      "table",
+      "orders",
+      "dashboard",
+      "admin",
+      "data table",
+      "status",
+      "filter",
+      "ecommerce",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 720,
+    "usage": "import { DashboardOrdersTable } from \"@/components/design-for-ai/dashboard-orders-table\";\n\nexport default function Orders() {\n  return (\n    <DashboardOrdersTable\n      orders={[\n        { id: \"#4823\", customer: \"Amara Okafor\", items: \"Tidepool mug ×2\", channel: \"Online store\", status: \"Paid\", total: 96, placed: \"Today, 09:42\" },\n      ]}\n      viewAllHref=\"/orders\"\n      currency=\"EUR\"\n      locale=\"fr-FR\"\n    />\n  );\n}",
+    "props": [
+      {
+        "name": "orders",
+        "type": "{ id; customer; items; channel; status: \"Paid\" | \"Pending\" | \"Fulfilled\" | \"Refunded\"; total: number; placed: string }[]",
+        "default": "7 demo orders",
+        "description": "Rows in the order you pass them (newest first). Refunded totals are struck through."
+      },
+      {
+        "name": "statuses",
+        "type": "OrderStatus[]",
+        "default": "[\"Paid\", \"Pending\", \"Fulfilled\", \"Refunded\"]",
+        "description": "Filter tabs after “All”, each with a live count. An empty filter shows a designed empty state."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Recent orders\"",
+        "description": "Heading."
+      },
+      {
+        "name": "viewAllHref",
+        "type": "string",
+        "default": "\"#orders\"",
+        "description": "Where the “View all orders” link goes."
+      },
+      {
+        "name": "viewAllLabel",
+        "type": "string",
+        "default": "\"View all orders\"",
+        "description": "Link text."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "theme ink",
+        "description": "The one accent: the active filter's count. Status dots carry semantic colour; nothing else does."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface palette."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"USD\"",
+        "description": "ISO currency code for totals."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-US\"",
+        "description": "Locale for totals."
+      }
+    ],
+    "added": "2026-10-09"
   },
   {
     "slug": "feature-sticky-scroll",
