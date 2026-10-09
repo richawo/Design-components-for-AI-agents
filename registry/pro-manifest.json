@@ -2815,7 +2815,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "three-d",
-    "description": "A dotted Three.js globe built from real coastlines, with comet arcs flying between cities, pulsing markers, a soft atmosphere and drag-to-spin inertia.",
+    "description": "A grey dotted Three.js globe from real coastlines: land spreads out on first view, then accent arcs draw between cities, with comets, labelled markers and drag-to-spin.",
     "tags": [
       "three.js",
       "webgl",
@@ -2824,32 +2824,33 @@
       "arcs",
       "map",
       "network",
-      "hero"
+      "monochrome"
     ],
     "dependencies": [
-      "three"
+      "three",
+      "motion"
     ],
     "theme": "dark",
     "previewHeight": 760,
-    "usage": "import { ThreeGlobeArcs } from \"@/components/design-for-ai/three-globe-arcs\";\n\n<div className=\"relative aspect-square w-full max-w-[720px]\">\n  <ThreeGlobeArcs\n    focus={[40, -40]}\n    colors={{ dots: \"#e6f0ff\", arc: \"#4cc3ff\", glow: \"#6fb8ff\" }}\n    routes={[{ from: [51.5, -0.12], to: [40.71, -74.0] }]}\n  />\n</div>",
+    "usage": "import { ThreeGlobeArcs } from \"@/components/design-for-ai/three-globe-arcs\";\n\n<div className=\"relative aspect-square w-full max-w-[640px]\">\n  <ThreeGlobeArcs\n    focus={[40, -40]}\n    accent=\"#4cc3ff\"\n    routes={[{ from: [51.5, -0.12], to: [40.71, -74.0], fromLabel: \"London\", toLabel: \"New York\" }]}\n  />\n</div>",
     "props": [
       {
         "name": "routes",
         "type": "{ from: [lat, lon]; to: [lat, lon]; fromLabel?: string; toLabel?: string }[]",
         "default": "11 global routes",
-        "description": "Great-circle arcs with a travelling comet. Unique endpoints get a pulsing marker; labels show on hover or tap."
+        "description": "Great-circle arcs with a travelling comet. Unique endpoints get a pulsing marker; labels show on hover, tap or keyboard turn."
       },
       {
-        "name": "colors",
-        "type": "{ dots?: string; arc?: string; glow?: string }",
-        "default": "{ dots: \"#f4efe9\", arc: \"#ff7a45\", glow: \"#ff9a6b\" }",
-        "description": "Land dots, the accent for arcs, markers and twinkles, and the atmosphere."
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ff7a45\"",
+        "description": "The one colour on the globe: arcs, comets and markers. Land, rim and atmosphere stay grey."
       },
       {
         "name": "focus",
         "type": "[number, number]",
         "default": "[24, 10]",
-        "description": "Latitude and longitude that face the camera on mount."
+        "description": "Latitude and longitude that face the camera on mount; the land reveal spreads out from here."
       },
       {
         "name": "speed",
@@ -2861,12 +2862,18 @@
         "name": "interactive",
         "type": "boolean",
         "default": "true",
-        "description": "Drag to spin with inertia and tilt."
+        "description": "Drag or arrow keys to spin with inertia and tilt."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "default": "\"Route globe\"",
+        "description": "Accessible name; the route count and controls are appended."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Classes for the host element, which fills its parent."
+        "description": "Classes for the root, which fills its parent."
       }
     ],
     "added": "2026-10-07"
@@ -3052,7 +3059,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "three-d",
-    "description": "A Three.js sphere of 14,000 shader-lit particles breathing with simplex noise, wrapped in a tilted orbit. Pointer parallax, responsive, offscreen-aware.",
+    "description": "A Three.js sphere of 14,000 grey shader-lit particles that condense from a loose cloud on first view, wrapped in a self-drawing orbit. Touch tints it with one accent.",
     "tags": [
       "three.js",
       "webgl",
@@ -3060,21 +3067,22 @@
       "particles",
       "shader",
       "glsl",
-      "hero",
-      "background"
+      "sphere",
+      "monochrome"
     ],
     "dependencies": [
-      "three"
+      "three",
+      "motion"
     ],
     "theme": "dark",
     "previewHeight": 720,
-    "usage": "import { ThreeParticleSphere } from \"@/components/design-for-ai/three-particle-sphere\";\n\n<div className=\"relative h-[560px]\">\n  <ThreeParticleSphere colors={[\"#e8f6ff\", \"#4cc3ff\", \"#0b2440\"]} density={10000} />\n</div>",
+    "usage": "import { ThreeParticleSphere } from \"@/components/design-for-ai/three-particle-sphere\";\n\n<div className=\"relative h-[560px] bg-black\">\n  <ThreeParticleSphere accent=\"#4cc3ff\" density={10000} />\n</div>",
     "props": [
       {
-        "name": "colors",
-        "type": "[string, string, string]",
-        "default": "[\"#fff1e4\", \"#ff7a45\", \"#5b1a2e\"]",
-        "description": "Rim highlight, mid-tone and core colours."
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ff7a45\"",
+        "description": "The one colour: particles swelling under the pointer and the ripple a click sends. The sphere itself is grey."
       },
       {
         "name": "density",
@@ -3091,20 +3099,25 @@
       {
         "name": "turbulence",
         "type": "number",
-        "default": "1",
+        "default": "0.55",
         "description": "Noise displacement strength, 0–1."
       },
       {
         "name": "interactive",
         "type": "boolean",
         "default": "true",
-        "description": "Tilt toward the pointer."
+        "description": "Lean toward the pointer, swell under it and ripple on click."
       },
       {
         "name": "ring",
         "type": "boolean",
         "default": "true",
         "description": "Show the orbiting particle ring."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Classes for the host element, which fills its parent."
       }
     ],
     "added": "2026-10-07"
@@ -3115,7 +3128,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "three-d",
-    "description": "A shader-built AI voice orb with thin-film sheen and a fresnel rim that breathes, listens to your mic, swirls while thinking and pulses word by word as it speaks.",
+    "description": "A dark-glass voice orb whose rim draws itself on first view. One accent burns brighter per state as it listens to your mic, swirls in thought and pulses as it speaks.",
     "tags": [
       "three.js",
       "webgl",
@@ -3124,7 +3137,7 @@
       "orb",
       "shader",
       "microphone",
-      "ai"
+      "monochrome"
     ],
     "dependencies": [
       "three",
@@ -3168,10 +3181,10 @@
         "description": "Lines voiced by the synthetic speech envelope; the caption lights up word by word in sync with the pulses."
       },
       {
-        "name": "tones",
-        "type": "Partial<Record<VoiceOrbState, { deep?: string; rim?: string; accent?: string }>>",
-        "default": "amber idle, coral listening, teal thinking, honey speaking",
-        "description": "Body, rim and accent colours per state. Blended, never snapped."
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ff7a45\"",
+        "description": "The one colour: the orb's inner light and halo, the state dots and the mic level ring. States change its brightness (idle 35%, listening 100%, thinking 65%, speaking 85%), never its hue."
       },
       {
         "name": "showControls",
