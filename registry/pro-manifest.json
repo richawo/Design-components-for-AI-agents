@@ -2628,7 +2628,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "three-d",
-    "description": "A Three.js torus knot rendered entirely in mono characters from a runtime glyph atlas, with edge-aware stroke glyphs, a hover torch and drag-to-spin inertia.",
+    "description": "A Three.js torus knot drawn in mono characters that resolve row by row out of a scramble, with edge-aware stroke glyphs, an accent torch and drag-to-spin.",
     "tags": [
       "three.js",
       "webgl",
@@ -2645,7 +2645,7 @@
     ],
     "theme": "dark",
     "previewHeight": 820,
-    "usage": "import { ThreeAsciiObject } from \"@/components/design-for-ai/three-ascii-object\";\n\n<div className=\"relative h-[560px]\">\n  <ThreeAsciiObject shape=\"twist\" cellSize={12} color=\"#d9f99d\" />\n</div>",
+    "usage": "import { ThreeAsciiObject } from \"@/components/design-for-ai/three-ascii-object\";\n\n<div className=\"relative h-[560px]\">\n  <ThreeAsciiObject shape=\"twist\" cellSize={12} accent=\"#7dd3fc\" />\n</div>",
     "props": [
       {
         "name": "shape",
@@ -2662,14 +2662,20 @@
       {
         "name": "cellSize",
         "type": "number",
-        "default": "14",
+        "default": "12",
         "description": "Character cell height in CSS px; width is 0.6×. Rounded to whole device pixels so glyphs stay crisp. Updates live."
       },
       {
         "name": "color",
         "type": "string",
-        "default": "\"#f3eadb\"",
-        "description": "Glyph tint. Brightness within the tint follows the lighting."
+        "default": "\"#ececec\"",
+        "description": "Glyph tint, neutral white by default. Brightness within the tint follows the lighting."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ff7a45\"",
+        "description": "The one accent: glyphs lit by the pointer's torch lean toward it (up to 80%)."
       },
       {
         "name": "background",
@@ -2701,6 +2707,11 @@
         "description": "Called when the character grid changes size."
       },
       {
+        "name": "onReveal",
+        "type": "() => void",
+        "description": "Fires once as the glyphs start to resolve on first view, so surrounding UI can follow."
+      },
+      {
         "name": "label",
         "type": "string",
         "description": "Accessible description; a sensible default names the shape."
@@ -2719,7 +2730,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "three-d",
-    "description": "A drifting Three.js landscape drawn only in topographic contour lines. Click to raise a survey pin whose contours redraw outward; a readout tracks the pointer.",
+    "description": "A drifting Three.js landscape drawn only in contour lines that sweep in from the viewer. Click to raise a survey pin whose contours redraw outward.",
     "tags": [
       "three.js",
       "webgl",
@@ -2739,7 +2750,7 @@
     ],
     "theme": "dark",
     "previewHeight": 780,
-    "usage": "import { ThreeContourTerrain } from \"@/components/design-for-ai/three-contour-terrain\";\n\n<div className=\"relative h-[640px] overflow-hidden rounded-2xl\">\n  <ThreeContourTerrain title=\"Vire Basin — Sheet 4\" colors={{ accent: \"#7ee0b8\" }} />\n</div>",
+    "usage": "import { ThreeContourTerrain } from \"@/components/design-for-ai/three-contour-terrain\";\n\n<div className=\"relative h-[640px] overflow-hidden rounded-2xl\">\n  <ThreeContourTerrain title=\"Vire Basin — Sheet 4\" accent=\"#7ee0b8\" />\n</div>",
     "props": [
       {
         "name": "title",
@@ -2772,10 +2783,16 @@
         "description": "Contour interval in metres; every fifth line is an index contour."
       },
       {
-        "name": "colors",
-        "type": "{ line?: string; accent?: string }",
-        "default": "{ line: \"#ece8df\", accent: \"#f5a524\" }",
-        "description": "Contour colour and the single accent for index lines, ripples and pins."
+        "name": "lineColor",
+        "type": "string",
+        "default": "\"#e6e6e6\"",
+        "description": "Minor contour colour, drawn at 46%. Neutral white by default."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#f5a524\"",
+        "description": "The one accent: index contours, pin ripples, pin labels and the legend swatch."
       },
       {
         "name": "speed",
@@ -2884,7 +2901,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "three-d",
-    "description": "A brushed-metal membership card in Three.js with a thin-film foil shader, etched type and studio reflections. It tilts on a spring and flips on click.",
+    "description": "A brushed-metal membership card in Three.js with thin-film foil and etched type. It turns in out of the dark under a passing glint, tilts and flips.",
     "tags": [
       "three.js",
       "webgl",
@@ -2976,6 +2993,11 @@
         "description": "Pointer and device-orientation tilt. Flipping always works."
       },
       {
+        "name": "onReveal",
+        "type": "() => void",
+        "description": "Fires once as the card starts its turn-in on first view, so surrounding UI can follow it in."
+      },
+      {
         "name": "className",
         "type": "string",
         "description": "Classes for the root, which fills its parent."
@@ -2989,7 +3011,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "three-d",
-    "description": "A tilted cluster of sculpted Three.js keycaps that answer your real keyboard. Caps sink on a spring, light bleeds from beneath, and chords like ⌘K show their caption.",
+    "description": "Sculpted Three.js keycaps that drop onto their plate in reading order, then answer your real keyboard: caps sink on a spring and chords like ⌘K show a caption.",
     "tags": [
       "three.js",
       "webgl",
@@ -3007,7 +3029,7 @@
     ],
     "theme": "dark",
     "previewHeight": 700,
-    "usage": "import { ThreeKeycaps } from \"@/components/design-for-ai/three-keycaps\";\n\n<div className=\"h-[520px]\">\n  <ThreeKeycaps\n    chords={[{ keys: [\"cmd\", \"k\"], caption: \"Search everything\" }]}\n    palette={{ accent: \"#3b82f6\", glow: \"#8ab4ff\" }}\n  />\n</div>",
+    "usage": "import { ThreeKeycaps } from \"@/components/design-for-ai/three-keycaps\";\n\n<div className=\"h-[520px]\">\n  <ThreeKeycaps\n    chords={[{ keys: [\"cmd\", \"k\"], caption: \"Search everything\" }]}\n    accent=\"#3b82f6\"\n  />\n</div>",
     "props": [
       {
         "name": "rows",
@@ -3022,10 +3044,16 @@
         "description": "Key-id combinations that light together and show a caption."
       },
       {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#e9572b\"",
+        "description": "The one accent: the accent-tone cap, and (28% lighter) the LED light that bleeds from beneath a pressed cap."
+      },
+      {
         "name": "palette",
-        "type": "{ alpha?, mod?, accent?, legend?, accentLegend?, glow? }",
-        "default": "{ alpha: \"#34353a\", mod: \"#232428\", accent: \"#e9572b\", legend: \"#e7e3da\", glow: \"#ffa25a\" }",
-        "description": "Cap colours, legends and the LED light that bleeds from beneath."
+        "type": "{ alpha?, mod?, legend? }",
+        "default": "{ alpha: \"#34353a\", mod: \"#232428\", legend: \"#e6e6e6\" }",
+        "description": "The neutral cap plastics and legend ink."
       },
       {
         "name": "demo",
