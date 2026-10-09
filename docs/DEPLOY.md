@@ -3,14 +3,26 @@
 The site runs on Cloudflare Workers as its own Worker, `design-yaps`, on
 `design.yaps.ai`. It follows the same pattern as `launch-yaps` and the other
 Yaps subdomains: one Worker per product, a custom-domain route in
-`wrangler.jsonc`, and Cloudflare Workers Builds deploying every push to
-`main`. It doesn't touch the apex domain or the main `yaps-site` Worker.
+`wrangler.jsonc`, with support for Cloudflare Workers Builds deploying every
+push to `main`. It doesn't touch the apex domain or the main `yaps-site` Worker.
 
 Next.js runs on Workers through the [OpenNext adapter](https://opennext.js.org/cloudflare).
 Every page is prerendered at build time. Only the licence, checkout, Pro
 source and Markdown routes run in the Worker, and none of them read the disk:
 `scripts/build-registry.mjs` bundles sources, docs and blog posts into
 `registry/__generated__/` so they ship inside the Worker.
+
+## Production status (9 October 2026)
+
+The site is live at <https://design.yaps.ai>, with a fallback at
+<https://design-yaps.richardawoyemi.workers.dev>. The initial production
+deployment includes all 20 free and 16 Pro components from `main` at
+`85e4bc0`, with `LICENSE_SECRET` configured as a runtime secret.
+
+The first deployment was published from an authenticated terminal. Workers
+Builds is not connected yet: configure a read-only `PRO_REPO_TOKEN` before
+enabling automatic builds so they retain the Pro previews and gated source.
+Stripe is not configured yet; checkout displays the email fallback.
 
 ## First deploy (Workers Builds)
 
