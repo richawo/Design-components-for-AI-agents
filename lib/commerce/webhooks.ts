@@ -26,11 +26,11 @@ async function paymentState(stripe: Stripe, intentId: string | null): Promise<"a
 }
 
 async function latestInvoice(stripe: Stripe, value: string | Stripe.Invoice | null) {
-  return typeof value === "string" ? stripe.invoices.retrieve(value, { expand: ["payments.data.payment.payment_intent"] }) : value;
+  return typeof value === "string" ? stripe.invoices.retrieve(value, { expand: ["payments"] }) : value;
 }
 
 export async function fulfillPurchase(env: CommerceEnv, sessionId: string, stripe = stripeClient(env)) {
-  const session = await stripe.checkout.sessions.retrieve(sessionId, { expand: ["line_items.data.price.product"] });
+  const session = await stripe.checkout.sessions.retrieve(sessionId, { expand: ["line_items"] });
   if (session.metadata?.app !== APP) return null;
   if (session.status !== "complete" || session.payment_status === "unpaid") return null;
   const userId = session.client_reference_id;
@@ -43,7 +43,7 @@ export async function fulfillPurchase(env: CommerceEnv, sessionId: string, strip
   let sub: Stripe.Subscription | null = null;
   let invoice: Stripe.Invoice | null = null;
   if (session.subscription) {
-    sub = await stripe.subscriptions.retrieve(objectId(session.subscription)!, { expand: ["latest_invoice.payments.data.payment.payment_intent"] });
+    sub = await stripe.subscriptions.retrieve(objectId(session.subscription)!, { expand: ["latest_invoice.payments"] });
     if (sub.metadata.app !== APP || sub.metadata.user_id !== userId) throw new Error("Subscription ownership mismatch");
     priceId = sub.items.data[0]?.price.id;
     invoice = await latestInvoice(stripe, sub.latest_invoice);
@@ -82,7 +82,7 @@ async function recordInvoice(env: CommerceEnv, licenceId: string, invoice: Strip
 }
 
 export async function reconcileSubscription(env: CommerceEnv, subscriptionId: string, stripe = stripeClient(env)) {
-  const sub = await stripe.subscriptions.retrieve(subscriptionId, { expand: ["latest_invoice.payments.data.payment.payment_intent"] });
+  const sub = await stripe.subscriptions.retrieve(subscriptionId, { expand: ["latest_invoice.payments"] });
   if (sub.metadata.app !== APP) return;
   let row = await env.COMMERCE_DB.prepare("SELECT * FROM licences WHERE subscription_id=?").bind(sub.id).first<LicenceRow>();
   if (!row) {

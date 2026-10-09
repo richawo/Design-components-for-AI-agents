@@ -58,7 +58,7 @@ export async function startCheckout(env: CommerceEnv, user: AccountUser, planId:
     if (existing) throw new CommerceError(409, "You already have a licence. Manage it from your account to avoid another charge.");
     const price = await stripe.prices.retrieve(priceId, { expand: ["product"] });
     const product = typeof price.product === "string" ? null : price.product;
-    if (!price.active || price.currency !== "usd" || price.unit_amount !== plan.price * 100 || !product || product.deleted || product.metadata.app !== APP || price.metadata.plan !== plan.id || Boolean(price.recurring) !== (plan.mode === "subscription")) {
+    if (!price.active || price.currency !== "usd" || price.unit_amount !== plan.price * 100 || !product || product.deleted || product.metadata.app !== APP || price.metadata.plan !== plan.id || Boolean(price.recurring) !== (plan.mode === "subscription") || (price.recurring && (price.recurring.interval !== "year" || price.recurring.interval_count !== 1))) {
       throw new Error("Configured price does not match this product");
     }
     const customer = await customerFor(env, user, stripe);
