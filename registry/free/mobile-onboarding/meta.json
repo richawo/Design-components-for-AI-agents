@@ -4,47 +4,60 @@
   "tier": "free",
   "platform": "mobile",
   "category": "mobile",
-  "description": "A three-slide React Native onboarding for a habit app: drawn poster illustrations, colour that blends as you swipe and a Next button that grows into Get started.",
+  "description": "A four-step React Native onboarding where a swipe moves a day forward: the sky blends dawn to golden hour, SVG hills parallax and a grove grows under a glass card.",
   "tags": [
     "onboarding",
     "carousel",
     "react native",
-    "pagination",
+    "parallax",
+    "glassmorphism",
     "walkthrough",
-    "habit app"
+    "svg illustration"
   ],
-  "dependencies": [],
+  "dependencies": ["expo-blur", "expo-linear-gradient", "react-native-svg"],
   "theme": "light",
-  "previewHeight": 900,
-  "usage": "import { MobileOnboarding } from \"@/components/design-for-ai/native/mobile-onboarding\";\n\nexport default function Welcome({ navigation }) {\n  return <MobileOnboarding brand=\"lumen\" onFinish={() => navigation.replace(\"Home\")} />;\n}",
+  "previewHeight": 940,
+  "usage": "// Expo: npx expo install expo-blur expo-linear-gradient react-native-svg\n// Bare React Native: npx install-expo-modules, then install the three packages.\nimport { MobileOnboarding } from \"@/components/design-for-ai/native/mobile-onboarding\";\n\nexport default function Welcome({ navigation }) {\n  return <MobileOnboarding brand=\"grove\" onFinish={() => navigation.replace(\"Home\")} />;\n}",
   "props": [
     {
       "name": "brand",
       "type": "string",
       "default": "\"grove\"",
-      "description": "Wordmark in the top bar."
+      "description": "Wordmark centred in the top bar."
     },
     {
-      "name": "slides",
-      "type": "OnboardingSlide[]",
-      "description": "Kicker, title, body, background, accent and art (seed | chain | steps) per slide."
+      "name": "steps",
+      "type": "OnboardingStep[]",
+      "description": "Kicker, title, body, clock minutes, a three-stop sky gradient and a glass chip (breath | focus | week | reminder) per step. Three or four steps read best."
     },
     {
       "name": "skipLabel",
       "type": "string",
       "default": "\"Skip\"",
-      "description": "Top-right skip label."
+      "description": "Top-right glass pill; jumps to the last step through every sky in between."
+    },
+    {
+      "name": "nextLabel",
+      "type": "string",
+      "default": "\"Continue\"",
+      "description": "Button label on every step but the last."
     },
     {
       "name": "finishLabel",
       "type": "string",
-      "default": "\"Get started\"",
-      "description": "Label on the final pill button."
+      "default": "\"Plant my first tree\"",
+      "description": "Button label on the last step."
+    },
+    {
+      "name": "doneLabel",
+      "type": "string",
+      "default": "\"Planted. See you at 7:30\"",
+      "description": "Label after the final press, while the flourish plays."
     },
     {
       "name": "onFinish",
       "type": "() => void",
-      "description": "Called by Get started, or Skip on the last slide."
+      "description": "Called about a second after the final press, once the leaves have settled."
     }
   ],
   "added": "2026-10-07"
