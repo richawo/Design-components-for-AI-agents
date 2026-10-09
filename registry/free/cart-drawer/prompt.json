@@ -1,13 +1,12 @@
 {
   "component": "CartDrawer",
-  "intent": "A slide-over shopping bag with drawn thumbnails, steppers, inline undo, an animated free-shipping bar and an upsell, becoming a full-height bottom sheet on phones.",
+  "intent": "Monochrome slide-over cart that choreographs every open: blocks rise from blur, line items stagger, the free-shipping meter fills after landing and the totals count up; undo lives in place; a bottom sheet on phones.",
   "platform": "web",
   "stack": {
     "framework": "React 19",
-    "styling": "Tailwind CSS v4",
-    "animation": "motion/react",
-    "icons": "lucide-react",
-    "fonts": "font-display, font-sans, font-mono"
+    "styling": "Tailwind CSS v4 (CSS variables)",
+    "animation": "motion/react (variants with custom delays, useMotionValue, useTransform, useVelocity, animate, AnimatePresence, useDragControls)",
+    "icons": "lucide-react"
   },
   "layout": {
     "desktop": "440px right panel, full height, scrim black/60 with 2px blur",
@@ -19,7 +18,8 @@
       "dashed upsell card",
       "footer: subtotal/shipping dl + 56px checkout pill with total capsule + reassurance line"
     ],
-    "item": "72x84 thumbnail, name/variant left, line price right, stepper + Remove along the bottom"
+    "item": "72x84 thumbnail, name/variant left, line price right, stepper + Remove along the bottom",
+    "demoStage": "only the bar the trigger lives in, on #08080a; nothing behind the drawer"
   },
   "typography": {
     "title": {
@@ -46,26 +46,35 @@
     "numbers": "tabular-nums everywhere money appears"
   },
   "color": {
-    "panel": "#0b0b0c",
-    "text": "white at measured opacities",
-    "shippingCard": "white/4%",
-    "accent": "#d7e3a4 lime (count chip, success, total capsule, undo pill)",
-    "primary": "white pill with black text",
-    "undoBar": "#1c1c1f",
-    "thumbBg": "#161618",
-    "storeBg": "#09090b",
-    "scrim": "black at 60%, 2px blur"
+    "tokens": "PALETTE.dark / PALETTE.light → --cd-panel, --cd-raised, --cd-thumb, --cd-ink, --cd-on-ink, --cd-scrim, --cd-shadow, --cd-accent, --cd-on-accent",
+    "dark": {
+      "panel": "#0b0b0c",
+      "raised": "#1a1a1d",
+      "thumb": "#161618",
+      "ink": "#f4f4f5",
+      "scrim": "rgba(0,0,0,0.6)"
+    },
+    "light": {
+      "panel": "#ffffff",
+      "raised": "#f1f1f2",
+      "thumb": "#f1f1f2",
+      "ink": "#111113",
+      "scrim": "rgba(17,17,19,0.32)"
+    },
+    "accent": "#d7e3a4 via the accent prop: the total capsule on the checkout button only, with #0b0b0c text",
+    "everythingElse": "ink at opacities: trigger badge, meter fill, unlocked check, Free, Pairs well, Undo pill, drain line",
+    "products": "thumbnails use each product's own colour (depicted)"
   },
   "motion": {
-    "panel": "spring stiffness 340 damping 36; x 100% -> 0 desktop, y 100% -> 0 mobile",
-    "shipping": "fill width + truck left on spring stiffness 120 damping 20; truck rotates [0,-8,0] on unlock",
-    "price": "vertical roll, 280ms",
-    "rows": "height auto <-> 0, 300ms, ease [0.2,0.8,0.2,1]",
-    "undo": "2px line drains over 5s (CSS keyframes tm-cart-drawer-undo), pauses on hover/focus",
-    "sheetDrag": "handle-only drag; close past 140px or 700px/s",
-    "reducedMotion": "opacity fades only; no drag",
-    "stepper": "quantity rolls up/down 14px over 200ms in the direction of change; buttons press 0.9",
-    "checkout": "total rolls like the subtotal; checkout deepens glow on hover, presses 0.98"
+    "timeline": "T (s) from the panel starting: header 0.12, shipping card 0.17, items 0.22 + 0.06 each, footer 0.3, meter fill 0.36, counts 0.4 (600ms), upsell 0.42",
+    "reveal": "rise 12px from blur(8px), 500ms, ease [0.22, 1, 0.36, 1]",
+    "panel": "spring 340/36 from the right (bottom on phones); exit stiffer; scrim fades 300ms",
+    "meter": "one motion value drives fill width and truck position; fills from 0 after the card lands, then springs 120/20 on changes; truck wiggles once on unlock",
+    "figures": "Money component: motion value + useTransform text + velocity blur; subtotal and checkout total count from 0; prices tween 350ms on change",
+    "rows": "added rows (after the panel settles) grow from height 0 and rise in; removed rows collapse 300ms; quantities roll 14px in the direction of change",
+    "undo": "2px ink/50 line drains over undoSeconds via a motion value; hover/focus pauses and resumes from where it stopped",
+    "sheet": "drag only from the handle; dismiss past 140px or 700px/s",
+    "reducedMotion": "150ms fades, figures set instantly, no drag"
   },
   "responsive": {
     "mobile": "bottom sheet, 44px touch targets, safe-area bottom padding",
@@ -80,7 +89,7 @@
     "shipping bar is a progressbar with values"
   ],
   "content": {
-    "brand": "Fieldwork Supply",
+    "brand": "Fieldwork Supply (ships from Hebden Bridge)",
     "items": [
       "Waxed field notebook — A5 · Olive · Dot grid — £18 × 2",
       "Enamel camp mug — 350 ml · Bone — £16",
@@ -90,10 +99,11 @@
     "threshold": "Free shipping over £75; £4.95 otherwise"
   },
   "avoid": [
-    "product photos or grey boxes",
-    "undo hidden in a distant toast",
-    "gradient checkout buttons",
-    "fake scarcity copy",
-    "hover-only remove controls"
+    "a fake storefront, nav or headline behind the drawer",
+    "lime on badges, meters, labels or undo",
+    "product photos or grey placeholder boxes",
+    "toast-only undo",
+    "gradient checkout button or scarcity pressure",
+    "per-frame React state for counting figures"
   ]
 }
