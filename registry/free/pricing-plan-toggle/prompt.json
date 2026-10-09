@@ -1,11 +1,11 @@
 {
   "component": "PricingPlanToggle",
-  "intent": "One plan card under a monthly/annual switch. The thumb glides, each price digit spins like a slot reel with motion blur, a save badge springs in, and an optional seats stepper tweens the total.",
+  "intent": "One monochrome plan card under a monthly/annual switch. On first view every block rises from blur, the slot-reel price spins up from zero, the total counts and the checks draw in; the thumb glides, the reels spin with motion blur and one accent marks the saving.",
   "platform": "web",
   "stack": {
     "framework": "React 19",
-    "styling": "Tailwind CSS v4",
-    "animation": "motion/react (layoutId, motion values, useVelocity, springs, AnimatePresence)"
+    "styling": "Tailwind CSS v4 (@container, CSS variables)",
+    "animation": "motion/react (variants with custom delays, useInView, layoutId, motion values, useVelocity, useMotionValueEvent, springs, AnimatePresence)"
   },
   "layout": {
     "root": "@container column, max-width 420px, centred; switch 20px above the card",
@@ -16,33 +16,39 @@
   },
   "typography": {
     "price": "Geist 600, clamp(3.25rem, 2.6rem + 3cqi, 4rem), tracking -0.05em, tabular-nums",
-    "currency": "22px 500 white/45, top aligned",
-    "unit": "13px white/45, leading 1.3, two lines (split on \\n), bottom aligned",
+    "currency": "22px 500 ink/45, top aligned",
+    "unit": "13px ink/45, leading 1.3, two lines (split on \\n), bottom aligned",
     "name": "16px 500, tracking -0.015em",
-    "description": "14px, leading 1.5, white/50, max 30ch",
+    "description": "14px, leading 1.5, ink/50, max 30ch",
     "badge": "mono 11px uppercase, tracking 0.08em",
-    "features": "14px, leading 1.45, white/75",
-    "footnote": "mono 11px white/30"
+    "features": "14px, leading 1.45, ink/75",
+    "footnote": "mono 11px ink/30"
   },
   "color": {
-    "stage": "#000000",
-    "card": "#0b0b0c with inset white/8% hairline and white/6% top highlight",
-    "thumb": "#f4f4f5, active label #0b0b0c, inactive white/55",
-    "accent": "#7dd3a8 (checks, badge ring and fill at 12%), badge text #9be7c0",
-    "cta": "#f4f4f5 to #ffffff on hover, text #0b0b0c",
-    "seatsPanel": "white/2.5% with inset white/6%"
+    "tokens": "PALETTE.dark / PALETTE.light → --pp-card, --pp-ink, --pp-on-ink, --pp-shadow, --pp-thumb-shadow, --pp-accent; no inline hex in class names",
+    "stage": "#000000 (demo only)",
+    "dark": "card #0b0b0c with inset ink/8% hairline and ink/6% top highlight; ink #f4f4f5",
+    "light": "card #ffffff with ink/8% hairline and a soft long shadow; ink #111113",
+    "thumb": "ink fill, active label on-ink, inactive ink/55",
+    "accent": "#7dd3a8 via the accent prop, only on the save badge: fill 12%, ring 30%, text = color-mix(accent 60%, ink) so it reads on both themes",
+    "checks": "ink/70 — never the accent",
+    "cta": "ink fill, on-ink text, ink/90 on hover",
+    "seatsPanel": "ink/2.5% with inset ink/6%"
   },
   "motion": {
     "thumb": "layoutId spring stiffness 500, damping 40",
-    "reels": "strip 0-9 x5, 1.1em cells; all reels spin up when price rises, down when it falls; spring stiffness 120, damping 19; 55ms stagger; silent jump back to the middle copy on settle",
+    "reels": "strip 0-9 x5, 1.1em cells; all reels spin up when price rises, down when it falls, from wherever they are (interruptible); spring 120/19; 55ms stagger; silent jump back to the middle copy on settle",
     "motionBlur": "blur(min(2.4, |velocity in digits/s| / 9) px) on each reel",
     "digitCount": "columns keyed from the right; new ones grow from width 0 over 300ms",
     "badge": "spring stiffness 520, damping 20, from scale 0.6 and y 4px, origin right; exit 140ms ease-in",
     "note": "cross-fade: in y 8px + blur 3px over 300ms, out y -8px over 180ms",
     "seats": "count rolls 10px in the direction of change over 220ms; total tweens 450ms ease-out",
-    "checks": "pathLength draw 450ms, 70ms stagger, once in view",
-    "cta": "hover arrow +2px; press 0.98; loading spinner; success check draws 340ms; resets after 2.6s",
-    "reducedMotion": "reels jump, no blur, fades only (150ms), checks pre-drawn"
+    "checks": "pathLength draw 400ms, 60ms after each row lands",
+    "cta": "hover arrow +2px; press 0.98; loading spinner; success check draws 340ms; returns to idle after 2.6s (timer cleared on unmount)",
+    "reducedMotion": "one 150ms fade for every block, reels and total set instantly, no blur, checks pre-drawn",
+    "entrance": "once at 30% in view; T timeline (s): switch 0, card 0.06 (rise 16px from blur 8px, 600ms), header 0.12, price row 0.16, note 0.2, seats 0.24, CTA 0.28, divider draws 0.32, feature rows 0.36 + 45ms each, footnote 0.62, badge springs in 0.42",
+    "countUp": "before view every figure is 0: the reels are born on zero and spin up to the price (delay = price row start + 55ms per column), new columns grow from width 0, the total counts from 0 at 0.32s",
+    "total": "motion value written straight to the DOM (no re-render), 450ms ease-out, blur from velocity up to 1.6px"
   },
   "responsive": {
     "all": "fluid up to 420px; price size uses cqi so it scales with the card; padding steps up at @sm",
@@ -54,12 +60,23 @@
     "polite live region summarising billing, seats and total",
     "stepper is a labelled group; buttons labelled 'Add a seat' / 'Remove a seat' and disabled at limits",
     "CTA aria-busy while loading plus a status message",
-    "2px white focus outlines offset 2px"
+    "2px ink focus outlines offset 2px"
   ],
   "content": {
     "plan": "Team: For product teams who write things down and can find them again.",
-    "prices": { "monthly": 24, "annual": 19, "unit": "per seat\\nper month", "save": "Save 20%" },
-    "features": ["Unlimited docs, with full version history", "Comments, approvals and mentions", "Free guests, with access set page by page", "SSO with Google and Okta", "Support from people who use it daily"],
+    "prices": {
+      "monthly": 24,
+      "annual": 19,
+      "unit": "per seat\\nper month",
+      "save": "Save 20%"
+    },
+    "features": [
+      "Unlimited docs, with full version history",
+      "Comments, approvals and mentions",
+      "Free guests, with access set page by page",
+      "SSO with Google and Okta",
+      "Support from people who use it daily"
+    ],
     "cta": "Start 14-day trial / Setting up your trial… / Check your inbox",
     "footnote": "Prices in USD. Tax added at checkout."
   },
@@ -69,6 +86,9 @@
     "strikethrough prices",
     "digits that cross-fade instead of rolling",
     "reels spinning in mixed directions",
-    "layout shift when the total or unit changes"
+    "layout shift when the total or unit changes",
+    "mint or any accent on the checks",
+    "per-frame React state for counting figures",
+    "blocks that pop in without the staggered blur rise"
   ]
 }

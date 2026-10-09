@@ -4,28 +4,123 @@
   "tier": "free",
   "platform": "web",
   "category": "pricing",
-  "description": "A single plan card under a gliding monthly/annual switch: slot-reel digits with motion blur, a springy save badge, a seats stepper and a tweened total.",
-  "tags": ["pricing", "plan card", "billing toggle", "slot reel", "odometer", "seats", "saas", "dark"],
-  "dependencies": ["motion"],
+  "description": "One plan card under a gliding billing switch: blocks rise from blur, slot-reel digits spin up from zero, the total counts and checks draw in. Monochrome.",
+  "tags": [
+    "pricing",
+    "plan card",
+    "billing toggle",
+    "slot reel",
+    "odometer",
+    "seats",
+    "saas",
+    "dark",
+    "monochrome"
+  ],
+  "dependencies": [
+    "motion"
+  ],
   "theme": "dark",
   "previewHeight": 900,
   "usage": "import { PricingPlanToggle } from \"@/components/design-for-ai/pricing-plan-toggle\";\n\n<PricingPlanToggle\n  name=\"Pro\"\n  monthly={29}\n  annual={23}\n  saveLabel=\"Save 20%\"\n  seats={{ min: 1, max: 100, initial: 3 }}\n  features={[\"Unlimited projects\", \"Priority support\"]}\n  onCheckout={({ billing, seats }) => startCheckout({ billing, seats })}\n/>",
   "props": [
-    { "name": "monthly", "type": "number", "default": "24", "description": "Price per seat per month on monthly billing." },
-    { "name": "annual", "type": "number", "default": "19", "description": "Price per seat per month on annual billing." },
-    { "name": "name", "type": "string", "default": "\"Team\"", "description": "Plan name." },
-    { "name": "description", "type": "string", "description": "One line on who the plan is for." },
-    { "name": "currency", "type": "string", "default": "\"$\"", "description": "Symbol before every amount." },
-    { "name": "locale", "type": "string", "default": "\"en-US\"", "description": "Locale for number formatting." },
-    { "name": "unit", "type": "string", "default": "\"per seat\\nper month\"", "description": "Small print beside the price; \\n splits it over two lines." },
-    { "name": "saveLabel", "type": "string", "default": "\"Save 20%\"", "description": "Badge that springs in on annual billing." },
-    { "name": "notes", "type": "{ monthly: string; annual: string }", "description": "Billing note under the price; cross-fades on toggle." },
-    { "name": "features", "type": "string[]", "description": "Feature list with drawn checks." },
-    { "name": "cta / ctaDone", "type": "string", "default": "\"Start 14-day trial\" / \"Check your inbox\"", "description": "CTA label and its success label." },
-    { "name": "onCheckout", "type": "({ billing, seats, total }) => void | Promise<unknown>", "description": "CTA handler. Return a promise for the loading state." },
-    { "name": "seats", "type": "boolean | { min?, max?, initial? }", "default": "true (1–50, starts at 5)", "description": "Seats stepper and tweened total. false hides it." },
-    { "name": "defaultBilling", "type": "\"monthly\" | \"annual\"", "default": "\"annual\"", "description": "Billing period on first render." },
-    { "name": "footnote", "type": "string", "default": "\"Prices in USD. Tax added at checkout.\"", "description": "Mono small print at the bottom." }
+    {
+      "name": "monthly",
+      "type": "number",
+      "default": "24",
+      "description": "Price per seat per month on monthly billing."
+    },
+    {
+      "name": "annual",
+      "type": "number",
+      "default": "19",
+      "description": "Price per seat per month on annual billing."
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "default": "\"Team\"",
+      "description": "Plan name."
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "description": "One line on who the plan is for."
+    },
+    {
+      "name": "currency",
+      "type": "string",
+      "default": "\"$\"",
+      "description": "Symbol before every amount."
+    },
+    {
+      "name": "locale",
+      "type": "string",
+      "default": "\"en-US\"",
+      "description": "Locale for number formatting."
+    },
+    {
+      "name": "unit",
+      "type": "string",
+      "default": "\"per seat\\nper month\"",
+      "description": "Small print beside the price; \\n splits it over two lines."
+    },
+    {
+      "name": "saveLabel",
+      "type": "string",
+      "default": "\"Save 20%\"",
+      "description": "Badge that springs in on annual billing, in the accent."
+    },
+    {
+      "name": "notes",
+      "type": "{ monthly: string; annual: string }",
+      "description": "Billing note under the price; cross-fades on toggle."
+    },
+    {
+      "name": "features",
+      "type": "string[]",
+      "description": "Feature list; each check draws in after its row lands."
+    },
+    {
+      "name": "cta / ctaDone",
+      "type": "string",
+      "default": "\"Start 14-day trial\" / \"Check your inbox\"",
+      "description": "CTA label and its success label."
+    },
+    {
+      "name": "onCheckout",
+      "type": "({ billing, seats, total }) => void | Promise<unknown>",
+      "description": "CTA handler. Return a promise for the loading state."
+    },
+    {
+      "name": "seats",
+      "type": "boolean | { min?, max?, initial? }",
+      "default": "true (1–50, starts at 5)",
+      "description": "Seats stepper and tweened total. false hides it."
+    },
+    {
+      "name": "defaultBilling",
+      "type": "\"monthly\" | \"annual\"",
+      "default": "\"annual\"",
+      "description": "Billing period on first render."
+    },
+    {
+      "name": "footnote",
+      "type": "string",
+      "default": "\"Prices in USD. Tax added at checkout.\"",
+      "description": "Mono small print at the bottom."
+    },
+    {
+      "name": "accent",
+      "type": "string",
+      "default": "\"#7dd3a8\"",
+      "description": "The one signal colour, used only on the save badge."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Near-black card with white ink, or the white inverse."
+    }
   ],
   "added": "2026-10-09"
 }
