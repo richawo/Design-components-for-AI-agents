@@ -3,8 +3,8 @@
 The site runs on Cloudflare Workers as its own Worker, `design-yaps`, on
 `design.yaps.ai`. It follows the same pattern as `launch-yaps` and the other
 Yaps subdomains: one Worker per product, a custom-domain route in
-`wrangler.jsonc`, with support for Cloudflare Workers Builds deploying every
-push to `main`. It doesn't touch the apex domain or the main `yaps-site` Worker.
+`wrangler.jsonc`, and Cloudflare Workers Builds deploying every push to
+`main`. It doesn't touch the apex domain or the main `yaps-site` Worker.
 
 Next.js runs on Workers through the [OpenNext adapter](https://opennext.js.org/cloudflare).
 Every page is prerendered at build time. Only the licence, checkout, Pro
@@ -15,30 +15,38 @@ source and Markdown routes run in the Worker, and none of them read the disk:
 ## Production status (9 October 2026)
 
 The site is live at <https://design.yaps.ai>, with a fallback at
-<https://design-yaps.richardawoyemi.workers.dev>. The initial production
-deployment includes all 20 free and 16 Pro components from `main` at
-`85e4bc0`, with `LICENSE_SECRET` configured as a runtime secret.
+<https://design-yaps.richardawoyemi.workers.dev>. Workers Builds is connected
+to `richawo/Design-components-for-AI-agents`, with `main` as the production
+branch and all paths watched. Every push syncs Pro source, validates the
+registry, checks TypeScript, runs the tests, builds the Worker and deploys it.
 
-The first deployment was published from an authenticated terminal. Workers
-Builds is not connected yet: configure a read-only `PRO_REPO_TOKEN` before
-enabling automatic builds so they retain the Pro previews and gated source.
+The build uses an encrypted `PRO_REPO_SSH_KEY`: a read-only deploy key scoped
+to `richawo/Design-for-AI`. It cannot write to either repository. Production
+sync uses `--require-source`, so missing credentials or incomplete Pro source
+fail the build and leave the previous deployment active. `LICENSE_SECRET`
+remains configured separately as a runtime secret.
 Stripe is not configured yet; checkout displays the email fallback.
 
-## First deploy (Workers Builds)
+## Automatic deploys (Workers Builds)
 
-1. **Connect the repo.** Cloudflare dashboard → *Workers & Pages → Create →
-   Import a repository* → `richawo/Design-components-for-AI-agents`.
-   - Project name: `design-yaps` (must match `name` in `wrangler.jsonc`)
+1. **Connect the repo.** Cloudflare dashboard → *Workers & Pages → design-yaps
+   → Settings → Builds → Connect* → `richawo/Design-components-for-AI-agents`.
+   - Worker name: `design-yaps` (must match `name` in `wrangler.jsonc`)
    - Production branch: `main`
-   - Build command: `npm run pro:sync && npx opennextjs-cloudflare build`
+   - Build command: `npm run pro:sync -- --require-source && node scripts/build-registry.mjs --strict && npm run typecheck && npm test && npm run cf:build`
    - Deploy command: `npx opennextjs-cloudflare deploy`
-   - Non-production branch deploy command: `npx opennextjs-cloudflare upload`
-     (gives every branch a preview URL; `preview_urls` is on)
+   - Build watch paths: include `*`, no exclusions
+   - Preview builds: disabled
 2. **Build variables** (*Settings → Build → Variables and secrets*):
 
    | Variable | Why |
    | --- | --- |
-   | `PRO_REPO_TOKEN` | Fine-grained GitHub token with **read-only Contents** on `richawo/Design-for-AI`. The build clones Pro source with it. Without it the site still builds, but Pro components show as locked cards with no live preview. |
+   | `NODE_VERSION` | Plain variable, `24.11.1`. Matches the verified Node runtime. |
+   | `PRO_REPO_SSH_KEY` | Encrypted secret containing the read-only GitHub deploy key for `richawo/Design-for-AI`. The sync script writes it to a protected temporary file, verifies GitHub against `scripts/github-known-hosts`, then removes the file. |
+   | `PRO_REPO_TOKEN` | Optional alternative to the SSH key: a fine-grained token with **read-only Contents** on `richawo/Design-for-AI`. Store it as an encrypted secret. |
+
+   Build credentials are never runtime bindings. Local open-source builds
+   may omit Pro source; the production command explicitly requires it.
 
 3. **Runtime secrets** (*Settings → Variables and secrets*, type *Secret*, or
    `npx wrangler secret put <NAME>`):
@@ -53,7 +61,7 @@ Stripe is not configured yet; checkout displays the email fallback.
    `NEXT_PUBLIC_SITE_URL` is already set to `https://design.yaps.ai` in
    `wrangler.jsonc`.
 
-4. **Deploy.** Merge to `main`, or hit *Retry build*. The first deploy creates
+4. **Deploy.** Push to `main`, or hit *Retry build*. The first deploy creates
    the `design.yaps.ai` custom domain and its certificate, because `yaps.ai`
    is already a zone on the account. The Worker also stays reachable on its
    `workers.dev` URL.
@@ -79,7 +87,8 @@ and call it from a GitHub Action in the Pro repo.
 ## Check a deployment
 
 - `/components` lists 36 components, and Pro cards show live previews. If
-  they are locked, `PRO_REPO_TOKEN` is missing or lacks access.
+  they are locked in a manual build, Pro source was not synced. The automatic
+  production build rejects this condition.
 - `/api/registry` returns JSON, and `/r/chart-portfolio.json` returns a shadcn
   registry item whose URLs use `https://design.yaps.ai`.
 - `/components/chart-candlestick.md` returns Markdown, and
