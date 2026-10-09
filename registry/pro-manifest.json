@@ -826,7 +826,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "footers",
-    "description": "A black footer whose giant wordmark is a canvas field of mono characters. The cursor is a lens: glyphs scramble, brighten and thicken beneath it.",
+    "description": "A black footer whose giant wordmark is a canvas field of mono characters that sweeps on as you arrive. The cursor is a lens: glyphs scramble and brighten beneath it.",
     "tags": [
       "footer",
       "ascii",
@@ -835,7 +835,8 @@
       "big type",
       "interactive",
       "monospace",
-      "developer"
+      "developer",
+      "scroll reveal"
     ],
     "dependencies": [
       "motion"
@@ -893,7 +894,7 @@
         "name": "accent",
         "type": "string",
         "default": "\"#ff7a3d\"",
-        "description": "Colour of the hottest scrambling glyphs at the centre of the lens."
+        "description": "The one accent: the hottest scrambling glyphs under the lens, the reveal's leading edge and the hint dot."
       },
       {
         "name": "ramp",
