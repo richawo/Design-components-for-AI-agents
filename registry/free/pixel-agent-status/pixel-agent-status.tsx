@@ -1,7 +1,11 @@
 "use client";
 
-import { useEffect, useId, useRef, useState, type RefObject } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { useEffect, useId, useRef, useState, type CSSProperties, type RefObject } from "react";
+import { AnimatePresence, motion, useInView, useReducedMotion } from "motion/react";
+
+/* ------------------------------------------------------------------ */
+/* Types                                                                */
+/* ------------------------------------------------------------------ */
 
 export type AgentState = "thinking" | "searching" | "writing" | "listening" | "syncing" | "done" | "error" | "idle";
 
@@ -9,7 +13,7 @@ export type PixelStatusProps = {
   state: AgentState;
   /** Rendered size in px (the glyph is a 9×9 grid). */
   size?: number;
-  /** Override the state's colour. */
+  /** Override the state’s colour. Work-in-progress states use currentColor, so they follow your text. */
   color?: string;
   /** Show the unlit grid behind the glyph. */
   grid?: boolean;
@@ -17,22 +21,34 @@ export type PixelStatusProps = {
   label?: string;
   /** Change this value to replay the animation from its first frame. */
   replay?: number;
+  /** Hold the glyph dark (grid only) until true: lets a glyph power on once it has arrived. */
+  active?: boolean;
   className?: string;
 };
 
-const N = 9;
-const FPS = 10;
+/* ------------------------------------------------------------------ */
+/* Tokens                                                               */
+/* ------------------------------------------------------------------ */
 
-/** Default colours: warm for work in progress, semantic for outcomes. */
+const N = 9; // cells per side
+const FPS = 10; // stepped on purpose: smooth tweening would break the pixel feel
+const CELL = 10; // viewBox units per cell
+const DOT = { small: { size: 8.4, radius: 1.2 }, large: { size: 7.6, radius: 1.8 }, smallBelow: 28, glowFrom: 40 } as const;
+const LIT = { floor: 0.25, gridOpacity: 0.07, glowOpacity: 0.55, glowBlur: 2.4 } as const;
+
+/**
+ * Monochrome first: work in progress is drawn in currentColor (white on dark, ink on light),
+ * idle is a quiet grey, and only the outcomes carry colour, because they mean something.
+ */
 export const STATE_COLORS: Record<AgentState, string> = {
-  thinking: "#ff7a45",
-  searching: "#ffb38a",
-  writing: "#f4efe9",
-  listening: "#ff7a45",
-  syncing: "#9cc9ff",
+  thinking: "currentColor",
+  searching: "currentColor",
+  writing: "currentColor",
+  listening: "currentColor",
+  syncing: "currentColor",
   done: "#34d399",
-  error: "#fb7185",
-  idle: "#8a8580",
+  error: "#f87171",
+  idle: "#a1a1aa",
 };
 
 const LABELS: Record<AgentState, string> = {
@@ -45,6 +61,10 @@ const LABELS: Record<AgentState, string> = {
   error: "Needs attention",
   idle: "Idle",
 };
+
+/* ------------------------------------------------------------------ */
+/* Glyphs                                                               */
+/* ------------------------------------------------------------------ */
 
 type Px = Map<number, number>; // index → intensity 0–1
 const at = (x: number, y: number) => y * N + x;
@@ -65,7 +85,6 @@ const RING: [number, number][] = [
 ];
 const CHECK: [number, number][] = [[1, 4], [2, 5], [3, 6], [4, 5], [5, 4], [6, 3], [7, 2]];
 const LENS: [number, number][] = [[2, 1], [3, 1], [4, 1], [1, 2], [5, 2], [1, 3], [5, 3], [1, 4], [5, 4], [2, 5], [3, 5], [4, 5]];
-const Z: [number, number][] = [[0, 0], [1, 0], [2, 0], [3, 0], [2, 1], [1, 2], [0, 3], [1, 3], [2, 3], [3, 3]];
 
 /** Each glyph is a pure function of the frame number, so it is cheap and deterministic. */
 function glyph(state: AgentState, f: number): Px {
@@ -172,79 +191,150 @@ function glyph(state: AgentState, f: number): Px {
 /** A representative still for reduced motion. */
 const STILL: Record<AgentState, number> = { thinking: 3, searching: 2, writing: 11, listening: 4, syncing: 3, done: 99, error: 10, idle: 20 };
 
-/** One shared 10fps clock per mounted glyph, paused offscreen and in hidden tabs. */
-function useFrame(ref: RefObject<Element | null>, state: AgentState, replay = 0) {
-  const [f, setF] = useState(0);
+const DARK: Px = new Map();
+
+/* ------------------------------------------------------------------ */
+/* PixelStatus                                                          */
+/* ------------------------------------------------------------------ */
+
+/**
+ * A 10fps frame clock that paints straight into the SVG, so animating never re-renders React.
+ * Paused offscreen and in hidden tabs; one still frame with reduced motion.
+ */
+function usePixelClock(ref: RefObject<SVGSVGElement | null>, state: AgentState, replay: number, active: boolean, paint: (lit: Px) => void) {
+  const latest = useRef(paint);
   useEffect(() => {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) {
-      setF(STILL[state]);
+    latest.current = paint;
+  });
+
+  useEffect(() => {
+    if (!active) {
+      latest.current(DARK);
       return;
     }
-    setF(0);
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      latest.current(glyph(state, STILL[state]));
+      return;
+    }
+    let frame = 0;
+    latest.current(glyph(state, frame));
     let visible = true;
     const io = new IntersectionObserver(([e]) => (visible = e.isIntersecting));
     if (ref.current) io.observe(ref.current);
     const id = window.setInterval(() => {
-      if (visible && !document.hidden) setF((n) => n + 1);
+      if (!visible || document.hidden) return;
+      frame += 1;
+      latest.current(glyph(state, frame));
     }, 1000 / FPS);
     return () => {
       window.clearInterval(id);
       io.disconnect();
     };
-  }, [ref, state, replay]);
-  return f;
+  }, [ref, state, replay, active]);
 }
 
-export function PixelStatus({ state, size = 24, color, grid = true, label, replay = 0, className = "" }: PixelStatusProps) {
+export function PixelStatus({ state, size = 24, color, grid = true, label, replay = 0, active = true, className = "" }: PixelStatusProps) {
   const ref = useRef<SVGSVGElement>(null);
-  const f = useFrame(ref, state, replay);
-  const lit = glyph(state, f);
+  const dots = useRef<(SVGRectElement | null)[]>([]);
+  const glows = useRef<(SVGRectElement | null)[]>([]);
+  const filterId = `${useId().replace(/[^a-zA-Z0-9_-]/g, "")}-glow`;
   const c = color ?? STATE_COLORS[state];
-  const id = useId().replace(/:/g, "");
-  const cell = 10;
-  const dot = size < 28 ? 8.4 : 7.6;
-  const r = size < 28 ? 1.2 : 1.8;
+  const dot = size < DOT.smallBelow ? DOT.small : DOT.large;
+  const glow = size >= DOT.glowFrom;
+  const inset = (CELL - dot.size) / 2;
+
+  /** One cell’s look: lit in the state colour, unlit as a faint grid dot, or nothing. */
+  const look = (v: number | undefined) =>
+    v !== undefined ? { fill: c, opacity: LIT.floor + v * (1 - LIT.floor) } : { fill: "currentColor", opacity: grid ? LIT.gridOpacity : 0 };
+
+  usePixelClock(ref, state, replay, active, (lit) => {
+    for (let i = 0; i < N * N; i++) {
+      const v = lit.get(i);
+      const { fill, opacity } = look(v);
+      dots.current[i]?.setAttribute("fill", fill);
+      dots.current[i]?.setAttribute("opacity", String(opacity));
+      glows.current[i]?.setAttribute("opacity", String(v ?? 0));
+    }
+  });
+
+  // The first paint renders from props (frame 0, or dark); every later frame is written by the clock.
+  const first = active ? glyph(state, 0) : DARK;
   return (
-    <svg
-      ref={ref}
-      viewBox={`0 0 ${N * cell} ${N * cell}`}
-      width={size}
-      height={size}
-      role="img"
-      aria-label={label ?? LABELS[state]}
-      className={`shrink-0 ${className}`}
-    >
-      {size >= 40 && (
-        <defs>
-          <filter id={`${id}-g`} x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="2.4" />
-          </filter>
-        </defs>
+    <svg ref={ref} viewBox={`0 0 ${N * CELL} ${N * CELL}`} width={size} height={size} role="img" aria-label={label ?? LABELS[state]} className={`shrink-0 ${className}`}>
+      {glow && (
+        <>
+          <defs>
+            <filter id={filterId} x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation={LIT.glowBlur} />
+            </filter>
+          </defs>
+          <g filter={`url(#${filterId})`} opacity={LIT.glowOpacity} fill={c}>
+            {Array.from({ length: N * N }, (_, i) => (
+              <rect
+                key={i}
+                ref={(el) => {
+                  glows.current[i] = el;
+                }}
+                x={(i % N) * CELL}
+                y={Math.floor(i / N) * CELL}
+                width={CELL}
+                height={CELL}
+                opacity={first.get(i) ?? 0}
+              />
+            ))}
+          </g>
+        </>
       )}
-      {grid &&
-        Array.from({ length: N * N }, (_, i) =>
-          lit.has(i) ? null : (
-            <rect key={`g${i}`} x={(i % N) * cell + (cell - dot) / 2} y={Math.floor(i / N) * cell + (cell - dot) / 2} width={dot} height={dot} rx={r} fill="currentColor" opacity={0.07} />
-          ),
-        )}
-      {size >= 40 && (
-        <g filter={`url(#${id}-g)`} opacity={0.55}>
-          {[...lit].map(([i, v]) => (
-            <rect key={`b${i}`} x={(i % N) * cell} y={Math.floor(i / N) * cell} width={cell} height={cell} fill={c} opacity={v} />
-          ))}
-        </g>
-      )}
-      {[...lit].map(([i, v]) => (
-        <rect key={i} x={(i % N) * cell + (cell - dot) / 2} y={Math.floor(i / N) * cell + (cell - dot) / 2} width={dot} height={dot} rx={r} fill={c} opacity={0.25 + v * 0.75} />
+      {Array.from({ length: N * N }, (_, i) => (
+        <rect
+          key={i}
+          ref={(el) => {
+            dots.current[i] = el;
+          }}
+          x={(i % N) * CELL + inset}
+          y={Math.floor(i / N) * CELL + inset}
+          width={dot.size}
+          height={dot.size}
+          rx={dot.radius}
+          {...look(first.get(i))}
+        />
       ))}
     </svg>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/* Demo: the set, plus the glyphs used inline in an agent run           */
+/* Gallery: the set, plus a glyph used inline in a live agent run       */
 /* ------------------------------------------------------------------ */
+
+const PALETTE = {
+  surface: "#0b0b0c",
+  tile: "#0b0b0c",
+  tileHover: "#111113",
+  line: "rgba(255,255,255,0.08)",
+  divider: "rgba(255,255,255,0.06)",
+  ink: "#f4f4f5",
+  muted: "#a1a1aa",
+  faint: "#8a8a93",
+  pill: "rgba(255,255,255,0.03)",
+} as const;
+
+const EASE_OUT = [0.22, 1, 0.36, 1] as const;
+const EASE_IN = [0.4, 0, 1, 1] as const;
+
+/** One place for the choreography. Seconds unless noted. */
+const MOTION = {
+  rise: 12, // px
+  blur: 8, // px
+  block: 0.45,
+  step: 0.06, // eyebrow → title → run pill
+  tilesAt: 0.2,
+  tileStep: 0.04, // reading order, left to right, top to bottom
+  powerOn: 0.12, // a glyph lights once its tile is nearly down
+  runStepMs: 2600,
+  copiedMs: 1400,
+  fade: 0.15,
+} as const;
 
 const STATES: { state: AgentState; note: string }[] = [
   { state: "thinking", note: "Planning before acting" },
@@ -265,27 +355,73 @@ const RUN: { state: AgentState; text: string }[] = [
   { state: "done", text: "Migration ready for review" },
 ];
 
-export function PixelAgentStatus() {
-  const reduce = !!useReducedMotion();
+function enter(play: boolean, delay: number, reduce: boolean) {
+  if (reduce) return { initial: { opacity: 0 }, animate: { opacity: play ? 1 : 0 }, transition: { duration: MOTION.fade } };
+  return {
+    initial: { opacity: 0, y: MOTION.rise, filter: `blur(${MOTION.blur}px)` },
+    animate: play ? { opacity: 1, y: 0, filter: "blur(0px)", transitionEnd: { filter: "none" } } : undefined,
+    transition: { duration: MOTION.block, ease: EASE_OUT, delay },
+  };
+}
+
+/** False until `delay` seconds after `play`. Reduced motion: as soon as play is true. */
+function useAfter(play: boolean, delay: number, reduce: boolean) {
+  const [done, setDone] = useState(false);
+  useEffect(() => {
+    if (!play || done) return;
+    const t = setTimeout(() => setDone(true), reduce ? 0 : delay * 1000);
+    return () => clearTimeout(t);
+  }, [play, delay, reduce, done]);
+  return done;
+}
+
+/** Steps through the demo run, starting once the gallery has arrived. */
+function useRunStep(start: boolean, reduce: boolean) {
   const [step, setStep] = useState(0);
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const id = window.setInterval(() => setStep((s) => (s + 1) % (RUN.length + 1)), 2600);
+    if (!start || reduce) return;
+    const id = window.setInterval(() => setStep((s) => (s + 1) % (RUN.length + 1)), MOTION.runStepMs);
     return () => window.clearInterval(id);
-  }, []);
-  const current = RUN[Math.min(step, RUN.length - 1)];
+  }, [start, reduce]);
+  return RUN[Math.min(step, RUN.length - 1)];
+}
+
+export function PixelAgentStatus({ className = "" }: { className?: string }) {
+  const reduce = useReducedMotion() ?? false;
+  const root = useRef<HTMLElement>(null);
+  const play = useInView(root, { once: true, amount: 0.2 });
+  const lastTile = MOTION.tilesAt + (STATES.length - 1) * MOTION.tileStep + MOTION.block;
+  const settled = useAfter(play, lastTile, reduce);
+  const current = useRunStep(settled, reduce);
+  const pillLive = useAfter(play, MOTION.step * 3 + MOTION.powerOn, reduce);
 
   return (
-    <section className="@container w-full rounded-[22px] border border-white/[0.08] bg-[#0b0b0c] p-5 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] @xl:p-7">
+    <motion.section
+      ref={root}
+      {...enter(play, 0, reduce)}
+      style={{ background: PALETTE.surface, borderColor: PALETTE.line, color: PALETTE.ink, "--pas-hover": PALETTE.tileHover } as CSSProperties}
+      className={`@container w-full rounded-[22px] border p-5 font-sans antialiased shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] @xl:p-7 ${className}`}
+    >
       <header className="flex flex-col gap-4 @2xl:flex-row @2xl:items-end @2xl:justify-between">
         <div>
-          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/40">Pixel status · 9×9</p>
-          <h2 className="mt-2 text-balance font-sans text-[clamp(1.5rem,1.2rem+1.2vw,2rem)] font-medium tracking-[-0.035em]">Eight states your agent can be in.</h2>
+          <motion.p {...enter(play, MOTION.step, reduce)} className="font-mono text-[11px] uppercase tracking-[0.18em]" style={{ color: PALETTE.faint }}>
+            Pixel status · 9×9
+          </motion.p>
+          <motion.h2 {...enter(play, MOTION.step * 2, reduce)} className="mt-2 text-balance text-[clamp(1.5rem,1.1rem+1.6cqi,2rem)] font-medium tracking-[-0.035em]">
+            Eight states your agent can be in.
+          </motion.h2>
         </div>
         {/* Inline usage: the glyph at text size in a live run row. */}
-        <div className="flex min-w-0 items-center gap-3 overflow-hidden rounded-full border border-white/[0.08] bg-white/[0.03] py-2 pl-2.5 pr-4 @2xl:max-w-[60%]" aria-live="polite">
-          <PixelStatus state={current.state} size={18} grid={false} />
-          <span className="text-[13px] text-white/40">Atlas ·</span>
+        <motion.div
+          {...enter(play, MOTION.step * 3, reduce)}
+          className="flex min-w-0 items-center gap-3 overflow-hidden rounded-full border py-2 pl-2.5 pr-4 @2xl:max-w-[60%]"
+          style={{ borderColor: PALETTE.line, background: PALETTE.pill }}
+          aria-live="polite"
+        >
+          <PixelStatus state={current.state} size={18} grid={false} active={pillLive} />
+          <span className="shrink-0 text-[13px]" style={{ color: PALETTE.faint }}>
+            Atlas ·
+          </span>
           <span className="relative block min-w-0 flex-1">
             {/* Each step slides up and out of focus as the next arrives. */}
             <AnimatePresence mode="popLayout" initial={false}>
@@ -293,37 +429,46 @@ export function PixelAgentStatus() {
                 key={current.text}
                 initial={reduce ? { opacity: 0 } : { opacity: 0, y: 10, filter: "blur(3px)" }}
                 animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                exit={reduce ? { opacity: 0 } : { opacity: 0, y: -10, filter: "blur(3px)", transition: { duration: 0.2, ease: [0.4, 0, 1, 1] } }}
-                transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
-                className="block truncate text-[13px] text-white/75"
+                exit={reduce ? { opacity: 0 } : { opacity: 0, y: -10, filter: "blur(3px)", transition: { duration: 0.2, ease: EASE_IN } }}
+                transition={{ duration: 0.32, ease: EASE_OUT }}
+                className="block truncate text-[13px]"
+                style={{ color: PALETTE.muted }}
               >
                 {current.text}
                 {current.state !== "done" ? "…" : ""}
               </motion.span>
             </AnimatePresence>
           </span>
-        </div>
+        </motion.div>
       </header>
 
-      <ul className="mt-7 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.06] @2xl:grid-cols-4">
-        {STATES.map(({ state, note }) => (
-          <li key={state} className="bg-[#0b0b0c]">
-            <Tile state={state} note={note} reduce={reduce} />
-          </li>
-        ))}
+      {/* Hairlines come from each tile’s own 1px ring (into the 1px gap), so they arrive with the tiles instead of sitting there as an empty grey panel. */}
+      <ul className="mt-7 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border @2xl:grid-cols-4" style={{ borderColor: PALETTE.divider }}>
+        {STATES.map(({ state, note }, i) => {
+          const delay = MOTION.tilesAt + i * MOTION.tileStep;
+          return (
+            <motion.li key={state} {...enter(play, delay, reduce)} style={{ background: PALETTE.tile, boxShadow: `0 0 0 1px ${PALETTE.divider}` }}>
+              <Tile state={state} note={note} reduce={reduce} powerOnAt={delay + MOTION.powerOn} play={play} />
+            </motion.li>
+          );
+        })}
       </ul>
-    </section>
+    </motion.section>
   );
 }
 
-/** A gallery tile: hover replays the glyph, click copies its usage. */
-function Tile({ state, note, reduce }: { state: AgentState; note: string; reduce: boolean }) {
+/** A gallery tile: its glyph powers on as the tile lands; hover replays it, click copies its usage. */
+function Tile({ state, note, reduce, powerOnAt, play }: { state: AgentState; note: string; reduce: boolean; powerOnAt: number; play: boolean }) {
   const [replay, setReplay] = useState(0);
   const [copied, setCopied] = useState(false);
+  const on = useAfter(play, powerOnAt, reduce);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  useEffect(() => () => {
-    if (timer.current) clearTimeout(timer.current);
-  }, []);
+  useEffect(
+    () => () => {
+      if (timer.current) clearTimeout(timer.current);
+    },
+    [],
+  );
   const snippet = `<PixelStatus state="${state}" />`;
   return (
     <button
@@ -335,24 +480,26 @@ function Tile({ state, note, reduce }: { state: AgentState; note: string; reduce
         setCopied(true);
         setReplay((r) => r + 1);
         if (timer.current) clearTimeout(timer.current);
-        timer.current = setTimeout(() => setCopied(false), 1400);
+        timer.current = setTimeout(() => setCopied(false), MOTION.copiedMs);
       }}
       aria-label={`${LABELS[state]}: copy ${snippet}`}
-      className="group relative flex w-full flex-col p-4 text-left transition-[background-color,transform] duration-150 hover:bg-[#101012] focus-visible:z-10 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-white/70 active:scale-[0.985] @xl:p-5"
+      className="group relative flex w-full flex-col p-4 text-left transition-[background-color,transform] duration-150 hover:bg-[var(--pas-hover)] focus-visible:z-10 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-white/70 active:scale-[0.985] @xl:p-5"
     >
       <span
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-6 top-0 h-px opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-        style={{ background: `linear-gradient(90deg, transparent, ${STATE_COLORS[state]}, transparent)` }}
+        style={{ background: `linear-gradient(90deg, transparent, ${STATE_COLORS[state]}, transparent)`, color: PALETTE.muted }}
       />
-      <span className="flex aspect-[5/4] items-center justify-center text-white transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]">
-        <PixelStatus state={state} size={96} replay={replay} />
+      <span className="flex aspect-[5/4] items-center justify-center transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]" style={{ color: PALETTE.ink }}>
+        <PixelStatus state={state} size={96} replay={replay} active={on} />
       </span>
       <span className="mt-3 flex items-baseline justify-between gap-2">
-        <span className="text-[14px] font-medium tracking-[-0.01em] text-white/90">{LABELS[state]}</span>
-        <span className="size-1.5 shrink-0 rounded-full" style={{ background: STATE_COLORS[state] }} aria-hidden="true" />
+        <span className="text-[14px] font-medium tracking-[-0.01em]">{LABELS[state]}</span>
+        <span className="size-1.5 shrink-0 rounded-full" style={{ background: STATE_COLORS[state], color: PALETTE.muted }} aria-hidden="true" />
       </span>
-      <span className="mt-1 text-[12.5px] leading-snug text-white/45">{note}</span>
+      <span className="mt-1 text-[12.5px] leading-snug" style={{ color: PALETTE.faint }}>
+        {note}
+      </span>
       <span className="relative mt-3 block h-4 overflow-hidden font-mono text-[10.5px]" aria-live="polite">
         <AnimatePresence mode="popLayout" initial={false}>
           <motion.span
@@ -360,8 +507,8 @@ function Tile({ state, note, reduce }: { state: AgentState; note: string; reduce
             initial={reduce ? { opacity: 0 } : { opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={reduce ? { opacity: 0 } : { opacity: 0, y: -8 }}
-            transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            className={`block ${copied ? "text-[#34d399]" : "text-white/30 transition-colors group-hover:text-white/55"}`}
+            transition={{ duration: 0.2, ease: EASE_OUT }}
+            className={`block ${copied ? "text-white" : "text-white/35 transition-colors group-hover:text-white/60"}`}
           >
             {copied ? "Copied snippet" : `state="${state}"`}
           </motion.span>
@@ -374,7 +521,7 @@ function Tile({ state, note, reduce }: { state: AgentState; note: string; reduce
 /** Demo: the set on a dark stage. */
 export default function PixelAgentStatusDemo() {
   return (
-    <div className="flex min-h-[720px] w-full items-center justify-center bg-black px-4 py-10 sm:px-10">
+    <div className="flex min-h-dvh w-full items-center justify-center bg-black px-4 py-10 sm:px-10">
       <div className="w-full max-w-5xl">
         <PixelAgentStatus />
       </div>

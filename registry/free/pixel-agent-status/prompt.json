@@ -1,12 +1,12 @@
 {
   "component": "PixelStatus",
-  "intent": "A small, characterful status language for AI agents: eight animated 9×9 dot-matrix glyphs that read at 16px inline and still look crafted at 96px. Pixel art with discipline: one colour per state, a faint unlit grid and 10fps motion.",
+  "intent": "A small, characterful status language for AI agents: eight animated 9×9 dot-matrix glyphs that read at 16px inline and still look crafted at 96px. Pixel art with discipline: monochrome (currentColor) for work in progress, colour only for done and error, a faint unlit grid and 10fps motion.",
   "platform": "web",
   "stack": {
     "framework": "React 19",
     "styling": "Tailwind CSS v4",
     "rendering": "inline SVG rects; no canvas, no dependencies",
-    "animation": "setInterval at 10fps driving a frame counter; each glyph is a pure function of the frame; motion/react for the gallery's text swaps"
+    "animation": "a 10fps setInterval frame clock (usePixelClock) that paints straight into 81 pre-rendered SVG rects via refs (setAttribute), so animating never re-renders React; each glyph is a pure function of the frame; motion/react for the gallery's entrance and text swaps"
   },
   "layout": {
     "glyph": "9×9 grid in a 90×90 viewBox; dots 7.6 units (8.4 under 28px) with radius 1.8 (1.2 small); unlit dots at currentColor 7% when grid=true; a blurred copy of lit cells at 55% for glow at 40px and up",
@@ -25,15 +25,14 @@
     "code": "mono 10.5px white/30"
   },
   "color": {
-    "thinking": "#ff7a45",
-    "searching": "#ffb38a",
-    "writing": "#f4efe9",
-    "listening": "#ff7a45",
-    "syncing": "#9cc9ff",
+    "approach": "monochrome first: work-in-progress states draw in currentColor so they follow the surrounding text (white on dark, ink on light); colour only where it means something",
+    "thinking/searching/writing/listening/syncing": "currentColor",
+    "idle": "#a1a1aa (a quiet grey; core breathes 22–100%)",
     "done": "#34d399",
-    "error": "#fb7185",
-    "idle": "#8a8580",
-    "rule": "warm tones for work in progress, semantic colours only for outcomes; lit opacity 25% + 75% × intensity"
+    "error": "#f87171",
+    "grid": "unlit dots currentColor at 7%",
+    "gallery": "card #0b0b0c, line white/8%, dividers white/6% drawn as each tile's own 1px ring, ink #f4f4f5, muted #a1a1aa, faint #8a8a93, tile hover #111113; tokens in one PALETTE object",
+    "never": "a hue per state (no orange, peach or blue)"
   },
   "motion": {
     "thinking": "a comet with a 5-step tail circles a 16-cell square around a dim core",
@@ -46,7 +45,7 @@
     "idle": "sleep light: soft plus-shaped core breathing on a 4s cosine 22–100%, faint halo near the peak, never fully dark",
     "clock": "10fps, paused offscreen (IntersectionObserver) and in hidden tabs",
     "reducedMotion": "a representative still per state",
-    "gallery": "tiles are buttons: hover/focus replays the glyph, scales it 1.04 and draws a state-colour hairline; click copies the snippet with a sliding 'Copied snippet' confirmation; press scales 0.985",
+    "gallery": "once at 20% in view, ease-out [0.22,1,0.36,1]: card rises 12px out of an 8px blur (0.45s); eyebrow, title and run pill follow 60ms apart; tiles from 0.2s, 40ms apart in reading order; each tile's glyph powers on (active) 0.12s after its tile starts, from frame 0; the run pill starts cycling once every tile has landed. Reduced motion: 150ms fades, one still frame per glyph",
     "run": "run steps cross-fade with a 10px slide and 3px blur"
   },
   "responsive": {
@@ -75,6 +74,9 @@
     "sparkle icons for AI",
     "more than one colour inside a glyph",
     "smooth tweening that breaks the pixel feel",
-    "looping the done state"
+    "looping the done state",
+    "per-state hues for work in progress",
+    "re-rendering React every frame",
+    "an empty grey panel showing before the tiles arrive"
   ]
 }

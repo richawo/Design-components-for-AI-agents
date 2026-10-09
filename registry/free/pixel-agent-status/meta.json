@@ -4,7 +4,7 @@
   "tier": "free",
   "platform": "web",
   "category": "pixel",
-  "description": "Eight animated 9×9 pixel glyphs for what an AI agent is doing: thinking, searching, writing, listening, syncing, done, error and idle.",
+  "description": "Eight animated 9×9 pixel glyphs for what an AI agent is doing, drawn in your text colour; only done (green) and error (red) carry colour. Zero re-renders.",
   "tags": [
     "pixel art",
     "status",
@@ -13,7 +13,8 @@
     "icons",
     "animation",
     "svg",
-    "dot matrix"
+    "dot matrix",
+    "monochrome"
   ],
   "dependencies": [
     "motion"
@@ -36,7 +37,7 @@
     {
       "name": "color",
       "type": "string",
-      "description": "Override the state's default colour (see STATE_COLORS)."
+      "description": "Override the state’s colour. Work-in-progress states default to currentColor, idle to #a1a1aa, done #34d399, error #f87171 (see STATE_COLORS)."
     },
     {
       "name": "grid",
@@ -53,6 +54,12 @@
       "name": "replay",
       "type": "number",
       "description": "Change it to replay the animation from frame one (e.g. on hover)."
+    },
+    {
+      "name": "active",
+      "type": "boolean",
+      "default": "true",
+      "description": "Hold the glyph dark (grid only) until true, e.g. to power it on once it has arrived on screen."
     },
     {
       "name": "className",
