@@ -4,40 +4,35 @@
   "tier": "free",
   "platform": "web",
   "category": "hero",
-  "description": "A dark split hero for a dev tool: confident copy and a copyable install chip beside a terminal where an agent plans, writes files, passes tests and opens a PR.",
+  "description": "A dark devtool hero: headline lines blur in, then a monochrome terminal assembles and an agent plans, writes files, passes tests and opens a PR.",
   "tags": [
     "hero",
     "developer tool",
     "terminal",
     "ai agent",
-    "dark",
     "cli",
+    "dark",
     "landing page",
-    "typing animation"
+    "monochrome"
   ],
   "dependencies": [
     "motion"
   ],
   "theme": "dark",
   "previewHeight": 860,
-  "usage": "import { HeroTerminalAgent } from \"@/components/design-for-ai/hero-terminal-agent\";\n\n<HeroTerminalAgent\n  brand=\"Northwind CLI\"\n  headline=\"Ship the change, skip the chores.\"\n  emphasis=\"skip the chores.\"\n  installCommand=\"npx northwind@latest init\"\n/>",
+  "usage": "import { HeroTerminalAgent } from \"@/components/design-for-ai/hero-terminal-agent\";\n\n<HeroTerminalAgent\n  headline={[\"Ship the change,\", \"skip the chores.\"]}\n  emphasis=\"skip the chores.\"\n  installCommand=\"npx northwind@latest init\"\n/>",
   "props": [
     {
-      "name": "brand",
-      "type": "string",
-      "default": "\"Relay\"",
-      "description": "Product name beside the mark."
-    },
-    {
       "name": "headline",
-      "type": "string",
-      "description": "The headline."
+      "type": "string[]",
+      "default": "[\"The agent\", \"that does the\", \"boring parts\", \"of shipping.\"]",
+      "description": "Headline, one string per line; each line blurs in on its own beat."
     },
     {
       "name": "emphasis",
       "type": "string",
       "default": "\"boring parts\"",
-      "description": "Substring of the headline set at 45% opacity."
+      "description": "Phrase set at 45% ink."
     },
     {
       "name": "body",
@@ -47,7 +42,7 @@
     {
       "name": "primary",
       "type": "{ label: string; href: string }",
-      "description": "Main call to action."
+      "description": "Solid ink CTA with an arrow."
     },
     {
       "name": "installCommand",
@@ -58,23 +53,36 @@
     {
       "name": "facts",
       "type": "string[]",
-      "description": "Short mono facts under the actions."
+      "description": "Mono facts under the actions."
     },
     {
-      "name": "announcement",
-      "type": "{ label: string; href: string }",
-      "description": "Release link, top right."
+      "name": "tabTitle",
+      "type": "string",
+      "default": "\"checkout-api\"",
+      "description": "Terminal tab title."
+    },
+    {
+      "name": "version",
+      "type": "string",
+      "default": "\"relay 2.4.1\"",
+      "description": "Version in the status bar."
     },
     {
       "name": "session",
       "type": "AgentSession",
-      "description": "The terminal script: command, plan, files, tests and PR."
+      "description": "The scripted session: cwd, command, plan, files, tests and PR."
     },
     {
       "name": "loopPause",
       "type": "number",
       "default": "5200",
-      "description": "Milliseconds the finished session stays before replaying."
+      "description": "Ms the finished session holds before it replays."
+    },
+    {
+      "name": "accent",
+      "type": "string",
+      "default": "\"#d4ff3a\"",
+      "description": "The one signal colour, used only for the install chip's Copied confirmation."
     }
   ],
   "added": "2026-10-07"

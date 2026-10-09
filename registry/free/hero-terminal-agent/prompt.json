@@ -1,89 +1,77 @@
 {
   "component": "HeroTerminalAgent",
-  "intent": "Devtool hero: two-tone headline left, a terminal right where an AI agent reads, plans, writes, tests and opens a PR on a loop.",
+  "intent": "Dark, monochrome developer-tool hero: headline lines blur in, then a terminal assembles and an AI agent plans, writes files, passes tests and opens a PR on a loop.",
   "platform": "web",
   "stack": {
     "framework": "React 19",
-    "styling": "Tailwind CSS v4",
-    "animation": "motion/react (useInView, useReducedMotion) + timeline clock",
-    "fonts": "font-display, font-sans, font-mono (Geist family)"
+    "styling": "Tailwind CSS v4 (@container, CSS variables)",
+    "animation": "motion/react (variants with custom delays, useMotionValue, useTransform, useSpring, animate, AnimatePresence)",
+    "fonts": "font-display (Geist), font-sans, font-mono"
   },
   "layout": {
-    "container": "max-w-7xl, 12-col grid at lg; copy 6 cols, terminal 6 cols; stacked on mobile",
-    "topRow": "brand mark + name left, mono release link right",
-    "terminal": "tab bar 44px, body 380/440/480px with internal scroll, status bar"
+    "grid": "@container root; 12 cols from @5xl (64rem): copy 6, terminal 6; stacked below",
+    "container": "max-w 1280px, px 20/32/48px, py 64/80/112px",
+    "backdrop": "56px hairline grid at white/3%, radial mask centred behind the terminal",
+    "terminal": "tab bar 44px, body 380/440/480px scrolling internally, status bar 32px"
   },
   "typography": {
     "headline": {
       "font": "display",
       "weight": 700,
-      "size": "clamp(2.75rem, 1.5rem + 4.8vw, 5.5rem)",
+      "size": "clamp(2.75rem, 1.4rem + 4.6cqi, 5.25rem)",
       "leading": 0.95,
       "tracking": "-0.05em",
-      "maxWidth": "12ch",
-      "emphasis": "same font at 45% opacity, nowrap"
+      "lines": "one prop string per line; emphasis phrase at ink/45, no-wrap"
     },
-    "body": {
-      "size": "17px",
-      "leading": 1.6,
-      "opacity": 0.65,
-      "maxWidth": "46ch"
-    },
-    "terminal": {
-      "font": "mono",
-      "size": "12-13px",
-      "leading": 1.75
-    },
-    "meta": {
-      "font": "mono",
-      "size": "11px",
-      "case": "uppercase",
-      "tracking": "0.12-0.14em"
-    }
+    "body": { "size": "17px", "leading": 1.6, "color": "ink/65", "maxWidth": "46ch" },
+    "terminal": "mono 12px (13px from @md), leading 1.75",
+    "facts": "mono 11px uppercase, tracking 0.12em, ink/45"
   },
   "color": {
-    "background": "#070708",
-    "text": "#f2eee6",
-    "terminal": "#0c0b0a",
-    "accent": "#d4ff3a",
-    "running": "#ffb547",
-    "removed": "rose",
-    "grid": "white/3.5% 56px, radial mask",
-    "glow": "rgba(212,255,58,0.10)"
+    "tokens": "COLORS object → --ta-page, --ta-surface, --ta-ink, --ta-on-light, --ta-accent",
+    "page": "#09090b",
+    "surface": "#0f0f11",
+    "ink": "#f4f4f5",
+    "accent": "#d4ff3a via the accent prop, only on the install chip's Copied state",
+    "terminal": "ticks, summary and PR marker in ink; spinners ink/50; +n ink/80; −n ink/40; tree glyphs ink/25",
+    "focus": "2px ink rings"
   },
   "motion": {
-    "typing": "per-character 26-60ms jittered deterministically, +40ms on spaces",
-    "spinner": "braille frames ⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏",
-    "reveal": "plan 230ms apart, files 170ms apart, tests run for their own duration",
-    "loop": "pause 5200ms then replay; only while in view",
-    "reducedMotion": "render the finished session, no loop",
-    "entrance": "copy column staggers in (16px, 650ms, 70ms apart)",
-    "terminal": "tilts ≤1.5° toward the pointer on a soft spring; header grip is a pause/resume button that holds the clock",
-    "buttons": "CTA lifts 2px with deeper glow, press 0.98, arrow nudges 3px; copy chip presses 0.98 and pops its icon on a spring"
+    "copy": "once at 20% in view: headline lines rise 12px from blur(8px), 550ms, 65ms apart; body 0.26s, actions 0.32s, facts from 0.38s 40ms apart",
+    "terminal": "own once trigger at 30%: frame rises 24px from blur(8px), 700ms at 0.3s; header hairline draws, pause/tab/+/clock land 40ms apart from 0.42s; tab highlight draws; status bar at 0.52s",
+    "session": "first line 800ms after the frame starts; one rAF clock in a motion value; React state only at timeline marks; pauses offscreen, in hidden tabs and while held; replays after loopPause",
+    "rows": "each new line fades up 4px from blur(3px), 220ms",
+    "counts": "files and +/− tween to each new value over 400ms, tabular",
+    "tilt": "up to 1.5° toward a mouse pointer, spring 180/22",
+    "copy chip": "icon pops on spring 500/30; Copied holds 1.8s",
+    "reducedMotion": "finished session at once, no loop, tilt or blink; one 150ms fade; counts set instantly"
   },
   "responsive": {
-    "mobile": "terminal under copy, 380px tall, 12px type, tab subtitle hidden; actions stack full width",
-    "lg": "side by side, terminal 480px"
+    "narrow": "copy then terminal; actions full width below @md; tab subtitle and + hidden below @md",
+    "@5xl+": "side by side"
   },
   "accessibility": [
-    "terminal aria-hidden (decorative)",
-    "copy chip is a button with Copied state",
-    "visible focus rings in lime",
-    "no motion with prefers-reduced-motion"
+    "section labelled by the h1",
+    "terminal body role=log, aria-live off",
+    "pause button with aria-pressed and a label",
+    "copy chip with a descriptive aria-label and a polite live region",
+    "2px ink focus rings, offset 3px, instant",
+    "reduced motion shows the finished session"
   ],
   "content": {
-    "brand": "Relay",
-    "headline": "The agent that does the boring parts of shipping.",
+    "headline": ["The agent", "that does the", "boring parts", "of shipping."],
     "emphasis": "boring parts",
     "install": "npx relay@latest init",
-    "session": "rate-limit /v1/checkout and /v1/refunds → PR #482"
+    "facts": ["Runs locally or in CI", "Never pushes to main", "Free for open source"],
+    "command": "relay ship \"rate-limit /v1/checkout and /v1/refunds\"",
+    "pr": "#482 Rate-limit checkout and refunds"
   },
   "avoid": [
-    "traffic-light dots",
-    "hacker green-on-black",
-    "gradient headline",
-    "page-level horizontal overflow",
-    "fake progress bars",
-    "emoji in the terminal"
+    "brand bar or release announcement inside the hero",
+    "lime, amber or green terminal colours",
+    "radial glow blobs, gradient edges, button glows",
+    "macOS traffic lights and hacker clichés",
+    "per-frame React state",
+    "horizontal page scroll"
   ]
 }

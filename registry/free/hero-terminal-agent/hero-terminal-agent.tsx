@@ -1,7 +1,18 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import { AnimatePresence, motion, useInView, useMotionValue, useReducedMotion, useSpring, type Variants } from "motion/react";
+import { useEffect, useId, useMemo, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
+import {
+  AnimatePresence,
+  animate,
+  motion,
+  useInView,
+  useMotionValue,
+  useReducedMotion,
+  useSpring,
+  useTransform,
+  type MotionValue,
+  type Variants,
+} from "motion/react";
 
 type Link = { label: string; href: string };
 
@@ -20,14 +31,14 @@ export type SessionTest = {
   name: string;
   /** Duration printed after the tick, e.g. "12ms". */
   time: string;
-  /** How long the spinner runs before the test passes, in ms of animation time. */
+  /** How long the spinner runs before the test passes, in ms of session time. */
   run: number;
 };
 
 export type AgentSession = {
   cwd: string;
   branch: string;
-  /** Branch Relay works on, shown in the status bar. */
+  /** Branch the agent works on, shown in the status bar. */
   workBranch: string;
   command: string;
   /** Line shown while the agent reads the repo. */
@@ -41,11 +52,8 @@ export type AgentSession = {
 };
 
 export type HeroTerminalAgentProps = {
-  brand?: string;
-  /** Small release note above the headline. */
-  announcement?: Link;
-  /** The headline. The `emphasis` substring is set in a muted tone. */
-  headline?: string;
+  /** Headline, one string per line. The `emphasis` phrase is set at 45% ink. */
+  headline?: string[];
   emphasis?: string;
   body?: string;
   primary?: Link;
@@ -59,18 +67,88 @@ export type HeroTerminalAgentProps = {
   session?: AgentSession;
   /** Milliseconds the finished session stays on screen before it replays. */
   loopPause?: number;
+  /** The one signal colour: the install chip's "Copied" confirmation. */
+  accent?: string;
 };
 
-const LIME = "#d4ff3a";
-const ease = [0.22, 1, 0.36, 1] as const;
+/* ------------------------------------------------------------------ */
+/* Tokens                                                              */
+/* ------------------------------------------------------------------ */
 
-// Copy column arrives in order: headline, body, actions, facts.
-const stagger: Variants = { show: { transition: { staggerChildren: 0.07, delayChildren: 0.05 } } };
-const rise: Variants = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.65, ease } } };
-const fade: Variants = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { duration: 0.2 } } };
+const COLORS = {
+  page: "#09090b",
+  surface: "#0f0f11",
+  ink: "#f4f4f5",
+  /** Text on the accent and on the ink button. */
+  onLight: "#09090b",
+} as const;
+
+const DEFAULT_ACCENT = "#d4ff3a";
+const EASE = [0.22, 1, 0.36, 1] as const;
+
+/**
+ * Entrance timeline, in seconds. The copy lands first (headline lines, body,
+ * actions, facts), then the terminal assembles (frame, header, status bar),
+ * and only then does the session start typing.
+ */
+const T = {
+  line: 0,
+  lineStep: 0.065,
+  body: 0.26,
+  actions: 0.32,
+  facts: 0.38,
+  factStep: 0.04,
+  frame: 0.3,
+  header: 0.42,
+  headerStep: 0.04,
+  status: 0.52,
+  dur: 0.55,
+} as const;
+
+/** Session time (ms) before the first line prints, so it starts once the frame has landed. */
+const SESSION_DELAY = 800;
+/** Braille spinner frames and how long each one shows, in ms. */
 const SPIN = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
+const SPIN_FRAME = 80;
+/** Longest frame step the clock accepts, so a backgrounded tab doesn't skip the session. */
+const MAX_DT = 100;
+const COPIED_MS = 1800;
+/** Pointer tilt of the terminal, in degrees either way. */
+const TILT = 1.5;
 
-const defaultSession: AgentSession = {
+const reveal: Variants = {
+  hidden: { opacity: 0, y: 12, filter: "blur(8px)" },
+  show: (delay: number) => ({
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: T.dur, ease: EASE, delay },
+    transitionEnd: { filter: "none" },
+  }),
+};
+const frameIn: Variants = {
+  hidden: { opacity: 0, y: 24, filter: "blur(8px)" },
+  show: (delay: number) => ({
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.7, ease: EASE, delay },
+    transitionEnd: { filter: "none" },
+  }),
+};
+const drawX: Variants = {
+  hidden: { scaleX: 0 },
+  show: (delay: number) => ({ scaleX: 1, transition: { duration: 0.5, ease: EASE, delay } }),
+};
+/** Reduced motion: one short fade for everything, no transforms, blur or stagger. */
+const fade: Variants = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { duration: 0.15 } },
+};
+
+const FOCUS = "focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-(--ta-ink)";
+
+const DEFAULT_SESSION: AgentSession = {
   cwd: "~/northwind/checkout-api",
   branch: "main",
   workBranch: "relay/rate-limit",
@@ -110,14 +188,14 @@ const defaultSession: AgentSession = {
 };
 
 /* ------------------------------------------------------------------ */
-/* Timeline                                                            */
+/* Session timeline                                                    */
 /* ------------------------------------------------------------------ */
 
 type Row =
   | { kind: "cwd"; at: number }
   | { kind: "cmd"; at: number; typedAt: number[] }
   | { kind: "status"; at: number; doneAt: number; label: string; done: string }
-  | { kind: "heading"; at: number; label: string; gap: boolean }
+  | { kind: "heading"; at: number; label: string }
   | { kind: "plan"; at: number; n: number; text: string }
   | { kind: "file"; at: number; file: SessionFile }
   | { kind: "test"; at: number; doneAt: number; test: SessionTest }
@@ -127,51 +205,95 @@ type Row =
   | { kind: "note"; at: number }
   | { kind: "idle"; at: number };
 
+/** Pacing of the session, in ms. */
+const PACE = { prompt: 650, typed: 520, read: 1150, afterRead: 1400, plan: 230, section: 600, file: 170, test: 160, summary: 300, pr: 750, prTitle: 160, note: 420, idle: 500 } as const;
+
+/** Lays the session out on one clock. Also returns every moment something changes, so React only renders then. */
 function buildTimeline(s: AgentSession) {
   const rows: Row[] = [];
   let t = 0;
   rows.push({ kind: "cwd", at: t });
-  t += 650;
+  t += PACE.prompt;
+  const cmdAt = t;
   // Per-character typing delays, jittered deterministically so it reads human.
   const typedAt: number[] = [];
   for (let i = 0; i < s.command.length; i++) {
-    const c = s.command.charCodeAt(i);
-    t += 26 + ((c * 37 + i * 11) % 34) + (s.command[i] === " " ? 40 : 0);
+    t += 26 + ((s.command.charCodeAt(i) * 37 + i * 11) % 34) + (s.command[i] === " " ? 40 : 0);
     typedAt.push(t);
   }
-  rows.push({ kind: "cmd", at: 650, typedAt });
-  t += 520;
-  rows.push({ kind: "status", at: t, doneAt: t + 1150, label: s.reading, done: s.readingDone });
-  t += 1400;
-  rows.push({ kind: "heading", at: t, label: "Plan", gap: true });
-  s.plan.forEach((text, n) => {
-    t += 230;
-    rows.push({ kind: "plan", at: t, n: n + 1, text });
-  });
-  t += 600;
-  rows.push({ kind: "heading", at: t, label: "Writing files", gap: true });
-  s.files.forEach((file) => {
-    t += 170;
-    rows.push({ kind: "file", at: t, file });
-  });
-  t += 600;
-  rows.push({ kind: "heading", at: t, label: "Running tests", gap: true });
+  rows.push({ kind: "cmd", at: cmdAt, typedAt });
+  t += PACE.typed;
+  rows.push({ kind: "status", at: t, doneAt: t + PACE.read, label: s.reading, done: s.readingDone });
+  t += PACE.afterRead;
+  rows.push({ kind: "heading", at: t, label: "Plan" });
+  s.plan.forEach((text, n) => rows.push({ kind: "plan", at: (t += PACE.plan), n: n + 1, text }));
+  t += PACE.section;
+  rows.push({ kind: "heading", at: t, label: "Writing files" });
+  s.files.forEach((file) => rows.push({ kind: "file", at: (t += PACE.file), file }));
+  t += PACE.section;
+  rows.push({ kind: "heading", at: t, label: "Running tests" });
   s.tests.forEach((test) => {
-    t += 160;
+    t += PACE.test;
     rows.push({ kind: "test", at: t, doneAt: t + test.run, test });
     t += test.run;
   });
-  t += 300;
-  rows.push({ kind: "summary", at: t, text: s.testSummary });
-  t += 750;
-  rows.push({ kind: "pr", at: t });
-  t += 160;
-  rows.push({ kind: "prTitle", at: t });
-  t += 420;
-  rows.push({ kind: "note", at: t });
-  t += 500;
-  rows.push({ kind: "idle", at: t });
-  return { rows, total: t };
+  rows.push({ kind: "summary", at: (t += PACE.summary), text: s.testSummary });
+  rows.push({ kind: "pr", at: (t += PACE.pr) });
+  rows.push({ kind: "prTitle", at: (t += PACE.prTitle) });
+  rows.push({ kind: "note", at: (t += PACE.note) });
+  rows.push({ kind: "idle", at: (t += PACE.idle) });
+
+  const marks = new Set<number>();
+  for (const r of rows) {
+    marks.add(r.at);
+    if ("doneAt" in r) marks.add(r.doneAt);
+    if (r.kind === "cmd") r.typedAt.forEach((x) => marks.add(x));
+  }
+  return { rows, total: t, marks: [...marks].sort((a, b) => a - b) };
+}
+
+/**
+ * One clock for the whole session. Time lives in a motion value (the spinner
+ * and elapsed clock read it without re-rendering); React state only moves when
+ * the clock crosses a mark, i.e. when a line, a character or a tick changes.
+ * It pauses offscreen, in hidden tabs and while held, and replays after `loopPause`.
+ */
+function useSessionClock({ marks, total, loopPause, running }: { marks: number[]; total: number; loopPause: number; running: boolean }) {
+  const time = useMotionValue(0);
+  const [step, setStep] = useState(0);
+  const elapsed = useRef(-SESSION_DELAY);
+  const passed = useRef(0);
+
+  useEffect(() => {
+    if (!running) return;
+    let raf = 0;
+    let last = performance.now();
+    const tick = (now: number) => {
+      const dt = Math.min(now - last, MAX_DT);
+      last = now;
+      if (!document.hidden) {
+        elapsed.current += dt;
+        if (elapsed.current > total + loopPause) {
+          elapsed.current = 0;
+          passed.current = 0;
+        }
+        let n = passed.current;
+        while (n < marks.length && marks[n]! <= elapsed.current) n++;
+        if (n !== passed.current) {
+          passed.current = n;
+          setStep(n);
+        }
+        time.set(Math.max(0, elapsed.current));
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [running, marks, total, loopPause, time]);
+
+  // The last mark passed is "now" for rendering; before the first one, nothing has printed.
+  const now = step > 0 ? marks[step - 1]! : -1;
+  return { time, now };
 }
 
 function fmtClock(ms: number) {
@@ -184,9 +306,7 @@ function fmtClock(ms: number) {
 /* ------------------------------------------------------------------ */
 
 export function HeroTerminalAgent({
-  brand = "Relay",
-  announcement = { label: "Relay 2.4 reads monorepos now", href: "#changelog" },
-  headline = "The agent that does the boring parts of shipping.",
+  headline = ["The agent", "that does the", "boring parts", "of shipping."],
   emphasis = "boring parts",
   body = "Relay reads your repo, writes the change, runs the tests and opens the pull request. You review a tidy diff and keep the interesting work for yourself.",
   primary = { label: "Start shipping free", href: "#signup" },
@@ -194,91 +314,101 @@ export function HeroTerminalAgent({
   facts = ["Runs locally or in CI", "Never pushes to main", "Free for open source"],
   tabTitle = "checkout-api",
   version = "relay 2.4.1",
-  session = defaultSession,
+  session = DEFAULT_SESSION,
   loopPause = 5200,
+  accent = DEFAULT_ACCENT,
 }: HeroTerminalAgentProps) {
-  const [pre, post] = splitOnce(headline, emphasis);
-  const reduce = useReducedMotion();
-  const item = reduce ? fade : rise;
+  const rootRef = useRef<HTMLElement>(null);
+  const headingId = useId();
+  const reduce = !!useReducedMotion();
+  // Reveal once, when a fifth of the hero is on screen.
+  const inView = useInView(rootRef, { once: true, amount: 0.2 });
+  const vars = {
+    "--ta-page": COLORS.page,
+    "--ta-surface": COLORS.surface,
+    "--ta-ink": COLORS.ink,
+    "--ta-on-light": COLORS.onLight,
+    "--ta-accent": accent,
+  } as CSSProperties;
+  const v = (variants: Variants) => (reduce ? fade : variants);
 
   return (
-    <section className="relative isolate overflow-hidden bg-[#070708] text-[#f2eee6]">
-      <div
+    <motion.section
+      ref={rootRef}
+      aria-labelledby={headingId}
+      style={vars}
+      initial="hidden"
+      animate={inView ? "show" : "hidden"}
+      className="@container relative isolate overflow-hidden bg-(--ta-page) text-(--ta-ink)"
+    >
+      {/* A hairline grid, faded out toward the edges: texture, not decoration. */}
+      <motion.div
         aria-hidden="true"
-        className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:56px_56px] [mask-image:radial-gradient(ellipse_80%_70%_at_70%_40%,#000_20%,transparent_75%)]"
+        variants={fade}
+        className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:56px_56px] [mask-image:radial-gradient(ellipse_80%_70%_at_70%_45%,#000_20%,transparent_75%)]"
       />
-      <div aria-hidden="true" className="absolute right-[-10%] top-[18%] -z-10 h-[520px] w-[720px] max-w-[90vw] rounded-full bg-[radial-gradient(closest-side,rgba(212,255,58,0.10),transparent)] blur-2xl" />
-      <div className="mx-auto grid max-w-7xl gap-x-12 gap-y-14 px-5 pb-16 pt-8 sm:gap-y-20 sm:px-8 sm:pb-20 lg:grid-cols-12 lg:items-center lg:gap-y-24 lg:px-12 lg:pb-28 lg:pt-10">
-        {/* Top row */}
-        <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4 lg:col-span-12">
-          <p className="flex items-center gap-2.5 font-display text-[22px] font-bold tracking-[-0.04em]">
-            <RelayMark />
-            {brand}
-          </p>
-          <a
-            href={announcement.href}
-            className="group inline-flex items-center gap-2 rounded-sm font-mono text-[11px] uppercase tracking-[0.14em] text-[#f2eee6]/60 transition-colors hover:text-[#f2eee6] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d4ff3a]"
+      <div className="mx-auto grid max-w-7xl gap-x-12 gap-y-14 px-5 py-16 @xl:px-8 @xl:py-20 @5xl:grid-cols-12 @5xl:items-center @5xl:px-12 @5xl:py-28">
+        <div className="@5xl:col-span-6">
+          <h1
+            id={headingId}
+            className="font-display text-[clamp(2.75rem,1.4rem+4.6cqi,5.25rem)] font-bold leading-[0.95] tracking-[-0.05em]"
           >
-            <span className="size-1.5 rounded-full bg-[#d4ff3a]" aria-hidden="true" />
-            {announcement.label}
-            <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-0.5">
-              →
-            </span>
-          </a>
-        </div>
-
-        {/* Copy */}
-        <motion.div className="lg:col-span-6" variants={stagger} initial="hidden" animate="show">
-          <motion.h1 variants={item} className="max-w-[12ch] text-balance font-display text-[clamp(2.75rem,1.5rem+4.8vw,5.5rem)] font-bold leading-[0.95] tracking-[-0.05em]">
-            {pre}
-            {emphasis && post !== null ? (
-              <>
-                <span className="whitespace-nowrap text-[#f2eee6]/45">{emphasis}</span>
-                {post}
-              </>
-            ) : null}
-          </motion.h1>
-
-          <motion.p variants={item} className="mt-7 max-w-[46ch] text-[17px] leading-[1.6] text-[#f2eee6]/65">{body}</motion.p>
-
-          <motion.div variants={item} className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-            <a
-              href={primary.href}
-              className="group inline-flex h-12 items-center justify-center gap-2.5 rounded-[10px] bg-[#f2eee6] px-5 text-[15px] font-semibold text-[#141311] shadow-[0_10px_30px_-14px_rgba(242,238,230,0.6)] transition-[transform,background-color,box-shadow] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:bg-white hover:shadow-[0_16px_40px_-12px_rgba(242,238,230,0.75)] active:translate-y-0 active:scale-[0.98] active:duration-100 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[#d4ff3a]"
-            >
-              {primary.label}
-              <svg viewBox="0 0 16 16" className="size-4 transition-transform duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-[3px]" fill="none" aria-hidden="true">
-                <path d="M3 8h10m0 0L8.5 3.5M13 8l-4.5 4.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </a>
+            {headline.map((line, i) => (
+              <motion.span key={i} variants={v(reveal)} custom={T.line + i * T.lineStep} className="block">
+                <Emphasised text={line} phrase={emphasis} />
+              </motion.span>
+            ))}
+          </h1>
+          <motion.p variants={v(reveal)} custom={T.body} className="mt-7 max-w-[46ch] text-[17px] leading-[1.6] text-(--ta-ink)/65">
+            {body}
+          </motion.p>
+          <motion.div variants={v(reveal)} custom={T.actions} className="mt-9 flex flex-col gap-3 @md:flex-row @md:flex-wrap @md:items-center">
+            <PrimaryLink link={primary} />
             <CopyCommand command={installCommand} />
           </motion.div>
-
-          <motion.ul variants={item} className="mt-9 flex flex-wrap gap-x-5 gap-y-2 font-mono text-[11px] uppercase tracking-[0.12em] text-[#f2eee6]/45">
-            {facts.map((f) => (
-              <li key={f} className="flex items-center gap-2">
-                <span className="h-px w-3 bg-[#f2eee6]/30" aria-hidden="true" />
+          <ul className="mt-9 flex flex-wrap gap-x-5 gap-y-2 font-mono text-[11px] uppercase tracking-[0.12em] text-(--ta-ink)/45">
+            {facts.map((f, i) => (
+              <motion.li key={f} variants={v(reveal)} custom={T.facts + i * T.factStep} className="flex items-center gap-2">
+                <span className="h-px w-3 bg-(--ta-ink)/30" aria-hidden="true" />
                 {f}
-              </li>
+              </motion.li>
             ))}
-          </motion.ul>
-        </motion.div>
+          </ul>
+        </div>
 
-        {/* Terminal */}
-        <div className="relative min-w-0 lg:col-span-6">
-          <div aria-hidden="true" className="absolute -inset-px -z-10 rounded-[15px] bg-gradient-to-b from-white/[0.14] via-white/[0.04] to-transparent" />
-          <Terminal session={session} tabTitle={tabTitle} version={version} loopPause={loopPause} />
+        <div className="relative min-w-0 @5xl:col-span-6">
+          <Terminal session={session} tabTitle={tabTitle} version={version} loopPause={loopPause} reduce={reduce} variants={v} />
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }
 
-function splitOnce(text: string, needle: string): [string, string | null] {
-  if (!needle) return [text, null];
-  const i = text.indexOf(needle);
-  if (i < 0) return [text, null];
-  return [text.slice(0, i), text.slice(i + needle.length)];
+/** Sets a phrase of a line at 45% ink: two tones of one voice, no colour. */
+function Emphasised({ text, phrase }: { text: string; phrase: string }) {
+  const i = phrase ? text.indexOf(phrase) : -1;
+  if (i < 0) return <>{text}</>;
+  return (
+    <>
+      {text.slice(0, i)}
+      <span className="whitespace-nowrap text-(--ta-ink)/45">{phrase}</span>
+      {text.slice(i + phrase.length)}
+    </>
+  );
+}
+
+function PrimaryLink({ link }: { link: Link }) {
+  return (
+    <a
+      href={link.href}
+      className={`group inline-flex h-12 items-center justify-center gap-2.5 rounded-[10px] bg-(--ta-ink) px-5 text-[15px] font-semibold text-(--ta-on-light) transition-[background-color,transform] duration-150 hover:bg-white active:scale-[0.98] ${FOCUS}`}
+    >
+      {link.label}
+      <svg viewBox="0 0 16 16" className="size-4 transition-transform duration-150 group-hover:translate-x-[3px]" fill="none" aria-hidden="true">
+        <path d="M3 8h10m0 0L8.5 3.5M13 8l-4.5 4.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </a>
+  );
 }
 
 /* ------------------------------------------------------------------ */
@@ -287,11 +417,9 @@ function splitOnce(text: string, needle: string): [string, string | null] {
 
 function CopyCommand({ command }: { command: string }) {
   const [copied, setCopied] = useState(false);
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  useEffect(() => () => {
-    if (timer.current) clearTimeout(timer.current);
-  }, []);
+  useEffect(() => () => clearTimeout(timer.current), []);
 
   const copy = async () => {
     try {
@@ -300,34 +428,34 @@ function CopyCommand({ command }: { command: string }) {
       // Clipboard can be blocked (iframes, http). Still confirm: the command is visible to copy by hand.
     }
     setCopied(true);
-    if (timer.current) clearTimeout(timer.current);
-    timer.current = setTimeout(() => setCopied(false), 1800);
+    clearTimeout(timer.current);
+    timer.current = setTimeout(() => setCopied(false), COPIED_MS);
   };
 
   return (
     <button
       type="button"
       onClick={copy}
-      className="group inline-flex h-12 min-w-0 items-center justify-between gap-4 rounded-[10px] border border-[#f2eee6]/15 bg-[#0c0b0a] pl-4 pr-2 font-mono text-[13.5px] text-[#f2eee6]/85 transition-[border-color,transform] duration-150 hover:border-[#f2eee6]/30 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[#d4ff3a]"
       aria-label={`Copy install command: ${command}`}
+      className={`group inline-flex h-12 min-w-0 items-center justify-between gap-4 rounded-[10px] border border-(--ta-ink)/15 bg-(--ta-surface) pl-4 pr-2 font-mono text-[13.5px] text-(--ta-ink)/85 transition-[border-color,transform] duration-150 hover:border-(--ta-ink)/30 active:scale-[0.98] ${FOCUS}`}
     >
       <span className="truncate">
-        <span className="select-none text-[#f2eee6]/35">$ </span>
+        <span className="select-none text-(--ta-ink)/35">$ </span>
         {command}
       </span>
+      {/* The accent appears here and only here: it confirms the copy. */}
       <span
         className={`flex h-8 shrink-0 items-center gap-1.5 rounded-[7px] px-2.5 font-sans text-[12px] font-medium transition-colors duration-200 ${
-          copied ? "bg-[#d4ff3a] text-[#141311]" : "bg-[#f2eee6]/[0.07] text-[#f2eee6]/70 group-hover:bg-[#f2eee6]/[0.12] group-hover:text-[#f2eee6]"
+          copied ? "bg-(--ta-accent) text-(--ta-on-light)" : "bg-(--ta-ink)/[0.07] text-(--ta-ink)/70 group-hover:bg-(--ta-ink)/[0.12] group-hover:text-(--ta-ink)"
         }`}
       >
-        {/* Icon and label swap with a quick pop so the copy registers. */}
         <AnimatePresence mode="popLayout" initial={false}>
           <motion.span
-            key={copied ? "y" : "n"}
+            key={copied ? "copied" : "copy"}
             initial={{ opacity: 0, scale: 0.6 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.6, transition: { duration: 0.1 } }}
-            transition={{ type: "spring", stiffness: 600, damping: 32 }}
+            transition={{ type: "spring", stiffness: 500, damping: 30 }}
             className="inline-flex"
           >
             {copied ? (
@@ -352,38 +480,37 @@ function CopyCommand({ command }: { command: string }) {
 /* Terminal                                                            */
 /* ------------------------------------------------------------------ */
 
-function Terminal({ session, tabTitle, version, loopPause }: { session: AgentSession; tabTitle: string; version: string; loopPause: number }) {
-  const reduce = useReducedMotion();
+type VariantPicker = (v: Variants) => Variants;
+
+function Terminal({
+  session,
+  tabTitle,
+  version,
+  loopPause,
+  reduce,
+  variants: v,
+}: {
+  session: AgentSession;
+  tabTitle: string;
+  version: string;
+  loopPause: number;
+  reduce: boolean;
+  variants: VariantPicker;
+}) {
   const frameRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
-  const inView = useInView(frameRef, { amount: 0.25 });
-  const { rows, total } = useMemo(() => buildTimeline(session), [session]);
-  const [now, setNow] = useState(0);
+  // The terminal has its own reveal because it sits below the fold on phones;
+  // the session clock also needs it on screen, and stops when it leaves.
+  const revealed = useInView(frameRef, { once: true, amount: 0.3 });
+  const onScreen = useInView(frameRef, { amount: 0.25 });
+  const { rows, total, marks } = useMemo(() => buildTimeline(session), [session]);
   // The pause button holds the session so a line can be read.
   const [held, setHeld] = useState(false);
-  // A slight tilt toward the pointer gives the window weight.
-  const rx = useMotionValue(0);
-  const ry = useMotionValue(0);
-  const rotateX = useSpring(rx, { stiffness: 180, damping: 22 });
-  const rotateY = useSpring(ry, { stiffness: 180, damping: 22 });
-
-  // One clock drives the whole session. It pauses off-screen, while held, and never runs with reduced motion.
-  useEffect(() => {
-    if (reduce || !inView || held) return;
-    let last = performance.now();
-    const id = setInterval(() => {
-      const t = performance.now();
-      const dt = Math.min(t - last, 100);
-      last = t;
-      setNow((n) => (n + dt > total + loopPause ? 0 : n + dt));
-    }, 40);
-    return () => clearInterval(id);
-  }, [reduce, inView, held, total, loopPause]);
-
-  const time = reduce ? Number.POSITIVE_INFINITY : now;
-  const visible = rows.filter((r) => r.at <= time);
-  const finished = time >= total;
-  const spin = SPIN[Math.floor(now / 80) % SPIN.length];
+  const { time, now: clockNow } = useSessionClock({ marks, total, loopPause, running: revealed && onScreen && !held && !reduce });
+  const now = reduce ? Number.POSITIVE_INFINITY : clockNow;
+  const visible = rows.filter((r) => r.at <= now);
+  const finished = now >= total;
+  const tilt = usePointerTilt(reduce);
 
   const diff = visible.reduce(
     (acc, r) => (r.kind === "file" ? { files: acc.files + (r.file.added ? 1 : 0), add: acc.add + (r.file.added ?? 0), del: acc.del + (r.file.removed ?? 0) } : acc),
@@ -391,83 +518,50 @@ function Terminal({ session, tabTitle, version, loopPause }: { session: AgentSes
   );
 
   // Keep the newest line in view, like a real terminal.
-  const count = visible.length;
-  const typed = visible.find((r): r is Extract<Row, { kind: "cmd" }> => r.kind === "cmd")?.typedAt.filter((x) => x <= time).length ?? 0;
+  const typed = visible.find((r): r is Extract<Row, { kind: "cmd" }> => r.kind === "cmd")?.typedAt.filter((x) => x <= now).length ?? 0;
   useEffect(() => {
     const el = bodyRef.current;
     if (el) el.scrollTop = el.scrollHeight;
-  }, [count, typed]);
+  }, [visible.length, typed]);
+
+  const spin = useTransform(time, (t) => SPIN[Math.floor(t / SPIN_FRAME) % SPIN.length] ?? SPIN[0]!);
+  const clock = useTransform(time, fmtClock);
 
   return (
     <motion.div
       ref={frameRef}
-      initial={reduce ? false : { opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, ease, delay: 0.1 }}
-      style={{ rotateX, rotateY, transformPerspective: 1400 }}
-      onPointerMove={(e) => {
-        if (reduce || e.pointerType !== "mouse") return;
-        const r = e.currentTarget.getBoundingClientRect();
-        ry.set(((e.clientX - r.left) / r.width - 0.5) * 3);
-        rx.set(-((e.clientY - r.top) / r.height - 0.5) * 3);
-      }}
-      onPointerLeave={() => {
-        rx.set(0);
-        ry.set(0);
-      }}
-      className="relative overflow-hidden rounded-[14px] border border-white/[0.09] bg-[#0c0b0a] shadow-[0_1px_0_0_rgba(255,255,255,0.06)_inset,0_50px_100px_-40px_rgba(0,0,0,0.9),0_20px_40px_-20px_rgba(0,0,0,0.6)]"
+      initial="hidden"
+      animate={revealed ? "show" : "hidden"}
+      variants={v(frameIn)}
+      custom={T.frame}
+      style={{ rotateX: tilt.rotateX, rotateY: tilt.rotateY, transformPerspective: 1400 }}
+      onPointerMove={tilt.onPointerMove}
+      onPointerLeave={tilt.onPointerLeave}
+      className="relative overflow-hidden rounded-[14px] border border-(--ta-ink)/[0.09] bg-(--ta-surface) shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_50px_100px_-40px_rgba(0,0,0,0.9),0_20px_40px_-20px_rgba(0,0,0,0.6)]"
     >
-      {/* Header: a tab, not traffic lights */}
-      <div className="flex h-11 items-stretch justify-between border-b border-white/[0.07] pr-3 font-mono text-[12px] text-[#f2eee6]/50">
+      {/* Header: a tab, not traffic lights. */}
+      <div className="relative flex h-11 items-stretch justify-between pr-3 font-mono text-[12px] text-(--ta-ink)/50">
         <div className="flex min-w-0 items-stretch">
-          <button
-            type="button"
-            onClick={() => setHeld((h) => !h)}
-            disabled={!!reduce}
-            aria-label={held ? "Resume session" : "Pause session"}
-            aria-pressed={held}
-            className="group/p flex items-center justify-center border-r border-white/[0.07] px-4 transition-colors duration-150 hover:bg-white/[0.04] focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[#d4ff3a] disabled:pointer-events-none"
+          <motion.div variants={v(reveal)} custom={T.header} className="flex">
+            <HoldButton held={held} disabled={reduce} onToggle={() => setHeld((h) => !h)} />
+          </motion.div>
+          <motion.div
+            variants={v(reveal)}
+            custom={T.header + T.headerStep}
+            className="relative flex min-w-0 items-center gap-2.5 border-x border-(--ta-ink)/[0.07] bg-(--ta-ink)/[0.03] px-4 text-(--ta-ink)/85"
           >
-            <span className="relative flex h-3 w-3 items-center justify-center transition-transform duration-100 group-active/p:scale-90">
-              <span className={`absolute flex gap-[3px] transition-[opacity,scale] duration-200 ${held ? "scale-50 opacity-0" : "opacity-100"}`}>
-                <span className="h-3 w-[3px] rounded-full bg-[#f2eee6]/40 transition-colors group-hover/p:bg-[#f2eee6]/80" />
-                <span className="h-3 w-[3px] rounded-full bg-[#f2eee6]/40 transition-colors group-hover/p:bg-[#f2eee6]/80" />
-              </span>
-              <svg viewBox="0 0 12 12" className={`absolute size-3 text-[#d4ff3a] transition-[opacity,scale] duration-200 ${held ? "opacity-100" : "scale-50 opacity-0"}`} aria-hidden="true">
-                <path d="M3 1.8v8.4L10 6z" fill="currentColor" />
-              </svg>
-            </span>
-          </button>
-          <div className="relative flex min-w-0 items-center gap-2.5 border-r border-white/[0.07] bg-white/[0.03] px-4 text-[#f2eee6]/85">
             <span className="truncate">{tabTitle}</span>
-            <span className="hidden text-[#f2eee6]/35 sm:inline">— relay ship</span>
-            <span className="absolute inset-x-0 top-0 h-px bg-[#f2eee6]/40" aria-hidden="true" />
-          </div>
-          <div className="hidden items-center px-4 text-[#f2eee6]/30 sm:flex" aria-hidden="true">
+            <span className="hidden text-(--ta-ink)/35 @md:inline">— relay ship</span>
+            <motion.span variants={v(drawX)} custom={T.header + T.headerStep * 2} className="absolute inset-x-0 top-0 h-px origin-left bg-(--ta-ink)/40" aria-hidden="true" />
+          </motion.div>
+          <motion.div variants={v(reveal)} custom={T.header + T.headerStep * 2} className="hidden items-center px-4 text-(--ta-ink)/30 @md:flex" aria-hidden="true">
             +
-          </div>
+          </motion.div>
         </div>
-        <div className="flex shrink-0 items-center gap-2 tabular-nums" aria-hidden="true">
-          {finished ? (
-            <>
-              <span className="size-1.5 rounded-full" style={{ background: LIME }} />
-              <span className="text-[#f2eee6]/70">done</span>
-            </>
-          ) : held ? (
-            <>
-              <span className="flex gap-[2px]">
-                <span className="h-2 w-[2px] rounded-full bg-[#f2eee6]/60" />
-                <span className="h-2 w-[2px] rounded-full bg-[#f2eee6]/60" />
-              </span>
-              <span className="text-[#f2eee6]/70">paused</span>
-            </>
-          ) : (
-            <>
-              <span className="size-1.5 animate-pulse rounded-full bg-[#ffb547]" />
-              <span>{fmtClock(now)}</span>
-            </>
-          )}
-        </div>
+        <motion.div variants={v(reveal)} custom={T.header + T.headerStep * 3} className="flex shrink-0 items-center gap-2 tabular-nums" aria-hidden="true">
+          <SessionState finished={finished} held={held} clock={clock} />
+        </motion.div>
+        <motion.span variants={v(drawX)} custom={T.header} className="absolute inset-x-0 bottom-0 h-px origin-left bg-(--ta-ink)/[0.07]" aria-hidden="true" />
       </div>
 
       {/* Body */}
@@ -476,81 +570,188 @@ function Terminal({ session, tabTitle, version, loopPause }: { session: AgentSes
         role="log"
         aria-label="Example Relay session"
         aria-live="off"
-        className="h-[380px] overflow-y-auto px-4 py-4 font-mono text-[12px] leading-[1.75] text-[#f2eee6]/85 [scrollbar-color:rgba(255,255,255,0.12)_transparent] [scrollbar-width:thin] sm:h-[440px] sm:px-5 sm:text-[13px] lg:h-[480px]"
+        className="h-[380px] overflow-y-auto px-4 py-4 font-mono text-[12px] leading-[1.75] text-(--ta-ink)/85 [scrollbar-color:rgba(255,255,255,0.12)_transparent] [scrollbar-width:thin] @md:h-[440px] @md:px-5 @md:text-[13px] @5xl:h-[480px]"
       >
         {visible.map((r, i) => (
-          <TerminalRow key={i} row={r} time={time} spin={spin} session={session} />
+          <motion.div
+            key={i}
+            initial={reduce ? false : { opacity: 0, y: 4, filter: "blur(3px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)", transitionEnd: { filter: "none" } }}
+            transition={{ duration: 0.22, ease: EASE }}
+          >
+            <TerminalRow row={r} now={now} spin={spin} session={session} />
+          </motion.div>
         ))}
       </div>
       <style>{`@keyframes tm-hero-terminal-agent-blink{0%,55%{opacity:1}56%,100%{opacity:0}}`}</style>
 
       {/* Status bar */}
-      <div className="flex h-8 items-center justify-between gap-4 border-t border-white/[0.07] bg-white/[0.02] px-4 font-mono text-[11px] text-[#f2eee6]/45 tabular-nums">
+      <motion.div
+        variants={v(reveal)}
+        custom={T.status}
+        className="relative flex h-8 items-center justify-between gap-4 bg-(--ta-ink)/[0.02] px-4 font-mono text-[11px] tabular-nums text-(--ta-ink)/45"
+      >
+        <motion.span variants={v(drawX)} custom={T.status} className="absolute inset-x-0 top-0 h-px origin-left bg-(--ta-ink)/[0.07]" aria-hidden="true" />
         <span className="flex min-w-0 items-center gap-3 truncate">
-          <span className="text-[#f2eee6]/65">⎇ {session.workBranch}</span>
-          <span className="hidden sm:inline">{diff.files} files</span>
+          <span className="text-(--ta-ink)/65">⎇ {session.workBranch}</span>
+          <span className="hidden @md:inline">
+            <Count value={diff.files} reduce={reduce} /> files
+          </span>
           <span>
-            <span className="text-[#d4ff3a]/80">+{diff.add}</span> <span>−{diff.del}</span>
+            <span className="text-(--ta-ink)/80">
+              +<Count value={diff.add} reduce={reduce} />
+            </span>{" "}
+            −<Count value={diff.del} reduce={reduce} />
           </span>
         </span>
         <span className="shrink-0">{version}</span>
-      </div>
+      </motion.div>
     </motion.div>
   );
 }
 
-function Spinner({ ch }: { ch: string }) {
-  return <span className="inline-block w-[1.5ch] text-[#ffb547]">{ch}</span>;
+/** Springs the terminal a degree or two toward a mouse pointer; levels out on leave. */
+function usePointerTilt(reduce: boolean) {
+  const rx = useMotionValue(0);
+  const ry = useMotionValue(0);
+  const rotateX = useSpring(rx, { stiffness: 180, damping: 22 });
+  const rotateY = useSpring(ry, { stiffness: 180, damping: 22 });
+  return {
+    rotateX,
+    rotateY,
+    onPointerMove: (e: ReactPointerEvent<HTMLDivElement>) => {
+      if (reduce || e.pointerType !== "mouse") return;
+      const r = e.currentTarget.getBoundingClientRect();
+      ry.set(((e.clientX - r.left) / r.width - 0.5) * TILT * 2);
+      rx.set(-((e.clientY - r.top) / r.height - 0.5) * TILT * 2);
+    },
+    onPointerLeave: () => {
+      rx.set(0);
+      ry.set(0);
+    },
+  };
+}
+
+/** A figure that tweens from its previous value, so the diff counts rather than jumps. */
+function Count({ value, reduce }: { value: number; reduce: boolean }) {
+  const mv = useMotionValue(value);
+  const text = useTransform(mv, (n) => String(Math.round(n)));
+  useEffect(() => {
+    if (reduce) {
+      mv.jump(value);
+      return;
+    }
+    const controls = animate(mv, value, { duration: 0.4, ease: EASE });
+    return () => controls.stop();
+  }, [value, reduce, mv]);
+  return <motion.span>{text}</motion.span>;
+}
+
+function HoldButton({ held, disabled, onToggle }: { held: boolean; disabled: boolean; onToggle: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      disabled={disabled}
+      aria-label={held ? "Resume session" : "Pause session"}
+      aria-pressed={held}
+      className="group/p flex items-center justify-center px-4 transition-colors duration-150 hover:bg-(--ta-ink)/[0.04] focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-(--ta-ink) disabled:pointer-events-none"
+    >
+      <span className="relative flex size-3 items-center justify-center transition-transform duration-100 group-active/p:scale-90">
+        <span className={`absolute flex gap-[3px] transition-[opacity,scale] duration-200 ${held ? "scale-50 opacity-0" : "opacity-100"}`}>
+          <span className="h-3 w-[3px] rounded-full bg-(--ta-ink)/40 transition-colors duration-150 group-hover/p:bg-(--ta-ink)/80" />
+          <span className="h-3 w-[3px] rounded-full bg-(--ta-ink)/40 transition-colors duration-150 group-hover/p:bg-(--ta-ink)/80" />
+        </span>
+        <svg viewBox="0 0 12 12" className={`absolute size-3 text-(--ta-ink) transition-[opacity,scale] duration-200 ${held ? "opacity-100" : "scale-50 opacity-0"}`} aria-hidden="true">
+          <path d="M3 1.8v8.4L10 6z" fill="currentColor" />
+        </svg>
+      </span>
+    </button>
+  );
+}
+
+function SessionState({ finished, held, clock }: { finished: boolean; held: boolean; clock: MotionValue<string> }) {
+  if (finished) {
+    return (
+      <>
+        <span className="size-1.5 rounded-full bg-(--ta-ink)/80" />
+        <span className="text-(--ta-ink)/70">done</span>
+      </>
+    );
+  }
+  if (held) {
+    return (
+      <>
+        <span className="flex gap-[2px]">
+          <span className="h-2 w-[2px] rounded-full bg-(--ta-ink)/60" />
+          <span className="h-2 w-[2px] rounded-full bg-(--ta-ink)/60" />
+        </span>
+        <span className="text-(--ta-ink)/70">paused</span>
+      </>
+    );
+  }
+  return (
+    <>
+      <span className="size-1.5 rounded-full bg-(--ta-ink)/45" />
+      <motion.span>{clock}</motion.span>
+    </>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Rows                                                                */
+/* ------------------------------------------------------------------ */
+
+const GUTTER = "inline-block w-[1.5ch]";
+const INDENT = "pl-[calc(1.5ch+0.5rem)]";
+
+function Spinner({ ch }: { ch: MotionValue<string> }) {
+  return <motion.span className={`${GUTTER} text-(--ta-ink)/50`}>{ch}</motion.span>;
 }
 
 function Tick() {
-  return (
-    <span className="inline-block w-[1.5ch]" style={{ color: LIME }}>
-      ✓
-    </span>
-  );
+  return <span className={`${GUTTER} text-(--ta-ink)`}>✓</span>;
 }
 
 function Cursor({ solid }: { solid?: boolean }) {
   return (
     <span
       aria-hidden="true"
-      className={`ml-px inline-block h-[1.15em] w-[0.6em] translate-y-[0.2em] bg-[#f2eee6]/80 ${solid ? "" : "animate-[tm-hero-terminal-agent-blink_1.1s_steps(1)_infinite] motion-reduce:animate-none"}`}
+      className={`ml-px inline-block h-[1.15em] w-[0.6em] translate-y-[0.2em] bg-(--ta-ink)/80 ${solid ? "" : "animate-[tm-hero-terminal-agent-blink_1.1s_steps(1)_infinite] motion-reduce:animate-none"}`}
     />
   );
 }
 
-function TerminalRow({ row, time, spin, session }: { row: Row; time: number; spin: string; session: AgentSession }) {
+function TerminalRow({ row, now, spin, session }: { row: Row; now: number; spin: MotionValue<string>; session: AgentSession }) {
   switch (row.kind) {
     case "cwd":
       return (
-        <p className="text-[#f2eee6]/45">
-          <span className="text-[#f2eee6]/75">{session.cwd}</span> on <span className="text-[#f2eee6]/75">⎇ {session.branch}</span>
+        <p className="text-(--ta-ink)/45">
+          <span className="text-(--ta-ink)/75">{session.cwd}</span> on <span className="text-(--ta-ink)/75">⎇ {session.branch}</span>
         </p>
       );
     case "cmd": {
-      const n = row.typedAt.filter((x) => x <= time).length;
-      const typing = n < session.command.length;
+      const n = row.typedAt.filter((x) => x <= now).length;
       return (
         <p className="whitespace-pre-wrap break-words">
-          <span className="text-[#f2eee6]/45">❯ </span>
-          <span className="text-[#f2eee6]">{session.command.slice(0, n)}</span>
-          {typing ? <Cursor solid /> : null}
+          <span className="text-(--ta-ink)/45">❯ </span>
+          <span className="text-(--ta-ink)">{session.command.slice(0, n)}</span>
+          {n < session.command.length ? <Cursor solid /> : null}
         </p>
       );
     }
     case "status": {
-      const done = time >= row.doneAt;
+      const done = now >= row.doneAt;
       return (
         <p className="mt-3 flex gap-2">
-          {done ? <span className="inline-block w-[1.5ch] text-[#f2eee6]/45">◇</span> : <Spinner ch={spin} />}
+          {done ? <span className={`${GUTTER} text-(--ta-ink)/45`}>◇</span> : <Spinner ch={spin} />}
           <span className="min-w-0 flex-1">
             {done ? (
               <>
-                Read <span className="text-[#f2eee6]/50">{row.done}</span>
+                Read <span className="text-(--ta-ink)/50">{row.done}</span>
               </>
             ) : (
-              <span className="text-[#f2eee6]/70">{row.label}…</span>
+              <span className="text-(--ta-ink)/70">{row.label}…</span>
             )}
           </span>
         </p>
@@ -558,31 +759,30 @@ function TerminalRow({ row, time, spin, session }: { row: Row; time: number; spi
     }
     case "heading":
       return (
-        <p className={`flex gap-2 ${row.gap ? "mt-3" : ""}`}>
-          <span className="inline-block w-[1.5ch] text-[#f2eee6]/45">◇</span>
-          <span className="text-[#f2eee6]">{row.label}</span>
+        <p className="mt-3 flex gap-2">
+          <span className={`${GUTTER} text-(--ta-ink)/45`}>◇</span>
+          <span className="text-(--ta-ink)">{row.label}</span>
         </p>
       );
     case "plan":
       return (
-        <p className="flex gap-2 pl-[calc(1.5ch+0.5rem)] text-[#f2eee6]/70">
-          <span className="w-[2ch] shrink-0 text-[#f2eee6]/35 tabular-nums">{row.n}</span>
+        <p className={`flex gap-2 ${INDENT} text-(--ta-ink)/70`}>
+          <span className="w-[2ch] shrink-0 tabular-nums text-(--ta-ink)/35">{row.n}</span>
           <span className="min-w-0">{row.text}</span>
         </p>
       );
     case "file": {
       const f = row.file;
-      const isDir = f.name.endsWith("/");
       return (
-        <p className="flex items-baseline gap-3 pl-[calc(1.5ch+0.5rem)]">
+        <p className={`flex items-baseline gap-3 ${INDENT}`}>
           <span className="min-w-0 flex-1 break-words">
-            <span className="text-[#f2eee6]/25">{"│  ".repeat(Math.max(0, f.depth - 1))}</span>
-            {f.depth > 0 ? <span className="text-[#f2eee6]/25">{f.last ? "└─ " : "├─ "}</span> : null}
-            <span className={isDir ? "text-[#f2eee6]/55" : "text-[#f2eee6]/90"}>{f.name}</span>
+            <span className="text-(--ta-ink)/25">{"│  ".repeat(Math.max(0, f.depth - 1))}</span>
+            {f.depth > 0 ? <span className="text-(--ta-ink)/25">{f.last ? "└─ " : "├─ "}</span> : null}
+            <span className={f.name.endsWith("/") ? "text-(--ta-ink)/55" : "text-(--ta-ink)/90"}>{f.name}</span>
           </span>
           {f.added || f.removed ? (
-            <span className="shrink-0 tabular-nums text-[#f2eee6]/40">
-              {f.added ? <span className="text-[#d4ff3a]/75">+{f.added}</span> : null}
+            <span className="shrink-0 tabular-nums text-(--ta-ink)/40">
+              {f.added ? <span className="text-(--ta-ink)/80">+{f.added}</span> : null}
               {f.removed ? <span className="ml-2">−{f.removed}</span> : null}
             </span>
           ) : null}
@@ -590,35 +790,31 @@ function TerminalRow({ row, time, spin, session }: { row: Row; time: number; spi
       );
     }
     case "test": {
-      const done = time >= row.doneAt;
+      const done = now >= row.doneAt;
       return (
-        <p className="flex items-baseline gap-2 pl-[calc(1.5ch+0.5rem)]">
+        <p className={`flex items-baseline gap-2 ${INDENT}`}>
           {done ? <Tick /> : <Spinner ch={spin} />}
-          <span className={`min-w-0 flex-1 ${done ? "text-[#f2eee6]/80" : "text-[#f2eee6]/55"}`}>{row.test.name}</span>
-          <span className="shrink-0 tabular-nums text-[#f2eee6]/35">{done ? row.test.time : ""}</span>
+          <span className={`min-w-0 flex-1 ${done ? "text-(--ta-ink)/80" : "text-(--ta-ink)/55"}`}>{row.test.name}</span>
+          <span className="shrink-0 tabular-nums text-(--ta-ink)/35">{done ? row.test.time : ""}</span>
         </p>
       );
     }
     case "summary":
       return (
-        <p className="flex gap-2 pl-[calc(1.5ch+0.5rem)] pt-1">
-          <span className="inline-block w-[1.5ch]" aria-hidden="true" />
-          <span className="font-medium" style={{ color: LIME }}>
-            {row.text}
-          </span>
+        <p className={`flex gap-2 ${INDENT} pt-1`}>
+          <span className={GUTTER} aria-hidden="true" />
+          <span className="font-medium text-(--ta-ink)">{row.text}</span>
         </p>
       );
     case "pr":
       return (
         <p className="mt-3 flex gap-2">
-          <span className="inline-block w-[1.5ch]" style={{ color: LIME }}>
-            ◆
-          </span>
+          <span className={`${GUTTER} text-(--ta-ink)`}>◆</span>
           <span className="min-w-0 flex-1">
             Opened{" "}
             <a
               href={session.pr.href}
-              className="rounded-sm text-[#f2eee6] underline decoration-[#d4ff3a]/60 underline-offset-[3px] transition-colors hover:decoration-[#d4ff3a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d4ff3a]"
+              className="rounded-sm text-(--ta-ink) underline decoration-(--ta-ink)/40 underline-offset-[3px] transition-[text-decoration-color] duration-150 hover:decoration-(--ta-ink) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--ta-ink)"
             >
               pull request #{session.pr.number}
             </a>
@@ -626,26 +822,17 @@ function TerminalRow({ row, time, spin, session }: { row: Row; time: number; spi
         </p>
       );
     case "prTitle":
-      return <p className="pl-[calc(1.5ch+0.5rem)] text-[#f2eee6]/70">“{session.pr.title}”</p>;
+      return <p className={`${INDENT} text-(--ta-ink)/70`}>“{session.pr.title}”</p>;
     case "note":
-      return <p className="pl-[calc(1.5ch+0.5rem)] text-[#f2eee6]/40">{session.pr.note}</p>;
+      return <p className={`${INDENT} text-(--ta-ink)/40`}>{session.pr.note}</p>;
     case "idle":
       return (
         <p className="mt-3">
-          <span className="text-[#f2eee6]/45">❯ </span>
+          <span className="text-(--ta-ink)/45">❯ </span>
           <Cursor />
         </p>
       );
   }
-}
-
-function RelayMark() {
-  return (
-    <svg viewBox="0 0 24 24" className="size-6" aria-hidden="true">
-      <rect x="2" y="2" width="12" height="12" rx="3" fill="#f2eee6" />
-      <rect x="10" y="10" width="12" height="12" rx="3" fill="none" stroke="#d4ff3a" strokeWidth="2" />
-    </svg>
-  );
 }
 
 export default HeroTerminalAgent;
