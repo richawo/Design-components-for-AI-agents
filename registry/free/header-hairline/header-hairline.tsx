@@ -159,7 +159,7 @@ export function HeaderHairline({
         className="@container relative mx-auto flex w-full max-w-[1280px] items-center px-4 sm:px-6"
         style={{ height: TALL }}
       >
-        <div className="grid w-full grid-cols-[1fr_auto] items-center gap-4 @4xl:grid-cols-[1fr_auto_1fr]">
+        <div className="grid w-full grid-cols-[1fr_auto] items-center gap-4 @4xl:grid-cols-[auto_1fr_auto] @min-[1200px]:grid-cols-[1fr_auto_1fr]">
           {/* Wordmark */}
           <a
             href={brand.href}
@@ -187,7 +187,7 @@ export function HeaderHairline({
                 <circle cx="7" cy="7" r="4.75" stroke="currentColor" strokeWidth="1.5" />
                 <path d="m10.5 10.5 3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
               </svg>
-              <span className="hidden pr-6 @6xl:inline">{searchLabel}</span>
+              <span className="hidden whitespace-nowrap pr-6 @min-[1200px]:inline">{searchLabel}</span>
               <kbd
                 className={`hidden h-6 min-w-[2.25rem] items-center justify-center gap-0.5 rounded-[5px] bg-white/[0.06] px-1.5 font-mono text-[11px] font-medium text-white/60 transition-[transform,box-shadow,background-color] duration-100 group-hover/s:text-white/80 @4xl:inline-flex ${
                   keyDown
@@ -201,7 +201,7 @@ export function HeaderHairline({
 
             <a
               href={signIn.href}
-              className="hidden h-8 items-center rounded-lg px-3 text-[13.5px] text-white/65 outline-none transition-[color,background-color,transform] duration-150 hover:bg-white/[0.04] hover:text-white active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black @4xl:inline-flex"
+              className="hidden h-8 items-center whitespace-nowrap rounded-lg px-3 text-[13.5px] text-white/65 outline-none transition-[color,background-color,transform] duration-150 hover:bg-white/[0.04] hover:text-white active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black @4xl:inline-flex"
             >
               {signIn.label}
             </a>
@@ -210,7 +210,7 @@ export function HeaderHairline({
               href={cta.href}
               tabIndex={open ? -1 : undefined}
               aria-hidden={open || undefined}
-              className={`hidden h-8 items-center gap-1.5 rounded-lg bg-white px-3.5 text-[13.5px] font-medium tracking-[-0.01em] text-black shadow-[inset_0_-1px_0_rgba(0,0,0,0.12)] outline-none transition-[background-color,transform,opacity] duration-150 ${open ? "pointer-events-none opacity-0" : ""} hover:bg-[#e8e8ea] active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black @2xl:inline-flex`}
+              className={`hidden h-8 items-center gap-1.5 whitespace-nowrap rounded-lg bg-white px-3.5 text-[13.5px] font-medium tracking-[-0.01em] text-black shadow-[inset_0_-1px_0_rgba(0,0,0,0.12)] outline-none transition-[background-color,transform,opacity] duration-150 ${open ? "pointer-events-none opacity-0" : ""} hover:bg-[#e8e8ea] active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black @2xl:inline-flex`}
             >
               {cta.label}
             </a>
@@ -378,7 +378,7 @@ function HoverLinks({
   }, [hovered, moveTo]);
 
   return (
-    <nav aria-label="Main" className="hidden @4xl:block">
+    <nav aria-label="Main" className="hidden justify-center @4xl:flex">
       <LayoutGroup id={groupId}>
         <ul ref={listRef} className="relative flex items-center" onPointerLeave={() => setHovered(null)}>
           <motion.span
@@ -398,7 +398,7 @@ function HoverLinks({
                 onFocus={(e) => e.currentTarget.matches(":focus-visible") && setHovered(i)}
                 onBlur={() => setHovered(null)}
                 onClick={(e) => onChoose(i, e)}
-                className={`relative flex h-10 items-center rounded-lg px-3 text-[13.5px] tracking-[-0.005em] outline-none transition-[color,transform] duration-150 active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black ${
+                className={`relative flex h-10 items-center whitespace-nowrap rounded-lg px-3 text-[13.5px] tracking-[-0.005em] outline-none transition-[color,transform] duration-150 active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black ${
                   hovered === i || i === active ? "text-white" : "text-white/55"
                 }`}
               >

@@ -1,1 +1,63 @@
-{"component":"x","intent":"draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft draft ","platform":"web","stack":{},"layout":{},"typography":{},"color":{},"motion":{},"responsive":{},"accessibility":[],"content":{},"avoid":[]}
+{
+  "component": "HeroAppTilt",
+  "intent": "Dark product hero: headline, sub and CTAs above a markup-drawn mail app window that starts tilted back 22deg and flattens as it scrolls into place while a spotlight behind it brightens.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 (container queries, including a named @container/win)",
+    "animation": "motion/react: useScroll on the window frame, useSpring, useTransform"
+  },
+  "layout": {
+    "copy": "centred column, max-w 1240px, pt 80/112px",
+    "stage": "mt 56/80px; perspective 1200px wrapper with bottom mask (#000 52% -> transparent 96%)",
+    "spotlight": "absolute, -top-44, h 620px radial white 20% -> 6% -> 0",
+    "window": "radius 14/18px; title bar 44px; body 440/520/600px; sidebar 212px (>= @4xl/win); list 340-372px (full width < @2xl/win); detail flex-1 (>= @2xl/win)"
+  },
+  "typography": {
+    "headline": { "font": "display", "weight": 600, "size": "clamp(2.6rem, 1.1rem + 5.4cqw, 5.75rem)", "leading": 0.97, "tracking": "-0.055em", "muted": "white/45" },
+    "body": { "size": "16/17px", "leading": 1.6, "color": "white/60", "maxWidth": "50ch" },
+    "eyebrow": { "font": "mono", "size": "11px", "tracking": "0.2em" },
+    "app": "rows 13/12.5/12px, detail body 13.5px leading 1.65, subject 19-21px semibold, mono 10-10.5px labels"
+  },
+  "color": {
+    "background": "#000",
+    "window": "#0a0a0b, ring white/9%, hairlines white/5-7%",
+    "text": "white at 90/70/60/35%",
+    "accent": "#f2c46d (eyebrow dot, Draft chips, draft label, progress bar only)",
+    "avatars": "tinted greys #2b2621, #20262b, #26232b, #222823, #2b2224, #24252a"
+  },
+  "motion": {
+    "scroll": "useScroll target window frame, offset ['start end','start 20%']; rescaled by p0 = (vh - top)/(0.8 vh) so it starts fully tilted on load",
+    "spring": "stiffness 170, damping 32, mass 0.5; jump on first measure",
+    "mapping": "rotateX (1-p)*22deg, scale 0.94->1, y 24->0px, origin 50% 0%; spotlight opacity 0.22->1; top edge light 0.15->0.4->1",
+    "entrance": "eyebrow, headline (blur 8px), body and CTAs fade up 600-800ms with 80ms steps; window fades in over 900ms at 300ms",
+    "buttons": "150ms hover, press 0.97 in 75ms, icon nudges 2px",
+    "reducedMotion": "window flat, spotlight full, no blur, opacity-only fades"
+  },
+  "responsive": {
+    "phone": "CTAs stacked full width; window shows the list only",
+    "tablet": "list + detail",
+    "desktop": "sidebar + list + detail"
+  },
+  "accessibility": [
+    "window is a figure with role img and a descriptive aria-label; its contents are illustrative",
+    "CTAs are links with 2px white focus-visible ring offset 4px",
+    "reduced motion shows the window flat",
+    "no scroll hijacking: the page scrolls normally"
+  ],
+  "content": {
+    "eyebrow": "Tern 2.4 · Now on Windows",
+    "headline": "Your inbox, triaged before coffee.",
+    "body": "Tern reads the overnight pile, sorts it into Reply, Read later and Ignored, and drafts the boring answers in your voice. You just press send.",
+    "ctas": ["Download for Mac", "See how triage works"],
+    "app": "7 threads (Priya Raman: renewal 40 seats; Jonas Lindqvist: offer letter; Halcyon Capital: Q3 update; ...), open thread with a reply drafted by Tern"
+  },
+  "avoid": [
+    "screenshots or images of UI",
+    "coloured traffic lights and rainbow avatars",
+    "glow or gradient borders around the window",
+    "scroll-jacking or pinning",
+    "tilting past flat or re-tilting jitter",
+    "more than one accent colour"
+  ]
+}

@@ -14,11 +14,11 @@ Build one pricing plan card with a billing switch above it in React + Tailwind C
 - All reels spin the same way: up when the price rises, down when it falls, by the shortest number of steps in that direction. Spring stiffness 120, damping 19 (one small landing overshoot), staggered 55ms left to right. When a reel settles it silently jumps back to the middle copy so it can spin again.
 - Motion blur from the reel's own velocity: `blur(min(2.4, |v| / 9) px)` where v is digits per second, so a fast spin smears and the landing is crisp.
 - Digits are keyed from the right; if the number of digits changes the new column grows in from width 0.
-- Price type: Geist 600, `clamp(3.25rem, 2.6rem + 3cqi, 4rem)`, tracking −0.05em, tabular numerals; the currency is 22px white/45 top-aligned; the unit ("per seat / month") is 13px white/45 on two lines, bottom-aligned.
+- Price type: Geist 600, `clamp(3.25rem, 2.6rem + 3cqi, 4rem)`, tracking −0.05em, tabular numerals; the currency is 22px white/45 top-aligned; the unit ("per seat" / "per month", split on \n) is 13px white/45, leading 1.3, on two lines, bottom-aligned.
 
 **Other motion**
 - Save badge ("Save 20%", mono 11px uppercase, tracking 0.08em, `#9be7c0` on `#7dd3a8` at 12% with a 30% inset ring) pops in on annual with a spring (stiffness 520, damping 20, from scale 0.6, y 4px, origin right) and leaves in 140ms ease-in.
-- The billing note cross-fades: in from y 8px with 3px blur over 300ms, out to y −8px in 180ms.
+- The billing note cross-fades: in from y 8px with 3px blur over 300ms, out to y −8px in 180ms. Both notes sit invisibly in the same grid cell so the block is always as tall as the longer one and may wrap without jumping.
 - Seats panel (`white/2.5%`, radius 14px, inset hairline white/6%): a stepper with 32px − and + buttons (44px hit areas, disabled at the limits at 35%) and the count rolling 10px in the direction of change. Below, "Total" and the amount, tweened over 450ms ease-out with tabular numerals; the unit "/ year" or "/ month" fades and both widths are reserved so nothing shifts.
 - Feature checks (`#7dd3a8`) draw in with pathLength over 450ms, staggered 70ms, once in view.
 

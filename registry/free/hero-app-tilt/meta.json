@@ -23,10 +23,86 @@
   "usage": "import { HeroAppTilt } from \"@/components/design-for-ai/hero-app-tilt\";\n\n<HeroAppTilt\n  headline=\"Your inbox, triaged before coffee.\"\n  muted=\"before coffee.\"\n  primary={{ label: \"Download for Mac\", href: \"/download\" }}\n  tilt={18}\n/>",
   "props": [
     {
+      "name": "eyebrow",
+      "type": "string",
+      "default": "\"Tern 2.4 · Now on Windows\"",
+      "description": "Mono line above the headline, after a small accent dot."
+    },
+    {
+      "name": "headline",
+      "type": "string",
+      "default": "\"Your inbox, triaged before coffee.\"",
+      "description": "Centred headline, balanced to 15ch."
+    },
+    {
+      "name": "muted",
+      "type": "string",
+      "default": "\"before coffee.\"",
+      "description": "Substring of the headline set at 45% white."
+    },
+    {
+      "name": "body",
+      "type": "string",
+      "description": "Supporting paragraph, max 50ch."
+    },
+    {
+      "name": "primary",
+      "type": "{ label: string; href: string }",
+      "description": "White pill with a download glyph."
+    },
+    {
+      "name": "secondary",
+      "type": "{ label: string; href: string }",
+      "description": "Hairline pill with a chevron."
+    },
+    {
+      "name": "product",
+      "type": "string",
+      "default": "\"Tern\"",
+      "description": "Product name inside the window."
+    },
+    {
+      "name": "account",
+      "type": "{ name: string; initials: string }",
+      "description": "Signed-in user shown in the title bar."
+    },
+    {
+      "name": "folders",
+      "type": "{ label; count?; icon }[]",
+      "description": "Sidebar folders; the first is selected and its count heads the list."
+    },
+    {
+      "name": "labels",
+      "type": "string[]",
+      "description": "Sidebar labels."
+    },
+    {
+      "name": "listTitle",
+      "type": "string",
+      "default": "\"Reply\"",
+      "description": "List pane title."
+    },
+    {
+      "name": "threads",
+      "type": "{ from; initials; subject; preview; time; unread?; drafted? }[]",
+      "description": "Rows in the list; drafted rows get a gold Draft chip."
+    },
+    {
+      "name": "selected",
+      "type": "number",
+      "default": "0",
+      "description": "Index of the open thread."
+    },
+    {
+      "name": "message",
+      "type": "{ subject; from; fromEmail; to; time; body: string[]; draft: string[] }",
+      "description": "The open thread and the reply Tern drafted for it."
+    },
+    {
       "name": "tilt",
       "type": "number",
       "default": "22",
-      "description": "Starting tilt in degrees."
+      "description": "Starting tilt in degrees; flattens to 0 as the window scrolls into place."
     }
   ],
   "added": "2026-10-09"

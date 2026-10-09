@@ -17,7 +17,7 @@
     { "name": "description", "type": "string", "description": "One line on who the plan is for." },
     { "name": "currency", "type": "string", "default": "\"$\"", "description": "Symbol before every amount." },
     { "name": "locale", "type": "string", "default": "\"en-US\"", "description": "Locale for number formatting." },
-    { "name": "unit", "type": "string", "default": "\"per seat / month\"", "description": "Small print beside the price; ' / ' splits it over two lines." },
+    { "name": "unit", "type": "string", "default": "\"per seat\\nper month\"", "description": "Small print beside the price; \\n splits it over two lines." },
     { "name": "saveLabel", "type": "string", "default": "\"Save 20%\"", "description": "Badge that springs in on annual billing." },
     { "name": "notes", "type": "{ monthly: string; annual: string }", "description": "Billing note under the price; cross-fades on toggle." },
     { "name": "features", "type": "string[]", "description": "Feature list with drawn checks." },

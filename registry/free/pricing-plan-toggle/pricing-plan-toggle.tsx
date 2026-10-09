@@ -29,7 +29,7 @@ export type PricingPlanToggleProps = {
   currency?: string;
   /** Locale for number formatting. */
   locale?: string;
-  /** Small print beside the price. */
+  /** Small print beside the price. \n splits it over two lines. */
   unit?: string;
   /** Badge that pops in on annual billing. */
   saveLabel?: string;
@@ -53,8 +53,8 @@ const springUi = { type: "spring", stiffness: 500, damping: 40 } as const;
 
 const defaultFeatures = [
   "Unlimited docs, with full version history",
-  "Comments, approvals and @-mentions",
-  "Guests at no extra cost, with per-page access",
+  "Comments, approvals and mentions",
+  "Free guests, with access set page by page",
   "SSO with Google and Okta",
   "Support from people who use it daily",
 ];
@@ -70,7 +70,7 @@ export function PricingPlanToggle({
   annual = 19,
   currency = "$",
   locale = "en-US",
-  unit = "per seat / month",
+  unit = "per seat\nper month",
   saveLabel = "Save 20%",
   notes = { monthly: "Billed monthly. Cancel any time.", annual: "Billed yearly. Switch to monthly whenever." },
   features = defaultFeatures,
@@ -93,6 +93,7 @@ export function PricingPlanToggle({
   const [cta_, setCta] = useState<"idle" | "loading" | "done">("idle");
 
   const price = billing === "annual" ? annual : monthly;
+  const spoken = unit.replace(/\n/g, " ");
   const n = showSeats ? count : 1;
   const total = billing === "annual" ? price * n * 12 : price * n;
   const fmt = (v: number) => `${currency}${v.toLocaleString(locale, { maximumFractionDigits: Number.isInteger(v) ? 0 : 2, minimumFractionDigits: Number.isInteger(v) ? 0 : 2 })}`;
@@ -156,27 +157,32 @@ export function PricingPlanToggle({
             </span>
           </p>
           <p aria-hidden="true" className="pb-[0.45rem] text-[13px] leading-[1.3] text-white/45">
-            {unit.split(" / ").map((u, i, a) => (
+            {unit.split("\n").map((u) => (
               <span key={u} className="block">
                 {u}
-                {i < a.length - 1 ? " /" : ""}
               </span>
             ))}
           </p>
           <span className="sr-only">
-            {fmt(price)} {unit}, {notes[billing]}
+            {fmt(price)} {spoken}, {notes[billing]}
           </span>
         </div>
 
-        <div aria-hidden="true" className="relative mt-3 h-5 overflow-hidden text-[13px] text-white/45">
-          <AnimatePresence initial={false} mode="popLayout">
+        {/* Both notes sit invisibly in one grid cell, so the block is always as tall as the longer one and wrapping never jumps. */}
+        <div aria-hidden="true" className="mt-3 grid text-[13px] leading-[1.45] text-white/45">
+          {(["monthly", "annual"] as const).map((b) => (
+            <p key={b} className="invisible col-start-1 row-start-1">
+              {notes[b]}
+            </p>
+          ))}
+          <AnimatePresence initial={false}>
             <motion.p
               key={billing}
               initial={reduce ? { opacity: 0 } : { opacity: 0, y: 8, filter: "blur(3px)" }}
               animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
               exit={reduce ? { opacity: 0 } : { opacity: 0, y: -8, filter: "blur(3px)", transition: { duration: 0.18, ease: [0.4, 0, 1, 1] } }}
               transition={{ duration: 0.3, ease }}
-              className="whitespace-nowrap"
+              className="col-start-1 row-start-1"
             >
               {notes[billing]}
             </motion.p>
@@ -218,7 +224,7 @@ export function PricingPlanToggle({
         )}
 
         <p className="sr-only" aria-live="polite">
-          {billing === "annual" ? "Annual" : "Monthly"} billing, {fmt(price)} {unit}
+          {billing === "annual" ? "Annual" : "Monthly"} billing, {fmt(price)} {spoken}
           {showSeats ? `, ${n} ${n === 1 ? "seat" : "seats"}, ${fmt(total)} ${billing === "annual" ? "per year" : "per month"}` : ""}.
         </p>
 
@@ -278,14 +284,19 @@ export function PricingPlanToggle({
         </button>
 
         {/* Features */}
-        <ul className="mt-7 space-y-3 border-t border-white/[0.07] pt-6">
+        <motion.ul
+          initial={reduce ? "shown" : "hidden"}
+          whileInView="shown"
+          viewport={{ once: true, amount: 0.6 }}
+          className="mt-7 space-y-3 border-t border-white/[0.07] pt-6"
+        >
           {features.map((f, i) => (
             <li key={f} className="flex gap-3 text-[14px] leading-[1.45] text-white/75">
-              <DrawnCheck delay={0.1 + i * 0.07} reduce={reduce} />
+              <DrawnCheck delay={0.1 + i * 0.07} />
               <span>{f}</span>
             </li>
           ))}
-        </ul>
+        </motion.ul>
 
         {footnote && <p className="mt-7 font-mono text-[11px] tracking-[0.01em] text-white/30">{footnote}</p>}
       </article>
@@ -454,7 +465,10 @@ function TweenNumber({ value, format, reduce, className }: { value: number; form
   const ref = useRef<HTMLSpanElement>(null);
   const fmtRef = useRef(format);
   fmtRef.current = format;
-  useEffect(() => mv.on("change", (v) => ref.current && (ref.current.textContent = fmtRef.current(Math.round(v * 100) / 100))), [mv]);
+  const whole = useRef(Number.isInteger(value));
+  whole.current = Number.isInteger(value);
+  // Whole-number totals stay whole while they count, so "$133.50" never flashes past.
+  useEffect(() => mv.on("change", (v) => ref.current && (ref.current.textContent = fmtRef.current(whole.current ? Math.round(v) : Math.round(v * 100) / 100))), [mv]);
   useEffect(() => {
     if (reduce) {
       mv.jump(value);
@@ -529,7 +543,7 @@ function Stepper({
   );
 }
 
-function DrawnCheck({ delay, reduce }: { delay: number; reduce: boolean }) {
+function DrawnCheck({ delay }: { delay: number }) {
   return (
     <svg viewBox="0 0 16 16" className="mt-[2px] size-4 shrink-0 text-[#7dd3a8]" fill="none" aria-hidden="true">
       <motion.path
@@ -538,10 +552,10 @@ function DrawnCheck({ delay, reduce }: { delay: number; reduce: boolean }) {
         strokeWidth="1.6"
         strokeLinecap="round"
         strokeLinejoin="round"
-        initial={{ pathLength: reduce ? 1 : 0, opacity: reduce ? 1 : 0 }}
-        whileInView={{ pathLength: 1, opacity: 1 }}
-        viewport={{ once: true, amount: 1 }}
-        transition={{ pathLength: { duration: 0.45, ease, delay }, opacity: { duration: 0.1, delay } }}
+        variants={{
+          hidden: { pathLength: 0, opacity: 0 },
+          shown: { pathLength: 1, opacity: 1, transition: { pathLength: { duration: 0.45, ease, delay }, opacity: { duration: 0.1, delay } } },
+        }}
       />
     </svg>
   );

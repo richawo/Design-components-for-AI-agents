@@ -341,7 +341,7 @@ function Card({ t, hidden }: { t: Testimonial; hidden: boolean }) {
         ref.current.style.setProperty("--y", `${e.clientY - r.top}px`);
       }}
       style={{ "--x": "50%", "--y": "-40px" } as CSSProperties}
-      className="group/card relative isolate rounded-[16px] bg-[#0c0c0d] p-5 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.07),inset_0_1px_0_rgba(255,255,255,0.05)] transition-[translate,background-color,box-shadow] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-[3px] hover:bg-[#111113] hover:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.09),inset_0_1px_0_rgba(255,255,255,0.06),0_24px_48px_-24px_rgba(0,0,0,0.9)] focus-visible:-translate-y-[3px] focus-visible:bg-[#111113] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white @3xl:p-6"
+      className="group/card relative isolate rounded-[16px] bg-[#0c0c0d] p-5 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.07),inset_0_1px_0_rgba(255,255,255,0.05)] transition-[translate,background-color,box-shadow] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-[3px] hover:bg-[#111113] hover:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.09),inset_0_1px_0_rgba(255,255,255,0.06),0_24px_48px_-24px_rgba(0,0,0,0.9)] focus-visible:-translate-y-[3px] focus-visible:bg-[#111113] motion-reduce:translate-y-0 motion-reduce:hover:translate-y-0 motion-reduce:focus-visible:translate-y-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white @3xl:p-6"
     >
       {/* Pointer spotlight: a soft wash on the surface and a brighter arc on the border. */}
       <span

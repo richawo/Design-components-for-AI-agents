@@ -5,21 +5,75 @@
   "platform": "web",
   "category": "hero",
   "description": "A studio statement hero on grainy true black: a huge, tightly tracked sentence whose client name blurs and rolls while its slot springs to fit.",
-  "tags": ["hero", "typography", "statement", "studio", "agency", "rotating text", "blur", "dark", "film grain"],
-  "dependencies": ["motion"],
+  "tags": [
+    "hero",
+    "typography",
+    "statement",
+    "studio",
+    "agency",
+    "rotating text",
+    "blur",
+    "dark",
+    "film grain"
+  ],
+  "dependencies": [
+    "motion"
+  ],
   "theme": "dark",
   "previewHeight": 820,
-  "usage": "import { HeroBlurStatement } from \"@/components/design-for-ai/hero-blur-statement\";\n\n<HeroBlurStatement\n  lead=\"We build brands for\"\n  nouns={[\n    { word: \"Halden\", note: \"Rebrand, 2026\" },\n    { word: \"Osk\", note: \"Packaging system\" },\n  ]}\n  tail=\"and the shelves they live on.\"\n  primary={{ label: \"Start a project\", href: \"/contact\" }}\n/>",
+  "usage": "import { HeroBlurStatement } from \"@/components/design-for-ai/hero-blur-statement\";\n\n<HeroBlurStatement\n  lead=\"We build brands for\"\n  nouns={[\n    { word: \"Halden\", note: \"Rebrand, 2026\" },\n    { word: \"Osk\", note: \"Packaging system\" },\n  ]}\n  tail=\"and the shelves\\nthey live on.\"\n  primary={{ label: \"Start a project\", href: \"/contact\" }}\n/>",
   "props": [
-    { "name": "eyebrow", "type": "string", "default": "\"Ferro & Vale — Independent product studio\"", "description": "Mono line, top left." },
-    { "name": "status", "type": "string", "default": "\"Booking from February 2027\"", "description": "Mono line, top right, after a small dot." },
-    { "name": "lead", "type": "string", "default": "\"We design products for\"", "description": "Words before the rotating name." },
-    { "name": "nouns", "type": "{ word: string; note: string }[]", "description": "Names that take turns in the sentence, with a short note shown beside the counter. The first one is the static name with reduced motion." },
-    { "name": "tail", "type": "string", "default": "\"that people open on purpose.\"", "description": "Words after the name, set at 38% white." },
-    { "name": "primary", "type": "{ label: string; href: string }", "description": "White pill button with an arrow that nudges 2px on hover." },
-    { "name": "secondary", "type": "{ label: string; href: string }", "description": "Hairline-ringed pill button." },
-    { "name": "interval", "type": "number", "default": "2600", "description": "How long each name holds, in ms." },
-    { "name": "grain", "type": "number", "default": "0.07", "description": "Film grain opacity, 0–1." }
+    {
+      "name": "eyebrow",
+      "type": "string",
+      "default": "\"Ferro & Vale — Independent product studio\"",
+      "description": "Mono line, top left."
+    },
+    {
+      "name": "status",
+      "type": "string",
+      "default": "\"Booking from February 2027\"",
+      "description": "Mono line, top right, after a small dot."
+    },
+    {
+      "name": "lead",
+      "type": "string",
+      "default": "\"We design products for\"",
+      "description": "Words before the rotating name."
+    },
+    {
+      "name": "nouns",
+      "type": "{ word: string; note: string }[]",
+      "description": "Names that take turns in the sentence, with a short note shown beside the counter. The first one is the static name with reduced motion."
+    },
+    {
+      "name": "tail",
+      "type": "string",
+      "default": "\"that people\\nopen on purpose.\"",
+      "description": "Words after the name, set at 38% white. A \"\\n\" breaks the line on wide containers so nothing re-wraps while the slot springs."
+    },
+    {
+      "name": "primary",
+      "type": "{ label: string; href: string }",
+      "description": "White pill button with an arrow that nudges 2px on hover."
+    },
+    {
+      "name": "secondary",
+      "type": "{ label: string; href: string }",
+      "description": "Hairline-ringed pill button."
+    },
+    {
+      "name": "interval",
+      "type": "number",
+      "default": "2600",
+      "description": "How long each name holds, in ms."
+    },
+    {
+      "name": "grain",
+      "type": "number",
+      "default": "0.07",
+      "description": "Film grain opacity, 0–1."
+    }
   ],
   "added": "2026-10-09"
 }
