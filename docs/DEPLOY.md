@@ -86,7 +86,7 @@ and call it from a GitHub Action in the Pro repo.
 
 ## Check a deployment
 
-- `/components` lists 36 components, and Pro cards show live previews. If
+- `/components` lists the published components, and Pro cards show live previews. If
   they are locked in a manual build, Pro source was not synced. The automatic
   production build rejects this condition.
 - `/api/registry` returns JSON, and `/r/chart-portfolio.json` returns a shadcn
