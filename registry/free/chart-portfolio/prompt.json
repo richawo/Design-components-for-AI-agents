@@ -5,11 +5,11 @@
   "stack": {
     "framework": "React 19",
     "styling": "Tailwind CSS v4",
-    "animation": "motion/react (range pill) + requestAnimationFrame (line morph)",
+    "animation": "motion/react: motion values for the entrance, range morph and counting figures (no per-frame React state); layoutId for the range pill",
     "charting": "none: hand-written SVG"
   },
   "layout": {
-    "card": "bg #0b0b0c, border white/8%, radius 22px, inset top highlight, padding 20/28px",
+    "card": "bg #0b0b0c (light: #ffffff), border ink/8%, radius 22px, inset top highlight + deep shadow, padding 20/28px, @container root. No glow.",
     "header": "identity + price + delta left; range segmented control right (full width on mobile)",
     "plot": "ResizeObserver width; height 320px (230px < 520px); 56px right gutter for y labels (none on mobile); 40px volume band; 22px x-axis band",
     "footer": "4-col stat grid (2-col mobile) with 1px gaps: Open, High, Low, Volume"
@@ -25,31 +25,45 @@
     "labels": {
       "font": "mono",
       "size": "10.5-11px",
-      "color": "white/35"
+      "color": "ink/40"
     },
     "name": {
       "size": "14px",
-      "color": "white/80"
+      "color": "ink/80"
     }
   },
   "color": {
-    "surface": "#0b0b0c",
-    "up": "#34d399",
-    "down": "#fb7185",
-    "grid": "white/6%",
-    "openLine": "white/22% dashed 2 4",
-    "future": "white/70% at 32% opacity",
-    "glow": "trend colour, blur-3xl, opacity .16"
+    "approach": "monochrome card; green and red are the data (up/down) and appear only on the line, its area, the change and the dots",
+    "dark": {
+      "surface": "#0b0b0c",
+      "ink": "#ffffff",
+      "raised": "#161618",
+      "up": "#34d399",
+      "down": "#fb7185"
+    },
+    "light": {
+      "surface": "#ffffff",
+      "ink": "#0b0b0c",
+      "raised": "#ffffff",
+      "up": "#059669",
+      "down": "#e11d48"
+    },
+    "grid": "ink/6%",
+    "openLine": "ink/22% dashed 2 4",
+    "future": "ink/70% at 32% opacity",
+    "area": "trend colour 20% → 3% → 0",
+    "volume": "ink/11%, ink/70% under the cursor",
+    "tokens": "one PALETTE object per theme, written to --cp-* CSS variables"
   },
   "motion": {
-    "rangeMorph": "resample all series to 140 points; tween values 650ms ease-out quart",
+    "entrance": "Once at 35% in view; server HTML starts hidden. Card lands (opacity + 16px rise, no blur, 0.6s). Then, in seconds: identity row 0.06, price 0.12, change 0.18, range control 0.14 (each a 12px rise out of an 8px blur); gridlines and axis labels 0.20; the line rises from the plot floor in a left-to-right wave from 0.24 over 1.0s (progress clamp(t*1.6 − i/n*0.6), ease-out cubic; invisible until it starts), volume bars grow with it and the area fades in; the four stats rise from 0.42 at 60ms steps. Every figure counts up from 0 over 0.9s while an 8px blur clears. The live dot springs in as the wave lands, then pings (the one ambient signal).",
+    "implementation": "intro and morph are motion values; line, area and volume are derived path strings (useTransform) bound to motion.path d, so nothing re-renders per frame; figures are motion values rendered as text",
+    "rangeMorph": "resample all series to 140 points; morph values and the price domain together over 650ms ease-out quart, starting from wherever the previous morph was",
     "rangePill": "layoutId spring stiffness 500 damping 40",
-    "restPoint": "last point pings",
-    "reducedMotion": "instant swaps, no ping",
-    "figures": "scrubbing is instant; range changes and pointer-leave count price, delta, percentage and stats to their new values over 450ms ease-out",
+    "figures": "scrubbing is instant; range changes and pointer-leave count to new values over 450ms",
     "tooltip": "date pill rises 4px and fades in over 160ms",
     "press": "range pills scale 0.95 on press",
-    "entrance": "Once, at 35% in view: line rises from the plot floor in a left-to-right wave over 1.5s (progress clamp(t*1.6 - i/n*0.6), ease-out cubic); volume grows with it; area fades in; live dot pops in last. Price counts up from 0 over 1.3s while blur clears 8px\u21920; change +150ms, footer stats +500ms with 90ms stagger. Starts in pre-entrance state (no SSR flash). None with reduced motion."
+    "reducedMotion": "short fades only; line, figures and stats are final immediately; no ping"
   },
   "responsive": {
     "mobile": "range control full width; plot 72% height; no y gutter; 3 x labels; stats 2-up",
@@ -68,11 +82,11 @@
   },
   "avoid": [
     "chart libraries",
+    "a trend-tinted glow behind the card",
+    "per-frame React setState for animation",
     "thick strokes",
     "multiple bright series",
     "tooltips covering the line",
-    "gradient price text",
-    "3D or skeuomorphic effects",
-    "default browser fonts in axis labels"
+    "gradient price text"
   ]
 }

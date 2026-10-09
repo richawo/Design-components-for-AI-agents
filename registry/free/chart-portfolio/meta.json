@@ -4,21 +4,75 @@
   "tier": "free",
   "platform": "web",
   "category": "charts",
-  "description": "A financial-grade price chart with a crosshair that dims the future, morphing ranges, volume bars, keyboard inspection and live price readout.",
-  "tags": ["chart", "finance", "stock chart", "area chart", "crosshair", "tooltip", "dashboard", "svg"],
-  "dependencies": ["motion"],
+  "description": "A brokerage-grade price chart: the line rises in a wave, figures count up out of a blur, ranges morph, and a crosshair dims the future. Dark or light.",
+  "tags": [
+    "chart",
+    "finance",
+    "stock chart",
+    "area chart",
+    "crosshair",
+    "tooltip",
+    "dashboard",
+    "svg",
+    "dark"
+  ],
+  "dependencies": [
+    "motion"
+  ],
   "theme": "dark",
   "previewHeight": 680,
   "usage": "import { ChartPortfolio } from \"@/components/design-for-ai/chart-portfolio\";\n\n<ChartPortfolio\n  name=\"Acme Treasury\"\n  ticker=\"ACMT\"\n  currency=\"GBP\"\n  locale=\"en-GB\"\n  data={{ \"1M\": points }} // { t: epochMs, v: price, vol: volume }[]\n/>",
   "props": [
-    { "name": "name", "type": "string", "description": "Asset or portfolio name." },
-    { "name": "ticker", "type": "string", "description": "Ticker shown in mono; its first two letters make the mark." },
-    { "name": "exchange", "type": "string", "description": "Exchange or account label." },
-    { "name": "currency", "type": "string", "default": "\"USD\"", "description": "ISO currency for all money formatting." },
-    { "name": "locale", "type": "string", "default": "\"en-US\"", "description": "Locale for numbers and dates." },
-    { "name": "data", "type": "Partial<Record<\"1D\"|\"1W\"|\"1M\"|\"3M\"|\"1Y\"|\"ALL\", Point[]>>", "description": "Series per range: { t, v, vol }. Missing ranges fall back to demo data." },
-    { "name": "defaultRange", "type": "RangeKey", "default": "\"1M\"", "description": "Range selected on mount." },
-    { "name": "height", "type": "number", "default": "320", "description": "Chart height at desktop; mobile uses 72%." }
+    {
+      "name": "name",
+      "type": "string",
+      "description": "Asset or portfolio name."
+    },
+    {
+      "name": "ticker",
+      "type": "string",
+      "description": "Ticker shown in mono; its first two letters make the mark."
+    },
+    {
+      "name": "exchange",
+      "type": "string",
+      "description": "Exchange or account label."
+    },
+    {
+      "name": "currency",
+      "type": "string",
+      "default": "\"USD\"",
+      "description": "ISO currency for all money formatting."
+    },
+    {
+      "name": "locale",
+      "type": "string",
+      "default": "\"en-US\"",
+      "description": "Locale for numbers and dates."
+    },
+    {
+      "name": "data",
+      "type": "Partial<Record<\"1D\"|\"1W\"|\"1M\"|\"3M\"|\"1Y\"|\"ALL\", Point[]>>",
+      "description": "Series per range: { t, v, vol }. Missing ranges fall back to demo data."
+    },
+    {
+      "name": "defaultRange",
+      "type": "RangeKey",
+      "default": "\"1M\"",
+      "description": "Range selected on mount."
+    },
+    {
+      "name": "height",
+      "type": "number",
+      "default": "320",
+      "description": "Chart height at desktop; mobile uses 72%."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Near-black card with white ink, or a white card with near-black ink. Up and down colours adjust for contrast."
+    }
   ],
   "added": "2026-10-07"
 }

@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
-import { motion, useReducedMotion } from "motion/react";
+import { useEffect, useId, useMemo, useRef, useState, type CSSProperties } from "react";
+import { animate, motion, useInView, useMotionValue, useReducedMotion, useTransform, type MotionValue, type Variants } from "motion/react";
 
 export type Point = { t: number; v: number; vol: number };
 export type RangeKey = "1D" | "1W" | "1M" | "3M" | "1Y" | "ALL";
@@ -15,9 +15,15 @@ export type ChartPortfolioProps = {
   /** Series per range. Omit to use generated demo data. */
   data?: Partial<Record<RangeKey, Point[]>>;
   defaultRange?: RangeKey;
-  /** Chart height in px at desktop widths (mobile uses 72% of it). */
+  /** Chart height in px at desktop widths (narrow containers use 72% of it). */
   height?: number;
+  /** Near-black card (default) or white. */
+  theme?: "dark" | "light";
 };
+
+/* ------------------------------------------------------------------ */
+/* Tokens                                                              */
+/* ------------------------------------------------------------------ */
 
 const RANGES: { key: RangeKey; label: string; caption: string }[] = [
   { key: "1D", label: "1D", caption: "Today" },
@@ -28,9 +34,73 @@ const RANGES: { key: RangeKey; label: string; caption: string }[] = [
   { key: "ALL", label: "All", caption: "All time" },
 ];
 
-const UP = "#34d399";
-const DOWN = "#fb7185";
+// Green and red are the data here (up and down), so they stay; everything else is ink.
+const PALETTE = {
+  dark: {
+    surface: "#0b0b0c",
+    ink: "#ffffff",
+    raised: "#161618",
+    up: "#34d399",
+    down: "#fb7185",
+    shadow: "inset 0 1px 0 rgba(255,255,255,0.06), 0 30px 80px -30px rgba(0,0,0,0.9)",
+  },
+  light: {
+    surface: "#ffffff",
+    ink: "#0b0b0c",
+    raised: "#ffffff",
+    up: "#059669",
+    down: "#e11d48",
+    shadow: "0 1px 2px rgba(0,0,0,0.06), 0 24px 60px -30px rgba(0,0,0,0.22)",
+  },
+} as const;
+
+type Bezier = readonly [number, number, number, number];
+const EASE: Bezier = [0.22, 1, 0.36, 1];
+const EASE_COUNT: Bezier = [0.16, 1, 0.3, 1];
+
+/** Every range is resampled to this many points so any two can morph. */
 const SAMPLES = 140;
+const NARROW = 520;
+const AXIS_BAND = 22;
+const PAD_TOP = 16;
+
+// The entrance, in seconds: card → identity → price → change and range control
+// → chart (gridlines, then the line rises in a wave) → stats → live dot.
+const T = {
+  card: 0,
+  name: 0.06,
+  price: 0.12,
+  change: 0.18,
+  control: 0.14,
+  axes: 0.2,
+  rise: 0.24,
+  riseDur: 1.0,
+  stats: 0.42,
+  statStep: 0.06,
+  count: 0.9,
+  tick: 0.45,
+  morph: 0.65,
+  block: 0.6,
+} as const;
+
+/** 12px rise out of an 8px blur; `custom` is the start time in seconds. */
+const RISE: Variants = {
+  hidden: { opacity: 0, y: 12, filter: "blur(8px)" },
+  show: (delay: number) => ({ opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: T.block, ease: EASE, delay } }),
+};
+/** The card itself carries no blur, so it never compounds with its contents'. */
+const LAND: Variants = {
+  hidden: { opacity: 0, y: 16 },
+  show: { opacity: 1, y: 0, transition: { duration: T.block, ease: EASE } },
+};
+/** Reduced motion keeps only a short fade. */
+const FADE: Variants = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { duration: 0.15 } } };
+
+const FOCUS = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--cp-ink)";
+
+/* ------------------------------------------------------------------ */
+/* Component                                                           */
+/* ------------------------------------------------------------------ */
 
 export function ChartPortfolio({
   name = "Northwind Growth Index",
@@ -41,222 +111,131 @@ export function ChartPortfolio({
   data,
   defaultRange = "1M",
   height = 320,
+  theme = "dark",
 }: ChartPortfolioProps) {
   const uid = useId().replace(/:/g, "");
-  const reduce = useReducedMotion();
+  const reduce = !!useReducedMotion();
   const series = useMemo(() => ({ ...demoData(), ...data }) as Record<RangeKey, Point[]>, [data]);
   const [range, setRange] = useState<RangeKey>(defaultRange);
   const [hover, setHover] = useState<number | null>(null);
 
-  // Measure the plot so the SVG is drawn in real pixels at every width.
-  const wrapRef = useRef<HTMLDivElement>(null);
-  const [width, setWidth] = useState(720);
-  useEffect(() => {
-    const el = wrapRef.current;
-    if (!el) return;
-    const ro = new ResizeObserver(([e]) => setWidth(Math.max(240, Math.round(e.contentRect.width))));
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
-  // Entrance: the first time the card is mostly in view, the line rises from
-  // the floor in a wave from left to right, volume grows up with it, and the
-  // figures count up out of a blur. Once, and never with reduced motion.
-  const sectionRef = useRef<HTMLElement>(null);
-  const [intro, setIntro] = useState(0);
-  const [entered, setEntered] = useState(false);
-  useEffect(() => {
-    const el = sectionRef.current;
-    if (!el) return;
-    if (reduce) {
-      setIntro(1);
-      setEntered(true);
-      return;
-    }
-    let raf = 0;
-    const io = new IntersectionObserver(
-      ([e]) => {
-        if (!e.isIntersecting) return;
-        io.disconnect();
-        setEntered(true);
-        const t0 = performance.now();
-        const tick = (now: number) => {
-          const k = Math.min(1, (now - t0) / 1500);
-          setIntro(k);
-          if (k < 1) raf = requestAnimationFrame(tick);
-        };
-        raf = requestAnimationFrame(tick);
-      },
-      { threshold: 0.35 },
-    );
-    io.observe(el);
-    return () => {
-      io.disconnect();
-      cancelAnimationFrame(raf);
-    };
-  }, [reduce]);
-  const rise = useCallback(
-    (i: number) => {
-      if (intro >= 1) return 1;
-      const k = Math.min(1, Math.max(0, intro * 1.6 - (i / (SAMPLES - 1)) * 0.6));
-      return 1 - Math.pow(1 - k, 3);
-    },
-    [intro],
-  );
+  // Entrance: once, when 35% of the card is in view. Server HTML starts in
+  // the pre-entrance state, so nothing flashes before it plays.
+  const rootRef = useRef<HTMLElement>(null);
+  const inView = useInView(rootRef, { once: true, amount: 0.35 });
+  const entered = inView || reduce;
+  const intro = useIntro(entered, reduce);
 
-  const h = width < 520 ? Math.round(height * 0.72) : height;
-  const volH = width < 520 ? 28 : 40;
-  const padTop = 16;
-  const padRight = width < 520 ? 0 : 56;
+  const [wrapRef, width] = useWidth<HTMLDivElement>(720);
+  const narrow = width < NARROW;
+  const h = narrow ? Math.round(height * 0.72) : height;
+  const volH = narrow ? 28 : 40;
+  const padRight = narrow ? 0 : 56;
   const plotW = width - padRight;
-  const plotH = h - volH - padTop - 22;
+  const plotH = h - volH - PAD_TOP - AXIS_BAND;
 
-  // Resample every range to the same number of points so the line can morph.
   const target = useMemo(() => resample(series[range], SAMPLES), [series, range]);
-  const [shown, setShown] = useState(target);
-  const fromRef = useRef(target);
-  useEffect(() => {
-    const from = fromRef.current;
-    if (reduce || from === target) {
-      fromRef.current = target;
-      setShown(target);
-      return;
-    }
-    let raf = 0;
-    const start = performance.now();
-    const tick = (now: number) => {
-      const k = Math.min(1, (now - start) / 650);
-      const e = 1 - Math.pow(1 - k, 4);
-      setShown(target.map((p, i) => ({ t: p.t, v: from[i].v + (p.v - from[i].v) * e, vol: from[i].vol + (p.vol - from[i].vol) * e })));
-      if (k < 1) raf = requestAnimationFrame(tick);
-      else fromRef.current = target;
-    };
-    raf = requestAnimationFrame(tick);
-    return () => {
-      cancelAnimationFrame(raf);
-      fromRef.current = target;
-    };
-  }, [target, reduce]);
+  const morph = useMorph(target, reduce);
+  const geo = { plotW, plotH, h, volH };
+  const { line, area, volume, endX, endY } = useChartPaths(morph, intro, geo);
+  // The line waits on the floor invisibly, then appears the moment it starts to rise.
+  const lineOpacity = useTransform(intro, [0, 0.06], [0, 1]);
 
   const open = target[0].v;
-  const last = target[target.length - 1].v;
-  const [min, max] = useMemo(() => {
-    let lo = Infinity;
-    let hi = -Infinity;
-    for (const p of target) {
-      lo = Math.min(lo, p.v);
-      hi = Math.max(hi, p.v);
-    }
-    const pad = (hi - lo) * 0.12 || 1;
-    return [lo - pad, hi + pad];
-  }, [target]);
-  const maxVol = useMemo(() => Math.max(...target.map((p) => p.vol)), [target]);
+  const last = target[SAMPLES - 1].v;
+  const { lo, hi } = morph.toDomain.current;
+  const x = (i: number) => (i / (SAMPLES - 1)) * plotW;
+  const y = (v: number) => PAD_TOP + (1 - (v - lo) / (hi - lo)) * plotH;
 
-  const x = useCallback((i: number) => (i / (SAMPLES - 1)) * plotW, [plotW]);
-  const y = useCallback((v: number) => padTop + (1 - (v - min) / (max - min)) * plotH, [min, max, plotH]);
-
-  const pts = shown.map((p, i) => [x(i), y(min + (p.v - min) * rise(i))] as const);
-  const line = monotonePath(pts);
-  const area = `${line} L${plotW},${padTop + plotH} L0,${padTop + plotH} Z`;
-
-  const active = hover ?? SAMPLES - 1;
   const value = hover === null ? last : target[hover].v;
   const delta = value - open;
   const pct = (delta / open) * 100;
   const up = delta >= 0;
-  const trend = last >= open ? UP : DOWN;
-  const cursorX = x(active);
+  const trend = last >= open ? "var(--cp-up)" : "var(--cp-down)";
+  const cursorX = hover === null ? plotW : x(hover);
+  // Scrubbing is instant; range changes and leaving the plot count to the new value.
+  const instant = hover !== null;
 
   const money = useMemo(() => new Intl.NumberFormat(locale, { style: "currency", currency, minimumFractionDigits: 2, maximumFractionDigits: 2 }), [locale, currency]);
   const axis = useMemo(() => new Intl.NumberFormat(locale, { style: "currency", currency, maximumFractionDigits: 0 }), [locale, currency]);
-  const ticks = useMemo(() => {
-    const out: number[] = [];
-    for (let i = 0; i <= 3; i++) out.push(min + ((max - min) * (i + 0.5)) / 4);
-    return out;
-  }, [min, max]);
+  const compact = useMemo(() => new Intl.NumberFormat(locale, { notation: "compact", maximumFractionDigits: 1 }), [locale]);
+  const ticks = [0, 1, 2, 3].map((i) => lo + ((hi - lo) * (i + 0.5)) / 4);
   const xLabels = useMemo(() => {
-    const n = width < 520 ? 3 : 5;
+    const n = narrow ? 3 : 5;
     return Array.from({ length: n }, (_, i) => {
       const idx = Math.round((i / (n - 1)) * (SAMPLES - 1));
       return { idx, label: formatTime(target[idx].t, range, locale) };
     });
-  }, [target, range, locale, width]);
+  }, [target, range, locale, narrow]);
+  const stats = useMemo(
+    () => [
+      { label: "Open", value: open, format: (v: number) => money.format(v) },
+      { label: "High", value: Math.max(...target.map((p) => p.v)), format: (v: number) => money.format(v) },
+      { label: "Low", value: Math.min(...target.map((p) => p.v)), format: (v: number) => money.format(v) },
+      { label: "Volume", value: target.reduce((a, p) => a + p.vol, 0), format: (v: number) => compact.format(v) },
+    ],
+    [target, open, money, compact],
+  );
 
   const pickIndex = (clientX: number) => {
     const rect = wrapRef.current!.getBoundingClientRect();
     const px = Math.min(Math.max(clientX - rect.left, 0), plotW);
     return Math.round((px / plotW) * (SAMPLES - 1));
   };
-
   const caption = RANGES.find((r) => r.key === range)!.caption;
-  const tipLeft = Math.min(Math.max(cursorX, 64), plotW - 64);
+  const p = PALETTE[theme];
+  const vars = { "--cp-surface": p.surface, "--cp-ink": p.ink, "--cp-raised": p.raised, "--cp-up": p.up, "--cp-down": p.down, boxShadow: p.shadow, colorScheme: theme } as CSSProperties;
+  const rise = reduce ? FADE : RISE;
 
   return (
-    <section ref={sectionRef} className="@container relative w-full overflow-hidden rounded-[22px] border border-white/[0.08] bg-[#0b0b0c] p-5 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_30px_80px_-30px_rgba(0,0,0,0.9)] @xl:p-7">
-      <style>{`@keyframes cp-dot-in{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}`}</style>
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-40 left-1/2 h-72 w-[80%] -translate-x-1/2 rounded-full opacity-[0.16] blur-3xl transition-colors duration-700"
-        style={{ background: trend }}
-      />
-
+    <motion.section
+      ref={rootRef}
+      style={vars}
+      variants={reduce ? FADE : LAND}
+      initial="hidden"
+      animate={entered ? "show" : "hidden"}
+      className="@container relative w-full overflow-hidden rounded-[22px] border border-(--cp-ink)/[0.08] bg-(--cp-surface) p-5 text-(--cp-ink) @xl:p-7"
+    >
       <header className="relative flex flex-col gap-5 @2xl:flex-row @2xl:items-start @2xl:justify-between">
         <div>
-          <div className="flex min-w-0 items-center gap-2.5">
-            <span className="flex size-7 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-gradient-to-b from-white/[0.14] to-white/[0.02] font-mono text-[10px] font-semibold tracking-tight">
+          <motion.div variants={rise} custom={T.name} className="flex min-w-0 items-center gap-2.5">
+            <span className="flex size-7 shrink-0 items-center justify-center rounded-lg border border-(--cp-ink)/10 bg-(--cp-ink)/[0.06] font-mono text-[10px] font-semibold tracking-tight">
               {ticker.slice(0, 2)}
             </span>
-            <p className="truncate text-sm font-medium text-white/80">{name}</p>
-            <span className="hidden shrink-0 font-mono text-[11px] text-white/35 @md:inline">
+            <p className="truncate text-sm font-medium text-(--cp-ink)/80">{name}</p>
+            <span className="hidden shrink-0 font-mono text-[11px] text-(--cp-ink)/40 @md:inline">
               {ticker} · {exchange}
             </span>
-          </div>
-          <p className="mt-3 font-sans text-[clamp(2rem,1.6rem+1.6vw,2.75rem)] font-medium leading-none tracking-[-0.04em] tabular-nums">
-            {/* Scrubbing is instant; range changes count to the new value. */}
-            <Ticker value={value} instant={hover !== null || !!reduce} entered={entered} duration={1300} format={(v) => money.format(v)} />
+          </motion.div>
+          <p className="mt-3 font-sans text-[clamp(2rem,1.6rem+1.6vw,2.75rem)] font-medium leading-none tracking-[-0.04em]">
+            <Ticker value={value} instant={instant} entered={entered} reduce={reduce} delay={T.price} format={(v) => money.format(v)} />
           </p>
-          <p className="mt-2.5 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-sm tabular-nums">
-            <span className="inline-flex items-center gap-1 font-medium" style={{ color: up ? UP : DOWN }}>
-              <svg viewBox="0 0 10 10" className={`size-2.5 ${up ? "" : "rotate-180"}`} aria-hidden="true">
+          <motion.p variants={rise} custom={T.change} className="mt-2.5 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-sm tabular-nums">
+            <span className="inline-flex items-center gap-1 font-medium transition-colors duration-200" style={{ color: up ? "var(--cp-up)" : "var(--cp-down)" }}>
+              <svg viewBox="0 0 10 10" className={`size-2.5 transition-transform duration-200 ${up ? "" : "rotate-180"}`} aria-hidden="true">
                 <path d="M5 1.5 9 8H1z" fill="currentColor" />
               </svg>
               <span>
-                <Ticker value={Math.abs(delta)} instant={hover !== null || !!reduce} entered={entered} delay={150} format={(v) => money.format(v)} /> ({up ? "+" : "−"}
-                <Ticker value={Math.abs(pct)} instant={hover !== null || !!reduce} entered={entered} delay={150} format={(v) => v.toFixed(2)} />
+                <Ticker value={Math.abs(delta)} instant={instant} entered={entered} reduce={reduce} delay={T.change} format={(v) => money.format(v)} /> ({up ? "+" : "−"}
+                <Ticker value={Math.abs(pct)} instant={instant} entered={entered} reduce={reduce} delay={T.change} format={(v) => v.toFixed(2)} />
                 %)
               </span>
             </span>
-            <span className="text-white/40">{hover === null ? caption : formatTime(target[hover].t, range, locale, true)}</span>
-          </p>
+            <span className="text-(--cp-ink)/45">{hover === null ? caption : formatTime(target[hover].t, range, locale, true)}</span>
+          </motion.p>
         </div>
 
-        <div role="radiogroup" aria-label="Time range" className="flex w-full rounded-full border border-white/[0.08] bg-white/[0.03] p-1 @2xl:w-auto">
-          {RANGES.map((r) => (
-            <button
-              key={r.key}
-              role="radio"
-              aria-checked={range === r.key}
-              onClick={() => {
-                setHover(null);
-                setRange(r.key);
-              }}
-              className={`relative h-8 flex-1 rounded-full px-3 font-mono text-[11px] font-medium transition-[color,transform] duration-150 active:scale-[0.95] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white @2xl:flex-none ${range === r.key ? "text-black" : "text-white/55 hover:text-white"}`}
-            >
-              {range === r.key && (
-                <motion.span
-                  layoutId={`${uid}-range`}
-                  className="absolute inset-0 rounded-full bg-white shadow-[0_1px_8px_rgba(255,255,255,0.25)]"
-                  transition={{ type: "spring", stiffness: 500, damping: 40 }}
-                />
-              )}
-              <span className="relative">{r.label}</span>
-            </button>
-          ))}
-        </div>
+        <motion.div variants={rise} custom={T.control}>
+          <RangeControl value={range} uid={uid} reduce={reduce} onChange={(k) => {
+              setHover(null);
+              setRange(k);
+            }} />
+        </motion.div>
       </header>
 
       <div
         ref={wrapRef}
-        className="relative mt-6 touch-none select-none outline-none"
+        className="relative mt-6 touch-none select-none rounded-sm outline-none focus-visible:ring-1 focus-visible:ring-(--cp-ink)/30"
         style={{ height: h }}
         tabIndex={0}
         role="img"
@@ -268,10 +247,7 @@ export function ChartPortfolio({
           if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
             e.preventDefault();
             const step = e.shiftKey ? 10 : 1;
-            setHover((hv) => {
-              const cur = hv ?? SAMPLES - 1;
-              return Math.min(SAMPLES - 1, Math.max(0, cur + (e.key === "ArrowRight" ? step : -step)));
-            });
+            setHover((hv) => Math.min(SAMPLES - 1, Math.max(0, (hv ?? SAMPLES - 1) + (e.key === "ArrowRight" ? step : -step))));
           }
           if (e.key === "Escape") setHover(null);
         }}
@@ -280,82 +256,64 @@ export function ChartPortfolio({
         <svg width={width} height={h} className="absolute inset-0 overflow-visible" aria-hidden="true">
           <defs>
             <linearGradient id={`${uid}-fill`} x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stopColor={trend} stopOpacity="0.28" />
-              <stop offset="70%" stopColor={trend} stopOpacity="0.04" />
+              <stop offset="0%" stopColor={trend} stopOpacity="0.2" />
+              <stop offset="70%" stopColor={trend} stopOpacity="0.03" />
               <stop offset="100%" stopColor={trend} stopOpacity="0" />
             </linearGradient>
+            {/* Past and future of the cursor: the future fades to a ghost line. */}
             <clipPath id={`${uid}-past`}>
-              <rect x="0" y="0" width={hover === null ? plotW : cursorX} height={h} />
+              <rect x="0" y="0" width={cursorX} height={h} />
             </clipPath>
             <clipPath id={`${uid}-future`}>
-              <rect x={hover === null ? plotW : cursorX} y="0" width={plotW} height={h} />
+              <rect x={cursorX} y="0" width={plotW} height={h} />
             </clipPath>
-            <filter id={`${uid}-glow`} x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="4" />
-            </filter>
           </defs>
 
-          {ticks.map((t) => (
-            <g key={t}>
-              <line x1="0" x2={plotW} y1={y(t)} y2={y(t)} stroke="rgba(255,255,255,0.06)" />
-              {padRight > 0 && (
-                <text x={width} y={y(t) + 4} textAnchor="end" className="fill-white/35 font-mono text-[10.5px] tabular-nums">
-                  {axis.format(t)}
-                </text>
-              )}
-            </g>
-          ))}
+          <motion.g variants={reduce ? FADE : RISE} custom={T.axes}>
+            {ticks.map((t) => (
+              <g key={t}>
+                <line x1="0" x2={plotW} y1={y(t)} y2={y(t)} stroke="var(--cp-ink)" strokeOpacity="0.06" />
+                {padRight > 0 && (
+                  <text x={width} y={y(t) + 4} textAnchor="end" className="fill-(--cp-ink)/40 font-mono text-[10.5px] tabular-nums">
+                    {axis.format(t)}
+                  </text>
+                )}
+              </g>
+            ))}
+            <line x1="0" x2={plotW} y1={y(open)} y2={y(open)} stroke="var(--cp-ink)" strokeOpacity="0.22" strokeDasharray="2 4" />
+            {xLabels.map((l, i) => (
+              <text
+                key={l.idx}
+                x={x(l.idx)}
+                y={h - 4}
+                textAnchor={i === 0 ? "start" : i === xLabels.length - 1 ? "end" : "middle"}
+                className="fill-(--cp-ink)/40 font-mono text-[10.5px]"
+              >
+                {l.label}
+              </text>
+            ))}
+          </motion.g>
 
-          <line x1="0" x2={plotW} y1={y(open)} y2={y(open)} stroke="rgba(255,255,255,0.22)" strokeDasharray="2 4" />
+          <motion.path d={volume} fill="var(--cp-ink)" fillOpacity="0.11" />
+          {hover !== null && <VolumeHighlight points={target} index={hover} maxVol={morph.maxVol} x={x} h={h} volH={volH} plotW={plotW} />}
 
-          <g clipPath={`url(#${uid}-past)`}>
-            <path d={area} fill={`url(#${uid}-fill)`} opacity={Math.min(1, intro * 1.25)} />
-            <path d={line} fill="none" stroke={trend} strokeWidth="1.75" strokeLinejoin="round" strokeLinecap="round" />
-          </g>
+          <motion.g clipPath={`url(#${uid}-past)`} style={{ opacity: lineOpacity }}>
+            <motion.path d={area} fill={`url(#${uid}-fill)`} style={{ opacity: intro }} />
+            <motion.path d={line} fill="none" stroke={trend} strokeWidth="1.75" strokeLinejoin="round" strokeLinecap="round" />
+          </motion.g>
           <g clipPath={`url(#${uid}-future)`} opacity="0.32">
-            <path d={line} fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5" strokeLinejoin="round" />
+            <motion.path d={line} fill="none" stroke="var(--cp-ink)" strokeOpacity="0.7" strokeWidth="1.5" strokeLinejoin="round" />
           </g>
 
-          {shown.map((p, i) => {
-            if (i % 2) return null;
-            const bh = (p.vol / maxVol) * volH * rise(i);
-            const isActive = hover !== null && Math.abs(i - hover) <= 1;
-            return (
-              <rect
-                key={i}
-                x={x(i) - 1}
-                y={h - 22 - bh}
-                width={Math.max(1.5, plotW / SAMPLES)}
-                height={bh}
-                rx="1"
-                fill={isActive ? "rgba(255,255,255,0.7)" : "rgba(255,255,255,0.11)"}
-              />
-            );
-          })}
-
-          {xLabels.map((l, i) => (
-            <text
-              key={l.idx}
-              x={x(l.idx)}
-              y={h - 4}
-              textAnchor={i === 0 ? "start" : i === xLabels.length - 1 ? "end" : "middle"}
-              className="fill-white/35 font-mono text-[10.5px]"
-            >
-              {l.label}
-            </text>
-          ))}
-
+          {/* Kept mounted while scrubbing so it doesn't replay its entrance. */}
+          <g opacity={hover === null ? 1 : 0}>
+            <LiveDot x={endX} y={endY} color={trend} entered={entered} reduce={reduce} />
+          </g>
           {hover !== null && (
             <g>
-              <line x1={cursorX} x2={cursorX} y1={padTop - 6} y2={h - 22} stroke="rgba(255,255,255,0.28)" />
-              <circle cx={cursorX} cy={y(target[hover].v)} r="9" fill={trend} opacity="0.45" filter={`url(#${uid}-glow)`} />
-              <circle cx={cursorX} cy={y(target[hover].v)} r="4.5" fill="#0b0b0c" stroke={trend} strokeWidth="2" />
-            </g>
-          )}
-          {hover === null && intro >= 1 && (
-            <g className="motion-safe:animate-[cp-dot-in_420ms_cubic-bezier(0.22,1,0.36,1)]" style={{ transformOrigin: `${x(SAMPLES - 1)}px ${y(shown[SAMPLES - 1].v)}px` }}>
-              <circle cx={x(SAMPLES - 1)} cy={y(shown[SAMPLES - 1].v)} r="3.5" fill={trend} />
-              <circle cx={x(SAMPLES - 1)} cy={y(shown[SAMPLES - 1].v)} r="3.5" fill={trend} className="motion-safe:animate-ping" style={{ transformOrigin: "center", transformBox: "fill-box" }} />
+              <line x1={cursorX} x2={cursorX} y1={PAD_TOP - 6} y2={h - AXIS_BAND} stroke="var(--cp-ink)" strokeOpacity="0.28" />
+              <circle cx={cursorX} cy={y(target[hover].v)} r="9" fill={trend} opacity="0.18" />
+              <circle cx={cursorX} cy={y(target[hover].v)} r="4.5" fill="var(--cp-surface)" stroke={trend} strokeWidth="2" />
             </g>
           )}
         </svg>
@@ -364,105 +322,259 @@ export function ChartPortfolio({
           <motion.div
             initial={reduce ? false : { opacity: 0, y: 4 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.16, ease: [0.22, 1, 0.36, 1] }}
-            className="pointer-events-none absolute -top-1 -translate-x-1/2 rounded-md border border-white/10 bg-[#161618]/95 px-2 py-1 font-mono text-[10.5px] text-white/80 shadow-[0_8px_24px_rgba(0,0,0,0.5)] backdrop-blur"
-            style={{ left: tipLeft }}
+            transition={{ duration: 0.16, ease: EASE }}
+            className="pointer-events-none absolute -top-1 -translate-x-1/2 rounded-md border border-(--cp-ink)/10 bg-(--cp-raised) px-2 py-1 font-mono text-[10.5px] whitespace-nowrap text-(--cp-ink)/80 shadow-[0_8px_24px_rgba(0,0,0,0.25)]"
+            style={{ left: Math.min(Math.max(cursorX, 64), plotW - 64) }}
           >
             {formatTime(target[hover].t, range, locale, true)}
           </motion.div>
         )}
       </div>
 
-      <footer className="relative mt-5 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-white/[0.06] bg-white/[0.06] @xl:grid-cols-4">
-        {(
-          [
-            ["Open", open, (v: number) => money.format(v)],
-            ["High", Math.max(...target.map((p) => p.v)), (v: number) => money.format(v)],
-            ["Low", Math.min(...target.map((p) => p.v)), (v: number) => money.format(v)],
-            ["Volume", target.reduce((a, p) => a + p.vol, 0), (v: number) => new Intl.NumberFormat(locale, { notation: "compact", maximumFractionDigits: 1 }).format(v)],
-          ] as const
-        ).map(([k, n, fmt], i) => (
-          <div key={k} className="bg-[#0b0b0c] px-4 py-3">
-            <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-white/35">{k}</p>
-            <p className="mt-1 text-sm font-medium tabular-nums text-white/85">
-              <Ticker value={n} instant={!!reduce} entered={entered} delay={500 + i * 90} duration={900} format={fmt} />
+      <footer className="relative mt-5 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-(--cp-ink)/[0.07] @xl:grid-cols-4">
+        {stats.map((s, i) => (
+          <motion.div
+            key={s.label}
+            variants={rise}
+            custom={T.stats + i * T.statStep}
+            className="bg-(--cp-surface) px-4 py-3 shadow-[0_0_0_1px_color-mix(in_oklab,var(--cp-ink)_7%,var(--cp-surface))]"
+          >
+            <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-(--cp-ink)/40">{s.label}</p>
+            <p className="mt-1 text-sm font-medium text-(--cp-ink)/85">
+              <Ticker value={s.value} instant={false} entered={entered} reduce={reduce} delay={T.stats + i * T.statStep + 0.08} format={s.format} />
             </p>
-          </div>
+          </motion.div>
         ))}
       </footer>
-    </section>
+    </motion.section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Range control                                                       */
+/* ------------------------------------------------------------------ */
+
+function RangeControl({ value, uid, reduce, onChange }: { value: RangeKey; uid: string; reduce: boolean; onChange: (k: RangeKey) => void }) {
+  return (
+    <div role="radiogroup" aria-label="Time range" className="flex w-full rounded-full border border-(--cp-ink)/[0.08] bg-(--cp-ink)/[0.03] p-1 @2xl:w-auto">
+      {RANGES.map((r) => (
+        <button
+          key={r.key}
+          role="radio"
+          aria-checked={value === r.key}
+          onClick={() => onChange(r.key)}
+          className={`relative h-8 flex-1 rounded-full px-3 font-mono text-[11px] font-medium transition-[color,transform] duration-150 active:scale-[0.95] ${FOCUS} @2xl:flex-none ${value === r.key ? "text-(--cp-surface)" : "text-(--cp-ink)/55 hover:text-(--cp-ink)"}`}
+        >
+          {value === r.key && (
+            <motion.span layoutId={`${uid}-range`} className="absolute inset-0 rounded-full bg-(--cp-ink)" transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 500, damping: 40 }} />
+          )}
+          <span className="relative">{r.label}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Motion: entrance, morph and the paths they drive                    */
+/* ------------------------------------------------------------------ */
+
+/** 0 → 1 once the card is in view: the line's rise. A motion value, so it never re-renders the chart. */
+function useIntro(entered: boolean, reduce: boolean) {
+  const intro = useMotionValue(reduce ? 1 : 0);
+  useEffect(() => {
+    if (!entered) return;
+    if (reduce) return void intro.jump(1);
+    const a = animate(intro, 1, { duration: T.riseDur, delay: T.rise, ease: "linear" });
+    return () => a.stop();
+  }, [entered, reduce, intro]);
+  return intro;
+}
+
+type Domain = { lo: number; hi: number };
+
+function domainOf(points: Point[]): Domain {
+  let lo = Infinity;
+  let hi = -Infinity;
+  for (const pt of points) {
+    lo = Math.min(lo, pt.v);
+    hi = Math.max(hi, pt.v);
+  }
+  const pad = (hi - lo) * 0.12 || 1;
+  return { lo: lo - pad, hi: hi + pad };
+}
+
+/**
+ * Morphs between ranges: `k` runs 0 → 1 from the series (and price domain)
+ * on screen to the new one, so the line and its scale glide together.
+ */
+function useMorph(target: Point[], reduce: boolean) {
+  const k = useMotionValue(1);
+  const from = useRef(target);
+  const to = useRef(target);
+  const fromDomain = useRef(domainOf(target));
+  const toDomain = useRef(fromDomain.current);
+  // Volume is scaled to the destination series; bars ease with the values.
+  const maxVol = useMemo(() => Math.max(...target.map((pt) => pt.vol)), [target]);
+
+  if (to.current !== target) {
+    // Start from wherever the morph currently is, so a quick second click reverses smoothly.
+    const e = easeOutQuart(k.get());
+    from.current = to.current.map((pt, i) => ({ t: pt.t, v: lerp(from.current[i].v, pt.v, e), vol: lerp(from.current[i].vol, pt.vol, e) }));
+    fromDomain.current = { lo: lerp(fromDomain.current.lo, toDomain.current.lo, e), hi: lerp(fromDomain.current.hi, toDomain.current.hi, e) };
+    to.current = target;
+    toDomain.current = domainOf(target);
+    k.jump(reduce ? 1 : 0);
+  }
+
+  useEffect(() => {
+    if (k.get() >= 1) return;
+    const a = animate(k, 1, { duration: T.morph, ease: "linear" });
+    return () => a.stop();
+  }, [target, k]);
+
+  return { k, from, to, fromDomain, toDomain, maxVol };
+}
+
+/** The line, area and volume as path strings derived from the intro and morph motion values. */
+function useChartPaths(morph: ReturnType<typeof useMorph>, intro: MotionValue<number>, { plotW, plotH, h, volH }: { plotW: number; plotH: number; h: number; volH: number }) {
+  const floor = PAD_TOP + plotH;
+  const points = useTransform(() => {
+    const e = easeOutQuart(morph.k.get());
+    const t = intro.get();
+    const a = morph.from.current;
+    const b = morph.to.current;
+    const lo = lerp(morph.fromDomain.current.lo, morph.toDomain.current.lo, e);
+    const hi = lerp(morph.fromDomain.current.hi, morph.toDomain.current.hi, e);
+    return b.map((pt, i) => {
+      const v = lerp(a[i].v, pt.v, e);
+      const vol = lerp(a[i].vol, pt.vol, e);
+      const r = riseAt(i, t);
+      const yv = PAD_TOP + (1 - (v - lo) / (hi - lo)) * plotH;
+      // Each point rises from the plot floor in a left-to-right wave.
+      return { x: (i / (SAMPLES - 1)) * plotW, y: floor + (yv - floor) * r, vol: (vol / morph.maxVol) * volH * r };
+    });
+  });
+  const line = useTransform(points, (pts) => monotonePath(pts.map((pt) => [pt.x, pt.y] as const)));
+  const area = useTransform(line, (d) => `${d} L${plotW},${floor} L0,${floor} Z`);
+  const volume = useTransform(points, (pts) => {
+    const w = Math.max(1.5, plotW / SAMPLES).toFixed(2);
+    let d = "";
+    for (let i = 0; i < pts.length; i += 2) {
+      const bh = pts[i].vol;
+      if (bh < 0.05) continue;
+      d += `M${(pts[i].x - 1).toFixed(2)},${(h - AXIS_BAND - bh).toFixed(2)}h${w}v${bh.toFixed(2)}h-${w}Z`;
+    }
+    return d;
+  });
+  const endX = useTransform(points, (pts) => pts[pts.length - 1].x);
+  const endY = useTransform(points, (pts) => pts[pts.length - 1].y);
+  return { line, area, volume, endX, endY };
+}
+
+/** Wave progress for point i at intro time t: clamp(t·1.6 − i/n·0.6), ease-out cubic. */
+function riseAt(i: number, t: number) {
+  if (t >= 1) return 1;
+  const k = Math.min(1, Math.max(0, t * 1.6 - (i / (SAMPLES - 1)) * 0.6));
+  return 1 - Math.pow(1 - k, 3);
+}
+
+const lerp = (a: number, b: number, k: number) => a + (b - a) * k;
+const easeOutQuart = (k: number) => 1 - Math.pow(1 - k, 4);
+
+/* ------------------------------------------------------------------ */
+/* Small parts                                                         */
+/* ------------------------------------------------------------------ */
+
+function useWidth<E extends HTMLElement>(initial: number) {
+  const ref = useRef<E>(null);
+  const [width, setWidth] = useState(initial);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([e]) => setWidth(Math.max(240, Math.round(e.contentRect.width))));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  return [ref, width] as const;
+}
+
+/** Bars under the cursor brighten. */
+function VolumeHighlight({ points, index, maxVol, x, h, volH, plotW }: { points: Point[]; index: number; maxVol: number; x: (i: number) => number; h: number; volH: number; plotW: number }) {
+  const w = Math.max(1.5, plotW / SAMPLES);
+  const bars = [index - 1, index, index + 1].filter((i) => i >= 0 && i < SAMPLES && i % 2 === 0);
+  return (
+    <>
+      {bars.map((i) => {
+        const bh = (points[i].vol / maxVol) * volH;
+        return <rect key={i} x={x(i) - 1} y={h - AXIS_BAND - bh} width={w} height={bh} rx="1" fill="var(--cp-ink)" fillOpacity="0.7" />;
+      })}
+    </>
+  );
+}
+
+/** The resting "now" dot: it lands once the line has risen, then pings (the one ambient signal). */
+function LiveDot({ x, y, color, entered, reduce }: { x: MotionValue<number>; y: MotionValue<number>; color: string; entered: boolean; reduce: boolean }) {
+  return (
+    <motion.g
+      initial={{ scale: 0, opacity: 0 }}
+      animate={entered ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
+      transition={reduce ? { duration: 0 } : { delay: T.rise + T.riseDur * 0.95, type: "spring", stiffness: 500, damping: 30 }}
+      style={{ transformBox: "fill-box", transformOrigin: "center" }}
+    >
+      <motion.circle cx={x} cy={y} r="3.5" fill={color} />
+      {!reduce && <motion.circle cx={x} cy={y} r="3.5" fill={color} className="animate-ping" style={{ transformBox: "fill-box", transformOrigin: "center" }} />}
+    </motion.g>
   );
 }
 
 /**
- * A figure that counts to each new value (450ms ease-out) unless `instant`.
- * On entrance it counts up from zero while a blur clears, after `delay`.
+ * A figure that counts up from zero out of a blur on entrance (after `delay`),
+ * then eases to each new value over 450ms unless `instant`. Motion values
+ * write the text and filter directly; nothing re-renders while it counts.
  */
-function Ticker({
-  value,
-  instant,
-  format,
-  entered = true,
-  delay = 0,
-  duration = 450,
-}: {
-  value: number;
-  instant: boolean;
-  format: (v: number) => string;
-  entered?: boolean;
-  delay?: number;
-  duration?: number;
-}) {
-  const [shown, setShown] = useState(value);
-  const [blur, setBlur] = useState(0);
-  const [hidden, setHidden] = useState(!entered);
-  const ref = useRef(value);
-  const introDone = useRef(entered);
+function Ticker({ value, instant, format, entered, reduce, delay = 0 }: { value: number; instant: boolean; format: (v: number) => string; entered: boolean; reduce: boolean; delay?: number }) {
+  const n = useMotionValue(entered ? value : 0);
+  const settle = useMotionValue(entered ? 1 : 0);
+  const waiting = useRef(!entered);
+  const settling = useRef<ReturnType<typeof animate> | null>(null);
+
   useEffect(() => {
-    if (!entered) {
-      setHidden(true);
-      return;
+    if (!entered) return;
+    if (waiting.current) {
+      waiting.current = false;
+      if (reduce) {
+        n.jump(value);
+        settle.jump(1);
+        return;
+      }
+      settling.current = animate(settle, 1, { duration: T.count * 0.8, delay, ease: EASE });
+      const count = animate(n, value, { duration: T.count, delay, ease: EASE_COUNT });
+      return () => count.stop();
     }
-    if (instant && introDone.current) {
-      ref.current = value;
-      setShown(value);
-      return;
-    }
-    const first = !introDone.current;
-    introDone.current = true;
-    const from = first ? 0 : ref.current;
-    const ms = first ? duration : 450;
-    let raf = 0;
-    let t0 = 0;
-    const timer = setTimeout(
-      () => {
-        setHidden(false);
-        t0 = performance.now();
-        const step = (now: number) => {
-          const k = Math.min(1, (now - t0) / ms);
-          const e = 1 - Math.pow(1 - k, first ? 4 : 3);
-          const v = from + (value - from) * e;
-          ref.current = v;
-          setShown(v);
-          if (first) setBlur((1 - e) * 8);
-          if (k < 1) raf = requestAnimationFrame(step);
-        };
-        raf = requestAnimationFrame(step);
-      },
-      first ? delay : 0,
-    );
-    return () => {
-      clearTimeout(timer);
-      cancelAnimationFrame(raf);
-    };
-  }, [value, instant, entered, delay, duration]);
+    // A settle cut short (strict-mode remount) finishes rather than leaving the figure blurred.
+    if (settle.get() < 1 && !settling.current) settling.current = animate(settle, 1, { duration: T.tick, ease: EASE });
+    if (instant || reduce) return void n.jump(value);
+    const tick = animate(n, value, { duration: T.tick, ease: EASE });
+    return () => tick.stop();
+    // `delay` only matters for the entrance.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value, instant, entered, reduce]);
+  useEffect(
+    () => () => {
+      settling.current?.stop();
+      settling.current = null;
+    },
+    [],
+  );
+
+  const text = useTransform(n, format);
+  const filter = useTransform(settle, [0, 1], ["blur(8px)", "blur(0px)"]);
+  const opacity = useTransform(settle, [0, 0.35], [0, 1]);
   return (
-    <span
-      className="inline-block will-change-[filter]"
-      style={{ filter: blur > 0.05 ? `blur(${blur.toFixed(2)}px)` : undefined, opacity: hidden ? 0 : 1 - blur / 16 }}
-    >
-      {format(shown)}
-    </span>
+    <motion.span className="inline-block tabular-nums" style={{ filter, opacity }}>
+      {text}
+    </motion.span>
   );
 }
 
@@ -510,13 +622,14 @@ function formatTime(t: number, range: RangeKey, locale: string, long = false) {
 /** Deterministic demo data: a seeded random walk per range, ending at the same price. */
 function demoData(): Record<RangeKey, Point[]> {
   const end = Date.UTC(2026, 9, 7, 20, 0);
+  // [points, step ms, volatility, seed]
   const spec: Record<RangeKey, [number, number, number, number]> = {
     "1D": [78, 5 * 60e3, 0.0016, 11],
     "1W": [120, 60 * 60e3, 0.004, 23],
     "1M": [150, 4.8 * 3600e3, 0.009, 37],
     "3M": [150, 14.4 * 3600e3, 0.013, 51],
     "1Y": [180, 48.7 * 3600e3, 0.019, 67],
-    "ALL": [200, 182 * 3600e3, 0.03, 89],
+    ALL: [200, 182 * 3600e3, 0.03, 89],
   };
   const out = {} as Record<RangeKey, Point[]>;
   for (const key of Object.keys(spec) as RangeKey[]) {
