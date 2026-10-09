@@ -4,7 +4,7 @@
   "tier": "free",
   "platform": "web",
   "category": "cta",
-  "description": "A closing call to action where a sunrise is drawn in ordered (Bayer) dither: light quantised into three colours, a crisp horizon hairline and a scanline reflection.",
+  "description": "A closing call to action where light rises over a horizon in ordered Bayer dither: silver by default, one accent prop recolours it, copy staggers in above.",
   "tags": [
     "cta",
     "call to action",
@@ -12,16 +12,17 @@
     "dither",
     "bayer",
     "pixel",
-    "sunrise",
+    "horizon",
     "canvas",
-    "closing section"
+    "closing section",
+    "monochrome"
   ],
   "dependencies": [
     "motion"
   ],
   "theme": "dark",
   "previewHeight": 760,
-  "usage": "import { CtaHorizon } from \"@/components/design-for-ai/cta-horizon\";\n\n<CtaHorizon\n  headline=\"Start your free trial today.\"\n  muted=\"today.\"\n  primary={{ label: \"Start free\", href: \"/signup\" }}\n  glow={[\"#d9f1ff\", \"#4cc3ff\", \"#3d5afe\"]}\n/>",
+  "usage": "import { CtaHorizon } from \"@/components/design-for-ai/cta-horizon\";\n\n<CtaHorizon\n  headline=\"Start your free trial today.\"\n  muted=\"today.\"\n  primary={{ label: \"Start free\", href: \"/signup\" }}\n  accent=\"#ff6a3d\"\n/>",
   "props": [
     {
       "name": "headline",
@@ -32,12 +33,12 @@
       "name": "muted",
       "type": "string",
       "default": "\"proud to demo.\"",
-      "description": "Substring of the headline set at 45% white."
+      "description": "Substring of the headline set at 45% white; it lands a beat after the rest."
     },
     {
       "name": "eyebrow",
       "type": "string",
-      "description": "Label in the pill above the headline."
+      "description": "Mono label above the headline, between two hairlines that draw outward."
     },
     {
       "name": "body",
@@ -47,7 +48,7 @@
     {
       "name": "primary",
       "type": "{ label: string; href: string }",
-      "description": "White primary button. Hover warms a glow beneath it and nudges the arrow 2px; nothing jumps."
+      "description": "White primary button. Hover is calm: the surface dims a touch and the arrow nudges 2px; nothing glows, lifts or grows."
     },
     {
       "name": "secondary",
@@ -60,10 +61,10 @@
       "description": "Three reassurance notes along the bottom."
     },
     {
-      "name": "glow",
-      "type": "[string, string, string]",
-      "default": "[\"#ffe2c4\", \"#ff7a45\", \"#ff4d6d\"]",
-      "description": "Light colours, hottest first: core, mid, outer. The dither quantises between them."
+      "name": "accent",
+      "type": "string",
+      "default": "\"#d9d9d6\"",
+      "description": "The one colour of the light. The dither ramps panel → accent → a pale core; pass a brand hue to recolour the whole horizon."
     },
     {
       "name": "cell",

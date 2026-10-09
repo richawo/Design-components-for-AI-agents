@@ -1,84 +1,93 @@
 {
   "component": "CtaHorizon",
-  "intent": "A closing call to action on a dark panel where a sunrise is drawn in ordered (Bayer) dither: light quantised into a few colours, a crisp horizon hairline and a scanline reflection. Calm, graphic, premium.",
+  "intent": "A closing call to action on a dark panel where light rises over a horizon drawn in ordered (Bayer) dither: one colour quantised into five levels, a crisp horizon hairline and a scanline reflection. Monochrome silver by default; one accent prop recolours the whole light.",
   "platform": "web",
   "stack": [
     "React 19",
-    "Tailwind CSS v4",
-    "motion/react",
+    "Tailwind CSS v4 (container queries)",
+    "motion/react (variants with a custom start time, useInView)",
     "Canvas 2D (ImageData, no WebGL)"
   ],
   "layout": {
-    "page": "black, 12\u201324px padding",
-    "panel": "rounded 24px (32px sm+), #09090b, inset top highlight, 1px white/6% ring, min-height 560/640/700px",
+    "page": "black; @container on the section, 12/20/24px padding on an inner box (@xl, @5xl)",
+    "panel": "rounded 24px (32px from @xl), #09090b, inset top highlight, 1px white/6% ring, min-height 560/640/700px",
     "content": "centred column; notes pinned to the bottom with mt-auto",
-    "horizon": "40px above the first note, re-measured every frame"
+    "horizon": "40px above the first note, re-measured by ResizeObserver (panel + notes) and on document.fonts.ready, never per frame"
   },
   "typography": {
     "headline": {
       "font": "display",
       "weight": 600,
-      "size": "clamp(2.5rem, 1.4rem + 4.6vw, 5.75rem)",
+      "size": "clamp(2.5rem, 1.4rem + 4.6cqi, 5.75rem)",
       "leading": 0.98,
       "tracking": "-0.055em",
       "maxWidth": "16ch",
-      "leadClause": "white\u2192white/70 gradient",
+      "wrap": "balance; words are inline-blocks so the line still balances",
       "mutedClause": "white/45"
     },
     "body": {
       "size": "16-17px",
       "color": "white/60",
-      "maxWidth": "50ch"
+      "maxWidth": "48ch"
     },
     "eyebrow": {
       "font": "mono",
       "size": "11px",
-      "tracking": "0.18em",
-      "case": "uppercase"
-    }
+      "tracking": "0.2em",
+      "case": "uppercase",
+      "rules": "two 24px white/25 hairlines"
+    },
+    "notes": "mono 11px uppercase, tracking 0.14em, white/60, dark text-shadow"
   },
   "color": {
+    "approach": "monochrome first; one accent drives every coloured pixel",
     "panel": "#09090b",
-    "glow": {
-      "core": "#ffe2c4",
-      "mid": "#ff7a45",
-      "outer": "#ff4d6d"
-    },
-    "levels": "panel black \u2192 outer at 45% \u2192 outer \u2192 mid \u2192 core, chosen per cell with an 8\u00d78 Bayer threshold",
+    "accent": "prop, default silver #d9d9d6 (try a brand hue such as #ff6a3d)",
+    "levels": "panel -> mix(panel, accent, 0.22) -> mix(panel, accent, 0.5) -> accent -> mix(accent, white, 0.65), chosen per cell with an 8x8 Bayer threshold",
     "hairline": "white up to 70% under the sun, fading to 0 within 38% of the width either side",
-    "copyFade": "#09090b \u2192 92% at 42% \u2192 transparent at 72%"
+    "copyFade": "panel -> 92% at 42% -> transparent at 72%",
+    "buttons": "white primary, dark-glass secondary; no coloured glow anywhere"
   },
   "motion": {
-    "rise": "sun rises over 1.8s on first view, ease-out expo",
-    "shimmer": "multiplies existing light \u00b114% with two slow sines; never adds light to dark areas",
-    "lean": "up to 6% of the width toward a mouse pointer, eased",
+    "timeline": "one T object from the moment 35% of the panel is in view: panel fade 0, eyebrow 0.08 (its rules draw outward at 0.18), headline words 0.14 + 15ms each with the muted clause a 70ms beat later, body 0.30, primary 0.38, secondary 0.43, light rises 0.36 -> 1.31, notes 0.62 + 60ms each",
+    "blocks": "opacity 0, y 12px, blur 8px -> clear, 600ms [0.22,1,0.36,1]",
+    "rise": "ease-out expo over 950ms; the sun climbs from 0.78 to 0.28 of its own vertical radius below the line, so it reads the same on a tall phone panel",
+    "shimmer": "the one ambient loop: multiplies existing light +-14% with two slow sines; never adds light to dark areas",
+    "lean": "up to 6% of the width toward a mouse pointer, eased 6% per frame",
     "fps": "30, paused offscreen and in hidden tabs",
-    "copy": "headline blur 8px\u21920 + 18px rise over 0.9s; body +120ms, buttons +200ms, notes 80ms apart after 500ms",
-    "primaryHover": "a blurred accent glow fades in beneath the button and the arrow nudges 2px; press 0.98; no magnetism or lift",
-    "reducedMotion": "one still frame (redrawn on resize); no entrances"
+    "primaryHover": "calm: background dims to #ececec and the arrow nudges 2px in 150ms; no glow, lift, growth or magnetism; press 0.98",
+    "reducedMotion": "one still frame of the risen light (redrawn on resize and when fonts land); copy is a 150ms opacity fade"
   },
   "responsive": {
-    "mobile": "buttons full width and stacked; notes stacked; bloom 130% wide",
-    "sm+": "buttons inline; notes in 3 columns"
+    "narrow": "buttons full width and stacked; notes stacked",
+    "@xl+": "buttons inline; notes in 3 columns"
   },
   "accessibility": [
-    "decorative layers aria-hidden",
-    "magnetic effect mouse-only",
-    "white focus rings",
-    "AA contrast for all copy"
+    "decorative canvas and fade are aria-hidden",
+    "white 2px focus rings offset 4px, keyboard only",
+    "lean is mouse-only",
+    "AA contrast for all copy (light never reaches the headline or body)"
   ],
   "content": {
-    "headline": "Ship the version you\u2019d be proud to demo.",
+    "eyebrow": "Ready when you are",
+    "headline": "Ship the version you’d be proud to demo.",
     "muted": "proud to demo.",
+    "body": "Book a 30-minute call. We’ll look at what you have, tell you honestly what we’d change, and send a plan the same day.",
     "primary": "Book a call",
-    "secondary": "See pricing"
+    "secondary": "See pricing",
+    "notes": [
+      "Replies within one working day",
+      "Two slots open for January",
+      "Teams in 14 countries"
+    ]
   },
   "avoid": [
-    "glowing planet arcs or purple-blue blobs",
-    "concentric rings, sparkles",
-    "magnetic or jumping buttons",
+    "a multi-stop orange-pink sunset palette: one accent, derived levels",
+    "glowing planet arcs, purple-blue blobs, coloured glows under buttons",
+    "magnetic, lifting or growing hover states",
     "light reaching the headline or body copy",
     "dither noise in dark areas (shimmer must be multiplicative)",
+    "measuring layout every frame",
     "blurred/smoothed scaling of the dither canvas"
   ]
 }
