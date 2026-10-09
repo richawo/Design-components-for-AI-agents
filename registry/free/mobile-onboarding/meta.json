@@ -4,7 +4,7 @@
   "tier": "free",
   "platform": "mobile",
   "category": "mobile",
-  "description": "A four-step React Native onboarding where a swipe moves a day forward: the sky blends dawn to golden hour, SVG hills parallax and a grove grows under a glass card.",
+  "description": "A dark React Native onboarding where each swipe moves a moonlit greyscale day forward, a grove grows in one accent, and every step's copy and figures stagger in.",
   "tags": [
     "onboarding",
     "carousel",
@@ -12,10 +12,16 @@
     "parallax",
     "glassmorphism",
     "walkthrough",
-    "svg illustration"
+    "svg illustration",
+    "dark",
+    "monochrome"
   ],
-  "dependencies": ["expo-blur", "expo-linear-gradient", "react-native-svg"],
-  "theme": "light",
+  "dependencies": [
+    "expo-blur",
+    "expo-linear-gradient",
+    "react-native-svg"
+  ],
+  "theme": "dark",
   "previewHeight": 940,
   "usage": "// Expo: npx expo install expo-blur expo-linear-gradient react-native-svg\n// Bare React Native: npx install-expo-modules, then install the three packages.\nimport { MobileOnboarding } from \"@/components/design-for-ai/native/mobile-onboarding\";\n\nexport default function Welcome({ navigation }) {\n  return <MobileOnboarding brand=\"grove\" onFinish={() => navigation.replace(\"Home\")} />;\n}",
   "props": [
@@ -28,7 +34,13 @@
     {
       "name": "steps",
       "type": "OnboardingStep[]",
-      "description": "Kicker, title, body, clock minutes, a three-stop sky gradient and a glass chip (breath | focus | week | reminder) per step. Three or four steps read best."
+      "description": "Kicker, title, body, clock minutes, a greyscale scene (sky, land, sun and moon positions, stars, mist) and a glass chip (breath | focus | week | reminder) per step. Three or four steps read best."
+    },
+    {
+      "name": "accent",
+      "type": "string",
+      "default": "\"#8BE0A4\"",
+      "description": "The one colour (6-digit hex): the grove, the brand mark, the chip badge and best-day bar, and the last step's button and planting flourish."
     },
     {
       "name": "skipLabel",
