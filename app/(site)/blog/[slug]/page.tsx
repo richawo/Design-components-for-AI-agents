@@ -48,7 +48,6 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
       articleSection: meta.category,
       keywords: meta.keywords.join(", "),
       url,
-      image: absoluteUrl(`/blog/${slug}/opengraph-image`),
       isAccessibleForFree: true,
       author: { "@type": "Organization", name: meta.author, url: site.url },
       publisher: { "@type": "Organization", name: site.name, url: site.url, logo: { "@type": "ImageObject", url: absoluteUrl("/icon.svg") } },
@@ -73,18 +72,20 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
   }
 
   return (
-    <article className="mx-auto max-w-[88rem] px-4 pb-24 sm:px-6 lg:px-10">
+    <article className="mx-auto max-w-[80rem] px-5 pb-28 sm:px-8">
       <JsonLd data={jsonLd} />
       <header className="mx-auto max-w-4xl pb-12 pt-12 lg:pt-20">
-        <nav aria-label="Breadcrumb" className="font-mono text-[11px] uppercase tracking-[0.14em] text-site-fg-3">
-          <Link href="/blog" className="hover:text-site-fg">
+        <nav aria-label="Breadcrumb" className="site-in font-mono text-[11px] uppercase tracking-[0.14em] text-site-fg-3">
+          <Link href="/blog" className="rounded-sm transition-colors duration-150 hover:text-site-fg">
             Blog
           </Link>{" "}
           / {meta.category}
         </nav>
-        <h1 className="mt-6 text-[clamp(2.4rem,1.4rem+4vw,5rem)] font-semibold leading-[0.95] tracking-[-0.05em]">{meta.title}</h1>
-        <p className="mt-6 max-w-[60ch] text-[clamp(1.1rem,1rem+0.4vw,1.3rem)] leading-relaxed text-site-fg-2">{meta.description}</p>
-        <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 border-t border-white/[0.08] pt-5 font-mono text-[11px] uppercase tracking-[0.14em] text-site-fg-3">
+        <h1 className="site-in mt-6 text-balance text-[clamp(2.4rem,1.4rem+4vw,5rem)] font-semibold leading-[0.95] tracking-[-0.05em] [--i:1]">
+          <span className="site-silver-text">{meta.title}</span>
+        </h1>
+        <p className="site-in mt-6 max-w-[60ch] text-[clamp(1.1rem,1rem+0.4vw,1.3rem)] leading-relaxed text-site-fg-2 [--i:2]">{meta.description}</p>
+        <div className="site-in mt-8 flex flex-wrap gap-x-6 gap-y-2 border-t border-white/[0.08] pt-5 font-mono text-[11px] uppercase tracking-[0.14em] text-site-fg-3 [--i:3]">
           <span>{meta.author}</span>
           <time dateTime={meta.date}>{fmt(meta.date)}</time>
           {meta.dateModified !== meta.date && <span>Updated {fmt(meta.dateModified)}</span>}
@@ -93,24 +94,24 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
       </header>
 
       <div className="grid gap-12 lg:grid-cols-12">
-        <aside className="hidden lg:col-span-3 lg:block">
+        <aside className="site-in hidden [--i:4] lg:col-span-3 lg:block">
           <div className="sticky top-28">
             <Toc headings={headings} label="In this piece" />
           </div>
         </aside>
-        <div className="site-prose min-w-0 lg:col-span-7" dangerouslySetInnerHTML={{ __html: html }} />
+        <div className="site-prose site-in min-w-0 [--i:4] lg:col-span-7" dangerouslySetInnerHTML={{ __html: html }} />
       </div>
 
-      <aside className="site-surface relative mx-auto mt-20 max-w-4xl overflow-hidden rounded-[24px] p-8 sm:p-12">
-        <p className="text-3xl font-semibold leading-tight tracking-[-0.04em] sm:text-4xl">
-          Give your agent something <span className="text-site-glow">worth copying.</span>
+      <aside className="site-surface site-reveal relative mx-auto mt-20 max-w-4xl overflow-hidden rounded-[24px] p-8 sm:p-12">
+        <p className="text-balance text-3xl font-semibold leading-tight tracking-[-0.04em] sm:text-4xl">
+          Give your agent something <span className="text-site-fg-3">worth copying.</span>
         </p>
         <p className="mt-3 max-w-[52ch] text-[16px] leading-relaxed text-site-fg-2">Every Design for AI component ships with its code, a prompt and a JSON prompt. Most are free.</p>
         <div className="mt-7 flex flex-wrap gap-3">
-          <Link href="/components" className="inline-flex h-12 items-center rounded-full bg-white px-6 font-semibold text-black transition duration-200 ease-[cubic-bezier(.2,.8,.2,1)] hover:-translate-y-px hover:shadow-[0_0_0_1px_rgba(255,255,255,0.2),0_14px_36px_-10px_rgba(255,179,138,0.6)] active:translate-y-0 active:scale-[0.97] active:duration-75">
+          <Link href="/components" className="site-btn site-btn-primary h-12 px-6 text-[15px]">
             Browse components
           </Link>
-          <Link href="/docs/agents" className="inline-flex h-12 items-center rounded-full border border-white/15 px-6 font-semibold transition duration-200 hover:border-white/30 hover:bg-white/[0.04] active:scale-[0.97] active:duration-75">
+          <Link href="/docs/agents" className="site-btn site-btn-secondary h-12 px-6 text-[15px]">
             Connect your agent
           </Link>
         </div>
@@ -118,12 +119,12 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
 
       {related.length > 0 && (
         <section className="mx-auto mt-20 max-w-4xl">
-          <h2 className="font-mono text-[11px] uppercase tracking-[0.16em] text-site-fg-3">Keep reading</h2>
-          <ul className="mt-4 border-t border-white/20">
+          <h2 className="site-reveal font-mono text-[11px] uppercase tracking-[0.16em] text-site-fg-3">Keep reading</h2>
+          <ul className="mt-4 border-t border-white/[0.12]">
             {related.map((r) => (
-              <li key={r.slug}>
+              <li key={r.slug} className="site-reveal">
                 <Link href={`/blog/${r.slug}`} className="group block border-b border-white/[0.08] py-6">
-                  <span className="block text-2xl font-bold tracking-[-0.035em] group-hover:site-gradient-text">{r.title}</span>
+                  <span className="block text-balance text-2xl font-semibold tracking-[-0.035em] text-site-fg-2 transition-colors duration-150 group-hover:text-site-fg">{r.title}</span>
                   <span className="mt-1 block text-[15px] text-site-fg-3">{r.excerpt}</span>
                 </Link>
               </li>
