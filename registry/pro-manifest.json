@@ -1431,7 +1431,7 @@
     "tier": "pro",
     "platform": "mobile",
     "category": "mobile",
-    "description": "A React Native express-checkout sheet over a blurred product page: gliding card picker, delivery control, hold-to-pay ring, spinner, success and a receipt pill.",
+    "description": "A dark React Native checkout sheet over a product page that animates in: cards deal in, totals count up, hold to pay morphs into a spinner, a check and a receipt pill.",
     "tags": [
       "checkout",
       "payments",
@@ -1439,7 +1439,9 @@
       "react native",
       "commerce",
       "hold to confirm",
-      "glassmorphism",
+      "monochrome",
+      "dark",
+      "count up",
       "fintech"
     ],
     "dependencies": [
@@ -1449,7 +1451,7 @@
     ],
     "theme": "dark",
     "previewHeight": 940,
-    "usage": "import { MobileCheckoutSheet } from \"@/components/design-for-ai/native/mobile-checkout-sheet\";\n\n// npm i expo-blur expo-linear-gradient react-native-svg\n// (bare React Native: run `npx install-expo-modules` once)\n<MobileCheckoutSheet\n  merchant={{ name: \"Halden Studio\", domain: \"halden.studio\" }}\n  items={cartLines}\n  cards={walletCards}\n  onPay={async ({ cardId, deliveryId, total }) => {\n    const res = await api.charge({ cardId, deliveryId, total });\n    return res.ok ? \"success\" : \"declined\";\n  }}\n  onReceiptPress={() => navigation.navigate(\"Receipt\")}\n/>",
+    "usage": "import { MobileCheckoutSheet } from \"@/components/design-for-ai/native/mobile-checkout-sheet\";\n\n// npm i expo-blur expo-linear-gradient react-native-svg\n// (bare React Native: run `npx install-expo-modules` once)\n<MobileCheckoutSheet\n  merchant={{ name: \"Halden Studio\", domain: \"halden.studio\" }}\n  items={cartLines}\n  cards={walletCards}\n  accent=\"#F5F5F5\"\n  onPay={async ({ cardId, deliveryId, total }) => {\n    const res = await api.charge({ cardId, deliveryId, total });\n    return res.ok ? \"success\" : \"declined\";\n  }}\n  onReceiptPress={() => navigation.navigate(\"Receipt\")}\n/>",
     "props": [
       {
         "name": "items",
@@ -1494,6 +1496,12 @@
         "description": "Selected card id. Defaults to the first card."
       },
       {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#F5F5F5\"",
+        "description": "The one brand colour (6-digit hex): fills Buy now and the pay button, whose labels flip to black or white for contrast. Everything else is greyscale apart from the card faces."
+      },
+      {
         "name": "currency",
         "type": "string",
         "default": "\"£\"",
@@ -1519,7 +1527,7 @@
         "name": "initiallyOpen",
         "type": "boolean",
         "default": "true",
-        "description": "Present the sheet on mount."
+        "description": "Present the sheet once the product page has made its entrance."
       }
     ],
     "added": "2026-10-09"
