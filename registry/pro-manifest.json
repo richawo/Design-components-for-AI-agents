@@ -2031,7 +2031,7 @@
     "tier": "pro",
     "platform": "mobile",
     "category": "mobile",
-    "description": "A React Native sleep-app paywall: a glowing moon over drifting stars and a lake, a glass plan picker with a gliding highlight, rolling prices and calm end states.",
+    "description": "A dark, monochrome React Native paywall: a moonlit lake in true greys, a glass plan picker, amber only on the CTA and selection, prices that count and roll.",
     "tags": [
       "paywall",
       "subscription",
@@ -2039,7 +2039,8 @@
       "pricing",
       "in-app purchase",
       "glassmorphism",
-      "dark"
+      "dark",
+      "monochrome"
     ],
     "dependencies": [
       "expo-blur",
@@ -2054,7 +2055,7 @@
         "name": "kicker",
         "type": "string",
         "default": "\"Nightjar Plus\"",
-        "description": "Mono kicker beside the moon mark."
+        "description": "Mono kicker beside the greyscale crescent."
       },
       {
         "name": "title",
@@ -2070,7 +2071,7 @@
       {
         "name": "features",
         "type": "PaywallFeature[]",
-        "description": "Rows of { icon: sound | alarm | story | offline, title }, drawn on in a stagger."
+        "description": "Rows of { icon: sound | alarm | story | offline, title }; they blur in on a stagger as their icons draw on."
       },
       {
         "name": "currency",
@@ -2107,6 +2108,12 @@
         "type": "\"annual\" | \"monthly\"",
         "default": "\"annual\"",
         "description": "Preselected plan."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#F4AE4B\"",
+        "description": "The one colour (6-digit hex): the call to action, the selected plan's ring, wash and radio, and the saving badge."
       },
       {
         "name": "onSubscribe",
