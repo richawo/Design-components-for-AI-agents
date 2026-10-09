@@ -1,498 +1,429 @@
 "use client";
 
-import { useEffect, useId, useMemo, useRef, useState, type ChangeEvent, type DragEvent, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { Check, ChevronDown, Download, ImageUp, LoaderCircle, TriangleAlert } from "lucide-react";
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type KeyboardEvent as ReactKeyboardEvent,
+  type ReactNode,
+} from "react";
+import { AnimatePresence, motion, useInView, useReducedMotion } from "motion/react";
+import { Check, ChevronDown, LoaderCircle, RotateCcw } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
 /* Types                                                                */
 /* ------------------------------------------------------------------ */
 
-export type SettingsValues = {
-  /** Object URL or data URL for the avatar, or null for initials. */
-  avatar: string | null;
-  name: string;
-  username: string;
-  bio: string;
-  pronouns: string;
-  timezone: string;
-  mentions: boolean;
-  replies: boolean;
-  digest: boolean;
-  product: boolean;
-  frequency: "instant" | "hourly" | "daily";
-  theme: "light" | "dark" | "system";
-  density: "comfortable" | "compact";
-  weekStart: "Monday" | "Sunday" | "Saturday";
+export type SettingValue = string | boolean;
+export type SettingsValues = Record<string, SettingValue>;
+export type SettingOption = { value: string; label: string };
+
+type RowBase = { id: string; label: string; hint?: string };
+
+export type SettingsRow =
+  | (RowBase & { kind: "toggle" })
+  | (RowBase & { kind: "segmented"; options: SettingOption[] })
+  | (RowBase & { kind: "select"; options: SettingOption[] })
+  | (RowBase & { kind: "text"; placeholder?: string; /** Fixed text inside the field, e.g. a domain. */ prefix?: string });
+
+export type SettingsSection = {
+  id: string;
+  label: string;
+  /** One line under the tabs while this section is open. */
+  description?: string;
+  rows: SettingsRow[];
 };
 
 export type SettingsPanelProps = {
   title?: string;
   description?: string;
-  /** Shown before the username field, e.g. your app's domain. */
-  usernamePrefix?: string;
-  email?: string;
-  initialValues?: Partial<SettingsValues>;
-  pronounOptions?: string[];
-  timezoneOptions?: string[];
-  /** Called with the new values. Return a promise to show the saving state until it resolves. */
+  sections?: SettingsSection[];
+  defaultSection?: string;
+  /** Saved values, keyed by row id. Rows without one start empty, off or on their first option. */
+  initialValues?: SettingsValues;
+  /** Called with every value on Save or ⌘S. Return a promise to hold the saving state; reject to show the error state. */
   onSave?: (values: SettingsValues) => Promise<void> | void;
-  bioLimit?: number;
+  onChange?: (values: SettingsValues) => void;
+  /** The one accent: switches that are on, and Save. Defaults to the theme’s ink. */
+  accent?: string;
+  theme?: "dark" | "light";
+  className?: string;
 };
 
-const DEFAULTS: SettingsValues = {
-  avatar: null,
-  name: "Mika Korhonen",
-  username: "mika",
-  bio: "Field researcher. I collect interview notes, bad puns and good coffee.",
-  pronouns: "she/her",
-  timezone: "Europe/Helsinki (GMT+3)",
+/* ------------------------------------------------------------------ */
+/* Tokens                                                               */
+/* ------------------------------------------------------------------ */
+
+const PALETTE = {
+  dark: {
+    surface: "#111113",
+    raised: "#18181b",
+    field: "#0c0c0e",
+    line: "#232327",
+    rule: "#1c1c1f",
+    ink: "#f4f4f5",
+    muted: "#a1a1aa",
+    faint: "#8a8a93",
+    track: "#27272a",
+    trackHover: "#303034",
+    knob: "#a1a1aa",
+    danger: "#f87171",
+    shadow: "inset 0 1px 0 rgba(255,255,255,0.04), 0 32px 64px -32px rgba(0,0,0,0.9)",
+  },
+  light: {
+    surface: "#ffffff",
+    raised: "#f6f6f7",
+    field: "#fafafa",
+    line: "#e4e4e7",
+    rule: "#efeff1",
+    ink: "#18181b",
+    muted: "#52525b",
+    faint: "#71717a",
+    track: "#e4e4e7",
+    trackHover: "#d9d9de",
+    knob: "#ffffff",
+    danger: "#b91c1c",
+    shadow: "0 1px 2px rgba(24,24,27,0.04), 0 32px 64px -40px rgba(24,24,27,0.25)",
+  },
+} as const;
+
+type Palette = Record<keyof (typeof PALETTE)["dark"], string>;
+
+/** The demo’s quiet backdrop; not part of the component. */
+const STAGE = "#0a0a0b";
+
+const EASE_OUT = [0.22, 1, 0.36, 1] as const;
+const EASE_IN = [0.4, 0, 1, 1] as const;
+const SPRING_UI = { type: "spring", stiffness: 500, damping: 40 } as const;
+
+/** One place for the choreography. Seconds unless noted. */
+const MOTION = {
+  rise: 12, // px
+  blur: 8, // px
+  block: 0.5,
+  step: 0.06, // title → description → tabs
+  rowsAt: 0.22, // first row on first view
+  rowStep: 0.05,
+  switchStep: 0.04, // rows after a section switch
+  settle: 0.16, // a row’s control settles (switch fills, pill lands) once the row is down
+  exit: 0.16,
+  height: 0.32, // card height follows the section
+  savedFor: 1.8, // “Saved” lingers, then the bar leaves
+  fade: 0.15, // reduced motion
+} as const;
+
+const SWITCH = { width: 44, height: 26, knob: 20, pad: 3 } as const;
+const FAKE_SAVE_MS = 900;
+
+/* ------------------------------------------------------------------ */
+/* Demo content: Fieldnote, a research notes app                        */
+/* ------------------------------------------------------------------ */
+
+const DEMO_SECTIONS: SettingsSection[] = [
+  {
+    id: "notifications",
+    label: "Notifications",
+    description: "Sent to mika@fieldnote.app. Fieldnote never emails you about emails.",
+    rows: [
+      { kind: "toggle", id: "mentions", label: "Mentions", hint: "Someone @mentions you in a note or comment." },
+      { kind: "toggle", id: "replies", label: "Replies to my comments", hint: "Threads you started or joined." },
+      { kind: "toggle", id: "digest", label: "Weekly digest", hint: "Monday morning: what changed in notes you follow." },
+      { kind: "toggle", id: "product", label: "Product news", hint: "About once a month. No “we miss you”." },
+      {
+        kind: "segmented",
+        id: "delivery",
+        label: "Delivery",
+        hint: "Batching keeps your inbox quieter.",
+        options: [
+          { value: "instant", label: "Instantly" },
+          { value: "hourly", label: "Hourly" },
+          { value: "daily", label: "Daily" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "appearance",
+    label: "Appearance",
+    description: "Applies on this device only.",
+    rows: [
+      {
+        kind: "segmented",
+        id: "theme",
+        label: "Theme",
+        options: [
+          { value: "light", label: "Light" },
+          { value: "dark", label: "Dark" },
+          { value: "system", label: "System" },
+        ],
+      },
+      {
+        kind: "segmented",
+        id: "density",
+        label: "Density",
+        hint: "Compact fits about 30% more notes on screen.",
+        options: [
+          { value: "comfortable", label: "Comfortable" },
+          { value: "compact", label: "Compact" },
+        ],
+      },
+      {
+        kind: "select",
+        id: "weekStart",
+        label: "Week starts on",
+        options: ["Monday", "Sunday", "Saturday"].map((d) => ({ value: d, label: d })),
+      },
+      { kind: "toggle", id: "reduceMotion", label: "Calm mode", hint: "Fewer animations, no autoplaying previews." },
+    ],
+  },
+  {
+    id: "profile",
+    label: "Profile",
+    description: "What teammates see next to your notes and comments.",
+    rows: [
+      { kind: "text", id: "name", label: "Display name" },
+      { kind: "text", id: "username", label: "Username", hint: "Lowercase letters, numbers and dashes.", prefix: "fieldnote.app/" },
+      {
+        kind: "select",
+        id: "timezone",
+        label: "Time zone",
+        hint: "Used for reminders and your digest.",
+        options: ["Europe/Helsinki (GMT+3)", "Europe/London (GMT+1)", "America/New_York (GMT−4)", "Asia/Tokyo (GMT+9)"].map((z) => ({ value: z, label: z })),
+      },
+    ],
+  },
+];
+
+const DEMO_VALUES: SettingsValues = {
   mentions: true,
   replies: true,
   digest: true,
   product: false,
-  frequency: "hourly",
+  delivery: "hourly",
   theme: "dark",
   density: "comfortable",
   weekStart: "Monday",
+  reduceMotion: false,
+  name: "Mika Korhonen",
+  username: "mika",
+  timezone: "Europe/Helsinki (GMT+3)",
 };
 
-const SECTIONS = [
-  { id: "profile", label: "Profile" },
-  { id: "notifications", label: "Notifications" },
-  { id: "appearance", label: "Appearance" },
-  { id: "danger", label: "Danger zone" },
-] as const;
-
-type SectionId = (typeof SECTIONS)[number]["id"];
-
-const ease = [0.2, 0.8, 0.2, 1] as const;
-const focusRing = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d4f25c]";
-
 /* ------------------------------------------------------------------ */
-/* Component                                                            */
+/* Helpers                                                              */
 /* ------------------------------------------------------------------ */
 
-export function SettingsPanel({
-  title = "Settings",
-  description = "How you appear to your team, and how much Fieldnote is allowed to interrupt you.",
-  usernamePrefix = "fieldnote.app/",
-  email = "mika@fieldnote.app",
-  initialValues,
-  pronounOptions = ["she/her", "he/him", "they/them", "Prefer not to say"],
-  timezoneOptions = ["Europe/Helsinki (GMT+3)", "Europe/London (GMT+1)", "America/New_York (GMT−4)", "America/Los_Angeles (GMT−7)", "Asia/Tokyo (GMT+9)"],
-  onSave,
-  bioLimit = 160,
-}: SettingsPanelProps) {
-  const reduce = useReducedMotion() ?? false;
-  const uid = useId().replace(/[^a-zA-Z0-9_-]/g, "");
-  const [saved, setSaved] = useState<SettingsValues>(() => ({ ...DEFAULTS, ...initialValues }));
-  const [values, setValues] = useState<SettingsValues>(saved);
-  const [status, setStatus] = useState<"idle" | "saving" | "saved">("idle");
-  const [active, setActive] = useState<SectionId>("profile");
+function inkOn(hex: string) {
+  const v = hex.replace("#", "");
+  const full = v.length === 3 ? [...v].map((c) => c + c).join("") : v.slice(0, 6);
+  const [r, g, b] = [0, 2, 4].map((i) => parseInt(full.slice(i, i + 2), 16) / 255).map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b > 0.4 ? "#0a0a0b" : "#ffffff";
+}
 
-  const changed = useMemo(() => (Object.keys(values) as (keyof SettingsValues)[]).filter((k) => values[k] !== saved[k]), [values, saved]);
-  const dirty = changed.length > 0;
+function cssVars(p: Palette, accent: string): CSSProperties {
+  const vars: Record<string, string> = { "--sp-accent": accent, "--sp-on-accent": inkOn(accent) };
+  for (const [k, v] of Object.entries(p)) vars[`--sp-${k}`] = v;
+  return vars as CSSProperties;
+}
 
-  const set = <K extends keyof SettingsValues>(key: K, value: SettingsValues[K]) => {
-    setStatus("idle");
-    setValues((v) => ({ ...v, [key]: value }));
+/** A row’s starting value when the caller didn’t give one. */
+function fallbackValue(row: SettingsRow): SettingValue {
+  if (row.kind === "toggle") return false;
+  if (row.kind === "text") return "";
+  return row.options[0]?.value ?? "";
+}
+
+/** Entrance props for a block: rises out of a blur. Reduced motion: a short fade. */
+function enter(play: boolean, delay: number, reduce: boolean) {
+  if (reduce) return { initial: { opacity: 0 }, animate: { opacity: play ? 1 : 0 }, transition: { duration: MOTION.fade } };
+  return {
+    initial: { opacity: 0, y: MOTION.rise, filter: `blur(${MOTION.blur}px)` },
+    animate: play ? { opacity: 1, y: 0, filter: "blur(0px)", transitionEnd: { filter: "none" } } : undefined,
+    transition: { duration: MOTION.block, ease: EASE_OUT, delay },
   };
+}
 
-  const save = async () => {
-    if (!dirty || status === "saving") return;
+const focusRing = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--sp-ink)]";
+const fieldCls =
+  "h-10 w-full rounded-lg border border-[var(--sp-line)] bg-[var(--sp-field)] px-3 text-[14px] text-[var(--sp-ink)] outline-none transition-[border-color,box-shadow] duration-150 placeholder:text-[var(--sp-faint)] hover:border-[color-mix(in_srgb,var(--sp-ink)_22%,transparent)] focus:border-[color-mix(in_srgb,var(--sp-ink)_45%,transparent)] focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--sp-ink)_10%,transparent)]";
+
+/* ------------------------------------------------------------------ */
+/* Hooks                                                                */
+/* ------------------------------------------------------------------ */
+
+type SaveStatus = "idle" | "saving" | "saved" | "error";
+
+/** Saved vs. edited values, the list of changed keys, and the save lifecycle. */
+function useSettingsForm(sections: SettingsSection[], initialValues: SettingsValues, onSave?: SettingsPanelProps["onSave"], onChange?: SettingsPanelProps["onChange"]) {
+  const [saved, setSaved] = useState<SettingsValues>(() => {
+    const base: SettingsValues = {};
+    for (const s of sections) for (const r of s.rows) base[r.id] = initialValues[r.id] ?? fallbackValue(r);
+    return base;
+  });
+  const [values, setValues] = useState(saved);
+  const [status, setStatus] = useState<SaveStatus>("idle");
+
+  // Undoing a change by hand makes it disappear from the count.
+  const changed = useMemo(() => Object.keys(values).filter((k) => values[k] !== saved[k]), [values, saved]);
+
+  const set = useCallback(
+    (id: string, value: SettingValue) => {
+      setStatus((s) => (s === "saving" ? s : "idle"));
+      setValues((v) => {
+        const next = { ...v, [id]: value };
+        onChange?.(next);
+        return next;
+      });
+    },
+    [onChange],
+  );
+
+  const save = useCallback(async () => {
+    if (!changed.length || status === "saving") return;
     setStatus("saving");
-    await (onSave ? onSave(values) : new Promise<void>((r) => setTimeout(r, 900)));
-    setSaved(values);
-    setStatus("saved");
-  };
+    try {
+      await (onSave ? onSave(values) : new Promise<void>((r) => setTimeout(r, FAKE_SAVE_MS)));
+      setSaved(values);
+      setStatus("saved");
+    } catch {
+      setStatus("error");
+    }
+  }, [changed.length, status, onSave, values]);
 
-  const discard = () => {
+  const discard = useCallback(() => {
     setValues(saved);
     setStatus("idle");
-  };
+  }, [saved]);
 
-  // ⌘S / Ctrl+S saves.
-  const saveRef = useRef(save);
-  saveRef.current = save;
+  // “Saved” lingers, then the bar takes its leave.
+  useEffect(() => {
+    if (status !== "saved") return;
+    const t = setTimeout(() => setStatus("idle"), MOTION.savedFor * 1000);
+    return () => clearTimeout(t);
+  }, [status]);
+
+  return { values, changed, status, set, save, discard };
+}
+
+/** ⌘S / Ctrl+S, without re-binding the listener on every keystroke. */
+function useSaveShortcut(save: () => void) {
+  const latest = useRef(save);
+  useEffect(() => {
+    latest.current = save;
+  }, [save]);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "s") {
         e.preventDefault();
-        void saveRef.current();
+        latest.current();
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
+}
 
-  // Fade the "Saved" confirmation after a moment.
+/** Content height, so the card can ease between sections instead of jumping. */
+function useContentHeight() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [height, setHeight] = useState<number | "auto">("auto");
   useEffect(() => {
-    if (status !== "saved") return;
-    const t = setTimeout(() => setStatus("idle"), 2200);
+    const el = ref.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => setHeight(entry.borderBoxSize[0]?.blockSize ?? el.offsetHeight));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  return { ref, height };
+}
+
+/** False until `delay` has passed after `play`: lets a control settle after its row lands. */
+function useSettled(play: boolean, delay: number) {
+  const reduce = useReducedMotion() ?? false;
+  const [settled, setSettled] = useState(false);
+  useEffect(() => {
+    if (!play || settled) return;
+    if (reduce) {
+      setSettled(true);
+      return;
+    }
+    const t = setTimeout(() => setSettled(true), delay * 1000);
     return () => clearTimeout(t);
-  }, [status]);
-
-  // Scroll-spy for the section nav.
-  useEffect(() => {
-    const els = SECTIONS.map((s) => document.getElementById(`${uid}-${s.id}`)).filter((el): el is HTMLElement => !!el);
-    const io = new IntersectionObserver(
-      (entries) => {
-        const hit = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
-        if (hit) setActive(hit.target.id.replace(`${uid}-`, "") as SectionId);
-      },
-      { rootMargin: "-15% 0px -70% 0px" },
-    );
-    els.forEach((el) => io.observe(el));
-    return () => io.disconnect();
-  }, [uid]);
-
-  const go = (id: SectionId) => {
-    setActive(id);
-    document.getElementById(`${uid}-${id}`)?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
-  };
-
-  const initials = values.name
-    .split(/\s+/)
-    .filter(Boolean)
-    .map((p) => p[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
-
-  return (
-    <div className="min-h-full bg-[#0e0e10] font-sans text-[#f2f2f0] antialiased [color-scheme:dark]">
-      <div className="mx-auto max-w-[1120px] px-4 pb-10 pt-10 sm:px-8 sm:pt-14 lg:px-12 lg:pt-20">
-        {/* Header */}
-        <header className="max-w-[68ch]">
-          <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-[#9a9aa2]">
-            Fieldnote <span className="px-1.5 text-[#55555c]">/</span> {saved.name}
-          </p>
-          <h1 className="mt-4 font-display text-[clamp(2.5rem,1.8rem+3vw,4.25rem)] font-semibold leading-[0.95] tracking-[-0.045em]">{title}</h1>
-          <p className="mt-4 text-pretty text-[16px] leading-relaxed text-[#9a9aa2]">{description}</p>
-        </header>
-
-        <div className="mt-10 lg:mt-14 lg:grid lg:grid-cols-[180px_minmax(0,1fr)] lg:gap-14">
-          {/* Section nav: sticky list on desktop, scrolling tabs on mobile */}
-          <nav aria-label="Settings sections" className="sticky top-0 z-20 -mx-4 border-b border-[#232328] bg-[#0e0e10]/95 px-4 backdrop-blur-sm sm:-mx-8 sm:px-8 lg:top-10 lg:mx-0 lg:self-start lg:border-0 lg:bg-transparent lg:px-0 lg:backdrop-blur-none">
-            <ul className="flex gap-1 overflow-x-auto py-2 [scrollbar-width:none] lg:flex-col lg:gap-0.5 lg:overflow-visible lg:py-0 [&::-webkit-scrollbar]:hidden">
-              {SECTIONS.map((s) => {
-                const on = active === s.id;
-                return (
-                  <li key={s.id} className="shrink-0">
-                    <a
-                      href={`#${uid}-${s.id}`}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        go(s.id);
-                      }}
-                      aria-current={on ? "true" : undefined}
-                      className={`relative flex h-10 items-center rounded-lg px-3 text-[14px] transition-[color,background-color,border-color,box-shadow,transform] lg:h-9 duration-150 active:scale-[0.97] ${focusRing} ${
-                        on ? "text-[#f2f2f0]" : "text-[#9a9aa2] hover:text-[#f2f2f0]"
-                      } ${s.id === "danger" && !on ? "lg:text-[#ff8a7a]/80" : ""}`}
-                    >
-                      {on && (
-                        <motion.span
-                          layoutId={`${uid}-nav`}
-                          className="absolute inset-0 rounded-lg bg-[#1d1d21] shadow-[inset_0_0_0_1px_#2a2a30]"
-                          transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 500, damping: 40 }}
-                        />
-                      )}
-                      <span className="relative flex items-center gap-2.5">
-                        <span className={`hidden h-3.5 w-[2px] rounded-full lg:block ${on ? "bg-[#d4f25c]" : "bg-transparent"}`} aria-hidden="true" />
-                        {s.label}
-                      </span>
-                    </a>
-                  </li>
-                );
-              })}
-            </ul>
-          </nav>
-
-          <div className="mt-8 space-y-14 lg:mt-0">
-            {/* Profile */}
-            <Section id={`${uid}-profile`} title="Profile" hint="This is what teammates see next to your notes and comments.">
-              <Row label="Photo" hint="Square, at least 256px. JPG, PNG or GIF.">
-                <AvatarField value={values.avatar} initials={initials} onChange={(v) => set("avatar", v)} />
-              </Row>
-              <Row label="Display name" htmlFor={`${uid}-name`}>
-                <input id={`${uid}-name`} value={values.name} onChange={(e) => set("name", e.target.value)} className={inputCls} autoComplete="name" />
-              </Row>
-              <Row label="Username" htmlFor={`${uid}-username`} hint="Lowercase letters, numbers and dashes.">
-                <div className="flex h-11 items-center rounded-lg border border-[#2a2a30] bg-[#111113] transition-colors focus-within:border-[#d4f25c]/70 focus-within:ring-2 focus-within:ring-[#d4f25c]/15 hover:border-[#36363d]">
-                  <span className="select-none pl-3.5 font-mono text-[13px] text-[#6e6e76]">{usernamePrefix}</span>
-                  <input
-                    id={`${uid}-username`}
-                    value={values.username}
-                    onChange={(e) => set("username", e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))}
-                    className="h-full min-w-0 flex-1 bg-transparent pr-3.5 font-mono text-[13px] text-[#f2f2f0] outline-none"
-                    spellCheck={false}
-                    autoComplete="username"
-                  />
-                </div>
-              </Row>
-              <Row label="Bio" htmlFor={`${uid}-bio`}>
-                <textarea
-                  id={`${uid}-bio`}
-                  value={values.bio}
-                  maxLength={bioLimit}
-                  rows={3}
-                  onChange={(e) => set("bio", e.target.value)}
-                  className={`${inputCls} h-auto resize-none py-2.5 leading-relaxed`}
-                  aria-describedby={`${uid}-bio-count`}
-                />
-                <p id={`${uid}-bio-count`} className={`mt-1.5 text-right font-mono text-[11px] tabular-nums ${values.bio.length > bioLimit - 15 ? "text-[#d4f25c]" : "text-[#6e6e76]"}`}>
-                  {values.bio.length}/{bioLimit}
-                </p>
-              </Row>
-              <Row label="Pronouns" htmlFor={`${uid}-pronouns`}>
-                <Select id={`${uid}-pronouns`} value={values.pronouns} options={pronounOptions} onChange={(v) => set("pronouns", v)} />
-              </Row>
-              <Row label="Time zone" htmlFor={`${uid}-tz`} hint="Used for reminders and your weekly digest.">
-                <Select id={`${uid}-tz`} value={values.timezone} options={timezoneOptions} onChange={(v) => set("timezone", v)} />
-              </Row>
-            </Section>
-
-            {/* Notifications */}
-            <Section id={`${uid}-notifications`} title="Notifications" hint={`Sent to ${email}. Fieldnote never emails you about emails.`}>
-              <Row label="Mentions" hint="Someone @mentions you in a note or comment." inline>
-                <Toggle checked={values.mentions} onChange={(v) => set("mentions", v)} label="Mentions" reduce={reduce} />
-              </Row>
-              <Row label="Replies to my comments" hint="Threads you started or joined." inline>
-                <Toggle checked={values.replies} onChange={(v) => set("replies", v)} label="Replies to my comments" reduce={reduce} />
-              </Row>
-              <Row label="Weekly digest" hint="Monday morning: what changed in notes you follow." inline>
-                <Toggle checked={values.digest} onChange={(v) => set("digest", v)} label="Weekly digest" reduce={reduce} />
-              </Row>
-              <Row label="Product news" hint="New features, about once a month. No “we miss you”." inline>
-                <Toggle checked={values.product} onChange={(v) => set("product", v)} label="Product news" reduce={reduce} />
-              </Row>
-              <Row label="Delivery" hint="Batching keeps your inbox quieter.">
-                <Segmented
-                  label="Delivery"
-                  value={values.frequency}
-                  options={[
-                    { value: "instant", label: "Instantly" },
-                    { value: "hourly", label: "Hourly" },
-                    { value: "daily", label: "Daily" },
-                  ]}
-                  onChange={(v) => set("frequency", v)}
-                  layoutId={`${uid}-freq`}
-                  reduce={reduce}
-                />
-              </Row>
-            </Section>
-
-            {/* Appearance */}
-            <Section id={`${uid}-appearance`} title="Appearance" hint="Applies on this device only.">
-              <Row label="Theme">
-                <Segmented
-                  label="Theme"
-                  value={values.theme}
-                  options={[
-                    { value: "light", label: "Light" },
-                    { value: "dark", label: "Dark" },
-                    { value: "system", label: "System" },
-                  ]}
-                  onChange={(v) => set("theme", v)}
-                  layoutId={`${uid}-theme`}
-                  reduce={reduce}
-                />
-              </Row>
-              <Row label="Density" hint="Compact fits about 30% more notes on screen.">
-                <Segmented
-                  label="Density"
-                  value={values.density}
-                  options={[
-                    { value: "comfortable", label: "Comfortable" },
-                    { value: "compact", label: "Compact" },
-                  ]}
-                  onChange={(v) => set("density", v)}
-                  layoutId={`${uid}-density`}
-                  reduce={reduce}
-                />
-              </Row>
-              <Row label="Week starts on" htmlFor={`${uid}-week`}>
-                <Select id={`${uid}-week`} value={values.weekStart} options={["Monday", "Sunday", "Saturday"]} onChange={(v) => set("weekStart", v as SettingsValues["weekStart"])} />
-              </Row>
-            </Section>
-
-            {/* Danger zone */}
-            <DangerZone id={`${uid}-danger`} username={saved.username} email={email} reduce={reduce} />
-
-            {/* Unsaved changes bar */}
-            <div className="pointer-events-none sticky bottom-4 z-30 flex justify-center sm:bottom-6" aria-live="polite">
-              <AnimatePresence>
-                {(dirty || status === "saved") && (
-                  <motion.div
-                    key="bar"
-                    initial={reduce ? { opacity: 0 } : { y: 96, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    exit={reduce ? { opacity: 0 } : { y: 96, opacity: 0 }}
-                    transition={reduce ? { duration: 0.15 } : { type: "spring", stiffness: 380, damping: 34 }}
-                    className="pointer-events-auto flex w-full max-w-[560px] items-center gap-3 rounded-xl border border-[#2f2f36] bg-[#1a1a1e] py-2.5 pl-4 pr-2.5 shadow-[0_24px_48px_-16px_rgba(0,0,0,0.8),0_0_0_1px_rgba(0,0,0,0.4)]"
-                  >
-                    <AnimatePresence mode="wait" initial={false}>
-                      {status === "saved" && !dirty ? (
-                        <motion.p key="saved" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="flex flex-1 items-center gap-2.5 text-[14px]">
-                          <span className="flex size-5 items-center justify-center rounded-full bg-[#d4f25c] text-[#0e0e10]">
-                            <Check className="size-3.5" strokeWidth={3} aria-hidden="true" />
-                          </span>
-                          Changes saved
-                        </motion.p>
-                      ) : (
-                        <motion.p key="dirty" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="flex min-w-0 flex-1 items-center gap-2.5 text-[14px]">
-                          <span className="relative flex size-2 shrink-0" aria-hidden="true">
-                            <span className="absolute inline-flex size-full animate-ping rounded-full bg-[#d4f25c] opacity-50 motion-reduce:hidden" />
-                            <span className="relative inline-flex size-2 rounded-full bg-[#d4f25c]" />
-                          </span>
-                          <span className="truncate">
-                            <span className="tabular-nums">{changed.length}</span> unsaved {changed.length === 1 ? "change" : "changes"}
-                          </span>
-                        </motion.p>
-                      )}
-                    </AnimatePresence>
-                    {dirty && (
-                      <>
-                        <button
-                          type="button"
-                          onClick={discard}
-                          disabled={status === "saving"}
-                          className={`h-10 shrink-0 rounded-lg px-3.5 text-[14px] text-[#c4c4ca] transition-[color,background-color,border-color,box-shadow,transform] hover:bg-[#25252a] hover:text-[#f2f2f0] disabled:opacity-40 duration-150 active:scale-[0.97] ${focusRing}`}
-                        >
-                          Discard
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => void save()}
-                          disabled={status === "saving"}
-                          className={`inline-flex h-10 shrink-0 items-center gap-2 rounded-lg bg-[#d4f25c] px-4 text-[14px] font-semibold text-[#0e0e10] transition-[transform,background-color] hover:bg-[#dff77c] active:scale-[0.98] disabled:cursor-progress ${focusRing}`}
-                        >
-                          {status === "saving" ? (
-                            <>
-                              <LoaderCircle className="size-4 animate-spin" strokeWidth={2.5} aria-hidden="true" />
-                              Saving
-                            </>
-                          ) : (
-                            <>
-                              Save<span className="hidden sm:inline"> changes</span>
-                              <kbd className="hidden rounded border border-[#0e0e10]/20 px-1 font-mono text-[10px] font-medium sm:inline">⌘S</kbd>
-                            </>
-                          )}
-                        </button>
-                      </>
-                    )}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  );
+  }, [play, delay, reduce, settled]);
+  return settled;
 }
 
 /* ------------------------------------------------------------------ */
-/* Building blocks                                                      */
+/* Controls                                                             */
 /* ------------------------------------------------------------------ */
 
-const inputCls =
-  "h-11 w-full rounded-lg border border-[#2a2a30] bg-[#111113] px-3.5 text-[14px] text-[#f2f2f0] outline-none transition-colors placeholder:text-[#6e6e76] hover:border-[#36363d] focus:border-[#d4f25c]/70 focus:ring-2 focus:ring-[#d4f25c]/15";
-
-function Section({ id, title, hint, children }: { id: string; title: string; hint: string; children: ReactNode }) {
-  return (
-    <section id={id} aria-labelledby={`${id}-h`} className="scroll-mt-20 lg:scroll-mt-10">
-      <h2 id={`${id}-h`} className="font-display text-[22px] font-semibold tracking-[-0.03em]">
-        {title}
-      </h2>
-      <p className="mt-1.5 text-[14px] text-[#9a9aa2]">{hint}</p>
-      <div className="mt-5 divide-y divide-[#222227] rounded-xl border border-[#232328] bg-[#151518]">{children}</div>
-    </section>
-  );
-}
-
-function Row({ label, hint, htmlFor, inline = false, children }: { label: string; hint?: string; htmlFor?: string; inline?: boolean; children: ReactNode }) {
-  const Label = htmlFor ? "label" : "p";
-  return (
-    <div className={`px-4 py-5 sm:px-6 ${inline ? "flex items-center justify-between gap-6" : "grid gap-3 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] md:gap-8"}`}>
-      <div className="min-w-0">
-        <Label {...(htmlFor ? { htmlFor } : {})} className="block text-[14px] font-medium text-[#f2f2f0]">
-          {label}
-        </Label>
-        {hint && <p className="mt-1 text-[13px] leading-snug text-[#9a9aa2]">{hint}</p>}
-      </div>
-      <div className={inline ? "shrink-0" : "min-w-0"}>{children}</div>
-    </div>
-  );
-}
-
-function Select({ id, value, options, onChange }: { id: string; value: string; options: string[]; onChange: (v: string) => void }) {
-  return (
-    <div className="relative">
-      <select id={id} value={value} onChange={(e) => onChange(e.target.value)} className={`${inputCls} cursor-pointer appearance-none pr-10`}>
-        {options.map((o) => (
-          <option key={o} value={o} className="bg-[#151518]">
-            {o}
-          </option>
-        ))}
-      </select>
-      <ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 size-4 -translate-y-1/2 text-[#9a9aa2]" strokeWidth={1.75} aria-hidden="true" />
-    </div>
-  );
-}
-
-function Toggle({ checked, onChange, label, reduce }: { checked: boolean; onChange: (v: boolean) => void; label: string; reduce: boolean }) {
+/** A switch whose fill and knob only travel once its row has landed. */
+function Toggle({ checked, onChange, labelledBy, describedBy, settleAt, play }: { checked: boolean; onChange: (v: boolean) => void; labelledBy: string; describedBy?: string; settleAt: number; play: boolean }) {
+  const reduce = useReducedMotion() ?? false;
+  const settled = useSettled(play, settleAt);
+  const on = checked && settled;
+  const travel = SWITCH.width - SWITCH.knob - SWITCH.pad * 2;
   return (
     <button
       type="button"
       role="switch"
       aria-checked={checked}
-      aria-label={label}
+      aria-labelledby={labelledBy}
+      aria-describedby={describedBy}
       onClick={() => onChange(!checked)}
-      className={`relative flex h-[26px] w-[46px] shrink-0 items-center rounded-full p-[3px] transition-[color,background-color,border-color,box-shadow,transform] duration-200 active:scale-[0.97] ${focusRing} ${
-        checked ? "justify-end bg-[#d4f25c]" : "justify-start bg-[#2c2c32] hover:bg-[#35353c]"
-      }`}
+      className={`group relative shrink-0 rounded-full transition-transform duration-150 active:scale-[0.96] ${focusRing}`}
+      style={{ width: SWITCH.width, height: SWITCH.height }}
     >
-      {/* 44px touch target */}
-      <span className="absolute -inset-2.5" aria-hidden="true" />
+      {/* 44px hit area around a 26px switch */}
+      <span className="absolute -inset-[9px]" aria-hidden="true" />
+      <span className="absolute inset-0 rounded-full bg-[var(--sp-track)] transition-colors duration-150 group-hover:bg-[var(--sp-trackHover)]" aria-hidden="true" />
       <motion.span
-        layout
-        transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 700, damping: 38 }}
-        className={`block size-5 rounded-full shadow-[0_1px_3px_rgba(0,0,0,0.4)] ${checked ? "bg-[#0e0e10]" : "bg-[#9a9aa2]"}`}
+        className="absolute inset-0 rounded-full bg-[var(--sp-accent)]"
+        initial={false}
+        animate={{ opacity: on ? 1 : 0 }}
+        transition={{ duration: reduce ? 0 : 0.2 }}
+        aria-hidden="true"
+      />
+      <motion.span
+        className="absolute rounded-full shadow-[0_1px_3px_rgba(0,0,0,0.35)]"
+        style={{ top: SWITCH.pad, left: SWITCH.pad, width: SWITCH.knob, height: SWITCH.knob }}
+        initial={false}
+        animate={{ x: on ? travel : 0, backgroundColor: on ? "var(--sp-on-accent)" : "var(--sp-knob)" }}
+        transition={reduce ? { duration: 0 } : { x: SPRING_UI, backgroundColor: { duration: 0.2 } }}
+        aria-hidden="true"
       />
     </button>
   );
 }
 
-function Segmented<T extends string>({
-  label,
-  value,
-  options,
-  onChange,
-  layoutId,
-  reduce,
-}: {
-  label: string;
-  value: T;
-  options: { value: T; label: string }[];
-  onChange: (v: T) => void;
-  layoutId: string;
-  reduce: boolean;
-}) {
+function Segmented({ value, options, onChange, labelledBy, layoutId, settleAt, play }: { value: string; options: SettingOption[]; onChange: (v: string) => void; labelledBy: string; layoutId: string; settleAt: number; play: boolean }) {
+  const reduce = useReducedMotion() ?? false;
+  const settled = useSettled(play, settleAt);
   const refs = useRef<(HTMLButtonElement | null)[]>([]);
-  const onKey = (e: ReactKeyboardEvent, i: number) => {
-    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+  const index = Math.max(0, options.findIndex((o) => o.value === value));
+
+  const onKey = (e: ReactKeyboardEvent) => {
+    const step = e.key === "ArrowRight" || e.key === "ArrowDown" ? 1 : e.key === "ArrowLeft" || e.key === "ArrowUp" ? -1 : 0;
+    if (!step) return;
     e.preventDefault();
-    const next = (i + (e.key === "ArrowRight" ? 1 : -1) + options.length) % options.length;
+    const next = (index + step + options.length) % options.length;
     onChange(options[next].value);
     refs.current[next]?.focus();
   };
+
   return (
-    <div role="radiogroup" aria-label={label} className="grid w-full auto-cols-fr grid-flow-col rounded-lg border border-[#2a2a30] bg-[#111113] p-1 sm:inline-grid sm:w-auto">
+    <div
+      role="radiogroup"
+      aria-labelledby={labelledBy}
+      onKeyDown={onKey}
+      className="grid w-full auto-cols-fr grid-flow-col rounded-lg border border-[var(--sp-line)] bg-[var(--sp-field)] p-[3px] @lg:inline-grid @lg:w-auto"
+    >
       {options.map((o, i) => {
-        const on = o.value === value;
+        const on = i === index;
         return (
           <button
             key={o.value}
@@ -504,14 +435,17 @@ function Segmented<T extends string>({
             aria-checked={on}
             tabIndex={on ? 0 : -1}
             onClick={() => onChange(o.value)}
-            onKeyDown={(e) => onKey(e, i)}
-            className={`relative h-9 rounded-md px-4 text-[13px] font-medium transition-[color,background-color,border-color,box-shadow,transform] duration-150 active:scale-[0.97] ${focusRing} ${on ? "text-[#0e0e10]" : "text-[#9a9aa2] hover:text-[#f2f2f0]"}`}
+            className={`relative h-8 whitespace-nowrap rounded-md px-3.5 text-[13px] font-medium transition-[color,transform] duration-150 active:scale-[0.97] ${focusRing} ${
+              on && settled ? "text-[var(--sp-surface)]" : on ? "text-[var(--sp-ink)]" : "text-[var(--sp-faint)] hover:text-[var(--sp-ink)]"
+            }`}
           >
-            {on && (
+            {on && settled && (
               <motion.span
                 layoutId={layoutId}
-                className="absolute inset-0 rounded-md bg-[#f2f2f0]"
-                transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 520, damping: 40 }}
+                initial={reduce ? false : { opacity: 0, scale: 0.92 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={reduce ? { duration: 0 } : SPRING_UI}
+                className="absolute inset-0 rounded-md bg-[var(--sp-ink)]"
               />
             )}
             <span className="relative">{o.label}</span>
@@ -522,182 +456,389 @@ function Segmented<T extends string>({
   );
 }
 
-function AvatarField({ value, initials, onChange }: { value: string | null; initials: string; onChange: (v: string | null) => void }) {
-  const input = useRef<HTMLInputElement>(null);
-  const [over, setOver] = useState(false);
-
-  const read = (file: File | undefined) => {
-    if (!file || !file.type.startsWith("image/")) return;
-    const reader = new FileReader();
-    reader.onload = () => typeof reader.result === "string" && onChange(reader.result);
-    reader.readAsDataURL(file);
-  };
-
-  const onDrop = (e: DragEvent) => {
-    e.preventDefault();
-    setOver(false);
-    read(e.dataTransfer.files[0]);
-  };
-
+function SelectField({ id, value, options, onChange, describedBy }: { id: string; value: string; options: SettingOption[]; onChange: (v: string) => void; describedBy?: string }) {
   return (
-    <div className="flex items-center gap-4" onDragOver={(e) => (e.preventDefault(), setOver(true))} onDragLeave={() => setOver(false)} onDrop={onDrop}>
-      <button
-        type="button"
-        onClick={() => input.current?.click()}
-        aria-label="Upload a new photo"
-        className={`group relative flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-full transition-[box-shadow,transform] duration-150 active:scale-[0.97] ${focusRing} ${
-          over ? "shadow-[0_0_0_2px_#d4f25c]" : "shadow-[0_0_0_1px_#2a2a30]"
-        }`}
-      >
-        {value ? (
-          <img src={value} alt="" className="size-full object-cover" />
-        ) : (
-          <span className="flex size-full items-center justify-center bg-[#26262c] font-display text-[20px] font-semibold tracking-[-0.02em] text-[#d4f25c]">{initials || "?"}</span>
-        )}
-        <span className="absolute inset-0 flex items-center justify-center bg-[#0e0e10]/70 opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
-          <ImageUp className="size-5 text-[#f2f2f0]" strokeWidth={1.75} aria-hidden="true" />
-        </span>
-      </button>
-      <div className="flex flex-wrap items-center gap-2">
-        <button
-          type="button"
-          onClick={() => input.current?.click()}
-          className={`h-10 rounded-lg border border-[#2f2f36] bg-[#1d1d21] px-3.5 text-[13px] font-medium transition-[color,background-color,border-color,box-shadow,transform] hover:border-[#3a3a42] hover:bg-[#232328] duration-150 active:scale-[0.97] ${focusRing}`}
-        >
-          Upload new
-        </button>
-        {value && (
-          <button type="button" onClick={() => onChange(null)} className={`h-10 rounded-lg px-3 text-[13px] text-[#9a9aa2] transition-[color,background-color,border-color,box-shadow,transform] hover:text-[#f2f2f0] duration-150 active:scale-[0.97] ${focusRing}`}>
-            Remove
-          </button>
-        )}
-        <span className="hidden text-[12px] text-[#6e6e76] xl:inline">or drop an image here</span>
-      </div>
+    <div className="relative">
+      <select id={id} value={value} onChange={(e) => onChange(e.target.value)} aria-describedby={describedBy} className={`${fieldCls} cursor-pointer appearance-none pr-9`}>
+        {options.map((o) => (
+          <option key={o.value} value={o.value}>
+            {o.label}
+          </option>
+        ))}
+      </select>
+      <ChevronDown className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-[var(--sp-faint)]" strokeWidth={1.75} aria-hidden="true" />
+    </div>
+  );
+}
+
+function TextField({ id, value, onChange, placeholder, prefix, describedBy }: { id: string; value: string; onChange: (v: string) => void; placeholder?: string; prefix?: string; describedBy?: string }) {
+  if (!prefix) return <input id={id} value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} aria-describedby={describedBy} className={fieldCls} />;
+  return (
+    <div className={`${fieldCls} flex items-center gap-0 px-0 focus-within:border-[color-mix(in_srgb,var(--sp-ink)_45%,transparent)] focus-within:shadow-[0_0_0_3px_color-mix(in_srgb,var(--sp-ink)_10%,transparent)]`}>
+      <span className="select-none pl-3 font-mono text-[12.5px] text-[var(--sp-faint)]">{prefix}</span>
       <input
-        ref={input}
-        type="file"
-        accept="image/*"
-        className="sr-only"
-        tabIndex={-1}
-        aria-hidden="true"
-        onChange={(e: ChangeEvent<HTMLInputElement>) => {
-          read(e.target.files?.[0]);
-          e.target.value = "";
-        }}
+        id={id}
+        value={value}
+        placeholder={placeholder}
+        onChange={(e) => onChange(e.target.value)}
+        aria-describedby={describedBy}
+        spellCheck={false}
+        className="h-full min-w-0 flex-1 bg-transparent pr-3 font-mono text-[12.5px] text-[var(--sp-ink)] outline-none"
       />
     </div>
   );
 }
 
-function DangerZone({ id, username, email, reduce }: { id: string; username: string; email: string; reduce: boolean }) {
-  const [open, setOpen] = useState(false);
-  const [typed, setTyped] = useState("");
-  const [done, setDone] = useState(false);
-  const confirmId = `${id}-confirm`;
-  const match = typed.trim() === username;
+/* ------------------------------------------------------------------ */
+/* Layout pieces                                                        */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Label + hint on the left, the control on the right. Switches stay inline at every width;
+ * segmented controls hug the right edge; text and selects fill their column.
+ */
+function Row({
+  label,
+  hint,
+  labelId,
+  hintId,
+  htmlFor,
+  control,
+  delay,
+  play,
+  children,
+}: {
+  label: string;
+  hint?: string;
+  labelId: string;
+  hintId: string;
+  htmlFor?: string;
+  control: "inline" | "end" | "fill";
+  delay: number;
+  play: boolean;
+  children: ReactNode;
+}) {
+  const inline = control === "inline";
+  const reduce = useReducedMotion() ?? false;
+  const Label = htmlFor ? "label" : "p";
+  return (
+    <motion.div
+      {...enter(play, delay, reduce)}
+      className={`border-t border-[var(--sp-rule)] px-5 py-4 first:border-t-0 @lg:px-6 ${
+        inline ? "flex items-center justify-between gap-6" : "grid gap-3 @lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] @lg:items-center @lg:gap-8"
+      }`}
+    >
+      <div className="min-w-0">
+        <Label id={labelId} {...(htmlFor ? { htmlFor } : {})} className="block text-[14px] font-medium text-[var(--sp-ink)]">
+          {label}
+        </Label>
+        {hint && (
+          <p id={hintId} className="mt-0.5 text-[13px] leading-snug text-[var(--sp-faint)]">
+            {hint}
+          </p>
+        )}
+      </div>
+      <div className={inline ? "shrink-0" : control === "end" ? "min-w-0 @lg:justify-self-end" : "min-w-0"}>{children}</div>
+    </motion.div>
+  );
+}
+
+/** Every row of one section. Rows stagger in on first view and again after each switch. */
+function Section({ section, values, onSet, play, firstView, uid }: { section: SettingsSection; values: SettingsValues; onSet: (id: string, v: SettingValue) => void; play: boolean; firstView: boolean; uid: string }) {
+  const reduce = useReducedMotion() ?? false;
+  return (
+    <motion.div
+      role="tabpanel"
+      id={`${uid}-panel-${section.id}`}
+      aria-labelledby={`${uid}-tab-${section.id}`}
+      exit={reduce ? { opacity: 0 } : { opacity: 0, y: -6, filter: "blur(4px)", transition: { duration: MOTION.exit, ease: EASE_IN } }}
+    >
+      {section.rows.map((row, i) => {
+        const delay = firstView ? MOTION.rowsAt + i * MOTION.rowStep : 0.04 + i * MOTION.switchStep;
+        const settleAt = delay + MOTION.settle;
+        const ids = { labelId: `${uid}-${row.id}-label`, hintId: `${uid}-${row.id}-hint`, control: `${uid}-${row.id}` };
+        const describedBy = row.hint ? ids.hintId : undefined;
+        const value = values[row.id];
+        return (
+          <Row
+            key={row.id}
+            label={row.label}
+            hint={row.hint}
+            labelId={ids.labelId}
+            hintId={ids.hintId}
+            htmlFor={row.kind === "select" || row.kind === "text" ? ids.control : undefined}
+            control={row.kind === "toggle" ? "inline" : row.kind === "segmented" ? "end" : "fill"}
+            delay={delay}
+            play={play}
+          >
+            {row.kind === "toggle" && (
+              <Toggle checked={value === true} onChange={(v) => onSet(row.id, v)} labelledBy={ids.labelId} describedBy={describedBy} settleAt={settleAt} play={play} />
+            )}
+            {row.kind === "segmented" && (
+              <Segmented
+                value={String(value)}
+                options={row.options}
+                onChange={(v) => onSet(row.id, v)}
+                labelledBy={ids.labelId}
+                layoutId={`${uid}-${row.id}-pill`}
+                settleAt={settleAt}
+                play={play}
+              />
+            )}
+            {row.kind === "select" && <SelectField id={ids.control} value={String(value)} options={row.options} onChange={(v) => onSet(row.id, v)} describedBy={describedBy} />}
+            {row.kind === "text" && (
+              <TextField id={ids.control} value={String(value)} placeholder={row.placeholder} prefix={row.prefix} onChange={(v) => onSet(row.id, v)} describedBy={describedBy} />
+            )}
+          </Row>
+        );
+      })}
+    </motion.div>
+  );
+}
+
+function SectionTabs({ sections, value, dirty, onChange, uid }: { sections: SettingsSection[]; value: string; dirty: Set<string>; onChange: (id: string) => void; uid: string }) {
+  const reduce = useReducedMotion() ?? false;
+  const refs = useRef<(HTMLButtonElement | null)[]>([]);
+  const index = Math.max(0, sections.findIndex((s) => s.id === value));
+
+  const onKey = (e: ReactKeyboardEvent) => {
+    const step = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+    if (!step) return;
+    e.preventDefault();
+    const next = (index + step + sections.length) % sections.length;
+    onChange(sections[next].id);
+    refs.current[next]?.focus();
+  };
 
   return (
-    <section id={id} aria-labelledby={`${id}-h`} className="scroll-mt-20 lg:scroll-mt-10">
-      <h2 id={`${id}-h`} className="font-display text-[22px] font-semibold tracking-[-0.03em] text-[#ff8a7a]">
-        Danger zone
-      </h2>
-      <p className="mt-1.5 text-[14px] text-[#9a9aa2]">Take your notes with you, or leave for good.</p>
-      <div className="mt-5 divide-y divide-[#3a1f1c] rounded-xl border border-[#4a2421] bg-[#171213]">
-        <div className="flex flex-col gap-4 px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-          <div>
-            <p className="text-[14px] font-medium">Export everything</p>
-            <p className="mt-1 text-[13px] text-[#9a9aa2]">Every note, comment and attachment as Markdown in a .zip.</p>
-          </div>
+    <div role="tablist" aria-label="Settings sections" onKeyDown={onKey} className="-mb-px flex gap-5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      {sections.map((s, i) => {
+        const on = i === index;
+        return (
           <button
+            key={s.id}
+            ref={(el) => {
+              refs.current[i] = el;
+            }}
+            id={`${uid}-tab-${s.id}`}
             type="button"
-            className={`inline-flex h-10 shrink-0 items-center gap-2 self-start rounded-lg border border-[#2f2f36] bg-[#1d1d21] px-3.5 text-[13px] font-medium transition-[color,background-color,border-color,box-shadow,transform] hover:bg-[#232328] sm:self-auto duration-150 active:scale-[0.97] ${focusRing}`}
+            role="tab"
+            aria-selected={on}
+            aria-controls={`${uid}-panel-${s.id}`}
+            tabIndex={on ? 0 : -1}
+            onClick={() => onChange(s.id)}
+            className={`relative flex h-11 shrink-0 items-center gap-1.5 text-[14px] transition-[color,transform] duration-150 active:scale-[0.97] focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--sp-ink)] ${
+              on ? "text-[var(--sp-ink)]" : "text-[var(--sp-faint)] hover:text-[var(--sp-ink)]"
+            }`}
           >
-            <Download className="size-4" strokeWidth={1.75} aria-hidden="true" />
-            Export .zip
+            {s.label}
+            <AnimatePresence>
+              {dirty.has(s.id) && (
+                <motion.span
+                  key="dot"
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  exit={{ scale: 0 }}
+                  transition={reduce ? { duration: 0 } : SPRING_UI}
+                  className="size-1.5 rounded-full bg-[var(--sp-muted)]"
+                  aria-label="unsaved changes"
+                />
+              )}
+            </AnimatePresence>
+            {on && (
+              <motion.span layoutId={`${uid}-tab`} transition={reduce ? { duration: 0 } : SPRING_UI} className="absolute inset-x-0 bottom-0 h-[1.5px] rounded-full bg-[var(--sp-ink)]" aria-hidden="true" />
+            )}
           </button>
-        </div>
-        <div className="px-4 py-5 sm:px-6">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="text-[14px] font-medium">Delete account</p>
-              <p className="mt-1 text-[13px] text-[#9a9aa2]">Removes your notes from every shared workspace. There’s no undo.</p>
+        );
+      })}
+    </div>
+  );
+}
+
+/** Slides up from the card’s foot while there’s something to save, then says so and leaves. */
+function SaveBar({ count, status, onSave, onDiscard }: { count: number; status: SaveStatus; onSave: () => void; onDiscard: () => void }) {
+  const reduce = useReducedMotion() ?? false;
+  const show = count > 0 || status === "saved";
+  const message = status === "saved" && count === 0 ? "saved" : status === "error" ? "error" : "dirty";
+  const swap = reduce
+    ? { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 } }
+    : { initial: { opacity: 0, y: 6, filter: "blur(3px)" }, animate: { opacity: 1, y: 0, filter: "blur(0px)" }, exit: { opacity: 0, y: -6, filter: "blur(3px)" } };
+
+  return (
+    <AnimatePresence initial={false}>
+      {show && (
+        <motion.div
+          key="bar"
+          initial={reduce ? { opacity: 0 } : { height: 0, opacity: 0 }}
+          animate={reduce ? { opacity: 1 } : { height: "auto", opacity: 1 }}
+          exit={reduce ? { opacity: 0 } : { height: 0, opacity: 0, transition: { duration: 0.22, ease: EASE_IN } }}
+          transition={{ duration: reduce ? MOTION.fade : 0.34, ease: EASE_OUT }}
+          className="overflow-hidden"
+        >
+          <div className="flex items-center gap-3 border-t border-[var(--sp-line)] bg-[var(--sp-raised)] py-3 pl-5 pr-3 @lg:pl-6" aria-live="polite">
+            <div className="relative h-5 min-w-0 flex-1 overflow-hidden text-[14px]">
+              <AnimatePresence mode="popLayout" initial={false}>
+                <motion.p key={message === "dirty" ? `dirty-${count}` : message} {...swap} transition={{ duration: 0.2, ease: EASE_OUT }} className="flex items-center gap-2 truncate">
+                  {message === "saved" && (
+                    <>
+                      <Check className="size-4 shrink-0 text-[var(--sp-ink)]" strokeWidth={2.5} aria-hidden="true" />
+                      Changes saved
+                    </>
+                  )}
+                  {message === "error" && <span className="text-[var(--sp-danger)]">Couldn’t save. Check your connection.</span>}
+                  {message === "dirty" && (
+                    <span className="truncate text-[var(--sp-muted)]">
+                      <span className="tabular-nums text-[var(--sp-ink)]">{count}</span> unsaved {count === 1 ? "change" : "changes"}
+                    </span>
+                  )}
+                </motion.p>
+              </AnimatePresence>
             </div>
-            {!open && !done && (
-              <button
-                type="button"
-                onClick={() => setOpen(true)}
-                aria-expanded={open}
-                className="inline-flex h-10 shrink-0 items-center self-start rounded-lg border border-[#6b2b25] bg-[#2a1513] px-3.5 text-[13px] font-medium text-[#ff8a7a] transition-[color,background-color,border-color,box-shadow,transform] hover:border-[#8a352d] hover:bg-[#341917] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff8a7a] sm:self-auto duration-150 active:scale-[0.97]"
-              >
-                Delete account
-              </button>
+            {count > 0 && (
+              <>
+                <button
+                  type="button"
+                  onClick={onDiscard}
+                  disabled={status === "saving"}
+                  className={`h-9 shrink-0 rounded-lg px-3 text-[13px] font-medium text-[var(--sp-muted)] transition-[color,background-color,transform] duration-150 hover:bg-[color-mix(in_srgb,var(--sp-ink)_6%,transparent)] hover:text-[var(--sp-ink)] active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40 ${focusRing}`}
+                >
+                  Discard
+                </button>
+                <button
+                  type="button"
+                  onClick={onSave}
+                  disabled={status === "saving"}
+                  className={`relative inline-flex h-9 min-w-[7.5rem] shrink-0 items-center justify-center gap-2 rounded-lg bg-[var(--sp-accent)] px-3.5 text-[13px] font-semibold text-[var(--sp-on-accent)] transition-[filter,transform] duration-150 hover:brightness-110 active:scale-[0.97] disabled:cursor-progress ${focusRing}`}
+                >
+                  {status === "saving" ? (
+                    <>
+                      <LoaderCircle className="size-4 animate-spin" strokeWidth={2.5} aria-hidden="true" />
+                      Saving
+                    </>
+                  ) : status === "error" ? (
+                    <>
+                      <RotateCcw className="size-3.5" strokeWidth={2.5} aria-hidden="true" />
+                      Try again
+                    </>
+                  ) : (
+                    <>
+                      Save
+                      <kbd className="hidden rounded border border-current/25 px-1 font-mono text-[10px] font-medium opacity-70 @md:inline">⌘S</kbd>
+                    </>
+                  )}
+                </button>
+              </>
             )}
           </div>
-          <AnimatePresence initial={false}>
-            {open && !done && (
-              <motion.div
-                initial={reduce ? { opacity: 0 } : { height: 0, opacity: 0 }}
-                animate={reduce ? { opacity: 1 } : { height: "auto", opacity: 1 }}
-                exit={reduce ? { opacity: 0 } : { height: 0, opacity: 0 }}
-                transition={{ duration: reduce ? 0 : 0.35, ease }}
-                className="overflow-hidden"
-              >
-                <form
-                  className="mt-5 rounded-lg border border-[#3a1f1c] bg-[#120e0e] p-4"
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    if (match) setDone(true);
-                  }}
-                >
-                  <label htmlFor={confirmId} className="flex items-start gap-2.5 text-[13px] leading-snug text-[#c4c4ca]">
-                    <TriangleAlert className="mt-px size-4 shrink-0 text-[#ff8a7a]" strokeWidth={1.75} aria-hidden="true" />
-                    <span>
-                      Type <span className="rounded bg-[#2a1513] px-1.5 py-0.5 font-mono text-[12px] text-[#ff8a7a]">{username}</span> to confirm.
-                    </span>
-                  </label>
-                  <div className="mt-3 flex flex-col gap-2 sm:flex-row">
-                    <input
-                      id={confirmId}
-                      value={typed}
-                      onChange={(e) => setTyped(e.target.value)}
-                      autoFocus
-                      spellCheck={false}
-                      autoComplete="off"
-                      className="h-10 w-full min-w-0 rounded-lg border border-[#3a1f1c] sm:flex-1 bg-[#0e0e10] px-3 font-mono text-[13px] outline-none transition-colors focus:border-[#ff8a7a]/70"
-                    />
-                    <div className="flex gap-2">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setOpen(false);
-                          setTyped("");
-                        }}
-                        className={`h-10 flex-1 rounded-lg px-3.5 text-[13px] text-[#9a9aa2] hover:text-[#f2f2f0] sm:flex-none transition-transform duration-150 active:scale-[0.97] ${focusRing}`}
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        type="submit"
-                        disabled={!match}
-                        className="h-10 flex-1 rounded-lg bg-[#ff6b5a] px-3.5 text-[13px] font-semibold text-[#160b0a] transition-[opacity,transform] hover:bg-[#ff7d6e] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff8a7a] disabled:cursor-not-allowed disabled:opacity-35 sm:flex-none duration-150 active:scale-[0.97]"
-                      >
-                        Delete forever
-                      </button>
-                    </div>
-                  </div>
-                </form>
-              </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Component                                                            */
+/* ------------------------------------------------------------------ */
+
+export function SettingsPanel({
+  title = "Settings",
+  description = "How Fieldnote looks, and how often it’s allowed to interrupt you.",
+  sections = DEMO_SECTIONS,
+  defaultSection,
+  initialValues = DEMO_VALUES,
+  onSave,
+  onChange,
+  accent,
+  theme = "dark",
+  className = "",
+}: SettingsPanelProps) {
+  const reduce = useReducedMotion() ?? false;
+  const uid = useId().replace(/[^a-zA-Z0-9_-]/g, "");
+  const root = useRef<HTMLElement>(null);
+  const play = useInView(root, { once: true, amount: 0.2 });
+  const palette = PALETTE[theme];
+  const form = useSettingsForm(sections, initialValues, onSave, onChange);
+  const { ref: bodyRef, height } = useContentHeight();
+
+  const [active, setActive] = useState(defaultSection ?? sections[0]?.id ?? "");
+  // The first section staggers in with the card; later switches are quicker.
+  const [switched, setSwitched] = useState(false);
+  const section = sections.find((s) => s.id === active) ?? sections[0];
+
+  useSaveShortcut(() => void form.save());
+
+  const dirtySections = useMemo(() => new Set(sections.filter((s) => s.rows.some((r) => form.changed.includes(r.id))).map((s) => s.id)), [sections, form.changed]);
+
+  if (!section) return null;
+
+  const choose = (id: string) => {
+    if (id === section.id) return;
+    setSwitched(true);
+    setActive(id);
+  };
+
+  return (
+    <section
+      ref={root}
+      aria-labelledby={`${uid}-title`}
+      style={cssVars(palette, accent ?? palette.ink)}
+      className={`@container w-full font-sans text-[var(--sp-ink)] antialiased ${theme === "dark" ? "[color-scheme:dark]" : "[color-scheme:light]"} ${className}`}
+    >
+      <motion.div {...enter(play, 0, reduce)} className="overflow-hidden rounded-[16px] border border-[var(--sp-line)] bg-[var(--sp-surface)] shadow-[var(--sp-shadow)]">
+        <header className="border-b border-[var(--sp-line)] px-5 pt-6 @lg:px-6 @lg:pt-7">
+          <motion.h2 id={`${uid}-title`} {...enter(play, MOTION.step, reduce)} className="font-display text-[clamp(1.5rem,1.1rem+2cqi,2rem)] font-semibold leading-none tracking-[-0.035em]">
+            {title}
+          </motion.h2>
+          <motion.p {...enter(play, MOTION.step * 2, reduce)} className="mt-2 max-w-[56ch] text-pretty text-[14px] leading-relaxed text-[var(--sp-muted)]">
+            {description}
+          </motion.p>
+          <motion.div {...enter(play, MOTION.step * 3, reduce)} className="mt-5">
+            <SectionTabs sections={sections} value={section.id} dirty={dirtySections} onChange={choose} uid={uid} />
+          </motion.div>
+        </header>
+
+        {/* The card’s height eases to each section’s rows rather than jumping. */}
+        <motion.div
+          initial={false}
+          animate={{ height }}
+          transition={{ duration: reduce ? 0 : MOTION.height, ease: EASE_OUT }}
+          className="overflow-hidden"
+        >
+          <div ref={bodyRef}>
+            {section.description && (
+              <div className="relative overflow-hidden px-5 pt-4 @lg:px-6">
+                <AnimatePresence mode="wait">
+                  <motion.p
+                    key={section.id}
+                    {...enter(play, switched ? 0 : MOTION.step * 3, reduce)}
+                    exit={{ opacity: 0, transition: { duration: MOTION.exit } }}
+                    className="text-[13px] leading-relaxed text-[var(--sp-faint)]"
+                  >
+                    {section.description}
+                  </motion.p>
+                </AnimatePresence>
+              </div>
             )}
-          </AnimatePresence>
-          {done && (
-            <p role="status" className="mt-4 rounded-lg border border-[#3a1f1c] bg-[#120e0e] px-4 py-3 text-[13px] leading-snug text-[#c4c4ca]">
-              We’ve sent a last-chance link to <span className="text-[#f2f2f0]">{email}</span>. Your account goes in 48 hours unless you click it.
-            </p>
-          )}
-        </div>
-      </div>
+            <div className="py-1">
+              <AnimatePresence mode="wait">
+                <Section key={section.id} section={section} values={form.values} onSet={form.set} play={play} firstView={!switched} uid={uid} />
+              </AnimatePresence>
+            </div>
+          </div>
+        </motion.div>
+
+        <SaveBar count={form.changed.length} status={form.status} onSave={() => void form.save()} onDiscard={form.discard} />
+      </motion.div>
     </section>
   );
 }
 
-export default SettingsPanel;
+export default function SettingsPanelDemo() {
+  return (
+    <div className="flex min-h-dvh items-center justify-center px-4 py-16 sm:px-8" style={{ background: STAGE }}>
+      <div className="w-full max-w-[680px]">
+        <SettingsPanel />
+      </div>
+    </div>
+  );
+}

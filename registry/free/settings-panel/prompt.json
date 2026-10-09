@@ -1,108 +1,111 @@
 {
   "component": "SettingsPanel",
-  "intent": "A dark account settings page with scroll-spy section nav, custom switches and segmented controls, an avatar uploader, a typed-confirm danger zone and a sticky bar that counts unsaved changes.",
+  "intent": "A dark, monochrome settings card driven by a sections prop: rows stagger in, switches fill once they land, sections cross-fade while the card eases to height, and a save bar counts unsaved changes.",
   "platform": "web",
   "stack": {
     "framework": "React 19",
-    "styling": "Tailwind CSS v4",
-    "animation": "motion/react (layout, layoutId, AnimatePresence)",
+    "styling": "Tailwind CSS v4 with @container queries; colour tokens as CSS variables on the root",
+    "animation": "motion/react: motion values and useTransform for counting figures and path geometry (no per-frame React setState), layoutId for selection, AnimatePresence for swaps",
     "icons": "lucide-react",
-    "fonts": "font-display (Geist, tight tracking), font-sans (Geist), font-mono (Geist Mono)"
+    "fonts": "font-display (Geist) for headlines, font-sans (Geist) with tnum, font-mono (Geist Mono) for small labels"
   },
   "layout": {
-    "container": "max-w 1120px, px 16/32/48, pt 40→80px",
-    "header": "mono breadcrumb, display heading, one-line description (max 68ch)",
-    "desktop": "180px sticky section nav + content column, 56px gap",
-    "mobile": "nav becomes a sticky horizontal scrolling tab strip",
-    "sections": [
-      "Profile: avatar, display name, username with prefix, bio with counter, pronouns, time zone",
-      "Notifications: 4 switches + delivery segmented",
-      "Appearance: theme + density segmented, week start select",
-      "Danger zone: export, delete with typed confirmation"
+    "card": "surface, 1px line, 16px radius, inset highlight + deep shadow, overflow hidden, @container root",
+    "header": "title, description, section tabs with travelling underline and unsaved dots",
+    "rows": "switch inline at every width; segmented hugs right from @lg; select/text fill a 1fr/1.15fr column from @lg, stacked below",
+    "saveBar": "foot of the card: count, Discard, Save (fixed min width, ⌘S kbd from @md)",
+    "subComponents": [
+      "Section",
+      "Row",
+      "Toggle",
+      "Segmented",
+      "SelectField",
+      "TextField",
+      "SectionTabs",
+      "SaveBar"
     ],
-    "rows": "label + hint left, control right (2fr/3fr) at ≥768px; switches always right-aligned",
-    "saveBar": "sticky bottom of the content column, max 560px, count + Discard + Save ⌘S"
+    "hooks": [
+      "useSettingsForm",
+      "useSaveShortcut",
+      "useContentHeight",
+      "useSettled"
+    ]
   },
   "typography": {
-    "heading": {
+    "title": {
       "font": "display",
-      "size": "clamp(2.5rem, 1.8rem + 3vw, 4.25rem)",
+      "size": "clamp(1.5rem, 1.1rem + 2cqi, 2rem)",
       "weight": 600,
-      "tracking": "-0.045em",
-      "leading": 0.95
+      "tracking": "-0.035em",
+      "leading": 1
     },
-    "sectionHeading": {
-      "font": "display",
-      "size": "22px",
-      "weight": 600,
-      "tracking": "-0.03em"
-    },
-    "label": {
-      "size": "14px",
-      "weight": 500
-    },
-    "hint": {
-      "size": "13px",
-      "color": "muted"
-    },
-    "mono": "breadcrumb 11px 0.16em uppercase; username 13px; counter 11px"
+    "description": "14px muted, max 56ch",
+    "tabs": "14px",
+    "label": "14px medium",
+    "hint": "13px faint",
+    "fields": "14px; prefix and username in mono 12.5px"
   },
   "color": {
-    "background": "#0e0e10",
-    "card": "#151518",
-    "cardBorder": "#232328",
-    "input": "#111113 with #2a2a30 border",
-    "text": "#f2f2f0",
-    "muted": "#9a9aa2",
-    "faint": "#6e6e76",
-    "accent": "#d4f25c",
-    "segmentedSelected": "#f2f2f0 with dark text",
-    "danger": {
-      "text": "#ff8a7a",
-      "button": "#ff6b5a",
-      "surface": "#171213",
-      "border": "#4a2421"
+    "approach": "greyscale; one accent prop (default theme ink) for switches that are on and Save; segmented selection is an ink pill; focus rings are ink",
+    "dark": {
+      "surface": "#111113",
+      "raised": "#18181b",
+      "field": "#0c0c0e",
+      "line": "#232327",
+      "rule": "#1c1c1f",
+      "ink": "#f4f4f5",
+      "muted": "#a1a1aa",
+      "faint": "#8a8a93",
+      "track": "#27272a",
+      "trackHover": "#303034",
+      "knob": "#a1a1aa",
+      "danger": "#f87171"
     },
-    "colorScheme": "dark"
+    "light": {
+      "surface": "#ffffff",
+      "raised": "#f6f6f7",
+      "field": "#fafafa",
+      "line": "#e4e4e7",
+      "rule": "#efeff1",
+      "ink": "#18181b",
+      "muted": "#52525b",
+      "faint": "#71717a",
+      "track": "#e4e4e7",
+      "knob": "#ffffff",
+      "danger": "#b91c1c"
+    }
   },
   "motion": {
-    "switch": "knob layout spring, stiffness 700, damping 38",
-    "pills": "shared layoutId springs for nav and segmented controls",
-    "saveBar": "y 96 → 0 spring (380/34); message cross-fade unsaved ↔ saved",
-    "dangerConfirm": "height auto, 0.35s, ease [0.2, 0.8, 0.2, 1]",
-    "reducedMotion": "fades only; no springs; no ping",
-    "press": "buttons and links press to 0.97, full-width rows to 0.99, 150ms; one shared transition for colour and transform"
+    "trigger": "once at 20% in view",
+    "order": "card → title → description → tabs (60ms apart) → rows from 0.22s, 50ms apart → each control settles 0.16s after its row",
+    "switch": "accent layer fades in, knob slides on spring 500/40",
+    "segmented": "pill lands with opacity + 0.92 scale, then travels by layoutId",
+    "sectionSwitch": "rows exit together (6px up, 4px blur, 0.16s); next rows 40ms apart; card height eases over 0.32s",
+    "saveBar": "height 0 → auto (0.34s); message cross-fades; saving spinner in the same box; 'Changes saved' lingers 1.8s then collapses",
+    "reducedMotion": "150ms fades, controls instant, no height animation"
   },
   "responsive": {
-    "390": "tab strip nav; rows stack; segmented controls full width; danger buttons below their text",
-    "768": "rows split label/control 2fr/3fr",
-    "1024": "sticky side nav appears"
+    "390": "fields and segmented controls full width under their labels; switches stay inline",
+    "680": "two-column field rows"
   },
   "accessibility": [
-    "switches are role=switch with aria-checked and a 44px hit area",
-    "segmented controls are radiogroups with roving tabindex and arrow keys",
-    "real labels and native selects; bio counter linked with aria-describedby",
-    "save bar is aria-live=polite; ⌘S/Ctrl+S saves",
-    "scroll-spy nav uses aria-current",
-    "visible lime focus rings"
+    "role=switch with aria-checked, labelled and described by the row",
+    "segmented radiogroups with roving tabindex and arrow keys",
+    "tablist/tabpanel for sections",
+    "real labels and native selects; color-scheme follows theme",
+    "save bar aria-live polite",
+    "44px hit areas"
   ],
   "content": {
-    "app": "Fieldnote, a research notes app",
-    "person": "Mika Korhonen, @mika, she/her, Europe/Helsinki",
-    "bio": "Field researcher. I collect interview notes, bad puns and good coffee.",
-    "hints": [
-      "Monday morning: what changed in notes you follow.",
-      "New features, about once a month. No “we miss you”.",
-      "Compact fits about 30% more notes on screen."
-    ],
-    "danger": "Type your username to confirm; afterwards: a last-chance link is emailed, account goes in 48 hours"
+    "brand": "Fieldnote, a research notes app",
+    "sections": "Notifications (Mentions, Replies, Weekly digest, Product news, Delivery), Appearance (Theme, Density, Week starts on, Calm mode), Profile (Display name, Username with prefix, Time zone)"
   },
   "avoid": [
-    "glassmorphism",
-    "gradients or neon glow",
-    "toasts covering the form",
-    "div-based fake selects without semantics",
-    "modal 'Are you sure?' for deletion",
-    "grey-on-grey hints below AA"
+    "lime or brand colour on focus rings and nav",
+    "glass, glow, gradients",
+    "a full page with header and side nav",
+    "a modal for saving",
+    "div controls without roles",
+    "per-row hard-coded sections"
   ]
 }

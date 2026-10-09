@@ -4,22 +4,76 @@
   "tier": "free",
   "platform": "web",
   "category": "app",
-  "description": "A dark account settings page with scroll-spy section nav, spring toggles, segmented controls, avatar upload, a typed-confirm danger zone and an unsaved-changes bar.",
-  "tags": ["settings", "preferences", "form", "toggle", "segmented control", "account", "dark", "app"],
-  "dependencies": ["motion", "lucide-react"],
+  "description": "A dark settings card: rows stagger in, switches fill once they land, sections cross-fade as the card eases to height, and a save bar counts unsaved changes.",
+  "tags": [
+    "settings",
+    "preferences",
+    "form",
+    "toggle",
+    "switch",
+    "segmented control",
+    "save bar",
+    "dark",
+    "app"
+  ],
+  "dependencies": [
+    "motion",
+    "lucide-react"
+  ],
   "theme": "dark",
-  "previewHeight": 1000,
-  "usage": "import { SettingsPanel } from \"@/components/design-for-ai/settings-panel\";\n\nexport default function Page() {\n  return (\n    <SettingsPanel\n      usernamePrefix=\"acme.app/\"\n      email=\"ada@acme.app\"\n      initialValues={{ name: \"Ada Byrne\", username: \"ada\", theme: \"system\" }}\n      onSave={async (values) => {\n        await fetch(\"/api/settings\", { method: \"PUT\", body: JSON.stringify(values) });\n      }}\n    />\n  );\n}",
+  "previewHeight": 760,
+  "usage": "import { SettingsPanel } from \"@/components/design-for-ai/settings-panel\";\n\nexport default function Preferences() {\n  return (\n    <SettingsPanel\n      title=\"Settings\"\n      sections={[\n        {\n          id: \"notifications\",\n          label: \"Notifications\",\n          rows: [\n            { kind: \"toggle\", id: \"mentions\", label: \"Mentions\", hint: \"Someone @mentions you.\" },\n            { kind: \"segmented\", id: \"delivery\", label: \"Delivery\", options: [{ value: \"instant\", label: \"Instantly\" }, { value: \"daily\", label: \"Daily\" }] },\n          ],\n        },\n      ]}\n      initialValues={{ mentions: true, delivery: \"daily\" }}\n      onSave={async (values) => {\n        await fetch(\"/api/settings\", { method: \"PUT\", body: JSON.stringify(values) });\n      }}\n      accent=\"#7dd3fc\"\n    />\n  );\n}",
   "props": [
-    { "name": "initialValues", "type": "Partial<SettingsValues>", "description": "Saved values to start from. Anything you change is compared against these to drive the unsaved-changes bar." },
-    { "name": "onSave", "type": "(values: SettingsValues) => Promise<void> | void", "description": "Called on Save or ⌘S. Return a promise to keep the saving spinner up until it resolves. Defaults to a 900ms fake save." },
-    { "name": "title", "type": "string", "default": "\"Settings\"", "description": "Page heading." },
-    { "name": "description", "type": "string", "description": "One line under the heading." },
-    { "name": "usernamePrefix", "type": "string", "default": "\"fieldnote.app/\"", "description": "Fixed prefix inside the username field." },
-    { "name": "email", "type": "string", "default": "\"mika@fieldnote.app\"", "description": "Where notifications go; also used in the deletion confirmation." },
-    { "name": "pronounOptions", "type": "string[]", "description": "Options for the pronouns select." },
-    { "name": "timezoneOptions", "type": "string[]", "description": "Options for the time zone select." },
-    { "name": "bioLimit", "type": "number", "default": "160", "description": "Character limit for the bio, with a live counter." }
+    {
+      "name": "sections",
+      "type": "{ id: string; label: string; description?: string; rows: SettingsRow[] }[]",
+      "default": "Notifications, Appearance, Profile",
+      "description": "One tab per section. A row is { kind: \"toggle\" | \"segmented\" | \"select\" | \"text\", id, label, hint? } plus options (segmented, select) or placeholder/prefix (text)."
+    },
+    {
+      "name": "initialValues",
+      "type": "Record<string, string | boolean>",
+      "description": "Saved values keyed by row id. Changes are compared against these to drive the unsaved count; rows without one start off, empty or on their first option."
+    },
+    {
+      "name": "onSave",
+      "type": "(values) => Promise<void> | void",
+      "description": "Called on Save or ⌘S. Return a promise to hold the saving state; reject it to show the error state with Try again. Defaults to a 900ms fake save."
+    },
+    {
+      "name": "onChange",
+      "type": "(values) => void",
+      "description": "Called with every edit."
+    },
+    {
+      "name": "defaultSection",
+      "type": "string",
+      "default": "first section",
+      "description": "Section open on first render."
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "default": "\"Settings\"",
+      "description": "Card heading."
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "description": "One line under the heading."
+    },
+    {
+      "name": "accent",
+      "type": "string",
+      "default": "theme ink",
+      "description": "The one accent: switches that are on and the Save button. Monochrome by default."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Surface palette; also sets color-scheme so native selects match."
+    }
   ],
   "added": "2026-10-07"
 }
