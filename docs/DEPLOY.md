@@ -58,7 +58,7 @@ Stripe is not configured yet; checkout displays the email fallback.
    is already a zone on the account. The Worker also stays reachable on its
    `workers.dev` URL.
 
-The Worker bundle is about 3.2 MB gzipped, so it needs the Workers Paid plan
+The Worker bundle is about 4.4 MB gzipped (61 components), so it needs the Workers Paid plan
 (10 MB limit), which the Yaps account already uses.
 
 ## Deploy from a terminal
