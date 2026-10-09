@@ -1269,6 +1269,105 @@
     "added": "2026-10-07"
   },
   {
+    "slug": "mobile-checkout-sheet",
+    "name": "Hold-to-Pay Checkout Sheet",
+    "tier": "pro",
+    "platform": "mobile",
+    "category": "mobile",
+    "description": "A React Native express-checkout sheet over a blurred product page: gliding card picker, delivery control, hold-to-pay ring, spinner, success and a receipt pill.",
+    "tags": [
+      "checkout",
+      "payments",
+      "bottom sheet",
+      "react native",
+      "commerce",
+      "hold to confirm",
+      "glassmorphism",
+      "fintech"
+    ],
+    "dependencies": [
+      "expo-blur",
+      "expo-linear-gradient",
+      "react-native-svg"
+    ],
+    "theme": "dark",
+    "previewHeight": 940,
+    "usage": "import { MobileCheckoutSheet } from \"@/components/design-for-ai/native/mobile-checkout-sheet\";\n\n// npm i expo-blur expo-linear-gradient react-native-svg\n// (bare React Native: run `npx install-expo-modules` once)\n<MobileCheckoutSheet\n  merchant={{ name: \"Halden Studio\", domain: \"halden.studio\" }}\n  items={cartLines}\n  cards={walletCards}\n  onPay={async ({ cardId, deliveryId, total }) => {\n    const res = await api.charge({ cardId, deliveryId, total });\n    return res.ok ? \"success\" : \"declined\";\n  }}\n  onReceiptPress={() => navigation.navigate(\"Receipt\")}\n/>",
+    "props": [
+      {
+        "name": "items",
+        "type": "LineItem[]",
+        "description": "Line items: name, optional detail and price."
+      },
+      {
+        "name": "cards",
+        "type": "PayCard[]",
+        "description": "Wallet cards: id, name, kind, last four and card art (\"fern\", \"kite\" or \"northwind\")."
+      },
+      {
+        "name": "delivery",
+        "type": "DeliveryOption[]",
+        "description": "Delivery methods for the segmented control: id, label, price and ETA copy."
+      },
+      {
+        "name": "onPay",
+        "type": "(payment) => Promise<\"success\" | \"declined\">",
+        "description": "Charge the card. The sheet shows the spinner for at least 1.1s, then success or the declined state. Defaults to a simulation."
+      },
+      {
+        "name": "merchant",
+        "type": "{ name: string; domain: string }",
+        "default": "Halden Studio",
+        "description": "Who's being paid."
+      },
+      {
+        "name": "product",
+        "type": "CheckoutProduct",
+        "description": "The product page the sheet presents over."
+      },
+      {
+        "name": "initialDelivery",
+        "type": "string",
+        "default": "\"express\"",
+        "description": "Selected delivery option id."
+      },
+      {
+        "name": "initialCard",
+        "type": "string",
+        "description": "Selected card id. Defaults to the first card."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"£\"",
+        "description": "Currency symbol."
+      },
+      {
+        "name": "declineOnce",
+        "type": "string[]",
+        "default": "[\"kite\"]",
+        "description": "Simulation only: cards whose first attempt is declined, then go through on retry."
+      },
+      {
+        "name": "onDismiss",
+        "type": "() => void",
+        "description": "Fired when the sheet is dragged down, closed or the backdrop is tapped."
+      },
+      {
+        "name": "onReceiptPress",
+        "type": "() => void",
+        "description": "Fired when the receipt pill is tapped."
+      },
+      {
+        "name": "initiallyOpen",
+        "type": "boolean",
+        "default": "true",
+        "description": "Present the sheet on mount."
+      }
+    ],
+    "added": "2026-10-09"
+  },
+  {
     "slug": "mobile-live-activity",
     "name": "Delivery Live Activity",
     "tier": "pro",
