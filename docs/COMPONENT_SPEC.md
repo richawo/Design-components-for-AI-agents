@@ -120,6 +120,14 @@ something a senior product designer would put in their portfolio.
 
 ### Do
 
+- **Be one focused component, not a page.** A pricing component is the
+  pricing; a header is the header. No marketing headline, filler sections or
+  fake website around it. The default export may place the component on a
+  quiet stage (plain dark or light background, centred, generous padding) and
+  may add the minimum context needed to show its behaviour (for example, a
+  short scrollable area under a header that condenses on scroll), but the
+  stage is never part of the component's API. If it could be split into two
+  components, split it.
 - **Feel premium.** Precise typography, layered depth (hairline borders, inner
   highlights, soft deep shadows), restrained colour, purposeful light and
   texture. Playful components are welcome, but they have to be polished

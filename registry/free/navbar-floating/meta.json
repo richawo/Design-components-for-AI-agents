@@ -3,7 +3,7 @@
   "name": "Floating Glass Navbar",
   "tier": "free",
   "platform": "web",
-  "category": "navigation",
+  "category": "headers",
   "description": "A floating glass pill navbar with a sliding hover pill, a scroll-condensing width and a full-screen mobile sheet with a proper focus trap.",
   "tags": [
     "navbar",

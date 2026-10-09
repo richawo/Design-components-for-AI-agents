@@ -25,8 +25,8 @@ const publicR = path.join(root, "public", "r");
 const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://design.yaps.ai").replace(/\/$/, "");
 
 const CATEGORIES = [
-  "charts", "three-d", "pixel", "hero", "pricing", "features", "social-proof", "cta", "navigation", "content",
-  "ai", "app", "forms", "portfolio", "commerce", "primitives", "mobile",
+  "charts", "three-d", "pixel", "hero", "pricing", "features", "social-proof", "cta", "headers", "footers", "navigation", "content",
+  "ai", "app", "auth", "forms", "text", "portfolio", "commerce", "primitives", "mobile",
 ];
 const REQUIRED_PROMPT_KEYS = [
   "component", "intent", "platform", "stack", "layout", "typography", "color",
