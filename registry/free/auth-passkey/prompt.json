@@ -1,8 +1,13 @@
 {
   "component": "AuthPasskey",
-  "intent": "A focused passkey sign-in card where a hand-drawn fingerprint is the interface: it draws in, a scan line reads it while the device answers, and success fills it with light from the core outward.",
+  "intent": "A focused passkey sign-in card where a hand-drawn fingerprint is the interface: it draws in, a scan line reads it while the device answers, and success fills it with light from the core outward. The card rises out of a blur and its contents stagger in reading order before the print draws.",
   "platform": "web",
-  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "animation": "motion/react (pathLength, SVG masks, AnimatePresence)", "icons": "none: every glyph is hand-drawn SVG" },
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4",
+    "animation": "motion/react (pathLength, SVG masks, AnimatePresence)",
+    "icons": "none: every glyph is hand-drawn SVG"
+  },
   "layout": {
     "card": "max-width 400px, #0b0b0c, 1px white/8% border, radius 28px, inset top highlight, padding 40/36/28px (32/24/24px under 360px container), centred stack",
     "glyph": "164px well (148px small) with 7% hairline and inner shadow; 130px svg in a 120 viewBox clipped to r=47",
@@ -10,21 +15,62 @@
     "actions": "48px primary button radius 14px full width; 44px secondary row for Cancel / Use email instead"
   },
   "typography": {
-    "heading": { "font": "display (Geist)", "weight": 600, "size": "clamp(1.6rem, 1.3rem + 1.2cqi, 1.875rem)", "tracking": "-0.035em", "leading": 1.05 },
-    "body": { "size": "14.5px", "leading": 1.55, "color": "#8b8b93" },
-    "hint": { "font": "mono", "size": "11.5px", "color": "#6c6c74" }
+    "heading": {
+      "font": "display (Geist)",
+      "weight": 600,
+      "size": "clamp(1.6rem, 1.3rem + 1.2cqi, 1.875rem)",
+      "tracking": "-0.035em",
+      "leading": 1.05
+    },
+    "body": {
+      "size": "14.5px",
+      "leading": 1.55,
+      "color": "#8b8b93"
+    },
+    "hint": {
+      "font": "mono",
+      "size": "11.5px",
+      "color": "#6c6c74"
+    }
   },
-  "color": { "stage": "#000000", "card": "#0b0b0c", "text": "#f4f4f5", "muted": "#8b8b93", "ridges": "white/26%", "scan": "#f4f7ff", "success": "#8ff0c4", "error": "#ff8a8a", "button": "#f4f4f5 bg, #0b0b0c text" },
+  "color": {
+    "approach": "monochrome; one accent prop (default = theme ink) on the primary button; mint only for success, rose/red only for error; tokens in one PALETTE → --pk-* CSS variables",
+    "dark": {
+      "stage": "#000000",
+      "card": "#0b0b0c",
+      "ink": "#f4f4f5",
+      "muted": "#8b8b93",
+      "hint": "#7a7a83",
+      "ridges": "white/26% (20% settled, 12% unsupported)",
+      "scan": "#f4f4f5",
+      "success": "#8ff0c4 (text #c9f8e1)",
+      "error": "#ff8a8a (text #ffb4b4)"
+    },
+    "light": {
+      "card": "#ffffff",
+      "ink": "#18181b",
+      "muted": "#5f5f68",
+      "ridges": "#18181b at 28%",
+      "scan": "#18181b",
+      "success": "#16a34a",
+      "error": "#dc2626"
+    },
+    "button": "accent fill, black-or-white label; it keeps the accent on success and draws a check"
+  },
   "motion": {
-    "entrance": "card y 12 → 0 + fade 600ms ease-out; ridges pathLength 0 → 1 over 900ms, delay 250ms + 550ms × normalised distance from the core",
-    "awaiting": "34-unit gradient band masks a bright ridge layer and a 1px scan line; travels top → bottom → top in 2.6s ease-in-out, looping",
-    "success": "radial mask r 0 → 90 over 850ms lights mint ridges from the core outward; bloom fades in; badge springs in at 550ms (500/28) and its check draws over 360ms",
-    "cancel": "glyph settles scale 1 → .97 → 1 over 600ms, ridges dim to white/20%",
+    "entrance": "once at 30% in view: card y 16→0 + blur 10→0 over 600ms; then brand → heading → description → glyph well → status → button → link, 50ms apart from 120ms (opacity, 10px rise, 6px blur clearing, 450ms); ridges pathLength 0→1 over 700ms once the glyph block lands, each delayed by 400ms × normalised distance from the core",
+    "awaiting": "34-unit gradient band masks a bright ridge layer and a 1px scan line in ink; travels top → bottom → top in 2.6s ease-in-out, looping (the one ambient signal); the status copy carries a static ellipsis",
+    "success": "radial mask r 0→90 over 850ms lights mint ridges from the core outward while a 1px mint ring draws round the well (pathLength, 700ms); badge springs in at 550ms (500/28) and its check draws over 360ms; button stays accent with a drawn check",
+    "cancel": "glyph settles scale 1 → .97 → 1 over 600ms, ridges dim (CSS stroke transition between tokens)",
     "swaps": "copy and labels cross-fade with 6–8px offset and 3–4px blur, 220ms in, 120ms out",
     "press": "button scale .975",
-    "reducedMotion": "no drawing, band parked at centre, fades only"
+    "cleanup": "usePasskeyCeremony owns one AbortController per attempt; the timeout and the success hold go through useTimeouts and are cleared on unmount, which also aborts the ceremony",
+    "reducedMotion": "150ms fades only; no drawing; band parked at centre"
   },
-  "responsive": { "narrow": "under a 360px container: tighter padding, 148px well", "wide": "card caps at 400px, centred on the stage" },
+  "responsive": {
+    "narrow": "under a 360px container: tighter padding, 148px well",
+    "wide": "card caps at 400px, centred on the stage"
+  },
   "accessibility": [
     "section aria-labelledby the heading",
     "status block aria-live=polite, aria-atomic",
@@ -42,5 +88,16 @@
     "states": "idle, awaiting, success, cancelled, timeout, unsupported, error",
     "api": "onAuthenticate(signal) => Promise; NotAllowedError/AbortError = cancel; timeoutMs aborts"
   },
-  "avoid": ["icon-library fingerprint", "pulsing glow rings", "blue biometric gradients", "shake or confetti", "a page or marketing copy around the card", "red walls of error text"]
+  "avoid": [
+    "icon-library fingerprint",
+    "pulsing glow rings",
+    "blue biometric gradients",
+    "shake or confetti",
+    "a page or marketing copy around the card",
+    "red walls of error text",
+    "a glow bloom behind the well",
+    "a mint-filled button",
+    "per-state accent colours",
+    "inline hex outside the palette"
+  ]
 }
