@@ -1,0 +1,99 @@
+{
+  "slug": "footer-columns-status",
+  "name": "Columns Footer with Status",
+  "tier": "free",
+  "platform": "web",
+  "category": "footers",
+  "description": "A refined dark product footer: hairline link grid lit from inside by the pointer, a breathing status pill, a gliding theme switch and a locale menu.",
+  "tags": [
+    "footer",
+    "navigation",
+    "status",
+    "theme switch",
+    "locale",
+    "spotlight",
+    "accordion",
+    "saas"
+  ],
+  "dependencies": [
+    "motion"
+  ],
+  "theme": "dark",
+  "previewHeight": 620,
+  "usage": "import { FooterColumnsStatus } from \"@/components/design-for-ai/footer-columns-status\";\n\nexport default function SiteFooter() {\n  const status = useStatus(); // \"ok\" | \"degraded\" | \"outage\"\n  return (\n    <FooterColumnsStatus\n      brand={{ name: \"Halyard\", href: \"/\" }}\n      status={status}\n      statusHref=\"https://status.halyard.dev\"\n      onThemeChange={(t) => setTheme(t)}\n      onLocaleChange={(code) => router.push(`/${code}`)}\n    />\n  );\n}",
+  "props": [
+    {
+      "name": "brand",
+      "type": "{ name: string; href: string }",
+      "default": "{ name: \"Halyard\", href: \"#\" }",
+      "description": "Wordmark next to the drawn mark in the first cell."
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "default": "\"Queues, cron and webhooks that retry until they land.\"",
+      "description": "One line under the brand, max 30ch."
+    },
+    {
+      "name": "release",
+      "type": "{ version; label; href } | null",
+      "description": "Release pill pinned to the bottom of the brand cell. null hides it."
+    },
+    {
+      "name": "columns",
+      "type": "{ title: string; links: { label; href; badge?; external? }[] }[]",
+      "description": "Four link columns. badge renders a small mono tag; external adds ↗ and opens a new tab."
+    },
+    {
+      "name": "status",
+      "type": "\"ok\" | \"degraded\" | \"outage\"",
+      "default": "\"ok\"",
+      "description": "Status pill variant: colour, copy and breathing speed all follow it."
+    },
+    {
+      "name": "statusLabels",
+      "type": "Record<FooterStatus, string>",
+      "description": "Copy for each status variant."
+    },
+    {
+      "name": "statusHref",
+      "type": "string",
+      "default": "\"#status\"",
+      "description": "Where the status pill links."
+    },
+    {
+      "name": "theme / defaultTheme",
+      "type": "\"system\" | \"light\" | \"dark\"",
+      "default": "\"system\"",
+      "description": "Controlled or initial value of the 3-way theme switch."
+    },
+    {
+      "name": "onThemeChange",
+      "type": "(theme) => void",
+      "description": "The switch only reports; apply the theme yourself."
+    },
+    {
+      "name": "locales",
+      "type": "{ code: string; label: string }[]",
+      "description": "Options in the locale menu."
+    },
+    {
+      "name": "locale / defaultLocale",
+      "type": "string",
+      "default": "\"en-GB\"",
+      "description": "Controlled or initial locale code."
+    },
+    {
+      "name": "onLocaleChange",
+      "type": "(code: string) => void",
+      "description": "Called when a locale is chosen."
+    },
+    {
+      "name": "copyright",
+      "type": "string",
+      "default": "\"© 2026 Halyard Labs, Inc.\"",
+      "description": "Mono line in the bottom bar."
+    }
+  ],
+  "added": "2026-10-09"
+}

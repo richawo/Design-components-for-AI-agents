@@ -333,6 +333,96 @@
     "added": "2026-10-07"
   },
   {
+    "slug": "footer-ascii-wordmark",
+    "name": "ASCII Wordmark Footer",
+    "tier": "pro",
+    "platform": "web",
+    "category": "footers",
+    "description": "A black footer whose giant wordmark is a canvas field of mono characters. The cursor is a lens: glyphs scramble, brighten and thicken beneath it.",
+    "tags": [
+      "footer",
+      "ascii",
+      "canvas",
+      "wordmark",
+      "big type",
+      "interactive",
+      "monospace",
+      "developer"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 640,
+    "usage": "import { FooterAsciiWordmark } from \"@/components/design-for-ai/footer-ascii-wordmark\";\n\nexport default function SiteFooter() {\n  return (\n    <FooterAsciiWordmark\n      wordmark=\"tidepool\"\n      stacked={[\"tide\", \"pool\"]}\n      kicker=\"Tidepool · Lisbon\"\n      signOff=\"Feature flags for teams who ship on Fridays and sleep anyway.\"\n      accent=\"#7dd3fc\"\n    />\n  );\n}",
+    "props": [
+      {
+        "name": "wordmark",
+        "type": "string",
+        "default": "\"fieldnote\"",
+        "description": "The giant word. Rasterised with the display face at weight 800 and fitted to the full footer width. Words without descenders read best."
+      },
+      {
+        "name": "stacked",
+        "type": "string[]",
+        "default": "[\"field\", \"note\"]",
+        "description": "Lines used instead below 560px so the mark keeps enough rows to stay legible. Pass [] to keep one line."
+      },
+      {
+        "name": "kicker",
+        "type": "string",
+        "default": "\"Fieldnote · Brooklyn, NY\"",
+        "description": "Mono line above the sign-off."
+      },
+      {
+        "name": "signOff",
+        "type": "string",
+        "description": "One or two sentences above the wordmark, max 34ch."
+      },
+      {
+        "name": "links",
+        "type": "{ label: string; href: string; external?: boolean }[]",
+        "description": "The compact link row. Hovering one dims its siblings."
+      },
+      {
+        "name": "legal",
+        "type": "string",
+        "default": "\"© 2026 Fieldnote Systems, Inc.\"",
+        "description": "Mono legal line under the wordmark."
+      },
+      {
+        "name": "legalLinks",
+        "type": "{ label: string; href: string }[]",
+        "description": "Privacy, terms and similar."
+      },
+      {
+        "name": "ink",
+        "type": "string",
+        "default": "\"#ece9e2\"",
+        "description": "Colour of the character field."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ff7a3d\"",
+        "description": "Colour of the hottest scrambling glyphs at the centre of the lens."
+      },
+      {
+        "name": "ramp",
+        "type": "string",
+        "default": "\" .·:-=+*#%@\"",
+        "description": "Density ramp, lightest first; the first character is empty space."
+      },
+      {
+        "name": "glyphs",
+        "type": "string",
+        "default": "\"/\\\\|<>{}[]=+*#%&$@01?\"",
+        "description": "Glyphs the lens scrambles through."
+      }
+    ],
+    "added": "2026-10-09"
+  },
+  {
     "slug": "hero-kinetic-type",
     "name": "Kinetic Type Hero",
     "tier": "pro",
@@ -1040,6 +1130,111 @@
     "added": "2026-10-07"
   },
   {
+    "slug": "three-holo-card",
+    "name": "Holo Metal Card",
+    "tier": "pro",
+    "platform": "web",
+    "category": "three-d",
+    "description": "A brushed-metal membership card in Three.js with a thin-film foil shader, etched type and studio reflections. It tilts on a spring and flips on click.",
+    "tags": [
+      "three.js",
+      "webgl",
+      "3d",
+      "card",
+      "credit card",
+      "holographic",
+      "shader",
+      "glsl",
+      "fintech",
+      "membership"
+    ],
+    "dependencies": [
+      "three",
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 720,
+    "usage": "import { ThreeHoloCard } from \"@/components/design-for-ai/three-holo-card\";\n\n<div className=\"relative h-[480px]\">\n  <ThreeHoloCard issuer=\"Ferro\" tier=\"Reserve\" holder=\"Amara Okafor\" finish=\"titanium\" />\n</div>",
+    "props": [
+      {
+        "name": "issuer",
+        "type": "string",
+        "default": "\"Ferro\"",
+        "description": "Issuer wordmark, top left of the front."
+      },
+      {
+        "name": "tier",
+        "type": "string",
+        "default": "\"Reserve\"",
+        "description": "Tier name, set in italic serif."
+      },
+      {
+        "name": "holder",
+        "type": "string",
+        "default": "\"Amara Okafor\"",
+        "description": "Cardholder name, upper-cased on the card."
+      },
+      {
+        "name": "number",
+        "type": "string",
+        "default": "\"4921 0738 5512 0427\"",
+        "description": "Full number on the back; the front shows the last four."
+      },
+      {
+        "name": "expiry",
+        "type": "string",
+        "default": "\"09/31\"",
+        "description": "Expiry, MM/YY."
+      },
+      {
+        "name": "since",
+        "type": "string",
+        "default": "\"2019\"",
+        "description": "Member-since year."
+      },
+      {
+        "name": "finePrint",
+        "type": "[string, string]",
+        "default": "Ferro’s return-address lines",
+        "description": "Two lines of fine print on the back."
+      },
+      {
+        "name": "finish",
+        "type": "\"graphite\" | \"titanium\" | \"champagne\"",
+        "default": "\"graphite\"",
+        "description": "Metal finish: base reflectance, edge polish and etch colour."
+      },
+      {
+        "name": "side",
+        "type": "\"front\" | \"back\"",
+        "description": "Controlled side. Omit to let the card manage it."
+      },
+      {
+        "name": "defaultSide",
+        "type": "\"front\" | \"back\"",
+        "default": "\"front\"",
+        "description": "Initial side when uncontrolled."
+      },
+      {
+        "name": "onSideChange",
+        "type": "(side) => void",
+        "description": "Called when the card is flipped."
+      },
+      {
+        "name": "interactive",
+        "type": "boolean",
+        "default": "true",
+        "description": "Pointer and device-orientation tilt. Flipping always works."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Classes for the root, which fills its parent."
+      }
+    ],
+    "added": "2026-10-09"
+  },
+  {
     "slug": "three-particle-sphere",
     "name": "Particle Sphere",
     "tier": "pro",
@@ -1101,6 +1296,96 @@
       }
     ],
     "added": "2026-10-07"
+  },
+  {
+    "slug": "three-voice-orb",
+    "name": "Voice Orb",
+    "tier": "pro",
+    "platform": "web",
+    "category": "three-d",
+    "description": "A shader-built AI voice orb with thin-film sheen and a fresnel rim that breathes, listens to your mic, swirls while thinking and pulses word by word as it speaks.",
+    "tags": [
+      "three.js",
+      "webgl",
+      "voice",
+      "assistant",
+      "orb",
+      "shader",
+      "microphone",
+      "ai"
+    ],
+    "dependencies": [
+      "three",
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 860,
+    "usage": "import { ThreeVoiceOrb } from \"@/components/design-for-ai/three-voice-orb\";\n\nconst [state, setState] = useState<\"idle\" | \"listening\" | \"thinking\" | \"speaking\">(\"idle\");\n\n<ThreeVoiceOrb\n  name=\"Wren\"\n  state={state}\n  onStateChange={setState}\n  speakingLines={[\"Your 3pm moved to 3:30. Coffee’s on Priya.\"]}\n/>",
+    "props": [
+      {
+        "name": "state",
+        "type": "\"idle\" | \"listening\" | \"thinking\" | \"speaking\"",
+        "description": "Controlled state. Omit to let the built-in segmented control drive it."
+      },
+      {
+        "name": "defaultState",
+        "type": "VoiceOrbState",
+        "default": "\"idle\"",
+        "description": "Starting state when uncontrolled."
+      },
+      {
+        "name": "onStateChange",
+        "type": "(state: VoiceOrbState) => void",
+        "description": "Called when the control or the mic button changes state."
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "default": "\"Wren\"",
+        "description": "The assistant’s name, used in the idle caption and labels."
+      },
+      {
+        "name": "captions",
+        "type": "{ idle?: string; listening?: string; thinking?: string }",
+        "description": "Caption per state. Mic status lines (waiting, blocked, missing) override listening."
+      },
+      {
+        "name": "speakingLines",
+        "type": "string[]",
+        "default": "3 scheduling lines",
+        "description": "Lines voiced by the synthetic speech envelope; the caption lights up word by word in sync with the pulses."
+      },
+      {
+        "name": "tones",
+        "type": "Partial<Record<VoiceOrbState, { deep?: string; rim?: string; accent?: string }>>",
+        "default": "amber idle, coral listening, teal thinking, honey speaking",
+        "description": "Body, rim and accent colours per state. Blended, never snapped."
+      },
+      {
+        "name": "showControls",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show the state segmented control and the microphone button."
+      },
+      {
+        "name": "showCaption",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show the eyebrow and caption under the orb."
+      },
+      {
+        "name": "interactive",
+        "type": "boolean",
+        "default": "true",
+        "description": "Tilt the orb gently toward the pointer."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Classes for the root element."
+      }
+    ],
+    "added": "2026-10-09"
   },
   {
     "slug": "work-index-hover",

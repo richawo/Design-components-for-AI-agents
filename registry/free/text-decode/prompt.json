@@ -1,0 +1,64 @@
+{
+  "component": "TextDecode",
+  "intent": "A typographic scramble that decodes text left to right on view, hover or focus. Widths are reserved so lines never reflow; each character lands with a brief flash.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4",
+    "animation": "requestAnimationFrame writing to the DOM directly, WAAPI for the landing flash; motion/react for useReducedMotion only"
+  },
+  "layout": {
+    "structure": "one inline span per character: the real character in flow (reserves width) + an absolute overlay (inset 0, flex-centred both axes so its baseline matches the real character at any line-height) for scramble glyphs and the flash",
+    "wrapping": "inline spans, never inline-block, so words wrap at spaces; \\n becomes <br>",
+    "demo": "black stage, max-width 960px, left aligned: eyebrow, display heading, status line with live dot, hairline rule, 4-link nav + Replay pill; nav is 2x2 below @md, row above"
+  },
+  "typography": {
+    "eyebrow": "mono 11px uppercase, tracking 0.18em, white/45",
+    "heading": "display face, clamp(2.75rem, 1.1rem + 6.2vw, 6.5rem), weight 500, leading 0.95, tracking -0.045em",
+    "status": "mono 12.5px (13px @xl), leading 1.6, white/60",
+    "nav": "mono 12px uppercase, tracking 0.14em, white/55 to white; index numbers white/25 to #7dd3a8"
+  },
+  "color": {
+    "stage": "#000000",
+    "text": "inherits currentColor",
+    "scramble": "currentColor at 50% opacity",
+    "flash": "#ffffff with text-shadow 0 0 12px at 30% via color-mix (flashColor prop)",
+    "accent": "#7dd3a8 live dot and hovered nav index",
+    "rule": "white/9%"
+  },
+  "motion": {
+    "stagger": "min(1000 / speed, 1100 / characters) ms, speed default 32 chars/s",
+    "scrambleLead": "clamp(stagger * 7, 170, 380) ms per character before it resolves",
+    "glyphRate": "new glyph every 56ms per character, per-character phase offset, stable hash, never the final character",
+    "flash": "overlay shows final char in flashColor, opacity 1 to 0 over 560ms cubic-bezier(0.22, 1, 0.36, 1)",
+    "view": "IntersectionObserver 30%, once, optional delay; pre-reveal state is rendered on the server",
+    "hover": "pointerenter or :focus-visible on nearest a/button/[data-decode-trigger]; sweeps a scramble band through visible text; ignored while running",
+    "textChange": "unchanged characters (same index) stay put; changed old characters hold their place until the edge reaches them, then scramble into the new value",
+    "ambient": "demo status line takes a new reading every 4.2s, paused offscreen and in hidden tabs",
+    "reducedMotion": "final text immediately; no scramble on hover, replay or text change"
+  },
+  "responsive": {
+    "all": "pure inline text, so it works at any width; status line wraps under its dot",
+    "demo": "nav is a 2-column grid below @md (28rem), a row above; Replay pill moves beside the nav at @xl"
+  },
+  "accessibility": [
+    "full text in an sr-only span, read once; the per-character layer is aria-hidden",
+    "hover trigger also fires on keyboard :focus-visible",
+    "links and the Replay button have 44px targets and a 2px white focus ring offset against black",
+    "overlay glyphs are user-select none so copying gives the real text"
+  ],
+  "content": {
+    "eyebrow": "Observation log · Dish 04 / 07",
+    "heading": "Signal found\\nat 1420 MHz.",
+    "status": "Hydrogen line · drift corrected 0.003 Hz · 04:12:51 UTC (cycles through four readings)",
+    "nav": ["Archive", "Observations", "Instruments", "Contact"]
+  },
+  "avoid": [
+    "random Unicode, emoji or katakana rain",
+    "inline-block per character (breaks word wrapping)",
+    "any layout shift while scrambling",
+    "React state updates per frame",
+    "colour cycling, blur or persistent glow",
+    "scrambling punctuation in auto mode"
+  ]
+}

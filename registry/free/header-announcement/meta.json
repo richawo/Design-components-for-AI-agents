@@ -1,0 +1,23 @@
+{
+  "slug": "header-announcement",
+  "name": "Announcement Strip",
+  "tier": "free",
+  "platform": "web",
+  "category": "headers",
+  "description": "A slim announcement strip for the top of a site: messages roll vertically, a New badge shimmers once, and dismissing glides the page up instead of jumping.",
+  "tags": ["announcement bar", "banner", "header", "top bar", "carousel", "dismissible", "dark"],
+  "dependencies": ["motion"],
+  "theme": "dark",
+  "previewHeight": 420,
+  "usage": "import { HeaderAnnouncement } from \"@/components/design-for-ai/header-announcement\";\n\n<HeaderAnnouncement\n  messages={[\n    { id: \"v2\", badge: \"New\", text: \"Acme 2.0 ships offline mode.\", link: { label: \"Read more\", href: \"/blog/2-0\" } },\n  ]}\n  open={!dismissed}\n  onDismiss={(id) => saveDismissed(id)}\n/>\n<SiteHeader />",
+  "props": [
+    { "name": "messages", "type": "{ id: string; badge?: string; text: string; short?: string; link?: { label: string; href: string } }[]", "description": "Messages to rotate through. `short` replaces `text` under 672px of container width." },
+    { "name": "interval", "type": "number", "default": "5200", "description": "Milliseconds each message stays up. Pauses on hover, focus, offscreen and with reduced motion." },
+    { "name": "open", "type": "boolean", "description": "Controlled visibility. Omit to let the strip hide itself on dismiss." },
+    { "name": "defaultOpen", "type": "boolean", "default": "true", "description": "Starting visibility when uncontrolled." },
+    { "name": "onDismiss", "type": "(id: string) => void", "description": "Called when the strip is dismissed, with the id of the message on show." },
+    { "name": "storageKey", "type": "string", "description": "Optional. Remembers dismissal in localStorage under this key (wrapped in try/catch)." },
+    { "name": "className", "type": "string", "default": "\"\"", "description": "Extra classes on the strip." }
+  ],
+  "added": "2026-10-09"
+}

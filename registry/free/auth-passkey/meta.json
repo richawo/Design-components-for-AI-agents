@@ -1,0 +1,27 @@
+{
+  "slug": "auth-passkey",
+  "name": "Passkey Sign-in",
+  "tier": "free",
+  "platform": "web",
+  "category": "auth",
+  "description": "A passkey sign-in card with a hand-drawn fingerprint: a scan line sweeps it while the device answers, and on success it lights from the core outward.",
+  "tags": ["auth", "passkey", "webauthn", "sign in", "login", "fingerprint", "biometric", "dark"],
+  "dependencies": ["motion"],
+  "theme": "dark",
+  "previewHeight": 820,
+  "usage": "import { AuthPasskey } from \"@/components/design-for-ai/auth-passkey\";\n\n<AuthPasskey\n  brand=\"Acme\"\n  onAuthenticate={async (signal) => {\n    const options = await fetch(\"/api/passkey/options\").then((r) => r.json());\n    const credential = await navigator.credentials.get({ publicKey: options, signal });\n    const user = await fetch(\"/api/passkey/verify\", { method: \"POST\", body: JSON.stringify(credential) }).then((r) => r.json());\n    return { name: user.name };\n  }}\n  onSuccess={() => router.push(\"/app\")}\n  onFallback={() => setMode(\"email\")}\n/>",
+  "props": [
+    { "name": "onAuthenticate", "type": "(signal: AbortSignal) => Promise<PasskeyResult | void>", "description": "Runs the WebAuthn ceremony. Resolve to sign in. Reject with NotAllowedError or AbortError for a calm cancel, anything else for the error state. Defaults to a 2.4s simulated success." },
+    { "name": "onSuccess", "type": "(result: PasskeyResult) => void", "description": "Called once the success animation has settled (about 1.4s)." },
+    { "name": "onFallback", "type": "() => void", "description": "“Use email instead”, and the primary action when passkeys are unsupported." },
+    { "name": "supported", "type": "boolean", "description": "Force passkey support on or off. Undefined feature-detects window.PublicKeyCredential." },
+    { "name": "timeoutMs", "type": "number", "default": "60000", "description": "Abort the ceremony and show the timed-out state after this long." },
+    { "name": "brand", "type": "string", "default": "\"Fathom\"", "description": "Product name beside the mark." },
+    { "name": "title", "type": "string", "default": "\"Welcome back\"", "description": "Card heading." },
+    { "name": "description", "type": "string", "description": "One line under the heading." },
+    { "name": "credentialHint", "type": "string", "default": "\"iCloud Keychain · last used Tuesday\"", "description": "Quiet mono line under the glyph while idle." },
+    { "name": "buttonLabel", "type": "string", "default": "\"Sign in with passkey\"", "description": "Primary button label." },
+    { "name": "fallbackLabel", "type": "string", "default": "\"Use email instead\"", "description": "Label of the fallback link." }
+  ],
+  "added": "2026-10-09"
+}

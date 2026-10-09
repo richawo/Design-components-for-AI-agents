@@ -1,0 +1,46 @@
+{
+  "component": "AuthPasskey",
+  "intent": "A focused passkey sign-in card where a hand-drawn fingerprint is the interface: it draws in, a scan line reads it while the device answers, and success fills it with light from the core outward.",
+  "platform": "web",
+  "stack": { "framework": "React 19", "styling": "Tailwind CSS v4", "animation": "motion/react (pathLength, SVG masks, AnimatePresence)", "icons": "none: every glyph is hand-drawn SVG" },
+  "layout": {
+    "card": "max-width 400px, #0b0b0c, 1px white/8% border, radius 28px, inset top highlight, padding 40/36/28px (32/24/24px under 360px container), centred stack",
+    "glyph": "164px well (148px small) with 7% hairline and inner shadow; 130px svg in a 120 viewBox clipped to r=47",
+    "status": "reserved 52px live region",
+    "actions": "48px primary button radius 14px full width; 44px secondary row for Cancel / Use email instead"
+  },
+  "typography": {
+    "heading": { "font": "display (Geist)", "weight": 600, "size": "clamp(1.6rem, 1.3rem + 1.2cqi, 1.875rem)", "tracking": "-0.035em", "leading": 1.05 },
+    "body": { "size": "14.5px", "leading": 1.55, "color": "#8b8b93" },
+    "hint": { "font": "mono", "size": "11.5px", "color": "#6c6c74" }
+  },
+  "color": { "stage": "#000000", "card": "#0b0b0c", "text": "#f4f4f5", "muted": "#8b8b93", "ridges": "white/26%", "scan": "#f4f7ff", "success": "#8ff0c4", "error": "#ff8a8a", "button": "#f4f4f5 bg, #0b0b0c text" },
+  "motion": {
+    "entrance": "card y 12 → 0 + fade 600ms ease-out; ridges pathLength 0 → 1 over 900ms, delay 250ms + 550ms × normalised distance from the core",
+    "awaiting": "34-unit gradient band masks a bright ridge layer and a 1px scan line; travels top → bottom → top in 2.6s ease-in-out, looping",
+    "success": "radial mask r 0 → 90 over 850ms lights mint ridges from the core outward; bloom fades in; badge springs in at 550ms (500/28) and its check draws over 360ms",
+    "cancel": "glyph settles scale 1 → .97 → 1 over 600ms, ridges dim to white/20%",
+    "swaps": "copy and labels cross-fade with 6–8px offset and 3–4px blur, 220ms in, 120ms out",
+    "press": "button scale .975",
+    "reducedMotion": "no drawing, band parked at centre, fades only"
+  },
+  "responsive": { "narrow": "under a 360px container: tighter padding, 148px well", "wide": "card caps at 400px, centred on the stage" },
+  "accessibility": [
+    "section aria-labelledby the heading",
+    "status block aria-live=polite, aria-atomic",
+    "svg role=img with a state-aware label",
+    "primary button aria-busy while waiting",
+    "Cancel returns focus to the primary button",
+    "2px white focus-visible outline, keyboard only",
+    "44px minimum targets"
+  ],
+  "content": {
+    "brand": "Fathom",
+    "title": "Welcome back",
+    "description": "Sign in with the passkey saved on this device. Nothing to type, nothing to remember.",
+    "credentialHint": "iCloud Keychain · last used Tuesday",
+    "states": "idle, awaiting, success, cancelled, timeout, unsupported, error",
+    "api": "onAuthenticate(signal) => Promise; NotAllowedError/AbortError = cancel; timeoutMs aborts"
+  },
+  "avoid": ["icon-library fingerprint", "pulsing glow rings", "blue biometric gradients", "shake or confetti", "a page or marketing copy around the card", "red walls of error text"]
+}

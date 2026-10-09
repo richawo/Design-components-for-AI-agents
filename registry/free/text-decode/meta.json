@@ -1,0 +1,25 @@
+{
+  "slug": "text-decode",
+  "name": "Text Decode",
+  "tier": "free",
+  "platform": "web",
+  "category": "text",
+  "description": "A case-aware scramble that decodes text left to right on view and hover, with reserved widths so lines never reflow and a brief flash as each letter lands.",
+  "tags": ["text", "scramble", "decode", "text effect", "hover", "monospace", "typography", "link"],
+  "dependencies": ["motion"],
+  "theme": "dark",
+  "previewHeight": 720,
+  "usage": "import { TextDecode } from \"@/components/design-for-ai/text-decode\";\n\n<h1 className=\"font-display text-6xl tracking-tight\">\n  <TextDecode text=\"Build log, decoded.\" trigger=\"view\" />\n</h1>\n\n<a href=\"/work\" className=\"font-mono uppercase\">\n  <TextDecode text=\"Work\" trigger=\"hover\" glyphs=\"symbols\" />\n</a>",
+  "props": [
+    { "name": "text", "type": "string", "default": "\"Signal found at 1420 MHz.\"", "description": "The text. \\n makes a hard break; long lines wrap normally. Changing it scrambles the old value into the new one." },
+    { "name": "trigger", "type": "\"view\" | \"hover\" | \"both\"", "default": "\"both\"", "description": "Decode once when 30% visible, on pointer enter or keyboard focus (of the nearest link or button), or both." },
+    { "name": "speed", "type": "number", "default": "32", "description": "Characters per second for the resolving edge. Long strings are capped at about 1.1s." },
+    { "name": "glyphs", "type": "\"auto\" | \"symbols\" | \"blocks\" | \"binary\" | \"hex\" | string", "default": "\"auto\"", "description": "Glyph set. auto keeps case and digits in their own class and leaves punctuation alone; any other string is used as-is." },
+    { "name": "flashColor", "type": "string", "default": "\"#ffffff\"", "description": "Colour of the flash as each character lands." },
+    { "name": "delay", "type": "number", "default": "0", "description": "Milliseconds before the on-view decode, for staggering lines." },
+    { "name": "replayKey", "type": "string | number", "description": "Change it to replay the decode." },
+    { "name": "as", "type": "\"span\" | \"p\" | \"div\" | \"h1\" | \"h2\" | \"h3\" | \"h4\" | \"li\" | \"strong\"", "default": "\"span\"", "description": "Element to render." },
+    { "name": "onDone", "type": "() => void", "description": "Called when a decode finishes." }
+  ],
+  "added": "2026-10-09"
+}
