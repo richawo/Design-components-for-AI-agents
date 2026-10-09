@@ -22,10 +22,15 @@ const targets = index.filter((e) => e.hasSource && (!only.length || only.include
 
 for (const e of targets) {
   const mobile = e.platform === "mobile";
-  const page = await browser.newPage({ viewport: mobile ? { width: 390, height: 844 } : { width: 1440, height: 900 }, deviceScaleFactor: mobile ? 2 : 1, reducedMotion: "no-preference" });
+  // Headers and footers are thin strips at 1440; a narrower viewport (same 16:10)
+  // lets them fill more of the card.
+  const strip = e.category === "headers" || e.category === "footers";
+  const page = await browser.newPage({ viewport: mobile ? { width: 390, height: 844 } : strip ? { width: 1024, height: 640 } : { width: 1440, height: 900 }, deviceScaleFactor: mobile ? 2 : 1, reducedMotion: "no-preference" });
   try {
-    await page.goto(`${base}/preview/${e.slug}`, { waitUntil: "networkidle", timeout: 120000 });
-    await page.waitForTimeout(2800);
+    // "load", not "networkidle": live components (tickers, polling demos) never go idle.
+    await page.goto(`${base}/preview/${e.slug}`, { waitUntil: "load", timeout: 120000 });
+    // WebGL scenes render through software GL here; give them longer to settle.
+    await page.waitForTimeout(e.category === "three-d" || e.dependencies.includes("three") ? 6000 : 3200);
     const png = await page.screenshot({ type: "png" });
     let img;
     if (mobile) {
