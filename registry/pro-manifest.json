@@ -1873,6 +1873,40 @@
     "added": "2026-10-09"
   },
   {
+    "slug": "three-keycaps",
+    "name": "Keycaps",
+    "tier": "pro",
+    "platform": "web",
+    "category": "three-d",
+    "description": "A tilted cluster of sculpted Three.js keycaps that answer your real keyboard. Caps sink on a spring, light bleeds from beneath, and chords like ⌘K show their caption.",
+    "tags": [
+      "three.js",
+      "webgl",
+      "3d",
+      "keyboard",
+      "keycaps",
+      "shortcuts",
+      "command menu",
+      "shader",
+      "interactive"
+    ],
+    "dependencies": [
+      "three",
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 700,
+    "usage": "import { ThreeKeycaps } from \"@/components/design-for-ai/three-keycaps\";\n\n<div className=\"h-[520px]\">\n  <ThreeKeycaps\n    chords={[{ keys: [\"cmd\", \"k\"], caption: \"Search everything\" }]}\n    palette={{ accent: \"#3b82f6\", glow: \"#8ab4ff\" }}\n  />\n</div>",
+    "props": [
+      {
+        "name": "rows",
+        "type": "KeycapDef[][]",
+        "description": "x"
+      }
+    ],
+    "added": "2026-10-09"
+  },
+  {
     "slug": "three-particle-sphere",
     "name": "Particle Sphere",
     "tier": "pro",
