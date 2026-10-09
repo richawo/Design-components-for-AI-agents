@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { DitherGlow } from "@/components/site/dither-glow";
 import { Faq, faqJsonLd, type QA } from "@/components/site/faq";
 import { JsonLd } from "@/components/site/json-ld";
 import { PricingPlans } from "@/components/site/pricing-plans";
@@ -45,7 +46,9 @@ export default function PricingPage() {
   const prices = Object.fromEntries(PLANS.map((p) => [p.id, p.price]));
   return (
     <div className="relative isolate mx-auto max-w-[80rem] px-5 pb-28 sm:px-8">
-      <div aria-hidden="true" className="absolute left-1/2 top-[-14rem] -z-10 h-[30rem] w-[56rem] max-w-full -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(255,122,69,0.16),transparent)] blur-2xl" />
+      <div aria-hidden="true" className="absolute inset-x-0 -top-16 -z-10 h-[36rem]">
+        <DitherGlow className="[mask-image:linear-gradient(180deg,#000_40%,transparent)]" />
+      </div>
       <JsonLd
         data={[
           faqJsonLd(FAQ),

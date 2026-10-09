@@ -104,6 +104,43 @@
   }
 }
 
+/* Light leaks: two huge, very soft pools of light that drift over 70–90s.
+   Transform-only animation, so it composites for free. */
+.site-leaks {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.site-leaks::before,
+.site-leaks::after {
+  content: "";
+  position: absolute;
+  width: 70vmax;
+  height: 70vmax;
+  border-radius: 9999px;
+  filter: blur(60px);
+  will-change: transform;
+}
+.site-leaks::before {
+  left: -25vmax;
+  top: -40vmax;
+  background: radial-gradient(closest-side, rgba(255, 122, 69, 0.11), rgba(255, 77, 109, 0.04) 55%, transparent 72%);
+  animation: site-leak-a 84s ease-in-out infinite alternate;
+}
+.site-leaks::after {
+  right: -30vmax;
+  top: -30vmax;
+  background: radial-gradient(closest-side, rgba(255, 231, 209, 0.06), rgba(255, 179, 138, 0.025) 55%, transparent 72%);
+  animation: site-leak-b 72s ease-in-out infinite alternate;
+}
+@keyframes site-leak-a {
+  to { transform: translate3d(22vmax, 10vmax, 0) scale(1.15); }
+}
+@keyframes site-leak-b {
+  to { transform: translate3d(-18vmax, 14vmax, 0) scale(0.92); }
+}
+
 /* Film grain over everything. A fixed SVG turbulence tile, 3.5% opacity. */
 .site-grain::after {
   content: "";
@@ -188,6 +225,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .site-beam::before { animation: none; }
+  .site-leaks::before, .site-leaks::after { animation: none; }
   .site-pop, .site-draw, .site-rise { animation: none; }
   .site-disclosure details::details-content { transition: none; }
 }

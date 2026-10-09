@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { CopyButton } from "@/components/site/copy-button";
+import { DitherGlow } from "@/components/site/dither-glow";
 import { Faq, faqJsonLd, type QA } from "@/components/site/faq";
 import { JsonLd } from "@/components/site/json-ld";
 import { LiveSlot } from "@/components/site/live-slot";
@@ -80,8 +81,8 @@ export default async function HomePage() {
 
       {/* ---------------------------------------------------------------- Hero */}
       <section className="relative isolate -mt-16 overflow-hidden pt-16">
-        <div aria-hidden="true" className="site-grid absolute inset-0 -z-10" />
-        <div aria-hidden="true" className="absolute left-1/2 top-[-18rem] -z-10 h-[38rem] w-[60rem] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(255,122,69,0.22),rgba(255,77,109,0.08)_55%,transparent)] blur-2xl" />
+        <div aria-hidden="true" className="site-leaks -z-10" />
+        <DitherGlow className="-z-10 [mask-image:linear-gradient(180deg,#000_55%,transparent)]" />
         <div aria-hidden="true" className="absolute inset-x-0 top-0 -z-10 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
 
         <div className="mx-auto max-w-[80rem] px-5 pb-16 pt-20 text-center sm:px-8 sm:pt-28 lg:pb-20">
@@ -198,7 +199,7 @@ export default async function HomePage() {
 
       {/* ---------------------------------------------------------- Categories */}
       <section className="relative border-t border-white/[0.07]">
-        <div aria-hidden="true" className="site-dots absolute inset-0 -z-10 opacity-40 [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000,transparent)]" />
+        <div aria-hidden="true" className="site-leaks -z-10 opacity-60 [mask-image:linear-gradient(180deg,#000,transparent_70%)]" />
         <div className="mx-auto max-w-[80rem] px-5 py-24 sm:px-8 lg:py-32">
           <SectionHead
             eyebrow="The library"
