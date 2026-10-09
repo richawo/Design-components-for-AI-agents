@@ -1176,7 +1176,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "hero",
-    "description": "A centred hero over a blueprint field where a three.js glass prism splits a thin white beam into a restrained spectrum that follows the cursor.",
+    "description": "A dark hero where a glass prism splits a hairline beam into a real, Snell's-law spectrum: the beam travels in, the spectrum unfurls, the cursor steers it.",
     "tags": [
       "hero",
       "three.js",
@@ -3095,7 +3095,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "portfolio",
-    "description": "A studio work index in huge display type. On desktop a cover card follows the cursor on springs and tilts with its velocity, while the other rows dim away.",
+    "description": "A dark studio work index in huge type: rows stagger in as their rules draw, and on desktop a cover card follows the cursor on springs, tilting with velocity.",
     "tags": [
       "portfolio",
       "work index",
@@ -3104,19 +3104,21 @@
       "cursor follow",
       "agency",
       "studio",
-      "dark"
+      "dark",
+      "light",
+      "stagger"
     ],
     "dependencies": [
       "motion"
     ],
     "theme": "dark",
     "previewHeight": 1100,
-    "usage": "import { WorkIndexHover } from \"@/components/design-for-ai/work-index-hover\";\n\n<WorkIndexHover\n  title=\"Recent work\"\n  projects={[{ year: \"2026\", client: \"Acme\", discipline: \"Brand\", href: \"/work/acme\", cover: \"ferry\", color: \"#ffb43b\" }]}\n/>",
+    "usage": "import { WorkIndexHover } from \"@/components/design-for-ai/work-index-hover\";\n\n<WorkIndexHover\n  title=\"Recent work\"\n  projects={[{ year: \"2026\", client: \"Acme\", discipline: \"Brand\", href: \"/work/acme\", cover: \"ferry\" }]}\n  theme=\"dark\"\n/>",
     "props": [
       {
         "name": "projects",
         "type": "Project[]",
-        "description": "year, client, discipline, href, cover art key and accent colour."
+        "description": "year, client, discipline, href, cover art key, and an optional chip colour (defaults to accent)."
       },
       {
         "name": "title",
@@ -3139,6 +3141,24 @@
         "type": "string",
         "default": "\"View case\"",
         "description": "Chip label on the floating card."
+      },
+      {
+        "name": "columns",
+        "type": "[string, string, string]",
+        "default": "[\"Year\", \"Client\", \"Discipline\"]",
+        "description": "Column labels over the rows on wide containers."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "ink",
+        "description": "Fill of the active row's arrow chip and the focus ring."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Near-black or paper. Covers keep their own colours."
       }
     ],
     "added": "2026-10-07"
