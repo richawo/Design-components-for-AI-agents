@@ -1,5 +1,202 @@
 [
   {
+    "slug": "auth-otp",
+    "name": "One-time Code",
+    "tier": "pro",
+    "platform": "web",
+    "category": "auth",
+    "description": "A six-digit verification code input that rolls digits in, ripples on paste, shakes wrong codes away and fuses into a single Verified pill on success.",
+    "tags": [
+      "otp",
+      "one-time code",
+      "verification",
+      "2fa",
+      "auth",
+      "pin input",
+      "magic code",
+      "form"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 720,
+    "usage": "import { AuthOtp } from \"@/components/design-for-ai/auth-otp\";\n\n<AuthOtp\n  channel=\"email\"\n  destination={user.email}\n  onVerify={async (code) => {\n    const res = await fetch(\"/api/verify\", { method: \"POST\", body: JSON.stringify({ code }) });\n    if (res.status === 410) return { ok: false, reason: \"expired\" };\n    if (res.status === 429) return { ok: false, reason: \"locked\" };\n    if (!res.ok) return { ok: false, reason: \"invalid\", attemptsLeft: Number(res.headers.get(\"X-Attempts-Left\")) };\n    return { ok: true };\n  }}\n  onResend={() => fetch(\"/api/verify/resend\", { method: \"POST\" }).then(() => undefined)}\n  onChangeDestination={(email) => sendCode(email)}\n  onVerified={() => router.push(\"/app\")}\n/>",
+    "props": [
+      {
+        "name": "onVerify",
+        "type": "(code: string) => Promise<OtpVerifyResult | void>",
+        "description": "Runs as soon as the last digit lands. Resolve { ok: true }, { ok: false, reason: \"invalid\", attemptsLeft }, { ok: false, reason: \"expired\" } or { ok: false, reason: \"locked\" }."
+      },
+      {
+        "name": "onResend",
+        "type": "() => Promise<void>",
+        "description": "Sends a fresh code. The countdown restarts once it resolves."
+      },
+      {
+        "name": "onChangeDestination",
+        "type": "(value: string) => Promise<void>",
+        "description": "Inline “Edit”: send a code to a new address. Resolve when sent."
+      },
+      {
+        "name": "onEdit",
+        "type": "() => void",
+        "description": "If set, “Edit” calls this instead of opening the inline editor."
+      },
+      {
+        "name": "onVerified",
+        "type": "() => void",
+        "description": "Called after the merge-to-pill animation settles."
+      },
+      {
+        "name": "length",
+        "type": "number",
+        "default": "6",
+        "description": "Number of digits, split into two groups."
+      },
+      {
+        "name": "channel",
+        "type": "\"email\" | \"sms\"",
+        "default": "\"email\"",
+        "description": "Sets the glyph, heading and editor input type."
+      },
+      {
+        "name": "destination",
+        "type": "string",
+        "default": "\"ines.moreau@halyard.app\"",
+        "description": "Where the code went, shown in full."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Check your inbox\" / \"Check your phone\"",
+        "description": "Card heading."
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "default": "\"Enter the 6-digit code we just sent to\"",
+        "description": "Lead-in before the destination."
+      },
+      {
+        "name": "resendAfter",
+        "type": "number",
+        "default": "30",
+        "description": "Seconds before Resend unlocks."
+      },
+      {
+        "name": "footnote",
+        "type": "string",
+        "description": "Fine print under the resend row."
+      },
+      {
+        "name": "autoFocus",
+        "type": "boolean",
+        "default": "true",
+        "description": "Focus the code on mount."
+      }
+    ],
+    "added": "2026-10-09"
+  },
+  {
+    "slug": "auth-sso-detect",
+    "name": "SSO-Aware Sign-in",
+    "tier": "pro",
+    "platform": "web",
+    "category": "auth",
+    "description": "A work-email sign-in that reads the domain as you type: the password folds away, the button becomes Continue with Okta, and shared domains get a workspace picker.",
+    "tags": [
+      "auth",
+      "sso",
+      "single sign-on",
+      "login",
+      "okta",
+      "enterprise",
+      "workspace picker",
+      "form",
+      "light"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "light",
+    "previewHeight": 900,
+    "usage": "import { AuthSsoDetect } from \"@/components/design-for-ai/auth-sso-detect\";\n\n<AuthSsoDetect\n  brand=\"Acme\"\n  title=\"Sign in to Acme\"\n  detect={async (domain) => {\n    const res = await fetch(`/api/sso/lookup?domain=${domain}`);\n    return res.json(); // SsoWorkspace[]: [] means password sign-in\n  }}\n  onSsoContinue={async (workspace, email) => {\n    window.location.assign(`/api/sso/start?ws=${workspace.id}&login_hint=${encodeURIComponent(email)}`);\n  }}\n  onPasswordSignIn={async (email, password) => {\n    const res = await fetch(\"/api/login\", { method: \"POST\", body: JSON.stringify({ email, password }) });\n    if (!res.ok) throw new Error(\"That password doesn’t match.\");\n  }}\n/>",
+    "props": [
+      {
+        "name": "detect",
+        "type": "(domain: string) => Promise<SsoWorkspace[]>",
+        "description": "Look a domain up. [] keeps email + password; one workspace morphs to SSO; several show the picker. Defaults to a lookup in `directory`."
+      },
+      {
+        "name": "directory",
+        "type": "Record<string, SsoWorkspace[]>",
+        "description": "Static domain → workspaces map used when `detect` is not given. Demo domains: acme.com, globex.com, contoso.com, initech.io."
+      },
+      {
+        "name": "debounceMs",
+        "type": "number",
+        "default": "420",
+        "description": "Quiet time after the last keystroke before the domain is checked."
+      },
+      {
+        "name": "onSsoContinue",
+        "type": "(workspace: SsoWorkspace, email: string) => Promise<void>",
+        "description": "Start the redirect. The button shows redirect progress until it resolves; reject with an Error to show its message."
+      },
+      {
+        "name": "onPasswordSignIn",
+        "type": "(email: string, password: string) => Promise<void>",
+        "description": "Password sign-in for non-SSO domains. Reject with an Error to show it under the password field."
+      },
+      {
+        "name": "email",
+        "type": "string",
+        "description": "Controlled email value. Pair with onEmailChange, or use defaultEmail."
+      },
+      {
+        "name": "defaultEmail",
+        "type": "string",
+        "default": "\"\"",
+        "description": "Initial email when uncontrolled."
+      },
+      {
+        "name": "onEmailChange",
+        "type": "(email: string) => void",
+        "description": "Called on every edit."
+      },
+      {
+        "name": "onForgotPassword",
+        "type": "() => void",
+        "description": "The “Forgot?” link."
+      },
+      {
+        "name": "brand",
+        "type": "string",
+        "default": "\"Plinth\"",
+        "description": "Product name beside the mark."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Sign in to Plinth\"",
+        "description": "Card heading."
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "One line under the heading."
+      },
+      {
+        "name": "signUpHref",
+        "type": "string",
+        "default": "\"#\"",
+        "description": "Target of the “Start a free trial” link."
+      }
+    ],
+    "added": "2026-10-09"
+  },
+  {
     "slug": "chart-allocation",
     "name": "Allocation Donut",
     "tier": "pro",
@@ -353,7 +550,7 @@
       "motion"
     ],
     "theme": "dark",
-    "previewHeight": 640,
+    "previewHeight": 580,
     "usage": "import { FooterAsciiWordmark } from \"@/components/design-for-ai/footer-ascii-wordmark\";\n\nexport default function SiteFooter() {\n  return (\n    <FooterAsciiWordmark\n      wordmark=\"tidepool\"\n      stacked={[\"tide\", \"pool\"]}\n      kicker=\"Tidepool · Lisbon\"\n      signOff=\"Feature flags for teams who ship on Fridays and sleep anyway.\"\n      accent=\"#7dd3fc\"\n    />\n  );\n}",
     "props": [
       {
@@ -418,6 +615,69 @@
         "type": "string",
         "default": "\"/\\\\|<>{}[]=+*#%&$@01?\"",
         "description": "Glyphs the lens scrambles through."
+      }
+    ],
+    "added": "2026-10-09"
+  },
+  {
+    "slug": "header-island",
+    "name": "Dynamic Island Header",
+    "tier": "pro",
+    "platform": "web",
+    "category": "headers",
+    "description": "A black pill header that morphs like a dynamic island into search, a live deploy notification and an account menu, with a blob spring and blurred content swaps.",
+    "tags": [
+      "dynamic island",
+      "header",
+      "navbar",
+      "search",
+      "notification",
+      "morphing",
+      "command k"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "light",
+    "previewHeight": 560,
+    "usage": "import { HeaderIsland } from \"@/components/design-for-ai/header-island\";\n\n<HeaderIsland\n  brand={{ name: \"Acme\", href: \"/\" }}\n  links={[{ label: \"Home\", href: \"/\" }, { label: \"Projects\", href: \"/projects\" }, { label: \"Docs\", href: \"/docs\" }]}\n  notification={deploy}\n  onNotificationClose={() => setDeploy(null)}\n  onSelect={(item) => runCommand(item.id)}\n/>",
+    "props": [
+      {
+        "name": "brand",
+        "type": "{ name: string; href: string }",
+        "description": "x"
+      }
+    ],
+    "added": "2026-10-09"
+  },
+  {
+    "slug": "header-morph-mega",
+    "name": "Morphing Mega Menu",
+    "tier": "pro",
+    "platform": "web",
+    "category": "headers",
+    "description": "A Stripe-style header whose single dropdown panel morphs its width, height and position between menus, with direction-aware content and a springing caret.",
+    "tags": [
+      "mega menu",
+      "header",
+      "navbar",
+      "dropdown",
+      "navigation",
+      "morphing",
+      "light"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "light",
+    "previewHeight": 640,
+    "usage": "import { HeaderMorphMega } from \"@/components/design-for-ai/header-morph-mega\";\n\n<HeaderMorphMega\n  brand={{ name: \"Acme\", href: \"/\" }}\n  sections={[\n    { label: \"Product\", columns: [{ heading: \"Build\", links: [{ label: \"Docs\", href: \"/docs\", glyph: \"docs\" }] }] },\n  ]}\n  cta={{ label: \"Get started\", href: \"/signup\" }}\n/>",
+    "props": [
+      {
+        "name": "brand",
+        "type": "{ name: string; href: string }",
+        "default": "{ name: \"Ledgerline\", href: \"#\" }",
+        "description": "Wordmark and home link."
       }
     ],
     "added": "2026-10-09"
@@ -498,6 +758,80 @@
     "added": "2026-10-07"
   },
   {
+    "slug": "hero-prism",
+    "name": "Prism Hero",
+    "tier": "pro",
+    "platform": "web",
+    "category": "hero",
+    "description": "A centred hero over a blueprint field where a three.js glass prism splits a thin white beam into a restrained spectrum that follows the cursor.",
+    "tags": [
+      "hero",
+      "three.js",
+      "webgl",
+      "prism",
+      "spectrum",
+      "refraction",
+      "blueprint",
+      "dark",
+      "shader"
+    ],
+    "dependencies": [
+      "motion",
+      "three"
+    ],
+    "theme": "dark",
+    "previewHeight": 900,
+    "usage": "import { HeroPrism } from \"@/components/design-for-ai/hero-prism\";\n\n<HeroPrism\n  eyebrow=\"Halide 3 — Event analytics\"\n  headline=\"One stream in. Every answer out.\"\n  muted=\"Every answer out.\"\n  primary={{ label: \"Start free\", href: \"/signup\" }}\n/>",
+    "props": [
+      {
+        "name": "eyebrow",
+        "type": "string",
+        "default": "\"Halide 3 — Event analytics\"",
+        "description": "Mono line above the headline."
+      },
+      {
+        "name": "headline",
+        "type": "string",
+        "default": "\"One stream in. Every answer out.\"",
+        "description": "The headline, centred, balanced to at most 14ch."
+      },
+      {
+        "name": "muted",
+        "type": "string",
+        "default": "\"Every answer out.\"",
+        "description": "Substring of the headline set at 42% white."
+      },
+      {
+        "name": "body",
+        "type": "string",
+        "description": "Supporting paragraph, max 52ch."
+      },
+      {
+        "name": "primary",
+        "type": "{ label: string; href: string }",
+        "description": "White pill button; the arrow nudges 2px on hover."
+      },
+      {
+        "name": "secondary",
+        "type": "{ label: string; href: string }",
+        "description": "Dark hairline pill that stays legible over the field."
+      },
+      {
+        "name": "dispersion",
+        "type": "number",
+        "default": "0.5",
+        "description": "How wide the spectrum fans, 0–1. 0.5 is restrained; 1 is still tasteful."
+      },
+      {
+        "name": "readout",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show the live incidence and deviation readout beside the prism (wide containers only)."
+      }
+    ],
+    "added": "2026-10-09"
+  },
+  {
     "slug": "hero-product-stack",
     "name": "Product Stack Hero",
     "tier": "pro",
@@ -574,6 +908,123 @@
       }
     ],
     "added": "2026-10-07"
+  },
+  {
+    "slug": "input-ai-prompt",
+    "name": "AI Prompt Composer",
+    "tier": "pro",
+    "platform": "web",
+    "category": "ai",
+    "description": "A prompt composer with file chips, a model picker, slash commands, live mic levels and token hints. While the agent thinks, a comet of light circles the border.",
+    "tags": [
+      "ai",
+      "prompt",
+      "composer",
+      "chat input",
+      "textarea",
+      "slash commands",
+      "model picker",
+      "voice input",
+      "file upload",
+      "dark"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 760,
+    "usage": "import { InputAiPrompt } from \"@/components/design-for-ai/input-ai-prompt\";\nimport { useChat } from \"@ai-sdk/react\";\n\nconst { status, error, sendMessage, stop, regenerate } = useChat();\n\n<InputAiPrompt\n  status={status}\n  error={error?.message}\n  onSubmit={({ text, model }) => sendMessage({ text }, { body: { model } })}\n  onStop={stop}\n  onRetry={regenerate}\n  onUpload={(file, onProgress) => uploadWithProgress(\"/api/files\", file, onProgress)}\n/>",
+    "props": [
+      {
+        "name": "status",
+        "type": "\"ready\" | \"submitted\" | \"streaming\" | \"error\"",
+        "description": "Controlled request status, the same shape as the AI SDK's useChat. Undefined simulates thinking → streaming → ready."
+      },
+      {
+        "name": "error",
+        "type": "string",
+        "description": "Message shown with Retry when status is \"error\"."
+      },
+      {
+        "name": "onSubmit",
+        "type": "(s: PromptSubmission) => void",
+        "description": "Called with { text, model, attachments } on Send or ⌘/Ctrl+Enter. Only finished uploads are included."
+      },
+      {
+        "name": "onStop",
+        "type": "() => void",
+        "description": "Stop button (and Escape) while thinking or streaming."
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Retry button in the error strip."
+      },
+      {
+        "name": "models",
+        "type": "PromptModel[]",
+        "description": "{ id, name, description, tag? } for the model popover."
+      },
+      {
+        "name": "defaultModel",
+        "type": "string",
+        "description": "Model id selected on mount. Defaults to the first."
+      },
+      {
+        "name": "onModelChange",
+        "type": "(id: string) => void",
+        "description": "Called when a model is picked."
+      },
+      {
+        "name": "commands",
+        "type": "SlashCommand[]",
+        "description": "{ name, description } suggestions shown after typing /."
+      },
+      {
+        "name": "maxTokens",
+        "type": "number",
+        "default": "8000",
+        "description": "Budget for the token hint (≈ chars / 4). Amber past 80%; over it, Send disables."
+      },
+      {
+        "name": "maxFileSize",
+        "type": "number",
+        "default": "26214400",
+        "description": "Bytes. Larger files become error chips."
+      },
+      {
+        "name": "accept",
+        "type": "string",
+        "description": "accept attribute for the file picker."
+      },
+      {
+        "name": "onUpload",
+        "type": "(file: File, onProgress: (p: number) => void) => Promise<void>",
+        "description": "Upload one file and report progress 0–1. Reject to show an error chip with Retry. Defaults to a simulated upload."
+      },
+      {
+        "name": "defaultAttachments",
+        "type": "PromptAttachment[]",
+        "description": "Chips to start with (status uploading | done | error)."
+      },
+      {
+        "name": "microphone",
+        "type": "\"simulated\" | \"real\"",
+        "default": "\"simulated\"",
+        "description": "\"real\" asks for the microphone with getUserMedia and records with MediaRecorder."
+      },
+      {
+        "name": "onTranscribe",
+        "type": "(audio: Blob | null) => Promise<string>",
+        "description": "Turn a recording into text; the result is appended to the prompt."
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "description": "Textarea placeholder."
+      }
+    ],
+    "added": "2026-10-09"
   },
   {
     "slug": "mobile-bottom-sheet",
@@ -1066,6 +1517,193 @@
       }
     ],
     "added": "2026-10-07"
+  },
+  {
+    "slug": "three-ascii-object",
+    "name": "ASCII Object",
+    "tier": "pro",
+    "platform": "web",
+    "category": "three-d",
+    "description": "A Three.js torus knot rendered entirely in mono characters from a runtime glyph atlas, with edge-aware stroke glyphs, a hover torch and drag-to-spin inertia.",
+    "tags": [
+      "three.js",
+      "webgl",
+      "ascii",
+      "shader",
+      "3d",
+      "typography",
+      "post-processing",
+      "generative"
+    ],
+    "dependencies": [
+      "three",
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 820,
+    "usage": "import { ThreeAsciiObject } from \"@/components/design-for-ai/three-ascii-object\";\n\n<div className=\"relative h-[560px]\">\n  <ThreeAsciiObject shape=\"twist\" cellSize={12} color=\"#d9f99d\" />\n</div>",
+    "props": [
+      {
+        "name": "shape",
+        "type": "\"knot\" | \"twist\"",
+        "default": "\"knot\"",
+        "description": "A 2,3 torus knot, or a square torus with chamfered edges twisted three quarter-turns."
+      },
+      {
+        "name": "ramp",
+        "type": "string",
+        "default": "\" .:-=+*#%@\"",
+        "description": "Characters from empty to dense; the first should be a space. ASCII_RAMPS exports classic, fine and blocks. Updates live."
+      },
+      {
+        "name": "cellSize",
+        "type": "number",
+        "default": "14",
+        "description": "Character cell height in CSS px; width is 0.6×. Rounded to whole device pixels so glyphs stay crisp. Updates live."
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "default": "\"#f3eadb\"",
+        "description": "Glyph tint. Brightness within the tint follows the lighting."
+      },
+      {
+        "name": "background",
+        "type": "string",
+        "default": "\"#000000\"",
+        "description": "Fill behind the glyphs."
+      },
+      {
+        "name": "edges",
+        "type": "boolean",
+        "default": "true",
+        "description": "Draw silhouettes and self-overlaps with directional stroke glyphs ( - / | \\ ) found by a depth Sobel."
+      },
+      {
+        "name": "autoRotate",
+        "type": "number",
+        "default": "0.32",
+        "description": "Idle spin in rad/s; resumes 1.2s after a drag. 0 holds still."
+      },
+      {
+        "name": "interactive",
+        "type": "boolean",
+        "default": "true",
+        "description": "Drag to turn with inertia, hover torch, arrow-key nudges."
+      },
+      {
+        "name": "onGridChange",
+        "type": "(cols: number, rows: number) => void",
+        "description": "Called when the character grid changes size."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "description": "Accessible description; a sensible default names the shape."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Classes for the host, which fills its parent."
+      }
+    ],
+    "added": "2026-10-09"
+  },
+  {
+    "slug": "three-contour-terrain",
+    "name": "Contour Terrain",
+    "tier": "pro",
+    "platform": "web",
+    "category": "three-d",
+    "description": "A drifting Three.js landscape drawn only in topographic contour lines. Click to raise a survey pin whose contours redraw outward; a readout tracks the pointer.",
+    "tags": [
+      "three.js",
+      "webgl",
+      "3d",
+      "topographic",
+      "contour lines",
+      "map",
+      "terrain",
+      "shader",
+      "glsl",
+      "hero",
+      "background"
+    ],
+    "dependencies": [
+      "three",
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 780,
+    "usage": "import { ThreeContourTerrain } from \"@/components/design-for-ai/three-contour-terrain\";\n\n<div className=\"relative h-[640px] overflow-hidden rounded-2xl\">\n  <ThreeContourTerrain title=\"Vire Basin — Sheet 4\" colors={{ accent: \"#7ee0b8\" }} />\n</div>",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Kestrel Range — Sheet 12\"",
+        "description": "Sheet title, top left."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "default": "\"Survey 1 : 25 000 · NAD-21\"",
+        "description": "Second line under the title."
+      },
+      {
+        "name": "origin",
+        "type": "[number, number]",
+        "default": "[46.4182, 8.0619]",
+        "description": "Latitude and longitude at the map's centre, for the readout."
+      },
+      {
+        "name": "baseElevation",
+        "type": "number",
+        "default": "1460",
+        "description": "Elevation of terrain height 0, in metres."
+      },
+      {
+        "name": "interval",
+        "type": "number",
+        "default": "20",
+        "description": "Contour interval in metres; every fifth line is an index contour."
+      },
+      {
+        "name": "colors",
+        "type": "{ line?: string; accent?: string }",
+        "default": "{ line: \"#ece8df\", accent: \"#f5a524\" }",
+        "description": "Contour colour and the single accent for index lines, ripples and pins."
+      },
+      {
+        "name": "speed",
+        "type": "number",
+        "default": "1",
+        "description": "Drift speed multiplier; 0 holds the map still."
+      },
+      {
+        "name": "maxPins",
+        "type": "number",
+        "default": "6",
+        "description": "Pins kept at once (up to 7); the oldest sinks back when exceeded."
+      },
+      {
+        "name": "seed",
+        "type": "number",
+        "default": "7",
+        "description": "Terrain seed."
+      },
+      {
+        "name": "chrome",
+        "type": "boolean",
+        "default": "true",
+        "description": "Sheet header, legend, scale bar, pin count and Clear button."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Classes for the root, which fills its parent."
+      }
+    ],
+    "added": "2026-10-09"
   },
   {
     "slug": "three-globe-arcs",
