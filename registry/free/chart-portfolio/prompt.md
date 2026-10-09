@@ -24,6 +24,7 @@ Build a financial-grade portfolio price chart in React + Tailwind CSS v4 (`motio
 - The line after the cursor fades to a 32% white "future" line, and the area after it disappears (clip paths).
 - A small timestamp chip follows the cursor along the top, clamped inside the plot.
 - Keyboard: the plot is focusable. Left/Right step through points (Shift jumps 10), Esc clears.
+- Entrance (once, when 35% of the card is in view): over 1.5s the line rises from the floor of the plot in a wave from left to right (each point's progress = clamp(t·1.6 − i/n·0.6), ease-out cubic), volume bars grow up with it, the area fill fades in, and the live dot pops in at the end. The headline price counts up from zero over 1.3s while a blur clears from 8px to 0; the change and the footer stats follow with 150ms and 500ms + 90ms stagger. Start in the pre-entrance state so server-rendered pages never flash. Reduced motion: no entrance.
 - Range change: resample every series to 140 points and morph between them with rAF over 650ms, ease-out quart. With reduced motion, swap instantly.
 - At rest, the last point pulses (ping).
 

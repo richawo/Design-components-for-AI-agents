@@ -48,7 +48,8 @@
     "reducedMotion": "instant swaps, no ping",
     "figures": "scrubbing is instant; range changes and pointer-leave count price, delta, percentage and stats to their new values over 450ms ease-out",
     "tooltip": "date pill rises 4px and fades in over 160ms",
-    "press": "range pills scale 0.95 on press"
+    "press": "range pills scale 0.95 on press",
+    "entrance": "Once, at 35% in view: line rises from the plot floor in a left-to-right wave over 1.5s (progress clamp(t*1.6 - i/n*0.6), ease-out cubic); volume grows with it; area fades in; live dot pops in last. Price counts up from 0 over 1.3s while blur clears 8px\u21920; change +150ms, footer stats +500ms with 90ms stagger. Starts in pre-entrance state (no SSR flash). None with reduced motion."
   },
   "responsive": {
     "mobile": "range control full width; plot 72% height; no y gutter; 3 x labels; stats 2-up",

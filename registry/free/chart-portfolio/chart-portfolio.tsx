@@ -58,6 +58,51 @@ export function ChartPortfolio({
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
+  // Entrance: the first time the card is mostly in view, the line rises from
+  // the floor in a wave from left to right, volume grows up with it, and the
+  // figures count up out of a blur. Once, and never with reduced motion.
+  const sectionRef = useRef<HTMLElement>(null);
+  const [intro, setIntro] = useState(0);
+  const [entered, setEntered] = useState(false);
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    if (reduce) {
+      setIntro(1);
+      setEntered(true);
+      return;
+    }
+    let raf = 0;
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting) return;
+        io.disconnect();
+        setEntered(true);
+        const t0 = performance.now();
+        const tick = (now: number) => {
+          const k = Math.min(1, (now - t0) / 1500);
+          setIntro(k);
+          if (k < 1) raf = requestAnimationFrame(tick);
+        };
+        raf = requestAnimationFrame(tick);
+      },
+      { threshold: 0.35 },
+    );
+    io.observe(el);
+    return () => {
+      io.disconnect();
+      cancelAnimationFrame(raf);
+    };
+  }, [reduce]);
+  const rise = useCallback(
+    (i: number) => {
+      if (intro >= 1) return 1;
+      const k = Math.min(1, Math.max(0, intro * 1.6 - (i / (SAMPLES - 1)) * 0.6));
+      return 1 - Math.pow(1 - k, 3);
+    },
+    [intro],
+  );
+
   const h = width < 520 ? Math.round(height * 0.72) : height;
   const volH = width < 520 ? 28 : 40;
   const padTop = 16;
@@ -109,7 +154,7 @@ export function ChartPortfolio({
   const x = useCallback((i: number) => (i / (SAMPLES - 1)) * plotW, [plotW]);
   const y = useCallback((v: number) => padTop + (1 - (v - min) / (max - min)) * plotH, [min, max, plotH]);
 
-  const pts = shown.map((p, i) => [x(i), y(p.v)] as const);
+  const pts = shown.map((p, i) => [x(i), y(min + (p.v - min) * rise(i))] as const);
   const line = monotonePath(pts);
   const area = `${line} L${plotW},${padTop + plotH} L0,${padTop + plotH} Z`;
 
@@ -146,7 +191,8 @@ export function ChartPortfolio({
   const tipLeft = Math.min(Math.max(cursorX, 64), plotW - 64);
 
   return (
-    <section className="@container relative w-full overflow-hidden rounded-[22px] border border-white/[0.08] bg-[#0b0b0c] p-5 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_30px_80px_-30px_rgba(0,0,0,0.9)] @xl:p-7">
+    <section ref={sectionRef} className="@container relative w-full overflow-hidden rounded-[22px] border border-white/[0.08] bg-[#0b0b0c] p-5 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_30px_80px_-30px_rgba(0,0,0,0.9)] @xl:p-7">
+      <style>{`@keyframes cp-dot-in{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}`}</style>
       <div
         aria-hidden="true"
         className="pointer-events-none absolute -top-40 left-1/2 h-72 w-[80%] -translate-x-1/2 rounded-full opacity-[0.16] blur-3xl transition-colors duration-700"
@@ -166,16 +212,18 @@ export function ChartPortfolio({
           </div>
           <p className="mt-3 font-sans text-[clamp(2rem,1.6rem+1.6vw,2.75rem)] font-medium leading-none tracking-[-0.04em] tabular-nums">
             {/* Scrubbing is instant; range changes count to the new value. */}
-            <Ticker value={value} instant={hover !== null || !!reduce} format={(v) => money.format(v)} />
+            <Ticker value={value} instant={hover !== null || !!reduce} entered={entered} duration={1300} format={(v) => money.format(v)} />
           </p>
           <p className="mt-2.5 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-sm tabular-nums">
             <span className="inline-flex items-center gap-1 font-medium" style={{ color: up ? UP : DOWN }}>
               <svg viewBox="0 0 10 10" className={`size-2.5 ${up ? "" : "rotate-180"}`} aria-hidden="true">
                 <path d="M5 1.5 9 8H1z" fill="currentColor" />
               </svg>
-              <Ticker value={Math.abs(delta)} instant={hover !== null || !!reduce} format={(v) => money.format(v)} /> ({up ? "+" : "−"}
-              <Ticker value={Math.abs(pct)} instant={hover !== null || !!reduce} format={(v) => v.toFixed(2)} />
-              %)
+              <span>
+                <Ticker value={Math.abs(delta)} instant={hover !== null || !!reduce} entered={entered} delay={150} format={(v) => money.format(v)} /> ({up ? "+" : "−"}
+                <Ticker value={Math.abs(pct)} instant={hover !== null || !!reduce} entered={entered} delay={150} format={(v) => v.toFixed(2)} />
+                %)
+              </span>
             </span>
             <span className="text-white/40">{hover === null ? caption : formatTime(target[hover].t, range, locale, true)}</span>
           </p>
@@ -261,7 +309,7 @@ export function ChartPortfolio({
           <line x1="0" x2={plotW} y1={y(open)} y2={y(open)} stroke="rgba(255,255,255,0.22)" strokeDasharray="2 4" />
 
           <g clipPath={`url(#${uid}-past)`}>
-            <path d={area} fill={`url(#${uid}-fill)`} />
+            <path d={area} fill={`url(#${uid}-fill)`} opacity={Math.min(1, intro * 1.25)} />
             <path d={line} fill="none" stroke={trend} strokeWidth="1.75" strokeLinejoin="round" strokeLinecap="round" />
           </g>
           <g clipPath={`url(#${uid}-future)`} opacity="0.32">
@@ -270,7 +318,7 @@ export function ChartPortfolio({
 
           {shown.map((p, i) => {
             if (i % 2) return null;
-            const bh = (p.vol / maxVol) * volH;
+            const bh = (p.vol / maxVol) * volH * rise(i);
             const isActive = hover !== null && Math.abs(i - hover) <= 1;
             return (
               <rect
@@ -304,8 +352,8 @@ export function ChartPortfolio({
               <circle cx={cursorX} cy={y(target[hover].v)} r="4.5" fill="#0b0b0c" stroke={trend} strokeWidth="2" />
             </g>
           )}
-          {hover === null && (
-            <g>
+          {hover === null && intro >= 1 && (
+            <g className="motion-safe:animate-[cp-dot-in_420ms_cubic-bezier(0.22,1,0.36,1)]" style={{ transformOrigin: `${x(SAMPLES - 1)}px ${y(shown[SAMPLES - 1].v)}px` }}>
               <circle cx={x(SAMPLES - 1)} cy={y(shown[SAMPLES - 1].v)} r="3.5" fill={trend} />
               <circle cx={x(SAMPLES - 1)} cy={y(shown[SAMPLES - 1].v)} r="3.5" fill={trend} className="motion-safe:animate-ping" style={{ transformOrigin: "center", transformBox: "fill-box" }} />
             </g>
@@ -333,11 +381,11 @@ export function ChartPortfolio({
             ["Low", Math.min(...target.map((p) => p.v)), (v: number) => money.format(v)],
             ["Volume", target.reduce((a, p) => a + p.vol, 0), (v: number) => new Intl.NumberFormat(locale, { notation: "compact", maximumFractionDigits: 1 }).format(v)],
           ] as const
-        ).map(([k, n, fmt]) => (
+        ).map(([k, n, fmt], i) => (
           <div key={k} className="bg-[#0b0b0c] px-4 py-3">
             <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-white/35">{k}</p>
             <p className="mt-1 text-sm font-medium tabular-nums text-white/85">
-              <Ticker value={n} instant={!!reduce} format={fmt} />
+              <Ticker value={n} instant={!!reduce} entered={entered} delay={500 + i * 90} duration={900} format={fmt} />
             </p>
           </div>
         ))}
@@ -346,30 +394,76 @@ export function ChartPortfolio({
   );
 }
 
-/** A figure that counts to each new value (450ms ease-out) unless `instant`. */
-function Ticker({ value, instant, format }: { value: number; instant: boolean; format: (v: number) => string }) {
+/**
+ * A figure that counts to each new value (450ms ease-out) unless `instant`.
+ * On entrance it counts up from zero while a blur clears, after `delay`.
+ */
+function Ticker({
+  value,
+  instant,
+  format,
+  entered = true,
+  delay = 0,
+  duration = 450,
+}: {
+  value: number;
+  instant: boolean;
+  format: (v: number) => string;
+  entered?: boolean;
+  delay?: number;
+  duration?: number;
+}) {
   const [shown, setShown] = useState(value);
+  const [blur, setBlur] = useState(0);
+  const [hidden, setHidden] = useState(!entered);
   const ref = useRef(value);
+  const introDone = useRef(entered);
   useEffect(() => {
-    if (instant) {
+    if (!entered) {
+      setHidden(true);
+      return;
+    }
+    if (instant && introDone.current) {
       ref.current = value;
       setShown(value);
       return;
     }
-    const from = ref.current;
+    const first = !introDone.current;
+    introDone.current = true;
+    const from = first ? 0 : ref.current;
+    const ms = first ? duration : 450;
     let raf = 0;
-    const t0 = performance.now();
-    const step = (now: number) => {
-      const k = Math.min(1, (now - t0) / 450);
-      const v = from + (value - from) * (1 - Math.pow(1 - k, 3));
-      ref.current = v;
-      setShown(v);
-      if (k < 1) raf = requestAnimationFrame(step);
+    let t0 = 0;
+    const timer = setTimeout(
+      () => {
+        setHidden(false);
+        t0 = performance.now();
+        const step = (now: number) => {
+          const k = Math.min(1, (now - t0) / ms);
+          const e = 1 - Math.pow(1 - k, first ? 4 : 3);
+          const v = from + (value - from) * e;
+          ref.current = v;
+          setShown(v);
+          if (first) setBlur((1 - e) * 8);
+          if (k < 1) raf = requestAnimationFrame(step);
+        };
+        raf = requestAnimationFrame(step);
+      },
+      first ? delay : 0,
+    );
+    return () => {
+      clearTimeout(timer);
+      cancelAnimationFrame(raf);
     };
-    raf = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(raf);
-  }, [value, instant]);
-  return <>{format(shown)}</>;
+  }, [value, instant, entered, delay, duration]);
+  return (
+    <span
+      className="inline-block will-change-[filter]"
+      style={{ filter: blur > 0.05 ? `blur(${blur.toFixed(2)}px)` : undefined, opacity: hidden ? 0 : 1 - blur / 16 }}
+    >
+      {format(shown)}
+    </span>
+  );
 }
 
 /* ----------------------------------------------------------------- utils */
