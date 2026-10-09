@@ -164,6 +164,17 @@ something a senior product designer would put in their portfolio.
   ring, a map route), data series, and semantic states (success, error). If
   a colour isn't doing one of those jobs, it's grey. Expose the accent as one
   prop or token so a user rebrands in one place. Contrast meets WCAG AA.
+- **Dark first.** The library leans dark: components default to a dark
+  theme (`"theme": "dark"`), with near-black surfaces, layered greys and
+  white ink. Ship a light default only when the idea genuinely depends on it
+  (paper, print, a daylight scene), and prefer a `theme` prop so the same
+  component works both ways.
+- **Write brilliant code.** The code is the product people buy. It reads
+  like a senior engineer wrote it: small named sub-components and hooks,
+  typed props with sensible defaults, constants for tokens (colour, timing,
+  spacing) in one place, memoised animated values and interpolations, no
+  dead code, no magic numbers without a name or a comment, effects that
+  clean up, and comments that explain why rather than what.
 - **Polish the whole frame, not just the subject.** Everything visible is
   held to the same bar as the thing the component is named for. The
   content around a tab bar, a sheet or a header is never filler: it is
