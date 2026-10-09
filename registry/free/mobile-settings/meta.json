@@ -4,10 +4,12 @@
   "tier": "free",
   "platform": "mobile",
   "category": "mobile",
-  "description": "An iOS-grade settings screen for a journaling app: a large title that folds into a glass nav bar, springy switches, a gliding segmented control and a size slider.",
+  "description": "A dark, monochrome iOS settings screen for a journaling app: a title that folds into glass, springy switches, a snapping slider and sections that blur and count in.",
   "tags": [
     "settings",
     "react native",
+    "dark",
+    "monochrome",
     "switch",
     "segmented control",
     "slider",
@@ -16,10 +18,12 @@
     "action sheet"
   ],
   "dependencies": ["expo-blur", "expo-linear-gradient", "react-native-svg"],
-  "theme": "light",
+  "theme": "dark",
   "previewHeight": 940,
-  "usage": "// Bare React Native apps: run `npx install-expo-modules` once for expo-blur and expo-linear-gradient.\nimport { MobileSettings } from \"@/components/design-for-ai/native/mobile-settings\";\n\n<MobileSettings\n  appName=\"Inkwell\"\n  initial={{ paper: \"night\", textSize: 18 }}\n  onChange={(settings) => save(settings)}\n  onDeleteAll={moveEntriesToTrash}\n  onDone={navigation.goBack}\n/>",
+  "usage": "// Bare React Native apps: run `npx install-expo-modules` once for expo-blur and expo-linear-gradient.\nimport { MobileSettings } from \"@/components/design-for-ai/native/mobile-settings\";\n\n<MobileSettings\n  appName=\"Inkwell\"\n  accent=\"#7C9CFF\"\n  initial={{ paper: \"night\", textSize: 18 }}\n  onChange={(settings) => save(settings)}\n  onDeleteAll={moveEntriesToTrash}\n  onDone={navigation.goBack}\n/>",
   "props": [
+    { "name": "theme", "type": "\"dark\" | \"light\"", "default": "\"dark\"", "description": "Dark by default; the light variant is designed, not inverted." },
+    { "name": "accent", "type": "string", "default": "\"#34C77B\"", "description": "The one colour: switches, the slider, the selected time and Done." },
     { "name": "appName", "type": "string", "default": "\"Folio\"", "description": "App name in the colophon." },
     { "name": "version", "type": "string", "default": "\"4.2 (1180)\"", "description": "Version string in the colophon." },
     { "name": "profile", "type": "SettingsProfile", "description": "Name, email, plan, renewal, entries, streak and word count." },
