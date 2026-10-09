@@ -1,12 +1,13 @@
 {
   "component": "HeroBlurStatement",
-  "intent": "Typographic studio hero on grainy true black: one huge sentence whose client name blurs and rolls in and out while its inline slot springs to fit each word.",
+  "intent": "Dark-first typographic studio hero on grainy true black (or a paper theme): one huge sentence whose client name blurs and rolls in and out while its inline slot springs to fit each word.",
   "platform": "web",
   "stack": {
     "framework": "React 19",
     "styling": "Tailwind CSS v4 (container queries)",
-    "animation": "motion/react (variants, AnimatePresence popLayout, useSpring for the slot width) + one requestAnimationFrame clock",
-    "fonts": "font-display (Geist) for the sentence, font-serif (Instrument Serif italic) for the name, font-mono for metadata"
+    "animation": "motion/react (variants with a custom start time, AnimatePresence popLayout, useSpring for the slot width) + one requestAnimationFrame clock that writes the progress hairline directly to the DOM",
+    "fonts": "font-display (Geist) for the sentence, font-serif (Instrument Serif italic) for the name, font-mono for metadata",
+    "structure": "HeroBlurStatement composes TopRow, Statement (Words, NameSlot, measurer) and Footer (actions + RotationControl); hooks useRotation (clock, pause, offscreen) and useSlotWidth (measure + spring); PALETTE and a T timeline object hold every token"
   },
   "layout": {
     "section": "bg #000, overflow hidden; inner @container max-w 1440px, min-h clamp(640px,100svh,980px), px 20/32/56px",
@@ -18,30 +19,59 @@
     "lines": "<br> after lead; slot + tail line 1 together; tail '\\n' breaks at @3xl+; below @3xl the name has its own line"
   },
   "typography": {
-    "statement": { "font": "display", "weight": 500, "size": "clamp(2.9rem, 0.6rem + 7.6cqw, 8.75rem)", "leading": 0.96, "tracking": "-0.058em" },
-    "name": { "font": "serif italic", "size": "1.08em", "leading": 0.89, "tracking": "-0.02em" },
-    "tail": { "color": "white/38" },
-    "meta": { "font": "mono", "size": "11px", "case": "uppercase", "tracking": "0.16-0.18em", "color": "white/50" },
+    "statement": {
+      "font": "display",
+      "weight": 500,
+      "size": "clamp(2.9rem, 0.6rem + 7.6cqw, 8.75rem)",
+      "leading": 0.96,
+      "tracking": "-0.058em"
+    },
+    "name": {
+      "font": "serif italic",
+      "size": "1.08em",
+      "leading": 0.89,
+      "tracking": "-0.02em"
+    },
+    "tail": {
+      "color": "white/38"
+    },
+    "meta": {
+      "font": "mono",
+      "size": "11px",
+      "case": "uppercase",
+      "tracking": "0.16-0.18em",
+      "color": "white/50"
+    },
     "buttons": "15px medium, tracking -0.01em"
   },
   "color": {
-    "background": "#000",
-    "text": "#f5f5f4",
-    "name": "#ffffff",
-    "tail": "rgba(255,255,255,0.38)",
-    "hairlines": "rgba(255,255,255,0.10-0.16)",
-    "grain": "desaturated feTurbulence at opacity 0.07",
-    "glow": "radial white 3.5% from top-left"
+    "approach": "monochrome only: page, ink and ink at opacities; no accent colour",
+    "dark": {
+      "page": "#000000",
+      "ink": "#f5f5f4",
+      "name": "#ffffff",
+      "tail": "ink/38",
+      "hairlines": "ink/10-15",
+      "falloff": "radial white 3.5% from top-left"
+    },
+    "light": {
+      "page": "#f4f3ef",
+      "ink": "#0c0c0b",
+      "name": "#000000",
+      "tail": "ink/38",
+      "falloff": "radial white 60% from top-left"
+    },
+    "grain": "desaturated feTurbulence at opacity 0.07 on both themes"
   },
   "motion": {
-    "entrance": "each word opacity 0, blur 12px, y 0.08em -> clear, 750ms ease-out [0.22,1,0.36,1], 40ms stagger from 120ms",
+    "entrance": "one T timeline: eyebrow 0 and status 0.06 rise 10px out of an 8px blur; each word opacity 0, blur 12px, y 0.08em -> clear, 750ms ease-out [0.22,1,0.36,1], 40ms stagger from 120ms (lead, slot, tail in reading order); the bottom hairline draws scaleX from the left at 0.50 over 800ms; primary 0.58, secondary 0.64, rotation control 0.70",
     "nameEnter": "y 0.32em, blur 10px -> 0, 520ms ease-out",
     "nameExit": "y -0.32em, blur 10px, opacity 0, 340ms ease-in",
     "slotWidth": "spring stiffness 260, damping 26, mass 0.9 to the measured width of the next name",
-    "clock": "interval 2600ms (first hold +900ms); hairline progress scaleX 0->1; pauses on h1 hover, manual hold, offscreen, hidden tab",
+    "clock": "interval 2600ms (first hold +900ms); hairline progress scaleX 0->1 written straight to the element, never React state per frame; pauses on h1 hover (mouse), manual hold, offscreen (IntersectionObserver), hidden tab; frames longer than 250ms are clamped",
     "note": "cross-fade with 6px offset and 3px blur, 320ms",
     "buttons": "hover 150ms; press scale 0.97 in 75ms; arrow nudges 2px",
-    "reducedMotion": "no rotation or blur; 150ms opacity; control steps to the next name on press; progress bar hidden"
+    "reducedMotion": "no rotation or blur; every block a 150ms opacity fade; control steps to the next name on press; progress bar not rendered"
   },
   "responsive": {
     "phone": "name on its own line; CTAs side by side at equal width; control below",
@@ -60,7 +90,10 @@
     "status": "Booking from February 2027",
     "sentence": "We design products for {Tessel | Kiln | Meridian | Parcel | Northwind | Strata} that people open on purpose.",
     "notes": "Issue tracking, 2022 / Build pipelines / Startup treasury / Returns, no queue / Fleet telemetry / Design tokens, 2025",
-    "ctas": ["Start a project", "See selected work"]
+    "ctas": [
+      "Start a project",
+      "See selected work"
+    ]
   },
   "avoid": [
     "gradient or glowing headline text",
@@ -68,6 +101,7 @@
     "the line re-wrapping as names change",
     "animated grain or vignette pulses",
     "logo walls or navigation inside the hero",
-    "more than one serif word in the sentence"
+    "more than one serif word in the sentence",
+    "an accent colour, glow or tinted wash: the contrast is grotesk vs serif, not hue"
   ]
 }

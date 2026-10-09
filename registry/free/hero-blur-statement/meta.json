@@ -14,7 +14,8 @@
     "rotating text",
     "blur",
     "dark",
-    "film grain"
+    "film grain",
+    "light"
   ],
   "dependencies": [
     "motion"
@@ -73,6 +74,12 @@
       "type": "number",
       "default": "0.07",
       "description": "Film grain opacity, 0–1."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Grainy true black, or warm-white paper (#f4f3ef) with black ink."
     }
   ],
   "added": "2026-10-09"
