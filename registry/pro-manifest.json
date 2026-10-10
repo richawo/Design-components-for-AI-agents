@@ -2761,6 +2761,209 @@
     "added": "2026-10-09"
   },
   {
+    "slug": "collab-activity-feed",
+    "name": "Activity Feed",
+    "tier": "pro",
+    "platform": "web",
+    "category": "collaboration",
+    "description": "A workspace activity timeline grouped by day, filtered by type and person, with word-level diffs, before-and-after values and status moves shown inline.",
+    "tags": [
+      "activity",
+      "timeline",
+      "feed",
+      "audit",
+      "diff",
+      "collaboration",
+      "history",
+      "filters",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 960,
+    "usage": "import { CollabActivityFeed } from \"@/components/design-for-ai/collab-activity-feed\";\n\nexport default function History() {\n  return (\n    <CollabActivityFeed\n      title=\"Activity\"\n      subtitle=\"Ledgerline · Website\"\n      people={[{ id: \"mara\", name: \"Mara Ilić\" }]}\n      events={[\n        {\n          id: \"e1\", day: \"Today\", date: \"Sat 10 Oct\", time: \"09:42\", actorId: \"mara\", type: \"edit\",\n          action: \"changed the price of\", target: \"Pro\",\n          change: { kind: \"value\", before: \"$24 / seat\", after: \"$29 / seat\" },\n        },\n      ]}\n    />\n  );\n}",
+    "props": [
+      {
+        "name": "events",
+        "type": "{ id; day; date?; time; actorId; type: \"edit\" | \"comment\" | \"status\" | \"member\"; action; target; change? }[]",
+        "default": "9 demo events",
+        "description": "Newest first. Consecutive events with the same `day` share a heading. `change` is a word-level text diff, a before/after value, a status move, or a quote."
+      },
+      {
+        "name": "people",
+        "type": "{ id; name }[]",
+        "default": "4 demo people",
+        "description": "Actors, and the avatar filter in the header."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Activity\"",
+        "description": "Heading."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "default": "\"Ledgerline · Website\"",
+        "description": "Mono line under the heading."
+      },
+      {
+        "name": "showDiffs",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show the inline changes under each event."
+      },
+      {
+        "name": "density",
+        "type": "\"comfortable\" | \"compact\"",
+        "default": "\"comfortable\"",
+        "description": "Row spacing."
+      },
+      {
+        "name": "filter",
+        "type": "\"all\" | ActivityType",
+        "default": "uncontrolled (\"all\")",
+        "description": "Optional. Drive the type filter from outside; pair with onFilterChange."
+      },
+      {
+        "name": "onFilterChange",
+        "type": "(filter) => void",
+        "default": "none",
+        "description": "Called when a type chip is chosen."
+      },
+      {
+        "name": "person",
+        "type": "string | null",
+        "default": "uncontrolled (null)",
+        "description": "Optional. Drive the person filter from outside; pair with onPersonChange."
+      },
+      {
+        "name": "onPersonChange",
+        "type": "(personId: string | null) => void",
+        "default": "none",
+        "description": "Called when an avatar is toggled."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "theme ink",
+        "description": "The one accent: the active chip’s count and the selected person’s ring. Diff colours are semantic (added, removed)."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface palette."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:900",
+        "click:@type-edit",
+        "wait:800",
+        "click:@person-mara",
+        "wait:900",
+        "click:@clear-filters",
+        "wait:900"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "showDiffs",
+        "label": "Inline diffs",
+        "kind": "toggle",
+        "default": true,
+        "group": "Content"
+      },
+      {
+        "prop": "density",
+        "label": "Density",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "comfortable",
+            "label": "Comfortable"
+          },
+          {
+            "value": "compact",
+            "label": "Compact"
+          }
+        ],
+        "default": "comfortable",
+        "group": "Look"
+      },
+      {
+        "prop": "subtitle",
+        "label": "Workspace",
+        "kind": "text",
+        "default": "Ledgerline · Website",
+        "group": "Content"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#60a5fa",
+          "#f5a524",
+          "#ff7a45"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "filter",
+        "label": "Type",
+        "kind": "action",
+        "options": [
+          {
+            "value": "all",
+            "label": "All"
+          },
+          {
+            "value": "edit",
+            "label": "Edits"
+          },
+          {
+            "value": "comment",
+            "label": "Comments"
+          },
+          {
+            "value": "status",
+            "label": "Status"
+          },
+          {
+            "value": "member",
+            "label": "People"
+          }
+        ],
+        "group": "State"
+      }
+    ]
+  },
+  {
     "slug": "collab-annotation-pins",
     "name": "Annotation Pins",
     "tier": "pro",
