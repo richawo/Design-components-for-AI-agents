@@ -25,7 +25,7 @@ const AGENTS = ["Claude Code", "Cursor", "v0", "Windsurf", "Codex", "Lovable", "
 
 const AGENT_SURFACES = [
   ["Remote MCP", "One line in Claude Code, Cursor or Windsurf. Nothing to install or update."],
-  ["CLI", "npx design-for-ai search, add and prompt, from your terminal or your agent’s."],
+  ["CLI", "Search, add and read design prompts, from your terminal or your agent’s."],
   ["shadcn registry", "Every component is a registry item. Pro sits behind your licence key."],
   ["Markdown everywhere", "Add .md to any URL. llms.txt maps the library for language models."],
 ] as const;
