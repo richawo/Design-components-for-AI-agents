@@ -98,6 +98,7 @@ type Palette = Record<keyof (typeof PALETTE)["dark"], string>;
 
 /** The demo’s quiet backdrop; not part of the component. */
 const STAGE = "#000000";
+const STAGE_LIGHT = "#f1f1f3";
 
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 const EASE_IN = [0.4, 0, 1, 1] as const;
@@ -462,6 +463,7 @@ export function AuthPasskey({
               <motion.button
                 key="cancel"
                 type="button"
+                data-demo="passkey-cancel"
                 onClick={() => {
                   ceremony.cancel();
                   buttonRef.current?.focus();
@@ -478,6 +480,7 @@ export function AuthPasskey({
               <motion.button
                 key="fallback"
                 type="button"
+                data-demo="passkey-fallback"
                 onClick={onFallback}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -526,6 +529,7 @@ function PrimaryButton({
     <motion.button
       ref={buttonRef}
       type="button"
+      data-demo="passkey-button"
       onClick={busy || done ? undefined : onClick}
       aria-busy={busy}
       aria-disabled={busy || done}
@@ -796,12 +800,13 @@ const OUTCOMES: { id: DemoOutcome; label: string }[] = [
   { id: "unsupported", label: "Unsupported" },
 ];
 
-export default function AuthPasskeyDemo() {
+export default function AuthPasskeyDemo(overrides: Partial<AuthPasskeyProps> = {}) {
   const reduce = useReducedMotion() ?? false;
   const uid = useId().replace(/[^a-zA-Z0-9_-]/g, "");
   const [outcome, setOutcome] = useState<DemoOutcome>("success");
   const [run, setRun] = useState(0);
   const [note, setNote] = useState("");
+  const light = overrides.theme === "light";
 
   const pick = (o: DemoOutcome) => {
     setOutcome(o);
@@ -810,7 +815,7 @@ export default function AuthPasskeyDemo() {
   };
 
   return (
-    <div className="flex min-h-dvh flex-col items-center justify-center gap-8 px-4 py-14 font-sans" style={{ background: STAGE }}>
+    <div className="flex min-h-dvh flex-col items-center justify-center gap-8 px-4 py-14 font-sans" style={{ background: light ? STAGE_LIGHT : STAGE }}>
       <AuthPasskey
         key={run}
         supported={outcome === "unsupported" ? false : undefined}
@@ -818,9 +823,14 @@ export default function AuthPasskeyDemo() {
         onAuthenticate={(signal) => simulate(signal, outcome)}
         onSuccess={() => setNote("onSuccess fired. A real app would redirect here.")}
         onFallback={() => setNote("onFallback fired. Show your email sign-in.")}
+        {...overrides}
       />
       <motion.div {...enter(true, 0.6, reduce)} className="flex w-full max-w-[400px] flex-col items-center gap-3">
-        <div role="radiogroup" aria-label="Demo outcome" className="flex max-w-full justify-center overflow-x-auto rounded-full border border-white/[0.07] p-1 [scrollbar-width:none]">
+        <div
+          role="radiogroup"
+          aria-label="Demo outcome"
+          className={`flex max-w-full justify-center overflow-x-auto rounded-full border p-1 [scrollbar-width:none] ${light ? "border-black/[0.09]" : "border-white/[0.07]"}`}
+        >
           {OUTCOMES.map((o) => {
             const on = o.id === outcome;
             return (
@@ -830,15 +840,19 @@ export default function AuthPasskeyDemo() {
                 role="radio"
                 aria-checked={on}
                 onClick={() => pick(o.id)}
-                className={`relative h-8 shrink-0 rounded-full px-2.5 font-mono text-[11px] tracking-[0.02em] transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-white active:translate-y-px ${on ? "text-white" : "text-white/50 hover:text-white/80"}`}
+                className={`relative h-8 shrink-0 rounded-full px-2.5 font-mono text-[11px] tracking-[0.02em] transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-1 active:translate-y-px ${
+                  light
+                    ? `focus-visible:outline-black ${on ? "text-black" : "text-black/55 hover:text-black/85"}`
+                    : `focus-visible:outline-white ${on ? "text-white" : "text-white/50 hover:text-white/80"}`
+                }`}
               >
-                {on && <motion.span layoutId={`${uid}-pill`} className="absolute inset-0 rounded-full bg-white/[0.09]" transition={reduce ? { duration: 0 } : SPRING_UI} />}
+                {on && <motion.span layoutId={`${uid}-pill`} className={`absolute inset-0 rounded-full ${light ? "bg-black/[0.07]" : "bg-white/[0.09]"}`} transition={reduce ? { duration: 0 } : SPRING_UI} />}
                 <span className="relative">{o.label}</span>
               </button>
             );
           })}
         </div>
-        <p className="h-4 font-mono text-[11px] text-white/45" aria-live="polite">
+        <p className={`h-4 font-mono text-[11px] ${light ? "text-black/55" : "text-white/45"}`} aria-live="polite">
           {note || "Demo: pick how the device answers, then sign in."}
         </p>
       </motion.div>
