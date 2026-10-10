@@ -135,10 +135,32 @@ video, `public/previews/<slug>.mp4`.
 Rules: 3–8 s in total (glides take 700 ms, clicks 110 ms, typing 70 ms a
 character); targets are only ever `@name`; at least one step targets an
 element; nothing is left held down. Show the component's idea in one breath:
-the state change it exists for, not a tour. Script-dispatched events can't
-trigger CSS `:hover` in the live player (the recorded video uses real input
-and does), so hover styling the demo relies on should come from JS (motion's
-`whileHover`, pointer handlers) or not matter.
+the state change it exists for, not a tour.
+
+How the live player behaves, so a demo looks the same live as in the recorded
+video (which uses real input):
+
+- **Hover and press.** Script events can't set CSS `:hover` or `:active`, so
+  while a demo plays the player copies every same-origin rule that uses them,
+  swaps the pseudo-class for `[data-demo-hover]` / `[data-demo-active]`, and
+  sets those attributes on the element under the cursor and its ancestors
+  (where the browser would match the real pseudo-class). Tailwind's `hover:`,
+  `group-hover:` and `active:` variants work this way. JS hover (motion's
+  `whileHover`, `pointerenter` handlers) gets real pointer events. It all comes
+  off the moment the demo stops. Not covered: styles in shadow roots or
+  `adoptedStyleSheets`, rules a CSS-in-JS library inserts after the demo has
+  started, and `:not(:hover)`, which the copy can't express (its copy matches
+  every unmarked element).
+- **Focus.** A scripted click focuses what a mouse click would, without the
+  keyboard focus ring (`focus({ focusVisible: false })`). Text fields still show
+  their ring, as they do for a real click, and so does anything a scripted
+  `tab:` reaches. A component that moves focus itself after a `key:` step (an
+  arrow key in a radio group, a dialog returning focus to its trigger) gets the
+  browser's own keyboard heuristics, ring included, as in the video. In engines
+  without the `focusVisible` option a click doesn't focus a button at all (as
+  in Safari); the next `key:`, `type:` or `tab:` step focuses it first.
+- **Keys.** `key:Enter` in a single-line field submits its form through the
+  default button, like the browser's implicit submission.
 
 ### Controls (`controls`)
 

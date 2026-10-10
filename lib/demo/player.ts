@@ -1,4 +1,5 @@
 import { CURSOR_START } from "./cursor.mjs";
+import { ACTIVE_ATTR, HOVER_ATTR, PseudoStateMirror, moveMark } from "./pseudo-state";
 import { TIMING, targetSelector, type DemoTarget, type ParsedStep } from "./schema.mjs";
 
 /**
@@ -7,10 +8,14 @@ import { TIMING, targetSelector, type DemoTarget, type ParsedStep } from "./sche
  * elements under a drawn cursor, so components react exactly as they do to
  * a person. Browser-only.
  *
- * One limit to know: script-dispatched events can't trigger CSS :hover, so
- * hover styling that matters to the demo should come from JS (motion's
- * whileHover, pointerenter handlers). The recorded card videos use real
- * input and do get :hover.
+ * Script-dispatched events can't set CSS :hover or :active, so while a demo
+ * plays the page's same-origin :hover / :active rules are mirrored onto
+ * attributes the player sets under its pointer (./pseudo-state.ts). JS hover
+ * (motion's whileHover, pointerenter handlers) gets the real events.
+ *
+ * Focus follows the pointer the way a mouse does: a scripted press focuses
+ * what a real press would, but without the keyboard focus ring (see
+ * focusFromPointer). Only scripted Tab presses show the ring.
  */
 
 export type CursorHandle = {
@@ -26,6 +31,28 @@ const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 
 const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"]), [contenteditable="true"]';
 
 export class DemoAborted extends Error {}
+
+/** Text entry shows a focus ring however it was focused, so a press focuses it plainly. */
+const TEXT_ENTRY = 'input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="image"]), textarea, select, [contenteditable]:not([contenteditable="false"])';
+
+/**
+ * Whether this engine reads FocusOptions.focusVisible (Chrome 135+, Firefox
+ * 104+). Without it a script focus() can't say "this came from a pointer", and
+ * Chrome-like heuristics treat it as keyboard focus and draw the ring.
+ */
+export function supportsFocusVisibleOption(el: Element): boolean {
+  let read = false;
+  const probe = {
+    get focusVisible() {
+      read = true;
+      return false;
+    },
+    preventScroll: true,
+  };
+  // A detached element can't take focus, but the browser still reads the options it understands.
+  el.ownerDocument.createElement("div").focus(probe as FocusOptions);
+  return read;
+}
 
 /**
  * Resolves once the page renders smoothly (five frames in a row under ~30fps
@@ -54,6 +81,10 @@ export class DemoPlayer {
   private pressedOn: Element | null = null;
   private captured: Element | null = null;
   private restoreCapture: (() => void) | null = null;
+  private readonly pseudo: PseudoStateMirror;
+  /** Where a pointer press would have put focus, on engines that can't focus without the ring. */
+  private pendingFocus: HTMLElement | null = null;
+  private focusVisibleOption: boolean | null = null;
 
   constructor(
     private readonly win: Window,
@@ -62,10 +93,12 @@ export class DemoPlayer {
   ) {
     this.x = win.innerWidth * CURSOR_START[0];
     this.y = win.innerHeight * CURSOR_START[1];
+    this.pseudo = new PseudoStateMirror(win.document);
   }
 
   async play(steps: ParsedStep[]): Promise<void> {
     this.patchCapture();
+    this.pseudo.sync();
     try {
       this.cursor.move(this.x, this.y);
       this.cursor.show(true);
@@ -85,6 +118,9 @@ export class DemoPlayer {
       this.pressedOn = null;
     }
     this.captured = null;
+    this.pendingFocus = null;
+    this.over = null;
+    this.pseudo.dispose();
     this.cursor.press(false);
     this.cursor.show(false);
     this.restoreCapture?.();
@@ -115,15 +151,18 @@ export class DemoPlayer {
         this.up();
         return;
       case "tab":
+        this.applyPendingFocus(); // Tab moves on from where the last press was.
         for (let i = 0; i < s.n; i++) {
           this.tab();
           await this.sleep(TIMING.tabGap);
         }
         return;
       case "key":
+        this.applyPendingFocus();
         this.key(s.key);
         return this.sleep(TIMING.keyGap);
       case "type":
+        this.applyPendingFocus();
         for (const ch of s.text) {
           this.typeChar(ch);
           await this.sleep(TIMING.typeGap);
@@ -215,6 +254,9 @@ export class DemoPlayer {
       }
     }
     this.over = to;
+    // :hover lives on the element under the pointer and all its ancestors.
+    this.pseudo.sync();
+    moveMark(HOVER_ATTR, from, to);
   }
 
   private down() {
@@ -223,19 +265,55 @@ export class DemoPlayer {
     this.pressedOn = el;
     this.cursor.press(true);
     this.cursor.pulse();
+    moveMark(ACTIVE_ATTR, null, el);
     const ok = this.fire(el, "pointerdown", { buttons: 1 });
     this.fire(el, "mousedown", { buttons: 1 }, true);
     // A real press focuses the nearest focusable ancestor (unless prevented).
     if (ok) {
       const f = el.closest<HTMLElement>(FOCUSABLE);
-      if (f && this.win.document.activeElement !== f) f.focus({ preventScroll: true });
+      if (f && this.win.document.activeElement !== f) this.focusFromPointer(f);
     }
+  }
+
+  /**
+   * Focus as a mouse press does. A bare focus() from script reads as keyboard
+   * focus to Chrome's :focus-visible heuristic (there's been no real input in
+   * the frame yet), so every pressed button would wear its heavy keyboard ring
+   * for the rest of the demo. `focusVisible: false` says "pointer". Text entry
+   * keeps the plain call, because a real click shows its ring too.
+   *
+   * Engines that ignore the option get no focus on a pointer press at all
+   * (as Safari does for buttons); the focus is remembered and applied just
+   * before the next key or type step, which needs a focused element.
+   */
+  private focusFromPointer(f: HTMLElement) {
+    this.pendingFocus = null;
+    if (f.matches(TEXT_ENTRY)) {
+      f.focus({ preventScroll: true });
+      return;
+    }
+    this.focusVisibleOption ??= supportsFocusVisibleOption(f);
+    if (this.focusVisibleOption) {
+      f.focus({ preventScroll: true, focusVisible: false } as FocusOptions);
+      return;
+    }
+    // Leave the old focus, as a press anywhere else does, without drawing a ring on the new target.
+    const active = this.win.document.activeElement as HTMLElement | null;
+    if (active && active !== this.win.document.body && !active.contains(f)) active.blur();
+    this.pendingFocus = f;
+  }
+
+  private applyPendingFocus() {
+    const f = this.pendingFocus;
+    this.pendingFocus = null;
+    if (f?.isConnected && this.win.document.activeElement !== f) f.focus({ preventScroll: true });
   }
 
   private up() {
     const from = this.pressedOn;
     const el = this.captured ?? this.win.document.elementFromPoint(this.x, this.y);
     this.cursor.press(false);
+    moveMark(ACTIVE_ATTR, from, null);
     if (!el) return;
     this.fire(el, "pointerup", { buttons: 0 });
     this.fire(el, "mouseup", { buttons: 0 }, true);
@@ -321,6 +399,13 @@ export class DemoPlayer {
     // The browser's default actions for activation keys.
     const activates = el.matches("button, a[href], [role='button'], [role='option'], [role='radio'], [role='tab'], [role='checkbox'], [role='switch']");
     if (ok && init.key === "Enter" && activates) el.click();
+    // Implicit submission: Enter in a single-line field submits its form through the default button.
+    else if (ok && init.key === "Enter" && el instanceof W.HTMLInputElement && el.form && el.matches(TEXT_ENTRY)) {
+      const submit = el.form.querySelector<HTMLElement>('button:not([type]), button[type="submit"], input[type="submit"]');
+      if (submit) {
+        if (!submit.matches(":disabled")) submit.click();
+      } else el.form.requestSubmit();
+    }
     el.dispatchEvent(new W.KeyboardEvent("keyup", init));
     if (ok && init.key === " " && activates) el.click();
   }
@@ -339,7 +424,8 @@ export class DemoPlayer {
         const next = el.value.slice(0, start) + ch + el.value.slice(end);
         // The native setter, so React's value tracker sees a real change.
         setter?.call(el, next);
-        el.setSelectionRange?.(start + 1, start + 1);
+        // email, number and a few other types have no selection API and throw on setSelectionRange.
+        if (el.selectionStart !== null) el.setSelectionRange(start + 1, start + 1);
         el.dispatchEvent(new W.InputEvent("input", { bubbles: true, composed: true, inputType: "insertText", data: ch }));
       } else if (el.isContentEditable) {
         this.win.document.execCommand("insertText", false, ch);
@@ -355,7 +441,8 @@ export class DemoPlayer {
     if (!ok) return;
     const all = [...this.win.document.querySelectorAll<HTMLElement>(FOCUSABLE)].filter((n) => n.tabIndex >= 0 && n.getClientRects().length > 0);
     const i = all.indexOf(el);
-    all[(i + 1) % all.length]?.focus();
+    // Keyboard focus: the one scripted step that should show the ring.
+    all[(i + 1) % all.length]?.focus({ focusVisible: true } as FocusOptions);
   }
 
   /**
