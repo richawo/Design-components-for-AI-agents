@@ -1,0 +1,71 @@
+{
+  "component": "ChartWaffle",
+  "intent": "A ten-by-ten unit chart where each cell is one ticket in a hundred and keeps its identity, so switching periods flies the cells that change hands to their new group.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 with container queries",
+    "animation": "motion/react: x/y percentage transforms on springs for cell flights, useAnimate for the mid-flight dip, motion values for counting figures, layoutId tab pill, variants for the staggered entrance",
+    "charting": "none: 100 absolutely positioned divs"
+  },
+  "layout": {
+    "card": "bg #0b0b0c (light #ffffff), border ink/8%, radius 22px, inset top highlight, deep shadow, @container root",
+    "header": "title + mono subtitle, caption under it; period tabs on the right, full width in narrow containers",
+    "grid": "square box max 360px; each cell 10%×10%, positioned by x = col×100%, y = row×100%; gap is inner padding (default 4px); radius 3px or round",
+    "fill": "column by column by default (bands), or row by row",
+    "body": "grid left and headline + legend right from @3xl; stacked below",
+    "legend": "rows: swatch, label, note, delta vs previous period, count"
+  },
+  "typography": {
+    "title": "15px medium tracking -0.01em",
+    "subtitle": "mono 11px ink/45",
+    "headline": "Geist 600 clamp(3.25rem, 2.2rem + 4cqi, 5.25rem) tracking -0.055em leading 0.9 in the accent",
+    "legend": "13.5px labels, 12px notes ink/42, 15px tabular counts, mono 11px deltas",
+    "readout": "mono 10.5px ink/40"
+  },
+  "color": {
+    "approach": "monochrome; the first group is the one accent, the rest step down the ink",
+    "dark": { "surface": "#0b0b0c", "ink": "#f5f5f4" },
+    "light": { "surface": "#ffffff", "ink": "#0b0b0c" },
+    "accent": "#ff7a45 (prop): first group's cells, swatch and headline",
+    "ramp": "color-mix of ink at 62%, 34%, 17%, 10% for groups 2–5",
+    "deltas": "green #34d399 / rose #fb7185 for the lead group only; grey for the others",
+    "tokens": "one PALETTE object per theme written to --cw-* CSS variables"
+  },
+  "motion": {
+    "entrance": "once at 30% in view: card lands (16px, 0.6s); title 0.06s and tabs 0.12s rise out of an 8px blur; cells pop from scale 0.4 in fill order from 0.2s at 6ms steps; headline counts up at 0.3s; legend rows at 0.38s + 50ms steps with counts rolling up out of a blur",
+    "switch": "groups keep their nearest cells, the surplus flies to groups that grew (nearest first), then each group takes consecutive slots in its old order; cells travel on spring 320/30 staggered 4ms per slot; cells that change group dip to 0.55 scale and back over 0.55s and cross-fade colour 120ms after setting off; counts tween 0.6s with a 3px blur",
+    "hover": "a cell or legend row dims the other groups to 20%; a mono readout names the hovered cell",
+    "reducedMotion": "cells jump, colours and counts final, 150ms fades only"
+  },
+  "interaction": {
+    "tabs": "switch period; onPeriodChange(key)",
+    "legend": "hover, focus or tap a row to isolate its group",
+    "cells": "hovering a cell isolates its group and names it"
+  },
+  "responsive": {
+    "container": "@container queries; grid and legend side by side from @3xl, stacked below; deltas stay beside the counts at every width"
+  },
+  "accessibility": [
+    "grid is role=img with every group's count in its label",
+    "tabs use role=tablist/tab with aria-selected",
+    "legend rows are buttons with spoken labels and highlight on focus",
+    "the hover readout is aria-live=polite",
+    "counting figures carry an sr-only final value"
+  ],
+  "content": {
+    "title": "Who closed the ticket",
+    "subtitle": "Per 100 support tickets",
+    "groups": "Resolved by the agent, Agent drafted / person sent, Handled by a person, Escalated to engineering",
+    "periods": "Q4 ’25 [31,22,38,9], Q1 [42,24,27,7], Q2 [53,21,20,6], Q3 [64,17,14,5]",
+    "unit": "ticket"
+  },
+  "avoid": [
+    "chart libraries or canvas",
+    "recolouring cells in place instead of moving them",
+    "random shuffles or all 100 cells moving at once",
+    "a rainbow of group colours",
+    "icons or percentages inside cells",
+    "a pie chart beside the waffle"
+  ]
+}

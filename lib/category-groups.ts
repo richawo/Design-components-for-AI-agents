@@ -5,12 +5,12 @@ export const CATEGORY_GROUPS: { label: string; categories: Category[] }[] = [
   { label: "Lead", categories: ["hero", "ai", "agents"] },
   {
     label: "Marketing sections",
-    categories: ["backgrounds", "features", "pricing", "social-proof", "cta", "headers", "footers", "content", "media", "portfolio", "commerce", "auth"],
+    categories: ["backgrounds", "features", "diagrams", "pricing", "social-proof", "cta", "headers", "footers", "content", "media", "portfolio", "commerce", "auth"],
   },
   { label: "Visual", categories: ["text", "three-d", "pixel", "effects"] },
   { label: "Controls", categories: ["buttons", "inputs", "selects", "date-time", "forms"] },
   { label: "Surfaces & feedback", categories: ["overlays", "feedback", "progress", "cards", "primitives"] },
-  { label: "App UI", categories: ["navigation", "onboarding", "app", "data", "charts"] },
+  { label: "App UI", categories: ["navigation", "onboarding", "app", "devtools", "billing", "collaboration", "editors", "data", "charts"] },
   { label: "Platforms", categories: ["mobile"] },
 ];
 

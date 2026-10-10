@@ -38,11 +38,11 @@ const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://design.yaps.ai").
 // Gallery order; keep in sync with CATEGORIES in lib/registry-types.ts.
 const CATEGORIES = [
   "hero", "ai", "agents",
-  "backgrounds", "features", "pricing", "social-proof", "cta", "headers", "footers", "content", "media", "portfolio", "commerce", "auth",
+  "backgrounds", "features", "diagrams", "pricing", "social-proof", "cta", "headers", "footers", "content", "media", "portfolio", "commerce", "auth",
   "text", "three-d", "pixel", "effects",
   "buttons", "inputs", "selects", "date-time", "forms",
   "overlays", "feedback", "progress", "cards", "primitives",
-  "navigation", "onboarding", "app", "data", "charts",
+  "navigation", "onboarding", "app", "devtools", "billing", "collaboration", "editors", "data", "charts",
   "mobile",
 ];
 const REQUIRED_PROMPT_KEYS = [
