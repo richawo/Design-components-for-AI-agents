@@ -78,14 +78,24 @@ const LIST_MAX_PX = 300;
 const LIST_PADDING_PX = 12;
 const SEARCH_ROW_PX = 44;
 const HEADING_PX = 30;
+/** The hairline and padding above every group after the first (`mt-1 border-t pt-1`). */
+const GROUP_DIVIDER_PX = 9;
 const EMPTY_PX = 64;
 /** A pause longer than this starts a new typeahead search. */
 const TYPEAHEAD_RESET_MS = 600;
 const PAGE_STEP = 5;
+/**
+ * After a choice the panel stays open this long, so the check draws on the row
+ * just chosen (its draw is 320ms after a 40ms delay) before the panel folds away.
+ */
+const COMMIT_HOLD_MS = 300;
+/** Soft bottom edge on the list while more rows lie below the fold. */
+const FADE_MASK = "linear-gradient(to bottom, black calc(100% - 24px), transparent)";
 
 const SIZE = {
   sm: { field: "h-9 px-3 text-[13px] gap-2.5", row: "h-8 text-[13px]", rowPx: 32, hint: "text-[11px]" },
-  md: { field: "h-11 px-3.5 text-[14px] gap-3", row: "h-10 text-[14px]", rowPx: 40, hint: "text-[11.5px]" },
+  // 44px rows match the 44px trigger and the touch-target floor at every pointer.
+  md: { field: "h-11 px-3.5 text-[14px] gap-3", row: "h-11 text-[14px]", rowPx: 44, hint: "text-[11.5px]" },
 } as const;
 
 const PALETTE = {
@@ -238,7 +248,7 @@ const optionDomId = (uid: string, value: string) => `${uid}-option-${value.repla
 /* Parts                                                               */
 /* ------------------------------------------------------------------ */
 
-/** Drawn once each time its row becomes the chosen one, because it mounts with the selection. */
+/** Mounts with the selection, so it draws each time the chosen row changes. */
 function CheckMark({ reduce }: { reduce: boolean }) {
   return (
     <svg viewBox="0 0 16 16" width={14} height={14} fill="none" aria-hidden="true" className="text-(--sl-accent)">
@@ -259,7 +269,8 @@ function CheckMark({ reduce }: { reduce: boolean }) {
 type OptionRowProps = {
   option: SelectOption;
   id: string;
-  uid: string;
+  /** Shared by every row of one open session, so the highlight glides within it and starts fresh on the next. */
+  highlightId: string;
   active: boolean;
   selected: boolean;
   size: SelectSize;
@@ -268,7 +279,7 @@ type OptionRowProps = {
   onPick: () => void;
 };
 
-function OptionRow({ option, id, uid, active, selected, size, reduce, onHover, onPick }: OptionRowProps) {
+function OptionRow({ option, id, highlightId, active, selected, size, reduce, onHover, onPick }: OptionRowProps) {
   return (
     <div
       id={id}
@@ -285,7 +296,7 @@ function OptionRow({ option, id, uid, active, selected, size, reduce, onHover, o
     >
       {active ? (
         <motion.span
-          layoutId={`${uid}-highlight`}
+          layoutId={highlightId}
           aria-hidden="true"
           transition={reduce ? { duration: 0 } : SPRING_UI}
           className="absolute inset-0 rounded-[8px] bg-(--sl-highlight)"
@@ -332,47 +343,77 @@ export function SelectListbox({
   const listRef = useRef<HTMLDivElement>(null);
   const focusSearchOnOpen = useRef(false);
   const typed = useRef({ text: "", at: 0 });
+  // A choice is on screen and the panel is about to close: input waits until it does.
+  const committing = useRef(false);
+  const closeTimer = useRef<number | null>(null);
 
   const [internal, setInternal] = useState(() => defaultValue ?? options[0]?.value ?? "");
   const selectedValue = value ?? internal;
   const selected = options.find((o) => o.value === selectedValue);
 
   const [open, setOpen] = useState(defaultOpen && !disabled);
+  // Counts each opening so the highlight's shared layout id is new every time the panel unfolds.
+  const [openCount, setOpenCount] = useState(0);
   const [query, setQuery] = useState("");
   const [activeValue, setActiveValue] = useState<string | null>(() =>
     options.some((o) => o.value === selectedValue) ? selectedValue : (options[0]?.value ?? null),
   );
   const [autoSide, setAutoSide] = useState<Side>("bottom");
+  const [overflowBelow, setOverflowBelow] = useState(false);
 
   const { sections, flat } = useMemo(() => arrange(options, grouped, query), [options, grouped, query]);
   const active = flat.find((o) => o.value === activeValue) ?? flat[0] ?? null;
   const activeKey = active?.value ?? null;
   const activeIndex = active ? flat.indexOf(active) : -1;
+  const hasRows = flat.length > 0;
   const side: Side = placement === "auto" ? autoSide : placement;
 
   // The panel's height is known from its rows, so the side can be chosen before it is painted.
   const headings = sections.filter((s) => s.heading).length;
-  const rowsPx = flat.length * SIZE[size].rowPx + headings * HEADING_PX + LIST_PADDING_PX;
-  const listPx = flat.length ? Math.min(LIST_MAX_PX, rowsPx) : EMPTY_PX;
+  const dividers = sections.filter((s, i) => s.heading && i > 0).length;
+  const rowsPx = flat.length * SIZE[size].rowPx + headings * HEADING_PX + dividers * GROUP_DIVIDER_PX + LIST_PADDING_PX;
+  const listPx = hasRows ? Math.min(LIST_MAX_PX, rowsPx) : EMPTY_PX;
   const panelPx = listPx + (searchable ? SEARCH_ROW_PX : 0);
 
-  const close = useCallback((restoreFocus: boolean) => {
-    setOpen(false);
-    if (restoreFocus) triggerRef.current?.focus({ preventScroll: true });
+  const cancelPendingClose = useCallback(() => {
+    if (closeTimer.current !== null) window.clearTimeout(closeTimer.current);
+    closeTimer.current = null;
   }, []);
+
+  // A pending close must not outlive the component.
+  useEffect(() => () => cancelPendingClose(), [cancelPendingClose]);
+
+  const close = useCallback(
+    (restoreFocus: boolean) => {
+      cancelPendingClose();
+      committing.current = false;
+      setOpen(false);
+      if (restoreFocus) triggerRef.current?.focus({ preventScroll: true });
+    },
+    [cancelPendingClose],
+  );
 
   const show = () => {
     if (disabled) return;
     setQuery("");
     setActiveValue(options.some((o) => o.value === selectedValue) ? selectedValue : (options[0]?.value ?? null));
     focusSearchOnOpen.current = searchable;
+    setOpenCount((n) => n + 1);
     setOpen(true);
   };
 
   const commit = (option: SelectOption) => {
+    if (committing.current) return;
     if (value === undefined) setInternal(option.value);
+    setActiveValue(option.value);
     onValueChange?.(option.value, option);
-    close(true);
+    if (reduce) {
+      close(true);
+      return;
+    }
+    // The value swaps at once; the panel holds open so the check draws on the chosen row, then closes.
+    committing.current = true;
+    closeTimer.current = window.setTimeout(() => close(true), COMMIT_HOLD_MS);
   };
 
   const typeTo = (char: string, list: SelectOption[], from: string | null) => {
@@ -385,6 +426,12 @@ export function SelectListbox({
 
   // Keyboard model: the trigger keeps focus while the panel is open (or the filter field, when searchable).
   const onKey = (e: ReactKeyboardEvent<HTMLElement>, fromSearch: boolean) => {
+    // Only Tab gets through while a choice is being confirmed: it closes the panel at once.
+    if (committing.current && e.key !== "Tab") {
+      e.preventDefault();
+      return;
+    }
+
     const last = flat.length - 1;
     const goTo = (index: number) => {
       e.preventDefault();
@@ -447,6 +494,16 @@ export function SelectListbox({
     }
   };
 
+  // Whether the list has rows below the fold, so its bottom edge can fade to say so.
+  const syncOverflow = useCallback(() => {
+    const list = listRef.current;
+    setOverflowBelow(!!list && list.scrollTop + list.clientHeight < list.scrollHeight - 2);
+  }, []);
+
+  useLayoutEffect(() => {
+    if (open) syncOverflow();
+  }, [open, flat, listPx, syncOverflow]);
+
   // Choose a side on open and whenever the viewport changes, for `auto` only.
   useLayoutEffect(() => {
     if (!open || placement !== "auto") return;
@@ -476,8 +533,8 @@ export function SelectListbox({
   }, [open]);
 
   useEffect(() => {
-    if (disabled) setOpen(false);
-  }, [disabled]);
+    if (disabled) close(false);
+  }, [disabled, close]);
 
   useEffect(() => {
     if (!open) return;
@@ -502,6 +559,9 @@ export function SelectListbox({
     "--sl-accent": accent,
   } as CSSProperties;
 
+  const highlightId = `${uid}-highlight-${openCount}`;
+  const fade = overflowBelow ? { maskImage: FADE_MASK, WebkitMaskImage: FADE_MASK } : undefined;
+
   return (
     <motion.div
       ref={rootRef}
@@ -522,14 +582,18 @@ export function SelectListbox({
           role="combobox"
           aria-haspopup="listbox"
           aria-expanded={open}
-          aria-controls={open ? listId : undefined}
+          aria-controls={open && hasRows ? listId : undefined}
           aria-labelledby={`${labelId} ${valueId}`}
           aria-activedescendant={open && !searchable && active ? optionDomId(uid, active.value) : undefined}
           disabled={disabled}
           data-demo="trigger"
-          onClick={() => (open ? close(true) : show())}
+          onClick={() => {
+            if (committing.current) return;
+            if (open) close(true);
+            else show();
+          }}
           onKeyDown={(e) => onKey(e, false)}
-          className={`group flex w-full items-center rounded-[10px] bg-(--sl-field) text-left ring-1 ring-inset transition-[background-color,box-shadow,scale] duration-150 ease-out hover:bg-(--sl-field-hover) active:scale-[0.985] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-(--sl-field) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--sl-ink) ${
+          className={`group flex w-full items-center rounded-[10px] bg-(--sl-field) text-left ring-1 ring-inset transition-[background-color,box-shadow,scale] duration-150 ease-out hover:bg-(--sl-field-hover) active:scale-[0.985] active:duration-[90ms] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-(--sl-field) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--sl-ink)/60 ${
             SIZE[size].field
           } ${open ? "ring-(--sl-ink)/20" : "ring-(--sl-line)"}`}
         >
@@ -572,13 +636,14 @@ export function SelectListbox({
               {searchable ? (
                 <div className="flex h-11 shrink-0 items-center gap-2.5 border-b border-(--sl-line) px-3.5 focus-within:border-(--sl-ink)/30">
                   <Search size={15} strokeWidth={1.75} aria-hidden="true" className="shrink-0 text-(--sl-hint)" />
+                  {/* 16px, not smaller: iOS zooms the page on focus for any field set under 16px. */}
                   <input
                     ref={searchRef}
                     type="text"
                     role="combobox"
                     aria-expanded="true"
                     aria-autocomplete="list"
-                    aria-controls={listId}
+                    aria-controls={hasRows ? listId : undefined}
                     aria-activedescendant={active ? optionDomId(uid, active.value) : undefined}
                     aria-label={`Filter ${label.toLowerCase()}`}
                     placeholder={searchPlaceholder}
@@ -587,36 +652,35 @@ export function SelectListbox({
                     spellCheck={false}
                     onChange={(e) => setQuery(e.target.value)}
                     onKeyDown={(e) => onKey(e, true)}
-                    className="min-w-0 flex-1 bg-transparent text-[16px] text-(--sl-ink) outline-none placeholder:text-(--sl-hint) sm:text-[14px]"
+                    className="min-w-0 flex-1 bg-transparent text-[16px] text-(--sl-ink) outline-none placeholder:text-(--sl-hint)"
                   />
                 </div>
               ) : null}
 
-              <div
-                ref={listRef}
-                id={listId}
-                role="listbox"
-                aria-labelledby={labelId}
-                className="relative overflow-y-auto overscroll-contain p-1.5 [scrollbar-width:thin]"
-                style={{ maxHeight: LIST_MAX_PX }}
-              >
-                {flat.length === 0 ? (
-                  <p role="status" className="px-2.5 py-4 text-[13px] text-(--sl-hint)">
-                    {query ? `No match for “${query}”` : "Nothing to choose from"}
-                  </p>
-                ) : (
-                  sections.map((section, si) => {
+              {hasRows ? (
+                <div
+                  ref={listRef}
+                  id={listId}
+                  role="listbox"
+                  aria-labelledby={labelId}
+                  onScroll={syncOverflow}
+                  className="relative overflow-y-auto overscroll-contain p-1.5 [scrollbar-width:thin]"
+                  style={{ maxHeight: LIST_MAX_PX, ...fade }}
+                >
+                  {sections.map((section, si) => {
                     const rows = section.options.map((option) => (
                       <OptionRow
                         key={option.value}
                         option={option}
                         id={optionDomId(uid, option.value)}
-                        uid={uid}
+                        highlightId={highlightId}
                         active={option.value === activeKey}
                         selected={option.value === selectedValue}
                         size={size}
                         reduce={reduce}
-                        onHover={() => setActiveValue(option.value)}
+                        onHover={() => {
+                          if (!committing.current) setActiveValue(option.value);
+                        }}
                         onPick={() => commit(option)}
                       />
                     ));
@@ -629,15 +693,24 @@ export function SelectListbox({
                         aria-labelledby={headingId}
                         className={si > 0 ? "mt-1 border-t border-(--sl-line) pt-1" : undefined}
                       >
-                        <div id={headingId} className="px-2.5 pb-1 pt-2 font-mono text-[10.5px] uppercase tracking-[0.14em] text-(--sl-hint)">
+                        <div
+                          id={headingId}
+                          role="presentation"
+                          className="px-2.5 pb-1 pt-2 font-mono text-[10.5px] uppercase tracking-[0.14em] text-(--sl-hint)"
+                        >
                           {section.heading}
                         </div>
                         {rows}
                       </div>
                     );
-                  })
-                )}
-              </div>
+                  })}
+                </div>
+              ) : (
+                // Outside the listbox: an empty listbox is not a valid container for a status line.
+                <p role="status" className="px-4 py-5 text-[13px] text-(--sl-hint)">
+                  {query ? `No match for “${query}”` : "Nothing to choose from"}
+                </p>
+              )}
             </motion.div>
           ) : null}
         </AnimatePresence>
@@ -652,12 +725,12 @@ export function SelectListbox({
 
 /**
  * The featured instance opens on first render, so the static preview shows the
- * panel, not a closed field. The demo closes and reopens it, then types to the
- * option it wants. Overrides spread last so the Customize controls always win.
+ * panel, not a closed field. The stage sits high so the panel has room below
+ * the trigger. Overrides spread last so the Customize controls always win.
  */
 export default function SelectListboxDemo(overrides: Partial<SelectListboxProps> = {}) {
   return (
-    <div className="flex min-h-[100dvh] items-center justify-center px-4 py-12">
+    <div className="flex min-h-[100dvh] items-start justify-center px-4 pb-12 pt-[clamp(80px,22vh,200px)]">
       <SelectListbox defaultOpen defaultValue="berlin" {...overrides} />
     </div>
   );

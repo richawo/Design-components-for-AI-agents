@@ -69,7 +69,7 @@
       "name": "size",
       "type": "\"sm\" | \"md\"",
       "default": "\"md\"",
-      "description": "Trigger and row heights: 36px and 44px for md, 32px rows and a 36px trigger for sm."
+      "description": "Medium: 44px trigger and 44px rows. Small: 36px trigger and 32px rows, for dense forms."
     },
     {
       "name": "grouped",
@@ -117,19 +117,19 @@
   "added": "2026-10-10",
   "demo": {
     "steps": [
-      "wait:450",
-      "click:@trigger",
-      "wait:380",
-      "click:@trigger",
-      "wait:280",
+      "wait:500",
       "hover:@opt-london",
-      "wait:180",
+      "wait:160",
       "hover:@opt-madrid",
       "wait:140",
+      "tab:1",
+      "wait:200",
       "type:lis",
-      "wait:260",
+      "wait:300",
       "key:Enter",
-      "wait:1500"
+      "wait:900",
+      "click:@trigger",
+      "wait:900"
     ]
   },
   "controls": [

@@ -11,8 +11,8 @@
     "root": "@container column, max-width 320px, trigger full width",
     "label": "mono 11px uppercase label, 8px above the trigger",
     "trigger": "md 44px / sm 36px, radius 10px, inset hairline, value left, hint, 16px chevron right",
-    "panel": "trigger width, 6px gap above or below, radius 12px, list max 300px, rows 40px (md) or 32px (sm), radius 8px",
-    "search": "optional 44px filter row at the top of the panel"
+    "panel": "trigger width, 6px gap above or below, radius 12px, list max 300px, rows 44px (md, matching the trigger) or 32px (sm), radius 8px, bottom 24px fades out while rows lie below the fold",
+    "search": "optional 44px filter row at the top of the panel; input 16px always (iOS zoom)"
   },
   "typography": {
     "trigger": "14px (md) or 13px (sm), 400 weight, ink",
@@ -29,30 +29,31 @@
   "motion": {
     "reveal": "block rises 8px out of 6px blur, 500ms ease-out, 50ms delay, once on mount",
     "panel": "unfolds from the trigger edge: scaleY 0.9 to 1, 6px drift, 4px blur, 260ms ease-out; exit 140ms ease-in",
-    "highlight": "one layoutId element on spring.ui (500/40), glides between rows",
+    "highlight": "one layoutId element on spring.ui (500/40), glides between rows; its id is new per opening so it starts in place",
     "value": "keyed cross-fade, 6px rise and 3px blur, 280ms",
     "check": "pathLength 0 to 1 over 320ms, 40ms delay, remounts with selection",
-    "press": "scale 0.985",
-    "reducedMotion": "opacity only, 150ms or less, no spring, check pre-drawn"
+    "press": "scale 0.985 in 90ms, springs back over 150ms",
+    "reducedMotion": "opacity only, 150ms or less, no spring, no hold, check pre-drawn",
+    "choose": "trigger value swaps at once; panel holds 300ms so the check draws on the chosen row, then closes (140ms exit); input ignored during the hold; reduced motion closes at once"
   },
   "responsive": {
-    "all": "fluid to 320px; panel matches trigger width; filter input 16px on small screens to avoid zoom",
-    "touch": "44px trigger, no hover-only action"
+    "all": "fluid to 320px; panel matches trigger width; filter input stays 16px so iOS does not zoom",
+    "touch": "44px trigger and 44px md rows, no hover-only action"
   },
   "accessibility": [
-    "trigger role combobox with aria-haspopup listbox, aria-expanded, aria-controls only while open, aria-activedescendant while open",
-    "options role option with aria-selected; groups role group labelled by heading",
+    "trigger role combobox with aria-haspopup listbox, aria-expanded, aria-controls only while open and while rows exist, aria-activedescendant while open",
+    "options role option with aria-selected; groups role group labelled by a presentation-role heading",
     "keyboard: arrows (no wrap), Home, End, PageUp and PageDown (five rows), Enter and Space choose, Escape closes and restores focus, Tab closes",
     "typeahead buffer of 600ms; a single letter cycles through matches",
     "closed trigger: printable keys choose the first match directly",
-    "focus-visible ring 2px ink offset 2px; no focus steal on first render",
-    "empty results are a polite status line"
+    "focus-visible ring 2px ink at 60% offset 2px; no focus steal on first render",
+    "empty results are a polite status line outside the listbox; an empty listbox is not rendered"
   ],
   "content": {
     "options": "Ten fictional cities in Europe, Americas and Asia-Pacific, each with a time-zone hint",
     "placeholder": "Choose a city",
     "label": "City",
-    "demo": "closes and reopens, hovers two Europe rows, types lis to reach Lisbon, selects it"
+    "demo": "opens with Berlin, hovers two Europe rows, tabs to the trigger, types lis to reach Lisbon, presses Enter so the check draws on Lisbon, then reopens to show it checked"
   },
   "avoid": [
     "oversized rounded panels or radius above 12px",
@@ -63,6 +64,8 @@
     "wrapping arrow keys",
     "moving focus into the list on first render",
     "a highlight that jumps instead of gliding",
-    "placeholder copy such as Option 1"
+    "placeholder copy such as Option 1",
+    "a check that only draws when the panel reopens",
+    "a closed field as the final frame of the demo"
   ]
 }
