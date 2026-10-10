@@ -60,18 +60,14 @@ const FIGURES = /^[\s\d.,:%+\-−$€£¥#/]*$/;
 /** Base filler glyphs per reel, before `spins`. Later reels get a couple more so they read as travelling further. */
 const BASE_ROWS = 4;
 const ROWS_PER_SPIN = 4;
-/** One visible overshoot as a reel lands: the clunk of a real reel catching its stop. */
-const LAND_EASE = [0.2, 1.16, 0.34, 1] as const;
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
-/** The window reaches past the line box by this much, so accents and descenders are never clipped at rest. */
+/** The window reaches past the line box by this much at rest, so accents and descenders are never clipped. */
 const BLEED = "0.16em";
 /**
- * While a reel spins, its window fades at the top and bottom like the curve of
- * a drum, so the rows passing through read as depth rather than as clutter
- * above and below the line. At rest there is no mask.
+ * How far past the stop a reel travels before it settles, in rows. A fraction
+ * of one row — not of the whole travel — so the clunk stays a clunk on a long strip.
  */
-const DRUM = "linear-gradient(to bottom, transparent, #000 0.3em, #000 calc(100% - 0.3em), transparent)";
-const DRUM_MASK: CSSProperties = { maskImage: DRUM, WebkitMaskImage: DRUM };
+const PEEK = 0.12;
 
 /* ------------------------------------------------------------------ reel */
 
@@ -109,6 +105,10 @@ function Reel({ cell, run, stagger, duration, spins, direction, reduce }: ReelPr
   const endRow = direction === "up" ? land : rows - 1 - land;
   const pct = (row: number) => `${(-row / rows) * 100}%`;
   const delay = (cell.order * stagger) / 1000;
+  // Travel is many rows; a bezier overshoot would fling the glyph out of the slot.
+  // Peek a fraction of one row past the stop, then settle back onto it.
+  const sign = endRow >= startRow ? 1 : -1;
+  const peek = endRow + sign * PEEK;
 
   // Width follows the landing character, measured in the reel's own font, so proportional type never reflows.
   useLayoutEffect(() => {
@@ -151,21 +151,20 @@ function Reel({ cell, run, stagger, duration, spins, direction, reduce }: ReelPr
       <span ref={measureRef} aria-hidden="true" className="invisible absolute left-0 top-0 whitespace-pre">
         {cell.to || "\u200b"}
       </span>
-      <span className="absolute inset-x-[-0.04em] overflow-hidden" style={{ top: `-${BLEED}`, bottom: `-${BLEED}`, ...(spinning ? DRUM_MASK : null) }}>
+      <span
+        className="absolute inset-x-[-0.04em] overflow-hidden"
+        style={spinning ? { top: 0, bottom: 0 } : { top: `-${BLEED}`, bottom: `-${BLEED}` }}
+      >
         {spinning ? (
           <motion.span
             key={run}
-            className="absolute inset-x-[0.04em] flex flex-col items-center"
-            style={{ top: BLEED }}
-            initial={{ y: pct(startRow), filter: "blur(0px)" }}
-            animate={{ y: pct(endRow), filter: ["blur(0px)", "blur(1.4px)", "blur(0px)"] }}
-            transition={{
-              y: { duration: duration / 1000, delay, ease: LAND_EASE },
-              filter: { duration: duration / 1000, delay, times: [0, 0.35, 0.8], ease: "linear" },
-            }}
+            className="absolute inset-x-[0.04em] top-0 flex flex-col"
+            initial={{ y: pct(startRow) }}
+            animate={{ y: [pct(startRow), pct(peek), pct(endRow)] }}
+            transition={{ y: { duration: duration / 1000, delay, times: [0, 0.86, 1], ease: EASE_OUT } }}
           >
             {ordered.map((g, i) => (
-              <span key={i} className="block whitespace-pre text-center" style={{ height: "1lh" }}>
+              <span key={i} className="block w-full overflow-hidden whitespace-pre text-center" style={{ height: "1lh" }}>
                 {g || "\u200b"}
               </span>
             ))}

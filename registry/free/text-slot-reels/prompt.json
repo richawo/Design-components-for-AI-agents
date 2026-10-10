@@ -9,7 +9,7 @@
   },
   "layout": {
     "root": "any text element (as); reels inherit font, size, tracking and line height",
-    "reel": "inline-block per character, baseline from a zero-width space in flow; the strip sits in an absolute overflow-hidden window extending 0.16em above and below the line box; while spinning the window is masked transparent → black over 0.3em at both ends (a drum), no mask at rest",
+    "reel": "inline-block per character, baseline from a zero-width space in flow; the strip sits in an absolute overflow-hidden window. At rest the window extends 0.16em above and below the line box. While spinning the window is exactly the line box and each row clips its own glyph, so the slot shows one character and a passing glyph is a clean horizontal cut",
     "rows": "each row exactly 1lh tall; strip moved by translateY(-k/n × 100%)",
     "width": "an invisible copy of the landing character is measured (ResizeObserver too) and the reel width eases to it over the spin; until measured the character renders in flow",
     "pairing": "old and new values paired per character; padded right for words and left for figures (align auto); keys count from the anchored side",
@@ -32,13 +32,13 @@
   },
   "motion": {
     "strip": "[old, 4 + 4×spins filler (+0–2 by position), new, one past]; filler from the character's class via a stable hash",
-    "spin": "y over duration (default 900ms) with cubic-bezier(0.2, 1.16, 0.34, 1): one overshoot into the glyph past the stop",
-    "blur": "0 → 1.4px at 35% → 0 by 80% of the spin",
+    "spin": "y over duration (default 900ms), ease-out cubic-bezier(0.22, 1, 0.36, 1), keys at 0 / 0.86 / 1: start, a peek 0.12 row past the stop, then the stop. The peek is a fraction of one row, not of the travel",
+    "blur": "none; the cut stays sharp",
     "stagger": "stagger ms (default 45) between reels, counted only across reels that change",
     "direction": "down reverses the strip",
     "nonSpinning": "spaces and punctuation cross-fade over 150ms",
     "cleanup": "after the last reel lands the strips and padding cells are removed; onSettle fires",
-    "reducedMotion": "no strips, blur or overshoot; changed characters cross-fade in 150ms"
+    "reducedMotion": "no strips and no peek; changed characters cross-fade in 150ms"
   },
   "responsive": "Reels inherit the host's type, so they scale with clamp() or cqi sizes; the width re-measures on resize. Long values wrap between words at <wbr>; the demo name is sized to hold one line from 390px up.",
   "accessibility": [
@@ -70,7 +70,7 @@
     "spinning characters that did not change",
     "letters spinning through digits or symbols",
     "reels whose width jumps",
-    "more than one overshoot, or blur at rest",
+    "an overshoot measured against the whole travel, or blur that smears one glyph into the next",
     "announcing filler glyphs to screen readers"
   ]
 }

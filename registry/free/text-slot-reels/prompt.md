@@ -2,7 +2,7 @@ Build a text effect in React 19 + Tailwind CSS v4 + `motion/react` where text an
 
 **Layout**
 - The root is any text element (`as`), so the reels inherit the host's font, size, weight, tracking and line height. One `span` per character, inline-block, aligned to the baseline.
-- A reel keeps the text's own baseline with a zero-width space in flow; its glyph strip lives in an absolutely positioned window that reaches 0.16em above and below the line box, so accents and descenders are never clipped at rest, and the window is `overflow: hidden`. While a reel spins the window carries a vertical mask (transparent → black over 0.3em at both ends), like the curve of a drum, so rows passing above and below read as depth, not clutter; at rest there is no mask.
+- A reel keeps the text's own baseline with a zero-width space in flow; its glyph strip lives in an absolutely positioned window with `overflow: hidden`. At rest the window reaches 0.16em above and below the line box, so accents and descenders are never clipped. While a reel spins the window is exactly the line box, and each row is `1lh` tall with its own overflow hidden, so the slot shows one glyph and a passing glyph is a clean horizontal cut — never a second letter stacked on the first.
 - The strip is a column of rows, each exactly `1lh` tall, moved with `translateY` in percent of its own height (row k of n is −k/n × 100%), so it lines up at any font size and line height.
 - Width: an invisible copy of the landing character measures the reel; its width eases to the new character over the spin, so proportional type never reflows. A ResizeObserver keeps it honest when fonts load or `cqi` type resizes. Until it has measured, the character renders in flow, so server HTML has the right layout.
 - Old and new values are paired character by character. Shorter values are padded on the right for words and on the left for figures (`align="auto"`), so a growing number keeps its units still. Reel keys count from the anchored side.
@@ -18,10 +18,10 @@ Build a text effect in React 19 + Tailwind CSS v4 + `motion/react` where text an
 
 **Motion**
 - Strip per changed reel: [old character, 4 + 4 × `spins` filler glyphs (plus 0–2 more by position), new character, one glyph past it]. Filler comes from the character's class (digits, capitals, lowercase) with a stable hash, so a word keeps its silhouette mid-spin; punctuation and spaces never spin, they cross-fade (150ms).
-- `y` runs over `duration` (900ms) with `[0.2, 1.16, 0.34, 1]`: one visible overshoot into the glyph past the stop, then it settles. A vertical blur peaks at 1.4px at 35% of the spin and clears by 80%.
+- `y` runs over `duration` (900ms) with ease-out `[0.22, 1, 0.36, 1]`, in three keys: the old glyph, a peek 0.12 of a row past the stop (at 86% of the spin), then back onto the new glyph. The peek is a fraction of one row, not of the whole travel, so a long strip still lands with one small clunk. No blur: the cut stays sharp.
 - Reels start `stagger` ms apart (45ms), counted only across reels that change. `direction="down"` reverses the strip.
 - After the last reel lands, the padding cells and strips are dropped and the DOM is plain characters again. `onSettle` fires then.
-- Reduced motion: no strips, no blur and no overshoot; changed characters cross-fade in 150ms.
+- Reduced motion: no strips and no peek; changed characters cross-fade in 150ms.
 
 **Accessibility**
 - The visual reels are `aria-hidden`; a visually hidden copy of the full value is always present. `announce` adds a polite live region that speaks the value only after it has landed, never the filler.
@@ -33,4 +33,4 @@ Build a text effect in React 19 + Tailwind CSS v4 + `motion/react` where text an
 **Don't**
 - Don't build a split-flap board, add a slot-machine frame, lever or coloured lights, or spin unchanged characters.
 - Don't spin letters through digits or symbols, or let reels change width with a jump.
-- Don't bounce more than once, blur at rest, or announce every glyph to screen readers.
+- Don't bounce more than once, smear one glyph into the next, or announce every glyph to screen readers.
