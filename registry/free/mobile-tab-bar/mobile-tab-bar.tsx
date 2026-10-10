@@ -85,6 +85,8 @@ export type MobileTabBarProps = {
   tab?: TabKey;
   /** Drive the quick-action arc from outside: "open" fans it out, "closed" folds it away. */
   menu?: "open" | "closed";
+  /** Fired whenever the quick-action arc opens or closes, by a tap or from outside. */
+  onMenuChange?: (menu: "open" | "closed") => void;
   onTabChange?: (key: TabKey) => void;
   onAction?: (key: string) => void;
 };
@@ -207,6 +209,14 @@ function withAlpha(hex: string, alpha: number) {
   return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${alpha})`;
 }
 
+/** True when white ink on this "#RRGGBB" fill would fall below 2:1 contrast (the default orange sits at 2.8). */
+function isLightFill(hex: string) {
+  const n = parseInt(hex.replace("#", ""), 16);
+  const lin = (c: number) => ((c /= 255) <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+  const lum = 0.2126 * lin((n >> 16) & 255) + 0.7152 * lin((n >> 8) & 255) + 0.0722 * lin(n & 255);
+  return 1.05 / (lum + 0.05) < 2;
+}
+
 const round1 = (n: number) => Math.round(n * 10) / 10;
 
 /** A smooth curve through the points (Catmull-Rom as cubic Béziers). */
@@ -248,12 +258,12 @@ function chartPoints(values: number[], width: number, height: number, pad = 3): 
   ]);
 }
 
+/** First and last initial, so a middle name never takes the place of a surname. */
 function initialsOf(name: string) {
-  return name
-    .split(" ")
-    .map((w) => w[0])
+  const words = name.split(" ").filter(Boolean);
+  return [words[0], words.length > 1 ? words[words.length - 1] : ""]
+    .map((w) => w?.[0] ?? "")
     .join("")
-    .slice(0, 2)
     .toUpperCase();
 }
 
@@ -1801,7 +1811,7 @@ function CentreAction({ open, menu, rise, onToggle }: { open: boolean; menu: Ani
           <Animated.View style={motion.plus}>
             <PlusGlyph color={INK.black} />
             <Animated.View style={[StyleSheet.absoluteFill, motion.whitePlus]}>
-              <PlusGlyph color="#FFFFFF" />
+              <PlusGlyph color={isLightFill(accent) ? INK.black : "#FFFFFF"} />
             </Animated.View>
           </Animated.View>
         </Animated.View>
@@ -1903,6 +1913,7 @@ export function MobileTabBar({
   accent = DEFAULT_ACCENT,
   tab,
   menu: menuState,
+  onMenuChange,
   onTabChange,
   onAction,
 }: MobileTabBarProps) {
@@ -1910,9 +1921,11 @@ export function MobileTabBar({
   const firstName = runnerName.split(" ")[0];
   const initials = initialsOf(runnerName);
 
-  const [active, setActive] = useState<TabKey>(initialTab);
+  // A controlled `tab` is the starting tab too, so mounting with it plays no transition.
+  const startTab = tab ?? initialTab;
+  const [active, setActive] = useState<TabKey>(startTab);
   // `visit` re-keys the view, so even a quick there-and-back replays its entrance.
-  const [view, setView] = useState({ tab: initialTab, visit: 0 });
+  const [view, setView] = useState({ tab: startTab, visit: 0 });
   const [leaving, setLeaving] = useState(false);
   const [badges, setBadges] = useState<Record<string, number>>(() => Object.fromEntries(tabs.map((t) => [t.key, t.badge ?? 0])));
   const [km, setKm] = useState(() => week.reduce((sum, d) => sum + d.km, 0));
@@ -1920,7 +1933,7 @@ export function MobileTabBar({
   const [toast, setToast] = useState<QuickAction | null>(null);
 
   const exit = useRef(new Animated.Value(1)).current;
-  const pending = useRef<TabKey>(initialTab);
+  const pending = useRef<TabKey>(startTab);
   const rise = useRef(new Animated.Value(36)).current;
   const menu = useRef(new Animated.Value(0)).current;
   const items = useRef(actions.map(() => new Animated.Value(0))).current;
@@ -1966,6 +1979,7 @@ export function MobileTabBar({
 
   const toggleMenu = (next: boolean) => {
     setOpen(next);
+    onMenuChange?.(next ? "open" : "closed");
     if (reduce) {
       [menu, ...items].forEach((v) => Animated.timing(v, { toValue: next ? 1 : 0, duration: 120, useNativeDriver: true }).start());
       return;
@@ -2085,8 +2099,18 @@ export function MobileTabBar({
   );
 }
 
+/**
+ * The Customize panel's "Quick actions" buttons re-send the same value when
+ * pressed twice. The demo mirrors the arc's real state back into `menu`, so a
+ * re-sent "open" after the visitor closed it is a genuine change again.
+ */
 export default function MobileTabBarDemo(overrides: Partial<MobileTabBarProps> = {}) {
-  return <MobileTabBar {...overrides} />;
+  const { menu: forced, ...rest } = overrides;
+  const [menu, setMenu] = useState(forced);
+  useEffect(() => {
+    if (forced) setMenu(forced);
+  }, [overrides]); // a fresh object per host message, the same one across our own renders
+  return <MobileTabBar {...rest} menu={menu} onMenuChange={setMenu} />;
 }
 
 /* ------------------------------------------------------------------ */
