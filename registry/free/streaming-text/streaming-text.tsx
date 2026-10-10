@@ -302,6 +302,7 @@ function Cite({ n, source, active, onHover, inkClass, anchor }: { n: number; sou
     <sup className={`relative -top-[0.45em] mx-[1px] inline-block align-baseline leading-none ${inkClass}`}>
       <a
         href={`#${anchor}`}
+        data-demo={`cite-${n}`}
         aria-label={`Source ${n}${source ? `: ${source.title}` : ""}`}
         onMouseEnter={() => onHover(n)}
         onMouseLeave={() => onHover(null)}
@@ -600,12 +601,21 @@ export function StreamingText({
   );
 }
 
-/** The answer card on its stage. Overrides (the page’s Customize panel) go straight to the card; the stage follows the theme. */
+/** A shorter answer for the showcase, so the whole card (question to footer) stays in frame while the demo plays. */
+const STAGE_ANSWER = [
+  "A loaf usually collapses because the dough ran out of strength before the oven could set it.[1] The usual culprit is **overproofing**: if the poke-test dent springs back slowly and only partway, bake it.[2] Left too long, acids loosen the gluten and the loaf sighs the moment you score it.[3] Shorten the final proof by 30 to 45 minutes.",
+];
+
+/**
+ * The answer card on its stage. It opens on the finished answer so Regenerate
+ * is there from the first frame; overrides (the page’s Customize panel) go
+ * straight to the card, and the stage follows the theme.
+ */
 export default function StreamingTextDemo(overrides: Partial<StreamingTextProps> = {}) {
   return (
-    <div className="flex min-h-dvh items-center justify-center px-4 py-12 sm:px-8 sm:py-20" style={{ background: STAGE[overrides.theme ?? "dark"] }}>
+    <div className="flex min-h-dvh items-start justify-center px-4 pb-10 pt-[max(2rem,calc((100dvh-860px)/2))] sm:px-8" style={{ background: STAGE[overrides.theme ?? "dark"] }}>
       <div className="w-full max-w-[820px]">
-        <StreamingText pace={0.5} {...overrides} />
+        <StreamingText answer={STAGE_ANSWER} sources={DEMO_SOURCES.slice(0, 3)} autoStart={false} {...overrides} />
       </div>
     </div>
   );

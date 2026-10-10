@@ -78,11 +78,11 @@
   "added": "2026-10-07",
   "demo": {
     "steps": [
-      "wait:400",
-      "click:@copy",
-      "wait:900",
+      "wait:300",
       "click:@regenerate",
-      "wait:3000"
+      "wait:3000",
+      "hover:@cite-2",
+      "wait:1400"
     ]
   },
   "controls": [
@@ -100,13 +100,13 @@
     },
     {
       "prop": "pace",
-      "label": "Delay scale",
+      "label": "Word delay",
       "kind": "slider",
       "min": 0.25,
       "max": 2,
       "step": 0.25,
       "unit": "x",
-      "default": 0.5
+      "default": 1
     },
     {
       "prop": "theme",
@@ -140,7 +140,7 @@
       "prop": "autoStart",
       "label": "Stream on load",
       "kind": "toggle",
-      "default": true,
+      "default": false,
       "remount": true
     }
   ]
