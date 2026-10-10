@@ -25,6 +25,8 @@ export type PixelMatrixDisplayProps = {
   chrome?: boolean;
   /** Offer a microphone toggle that drives the equaliser from live audio. */
   microphone?: boolean;
+  /** Jump to this scene whenever the value changes (it must be one of `scenes`). The cycle carries on from there. */
+  scene?: SceneKey;
   className?: string;
 };
 
@@ -66,8 +68,8 @@ const MOTION = {
 const DOT = { radius: 0.34, levels: 5, reach: 4.2, bloom: 0.4, bloomStep: 0.18, nearLevels: 3 } as const;
 const MARQUEE_SPEED = 14; // dots per second
 
-function cssVars(): CSSProperties {
-  const vars: Record<string, string> = {};
+function cssVars(color: string): CSSProperties {
+  const vars: Record<string, string> = { "--pmd-accent": color };
   for (const [k, v] of Object.entries(PALETTE)) vars[`--pmd-${k}`] = v;
   return vars as CSSProperties;
 }
@@ -516,6 +518,7 @@ export function PixelMatrixDisplay({
   interval = 4800,
   chrome = true,
   microphone = true,
+  scene,
   className = "",
 }: PixelMatrixDisplayProps) {
   const reduce = useReducedMotion() ?? false;
@@ -542,6 +545,16 @@ export function PixelMatrixDisplay({
     const eq = sceneKey.split(",").indexOf("equalizer");
     if (eq >= 0) setIndex(eq);
   }, [mic.state, sceneKey, setIndex]);
+
+  // A host can jump to a scene by changing `scene`.
+  const stopMic = mic.stop;
+  useEffect(() => {
+    if (!scene) return;
+    const to = sceneKey.split(",").indexOf(scene);
+    if (to < 0) return;
+    stopMic();
+    setIndex(to);
+  }, [scene, sceneKey, setIndex, stopMic]);
 
   useMatrixCanvas({ canvas: canvasRef, wrap: wrapRef, live: liveRef, audio: audioRef, mic: mic.mic, text, sceneKey, color, cols, rows, reduce });
 
@@ -573,7 +586,7 @@ export function PixelMatrixDisplay({
   const label = SCENE_LABELS[current];
 
   return (
-    <div ref={root} className={`@container w-full font-sans ${className}`} style={cssVars()}>
+    <div ref={root} className={`@container w-full font-sans ${className}`} style={cssVars(color)}>
       <motion.div
         {...enter(play, 0, reduce)}
         className="relative overflow-hidden rounded-[20px] border p-[clamp(12px,2.6cqi,22px)] shadow-[inset_0_1px_0_rgba(255,255,255,0.06),inset_0_0_40px_rgba(0,0,0,0.9),0_30px_80px_-30px_rgba(0,0,0,0.9)]"
@@ -581,6 +594,7 @@ export function PixelMatrixDisplay({
       >
         <div
           ref={wrapRef}
+          data-demo="display"
           className="w-full"
           onPointerMove={(e) => {
             if (e.pointerType !== "mouse") return;
@@ -596,7 +610,7 @@ export function PixelMatrixDisplay({
             setHovering(false);
           }}
         >
-          <canvas ref={canvasRef} role="img" aria-label={`Dot-matrix display showing ${label.toLowerCase()}${current === "marquee" ? `: ${text.trim()}` : ""}`} className="block" />
+          <canvas ref={canvasRef} data-marquee={text.trim()} role="img" aria-label={`Dot-matrix display showing ${label.toLowerCase()}${current === "marquee" ? `: ${text.trim()}` : ""}`} className="block" />
         </div>
         {/* A faint glass sheen over the dots. */}
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 rounded-[20px] bg-[linear-gradient(180deg,rgba(255,255,255,0.05),transparent_38%)]" />
@@ -614,10 +628,10 @@ export function PixelMatrixDisplay({
           showProgress={!reduce && scenes.length > 1}
         >
           {microphone && scenes.includes("equalizer") && <MicButton state={mic.state} color={color} onToggle={() => void mic.toggle()} />}
-          <IconButton label="Previous scene" onClick={() => step(-1)}>
+          <IconButton demo="prev" label="Previous scene" onClick={() => step(-1)}>
             <path d="M10 3.5 5.5 8l4.5 4.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" fill="none" />
           </IconButton>
-          <IconButton label={paused ? "Resume" : "Pause"} pressed={paused} onClick={() => setPaused((p) => !p)}>
+          <IconButton demo="pause" label={paused ? "Resume" : "Pause"} pressed={paused} onClick={() => setPaused((p) => !p)}>
             {paused ? (
               <path d="M5 3.5v9l7-4.5z" fill="currentColor" />
             ) : (
@@ -627,7 +641,7 @@ export function PixelMatrixDisplay({
               </>
             )}
           </IconButton>
-          <IconButton label="Next scene" onClick={() => step(1)}>
+          <IconButton demo="next" label="Next scene" onClick={() => step(1)}>
             <path d="M6 3.5 10.5 8 6 12.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" fill="none" />
           </IconButton>
         </Caption>
@@ -697,9 +711,9 @@ function Caption({
 const controlCls =
   "flex items-center justify-center rounded-full transition-[color,background-color,transform] duration-150 hover:bg-[var(--pmd-controlHover)] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-white/70 active:scale-90";
 
-function IconButton({ label, pressed, onClick, children }: { label: string; pressed?: boolean; onClick: () => void; children: ReactNode }) {
+function IconButton({ label, pressed, demo, onClick, children }: { label: string; pressed?: boolean; demo?: string; onClick: () => void; children: ReactNode }) {
   return (
-    <button type="button" aria-label={label} aria-pressed={pressed} onClick={onClick} className={`size-8 text-[var(--pmd-control)] ${controlCls}`}>
+    <button type="button" data-demo={demo} aria-label={label} aria-pressed={pressed} onClick={onClick} className={`size-8 text-[var(--pmd-control)] ${controlCls}`}>
       <svg viewBox="0 0 16 16" className="size-3.5" aria-hidden="true">
         {children}
       </svg>
@@ -712,6 +726,7 @@ function MicButton({ state, color, onToggle }: { state: "off" | "asking" | "on" 
   return (
     <button
       type="button"
+      data-demo="mic"
       aria-pressed={on}
       aria-label={on ? "Stop listening" : "Drive the equaliser with your microphone"}
       title={state === "blocked" ? "Microphone blocked. Allow it in your browser to try again." : undefined}
@@ -732,12 +747,12 @@ function MicButton({ state, color, onToggle }: { state: "off" | "asking" | "on" 
   );
 }
 
-/** Demo: the display on a black stage. */
-export default function PixelMatrixDisplayDemo() {
+/** Demo: the display on a black stage. Overrides are spread on the featured instance. */
+export default function PixelMatrixDisplayDemo(overrides: Partial<PixelMatrixDisplayProps> = {}) {
   return (
     <div className="flex min-h-dvh w-full items-center justify-center bg-black px-4 py-12 sm:px-10">
       <div className="w-full max-w-3xl">
-        <PixelMatrixDisplay />
+        <PixelMatrixDisplay {...overrides} />
       </div>
     </div>
   );
