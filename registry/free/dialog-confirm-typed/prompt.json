@@ -1,0 +1,94 @@
+{
+  "component": "DialogConfirmTyped",
+  "intent": "A destructive confirmation dialog for removing a resource. The visitor opens it from a danger-zone trigger, sees exactly what will be lost, types the resource name to enable Delete, and gets a clear pending, done or error outcome. The panel grows out of the trigger, and it is the one place a destructive action is confirmed.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 with @container queries and CSS variables on the root",
+    "animation": "motion/react: animate() on the panel (clip-path circle, scale, opacity), stagger() for content blocks, useMotionValue and animate() for ledger counts, AnimatePresence for the confirm label and the match tick"
+  },
+  "layout": {
+    "root": "@container, relative, isolate, min-height 640px, centred, transparent, padding 16px / 32px",
+    "card": "max 560px wide, radius 16px, padding 20px (24px from @md); flex row from @md with the trigger at the end",
+    "panel": "absolute, centred on both axes via translate, width min(460px, 100% - 2rem), radius 18px, padding 24px (28px from @md), z-index above the scrim",
+    "ledger": "definition list with hairline rules; each row label left, mono figure right",
+    "footer": "Cancel and Delete first in the DOM. From @lg one row: Archive instead left (-12px optical offset), Cancel and Delete right, Delete min-width 168px so its states never resize it. Below @lg: Cancel + Delete full width (Delete fills), Archive instead centred under them. Below @xs: Delete stacked over a full-width Cancel.",
+    "errorLine": "no reserved line: the kicker cross-fades to the error copy, so an error never moves anything"
+  },
+  "typography": {
+    "kicker": "mono 10.5px uppercase, letter-spacing 0.14em, muted",
+    "title": "display face 24px, line-height 1.1, letter-spacing -0.03em",
+    "body": "14px, line-height 1.55",
+    "ledger": "label 13.5px body colour; figure mono 13.5px tabular numerals",
+    "field": "mono 14px, height 44px, radius 11px",
+    "buttons": "14px, weight 500, letter-spacing -0.01em"
+  },
+  "color": {
+    "approach": "one destructive accent per tone; everything else monochrome",
+    "dark": "card #121214, panel #161618, field #0e0e10, hairline rgba(255,255,255,0.08), ink #f4f4f5, body #b4b4bc, muted #8a8a93, scrim rgba(0,0,0,0.62), success #5cb86f",
+    "light": "card and panel #ffffff, field #f6f6f7, hairline rgba(24,24,27,0.10), ink #18181b, body #3f3f46, muted #6b6b74, scrim rgba(18,18,20,0.42), success #2f7d43",
+    "danger": "fill #d63b40 with white text; ink #ff8b8f on dark, #b91c1c on light; wash 10% dark, 7% light",
+    "neutral": "fill is the theme ink with the inverse text; ink is the same ink",
+    "rule": "no warning triangle, no gradient, no tinted surfaces beyond the tone wash"
+  },
+  "motion": {
+    "open": "panel clip-path circle grows from radius 0 at the trigger centre to 960px over 500ms on [0.22,1,0.36,1]; scale 0.965 to 1 from the same origin; opacity 0.5 to 1",
+    "content": "blocks rise 8px with 4px blur clearing, 420ms each, staggered 50ms from 140ms, in reading order",
+    "figures": "ledger numbers count up from zero over 700ms each time the dialog opens",
+    "close": "the same circle shrinks back into the trigger over 260ms on [0.4,0,1,1]; the panel hides only when that run finishes and is still current",
+    "pending": "label cross-fades to a spinner while onConfirm's promise is unsettled; button width is locked",
+    "done": "check path draws in over 340ms, holds for 520ms, then the dialog closes and focus returns to the trigger",
+    "error": "panel shakes x [0,-3,3,-2,2,-1,0] over 340ms; the label reads “Couldn’t delete” and the kicker cross-fades to “Couldn’t delete. Nothing was removed.” in the tone ink for 2.6s; typed name is kept",
+    "reducedMotion": "no clip, scale, rise or shake; 150ms opacity fades; figures set immediately; spinner stops"
+  },
+  "responsive": {
+    "panel": "min(460px, 100% - 2rem) so it fits a 320px viewport; the footer is laid out per container width (@lg row, then stacked) rather than wrapping",
+    "card": "stacks the trigger under the copy below @md",
+    "touch": "every control is at least 40px tall; the field is 44px"
+  },
+  "behaviour": {
+    "match": "Delete enables when the trimmed field equals resourceName; a green check appears at the field's right edge",
+    "enter": "Enter in the field runs Delete only when it is enabled",
+    "dismiss": "Cancel, Escape, a click on the scrim and a finished delete close the dialog and return focus to the trigger; nothing closes while a delete is pending",
+    "focus": "field focused on open, or Cancel when typing is off; Tab and Shift+Tab wrap inside the dialog",
+    "page": "the card is inert while open and page scroll is locked",
+    "archive": "calls onArchive; closes when a returned promise resolves"
+  },
+  "accessibility": [
+    "role=dialog with aria-modal=true, labelled by the title and described by the body",
+    "trigger has aria-haspopup=dialog and aria-expanded",
+    "polite live region announces deleting, deleted, the error and archive failures",
+    "focus trap with Tab and Shift+Tab; Escape dismisses; focus returns to the trigger",
+    "spinner and drawn icons are aria-hidden; the focus ring is a 2px keyboard-only outline",
+    "disabled controls are 40% opacity with a not-allowed cursor"
+  ],
+  "content": {
+    "defaults": {
+      "triggerLabel": "Delete project",
+      "resourceName": "atlas-staging",
+      "environments": 12,
+      "lastDeployHours": 3,
+      "secrets": 47
+    },
+    "copy": {
+      "kicker": "Permanent deletion",
+      "title": "Delete {resourceName}",
+      "body": "This removes the project and everything inside it. There is no recovery window and no undo.",
+      "field": "Type {resourceName} to confirm",
+      "pending": "Deleting…",
+      "done": "Deleted",
+      "error": "Couldn’t delete",
+      "errorKicker": "Couldn’t delete. Nothing was removed.",
+      "archive": "Archive instead"
+    }
+  },
+  "avoid": [
+    "a red warning triangle or any alarm icon",
+    "a generic 'Are you sure?' with two buttons and no information about what is lost",
+    "enabling Delete from a click alone when typing is required",
+    "closing the dialog while a delete is still in flight",
+    "a second accent colour, gradients, glass blur, glow or decorative pills",
+    "a portal library: the dialog positions inside its container, and the usage note explains how to lift it",
+    "animating button opacity through a stagger container with fill mode both, which pins it and ignores :disabled"
+  ]
+}

@@ -1,0 +1,190 @@
+{
+  "slug": "dialog-confirm-typed",
+  "name": "Typed Confirm Dialog",
+  "tier": "free",
+  "platform": "web",
+  "category": "overlays",
+  "description": "A destructive confirm that grows out of its trigger, traps focus and enables Delete only once the exact name is typed. It lists what is lost and offers Archive instead.",
+  "tags": [
+    "dialog",
+    "confirm",
+    "destructive",
+    "delete",
+    "typed confirmation",
+    "modal",
+    "focus trap",
+    "dark"
+  ],
+  "dependencies": [
+    "motion"
+  ],
+  "theme": "dark",
+  "previewHeight": 720,
+  "usage": "import { DialogConfirmTyped } from \"@/components/design-for-ai/dialog-confirm-typed\";\n\n<DialogConfirmTyped\n  triggerLabel=\"Delete project\"\n  resourceName=\"atlas-staging\"\n  environments={12}\n  lastDeployHours={3}\n  onConfirm={(name) => api.projects.delete(name)} // return a promise for the pending and error states\n  onArchive={() => api.projects.archive(id)}\n/>\n\n<DialogConfirmTyped tone=\"neutral\" requireTyping={false} alternative={false} />\n\n// The dialog sits inside its container. To lift it to document.body, render the same markup through createPortal and keep the focus trap, scroll lock and focus return.",
+  "props": [
+    {
+      "name": "triggerLabel",
+      "type": "string",
+      "default": "\"Delete project\"",
+      "description": "The button in the card that opens the dialog."
+    },
+    {
+      "name": "resourceName",
+      "type": "string",
+      "default": "\"atlas-staging\"",
+      "description": "The exact name the visitor must type before Delete enables."
+    },
+    {
+      "name": "environments",
+      "type": "number",
+      "default": "12",
+      "description": "Environments that go with the project, counted up in the ledger."
+    },
+    {
+      "name": "lastDeployHours",
+      "type": "number",
+      "default": "3",
+      "description": "Hours since the last deploy, shown as “3 h ago”."
+    },
+    {
+      "name": "secrets",
+      "type": "number",
+      "default": "47",
+      "description": "Environment variables that go with the project."
+    },
+    {
+      "name": "requireTyping",
+      "type": "boolean",
+      "default": "true",
+      "description": "Ask for the exact name first. Off, Delete is a single plain confirm."
+    },
+    {
+      "name": "alternative",
+      "type": "boolean",
+      "default": "true",
+      "description": "Offer “Archive instead”, which keeps environments and history."
+    },
+    {
+      "name": "tone",
+      "type": "\"danger\" | \"neutral\"",
+      "default": "\"danger\"",
+      "description": "Red for removal; the theme’s ink for anything milder."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "The surface the dialog sits on, so its scrim, field and text keep their contrast."
+    },
+    {
+      "name": "open",
+      "type": "boolean",
+      "description": "Controlled open state. Leave it out and the trigger owns it."
+    },
+    {
+      "name": "onOpenChange",
+      "type": "(open: boolean) => void",
+      "description": "Fires on every open and close: the trigger, Cancel, Esc, the scrim, or a finished delete."
+    },
+    {
+      "name": "onConfirm",
+      "type": "(name: string) => void | Promise<unknown>",
+      "description": "Runs with the typed name. Return a promise for the pending state; reject it for the error state."
+    },
+    {
+      "name": "onArchive",
+      "type": "() => void | Promise<unknown>",
+      "description": "Runs when the visitor picks Archive instead. A promise holds the dialog open until it settles."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "description": "Classes for the outer container."
+    }
+  ],
+  "added": "2026-10-10",
+  "demo": {
+    "steps": [
+      "wait:350",
+      "click:@trigger",
+      "wait:600",
+      "type:atlas-staging",
+      "wait:300",
+      "hover:@confirm",
+      "click",
+      "wait:1750"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "resourceName",
+      "label": "Project name",
+      "kind": "text",
+      "default": "atlas-staging"
+    },
+    {
+      "prop": "requireTyping",
+      "label": "Require typing",
+      "kind": "toggle",
+      "default": true
+    },
+    {
+      "prop": "alternative",
+      "label": "Archive option",
+      "kind": "toggle",
+      "default": true
+    },
+    {
+      "prop": "tone",
+      "label": "Tone",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "danger",
+          "label": "Danger"
+        },
+        {
+          "value": "neutral",
+          "label": "Neutral"
+        }
+      ],
+      "default": "danger"
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark"
+    },
+    {
+      "prop": "open",
+      "label": "Dialog",
+      "kind": "action",
+      "options": [
+        {
+          "value": false,
+          "label": "Close"
+        },
+        {
+          "value": true,
+          "label": "Open"
+        }
+      ]
+    },
+    {
+      "prop": "$replay",
+      "label": "Replay",
+      "kind": "action"
+    }
+  ]
+}
