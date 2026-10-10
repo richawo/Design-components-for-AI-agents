@@ -73,21 +73,20 @@
     {
       "name": "scene",
       "type": "\"marquee\"|\"clock\"|\"equalizer\"|\"pulse\"|\"orbit\"",
-      "description": "Jump to this scene whenever the value changes. It must be one of `scenes`; the cycle carries on from there."
+      "description": "Hold on this scene. It must be one of `scenes`. Jumps to it when the value changes and pauses auto-advance while set; prev and next still step."
     }
   ],
   "added": "2026-10-07",
   "demo": {
     "steps": [
-      "wait:400",
-      "hover:@display:0.1,0.5",
-      "hover:@display:0.9,0.45",
-      "click:@next",
-      "wait:800",
+      "hover:@next",
+      "wait:300",
       "click",
-      "wait:800",
+      "wait:1300",
       "click",
-      "wait:500"
+      "wait:1300",
+      "click",
+      "wait:1400"
     ],
     "loop": false
   },

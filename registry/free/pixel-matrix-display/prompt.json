@@ -30,8 +30,8 @@
     "dotOff": "white/5.5%",
     "dotOn": "#f5f5f0 (prop)",
     "bloom": "shadowBlur in dot colour, grows with brightness level",
-    "tokens": "PALETTE: panel #070707, line white/8%, off dots white/5.5%, caption white/45%, controls white/60% (hover white, bg white/6%), progress track white/10% fill white/60%, mic blocked #f87171; exposed as --pmd-* CSS variables",
-    "accent": "color prop (default #f5f5f0) is the one accent: lit dots, bloom and the live mic dot"
+    "tokens": "PALETTE: panel #070707, line white/8%, off dots white/5.5%, caption white/45%, controls white/60% (hover white, bg white/6%), progress track white/10% fill the dot colour at 70%, mic blocked #f87171; exposed as --pmd-* CSS variables",
+    "accent": "color prop (default #f5f5f0) is the one accent: lit dots, bloom, the progress line and the live mic dot"
   },
   "motion": {
     "sceneInterval": 4800,
@@ -77,6 +77,7 @@
     "a display that pops in fully lit"
   ],
   "interaction": {
-    "microphone": "Opt-in 'Use mic' toggle: getUserMedia + AnalyserNode (fftSize 256), log-spaced bands to bars, fast attack / slow release, falling peak-hold dots; holds the equaliser scene; stops all tracks on toggle, scene change or unmount; blocked permission shows 'Mic blocked'."
+    "microphone": "Opt-in 'Use mic' toggle: getUserMedia + AnalyserNode (fftSize 256), log-spaced bands to bars, fast attack / slow release, falling peak-hold dots; holds the equaliser scene; stops all tracks on toggle, scene change or unmount; blocked permission shows 'Mic blocked'.",
+    "scene": "Optional prop: holds the display on that scene. Jumps to it when the value changes and pauses auto-advance while set; prev and next still step."
   }
 }

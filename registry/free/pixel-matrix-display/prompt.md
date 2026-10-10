@@ -48,3 +48,4 @@ Build a dot-matrix LED display in React + Tailwind CSS v4 + `motion/react` (for 
 - The scene label cross-fades on every change (in: 6px, 2px blur, 320ms; out: up 6px, 160ms ease-in). Below `@md` the mic control shrinks to its dot (the aria-label keeps the meaning) so the caption never wraps.
 - Code: hooks `useSceneCycle`, `useMicrophone`, `useMatrixCanvas`; sub-components `Caption`, `IconButton`, `MicButton`; everything the draw loop reads (scene index, dissolve start, sweep start, pointer) lives in one ref, never React state. Colours in one PALETTE object as `--pmd-*` variables; the mic's blocked state is `#f87171`.
 - Control buttons scale to 0.9 while pressed and have a focus ring.
+- Optional `scene` prop: holds the display on that scene (it jumps there when the value changes and auto-advance pauses while it is set; prev and next still step). The progress line fills in the dot colour at 70%.

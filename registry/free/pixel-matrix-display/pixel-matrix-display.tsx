@@ -25,7 +25,7 @@ export type PixelMatrixDisplayProps = {
   chrome?: boolean;
   /** Offer a microphone toggle that drives the equaliser from live audio. */
   microphone?: boolean;
-  /** Jump to this scene whenever the value changes (it must be one of `scenes`). The cycle carries on from there. */
+  /** Hold on this scene (it must be one of `scenes`): jumps to it when the value changes and pauses auto-advance while set. Prev and next still step. */
   scene?: SceneKey;
   className?: string;
 };
@@ -42,7 +42,6 @@ const PALETTE = {
   control: "rgba(255,255,255,0.6)",
   controlHover: "rgba(255,255,255,0.06)",
   track: "rgba(255,255,255,0.1)",
-  progress: "rgba(255,255,255,0.6)",
   blocked: "#f87171",
 } as const;
 
@@ -68,8 +67,8 @@ const MOTION = {
 const DOT = { radius: 0.34, levels: 5, reach: 4.2, bloom: 0.4, bloomStep: 0.18, nearLevels: 3 } as const;
 const MARQUEE_SPEED = 14; // dots per second
 
-function cssVars(color: string): CSSProperties {
-  const vars: Record<string, string> = { "--pmd-accent": color };
+function cssVars(): CSSProperties {
+  const vars: Record<string, string> = {};
   for (const [k, v] of Object.entries(PALETTE)) vars[`--pmd-${k}`] = v;
   return vars as CSSProperties;
 }
@@ -535,7 +534,7 @@ export function PixelMatrixDisplay({
   const [poweredOn, setPoweredOn] = useState(false);
   const mic = useMicrophone(audioRef);
   // Reduced motion: no autoplay; the controls still step through scenes.
-  const running = poweredOn && !reduce && !paused && !hovering && mic.state !== "on";
+  const running = poweredOn && !reduce && !paused && !hovering && !scene && mic.state !== "on";
   const cycle = useSceneCycle(scenes.length, interval, running);
 
   // Listening holds the equaliser on screen.
@@ -586,7 +585,7 @@ export function PixelMatrixDisplay({
   const label = SCENE_LABELS[current];
 
   return (
-    <div ref={root} className={`@container w-full font-sans ${className}`} style={cssVars(color)}>
+    <div ref={root} className={`@container w-full font-sans ${className}`} style={cssVars()}>
       <motion.div
         {...enter(play, 0, reduce)}
         className="relative overflow-hidden rounded-[20px] border p-[clamp(12px,2.6cqi,22px)] shadow-[inset_0_1px_0_rgba(255,255,255,0.06),inset_0_0_40px_rgba(0,0,0,0.9),0_30px_80px_-30px_rgba(0,0,0,0.9)]"
@@ -610,7 +609,7 @@ export function PixelMatrixDisplay({
             setHovering(false);
           }}
         >
-          <canvas ref={canvasRef} data-marquee={text.trim()} role="img" aria-label={`Dot-matrix display showing ${label.toLowerCase()}${current === "marquee" ? `: ${text.trim()}` : ""}`} className="block" />
+          <canvas ref={canvasRef} role="img" aria-label={`Dot-matrix display showing ${label.toLowerCase()}. Marquee text: ${text.trim()}`} className="block" />
         </div>
         {/* A faint glass sheen over the dots. */}
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 rounded-[20px] bg-[linear-gradient(180deg,rgba(255,255,255,0.05),transparent_38%)]" />
@@ -625,6 +624,7 @@ export function PixelMatrixDisplay({
           label={label}
           live={mic.state === "on" && current === "equalizer"}
           progress={cycle.progress}
+          color={color}
           showProgress={!reduce && scenes.length > 1}
         >
           {microphone && scenes.includes("equalizer") && <MicButton state={mic.state} color={color} onToggle={() => void mic.toggle()} />}
@@ -662,6 +662,7 @@ function Caption({
   label,
   live,
   progress,
+  color,
   showProgress,
   children,
 }: {
@@ -672,6 +673,7 @@ function Caption({
   label: string;
   live: boolean;
   progress: MotionValue<number>;
+  color: string;
   showProgress: boolean;
   children: ReactNode;
 }) {
@@ -682,7 +684,7 @@ function Caption({
         {showProgress && (
           <span className="relative block h-px w-10 shrink-0 overflow-hidden" style={{ background: PALETTE.track }} aria-hidden="true">
             {/* Fills over the scene’s duration; holds while the scene is held. */}
-            <motion.span className="absolute inset-0 origin-left" style={{ scaleX: progress, background: PALETTE.progress }} />
+            <motion.span className="absolute inset-0 origin-left" style={{ scaleX: progress, background: `color-mix(in srgb, ${color} 70%, transparent)` }} />
           </span>
         )}
         <span className="relative min-w-0 truncate" aria-live="polite">
