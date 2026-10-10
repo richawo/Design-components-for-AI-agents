@@ -163,6 +163,9 @@ function emailProblem(v: string): string | null {
   return null;
 }
 
+/** Quiet time (ms) before the "Did you mean" hint opens while typing. */
+const SUGGEST_DELAY = 400;
+
 const TYPOS: Record<string, string> = {
   "gmial.com": "gmail.com",
   "gmal.com": "gmail.com",
@@ -562,7 +565,26 @@ function FormView({
   reduce: boolean;
 }) {
   const at = (n: number) => base + n * MOTION.stagger;
-  const suggestion = error ? null : suggestFix(email);
+  // The typo hint waits for a pause (or blur) before it opens, so typing
+  // straight through a typo-shaped prefix ("gmail.co" on the way to
+  // "gmail.com") never flashes the row and nudges the button. It still
+  // closes the instant it stops applying.
+  const live = error ? null : suggestFix(email);
+  const [shown, setShown] = useState<string | null>(() => live);
+  const visible = shown !== null;
+  useEffect(() => {
+    if (!live) {
+      setShown(null);
+      return;
+    }
+    if (visible) {
+      setShown(live);
+      return;
+    }
+    const t = window.setTimeout(() => setShown(live), SUGGEST_DELAY);
+    return () => window.clearTimeout(t);
+  }, [live, visible]);
+  const suggestion = live && visible ? live : null;
   const swap = swapProps(reduce);
   const fieldId = `${uid}-email`;
 
@@ -618,7 +640,10 @@ function FormView({
                 aria-invalid={!!error || undefined}
                 aria-describedby={error ? `${uid}-err` : suggestion ? `${uid}-fix` : undefined}
                 onChange={(e) => onEmail(e.target.value)}
-                onBlur={onBlurCheck}
+                onBlur={() => {
+                  onBlurCheck();
+                  if (live) setShown(live);
+                }}
                 className="h-11 w-full min-w-0 rounded-[11px] bg-transparent px-3.5 text-[16px] text-[var(--ml-ink)] outline-none selection:bg-[color-mix(in_srgb,var(--ml-ink)_22%,transparent)] placeholder:text-[var(--ml-placeholder)] @sm:text-[15px]"
               />
             </div>
