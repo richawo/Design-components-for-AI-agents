@@ -5,7 +5,7 @@
   "stack": {
     "framework": "React 19",
     "styling": "Tailwind CSS v4 with @container queries and CSS variables on the root",
-    "animation": "motion/react: animate() on the panel (clip-path circle, scale, opacity), stagger() for content blocks, useMotionValue and animate() for ledger counts, AnimatePresence for the confirm label and the match tick"
+    "animation": "motion/react: animate() on a disc behind the panel (transform scale and opacity, composited) and on the content blocks with stagger(), useMotionValue and animate() for ledger counts, AnimatePresence for the confirm label and the match tick"
   },
   "layout": {
     "root": "@container, relative, centred, transparent, padding 16px / 40px (32px / 48px from sm). Sized by the card alone: the dialog is fixed to the viewport, so the root never reserves height for it",
@@ -20,27 +20,27 @@
     "kicker": "mono 10.5px uppercase, letter-spacing 0.14em, muted",
     "title": "display face 24px, line-height 1.1, letter-spacing -0.03em",
     "body": "14px, line-height 1.55",
-    "ledger": "label 13.5px body colour; figure mono 13.5px tabular numerals",
+    "ledger": "label 13.5px body colour; figure mono 13.5px tabular numerals; a suffix such as h ago is body sans in the muted colour, joined to the figure by a thin space",
     "field": "mono 14px, height 44px, radius 11px",
     "buttons": "14px, weight 500, letter-spacing -0.01em"
   },
   "color": {
     "approach": "one destructive accent per tone; everything else monochrome",
-    "dark": "card #121214, panel #161618, field #0e0e10, hairline rgba(255,255,255,0.08), ink #f4f4f5, body #b4b4bc, muted #8a8a93, scrim rgba(0,0,0,0.62), success #5cb86f",
-    "light": "card and panel #ffffff, field #f6f6f7, hairline rgba(24,24,27,0.10), ink #18181b, body #3f3f46, muted #6b6b74, scrim rgba(18,18,20,0.42), success #2f7d43",
+    "dark": "card #121214, panel #161618, field #0e0e10, hairline rgba(255,255,255,0.08), ink #f4f4f5, body #b4b4bc, muted #8a8a93, scrim rgba(0,0,0,0.72), success #5cb86f",
+    "light": "card and panel #ffffff, field #f6f6f7, hairline rgba(24,24,27,0.10), ink #18181b, body #3f3f46, muted #6b6b74, scrim rgba(18,18,20,0.5), success #2f7d43",
     "danger": "fill #d63b40 with white text, hover #e2484d; ink #ff8b8f on dark; on light fill #dc2626, hover #c51f1f, ink #b91c1c; wash 10% dark, 7% light",
     "neutral": "fill #e9e9ec (hover #ffffff) with #0b0b0c text on dark; #18181b (hover #2e2e33) with white text on light; ink is the theme ink",
     "rule": "no warning triangle, no gradient, no tinted surfaces beyond the tone wash"
   },
   "motion": {
-    "open": "panel clip-path circle grows from radius 0 at the trigger centre (measured against the panel's resting viewport box) to exactly the distance to the panel's farthest corner over 500ms on [0.22,1,0.36,1]; scale 0.965 to 1 from the same origin; opacity 0.5 to 1",
-    "content": "blocks rise 8px with opacity (no blur, so the reveal stays light under the clip), 360ms each, staggered 40ms from 120ms, in reading order; the last block lands by about 720ms",
+    "open": "a fixed, rounded 18px, overflow-hidden frame the size of the panel's resting box sits behind the panel and holds a disc in the panel colour, centred on the trigger centre (measured against that box), radius the distance to the box's farthest corner; the disc scales 0 to 1 with a transform string (composited) and fades from 0.6 over 750ms on [0.45,0.1,0.2,1] (soft start, so the growth spreads over many frames) while the panel above is clear (no surface, hairline or shadow); when it lands the panel takes back its surface, its hairline and shadow fade in over 300ms and the frame hides. Not a clip-path circle over the panel: that repaints the panel every frame and steps the grow on a busy machine",
+    "content": "blocks rise 8px with opacity (no blur), 320ms each, staggered 35ms from 520ms when the disc is nearly whole, in reading order, so nothing shows outside the disc; the last block lands by about 1.05s",
     "figures": "ledger numbers count up from zero over 700ms each time the dialog opens",
-    "close": "the same circle shrinks back into the trigger over 260ms on [0.4,0,1,1]; the panel hides only when that run finishes and is still current",
+    "close": "content fades out over 100ms while the panel clears, and the same disc scales back into the trigger over 420ms on [0.4,0,1,1]; the panel hides only when that run finishes and is still current",
     "pending": "label cross-fades to a spinner while onConfirm's promise is unsettled; button width is locked",
-    "done": "check path draws in over 340ms, holds for 520ms, then the dialog closes and focus returns to the trigger",
+    "done": "check path draws in over 340ms, holds for 800ms so it can be read, then the dialog closes and focus returns to the trigger",
     "error": "panel shakes x [0,-3,3,-2,2,-1,0] over 340ms; the label reads “Couldn’t delete” and the kicker cross-fades to “Couldn’t delete. Nothing was removed.” in the tone ink for 2.6s; typed name is kept",
-    "reducedMotion": "no clip, scale, rise or shake; 150ms opacity fades; figures set immediately; spinner stops"
+    "reducedMotion": "no disc, rise or shake; 150ms opacity fades; figures set immediately; spinner stops"
   },
   "responsive": {
     "panel": "min(460px, 100vw - 2rem) wide and at most 100dvh - 2rem tall, centred in the viewport, so it is reachable from a 320px-wide or 560px-tall screen wherever the card sits; the footer is laid out per panel width rather than wrapping",

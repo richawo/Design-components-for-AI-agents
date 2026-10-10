@@ -89,7 +89,7 @@ const PALETTE = {
     ink: "#f4f4f5",
     body: "#b4b4bc",
     muted: "#8a8a93",
-    scrim: "rgba(0,0,0,0.62)",
+    scrim: "rgba(0,0,0,0.72)",
     ok: "#5cb86f",
     focus: "rgba(244,244,245,0.42)",
   },
@@ -102,7 +102,7 @@ const PALETTE = {
     ink: "#18181b",
     body: "#3f3f46",
     muted: "#6b6b74",
-    scrim: "rgba(18,18,20,0.42)",
+    scrim: "rgba(18,18,20,0.5)",
     ok: "#2f7d43",
     focus: "rgba(24,24,27,0.40)",
   },
@@ -122,20 +122,23 @@ const TONE = {
 
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 const EASE_IN = [0.4, 0, 1, 1] as const;
+/** The grow: a soft start and a long settle, so the disc reads as growing out of the button over many frames rather than popping open. */
+const EASE_GROW = [0.45, 0.1, 0.2, 1] as const;
 
 /** One place for the feel. Seconds unless noted. */
 const MOTION = {
-  open: 0.5, // the panel grows out of the trigger
-  close: 0.26, // and folds back into it
-  block: 0.36, // each block of content rises into place: opacity and a short lift, no blur, so it stays light under the clip
-  riseAt: 0.12, // after the panel has started to open
-  step: 0.04, // reading order, one block at a time; the last block lands by about 0.72s
+  open: 0.75, // the disc grows out of the trigger: one composited transform, and no drop shadow until it lands
+  close: 0.42, // and folds back into it, slowly enough that the fold reads as the payoff
+  leave: 0.1, // the content fades before the fold, so nothing shows outside the shrinking disc
+  block: 0.32, // each block of content rises into place: opacity and a short lift, no blur, so it stays light while the disc lands
+  riseAt: 0.52, // once the disc is nearly whole (about 93% of its radius), so no content shows outside it
+  step: 0.035, // reading order, one block at a time; the last block lands by about 1.05s
   rise: 8,
   count: 0.7, // ledger figures count up from zero
   shake: [0, -3, 3, -2, 2, -1, 0],
   shakeFor: 0.34,
   fade: 0.15, // reduced motion: opacity only
-  doneHoldMs: 520, // “Deleted” shows before the dialog closes
+  doneHoldMs: 800, // “Deleted” shows long enough to be read before the dialog closes
   errorMs: 2600,
 } as const;
 
@@ -170,8 +173,8 @@ function fill(template: string, name: string) {
 }
 
 /**
- * Where the panel’s clip circle starts (the trigger’s centre, in the panel’s own coordinates) and how far it
- * must grow to uncover the panel’s farthest corner. The panel is centred in the viewport, so the trigger can be
+ * Where the growing disc starts (the trigger’s centre, in the panel’s own coordinates) and how far it must
+ * grow to cover the panel’s farthest corner. The panel is centred in the viewport, so the trigger can be
  * anywhere around it, even below it on a short screen. Call it with the panel’s animated transform cleared.
  */
 function originOf(panel: HTMLElement, trigger: HTMLElement | null) {
@@ -242,13 +245,14 @@ export function DialogConfirmTyped({
   const uid = useId().replace(/[^a-zA-Z0-9_-]/g, "");
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  const backRef = useRef<HTMLDivElement>(null);
+  const discRef = useRef<HTMLSpanElement>(null);
   const fieldRef = useRef<HTMLInputElement>(null);
   const cancelRef = useRef<HTMLButtonElement>(null);
   const confirmRef = useRef<HTMLButtonElement>(null);
   const alive = useRef(true);
   const wasOpen = useRef(false);
   const openRef = useRef(false);
-  const origin = useRef({ x: 0, y: 0, reach: 0 });
   const runs = useRef<AnimationPlaybackControls[]>([]);
   const errorRun = useRef(0);
   const later = useTimers();
@@ -327,53 +331,63 @@ export function DialogConfirmTyped({
     if (!busy) changeOpen(false);
   };
 
-  /* Open and close: the panel grows out of the trigger and folds back into it. Imperative, so the same path serves a click and the host’s Open action. Acts only on a transition, so a changed prop never replays it. */
+  /* Open and close: the panel grows out of the trigger and folds back into it. Imperative, so the same path serves a click and the host’s Open action. Acts only on a transition, so a changed prop never replays it.
+     The circle is a real disc in the panel’s colour that scales up behind the panel, inside a rounded frame the size
+     of the panel. A transform is composited, so every frame of the grow is cheap; a clip-path circle over the whole
+     panel repaints it on every frame and drops the grow to a few stepped frames on a busy machine. */
   useLayoutEffect(() => {
     const panel = panelRef.current;
+    const back = backRef.current;
+    const disc = discRef.current;
     const trigger = triggerRef.current;
     openRef.current = open;
     const opening = open && !wasOpen.current;
     const closing = !open && wasOpen.current;
-    if (!panel || (!opening && !closing)) return;
+    if (!panel || !back || !disc || (!opening && !closing)) return;
     wasOpen.current = open;
     runs.current.forEach((r) => r.stop());
     runs.current = [];
+    const blocks = Array.from(panel.querySelectorAll<HTMLElement>("[data-rise]"));
 
     if (opening) {
-      // A reopen mid-fold leaves the panel scaled and shifted; measure its resting box, then grow from there.
+      // Clear any transform an interrupted shake left, so the resting box is measured, then grow from there.
       panel.style.transform = "";
       panel.scrollTop = 0;
+      const box = panel.getBoundingClientRect();
       const { x, y, reach } = originOf(panel, trigger);
-      origin.current = { x, y, reach };
-      const at = `${x}px ${y}px`;
+      Object.assign(back.style, { left: `${box.left}px`, top: `${box.top}px`, width: `${box.width}px`, height: `${box.height}px` });
+      Object.assign(disc.style, { left: `${x - reach}px`, top: `${y - reach}px`, width: `${reach * 2}px`, height: `${reach * 2}px` });
       panel.style.visibility = "visible";
-      panel.style.transformOrigin = at;
       // A host that opens straight into a later status has already confirmed the name, so the field shows it.
       if (!statusControlled) changeStatus("idle");
       setTyped(statusRef.current === "idle" ? "" : resourceName);
       setAnnounce("");
 
       if (reduce) {
+        panel.dataset.grown = "true";
+        back.style.visibility = "hidden";
         runs.current.push(animate(panel, { opacity: [0, 1] }, { duration: MOTION.fade }));
       } else {
-        const grow = animate(
-          panel,
-          { clipPath: [`circle(0px at ${at})`, `circle(${reach}px at ${at})`], scale: [0.965, 1], opacity: [0.5, 1] },
-          { duration: MOTION.open, ease: EASE_OUT },
-        );
+        // The panel is clear while the disc grows behind it; its own surface, hairline and shadow return once it lands.
+        panel.dataset.grown = "false";
+        panel.style.opacity = "1";
+        back.style.visibility = "visible";
+        const grow = animate(disc, { transform: ["scale(0)", "scale(1)"], opacity: [0.6, 1] }, { duration: MOTION.open, ease: EASE_GROW });
         runs.current.push(grow);
-        // Only the run that is still current may clear the clip; a stopped run must not touch a reopened panel.
+        // Only the run that is still current may hand over to the panel; a stopped run must not touch a reopened one.
         grow.finished.then(() => {
-          if (alive.current && runs.current.includes(grow)) panel.style.clipPath = "";
+          if (!alive.current || !runs.current.includes(grow)) return;
+          panel.dataset.grown = "true";
+          back.style.visibility = "hidden";
         });
       }
 
-      const blocks = Array.from(panel.querySelectorAll<HTMLElement>("[data-rise]"));
+      // Content rises once the disc is nearly whole, so nothing shows outside it and nothing lands on the frame it completes.
       runs.current.push(
         animate(
           blocks,
           reduce ? { opacity: [0, 1] } : { opacity: [0, 1], y: [MOTION.rise, 0] },
-          { duration: reduce ? MOTION.fade : MOTION.block, ease: EASE_OUT, delay: stagger(MOTION.step, { startDelay: MOTION.riseAt }) },
+          { duration: reduce ? MOTION.fade : MOTION.block, ease: EASE_OUT, delay: stagger(MOTION.step, { startDelay: reduce ? 0 : MOTION.riseAt }) },
         ),
       );
 
@@ -388,24 +402,27 @@ export function DialogConfirmTyped({
     } else {
       // Hand focus back before the panel hides, so nothing is left focused in a hidden tree.
       trigger?.focus({ preventScroll: true });
-      const { x, y, reach } = origin.current;
-      const at = `${x}px ${y}px`;
       const hide = () => {
         // A reopen during the fold stops this run; a stopped run must never hide the new panel.
         if (!alive.current || openRef.current || !runs.current.includes(fold)) return;
         panel.style.visibility = "hidden";
-        panel.style.clipPath = "";
         panel.style.transform = "";
+        back.style.visibility = "hidden";
         // The confirm settles back once it is out of sight, so the next open starts clean.
         changeStatus("idle");
       };
-      const fold = reduce
-        ? animate(panel, { opacity: [1, 0] }, { duration: MOTION.fade })
-        : animate(
-            panel,
-            { clipPath: [`circle(${reach}px at ${at})`, `circle(0px at ${at})`], scale: [1, 0.965], opacity: [1, 0] },
-            { duration: MOTION.close, ease: EASE_IN },
-          );
+      let fold: ReturnType<typeof animate>;
+      if (reduce) {
+        fold = animate(panel, { opacity: [1, 0] }, { duration: MOTION.fade });
+      } else {
+        // The content leaves first, then the disc folds back into the trigger with the panel clear above it.
+        const box = panel.getBoundingClientRect();
+        Object.assign(back.style, { left: `${box.left}px`, top: `${box.top}px`, width: `${box.width}px`, height: `${box.height}px` });
+        back.style.visibility = "visible";
+        panel.dataset.grown = "false";
+        runs.current.push(animate(blocks, { opacity: 0 }, { duration: MOTION.leave, ease: EASE_IN }));
+        fold = animate(disc, { transform: ["scale(1)", "scale(0)"], opacity: [1, 0.6] }, { duration: MOTION.close, ease: EASE_IN });
+      }
       runs.current.push(fold);
       fold.finished.then(hide);
     }
@@ -560,6 +577,12 @@ export function DialogConfirmTyped({
         className={`fixed inset-0 z-[60] bg-[var(--dcf-scrim)] transition-opacity duration-200 ease-out ${open ? "opacity-100" : "pointer-events-none opacity-0"}`}
       />
 
+      {/* The surface the dialog grows on: a rounded frame matching the panel, holding a disc in the panel's colour
+          that scales out of the trigger. Shown only while it grows or folds; the panel draws its own surface at rest. */}
+      <div ref={backRef} aria-hidden="true" className="pointer-events-none fixed z-[61] overflow-hidden rounded-[18px]" style={{ visibility: "hidden" }}>
+        <span ref={discRef} className="absolute block rounded-full bg-[var(--dcf-panel)]" />
+      </div>
+
       <div
         ref={panelRef}
         role="dialog"
@@ -570,7 +593,7 @@ export function DialogConfirmTyped({
         inert={!open}
         style={{ visibility: "hidden" }}
         onKeyDown={onPanelKey}
-        className="fixed left-1/2 top-1/2 z-[61] max-h-[calc(100dvh-2rem)] w-[min(460px,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 overflow-y-auto overscroll-contain @container rounded-[18px] bg-[var(--dcf-panel)] p-6 text-[var(--dcf-ink)] shadow-[inset_0_0_0_1px_var(--dcf-line),inset_0_1px_0_rgba(255,255,255,0.05),0_40px_90px_-30px_rgba(0,0,0,0.85)] outline-none [scrollbar-width:thin] [@media(min-width:480px)_and_(min-height:641px)]:p-7 [@media(max-height:640px)]:p-5"
+        className="fixed left-1/2 top-1/2 z-[61] max-h-[calc(100dvh-2rem)] w-[min(460px,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 overflow-y-auto overscroll-contain @container rounded-[18px] bg-[var(--dcf-panel)] p-6 text-[var(--dcf-ink)] shadow-[inset_0_0_0_1px_var(--dcf-line),inset_0_1px_0_rgba(255,255,255,0.05),0_40px_90px_-30px_rgba(0,0,0,0.85)] transition-[box-shadow] duration-300 ease-out data-[grown=false]:bg-transparent data-[grown=false]:shadow-[inset_0_0_0_1px_transparent,inset_0_1px_0_transparent,0_40px_90px_-30px_transparent] data-[grown=false]:transition-none outline-none [scrollbar-width:thin] [@media(min-width:480px)_and_(min-height:641px)]:p-7 [@media(max-height:640px)]:p-5"
       >
         {/* The kicker doubles as the error line, so a failed delete is explained without moving anything. */}
         <p data-rise className="grid font-mono text-[10.5px] uppercase tracking-[0.14em]">
@@ -719,7 +742,8 @@ function Ledger({ row, open, reduce }: { row: LedgerRow; open: boolean; reduce: 
       <dt className="text-[13.5px] text-[var(--dcf-body)]">{row.label}</dt>
       <dd className="font-mono text-[13.5px] text-[var(--dcf-ink)]">
         <Figure value={row.value} open={open} reduce={reduce} />
-        {row.suffix ? ` ${row.suffix}` : null}
+        {/* The unit reads as words, not figures: body sans, muted, joined by a thin space. */}
+        {row.suffix ? <span className="font-sans text-[var(--dcf-muted)]">{`\u2009${row.suffix}`}</span> : null}
       </dd>
     </div>
   );

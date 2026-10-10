@@ -169,7 +169,7 @@
       "wait:300",
       "hover:@confirm",
       "click",
-      "wait:1750"
+      "wait:2600"
     ]
   },
   "controls": [
