@@ -410,7 +410,8 @@ export type PixelAgentStatusProps = {
   className?: string;
 };
 
-export function PixelAgentStatus({ state: held, size = 96, color, grid = true, className = "" }: PixelAgentStatusProps) {
+export function PixelAgentStatus({ state: heldState, size = 96, color, grid = true, className = "" }: PixelAgentStatusProps) {
+  const held = heldState && heldState in HELD_TEXT ? heldState : undefined; // anything else (e.g. "auto") resumes the run
   const reduce = useReducedMotion() ?? false;
   const root = useRef<HTMLElement>(null);
   const play = useInView(root, { once: true, amount: 0.2 });
@@ -438,7 +439,6 @@ export function PixelAgentStatus({ state: held, size = 96, color, grid = true, c
         {/* Inline usage: the glyph at text size in a live run row. */}
         <motion.div
           {...enter(play, MOTION.step * 3, reduce)}
-          data-demo="run-row"
           className="flex min-w-0 items-center gap-3 overflow-hidden rounded-full border py-2 pl-2.5 pr-4 @2xl:max-w-[60%]"
           style={{ borderColor: PALETTE.line, background: PALETTE.pill }}
           aria-live="polite"
@@ -563,11 +563,11 @@ function Tile({
 }
 
 /** Demo: the set on a dark stage. */
-export default function PixelAgentStatusDemo({ state, size, color, grid }: Partial<PixelStatusProps> = {}) {
+export default function PixelAgentStatusDemo(overrides: Partial<PixelAgentStatusProps> = {}) {
   return (
     <div className="flex min-h-dvh w-full items-center justify-center bg-black px-4 py-10 sm:px-10">
       <div className="w-full max-w-5xl">
-        <PixelAgentStatus state={state} size={size} color={color} grid={grid} />
+        <PixelAgentStatus {...overrides} />
       </div>
     </div>
   );
