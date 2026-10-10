@@ -1,0 +1,194 @@
+{
+  "slug": "segmented-control",
+  "name": "Segmented Control",
+  "tier": "free",
+  "platform": "web",
+  "category": "selects",
+  "description": "One pill that travels between options on a spring, with optional icons and counts, equal or content widths, and a sideways scroll behind soft edges when space runs out.",
+  "tags": [
+    "segmented control",
+    "segmented",
+    "toggle group",
+    "period picker",
+    "radio group",
+    "keyboard",
+    "tabs",
+    "dark",
+    "monochrome"
+  ],
+  "dependencies": [
+    "motion",
+    "lucide-react"
+  ],
+  "theme": "dark",
+  "previewHeight": 520,
+  "usage": "import { SegmentedControl } from \"@/components/design-for-ai/segmented-control\";\n\n<SegmentedControl\n  label=\"Period\"\n  segments={3}\n  defaultValue=\"month\"\n  onValueChange={(period) => setPeriod(period)}\n/>\n\n<SegmentedControl\n  label=\"Sort\"\n  width=\"content\"\n  counts\n  options={[\n    { value: \"recent\", label: \"Recent\", count: 12 },\n    { value: \"starred\", label: \"Starred\", count: 4 },\n    { value: \"shared\", label: \"Shared\", count: 9 },\n  ]}\n/>",
+  "props": [
+    {
+      "name": "label",
+      "type": "string",
+      "default": "\"Period\"",
+      "description": "The group's accessible name. It is not drawn; the surface around the control carries the visible heading."
+    },
+    {
+      "name": "options",
+      "type": "SegmentedControlOption[]",
+      "description": "The segments, each with a value, a label and optional icon, count and disabled flag. Leave out to use the built-in periods."
+    },
+    {
+      "name": "segments",
+      "type": "number",
+      "default": "3",
+      "description": "How many built-in periods to show, from 2 to 6. Ignored when options is given. Week and Year are always present."
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "description": "Controlled selection. Update it from onValueChange. If it names no enabled segment, the first enabled one shows."
+    },
+    {
+      "name": "defaultValue",
+      "type": "string",
+      "default": "The first segment",
+      "description": "Starting selection when uncontrolled."
+    },
+    {
+      "name": "onValueChange",
+      "type": "(value: string, option: SegmentedControlOption) => void",
+      "description": "Runs when the person picks a different segment by pointer or keyboard. Picking the selected segment again does nothing."
+    },
+    {
+      "name": "width",
+      "type": "\"equal\" | \"content\"",
+      "default": "\"equal\"",
+      "description": "Equal gives every segment the same share of the track. Content sizes each segment to its label and scrolls the track sideways behind soft edges when it runs out of room."
+    },
+    {
+      "name": "icons",
+      "type": "boolean",
+      "default": "true",
+      "description": "Shows each option's icon before its label. Off, the labels stand alone."
+    },
+    {
+      "name": "counts",
+      "type": "boolean",
+      "default": "false",
+      "description": "Shows each option's count after its label, in tabular figures and the muted ink."
+    },
+    {
+      "name": "size",
+      "type": "\"sm\" | \"md\"",
+      "default": "\"md\"",
+      "description": "Segments 36px tall with 14px labels for md, 30px with 13px labels for sm."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Near-black track with a paper pill, or the light inverse. Set it to match the surface the control sits on."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "description": "Extra classes on the root, for spacing inside a toolbar or a settings row."
+    }
+  ],
+  "added": "2026-10-10",
+  "demo": {
+    "steps": [
+      "wait:500",
+      "click:@week",
+      "wait:420",
+      "click:@year",
+      "wait:380",
+      "click:@column-week",
+      "wait:260",
+      "key:ArrowRight",
+      "key:ArrowRight",
+      "key:ArrowRight",
+      "wait:1400"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "segments",
+      "label": "Segments",
+      "kind": "slider",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 3,
+      "group": "Layout"
+    },
+    {
+      "prop": "width",
+      "label": "Width",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "equal",
+          "label": "Equal"
+        },
+        {
+          "value": "content",
+          "label": "Content"
+        }
+      ],
+      "default": "equal",
+      "group": "Layout"
+    },
+    {
+      "prop": "icons",
+      "label": "Icons",
+      "kind": "toggle",
+      "default": true,
+      "group": "Content"
+    },
+    {
+      "prop": "counts",
+      "label": "Counts",
+      "kind": "toggle",
+      "default": false,
+      "group": "Content"
+    },
+    {
+      "prop": "size",
+      "label": "Size",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "sm",
+          "label": "Small"
+        },
+        {
+          "value": "md",
+          "label": "Medium"
+        }
+      ],
+      "default": "md",
+      "group": "Look"
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark",
+      "group": "Look"
+    },
+    {
+      "prop": "$replay",
+      "label": "Replay",
+      "kind": "action"
+    }
+  ]
+}

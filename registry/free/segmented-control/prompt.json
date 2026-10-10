@@ -1,0 +1,71 @@
+{
+  "component": "SegmentedControl",
+  "intent": "A segmented control in which the selection is one raised pill that travels between segments on a spring. Segments can carry icons and counts, sit at equal or content widths, and at content width scroll sideways behind soft edges when the track runs out of room. Monochrome and dark first, with no accent colour.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 with CSS variables set on the root from a theme prop, and @container on the root",
+    "animation": "motion/react: a shared layoutId pill on spring.ui (stiffness 500, damping 40), animate for the demo count tween, useInView and useReducedMotion for the demo entrance"
+  },
+  "layout": {
+    "root": "@container, full width",
+    "track": "radiogroup with 3px inner padding. Equal width: flex row filling the root, each segment flex 1 1 0 with min-width 0. Content width: fit-content, max-width 100%, scrolls horizontally when overflowing.",
+    "segments": "36px tall (md) or 30px (sm). Horizontal padding 10px, 14px from a 22rem container. Icon and label gap 6px (md) or 5px (sm).",
+    "overflow": "content width only: scrollbar hidden, 28px fades at each edge shown only while more content lies past that edge, selection scrolled into view with 6px clearance (smooth, instant under reduced motion)",
+    "demo": "440px card on a theme-following stage with a mono header (Dictation volume, Period and a tweening count), the equal-width control (Week, Month, Year), a hairline and a 248px narrow column holding six periods at content width"
+  },
+  "typography": {
+    "label": "Geist 500, tracking -0.01em, 14px (md) or 13px (sm), nowrap",
+    "count": "Geist 400, tabular figures, 13px (md) or 12px (sm), muted ink, Intl.NumberFormat en-US",
+    "demoHeader": "mono 11px uppercase, tracking 0.12em, muted"
+  },
+  "color": {
+    "approach": "CSS variables on the root from the theme prop. Dark: track #19191c, pill #2c2c31, ink #f4f4f5, muted #8a8a93, track ring 1px inset at 7% white. Light: track #f1f1f3, pill #ffffff, ink #18181b, muted #64646e, track ring 1px inset at 7% ink.",
+    "pill": "dark: 1px inset hairline at 8% white, 1px inset top highlight, 1px 2px drop at 50% black, soft 6px 14px drop at 70% black; light: 5% ink hairline, white top highlight, 10% drop, 28% soft drop",
+    "states": "selected label ink; unselected label muted and ink on hover; disabled at 40% opacity with cursor-not-allowed and no hover",
+    "accent": "none. Monochrome by design: the selection is ink on paper."
+  },
+  "motion": {
+    "pill": "one layoutId element per instance, moved on spring.ui (stiffness 500, damping 40). Reversed picks redirect mid-flight.",
+    "colour": "label and icon colour cross-fade over 150ms ease-out, curve 0.22, 1, 0.36, 1",
+    "press": "enabled segment scales to 0.97 over 150ms and springs back on release",
+    "edges": "scroll fades fade in and out over 200ms ease-out",
+    "scroll": "selected segment scrolled into view with a smooth scroll when it passes a visible edge",
+    "demo": "card rises 12px out of an 8px blur over 500ms ease-out; header at 60ms, control at 160ms, narrow column at 260ms; header count tweens from 0 over 500ms and tallies on each change",
+    "reducedMotion": "pill jumps, scroll jumps, entrance is a 150ms opacity fade; colour transitions stay"
+  },
+  "responsive": {
+    "equal": "works from 320px upward; longer labels truncate with an ellipsis instead of breaking the row",
+    "content": "scrolls inside its own box; the page never scrolls sideways",
+    "demo": "card max-width 440px, 24px stage padding and 40px from sm; narrow column max-width 248px so the overflow mode shows at every width"
+  },
+  "accessibility": [
+    "track role=radiogroup with aria-label; each segment a native button with role=radio and aria-checked",
+    "roving tabIndex: selected segment 0, the others -1",
+    "ArrowRight and ArrowDown select and focus the next enabled segment; ArrowLeft and ArrowUp the previous; both wrap like native radios",
+    "Home and End select the first and last enabled segments; disabled segments are skipped",
+    "Space and Enter activate through the native button",
+    "focus-visible: 2px ink outline drawn 3px inside the segment so it stays visible over the pill and inside the scrolling track; instant and keyboard only",
+    "icons aria-hidden; counts are plain text read after the label",
+    "picking the already selected segment fires no change"
+  ],
+  "content": {
+    "options": "Day, Week, Month, Quarter, Year, All time, each with an icon and a count (3, 17, 64, 188, 741, 2314)",
+    "segments": "2 shows Week and Year; 3 adds Month; 4 adds Day; 5 adds Quarter; 6 adds All time",
+    "demoSteps": [
+      "click Week (the pill travels left from Month)",
+      "click Year (the pill travels right)",
+      "click Week in the narrow column",
+      "press Arrow Right three times: Month, Quarter, Year, with the track scrolling to show Year"
+    ]
+  },
+  "avoid": [
+    "an accent colour, glow, gradient track or gradient text",
+    "bounce past the spring, pulsing selection, or animation longer than 800ms",
+    "sparkle or AI icons, emoji, or pill badges on the counts",
+    "a separate selected label or checkmark; the pill is the status",
+    "a hard cut between segments; reduced motion removes only the travel",
+    "a visible scrollbar in the overflow track, or an edge fade on a track that is not overflowing",
+    "hover-only affordances; every segment works by keyboard and touch"
+  ]
+}
