@@ -2513,6 +2513,211 @@
     ]
   },
   {
+    "slug": "chart-cohort-retention",
+    "name": "Cohort Retention",
+    "tier": "pro",
+    "platform": "web",
+    "category": "charts",
+    "description": "A weekly retention triangle whose cells shrink into dots on one curve per cohort; switch segment and the wash re-sweeps along the diagonal.",
+    "tags": [
+      "cohort analysis",
+      "retention",
+      "heatmap",
+      "line chart",
+      "product analytics",
+      "saas",
+      "svg",
+      "dashboard",
+      "dark"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 760,
+    "usage": "import { ChartCohortRetention } from \"@/components/design-for-ai/chart-cohort-retention\";\n\n<ChartCohortRetention\n  title=\"Monthly retention\"\n  subtitle=\"Paid accounts\"\n  periodPrefix=\"M\"\n  periodName=\"month\"\n  focusPeriod={3}\n  segments={[\n    {\n      key: \"all\",\n      label: \"All\",\n      cohorts: [\n        { label: \"Jan\", size: 412, retention: [1, 0.82, 0.74, 0.7] },\n        { label: \"Feb\", size: 455, retention: [1, 0.85, 0.77] },\n        { label: \"Mar\", size: 498, retention: [1, 0.88] },\n      ],\n    },\n  ]}\n/>",
+    "props": [
+      {
+        "name": "segments",
+        "type": "{ key: string; label: string; cohorts: Cohort[] }[]",
+        "default": "All / Self-serve / Sales-led / Mobile",
+        "description": "One set of cohorts per segment. Cohort: { label, size, retention: number[] } with retention as 0–1 per period since start, oldest cohort first."
+      },
+      {
+        "name": "defaultSegment",
+        "type": "string",
+        "default": "first segment",
+        "description": "Segment key shown first."
+      },
+      {
+        "name": "onSegmentChange",
+        "type": "(key: string) => void",
+        "description": "Called when the segment changes."
+      },
+      {
+        "name": "defaultView",
+        "type": "\"grid\" | \"curves\"",
+        "default": "\"grid\"",
+        "description": "Open as the retention triangle or as one curve per cohort."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Weekly retention\"",
+        "description": "Card title."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "default": "\"Signups by week · active users\"",
+        "description": "Mono line beside the title."
+      },
+      {
+        "name": "periodPrefix",
+        "type": "string",
+        "default": "\"W\"",
+        "description": "Column prefix: W0, W1 … or M0, M1 …"
+      },
+      {
+        "name": "periodName",
+        "type": "string",
+        "default": "\"week\"",
+        "description": "One period in words, used in the headline (Week-4 retention)."
+      },
+      {
+        "name": "focusPeriod",
+        "type": "number",
+        "default": "4",
+        "description": "The period the headline averages (size-weighted) and whose column head is lit."
+      },
+      {
+        "name": "showValues",
+        "type": "boolean",
+        "default": "true",
+        "description": "Print each cell's percentage when the column is wide enough."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#2dd4bf\"",
+        "description": "The one colour: the retention wash, the average curve and the headline."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Near-black card with white ink, or a white card with near-black ink."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "hover:@cohort-6",
+        "wait:400",
+        "click:@segment-sales",
+        "wait:900",
+        "click:@view-curves",
+        "wait:1300",
+        "click:@segment-mobile",
+        "wait:900"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "title",
+        "label": "Title",
+        "kind": "text",
+        "default": "Weekly retention"
+      },
+      {
+        "prop": "defaultView",
+        "label": "Opens as",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "grid",
+            "label": "Triangle"
+          },
+          {
+            "value": "curves",
+            "label": "Curves"
+          }
+        ],
+        "default": "grid",
+        "remount": true
+      },
+      {
+        "prop": "defaultSegment",
+        "label": "Segment",
+        "kind": "select",
+        "options": [
+          {
+            "value": "all",
+            "label": "All"
+          },
+          {
+            "value": "self-serve",
+            "label": "Self-serve"
+          },
+          {
+            "value": "sales",
+            "label": "Sales-led"
+          },
+          {
+            "value": "mobile",
+            "label": "Mobile"
+          }
+        ],
+        "default": "all",
+        "remount": true
+      },
+      {
+        "prop": "focusPeriod",
+        "label": "Headline week",
+        "kind": "slider",
+        "min": 1,
+        "max": 8,
+        "step": 1,
+        "default": 4
+      },
+      {
+        "prop": "showValues",
+        "label": "Cell values",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#2dd4bf",
+        "options": [
+          "#2dd4bf",
+          "#ff7a45",
+          "#60a5fa",
+          "#e5e5e5"
+        ]
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "chart-revenue-trend",
     "name": "Revenue Trend",
     "tier": "pro",
@@ -2759,6 +2964,227 @@
       }
     ],
     "added": "2026-10-09"
+  },
+  {
+    "slug": "chart-treemap-drill",
+    "name": "Drill-down Treemap",
+    "tier": "pro",
+    "platform": "web",
+    "category": "charts",
+    "description": "A squarified treemap of a cloud bill: click a tile and its children grow out of it to fill the plot while the rest zooms away, with a breadcrumb back up.",
+    "tags": [
+      "treemap",
+      "drill down",
+      "hierarchy",
+      "breadcrumb",
+      "cloud costs",
+      "finops",
+      "dashboard",
+      "dark",
+      "monochrome"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 760,
+    "usage": "import { ChartTreemapDrill } from \"@/components/design-for-ai/chart-treemap-drill\";\nimport type { TreemapNode } from \"@/components/design-for-ai/chart-treemap-drill\";\n\nconst bill: TreemapNode = {\n  name: \"All teams\",\n  children: [\n    { name: \"Search\", children: [{ name: \"indexers\", value: 8_400, previous: 7_900 }, { name: \"query-api\", value: 3_100 }] },\n    { name: \"Payments\", children: [{ name: \"ledger-db\", value: 6_200, previous: 6_500 }] },\n  ],\n};\n\n<ChartTreemapDrill\n  data={bill}\n  title=\"Spend by team\"\n  subtitle=\"Q3 2026\"\n  previousLabel=\"Q2\"\n  currency=\"EUR\"\n  locale=\"de-DE\"\n  onDrill={(path) => console.log(path)}\n/>",
+    "props": [
+      {
+        "name": "data",
+        "type": "TreemapNode",
+        "default": "Larkspur's October cloud bill",
+        "description": "The root: { name, value?, previous?, children? }. Leaves carry value (and optionally previous); groups sum their children. Any depth."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Infrastructure spend\"",
+        "description": "Card title."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "default": "\"October 2026\"",
+        "description": "Mono line beside the title."
+      },
+      {
+        "name": "previousLabel",
+        "type": "string",
+        "default": "\"Sep\"",
+        "description": "The previous period's name in the change label under the total."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"USD\"",
+        "description": "ISO currency for values."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-US\"",
+        "description": "Locale for number formatting."
+      },
+      {
+        "name": "height",
+        "type": "number",
+        "default": "440",
+        "description": "Plot height in px, capped at 110% of the card's width on narrow containers."
+      },
+      {
+        "name": "gap",
+        "type": "number",
+        "default": "4",
+        "description": "Space between tiles, px."
+      },
+      {
+        "name": "showChange",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show change against the previous period on the total and on tiles big enough to hold it."
+      },
+      {
+        "name": "increase",
+        "type": "\"good\" | \"bad\"",
+        "default": "\"bad\"",
+        "description": "Whether a rise is good news (revenue: green) or bad (spend: rose)."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ff7a45\"",
+        "description": "The one colour: the tile under the pointer or in keyboard focus, and its value."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Near-black card with white ink, or a white card with near-black ink."
+      },
+      {
+        "name": "onDrill",
+        "type": "(path: string[]) => void",
+        "description": "Called with the names from the root to the level now shown."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "hover:@tile-databases",
+        "wait:250",
+        "click:@tile-compute",
+        "wait:850",
+        "click:@tile-inference-gpu-pool",
+        "wait:900",
+        "click:@crumb-0",
+        "wait:900"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "title",
+        "label": "Title",
+        "kind": "text",
+        "default": "Infrastructure spend"
+      },
+      {
+        "prop": "height",
+        "label": "Plot height",
+        "kind": "slider",
+        "min": 320,
+        "max": 560,
+        "step": 10,
+        "unit": "px",
+        "default": 440
+      },
+      {
+        "prop": "gap",
+        "label": "Tile gap",
+        "kind": "slider",
+        "min": 0,
+        "max": 10,
+        "step": 1,
+        "unit": "px",
+        "default": 4
+      },
+      {
+        "prop": "showChange",
+        "label": "Show change",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "increase",
+        "label": "A rise is",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "bad",
+            "label": "Bad (spend)"
+          },
+          {
+            "value": "good",
+            "label": "Good"
+          }
+        ],
+        "default": "bad"
+      },
+      {
+        "prop": "currency",
+        "label": "Currency",
+        "kind": "select",
+        "options": [
+          {
+            "value": "USD",
+            "label": "US dollar (USD)"
+          },
+          {
+            "value": "EUR",
+            "label": "Euro (EUR)"
+          },
+          {
+            "value": "GBP",
+            "label": "Pound (GBP)"
+          },
+          {
+            "value": "JPY",
+            "label": "Yen (JPY)"
+          }
+        ],
+        "default": "USD"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#ff7a45",
+        "options": [
+          "#ff7a45",
+          "#34d399",
+          "#60a5fa",
+          "#e5e5e5"
+        ]
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark"
+      }
+    ]
   },
   {
     "slug": "combobox-async",
