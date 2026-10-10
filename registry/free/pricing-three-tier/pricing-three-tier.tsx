@@ -367,6 +367,7 @@ function SavingNote({ saving, earned, reduce }: { saving: string; earned: boolea
     <p className="flex items-center gap-2 text-[13px] text-(--pt-ink)/50">
       Pay annually, get
       <motion.span
+        data-demo="saving"
         animate={earned && !reduce ? { scale: [1, 1.06, 1] } : { scale: 1 }}
         transition={{ duration: 0.32, ease: EASE }}
         className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 font-medium ring-1 ring-inset transition-colors duration-200 ${
@@ -426,7 +427,6 @@ function PlanCard({
       ref={ref}
       onPointerMove={(e) => trackPointer(e, ref.current)}
       aria-label={`${plan.name} plan`}
-      data-demo={`plan-${plan.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}
       initial="hidden"
       animate={active ? "show" : "hidden"}
       variants={v(cardIn)}
@@ -526,7 +526,7 @@ function PlanCard({
                 <Check variants={v(drawPath)} delay={rowAt + 0.06} strong={lifted} />
                 <span className="text-(--pt-ink)/80">
                   {f.text}
-                  {f.note ? <NoteMarker note={f.note} uid={uid} hot={hotNote === f.note} onNote={onNote} /> : null}
+                  {f.note ? <NoteMarker note={f.note} plan={plan.name} uid={uid} hot={hotNote === f.note} onNote={onNote} /> : null}
                 </span>
               </motion.li>
             );
@@ -620,12 +620,12 @@ function Check({ variants, delay, strong }: { variants: Variants; delay: number;
   );
 }
 
-function NoteMarker({ note, uid, hot, onNote }: { note: number; uid: string; hot: boolean; onNote: (n: number | null) => void }) {
+function NoteMarker({ note, plan, uid, hot, onNote }: { note: number; plan: string; uid: string; hot: boolean; onNote: (n: number | null) => void }) {
   return (
     <sup className="ml-0.5">
       <a
         href={`#${uid}-fn-${note}`}
-        data-demo={`note-${note}`}
+        data-demo={`note-${note}-${plan.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}
         aria-label={`Footnote ${note}`}
         onPointerEnter={() => onNote(note)}
         onPointerLeave={() => onNote(null)}

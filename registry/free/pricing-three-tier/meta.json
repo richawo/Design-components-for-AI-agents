@@ -73,15 +73,12 @@
   "added": "2026-10-07",
   "demo": {
     "steps": [
-      "wait:1400",
+      "wait:600",
       "click:@billing-monthly",
-      "wait:800",
+      "wait:900",
       "click:@billing-annual",
-      "wait:750",
-      "hover:@note-1",
-      "wait:450",
-      "hover:@cta-featured",
-      "wait:500"
+      "hover:@saving",
+      "wait:1300"
     ],
     "loop": false
   },
@@ -102,7 +99,7 @@
       ],
       "default": "annual",
       "remount": true,
-      "group": "Billing"
+      "group": "Content"
     },
     {
       "prop": "theme",
