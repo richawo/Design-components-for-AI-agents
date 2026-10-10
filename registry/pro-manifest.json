@@ -3474,6 +3474,210 @@
     ]
   },
   {
+    "slug": "editor-node-graph",
+    "name": "Node Graph Editor",
+    "tier": "pro",
+    "platform": "web",
+    "category": "editors",
+    "description": "A workflow editor for AI pipelines: drag steps, wire typed ports, then Run lights each wire as data passes and a failing step explains why it stopped.",
+    "tags": [
+      "editors",
+      "node editor",
+      "workflow",
+      "pipeline",
+      "canvas",
+      "ai agents",
+      "automation",
+      "graph",
+      "low code",
+      "inspector"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 860,
+    "usage": "import { EditorNodeGraph } from \"@/components/design-for-ai/editor-node-graph\";\n\n<EditorNodeGraph\n  name=\"support-autoreply\"\n  nodes={steps}\n  edges={wires}\n  testCases={samples}\n  onConnect={(edge) => save(edge)}\n  onRun={(result) => log(result)}\n/>\n\n// Ports are typed (text, json, docs) and an input only takes its own type. Click an output, then an input, to wire them, or drag between them; Enter on a focused port does the same.\n// Run plans the whole pass first: a step starts once every wire into it has delivered, an input with no wire stops the run at that step (with a one-click fix), and the chosen test case can fail one step with its own explanation.\n// Plain wheel scrolls the page. Ctrl-scroll or pinch zooms, and dragging the canvas pans.",
+    "props": [
+      {
+        "name": "name",
+        "type": "string",
+        "default": "\"support-autoreply\"",
+        "description": "The workflow's name, shown in the breadcrumb and the inspector overview."
+      },
+      {
+        "name": "nodes",
+        "type": "GraphNode[]",
+        "default": "six steps: New ticket, Classify intent, Search help center, Draft reply, Policy check, Send to Zendesk",
+        "description": "The steps. Each has an id, title, kind (trigger, llm, search, guard, action), a position, typed inputs and outputs, config pairs, how long it runs and what it produced."
+      },
+      {
+        "name": "edges",
+        "type": "{ from: string; to: string }[]",
+        "default": "seven wires, with Draft reply's context left unwired",
+        "description": "Wires written as \"nodeId.portId\", from an output to an input. Read on mount and whenever the array changes; wiring in the editor keeps its own copy and reports each new wire through onConnect."
+      },
+      {
+        "name": "testCases",
+        "type": "{ id; label; summary; failure?: { node; title; detail; excerpt?; hint } }[]",
+        "default": "a late refund that the policy check blocks, and a fresh refund that passes",
+        "description": "Sample inputs to run with. A case's failure names the step that stops and the words it shows on the canvas and in the inspector."
+      },
+      {
+        "name": "testCase",
+        "type": "string",
+        "default": "\"late-refund\"",
+        "description": "The id of the test case Run uses. The toolbar's Test with menu changes it too."
+      },
+      {
+        "name": "snapToGrid",
+        "type": "boolean",
+        "default": "true",
+        "description": "Snap dragged and nudged steps to an 8px grid. The magnet button in the toolbar toggles it."
+      },
+      {
+        "name": "showGrid",
+        "type": "boolean",
+        "default": "true",
+        "description": "The dot grid behind the canvas. It pans and scales with the view."
+      },
+      {
+        "name": "showInspector",
+        "type": "boolean",
+        "default": "true",
+        "description": "The panel that explains the selected step: why it stopped, what it produced, its wires and config. Beside the canvas on wide containers, under it on narrow ones."
+      },
+      {
+        "name": "showMinimap",
+        "type": "boolean",
+        "default": "true",
+        "description": "The overview in the canvas corner, with run status per step and the visible area outlined. Hidden on narrow containers."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#f4f4f5\"",
+        "description": "The one brand accent: Run, lit wires, packets, the running ring and the selection. Defaults to ink for the theme; either theme's ink follows the theme. Port types and failure colours are fixed."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Near-black editor with white ink, or the white inverse."
+      },
+      {
+        "name": "onRun",
+        "type": "(result: { status: \"passed\" | \"failed\"; failedAt?: string; ms: number }) => void",
+        "description": "Called once a run finishes, with the step it stopped at."
+      },
+      {
+        "name": "onConnect",
+        "type": "(edge: { from: string; to: string }) => void",
+        "description": "Called for each wire the person adds. A wire into an input that already had one replaces it."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the editor."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:500",
+        "click:@port-search-docs",
+        "wait:250",
+        "click:@port-draft-context",
+        "wait:400",
+        "click:@run",
+        "wait:3300"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "testCase",
+        "label": "Test input",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "late-refund",
+            "label": "Late refund"
+          },
+          {
+            "value": "fresh-refund",
+            "label": "Fresh refund"
+          }
+        ],
+        "default": "late-refund",
+        "group": "Run"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action",
+        "group": "Run"
+      },
+      {
+        "prop": "snapToGrid",
+        "label": "Snap to grid",
+        "kind": "toggle",
+        "default": true,
+        "group": "Canvas"
+      },
+      {
+        "prop": "showGrid",
+        "label": "Dot grid",
+        "kind": "toggle",
+        "default": true,
+        "group": "Canvas"
+      },
+      {
+        "prop": "showMinimap",
+        "label": "Minimap",
+        "kind": "toggle",
+        "default": true,
+        "group": "Canvas"
+      },
+      {
+        "prop": "showInspector",
+        "label": "Inspector",
+        "kind": "toggle",
+        "default": true,
+        "group": "Canvas"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#8ab4ff",
+          "#7dd3a8",
+          "#f4b267"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      }
+    ]
+  },
+  {
     "slug": "feature-sticky-scroll",
     "name": "Sticky Scroll Story",
     "tier": "pro",
