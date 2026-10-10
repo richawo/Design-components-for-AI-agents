@@ -1,27 +1,16 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-
-/** Off screen this long, a card drops its video so a long gallery doesn't hold dozens of decoders. */
-const UNLOAD_AFTER_MS = 2000;
-/** A touch card plays when this much of it is on screen. */
-const PLAY_IN_VIEW_AT = 0.6;
-
-type Mode = "hover" | "in-view" | "off";
-
-function videoMode(): Mode {
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return "off";
-  const conn = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
-  if (conn?.saveData) return "off";
-  return window.matchMedia("(hover: hover) and (pointer: fine)").matches ? "hover" : "in-view";
-}
+import { registerCard, videoAllowed } from "./card-playback";
 
 /**
  * A gallery card's picture: the poster, and over it a short recording of the
- * component in use. The video costs nothing until it's wanted: no src until a
- * pointer enters the card (or, on touch screens, until the card is in view),
- * paused and rewound on leave, unloaded when the card scrolls away. Reduced
- * motion and Save-Data get the poster only.
+ * component in use, playing on its own while the card is in view (see
+ * card-playback for which cards play and when). The video costs nothing until
+ * the card nears the viewport, crossfades in over the poster on its first
+ * frame, and is unloaded once the card has been off screen a moment. Hovering
+ * or focusing a card keeps it playing. Reduced motion and Save-Data get the
+ * poster only.
  */
 export function CardMedia({
   name,
@@ -38,76 +27,48 @@ export function CardMedia({
 }) {
   const ref = useRef<HTMLVideoElement>(null);
   const [src, setSrc] = useState(false);
-  const srcRef = useRef(false);
   const want = useRef(false);
+  const committed = useRef(false);
   const [showing, setShowing] = useState(false);
   const fit = platform === "mobile" ? "object-contain py-3" : "object-cover object-top";
 
   useEffect(() => {
     const v = ref.current;
     const card = v?.closest("a");
-    if (!v || !card || !video) return;
-    const mode = videoMode();
-    if (mode === "off") return;
+    if (!v || !card || !video || !videoAllowed()) return;
 
-    let unload: number | undefined;
-    const start = () => {
-      want.current = true;
-      window.clearTimeout(unload);
-      // The first time, the source renders on the next commit and plays from the effect below.
-      if (srcRef.current) v.play().catch(() => {});
-      else setSrc(true);
-    };
-    const stop = () => {
-      want.current = false;
-      v.pause();
-      setShowing(false);
-      // Rewind after the fade, so the poster is what fades back in.
-      window.setTimeout(() => {
-        if (v.paused) v.currentTime = 0;
-      }, 220);
-    };
-
-    const io = new IntersectionObserver(
-      ([e]) => {
-        if (mode === "in-view") {
-          if (e.intersectionRatio >= PLAY_IN_VIEW_AT) start();
-          else stop();
-        }
-        if (!e.isIntersecting) {
-          window.clearTimeout(unload);
-          unload = window.setTimeout(() => {
-            v.pause();
-            setShowing(false);
-            setSrc(false);
-          }, UNLOAD_AFTER_MS);
-        } else window.clearTimeout(unload);
+    const handle = registerCard(card, {
+      setLoaded(loaded) {
+        if (!loaded) setShowing(false);
+        setSrc(loaded);
       },
-      { threshold: [0, PLAY_IN_VIEW_AT] },
-    );
-    io.observe(card);
-
-    const focusIn = () => card.matches(":focus-visible") && start();
-    if (mode === "hover") {
-      card.addEventListener("pointerenter", start);
-      card.addEventListener("pointerleave", stop);
-      card.addEventListener("focusin", focusIn);
-      card.addEventListener("focusout", stop);
-    }
+      setPlaying(playing) {
+        want.current = playing;
+        if (!playing) v.pause();
+        else if (committed.current) v.play().catch(() => {});
+        // Otherwise the source is still committing; the effect below starts it.
+      },
+    });
+    const enter = (e: PointerEvent) => e.pointerType === "mouse" && handle.engage(true);
+    const leave = () => handle.engage(false);
+    const focusIn = () => card.matches(":focus-visible") && handle.engage(true);
+    card.addEventListener("pointerenter", enter);
+    card.addEventListener("pointerleave", leave);
+    card.addEventListener("focusin", focusIn);
+    card.addEventListener("focusout", leave);
     return () => {
-      io.disconnect();
-      window.clearTimeout(unload);
-      card.removeEventListener("pointerenter", start);
-      card.removeEventListener("pointerleave", stop);
+      handle.release();
+      card.removeEventListener("pointerenter", enter);
+      card.removeEventListener("pointerleave", leave);
       card.removeEventListener("focusin", focusIn);
-      card.removeEventListener("focusout", stop);
+      card.removeEventListener("focusout", leave);
     };
   }, [video]);
 
   // <source> changes need an explicit load(); dropping them also releases the decoder.
   useEffect(() => {
     const v = ref.current;
-    srcRef.current = src;
+    committed.current = src;
     if (!v) return;
     v.load();
     if (src && want.current) v.play().catch(() => {});
@@ -132,7 +93,7 @@ export function CardMedia({
           muted
           loop
           playsInline
-          preload="none"
+          preload={src ? "auto" : "none"}
           aria-hidden="true"
           tabIndex={-1}
           disablePictureInPicture
