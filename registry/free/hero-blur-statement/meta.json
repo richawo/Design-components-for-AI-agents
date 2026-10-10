@@ -82,5 +82,82 @@
       "description": "Grainy true black, or warm-white paper (#f4f3ef) with black ink."
     }
   ],
+  "demo": {
+    "steps": [
+      "wait:150",
+      "hover:@name:0.5,0.55",
+      "wait:650",
+      "hover:@rotation:0.12,0.5",
+      "wait:700",
+      "click",
+      "wait:400",
+      "click",
+      "wait:1400"
+    ],
+    "loop": false
+  },
+  "controls": [
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark"
+    },
+    {
+      "prop": "interval",
+      "label": "Hold each name",
+      "kind": "slider",
+      "min": 800,
+      "max": 5000,
+      "step": 100,
+      "unit": "ms",
+      "default": 1200
+    },
+    {
+      "prop": "grain",
+      "label": "Grain",
+      "kind": "slider",
+      "min": 0,
+      "max": 0.3,
+      "step": 0.01,
+      "default": 0.07
+    },
+    {
+      "prop": "lead",
+      "label": "Lead-in",
+      "kind": "text",
+      "default": "We design products for",
+      "group": "Content"
+    },
+    {
+      "prop": "eyebrow",
+      "label": "Eyebrow",
+      "kind": "text",
+      "default": "Ferro & Vale · Product studio, Lisbon",
+      "group": "Content"
+    },
+    {
+      "prop": "status",
+      "label": "Status",
+      "kind": "text",
+      "default": "Booking from February 2027",
+      "group": "Content"
+    },
+    {
+      "prop": "$replay",
+      "label": "Replay",
+      "kind": "action"
+    }
+  ],
   "added": "2026-10-09"
 }

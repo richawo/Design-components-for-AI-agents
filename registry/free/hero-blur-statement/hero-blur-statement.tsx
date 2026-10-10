@@ -21,7 +21,7 @@ export type HeroBlurStatementProps = {
   lead?: string;
   /** Names that take turns in the sentence. The first is the static one with reduced motion. */
   nouns?: RotatingNoun[];
-  /** Words after the rotating name, set at 38% ink. A "\n" (or " / " in a single-line field) breaks the line on wide containers. */
+  /** Words after the rotating name, set at 38% ink. A "\n" breaks the line on wide containers. */
   tail?: string;
   primary?: Link;
   secondary?: Link;
@@ -410,7 +410,7 @@ function Words({ words, first, variants, className = "" }: { words: string[]; fi
 /** An inline box whose width springs to the next name while the names roll through it. */
 function NameSlot({ name, width, reduce }: { name: string; width: MotionValue<number>; reduce: boolean }) {
   return (
-    <motion.span style={{ width }} className="relative inline-block">
+    <motion.span data-demo="name" style={{ width }} className="relative inline-block">
       {/* Invisible copy of the current name gives the box its baseline. */}
       <span className={`invisible ${NAME_FACE}`}>{name}</span>
       <AnimatePresence initial={false} mode="popLayout">
@@ -539,12 +539,10 @@ function ControlGlyph({ kind }: { kind: "next" | "play" | "pause" }) {
 }
 
 /**
- * The hero as it ships. Names hold 1.5 s here (the component's own default is 2.6 s)
- * so the demo shows several rolls in a few seconds; the Customize slider starts at 1500
- * and "Copy configured" keeps whatever it is set to. Overrides come from the Customize
- * panel, whose single-line Tail field writes " / " for the line break.
+ * The hero as it ships. Names hold 1.2 s here (the component's own default is 2.6 s)
+ * so the demo shows several rolls in a few seconds; the Customize slider starts at 1200
+ * and "Copy configured" keeps whatever it is set to. Overrides from the Customize panel win.
  */
 export default function HeroBlurStatementDemo(overrides: Partial<HeroBlurStatementProps> = {}) {
-  const tail = overrides.tail?.replace(/ \/ /g, "\n");
-  return <HeroBlurStatement interval={1500} {...overrides} {...(tail === undefined ? {} : { tail })} />;
+  return <HeroBlurStatement interval={1200} {...overrides} />;
 }
