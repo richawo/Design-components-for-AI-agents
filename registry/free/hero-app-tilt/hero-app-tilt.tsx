@@ -428,6 +428,7 @@ function PrimaryLink({ link }: { link: Link }) {
   return (
     <a
       href={link.href}
+      data-demo="cta"
       className={`group inline-flex h-12 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-(--at-ink) px-6 text-[15px] font-medium tracking-[-0.01em] text-(--at-on-ink) transition-[background-color,scale] duration-150 ease-out hover:bg-(--at-ink)/90 active:scale-[0.97] active:duration-75 ${FOCUS}`}
     >
       <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" className="size-4 transition-transform duration-150 ease-out group-hover:translate-y-0.5">
@@ -479,6 +480,7 @@ function AppWindow({ edge, active, reduce, v, product, account, folders, labels,
     <figure
       aria-label={`${product} app: the ${listTitle} list with ${threads.length} threads, and a reply drafted for “${message.subject}”.`}
       role="img"
+      data-demo="window"
       className="@container/win relative overflow-hidden rounded-[14px] bg-(--at-window) text-left shadow-(--at-shadow) @3xl:rounded-[18px]"
     >
       {/* Edge light along the top, brightening as the window flattens. */}
@@ -621,7 +623,7 @@ function OvernightCard({
   const share = overnight.triaged > 0 ? overnight.done / overnight.triaged : 0;
   const scaleX = useTransform(fill, (t) => t * share);
   return (
-    <motion.div variants={v(settle)} custom={delay} className="mt-3 rounded-[10px] bg-(--at-ink)/[0.03] p-3 ring-1 ring-inset ring-(--at-ink)/[0.06]">
+    <motion.div variants={v(settle)} custom={delay} data-demo="overnight" className="mt-3 rounded-[10px] bg-(--at-ink)/[0.03] p-3 ring-1 ring-inset ring-(--at-ink)/[0.06]">
       <p className={`text-[12px] leading-[1.45] text-(--at-ink)/70`}>
         Overnight: <span className="text-(--at-ink)">{drafted} drafts</span> ready,{" "}
         <CountUp value={overnight.done} active={active} reduce={reduce} delay={T.meter} duration={T.meterDur} /> of {overnight.triaged} sorted.
@@ -740,7 +742,7 @@ function MessagePane({ message, product, initials, position, v }: { message: Til
 
 function DraftCard({ message, product, v }: { message: TiltMessage; product: string; v: Pick }) {
   return (
-    <motion.div variants={v(settle)} custom={T.draft} className="mt-6 rounded-xl bg-(--at-ink)/[0.035] p-4 ring-1 ring-inset ring-(--at-ink)/[0.08] @4xl/win:p-5">
+    <motion.div variants={v(settle)} custom={T.draft} data-demo="draft" className="mt-6 rounded-xl bg-(--at-ink)/[0.035] p-4 ring-1 ring-inset ring-(--at-ink)/[0.08] @4xl/win:p-5">
       <div className="flex items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.14em] text-(--at-ink)/60">
         <span className="size-1.5 rounded-full bg-(--at-accent)" />
         Drafted by {product} · in your voice
@@ -829,11 +831,14 @@ function FolderIcon({ name }: { name: TiltFolder["icon"] }) {
   );
 }
 
-/** Demo: the hero plus a little runway below it, so there is room to scroll the window flat. */
-export default function HeroAppTiltDemo() {
+/**
+ * Demo: the hero plus a little runway below it, so there is room to scroll the window flat.
+ * Overrides (the Customize panel) are spread onto the featured instance, and the stage follows `theme`.
+ */
+export default function HeroAppTiltDemo(overrides: Partial<HeroAppTiltProps> = {}) {
   return (
-    <div className="bg-black">
-      <HeroAppTilt />
+    <div style={{ background: overrides.theme === "light" ? PALETTE.light.page : PALETTE.dark.page }}>
+      <HeroAppTilt {...overrides} />
       <div aria-hidden="true" className="h-[45vh]" />
     </div>
   );

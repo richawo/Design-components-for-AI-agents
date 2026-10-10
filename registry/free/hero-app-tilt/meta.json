@@ -125,5 +125,88 @@
       "description": "Black stage or a daylight grey one with a white window."
     }
   ],
-  "added": "2026-10-09"
+  "added": "2026-10-09",
+  "demo": {
+    "steps": [
+      "wait:500",
+      "hover:@cta",
+      "scroll:340",
+      "wait:500",
+      "hover:@draft",
+      "wait:500",
+      "hover:@overnight",
+      "wait:400",
+      "scroll:-340",
+      "wait:600"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "headline",
+      "label": "Headline",
+      "kind": "text",
+      "default": "Your inbox, triaged before coffee.",
+      "group": "Content"
+    },
+    {
+      "prop": "eyebrow",
+      "label": "Eyebrow",
+      "kind": "text",
+      "default": "Tern 2.4 · Now on Windows",
+      "group": "Content"
+    },
+    {
+      "prop": "product",
+      "label": "Product name",
+      "kind": "text",
+      "default": "Tern",
+      "group": "Content"
+    },
+    {
+      "prop": "tilt",
+      "label": "Starting tilt",
+      "kind": "slider",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "°",
+      "default": 22,
+      "group": "Look"
+    },
+    {
+      "prop": "accent",
+      "label": "Accent",
+      "kind": "color",
+      "default": "#f2c46d",
+      "options": [
+        "#f2c46d",
+        "#ff7a45",
+        "#34d399",
+        "#60a5fa"
+      ],
+      "group": "Look"
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark",
+      "group": "Look"
+    },
+    {
+      "prop": "$replay",
+      "label": "Replay",
+      "kind": "action"
+    }
+  ]
 }
