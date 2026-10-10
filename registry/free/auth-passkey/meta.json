@@ -26,15 +26,5 @@
     {"name": "theme", "type": "\"dark\" | \"light\"", "default": "\"dark\"", "description": "Surface palette, fingerprint and well included."},
     {"name": "className", "type": "string", "description": "Extra classes on the root."}
   ],
-  "demo": { "steps": ["wait:150", "click:@passkey-button", "move:0.68,0.74", "wait:3400"] },
-  "controls": [
-    {"prop": "theme", "label": "Theme", "kind": "segmented", "options": [{"value": "dark", "label": "Dark"}, {"value": "light", "label": "Light"}], "default": "dark"},
-    {"prop": "accent", "label": "Button colour", "kind": "color", "default": "#f4f4f5", "options": ["#f4f4f5", "#52525b", "#ff7a45", "#60a5fa", "#a78bfa"]},
-    {"prop": "brand", "label": "Brand", "kind": "text", "default": "Fathom"},
-    {"prop": "title", "label": "Title", "kind": "text", "default": "Welcome back"},
-    {"prop": "buttonLabel", "label": "Button label", "kind": "text", "default": "Sign in with passkey"},
-    {"prop": "supported", "label": "Passkeys supported", "kind": "toggle", "default": true},
-    {"prop": "$replay", "label": "Replay", "kind": "action"}
-  ],
   "added": "2026-10-09"
 }
