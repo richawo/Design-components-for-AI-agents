@@ -71,8 +71,8 @@
     {
       "name": "placeholder",
       "type": "string",
-      "default": "\"Reply to Wren…\"",
-      "description": "Composer placeholder."
+      "default": "\"Reply to {assistantName}…\"",
+      "description": "Composer placeholder. Follows the assistant's name unless you set it."
     },
     {
       "name": "onNewThread",
@@ -100,12 +100,10 @@
   "added": "2026-10-07",
   "demo": {
     "steps": [
-      "wait:500",
       "click:@composer",
       "type:Add a test",
-      "wait:200",
       "click:@send",
-      "wait:4200"
+      "wait:4600"
     ]
   },
   "controls": [
@@ -164,7 +162,7 @@
         "#ff9a6b",
         "#7dd3a8",
         "#60a5fa",
-        "#e4e4e7"
+        "#a78bfa"
       ],
       "group": "Look"
     }

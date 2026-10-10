@@ -44,7 +44,7 @@ export type ChatThreadProps = {
   messages?: ChatMessage[];
   /** Stream the final assistant message in once the thread has landed. */
   streamLast?: boolean;
-  /** Composer placeholder. */
+  /** Composer placeholder. Defaults to “Reply to {assistantName}…”. */
   placeholder?: string;
   /**
    * Builds the canned reply that streams back after the user sends. Replace it with
@@ -922,7 +922,7 @@ export function ChatThread({
   model = "Wren 2 · Balanced",
   messages = DEMO_MESSAGES,
   streamLast = true,
-  placeholder = "Reply to Wren…",
+  placeholder,
   reply = defaultReply,
   onSend,
   onNewThread,
@@ -1020,7 +1020,7 @@ export function ChatThread({
         <Composer
           name={assistantName}
           model={model}
-          placeholder={placeholder}
+          placeholder={placeholder ?? `Reply to ${assistantName}…`}
           streaming={streaming}
           onSend={send}
           onStop={() => setStreamingId(null)}
@@ -1033,19 +1033,38 @@ export function ChatThread({
   );
 }
 
+/**
+ * The demo’s opening thread: one question and an answer that ends on a short paragraph,
+ * its sources and Copy, so the whole thread fits in frame and the first view is composed.
+ */
+const DEMO_SEED: ChatMessage[] = [
+  DEMO_MESSAGES[0],
+  {
+    id: "m2",
+    role: "assistant",
+    time: "10:42",
+    blocks: [
+      {
+        type: "p",
+        text: "Debounce the **value**, not the handler. Keep the raw text in state, restart a `setTimeout` on every change, and fetch from the settled copy after `250ms` of quiet. Our test page dropped from 31 requests per search to 3.",
+      },
+    ],
+    sources: (DEMO_MESSAGES[3] as Extract<ChatMessage, { role: "assistant" }>).sources,
+  },
+];
+
 /** The demo’s stand-in answer to the scripted question: a sentence, then a test that streams in as code. */
 function demoReply(): ChatBlock[] {
   return [
-    { type: "p", text: "Sure. Fake the timers, change the value, and check it only settles after `250ms` of quiet." },
+    { type: "p", text: "Sure. Here it is." },
     {
       type: "code",
       lang: "ts",
       filename: "use-debounced-value.test.ts",
-      code: `it("waits for quiet", () => {
-  vi.useFakeTimers();
-  rerender("abc");
-  vi.advanceTimersByTime(250);
-  expect(result.current).toBe("abc");
+      code: `it("waits", async () => {
+  const h = renderHook(useDebouncedValue, { initialProps: 0 });
+  h.rerender(1);
+  await waitFor(() => expect(h.result.current).toBe(1));
 });`,
     },
   ];
@@ -1053,12 +1072,11 @@ function demoReply(): ChatBlock[] {
 
 export default function ChatThreadDemo(overrides: Partial<ChatThreadProps> = {}) {
   const theme = overrides.theme ?? "dark";
-  const name = overrides.assistantName ?? "Wren";
   return (
     <div className="flex min-h-dvh items-center justify-center sm:px-6 sm:py-8 lg:py-10" style={{ background: STAGE[theme] }}>
       <div className="h-dvh min-h-[620px] w-full max-w-[1040px] sm:h-[820px] sm:min-h-0">
         {/* The thread opens settled so the scripted send is the one reply that streams. */}
-        <ChatThread streamLast={false} reply={demoReply} placeholder={`Reply to ${name}…`} {...overrides} />
+        <ChatThread messages={DEMO_SEED} subtitle="Frontend · 2 messages · Today" streamLast={false} reply={demoReply} {...overrides} />
       </div>
     </div>
   );
