@@ -349,6 +349,7 @@ function Statement({
 
   return (
     <h1
+      data-demo="statement"
       onPointerEnter={(e) => e.pointerType === "mouse" && onHover(true)}
       onPointerLeave={() => onHover(false)}
       className="relative font-display text-[clamp(2.9rem,0.6rem+7.6cqw,8.75rem)] font-medium leading-[0.96] tracking-[-0.058em] [text-wrap:pretty]"
@@ -438,6 +439,7 @@ function Footer({ primary, secondary, control, v }: { primary: Link; secondary: 
           variants={v(reveal)}
           custom={T.footer}
           href={primary.href}
+          data-demo="primary"
           className={`group inline-flex h-12 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-(--bs-ink) px-5 text-[15px] font-medium tracking-[-0.01em] text-(--bs-on-ink) transition-[background-color,scale] duration-150 ease-out hover:bg-(--bs-name) active:scale-[0.97] active:duration-75 @md:px-6 ${FOCUS}`}
         >
           {primary.label}
@@ -488,6 +490,7 @@ function RotationControl({
     <button
       type="button"
       onClick={onPress}
+      data-demo="rotation"
       aria-label={reduce ? "Show the next client name" : held ? "Resume rotating client names" : "Pause rotating client names"}
       aria-pressed={reduce ? undefined : held}
       className="group -mx-2 flex min-h-11 items-center gap-3 rounded-full px-2 text-left font-mono text-[11px] uppercase tracking-[0.16em] text-(--bs-ink)/55 transition-colors duration-150 hover:text-(--bs-ink)/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--bs-ink) active:scale-[0.98] @4xl:mx-0"
@@ -536,6 +539,7 @@ function ControlGlyph({ kind }: { kind: "next" | "play" | "pause" }) {
   );
 }
 
-export default function HeroBlurStatementDemo() {
-  return <HeroBlurStatement />;
+/** The hero as it ships. Names roll a little faster here (1.5 s) so the demo shows several; overrides come from the page's Customize panel. */
+export default function HeroBlurStatementDemo(overrides: Partial<HeroBlurStatementProps> = {}) {
+  return <HeroBlurStatement interval={1500} {...overrides} />;
 }
