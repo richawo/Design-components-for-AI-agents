@@ -103,7 +103,7 @@ const PALETTE = {
 type Palette = Record<keyof (typeof PALETTE)["dark"], string>;
 
 /** The demo’s quiet backdrop; not part of the component. */
-const STAGE = "#000000";
+const STAGE = { dark: "#000000", light: "#ececef" } as const;
 
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 const EASE_IN = [0.4, 0, 1, 1] as const;
@@ -593,6 +593,7 @@ function FormView({
             >
               <input
                 ref={inputRef}
+                data-demo="email"
                 id={fieldId}
                 name="email"
                 type="email"
@@ -646,7 +647,7 @@ function FormView({
         </motion.div>
 
         <motion.div {...(animateCta ? enter(play, at(4), reduce) : {})}>
-          <PrimaryButton layoutId={`${uid}-cta`} type="submit" disabled={sending} reduce={reduce} className="mt-5">
+          <PrimaryButton layoutId={`${uid}-cta`} demo="send" type="submit" disabled={sending} reduce={reduce} className="mt-5">
             <AnimatePresence mode="popLayout" initial={false}>
               {sending ? (
                 <motion.span key="sending" {...swap} transition={{ duration: MOTION.swap, ease: EASE_OUT }} className="relative flex items-center gap-2.5">
@@ -716,7 +717,7 @@ function SentView({
       </motion.p>
 
       {provider ? (
-        <PrimaryButton layoutId={`${uid}-cta`} href={provider.href} reduce={reduce} className="mt-7">
+        <PrimaryButton layoutId={`${uid}-cta`} demo="open-mail" href={provider.href} reduce={reduce} className="mt-7">
           <motion.span {...enter(true, at(3), reduce, 6, 3, MOTION.swap + 0.1)} className="relative flex items-center gap-2">
             Open {provider.name}
             <ArrowUpRight />
@@ -873,6 +874,7 @@ function PrimaryButton({
   disabled,
   reduce,
   className = "",
+  demo,
 }: {
   layoutId: string;
   children: ReactNode;
@@ -881,6 +883,7 @@ function PrimaryButton({
   disabled?: boolean;
   reduce: boolean;
   className?: string;
+  demo?: string;
 }) {
   const cls = `group/cta relative flex h-11 w-full items-center justify-center overflow-hidden rounded-[11px] bg-[var(--ml-accent)] text-[14.5px] font-medium tracking-[-0.005em] text-[var(--ml-on-accent)] shadow-[inset_0_1px_0_rgba(255,255,255,0.35),inset_0_-1px_0_rgba(0,0,0,0.12)] ${focusRing} ${className}`;
   const t = reduce ? { duration: 0 } : { layout: { duration: MOTION.morph, ease: EASE_IN_OUT } };
@@ -888,7 +891,7 @@ function PrimaryButton({
   const wash = <span aria-hidden="true" className="absolute inset-0 bg-current opacity-0 transition-opacity duration-150 group-hover/cta:opacity-[0.07]" />;
   if (href)
     return (
-      <motion.a layoutId={layoutId} transition={t} href={href} target="_blank" rel="noopener noreferrer" whileTap={reduce ? undefined : { scale: 0.98 }} className={cls}>
+      <motion.a layoutId={layoutId} transition={t} data-demo={demo} href={href} target="_blank" rel="noopener noreferrer" whileTap={reduce ? undefined : { scale: 0.98 }} className={cls}>
         {wash}
         {children}
       </motion.a>
@@ -897,6 +900,7 @@ function PrimaryButton({
     <motion.button
       layoutId={layoutId}
       transition={t}
+      data-demo={demo}
       type={type ?? "button"}
       disabled={disabled}
       aria-disabled={disabled || undefined}
@@ -1075,11 +1079,25 @@ const DEMO_MODES = [
   { id: "expired", label: "Expired link" },
 ] as const;
 
-export default function AuthMagicLinkDemo() {
+/** The dark theme’s own ink; as a control default it means “no accent chosen”, so the light theme keeps its ink. */
+const DEFAULT_DARK_ACCENT = "#ededef";
+
+const DEMO_TONE = {
+  dark: { ring: "shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1)]", on: "text-[#0a0a0b]", off: "text-[#8a8a92] hover:text-[#ededef]", pill: "bg-[#ededef]", focus: "focus-visible:outline-[#ededef]", note: "text-[#7d7d86]" },
+  light: { ring: "shadow-[inset_0_0_0_1px_rgba(24,24,27,0.14)]", on: "text-[#ffffff]", off: "text-[#52525b] hover:text-[#18181b]", pill: "bg-[#18181b]", focus: "focus-visible:outline-[#18181b]", note: "text-[#52525b]" },
+} as const;
+
+export default function AuthMagicLinkDemo({ expired: forcedExpired, theme = "dark", accent, ...overrides }: Partial<AuthMagicLinkProps> = {}) {
   const reduce = useReducedMotion() ?? false;
   const uid = useId().replace(/[^a-zA-Z0-9_-]/g, "");
-  const [mode, setMode] = useState<(typeof DEMO_MODES)[number]["id"]>("fresh");
+  const [mode, setMode] = useState<(typeof DEMO_MODES)[number]["id"]>(forcedExpired ? "expired" : "fresh");
   const { wait } = useTimeouts();
+  const tone = DEMO_TONE[theme];
+
+  // The Customize panel and the demo’s own switch drive the same state.
+  useEffect(() => {
+    setMode(forcedExpired ? "expired" : "fresh");
+  }, [forcedExpired]);
 
   const onSend = async (email: string) => {
     await wait(DEMO_LATENCY_MS);
@@ -1087,27 +1105,36 @@ export default function AuthMagicLinkDemo() {
   };
 
   return (
-    <div className="flex min-h-dvh flex-col items-center justify-center px-4 py-12 sm:py-16" style={{ background: STAGE }}>
-      <AuthMagicLink key={mode} expired={mode === "expired"} defaultEmail={mode === "expired" ? "ines@proton.me" : ""} onSend={onSend} />
+    <div className="flex min-h-dvh flex-col items-center justify-center px-4 py-12 transition-colors duration-300 sm:py-16" style={{ background: STAGE[theme] }}>
+      <AuthMagicLink
+        key={mode}
+        expired={mode === "expired"}
+        defaultEmail={mode === "expired" ? "ines@proton.me" : ""}
+        onSend={onSend}
+        {...overrides}
+        theme={theme}
+        accent={accent === DEFAULT_DARK_ACCENT && theme === "light" ? undefined : accent}
+      />
       <motion.div {...enter(true, 0.6, reduce)} className="mt-6 flex flex-col items-center gap-3">
-        <div role="radiogroup" aria-label="Demo state" className="flex rounded-full p-1 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1)]">
+        <div role="radiogroup" aria-label="Demo state" className={`flex rounded-full p-1 ${tone.ring}`}>
           {DEMO_MODES.map((m) => (
             <button
               key={m.id}
               type="button"
               role="radio"
               aria-checked={mode === m.id}
+              data-demo={`mode-${m.id}`}
               onClick={() => setMode(m.id)}
-              className={`relative h-9 rounded-full px-4 font-mono text-[11px] uppercase tracking-[0.12em] transition-[color,transform] duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ededef] active:scale-[0.97] ${
-                mode === m.id ? "text-[#0a0a0b]" : "text-[#8a8a92] hover:text-[#ededef]"
+              className={`relative h-9 rounded-full px-4 font-mono text-[11px] uppercase tracking-[0.12em] transition-[color,transform] duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 active:scale-[0.97] ${tone.focus} ${
+                mode === m.id ? tone.on : tone.off
               }`}
             >
-              {mode === m.id && <motion.span layoutId={`${uid}-mode`} transition={reduce ? { duration: 0 } : SPRING_UI} className="absolute inset-0 rounded-full bg-[#ededef]" />}
+              {mode === m.id && <motion.span layoutId={`${uid}-mode`} transition={reduce ? { duration: 0 } : SPRING_UI} className={`absolute inset-0 rounded-full ${tone.pill}`} />}
               <span className="relative">{m.label}</span>
             </button>
           ))}
         </div>
-        <p className="max-w-[340px] text-center font-mono text-[11px] uppercase leading-[1.6] tracking-[0.12em] text-[#7d7d86]">
+        <p className={`max-w-[340px] text-center font-mono text-[11px] uppercase leading-[1.6] tracking-[0.12em] ${tone.note}`}>
           Try gmail.com, outlook.com or proton.me · <span className="normal-case tracking-[0.04em]">@example.com</span> fails
         </p>
       </motion.div>
