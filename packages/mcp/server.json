@@ -23,23 +23,5 @@
         }
       ]
     }
-  ],
-  "packages": [
-    {
-      "registryType": "npm",
-      "identifier": "design-for-ai-mcp",
-      "version": "0.2.0",
-      "transport": {
-        "type": "stdio"
-      },
-      "environmentVariables": [
-        {
-          "name": "DESIGN_FOR_AI_LICENSE",
-          "description": "Optional Pro licence key",
-          "isRequired": false,
-          "isSecret": true
-        }
-      ]
-    }
   ]
 }

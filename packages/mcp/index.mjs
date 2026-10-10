@@ -6,7 +6,7 @@
 // API, so there is nothing to keep in sync. Pro components need a licence key
 // in DESIGN_FOR_AI_LICENSE.
 //
-//   claude mcp add design-for-ai -- npx -y design-for-ai-mcp
+//   claude mcp add design-for-ai -- npx -y https://design.yaps.ai/mcp.tgz
 
 import fs from "node:fs";
 import path from "node:path";

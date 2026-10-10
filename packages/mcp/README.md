@@ -14,7 +14,7 @@ This package is the same tools over stdio, for clients or networks that prefer a
 
 ```bash
 # Claude Code
-claude mcp add design-for-ai -- npx -y design-for-ai-mcp
+claude mcp add design-for-ai -- npx -y https://design.yaps.ai/mcp.tgz
 ```
 
 Cursor, Windsurf and other MCP clients:
@@ -24,7 +24,7 @@ Cursor, Windsurf and other MCP clients:
   "mcpServers": {
     "design-for-ai": {
       "command": "npx",
-      "args": ["-y", "design-for-ai-mcp"],
+      "args": ["-y", "https://design.yaps.ai/mcp.tgz"],
       "env": { "DESIGN_FOR_AI_LICENSE": "dfa_…" }
     }
   }

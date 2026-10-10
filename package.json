@@ -9,7 +9,7 @@
     "registry": "node scripts/build-registry.mjs",
     "predev": "node scripts/build-registry.mjs",
     "dev": "next dev",
-    "prebuild": "node scripts/build-registry.mjs --strict",
+    "prebuild": "node scripts/build-registry.mjs --strict && node scripts/build-cli-dist.mjs",
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",

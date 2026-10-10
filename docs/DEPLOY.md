@@ -125,6 +125,16 @@ Don't symlink `registry/pro` to a checkout elsewhere: Turbopack won't follow
 a symlink that leaves the project. Clone the Pro repo into `registry/pro`, or
 run `npm run pro:sync`.
 
+## CLI distribution
+
+`prebuild` packages the zero-dependency public CLI into `public/cli.tgz`
+and the stdio MCP wrapper into `public/mcp.tgz`.
+The archives contain only their public entry points, package metadata and
+documentation. An allowlist rejects unexpected files.
+Buyers can run `npx https://design.yaps.ai/cli.tgz` without waiting for npm
+publication. The generated archive stays out of Git and is rebuilt by Workers
+Builds.
+
 ## Adapter patch
 
 `scripts/patch-opennext.mjs` runs on `postinstall`. It teaches

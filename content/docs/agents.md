@@ -55,7 +55,7 @@ The header is optional. Without it, every free component works and the server te
 The same tools run locally over stdio, reading the public API:
 
 ```bash
-claude mcp add design-for-ai -e DESIGN_FOR_AI_LICENSE=dfa_… -- npx -y design-for-ai-mcp
+claude mcp add design-for-ai -e DESIGN_FOR_AI_LICENSE=dfa_… -- npx -y https://design.yaps.ai/mcp.tgz
 ```
 
 ## CLI
@@ -63,11 +63,11 @@ claude mcp add design-for-ai -e DESIGN_FOR_AI_LICENSE=dfa_… -- npx -y design-f
 For you, or for an agent that would rather run a command than call a tool:
 
 ```bash
-npx design-for-ai search sign in        # find components
-npx design-for-ai info auth-sign-in     # description, install command and props
-npx design-for-ai add auth-sign-in      # write the file, install missing dependencies
-npx design-for-ai prompt auth-sign-in   # print the design brief (--json for the JSON prompt)
-npx design-for-ai login dfa_…           # unlock Pro on this machine
+npx https://design.yaps.ai/cli.tgz search sign in        # find components
+npx https://design.yaps.ai/cli.tgz info auth-sign-in     # description, install command and props
+npx https://design.yaps.ai/cli.tgz add auth-sign-in      # write the file, install missing dependencies
+npx https://design.yaps.ai/cli.tgz prompt auth-sign-in   # print the design brief (--json for the JSON prompt)
+npx https://design.yaps.ai/cli.tgz login dfa_…           # unlock Pro on this machine
 ```
 
 `add` writes to `components/design-for-ai/` (or `src/components/design-for-ai/` when you have a `src` folder; override with `--dir`) and installs what the component imports (`motion`, `three`, `lucide-react`) with your package manager.

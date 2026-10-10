@@ -3,9 +3,9 @@
 The command line for [Design for AI](https://design.yaps.ai): premium, hand-built React + Tailwind v4 and React Native components, each with a design prompt and a JSON prompt your agent can follow.
 
 ```bash
-npx design-for-ai search sign in        # find components
-npx design-for-ai add auth-sign-in      # write the file, install missing deps
-npx design-for-ai prompt auth-sign-in   # print the design brief for your agent
+npx https://design.yaps.ai/cli.tgz search sign in        # find components
+npx https://design.yaps.ai/cli.tgz add auth-sign-in      # write the file, install missing deps
+npx https://design.yaps.ai/cli.tgz prompt auth-sign-in   # print the design brief for your agent
 ```
 
 No dependencies, Node 18+.
@@ -24,7 +24,7 @@ No dependencies, Node 18+.
 
 ## Pro
 
-Pro components need a licence key: `npx design-for-ai login dfa_…`, or set `DESIGN_FOR_AI_LICENSE`. Get one at [design.yaps.ai/pricing](https://design.yaps.ai/pricing).
+Pro components need a licence key: `npx https://design.yaps.ai/cli.tgz login dfa_…`, or set `DESIGN_FOR_AI_LICENSE`. Get one at [design.yaps.ai/pricing](https://design.yaps.ai/pricing).
 
 ## Environment
 

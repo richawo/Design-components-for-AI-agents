@@ -7,13 +7,13 @@ section: Getting started
 
 ## With the Design for AI CLI
 
-No setup, works in any React or React Native project:
+The CLI is packaged directly on this site and works in any React or React Native project:
 
 ```bash
-npx design-for-ai add pricing-plan-toggle
+npx https://design.yaps.ai/cli.tgz add pricing-plan-toggle
 ```
 
-It writes `components/design-for-ai/pricing-plan-toggle.tsx` (or under `src/` when you have one) and installs the component's npm dependencies with your package manager. `npx design-for-ai search <query>` finds components, and `npx design-for-ai prompt <slug>` prints the design brief to hand to your agent. For Pro, run `npx design-for-ai login <key>` once.
+It writes `components/design-for-ai/pricing-plan-toggle.tsx` (or under `src/` when you have one) and installs the component's npm dependencies with your package manager. `npx https://design.yaps.ai/cli.tgz search <query>` finds components, and `npx https://design.yaps.ai/cli.tgz prompt <slug>` prints the design brief to hand to your agent. For Pro, run `npx https://design.yaps.ai/cli.tgz login <key>` once.
 
 ## With the shadcn CLI
 

@@ -145,7 +145,7 @@ export function AccountPanel({ welcome, pending, plan }: { welcome: boolean; pen
             {licence.owner && licence.seats > 1 && <TeamSeats licence={licence} busy={busy} action={action} reload={load} />}
           </div>)}
           {licences.some((l) => l.active) && <div className="grid gap-6 md:grid-cols-3">{[
-            { title: "CLI", code: "npx design-for-ai login <your key>", text: "Then add any Pro component with npx design-for-ai add <slug>." },
+            { title: "CLI", code: "npx https://design.yaps.ai/cli.tgz login <your key>", text: "Then add any Pro component with npx https://design.yaps.ai/cli.tgz add <slug>." },
             { title: "MCP server", code: "claude mcp add --transport http design-for-ai https://design.yaps.ai/mcp --header \"Authorization: Bearer $DESIGN_FOR_AI_LICENSE\"", text: "Use the same URL and authorization header in Cursor or Windsurf." },
             { title: "shadcn", code: "npx shadcn@latest add @design-for-ai-pro/<slug>", text: "Add the Pro registry to components.json first. The installation guide has the full example." },
           ].map((item) => <div key={item.title} className="site-surface min-w-0 rounded-[20px] p-5"><h3 className="font-mono text-xs uppercase tracking-[0.14em] text-site-fg-3">{item.title}</h3><p className="mt-3 overflow-x-auto rounded-xl bg-white/[0.04] p-3 font-mono text-[12px] leading-relaxed">{item.code}</p><p className="mt-3 text-sm leading-relaxed text-site-fg-2">{item.text}</p></div>)}</div>}

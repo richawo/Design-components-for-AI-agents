@@ -48,14 +48,14 @@ The site is a remote MCP server; nothing to install:
 claude mcp add --transport http design-for-ai https://design.yaps.ai/mcp
 ```
 
-Then ask: *"Find a Design for AI chart component and add it to the dashboard."* Prefer a local process? `npx -y design-for-ai-mcp`.
+Then ask: *"Find a Design for AI chart component and add it to the dashboard."* Prefer a local process? `npx -y https://design.yaps.ai/mcp.tgz`.
 
 ### CLI
 
 ```bash
-npx design-for-ai search sign in
-npx design-for-ai add auth-sign-in      # writes the file, installs its dependencies
-npx design-for-ai prompt auth-sign-in   # the design brief, for your agent
+npx https://design.yaps.ai/cli.tgz search sign in
+npx https://design.yaps.ai/cli.tgz add auth-sign-in      # writes the file, installs its dependencies
+npx https://design.yaps.ai/cli.tgz prompt auth-sign-in   # the design brief, for your agent
 ```
 
 ### Claude skill

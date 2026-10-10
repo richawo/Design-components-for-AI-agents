@@ -11,6 +11,8 @@ registry/pro
 registry/__generated__
 test-results
 public/r
+public/cli.tgz
+public/mcp.tgz
 .open-next
 .wrangler
 .dev.vars*

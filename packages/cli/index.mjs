@@ -2,9 +2,9 @@
 // design-for-ai: search, read and add Design for AI components from a terminal.
 // Zero dependencies. Talks to the public JSON API.
 //
-//   npx design-for-ai search pricing
-//   npx design-for-ai add chart-portfolio
-//   npx design-for-ai prompt chart-portfolio | pbcopy
+//   npx https://design.yaps.ai/cli.tgz search pricing
+//   npx https://design.yaps.ai/cli.tgz add chart-portfolio
+//   npx https://design.yaps.ai/cli.tgz prompt chart-portfolio | pbcopy
 
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";
@@ -17,7 +17,7 @@ const CONFIG = path.join(process.env.XDG_CONFIG_HOME || path.join(os.homedir(), 
 
 /* ------------------------------------------------------------ output */
 
-// `npx design-for-ai list | head` closes the pipe early; that's not an error.
+// `npx https://design.yaps.ai/cli.tgz list | head` closes the pipe early; that's not an error.
 process.stdout.on("error", (e) => (e.code === "EPIPE" ? process.exit(0) : (() => { throw e; })()));
 
 const tty = process.stdout.isTTY && !process.env.NO_COLOR;
@@ -99,9 +99,9 @@ async function index() {
 }
 
 function explain(e, slug) {
-  if (e.code === "NO_LICENSE") die(`${bold(slug)} is a Pro component. Run ${accent("npx design-for-ai login <key>")} or set DESIGN_FOR_AI_LICENSE. Get a key at ${BASE}/pricing`);
+  if (e.code === "NO_LICENSE") die(`${bold(slug)} is a Pro component. Run ${accent("npx https://design.yaps.ai/cli.tgz login <key>")} or set DESIGN_FOR_AI_LICENSE. Get a key at ${BASE}/pricing`);
   if (e.code === "BAD_LICENSE") die(`Your licence key was rejected (expired or revoked). Check it at ${BASE}/account`);
-  if (e.code === "NOT_FOUND") die(`No component called ${bold(slug)}. Try ${accent(`npx design-for-ai search ${slug.split("-")[0]}`)}`);
+  if (e.code === "NOT_FOUND") die(`No component called ${bold(slug)}. Try ${accent(`npx https://design.yaps.ai/cli.tgz search ${slug.split("-")[0]}`)}`);
   throw e;
 }
 
@@ -145,10 +145,10 @@ async function search(query) {
     .sort((a, b) => b.score - a.score)
     .slice(0, Number(flags.limit) || 20);
   if (flags.json) return out(JSON.stringify(hits.map((h) => h.x), null, 2));
-  if (!hits.length) return out(`No components match ${bold(query || "")}. Try ${accent("npx design-for-ai list")}.`);
+  if (!hits.length) return out(`No components match ${bold(query || "")}. Try ${accent("npx https://design.yaps.ai/cli.tgz list")}.`);
   out(`${hits.length} component${hits.length === 1 ? "" : "s"}\n`);
   for (const h of hits) out(`${row(h.x)}\n`);
-  out(dim(`Add one: npx design-for-ai add <slug>   Read its brief: npx design-for-ai prompt <slug>`));
+  out(dim(`Add one: npx https://design.yaps.ai/cli.tgz add <slug>   Read its brief: npx https://design.yaps.ai/cli.tgz prompt <slug>`));
 }
 
 async function list() {
@@ -166,7 +166,7 @@ async function list() {
 }
 
 async function info(slug) {
-  if (!slug) die("Usage: npx design-for-ai info <slug>");
+  if (!slug) die("Usage: npx https://design.yaps.ai/cli.tgz info <slug>");
   const meta = (await index()).find((x) => x.slug === slug);
   if (!meta) explain({ code: "NOT_FOUND" }, slug);
   let full = null;
@@ -186,11 +186,11 @@ async function info(slug) {
       out(`\n${bold("Props")}`);
       for (const p of full.props) out(`  ${accent(p.name)} ${dim(p.type)}${p.default ? dim(` = ${p.default}`) : ""}\n    ${p.description}`);
     }
-  } else out(`\n${dim("Pro: run")} ${accent("npx design-for-ai login <key>")} ${dim("for props, prompts and source.")}`);
+  } else out(`\n${dim("Pro: run")} ${accent("npx https://design.yaps.ai/cli.tgz login <key>")} ${dim("for props, prompts and source.")}`);
 }
 
 async function prompt(slug) {
-  if (!slug) die("Usage: npx design-for-ai prompt <slug> [--json]");
+  if (!slug) die("Usage: npx https://design.yaps.ai/cli.tgz prompt <slug> [--json]");
   try {
     const full = await api(`/api/registry/${encodeURIComponent(slug)}`);
     out(flags.json ? JSON.stringify(full.promptJson, null, 2) : full.prompt.trim());
@@ -200,7 +200,7 @@ async function prompt(slug) {
 }
 
 async function add(slugs) {
-  if (!slugs.length) die("Usage: npx design-for-ai add <slug> [more slugs] [--dir path] [--force] [--no-install]");
+  if (!slugs.length) die("Usage: npx https://design.yaps.ai/cli.tgz add <slug> [more slugs] [--dir path] [--force] [--no-install]");
   const cwd = process.cwd();
   const all = await index();
   const needed = new Set();
@@ -247,7 +247,7 @@ async function add(slugs) {
 }
 
 function login(key) {
-  if (!key) die("Usage: npx design-for-ai login <licence key>   (starts with dfa_)");
+  if (!key) die("Usage: npx https://design.yaps.ai/cli.tgz login <licence key>   (starts with dfa_)");
   if (!/^dfa_[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(key.trim())) die("That doesn't look like a licence key. It starts with dfa_ and has a dot in the middle.");
   writeConfig({ ...readConfig(), license: key.trim() });
   out(`${green("✓")} Licence saved to ${dim(CONFIG)}. Pro components are unlocked for this user.`);
@@ -276,21 +276,21 @@ function mcp() {
       .map((l) => `  ${l}`)
       .join("\n"),
   );
-  out(dim(`\nPrefer a local stdio server? npx -y design-for-ai-mcp`));
+  out(dim(`\nPrefer a local stdio server? npx -y https://design.yaps.ai/mcp.tgz`));
 }
 
 function help() {
   out(`${bold("design-for-ai")} ${dim(VERSION)}  ${dim("Premium components for AI agents · " + BASE)}
 
 ${bold("Usage")}
-  npx design-for-ai ${accent("search")} <query>        Find components ${dim("[--category] [--tier free|pro] [--json]")}
-  npx design-for-ai ${accent("list")}                  Every component by category ${dim("[--category] [--tier] [--json]")}
-  npx design-for-ai ${accent("info")} <slug>           Description, install command and props
-  npx design-for-ai ${accent("add")} <slug…>           Write the file(s) and install missing deps ${dim("[--dir] [--force] [--no-install]")}
-  npx design-for-ai ${accent("prompt")} <slug>         Print the design brief for your agent ${dim("[--json]")}
-  npx design-for-ai ${accent("login")} <key>           Save a Pro licence key
-  npx design-for-ai ${accent("logout")}                Forget it
-  npx design-for-ai ${accent("mcp")}                   How to connect Claude Code, Cursor and others
+  npx https://design.yaps.ai/cli.tgz ${accent("search")} <query>        Find components ${dim("[--category] [--tier free|pro] [--json]")}
+  npx https://design.yaps.ai/cli.tgz ${accent("list")}                  Every component by category ${dim("[--category] [--tier] [--json]")}
+  npx https://design.yaps.ai/cli.tgz ${accent("info")} <slug>           Description, install command and props
+  npx https://design.yaps.ai/cli.tgz ${accent("add")} <slug…>           Write the file(s) and install missing deps ${dim("[--dir] [--force] [--no-install]")}
+  npx https://design.yaps.ai/cli.tgz ${accent("prompt")} <slug>         Print the design brief for your agent ${dim("[--json]")}
+  npx https://design.yaps.ai/cli.tgz ${accent("login")} <key>           Save a Pro licence key
+  npx https://design.yaps.ai/cli.tgz ${accent("logout")}                Forget it
+  npx https://design.yaps.ai/cli.tgz ${accent("mcp")}                   How to connect Claude Code, Cursor and others
 
 ${bold("Environment")}
   DESIGN_FOR_AI_LICENSE   Pro licence key (overrides login)
