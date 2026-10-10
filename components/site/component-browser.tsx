@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { CategorySidebar } from "./category-sidebar";
 import { cardEntrance, ComponentCard, FIRST_VIEW_CARDS } from "./component-card";
 import type { CardData } from "@/lib/registry";
 
@@ -47,16 +48,8 @@ export function ComponentBrowser({ cards, categories }: { cards: CardData[]; cat
   }, [cards, q, tier, cat]);
 
   return (
-    <div className="grid gap-10 lg:grid-cols-[220px_1fr]">
-      <aside className="site-in min-w-0 [--i:3] lg:sticky lg:top-24 lg:self-start">
-        <p className="hidden font-mono text-[11px] uppercase tracking-[0.16em] text-site-fg-3 lg:block">Categories</p>
-        <ul className="-mx-5 flex gap-1.5 overflow-x-auto px-5 pb-1 [mask-image:linear-gradient(90deg,#000_calc(100%-3rem),transparent)] [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:px-0 sm:[mask-image:none] lg:mt-4 lg:flex-col lg:gap-0.5">
-          <CatItem active={cat === "all"} onClick={() => setCat("all")} label="All components" count={cards.length} />
-          {categories.map((c) => (
-            <CatItem key={c.key} active={cat === c.key} onClick={() => setCat(c.key)} label={c.label} count={c.count} />
-          ))}
-        </ul>
-      </aside>
+    <div className="grid gap-3 lg:grid-cols-[220px_1fr] lg:gap-10">
+      <CategorySidebar categories={categories} total={cards.length} active={cat} onSelect={setCat} />
       <div className="min-w-0">
         <div className="site-in flex flex-col gap-3 [--i:3] sm:flex-row">
           <label className="group/search relative flex-1">
@@ -171,28 +164,5 @@ function CardSlot({ entrance, children }: { entrance?: ReturnType<typeof cardEnt
     <div className={`flex w-full ${entrance?.className ?? ""}`} style={entrance?.style}>
       {children}
     </div>
-  );
-}
-
-function CatItem({ active, onClick, label, count }: { active: boolean; onClick: () => void; label: string; count: number }) {
-  return (
-    <li className="shrink-0">
-      <button
-        type="button"
-        onClick={onClick}
-        aria-pressed={active}
-        className={`group relative flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2 text-left text-[14px] transition-colors duration-150 ${active ? "text-site-fg" : "text-site-fg-2 hover:bg-white/[0.04] hover:text-site-fg"}`}
-      >
-        {active && (
-          <motion.span
-            layoutId="browser-cat"
-            className="absolute inset-0 rounded-lg bg-white/[0.07] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
-            transition={{ type: "spring", stiffness: 500, damping: 40 }}
-          />
-        )}
-        <span className="relative whitespace-nowrap transition-transform duration-150 group-active:scale-[0.97]">{label}</span>
-        <span className={`relative font-mono text-[11px] tabular-nums transition-colors ${active ? "text-site-fg-2" : "text-site-fg-3"}`}>{count}</span>
-      </button>
-    </li>
   );
 }
