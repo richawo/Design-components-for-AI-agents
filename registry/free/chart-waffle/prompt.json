@@ -44,7 +44,7 @@
     "cells": "hovering a cell isolates its group and names it"
   },
   "responsive": {
-    "container": "@container queries; grid and legend side by side from @3xl, stacked below; deltas hide below @sm"
+    "container": "@container queries; grid and legend side by side from @3xl, stacked below; deltas stay beside the counts at every width"
   },
   "accessibility": [
     "grid is role=img with every group's count in its label",

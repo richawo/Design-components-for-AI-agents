@@ -490,7 +490,7 @@ function LegendRow({
         <span className="flex items-baseline gap-3">
           {delta !== null && (
             <span
-              className="hidden font-mono text-[11px] tabular-nums text-(--cw-ink)/45 @sm:inline"
+              className="font-mono text-[11px] tabular-nums text-(--cw-ink)/45"
               style={index === 0 && delta ? { color: delta > 0 ? "var(--cw-up)" : "var(--cw-down)" } : undefined}
             >
               {delta > 0 ? "+" : delta < 0 ? "−" : "±"}

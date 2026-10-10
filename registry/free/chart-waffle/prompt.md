@@ -32,7 +32,7 @@ Build a ten-by-ten waffle (unit) chart in React + Tailwind CSS v4 (container que
 - Reduced motion: cells jump to their slots, colours and counts are final, and only 150ms fades remain.
 
 **Responsive**
-- Grid left and legend right from `@3xl`; stacked and centred below. Deltas hide below `@sm`.
+- Grid left and legend right from `@3xl`; stacked and centred below. Deltas stay beside the counts at every width.
 
 **Accessibility**
 - The grid is `role="img"` with every group's count in its label.
