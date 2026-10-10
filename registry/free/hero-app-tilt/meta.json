@@ -128,12 +128,12 @@
   "added": "2026-10-09",
   "demo": {
     "steps": [
-      "hover:@cta",
-      "wait:500",
+      "hover:@window:0.5,0.3",
+      "wait:250",
       "scroll:120",
       "scroll:120",
       "scroll:120",
-      "wait:400",
+      "wait:700",
       "scroll:-180",
       "scroll:-180",
       "wait:300"
@@ -149,7 +149,7 @@
     },
     {
       "prop": "muted",
-      "label": "Muted part",
+      "label": "Muted ending",
       "kind": "text",
       "default": "before coffee.",
       "group": "Content"
@@ -159,13 +159,6 @@
       "label": "Eyebrow",
       "kind": "text",
       "default": "Tern 2.4 · Now on Windows",
-      "group": "Content"
-    },
-    {
-      "prop": "product",
-      "label": "Product name",
-      "kind": "text",
-      "default": "Tern",
       "group": "Content"
     },
     {
