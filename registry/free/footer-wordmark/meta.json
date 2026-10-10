@@ -55,7 +55,7 @@
       "name": "city",
       "type": "string",
       "default": "\"London\"",
-      "description": "Label before the live time."
+      "description": "Label before the live time. Defaults to the city named by timeZone (\"Europe/London\" reads \"London\")."
     },
     {
       "name": "timeZone",
@@ -93,15 +93,14 @@
   "added": "2026-10-07",
   "demo": {
     "steps": [
-      "wait:600",
-      "scroll:420",
-      "wait:400",
+      "wait:300",
+      "scroll:200",
+      "scroll:200",
+      "scroll:200",
+      "wait:800",
       "click:@newsletter-email",
       "type:ana@",
-      "type:studio",
-      "key:Enter",
-      "wait:450",
-      "type:.co",
+      "type:studio.co",
       "key:Enter",
       "wait:1500"
     ]
@@ -129,10 +128,28 @@
       "group": "Content"
     },
     {
-      "prop": "city",
-      "label": "City",
-      "kind": "text",
-      "default": "London",
+      "prop": "timeZone",
+      "label": "Local time",
+      "kind": "select",
+      "options": [
+        {
+          "value": "Europe/London",
+          "label": "London"
+        },
+        {
+          "value": "Europe/Lisbon",
+          "label": "Lisbon"
+        },
+        {
+          "value": "America/New_York",
+          "label": "New York"
+        },
+        {
+          "value": "Asia/Tokyo",
+          "label": "Tokyo"
+        }
+      ],
+      "default": "Europe/London",
       "group": "Content"
     },
     {
@@ -150,7 +167,7 @@
       "label": "Reveal",
       "kind": "action",
       "value": "Replay",
-      "group": "Look"
+      "group": "Reveal"
     }
   ]
 }

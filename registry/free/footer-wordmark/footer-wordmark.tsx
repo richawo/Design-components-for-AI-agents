@@ -14,7 +14,7 @@ export type FooterWordmarkProps = {
   email?: string;
   columns?: Column[];
   address?: string[];
-  /** City label shown before the live time. */
+  /** City label shown before the live time. Defaults to the last part of `timeZone` ("Europe/London" reads "London"). */
   city?: string;
   /** IANA time zone for the live clock. */
   timeZone?: string;
@@ -78,6 +78,9 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 /** Until the wordmark is measured: a rough advance per character and ascent, in 100px units. */
 const ESTIMATE = { advance: 58, ascent: 74 };
 const MINUTES_PER_DAY = 24 * 60;
+
+/** "America/New_York" → "New York": the label used when no city is given. */
+const cityOfZone = (zone: string) => (zone.split("/").pop() ?? zone).replace(/_/g, " ");
 
 const reveal: Variants = {
   hidden: { opacity: 0, y: 12, filter: "blur(8px)" },
@@ -187,7 +190,7 @@ export function FooterWordmark({
     },
   ],
   address = ["2nd floor, 14 Rivington St", "London EC2A 3DU"],
-  city = "London",
+  city,
   timeZone = "Europe/London",
   newsletter = {
     title: "Low Tide",
@@ -267,7 +270,7 @@ export function FooterWordmark({
           {columns.map((col, ci) => (
             <LinkColumn key={col.title} column={col} delay={at(gridAt, ci * T.column)} reduce={reduce} />
           ))}
-          <Visit address={address} city={city} timeZone={timeZone} start={gridAt === null ? null : at(gridAt, columns.length * T.column)} reduce={reduce} />
+          <Visit address={address} city={city ?? cityOfZone(timeZone)} timeZone={timeZone} start={gridAt === null ? null : at(gridAt, columns.length * T.column)} reduce={reduce} />
           <motion.div variants={v} custom={at(gridAt, (columns.length + 1) * T.column)} className="col-span-2 @2xl:col-span-4 @6xl:col-span-4 @6xl:col-start-9">
             <Newsletter {...newsletter} onSubscribe={onSubscribe} reduce={reduce} />
           </motion.div>
@@ -312,7 +315,6 @@ function EmailLink({ email, start, reduce }: { email: string; start: number | nu
   return (
     <motion.a
       href={`mailto:${email}`}
-      data-demo="email"
       variants={reduce ? fade : reveal}
       custom={at(T.email)}
       className={`group mt-8 inline-flex max-w-full items-center gap-3 font-display text-[clamp(1.25rem,0.9rem+1.6cqi,2.25rem)] font-semibold tracking-[-0.035em] transition-transform duration-150 active:scale-[0.99] ${RING}`}
