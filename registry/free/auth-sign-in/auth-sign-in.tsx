@@ -138,6 +138,7 @@ type Palette = Record<keyof (typeof PALETTE)["dark"], string>;
 
 /** The demo’s quiet backdrop; not part of the component. */
 const STAGE = "#000000";
+const STAGE_LIGHT = "#f1f1f3";
 
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 const EASE_IN = [0.4, 0, 1, 1] as const;
@@ -744,6 +745,7 @@ function EmailField({
           <input
             ref={inputRef}
             id={id}
+            data-demo="email"
             name="email"
             type="email"
             inputMode="email"
@@ -1085,6 +1087,7 @@ function PasswordInput({
       <motion.input
         ref={inputRef}
         id={id}
+        data-demo="password"
         name="password"
         type={revealed ? "text" : "password"}
         autoComplete="current-password"
@@ -1140,6 +1143,7 @@ function RevealButton({ revealed, onToggle, keepFocus, disabled, reduce }: { rev
     <button
       type="button"
       aria-label="Show password"
+      data-demo="reveal"
       aria-pressed={revealed}
       disabled={disabled}
       // Keep the caret in the field when toggling with a pointer.
@@ -1224,6 +1228,7 @@ function SubmitButton({ state, label, lockLeft, disabled, reduce }: { state: Sta
   return (
     <button
       type="submit"
+      data-demo="submit"
       disabled={disabled}
       aria-disabled={busy || undefined}
       className={`group/submit relative mt-5 flex h-11 w-full items-center justify-center overflow-hidden rounded-[11px] text-[14.5px] font-medium tracking-[-0.005em] transition-[background-color,color,transform,box-shadow] duration-150 active:scale-[0.98] disabled:cursor-not-allowed disabled:active:scale-100 ${focusRing} ${
@@ -1271,6 +1276,7 @@ function SsoButton({ provider, state, disabled, onClick, reduce }: { provider: S
   return (
     <button
       type="button"
+      data-demo={`sso-${provider}`}
       onClick={onClick}
       disabled={disabled}
       aria-label={`Continue with ${label}`}
@@ -1433,7 +1439,7 @@ const DEMO_LATENCY_MS = 1150;
 const DEMO_MAX_MISSES = 3;
 const DEMO_LOCK_SECONDS = 30;
 
-export default function AuthSignInDemo() {
+export default function AuthSignInDemo(overrides: Partial<AuthSignInProps> = {}) {
   const reduce = useReducedMotion() ?? false;
   const misses = useRef(0);
   const [run, setRun] = useState(0);
@@ -1455,14 +1461,17 @@ export default function AuthSignInDemo() {
     return { ok: false, reason: "invalid_credentials", attemptsLeft: DEMO_MAX_MISSES - misses.current };
   };
 
+  const light = overrides.theme === "light";
   const fade = reduce
     ? { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 } }
     : { initial: { opacity: 0, y: 6, filter: "blur(4px)" }, animate: { opacity: 1, y: 0, filter: "blur(0px)" }, exit: { opacity: 0, y: -6, filter: "blur(4px)" } };
 
   return (
-    <div className="flex min-h-dvh flex-col items-center justify-center px-4 py-12 sm:py-16" style={{ background: STAGE }}>
-      <AuthSignIn key={run} onSubmit={onSubmit} onSuccess={() => setSignedIn(true)} onForgotPassword={() => undefined} />
-      <div className="mt-6 flex min-h-11 max-w-[400px] flex-wrap items-center justify-center gap-x-3 gap-y-1 px-2 text-center font-mono text-[11px] uppercase leading-[1.6] tracking-[0.12em] text-[#7d7d86]">
+    <div className="flex min-h-dvh flex-col items-center justify-center px-4 py-12 sm:py-16" style={{ background: light ? STAGE_LIGHT : STAGE }}>
+      <AuthSignIn key={run} onSubmit={onSubmit} onSuccess={() => setSignedIn(true)} onForgotPassword={() => undefined} {...overrides} />
+      <div
+        className={`mt-6 flex min-h-11 max-w-[400px] flex-wrap items-center justify-center gap-x-3 gap-y-1 px-2 text-center font-mono text-[11px] uppercase leading-[1.6] tracking-[0.12em] ${light ? "text-[#71717a]" : "text-[#7d7d86]"}`}
+      >
         <AnimatePresence mode="popLayout">
           {signedIn ? (
             <motion.button
@@ -1474,13 +1483,17 @@ export default function AuthSignInDemo() {
                 setSignedIn(false);
                 setRun((r) => r + 1);
               }}
-              className="inline-flex h-9 items-center rounded-full px-4 text-[#cfcfd4] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.14)] transition-[background-color,transform] duration-150 hover:bg-white/[0.05] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ededef] active:scale-[0.97]"
+              className={`inline-flex h-9 items-center rounded-full px-4 transition-[background-color,transform] duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 active:scale-[0.97] ${
+                light
+                  ? "text-[#3f3f46] shadow-[inset_0_0_0_1px_rgba(24,24,27,0.2)] hover:bg-black/[0.05] focus-visible:outline-[#18181b]"
+                  : "text-[#cfcfd4] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.14)] hover:bg-white/[0.05] focus-visible:outline-[#ededef]"
+              }`}
             >
               Reset demo
             </motion.button>
           ) : (
             <motion.p key="hint" {...fade} transition={{ duration: MOTION.block, ease: EASE_OUT, delay: reduce ? 0 : 0.7 }}>
-              Password <span className="normal-case tracking-[0.04em] text-[#cfcfd4]">{DEMO_PASSWORD}</span> · 3 misses locks
+              Password <span className={`normal-case tracking-[0.04em] ${light ? "text-[#3f3f46]" : "text-[#cfcfd4]"}`}>{DEMO_PASSWORD}</span> · 3 misses locks
             </motion.p>
           )}
         </AnimatePresence>
