@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from "react";
 import { Calendar, CalendarClock, CalendarDays, CalendarRange, History, Sun } from "lucide-react";
-import { animate, motion, useInView, useReducedMotion } from "motion/react";
+import { AnimatePresence, animate, motion, useInView, useReducedMotion } from "motion/react";
 
 /* ------------------------------------------------------------------ */
 /* Types                                                               */
@@ -34,10 +34,13 @@ export type SegmentedControlProps = {
   value?: string;
   /** Starting selection when uncontrolled. */
   defaultValue?: string;
+  /** The value of one segment to lock. It dims, cannot be picked, and the arrow keys step over it. */
+  disabledValue?: string;
   onValueChange?: (value: string, option: SegmentedControlOption) => void;
   /**
-   * Equal segments share the track's width. Content sizes each segment to its label and,
-   * when the track is too narrow, scrolls it sideways behind soft edges.
+   * Equal shares the track's width between the segments. Content sizes each segment to its label and
+   * keeps the group at the start of the track. In both, a label that cannot fit keeps its full width
+   * and the track scrolls sideways behind soft edges, so no label is ever truncated.
    */
   width?: SegmentedControlWidth;
   /** Glyphs before the labels. */
@@ -61,10 +64,22 @@ const EASE_IN_OUT = [0.65, 0, 0.35, 1] as const;
 /** Width of the fade that signals more segments past an edge, in px. */
 const FADE_WIDTH = 28;
 /**
- * Clearance kept between a scrolled-to segment and the track edge, in px. It clears the fade
- * plus a little air, so an edge fade never covers the selected segment or its focus ring.
+ * Clearance kept between a scrolled-to segment and a faded edge, in px. It clears the fade plus a
+ * little air, so an edge fade never covers the selected segment or its focus ring.
  */
 const EDGE_CLEARANCE = FADE_WIDTH + 4;
+const FADE_TRANSITION = "200ms cubic-bezier(0.22, 1, 0.36, 1)";
+
+/**
+ * The edge fades are a mask on the scroller rather than overlays, so the track's fill and hairline
+ * keep their rounded corners. Registering the fade widths as lengths lets the mask transition
+ * between its states; without registration the fades still work, they just snap.
+ */
+const FADE_PROPERTIES =
+  '@property --sg-fade-start{syntax:"<length>";inherits:false;initial-value:0px}' +
+  '@property --sg-fade-end{syntax:"<length>";inherits:false;initial-value:0px}';
+const EDGE_MASK =
+  "linear-gradient(to right, transparent 0px, #000 var(--sg-fade-start), #000 calc(100% - var(--sg-fade-end)), transparent 100%)";
 
 const SIZES = {
   sm: { height: 30, track: 10, text: "text-[13px]", count: "text-[12px]", icon: 13, gap: 5 },
@@ -78,9 +93,9 @@ const THEMES = {
     pill: "#2c2c31",
     pillShadow:
       "inset 0 0 0 1px rgb(255 255 255 / 0.08), inset 0 1px 0 rgb(255 255 255 / 0.08), 0 1px 2px rgb(0 0 0 / 0.5), 0 6px 14px -6px rgb(0 0 0 / 0.7)",
-    hover: "rgb(255 255 255 / 0.04)",
     ink: "#f4f4f5",
     muted: "#8a8a93",
+    focus: "rgb(244 244 245 / 0.7)",
   },
   light: {
     track: "#f1f1f3",
@@ -88,14 +103,11 @@ const THEMES = {
     pill: "#ffffff",
     pillShadow:
       "inset 0 0 0 1px rgb(24 24 27 / 0.05), inset 0 1px 0 #ffffff, 0 1px 2px rgb(24 24 27 / 0.1), 0 6px 14px -8px rgb(24 24 27 / 0.28)",
-    hover: "rgb(24 24 27 / 0.04)",
     ink: "#18181b",
     muted: "#64646e",
+    focus: "rgb(24 24 27 / 0.7)",
   },
 } as const;
-
-/** Where the pill sits, in the track's content coordinates, so scrolling the track never moves it off its segment. */
-type PillBox = { x: number; width: number };
 
 /* ------------------------------------------------------------------ */
 /* Built-in periods                                                    */
@@ -144,12 +156,16 @@ function nextEnabled(options: SegmentedControlOption[], from: number, direction:
 /* The control                                                         */
 /* ------------------------------------------------------------------ */
 
+/** Where the pill sits, in the track's content coordinates, so scrolling the track never moves it off its segment. */
+type PillBox = { x: number; width: number };
+
 export function SegmentedControl({
   label = "Period",
   options,
   segments = 3,
   value,
   defaultValue,
+  disabledValue,
   onValueChange,
   width = "equal",
   icons = true,
@@ -159,7 +175,11 @@ export function SegmentedControl({
   className = "",
 }: SegmentedControlProps) {
   const reduce = !!useReducedMotion();
-  const items = options ?? periodsFor(segments);
+  const base = options ?? periodsFor(segments);
+  const items =
+    disabledValue === undefined
+      ? base
+      : base.map((option) => (option.value === disabledValue ? { ...option, disabled: true } : option));
   const [internal, setInternal] = useState<string | undefined>(defaultValue ?? items[0]?.value);
 
   const current = value ?? internal;
@@ -202,7 +222,7 @@ export function SegmentedControl({
     (behavior: ScrollBehavior) => {
       const box = scroller.current;
       const button = buttons.current[selectedIndex];
-      if (!scrolls || !box || !button) return;
+      if (!box || !button) return;
       const left = button.offsetLeft;
       const right = left + button.offsetWidth;
       const view = box.clientWidth;
@@ -211,11 +231,13 @@ export function SegmentedControl({
       else if (right > box.scrollLeft + view - EDGE_CLEARANCE) target = right - view + EDGE_CLEARANCE;
       if (target !== null) box.scrollTo({ left: Math.max(0, target), behavior });
     },
-    [scrolls, selectedIndex],
+    [selectedIndex],
   );
 
   // Labels, icons and counts change the track's width without a scroll, so the fades, the pill and
-  // the selection all re-read on every resize of the track or its content.
+  // the selection all re-read on every resize of the track or its content. In equal width the
+  // segments shrink continuously as the box narrows, so these re-reads are what keep the pill
+  // travelling with its label rather than jumping to it.
   useEffect(() => {
     const box = scroller.current;
     const inner = content.current;
@@ -233,7 +255,7 @@ export function SegmentedControl({
   // Measured before paint, so the pill is never seen at a stale position.
   useLayoutEffect(() => {
     measurePill();
-  }, [measurePill, options, segments, icons, counts, size, scrolls]);
+  }, [measurePill, options, segments, disabledValue, icons, counts, size, width]);
 
   useEffect(() => {
     reveal(reduce ? "auto" : "smooth");
@@ -285,13 +307,26 @@ export function SegmentedControl({
     "--sg-ring": palette.ring,
     "--sg-pill": palette.pill,
     "--sg-pill-shadow": palette.pillShadow,
-    "--sg-hover": palette.hover,
     "--sg-ink": palette.ink,
     "--sg-muted": palette.muted,
+    "--sg-focus": palette.focus,
+    "--sg-gap": `${geometry.gap}px`,
+    "--sg-icon": `${geometry.icon}px`,
+  } as CSSProperties;
+
+  // The fades follow the scroller's own edges. They live on the scroller as a mask, so the track
+  // underneath keeps its fill, hairline and corners whichever way the track is scrolled.
+  const fades = {
+    "--sg-fade-start": edges.start ? `${FADE_WIDTH}px` : "0px",
+    "--sg-fade-end": edges.end ? `${FADE_WIDTH}px` : "0px",
+    maskImage: EDGE_MASK,
+    WebkitMaskImage: EDGE_MASK,
+    transition: reduce ? "none" : `--sg-fade-start ${FADE_TRANSITION}, --sg-fade-end ${FADE_TRANSITION}`,
   } as CSSProperties;
 
   return (
     <div className={`@container w-full ${className}`} style={vars}>
+      <style>{FADE_PROPERTIES}</style>
       <div
         role="radiogroup"
         aria-label={label}
@@ -305,9 +340,11 @@ export function SegmentedControl({
         <div
           ref={scroller}
           onScroll={readEdges}
-          className={`relative flex min-w-0 flex-1 ${scrolls ? "overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" : "overflow-hidden"}`}
+          className="relative flex min-w-0 flex-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          style={fades}
         >
-          <div ref={content} className={`relative flex ${scrolls ? "w-max" : "w-full"}`}>
+          {/* At least the track's width, and wider when the labels need the room, so the track scrolls. */}
+          <div ref={content} className="relative flex min-w-full w-max">
             {pill ? (
               <motion.span
                 aria-hidden="true"
@@ -339,29 +376,27 @@ export function SegmentedControl({
                   onClick={() => choose(index)}
                   onKeyDown={(event) => onKeyDown(event, index)}
                   style={{ height: geometry.height, borderRadius: geometry.track - 3 }}
-                  className={`group relative flex items-center justify-center px-2.5 font-medium tracking-[-0.01em] whitespace-nowrap transition-[color] duration-150 ease-out focus-visible:outline-2 focus-visible:-outline-offset-[3px] focus-visible:outline-(--sg-ink) enabled:cursor-pointer disabled:cursor-not-allowed disabled:opacity-40 @[22rem]:px-3.5 ${geometry.text} ${
-                    scrolls ? "shrink-0" : "min-w-0 flex-1 basis-0"
-                  } ${active ? "text-(--sg-ink)" : "text-(--sg-muted) enabled:hover:bg-(--sg-hover) enabled:hover:text-(--sg-ink)"}`}
+                  className={`group relative flex items-center justify-center px-2.5 font-medium tracking-[-0.01em] whitespace-nowrap transition-[color] duration-150 ease-out focus-visible:outline-2 focus-visible:-outline-offset-[3px] focus-visible:outline-(--sg-focus) enabled:cursor-pointer disabled:cursor-not-allowed disabled:opacity-40 @[22rem]:px-3.5 ${geometry.text} ${
+                    scrolls ? "shrink-0" : "min-w-max flex-1 basis-0"
+                  } ${active ? "text-(--sg-ink)" : "text-(--sg-muted) enabled:hover:text-(--sg-ink)"}`}
                 >
                   {/* The press lives on the label, not the segment, so the pill beneath never changes stacking. */}
-                  <span
-                    className="flex min-w-0 items-center transition-transform duration-[90ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-active:scale-[0.97]"
-                    style={{ gap: geometry.gap }}
-                  >
+                  <span className="flex min-w-0 items-center transition-transform duration-[90ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-active:scale-[0.97]">
                     {icons ? (
+                      // Equal width folds the icon away under 22rem, easing its width and gap out rather than
+                      // cutting, so a column that narrows keeps its labels where they are.
                       <span
                         aria-hidden="true"
-                        className={`grid shrink-0 place-items-center [&>svg]:size-full [&>svg]:stroke-[1.75] ${
-                          scrolls ? "" : "@max-[22rem]:hidden"
+                        className={`grid shrink-0 place-items-center mr-(--sg-gap) h-(--sg-icon) w-(--sg-icon) transition-[width,margin,opacity] duration-200 ease-out [&>svg]:size-full [&>svg]:stroke-[1.75] ${
+                          scrolls ? "" : "@max-[22rem]:mr-0 @max-[22rem]:w-0 @max-[22rem]:opacity-0"
                         }`}
-                        style={{ width: geometry.icon, height: geometry.icon }}
                       >
                         {option.icon}
                       </span>
                     ) : null}
-                    <span className={scrolls ? "" : "truncate"}>{option.label}</span>
+                    <span>{option.label}</span>
                     {counts && option.count !== undefined ? (
-                      <span className={`tabular-nums text-(--sg-muted) ${geometry.count}`}>{NUMBER.format(option.count)}</span>
+                      <span className={`ml-(--sg-gap) tabular-nums text-(--sg-muted) ${geometry.count}`}>{NUMBER.format(option.count)}</span>
                     ) : null}
                   </span>
                 </button>
@@ -369,20 +404,6 @@ export function SegmentedControl({
             })}
           </div>
         </div>
-        {scrolls ? (
-          <>
-            <span
-              aria-hidden="true"
-              className={`pointer-events-none absolute inset-y-0 left-0 z-10 transition-opacity duration-200 ease-out ${edges.start ? "opacity-100" : "opacity-0"}`}
-              style={{ width: FADE_WIDTH, background: "linear-gradient(to right, var(--sg-track), transparent)" }}
-            />
-            <span
-              aria-hidden="true"
-              className={`pointer-events-none absolute inset-y-0 right-0 z-10 transition-opacity duration-200 ease-out ${edges.end ? "opacity-100" : "opacity-0"}`}
-              style={{ width: FADE_WIDTH, background: "linear-gradient(to left, var(--sg-track), transparent)" }}
-            />
-          </>
-        ) : null}
       </div>
     </div>
   );
@@ -393,7 +414,7 @@ export function SegmentedControl({
 /* ------------------------------------------------------------------ */
 
 /** The width the demo narrows its column to, in px. Narrow enough that the three periods overflow. */
-const NARROW_WIDTH = 232;
+const NARROW_WIDTH = 216;
 
 const STAGE_DARK = {
   "--stage-bg": "#09090b",
@@ -441,6 +462,7 @@ export default function SegmentedControlDemo({
   counts = true,
   size = "md",
   theme = "dark",
+  disabledValue,
   ...overrides
 }: Partial<SegmentedControlProps> = {}) {
   const reduce = !!useReducedMotion();
@@ -449,9 +471,10 @@ export default function SegmentedControlDemo({
   const [picked, setPicked] = useState("month");
   const [narrow, setNarrow] = useState(false);
 
-  // The readout follows the control's own fallback, so it never names a period the track is not showing.
-  const sets = periodsFor(segments);
-  const active = sets.find((period) => period.value === picked) ?? sets[0];
+  // The readout follows the control's own fallback, so it never names a period the track is not
+  // showing or one that is locked.
+  const open = periodsFor(segments).filter((period) => period.value !== disabledValue);
+  const active = open.find((period) => period.value === picked) ?? open[0];
   const shownCount = useCountUp(inView ? (active.count ?? 0) : 0, reduce);
 
   const stage = theme === "dark" ? STAGE_DARK : STAGE_LIGHT;
@@ -460,6 +483,14 @@ export default function SegmentedControlDemo({
     : { hidden: { opacity: 0, y: 12, filter: "blur(8px)" }, shown: { opacity: 1, y: 0, filter: "blur(0px)" } };
   const landing = inView ? "shown" : "hidden";
   const enter = (delay: number) => ({ duration: reduce ? 0.15 : 0.5, ease: EASE_OUT, delay: reduce ? 0 : delay });
+  // The period word swaps with a small offset and blur, so the eye can follow it across.
+  const swap = reduce
+    ? { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 } }
+    : {
+        initial: { opacity: 0, y: 5, filter: "blur(3px)" },
+        animate: { opacity: 1, y: 0, filter: "blur(0px)" },
+        exit: { opacity: 0, y: -5, filter: "blur(3px)" },
+      };
 
   return (
     <div className="flex min-h-dvh items-center justify-center bg-(--stage-bg) p-6 sm:p-10" style={stage}>
@@ -480,12 +511,28 @@ export default function SegmentedControlDemo({
         >
           <span>Dictation volume</span>
           <span>
-            {active.label} · <span className="tabular-nums">{NUMBER.format(shownCount)}</span>
+            <span className="relative inline-block">
+              <AnimatePresence mode="popLayout" initial={false}>
+                <motion.span
+                  key={active.value}
+                  initial={swap.initial}
+                  animate={swap.animate}
+                  exit={swap.exit}
+                  transition={{ duration: reduce ? 0.15 : 0.18, ease: EASE_OUT }}
+                  className="inline-block"
+                >
+                  {active.label}
+                </motion.span>
+              </AnimatePresence>
+            </span>
+            {" · "}
+            <span className="tabular-nums">{NUMBER.format(shownCount)}</span>
           </span>
         </motion.div>
 
         <motion.div variants={rise} initial="hidden" animate={landing} transition={enter(0.16)}>
-          {/* The column narrows under the control. Its width switches to content, so the overflow shows. */}
+          {/* The column narrows under the control. The control keeps its width mode, so the segments
+              shrink in step with the column and only the overflow appears, with nothing cut. */}
           <motion.div
             initial={false}
             animate={{ width: narrow ? NARROW_WIDTH : "100%" }}
@@ -495,11 +542,12 @@ export default function SegmentedControlDemo({
             <SegmentedControl
               label="Period"
               segments={segments}
-              width={narrow ? "content" : width}
+              width={width}
               icons={icons}
               counts={counts}
               size={size}
               theme={theme}
+              disabledValue={disabledValue}
               value={active.value}
               onValueChange={(next) => setPicked(next)}
               {...overrides}

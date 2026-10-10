@@ -53,6 +53,11 @@
       "description": "Starting selection when uncontrolled."
     },
     {
+      "name": "disabledValue",
+      "type": "string",
+      "description": "The value of one segment to lock. It dims to 40%, cannot be picked, and the arrow keys step over it. Works with options too."
+    },
+    {
       "name": "onValueChange",
       "type": "(value: string, option: SegmentedControlOption) => void",
       "description": "Runs when the person picks a different segment by pointer or keyboard. Picking the selected segment again does nothing."
@@ -61,7 +66,7 @@
       "name": "width",
       "type": "\"equal\" | \"content\"",
       "default": "\"equal\"",
-      "description": "Equal gives every segment the same share of the track. Content sizes each segment to its label and scrolls the track sideways behind soft edges when it runs out of room."
+      "description": "Equal gives every segment the same share of the track. Content sizes each segment to its label and keeps the group at the track's start. In both, a label that cannot fit keeps its full width and the track scrolls sideways behind soft edges."
     },
     {
       "name": "icons",
@@ -139,6 +144,23 @@
         }
       ],
       "default": "equal",
+      "group": "Layout"
+    },
+    {
+      "prop": "disabledValue",
+      "label": "Locked segment",
+      "kind": "select",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "month",
+          "label": "Month"
+        }
+      ],
+      "default": "none",
       "group": "Layout"
     },
     {
