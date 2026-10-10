@@ -1,36 +1,121 @@
 <div align="center">
 
-# Design components for AI agents
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/wordmark-dark.png">
+  <img src=".github/assets/wordmark-light.png" alt="Design for AI" width="360">
+</picture>
 
-**Precise, responsive React, Tailwind and React Native components, each shipped with the code, a design prompt and a JSON prompt, so the interfaces your AI agent builds look designed, not generated.**
+# React components for AI coding agents
 
-[Browse the library](https://design.yaps.ai/components) · [Docs](https://design.yaps.ai/docs) · [MCP server](https://design.yaps.ai/docs/agents) · [Design principles](https://design.yaps.ai/docs/principles) · [Pricing](https://design.yaps.ai/pricing)
+**Bring taste to what your agent ships.**
+
+Animated React, Tailwind CSS and React Native components for Claude Code, Cursor, Codex and other AI coding agents. Every component comes with source code, a design brief and a JSON prompt.
+
+[Explore components](https://design.yaps.ai/components) · [Documentation](https://design.yaps.ai/docs) · [Connect your agent](https://design.yaps.ai/docs/agents) · [Design principles](https://design.yaps.ai/docs/principles) · [Pricing](https://design.yaps.ai/pricing)
+
+<a href="https://design.yaps.ai/components">
+  <picture>
+    <source media="(prefers-reduced-motion: reduce)" srcset=".github/assets/showcase-still.png">
+    <img src=".github/assets/showcase.gif" alt="Design for AI component collection: an animated AI agent terminal, a portfolio chart, a Three.js particle sphere and React Native navigation" width="100%">
+  </picture>
+</a>
 
 </div>
 
----
+## Why Design for AI?
 
-AI coding agents are excellent engineers and average designers. Left to their defaults, Claude Code, Cursor, v0, Lovable and Bolt all reach for the same purple gradients, sparkle badges and three identical feature cards: the look people now call *AI slop*.
+- **A designed starting point.** Give your agent a specific component instead of asking it to invent a design system from a blank prompt.
+- **Three ways to build.** Install the React or React Native source, paste the design brief, or pass the JSON prompt to your agent. Each describes the same interface.
+- **Motion with a purpose.** Chart ranges morph, replies stream, navigation moves on springs, and loading resolves into a result. Preview the behaviour before using it.
+- **Your code, your stack.** Free components are MIT. Components live in your project, with typed props and explicit dependencies. Pro source is licensed separately.
 
-**Design for AI** gives your agent something specific to work from. Every component is a single self-contained file plus two briefs that describe exactly how it's designed:
+## See the components in motion
 
-| Format | What it is | Use it when |
+These are recordings of the actual components. Open any preview to try its controls, see the code or copy its brief. Readers with reduced motion enabled see still images.
+
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <a href="https://design.yaps.ai/components/hero-terminal-agent">
+        <picture>
+          <source media="(prefers-reduced-motion: reduce)" srcset=".github/assets/hero-terminal-agent.png">
+          <img src=".github/assets/hero-terminal-agent.gif" alt="Animated React AI agent hero with a terminal that plans work, writes files and runs tests" width="100%">
+        </picture>
+      </a>
+      <p><strong>AI agent hero</strong><br>A live terminal session, ordered reveals and a copyable install command.<br><a href="https://design.yaps.ai/components/hero-terminal-agent">Try the component</a> · Free</p>
+    </td>
+    <td width="50%" valign="top">
+      <a href="https://design.yaps.ai/components/three-globe-arcs">
+        <picture>
+          <source media="(prefers-reduced-motion: reduce)" srcset=".github/assets/three-globe-arcs.png">
+          <img src=".github/assets/three-globe-arcs.gif" alt="Animated Three.js globe with illuminated routes and live network metrics" width="100%">
+        </picture>
+      </a>
+      <p><strong>WebGL globe</strong><br>A rotating point globe with flight arcs and a quiet, precise readout.<br><a href="https://design.yaps.ai/components/three-globe-arcs">Try the component</a> · Pro</p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <a href="https://design.yaps.ai/components/chart-portfolio">
+        <picture>
+          <source media="(prefers-reduced-motion: reduce)" srcset=".github/assets/chart-portfolio.png">
+          <img src=".github/assets/chart-portfolio.gif" alt="Animated React portfolio chart with a crosshair, changing ranges and live price readouts" width="100%">
+        </picture>
+      </a>
+      <p><strong>Portfolio chart</strong><br>A hand-drawn SVG chart with range morphs, volume and a crosshair.<br><a href="https://design.yaps.ai/components/chart-portfolio">Try the component</a> · Free</p>
+    </td>
+    <td width="50%" valign="top">
+      <a href="https://design.yaps.ai/components/bento-grid">
+        <picture>
+          <source media="(prefers-reduced-motion: reduce)" srcset=".github/assets/bento-grid.png">
+          <img src=".github/assets/bento-grid.gif" alt="Animated React analytics bento grid with a drawing chart, counting metrics and activity tiles" width="100%">
+        </picture>
+      </a>
+      <p><strong>Live analytics bento</strong><br>Drawing charts, counting figures and six tiles that tell one story.<br><a href="https://design.yaps.ai/components/bento-grid">Try the component</a> · Free</p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <a href="https://design.yaps.ai/components/mobile-tab-bar">
+        <picture>
+          <source media="(prefers-reduced-motion: reduce)" srcset=".github/assets/mobile-tab-bar.png">
+          <img src=".github/assets/mobile-tab-bar.gif" alt="Animated React Native glass tab bar with morphing icons, a spring lens and a radial action menu" width="100%">
+        </picture>
+      </a>
+      <p><strong>React Native navigation</strong><br>Glass, morphing icons and a spring-driven lens, with an arc menu.<br><a href="https://design.yaps.ai/components/mobile-tab-bar">Try the component</a> · Free</p>
+    </td>
+    <td width="50%" valign="top">
+      <a href="https://design.yaps.ai/components/three-particle-sphere">
+        <picture>
+          <source media="(prefers-reduced-motion: reduce)" srcset=".github/assets/three-particle-sphere.png">
+          <img src=".github/assets/three-particle-sphere.gif" alt="Animated Three.js particle sphere with a breathing, flowing surface of silver points" width="100%">
+        </picture>
+      </a>
+      <p><strong>Particle sphere</strong><br>A living point cloud with depth, rhythm and a restrained silver palette.<br><a href="https://design.yaps.ai/components/three-particle-sphere">Try the component</a> · Pro</p>
+    </td>
+  </tr>
+</table>
+
+[Browse the full component library →](https://design.yaps.ai/components)
+
+## What you get with every component
+
+| Format | What it contains | When to use it |
 | --- | --- | --- |
-| **Code** | One `.tsx` file. React 19 + Tailwind CSS v4 (+ `motion` or `three` where needed), or React Native core APIs only. | You want it in your project now. |
-| **Prompt** | A design director's brief: type scale, colour, spacing, motion, accessibility and a list of what to avoid. | You want your agent to rebuild it in your brand or stack. |
-| **JSON prompt** | The same brief as structured data with stable keys. | You're scripting, swapping one dimension at a time, or your agent follows specs better than prose. |
+| **Source code** | A self-contained `.tsx` file with typed props. React + Tailwind CSS, or React Native with declared dependencies. | Install it in your project and adapt it. |
+| **Design brief** | Type, spacing, colour, motion, responsive behaviour, accessibility and the choices to avoid. | Ask your agent to rebuild it in your brand or stack. |
+| **JSON prompt** | The same brief as structured data with a consistent schema. | Automate generation or change one design decision at a time. |
 
-## What's inside
+## Explore by category
 
-- **Charts & data:** financial-grade charts with crosshairs, range morphing, volume and keyboard inspection. Hand-drawn SVG, no chart library.
-- **3D & WebGL:** Three.js scenes (particle fields, shader-lit objects) that stay tasteful, responsive and cheap to run.
-- **Pixel & generative:** dot-matrix displays, pixel animation and generative textures.
-- **AI interfaces:** chat threads, streaming text, command palettes, agent timelines.
-- **Marketing sections:** heroes, pricing, features, social proof, calls to action, navigation.
-- **App UI and forms:** dashboards, tables, settings, sign-in, one-time codes.
-- **React Native:** onboarding, tab bars, bottom sheets, paywalls, chat, wallets and swipe lists, previewed live on the web through react-native-web.
-
-Every component is responsive (to its container, not just the viewport), keyboard accessible and respects `prefers-reduced-motion`.
+| Build | Start here |
+| --- | --- |
+| AI chat, streaming answers and agent workflows | [AI interfaces](https://design.yaps.ai/categories/ai) · [Agent components](https://design.yaps.ai/categories/agents) |
+| Landing pages and product marketing | [Heroes](https://design.yaps.ai/categories/hero) · [Features](https://design.yaps.ai/categories/features) · [Pricing](https://design.yaps.ai/categories/pricing) |
+| Dashboards and analytics | [Charts](https://design.yaps.ai/categories/charts) · [App UI](https://design.yaps.ai/categories/app) |
+| Generative visuals and WebGL | [3D components](https://design.yaps.ai/categories/three-d) · [Pixel components](https://design.yaps.ai/categories/pixel) |
+| Mobile apps | [React Native components](https://design.yaps.ai/categories/mobile) |
+| Product UI and forms | [Inputs](https://design.yaps.ai/categories/inputs) · [Authentication](https://design.yaps.ai/categories/auth) · [Feedback](https://design.yaps.ai/categories/feedback) |
 
 ## Quick start
 
