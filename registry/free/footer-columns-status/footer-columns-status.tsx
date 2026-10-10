@@ -810,6 +810,7 @@ function ThemeSwitch({ value, onChange, compact }: { value: FooterTheme; onChang
             }}
             type="button"
             role="radio"
+            data-demo={`theme-${t.value}`}
             aria-checked={on}
             aria-label={t.label}
             title={t.label}
@@ -858,6 +859,7 @@ function LocaleSelect({
       <button
         ref={lb.triggerRef}
         type="button"
+        data-demo="locale"
         aria-haspopup="listbox"
         aria-expanded={lb.open}
         aria-controls={`${id}-list`}
@@ -949,6 +951,7 @@ function LocaleOption({
     <li
       id={id}
       role="option"
+      data-demo={`locale-${locale.code.toLowerCase()}`}
       aria-selected={selected}
       onPointerMove={onHover}
       onClick={onPick}
@@ -995,9 +998,26 @@ function HalyardMark() {
 /* Demo                                                                */
 /* ------------------------------------------------------------------ */
 
-/** Demo: the footer at the foot of a quiet page, with a status preview switch above it. */
-export default function FooterColumnsStatusDemo() {
-  const [status, setStatus] = useState<FooterStatus>("ok");
+export type FooterColumnsStatusDemoProps = Partial<FooterColumnsStatusProps>;
+
+/**
+ * Demo: the footer at the foot of a quiet page, with a status preview switch above it.
+ * `status`, `theme` and `locale` are state the demo owns, so the footer's own controls
+ * keep working; the Customize panel pushes values into that state.
+ */
+export default function FooterColumnsStatusDemo({ status: forcedStatus, theme: forcedTheme, locale: forcedLocale, ...overrides }: FooterColumnsStatusDemoProps = {}) {
+  const [status, setStatus] = useState<FooterStatus>(forcedStatus ?? "ok");
+  const [theme, setTheme] = useState<FooterTheme>(forcedTheme ?? "system");
+  const [locale, setLocale] = useState<string>(forcedLocale ?? "en-GB");
+  useEffect(() => {
+    if (forcedStatus) setStatus(forcedStatus);
+  }, [forcedStatus]);
+  useEffect(() => {
+    if (forcedTheme) setTheme(forcedTheme);
+  }, [forcedTheme]);
+  useEffect(() => {
+    if (forcedLocale) setLocale(forcedLocale);
+  }, [forcedLocale]);
   return (
     <div className="flex min-h-dvh flex-col justify-between bg-black">
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4 }} className="flex justify-center px-5 pb-10 pt-8">
@@ -1008,6 +1028,7 @@ export default function FooterColumnsStatusDemo() {
               <button
                 key={s}
                 type="button"
+                data-demo={`status-${s}`}
                 aria-pressed={status === s}
                 onClick={() => setStatus(s)}
                 className={`relative h-8 rounded-full px-3 uppercase tracking-[0.14em] transition-[color] duration-150 focus-visible:outline-2 focus-visible:outline-white/60 active:translate-y-px ${
@@ -1021,7 +1042,7 @@ export default function FooterColumnsStatusDemo() {
           </div>
         </div>
       </motion.div>
-      <FooterColumnsStatus status={status} />
+      <FooterColumnsStatus {...overrides} status={status} theme={theme} onThemeChange={setTheme} locale={locale} onLocaleChange={setLocale} />
     </div>
   );
 }

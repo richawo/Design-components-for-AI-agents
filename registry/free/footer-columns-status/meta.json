@@ -69,10 +69,15 @@
       "description": "90-day uptime in percent, shown in the status pill. Counts up from zero once the pill lands; null hides it."
     },
     {
-      "name": "theme / defaultTheme",
+      "name": "theme",
+      "type": "\"system\" | \"light\" | \"dark\"",
+      "description": "Controlled value of the 3-way theme switch. Omit to let it keep its own state."
+    },
+    {
+      "name": "defaultTheme",
       "type": "\"system\" | \"light\" | \"dark\"",
       "default": "\"system\"",
-      "description": "Controlled or initial value of the 3-way theme switch."
+      "description": "Initial value when the switch is uncontrolled."
     },
     {
       "name": "onThemeChange",
@@ -85,10 +90,15 @@
       "description": "Options in the locale menu."
     },
     {
-      "name": "locale / defaultLocale",
+      "name": "locale",
+      "type": "string",
+      "description": "Controlled locale code. Omit to let the menu keep its own state."
+    },
+    {
+      "name": "defaultLocale",
       "type": "string",
       "default": "\"en-GB\"",
-      "description": "Controlled or initial locale code."
+      "description": "Initial locale code when the menu is uncontrolled."
     },
     {
       "name": "onLocaleChange",
@@ -102,5 +112,119 @@
       "description": "Mono line in the bottom bar."
     }
   ],
-  "added": "2026-10-09"
+  "added": "2026-10-09",
+  "demo": {
+    "steps": [
+      "wait:500",
+      "click:@status-outage",
+      "wait:250",
+      "click:@locale",
+      "wait:300",
+      "click:@locale-de-de",
+      "wait:250",
+      "click:@theme-light",
+      "wait:500"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "status",
+      "label": "Status",
+      "kind": "action",
+      "options": [
+        {
+          "value": "ok",
+          "label": "Normal"
+        },
+        {
+          "value": "degraded",
+          "label": "Degraded"
+        },
+        {
+          "value": "outage",
+          "label": "Outage"
+        }
+      ]
+    },
+    {
+      "prop": "uptime",
+      "label": "Uptime",
+      "kind": "slider",
+      "min": 90,
+      "max": 100,
+      "step": 0.01,
+      "unit": "%",
+      "default": 99.98
+    },
+    {
+      "prop": "description",
+      "label": "Tagline",
+      "kind": "text",
+      "default": "Queues, cron and webhooks that retry until they land.",
+      "group": "Content"
+    },
+    {
+      "prop": "copyright",
+      "label": "Copyright",
+      "kind": "text",
+      "default": "© 2026 Halyard Labs, Inc.",
+      "group": "Content"
+    },
+    {
+      "prop": "locale",
+      "label": "Language",
+      "kind": "select",
+      "options": [
+        {
+          "value": "en-US",
+          "label": "English (US)"
+        },
+        {
+          "value": "en-GB",
+          "label": "English (UK)"
+        },
+        {
+          "value": "de-DE",
+          "label": "Deutsch"
+        },
+        {
+          "value": "fr-FR",
+          "label": "Français"
+        },
+        {
+          "value": "es-MX",
+          "label": "Español (México)"
+        },
+        {
+          "value": "pt-BR",
+          "label": "Português (Brasil)"
+        },
+        {
+          "value": "ja-JP",
+          "label": "日本語"
+        }
+      ],
+      "default": "en-GB"
+    },
+    {
+      "prop": "theme",
+      "label": "Theme switch",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "system",
+          "label": "System"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        },
+        {
+          "value": "dark",
+          "label": "Dark"
+        }
+      ],
+      "default": "system"
+    }
+  ]
 }
