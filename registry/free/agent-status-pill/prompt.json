@@ -1,0 +1,90 @@
+{
+  "component": "AgentStatusPill",
+  "intent": "A compact status for AI agents in headers and list rows: idle, running with a live clock, needs you, failed, done. The width springs between states, the live dot is the only ambient motion, and a click opens recent activity with the action the state is asking for.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4",
+    "animation": "motion/react (animated width on a measured content span, AnimatePresence popLayout for label and clock swaps, useInView to pause the ping and clock offscreen)"
+  },
+  "layout": {
+    "pill": "[dot] label | clock, fully rounded button with an animated width inside an overflow-hidden clip; content span is w-max and measured with ResizeObserver",
+    "sm": "24px tall, padding 0 9px, gap 6px, 12px label, 11px clock, 6px dot, 9px separator",
+    "md": "30px tall, padding 0 12px, gap 7px, 13px label, 12px clock, 7px dot, 11px separator",
+    "hitArea": "::before 44px tall centred on the pill",
+    "panel": "absolute below (or above) the pill, aligned to its end, width min(19rem, 100vw - 2rem), radius 12px, padding 14px; heading row, summary, mono command well, activity list with a 2.25rem time column, actions footer split by a hairline",
+    "demo": "640px card: header with monogram, breadcrumb, title and the md pill; 'Other runs' list of four rows with sm pills; rows raise z-index while their panel is open, the last two open upward"
+  },
+  "typography": {
+    "label": "Geist (font-sans) 500, tracking -0.005em, 12px (sm) / 13px (md), line-height 1",
+    "clock": "Geist Mono, tabular-nums, 11px (sm) / 12px (md), muted",
+    "panelHeading": "13px 500, tracking -0.01em",
+    "panelBody": "12.5px, line-height 1.5, muted",
+    "activityTime": "mono 10.5px, faint",
+    "command": "mono 11.5px in a recessed well"
+  },
+  "color": {
+    "approach": "monochrome first; only the dot carries hue, and only needs-you and failed tint the pill itself because they ask the user to act",
+    "states": "idle #71717a hollow ring; running = ink with a ping; waiting #f5a524 with a slower ping; error #f2555a; done #3fcf8e",
+    "tint": "label color-mix(tone 74%, ink) on dark, 52% on light; surface tone 9% over the base surface; ring tone 34%",
+    "dark": "ink #f4f4f5, muted #a1a1aa, faint #71717a, surface white 4.5%, ring white 10%, highlight white 6%, hover white 8%, panel #111113, panel ring white 9%, well #09090b",
+    "light": "ink #18181b, muted #52525b, surface ink 4%, ring ink 12%, panel #ffffff, well #f4f4f5",
+    "tokens": "exposed as --asp-* custom properties on the wrapper; `tones` overrides a state colour",
+    "demo": "#000 stage, #0b0b0c card, white 8% hairlines, #8a8a93 muted text, #18181b monogram tile"
+  },
+  "motion": {
+    "width": "animates to the measured content width, spring stiffness 500 damping 40",
+    "labelSwap": "popLayout cross-fade: in from y 5px + 3px blur over 240ms ease-out [0.22,1,0.36,1], out to y -5px over 160ms ease-in",
+    "dot": "fill and ring animate in 240ms; running ping scale 1 to 2.9, opacity 0.55 to 0, 1.6s; waiting ping 2.4s; paused offscreen",
+    "clock": "ticks every second only while open-ended and in view; renders after mount",
+    "press": "translateY 1px over 100ms; hover surface fades in over 150ms",
+    "panel": "hover opens once the pointer rests for 380ms (each move restarts the wait), closes 140ms after leave unless pinned; in from y -6px, scale 0.98, blur 4px over 220ms; out 140ms; activity rows stagger 45ms",
+    "reducedMotion": "no ping, no blur or offsets, width set instantly, 150ms opacity fades",
+    "demoEntrance": "once at 30% in view: card rises 12px out of an 8px blur over 0.5s, header 80ms, label 160ms, rows from 220ms 60ms apart"
+  },
+  "responsive": {
+    "pill": "intrinsic width; never wraps (whitespace-nowrap); 44px touch target at both sizes",
+    "panel": "capped at 100vw - 2rem so it never overflows a phone",
+    "demo": "card fluid to 640px; titles and tasks truncate so the pill keeps its place at 320px"
+  },
+  "accessibility": [
+    "button with aria-haspopup=dialog, aria-expanded and aria-controls",
+    "panel is a non-modal role=dialog labelled '{agent}: {heading}', placed after the pill in the tab order",
+    "visually hidden role=status announces state changes only, never the clock",
+    "Esc closes the panel and returns focus to the pill; a press outside closes a pinned panel",
+    "clock is a <time> with an ISO 8601 duration",
+    "2px ink focus outline offset 2px, keyboard only; hover has a click and tap equivalent"
+  ],
+  "content": {
+    "labels": {
+      "idle": "Idle",
+      "running": "Running",
+      "waiting": "Needs you",
+      "error": "Failed",
+      "done": "Done"
+    },
+    "headings": {
+      "idle": "Not running",
+      "running": "Working",
+      "waiting": "Waiting for your input",
+      "error": "Stopped with an error",
+      "done": "Finished"
+    },
+    "demoFeatured": "Fixer, 'Migrate billing webhooks to v2', waiting 1:14 on a 6:12 run: 'Approve a migration?' with `pnpm prisma migrate deploy`, Deny and Approve",
+    "demoRows": [
+      "lint-sweeper · Fix 23 ESLint warnings in packages/ui · running",
+      "docs-writer · Draft the 4.12 changelog · done 3:07",
+      "test-doctor · Quarantine the flaky checkout e2e suite · failed",
+      "dep-bot · Weekly dependency bump · idle, Run now"
+    ]
+  },
+  "avoid": [
+    "colour on the running state",
+    "gradients, glows or glass around the pill",
+    "a spinner beside the dot or a pulsing label",
+    "the width jumping between states, or text scaled by a layout animation",
+    "announcing the ticking clock to screen readers",
+    "percentage progress",
+    "decorative pills that assert a quality rather than report a state"
+  ]
+}

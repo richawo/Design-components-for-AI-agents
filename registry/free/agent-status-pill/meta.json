@@ -1,0 +1,189 @@
+{
+  "slug": "agent-status-pill",
+  "name": "Agent Status Pill",
+  "tier": "free",
+  "platform": "web",
+  "category": "agents",
+  "description": "A compact agent status for headers and lists: idle, running with a live clock, needs you, failed, done. The width springs between states; a click opens recent activity.",
+  "tags": [
+    "agent",
+    "status",
+    "pill",
+    "ai agent",
+    "activity",
+    "popover",
+    "run status",
+    "elapsed time",
+    "dark",
+    "monochrome"
+  ],
+  "dependencies": [
+    "motion"
+  ],
+  "theme": "dark",
+  "previewHeight": 680,
+  "usage": "import { AgentStatusPill } from \"@/components/design-for-ai/agent-status-pill\";\n\n<AgentStatusPill\n  agent=\"Fixer\"\n  state={run.status}               // \"idle\" | \"running\" | \"waiting\" | \"error\" | \"done\"\n  since={run.startedAt}            // epoch ms; the clock ticks until `until` is set\n  until={run.finishedAt}\n  summary=\"Fixer wants to apply one pending migration to staging.\"\n  command=\"pnpm prisma migrate deploy\"\n  actions={[\n    { label: \"Deny\", onSelect: () => run.deny() },\n    { label: \"Approve\", onSelect: () => run.approve(), primary: true },\n  ]}\n/>\n\n// In a list row, smaller and without the panel copy:\n<AgentStatusPill size=\"sm\" state=\"running\" since={startedAt} />\n\n// The panel is positioned inside the pill's own wrapper (no portal). Inside a\n// clipping container, lift it to document.body with your own portal or give\n// the row `position: relative` and a z-index while it is open.",
+  "props": [
+    {
+      "name": "state",
+      "type": "\"idle\" | \"running\" | \"waiting\" | \"error\" | \"done\"",
+      "default": "\"idle\"",
+      "description": "What the agent is doing. The label cross-fades and the pill animates to its new width when it changes."
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "description": "Replaces the built-in label for every state (e.g. \"Awaiting review\"). Leave empty for Idle, Running, Needs you, Failed and Done."
+    },
+    {
+      "name": "elapsed",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show the clock after a hairline: run time while running, time spent waiting, and the frozen run time on error and done."
+    },
+    {
+      "name": "since",
+      "type": "number",
+      "description": "Epoch ms the clock counts from."
+    },
+    {
+      "name": "until",
+      "type": "number",
+      "description": "Epoch ms the clock stopped at. Leave undefined to keep it ticking."
+    },
+    {
+      "name": "size",
+      "type": "\"sm\" | \"md\"",
+      "default": "\"md\"",
+      "description": "24px for list rows, 30px for headers. Both keep a 44px touch target."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "The surface the pill sits on; sets ink, rings and the panel."
+    },
+    {
+      "name": "agent",
+      "type": "string",
+      "description": "Whose status this is. Prefixes the screen reader announcement and names the activity panel."
+    },
+    {
+      "name": "heading",
+      "type": "string",
+      "description": "Activity panel title. Defaults to a sentence for the state, such as \"Waiting for your input\"."
+    },
+    {
+      "name": "summary",
+      "type": "string",
+      "description": "One or two lines under the heading."
+    },
+    {
+      "name": "command",
+      "type": "string",
+      "description": "A command or path the state is about, set in mono in a recessed well."
+    },
+    {
+      "name": "activity",
+      "type": "{ id: string; text: string; time?: string; live?: boolean }[]",
+      "description": "The last few steps, oldest first. The live step is drawn in full ink."
+    },
+    {
+      "name": "actions",
+      "type": "{ label: string; onSelect: () => void; primary?: boolean }[]",
+      "description": "Buttons at the foot of the panel, such as Approve or Retry. Selecting one closes the panel."
+    },
+    {
+      "name": "align",
+      "type": "\"start\" | \"end\"",
+      "default": "\"end\"",
+      "description": "Which edge of the pill the panel lines up with."
+    },
+    {
+      "name": "side",
+      "type": "\"bottom\" | \"top\"",
+      "default": "\"bottom\"",
+      "description": "Open the panel below or above the pill."
+    },
+    {
+      "name": "tones",
+      "type": "Partial<Record<AgentStatus, string>>",
+      "description": "Override a state's colour. Waiting #f5a524, error #f2555a, done #3fcf8e, idle #71717a; running uses the ink."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "description": "Classes for the wrapper span. Other span attributes (data-*, aria-*) pass through too."
+    }
+  ],
+  "added": "2026-10-10",
+  "demo": {
+    "steps": [
+      "wait:450",
+      "click:@status-pill",
+      "wait:1100",
+      "click:@action-approve",
+      "wait:200",
+      "hover:@status-pill",
+      "wait:1700"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "state",
+      "label": "State",
+      "kind": "select",
+      "options": [
+        {
+          "value": "idle",
+          "label": "Idle"
+        },
+        {
+          "value": "running",
+          "label": "Running"
+        },
+        {
+          "value": "waiting",
+          "label": "Needs you"
+        },
+        {
+          "value": "error",
+          "label": "Failed"
+        },
+        {
+          "value": "done",
+          "label": "Done"
+        }
+      ],
+      "default": "waiting"
+    },
+    {
+      "prop": "elapsed",
+      "label": "Elapsed time",
+      "kind": "toggle",
+      "default": true
+    },
+    {
+      "prop": "label",
+      "label": "Custom label",
+      "kind": "text",
+      "default": ""
+    },
+    {
+      "prop": "size",
+      "label": "Size",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "sm",
+          "label": "Small"
+        },
+        {
+          "value": "md",
+          "label": "Medium"
+        }
+      ],
+      "default": "md"
+    }
+  ]
+}
