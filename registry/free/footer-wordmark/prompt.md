@@ -12,7 +12,7 @@ Build a big studio footer in React + Tailwind CSS (v4, container queries) with `
 - Email: display 600, `clamp(1.25rem, 0.9rem + 1.6cqi, 2.25rem)`, tracking −0.035em, with a 2px underline drawn as a background that retracts to the right on hover.
 - Column titles: mono 11px uppercase, tracking 0.16em, white/45. Links: 17px medium, tracking −0.015em, at least 36px tall, with a 1.5px underline that grows from the left on hover. External links get ↗, which nudges up and right on hover.
 - Newsletter title in semibold sans at 26px, tracking −0.035em ("Low Tide"), body 15px at white/60, max 40ch.
-- Clock: a mono label ("Local time · BST") with a pinging white dot (the one ambient signal, running only while on screen), then "London 19:27" in display 22px semibold with tabular figures. It updates on each minute boundary, not every second.
+- Clock: a mono label ("Local time · BST") with a pinging white dot (the one ambient signal, running only while on screen), then "London 19:27" in display 22px semibold with tabular figures. The city label is a prop; when it's omitted, derive it from the time zone ("America/New_York" reads "New York") so a custom zone never sits next to the wrong city. It updates on each minute boundary, not every second.
 - Wordmark: display (Geist) semibold, tracking −0.065em, lowercase, filled with a vertical metallic gradient (white 90% → zinc-400 50% → zinc-700 5%) so it fades into the black. The gradient id comes from `useId()`.
 
 **Colour**
@@ -27,7 +27,7 @@ Build a big studio footer in React + Tailwind CSS (v4, container queries) with `
 - Four blocks, each revealed when a quarter of it is visible: closing line, column grid, wordmark, legal bar. A shared clock keeps them in order when they arrive together (desktop), while a block scrolled to later (mobile) starts at once instead of waiting out its slot. Items rise 12px out of an 8px blur over 600ms `cubic-bezier(0.22, 1, 0.36, 1)`; rules draw (scaleX, 800ms).
 - Closing line (0ms): top hairline draws from the centre; headline words stagger 35ms apart (sr-only full text, words `aria-hidden`); the email at 300ms, its underline drawing left to right; the arrow chip pops in (scale 0.6 → 1) at 420ms; the back-to-top ring draws along its path (`pathLength`, 700ms) from 240ms, then its arrow and label.
 - Grid (320ms): the 2px rule draws; columns follow 60ms apart, title first, links 30ms apart. Visit: address, then the live dot pops in and starts pinging, then the clock counts from 00:00 to the local time over 700ms (a motion value, tabular figures, 3px blur clearing as it lands). The newsletter lands last.
-- Wordmark (500ms): rises from fully below the floor (translate in viewBox units) and sharpens out of an 8px blur over 900ms, once measured.
+- Wordmark (500ms): rises from fully below the floor (translate in viewBox units) over 1.1s on a slow-start curve `cubic-bezier(0.6, 0, 0.2, 1)`, so the climb stays visible even if the first frame of the big type is slow to paint, and fades and sharpens out of an 8px blur over 900ms on the shared ease, once measured.
 - Legal bar (620ms): rule draws, the line, then links 30ms apart. It lands last.
 
 **Motion**

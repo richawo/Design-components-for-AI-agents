@@ -47,6 +47,13 @@ const COLORS = {
 } as const;
 
 const EASE = [0.22, 1, 0.36, 1] as const;
+/**
+ * The wordmark's climb: a gentle lift-off, then a long settle. A front-loaded
+ * curve spends most of the climb in its first few frames, which is exactly
+ * when the browser first rasterises the big gradient type, so the rise read
+ * as a pop. Starting slowly keeps the whole climb on screen.
+ */
+const RISE = [0.6, 0, 0.2, 1] as const;
 
 /**
  * Entrance timeline, in seconds. Four blocks, each revealed when a quarter of
@@ -67,6 +74,7 @@ const T = {
   countDur: 0.7,
   mark: 0.5,
   markDur: 0.9,
+  riseDur: 1.1,
   legal: 0.62,
   dur: 0.6,
   drawDur: 0.8,
@@ -602,34 +610,38 @@ function Wordmark({ text, clip, start, reduce }: { text: string; clip: number; s
   const shown = start !== null && measured;
 
   return (
-    <motion.svg
+    /* The wrapper is the floor: it fades and sharpens, and clips the word as it climbs. */
+    <motion.div
       aria-hidden="true"
-      viewBox={`${box.x} ${-box.asc} ${box.w} ${h}`}
-      className="mt-6 block w-full select-none overflow-hidden @2xl:mt-8"
+      className="mt-6 select-none overflow-hidden @2xl:mt-8"
       initial={false}
       animate={shown ? { opacity: 1, filter: "blur(0px)" } : { opacity: 0, filter: reduce ? "blur(0px)" : "blur(8px)" }}
       transition={{ duration: reduce ? 0.15 : T.markDur, ease: EASE, delay: shown ? (start ?? 0) : 0 }}
     >
-      <defs>
-        <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
-          {COLORS.metal.map((s) => (
-            <stop key={s.at} offset={s.at} stopColor={s.color} stopOpacity={s.opacity} />
-          ))}
-        </linearGradient>
-      </defs>
-      {/* Translate in viewBox units: from fully below the floor to resting. */}
-      <motion.text
-        ref={ref}
-        fontSize="100"
-        fill={`url(#${gradientId})`}
-        className="font-display font-semibold tracking-[-0.065em]"
+      {/*
+        The climb moves the whole SVG (its own layer, painted once) from fully
+        below the floor to resting, rather than moving the text inside it,
+        which would repaint the big gradient type on every frame.
+      */}
+      <motion.svg
+        viewBox={`${box.x} ${-box.asc} ${box.w} ${h}`}
+        className="block w-full overflow-hidden will-change-transform"
         initial={false}
-        animate={{ y: shown || reduce ? 0 : h }}
-        transition={{ duration: reduce ? 0 : T.markDur, ease: EASE, delay: shown ? (start ?? 0) : 0 }}
+        animate={{ y: shown || reduce ? "0%" : "100%" }}
+        transition={{ duration: reduce ? 0 : T.riseDur, ease: RISE, delay: shown ? (start ?? 0) : 0 }}
       >
-        {text}
-      </motion.text>
-    </motion.svg>
+        <defs>
+          <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
+            {COLORS.metal.map((s) => (
+              <stop key={s.at} offset={s.at} stopColor={s.color} stopOpacity={s.opacity} />
+            ))}
+          </linearGradient>
+        </defs>
+        <text ref={ref} fontSize="100" fill={`url(#${gradientId})`} className="font-display font-semibold tracking-[-0.065em]">
+          {text}
+        </text>
+      </motion.svg>
+    </motion.div>
   );
 }
 

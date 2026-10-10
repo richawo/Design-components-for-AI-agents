@@ -4,7 +4,7 @@
   "tier": "free",
   "platform": "web",
   "category": "footers",
-  "description": "A dark studio footer that reveals on scroll: closing line, drawn rules, staggered link columns, a counting local clock, a newsletter and a wordmark rising from the floor.",
+  "description": "A dark studio footer that reveals on scroll: closing line, drawn rules, staggered link columns, a live local clock, a newsletter and a wordmark rising out of the floor.",
   "tags": [
     "footer",
     "navigation",
@@ -54,8 +54,8 @@
     {
       "name": "city",
       "type": "string",
-      "default": "\"London\"",
-      "description": "Label before the live time. Defaults to the city named by timeZone (\"Europe/London\" reads \"London\")."
+      "default": "derived from timeZone (\"Europe/London\" → \"London\")",
+      "description": "Label before the live time. When omitted it is the last part of timeZone, underscores as spaces (\"America/New_York\" reads \"New York\")."
     },
     {
       "name": "timeZone",
@@ -93,16 +93,16 @@
   "added": "2026-10-07",
   "demo": {
     "steps": [
-      "wait:300",
-      "scroll:200",
-      "scroll:200",
-      "scroll:200",
-      "wait:800",
-      "click:@newsletter-email",
+      "wait:150",
+      "move:0.6,0.62",
+      "scroll:600",
+      "wait:250",
+      "hover:@newsletter-email",
+      "click",
       "type:ana@",
       "type:studio.co",
-      "key:Enter",
-      "wait:1500"
+      "click:@newsletter-submit",
+      "wait:1400"
     ]
   },
   "controls": [
