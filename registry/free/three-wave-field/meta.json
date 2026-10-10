@@ -56,16 +56,12 @@
   "added": "2026-10-07",
   "demo": {
     "steps": [
-      "click:@field:0.46,0.7",
-      "hover:@field:0.66,0.68",
-      "wait:200",
+      "hover:@field:0.42,0.56",
+      "hover:@field:0.56,0.52",
+      "wait:350",
+      "hover:@field:0.5,0.57",
       "click",
-      "wait:400",
-      "hover:@field:0.36,0.69",
-      "click",
-      "wait:900",
-      "hover:@field:0.54,0.66",
-      "wait:700"
+      "wait:450"
     ],
     "loop": false
   },
