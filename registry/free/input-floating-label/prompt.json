@@ -18,7 +18,7 @@
   },
   "typography": {
     "input": "sans, 16px (md) or 18px (lg), so iOS does not zoom",
-    "label": "sans, 15px (md) or 17px (lg), line box 20px; floated state is the same element scaled to 0.76 from the left centre",
+    "label": "sans, 15px (md) or 17px (lg), line box 20px; floated state is the same element scaled to 0.76 from the left centre; max width is the field minus the label offset and trailing inset, with an ellipsis for longer labels",
     "message": "sans 13px, leading 1.45; 13.5px from the @sm container breakpoint",
     "suffix": "13px, muted, line-height 1",
     "counter": "mono 12px, tabular-nums; digits tween over 180ms"
@@ -46,14 +46,14 @@
       "error": "#b3432a",
       "success": "#2c7a45"
     },
-    "usage": "error colours only on the border, the message, the label and the count at the limit in the error state; success colours only on the border, the message and the tick; everything else monochrome"
+    "usage": "error colours only on the border, the message, the label (full strength while focused, 80% at rest) and the count at the limit in the error state; success colours only on the border, the message and the tick; everything else monochrome"
   },
   "border": {
     "rest": "1px inset box-shadow at the hairline colour",
-    "hover": "1px at the hover hairline",
-    "focusWithin": "1.5px at the focus hairline, on the masked border so the line opens around the label",
-    "error": "1.5px at the error colour",
-    "success": "1.5px at the success colour",
+    "hover": "1px at the hover hairline, on pointer devices only (@media (hover: hover) and (pointer: fine))",
+    "focusWithin": "1.5px at the focus hairline, on the masked border so the line opens around the label; on an error or success field, 2px in that state colour, declared after the state rules so focus wins",
+    "error": "1.5px at the error colour (2px while focused)",
+    "success": "1.5px at the success colour (2px while focused)",
     "disabled": "1px hairline, no hover response",
     "outline": "none; there is no outer focus ring, so the notch is never crossed by a second line"
   },
@@ -69,14 +69,14 @@
   },
   "validation": {
     "validate": "a function (value) => boolean passed by the host. Without it there is no error and no success tick",
-    "idle": "an invalid value is called out only after 800ms of rest, or when the field is left",
+    "idle": "an invalid value is called out only after 800ms of rest, or when the field is left; every edit returns a called-out error to rest first",
     "valid": "a valid value clears the error straight away and shows the success text and tick",
     "demo": "the demo passes an email check: local part, @, domain and a top-level domain of two or more letters"
   },
   "counter": {
     "appears": "only once the value reaches 80% of maxLength; at rest with no value near the limit, nothing shows",
     "limit": "the count turns to the error colour at maxLength, and the input stops there",
-    "demo": "maxLength 22, so the count appears at 18 characters"
+    "demo": "maxLength 40, so the count appears at 32 characters; the Value control seeds a 33-character valid address so the count, success state and notch can be reviewed without typing"
   },
   "responsive": {
     "all": "fluid to 420px; the field and helper row share one container; touch targets stay the full field height (56px or 64px)",
@@ -91,14 +91,14 @@
     "message container aria-live polite, so the error and success copy is announced once per change",
     "disabled uses the native disabled attribute and dims the body to 42% opacity with cursor not-allowed; the wrapper carries aria-disabled",
     "decorative layers, the prefix glyph and the tick are aria-hidden",
-    "focus is shown on the border as a 1.5px line at 0.90 ink; the field is keyboard operable with no extra ring"
+    "focus is shown on the border as a 1.5px line at 0.90 ink (2px in the state colour for error and success); the field is keyboard operable with no extra ring, and an errored label stays full strength while focused"
   ],
   "content": {
-    "label": "Work email",
+    "label": "Work email (a long label ends in an ellipsis before the trailing slot)",
     "helper": "We’ll send receipts and invoices here.",
     "errorText": "Add a domain, like ana@studio.co",
     "successText": "Looks good. Receipts go here.",
-    "count": "hidden at rest, then 18 / 22 from 80% of a 22-character limit"
+    "count": "hidden at rest, then 32 / 40 from 80% of a 40-character limit"
   },
   "avoid": [
     "a filled background behind the label, or a Material-style underline field",

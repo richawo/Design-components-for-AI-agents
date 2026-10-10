@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  useCallback,
   useEffect,
   useId,
   useLayoutEffect,
@@ -80,6 +81,8 @@ type Tone = {
   muted: string;
   icon: string;
   error: string;
+  /** The error colour at 80%, for the label while the errored field is not focused. */
+  errorMuted: string;
   success: string;
 };
 
@@ -93,6 +96,7 @@ const TONES: Record<FloatingLabelFieldTheme, Tone> = {
     muted: "rgba(244,244,245,0.58)",
     icon: "rgba(244,244,245,0.42)",
     error: "#f0937a",
+    errorMuted: "rgba(240,147,122,0.8)",
     success: "#8fd7a6",
   },
   light: {
@@ -104,6 +108,7 @@ const TONES: Record<FloatingLabelFieldTheme, Tone> = {
     muted: "rgba(17,17,19,0.6)",
     icon: "rgba(17,17,19,0.45)",
     error: "#b3432a",
+    errorMuted: "rgba(179,67,42,0.8)",
     success: "#2c7a45",
   },
 };
@@ -134,6 +139,8 @@ const SLOT_GAP = 10;
 const IDLE_MS = 800;
 /** Share of `maxLength` at which the counter appears. */
 const COUNTER_NEAR = 0.8;
+/** Corner radius of the field, in px. Matches `border-radius` in FIELD_CSS. The notch stops short of it. */
+const CORNER = 12;
 /** Name of the keyframes the autofill hook listens for. Chrome fires animationstart when it fills a field. */
 const AUTOFILL_ANIMATION = "ifl-autofill";
 
@@ -165,10 +172,15 @@ const FIELD_CSS = `
     linear-gradient(#000 0 0) var(--ifl-nr, 100%) 0 / calc(100% - var(--ifl-nr, 100%)) 2px no-repeat,
     linear-gradient(#000 0 0) 0 2px / 100% calc(100% - 2px) no-repeat;
 }
-.ifl-field:hover .ifl-border { box-shadow: inset 0 0 0 1px var(--ifl-line-hover); }
+@media (hover: hover) and (pointer: fine) {
+  .ifl-field:hover .ifl-border { box-shadow: inset 0 0 0 1px var(--ifl-line-hover); }
+}
 .ifl-field:focus-within .ifl-border { box-shadow: inset 0 0 0 1.5px var(--ifl-line-focus); }
 .ifl-root[data-state="error"] .ifl-border { box-shadow: inset 0 0 0 1.5px var(--ifl-error); }
 .ifl-root[data-state="success"] .ifl-border { box-shadow: inset 0 0 0 1.5px var(--ifl-success); }
+/* Focus on a state colour keeps the colour and steps up to 2px, so a focused field never looks idle. */
+.ifl-root[data-state="error"] .ifl-field:focus-within .ifl-border { box-shadow: inset 0 0 0 2px var(--ifl-error); }
+.ifl-root[data-state="success"] .ifl-field:focus-within .ifl-border { box-shadow: inset 0 0 0 2px var(--ifl-success); }
 .ifl-root[data-state="disabled"] .ifl-field { cursor: not-allowed; }
 .ifl-root[data-state="disabled"] .ifl-border { box-shadow: inset 0 0 0 1px var(--ifl-line); }
 .ifl-root[data-state="disabled"] .ifl-body { opacity: 0.42; }
@@ -263,7 +275,7 @@ function SuccessTick({ color, reduce }: { color: string; reduce: boolean }) {
       initial={{ opacity: 0, scale: reduce ? 1 : 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.24, ease: EASE }}
+      transition={{ duration: reduce ? FADE_S : 0.24, ease: EASE }}
     >
       <motion.path
         d="M3.8 9.4 7.3 12.8 14.2 5.6"
@@ -314,7 +326,15 @@ export function FloatingLabelField({
 
   const rootRef = useRef<HTMLDivElement>(null);
   const inView = useInView(rootRef, { once: true, amount: 0.3 });
-  const fieldRef = useRef<HTMLDivElement>(null);
+  const fieldRef = useRef<HTMLDivElement | null>(null);
+  const [setFieldNode, fieldWidth] = useMeasuredWidth();
+  const attachField = useCallback(
+    (node: HTMLDivElement | null) => {
+      fieldRef.current = node;
+      setFieldNode(node);
+    },
+    [setFieldNode],
+  );
   const [setLabelNode, labelWidth] = useMeasuredWidth();
   const [setPrefixNode, prefixWidth] = useMeasuredWidth();
   const [setTrailingNode, trailingWidth] = useMeasuredWidth();
@@ -337,6 +357,8 @@ export function FloatingLabelField({
 
   const labelX = dims.pad + slotOffset(prefixWidth);
   const inputPadRight = dims.pad + slotOffset(trailingWidth);
+  // The label may run as far as the text. A longer label ends in an ellipsis before the trailing slot.
+  const labelMax = fieldWidth > 0 ? Math.max(0, fieldWidth - labelX - inputPadRight) : undefined;
   const showCount = counter && maxLength !== undefined && value.length >= maxLength * COUNTER_NEAR;
   const countColor = maxLength !== undefined && value.length >= maxLength ? tone.error : tone.ink;
   const message =
@@ -359,9 +381,11 @@ export function FloatingLabelField({
   useEffect(() => {
     const el = fieldRef.current;
     if (!el) return;
+    // The cut stops short of the right corner, so it never reaches the rounded end of the hairline.
+    const roomEnd = fieldWidth > 0 ? fieldWidth - CORNER - NOTCH_GAP : Infinity;
     const open = floated && labelWidth > 0;
     const target = open
-      ? { start: labelX - NOTCH_GAP, end: labelX + labelWidth * FLOAT_SCALE + NOTCH_GAP }
+      ? { start: labelX - NOTCH_GAP, end: Math.min(labelX + labelWidth * FLOAT_SCALE + NOTCH_GAP, roomEnd) }
       : { start: labelX, end: labelX };
     const paint = (start: number, end: number) => {
       el.style.setProperty("--ifl-nl", `${start}px`);
@@ -395,7 +419,7 @@ export function FloatingLabelField({
       startAnim.stop();
       endAnim.stop();
     };
-  }, [floated, labelX, labelWidth, reduce]);
+  }, [floated, labelX, labelWidth, fieldWidth, reduce]);
 
   // Controlled fields report upward and leave the value to the host. Uncontrolled ones keep it here too.
   const commit = (next: string) => {
@@ -406,7 +430,8 @@ export function FloatingLabelField({
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const next = event.target.value;
     setAutofilled(false);
-    if (!next) setTouched(false);
+    // Every edit drops the error back to rest, so it only returns once the value has settled again.
+    setTouched(false);
     commit(next);
     onChange?.(event);
   };
@@ -441,7 +466,9 @@ export function FloatingLabelField({
     "--ifl-success": tone.success,
   } as CSSProperties;
 
-  const labelColor = resolved === "error" ? tone.error : focused ? tone.ink : tone.muted;
+  // An errored label is full strength while focused and eases to 80% at rest, so focus still reads on it.
+  const labelColor =
+    resolved === "error" ? (focused ? tone.error : tone.errorMuted) : focused ? tone.ink : tone.muted;
   // Under reduced motion the label moves instantly and only its colour fades, which is the one change that stays.
   const labelTransition = reduce
     ? { y: { duration: 0 }, scale: { duration: 0 }, color: { duration: FADE_S, ease: EASE } }
@@ -464,7 +491,7 @@ export function FloatingLabelField({
         transition={{ duration: reduce ? FADE_S : 0.6, ease: EASE }}
       >
         <div className="ifl-body">
-          <div ref={fieldRef} className="ifl-field" style={{ height: dims.height }}>
+          <div ref={attachField} className="ifl-field" style={{ height: dims.height }}>
             <div aria-hidden="true" className="ifl-surface" />
             <div aria-hidden="true" className="ifl-border" />
 
@@ -475,9 +502,16 @@ export function FloatingLabelField({
               style={{
                 left: labelX,
                 top: 0,
+                maxWidth: labelMax,
                 fontSize: dims.label,
                 color: labelColor,
                 transformOrigin: "left center",
+                // Ellipsis needs overflow clipping. The padding and matching negative margin widen the clip box
+                // by 3px top and bottom, so descenders are never cut, and the text stays where it was.
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                paddingBlock: 3,
+                marginBlock: -3,
               }}
               animate={{
                 y: floated ? -LABEL_BOX / 2 : (dims.height - LABEL_BOX) / 2,
@@ -602,14 +636,17 @@ const isEmail = (value: string) => EMAIL.test(value.trim());
 export default function FloatingLabelFieldDemo({
   state: forced,
   prefix,
+  suffix,
   ...overrides
 }: Partial<FloatingLabelFieldProps> = {}) {
   const [state, setState] = useState<FloatingLabelFieldState | undefined>(forced);
   useEffect(() => setState(forced), [forced]);
 
   const light = overrides.theme === "light";
+  // The controls send booleans for the slots. A true suffix shows a short word, so the trailing slot is visible.
   const glyph =
     prefix === undefined || prefix === true ? <Mail size={16} strokeWidth={1.6} /> : prefix === false ? null : prefix;
+  const word = suffix === true ? "Optional" : suffix === false ? undefined : suffix;
 
   return (
     <div
@@ -626,8 +663,9 @@ export default function FloatingLabelFieldDemo({
         errorText="Add a domain, like ana@studio.co"
         successText="Looks good. Receipts go here."
         validate={isEmail}
-        maxLength={22}
+        maxLength={40}
         prefix={glyph}
+        suffix={word}
         {...overrides}
         state={state === "default" ? undefined : state}
       />

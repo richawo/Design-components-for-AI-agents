@@ -27,7 +27,7 @@
       "name": "label",
       "type": "string",
       "default": "\"Label\"",
-      "description": "Resting label. It rises into the notch on the top hairline when the field is focused or filled."
+      "description": "Resting label. It rises into the notch on the top hairline when the field is focused or filled. A label too long for the field ends in an ellipsis before the trailing slot."
     },
     {
       "name": "helper",
@@ -38,7 +38,7 @@
       "name": "errorText",
       "type": "string",
       "default": "\"Enter a valid value\"",
-      "description": "Replaces the helper once a value has rested and failed validate, or the field is left with one in it."
+      "description": "Replaces the helper once a value has rested and failed validate, or the field is left with one in it. Every edit returns it to rest until the value settles again."
     },
     {
       "name": "successText",
@@ -61,7 +61,7 @@
       "name": "counter",
       "type": "boolean",
       "default": "true",
-      "description": "Shows the count once the value passes 80% of maxLength, tweening the digits and turning to the error colour at the limit. Needs maxLength."
+      "description": "Shows the count once the value passes 80% of maxLength (32 of 40 in the demo), tweening the digits and turning to the error colour at the limit. Needs maxLength. Nothing shows at rest, so use the Value control to fill the demo."
     },
     {
       "name": "maxLength",
@@ -119,7 +119,7 @@
       "click:@email",
       "wait:300",
       "type:ana.lumen@",
-      "wait:1000",
+      "wait:1600",
       "type:studio.co",
       "wait:1400"
     ]
@@ -164,6 +164,24 @@
       "group": "Content"
     },
     {
+      "prop": "defaultValue",
+      "label": "Value",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "",
+          "label": "Empty"
+        },
+        {
+          "value": "ana.lumen@northwind-studio.com.au",
+          "label": "Filled"
+        }
+      ],
+      "default": "",
+      "remount": true,
+      "group": "Content"
+    },
+    {
       "prop": "counter",
       "label": "Counter",
       "kind": "toggle",
@@ -175,6 +193,13 @@
       "label": "Prefix",
       "kind": "toggle",
       "default": true,
+      "group": "Details"
+    },
+    {
+      "prop": "suffix",
+      "label": "Suffix",
+      "kind": "toggle",
+      "default": false,
       "group": "Details"
     },
     {
