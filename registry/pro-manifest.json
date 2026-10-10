@@ -3474,6 +3474,213 @@
     ]
   },
   {
+    "slug": "effect-gravity-grid",
+    "name": "Gravity Grid",
+    "tier": "pro",
+    "platform": "web",
+    "category": "effects",
+    "description": "A tile grid that bends toward the cursor like spacetime around a mass, its slope catching light, while a click sends a shockwave ring through the tiles.",
+    "tags": [
+      "effect",
+      "cursor",
+      "grid",
+      "gravity",
+      "shockwave",
+      "canvas",
+      "background",
+      "interactive",
+      "monochrome"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 760,
+    "usage": "import { GravityGrid } from \"@/components/design-for-ai/effect-gravity-grid\";\n\n// Fills its parent; give the parent a height. Content inside sits above the field.\n<section className=\"relative h-[640px]\">\n  <GravityGrid cell={28} pull={0.5} radius={240}>\n    <div className=\"grid h-full place-items-center\">\n      <h2 className=\"font-display text-7xl tracking-tight\">Weight, made visible.</h2>\n    </div>\n  </GravityGrid>\n</section>\n\n// Fire a shockwave from the centre from outside the field.\n<GravityGrid pulseKey={launches} onPulse={(x, y) => track(\"pulse\", { x, y })} accent=\"#8ab4ff\" />",
+    "props": [
+      {
+        "name": "cell",
+        "type": "number",
+        "default": "28",
+        "description": "Tile pitch in CSS px, clamped to 14–64. The lattice gets one tile of overscan on every side, so the well never drags an edge into view."
+      },
+      {
+        "name": "gap",
+        "type": "number",
+        "default": "3",
+        "description": "Space between tiles in px. Tiles are inset toward their own centre, so the gap stretches and shrinks with the warp."
+      },
+      {
+        "name": "pull",
+        "type": "number",
+        "default": "0.5",
+        "description": "How hard the mass pulls, 0 to 1. Internally capped below the point where a Gaussian well would fold tiles over each other."
+      },
+      {
+        "name": "radius",
+        "type": "number",
+        "default": "240",
+        "description": "Reach of the well in px (the Gaussian's sigma is half of it). Capped at 45% of the field's shorter side, so a small field keeps a proportionate well."
+      },
+      {
+        "name": "shockwave",
+        "type": "boolean",
+        "default": "true",
+        "description": "A click, a tap or Enter sends a shockwave ring out from the point. Off, the field only bends."
+      },
+      {
+        "name": "rest",
+        "type": "\"centre\" | \"none\"",
+        "default": "\"centre\"",
+        "description": "Where the mass rests while the pointer is away. centre settles into a gentle well (62% strength) in the middle, so the field shows its idea at rest; none lets it go flat. Either way the loop sleeps once settled."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#f4f4f5\"",
+        "description": "Tint of the shockwave front, as a hex colour."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "White tiles on #070708, or ink tiles on #f3f2ee paper."
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "description": "Content drawn above the field. It lets the pointer through, except links and buttons."
+      },
+      {
+        "name": "onPulse",
+        "type": "(x: number, y: number) => void",
+        "description": "Called with the point (px from the field's top left) each time a shockwave starts."
+      },
+      {
+        "name": "pulseKey",
+        "type": "string | number",
+        "description": "Change it to send a shockwave from the centre, e.g. from a button outside the field."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root, which fills its parent."
+      }
+    ],
+    "demo": {
+      "steps": [
+        "wait:300",
+        "hover:@field:0.28,0.42",
+        "hover:@field:0.5,0.56",
+        "click",
+        "wait:700",
+        "hover:@field:0.74,0.36",
+        "click",
+        "wait:900",
+        "click:@pulse",
+        "wait:1100"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "pull",
+        "label": "Pull",
+        "kind": "slider",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "default": 0.5
+      },
+      {
+        "prop": "radius",
+        "label": "Well radius",
+        "kind": "slider",
+        "min": 100,
+        "max": 480,
+        "step": 10,
+        "unit": "px",
+        "default": 240
+      },
+      {
+        "prop": "cell",
+        "label": "Tile size",
+        "kind": "slider",
+        "min": 16,
+        "max": 56,
+        "step": 2,
+        "unit": "px",
+        "default": 28
+      },
+      {
+        "prop": "gap",
+        "label": "Gap",
+        "kind": "slider",
+        "min": 0,
+        "max": 10,
+        "step": 1,
+        "unit": "px",
+        "default": 3
+      },
+      {
+        "prop": "shockwave",
+        "label": "Shockwave",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "rest",
+        "label": "At rest",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "centre",
+            "label": "Centre well"
+          },
+          {
+            "value": "none",
+            "label": "Flat"
+          }
+        ],
+        "default": "centre"
+      },
+      {
+        "prop": "accent",
+        "label": "Wave tint",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#8ab4ff",
+          "#7dd3a8",
+          "#ffb454",
+          "#ff7a9c"
+        ]
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ],
+    "added": "2026-10-10"
+  },
+  {
     "slug": "feature-sticky-scroll",
     "name": "Sticky Scroll Story",
     "tier": "pro",
