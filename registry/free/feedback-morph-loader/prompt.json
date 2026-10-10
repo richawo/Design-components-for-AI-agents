@@ -1,0 +1,67 @@
+{
+  "component": "MorphLoader",
+  "intent": "A tiny loader whose two strokes morph circle → square → triangle while a job runs, then fold in place into a check on success or a cross on error. The same two lines are the loader and the result.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4",
+    "animation": "one requestAnimationFrame loop writing SVG path d attributes directly; motion/react for the demo's reveals, cross-fades and useReducedMotion"
+  },
+  "layout": {
+    "root": "inline-flex span, size × size (default 20px), never resizes between statuses",
+    "drawing": "viewBox 0 0 24 24, two paths of exactly 36 points each, round caps and joins",
+    "halves": "every closed shape is sampled by arc length from the top centre, clockwise; path A = right half (top → bottom), path B = left half (bottom → top)",
+    "shapes": { "circle": "r 7.4", "square": "±6.4, sampled from mid top edge", "triangle": "r 8.5, nudged down 1.6", "diamond": "r 8", "hexagon": "r 7.7" },
+    "glyphs": {
+      "check": "A 17.4,8.4 → 10.4,16.1 (long leg); B 10.4,16.1 → 6.7,12.4 (short leg)",
+      "cross": "A 16.6,7.4 → 7.4,16.6; B 16.6,16.6 → 7.4,7.4"
+    },
+    "demo": "black stage; one 600px card: 52px specimen in an 88–104px tile beside eyebrow + cross-fading title, four step rows with 16px loaders, footer with a count and one button"
+  },
+  "typography": {
+    "title": "display, clamp(1.25rem, 0.9rem + 2.2cqi, 1.75rem), 500, leading 1.1, tracking -0.03em, text-balance",
+    "sub": "13px / 20px, tabular-nums, #a1a1aa",
+    "eyebrow": "mono 11px uppercase, tracking 0.16em, #71717a",
+    "rows": "14px / 20px, tracking -0.01em; meta mono 11px tabular"
+  },
+  "color": {
+    "loading": "currentColor (demo #f4f4f5); idle at 45% opacity",
+    "success": "#6fd08c",
+    "error": "#ff7a6b",
+    "demoStage": "#050506",
+    "demoCard": "#111113, inset 1px rgba(255,255,255,0.08), top highlight 4%, shadow 0 40px 80px -30px rgba(0,0,0,0.9)",
+    "hairlines": "rgba(255,255,255,0.06)"
+  },
+  "motion": {
+    "loop": "0.9s per shape: hold 32%, then cubic ease-in-out morph into the next; the drawing turns once every 2.6s; speed multiplies the clock",
+    "breathing": "while a shape travels both halves open into chasing arcs, trimming 2.5% → 10% of the perimeter at each end along sin(π·morph)",
+    "fold": "a status change captures the current points and interpolates to the new pose: 460ms ease-in-out into check/cross, 320ms ease-out back into the loop; never jumps mid-morph",
+    "colour": "stroke colour transitions over 200ms",
+    "lifecycle": "the loop only runs while loading or mid-fold, pauses offscreen (IntersectionObserver) and in hidden tabs",
+    "reducedMotion": "no turn, morph or breathing; loading is a still open outline; status changes are instant except the colour"
+  },
+  "responsive": "The loader is a fixed-size glyph; the demo card is a @container: the specimen tile grows from 88 to 104px and padding from 20 to 28px at @md; rows truncate their label before their meta.",
+  "accessibility": [
+    "The SVG is aria-hidden; a visually hidden role=status aria-live=polite span carries label, successLabel or errorLabel.",
+    "announce={false} drops the live region when a parent already announces the state.",
+    "Demo buttons are real buttons with 2px focus-visible rings offset on #111113 and a 0.97 press scale; Publish is disabled at 40% while running."
+  ],
+  "content": {
+    "release": "Release · v4.2",
+    "steps": ["Render 18 pages · 0.8 s", "Optimise 46 images · 3.1 MB saved", "Purge the edge cache · 212 PoPs (fails first: timed out)", "Email 2,481 subscribers · sent"],
+    "titles": {
+      "live": "v4.1 is live · Published yesterday, 18:04 · 3.2 s (the opening state: four checks, button “Publish v4.2”)",
+      "running": "Publishing the changelog · Four steps · about 3 s",
+      "failed": "The edge cache didn’t clear · 3 of 4 steps · nothing is live yet",
+      "done": "v4.2 is live · 4 of 4 steps · 3.4 s"
+    },
+    "actions": ["Publish v4.2", "Retry step 3", "Publish again"]
+  },
+  "avoid": [
+    "a spinner that cross-fades into a separate check icon",
+    "bounce, spring or shake on the glyph",
+    "colour on the loading state, glow, or a gradient tile",
+    "a box that resizes between statuses",
+    "a loop that keeps running offscreen or in a hidden tab"
+  ]
+}
