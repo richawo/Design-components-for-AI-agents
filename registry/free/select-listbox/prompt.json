@@ -1,0 +1,68 @@
+{
+  "component": "SelectListbox",
+  "intent": "A custom single-value select that behaves like the native control: typeahead, Home and End, grouped options, a gliding spring highlight and a check that draws on the chosen row. The panel unfolds from its trigger and flips upward near the bottom edge. Monochrome, with one accent on the check.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 (@container, CSS variables)",
+    "animation": "motion/react (variants, layoutId, pathLength, AnimatePresence popLayout, useReducedMotion), lucide-react for the chevron and search icon"
+  },
+  "layout": {
+    "root": "@container column, max-width 320px, trigger full width",
+    "label": "mono 11px uppercase label, 8px above the trigger",
+    "trigger": "md 44px / sm 36px, radius 10px, inset hairline, value left, hint, 16px chevron right",
+    "panel": "trigger width, 6px gap above or below, radius 12px, list max 300px, rows 40px (md) or 32px (sm), radius 8px",
+    "search": "optional 44px filter row at the top of the panel"
+  },
+  "typography": {
+    "trigger": "14px (md) or 13px (sm), 400 weight, ink",
+    "row": "14px or 13px, body colour, selected in ink",
+    "hint": "mono 11.5px (11px on sm), tabular-nums, hint colour",
+    "headings": "mono 10.5px uppercase, tracking 0.14em, hint colour",
+    "label": "mono 11px uppercase, tracking 0.12em"
+  },
+  "color": {
+    "tokens": "PALETTE dark and light to --sl-* variables; accent default #7dd3a8 used only on the check",
+    "dark": "field #141416, panel #111113, ink #f4f4f5, body #c4c4ca, hint #8a8a93, hairline 8% white",
+    "light": "field #ffffff, panel #ffffff, ink #18181b, body #3f3f46, hint #6b6b74, hairline 10% ink"
+  },
+  "motion": {
+    "reveal": "block rises 8px out of 6px blur, 500ms ease-out, 50ms delay, once on mount",
+    "panel": "unfolds from the trigger edge: scaleY 0.9 to 1, 6px drift, 4px blur, 260ms ease-out; exit 140ms ease-in",
+    "highlight": "one layoutId element on spring.ui (500/40), glides between rows",
+    "value": "keyed cross-fade, 6px rise and 3px blur, 280ms",
+    "check": "pathLength 0 to 1 over 320ms, 40ms delay, remounts with selection",
+    "press": "scale 0.985",
+    "reducedMotion": "opacity only, 150ms or less, no spring, check pre-drawn"
+  },
+  "responsive": {
+    "all": "fluid to 320px; panel matches trigger width; filter input 16px on small screens to avoid zoom",
+    "touch": "44px trigger, no hover-only action"
+  },
+  "accessibility": [
+    "trigger role combobox with aria-haspopup listbox, aria-expanded, aria-controls only while open, aria-activedescendant while open",
+    "options role option with aria-selected; groups role group labelled by heading",
+    "keyboard: arrows (no wrap), Home, End, PageUp and PageDown (five rows), Enter and Space choose, Escape closes and restores focus, Tab closes",
+    "typeahead buffer of 600ms; a single letter cycles through matches",
+    "closed trigger: printable keys choose the first match directly",
+    "focus-visible ring 2px ink offset 2px; no focus steal on first render",
+    "empty results are a polite status line"
+  ],
+  "content": {
+    "options": "Ten fictional cities in Europe, Americas and Asia-Pacific, each with a time-zone hint",
+    "placeholder": "Choose a city",
+    "label": "City",
+    "demo": "closes and reopens, hovers two Europe rows, types lis to reach Lisbon, selects it"
+  },
+  "avoid": [
+    "oversized rounded panels or radius above 12px",
+    "glass, blur-backed panels or gradient borders",
+    "an icon on every option or coloured group tiles",
+    "accent on the highlight, the trigger or the focus ring",
+    "portals or positioning outside the component",
+    "wrapping arrow keys",
+    "moving focus into the list on first render",
+    "a highlight that jumps instead of gliding",
+    "placeholder copy such as Option 1"
+  ]
+}

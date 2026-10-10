@@ -1,0 +1,191 @@
+{
+  "slug": "select-listbox",
+  "name": "Listbox Select",
+  "tier": "free",
+  "platform": "web",
+  "category": "selects",
+  "description": "A custom select with native keyboard manners: typeahead, Home and End, grouped options, a spring highlight and a check that draws on the chosen row.",
+  "tags": [
+    "select",
+    "listbox",
+    "dropdown",
+    "typeahead",
+    "combobox",
+    "keyboard",
+    "grouped options",
+    "form control",
+    "dark",
+    "monochrome"
+  ],
+  "dependencies": [
+    "motion",
+    "lucide-react"
+  ],
+  "theme": "dark",
+  "previewHeight": 760,
+  "usage": "import { SelectListbox } from \"@/components/design-for-ai/select-listbox\";\n\nconst cities = [\n  { value: \"berlin\", label: \"Berlin\", group: \"Europe\", hint: \"CET\" },\n  { value: \"lisbon\", label: \"Lisbon\", group: \"Europe\", hint: \"WET\" },\n  { value: \"austin\", label: \"Austin\", group: \"Americas\", hint: \"CST\" },\n];\n\n<SelectListbox\n  label=\"City\"\n  options={cities}\n  defaultValue=\"berlin\"\n  onValueChange={(value) => setCity(value)}\n/>",
+  "props": [
+    {
+      "name": "options",
+      "type": "SelectOption[]",
+      "default": "Ten cities in three regions",
+      "description": "Each option takes value, label, and optional group (heading) and hint (mono text on the row)."
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "description": "Controlled value. Leave out to let the component keep its own selection."
+    },
+    {
+      "name": "defaultValue",
+      "type": "string",
+      "default": "\"berlin\" in the demo, otherwise the first option",
+      "description": "Value on first render when uncontrolled."
+    },
+    {
+      "name": "onValueChange",
+      "type": "(value: string, option: SelectOption) => void",
+      "description": "Runs when the user chooses an option by pointer or keyboard."
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "default": "\"City\"",
+      "description": "Mono label above the trigger, and the accessible name of the list."
+    },
+    {
+      "name": "placeholder",
+      "type": "string",
+      "default": "\"Choose a city\"",
+      "description": "Shown on the trigger while nothing is chosen."
+    },
+    {
+      "name": "searchPlaceholder",
+      "type": "string",
+      "default": "\"Search cities\"",
+      "description": "Placeholder of the filter field when searchable is on."
+    },
+    {
+      "name": "size",
+      "type": "\"sm\" | \"md\"",
+      "default": "\"md\"",
+      "description": "Trigger and row heights: 36px and 44px for md, 32px rows and a 36px trigger for sm."
+    },
+    {
+      "name": "grouped",
+      "type": "boolean",
+      "default": "true",
+      "description": "Puts options under their group headings in first-seen order. Off, the same list reads flat."
+    },
+    {
+      "name": "searchable",
+      "type": "boolean",
+      "default": "false",
+      "description": "Adds a filter field at the top of the panel. Keys go to the field while it has focus."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": "false",
+      "description": "Dims the trigger and closes the panel. No hover response."
+    },
+    {
+      "name": "placement",
+      "type": "\"auto\" | \"top\" | \"bottom\"",
+      "default": "\"auto\"",
+      "description": "Where the panel opens. Auto takes the side with room and prefers below."
+    },
+    {
+      "name": "defaultOpen",
+      "type": "boolean",
+      "default": "false",
+      "description": "Opens the panel on first render without moving focus into it."
+    },
+    {
+      "name": "accent",
+      "type": "string",
+      "default": "\"#7dd3a8\"",
+      "description": "The one colour: the check on the chosen row."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Near-black field and panel with white ink, or the white inverse."
+    }
+  ],
+  "added": "2026-10-10",
+  "demo": {
+    "steps": [
+      "wait:450",
+      "click:@trigger",
+      "wait:380",
+      "click:@trigger",
+      "wait:280",
+      "hover:@opt-london",
+      "wait:180",
+      "hover:@opt-madrid",
+      "wait:140",
+      "type:lis",
+      "wait:260",
+      "key:Enter",
+      "wait:1500"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "size",
+      "label": "Size",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "sm",
+          "label": "Small"
+        },
+        {
+          "value": "md",
+          "label": "Medium"
+        }
+      ],
+      "default": "md"
+    },
+    {
+      "prop": "grouped",
+      "label": "Grouped",
+      "kind": "toggle",
+      "default": true
+    },
+    {
+      "prop": "searchable",
+      "label": "Search",
+      "kind": "toggle",
+      "default": false
+    },
+    {
+      "prop": "placement",
+      "label": "Opens",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "auto",
+          "label": "Auto"
+        },
+        {
+          "value": "top",
+          "label": "Above"
+        },
+        {
+          "value": "bottom",
+          "label": "Below"
+        }
+      ],
+      "default": "auto"
+    },
+    {
+      "prop": "disabled",
+      "label": "Disabled",
+      "kind": "toggle",
+      "default": false
+    }
+  ]
+}
