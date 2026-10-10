@@ -80,11 +80,105 @@
       "description": "Scroll distance in px before the hairline and blur appear and the bar condenses from 64 to 56px."
     },
     {
+      "name": "showSearch",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show the search chip (and the icon button on narrow bars). ⌘K / Ctrl K still calls onSearch."
+    },
+    {
+      "name": "scrollState",
+      "type": "\"auto\" | \"top\" | \"scrolled\"",
+      "default": "\"auto\"",
+      "description": "\"auto\" follows the page scroll. \"top\" and \"scrolled\" pin the resting or condensed look, handy for previews."
+    },
+    {
       "name": "className",
       "type": "string",
       "default": "\"\"",
       "description": "Extra classes on the header element."
     }
   ],
-  "added": "2026-10-09"
+  "added": "2026-10-09",
+  "demo": {
+    "steps": [
+      "wait:400",
+      "hover:@link-docs",
+      "hover:@link-customers",
+      "click:@link-pricing",
+      "wait:250",
+      "scroll:560",
+      "wait:450",
+      "hover:@cta",
+      "scroll:-560",
+      "wait:300"
+    ],
+    "loop": false
+  },
+  "controls": [
+    {
+      "prop": "activeIndex",
+      "label": "Current route",
+      "kind": "select",
+      "options": [
+        {
+          "value": 0,
+          "label": "Product"
+        },
+        {
+          "value": 1,
+          "label": "Docs"
+        },
+        {
+          "value": 2,
+          "label": "Customers"
+        },
+        {
+          "value": 3,
+          "label": "Pricing"
+        },
+        {
+          "value": 4,
+          "label": "Changelog"
+        }
+      ],
+      "default": 1
+    },
+    {
+      "prop": "scrollState",
+      "label": "Header state",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "auto",
+          "label": "Follow scroll"
+        },
+        {
+          "value": "top",
+          "label": "Top"
+        },
+        {
+          "value": "scrolled",
+          "label": "Scrolled"
+        }
+      ],
+      "default": "auto"
+    },
+    {
+      "prop": "showSearch",
+      "label": "Search chip",
+      "kind": "toggle",
+      "default": true
+    },
+    {
+      "prop": "searchLabel",
+      "label": "Search label",
+      "kind": "text",
+      "default": "Search docs"
+    },
+    {
+      "prop": "$replay",
+      "label": "Replay",
+      "kind": "action"
+    }
+  ]
 }

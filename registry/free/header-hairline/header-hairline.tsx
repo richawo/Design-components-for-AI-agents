@@ -38,6 +38,10 @@ export type HeaderHairlineProps = {
   cta?: { label: string; href: string };
   /** Scroll distance in px after which the hairline, blur and condensed height kick in. */
   condenseAt?: number;
+  /** Show the search chip (and the icon button on narrow bars). ⌘K / Ctrl K still calls `onSearch`. */
+  showSearch?: boolean;
+  /** `"auto"` follows the page scroll. `"top"` and `"scrolled"` pin the resting or condensed look, e.g. to preview it. */
+  scrollState?: "auto" | "top" | "scrolled";
   className?: string;
 };
 
@@ -181,6 +185,8 @@ export function HeaderHairline({
   signIn = { label: "Sign in", href: "#login" },
   cta = { label: "Start deploying", href: "#signup" },
   condenseAt = 8,
+  showSearch = true,
+  scrollState = "auto",
   className = "",
 }: HeaderHairlineProps) {
   const reduce = useReducedMotion() ?? false;
@@ -189,7 +195,8 @@ export function HeaderHairline({
   const [innerActive, setInnerActive] = useState(defaultActiveIndex);
   const active = activeIndex ?? innerActive;
   const [open, setOpen] = useState(false);
-  const scrolled = useCondensed(condenseAt);
+  const pageScrolled = useCondensed(condenseAt);
+  const scrolled = scrollState === "auto" ? pageScrolled : scrollState === "scrolled";
   const { held, mac } = useCommandK(onSearch);
   const headerRef = useRef<HTMLElement>(null);
   const barRef = useRef<HTMLDivElement>(null);
@@ -213,7 +220,7 @@ export function HeaderHairline({
   const at = (k: number) => INTRO.actionsAt + k * INTRO.stagger;
 
   return (
-    <header ref={headerRef} className={`sticky top-0 z-40 w-full text-white ${className}`}>
+    <header ref={headerRef} data-demo="header" className={`sticky top-0 z-40 w-full text-white ${className}`}>
       {/* Surface: transparent at rest; hairline + blur fade in once the page moves. Never transition backdrop-filter itself. */}
       <motion.div
         aria-hidden="true"
@@ -248,12 +255,15 @@ export function HeaderHairline({
           <HoverLinks links={links} active={active} onChoose={choose} reduce={reduce} groupId={uid} />
 
           <div className="flex items-center justify-end gap-1.5 @4xl:gap-2">
-            <Landing variants={rise} delay={at(0)}>
-              <SearchChip label={searchLabel} mac={mac} held={held} onSearch={onSearch} />
-            </Landing>
+            {showSearch ? (
+              <Landing variants={rise} delay={at(0)}>
+                <SearchChip label={searchLabel} mac={mac} held={held} onSearch={onSearch} />
+              </Landing>
+            ) : null}
             <Landing variants={rise} delay={at(1)} className="hidden @4xl:block">
               <a
                 href={signIn.href}
+                data-demo="signin"
                 className="flex h-8 items-center whitespace-nowrap rounded-lg px-3 text-[13.5px] text-white/65 outline-none transition-[color,background-color,transform] duration-150 hover:bg-white/[0.04] hover:text-white active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
               >
                 {signIn.label}
@@ -262,6 +272,7 @@ export function HeaderHairline({
             <Landing variants={rise} delay={at(2)} className="hidden @2xl:block">
               <a
                 href={cta.href}
+                data-demo="cta"
                 tabIndex={open ? -1 : undefined}
                 aria-hidden={open || undefined}
                 className={`flex h-8 items-center gap-1.5 whitespace-nowrap rounded-lg bg-white px-3.5 text-[13.5px] font-medium tracking-[-0.01em] text-black shadow-[inset_0_-1px_0_rgba(0,0,0,0.12)] outline-none transition-[background-color,transform,opacity] duration-150 hover:bg-[#e8e8ea] active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black ${
@@ -393,6 +404,7 @@ function HoverLinks({
               >
                 <a
                   href={l.href}
+                  data-demo={`link-${demoName(l.label)}`}
                   aria-current={i === active ? "page" : undefined}
                   onPointerEnter={(e) => e.pointerType === "mouse" && setHovered(i)}
                   onFocus={(e) => e.currentTarget.matches(":focus-visible") && setHovered(i)}
@@ -438,6 +450,7 @@ function SearchChip({ label, mac, held, onSearch }: { label: string; mac: boolea
     <button
       type="button"
       onClick={() => onSearch?.()}
+      data-demo="search"
       aria-label={`${label} (${mac ? "Command" : "Control"} K)`}
       aria-keyshortcuts={mac ? "Meta+K" : "Control+K"}
       className={`group/s flex h-11 min-w-11 items-center justify-center gap-2 rounded-lg px-2.5 text-[13px] text-white/55 outline-none transition-[background-color,color,transform,box-shadow] duration-150 hover:text-white active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black @4xl:h-8 @4xl:min-w-0 @4xl:justify-start @4xl:pl-2.5 @4xl:pr-1 @4xl:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1)] @4xl:hover:bg-white/[0.04] @4xl:hover:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.16)] ${
@@ -575,6 +588,9 @@ function MobileMenu({
   );
 }
 
+/** "Customers" -> "customers": the name a demo script targets a link by. */
+const demoName = (label: string) => label.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+
 function Mark() {
   return (
     <svg viewBox="0 0 24 24" className="size-[22px] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-px" aria-hidden="true">
@@ -620,14 +636,14 @@ const CLI = [
   { prompt: false, text: "  Promoted to production in 1.4s" },
 ];
 
-function Demo() {
+function Stage(props: HeaderHairlineProps) {
   const reduce = useReducedMotion() ?? false;
   const rise = riseVariants(reduce);
   const [startedAt] = useState(() => (typeof performance === "undefined" ? 0 : performance.now()));
   const intro = (k: number) => PAGE.at + k * PAGE.stagger;
   return (
     <div className="min-h-[1500px] text-white" style={{ backgroundColor: COLOR.page }}>
-      <HeaderHairline />
+      <HeaderHairline {...props} />
       <article className="mx-auto max-w-[1280px] px-4 pb-40 pt-14 sm:px-6 sm:pt-20">
         <div className="max-w-[680px]">
           <motion.p variants={rise} initial="hidden" animate="shown" custom={intro(0)} className="font-mono text-[11px] uppercase tracking-[0.14em] text-white/40">
@@ -695,4 +711,21 @@ function Demo() {
   );
 }
 
-export default Demo;
+/** The header over a docs article. Overrides (the page's Customize panel) go straight to the header. */
+export default function HeaderHairlineDemo({ activeIndex: forced, onNavigate, ...overrides }: Partial<HeaderHairlineProps> = {}) {
+  // The demo owns the current route so clicks keep moving the dot while the control can also set it.
+  const [active, setActive] = useState(forced ?? 1);
+  useEffect(() => {
+    if (forced !== undefined) setActive(forced);
+  }, [forced]);
+  return (
+    <Stage
+      {...overrides}
+      activeIndex={active}
+      onNavigate={(i, link) => {
+        setActive(i);
+        onNavigate?.(i, link);
+      }}
+    />
+  );
+}
