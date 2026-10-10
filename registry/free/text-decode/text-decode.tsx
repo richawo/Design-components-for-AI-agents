@@ -118,8 +118,9 @@ export function TextDecode({
   const paint = (i: number, state: "hidden" | "glyph" | "old" | "final" | "flash", glyph = "") => {
     const el = cellRefs.current[i];
     if (!el) return;
-    const base = el.firstElementChild as HTMLElement;
-    const over = el.lastElementChild as HTMLElement;
+    // The overlay comes first in each cell (see the render below), the real character last.
+    const over = el.firstElementChild as HTMLElement;
+    const base = el.lastElementChild as HTMLElement;
     if (state === "hidden") {
       base.style.opacity = "0";
       over.style.opacity = "0";
@@ -320,8 +321,8 @@ export function TextDecode({
               }}
               className="tdc-cell"
             >
-              <span> </span>
               <span className="tdc-over" />
+              <span> </span>
             </span>
           ) : (
             <span
@@ -331,9 +332,10 @@ export function TextDecode({
               }}
               className="tdc-cell"
             >
+              {/* The overlay goes BEFORE the character: placed after it, a cell that ends a soft-wrapped line splits across the break and the overlay's box collapses to zero width, so its glyphs and flash land off the letter. */}
+              <span className="tdc-over" />
               {/* The final character is always in the flow (only its opacity changes), so its width is reserved from frame one. */}
               <span style={armed ? { opacity: 0 } : undefined}>{c.ch}</span>
-              <span className="tdc-over" />
             </span>
           ),
         )}
@@ -360,7 +362,9 @@ const readings = [
   "Hydrogen line · integration 6 of 8 complete · 04:13:03 UTC",
 ];
 
+/** The Headline control's default; the frame renders it with its designed line break. */
 const DEFAULT_HEADLINE = "Signal found at 1420 MHz.";
+const DEFAULT_HEADLINE_LINES = "Signal found\nat 1420 MHz.";
 
 const links = ["Archive", "Observations", "Instruments", "Contact"];
 
@@ -436,7 +440,9 @@ function TextDecodeDemo(overrides: Partial<TextDecodeProps> = {}) {
   }, [glyphs, speed, flashColor]);
   // A picked glyph set reaches every line; at the default the nav and status keep their own sets (symbols, binary).
   const picked = glyphs && glyphs !== "auto" ? glyphs : undefined;
+  // The default headline keeps its designed hard break; typed text wraps (and balances) on its own.
   const customText = overrides.text !== undefined && overrides.text !== DEFAULT_HEADLINE;
+  const { text: _text, ...headlineOverrides } = overrides;
 
   return (
     <div className="flex min-h-dvh w-full items-center justify-center bg-black px-5 py-16 text-white sm:px-10">
@@ -453,13 +459,13 @@ function TextDecodeDemo(overrides: Partial<TextDecodeProps> = {}) {
 
         <TextDecode
           as="h2"
-          text={DEFAULT_HEADLINE}
           trigger="view"
           delay={DEMO_T.heading * 1000}
           speed={26}
           replayKey={replay}
-          className={`mt-6 ${customText ? "max-w-[14em]" : "max-w-[6.5em]"} text-balance font-display text-[clamp(2.75rem,1.1rem+6.2cqi,6.5rem)] font-medium leading-[0.95] tracking-[-0.045em] text-white`}
-          {...overrides}
+          className={`mt-6 ${customText ? "max-w-[14em] text-balance" : ""} font-display text-[clamp(2.75rem,1.1rem+6.2cqi,6.5rem)] font-medium leading-[0.95] tracking-[-0.045em] text-white`}
+          {...headlineOverrides}
+          text={customText ? overrides.text : DEFAULT_HEADLINE_LINES}
         />
 
         <p className="mt-9 flex items-start gap-3 font-mono text-[12.5px] leading-[1.6] text-white/60 @xl:text-[13px]">
