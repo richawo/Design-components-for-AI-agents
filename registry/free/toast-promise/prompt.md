@@ -1,15 +1,18 @@
 Build one toast that follows one async job, in React 19 + Tailwind CSS v4 + `motion/react`. It is a single notification, not a stack: it starts on loading, morphs in place to success or error, and on success counts its window down, with Undo and a ring around the button when Undo is on. It should feel like a receipt for something that just happened, not a chat bubble and not a marketing banner.
 
 **Layout**
-- The card is at most 392px wide (it fills a narrower container), radius 14px, padding 14px 16px 16px, one row: an 18px status glyph, a text column that takes the remaining width, then the Undo button and a 28px dismiss button, with 4px between the two actions.
+- The card is at most 392px wide (it fills a narrower container), radius 14px, padding 14px 16px 16px. It is one CSS grid with a 12px column gap and two arrangements, picked by a container query on the toast's layer, never the viewport:
+  - From 448px of container (`@md`), one row: an 18px status glyph, a text column that takes the remaining width, the action (Undo or Try again), then a 28px dismiss button centred on the pill.
+  - Below 448px, the glyph, the copy and dismiss share the first row (dismiss centred on the title line) and the action drops to a second row under the copy, 12px below it and aligned with its left edge, so the copy keeps the card's whole width. The action row opens and closes with a `grid-template-rows` transition from `0fr` to `1fr` (300ms, ease-out), so the card grows and shrinks instead of jumping a row.
 - The toast fills the nearest positioned parent (`absolute`, the default) or the viewport (`fixed`). Its layer is a `@container`, so the insets follow the container: 16px from the edges, and 24px once the container is 448px wide or more. Positions: bottom-right (aligned right, bottom edge), bottom-center (centred on the x axis, bottom edge), top-right (aligned right, top edge). A narrow container gets a card that fills its width, with no viewport breakpoints anywhere.
 - The Undo button is a fixed 76 × 32px pill. Its countdown ring is a rounded rectangle 84.5 × 40.5 with radius 20.25 drawn 5px outside the button, so its size never changes when the label changes.
 - A 2px hairline runs along the card's lower edge, clipped by the card's rounded corners.
 
 **Typography**
 - Title: 14px / 20px, weight 500, tracking -0.01em, ink.
-- Description: 13px / 1.45, weight 400, muted, `tabular-nums`. When it carries the window it reads "5 s to undo" with non-breaking spaces, so the group never wraps apart.
-- Dismiss and Undo labels: 13px, weight 500, tracking -0.01em.
+- Title wraps with `text-wrap: balance`, the description with `text-wrap: pretty`.
+- Description: 13px / 1.45, weight 400, muted, `tabular-nums`. When it carries the window, "· 5 s to undo" is its own `white-space: nowrap` span after a plain space, so a narrow card breaks before the dot and never inside "Moved to Archive" or "5 s to undo".
+- Undo and Try again labels: 13px, weight 500, tracking -0.01em.
 - No all-caps labels, no mono in the toast itself.
 
 **Colour (dark is the default; monochrome first)**
@@ -20,9 +23,9 @@ Build one toast that follows one async job, in React 19 + Tailwind CSS v4 + `mot
 - Light theme: card #ffffff, hairline rgba(24,24,27,0.09), ink #18181b, muted #52525b, success #3f8a50, error #c9553d, undo fill rgba(24,24,27,0.05), hover rgba(24,24,27,0.09).
 
 **The four states**
-1. Loading: an 18px ring with a 90-degree arc turning at 1.2s per turn (static under reduced motion). The hairline carries a 40%-wide soft sweep (ink fading in and out at both ends) that runs left to right every 1.3s, linear, forever. The copy reads "Archiving 12 threads…" with "Moving them out of your inbox" beneath. No Undo, no countdown.
+1. Loading: an 18px ring with a 90-degree arc turning at 1.2s per turn (static under reduced motion). The hairline carries a 40%-wide soft sweep (ink fading in and out at both ends) that runs left to right every 1.3s, linear, forever. Move it with a transform (`x` from -100% to 250% of its own width), never `left`, so the loop stays on the compositor. The copy reads "Archiving 12 threads…" with "Moving them out of your inbox" beneath. No Undo, no countdown.
 2. Success: the spinner cross-fades into a 1.7px check that draws its stroke over 340ms (delayed 80ms). The hairline lands as a success-coloured bar scaling from its left edge over 500ms and fades out 1.1s later. The description carries the window: "Moved to Archive · 5 s to undo". With Undo on, Undo appears with a 220ms scale from 0.92 and opacity, and the ring is full at the start and drains around the button over the whole window. With Undo off there is no button and no ring, but the toast still leaves when the same window ends.
-3. Error: the glyph becomes a circle with a cross. The hairline lands as an error-coloured bar and stays. The copy names the state the world is in: "Nothing was archived. Your inbox is unchanged." With `onRetry` set, a quiet text button ("Try again") takes the Undo slot: no fill, muted until hover, a 44px hit area. Pressing it runs the job again and the toast returns to loading. Without `onRetry` there is no Retry. An error has no timer: it stays until it is retried or dismissed.
+3. Error: the glyph becomes a circle with a cross. The hairline lands as an error-coloured bar and stays. The copy names the state the world is in: "Nothing was archived. Your inbox is unchanged." With `onRetry` set, a quiet text button ("Try again") takes the Undo slot: no fill, muted at rest and ink on hover (a colour transition), a 44px hit area. In the narrow layout its 10px side padding hangs to the left so the label lines up with the copy. Pressing it runs the job again and the toast returns to loading. Without `onRetry` there is no Retry. An error has no timer: it stays until it is retried or dismissed.
 4. Undone: after Undo is pressed the glyph becomes a return arrow, the title reads "Restored 12 threads", the description reads "Put back where it was", the ring and the button disappear, and the toast leaves 1.6s later.
 
 **Motion**
@@ -35,8 +38,9 @@ Build one toast that follows one async job, in React 19 + Tailwind CSS v4 + `mot
 
 **Behaviour and accessibility**
 - Each run of the job gets an id; a result that arrives after a newer run has started is ignored, so a re-run or a Retry never lands on a stale state. A job that throws synchronously settles as an error.
+- `onStatusChange(status)` reports every status change of the current run and never one from a superseded run. A host mirrors the outcome from it (fade the archived rows once the toast says Archived), not from the job's own side effects, so the page and the toast can never disagree.
 - Announce politely: a visually hidden `role="status"` with `aria-live="polite"` sits in the always-mounted layer, empty at first, and receives "title. description" on the next frame after each status change, so the region exists before the words arrive. The countdown never announces.
-- Undo, Retry and dismiss are real buttons with keyboard focus rings (2px, current colour). Undo's ring sits 9px out, beyond the countdown ring, so the ring never hides how much of the window is left. Dismiss has `aria-label="Dismiss"`. Esc inside the toast dismisses it.
+- Undo, Retry and dismiss are real buttons with keyboard focus rings (2px, current colour). Undo's focus ring is drawn inside the pill (offset -3px), so the countdown ring stays the only ring around the button and never reads as a second countdown. Dismiss has `aria-label="Dismiss"`. Esc inside the toast dismisses it.
 - Touch targets: the visible Undo pill is 32px tall and its hit area reaches 44px. The visible dismiss circle is 28px and its hit area reaches 44px. Retry's hit area also reaches 44px.
 - The card is a `div` with `role="group"` and `aria-labelledby` pointing at its title (not a landmark, since the live region already announces). Hover pauses are pointer events; focus pauses come from `focus` and `blur`, so keyboard users can read the copy and reach Undo at their own pace.
 - Pressing Undo moves focus to the Dismiss button, so focus is never dropped to the page as Undo unmounts.
@@ -45,6 +49,8 @@ Build one toast that follows one async job, in React 19 + Tailwind CSS v4 + `mot
 **Don't**
 - Don't stack several toasts or fan them out: that is `toast-stack`. This is one job, one toast.
 - Don't use a spinner that never resolves, a progress bar that fills with a percentage nobody computed, confetti, a green tick in a rounded square, or a coloured card per state.
+- Don't keep one fixed row at every width: below 448px a 76px pill beside the copy squeezes it to a 120px column and breaks phrases in half.
+- Don't raise the toast on page load in a demo: a toast is a receipt for something the user did, so it appears on a click.
 - Don't put the countdown in the copy as a ticking number; the ring is the countdown. The description states the window once.
 - Don't restart the countdown on hover, or let it run while the pointer is on the toast.
 - Don't add emoji, sparkles, glow, glassmorphism, gradient text or a bouncing entrance.

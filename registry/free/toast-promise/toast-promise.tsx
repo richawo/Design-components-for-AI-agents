@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
+import { useCallback, useEffect, useId, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
 import { AnimatePresence, animate, motion, useInView, useMotionValue, useReducedMotion, useTransform, type PanInfo } from "motion/react";
 
 /* ------------------------------------------------------------------ */
@@ -42,6 +42,11 @@ export type PromiseToastProps = {
   onRetry?: () => void;
   /** Runs when the toast leaves: the window ended, it was swiped or dismissed, or Esc was pressed. */
   onDismiss?: () => void;
+  /**
+   * Runs on every status change of the current run (never for a superseded one), so the host can
+   * mirror the outcome, e.g. fade the archived rows only once the toast itself says "Archived".
+   */
+  onStatusChange?: (status: PromiseToastStatus) => void;
 };
 
 /* ------------------------------------------------------------------ */
@@ -112,9 +117,6 @@ const MOTION = {
   fade: 0.15, // reduced motion
 } as const;
 
-/** A non-breaking space: binds a phrase together so copy wraps as a unit. */
-const NBSP = "\u00A0";
-
 /** The undo ring is a rounded rect 84.5 × 40.5 with radius 20.25: its length, for dash maths. */
 const RING_LENGTH = 2 * Math.PI * 20.25 + 2 * (84.5 - 2 * 20.25);
 
@@ -178,6 +180,7 @@ export function PromiseToast({
   onUndo,
   onRetry,
   onDismiss,
+  onStatusChange,
 }: PromiseToastProps) {
   const reduce = useReducedMotion() ?? false;
   const uid = useId();
@@ -205,11 +208,13 @@ export function PromiseToast({
   const onUndoRef = useRef(onUndo);
   const onRetryRef = useRef(onRetry);
   const onDismissRef = useRef(onDismiss);
+  const onStatusChangeRef = useRef(onStatusChange);
   useEffect(() => {
     jobRef.current = job;
     onUndoRef.current = onUndo;
     onRetryRef.current = onRetry;
     onDismissRef.current = onDismiss;
+    onStatusChangeRef.current = onStatusChange;
   });
 
   const cardRef = useRef<HTMLDivElement>(null);
@@ -253,6 +258,11 @@ export function PromiseToast({
         },
       );
   }, [runKey, attemptKey, life]);
+
+  // Status only ever changes for the current run (stale results are dropped above), so this reports truth.
+  useEffect(() => {
+    onStatusChangeRef.current?.(status);
+  }, [status]);
 
   // The success window: `life` runs 1 → 0 over `duration` and the toast leaves when it empties.
   // It runs with or without Undo, so a success toast never stays on screen for good. Undo only
@@ -304,29 +314,41 @@ export function PromiseToast({
     close();
   };
 
+  // The window is its own nowrap span after a plain space, so a narrow card breaks before the dot,
+  // never inside "Moved to Archive" and never inside "5 s to undo".
+  const windowText = `· ${Math.round(duration)} s to undo`;
   const copy = (() => {
     switch (status) {
       case "loading":
-        return { title: loadingTitle, description: loadingDescription };
+        return { title: loadingTitle, description: loadingDescription, spoken: loadingDescription };
       case "success":
-        // Non-breaking spaces bind the dot and the window to the copy before them, so a wrap never strands
-        // a dot at the end of a line or splits "5 s to undo".
-        return { title: successTitle, description: undo ? `${successDescription}${NBSP}·${NBSP}${Math.round(duration)}${NBSP}s${NBSP}to${NBSP}undo` : successDescription };
+        return undo
+          ? {
+              title: successTitle,
+              description: (
+                <>
+                  {successDescription} <span className="whitespace-nowrap">{windowText}</span>
+                </>
+              ),
+              spoken: `${successDescription}, ${Math.round(duration)} seconds to undo`,
+            }
+          : { title: successTitle, description: successDescription, spoken: successDescription };
       case "error":
-        return { title: errorTitle, description: errorDescription };
+        return { title: errorTitle, description: errorDescription, spoken: errorDescription };
       case "undone":
-        return { title: undoTitle, description: undoneDescription };
+        return { title: undoTitle, description: undoneDescription, spoken: undoneDescription };
     }
   })();
 
   // Filled on the next frame, so the region is already in the DOM when the words arrive.
   useEffect(() => {
-    const frame = window.requestAnimationFrame(() => setAnnouncement(`${copy.title}. ${copy.description}`));
+    const frame = window.requestAnimationFrame(() => setAnnouncement(`${copy.title}. ${copy.spoken}`));
     return () => window.cancelAnimationFrame(frame);
-  }, [copy.title, copy.description]);
+  }, [copy.title, copy.spoken]);
 
   const showUndo = status === "success" && undo;
   const showRetry = status === "error" && onRetry !== undefined;
+  const hasAction = showUndo || showRetry;
 
   const cardVariants = {
     from: reduce ? { opacity: 0 } : { opacity: 0, y: MOTION.enterRise, filter: `blur(${MOTION.enterBlur}px)` },
@@ -390,8 +412,14 @@ export function PromiseToast({
               }}
               className="pointer-events-auto relative w-full max-w-[392px] select-none overflow-hidden rounded-[14px]"
             >
-              <div className="flex items-start gap-3 px-4 pb-4 pt-3.5">
-                <span aria-hidden="true" className="relative mt-px grid h-[18px] w-[18px] shrink-0 place-items-center">
+              {/*
+                One grid, two arrangements, chosen by the layer's width (a container query, not the viewport).
+                Narrow (under 448px): glyph, copy and Dismiss share the first row; Undo or Try again drops to a
+                second row under the copy, so the copy keeps the card's full width. From @md the card is 392px
+                and the action moves inline between the copy and Dismiss.
+              */}
+              <div className="grid grid-cols-[18px_minmax(0,1fr)_28px] items-start gap-x-3 px-4 pb-4 pt-3.5 @md:grid-cols-[18px_minmax(0,1fr)_auto_28px]">
+                <span aria-hidden="true" className="relative col-start-1 row-start-1 mt-px grid h-[18px] w-[18px] place-items-center">
                   {/* popLayout lets the new glyph and copy arrive while the old ones leave, so the card never goes blank mid-change. */}
                   <AnimatePresence mode="popLayout" initial={false}>
                     <motion.span
@@ -407,91 +435,108 @@ export function PromiseToast({
                   </AnimatePresence>
                 </span>
 
-                <div className="relative min-w-0 flex-1">
+                <div className="relative col-start-2 row-start-1 min-w-0">
                   <AnimatePresence mode="popLayout" initial={false}>
                     <motion.div key={status} {...swap}>
-                      <p id={`${uid}-title`} className="text-[14px] font-medium leading-5 tracking-[-0.01em]" style={{ color: palette.ink }}>
+                      <p id={`${uid}-title`} className="text-balance text-[14px] font-medium leading-5 tracking-[-0.01em]" style={{ color: palette.ink }}>
                         {copy.title}
                       </p>
-                      <p className="mt-0.5 text-[13px] leading-[1.45] tabular-nums" style={{ color: palette.muted }}>
+                      <p className="mt-0.5 text-pretty text-[13px] leading-[1.45] tabular-nums" style={{ color: palette.muted }}>
                         {copy.description}
                       </p>
                     </motion.div>
                   </AnimatePresence>
                 </div>
 
-                <div className="flex shrink-0 items-center gap-1">
-                  <AnimatePresence>
-                    {showUndo && (
-                      <motion.span
-                        key="undo"
-                        initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.92 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.92, transition: { duration: 0.12 } }}
-                        transition={{ duration: 0.22, ease: EASE_OUT }}
-                        className="relative mr-1 inline-grid place-items-center"
-                        style={{ width: 76, height: 32 }}
-                      >
-                        {/* The hit area reaches 44px tall (the ::before) while the pill stays 32px. */}
-                        <button
-                          type="button"
-                          data-demo="undo"
-                          onClick={undoNow}
-                          className={`relative z-10 grid h-8 w-[76px] place-items-center rounded-full text-[13px] font-medium tracking-[-0.01em] transition-[background-color,scale] duration-150 ease-out before:absolute before:-inset-[6px] before:content-[''] active:scale-[0.96] focus-visible:outline-2 focus-visible:outline-offset-[9px] focus-visible:outline-current ${palette.controlClass} ${palette.hoverClass}`}
-                          style={{ color: palette.ink, boxShadow: `inset 0 0 0 1px ${palette.line}` }}
+                {/*
+                  The action slot. Its row opens and closes with a grid-template-rows transition (0fr to 1fr), so
+                  in the narrow layout the card grows and shrinks smoothly instead of jumping by a row. The card's
+                  own overflow clips the button while its row is still opening.
+                */}
+                <div
+                  className={`col-start-2 row-start-2 grid justify-items-start transition-[grid-template-rows] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none @md:col-start-3 @md:row-start-1 ${hasAction ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
+                >
+                  <div className="min-h-0">
+                    <AnimatePresence initial={false}>
+                      {showUndo && (
+                        <motion.div
+                          key="undo"
+                          initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.92 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.92, transition: { duration: 0.12 } }}
+                          transition={{ duration: 0.22, ease: EASE_OUT }}
+                          className="origin-left pt-3 @md:origin-center @md:pt-0"
                         >
-                          {undoLabel}
-                        </button>
-                        {/* The countdown ring sits 5px outside the button and empties as the undo window closes. */}
-                        <svg aria-hidden="true" width={86} height={42} viewBox="0 0 86 42" fill="none" className="pointer-events-none absolute -inset-[5px] z-0 overflow-visible" style={{ color: palette.ink }}>
-                          <motion.rect
-                            x={0.75}
-                            y={0.75}
-                            width={84.5}
-                            height={40.5}
-                            rx={20.25}
-                            stroke="currentColor"
-                            strokeWidth={1.5}
-                            strokeDasharray={`${RING_LENGTH} ${RING_LENGTH}`}
-                            style={{ strokeDashoffset: ringOffset }}
-                          />
-                        </svg>
-                      </motion.span>
-                    )}
-                    {showRetry && (
-                      <motion.span
-                        key="retry"
-                        initial={reduce ? { opacity: 0 } : { opacity: 0, y: 4 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, transition: { duration: 0.12 } }}
-                        transition={{ duration: 0.22, ease: EASE_OUT }}
-                        className="relative mr-1 inline-grid place-items-center"
-                      >
-                        {/* A quiet text button with no fill: the retry is a second chance, not the main action. */}
-                        <button
-                          type="button"
-                          data-demo="retry"
-                          onClick={retry}
-                          className={`relative grid h-8 place-items-center rounded-full px-2.5 text-[13px] font-medium tracking-[-0.01em] transition-[background-color,scale] duration-150 ease-out before:absolute before:-inset-x-1 before:-inset-y-[6px] before:content-[''] active:scale-[0.96] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current ${palette.hoverClass}`}
-                          style={{ color: palette.ink }}
+                          <span className="relative grid place-items-center" style={{ width: 76, height: 32 }}>
+                            {/*
+                              The hit area reaches 44px tall (the ::before) while the pill stays 32px. The focus ring is
+                              drawn inside the pill, so the countdown ring stays the only ring around it.
+                            */}
+                            <button
+                              type="button"
+                              data-demo="undo"
+                              onClick={undoNow}
+                              className={`relative z-10 grid h-8 w-[76px] place-items-center rounded-full text-[13px] font-medium tracking-[-0.01em] transition-[background-color,scale] duration-150 ease-out before:absolute before:-inset-[6px] before:content-[''] active:scale-[0.96] focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-current ${palette.controlClass} ${palette.hoverClass}`}
+                              style={{ color: palette.ink, boxShadow: `inset 0 0 0 1px ${palette.line}` }}
+                            >
+                              {undoLabel}
+                            </button>
+                            {/* The countdown ring sits 5px outside the button and empties as the undo window closes. */}
+                            <svg aria-hidden="true" width={86} height={42} viewBox="0 0 86 42" fill="none" className="pointer-events-none absolute -inset-[5px] z-0 overflow-visible" style={{ color: palette.ink }}>
+                              <motion.rect
+                                x={0.75}
+                                y={0.75}
+                                width={84.5}
+                                height={40.5}
+                                rx={20.25}
+                                stroke="currentColor"
+                                strokeWidth={1.5}
+                                strokeDasharray={`${RING_LENGTH} ${RING_LENGTH}`}
+                                style={{ strokeDashoffset: ringOffset }}
+                              />
+                            </svg>
+                          </span>
+                        </motion.div>
+                      )}
+                      {showRetry && (
+                        <motion.div
+                          key="retry"
+                          initial={reduce ? { opacity: 0 } : { opacity: 0, y: 4 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, transition: { duration: 0.12 } }}
+                          transition={{ duration: 0.22, ease: EASE_OUT }}
+                          className="pt-3 @md:pt-0"
                         >
-                          {retryLabel}
-                        </button>
-                      </motion.span>
-                    )}
-                  </AnimatePresence>
-                  <button
-                    ref={dismissRef}
-                    type="button"
-                    onClick={() => close()}
-                    aria-label="Dismiss"
-                    className={`relative grid size-7 place-items-center rounded-full before:absolute before:-inset-2 before:content-[''] transition-[background-color,scale] duration-150 ease-out active:scale-[0.92] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current ${palette.hoverClass}`}
-                    style={{ color: palette.muted }}
-                  >
-                    {/* The visible circle is 28px; its hit area reaches 44px. */}
-                    <CloseGlyph />
-                  </button>
+                          {/*
+                            A quiet text button with no fill: the retry is a second chance, not the main action. Muted at
+                            rest, ink on hover. In the narrow layout its padding hangs left so the label lines up with the copy.
+                          */}
+                          <button
+                            type="button"
+                            data-demo="retry"
+                            onClick={retry}
+                            className={`relative -ml-2.5 grid h-8 place-items-center rounded-full px-2.5 text-[13px] font-medium tracking-[-0.01em] text-(color:--tp-rest) transition-[background-color,color,scale] duration-150 ease-out before:absolute before:-inset-x-1 before:-inset-y-[6px] before:content-[''] hover:text-(color:--tp-hover) active:scale-[0.96] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current @md:ml-0 ${palette.hoverClass}`}
+                            style={{ "--tp-rest": palette.muted, "--tp-hover": palette.ink } as CSSProperties}
+                          >
+                            {retryLabel}
+                          </button>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
                 </div>
+
+                {/* The visible circle is 28px; its hit area reaches 44px. Centred on the title line, or on the pill once inline. */}
+                <button
+                  ref={dismissRef}
+                  type="button"
+                  onClick={() => close()}
+                  aria-label="Dismiss"
+                  className={`relative col-start-3 row-start-1 -mt-1 grid size-7 place-items-center rounded-full before:absolute before:-inset-2 before:content-[''] transition-[background-color,scale] duration-150 ease-out active:scale-[0.92] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current @md:col-start-4 @md:mt-0.5 ${palette.hoverClass}`}
+                  style={{ color: palette.muted }}
+                >
+                  <CloseGlyph />
+                </button>
               </div>
 
               {/* The hairline along the lower edge: a sweep while loading, then it settles into the outcome. */}
@@ -501,11 +546,13 @@ export function PromiseToast({
                     // A faint full-width track, not a segment: a centred segment reads as a progress bar at an invented value.
                     <span className="absolute inset-0" style={{ background: palette.track }} />
                   ) : (
+                    // A transform, not `left`: the loop runs on the compositor. x is a share of the segment's own
+                    // width (40% of the track), so -100% starts it just off the left edge and 250% ends it just off the right.
                     <motion.span
-                      className="absolute inset-y-0 w-2/5"
+                      className="absolute inset-y-0 left-0 w-2/5"
                       style={{ background: `linear-gradient(90deg, transparent, ${palette.ink}, transparent)` }}
-                      initial={{ left: "-40%" }}
-                      animate={{ left: "100%" }}
+                      initial={{ x: "-100%" }}
+                      animate={{ x: "250%" }}
                       transition={{ duration: MOTION.sweep, ease: "linear", repeat: Infinity }}
                     />
                   ))}
@@ -594,7 +641,7 @@ type Trigger = "archive" | "snooze";
 
 /** The job's length once a control has changed: short, so each change settles within a second. */
 const CONTROL_JOB_MS = 700;
-/** The stage's own job: long enough to see the loading sweep, then the ring drain before the pointer arrives. */
+/** A click's job: long enough to watch the loading sweep before the toast lands. */
 const DEMO_JOB_MS = 1500;
 
 /** The demo's own stage. Greyscale: the toast is the only thing with a colour meaning. */
@@ -646,10 +693,11 @@ export type PromiseToastDemoProps = Partial<PromiseToastProps> & {
 };
 
 /**
- * The demo: an inbox where "Archive 12 threads" or "Snooze 5 threads" starts the job. The
- * toast appears on the click, loads, lands, and its ring counts down until the cursor pauses
- * it and presses Undo. Overrides (the page's Customize panel) apply to the toast. Every
- * control replays the job, so each change shows at once.
+ * The demo: an inbox where "Archive 12 threads" or "Snooze 5 threads" starts the job. Nothing runs
+ * until something asks for it, the way a real toast works: a click raises the toast, it loads,
+ * lands, and its ring counts down until the cursor pauses it and presses Undo. Overrides (the
+ * page's Customize panel) apply to the toast, and every control replays the job so each change
+ * shows at once.
  */
 export default function PromiseToastDemo(overrides: PromiseToastDemoProps = {}) {
   const { outcome = "success", trigger: forcedTrigger, duration = 5, undo = true, position = "bottom-right", theme = "dark", ...rest } = overrides;
@@ -661,14 +709,12 @@ export default function PromiseToastDemo(overrides: PromiseToastDemoProps = {}) 
 
   const [trigger, setTrigger] = useState<Trigger>(forcedTrigger ?? "archive");
   const [counter, setCounter] = useState(0);
-  // The toast is raised once the stage scrolls into view, so the first frame is never an empty band.
-  // A click or a control change raises it too.
+  // The toast mounts on the first click or control change, never on its own.
   const [armed, setArmed] = useState(false);
-  // Whether a toast is on screen. Drives the footer hint; onDismiss clears it, and the next run raises it again.
-  const [live, setLive] = useState(false);
   // The run Retry was pressed on. A retry succeeds only for that run, so any new run fails again.
   const [recoveredKey, setRecoveredKey] = useState<string | null>(null);
-  // Which job's threads are out of the inbox right now: set on success, cleared on Undo or a new run.
+  // Which job's threads are out of the inbox. Derived from the toast's own status (onStatusChange), which only
+  // ever reports the current run, so a superseded job can never fade the rows under an error.
   const [moved, setMoved] = useState<Trigger | null>(null);
   const touched = Object.keys(overrides).length > 0;
 
@@ -677,33 +723,29 @@ export default function PromiseToastDemo(overrides: PromiseToastDemoProps = {}) 
     if (forcedTrigger) setTrigger(forcedTrigger);
   }, [forcedTrigger]);
   useEffect(() => {
-    if (touched || play) setArmed(true);
-  }, [touched, play]);
+    if (touched) setArmed(true);
+  }, [touched]);
 
-  // The first view runs the job without a click. Reduced motion settles it at once, so the toast opens in success.
-  const jobMs = touched ? CONTROL_JOB_MS : reduce ? 0 : DEMO_JOB_MS;
+  const jobMs = touched ? CONTROL_JOB_MS : DEMO_JOB_MS;
 
   // Changing any control replays the job, so the toast always shows the new setting in motion.
   const runKey = [counter, outcome, trigger, duration, undo, position, theme].join("|");
 
-  useEffect(() => {
-    if (armed) setLive(true);
-  }, [armed, runKey]);
+  // One timer at a time: a new run (or Retry) clears the last one, so a superseded job never settles at all.
+  const timerRef = useRef<number | undefined>(undefined);
+  useEffect(() => () => window.clearTimeout(timerRef.current), []);
 
+  // The fake request has no side effects; the stage reacts to what the toast reports, not to this timer.
   const job = useCallback(
     () =>
       new Promise<void>((resolve, reject) => {
-        setMoved(null);
-        window.setTimeout(() => {
-          if (outcome === "error" && recoveredKey !== runKey) {
-            reject(new Error("offline"));
-            return;
-          }
-          setMoved(trigger);
-          resolve();
+        window.clearTimeout(timerRef.current);
+        timerRef.current = window.setTimeout(() => {
+          if (outcome === "error" && recoveredKey !== runKey) reject(new Error("offline"));
+          else resolve();
         }, jobMs);
       }),
-    [outcome, trigger, jobMs, recoveredKey, runKey],
+    [outcome, jobMs, recoveredKey, runKey],
   );
 
   const start = (next: Trigger) => {
@@ -721,8 +763,11 @@ export default function PromiseToastDemo(overrides: PromiseToastDemoProps = {}) 
     show: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: DEMO_MOTION.block, ease: EASE_OUT }, transitionEnd: { filter: "none" } },
   };
 
-  // A top toast sits over the header, so the stage opens a gap above it; a bottom one sits over the last rows, so the stage leaves room below.
-  const stagePad = position === "top-right" ? "pt-32 pb-5" : "pt-5 pb-32";
+  // A top toast sits over the header, so the stage opens a gap above it; a bottom one sits over the last rows, so the
+  // stage leaves room below. Under @md the toast stacks its action on a second row, so the gap is taller.
+  const stagePad = position === "top-right" ? "pt-44 pb-5 @md:pt-32" : "pt-5 pb-44 @md:pb-32";
+  const buttonClass =
+    "inline-flex h-9 items-center justify-center whitespace-nowrap rounded-[10px] px-3.5 text-[13px] font-medium transition-[opacity,scale] duration-150 ease-out hover:opacity-90 active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current";
 
   return (
     <div className="flex min-h-dvh w-full items-center justify-center px-[clamp(1rem,4vw,2rem)] py-16 font-sans antialiased" style={{ background: s.backdrop, color: s.ink }}>
@@ -749,23 +794,12 @@ export default function PromiseToastDemo(overrides: PromiseToastDemoProps = {}) 
             <p className="text-[13px] leading-[1.5]" style={{ color: s.muted }}>
               Showing 5 of 12 threads.
             </p>
-            <div className="flex shrink-0 items-center gap-2">
-              <button
-                type="button"
-                data-demo="snooze"
-                onClick={() => start("snooze")}
-                className="inline-flex h-9 items-center rounded-[10px] px-3.5 text-[13px] font-medium transition-[opacity,scale] duration-150 ease-out hover:opacity-90 active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
-                style={{ background: s.chip, color: s.ink }}
-              >
+            {/* Full width under the line on narrow stages: two equal buttons, or one per row below 320px of stage. */}
+            <div className="grid w-full grid-cols-1 gap-2 @xs:grid-cols-2 @md:flex @md:w-auto">
+              <button type="button" data-demo="snooze" onClick={() => start("snooze")} className={buttonClass} style={{ background: s.chip, color: s.ink }}>
                 Snooze 5 threads
               </button>
-              <button
-                type="button"
-                data-demo="archive"
-                onClick={() => start("archive")}
-                className="inline-flex h-9 items-center rounded-[10px] px-3.5 text-[13px] font-medium transition-[opacity,scale] duration-150 ease-out hover:opacity-90 active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
-                style={{ background: s.pill, color: s.onPill }}
-              >
+              <button type="button" data-demo="archive" onClick={() => start("archive")} className={buttonClass} style={{ background: s.pill, color: s.onPill }}>
                 Archive 12 threads
               </button>
             </div>
@@ -774,7 +808,7 @@ export default function PromiseToastDemo(overrides: PromiseToastDemoProps = {}) 
           <motion.ul variants={riseVariants} className="mt-5">
             {THREADS.map((t) => (
               <motion.li key={t.id} variants={riseVariants} className="border-t py-3 first:border-t-0" style={{ borderColor: s.line }}>
-                <motion.div animate={{ opacity: moved ? 0.3 : 1, x: moved ? -6 : 0 }} transition={{ duration: 0.4, ease: EASE_OUT }} className="flex items-center gap-3">
+                <motion.div animate={{ opacity: moved ? 0.3 : 1, x: moved && !reduce ? -6 : 0 }} transition={{ duration: reduce ? 0.15 : 0.4, ease: EASE_OUT }} className="flex items-center gap-3">
                   <span aria-hidden="true" className="grid size-8 shrink-0 place-items-center rounded-[9px] font-mono text-[11px] font-medium" style={{ background: s.chip, color: s.chipInk }}>
                     {t.initials}
                   </span>
@@ -803,26 +837,17 @@ export default function PromiseToastDemo(overrides: PromiseToastDemoProps = {}) 
               position={position}
               theme={theme}
               strategy="absolute"
-              onUndo={() => setMoved(null)}
-              onRetry={() => setRecoveredKey(runKey)}
-              onDismiss={() => {
-                setLive(false);
-                rest.onDismiss?.();
+              onRetry={() => {
+                setRecoveredKey(runKey);
+                rest.onRetry?.();
+              }}
+              onStatusChange={(status) => {
+                setMoved(status === "success" ? trigger : null);
+                rest.onStatusChange?.(status);
               }}
             />
           )}
         </motion.section>
-
-        {/* The hint describes only what is on screen: it holds its line while no toast is up, so nothing shifts. */}
-        <motion.p
-          variants={riseVariants}
-          initial="hidden"
-          animate={play ? "show" : "hidden"}
-          className={`mt-4 text-center font-mono text-[11px] ${live ? "" : "invisible"}`}
-          style={{ color: s.muted }}
-        >
-          {undo ? "Hover the toast to pause the ring. Esc dismisses it from inside." : "Esc dismisses the toast from inside it."}
-        </motion.p>
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 {
   "component": "PromiseToast",
-  "intent": "One toast that follows one async job. It opens on loading with a hairline sweeping its lower edge, morphs in place to success or error, and on success counts its window down, with Undo and a ring around the button when Undo is on. Hover or focus pauses the countdown, a swipe or Esc dismisses it, error offers Retry when wired, and the copy is announced politely.",
+  "intent": "One toast that follows one async job. It opens on loading with a hairline sweeping its lower edge, morphs in place to success or error, and on success counts its window down, with Undo and a ring around the button when Undo is on. Hover or focus pauses the countdown, a swipe or Esc dismisses it, error offers Retry when wired, the copy is announced politely, and onStatusChange reports each change of the current run so the host can mirror the outcome.",
   "platform": "web",
   "stack": {
     "framework": "React 19",
@@ -8,17 +8,18 @@
     "animation": "motion/react (useMotionValue and useTransform for the countdown ring and swipe offset, animate for the countdown and spring back, AnimatePresence with popLayout for the status glyph and copy, a variant set with custom direction for the exit, useInView for the demo entrance)"
   },
   "layout": {
-    "card": "at most 392px wide (fills a narrower container), radius 14px, padding 14px 16px 16px; one row: 18px status glyph, text column (flex-1), then Undo (76 x 32px pill) and a 28px dismiss button with 4px gap",
+    "card": "at most 392px wide (fills a narrower container), radius 14px, padding 14px 16px 16px; one grid with a 12px column gap. From 448px of container (@md): one row of 18px status glyph, text column (minmax(0,1fr)), the action (Undo 76 x 32px pill or Try again), and a 28px dismiss centred on the pill. Below 448px: glyph, copy and dismiss on the first row (dismiss centred on the title line), the action on a second row under the copy, 12px below and left-aligned with it",
     "placement": "a @container layer fills the nearest positioned parent (absolute by default) or the viewport (fixed); the card sits bottom-right, bottom-center or top-right inside a padding of 16px, or 24px once the container is 448px or wider (@md:); no viewport breakpoints",
     "ring": "rounded rect 84.5 x 40.5 radius 20.25 drawn 5px outside the Undo button in an 86 x 42 svg; dash length equals the perimeter (2*pi*20.25 + 2*(84.5 - 40.5) = 215.2) and the dash offset is (1 - remaining) * length",
     "hitAreas": "Undo's pill is 32px tall with a 44px hit area (::before); the dismiss circle is 28px with a 44px hit area; the Retry text button has a 44px hit area",
     "hairline": "2px tall along the card's lower edge, clipped by the card's radius; loading sweep 40% wide, success and error bars scale from the left edge",
-    "demo": "560px column: a stage card with 440px minimum height, header with 'Inbox' and a mono count, a toolbar with a Snooze 5 threads button beside the Archive 12 threads pill (wrapping on narrow widths), five thread rows with 32px monograms, and a footer hint in mono; the stage reserves 128px at the bottom for a bottom toast or 128px at the top for a top-right toast"
+    "demo": "560px column: a stage card with 440px minimum height, header with 'Inbox' and a mono count, a toolbar with a Snooze 5 threads button beside the Archive 12 threads pill (under @md the buttons take the full width as two equal columns, one per row below 320px of stage), five thread rows with 32px monograms; the stage reserves 128px at the bottom for a bottom toast or at the top for a top-right toast, 176px under @md where the action stacks. No toast until a click or a control change, and no footer hint",
+    "actionRow": "the action slot opens and closes with a grid-template-rows transition from 0fr to 1fr (300ms, ease-out), so the narrow card grows and shrinks rather than jumping; the card's overflow clips the button while the row opens"
   },
   "typography": {
-    "title": "Geist (font-sans) 500, 14px / 20px, tracking -0.01em",
-    "description": "Geist 400, 13px / 1.45, tabular-nums; the window group uses non-breaking spaces",
-    "labels": "13px 500 for Undo, Retry and the demo's buttons",
+    "title": "Geist (font-sans) 500, 14px / 20px, tracking -0.01em, text-wrap: balance",
+    "description": "Geist 400, 13px / 1.45, tabular-nums, text-wrap: pretty; the window ('· 5 s to undo') is its own nowrap span after a plain space, so a wrap lands before the dot",
+    "labels": "13px 500 for Undo, Try again and the demo's buttons (dismiss is icon-only)",
     "demoMeta": "mono 11px tabular-nums for counts and times"
   },
   "color": {
@@ -31,17 +32,18 @@
     "entrance": "card rises 14px from opacity 0 with a 6px blur that clears over 420ms on cubic-bezier(0.22, 1, 0.36, 1)",
     "statusSwap": "copy and glyph cross-fade with a 6px rise, 3px blur, 260ms; outgoing copy 160ms ease-in; no hard cut",
     "glyphs": "spinner: 18px ring with a 90-degree arc, one turn per 1.2s; success check draws its stroke over 340ms after an 80ms delay; error is a circle with a cross",
-    "sweep": "loading hairline sweep: 40% wide soft gradient moving left to right every 1.3s, linear, repeating",
+    "sweep": "loading hairline sweep: 40% wide soft gradient moving left to right every 1.3s, linear, repeating; animated as a transform (x from -100% to 250% of its own width), never left",
     "resolve": "success or error hairline scales from its left edge over 500ms; the success bar fades 1.1s later",
     "countdown": "a motion value runs linearly 1 to 0 over the success window whether or not Undo is on; hover, focus or a hidden tab pauses it in place and resume continues from the same point; empty means the toast leaves and onDismiss runs; the ring is drawn only when Undo is on",
     "undo": "Undo appears with a 220ms scale from 0.92 and opacity; pressing it swaps the glyph to a return arrow, restores the copy and leaves after 1.6s",
-    "retry": "on error with onRetry set, a quiet text button fades in 4px upward; pressing it calls onRetry and runs the job again from loading",
+    "retry": "on error with onRetry set, a quiet text button fades in 4px upward, muted at rest and ink on hover; pressing it calls onRetry and runs the job again from loading",
     "swipe": "horizontal drag with a 0.35 rubber band from the first pixel (zero drag constraints); past 90px or faster than 500px/s it dismisses in the drag direction (420px fly and fade); otherwise a spring back (stiffness 420, damping 36); touch-action pan-y",
     "exit": "dismiss drops 8px and fades over 220ms on cubic-bezier(0.4, 0, 1, 1)",
-    "reducedMotion": "no rise, blur, fly, spin or sweep; the loading hairline becomes a faint full-width track; opacity changes over 150ms; the countdown still drains because it reports time"
+    "reducedMotion": "no rise, blur, fly, spin or sweep; the loading hairline becomes a faint full-width track; opacity changes over 150ms; the countdown still drains because it reports time",
+    "actionRow": "narrow layout only in effect: the action row eases open and closed via grid-template-rows (300ms), no transition under reduced motion"
   },
   "responsive": {
-    "widths": "designed at 320, 390, 768, 1024, 1440 and 1920px: the card fills a narrow container and is 392px at most; the layer's inset follows its container width",
+    "widths": "designed at 320, 390, 768, 1024, 1440 and 1920px: the card fills a narrow container and is 392px at most; under 448px of container the action stacks on its own row so title and description keep the card's width; the layer's inset follows its container width",
     "overflow": "no horizontal scroll at any width; the description wraps to two lines at most",
     "touch": "Undo 32px visible and 44px to hit, dismiss 28px visible and 44px to hit; the card is the swipe surface; no hover-only controls"
   },
@@ -50,12 +52,13 @@
     "the card is a div with role=group and aria-labelledby pointing at its title (not a landmark; the live region announces)",
     "Undo moves focus to the Dismiss button, so focus survives Undo unmounting",
     "hover and focus are cleared when the toast leaves and read live from the DOM when the next one opens, so a stale flag never freezes the countdown",
-    "Undo, Retry and dismiss are real buttons; dismiss has aria-label=Dismiss; focus rings are 2px in the current colour, shown for keyboard focus only; Undo's ring sits 9px out, beyond the countdown ring",
+    "Undo, Retry and dismiss are real buttons; dismiss has aria-label=Dismiss; focus rings are 2px in the current colour, shown for keyboard focus only; Undo's focus ring is drawn inside the pill (offset -3px), so the countdown ring stays the only ring around it",
     "Escape inside the toast dismisses it",
     "hover pauses the countdown and focus within pauses it too, so a keyboard user can read the copy and reach Undo before it leaves",
     "reduced motion keeps opacity changes and the countdown; spinner and sweep are static",
     "errors do not expire on a timer: they stay until retried or dismissed",
-    "contrast: ink on the card and muted copy meet WCAG AA; success and error are used on glyphs and hairlines only, never as text"
+    "contrast: ink on the card and muted copy meet WCAG AA; success and error are used on glyphs and hairlines only, never as text",
+    "onStatusChange fires only for the current run, so a host that mirrors it (fading archived rows) can never contradict the toast's own copy"
   ],
   "content": {
     "loading": "Archiving 12 threads… / Moving them out of your inbox",
@@ -73,6 +76,9 @@
     "a success toast with no exit when Undo is off: the window always ends the toast",
     "viewport breakpoints (sm:, md:) for placement: the layer responds to its container",
     "glassmorphism, glow, gradient text, bouncing entrances, or infinite pulses on content",
-    "hard cuts between states; every change is a cross-fade or a morph"
+    "hard cuts between states; every change is a cross-fade or a morph",
+    "one fixed row at every width: under 448px the action stacks below the copy instead of squeezing it",
+    "raising the toast on page load: it appears on a click, as the receipt for that click",
+    "animating the loading sweep with left (layout every frame) instead of a transform"
   ]
 }

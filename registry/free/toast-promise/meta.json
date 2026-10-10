@@ -26,7 +26,7 @@
     {
       "name": "job",
       "type": "() => Promise<unknown>",
-      "description": "The async work. Resolve for success, reject for error. Runs on mount and whenever runKey changes. Left out, the toast settles as success at once."
+      "description": "The async work. Resolve for success, reject for error. Runs on mount, whenever runKey changes, and on Retry. Left out, the toast settles as success at once."
     },
     {
       "name": "runKey",
@@ -56,7 +56,7 @@
       "name": "successDescription",
       "type": "string",
       "default": "\"Moved to Archive\"",
-      "description": "Line under the success title. With undo on, the undo window is appended, e.g. “· 5 s to undo”."
+      "description": "Line under the success title. With undo on, the window follows it as one unbreakable group, e.g. “· 5 s to undo”, so a narrow card breaks before the dot."
     },
     {
       "name": "retryLabel",
@@ -110,7 +110,7 @@
       "name": "position",
       "type": "\"bottom-right\" | \"bottom-center\" | \"top-right\"",
       "default": "\"bottom-right\"",
-      "description": "Where the toast sits. On phones it always spans the bottom (or top) edge."
+      "description": "Where the toast sits. In a container under 448px the card fills its width and Undo or Try again moves to a second row under the copy."
     },
     {
       "name": "strategy",
@@ -140,6 +140,11 @@
       "description": "Runs when the toast leaves: the countdown ended, it was swiped or dismissed, or Esc was pressed."
     },
     {
+      "name": "onStatusChange",
+      "type": "(status: \"loading\" | \"success\" | \"error\" | \"undone\") => void",
+      "description": "Runs on every status change of the current run, never for a superseded one. Mirror the outcome from here (fade the archived rows once the toast says Archived) rather than from the job's own side effects."
+    },
+    {
       "name": "outcome",
       "type": "\"success\" | \"error\"",
       "default": "\"success\"",
@@ -157,11 +162,11 @@
     "steps": [
       "wait:300",
       "click:@archive",
-      "wait:1000",
+      "wait:2500",
       "hover:@toast",
-      "wait:700",
+      "wait:900",
       "click:@undo",
-      "wait:1200"
+      "wait:900"
     ]
   },
   "controls": [
