@@ -24,6 +24,8 @@ export type CtaHorizonProps = {
   accent?: string;
   /** Size of one dither cell in CSS pixels. 3 reads as texture, 5 as pixel art. */
   cell?: number;
+  /** How far the light leans toward a mouse pointer, as a fraction of the panel width. Default 0.12. */
+  lean?: number;
 };
 
 /* ------------------------------------------------------------------ */
@@ -114,6 +116,7 @@ export function CtaHorizon({
   notes = ["Replies within one working day", "Two slots open for January", "Teams in 14 countries"],
   accent = COLOR.accent,
   cell = 3,
+  lean = FIELD.lean,
 }: CtaHorizonProps) {
   const reduce = !!useReducedMotion();
   const panelRef = useRef<HTMLDivElement>(null);
@@ -129,12 +132,13 @@ export function CtaHorizon({
       <div className="p-3 @xl:p-5 @5xl:p-6">
         <motion.div
           ref={panelRef}
+          data-demo="panel"
           initial="hidden"
           animate={inView ? "show" : "hidden"}
           variants={v(panelIn)}
           className="relative isolate mx-auto max-w-[1440px] overflow-hidden rounded-3xl bg-(--ch-panel) text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_0_0_1px_rgba(255,255,255,0.06)] @xl:rounded-[32px]"
         >
-          <DitherHorizon accent={accent} cell={cell} reduce={reduce} active={inView} anchorRef={notesRef} />
+          <DitherHorizon accent={accent} cell={cell} lean={lean} reduce={reduce} active={inView} anchorRef={notesRef} />
 
           <div className="relative flex min-h-[560px] flex-col items-center px-6 pb-14 pt-16 text-center @xl:min-h-[640px] @xl:px-12 @xl:pt-24 @5xl:min-h-[700px] @5xl:pt-28">
             <Eyebrow text={eyebrow} v={v} />
@@ -203,6 +207,7 @@ function PrimaryLink({ link }: { link: Link }) {
   return (
     <a
       href={link.href}
+      data-demo="primary"
       className={`group inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-white px-6 text-[15px] font-medium text-black shadow-[0_0_0_1px_rgba(255,255,255,0.2)] transition-[background-color,scale] duration-150 ease-out hover:bg-[#ececec] active:scale-[0.98] active:duration-75 @xl:w-auto ${FOCUS}`}
     >
       {link.label}
@@ -218,6 +223,7 @@ function SecondaryLink({ link }: { link: Link }) {
   return (
     <a
       href={link.href}
+      data-demo="secondary"
       className={`inline-flex h-12 w-full items-center justify-center rounded-full bg-black/45 px-6 text-[15px] font-medium text-white/85 ring-1 ring-inset ring-white/15 backdrop-blur-md transition-[color,background-color,box-shadow,scale] duration-150 ease-out hover:bg-black/60 hover:text-white hover:ring-white/25 active:scale-[0.98] active:duration-75 @xl:w-auto ${FOCUS}`}
     >
       {link.label}
@@ -338,7 +344,7 @@ const easeOutExpo = (k: number) => (k >= 1 ? 1 : 1 - Math.pow(2, -10 * k));
 function useDitherField(
   canvasRef: RefObject<HTMLCanvasElement | null>,
   anchorRef: RefObject<HTMLElement | null>,
-  { accent, cell, reduce, active }: { accent: string; cell: number; reduce: boolean; active: boolean },
+  { accent, cell, lean: leanMax, reduce, active }: { accent: string; cell: number; lean: number; reduce: boolean; active: boolean },
 ) {
   // The rise starts from the reveal, which is a prop; the loop reads it from a ref so it isn't restarted.
   const activeAt = useRef<number | null>(null);
@@ -394,7 +400,7 @@ function useDitherField(
     const onMove = (e: PointerEvent) => {
       if (e.pointerType !== "mouse") return;
       const r = canvas.getBoundingClientRect();
-      leanTarget = ((e.clientX - r.left) / r.width - 0.5) * FIELD.lean;
+      leanTarget = ((e.clientX - r.left) / r.width - 0.5) * leanMax;
     };
     const onLeave = () => (leanTarget = 0);
 
@@ -460,32 +466,50 @@ function useDitherField(
       panel.removeEventListener("pointermove", onMove);
       panel.removeEventListener("pointerleave", onLeave);
     };
-  }, [canvasRef, anchorRef, accent, cell, reduce]);
+  }, [canvasRef, anchorRef, accent, cell, leanMax, reduce]);
 }
 
 function DitherHorizon({
   accent,
   cell,
+  lean,
   reduce,
   active,
   anchorRef,
 }: {
   accent: string;
   cell: number;
+  lean: number;
   reduce: boolean;
   active: boolean;
   /** The horizon sits just above this element (the notes). */
   anchorRef: RefObject<HTMLElement | null>;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  useDitherField(canvasRef, anchorRef, { accent, cell, reduce, active });
+  useDitherField(canvasRef, anchorRef, { accent, cell, lean, reduce, active });
   return (
     <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-      <canvas ref={canvasRef} className="absolute left-0 top-0 block [image-rendering:pixelated]" />
+      <canvas ref={canvasRef} data-accent={accent} data-cell={cell} className="absolute left-0 top-0 block [image-rendering:pixelated]" />
       {/* Fade the top of the field into the panel so the copy sits on near-black. */}
       <div className="absolute inset-0 bg-[linear-gradient(180deg,var(--ch-panel)_0%,color-mix(in_srgb,var(--ch-panel)_92%,transparent)_42%,transparent_72%)]" />
     </div>
   );
 }
 
-export default CtaHorizon;
+/**
+ * The gallery demo: the same section, with the light leaning further toward the
+ * pointer so the sweep reads at a glance, and in-page links held still so the
+ * demo cursor (or a visitor) can click them without changing the page hash.
+ */
+export default function CtaHorizonDemo(overrides: Partial<CtaHorizonProps> = {}) {
+  return (
+    <div
+      onClickCapture={(e) => {
+        const a = (e.target as HTMLElement).closest("a");
+        if (a?.getAttribute("href")?.startsWith("#")) e.preventDefault();
+      }}
+    >
+      <CtaHorizon lean={0.28} {...overrides} />
+    </div>
+  );
+}

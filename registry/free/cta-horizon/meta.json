@@ -71,7 +71,73 @@
       "type": "number",
       "default": "3",
       "description": "Dither cell size in CSS px. 3 reads as texture, 5 as pixel art."
+    },
+    {
+      "name": "lean",
+      "type": "number",
+      "default": "0.12",
+      "description": "How far the light leans toward a mouse pointer, as a fraction of the panel width. 0 keeps the sun centred."
     }
   ],
-  "added": "2026-10-07"
+  "added": "2026-10-07",
+  "demo": {
+    "steps": [
+      "wait:1500",
+      "hover:@panel:0.14,0.5",
+      "wait:400",
+      "hover:@panel:0.86,0.5",
+      "wait:300",
+      "hover:@primary",
+      "wait:350",
+      "click",
+      "wait:700"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "eyebrow",
+      "label": "Eyebrow",
+      "kind": "text",
+      "default": "Ready when you are",
+      "group": "Content"
+    },
+    {
+      "prop": "headline",
+      "label": "Headline",
+      "kind": "text",
+      "default": "Ship the version you’d be proud to demo.",
+      "group": "Content"
+    },
+    {
+      "prop": "muted",
+      "label": "Muted ending",
+      "kind": "text",
+      "default": "proud to demo.",
+      "group": "Content"
+    },
+    {
+      "prop": "accent",
+      "label": "Light",
+      "kind": "color",
+      "default": "#d9d9d6",
+      "options": [
+        "#d9d9d6",
+        "#ff6a3d",
+        "#6d8cff",
+        "#3dd6a0"
+      ],
+      "group": "Look"
+    },
+    {
+      "prop": "cell",
+      "label": "Dither cell",
+      "kind": "slider",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "unit": "px",
+      "default": 3,
+      "group": "Look"
+    }
+  ]
 }
