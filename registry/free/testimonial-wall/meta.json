@@ -84,15 +84,13 @@
   "added": "2026-10-09",
   "demo": {
     "steps": [
-      "wait:1300",
-      "hover:@column-1:0.5,0.5",
-      "wait:600",
-      "hover:@column-0:0.5,0.55",
-      "wait:400",
-      "click:@pause",
-      "wait:800",
-      "click:@pause",
-      "wait:700"
+      "wait:300",
+      "hover:@column-1:0.5,0.42",
+      "wait:1600",
+      "hover:@column-0:0.5,0.5",
+      "wait:1400",
+      "move:0.5,0.98",
+      "wait:500"
     ]
   },
   "controls": [
@@ -117,12 +115,12 @@
       "prop": "accent",
       "label": "Seal accent",
       "kind": "color",
-      "default": "#f4f4f5",
+      "default": "#7dd3fc",
       "options": [
-        "#f4f4f5",
         "#7dd3fc",
         "#fbbf24",
-        "#a78bfa"
+        "#a78bfa",
+        "#f4f4f5"
       ],
       "group": "Look"
     },

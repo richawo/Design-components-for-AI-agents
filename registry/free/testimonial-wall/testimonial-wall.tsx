@@ -292,7 +292,7 @@ export function TestimonialWall({
         <div className="grid h-full gap-4 @3xl:gap-5" style={{ gridTemplateColumns: `repeat(${n}, minmax(0, 1fr))`, gridTemplateRows: reduce ? undefined : "minmax(0, 1fr)" }}>
           {columns.map((items, c) =>
             reduce ? (
-              <StaticColumn key={`${n}-${c}`} items={items} />
+              <StaticColumn key={`${n}-${c}`} items={items} index={c} />
             ) : (
               <Column key={`${n}-${c}`} items={items} index={c} speed={speeds[c % speeds.length] ?? speeds[0] ?? 24} active={onScreen} play={play} paused={paused} />
             ),
@@ -337,9 +337,9 @@ function PauseButton({ paused, onToggle }: { paused: boolean; onToggle: () => vo
 }
 
 /** Reduced motion: the same columns at natural height. No masks, clones or drift. */
-function StaticColumn({ items }: { items: Testimonial[] }) {
+function StaticColumn({ items, index }: { items: Testimonial[]; index: number }) {
   return (
-    <ul className="flex min-w-0 flex-col gap-4 @3xl:gap-5">
+    <ul data-demo={`column-${index}`} className="flex min-w-0 flex-col gap-4 @3xl:gap-5">
       {items.map((t, i) => (
         <li key={i}>
           <Card t={t} hidden={false} />
@@ -619,18 +619,18 @@ function VerifiedSeal() {
 /* Demo                                                                 */
 /* ------------------------------------------------------------------ */
 
-export default function TestimonialWallDemo({ paused: forced, ...overrides }: Partial<TestimonialWallProps> = {}) {
+export default function TestimonialWallDemo({ paused: forced, accent: accentProp = "#7dd3fc", speeds = [40, 52, 34], ...overrides }: Partial<TestimonialWallProps> = {}) {
   const theme = overrides.theme ?? "dark";
   const [paused, setPaused] = useState(forced ?? false);
   useEffect(() => {
     if (forced !== undefined) setPaused(forced);
   }, [forced]);
   // The dark wall's ink accent would vanish on white cards, so it only applies on dark.
-  const accent = theme === "light" && overrides.accent?.toLowerCase() === PALETTE.dark.ink ? undefined : overrides.accent;
+  const accent = theme === "light" && accentProp.toLowerCase() === PALETTE.dark.ink ? undefined : accentProp;
   return (
     <div className="flex min-h-dvh w-full items-center justify-center px-4 py-12 sm:px-8 sm:py-16" style={{ background: STAGE[theme] }}>
       <div className="w-full max-w-[1180px]">
-        <TestimonialWall {...overrides} accent={accent} paused={paused} onPausedChange={setPaused} />
+        <TestimonialWall {...overrides} speeds={speeds} accent={accent} paused={paused} onPausedChange={setPaused} />
       </div>
     </div>
   );
