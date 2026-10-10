@@ -45,6 +45,24 @@ function line(c) {
   return `- ${c.slug} · ${c.name} (${c.tier}${c.platform === "mobile" ? ", React Native" : ""}, ${c.category}): ${c.description}`;
 }
 
+// Mirrors lib/demo/describe.ts on the site.
+function controlLine(c) {
+  if (c.kind === "action" && c.prop === "$replay") return `- ${c.label}: replays the demo.`;
+  const opts = (c.options ?? []).map((o) => (o && typeof o === "object" ? o : { value: o }));
+  const range =
+    c.kind === "slider" ? `${c.min}–${c.max}${c.unit ? ` ${c.unit}` : ""}${c.step ? `, step ${c.step}` : ""}`
+    : c.kind === "select" || c.kind === "segmented" ? opts.map((o) => JSON.stringify(o.value)).join(" | ")
+    : c.kind === "color" ? `hex colour${opts.length ? `; suggested ${opts.map((o) => o.value).join(", ")}` : ""}`
+    : c.kind === "toggle" ? "true | false"
+    : c.kind === "action" ? `runtime state: ${(opts.length ? opts.map((o) => JSON.stringify(o.value)) : [JSON.stringify(c.value)]).join(" | ")}`
+    : "text";
+  return `- \`${c.prop}\` (${c.label}, ${c.kind}): ${range}${c.default !== undefined ? ` · demo default ${JSON.stringify(c.default)}` : ""}`;
+}
+const controlsSection = (controls) =>
+  controls?.length
+    ? ["", "## Controls", "", "The props worth tuning, with the ranges the preview offers. Action controls show runtime states the host app drives.", "", ...controls.map(controlLine)]
+    : [];
+
 const proMessage = (slug) =>
   `"${slug}" is a Pro component. Set DESIGN_FOR_AI_LICENSE in this MCP server's environment to unlock it (get a licence at ${BASE}/pricing). The free components work without one; use search_components with tier "free" to find alternatives.`;
 
@@ -82,24 +100,29 @@ server.tool(
 
 server.tool(
   "get_component",
-  "Get one component: install command, usage, props, the design prompt, the JSON prompt and the full source file.",
+  "Get one component: install command, usage, props, tunable controls, the design prompt, the JSON prompt and the full source file.",
   {
     slug: z.string().describe("Component slug from search_components"),
-    include: z.array(z.enum(["code", "prompt", "json", "props", "install"])).optional().describe("Sections to include (default: all)"),
+    include: z.array(z.enum(["code", "prompt", "json", "props", "controls", "install"])).optional().describe("Sections to include (default: all)"),
   },
   async ({ slug, include }) => {
-    const want = new Set(include ?? ["code", "prompt", "json", "props", "install"]);
+    const want = new Set(include ?? ["code", "prompt", "json", "props", "controls", "install"]);
     try {
       const c = await api(`/api/registry/${encodeURIComponent(slug)}`);
       const parts = [`# ${c.name} (${c.slug})`, "", c.description, "", `Tier: ${c.tier} · Platform: ${c.platform} · File: ${c.file}${c.dependencies?.length ? ` · Dependencies: ${c.dependencies.join(", ")}` : ""}`];
       if (want.has("install")) parts.push("", "## Install", "```bash", c.install, "```", "", "## Usage", "```tsx", c.usage, "```");
       if (want.has("props") && c.props?.length) parts.push("", "## Props", ...c.props.map((p) => `- \`${p.name}\`: ${p.type}${p.default ? ` (default ${p.default})` : ""}. ${p.description}`));
+      if (want.has("controls") || want.has("props")) parts.push(...controlsSection(c.controls));
       if (want.has("prompt")) parts.push("", "## Design prompt", c.prompt.trim());
       if (want.has("json")) parts.push("", "## JSON prompt", "```json", JSON.stringify(c.promptJson, null, 2), "```");
       if (want.has("code")) parts.push("", `## Source (${c.file})`, "```tsx", c.code.trim(), "```");
       return text(parts.join("\n"));
     } catch (e) {
-      if (e.code === "PRO") return text(proMessage(slug));
+      if (e.code === "PRO") {
+        // Controls are public metadata, so show them even without a licence.
+        const meta = (await index()).find((x) => x.slug === slug);
+        return text([proMessage(slug), ...controlsSection(meta?.controls)].join("\n"));
+      }
       throw e;
     }
   },

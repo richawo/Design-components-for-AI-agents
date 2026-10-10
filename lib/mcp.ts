@@ -1,5 +1,6 @@
 import "server-only";
 import { getDoc } from "./content";
+import { controlsSection } from "./demo/describe";
 import { fileNameFor, installText } from "./install";
 import type { Verified } from "./license";
 import { markdownForPage } from "./page-markdown";
@@ -80,14 +81,14 @@ export const TOOLS: Tool[] = [
   {
     name: "get_component",
     title: "Get a component",
-    description: "One component: install command, usage, props, the design prompt, the JSON prompt and the full source file.",
+    description: "One component: install command, usage, props, tunable controls (prop ranges and choices), the design prompt, the JSON prompt and the full source file.",
     inputSchema: {
       type: "object",
       properties: {
         slug: { type: "string", description: "Component slug from search_components" },
         include: {
           type: "array",
-          items: { type: "string", enum: ["install", "props", "prompt", "json", "code"] },
+          items: { type: "string", enum: ["install", "props", "controls", "prompt", "json", "code"] },
           description: "Sections to include (default: all)",
         },
       },
@@ -99,7 +100,7 @@ export const TOOLS: Tool[] = [
       const slug = String(a.slug ?? "");
       const e = getComponent(slug);
       if (!e) return text(`No component "${slug}". Use search_components to find slugs.`, true);
-      const want = new Set((a.include as string[] | undefined) ?? ["install", "props", "prompt", "json", "code"]);
+      const want = new Set((a.include as string[] | undefined) ?? ["install", "props", "controls", "prompt", "json", "code"]);
       const parts = [
         `# ${e.name} (${e.slug})`,
         "",
@@ -111,6 +112,8 @@ export const TOOLS: Tool[] = [
       if (want.has("install")) parts.push("", "## Install", "```bash", installText(e), "```", "", "## Usage", "```tsx", e.usage, "```");
       if (want.has("props") && e.props.length)
         parts.push("", "## Props", ...e.props.map((p) => `- \`${p.name}\`: ${p.type}${p.default ? ` (default ${p.default})` : ""}. ${p.description}`));
+      // Controls are public metadata, so Pro components show them without a licence too.
+      if ((want.has("controls") || want.has("props")) && e.controls?.length) parts.push("", ...controlsSection(e.controls));
       const needsSource = want.has("prompt") || want.has("json") || want.has("code");
       if (needsSource) {
         if (e.tier === "pro" && !ctx.license.ok) {

@@ -165,6 +165,20 @@ async function list() {
   }
 }
 
+/** One tunable control (meta.controls), as the site's Customize panel offers it. */
+function controlLine(c) {
+  if (c.kind === "action" && c.prop === "$replay") return `${c.label}: replays the demo`;
+  const opts = (c.options ?? []).map((o) => (o && typeof o === "object" ? o.value : o));
+  const range =
+    c.kind === "slider" ? `${c.min}–${c.max}${c.unit ? ` ${c.unit}` : ""}`
+    : c.kind === "select" || c.kind === "segmented" ? opts.map((o) => JSON.stringify(o)).join(" | ")
+    : c.kind === "toggle" ? "true | false"
+    : c.kind === "color" ? "hex colour"
+    : c.kind === "action" ? `runtime state: ${(opts.length ? opts : [c.value]).map((o) => JSON.stringify(o)).join(" | ")}`
+    : "text";
+  return `${accent(c.prop)} ${dim(c.kind)}  ${range}${c.default !== undefined ? dim(` = ${JSON.stringify(c.default)}`) : ""}`;
+}
+
 async function info(slug) {
   if (!slug) die("Usage: npx https://design.yaps.ai/cli.tgz info <slug>");
   const meta = (await index()).find((x) => x.slug === slug);
@@ -187,6 +201,11 @@ async function info(slug) {
       for (const p of full.props) out(`  ${accent(p.name)} ${dim(p.type)}${p.default ? dim(` = ${p.default}`) : ""}\n    ${p.description}`);
     }
   } else out(`\n${dim("Pro: run")} ${accent("npx https://design.yaps.ai/cli.tgz login <key>")} ${dim("for props, prompts and source.")}`);
+  // Controls are public metadata, shown with or without a licence.
+  if (meta.controls?.length) {
+    out(`\n${bold("Controls")} ${dim("(tunable on the component page)")}`);
+    for (const c of meta.controls) out(`  ${controlLine(c)}`);
+  }
 }
 
 async function prompt(slug) {

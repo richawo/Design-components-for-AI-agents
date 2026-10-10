@@ -1,3 +1,4 @@
+import { controlsSection } from "@/lib/demo/describe";
 import { fileNameFor, installText } from "@/lib/install";
 import { getComponent, readSource } from "@/lib/registry";
 import { CATEGORIES } from "@/lib/registry-types";
@@ -42,6 +43,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ slug: s
     "| --- | --- | --- | --- |",
     ...e.props.map((p) => `| \`${p.name}\` | \`${p.type.replace(/\|/g, "\\|")}\` | ${p.default ? `\`${p.default}\`` : "—"} | ${p.description} |`),
     "",
+    ...(e.controls?.length ? [...controlsSection(e.controls), ""] : []),
     ...(src
       ? ["## Prompt", "", src.prompt.trim(), "", "## JSON prompt", "", "```json", src.promptJson.trim(), "```", "", `## Source (${fileNameFor(e)})`, "", "```tsx", src.code.trim(), "```", ""]
       : ["## Prompt and source", "", `This is a Pro component. Its code, prompt and JSON prompt are available with a licence: ${absoluteUrl("/pricing")}`, ""]),

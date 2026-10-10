@@ -46,6 +46,16 @@ describe("remote MCP server", () => {
     expect(r.result.content[0].text).toContain("Pro component");
   });
 
+  it("lists tunable controls, for Pro components too", async () => {
+    const free = await call("get_component", { slug: "button-hold-confirm", include: ["controls"] });
+    expect(free.result.content[0].text).toContain("## Controls");
+    expect(free.result.content[0].text).toMatch(/`duration` \(Hold for, slider\): 500–3000 ms/);
+    const pro = await call("get_component", { slug: "three-voice-orb" });
+    expect(pro.result.content[0].text).toContain("## Controls");
+    expect(pro.result.content[0].text).toContain("runtime state");
+    expect(pro.result.content[0].text).not.toContain("## Source");
+  });
+
   it("reads site pages as Markdown", async () => {
     const r = await call("get_page", { path: "pricing" });
     expect(r.result.content[0].text).toContain("# Pricing");
