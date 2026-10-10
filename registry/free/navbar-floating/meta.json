@@ -59,7 +59,92 @@
       "type": "number",
       "default": "80",
       "description": "Scroll distance in px before the bar condenses."
+    },
+    {
+      "name": "tucked",
+      "type": "boolean",
+      "description": "Force the tucked-in (true) or resting (false) shape. Leave undefined to follow the page scroll."
+    },
+    {
+      "name": "barOpacity",
+      "type": "number",
+      "default": "0.72",
+      "description": "Opacity of the glass behind the links, 0 to 1. The page reads through the rest."
+    },
+    {
+      "name": "width",
+      "type": "number",
+      "default": "1200",
+      "description": "Maximum width of the resting bar in px. It tucks to 720, or to this when smaller."
     }
   ],
-  "added": "2026-10-07"
+  "added": "2026-10-07",
+  "demo": {
+    "steps": [
+      "wait:600",
+      "hover:@link-1",
+      "hover:@link-2",
+      "hover:@link-0",
+      "wait:200",
+      "scroll:420",
+      "wait:1000",
+      "hover:@cta",
+      "scroll:-420",
+      "wait:900"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "activeIndex",
+      "label": "Current page",
+      "kind": "select",
+      "options": [
+        {
+          "value": 0,
+          "label": "Product"
+        },
+        {
+          "value": 1,
+          "label": "Customers"
+        },
+        {
+          "value": 2,
+          "label": "Pricing"
+        },
+        {
+          "value": 3,
+          "label": "Changelog"
+        }
+      ],
+      "default": 3
+    },
+    {
+      "prop": "tucked",
+      "label": "Tucked in",
+      "kind": "toggle",
+      "default": false,
+      "group": "Shape"
+    },
+    {
+      "prop": "width",
+      "label": "Bar width",
+      "kind": "slider",
+      "min": 760,
+      "max": 1400,
+      "step": 20,
+      "unit": "px",
+      "default": 1200,
+      "group": "Shape"
+    },
+    {
+      "prop": "barOpacity",
+      "label": "Glass opacity",
+      "kind": "slider",
+      "min": 0.3,
+      "max": 1,
+      "step": 0.05,
+      "default": 0.72,
+      "group": "Look"
+    }
+  ]
 }

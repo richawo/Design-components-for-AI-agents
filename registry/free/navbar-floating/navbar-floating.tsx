@@ -22,6 +22,12 @@ export type NavbarFloatingProps = {
   socials?: Social[];
   /** Scroll distance in px after which the pill tucks itself in. */
   condenseAt?: number;
+  /** Force the tucked-in (true) or resting (false) shape. Leave undefined to follow the page scroll. */
+  tucked?: boolean;
+  /** Opacity of the glass behind the links, 0 to 1. The page reads through the rest. */
+  barOpacity?: number;
+  /** Maximum width of the resting bar in px. It tucks to 720 (or this, if smaller). */
+  width?: number;
 };
 
 /* ------------------------------------------------------------------ */
@@ -29,8 +35,8 @@ export type NavbarFloatingProps = {
 /* ------------------------------------------------------------------ */
 
 const COLOR = {
-  /** The pill: near-black at 72% so the page reads through the blur. */
-  bar: "rgba(12,12,14,0.72)",
+  /** The pill: near-black, 72% opaque by default so the page reads through the blur. */
+  bar: (opacity: number) => `rgba(12,12,14,${opacity})`,
   sheet: "#050506",
   page: "#050506",
 } as const;
@@ -141,6 +147,9 @@ export function NavbarFloating({
     { label: "LinkedIn", href: "#" },
   ],
   condenseAt = 80,
+  tucked: forcedTucked,
+  barOpacity = 0.72,
+  width = WIDTH.full,
 }: NavbarFloatingProps) {
   const reduce = useReducedMotion() ?? false;
   const uid = useId();
@@ -159,7 +168,7 @@ export function NavbarFloating({
   }, []);
   useSheetBehaviour(open, headerRef, close, dismiss);
 
-  const tucked = condensed && !open;
+  const tucked = (forcedTucked ?? condensed) && !open;
   const spring = reduce ? { duration: 0 } : SPRING_UI;
   const rise = riseVariants(reduce);
 
@@ -169,7 +178,7 @@ export function NavbarFloating({
       <motion.nav
         aria-label="Main"
         initial={reduce ? { opacity: 0 } : { opacity: 0, y: -10, maxWidth: WIDTH.intro }}
-        animate={{ opacity: 1, y: 0, maxWidth: tucked ? WIDTH.tucked : WIDTH.full, paddingTop: tucked ? 6 : 8, paddingBottom: tucked ? 6 : 8 }}
+        animate={{ opacity: 1, y: 0, maxWidth: tucked ? Math.min(WIDTH.tucked, width) : width, paddingTop: tucked ? 6 : 8, paddingBottom: tucked ? 6 : 8 }}
         transition={{
           ...spring,
           maxWidth: landed || reduce ? spring : { duration: INTRO.bar + 0.15, ease: EASE_OUT },
@@ -177,12 +186,13 @@ export function NavbarFloating({
           y: { duration: INTRO.bar, ease: EASE_OUT },
         }}
         onAnimationComplete={() => setLanded(true)}
-        style={{ backgroundColor: COLOR.bar, boxShadow: tucked ? SHADOW.tucked : SHADOW.rest }}
+        style={{ backgroundColor: COLOR.bar(barOpacity), boxShadow: tucked ? SHADOW.tucked : SHADOW.rest }}
         className="pointer-events-auto relative z-10 flex w-full items-center justify-between gap-4 rounded-full pl-3 pr-2 text-white backdrop-blur-xl backdrop-saturate-150 transition-shadow duration-500 sm:pl-4"
       >
         <motion.a
           href={brand.href}
           data-nf-focus
+          data-demo="brand"
           variants={rise}
           initial="hidden"
           animate="shown"
@@ -207,6 +217,7 @@ export function NavbarFloating({
         <motion.div variants={rise} initial="hidden" animate="shown" custom={INTRO.actionAt} className="flex items-center gap-2">
           <a
             href={cta.href}
+            data-demo="cta"
             className="group hidden h-9 items-center gap-1.5 rounded-full bg-white px-4 text-[14px] font-medium text-black shadow-[inset_0_-1px_0_rgba(0,0,0,0.14)] outline-none transition-[background-color,transform] duration-150 hover:bg-[#ececee] active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black md:inline-flex"
           >
             {cta.label}
@@ -252,6 +263,7 @@ function DesktopLinks({ links, activeIndex, reduce, groupId }: { links: NavLink[
             <motion.li key={l.label} variants={rise} initial="hidden" animate="shown" custom={delay} className="relative">
               <a
                 href={l.href}
+                data-demo={`link-${n}`}
                 aria-current={n === activeIndex ? "page" : undefined}
                 onMouseEnter={() => setHovered(n)}
                 onFocus={() => setHovered(n)}
@@ -278,6 +290,7 @@ function DesktopLinks({ links, activeIndex, reduce, groupId }: { links: NavLink[
                   // The current-page rule draws from its centre once its link has landed.
                   <motion.span
                     aria-hidden="true"
+                    data-demo={`current-${n}`}
                     initial={reduce ? false : { scaleX: 0 }}
                     animate={{ scaleX: 1 }}
                     transition={{ duration: 0.4, ease: EASE_OUT, delay: delay + INTRO.item * 0.6 }}
@@ -317,6 +330,7 @@ function MenuButton({
       ref={ref}
       type="button"
       data-nf-focus
+      data-demo="menu"
       aria-expanded={open}
       aria-controls={controls}
       onClick={onToggle}
@@ -552,13 +566,13 @@ function useRevealOnce(ref: RefObject<HTMLElement | null>, startedAt: number) {
   return delay;
 }
 
-function Demo() {
+export default function NavbarFloatingDemo(overrides: Partial<NavbarFloatingProps> = {}) {
   const reduce = useReducedMotion() ?? false;
   const rise = riseVariants(reduce);
   const [startedAt] = useState(() => (typeof performance === "undefined" ? 0 : performance.now()));
   return (
     <div className="min-h-[1700px] text-white" style={{ backgroundColor: COLOR.page }}>
-      <NavbarFloating activeIndex={3} />
+      <NavbarFloating activeIndex={3} {...overrides} />
       <main className="mx-auto max-w-[1240px] px-6 pb-32 pt-36 sm:px-9 sm:pt-44">
         <motion.p variants={rise} initial="hidden" animate="shown" custom={PAGE.at} className="font-mono text-[11px] uppercase tracking-[0.16em] text-white/45">
           Changelog · Updated 8 Oct 2026
@@ -622,4 +636,3 @@ function ReleaseEntry({ release, reduce, startedAt }: { release: Release; reduce
   );
 }
 
-export default Demo;
