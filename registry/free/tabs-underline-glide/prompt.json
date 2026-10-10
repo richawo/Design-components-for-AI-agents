@@ -1,0 +1,80 @@
+{
+  "component": "TabsUnderlineGlide",
+  "intent": "Underline tabs whose indicator glides like a pen stroke: the leading edge travels on spring.ui and the trailing edge on a softer spring, so the line stretches as it leaves and gathers to the new label as it lands. Panels cross-fade with a 6px slide in the direction of travel. Overflowing tabs scroll behind mask fades with round arrows. Monochrome and dark first, with roving tabindex and auto or manual activation.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 with CSS variables set on the root from a theme prop, @container on the root, and a small style block registering the fade widths with @property",
+    "animation": "motion/react: two motion values for the indicator's edges animated with animate() on different springs and a derived width; AnimatePresence mode popLayout with a custom direction for panels; useInView, variants and animate() for the panel stagger and count-ups; useReducedMotion",
+    "icons": "lucide-react ChevronLeft and ChevronRight for the overflow arrows"
+  },
+  "layout": {
+    "root": "@container, full width: a 44px tab row, then a relative panel area with 20px top padding",
+    "row": "relative; a 1px full-width rail at the foot outside the scroller; a horizontal scroller with a hidden scrollbar holding the tablist (flex, width max-content, min-width 100%, gap 2px, 4px from a 28rem container)",
+    "tabs": "44px tall, 10px horizontal padding (14px from 28rem), label then an optional count 6px after; never wrap or truncate",
+    "underline": "2px, rounded, on the rail at the foot of the row, spanning the selected label's text only, measured as button.offsetLeft + label.offsetLeft and label.offsetWidth in the strip's coordinates",
+    "pill": "the selected tab box inset 2px horizontally and 7px vertically, 9px radius, beneath the labels",
+    "overflow": "56px mask fades on the scroller driven by two @property length variables (220ms ease); a 40 by 44px arrow over each edge with more tabs past it, holding a 28px round chip; a press scrolls 70% of the visible width; selected or focused tabs scroll to at least 60px inside a faded edge",
+    "panel": "only the selected panel is rendered; the leaving panel is lifted out of flow by popLayout"
+  },
+  "typography": {
+    "label": "Geist 500, 14px, tracking -0.01em, nowrap",
+    "count": "Geist 400, 12.5px, tabular figures, Intl.NumberFormat en-US, plain text",
+    "panelLead": "15px, leading 1.55, max 56ch, muted",
+    "figures": "Geist display 600, clamp(1.375rem, 4.2cqi, 1.75rem), tracking -0.03em, tabular",
+    "metadata": "mono 10.5px uppercase, tracking 0.12em"
+  },
+  "color": {
+    "dark": "ink #f4f4f5, muted #8a8a93, faint #5d5d66, rail 8% white, lines 6% white, surface #18181b, pill #26262b with 8% white hairline and soft black drops, arrow chip #1f1f23 (hover #28282d), focus ink at 75%, ok #3dd68c, busy and warn #f5b946",
+    "light": "ink #18181b, muted #63636c, faint #9b9ba4, rail 10% ink, lines 7% ink, surface #f4f4f5, pill #ffffff, arrow chip #ffffff (hover #f4f4f5), focus ink at 70%, ok #1f9d5c, busy and warn #d08a00",
+    "states": "selected label ink, others muted moving to ink on hover with no surface; selected count muted, others faint; disabled 40% with cursor-not-allowed",
+    "accent": "the underline takes the accent prop when given, otherwise the ink; the pill stays neutral; status colour only on 7px dots and the WARN log level"
+  },
+  "motion": {
+    "indicator": "left and right edges as motion values; moving right, the right edge on spring.ui (stiffness 500, damping 40) and the left on stiffness 300, damping 34; reversed when moving left; first placement jumps; mid-flight picks redirect with velocity; re-measured on resize, counts, tab set and indicator changes; no layoutId",
+    "panels": "enter from 6px on the side the selection came from with opacity 0 and 3px blur over 260ms cubic-bezier(0.22, 1, 0.36, 1); exit 6px the other way over 170ms cubic-bezier(0.4, 0, 1, 1); no animation on first render",
+    "panelContents": "lead and rows stagger 50ms apart, rising 10px out of a 6px blur over 420ms; figures count up over 700ms; bars and sparkline grow from the baseline after a 300ms delay; meters fill last",
+    "hover": "label colour over 150ms ease-out; arrow chip background and ink step, chevron nudges 1px outward",
+    "press": "label scales to 0.97 over 90ms (not the tab); arrow chip to 0.94",
+    "arrows": "arrive with a 4px slide and fade over 200ms, leave over 140ms",
+    "fades": "mask variables ease over 220ms",
+    "reducedMotion": "indicator and scrolling jump, panels and contents fade over 150ms or less, figures land at once"
+  },
+  "responsive": {
+    "strip": "never wraps or truncates; scrolls inside its own box with fades and arrows from 320px upward",
+    "panels": "stats keep three columns with fluid figure size; rows truncate their text and keep metadata on the right",
+    "demo": "card max-width 680px with 16px side padding on phones and 28px from sm; the strip overflows at 390px at rest and in the 300px narrow column"
+  },
+  "accessibility": [
+    "tablist with aria-label and aria-orientation horizontal; native button tabs with role tab, aria-selected, ids and aria-controls on the selected tab",
+    "tabpanel with aria-labelledby its tab and tabIndex 0",
+    "roving tabindex: only the selected tab is tabbable",
+    "ArrowLeft and ArrowRight move focus, wrapping; Home and End jump to the ends; disabled tabs are skipped",
+    "auto activation selects on focus; manual moves focus only and Enter or Space opens the focused tab",
+    "focus-visible: 2px ring 6px inside the tab, instant and keyboard only; the panel's ring sits 4px outside",
+    "overflow arrows are tabIndex -1 and aria-hidden because moving through the tabs scrolls the strip",
+    "meters use role meter with min, max and value; chart values carry screen-reader text"
+  ],
+  "content": {
+    "builtInTabs": "Overview, Deployments (24), Logs, Analytics, Domains (3), Variables (18), Storage, Settings; the tabs prop takes the first 2 to 8",
+    "panels": "Overview: 1,418,204 requests, 182 ms p95, 0.04% errors over a 24-bar sparkline. Deployments: three commits with status dots. Logs: a four-line live tail with one WARN 429. Analytics: 48,210 visitors over seven days. Domains: tidewell.app and two siblings. Variables: three masked keys. Storage: three meters, Postgres at 81%. Settings: region, build command and Node version.",
+    "demoFrame": "card with a TIDEWELL / PRODUCTION kicker, the title tidewell-web, the tabs, and a footer with a Narrow column toggle and a key hint that follows activation",
+    "demoSteps": [
+      "click Deployments (the line stretches right and lands, the panel slides in from the right)",
+      "click Analytics (the line travels two tabs further)",
+      "click Logs (the line travels back, the panel slides in from the left)",
+      "press Narrow column (the column narrows to 300px, fades and arrows arrive)",
+      "press the end arrow (the strip scrolls to reveal Domains and Variables)"
+    ]
+  },
+  "avoid": [
+    "a layoutId jump or a single spring that keeps the line one width",
+    "bounce, overshoot or any animation longer than 800ms",
+    "a hover surface on tabs, a bold weight change or a checkmark on the selected tab",
+    "counts as tinted chips, sparkle icons, emoji or a gradient underline",
+    "a visible scrollbar, an overlay fade, a fade on a strip that does not overflow, or an arrow covering the selected tab",
+    "truncated or wrapping tab labels",
+    "a panel area that doubles in height while panels cross-fade",
+    "decorative colour: status colours only on dots and the warning log level"
+  ]
+}

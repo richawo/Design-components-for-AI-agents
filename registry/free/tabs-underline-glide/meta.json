@@ -1,0 +1,168 @@
+{
+  "slug": "tabs-underline-glide",
+  "name": "Underline Tabs",
+  "tier": "free",
+  "platform": "web",
+  "category": "navigation",
+  "description": "Tabs whose underline stretches and glides between labels on two springs, with quiet counts, overflow arrows over soft edge fades and panels that cross-fade 6px.",
+  "tags": [
+    "tabs",
+    "tab bar",
+    "underline tabs",
+    "navigation",
+    "overflow",
+    "keyboard",
+    "roving tabindex",
+    "dark",
+    "monochrome"
+  ],
+  "dependencies": [
+    "motion",
+    "lucide-react"
+  ],
+  "theme": "dark",
+  "previewHeight": 640,
+  "usage": "import { TabsUnderlineGlide } from \"@/components/design-for-ai/tabs-underline-glide\";\n\n<TabsUnderlineGlide\n  label=\"Project sections\"\n  defaultValue=\"overview\"\n  items={[\n    { value: \"overview\", label: \"Overview\", content: <Overview /> },\n    { value: \"deployments\", label: \"Deployments\", count: 24, content: <Deployments /> },\n    { value: \"settings\", label: \"Settings\", content: <Settings /> },\n  ]}\n  onValueChange={(section) => router.replace(`?tab=${section}`)}\n/>\n\n// Heavy panels: open on Enter instead of on arrow focus\n<TabsUnderlineGlide activation=\"manual\" indicator=\"pill\" theme=\"light\" items={sections} />",
+  "props": [
+    {
+      "name": "label",
+      "type": "string",
+      "default": "\"Project\"",
+      "description": "The tab list's accessible name. It is not drawn; the heading above the tabs carries the visible title."
+    },
+    {
+      "name": "items",
+      "type": "TabsUnderlineItem[]",
+      "description": "The tabs, each with a value, a label, a panel (content) and optional count and disabled flag. Leave out to use the built-in project console."
+    },
+    {
+      "name": "tabs",
+      "type": "number",
+      "default": "6",
+      "description": "How many built-in tabs to show, from 2 to 8: Overview, Deployments, Logs, Analytics, Domains, Variables, Storage, Settings. Ignored when items is given."
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "description": "Controlled selection. Update it from onValueChange. If it names no enabled tab, the first enabled one shows."
+    },
+    {
+      "name": "defaultValue",
+      "type": "string",
+      "default": "The first tab",
+      "description": "Starting selection when uncontrolled."
+    },
+    {
+      "name": "onValueChange",
+      "type": "(value: string, item: TabsUnderlineItem) => void",
+      "description": "Runs when a different tab is opened by pointer or keyboard. Opening the selected tab again does nothing."
+    },
+    {
+      "name": "counts",
+      "type": "boolean",
+      "default": "true",
+      "description": "Shows each tab's count after its label in tabular figures and a quieter ink."
+    },
+    {
+      "name": "activation",
+      "type": "\"auto\" | \"manual\"",
+      "default": "\"auto\"",
+      "description": "Auto opens a tab as the arrow keys reach it. Manual only moves focus; Enter or Space opens the focused tab. Use manual when a panel is expensive to render."
+    },
+    {
+      "name": "indicator",
+      "type": "\"underline\" | \"pill\"",
+      "default": "\"underline\"",
+      "description": "A 2px line under the selected label, or a raised pill behind the whole tab. Both glide with a leading and a trailing edge."
+    },
+    {
+      "name": "accent",
+      "type": "string",
+      "description": "Colour of the underline, the one accent. Defaults to the theme's ink. The pill stays neutral."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Ink, rail, pill and arrow colours for a near-black or a light surface."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "description": "Extra classes on the root."
+    }
+  ],
+  "added": "2026-10-10",
+  "demo": {
+    "steps": [
+      "wait:400",
+      "click:@tab-deployments",
+      "wait:350",
+      "click:@tab-analytics",
+      "wait:350",
+      "click:@tab-logs",
+      "wait:300",
+      "click:@narrow",
+      "wait:550",
+      "click:@scroll-end",
+      "wait:700"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "tabs",
+      "label": "Tabs",
+      "kind": "slider",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 6,
+      "group": "Content"
+    },
+    {
+      "prop": "counts",
+      "label": "Counts",
+      "kind": "toggle",
+      "default": true,
+      "group": "Content"
+    },
+    {
+      "prop": "activation",
+      "label": "Activation",
+      "kind": "segmented",
+      "options": [
+        { "value": "auto", "label": "Auto" },
+        { "value": "manual", "label": "Manual" }
+      ],
+      "default": "auto",
+      "group": "Behaviour"
+    },
+    {
+      "prop": "indicator",
+      "label": "Indicator",
+      "kind": "segmented",
+      "options": [
+        { "value": "underline", "label": "Underline" },
+        { "value": "pill", "label": "Pill" }
+      ],
+      "default": "underline",
+      "group": "Look"
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        { "value": "dark", "label": "Dark" },
+        { "value": "light", "label": "Light" }
+      ],
+      "default": "dark",
+      "group": "Look"
+    },
+    {
+      "prop": "$replay",
+      "label": "Replay",
+      "kind": "action"
+    }
+  ]
+}
