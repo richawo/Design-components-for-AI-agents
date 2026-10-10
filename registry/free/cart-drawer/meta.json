@@ -119,15 +119,13 @@
   "added": "2026-10-07",
   "demo": {
     "steps": [
-      "wait:400",
-      "click:@upsell-add",
-      "wait:700",
-      "click:@remove-mug",
-      "wait:450",
-      "click:@undo-mug",
       "wait:250",
-      "click:@qty-add-nb",
-      "wait:600"
+      "click:@upsell-add",
+      "wait:1000",
+      "click:@remove-mug",
+      "wait:700",
+      "click:@undo-mug",
+      "wait:1200"
     ]
   },
   "controls": [
@@ -168,7 +166,7 @@
     },
     {
       "prop": "freeShippingThreshold",
-      "label": "Free shipping over",
+      "label": "Free shipping over (£)",
       "kind": "slider",
       "min": 40,
       "max": 150,
@@ -178,7 +176,7 @@
     },
     {
       "prop": "shippingFee",
-      "label": "Shipping fee",
+      "label": "Shipping fee (£)",
       "kind": "slider",
       "min": 0,
       "max": 12,

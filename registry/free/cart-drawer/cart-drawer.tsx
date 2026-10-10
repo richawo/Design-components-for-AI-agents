@@ -995,7 +995,8 @@ function Thumb({ art, color, small = false }: { art: CartArt; color: string; sma
 /**
  * The only context the drawer needs: the bar its trigger lives in. No storefront behind it.
  * `open` is lifted into the demo so a control can open and close the drawer while the
- * built-in trigger, the scrim and Esc keep working.
+ * built-in trigger, the scrim and Esc keep working. Note: unlike `CartDrawer`, this demo wrapper treats a passed
+ * `open` as the starting state, so scrim and Esc still close it.
  */
 export default function CartDrawerDemo({ open: forcedOpen, onOpenChange, ...overrides }: Partial<CartDrawerProps> = {}) {
   const [open, setOpen] = useState(forcedOpen ?? true);
