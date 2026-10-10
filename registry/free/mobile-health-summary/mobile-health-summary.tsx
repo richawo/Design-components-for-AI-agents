@@ -232,7 +232,7 @@ const AVATAR = 42;
 /**
  * React Native Web turns `dataSet` into the `data-demo` attribute the live demo
  * script finds its targets by; native ignores it. Plain `data-*` props are dropped.
- * The demo taps a day (data-demo="day-1", data-demo="day-3"), the rings
+ * The demo taps a day (data-demo="day-2", data-demo="day-3"), the rings
  * (data-demo="rings") and a legend entry (data-demo="legend-stand").
  */
 const demoTarget = (name: string): { dataSet: { demo: string } } => ({ dataSet: { demo: name } });
@@ -1596,7 +1596,12 @@ export function MobileHealthSummary({
   ringsRef.current = rings;
   useEffect(() => {
     if (focusedRing === undefined) return;
-    setFocus(focusedRing === "none" ? null : Math.max(0, ringsRef.current.findIndex((r) => r.key === focusedRing)));
+    if (focusedRing === "none") {
+      setFocus(null);
+      return;
+    }
+    const at = ringsRef.current.findIndex((r) => r.key === focusedRing);
+    if (at >= 0) setFocus(at);
   }, [focusedRing]);
 
   const pickDay = (i: number) => {

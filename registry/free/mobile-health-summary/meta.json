@@ -49,7 +49,7 @@
     {
       "name": "focusedRing",
       "type": "RingKey | \"none\"",
-      "description": "Isolates a ring from outside, as if it had been tapped: the others dim and the centre reads that ring's progress. \"none\" clears it. Tapping still works; only a change of this value moves the focus."
+      "description": "Isolates a ring from outside, as if it had been tapped: the others dim and the centre reads that ring's progress. \"none\" clears it; unknown keys are ignored. Tapping still works; only a change of this value moves the focus, so re-send after a tap by passing a different value first."
     },
     {
       "name": "title",
@@ -77,15 +77,15 @@
   "added": "2026-10-09",
   "demo": {
     "steps": [
-      "wait:350",
+      "wait:100",
+      "click:@day-2",
+      "wait:850",
       "click:@day-3",
-      "wait:1100",
+      "wait:1050",
       "click:@rings:0.5,0.064",
       "wait:900",
       "click:@legend-stand",
-      "wait:900",
-      "click:@day-1",
-      "wait:1200"
+      "wait:1100"
     ],
     "loop": false
   },
@@ -103,17 +103,36 @@
     },
     {
       "prop": "initialDay",
-      "label": "Day",
-      "kind": "slider",
-      "min": 0,
-      "max": 4,
-      "step": 1,
+      "label": "Selected day",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": 0,
+          "label": "Mon"
+        },
+        {
+          "value": 1,
+          "label": "Tue"
+        },
+        {
+          "value": 2,
+          "label": "Wed"
+        },
+        {
+          "value": 3,
+          "label": "Thu"
+        },
+        {
+          "value": 4,
+          "label": "Fri"
+        }
+      ],
       "default": 4,
       "remount": true
     },
     {
       "prop": "accent",
-      "label": "Accent",
+      "label": "Chart accent",
       "kind": "color",
       "default": "#FF3D6E",
       "options": [
