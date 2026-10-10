@@ -17,7 +17,9 @@
 // Steps are separated by ";":
 //   wait:600            pause
 //   move:0.5,0.4        glide the pointer to a fraction of the viewport
-//   hover:<selector>    glide to the centre of an element (Playwright selector)
+//   hover:<selector>    glide to the centre of an element (Playwright selector,
+//                       or @name for the element with data-demo="name", and
+//                       @name:0.2,0.5 for a point inside its box)
 //   click[:<selector>]  click an element, or wherever the pointer is
 //   down / up           press / release the mouse
 //   drag:0.3,0.5        hold, glide to a point, release
@@ -27,11 +29,13 @@
 //   scroll:600          scroll the page by pixels
 //
 // Without --steps it waits, tabs through the first five focusable elements,
-// then sweeps the pointer across the page.
+// then sweeps the pointer across the page. --steps=demo plays the component's
+// meta.demo script (the same one the live page and the card video use).
 import fs from "node:fs";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
-import { chromium } from "playwright-core";
+import { launchChromium } from "./lib/browser.mjs";
+import { parseStep, targetSelector } from "../lib/demo/schema.mjs";
 
 const args = process.argv.slice(2);
 const flag = (name, dflt) => {
@@ -52,23 +56,20 @@ const every = Number(flag("every", "200"));
 const focus = flag("focus", "");
 const cols = Number(flag("cols", "3"));
 const from = Number(flag("from", "0")) / 1000;
-const steps = flag("steps", "wait:1200;tab:5;wait:400;move:0.2,0.35;move:0.5,0.5;move:0.8,0.4;move:0.6,0.7;wait:600");
-
-function executablePath() {
-  const root = "/opt/pw-browsers";
-  if (!fs.existsSync(root)) return undefined;
-  for (const d of fs.readdirSync(root)) {
-    for (const rel of ["chrome-linux/chrome", "chrome-linux64/chrome"]) {
-      const p = path.join(root, d, rel);
-      if (fs.existsSync(p)) return p;
-    }
+let steps = flag("steps", "wait:1200;tab:5;wait:400;move:0.2,0.35;move:0.5,0.5;move:0.8,0.4;move:0.6,0.7;wait:600");
+if (steps === "demo") {
+  const meta = ["free", "pro"].map((t) => new URL(`../registry/${t}/${slug}/meta.json`, import.meta.url)).find((u) => fs.existsSync(u));
+  const demo = meta && JSON.parse(fs.readFileSync(meta, "utf8")).demo;
+  if (!demo) {
+    console.error(`${slug} has no demo in meta.json`);
+    process.exit(1);
   }
-  return undefined;
+  steps = demo.steps.join(";");
 }
 
 fs.mkdirSync(out, { recursive: true });
 const tmp = fs.mkdtempSync(path.join(out, ".video-"));
-const browser = await chromium.launch({ executablePath: executablePath(), args: ["--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"] });
+const browser = await launchChromium();
 const context = await browser.newContext({ viewport: { width, height }, recordVideo: { dir: tmp, size: { width, height } } });
 
 // Headless Chromium draws no cursor, so add one that follows the mouse and
@@ -126,12 +127,14 @@ for (const raw of steps.split(";").map((s) => s.trim()).filter(Boolean)) {
     const [fx, fy] = arg.split(",").map(Number);
     await glide(fx * width, fy * height);
   } else if (cmd === "hover" || (cmd === "click" && arg)) {
-    const box = await page.locator(arg).first().boundingBox();
+    const t = arg.startsWith("@") ? parseStep(`${cmd}:${arg}`).step?.target : null;
+    const box = await page.locator(t ? targetSelector(t.name) : arg).first().boundingBox();
     if (!box) {
       console.warn(`  no element for ${arg}`);
       continue;
     }
-    await glide(box.x + box.width / 2, box.y + box.height / 2);
+    const [fx, fy] = t?.at ?? [0.5, 0.5];
+    await glide(box.x + box.width * fx, box.y + box.height * fy);
     if (cmd === "click") {
       await page.mouse.down();
       await page.waitForTimeout(110);

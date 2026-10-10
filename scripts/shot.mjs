@@ -10,7 +10,7 @@
 // once at 390x844. Requires a running dev or prod server.
 import fs from "node:fs";
 import path from "node:path";
-import { chromium } from "playwright-core";
+import { launchChromium } from "./lib/browser.mjs";
 
 const args = process.argv.slice(2);
 const flag = (name, dflt) => {
@@ -25,20 +25,8 @@ const wait = Number(flag("wait", "1500"));
 const hover = flag("hover", "")?.split(",").map(Number);
 const index = JSON.parse(fs.readFileSync(new URL("../registry/__generated__/index.json", import.meta.url), "utf8"));
 
-function executablePath() {
-  const root = "/opt/pw-browsers";
-  if (!fs.existsSync(root)) return undefined;
-  for (const d of fs.readdirSync(root)) {
-    for (const rel of ["chrome-linux/chrome", "chrome-linux64/chrome"]) {
-      const p = path.join(root, d, rel);
-      if (fs.existsSync(p)) return p;
-    }
-  }
-  return undefined;
-}
-
 fs.mkdirSync(out, { recursive: true });
-const browser = await chromium.launch({ executablePath: executablePath(), args: ["--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"] });
+const browser = await launchChromium();
 for (const slug of slugs) {
   const entry = index.find((e) => e.slug === slug);
   const ws = entry?.platform === "mobile" ? [390] : widths;
