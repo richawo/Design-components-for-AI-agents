@@ -1,0 +1,181 @@
+{
+  "slug": "feedback-morph-loader",
+  "name": "Morph Loader",
+  "tier": "free",
+  "platform": "web",
+  "category": "feedback",
+  "description": "A tiny loader whose two strokes morph circle to square to triangle while it works, then fold into a check or a cross in place when the job lands.",
+  "tags": [
+    "loader",
+    "spinner",
+    "morph",
+    "loading",
+    "success",
+    "error",
+    "feedback",
+    "svg",
+    "status",
+    "monochrome"
+  ],
+  "dependencies": [
+    "motion"
+  ],
+  "theme": "dark",
+  "previewHeight": 720,
+  "usage": "import { MorphLoader } from \"@/components/design-for-ai/feedback-morph-loader\";\n\n// Drive it from your request state; it keeps its size through every status.\n<MorphLoader status={upload.status} label=\"Uploading brand-kit.zip\" successLabel=\"Uploaded\" errorLabel=\"Upload failed\" />\n\n// Inside a button, beside the label, inheriting its colour.\n<button className=\"inline-flex items-center gap-2\">\n  <MorphLoader status=\"loading\" size={14} strokeWidth={1.5} announce={false} />\n  Saving\n</button>\n\n<MorphLoader status=\"loading\" size={48} strokeWidth={2.4} shapes={[\"circle\", \"hexagon\", \"diamond\"]} speed={0.8} />",
+  "props": [
+    {
+      "name": "status",
+      "type": "\"idle\" | \"loading\" | \"success\" | \"error\"",
+      "default": "\"loading\"",
+      "description": "idle rests on the first shape at 45% opacity; loading morphs through shapes; success folds into a check; error into a cross. Changes start from wherever the strokes are, so a status change mid-morph never jumps."
+    },
+    {
+      "name": "size",
+      "type": "number",
+      "default": "20",
+      "description": "Rendered size in px. The drawing scales and the stroke stays strokeWidth px."
+    },
+    {
+      "name": "strokeWidth",
+      "type": "number",
+      "default": "1.75",
+      "description": "Stroke weight in px at the rendered size."
+    },
+    {
+      "name": "speed",
+      "type": "number",
+      "default": "1",
+      "description": "Loop speed multiplier. At 1 it morphs one shape every 0.9 s and turns once every 2.6 s."
+    },
+    {
+      "name": "shapes",
+      "type": "(\"circle\" | \"square\" | \"triangle\" | \"diamond\" | \"hexagon\")[]",
+      "default": "[\"circle\", \"square\", \"triangle\"]",
+      "description": "The shapes the loop morphs through, in order. The first one is also the idle pose."
+    },
+    {
+      "name": "color",
+      "type": "string",
+      "default": "\"currentColor\"",
+      "description": "Ink while idle or loading. Inherits the text colour by default."
+    },
+    {
+      "name": "successColor",
+      "type": "string",
+      "default": "\"#6fd08c\"",
+      "description": "Ink of the check."
+    },
+    {
+      "name": "errorColor",
+      "type": "string",
+      "default": "\"#ff7a6b\"",
+      "description": "Ink of the cross."
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "default": "\"Loading\"",
+      "description": "Announced while loading."
+    },
+    {
+      "name": "successLabel",
+      "type": "string",
+      "default": "\"Done\"",
+      "description": "Announced on success."
+    },
+    {
+      "name": "errorLabel",
+      "type": "string",
+      "default": "\"Failed\"",
+      "description": "Announced on error."
+    },
+    {
+      "name": "announce",
+      "type": "boolean",
+      "default": "true",
+      "description": "Renders a polite live region with the current label. Turn it off when a parent (a button, a row) already announces the state."
+    },
+    {
+      "name": "onSettled",
+      "type": "(status: \"success\" | \"error\") => void",
+      "description": "Called once the fold into a check or a cross has landed."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "description": "Extra classes on the root span."
+    }
+  ],
+  "demo": {
+    "steps": [
+      "wait:400",
+      "click:@publish",
+      "wait:3000",
+      "click:@retry",
+      "wait:2100"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "status",
+      "label": "Status",
+      "kind": "action",
+      "options": [
+        "loading",
+        "success",
+        "error",
+        "idle"
+      ]
+    },
+    {
+      "prop": "speed",
+      "label": "Speed",
+      "kind": "slider",
+      "min": 0.4,
+      "max": 2,
+      "step": 0.1,
+      "unit": "×",
+      "default": 1
+    },
+    {
+      "prop": "strokeWidth",
+      "label": "Stroke",
+      "kind": "slider",
+      "min": 1,
+      "max": 4,
+      "step": 0.2,
+      "unit": "px",
+      "default": 2.4
+    },
+    {
+      "prop": "successColor",
+      "label": "Check",
+      "kind": "color",
+      "default": "#6fd08c",
+      "options": [
+        "#6fd08c",
+        "#f4f4f5",
+        "#8ab4ff",
+        "#ffb454"
+      ]
+    },
+    {
+      "prop": "errorColor",
+      "label": "Cross",
+      "kind": "color",
+      "default": "#ff7a6b",
+      "options": [
+        "#ff7a6b",
+        "#f4f4f5",
+        "#ffb454"
+      ]
+    },
+    {
+      "prop": "$replay",
+      "label": "Replay",
+      "kind": "action"
+    }
+  ],
+  "added": "2026-10-10"
+}
