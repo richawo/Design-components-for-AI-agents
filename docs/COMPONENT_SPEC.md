@@ -50,7 +50,13 @@ Broken components are skipped (and reported) in dev; `--strict` fails CI.
   continuous transitions between states (shared elements move, nothing cuts).
 - **Default export renders a complete, beautiful demo with zero props.** Also
   export the component by name (`export function HeroEditorial`) and its props
-  type (`export type HeroEditorialProps`).
+  type (`export type HeroEditorialProps`). When the component has `controls`,
+  the default export takes overrides and spreads them onto the featured
+  instance: `export default function HeroEditorialDemo(overrides:
+  Partial<HeroEditorialProps> = {})` (see "Controls" below).
+- **Name the parts a demo uses** with `data-demo="name"` (lowercase
+  kebab-case). It's harmless in production code and is how the demo script
+  finds its targets.
 - **Every piece of content is a typed prop with a realistic default.** Arrays
   of items (plans, testimonials, nav links) are props too.
 - `"use client"` at the top when the component uses state, effects, refs or
@@ -96,6 +102,103 @@ Broken components are skipped (and reported) in dev; `--strict` fails CI.
 
 Mobile components use `"category": "mobile"` and are imported from
 `@/components/design-for-ai/native/<slug>` in `usage`.
+
+Two optional keys make the component page and the gallery card come alive.
+They live in `meta.json` (the four-file rule stays), are public metadata
+(safe in `pro-manifest.json` for Pro), and are validated by
+`build-registry.mjs`. The types are `DemoScript` and `ComponentControl` in
+`lib/registry-types.ts`; the parser and rules are in `lib/demo/schema.mjs`.
+
+### Demo script (`demo`)
+
+```json
+"demo": { "steps": ["wait:500", "click:@billing-monthly", "wait:550", "click:@checkout", "wait:1600"], "loop": false }
+```
+
+A short, deterministic walkthrough in the `scripts/rec.mjs` step DSL. It
+plays live on the component page with a drawn cursor (real pointer, mouse,
+keyboard and input events on the targets), stops the instant the visitor
+moves, clicks, types or scrolls, and never autoplays with reduced motion
+(Replay still works). The same script is recorded into the card's hover
+video, `public/previews/<slug>.mp4`.
+
+| Step | Does |
+| --- | --- |
+| `wait:600` | pause (ms, up to 6000) |
+| `move:0.5,0.4` | glide to a fraction of the viewport |
+| `hover:@name` / `hover:@name:0.2,0.5` | glide to the element with `data-demo="name"` (its centre, or a point in its box) |
+| `click` / `click:@name[:fx,fy]` | click where the pointer is, or glide there and click |
+| `down` / `up` | press / release (a hold is `down; wait:1600; up`) |
+| `drag:0.3,0.5` | hold, glide to a point, release |
+| `tab:2` · `key:Enter` · `type:hello` · `scroll:600` | keyboard and scroll |
+
+Rules: 3–8 s in total (glides take 700 ms, clicks 110 ms, typing 70 ms a
+character); targets are only ever `@name`; at least one step targets an
+element; nothing is left held down. Show the component's idea in one breath:
+the state change it exists for, not a tour. Script-dispatched events can't
+trigger CSS `:hover` in the live player (the recorded video uses real input
+and does), so hover styling the demo relies on should come from JS (motion's
+`whileHover`, pointer handlers) or not matter.
+
+### Controls (`controls`)
+
+```json
+"controls": [
+  { "prop": "duration", "label": "Hold for", "kind": "slider", "min": 500, "max": 3000, "step": 100, "unit": "ms", "default": 1500 },
+  { "prop": "variant", "label": "Variant", "kind": "segmented", "options": [{ "value": "danger", "label": "Danger" }, { "value": "neutral", "label": "Neutral" }], "default": "danger" },
+  { "prop": "accent", "label": "Fill", "kind": "color", "default": "#e5484d", "options": ["#e5484d", "#f59e0b", "#ececee"] },
+  { "prop": "state", "label": "State", "kind": "action", "options": ["idle", "listening", "thinking", "speaking"] }
+]
+```
+
+The props worth tuning, shown in a Customize panel under the preview. Every
+change goes straight to the live preview (merged over the demo's own props),
+into the URL hash (`#c=prop:value,…`, diff from the defaults only, so links
+are shareable), and into "Copy configured" (the usage snippet with the tuned
+props) and "Copy configured prompt" (the design prompt plus the tuned values;
+for Pro only when the visitor is licensed). Agents read them too: MCP
+`get_component`, CLI `info`, `/api/registry/<slug>` and the Markdown twin.
+
+| Kind | Needs | Renders |
+| --- | --- | --- |
+| `toggle` | boolean `default` | a switch |
+| `slider` | `min`, `max`, numeric `default`; optional `step`, `unit` | a fill bar, label left, value right |
+| `select` | `options`, `default` one of them | a native select |
+| `segmented` | 2–5 `options`, `default` one of them | a segmented control |
+| `color` | `#rrggbb` `default`; optional up to 6 swatch `options` | swatches plus a custom picker |
+| `text` | string `default` (≤ 120 chars) | an inline text field |
+| `action` | `options` (one button each) or a single `value`; prop `"$replay"` replays the demo | buttons |
+
+Rules:
+
+- `prop` must be documented in `meta.props`; `default` is the value **the demo
+  renders with** (not necessarily the component's own default). At most 12
+  controls; `label` 2–24 characters; `group` puts controls under a heading.
+- **Actions are runtime state, not configuration** (`state`, `status`,
+  `open`): they move the preview into a state, but aren't saved to the URL or
+  the copied snippet, because the host app drives them.
+- `remount: true` for props only read on mount (`defaultOpen`,
+  `defaultBilling`), so a change restarts the component.
+- Pick props that visibly change the component. `check-component.mjs` flips
+  each one and fails if the preview doesn't change.
+- The default export spreads the overrides on the featured instance, after its
+  demo props so they win: `<Thing onCheckout={fake} {...overrides} />`. When
+  the demo owns state the control drives (an action), take it out of the
+  overrides and sync it into the demo's state, so the component's own controls
+  keep working:
+
+  ```tsx
+  export default function ThreeVoiceOrbDemo({ state: forced, ...overrides }: Partial<ThreeVoiceOrbProps> = {}) {
+    const [state, setState] = useState<VoiceOrbState>(forced ?? "idle");
+    useEffect(() => {
+      if (forced) setState(forced);
+    }, [forced]);
+    return <ThreeVoiceOrb {...overrides} state={state} onStateChange={setState} />;
+  }
+  ```
+
+  If the stage colour depends on a control (a `theme` toggle), let the stage
+  follow it too.
 
 ### `prompt.md`
 
@@ -338,7 +441,9 @@ done until its recording feels right at full speed.
 
 ## 6. Visual QA loop (required)
 
-A dev server runs at `http://localhost:3100`. Every component is visible at
+A dev server runs at `http://localhost:3100` (the scripts' default; `npm run dev`
+alone starts on 3000, so start it with `-- -p 3100` or pass `--base` to every
+script). Every component is visible at
 `/preview/<slug>`.
 
 ```bash
@@ -363,7 +468,51 @@ Fix and re-shoot until the answer is an unqualified yes. For interactive states
 throwaway Playwright script that clicks, hovers or types, and screenshot that
 state too.
 
-## 7. Licence
+## 7. How to add demo + controls (checklist)
+
+1. Add `data-demo="…"` to the elements the demo touches (a trigger, a
+   field, a send button; dynamic names like `` data-demo={`range-${key}`} ``
+   are fine).
+2. Make the default export take `overrides: Partial<Props> = {}` and spread
+   them on the featured instance.
+3. Add `demo` and `controls` to `meta.json`.
+4. Run the per-component check against a running dev server:
+
+   ```bash
+   npm run dev -- -p 3100        # or reuse one that's already running
+   node scripts/check-component.mjs <slug> --base=http://localhost:3100
+   ```
+
+   It validates the four files, demo and controls (`build-registry.mjs
+   --only=<slug> --dry-run`, which writes nothing), screenshots the preview
+   at 1440, 768 and 390 into `test-results/check/<slug>/` (failing on
+   overflow or console errors), flips every control and fails if one changes
+   nothing, and records the demo to `public/previews/<slug>.mp4` (failing on
+   a missing target, a console error, a video over 400 KB or one outside
+   3–8 s). A contact sheet of the video lands next to the screenshots. Open
+   them all and judge them as §6 says. `--no-video` skips the recording.
+
+**Running many at once.** The check is built for parallel builders sharing
+one dev server: validation is read-only, every output path is per slug, the
+video replaces its file atomically, and the shared generated files
+(`registry/__generated__/*`, `public/r/*`) are only ever written by a full
+`build-registry.mjs`, which takes a lock (`registry/__generated__/.build.lock`,
+stale after 2 minutes or when its process is gone), reads the registry inside
+the lock and swaps each file in with an atomic rename. So concurrent runs
+serialise and the last one includes every component on disk. Don't run
+`next build` or a second `next dev` in the same checkout while others work;
+they share `.next/`.
+
+Worked example: `registry/free/button-hold-confirm` (a tap, a hold that
+deletes a row, a hold that fails) and, for an action control, the Pro
+`three-voice-orb`.
+
+The scripts find Chromium in `$CHROMIUM_PATH`, the CI image, Playwright's
+own download, or failing that the newest full Chromium in the local
+Playwright cache. Prefer a full build to `chrome-headless-shell`, which
+starves animation frames while a button is held.
+
+## 8. Licence
 
 - `registry/free/**` is MIT.
 - `registry/pro/**` is proprietary (see `LICENSE-PRO.md` in the private

@@ -29,4 +29,5 @@ npm install
 npm run dev                                   # http://localhost:3000
 node scripts/build-registry.mjs               # validate every component
 node scripts/shot.mjs <slug> --base=http://localhost:3000
+node scripts/check-component.mjs <slug> --base=http://localhost:3000   # validate, screenshot, check controls, record the demo video
 ```
