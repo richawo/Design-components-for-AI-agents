@@ -41,7 +41,7 @@ Build a full-width site header in React + Tailwind CSS v4 + `motion/react`, at t
 - Small named pieces: `useCondensed`, `useCommandK` (returns whether the key is held and whether to show ⌘ or Ctrl), `useMenuBehaviour` (scroll lock, Tab trap, Esc, auto-close at 896px), `HoverLinks`, `SearchChip`, `Burger`, `MobileMenu`. Spring and timing values live in named constants (`EDGE`, `INTRO`, `HEIGHT`).
 
 **Demo**
-- Under the header sits one Kestrel docs article, not skeleton bars: a mono breadcrumb (Docs / Deployments / Rollbacks), the headline "Roll back a deploy in one command" (`clamp(2.25rem, 1.5rem + 3vw, 3.75rem)`, tracking −0.045em), a 17px lead, a mono meta line, then a CLI block and two short sections, max width 680px, aligned with the wordmark. The first blocks stagger in 60ms apart from 340ms, after the header; later sections reveal once they are within 400px of the viewport, and any already on screen wait for the page intro.
+- Under the header sits one Kestrel docs article, not skeleton bars: a mono breadcrumb (Docs / Deployments / Rollbacks), the headline "Roll back a deploy in one command" (`clamp(2.25rem, 1.5rem + 3vw, 3.75rem)`, tracking −0.045em), a 17px lead, a mono meta line, then a CLI block and two short sections, max width 680px, aligned with the wordmark. The first blocks stagger in 60ms apart from 340ms, after the header; later sections reveal once they are within 120px of the viewport, and any already on screen wait for the page intro.
 
 **Don't**
 - No glass pill, no glow behind the CTA, no gradient wordmark.

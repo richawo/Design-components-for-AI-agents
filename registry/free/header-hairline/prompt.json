@@ -41,7 +41,7 @@
     "press": "scale 0.97",
     "reducedMotion": "150ms fades instead of rises; highlight jumps, no height tween, opacity-only menu",
     "entrance": "first view ≤ 800ms: wordmark at 40ms, links from 120ms 45ms apart, then search chip, Sign in, primary button (or burger) from 360ms 45ms apart; each block opacity 0→1, y 8px→0, blur 6px→0, 450ms cubic-bezier(0.22,1,0.36,1)",
-    "demo": "docs article: breadcrumb, headline, lead, meta stagger 60ms from 340ms; later sections reveal once within 400px of the viewport, waiting for the page intro if already on screen"
+    "demo": "docs article: breadcrumb, headline, lead, meta stagger 60ms from 340ms; later sections reveal once within 120px of the viewport, waiting for the page intro if already on screen"
   },
   "responsive": {
     "1440": "links centred on the page, search chip with label",
