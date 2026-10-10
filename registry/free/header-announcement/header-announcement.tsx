@@ -31,6 +31,10 @@ export type HeaderAnnouncementProps = {
   storageKey?: string;
   /** Optional brand colour for the badge. Defaults to white, so the strip stays monochrome. */
   accent?: string;
+  /** Show the dismiss button. Turn it off for a notice that has to stay up. */
+  dismissible?: boolean;
+  /** Show the pager segments (wide containers only). Hidden automatically with a single message. */
+  pager?: boolean;
   className?: string;
 };
 
@@ -167,6 +171,8 @@ export function HeaderAnnouncement({
   onDismiss,
   storageKey,
   accent,
+  dismissible = true,
+  pager = true,
   className = "",
 }: HeaderAnnouncementProps) {
   const [innerOpen, setInnerOpen] = useState(defaultOpen);
@@ -195,19 +201,23 @@ export function HeaderAnnouncement({
   };
 
   // The strip mounts per showing, so bringing it back replays its entrance.
-  return <AnimatePresence>{visible ? <Strip key="strip" messages={messages} interval={interval} accent={accent} onDismiss={dismiss} className={className} /> : null}</AnimatePresence>;
+  return <AnimatePresence>{visible ? <Strip key="strip" messages={messages} interval={interval} accent={accent} dismissible={dismissible} pager={pager} onDismiss={dismiss} className={className} /> : null}</AnimatePresence>;
 }
 
 function Strip({
   messages,
   interval,
   accent,
+  dismissible,
+  pager,
   onDismiss,
   className,
 }: {
   messages: Announcement[];
   interval: number;
   accent?: string;
+  dismissible: boolean;
+  pager: boolean;
   onDismiss: (id: string) => void;
   className: string;
 }) {
@@ -259,7 +269,7 @@ function Strip({
     >
       <motion.div exit={{ opacity: 0, transition: { duration: 0.14, ease: EASE_IN } }} className="@container border-b border-white/[0.08]">
         <div className="mx-auto grid h-11 max-w-[1280px] grid-cols-[1fr_auto] items-center pl-4 pr-1 @2xl:h-10 @2xl:grid-cols-[96px_1fr_96px] @2xl:px-6">
-          {count > 1 ? (
+          {count > 1 && pager ? (
             <Pager messages={messages} index={index} progress={progress} reduce={reduce} paused={paused && !reduce} onPick={(i) => go(i, i < index ? -1 : 1)} />
           ) : (
             <span className="hidden @2xl:block" />
@@ -290,18 +300,23 @@ function Strip({
             </AnimatePresence>
           </div>
 
-          <motion.div variants={rise} initial="hidden" animate="shown" custom={INTRO.dismissAt} className="flex justify-end">
-            <button
-              type="button"
-              onClick={() => onDismiss(current.id)}
-              aria-label="Dismiss announcements"
-              className="relative z-10 flex size-11 items-center justify-center rounded-lg text-white/45 outline-none transition-[color,background-color,transform] duration-150 hover:bg-white/[0.06] hover:text-white active:scale-[0.94] focus-visible:ring-2 focus-visible:ring-white/70 @2xl:size-7 @2xl:rounded-md"
-            >
-              <svg viewBox="0 0 16 16" className="size-3.5" fill="none" aria-hidden="true">
-                <path d="m4 4 8 8m0-8-8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-              </svg>
-            </button>
-          </motion.div>
+          {dismissible ? (
+            <motion.div variants={rise} initial="hidden" animate="shown" custom={INTRO.dismissAt} className="flex justify-end">
+              <button
+                type="button"
+                data-demo="dismiss"
+                onClick={() => onDismiss(current.id)}
+                aria-label="Dismiss announcements"
+                className="relative z-10 flex size-11 items-center justify-center rounded-lg text-white/45 outline-none transition-[color,background-color,transform] duration-150 hover:bg-white/[0.06] hover:text-white active:scale-[0.94] focus-visible:ring-2 focus-visible:ring-white/70 @2xl:size-7 @2xl:rounded-md"
+              >
+                <svg viewBox="0 0 16 16" className="size-3.5" fill="none" aria-hidden="true">
+                  <path d="m4 4 8 8m0-8-8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+              </button>
+            </motion.div>
+          ) : (
+            <span className="hidden @2xl:block" />
+          )}
         </div>
       </motion.div>
     </motion.section>
@@ -334,6 +349,7 @@ function Pager({
         <button
           key={m.id}
           type="button"
+          data-demo={`pager-${i + 1}`}
           onClick={() => onPick(i)}
           aria-label={`Announcement ${i + 1} of ${count}`}
           aria-current={i === index ? "true" : undefined}
@@ -423,14 +439,28 @@ const NOTES = [
   { k: "03", title: "Nothing ships unread", body: "Drafts stay private until a responder signs them off. Outpost never publishes on its own." },
 ];
 
-function Demo() {
+/**
+ * `open` is lifted into the demo so a control can show and dismiss the strip while the
+ * stage below keeps gliding with it; clearing the override returns to the resting state: open.
+ */
+export default function HeaderAnnouncementDemo({ open: forcedOpen, onDismiss, ...overrides }: Partial<HeaderAnnouncementProps> = {}) {
   const reduce = useReducedMotion() ?? false;
   const rise = riseVariants(reduce);
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(forcedOpen ?? true);
+  useEffect(() => {
+    setOpen(forcedOpen ?? true);
+  }, [forcedOpen]);
   const at = (k: number) => PAGE.at + k * PAGE.stagger;
   return (
     <div className="min-h-[560px] text-white" style={{ backgroundColor: COLOR.page }}>
-      <HeaderAnnouncement open={open} onDismiss={() => setOpen(false)} />
+      <HeaderAnnouncement
+        {...overrides}
+        open={open}
+        onDismiss={(id) => {
+          setOpen(false);
+          onDismiss?.(id);
+        }}
+      />
       <div className="border-b border-white/[0.06]">
         <motion.div variants={rise} initial="hidden" animate="shown" custom={at(0)} className="mx-auto flex h-16 max-w-[1280px] items-center gap-2 px-4 sm:px-6">
           <svg viewBox="0 0 24 24" className="size-5" aria-hidden="true">
@@ -438,6 +468,7 @@ function Demo() {
             <path d="m4 7.5 8 4.5 8-4.5M12 12v9" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" opacity="0.5" />
           </svg>
           <span className="font-display text-[16px] font-semibold tracking-[-0.035em]">Outpost</span>
+          <AnimatePresence>{!open ? <BringBack onClick={() => setOpen(true)}>Bring the strip back</BringBack> : null}</AnimatePresence>
         </motion.div>
       </div>
       <main className="mx-auto max-w-[1280px] px-4 pb-20 pt-12 sm:px-6 sm:pt-16">
@@ -472,9 +503,6 @@ function Demo() {
             </motion.li>
           ))}
         </ol>
-        <AnimatePresence>
-          {!open ? <BringBack onClick={() => setOpen(true)}>Bring the strip back</BringBack> : null}
-        </AnimatePresence>
       </main>
     </div>
   );
@@ -483,13 +511,14 @@ function Demo() {
 function BringBack({ onClick, children }: { onClick: () => void; children: ReactNode }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 8, filter: "blur(6px)" }}
-      animate={{ opacity: 1, y: 0, filter: "blur(0px)", transition: { delay: 0.3, duration: 0.4, ease: EASE_OUT } }}
+      initial={{ opacity: 0, y: 6, filter: "blur(6px)" }}
+      animate={{ opacity: 1, y: 0, filter: "blur(0px)", transition: { delay: 0.25, duration: 0.4, ease: EASE_OUT } }}
       exit={{ opacity: 0, transition: { duration: 0.12 } }}
-      className="mt-10 flex justify-center"
+      className="ml-auto flex"
     >
       <button
         type="button"
+        data-demo="bring-back"
         onClick={onClick}
         className="h-9 rounded-full px-4 font-mono text-[11.5px] uppercase tracking-[0.12em] text-white/45 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1)] outline-none transition-[color,background-color,transform] duration-150 hover:bg-white/[0.04] hover:text-white active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-white/70"
       >
@@ -499,4 +528,3 @@ function BringBack({ onClick, children }: { onClick: () => void; children: React
   );
 }
 
-export default Demo;

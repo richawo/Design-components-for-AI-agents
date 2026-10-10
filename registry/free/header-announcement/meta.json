@@ -60,11 +60,88 @@
       "description": "Optional brand colour for the badge text and ring. Defaults to white, keeping the strip monochrome."
     },
     {
+      "name": "dismissible",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show the dismiss button. Turn it off for a notice that has to stay up."
+    },
+    {
+      "name": "pager",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show the pager segments on wide containers. Hidden automatically when there is a single message."
+    },
+    {
       "name": "className",
       "type": "string",
       "default": "\"\"",
       "description": "Extra classes on the strip."
     }
   ],
-  "added": "2026-10-09"
+  "added": "2026-10-09",
+  "demo": {
+    "steps": [
+      "wait:600",
+      "click:@pager-2",
+      "wait:700",
+      "click:@pager-3",
+      "wait:600",
+      "click:@dismiss",
+      "wait:900",
+      "click:@bring-back",
+      "wait:800"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "open",
+      "label": "Strip",
+      "kind": "action",
+      "options": [
+        {
+          "value": true,
+          "label": "Show"
+        },
+        {
+          "value": false,
+          "label": "Dismiss"
+        }
+      ],
+      "group": "State"
+    },
+    {
+      "prop": "accent",
+      "label": "Badge colour",
+      "kind": "color",
+      "default": "#ffffff",
+      "options": [
+        "#ffffff",
+        "#ff7a45",
+        "#7dd3a8",
+        "#60a5fa"
+      ],
+      "group": "Look"
+    },
+    {
+      "prop": "dismissible",
+      "label": "Dismiss button",
+      "kind": "toggle",
+      "default": true,
+      "group": "Look"
+    },
+    {
+      "prop": "pager",
+      "label": "Pager",
+      "kind": "toggle",
+      "default": true,
+      "group": "Look"
+    },
+    {
+      "prop": "$replay",
+      "label": "Demo",
+      "kind": "action",
+      "value": "Replay",
+      "group": "Demo"
+    }
+  ]
 }

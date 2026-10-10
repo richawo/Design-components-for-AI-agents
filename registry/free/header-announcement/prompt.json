@@ -12,7 +12,8 @@
     "height": "40px (44px under 672px container)",
     "desktop": "grid 96px | 1fr | 96px, px 24px: pager | centred message | dismiss",
     "mobile": "grid 1fr | auto, left-aligned message, pager hidden, whole row is the link",
-    "message": "badge, one-line text with ellipsis, link + arrow; `short` text under 896px"
+    "message": "badge, one-line text with ellipsis, link + arrow; `short` text under 896px",
+    "options": "optional dismissible (default true) and pager (default true) props; when off, an empty slot keeps the centre column aligned"
   },
   "typography": {
     "text": "13px, tracking -0.005em, white/80",

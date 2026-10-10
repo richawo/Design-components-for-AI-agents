@@ -6,6 +6,7 @@ Build a slim, monochrome announcement strip that sits above a site header, in Re
 - ≥672px: grid `96px 1fr 96px` with `px-6` (aligned with the header's gutter). Left: pager. Centre: the message, centred. Right: dismiss.
 - <672px: grid `1fr auto`, `pl-4 pr-1`; the message is left-aligned and the pager is hidden.
 - Message row: badge, text (truncates), link with arrow, 10px gaps. Each message may carry a `short` version used under 896px.
+- Optional `dismissible` and `pager` props (both default true) hide the dismiss button and the pager; an empty slot keeps the centre column aligned.
 
 **Typography**
 - Text 13px, tracking −0.005em, `white/80`, one line, ellipsis.
