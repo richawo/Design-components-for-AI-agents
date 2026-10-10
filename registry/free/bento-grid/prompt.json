@@ -85,7 +85,7 @@
       1
     ],
     "timeline": "per tile, seconds after the tile starts: tile lands 0 (opacity + 16px rise, no blur, 0.6s) → label/title/body 0.08/0.13/0.18 (12px rise out of 8px blur) → figures 0.24 (count up from 0 over 0.9s with an 8px blur that clears) → data 0.30 (chart/map draw 0.7s, cells wave in, bars grow) → progress 0.62 (meters fill, top-city list). Tiles in a row start 70ms apart; rows lower in the viewport start up to 220ms later.",
-    "trend": "line revealed by widening a clipPath rect (non-scaling stroke, not pathLength); end dot springs in as the line arrives; d morphs over 0.9s; metrics cycle every 4.2s while on screen until clicked; each new total re-counts from zero",
+    "trend": "line revealed by widening a clipPath rect (non-scaling stroke, not pathLength); end dot springs in as the line arrives; d morphs over 0.9s; metrics cycle every 4.2s while on screen until clicked (the first metric holds a full cycle after its line draws; a pointer over the tile pauses and restarts the count); each new total re-counts from zero",
     "stat": "184 counts up out of a blur; Northstar meter fills in 0.35s, the warehouse meter crawls 1.4s linear (the joke)",
     "heatmap": "168 plain spans with CSS opacity/scale transitions delayed in a diagonal wave (12ms per step); then a random cell pops every 650ms",
     "search": "types 38-88ms per char, holds the answer 2.6s, erases 3 chars per 18ms; answer card cross-fades with a 4px blur; mini-bars grow from the baseline",

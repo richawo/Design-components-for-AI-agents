@@ -71,7 +71,7 @@
     {
       "name": "trend",
       "type": "TrendTileProps",
-      "description": "Line-chart tile. The line draws in, then morphs between metrics every 4.2s until someone picks one; each new total counts up."
+      "description": "Line-chart tile. The line draws in, then morphs between metrics every 4.2s (holding while a pointer is over the tile) until someone picks one; each new total counts up."
     },
     {
       "name": "stat",
@@ -108,14 +108,14 @@
   "demo": {
     "steps": [
       "wait:300",
-      "click:@metric-revenue",
-      "wait:700",
       "click:@metric-signups",
-      "wait:500",
+      "wait:700",
+      "click:@metric-revenue",
+      "wait:600",
       "scroll:760",
-      "wait:550",
+      "wait:200",
       "click:@switch-anomaly-alerts",
-      "wait:900",
+      "wait:1100",
       "click",
       "wait:800"
     ]
@@ -161,6 +161,13 @@
     {
       "prop": "heading",
       "label": "Section heading",
+      "kind": "text",
+      "default": "",
+      "group": "Look"
+    },
+    {
+      "prop": "headingMuted",
+      "label": "Muted clause",
       "kind": "text",
       "default": "",
       "group": "Look"

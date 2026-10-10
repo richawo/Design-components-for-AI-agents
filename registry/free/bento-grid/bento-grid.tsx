@@ -346,10 +346,25 @@ const SURFACE: Record<"tile" | "invert" | "deep", CSSProperties> = {
   deep: { "--bn-surface": "var(--bn-deep)", "--bn-ink": "var(--bn-deep-ink)" } as CSSProperties,
 };
 
-function Tile({ reveal, surface = "tile", className = "", children }: { reveal: Reveal; surface?: keyof typeof SURFACE; className?: string; children: ReactNode }) {
+function Tile({
+  reveal,
+  surface = "tile",
+  className = "",
+  onHold,
+  children,
+}: {
+  reveal: Reveal;
+  surface?: keyof typeof SURFACE;
+  className?: string;
+  /** Told when a pointer arrives on (true) or leaves (false) the tile. */
+  onHold?: (on: boolean) => void;
+  children: ReactNode;
+}) {
   return (
     <motion.article
       ref={reveal.ref}
+      onPointerEnter={onHold ? () => onHold(true) : undefined}
+      onPointerLeave={onHold ? () => onHold(false) : undefined}
       style={SURFACE[surface]}
       initial="hidden"
       animate={reveal.shown ? "show" : "hidden"}
@@ -519,12 +534,26 @@ export function TrendTile({ label, title, body, dates, metrics, className = "" }
     setSwitched(true);
   };
 
-  // Cycle metrics while on screen, until someone picks one.
+  // The chart holds still while a pointer is over the tile, as a hover would expect.
+  const [holding, setHolding] = useState(false);
+
+  // Cycle metrics while on screen, until someone picks one. The first metric
+  // gets a full cycle once its line has drawn, and every pause (a pointer over
+  // the tile, the tile scrolling away) restarts the count rather than swapping
+  // the chart the instant it resumes.
   useEffect(() => {
-    if (!live || touched || metrics.length < 2) return;
-    const id = setInterval(() => select((n) => (n + 1) % metrics.length), METRIC_CYCLE_MS);
-    return () => clearInterval(id);
-  }, [live, touched, metrics.length]);
+    if (!live || touched || holding || metrics.length < 2) return;
+    const lead = phase === "play" ? (T.data + T.draw) * 1000 : 0;
+    let id: ReturnType<typeof setInterval> | undefined;
+    const first = setTimeout(() => {
+      select((n) => (n + 1) % metrics.length);
+      id = setInterval(() => select((n) => (n + 1) % metrics.length), METRIC_CYCLE_MS);
+    }, METRIC_CYCLE_MS + lead);
+    return () => {
+      clearTimeout(first);
+      clearInterval(id);
+    };
+  }, [live, touched, holding, phase, metrics.length]);
 
   const m = metrics[active];
   const { line, area, last } = useMemo(() => {
@@ -536,7 +565,7 @@ export function TrendTile({ label, title, body, dates, metrics, className = "" }
   const morph = { duration: reduce ? 0 : 0.9, ease: EASE };
 
   return (
-    <Tile reveal={reveal} className={className}>
+    <Tile reveal={reveal} className={className} onHold={setHolding}>
       <div className="flex flex-col gap-6 @5xl:flex-row @5xl:items-start @5xl:justify-between">
         <TileHead reveal={reveal} {...{ label, title, body }} />
         <motion.div
@@ -976,7 +1005,7 @@ export function AlertsTile({ label, title, body, settings, preview, className = 
                 initial={reduce ? false : { opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0, transition: { duration: reduce ? 0 : 0.15 } }}
-                className={`absolute inset-0 flex items-center justify-center rounded-[14px] border border-dashed border-(--bn-ink)/15 px-4 ${MONO} text-[11px] tracking-[0.1em] text-(--bn-ink)/45`}
+                className={`absolute inset-0 flex items-center justify-center rounded-[14px] border border-dashed border-(--bn-ink)/15 px-4 ${MONO} text-[12px] tracking-[0.1em] text-(--bn-ink)/65`}
               >
                 {preview.quiet}
               </motion.div>

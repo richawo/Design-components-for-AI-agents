@@ -7,7 +7,7 @@ Build a live bento grid for a fictional analytics product, “Northstar”, in R
 - Columns via container queries: 1 → 2 at `@3xl` → 6 at `@5xl`. Spans at `@5xl`: Trend 4 + Stat 2, Heatmap 3 + Search 3, Alerts 2 + Map 4. At `@3xl`: Trend and Map span 2.
 - Every tile: padding 24/32px; mono label (“01 / Trends”), display title 22–24px, body 15px/1.55 at 68% ink; the illustration is pushed down with `mt-auto`.
 - Export each tile (`TrendTile`, `StatTile`, `HeatmapTile`, `SearchTile`, `AlertsTile`, `MapTile`); `<BentoGrid>` with `children` renders your own selection inside the themed sheet.
-- `ambient` (boolean, default true) stops the metric cycle, typing, switch flips, heatmap ticks and live-city pings when false, but keeps entrances and clicks. Reduced motion always forces it off. The alert switches also hold still while a pointer is over them.
+- `ambient` (boolean, default true) stops the metric cycle, typing, switch flips, heatmap ticks and live-city pings when false, but keeps entrances and clicks. Reduced motion always forces it off. The alert switches and the trend chart also hold still while a pointer is over them.
 
 **Tiles**
 1. Trend: segmented control (Weekly actives / Signups / Revenue) with an ink pill on `layoutId` (spring 500/40); total in 34px display, a hairline delta chip, “14 days”. SVG line chart (640×220 viewBox, `preserveAspectRatio="none"`, non-scaling stroke), Catmull-Rom path, three dashed gridlines, an area fading from ink 14% to 0, and an accent “now” dot with a surface-coloured 3px border, placed in HTML by percentage.
@@ -27,7 +27,7 @@ Build a live bento grid for a fictional analytics product, “Northstar”, in R
 
 **Motion** (ease `[0.22, 1, 0.36, 1]`)
 - One timeline per tile (seconds after the tile starts): the tile lands at 0 (opacity, 16px rise, no blur of its own so it never compounds) → label, title, body at 0.08/0.13/0.18 (12px rise out of an 8px blur) → figures at 0.24 (count up from zero over 0.9s with an 8px blur that clears) → data at 0.30 (the line and the world draw over 0.7s, cells wave in, bars grow) → progress at 0.62 (meters fill, the top-cities list staggers 50ms). Tiles in a row start 70ms apart; rows lower in the viewport start up to 220ms later.
-- Trend: the line is revealed by widening a `clipPath` rect (pathLength breaks with non-scaling strokes); the dot springs in as the line arrives; metrics cycle every 4.2s while on screen until clicked, morphing `d` over 0.9s, and each new total re-counts from zero.
+- Trend: the line is revealed by widening a `clipPath` rect (pathLength breaks with non-scaling strokes); the dot springs in as the line arrives; metrics cycle every 4.2s while on screen until clicked (the first metric holds a full cycle after its line draws, and a pointer over the tile pauses and restarts the count), morphing `d` over 0.9s, and each new total re-counts from zero.
 - Stat: the slow meter crawls 1.4s linear on purpose.
 - Heatmap: 168 plain spans with CSS opacity/scale transitions delayed in a diagonal wave (12ms per step), then a random cell pops every 650ms.
 - Map: the world sweeps in west to east through a clip rect; each city springs in as the sweep passes; rings start only after the sweep; counts tick every 1.1s and the list re-sorts with `layout`.
