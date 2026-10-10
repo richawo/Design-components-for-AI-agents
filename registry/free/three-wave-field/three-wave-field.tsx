@@ -474,7 +474,7 @@ export function ThreeWaveField({ accent = COLOR.accent, amplitude = 1, speed = 1
   const hostRef = useRef<HTMLDivElement>(null);
   const stage = useRenderer(hostRef);
   useWaveField(stage, { accent, amplitude, speed, interactive });
-  return <div ref={hostRef} className={`relative h-full w-full touch-pan-y ${className}`} />;
+  return <div ref={hostRef} data-demo="field" className={`relative h-full w-full touch-pan-y ${className}`} />;
 }
 
 /* ------------------------------------------------------------------ */
@@ -484,11 +484,14 @@ export function ThreeWaveField({ accent = COLOR.accent, amplitude = 1, speed = 1
 /** `tight` units (°, %) sit against the number instead of after a space. */
 type Reading = { label: string; value: number; decimals: number; unit: string; tight?: boolean };
 
-const READINGS: Reading[] = [
-  { label: "Swell", value: 2.4, decimals: 1, unit: "m" },
-  { label: "Period", value: 11.2, decimals: 1, unit: "s" },
-  { label: "Heading", value: 248, decimals: 0, unit: "°", tight: true },
-];
+/** The buoy reports what the sea is doing: taller waves read as a bigger swell, faster ones as a shorter period. */
+function readingsFor(amplitude: number, speed: number): Reading[] {
+  return [
+    { label: "Swell", value: 2.4 * amplitude, decimals: 1, unit: "m" },
+    { label: "Period", value: 11.2 / Math.max(speed, 0.1), decimals: 1, unit: "s" },
+    { label: "Heading", value: 248, decimals: 0, unit: "°", tight: true },
+  ];
+}
 
 // The caption follows the sea: eyebrow, then each reading, then the hint.
 const CAPTION = { start: 0.35, step: 0.06, count: 0.9 } as const;
@@ -510,6 +513,8 @@ function CountUp({ value, decimals, delay, run }: { value: number; decimals: num
   const format = useMemo(() => new Intl.NumberFormat("en-GB", { minimumFractionDigits: decimals, maximumFractionDigits: decimals }), [decimals]);
   const text = useTransform(n, (v) => format.format(v));
   const filter = useTransform(settle, [0, 1], ["blur(4px)", "blur(0px)"]);
+  // The entrance staggers; a later change (a tuned reading) just eases to the new figure.
+  const entered = useRef(false);
 
   useEffect(() => {
     if (reduce) {
@@ -518,8 +523,10 @@ function CountUp({ value, decimals, delay, run }: { value: number; decimals: num
       return;
     }
     if (!run) return;
-    const count = animate(n, value, { duration: CAPTION.count, delay, ease: EASE_OUT });
-    const clear = animate(settle, 1, { duration: CAPTION.count * 0.8, delay, ease: EASE_OUT });
+    const again = entered.current;
+    entered.current = true;
+    const count = animate(n, value, { duration: again ? 0.45 : CAPTION.count, delay: again ? 0 : delay, ease: EASE_OUT });
+    const clear = animate(settle, 1, { duration: CAPTION.count * 0.8, delay: again ? 0 : delay, ease: EASE_OUT });
     return () => {
       count.stop();
       clear.stop();
@@ -529,12 +536,13 @@ function CountUp({ value, decimals, delay, run }: { value: number; decimals: num
   return <motion.span style={{ filter }}>{text}</motion.span>;
 }
 
-function BuoyReadout() {
+function BuoyReadout({ accent, amplitude, speed, interactive }: Required<Omit<ThreeWaveFieldProps, "className">>) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.3 });
   const reduce = useReducedMotion() ?? false;
   const variants = reduce ? fade : rise;
   const state = inView ? "show" : "hidden";
+  const readings = readingsFor(amplitude, speed);
 
   return (
     <div ref={ref} className="pointer-events-none flex flex-col gap-4 @2xl:flex-row @2xl:items-end @2xl:justify-between">
@@ -543,7 +551,7 @@ function BuoyReadout() {
           Tidewater buoy 41 · Rockall Trough
         </motion.p>
         <dl className="mt-3 flex gap-7 @md:gap-10">
-          {READINGS.map((r, i) => (
+          {readings.map((r, i) => (
             <motion.div key={r.label} custom={i + 1} variants={variants} initial="hidden" animate={state}>
               <dt className="font-mono text-[10.5px] uppercase tracking-[0.18em] text-white/40">{r.label}</dt>
               <dd className="mt-1.5 font-display text-[clamp(1.5rem,1.2rem+1.4cqi,2.25rem)] font-medium leading-none tracking-[-0.04em] text-white tabular-nums">
@@ -554,24 +562,33 @@ function BuoyReadout() {
           ))}
         </dl>
       </div>
-      <motion.p custom={READINGS.length + 1} variants={variants} initial="hidden" animate={state} className="text-balance font-mono text-[10.5px] uppercase tracking-[0.18em] text-white/35">
-        <span className="[@media(hover:none)]:hidden">Move to lift the swell · click to drop a stone</span>
-        <span className="hidden [@media(hover:none)]:inline">Tap to drop a stone</span>
+      <motion.p custom={readings.length + 1} variants={variants} initial="hidden" animate={state} className="text-balance font-mono text-[10.5px] uppercase tracking-[0.18em] text-white/35">
+        {interactive ? (
+          <>
+            {/* The dot is the touch colour, so a tuned accent shows up in the legend too. */}
+            <span aria-hidden="true" className="mr-2 inline-block size-1.5 -translate-y-px rounded-full align-middle" style={{ backgroundColor: accent }} />
+            <span className="[@media(hover:none)]:hidden">Move to lift the swell · click to drop a stone</span>
+            <span className="hidden [@media(hover:none)]:inline">Tap to drop a stone</span>
+          </>
+        ) : (
+          <span>Still water · pointer off</span>
+        )}
       </motion.p>
     </div>
   );
 }
 
-export default function ThreeWaveFieldDemo() {
+export default function ThreeWaveFieldDemo(overrides: Partial<ThreeWaveFieldProps> = {}) {
+  const { accent = COLOR.accent, amplitude = 1, speed = 1, interactive = true } = overrides;
   return (
     <section className="@container relative isolate h-[760px] w-full overflow-hidden bg-black text-white">
       <div className="absolute inset-0">
-        <ThreeWaveField />
+        <ThreeWaveField {...overrides} />
       </div>
       {/* Keeps the readout legible over the moving field. */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-56 bg-gradient-to-t from-black via-black/70 to-transparent" />
       <div className="absolute inset-x-0 bottom-0 px-6 pb-7 @md:px-10 @md:pb-9">
-        <BuoyReadout />
+        <BuoyReadout accent={accent} amplitude={amplitude} speed={speed} interactive={interactive} />
       </div>
     </section>
   );
