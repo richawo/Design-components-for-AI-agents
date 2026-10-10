@@ -128,16 +128,15 @@
   "added": "2026-10-09",
   "demo": {
     "steps": [
-      "wait:500",
       "hover:@cta",
-      "scroll:340",
       "wait:500",
-      "hover:@draft",
-      "wait:500",
-      "hover:@overnight",
+      "scroll:120",
+      "scroll:120",
+      "scroll:120",
       "wait:400",
-      "scroll:-340",
-      "wait:600"
+      "scroll:-180",
+      "scroll:-180",
+      "wait:300"
     ]
   },
   "controls": [
@@ -146,6 +145,13 @@
       "label": "Headline",
       "kind": "text",
       "default": "Your inbox, triaged before coffee.",
+      "group": "Content"
+    },
+    {
+      "prop": "muted",
+      "label": "Muted part",
+      "kind": "text",
+      "default": "before coffee.",
       "group": "Content"
     },
     {

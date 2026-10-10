@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, type CSSProperties, type ReactNode, type RefObject } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode, type RefObject } from "react";
 import {
   animate,
   motion,
@@ -834,11 +834,28 @@ function FolderIcon({ name }: { name: TiltFolder["icon"] }) {
 /**
  * Demo: the hero plus a little runway below it, so there is room to scroll the window flat.
  * Overrides (the Customize panel) are spread onto the featured instance, and the stage follows `theme`.
+ *
+ * The hero assembles itself on load, long before a recording starts. When an automated capture (the card
+ * video) begins moving the pointer, the instance is remounted once so the stagger, count-ups and meter
+ * fill play inside the clip. Real visitors and the live player never see this, and reduced motion skips it.
  */
 export default function HeroAppTiltDemo(overrides: Partial<HeroAppTiltProps> = {}) {
+  const [run, setRun] = useState(0);
+  const reduce = useReducedMotion();
+  useEffect(() => {
+    if (reduce || typeof navigator === "undefined" || !navigator.webdriver) return;
+    let moves = 0;
+    const onMove = (e: PointerEvent) => {
+      if (!e.isTrusted || ++moves < 2) return; // the first move only parks the pointer
+      window.removeEventListener("pointermove", onMove, true);
+      setRun(1);
+    };
+    window.addEventListener("pointermove", onMove, true);
+    return () => window.removeEventListener("pointermove", onMove, true);
+  }, [reduce]);
   return (
     <div style={{ background: overrides.theme === "light" ? PALETTE.light.page : PALETTE.dark.page }}>
-      <HeroAppTilt {...overrides} />
+      <HeroAppTilt key={run} {...overrides} />
       <div aria-hidden="true" className="h-[45vh]" />
     </div>
   );
