@@ -21,22 +21,24 @@
   },
   "color": {
     "approach": "CSS variables on the root from the theme prop. Dark: ink #f4f4f5, paper #0b0b0c, thumb off #f4f4f5, muted #8a8a93. Light: ink #18181b, paper #ffffff, thumb off #ffffff, muted #71717a.",
-    "track": "colour in the --sw-bg variable, never inline; off: ink at 12% with an inset ring at 16% ink, hover 18%; on: the fill (accent prop, or the ink), hover steps the fill 12% toward the surface; hover on the track or the label row lifts the track",
-    "thumb": "on: paper colour; off: thumb-off colour; shadow 0 1px 2px at 45% black plus a 0.5px hairline",
-    "glyphs": "check in paper colour on the fill; cross in ink at 45%",
-    "accent": "one prop, used as given. The demo maps its default swatch (#f4f4f5) to no accent, so the theme's ink shows",
-    "disabled": "row at 40% opacity, cursor-not-allowed, no hover"
+    "track": "Colour sits in the --sw-track variable on the button, never inline, so hover can win. Track: ink at 12% with an inset ring at 16% ink, hover 18%. The fill is a child span, not the track: its width follows the thumb (see motion.fill) and its colour is the accent prop, or the ink, with hover stepping it 12% toward the surface. Hover on the track or the label row lifts the track or fill. Pending and disabled take no hover or press styling.",
+    "thumb": "Off: the thumb-off colour (white in the dark theme). On: the paper colour (near-black in the dark theme) when no accent is set; with an accent, near-black on a light accent (relative luminance over 0.6) and white on a darker one. The thumb swaps between its off and on colour across the middle of its travel (progress 0.44 to 0.56), never at rest, so it is never grey on grey. Shadow: 0 1px 2px at 45% black plus a 0.5px hairline in black at 35% (dark), so a white thumb keeps its edge on a white fill.",
+    "glyphs": "Check in whichever of white or near-black contrasts more on the fill; cross in ink at 45%.",
+    "accent": "One prop, used as given. The first swatch in the playground (#f4f4f5) means the theme's ink: the demo maps it to no accent, so the ink shows (near-black in the light theme).",
+    "disabled": "Row at 40% opacity, cursor-not-allowed, no hover. The playground's Disabled control shows it on the Sync row.",
+    "error": "Refusal line in #f87171 (dark) or #dc2626 (light), both AA on their card."
   },
   "motion": {
     "position": "one motion value, animate to 0 or travel with spring.ui (stiffness 500, damping 40). Interruptions carry velocity.",
     "stretch": "s = min(|velocity| / (travel * 8), 1) * 0.14; scaleX = 1 + s; scaleY = 1 - s/2; transform origin is the trailing edge (left while moving on, right while moving off). Zero at rest.",
-    "colour": "track and thumb cross-fade over 150ms ease-out",
+    "colour": "The track and fill colours cross-fade over 150ms ease-out on hover only. The thumb's on colour is revealed across the middle of its travel (progress 0.44 to 0.56), in step with the spring, so the swap happens while the stretch peaks.",
     "press": "track scales to 0.97 over 150ms (scale property) while the track or its label row is pressed, enabled only",
     "glyphs": "check draws on 80ms after the thumb starts moving on; cross draws off with the thumb; opacity 200ms ease-out",
-    "pending": "thumb keeps its old position and shows a spinner (animate-spin, stopped under reduced motion); on resolve the thumb springs to the new state and the stretch plays; on reject it stays",
-    "reducedMotion": "position jumps, no stretch, no glyph draw, no spinner rotation, no refusal pull, colour and opacity fades at 150ms",
-    "demo": "card rises 12px out of 8px blur over 500ms ease-out; header at 60ms; rows from 160ms, 60ms apart; count tweens 0 to n over 500ms; cursor turns updates on, digest off, then sync on, which holds 800ms",
-    "refusal": "a rejected change nudges the thumb 3px toward the requested side and back on spring.ui; reduced motion dims the thumb to half and back over 150ms"
+    "pending": "Thumb keeps its old position and shows a spinner (animate-spin, stopped under reduced motion); on resolve the thumb springs to the new state and the stretch plays; on reject it stays. Pending drops hover and press styling and shows cursor-progress.",
+    "reducedMotion": "Position jumps, the thumb swaps colour at once, no stretch, no glyph draw, no spinner rotation, no shake; colour and opacity fades stay at 150ms.",
+    "demo": "Card rises 12px out of 8px blur over 500ms ease-out; header at 60ms; rows from 160ms, 60ms apart; count tweens 0 to n over 500ms. The cursor hovers each label (not the track), clicks Product updates on, Weekly digest off, then Sync to devices on, which holds its spinner for 800ms. The first attempt to pause Sync is refused in red, so a retry works.",
+    "refusal": "A rejected change replaces the description with the message in red for 3.5 s or until the next attempt: a cross-fade with a 4px offset and 3px blur over 180ms (opacity only under reduced motion). The thumb shakes in two beats, [0, +4, -2, 0] px toward the requested side, on spring.ui. Reduced motion dims the thumb to half and back over 150ms instead.",
+    "fill": "A child span grows with the thumb from nothing (off) to the whole track (on): width = thumb position / travel * track width. It is the wake the thumb leaves behind, so the stretch reads as weight rather than a ghost."
   },
   "responsive": {
     "root": "@container, the row flexes; the text column shrinks with min-width 0 and wraps",
@@ -47,7 +49,7 @@
     "role=switch with aria-checked; name via aria-labelledby on the label span; description via aria-describedby",
     "async adds a visually hidden line 'Confirms with the server before it switches.' referenced from aria-describedby",
     "aria-busy while pending; further clicks ignored while pending",
-    "a rejected change is announced through a visually hidden role=status (polite) region using errorMessage or its default copy",
+    "A refused change shows its message in a visible red line that replaces the description, and in a visually hidden role=status live region (polite), so it is announced once. The visible line is aria-hidden so it is not read twice.",
     "Space and Enter toggle through the native button",
     "focus-visible: 2px outline offset 2px in the ink colour, instant, keyboard only",
     "decorative glyphs and spinner are aria-hidden",
@@ -60,7 +62,7 @@
     "demoRows": [
       "Product updates: One note a month, when something you use changes. (starts off)",
       "Weekly digest: Mondays at 8:00, summarising what changed in your notes. (starts on)",
-      "Sync to devices: Pushes changes to your other devices. (async; turning it off is refused in the demo)"
+      "Sync to devices: Pushes changes to your other devices. (async; the first attempt to pause it is refused in red, and the retry works)"
     ],
     "asyncHint": "Confirms with the server before it switches. (visually hidden)"
   },

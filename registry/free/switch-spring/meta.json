@@ -54,12 +54,12 @@
       "name": "async",
       "type": "boolean",
       "default": "false",
-      "description": "Holds the thumb in a spinner until the promise settles, then lands it. Off, the thumb moves at once and a rejection rolls it back. Either way a rejection nudges the thumb and is announced."
+      "description": "Holds the thumb in a spinner until the promise settles, then lands it. Off, the thumb moves at once and a rejection rolls it back. Either way a rejection shakes the thumb, shows the message in red in place of the description, and announces it."
     },
     {
       "name": "errorMessage",
       "type": "string",
-      "description": "Announced politely, and shown by a small nudge of the thumb, when a change is refused. Defaults to \"Couldn't turn on <label>. Try again.\""
+      "description": "The line shown in red, and announced politely, when a change is refused, in place of the description for about 3.5 s. Defaults to \"Couldn't turn on <label>. Try again.\" (or off)."
     },
     {
       "name": "size",
@@ -82,7 +82,7 @@
     {
       "name": "accent",
       "type": "string",
-      "description": "The fill while on. Leave out for the theme's ink."
+      "description": "The fill while on, and the colour the thumb and glyphs take against it: the thumb turns near-black on a light accent and white on a darker one. Leave out for the theme's ink. The first swatch in the playground is the theme's ink."
     },
     {
       "name": "theme",
@@ -106,14 +106,19 @@
   "demo": {
     "steps": [
       "wait:500",
-      "hover:@switch-updates:0.95,0.5",
-      "wait:320",
+      "hover:@switch-updates:0.3,0.5",
+      "wait:250",
       "click",
-      "wait:420",
-      "click:@switch-digest:0.95,0.5",
-      "wait:420",
-      "click:@switch-sync:0.95,0.5",
-      "wait:1700"
+      "wait:520",
+      "hover:@switch-digest:0.3,0.5",
+      "wait:200",
+      "click",
+      "wait:520",
+      "hover:@switch-sync:0.3,0.5",
+      "wait:200",
+      "click",
+      "wait:1500",
+      "move:0.5,0.95"
     ]
   },
   "controls": [
@@ -197,6 +202,13 @@
       "label": "Waits for server",
       "kind": "toggle",
       "default": true,
+      "group": "Behaviour"
+    },
+    {
+      "prop": "disabled",
+      "label": "Disabled",
+      "kind": "toggle",
+      "default": false,
       "group": "Behaviour"
     },
     {
