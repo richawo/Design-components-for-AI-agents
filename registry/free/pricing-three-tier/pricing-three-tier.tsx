@@ -526,7 +526,7 @@ function PlanCard({
                 <Check variants={v(drawPath)} delay={rowAt + 0.06} strong={lifted} />
                 <span className="text-(--pt-ink)/80">
                   {f.text}
-                  {f.note ? <NoteMarker note={f.note} plan={plan.name} uid={uid} hot={hotNote === f.note} onNote={onNote} /> : null}
+                  {f.note ? <NoteMarker note={f.note} uid={uid} hot={hotNote === f.note} onNote={onNote} /> : null}
                 </span>
               </motion.li>
             );
@@ -597,7 +597,6 @@ function PlanCta({ cta, solid }: { cta: PricingPlan["cta"]; solid: boolean }) {
   return (
     <a
       href={cta.href}
-      data-demo={solid ? "cta-featured" : undefined}
       className={`group/cta inline-flex h-11 w-full items-center justify-center gap-2 rounded-full px-5 text-[14px] font-medium transition-[background-color,color,transform] duration-150 active:scale-[0.98] ${FOCUS} ${
         solid
           ? "bg-(--pt-ink) text-(--pt-on-ink) hover:bg-(--pt-ink)/90"
@@ -620,12 +619,11 @@ function Check({ variants, delay, strong }: { variants: Variants; delay: number;
   );
 }
 
-function NoteMarker({ note, plan, uid, hot, onNote }: { note: number; plan: string; uid: string; hot: boolean; onNote: (n: number | null) => void }) {
+function NoteMarker({ note, uid, hot, onNote }: { note: number; uid: string; hot: boolean; onNote: (n: number | null) => void }) {
   return (
     <sup className="ml-0.5">
       <a
         href={`#${uid}-fn-${note}`}
-        data-demo={`note-${note}-${plan.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}
         aria-label={`Footnote ${note}`}
         onPointerEnter={() => onNote(note)}
         onPointerLeave={() => onNote(null)}
@@ -757,7 +755,16 @@ function DigitColumn({ value, place }: { value: MotionValue<number>; place: numb
 /* Demo                                                                */
 /* ------------------------------------------------------------------ */
 
-/** The component as published; overrides (the page's Customize panel) go straight to it. */
+/**
+ * The component as published; overrides (the page's Customize panel) go
+ * straight to it. The stage takes the theme's page colour, so a light theme
+ * never sits on a dark band below the footnotes.
+ */
 export default function PricingThreeTierDemo(overrides: Partial<PricingThreeTierProps> = {}) {
-  return <PricingThreeTier {...overrides} />;
+  const page = PALETTE[overrides.theme ?? "dark"].page;
+  return (
+    <div className="min-h-dvh w-full" style={{ backgroundColor: page }}>
+      <PricingThreeTier {...overrides} />
+    </div>
+  );
 }

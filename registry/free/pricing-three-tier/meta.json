@@ -73,12 +73,12 @@
   "added": "2026-10-07",
   "demo": {
     "steps": [
-      "wait:600",
+      "wait:180",
       "click:@billing-monthly",
       "wait:900",
       "click:@billing-annual",
       "hover:@saving",
-      "wait:1300"
+      "wait:900"
     ],
     "loop": false
   },
@@ -99,7 +99,7 @@
       ],
       "default": "annual",
       "remount": true,
-      "group": "Content"
+      "group": "Billing"
     },
     {
       "prop": "theme",
