@@ -32,7 +32,7 @@ Build a wave field in React 19 + plain Three.js (no react-three-fiber) + Tailwin
 
 **Demo stage**
 - Black, 760px tall, `@container`; the field fills it. No headline, no buttons.
-- A buoy readout bottom-left over a black-to-transparent gradient (224px): a mono eyebrow “Tidewater buoy 41 · Rockall Trough” (11px, 0.2em, white/45), then three readings — Swell 2.4 m, Period 11.2 s, Heading 248° — as mono 10.5px labels over Geist 500 figures (`clamp(1.5rem, 1.2rem + 1.4cqi, 2.25rem)`, −0.04em, tabular) with a white/45 unit. The hint (“Move to lift the swell · click to drop a stone”, or “Tap to drop a stone” on touch) sits bottom-right (stacked under 672px).
+- A buoy readout bottom-left over a black-to-transparent gradient (224px): a mono eyebrow “Tidewater buoy 41 · Rockall Trough” (11px, 0.2em, white/45), then three readings — Swell 2.4 m, Period 11.2 s, Heading 248° — as mono 10.5px labels over Geist 500 figures (`clamp(1.5rem, 1.2rem + 1.4cqi, 2.25rem)`, −0.04em, tabular) with a white/45 unit. The hint (“Move to lift the swell · click to drop a stone”, or “Tap to drop a stone” on touch) sits bottom-right (stacked under 672px), led by a 6px dot in the accent colour as a legend key; each clause is kept whole and the `·` rides the first so a wrap never starts a line with it. With `interactive` off it reads “Pointer off · watching the swell”.
 - Choreography: once the readout is 30% in view, the eyebrow, each reading and the hint rise 12px from an 8px blur over 600ms, starting at 350ms and 60ms apart; each figure counts up from zero over 900ms with a 4px blur clearing as it lands. Motion values drive the numbers; React never re-renders per frame.
 
 **Behaviour**

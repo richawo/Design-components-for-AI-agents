@@ -565,13 +565,22 @@ function BuoyReadout({ accent, amplitude, speed, interactive }: Required<Omit<Th
       <motion.p custom={readings.length + 1} variants={variants} initial="hidden" animate={state} className="text-balance font-mono text-[10.5px] uppercase tracking-[0.18em] text-white/35">
         {interactive ? (
           <>
-            {/* The dot is the touch colour, so a tuned accent shows up in the legend too. */}
-            <span aria-hidden="true" className="mr-2 inline-block size-1.5 -translate-y-px rounded-full align-middle" style={{ backgroundColor: accent }} />
-            <span className="[@media(hover:none)]:hidden">Move to lift the swell · click to drop a stone</span>
-            <span className="hidden [@media(hover:none)]:inline">Tap to drop a stone</span>
+            {/* The dot is the legend key for the touch colour, so a tuned accent shows up here too.
+                Each clause stays whole and the separator rides the first, so a wrap never starts a line with a stray dot. */}
+            <span className="[@media(hover:none)]:hidden">
+              <span className="whitespace-nowrap">
+                <span aria-hidden="true" className="mr-2 inline-block size-1.5 -translate-y-px rounded-full align-middle" style={{ backgroundColor: accent }} />
+                Move to lift the swell ·
+              </span>{" "}
+              <span className="whitespace-nowrap">click to drop a stone</span>
+            </span>
+            <span className="hidden [@media(hover:none)]:inline">
+              <span aria-hidden="true" className="mr-2 inline-block size-1.5 -translate-y-px rounded-full align-middle" style={{ backgroundColor: accent }} />
+              Tap to drop a stone
+            </span>
           </>
         ) : (
-          <span>Still water · pointer off</span>
+          <span>Pointer off · watching the swell</span>
         )}
       </motion.p>
     </div>

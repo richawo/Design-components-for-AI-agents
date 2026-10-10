@@ -46,7 +46,7 @@
     "canvas is aria-hidden; the readout carries the meaning in text",
     "touch-action pan-y so the field never traps page scroll",
     "decorative motion stops under prefers-reduced-motion",
-    "hint copy switches for touch devices",
+    "hint copy switches for touch devices; a small accent dot leads the hint as the legend key",
     "the readout sits over a gradient so contrast never depends on the animation"
   ],
   "content": {

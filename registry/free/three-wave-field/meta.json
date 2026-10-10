@@ -27,7 +27,7 @@
       "name": "accent",
       "type": "string",
       "default": "\"#ff7a45\"",
-      "description": "The one colour in the field: the mound under the pointer and the ring a click or tap drops. Everything else is grey."
+      "description": "The one colour in the field: the mound under the pointer and the ring a click or tap drops. Everything else in the field is grey; a small dot of it also keys the hint in the demo."
     },
     {
       "name": "amplitude",
@@ -56,16 +56,15 @@
   "added": "2026-10-07",
   "demo": {
     "steps": [
-      "wait:700",
-      "hover:@field:0.28,0.62",
-      "hover:@field:0.72,0.5",
+      "wait:150",
+      "hover:@field:0.45,0.58",
       "click",
-      "wait:500",
-      "hover:@field:0.5,0.7",
+      "wait:250",
+      "hover:@field:0.62,0.48",
       "click",
       "wait:700",
-      "hover:@field:0.2,0.55",
-      "wait:300"
+      "hover:@field:0.36,0.5",
+      "wait:500"
     ],
     "loop": false
   },
@@ -89,7 +88,8 @@
       "min": 0.2,
       "max": 2.2,
       "step": 0.1,
-      "default": 1
+      "default": 1,
+      "unit": "×"
     },
     {
       "prop": "speed",
@@ -98,7 +98,8 @@
       "min": 0.2,
       "max": 3,
       "step": 0.1,
-      "default": 1
+      "default": 1,
+      "unit": "×"
     },
     {
       "prop": "interactive",
