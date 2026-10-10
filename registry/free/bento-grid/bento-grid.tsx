@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { AnimatePresence, animate, motion, useInView, useMotionValue, useReducedMotion, useTransform, type Transition, type Variants } from "motion/react";
 import { Search } from "lucide-react";
 
@@ -28,6 +28,8 @@ export type BentoGridProps = {
   theme?: "dark" | "light";
   /** The one signal colour: the chart's "now" dot, the peak cell, live cities. */
   accent?: string;
+  /** Ambient motion: the metric cycle, typing, switch flips, heatmap ticks and live cities. Off leaves a still grid; entrances and clicks still work. */
+  ambient?: boolean;
   /** Optional section header. Omit `heading` and the grid stands on its own. */
   eyebrow?: string;
   heading?: string;
@@ -134,6 +136,9 @@ const LAND: Variants = {
 };
 
 const MONO = "font-mono uppercase";
+
+/** "Weekly actives" → "weekly-actives": stable names for the demo script to target. */
+const kebab = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 const FOCUS = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--bn-ink)";
 
 /* ------------------------------------------------------------------ */
@@ -143,6 +148,7 @@ const FOCUS = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visi
 export function BentoGrid({
   theme = "dark",
   accent = ACCENT,
+  ambient = true,
   eyebrow,
   heading,
   headingMuted,
@@ -175,26 +181,28 @@ export function BentoGrid({
   const headingId = useId();
 
   return (
-    <section style={vars} aria-labelledby={heading ? headingId : undefined} aria-label={heading ? undefined : "Product features"} className="@container bg-(--bn-page) text-(--bn-ink)">
-      <style>{KEYFRAMES}</style>
-      <div className="mx-auto max-w-7xl px-4 py-10 @xl:px-8 @xl:py-16 @5xl:px-12 @5xl:py-20">
-        {heading ? <GridHeader id={headingId} eyebrow={eyebrow} heading={heading} muted={headingMuted} intro={intro} link={link} /> : null}
-        {/* One sheet of hairlines: each tile's 1px ring fills the 1px gap, so the
-            rules arrive with their tiles instead of sitting there as a grey slab. */}
-        <div className="grid grid-cols-1 gap-px overflow-hidden rounded-[22px] border border-(--bn-rule) @3xl:grid-cols-2 @5xl:grid-cols-6">
-          {children ?? (
-            <>
-              <TrendTile {...trend} className="@3xl:col-span-2 @5xl:col-span-4" />
-              <StatTile {...stat} className="@5xl:col-span-2" />
-              <HeatmapTile {...heatmap} className="@5xl:col-span-3" />
-              <SearchTile {...search} className="@5xl:col-span-3" />
-              <AlertsTile {...alerts} className="@5xl:col-span-2" />
-              <MapTile {...map} className="@3xl:col-span-2 @5xl:col-span-4" />
-            </>
-          )}
+    <AmbientContext.Provider value={ambient}>
+      <section style={vars} aria-labelledby={heading ? headingId : undefined} aria-label={heading ? undefined : "Product features"} className="@container bg-(--bn-page) text-(--bn-ink)">
+        <style>{KEYFRAMES}</style>
+        <div className="mx-auto max-w-7xl px-4 py-10 @xl:px-8 @xl:py-16 @5xl:px-12 @5xl:py-20">
+          {heading ? <GridHeader id={headingId} eyebrow={eyebrow} heading={heading} muted={headingMuted} intro={intro} link={link} /> : null}
+          {/* One sheet of hairlines: each tile's 1px ring fills the 1px gap, so the
+              rules arrive with their tiles instead of sitting there as a grey slab. */}
+          <div className="grid grid-cols-1 gap-px overflow-hidden rounded-[22px] border border-(--bn-rule) @3xl:grid-cols-2 @5xl:grid-cols-6">
+            {children ?? (
+              <>
+                <TrendTile {...trend} className="@3xl:col-span-2 @5xl:col-span-4" />
+                <StatTile {...stat} className="@5xl:col-span-2" />
+                <HeatmapTile {...heatmap} className="@5xl:col-span-3" />
+                <SearchTile {...search} className="@5xl:col-span-3" />
+                <AlertsTile {...alerts} className="@5xl:col-span-2" />
+                <MapTile {...map} className="@3xl:col-span-2 @5xl:col-span-4" />
+              </>
+            )}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </AmbientContext.Provider>
   );
 }
 
@@ -249,6 +257,9 @@ function GridHeader({ id, eyebrow, heading, muted, intro, link }: { id: string; 
   );
 }
 
+/** Lets the grid switch every tile's ambient loops off at once. */
+const AmbientContext = createContext(true);
+
 /* ------------------------------------------------------------------ */
 /* Reveal: when, and in what order, a tile plays its entrance          */
 /* ------------------------------------------------------------------ */
@@ -271,6 +282,7 @@ const APPROACH = "0px 0px 320px 0px";
 function useReveal(order = 0) {
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion() ?? false;
+  const ambient = useContext(AmbientContext);
   const [stage, setStage] = useState<Phase>("pending");
   const [base, setBase] = useState(order * T.tileStep);
   const entered = useInView(ref, { once: true, amount: 0.25 });
@@ -312,7 +324,7 @@ function useReveal(order = 0) {
   const shown = phase === "final" || phase === "play";
   /** Start time for `offset` on this tile's timeline, or null to snap. */
   const at = (offset: number) => (phase === "play" ? base + offset : null);
-  return { ref, reduce, phase, shown, at, live: onScreen && shown && !reduce };
+  return { ref, reduce, phase, shown, at, live: onScreen && shown && !reduce && ambient };
 }
 
 type Reveal = ReturnType<typeof useReveal>;
@@ -537,6 +549,7 @@ export function TrendTile({ label, title, body, dates, metrics, className = "" }
           {metrics.map((mm, i) => (
             <button
               key={mm.name}
+              data-demo={`metric-${kebab(mm.name)}`}
               type="button"
               aria-pressed={i === active}
               onClick={() => {
@@ -963,6 +976,7 @@ export function AlertsTile({ label, title, body, settings, preview, className = 
           {settings.map((s, i) => (
             <motion.button
               key={s.label}
+              data-demo={`switch-${kebab(s.label)}`}
               variants={RISE}
               custom={reveal.at(T.data + i * T.textStep)}
               type="button"
@@ -1264,7 +1278,7 @@ const DEFAULTS = {
   },
 } satisfies Required<Pick<BentoGridProps, "trend" | "stat" | "heatmap" | "search" | "alerts" | "map">>;
 
-/** Demo: the grid on its own, no marketing header. */
-export default function BentoGridDemo() {
-  return <BentoGrid />;
+/** Demo: the grid on its own, no marketing header. Overrides (the page's Customize panel) go straight to the grid. */
+export default function BentoGridDemo(overrides: Partial<BentoGridProps> = {}) {
+  return <BentoGrid {...overrides} />;
 }

@@ -38,6 +38,12 @@
       "description": "The one signal colour: the chart’s “now” dot, the heatmap peak, live cities and the answer’s latest bar."
     },
     {
+      "name": "ambient",
+      "type": "boolean",
+      "default": "true",
+      "description": "Ambient motion: the metric cycle, typing, switch flips, heatmap ticks and live cities. Off leaves a still grid; entrances and clicks still work."
+    },
+    {
       "name": "heading",
       "type": "string",
       "description": "Optional section header. Omit it (the default) and the grid stands on its own."
@@ -98,5 +104,73 @@
       "description": "Compose your own grid from the exported tiles (TrendTile, StatTile, HeatmapTile, SearchTile, AlertsTile, MapTile) instead of the default six."
     }
   ],
-  "added": "2026-10-07"
+  "added": "2026-10-07",
+  "demo": {
+    "steps": [
+      "wait:700",
+      "click:@metric-signups",
+      "wait:450",
+      "click:@metric-revenue",
+      "wait:450",
+      "scroll:760",
+      "wait:300",
+      "click:@switch-anomaly-alerts",
+      "wait:650",
+      "click",
+      "wait:800"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark",
+      "group": "Look"
+    },
+    {
+      "prop": "accent",
+      "label": "Signal",
+      "kind": "color",
+      "default": "#d5f56a",
+      "options": [
+        "#d5f56a",
+        "#ff7a45",
+        "#60a5fa",
+        "#34d399"
+      ],
+      "group": "Look"
+    },
+    {
+      "prop": "ambient",
+      "label": "Ambient motion",
+      "kind": "toggle",
+      "default": true,
+      "group": "Look"
+    },
+    {
+      "prop": "heading",
+      "label": "Section heading",
+      "kind": "text",
+      "default": "",
+      "group": "Look"
+    },
+    {
+      "prop": "$replay",
+      "label": "Demo",
+      "kind": "action",
+      "value": "Replay",
+      "group": "Demo"
+    }
+  ]
 }
