@@ -91,13 +91,13 @@
   "added": "2026-10-07",
   "demo": {
     "steps": [
-      "wait:1300",
+      "wait:400",
       "hover:@stack:0.5,0.85",
       "wait:550",
       "click:@dismiss-1",
-      "wait:200",
+      "hover:@stack:0.3,0.5",
       "click:@publish",
-      "wait:1800"
+      "wait:2600"
     ]
   },
   "controls": [
