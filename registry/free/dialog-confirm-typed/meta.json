@@ -2,7 +2,6 @@
   "slug": "dialog-confirm-typed",
   "name": "Typed Confirm Dialog",
   "tier": "free",
-  "status": "draft",
   "platform": "web",
   "category": "overlays",
   "description": "A destructive confirm that grows out of its trigger, traps focus and enables Delete only once the exact name is typed. It lists what is lost and offers Archive instead.",
@@ -21,7 +20,7 @@
   ],
   "theme": "dark",
   "previewHeight": 720,
-  "usage": "import { DialogConfirmTyped } from \"@/components/design-for-ai/dialog-confirm-typed\";\n\n<DialogConfirmTyped\n  triggerLabel=\"Delete project\"\n  resourceName=\"atlas-staging\"\n  ledger={[\n    { label: \"Environments\", value: 12 },\n    { label: \"Last deploy\", value: 3, suffix: \"h ago\" },\n    { label: \"Environment variables\", value: 47 },\n  ]}\n  onConfirm={(name) => api.projects.delete(name)} // return a promise for the pending and error states\n  onArchive={() => api.projects.archive(id)}\n/>\n\n// Drive the status from your own mutation instead of the promise:\n<DialogConfirmTyped status={mutation.status === \"pending\" ? \"pending\" : mutation.isError ? \"error\" : \"idle\"} onConfirm={(name) => mutation.mutate(name)} />\n\n<DialogConfirmTyped tone=\"neutral\" requireTyping={false} alternative={false} triggerLabel=\"Remove member\" title=\"Remove {name}\" />\n\n// The dialog sits inside its container, which grows to fit it. To lift it to document.body, render the same markup through createPortal and keep the focus trap, scroll lock and focus return.",
+  "usage": "import { DialogConfirmTyped } from \"@/components/design-for-ai/dialog-confirm-typed\";\n\n<DialogConfirmTyped\n  triggerLabel=\"Delete project\"\n  resourceName=\"atlas-staging\"\n  ledger={[\n    { label: \"Environments\", value: 12 },\n    { label: \"Last deploy\", value: 3, suffix: \"h ago\" },\n    { label: \"Environment variables\", value: 47 },\n  ]}\n  onConfirm={(name) => api.projects.delete(name)} // return a promise for the pending and error states\n  onArchive={() => api.projects.archive(id)}\n/>\n\n// Drive the status from your own mutation instead of the promise:\n<DialogConfirmTyped status={mutation.status === \"pending\" ? \"pending\" : mutation.isError ? \"error\" : \"idle\"} onConfirm={(name) => mutation.mutate(name)} />\n\n<DialogConfirmTyped tone=\"neutral\" requireTyping={false} alternative={false} triggerLabel=\"Remove member\" title=\"Remove {name}\" />\n\n// The card sits in your layout; the scrim and panel are position: fixed, so the dialog always lands centred in the viewport, growing out of the trigger wherever the card is. Keep it out of an ancestor with a transform or filter, which would become its containing block.",
   "props": [
     {
       "name": "triggerLabel",
@@ -157,7 +156,7 @@
     {
       "name": "className",
       "type": "string",
-      "description": "Classes for the outer container."
+      "description": "Classes for the outer container that holds the card. The dialog is fixed to the viewport, so this never clips or sizes it."
     }
   ],
   "added": "2026-10-10",

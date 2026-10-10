@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent as ReactKeyboardEvent, type ReactNode, type RefObject } from "react";
+import { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from "react";
 import { AnimatePresence, animate, motion, stagger, useMotionValue, useReducedMotion, useTransform, type AnimationPlaybackControls } from "motion/react";
 
 /* ------------------------------------------------------------------ */
@@ -108,15 +108,15 @@ const PALETTE = {
   },
 } as const;
 
-/** Each tone owns the fill of the confirm button, the trigger’s ink and hairline, and the card’s rule. */
+/** Each tone owns the fill of the confirm button (and its one hover step), the trigger’s ink and hairline, and the card’s rule. */
 const TONE = {
   dark: {
-    danger: { fill: "#d63b40", ink: "#ff8b8f", wash: "rgba(214,59,64,0.10)", line: "rgba(214,59,64,0.42)", on: "#ffffff" },
-    neutral: { fill: "#f4f4f5", ink: "#f4f4f5", wash: "rgba(255,255,255,0.06)", line: "rgba(255,255,255,0.22)", on: "#0b0b0c" },
+    danger: { fill: "#d63b40", fillHover: "#e2484d", ink: "#ff8b8f", wash: "rgba(214,59,64,0.10)", line: "rgba(214,59,64,0.42)", on: "#ffffff" },
+    neutral: { fill: "#e9e9ec", fillHover: "#ffffff", ink: "#f4f4f5", wash: "rgba(255,255,255,0.06)", line: "rgba(255,255,255,0.22)", on: "#0b0b0c" },
   },
   light: {
-    danger: { fill: "#dc2626", ink: "#b91c1c", wash: "rgba(220,38,38,0.07)", line: "rgba(220,38,38,0.38)", on: "#ffffff" },
-    neutral: { fill: "#18181b", ink: "#18181b", wash: "rgba(24,24,27,0.05)", line: "rgba(24,24,27,0.22)", on: "#ffffff" },
+    danger: { fill: "#dc2626", fillHover: "#c51f1f", ink: "#b91c1c", wash: "rgba(220,38,38,0.07)", line: "rgba(220,38,38,0.38)", on: "#ffffff" },
+    neutral: { fill: "#18181b", fillHover: "#2e2e33", ink: "#18181b", wash: "rgba(24,24,27,0.05)", line: "rgba(24,24,27,0.22)", on: "#ffffff" },
   },
 } as const;
 
@@ -127,21 +127,17 @@ const EASE_IN = [0.4, 0, 1, 1] as const;
 const MOTION = {
   open: 0.5, // the panel grows out of the trigger
   close: 0.26, // and folds back into it
-  block: 0.42, // each block of content rises into place
-  riseAt: 0.14, // after the panel has started to open
-  step: 0.05, // reading order, one block at a time
+  block: 0.36, // each block of content rises into place: opacity and a short lift, no blur, so it stays light under the clip
+  riseAt: 0.12, // after the panel has started to open
+  step: 0.04, // reading order, one block at a time; the last block lands by about 0.72s
   rise: 8,
   count: 0.7, // ledger figures count up from zero
-  reach: 960, // px, the circle’s end radius: past the far corner of the panel
   shake: [0, -3, 3, -2, 2, -1, 0],
   shakeFor: 0.34,
   fade: 0.15, // reduced motion: opacity only
   doneHoldMs: 520, // “Deleted” shows before the dialog closes
   errorMs: 2600,
 } as const;
-
-/** The root is never shorter than this, and always tall enough for the panel plus this gutter. */
-const LAYOUT = { minHeight: 640, gutter: 24 } as const;
 
 const LABELS: ConfirmLabels = {
   pending: "Deleting…",
@@ -173,16 +169,34 @@ function fill(template: string, name: string) {
   return template.split("{name}").join(name);
 }
 
-/** Where the panel’s clip circle starts: the trigger’s centre, in the panel’s own coordinates. */
-function originOf(panel: HTMLElement, root: HTMLElement, trigger: HTMLElement | null) {
-  if (!trigger) return { x: panel.offsetWidth / 2, y: panel.offsetHeight / 2 };
-  const r = root.getBoundingClientRect();
-  const t = trigger.getBoundingClientRect();
-  // offsetLeft/offsetTop ignore transforms, so a panel mid-animation still measures true. They also ignore
-  // the panel’s own -50% centring translate, so take half its size off to reach its real top-left corner.
-  const left = panel.offsetLeft - panel.offsetWidth / 2;
-  const top = panel.offsetTop - panel.offsetHeight / 2;
-  return { x: t.left - r.left + t.width / 2 - left, y: t.top - r.top + t.height / 2 - top };
+/**
+ * Where the panel’s clip circle starts (the trigger’s centre, in the panel’s own coordinates) and how far it
+ * must grow to uncover the panel’s farthest corner. The panel is centred in the viewport, so the trigger can be
+ * anywhere around it, even below it on a short screen. Call it with the panel’s animated transform cleared.
+ */
+function originOf(panel: HTMLElement, trigger: HTMLElement | null) {
+  const p = panel.getBoundingClientRect();
+  const t = trigger?.getBoundingClientRect();
+  const x = t ? t.left + t.width / 2 - p.left : p.width / 2;
+  const y = t ? t.top + t.height / 2 - p.top : p.height / 2;
+  const reach = Math.ceil(Math.hypot(Math.max(x, p.width - x), Math.max(y, p.height - y))) + 2;
+  return { x, y, reach };
+}
+
+/** Lock the page while the dialog is open, padding for the vanished scrollbar so nothing behind it shifts. */
+function useScrollLock(active: boolean) {
+  useEffect(() => {
+    if (!active) return;
+    const { body, documentElement } = document;
+    const gap = window.innerWidth - documentElement.clientWidth;
+    const previous = { overflow: body.style.overflow, paddingRight: body.style.paddingRight };
+    body.style.overflow = "hidden";
+    if (gap > 0) body.style.paddingRight = `${gap}px`;
+    return () => {
+      body.style.overflow = previous.overflow;
+      body.style.paddingRight = previous.paddingRight;
+    };
+  }, [active]);
 }
 
 /** setTimeout that is cleared on unmount, so a late callback never lands on a dead component. */
@@ -192,21 +206,6 @@ function useTimers() {
   return useCallback((fn: () => void, ms: number) => {
     ids.current.push(window.setTimeout(fn, ms));
   }, []);
-}
-
-/** The panel’s rendered height, so the root can always make room for it. */
-function useHeight(ref: RefObject<HTMLElement | null>) {
-  const [height, setHeight] = useState(0);
-  useLayoutEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const measure = () => setHeight(el.offsetHeight);
-    measure();
-    const observer = new ResizeObserver(measure);
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [ref]);
-  return height;
 }
 
 /* ------------------------------------------------------------------ */
@@ -241,7 +240,6 @@ export function DialogConfirmTyped({
 }: DialogConfirmTypedProps) {
   const reduce = useReducedMotion() ?? false;
   const uid = useId().replace(/[^a-zA-Z0-9_-]/g, "");
-  const rootRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const fieldRef = useRef<HTMLInputElement>(null);
@@ -250,11 +248,10 @@ export function DialogConfirmTyped({
   const alive = useRef(true);
   const wasOpen = useRef(false);
   const openRef = useRef(false);
-  const origin = useRef({ x: 0, y: 0 });
+  const origin = useRef({ x: 0, y: 0, reach: 0 });
   const runs = useRef<AnimationPlaybackControls[]>([]);
   const errorRun = useRef(0);
   const later = useTimers();
-  const panelHeight = useHeight(panelRef);
 
   const openControlled = openProp !== undefined;
   const [innerOpen, setInnerOpen] = useState(false);
@@ -289,6 +286,7 @@ export function DialogConfirmTyped({
         "--dcf-ok": palette.ok,
         "--dcf-focus": palette.focus,
         "--dcf-fill": toneColours.fill,
+        "--dcf-fill-hover": toneColours.fillHover,
         "--dcf-tone-ink": toneColours.ink,
         "--dcf-wash": toneColours.wash,
         "--dcf-tone-line": toneColours.line,
@@ -332,19 +330,21 @@ export function DialogConfirmTyped({
   /* Open and close: the panel grows out of the trigger and folds back into it. Imperative, so the same path serves a click and the host’s Open action. Acts only on a transition, so a changed prop never replays it. */
   useLayoutEffect(() => {
     const panel = panelRef.current;
-    const root = rootRef.current;
     const trigger = triggerRef.current;
     openRef.current = open;
     const opening = open && !wasOpen.current;
     const closing = !open && wasOpen.current;
-    if (!panel || !root || (!opening && !closing)) return;
+    if (!panel || (!opening && !closing)) return;
     wasOpen.current = open;
     runs.current.forEach((r) => r.stop());
     runs.current = [];
 
     if (opening) {
-      const { x, y } = originOf(panel, root, trigger);
-      origin.current = { x, y };
+      // A reopen mid-fold leaves the panel scaled and shifted; measure its resting box, then grow from there.
+      panel.style.transform = "";
+      panel.scrollTop = 0;
+      const { x, y, reach } = originOf(panel, trigger);
+      origin.current = { x, y, reach };
       const at = `${x}px ${y}px`;
       panel.style.visibility = "visible";
       panel.style.transformOrigin = at;
@@ -358,7 +358,7 @@ export function DialogConfirmTyped({
       } else {
         const grow = animate(
           panel,
-          { clipPath: [`circle(0px at ${at})`, `circle(${MOTION.reach}px at ${at})`], scale: [0.965, 1], opacity: [0.5, 1] },
+          { clipPath: [`circle(0px at ${at})`, `circle(${reach}px at ${at})`], scale: [0.965, 1], opacity: [0.5, 1] },
           { duration: MOTION.open, ease: EASE_OUT },
         );
         runs.current.push(grow);
@@ -372,17 +372,23 @@ export function DialogConfirmTyped({
       runs.current.push(
         animate(
           blocks,
-          reduce ? { opacity: [0, 1] } : { opacity: [0, 1], y: [MOTION.rise, 0], filter: ["blur(4px)", "blur(0px)"] },
+          reduce ? { opacity: [0, 1] } : { opacity: [0, 1], y: [MOTION.rise, 0] },
           { duration: reduce ? MOTION.fade : MOTION.block, ease: EASE_OUT, delay: stagger(MOTION.step, { startDelay: MOTION.riseAt }) },
         ),
       );
 
-      // Focus the field when a name is required, otherwise the least destructive action.
-      (requireTyping ? fieldRef.current : cancelRef.current)?.focus({ preventScroll: true });
+      // Focus the field when a name is required, otherwise the least destructive action. On a screen too short
+      // for the whole panel it scrolls inside itself, so bring the focused control into its view.
+      const first = requireTyping ? fieldRef.current : cancelRef.current;
+      first?.focus({ preventScroll: true });
+      if (first) {
+        const below = first.getBoundingClientRect().bottom - panel.getBoundingClientRect().bottom + 24;
+        if (below > 0) panel.scrollTop += below;
+      }
     } else {
       // Hand focus back before the panel hides, so nothing is left focused in a hidden tree.
       trigger?.focus({ preventScroll: true });
-      const { x, y } = origin.current;
+      const { x, y, reach } = origin.current;
       const at = `${x}px ${y}px`;
       const hide = () => {
         // A reopen during the fold stops this run; a stopped run must never hide the new panel.
@@ -397,7 +403,7 @@ export function DialogConfirmTyped({
         ? animate(panel, { opacity: [1, 0] }, { duration: MOTION.fade })
         : animate(
             panel,
-            { clipPath: [`circle(${MOTION.reach}px at ${at})`, `circle(0px at ${at})`], scale: [1, 0.965], opacity: [1, 0] },
+            { clipPath: [`circle(${reach}px at ${at})`, `circle(0px at ${at})`], scale: [1, 0.965], opacity: [1, 0] },
             { duration: MOTION.close, ease: EASE_IN },
           );
       runs.current.push(fold);
@@ -406,14 +412,20 @@ export function DialogConfirmTyped({
     // Runs on open transitions only; the status and name it reads are current through refs and the transition itself.
   }, [open, reduce, requireTyping]);
 
-  // Scroll lock while open, so the page behind the dialog stays put.
+  useScrollLock(open);
+
+  // A modal keeps focus: anything that lands outside the panel while it is open (a host shortcut, a stray
+  // programmatic focus) is pulled back to the panel.
   useEffect(() => {
     if (!open) return;
-    const previous = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = previous;
+    const onFocusIn = (e: FocusEvent) => {
+      // Closing hands focus back to the trigger before this listener is gone; that move is the point, so let it through.
+      if (!openRef.current) return;
+      const panel = panelRef.current;
+      if (panel && e.target instanceof Node && !panel.contains(e.target)) panel.focus({ preventScroll: true });
     };
+    document.addEventListener("focusin", onFocusIn);
+    return () => document.removeEventListener("focusin", onFocusIn);
   }, [open]);
 
   /* What each status means once it lands, whether the promise or the host moved it there. */
@@ -511,9 +523,8 @@ export function DialogConfirmTyped({
 
   return (
     <div
-      ref={rootRef}
-      style={{ ...vars, minHeight: Math.max(LAYOUT.minHeight, panelHeight + LAYOUT.gutter * 2) }}
-      className={`@container relative isolate flex w-full items-center justify-center px-4 py-14 font-sans antialiased sm:px-8 ${theme === "dark" ? "[color-scheme:dark]" : "[color-scheme:light]"} ${className}`}
+      style={vars}
+      className={`@container relative flex w-full items-center justify-center px-4 py-10 font-sans antialiased sm:px-8 sm:py-12 ${theme === "dark" ? "[color-scheme:dark]" : "[color-scheme:light]"} ${className}`}
     >
       {/* The surface that holds the trigger. Inert while open, so nothing behind the dialog takes focus. */}
       <section
@@ -535,17 +546,18 @@ export function DialogConfirmTyped({
           aria-haspopup="dialog"
           aria-expanded={open}
           onClick={() => changeOpen(true)}
-          className="mt-5 inline-flex h-10 shrink-0 cursor-pointer items-center justify-center rounded-[11px] px-4 text-[13.5px] font-medium tracking-[-0.01em] text-[var(--dcf-tone-ink)] shadow-[inset_0_0_0_1px_var(--dcf-tone-line)] transition-[background-color,scale] duration-150 ease-out hover:bg-[var(--dcf-wash)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--dcf-tone-ink)] active:scale-[0.97] @md:mt-0"
+          className="mt-5 inline-flex h-11 shrink-0 cursor-pointer items-center justify-center rounded-[11px] px-4 text-[13.5px] font-medium tracking-[-0.01em] text-[var(--dcf-tone-ink)] shadow-[inset_0_0_0_1px_var(--dcf-tone-line)] transition-[background-color,scale] duration-150 ease-out hover:bg-[var(--dcf-wash)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--dcf-tone-ink)] active:scale-[0.97] @md:mt-0"
         >
           {triggerLabel}
         </button>
       </section>
 
-      {/* The scrim. Clicking it is the same as Cancel, except while a delete is running. */}
+      {/* The scrim covers the viewport, so wherever the card sits on the page the dialog lands in view and no click
+          reaches the page behind it. Clicking it is the same as Cancel, except while a delete is running. */}
       <div
         aria-hidden="true"
         onClick={dismiss}
-        className={`absolute inset-0 z-10 bg-[var(--dcf-scrim)] transition-opacity duration-200 ease-out ${open ? "opacity-100" : "pointer-events-none opacity-0"}`}
+        className={`fixed inset-0 z-[60] bg-[var(--dcf-scrim)] transition-opacity duration-200 ease-out ${open ? "opacity-100" : "pointer-events-none opacity-0"}`}
       />
 
       <div
@@ -558,7 +570,7 @@ export function DialogConfirmTyped({
         inert={!open}
         style={{ visibility: "hidden" }}
         onKeyDown={onPanelKey}
-        className="absolute left-1/2 top-1/2 z-20 w-[min(460px,calc(100%-2rem))] -translate-x-1/2 -translate-y-1/2 rounded-[18px] bg-[var(--dcf-panel)] p-6 text-[var(--dcf-ink)] shadow-[inset_0_0_0_1px_var(--dcf-line),inset_0_1px_0_rgba(255,255,255,0.05),0_40px_90px_-30px_rgba(0,0,0,0.85)] outline-none @md:p-7"
+        className="fixed left-1/2 top-1/2 z-[61] max-h-[calc(100dvh-2rem)] w-[min(460px,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 overflow-y-auto overscroll-contain @container rounded-[18px] bg-[var(--dcf-panel)] p-6 text-[var(--dcf-ink)] shadow-[inset_0_0_0_1px_var(--dcf-line),inset_0_1px_0_rgba(255,255,255,0.05),0_40px_90px_-30px_rgba(0,0,0,0.85)] outline-none [scrollbar-width:thin] [@media(min-width:480px)_and_(min-height:641px)]:p-7 [@media(max-height:640px)]:p-5"
       >
         {/* The kicker doubles as the error line, so a failed delete is explained without moving anything. */}
         <p data-rise className="grid font-mono text-[10.5px] uppercase tracking-[0.14em]">
@@ -590,7 +602,7 @@ export function DialogConfirmTyped({
 
         {ledger.length ? (
           <>
-            <p data-rise className="mt-6 font-mono text-[10.5px] uppercase tracking-[0.14em] text-[var(--dcf-muted)]">
+            <p data-rise className="mt-6 font-mono text-[10.5px] uppercase [@media(max-height:640px)]:mt-4 tracking-[0.14em] text-[var(--dcf-muted)]">
               {ledgerLabel}
             </p>
             <dl data-rise className="mt-2 border-y border-[var(--dcf-rule)]">
@@ -602,7 +614,7 @@ export function DialogConfirmTyped({
         ) : null}
 
         {requireTyping ? (
-          <div data-rise className="mt-5">
+          <div data-rise className="mt-5 [@media(max-height:640px)]:mt-4">
             <label htmlFor={fieldId} className="block text-[13px] text-[var(--dcf-body)]">
               {fieldBefore}
               <span className="font-mono text-[var(--dcf-ink)]">{resourceName}</span>
@@ -625,7 +637,7 @@ export function DialogConfirmTyped({
                 autoComplete="off"
                 spellCheck={false}
                 aria-describedby={bodyId}
-                className="h-11 w-full rounded-[11px] bg-[var(--dcf-field)] px-3.5 pr-10 font-mono text-[14px] text-[var(--dcf-ink)] shadow-[inset_0_0_0_1px_var(--dcf-line)] transition-shadow duration-150 ease-out focus:shadow-[inset_0_0_0_1px_var(--dcf-focus)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--dcf-ink)]"
+                className="h-11 w-full rounded-[11px] bg-[var(--dcf-field)] px-3.5 pr-10 font-mono text-[14px] text-[var(--dcf-ink)] shadow-[inset_0_0_0_1px_var(--dcf-line)] outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--dcf-focus)]"
               />
               <AnimatePresence initial={false}>
                 {matches ? (
@@ -646,9 +658,11 @@ export function DialogConfirmTyped({
           </div>
         ) : null}
 
-        {/* Cancel and Delete come first in the DOM, so Tab goes from the field straight to them. From @lg the row reverses and Archive sits on the left; below it, the pair fills the width and Archive stacks under it, and in the narrowest containers Delete stacks over Cancel. */}
-        <div data-rise className="mt-6 flex flex-col gap-2 @lg:flex-row-reverse @lg:items-center @lg:justify-between @lg:gap-4">
-          <div className="flex flex-col-reverse gap-2 @xs:flex-row @xs:items-center">
+        {/* Cancel and Delete come first in the DOM, so Tab goes from the field straight to them. The panel is its own
+            container: from 400px of content the row reverses and Archive sits on the left; below it, the pair fills the
+            width and Archive stacks under it, and under 280px (a 320px phone) Delete stacks over Cancel. */}
+        <div data-rise className="mt-6 flex flex-col gap-2 [@media(max-height:640px)]:mt-5 @[25rem]:flex-row-reverse @[25rem]:items-center @[25rem]:justify-between @[25rem]:gap-4">
+          <div className="flex flex-col-reverse gap-2 @[17.5rem]:flex-row @[17.5rem]:items-center">
             <button
               ref={cancelRef}
               type="button"
@@ -667,10 +681,9 @@ export function DialogConfirmTyped({
               disabled={!matches}
               aria-disabled={busy || undefined}
               aria-busy={status === "pending" || undefined}
-              className={`grid h-11 place-items-center rounded-[11px] px-5 text-[14px] font-medium tracking-[-0.01em] transition-[background-color,opacity,scale] duration-200 ease-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--dcf-fill)] disabled:cursor-not-allowed disabled:opacity-40 @xs:flex-1 @lg:min-w-[168px] @lg:flex-none ${
-                status === "pending" ? "cursor-progress" : busy ? "cursor-default" : "cursor-pointer active:scale-[0.98]"
+              className={`grid h-11 place-items-center rounded-[11px] bg-[var(--dcf-fill)] px-5 text-[14px] font-medium tracking-[-0.01em] text-[var(--dcf-on-fill)] transition-[background-color,opacity,scale] duration-150 ease-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--dcf-fill)] disabled:cursor-not-allowed disabled:opacity-40 @[17.5rem]:flex-1 @[25rem]:min-w-[168px] @[25rem]:flex-none ${
+                status === "pending" ? "cursor-progress" : busy ? "cursor-default" : matches ? "cursor-pointer hover:bg-[var(--dcf-fill-hover)] active:scale-[0.98]" : ""
               }`}
-              style={{ background: "var(--dcf-fill)", color: "var(--dcf-on-fill)" }}
             >
               <ConfirmLabel status={status} label={confirmText} words={words} reduce={reduce} />
             </button>
@@ -680,7 +693,7 @@ export function DialogConfirmTyped({
               type="button"
               onClick={archive}
               disabled={busy}
-              className="inline-flex h-11 cursor-pointer items-center justify-center rounded-[11px] px-3 text-[14px] text-[var(--dcf-muted)] transition-[background-color,color,scale] duration-150 ease-out hover:bg-[var(--dcf-wash)] hover:text-[var(--dcf-ink)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--dcf-ink)] active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40 @lg:-ml-3"
+              className="inline-flex h-11 cursor-pointer items-center justify-center rounded-[11px] px-3 text-[14px] text-[var(--dcf-muted)] transition-[background-color,color,scale] duration-150 ease-out hover:bg-[var(--dcf-wash)] hover:text-[var(--dcf-ink)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--dcf-ink)] active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40 @[25rem]:-ml-3"
             >
               {words.archive}
             </button>
@@ -702,7 +715,7 @@ export function DialogConfirmTyped({
 /** One line of what goes. The figure counts up from zero each time the dialog opens. */
 function Ledger({ row, open, reduce }: { row: LedgerRow; open: boolean; reduce: boolean }) {
   return (
-    <div className="flex items-baseline justify-between gap-4 border-b border-[var(--dcf-rule)] py-3 last:border-b-0">
+    <div className="flex items-baseline justify-between gap-4 border-b border-[var(--dcf-rule)] py-3 last:border-b-0 [@media(max-height:640px)]:py-2.5">
       <dt className="text-[13.5px] text-[var(--dcf-body)]">{row.label}</dt>
       <dd className="font-mono text-[13.5px] text-[var(--dcf-ink)]">
         <Figure value={row.value} open={open} reduce={reduce} />
@@ -817,13 +830,23 @@ function Spinner({ size }: { size: number }) {
 const STAGE = { dark: "#000000", light: "#f4f4f5" } as const;
 
 /**
- * The demo frames the component as a settings pane, so the scrim dims a bounded
- * surface rather than a band of the page and the dialog lands inside that frame.
+ * The demo sets the danger zone at the foot of a quiet settings pane, which is where it lives in a real product.
+ * The dialog is not bound to the pane: the scrim covers the viewport and the panel centres in it, growing up out
+ * of the trigger. The pane is tall enough that the open dialog lands inside its frame.
  */
 const PANE = {
-  dark: "rounded-[22px] overflow-hidden bg-[#060607] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.07)]",
-  light: "rounded-[22px] overflow-hidden bg-[#fafafa] shadow-[inset_0_0_0_1px_rgba(24,24,27,0.09)]",
+  dark: { frame: "bg-[#060607] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.07)]", ink: "#f4f4f5", muted: "#8a8a93", body: "#b4b4bc", rule: "rgba(255,255,255,0.07)" },
+  light: { frame: "bg-[#fafafa] shadow-[inset_0_0_0_1px_rgba(24,24,27,0.09)]", ink: "#18181b", muted: "#6b6b74", body: "#3f3f46", rule: "rgba(24,24,27,0.08)" },
 } as const;
+
+/** The settings above the danger zone. Context only, so it stays read-only and grey. */
+const SETTINGS = [
+  { label: "Project name", value: "{name}", mono: true },
+  { label: "Framework", value: "Next.js 16" },
+  { label: "Region", value: "Frankfurt · eu-central-1" },
+  { label: "Production branch", value: "main", mono: true },
+  { label: "Created", value: "14 March 2026" },
+] as const;
 
 /** How long the demo’s delete takes, so the pending state reads. */
 const DEMO_DELETE_MS = 900;
@@ -855,11 +878,34 @@ export default function DialogConfirmTypedDemo({ open: forcedOpen, status: force
   }, [forcedStatus]);
 
   const theme = overrides.theme ?? "dark";
+  const pane = PANE[theme];
+  const name = overrides.resourceName ?? "atlas-staging";
   return (
-    <div className="flex min-h-dvh w-full items-center justify-center px-2 py-8" style={{ background: STAGE[theme] }}>
-      <div className="w-full max-w-[640px]">
+    <div className="flex min-h-dvh w-full items-center justify-center px-2 py-8 font-sans antialiased" style={{ background: STAGE[theme] }}>
+      <div className={`flex min-h-[560px] w-full max-w-[640px] flex-col overflow-hidden rounded-[22px] ${pane.frame}`}>
+        <div className="mx-auto w-full max-w-[560px] px-4 pt-8 sm:px-0 sm:pt-10">
+          <p className="font-mono text-[10.5px] uppercase tracking-[0.14em]" style={{ color: pane.muted }}>
+            Projects / {name}
+          </p>
+          <h1 className="mt-2 font-display text-[22px] leading-[1.15] tracking-[-0.02em]" style={{ color: pane.ink }}>
+            General
+          </h1>
+          <dl className="mt-5 border-t" style={{ borderColor: pane.rule }}>
+            {SETTINGS.map((row) => (
+              <div key={row.label} className="flex items-baseline justify-between gap-4 border-b py-3" style={{ borderColor: pane.rule }}>
+                <dt className="text-[13.5px]" style={{ color: pane.muted }}>
+                  {row.label}
+                </dt>
+                <dd className={`min-w-0 truncate text-right text-[13.5px] ${"mono" in row ? "font-mono" : ""}`} style={{ color: pane.body }}>
+                  {fill(row.value, name)}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
         <DialogConfirmTyped
-          className={PANE[theme]}
+          className="mt-auto"
+          cardKicker="Danger zone"
           onConfirm={simulateDelete}
           onArchive={simulateArchive}
           {...overrides}
