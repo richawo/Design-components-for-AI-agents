@@ -100,9 +100,12 @@ and call it from a GitHub Action in the Pro repo.
 
 ## Check a deployment
 
-- `/components` lists the published components, and Pro cards show live previews. If
-  they are locked in a manual build, Pro source was not synced. The automatic
-  production build rejects this condition.
+- `/components` lists the published components, free and Pro. Each card shows its
+  poster, and cards with a demo recording play it, muted and looping, while they
+  are in view (posters only with reduced motion or Save-Data). The headline shows
+  the real count in the server HTML. If Pro detail pages are locked in a manual
+  build, Pro source was not synced. The automatic production build rejects this
+  condition.
 - `/api/registry` returns JSON, and `/r/chart-portfolio.json` returns a shadcn
   registry item whose URLs use `https://design.yaps.ai`.
 - `/components/chart-candlestick.md` returns Markdown, and
