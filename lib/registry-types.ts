@@ -11,6 +11,7 @@ export const CATEGORIES = {
   // Marketing sections
   backgrounds: { label: "Backgrounds & shaders", noun: "background", blurb: "Shader fields, grain, dither, grids and patterns that sit behind content." },
   features: { label: "Features & bento", noun: "feature section", blurb: "Bento grids, tabbed previews, sticky scroll stories, integrations and spec sheets that show instead of tell." },
+  diagrams: { label: "Diagrams & explainers", noun: "animated diagram", blurb: "Systems you can watch work: pipelines, rollouts, queues, payment hops and handshakes, drawn and animated in code." },
   pricing: { label: "Pricing", noun: "pricing section", blurb: "Pricing that reads like a decision, not a spreadsheet." },
   "social-proof": { label: "Social proof", noun: "testimonial and logo section", blurb: "Testimonials, logo walls, marquees and numbers people actually believe." },
   cta: { label: "Calls to action", noun: "call-to-action block", blurb: "Closers, waitlists and newsletter sign-ups with some nerve." },
@@ -42,6 +43,10 @@ export const CATEGORIES = {
   navigation: { label: "Navigation", noun: "navigation component", blurb: "In-app navigation: tabs, sidebars, docks, breadcrumbs, pagination, toolbars." },
   onboarding: { label: "Onboarding & steppers", noun: "onboarding", blurb: "Steppers, setup checklists, product tours." },
   app: { label: "Dashboards & app UI", noun: "app interface", blurb: "Dashboards, settings, API keys, audit logs: the product behind the site." },
+  devtools: { label: "Developer tools", noun: "developer tool", blurb: "Consoles engineers live in: log tails, API playgrounds, webhook inspectors, env vars, flags and status pages." },
+  billing: { label: "Billing & subscriptions", noun: "billing component", blurb: "In-product money: plan changes with proration, invoices, payment methods, seats and cancel flows." },
+  collaboration: { label: "Collaboration", noun: "collaboration component", blurb: "Working together: comment threads, mentions, share and invite panels, annotation pins and activity." },
+  editors: { label: "Editors & canvases", noun: "editor", blurb: "Places people make things: rich text, node graphs, whiteboards and signature pads." },
   data: { label: "Tables & lists", noun: "table and list", blurb: "Data tables, editable grids, file trees, kanban boards, inbox lists." },
   charts: { label: "Charts & maps", noun: "chart", blurb: "Financial-grade charts, heatmaps, funnels, sankeys and dot maps, with motion that explains the data." },
   // Platforms

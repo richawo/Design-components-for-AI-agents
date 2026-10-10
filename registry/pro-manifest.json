@@ -3474,6 +3474,987 @@
     ]
   },
   {
+    "slug": "devtools-api-playground",
+    "name": "API Playground",
+    "tier": "pro",
+    "platform": "web",
+    "category": "devtools",
+    "description": "An API explorer for docs and dashboards: toggleable params, a masked key, Send with a timing waterfall, a tinted JSON response and copyable curl, fetch and Python.",
+    "tags": [
+      "api",
+      "playground",
+      "api explorer",
+      "developer tools",
+      "docs",
+      "request",
+      "response",
+      "json",
+      "code snippet"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 820,
+    "usage": "import { ApiPlayground } from \"@/components/design-for-ai/devtools-api-playground\";\n\n<ApiPlayground\n  baseUrl=\"https://api.example.com\"\n  path=\"/v1/invoices\"\n  method=\"GET\"\n  params={[{ key: \"status\", value: \"open\", enabled: true }]}\n  apiKey={publishableTestKey} // shown masked; never a live secret\n  onSend={({ method, url, body }) => runRequest(method, url, body)}\n/>\n\n// `outcome` picks the sample server's reply (success, invalid, rate-limited) for docs.\n// Swap `respond()` for your own call to show real responses.",
+    "props": [
+      {
+        "name": "baseUrl",
+        "type": "string",
+        "default": "\"https://api.ledgerline.dev\"",
+        "description": "API origin, shown muted before the path."
+      },
+      {
+        "name": "path",
+        "type": "string",
+        "default": "\"/v1/invoices\"",
+        "description": "Resource path, shown in ink."
+      },
+      {
+        "name": "method",
+        "type": "\"GET\" | \"POST\"",
+        "default": "\"GET\"",
+        "description": "HTTP method. GET opens on Params, POST on Body."
+      },
+      {
+        "name": "params",
+        "type": "ApiParam[]",
+        "description": "Query parameters for GET: key, value and enabled. Each can be switched off without deleting it."
+      },
+      {
+        "name": "body",
+        "type": "Record<string, unknown>",
+        "description": "JSON body for POST, shown tinted and used in the snippets."
+      },
+      {
+        "name": "apiKey",
+        "type": "string",
+        "default": "\"sk_test_51Lr9vQ2xK8f4a\"",
+        "description": "Key shown masked in the Authorization header and the curl snippet."
+      },
+      {
+        "name": "outcome",
+        "type": "\"success\" | \"invalid\" | \"rate-limited\"",
+        "default": "\"success\"",
+        "description": "Which reply the sample server sends: 200/201, 422 with the offending param, or 429 with retry-after."
+      },
+      {
+        "name": "showTiming",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show the DNS, TCP, TLS, server and download waterfall above the response."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface the playground sits on."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#7cc4ff\"",
+        "description": "The one accent: the server-time bar, the active tab underline and numbers in JSON."
+      },
+      {
+        "name": "onSend",
+        "type": "(request: { method, url, body? }) => void",
+        "description": "Called with the built request when Send or ⌘↵ is pressed."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root section."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@send",
+        "wait:1700",
+        "click:@response-tab-code",
+        "wait:400",
+        "click:@lang-python",
+        "wait:800"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "method",
+        "label": "Method",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "GET",
+            "label": "GET"
+          },
+          {
+            "value": "POST",
+            "label": "POST"
+          }
+        ],
+        "default": "GET",
+        "group": "Request"
+      },
+      {
+        "prop": "outcome",
+        "label": "Outcome",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "success",
+            "label": "Success"
+          },
+          {
+            "value": "invalid",
+            "label": "Invalid"
+          },
+          {
+            "value": "rate-limited",
+            "label": "Rate limited"
+          }
+        ],
+        "default": "success",
+        "group": "Request"
+      },
+      {
+        "prop": "path",
+        "label": "Path",
+        "kind": "text",
+        "default": "/v1/invoices",
+        "group": "Request"
+      },
+      {
+        "prop": "showTiming",
+        "label": "Timing",
+        "kind": "toggle",
+        "default": true,
+        "group": "Layout"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#7cc4ff",
+        "options": [
+          "#7cc4ff",
+          "#ff9d5c",
+          "#7dd3a8"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
+  },
+  {
+    "slug": "devtools-log-stream",
+    "name": "Log Stream",
+    "tier": "pro",
+    "platform": "web",
+    "category": "devtools",
+    "description": "A live log tail that behaves: level filters with counts, search that highlights in place, follow mode that pauses when you scroll back, and lines that open into fields.",
+    "tags": [
+      "logs",
+      "log viewer",
+      "tail",
+      "observability",
+      "developer tools",
+      "search",
+      "streaming",
+      "monospace",
+      "console"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 760,
+    "usage": "import { LogStream } from \"@/components/design-for-ai/devtools-log-stream\";\n\n<LogStream\n  source=\"api-gateway · production\"\n  live={false} // turn off the sample stream\n  initialLines={lines} // { id, time, level, service, message, fields }[], oldest first\n  height={480}\n/>\n\n// Feed it from your socket by appending to `lines`; follow mode keeps the newest line on the floor.\n// Scrolling up pauses follow and counts what arrives; the pill jumps back. Click a line to see its fields.",
+    "props": [
+      {
+        "name": "source",
+        "type": "string",
+        "default": "\"api-gateway · production\"",
+        "description": "Name of the source being tailed, shown in mono beside the live dot."
+      },
+      {
+        "name": "initialLines",
+        "type": "LogLine[]",
+        "description": "Lines to show, oldest first: id, time (ms), level, service, message and structured fields. Defaults to a seeded API-gateway sample."
+      },
+      {
+        "name": "live",
+        "type": "boolean",
+        "default": "true",
+        "description": "Stream sample lines. The stream pauses while off screen, in a hidden tab and under reduced motion."
+      },
+      {
+        "name": "rate",
+        "type": "number",
+        "default": "3",
+        "description": "Sample lines a second while live, with jittered arrivals."
+      },
+      {
+        "name": "wrap",
+        "type": "boolean",
+        "default": "false",
+        "description": "Wrap long messages instead of truncating them to one line."
+      },
+      {
+        "name": "showService",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show the service column between the level tag and the message."
+      },
+      {
+        "name": "density",
+        "type": "\"compact\" | \"comfortable\"",
+        "default": "\"comfortable\"",
+        "description": "Row spacing: 3px or 6px of vertical padding."
+      },
+      {
+        "name": "defaultLevel",
+        "type": "\"all\" | \"error\" | \"warn\" | \"info\" | \"debug\"",
+        "default": "\"all\"",
+        "description": "The level filter to start on. Read on mount."
+      },
+      {
+        "name": "height",
+        "type": "number",
+        "default": "420",
+        "description": "Height of the log viewport, in px."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface the console sits on."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#7cc4ff\"",
+        "description": "The one accent: the live dot, search matches and numeric field values."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root section."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:500",
+        "click:@search",
+        "type:timeout",
+        "wait:500",
+        "click:@level-error",
+        "wait:500",
+        "click:@log-line:0.6,0.5",
+        "wait:900"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "live",
+        "label": "Live",
+        "kind": "toggle",
+        "default": true,
+        "group": "Stream"
+      },
+      {
+        "prop": "rate",
+        "label": "Rate",
+        "kind": "slider",
+        "min": 1,
+        "max": 12,
+        "step": 1,
+        "unit": "/s",
+        "default": 3,
+        "group": "Stream"
+      },
+      {
+        "prop": "showService",
+        "label": "Service",
+        "kind": "toggle",
+        "default": true,
+        "group": "Layout"
+      },
+      {
+        "prop": "density",
+        "label": "Density",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "compact",
+            "label": "Compact"
+          },
+          {
+            "value": "comfortable",
+            "label": "Comfortable"
+          }
+        ],
+        "default": "comfortable",
+        "group": "Layout"
+      },
+      {
+        "prop": "height",
+        "label": "Height",
+        "kind": "slider",
+        "min": 280,
+        "max": 560,
+        "step": 20,
+        "unit": "px",
+        "default": 420,
+        "group": "Layout"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#7cc4ff",
+        "options": [
+          "#7cc4ff",
+          "#ff9d5c",
+          "#7dd3a8"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
+  },
+  {
+    "slug": "devtools-webhook-inspector",
+    "name": "Webhook Inspector",
+    "tier": "pro",
+    "platform": "web",
+    "category": "devtools",
+    "description": "A webhook endpoint console: 24-hour delivery chart, a filterable deliveries list, an attempt timeline with backoff, signed payloads and a Retry that lands live.",
+    "tags": [
+      "webhooks",
+      "deliveries",
+      "retry",
+      "developer tools",
+      "dashboard",
+      "events",
+      "observability",
+      "json",
+      "status"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 880,
+    "usage": "import { WebhookInspector } from \"@/components/design-for-ai/devtools-webhook-inspector\";\n\n<WebhookInspector\n  endpoint=\"https://example.com/webhooks/billing\"\n  deliveries={deliveries} // { id, event, time, attempts: { at, status, ms }[], maxAttempts, nextRetry?, payload }[]\n  onRetry={(d) => redeliver(d.id)}\n/>\n\n// Append the new attempt to that delivery when your redelivery call returns.\n// `retryOutcome` decides how the built-in sample resolves (succeed or fail).",
+    "props": [
+      {
+        "name": "endpoint",
+        "type": "string",
+        "default": "\"https://hooks.fieldnote.app/ledgerline\"",
+        "description": "The receiving URL, shown in mono beside the Enabled pill."
+      },
+      {
+        "name": "deliveries",
+        "type": "WebhookDelivery[]",
+        "description": "Newest first: id, event type, relative time, attempts (time, status or \"timeout\", ms), max attempts, next retry and the signed payload."
+      },
+      {
+        "name": "filter",
+        "type": "\"all\" | \"failed\"",
+        "default": "\"all\"",
+        "description": "Which deliveries the list shows. The list's own toggle changes it too."
+      },
+      {
+        "name": "showChart",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show the 24-hour chart with first-attempt failures stacked in the error tone."
+      },
+      {
+        "name": "retryOutcome",
+        "type": "\"succeed\" | \"fail\"",
+        "default": "\"succeed\"",
+        "description": "How a manual retry resolves in the sample: 200 in 192 ms, or 503."
+      },
+      {
+        "name": "density",
+        "type": "\"compact\" | \"comfortable\"",
+        "default": "\"comfortable\"",
+        "description": "Row spacing in the deliveries list."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface the console sits on."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#7cc4ff\"",
+        "description": "The one accent: the selected row's edge, the active tab, the sending attempt and numbers in JSON."
+      },
+      {
+        "name": "onRetry",
+        "type": "(delivery: WebhookDelivery) => void",
+        "description": "Called when Retry now or Redeliver is pressed."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root section."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:500",
+        "click:@retry",
+        "wait:1900",
+        "click:@tab-response",
+        "wait:600",
+        "click:@filter-failed",
+        "wait:900"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "filter",
+        "label": "Filter",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "all",
+            "label": "All"
+          },
+          {
+            "value": "failed",
+            "label": "Failed"
+          }
+        ],
+        "default": "all",
+        "group": "List"
+      },
+      {
+        "prop": "density",
+        "label": "Density",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "compact",
+            "label": "Compact"
+          },
+          {
+            "value": "comfortable",
+            "label": "Comfortable"
+          }
+        ],
+        "default": "comfortable",
+        "group": "List"
+      },
+      {
+        "prop": "showChart",
+        "label": "Chart",
+        "kind": "toggle",
+        "default": true,
+        "group": "Layout"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#7cc4ff",
+        "options": [
+          "#7cc4ff",
+          "#ff9d5c",
+          "#7dd3a8"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
+  },
+  {
+    "slug": "diagram-deploy-canary",
+    "name": "Canary Deploy",
+    "tier": "pro",
+    "platform": "web",
+    "category": "diagrams",
+    "description": "A release you can watch: build, sharded tests, then 5% and 25% canaries under a live error-rate guardrail that rolls a bad build back on its own.",
+    "tags": [
+      "deploy",
+      "canary",
+      "release",
+      "rollback",
+      "ci/cd",
+      "guardrail",
+      "animated diagram",
+      "devops",
+      "pipeline"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 860,
+    "usage": "import { DeployCanary } from \"@/components/design-for-ai/diagram-deploy-canary\";\n\n<DeployCanary\n  version=\"v2.15.0\"\n  previous=\"v2.14.3\"\n  commit=\"Cache invoice totals per account\"\n  threshold={1} // 5xx rate in percent; crossing it during a canary rolls back\n  canarySteps={[5, 25]}\n/>\n\n// The sample plays a healthy build to 100%, or a regression that trips at the second canary.\n// Use it on a platform landing page, a docs page about progressive delivery, or an incident write-up.",
+    "props": [
+      {
+        "name": "version",
+        "type": "string",
+        "default": "\"v2.15.0\"",
+        "description": "Version being released; labels the canary share."
+      },
+      {
+        "name": "previous",
+        "type": "string",
+        "default": "\"v2.14.3\"",
+        "description": "Version running now, which a rollback returns to."
+      },
+      {
+        "name": "commit",
+        "type": "string",
+        "default": "\"Cache invoice totals per account\"",
+        "description": "Commit message on the release card."
+      },
+      {
+        "name": "sha",
+        "type": "string",
+        "default": "\"a41d9c2\"",
+        "description": "Short commit sha, shown on the card and the Build stage."
+      },
+      {
+        "name": "author",
+        "type": "string",
+        "default": "\"maya\"",
+        "description": "Author shown on the release card."
+      },
+      {
+        "name": "build",
+        "type": "\"healthy\" | \"regressed\"",
+        "default": "\"healthy\"",
+        "description": "Which build the sample ships. The card's own toggle changes it too."
+      },
+      {
+        "name": "threshold",
+        "type": "number",
+        "default": "1",
+        "description": "Error-rate guardrail in percent, drawn as a dashed line on the chart."
+      },
+      {
+        "name": "canarySteps",
+        "type": "[number, number]",
+        "default": "[5, 25]",
+        "description": "Traffic share of the two canary steps, in percent."
+      },
+      {
+        "name": "showShards",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show the four parallel test shards filling inside the Test stage."
+      },
+      {
+        "name": "orientation",
+        "type": "\"auto\" | \"vertical\"",
+        "default": "\"auto\"",
+        "description": "Auto puts stages in a row from 672px of container width; vertical always stacks them."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface the diagram sits on."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#7cc4ff\"",
+        "description": "The one accent: the canary traffic share, the error-rate line and the running stage."
+      },
+      {
+        "name": "onDeploy",
+        "type": "(build: \"healthy\" | \"regressed\") => void",
+        "description": "Called when Deploy is pressed."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root section."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@build-regressed",
+        "wait:300",
+        "click:@deploy",
+        "wait:4600"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "build",
+        "label": "Build",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "healthy",
+            "label": "Healthy"
+          },
+          {
+            "value": "regressed",
+            "label": "Regression"
+          }
+        ],
+        "default": "healthy",
+        "group": "Release"
+      },
+      {
+        "prop": "threshold",
+        "label": "Guardrail",
+        "kind": "slider",
+        "min": 0.5,
+        "max": 3,
+        "step": 0.25,
+        "unit": "%",
+        "default": 1,
+        "group": "Release"
+      },
+      {
+        "prop": "showShards",
+        "label": "Test shards",
+        "kind": "toggle",
+        "default": true,
+        "group": "Layout"
+      },
+      {
+        "prop": "orientation",
+        "label": "Layout",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "auto",
+            "label": "Auto"
+          },
+          {
+            "value": "vertical",
+            "label": "Stacked"
+          }
+        ],
+        "default": "auto",
+        "group": "Layout"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#7cc4ff",
+        "options": [
+          "#7cc4ff",
+          "#ff9d5c",
+          "#7dd3a8"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
+  },
+  {
+    "slug": "diagram-rag-pipeline",
+    "name": "RAG Pipeline",
+    "tier": "pro",
+    "platform": "web",
+    "category": "diagrams",
+    "description": "A retrieval-augmented answer traced stage by stage: tokens, the embedding, scored chunks that rerank in place, then a grounded answer with numbered sources.",
+    "tags": [
+      "rag",
+      "retrieval",
+      "embeddings",
+      "vector search",
+      "rerank",
+      "pipeline",
+      "diagram",
+      "llm",
+      "observability"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 900,
+    "usage": "import { RagPipeline } from \"@/components/design-for-ai/diagram-rag-pipeline\";\n\n<RagPipeline\n  query={trace.query}\n  chunks={trace.hits} // { id, source, text, similarity, rerankScore }[]\n  answer={trace.answer} // { text, cite? }[]: cite is a chunk id\n  topK={6}\n  contextSize={3}\n  rerank\n  onRun={() => analytics.track(\"rag_trace_replayed\")}\n/>\n\n// The resting state is a finished trace. Run replays it stage by stage and the inspector follows;\n// clicking a stage pins the inspector to it. Turn rerank off to show plain top-k retrieval.",
+    "props": [
+      {
+        "name": "query",
+        "type": "string",
+        "default": "\"Can I get a refund if I cancel an annual plan halfway through the year?\"",
+        "description": "The question being traced. It is tokenised for the Query view and seeds the drawn embedding."
+      },
+      {
+        "name": "chunks",
+        "type": "RagChunk[]",
+        "description": "Corpus hits with id, source, text, cosine similarity and cross-encoder score. Retrieve sorts by similarity, Rerank by score. Defaults to a refund-policy corpus."
+      },
+      {
+        "name": "answer",
+        "type": "RagAnswerPart[]",
+        "description": "The answer as sentences, each optionally citing a chunk id. A marker shows only when that chunk made it into the prompt context."
+      },
+      {
+        "name": "topK",
+        "type": "number",
+        "default": "6",
+        "description": "How many chunks vector search returns. Changes the retrieve detail, the list length and the measured latency."
+      },
+      {
+        "name": "contextSize",
+        "type": "number",
+        "default": "3",
+        "description": "How many chunks go into the prompt after search and rerank."
+      },
+      {
+        "name": "rerank",
+        "type": "boolean",
+        "default": "true",
+        "description": "Include the rerank stage. Off, the prompt takes the top chunks by similarity and the stage folds out of the row."
+      },
+      {
+        "name": "showLatency",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show measured latency under each stage and the end-to-end total in the header."
+      },
+      {
+        "name": "orientation",
+        "type": "\"auto\" | \"horizontal\" | \"vertical\"",
+        "default": "\"auto\"",
+        "description": "auto lays stages in a row from 672px of container width and stacks them below that."
+      },
+      {
+        "name": "embedModel",
+        "type": "string",
+        "default": "\"atlas-embed-v3\"",
+        "description": "Embedding model name under the Embed stage."
+      },
+      {
+        "name": "generateModel",
+        "type": "string",
+        "default": "\"halcyon-2\"",
+        "description": "Generation model name under the Generate stage."
+      },
+      {
+        "name": "indexSize",
+        "type": "number",
+        "default": "12480",
+        "description": "Chunks in the index, for the retrieve readout."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface the diagram sits on."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#7cc4ff\"",
+        "description": "The one accent: the running stage's ring, the travelling packet and the citation markers."
+      },
+      {
+        "name": "onRun",
+        "type": "() => void",
+        "description": "Called when Run is pressed, before the trace replays."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root section."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:300",
+        "click:@run",
+        "wait:3500",
+        "click:@stage-retrieve",
+        "wait:700"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "query",
+        "label": "Question",
+        "kind": "text",
+        "default": "Can I get a refund if I cancel an annual plan halfway through the year?",
+        "group": "Trace"
+      },
+      {
+        "prop": "topK",
+        "label": "Top k",
+        "kind": "slider",
+        "min": 3,
+        "max": 8,
+        "step": 1,
+        "default": 6,
+        "group": "Trace"
+      },
+      {
+        "prop": "rerank",
+        "label": "Rerank",
+        "kind": "toggle",
+        "default": true,
+        "group": "Trace"
+      },
+      {
+        "prop": "showLatency",
+        "label": "Latency",
+        "kind": "toggle",
+        "default": true,
+        "group": "Layout"
+      },
+      {
+        "prop": "orientation",
+        "label": "Stages",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "auto",
+            "label": "Auto"
+          },
+          {
+            "value": "vertical",
+            "label": "Stacked"
+          }
+        ],
+        "default": "auto",
+        "group": "Layout"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#7cc4ff",
+        "options": [
+          "#7cc4ff",
+          "#ff9d5c",
+          "#7dd3a8"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Run again",
+        "kind": "action"
+      }
+    ]
+  },
+  {
     "slug": "feature-sticky-scroll",
     "name": "Sticky Scroll Story",
     "tier": "pro",
