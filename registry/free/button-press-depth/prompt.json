@@ -20,14 +20,14 @@
   },
   "color": {
     "approach": "monochrome first. The accent fills the primary button only. Destructive is the one red. Everything else is a neutral ink on a neutral surface.",
-    "primary": "fill = accent (default #2563eb). Base edge = color-mix(accent 62%, black). Label is white or near-black, whichever has the higher WCAG contrast on the fill. Hover = accent 88% mixed toward white (dark) or black (light). Press = accent 90% mixed toward black. Inset top highlight rgba(255,255,255,0.24).",
+    "primary": "fill = accent (default #f4f4f5, a near-white monochrome fill with a near-black label). Base edge = color-mix(accent 62%, black). Label is white or near-black, whichever has the higher WCAG contrast on the fill. Hover = accent 88% mixed toward white (dark) or black (light). Press = accent 90% mixed toward black. Inset top highlight rgba(255,255,255,0.24).",
     "secondary": "dark: fill #1f1f24, edge #060607, label #f4f4f5, highlight rgba(255,255,255,0.08). light: fill #ffffff, edge #c4c5cc, label #18181b, highlight rgba(255,255,255,0.95).",
     "destructive": "dark: fill #d6393f, edge #7f1d22, label #ffffff. light: fill #dc2626, edge #8f1717.",
     "ghost": "no fill and no edge at rest. Hover rgba(255,255,255,0.07) (light rgba(24,24,27,0.06)). Press rgba(255,255,255,0.12) (light rgba(24,24,27,0.10)). Label #f4f4f5 dark, #18181b light.",
     "focus": "2px outline in the variant's ring colour, offset 2px. Keyboard focus only."
   },
   "motion": {
-    "hover": "face translates -1px up, so the base edge shows 3px. 120ms ease-out cubic-bezier(0.22,1,0.36,1). Pointer devices only.",
+    "hover": "face translates -1px up, so the base edge shows 3px. The built-in trailing arrow nudges 1.5px toward the action. 120ms ease-out cubic-bezier(0.22,1,0.36,1). Pointer devices only.",
     "press": "face translates 2px down and covers the base edge completely. Background moves to the press colour. Released on pointer up, pointer leave, pointer cancel, blur or key up. Space and Enter press from the keyboard; key repeat is ignored.",
     "loading": "label is replaced by a spinner in the same box, cross-fading with a 4px rise and a 2px blur clearing, 200ms ease-out. The spinner turns continuously and stops under reduced motion. An optional loadingLabel adds text beside it.",
     "success": "label is replaced by a check in the same box. The check's pathLength draws from 0 to 1 over 340ms with a 120ms delay. An optional successLabel adds text beside it.",
@@ -52,9 +52,9 @@
   "content": {
     "defaults": {
       "label": "Save changes",
-      "accent": "#2563eb"
+      "accent": "#f4f4f5"
     },
-    "demo": "a project settings card with three read-only rows (domain, visibility, retention), a primary Save changes button, a secondary Preview and a ghost Discard. The header reads Unsaved changes until save starts, Saving… while it runs, then All changes saved.",
+    "demo": "a project settings card with three read-only rows (domain, visibility, retention), a primary Save changes button, a secondary Preview with a leading eye glyph and a ghost Discard. The cursor lands at the lower right of Save, clear of the spinner and the check. The header reads Unsaved changes until save starts, Saving… while it runs, then All changes saved. A state picked in the Customize panel is held until another is picked.",
     "optionalText": "loadingLabel and successLabel are optional. When absent, the spinner and check replace the label in the same box."
   },
   "avoid": [

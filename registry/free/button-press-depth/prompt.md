@@ -8,12 +8,12 @@ Build a press-depth button in React 19 + Tailwind CSS v4 with `motion/react` for
 
 **Depth (the signature)**
 - Rest: the face sits at 0. The base shows 2px below it.
-- Hover (pointer devices only): the face rises 1px, so the base shows 3px. 120ms, ease-out `cubic-bezier(0.22, 1, 0.36, 1)`.
+- Hover (pointer devices only): the face rises 1px, so the base shows 3px. 120ms, ease-out `cubic-bezier(0.22, 1, 0.36, 1)`. The built-in trailing arrow nudges 1.5px toward the action on the same timing.
 - Press (pointer down, Space or Enter down, ignoring key repeat): the face sinks 2px and covers the base. The background moves to the press colour. It releases on pointer up, leave, cancel, blur or key up. Touch gets the same press.
 - Hover and press are set from pointer and key handlers in React state, not from CSS `:hover`, so scripted demos show them too.
 
 **Colour (monochrome first; the accent is the one colour)**
-- Primary: fill = `accent` (default `#2563eb`). Base edge = `color-mix(in oklab, accent 62%, black)`. Label is white or near-black, whichever has the higher WCAG contrast on the fill. Hover = accent 88% mixed toward white on dark or black on light. Press = accent 90% mixed toward black. Top inset highlight `rgba(255,255,255,0.24)`.
+- Primary: fill = `accent` (default `#f4f4f5`, a near-white monochrome fill with a near-black label; set it to a brand colour to rebrand). Base edge = `color-mix(in oklab, accent 62%, black)`. Label is white or near-black, whichever has the higher WCAG contrast on the fill. Hover = accent 88% mixed toward white on dark or black on light. Press = accent 90% mixed toward black. Top inset highlight `rgba(255,255,255,0.24)`.
 - Secondary, dark: fill `#1f1f24`, edge `#060607`, label `#f4f4f5`, highlight `rgba(255,255,255,0.08)`. Secondary, light: fill `#ffffff`, edge `#c4c5cc`, label `#18181b`, highlight `rgba(255,255,255,0.95)`.
 - Destructive, dark: fill `#d6393f`, edge `#7f1d22`, label `#ffffff`. Light: fill `#dc2626`, edge `#8f1717`.
 - Ghost: no fill, no edge, no highlight at rest. Hover `rgba(255,255,255,0.07)` (light `rgba(24,24,27,0.06)`), press `rgba(255,255,255,0.12)` (light `rgba(24,24,27,0.10)`).
@@ -38,8 +38,9 @@ Build a press-depth button in React 19 + Tailwind CSS v4 with `motion/react` for
 
 **Demo (dark stage, `#0a0a0b`)**
 - A 520px card (`#111113`, 16px radius, hairline inset ring) titled "Project settings". The header reads "Unsaved changes" in mono, shows "Saving…" while Save runs, and changes to "All changes saved" once it lands. Status text cross-fades. Three read-only rows: Domain, Visibility, Retention.
-- Footer: primary "Save changes" (the demo target), secondary "Preview", ghost "Discard".
-- Sequence: the cursor glides to Save and lifts it, holds a press for about 320ms (the face sinks), releases; Save goes to loading for about 1.1s, then success for 1.6s, and the cursor stays on it until the check has drawn. A Tab then moves focus onto Preview and its ring shows.
+- Footer: primary "Save changes" (the demo target), secondary "Preview" with a leading 16-unit eye glyph, ghost "Discard".
+- Sequence: the cursor glides to the lower right of Save, so its tip sits clear of the spinner and the check, lifts the button, holds a press for about 320ms (the face sinks), releases; Save goes to loading for about 1.1s, then success for 1.6s. A Tab then moves focus onto Preview and its ring shows.
+- Customize: a state picked in the panel is held until another is picked. Picking one cancels any save still running.
 
 **Don't**
 - No gradient fill, no glow or coloured shadow, no bounce or overshoot on press.

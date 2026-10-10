@@ -80,8 +80,8 @@
     {
       "name": "accent",
       "type": "string",
-      "default": "\"#2563eb\"",
-      "description": "The one accent. It fills the primary button; its base edge and label colour are derived from it."
+      "default": "\"#f4f4f5\"",
+      "description": "The one accent. It fills the primary button, and its base edge and label colour are derived from it. Defaults to a near-white monochrome fill."
     },
     {
       "name": "theme",
@@ -116,14 +116,14 @@
   "demo": {
     "steps": [
       "wait:300",
-      "hover:@save",
+      "hover:@save:0.84,0.78",
       "wait:200",
       "down",
       "wait:320",
       "up",
-      "wait:1700",
+      "wait:2500",
       "tab:1",
-      "wait:1000"
+      "wait:900"
     ]
   },
   "controls": [
@@ -184,12 +184,12 @@
       "prop": "accent",
       "label": "Accent",
       "kind": "color",
-      "default": "#2563eb",
+      "default": "#f4f4f5",
       "options": [
+        "#f4f4f5",
         "#2563eb",
         "#0f766e",
-        "#e4572e",
-        "#f4f4f5"
+        "#e4572e"
       ],
       "group": "Look"
     },

@@ -56,10 +56,13 @@ export type PressDepthButtonProps = {
 const PRESS_TRAVEL = 2; // px the face sinks into its base edge
 const LIFT = 1; // px the face rises on hover, so the base shows a little more
 const SUCCESS_HOLD_MS = 1600;
-const DEFAULT_ACCENT = "#2563eb";
+/** Monochrome by default: a near-white primary on dark, so the accent is a choice the user makes, not a framework blue. */
+const DEFAULT_ACCENT = "#f4f4f5";
 const DEFAULT_ERROR_LABEL = "Didn’t save";
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 const DEMO_TIMING = { saveMs: 1100, holdMs: 1600 } as const;
+/** The built-in arrow nudges toward the action on hover, a 1–2px step as the spec asks. */
+const ARROW_NUDGE = 1.5;
 
 /** Neutrals per theme. Colour only appears on the primary accent and the destructive fill. */
 const NEUTRAL = {
@@ -155,16 +158,17 @@ function tokensFor(variant: PressDepthVariant, theme: PressDepthTheme, accent: s
 const FACE =
   "relative inline-grid items-center justify-items-center whitespace-nowrap select-none font-sans font-medium tracking-[-0.01em] touch-manipulation [-webkit-tap-highlight-color:transparent] transition-[transform,background-color,box-shadow] duration-[120ms] ease-[cubic-bezier(0.22,1,0.36,1)] focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed motion-reduce:duration-150";
 
+// Tailwind v4 spells "no blur" as blur-none (blur-0 does not exist), so the reduced-motion override really applies.
 const SLOT =
-  "col-start-1 row-start-1 inline-flex items-center justify-center transition-[opacity,transform,filter] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:translate-y-0 motion-reduce:blur-0 motion-reduce:transition-opacity motion-reduce:duration-150";
-const SLOT_ON = "opacity-100 translate-y-0 blur-0";
+  "col-start-1 row-start-1 inline-flex items-center justify-center transition-[opacity,transform,filter] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:translate-y-0 motion-reduce:blur-none motion-reduce:transition-opacity motion-reduce:duration-150";
+const SLOT_ON = "opacity-100 translate-y-0 blur-none";
 const SLOT_OFF = "pointer-events-none opacity-0 translate-y-[4px] blur-[2px]";
 
 /* ------------------------------------------------------------------ */
 /* Hooks                                                                */
 /* ------------------------------------------------------------------ */
 
-/** setTimeout that is cleared on unmount, so a late callback never lands on a dead component. */
+/** setTimeout that is cleared on unmount, so a late callback never lands on a dead component, and on demand via clear. */
 function useTimers() {
   const ids = useRef<number[]>([]);
   useEffect(() => {
@@ -177,7 +181,11 @@ function useTimers() {
   const later = useCallback((fn: () => void, ms: number) => {
     ids.current.push(window.setTimeout(fn, ms));
   }, []);
-  return { later };
+  const clear = useCallback(() => {
+    ids.current.forEach(window.clearTimeout);
+    ids.current = [];
+  }, []);
+  return { later, clear };
 }
 
 /** Only a real promise counts as work in flight; a plain return value does not. */
@@ -216,6 +224,16 @@ function CheckGlyph({ size, active, reduce }: { size: number; active: boolean; r
         animate={{ pathLength: active ? 1 : 0 }}
         transition={reduce ? { duration: 0 } : { duration: 0.34, ease: EASE_OUT, delay: 0.12 }}
       />
+    </svg>
+  );
+}
+
+/** A 16-unit eye, a leading glyph the demo shows so the left slot's optical alignment is visible by default. */
+function EyeGlyph() {
+  return (
+    <svg width={16} height={16} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M1.5 8S4 3.5 8 3.5 14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8Z" />
+      <circle cx={8} cy={8} r={2} />
     </svg>
   );
 }
@@ -264,6 +282,8 @@ export function PressDepthButton({
     return 0;
   })();
   const background = pose === "press" ? tokens.press : pose === "hover" ? tokens.hover : tokens.fill;
+  // Only a hovered, idle button nudges its trailing glyph; reduced motion keeps it still.
+  const arrowNudge = !reduce && pose === "hover" ? ARROW_NUDGE : 0;
 
   const face: CSSProperties = {
     backgroundColor: background,
@@ -351,7 +371,15 @@ export function PressDepthButton({
         <span className={`${SLOT} ${dim.gap} ${idleOn ? SLOT_ON : SLOT_OFF}`} aria-hidden={!idleOn || undefined}>
           {leadingIcon ? <span aria-hidden="true" className="inline-flex shrink-0">{leadingIcon}</span> : null}
           <span>{label}</span>
-          {trailing ? <span aria-hidden="true" className="inline-flex shrink-0">{trailing}</span> : null}
+          {trailing ? (
+            <span
+              aria-hidden="true"
+              className="inline-flex shrink-0 transition-transform duration-[120ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
+              style={{ transform: `translateX(${arrowNudge}px)` }}
+            >
+              {trailing}
+            </span>
+          ) : null}
         </span>
         <span className={`${SLOT} ${dim.gap} ${current === "loading" ? SLOT_ON : SLOT_OFF}`} aria-hidden={current !== "loading" || undefined}>
           <SpinnerGlyph size={dim.glyph} reduce={reduce} />
@@ -401,28 +429,25 @@ export default function PressDepthButtonDemo({ state: forced, ...overrides }: Pa
   const uid = useId();
   const cardRef = useRef<HTMLElement>(null);
   const play = useInView(cardRef, { once: true, amount: 0.3 });
-  const { later } = useTimers();
-  const [saveState, setSaveState] = useState<PressDepthState>(forced ?? "idle");
+  const { later, clear } = useTimers();
+  const [saveState, setSaveState] = useState<PressDepthState>("idle");
   const [saved, setSaved] = useState(false);
 
-  // A state picked in the Customize panel is a one-shot trigger, not a held value: loading runs
-  // the save sequence, success holds, and both return to idle so the Save button is never stuck.
+  // A state picked in the Customize panel is held until another is picked, so the preview shows it
+  // for as long as the visitor wants to inspect it. Picking one cancels any save still in flight, and
+  // clearing the pick (Replay does this) returns the demo to rest so the Save button is clickable again.
   useEffect(() => {
-    if (!forced) return;
-    setSaveState(forced);
-    if (forced === "loading") {
+    clear();
+    if (forced === undefined) {
+      setSaveState("idle");
       setSaved(false);
-      later(() => {
-        setSaveState("success");
-        setSaved(true);
-        later(() => setSaveState("idle"), DEMO_TIMING.holdMs);
-      }, DEMO_TIMING.saveMs);
-    } else if (forced === "success") {
-      setSaved(true);
-      later(() => setSaveState("idle"), DEMO_TIMING.holdMs);
+      return;
     }
-  }, [forced, later]);
+    setSaveState(forced);
+    setSaved(forced === "success");
+  }, [forced, clear]);
 
+  // The save the demo's own press runs: loading, then success that holds, then back to idle.
   const save = () => {
     setSaved(false);
     setSaveState("loading");
@@ -480,14 +505,14 @@ export default function PressDepthButtonDemo({ state: forced, ...overrides }: Pa
             <div data-demo="save" className="inline-flex">
               <PressDepthButton label="Save changes" state={saveState} onPress={save} {...overrides} />
             </div>
-            <PressDepthButton variant="secondary" label="Preview" />
+            <PressDepthButton variant="secondary" label="Preview" leadingIcon={<EyeGlyph />} />
             <div data-demo="discard" className="inline-flex">
               <PressDepthButton variant="ghost" label="Discard" />
             </div>
           </motion.div>
         </motion.section>
         <motion.p {...enter(play, 0.42, reduce)} className="mt-4 text-center font-mono text-[11px]" style={{ color: STAGE.muted }}>
-          Tab moves between the actions. Space or Enter presses the focused one.
+          Tab to focus · Space or Enter to press
         </motion.p>
       </div>
     </div>
