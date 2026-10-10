@@ -26,10 +26,10 @@
     {"name": "theme", "type": "\"dark\" | \"light\"", "default": "\"dark\"", "description": "Surface palette, fingerprint and well included."},
     {"name": "className", "type": "string", "description": "Extra classes on the root."}
   ],
-  "demo": { "steps": ["wait:900", "hover:@passkey-button", "click", "wait:3300"] },
+  "demo": { "steps": ["wait:450", "hover:@passkey-button", "click", "move:0.68,0.74", "wait:3900"] },
   "controls": [
     {"prop": "theme", "label": "Theme", "kind": "segmented", "options": [{"value": "dark", "label": "Dark"}, {"value": "light", "label": "Light"}], "default": "dark"},
-    {"prop": "accent", "label": "Button", "kind": "color", "default": "#f4f4f5", "options": ["#f4f4f5", "#ff7a45", "#60a5fa", "#a78bfa", "#34d399"]},
+    {"prop": "accent", "label": "Button colour", "kind": "color", "default": "#f4f4f5", "options": ["#f4f4f5", "#18181b", "#ff7a45", "#60a5fa", "#a78bfa", "#34d399"]},
     {"prop": "brand", "label": "Brand", "kind": "text", "default": "Fathom"},
     {"prop": "title", "label": "Title", "kind": "text", "default": "Welcome back"},
     {"prop": "buttonLabel", "label": "Button label", "kind": "text", "default": "Sign in with passkey"},

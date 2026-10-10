@@ -219,7 +219,9 @@ function inkOn(hex: string) {
   const v = hex.replace("#", "");
   const full = v.length === 3 ? [...v].map((c) => c + c).join("") : v.slice(0, 6);
   const [r, g, b] = [0, 2, 4].map((i) => parseInt(full.slice(i, i + 2), 16) / 255).map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
-  return 0.2126 * r + 0.7152 * g + 0.0722 * b > 0.4 ? "#0a0a0b" : "#ffffff";
+  const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  // Contrast against black (0.0 luminance, with the 0.05 offset) vs white: keep whichever is higher.
+  return (lum + 0.05) / 0.05 >= 1.05 / (lum + 0.05) ? "#0a0a0b" : "#ffffff";
 }
 
 /** Palette → `--pk-*` variables (camelCase keys become kebab-case). */
@@ -800,13 +802,24 @@ const OUTCOMES: { id: DemoOutcome; label: string }[] = [
   { id: "unsupported", label: "Unsupported" },
 ];
 
-export default function AuthPasskeyDemo(overrides: Partial<AuthPasskeyProps> = {}) {
+export default function AuthPasskeyDemo({ supported: forcedSupported, ...overrides }: Partial<AuthPasskeyProps> = {}) {
   const reduce = useReducedMotion() ?? false;
   const uid = useId().replace(/[^a-zA-Z0-9_-]/g, "");
   const [outcome, setOutcome] = useState<DemoOutcome>("success");
   const [run, setRun] = useState(0);
   const [note, setNote] = useState("");
   const light = overrides.theme === "light";
+
+  // The "supported" control and the outcome picker describe the same thing, so keep them in step.
+  const lastSupported = useRef(forcedSupported);
+  useEffect(() => {
+    if (lastSupported.current === forcedSupported) return;
+    lastSupported.current = forcedSupported;
+    if (forcedSupported === false) setOutcome("unsupported");
+    else if (forcedSupported === true) setOutcome((o) => (o === "unsupported" ? "success" : o));
+    setRun((r) => r + 1);
+    setNote("");
+  }, [forcedSupported]);
 
   const pick = (o: DemoOutcome) => {
     setOutcome(o);
