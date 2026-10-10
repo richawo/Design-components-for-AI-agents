@@ -268,7 +268,7 @@ function Strip({
       className={`relative overflow-hidden text-white ${className}`}
     >
       <motion.div exit={{ opacity: 0, transition: { duration: 0.14, ease: EASE_IN } }} className="@container border-b border-white/[0.08]">
-        <div className="mx-auto grid h-11 max-w-[1280px] grid-cols-[1fr_auto] items-center pl-4 pr-1 @2xl:h-10 @2xl:grid-cols-[96px_1fr_96px] @2xl:px-6">
+        <div className={`mx-auto grid h-11 max-w-[1280px] grid-cols-[1fr_auto] items-center pl-4 ${dismissible ? "pr-1" : "pr-4"} @2xl:h-10 @2xl:grid-cols-[96px_1fr_96px] @2xl:px-6`}>
           {count > 1 && pager ? (
             <Pager messages={messages} index={index} progress={progress} reduce={reduce} paused={paused && !reduce} onPick={(i) => go(i, i < index ? -1 : 1)} />
           ) : (
@@ -440,8 +440,8 @@ const NOTES = [
 ];
 
 /**
- * `open` is lifted into the demo so a control can show and dismiss the strip while the
- * stage below keeps gliding with it; clearing the override returns to the resting state: open.
+ * `open` is lifted into the demo so the stage below glides with the strip when it is dismissed
+ * or brought back; an `open` override sets the starting state.
  */
 export default function HeaderAnnouncementDemo({ open: forcedOpen, onDismiss, ...overrides }: Partial<HeaderAnnouncementProps> = {}) {
   const reduce = useReducedMotion() ?? false;

@@ -81,33 +81,26 @@
   "added": "2026-10-09",
   "demo": {
     "steps": [
-      "wait:600",
+      "wait:400",
       "click:@pager-2",
-      "wait:700",
-      "click:@pager-3",
-      "wait:600",
+      "wait:800",
       "click:@dismiss",
       "wait:900",
       "click:@bring-back",
-      "wait:800"
+      "wait:900"
     ]
   },
   "controls": [
     {
-      "prop": "open",
-      "label": "Strip",
-      "kind": "action",
-      "options": [
-        {
-          "value": true,
-          "label": "Show"
-        },
-        {
-          "value": false,
-          "label": "Dismiss"
-        }
-      ],
-      "group": "State"
+      "prop": "interval",
+      "label": "Hold each for",
+      "kind": "slider",
+      "min": 2000,
+      "max": 9000,
+      "step": 200,
+      "unit": "ms",
+      "default": 5200,
+      "group": "Look"
     },
     {
       "prop": "accent",
