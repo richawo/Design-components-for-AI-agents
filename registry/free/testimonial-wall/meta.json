@@ -85,12 +85,14 @@
   "demo": {
     "steps": [
       "wait:300",
-      "hover:@column-1:0.5,0.42",
-      "wait:1600",
-      "hover:@column-0:0.5,0.5",
-      "wait:1400",
+      "hover:@card-1:0.32,0.4",
+      "wait:1000",
+      "hover:@card-1:0.8,0.66",
+      "wait:600",
+      "hover:@card-0:0.4,0.42",
+      "wait:1000",
       "move:0.5,0.98",
-      "wait:500"
+      "wait:300"
     ]
   },
   "controls": [
@@ -115,12 +117,12 @@
       "prop": "accent",
       "label": "Seal accent",
       "kind": "color",
-      "default": "#7dd3fc",
+      "default": "#f4f4f5",
       "options": [
+        "#f4f4f5",
         "#7dd3fc",
         "#fbbf24",
-        "#a78bfa",
-        "#f4f4f5"
+        "#a78bfa"
       ],
       "group": "Look"
     },
@@ -136,13 +138,6 @@
       "group": "Look"
     },
     {
-      "prop": "pauseControl",
-      "label": "Pause button",
-      "kind": "toggle",
-      "default": true,
-      "group": "Motion"
-    },
-    {
       "prop": "paused",
       "label": "Drift",
       "kind": "action",
@@ -156,6 +151,13 @@
           "label": "Pause"
         }
       ],
+      "group": "Motion"
+    },
+    {
+      "prop": "pauseControl",
+      "label": "Pause button",
+      "kind": "toggle",
+      "default": true,
       "group": "Motion"
     }
   ]

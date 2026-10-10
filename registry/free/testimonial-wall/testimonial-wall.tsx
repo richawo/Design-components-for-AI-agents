@@ -341,7 +341,7 @@ function StaticColumn({ items, index }: { items: Testimonial[]; index: number })
   return (
     <ul data-demo={`column-${index}`} className="flex min-w-0 flex-col gap-4 @3xl:gap-5">
       {items.map((t, i) => (
-        <li key={i}>
+        <li key={i} data-demo={i === 0 ? `card-${index}` : undefined}>
           <Card t={t} hidden={false} />
         </li>
       ))}
@@ -367,6 +367,30 @@ function Column({ items, index, speed, active, play, paused }: { items: Testimon
   useEffect(() => {
     pausedRef.current = paused;
   }, [paused]);
+  // The card nearest the column's middle carries `data-demo="card-<index>"`, so a demo always lands on a whole, unfaded card.
+  const demoCard = useRef<{ el: HTMLElement | null; due: number }>({ el: null, due: 0 });
+  const markDemoCard = (now: number) => {
+    const d = demoCard.current;
+    const st = s.current;
+    if (now < d.due || ((st.hover || st.focus) && d.el?.isConnected)) return;
+    d.due = now + 200;
+    const vp = viewportRef.current;
+    const track = trackRef.current;
+    if (!vp || !track) return;
+    const box = vp.getBoundingClientRect();
+    const mid = box.top + box.height / 2;
+    let best: HTMLElement | null = null;
+    let gap = Infinity;
+    for (const card of track.querySelectorAll<HTMLElement>("[data-card]")) {
+      const r = card.getBoundingClientRect();
+      const g = Math.abs(r.top + r.height / 2 - mid);
+      if (g < gap) [best, gap] = [card, g];
+    }
+    if (best === d.el) return;
+    d.el?.removeAttribute("data-demo");
+    best?.setAttribute("data-demo", `card-${index}`);
+    d.el = best;
+  };
 
   const apply = () => {
     const t = trackRef.current;
@@ -428,6 +452,7 @@ function Column({ items, index, speed, active, play, paused }: { items: Testimon
         if (st.period > 0) st.y = ((st.y % st.period) + st.period) % st.period;
       }
       apply();
+      markDemoCard(now);
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
@@ -517,6 +542,10 @@ function Card({ t, hidden }: { t: Testimonial; hidden: boolean }) {
       data-card
       tabIndex={hidden ? -1 : 0}
       aria-hidden={hidden || undefined}
+      onPointerEnter={(e) => {
+        if (e.pointerType === "mouse") e.currentTarget.setAttribute("data-hover", "");
+      }}
+      onPointerLeave={(e) => e.currentTarget.removeAttribute("data-hover")}
       onPointerMove={(e) => {
         // CSS variables, not state: following the pointer never re-renders.
         if (e.pointerType !== "mouse" || !ref.current) return;
@@ -525,17 +554,17 @@ function Card({ t, hidden }: { t: Testimonial; hidden: boolean }) {
         ref.current.style.setProperty("--y", `${e.clientY - r.top}px`);
       }}
       style={{ "--x": "50%", "--y": "-40px" } as CSSProperties}
-      className={`group/card relative isolate rounded-[16px] bg-[var(--wall-card)] p-5 shadow-[inset_0_0_0_1px_var(--wall-line),inset_0_1px_0_var(--wall-sheen)] transition-[translate,background-color,box-shadow] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-[3px] hover:bg-[var(--wall-cardHover)] hover:shadow-[inset_0_0_0_1px_var(--wall-line),inset_0_1px_0_var(--wall-sheen),var(--wall-lift)] focus-visible:-translate-y-[3px] focus-visible:bg-[var(--wall-cardHover)] @3xl:p-6 ${focusRing}`}
+      className={`group/card relative isolate rounded-[16px] bg-[var(--wall-card)] p-5 shadow-[inset_0_0_0_1px_var(--wall-line),inset_0_1px_0_var(--wall-sheen)] transition-[translate,background-color,box-shadow] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-[3px] hover:bg-[var(--wall-cardHover)] hover:shadow-[inset_0_0_0_1px_var(--wall-line),inset_0_1px_0_var(--wall-sheen),var(--wall-lift)] data-[hover]:-translate-y-[3px] data-[hover]:bg-[var(--wall-cardHover)] data-[hover]:shadow-[inset_0_0_0_1px_var(--wall-line),inset_0_1px_0_var(--wall-sheen),var(--wall-lift)] focus-visible:-translate-y-[3px] focus-visible:bg-[var(--wall-cardHover)] @3xl:p-6 ${focusRing}`}
     >
       {/* Pointer spotlight: a soft wash on the surface and a brighter arc on the border. */}
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10 rounded-[inherit] opacity-0 transition-opacity duration-200 group-hover/card:opacity-100"
+        className="pointer-events-none absolute inset-0 -z-10 rounded-[inherit] opacity-0 transition-opacity duration-200 group-hover/card:opacity-100 group-data-[hover]/card:opacity-100"
         style={{ background: "radial-gradient(320px circle at var(--x) var(--y), var(--wall-spot), transparent 50%)" }}
       />
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 rounded-[inherit] p-px opacity-0 transition-opacity duration-200 group-hover/card:opacity-100"
+        className="pointer-events-none absolute inset-0 rounded-[inherit] p-px opacity-0 transition-opacity duration-200 group-hover/card:opacity-100 group-data-[hover]/card:opacity-100"
         style={{
           background: "radial-gradient(180px circle at var(--x) var(--y), var(--wall-edge), transparent 70%)",
           WebkitMask: "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
@@ -619,18 +648,18 @@ function VerifiedSeal() {
 /* Demo                                                                 */
 /* ------------------------------------------------------------------ */
 
-export default function TestimonialWallDemo({ paused: forced, accent: accentProp = "#7dd3fc", speeds = [40, 52, 34], ...overrides }: Partial<TestimonialWallProps> = {}) {
+export default function TestimonialWallDemo({ paused: forced, accent: accentProp, ...overrides }: Partial<TestimonialWallProps> = {}) {
   const theme = overrides.theme ?? "dark";
   const [paused, setPaused] = useState(forced ?? false);
   useEffect(() => {
     if (forced !== undefined) setPaused(forced);
   }, [forced]);
   // The dark wall's ink accent would vanish on white cards, so it only applies on dark.
-  const accent = theme === "light" && accentProp.toLowerCase() === PALETTE.dark.ink ? undefined : accentProp;
+  const accent = theme === "light" && accentProp?.toLowerCase() === PALETTE.dark.ink ? undefined : accentProp;
   return (
     <div className="flex min-h-dvh w-full items-center justify-center px-4 py-12 sm:px-8 sm:py-16" style={{ background: STAGE[theme] }}>
       <div className="w-full max-w-[1180px]">
-        <TestimonialWall {...overrides} speeds={speeds} accent={accent} paused={paused} onPausedChange={setPaused} />
+        <TestimonialWall {...overrides} accent={accent} paused={paused} onPausedChange={setPaused} />
       </div>
     </div>
   );
