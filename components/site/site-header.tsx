@@ -89,7 +89,7 @@ export function SiteHeader() {
               GitHub
             </a>
             <Link href="/account" className="site-btn site-btn-ghost h-9 px-3 text-[14px] font-normal">
-              Sign in
+              Account
             </Link>
             <Link
               href="/pricing"
@@ -134,7 +134,7 @@ export function SiteHeader() {
         </nav>
         <div className="mt-auto grid grid-cols-2 gap-3">
           <Link href="/account" className="site-btn site-btn-secondary col-span-2 h-12 text-[15px]">
-            Sign in
+            Account
           </Link>
           <a href={site.github} className="site-btn site-btn-secondary h-12 text-[15px]">
             <GitHubMark className="size-4" /> GitHub

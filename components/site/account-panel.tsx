@@ -33,8 +33,10 @@ export function AccountPanel({ welcome, pending, plan }: { welcome: boolean; pen
 
   const load = useCallback(async () => {
     const response = await fetch("/api/account", { cache: "no-store" });
-    if (response.ok) { setState({ status: "signed-in", account: await response.json() }); return; }
-    if (response.status !== 401) {
+    if (response.ok) {
+      const account = await response.json();
+      if (account.user) { setState({ status: "signed-in", account }); return; }
+    } else if (response.status !== 401) {
       const data = await response.json();
       throw new Error(data.error || "Couldn't load your account. Please try again.");
     }
@@ -138,7 +140,7 @@ export function AccountPanel({ welcome, pending, plan }: { welcome: boolean; pen
           {welcome && licences.some((l) => l.active) && <p role="status" className="text-lg text-site-fg">Your library is ready. Copy your key below to connect your agents.</p>}
           {licences.map((licence) => <div key={licence.id} className="site-surface site-in min-w-0 rounded-[24px] p-7 sm:p-8">
             <div className="flex flex-wrap justify-between gap-4"><div><p className="font-mono text-[11px] uppercase tracking-[0.16em] text-site-fg-3">{licence.owner ? "Your licence" : "Library access"}</p><h2 className="mt-2 text-3xl font-semibold tracking-[-0.04em]">{names[licence.plan] || licence.plan}</h2><p className="mt-2 text-[15px] text-site-fg-2">{licence.active ? licence.expiresAt ? `Access through ${new Date(licence.expiresAt * 1000).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}` : "Lifetime access" : licence.status === "past_due" ? "Payment needs attention. Open billing to update your payment method." : licence.status === "refunded" ? "This payment was refunded." : licence.status === "disputed" ? "Access is suspended while the payment dispute is reviewed." : "This licence is no longer active."}</p></div></div>
-            {licence.token && <div className="mt-6 min-w-0 rounded-2xl border border-white/[0.08] bg-site-bg/60 p-4"><div className="flex items-center justify-between gap-3"><p className="font-mono text-[11px] uppercase tracking-[0.14em] text-site-fg-2">Your licence key</p><CopyButton text={licence.token} label="Copy key" /></div><p className="mt-3 break-all font-mono text-[12px] leading-relaxed text-site-fg-2">{licence.token}</p><p className="mt-3 text-xs text-site-fg-3">Keep this key private. Each Team member signs in to get their own.</p></div>}
+            {licence.token && <LicenceKey token={licence.token} />}
             {licence.owner && licence.seats > 1 && <TeamSeats licence={licence} busy={busy} action={action} reload={load} />}
           </div>)}
           {licences.some((l) => l.active) && <div className="grid gap-6 md:grid-cols-3">{[
@@ -151,6 +153,11 @@ export function AccountPanel({ welcome, pending, plan }: { welcome: boolean; pen
       )}
     </div>
   );
+}
+
+function LicenceKey({ token }: { token: string }) {
+  const [visible, setVisible] = useState(false);
+  return <div className="mt-6 min-w-0 rounded-2xl border border-white/[0.08] bg-site-bg/60 p-4"><div className="flex flex-wrap items-center justify-between gap-3"><p className="font-mono text-[11px] uppercase tracking-[0.14em] text-site-fg-2">Your licence key</p><div className="flex items-center gap-4"><button type="button" onClick={() => setVisible(!visible)} aria-pressed={visible} className="text-xs text-site-fg-2 underline decoration-white/20 underline-offset-4">{visible ? "Hide key" : "Show key"}</button><CopyButton text={token} label="Copy key" /></div></div><p className="mt-3 break-all font-mono text-[12px] leading-relaxed text-site-fg-2">{visible ? token : "dfa_••••••••••••••••••••••••"}</p><p className="mt-3 text-xs text-site-fg-3">Keep this key private. Each Team member signs in to get their own.</p></div>;
 }
 
 function TeamSeats({ licence, busy, action, reload }: { licence: Licence; busy: string | null; action: (id: string, fn: () => Promise<void>) => Promise<void>; reload: () => Promise<void> }) {
