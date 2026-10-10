@@ -489,7 +489,8 @@ function DitherHorizon({
   useDitherField(canvasRef, anchorRef, { accent, cell, lean, reduce, active });
   return (
     <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-      <canvas ref={canvasRef} data-accent={accent} data-cell={cell} className="absolute left-0 top-0 block [image-rendering:pixelated]" />
+      {/* The data-* mirrors expose the settings the canvas pixels were drawn with, so tooling can read them without sampling the canvas. */}
+      <canvas ref={canvasRef} data-accent={accent} data-cell={cell} data-lean={lean} className="absolute left-0 top-0 block [image-rendering:pixelated]" />
       {/* Fade the top of the field into the panel so the copy sits on near-black. */}
       <div className="absolute inset-0 bg-[linear-gradient(180deg,var(--ch-panel)_0%,color-mix(in_srgb,var(--ch-panel)_92%,transparent)_42%,transparent_72%)]" />
     </div>
@@ -497,9 +498,10 @@ function DitherHorizon({
 }
 
 /**
- * The gallery demo: the same section, with the light leaning further toward the
- * pointer so the sweep reads at a glance, and in-page links held still so the
- * demo cursor (or a visitor) can click them without changing the page hash.
+ * The gallery demo wrapper. The named `CtaHorizon` export is the API; use that.
+ * Here the light leans further toward the pointer by default (`lean` 0.28, a
+ * 14% shift) so the sweep reads at a glance, and in-page links are held still
+ * so the demo cursor (or a visitor) can click them without changing the hash.
  */
 export default function CtaHorizonDemo(overrides: Partial<CtaHorizonProps> = {}) {
   return (

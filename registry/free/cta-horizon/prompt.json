@@ -53,7 +53,7 @@
     "blocks": "opacity 0, y 12px, blur 8px -> clear, 600ms [0.22,1,0.36,1]",
     "rise": "ease-out expo over 950ms; the sun climbs from 0.78 to 0.28 of its own vertical radius below the line, so it reads the same on a tall phone panel",
     "shimmer": "the one ambient loop: multiplies existing light +-14% with two slow sines; never adds light to dark areas",
-    "lean": "up to 6% of the width toward a mouse pointer, eased 6% per frame",
+    "lean": "a lean prop (default 0.12, a fraction of the panel width, so up to 6% of the width) sets how far the light shifts toward a mouse pointer, eased 6% per frame; 0 keeps it centred",
     "fps": "30, paused offscreen and in hidden tabs",
     "primaryHover": "calm: background dims to #ececec and the arrow nudges 2px in 150ms; no glow, lift, growth or magnetism; press 0.98",
     "reducedMotion": "one still frame of the risen light (redrawn on resize and when fonts land); copy is a 150ms opacity fade"

@@ -23,7 +23,7 @@ Build a closing call-to-action section in React + Tailwind CSS v4 with `motion/r
 
 **Ambient and pointer**
 - A faint shimmer multiplies the existing light (±14%, two slow sines), so dark areas stay perfectly clean. It is the one ambient loop.
-- The light leans up to 6% of the width toward a mouse pointer, eased 6% per frame; touch does nothing.
+- The light leans toward a mouse pointer, eased 6% per frame; touch does nothing. A `lean` prop sets how far, as a fraction of the panel width (default 0.12, so the light shifts up to 6% of the width; 0 keeps it centred).
 - 30fps is plenty. Pause when offscreen or the tab is hidden. With reduced motion, draw one still frame of the risen light (and redraw it on resize), and fade the copy for 150ms with no transforms or blur.
 
 **Content**
