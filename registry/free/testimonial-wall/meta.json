@@ -66,10 +66,99 @@
       "description": "Dark near-black cards on black, or white cards for a light page."
     },
     {
+      "name": "paused",
+      "type": "boolean",
+      "description": "Pauses the drift. Pass it with onPausedChange to control the pause state from outside; leave it out and the pause control keeps its own."
+    },
+    {
+      "name": "onPausedChange",
+      "type": "(paused: boolean) => void",
+      "description": "Called with the next state when the pause control is used."
+    },
+    {
       "name": "className",
       "type": "string",
       "description": "Extra classes for the root."
     }
   ],
-  "added": "2026-10-09"
+  "added": "2026-10-09",
+  "demo": {
+    "steps": [
+      "wait:1300",
+      "hover:@column-1:0.5,0.5",
+      "wait:600",
+      "hover:@column-0:0.5,0.55",
+      "wait:400",
+      "click:@pause",
+      "wait:800",
+      "click:@pause",
+      "wait:700"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark",
+      "group": "Look"
+    },
+    {
+      "prop": "accent",
+      "label": "Seal accent",
+      "kind": "color",
+      "default": "#f4f4f5",
+      "options": [
+        "#f4f4f5",
+        "#7dd3fc",
+        "#fbbf24",
+        "#a78bfa"
+      ],
+      "group": "Look"
+    },
+    {
+      "prop": "height",
+      "label": "Wall height",
+      "kind": "slider",
+      "min": 480,
+      "max": 860,
+      "step": 20,
+      "unit": "px",
+      "default": 720,
+      "group": "Look"
+    },
+    {
+      "prop": "pauseControl",
+      "label": "Pause button",
+      "kind": "toggle",
+      "default": true,
+      "group": "Motion"
+    },
+    {
+      "prop": "paused",
+      "label": "Drift",
+      "kind": "action",
+      "options": [
+        {
+          "value": false,
+          "label": "Run"
+        },
+        {
+          "value": true,
+          "label": "Pause"
+        }
+      ],
+      "group": "Motion"
+    }
+  ]
 }

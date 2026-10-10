@@ -30,6 +30,10 @@ export type TestimonialWallProps = {
   /** The one accent: the verified seal. Defaults to the theme’s ink, so the wall is greyscale. */
   accent?: string;
   theme?: "dark" | "light";
+  /** Pauses the drift when set; makes the pause state controlled from outside. Without it the pause control keeps its own state. */
+  paused?: boolean;
+  /** Called with the next state when the pause control is used. */
+  onPausedChange?: (paused: boolean) => void;
   className?: string;
 };
 
@@ -257,6 +261,8 @@ export function TestimonialWall({
   pauseControl = true,
   accent,
   theme = "dark",
+  paused: pausedProp,
+  onPausedChange,
   className = "",
 }: TestimonialWallProps) {
   const reduce = useReducedMotion() ?? false;
@@ -264,7 +270,8 @@ export function TestimonialWall({
   const cols = useColumnCount(rootRef);
   const onScreen = useOnScreen(rootRef);
   const play = useInView(rootRef, { once: true, amount: 0.2 });
-  const [paused, setPaused] = useState(false);
+  const [pausedInner, setPausedInner] = useState(false);
+  const paused = pausedProp ?? pausedInner;
   const palette = PALETTE[theme];
 
   const n = cols ?? 3;
@@ -300,7 +307,10 @@ export function TestimonialWall({
           transition={{ duration: 0.4, ease: EASE_OUT, delay: MOTION.control }}
           className="absolute bottom-1 right-1 z-10"
         >
-          <PauseButton paused={paused} onToggle={() => setPaused((p) => !p)} />
+          <PauseButton paused={paused} onToggle={() => {
+            setPausedInner(!paused);
+            onPausedChange?.(!paused);
+          }} />
         </motion.div>
       )}
     </motion.section>
@@ -311,6 +321,7 @@ function PauseButton({ paused, onToggle }: { paused: boolean; onToggle: () => vo
   return (
     <button
       type="button"
+      data-demo="pause"
       aria-pressed={paused}
       aria-label={paused ? "Resume scrolling testimonials" : "Pause scrolling testimonials"}
       onClick={onToggle}
@@ -470,6 +481,7 @@ function Column({ items, index, speed, active, play, paused }: { items: Testimon
   return (
     <div
       ref={viewportRef}
+      data-demo={`column-${index}`}
       onPointerEnter={(e) => {
         if (e.pointerType === "mouse") s.current.hover = true;
       }}
@@ -607,11 +619,18 @@ function VerifiedSeal() {
 /* Demo                                                                 */
 /* ------------------------------------------------------------------ */
 
-export default function TestimonialWallDemo() {
+export default function TestimonialWallDemo({ paused: forced, ...overrides }: Partial<TestimonialWallProps> = {}) {
+  const theme = overrides.theme ?? "dark";
+  const [paused, setPaused] = useState(forced ?? false);
+  useEffect(() => {
+    if (forced !== undefined) setPaused(forced);
+  }, [forced]);
+  // The dark wall's ink accent would vanish on white cards, so it only applies on dark.
+  const accent = theme === "light" && overrides.accent?.toLowerCase() === PALETTE.dark.ink ? undefined : overrides.accent;
   return (
-    <div className="flex min-h-dvh w-full items-center justify-center px-4 py-12 sm:px-8 sm:py-16" style={{ background: STAGE.dark }}>
+    <div className="flex min-h-dvh w-full items-center justify-center px-4 py-12 sm:px-8 sm:py-16" style={{ background: STAGE[theme] }}>
       <div className="w-full max-w-[1180px]">
-        <TestimonialWall />
+        <TestimonialWall {...overrides} accent={accent} paused={paused} onPausedChange={setPaused} />
       </div>
     </div>
   );
