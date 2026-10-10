@@ -589,7 +589,9 @@ const STAGE = {
   dark: { backdrop: "#0a0a0b", card: "#111113", line: "#232327", rule: "#1c1c1f", ink: "#f4f4f5", muted: "#a1a1aa", faint: "#8a8a93", hover: "rgba(255,255,255,0.03)", hint: "#d4d4d8", shadow: "inset 0 1px 0 rgba(255,255,255,0.04), 0 32px 64px -32px rgba(0,0,0,0.9)" },
   light: { backdrop: "#f4f4f5", card: "#ffffff", line: "#e4e4e7", rule: "#ececee", ink: "#18181b", muted: "#52525b", faint: "#71717a", hover: "rgba(24,24,27,0.04)", hint: "#3f3f46", shadow: "0 32px 64px -36px rgba(24,24,27,0.28), 0 1px 2px rgba(24,24,27,0.05)" },
 } as const;
-const DEMO_MOTION = { block: 0.5, step: 0.06, buttonsAt: 0.24, hintAt: 0.5, count: 0.9, seedAt: 0.3, seedStep: 0.16 } as const;
+const DEMO_MOTION = { block: 0.5, step: 0.06, buttonsAt: 0.24, hintAt: 0.5, count: 0.9, seedAt: 0.3, seedStep: 0.16, redealAfter: 1.2 } as const;
+/** The first accent swatch is the dark theme's ink; picking it means "theme ink", so it never paints a white button on a white card. */
+const THEME_INK_SWATCH = "#f4f4f5";
 /** Toasts in the demo linger long enough to be played with. The `duration` control tunes it. */
 const DEMO_DURATION = 12000;
 const WORDS = 1284;
@@ -658,29 +660,46 @@ function WordCount({ play, reduce }: { play: boolean; reduce: boolean }) {
 
 export default function ToastStackDemo(overrides: Partial<ToasterProps> = {}) {
   const stage = STAGE[overrides.theme ?? "dark"];
+  const accent = overrides.accent && overrides.accent.toLowerCase() !== THEME_INK_SWATCH ? overrides.accent : undefined;
   const reduce = useReducedMotion() ?? false;
   const uid = useId();
   const card = useRef<HTMLElement>(null);
   const play = useInView(card, { once: true, amount: 0.3 });
   const actions = useMemo(demoActions, []);
+  const { toasts: live } = useToasts();
+  const empty = live.length === 0;
+  // Each deal is a round; a new round deals the same hand again.
+  const [round, setRound] = useState(0);
 
-  // Five toasts arrive once the card has landed, so the stack is there to play with.
+  // Five toasts arrive from 0.3s, as the card lands, so the stack is there to play with.
   useEffect(() => {
     if (!play) return;
     // The action-bearing toast lands last so its button is in front, where the accent control shows.
+    // It skips the description so the resting stack stays short and the hint line stays clear.
     const seed = [
       () => toast.info("Maya Okafor left a comment", { description: "“Cut the second paragraph. Trust me.”" }),
       () => toast.success("Cover image uploaded", { description: "Autumn-cover.jpg, 2.4 MB." }),
       actions[0].fire,
       () => toast.info("Autosave is on", { description: "Every 30 seconds." }),
-      actions[3].fire,
+      () => toast.info("Moved 3 drafts to the bin", { action: { label: "Undo", onClick: () => toast.success("Restored 3 drafts") } }),
     ];
     const timers = seed.map((fire, i) => setTimeout(fire, reduce ? 0 : (DEMO_MOTION.seedAt + i * DEMO_MOTION.seedStep) * 1000));
     return () => {
       timers.forEach(clearTimeout);
       toast.dismiss();
     };
-  }, [play, reduce, actions]);
+  }, [play, reduce, actions, round]);
+
+  // Keep the stack alive: once it has been empty a moment, deal again; if a control changes while it is empty, deal at once.
+  const overrideKey = JSON.stringify(overrides);
+  const lastKey = useRef(overrideKey);
+  useEffect(() => {
+    const changed = lastKey.current !== overrideKey;
+    lastKey.current = overrideKey;
+    if (!play || !empty) return;
+    const timer = setTimeout(() => setRound((r) => r + 1), changed ? 0 : DEMO_MOTION.redealAfter * 1000);
+    return () => clearTimeout(timer);
+  }, [play, empty, overrideKey]);
 
   return (
     <div className="@container flex min-h-dvh w-full flex-col items-center justify-center px-4 pb-48 pt-12 font-sans sm:pb-12 antialiased sm:px-8" style={{ background: stage.backdrop, color: stage.ink, ["--st-hover" as string]: stage.hover, ["--st-hint" as string]: stage.hint, ["--st-ink" as string]: stage.ink }}>
@@ -723,7 +742,7 @@ export default function ToastStackDemo(overrides: Partial<ToasterProps> = {}) {
       <motion.p {...demoEnter(play, DEMO_MOTION.hintAt, reduce)} className="mt-5 text-center font-mono text-[11px] uppercase leading-[1.7] tracking-[0.12em]" style={{ color: stage.faint }}>
         Hover the stack to fan out · Swipe to dismiss<span className="hidden @lg:inline"> · Alt+T</span>
       </motion.p>
-      <Toaster duration={DEMO_DURATION} {...overrides} />
+      <Toaster duration={DEMO_DURATION} {...overrides} accent={accent} />
     </div>
   );
 }

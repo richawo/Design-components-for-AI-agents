@@ -40,7 +40,7 @@
       "name": "accent",
       "type": "string",
       "default": "theme ink",
-      "description": "The one accent: the action button (its text is black or white by luminance)."
+      "description": "The one accent: the action button (its text is black or white by luminance). Leave it unset for the theme's ink."
     },
     {
       "name": "theme",
@@ -91,13 +91,13 @@
   "added": "2026-10-07",
   "demo": {
     "steps": [
-      "wait:400",
-      "hover:@stack:0.5,0.85",
-      "wait:550",
-      "click:@dismiss-1",
-      "hover:@stack:0.3,0.5",
+      "wait:350",
+      "hover:@stack:0.45,0.5",
+      "hover:@toast-1:0.4,0.5",
+      "drag:0.97,0.81",
+      "wait:300",
       "click:@publish",
-      "wait:2600"
+      "wait:2200"
     ]
   },
   "controls": [

@@ -57,7 +57,7 @@
     "stackHeight": "ol height animates 0.35s ease-out",
     "exit": "scale 0.94, opacity 0, 200ms ease-in",
     "swipe": "drag x, elastic 0.85, opacity fades to 0 at ±220px; past 90px or 600px/s flies 420px out over 0.22s then dismisses; else springs home 500/35",
-    "demo": "card rises 12px from an 8px blur (0.5s); eyebrow, title, meta 60ms apart; word count counts up 0->1,284 (0.9s); action cells from 0.24s, 60ms apart; hint at 0.5s; three toasts dealt in from 0.75s, 320ms apart",
+    "demo": "card rises 12px from an 8px blur (0.5s); eyebrow, title, meta 60ms apart; word count counts up 0->1,284 (0.9s); action cells from 0.24s, 60ms apart; hint at 0.5s; five toasts dealt in from 0.3s, 160ms apart, as the card lands; when the stack has been empty 1.2s (or a prop changes while it is empty) the same five are dealt again",
     "reducedMotion": "no drag, no springs, 150ms fades; numbers set instantly; countdown still runs",
     "press": "buttons 0.97, demo cells 0.98, 150ms"
   },
@@ -75,12 +75,12 @@
   "content": {
     "brand": "Quire, an editorial CMS",
     "actions": [
-      "Save draft -> Draft saved — 1,284 words, all of them yours.",
+      "Save draft -> Draft saved: 1,284 words, all of them yours.",
       "Publish -> Publishing to 4,120 readers… -> Published. Go and make a coffee.",
-      "Send proofs -> Couldn’t reach the printer — Retry now",
-      "Move to bin -> Moved 3 drafts to the bin — Undo"
+      "Send proofs -> Couldn’t reach the printer (action: Retry now)",
+      "Move to bin -> Moved 3 drafts to the bin (action: Undo)"
     ],
-    "seeded": "Moved 3 drafts to the bin; Maya Okafor left a comment (“Cut the second paragraph. Trust me.”); Draft saved"
+    "seeded": "Maya Okafor left a comment (“Cut the second paragraph. Trust me.”); Cover image uploaded; Draft saved; Autosave is on; Moved 3 drafts to the bin (Undo, no description, dealt last so it sits in front)"
   },
   "avoid": [
     "full-bleed coloured toasts",
