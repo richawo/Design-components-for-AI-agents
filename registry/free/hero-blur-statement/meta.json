@@ -51,7 +51,7 @@
       "name": "tail",
       "type": "string",
       "default": "\"that people\\nopen on purpose.\"",
-      "description": "Words after the name, set at 38% white. A \"\\n\" (or \" / \" in a single-line field) breaks the line on wide containers so nothing re-wraps while the slot springs."
+      "description": "Words after the name, set at 38% white. A \"\\n\" breaks the line on wide containers so nothing re-wraps while the slot springs."
     },
     {
       "name": "primary",
@@ -85,11 +85,11 @@
   "added": "2026-10-09",
   "demo": {
     "steps": [
-      "wait:1000",
-      "hover:@statement:0.22,0.62",
+      "wait:600",
+      "hover:@rotation",
       "wait:1500",
       "move:0.8,0.3",
-      "wait:2200"
+      "wait:2800"
     ],
     "loop": false
   },
@@ -118,11 +118,11 @@
       "max": 5000,
       "step": 100,
       "unit": "ms",
-      "default": 2100
+      "default": 1500
     },
     {
       "prop": "grain",
-      "label": "Film grain (opacity)",
+      "label": "Grain",
       "kind": "slider",
       "min": 0,
       "max": 0.3,
@@ -148,6 +148,13 @@
       "label": "Eyebrow",
       "kind": "text",
       "default": "Ferro & Vale · Product studio, Lisbon",
+      "group": "Content"
+    },
+    {
+      "prop": "status",
+      "label": "Status",
+      "kind": "text",
+      "default": "Booking from February 2027",
       "group": "Content"
     },
     {

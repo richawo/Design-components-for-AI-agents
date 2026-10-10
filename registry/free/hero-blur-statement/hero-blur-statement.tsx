@@ -339,9 +339,9 @@ function Statement({
   const width = useSlotWidth(measureRef, index, reduce);
   const current = names[Math.min(index, names.length - 1)];
   const leadWords = lead.split(" ").filter(Boolean);
-  // "\n" in the tail is a line break on wide containers; " / " does the same for single-line fields.
-  const tailLines = tail.split(/\n| \/ /).map((line) => line.split(" ").filter(Boolean));
-  const fullSentence = `${lead} ${names.map((x) => x.word).join(", ")} ${tail.replace(/\n| \/ /g, " ")}`;
+  // "\n" in the tail is a line break on wide containers.
+  const tailLines = tail.split("\n").map((line) => line.split(" ").filter(Boolean));
+  const fullSentence = `${lead} ${names.map((x) => x.word).join(", ")} ${tail.replace(/\n/g, " ")}`;
   const v = reduce ? fade : word;
   // Word order sets the stagger: lead, then the slot, then the tail, line by line.
   const slotOrder = leadWords.length;
@@ -539,10 +539,12 @@ function ControlGlyph({ kind }: { kind: "next" | "play" | "pause" }) {
 }
 
 /**
- * The hero as it ships. Names hold 2.1 s here (the component's own default is 2.6 s)
- * so the demo shows several in a few seconds; the Customize slider starts at 2100 and
- * "Copy configured" keeps whatever it is set to. Overrides come from the Customize panel.
+ * The hero as it ships. Names hold 1.5 s here (the component's own default is 2.6 s)
+ * so the demo shows several rolls in a few seconds; the Customize slider starts at 1500
+ * and "Copy configured" keeps whatever it is set to. Overrides come from the Customize
+ * panel, whose single-line Tail field writes " / " for the line break.
  */
 export default function HeroBlurStatementDemo(overrides: Partial<HeroBlurStatementProps> = {}) {
-  return <HeroBlurStatement interval={2100} {...overrides} />;
+  const tail = overrides.tail?.replace(/ \/ /g, "\n");
+  return <HeroBlurStatement interval={1500} {...overrides} {...(tail === undefined ? {} : { tail })} />;
 }
