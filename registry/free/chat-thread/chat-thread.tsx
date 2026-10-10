@@ -117,8 +117,8 @@ type Palette = Record<keyof (typeof PALETTE)["dark"], string>;
 
 const DEFAULT_ACCENT = "#ff9a6b";
 
-/** The demo’s quiet backdrop; not part of the component. */
-const STAGE = "#000000";
+/** The demo’s quiet backdrop; not part of the component. It follows the theme. */
+const STAGE = { dark: "#000000", light: "#e9e9ec" } as const;
 
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 const EASE_IN = [0.4, 0, 1, 1] as const;
@@ -746,6 +746,7 @@ function SendButton({ streaming, canSend, onStop, reduce }: { streaming: boolean
             key="stop"
             type="button"
             aria-label="Stop generating"
+            data-demo="stop"
             onClick={onStop}
             {...pop}
             whileTap={reduce ? undefined : { scale: 0.92 }}
@@ -758,6 +759,7 @@ function SendButton({ streaming, canSend, onStop, reduce }: { streaming: boolean
             key="send"
             type="submit"
             aria-label="Send message"
+            data-demo="send"
             disabled={!canSend}
             {...pop}
             whileTap={reduce || !canSend ? undefined : { scale: 0.92 }}
@@ -858,6 +860,7 @@ function Composer({
         </label>
         <textarea
           id={inputId}
+          data-demo="composer"
           ref={textarea}
           rows={1}
           value={draft}
@@ -1030,11 +1033,32 @@ export function ChatThread({
   );
 }
 
-export default function ChatThreadDemo() {
+/** The demo’s stand-in answer to the scripted question: a sentence, then a test that streams in as code. */
+function demoReply(): ChatBlock[] {
+  return [
+    { type: "p", text: "Sure. Fake the timers, change the value, and check it only settles after `250ms` of quiet." },
+    {
+      type: "code",
+      lang: "ts",
+      filename: "use-debounced-value.test.ts",
+      code: `it("waits for quiet", () => {
+  vi.useFakeTimers();
+  rerender("abc");
+  vi.advanceTimersByTime(250);
+  expect(result.current).toBe("abc");
+});`,
+    },
+  ];
+}
+
+export default function ChatThreadDemo(overrides: Partial<ChatThreadProps> = {}) {
+  const theme = overrides.theme ?? "dark";
+  const name = overrides.assistantName ?? "Wren";
   return (
-    <div className="flex min-h-dvh items-center justify-center sm:px-6 sm:py-8 lg:py-10" style={{ background: STAGE }}>
+    <div className="flex min-h-dvh items-center justify-center sm:px-6 sm:py-8 lg:py-10" style={{ background: STAGE[theme] }}>
       <div className="h-dvh min-h-[620px] w-full max-w-[1040px] sm:h-[820px] sm:min-h-0">
-        <ChatThread />
+        {/* The thread opens settled so the scripted send is the one reply that streams. */}
+        <ChatThread streamLast={false} reply={demoReply} placeholder={`Reply to ${name}…`} {...overrides} />
       </div>
     </div>
   );
