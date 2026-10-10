@@ -69,7 +69,7 @@
       "name": "size",
       "type": "\"sm\" | \"md\"",
       "default": "\"md\"",
-      "description": "Medium: 44px trigger and 44px rows. Small: 36px trigger and 32px rows, for dense forms."
+      "description": "Medium: 44px trigger and 44px rows. Small: 36px trigger and 32px rows for dense forms, 44px on touch screens."
     },
     {
       "name": "grouped",
@@ -104,8 +104,8 @@
     {
       "name": "accent",
       "type": "string",
-      "default": "\"#7dd3a8\"",
-      "description": "The one colour: the check on the chosen row."
+      "default": "\"#7dd3a8\" (dark) or \"#1f9d6b\" (light)",
+      "description": "The one colour: the check on the chosen row. Mint on dark, a deeper green on light, where mint fails the 3:1 non-text floor."
     },
     {
       "name": "theme",
@@ -122,13 +122,15 @@
       "wait:160",
       "hover:@opt-madrid",
       "wait:140",
-      "tab:1",
+      "click:@trigger",
+      "wait:260",
+      "key:Enter",
       "wait:200",
       "type:lis",
       "wait:300",
       "key:Enter",
       "wait:900",
-      "click:@trigger",
+      "key:Enter",
       "wait:900"
     ]
   },

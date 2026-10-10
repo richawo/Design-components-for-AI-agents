@@ -52,7 +52,7 @@ export type SelectListboxProps = {
   placement?: SelectPlacement;
   /** Opens the panel on first render without moving focus into it. */
   defaultOpen?: boolean;
-  /** The one colour: the check on the chosen row. */
+  /** The one colour: the check on the chosen row. Defaults to the theme's accent in `PALETTE`. */
   accent?: string;
   theme?: "dark" | "light";
   className?: string;
@@ -65,7 +65,6 @@ type Section = { heading?: string; options: SelectOption[] };
 /* Tokens                                                              */
 /* ------------------------------------------------------------------ */
 
-const DEFAULT_ACCENT = "#7dd3a8";
 const EASE = [0.22, 1, 0.36, 1] as const;
 const EASE_IN = [0.4, 0, 1, 1] as const;
 const SPRING_UI = { type: "spring", stiffness: 500, damping: 40 } as const;
@@ -74,7 +73,8 @@ const SPRING_UI = { type: "spring", stiffness: 500, damping: 40 } as const;
 const PANEL_GAP = 6;
 /** Least clearance kept between the panel and the viewport edge when choosing a side. */
 const VIEWPORT_EDGE = 12;
-const LIST_MAX_PX = 300;
+// 320 lands the fold mid-row (Mexico City is half visible), so the cut reads as scrollable.
+const LIST_MAX_PX = 320;
 const LIST_PADDING_PX = 12;
 const SEARCH_ROW_PX = 44;
 const HEADING_PX = 30;
@@ -85,18 +85,28 @@ const EMPTY_PX = 64;
 const TYPEAHEAD_RESET_MS = 600;
 const PAGE_STEP = 5;
 /**
- * After a choice the panel stays open this long, so the check draws on the row
- * just chosen (its draw is 320ms after a 40ms delay) before the panel folds away.
+ * After a pointer or keyboard choice from the open panel, the panel stays open
+ * this long, so the check draws on the row just chosen (its draw is 320ms after
+ * a 40ms delay) before the panel folds away.
  */
 const COMMIT_HOLD_MS = 300;
 /** Soft bottom edge on the list while more rows lie below the fold. */
-const FADE_MASK = "linear-gradient(to bottom, black calc(100% - 24px), transparent)";
+const FADE_MASK = "linear-gradient(to bottom, black calc(100% - 32px), transparent)";
 
+// Small sizes keep 36px and 32px on fine pointers; coarse pointers get the 44px touch floor.
 const SIZE = {
-  sm: { field: "h-9 px-3 text-[13px] gap-2.5", row: "h-8 text-[13px]", rowPx: 32, hint: "text-[11px]" },
+  sm: {
+    field: "h-9 px-3 text-[13px] gap-2.5 [@media(pointer:coarse)]:h-11",
+    row: "h-8 text-[13px] [@media(pointer:coarse)]:h-11",
+    rowPx: 32,
+    hint: "text-[11px]",
+  },
   // 44px rows match the 44px trigger and the touch-target floor at every pointer.
   md: { field: "h-11 px-3.5 text-[14px] gap-3", row: "h-11 text-[14px]", rowPx: 44, hint: "text-[11.5px]" },
 } as const;
+
+/** Container query: below this width the time-zone hints step aside so the names keep room. */
+const HINT_HIDE = "@max-[14rem]:hidden";
 
 const PALETTE = {
   dark: {
@@ -109,6 +119,8 @@ const PALETTE = {
     line: "rgba(255,255,255,0.08)",
     highlight: "rgba(255,255,255,0.07)",
     shadow: "inset 0 1px 0 rgba(255,255,255,0.05), 0 28px 60px -20px rgba(0,0,0,0.9), 0 4px 12px -4px rgba(0,0,0,0.6)",
+    // Mint on near-black clears the 3:1 non-text floor by a wide margin.
+    accent: "#7dd3a8",
   },
   light: {
     field: "#ffffff",
@@ -120,6 +132,8 @@ const PALETTE = {
     line: "rgba(24,24,27,0.1)",
     highlight: "rgba(24,24,27,0.05)",
     shadow: "0 24px 48px -18px rgba(24,24,27,0.28), 0 2px 6px -2px rgba(24,24,27,0.12)",
+    // Mint is about 1.7:1 on white; this deeper green is about 3.4:1, the 3:1 non-text floor.
+    accent: "#1f9d6b",
   },
 } as const;
 
@@ -290,7 +304,7 @@ function OptionRow({ option, id, highlightId, active, selected, size, reduce, on
       // Keep focus where it is: the trigger or the filter field owns the keyboard.
       onPointerDown={(e) => e.preventDefault()}
       onClick={onPick}
-      className={`relative flex cursor-pointer select-none items-center gap-3 rounded-[8px] px-2.5 ${SIZE[size].row} ${
+      className={`group relative flex cursor-pointer select-none items-center rounded-[8px] px-2.5 ${SIZE[size].row} ${
         active ? "text-(--sl-ink)" : "text-(--sl-body)"
       }`}
     >
@@ -302,9 +316,14 @@ function OptionRow({ option, id, highlightId, active, selected, size, reduce, on
           className="absolute inset-0 rounded-[8px] bg-(--sl-highlight)"
         />
       ) : null}
-      <span className="relative min-w-0 flex-1 truncate">{option.label}</span>
-      {option.hint ? <span className={`relative shrink-0 font-mono tabular-nums text-(--sl-hint) ${SIZE[size].hint}`}>{option.hint}</span> : null}
-      <span className="relative grid size-4 shrink-0 place-items-center">{selected ? <CheckMark reduce={reduce} /> : null}</span>
+      {/* The content takes the press, not the highlight, so the glide stays clean under a pressed row. */}
+      <span className="relative flex min-w-0 flex-1 items-center gap-3 transition-transform duration-[90ms] ease-out group-active:scale-[0.98] motion-reduce:transition-none motion-reduce:group-active:scale-100">
+        <span className="min-w-0 flex-1 truncate">{option.label}</span>
+        {option.hint ? (
+          <span className={`shrink-0 font-mono tabular-nums text-(--sl-hint) ${SIZE[size].hint} ${HINT_HIDE}`}>{option.hint}</span>
+        ) : null}
+        <span className="grid size-4 shrink-0 place-items-center">{selected ? <CheckMark reduce={reduce} /> : null}</span>
+      </span>
     </div>
   );
 }
@@ -327,7 +346,7 @@ export function SelectListbox({
   disabled = false,
   placement = "auto",
   defaultOpen = false,
-  accent = DEFAULT_ACCENT,
+  accent,
   theme = "dark",
   className = "",
 }: SelectListboxProps) {
@@ -402,11 +421,17 @@ export function SelectListbox({
     setOpen(true);
   };
 
-  const commit = (option: SelectOption) => {
+  /**
+   * Chooses an option. From the open panel the choice is confirmed: the panel
+   * holds so the check can draw, then closes. On the closed trigger (typeahead)
+   * there is no panel to hold, so the value simply changes and typing carries on.
+   */
+  const commit = (option: SelectOption, fromPanel: boolean) => {
     if (committing.current) return;
     if (value === undefined) setInternal(option.value);
     setActiveValue(option.value);
     onValueChange?.(option.value, option);
+    if (!fromPanel) return;
     if (reduce) {
       close(true);
       return;
@@ -449,7 +474,7 @@ export function SelectListbox({
       // Typing on a closed select chooses the match straight away, as the native control does.
       if (isTypeable(e)) {
         const hit = typeTo(e.key, flat, selectedValue);
-        if (hit) commit(hit);
+        if (hit) commit(hit, false);
       }
       return;
     }
@@ -471,13 +496,13 @@ export function SelectListbox({
         return goTo(activeIndex - PAGE_STEP);
       case "Enter":
         e.preventDefault();
-        if (active) commit(active);
+        if (active) commit(active, true);
         else close(true);
         return;
       case " ":
         if (fromSearch) return;
         e.preventDefault();
-        if (active) commit(active);
+        if (active) commit(active, true);
         return;
       case "Escape":
         e.preventDefault();
@@ -556,7 +581,7 @@ export function SelectListbox({
     "--sl-line": palette.line,
     "--sl-highlight": palette.highlight,
     "--sl-shadow": palette.shadow,
-    "--sl-accent": accent,
+    "--sl-accent": accent ?? palette.accent,
   } as CSSProperties;
 
   const highlightId = `${uid}-highlight-${openCount}`;
@@ -579,7 +604,8 @@ export function SelectListbox({
         <button
           ref={triggerRef}
           type="button"
-          role="combobox"
+          // With a filter field the field is the combobox; the trigger is only the button that opens the popup.
+          role={searchable ? "button" : "combobox"}
           aria-haspopup="listbox"
           aria-expanded={open}
           aria-controls={open && hasRows ? listId : undefined}
@@ -608,7 +634,9 @@ export function SelectListbox({
                 className={`flex min-w-0 items-baseline gap-2 ${selected ? "text-(--sl-ink)" : "text-(--sl-hint)"}`}
               >
                 <span className="truncate">{selected ? selected.label : placeholder}</span>
-                {selected?.hint ? <span className={`shrink-0 font-mono tabular-nums text-(--sl-hint) ${SIZE[size].hint}`}>{selected.hint}</span> : null}
+                {selected?.hint ? (
+                  <span className={`shrink-0 font-mono tabular-nums text-(--sl-hint) ${SIZE[size].hint} ${HINT_HIDE}`}>{selected.hint}</span>
+                ) : null}
               </motion.span>
             </AnimatePresence>
           </span>
@@ -681,7 +709,7 @@ export function SelectListbox({
                         onHover={() => {
                           if (!committing.current) setActiveValue(option.value);
                         }}
-                        onPick={() => commit(option)}
+                        onPick={() => commit(option, true)}
                       />
                     ));
                     if (!section.heading) return <div key={`section-${si}`}>{rows}</div>;
@@ -726,11 +754,17 @@ export function SelectListbox({
 /**
  * The featured instance opens on first render, so the static preview shows the
  * panel, not a closed field. The stage sits high so the panel has room below
- * the trigger. Overrides spread last so the Customize controls always win.
+ * the trigger; for `placement: "top"` it sits low so the panel has room above.
+ * Overrides spread last so the Customize controls always win.
  */
 export default function SelectListboxDemo(overrides: Partial<SelectListboxProps> = {}) {
+  const opensUp = overrides.placement === "top";
   return (
-    <div className="flex min-h-[100dvh] items-start justify-center px-4 pb-12 pt-[clamp(80px,22vh,200px)]">
+    <div
+      className={`flex min-h-[100dvh] justify-center px-4 ${
+        opensUp ? "items-end pb-[clamp(40px,9vh,96px)] pt-12" : "items-start pb-12 pt-[clamp(80px,22vh,200px)]"
+      }`}
+    >
       <SelectListbox defaultOpen defaultValue="berlin" {...overrides} />
     </div>
   );

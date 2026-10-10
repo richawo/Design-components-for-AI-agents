@@ -8,10 +8,10 @@
     "animation": "motion/react (variants, layoutId, pathLength, AnimatePresence popLayout, useReducedMotion), lucide-react for the chevron and search icon"
   },
   "layout": {
-    "root": "@container column, max-width 320px, trigger full width",
+    "root": "@container column, max-width 320px, trigger full width; hints hide below a 224px container (@max-[14rem])",
     "label": "mono 11px uppercase label, 8px above the trigger",
     "trigger": "md 44px / sm 36px, radius 10px, inset hairline, value left, hint, 16px chevron right",
-    "panel": "trigger width, 6px gap above or below, radius 12px, list max 300px, rows 44px (md, matching the trigger) or 32px (sm), radius 8px, bottom 24px fades out while rows lie below the fold",
+    "panel": "trigger width, 6px gap above or below, radius 12px, list max 320px (fold lands mid-row), rows 44px (md, matching the trigger) or 32px (sm, 44px on coarse pointers), radius 8px, bottom 32px fades out while rows lie below the fold",
     "search": "optional 44px filter row at the top of the panel; input 16px always (iOS zoom)"
   },
   "typography": {
@@ -22,9 +22,9 @@
     "label": "mono 11px uppercase, tracking 0.12em"
   },
   "color": {
-    "tokens": "PALETTE dark and light to --sl-* variables; accent default #7dd3a8 used only on the check",
+    "tokens": "PALETTE dark and light to --sl-* variables (accent included); the accent is used only on the check. Default accent #7dd3a8 on dark, #1f9d6b on light (mint is about 1.7:1 on white)",
     "dark": "field #141416, panel #111113, ink #f4f4f5, body #c4c4ca, hint #8a8a93, hairline 8% white",
-    "light": "field #ffffff, panel #ffffff, ink #18181b, body #3f3f46, hint #6b6b74, hairline 10% ink"
+    "light": "field #ffffff, panel #ffffff, ink #18181b, body #3f3f46, hint #6b6b74, hairline 10% ink, accent #1f9d6b"
   },
   "motion": {
     "reveal": "block rises 8px out of 6px blur, 500ms ease-out, 50ms delay, once on mount",
@@ -32,16 +32,16 @@
     "highlight": "one layoutId element on spring.ui (500/40), glides between rows; its id is new per opening so it starts in place",
     "value": "keyed cross-fade, 6px rise and 3px blur, 280ms",
     "check": "pathLength 0 to 1 over 320ms, 40ms delay, remounts with selection",
-    "press": "scale 0.985 in 90ms, springs back over 150ms",
+    "press": "row content scale 0.98 in 90ms while pressed; trigger scale 0.985 in 90ms, springs back over 150ms",
     "reducedMotion": "opacity only, 150ms or less, no spring, no hold, check pre-drawn",
-    "choose": "trigger value swaps at once; panel holds 300ms so the check draws on the chosen row, then closes (140ms exit); input ignored during the hold; reduced motion closes at once"
+    "choose": "from the open panel: trigger value swaps at once; panel holds 300ms so the check draws on the chosen row, then closes (140ms exit); input ignored during the hold; reduced motion closes at once. Closed-trigger typeahead commits with no hold"
   },
   "responsive": {
     "all": "fluid to 320px; panel matches trigger width; filter input stays 16px so iOS does not zoom",
     "touch": "44px trigger and 44px md rows, no hover-only action"
   },
   "accessibility": [
-    "trigger role combobox with aria-haspopup listbox, aria-expanded, aria-controls only while open and while rows exist, aria-activedescendant while open",
+    "trigger role combobox with aria-haspopup listbox, aria-expanded, aria-controls only while open and while rows exist, aria-activedescendant while open; with searchable the trigger is role button and the filter field is the combobox",
     "options role option with aria-selected; groups role group labelled by a presentation-role heading",
     "keyboard: arrows (no wrap), Home, End, PageUp and PageDown (five rows), Enter and Space choose, Escape closes and restores focus, Tab closes",
     "typeahead buffer of 600ms; a single letter cycles through matches",
@@ -53,7 +53,7 @@
     "options": "Ten fictional cities in Europe, Americas and Asia-Pacific, each with a time-zone hint",
     "placeholder": "Choose a city",
     "label": "City",
-    "demo": "opens with Berlin, hovers two Europe rows, tabs to the trigger, types lis to reach Lisbon, presses Enter so the check draws on Lisbon, then reopens to show it checked"
+    "demo": "opens with Berlin, hovers London and Madrid, clicks the trigger to close, reopens with Enter, types lis so the highlight glides to Lisbon, presses Enter so the check draws on Lisbon while the panel holds, then reopens to show it checked"
   },
   "avoid": [
     "oversized rounded panels or radius above 12px",
@@ -66,6 +66,9 @@
     "a highlight that jumps instead of gliding",
     "placeholder copy such as Option 1",
     "a check that only draws when the panel reopens",
-    "a closed field as the final frame of the demo"
+    "a closed field as the final frame of the demo",
+    "a check that only draws on reopen (it must draw on the choice itself)",
+    "a mint accent on white (fails 3:1)",
+    "a typeahead that swallows the second search on the closed trigger"
   ]
 }
