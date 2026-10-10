@@ -74,7 +74,7 @@
     {
       "name": "step",
       "type": "number",
-      "description": "Jumps the carousel to this step (0-based) whenever the value changes. Leave unset and only the person moves it. Jumping back from a planted last step clears the grove."
+      "description": "Jumps the carousel to this step (0-based) whenever the value changes. Leave unset and only the person moves it. Any jump clears a planted grove, so the last step's button is ready again."
     },
     {
       "name": "stepKey",
@@ -86,13 +86,12 @@
   "added": "2026-10-07",
   "demo": {
     "steps": [
-      "hover:@copy:0.9,0.4",
-      "drag:0.36,0.72",
-      "wait:400",
-      "click:@skip",
-      "wait:650",
       "click:@next",
-      "wait:1000"
+      "wait:2400",
+      "click:@skip",
+      "wait:900",
+      "click:@next",
+      "wait:1200"
     ],
     "loop": false
   },
@@ -155,7 +154,7 @@
     },
     {
       "prop": "finishLabel",
-      "label": "Final button",
+      "label": "Last step button",
       "kind": "text",
       "default": "Plant my first tree",
       "group": "Copy"

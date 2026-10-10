@@ -83,7 +83,7 @@ export type MobileOnboardingProps = {
   onFinish?: () => void;
   /**
    * Jumps the carousel to this step (0-based) each time the value changes. Leave it unset and the
-   * carousel is driven only by the person; a planted grove is cleared when you jump back.
+   * carousel is driven only by the person; any jump clears a planted grove so the last button is ready again.
    */
   step?: number;
   /** Change this number to jump to `step` again when its value has not changed (a "replay" button). */
@@ -559,22 +559,31 @@ export function MobileOnboarding({
     if (finishTimer.current) clearTimeout(finishTimer.current);
   }, []);
 
-  /* A changed `step` prop moves the carousel; jumping off a planted last step clears the grove. */
+  /* A changed `step` prop moves the carousel. Any jump clears a planted grove so the last step's button
+     is ready again: instantly when the carousel leaves the last step, with a short fade when it stays. */
   const appliedStep = useRef<string | undefined>(undefined);
+  const doneRef = useRef(done);
+  doneRef.current = done;
   useEffect(() => {
     if (step === undefined || !w) return;
     const request = `${step}:${stepKey}`;
     if (appliedStep.current === request) return;
     appliedStep.current = request;
     if (finishTimer.current) clearTimeout(finishTimer.current);
-    if (step < last) {
+    if (doneRef.current) {
       setDone(false);
-      plant.setValue(0);
-      burst.setValue(0);
-      doneFade.setValue(0);
+      if (step < last || reduced) {
+        plant.setValue(0);
+        burst.setValue(0);
+        doneFade.setValue(0);
+      } else {
+        const fade = { toValue: 0, duration: 280, easing: EASE_OUT, useNativeDriver: ND };
+        burst.setValue(0);
+        Animated.parallel([Animated.timing(plant, fade), Animated.timing(doneFade, fade)]).start();
+      }
     }
     goTo(step);
-  }, [step, stepKey, w, last, goTo, plant, burst, doneFade]);
+  }, [step, stepKey, w, last, reduced, goTo, plant, burst, doneFade]);
 
   const finish = () => {
     if (done) return;
@@ -2084,18 +2093,40 @@ const styles = StyleSheet.create({
   ctaText: { userSelect: "none", color: INK.onLight, fontSize: 17, fontWeight: "600", letterSpacing: -0.3 },
 });
 
+/** Shallow prop comparison: functions compare by identity, so an inline `onFinish` never reads as "unchanged". */
+function sameProps(a: Record<string, unknown>, b: Record<string, unknown>) {
+  const ka = Object.keys(a);
+  return ka.length === Object.keys(b).length && ka.every((k) => Object.is(a[k], b[k]));
+}
+
+/**
+ * The gallery demo. Two things the Customize panel needs that a plain prop can't express:
+ * - "Jump to" sends the same `step` again after a manual swipe. A props object that is new but equal in
+ *   every value (the panel re-sending its state on a press) means "press again", so the key is bumped.
+ *   Limitation: the panel sends no press counter, so any host re-render that hands over a fresh, value-equal
+ *   props object while `step` is set re-applies the jump. Changing any other control never does.
+ * - "Final button" only shows on the last step, so editing it jumps there to show the change.
+ */
 export default function MobileOnboardingDemo(props: Partial<MobileOnboardingProps> = {}) {
   const { step, ...overrides } = props;
-  /* The Jump to buttons send the same `step` again after a manual swipe. Nothing else re-sends an
-     identical set of props, so a parent render that changes nothing means "press again": bump the
-     key to re-apply. Our own re-render (the key bump) hands back the same props object, so it is skipped. */
+  const last = (overrides.steps ?? DEFAULT_STEPS).length - 1;
   const [stepKey, setStepKey] = useState(0);
-  const seen = useRef<{ props: Partial<MobileOnboardingProps>; step?: number; sig: string } | null>(null);
-  const sig = JSON.stringify(overrides);
+  const [toLast, setToLast] = useState(false);
+  const seen = useRef<{ props: Partial<MobileOnboardingProps>; step?: number; overrides: Record<string, unknown> } | null>(null);
   useEffect(() => {
     const before = seen.current;
-    seen.current = { props, step, sig };
-    if (before && before.props !== props && step !== undefined && before.step === step && before.sig === sig) setStepKey((k) => k + 1);
+    seen.current = { props, step, overrides };
+    if (!before || before.props === props) return;
+    if (step !== before.step) {
+      // A new value jumps on its own through the `step` prop.
+      setToLast(false);
+    } else if (step !== undefined && sameProps(before.overrides, overrides)) {
+      setToLast(false);
+      setStepKey((k) => k + 1);
+    } else if (overrides.finishLabel !== before.overrides.finishLabel) {
+      setToLast(true);
+      setStepKey((k) => k + 1);
+    }
   });
-  return <MobileOnboarding {...overrides} step={step} stepKey={stepKey} />;
+  return <MobileOnboarding {...overrides} step={toLast ? last : step} stepKey={stepKey} />;
 }
