@@ -84,7 +84,7 @@ Then install any Pro component by name:
 npx shadcn@latest add @design-for-ai-pro/hero-kinetic-type
 ```
 
-Your key is on your [account page](/account). Keep it out of version control.
+Sign in to your [account page](/account) with the email address you bought with to recover your key on any device. Team members use their invited email address to get a personal key. Keep keys out of version control.
 
 ## React Native components
 

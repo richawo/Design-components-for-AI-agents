@@ -7,12 +7,13 @@ Yaps subdomains: one Worker per product, a custom-domain route in
 `main`. It doesn't touch the apex domain or the main `yaps-site` Worker.
 
 Next.js runs on Workers through the [OpenNext adapter](https://opennext.js.org/cloudflare).
-Every page is prerendered at build time. Only the licence, checkout, Pro
-source and Markdown routes run in the Worker, and none of them read the disk:
+Content pages are prerendered at build time. Account, authentication, billing,
+licence, Pro source and Markdown routes run in the Worker. Component and
+content routes use bundled data instead of reading the disk:
 `scripts/build-registry.mjs` bundles sources, docs and blog posts into
 `registry/__generated__/` so they ship inside the Worker.
 
-## Production status (9 October 2026)
+## Production status (10 October 2026)
 
 The site is live at <https://design.yaps.ai>, with a fallback at
 <https://design-yaps.richardawoyemi.workers.dev>. Workers Builds is connected
@@ -25,7 +26,13 @@ to `richawo/Design-for-AI`. It cannot write to either repository. Production
 sync uses `--require-source`, so missing credentials or incomplete Pro source
 fail the build and leave the previous deployment active. `LICENSE_SECRET`
 remains configured separately as a runtime secret.
-Stripe is not configured yet; checkout displays the email fallback.
+
+Email-code accounts, hosted Stripe Checkout, signed billing events, licence
+recovery, Team seats and a dedicated billing portal are configured. Commerce
+uses its own D1 database, `design-yaps-commerce`, through `COMMERCE_DB`. See
+[COMMERCE.md](COMMERCE.md) for the customer flow, event handling, permissions
+and test procedure. Automatic tax remains disabled pending confirmed tax
+registrations; no active registrations were returned during setup.
 
 ## Automatic deploys (Workers Builds)
 
@@ -54,20 +61,27 @@ Stripe is not configured yet; checkout displays the email fallback.
    | Secret | Why |
    | --- | --- |
    | `LICENSE_SECRET` | Signs and verifies licence keys. 32+ random characters (`openssl rand -base64 48`). Never change it once keys are issued, or every key stops working. |
-   | `STRIPE_SECRET_KEY` | Checkout. Without it, *Get Pro* asks buyers to email you, and the missing variable is logged. |
-   | `STRIPE_PRICE_PRO_YEARLY`, `STRIPE_PRICE_PRO_LIFETIME`, `STRIPE_PRICE_TEAM_YEARLY`, `STRIPE_PRICE_TEAM_LIFETIME` | Stripe price ids (`price_…`) matching `lib/pricing.ts`: $99 a year, $179 once, $299 a year, $499 once. |
+   | `AUTH_SECRET` | Hashes email codes, sessions and rate-limit identifiers. 32+ random characters. |
+   | `STRIPE_SECRET_KEY` | Dedicated restricted key for checkout and billing reads. |
+   | `STRIPE_WEBHOOK_SECRET` | Verifies raw events sent to `/api/billing/webhook`. |
+   | `RESEND_API_KEY` | Sending-only key restricted to `yaps.ai`, for authentication and licence emails. |
    | `LICENSE_REVOKED` | Optional. Comma-separated licence ids to revoke. |
 
-   `NEXT_PUBLIC_SITE_URL` is already set to `https://design.yaps.ai` in
-   `wrangler.jsonc`.
+   Plain variables in `wrangler.jsonc` include `NEXT_PUBLIC_SITE_URL`,
+   `EMAIL_FROM`, the four `STRIPE_PRICE_*` IDs, `STRIPE_PORTAL_CONFIGURATION`
+   and `STRIPE_AUTOMATIC_TAX`. Prices match `lib/pricing.ts`: $99 a year,
+   $179 once, $299 a year and $499 once.
+
+   Apply D1 migrations before code that needs new schema:
+   `npx wrangler d1 migrations apply COMMERCE_DB --remote`.
 
 4. **Deploy.** Push to `main`, or hit *Retry build*. The first deploy creates
    the `design.yaps.ai` custom domain and its certificate, because `yaps.ai`
    is already a zone on the account. The Worker also stays reachable on its
    `workers.dev` URL.
 
-The Worker bundle is about 4.4 MB gzipped (61 components), so it needs the Workers Paid plan
-(10 MB limit), which the Yaps account already uses.
+The deployment uses the Yaps account's existing Workers Paid plan. Verify
+the upload size during a dry run as the component library grows.
 
 ## Deploy from a terminal
 
@@ -93,14 +107,17 @@ and call it from a GitHub Action in the Pro repo.
   registry item whose URLs use `https://design.yaps.ai`.
 - `/components/chart-candlestick.md` returns Markdown, and
   `/api/registry/chart-candlestick` returns 401 without a licence.
-- *Get Pro* on `/pricing` opens Stripe Checkout. With a Stripe test key, pay
-  with `4242 4242 4242 4242`; you should land on `/account` with a licence key,
-  and the Code tab on a Pro component should show source.
+- *Get Pro* on `/pricing` sends a signed-out visitor to email sign-in, then
+  offers Stripe Checkout. Use a separate sandbox and local commerce database
+  for test-card purchases. Verify the webhook, account key, Pro downloads,
+  billing portal, full test refund and recovery after sign-out. Never use a
+  test card with the production live key. See [COMMERCE.md](COMMERCE.md).
 
 ## Run the Worker locally
 
 ```bash
-echo 'LICENSE_SECRET=local-only-secret-at-least-32-chars' > .dev.vars
+# Put local-only LICENSE_SECRET and AUTH_SECRET (32+ chars each) in .dev.vars.
+npx wrangler d1 migrations apply COMMERCE_DB --local
 npm run preview        # OpenNext build, then wrangler dev on workerd
 ```
 
