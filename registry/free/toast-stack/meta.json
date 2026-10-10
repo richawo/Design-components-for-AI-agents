@@ -49,6 +49,18 @@
       "description": "Dark raised cards or white cards; success and error keep their semantic green and red."
     },
     {
+      "name": "duration",
+      "type": "number",
+      "default": "5000",
+      "description": "Milliseconds a toast stays before it dismisses itself, unless it was created with its own duration. Errors stay 1.6 times as long. Hovering or focusing the stack pauses every timer."
+    },
+    {
+      "name": "visible",
+      "type": "number",
+      "default": "3",
+      "description": "How many cards peek out behind the front one while the stack is collapsed (1 to 5)."
+    },
+    {
       "name": "label",
       "type": "string",
       "default": "\"Notifications\"",
@@ -76,5 +88,90 @@
       "description": "Shows a loading toast that turns into success or error in place when the promise settles."
     }
   ],
-  "added": "2026-10-07"
+  "added": "2026-10-07",
+  "demo": {
+    "steps": [
+      "wait:1300",
+      "hover:@stack:0.5,0.85",
+      "wait:550",
+      "click:@dismiss-1",
+      "wait:200",
+      "click:@publish",
+      "wait:1800"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "position",
+      "label": "Position",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "bottom-left",
+          "label": "Left"
+        },
+        {
+          "value": "bottom-center",
+          "label": "Centre"
+        },
+        {
+          "value": "bottom-right",
+          "label": "Right"
+        }
+      ],
+      "default": "bottom-right",
+      "group": "Stack"
+    },
+    {
+      "prop": "visible",
+      "label": "Cards peeking",
+      "kind": "slider",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 3,
+      "group": "Stack"
+    },
+    {
+      "prop": "duration",
+      "label": "Lingers for",
+      "kind": "slider",
+      "min": 2000,
+      "max": 20000,
+      "step": 500,
+      "unit": "ms",
+      "default": 12000,
+      "group": "Stack"
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark",
+      "group": "Look"
+    },
+    {
+      "prop": "accent",
+      "label": "Action button",
+      "kind": "color",
+      "default": "#f4f4f5",
+      "options": [
+        "#f4f4f5",
+        "#ff7a45",
+        "#60a5fa",
+        "#a78bfa"
+      ],
+      "group": "Look"
+    }
+  ]
 }

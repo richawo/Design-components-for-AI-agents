@@ -9,7 +9,7 @@ Build a stacked toast system in React + Tailwind CSS v4 with `motion/react` and 
 **Toaster layout**
 - Props: `strategy` "fixed" (viewport) or "absolute" (nearest positioned parent); `position` bottom-right, bottom-left or bottom-center from 640px up (below that it spans the bottom edge with 16px insets); `accent`; `theme`; `label`; `hotkey`.
 - Width 360px. Each toast is absolutely positioned at the bottom of an `ol` whose height animates to fit the stack (0.35s ease-out).
-- Collapsed: toast *i* sits at `y = −i × 14px` with `scale = 1 − i × 0.05` and transform-origin at top centre, so a 14px sliver of the cards behind peeks above the front one. Only 3 are visible. Cards behind borrow the front card's height and fade their content to 0, so nothing peeks out below.
+- Collapsed: toast *i* sits at `y = −i × 14px` with `scale = 1 − i × 0.05` and transform-origin at top centre, so a 14px sliver of the cards behind peeks above the front one. Only 3 are visible by default (a `visible` prop, 1 to 5). Cards behind borrow the front card's height and fade their content to 0, so nothing peeks out below.
 - Expanded (hover, focus-within, or a tap on touch): every toast moves to `y = −(sum of the heights in front + 10px gaps)` at scale 1. Heights are measured with ResizeObserver.
 - Sub-components `ToastItem`, `ToastGlyph`; hooks `useLifetime`, `useFocusHotkey`, `useTabHidden`.
 
@@ -34,7 +34,7 @@ Build a stacked toast system in React + Tailwind CSS v4 with `motion/react` and 
 
 **Demo (quiet `#0a0a0b` stage, centred)**
 - A 460px draft card (`#111113`, 1px `#232327`, 16px radius): mono eyebrow "Quire · Draft 7", "The Autumn Issue" (display 22px/600, −0.03em), "1,284 words · edited 2 minutes ago" with the count ticking up from zero (a motion value, tabular numerals). Below a hairline, a 2×2 grid of 64px action cells (label + mono hint): Save draft (success: "Draft saved — 1,284 words, all of them yours."), Publish (promise: "Publishing to 4,120 readers…" → "Published. Go and make a coffee."), Send proofs (error "Couldn’t reach the printer" with "Retry now"), Move to bin (info "Moved 3 drafts to the bin" with "Undo").
-- Card rises 12px out of an 8px blur (0.5s), then eyebrow, title and meta 60ms apart, the four cells from 0.24s, and a mono hint line at 0.5s. Three toasts are dealt in from 0.75s, 320ms apart, once the card has landed. The real `<Toaster />` is fixed to the viewport, bottom-right.
+- Card rises 12px out of an 8px blur (0.5s), then eyebrow, title and meta 60ms apart, the four cells from 0.24s, and a mono hint line at 0.5s. Four toasts are dealt in from 0.5s, 260ms apart, once the card has landed, and linger 12s so the stack can be played with (the Toaster's `duration` prop, default 5s; errors stay 1.6 times as long). A focused toast that is dismissed must release the stack's focus state, or the stack stays fanned out and paused. The real `<Toaster />` is fixed to the viewport, bottom-right.
 
 **Accessibility**
 - A labelled `section` region ("Notifications (Alt+T)"). Alt+T focuses the newest toast. Each toast is focusable, with `role="status"` (errors use `role="alert"`) and a full aria-label. Esc, Delete or Backspace dismisses the focused toast.

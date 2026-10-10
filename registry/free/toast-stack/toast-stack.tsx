@@ -18,8 +18,10 @@ export type ToastData = {
   title: string;
   description?: string;
   action?: ToastAction;
-  /** Milliseconds before auto-dismiss. Loading toasts never auto-dismiss. */
+  /** Milliseconds before auto-dismiss. Loading toasts never auto-dismiss. Honoured when `explicit`; otherwise the Toaster’s `duration` applies. */
   duration: number;
+  /** True when the caller passed its own `duration`, which then beats the Toaster’s. */
+  explicit?: boolean;
   /** Bumped whenever the toast changes, which restarts its timer. */
   version: number;
 };
@@ -38,6 +40,8 @@ type PromiseMessages<T> = {
 };
 
 const LIMITS = { max: 5, duration: 5000, errorDuration: 8000 } as const;
+/** Errors stay up this much longer than the Toaster’s `duration`. */
+const ERROR_LINGER = LIMITS.errorDuration / LIMITS.duration;
 
 let toasts: ToastData[] = [];
 let nextId = 1;
@@ -65,6 +69,7 @@ function push(type: ToastType, title: string, opts: ToastOptions = {}) {
     description: opts.description,
     action: opts.action,
     duration: opts.duration ?? (type === "error" ? LIMITS.errorDuration : LIMITS.duration),
+    explicit: opts.duration !== undefined,
     version: 0,
   };
   // Newest first. Anything past the cap is dropped from the back.
@@ -242,7 +247,7 @@ function useTabHidden() {
  * dismisses the toast when it runs out. Pausing stops the tween; resuming continues from
  * wherever it stopped. Each update (a promise settling) refills it.
  */
-function useLifetime(t: ToastData, running: boolean) {
+function useLifetime(t: ToastData, running: boolean, duration: number) {
   const life = useMotionValue(1);
   const fresh = useRef(true);
 
@@ -255,9 +260,9 @@ function useLifetime(t: ToastData, running: boolean) {
     if (!running) return;
     const delay = fresh.current ? MOTION.timerAfter : 0;
     fresh.current = false;
-    const run = animate(life, 0, { duration: (life.get() * t.duration) / 1000, ease: "linear", delay, onComplete: () => dismiss(t.id) });
+    const run = animate(life, 0, { duration: (life.get() * duration) / 1000, ease: "linear", delay, onComplete: () => dismiss(t.id) });
     return () => run.stop();
-  }, [running, t.id, t.version, t.duration, life]);
+  }, [running, t.id, t.version, duration, life]);
 
   return life;
 }
@@ -277,6 +282,10 @@ export type ToasterProps = {
   /** The one accent: the action button. Defaults to the theme’s ink. */
   accent?: string;
   theme?: "dark" | "light";
+  /** Milliseconds a toast stays before it dismisses itself, unless it was created with its own `duration`. Errors stay 1.6 times as long. */
+  duration?: number;
+  /** How many cards peek out behind the front one while the stack is collapsed (1 to 5). */
+  visible?: number;
 };
 
 const PLACE = {
@@ -285,7 +294,7 @@ const PLACE = {
   "bottom-right": "sm:left-auto sm:right-6",
 } as const;
 
-export function Toaster({ strategy = "fixed", position = "bottom-right", label = "Notifications", hotkey = "t", accent, theme = "dark" }: ToasterProps) {
+export function Toaster({ strategy = "fixed", position = "bottom-right", label = "Notifications", hotkey = "t", accent, theme = "dark", duration = LIMITS.duration, visible: visibleProp = STACK.visible }: ToasterProps) {
   const { toasts: list } = useToasts();
   const reduce = useReducedMotion() ?? false;
   const listRef = useRef<HTMLOListElement>(null);
@@ -295,6 +304,7 @@ export function Toaster({ strategy = "fixed", position = "bottom-right", label =
   const [heights, setHeights] = useState<Record<number, number>>({});
   const hidden = useTabHidden();
   const palette = PALETTE[theme];
+  const visible = Math.min(LIMITS.max, Math.max(1, Math.round(visibleProp)));
 
   useFocusHotkey(hotkey, listRef);
 
@@ -313,6 +323,10 @@ export function Toaster({ strategy = "fixed", position = "bottom-right", label =
   useEffect(() => {
     if (list.length < 2) setPinned(false);
   }, [list.length]);
+  // A focused toast that unmounts (dismissed by click or key) never fires blur, which would leave the stack fanned out and paused.
+  useEffect(() => {
+    if (focused && !listRef.current?.contains(document.activeElement)) setFocused(false);
+  }, [list, focused]);
 
   const setHeight = useCallback((id: number, h: number) => {
     setHeights((prev) => (prev[id] === h ? prev : { ...prev, [id]: h }));
@@ -323,7 +337,7 @@ export function Toaster({ strategy = "fixed", position = "bottom-right", label =
   const offsets = list.map((_, i) => list.slice(0, i).reduce((acc, t) => acc + h(t.id) + STACK.gap, 0));
   const stackH = expanded
     ? list.reduce((acc, t) => acc + h(t.id), 0) + STACK.gap * Math.max(0, list.length - 1)
-    : frontH + STACK.peek * Math.min(Math.max(0, list.length - 1), STACK.visible - 1);
+    : frontH + STACK.peek * Math.min(Math.max(0, list.length - 1), visible - 1);
 
   return (
     <section
@@ -333,6 +347,7 @@ export function Toaster({ strategy = "fixed", position = "bottom-right", label =
     >
       <motion.ol
         ref={listRef}
+        data-demo="stack"
         className="relative m-0 list-none p-0"
         animate={{ height: stackH }}
         transition={reduce ? { duration: 0 } : { duration: MOTION.height, ease: EASE_OUT }}
@@ -348,7 +363,7 @@ export function Toaster({ strategy = "fixed", position = "bottom-right", label =
       >
         <AnimatePresence initial={false}>
           {list.map((t, i) => (
-            <ToastItem key={t.id} toast={t} index={i} count={list.length} expanded={expanded} paused={paused} offset={offsets[i]} frontHeight={frontH} reduce={reduce} onHeight={setHeight} />
+            <ToastItem key={t.id} toast={t} index={i} count={list.length} expanded={expanded} paused={paused} offset={offsets[i]} frontHeight={frontH} reduce={reduce} visible={visible} duration={duration} onHeight={setHeight} />
           ))}
         </AnimatePresence>
       </motion.ol>
@@ -403,6 +418,8 @@ function ToastItem({
   offset,
   frontHeight,
   reduce,
+  visible,
+  duration,
   onHeight,
 }: {
   toast: ToastData;
@@ -413,6 +430,8 @@ function ToastItem({
   offset: number;
   frontHeight: number;
   reduce: boolean;
+  visible: number;
+  duration: number;
   onHeight: (id: number, h: number) => void;
 }) {
   const inner = useRef<HTMLDivElement>(null);
@@ -422,8 +441,9 @@ function ToastItem({
   const fade = useTransform(x, [-SWIPE.fadeAt, 0, SWIPE.fadeAt], [0, 1, 0]);
   const front = index === 0;
   const tucked = !expanded && !front; // behind the front card: only its top sliver shows
-  const timed = t.type !== "loading" && Number.isFinite(t.duration);
-  const life = useLifetime(t, timed && !paused && !dragging);
+  const lifespan = t.explicit ? t.duration : t.type === "error" ? duration * ERROR_LINGER : duration;
+  const timed = t.type !== "loading" && Number.isFinite(lifespan);
+  const life = useLifetime(t, timed && !paused && !dragging, lifespan);
 
   // Measure the natural height so the stack can lay itself out.
   useEffect(() => {
@@ -451,7 +471,7 @@ function ToastItem({
 
   const target = expanded
     ? { y: -offset, scale: 1, opacity: 1 }
-    : { y: -index * STACK.peek, scale: 1 - index * STACK.shrink, opacity: index < STACK.visible ? 1 : 0 };
+    : { y: -index * STACK.peek, scale: 1 - index * STACK.shrink, opacity: index < visible ? 1 : 0 };
   // Cards behind the front one borrow its height while collapsed, so nothing peeks out underneath.
   const cardHeight = expanded || front ? height : frontHeight;
   const tone = TONE[t.type];
@@ -471,6 +491,7 @@ function ToastItem({
     >
       <motion.div
         data-toast
+        data-demo={`toast-${index}`}
         tabIndex={0}
         role={t.type === "error" ? "alert" : "status"}
         aria-live={t.type === "error" ? "assertive" : "polite"}
@@ -546,6 +567,7 @@ function ToastItem({
         <button
           type="button"
           aria-label="Dismiss notification"
+          data-demo={`dismiss-${index}`}
           onClick={() => dismiss(t.id)}
           onPointerDownCapture={(e) => e.stopPropagation()}
           className={`absolute right-1.5 top-1.5 flex size-8 items-center justify-center rounded-[8px] text-[var(--ts-muted)] transition-[color,background-color,transform] duration-150 hover:bg-[var(--ts-hover)] hover:text-[var(--ts-ink)] active:scale-[0.97] focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--ts-ink)] ${tucked ? "opacity-0" : ""}`}
@@ -563,8 +585,13 @@ function ToastItem({
 /* ------------------------------------------------------------------ */
 
 /** The demo’s quiet backdrop and card; not part of the component. */
-const STAGE = { backdrop: "#0a0a0b", card: "#111113", line: "#232327", rule: "#1c1c1f", ink: "#f4f4f5", muted: "#a1a1aa", faint: "#8a8a93" } as const;
-const DEMO_MOTION = { block: 0.5, step: 0.06, buttonsAt: 0.24, hintAt: 0.5, count: 0.9, seedAt: 0.75, seedStep: 0.32 } as const;
+const STAGE = {
+  dark: { backdrop: "#0a0a0b", card: "#111113", line: "#232327", rule: "#1c1c1f", ink: "#f4f4f5", muted: "#a1a1aa", faint: "#8a8a93", hover: "rgba(255,255,255,0.03)", hint: "#d4d4d8", shadow: "inset 0 1px 0 rgba(255,255,255,0.04), 0 32px 64px -32px rgba(0,0,0,0.9)" },
+  light: { backdrop: "#f4f4f5", card: "#ffffff", line: "#e4e4e7", rule: "#ececee", ink: "#18181b", muted: "#52525b", faint: "#71717a", hover: "rgba(24,24,27,0.04)", hint: "#3f3f46", shadow: "0 32px 64px -36px rgba(24,24,27,0.28), 0 1px 2px rgba(24,24,27,0.05)" },
+} as const;
+const DEMO_MOTION = { block: 0.5, step: 0.06, buttonsAt: 0.24, hintAt: 0.5, count: 0.9, seedAt: 0.5, seedStep: 0.26 } as const;
+/** Toasts in the demo linger long enough to be played with. The `duration` control tunes it. */
+const DEMO_DURATION = 12000;
 const WORDS = 1284;
 
 type DemoAction = { id: string; label: string; hint: string; fire: () => void };
@@ -576,7 +603,7 @@ function demoActions(): DemoAction[] {
       id: "publish",
       label: "Publish",
       hint: "Promise",
-      fire: () => void toast.promise(new Promise<void>((r) => setTimeout(r, 2200)), { loading: "Publishing to 4,120 readers…", success: "Published. Go and make a coffee.", error: "That didn’t work" }),
+      fire: () => void toast.promise(new Promise<void>((r) => setTimeout(r, 1300)), { loading: "Publishing to 4,120 readers…", success: "Published. Go and make a coffee.", error: "That didn’t work" }),
     },
     {
       id: "proofs",
@@ -629,7 +656,8 @@ function WordCount({ play, reduce }: { play: boolean; reduce: boolean }) {
   );
 }
 
-export default function ToastStackDemo() {
+export default function ToastStackDemo(overrides: Partial<ToasterProps> = {}) {
+  const stage = STAGE[overrides.theme ?? "dark"];
   const reduce = useReducedMotion() ?? false;
   const uid = useId();
   const card = useRef<HTMLElement>(null);
@@ -639,7 +667,12 @@ export default function ToastStackDemo() {
   // Three toasts arrive once the card has landed, so the stack is there to play with.
   useEffect(() => {
     if (!play) return;
-    const seed = [actions[3].fire, () => toast.info("Maya Okafor left a comment", { description: "“Cut the second paragraph. Trust me.”" }), actions[0].fire];
+    const seed = [
+      actions[3].fire,
+      () => toast.info("Maya Okafor left a comment", { description: "“Cut the second paragraph. Trust me.”" }),
+      () => toast.success("Cover image uploaded", { description: "Autumn-cover.jpg, 2.4 MB." }),
+      actions[0].fire,
+    ];
     const timers = seed.map((fire, i) => setTimeout(fire, reduce ? 0 : (DEMO_MOTION.seedAt + i * DEMO_MOTION.seedStep) * 1000));
     return () => {
       timers.forEach(clearTimeout);
@@ -648,35 +681,36 @@ export default function ToastStackDemo() {
   }, [play, reduce, actions]);
 
   return (
-    <div className="@container flex min-h-dvh w-full flex-col items-center justify-center px-4 pb-48 pt-12 font-sans sm:pb-12 text-[#f4f4f5] antialiased sm:px-8" style={{ background: STAGE.backdrop }}>
+    <div className="@container flex min-h-dvh w-full flex-col items-center justify-center px-4 pb-48 pt-12 font-sans sm:pb-12 antialiased sm:px-8" style={{ background: stage.backdrop, color: stage.ink, ["--st-hover" as string]: stage.hover, ["--st-hint" as string]: stage.hint, ["--st-ink" as string]: stage.ink }}>
       <motion.section
         ref={card}
         aria-labelledby={`${uid}-title`}
         {...demoEnter(play, 0, reduce)}
         className="w-full max-w-[460px] overflow-hidden rounded-[16px] border"
-        style={{ background: STAGE.card, borderColor: STAGE.line, boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04), 0 32px 64px -32px rgba(0,0,0,0.9)" }}
+        style={{ background: stage.card, borderColor: stage.line, boxShadow: stage.shadow }}
       >
         <header className="px-5 pb-5 pt-5">
-          <motion.p {...demoEnter(play, DEMO_MOTION.step, reduce)} className="font-mono text-[11px] uppercase tracking-[0.14em]" style={{ color: STAGE.faint }}>
+          <motion.p {...demoEnter(play, DEMO_MOTION.step, reduce)} className="font-mono text-[11px] uppercase tracking-[0.14em]" style={{ color: stage.faint }}>
             Quire · Draft 7
           </motion.p>
           <motion.h2 {...demoEnter(play, DEMO_MOTION.step * 2, reduce)} id={`${uid}-title`} className="mt-2 font-display text-[22px] font-semibold leading-tight tracking-[-0.03em]">
             The Autumn Issue
           </motion.h2>
-          <motion.p {...demoEnter(play, DEMO_MOTION.step * 3, reduce)} className="mt-1 text-[13px]" style={{ color: STAGE.muted }}>
+          <motion.p {...demoEnter(play, DEMO_MOTION.step * 3, reduce)} className="mt-1 text-[13px]" style={{ color: stage.muted }}>
             <WordCount play={play} reduce={reduce} /> words · edited 2 minutes ago
           </motion.p>
         </header>
-        <ul className="grid grid-cols-2 gap-px border-t" style={{ borderColor: STAGE.line, background: STAGE.rule }}>
+        <ul className="grid grid-cols-2 gap-px border-t" style={{ borderColor: stage.line, background: stage.rule }}>
           {actions.map((a, i) => (
-            <motion.li key={a.id} {...demoEnter(play, DEMO_MOTION.buttonsAt + i * DEMO_MOTION.step, reduce)} style={{ background: STAGE.card }}>
+            <motion.li key={a.id} {...demoEnter(play, DEMO_MOTION.buttonsAt + i * DEMO_MOTION.step, reduce)} style={{ background: stage.card }}>
               <button
                 type="button"
+                data-demo={a.id}
                 onClick={a.fire}
-                className="group flex h-16 w-full flex-col items-start justify-center px-5 text-left transition-[background-color,transform] duration-150 hover:bg-white/[0.03] active:scale-[0.98] focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-white"
+                className="group flex h-16 w-full flex-col items-start justify-center px-5 text-left transition-[background-color,transform] duration-150 hover:bg-[var(--st-hover)] active:scale-[0.98] focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--st-ink)]"
               >
                 <span className="text-[14px] font-medium">{a.label}</span>
-                <span className="font-mono text-[10.5px] uppercase tracking-[0.12em] transition-colors duration-150 group-hover:text-[#d4d4d8]" style={{ color: STAGE.faint }}>
+                <span className="font-mono text-[10.5px] uppercase tracking-[0.12em] transition-colors duration-150 group-hover:text-[var(--st-hint)]" style={{ color: stage.faint }}>
                   {a.hint}
                 </span>
               </button>
@@ -684,10 +718,10 @@ export default function ToastStackDemo() {
           ))}
         </ul>
       </motion.section>
-      <motion.p {...demoEnter(play, DEMO_MOTION.hintAt, reduce)} className="mt-5 text-center font-mono text-[11px] uppercase leading-[1.7] tracking-[0.12em]" style={{ color: STAGE.faint }}>
+      <motion.p {...demoEnter(play, DEMO_MOTION.hintAt, reduce)} className="mt-5 text-center font-mono text-[11px] uppercase leading-[1.7] tracking-[0.12em]" style={{ color: stage.faint }}>
         Hover the stack to fan out · Swipe to dismiss<span className="hidden @lg:inline"> · Alt+T</span>
       </motion.p>
-      <Toaster />
+      <Toaster duration={DEMO_DURATION} {...overrides} />
     </div>
   );
 }
