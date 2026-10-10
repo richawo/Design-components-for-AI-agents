@@ -805,18 +805,21 @@ const OUTCOMES: { id: DemoOutcome; label: string }[] = [
 export default function AuthPasskeyDemo({ supported: forcedSupported, ...overrides }: Partial<AuthPasskeyProps> = {}) {
   const reduce = useReducedMotion() ?? false;
   const uid = useId().replace(/[^a-zA-Z0-9_-]/g, "");
-  const [outcome, setOutcome] = useState<DemoOutcome>("success");
+  // Anything but an explicit `false` counts as supported, so a shared `#c=supported:0` link or a
+  // Replay starts in the unsupported state, and switching the control back on (which sends `{}`) recovers.
+  const [outcome, setOutcome] = useState<DemoOutcome>(() => (forcedSupported === false ? "unsupported" : "success"));
   const [run, setRun] = useState(0);
   const [note, setNote] = useState("");
   const light = overrides.theme === "light";
 
   // The "supported" control and the outcome picker describe the same thing, so keep them in step.
-  const lastSupported = useRef(forcedSupported);
+  const lastSupported = useRef(forcedSupported !== false);
   useEffect(() => {
-    if (lastSupported.current === forcedSupported) return;
-    lastSupported.current = forcedSupported;
-    if (forcedSupported === false) setOutcome("unsupported");
-    else if (forcedSupported === true) setOutcome((o) => (o === "unsupported" ? "success" : o));
+    const on = forcedSupported !== false;
+    if (lastSupported.current === on) return;
+    lastSupported.current = on;
+    if (!on) setOutcome("unsupported");
+    else setOutcome((o) => (o === "unsupported" ? "success" : o));
     setRun((r) => r + 1);
     setNote("");
   }, [forcedSupported]);

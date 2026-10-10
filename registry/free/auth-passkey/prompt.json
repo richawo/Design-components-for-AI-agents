@@ -55,7 +55,7 @@
       "success": "#16a34a",
       "error": "#dc2626"
     },
-    "button": "accent fill, black-or-white label; it keeps the accent on success and draws a check"
+    "button": "accent fill; label is whichever of black or white has the higher WCAG contrast; it keeps the accent on success and draws a check"
   },
   "motion": {
     "entrance": "once at 30% in view: card y 16→0 + blur 10→0 over 600ms; then brand → heading → description → glyph well → status → button → link, 50ms apart from 120ms (opacity, 10px rise, 6px blur clearing, 450ms); ridges pathLength 0→1 over 700ms once the glyph block lands, each delayed by 400ms × normalised distance from the core",

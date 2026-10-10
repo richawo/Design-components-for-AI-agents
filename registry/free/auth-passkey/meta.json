@@ -22,14 +22,14 @@
     {"name": "credentialHint", "type": "string", "default": "\"iCloud Keychain · last used Tuesday\"", "description": "Quiet mono line under the glyph while idle."},
     {"name": "buttonLabel", "type": "string", "default": "\"Sign in with passkey\"", "description": "Primary button label."},
     {"name": "fallbackLabel", "type": "string", "default": "\"Use email instead\"", "description": "Label of the fallback link."},
-    {"name": "accent", "type": "string", "default": "theme ink", "description": "The one accent: the primary button. Its label flips black or white for contrast. Mint stays reserved for success."},
+    {"name": "accent", "type": "string", "default": "theme ink", "description": "The one accent: the primary button. Its label is whichever of black or white has the higher WCAG contrast on it. Mint stays reserved for success, so don't use it here. Unset, it follows the theme ink: near-white on dark, near-black on light (the demo's first swatch stands for that ink)."},
     {"name": "theme", "type": "\"dark\" | \"light\"", "default": "\"dark\"", "description": "Surface palette, fingerprint and well included."},
     {"name": "className", "type": "string", "description": "Extra classes on the root."}
   ],
-  "demo": { "steps": ["wait:450", "hover:@passkey-button", "click", "move:0.68,0.74", "wait:3900"] },
+  "demo": { "steps": ["wait:150", "click:@passkey-button", "move:0.68,0.74", "wait:3400"] },
   "controls": [
     {"prop": "theme", "label": "Theme", "kind": "segmented", "options": [{"value": "dark", "label": "Dark"}, {"value": "light", "label": "Light"}], "default": "dark"},
-    {"prop": "accent", "label": "Button colour", "kind": "color", "default": "#f4f4f5", "options": ["#f4f4f5", "#18181b", "#ff7a45", "#60a5fa", "#a78bfa", "#34d399"]},
+    {"prop": "accent", "label": "Button colour", "kind": "color", "default": "#f4f4f5", "options": ["#f4f4f5", "#52525b", "#ff7a45", "#60a5fa", "#a78bfa"]},
     {"prop": "brand", "label": "Brand", "kind": "text", "default": "Fathom"},
     {"prop": "title", "label": "Title", "kind": "text", "default": "Welcome back"},
     {"prop": "buttonLabel", "label": "Button label", "kind": "text", "default": "Sign in with passkey"},

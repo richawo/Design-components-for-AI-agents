@@ -20,7 +20,7 @@ Build a passkey sign-in card in React + Tailwind CSS v4 + `motion/react`. One fo
 
 **Colour** (one `PALETTE` for dark and light → `--pk-*` CSS variables)
 - Monochrome first. Dark: stage `#000`, card `#0b0b0c`, ink `#f4f4f5`, muted `#8b8b93`, hint `#7a7a83`, hairline white 8%, ridges white 26% (20% settled, 12% unsupported), scan in ink. Light: card `#ffffff`, ink `#18181b`, muted `#5f5f68`, ridges ink at 28%.
-- One accent (`accent` prop, default = ink) fills the primary button; its label is black or white by contrast and hover lays a 7% wash of the label colour. Mint `#8ff0c4` (light `#16a34a`) means success and nothing else; rose `#ff8a8a` (light `#dc2626`) means error.
+- One accent (`accent` prop, default = ink) fills the primary button; its label is whichever of black or white has the higher WCAG contrast ratio on it (so a mid-tone such as `#ff7a45` gets a black label) and hover lays a 7% wash of the label colour. Mint `#8ff0c4` (light `#16a34a`) means success and nothing else; rose `#ff8a8a` (light `#dc2626`) means error.
 
 **Typography**
 - Heading Geist display, semibold, `clamp(1.6rem, 1.3rem + 1.2cqi, 1.875rem)`, tracking −0.035em, leading 1.05. Body 14.5px / 1.55. The idle credential hint is mono 11.5px.
