@@ -95,6 +95,7 @@ type Palette = Record<keyof (typeof PALETTE)["dark"], string>;
 
 /** The demo’s quiet backdrop; not part of the component. */
 const STAGE = "#0a0a0b";
+const STAGE_LIGHT = "#f4f4f5";
 
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 const EASE_IN = [0.4, 0, 1, 1] as const;
@@ -362,7 +363,7 @@ function useSettled(play: boolean, delay: number) {
 /* ------------------------------------------------------------------ */
 
 /** A switch whose fill and knob only travel once its row has landed. */
-function Toggle({ checked, onChange, labelledBy, describedBy, settleAt, play }: { checked: boolean; onChange: (v: boolean) => void; labelledBy: string; describedBy?: string; settleAt: number; play: boolean }) {
+function Toggle({ checked, onChange, labelledBy, describedBy, settleAt, play, demoName }: { checked: boolean; onChange: (v: boolean) => void; labelledBy: string; describedBy?: string; settleAt: number; play: boolean; demoName: string }) {
   const reduce = useReducedMotion() ?? false;
   const settled = useSettled(play, settleAt);
   const on = checked && settled;
@@ -374,6 +375,7 @@ function Toggle({ checked, onChange, labelledBy, describedBy, settleAt, play }: 
       aria-checked={checked}
       aria-labelledby={labelledBy}
       aria-describedby={describedBy}
+      data-demo={demoName}
       onClick={() => onChange(!checked)}
       className={`group relative shrink-0 rounded-full transition-transform duration-150 active:scale-[0.96] ${focusRing}`}
       style={{ width: SWITCH.width, height: SWITCH.height }}
@@ -400,7 +402,7 @@ function Toggle({ checked, onChange, labelledBy, describedBy, settleAt, play }: 
   );
 }
 
-function Segmented({ value, options, onChange, labelledBy, layoutId, settleAt, play }: { value: string; options: SettingOption[]; onChange: (v: string) => void; labelledBy: string; layoutId: string; settleAt: number; play: boolean }) {
+function Segmented({ value, options, onChange, labelledBy, layoutId, settleAt, play, demoPrefix }: { value: string; options: SettingOption[]; onChange: (v: string) => void; labelledBy: string; layoutId: string; settleAt: number; play: boolean; demoPrefix: string }) {
   const reduce = useReducedMotion() ?? false;
   const settled = useSettled(play, settleAt);
   const refs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -434,6 +436,7 @@ function Segmented({ value, options, onChange, labelledBy, layoutId, settleAt, p
             role="radio"
             aria-checked={on}
             tabIndex={on ? 0 : -1}
+            data-demo={`${demoPrefix}-${o.value}`}
             onClick={() => onChange(o.value)}
             className={`relative h-8 whitespace-nowrap rounded-md px-3.5 text-[13px] font-medium transition-[color,transform] duration-150 active:scale-[0.97] ${focusRing} ${
               on && settled ? "text-[var(--sp-surface)]" : on ? "text-[var(--sp-ink)]" : "text-[var(--sp-faint)] hover:text-[var(--sp-ink)]"
@@ -572,7 +575,7 @@ function Section({ section, values, onSet, play, firstView, uid }: { section: Se
             play={play}
           >
             {row.kind === "toggle" && (
-              <Toggle checked={value === true} onChange={(v) => onSet(row.id, v)} labelledBy={ids.labelId} describedBy={describedBy} settleAt={settleAt} play={play} />
+              <Toggle checked={value === true} onChange={(v) => onSet(row.id, v)} labelledBy={ids.labelId} describedBy={describedBy} settleAt={settleAt} play={play} demoName={`toggle-${row.id}`} />
             )}
             {row.kind === "segmented" && (
               <Segmented
@@ -583,6 +586,7 @@ function Section({ section, values, onSet, play, firstView, uid }: { section: Se
                 layoutId={`${uid}-${row.id}-pill`}
                 settleAt={settleAt}
                 play={play}
+                demoPrefix={`option-${row.id}`}
               />
             )}
             {row.kind === "select" && <SelectField id={ids.control} value={String(value)} options={row.options} onChange={(v) => onSet(row.id, v)} describedBy={describedBy} />}
@@ -626,6 +630,7 @@ function SectionTabs({ sections, value, dirty, onChange, uid }: { sections: Sett
             aria-selected={on}
             aria-controls={`${uid}-panel-${s.id}`}
             tabIndex={on ? 0 : -1}
+            data-demo={`tab-${s.id}`}
             onClick={() => onChange(s.id)}
             className={`relative flex h-11 shrink-0 items-center gap-1.5 text-[14px] transition-[color,transform] duration-150 active:scale-[0.97] focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--sp-ink)] ${
               on ? "text-[var(--sp-ink)]" : "text-[var(--sp-faint)] hover:text-[var(--sp-ink)]"
@@ -699,6 +704,7 @@ function SaveBar({ count, status, onSave, onDiscard }: { count: number; status: 
                 <button
                   type="button"
                   onClick={onDiscard}
+                  data-demo="discard"
                   disabled={status === "saving"}
                   className={`h-9 shrink-0 rounded-lg px-3 text-[13px] font-medium text-[var(--sp-muted)] transition-[color,background-color,transform] duration-150 hover:bg-[color-mix(in_srgb,var(--sp-ink)_6%,transparent)] hover:text-[var(--sp-ink)] active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40 ${focusRing}`}
                 >
@@ -707,6 +713,7 @@ function SaveBar({ count, status, onSave, onDiscard }: { count: number; status: 
                 <button
                   type="button"
                   onClick={onSave}
+                  data-demo="save"
                   disabled={status === "saving"}
                   className={`relative inline-flex h-9 min-w-[7.5rem] shrink-0 items-center justify-center gap-2 rounded-lg bg-[var(--sp-accent)] px-3.5 text-[13px] font-semibold text-[var(--sp-on-accent)] transition-[filter,transform] duration-150 hover:brightness-110 active:scale-[0.97] disabled:cursor-progress ${focusRing}`}
                 >
@@ -833,11 +840,11 @@ export function SettingsPanel({
   );
 }
 
-export default function SettingsPanelDemo() {
+export default function SettingsPanelDemo(overrides: Partial<SettingsPanelProps> = {}) {
   return (
-    <div className="flex min-h-dvh items-center justify-center px-4 py-16 sm:px-8" style={{ background: STAGE }}>
+    <div className="flex min-h-dvh items-center justify-center px-4 py-16 sm:px-8" style={{ background: overrides.theme === "light" ? STAGE_LIGHT : STAGE }}>
       <div className="w-full max-w-[680px]">
-        <SettingsPanel />
+        <SettingsPanel {...overrides} />
       </div>
     </div>
   );

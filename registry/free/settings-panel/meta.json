@@ -75,5 +75,86 @@
       "description": "Surface palette; also sets color-scheme so native selects match."
     }
   ],
-  "added": "2026-10-07"
+  "added": "2026-10-07",
+  "demo": {
+    "steps": [
+      "wait:500",
+      "click:@toggle-product",
+      "wait:200",
+      "click:@tab-appearance",
+      "wait:900",
+      "click:@option-density-compact",
+      "wait:450",
+      "click:@save",
+      "wait:1400"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "title",
+      "label": "Heading",
+      "kind": "text",
+      "default": "Settings",
+      "group": "Content"
+    },
+    {
+      "prop": "description",
+      "label": "Description",
+      "kind": "text",
+      "default": "How Fieldnote looks, and how often it’s allowed to interrupt you.",
+      "group": "Content"
+    },
+    {
+      "prop": "defaultSection",
+      "label": "Opens on",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "notifications",
+          "label": "Alerts"
+        },
+        {
+          "value": "appearance",
+          "label": "Look"
+        },
+        {
+          "value": "profile",
+          "label": "Profile"
+        }
+      ],
+      "default": "notifications",
+      "remount": true,
+      "group": "Content"
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark",
+      "group": "Look"
+    },
+    {
+      "prop": "accent",
+      "label": "Accent",
+      "kind": "color",
+      "default": "#f4f4f5",
+      "options": [
+        "#f4f4f5",
+        "#7dd3fc",
+        "#fbbf24",
+        "#86efac"
+      ],
+      "group": "Look"
+    }
+  ]
 }
