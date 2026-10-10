@@ -1,0 +1,224 @@
+{
+  "slug": "button-press-depth",
+  "name": "Press Depth Button",
+  "tier": "free",
+  "platform": "web",
+  "category": "buttons",
+  "description": "A button with physical depth: a 2px base edge the face sinks into on press, four variants, three sizes. Loading and success swap the label in place, so width stays fixed.",
+  "tags": [
+    "button",
+    "cta",
+    "press",
+    "depth",
+    "loading state",
+    "focus ring",
+    "primary button",
+    "monochrome"
+  ],
+  "dependencies": [
+    "motion"
+  ],
+  "theme": "dark",
+  "previewHeight": 600,
+  "usage": "import { PressDepthButton } from \"@/components/design-for-ai/button-press-depth\";\n\n<PressDepthButton label=\"Save changes\" onPress={() => api.save()} />  // spinner, then check, in the same box\n\n<PressDepthButton label=\"Publish\" loadingLabel=\"Publishing…\" successLabel=\"Live\" onPress={() => api.publish()} />\n\n<PressDepthButton variant=\"secondary\" size=\"sm\" label=\"Preview\" icon />\n\n<PressDepthButton variant=\"destructive\" label=\"Delete project\" leadingIcon={<TrashIcon />} trailingIcon={null} />\n\n<PressDepthButton state=\"loading\" label=\"Publish\" loadingLabel=\"Publishing…\" />  // controlled: you drive the state",
+  "props": [
+    {
+      "name": "label",
+      "type": "string",
+      "default": "\"Save changes\"",
+      "description": "Resting label. The loading and success glyphs replace it in the same box, so the width never changes."
+    },
+    {
+      "name": "loadingLabel",
+      "type": "string",
+      "description": "Optional text beside the spinner while onPress is pending. Without it the spinner replaces the label in the same box."
+    },
+    {
+      "name": "successLabel",
+      "type": "string",
+      "description": "Optional text beside the check once onPress settles. Without it the check replaces the label in the same box."
+    },
+    {
+      "name": "variant",
+      "type": "\"primary\" | \"secondary\" | \"ghost\" | \"destructive\"",
+      "default": "\"primary\"",
+      "description": "Primary takes the accent fill. Secondary is a raised neutral. Ghost has no edge and no fill at rest. Destructive is the one red."
+    },
+    {
+      "name": "size",
+      "type": "\"sm\" | \"md\" | \"lg\"",
+      "default": "\"md\"",
+      "description": "32, 40 or 48px tall. The small size keeps a 40px touch target through its hit area."
+    },
+    {
+      "name": "state",
+      "type": "\"idle\" | \"loading\" | \"success\" | \"disabled\"",
+      "description": "Controlled state. Leave it out and onPress drives loading and success itself."
+    },
+    {
+      "name": "icon",
+      "type": "boolean",
+      "default": "false",
+      "description": "Shows the built-in arrow after the label."
+    },
+    {
+      "name": "leadingIcon",
+      "type": "ReactNode",
+      "description": "Any glyph before the label. Drawn at the size's icon width by you."
+    },
+    {
+      "name": "trailingIcon",
+      "type": "ReactNode | null",
+      "description": "Any glyph after the label. Overrides icon; pass null to hide it."
+    },
+    {
+      "name": "accent",
+      "type": "string",
+      "default": "\"#2563eb\"",
+      "description": "The one accent. It fills the primary button; its base edge and label colour are derived from it."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "The surface the button sits on, so its neutrals keep their contrast."
+    },
+    {
+      "name": "successMs",
+      "type": "number",
+      "default": "1600",
+      "description": "Uncontrolled only: how long the success state holds before it returns to idle."
+    },
+    {
+      "name": "onPress",
+      "type": "() => void | Promise<unknown>",
+      "description": "Runs on press. Return a promise to show loading, then success. Reject to return to idle."
+    },
+    {
+      "name": "type",
+      "type": "\"button\" | \"submit\"",
+      "default": "\"button\"",
+      "description": "The native button type."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "description": "Applied to the outer wrapper, not the button."
+    }
+  ],
+  "added": "2026-10-10",
+  "demo": {
+    "steps": [
+      "wait:300",
+      "hover:@save",
+      "wait:200",
+      "down",
+      "wait:120",
+      "up",
+      "hover:@discard",
+      "wait:600",
+      "tab:1",
+      "wait:800"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "label",
+      "label": "Label",
+      "kind": "text",
+      "default": "Save changes",
+      "group": "Content"
+    },
+    {
+      "prop": "variant",
+      "label": "Variant",
+      "kind": "select",
+      "options": [
+        {
+          "value": "primary",
+          "label": "Primary"
+        },
+        {
+          "value": "secondary",
+          "label": "Secondary"
+        },
+        {
+          "value": "ghost",
+          "label": "Ghost"
+        },
+        {
+          "value": "destructive",
+          "label": "Destructive"
+        }
+      ],
+      "default": "primary",
+      "group": "Look"
+    },
+    {
+      "prop": "size",
+      "label": "Size",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "sm",
+          "label": "Small"
+        },
+        {
+          "value": "md",
+          "label": "Medium"
+        },
+        {
+          "value": "lg",
+          "label": "Large"
+        }
+      ],
+      "default": "md",
+      "group": "Look"
+    },
+    {
+      "prop": "accent",
+      "label": "Accent",
+      "kind": "color",
+      "default": "#2563eb",
+      "options": [
+        "#2563eb",
+        "#0f766e",
+        "#e4572e",
+        "#f4f4f5"
+      ],
+      "group": "Look"
+    },
+    {
+      "prop": "icon",
+      "label": "Arrow",
+      "kind": "toggle",
+      "default": false,
+      "group": "Content"
+    },
+    {
+      "prop": "state",
+      "label": "State",
+      "kind": "select",
+      "options": [
+        {
+          "value": "idle",
+          "label": "Idle"
+        },
+        {
+          "value": "loading",
+          "label": "Loading"
+        },
+        {
+          "value": "success",
+          "label": "Success"
+        },
+        {
+          "value": "disabled",
+          "label": "Disabled"
+        }
+      ],
+      "default": "idle",
+      "group": "State"
+    }
+  ]
+}

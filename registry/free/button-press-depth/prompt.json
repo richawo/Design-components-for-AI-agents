@@ -1,0 +1,67 @@
+{
+  "component": "PressDepthButton",
+  "intent": "An everyday button with physical depth. A 2px base edge sits under the face; the face lifts a hair on hover and sinks into the edge on press, so the button feels like a key rather than a painted rectangle. Loading and success replace the label inside the same box so the width never changes.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 utilities plus inline style for the per-variant colour tokens",
+    "animation": "CSS transitions on transform, background-color and box-shadow (120ms ease-out); motion/react for the demo entrance and the check's pathLength draw; Tailwind animate-spin for the spinner"
+  },
+  "layout": {
+    "wrapper": "inline-grid span, position relative. The base edge is an absolutely positioned sibling that sits 2px below the face and never moves.",
+    "face": "button as an inline-grid. Label, loading and success slots share grid cell 1/1 so the box is as wide as its widest state and never resizes.",
+    "sizes": "sm 32px tall, 13px label, 8px radius, 12px horizontal padding, 6px gap, 14px glyph. md 40px tall, 14px label, 10px radius, 16px padding, 8px gap, 16px glyph. lg 48px tall, 15px label, 12px radius, 22px padding, 10px gap, 18px glyph.",
+    "glyphs": "leading and trailing slots on both sides. The built-in arrow is a 16-unit stroked path at 1.5 weight. The spinner is a partial 28/10 ring. The check is a 3-point stroke drawn by pathLength.",
+    "touch": "sm and md extend their tappable area to 44px with a pseudo element; the drawn face stays 32px or 40px. lg is already 48px."
+  },
+  "typography": {
+    "label": "Geist (font-sans) 500, tracking -0.01em, 13px (sm), 14px (md), 15px (lg)",
+    "states": "loading and success labels use the same type as the resting label so nothing jumps"
+  },
+  "color": {
+    "approach": "monochrome first. The accent fills the primary button only. Destructive is the one red. Everything else is a neutral ink on a neutral surface.",
+    "primary": "fill = accent (default #2563eb). Base edge = color-mix(accent 62%, black). Label is white or near-black, whichever has the higher WCAG contrast on the fill. Hover = accent 88% mixed toward white (dark) or black (light). Press = accent 90% mixed toward black. Inset top highlight rgba(255,255,255,0.24).",
+    "secondary": "dark: fill #1f1f24, edge #060607, label #f4f4f5, highlight rgba(255,255,255,0.08). light: fill #ffffff, edge #c4c5cc, label #18181b, highlight rgba(255,255,255,0.95).",
+    "destructive": "dark: fill #d6393f, edge #7f1d22, label #ffffff. light: fill #dc2626, edge #8f1717.",
+    "ghost": "no fill and no edge at rest. Hover rgba(255,255,255,0.07) (light rgba(24,24,27,0.06)). Press rgba(255,255,255,0.12) (light rgba(24,24,27,0.10)). Label #f4f4f5 dark, #18181b light.",
+    "focus": "2px outline in the variant's ring colour, offset 2px. Keyboard focus only."
+  },
+  "motion": {
+    "hover": "face translates -1px up, so the base edge shows 3px. 120ms ease-out cubic-bezier(0.22,1,0.36,1). Pointer devices only.",
+    "press": "face translates 2px down and covers the base edge completely. Background moves to the press colour. Released on pointer up, pointer leave, pointer cancel, blur or key up. Space and Enter press from the keyboard; key repeat is ignored.",
+    "loading": "label is replaced by a spinner in the same box, cross-fading with a 4px rise and a 2px blur clearing, 200ms ease-out. The spinner turns continuously and stops under reduced motion. An optional loadingLabel adds text beside it.",
+    "success": "label is replaced by a check in the same box. The check's pathLength draws from 0 to 1 over 340ms with a 120ms delay. An optional successLabel adds text beside it.",
+    "reducedMotion": "no translate and no blur. The press is shown as a colour change and the base edge fades to 0. Opacity fades stay at 150ms."
+  },
+  "responsive": {
+    "button": "intrinsic width. Wraps inside a flex row on narrow containers without changing its own internal layout.",
+    "demo": "card max 520px, fluid below. Footer buttons wrap onto a new line on narrow containers."
+  },
+  "accessibility": [
+    "native button element; type is button unless set to submit",
+    "disabled uses the disabled attribute, so it is removed from the tab order and cannot be pressed",
+    "aria-busy is set while loading; presses during loading are ignored",
+    "inactive label slots are aria-hidden, so the accessible name is always the visible label",
+    "focus-visible outline in the ring colour, never shown on pointer click",
+    "tap highlight removed and touch-action manipulation so presses respond instantly on touch",
+    "a visually hidden role=status region announces successLabel, or Done when it is not set, when success lands",
+    "while loading without loadingLabel the button's aria-label reads 'label, in progress'"
+  ],
+  "content": {
+    "defaults": {
+      "label": "Save changes",
+      "accent": "#2563eb"
+    },
+    "demo": "a project settings card with three read-only rows (domain, visibility, retention), a primary Save changes button, a secondary Preview and a ghost Discard. The header reads Unsaved changes until save lands, then All changes saved.",
+    "optionalText": "loadingLabel and successLabel are optional. When absent, the spinner and check replace the label in the same box."
+  },
+  "avoid": [
+    "no glow, no bloom or coloured shadow",
+    "no gradient fill on any variant",
+    "no bounce, overshoot or spring on the press",
+    "do not change the button width between states",
+    "do not dim the button while loading; only disabled reduces opacity",
+    "do not add a second accent or a tinted pill next to the button",
+    "do not replace the label with a bare spinner"
+  ]
+}
