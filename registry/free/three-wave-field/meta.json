@@ -56,15 +56,15 @@
   "added": "2026-10-07",
   "demo": {
     "steps": [
-      "wait:150",
+      "wait:1000",
       "hover:@field:0.45,0.58",
       "click",
-      "wait:250",
-      "hover:@field:0.62,0.48",
-      "click",
-      "wait:700",
-      "hover:@field:0.36,0.5",
-      "wait:500"
+      "wait:900",
+      "hover:@field:0.62,0.5",
+      "hover:@field:0.4,0.55",
+      "wait:800",
+      "move:0.74,0.82",
+      "wait:900"
     ],
     "loop": false
   },
