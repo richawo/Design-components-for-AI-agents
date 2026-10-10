@@ -2221,6 +2221,195 @@
     "added": "2026-10-10"
   },
   {
+    "slug": "billing-usage-forecast",
+    "name": "Usage Forecast Cone",
+    "tier": "pro",
+    "platform": "web",
+    "category": "billing",
+    "description": "Spend over the billing period as a line with a forecast cone that keeps your weekly rhythm, and a budget line you drag to date the day you cross it.",
+    "tags": [
+      "billing",
+      "usage forecast",
+      "spend",
+      "budget",
+      "forecast cone",
+      "chart",
+      "cloud costs"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 720,
+    "usage": "import { UsageForecast } from \"@/components/design-for-ai/billing-usage-forecast\";\n\n<UsageForecast\n  title=\"October spend\"\n  daily={[96, 141, 44, 61, 128, 162, 109, 151, 117, 49]}\n  periodStart=\"2026-10-01\"\n  periodDays={31}\n  budget={3000}\n  onBudgetChange={(budget) => saveBudget(budget)}\n  confidence={80}\n/>",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"October spend\"",
+        "description": "The small label above the figure."
+      },
+      {
+        "name": "daily",
+        "type": "number[]",
+        "default": "ten days of October",
+        "description": "Spend per day so far, oldest first. Its length is the days elapsed, counting today. Weekdays and weekends each project their own mean."
+      },
+      {
+        "name": "periodStart",
+        "type": "string",
+        "default": "\"2026-10-01\"",
+        "description": "First day of the period, ISO date. Used for dates and to tell weekends from weekdays."
+      },
+      {
+        "name": "periodDays",
+        "type": "number",
+        "default": "31",
+        "description": "Days in the period."
+      },
+      {
+        "name": "budget",
+        "type": "number",
+        "default": "3000",
+        "description": "Where the budget line sits. Dragging it calls onBudgetChange; passing a new value moves it."
+      },
+      {
+        "name": "onBudgetChange",
+        "type": "(budget: number) => void",
+        "description": "Called while the budget line is dragged or stepped with the keyboard."
+      },
+      {
+        "name": "budgetStep",
+        "type": "number",
+        "default": "50",
+        "description": "The budget snaps to this step. PageUp and PageDown move ten steps."
+      },
+      {
+        "name": "confidence",
+        "type": "80 | 95",
+        "default": "80",
+        "description": "The cone's interval. 95 widens it, and the likely crossing window with it."
+      },
+      {
+        "name": "cone",
+        "type": "boolean",
+        "default": "true",
+        "description": "Draw the forecast cone. Off, only the dashed median forecast is drawn."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Locale for money, the compact axis and dates."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"USD\"",
+        "description": "ISO 4217 code."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#f5a524\"",
+        "description": "The one accent: the budget line and handle, the crossing marker and window, and the crossing date."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface and ink. Light deepens the accent for text so it stays readable."
+      }
+    ],
+    "demo": {
+      "steps": [
+        "wait:500",
+        "hover:@plot:0.3,0.5",
+        "wait:600",
+        "hover:@budget:0.03,0.5",
+        "down",
+        "hover:@plot:0.1,0.41",
+        "up",
+        "wait:600",
+        "hover:@plot:0.86,0.5",
+        "wait:1100"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "budget",
+        "label": "Budget",
+        "kind": "slider",
+        "min": 1500,
+        "max": 4000,
+        "step": 50,
+        "unit": "$",
+        "default": 3000,
+        "group": "Forecast"
+      },
+      {
+        "prop": "confidence",
+        "label": "Confidence",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": 80,
+            "label": "80%"
+          },
+          {
+            "value": 95,
+            "label": "95%"
+          }
+        ],
+        "default": 80,
+        "group": "Forecast"
+      },
+      {
+        "prop": "cone",
+        "label": "Cone",
+        "kind": "toggle",
+        "default": true,
+        "group": "Forecast"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f5a524",
+        "options": [
+          "#f5a524",
+          "#7dd3a8",
+          "#60a5fa",
+          "#ececee"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ],
+    "added": "2026-10-10"
+  },
+  {
     "slug": "button-magnetic",
     "name": "Magnetic CTA",
     "tier": "pro",
