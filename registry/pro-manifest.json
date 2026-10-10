@@ -1765,6 +1765,245 @@
     ]
   },
   {
+    "slug": "billing-cancel-flow",
+    "name": "Honest Cancel Flow",
+    "tier": "pro",
+    "platform": "web",
+    "category": "billing",
+    "description": "A cancellation flow that answers each reason with an honest alternative (pause, downgrade, export), then a dated what-happens-now timeline and a calm hold-to-cancel.",
+    "tags": [
+      "billing",
+      "cancel subscription",
+      "churn",
+      "retention",
+      "hold to confirm",
+      "pause plan",
+      "saas"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 820,
+    "usage": "import { CancelFlow } from \"@/components/design-for-ai/billing-cancel-flow\";\n\n<CancelFlow\n  planName=\"Studio\"\n  today=\"2026-10-10\"\n  accessUntil=\"2026-10-23\"\n  lastChargeDate=\"2026-09-24\"\n  lastChargeAmount={128}\n  retentionDays={30}\n  email=\"ines@copperline.studio\"\n  onCancel={({ reasonId, note }) => fetch(\"/api/subscription/cancel\", { method: \"POST\", body: JSON.stringify({ reasonId, note }) })}\n  onAcceptOffer={({ offer }) => fetch(`/api/subscription/${offer}`, { method: \"POST\" })}\n/>",
+    "props": [
+      {
+        "name": "planName",
+        "type": "string",
+        "default": "\"Studio\"",
+        "description": "The plan being cancelled, as named in the headings, the hold button and the summary."
+      },
+      {
+        "name": "reasons",
+        "type": "{ id: string; label: string; offer: CancelOffer }[]",
+        "default": "five reasons",
+        "description": "Each reason and the alternative it opens: { kind: \"pause\", months } | { kind: \"downgrade\", planName } | { kind: \"export\", size } | { kind: \"feedback\", placeholder } | { kind: \"none\" }, each with a title and body."
+      },
+      {
+        "name": "defaultReason",
+        "type": "string",
+        "default": "\"\"",
+        "description": "The reason selected on mount, by id. Anything that isn't a reason id means none is selected."
+      },
+      {
+        "name": "step",
+        "type": "\"reason\" | \"confirm\" | \"done\"",
+        "description": "Controlled step. Update it from onStepChange. Leave it out and the flow keeps its own."
+      },
+      {
+        "name": "onStepChange",
+        "type": "(step) => void",
+        "description": "Called when the flow moves to another step."
+      },
+      {
+        "name": "today",
+        "type": "string",
+        "default": "\"2026-10-10\"",
+        "description": "Today, ISO date. Pause offers count their months from it."
+      },
+      {
+        "name": "accessUntil",
+        "type": "string",
+        "default": "\"2026-10-23\"",
+        "description": "The last day of paid access, ISO date."
+      },
+      {
+        "name": "lastChargeDate",
+        "type": "string",
+        "default": "\"2026-09-24\"",
+        "description": "When the last invoice was paid, ISO date."
+      },
+      {
+        "name": "lastChargeAmount",
+        "type": "number",
+        "default": "128",
+        "description": "What the last invoice charged."
+      },
+      {
+        "name": "retentionDays",
+        "type": "number",
+        "default": "30",
+        "description": "Days data is kept after access ends. The deletion date on the timeline is accessUntil plus this."
+      },
+      {
+        "name": "email",
+        "type": "string",
+        "default": "\"ines@copperline.studio\"",
+        "description": "Where reminders go, as printed in the timeline and the summary."
+      },
+      {
+        "name": "holdMs",
+        "type": "number",
+        "default": "1400",
+        "description": "How long the cancel button has to be held. The button shows the time; a release drains the fill back."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Locale for dates and money."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"USD\"",
+        "description": "ISO 4217 code for the last charge."
+      },
+      {
+        "name": "onCancel",
+        "type": "({ kind: \"cancelled\", reasonId, note? }) => void",
+        "description": "Called when the hold completes, with the reason and any note typed into the feedback offer."
+      },
+      {
+        "name": "onAcceptOffer",
+        "type": "({ kind: \"accepted\", reasonId, offer }) => void",
+        "description": "Called when the pause or downgrade offer is taken instead."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#7dd3a8\"",
+        "description": "The one accent: the selected reason and the offer's action. Cancelling itself stays in ink."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface and ink."
+      }
+    ],
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@reason-not-using",
+        "wait:1100",
+        "click:@continue",
+        "wait:500",
+        "hover:@hold",
+        "down",
+        "wait:1600",
+        "up",
+        "wait:1300"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "step",
+        "label": "Step",
+        "kind": "action",
+        "options": [
+          {
+            "value": "reason",
+            "label": "Reason"
+          },
+          {
+            "value": "confirm",
+            "label": "Confirm"
+          },
+          {
+            "value": "done",
+            "label": "Done"
+          }
+        ]
+      },
+      {
+        "prop": "defaultReason",
+        "label": "Reason",
+        "kind": "select",
+        "options": [
+          {
+            "value": "none",
+            "label": "None yet"
+          },
+          {
+            "value": "expensive",
+            "label": "Too expensive"
+          },
+          {
+            "value": "not-using",
+            "label": "Not using it"
+          },
+          {
+            "value": "missing",
+            "label": "Missing a feature"
+          },
+          {
+            "value": "switching",
+            "label": "Switching tools"
+          },
+          {
+            "value": "other",
+            "label": "Something else"
+          }
+        ],
+        "default": "none",
+        "remount": true
+      },
+      {
+        "prop": "planName",
+        "label": "Plan name",
+        "kind": "text",
+        "default": "Studio"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#7dd3a8",
+        "options": [
+          "#7dd3a8",
+          "#f5a524",
+          "#60a5fa",
+          "#ececee"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ],
+    "added": "2026-10-10"
+  },
+  {
     "slug": "billing-plan-change",
     "name": "Plan Change Proration",
     "tier": "pro",
