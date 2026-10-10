@@ -4,14 +4,13 @@
   "tier": "free",
   "platform": "web",
   "category": "inputs",
-  "description": "A field whose label rises into a notch cut in its hairline border, with error and success text that cross-fade in and a tick that draws. Monochrome, dark first.",
+  "description": "A text field whose label rises into a notch cut in its hairline border. Error and success copy cross-fade in, a tick draws on success, and a count appears near the limit.",
   "tags": [
     "input",
     "text field",
     "floating label",
     "form",
     "validation",
-    "email",
     "notch",
     "dark",
     "monochrome"
@@ -22,60 +21,62 @@
   ],
   "theme": "dark",
   "previewHeight": 560,
-  "usage": "import { FloatingLabelField } from \"@/components/design-for-ai/input-floating-label\";\n\n<FloatingLabelField\n  label=\"Work email\"\n  helper=\"We’ll send receipts and invoices here.\"\n  errorText=\"Add a domain, like ana@studio.co\"\n  onValueChange={(value) => setEmail(value)}\n/>\n\n<FloatingLabelField\n  label=\"Company\"\n  size=\"lg\"\n  prefix={false}\n  suffix=\"Optional\"\n  counter\n  maxLength={60}\n/>",
+  "usage": "import { FloatingLabelField } from \"@/components/design-for-ai/input-floating-label\";\n\nconst isEmail = (value: string) => /^[^\\s@]+@[^\\s@]+\\.[a-z]{2,}$/i.test(value.trim());\n\n<FloatingLabelField\n  type=\"email\"\n  autoComplete=\"email\"\n  label=\"Work email\"\n  helper=\"We’ll send receipts and invoices here.\"\n  errorText=\"Add a domain, like ana@studio.co\"\n  successText=\"Looks good. Receipts go here.\"\n  validate={isEmail}\n  maxLength={40}\n  value={email}\n  onValueChange={setEmail}\n/>\n\n<FloatingLabelField\n  label=\"Company\"\n  size=\"lg\"\n  suffix=\"Optional\"\n  maxLength={60}\n/>",
   "props": [
     {
       "name": "label",
       "type": "string",
-      "default": "\"Work email\"",
+      "default": "\"Label\"",
       "description": "Resting label. It rises into the notch on the top hairline when the field is focused or filled."
     },
     {
       "name": "helper",
       "type": "string",
-      "default": "\"We’ll send receipts and invoices here.\"",
       "description": "Helper text under the field, shown in the resting, focused and filled states."
     },
     {
       "name": "errorText",
       "type": "string",
-      "default": "\"Add a domain, like ana@studio.co\"",
-      "description": "Replaces the helper once the typed value has rested as an invalid email, or the field is left with one in it."
+      "default": "\"Enter a valid value\"",
+      "description": "Replaces the helper once a value has rested and failed validate, or the field is left with one in it."
     },
     {
       "name": "successText",
       "type": "string",
-      "default": "\"Looks good. Receipts go here.\"",
-      "description": "Replaces the helper once the value is a valid email. The tick draws in the trailing slot at the same time."
+      "default": "\"Looks good.\"",
+      "description": "Replaces the helper once a value passes validate. The tick draws beside any suffix at the same time."
     },
     {
       "name": "state",
       "type": "\"default\" | \"error\" | \"success\" | \"disabled\"",
-      "default": "\"default\"",
-      "description": "Forces a state for review. Leave it unset and the field follows what is typed; disabled locks the input and dims it."
+      "default": "unset",
+      "description": "Forces a state for review. Unset, the field follows what is typed. Disabled locks the input and dims the whole field and its helper row."
+    },
+    {
+      "name": "validate",
+      "type": "(value: string) => boolean",
+      "description": "Decides whether a value is acceptable. Without it the field never shows an error or the success tick, so a plain text field stays quiet."
     },
     {
       "name": "counter",
       "type": "boolean",
       "default": "true",
-      "description": "Shows the limit as a faint \"Max 40\" at rest and switches to the live count once the value passes 80% of it."
+      "description": "Shows the count once the value passes 80% of maxLength, tweening the digits and turning to the error colour at the limit. Needs maxLength."
     },
     {
       "name": "maxLength",
       "type": "number",
-      "default": "40",
-      "description": "Longest value the field accepts. The input stops at this length, so the counter can never read over the limit."
+      "description": "Longest value the field accepts. The input stops at this length, and the count reads against it."
     },
     {
       "name": "prefix",
-      "type": "boolean",
-      "default": "true",
-      "description": "Shows the mail glyph in the leading slot. The text starts after it, and the notch moves with it."
+      "type": "ReactNode",
+      "description": "Leading slot, such as an icon. Its measured width sets where the label and the text start, with a 10px gap."
     },
     {
       "name": "suffix",
       "type": "ReactNode",
-      "description": "Content for the trailing slot, such as a unit or a short action. The success tick takes this slot while the value is valid."
+      "description": "Trailing slot, such as a unit or a short word. Its measured width sets the text's right inset. The success tick sits beside it."
     },
     {
       "name": "size",
@@ -93,12 +94,17 @@
       "name": "defaultValue",
       "type": "string",
       "default": "\"\"",
-      "description": "Value on first render. A filled field rests with its label already on the line."
+      "description": "Uncontrolled: the value on first render. A filled field rests with its label already on the line."
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "description": "Controlled: the value. Pair it with onValueChange so the host owns the state."
     },
     {
       "name": "onValueChange",
       "type": "(value: string) => void",
-      "description": "Called on every keystroke with the current value, so the host can validate or save."
+      "description": "Called on every change, and when Chrome autofills the field, with the current value."
     },
     {
       "name": "className",
@@ -122,14 +128,25 @@
     {
       "prop": "state",
       "label": "State",
-      "kind": "select",
+      "kind": "action",
       "options": [
-        { "value": "default", "label": "Default" },
-        { "value": "error", "label": "Error" },
-        { "value": "success", "label": "Success" },
-        { "value": "disabled", "label": "Disabled" }
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "error",
+          "label": "Error"
+        },
+        {
+          "value": "success",
+          "label": "Success"
+        },
+        {
+          "value": "disabled",
+          "label": "Disabled"
+        }
       ],
-      "default": "default",
       "group": "State"
     },
     {
@@ -165,8 +182,14 @@
       "label": "Size",
       "kind": "segmented",
       "options": [
-        { "value": "md", "label": "Medium" },
-        { "value": "lg", "label": "Large" }
+        {
+          "value": "md",
+          "label": "Medium"
+        },
+        {
+          "value": "lg",
+          "label": "Large"
+        }
       ],
       "default": "md",
       "group": "Look"

@@ -1,25 +1,27 @@
 {
   "component": "FloatingLabelField",
-  "intent": "One dark, monochrome text field for an email address. The label rests inside the field and, once focused or filled, rises onto the top hairline while the border opens a notch around it. Error and success text cross-fade in place of the helper, and a success tick draws itself in the trailing slot. Built with React 19, Tailwind CSS v4 and motion/react, with lucide-react for the mail glyph.",
+  "intent": "One dark, monochrome, native text field. The label rests inside the field and, once focused or filled, rises onto the top hairline while the border opens a notch around it. Validation is a prop: when a validate function is supplied, invalid values show error copy after they rest, and valid values show success copy and a drawn tick. Built with React 19, Tailwind CSS v4 and motion/react, with lucide-react for the mail glyph in the demo.",
   "platform": "web",
   "stack": {
     "framework": "React 19",
-    "styling": "Tailwind CSS v4 (@container on the root, arbitrary values, one namespaced style block for the notch mask)",
-    "animation": "motion/react (animate for the notch edges and the label, AnimatePresence mode popLayout for messages, pathLength for the tick, useInView for the first reveal)",
-    "icons": "lucide-react Mail, 16px, stroke 1.6"
+    "styling": "Tailwind CSS v4 (@container on the root, arbitrary values) plus one ifl- namespaced style block for the notch mask, focus border, autofill and disabled rules",
+    "animation": "motion/react (animate for the notch edges, the label and the tweened count; AnimatePresence mode popLayout for messages and the count; pathLength for the tick; useInView for the first reveal)",
+    "icons": "lucide-react Mail, 16px, stroke 1.6, supplied as the prefix in the demo"
   },
   "layout": {
-    "root": "@container block, max-width 420px, full width below; helper row sits 10px under the field",
-    "field": "56px tall (md) or 64px (lg), border-radius 12px, position relative; surface layer, masked border layer, label, prefix, input, suffix stacked in that order",
-    "padding": "16px horizontal (md), 18px (lg); leading slot 16px icon plus 10px gap when prefix is on; trailing slot 26px for suffix or the success tick",
-    "helperRow": "flex, items start, gap 16px; message left (min-width 0, flex 1), counter right and shrink-0; both inset by the field padding",
+    "root": "@container block, max-width 420px, full width below; the field and the helper row sit in a body wrapper that carries the disabled dim",
+    "field": "56px tall (md) or 64px (lg), border-radius 12px, position relative; surface layer, masked border layer, label, prefix slot, input, trailing slot, stacked in that order",
+    "padding": "16px horizontal (md), 18px (lg). The prefix and trailing slots are measured with ResizeObserver; the label, notch start and input padding add their measured width plus a 10px gap",
+    "trailingSlot": "holds the suffix and, beside it, the success tick, at a 10px gap; its measured width sets the input's right padding",
+    "helperRow": "flex, items start, gap 16px; message left (min-width 0, flex 1), count right and shrink-0; both inset by the field padding. The count reserves its width while hidden so the message never reflows",
     "collapse": "the label and text keep their offsets at every width; the field never shrinks below 280px"
   },
   "typography": {
     "input": "sans, 16px (md) or 18px (lg), so iOS does not zoom",
     "label": "sans, 15px (md) or 17px (lg), line box 20px; floated state is the same element scaled to 0.76 from the left centre",
     "message": "sans 13px, leading 1.45; 13.5px from the @sm container breakpoint",
-    "counter": "mono 12px, tabular-nums, no tracking change"
+    "suffix": "13px, muted, line-height 1",
+    "counter": "mono 12px, tabular-nums; digits tween over 180ms"
   },
   "color": {
     "dark": {
@@ -31,56 +33,82 @@
       "muted": "rgba(244,244,245,0.58)",
       "icon": "rgba(244,244,245,0.42)",
       "error": "#f0937a",
-      "success": "#8fd7a6",
-      "focusRing": "rgba(244,244,245,0.26)"
+      "success": "#8fd7a6"
     },
     "light": {
       "surface": "#ffffff",
       "ink": "#111113",
       "hairline": "rgba(17,17,19,0.14)",
+      "hairlineHover": "rgba(17,17,19,0.30)",
+      "hairlineFocus": "rgba(17,17,19,0.90)",
+      "muted": "rgba(17,17,19,0.60)",
+      "icon": "rgba(17,17,19,0.45)",
       "error": "#b3432a",
       "success": "#2c7a45"
     },
-    "usage": "error colours only on the border, the message and the label in the error state; success colours only on the border, the message and the tick; everything else monochrome"
+    "usage": "error colours only on the border, the message, the label and the count at the limit in the error state; success colours only on the border, the message and the tick; everything else monochrome"
+  },
+  "border": {
+    "rest": "1px inset box-shadow at the hairline colour",
+    "hover": "1px at the hover hairline",
+    "focusWithin": "1.5px at the focus hairline, on the masked border so the line opens around the label",
+    "error": "1.5px at the error colour",
+    "success": "1.5px at the success colour",
+    "disabled": "1px hairline, no hover response",
+    "outline": "none; there is no outer focus ring, so the notch is never crossed by a second line"
   },
   "motion": {
-    "rise": "label y and scale and notch edges share 320ms ease-out [0.22, 1, 0.36, 1]; notch edges write --fl-nl and --fl-nr imperatively from animate onUpdate, interruptible from the current position",
+    "rise": "label y and scale and notch edges share 320ms ease-out [0.22, 1, 0.36, 1]; notch edges write --ifl-nl and --ifl-nr imperatively from animate onUpdate, interruptible from the current position",
     "messages": "popLayout cross-fade: enter from y 6px and blur 3px, exit to y -6px and blur 3px, 260ms ease-out",
+    "count": "rises like a message when it appears; digits tween to the new value over 180ms",
     "tick": "scale 0.8 to 1 with opacity over 240ms; path pathLength 0 to 1 over 420ms, 100ms delay",
     "reveal": "once at 30% in view: the block rises 10px from blur 6px over 600ms",
-    "focusRing": "2px outline, offset 3px, instant, on :focus-within only",
+    "autofill": "a :-webkit-autofill rule plays the ifl-autofill keyframes; onAnimationStart reads the DOM value and marks the field as filled so the label stays floated",
     "borderTransition": "box-shadow 180ms ease-out",
-    "reducedMotion": "opacity changes at 150ms only, notch set instantly, tick drawn complete, no blur or offset"
+    "reducedMotion": "no transforms, offsets or blur on the label, notch, messages, count or tick; colour and opacity changes at 150ms or less; notch set instantly; tick drawn complete"
+  },
+  "validation": {
+    "validate": "a function (value) => boolean passed by the host. Without it there is no error and no success tick",
+    "idle": "an invalid value is called out only after 800ms of rest, or when the field is left",
+    "valid": "a valid value clears the error straight away and shows the success text and tick",
+    "demo": "the demo passes an email check: local part, @, domain and a top-level domain of two or more letters"
+  },
+  "counter": {
+    "appears": "only once the value reaches 80% of maxLength; at rest with no value near the limit, nothing shows",
+    "limit": "the count turns to the error colour at maxLength, and the input stops there",
+    "demo": "maxLength 22, so the count appears at 18 characters"
   },
   "responsive": {
     "all": "fluid to 420px; the field and helper row share one container; touch targets stay the full field height (56px or 64px)",
-    "widths": "designed at 320, 390, 768 and 1440px; the label, notch and counter never overflow the field",
+    "widths": "designed at 320, 390, 768 and 1440px; the label, notch, slots and count never overflow the field",
     "touch": "the whole field is the hit target, not the label; tapping the label focuses the input"
   },
   "accessibility": [
-    "native input type email with inputMode email and autoComplete email; spellCheck off",
+    "native input that takes type, name, autoComplete, inputMode, required, spellCheck and any other input attribute as passed",
     "label associated with htmlFor; the label is pointer-events none so taps reach the input",
-    "aria-invalid true in the error state; aria-describedby points at the message container",
+    "onFocus, onBlur and onChange composed with the internal handlers; value and onValueChange work as a controlled pair",
+    "aria-invalid true in the error state; aria-describedby points at the message container and merges any host ids",
     "message container aria-live polite, so the error and success copy is announced once per change",
-    "disabled uses the native disabled attribute and dims the field to 42% opacity with cursor not-allowed",
-    "decorative layers, the mail glyph and the tick are aria-hidden",
-    "focus is shown on the field with a 2px ring; text inputs always show focus, so the ring is not limited to keyboard use"
+    "disabled uses the native disabled attribute and dims the body to 42% opacity with cursor not-allowed; the wrapper carries aria-disabled",
+    "decorative layers, the prefix glyph and the tick are aria-hidden",
+    "focus is shown on the border as a 1.5px line at 0.90 ink; the field is keyboard operable with no extra ring"
   ],
   "content": {
     "label": "Work email",
     "helper": "We’ll send receipts and invoices here.",
     "errorText": "Add a domain, like ana@studio.co",
     "successText": "Looks good. Receipts go here.",
-    "counter": "Max 40 at rest, then 32 / 40 from 80% of the limit"
+    "count": "hidden at rest, then 18 / 22 from 80% of a 22-character limit"
   },
   "avoid": [
     "a filled background behind the label, or a Material-style underline field",
     "a glow, gradient or coloured fill on focus",
+    "an outer focus ring or halo that runs over the notch",
     "a red warning triangle or a shake animation on error",
     "the label jumping between positions instead of rising along one path",
-    "a live counter before 80% of the limit",
+    "a count before 80% of the limit, or a permanent 'Max N' label",
     "a success tick that fades in rather than drawing",
-    "layout shift when the message changes or the label rises",
+    "layout shift when the message changes, the label rises or the count appears",
     "blur or opacity on the input text itself",
     "emoji or decorative sparkles anywhere in the field",
     "per-frame React state for the notch edges"
