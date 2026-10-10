@@ -1,0 +1,82 @@
+{
+  "component": "AiThinkingStates",
+  "intent": "An honest working indicator for an AI reply. It shows a plain-language state (\"Searching 12 sources…\") with one of three quiet motions: a shimmer that runs along the label text only, a 3×3 dot comet that lights in sequence, or three ticks that light in turn. The label cross-fades when the state changes, inside a width reserved for every state so the line never moves. It sits inline in a sentence or beside a button and never invents progress.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 with @container on the demo card and CSS custom properties for tempo, play state and palette",
+    "animation": "motion/react for the label cross-fade (AnimatePresence, keyed motion span) and the demo entrance; CSS keyframes for the ambient loops, namespaced ats-*, injected once with a React 19 style precedence tag; speed applied as a WAAPI playbackRate on the ats-* animations"
+  },
+  "layout": {
+    "root": "inline-flex span, items-center, align-middle, max-w-full. Not a container query: @container would make an inline box size to zero. Gap 10px md, 8px sm. A glyph variant adds a leading 0.5em inset so the glyph does not attach to the sentence before it",
+    "shimmer": "no glyph; the label is the indicator",
+    "matrix": "grid-cols-3 of rounded dots; 18px square at md (4px dots, 3px pitch), 13px at sm (3px dots, 2px pitch)",
+    "steps": "three rounded ticks in a row, 2px wide; 8px tall at md with 4px gaps, 7px tall at sm with 3px gaps; centred on the x-height",
+    "reserve": "a reserve list of every state the indicator will show; each is rendered invisible in the same grid cell as the live label, so the width is set by the widest state and does not follow the label while it cycles",
+    "label": "inline grid with one shared cell so outgoing and incoming text overlap and nothing reflows; the label wraps inside its parent and is never truncated",
+    "demo": "a 540px message card on a stage: a meta line, a paragraph ending in the indicator inline, a hairline, a footer with a short note and a Stop/Resume button; a three-option segmented switch below the card (shimmer, matrix, steps). Stop swaps the inline indicator for a still 'Stopped · draft kept' line"
+  },
+  "typography": {
+    "label": "Geist (font-sans) 500, tracking -0.01em; 15px / 24px at md, 13px / 20px at sm",
+    "shimmerText": "same size and weight as the label; resting colour is the base tone, the sweep highlight is the ink tone",
+    "demoMeta": "mono 11px uppercase, tracking 0.14em",
+    "demoBody": "15px / 28px, text-pretty"
+  },
+  "color": {
+    "approach": "monochrome; no accent. Two palettes written to CSS variables on the root (--ats-ink, --ats-body, --ats-base, --ats-rest).",
+    "dark": "ink #f4f4f5 for the lit dot, comet head and shimmer highlight; body #c6c6cc for the settled label and tick glyph; base #8a8a93 for shimmer resting text (about 5.6:1 on #0e0e10) and comet tail; rest #45454d for unlit dots",
+    "light": "ink #18181b; body #3f3f46; base #71717a (about 4.8:1 on white); rest #c4c4ca",
+    "demoStage": "dark: #000 page, #0e0e10 card, #232327 hairline, #1b1b1e rule, #2a2a30 hover chip; light: #f4f4f5 page, #fff card, #e4e4e7 hairline"
+  },
+  "motion": {
+    "shimmer": "background-clip text on the label only; a band of ink 12% wide (44% to 56% of the gradient) on a 250% background, sweeping left to right; 2200ms linear infinite",
+    "matrix": "outer ring lights clockwise as a three-step comet: ink at 18% of the loop, body at 30%, base at 42%, rest by 50%; the centre lights at phase 0.5; 1200ms ease-in-out infinite",
+    "steps": "three ticks; each brightens to body colour at about 16% of the loop and falls back to 28% opacity by a third of it, staggered by a third of the loop so one tick is lit at a time; 1500ms ease-in-out infinite. No fill and no left-to-right sweep",
+    "phase": "each element uses animation-delay of (phase - 1) times the cycle, so offsets persist and nothing waits on mount",
+    "speed": "the cycle is fixed per variant; speed sets the playbackRate of the running ats-* animations (clamped 0.25 to 4), so a change of tempo keeps every element at its place in its loop",
+    "paused": "animation-play-state from a root variable, freezing every loop on its current frame",
+    "labelChange": "outgoing: opacity 0, y -4px, blur 3px over 160ms ease-in; incoming: from y 4px and blur 3px to rest over 260ms ease-out; shared grid cell so the line never reflows",
+    "reducedMotion": "no loops; shimmer shows the base tone only; matrix shows its top row as a still comet (ink, body, base); steps show the first tick at full opacity and the other two at 35%; label fades in 150ms with no offset or blur",
+    "demoEntrance": "card rises 12px out of an 8px blur over 500ms ease-out on mount",
+    "demoScript": "after a 600ms pause the cursor clicks Matrix, Steps and Shimmer in turn, each click 1500ms apart; the phase label holds on Reading files… until the first pick, and each pick advances it and restarts its timer, so every click lands a cross-fade"
+  },
+  "responsive": {
+    "component": "inline; the label wraps when its parent is narrow and never sets a width of its own beyond the reserved states",
+    "demo": "card is fluid to 540px; footer wraps below the card's inner width; variant switch stays centred with 44px touch targets below 640px; Stop is 44px tall below the card's md container width and 36px above it; checked at 390px with no horizontal overflow"
+  },
+  "accessibility": [
+    "visual indicator is aria-hidden; the label is repeated in one sr-only role=status region so each state is announced once, politely",
+    "no interactive elements inside the component; beside a button, the button carries its own visible name that matches its accessible name, and the indicator stays aria-hidden",
+    "the demo's Stop button is a real toggle: it stops the reply and offers Resume, with a visible label that matches its accessible name",
+    "variant switch is a group with aria-label and buttons with aria-pressed; focus ring is 2px, offset 2px, in currentColor",
+    "reduced motion keeps every state legible with no loops; contrast of label text meets WCAG AA on both palettes",
+    "no reliance on colour alone: the state is always spelled out in the label"
+  ],
+  "content": {
+    "defaults": {
+      "label": "Reading files…",
+      "cycle": [
+        "Reading files…",
+        "Searching 12 sources…",
+        "Writing…"
+      ],
+      "message": "Three Q3 reports cover churn, so I’m checking each figure against its source before drafting the board summary.",
+      "footer": "Stop keeps the draft so far.",
+      "footerResumed": "Resume picks up from this point.",
+      "stopped": "Stopped · draft kept",
+      "meta": "Research run · 14:02"
+    },
+    "rules": "labels name a real state in plain words; the demo holds on its first state until the first variant pick, then advances the phase label on each pick and every 2400ms, unless a label is pinned, the reply is stopped, paused or reduced motion is on"
+  },
+  "avoid": [
+    "a percentage, count-up or progress fill that implies a known total",
+    "a left-to-right fill or a row of bars that reads as a progress meter or as an em-dash run",
+    "sparkle icons, gradient halos, orbiting rings or bouncing dots",
+    "colour beyond the greyscale ink, and any accent used for decoration",
+    "a pill or badge around the label",
+    "an ellipsis animation, typing cursor or a looping text swap that never settles on a state",
+    "a width that follows the label while it cycles, so the surrounding sentence or button reflows",
+    "a button that looks like it stops something but does nothing, or whose visible text differs from its accessible name",
+    "a loop that keeps running under reduced motion"
+  ]
+}

@@ -1,0 +1,166 @@
+{
+  "slug": "ai-thinking-states",
+  "name": "Thinking States",
+  "tier": "free",
+  "platform": "web",
+  "category": "ai",
+  "description": "Honest working indicators for AI replies: a shimmer along the label, a 3×3 dot comet, or three ticks lit in turn, with a phase label that cross-fades in place.",
+  "tags": [
+    "ai",
+    "thinking",
+    "loading state",
+    "streaming",
+    "shimmer",
+    "dot matrix",
+    "agent status",
+    "monochrome"
+  ],
+  "dependencies": [
+    "motion"
+  ],
+  "theme": "dark",
+  "previewHeight": 620,
+  "usage": "import { AiThinkingStates } from \"@/components/design-for-ai/ai-thinking-states\";\n\nconst STATES = [\"Reading files…\", \"Searching 12 sources…\", \"Writing…\"];\n\n<p className=\"text-[15px] leading-7\">\n  Three reports cover churn, so I’m checking each figure before drafting. <AiThinkingStates label=\"Searching 12 sources…\" reserve={STATES} />\n</p>\n\n<div className=\"flex items-center gap-4\">\n  <AiThinkingStates variant=\"matrix\" size=\"sm\" label=\"Writing…\" reserve={STATES} />\n  <button type=\"button\" className=\"inline-flex h-11 items-center rounded-[10px] px-3.5\">Stop</button>\n</div>",
+  "props": [
+    {
+      "name": "variant",
+      "type": "\"shimmer\" | \"matrix\" | \"steps\"",
+      "default": "\"shimmer\"",
+      "description": "shimmer runs a highlight along the label text only; matrix runs a 3×3 dot comet; steps lights three short ticks in turn, with no fill and no total."
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "default": "\"Reading files…\"",
+      "description": "The honest state in plain words. It is the only thing the component shows, so it should name what the system is actually doing. Cross-fades when it changes."
+    },
+    {
+      "name": "reserve",
+      "type": "readonly string[]",
+      "default": "[]",
+      "description": "Every state the indicator will show. The widest one sets the width, so the line and any button around it never resize while the label cycles. Pass the states you will display."
+    },
+    {
+      "name": "speed",
+      "type": "number",
+      "default": "1",
+      "description": "Multiplies the tempo of the loop. 2 runs twice as fast; clamped between 0.25 and 4. Changing it keeps every element at its place in the loop."
+    },
+    {
+      "name": "size",
+      "type": "\"sm\" | \"md\"",
+      "default": "\"md\"",
+      "description": "md sits inside a message at body size; sm sits inside a button or a dense row at 13px."
+    },
+    {
+      "name": "paused",
+      "type": "boolean",
+      "default": "false",
+      "description": "Freezes the indicator on the frame it is showing, for a stream that has stalled or a tab the user has put aside."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Palette for the surface the indicator sits on. Greyscale in both."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "description": "Extra classes on the root span, for spacing or alignment inside a line."
+    }
+  ],
+  "demo": {
+    "steps": [
+      "wait:600",
+      "click:@variant-matrix",
+      "wait:1500",
+      "click:@variant-steps",
+      "wait:1500",
+      "click:@variant-shimmer",
+      "wait:700"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "variant",
+      "label": "Variant",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "shimmer",
+          "label": "Shimmer"
+        },
+        {
+          "value": "matrix",
+          "label": "Matrix"
+        },
+        {
+          "value": "steps",
+          "label": "Steps"
+        }
+      ],
+      "default": "shimmer"
+    },
+    {
+      "prop": "label",
+      "label": "Label",
+      "kind": "text",
+      "default": "Reading files…"
+    },
+    {
+      "prop": "speed",
+      "label": "Speed",
+      "kind": "slider",
+      "min": 0.5,
+      "max": 2.5,
+      "step": 0.1,
+      "unit": "x",
+      "default": 1
+    },
+    {
+      "prop": "size",
+      "label": "Size",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "sm",
+          "label": "Small"
+        },
+        {
+          "value": "md",
+          "label": "Medium"
+        }
+      ],
+      "default": "md"
+    },
+    {
+      "prop": "paused",
+      "label": "Paused",
+      "kind": "toggle",
+      "default": false
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark"
+    },
+    {
+      "prop": "$replay",
+      "label": "Replay",
+      "kind": "action"
+    }
+  ],
+  "added": "2026-10-10"
+}
