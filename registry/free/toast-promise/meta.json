@@ -157,7 +157,7 @@
     "steps": [
       "wait:300",
       "click:@archive",
-      "wait:2600",
+      "wait:1000",
       "hover:@toast",
       "wait:700",
       "click:@undo",

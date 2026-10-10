@@ -36,9 +36,9 @@
     "countdown": "a motion value runs linearly 1 to 0 over the success window whether or not Undo is on; hover, focus or a hidden tab pauses it in place and resume continues from the same point; empty means the toast leaves and onDismiss runs; the ring is drawn only when Undo is on",
     "undo": "Undo appears with a 220ms scale from 0.92 and opacity; pressing it swaps the glyph to a return arrow, restores the copy and leaves after 1.6s",
     "retry": "on error with onRetry set, a quiet text button fades in 4px upward; pressing it calls onRetry and runs the job again from loading",
-    "swipe": "horizontal drag with 0.35 rubber band; past 90px or faster than 500px/s it dismisses in the drag direction (420px fly and fade); otherwise a spring back (stiffness 420, damping 36); touch-action pan-y",
+    "swipe": "horizontal drag with a 0.35 rubber band from the first pixel (zero drag constraints); past 90px or faster than 500px/s it dismisses in the drag direction (420px fly and fade); otherwise a spring back (stiffness 420, damping 36); touch-action pan-y",
     "exit": "dismiss drops 8px and fades over 220ms on cubic-bezier(0.4, 0, 1, 1)",
-    "reducedMotion": "no rise, blur, fly, spin or sweep; opacity changes over 150ms; the countdown still drains because it reports time"
+    "reducedMotion": "no rise, blur, fly, spin or sweep; the loading hairline becomes a faint full-width track; opacity changes over 150ms; the countdown still drains because it reports time"
   },
   "responsive": {
     "widths": "designed at 320, 390, 768, 1024, 1440 and 1920px: the card fills a narrow container and is 392px at most; the layer's inset follows its container width",
@@ -47,7 +47,9 @@
   },
   "accessibility": [
     "a visually hidden role=status with aria-live=polite lives in the always-mounted layer, starts empty and receives 'title. description' on the next frame after each status change; the countdown never announces",
-    "the card has aria-labelledby pointing at its title",
+    "the card is a div with role=group and aria-labelledby pointing at its title (not a landmark; the live region announces)",
+    "Undo moves focus to the Dismiss button, so focus survives Undo unmounting",
+    "hover and focus are cleared when the toast leaves and read live from the DOM when the next one opens, so a stale flag never freezes the countdown",
     "Undo, Retry and dismiss are real buttons; dismiss has aria-label=Dismiss; focus rings are 2px in the current colour, shown for keyboard focus only; Undo's ring sits 9px out, beyond the countdown ring",
     "Escape inside the toast dismisses it",
     "hover pauses the countdown and focus within pauses it too, so a keyboard user can read the copy and reach Undo before it leaves",

@@ -112,6 +112,9 @@ const MOTION = {
   fade: 0.15, // reduced motion
 } as const;
 
+/** A non-breaking space: binds a phrase together so copy wraps as a unit. */
+const NBSP = "\u00A0";
+
 /** The undo ring is a rounded rect 84.5 × 40.5 with radius 20.25: its length, for dash maths. */
 const RING_LENGTH = 2 * Math.PI * 20.25 + 2 * (84.5 - 2 * 20.25);
 
@@ -209,15 +212,22 @@ export function PromiseToast({
     onDismissRef.current = onDismiss;
   });
 
+  const cardRef = useRef<HTMLDivElement>(null);
+  const dismissRef = useRef<HTMLButtonElement>(null);
+
   // Each run gets an id; a result from an older run is ignored, so a re-run never lands on a stale state.
   const attempt = useRef(0);
   const restoreTimer = useRef<number | undefined>(undefined);
 
   const paused = hovered || focused || hiddenTab;
 
+  // Hover and focus are cleared with the card. It unmounts without a pointerleave or blur, so a flag
+  // left behind would freeze the next toast's countdown for good.
   const close = useCallback((dir = 0) => {
     setFlyDir(dir);
     setOpen(false);
+    setHovered(false);
+    setFocused(false);
     onDismissRef.current?.();
   }, []);
 
@@ -226,6 +236,10 @@ export function PromiseToast({
   useEffect(() => {
     const id = ++attempt.current;
     setOpen(true);
+    // Read the live pointer and focus: the card may mount under a pointer that never entered it.
+    const card = cardRef.current;
+    setHovered(card?.matches(":hover") ?? false);
+    setFocused(card?.contains(document.activeElement) ?? false);
     setStatus("loading");
     life.set(1);
     Promise.resolve()
@@ -261,6 +275,8 @@ export function PromiseToast({
     if (status !== "success") return;
     onUndoRef.current?.();
     setStatus("undone");
+    // Undo unmounts as the status changes. Move focus to Dismiss so keyboard users are not dropped to the page.
+    dismissRef.current?.focus({ preventScroll: true });
     window.clearTimeout(restoreTimer.current);
     restoreTimer.current = window.setTimeout(() => close(), MOTION.undone * 1000);
   };
@@ -293,8 +309,9 @@ export function PromiseToast({
       case "loading":
         return { title: loadingTitle, description: loadingDescription };
       case "success":
-        // Non-breaking spaces keep "5 s to undo" on one line when the copy wraps on a phone.
-        return { title: successTitle, description: undo ? `${successDescription} · ${Math.round(duration)} s to undo` : successDescription };
+        // Non-breaking spaces bind the dot and the window to the copy before them, so a wrap never strands
+        // a dot at the end of a line or splits "5 s to undo".
+        return { title: successTitle, description: undo ? `${successDescription}${NBSP}·${NBSP}${Math.round(duration)}${NBSP}s${NBSP}to${NBSP}undo` : successDescription };
       case "error":
         return { title: errorTitle, description: errorDescription };
       case "undone":
@@ -341,8 +358,10 @@ export function PromiseToast({
       <div className={`flex h-full w-full p-4 @md:p-6 ${PLACE[position]}`}>
         <AnimatePresence custom={flyDir}>
           {open && (
-            <motion.section
+            <motion.div
               key="toast"
+              ref={cardRef}
+              role="group"
               data-demo="toast"
               aria-labelledby={`${uid}-title`}
               variants={cardVariants}
@@ -351,7 +370,8 @@ export function PromiseToast({
               exit="leave"
               custom={flyDir}
               drag="x"
-              dragConstraints={{ left: -MOTION.swipe.fly, right: MOTION.swipe.fly }}
+              /* Zero constraints: the card resists from the first pixel (the 0.35 rubber band), not only past a limit. */
+              dragConstraints={{ left: 0, right: 0 }}
               dragElastic={0.35}
               dragMomentum={false}
               onDragEnd={onDragEnd}
@@ -461,6 +481,7 @@ export function PromiseToast({
                     )}
                   </AnimatePresence>
                   <button
+                    ref={dismissRef}
                     type="button"
                     onClick={() => close()}
                     aria-label="Dismiss"
@@ -477,7 +498,8 @@ export function PromiseToast({
               <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-[2px] overflow-hidden">
                 {status === "loading" &&
                   (reduce ? (
-                    <span className="absolute inset-y-0 left-[30%] w-[40%]" style={{ background: palette.track }} />
+                    // A faint full-width track, not a segment: a centred segment reads as a progress bar at an invented value.
+                    <span className="absolute inset-0" style={{ background: palette.track }} />
                   ) : (
                     <motion.span
                       className="absolute inset-y-0 w-2/5"
@@ -500,7 +522,7 @@ export function PromiseToast({
                   />
                 )}
               </div>
-            </motion.section>
+            </motion.div>
           )}
         </AnimatePresence>
       </div>
@@ -616,9 +638,6 @@ const JOB_COPY: Record<Trigger, Partial<PromiseToastProps>> = {
 /** The header count once a job has moved threads out of the inbox. */
 const MOVED_COUNT: Record<Trigger, string> = { archive: "12 archived", snooze: "5 snoozed" };
 
-/** The toast re-runs the job itself, so the demo has nothing to reset on Retry. */
-const RETRY_IN_DEMO = () => undefined;
-
 export type PromiseToastDemoProps = Partial<PromiseToastProps> & {
   /** What the job settles with. Changing it replays the job. */
   outcome?: "success" | "error";
@@ -642,8 +661,13 @@ export default function PromiseToastDemo(overrides: PromiseToastDemoProps = {}) 
 
   const [trigger, setTrigger] = useState<Trigger>(forcedTrigger ?? "archive");
   const [counter, setCounter] = useState(0);
-  // The toast appears on the first click, or on the first control change, and then stays.
+  // The toast is raised once the stage scrolls into view, so the first frame is never an empty band.
+  // A click or a control change raises it too.
   const [armed, setArmed] = useState(false);
+  // Whether a toast is on screen. Drives the footer hint; onDismiss clears it, and the next run raises it again.
+  const [live, setLive] = useState(false);
+  // The run Retry was pressed on. A retry succeeds only for that run, so any new run fails again.
+  const [recoveredKey, setRecoveredKey] = useState<string | null>(null);
   // Which job's threads are out of the inbox right now: set on success, cleared on Undo or a new run.
   const [moved, setMoved] = useState<Trigger | null>(null);
   const touched = Object.keys(overrides).length > 0;
@@ -653,17 +677,25 @@ export default function PromiseToastDemo(overrides: PromiseToastDemoProps = {}) 
     if (forcedTrigger) setTrigger(forcedTrigger);
   }, [forcedTrigger]);
   useEffect(() => {
-    if (touched) setArmed(true);
-  }, [touched]);
+    if (touched || play) setArmed(true);
+  }, [touched, play]);
 
-  const jobMs = touched ? CONTROL_JOB_MS : DEMO_JOB_MS;
+  // The first view runs the job without a click. Reduced motion settles it at once, so the toast opens in success.
+  const jobMs = touched ? CONTROL_JOB_MS : reduce ? 0 : DEMO_JOB_MS;
+
+  // Changing any control replays the job, so the toast always shows the new setting in motion.
+  const runKey = [counter, outcome, trigger, duration, undo, position, theme].join("|");
+
+  useEffect(() => {
+    if (armed) setLive(true);
+  }, [armed, runKey]);
 
   const job = useCallback(
     () =>
       new Promise<void>((resolve, reject) => {
         setMoved(null);
         window.setTimeout(() => {
-          if (outcome === "error") {
+          if (outcome === "error" && recoveredKey !== runKey) {
             reject(new Error("offline"));
             return;
           }
@@ -671,11 +703,8 @@ export default function PromiseToastDemo(overrides: PromiseToastDemoProps = {}) 
           resolve();
         }, jobMs);
       }),
-    [outcome, trigger, jobMs],
+    [outcome, trigger, jobMs, recoveredKey, runKey],
   );
-
-  // Changing any control replays the job, so the toast always shows the new setting in motion.
-  const runKey = [counter, outcome, trigger, duration, undo, position, theme].join("|");
 
   const start = (next: Trigger) => {
     setTrigger(next);
@@ -696,7 +725,7 @@ export default function PromiseToastDemo(overrides: PromiseToastDemoProps = {}) 
   const stagePad = position === "top-right" ? "pt-32 pb-5" : "pt-5 pb-32";
 
   return (
-    <div className="flex min-h-dvh w-full items-center justify-center px-4 py-16 font-sans antialiased sm:px-8" style={{ background: s.backdrop, color: s.ink }}>
+    <div className="flex min-h-dvh w-full items-center justify-center px-[clamp(1rem,4vw,2rem)] py-16 font-sans antialiased" style={{ background: s.backdrop, color: s.ink }}>
       <div className="@container w-full max-w-[560px]">
         <motion.section
           ref={stageRef}
@@ -775,13 +804,24 @@ export default function PromiseToastDemo(overrides: PromiseToastDemoProps = {}) 
               theme={theme}
               strategy="absolute"
               onUndo={() => setMoved(null)}
-              onRetry={RETRY_IN_DEMO}
+              onRetry={() => setRecoveredKey(runKey)}
+              onDismiss={() => {
+                setLive(false);
+                rest.onDismiss?.();
+              }}
             />
           )}
         </motion.section>
 
-        <motion.p variants={riseVariants} initial="hidden" animate={play ? "show" : "hidden"} className="mt-4 text-center font-mono text-[11px]" style={{ color: s.muted }}>
-          Hover the toast to pause the ring · Esc dismisses
+        {/* The hint describes only what is on screen: it holds its line while no toast is up, so nothing shifts. */}
+        <motion.p
+          variants={riseVariants}
+          initial="hidden"
+          animate={play ? "show" : "hidden"}
+          className={`mt-4 text-center font-mono text-[11px] ${live ? "" : "invisible"}`}
+          style={{ color: s.muted }}
+        >
+          {undo ? "Hover the toast to pause the ring. Esc dismisses it from inside." : "Esc dismisses the toast from inside it."}
         </motion.p>
       </div>
     </div>

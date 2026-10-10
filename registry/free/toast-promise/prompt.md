@@ -31,14 +31,16 @@ Build one toast that follows one async job, in React 19 + Tailwind CSS v4 + `mot
 - Countdown: a motion value runs linearly from 1 to 0 over the success window, whether or not Undo is on. Hovering the card, focusing inside it or hiding the tab pauses it where it stands; leaving resumes from that point, so a hover never resets the window. When it empties the toast leaves, and `onDismiss` runs.
 - Swipe: horizontal drag with rubber-band resistance (0.35). A drag past 90px, or a flick faster than 500px/s, dismisses it in that direction (it flies 420px out and fades). Anything shorter springs back to 0 on a stiff spring (stiffness 420, damping 36). Touch keeps vertical scroll (`touch-action: pan-y`).
 - Exit: a dismissed toast drops 8px and fades over 220ms on the ease-in curve.
-- Reduced motion: the rise, the blur, the swipe fly and the spinner and sweep stop. Opacity still changes over 150ms. The countdown still drains, because it reports time, not decoration.
+- Reduced motion: the rise, the blur, the swipe fly and the spinner and sweep stop; the loading hairline becomes a faint full-width track, not a segment. Opacity still changes over 150ms. The countdown still drains, because it reports time, not decoration.
 
 **Behaviour and accessibility**
 - Each run of the job gets an id; a result that arrives after a newer run has started is ignored, so a re-run or a Retry never lands on a stale state. A job that throws synchronously settles as an error.
 - Announce politely: a visually hidden `role="status"` with `aria-live="polite"` sits in the always-mounted layer, empty at first, and receives "title. description" on the next frame after each status change, so the region exists before the words arrive. The countdown never announces.
 - Undo, Retry and dismiss are real buttons with keyboard focus rings (2px, current colour). Undo's ring sits 9px out, beyond the countdown ring, so the ring never hides how much of the window is left. Dismiss has `aria-label="Dismiss"`. Esc inside the toast dismisses it.
 - Touch targets: the visible Undo pill is 32px tall and its hit area reaches 44px. The visible dismiss circle is 28px and its hit area reaches 44px. Retry's hit area also reaches 44px.
-- The card has `aria-labelledby` pointing at its title. Hover pauses are pointer events; focus pauses come from `focus` and `blur`, so keyboard users can read the copy and reach Undo at their own pace.
+- The card is a `div` with `role="group"` and `aria-labelledby` pointing at its title (not a landmark, since the live region already announces). Hover pauses are pointer events; focus pauses come from `focus` and `blur`, so keyboard users can read the copy and reach Undo at their own pace.
+- Pressing Undo moves focus to the Dismiss button, so focus is never dropped to the page as Undo unmounts.
+- Hover and focus are cleared when the toast leaves, and read live from the DOM when the next one opens: a card that unmounts under the pointer never fires pointerleave, and a stale flag would freeze the next countdown.
 
 **Don't**
 - Don't stack several toasts or fan them out: that is `toast-stack`. This is one job, one toast.
