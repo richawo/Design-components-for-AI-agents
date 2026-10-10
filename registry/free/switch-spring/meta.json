@@ -37,7 +37,7 @@
     {
       "name": "checked",
       "type": "boolean",
-      "description": "Controlled state. Update it from onCheckedChange once the change has landed."
+      "description": "Controlled state. The switch only moves when this changes, so update it from onCheckedChange once the change has landed."
     },
     {
       "name": "defaultChecked",
@@ -54,7 +54,12 @@
       "name": "async",
       "type": "boolean",
       "default": "false",
-      "description": "Holds the thumb in a spinner until the promise settles, then lands it. Off, the thumb moves at once and a rejection rolls it back."
+      "description": "Holds the thumb in a spinner until the promise settles, then lands it. Off, the thumb moves at once and a rejection rolls it back. Either way a rejection nudges the thumb and is announced."
+    },
+    {
+      "name": "errorMessage",
+      "type": "string",
+      "description": "Announced politely, and shown by a small nudge of the thumb, when a change is refused. Defaults to \"Couldn't turn on <label>. Try again.\""
     },
     {
       "name": "size",
@@ -77,7 +82,7 @@
     {
       "name": "accent",
       "type": "string",
-      "description": "The fill while on. Leave out for the theme's ink. The dark ink hex #f4f4f5 is read as the theme's ink, so it stays legible on light surfaces."
+      "description": "The fill while on. Leave out for the theme's ink."
     },
     {
       "name": "theme",
@@ -101,7 +106,9 @@
   "demo": {
     "steps": [
       "wait:500",
-      "click:@switch-updates:0.95,0.5",
+      "hover:@switch-updates:0.95,0.5",
+      "wait:320",
+      "click",
       "wait:420",
       "click:@switch-digest:0.95,0.5",
       "wait:420",

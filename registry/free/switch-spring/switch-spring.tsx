@@ -16,7 +16,10 @@ export type SwitchSpringProps = {
   label?: string;
   /** One quiet line under the label, in the muted ink. */
   description?: string;
-  /** Controlled state. Update it from `onCheckedChange` once the change has landed. */
+  /**
+   * Controlled state. The switch only moves when this changes, so update it from
+   * `onCheckedChange` once the change has landed.
+   */
   checked?: boolean;
   /** Starting state when uncontrolled. */
   defaultChecked?: boolean;
@@ -28,8 +31,11 @@ export type SwitchSpringProps = {
   /**
    * Holds the thumb in a spinner until the promise from `onCheckedChange` settles,
    * then lands it. Off, the thumb moves at once and a rejection rolls it back.
+   * Either way a rejection nudges the thumb and is announced.
    */
   async?: boolean;
+  /** Announced, and shown by a nudge of the thumb, when a change is refused. */
+  errorMessage?: string;
   size?: SwitchSpringSize;
   /** Glyphs in the track: a check while on, a cross while off. */
   icons?: boolean;
@@ -53,7 +59,10 @@ const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 /** Space between the thumb and the track edge, in px. */
 const PAD = 2;
 
-/** The dark theme's ink. Read as "the theme's ink" so the default swatch stays legible on light surfaces. */
+/** How far a refused change pulls the thumb toward the side it asked for, in px. */
+const REFUSAL_NUDGE_PX = 3;
+
+/** The dark theme's ink, which the demo maps to the theme's own ink so it stays legible on light surfaces. */
 const DARK_INK = "#f4f4f5";
 
 /** The thumb's widest stretch at full speed, as a fraction of its width. */
@@ -65,15 +74,35 @@ const STRETCH_MAX = 0.14;
  */
 const PEAK_SPEED_PER_TRAVEL = 8;
 
+/*
+ * The row gap and the description tighten inside a container narrower than
+ * 20rem (@xs), which is where a settings list sits on a phone.
+ */
 const SIZES = {
-  sm: { width: 32, height: 18, thumb: 14, glyph: 8, text: "text-[13px]", desc: "text-[12px]", gap: 12 },
-  md: { width: 40, height: 22, thumb: 18, glyph: 9, text: "text-[14px]", desc: "text-[12.5px]", gap: 14 },
-  lg: { width: 52, height: 30, thumb: 24, glyph: 11, text: "text-[16px]", desc: "text-[13.5px]", gap: 16 },
+  sm: { width: 32, height: 18, thumb: 14, glyph: 8, text: "text-[13px]", desc: "text-[12px]", row: "gap-3 @max-xs:gap-2" },
+  md: {
+    width: 40,
+    height: 22,
+    thumb: 18,
+    glyph: 9,
+    text: "text-[14px]",
+    desc: "text-[12.5px] @max-xs:text-[12px]",
+    row: "gap-3.5 @max-xs:gap-2.5",
+  },
+  lg: {
+    width: 52,
+    height: 30,
+    thumb: 24,
+    glyph: 11,
+    text: "text-[16px]",
+    desc: "text-[13.5px] @max-xs:text-[12px]",
+    row: "gap-4 @max-xs:gap-3",
+  },
 } as const;
 
 const THEMES = {
   dark: {
-    ink: "#f4f4f5",
+    ink: DARK_INK,
     paper: "#0b0b0c",
     thumbOff: "#f4f4f5",
     muted: "#8a8a93",
@@ -171,6 +200,7 @@ export function SwitchSpring({
   defaultChecked = false,
   onCheckedChange,
   async: waitsForChange = false,
+  errorMessage,
   size = "md",
   icons = false,
   labelSide = "left",
@@ -182,8 +212,10 @@ export function SwitchSpring({
   const id = useId();
   const reduce = !!useReducedMotion();
   const mounted = useRef(false);
+  const isControlled = checked !== undefined;
   const [on, setOn] = useState(checked ?? defaultChecked);
   const [pending, setPending] = useState(false);
+  const [refusal, setRefusal] = useState<string | null>(null);
 
   useEffect(() => {
     mounted.current = true;
@@ -199,8 +231,7 @@ export function SwitchSpring({
   const geometry = SIZES[size];
   const palette = THEMES[theme];
   const travel = geometry.width - geometry.thumb - PAD * 2;
-  // A dark ink swatch means "the theme's ink", so it never lands as near-invisible on light.
-  const fill = accent && accent.toLowerCase() !== DARK_INK ? accent : palette.ink;
+  const fill = accent ?? palette.ink;
 
   /* Thumb motion. The position is a spring; the stretch is read from its speed. */
   const x = useMotionValue(on ? travel : 0);
@@ -220,6 +251,11 @@ export function SwitchSpring({
   // Stretch from the trailing edge so the leading edge is the part that reaches ahead.
   const originX = useTransform(velocity, (v) => (v >= 0 ? 0 : 1));
 
+  /* Refusal. The nudge is kept apart from the position so it never fights the spring. */
+  const nudge = useMotionValue(0);
+  const thumbX = useTransform([x, nudge], ([base, pull]: number[]) => base + pull);
+  const dim = useMotionValue(1);
+
   useEffect(() => {
     const target = on ? travel : 0;
     if (reduce) {
@@ -230,35 +266,49 @@ export function SwitchSpring({
     return () => spring.stop();
   }, [on, travel, reduce, x]);
 
+  const refuse = (next: boolean) => {
+    if (!mounted.current) return;
+    setRefusal(errorMessage ?? `Couldn't turn ${next ? "on" : "off"} ${label}. Try again.`);
+    // Reduced motion keeps the meaning as an opacity dip; the pull is a transform.
+    if (reduce) animate(dim, [1, 0.5, 1], { duration: 0.15, ease: EASE_OUT });
+    else animate(nudge, [0, next ? REFUSAL_NUDGE_PX : -REFUSAL_NUDGE_PX, 0], SPRING_UI);
+  };
+
   const request = (next: boolean) => {
     if (disabled || pending) return;
+    setRefusal(null);
     if (!onCheckedChange) {
-      setOn(next);
+      if (!isControlled) setOn(next);
       return;
     }
-    const outcome = Promise.resolve(onCheckedChange(next));
+    const outcome = Promise.resolve(onCheckedChange(next)).then(
+      () => true,
+      () => false,
+    );
     if (!waitsForChange) {
-      setOn(next);
-      outcome.catch(() => {
-        if (mounted.current) setOn(!next);
+      if (!isControlled) setOn(next);
+      outcome.then((landed) => {
+        if (landed || !mounted.current) return;
+        if (!isControlled) setOn(!next);
+        refuse(next);
       });
       return;
     }
     setPending(true);
-    outcome
-      .then(
-        () => {
-          if (mounted.current) setOn(next);
-        },
-        () => undefined,
-      )
-      .finally(() => {
-        if (mounted.current) setPending(false);
-      });
+    outcome.then((landed) => {
+      if (!mounted.current) return;
+      setPending(false);
+      if (landed) {
+        if (!isControlled) setOn(next);
+      } else {
+        refuse(next);
+      }
+    });
   };
 
   const describedBy = [description ? `${id}-desc` : null, waitsForChange ? `${id}-async` : null].filter(Boolean).join(" ");
 
+  // The track's colour comes from these variables, never inline, so the hover steps can win.
   const vars = {
     "--sw-ink": palette.ink,
     "--sw-paper": palette.paper,
@@ -266,12 +316,20 @@ export function SwitchSpring({
     "--sw-muted": palette.muted,
     "--sw-thumb-shadow": palette.thumbShadow,
     "--sw-fill": fill,
-    "--sw-fill-hover": `color-mix(in srgb, ${fill} 90%, white)`,
+    // Steps 12% toward the surface, so the hover reads on white and near-white fills alike.
+    "--sw-fill-hover": `color-mix(in srgb, ${fill} 88%, ${palette.paper})`,
     "--sw-track": `color-mix(in srgb, ${palette.ink} 12%, transparent)`,
     "--sw-track-hover": `color-mix(in srgb, ${palette.ink} 18%, transparent)`,
     "--sw-track-ring": `color-mix(in srgb, ${palette.ink} 16%, transparent)`,
     "--sw-glyph-off": `color-mix(in srgb, ${palette.ink} 45%, transparent)`,
+    "--sw-bg": on ? "var(--sw-fill)" : "var(--sw-track)",
+    "--sw-bg-hover": on ? "var(--sw-fill-hover)" : "var(--sw-track-hover)",
   } as CSSProperties;
+
+  // Hover and press reach the track from anywhere on the row, so the label text gives feedback too.
+  const interactive = disabled
+    ? ""
+    : "group-hover/switch:bg-(--sw-bg-hover) group-active/switch:scale-[0.97]";
 
   const track = (
     <button
@@ -284,10 +342,10 @@ export function SwitchSpring({
       aria-busy={pending || undefined}
       disabled={disabled}
       onClick={() => request(!on)}
-      style={{ width: geometry.width, height: geometry.height, backgroundColor: on ? "var(--sw-fill)" : "var(--sw-track)" }}
-      className={`relative shrink-0 rounded-full transition-[background-color,transform] duration-150 ease-out enabled:active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--sw-ink) disabled:cursor-not-allowed ${
-        on ? "enabled:hover:bg-(--sw-fill-hover)" : "ring-1 ring-inset ring-(--sw-track-ring) enabled:hover:bg-(--sw-track-hover)"
-      }`}
+      style={{ width: geometry.width, height: geometry.height }}
+      className={`relative shrink-0 rounded-full bg-(--sw-bg) transition-[background-color,scale] duration-150 ease-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--sw-ink) disabled:cursor-not-allowed ${
+        on ? "" : "ring-1 ring-inset ring-(--sw-track-ring)"
+      } ${interactive}`}
     >
       {icons ? <TrackGlyphs on={on} geometry={geometry} reduce={reduce} /> : null}
       <motion.span
@@ -298,10 +356,11 @@ export function SwitchSpring({
           top: (geometry.height - geometry.thumb) / 2,
           width: geometry.thumb,
           height: geometry.thumb,
-          x,
+          x: thumbX,
           scaleX,
           scaleY,
           originX,
+          opacity: dim,
           backgroundColor: on ? "var(--sw-paper)" : "var(--sw-thumb-off)",
           color: on ? "var(--sw-ink)" : "var(--sw-paper)",
           boxShadow: "var(--sw-thumb-shadow)",
@@ -327,6 +386,9 @@ export function SwitchSpring({
           Confirms with the server before it switches.
         </span>
       ) : null}
+      <span role="status" aria-live="polite" className="sr-only">
+        {refusal}
+      </span>
     </span>
   );
 
@@ -335,8 +397,7 @@ export function SwitchSpring({
       <label
         htmlFor={id}
         data-side={labelSide}
-        className={`flex items-center ${disabled ? "cursor-not-allowed opacity-40" : "cursor-pointer"}`}
-        style={{ gap: geometry.gap }}
+        className={`group/switch flex items-center ${geometry.row} ${disabled ? "cursor-not-allowed opacity-40" : "cursor-pointer"}`}
       >
         {labelSide === "right" ? (
           <>
@@ -368,6 +429,7 @@ const DEMO_ROWS = [
     label: "Product updates",
     description: "One note a month, when something you use changes.",
     async: false,
+    defaultOn: false,
   },
   {
     key: "digest",
@@ -375,6 +437,7 @@ const DEMO_ROWS = [
     label: "Weekly digest",
     description: "Mondays at 8:00, summarising what changed in your notes.",
     async: false,
+    defaultOn: true,
   },
   {
     key: "sync",
@@ -382,6 +445,7 @@ const DEMO_ROWS = [
     label: "Sync to devices",
     description: "Pushes changes to your other devices.",
     async: true,
+    defaultOn: false,
   },
 ] as const;
 
@@ -409,7 +473,11 @@ function useCountUp(target: number, reduce: boolean) {
   return shown;
 }
 
-type DemoOverrides = Partial<SwitchSpringProps>;
+/**
+ * The demo owns each switch's state, so the controlled and handler props stay with it.
+ * Every other prop reaches the featured (async) row.
+ */
+type DemoOverrides = Partial<Omit<SwitchSpringProps, "checked" | "defaultChecked" | "onCheckedChange">>;
 
 export default function SwitchSpringDemo({
   size = "md",
@@ -419,14 +487,17 @@ export default function SwitchSpringDemo({
   theme = "dark",
   async: holdsChange = true,
   disabled = false,
+  ...featured
 }: DemoOverrides = {}) {
   const reduce = !!useReducedMotion();
   const cardRef = useRef<HTMLDivElement>(null);
   const inView = useInView(cardRef, { once: true, amount: 0.3 });
-  const [flags, setFlags] = useState<boolean[]>(() => DEMO_ROWS.map(() => false));
+  const [flags, setFlags] = useState<boolean[]>(() => DEMO_ROWS.map((row) => row.defaultOn));
   const setFlag = (index: number, value: boolean) => setFlags((prev) => prev.map((f, i) => (i === index ? value : f)));
   const onCount = flags.filter(Boolean).length;
   const shownCount = useCountUp(inView ? onCount : 0, reduce);
+  // The default swatch is the theme's own ink, so it is passed as no accent at all.
+  const shownAccent = accent === DARK_INK ? undefined : accent;
 
   const stage = theme === "dark" ? STAGE_DARK : STAGE_LIGHT;
   const rise = reduce
@@ -435,7 +506,7 @@ export default function SwitchSpringDemo({
   const landing = inView ? "shown" : "hidden";
 
   return (
-    <div className="flex min-h-full items-center justify-center bg-(--stage-bg) p-6 sm:p-10" style={stage}>
+    <div className="flex min-h-dvh w-full items-center justify-center bg-(--stage-bg) p-6 sm:p-10" style={stage}>
       <motion.div
         ref={cardRef}
         variants={rise}
@@ -471,18 +542,25 @@ export default function SwitchSpringDemo({
                 <SwitchSpring
                   label={row.label}
                   description={row.description}
+                  defaultChecked={row.defaultOn}
                   onCheckedChange={
                     row.async
-                      ? (next) => wait(DEMO_HOLD_MS).then(() => setFlag(i, next))
+                      ? (next) =>
+                          wait(DEMO_HOLD_MS).then(() => {
+                            // Turning sync off is refused here, so the refusal beat can be seen without a control.
+                            if (!next) throw new Error("Sync can't be paused right now.");
+                            setFlag(i, next);
+                          })
                       : (next) => setFlag(i, next)
                   }
                   async={row.async ? holdsChange : false}
                   size={size}
                   icons={icons}
                   labelSide={labelSide}
-                  accent={accent}
+                  accent={shownAccent}
                   theme={theme}
                   disabled={disabled}
+                  {...(row.async ? featured : {})}
                 />
               </div>
             </motion.li>
