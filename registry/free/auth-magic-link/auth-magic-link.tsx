@@ -208,12 +208,22 @@ function detectProvider(email: string, sender: string, extra?: Record<string, Ma
   return null;
 }
 
+/** Relative luminance of #0a0a0b, the dark label ink. */
+const INK_DARK_LUMINANCE = 0.003;
+
+/** CTA hover wash: a faint veil of the label colour. */
+const WASH = { rest: { opacity: 0 }, hover: { opacity: 0.07 } };
+
 /** Black or white, whichever reads on the accent. */
 function inkOn(hex: string) {
   const v = hex.replace("#", "");
   const full = v.length === 3 ? [...v].map((c) => c + c).join("") : v.slice(0, 6);
   const [r, g, b] = [0, 2, 4].map((i) => parseInt(full.slice(i, i + 2), 16) / 255).map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
-  return 0.2126 * r + 0.7152 * g + 0.0722 * b > 0.4 ? "#0a0a0b" : "#ffffff";
+  const L = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  // Pick by real WCAG contrast against each ink (the crossover sits near L = 0.18, not 0.5).
+  const onDark = (L + 0.05) / (INK_DARK_LUMINANCE + 0.05);
+  const onWhite = 1.05 / (L + 0.05);
+  return onDark >= onWhite ? "#0a0a0b" : "#ffffff";
 }
 
 /** Palette → `--ml-*` variables (camelCase keys become kebab-case). */
@@ -888,10 +898,11 @@ function PrimaryButton({
   const cls = `group/cta relative flex h-11 w-full items-center justify-center overflow-hidden rounded-[11px] bg-[var(--ml-accent)] text-[14.5px] font-medium tracking-[-0.005em] text-[var(--ml-on-accent)] shadow-[inset_0_1px_0_rgba(255,255,255,0.35),inset_0_-1px_0_rgba(0,0,0,0.12)] ${focusRing} ${className}`;
   const t = reduce ? { duration: 0 } : { layout: { duration: MOTION.morph, ease: EASE_IN_OUT } };
   // Hover: a wash of the label colour, so it darkens a light accent and lightens a dark one.
-  const wash = <span aria-hidden="true" className="absolute inset-0 bg-current opacity-0 transition-opacity duration-150 group-hover/cta:opacity-[0.07]" />;
+  // Driven by motion's whileHover (not CSS :hover) so the scripted demo cursor shows it too.
+  const wash = <motion.span aria-hidden="true" variants={WASH} transition={{ duration: 0.15 }} className="absolute inset-0 bg-current" />;
   if (href)
     return (
-      <motion.a layoutId={layoutId} transition={t} data-demo={demo} href={href} target="_blank" rel="noopener noreferrer" whileTap={reduce ? undefined : { scale: 0.98 }} className={cls}>
+      <motion.a layoutId={layoutId} transition={t} data-demo={demo} initial="rest" whileHover="hover" href={href} target="_blank" rel="noopener noreferrer" whileTap={reduce ? undefined : { scale: 0.98 }} className={cls}>
         {wash}
         {children}
       </motion.a>
@@ -901,6 +912,8 @@ function PrimaryButton({
       layoutId={layoutId}
       transition={t}
       data-demo={demo}
+      initial="rest"
+      whileHover={disabled ? undefined : "hover"}
       type={type ?? "button"}
       disabled={disabled}
       aria-disabled={disabled || undefined}
@@ -1092,6 +1105,7 @@ export default function AuthMagicLinkDemo({ expired: forcedExpired, theme = "dar
   const uid = useId().replace(/[^a-zA-Z0-9_-]/g, "");
   const [mode, setMode] = useState<(typeof DEMO_MODES)[number]["id"]>(forcedExpired ? "expired" : "fresh");
   const { wait } = useTimeouts();
+  const replaceOnType = useRef(false);
   const tone = DEMO_TONE[theme];
 
   // The Customize panel and the demo’s own switch drive the same state.
@@ -1105,7 +1119,32 @@ export default function AuthMagicLinkDemo({ expired: forcedExpired, theme = "dar
   };
 
   return (
-    <div className="flex min-h-dvh flex-col items-center justify-center px-4 py-12 transition-colors duration-300 sm:py-16" style={{ background: STAGE[theme] }}>
+    <div
+      className="flex min-h-dvh flex-col items-center justify-center px-4 py-12 transition-colors duration-300 sm:py-16"
+      style={{ background: STAGE[theme] }}
+      // The expired view prefills the email. Typing into it (live or on a replay) should replace the prefill, not append to it.
+      onFocusCapture={(e) => {
+        const el = e.target;
+        if (!(el instanceof HTMLInputElement) || el.type !== "email" || !el.value) return;
+        replaceOnType.current = true;
+        setTimeout(() => el.select(), 0);
+      }}
+      onBlurCapture={() => {
+        replaceOnType.current = false;
+      }}
+      onPointerDownCapture={(e) => {
+        if (e.target === document.activeElement) replaceOnType.current = false;
+      }}
+      onKeyDownCapture={(e) => {
+        const el = e.target;
+        if (!replaceOnType.current || !(el instanceof HTMLInputElement)) return;
+        replaceOnType.current = false;
+        if (e.key.length !== 1 || e.metaKey || e.ctrlKey || e.altKey) return;
+        // Same effect as typing over a selection; the native setter keeps React’s value tracker honest.
+        Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set?.call(el, "");
+        el.dispatchEvent(new Event("input", { bubbles: true }));
+      }}
+    >
       <AuthMagicLink
         key={mode}
         expired={mode === "expired"}
