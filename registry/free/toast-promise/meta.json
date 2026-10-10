@@ -21,7 +21,7 @@
   ],
   "theme": "dark",
   "previewHeight": 700,
-  "usage": "import { PromiseToast } from \"@/components/design-for-ai/toast-promise\";\n\n// Positioned inside the nearest relative parent (use strategy=\"fixed\" to pin it to the viewport).\n<div className=\"relative\">\n  <PromiseToast\n    job={() => api.threads.archive(ids)}\n    loadingTitle=\"Archiving 12 threads…\"\n    successTitle=\"Archived 12 threads\"\n    errorTitle=\"Couldn’t archive 12 threads\"\n    undoTitle=\"Restored 12 threads\"\n    onUndo={() => api.threads.restore(ids)}\n  />\n</div>\n\n// Run the job again by changing runKey, for example a new batch id.\n<PromiseToast job={submit} runKey={batchId} position=\"bottom-center\" duration={8} />",
+  "usage": "import { PromiseToast } from \"@/components/design-for-ai/toast-promise\";\n\n// Fills the nearest positioned parent, so give that parent a height (use strategy=\"fixed\" to pin it to the viewport).\n<div className=\"relative h-40\">\n  <PromiseToast\n    job={() => api.threads.archive(ids)}\n    loadingTitle=\"Archiving 12 threads…\"\n    successTitle=\"Archived 12 threads\"\n    errorTitle=\"Couldn’t archive 12 threads\"\n    undoTitle=\"Restored 12 threads\"\n    onUndo={() => api.threads.restore(ids)}\n    onRetry={() => trackRetry(ids)}\n  />\n</div>\n\n// Run the job again by changing runKey, for example a new batch id.\n<PromiseToast job={submit} runKey={batchId} position=\"bottom-center\" duration={8} />\n\n// undo={false}: success still leaves after duration, just without the Undo button and ring.",
   "props": [
     {
       "name": "job",
@@ -57,6 +57,12 @@
       "type": "string",
       "default": "\"Moved to Archive\"",
       "description": "Line under the success title. With undo on, the undo window is appended, e.g. “· 5 s to undo”."
+    },
+    {
+      "name": "retryLabel",
+      "type": "string",
+      "default": "\"Try again\"",
+      "description": "Label on the quiet Retry button. It appears on error only when onRetry is set."
     },
     {
       "name": "errorTitle",
@@ -98,7 +104,7 @@
       "name": "duration",
       "type": "number",
       "default": "5",
-      "description": "The undo window in seconds (2 to 10). The toast leaves when the ring empties."
+      "description": "The success window in seconds (2 to 10). The toast leaves when it ends, with Undo or without it. With Undo on, the ring counts it down."
     },
     {
       "name": "position",
@@ -110,7 +116,7 @@
       "name": "strategy",
       "type": "\"absolute\" | \"fixed\"",
       "default": "\"absolute\"",
-      "description": "Absolute sits in the nearest positioned parent; fixed pins to the viewport."
+      "description": "Absolute fills the nearest positioned parent; fixed pins to the viewport."
     },
     {
       "name": "theme",
@@ -122,6 +128,11 @@
       "name": "onUndo",
       "type": "() => void",
       "description": "Runs when Undo is pressed. Put the change back here."
+    },
+    {
+      "name": "onRetry",
+      "type": "() => void",
+      "description": "Runs when Retry is pressed on an error, just before the job runs again. Without it there is no Retry button."
     },
     {
       "name": "onDismiss",
@@ -136,22 +147,21 @@
     },
     {
       "name": "trigger",
-      "type": "\"archive\" | \"bin\"",
+      "type": "\"archive\" | \"snooze\"",
       "default": "\"archive\"",
-      "description": "Demo only. Which job the toast follows: archive the 12 threads, or move 3 drafts to the bin."
+      "description": "Demo only. Which job the toast follows: archive the 12 threads, or snooze the 5 shown."
     }
   ],
   "added": "2026-10-10",
   "demo": {
     "steps": [
-      "wait:400",
-      "hover:@archive",
-      "click",
-      "wait:1500",
+      "wait:300",
+      "click:@archive",
+      "wait:2600",
       "hover:@toast",
-      "wait:900",
+      "wait:700",
       "click:@undo",
-      "wait:1400"
+      "wait:1200"
     ]
   },
   "controls": [
@@ -217,8 +227,8 @@
           "label": "Archive 12"
         },
         {
-          "value": "bin",
-          "label": "Bin 3 drafts"
+          "value": "snooze",
+          "label": "Snooze 5"
         }
       ]
     },
