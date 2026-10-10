@@ -1,0 +1,76 @@
+{
+  "component": "SwitchSpring",
+  "intent": "A settings switch with weight. The thumb stretches in its direction of travel and lands on a spring, optional glyphs sit in the track, and an async switch holds a spinner on its old position until the change is confirmed. Monochrome by default, one accent prop.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 with CSS variables set on the root",
+    "animation": "motion/react: one spring motion value for position (spring.ui, stiffness 500, damping 40), useVelocity for the stretch, animate for the spring and the count tween, useInView and useReducedMotion for the demo"
+  },
+  "layout": {
+    "row": "label element wrapping the text column and the track; the whole row is the hit target; labelSide left puts the text first, right puts the track first",
+    "gap": "12px sm, 14px md, 16px lg between text and track",
+    "track": "button role=switch, fixed size: sm 32x18 with 14px thumb, md 40x22 with 18px, lg 52x30 with 24px; thumb inset 2px; travel = track - thumb - 4px",
+    "root": "@container, full width, no padding of its own",
+    "demo": "440px card on a theme-following stage, header row (Notifications, count of 3 on), three rows with 1px hairline dividers, the third row async"
+  },
+  "typography": {
+    "label": "Geist 500, tracking -0.01em, 13px sm / 14px md / 16px lg",
+    "description": "Geist 400, 12px sm / 12.5px md / 13.5px lg, line-height 1.45, muted ink",
+    "demoHeader": "mono 11px uppercase, tracking 0.12em, muted; count uses tabular numerals"
+  },
+  "color": {
+    "approach": "CSS variables on the root from the theme prop. Dark: ink #f4f4f5, paper #0b0b0c, thumb off #f4f4f5, muted #8a8a93. Light: ink #18181b, paper #ffffff, thumb off #ffffff, muted #71717a.",
+    "track": "off: ink at 12% with an inset ring at 16% ink, hover 18%; on: the fill (accent prop, or the ink), hover mixes fill 90% with white",
+    "thumb": "on: paper colour; off: thumb-off colour; shadow 0 1px 2px at 45% black plus a 0.5px hairline",
+    "glyphs": "check in paper colour on the fill; cross in ink at 45%",
+    "accent": "one prop. The dark ink hex #f4f4f5 is read as the theme's ink so the default stays legible on light surfaces",
+    "disabled": "row at 40% opacity, cursor-not-allowed, no hover"
+  },
+  "motion": {
+    "position": "one motion value, animate to 0 or travel with spring.ui (stiffness 500, damping 40). Interruptions carry velocity.",
+    "stretch": "s = min(|velocity| / (travel * 8), 1) * 0.14; scaleX = 1 + s; scaleY = 1 - s/2; transform origin is the trailing edge (left while moving on, right while moving off). Zero at rest.",
+    "colour": "track and thumb cross-fade over 150ms ease-out",
+    "press": "track scales to 0.97 over 150ms while enabled",
+    "glyphs": "check draws on 80ms after the thumb starts moving on; cross draws off with the thumb; opacity 200ms ease-out",
+    "pending": "thumb keeps its old position and shows a spinner (animate-spin, stopped under reduced motion); on resolve the thumb springs to the new state and the stretch plays; on reject it stays",
+    "reducedMotion": "position jumps, no stretch, no glyph draw, no spinner rotation, colour and opacity fades at 150ms",
+    "demo": "card rises 12px out of 8px blur over 500ms ease-out; header at 60ms; rows from 160ms, 60ms apart; count tweens 0 to n over 500ms; cursor flips three switches with 420ms between, the third holds 800ms"
+  },
+  "responsive": {
+    "root": "@container, the row flexes; the text column shrinks with min-width 0 and wraps",
+    "demo": "card max-width 440px, full width below that, stage padding 24px and 40px from sm",
+    "widths": "designed at 320, 390, 768, 1024, 1440 and 1920px with no horizontal overflow"
+  },
+  "accessibility": [
+    "role=switch with aria-checked; name via aria-labelledby on the label span; description via aria-describedby",
+    "async adds a visually hidden line 'Confirms with the server before it switches.' referenced from aria-describedby",
+    "aria-busy while pending; further clicks ignored while pending",
+    "Space and Enter toggle through the native button",
+    "focus-visible: 2px outline offset 2px in the ink colour, instant, keyboard only",
+    "decorative glyphs and spinner are aria-hidden",
+    "disabled uses the native disabled attribute",
+    "reduced motion keeps colour and opacity changes and removes transforms, stretch, glyph drawing and spinner rotation"
+  ],
+  "content": {
+    "label": "Email digests (default), or any short setting name",
+    "description": "One muted line of plain copy under the label",
+    "demoRows": [
+      "Product updates: One note a month, when something you use changes.",
+      "Weekly digest: Mondays at 8:00, summarising what changed in your notes.",
+      "Sync to devices: Pushes changes to your other devices. (async)"
+    ],
+    "asyncHint": "Confirms with the server before it switches. (visually hidden)"
+  },
+  "avoid": [
+    "a gradient or glowing track, sparkle or AI iconography, emoji",
+    "a bounce beyond the spring's natural overshoot, or a rotate-in",
+    "per-row colour, tinted tracks that carry no meaning, rainbow accents",
+    "a width change when the spinner appears; the track and thumb keep their size",
+    "a separate 'saving' label or pill; the thumb is the status",
+    "a checkmark that does not draw on, or a cross that appears without the thumb moving",
+    "stretch that persists at rest, or a squash that does not return to 1",
+    "a click target smaller than the row for touch users",
+    "exposing the async hold as visible text at rest; it belongs in the accessible description"
+  ]
+}

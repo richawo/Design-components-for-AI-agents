@@ -1,0 +1,201 @@
+{
+  "slug": "switch-spring",
+  "name": "Spring Switch",
+  "tier": "free",
+  "platform": "web",
+  "category": "selects",
+  "description": "Switches with weight: the thumb stretches in its direction of travel and lands on a spring, glyphs sit in the track, and async switches hold a spinner until confirmed.",
+  "tags": [
+    "switch",
+    "toggle",
+    "settings",
+    "spring",
+    "async",
+    "loading",
+    "accessible",
+    "dark",
+    "monochrome"
+  ],
+  "dependencies": [
+    "motion"
+  ],
+  "theme": "dark",
+  "previewHeight": 460,
+  "usage": "import { SwitchSpring } from \"@/components/design-for-ai/switch-spring\";\n\n<SwitchSpring\n  label=\"Sync to devices\"\n  description=\"Pushes changes to your other devices.\"\n  defaultChecked\n  async\n  onCheckedChange={(next) => api.settings.update({ sync: next })} // return the promise to hold the thumb\n/>\n\n<SwitchSpring label=\"Product updates\" size=\"sm\" icons labelSide=\"right\" accent=\"#7dd3a8\" />",
+  "props": [
+    {
+      "name": "label",
+      "type": "string",
+      "default": "\"Email digests\"",
+      "description": "The switch's name, read by screen readers and set beside the track."
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "description": "One quiet line under the label, in the muted ink."
+    },
+    {
+      "name": "checked",
+      "type": "boolean",
+      "description": "Controlled state. Update it from onCheckedChange once the change has landed."
+    },
+    {
+      "name": "defaultChecked",
+      "type": "boolean",
+      "default": "false",
+      "description": "Starting state when uncontrolled."
+    },
+    {
+      "name": "onCheckedChange",
+      "type": "(checked: boolean) => void | Promise<unknown>",
+      "description": "Runs when the person flips the switch. Return a promise to wait on the change; if it rejects, the switch stays where it was."
+    },
+    {
+      "name": "async",
+      "type": "boolean",
+      "default": "false",
+      "description": "Holds the thumb in a spinner until the promise settles, then lands it. Off, the thumb moves at once and a rejection rolls it back."
+    },
+    {
+      "name": "size",
+      "type": "\"sm\" | \"md\" | \"lg\"",
+      "default": "\"md\"",
+      "description": "Track of 32, 40 or 52 px wide. The label scales with it."
+    },
+    {
+      "name": "icons",
+      "type": "boolean",
+      "default": "false",
+      "description": "Glyphs in the track: a check on the side the thumb has left when on, a cross when off."
+    },
+    {
+      "name": "labelSide",
+      "type": "\"left\" | \"right\"",
+      "default": "\"left\"",
+      "description": "Which side of the track the label sits on. Left reads like a settings list; right suits forms."
+    },
+    {
+      "name": "accent",
+      "type": "string",
+      "description": "The fill while on. Leave out for the theme's ink. The dark ink hex #f4f4f5 is read as the theme's ink, so it stays legible on light surfaces."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "The surface the switch sits on, so its track, thumb and muted text keep their contrast."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": "false",
+      "description": "Disables the switch and dims the row to 40%."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "description": "Extra classes on the root, for spacing inside a list."
+    }
+  ],
+  "added": "2026-10-10",
+  "demo": {
+    "steps": [
+      "wait:500",
+      "click:@switch-updates:0.95,0.5",
+      "wait:420",
+      "click:@switch-digest:0.95,0.5",
+      "wait:420",
+      "click:@switch-sync:0.95,0.5",
+      "wait:1700"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "size",
+      "label": "Size",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "sm",
+          "label": "Small"
+        },
+        {
+          "value": "md",
+          "label": "Medium"
+        },
+        {
+          "value": "lg",
+          "label": "Large"
+        }
+      ],
+      "default": "md",
+      "group": "Look"
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark",
+      "group": "Look"
+    },
+    {
+      "prop": "accent",
+      "label": "Track fill",
+      "kind": "color",
+      "default": "#f4f4f5",
+      "options": [
+        "#f4f4f5",
+        "#7dd3a8",
+        "#ff7a45",
+        "#60a5fa"
+      ],
+      "group": "Look"
+    },
+    {
+      "prop": "icons",
+      "label": "Track glyphs",
+      "kind": "toggle",
+      "default": true,
+      "group": "Look"
+    },
+    {
+      "prop": "labelSide",
+      "label": "Label side",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left",
+      "group": "Layout"
+    },
+    {
+      "prop": "async",
+      "label": "Waits for server",
+      "kind": "toggle",
+      "default": true,
+      "group": "Behaviour"
+    },
+    {
+      "prop": "$replay",
+      "label": "Replay",
+      "kind": "action"
+    }
+  ]
+}
