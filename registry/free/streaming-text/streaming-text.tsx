@@ -421,10 +421,11 @@ function Sources({ sources, hover, onHover, anchor, reduce }: { sources: Streami
   );
 }
 
-function ControlButton({ children, label, onClick, disabled }: { children: ReactNode; label: string; onClick: () => void; disabled?: boolean }) {
+function ControlButton({ children, label, onClick, disabled, demo }: { children: ReactNode; label: string; onClick: () => void; disabled?: boolean; demo?: string }) {
   return (
     <button
       type="button"
+      data-demo={demo}
       onClick={onClick}
       disabled={disabled}
       className={`group/btn inline-flex h-11 items-center gap-2 rounded-full px-4 text-[13.5px] font-medium text-[var(--st-muted)] transition-[color,background-color,transform] duration-150 hover:bg-[var(--st-hover)] hover:text-[var(--st-ink)] active:scale-[0.96] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-[var(--st-muted)] @xl:h-10 ${focusRing}`}
@@ -577,16 +578,16 @@ export function StreamingText({
           <p className="pl-2 font-mono text-[11px] text-[var(--st-faint)]">Answers can be wrong. Check the sources.</p>
           <div className="flex items-center gap-1">
             {live ? (
-              <ControlButton onClick={stream.stop} label="Stop">
+              <ControlButton demo="stop" onClick={stream.stop} label="Stop">
                 <Square className="size-3 fill-current" aria-hidden="true" />
               </ControlButton>
             ) : (
-              <ControlButton onClick={regenerate} label="Regenerate">
+              <ControlButton demo="regenerate" onClick={regenerate} label="Regenerate">
                 {/* The arrow winds back half a turn on hover: a hint of what it does. */}
                 <RotateCcw className="size-3.5 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/btn:-rotate-180 motion-reduce:transition-none" aria-hidden="true" />
               </ControlButton>
             )}
-            <ControlButton onClick={() => copy(plainText(answer))} label={copied ? "Copied" : "Copy"} disabled={live}>
+            <ControlButton demo="copy" onClick={() => copy(plainText(answer))} label={copied ? "Copied" : "Copy"} disabled={live}>
               <CopyIcon copied={copied} reduce={reduce} />
             </ControlButton>
             <span className="sr-only" aria-live="polite">
@@ -599,11 +600,12 @@ export function StreamingText({
   );
 }
 
-export default function StreamingTextDemo() {
+/** The answer card on its stage. Overrides (the page’s Customize panel) go straight to the card; the stage follows the theme. */
+export default function StreamingTextDemo(overrides: Partial<StreamingTextProps> = {}) {
   return (
-    <div className="flex min-h-dvh items-center justify-center px-4 py-12 sm:px-8 sm:py-20" style={{ background: STAGE.dark }}>
+    <div className="flex min-h-dvh items-center justify-center px-4 py-12 sm:px-8 sm:py-20" style={{ background: STAGE[overrides.theme ?? "dark"] }}>
       <div className="w-full max-w-[820px]">
-        <StreamingText />
+        <StreamingText pace={0.5} {...overrides} />
       </div>
     </div>
   );

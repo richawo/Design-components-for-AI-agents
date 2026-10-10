@@ -75,5 +75,73 @@
       "description": "Extra classes on the root article."
     }
   ],
-  "added": "2026-10-07"
+  "added": "2026-10-07",
+  "demo": {
+    "steps": [
+      "wait:400",
+      "click:@copy",
+      "wait:900",
+      "click:@regenerate",
+      "wait:3000"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "question",
+      "label": "Question",
+      "kind": "text",
+      "default": "Why does my sourdough collapse when it goes in the oven?"
+    },
+    {
+      "prop": "askedBy",
+      "label": "Asked by",
+      "kind": "text",
+      "default": "Asked by Noor · 09:14"
+    },
+    {
+      "prop": "pace",
+      "label": "Delay scale",
+      "kind": "slider",
+      "min": 0.25,
+      "max": 2,
+      "step": 0.25,
+      "unit": "x",
+      "default": 0.5
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark"
+    },
+    {
+      "prop": "accent",
+      "label": "Accent",
+      "kind": "color",
+      "default": "#ff9a6b",
+      "options": [
+        "#ff9a6b",
+        "#ededef",
+        "#34d399",
+        "#60a5fa"
+      ]
+    },
+    {
+      "prop": "autoStart",
+      "label": "Stream on load",
+      "kind": "toggle",
+      "default": true,
+      "remount": true
+    }
+  ]
 }
