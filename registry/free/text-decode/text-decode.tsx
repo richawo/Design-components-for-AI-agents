@@ -360,6 +360,8 @@ const readings = [
   "Hydrogen line · integration 6 of 8 complete · 04:13:03 UTC",
 ];
 
+const DEFAULT_HEADLINE = "Signal found at 1420 MHz.";
+
 const links = ["Archive", "Observations", "Instruments", "Contact"];
 
 /** Semantic only: the status line is live. Everything else is white at stepped opacities. */
@@ -424,14 +426,17 @@ function TextDecodeDemo(overrides: Partial<TextDecodeProps> = {}) {
 
   // Tuning the effect (glyphs, speed, flash) replays the frame; typing new text is handled by the component itself.
   const { glyphs, speed, flashColor } = overrides;
-  const tuned = useRef(false);
+  // Compared against the previous values (not a first-run flag) so React StrictMode's double-invoked effects never replay on mount.
+  const prevTune = useRef({ glyphs, speed, flashColor });
   useEffect(() => {
-    if (!tuned.current) {
-      tuned.current = true;
-      return;
-    }
+    const p = prevTune.current;
+    if (p.glyphs === glyphs && p.speed === speed && p.flashColor === flashColor) return;
+    prevTune.current = { glyphs, speed, flashColor };
     setReplay((r) => r + 1);
   }, [glyphs, speed, flashColor]);
+  // A picked glyph set reaches every line; at the default the nav and status keep their own sets (symbols, binary).
+  const picked = glyphs && glyphs !== "auto" ? glyphs : undefined;
+  const customText = overrides.text !== undefined && overrides.text !== DEFAULT_HEADLINE;
 
   return (
     <div className="flex min-h-dvh w-full items-center justify-center bg-black px-5 py-16 text-white sm:px-10">
@@ -448,12 +453,12 @@ function TextDecodeDemo(overrides: Partial<TextDecodeProps> = {}) {
 
         <TextDecode
           as="h2"
-          text="Signal found at 1420 MHz."
+          text={DEFAULT_HEADLINE}
           trigger="view"
           delay={DEMO_T.heading * 1000}
           speed={26}
           replayKey={replay}
-          className="mt-6 max-w-[6.5em] text-balance font-display text-[clamp(2.75rem,1.1rem+6.2cqi,6.5rem)] font-medium leading-[0.95] tracking-[-0.045em] text-white"
+          className={`mt-6 ${customText ? "max-w-[14em]" : "max-w-[6.5em]"} text-balance font-display text-[clamp(2.75rem,1.1rem+6.2cqi,6.5rem)] font-medium leading-[0.95] tracking-[-0.045em] text-white`}
           {...overrides}
         />
 
@@ -462,7 +467,7 @@ function TextDecodeDemo(overrides: Partial<TextDecodeProps> = {}) {
             {!reduce && <span className="absolute inset-0 animate-ping rounded-full opacity-60" style={{ background: LIVE }} />}
             <span className="relative size-1.5 rounded-full" style={{ background: LIVE }} />
           </motion.span>
-          <TextDecode text={reading} trigger="view" glyphs="binary" flashColor={flashColor} delay={DEMO_T.status * 1000} speed={60} replayKey={replay} />
+          <TextDecode text={reading} trigger="view" glyphs={picked ?? "binary"} flashColor={flashColor} delay={DEMO_T.status * 1000} speed={60} replayKey={replay} />
         </p>
 
         <div className="relative mt-14 flex flex-col gap-6 pt-5 @xl:flex-row @xl:items-center @xl:justify-between">
@@ -479,7 +484,7 @@ function TextDecodeDemo(overrides: Partial<TextDecodeProps> = {}) {
                     <span aria-hidden="true" className="tabular-nums text-white/25 transition-colors duration-150 group-hover:text-white/60">
                       {String(i + 1).padStart(2, "0")}
                     </span>
-                    <TextDecode text={l} trigger="hover" glyphs="symbols" flashColor={flashColor} speed={40} />
+                    <TextDecode text={l} trigger="hover" glyphs={picked ?? "symbols"} flashColor={flashColor} speed={40} />
                   </a>
                 </motion.li>
               ))}

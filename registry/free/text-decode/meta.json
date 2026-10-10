@@ -21,11 +21,11 @@
     { "name": "as", "type": "\"span\" | \"p\" | \"div\" | \"h1\" | \"h2\" | \"h3\" | \"h4\" | \"li\" | \"strong\"", "default": "\"span\"", "description": "Element to render." },
     { "name": "onDone", "type": "() => void", "description": "Called when a decode finishes." }
   ],
-  "demo": { "steps": ["wait:1700", "hover:@link-observations", "wait:750", "hover:@link-contact", "wait:750", "click:@replay", "wait:1700"] },
+  "demo": { "steps": ["wait:200", "click:@replay", "wait:1700", "hover:@link-observations", "wait:900"] },
   "controls": [
     { "prop": "text", "label": "Headline", "kind": "text", "default": "Signal found at 1420 MHz." },
     { "prop": "glyphs", "label": "Glyphs", "kind": "select", "options": [{ "value": "auto", "label": "Auto (case-aware)" }, { "value": "symbols", "label": "Symbols" }, { "value": "blocks", "label": "Blocks" }, { "value": "binary", "label": "Binary" }, { "value": "hex", "label": "Hex" }], "default": "auto" },
-    { "prop": "speed", "label": "Speed", "kind": "slider", "min": 20, "max": 120, "step": 2, "unit": "ch/s", "default": 26 },
+    { "prop": "speed", "label": "Headline speed", "kind": "slider", "min": 24, "max": 120, "step": 2, "unit": "ch/s", "default": 26 },
     { "prop": "flashColor", "label": "Landing flash", "kind": "color", "default": "#ffffff", "options": ["#ffffff", "#7dd3a8", "#ffb454", "#8ab4ff", "#ff7a9c"] },
     { "prop": "$replay", "label": "Replay", "kind": "action" }
   ],
