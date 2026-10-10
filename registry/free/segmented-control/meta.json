@@ -96,17 +96,21 @@
   "added": "2026-10-10",
   "demo": {
     "steps": [
-      "wait:500",
+      "wait:300",
       "click:@week",
-      "wait:420",
+      "wait:180",
       "click:@year",
-      "wait:380",
-      "click:@column-week",
-      "wait:260",
+      "wait:180",
+      "click:@week",
+      "wait:180",
+      "click:@narrow",
+      "wait:420",
+      "click:@week",
+      "wait:180",
       "key:ArrowRight",
+      "wait:180",
       "key:ArrowRight",
-      "key:ArrowRight",
-      "wait:1400"
+      "wait:600"
     ]
   },
   "controls": [
@@ -148,7 +152,7 @@
       "prop": "counts",
       "label": "Counts",
       "kind": "toggle",
-      "default": false,
+      "default": true,
       "group": "Content"
     },
     {
