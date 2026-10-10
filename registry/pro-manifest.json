@@ -3479,7 +3479,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "editors",
-    "description": "A workflow editor for AI pipelines: drag steps, wire typed ports, then Run lights each wire as data passes and a failing step explains why it stopped.",
+    "description": "A workflow editor for AI pipelines: wire typed ports, then Run lights each wire as data passes and a failing step explains why it stopped.",
     "tags": [
       "editors",
       "node editor",
@@ -3523,6 +3523,12 @@
         "type": "{ id; label; summary; failure?: { node; title; detail; excerpt?; hint } }[]",
         "default": "a late refund that the policy check blocks, and a fresh refund that passes",
         "description": "Sample inputs to run with. A case's failure names the step that stops and the words it shows on the canvas and in the inspector."
+      },
+      {
+        "name": "summary",
+        "type": "string",
+        "default": "\"Answers billing tickets, checks the reply against refund policy, then posts it.\"",
+        "description": "One line under the workflow name in the inspector."
       },
       {
         "name": "testCase",
