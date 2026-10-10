@@ -1765,6 +1765,223 @@
     ]
   },
   {
+    "slug": "billing-plan-change",
+    "name": "Plan Change Proration",
+    "tier": "pro",
+    "platform": "web",
+    "category": "billing",
+    "description": "A plan switcher that prints the proration as a receipt before you confirm: unused credit, new charge, due today and the next invoice, over a strip of the period.",
+    "tags": [
+      "billing",
+      "plan change",
+      "proration",
+      "upgrade",
+      "subscription",
+      "receipt",
+      "saas"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 860,
+    "usage": "import { PlanChange } from \"@/components/design-for-ai/billing-plan-change\";\n\n<PlanChange\n  currentPlanId=\"studio\"\n  currentInterval=\"monthly\"\n  seats={8}\n  periodStart=\"2026-09-24\"\n  periodEnd=\"2026-10-23\"\n  today=\"2026-10-10\"\n  paymentLabel=\"•••• 4242\"\n  onConfirm={async (quote) => {\n    await fetch(\"/api/subscription\", { method: \"PATCH\", body: JSON.stringify(quote.to) });\n  }}\n/>",
+    "props": [
+      {
+        "name": "plans",
+        "type": "{ id: string; name: string; blurb: string; monthly: number; yearly: number }[]",
+        "default": "Hobby, Studio, Scale",
+        "description": "The plans to choose between. Prices are per seat: per month when billed monthly, per year when billed yearly."
+      },
+      {
+        "name": "currentPlanId",
+        "type": "string",
+        "default": "\"studio\"",
+        "description": "The plan the workspace is on now. It carries a Current tag and is the source of the credit line."
+      },
+      {
+        "name": "currentInterval",
+        "type": "\"monthly\" | \"yearly\"",
+        "default": "\"monthly\"",
+        "description": "How the current plan is billed."
+      },
+      {
+        "name": "defaultPlanId",
+        "type": "string",
+        "default": "currentPlanId",
+        "description": "The plan selected on mount. Picking the current plan (with the current interval) means no change, so the receipt shows its empty state."
+      },
+      {
+        "name": "defaultInterval",
+        "type": "\"monthly\" | \"yearly\"",
+        "default": "currentInterval",
+        "description": "The interval the toggle opens on. A new interval starts a fresh period today and charges the new plan in full."
+      },
+      {
+        "name": "seats",
+        "type": "number",
+        "default": "8",
+        "description": "Seats on the subscription. Every price and line on the receipt scales with it."
+      },
+      {
+        "name": "periodStart",
+        "type": "string",
+        "default": "\"2026-09-24\"",
+        "description": "First day of the current period, ISO date."
+      },
+      {
+        "name": "periodEnd",
+        "type": "string",
+        "default": "\"2026-10-23\"",
+        "description": "Last day of the current period, ISO date, inclusive."
+      },
+      {
+        "name": "today",
+        "type": "string",
+        "default": "\"2026-10-10\"",
+        "description": "The day the change takes effect, ISO date. Pass the real date in production."
+      },
+      {
+        "name": "paymentLabel",
+        "type": "string",
+        "default": "\"•••• 4242\"",
+        "description": "The card that pays, as printed in the fine print and the confirmation."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Locale for money and dates."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"USD\"",
+        "description": "ISO 4217 code."
+      },
+      {
+        "name": "yearlyBadge",
+        "type": "string",
+        "default": "\"−17%\"",
+        "description": "The saving shown beside Yearly on the toggle. Empty hides it."
+      },
+      {
+        "name": "onConfirm",
+        "type": "(quote: PlanChangeQuote) => Promise<void> | void",
+        "description": "Called with the quote the receipt showed. Return a promise to hold the loading state; reject it to show the declined state. Defaults to a 900ms fake."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#7dd3a8\"",
+        "description": "The one accent: the selection ring, the new plan's stretch of the period and the confirm button."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface and ink. Light deepens the accent for text so it stays readable."
+      }
+    ],
+    "demo": {
+      "steps": [
+        "wait:500",
+        "click:@plan-scale",
+        "wait:1500",
+        "click:@confirm",
+        "wait:1900"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "seats",
+        "label": "Seats",
+        "kind": "slider",
+        "min": 1,
+        "max": 40,
+        "step": 1,
+        "default": 8,
+        "group": "Subscription"
+      },
+      {
+        "prop": "defaultPlanId",
+        "label": "Selected plan",
+        "kind": "select",
+        "options": [
+          {
+            "value": "studio",
+            "label": "Studio (current)"
+          },
+          {
+            "value": "scale",
+            "label": "Scale"
+          },
+          {
+            "value": "hobby",
+            "label": "Hobby"
+          }
+        ],
+        "default": "studio",
+        "remount": true,
+        "group": "Subscription"
+      },
+      {
+        "prop": "defaultInterval",
+        "label": "Interval",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "monthly",
+            "label": "Monthly"
+          },
+          {
+            "value": "yearly",
+            "label": "Yearly"
+          }
+        ],
+        "default": "monthly",
+        "remount": true,
+        "group": "Subscription"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#7dd3a8",
+        "options": [
+          "#7dd3a8",
+          "#f5a524",
+          "#60a5fa",
+          "#ececee"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ],
+    "added": "2026-10-10"
+  },
+  {
     "slug": "button-magnetic",
     "name": "Magnetic CTA",
     "tier": "pro",
