@@ -54,6 +54,12 @@
       "description": "Mono notes beside the actions."
     },
     {
+      "name": "indexLabel",
+      "type": "string",
+      "default": "\"Index\"",
+      "description": "Label above the numbered index; also the nav landmark name."
+    },
+    {
       "name": "items",
       "type": "{ title; speaker; when; href }[]",
       "description": "Numbered index rows."
@@ -82,5 +88,63 @@
       "description": "Black poster or white paper; both use the same grid and accent."
     }
   ],
-  "added": "2026-10-07"
+  "added": "2026-10-07",
+  "demo": {
+    "steps": [
+      "wait:1600",
+      "hover:@track-1",
+      "wait:300",
+      "hover:@track-3",
+      "wait:300",
+      "hover:@track-4",
+      "wait:200",
+      "hover:@primary",
+      "wait:700",
+      "hover:@secondary",
+      "wait:700"
+    ],
+    "loop": false
+  },
+  "controls": [
+    {
+      "prop": "accent",
+      "label": "Accent",
+      "kind": "color",
+      "default": "#e10600",
+      "options": [
+        "#e10600",
+        "#2563eb",
+        "#16a34a",
+        "#f59e0b"
+      ]
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark"
+    },
+    {
+      "prop": "showGrid",
+      "label": "Column guides",
+      "kind": "toggle",
+      "default": true
+    },
+    {
+      "prop": "indexLabel",
+      "label": "Index heading",
+      "kind": "text",
+      "default": "Index"
+    }
+  ]
 }

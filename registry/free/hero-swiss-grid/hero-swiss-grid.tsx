@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, type CSSProperties, type ReactNode } from "react";
+import { useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { motion, useInView, useReducedMotion, type Variants } from "motion/react";
 
 type Link = { label: string; href: string };
@@ -96,6 +96,20 @@ const GUTTER = "px-5 @xl:px-8 @5xl:px-12";
 const MONO = "font-mono text-[11px] uppercase tracking-[0.08em]";
 const FOCUS = "focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-(--sg-accent)";
 
+/**
+ * Hover as state rather than the :hover pseudo-class, so a scripted pointer
+ * (the demo player, tests) lights things up exactly like a real mouse does.
+ * Styles read `data-hot`, which the element and its `group` children share.
+ */
+function useHot() {
+  const [hot, setHot] = useState(false);
+  return {
+    "data-hot": hot,
+    onPointerEnter: () => setHot(true),
+    onPointerLeave: () => setHot(false),
+  } as const;
+}
+
 /* ------------------------------------------------------------------ */
 /* Component                                                           */
 /* ------------------------------------------------------------------ */
@@ -173,12 +187,7 @@ export function HeroSwissGrid({
             </motion.p>
             <motion.div variants={v(reveal)} custom={T.intro + T.step} className="col-span-4 flex flex-col items-start gap-4 @3xl:col-start-5">
               <PrimaryButton link={primary} />
-              <a
-                href={secondary.href}
-                className={`text-[15px] font-medium underline decoration-1 underline-offset-[5px] transition-[color,transform] duration-150 hover:text-(--sg-accent) active:scale-[0.97] ${FOCUS}`}
-              >
-                {secondary.label}
-              </a>
+              <SecondaryLink link={secondary} />
             </motion.div>
             <motion.ul
               variants={v(reveal)}
@@ -223,14 +232,31 @@ function Rule({ variants, delay, className }: { variants: Variants; delay: numbe
   return <motion.span aria-hidden="true" variants={variants} custom={delay} className={`absolute inset-x-0 h-px origin-left ${className}`} />;
 }
 
-function PrimaryButton({ link }: { link: Link }) {
+function SecondaryLink({ link }: { link: Link }) {
+  const hot = useHot();
   return (
     <a
       href={link.href}
-      className={`group inline-flex h-14 items-center gap-6 bg-(--sg-ink) pl-5 pr-4 text-[15px] font-semibold text-(--sg-on-ink) transition-[color,background-color,transform] duration-150 hover:bg-(--sg-accent) hover:text-white active:scale-[0.97] ${FOCUS}`}
+      data-demo="secondary"
+      {...hot}
+      className={`text-[15px] font-medium underline decoration-1 underline-offset-[5px] transition-[color,transform] duration-150 data-[hot=true]:text-(--sg-accent) active:scale-[0.97] ${FOCUS}`}
     >
       {link.label}
-      <svg viewBox="0 0 16 16" className="size-4 transition-transform duration-150 group-hover:translate-x-1" fill="none" aria-hidden="true">
+    </a>
+  );
+}
+
+function PrimaryButton({ link }: { link: Link }) {
+  const hot = useHot();
+  return (
+    <a
+      href={link.href}
+      data-demo="primary"
+      {...hot}
+      className={`group inline-flex h-14 items-center gap-6 bg-(--sg-ink) pl-5 pr-4 text-[15px] font-semibold text-(--sg-on-ink) transition-[color,background-color,transform] duration-150 data-[hot=true]:bg-(--sg-accent) data-[hot=true]:text-white active:scale-[0.97] ${FOCUS}`}
+    >
+      {link.label}
+      <svg viewBox="0 0 16 16" className="size-4 transition-transform duration-150 group-data-[hot=true]:translate-x-1" fill="none" aria-hidden="true">
         <path d="M2 8h12m0 0L9 3m5 5-5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="square" />
       </svg>
     </a>
@@ -275,18 +301,21 @@ function Index({
 }
 
 function IndexRow({ item, n, delay, reduce }: { item: SwissIndexItem; n: number; delay: number; reduce: boolean }) {
+  const hot = useHot();
   return (
     <li className="relative">
       <motion.a
         href={item.href}
+        data-demo={`track-${n}`}
+        {...hot}
         variants={reduce ? fade : reveal}
         custom={delay}
         className={`group ${COLS} items-baseline py-4 transition-transform duration-150 active:scale-[0.99] focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-(--sg-accent) @3xl:py-5`}
       >
-        <span className="col-span-1 font-mono text-[13px] tabular-nums transition-colors duration-150 group-hover:text-(--sg-accent)">{String(n).padStart(2, "0")}</span>
+        <span className="col-span-1 font-mono text-[13px] tabular-nums transition-colors duration-150 group-data-[hot=true]:text-(--sg-accent)">{String(n).padStart(2, "0")}</span>
         <span className="col-span-3 font-sans text-[clamp(1.35rem,1rem+1.4cqi,2.25rem)] font-semibold leading-[1.05] tracking-[-0.035em] @3xl:col-span-5">
           {/* The underline is a background so it can grow from the left on hover. */}
-          <span className="bg-[linear-gradient(var(--sg-accent),var(--sg-accent))] bg-[length:0%_2px] bg-left-bottom bg-no-repeat pb-0.5 transition-[background-size] duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:bg-[length:100%_2px]">
+          <span className="bg-[linear-gradient(var(--sg-accent),var(--sg-accent))] bg-[length:0%_2px] bg-left-bottom bg-no-repeat pb-0.5 transition-[background-size] duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-data-[hot=true]:bg-[length:100%_2px]">
             {item.title}
           </span>
         </span>
@@ -295,7 +324,7 @@ function IndexRow({ item, n, delay, reduce }: { item: SwissIndexItem; n: number;
           {item.when}
           <span
             aria-hidden="true"
-            className="hidden -translate-x-1.5 text-[15px] text-(--sg-accent) opacity-0 transition-[opacity,transform] duration-200 group-hover:translate-x-0 group-hover:opacity-100 @3xl:inline"
+            className="hidden -translate-x-1.5 text-[15px] text-(--sg-accent) opacity-0 transition-[opacity,transform] duration-200 group-data-[hot=true]:translate-x-0 group-data-[hot=true]:opacity-100 @3xl:inline"
           >
             →
           </span>
@@ -306,4 +335,7 @@ function IndexRow({ item, n, delay, reduce }: { item: SwissIndexItem; n: number;
   );
 }
 
-export default HeroSwissGrid;
+/** The featured instance. Controls pass overrides, which win over the defaults. */
+export default function HeroSwissGridDemo(overrides: Partial<HeroSwissGridProps> = {}) {
+  return <HeroSwissGrid {...overrides} />;
+}
