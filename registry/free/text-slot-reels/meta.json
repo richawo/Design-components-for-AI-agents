@@ -1,0 +1,37 @@
+{
+  "slug": "text-slot-reels",
+  "name": "Slot Reels",
+  "tier": "free",
+  "platform": "web",
+  "category": "text",
+  "description": "Text and figures that spin into their new value on staggered reels: each character rolls through its own class and lands with one small clunk.",
+  "tags": ["text", "slot", "reels", "rolling", "numbers", "counter", "text effect", "typography", "ticker"],
+  "dependencies": ["motion"],
+  "theme": "dark",
+  "previewHeight": 720,
+  "usage": "import { SlotReels } from \"@/components/design-for-ai/text-slot-reels\";\n\n// Change value and every character that differs spins into place.\n<h2 className=\"font-display text-7xl tracking-tight\">\n  <SlotReels value={release.codename} announce />\n</h2>\n\n// Figures pad on the left, so a growing number keeps its digits aligned.\n<p className=\"font-mono tabular-nums\">\n  MRR <SlotReels value={formatUsd(mrr)} stagger={30} duration={700} />\n</p>\n\n<SlotReels value=\"Sold out\" direction=\"down\" spins={2} replayKey={launchId} />",
+  "props": [
+    { "name": "value", "type": "string", "default": "\"Amber Lantern\"", "description": "The text. When it changes, characters that differ spin from the old value into the new one; the rest stay put." },
+    { "name": "stagger", "type": "number", "default": "45", "description": "Milliseconds between one spinning reel starting and the next. Reels that don't change aren't counted, so there are no gaps." },
+    { "name": "duration", "type": "number", "default": "900", "description": "How long one reel spins, in ms. Its width eases to the new character over the same time." },
+    { "name": "spins", "type": "number", "default": "1", "description": "Extra glyphs each reel passes, in sets of four. 0 rolls almost straight to the new character." },
+    { "name": "direction", "type": "\"up\" | \"down\"", "default": "\"up\"", "description": "Which way the reels travel." },
+    { "name": "align", "type": "\"auto\" | \"left\" | \"right\"", "default": "\"auto\"", "description": "Where a shorter value is padded. auto pads figures on the left (so units stay put) and words on the right." },
+    { "name": "replayKey", "type": "string | number", "description": "Change it to spin every character again, even unchanged ones." },
+    { "name": "announce", "type": "boolean", "default": "false", "description": "Announce the value through a polite live region once the last reel lands. The full value is always in the accessible text." },
+    { "name": "as", "type": "\"span\" | \"p\" | \"div\" | \"h1\" | \"h2\" | \"h3\" | \"strong\"", "default": "\"span\"", "description": "Element to render." },
+    { "name": "className", "type": "string", "description": "Classes on the root. Type styles here set the reels' font, size and line height." },
+    { "name": "style", "type": "CSSProperties", "description": "Inline styles on the root." },
+    { "name": "onSettle", "type": "(value: string) => void", "description": "Called when the last reel has landed." }
+  ],
+  "demo": { "steps": ["wait:500", "click:@spin", "wait:1900", "click:@spin", "wait:1900"] },
+  "controls": [
+    { "prop": "value", "label": "Text", "kind": "text", "default": "Amber Lantern" },
+    { "prop": "stagger", "label": "Stagger", "kind": "slider", "min": 0, "max": 120, "step": 5, "unit": "ms", "default": 45 },
+    { "prop": "duration", "label": "Spin for", "kind": "slider", "min": 400, "max": 1800, "step": 50, "unit": "ms", "default": 900 },
+    { "prop": "spins", "label": "Extra spins", "kind": "slider", "min": 0, "max": 4, "step": 1, "default": 1 },
+    { "prop": "direction", "label": "Direction", "kind": "segmented", "options": [{ "value": "up", "label": "Up" }, { "value": "down", "label": "Down" }], "default": "up" },
+    { "prop": "$replay", "label": "Replay", "kind": "action" }
+  ],
+  "added": "2026-10-10"
+}
