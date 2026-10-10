@@ -1,5 +1,1048 @@
 [
   {
+    "slug": "agent-approval-gate",
+    "name": "Agent Approval Gate",
+    "tier": "pro",
+    "platform": "web",
+    "category": "agents",
+    "description": "When an agent asks permission: the exact command or diff, a risk tag, and Allow once, Always allow here or Deny. Keyboard first, with a timer that runs only while seen.",
+    "tags": [
+      "agents",
+      "approval",
+      "permissions",
+      "human in the loop",
+      "tool use",
+      "diff",
+      "risk",
+      "keyboard",
+      "timeout",
+      "scope"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 860,
+    "usage": "import { AgentApprovalGate } from \"@/components/design-for-ai/agent-approval-gate\";\n\n<AgentApprovalGate\n  agent=\"Atlas\"\n  request=\"file-write\"\n  risk=\"medium\"\n  countdown={18}\n  onDecision={(decision) => agent.resume(decision)}\n/>\n\n// Drive it from outside with status (pending, approved, denied). Pass onDecision to hear the answer.\n// Y, A and N answer while the card has focus, so they never fire on a page the person is only reading.\n// Pass autoFocus to focus the card once it is in view, so a gate that appears mid-task is answerable at once.\n// The countdown only runs while the card is in view, so an unseen request never denies itself.",
+    "props": [
+      {
+        "name": "agent",
+        "type": "string",
+        "default": "\"Atlas\"",
+        "description": "Name of the agent asking. Shown in the eyebrow, the denial placeholder and the file-write note."
+      },
+      {
+        "name": "request",
+        "type": "\"shell\" | \"file-write\" | \"payment\" | \"network\"",
+        "default": "\"file-write\"",
+        "description": "What the agent wants to do. Chooses the title, the exact command, the diff, the touch tag and the three facets."
+      },
+      {
+        "name": "risk",
+        "type": "\"low\" | \"medium\" | \"high\"",
+        "default": "\"medium\"",
+        "description": "How serious the request is in its context. Colours the touch tag (medium uses its own amber, never the accent) and picks the note in its tooltip, which is written for each request."
+      },
+      {
+        "name": "showDiff",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show the diff under the command when the request has one. The command always shows."
+      },
+      {
+        "name": "countdown",
+        "type": "number",
+        "default": "18",
+        "description": "Seconds until the request is denied on its own. 0 turns the countdown off. The clock runs only while the card is in view. It pauses while the pointer is over the card, while focus is on a control, while the card is off screen and while the tab is hidden, and it never starts unseen."
+      },
+      {
+        "name": "status",
+        "type": "\"pending\" | \"approved\" | \"denied\"",
+        "description": "Drive the card from outside: pending resets it and clears an earlier answer; approved or denied folds it into the receipt."
+      },
+      {
+        "name": "onDecision",
+        "type": "(decision: { verdict, scope, reason, at }) => void",
+        "description": "Called once with the answer: once, always (with its scope), deny (with an optional reason) or timeout."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#f4f4f5\"",
+        "description": "The one brand accent: the primary button, the countdown bar and the selected scope dot. Defaults to ink for the theme (near-white on dark, near-black on light), so the primary action is never amber. Passing either ink (\"#f4f4f5\" or \"#111113\") also means ink and follows the theme, which is why the default swatch stays correct in the light theme. The ink that sits on it is picked for contrast. Risk colours are fixed."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Near-black card with white ink, or the white inverse."
+      },
+      {
+        "name": "autoFocus",
+        "type": "boolean",
+        "default": "false",
+        "description": "Focus the card once it is in view, so Y, A and N answer without a Tab. Shows a quiet outline on the card while the keys are live. The demo turns it on."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the card."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:300",
+        "hover:@risk",
+        "wait:550",
+        "click:@scope",
+        "wait:220",
+        "click:@scope-folder",
+        "wait:180",
+        "click:@allow-always",
+        "wait:1800"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "risk",
+        "label": "Risk level",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "low",
+            "label": "Low"
+          },
+          {
+            "value": "medium",
+            "label": "Medium"
+          },
+          {
+            "value": "high",
+            "label": "High"
+          }
+        ],
+        "default": "medium",
+        "group": "Policy"
+      },
+      {
+        "prop": "countdown",
+        "label": "Countdown",
+        "kind": "slider",
+        "min": 0,
+        "max": 30,
+        "step": 1,
+        "unit": "s",
+        "default": 18,
+        "group": "Policy"
+      },
+      {
+        "prop": "request",
+        "label": "Request",
+        "kind": "select",
+        "options": [
+          {
+            "value": "shell",
+            "label": "Shell command"
+          },
+          {
+            "value": "file-write",
+            "label": "File write"
+          },
+          {
+            "value": "payment",
+            "label": "Payment"
+          },
+          {
+            "value": "network",
+            "label": "Network call"
+          }
+        ],
+        "default": "file-write",
+        "group": "Request"
+      },
+      {
+        "prop": "showDiff",
+        "label": "Show diff",
+        "kind": "toggle",
+        "default": true,
+        "group": "Request"
+      },
+      {
+        "prop": "status",
+        "label": "Status",
+        "kind": "action",
+        "options": [
+          {
+            "value": "pending",
+            "label": "Reset"
+          },
+          {
+            "value": "approved",
+            "label": "Approve"
+          },
+          {
+            "value": "denied",
+            "label": "Deny"
+          }
+        ],
+        "group": "State"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action",
+        "group": "State"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#8ab4ff",
+          "#7dd3a8"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      }
+    ]
+  },
+  {
+    "slug": "agent-plan-steps",
+    "name": "Agent Plan",
+    "tier": "pro",
+    "platform": "web",
+    "category": "agents",
+    "description": "A numbered agent plan you reorder and rename before approving, then watch tick through live with timings, a shimmer on the active step and substeps unfolding beneath it.",
+    "tags": [
+      "agent",
+      "plan",
+      "steps",
+      "task list",
+      "approval",
+      "run",
+      "timeline",
+      "substeps",
+      "reorder",
+      "monochrome"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 860,
+    "usage": "import { AgentPlan } from \"@/components/design-for-ai/agent-plan-steps\";\n\nconst [state, setState] = useState<\"draft\" | \"running\" | \"paused\" | \"complete\" | \"failed\">(\"draft\");\n\n<AgentPlan\n  title=\"Backfill the ledger from billing events\"\n  steps={planFromAgent}\n  state={state}\n  onStateChange={setState}\n  onApprove={(steps) => api.runs.start(runId, steps)}\n/>\n\n// steps: { id, title, duration?, substeps?, outcome?: \"done\" | \"skipped\" | \"failed\", reason? }\n// Drive the run from your own backend by setting `state` as each step lands, or let the component tick.",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Backfill the ledger from billing events\"",
+        "description": "The goal the plan serves, in the display face."
+      },
+      {
+        "name": "summary",
+        "type": "string",
+        "default": "\"Drafted from your request and the current schema. Nothing runs until you approve.\"",
+        "description": "One line under the title while the plan is a draft."
+      },
+      {
+        "name": "steps",
+        "type": "PlanStep[]",
+        "description": "The proposed steps in order. { id, title, duration? (ms of real run time, shown as the estimate), substeps?, outcome?, reason? }. Keep the array stable between renders."
+      },
+      {
+        "name": "stepCount",
+        "type": "number",
+        "default": "6",
+        "description": "How many of the steps to propose, from the top (3 to 8)."
+      },
+      {
+        "name": "state",
+        "type": "\"draft\" | \"running\" | \"paused\" | \"complete\" | \"failed\"",
+        "description": "Controlled phase. Omit to let the plan manage its own run."
+      },
+      {
+        "name": "defaultState",
+        "type": "PlanPhase",
+        "default": "\"draft\"",
+        "description": "Starting phase when uncontrolled."
+      },
+      {
+        "name": "onStateChange",
+        "type": "(state: PlanPhase) => void",
+        "description": "Called on approve, pause, resume, retry, edit and when the run finishes or fails."
+      },
+      {
+        "name": "onApprove",
+        "type": "(steps: PlanStep[]) => void",
+        "description": "Called with the steps in their final order and wording when the plan is approved."
+      },
+      {
+        "name": "editable",
+        "type": "boolean",
+        "default": "true",
+        "description": "Steps can be dragged, reordered with Alt and the arrow keys, and renamed in draft."
+      },
+      {
+        "name": "showTimings",
+        "type": "boolean",
+        "default": "true",
+        "description": "Estimates in draft, measured times while running and after."
+      },
+      {
+        "name": "speed",
+        "type": "number",
+        "default": "1",
+        "description": "Playback multiplier for the run's clock. The plan's times stay real: 2 plays the same run in half the wall time."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#f2a65a\"",
+        "description": "The one colour: the approve, resume and retry buttons, and the active step's mark. Everything else is ink and grey."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Near-black card with white ink, or the white inverse."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Classes for the root element."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "hover:@grip-backfill",
+        "down",
+        "hover:@step-schema:0.5,0.15",
+        "up",
+        "click:@title-dedupe",
+        "type: in staging",
+        "click:@approve",
+        "wait:3150"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "state",
+        "label": "State",
+        "kind": "action",
+        "options": [
+          {
+            "value": "draft",
+            "label": "Draft"
+          },
+          {
+            "value": "running",
+            "label": "Running"
+          },
+          {
+            "value": "paused",
+            "label": "Paused"
+          },
+          {
+            "value": "complete",
+            "label": "Complete"
+          },
+          {
+            "value": "failed",
+            "label": "Failed"
+          }
+        ],
+        "group": "Run"
+      },
+      {
+        "prop": "stepCount",
+        "label": "Steps",
+        "kind": "slider",
+        "min": 3,
+        "max": 8,
+        "step": 1,
+        "default": 6,
+        "group": "Plan"
+      },
+      {
+        "prop": "editable",
+        "label": "Editable",
+        "kind": "toggle",
+        "default": true,
+        "group": "Plan"
+      },
+      {
+        "prop": "showTimings",
+        "label": "Timings",
+        "kind": "toggle",
+        "default": true,
+        "group": "Plan"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f2a65a",
+        "options": [
+          "#f2a65a",
+          "#7dd3a8",
+          "#7db6ff",
+          "#ededef"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
+  },
+  {
+    "slug": "agent-tool-call",
+    "name": "Agent Tool Call",
+    "tier": "pro",
+    "platform": "web",
+    "category": "agents",
+    "description": "One agent tool call as a flight-recorder line: mono tool name, argument summary, live duration and a status glyph that morphs through queued, running, done and failed.",
+    "tags": [
+      "agent",
+      "tool call",
+      "trace",
+      "log",
+      "streaming",
+      "json",
+      "retry",
+      "monochrome"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 760,
+    "usage": "import { AgentToolCall } from \"@/components/design-for-ai/agent-tool-call\";\n\n<AgentToolCall\n  seq={3}\n  tool=\"web.search\"\n  args={{ query: \"stripe proration rules\", limit: 5 }}\n  status={run.status}\n  durationMs={run.durationMs}\n  result={run.output}\n  stderr={run.stderr}\n  onRetry={() => agent.retry(run.id)} // return a promise: resolves to done, rejects to failed\n/>\n\n// Uncontrolled: omit status and let Retry drive it (defaultStatus=\"failed\" starts it failed).\n<AgentToolCall tool=\"sql.query\" defaultStatus=\"failed\" stderr={sqlError} />",
+    "props": [
+      {
+        "name": "seq",
+        "type": "number",
+        "default": "1",
+        "description": "Position in the log, shown as a two-digit index on wide containers."
+      },
+      {
+        "name": "tool",
+        "type": "string",
+        "default": "\"read_file\"",
+        "description": "Tool name, set in mono. read_file, web.search, bash and sql.query get realistic sample arguments, output and errors."
+      },
+      {
+        "name": "args",
+        "type": "Record<string, string | number | boolean>",
+        "description": "Flat arguments. Shown as a one-line summary and, expanded, as tinted JSON. Defaults to the sample for the tool."
+      },
+      {
+        "name": "status",
+        "type": "\"pending\" | \"running\" | \"done\" | \"failed\"",
+        "description": "Controlled status. Omit it to let the component track its own status, which Retry drives."
+      },
+      {
+        "name": "defaultStatus",
+        "type": "\"pending\" | \"running\" | \"done\" | \"failed\"",
+        "default": "\"done\"",
+        "description": "Starting status when uncontrolled."
+      },
+      {
+        "name": "durationMs",
+        "type": "number",
+        "description": "Recorded duration once the call has finished. While it runs, the line counts live; without it, a finished call shows the time it was observed running."
+      },
+      {
+        "name": "result",
+        "type": "string",
+        "description": "Output of the call. Six lines show at first, with the rest one click away in a scroll area that keeps the page still."
+      },
+      {
+        "name": "stderr",
+        "type": "string",
+        "description": "Standard error. A failed call shows its last four lines beside a Retry button."
+      },
+      {
+        "name": "defaultExpanded",
+        "type": "boolean",
+        "default": "false",
+        "description": "Whether the arguments and result panel starts open."
+      },
+      {
+        "name": "showTiming",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show the duration column."
+      },
+      {
+        "name": "density",
+        "type": "\"compact\" | \"comfortable\"",
+        "default": "\"comfortable\"",
+        "description": "Row height and type size. Compact fits a dense log; comfortable suits a single call on its own."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "The surface the line sits on, so its text, rules and tints keep their contrast."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ff9d5c\"",
+        "description": "The one accent: the arc of a running call and the tint behind arguments. Light theme darkens it for text."
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void | Promise<unknown>",
+        "description": "Runs on Retry. Return a promise to show the running state; it resolves to done and rejects to failed. Without it, an uncontrolled call reruns for 1.1 s, and a controlled call hides Retry because only the host can change its status."
+      },
+      {
+        "name": "retryLabel",
+        "type": "string",
+        "default": "\"Retry\"",
+        "description": "Label on the retry button in a failed call."
+      },
+      {
+        "name": "retryingLabel",
+        "type": "string",
+        "default": "\"Retrying\"",
+        "description": "Label on the retry button while the retry runs. The button keeps its width, and the error above stays visible, dimmed, until the call lands."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "move:0.5,0.3",
+        "wait:900",
+        "click:@call-toggle:0.3,0.5",
+        "wait:200",
+        "click:@call-more",
+        "wait:100",
+        "hover:@call-result:0.5,0.35",
+        "scroll:200",
+        "wait:80",
+        "click:@call-retry",
+        "wait:1380"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "status",
+        "label": "Status",
+        "kind": "action",
+        "options": [
+          {
+            "value": "pending",
+            "label": "Queued"
+          },
+          {
+            "value": "running",
+            "label": "Running"
+          },
+          {
+            "value": "done",
+            "label": "Done"
+          },
+          {
+            "value": "failed",
+            "label": "Failed"
+          }
+        ],
+        "group": "Call"
+      },
+      {
+        "prop": "tool",
+        "label": "Tool",
+        "kind": "select",
+        "options": [
+          {
+            "value": "read_file",
+            "label": "read_file"
+          },
+          {
+            "value": "web.search",
+            "label": "web.search"
+          },
+          {
+            "value": "bash",
+            "label": "bash"
+          },
+          {
+            "value": "sql.query",
+            "label": "sql.query"
+          }
+        ],
+        "default": "read_file",
+        "group": "Call"
+      },
+      {
+        "prop": "defaultExpanded",
+        "label": "Expanded",
+        "kind": "toggle",
+        "default": false,
+        "remount": true,
+        "group": "Layout"
+      },
+      {
+        "prop": "showTiming",
+        "label": "Duration",
+        "kind": "toggle",
+        "default": true,
+        "group": "Layout"
+      },
+      {
+        "prop": "density",
+        "label": "Density",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "compact",
+            "label": "Compact"
+          },
+          {
+            "value": "comfortable",
+            "label": "Comfortable"
+          }
+        ],
+        "default": "comfortable",
+        "group": "Layout"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Run again",
+        "kind": "action"
+      }
+    ]
+  },
+  {
+    "slug": "ai-citations-inline",
+    "name": "Inline Citations",
+    "tier": "pro",
+    "platform": "web",
+    "category": "ai",
+    "description": "An AI answer with numbered markers on the baseline. Hover one to light the exact span it backs and open a source card; a rail groups duplicate sources.",
+    "tags": [
+      "ai",
+      "citations",
+      "inline citations",
+      "sources",
+      "answer",
+      "rag",
+      "source card",
+      "footnotes"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 780,
+    "usage": "import { InlineCitations } from \"@/components/design-for-ai/ai-citations-inline\";\n\n<InlineCitations\n  question=\"Why do teams cancel at their first renewal?\"\n  answer={[\n    { text: \"Most accounts that cancel at first renewal \" },\n    { text: \"had gone quiet by week six\", cite: [\"s1\"] },\n    { text: \".\" },\n  ]}\n  sources={[\n    { id: \"s1\", title: \"2026 Renewal Survey\", domain: \"renewalbrief.co\", quote: \"Most had gone quiet by week six.\", match: \"had gone quiet by week six\" },\n  ]}\n  maxSources={6}\n  markerStyle=\"number\"\n  cardOnHover\n/>",
+    "props": [
+      {
+        "name": "question",
+        "type": "string",
+        "default": "\"Why do teams cancel at their first renewal?\"",
+        "description": "The question the answer responds to, set in serif above the answer."
+      },
+      {
+        "name": "headingLevel",
+        "type": "\"h2\" | \"h3\"",
+        "default": "\"h2\"",
+        "description": "The question's heading level. Use h3 when the host page already owns the h2; the rail's Sources heading steps down with it."
+      },
+      {
+        "name": "answer",
+        "type": "AnswerPart[]",
+        "description": "The answer as spans: { text, cite? }. Cited spans are highlighted when their marker is read. A cited span is marked by its last word, so the marker never wraps away from its claim."
+      },
+      {
+        "name": "sources",
+        "type": "CitationSource[]",
+        "description": "Retrieved sources in ranked order: { id, title, domain, monogram?, quote, match }. match must appear verbatim inside quote. Sources sharing a domain and title are grouped in the rail and share one marker number."
+      },
+      {
+        "name": "maxSources",
+        "type": "number",
+        "default": "6",
+        "description": "How many sources, from the top of the list, may back the answer. Claims cited only to sources beyond it read as plain prose."
+      },
+      {
+        "name": "markerStyle",
+        "type": "\"number\" | \"dot\" | \"chip\"",
+        "default": "\"number\"",
+        "description": "The marker on the baseline: a bare numeral, a 6px dot, or a boxed numeral chip."
+      },
+      {
+        "name": "showRail",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show the sources rail under the answer. Each source row quotes the sentences it backs and says how many claims that is; clicking a row pins its card on the first claim and moves focus there. The card names the other claims a source backs."
+      },
+      {
+        "name": "cardOnHover",
+        "type": "boolean",
+        "default": "true",
+        "description": "Hovering a marker opens its source card, and moving to another marker glides the card there. The card is placed so it never covers another marker, and the pointer passes through an unpinned card. Off, a click opens and pins it, and the default hint says so. On touch the hint asks for a tap. A tap on another marker moves the card and pins it; a second tap on the pinned marker closes it. Escape closes a pinned card wherever focus is."
+      },
+      {
+        "name": "hint",
+        "type": "string | false",
+        "description": "The line under the answer that says how to read a source. Leave it out for the adaptive wording (hover, click, or tap on touch screens), pass your own copy, or pass false to hide it in a product view."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#f5c66b\"",
+        "description": "The one accent: the highlighter wash behind a cited span, the active marker and the quote mark. A #rrggbb colour."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Greyscale surfaces and ink. The accent stays the same in both themes."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "move:0.5,0.06",
+        "wait:300",
+        "hover:@marker-1",
+        "wait:950",
+        "hover:@marker-2",
+        "wait:1000",
+        "click:@rail-1",
+        "wait:1300"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "markerStyle",
+        "label": "Marker",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "number",
+            "label": "Number"
+          },
+          {
+            "value": "dot",
+            "label": "Dot"
+          },
+          {
+            "value": "chip",
+            "label": "Chip"
+          }
+        ],
+        "default": "number"
+      },
+      {
+        "prop": "maxSources",
+        "label": "Retrieved",
+        "kind": "slider",
+        "min": 2,
+        "max": 6,
+        "step": 1,
+        "default": 6
+      },
+      {
+        "prop": "showRail",
+        "label": "Sources rail",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "cardOnHover",
+        "label": "Open on hover",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "accent",
+        "label": "Highlight",
+        "kind": "color",
+        "default": "#f5c66b",
+        "options": [
+          "#f5c66b",
+          "#7dd3fc",
+          "#a3e635",
+          "#ededef"
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "ai-reasoning-trace",
+    "name": "Reasoning Trace",
+    "tier": "pro",
+    "platform": "web",
+    "category": "ai",
+    "description": "“Thought for 14s”, done properly: a ticking timer while thinking, a one-line summary that rewrites per step, and a dimmed trace that folds away when the reply starts.",
+    "tags": [
+      "ai",
+      "reasoning",
+      "thinking",
+      "chain of thought",
+      "trace",
+      "streaming",
+      "llm",
+      "monochrome",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 780,
+    "usage": "import { ReasoningTrace } from \"@/components/design-for-ai/ai-reasoning-trace\";\n\n// Your model drives it: append each step as it reasons, and each word of the reply as it streams.\nexport default function Reply({ status, startedAt, steps, reply, thoughtForMs }) {\n  return (\n    <ReasoningTrace\n      state={status} // \"thinking\" | \"answering\" | \"done\"\n      startedAt={startedAt} // Date.now() when thinking began. Starts the live timer.\n      trace={steps} // [{ summary: \"Checking the billing rule\", detail: \"Seats are prorated by day.\", atMs: 600 }]\n      answer={reply} // [\"The jump is proration, not a double charge.\"]\n      thoughtForMs={thoughtForMs} // optional final time in ms. Without it the measured time is kept.\n    />\n  );\n}\n\n// The reader's open or closed choice holds across runs (rememberChoice, default true).\n// Pass storageKey=\"reasoning-trace\" to keep it across reloads, or open and onOpenChange to own it yourself.",
+    "props": [
+      {
+        "name": "state",
+        "type": "\"thinking\" | \"answering\" | \"done\"",
+        "default": "\"done\"",
+        "description": "Thinking shows the live timer, the rewriting summary and the steps as they arrive. Answering streams the reply in and the trace folds. Done is the finished card. The host drives it; the component never advances on its own."
+      },
+      {
+        "name": "trace",
+        "type": "{ summary: string; detail: string; atMs?: number }[]",
+        "default": "[]",
+        "description": "Every step so far, in order. Summary is the one-line headline shown while the model is on it; detail is the dimmed line kept in the trace; atMs, when given, stamps the step's landing time as a quiet +0.6s. The trace region caps its height and scrolls, and follows the newest step while thinking."
+      },
+      {
+        "name": "answer",
+        "type": "string[]",
+        "default": "[]",
+        "description": "The reply so far, as paragraphs. Words settle in as they arrive; words already on screen when the card first renders stay put."
+      },
+      {
+        "name": "startedAt",
+        "type": "number",
+        "description": "When thinking began, as Date.now(). Starts the live timer. Without it the header shows the bare label, Thinking or Thought."
+      },
+      {
+        "name": "thoughtForMs",
+        "type": "number",
+        "description": "The final thinking time in milliseconds, for the Thought for label. Once the answer starts it wins over the time the card measured."
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "description": "Controlled open state for the trace. Pair it with onOpenChange to own the reader's choice yourself. When set, auto-collapse and rememberChoice no longer apply."
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "default": "true",
+        "description": "The open state before the reader or auto-collapse has spoken. Ignored when open is set."
+      },
+      {
+        "name": "onOpenChange",
+        "type": "(open: boolean) => void",
+        "description": "Called when the reader opens or closes the trace."
+      },
+      {
+        "name": "autoCollapse",
+        "type": "boolean",
+        "default": "true",
+        "description": "Folds the trace away when the answer starts, unless the reader has chosen."
+      },
+      {
+        "name": "rememberChoice",
+        "type": "boolean",
+        "default": "true",
+        "description": "Keeps the reader's open or closed choice across runs in this instance, so a reader who always wants the trace open is never folded again. Off, the choice lasts one run and auto-collapse applies at the next hand-off."
+      },
+      {
+        "name": "storageKey",
+        "type": "string",
+        "description": "Persists the reader's choice in localStorage under this key, so it survives reloads. Read after mount; storage errors are ignored. Implies rememberChoice."
+      },
+      {
+        "name": "showTimer",
+        "type": "boolean",
+        "default": "true",
+        "description": "Shows the seconds in the header: live while thinking, frozen once done. Off keeps the bare label."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Near-black surface with white ink, or the white inverse."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root section."
+      },
+      {
+        "name": "steps",
+        "type": "number",
+        "default": "7",
+        "description": "Demo only. Default export only, not part of the component API. How many steps the scripted stream runs, from 3 to 12. Hosts pass their own trace."
+      },
+      {
+        "name": "speed",
+        "type": "number",
+        "default": "1",
+        "description": "Demo only. Default export only, not part of the component API. Stream pace. 2 streams twice as fast and the timer reads the shorter time."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "move:0.5,0.45",
+        "wait:3600",
+        "click:@trace-toggle",
+        "hover:@trace-steps:0.5,0.5",
+        "scroll:600",
+        "wait:300"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "steps",
+        "label": "Steps",
+        "kind": "slider",
+        "min": 3,
+        "max": 12,
+        "step": 1,
+        "default": 7,
+        "group": "Stream"
+      },
+      {
+        "prop": "speed",
+        "label": "Pace",
+        "kind": "slider",
+        "min": 0.5,
+        "max": 2,
+        "step": 0.1,
+        "unit": "×",
+        "default": 1,
+        "group": "Stream"
+      },
+      {
+        "prop": "state",
+        "label": "State",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "thinking",
+            "label": "Thinking"
+          },
+          {
+            "value": "done",
+            "label": "Done"
+          }
+        ],
+        "default": "thinking",
+        "group": "Stream"
+      },
+      {
+        "prop": "autoCollapse",
+        "label": "Auto-collapse",
+        "kind": "toggle",
+        "default": true,
+        "group": "Trace"
+      },
+      {
+        "prop": "showTimer",
+        "label": "Show timer",
+        "kind": "toggle",
+        "default": true,
+        "group": "Trace"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Restart",
+        "kind": "action"
+      }
+    ]
+  },
+  {
     "slug": "auth-otp",
     "name": "One-time Code",
     "tier": "pro",
@@ -230,6 +1273,484 @@
       }
     ],
     "added": "2026-10-09"
+  },
+  {
+    "slug": "bg-dither-flow",
+    "name": "Dither Flow",
+    "tier": "pro",
+    "platform": "web",
+    "category": "backgrounds",
+    "description": "A slowly advecting noise field rendered as an ordered Bayer 8×8 dither in two inks, like a risograph in motion. The pointer leaves a short wake of ink behind it.",
+    "tags": [
+      "background",
+      "shader",
+      "webgl",
+      "dither",
+      "bayer",
+      "riso",
+      "halftone",
+      "hero"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 664,
+    "usage": "import { BgDitherFlow } from \"@/components/design-for-ai/bg-dither-flow\";\n\n<div className=\"relative h-[560px] overflow-hidden rounded-2xl\">\n  <BgDitherFlow pixelSize={3} threshold={0.6} quiet={0.6}>\n    <h2 className=\"font-display text-6xl tracking-[-0.04em]\">Print, in motion.</h2>\n  </BgDitherFlow>\n</div>\n\n// Children sit above the field, inside the quiet zone at the centre.",
+    "props": [
+      {
+        "name": "pixelSize",
+        "type": "number",
+        "default": "4",
+        "description": "Dither cell size in CSS pixels, 1 to 8. Larger cells read as a coarser print."
+      },
+      {
+        "name": "threshold",
+        "type": "number",
+        "default": "0.6",
+        "description": "Where the ink cut sits, 0 to 1. Lower floods the field with ink; higher leaves almost none."
+      },
+      {
+        "name": "quiet",
+        "type": "number",
+        "default": "0.6",
+        "description": "How far the centre of the stage is held to paper, 0 to 1, so a headline sits on calm ground."
+      },
+      {
+        "name": "inkA",
+        "type": "string",
+        "default": "\"#ededef\"",
+        "description": "The dense ink, drawn where the field is heaviest. Light on dark paper, dark on light paper. Neutral by default."
+      },
+      {
+        "name": "inkB",
+        "type": "string",
+        "default": "\"#0b0b0c\"",
+        "description": "The paper ink, drawn everywhere else. Also the root background, so an invalid value never shows a seam."
+      },
+      {
+        "name": "speed",
+        "type": "number",
+        "default": "0.4",
+        "description": "Drift speed multiplier, 0 to 2. 0 holds the field still and stops the loop."
+      },
+      {
+        "name": "wake",
+        "type": "boolean",
+        "default": "true",
+        "description": "Leave a short wake of ink behind the pointer. Off ignores the pointer entirely."
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "description": "Content drawn above the field, such as a headline or a caption. Sits in the quiet zone at the centre."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Classes for the root, which fills its parent. Give the parent a height."
+      }
+    ],
+    "demo": {
+      "steps": [
+        "wait:300",
+        "click:@pixel",
+        "wait:250",
+        "hover:@field:0.08,0.82",
+        "hover:@field:0.5,0.86",
+        "hover:@field:0.92,0.74",
+        "wait:300",
+        "click:@pixel",
+        "wait:1200"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "pixelSize",
+        "label": "Pixel size",
+        "kind": "slider",
+        "min": 1,
+        "max": 8,
+        "step": 1,
+        "unit": "px",
+        "default": 2,
+        "group": "Grid"
+      },
+      {
+        "prop": "threshold",
+        "label": "Threshold",
+        "kind": "slider",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "default": 0.6,
+        "group": "Grid"
+      },
+      {
+        "prop": "quiet",
+        "label": "Quiet zone",
+        "kind": "slider",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "default": 0.6,
+        "group": "Grid"
+      },
+      {
+        "prop": "inkA",
+        "label": "Ink",
+        "kind": "color",
+        "default": "#ededef",
+        "options": [
+          "#ededef",
+          "#16161a",
+          "#ff6b4a",
+          "#f5a524",
+          "#7ee0b8"
+        ],
+        "group": "Ink"
+      },
+      {
+        "prop": "inkB",
+        "label": "Paper",
+        "kind": "color",
+        "default": "#0b0b0c",
+        "options": [
+          "#0b0b0c",
+          "#1c1d24",
+          "#f3eee6",
+          "#1d2a6b"
+        ],
+        "group": "Ink"
+      },
+      {
+        "prop": "speed",
+        "label": "Drift",
+        "kind": "slider",
+        "min": 0,
+        "max": 2,
+        "step": 0.1,
+        "unit": "×",
+        "default": 0.4,
+        "group": "Motion"
+      },
+      {
+        "prop": "wake",
+        "label": "Pointer wake",
+        "kind": "toggle",
+        "default": true,
+        "group": "Motion"
+      }
+    ],
+    "added": "2026-10-10"
+  },
+  {
+    "slug": "bg-grain-gradient",
+    "name": "Grain Light Field",
+    "tier": "pro",
+    "platform": "web",
+    "category": "backgrounds",
+    "description": "A WebGL shaft of light falling across near-black, with fine film grain and one accent pooled in a corner. It leans toward the pointer and rests under reduced motion.",
+    "tags": [
+      "background",
+      "shader",
+      "webgl",
+      "grain",
+      "gradient",
+      "hero background",
+      "light",
+      "dark"
+    ],
+    "dependencies": [
+      "three",
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 640,
+    "usage": "import { GrainGradient } from \"@/components/design-for-ai/bg-grain-gradient\";\n\n<section className=\"relative h-[720px] overflow-hidden\">\n  <GrainGradient accent=\"#ff7a45\" intensity={0.6} grain={0.35}>\n    <div className=\"relative z-10 flex h-full items-end p-12\">\n      <h1 className=\"font-display text-6xl tracking-[-0.045em] text-white\">Your headline here</h1>\n    </div>\n  </GrainGradient>\n</section>\n\n// Monochrome field, no pool and no pointer lean: <GrainGradient accentAmount={0} followPointer={false} />\n// The root is h-full, so give the parent a height.",
+    "props": [
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ff7a45\"",
+        "description": "The one accent, pooled in the bottom-right corner and kept there. Set accentAmount to 0 to turn it off."
+      },
+      {
+        "name": "accentAmount",
+        "type": "number",
+        "default": "1",
+        "description": "How much of the accent pool shows, 0 to 1. At 0 the field is monochrome: light and ink only."
+      },
+      {
+        "name": "intensity",
+        "type": "number",
+        "default": "0.6",
+        "description": "Brightness of the falling light, 0 to 1. It also scales the accent pool."
+      },
+      {
+        "name": "grain",
+        "type": "number",
+        "default": "0.35",
+        "description": "Film grain strength, 0 to 1. The grain is a noise layer over the light, so it stays fine at every size."
+      },
+      {
+        "name": "speed",
+        "type": "number",
+        "default": "1",
+        "description": "Drift and grain rate. 1 is the default pace; 0 holds the light and the grain still."
+      },
+      {
+        "name": "followPointer",
+        "type": "boolean",
+        "default": "true",
+        "description": "Lean the light a little toward the mouse or pen. Touch never moves it, so a drag still scrolls the page."
+      },
+      {
+        "name": "paused",
+        "type": "boolean",
+        "default": "false",
+        "description": "Freeze the light, its lean and the grain on the current frame."
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "description": "Content layered over the field. The field sits behind it and never receives its layout."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Classes for the root element, which fills its parent."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "hover:@field:0.12,0.2",
+        "wait:1100",
+        "hover:@field:0.86,0.8",
+        "wait:1100",
+        "hover:@field:0.5,0.4",
+        "wait:900"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#ff7a45",
+        "options": [
+          "#ff7a45",
+          "#e8b15c",
+          "#a3e635"
+        ]
+      },
+      {
+        "prop": "accentAmount",
+        "label": "Corner accent",
+        "kind": "slider",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "default": 1
+      },
+      {
+        "prop": "intensity",
+        "label": "Intensity",
+        "kind": "slider",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "default": 0.6
+      },
+      {
+        "prop": "grain",
+        "label": "Grain",
+        "kind": "slider",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "default": 0.35
+      },
+      {
+        "prop": "speed",
+        "label": "Speed",
+        "kind": "slider",
+        "min": 0,
+        "max": 2,
+        "step": 0.1,
+        "unit": "×",
+        "default": 1
+      },
+      {
+        "prop": "followPointer",
+        "label": "Follow pointer",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "paused",
+        "label": "Paused",
+        "kind": "toggle",
+        "default": false
+      }
+    ]
+  },
+  {
+    "slug": "button-magnetic",
+    "name": "Magnetic CTA",
+    "tier": "pro",
+    "platform": "web",
+    "category": "buttons",
+    "description": "A primary button that leans toward the pointer as it nears, with its label and arrow on separate depths and a soft light that tracks the cursor.",
+    "tags": [
+      "button",
+      "cta",
+      "magnetic",
+      "hover",
+      "spring",
+      "call to action",
+      "monochrome"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 560,
+    "usage": "import { MagneticCta } from \"@/components/design-for-ai/button-magnetic\";\n\n<MagneticCta label=\"Start building\" onClick={() => router.push(\"/signup\")} />\n\n<MagneticCta theme=\"light\" strength={4} radius={160} arrow={false} accent=\"#d4775b\" className=\"mt-8\" />",
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "default": "\"Start building\"",
+        "description": "The action's label. A few words, in sentence case."
+      },
+      {
+        "name": "arrow",
+        "type": "boolean",
+        "default": "true",
+        "description": "Shows an arrow after the label. The arrow sits on a nearer depth than the label, so the two move almost together and never collide."
+      },
+      {
+        "name": "strength",
+        "type": "number",
+        "default": "6",
+        "description": "The furthest the button leans toward the pointer, in px. Capped at 8; 0 turns the lean off."
+      },
+      {
+        "name": "radius",
+        "type": "number",
+        "default": "200",
+        "description": "Distance from the button edge, in px, at which the pull begins. It governs the pull only; the spotlight is sized from the button."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#e9e9eb\" on dark, \"#0a0a0b\" on light",
+        "description": "The fill, as a hex colour. Unset, it is #e9e9eb on a dark surface and #0a0a0b (ink) on a light one. The label colour, spotlight and rim are chosen for contrast against it."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "The surface the button sits on. It sets the default fill, the drop shadow and the focus ring so each keeps its contrast."
+      },
+      {
+        "name": "onClick",
+        "type": "() => void",
+        "description": "Runs on click, after the press has been felt."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "default": "false",
+        "description": "Disables the button. It stops leaning and drops to 40% opacity."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root, for layout such as margin, or alignment beside a secondary link."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:250",
+        "move:0.12,0.7",
+        "move:0.4,0.22",
+        "move:0.62,0.22",
+        "move:0.7,0.36",
+        "hover:@magnetic-cta:0.8,0.5",
+        "wait:200",
+        "down",
+        "wait:260",
+        "up",
+        "wait:150",
+        "move:0.9,0.85",
+        "wait:800"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "strength",
+        "label": "Lean",
+        "kind": "slider",
+        "min": 0,
+        "max": 8,
+        "step": 1,
+        "unit": "px",
+        "default": 6,
+        "group": "Field"
+      },
+      {
+        "prop": "label",
+        "label": "Label",
+        "kind": "text",
+        "default": "Start building",
+        "group": "Content"
+      },
+      {
+        "prop": "arrow",
+        "label": "Arrow",
+        "kind": "toggle",
+        "default": true,
+        "group": "Content"
+      },
+      {
+        "prop": "accent",
+        "label": "Fill",
+        "kind": "color",
+        "default": "#e9e9eb",
+        "options": [
+          "#18181b",
+          "#d4775b"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
   },
   {
     "slug": "chart-allocation",
@@ -605,6 +2126,244 @@
       }
     ],
     "added": "2026-10-09"
+  },
+  {
+    "slug": "combobox-async",
+    "name": "Async Combobox",
+    "tier": "pro",
+    "platform": "web",
+    "category": "selects",
+    "description": "A combobox over a remote source: skeleton rows while it loads, stale results dimmed rather than cleared, a Create row when nothing matches and recent picks when empty.",
+    "tags": [
+      "combobox",
+      "autocomplete",
+      "async search",
+      "typeahead",
+      "creatable select",
+      "multi-select",
+      "aria",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 720,
+    "usage": "import { ComboboxAsync } from \"@/components/design-for-ai/combobox-async\";\n\nasync function searchClients(query: string, signal: AbortSignal) {\n  const res = await fetch(`/api/clients?q=${encodeURIComponent(query)}`, { signal });\n  return (await res.json()) as { id: string; label: string; detail?: string }[];\n}\n\nexport default function ClientPicker() {\n  return (\n    <ComboboxAsync\n      label=\"Client\"\n      placeholder=\"Search clients…\"\n      resultsLabel=\"Clients\"\n      search={searchClients}\n      onCreate={(name) => createClient(name)}\n      onChange={(picked) => setClient(picked[0] ?? null)}\n    />\n  );\n}",
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "default": "\"Account\"",
+        "description": "Mono label above the field, and the accessible name of the list."
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "default": "\"Search accounts…\"",
+        "description": "Field placeholder, shown while the field is empty. Pass the noun your list holds, e.g. \"Search clients…\"."
+      },
+      {
+        "name": "search",
+        "type": "(query: string, signal: AbortSignal) => Promise<ComboboxItem[]>",
+        "description": "Your remote source. A newer query aborts the older request, so the last query typed always wins. Left out, the built-in demo directory answers after latency."
+      },
+      {
+        "name": "latency",
+        "type": "number",
+        "default": "700",
+        "description": "Milliseconds the built-in directory takes to answer. Ignored when search is passed."
+      },
+      {
+        "name": "offline",
+        "type": "boolean",
+        "default": "false",
+        "description": "Make the built-in directory fail every query, to show the designed error state. Ignored when search is passed."
+      },
+      {
+        "name": "debounce",
+        "type": "number",
+        "default": "150 with search, 0 for the built-in directory",
+        "description": "Milliseconds to wait after the last keystroke before the source is asked, so a fast typist sends one request, not nine. The skeleton or stale state shows during the wait."
+      },
+      {
+        "name": "allowCreate",
+        "type": "boolean",
+        "default": "true",
+        "description": "Offer “Create ‘name’” when a search finds nothing."
+      },
+      {
+        "name": "onCreate",
+        "type": "(name: string) => void",
+        "description": "Called with the name as it is shown when the Create row is chosen: trimmed, spaces collapsed, a lowercase entry capitalised. That name is also the new item's label, and the item is picked straight away."
+      },
+      {
+        "name": "recent",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show recent picks on an empty query, and as a fallback under a search that finds nothing. Reopening a single choice lists them with the choice checked."
+      },
+      {
+        "name": "recentItems",
+        "type": "ComboboxItem[]",
+        "description": "Recent picks at first render. Each pick moves to the front (in multiple mode, once the list closes); three are kept."
+      },
+      {
+        "name": "multiple",
+        "type": "boolean",
+        "default": "false",
+        "description": "Pick several options. Each becomes a removable token inside the field, and the list stays open."
+      },
+      {
+        "name": "emptyText",
+        "type": "string",
+        "default": "\"Nothing in the directory matches that.\"",
+        "description": "Line shown when a search finds nothing."
+      },
+      {
+        "name": "resultsLabel",
+        "type": "string",
+        "default": "\"Accounts\"",
+        "description": "Heading over the matches. Set it to the noun your list holds, such as \"Clients\"."
+      },
+      {
+        "name": "recentLabel",
+        "type": "string",
+        "default": "\"Recent\"",
+        "description": "Heading over recent picks, on an empty query and under a search that finds nothing."
+      },
+      {
+        "name": "createLabel",
+        "type": "string",
+        "default": "\"Create\"",
+        "description": "The verb on the Create row: “Create ‘Northwind’”."
+      },
+      {
+        "name": "createHint",
+        "type": "string",
+        "default": "\"Adds to the directory\"",
+        "description": "Mono hint on the right of the Create row. Hidden below a 384px container, so it never truncates on phones."
+      },
+      {
+        "name": "idleText",
+        "type": "string",
+        "default": "\"Type to search the directory.\"",
+        "description": "Line shown on an empty query when there are no recent picks to list."
+      },
+      {
+        "name": "errorText",
+        "type": "string",
+        "default": "\"Couldn’t reach the directory.\"",
+        "description": "Line shown when the source fails."
+      },
+      {
+        "name": "retryText",
+        "type": "string",
+        "default": "\"Try again\"",
+        "description": "The action on the failure line that asks the source again."
+      },
+      {
+        "name": "defaultQuery",
+        "type": "string",
+        "description": "Text in the field on first render."
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "default": "false",
+        "description": "Open the list on first render."
+      },
+      {
+        "name": "onChange",
+        "type": "(selected: ComboboxItem[]) => void",
+        "description": "Called with the whole selection whenever it changes: a pick, a removed token or a cleared choice."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#9be3c4\"",
+        "description": "The one accent: the Create action. Nothing else is coloured."
+      },
+      {
+        "name": "accentInk",
+        "type": "string",
+        "default": "\"#0b0b0c\"",
+        "description": "Ink on the Create tile's plus glyph. Use dark ink for a light accent and light ink for a dark one."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Greyscale palette for the field, the sheet and the stage."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "click:@input:0.1,0.5",
+        "key:Escape",
+        "key:Escape",
+        "key:ArrowDown",
+        "wait:400",
+        "type:nor",
+        "wait:800",
+        "key:ArrowDown",
+        "type:thwind",
+        "wait:800",
+        "click:@create",
+        "wait:250",
+        "key:ArrowDown",
+        "wait:1000"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "latency",
+        "label": "Latency",
+        "kind": "slider",
+        "min": 0,
+        "max": 1500,
+        "step": 50,
+        "unit": "ms",
+        "default": 700
+      },
+      {
+        "prop": "allowCreate",
+        "label": "Allow create",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "recent",
+        "label": "Recent picks",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "multiple",
+        "label": "Multiple",
+        "kind": "toggle",
+        "default": false
+      },
+      {
+        "prop": "emptyText",
+        "label": "Empty copy",
+        "kind": "text",
+        "default": "Nothing in the directory matches that."
+      },
+      {
+        "prop": "offline",
+        "label": "Offline source",
+        "kind": "toggle",
+        "default": false
+      }
+    ]
   },
   {
     "slug": "dashboard-kpi-cards",
@@ -1125,6 +2884,358 @@
     "added": "2026-10-09"
   },
   {
+    "slug": "hero-ghost-cursor",
+    "name": "Ghost Cursor Hero",
+    "tier": "pro",
+    "platform": "web",
+    "category": "hero",
+    "description": "A headline over a product window that a ghost cursor drives on a loop: ship a release, search, or invite a teammate. Move in and it hands over.",
+    "tags": [
+      "hero",
+      "ghost cursor",
+      "product demo",
+      "animated ui",
+      "landing page",
+      "dark",
+      "monochrome"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 1100,
+    "usage": "import { HeroGhostCursor } from \"@/components/design-for-ai/hero-ghost-cursor\";\n\n<HeroGhostCursor\n  headline=\"Ship on Tuesday, not Friday at six.\"\n  emphasis=\"Tuesday\"\n  script=\"search\"\n  handOver\n  resumeAfter={4000}\n  accent=\"#ff5a1f\"\n/>",
+    "props": [
+      {
+        "name": "headline",
+        "type": "string",
+        "default": "\"Ship on Tuesday, not Friday at six.\"",
+        "description": "The headline, set large above the product window."
+      },
+      {
+        "name": "emphasis",
+        "type": "string",
+        "default": "\"Tuesday\"",
+        "description": "A word from the headline set in serif italic. Ignored when it is not in the headline."
+      },
+      {
+        "name": "eyebrow",
+        "type": "string",
+        "default": "\"Northwind · releases\"",
+        "description": "Small mono line above the headline."
+      },
+      {
+        "name": "body",
+        "type": "string",
+        "description": "Supporting paragraph beside the headline."
+      },
+      {
+        "name": "script",
+        "type": "\"ship\" | \"search\" | \"invite\"",
+        "default": "\"ship\"",
+        "description": "The walkthrough the ghost loops: ship types a release note and ships from the menu, search types a query and picks a result, invite adds a teammate."
+      },
+      {
+        "name": "speed",
+        "type": "number",
+        "default": "1",
+        "description": "Playback speed of the ghost as a multiplier. Scales glides, presses, typing and the release stages together."
+      },
+      {
+        "name": "handOver",
+        "type": "boolean",
+        "default": "true",
+        "description": "When the visitor’s pointer enters the window, the ghost fades out and hands them control. Off, the ghost keeps running alongside them."
+      },
+      {
+        "name": "resumeAfter",
+        "type": "number",
+        "default": "4000",
+        "description": "Idle milliseconds, pointer out and no keyboard focus inside the window, before the ghost takes it back and restarts. The component page renders this at 1200 so the take-back and its press on Deploys fit its card video."
+      },
+      {
+        "name": "frame",
+        "type": "\"window\" | \"bare\"",
+        "default": "\"window\"",
+        "description": "The product window with its title bar and traffic lights, or the bare app surface with no chrome."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "The surface the hero sits on. Every colour is a token, so both themes keep their contrast."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ff5a1f\"",
+        "description": "The one accent colour: the active tab, the press ring, the live check and the send button. Hex only."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the section root."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:3300",
+        "move:0.93,0.08",
+        "hover:@tab-team",
+        "click",
+        "wait:150",
+        "hover:@headline",
+        "wait:2000"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "headline",
+        "label": "Headline",
+        "kind": "text",
+        "default": "Ship on Tuesday, not Friday at six."
+      },
+      {
+        "prop": "script",
+        "label": "Script",
+        "kind": "select",
+        "options": [
+          {
+            "value": "ship",
+            "label": "Ship"
+          },
+          {
+            "value": "search",
+            "label": "Search"
+          },
+          {
+            "value": "invite",
+            "label": "Invite"
+          }
+        ],
+        "default": "ship"
+      },
+      {
+        "prop": "handOver",
+        "label": "Hand over",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "speed",
+        "label": "Speed",
+        "kind": "slider",
+        "min": 0.5,
+        "max": 2,
+        "step": 0.1,
+        "unit": "×",
+        "default": 1
+      },
+      {
+        "prop": "frame",
+        "label": "Frame",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "window",
+            "label": "Window"
+          },
+          {
+            "value": "bare",
+            "label": "Bare"
+          }
+        ],
+        "default": "window"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
+  },
+  {
+    "slug": "hero-inline-objects",
+    "name": "Inline Objects Hero",
+    "tier": "pro",
+    "platform": "web",
+    "category": "hero",
+    "description": "A display sentence with a switch, a counting figure, an avatar stack and a cursor chip set inline at cap height. Hover animates each; screen readers hear the sentence.",
+    "tags": [
+      "hero",
+      "inline objects",
+      "display type",
+      "headline",
+      "switch",
+      "avatars",
+      "cursor chip",
+      "dark",
+      "monochrome"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 720,
+    "usage": "import { HeroInlineObjects } from \"@/components/design-for-ai/hero-inline-objects\";\n\n<HeroInlineObjects\n  set=\"developer\"\n  align=\"center\"\n/>",
+    "props": [
+      {
+        "name": "headline",
+        "type": "string",
+        "default": "the set's own sentence",
+        "description": "The display sentence. Put {toggle}, {figure}, {avatars} or {chip} where an object belongs; everything else is set as type. Each word animates in on first view. Leave it out to use the chosen set's own sentence."
+      },
+      {
+        "name": "set",
+        "type": "\"product\" | \"developer\" | \"finance\"",
+        "default": "\"product\"",
+        "description": "Sample data and voice for the objects: a product rollout to users, a service deploy, or a finance close, each with its own sentence, figure and names."
+      },
+      {
+        "name": "data",
+        "type": "Partial<InlineObjectsData>",
+        "description": "Replaces single fields of the chosen set. toggle is a boolean, figure is { value, unit }, avatars is a string[] of full names, chip is the name on the cursor."
+      },
+      {
+        "name": "hoverAnimate",
+        "type": "boolean",
+        "default": "true",
+        "description": "Hover (or tap) animates each object: the switch flips, the figure re-ticks, the avatars fan out, the cursor nudges. Off keeps the sentence still and hides any hint."
+      },
+      {
+        "name": "hint",
+        "type": "string | false",
+        "default": "false",
+        "description": "An optional mono line under a hairline rule, shown only while hoverAnimate is on. Off by default; the gallery demo sets \"Hover or tap any object\"."
+      },
+      {
+        "name": "as",
+        "type": "\"h1\" | \"h2\"",
+        "default": "\"h1\"",
+        "description": "Heading level of the sentence. A hero is usually the page's h1; use h2 when the page already has one."
+      },
+      {
+        "name": "align",
+        "type": "\"left\" | \"center\"",
+        "default": "\"left\"",
+        "description": "Alignment of the sentence and its hint line, if any."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Ink on near-black, or ink on warm paper. Every surface and object colour follows it."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "hover:@toggle",
+        "wait:900",
+        "hover:@figure",
+        "wait:900",
+        "hover:@avatars",
+        "wait:1000",
+        "hover:@chip:0.78,0.5",
+        "wait:700"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "headline",
+        "label": "Sentence",
+        "kind": "text",
+        "default": "Ship behind a switch that is {toggle}, to {figure}, reviewed by {avatars} and signed off by {chip}.",
+        "group": "Copy"
+      },
+      {
+        "prop": "set",
+        "label": "Data set",
+        "kind": "select",
+        "options": [
+          {
+            "value": "product",
+            "label": "Product"
+          },
+          {
+            "value": "developer",
+            "label": "Developer"
+          },
+          {
+            "value": "finance",
+            "label": "Finance"
+          }
+        ],
+        "default": "product",
+        "group": "Data"
+      },
+      {
+        "prop": "hoverAnimate",
+        "label": "Hover motion",
+        "kind": "toggle",
+        "default": true,
+        "group": "Motion"
+      },
+      {
+        "prop": "align",
+        "label": "Alignment",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Centre"
+          }
+        ],
+        "default": "left",
+        "group": "Layout"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
+  },
+  {
     "slug": "hero-kinetic-type",
     "name": "Kinetic Type Hero",
     "tier": "pro",
@@ -1582,6 +3693,241 @@
           "#a3e635",
           "#ededef"
         ]
+      }
+    ]
+  },
+  {
+    "slug": "mobile-agent-approval",
+    "name": "Agent Approval Sheet",
+    "tier": "pro",
+    "platform": "mobile",
+    "category": "mobile",
+    "description": "A mobile sheet for an agent that paused on a risky step: the exact command, a risk meter, and Approve as a hold-to-confirm bar a pocket tap cannot trigger.",
+    "tags": [
+      "agents",
+      "approval",
+      "human in the loop",
+      "hold to confirm",
+      "react native",
+      "bottom sheet",
+      "receipt",
+      "permissions"
+    ],
+    "dependencies": [
+      "expo-blur",
+      "expo-linear-gradient",
+      "react-native-svg"
+    ],
+    "theme": "dark",
+    "previewHeight": 940,
+    "usage": "import { MobileAgentApproval } from \"@/components/design-for-ai/native/mobile-agent-approval\";\n\n// npm i expo-blur expo-linear-gradient react-native-svg\n// (bare React Native: run `npx install-expo-modules` once)\n<MobileAgentApproval\n  agent=\"Juno\"\n  request=\"payment\"\n  risk=\"high\"\n  holdDuration={1.2}\n  runId=\"5108\"\n  details={{\n    title: \"Refund $120.00 to Ines Carvalho\",\n    command: { head: \"$ stripe refunds create\", args: [[\"--charge\", \"ch_3Pq8\"], [\"--amount\", \"12000\"]] },\n  }}\n  onDecision={({ outcome, request, at }) => agent.resume({ outcome, request, at })}\n/>\n\n// Drive it from outside with status (pending, approved, denied). Swipe down or\n// tap \"Decide later\" to defer: the sheet folds to a receipt and tapping it reopens the question.",
+    "props": [
+      {
+        "name": "agent",
+        "type": "string",
+        "default": "\"Atlas\"",
+        "description": "Who is asking. Shown in the eyebrow and woven into the summary, the receipts and the link copy. The deploy command takes its name too."
+      },
+      {
+        "name": "request",
+        "type": "\"deploy\" | \"payment\" | \"email\"",
+        "default": "\"deploy\"",
+        "description": "The preset request. Chooses the default title, command, three facts and receipt wording. Anything in details replaces the preset."
+      },
+      {
+        "name": "risk",
+        "type": "\"low\" | \"medium\" | \"high\"",
+        "default": "\"high\"",
+        "description": "How serious the action is. Sets the three-bar risk meter and its one-line note."
+      },
+      {
+        "name": "holdDuration",
+        "type": "number",
+        "default": "1.2",
+        "description": "Seconds the Approve bar must be held before it fills and approves. Clamped to 0.5 to 2. Releasing early springs the bar back."
+      },
+      {
+        "name": "status",
+        "type": "\"pending\" | \"approved\" | \"denied\"",
+        "description": "Drive the sheet from outside. Changing it moves the sheet to that state without reporting a decision."
+      },
+      {
+        "name": "receipt",
+        "type": "boolean",
+        "default": "true",
+        "description": "Fold a settled request into a receipt row and log it to the run. Off keeps the sheet open after the decision, and says it is not logged."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#F5F5F5\" on dark, \"#111113\" on light",
+        "description": "The one brand colour, as a 6-digit hex. It fills the Approve control; its label takes the near-black or near-white ink with the higher WCAG contrast, so it stays at AA on any swatch. Unset, the default flips with the theme so Approve stays solid on a white sheet."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Near-black sheet over a dimmed app, or the white inverse."
+      },
+      {
+        "name": "runId",
+        "type": "string",
+        "default": "\"2417\"",
+        "description": "The run the request belongs to. Shown in the eyebrow and in the ledger line under Approve."
+      },
+      {
+        "name": "pausedFor",
+        "type": "string",
+        "default": "\"4 min\"",
+        "description": "How long the run has been paused, written as \"Paused {pausedFor} ago\" on the right of the header."
+      },
+      {
+        "name": "details",
+        "type": "Partial<{ title: string; summary: string; command: { head: string; args?: [name, value][] }; facts: [Fact, Fact, Fact]; detail: string; done: string }>",
+        "description": "Replace any part of the request's copy with your own: the title, summary, verbatim command (a bare head line plus aligned name and value lines), the three facts, the detail line and the approved receipt line. Unset fields keep the preset's copy."
+      },
+      {
+        "name": "onDecision",
+        "type": "(decision: { outcome: \"approved\" | \"denied\" | \"deferred\"; request; at: number }) => void",
+        "description": "Called once when the person decides: by holding Approve, Deny, deferring, or the screen reader's activate action. Host status changes are not reported."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:150",
+        "hover:@grabber",
+        "down",
+        "hover:@title",
+        "up",
+        "wait:200",
+        "hover:@approve",
+        "wait:150",
+        "down",
+        "wait:350",
+        "up",
+        "wait:350",
+        "down",
+        "wait:1450",
+        "up",
+        "wait:2100"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "risk",
+        "label": "Risk level",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "low",
+            "label": "Low"
+          },
+          {
+            "value": "medium",
+            "label": "Medium"
+          },
+          {
+            "value": "high",
+            "label": "High"
+          }
+        ],
+        "default": "high",
+        "group": "Policy"
+      },
+      {
+        "prop": "holdDuration",
+        "label": "Hold for",
+        "kind": "slider",
+        "min": 0.5,
+        "max": 2,
+        "step": 0.1,
+        "unit": "s",
+        "default": 1.2,
+        "group": "Policy"
+      },
+      {
+        "prop": "request",
+        "label": "Request",
+        "kind": "select",
+        "options": [
+          {
+            "value": "deploy",
+            "label": "Deploy"
+          },
+          {
+            "value": "payment",
+            "label": "Payment"
+          },
+          {
+            "value": "email",
+            "label": "Email"
+          }
+        ],
+        "default": "deploy",
+        "group": "Request"
+      },
+      {
+        "prop": "receipt",
+        "label": "Fold to receipt",
+        "kind": "toggle",
+        "default": true,
+        "group": "Request"
+      },
+      {
+        "prop": "status",
+        "label": "Status",
+        "kind": "action",
+        "options": [
+          {
+            "value": "pending",
+            "label": "Reset"
+          },
+          {
+            "value": "approved",
+            "label": "Approve"
+          },
+          {
+            "value": "denied",
+            "label": "Deny"
+          }
+        ],
+        "group": "State"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action",
+        "group": "State"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#F5F5F5",
+        "options": [
+          "#F5F5F5",
+          "#D4775B",
+          "#8AB4FF"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
       }
     ]
   },
@@ -3364,6 +5710,224 @@
         "default": true
       }
     ]
+  },
+  {
+    "slug": "usage-meter-tokens",
+    "name": "Token Usage Meter",
+    "tier": "pro",
+    "platform": "web",
+    "category": "progress",
+    "description": "An AI usage meter for one budget cycle: a stacked bar by model, a tick that warms past 80%, and the day the budget runs out at this pace.",
+    "tags": [
+      "usage meter",
+      "token budget",
+      "ai usage",
+      "quota",
+      "forecast",
+      "progress bar"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 760,
+    "usage": "import { TokenUsageMeter } from \"@/components/design-for-ai/usage-meter-tokens\";\n\n<TokenUsageMeter\n  title=\"Token budget\"\n  used={56}\n  models={4}\n  budget={4_000_000}\n  cycleStart=\"2026-10-01\"\n  cycleEnd=\"2026-10-31\"\n  today=\"2026-10-10\"\n  catalog={[\n    { name: \"Halcyon Pro\", share: 0.44, usdPerMillion: 15 },\n    { name: \"Halcyon Mini\", share: 0.27, usdPerMillion: 2.5 },\n    { name: \"Quill Vision\", share: 0.13, usdPerMillion: 6 },\n    { name: \"Kestrel Embed\", share: 0.08, usdPerMillion: 0.5 },\n  ]}\n  unit=\"tokens\"\n  forecast\n/>",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Token budget\"",
+        "description": "The small label above the figure."
+      },
+      {
+        "name": "used",
+        "type": "number",
+        "default": "56",
+        "description": "Share of the cycle budget already used, in percent (0 to 120). Past 100 the budget is exceeded and the readout says by how much."
+      },
+      {
+        "name": "models",
+        "type": "number",
+        "default": "4",
+        "description": "Segments on the bar, 1 to 4. The top models keep their own segment and the rest fold into Other models. 1 shows one total."
+      },
+      {
+        "name": "catalog",
+        "type": "UsageModel[]",
+        "default": "six fictional models",
+        "description": "Each model's share of tokens and its price in dollars per million tokens. Shares are normalised."
+      },
+      {
+        "name": "budget",
+        "type": "number",
+        "default": "4000000",
+        "description": "The cycle budget in tokens. Credits are 1,000 tokens each; dollars are priced from the catalog."
+      },
+      {
+        "name": "unit",
+        "type": "\"tokens\" | \"credits\" | \"$\"",
+        "default": "\"tokens\"",
+        "description": "What the bar and the figures count in. The bar's segments resize to the chosen unit."
+      },
+      {
+        "name": "softLimit",
+        "type": "number",
+        "default": "80",
+        "description": "Percent of the budget where the tone shifts. The tick and its label warm, and the stretch of bar or projection past it gets an accent edge; the palette stays put."
+      },
+      {
+        "name": "cycleStart",
+        "type": "string",
+        "default": "\"2026-10-01\"",
+        "description": "First day of the cycle, ISO date. Used for the forecast and the day marker."
+      },
+      {
+        "name": "cycleEnd",
+        "type": "string",
+        "default": "\"2026-10-31\"",
+        "description": "Last day of the cycle, ISO date, inclusive."
+      },
+      {
+        "name": "today",
+        "type": "string",
+        "default": "\"2026-10-10\"",
+        "description": "The day the forecast is made on, ISO date. Pass the real date in production."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Locale for compact numbers, dates and currency."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"USD\"",
+        "description": "ISO 4217 code shown when the unit is dollars."
+      },
+      {
+        "name": "forecast",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show the run-out forecast and the what-if slider beneath the legend. The slider speeds up the daily pace from today on; the share used never changes."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#f5a524\"",
+        "description": "The one accent: the forecast date, the tone past the soft limit and the what-if thumb."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface and ink. Light deepens the accent for text so it stays readable on paper."
+      }
+    ],
+    "demo": {
+      "steps": [
+        "wait:500",
+        "hover:@bar:0.12,0.5",
+        "wait:360",
+        "hover:@bar:0.32,0.5",
+        "wait:360",
+        "hover:@bar:0.43,0.5",
+        "wait:360",
+        "hover:@bar:0.51,0.5",
+        "wait:300",
+        "hover:@whatif:0.02,0.5",
+        "down",
+        "hover:@whatif:0.66,0.5",
+        "up",
+        "wait:600"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "used",
+        "label": "Used",
+        "kind": "slider",
+        "min": 0,
+        "max": 120,
+        "step": 1,
+        "unit": "%",
+        "default": 56,
+        "group": "Usage"
+      },
+      {
+        "prop": "models",
+        "label": "Models shown",
+        "kind": "slider",
+        "min": 1,
+        "max": 4,
+        "step": 1,
+        "default": 4,
+        "group": "Usage"
+      },
+      {
+        "prop": "unit",
+        "label": "Unit",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "tokens",
+            "label": "Tokens"
+          },
+          {
+            "value": "credits",
+            "label": "Credits"
+          },
+          {
+            "value": "$",
+            "label": "$"
+          }
+        ],
+        "default": "tokens",
+        "group": "Usage"
+      },
+      {
+        "prop": "forecast",
+        "label": "Forecast",
+        "kind": "toggle",
+        "default": true,
+        "group": "Forecast"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f5a524",
+        "options": [
+          "#f5a524",
+          "#7dd3a8",
+          "#60a5fa"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ],
+    "added": "2026-10-10"
   },
   {
     "slug": "work-index-hover",
