@@ -27,7 +27,7 @@
       "name": "label",
       "type": "string",
       "default": "\"Label\"",
-      "description": "Resting label. It rises into the notch on the top hairline when the field is focused or filled. A label too long for the field ends in an ellipsis before the trailing slot."
+      "description": "Resting label. It rises into the notch on the top hairline when the field is focused or filled. At rest a long label ends in an ellipsis before the trailing slot; floated and scaled down, it uses the whole run of hairline up to that slot."
     },
     {
       "name": "helper",
@@ -38,7 +38,7 @@
       "name": "errorText",
       "type": "string",
       "default": "\"Enter a valid value\"",
-      "description": "Replaces the helper once a value has rested and failed validate, or the field is left with one in it. Every edit returns it to rest until the value settles again."
+      "description": "Replaces the helper once a value has rested for 800ms and failed validate, or the field is left with one in it. Once shown it stays while the value is still wrong, then goes straight to success when it is fixed."
     },
     {
       "name": "successText",
@@ -50,7 +50,7 @@
       "name": "state",
       "type": "\"default\" | \"error\" | \"success\" | \"disabled\"",
       "default": "unset",
-      "description": "Forces a state for review. Unset, the field follows what is typed. Disabled locks the input and dims the whole field and its helper row."
+      "description": "Forces a state for review. Unset, the field follows what is typed. Disabled locks the input and dims the whole field and its helper row. In the demo, each state also fills the field to match it."
     },
     {
       "name": "validate",
@@ -61,7 +61,7 @@
       "name": "counter",
       "type": "boolean",
       "default": "true",
-      "description": "Shows the count once the value passes 80% of maxLength (32 of 40 in the demo), tweening the digits and turning to the error colour at the limit. Needs maxLength. Nothing shows at rest, so use the Value control to fill the demo."
+      "description": "Shows the count once the value passes 80% of maxLength (32 of 40 in the demo), tweening the digits. It reads muted, steps up to full ink for the last three characters and turns to the error colour at the limit. Needs maxLength."
     },
     {
       "name": "maxLength",
@@ -76,7 +76,7 @@
     {
       "name": "suffix",
       "type": "ReactNode",
-      "description": "Trailing slot, such as a unit or a short word. Its measured width sets the text's right inset. The success tick sits beside it."
+      "description": "Trailing slot, such as a unit or a short word. Its measured width sets the text's right inset, the success tick sits beside it, and screen readers hear it with the field through aria-describedby."
     },
     {
       "name": "size",

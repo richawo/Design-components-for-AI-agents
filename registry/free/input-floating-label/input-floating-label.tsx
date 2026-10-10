@@ -14,7 +14,7 @@ import {
   type InputHTMLAttributes,
   type ReactNode,
 } from "react";
-import { AnimatePresence, animate, motion, useInView, useReducedMotion } from "motion/react";
+import { AnimatePresence, animate, motion, useMotionValue, useReducedMotion } from "motion/react";
 import { Mail } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
@@ -139,6 +139,16 @@ const SLOT_GAP = 10;
 const IDLE_MS = 800;
 /** Share of `maxLength` at which the counter appears. */
 const COUNTER_NEAR = 0.8;
+/** Characters left at which the count steps up from muted to full ink. At the limit it turns to the error colour. */
+const COUNTER_CLOSE = 3;
+/** Thin space, so the count reads as one figure ("33 / 40") rather than three words. */
+const THIN = "\u2009";
+/** Below this field width the field is in a narrow column: padding and the resting label tighten. */
+const COMPACT_BELOW = 300;
+/** How much the side padding tightens in a narrow column, in px. */
+const COMPACT_PAD_STEP = 4;
+/** maxWidth before the field is measured. Large enough to never clip, and still a number motion can tween from. */
+const UNMEASURED = 100_000;
 /** Corner radius of the field, in px. Matches `border-radius` in FIELD_CSS. The notch stops short of it. */
 const CORNER = 12;
 /** Name of the keyframes the autofill hook listens for. Chrome fires animationstart when it fills a field. */
@@ -252,11 +262,7 @@ function useTweenedNumber(target: number, reduce: boolean): number {
 /** The count, rolling to its new value rather than jumping. */
 function CharCount({ count, max, reduce }: { count: number; max: number; reduce: boolean }) {
   const shown = useTweenedNumber(count, reduce);
-  return (
-    <>
-      {shown} / {max}
-    </>
-  );
+  return <>{`${shown}${THIN}/${THIN}${max}`}</>;
 }
 
 /** A tick that draws itself in once the value is valid. Drawn, not faded, so the arrival reads as a confirmation. */
@@ -320,12 +326,11 @@ export function FloatingLabelField({
   const id = useId();
   const inputId = idProp ?? `${id}-input`;
   const messageId = `${id}-message`;
+  const suffixId = `${id}-suffix`;
   const reduce = useReducedMotion() ?? false;
   const tone = TONES[theme];
   const dims = SIZES[size];
 
-  const rootRef = useRef<HTMLDivElement>(null);
-  const inView = useInView(rootRef, { once: true, amount: 0.3 });
   const fieldRef = useRef<HTMLDivElement | null>(null);
   const [setFieldNode, fieldWidth] = useMeasuredWidth();
   const attachField = useCallback(
@@ -335,7 +340,9 @@ export function FloatingLabelField({
     },
     [setFieldNode],
   );
-  const [setLabelNode, labelWidth] = useMeasuredWidth();
+  // The label's natural width comes from an unclipped twin, so it never changes while the real label's
+  // clip width is moving. The notch is sized from it.
+  const [setLabelTwin, labelNaturalWidth] = useMeasuredWidth();
   const [setPrefixNode, prefixWidth] = useMeasuredWidth();
   const [setTrailingNode, trailingWidth] = useMeasuredWidth();
 
@@ -347,20 +354,39 @@ export function FloatingLabelField({
   /** An invalid value is only called out once it has rested or the field has been left. */
   const [touched, setTouched] = useState(false);
 
+  const isValid = (candidate: string) => candidate.length > 0 && (validate?.(candidate) ?? false);
   const hasValue = value.length > 0;
-  const valid = hasValue && (validate?.(value) ?? false);
+  const valid = isValid(value);
   const invalid = hasValue && validate !== undefined && !valid;
   const auto: FloatingLabelFieldState = valid ? "success" : invalid && touched ? "error" : "default";
   const resolved: FloatingLabelFieldState = disabledProp || state === "disabled" ? "disabled" : (state ?? auto);
   const disabled = resolved === "disabled";
   const floated = focused || hasValue || autofilled;
+  const hasSuffix = suffix !== undefined && suffix !== null && suffix !== false;
 
-  const labelX = dims.pad + slotOffset(prefixWidth);
-  const inputPadRight = dims.pad + slotOffset(trailingWidth);
-  // The label may run as far as the text. A longer label ends in an ellipsis before the trailing slot.
-  const labelMax = fieldWidth > 0 ? Math.max(0, fieldWidth - labelX - inputPadRight) : undefined;
+  // A narrow column (a sidebar, a 320px phone with page padding) gets tighter padding and a smaller
+  // resting label, so the text keeps its room instead of the frame eating it.
+  const compact = fieldWidth > 0 && fieldWidth < COMPACT_BELOW;
+  const pad = compact ? dims.pad - COMPACT_PAD_STEP : dims.pad;
+  const labelSize = compact ? dims.label - 1 : dims.label;
+
+  const labelX = pad + slotOffset(prefixWidth);
+  const inputPadRight = pad + slotOffset(trailingWidth);
+  const measured = fieldWidth > 0;
+  // At rest the label may run as far as the text, then ends in an ellipsis before the trailing slot.
+  const restMax = measured ? Math.max(0, fieldWidth - labelX - inputPadRight) : UNMEASURED;
+  // Floated, it sits on the top line, clear of the trailing slot, and stops a gap short of the
+  // corner so the notch always has a closing edge.
+  const floatMax = measured
+    ? Math.max(0, Math.min(fieldWidth - inputPadRight, fieldWidth - CORNER - 2 * NOTCH_GAP) - labelX)
+    : UNMEASURED;
+  /** On-screen width of the floated label, which is what the notch has to clear. */
+  const floatedWidth = Math.min(labelNaturalWidth * FLOAT_SCALE, floatMax);
+
+  const remaining = maxLength === undefined ? Infinity : maxLength - value.length;
   const showCount = counter && maxLength !== undefined && value.length >= maxLength * COUNTER_NEAR;
-  const countColor = maxLength !== undefined && value.length >= maxLength ? tone.error : tone.ink;
+  // The count gets louder as the limit gets closer: muted, then ink for the last few, then error at the limit.
+  const countColor = remaining <= 0 ? tone.error : remaining <= COUNTER_CLOSE ? tone.ink : tone.muted;
   const message =
     resolved === "error"
       ? { kind: "error", text: errorText, color: tone.error }
@@ -375,6 +401,31 @@ export function FloatingLabelField({
     return () => window.clearTimeout(timer);
   }, [value, invalid]);
 
+  // A forced error counts as called out, so handing the field back keeps the error until the value is fixed.
+  useEffect(() => {
+    if (state === "error") setTouched(true);
+  }, [state]);
+
+  // The label is clipped before it is scaled, so its clip width is widened by 1 / FLOAT_SCALE as it
+  // rises. The clip tweens with the scale (same curve, same moment), so the on-screen width never
+  // overshoots into the trailing slot mid-flight. A resize or a tick arriving moves it at once.
+  const labelMaxWidth = useMotionValue(UNMEASURED);
+  const wasFloated = useRef(floated);
+  const clipSized = useRef(false);
+  useLayoutEffect(() => {
+    if (!measured) return;
+    const target = floated ? floatMax / FLOAT_SCALE : restMax;
+    const rising = wasFloated.current !== floated;
+    wasFloated.current = floated;
+    if (!clipSized.current || !rising || reduce) {
+      clipSized.current = true;
+      labelMaxWidth.set(target);
+      return;
+    }
+    const controls = animate(labelMaxWidth, target, { duration: RISE_S, ease: EASE });
+    return () => controls.stop();
+  }, [floated, floatMax, restMax, measured, reduce, labelMaxWidth]);
+
   // The notch opens from the label's own start and closes back to a point. It is written straight to the
   // element's CSS variables so the 60 fps move never re-renders React.
   const notch = useRef({ start: labelX, end: labelX });
@@ -383,9 +434,9 @@ export function FloatingLabelField({
     if (!el) return;
     // The cut stops short of the right corner, so it never reaches the rounded end of the hairline.
     const roomEnd = fieldWidth > 0 ? fieldWidth - CORNER - NOTCH_GAP : Infinity;
-    const open = floated && labelWidth > 0;
+    const open = floated && labelNaturalWidth > 0;
     const target = open
-      ? { start: labelX - NOTCH_GAP, end: Math.min(labelX + labelWidth * FLOAT_SCALE + NOTCH_GAP, roomEnd) }
+      ? { start: labelX - NOTCH_GAP, end: Math.min(labelX + floatedWidth + NOTCH_GAP, roomEnd) }
       : { start: labelX, end: labelX };
     const paint = (start: number, end: number) => {
       el.style.setProperty("--ifl-nl", `${start}px`);
@@ -419,7 +470,7 @@ export function FloatingLabelField({
       startAnim.stop();
       endAnim.stop();
     };
-  }, [floated, labelX, labelWidth, fieldWidth, reduce]);
+  }, [floated, labelX, labelNaturalWidth, floatedWidth, fieldWidth, reduce]);
 
   // Controlled fields report upward and leave the value to the host. Uncontrolled ones keep it here too.
   const commit = (next: string) => {
@@ -430,8 +481,10 @@ export function FloatingLabelField({
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const next = event.target.value;
     setAutofilled(false);
-    // Every edit drops the error back to rest, so it only returns once the value has settled again.
-    setTouched(false);
+    // Reward early, punish late. An error already called out stays while the value is still wrong, so
+    // fixing it goes straight from error to success with no helper in between. An emptied or valid value
+    // starts over, so the next mistake waits for a pause again.
+    if (next.length === 0 || isValid(next)) setTouched(false);
     commit(next);
     onChange?.(event);
   };
@@ -473,37 +526,49 @@ export function FloatingLabelField({
   const labelTransition = reduce
     ? { y: { duration: 0 }, scale: { duration: 0 }, color: { duration: FADE_S, ease: EASE } }
     : { duration: RISE_S, ease: EASE };
-  const describedBy = [messageId, ariaDescribedBy].filter(Boolean).join(" ");
+  // Swapped text (the message and the count) enters from below and leaves upward, with a light blur.
+  const swapIn = reduce ? { opacity: 0 } : { opacity: 0, y: 6, filter: "blur(3px)" };
+  const swapSettle = reduce ? { opacity: 1 } : { opacity: 1, y: 0, filter: "blur(0px)" };
+  const swapOut = reduce ? { opacity: 0 } : { opacity: 0, y: -6, filter: "blur(3px)" };
+  const swapTransition = { duration: reduce ? FADE_S : MESSAGE_S, ease: EASE };
+  // The suffix ("Optional", a unit) is part of what the field means, so it is read with the field, before the message.
+  const describedBy = [hasSuffix ? suffixId : undefined, messageId, ariaDescribedBy].filter(Boolean).join(" ");
 
   return (
     <>
       <style href="input-floating-label-styles" precedence="default">
         {FIELD_CSS}
       </style>
-      <motion.div
-        ref={rootRef}
+      <div
         data-state={resolved}
         aria-disabled={disabled || undefined}
         className={`ifl-root @container relative w-full max-w-[420px] font-sans${className ? ` ${className}` : ""}`}
         style={cssVars}
-        initial={reduce ? false : { opacity: 0, y: 10, filter: "blur(6px)" }}
-        animate={inView || reduce ? { opacity: 1, y: 0, filter: "blur(0px)" } : undefined}
-        transition={{ duration: reduce ? FADE_S : 0.6, ease: EASE }}
       >
         <div className="ifl-body">
           <div ref={attachField} className="ifl-field" style={{ height: dims.height }}>
             <div aria-hidden="true" className="ifl-surface" />
             <div aria-hidden="true" className="ifl-border" />
 
+            {/* Unclipped twin of the label, measured for the notch. Its own box clips it, so it never widens the page. */}
+            <div aria-hidden="true" className="pointer-events-none invisible absolute inset-0 overflow-hidden">
+              <span
+                ref={setLabelTwin}
+                className="absolute left-0 top-0 whitespace-nowrap leading-5"
+                style={{ fontSize: labelSize }}
+              >
+                {label}
+              </span>
+            </div>
+
             <motion.label
-              ref={setLabelNode}
               htmlFor={inputId}
               className="pointer-events-none absolute z-[1] whitespace-nowrap leading-5"
               style={{
                 left: labelX,
                 top: 0,
-                maxWidth: labelMax,
-                fontSize: dims.label,
+                maxWidth: labelMaxWidth,
+                fontSize: labelSize,
                 color: labelColor,
                 transformOrigin: "left center",
                 // Ellipsis needs overflow clipping. The padding and matching negative margin widen the clip box
@@ -527,7 +592,7 @@ export function FloatingLabelField({
               ref={setPrefixNode}
               aria-hidden="true"
               className="pointer-events-none absolute z-[1] flex items-center leading-none"
-              style={{ left: dims.pad, top: "50%", transform: "translateY(-50%)", color: tone.icon }}
+              style={{ left: pad, top: "50%", transform: "translateY(-50%)", color: tone.icon }}
             >
               {prefix}
             </span>
@@ -554,13 +619,15 @@ export function FloatingLabelField({
               onAnimationStart={handleAnimationStart}
             />
 
+            {/* Hidden from the reading order; the suffix reaches assistive technology through aria-describedby. */}
             <div
               ref={setTrailingNode}
+              aria-hidden="true"
               className="pointer-events-none absolute top-1/2 z-[1] flex -translate-y-1/2 items-center gap-2.5"
-              style={{ right: dims.pad, color: tone.muted }}
+              style={{ right: pad, color: tone.muted }}
             >
-              {suffix !== undefined && suffix !== null && suffix !== false && (
-                <span className="leading-none" style={{ fontSize: 13 }}>
+              {hasSuffix && (
+                <span id={suffixId} className="leading-none" style={{ fontSize: 13 }}>
                   {suffix}
                 </span>
               )}
@@ -571,8 +638,8 @@ export function FloatingLabelField({
           </div>
 
           <div
-            className="mt-2.5 flex items-start justify-between gap-4"
-            style={{ paddingLeft: dims.pad, paddingRight: dims.pad }}
+            className="mt-2.5 flex items-start justify-between gap-3 @xs:gap-4"
+            style={{ paddingLeft: pad, paddingRight: pad }}
           >
             <div id={messageId} aria-live="polite" className="relative min-w-0 flex-1">
               <AnimatePresence mode="popLayout" initial={false}>
@@ -580,10 +647,10 @@ export function FloatingLabelField({
                   key={message.kind}
                   className="font-sans text-[13px] leading-[1.45] @sm:text-[13.5px]"
                   style={{ color: message.color }}
-                  initial={reduce ? { opacity: 0 } : { opacity: 0, y: 6, filter: "blur(3px)" }}
-                  animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0, filter: "blur(0px)" }}
-                  exit={reduce ? { opacity: 0 } : { opacity: 0, y: -6, filter: "blur(3px)" }}
-                  transition={{ duration: reduce ? FADE_S : MESSAGE_S, ease: EASE }}
+                  initial={swapIn}
+                  animate={swapSettle}
+                  exit={swapOut}
+                  transition={swapTransition}
                 >
                   {message.text}
                 </motion.p>
@@ -594,18 +661,17 @@ export function FloatingLabelField({
               <div className="grid shrink-0 justify-items-end font-mono text-[12px] leading-[1.45] tabular-nums">
                 {/* Holds the count's width from the start, so the message never reflows when the count arrives. */}
                 <span aria-hidden="true" className="invisible col-start-1 row-start-1">
-                  {maxLength} / {maxLength}
+                  {`${maxLength}${THIN}/${THIN}${maxLength}`}
                 </span>
                 <AnimatePresence initial={false}>
                   {showCount && (
                     <motion.span
                       key="count"
                       className="col-start-1 row-start-1"
-                      style={{ color: countColor }}
-                      initial={reduce ? { opacity: 0 } : { opacity: 0, y: 6, filter: "blur(3px)" }}
-                      animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0, filter: "blur(0px)" }}
-                      exit={reduce ? { opacity: 0 } : { opacity: 0, y: -6, filter: "blur(3px)" }}
-                      transition={{ duration: reduce ? FADE_S : MESSAGE_S, ease: EASE }}
+                      initial={{ ...swapIn, color: countColor }}
+                      animate={{ ...swapSettle, color: countColor }}
+                      exit={swapOut}
+                      transition={swapTransition}
                     >
                       <CharCount count={value.length} max={maxLength} reduce={reduce} />
                     </motion.span>
@@ -615,7 +681,7 @@ export function FloatingLabelField({
             )}
           </div>
         </div>
-      </motion.div>
+      </div>
     </>
   );
 }
@@ -629,18 +695,48 @@ const EMAIL = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i;
 const isEmail = (value: string) => EMAIL.test(value.trim());
 
 /**
+ * What the field shows while a state is forced from the controls, given what the visitor typed, so each
+ * state describes what is on screen: a half-typed address for the error, a finished one for success,
+ * and a filled field for disabled so its dimmed, floated look is visible. "Default" shows what was typed.
+ */
+const STATE_VALUES: Record<FloatingLabelFieldState, (typed: string) => string> = {
+  default: (typed) => typed,
+  error: () => "ana.lumen@",
+  success: () => "ana.lumen@studio.co",
+  disabled: (typed) => typed || "ana.lumen@studio.co",
+};
+
+/**
  * The component on a quiet stage. The featured field is an email field; overrides are spread onto it
- * so every control reaches it. The state control forces a state at runtime, so it is synced into the
- * demo's own state and "Default" hands the field back to what is typed.
+ * so every control reaches it. The demo owns the value, and the state control both pins a state and
+ * fills the field to match it. "Default" hands the field back to what the visitor typed.
+ *
+ * The first-view entrance lives here, on the stage, not in the field: a form primitive should be
+ * visible the moment it mounts.
  */
 export default function FloatingLabelFieldDemo({
   state: forced,
   prefix,
   suffix,
+  defaultValue = "",
+  onValueChange,
   ...overrides
 }: Partial<FloatingLabelFieldProps> = {}) {
+  const reduce = useReducedMotion() ?? false;
+  const [value, setValue] = useState(defaultValue);
+  /** The visitor's own value. A forced state shows a sample beside it but never overwrites it. */
+  const typed = useRef(defaultValue);
   const [state, setState] = useState<FloatingLabelFieldState | undefined>(forced);
-  useEffect(() => setState(forced), [forced]);
+  useEffect(() => {
+    setState(forced);
+    setValue(STATE_VALUES[forced ?? "default"](typed.current));
+  }, [forced]);
+
+  const handleValueChange = (next: string) => {
+    typed.current = next;
+    setValue(next);
+    onValueChange?.(next);
+  };
 
   const light = overrides.theme === "light";
   // The controls send booleans for the slots. A true suffix shows a short word, so the trailing slot is visible.
@@ -652,23 +748,32 @@ export default function FloatingLabelFieldDemo({
     <div
       className={`flex min-h-dvh w-full items-center justify-center px-5 py-16 sm:px-8 ${light ? "bg-[#f4f4f5]" : "bg-black"}`}
     >
-      <FloatingLabelField
-        type="email"
-        inputMode="email"
-        autoComplete="email"
-        spellCheck={false}
-        data-demo="email"
-        label="Work email"
-        helper="We’ll send receipts and invoices here."
-        errorText="Add a domain, like ana@studio.co"
-        successText="Looks good. Receipts go here."
-        validate={isEmail}
-        maxLength={40}
-        prefix={glyph}
-        suffix={word}
-        {...overrides}
-        state={state === "default" ? undefined : state}
-      />
+      <motion.div
+        className="w-full max-w-[420px]"
+        initial={reduce ? false : { opacity: 0, y: 10, filter: "blur(6px)" }}
+        animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+        transition={{ duration: 0.6, ease: EASE }}
+      >
+        <FloatingLabelField
+          type="email"
+          inputMode="email"
+          autoComplete="email"
+          spellCheck={false}
+          data-demo="email"
+          label="Work email"
+          helper="We’ll send receipts and invoices here."
+          errorText="Add a domain, like ana@studio.co"
+          successText="Looks good. Receipts go here."
+          validate={isEmail}
+          maxLength={40}
+          prefix={glyph}
+          suffix={word}
+          {...overrides}
+          value={value}
+          onValueChange={handleValueChange}
+          state={state === "default" ? undefined : state}
+        />
+      </motion.div>
     </div>
   );
 }

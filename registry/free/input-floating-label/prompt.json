@@ -5,7 +5,7 @@
   "stack": {
     "framework": "React 19",
     "styling": "Tailwind CSS v4 (@container on the root, arbitrary values) plus one ifl- namespaced style block for the notch mask, focus border, autofill and disabled rules",
-    "animation": "motion/react (animate for the notch edges, the label and the tweened count; AnimatePresence mode popLayout for messages and the count; pathLength for the tick; useInView for the first reveal)",
+    "animation": "motion/react (animate for the notch edges, the label's clip width and the tweened count; motion values for the label; AnimatePresence mode popLayout for messages and the count; pathLength for the tick). The field has no entrance of its own; the demo stage reveals it",
     "icons": "lucide-react Mail, 16px, stroke 1.6, supplied as the prefix in the demo"
   },
   "layout": {
@@ -14,14 +14,14 @@
     "padding": "16px horizontal (md), 18px (lg). The prefix and trailing slots are measured with ResizeObserver; the label, notch start and input padding add their measured width plus a 10px gap",
     "trailingSlot": "holds the suffix and, beside it, the success tick, at a 10px gap; its measured width sets the input's right padding",
     "helperRow": "flex, items start, gap 16px; message left (min-width 0, flex 1), count right and shrink-0; both inset by the field padding. The count reserves its width while hidden so the message never reflows",
-    "collapse": "the label and text keep their offsets at every width; the field never shrinks below 280px"
+    "collapse": "the label and text keep their offsets at every width. Below a 300px field (a sidebar, or a 320px phone with page padding) the side padding tightens by 4px and the resting label steps down 1px; the helper row gap is 12px below the @xs container width and 16px above"
   },
   "typography": {
     "input": "sans, 16px (md) or 18px (lg), so iOS does not zoom",
-    "label": "sans, 15px (md) or 17px (lg), line box 20px; floated state is the same element scaled to 0.76 from the left centre; max width is the field minus the label offset and trailing inset, with an ellipsis for longer labels",
+    "label": "sans, 15px (md) or 17px (lg), 14px/16px in a narrow field, line box 20px; floated state is the same element scaled to 0.76 from the left centre. At rest the max width is the field minus the label offset and trailing inset, with an ellipsis. Floated, the clip width tweens to that run divided by 0.76 (capped 8px short of the corner), so the scaled label uses the full hairline up to the trailing slot and never overshoots it mid-rise. The notch is sized from an unclipped, invisible twin of the label",
     "message": "sans 13px, leading 1.45; 13.5px from the @sm container breakpoint",
     "suffix": "13px, muted, line-height 1",
-    "counter": "mono 12px, tabular-nums; digits tween over 180ms"
+    "counter": "mono 12px, tabular-nums, written 33 / 40 with thin spaces (U+2009) around the slash; digits tween over 180ms"
   },
   "color": {
     "dark": {
@@ -46,7 +46,7 @@
       "error": "#b3432a",
       "success": "#2c7a45"
     },
-    "usage": "error colours only on the border, the message, the label (full strength while focused, 80% at rest) and the count at the limit in the error state; success colours only on the border, the message and the tick; everything else monochrome"
+    "usage": "error colours only on the border, the message, the label (full strength while focused, 80% at rest) and the count at the limit; success colours only on the border, the message and the tick; the count is muted from 80% of the limit, full ink for the last three characters; everything else monochrome"
   },
   "border": {
     "rest": "1px inset box-shadow at the hairline colour",
@@ -62,21 +62,21 @@
     "messages": "popLayout cross-fade: enter from y 6px and blur 3px, exit to y -6px and blur 3px, 260ms ease-out",
     "count": "rises like a message when it appears; digits tween to the new value over 180ms",
     "tick": "scale 0.8 to 1 with opacity over 240ms; path pathLength 0 to 1 over 420ms, 100ms delay",
-    "reveal": "once at 30% in view: the block rises 10px from blur 6px over 600ms",
+    "reveal": "none on the field: a form primitive is visible the moment it mounts. The demo stage fades the field in once (10px rise, 6px blur, 600ms)",
     "autofill": "a :-webkit-autofill rule plays the ifl-autofill keyframes; onAnimationStart reads the DOM value and marks the field as filled so the label stays floated",
     "borderTransition": "box-shadow 180ms ease-out",
     "reducedMotion": "no transforms, offsets or blur on the label, notch, messages, count or tick; colour and opacity changes at 150ms or less; notch set instantly; tick drawn complete"
   },
   "validation": {
     "validate": "a function (value) => boolean passed by the host. Without it there is no error and no success tick",
-    "idle": "an invalid value is called out only after 800ms of rest, or when the field is left; every edit returns a called-out error to rest first",
+    "idle": "reward early, punish late: an invalid value is called out only after 800ms of rest, or when the field is left. Once called out, the error stays while the value is still wrong and goes straight to success when it is fixed, with no helper in between. Emptying the field, or making it valid, resets this, so the next mistake waits for a pause again. A forced error state counts as called out",
     "valid": "a valid value clears the error straight away and shows the success text and tick",
     "demo": "the demo passes an email check: local part, @, domain and a top-level domain of two or more letters"
   },
   "counter": {
     "appears": "only once the value reaches 80% of maxLength; at rest with no value near the limit, nothing shows",
-    "limit": "the count turns to the error colour at maxLength, and the input stops there",
-    "demo": "maxLength 40, so the count appears at 32 characters; the Value control seeds a 33-character valid address so the count, success state and notch can be reviewed without typing"
+    "limit": "the count reads muted, steps up to full ink for the last three characters and turns to the error colour at maxLength; the input stops there",
+    "demo": "maxLength 40, so the count appears at 32 characters; the Value control seeds a 33-character valid address, and the State control fills the field to match each forced state (ana.lumen@ for error, ana.lumen@studio.co for success, a filled field for disabled)"
   },
   "responsive": {
     "all": "fluid to 420px; the field and helper row share one container; touch targets stay the full field height (56px or 64px)",
@@ -87,10 +87,10 @@
     "native input that takes type, name, autoComplete, inputMode, required, spellCheck and any other input attribute as passed",
     "label associated with htmlFor; the label is pointer-events none so taps reach the input",
     "onFocus, onBlur and onChange composed with the internal handlers; value and onValueChange work as a controlled pair",
-    "aria-invalid true in the error state; aria-describedby points at the message container and merges any host ids",
+    "aria-invalid true in the error state; aria-describedby lists the suffix (when there is one), then the message container, then any host ids, so 'Optional' or a unit is heard with the field",
     "message container aria-live polite, so the error and success copy is announced once per change",
     "disabled uses the native disabled attribute and dims the body to 42% opacity with cursor not-allowed; the wrapper carries aria-disabled",
-    "decorative layers, the prefix glyph and the tick are aria-hidden",
+    "decorative layers, the prefix glyph, the label twin and the trailing slot (suffix and tick) are aria-hidden; the suffix still reaches assistive technology through aria-describedby",
     "focus is shown on the border as a 1.5px line at 0.90 ink (2px in the state colour for error and success); the field is keyboard operable with no extra ring, and an errored label stays full strength while focused"
   ],
   "content": {
@@ -98,7 +98,7 @@
     "helper": "We’ll send receipts and invoices here.",
     "errorText": "Add a domain, like ana@studio.co",
     "successText": "Looks good. Receipts go here.",
-    "count": "hidden at rest, then 32 / 40 from 80% of a 40-character limit"
+    "count": "hidden at rest, then 32 / 40 (thin spaces) from 80% of a 40-character limit"
   },
   "avoid": [
     "a filled background behind the label, or a Material-style underline field",
@@ -111,6 +111,8 @@
     "layout shift when the message changes, the label rises or the count appears",
     "blur or opacity on the input text itself",
     "emoji or decorative sparkles anywhere in the field",
-    "per-frame React state for the notch edges"
+    "per-frame React state for the notch edges",
+    "the error dropping back to the helper on every keystroke while the user fixes it",
+    "an entrance animation on the field itself"
   ]
 }
