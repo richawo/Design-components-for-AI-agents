@@ -25,8 +25,10 @@ export type PixelMatrixDisplayProps = {
   chrome?: boolean;
   /** Offer a microphone toggle that drives the equaliser from live audio. */
   microphone?: boolean;
-  /** Hold on this scene (it must be one of `scenes`): jumps to it when the value changes and pauses auto-advance while set. Prev and next still step. */
+  /** Show this scene (it must be one of `scenes`): jumps there when the value changes and pauses auto-advance, so the pause control reads Resume. Resume continues cycling; prev and next still step. */
   scene?: SceneKey;
+  /** Called whenever the shown scene changes (auto-advance, prev/next, the mic or `scene`). */
+  onSceneChange?: (scene: SceneKey) => void;
   className?: string;
 };
 
@@ -518,6 +520,7 @@ export function PixelMatrixDisplay({
   chrome = true,
   microphone = true,
   scene,
+  onSceneChange,
   className = "",
 }: PixelMatrixDisplayProps) {
   const reduce = useReducedMotion() ?? false;
@@ -534,7 +537,7 @@ export function PixelMatrixDisplay({
   const [poweredOn, setPoweredOn] = useState(false);
   const mic = useMicrophone(audioRef);
   // Reduced motion: no autoplay; the controls still step through scenes.
-  const running = poweredOn && !reduce && !paused && !hovering && !scene && mic.state !== "on";
+  const running = poweredOn && !reduce && !paused && !hovering && mic.state !== "on";
   const cycle = useSceneCycle(scenes.length, interval, running);
 
   // Listening holds the equaliser on screen.
@@ -545,15 +548,34 @@ export function PixelMatrixDisplay({
     if (eq >= 0) setIndex(eq);
   }, [mic.state, sceneKey, setIndex]);
 
-  // A host can jump to a scene by changing `scene`.
+  // A host can jump to a scene by changing `scene`: it jumps there and pauses, so the pause
+  // control reads Resume and resuming carries on cycling. A value that names the scene already
+  // on screen (a host echoing onSceneChange back) changes nothing, except on mount, where it holds.
   const stopMic = mic.stop;
+  const shownRef = useRef(cycle.index);
+  shownRef.current = cycle.index;
+  const sceneMounted = useRef(false);
   useEffect(() => {
+    const first = !sceneMounted.current;
+    sceneMounted.current = true;
     if (!scene) return;
     const to = sceneKey.split(",").indexOf(scene);
-    if (to < 0) return;
+    if (to < 0 || (!first && to === shownRef.current)) return;
     stopMic();
     setIndex(to);
+    setPaused(true);
   }, [scene, sceneKey, setIndex, stopMic]);
+
+  // Report every change of the shown scene.
+  const reportRef = useRef(onSceneChange);
+  reportRef.current = onSceneChange;
+  const reported = useRef(cycle.index);
+  useEffect(() => {
+    if (reported.current === cycle.index) return;
+    reported.current = cycle.index;
+    const shown = sceneKey.split(",")[cycle.index] as SceneKey | undefined;
+    if (shown) reportRef.current?.(shown);
+  }, [cycle.index, sceneKey]);
 
   useMatrixCanvas({ canvas: canvasRef, wrap: wrapRef, live: liveRef, audio: audioRef, mic: mic.mic, text, sceneKey, color, cols, rows, reduce });
 
@@ -609,7 +631,7 @@ export function PixelMatrixDisplay({
             setHovering(false);
           }}
         >
-          <canvas ref={canvasRef} role="img" aria-label={`Dot-matrix display showing ${label.toLowerCase()}. Marquee text: ${text.trim()}`} className="block" />
+          <canvas ref={canvasRef} role="img" aria-label={`Dot-matrix display showing ${label.toLowerCase()}${current === "marquee" ? `: ${text.trim()}` : ""}`} className="block" />
         </div>
         {/* A faint glass sheen over the dots. */}
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 rounded-[20px] bg-[linear-gradient(180deg,rgba(255,255,255,0.05),transparent_38%)]" />
@@ -749,12 +771,48 @@ function MicButton({ state, color, onToggle }: { state: "off" | "asking" | "on" 
   );
 }
 
-/** Demo: the display on a black stage. Overrides are spread on the featured instance. */
-export default function PixelMatrixDisplayDemo(overrides: Partial<PixelMatrixDisplayProps> = {}) {
+/** The props a re-sent Customize message carries, minus the action itself. */
+function sameSettings(a: Partial<PixelMatrixDisplayProps>, b: Partial<PixelMatrixDisplayProps>) {
+  const keys = new Set([...Object.keys(a), ...Object.keys(b)]);
+  keys.delete("scene");
+  for (const k of keys) {
+    const x = a[k as keyof PixelMatrixDisplayProps];
+    const y = b[k as keyof PixelMatrixDisplayProps];
+    if (x !== y && JSON.stringify(x) !== JSON.stringify(y)) return false;
+  }
+  return true;
+}
+
+/**
+ * Demo: the display on a black stage. Overrides are spread on the featured instance. The shown
+ * scene lives here (synced through onSceneChange), so a Scene action jumps there even after the
+ * visitor has stepped away with prev/next, and editing the marquee text brings the marquee up.
+ */
+export default function PixelMatrixDisplayDemo(props: Partial<PixelMatrixDisplayProps> = {}) {
+  const { scene: forced, onSceneChange, ...overrides } = props;
+  const [shown, setShown] = useState<SceneKey | undefined>(forced);
+  const last = useRef<Partial<PixelMatrixDisplayProps> | null>(null);
+
+  useEffect(() => {
+    const prev = last.current;
+    last.current = props;
+    if (!prev || prev === props) return;
+    // Clicking the same Scene button again re-sends identical props: honour it as a fresh jump.
+    if (forced && (forced !== prev.scene || sameSettings(prev, props))) setShown(forced);
+    else if (props.text !== prev.text) setShown("marquee");
+  }, [props, forced]);
+
   return (
     <div className="flex min-h-dvh w-full items-center justify-center bg-black px-4 py-12 sm:px-10">
       <div className="w-full max-w-3xl">
-        <PixelMatrixDisplay {...overrides} />
+        <PixelMatrixDisplay
+          {...overrides}
+          scene={shown}
+          onSceneChange={(s) => {
+            setShown(s);
+            onSceneChange?.(s);
+          }}
+        />
       </div>
     </div>
   );

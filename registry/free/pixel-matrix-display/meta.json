@@ -38,7 +38,7 @@
       "name": "color",
       "type": "string",
       "default": "\"#f5f5f0\"",
-      "description": "Lit dot colour, the display’s one accent; also tints the bloom and the live mic dot."
+      "description": "Lit dot colour, the display’s one accent; also tints the bloom, the caption’s progress line and the live mic dot."
     },
     {
       "name": "cols",
@@ -73,20 +73,27 @@
     {
       "name": "scene",
       "type": "\"marquee\"|\"clock\"|\"equalizer\"|\"pulse\"|\"orbit\"",
-      "description": "Hold on this scene. It must be one of `scenes`. Jumps to it when the value changes and pauses auto-advance while set; prev and next still step."
+      "description": "Show this scene. It must be one of `scenes`. Jumps there when the value changes and pauses auto-advance, so the pause button reads Resume; Resume continues cycling, and prev and next still step."
+    },
+    {
+      "name": "onSceneChange",
+      "type": "(scene: SceneKey) => void",
+      "description": "Called whenever the shown scene changes (auto-advance, prev/next, the mic or `scene`), so a host can keep `scene` in sync."
     }
   ],
   "added": "2026-10-07",
   "demo": {
     "steps": [
-      "hover:@next",
-      "wait:300",
+      "hover:@next:0.5,0.5",
+      "wait:150",
       "click",
-      "wait:1300",
+      "wait:1250",
       "click",
-      "wait:1300",
+      "wait:1250",
       "click",
-      "wait:1400"
+      "wait:1250",
+      "click",
+      "wait:1500"
     ],
     "loop": false
   },

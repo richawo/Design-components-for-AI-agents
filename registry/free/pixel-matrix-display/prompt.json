@@ -78,6 +78,6 @@
   ],
   "interaction": {
     "microphone": "Opt-in 'Use mic' toggle: getUserMedia + AnalyserNode (fftSize 256), log-spaced bands to bars, fast attack / slow release, falling peak-hold dots; holds the equaliser scene; stops all tracks on toggle, scene change or unmount; blocked permission shows 'Mic blocked'.",
-    "scene": "Optional prop: holds the display on that scene. Jumps to it when the value changes and pauses auto-advance while set; prev and next still step."
+    "scene": "Optional prop: jumps to that scene when the value changes and pauses auto-advance (the pause button reads Resume, aria-pressed true); Resume continues cycling, prev and next still step. onSceneChange(scene) reports every change of the shown scene."
   }
 }
