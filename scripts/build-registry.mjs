@@ -14,9 +14,20 @@
 // Pro source is optional. Without registry/pro (a fresh open-source clone) the
 // site still builds: Pro components come from pro-manifest.json and render as
 // locked cards.
+//
+//   node scripts/build-registry.mjs                 validate everything, write outputs
+//   node scripts/build-registry.mjs --strict        fail on any problem (CI, prebuild)
+//   node scripts/build-registry.mjs --only=a,b --dry-run
+//                                                   validate just those slugs, write nothing
+//
+// Safe to run from many agents at once: a full run holds a lock
+// (registry/__generated__/.build.lock) and replaces each output atomically, so
+// concurrent runs serialise and the last one sees every component on disk.
+// --dry-run never takes the lock because it never writes.
 
 import fs from "node:fs";
 import path from "node:path";
+import { validateControls, validateDemo } from "../lib/demo/schema.mjs";
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
 const registryDir = path.join(root, "registry");
@@ -34,6 +45,13 @@ const REQUIRED_PROMPT_KEYS = [
 ];
 
 const STRICT = process.argv.includes("--strict");
+const DRY_RUN = process.argv.includes("--dry-run");
+const ONLY = new Set(
+  (process.argv.find((a) => a.startsWith("--only="))?.slice(7) ?? "")
+    .split(",")
+    .map((x) => x.trim())
+    .filter(Boolean),
+);
 const errors = [];
 const broken = new Set();
 const fail = (slug, msg) => {
@@ -47,6 +65,7 @@ function readComponents(tier) {
   return fs
     .readdirSync(dir, { withFileTypes: true })
     .filter((d) => d.isDirectory() && !d.name.startsWith(".") && !d.name.startsWith("_"))
+    .filter((d) => !ONLY.size || ONLY.has(d.name))
     .map((d) => {
       const slug = d.name;
       const base = path.join(dir, slug);
@@ -112,6 +131,9 @@ function validateMeta(slug, tier, m) {
   if (typeof m.usage !== "string" || !m.usage.trim()) fail(slug, "usage missing");
   if (!Array.isArray(m.props)) fail(slug, "props must be an array");
   if (!/^\d{4}-\d{2}-\d{2}$/.test(m.added ?? "")) fail(slug, "added must be YYYY-MM-DD");
+  // Demo script and controls (docs/COMPONENT_SPEC.md "Demo script", "Controls").
+  for (const e of validateDemo(m.demo)) fail(slug, e);
+  for (const e of validateControls(m.controls, Array.isArray(m.props) ? m.props.map((p) => p.name) : [])) fail(slug, e);
 }
 
 /** Published components must ship real briefs, not placeholders. */
@@ -125,6 +147,18 @@ function validateCompleteness(slug, m, prompt, promptJson, code) {
     }
   } else if (/import\s+\w+\s+from/.test(m.usage ?? "")) {
     fail(slug, "usage should use the named export; the default export is the demo");
+  }
+  // Controls are merged over the demo's own props, so the demo must accept them.
+  if (Array.isArray(m.controls) && m.controls.length && code) {
+    const name = /export\s+default\s+function\s+(\w+)/.exec(code)?.[1] ?? /export\s+default\s+(\w+)\s*;/.exec(code)?.[1];
+    const params = name ? new RegExp(`function\\s+${name}\\s*\\(([^)]*)\\)`).exec(code)?.[1] : undefined;
+    if (!name) fail(slug, "controls need a named default export (export default function XDemo(overrides: Partial<XProps> = {}))");
+    else if (params !== undefined && !params.trim()) fail(slug, `controls are set but ${name}() takes no props; accept overrides: Partial<Props> and spread them on the featured instance`);
+  }
+  if (m.demo && Array.isArray(m.demo.steps) && code) {
+    const names = [...new Set(m.demo.steps.map((st) => /@([a-z][a-z0-9-]*)/.exec(String(st))?.[1]).filter(Boolean))];
+    const dynamic = /data-demo=\{/.test(code);
+    for (const n of names) if (!code.includes(`data-demo="${n}"`) && !dynamic) fail(slug, `demo targets @${n} but no element has data-demo="${n}"`);
   }
   if ((prompt ?? "").trim().length < 600) fail(slug, "prompt.md is too short to rebuild the component (min 600 chars)");
   if ((promptJson ?? "").trim().length < 600) fail(slug, "prompt.json is too thin (min 600 chars)");
@@ -171,11 +205,57 @@ const THEME_ITEM = {
   files: [],
 };
 
-function writeJson(p, data) {
-  const text = JSON.stringify(data, null, 2) + "\n";
+/** Replace a file in one step, so a dev server compiling mid-run never reads half of it. */
+function writeAtomic(p, text) {
   fs.mkdirSync(path.dirname(p), { recursive: true });
   if (fs.existsSync(p) && fs.readFileSync(p, "utf8") === text) return;
-  fs.writeFileSync(p, text);
+  const tmp = `${p}.${process.pid}.tmp`;
+  fs.writeFileSync(tmp, text);
+  fs.renameSync(tmp, p);
+}
+
+function writeJson(p, data) {
+  writeAtomic(p, JSON.stringify(data, null, 2) + "\n");
+}
+
+/**
+ * One full build at a time. A lock directory (mkdir is atomic) holds the
+ * owner's pid; a lock older than two minutes or whose owner is gone is stale.
+ */
+function acquireLock() {
+  const lock = path.join(outDir, ".build.lock");
+  fs.mkdirSync(outDir, { recursive: true });
+  const deadline = Date.now() + 90_000;
+  const sleep = (ms) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+  for (;;) {
+    try {
+      fs.mkdirSync(lock);
+      fs.writeFileSync(path.join(lock, "pid"), String(process.pid));
+      const release = () => fs.rmSync(lock, { recursive: true, force: true });
+      process.on("exit", release);
+      for (const sig of ["SIGINT", "SIGTERM"]) process.on(sig, () => process.exit(130));
+      return;
+    } catch (e) {
+      if (e.code !== "EEXIST") throw e;
+      let stale = false;
+      try {
+        const age = Date.now() - fs.statSync(lock).mtimeMs;
+        const pid = Number(fs.readFileSync(path.join(lock, "pid"), "utf8"));
+        let alive = true;
+        try {
+          process.kill(pid, 0);
+        } catch {
+          alive = false;
+        }
+        stale = age > 120_000 || (pid > 0 && !alive);
+      } catch {
+        stale = Date.now() - (fs.statSync(lock, { throwIfNoEntry: false })?.mtimeMs ?? 0) > 5_000;
+      }
+      if (stale) fs.rmSync(lock, { recursive: true, force: true });
+      else if (Date.now() > deadline) throw new Error(`registry build lock ${lock} held for 90s; remove it if no build is running`);
+      else sleep(100);
+    }
+  }
 }
 
 // In dev, a half-finished component is skipped so it can't break the others.
@@ -184,6 +264,12 @@ function writeJson(p, data) {
 // can live in the repo while it's being brought up to the bar.
 const SHOW_DRAFTS = process.env.SHOW_DRAFTS === "1";
 const visible = (c) => !broken.has(c.meta.slug) && (SHOW_DRAFTS || c.meta.status !== "draft");
+if (ONLY.size && !DRY_RUN) {
+  console.error("--only validates a subset, so it can't write outputs that list every component. Add --dry-run.");
+  process.exit(1);
+}
+// Read inside the lock, so a run that writes last has also read last.
+if (!DRY_RUN) acquireLock();
 const free = readComponents("free").filter(visible);
 const pro = readComponents("pro").filter(visible);
 const proManifestPath = path.join(registryDir, "pro-manifest.json");
@@ -196,9 +282,22 @@ for (const c of [...free, ...pro]) {
   seen.add(c.meta.slug);
 }
 
+// --only: the slug must also be unique against the tier we didn't read.
+if (ONLY.size) {
+  for (const slug of ONLY) {
+    const where = ["free", "pro"].filter((t) => fs.existsSync(path.join(registryDir, t, slug, "meta.json")));
+    if (!where.length) fail(slug, "no such component in registry/free or registry/pro");
+    if (where.length > 1) fail(slug, "slug used in both free/ and pro/");
+  }
+}
+
 if (errors.length) {
-  console.error(`\nRegistry has ${errors.length} problem(s)${STRICT ? "" : " (skipped those components)"}:\n  - ${errors.join("\n  - ")}\n`);
-  if (STRICT) process.exit(1);
+  console.error(`\nRegistry has ${errors.length} problem(s)${STRICT || DRY_RUN ? "" : " (skipped those components)"}:\n  - ${errors.join("\n  - ")}\n`);
+  if (STRICT || DRY_RUN) process.exit(1);
+}
+if (DRY_RUN) {
+  console.log(`registry: ${[...free, ...pro].length} component(s) valid${ONLY.size ? ` (${[...ONLY].join(", ")})` : ""}, nothing written (--dry-run)`);
+  process.exit(0);
 }
 
 // Pro metadata: from source when we have it, otherwise from the committed manifest.
@@ -233,13 +332,9 @@ const entries = [
 // and prune files for components that no longer exist.
 function prune(dir, keep) {
   if (!fs.existsSync(dir)) return;
-  for (const f of fs.readdirSync(dir)) if (!keep.has(f)) fs.rmSync(path.join(dir, f), { force: true });
+  for (const f of fs.readdirSync(dir)) if (!keep.has(f) && !f.endsWith(".tmp")) fs.rmSync(path.join(dir, f), { force: true });
 }
-function writeIfChanged(p, text) {
-  fs.mkdirSync(path.dirname(p), { recursive: true });
-  if (fs.existsSync(p) && fs.readFileSync(p, "utf8") === text) return;
-  fs.writeFileSync(p, text);
-}
+const writeIfChanged = writeAtomic;
 writeJson(path.join(outDir, "index.json"), entries);
 prune(path.join(outDir, "sources"), new Set([...free, ...pro].map((c) => `${c.meta.slug}.json`)));
 prune(path.join(outDir, "r-pro"), new Set(pro.map((c) => `${c.meta.slug}.json`)));
@@ -273,7 +368,10 @@ const mdFiles = (dir) => {
 };
 writeJson(path.join(outDir, "content.json"), { blog: mdFiles("blog"), docs: mdFiles("docs") });
 const previewsDir = path.join(root, "public", "previews");
-const thumbs = fs.existsSync(previewsDir) ? fs.readdirSync(previewsDir).filter((f) => f.endsWith(".webp")).sort() : [];
+const previewFiles = fs.existsSync(previewsDir) ? fs.readdirSync(previewsDir).sort() : [];
+const thumbs = previewFiles.filter((f) => f.endsWith(".webp"));
+// Hover videos recorded by scripts/record-demos.mjs from meta.demo.
+const videos = previewFiles.filter((f) => f.endsWith(".mp4") || f.endsWith(".webm"));
 const sourceLoaders = [...free, ...pro]
   .map((c) => `  ${JSON.stringify(c.meta.slug)}: () => import(${JSON.stringify(`./sources/${c.meta.slug}.json`)}),`)
   .join("\n");
@@ -296,6 +394,8 @@ ${proItemLoaders}
 };
 
 export const thumbnails: ReadonlySet<string> = new Set(${JSON.stringify(thumbs)});
+
+export const videos: ReadonlySet<string> = new Set(${JSON.stringify(videos)});
 `,
 );
 

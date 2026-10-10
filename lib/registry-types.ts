@@ -34,6 +34,50 @@ export interface PropDoc {
   description: string;
 }
 
+/**
+ * A scripted walkthrough of the component, in the scripts/rec.mjs step DSL.
+ * Targets are `@name`, meaning the element with `data-demo="name"`. It plays
+ * live on the component page (with a drawn cursor) and is recorded into the
+ * gallery card's hover video. See docs/COMPONENT_SPEC.md "Demo script".
+ */
+export interface DemoScript {
+  /** e.g. ["wait:500", "hover:@send", "click", "wait:900"]. 3–8 s in total. */
+  steps: string[];
+  /** Replay after a pause on the component page. Recordings play once. */
+  loop?: boolean;
+}
+
+export type ControlKind = "toggle" | "slider" | "select" | "segmented" | "color" | "text" | "action";
+export type ControlValue = string | number | boolean;
+export type ControlOption = ControlValue | { value: ControlValue; label: string };
+
+/**
+ * One tunable prop in the Customize panel under the preview. Values are
+ * merged over the demo's own props. See docs/COMPONENT_SPEC.md "Controls".
+ */
+export interface ComponentControl {
+  /** A prop of the named export (documented in meta.props), or "$replay" for an action that replays the demo. */
+  prop: string;
+  label: string;
+  kind: ControlKind;
+  /** The value the demo renders with. Required for every kind except action. */
+  default?: ControlValue;
+  /** slider */
+  min?: number;
+  max?: number;
+  step?: number;
+  /** slider: shown after the value, e.g. "ms" or "px". */
+  unit?: string;
+  /** select / segmented choices, colour swatches, or one action button each. */
+  options?: ControlOption[];
+  /** action without options: the value its single button sets. */
+  value?: ControlValue;
+  /** Controls sharing a group sit together under its heading. */
+  group?: string;
+  /** Remount the component when this changes (for props read only on mount, such as defaultX). */
+  remount?: boolean;
+}
+
 /** The contents of a component's meta.json. */
 export interface ComponentMeta {
   slug: string;
@@ -54,6 +98,10 @@ export interface ComponentMeta {
   usage: string;
   props: PropDoc[];
   added: string;
+  /** Scripted walkthrough for the live preview and the card video. */
+  demo?: DemoScript;
+  /** Tunable props shown under the preview (max 12). */
+  controls?: ComponentControl[];
   /** Drafts are hidden from the site and registry until they meet the bar. */
   status?: "draft";
 }
