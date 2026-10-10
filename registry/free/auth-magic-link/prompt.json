@@ -54,7 +54,7 @@
       "ok": "#15803d",
       "envelope": "back #e4e4e7, pocket #f4f4f5, flap #fafafa, strokes 16% ink, paper #ffffff, lines #a1a1aa"
     },
-    "primary": "accent fill with black-or-white label by contrast; hover lays a 7% wash of the label colour"
+    "primary": "accent fill with a #0a0a0b or #ffffff label, whichever has the higher WCAG contrast ratio (crossover near luminance 0.18); hover lays a 7% wash of the label colour via motion whileHover"
   },
   "motion": {
     "morph": "height follows content via ResizeObserver (420ms in-out); the old view exits y −8 with 4px blur (200ms ease-in) while the new view's blocks stagger in (envelope → heading → copy → button label → footer row, 50ms apart from 140ms); the primary button shares a layoutId so it travels instead of re-entering",
@@ -80,8 +80,9 @@
     "title": "Sign in with a link",
     "subtitle": "No password to forget. We’ll email you a link that signs you straight in.",
     "sent": "We sent a sign-in link to {email}. It works once and expires in 15 minutes.",
-    "expired": "That link has expired — Sign-in links work once and last 15 minutes, so this one’s retired. We’ll send you a fresh one.",
+    "expired": "heading: That link has expired; body: Sign-in links work once and last 15 minutes, so this one’s retired. We’ll send you a fresh one.",
     "providers": "Gmail (search deep link), Outlook, Proton, iCloud Mail, Yahoo Mail, Fastmail, HEY; providers prop extends",
+    "typoHint": "opens after a 400ms typing pause or on blur, closes immediately when it stops applying",
     "typos": "gmial/gmal/gamil/gnail → gmail.com, hotmial → hotmail.com, outlok → outlook.com, yahooo → yahoo.com, porton.me → proton.me",
     "demo": "New visit / Expired link segmented control; @example.com fails"
   },

@@ -1117,20 +1117,18 @@ const DEMO_MODES = [
   { id: "expired", label: "Expired link" },
 ] as const;
 
-/** The dark theme’s own ink; as a control default it means “no accent chosen”, so the light theme keeps its ink. */
-const DEFAULT_DARK_ACCENT = "#ededef";
-
 const DEMO_TONE = {
   dark: { ring: "shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1)]", on: "text-[#0a0a0b]", off: "text-[#8a8a92] hover:text-[#ededef]", pill: "bg-[#ededef]", focus: "focus-visible:outline-[#ededef]", note: "text-[#7d7d86]" },
   light: { ring: "shadow-[inset_0_0_0_1px_rgba(24,24,27,0.14)]", on: "text-[#ffffff]", off: "text-[#52525b] hover:text-[#18181b]", pill: "bg-[#18181b]", focus: "focus-visible:outline-[#18181b]", note: "text-[#52525b]" },
 } as const;
 
-export default function AuthMagicLinkDemo({ expired: forcedExpired, theme = "dark", accent, ...overrides }: Partial<AuthMagicLinkProps> = {}) {
+export default function AuthMagicLinkDemo({ expired: forcedExpired, ...overrides }: Partial<AuthMagicLinkProps> = {}) {
   const reduce = useReducedMotion() ?? false;
   const uid = useId().replace(/[^a-zA-Z0-9_-]/g, "");
   const [mode, setMode] = useState<(typeof DEMO_MODES)[number]["id"]>(forcedExpired ? "expired" : "fresh");
   const { wait } = useTimeouts();
   const replaceOnType = useRef(false);
+  const theme = overrides.theme ?? "dark";
   const tone = DEMO_TONE[theme];
 
   // The Customize panel and the demo’s own switch drive the same state.
@@ -1147,23 +1145,22 @@ export default function AuthMagicLinkDemo({ expired: forcedExpired, theme = "dar
     <div
       className="flex min-h-dvh flex-col items-center justify-center px-4 py-12 transition-colors duration-300 sm:py-16"
       style={{ background: STAGE[theme] }}
-      // The expired view prefills the email. Typing into it (live or on a replay) should replace the prefill, not append to it.
+      // The expired view prefills the email. The site's scripted demo player types with synthetic key events and
+      // can't select an email field's text (email inputs expose no selection range), so on a replay its first
+      // keystroke replaces the prefill instead of appending to it. Real keystrokes are never touched: a visitor
+      // editing the field keeps the browser's own behaviour.
       onFocusCapture={(e) => {
         const el = e.target;
-        if (!(el instanceof HTMLInputElement) || el.type !== "email" || !el.value) return;
-        replaceOnType.current = true;
-        setTimeout(() => el.select(), 0);
+        replaceOnType.current = el instanceof HTMLInputElement && el.type === "email" && el.value !== "";
       }}
       onBlurCapture={() => {
         replaceOnType.current = false;
       }}
-      onPointerDownCapture={(e) => {
-        if (e.target === document.activeElement) replaceOnType.current = false;
-      }}
       onKeyDownCapture={(e) => {
-        const el = e.target;
-        if (!replaceOnType.current || !(el instanceof HTMLInputElement)) return;
+        const armed = replaceOnType.current;
         replaceOnType.current = false;
+        const el = e.target;
+        if (!armed || e.nativeEvent.isTrusted || !(el instanceof HTMLInputElement)) return;
         if (e.key.length !== 1 || e.metaKey || e.ctrlKey || e.altKey) return;
         // Same effect as typing over a selection; the native setter keeps React’s value tracker honest.
         Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set?.call(el, "");
@@ -1176,8 +1173,6 @@ export default function AuthMagicLinkDemo({ expired: forcedExpired, theme = "dar
         defaultEmail={mode === "expired" ? "ines@proton.me" : ""}
         onSend={onSend}
         {...overrides}
-        theme={theme}
-        accent={accent === DEFAULT_DARK_ACCENT && theme === "light" ? undefined : accent}
       />
       <motion.div {...enter(true, 0.6, reduce)} className="mt-6 flex flex-col items-center gap-3">
         <div role="radiogroup" aria-label="Demo state" className={`flex rounded-full p-1 ${tone.ring}`}>
