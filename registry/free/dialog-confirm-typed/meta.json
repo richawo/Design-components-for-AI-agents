@@ -20,7 +20,7 @@
   ],
   "theme": "dark",
   "previewHeight": 720,
-  "usage": "import { DialogConfirmTyped } from \"@/components/design-for-ai/dialog-confirm-typed\";\n\n<DialogConfirmTyped\n  triggerLabel=\"Delete project\"\n  resourceName=\"atlas-staging\"\n  environments={12}\n  lastDeployHours={3}\n  onConfirm={(name) => api.projects.delete(name)} // return a promise for the pending and error states\n  onArchive={() => api.projects.archive(id)}\n/>\n\n<DialogConfirmTyped tone=\"neutral\" requireTyping={false} alternative={false} />\n\n// The dialog sits inside its container. To lift it to document.body, render the same markup through createPortal and keep the focus trap, scroll lock and focus return.",
+  "usage": "import { DialogConfirmTyped } from \"@/components/design-for-ai/dialog-confirm-typed\";\n\n<DialogConfirmTyped\n  triggerLabel=\"Delete project\"\n  resourceName=\"atlas-staging\"\n  ledger={[\n    { label: \"Environments\", value: 12 },\n    { label: \"Last deploy\", value: 3, suffix: \"h ago\" },\n    { label: \"Environment variables\", value: 47 },\n  ]}\n  onConfirm={(name) => api.projects.delete(name)} // return a promise for the pending and error states\n  onArchive={() => api.projects.archive(id)}\n/>\n\n// Drive the status from your own mutation instead of the promise:\n<DialogConfirmTyped status={mutation.status === \"pending\" ? \"pending\" : mutation.isError ? \"error\" : \"idle\"} onConfirm={(name) => mutation.mutate(name)} />\n\n<DialogConfirmTyped tone=\"neutral\" requireTyping={false} alternative={false} triggerLabel=\"Remove member\" title=\"Remove {name}\" />\n\n// The dialog sits inside its container, which grows to fit it. To lift it to document.body, render the same markup through createPortal and keep the focus trap, scroll lock and focus return.",
   "props": [
     {
       "name": "triggerLabel",
@@ -35,22 +35,69 @@
       "description": "The exact name the visitor must type before Delete enables."
     },
     {
-      "name": "environments",
-      "type": "number",
-      "default": "12",
-      "description": "Environments that go with the project, counted up in the ledger."
+      "name": "cardKicker",
+      "type": "string",
+      "default": "\"Settings\"",
+      "description": "Small caps line above the card title."
     },
     {
-      "name": "lastDeployHours",
-      "type": "number",
-      "default": "3",
-      "description": "Hours since the last deploy, shown as “3 h ago”."
+      "name": "cardTitle",
+      "type": "string",
+      "default": "\"Delete this project\"",
+      "description": "The card’s heading."
     },
     {
-      "name": "secrets",
-      "type": "number",
-      "default": "47",
-      "description": "Environment variables that go with the project."
+      "name": "cardDescription",
+      "type": "string",
+      "default": "\"Removes {name}, its environments and its deploy history. Nothing is kept once it is gone.\"",
+      "description": "The card’s sentence. {name} stands for the resource name."
+    },
+    {
+      "name": "cardHeadingLevel",
+      "type": "2 | 3 | 4 | 5 | 6",
+      "default": "2",
+      "description": "Heading level of the card title, so it fits the page’s outline. The dialog title is always an h2."
+    },
+    {
+      "name": "kicker",
+      "type": "string",
+      "default": "\"Permanent deletion\"",
+      "description": "Small caps line above the dialog title. It becomes the error line when a delete fails."
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "default": "\"Delete {name}\"",
+      "description": "The dialog title. {name} stands for the resource name."
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "default": "\"This removes the project and everything inside it. There is no recovery window and no undo.\"",
+      "description": "The dialog’s sentence, read out as its description."
+    },
+    {
+      "name": "ledgerLabel",
+      "type": "string",
+      "default": "\"What goes with it\"",
+      "description": "The heading over the ledger."
+    },
+    {
+      "name": "ledger",
+      "type": "{ label: string; value: number; suffix?: string }[]",
+      "default": "Environments 12, Last deploy 3 h ago, Environment variables 47",
+      "description": "What goes with the resource. Each figure counts up when the dialog opens; an empty array hides the ledger."
+    },
+    {
+      "name": "confirmLabel",
+      "type": "string",
+      "default": "triggerLabel",
+      "description": "The confirm button’s label."
+    },
+    {
+      "name": "labels",
+      "type": "Partial<ConfirmLabels>",
+      "description": "Override the other words: pending, done, error, failed, cancel, archive, archiveFailed, field (“Type {name} to confirm”) and announceDone."
     },
     {
       "name": "requireTyping",
@@ -85,6 +132,16 @@
       "name": "onOpenChange",
       "type": "(open: boolean) => void",
       "description": "Fires on every open and close: the trigger, Cancel, Esc, the scrim, or a finished delete."
+    },
+    {
+      "name": "status",
+      "type": "\"idle\" | \"pending\" | \"done\" | \"error\"",
+      "description": "Controlled status, for a host that tracks the delete itself. Leave it out and onConfirm’s promise drives it. Opening on a status past idle shows the confirmed name."
+    },
+    {
+      "name": "onStatusChange",
+      "type": "(status: ConfirmStatus) => void",
+      "description": "Fires on every status change, including the return to idle after an error or a close."
     },
     {
       "name": "onConfirm",
@@ -178,6 +235,29 @@
         {
           "value": true,
           "label": "Open"
+        }
+      ]
+    },
+    {
+      "prop": "status",
+      "label": "Status",
+      "kind": "action",
+      "options": [
+        {
+          "value": "idle",
+          "label": "Idle"
+        },
+        {
+          "value": "pending",
+          "label": "Deleting"
+        },
+        {
+          "value": "done",
+          "label": "Deleted"
+        },
+        {
+          "value": "error",
+          "label": "Failed"
         }
       ]
     },

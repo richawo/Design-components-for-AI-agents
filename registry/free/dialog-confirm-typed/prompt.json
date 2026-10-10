@@ -8,12 +8,12 @@
     "animation": "motion/react: animate() on the panel (clip-path circle, scale, opacity), stagger() for content blocks, useMotionValue and animate() for ledger counts, AnimatePresence for the confirm label and the match tick"
   },
   "layout": {
-    "root": "@container, relative, isolate, min-height 640px, centred, transparent, padding 16px / 32px",
+    "root": "@container, relative, isolate, min-height max(640px, measured panel height + 48px) via ResizeObserver, centred, transparent, padding 16px / 32px",
     "card": "max 560px wide, radius 16px, padding 20px (24px from @md); flex row from @md with the trigger at the end",
     "panel": "absolute, centred on both axes via translate, width min(460px, 100% - 2rem), radius 18px, padding 24px (28px from @md), z-index above the scrim",
     "ledger": "definition list with hairline rules; each row label left, mono figure right",
     "footer": "Cancel and Delete first in the DOM. From @lg one row: Archive instead left (-12px optical offset), Cancel and Delete right, Delete min-width 168px so its states never resize it. Below @lg: Cancel + Delete full width (Delete fills), Archive instead centred under them. Below @xs: Delete stacked over a full-width Cancel.",
-    "errorLine": "no reserved line: the kicker cross-fades to the error copy, so an error never moves anything"
+    "errorLine": "no reserved line: the kicker and the error copy both sit invisibly in one grid cell and the visible one cross-fades, so an error never moves anything even when it wraps"
   },
   "typography": {
     "kicker": "mono 10.5px uppercase, letter-spacing 0.14em, muted",
@@ -49,26 +49,43 @@
   "behaviour": {
     "match": "Delete enables when the trimmed field equals resourceName; a green check appears at the field's right edge",
     "enter": "Enter in the field runs Delete only when it is enabled",
-    "dismiss": "Cancel, Escape, a click on the scrim and a finished delete close the dialog and return focus to the trigger; nothing closes while a delete is pending",
+    "dismiss": "Cancel, Escape, a click on the scrim and a finished delete close the dialog and return focus to the trigger; nothing closes while a delete is pending; the panel has tabIndex=-1 so Escape works after clicking its text",
     "focus": "field focused on open, or Cancel when typing is off; Tab and Shift+Tab wrap inside the dialog",
     "page": "the card is inert while open and page scroll is locked",
-    "archive": "calls onArchive; closes when a returned promise resolves"
+    "archive": "calls onArchive; closes when a returned promise resolves",
+    "busy": "only an unmatched name sets disabled on Delete; while pending and done it keeps full opacity and focus with aria-disabled=true, a progress cursor and no press scale; the field is read-only; on error focus stays on (or returns to) Delete",
+    "status": "status and onStatusChange make the status controllable (idle, pending, done, error); opening into a status past idle fills the field with the confirmed name; the status returns to idle after the error hold or once the dialog has folded away"
   },
   "accessibility": [
-    "role=dialog with aria-modal=true, labelled by the title and described by the body",
+    "role=dialog with aria-modal=true, labelled by its h2 title and described by the body; the card heading level is a prop",
     "trigger has aria-haspopup=dialog and aria-expanded",
     "polite live region announces deleting, deleted, the error and archive failures",
-    "focus trap with Tab and Shift+Tab; Escape dismisses; focus returns to the trigger",
-    "spinner and drawn icons are aria-hidden; the focus ring is a 2px keyboard-only outline",
-    "disabled controls are 40% opacity with a not-allowed cursor"
+    "focus trap with Tab and Shift+Tab; Escape dismisses, including after a click on non-focusable panel content; focus returns to the trigger",
+    "a busy confirm uses aria-disabled rather than disabled, so focus never falls to the body",
+    "spinner and drawn icons are aria-hidden; every focus ring, the field included, is a 2px keyboard-only outline offset 2px",
+    "truly unavailable controls are 40% opacity with a not-allowed cursor"
   ],
   "content": {
     "defaults": {
       "triggerLabel": "Delete project",
       "resourceName": "atlas-staging",
-      "environments": 12,
-      "lastDeployHours": 3,
-      "secrets": 47
+      "cardKicker": "Settings",
+      "cardTitle": "Delete this project",
+      "ledger": [
+        {
+          "label": "Environments",
+          "value": 12
+        },
+        {
+          "label": "Last deploy",
+          "value": 3,
+          "suffix": "h ago"
+        },
+        {
+          "label": "Environment variables",
+          "value": 47
+        }
+      ]
     },
     "copy": {
       "kicker": "Permanent deletion",
@@ -80,7 +97,8 @@
       "error": "Couldn’t delete",
       "errorKicker": "Couldn’t delete. Nothing was removed.",
       "archive": "Archive instead"
-    }
+    },
+    "props": "every word is a prop: cardKicker, cardTitle, cardDescription, kicker, title, description, ledgerLabel, ledger, confirmLabel (defaults to triggerLabel) and labels (pending, done, error, failed, cancel, archive, archiveFailed, field, announceDone); {name} stands for the resource name"
   },
   "avoid": [
     "a red warning triangle or any alarm icon",
@@ -89,6 +107,7 @@
     "closing the dialog while a delete is still in flight",
     "a second accent colour, gradients, glass blur, glow or decorative pills",
     "a portal library: the dialog positions inside its container, and the usage note explains how to lift it",
-    "animating button opacity through a stagger container with fill mode both, which pins it and ignores :disabled"
+    "animating button opacity through a stagger container with fill mode both, which pins it and ignores :disabled",
+    "setting disabled on the confirm while it works: it greys out the payoff and drops focus to the body"
   ]
 }
