@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useId, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
+import { useCallback, useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
 import { AnimatePresence, animate, motion, useInView, useMotionValue, useReducedMotion, useTransform, type PanInfo } from "motion/react";
 
 /* ------------------------------------------------------------------ */
@@ -332,7 +332,7 @@ export function PromiseToast({
               background: palette.card,
               boxShadow: `inset 0 0 0 1px ${palette.line}, inset 0 1px 0 rgba(255,255,255,0.04), ${palette.shadow}`,
               touchAction: "pan-y",
-            } as CSSProperties}
+            }}
             className="pointer-events-auto relative w-full select-none overflow-hidden rounded-[14px] sm:w-[392px]"
           >
             <div className="flex items-start gap-3 px-4 pb-4 pt-3.5">
