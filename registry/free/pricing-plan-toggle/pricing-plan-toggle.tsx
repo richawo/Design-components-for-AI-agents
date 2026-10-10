@@ -416,6 +416,7 @@ function BillingSwitch({ billing, onChange, uid, reduce }: { billing: Billing; o
               aria-checked={on}
               tabIndex={on ? 0 : -1}
               data-value={o.value}
+              data-demo={`billing-${o.value}`}
               onClick={() => onChange(o.value)}
               className={`relative h-9 min-w-[104px] rounded-full px-5 text-[14px] font-medium tracking-[-0.01em] transition-[color,scale] duration-150 active:scale-[0.97] ${FOCUS} ${
                 on ? "text-(--pp-on-ink)" : "text-(--pp-ink)/55 hover:text-(--pp-ink)"
@@ -648,7 +649,7 @@ function Stepper({
   const btn = `relative grid size-8 place-items-center rounded-[9px] text-(--pp-ink)/70 transition-[background-color,color,scale,opacity] duration-150 hover:bg-(--pp-ink)/[0.07] hover:text-(--pp-ink) active:scale-[0.94] disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:bg-transparent disabled:hover:text-(--pp-ink)/70 before:absolute before:-inset-1.5 before:content-[''] ${FOCUS}`;
   return (
     <div role="group" aria-labelledby={labelledBy} className="flex items-center gap-1">
-      <button type="button" aria-label="Remove a seat" disabled={value <= min} onClick={() => onChange(Math.max(min, value - 1))} className={btn}>
+      <button type="button" aria-label="Remove a seat" data-demo="seat-remove" disabled={value <= min} onClick={() => onChange(Math.max(min, value - 1))} className={btn}>
         <svg viewBox="0 0 16 16" className="size-3.5" fill="none" aria-hidden="true">
           <path d="M3.5 8h9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
         </svg>
@@ -673,7 +674,7 @@ function Stepper({
           </motion.span>
         </AnimatePresence>
       </span>
-      <button type="button" aria-label="Add a seat" disabled={value >= max} onClick={() => onChange(Math.min(max, value + 1))} className={btn}>
+      <button type="button" aria-label="Add a seat" data-demo="seat-add" disabled={value >= max} onClick={() => onChange(Math.min(max, value + 1))} className={btn}>
         <svg viewBox="0 0 16 16" className="size-3.5" fill="none" aria-hidden="true">
           <path d="M3.5 8h9M8 3.5v9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
         </svg>
@@ -707,6 +708,7 @@ function CheckoutButton({
     <button
       type="button"
       onClick={onClick}
+      data-demo="checkout"
       aria-busy={state === "loading" || undefined}
       className={`group relative mt-5 grid h-11 w-full place-items-center rounded-[11px] bg-(--pp-ink) px-5 text-[14px] font-medium tracking-[-0.01em] text-(--pp-on-ink) shadow-[inset_0_1px_0_rgba(255,255,255,0.5),0_1px_2px_rgba(0,0,0,0.4)] transition-[background-color,scale] duration-150 ease-out hover:bg-(--pp-ink)/90 active:scale-[0.98] ${FOCUS}`}
     >
@@ -767,12 +769,11 @@ function CheckoutButton({
 /** Simulated checkout for the demo: a short network wait. */
 const DEMO_CHECKOUT_MS = 1400;
 
-function PricingPlanToggleDemo() {
+/** The card on a quiet stage. Overrides (the page's Customize panel) go straight to the card. */
+export default function PricingPlanToggleDemo(overrides: Partial<PricingPlanToggleProps> = {}) {
   return (
-    <div className="flex min-h-dvh w-full items-center justify-center bg-black px-4 py-14 sm:px-8">
-      <PricingPlanToggle onCheckout={() => new Promise((resolve) => window.setTimeout(resolve, DEMO_CHECKOUT_MS))} />
+    <div className={`flex min-h-dvh w-full items-center justify-center px-4 py-14 sm:px-8 ${overrides.theme === "light" ? "bg-[#f4f4f5]" : "bg-black"}`}>
+      <PricingPlanToggle onCheckout={() => new Promise((resolve) => window.setTimeout(resolve, DEMO_CHECKOUT_MS))} {...overrides} />
     </div>
   );
 }
-
-export default PricingPlanToggleDemo;

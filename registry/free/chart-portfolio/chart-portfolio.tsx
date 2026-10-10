@@ -235,6 +235,7 @@ export function ChartPortfolio({
 
       <div
         ref={wrapRef}
+        data-demo="plot"
         className="relative mt-6 touch-none select-none rounded-sm outline-none focus-visible:ring-1 focus-visible:ring-(--cp-ink)/30"
         style={{ height: h }}
         tabIndex={0}
@@ -362,6 +363,7 @@ function RangeControl({ value, uid, reduce, onChange }: { value: RangeKey; uid: 
           key={r.key}
           role="radio"
           aria-checked={value === r.key}
+          data-demo={`range-${r.key.toLowerCase()}`}
           onClick={() => onChange(r.key)}
           className={`relative h-8 flex-1 rounded-full px-3 font-mono text-[11px] font-medium transition-[color,transform] duration-150 active:scale-[0.95] ${FOCUS} @2xl:flex-none ${value === r.key ? "text-(--cp-surface)" : "text-(--cp-ink)/55 hover:text-(--cp-ink)"}`}
         >
@@ -653,12 +655,12 @@ function demoData(): Record<RangeKey, Point[]> {
   return out;
 }
 
-/** Demo: the chart on a dark stage. */
-export default function ChartPortfolioDemo() {
+/** Demo: the chart on a quiet stage. Overrides (the page's Customize panel) go straight to the chart. */
+export default function ChartPortfolioDemo(overrides: Partial<ChartPortfolioProps> = {}) {
   return (
-    <div className="flex min-h-[640px] w-full items-center justify-center bg-black px-4 py-10 sm:px-10">
+    <div className={`flex min-h-[640px] w-full items-center justify-center px-4 py-10 sm:px-10 ${overrides.theme === "light" ? "bg-[#f4f4f5]" : "bg-black"}`}>
       <div className="w-full max-w-4xl">
-        <ChartPortfolio />
+        <ChartPortfolio {...overrides} />
       </div>
     </div>
   );

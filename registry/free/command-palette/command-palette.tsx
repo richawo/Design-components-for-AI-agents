@@ -315,6 +315,7 @@ function Trigger({ label, triggerRef, onOpen, play, reduce }: { label: string; t
   return (
     <motion.button
       ref={triggerRef}
+      data-demo="trigger"
       type="button"
       onClick={onOpen}
       aria-label="Open command palette"
@@ -637,6 +638,7 @@ export function CommandPalette({
               <Search className="size-[18px] shrink-0 text-[var(--cp-faint)]" aria-hidden="true" />
               <input
                 ref={input}
+                data-demo="search"
                 role="combobox"
                 aria-expanded={flat.length > 0}
                 aria-controls={`${uid}-list`}
@@ -701,10 +703,11 @@ export function CommandPalette({
   );
 }
 
-export default function CommandPaletteDemo() {
+/** The palette on its stage. Overrides (the page's Customize panel) go straight to the palette. */
+export default function CommandPaletteDemo(overrides: Partial<CommandPaletteProps> = {}) {
   return (
-    <div className="min-h-dvh" style={{ background: STAGE }}>
-      <CommandPalette className="min-h-[max(720px,100dvh)]" />
+    <div className="min-h-dvh" style={{ background: overrides.theme === "light" ? "#f4f4f5" : STAGE }}>
+      <CommandPalette className="min-h-[max(720px,100dvh)]" {...overrides} />
     </div>
   );
 }

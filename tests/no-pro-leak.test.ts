@@ -43,4 +43,13 @@ describe("no Pro source in the public repository", () => {
     for (const m of manifest) expect(Object.keys(m)).not.toEqual(expect.arrayContaining(["code"]));
     expect(JSON.stringify(manifest)).not.toMatch(/useState\(|useEffect\(|useRef\(/);
   });
+
+  it("allows only meta.json keys in the manifest, and no source inside demo or controls", () => {
+    const allowed = new Set(["slug", "name", "tier", "platform", "category", "description", "tags", "dependencies", "theme", "previewHeight", "usage", "props", "added", "status", "demo", "controls"]);
+    for (const m of manifest) for (const k of Object.keys(m)) expect(allowed.has(k), `${(m as { slug: string }).slug}: ${k}`).toBe(true);
+    // Demo steps and control values are short strings: never code, prompts or file contents.
+    const extras = JSON.stringify(manifest.map((m) => [(m as { demo?: unknown }).demo, (m as { controls?: unknown }).controls]));
+    expect(extras).not.toMatch(/=>|export |import |function |className=|<\w+[\s>]/);
+    expect(extras.length).toBeLessThan(manifest.length * 4000);
+  });
 });

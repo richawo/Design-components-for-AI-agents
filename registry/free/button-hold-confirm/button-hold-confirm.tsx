@@ -509,7 +509,12 @@ function Count({ value, total, play, reduce }: { value: number; total: number; p
   );
 }
 
-export default function HoldConfirmButtonDemo() {
+/**
+ * The demo: a project list where every row deletes or archives with a hold, and
+ * the workspace itself is the featured button. Overrides (the page's Customize
+ * panel) apply to that featured button.
+ */
+export default function HoldConfirmButtonDemo(overrides: Partial<HoldConfirmButtonProps> = {}) {
   const reduce = useReducedMotion() ?? false;
   const uid = useId();
   const cardRef = useRef<HTMLElement>(null);
@@ -604,14 +609,16 @@ export default function HoldConfirmButtonDemo() {
                 Removes every project, preview and domain in Northwind. There’s no undo.
               </p>
             </div>
-            <HoldConfirmButton
-              label="Hold to delete workspace"
-              pendingLabel="Deleting workspace…"
-              errorLabel="Detach 2 domains first"
-              duration={1500}
-              className="self-start @md:self-auto"
-              onConfirm={() => new Promise((_, reject) => window.setTimeout(() => reject(new Error("domains")), 1100))}
-            />
+            <span data-demo="workspace" className="inline-flex self-start @md:self-auto">
+              <HoldConfirmButton
+                label="Hold to delete workspace"
+                pendingLabel="Deleting workspace…"
+                errorLabel="Detach 2 domains first"
+                duration={1500}
+                onConfirm={() => new Promise((_, reject) => window.setTimeout(() => reject(new Error("domains")), 1100))}
+                {...overrides}
+              />
+            </span>
           </motion.div>
         </motion.section>
         <motion.p {...enter(play, DEMO_MOTION.hintAt, reduce)} className="mt-4 text-center font-mono text-[11px]" style={{ color: STAGE.muted }}>
@@ -639,7 +646,10 @@ function ProjectRow({ project: p, onRemove }: { project: DemoProject; onRemove: 
         </span>
       </span>
       {p.action === "delete" ? (
-        <HoldConfirmButton size="sm" label="Delete" doneLabel="Deleted" errorLabel="Failed" announcement={`${p.name} deleted`} duration={1000} resetAfter={null} onConfirm={onRemove} />
+        // The first row is where the scripted demo shows a tap, then a hold.
+        <span data-demo={p.id === DEMO_PROJECTS[0].id ? "row-delete" : undefined} className="inline-flex">
+          <HoldConfirmButton size="sm" label="Delete" doneLabel="Deleted" errorLabel="Failed" announcement={`${p.name} deleted`} duration={1000} resetAfter={null} onConfirm={onRemove} />
+        </span>
       ) : (
         <HoldConfirmButton
           size="sm"

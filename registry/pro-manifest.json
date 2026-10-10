@@ -1530,7 +1530,60 @@
         "description": "Extra classes on the root."
       }
     ],
-    "added": "2026-10-09"
+    "added": "2026-10-09",
+    "demo": {
+      "steps": [
+        "wait:500",
+        "click:@prompt",
+        "type:Summarise the Q3 deck",
+        "wait:200",
+        "click:@send",
+        "wait:2300"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "status",
+        "label": "Status",
+        "kind": "action",
+        "options": [
+          {
+            "value": "ready",
+            "label": "Ready"
+          },
+          {
+            "value": "submitted",
+            "label": "Submitted"
+          },
+          {
+            "value": "streaming",
+            "label": "Streaming"
+          },
+          {
+            "value": "error",
+            "label": "Error"
+          }
+        ]
+      },
+      {
+        "prop": "placeholder",
+        "label": "Placeholder",
+        "kind": "text",
+        "default": "Ask Kestrel anything. Type / for commands, or drop files in."
+      },
+      {
+        "prop": "accent",
+        "label": "Working light",
+        "kind": "color",
+        "default": "#ff9d5c",
+        "options": [
+          "#ff9d5c",
+          "#7dd3fc",
+          "#a3e635",
+          "#ededef"
+        ]
+      }
+    ]
   },
   {
     "slug": "mobile-bottom-sheet",
@@ -3238,7 +3291,79 @@
         "description": "Classes for the root element."
       }
     ],
-    "added": "2026-10-09"
+    "added": "2026-10-09",
+    "demo": {
+      "steps": [
+        "wait:500",
+        "click:@state-listening",
+        "wait:1100",
+        "click:@state-thinking",
+        "wait:1100",
+        "click:@state-speaking",
+        "wait:1500"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "state",
+        "label": "State",
+        "kind": "action",
+        "options": [
+          {
+            "value": "idle",
+            "label": "Idle"
+          },
+          {
+            "value": "listening",
+            "label": "Listening"
+          },
+          {
+            "value": "thinking",
+            "label": "Thinking"
+          },
+          {
+            "value": "speaking",
+            "label": "Speaking"
+          }
+        ]
+      },
+      {
+        "prop": "name",
+        "label": "Assistant name",
+        "kind": "text",
+        "default": "Wren"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#ff7a45",
+        "options": [
+          "#ff7a45",
+          "#7dd3fc",
+          "#a3e635",
+          "#ededef"
+        ]
+      },
+      {
+        "prop": "showControls",
+        "label": "State control",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "showCaption",
+        "label": "Caption",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "interactive",
+        "label": "Pointer tilt",
+        "kind": "toggle",
+        "default": true
+      }
+    ]
   },
   {
     "slug": "work-index-hover",

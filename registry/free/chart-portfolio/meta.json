@@ -74,5 +74,103 @@
       "description": "Near-black card with white ink, or a white card with near-black ink. Up and down colours adjust for contrast."
     }
   ],
-  "added": "2026-10-07"
+  "added": "2026-10-07",
+  "demo": {
+    "steps": [
+      "wait:400",
+      "hover:@plot:0.12,0.5",
+      "hover:@plot:0.5,0.45",
+      "hover:@plot:0.88,0.55",
+      "click:@range-1y",
+      "wait:700",
+      "hover:@plot:0.3,0.5",
+      "hover:@plot:0.74,0.5",
+      "move:0.5,0.97"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "name",
+      "label": "Name",
+      "kind": "text",
+      "default": "Northwind Growth Index"
+    },
+    {
+      "prop": "ticker",
+      "label": "Ticker",
+      "kind": "text",
+      "default": "NWGI"
+    },
+    {
+      "prop": "defaultRange",
+      "label": "Opens on",
+      "kind": "select",
+      "options": [
+        {
+          "value": "1D",
+          "label": "1 day"
+        },
+        {
+          "value": "1W",
+          "label": "1 week"
+        },
+        {
+          "value": "1M",
+          "label": "1 month"
+        },
+        {
+          "value": "3M",
+          "label": "3 months"
+        },
+        {
+          "value": "1Y",
+          "label": "1 year"
+        },
+        {
+          "value": "ALL",
+          "label": "All time"
+        }
+      ],
+      "default": "1M",
+      "remount": true
+    },
+    {
+      "prop": "currency",
+      "label": "Currency",
+      "kind": "select",
+      "options": [
+        "USD",
+        "EUR",
+        "GBP",
+        "JPY"
+      ],
+      "default": "USD"
+    },
+    {
+      "prop": "height",
+      "label": "Chart height",
+      "kind": "slider",
+      "min": 220,
+      "max": 440,
+      "step": 10,
+      "unit": "px",
+      "default": 320
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark"
+    }
+  ]
 }

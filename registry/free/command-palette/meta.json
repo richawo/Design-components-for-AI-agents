@@ -82,5 +82,66 @@
       "description": "Extra classes on the root; give it a height (the scrim covers it)."
     }
   ],
-  "added": "2026-10-07"
+  "added": "2026-10-07",
+  "demo": {
+    "steps": [
+      "wait:1100",
+      "click:@search",
+      "type:road",
+      "wait:650",
+      "key:Enter",
+      "wait:1100",
+      "click:@trigger",
+      "wait:1300"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "placeholder",
+      "label": "Placeholder",
+      "kind": "text",
+      "default": "Search or type a command…"
+    },
+    {
+      "prop": "triggerLabel",
+      "label": "Trigger label",
+      "kind": "text",
+      "default": "Search or jump to…"
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark"
+    },
+    {
+      "prop": "accent",
+      "label": "Accent",
+      "kind": "color",
+      "default": "#ff7a45",
+      "options": [
+        "#ff7a45",
+        "#ededef",
+        "#34d399",
+        "#60a5fa"
+      ]
+    },
+    {
+      "prop": "defaultOpen",
+      "label": "Open on load",
+      "kind": "toggle",
+      "default": true,
+      "remount": true
+    }
+  ]
 }

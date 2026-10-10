@@ -81,10 +81,16 @@
       "description": "Feature list; each check draws in after its row lands."
     },
     {
-      "name": "cta / ctaDone",
+      "name": "cta",
       "type": "string",
-      "default": "\"Start 14-day trial\" / \"Check your inbox\"",
-      "description": "CTA label and its success label."
+      "default": "\"Start 14-day trial\"",
+      "description": "The checkout button label."
+    },
+    {
+      "name": "ctaDone",
+      "type": "string",
+      "default": "\"Check your inbox\"",
+      "description": "The button label after a successful checkout."
     },
     {
       "name": "onCheckout",
@@ -122,5 +128,117 @@
       "description": "Near-black card with white ink, or the white inverse."
     }
   ],
-  "added": "2026-10-09"
+  "added": "2026-10-09",
+  "demo": {
+    "steps": [
+      "wait:500",
+      "click:@billing-monthly",
+      "wait:550",
+      "click:@billing-annual",
+      "wait:350",
+      "click:@seat-add",
+      "wait:150",
+      "click",
+      "wait:350",
+      "click:@checkout",
+      "wait:1600"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "name",
+      "label": "Plan name",
+      "kind": "text",
+      "default": "Team",
+      "group": "Content"
+    },
+    {
+      "prop": "cta",
+      "label": "Button",
+      "kind": "text",
+      "default": "Start 14-day trial",
+      "group": "Content"
+    },
+    {
+      "prop": "saveLabel",
+      "label": "Save badge",
+      "kind": "text",
+      "default": "Save 20%",
+      "group": "Content"
+    },
+    {
+      "prop": "monthly",
+      "label": "Monthly price",
+      "kind": "slider",
+      "min": 5,
+      "max": 99,
+      "step": 1,
+      "default": 24,
+      "group": "Pricing"
+    },
+    {
+      "prop": "annual",
+      "label": "Annual price",
+      "kind": "slider",
+      "min": 5,
+      "max": 99,
+      "step": 1,
+      "default": 19,
+      "group": "Pricing"
+    },
+    {
+      "prop": "defaultBilling",
+      "label": "Opens on",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "monthly",
+          "label": "Monthly"
+        },
+        {
+          "value": "annual",
+          "label": "Annual"
+        }
+      ],
+      "default": "annual",
+      "remount": true,
+      "group": "Pricing"
+    },
+    {
+      "prop": "seats",
+      "label": "Seats stepper",
+      "kind": "toggle",
+      "default": true,
+      "group": "Pricing"
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark",
+      "group": "Look"
+    },
+    {
+      "prop": "accent",
+      "label": "Accent",
+      "kind": "color",
+      "default": "#7dd3a8",
+      "options": [
+        "#7dd3a8",
+        "#ff7a45",
+        "#60a5fa"
+      ],
+      "group": "Look"
+    }
+  ]
 }

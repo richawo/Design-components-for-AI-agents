@@ -110,5 +110,89 @@
       "description": "Disables the button."
     }
   ],
-  "added": "2026-10-09"
+  "added": "2026-10-09",
+  "demo": {
+    "steps": [
+      "wait:300",
+      "hover:@row-delete",
+      "click",
+      "wait:350",
+      "down",
+      "wait:1100",
+      "up",
+      "wait:450",
+      "hover:@workspace",
+      "down",
+      "wait:1600",
+      "up",
+      "wait:1150"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "label",
+      "label": "Label",
+      "kind": "text",
+      "default": "Hold to delete workspace"
+    },
+    {
+      "prop": "duration",
+      "label": "Hold for",
+      "kind": "slider",
+      "min": 500,
+      "max": 3000,
+      "step": 100,
+      "unit": "ms",
+      "default": 1500
+    },
+    {
+      "prop": "variant",
+      "label": "Variant",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "danger",
+          "label": "Danger"
+        },
+        {
+          "value": "neutral",
+          "label": "Neutral"
+        }
+      ],
+      "default": "danger"
+    },
+    {
+      "prop": "size",
+      "label": "Size",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "sm",
+          "label": "Small"
+        },
+        {
+          "value": "md",
+          "label": "Medium"
+        }
+      ],
+      "default": "md"
+    },
+    {
+      "prop": "accent",
+      "label": "Fill",
+      "kind": "color",
+      "default": "#e5484d",
+      "options": [
+        "#e5484d",
+        "#f59e0b",
+        "#ececee"
+      ]
+    },
+    {
+      "prop": "disabled",
+      "label": "Disabled",
+      "kind": "toggle",
+      "default": false
+    }
+  ]
 }
