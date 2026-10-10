@@ -65,6 +65,10 @@ function sync() {
     const manifest = JSON.parse(fs.readFileSync(path.join(root, "registry", "pro-manifest.json"), "utf8"));
     const missing = manifest.filter((entry) => entry.status !== "draft" && !fs.existsSync(path.join(dest, entry.slug, `${entry.slug}.tsx`)));
     if (missing.length) throw new Error(`Pro source is missing for: ${missing.map((entry) => entry.slug).join(", ")}`);
+    const blog = path.join(dest, "_site", "blog");
+    if (!fs.existsSync(blog) || !fs.readdirSync(blog).some((file) => file.endsWith(".md"))) {
+      throw new Error("Private blog source is missing from _site/blog; refusing to deploy an empty blog.");
+    }
   }
   console.log("pro: synced");
 }

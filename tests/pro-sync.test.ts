@@ -25,6 +25,10 @@ const dest = args.at(-1);
 fs.mkdirSync(path.join(dest, ".git"), {recursive:true});
 fs.mkdirSync(path.join(dest, "demo"));
 if (!env.TEST_MISSING_SOURCE) fs.writeFileSync(path.join(dest, "demo/demo.tsx"), "export function Demo() {}");
+if (!env.TEST_MISSING_BLOG) {
+  fs.mkdirSync(path.join(dest, "_site/blog"), {recursive:true});
+  fs.writeFileSync(path.join(dest, "_site/blog/fixture.md"), "Private blog fixture");
+}
 `, { mode: 0o700 });
   const run = (extra: Record<string, string> = {}, required = true) => spawnSync(process.execPath,
     [path.join(dir, "scripts/sync-pro.mjs"), ...(required ? ["--require-source"] : [])], {
@@ -81,5 +85,12 @@ describe("production Pro sync", () => {
     fs.writeFileSync(path.join(f.dir, "registry/pro/work.tsx"), "keep this work");
     expect(f.run({ PRO_REPO_TOKEN: "private-test-token" }).status).toBe(1);
     expect(fs.readFileSync(path.join(f.dir, "registry/pro/work.tsx"), "utf8")).toBe("keep this work");
+  });
+
+  it("rejects a production checkout without private blog content", () => {
+    const f = fixture();
+    const result = f.run({ PRO_REPO_TOKEN: "private-test-token", TEST_MISSING_BLOG: "1" });
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain("Private blog source is missing");
   });
 });

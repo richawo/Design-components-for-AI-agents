@@ -8,6 +8,9 @@ next-env.d.ts
 .DS_Store
 # Pro components live in a private repository and are cloned here at build time.
 registry/pro
+# Editorial source and translations belong to the private repository.
+content/blog
+content/i18n
 registry/__generated__
 test-results
 public/r

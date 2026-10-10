@@ -81,7 +81,8 @@ components/site/        Site chrome, never shipped to users
 registry/free/<slug>/   Free components: <slug>.tsx, meta.json, prompt.md, prompt.json (MIT)
 registry/pro/           Pro components, cloned from a private repo at build time (gitignored)
 registry/pro-manifest.json   Public metadata for Pro components
-content/                Docs and blog posts (Markdown)
+content/                Public documentation (Markdown)
+registry/pro/_site/     Private blog source and localization dictionaries
 scripts/                Registry build, screenshots, Pro sync
 packages/mcp/           design-for-ai-mcp, the local (stdio) MCP server
 packages/cli/           design-for-ai, the CLI

@@ -366,7 +366,11 @@ writeIfChanged(
 // Everything they need is bundled through static imports instead.
 const contentDir = path.join(root, "content");
 const mdFiles = (dir) => {
-  const d = path.join(contentDir, dir);
+  // Editorial source belongs to the private checkout. Only the ignored build
+  // bundle contains it; a public clone without private access has no posts.
+  const d = dir === "blog"
+    ? path.join(registryDir, "pro", "_site", "blog")
+    : path.join(contentDir, dir);
   if (!fs.existsSync(d)) return {};
   return Object.fromEntries(
     fs.readdirSync(d).filter((f) => f.endsWith(".md")).sort().map((f) => [f, fs.readFileSync(path.join(d, f), "utf8")]),

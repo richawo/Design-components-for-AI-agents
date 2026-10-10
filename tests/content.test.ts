@@ -1,18 +1,22 @@
 import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
+import { execFileSync } from "node:child_process";
 import { describe, expect, it } from "vitest";
 
 const root = path.resolve(__dirname, "..");
 const read = (dir: string) =>
-  fs
-    .readdirSync(path.join(root, dir))
+  (fs.existsSync(path.join(root, dir)) ? fs.readdirSync(path.join(root, dir)) : [])
     .filter((f) => f.endsWith(".md"))
     .map((f) => ({ file: f, ...matter(fs.readFileSync(path.join(root, dir, f), "utf8")) }));
 
 describe("blog posts", () => {
-  const posts = read("content/blog");
-  it.each(posts.map((p) => [p.file, p] as const))("%s has complete SEO frontmatter", (_, p) => {
+  const posts = read("registry/pro/_site/blog");
+  it("keeps editorial source and generated content out of the public index", () => {
+    const tracked = execFileSync("git", ["ls-files"], { cwd: root, encoding: "utf8" }).split("\n");
+    expect(tracked.filter((file) => /^(content\/(blog|i18n)\/|registry\/(pro|__generated__)\/)/.test(file))).toEqual([]);
+  });
+  for (const p of posts) it(`${p.file} has complete SEO frontmatter`, () => {
     expect(p.data.slug).toBe(p.file.replace(/\.md$/, ""));
     expect(p.data.title.length).toBeLessThanOrEqual(90);
     expect(p.data.description.length).toBeGreaterThan(70);

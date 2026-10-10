@@ -11,7 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: absoluteUrl("/"), lastModified: latest, changeFrequency: "weekly", priority: 1 },
     { url: absoluteUrl("/components"), lastModified: latest, changeFrequency: "weekly", priority: 0.9 },
     { url: absoluteUrl("/pricing"), changeFrequency: "monthly", priority: 0.8 },
-    { url: absoluteUrl("/blog"), lastModified: posts[0]?.dateModified, changeFrequency: "weekly", priority: 0.7 },
+    ...(posts.length ? [{ url: absoluteUrl("/blog"), lastModified: posts[0]?.dateModified, changeFrequency: "weekly" as const, priority: 0.7 }] : []),
     ...categoriesWithCounts().map((c) => ({ url: absoluteUrl(`/categories/${c.key}`), lastModified: latest, changeFrequency: "weekly" as const, priority: 0.8 })),
     ...components.map((c) => {
       const thumb = thumbnailFor(c.slug);

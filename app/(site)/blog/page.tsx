@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { Cover } from "@/components/site/cover";
 import { JsonLd } from "@/components/site/json-ld";
 import { allPosts } from "@/lib/content";
@@ -15,6 +16,7 @@ const fmt = (d: string) => new Date(d).toLocaleDateString("en-GB", { day: "numer
 
 export default function BlogIndex() {
   const posts = allPosts();
+  if (!posts.length) notFound();
   const [lead, ...rest] = posts;
   return (
     <div className="mx-auto max-w-[80rem] px-5 pb-28 sm:px-8">

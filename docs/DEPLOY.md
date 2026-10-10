@@ -13,6 +13,12 @@ content routes use bundled data instead of reading the disk:
 `scripts/build-registry.mjs` bundles sources, docs and blog posts into
 `registry/__generated__/` so they ship inside the Worker.
 
+Blog Markdown lives in the private repository at `_site/blog/`, cloned into
+`registry/pro/_site/blog/`. Its generated bundle is ignored by Git. Production
+sync requires these posts as well as the Pro components. A public clone without
+private access builds the component library and docs, with blog pages returning
+404 and no blog entries in its sitemap.
+
 ## Production status (10 October 2026)
 
 The site is live at <https://design.yaps.ai>, with a fallback at
