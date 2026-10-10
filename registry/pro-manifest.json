@@ -2761,6 +2761,606 @@
     "added": "2026-10-09"
   },
   {
+    "slug": "collab-annotation-pins",
+    "name": "Annotation Pins",
+    "tier": "pro",
+    "platform": "web",
+    "category": "collaboration",
+    "description": "Design review on a drawn landing page: numbered pins open comment popovers, resolving fades a pin and ticks the counter down, and comment mode drops new pins.",
+    "tags": [
+      "annotations",
+      "pins",
+      "design review",
+      "comments",
+      "feedback",
+      "collaboration",
+      "canvas",
+      "figma",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 820,
+    "usage": "import { CollabAnnotationPins } from \"@/components/design-for-ai/collab-annotation-pins\";\n\nexport default function Review() {\n  return (\n    <CollabAnnotationPins\n      title=\"Fieldnote · Marketing\"\n      frameLabel=\"Landing — v4\"\n      currentUser=\"Sam Okoye\"\n      pins={[\n        { id: \"p1\", x: 0.47, y: 0.27, author: \"Inês Duarte\", time: \"10:31\", body: \"Drop the full stop in the headline?\" },\n      ]}\n      onAdd={(pin) => savePin(pin)}\n      onResolve={(pin) => resolvePin(pin.id)}\n    />\n  );\n}",
+    "props": [
+      {
+        "name": "pins",
+        "type": "{ id; x: number; y: number; author; body; time; resolved?: boolean }[]",
+        "default": "5 demo pins",
+        "description": "Comments placed on the design. x and y are fractions (0–1) of the frame, so pins stay put at any size."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Fieldnote · Marketing\"",
+        "description": "File name in the toolbar."
+      },
+      {
+        "name": "frameLabel",
+        "type": "string",
+        "default": "\"Landing — v4\"",
+        "description": "Frame name above the design and in the toolbar."
+      },
+      {
+        "name": "currentUser",
+        "type": "string",
+        "default": "\"Sam Okoye\"",
+        "description": "Author of pins you drop."
+      },
+      {
+        "name": "showResolved",
+        "type": "boolean",
+        "default": "true",
+        "description": "Keep resolved pins on the canvas as faded ticks, or hide them."
+      },
+      {
+        "name": "pinShape",
+        "type": "\"teardrop\" | \"circle\"",
+        "default": "\"teardrop\"",
+        "description": "Teardrops point at their spot with the bottom-left corner; circles centre on it."
+      },
+      {
+        "name": "commentMode",
+        "type": "boolean",
+        "default": "uncontrolled (false)",
+        "description": "Optional. Drive comment mode from outside; pair with onCommentModeChange. C toggles it too."
+      },
+      {
+        "name": "onCommentModeChange",
+        "type": "(on: boolean) => void",
+        "default": "none",
+        "description": "Called when comment mode turns on or off."
+      },
+      {
+        "name": "onResolve",
+        "type": "(pin) => void",
+        "default": "none",
+        "description": "Called when a pin is resolved."
+      },
+      {
+        "name": "onAdd",
+        "type": "(pin) => void",
+        "default": "none",
+        "description": "Called with a new pin after it’s posted."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ff6b3d\"",
+        "description": "The one accent: pins, the open counter dot and the active comment-mode button. Pin numbers flip black or white to stay readable."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "The app chrome. The design under review stays a light page."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:1000",
+        "click:@pin-2",
+        "wait:500",
+        "click:@resolve",
+        "wait:500",
+        "click:@comment-mode",
+        "click:@canvas:0.72,0.6",
+        "type:Tighten this",
+        "key:Enter",
+        "wait:1000"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "showResolved",
+        "label": "Show resolved",
+        "kind": "toggle",
+        "default": true,
+        "group": "Content"
+      },
+      {
+        "prop": "pinShape",
+        "label": "Pin shape",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "teardrop",
+            "label": "Teardrop"
+          },
+          {
+            "value": "circle",
+            "label": "Circle"
+          }
+        ],
+        "default": "teardrop",
+        "group": "Look"
+      },
+      {
+        "prop": "title",
+        "label": "File name",
+        "kind": "text",
+        "default": "Fieldnote · Marketing",
+        "group": "Content"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Pin colour",
+        "kind": "color",
+        "default": "#ff6b3d",
+        "options": [
+          "#ff6b3d",
+          "#f5a524",
+          "#3b82f6",
+          "#22c55e",
+          "#f4f4f5"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "commentMode",
+        "label": "Comment mode",
+        "kind": "action",
+        "options": [
+          {
+            "value": false,
+            "label": "Off"
+          },
+          {
+            "value": true,
+            "label": "On"
+          }
+        ],
+        "group": "State"
+      }
+    ]
+  },
+  {
+    "slug": "collab-comment-thread",
+    "name": "Comment Thread",
+    "tier": "pro",
+    "platform": "web",
+    "category": "collaboration",
+    "description": "A comment thread anchored to a highlighted quote: @mentions become tokens, unread replies carry a marker, your comments edit inline and Resolve folds it to one line.",
+    "tags": [
+      "comments",
+      "thread",
+      "collaboration",
+      "mentions",
+      "resolve",
+      "unread",
+      "review",
+      "docs",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 860,
+    "usage": "import { CollabCommentThread } from \"@/components/design-for-ai/collab-comment-thread\";\n\nexport default function HeroThread() {\n  return (\n    <CollabCommentThread\n      location=\"Pricing page · Hero headline\"\n      quote=\"Pricing your finance team can actually read.\"\n      people={[\n        { id: \"sam\", name: \"Sam Okoye\", handle: \"sam\" },\n        { id: \"mara\", name: \"Mara Ilić\", handle: \"mara\" },\n      ]}\n      currentUserId=\"sam\"\n      comments={[{ id: \"c1\", authorId: \"mara\", body: \"Too much promise in “actually read”.\", time: \"Tue 14:02\", unread: true }]}\n      onPost={(body) => saveReply(body)}\n      onResolvedChange={(resolved) => setThreadResolved(resolved)}\n    />\n  );\n}",
+    "props": [
+      {
+        "name": "comments",
+        "type": "{ id; authorId; body; time; unread?: boolean; edited?: boolean }[]",
+        "default": "5 demo comments",
+        "description": "The thread, oldest first. `@handle` in a body renders as a mention token; unread comments get a marker and a “new” divider."
+      },
+      {
+        "name": "people",
+        "type": "{ id; name; handle }[]",
+        "default": "5 demo people",
+        "description": "Everyone on the doc: comment authors and the @mention suggestions."
+      },
+      {
+        "name": "currentUserId",
+        "type": "string",
+        "default": "\"sam\"",
+        "description": "The signed-in person. Their comments show Edit; replies post as them."
+      },
+      {
+        "name": "location",
+        "type": "string",
+        "default": "\"Pricing page · Hero headline\"",
+        "description": "Where the thread is anchored, shown in mono above the quote."
+      },
+      {
+        "name": "quote",
+        "type": "string",
+        "default": "\"Pricing your finance team can actually read.\"",
+        "description": "The highlighted document text the thread is about."
+      },
+      {
+        "name": "showUnread",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show unread markers until you reply, resolve or mark them read."
+      },
+      {
+        "name": "resolved",
+        "type": "boolean",
+        "default": "uncontrolled (false)",
+        "description": "Optional. Drive the resolved state from outside; pair with onResolvedChange."
+      },
+      {
+        "name": "onResolvedChange",
+        "type": "(resolved: boolean) => void",
+        "default": "none",
+        "description": "Called when Resolve or Reopen is pressed."
+      },
+      {
+        "name": "onPost",
+        "type": "(body: string) => void",
+        "default": "none",
+        "description": "Called with the text of a new reply (mentions as @handle)."
+      },
+      {
+        "name": "composerPlaceholder",
+        "type": "string",
+        "default": "\"Reply, or @ to mention\"",
+        "description": "Placeholder in the reply field."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#f5a524\"",
+        "description": "The one accent: quote highlight, mention tokens and unread markers. Used as a tint, never as text colour."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface palette."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:600",
+        "click:@reply",
+        "type:@pr",
+        "wait:350",
+        "click:@mention-priya",
+        "type:thank you",
+        "key:Enter",
+        "wait:900",
+        "click:@resolve",
+        "wait:1500"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "showUnread",
+        "label": "Unread markers",
+        "kind": "toggle",
+        "default": true,
+        "group": "Content"
+      },
+      {
+        "prop": "quote",
+        "label": "Quoted text",
+        "kind": "text",
+        "default": "Pricing your finance team can actually read.",
+        "group": "Content"
+      },
+      {
+        "prop": "location",
+        "label": "Location",
+        "kind": "text",
+        "default": "Pricing page · Hero headline",
+        "group": "Content"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Highlight",
+        "kind": "color",
+        "default": "#f5a524",
+        "options": [
+          "#f5a524",
+          "#f4f4f5",
+          "#60a5fa",
+          "#4ade80",
+          "#ff7a45"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "resolved",
+        "label": "Thread",
+        "kind": "action",
+        "options": [
+          {
+            "value": false,
+            "label": "Open"
+          },
+          {
+            "value": true,
+            "label": "Resolved"
+          }
+        ],
+        "group": "State"
+      }
+    ]
+  },
+  {
+    "slug": "collab-share-access",
+    "name": "Share Access Panel",
+    "tier": "pro",
+    "platform": "web",
+    "category": "collaboration",
+    "description": "A share panel where typed emails become validated chips, roles sit in a compact menu, removals offer Undo, and link access steps from restricted to public.",
+    "tags": [
+      "share",
+      "permissions",
+      "invite",
+      "collaboration",
+      "roles",
+      "email chips",
+      "access",
+      "copy link",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 820,
+    "usage": "import { CollabShareAccess } from \"@/components/design-for-ai/collab-share-access\";\n\nexport default function ShareDialog() {\n  return (\n    <CollabShareAccess\n      docTitle=\"Q4 launch plan\"\n      orgDomain=\"northwind.co\"\n      orgName=\"Northwind\"\n      members={[\n        { email: \"hana@northwind.co\", name: \"Hana Sato\", role: \"owner\" },\n        { email: \"mateo@northwind.co\", name: \"Mateo Herrera\", role: \"edit\" },\n      ]}\n      link=\"https://docs.northwind.co/d/q4-launch-plan\"\n      onInvite={(emails, role) => sendInvites(emails, role)}\n      onRemove={(member) => revoke(member.email)}\n      onLinkAccessChange={(access) => saveLinkAccess(access)}\n    />\n  );\n}",
+    "props": [
+      {
+        "name": "docTitle",
+        "type": "string",
+        "default": "\"Q4 launch plan\"",
+        "description": "The thing being shared, in the heading."
+      },
+      {
+        "name": "members",
+        "type": "{ email; name?; role: \"owner\" | \"view\" | \"comment\" | \"edit\"; pending?: boolean }[]",
+        "default": "4 demo members",
+        "description": "People with access. The owner can’t be changed; pending invites get a dashed avatar."
+      },
+      {
+        "name": "orgDomain",
+        "type": "string",
+        "default": "\"northwind.co\"",
+        "description": "Addresses on this domain are your organisation; anyone else gets a Guest tag."
+      },
+      {
+        "name": "orgName",
+        "type": "string",
+        "default": "\"Northwind\"",
+        "description": "Used in the “Anyone at …” link level."
+      },
+      {
+        "name": "defaultRole",
+        "type": "\"view\" | \"comment\" | \"edit\"",
+        "default": "\"edit\"",
+        "description": "Role pre-selected for new invites."
+      },
+      {
+        "name": "linkAccess",
+        "type": "\"restricted\" | \"organisation\" | \"anyone\"",
+        "default": "uncontrolled (\"organisation\")",
+        "description": "Optional. Drive the general access level from outside; pair with onLinkAccessChange."
+      },
+      {
+        "name": "linkRole",
+        "type": "\"view\" | \"comment\" | \"edit\"",
+        "default": "\"view\"",
+        "description": "What people arriving by link can do."
+      },
+      {
+        "name": "link",
+        "type": "string",
+        "default": "\"https://docs.northwind.co/d/q4-launch-plan\"",
+        "description": "Written to the clipboard by Copy link."
+      },
+      {
+        "name": "undoMs",
+        "type": "number",
+        "default": "5000",
+        "description": "How long Undo stays after removing someone."
+      },
+      {
+        "name": "onInvite",
+        "type": "(emails: string[], role) => void",
+        "default": "none",
+        "description": "Called with the valid addresses when Invite is pressed. Invalid chips stay behind."
+      },
+      {
+        "name": "onRemove",
+        "type": "(member) => void",
+        "default": "none",
+        "description": "Called when someone is removed (Undo puts them back)."
+      },
+      {
+        "name": "onRoleChange",
+        "type": "(email: string, role) => void",
+        "default": "none",
+        "description": "Called when a member’s role changes."
+      },
+      {
+        "name": "onLinkAccessChange",
+        "type": "(access) => void",
+        "default": "none",
+        "description": "Called when the general access level changes."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "theme ink",
+        "description": "The one accent: the Invite button, selected checks and the Copied tick. Button text flips black or white to stay readable."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface palette."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:600",
+        "click:@invite-input",
+        "type:ines@northwind.co,",
+        "type:lu@nw,",
+        "wait:400",
+        "click:@invite",
+        "wait:700",
+        "click:@copy-link",
+        "wait:1200"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "docTitle",
+        "label": "Document",
+        "kind": "text",
+        "default": "Q4 launch plan",
+        "group": "Content"
+      },
+      {
+        "prop": "orgName",
+        "label": "Organisation",
+        "kind": "text",
+        "default": "Northwind",
+        "group": "Content"
+      },
+      {
+        "prop": "defaultRole",
+        "label": "Invite as",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "view",
+            "label": "Viewer"
+          },
+          {
+            "value": "comment",
+            "label": "Commenter"
+          },
+          {
+            "value": "edit",
+            "label": "Editor"
+          }
+        ],
+        "default": "edit",
+        "group": "Content"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#60a5fa",
+          "#4ade80",
+          "#ff7a45",
+          "#f5a524"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "linkAccess",
+        "label": "General access",
+        "kind": "action",
+        "options": [
+          {
+            "value": "restricted",
+            "label": "Restricted"
+          },
+          {
+            "value": "organisation",
+            "label": "Organisation"
+          },
+          {
+            "value": "anyone",
+            "label": "Anyone"
+          }
+        ],
+        "group": "State"
+      }
+    ]
+  },
+  {
     "slug": "combobox-async",
     "name": "Async Combobox",
     "tier": "pro",
