@@ -2761,6 +2761,227 @@
     "added": "2026-10-09"
   },
   {
+    "slug": "chart-treemap-drill",
+    "name": "Drill-down Treemap",
+    "tier": "pro",
+    "platform": "web",
+    "category": "charts",
+    "description": "A squarified treemap of a cloud bill: click a tile and its children grow out of it to fill the plot while the rest zooms away, with a breadcrumb back up.",
+    "tags": [
+      "treemap",
+      "drill down",
+      "hierarchy",
+      "breadcrumb",
+      "cloud costs",
+      "finops",
+      "dashboard",
+      "dark",
+      "monochrome"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 760,
+    "usage": "import { ChartTreemapDrill } from \"@/components/design-for-ai/chart-treemap-drill\";\nimport type { TreemapNode } from \"@/components/design-for-ai/chart-treemap-drill\";\n\nconst bill: TreemapNode = {\n  name: \"All teams\",\n  children: [\n    { name: \"Search\", children: [{ name: \"indexers\", value: 8_400, previous: 7_900 }, { name: \"query-api\", value: 3_100 }] },\n    { name: \"Payments\", children: [{ name: \"ledger-db\", value: 6_200, previous: 6_500 }] },\n  ],\n};\n\n<ChartTreemapDrill\n  data={bill}\n  title=\"Spend by team\"\n  subtitle=\"Q3 2026\"\n  previousLabel=\"Q2\"\n  currency=\"EUR\"\n  locale=\"de-DE\"\n  onDrill={(path) => console.log(path)}\n/>",
+    "props": [
+      {
+        "name": "data",
+        "type": "TreemapNode",
+        "default": "Larkspur's October cloud bill",
+        "description": "The root: { name, value?, previous?, children? }. Leaves carry value (and optionally previous); groups sum their children. Any depth."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Infrastructure spend\"",
+        "description": "Card title."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "default": "\"October 2026\"",
+        "description": "Mono line beside the title."
+      },
+      {
+        "name": "previousLabel",
+        "type": "string",
+        "default": "\"Sep\"",
+        "description": "The previous period's name in the change label under the total."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"USD\"",
+        "description": "ISO currency for values."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-US\"",
+        "description": "Locale for number formatting."
+      },
+      {
+        "name": "height",
+        "type": "number",
+        "default": "440",
+        "description": "Plot height in px, capped at 110% of the card's width on narrow containers."
+      },
+      {
+        "name": "gap",
+        "type": "number",
+        "default": "4",
+        "description": "Space between tiles, px."
+      },
+      {
+        "name": "showChange",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show change against the previous period on the total and on tiles big enough to hold it."
+      },
+      {
+        "name": "increase",
+        "type": "\"good\" | \"bad\"",
+        "default": "\"bad\"",
+        "description": "Whether a rise is good news (revenue: green) or bad (spend: rose)."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ff7a45\"",
+        "description": "The one colour: the tile under the pointer or in keyboard focus, and its value."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Near-black card with white ink, or a white card with near-black ink."
+      },
+      {
+        "name": "onDrill",
+        "type": "(path: string[]) => void",
+        "description": "Called with the names from the root to the level now shown."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "hover:@tile-databases",
+        "wait:250",
+        "click:@tile-compute",
+        "wait:850",
+        "click:@tile-inference-gpu-pool",
+        "wait:900",
+        "click:@crumb-0",
+        "wait:900"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "title",
+        "label": "Title",
+        "kind": "text",
+        "default": "Infrastructure spend"
+      },
+      {
+        "prop": "height",
+        "label": "Plot height",
+        "kind": "slider",
+        "min": 320,
+        "max": 560,
+        "step": 10,
+        "unit": "px",
+        "default": 440
+      },
+      {
+        "prop": "gap",
+        "label": "Tile gap",
+        "kind": "slider",
+        "min": 0,
+        "max": 10,
+        "step": 1,
+        "unit": "px",
+        "default": 4
+      },
+      {
+        "prop": "showChange",
+        "label": "Show change",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "increase",
+        "label": "A rise is",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "bad",
+            "label": "Bad (spend)"
+          },
+          {
+            "value": "good",
+            "label": "Good"
+          }
+        ],
+        "default": "bad"
+      },
+      {
+        "prop": "currency",
+        "label": "Currency",
+        "kind": "select",
+        "options": [
+          {
+            "value": "USD",
+            "label": "US dollar (USD)"
+          },
+          {
+            "value": "EUR",
+            "label": "Euro (EUR)"
+          },
+          {
+            "value": "GBP",
+            "label": "Pound (GBP)"
+          },
+          {
+            "value": "JPY",
+            "label": "Yen (JPY)"
+          }
+        ],
+        "default": "USD"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#ff7a45",
+        "options": [
+          "#ff7a45",
+          "#34d399",
+          "#60a5fa",
+          "#e5e5e5"
+        ]
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "combobox-async",
     "name": "Async Combobox",
     "tier": "pro",
