@@ -6,7 +6,7 @@ import { CopyButton } from "./copy-button";
 import { planById } from "@/lib/pricing";
 
 type Licence = { id: string; plan: string; seats: number; status: string; expiresAt: number | null; owner: boolean; active: boolean; token: string | null; members: { email: string; invitation_sent_at: number | null }[] };
-type Account = { user: { email: string }; hasBilling: boolean; licences: Licence[] };
+type Account = { user: { email: string }; hasBilling: boolean; pendingCheckout: boolean; licences: Licence[] };
 type State = { status: "loading" | "signed-out" } | { status: "signed-in"; account: Account } | { status: "key"; email: string; licence: Licence };
 const names: Record<string, string> = { "pro-yearly": "Pro yearly", "pro-lifetime": "Pro lifetime", "team-yearly": "Team yearly", "team-lifetime": "Team lifetime" };
 const field = "w-full rounded-xl border border-white/[0.12] bg-site-bg px-4 py-3 text-[15px] text-site-fg outline-none transition-colors placeholder:text-site-fg-3 focus:border-site-accent";
@@ -55,7 +55,8 @@ export function AccountPanel({ welcome, pending, plan }: { welcome: boolean; pen
     const interval = setInterval(() => setClock(Date.now()), 1000);
     return () => clearInterval(interval);
   }, [codeSent]);
-  const awaiting = (welcome || pending) && state.status === "signed-in" && !state.account.licences.some((l) => l.active);
+  const awaiting = (welcome || pending) && state.status === "signed-in" && !state.account.licences.some((l) => l.active)
+    && (state.account.pendingCheckout || state.account.licences.length === 0);
   useEffect(() => {
     if (!awaiting) return;
     // Payment events may arrive after Stripe redirects. Refresh for one minute, then offer a manual retry.

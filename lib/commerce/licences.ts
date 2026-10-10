@@ -58,7 +58,8 @@ export async function requireCommerceLicense(req: Request): Promise<Verified> {
 
 export async function accountDetails(env: CommerceEnv, user: AccountUser) {
   const rows = await accountLicences(env, user);
-  return { user: { id: user.id, email: user.email }, hasBilling: Boolean(user.stripe_customer_id), licences: await Promise.all(rows.map(async (row) => ({
+  const pending = await env.COMMERCE_DB.prepare("SELECT id FROM checkout_requests WHERE user_id=? AND session_id IS NOT NULL").bind(user.id).first();
+  return { user: { id: user.id, email: user.email }, hasBilling: Boolean(user.stripe_customer_id), pendingCheckout: Boolean(pending), licences: await Promise.all(rows.map(async (row) => ({
     id: row.id, plan: row.plan, seats: row.seats, status: row.status, expiresAt: row.expires_at,
     owner: row.user_id === user.id, active: activeLicence(row),
     token: activeLicence(row) ? signLicense(licencePayload(row, user), 2) : null,

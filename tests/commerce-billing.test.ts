@@ -41,6 +41,8 @@ const event = (id: string, type: string, object: unknown) => ({ id, type, data: 
 describe("payment fulfilment", () => {
   it("never grants access for unpaid or unrelated checkout, and grants one licence and one email after payment", async () => {
     const f = fixture();
+    f.sql.prepare("INSERT INTO checkout_requests VALUES (?, ?, ?, ?, ?, ?)").run(f.user.id, "request_fixture", "pro-lifetime", f.session.id, "fixture", Date.now() / 1000 + 3600);
+    expect((await accountDetails(f.env, f.user)).pendingCheckout).toBe(true);
     f.session.payment_status = "unpaid";
     expect(await fulfillPurchase(f.env, f.session.id, f.stripe)).toBeNull();
     f.session.payment_status = "paid";
@@ -53,6 +55,7 @@ describe("payment fulfilment", () => {
     expect(second?.id).toBe(first?.id);
     expect(f.sql.prepare("SELECT count(*) AS n FROM licences").get()!.n).toBe(1);
     expect(f.mail).toHaveBeenCalledTimes(1);
+    expect((await accountDetails(f.env, f.user)).pendingCheckout).toBe(false);
     f.sql.close();
   });
 
