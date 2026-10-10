@@ -107,15 +107,15 @@
   "added": "2026-10-07",
   "demo": {
     "steps": [
+      "wait:300",
+      "click:@metric-revenue",
       "wait:700",
       "click:@metric-signups",
-      "wait:450",
-      "click:@metric-revenue",
-      "wait:450",
+      "wait:500",
       "scroll:760",
-      "wait:300",
+      "wait:550",
       "click:@switch-anomaly-alerts",
-      "wait:650",
+      "wait:900",
       "click",
       "wait:800"
     ]

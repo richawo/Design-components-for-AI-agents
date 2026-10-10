@@ -31,7 +31,7 @@
       "others": 1
     },
     "tile": "padding 24/32px; mono label, 22-24px display title, 15px body; illustration pushed down with mt-auto",
-    "composition": "tiles are exported; <BentoGrid> with children renders them inside the themed hairline sheet"
+    "composition": "tiles are exported; <BentoGrid> with children renders them inside the themed hairline sheet; `ambient` (boolean, default true) stops the metric cycle, typing, switch flips, heatmap ticks and live-city pings but keeps entrances and clicks; reduced motion forces it off; alert switches hold still while hovered"
   },
   "typography": {
     "heading": {

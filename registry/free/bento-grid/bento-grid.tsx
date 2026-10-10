@@ -182,7 +182,7 @@ export function BentoGrid({
 
   return (
     <AmbientContext.Provider value={ambient}>
-      <section style={vars} aria-labelledby={heading ? headingId : undefined} aria-label={heading ? undefined : "Product features"} className="@container bg-(--bn-page) text-(--bn-ink)">
+      <section style={vars} data-ambient={ambient ? "on" : "off"} aria-labelledby={heading ? headingId : undefined} aria-label={heading ? undefined : "Product features"} className="@container bg-(--bn-page) text-(--bn-ink)">
         <style>{KEYFRAMES}</style>
         <div className="mx-auto max-w-7xl px-4 py-10 @xl:px-8 @xl:py-16 @5xl:px-12 @5xl:py-20">
           {heading ? <GridHeader id={headingId} eyebrow={eyebrow} heading={heading} muted={headingMuted} intro={intro} link={link} /> : null}
@@ -912,11 +912,14 @@ export function AlertsTile({ label, title, body, settings, preview, className = 
   const { reduce, live } = reveal;
   const [state, setState] = useState(() => settings.map((s) => s.on));
   const [touched, setTouched] = useState(false);
+  // The switches hold still while a pointer is over them, as a hover would expect.
+  const hovered = useRef(false);
 
   useEffect(() => {
     if (!live || touched) return;
     let step = 0;
     const id = setInterval(() => {
+      if (hovered.current) return;
       const i = FLIP_ORDER[step % FLIP_ORDER.length] % settings.length;
       step += 1;
       setState((s) => s.map((v, j) => (j === i ? !v : v)));
@@ -932,7 +935,15 @@ export function AlertsTile({ label, title, body, settings, preview, className = 
   return (
     <Tile reveal={reveal} className={className}>
       <TileHead reveal={reveal} {...{ label, title, body }} />
-      <div className="mt-auto space-y-3">
+      <div
+        className="mt-auto space-y-3"
+        onPointerEnter={() => {
+          hovered.current = true;
+        }}
+        onPointerLeave={() => {
+          hovered.current = false;
+        }}
+      >
         <motion.div variants={RISE} custom={reveal.at(T.figure)} className="relative h-[96px]" aria-live="polite">
           <AnimatePresence initial={false} mode="popLayout">
             {state[preview.watch] ? (
