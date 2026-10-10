@@ -186,7 +186,14 @@ export function HeroBlurStatement({
                 reduce={reduce}
                 barRef={barRef}
                 // With reduced motion nothing rotates on its own; the control steps through the names instead.
-                onPress={() => (reduce ? step() : setHeld((h) => !h))}
+                // Play answers at once: the next name rolls in and gets a full hold.
+                onPress={() => {
+                  if (reduce) step();
+                  else if (held) {
+                    setHeld(false);
+                    step();
+                  } else setHeld(true);
+                }}
               />
             ) : null
           }
@@ -204,7 +211,8 @@ export function HeroBlurStatement({
  * The rotation clock. One rAF loop advances the name and writes the progress
  * hairline's scale straight to the DOM (no React render per frame), so pausing
  * freezes both together. It also stops offscreen and in hidden tabs.
- * Returns the current index and a function that steps to the next name.
+ * Returns the current index and a function that steps to the next name and
+ * restarts its hold.
  */
 function useRotation({
   count,
@@ -222,6 +230,8 @@ function useRotation({
   barRef: RefObject<HTMLSpanElement | null>;
 }): [number, () => void] {
   const [index, setIndex] = useState(0);
+  // Shared with `step`, so a manual step restarts the hold from zero.
+  const elapsedRef = useRef(-FIRST_HOLD);
   const pausedRef = useRef(paused);
   useEffect(() => {
     pausedRef.current = paused;
@@ -232,20 +242,20 @@ function useRotation({
     let visible = true;
     const io = new IntersectionObserver(([e]) => (visible = e.isIntersecting));
     if (rootRef.current) io.observe(rootRef.current);
-    let elapsed = -FIRST_HOLD;
     let last = performance.now();
     let raf = 0;
     const tick = (now: number) => {
       const dt = Math.min(now - last, MAX_FRAME);
       last = now;
       if (!pausedRef.current && visible && !document.hidden) {
-        elapsed += dt;
-        if (elapsed >= interval) {
-          elapsed = 0;
+        elapsedRef.current += dt;
+        if (elapsedRef.current >= interval) {
+          elapsedRef.current = 0;
           setIndex((i) => (i + 1) % count);
         }
       }
-      if (barRef.current) barRef.current.style.transform = `scaleX(${Math.max(0, Math.min(1, elapsed / interval)).toFixed(4)})`;
+      const progress = elapsedRef.current / interval;
+      if (barRef.current) barRef.current.style.transform = `scaleX(${Math.max(0, Math.min(1, progress)).toFixed(4)})`;
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
@@ -255,7 +265,10 @@ function useRotation({
     };
   }, [reduce, count, interval, rootRef, barRef]);
 
-  const step = useCallback(() => setIndex((i) => (i + 1) % Math.max(1, count)), [count]);
+  const step = useCallback(() => {
+    elapsedRef.current = 0;
+    setIndex((i) => (i + 1) % Math.max(1, count));
+  }, [count]);
   return [index, step];
 }
 
@@ -494,7 +507,7 @@ function RotationControl({
       aria-pressed={reduce ? undefined : held}
       className="group -mx-2 flex min-h-11 items-center gap-3 rounded-full px-2 text-left font-mono text-[11px] uppercase tracking-[0.16em] text-(--bs-ink)/55 transition-colors duration-150 hover:text-(--bs-ink)/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--bs-ink) active:scale-[0.98] @4xl:mx-0"
     >
-      <span aria-hidden="true" className="grid size-6 place-items-center rounded-full ring-1 ring-inset ring-(--bs-ink)/15 transition-[box-shadow] duration-150 group-hover:ring-(--bs-ink)/30">
+      <span aria-hidden="true" data-demo="rotation-glyph" className="grid size-6 place-items-center rounded-full ring-1 ring-inset ring-(--bs-ink)/15 transition-[box-shadow] duration-150 group-hover:ring-(--bs-ink)/30">
         <ControlGlyph kind={reduce ? "next" : paused ? "play" : "pause"} />
       </span>
       <span className="shrink-0 whitespace-nowrap tabular-nums text-(--bs-ink)/80">

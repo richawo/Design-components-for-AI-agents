@@ -51,7 +51,7 @@
       "name": "tail",
       "type": "string",
       "default": "\"that people\\nopen on purpose.\"",
-      "description": "Words after the name, set at 38% white. A \"\\n\" breaks the line on wide containers so nothing re-wraps while the slot springs."
+      "description": "Words after the name, set at 38% ink. A \"\\n\" breaks the line on wide containers so nothing re-wraps while the slot springs."
     },
     {
       "name": "primary",
@@ -84,15 +84,13 @@
   ],
   "demo": {
     "steps": [
-      "wait:150",
-      "hover:@name:0.5,0.55",
-      "wait:650",
-      "hover:@rotation:0.12,0.5",
-      "wait:700",
+      "wait:1500",
+      "hover:@rotation-glyph:0.4,0.92",
+      "wait:250",
       "click",
-      "wait:400",
+      "wait:1600",
       "click",
-      "wait:1400"
+      "wait:650"
     ],
     "loop": false
   },
