@@ -70,7 +70,87 @@
       "name": "onFinish",
       "type": "() => void",
       "description": "Called about a second after the final press, once the leaves have settled."
+    },
+    {
+      "name": "step",
+      "type": "number",
+      "description": "Jumps the carousel to this step (0-based) whenever the value changes. Leave unset and only the person moves it. Jumping back from a planted last step clears the grove."
     }
   ],
-  "added": "2026-10-07"
+  "added": "2026-10-07",
+  "demo": {
+    "steps": [
+      "wait:300",
+      "hover:@copy:0.85,0.4",
+      "drag:0.15,0.75",
+      "wait:700",
+      "click:@skip",
+      "wait:800",
+      "click:@next",
+      "wait:1500"
+    ],
+    "loop": false
+  },
+  "controls": [
+    {
+      "prop": "step",
+      "label": "Jump to",
+      "kind": "action",
+      "options": [
+        {
+          "value": 0,
+          "label": "Dawn"
+        },
+        {
+          "value": 1,
+          "label": "Morning"
+        },
+        {
+          "value": 2,
+          "label": "Evening"
+        },
+        {
+          "value": 3,
+          "label": "Night"
+        }
+      ]
+    },
+    {
+      "prop": "accent",
+      "label": "Accent",
+      "kind": "color",
+      "default": "#8BE0A4",
+      "options": [
+        "#8BE0A4",
+        "#F2B66D",
+        "#7DB7FF",
+        "#FF8FA3",
+        "#F5F5F5"
+      ]
+    },
+    {
+      "prop": "brand",
+      "label": "Brand",
+      "kind": "text",
+      "default": "grove"
+    },
+    {
+      "prop": "skipLabel",
+      "label": "Skip label",
+      "kind": "text",
+      "default": "Skip"
+    },
+    {
+      "prop": "nextLabel",
+      "label": "Button label",
+      "kind": "text",
+      "default": "Continue"
+    },
+    {
+      "prop": "finishLabel",
+      "label": "Final button",
+      "kind": "text",
+      "default": "Plant my first tree"
+    }
+  ]
 }

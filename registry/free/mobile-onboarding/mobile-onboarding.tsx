@@ -81,6 +81,11 @@ export type MobileOnboardingProps = {
   doneLabel?: string;
   /** Called once the planting flourish has played. */
   onFinish?: () => void;
+  /**
+   * Jumps the carousel to this step (0-based) each time the value changes. Leave it unset and the
+   * carousel is driven only by the person; a planted grove is cleared when you jump back.
+   */
+  step?: number;
 };
 
 /* ------------------------------------------------------------------ */
@@ -256,6 +261,13 @@ function useAnimatedNumber(initial: number) {
 function useSvgId(prefix: string) {
   return `${prefix}${useId().replace(/[^a-zA-Z0-9_-]/g, "")}`;
 }
+
+/**
+ * React Native Web turns `dataSet` into the `data-demo` attribute the live demo script targets.
+ * The demo swipes the copy (data-demo="copy"), then taps Skip (data-demo="skip") and the main
+ * button (data-demo="next"); the top-left button is data-demo="back".
+ */
+const demoTarget = (name: string): { dataSet: { demo: string } } => ({ dataSet: { demo: name } });
 
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
 
@@ -511,6 +523,7 @@ export function MobileOnboarding({
   finishLabel = "Plant my first tree",
   doneLabel = "Planted. See you at 7:30",
   onFinish,
+  step,
 }: MobileOnboardingProps) {
   const reduced = useReducedMotion();
   const [size, setSize] = useState({ w: 0, h: 0 });
@@ -542,6 +555,21 @@ export function MobileOnboarding({
   useEffect(() => () => {
     if (finishTimer.current) clearTimeout(finishTimer.current);
   }, []);
+
+  /* A changed `step` prop moves the carousel; jumping off a planted last step clears the grove. */
+  const appliedStep = useRef<number | undefined>(undefined);
+  useEffect(() => {
+    if (step === undefined || !w || appliedStep.current === step) return;
+    appliedStep.current = step;
+    if (finishTimer.current) clearTimeout(finishTimer.current);
+    if (step < last) {
+      setDone(false);
+      plant.setValue(0);
+      burst.setValue(0);
+      doneFade.setValue(0);
+    }
+    goTo(step);
+  }, [step, w, last, goTo, plant, burst, doneFade]);
 
   const finish = () => {
     if (done) return;
@@ -624,6 +652,7 @@ export function MobileOnboarding({
               accessibilityValue={{ text: `Step ${index + 1} of ${n}` }}
               accessibilityActions={[{ name: "increment" }, { name: "decrement" }]}
               onAccessibilityAction={(e) => goTo(e.nativeEvent.actionName === "increment" ? index + 1 : index - 1)}
+              {...demoTarget("copy")}
             >
               {steps.map((s, i) => (
                 <StepCopy key={`copy-${s.title}`} step={s} i={i} pos={pos} t={entrances[i]} w={w} compact={compact} reduced={reduced} />
@@ -1280,7 +1309,7 @@ function TopBar({
   return (
     <View style={styles.topBar}>
       <Animated.View style={{ transform: [{ translateX: motion.backX }], pointerEvents: index === 0 || done ? "none" : "auto" }}>
-        <Squish reduced={reduced} onPress={onBack} accessibilityRole="button" accessibilityLabel="Back" accessibilityHint="Goes to the previous step" hitSlop={6}>
+        <Squish reduced={reduced} onPress={onBack} accessibilityRole="button" accessibilityLabel="Back" accessibilityHint="Goes to the previous step" hitSlop={6} {...demoTarget("back")}>
           <Glass radius={20} wash={GLASS.control} fade={backFade} style={styles.roundBtn}>
             <Animated.View aria-hidden style={{ opacity: backFade }}>
               <Svg width={20} height={20} viewBox="0 0 24 24">
@@ -1299,7 +1328,7 @@ function TopBar({
       </Animated.View>
 
       <View style={{ pointerEvents: index === last || done ? "none" : "auto" }}>
-        <Squish reduced={reduced} onPress={onSkip} accessibilityRole="button" accessibilityLabel={`${skipLabel} to the last step`} hitSlop={6}>
+        <Squish reduced={reduced} onPress={onSkip} accessibilityRole="button" accessibilityLabel={`${skipLabel} to the last step`} hitSlop={6} {...demoTarget("skip")}>
           <Glass radius={20} wash={GLASS.control} fade={skipFade} style={styles.skipBtn}>
             <Animated.Text style={[styles.skipText, { opacity: skipFade }]}>{skipLabel}</Animated.Text>
           </Glass>
@@ -1915,6 +1944,7 @@ function Primary({
         accessibilityLabel={done ? doneLabel : isLast ? finishLabel : nextLabel}
         accessibilityState={{ disabled: done }}
         style={styles.cta}
+        {...demoTarget("next")}
       >
         <LinearGradient colors={["#FAFAFA", "#D6D6D6"]} style={StyleSheet.absoluteFill} />
         <Animated.View style={[StyleSheet.absoluteFill, m.faceFinal]}>
@@ -2049,6 +2079,6 @@ const styles = StyleSheet.create({
   ctaText: { userSelect: "none", color: INK.onLight, fontSize: 17, fontWeight: "600", letterSpacing: -0.3 },
 });
 
-export default function MobileOnboardingDemo() {
-  return <MobileOnboarding />;
+export default function MobileOnboardingDemo(overrides: Partial<MobileOnboardingProps> = {}) {
+  return <MobileOnboarding {...overrides} />;
 }
