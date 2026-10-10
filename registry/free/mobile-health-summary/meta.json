@@ -47,6 +47,11 @@
       "description": "The one brand colour outside the rings: the step sparkline's \"now\" dot and the heartbeat comet. Everything else is greyscale."
     },
     {
+      "name": "focusedRing",
+      "type": "RingKey | \"none\"",
+      "description": "Isolates a ring from outside, as if it had been tapped: the others dim and the centre reads that ring's progress. \"none\" clears it. Tapping still works; only a change of this value moves the focus."
+    },
+    {
       "name": "title",
       "type": "string",
       "default": "\"Summary\"",
@@ -69,5 +74,67 @@
       "description": "Fired when a ring is isolated, or cleared."
     }
   ],
-  "added": "2026-10-09"
+  "added": "2026-10-09",
+  "demo": {
+    "steps": [
+      "wait:350",
+      "click:@day-3",
+      "wait:1100",
+      "click:@rings:0.5,0.064",
+      "wait:900",
+      "click:@legend-stand",
+      "wait:900",
+      "click:@day-1",
+      "wait:1200"
+    ],
+    "loop": false
+  },
+  "controls": [
+    {
+      "prop": "focusedRing",
+      "label": "Focus ring",
+      "kind": "action",
+      "options": [
+        "move",
+        "exercise",
+        "stand",
+        "none"
+      ]
+    },
+    {
+      "prop": "initialDay",
+      "label": "Day",
+      "kind": "slider",
+      "min": 0,
+      "max": 4,
+      "step": 1,
+      "default": 4,
+      "remount": true
+    },
+    {
+      "prop": "accent",
+      "label": "Accent",
+      "kind": "color",
+      "default": "#FF3D6E",
+      "options": [
+        "#FF3D6E",
+        "#FFB020",
+        "#3DDC97",
+        "#4C9AFF",
+        "#F5F5F5"
+      ]
+    },
+    {
+      "prop": "title",
+      "label": "Title",
+      "kind": "text",
+      "default": "Summary"
+    },
+    {
+      "prop": "initials",
+      "label": "Initials",
+      "kind": "text",
+      "default": "NA"
+    }
+  ]
 }

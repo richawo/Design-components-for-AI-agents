@@ -85,6 +85,12 @@ export type MobileHealthSummaryProps = {
    * sparkline and runs the heartbeat. Everything else is greyscale.
    */
   accent?: string;
+  /**
+   * Isolates a ring from outside, as if it had been tapped: the others dim and
+   * the centre reads that ring's progress. "none" clears the focus. Tapping
+   * still works afterwards; only a change of this value moves the focus.
+   */
+  focusedRing?: RingKey | "none";
   onDayChange?: (index: number, day: HealthDay) => void;
   onRingSelect?: (ring: RingKey | null) => void;
 };
@@ -222,6 +228,14 @@ const CARD_RADIUS = 24;
 const CARD_PAD = 16;
 const CHART_H = 34;
 const AVATAR = 42;
+
+/**
+ * React Native Web turns `dataSet` into the `data-demo` attribute the live demo
+ * script finds its targets by; native ignores it. Plain `data-*` props are dropped.
+ * The demo taps a day (data-demo="day-1", data-demo="day-3"), the rings
+ * (data-demo="rings") and a legend entry (data-demo="legend-stand").
+ */
+const demoTarget = (name: string): { dataSet: { demo: string } } => ({ dataSet: { demo: name } });
 
 const TABULAR = { fontVariant: ["tabular-nums" as const] };
 // On the web a mouse drag would otherwise select text.
@@ -835,6 +849,7 @@ function WeekSelector({
               reduce={reduce}
               disabled={d.future}
               onPress={() => onPick(i)}
+              {...demoTarget(`day-${i}`)}
               accessibilityRole="tab"
               accessibilityLabel={d.dateLabel}
               accessibilityState={{ selected: isSelected, disabled: !!d.future }}
@@ -1128,6 +1143,7 @@ function RingStage({ uid, rings, values, dayName, focus, onFocus, intro, reduce 
       <Pressable
         onPressIn={onPressIn}
         onPress={onPress}
+        {...demoTarget("rings")}
         accessibilityRole="button"
         accessibilityLabel={`Activity rings. ${rings.map((r, i) => `${r.label} ${values[i]} of ${r.goal} ${r.unit}`).join(". ")}`}
         accessibilityHint="Tap a ring to focus it"
@@ -1173,6 +1189,7 @@ function Legend({ rings, values, focus, onFocus, reduce }: { rings: HealthRing[]
               to={0.95}
               reduce={reduce}
               onPress={() => onFocus(i)}
+              {...demoTarget(`legend-${ring.key}`)}
               accessibilityRole="button"
               accessibilityLabel={`${ring.label}: ${values[i]} of ${ring.goal} ${ring.unit}`}
               accessibilityState={{ selected: focus === i }}
@@ -1559,6 +1576,7 @@ export function MobileHealthSummary({
   days = DEFAULT_DAYS,
   initialDay,
   accent = DEFAULT_ACCENT,
+  focusedRing,
   onDayChange,
   onRingSelect,
 }: MobileHealthSummaryProps) {
@@ -1571,6 +1589,15 @@ export function MobileHealthSummary({
   const [intro, setIntro] = useState(true);
   const scrollY = useRef(new Animated.Value(0)).current;
   const day = days[dayIndex];
+
+  // A host-driven focus (a control, a deep link) moves the rings the same way a tap does.
+  // `rings` is read through a ref so an inline array from the host doesn't reset the focus on every render.
+  const ringsRef = useRef(rings);
+  ringsRef.current = rings;
+  useEffect(() => {
+    if (focusedRing === undefined) return;
+    setFocus(focusedRing === "none" ? null : Math.max(0, ringsRef.current.findIndex((r) => r.key === focusedRing)));
+  }, [focusedRing]);
 
   const pickDay = (i: number) => {
     if (days[i].future || i === dayIndex) return;
@@ -1735,6 +1762,6 @@ const styles = StyleSheet.create({
   sleepKeyValue: { color: COLOR.ink, fontSize: 13, fontWeight: "600", marginTop: 1 },
 });
 
-export default function MobileHealthSummaryDemo() {
-  return <MobileHealthSummary />;
+export default function MobileHealthSummaryDemo(overrides: Partial<MobileHealthSummaryProps> = {}) {
+  return <MobileHealthSummary {...overrides} />;
 }
