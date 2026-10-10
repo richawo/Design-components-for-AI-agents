@@ -19,8 +19,8 @@
     "motion"
   ],
   "theme": "dark",
-  "previewHeight": 600,
-  "usage": "import { PressDepthButton } from \"@/components/design-for-ai/button-press-depth\";\n\n<PressDepthButton label=\"Save changes\" onPress={() => api.save()} />  // returns a promise: spinner, then check, in the same box\n\n<PressDepthButton label=\"Publish\" loadingLabel=\"Publishing…\" successLabel=\"Live\" errorLabel=\"Didn’t publish\" onPress={() => api.publish()} />\n\n<PressDepthButton variant=\"secondary\" size=\"sm\" label=\"Preview\" icon />  // no promise returned: stays idle, no spinner or check\n\n<PressDepthButton variant=\"destructive\" label=\"Delete project\" leadingIcon={<TrashIcon />} trailingIcon={null} />\n\n<PressDepthButton state=\"loading\" label=\"Publish\" loadingLabel=\"Publishing…\" />  // controlled: you drive the state",
+  "previewHeight": 640,
+  "usage": "import { PressDepthButton } from \"@/components/design-for-ai/button-press-depth\";\n\n<PressDepthButton label=\"Save changes\" onPress={() => api.save()} />  // returns a promise: spinner, then check, in the same box\n\n<PressDepthButton label=\"Publish\" loadingLabel=\"Publishing…\" successLabel=\"Live\" errorLabel=\"Didn’t publish\" onPress={() => api.publish()} />\n\n<PressDepthButton variant=\"secondary\" size=\"sm\" label=\"Preview\" icon />  // no promise returned: stays idle, no spinner or check\n\n<PressDepthButton variant=\"destructive\" label=\"Delete project\" leadingIcon={<TrashIcon />} trailingIcon={null} />\n\n<PressDepthButton block label=\"Continue\" icon onPress={() => api.next()} />  // full width, for a mobile footer\n\n<PressDepthButton state=\"loading\" label=\"Publish\" loadingLabel=\"Publishing…\" />  // controlled: you drive the state",
   "props": [
     {
       "name": "label",
@@ -80,14 +80,14 @@
     {
       "name": "accent",
       "type": "string",
-      "default": "\"#f4f4f5\"",
-      "description": "The one accent. It fills the primary button, and its base edge and label colour are derived from it. Defaults to a near-white monochrome fill."
+      "default": "\"#f4f4f5\" on dark, \"#18181b\" on light",
+      "description": "The one accent. It fills the primary button, and its base edge, hover and label colour are derived from it. Hover always steps away from the label ink: a light fill darkens, a dark fill lightens. Leave it out for the monochrome default."
     },
     {
       "name": "theme",
       "type": "\"dark\" | \"light\"",
       "default": "\"dark\"",
-      "description": "The surface the button sits on, so its neutrals keep their contrast. Typed as PressDepthTheme."
+      "description": "The surface the button sits on, so its neutrals keep their contrast and the default accent flips between near-white and near-black. Typed as PressDepthTheme."
     },
     {
       "name": "successMs",
@@ -105,6 +105,12 @@
       "type": "\"button\" | \"submit\"",
       "default": "\"button\"",
       "description": "The native button type."
+    },
+    {
+      "name": "block",
+      "type": "boolean",
+      "default": "false",
+      "description": "Fills the width of its container, the stretched mobile call to action. The base edge stretches with it, and a label too long for the box truncates with an ellipsis."
     },
     {
       "name": "className",
@@ -187,10 +193,28 @@
       "default": "#f4f4f5",
       "options": [
         "#f4f4f5",
+        "#18181b",
         "#2563eb",
         "#0f766e",
         "#e4572e"
       ],
+      "group": "Look"
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark",
       "group": "Look"
     },
     {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useId, useRef, useState, type CSSProperties, type KeyboardEvent as ReactKeyboardEvent, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
+import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties, type KeyboardEvent as ReactKeyboardEvent, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
 import { AnimatePresence, motion, useInView, useReducedMotion } from "motion/react";
 
 /* ------------------------------------------------------------------ */
@@ -32,7 +32,7 @@ export type PressDepthButtonProps = {
   leadingIcon?: ReactNode;
   /** Any glyph after the label. Overrides `icon`; pass null to hide it. */
   trailingIcon?: ReactNode;
-  /** The one accent. It fills the primary button, and its base edge and label colour are derived from it. */
+  /** The one accent. It fills the primary button, and its base edge, hover and label colour are derived from it. Defaults to a monochrome fill: near-white on dark, near-black on light. */
   accent?: string;
   /** The surface the button sits on, so its neutrals keep their contrast. */
   theme?: PressDepthTheme;
@@ -44,6 +44,8 @@ export type PressDepthButtonProps = {
    */
   onPress?: () => void | Promise<unknown>;
   type?: "button" | "submit";
+  /** Fills the width of its container, the stretched mobile call to action. The base edge stretches with it; a label too long for the box truncates. */
+  block?: boolean;
   /** Applied to the outer wrapper, not the button. */
   className?: string;
 };
@@ -56,8 +58,8 @@ export type PressDepthButtonProps = {
 const PRESS_TRAVEL = 2; // px the face sinks into its base edge
 const LIFT = 1; // px the face rises on hover, so the base shows a little more
 const SUCCESS_HOLD_MS = 1600;
-/** Monochrome by default: a near-white primary on dark, so the accent is a choice the user makes, not a framework blue. */
-const DEFAULT_ACCENT = "#f4f4f5";
+/** Monochrome by default: a near-white primary on dark and a near-black one on light, so the accent is a choice the user makes, not a framework blue. */
+const DEFAULT_ACCENT = { dark: "#f4f4f5", light: "#18181b" } as const;
 const DEFAULT_ERROR_LABEL = "Didn’t save";
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 const DEMO_TIMING = { saveMs: 1100, holdMs: 1600 } as const;
@@ -75,7 +77,6 @@ const NEUTRAL = {
     dangerEdge: "#7f1d22",
     ghostHover: "rgba(255,255,255,0.07)",
     ghostPress: "rgba(255,255,255,0.12)",
-    shade: "white",
   },
   light: {
     ink: "#18181b",
@@ -86,7 +87,6 @@ const NEUTRAL = {
     dangerEdge: "#8f1717",
     ghostHover: "rgba(24,24,27,0.06)",
     ghostPress: "rgba(24,24,27,0.1)",
-    shade: "black",
   },
 } as const;
 
@@ -129,14 +129,20 @@ function inkOn(fill: string): string {
   return onWhite >= onBlack ? "#ffffff" : "#0a0a0b";
 }
 
-function raised(fill: string, edge: string, text: string, hl: string, ring: string, shade: string): Tokens {
+/**
+ * Hover is one clear step away from the label ink, never toward it: a light fill (dark label) darkens,
+ * a dark fill (light label) lightens. Mixing a near-white fill toward white would change nothing, so the
+ * direction comes from the fill itself, not from the theme. Press always goes a further step darker.
+ */
+function raised(fill: string, edge: string, text: string, hl: string, ring: string): Tokens {
+  const lightFill = inkOn(fill) !== "#ffffff";
   return {
     fill,
     edge,
     text,
     hl,
-    hover: `color-mix(in oklab, ${fill} 88%, ${shade})`,
-    press: `color-mix(in oklab, ${fill} 90%, black)`,
+    hover: lightFill ? `color-mix(in oklab, ${fill} 93%, black)` : `color-mix(in oklab, ${fill} 89%, white)`,
+    press: `color-mix(in oklab, ${fill} ${lightFill ? 86 : 88}%, black)`,
     ring,
   };
 }
@@ -145,22 +151,22 @@ function tokensFor(variant: PressDepthVariant, theme: PressDepthTheme, accent: s
   const n = NEUTRAL[theme];
   switch (variant) {
     case "primary":
-      return raised(accent, `color-mix(in oklab, ${accent} 62%, black)`, inkOn(accent), "rgba(255,255,255,0.24)", accent, n.shade);
+      return raised(accent, `color-mix(in oklab, ${accent} 62%, black)`, inkOn(accent), "rgba(255,255,255,0.24)", accent);
     case "destructive":
-      return raised(n.danger, n.dangerEdge, "#ffffff", "rgba(255,255,255,0.22)", n.danger, n.shade);
+      return raised(n.danger, n.dangerEdge, "#ffffff", "rgba(255,255,255,0.22)", n.danger);
     case "secondary":
-      return raised(n.secondary, n.secondaryEdge, n.ink, n.secondaryHl, n.ink, n.shade);
+      return raised(n.secondary, n.secondaryEdge, n.ink, n.secondaryHl, n.ink);
     case "ghost":
       return { fill: "transparent", edge: null, text: n.ink, hl: "transparent", hover: n.ghostHover, press: n.ghostPress, ring: n.ink };
   }
 }
 
 const FACE =
-  "relative inline-grid items-center justify-items-center whitespace-nowrap select-none font-sans font-medium tracking-[-0.01em] touch-manipulation [-webkit-tap-highlight-color:transparent] transition-[transform,background-color,box-shadow] duration-[120ms] ease-[cubic-bezier(0.22,1,0.36,1)] focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed motion-reduce:duration-150";
+  "relative inline-grid max-w-full grid-cols-[minmax(0,auto)] items-center justify-items-center whitespace-nowrap select-none font-sans font-medium tracking-[-0.01em] touch-manipulation [-webkit-tap-highlight-color:transparent] transition-[transform,background-color,box-shadow] duration-[120ms] ease-[cubic-bezier(0.22,1,0.36,1)] focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed motion-reduce:duration-150";
 
 // Tailwind v4 spells "no blur" as blur-none (blur-0 does not exist), so the reduced-motion override really applies.
 const SLOT =
-  "col-start-1 row-start-1 inline-flex items-center justify-center transition-[opacity,transform,filter] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:translate-y-0 motion-reduce:blur-none motion-reduce:transition-opacity motion-reduce:duration-150";
+  "col-start-1 row-start-1 inline-flex min-w-0 max-w-full items-center justify-center transition-[opacity,transform,filter] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:translate-y-0 motion-reduce:blur-none motion-reduce:transition-opacity motion-reduce:duration-150";
 const SLOT_ON = "opacity-100 translate-y-0 blur-none";
 const SLOT_OFF = "pointer-events-none opacity-0 translate-y-[4px] blur-[2px]";
 
@@ -205,11 +211,32 @@ function ArrowGlyph({ size }: { size: number }) {
   );
 }
 
-/** A partial ring reads as work in progress; a full circle would read as a stalled download. */
-function SpinnerGlyph({ size, reduce }: { size: number; reduce: boolean }) {
+/**
+ * A partial ring reads as work in progress; a full circle would read as a stalled download.
+ * Reduced motion drops the rotation, and a frozen arc would read as stuck, so it becomes three dots
+ * that fade in turn: opacity only, nothing moves. Both only animate while loading is showing.
+ */
+function SpinnerGlyph({ size, active, reduce }: { size: number; active: boolean; reduce: boolean }) {
+  if (reduce) {
+    return (
+      <svg width={size} height={size} viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+        {[3, 8, 13].map((cx, i) => (
+          <motion.circle
+            key={cx}
+            cx={cx}
+            cy={8}
+            r={1.5}
+            initial={false}
+            animate={active ? { opacity: [0.3, 1, 0.3] } : { opacity: 0.3 }}
+            transition={active ? { duration: 1.2, ease: "easeInOut", repeat: Infinity, delay: i * 0.2 } : { duration: 0 }}
+          />
+        ))}
+      </svg>
+    );
+  }
   return (
-    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" aria-hidden="true" className="animate-spin motion-reduce:animate-none">
-      <circle cx={8} cy={8} r={6} strokeDasharray={reduce ? "18 20" : "28 10"} />
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" aria-hidden="true" className={active ? "animate-spin" : undefined}>
+      <circle cx={8} cy={8} r={6} strokeDasharray="28 10" />
     </svg>
   );
 }
@@ -253,16 +280,17 @@ export function PressDepthButton({
   icon = false,
   leadingIcon = null,
   trailingIcon,
-  accent = DEFAULT_ACCENT,
+  accent,
   theme = "dark",
   successMs = SUCCESS_HOLD_MS,
   onPress,
   type = "button",
+  block = false,
   className = "",
 }: PressDepthButtonProps) {
   const reduce = useReducedMotion() ?? false;
   const dim = SIZES[size];
-  const tokens = tokensFor(variant, theme, accent);
+  const tokens = tokensFor(variant, theme, accent ?? DEFAULT_ACCENT[theme]);
   const isDepthed = tokens.edge !== null;
   const { later } = useTimers();
   const [internal, setInternal] = useState<PressDepthState>("idle");
@@ -338,7 +366,7 @@ export function PressDepthButton({
 
   return (
     <span
-      className={`relative inline-grid align-middle transition-opacity duration-200 data-[state=disabled]:opacity-40 ${isDepthed ? "pb-[2px]" : ""} ${className}`}
+      className={`relative max-w-full align-middle transition-opacity duration-200 data-[state=disabled]:opacity-40 ${block ? "grid w-full" : "inline-grid"} ${isDepthed ? "pb-[2px]" : ""} ${className}`}
       data-state={current}
     >
       {tokens.edge !== null && <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 bottom-0" style={base} />}
@@ -365,12 +393,12 @@ export function PressDepthButton({
         onKeyUp={release}
         onBlur={release}
         data-pose={pose}
-        className={`${FACE} ${dim.box} ${dim.hit}`}
+        className={`${FACE} ${dim.box} ${dim.hit} ${block ? "w-full" : ""}`}
         style={face}
       >
         <span className={`${SLOT} ${dim.gap} ${idleOn ? SLOT_ON : SLOT_OFF}`} aria-hidden={!idleOn || undefined}>
           {leadingIcon ? <span aria-hidden="true" className="inline-flex shrink-0">{leadingIcon}</span> : null}
-          <span>{label}</span>
+          <span className="min-w-0 truncate">{label}</span>
           {trailing ? (
             <span
               aria-hidden="true"
@@ -382,12 +410,12 @@ export function PressDepthButton({
           ) : null}
         </span>
         <span className={`${SLOT} ${dim.gap} ${current === "loading" ? SLOT_ON : SLOT_OFF}`} aria-hidden={current !== "loading" || undefined}>
-          <SpinnerGlyph size={dim.glyph} reduce={reduce} />
-          {loadingLabel ? <span>{loadingLabel}</span> : null}
+          <SpinnerGlyph size={dim.glyph} active={current === "loading"} reduce={reduce} />
+          {loadingLabel ? <span className="min-w-0 truncate">{loadingLabel}</span> : null}
         </span>
         <span className={`${SLOT} ${dim.gap} ${current === "success" ? SLOT_ON : SLOT_OFF}`} aria-hidden={current !== "success" || undefined}>
           <CheckGlyph size={dim.glyph} active={current === "success"} reduce={reduce} />
-          {successLabel ? <span>{successLabel}</span> : null}
+          {successLabel ? <span className="min-w-0 truncate">{successLabel}</span> : null}
         </span>
       </button>
       <span role="status" className="sr-only">
@@ -401,13 +429,28 @@ export function PressDepthButton({
 /* Demo                                                                 */
 /* ------------------------------------------------------------------ */
 
+/** The stage follows the theme control, so the light neutrals are rendered and checked, not just typed. */
 const STAGE = {
-  backdrop: "#0a0a0b",
-  card: "#111113",
-  ring: "rgba(255,255,255,0.08)",
-  rule: "rgba(255,255,255,0.07)",
-  ink: "#f4f4f5",
-  muted: "#8a8a93",
+  dark: {
+    backdrop: "#0a0a0b",
+    card: "#111113",
+    ring: "rgba(255,255,255,0.08)",
+    lip: "rgba(255,255,255,0.04)",
+    drop: "0 40px 80px -40px rgba(0,0,0,0.9)",
+    rule: "rgba(255,255,255,0.07)",
+    ink: "#f4f4f5",
+    muted: "#8a8a93",
+  },
+  light: {
+    backdrop: "#f4f4f5",
+    card: "#ffffff",
+    ring: "rgba(24,24,27,0.08)",
+    lip: "rgba(255,255,255,0)",
+    drop: "0 24px 48px -32px rgba(24,24,27,0.28)",
+    rule: "rgba(24,24,27,0.08)",
+    ink: "#18181b",
+    muted: "#63636c",
+  },
 } as const;
 
 const SETTINGS = [
@@ -415,6 +458,9 @@ const SETTINGS = [
   ["Visibility", "Team only"],
   ["Retention", "30 days"],
 ] as const;
+
+/** Below this footer width the three actions can't share a row, so Save takes the full width and the other two split the row under it. */
+const FOOTER_ROW_MIN = 380;
 
 function enter(play: boolean, delay: number, reduce: boolean) {
   return {
@@ -424,14 +470,32 @@ function enter(play: boolean, delay: number, reduce: boolean) {
   };
 }
 
-export default function PressDepthButtonDemo({ state: forced, ...overrides }: Partial<PressDepthButtonProps> = {}) {
+/** Tracks whether an element is narrower than `min`, before paint, so the footer never flashes its other layout. */
+function useNarrow<T extends HTMLElement>(min: number) {
+  const ref = useRef<T>(null);
+  const [narrow, setNarrow] = useState(false);
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const measure = () => setNarrow(el.getBoundingClientRect().width < min);
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [min]);
+  return [ref, narrow] as const;
+}
+
+export default function PressDepthButtonDemo({ state: forced, theme = "dark", ...overrides }: Partial<PressDepthButtonProps> = {}) {
   const reduce = useReducedMotion() ?? false;
   const uid = useId();
   const cardRef = useRef<HTMLElement>(null);
   const play = useInView(cardRef, { once: true, amount: 0.3 });
+  const [footerRef, narrow] = useNarrow<HTMLDivElement>(FOOTER_ROW_MIN);
   const { later, clear } = useTimers();
   const [saveState, setSaveState] = useState<PressDepthState>("idle");
   const [saved, setSaved] = useState(false);
+  const stage = STAGE[theme];
 
   // A state picked in the Customize panel is held until another is picked, so the preview shows it
   // for as long as the visitor wants to inspect it. Picking one cancels any save still in flight, and
@@ -461,27 +525,31 @@ export default function PressDepthButtonDemo({ state: forced, ...overrides }: Pa
   const status = saveState === "loading" ? "Saving…" : saved ? "All changes saved" : "Unsaved changes";
 
   return (
-    <div className="flex min-h-dvh w-full items-center justify-center px-4 py-16 font-sans antialiased sm:px-8" style={{ background: STAGE.backdrop, color: STAGE.ink }}>
+    <div
+      className="flex min-h-dvh w-full items-center justify-center px-4 py-12 font-sans antialiased transition-colors duration-200 sm:px-8 sm:py-16"
+      style={{ background: stage.backdrop, color: stage.ink }}
+    >
       <div className="@container w-full max-w-[520px]">
         <motion.section
           ref={cardRef}
           aria-labelledby={`${uid}-title`}
           {...enter(play, 0, reduce)}
           className="rounded-[16px] p-5 @md:p-6"
-          style={{ background: STAGE.card, boxShadow: `inset 0 0 0 1px ${STAGE.ring}, inset 0 1px 0 rgba(255,255,255,0.04), 0 40px 80px -40px rgba(0,0,0,0.9)` }}
+          style={{ background: stage.card, boxShadow: `inset 0 0 0 1px ${stage.ring}, inset 0 1px 0 ${stage.lip}, ${stage.drop}` }}
         >
           <motion.header {...enter(play, 0.06, reduce)} className="flex items-baseline justify-between gap-4">
             <h2 id={`${uid}-title`} className="text-[15px] font-medium tracking-[-0.01em]">
               Project settings
             </h2>
-            <span className="relative font-mono text-[11px] tabular-nums" style={{ color: STAGE.muted }}>
-              <AnimatePresence mode="popLayout" initial={false}>
+            {/* Both strings share one right-aligned grid cell, so the outgoing and incoming text cross-fade in place. */}
+            <span className="inline-grid justify-items-end font-mono text-[11px] tabular-nums" style={{ color: stage.muted }}>
+              <AnimatePresence initial={false}>
                 <motion.span
                   key={status}
-                  className="inline-block"
-                  initial={reduce ? { opacity: 0 } : { opacity: 0, y: 4, filter: "blur(2px)" }}
-                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                  exit={reduce ? { opacity: 0 } : { opacity: 0, y: -4, filter: "blur(2px)" }}
+                  className="col-start-1 row-start-1 whitespace-nowrap"
+                  initial={reduce ? { opacity: 0 } : { opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={reduce ? { opacity: 0 } : { opacity: 0, y: -4 }}
                   transition={{ duration: reduce ? 0.15 : 0.2, ease: EASE_OUT }}
                 >
                   {status}
@@ -492,26 +560,50 @@ export default function PressDepthButtonDemo({ state: forced, ...overrides }: Pa
 
           <motion.dl {...enter(play, 0.16, reduce)} className="mt-4">
             {SETTINGS.map(([term, value]) => (
-              <div key={term} className="flex items-baseline justify-between gap-4 border-t py-3 first:border-t-0" style={{ borderColor: STAGE.rule }}>
-                <dt className="text-[13px]" style={{ color: STAGE.muted }}>
+              <div key={term} className="flex items-baseline justify-between gap-4 border-t py-3 first:border-t-0" style={{ borderColor: stage.rule }}>
+                <dt className="text-[13px]" style={{ color: stage.muted }}>
                   {term}
                 </dt>
                 <dd className="font-mono text-[13px]">{value}</dd>
               </div>
             ))}
+            {/* The one destructive action sits on its own row, small, away from the save actions. */}
+            <div className="flex items-center justify-between gap-4 border-t py-3" style={{ borderColor: stage.rule }}>
+              <dt className="min-w-0">
+                <span className="block text-[13px]">Delete project</span>
+                <span className="mt-0.5 block text-[12px] leading-snug" style={{ color: stage.muted }}>
+                  Removes every deploy and the domain.
+                </span>
+              </dt>
+              <dd className="shrink-0">
+                <PressDepthButton variant="destructive" size="sm" label="Delete" theme={theme} />
+              </dd>
+            </div>
           </motion.dl>
 
-          <motion.div {...enter(play, 0.3, reduce)} className="mt-3 flex flex-wrap items-center gap-3 border-t pt-6" style={{ borderColor: STAGE.rule }}>
-            <div data-demo="save" className="inline-flex">
-              <PressDepthButton label="Save changes" state={saveState} onPress={save} {...overrides} />
+          {/*
+            Wide: Save and Preview lead on the left, Discard sits at the far right with its label on the card's content edge.
+            Narrow: Save takes the full row, Preview and Discard split the row under it. DOM order matches the reading order in both.
+          */}
+          <motion.div
+            ref={footerRef}
+            {...enter(play, 0.3, reduce)}
+            className={`mt-1 border-t pt-5 ${narrow ? "grid grid-cols-2 gap-2" : "flex items-center gap-2"}`}
+            style={{ borderColor: stage.rule }}
+          >
+            <div data-demo="save" className={narrow ? "col-span-2 grid" : "inline-flex min-w-0"}>
+              <PressDepthButton label="Save changes" state={saveState} onPress={save} theme={theme} block={narrow} {...overrides} />
             </div>
-            <PressDepthButton variant="secondary" label="Preview" leadingIcon={<EyeGlyph />} />
-            <div data-demo="discard" className="inline-flex">
-              <PressDepthButton variant="ghost" label="Discard" />
+            {/* Only Save gives way to a long custom label; Preview and Discard keep their full width. */}
+            <div className={narrow ? "grid" : "inline-flex shrink-0"}>
+              <PressDepthButton variant="secondary" label="Preview" leadingIcon={<EyeGlyph />} theme={theme} block={narrow} />
+            </div>
+            <div data-demo="discard" className={narrow ? "grid" : "-mr-4 ml-auto inline-flex shrink-0"}>
+              <PressDepthButton variant="ghost" label="Discard" theme={theme} block={narrow} />
             </div>
           </motion.div>
         </motion.section>
-        <motion.p {...enter(play, 0.42, reduce)} className="mt-4 text-center font-mono text-[11px]" style={{ color: STAGE.muted }}>
+        <motion.p {...enter(play, 0.42, reduce)} className="mt-4 text-center font-mono text-[11px]" style={{ color: stage.muted }}>
           Tab to focus · Space or Enter to press
         </motion.p>
       </div>

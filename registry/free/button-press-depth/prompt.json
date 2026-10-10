@@ -12,7 +12,8 @@
     "face": "button as an inline-grid. Label, loading and success slots share grid cell 1/1 so the box is as wide as its widest state and never resizes.",
     "sizes": "32, 40 or 48px tall; sm and md expand their hit area to 44px. sm 32px tall, 13px label, 8px radius, 12px horizontal padding, 6px gap, 14px glyph. md 40px tall, 14px label, 10px radius, 16px padding, 8px gap, 16px glyph. lg 48px tall, 15px label, 12px radius, 22px padding, 10px gap, 18px glyph.",
     "glyphs": "leading and trailing slots on both sides. The built-in arrow is a 16-unit stroked path at 1.5 weight. The spinner is a partial 28/10 ring. The check is a 3-point stroke drawn by pathLength.",
-    "touch": "sm and md extend their tappable area to 44px with a pseudo element; the drawn face stays 32px or 40px. lg is already 48px."
+    "touch": "sm and md extend their tappable area to 44px with a pseudo element; the drawn face stays 32px or 40px. lg is already 48px.",
+    "block": "block makes the wrapper a full-width grid and the face w-full, so the base edge stretches with it. The face is one minmax(0, auto) column and the label truncates, so an overlong label ends in an ellipsis instead of overflowing."
   },
   "typography": {
     "label": "Geist (font-sans) 500, tracking -0.01em, 13px (sm), 14px (md), 15px (lg)",
@@ -20,22 +21,23 @@
   },
   "color": {
     "approach": "monochrome first. The accent fills the primary button only. Destructive is the one red. Everything else is a neutral ink on a neutral surface.",
-    "primary": "fill = accent (default #f4f4f5, a near-white monochrome fill with a near-black label). Base edge = color-mix(accent 62%, black). Label is white or near-black, whichever has the higher WCAG contrast on the fill. Hover = accent 88% mixed toward white (dark) or black (light). Press = accent 90% mixed toward black. Inset top highlight rgba(255,255,255,0.24).",
+    "primary": "fill = accent (default #f4f4f5 on dark, #18181b on light, a monochrome fill). Base edge = color-mix(accent 62%, black). Label is white or near-black, whichever has the higher WCAG contrast on the fill. Inset top highlight rgba(255,255,255,0.24).",
     "secondary": "dark: fill #1f1f24, edge #060607, label #f4f4f5, highlight rgba(255,255,255,0.08). light: fill #ffffff, edge #c4c5cc, label #18181b, highlight rgba(255,255,255,0.95).",
     "destructive": "dark: fill #d6393f, edge #7f1d22, label #ffffff. light: fill #dc2626, edge #8f1717.",
     "ghost": "no fill and no edge at rest. Hover rgba(255,255,255,0.07) (light rgba(24,24,27,0.06)). Press rgba(255,255,255,0.12) (light rgba(24,24,27,0.10)). Label #f4f4f5 dark, #18181b light.",
-    "focus": "2px outline in the variant's ring colour, offset 2px. Keyboard focus only."
+    "focus": "2px outline in the variant's ring colour, offset 2px. Keyboard focus only.",
+    "hoverAndPress": "Every raised variant: hover is one clear step away from the label ink. A light fill (near-black label) darkens to fill 93% mixed with black; a dark fill (white label) lightens to fill 89% mixed with white. The direction comes from the fill, never the theme. Press goes darker: fill 86% (light fills) or 88% (dark fills) mixed with black."
   },
   "motion": {
     "hover": "face translates -1px up, so the base edge shows 3px. The built-in trailing arrow nudges 1.5px toward the action. 120ms ease-out cubic-bezier(0.22,1,0.36,1). Pointer devices only.",
     "press": "face translates 2px down and covers the base edge completely. Background moves to the press colour. Released on pointer up, pointer leave, pointer cancel, blur or key up. Space and Enter press from the keyboard; key repeat is ignored.",
-    "loading": "label is replaced by a spinner in the same box, cross-fading with a 4px rise and a 2px blur clearing, 200ms ease-out. The spinner turns continuously and stops under reduced motion. An optional loadingLabel adds text beside it.",
+    "loading": "label is replaced by a spinner in the same box, cross-fading with a 4px rise and a 2px blur clearing, 200ms ease-out. The spinner turns only while loading shows. Under reduced motion it becomes three 3px dots that fade 0.3 to 1 in turn over 1.2s, opacity only. An optional loadingLabel adds text beside it.",
     "success": "label is replaced by a check in the same box. The check's pathLength draws from 0 to 1 over 340ms with a 120ms delay. An optional successLabel adds text beside it.",
-    "reducedMotion": "no translate and no blur. The press is shown as a colour change and the base edge fades to 0. Opacity fades stay at 150ms."
+    "reducedMotion": "no translate and no blur. The press is shown as a colour change and the base edge fades to 0. Opacity fades stay at 150ms. The spinner becomes three fading dots so loading still reads as working."
   },
   "responsive": {
-    "button": "intrinsic width. Wraps inside a flex row on narrow containers without changing its own internal layout.",
-    "demo": "card max 520px, fluid below. Footer buttons wrap onto a new line on narrow containers."
+    "button": "intrinsic width by default, capped at its container with the label truncating; block fills the container.",
+    "demo": "card max 520px, fluid below. The footer is measured with a ResizeObserver: from 380px wide, Save and Preview lead on the left and Discard sits right with -mr-4 so its label meets the content edge; below that, Save spans a two-column grid and Preview and Discard split the row under it. DOM order Save, Preview, Discard matches the reading order in both."
   },
   "accessibility": [
     "native button element; type is button unless set to submit",
@@ -52,9 +54,9 @@
   "content": {
     "defaults": {
       "label": "Save changes",
-      "accent": "#f4f4f5"
+      "accent": "#f4f4f5 on dark, #18181b on light"
     },
-    "demo": "a project settings card with three read-only rows (domain, visibility, retention), a primary Save changes button, a secondary Preview with a leading eye glyph and a ghost Discard. The cursor lands at the lower right of Save, clear of the spinner and the check. The header reads Unsaved changes until save starts, Saving… while it runs, then All changes saved. A state picked in the Customize panel is held until another is picked.",
+    "demo": "a project settings card with three read-only rows (domain, visibility, retention), a Delete project row with a small destructive Delete, then a footer with a primary Save changes button, a secondary Preview with a leading eye glyph and a ghost Discard. The cursor lands at the lower right of Save, clear of the spinner and the check. The header reads Unsaved changes until save starts, Saving… while it runs, then All changes saved; the strings share one right-aligned cell and cross-fade in place. A Theme control repaints the stage in dark or light. A state picked in the Customize panel is held until another is picked.",
     "optionalText": "loadingLabel and successLabel are optional. When absent, the spinner and check replace the label in the same box."
   },
   "avoid": [
@@ -70,6 +72,7 @@
   "api": {
     "onPress": "Optional. Only a returned promise shows loading, then success. A rejected promise returns to idle and announces errorLabel. A plain or synchronous return leaves the button idle.",
     "errorLabel": "Announced through the status region when a returned promise rejects. Default \"Didn’t save\".",
-    "successState": "With no successLabel the success state names the button \"<label>, done\" so focus always has a name."
+    "successState": "With no successLabel the success state names the button \"<label>, done\" so focus always has a name.",
+    "block": "Optional boolean. Fills the container width, the base edge stretches with it."
   }
 }
