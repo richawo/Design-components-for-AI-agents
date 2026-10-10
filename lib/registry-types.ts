@@ -2,26 +2,49 @@ export type Tier = "free" | "pro";
 export type Platform = "web" | "mobile";
 
 export const CATEGORIES = {
-  charts: { label: "Charts & data", noun: "chart", blurb: "Financial-grade charts with crosshairs, tooltips and motion that explains the data." },
-  "three-d": { label: "3D & WebGL", noun: "3D scene", blurb: "Three.js scenes that stay tasteful, responsive and light enough to ship on a landing page." },
-  pixel: { label: "Pixel & generative", noun: "pixel animation", blurb: "Dot-matrix displays, pixel sprites and generative textures that add character without noise." },
+  // Key order is the gallery order (docs/CATALOGUE_ROADMAP.md section 1). Keep
+  // scripts/build-registry.mjs CATEGORIES in sync.
+  // Lead
   hero: { label: "Heroes", noun: "hero section", blurb: "First impressions with a point of view: editorial headlines, live product, kinetic type." },
+  ai: { label: "AI chat & assistants", noun: "AI chat interface", blurb: "Chat threads, composers, streaming and reasoning states, citations, model pickers, voice mode." },
+  agents: { label: "Agent interfaces", noun: "agent interface", blurb: "Tool calls, plans, approvals, run traces, diffs, task boards and subagent trees." },
+  // Marketing sections
+  backgrounds: { label: "Backgrounds & shaders", noun: "background", blurb: "Shader fields, grain, dither, grids and patterns that sit behind content." },
+  features: { label: "Features & bento", noun: "feature section", blurb: "Bento grids, tabbed previews, sticky scroll stories, integrations and spec sheets that show instead of tell." },
   pricing: { label: "Pricing", noun: "pricing section", blurb: "Pricing that reads like a decision, not a spreadsheet." },
-  features: { label: "Features", noun: "feature section", blurb: "Bento grids, sticky scroll stories and spec sheets that show instead of tell." },
-  "social-proof": { label: "Social proof", noun: "testimonial and logo section", blurb: "Testimonials, logo walls and numbers people actually believe." },
+  "social-proof": { label: "Social proof", noun: "testimonial and logo section", blurb: "Testimonials, logo walls, marquees and numbers people actually believe." },
   cta: { label: "Calls to action", noun: "call-to-action block", blurb: "Closers, waitlists and newsletter sign-ups with some nerve." },
-  headers: { label: "Headers", noun: "header", blurb: "Site headers and navigation bars: hairline, floating, morphing mega menus and announcement strips." },
+  headers: { label: "Headers & menus", noun: "header", blurb: "Site headers, mega menus, mobile menus and announcement strips." },
   footers: { label: "Footers", noun: "footer", blurb: "Footers that close a page properly: columns, wordmarks, newsletters and status." },
-  navigation: { label: "Navigation", noun: "navigation component", blurb: "Menus, breadcrumbs, tabs and the parts that move people around." },
-  content: { label: "Content", noun: "content section", blurb: "FAQs, changelogs, blog indexes and long-form layouts." },
-  ai: { label: "AI interfaces", noun: "AI interface", blurb: "Chat threads, prompt composers, agent timelines and streaming text." },
-  app: { label: "App UI", noun: "app interface", blurb: "Dashboards, tables, settings and boards for the product behind the site." },
-  auth: { label: "Auth", noun: "sign-in component", blurb: "Sign in, sign up, one-time codes, magic links, passkeys and SSO: the first thing a customer touches." },
-  forms: { label: "Forms & inputs", noun: "form", blurb: "Inputs, composers and forms people actually finish." },
-  text: { label: "Text effects", noun: "text effect", blurb: "Type that moves with intent: decoding, rolling, weight waves and reveals." },
+  content: { label: "Content", noun: "content section", blurb: "FAQs, changelogs, timelines, team, comparisons and long-form layouts." },
+  media: { label: "Media & galleries", noun: "media component", blurb: "Carousels, galleries, lightboxes, video and audio players, built without network media." },
   portfolio: { label: "Portfolio", noun: "portfolio section", blurb: "Work indexes and case-study layouts with a designer's eye." },
   commerce: { label: "Commerce", noun: "commerce component", blurb: "Product cards, carts and checkout moments." },
-  primitives: { label: "Primitives", noun: "UI primitive", blurb: "Buttons, toasts, empty states: the small parts everything else is built from." },
+  auth: { label: "Auth", noun: "sign-in component", blurb: "Sign in, sign up, one-time codes, magic links, passkeys and SSO: the first thing a customer touches." },
+  // Visual
+  text: { label: "Text effects", noun: "text effect", blurb: "Type that moves with intent: decoding, rolling, weight waves and reveals." },
+  "three-d": { label: "3D & WebGL", noun: "3D scene", blurb: "Three.js scenes that stay tasteful, responsive and light enough to ship on a landing page." },
+  pixel: { label: "Pixel & generative", noun: "pixel animation", blurb: "Dot-matrix displays, pixel sprites and generative textures that add character without noise." },
+  effects: { label: "Cursors & effects", noun: "cursor and effect", blurb: "Custom cursors, multiplayer presence, spotlights, tilt and animated borders." },
+  // Controls
+  buttons: { label: "Buttons & links", noun: "button", blurb: "Buttons, split buttons, CTAs, links and hold or press interactions." },
+  inputs: { label: "Inputs", noun: "input", blurb: "Text fields, search bars, number scrubbers, tags, sliders, colour pickers and file upload." },
+  selects: { label: "Selects & toggles", noun: "select and toggle", blurb: "Selects, comboboxes, multi-selects, switches, segmented controls, checkboxes and radios." },
+  "date-time": { label: "Dates & calendars", noun: "date and calendar", blurb: "Date and range pickers, month and week calendars, booking slots." },
+  forms: { label: "Forms", noun: "form", blurb: "Composed forms people actually finish: wizards, surveys, contact and settings forms." },
+  // Surfaces & feedback
+  overlays: { label: "Dialogs & overlays", noun: "dialog and overlay", blurb: "Dialogs, sheets, drawers, popovers, tooltips, dropdown and context menus." },
+  feedback: { label: "Feedback & status", noun: "feedback and status", blurb: "Toasts, alerts, notifications, empty states, loaders and skeletons." },
+  progress: { label: "Progress & usage", noun: "progress and usage", blurb: "Progress bars, rings, gauges and AI usage and quota meters." },
+  cards: { label: "Cards & profiles", noun: "card", blurb: "Standalone cards: profiles, stacks, tickets, swipe decks, hover cards." },
+  primitives: { label: "Primitives", noun: "UI primitive", blurb: "The smallest parts: avatars, badges, keycaps, dividers." },
+  // App UI
+  navigation: { label: "Navigation", noun: "navigation component", blurb: "In-app navigation: tabs, sidebars, docks, breadcrumbs, pagination, toolbars." },
+  onboarding: { label: "Onboarding & steppers", noun: "onboarding", blurb: "Steppers, setup checklists, product tours." },
+  app: { label: "Dashboards & app UI", noun: "app interface", blurb: "Dashboards, settings, API keys, audit logs: the product behind the site." },
+  data: { label: "Tables & lists", noun: "table and list", blurb: "Data tables, editable grids, file trees, kanban boards, inbox lists." },
+  charts: { label: "Charts & maps", noun: "chart", blurb: "Financial-grade charts, heatmaps, funnels, sankeys and dot maps, with motion that explains the data." },
+  // Platforms
   mobile: { label: "Mobile", noun: "React Native screen", blurb: "React Native screens and parts for iOS and Android, previewed live on the web." },
 } as const;
 
