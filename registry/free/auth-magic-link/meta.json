@@ -27,15 +27,5 @@
     {"name": "accent", "type": "string", "default": "theme ink", "description": "The one accent: the primary button in both views. Leave it unset to use the theme ink. Its label flips black or white for contrast."},
     {"name": "theme", "type": "\"dark\" | \"light\"", "default": "\"dark\"", "description": "Surface palette, envelope included. Both are tuned."}
   ],
-  "added": "2026-10-09",
-  "demo": {"steps": ["wait:200", "click:@email", "type:ines@gmail.com", "wait:100", "click:@send", "wait:1900", "hover:@open-mail", "wait:900", "move:0.78,0.9"]},
-  "controls": [
-    {"prop": "theme", "label": "Theme", "kind": "segmented", "options": [{"value": "dark", "label": "Dark"}, {"value": "light", "label": "Light"}], "default": "dark"},
-    {"prop": "accent", "label": "Button colour", "kind": "color", "default": "#ededef", "options": ["#ededef", "#7c9cff", "#3ddc97", "#ffb454"]},
-    {"prop": "expired", "label": "Expired link", "kind": "toggle", "default": false},
-    {"prop": "title", "label": "Heading (new visit)", "kind": "text", "default": "Sign in with a link", "group": "Content"},
-    {"prop": "submitLabel", "label": "Button text (new visit)", "kind": "text", "default": "Email me a link", "group": "Content"},
-    {"prop": "emailLabel", "label": "Field label", "kind": "text", "default": "Email", "group": "Content"},
-    {"prop": "$replay", "label": "Replay", "kind": "action"}
-  ]
+  "added": "2026-10-09"
 }
