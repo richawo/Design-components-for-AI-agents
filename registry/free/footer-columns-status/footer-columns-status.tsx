@@ -448,7 +448,7 @@ export function FooterColumnsStatus({
           <motion.span aria-hidden="true" variants={drawV} custom={at(gridAt, T.frame)} className={`${HAIRLINE} inset-y-0 right-0 hidden w-px origin-top @2xl:block`} />
 
           {/* Brand cell */}
-          <div ref={cellRef(0)} className="relative px-0 pb-8 pt-9 @2xl:col-span-4 @2xl:px-8 @2xl:pb-9 @6xl:col-span-1 @6xl:pb-12 @6xl:pt-10" style={cellVars}>
+          <div ref={cellRef(0)} data-demo="cell-brand" className="relative px-0 pb-8 pt-9 @2xl:col-span-4 @2xl:px-8 @2xl:pb-9 @6xl:col-span-1 @6xl:pb-12 @6xl:pt-10" style={cellVars}>
             <span aria-hidden="true" className="pointer-events-none absolute inset-0 hidden @2xl:block" style={cellLight} />
             <motion.span aria-hidden="true" variants={drawH} custom={at(gridAt, T.divider)} className={`${HAIRLINE} inset-x-0 bottom-0 hidden h-px origin-left @2xl:block @6xl:hidden`}>
               <span className="absolute inset-0" style={{ ...vLineLight, background: "radial-gradient(180px circle at var(--fcs-x) 100%, rgba(255,255,255,0.55), transparent 75%)" }} />
@@ -458,7 +458,7 @@ export function FooterColumnsStatus({
 
           {/* Link columns */}
           {columns.map((col, i) => (
-            <div key={col.title} ref={cellRef(i + 1)} className="relative @2xl:px-6 @2xl:pb-10 @2xl:pt-8 @6xl:pt-10" style={cellVars}>
+            <div key={col.title} ref={cellRef(i + 1)} data-demo={`cell-${col.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`} className="relative @2xl:px-6 @2xl:pb-10 @2xl:pt-8 @6xl:pt-10" style={cellVars}>
               <span aria-hidden="true" className="pointer-events-none absolute inset-0 hidden @2xl:block" style={cellLight} />
               <motion.span
                 aria-hidden="true"
@@ -680,6 +680,7 @@ function StatusPill({
   const ref = useRef<HTMLAnchorElement>(null);
   const onScreen = useInView(ref);
   const count = useMotionValue(0);
+  const landed = useRef(false);
   const figure = useTransform(count, (n) => `${n.toFixed(2)}%`);
   const filter = useTransform(count, (n) => `blur(${(1 - Math.min(1, n / Math.max(1, uptime ?? 1))) * 3}px)`);
 
@@ -689,7 +690,16 @@ function StatusPill({
       count.jump(uptime);
       return;
     }
-    const controls = animate(count, uptime, { duration: T.countDur, delay: start + T.count, ease: EASE });
+    // First landing counts up behind the pill; later changes answer at once.
+    const first = !landed.current;
+    const controls = animate(count, uptime, {
+      duration: first ? T.countDur : 0.2,
+      delay: first ? start + T.count : 0,
+      ease: EASE,
+      onComplete: () => {
+        landed.current = true;
+      },
+    });
     return () => controls.stop();
   }, [start, uptime, reduce, count]);
 
@@ -697,6 +707,7 @@ function StatusPill({
     <a
       ref={ref}
       href={href}
+      data-demo="status-pill"
       className={`group inline-flex h-9 items-center gap-2.5 self-start rounded-full bg-white/[0.025] pl-3 pr-3.5 text-[13px] text-white/75 hover:bg-white/[0.055] hover:text-white ${PILL} ${FOCUS} @2xl:h-8`}
     >
       <motion.span aria-hidden="true" variants={reduce ? fade : pop} custom={(start ?? 0) + T.dot} className="relative flex size-2 items-center justify-center">

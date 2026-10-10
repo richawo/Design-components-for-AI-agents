@@ -115,15 +115,12 @@
   "added": "2026-10-09",
   "demo": {
     "steps": [
-      "wait:500",
+      "hover:@cell-product",
+      "hover:@cell-company",
+      "wait:150",
       "click:@status-outage",
-      "wait:250",
-      "click:@locale",
-      "wait:300",
-      "click:@locale-de-de",
-      "wait:250",
-      "click:@theme-light",
-      "wait:500"
+      "hover:@status-pill",
+      "wait:1100"
     ]
   },
   "controls": [
@@ -204,7 +201,8 @@
           "label": "日本語"
         }
       ],
-      "default": "en-GB"
+      "default": "en-GB",
+      "group": "Bottom bar"
     },
     {
       "prop": "theme",
@@ -224,7 +222,8 @@
           "label": "Dark"
         }
       ],
-      "default": "system"
+      "default": "system",
+      "group": "Bottom bar"
     }
   ]
 }
