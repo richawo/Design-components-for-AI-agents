@@ -70,5 +70,104 @@
       "description": "Near-black or near-white surfaces; both are tuned."
     }
   ],
-  "added": "2026-10-07"
+  "added": "2026-10-07",
+  "demo": {
+    "steps": [
+      "wait:1400",
+      "click:@billing-monthly",
+      "wait:800",
+      "click:@billing-annual",
+      "wait:750",
+      "hover:@note-1",
+      "wait:450",
+      "hover:@cta-featured",
+      "wait:500"
+    ],
+    "loop": false
+  },
+  "controls": [
+    {
+      "prop": "defaultBilling",
+      "label": "Opens on",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "monthly",
+          "label": "Monthly"
+        },
+        {
+          "value": "annual",
+          "label": "Annual"
+        }
+      ],
+      "default": "annual",
+      "remount": true,
+      "group": "Billing"
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark",
+      "group": "Look"
+    },
+    {
+      "prop": "accent",
+      "label": "Accent",
+      "kind": "color",
+      "default": "#34d399",
+      "options": [
+        "#34d399",
+        "#7c9cff",
+        "#ff7a45",
+        "#f5c542"
+      ],
+      "group": "Look"
+    },
+    {
+      "prop": "currency",
+      "label": "Currency",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "$",
+          "label": "$"
+        },
+        {
+          "value": "£",
+          "label": "£"
+        },
+        {
+          "value": "€",
+          "label": "€"
+        }
+      ],
+      "default": "$",
+      "group": "Content"
+    },
+    {
+      "prop": "saving",
+      "label": "Saving",
+      "kind": "text",
+      "default": "2 months free",
+      "group": "Content"
+    },
+    {
+      "prop": "featuredLabel",
+      "label": "Featured label",
+      "kind": "text",
+      "default": "Most teams pick this",
+      "group": "Content"
+    }
+  ]
 }
