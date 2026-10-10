@@ -20,7 +20,7 @@
   ],
   "theme": "dark",
   "previewHeight": 600,
-  "usage": "import { PressDepthButton } from \"@/components/design-for-ai/button-press-depth\";\n\n<PressDepthButton label=\"Save changes\" onPress={() => api.save()} />  // spinner, then check, in the same box\n\n<PressDepthButton label=\"Publish\" loadingLabel=\"Publishing…\" successLabel=\"Live\" onPress={() => api.publish()} />\n\n<PressDepthButton variant=\"secondary\" size=\"sm\" label=\"Preview\" icon />\n\n<PressDepthButton variant=\"destructive\" label=\"Delete project\" leadingIcon={<TrashIcon />} trailingIcon={null} />\n\n<PressDepthButton state=\"loading\" label=\"Publish\" loadingLabel=\"Publishing…\" />  // controlled: you drive the state",
+  "usage": "import { PressDepthButton } from \"@/components/design-for-ai/button-press-depth\";\n\n<PressDepthButton label=\"Save changes\" onPress={() => api.save()} />  // returns a promise: spinner, then check, in the same box\n\n<PressDepthButton label=\"Publish\" loadingLabel=\"Publishing…\" successLabel=\"Live\" errorLabel=\"Didn’t publish\" onPress={() => api.publish()} />\n\n<PressDepthButton variant=\"secondary\" size=\"sm\" label=\"Preview\" icon />  // no promise returned: stays idle, no spinner or check\n\n<PressDepthButton variant=\"destructive\" label=\"Delete project\" leadingIcon={<TrashIcon />} trailingIcon={null} />\n\n<PressDepthButton state=\"loading\" label=\"Publish\" loadingLabel=\"Publishing…\" />  // controlled: you drive the state",
   "props": [
     {
       "name": "label",
@@ -39,6 +39,12 @@
       "description": "Optional text beside the check once onPress settles. Without it the check replaces the label in the same box."
     },
     {
+      "name": "errorLabel",
+      "type": "string",
+      "default": "\"Didn’t save\"",
+      "description": "Announced through the status region when a returned promise rejects. The button then returns to idle."
+    },
+    {
       "name": "variant",
       "type": "\"primary\" | \"secondary\" | \"ghost\" | \"destructive\"",
       "default": "\"primary\"",
@@ -48,12 +54,12 @@
       "name": "size",
       "type": "\"sm\" | \"md\" | \"lg\"",
       "default": "\"md\"",
-      "description": "32, 40 or 48px tall. The small size keeps a 40px touch target through its hit area."
+      "description": "32, 40 or 48px tall; sm and md expand their hit area to 44px."
     },
     {
       "name": "state",
       "type": "\"idle\" | \"loading\" | \"success\" | \"disabled\"",
-      "description": "Controlled state. Leave it out and onPress drives loading and success itself."
+      "description": "Controlled state. Leave it out and a returned promise from onPress drives loading and success itself."
     },
     {
       "name": "icon",
@@ -81,7 +87,7 @@
       "name": "theme",
       "type": "\"dark\" | \"light\"",
       "default": "\"dark\"",
-      "description": "The surface the button sits on, so its neutrals keep their contrast."
+      "description": "The surface the button sits on, so its neutrals keep their contrast. Typed as PressDepthTheme."
     },
     {
       "name": "successMs",
@@ -92,7 +98,7 @@
     {
       "name": "onPress",
       "type": "() => void | Promise<unknown>",
-      "description": "Runs on press. Return a promise to show loading, then success. Reject to return to idle."
+      "description": "Runs on press. Only a returned promise shows loading, then success; a rejected promise returns to idle and announces errorLabel. A plain or synchronous return leaves the button idle."
     },
     {
       "name": "type",
@@ -113,12 +119,11 @@
       "hover:@save",
       "wait:200",
       "down",
-      "wait:120",
+      "wait:320",
       "up",
-      "hover:@discard",
-      "wait:600",
+      "wait:1700",
       "tab:1",
-      "wait:800"
+      "wait:1000"
     ]
   },
   "controls": [
@@ -198,26 +203,13 @@
     {
       "prop": "state",
       "label": "State",
-      "kind": "select",
+      "kind": "action",
       "options": [
-        {
-          "value": "idle",
-          "label": "Idle"
-        },
-        {
-          "value": "loading",
-          "label": "Loading"
-        },
-        {
-          "value": "success",
-          "label": "Success"
-        },
-        {
-          "value": "disabled",
-          "label": "Disabled"
-        }
+        "idle",
+        "loading",
+        "success",
+        "disabled"
       ],
-      "default": "idle",
       "group": "State"
     }
   ]

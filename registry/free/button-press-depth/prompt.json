@@ -8,9 +8,9 @@
     "animation": "CSS transitions on transform, background-color and box-shadow (120ms ease-out); motion/react for the demo entrance and the check's pathLength draw; Tailwind animate-spin for the spinner"
   },
   "layout": {
-    "wrapper": "inline-grid span, position relative. The base edge is an absolutely positioned sibling that sits 2px below the face and never moves.",
+    "wrapper": "inline-grid span, position relative, with 2px bottom padding on depthed variants. The base edge is an absolutely positioned sibling that fills the bottom 2px under the face and never moves.",
     "face": "button as an inline-grid. Label, loading and success slots share grid cell 1/1 so the box is as wide as its widest state and never resizes.",
-    "sizes": "sm 32px tall, 13px label, 8px radius, 12px horizontal padding, 6px gap, 14px glyph. md 40px tall, 14px label, 10px radius, 16px padding, 8px gap, 16px glyph. lg 48px tall, 15px label, 12px radius, 22px padding, 10px gap, 18px glyph.",
+    "sizes": "32, 40 or 48px tall; sm and md expand their hit area to 44px. sm 32px tall, 13px label, 8px radius, 12px horizontal padding, 6px gap, 14px glyph. md 40px tall, 14px label, 10px radius, 16px padding, 8px gap, 16px glyph. lg 48px tall, 15px label, 12px radius, 22px padding, 10px gap, 18px glyph.",
     "glyphs": "leading and trailing slots on both sides. The built-in arrow is a 16-unit stroked path at 1.5 weight. The spinner is a partial 28/10 ring. The check is a 3-point stroke drawn by pathLength.",
     "touch": "sm and md extend their tappable area to 44px with a pseudo element; the drawn face stays 32px or 40px. lg is already 48px."
   },
@@ -45,14 +45,16 @@
     "focus-visible outline in the ring colour, never shown on pointer click",
     "tap highlight removed and touch-action manipulation so presses respond instantly on touch",
     "a visually hidden role=status region announces successLabel, or Done when it is not set, when success lands",
-    "while loading without loadingLabel the button's aria-label reads 'label, in progress'"
+    "while loading without loadingLabel the button's aria-label reads 'label, in progress'",
+    "a rejected onPress promise announces errorLabel (default \"Didn’t save\") and the button returns to idle",
+    "success with no successLabel gives the button the name '<label>, done' while the check shows"
   ],
   "content": {
     "defaults": {
       "label": "Save changes",
       "accent": "#2563eb"
     },
-    "demo": "a project settings card with three read-only rows (domain, visibility, retention), a primary Save changes button, a secondary Preview and a ghost Discard. The header reads Unsaved changes until save lands, then All changes saved.",
+    "demo": "a project settings card with three read-only rows (domain, visibility, retention), a primary Save changes button, a secondary Preview and a ghost Discard. The header reads Unsaved changes until save starts, Saving… while it runs, then All changes saved.",
     "optionalText": "loadingLabel and successLabel are optional. When absent, the spinner and check replace the label in the same box."
   },
   "avoid": [
@@ -62,6 +64,12 @@
     "do not change the button width between states",
     "do not dim the button while loading; only disabled reduces opacity",
     "do not add a second accent or a tinted pill next to the button",
-    "do not replace the label with a bare spinner"
-  ]
+    "do not shrink the button to a bare spinner or change its width; the spinner replaces the label inside the same box",
+    "do not treat a plain or synchronous onPress as work in flight; only a returned promise shows loading and success"
+  ],
+  "api": {
+    "onPress": "Optional. Only a returned promise shows loading, then success. A rejected promise returns to idle and announces errorLabel. A plain or synchronous return leaves the button idle.",
+    "errorLabel": "Announced through the status region when a returned promise rejects. Default \"Didn’t save\".",
+    "successState": "With no successLabel the success state names the button \"<label>, done\" so focus always has a name."
+  }
 }

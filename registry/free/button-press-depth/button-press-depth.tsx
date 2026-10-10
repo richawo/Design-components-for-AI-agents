@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useId, useRef, useState, type CSSProperties, type KeyboardEvent as ReactKeyboardEvent, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
-import { motion, useInView, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion, useInView, useReducedMotion } from "motion/react";
 
 /* ------------------------------------------------------------------ */
 /* Types                                                                */
@@ -10,7 +10,7 @@ import { motion, useInView, useReducedMotion } from "motion/react";
 export type PressDepthVariant = "primary" | "secondary" | "ghost" | "destructive";
 export type PressDepthSize = "sm" | "md" | "lg";
 export type PressDepthState = "idle" | "loading" | "success" | "disabled";
-type Theme = "dark" | "light";
+export type PressDepthTheme = "dark" | "light";
 type Pose = "rest" | "hover" | "press";
 
 export type PressDepthButtonProps = {
@@ -20,9 +20,11 @@ export type PressDepthButtonProps = {
   loadingLabel?: string;
   /** Optional text beside the check once onPress settles. Without it, the check replaces the label in the same box. */
   successLabel?: string;
+  /** Announced through the status region when a returned promise rejects. */
+  errorLabel?: string;
   variant?: PressDepthVariant;
   size?: PressDepthSize;
-  /** Drive the state from outside. Leave it out and onPress drives loading and success itself. */
+  /** Drive the state from outside. Leave it out and a returned promise from onPress drives loading and success itself. */
   state?: PressDepthState;
   /** Shows the built-in arrow after the label. */
   icon?: boolean;
@@ -33,10 +35,13 @@ export type PressDepthButtonProps = {
   /** The one accent. It fills the primary button, and its base edge and label colour are derived from it. */
   accent?: string;
   /** The surface the button sits on, so its neutrals keep their contrast. */
-  theme?: Theme;
+  theme?: PressDepthTheme;
   /** Uncontrolled only: how long success holds before the button returns to idle. */
   successMs?: number;
-  /** Runs on press. Return a promise to show loading, then success. */
+  /**
+   * Runs on press. Only a returned promise shows loading, then success. A rejected promise
+   * returns to idle and announces `errorLabel`. A plain or synchronous onPress leaves the button idle.
+   */
   onPress?: () => void | Promise<unknown>;
   type?: "button" | "submit";
   /** Applied to the outer wrapper, not the button. */
@@ -52,6 +57,7 @@ const PRESS_TRAVEL = 2; // px the face sinks into its base edge
 const LIFT = 1; // px the face rises on hover, so the base shows a little more
 const SUCCESS_HOLD_MS = 1600;
 const DEFAULT_ACCENT = "#2563eb";
+const DEFAULT_ERROR_LABEL = "Didn’t save";
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 const DEMO_TIMING = { saveMs: 1100, holdMs: 1600 } as const;
 
@@ -132,7 +138,7 @@ function raised(fill: string, edge: string, text: string, hl: string, ring: stri
   };
 }
 
-function tokensFor(variant: PressDepthVariant, theme: Theme, accent: string): Tokens {
+function tokensFor(variant: PressDepthVariant, theme: PressDepthTheme, accent: string): Tokens {
   const n = NEUTRAL[theme];
   switch (variant) {
     case "primary":
@@ -172,6 +178,11 @@ function useTimers() {
     ids.current.push(window.setTimeout(fn, ms));
   }, []);
   return { later };
+}
+
+/** Only a real promise counts as work in flight; a plain return value does not. */
+function isThenable(value: unknown): value is PromiseLike<unknown> {
+  return (typeof value === "object" || typeof value === "function") && value !== null && typeof (value as { then?: unknown }).then === "function";
 }
 
 /* ------------------------------------------------------------------ */
@@ -217,6 +228,7 @@ export function PressDepthButton({
   label = "Save changes",
   loadingLabel,
   successLabel,
+  errorLabel = DEFAULT_ERROR_LABEL,
   variant = "primary",
   size = "md",
   state,
@@ -236,6 +248,7 @@ export function PressDepthButton({
   const isDepthed = tokens.edge !== null;
   const { later } = useTimers();
   const [internal, setInternal] = useState<PressDepthState>("idle");
+  const [failed, setFailed] = useState(false);
   const [hover, setHover] = useState(false);
   const [pressed, setPressed] = useState(false);
 
@@ -260,11 +273,10 @@ export function PressDepthButton({
     borderRadius: dim.radius,
     outlineColor: tokens.ring,
   };
-  // The base is fixed while the face moves over it: resting it shows the edge, pressing covers it.
+  // The base is fixed to the bottom 2px of the wrapper while the face moves over it: resting it shows the edge, pressing covers it.
   const base: CSSProperties = {
     backgroundColor: tokens.edge ?? undefined,
     borderRadius: dim.radius,
-    transform: `translateY(${PRESS_TRAVEL}px)`,
     opacity: reduce && pose === "press" ? 0 : 1,
     transition: "opacity 160ms cubic-bezier(0.22,1,0.36,1)",
   };
@@ -275,13 +287,20 @@ export function PressDepthButton({
       void onPress?.();
       return;
     }
+    setFailed(false);
+    const result = onPress?.();
+    // A plain or synchronous onPress does no work in flight, so the button stays idle: no spinner, no check.
+    if (!isThenable(result)) return;
     setInternal("loading");
-    Promise.resolve(onPress?.()).then(
+    result.then(
       () => {
         setInternal("success");
         later(() => setInternal("idle"), successMs);
       },
-      () => setInternal("idle"),
+      () => {
+        setFailed(true);
+        setInternal("idle");
+      },
     );
   };
 
@@ -292,17 +311,26 @@ export function PressDepthButton({
   const trailing = trailingIcon !== undefined ? trailingIcon : icon ? <ArrowGlyph size={dim.glyph} /> : null;
   const idleOn = current === "idle" || current === "disabled";
 
+  // Without loadingLabel or successLabel the slot is aria-hidden, so the button needs a name of its own in those states.
+  const accessibleName =
+    current === "loading" && !loadingLabel ? `${label}, in progress` : current === "success" && !successLabel ? `${label}, done` : undefined;
+  const announce = current === "success" ? (successLabel ?? "Done") : failed ? errorLabel : "";
+
   return (
-    <span className={`relative inline-grid align-middle transition-opacity duration-200 data-[state=disabled]:opacity-40 ${className}`} data-state={current}>
-      {tokens.edge !== null && <span aria-hidden="true" className="pointer-events-none absolute inset-0" style={base} />}
+    <span
+      className={`relative inline-grid align-middle transition-opacity duration-200 data-[state=disabled]:opacity-40 ${isDepthed ? "pb-[2px]" : ""} ${className}`}
+      data-state={current}
+    >
+      {tokens.edge !== null && <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 bottom-0" style={base} />}
       <button
         type={type}
         disabled={current === "disabled"}
         aria-busy={current === "loading" || undefined}
-        aria-label={current === "loading" && !loadingLabel ? `${label}, in progress` : undefined}
+        aria-label={accessibleName}
         onClick={handleClick}
         onPointerEnter={(e: ReactPointerEvent<HTMLButtonElement>) => {
-          if (e.pointerType !== "touch" && interactive) setHover(true);
+          // Tracked in every state; the pose only shows the lift while the button is idle.
+          if (e.pointerType !== "touch") setHover(true);
         }}
         onPointerLeave={() => {
           setHover(false);
@@ -335,7 +363,7 @@ export function PressDepthButton({
         </span>
       </button>
       <span role="status" className="sr-only">
-        {current === "success" ? (successLabel ?? "Done") : ""}
+        {announce}
       </span>
     </span>
   );
@@ -377,10 +405,23 @@ export default function PressDepthButtonDemo({ state: forced, ...overrides }: Pa
   const [saveState, setSaveState] = useState<PressDepthState>(forced ?? "idle");
   const [saved, setSaved] = useState(false);
 
-  // A state picked in the Customize panel holds until it is picked again; the demo's own press runs from idle.
+  // A state picked in the Customize panel is a one-shot trigger, not a held value: loading runs
+  // the save sequence, success holds, and both return to idle so the Save button is never stuck.
   useEffect(() => {
-    if (forced) setSaveState(forced);
-  }, [forced]);
+    if (!forced) return;
+    setSaveState(forced);
+    if (forced === "loading") {
+      setSaved(false);
+      later(() => {
+        setSaveState("success");
+        setSaved(true);
+        later(() => setSaveState("idle"), DEMO_TIMING.holdMs);
+      }, DEMO_TIMING.saveMs);
+    } else if (forced === "success") {
+      setSaved(true);
+      later(() => setSaveState("idle"), DEMO_TIMING.holdMs);
+    }
+  }, [forced, later]);
 
   const save = () => {
     setSaved(false);
@@ -391,6 +432,8 @@ export default function PressDepthButtonDemo({ state: forced, ...overrides }: Pa
       later(() => setSaveState("idle"), DEMO_TIMING.holdMs);
     }, DEMO_TIMING.saveMs);
   };
+
+  const status = saveState === "loading" ? "Saving…" : saved ? "All changes saved" : "Unsaved changes";
 
   return (
     <div className="flex min-h-dvh w-full items-center justify-center px-4 py-16 font-sans antialiased sm:px-8" style={{ background: STAGE.backdrop, color: STAGE.ink }}>
@@ -406,8 +449,19 @@ export default function PressDepthButtonDemo({ state: forced, ...overrides }: Pa
             <h2 id={`${uid}-title`} className="text-[15px] font-medium tracking-[-0.01em]">
               Project settings
             </h2>
-            <span className="font-mono text-[11px]" style={{ color: STAGE.muted }}>
-              {saved ? "All changes saved" : "Unsaved changes"}
+            <span className="relative font-mono text-[11px] tabular-nums" style={{ color: STAGE.muted }}>
+              <AnimatePresence mode="popLayout" initial={false}>
+                <motion.span
+                  key={status}
+                  className="inline-block"
+                  initial={reduce ? { opacity: 0 } : { opacity: 0, y: 4, filter: "blur(2px)" }}
+                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  exit={reduce ? { opacity: 0 } : { opacity: 0, y: -4, filter: "blur(2px)" }}
+                  transition={{ duration: reduce ? 0.15 : 0.2, ease: EASE_OUT }}
+                >
+                  {status}
+                </motion.span>
+              </AnimatePresence>
             </span>
           </motion.header>
 
@@ -422,7 +476,7 @@ export default function PressDepthButtonDemo({ state: forced, ...overrides }: Pa
             ))}
           </motion.dl>
 
-          <motion.div {...enter(play, 0.3, reduce)} className="mt-6 flex flex-wrap items-center gap-3 border-t pt-6" style={{ borderColor: STAGE.rule }}>
+          <motion.div {...enter(play, 0.3, reduce)} className="mt-3 flex flex-wrap items-center gap-3 border-t pt-6" style={{ borderColor: STAGE.rule }}>
             <div data-demo="save" className="inline-flex">
               <PressDepthButton label="Save changes" state={saveState} onPress={save} {...overrides} />
             </div>

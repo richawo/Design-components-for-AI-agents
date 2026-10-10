@@ -1,9 +1,9 @@
 Build a press-depth button in React 19 + Tailwind CSS v4 with `motion/react` for the demo entrance. The button is an everyday primary, secondary, ghost or destructive action with physical depth: a 2px base edge sits under the face, the face lifts a hair on hover and sinks into the edge on press. It should feel like a key, not a painted rectangle.
 
 **Anatomy**
-- An outer `span` (relative, inline-grid) holds an absolutely positioned base and the `button` face. The base is the variant's edge colour, `border-radius` matching the face, and `translateY(2px)`. It never moves. The face sits in normal flow above it.
+- An outer `span` (relative, inline-grid, with 2px bottom padding on depthed variants) holds an absolutely positioned base and the `button` face. The base fills the bottom 2px under the face, in the variant's edge colour, with `border-radius` matching the face. It never moves. The face sits in normal flow above it.
 - The face is an inline-grid. Three slots share grid cell 1/1: the idle slot (leading glyph, label, trailing glyph), the loading slot (spinner) and the success slot (check). Optional text can sit beside either glyph. The box is as wide as its widest state, so nothing reflows. `loadingLabel` and `successLabel` are optional: without them the spinner and check replace the label itself.
-- Sizes: `sm` 32px tall, 8px radius, 12px horizontal padding, 13px label, 6px gap, 14px glyph. `md` 40px, 10px radius, 16px padding, 14px label, 8px gap, 16px glyph. `lg` 48px, 12px radius, 22px padding, 15px label, 10px gap, 18px glyph. Geist 500, tracking -0.01em.
+- Sizes: `sm` 32px tall, 8px radius, 12px horizontal padding, 13px label, 6px gap, 14px glyph. `md` 40px, 10px radius, 16px padding, 14px label, 8px gap, 16px glyph. `lg` 48px, 12px radius, 22px padding, 15px label, 10px gap, 18px glyph. Geist 500, tracking -0.01em. `sm` and `md` expand their hit area to 44px; the drawn face stays 32px or 40px.
 - Glyph slots sit on both sides. A boolean `icon` shows a 16-unit arrow after the label; `leadingIcon` and `trailingIcon` take any node, and `trailingIcon={null}` hides the trailing one. The spinner is a partial ring at 1.5 weight. The check is a 3-point path drawn by `pathLength`.
 
 **Depth (the signature)**
@@ -20,7 +20,7 @@ Build a press-depth button in React 19 + Tailwind CSS v4 with `motion/react` for
 - Focus: a 2px outline in the variant's ring colour with a 2px offset, shown on keyboard focus only.
 
 **States**
-- `idle`: interactive, as above.
+- `idle`: interactive, as above. Uncontrolled, only a promise returned from `onPress` starts loading. A plain or synchronous `onPress` leaves the button idle, with no spinner and no check. A rejected promise returns to idle and announces `errorLabel` (default "Didn’t save").
 - `loading`: the label is replaced by the spinner, and `loadingLabel` adds text beside it if set (opacity, a 4px rise and a 2px blur that clears, 200ms ease-out). The spinner turns at Tailwind's animate-spin pace (1s) and stops under reduced motion. The button sets `aria-busy` and ignores presses. It does not dim.
 - `success`: the label is replaced by the check, and `successLabel` adds text beside it if set. The check draws in over 340ms after a 120ms delay. Uncontrolled use returns to idle after `successMs` (1600ms).
 - `disabled`: 40% opacity on the whole component, `cursor-not-allowed`, the `disabled` attribute set, no hover or press response.
@@ -32,17 +32,18 @@ Build a press-depth button in React 19 + Tailwind CSS v4 with `motion/react` for
 **Accessibility**
 - A native `button`. `type` defaults to `button`. Disabled uses the `disabled` attribute, which takes it out of the tab order.
 - Inactive label slots are `aria-hidden`, so the accessible name is always the visible label.
-- A visually hidden `role="status"` region announces `successLabel`, or Done, when success lands. While loading with no `loadingLabel`, the button's aria-label reads "<label>, in progress".
+- A visually hidden `role="status"` region announces `successLabel`, or Done, when success lands, and `errorLabel` when a promise rejects. While loading with no `loadingLabel`, the button's aria-label reads "<label>, in progress". Success with no `successLabel` reads "<label>, done", so the focused button keeps a name.
 - Space and Enter press from the keyboard; the native click still fires.
 - `touch-action: manipulation`, no tap highlight, so presses respond at once on touch.
 
 **Demo (dark stage, `#0a0a0b`)**
-- A 520px card (`#111113`, 16px radius, hairline inset ring) titled "Project settings". The header reads "Unsaved changes" in mono and changes to "All changes saved" once Save lands. Three read-only rows: Domain, Visibility, Retention.
+- A 520px card (`#111113`, 16px radius, hairline inset ring) titled "Project settings". The header reads "Unsaved changes" in mono, shows "Saving…" while Save runs, and changes to "All changes saved" once it lands. Status text cross-fades. Three read-only rows: Domain, Visibility, Retention.
 - Footer: primary "Save changes" (the demo target), secondary "Preview", ghost "Discard".
-- Sequence: the cursor glides to Save and lifts it, presses (the face sinks), releases; Save goes to loading for about 1.1s, then success for 1.6s; a Tab moves focus onto Preview and its ring shows.
+- Sequence: the cursor glides to Save and lifts it, holds a press for about 320ms (the face sinks), releases; Save goes to loading for about 1.1s, then success for 1.6s, and the cursor stays on it until the check has drawn. A Tab then moves focus onto Preview and its ring shows.
 
 **Don't**
 - No gradient fill, no glow or coloured shadow, no bounce or overshoot on press.
 - Do not change the width between states.
-- Do not replace the label with a bare spinner.
+- Do not shrink the button to a bare spinner or change its width; the spinner replaces the label inside the same box.
+- Do not treat a plain or synchronous `onPress` as work in flight. Only a returned promise shows loading and success.
 - Do not add a second accent colour or a decorative pill beside the button.
