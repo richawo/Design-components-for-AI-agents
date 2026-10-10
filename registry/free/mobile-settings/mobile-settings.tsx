@@ -108,8 +108,11 @@ const DEFAULT_ACCENT = "#34C77B";
  * React Native Web turns `dataSet` into the `data-demo` attribute the live demo
  * script finds its targets by; native ignores it. Plain `data-*` props are dropped.
  * The demo picks night paper (data-demo="paper-night"), drags the text-size
- * slider (data-demo="size-slider") and deletes every entry
- * (data-demo="delete-all", then data-demo="delete-confirm" in the sheet).
+ * slider (data-demo="size-slider"), then flips the daily reminder
+ * (data-demo="reminder-toggle"; its time row is data-demo="reminder-time" and
+ * the chips data-demo="time-0" to "time-3"). The
+ * delete row (data-demo="delete-all", data-demo="delete-confirm" in the sheet)
+ * stays below the fold, so the demo never scrolls.
  */
 const demoTarget = (name: string): { dataSet: { demo: string } } => ({ dataSet: { demo: name } });
 

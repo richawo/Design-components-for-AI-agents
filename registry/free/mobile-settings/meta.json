@@ -58,7 +58,7 @@
     {
       "name": "initial",
       "type": "Partial<SettingsState>",
-      "description": "Starting paper, text size, reminder, time, prompts, Face ID and sync values."
+      "description": "Starting paper, text size, reminder, time, prompts, Face ID and sync values. This is the way to set a value at mount."
     },
     {
       "name": "reminderTimes",
@@ -73,17 +73,17 @@
     {
       "name": "paper",
       "type": "\"white\" | \"sepia\" | \"night\"",
-      "description": "Moves the reading paper whenever the value changes (a host control, a test); tapping the segmented control still works."
+      "description": "Imperative nudge for a host or test: moves the reading paper whenever the value changes. Use initial for the starting paper; onChange stays the source of truth."
     },
     {
       "name": "textSize",
       "type": "number",
-      "description": "Moves the text-size slider to this point size (14 to 22) whenever the value changes."
+      "description": "Imperative nudge: moves the text-size slider to this point size (14 to 22) whenever the value changes. Use initial for the starting size."
     },
     {
       "name": "reminder",
       "type": "boolean",
-      "description": "Switches the daily reminder on or off whenever the value changes; the reminder time row opens and closes with it."
+      "description": "Imperative nudge: switches the daily reminder on or off whenever the value changes (the time row follows). Use initial for the starting state."
     },
     {
       "name": "onChange",
@@ -104,15 +104,14 @@
   "added": "2026-10-07",
   "demo": {
     "steps": [
-      "wait:250",
-      "click:@paper-night",
       "wait:150",
+      "click:@paper-night",
+      "wait:800",
       "hover:@size-slider:0.39,0.5",
       "drag:0.74,0.58",
-      "click:@delete-all",
-      "wait:600",
-      "click:@delete-confirm",
-      "wait:1300"
+      "wait:900",
+      "click:@reminder-toggle",
+      "wait:1200"
     ],
     "loop": false
   },
@@ -148,12 +147,22 @@
     {
       "prop": "paper",
       "label": "Paper",
-      "kind": "action",
+      "kind": "segmented",
       "options": [
-        "white",
-        "sepia",
-        "night"
-      ]
+        {
+          "value": "white",
+          "label": "White"
+        },
+        {
+          "value": "sepia",
+          "label": "Sepia"
+        },
+        {
+          "value": "night",
+          "label": "Night"
+        }
+      ],
+      "default": "sepia"
     },
     {
       "prop": "textSize",
