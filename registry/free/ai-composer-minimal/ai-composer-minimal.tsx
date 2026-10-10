@@ -70,7 +70,7 @@ export type AiComposerMinimalProps = {
 
 const DEFAULT_FILES: ComposerFile[] = [
   { id: "q3-launch-roadmap", name: "q3-launch-roadmap.md", detail: "Edited today" },
-  { id: "customer-interviews", name: "customer-interviews.csv", detail: "14 rows" },
+  { id: "customer-interviews", name: "customer-interview-synthesis.md", detail: "Edited Monday" },
   { id: "launch-brief", name: "launch-brief.md", detail: "3 comments" },
   { id: "pricing-tests", name: "pricing-tests.md", detail: "Last week" },
 ];
@@ -94,6 +94,7 @@ const PALETTE = {
     faint: "#8a8a94",
     chip: "rgba(255,255,255,0.06)",
     send: "#f4f4f5",
+    sendHover: "#ffffff",
     onSend: "#0b0b0c",
     accent: "#f2b36b",
     shadow: "inset 0 1px 0 rgba(255,255,255,0.04), 0 1px 2px rgba(0,0,0,0.5), 0 28px 56px -28px rgba(0,0,0,0.9)",
@@ -110,6 +111,7 @@ const PALETTE = {
     faint: "#6b6b75",
     chip: "rgba(17,17,19,0.05)",
     send: "#18181b",
+    sendHover: "#2a2a2e",
     onSend: "#ffffff",
     accent: "#a84f24",
     shadow: "0 1px 2px rgba(17,17,19,0.06), 0 18px 40px -24px rgba(17,17,19,0.28)",
@@ -123,13 +125,20 @@ const PAD_Y = 7;
 const MAX_ROWS = 10;
 const POP_WIDTH = 288;
 const POP_MIN_WIDTH = 200;
-/** Gap between the popover and the line it is anchored to. */
+/** Gap between the popover and the top edge of the composer it opens above. */
 const POP_GAP = 8;
+/** Touch target: the 36px send button gets a 4px hit area on every side, so it is 44px. */
+const SEND_HIT_INSET = "before:absolute before:-inset-1 before:content-['']";
 const DEFAULT_REPLY_MS = 1800;
 
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 const EASE_IN = [0.4, 0, 1, 1] as const;
 const SPRING_UI = { type: "spring", stiffness: 500, damping: 40 } as const;
+/** First-view reveal: a 10px rise and a blur that clears. Reduced motion keeps only the fade. */
+const REVEAL_FROM = { opacity: 0, y: 10, filter: "blur(6px)" } as const;
+const REVEAL_TO = { opacity: 1, y: 0, filter: "blur(0px)" } as const;
+const REVEAL_FROM_REDUCED = { opacity: 0 } as const;
+const REVEAL_TO_REDUCED = { opacity: 1 } as const;
 
 /* ------------------------------------------------------------------ */
 /* Trigger detection                                                    */
@@ -207,6 +216,7 @@ export function AiComposerMinimal({
     "--cc-faint": palette.faint,
     "--cc-chip": palette.chip,
     "--cc-send": palette.send,
+    "--cc-send-hover": palette.sendHover,
     "--cc-on-send": palette.onSend,
     "--cc-accent": accent ?? palette.accent,
     "--cc-shadow": palette.shadow,
@@ -227,6 +237,7 @@ export function AiComposerMinimal({
   /** Where the caret sits: its x, the gap from the field's bottom to its line, and the field width. */
   const [anchor, setAnchor] = useState({ x: 0, bottom: 0, width: 0 });
 
+  const frameRef = useRef<HTMLDivElement>(null);
   const fieldRef = useRef<HTMLDivElement>(null);
   const mirrorRef = useRef<HTMLDivElement>(null);
   const caretRef = useRef<HTMLSpanElement>(null);
@@ -253,18 +264,22 @@ export function AiComposerMinimal({
     setCaret(at);
   }, [value]);
 
-  // Measure the caret from the screen, not from offsetTop: the mirror and field differ in
-  // positioning context, so offset chains are fragile. Equal values bail out, so this cannot loop.
+  // Measure from the screen, not from offsetTop: the mirror and field differ in positioning
+  // context, so offset chains are fragile. Equal values bail out, so this cannot loop.
+  // The menu is horizontally tied to the caret but vertically tied to the whole composer, so it
+  // opens above the text already written and never covers it. Differences of two rects cancel
+  // any translate from the entrance animation, so this stays correct while the frame settles.
   useLayoutEffect(() => {
     const el = caretRef.current;
     const field = fieldRef.current;
-    if (!el || !field) return;
+    const frame = frameRef.current;
+    if (!el || !field || !frame) return;
     const caretBox = el.getBoundingClientRect();
     const fieldBox = field.getBoundingClientRect();
-    const lineTop = caretBox.top - fieldBox.top;
+    const frameBox = frame.getBoundingClientRect();
     const next = {
       x: caretBox.left - fieldBox.left,
-      bottom: fieldBox.height - lineTop + POP_GAP,
+      bottom: fieldBox.height + (fieldBox.top - frameBox.top) + POP_GAP,
       width: fieldBox.width,
     };
     setAnchor((prev) => (prev.x === next.x && prev.bottom === next.bottom && prev.width === next.width ? prev : next));
@@ -287,6 +302,7 @@ export function AiComposerMinimal({
           .map((c) => ({ id: c.name, label: `/${c.name}`, detail: c.description, insert: `/${c.name} ` }));
   const index = Math.min(active, Math.max(0, options.length - 1));
   const optionId = (i: number) => `${uid}-option-${i}`;
+  const hintId = `${uid}-hint`;
   const popWidth = Math.min(POP_WIDTH, Math.max(POP_MIN_WIDTH, anchor.width));
   const popLeft = Math.min(Math.max(0, anchor.x - 12), Math.max(0, anchor.width - popWidth));
 
@@ -364,9 +380,22 @@ export function AiComposerMinimal({
 
   const hintLine = busy ? "Generating · esc to stop" : null;
 
+  // One polite region carries both states. An open menu says how many rows it holds and which is
+  // highlighted, so arrowing announces each row; the menu wins over "generating" when both apply.
+  const noun = trigger?.kind === "mention" ? "file" : "command";
+  const announcement = !open || !trigger
+    ? busy ? "Generating a reply" : ""
+    : options.length === 0
+      ? `No matching ${noun}s`
+      : `${options.length} ${noun}${options.length === 1 ? "" : "s"}. ${options[index].label}, ${index + 1} of ${options.length}`;
+
   return (
     <div className={`@container relative w-full max-w-[600px] ${className}`} style={vars}>
-      <div
+      <motion.div
+        ref={frameRef}
+        initial={reduce ? REVEAL_FROM_REDUCED : REVEAL_FROM}
+        animate={reduce ? REVEAL_TO_REDUCED : REVEAL_TO}
+        transition={{ duration: reduce ? 0.15 : 0.5, ease: EASE_OUT }}
         className="relative rounded-[16px] border transition-[border-color] duration-200 ease-out focus-within:border-[color:var(--cc-line-strong)]"
         style={{ background: "var(--cc-field)", borderColor: "var(--cc-line)", boxShadow: "var(--cc-shadow)" }}
         onMouseDown={(event) => {
@@ -402,6 +431,7 @@ export function AiComposerMinimal({
               aria-autocomplete="list"
               aria-controls={open ? `${uid}-list` : undefined}
               aria-activedescendant={open && options.length > 0 ? optionId(index) : undefined}
+              aria-describedby={open ? hintId : undefined}
               onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
                 setValue(event.target.value);
                 setCaret(event.target.selectionStart);
@@ -494,18 +524,19 @@ export function AiComposerMinimal({
             </AnimatePresence>
           </div>
 
+          {/* Hover is one step: a 4% lift on the fill (pointer devices only, via Tailwind's hover gate). */}
           <button
             type="button"
             data-demo="send"
             aria-label={busy ? "Stop generating" : "Send message"}
             disabled={!busy && !value.trim()}
             onClick={busy ? stop : submit}
-            className="relative grid size-9 shrink-0 cursor-pointer place-items-center rounded-[11px] transition-[background-color,box-shadow,transform,opacity] duration-150 ease-out enabled:active:scale-[0.96] focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-40"
-            style={
+            className={`group relative grid size-9 shrink-0 cursor-pointer place-items-center rounded-[11px] transition-[background-color,box-shadow,transform,opacity] duration-150 ease-out enabled:active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-40 ${SEND_HIT_INSET} ${
               busy
-                ? { color: "var(--cc-ink)", boxShadow: "inset 0 0 0 1px var(--cc-line-strong)", outlineColor: "var(--cc-ink)" }
-                : { background: "var(--cc-send)", color: "var(--cc-on-send)", outlineColor: "var(--cc-ink)" }
-            }
+                ? "text-[color:var(--cc-ink)] enabled:hover:bg-[color:var(--cc-chip)]"
+                : "bg-[color:var(--cc-send)] text-[color:var(--cc-on-send)] enabled:hover:bg-[color:var(--cc-send-hover)]"
+            }`}
+            style={{ outlineColor: "var(--cc-ink)", boxShadow: busy ? "inset 0 0 0 1px var(--cc-line-strong)" : undefined }}
           >
             <AnimatePresence initial={false} mode="popLayout">
               <motion.span
@@ -516,7 +547,14 @@ export function AiComposerMinimal({
                 transition={{ duration: reduce ? 0.12 : 0.2, ease: EASE_OUT }}
                 className="grid place-items-center"
               >
-                {busy ? <StopIcon /> : <ArrowUpIcon />}
+                {busy ? (
+                  <StopIcon />
+                ) : (
+                  // The arrow lifts 1px on hover; the nudge is nested so motion's own transform on the icon span is untouched.
+                  <span className="grid place-items-center transition-transform duration-150 ease-out group-enabled:group-hover:-translate-y-px">
+                    <ArrowUpIcon />
+                  </span>
+                )}
               </motion.span>
             </AnimatePresence>
             {busy && (
@@ -533,9 +571,15 @@ export function AiComposerMinimal({
             )}
           </button>
         </div>
-      </div>
+      </motion.div>
 
-      <div className="flex items-center justify-between gap-4 px-1 pt-3 font-mono text-[11px] leading-none" style={{ color: "var(--cc-faint)" }}>
+      <motion.div
+        initial={reduce ? REVEAL_FROM_REDUCED : REVEAL_FROM}
+        animate={reduce ? REVEAL_TO_REDUCED : REVEAL_TO}
+        transition={{ duration: reduce ? 0.15 : 0.5, delay: reduce ? 0 : 0.06, ease: EASE_OUT }}
+        className="flex items-center justify-between gap-4 px-1 pt-3 font-mono text-[11px] leading-none"
+        style={{ color: "var(--cc-faint)" }}
+      >
         <AnimatePresence mode="wait" initial={false}>
           <motion.span
             key={busy ? "busy" : "idle"}
@@ -564,10 +608,13 @@ export function AiComposerMinimal({
             </span>
           )}
         </span>
-      </div>
+      </motion.div>
 
+      <span id={hintId} className="sr-only">
+        Up and down to choose, Enter to insert, Escape to close
+      </span>
       <span role="status" aria-live="polite" className="sr-only">
-        {busy ? "Generating a reply" : ""}
+        {announcement}
       </span>
     </div>
   );
@@ -623,8 +670,8 @@ function FileIcon() {
 /* ------------------------------------------------------------------ */
 
 const STAGE = "#0a0a0b";
-/** The demo's simulated reply, in ms. Matches the stop beat in the script. */
-const DEMO_REPLY_MS = 1000;
+/** The demo's simulated reply, in ms. Short enough that the whole walkthrough stays under 8 s. */
+const DEMO_REPLY_MS = 700;
 
 /** Demo stage. The demo's own state drives Stop and back, so the component's controls work too. */
 export default function AiComposerMinimalDemo({ state: forced, ...overrides }: Partial<AiComposerMinimalProps> = {}) {

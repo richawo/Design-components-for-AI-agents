@@ -101,15 +101,15 @@
   "added": "2026-10-10",
   "demo": {
     "steps": [
-      "wait:200",
       "click:@field",
       "type:Summarise @",
-      "wait:250",
+      "wait:500",
+      "key:ArrowDown",
+      "wait:300",
       "key:Enter",
-      "type:in bullets",
-      "wait:250",
+      "type:into three themes for Thursday",
       "key:Enter",
-      "wait:1100"
+      "wait:800"
     ]
   },
   "controls": [
@@ -155,6 +155,22 @@
       "step": 1,
       "unit": "rows",
       "default": 6
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark"
     }
   ]
 }
