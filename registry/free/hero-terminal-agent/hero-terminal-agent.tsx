@@ -71,6 +71,10 @@ export type HeroTerminalAgentProps = {
   accent?: string;
   /** Holds or resumes the session from outside. The pause button in the tab bar toggles it too. */
   playback?: "play" | "pause";
+  /** Called when the pause button in the tab bar holds or resumes the session. */
+  onPlaybackChange?: (playback: "play" | "pause") => void;
+  /** Clock multiplier for the scripted session: 1 is real pace, 3 plays it three times faster. */
+  speed?: number;
 };
 
 /* ------------------------------------------------------------------ */
@@ -260,7 +264,7 @@ function buildTimeline(s: AgentSession) {
  * the clock crosses a mark, i.e. when a line, a character or a tick changes.
  * It pauses offscreen, in hidden tabs and while held, and replays after `loopPause`.
  */
-function useSessionClock({ marks, total, loopPause, running }: { marks: number[]; total: number; loopPause: number; running: boolean }) {
+function useSessionClock({ marks, total, loopPause, running, speed }: { marks: number[]; total: number; loopPause: number; running: boolean; speed: number }) {
   const time = useMotionValue(0);
   const [step, setStep] = useState(0);
   const elapsed = useRef(-SESSION_DELAY);
@@ -274,7 +278,7 @@ function useSessionClock({ marks, total, loopPause, running }: { marks: number[]
       const dt = Math.min(now - last, MAX_DT);
       last = now;
       if (!document.hidden) {
-        elapsed.current += dt;
+        elapsed.current += dt * speed;
         if (elapsed.current > total + loopPause) {
           elapsed.current = 0;
           passed.current = 0;
@@ -291,7 +295,7 @@ function useSessionClock({ marks, total, loopPause, running }: { marks: number[]
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [running, marks, total, loopPause, time]);
+  }, [running, marks, total, loopPause, speed, time]);
 
   // The last mark passed is "now" for rendering; before the first one, nothing has printed.
   const now = step > 0 ? marks[step - 1]! : -1;
@@ -320,6 +324,8 @@ export function HeroTerminalAgent({
   loopPause = 5200,
   accent = DEFAULT_ACCENT,
   playback,
+  onPlaybackChange,
+  speed = 1,
 }: HeroTerminalAgentProps) {
   const rootRef = useRef<HTMLElement>(null);
   const headingId = useId();
@@ -380,7 +386,7 @@ export function HeroTerminalAgent({
         </div>
 
         <div className="relative min-w-0 @5xl:col-span-6">
-          <Terminal session={session} tabTitle={tabTitle} version={version} loopPause={loopPause} playback={playback} reduce={reduce} variants={v} />
+          <Terminal session={session} tabTitle={tabTitle} version={version} loopPause={loopPause} playback={playback} onPlaybackChange={onPlaybackChange} speed={speed} reduce={reduce} variants={v} />
         </div>
       </div>
     </motion.section>
@@ -492,6 +498,8 @@ function Terminal({
   version,
   loopPause,
   playback,
+  onPlaybackChange,
+  speed,
   reduce,
   variants: v,
 }: {
@@ -500,6 +508,8 @@ function Terminal({
   version: string;
   loopPause: number;
   playback?: "play" | "pause";
+  onPlaybackChange?: (playback: "play" | "pause") => void;
+  speed: number;
   reduce: boolean;
   variants: VariantPicker;
 }) {
@@ -515,7 +525,16 @@ function Terminal({
   useEffect(() => {
     if (playback) setHeld(playback === "pause");
   }, [playback]);
-  const { time, now: clockNow } = useSessionClock({ marks, total, loopPause, running: revealed && onScreen && !held && !reduce });
+  // A non-positive or non-finite speed would stall or reverse the clock; fall back to real pace.
+  const clockSpeed = Number.isFinite(speed) && speed > 0 ? speed : 1;
+  const speedRef = useRef(clockSpeed);
+  speedRef.current = clockSpeed;
+  const toggleHold = () => {
+    const next = !held;
+    setHeld(next);
+    onPlaybackChange?.(next ? "pause" : "play");
+  };
+  const { time, now: clockNow } = useSessionClock({ marks, total, loopPause, running: revealed && onScreen && !held && !reduce, speed: clockSpeed });
   const now = reduce ? Number.POSITIVE_INFINITY : clockNow;
   const visible = rows.filter((r) => r.at <= now);
   const finished = now >= total;
@@ -533,7 +552,7 @@ function Terminal({
     if (el) el.scrollTop = el.scrollHeight;
   }, [visible.length, typed]);
 
-  const spin = useTransform(time, (t) => SPIN[Math.floor(t / SPIN_FRAME) % SPIN.length] ?? SPIN[0]!);
+  const spin = useTransform(time, (t) => SPIN[Math.floor(t / (SPIN_FRAME * speedRef.current)) % SPIN.length] ?? SPIN[0]!);
   const clock = useTransform(time, fmtClock);
 
   return (
@@ -553,7 +572,7 @@ function Terminal({
       <div className="relative flex h-11 items-stretch justify-between pr-3 font-mono text-[12px] text-(--ta-ink)/50">
         <div className="flex min-w-0 items-stretch">
           <motion.div variants={v(reveal)} custom={T.header} className="flex">
-            <HoldButton held={held} disabled={reduce} onToggle={() => setHeld((h) => !h)} />
+            <HoldButton held={held} disabled={reduce} onToggle={toggleHold} />
           </motion.div>
           <motion.div
             variants={v(reveal)}
@@ -847,6 +866,12 @@ function TerminalRow({ row, now, spin, session }: { row: Row; now: number; spin:
 }
 
 /** The featured instance. Overrides from the page's controls win over the demo's own props. */
-export default function HeroTerminalAgentDemo(overrides: Partial<HeroTerminalAgentProps> = {}) {
-  return <HeroTerminalAgent {...overrides} />;
+export default function HeroTerminalAgentDemo({ playback: forced, ...overrides }: Partial<HeroTerminalAgentProps> = {}) {
+  // The page's Session buttons force a state; the in-terminal button keeps the same state in step.
+  const [playback, setPlayback] = useState<"play" | "pause" | undefined>(forced);
+  useEffect(() => {
+    if (forced) setPlayback(forced);
+  }, [forced]);
+  // 3x: the plan, files, tests and PR land inside a short loop.
+  return <HeroTerminalAgent speed={3} {...overrides} playback={playback} onPlaybackChange={setPlayback} />;
 }

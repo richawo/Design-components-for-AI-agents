@@ -88,19 +88,30 @@
       "name": "playback",
       "type": "\"play\" | \"pause\"",
       "description": "Holds or resumes the session from outside. The pause button in the tab bar toggles the same state."
+    },
+    {
+      "name": "speed",
+      "type": "number",
+      "default": "1",
+      "description": "Clock multiplier for the scripted session. 1 is real pace; 3 plays the whole run three times faster."
+    },
+    {
+      "name": "onPlaybackChange",
+      "type": "(playback: \"play\" | \"pause\") => void",
+      "description": "Called when the pause button in the tab bar holds or resumes the session."
     }
   ],
   "added": "2026-10-07",
   "demo": {
     "steps": [
-      "wait:300",
-      "click:@copy-command",
-      "hover:@terminal:0.55,0.45",
+      "hover:@session-pause",
+      "wait:1200",
+      "click:@session-pause",
+      "hover:@terminal:0.7,0.5",
       "wait:200",
       "click:@session-pause",
-      "wait:900",
-      "click",
-      "wait:600"
+      "click:@copy-command",
+      "wait:900"
     ]
   },
   "controls": [
@@ -109,10 +120,28 @@
       "label": "Session",
       "kind": "action",
       "options": [
-        "pause",
-        "play"
+        {
+          "value": "pause",
+          "label": "Pause"
+        },
+        {
+          "value": "play",
+          "label": "Resume"
+        }
       ],
       "group": "Terminal"
+    },
+    {
+      "prop": "speed",
+      "label": "Session speed",
+      "kind": "slider",
+      "min": 1,
+      "max": 4,
+      "step": 0.5,
+      "unit": "x",
+      "default": 3,
+      "group": "Terminal",
+      "remount": true
     },
     {
       "prop": "tabTitle",
@@ -137,23 +166,28 @@
     },
     {
       "prop": "emphasis",
-      "label": "Dimmed phrase",
-      "kind": "text",
+      "label": "Dimmed line",
+      "kind": "select",
+      "options": [
+        {
+          "value": "The agent",
+          "label": "The agent"
+        },
+        {
+          "value": "that does the",
+          "label": "that does the"
+        },
+        {
+          "value": "boring parts",
+          "label": "boring parts"
+        },
+        {
+          "value": "of shipping.",
+          "label": "of shipping."
+        }
+      ],
       "default": "boring parts",
       "group": "Copy"
-    },
-    {
-      "prop": "accent",
-      "label": "Copied colour",
-      "kind": "color",
-      "default": "#d4ff3a",
-      "options": [
-        "#d4ff3a",
-        "#ffffff",
-        "#7dd3a8",
-        "#60a5fa"
-      ],
-      "group": "Look"
     },
     {
       "prop": "$replay",
