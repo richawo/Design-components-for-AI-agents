@@ -107,8 +107,9 @@ const DEFAULT_ACCENT = "#34C77B";
 /**
  * React Native Web turns `dataSet` into the `data-demo` attribute the live demo
  * script finds its targets by; native ignores it. Plain `data-*` props are dropped.
- * The demo picks night paper (data-demo="paper-night"), drags the text-size
- * slider (data-demo="size-slider"), then flips the daily reminder
+ * The demo drags the text-size slider (data-demo="size-slider") on sepia
+ * paper, picks white paper (data-demo="paper-white", also "paper-sepia" and
+ * "paper-night"), then flips the daily reminder off and back on
  * (data-demo="reminder-toggle"; its time row is data-demo="reminder-time" and
  * the chips data-demo="time-0" to "time-3"). The
  * delete row (data-demo="delete-all", data-demo="delete-confirm" in the sheet)
@@ -1919,8 +1920,38 @@ export function MobileSettings({
   );
 }
 
+type Nudges = Pick<MobileSettingsProps, "paper" | "textSize" | "reminder">;
+
+const sameProps = (a: Partial<MobileSettingsProps>, b: Partial<MobileSettingsProps>) => {
+  const ka = Object.keys(a) as (keyof MobileSettingsProps)[];
+  return ka.length === Object.keys(b).length && ka.every((k) => Object.is(a[k], b[k]));
+};
+
+/**
+ * Paper, text size and the reminder arrive from the preview's action buttons.
+ * They are nudges: the screen only reacts when a value changes, so a button
+ * pressed twice (after the visitor moved the control on the phone in between)
+ * would do nothing. When the same props arrive again, the nudges clear for a
+ * frame and are sent again, so every press lands.
+ */
 export default function MobileSettingsDemo(overrides: Partial<MobileSettingsProps> = {}) {
-  return <MobileSettings {...overrides} />;
+  const { paper, textSize, reminder, ...config } = overrides;
+  const [nudges, setNudges] = useState<Nudges>({ paper, textSize, reminder });
+  const previous = useRef<Partial<MobileSettingsProps> | null>(null);
+  useEffect(() => {
+    const prev = previous.current;
+    previous.current = overrides;
+    const next = { paper, textSize, reminder };
+    if (!prev || prev === overrides || !sameProps(prev, overrides)) {
+      setNudges(next);
+      return;
+    }
+    setNudges({});
+    const id = requestAnimationFrame(() => setNudges(next));
+    return () => cancelAnimationFrame(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [overrides]);
+  return <MobileSettings {...config} {...nudges} />;
 }
 
 /* ------------------------------------------------------------------ */

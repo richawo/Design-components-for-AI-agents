@@ -104,14 +104,16 @@
   "added": "2026-10-07",
   "demo": {
     "steps": [
-      "wait:150",
-      "click:@paper-night",
-      "wait:800",
+      "wait:100",
       "hover:@size-slider:0.39,0.5",
       "drag:0.74,0.58",
-      "wait:900",
+      "wait:550",
+      "click:@paper-white",
+      "wait:550",
       "click:@reminder-toggle",
-      "wait:1200"
+      "wait:500",
+      "click:@reminder-toggle",
+      "wait:800"
     ],
     "loop": false
   },
@@ -147,7 +149,7 @@
     {
       "prop": "paper",
       "label": "Paper",
-      "kind": "segmented",
+      "kind": "action",
       "options": [
         {
           "value": "white",
@@ -161,24 +163,41 @@
           "value": "night",
           "label": "Night"
         }
-      ],
-      "default": "sepia"
+      ]
     },
     {
       "prop": "textSize",
       "label": "Text size",
-      "kind": "slider",
-      "min": 14,
-      "max": 22,
-      "step": 1,
-      "unit": "pt",
-      "default": 17
+      "kind": "action",
+      "options": [
+        {
+          "value": 15,
+          "label": "15 pt"
+        },
+        {
+          "value": 17,
+          "label": "17 pt"
+        },
+        {
+          "value": 21,
+          "label": "21 pt"
+        }
+      ]
     },
     {
       "prop": "reminder",
       "label": "Daily reminder",
-      "kind": "toggle",
-      "default": true
+      "kind": "action",
+      "options": [
+        {
+          "value": true,
+          "label": "On"
+        },
+        {
+          "value": false,
+          "label": "Off"
+        }
+      ]
     }
   ]
 }
