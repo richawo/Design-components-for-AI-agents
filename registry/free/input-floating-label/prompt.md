@@ -1,0 +1,19 @@
+# Floating Label Field
+
+Build one text field for React 19 with Tailwind v4 and motion/react (plus lucide-react for the mail glyph). The idea: the label lives inside the field, and when the field is focused or filled it rises onto the top hairline and the border opens a notch around it, so the label reads as part of the frame rather than a tooltip. Dark first, monochrome, with error and success as the only colours.
+
+**Layout.** Root is a `@container` block, `max-width: 420px`, full width below that. The field is 56px tall (md) or 64px (lg), `border-radius: 12px`. Horizontal padding is 16px (md) or 18px (lg). A leading slot 16px wide plus a 10px gap holds the mail glyph when `prefix` is on, and the text starts after it. A trailing 26px slot holds `suffix` or the success tick. Below the field, 10px down, the helper row takes the message on the left and the counter on the right, with the same horizontal padding as the field so the text aligns to the field's inner edge.
+
+**Typography.** Input and label use the sans role. Input text is 16px (md) or 18px (lg), which keeps iOS from zooming. The resting label is 15px (md) or 17px (lg), centred vertically in a 20px line box. The floated label is the same text scaled to 0.76, transform origin left centre, so it never re-lays out. Helper, error and success text are 13px with leading 1.45, becoming 13.5px at `@sm`. The counter is mono 12px with tabular figures.
+
+**Colour (dark).** Surface `#0b0b0c`. Ink `#f4f4f5`. Hairline `rgba(244,244,245,0.14)`, hover `0.30`, focus `0.90`. Muted text `0.58`, icon `0.42`. Error `#f0937a`. Success `#8fd7a6`. The focus ring is a 2px outline at 0.26 ink, offset 3px, shown instantly on `:focus-within`. Light theme inverts to `#ffffff` surface, `#111113` ink, `#b3432a` error and `#2c7a45` success.
+
+**The notch.** The border is a separate absolutely positioned layer with an inset 1px box-shadow, masked with three layers: a left strip `0 0 / var(--fl-nl) 2px`, a right strip starting at `var(--fl-nr)`, and the body below 2px. The notch runs from `labelX − 4px` to `labelX + measuredWidth × 0.76 + 4px`. Write `--fl-nl` and `--fl-nr` imperatively from motion's `animate` so the cut moves on the animation frame without re-rendering React. The cut never reaches the corner, because the gap is 4px and the radius is 12px.
+
+**Motion.** Rise and notch share one 320ms ease-out `[0.22, 1, 0.36, 1]`. Reversing focus mid-flight reverses both edges from where they are. Helper, error and success text cross-fade inside `AnimatePresence mode="popLayout"` with a 6px offset and a 3px blur clearing over 260ms. The success tick draws its path with `pathLength` over 420ms, 100ms after it mounts. On first view the whole block rises 10px from a 6px blur over 600ms, once.
+
+**Validation.** An email is valid when it matches a local part, an `@`, a domain and a top-level domain of at least two letters. While typing, an invalid value is called out only after 800ms of rest, or when the field is left. A valid value clears the error straight away and shows the success tick.
+
+**Accessibility.** A native `<input type="email">` with `inputMode="email"` and `autoComplete="email"`. The label is associated with `htmlFor`. `aria-invalid` is set in the error state, `aria-describedby` points at the message container, which is `aria-live="polite"`. Disabled uses the native `disabled` attribute. The decorative layers and icons are `aria-hidden`. Reduced motion keeps opacity changes at 150ms, sets the notch instantly and draws the tick already complete.
+
+**Don't.** No Material floating-label clone with a filled background. No coloured fills, glow or gradient on focus. No red warning triangle. No shake animation on error. No live count before 80% of the limit: at rest the counter only states the limit, faintly. No label that jumps from one place to another instead of rising. No accent colour on the success state beyond the tick and its message.

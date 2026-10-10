@@ -1,0 +1,88 @@
+{
+  "component": "FloatingLabelField",
+  "intent": "One dark, monochrome text field for an email address. The label rests inside the field and, once focused or filled, rises onto the top hairline while the border opens a notch around it. Error and success text cross-fade in place of the helper, and a success tick draws itself in the trailing slot. Built with React 19, Tailwind CSS v4 and motion/react, with lucide-react for the mail glyph.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 (@container on the root, arbitrary values, one namespaced style block for the notch mask)",
+    "animation": "motion/react (animate for the notch edges and the label, AnimatePresence mode popLayout for messages, pathLength for the tick, useInView for the first reveal)",
+    "icons": "lucide-react Mail, 16px, stroke 1.6"
+  },
+  "layout": {
+    "root": "@container block, max-width 420px, full width below; helper row sits 10px under the field",
+    "field": "56px tall (md) or 64px (lg), border-radius 12px, position relative; surface layer, masked border layer, label, prefix, input, suffix stacked in that order",
+    "padding": "16px horizontal (md), 18px (lg); leading slot 16px icon plus 10px gap when prefix is on; trailing slot 26px for suffix or the success tick",
+    "helperRow": "flex, items start, gap 16px; message left (min-width 0, flex 1), counter right and shrink-0; both inset by the field padding",
+    "collapse": "the label and text keep their offsets at every width; the field never shrinks below 280px"
+  },
+  "typography": {
+    "input": "sans, 16px (md) or 18px (lg), so iOS does not zoom",
+    "label": "sans, 15px (md) or 17px (lg), line box 20px; floated state is the same element scaled to 0.76 from the left centre",
+    "message": "sans 13px, leading 1.45; 13.5px from the @sm container breakpoint",
+    "counter": "mono 12px, tabular-nums, no tracking change"
+  },
+  "color": {
+    "dark": {
+      "surface": "#0b0b0c",
+      "ink": "#f4f4f5",
+      "hairline": "rgba(244,244,245,0.14)",
+      "hairlineHover": "rgba(244,244,245,0.30)",
+      "hairlineFocus": "rgba(244,244,245,0.90)",
+      "muted": "rgba(244,244,245,0.58)",
+      "icon": "rgba(244,244,245,0.42)",
+      "error": "#f0937a",
+      "success": "#8fd7a6",
+      "focusRing": "rgba(244,244,245,0.26)"
+    },
+    "light": {
+      "surface": "#ffffff",
+      "ink": "#111113",
+      "hairline": "rgba(17,17,19,0.14)",
+      "error": "#b3432a",
+      "success": "#2c7a45"
+    },
+    "usage": "error colours only on the border, the message and the label in the error state; success colours only on the border, the message and the tick; everything else monochrome"
+  },
+  "motion": {
+    "rise": "label y and scale and notch edges share 320ms ease-out [0.22, 1, 0.36, 1]; notch edges write --fl-nl and --fl-nr imperatively from animate onUpdate, interruptible from the current position",
+    "messages": "popLayout cross-fade: enter from y 6px and blur 3px, exit to y -6px and blur 3px, 260ms ease-out",
+    "tick": "scale 0.8 to 1 with opacity over 240ms; path pathLength 0 to 1 over 420ms, 100ms delay",
+    "reveal": "once at 30% in view: the block rises 10px from blur 6px over 600ms",
+    "focusRing": "2px outline, offset 3px, instant, on :focus-within only",
+    "borderTransition": "box-shadow 180ms ease-out",
+    "reducedMotion": "opacity changes at 150ms only, notch set instantly, tick drawn complete, no blur or offset"
+  },
+  "responsive": {
+    "all": "fluid to 420px; the field and helper row share one container; touch targets stay the full field height (56px or 64px)",
+    "widths": "designed at 320, 390, 768 and 1440px; the label, notch and counter never overflow the field",
+    "touch": "the whole field is the hit target, not the label; tapping the label focuses the input"
+  },
+  "accessibility": [
+    "native input type email with inputMode email and autoComplete email; spellCheck off",
+    "label associated with htmlFor; the label is pointer-events none so taps reach the input",
+    "aria-invalid true in the error state; aria-describedby points at the message container",
+    "message container aria-live polite, so the error and success copy is announced once per change",
+    "disabled uses the native disabled attribute and dims the field to 42% opacity with cursor not-allowed",
+    "decorative layers, the mail glyph and the tick are aria-hidden",
+    "focus is shown on the field with a 2px ring; text inputs always show focus, so the ring is not limited to keyboard use"
+  ],
+  "content": {
+    "label": "Work email",
+    "helper": "We’ll send receipts and invoices here.",
+    "errorText": "Add a domain, like ana@studio.co",
+    "successText": "Looks good. Receipts go here.",
+    "counter": "Max 40 at rest, then 32 / 40 from 80% of the limit"
+  },
+  "avoid": [
+    "a filled background behind the label, or a Material-style underline field",
+    "a glow, gradient or coloured fill on focus",
+    "a red warning triangle or a shake animation on error",
+    "the label jumping between positions instead of rising along one path",
+    "a live counter before 80% of the limit",
+    "a success tick that fades in rather than drawing",
+    "layout shift when the message changes or the label rises",
+    "blur or opacity on the input text itself",
+    "emoji or decorative sparkles anywhere in the field",
+    "per-frame React state for the notch edges"
+  ]
+}
