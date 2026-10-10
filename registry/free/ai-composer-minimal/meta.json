@@ -1,0 +1,160 @@
+{
+  "slug": "ai-composer-minimal",
+  "name": "Minimal Composer",
+  "tier": "free",
+  "platform": "web",
+  "category": "ai",
+  "description": "A one-line prompt field that grows only when needed: @ files and / commands open at the caret, Enter sends, and Send becomes Stop while a reply runs.",
+  "tags": [
+    "chat composer",
+    "prompt input",
+    "mentions",
+    "slash commands",
+    "ai chat",
+    "dark",
+    "monochrome"
+  ],
+  "dependencies": [
+    "motion"
+  ],
+  "theme": "dark",
+  "previewHeight": 720,
+  "usage": "import { AiComposerMinimal } from \"@/components/design-for-ai/ai-composer-minimal\";\n\n<AiComposerMinimal\n  placeholder=\"Ask anything…\"\n  files={[{ id: \"roadmap\", name: \"q3-launch-roadmap.md\", detail: \"Edited today\" }]}\n  onSubmit={async (message) => { await ask(message); }} // return a promise to keep it generating\n  onStop={() => abort()}\n/>\n\n// Controlled: you own the state\nconst [state, setState] = useState<AiComposerState>(\"idle\");\n<AiComposerMinimal state={state} onStateChange={setState} onSubmit={(m) => send(m)} />",
+  "props": [
+    {
+      "name": "placeholder",
+      "type": "string",
+      "default": "\"Ask anything…\"",
+      "description": "Shown while the field is empty."
+    },
+    {
+      "name": "state",
+      "type": "\"idle\" | \"generating\"",
+      "description": "Controlled state. Leave it out and the composer owns the state and simulates the reply."
+    },
+    {
+      "name": "onStateChange",
+      "type": "(next: AiComposerState) => void",
+      "description": "Fires on send (generating) and on Stop (idle). Required when you pass state, because the host ends the reply."
+    },
+    {
+      "name": "onSubmit",
+      "type": "(message: string) => void | Promise<unknown>",
+      "description": "Receives the trimmed message. Return a promise to keep generating until it settles."
+    },
+    {
+      "name": "onStop",
+      "type": "() => void",
+      "description": "Fires when Stop is pressed or Escape is pressed while generating."
+    },
+    {
+      "name": "replyMs",
+      "type": "number",
+      "default": "1800",
+      "description": "Uncontrolled only: how long a send keeps generating when onSubmit returns nothing."
+    },
+    {
+      "name": "files",
+      "type": "{ id: string; name: string; detail: string }[]",
+      "description": "Files offered by the @ popover. Names have no spaces, because the mention is written as @name."
+    },
+    {
+      "name": "commandList",
+      "type": "{ name: string; description: string }[]",
+      "description": "Commands offered by the / popover, which opens only at the start of a line."
+    },
+    {
+      "name": "mentions",
+      "type": "boolean",
+      "default": "true",
+      "description": "Whether typing @ opens the file popover and shows the hint."
+    },
+    {
+      "name": "commands",
+      "type": "boolean",
+      "default": "true",
+      "description": "Whether a / at the start of a line opens the command popover and shows the hint."
+    },
+    {
+      "name": "maxRows",
+      "type": "number",
+      "default": "6",
+      "description": "Rows the field may grow to (1 to 10) before it scrolls inside itself."
+    },
+    {
+      "name": "accent",
+      "type": "string",
+      "description": "The one accent, used only for mention text. Defaults to amber on dark and rust on light."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "The surface the composer sits on, so its ink, borders and shadow keep their contrast."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "description": "Extra classes on the root, for width or margin."
+    }
+  ],
+  "added": "2026-10-10",
+  "demo": {
+    "steps": [
+      "wait:200",
+      "click:@field",
+      "type:Summarise @",
+      "wait:250",
+      "key:Enter",
+      "type:in bullets",
+      "wait:250",
+      "key:Enter",
+      "wait:1100"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "placeholder",
+      "label": "Placeholder",
+      "kind": "text",
+      "default": "Ask anything…"
+    },
+    {
+      "prop": "state",
+      "label": "State",
+      "kind": "action",
+      "options": [
+        {
+          "value": "idle",
+          "label": "Idle"
+        },
+        {
+          "value": "generating",
+          "label": "Generating"
+        }
+      ]
+    },
+    {
+      "prop": "mentions",
+      "label": "@ Mentions",
+      "kind": "toggle",
+      "default": true
+    },
+    {
+      "prop": "commands",
+      "label": "/ Commands",
+      "kind": "toggle",
+      "default": true
+    },
+    {
+      "prop": "maxRows",
+      "label": "Max rows",
+      "kind": "slider",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "unit": "rows",
+      "default": 6
+    }
+  ]
+}

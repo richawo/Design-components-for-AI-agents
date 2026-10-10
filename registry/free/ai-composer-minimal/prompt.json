@@ -1,0 +1,103 @@
+{
+  "component": "AiComposerMinimal",
+  "intent": "A minimal, premium AI prompt composer: one line that grows only when the text wraps, with @ file mentions and / commands in popovers anchored to the caret, Enter to send, and Send that becomes Stop while a reply runs. It is the lighter free sibling of the richer prompt composer: no attachments, no model picker, no ring of light.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 with inline CSS custom properties for colour",
+    "animation": "motion/react",
+    "icons": "inline SVG drawn in the file (no icon package)",
+    "fonts": "font-sans (Geist) for the field and option names, font-mono (Geist Mono) for the footer, keycaps and group labels"
+  },
+  "layout": {
+    "root": "@container, relative, max-width 600px, full width below. Footer hints drop their right-hand group under 420px of container width.",
+    "composer": "16px radius, 1px hairline border, fill #141416, inner top highlight and a soft deep shadow. Row: 16px left, 10px top and bottom, 10px right padding, 8px gap, items end-aligned so the send button sits on the last line.",
+    "field": "Textarea absolutely covering a mirror div in flow. The mirror has the same font, line box, padding, wrap and tracking, so it sets the height. One line is 36px (22px line box plus 7px top and bottom). Growth is 22px per row up to maxRows, then the field scrolls with no visible scrollbar.",
+    "popover": "288px wide (never wider than the field), at most 264px tall, 14px radius, panel #1b1b1e, hairline border, deep shadow. Bottom edge sits 8px above the caret line; left is the caret x clamped inside the field.",
+    "send": "36px square, 11px radius, ink fill. While generating it is an outlined square with a stop glyph and one hairline arc ringing it.",
+    "footer": "Mono 11px in the faint token, 12px below the composer: left shows return and shift-return keycaps, or 'Generating · esc to stop'; right shows the @ and / hints when those features are on."
+  },
+  "typography": {
+    "field": {
+      "font": "sans",
+      "size": "15px",
+      "lineHeight": "22px",
+      "tracking": "-0.005em"
+    },
+    "option": {
+      "font": "sans",
+      "size": "14px name, 11.5px detail",
+      "note": "Commands use mono 13px for the name"
+    },
+    "groupLabel": {
+      "font": "mono",
+      "size": "10.5px",
+      "case": "uppercase",
+      "tracking": "0.14em"
+    },
+    "footer": {
+      "font": "mono",
+      "size": "11px"
+    }
+  },
+  "color": {
+    "dark": {
+      "field": "#141416",
+      "panel": "#1b1b1e",
+      "ink": "#f4f4f5",
+      "body": "#c4c4ca",
+      "muted": "#a1a1aa",
+      "faint": "#8a8a94",
+      "line": "rgba(255,255,255,0.08)",
+      "sendFill": "#f4f4f5",
+      "sendInk": "#0b0b0c"
+    },
+    "light": {
+      "field": "#ffffff",
+      "ink": "#18181b",
+      "accent": "#a84f24"
+    },
+    "accent": "One prop, default #f2b36b on dark: mention text only, through a 16% tint of itself behind the mention. Nothing else is coloured."
+  },
+  "motion": {
+    "tokens": "ease-out [0.22,1,0.36,1]; ease-in [0.4,0,1,1]; spring.ui stiffness 500 damping 40 for the highlight",
+    "popover": "Enters in 240ms from 6px below with a 4px blur clearing; exits in 120ms.",
+    "highlight": "A shared layoutId pill glides between rows on spring.ui.",
+    "footerSwap": "Hints cross-fade with a 3px rise in 180ms.",
+    "send": "Scale 0.96 on press; the icon swaps between send and stop with a 0.7 to 1 scale.",
+    "generating": "The send button shows a stop glyph inside an inset hairline with one hairline arc rotating every 2.4s. This is the one ambient signal.",
+    "reducedMotion": "No travel, no blur, no rotation. Opacity changes at 120ms or less; the arc is static."
+  },
+  "behaviour": {
+    "enter": "Sends the trimmed message and clears the field. Empty or busy: nothing happens.",
+    "shiftEnter": "Breaks the line.",
+    "menus": "@ opens files at the start of a word, / opens commands only at the start of a line. Up and Down move, Enter or Tab pick, Escape closes and stays closed for that trigger. Picking writes @name or /name with a trailing space.",
+    "escape": "While generating, Escape stops.",
+    "uncontrolled": "Generating lasts replyMs (1800) or until a returned promise settles.",
+    "controlled": "Pass state and onStateChange; the host receives generating on send and idle on stop, and ends the reply itself."
+  },
+  "responsive": {
+    "widths": "Designed at 320, 390, 768, 1024, 1440 and 1920px. The field fills the width, the popover clamps to the field, and the footer's right group hides under 420px of container width. No horizontal overflow."
+  },
+  "accessibility": [
+    "The field is a textarea labelled Message with aria-autocomplete list; while a menu is open it carries aria-controls and aria-activedescendant.",
+    "Options are role option with aria-selected; the menu is role listbox with a name (Files or Commands).",
+    "The send button's label changes between Send message and Stop generating; it is disabled when there is nothing to send.",
+    "A polite live region announces Generating a reply while a reply runs.",
+    "Focus stays in the field, including when a menu row is pressed (mousedown is prevented). Focus-visible uses a 2px ink ring with offset.",
+    "Reduced motion keeps every state change readable without movement."
+  ],
+  "content": {
+    "placeholder": "Ask anything…",
+    "files": "q3-launch-roadmap.md (Edited today), customer-interviews.csv (14 rows), launch-brief.md (3 comments), pricing-tests.md (Last week)",
+    "commands": "/summarise, /translate, /outline, /rewrite, each with a short description"
+  },
+  "avoid": [
+    "A privacy or on-device badge, a 'stays on this device' line, or any reassurance pill.",
+    "Sparkle icons, emoji, a gradient ring of light, purple or blue glow, glassmorphism.",
+    "A model picker, attachment chips, a voice button or a second toolbar.",
+    "Rounded-full pill everywhere; the field is a 16px-radius box.",
+    "Accent colour on anything except the mention text.",
+    "Copy like Unlock, Seamless or Supercharge."
+  ]
+}
