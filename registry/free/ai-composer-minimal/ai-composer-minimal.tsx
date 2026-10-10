@@ -38,6 +38,8 @@ export type ComposerCommand = {
 export type AiComposerMinimalProps = {
   /** Shown while the field is empty. */
   placeholder?: string;
+  /** Text the field starts with. Read on mount only, so a change needs a remount. */
+  defaultValue?: string;
   /** Controlled state. Leave undefined and the composer owns it. */
   state?: AiComposerState;
   /** Fires when the composer wants to change state: on send, and on stop. */
@@ -122,10 +124,14 @@ const PALETTE = {
 /** Line box and vertical padding of the field. One row is LINE_PX + 2 × PAD_Y, so the send button sits on the last line. */
 const LINE_PX = 22;
 const PAD_Y = 7;
+/** The field glides to its new height as a line is added or sent, so growth never snaps. */
+const FIELD_GROW = "height 180ms cubic-bezier(0.22, 1, 0.36, 1)";
+/** The footer is a fixed-height row, so swapping its hints can never move the composer. */
+const FOOTER_PX = 20;
 const MAX_ROWS = 10;
 const POP_WIDTH = 288;
 const POP_MIN_WIDTH = 200;
-/** Gap between the popover and the top edge of the composer it opens above. */
+/** Gap between the menu and the top edge of the composer it opens above. */
 const POP_GAP = 8;
 /** Touch target: the 36px send button gets a 4px hit area on every side, so it is 44px. */
 const SEND_HIT_INSET = "before:absolute before:-inset-1 before:content-['']";
@@ -141,7 +147,7 @@ const REVEAL_FROM_REDUCED = { opacity: 0 } as const;
 const REVEAL_TO_REDUCED = { opacity: 1 } as const;
 
 /* ------------------------------------------------------------------ */
-/* Trigger detection                                                    */
+/* Trigger detection and rendering                                      */
 /* ------------------------------------------------------------------ */
 
 type Trigger = { kind: "mention" | "command"; start: number; query: string };
@@ -162,9 +168,12 @@ function findTrigger(text: string, caret: number): Trigger | null {
 
 type Option = { id: string; label: string; detail: string; insert: string };
 
-/** Mentions that exist are set in the accent, so the prompt reads as a list of references. */
+/**
+ * Mentions that exist are set in the accent, so the prompt reads as a list of references.
+ * A name ends before trailing punctuation, so "@launch-brief.md," still matches the file.
+ */
 function renderText(text: string, known: ReadonlySet<string>, keyPrefix: string): ReactNode[] {
-  return text.split(/(@[^\s@]+)/).map((part, i) => {
+  return text.split(/(@[^\s@]+?)(?=[.,;:!?)]*(?:\s|$))/).map((part, i) => {
     const key = `${keyPrefix}${i}`;
     if (part.startsWith("@") && known.has(part.slice(1))) {
       // Background only, never padding or weight: the mirror must lay out exactly like the textarea above it.
@@ -184,6 +193,7 @@ function renderText(text: string, known: ReadonlySet<string>, keyPrefix: string)
 
 export function AiComposerMinimal({
   placeholder = "Ask anything…",
+  defaultValue = "",
   state: stateProp,
   onStateChange,
   onSubmit,
@@ -228,14 +238,14 @@ export function AiComposerMinimal({
   const [ownState, setOwnState] = useState<AiComposerState>("idle");
   const busy = (controlled ? stateProp : ownState) === "generating";
 
-  const [value, setValue] = useState("");
-  const [caret, setCaret] = useState(0);
-  // Scrolling moves the caret on screen, so a scroll re-renders to re-anchor the menu.
-  const [, setScrolled] = useState(0);
+  const [value, setValue] = useState(defaultValue);
+  const [caret, setCaret] = useState(defaultValue.length);
   const [active, setActive] = useState(0);
   const [dismissed, setDismissed] = useState<string | null>(null);
-  /** Where the caret sits: its x, the gap from the field's bottom to its line, and the field width. */
-  const [anchor, setAnchor] = useState({ x: 0, bottom: 0, width: 0 });
+  /** Field height in px. Undefined before the first measure, so the first frame has nothing to animate from. */
+  const [fieldHeight, setFieldHeight] = useState<number | undefined>(undefined);
+  /** Caret x, and the field's left edge and width, all measured from inside the frame. */
+  const [anchor, setAnchor] = useState({ x: 0, fieldLeft: 0, width: 0 });
 
   const frameRef = useRef<HTMLDivElement>(null);
   const fieldRef = useRef<HTMLDivElement>(null);
@@ -264,25 +274,29 @@ export function AiComposerMinimal({
     setCaret(at);
   }, [value]);
 
-  // Measure from the screen, not from offsetTop: the mirror and field differ in positioning
-  // context, so offset chains are fragile. Equal values bail out, so this cannot loop.
-  // The menu is horizontally tied to the caret but vertically tied to the whole composer, so it
-  // opens above the text already written and never covers it. Differences of two rects cancel
-  // any translate from the entrance animation, so this stays correct while the frame settles.
+  // Measured from the screen, not offsetTop: the mirror and field sit in different positioning
+  // contexts. The menu hangs off the frame, so only horizontal positions are measured here. Height
+  // never feeds the menu, which lets the field animate its height without the menu chasing it.
+  // Equal values bail out, so this cannot loop.
   useLayoutEffect(() => {
     const el = caretRef.current;
     const field = fieldRef.current;
     const frame = frameRef.current;
     if (!el || !field || !frame) return;
+    // clientLeft is the frame's left border; absolutely positioned children measure from inside it.
+    const origin = frame.getBoundingClientRect().left + frame.clientLeft;
     const caretBox = el.getBoundingClientRect();
     const fieldBox = field.getBoundingClientRect();
-    const frameBox = frame.getBoundingClientRect();
-    const next = {
-      x: caretBox.left - fieldBox.left,
-      bottom: fieldBox.height + (fieldBox.top - frameBox.top) + POP_GAP,
-      width: fieldBox.width,
-    };
-    setAnchor((prev) => (prev.x === next.x && prev.bottom === next.bottom && prev.width === next.width ? prev : next));
+    const next = { x: caretBox.left - origin, fieldLeft: fieldBox.left - origin, width: fieldBox.width };
+    setAnchor((prev) => (prev.x === next.x && prev.fieldLeft === next.fieldLeft && prev.width === next.width ? prev : next));
+  });
+
+  // The field is as tall as its mirror (already capped at maxRows), so the mirror is the target height.
+  useLayoutEffect(() => {
+    const mirror = mirrorRef.current;
+    if (!mirror) return;
+    const height = mirror.offsetHeight;
+    setFieldHeight((prev) => (prev === height ? prev : height));
   });
 
   const trigger = findTrigger(value, caret);
@@ -304,7 +318,9 @@ export function AiComposerMinimal({
   const optionId = (i: number) => `${uid}-option-${i}`;
   const hintId = `${uid}-hint`;
   const popWidth = Math.min(POP_WIDTH, Math.max(POP_MIN_WIDTH, anchor.width));
-  const popLeft = Math.min(Math.max(0, anchor.x - 12), Math.max(0, anchor.width - popWidth));
+  // Follows the caret, clamped so the menu stays inside the field's own span.
+  const popLeft = Math.min(Math.max(anchor.fieldLeft, anchor.x - 12), anchor.fieldLeft + Math.max(0, anchor.width - popWidth));
+  const sendReady = busy || value.trim().length > 0;
 
   const pick = (option: Option) => {
     if (!trigger) return;
@@ -380,6 +396,15 @@ export function AiComposerMinimal({
 
   const hintLine = busy ? "Generating · esc to stop" : null;
 
+  // Send is never a grey slab: idle and empty it sits on the chip fill with a faint arrow, and it turns
+  // solid ink once there is text. aria-disabled (not disabled) keeps its size and its focusability;
+  // submit() already ignores an empty send.
+  const sendTone = busy
+    ? "cursor-pointer text-[color:var(--cc-ink)] hover:bg-[color:var(--cc-chip)] active:scale-[0.97]"
+    : sendReady
+      ? "cursor-pointer bg-[color:var(--cc-send)] text-[color:var(--cc-on-send)] hover:bg-[color:var(--cc-send-hover)] active:scale-[0.97]"
+      : "cursor-not-allowed bg-[color:var(--cc-chip)] text-[color:var(--cc-faint)]";
+
   // One polite region carries both states. An open menu says how many rows it holds and which is
   // highlighted, so arrowing announces each row; the menu wins over "generating" when both apply.
   const noun = trigger?.kind === "mention" ? "file" : "command";
@@ -396,8 +421,13 @@ export function AiComposerMinimal({
         initial={reduce ? REVEAL_FROM_REDUCED : REVEAL_FROM}
         animate={reduce ? REVEAL_TO_REDUCED : REVEAL_TO}
         transition={{ duration: reduce ? 0.15 : 0.5, ease: EASE_OUT }}
-        className="relative rounded-[16px] border transition-[border-color] duration-200 ease-out focus-within:border-[color:var(--cc-line-strong)]"
-        style={{ background: "var(--cc-field)", borderColor: "var(--cc-line)", boxShadow: "var(--cc-shadow)" }}
+        className="relative rounded-[16px] border transition-[border-color] duration-200 ease-out focus-within:border-[color:var(--cc-line-strong)] has-[textarea:focus-visible]:outline-2 has-[textarea:focus-visible]:outline-offset-2"
+        style={{
+          background: "var(--cc-field)",
+          borderColor: "var(--cc-line)",
+          boxShadow: "var(--cc-shadow)",
+          outlineColor: "var(--cc-line-strong)",
+        }}
         onMouseDown={(event) => {
           // A press on the frame (not the field or a button) keeps focus in the prompt.
           const target = event.target as HTMLElement;
@@ -407,121 +437,47 @@ export function AiComposerMinimal({
         }}
       >
         <div className="flex items-end gap-2.5 py-2.5 pl-4 pr-2.5">
-          <div ref={fieldRef} className="relative min-w-0 flex-1">
-            {/* The mirror is the field's height: it lays out the text, the caret and the mention marks. */}
-            <div
-              ref={mirrorRef}
-              aria-hidden="true"
-              className="pointer-events-none overflow-hidden break-words whitespace-pre-wrap py-[7px] font-sans text-[15px] leading-[22px] tracking-[-0.005em]"
-              style={{ color: "var(--cc-ink)", maxHeight: fieldMaxHeight }}
-            >
-              {renderText(value.slice(0, caret), known, "p")}
-              <span ref={caretRef} className="inline-block h-[22px] w-0 align-top" />
-              {renderText(value.slice(caret), known, "s")}
-              {"​"}
+          <div ref={fieldRef} className="min-w-0 flex-1">
+            {/* The wrapper glides to the mirror's height and clips it, so a new line or a send's reset animates. */}
+            <div className="relative overflow-hidden" style={{ height: fieldHeight, transition: reduce ? undefined : FIELD_GROW }}>
+              {/* The mirror lays out the text, the caret and the mention marks. It is in flow, so it sets the height. */}
+              <div
+                ref={mirrorRef}
+                aria-hidden="true"
+                className="pointer-events-none overflow-hidden break-words whitespace-pre-wrap py-[7px] font-sans text-[15px] leading-[22px] tracking-[-0.005em]"
+                style={{ color: "var(--cc-ink)", maxHeight: fieldMaxHeight }}
+              >
+                {renderText(value.slice(0, caret), known, "p")}
+                <span ref={caretRef} className="inline-block h-[22px] w-0 align-top" />
+                {renderText(value.slice(caret), known, "s")}
+                {"​"}
+              </div>
+
+              <textarea
+                ref={textareaRef}
+                data-demo="field"
+                rows={1}
+                value={value}
+                placeholder={placeholder}
+                aria-label="Message"
+                aria-autocomplete="list"
+                aria-controls={open ? `${uid}-list` : undefined}
+                aria-activedescendant={open && options.length > 0 ? optionId(index) : undefined}
+                aria-describedby={open ? hintId : undefined}
+                onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
+                  setValue(event.target.value);
+                  setCaret(event.target.selectionStart);
+                  setActive(0);
+                }}
+                onSelect={(event) => setCaret(event.currentTarget.selectionStart)}
+                onScroll={(event) => {
+                  if (mirrorRef.current) mirrorRef.current.scrollTop = event.currentTarget.scrollTop;
+                }}
+                onKeyDown={onKeyDown}
+                className="absolute inset-0 w-full resize-none overflow-y-auto bg-transparent py-[7px] font-sans text-[15px] leading-[22px] tracking-[-0.005em] break-words outline-none [scrollbar-width:none] placeholder:text-[color:var(--cc-faint)] [&::-webkit-scrollbar]:hidden"
+                style={{ color: "transparent", caretColor: "var(--cc-ink)" }}
+              />
             </div>
-
-            <textarea
-              ref={textareaRef}
-              data-demo="field"
-              rows={1}
-              value={value}
-              placeholder={placeholder}
-              aria-label="Message"
-              aria-autocomplete="list"
-              aria-controls={open ? `${uid}-list` : undefined}
-              aria-activedescendant={open && options.length > 0 ? optionId(index) : undefined}
-              aria-describedby={open ? hintId : undefined}
-              onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
-                setValue(event.target.value);
-                setCaret(event.target.selectionStart);
-                setActive(0);
-              }}
-              onSelect={(event) => setCaret(event.currentTarget.selectionStart)}
-              onScroll={(event) => {
-                if (mirrorRef.current) mirrorRef.current.scrollTop = event.currentTarget.scrollTop;
-                setScrolled(event.currentTarget.scrollTop);
-              }}
-              onKeyDown={onKeyDown}
-              className="absolute inset-0 w-full resize-none overflow-y-auto bg-transparent py-[7px] font-sans text-[15px] leading-[22px] tracking-[-0.005em] break-words outline-none [scrollbar-width:none] placeholder:text-[color:var(--cc-faint)] [&::-webkit-scrollbar]:hidden"
-              style={{ color: "transparent", caretColor: "var(--cc-ink)" }}
-            />
-
-            <AnimatePresence>
-              {open && trigger && (
-                <motion.div
-                  key={trigger.kind}
-                  id={`${uid}-list`}
-                  role="listbox"
-                  aria-label={trigger.kind === "mention" ? "Files" : "Commands"}
-                  initial={reduce ? { opacity: 0 } : { opacity: 0, y: 6, scale: 0.98, filter: "blur(4px)" }}
-                  animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
-                  exit={{ opacity: 0, transition: { duration: 0.12, ease: EASE_IN } }}
-                  transition={{ duration: reduce ? 0.12 : 0.24, ease: EASE_OUT }}
-                  className="absolute z-20 max-h-[264px] origin-bottom overflow-y-auto rounded-[14px] border p-1.5"
-                  style={{
-                    left: popLeft,
-                    bottom: anchor.bottom,
-                    width: popWidth,
-                    background: "var(--cc-panel)",
-                    borderColor: "var(--cc-line)",
-                    boxShadow: "var(--cc-panel-shadow)",
-                  }}
-                >
-                  <div className="px-2 pt-1 pb-1.5 font-mono text-[10.5px] tracking-[0.14em] uppercase" style={{ color: "var(--cc-faint)" }}>
-                    {trigger.kind === "mention" ? "Files" : "Commands"}
-                  </div>
-                  {options.length === 0 && (
-                    <div className="px-2 py-2 text-[13px]" style={{ color: "var(--cc-muted)" }}>
-                      {trigger.kind === "mention" ? "No matching files" : "No matching commands"}
-                    </div>
-                  )}
-                  {options.map((option, i) => {
-                    const on = i === index;
-                    return (
-                      <div
-                        key={option.id}
-                        id={optionId(i)}
-                        role="option"
-                        aria-selected={on}
-                        onMouseDown={(event) => event.preventDefault()}
-                        onMouseEnter={() => setActive(i)}
-                        onClick={() => pick(option)}
-                        className="relative flex cursor-pointer items-center gap-2.5 rounded-[10px] px-2 py-[7px]"
-                      >
-                        {on && (
-                          <motion.span
-                            layoutId={`${uid}-highlight`}
-                            transition={reduce ? { duration: 0 } : SPRING_UI}
-                            className="absolute inset-0 rounded-[10px]"
-                            style={{ background: "var(--cc-chip)" }}
-                          />
-                        )}
-                        {trigger.kind === "mention" && (
-                          <span
-                            className="relative grid size-7 shrink-0 place-items-center rounded-[8px] border"
-                            style={{ borderColor: "var(--cc-line)", color: "var(--cc-muted)" }}
-                          >
-                            <FileIcon />
-                          </span>
-                        )}
-                        <span className="relative flex min-w-0 flex-col">
-                          <span
-                            className={`truncate text-[14px] leading-[20px] ${trigger.kind === "command" ? "font-mono text-[13px]" : ""}`}
-                            style={{ color: on ? "var(--cc-ink)" : "var(--cc-body)" }}
-                          >
-                            {option.label}
-                          </span>
-                          <span className="truncate text-[11.5px] leading-[16px]" style={{ color: "var(--cc-faint)" }}>
-                            {option.detail}
-                          </span>
-                        </span>
-                      </div>
-                    );
-                  })}
-                </motion.div>
-              )}
-            </AnimatePresence>
           </div>
 
           {/* Hover is one step: a 4% lift on the fill (pointer devices only, via Tailwind's hover gate). */}
@@ -529,13 +485,9 @@ export function AiComposerMinimal({
             type="button"
             data-demo="send"
             aria-label={busy ? "Stop generating" : "Send message"}
-            disabled={!busy && !value.trim()}
+            aria-disabled={!sendReady || undefined}
             onClick={busy ? stop : submit}
-            className={`group relative grid size-9 shrink-0 cursor-pointer place-items-center rounded-[11px] transition-[background-color,box-shadow,transform,opacity] duration-150 ease-out enabled:active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-40 ${SEND_HIT_INSET} ${
-              busy
-                ? "text-[color:var(--cc-ink)] enabled:hover:bg-[color:var(--cc-chip)]"
-                : "bg-[color:var(--cc-send)] text-[color:var(--cc-on-send)] enabled:hover:bg-[color:var(--cc-send-hover)]"
-            }`}
+            className={`group relative grid size-9 shrink-0 place-items-center rounded-[11px] transition-[background-color,box-shadow,color,transform] duration-150 ease-out focus-visible:outline-2 focus-visible:outline-offset-2 ${SEND_HIT_INSET} ${sendTone}`}
             style={{ outlineColor: "var(--cc-ink)", boxShadow: busy ? "inset 0 0 0 1px var(--cc-line-strong)" : undefined }}
           >
             <AnimatePresence initial={false} mode="popLayout">
@@ -550,8 +502,8 @@ export function AiComposerMinimal({
                 {busy ? (
                   <StopIcon />
                 ) : (
-                  // The arrow lifts 1px on hover; the nudge is nested so motion's own transform on the icon span is untouched.
-                  <span className="grid place-items-center transition-transform duration-150 ease-out group-enabled:group-hover:-translate-y-px">
+                  // The arrow lifts 1px on hover while it is live; the nudge is nested so motion's own transform on the icon span is untouched.
+                  <span className={`grid place-items-center transition-transform duration-150 ease-out ${sendReady ? "group-hover:-translate-y-px" : ""}`}>
                     <ArrowUpIcon />
                   </span>
                 )}
@@ -571,14 +523,92 @@ export function AiComposerMinimal({
             )}
           </button>
         </div>
+
+        {/* The menu hangs off the frame, not the field, so it opens above the whole composer whatever its height. */}
+        <AnimatePresence>
+          {open && trigger && (
+            <motion.div
+              key={trigger.kind}
+              id={`${uid}-list`}
+              role="listbox"
+              aria-label={trigger.kind === "mention" ? "Files" : "Commands"}
+              initial={reduce ? { opacity: 0 } : { opacity: 0, y: 6, scale: 0.98, filter: "blur(4px)" }}
+              animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+              exit={{ opacity: 0, transition: { duration: 0.12, ease: EASE_IN } }}
+              transition={{ duration: reduce ? 0.12 : 0.24, ease: EASE_OUT }}
+              className="absolute z-20 max-h-[264px] origin-bottom overflow-y-auto rounded-[14px] border p-1.5"
+              style={{
+                left: popLeft,
+                bottom: `calc(100% + ${POP_GAP}px)`,
+                width: popWidth,
+                background: "var(--cc-panel)",
+                borderColor: "var(--cc-line)",
+                boxShadow: "var(--cc-panel-shadow)",
+              }}
+            >
+              <div className="px-2 pt-1 pb-1.5 font-mono text-[10.5px] tracking-[0.14em] uppercase" style={{ color: "var(--cc-faint)" }}>
+                {trigger.kind === "mention" ? "Files" : "Commands"}
+              </div>
+              {options.length === 0 && (
+                <div className="px-2 py-2 text-[13px]" style={{ color: "var(--cc-muted)" }}>
+                  {trigger.kind === "mention" ? "No matching files" : "No matching commands"}
+                </div>
+              )}
+              {options.map((option, i) => {
+                const on = i === index;
+                return (
+                  <div
+                    key={option.id}
+                    id={optionId(i)}
+                    role="option"
+                    aria-selected={on}
+                    onMouseDown={(event) => event.preventDefault()}
+                    onMouseEnter={() => setActive(i)}
+                    onClick={() => pick(option)}
+                    className="relative flex cursor-pointer items-center gap-2.5 rounded-[10px] px-2 py-[7px]"
+                  >
+                    {on && (
+                      <motion.span
+                        layoutId={`${uid}-highlight`}
+                        transition={reduce ? { duration: 0 } : SPRING_UI}
+                        className="absolute inset-0 rounded-[10px]"
+                        style={{ background: "var(--cc-chip)" }}
+                      />
+                    )}
+                    {trigger.kind === "mention" && (
+                      <span
+                        className="relative grid size-7 shrink-0 place-items-center rounded-[8px] border"
+                        style={{ borderColor: "var(--cc-line)", color: "var(--cc-muted)" }}
+                      >
+                        <FileIcon />
+                      </span>
+                    )}
+                    <span className="relative flex min-w-0 flex-col">
+                      <span
+                        className={`truncate text-[14px] leading-[20px] ${trigger.kind === "command" ? "font-mono text-[13px]" : ""}`}
+                        style={{ color: on ? "var(--cc-ink)" : "var(--cc-body)" }}
+                      >
+                        {option.label}
+                      </span>
+                      <span className="truncate text-[11.5px] leading-[16px]" style={{ color: "var(--cc-faint)" }}>
+                        {option.detail}
+                      </span>
+                    </span>
+                  </div>
+                );
+              })}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
 
+      {/* A fixed-height row: the idle and busy hints differ in height, and the composer must not move for either. */}
       <motion.div
         initial={reduce ? REVEAL_FROM_REDUCED : REVEAL_FROM}
         animate={reduce ? REVEAL_TO_REDUCED : REVEAL_TO}
         transition={{ duration: reduce ? 0.15 : 0.5, delay: reduce ? 0 : 0.06, ease: EASE_OUT }}
-        className="flex items-center justify-between gap-4 px-1 pt-3 font-mono text-[11px] leading-none"
-        style={{ color: "var(--cc-faint)" }}
+        className="mt-3 flex items-center justify-between gap-4 px-1 font-mono text-[11px] leading-none"
+        style={{ color: "var(--cc-faint)", height: FOOTER_PX }}
       >
         <AnimatePresence mode="wait" initial={false}>
           <motion.span
@@ -598,12 +628,12 @@ export function AiComposerMinimal({
         </AnimatePresence>
         <span className="hidden items-center gap-3 whitespace-nowrap @[420px]:flex">
           {mentions && (
-            <span>
+            <span className="inline-flex items-center gap-1.5">
               <Key>@</Key> mention
             </span>
           )}
           {commands && (
-            <span>
+            <span className="inline-flex items-center gap-1.5">
               <Key>/</Key> commands
             </span>
           )}
@@ -671,7 +701,39 @@ function FileIcon() {
 
 const STAGE = "#0a0a0b";
 /** The demo's simulated reply, in ms. Short enough that the whole walkthrough stays under 8 s. */
-const DEMO_REPLY_MS = 700;
+const DEMO_REPLY_MS = 600;
+/**
+ * A multi-line draft for the Max rows control to cap. The demo seeds it only once that control is
+ * tuned, so the untouched demo still starts empty and the card video shows the grow-on-wrap moment.
+ */
+const SAMPLE_DRAFT = [
+  "Pull the three themes out of the interview notes.",
+  "Keep each theme to one sentence and one customer quote.",
+  "Flag anything that touches the pricing tests.",
+  "Leave the roadmap out until Thursday.",
+  "Finish with a single recommendation.",
+].join("\n");
+
+/**
+ * The conversation the composer sits under. It is the context a real chat composer has, and it is
+ * the only thing that gives the card video height above the field: the video is cropped to the
+ * visible content, so a popover opening into empty stage would be cut off at the top of the frame.
+ */
+function ConversationContext({ light }: { light: boolean }) {
+  return (
+    <div className="flex flex-col gap-8" aria-hidden="true" style={{ color: light ? "#3f3f46" : "#c4c4ca" }}>
+      <p
+        className="ml-auto max-w-[78%] rounded-[14px] px-3.5 py-2.5 text-[14px] leading-[20px]"
+        style={{ background: light ? "rgba(17,17,19,0.05)" : "rgba(255,255,255,0.06)" }}
+      >
+        What did the five customer interviews say about exports?
+      </p>
+      <p className="text-[15px] leading-[22px] tracking-[-0.005em]">
+        Four of the five said exports lose their formatting when pasted into a doc. Two asked for a template they can reuse each week, and one wanted the export without the logo. Pricing only came up in the final call, so the pricing tests should wait until the export work ships.
+      </p>
+    </div>
+  );
+}
 
 /** Demo stage. The demo's own state drives Stop and back, so the component's controls work too. */
 export default function AiComposerMinimalDemo({ state: forced, ...overrides }: Partial<AiComposerMinimalProps> = {}) {
@@ -693,19 +755,25 @@ export default function AiComposerMinimalDemo({ state: forced, ...overrides }: P
     return () => window.clearTimeout(t);
   }, [state]);
 
+  // Anchored low, where a chat composer sits, with the conversation above it.
+  const light = overrides.theme === "light";
   return (
     <div
-      className="flex min-h-[max(680px,100dvh)] w-full items-center justify-center px-4 py-16"
-      style={{ background: overrides.theme === "light" ? "#f4f4f5" : STAGE }}
+      className="flex min-h-[max(680px,100dvh)] w-full items-end justify-center px-4 pb-[clamp(40px,10vh,96px)]"
+      style={{ background: light ? "#f4f4f5" : STAGE }}
     >
-      <AiComposerMinimal
-        {...overrides}
-        state={state}
-        onStateChange={(next) => {
-          replying.current = next === "generating";
-          setState(next);
-        }}
-      />
+      <div className="flex w-full max-w-[600px] flex-col gap-8">
+        <ConversationContext light={light} />
+        <AiComposerMinimal
+          defaultValue={overrides.maxRows === undefined ? undefined : SAMPLE_DRAFT}
+          {...overrides}
+          state={state}
+          onStateChange={(next) => {
+            replying.current = next === "generating";
+            setState(next);
+          }}
+        />
+      </div>
     </div>
   );
 }

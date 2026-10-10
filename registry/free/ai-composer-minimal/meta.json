@@ -28,6 +28,12 @@
       "description": "Shown while the field is empty."
     },
     {
+      "name": "defaultValue",
+      "type": "string",
+      "default": "\"\"",
+      "description": "Text the field starts with. Read on mount only. Tuning Max rows seeds a five-line sample draft, so the cap has text to cap."
+    },
+    {
       "name": "state",
       "type": "\"idle\" | \"generating\"",
       "description": "Controlled state. Leave it out and the composer owns the state and simulates the reply."
@@ -102,14 +108,15 @@
   "demo": {
     "steps": [
       "click:@field",
+      "move:0.5,0.95",
       "type:Summarise @",
-      "wait:500",
-      "key:ArrowDown",
       "wait:300",
+      "key:ArrowDown",
+      "wait:200",
       "key:Enter",
-      "type:into three themes for Thursday",
+      "type:into three themes for Thursday’s pricing",
       "key:Enter",
-      "wait:800"
+      "wait:350"
     ]
   },
   "controls": [
@@ -154,7 +161,8 @@
       "max": 10,
       "step": 1,
       "unit": "rows",
-      "default": 6
+      "default": 6,
+      "remount": true
     },
     {
       "prop": "theme",

@@ -12,10 +12,10 @@
   "layout": {
     "root": "@container, relative, max-width 600px, full width below. Footer hints drop their right-hand group under 420px of container width.",
     "composer": "16px radius, 1px hairline border, fill #141416, inner top highlight and a soft deep shadow. Row: 16px left, 10px top and bottom, 10px right padding, 8px gap, items end-aligned so the send button sits on the last line.",
-    "field": "Textarea absolutely covering a mirror div in flow. The mirror has the same font, line box, padding, wrap and tracking, so it sets the height. One line is 36px (22px line box plus 7px top and bottom). Growth is 22px per row up to maxRows, then the field scrolls with no visible scrollbar.",
-    "popover": "288px wide (never wider than the field), at most 264px tall, 14px radius, panel #1b1b1e, hairline border, deep shadow. Its bottom edge sits 8px above the top of the composer frame, so it never covers written text; left is the caret x clamped inside the field.",
-    "send": "36px square visual, 11px radius, ink fill. The hit area is 44px (a 4px pseudo-element). Hover lifts the fill 4% (pointer devices only) and nudges the arrow 1px up over 150ms. While generating it is an outlined square with a stop glyph and one hairline arc ringing it.",
-    "footer": "Mono 11px in the faint token, 12px below the composer: left shows return and shift-return keycaps, or 'Generating · esc to stop'; right shows the @ and / hints when those features are on."
+    "field": "Textarea absolutely covering a mirror div in flow. The mirror has the same font, line box, padding, wrap and tracking, so it sets the height. One line is 36px (22px line box plus 7px top and bottom). Growth is 22px per row up to maxRows, then the field scrolls with no visible scrollbar. Growth is animated: the wrapper clips the mirror and glides to its measured height over 180ms ease-out; under reduced motion it snaps.",
+    "popover": "288px wide (never wider than the field), at most 264px tall, 14px radius, panel #1b1b1e, hairline border, deep shadow. Positioned from the frame with bottom calc(100% + 8px), so it opens above the whole composer and never covers written text; height never feeds it. Left is the caret x clamped inside the field.",
+    "send": "36px square visual, 11px radius. Live: ink fill with ink arrow. Idle and empty: chip fill, faint arrow, not-allowed cursor, aria-disabled; it animates to the solid ink fill over 150ms when text appears. The hit area is 44px (a 4px pseudo-element). Hover lifts the fill 4% (pointer devices only) and nudges the arrow 1px up over 150ms. While generating it is an outlined square with a stop glyph and one hairline arc ringing it.",
+    "footer": "Mono 11px in the faint token, 12px below the composer, in a fixed 20px row so the idle and busy hints never change the composer's height: left shows return and shift-return keycaps, or 'Generating · esc to stop'; right shows the @ and / hints when those features are on, each as an inline-flex keycap plus label."
   },
   "typography": {
     "field": {
@@ -68,17 +68,18 @@
     "popover": "Enters in 240ms from 6px below with a 4px blur clearing; exits in 120ms.",
     "highlight": "A shared layoutId pill glides between rows on spring.ui.",
     "footerSwap": "Hints cross-fade with a 3px rise in 180ms.",
-    "send": "Press scales to 0.97; the icon swaps between send and stop with a 0.7 to 1 scale. Hover lifts the fill and nudges the arrow, pointer only.",
+    "send": "Press scales to 0.97; the icon swaps between send and stop with a 0.7 to 1 scale. Hover lifts the fill and nudges the arrow, pointer only. The idle-empty to live transition is a 150ms colour change; the size never changes.",
     "generating": "The send button shows a stop glyph inside an inset hairline with one hairline arc rotating every 2.4s. This is the one ambient signal.",
     "reducedMotion": "No travel, no blur, no rotation. Opacity changes at 150ms or less; the arc is static.",
-    "entrance": "First view: the composer rises 10px out of a 6px blur over 500ms (ease-out); the footer follows 60ms later."
+    "entrance": "First view: the composer rises 10px out of a 6px blur over 500ms (ease-out); the footer follows 60ms later.",
+    "field": "Height glides to the mirror's measured height over 180ms ease-out as lines are added, and snaps under reduced motion."
   },
   "behaviour": {
     "enter": "Sends the trimmed message and clears the field. Empty or busy: nothing happens.",
     "shiftEnter": "Breaks the line.",
     "menus": "@ opens files at the start of a word, / opens commands only at the start of a line. Up and Down move, Enter or Tab pick, Escape closes and stays closed for that trigger. Picking writes @name or /name with a trailing space.",
     "escape": "While generating, Escape stops.",
-    "uncontrolled": "Generating lasts replyMs (1800) or until a returned promise settles.",
+    "uncontrolled": "Generating lasts replyMs (1800) or until a returned promise settles. defaultValue sets the starting text. Tuning maxRows in the demo seeds a five-line draft so the cap is visible at rest.",
     "controlled": "Pass state and onStateChange; the host receives generating on send and idle on stop, and ends the reply itself."
   },
   "responsive": {
@@ -88,8 +89,8 @@
     "The field is a textarea labelled Message with aria-autocomplete list; while a menu is open it carries aria-controls, aria-activedescendant and aria-describedby pointing at a visually hidden hint.",
     "Options are role option with aria-selected; the menu is role listbox with a name (Files or Commands).",
     "A single polite live region announces the open menu (count, highlighted row, or no matches), otherwise Generating a reply while a reply runs.",
-    "The send button's label changes between Send message and Stop generating; it is disabled when there is nothing to send and has a 44px hit area.",
-    "Focus stays in the field, including when a menu row is pressed (mousedown is prevented). Focus-visible uses a 2px ink ring with offset.",
+    "The send button's label changes between Send message and Stop generating; it is aria-disabled (not disabled) when there is nothing to send and has a 44px hit area.",
+    "Focus stays in the field, including when a menu row is pressed (mousedown is prevented). Focus-visible uses a 2px ink ring with offset on the send button, and a 2px line-strong ring around the frame while the field has focus.",
     "Reduced motion keeps every state change readable without movement."
   ],
   "content": {
@@ -104,6 +105,7 @@
     "Rounded-full pill everywhere; the field is a 16px-radius box.",
     "Accent colour on anything except the mention text.",
     "Copy like Unlock, Seamless or Supercharge.",
-    "A theme toggle that changes only the copy: the light palette must change ink, surface, shadow and accent together."
+    "A theme toggle that changes only the copy: the light palette must change ink, surface, shadow and accent together.",
+    "Any change to the footer or send button that alters the composer's height between idle, generating and empty states."
   ]
 }
