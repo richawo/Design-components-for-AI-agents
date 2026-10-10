@@ -11,6 +11,7 @@
   "layout": {
     "position": "fixed top, inset 12/20px, centred",
     "bar": "max-w 1200px → 720px condensed; logo left, links centre (md+), CTA right",
+    "optionalProps": "tucked (true/false forces the shape over scroll; \"auto\" follows it), barOpacity (default 0.72), width (default 1200, tucks to min(720, width))",
     "sheet": "fixed inset-0, pt-28, links → CTA → contact → socials"
   },
   "typography": {

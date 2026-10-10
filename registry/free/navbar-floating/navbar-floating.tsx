@@ -22,8 +22,8 @@ export type NavbarFloatingProps = {
   socials?: Social[];
   /** Scroll distance in px after which the pill tucks itself in. */
   condenseAt?: number;
-  /** Force the tucked-in (true) or resting (false) shape. Leave undefined to follow the page scroll. */
-  tucked?: boolean;
+  /** Force the tucked-in (true) or resting (false) shape. Leave undefined, or pass "auto", to follow the page scroll. */
+  tucked?: boolean | "auto";
   /** Opacity of the glass behind the links, 0 to 1. The page reads through the rest. */
   barOpacity?: number;
   /** Maximum width of the resting bar in px. It tucks to 720 (or this, if smaller). */
@@ -147,11 +147,12 @@ export function NavbarFloating({
     { label: "LinkedIn", href: "#" },
   ],
   condenseAt = 80,
-  tucked: forcedTucked,
+  tucked: tuckedProp,
   barOpacity = 0.72,
   width = WIDTH.full,
 }: NavbarFloatingProps) {
   const reduce = useReducedMotion() ?? false;
+  const forcedTucked = tuckedProp === "auto" ? undefined : tuckedProp;
   const uid = useId();
   const sheetId = `${uid}-sheet`;
   const condensed = useCondensed(condenseAt);
@@ -192,7 +193,6 @@ export function NavbarFloating({
         <motion.a
           href={brand.href}
           data-nf-focus
-          data-demo="brand"
           variants={rise}
           initial="hidden"
           animate="shown"
@@ -566,6 +566,7 @@ function useRevealOnce(ref: RefObject<HTMLElement | null>, startedAt: number) {
   return delay;
 }
 
+// Demo hooks: data-demo="link-n" (desktop links), "cta" and "menu" (mobile) are the script's targets; "current-n" marks the current-page rule.
 export default function NavbarFloatingDemo(overrides: Partial<NavbarFloatingProps> = {}) {
   const reduce = useReducedMotion() ?? false;
   const rise = riseVariants(reduce);

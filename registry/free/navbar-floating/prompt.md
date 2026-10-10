@@ -28,6 +28,9 @@ Build a floating glass navigation bar in React + Tailwind CSS v4 with `motion/re
 - Big links (`font-display` semibold, `clamp(2.25rem, 11vw, 3.5rem)`, tracking −0.05em) rise out of their own masks, 60ms apart from 180ms, each with a mono index on the right (the current page adds a 6px white dot) and hairline dividers.
 - Then, 60ms apart from 420ms, each rising 8px out of a 6px blur: a full-width white CTA, the two contact columns (mono labels at `white/40`), and social links with ↗.
 
+**Optional props**
+- `tucked` forces the tucked-in (`true`) or resting (`false`) shape, overriding the scroll (`"auto"` or undefined follows it). `barOpacity` sets the glass opacity (default 0.72). `width` sets the resting max width (default 1200); the bar tucks to `min(720, width)`.
+
 **Code**
 - Small named pieces: `useCondensed`, `useSheetBehaviour` (scroll lock, Esc, Tab trap, auto-close at md), `DesktopLinks`, `MenuButton`, `MobileSheet`. Motion timings live in `INTRO` and `SHEET` objects; the entrance variants are module constants (one rise set, one reduced-motion fade set) with the delay passed as `custom`.
 

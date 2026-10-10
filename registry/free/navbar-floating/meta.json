@@ -62,8 +62,8 @@
     },
     {
       "name": "tucked",
-      "type": "boolean",
-      "description": "Force the tucked-in (true) or resting (false) shape. Leave undefined to follow the page scroll."
+      "type": "boolean | \"auto\"",
+      "description": "Force the tucked-in (true) or resting (false) shape. Leave undefined, or pass \"auto\", to follow the page scroll."
     },
     {
       "name": "barOpacity",
@@ -81,16 +81,16 @@
   "added": "2026-10-07",
   "demo": {
     "steps": [
-      "wait:600",
+      "wait:250",
       "hover:@link-1",
       "hover:@link-2",
-      "hover:@link-0",
-      "wait:200",
       "scroll:420",
-      "wait:1000",
-      "hover:@cta",
+      "wait:500",
+      "hover:@link-3",
+      "hover:@link-1",
       "scroll:-420",
-      "wait:900"
+      "wait:600",
+      "move:0.74,0.82"
     ]
   },
   "controls": [
@@ -120,31 +120,35 @@
     },
     {
       "prop": "tucked",
-      "label": "Tucked in",
-      "kind": "toggle",
-      "default": false,
+      "label": "Scroll state",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "auto",
+          "label": "Auto"
+        },
+        {
+          "value": false,
+          "label": "Resting"
+        },
+        {
+          "value": true,
+          "label": "Tucked"
+        }
+      ],
+      "default": "auto",
       "group": "Shape"
     },
     {
       "prop": "width",
       "label": "Bar width",
       "kind": "slider",
-      "min": 760,
-      "max": 1400,
+      "min": 720,
+      "max": 1200,
       "step": 20,
       "unit": "px",
       "default": 1200,
       "group": "Shape"
-    },
-    {
-      "prop": "barOpacity",
-      "label": "Glass opacity",
-      "kind": "slider",
-      "min": 0.3,
-      "max": 1,
-      "step": 0.05,
-      "default": 0.72,
-      "group": "Look"
     }
   ]
 }
