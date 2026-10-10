@@ -3474,6 +3474,238 @@
     ]
   },
   {
+    "slug": "diagram-payment-hops",
+    "name": "Payment Hops Diagram",
+    "tier": "pro",
+    "platform": "web",
+    "category": "diagrams",
+    "description": "A card payment's round trip drawn live: the amount travels terminal to issuer as a chip, an auth code or a decline rides back, and each hop shows its latency.",
+    "tags": [
+      "diagram",
+      "payments",
+      "card authorisation",
+      "fintech",
+      "explainer",
+      "latency",
+      "animated diagram",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 800,
+    "usage": "import { DiagramPaymentHops } from \"@/components/design-for-ai/diagram-payment-hops\";\n\n<DiagramPaymentHops\n  amount={24.5}\n  currency=\"EUR\"\n  locale=\"de-DE\"\n  outcome=\"declined\"\n  declineReason=\"Card expired\"\n  declineCode=\"54\"\n  onComplete={({ outcome, roundTripMs }) => track(\"demo_payment\", { outcome, roundTripMs })}\n/>\n\n// Your own route: terminal first, issuer last. Times are real milliseconds.\n<DiagramPaymentHops hops={[{ id: \"pos\", kind: \"terminal\", role: \"Terminal\", name: \"Kiosk 7\", linkMs: 30 }, /* … */]} />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Follow one card tap\"",
+        "description": "Heading over the diagram."
+      },
+      {
+        "name": "summary",
+        "type": "string",
+        "description": "One line under the heading."
+      },
+      {
+        "name": "hops",
+        "type": "PaymentHop[]",
+        "description": "The route, terminal first and issuer last: id, kind (terminal, acquirer, network, issuer), role, name, place, linkMs, workMs, replyMs, message and fields. Defaults to a four-party card payment built from the amount and outcome."
+      },
+      {
+        "name": "amount",
+        "type": "number",
+        "default": "4.8",
+        "description": "The amount in major units, carried out as the chip."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"GBP\"",
+        "description": "ISO 4217 currency code."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Locale for the money format."
+      },
+      {
+        "name": "outcome",
+        "type": "\"approved\" | \"declined\"",
+        "default": "\"approved\"",
+        "description": "What the issuer will say. The Approve and Decline switch in the footer changes it too."
+      },
+      {
+        "name": "onOutcomeChange",
+        "type": "(outcome: PaymentOutcome) => void",
+        "description": "Called when the footer switch changes the answer."
+      },
+      {
+        "name": "authCode",
+        "type": "string",
+        "default": "\"A7K2Q9\"",
+        "description": "The code an approval carries back to the terminal."
+      },
+      {
+        "name": "declineCode",
+        "type": "string",
+        "default": "\"51\"",
+        "description": "Response code a decline carries back."
+      },
+      {
+        "name": "declineReason",
+        "type": "string",
+        "default": "\"Insufficient funds\"",
+        "description": "Plain words for the decline, shown at the issuer and the terminal."
+      },
+      {
+        "name": "pace",
+        "type": "number",
+        "default": "6",
+        "description": "How many times slower than real time the payment plays. The milliseconds shown stay real."
+      },
+      {
+        "name": "showLatency",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show link latency on each lane and work time on each hop."
+      },
+      {
+        "name": "onComplete",
+        "type": "(result: { outcome: PaymentOutcome; roundTripMs: number }) => void",
+        "description": "Runs when the answer reaches the terminal."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#f2a65a\"",
+        "description": "The one colour: the amount in flight, the hop at work and the Tap card button. Approved and declined keep their green and red."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Near-black card or the white inverse."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@pay",
+        "wait:2700",
+        "click:@hop-issuer",
+        "wait:1100"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "outcome",
+        "label": "Issuer says",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "approved",
+            "label": "Approve"
+          },
+          {
+            "value": "declined",
+            "label": "Decline"
+          }
+        ],
+        "default": "approved",
+        "group": "Payment"
+      },
+      {
+        "prop": "amount",
+        "label": "Amount",
+        "kind": "slider",
+        "min": 1,
+        "max": 250,
+        "step": 0.5,
+        "default": 4.8,
+        "group": "Payment"
+      },
+      {
+        "prop": "currency",
+        "label": "Currency",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "GBP",
+            "label": "GBP"
+          },
+          {
+            "value": "EUR",
+            "label": "EUR"
+          },
+          {
+            "value": "USD",
+            "label": "USD"
+          }
+        ],
+        "default": "GBP",
+        "group": "Payment"
+      },
+      {
+        "prop": "showLatency",
+        "label": "Latency",
+        "kind": "toggle",
+        "default": true,
+        "group": "Diagram"
+      },
+      {
+        "prop": "title",
+        "label": "Title",
+        "kind": "text",
+        "default": "Follow one card tap",
+        "group": "Diagram"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f2a65a",
+        "options": [
+          "#f2a65a",
+          "#7aa2ff",
+          "#ececee"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Play again",
+        "kind": "action"
+      }
+    ]
+  },
+  {
     "slug": "feature-sticky-scroll",
     "name": "Sticky Scroll Story",
     "tier": "pro",
