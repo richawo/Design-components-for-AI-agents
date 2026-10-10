@@ -2,6 +2,7 @@ Build a full-width site header in React + Tailwind CSS v4 + `motion/react`, at t
 
 **Layout**
 - `<header>` is `sticky top-0 z-40`, full width. Inside, a bar `max-w-[1280px] mx-auto px-4 sm:px-6`, made the `@container`.
+- Optional props: `showSearch` (default true) hides the search chip and the narrow icon button, while ⌘K / Ctrl K still calls `onSearch`; `scrollState` (`"auto"` | `"top"` | `"scrolled"`, default `"auto"`) pins the resting or condensed look instead of following the page scroll.
 - Height animates 64px → 56px (`condenseAt`, default 8px of scroll), 320ms `cubic-bezier(0.22,1,0.36,1)`.
 - Desktop (container ≥ 896px): grid `auto 1fr auto` (links centred in the middle cell); from 1200px of container width switch to `1fr auto 1fr` so the links are optically centred on the page and the search chip shows its "Search docs" label.
 - Left: a 22px drawn mark (two slanted parallelograms, the second at 55% opacity) + wordmark. Centre: five links, `h-10 px-3`. Right: search chip, "Sign in" text link, white primary button, all `h-8`, gap 8px.
@@ -40,7 +41,7 @@ Build a full-width site header in React + Tailwind CSS v4 + `motion/react`, at t
 - Small named pieces: `useCondensed`, `useCommandK` (returns whether the key is held and whether to show ⌘ or Ctrl), `useMenuBehaviour` (scroll lock, Tab trap, Esc, auto-close at 896px), `HoverLinks`, `SearchChip`, `Burger`, `MobileMenu`. Spring and timing values live in named constants (`EDGE`, `INTRO`, `HEIGHT`).
 
 **Demo**
-- Under the header sits one Kestrel docs article, not skeleton bars: a mono breadcrumb (Docs / Deployments / Rollbacks), the headline "Roll back a deploy in one command" (`clamp(2.25rem, 1.5rem + 3vw, 3.75rem)`, tracking −0.045em), a 17px lead, a mono meta line, then a CLI block and two short sections, max width 680px, aligned with the wordmark. The first blocks stagger in 60ms apart from 340ms, after the header; later sections reveal once at 25% visibility, and any already on screen wait for the page intro.
+- Under the header sits one Kestrel docs article, not skeleton bars: a mono breadcrumb (Docs / Deployments / Rollbacks), the headline "Roll back a deploy in one command" (`clamp(2.25rem, 1.5rem + 3vw, 3.75rem)`, tracking −0.045em), a 17px lead, a mono meta line, then a CLI block and two short sections, max width 680px, aligned with the wordmark. The first blocks stagger in 60ms apart from 340ms, after the header; later sections reveal once they are within 400px of the viewport, and any already on screen wait for the page intro.
 
 **Don't**
 - No glass pill, no glow behind the CTA, no gradient wordmark.

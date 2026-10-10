@@ -101,16 +101,20 @@
   "added": "2026-10-09",
   "demo": {
     "steps": [
-      "wait:400",
+      "wait:200",
+      "move:0.42,0.12",
       "hover:@link-docs",
       "hover:@link-customers",
       "click:@link-pricing",
       "wait:250",
-      "scroll:560",
-      "wait:450",
-      "hover:@cta",
-      "scroll:-560",
-      "wait:300"
+      "scroll:220",
+      "wait:500",
+      "hover:@link-changelog",
+      "wait:150",
+      "scroll:-220",
+      "wait:200",
+      "move:0.5,0.6",
+      "wait:200"
     ],
     "loop": false
   },
@@ -153,12 +157,8 @@
           "label": "Follow scroll"
         },
         {
-          "value": "top",
-          "label": "Top"
-        },
-        {
           "value": "scrolled",
-          "label": "Scrolled"
+          "label": "Condensed"
         }
       ],
       "default": "auto"
@@ -171,7 +171,7 @@
     },
     {
       "prop": "searchLabel",
-      "label": "Search label",
+      "label": "Search label (wide)",
       "kind": "text",
       "default": "Search docs"
     },

@@ -610,9 +610,9 @@ const PAGE = { at: 0.34, stagger: 0.06 } as const;
 /** When the page's own first-view sequence ends; blocks already on screen at load wait for it. */
 const PAGE_END = PAGE.at + PAGE.stagger * 4;
 
-/** Reveal once at 25% visibility; returns the start delay, or null while hidden. */
+/** Reveal once within 400px of the viewport (so a quick scroll never shows blank space); returns the start delay, or null while hidden. */
 function useRevealOnce(ref: RefObject<HTMLElement | null>, startedAt: number) {
-  const inView = useInView(ref, { once: true, amount: 0.25 });
+  const inView = useInView(ref, { once: true, amount: 0, margin: "0px 0px 400px 0px" });
   const [delay, setDelay] = useState<number | null>(null);
   useEffect(() => {
     if (inView) setDelay(Math.max(0, PAGE_END - (performance.now() - startedAt) / 1000));

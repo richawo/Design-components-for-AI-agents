@@ -12,7 +12,8 @@
     "height": "64px at rest, 56px after condenseAt (8px) of scroll",
     "desktop": "≥896px container: grid auto|1fr|auto; ≥1200px: 1fr|auto|1fr so links are centred on the page",
     "right": "search chip (h-8, kbd ⌘K), Sign in text link, white primary button; gap 8px; whitespace-nowrap",
-    "mobile": "<896px: wordmark, 44px search icon, primary button from 672px, 44px burger; full-height menu under the bar with 56px rows and two 48px buttons at the bottom"
+    "mobile": "<896px: wordmark, 44px search icon, primary button from 672px, 44px burger; full-height menu under the bar with 56px rows and two 48px buttons at the bottom",
+    "optionalProps": "showSearch (default true) hides the search chip and the narrow icon button, ⌘K / Ctrl K still calls onSearch; scrollState \"auto\" | \"top\" | \"scrolled\" (default \"auto\") pins the resting or condensed look instead of following scroll"
   },
   "typography": {
     "wordmark": "font-display 17px / 600 / -0.04em",
@@ -40,7 +41,7 @@
     "press": "scale 0.97",
     "reducedMotion": "150ms fades instead of rises; highlight jumps, no height tween, opacity-only menu",
     "entrance": "first view ≤ 800ms: wordmark at 40ms, links from 120ms 45ms apart, then search chip, Sign in, primary button (or burger) from 360ms 45ms apart; each block opacity 0→1, y 8px→0, blur 6px→0, 450ms cubic-bezier(0.22,1,0.36,1)",
-    "demo": "docs article: breadcrumb, headline, lead, meta stagger 60ms from 340ms; later sections reveal once at 25% visibility, waiting for the page intro if already on screen"
+    "demo": "docs article: breadcrumb, headline, lead, meta stagger 60ms from 340ms; later sections reveal once within 400px of the viewport, waiting for the page intro if already on screen"
   },
   "responsive": {
     "1440": "links centred on the page, search chip with label",
