@@ -27,7 +27,7 @@
     {
       "name": "eyebrow",
       "type": "string",
-      "default": "\"Ferro & Vale — Independent product studio\"",
+      "default": "\"Ferro & Vale · Product studio, Lisbon\"",
       "description": "Mono line, top left."
     },
     {
@@ -51,7 +51,7 @@
       "name": "tail",
       "type": "string",
       "default": "\"that people\\nopen on purpose.\"",
-      "description": "Words after the name, set at 38% white. A \"\\n\" breaks the line on wide containers so nothing re-wraps while the slot springs."
+      "description": "Words after the name, set at 38% white. A \"\\n\" (or \" / \" in a single-line field) breaks the line on wide containers so nothing re-wraps while the slot springs."
     },
     {
       "name": "primary",
@@ -85,11 +85,11 @@
   "added": "2026-10-09",
   "demo": {
     "steps": [
-      "wait:2800",
-      "click:@rotation",
       "wait:1000",
-      "click",
-      "wait:2100"
+      "hover:@statement:0.22,0.62",
+      "wait:1500",
+      "move:0.8,0.3",
+      "wait:2200"
     ],
     "loop": false
   },
@@ -118,11 +118,11 @@
       "max": 5000,
       "step": 100,
       "unit": "ms",
-      "default": 1500
+      "default": 2100
     },
     {
       "prop": "grain",
-      "label": "Film grain",
+      "label": "Film grain (opacity)",
       "kind": "slider",
       "min": 0,
       "max": 0.3,
@@ -137,17 +137,17 @@
       "group": "Content"
     },
     {
+      "prop": "tail",
+      "label": "Tail",
+      "kind": "text",
+      "default": "that people / open on purpose.",
+      "group": "Content"
+    },
+    {
       "prop": "eyebrow",
       "label": "Eyebrow",
       "kind": "text",
       "default": "Ferro & Vale · Product studio, Lisbon",
-      "group": "Content"
-    },
-    {
-      "prop": "status",
-      "label": "Status line",
-      "kind": "text",
-      "default": "Booking from February 2027",
       "group": "Content"
     },
     {
