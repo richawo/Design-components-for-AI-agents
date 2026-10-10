@@ -394,6 +394,7 @@ export function CartDrawer({
       <button
         ref={trigger}
         type="button"
+        data-demo="bag"
         onClick={() => setOpen(true)}
         aria-haspopup="dialog"
         aria-expanded={open}
@@ -452,6 +453,7 @@ export function CartDrawer({
               </div>
               <button
                 type="button"
+                data-demo="close"
                 onClick={close}
                 aria-label="Close bag"
                 className={`-mr-2 -mt-1 flex size-11 items-center justify-center rounded-full transition-[background-color,transform] duration-150 hover:bg-(--cd-ink)/[0.07] active:scale-[0.94] ${FOCUS}`}
@@ -702,9 +704,10 @@ function LineItem({
             <Money value={item.price * item.qty} money={money} reduce={reduce} className="text-[15px] font-medium" />
           </div>
           <div className="mt-auto flex items-center justify-between gap-3 pt-3">
-            <Stepper value={item.qty} name={item.name} onChange={onQty} reduce={reduce} />
+            <Stepper value={item.qty} name={item.name} demoId={item.id} onChange={onQty} reduce={reduce} />
             <button
               type="button"
+              data-demo={`remove-${item.id}`}
               onClick={onRemove}
               aria-label={`Remove ${item.name}`}
               className={`h-11 rounded-full px-2 text-[13px] text-(--cd-ink)/60 underline decoration-(--cd-ink)/25 underline-offset-4 transition-[color,text-decoration-color] duration-150 hover:text-(--cd-ink) hover:decoration-(--cd-ink) sm:h-9 ${FOCUS}`}
@@ -718,7 +721,7 @@ function LineItem({
   );
 }
 
-function Stepper({ value, name, onChange, reduce }: { value: number; name: string; onChange: (v: number) => void; reduce: boolean }) {
+function Stepper({ value, name, demoId, onChange, reduce }: { value: number; name: string; demoId: string; onChange: (v: number) => void; reduce: boolean }) {
   const btn = `flex size-11 items-center justify-center rounded-full transition-[background-color,transform] duration-150 hover:bg-(--cd-ink)/[0.08] active:scale-90 disabled:opacity-30 disabled:active:scale-100 sm:size-9 ${FOCUS}`;
   // The number rolls up or down with the change, so the direction reads.
   const prev = useRef(value);
@@ -751,7 +754,7 @@ function Stepper({ value, name, onChange, reduce }: { value: number; name: strin
           </motion.span>
         </AnimatePresence>
       </span>
-      <button type="button" className={btn} onClick={() => onChange(value + 1)} disabled={value >= MAX_QTY} aria-label={`Increase quantity of ${name}`}>
+      <button type="button" data-demo={`qty-add-${demoId}`} className={btn} onClick={() => onChange(value + 1)} disabled={value >= MAX_QTY} aria-label={`Increase quantity of ${name}`}>
         <Plus size={14} strokeWidth={2.25} aria-hidden="true" />
       </button>
     </div>
@@ -788,6 +791,7 @@ function UndoRow({ item, seconds, onUndo, onExpire, reduce }: { item: CartItem; 
         </p>
         <button
           type="button"
+          data-demo={`undo-${item.id}`}
           onClick={onUndo}
           className={`h-9 shrink-0 rounded-full bg-(--cd-ink) px-4 text-[13px] font-semibold text-(--cd-on-ink) transition-transform duration-150 active:scale-[0.96] ${FOCUS} focus-visible:ring-offset-2 focus-visible:ring-offset-(--cd-raised)`}
         >
@@ -827,6 +831,7 @@ function Upsell({
         </div>
         <button
           type="button"
+          data-demo="upsell-add"
           onClick={onAdd}
           aria-label={`Add ${upsell.name} for ${money(upsell.price)}`}
           className={`inline-flex h-11 shrink-0 items-center gap-1.5 rounded-full bg-(--cd-ink)/[0.07] px-3.5 text-[13px] font-semibold transition-[background-color,color,transform] duration-150 hover:bg-(--cd-ink) hover:text-(--cd-on-ink) active:scale-[0.96] sm:h-9 ${FOCUS}`}
@@ -884,6 +889,7 @@ function CartFooter({
       </dl>
       <button
         type="button"
+        data-demo="checkout"
         disabled={disabled}
         onClick={onCheckout}
         className={`group mt-4 flex h-14 w-full items-center justify-between rounded-full bg-(--cd-ink) pl-6 pr-2 text-[15px] font-semibold text-(--cd-on-ink) transition-[background-color,transform] duration-150 hover:bg-(--cd-ink)/92 active:scale-[0.98] disabled:opacity-40 disabled:active:scale-100 ${FOCUS} focus-visible:ring-offset-2 focus-visible:ring-offset-(--cd-panel)`}
@@ -986,21 +992,34 @@ function Thumb({ art, color, small = false }: { art: CartArt; color: string; sma
 /* Demo: the drawer open over a quiet stage                            */
 /* ------------------------------------------------------------------ */
 
-/** The only context the drawer needs: the bar its trigger lives in. No storefront behind it. */
-export function CartDrawerDemo(props: CartDrawerProps) {
+/**
+ * The only context the drawer needs: the bar its trigger lives in. No storefront behind it.
+ * `open` is lifted into the demo so a control can open and close the drawer while the
+ * built-in trigger, the scrim and Esc keep working.
+ */
+export default function CartDrawerDemo({ open: forcedOpen, onOpenChange, ...overrides }: Partial<CartDrawerProps> = {}) {
+  const [open, setOpen] = useState(forcedOpen ?? true);
+  useEffect(() => {
+    // Clearing the override returns to the demo's resting state: open.
+    setOpen(forcedOpen ?? true);
+  }, [forcedOpen]);
+  const handleOpenChange = (next: boolean) => {
+    setOpen(next);
+    onOpenChange?.(next);
+  };
   return (
-    <Stage>
-      <CartDrawer strategy="absolute" {...props} />
+    <Stage theme={overrides.theme}>
+      <CartDrawer strategy="absolute" {...overrides} open={open} onOpenChange={handleOpenChange} />
     </Stage>
   );
 }
 
-function Stage({ children }: { children: ReactNode }) {
+export { CartDrawerDemo };
+
+function Stage({ theme = "dark", children }: { theme?: "dark" | "light"; children: ReactNode }) {
   return (
-    <div className="relative h-dvh min-h-[720px] overflow-hidden bg-[#08080a]">
+    <div className={`relative h-dvh min-h-[720px] overflow-hidden transition-colors duration-300 ${theme === "light" ? "bg-[#f4f4f5]" : "bg-[#08080a]"}`}>
       <div className="flex justify-end px-5 py-4 sm:px-8">{children}</div>
     </div>
   );
 }
-
-export default CartDrawerDemo;

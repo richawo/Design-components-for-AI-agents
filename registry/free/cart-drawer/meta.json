@@ -59,10 +59,20 @@
       "description": "Drawer heading."
     },
     {
-      "name": "open / defaultOpen / onOpenChange",
-      "type": "boolean / boolean / (open: boolean) => void",
-      "default": "— / true / —",
-      "description": "Controlled or uncontrolled open state. The built-in trigger button always reopens it."
+      "name": "open",
+      "type": "boolean",
+      "description": "Controlled open state. Leave undefined to let the component manage it. The built-in trigger button always reopens it."
+    },
+    {
+      "name": "defaultOpen",
+      "type": "boolean",
+      "default": "true",
+      "description": "Initial open state when uncontrolled."
+    },
+    {
+      "name": "onOpenChange",
+      "type": "(open: boolean) => void",
+      "description": "Called when the drawer opens or closes (trigger, close button, scrim, Esc or a sheet swipe)."
     },
     {
       "name": "shipsFrom",
@@ -106,5 +116,105 @@
       "description": "Near-black panel with white ink, or the white inverse."
     }
   ],
-  "added": "2026-10-07"
+  "added": "2026-10-07",
+  "demo": {
+    "steps": [
+      "wait:400",
+      "click:@upsell-add",
+      "wait:700",
+      "click:@remove-mug",
+      "wait:450",
+      "click:@undo-mug",
+      "wait:250",
+      "click:@qty-add-nb",
+      "wait:600"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "open",
+      "label": "Drawer",
+      "kind": "action",
+      "options": [
+        {
+          "value": true,
+          "label": "Open"
+        },
+        {
+          "value": false,
+          "label": "Closed"
+        }
+      ],
+      "group": "State"
+    },
+    {
+      "prop": "$replay",
+      "label": "Replay",
+      "kind": "action"
+    },
+    {
+      "prop": "title",
+      "label": "Title",
+      "kind": "text",
+      "default": "Your bag",
+      "group": "Content"
+    },
+    {
+      "prop": "shipsFrom",
+      "label": "Ships from",
+      "kind": "text",
+      "default": "ships from Hebden Bridge",
+      "group": "Content"
+    },
+    {
+      "prop": "freeShippingThreshold",
+      "label": "Free shipping over",
+      "kind": "slider",
+      "min": 40,
+      "max": 150,
+      "step": 5,
+      "default": 75,
+      "group": "Shipping"
+    },
+    {
+      "prop": "shippingFee",
+      "label": "Shipping fee",
+      "kind": "slider",
+      "min": 0,
+      "max": 12,
+      "step": 0.05,
+      "default": 4.95,
+      "group": "Shipping"
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark",
+      "group": "Look"
+    },
+    {
+      "prop": "accent",
+      "label": "Total capsule",
+      "kind": "color",
+      "default": "#d7e3a4",
+      "options": [
+        "#d7e3a4",
+        "#ffb86b",
+        "#9ccfff",
+        "#f4f4f5"
+      ],
+      "group": "Look"
+    }
+  ]
 }
