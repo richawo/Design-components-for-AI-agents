@@ -31,7 +31,7 @@
       "name": "defaultValue",
       "type": "string",
       "default": "\"\"",
-      "description": "Text the field starts with. Read on mount only. Tuning Max rows seeds a five-line sample draft, so the cap has text to cap."
+      "description": "Text the field starts with. Read on mount only."
     },
     {
       "name": "state",
@@ -107,16 +107,15 @@
   "added": "2026-10-10",
   "demo": {
     "steps": [
-      "click:@field",
-      "move:0.5,0.95",
+      "click:@field:0.9,0.5",
       "type:Summarise @",
-      "wait:300",
+      "wait:650",
       "key:ArrowDown",
-      "wait:200",
+      "wait:450",
       "key:Enter",
-      "type:into three themes for Thursday’s pricing",
+      "type:into three themes, one quote each",
       "key:Enter",
-      "wait:350"
+      "wait:1200"
     ]
   },
   "controls": [

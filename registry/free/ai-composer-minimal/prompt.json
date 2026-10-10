@@ -10,12 +10,12 @@
     "fonts": "font-sans (Geist) for the field and option names, font-mono (Geist Mono) for the footer, keycaps and group labels"
   },
   "layout": {
-    "root": "@container, relative, max-width 600px, full width below. Footer hints drop their right-hand group under 420px of container width.",
+    "root": "@container, relative, max-width 600px, full width below. Under 420px of container width the footer drops the shift-return hint and keeps the @ and / hints; while generating at that width the busy hint takes the row.",
     "composer": "16px radius, 1px hairline border, fill #141416, inner top highlight and a soft deep shadow. Row: 16px left, 10px top and bottom, 10px right padding, 8px gap, items end-aligned so the send button sits on the last line.",
     "field": "Textarea absolutely covering a mirror div in flow. The mirror has the same font, line box, padding, wrap and tracking, so it sets the height. One line is 36px (22px line box plus 7px top and bottom). Growth is 22px per row up to maxRows, then the field scrolls with no visible scrollbar. Growth is animated: the wrapper clips the mirror and glides to its measured height over 180ms ease-out; under reduced motion it snaps.",
     "popover": "288px wide (never wider than the field), at most 264px tall, 14px radius, panel #1b1b1e, hairline border, deep shadow. Positioned from the frame with bottom calc(100% + 8px), so it opens above the whole composer and never covers written text; height never feeds it. Left is the caret x clamped inside the field.",
     "send": "36px square visual, 11px radius. Live: ink fill with ink arrow. Idle and empty: chip fill, faint arrow, not-allowed cursor, aria-disabled; it animates to the solid ink fill over 150ms when text appears. The hit area is 44px (a 4px pseudo-element). Hover lifts the fill 4% (pointer devices only) and nudges the arrow 1px up over 150ms. While generating it is an outlined square with a stop glyph and one hairline arc ringing it.",
-    "footer": "Mono 11px in the faint token, 12px below the composer, in a fixed 20px row so the idle and busy hints never change the composer's height: left shows return and shift-return keycaps, or 'Generating · esc to stop'; right shows the @ and / hints when those features are on, each as an inline-flex keycap plus label."
+    "footer": "Mono 11px in the faint token, 12px below the composer, in a fixed 20px row so the idle and busy hints never change the composer's height: left shows return and shift-return keycaps (equal 18px boxes, return and shift drawn as 11px SVG glyphs with visually hidden labels), or 'Generating · esc to stop'; right shows the @ and / hints when those features are on, each as an inline-flex keycap plus label."
   },
   "typography": {
     "field": {
@@ -83,14 +83,14 @@
     "controlled": "Pass state and onStateChange; the host receives generating on send and idle on stop, and ends the reply itself."
   },
   "responsive": {
-    "widths": "Designed at 320, 390, 768, 1024, 1440 and 1920px. The field fills the width, the popover clamps to the field, and the footer's right group hides under 420px of container width. No horizontal overflow."
+    "widths": "Designed at 320, 390, 768, 1024, 1440 and 1920px. The field fills the width, the popover clamps to the field, and under 420px of container width the footer hides the shift-return hint (and the @ and / hints only while generating). No horizontal overflow."
   },
   "accessibility": [
     "The field is a textarea labelled Message with aria-autocomplete list; while a menu is open it carries aria-controls, aria-activedescendant and aria-describedby pointing at a visually hidden hint.",
     "Options are role option with aria-selected; the menu is role listbox with a name (Files or Commands).",
     "A single polite live region announces the open menu (count, highlighted row, or no matches), otherwise Generating a reply while a reply runs.",
     "The send button's label changes between Send message and Stop generating; it is aria-disabled (not disabled) when there is nothing to send and has a 44px hit area.",
-    "Focus stays in the field, including when a menu row is pressed (mousedown is prevented). Focus-visible uses a 2px ink ring with offset on the send button, and a 2px line-strong ring around the frame while the field has focus.",
+    "Focus stays in the field, including when a menu row is pressed (mousedown is prevented). Focus-visible uses a 2px ink ring with offset on the send button, and a 2px line-strong ring around the frame only after keyboard (Tab) focus, never on click; a pointer focus shows only the brighter border.",
     "Reduced motion keeps every state change readable without movement."
   ],
   "content": {

@@ -253,6 +253,9 @@ export function AiComposerMinimal({
   const caretRef = useRef<HTMLSpanElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const pendingCaret = useRef<number | null>(null);
+  /** The ring is for keyboard focus only. A field focused by a press shows just the brighter border. */
+  const [keyboardFocus, setKeyboardFocus] = useState(false);
+  const lastInput = useRef<"keyboard" | "pointer">("pointer");
   const runId = useRef(0);
   const replyTimer = useRef<number | undefined>(undefined);
   const mounted = useRef(false);
@@ -265,6 +268,22 @@ export function AiComposerMinimal({
     };
   }, []);
 
+  // Which input moved focus last: Tab and friends show the ring, a click or tap does not.
+  useEffect(() => {
+    const onKey = (event: globalThis.KeyboardEvent) => {
+      if (event.key === "Tab") lastInput.current = "keyboard";
+    };
+    const onPointer = () => {
+      lastInput.current = "pointer";
+    };
+    document.addEventListener("keydown", onKey, true);
+    document.addEventListener("pointerdown", onPointer, true);
+    return () => {
+      document.removeEventListener("keydown", onKey, true);
+      document.removeEventListener("pointerdown", onPointer, true);
+    };
+  }, []);
+
   // After an insertion, the caret goes to the end of the inserted text.
   useLayoutEffect(() => {
     const at = pendingCaret.current;
@@ -274,35 +293,50 @@ export function AiComposerMinimal({
     setCaret(at);
   }, [value]);
 
-  // Measured from the screen, not offsetTop: the mirror and field sit in different positioning
-  // contexts. The menu hangs off the frame, so only horizontal positions are measured here. Height
-  // never feeds the menu, which lets the field animate its height without the menu chasing it.
-  // Equal values bail out, so this cannot loop.
-  useLayoutEffect(() => {
-    const el = caretRef.current;
-    const field = fieldRef.current;
-    const frame = frameRef.current;
-    if (!el || !field || !frame) return;
-    // clientLeft is the frame's left border; absolutely positioned children measure from inside it.
-    const origin = frame.getBoundingClientRect().left + frame.clientLeft;
-    const caretBox = el.getBoundingClientRect();
-    const fieldBox = field.getBoundingClientRect();
-    const next = { x: caretBox.left - origin, fieldLeft: fieldBox.left - origin, width: fieldBox.width };
-    setAnchor((prev) => (prev.x === next.x && prev.fieldLeft === next.fieldLeft && prev.width === next.width ? prev : next));
-  });
-
-  // The field is as tall as its mirror (already capped at maxRows), so the mirror is the target height.
-  useLayoutEffect(() => {
-    const mirror = mirrorRef.current;
-    if (!mirror) return;
-    const height = mirror.offsetHeight;
-    setFieldHeight((prev) => (prev === height ? prev : height));
-  });
-
   const trigger = findTrigger(value, caret);
   const triggerKey = trigger ? `${trigger.kind}:${trigger.start}` : "";
   const enabled = trigger !== null && (trigger.kind === "command" ? commands : mentions);
   const open = enabled && dismissed !== triggerKey;
+
+  // The field is as tall as its mirror (already capped at maxRows), so the mirror is the target height.
+  // Measured when the text or the cap changes, and by a ResizeObserver when a width change rewraps it.
+  useLayoutEffect(() => {
+    const mirror = mirrorRef.current;
+    if (!mirror) return;
+    const measure = () => {
+      const height = mirror.offsetHeight;
+      setFieldHeight((prev) => (prev === height ? prev : height));
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(mirror);
+    return () => observer.disconnect();
+  }, [value, rows]);
+
+  // Where the menu hangs. Only read while it is open, so typing with it closed never forces layout.
+  // Measured from the screen, not offsetTop: the mirror and field sit in different positioning
+  // contexts. Only horizontal positions are read; height never feeds the menu, which lets the field
+  // animate its height without the menu chasing it. Equal values bail out, so this cannot loop.
+  useLayoutEffect(() => {
+    if (!open) return;
+    const frame = frameRef.current;
+    if (!frame) return;
+    const measure = () => {
+      const el = caretRef.current;
+      const field = fieldRef.current;
+      if (!el || !field) return;
+      // clientLeft is the frame's left border; absolutely positioned children measure from inside it.
+      const origin = frame.getBoundingClientRect().left + frame.clientLeft;
+      const caretBox = el.getBoundingClientRect();
+      const fieldBox = field.getBoundingClientRect();
+      const next = { x: caretBox.left - origin, fieldLeft: fieldBox.left - origin, width: fieldBox.width };
+      setAnchor((prev) => (prev.x === next.x && prev.fieldLeft === next.fieldLeft && prev.width === next.width ? prev : next));
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(frame);
+    return () => observer.disconnect();
+  }, [open, value, caret]);
 
   const query = trigger?.query.toLowerCase() ?? "";
   const options: Option[] = !trigger || !enabled
@@ -421,13 +455,16 @@ export function AiComposerMinimal({
         initial={reduce ? REVEAL_FROM_REDUCED : REVEAL_FROM}
         animate={reduce ? REVEAL_TO_REDUCED : REVEAL_TO}
         transition={{ duration: reduce ? 0.15 : 0.5, ease: EASE_OUT }}
-        className="relative rounded-[16px] border transition-[border-color] duration-200 ease-out focus-within:border-[color:var(--cc-line-strong)] has-[textarea:focus-visible]:outline-2 has-[textarea:focus-visible]:outline-offset-2"
+        className="relative rounded-[16px] border transition-[border-color] duration-200 ease-out focus-within:border-[color:var(--cc-line-strong)]"
         style={{
           background: "var(--cc-field)",
           borderColor: "var(--cc-line)",
           boxShadow: "var(--cc-shadow)",
-          outlineColor: "var(--cc-line-strong)",
+          // Shown instantly, with no transition on the ring.
+          outline: keyboardFocus ? "2px solid var(--cc-line-strong)" : "none",
+          outlineOffset: 2,
         }}
+        onPointerDown={() => setKeyboardFocus(false)}
         onMouseDown={(event) => {
           // A press on the frame (not the field or a button) keeps focus in the prompt.
           const target = event.target as HTMLElement;
@@ -474,6 +511,8 @@ export function AiComposerMinimal({
                   if (mirrorRef.current) mirrorRef.current.scrollTop = event.currentTarget.scrollTop;
                 }}
                 onKeyDown={onKeyDown}
+                onFocus={() => setKeyboardFocus(lastInput.current === "keyboard")}
+                onBlur={() => setKeyboardFocus(false)}
                 className="absolute inset-0 w-full resize-none overflow-y-auto bg-transparent py-[7px] font-sans text-[15px] leading-[22px] tracking-[-0.005em] break-words outline-none [scrollbar-width:none] placeholder:text-[color:var(--cc-faint)] [&::-webkit-scrollbar]:hidden"
                 style={{ color: "transparent", caretColor: "var(--cc-ink)" }}
               />
@@ -621,12 +660,26 @@ export function AiComposerMinimal({
           >
             {hintLine ?? (
               <>
-                <Key>↵</Key> send <Key>⇧↵</Key> new line
+                <span className="inline-flex items-center gap-1.5">
+                  <Key label="Enter">
+                    <ReturnGlyph />
+                  </Key>
+                  send
+                </span>
+                {/* Shift+Enter means nothing on touch, so narrow layouts spend the room on @ and / instead. */}
+                <span className="hidden items-center gap-1.5 @[420px]:inline-flex">
+                  <Key label="Shift Enter">
+                    <ShiftGlyph />
+                    <ReturnGlyph />
+                  </Key>
+                  new line
+                </span>
               </>
             )}
           </motion.span>
         </AnimatePresence>
-        <span className="hidden items-center gap-3 whitespace-nowrap @[420px]:flex">
+        {/* While a reply runs, narrow layouts give the row to the busy hint; the @ and / hints return after. */}
+        <span className={`${busy ? "hidden @[420px]:flex" : "flex"} items-center gap-3 whitespace-nowrap`}>
           {mentions && (
             <span className="inline-flex items-center gap-1.5">
               <Key>@</Key> mention
@@ -654,14 +707,40 @@ export function AiComposerMinimal({
 /* Pieces                                                               */
 /* ------------------------------------------------------------------ */
 
-function Key({ children }: { children: ReactNode }) {
+/** Every keycap is the same 18px box, so a drawn glyph and a typed character carry the same weight. */
+function Key({ children, label }: { children: ReactNode; label?: string }) {
   return (
     <kbd
-      className="rounded-[5px] border px-1.5 py-[3px] font-mono text-[10.5px] leading-none"
+      className="inline-flex h-[18px] min-w-[18px] items-center justify-center gap-px rounded-[5px] border px-[5px] font-mono text-[11px] leading-none"
       style={{ borderColor: "var(--cc-line)", background: "var(--cc-chip)", color: "var(--cc-muted)" }}
     >
-      {children}
+      {label ? (
+        <>
+          <span className="sr-only">{label}</span>
+          <span aria-hidden="true" className="inline-flex items-center gap-px">
+            {children}
+          </span>
+        </>
+      ) : (
+        children
+      )}
     </kbd>
+  );
+}
+
+function ReturnGlyph() {
+  return (
+    <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+      <path d="M10 2.5v3.25A1.75 1.75 0 0 1 8.25 7.5H2.5M4.75 5.25 2.5 7.5l2.25 2.25" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function ShiftGlyph() {
+  return (
+    <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+      <path d="M6 1.75 1.75 6.25h2.5v4h3.5v-4h2.5z" stroke="currentColor" strokeWidth="1.25" strokeLinejoin="round" />
+    </svg>
   );
 }
 
@@ -701,7 +780,7 @@ function FileIcon() {
 
 const STAGE = "#0a0a0b";
 /** The demo's simulated reply, in ms. Short enough that the whole walkthrough stays under 8 s. */
-const DEMO_REPLY_MS = 600;
+const DEMO_REPLY_MS = 900;
 /**
  * A multi-line draft for the Max rows control to cap. The demo seeds it only once that control is
  * tuned, so the untouched demo still starts empty and the card video shows the grow-on-wrap moment.
@@ -762,7 +841,8 @@ export default function AiComposerMinimalDemo({ state: forced, ...overrides }: P
       className="flex min-h-[max(680px,100dvh)] w-full items-end justify-center px-4 pb-[clamp(40px,10vh,96px)]"
       style={{ background: light ? "#f4f4f5" : STAGE }}
     >
-      <div className="flex w-full max-w-[600px] flex-col gap-8">
+      {/* A chat column, a little narrower than the composer's own 600px cap, so the demo sentence wraps and the field grows a line. */}
+      <div className="flex w-full max-w-[540px] flex-col gap-8">
         <ConversationContext light={light} />
         <AiComposerMinimal
           defaultValue={overrides.maxRows === undefined ? undefined : SAMPLE_DRAFT}
