@@ -86,6 +86,8 @@ export type MobileOnboardingProps = {
    * carousel is driven only by the person; a planted grove is cleared when you jump back.
    */
   step?: number;
+  /** Change this number to jump to `step` again when its value has not changed (a "replay" button). */
+  stepKey?: number;
 };
 
 /* ------------------------------------------------------------------ */
@@ -524,6 +526,7 @@ export function MobileOnboarding({
   doneLabel = "Planted. See you at 7:30",
   onFinish,
   step,
+  stepKey = 0,
 }: MobileOnboardingProps) {
   const reduced = useReducedMotion();
   const [size, setSize] = useState({ w: 0, h: 0 });
@@ -557,10 +560,12 @@ export function MobileOnboarding({
   }, []);
 
   /* A changed `step` prop moves the carousel; jumping off a planted last step clears the grove. */
-  const appliedStep = useRef<number | undefined>(undefined);
+  const appliedStep = useRef<string | undefined>(undefined);
   useEffect(() => {
-    if (step === undefined || !w || appliedStep.current === step) return;
-    appliedStep.current = step;
+    if (step === undefined || !w) return;
+    const request = `${step}:${stepKey}`;
+    if (appliedStep.current === request) return;
+    appliedStep.current = request;
     if (finishTimer.current) clearTimeout(finishTimer.current);
     if (step < last) {
       setDone(false);
@@ -569,7 +574,7 @@ export function MobileOnboarding({
       doneFade.setValue(0);
     }
     goTo(step);
-  }, [step, w, last, goTo, plant, burst, doneFade]);
+  }, [step, stepKey, w, last, goTo, plant, burst, doneFade]);
 
   const finish = () => {
     if (done) return;
@@ -2079,6 +2084,18 @@ const styles = StyleSheet.create({
   ctaText: { userSelect: "none", color: INK.onLight, fontSize: 17, fontWeight: "600", letterSpacing: -0.3 },
 });
 
-export default function MobileOnboardingDemo(overrides: Partial<MobileOnboardingProps> = {}) {
-  return <MobileOnboarding {...overrides} />;
+export default function MobileOnboardingDemo(props: Partial<MobileOnboardingProps> = {}) {
+  const { step, ...overrides } = props;
+  /* The Jump to buttons send the same `step` again after a manual swipe. Nothing else re-sends an
+     identical set of props, so a parent render that changes nothing means "press again": bump the
+     key to re-apply. Our own re-render (the key bump) hands back the same props object, so it is skipped. */
+  const [stepKey, setStepKey] = useState(0);
+  const seen = useRef<{ props: Partial<MobileOnboardingProps>; step?: number; sig: string } | null>(null);
+  const sig = JSON.stringify(overrides);
+  useEffect(() => {
+    const before = seen.current;
+    seen.current = { props, step, sig };
+    if (before && before.props !== props && step !== undefined && before.step === step && before.sig === sig) setStepKey((k) => k + 1);
+  });
+  return <MobileOnboarding {...overrides} step={step} stepKey={stepKey} />;
 }
