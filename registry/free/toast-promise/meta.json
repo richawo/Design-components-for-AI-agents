@@ -1,0 +1,247 @@
+{
+  "slug": "toast-promise",
+  "name": "Promise Toast",
+  "tier": "free",
+  "platform": "web",
+  "category": "feedback",
+  "description": "One toast that follows one async job: a hairline while it loads, a morph in place to success or error, and an Undo whose ring counts down. Pauses on hover.",
+  "tags": [
+    "toast",
+    "promise",
+    "undo",
+    "async",
+    "loading",
+    "notification",
+    "feedback",
+    "dark",
+    "monochrome"
+  ],
+  "dependencies": [
+    "motion"
+  ],
+  "theme": "dark",
+  "previewHeight": 700,
+  "usage": "import { PromiseToast } from \"@/components/design-for-ai/toast-promise\";\n\n// Positioned inside the nearest relative parent (use strategy=\"fixed\" to pin it to the viewport).\n<div className=\"relative\">\n  <PromiseToast\n    job={() => api.threads.archive(ids)}\n    loadingTitle=\"Archiving 12 threads…\"\n    successTitle=\"Archived 12 threads\"\n    errorTitle=\"Couldn’t archive 12 threads\"\n    undoTitle=\"Restored 12 threads\"\n    onUndo={() => api.threads.restore(ids)}\n  />\n</div>\n\n// Run the job again by changing runKey, for example a new batch id.\n<PromiseToast job={submit} runKey={batchId} position=\"bottom-center\" duration={8} />",
+  "props": [
+    {
+      "name": "job",
+      "type": "() => Promise<unknown>",
+      "description": "The async work. Resolve for success, reject for error. Runs on mount and whenever runKey changes. Left out, the toast settles as success at once."
+    },
+    {
+      "name": "runKey",
+      "type": "string | number",
+      "default": "0",
+      "description": "Change it to run the job again. The toast morphs back to loading."
+    },
+    {
+      "name": "loadingTitle",
+      "type": "string",
+      "default": "\"Archiving 12 threads…\"",
+      "description": "Title while the job is in flight."
+    },
+    {
+      "name": "loadingDescription",
+      "type": "string",
+      "default": "\"Moving them out of your inbox\"",
+      "description": "Line under the title while loading."
+    },
+    {
+      "name": "successTitle",
+      "type": "string",
+      "default": "\"Archived 12 threads\"",
+      "description": "Title once the job resolves."
+    },
+    {
+      "name": "successDescription",
+      "type": "string",
+      "default": "\"Moved to Archive\"",
+      "description": "Line under the success title. With undo on, the undo window is appended, e.g. “· 5 s to undo”."
+    },
+    {
+      "name": "errorTitle",
+      "type": "string",
+      "default": "\"Couldn’t archive 12 threads\"",
+      "description": "Title if the job rejects."
+    },
+    {
+      "name": "errorDescription",
+      "type": "string",
+      "default": "\"Nothing was archived. Your inbox is unchanged.\"",
+      "description": "Line under the error title. Say what state the world is in now."
+    },
+    {
+      "name": "undoLabel",
+      "type": "string",
+      "default": "\"Undo\"",
+      "description": "Label on the Undo button."
+    },
+    {
+      "name": "undoTitle",
+      "type": "string",
+      "default": "\"Restored 12 threads\"",
+      "description": "Title once Undo has been pressed. The toast then leaves on its own."
+    },
+    {
+      "name": "undoneDescription",
+      "type": "string",
+      "default": "\"Put back where it was\"",
+      "description": "Line under the restored title."
+    },
+    {
+      "name": "undo",
+      "type": "boolean",
+      "default": "true",
+      "description": "Offer Undo on success. The ring around the button counts the window down."
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": "5",
+      "description": "The undo window in seconds (2 to 10). The toast leaves when the ring empties."
+    },
+    {
+      "name": "position",
+      "type": "\"bottom-right\" | \"bottom-center\" | \"top-right\"",
+      "default": "\"bottom-right\"",
+      "description": "Where the toast sits. On phones it always spans the bottom (or top) edge."
+    },
+    {
+      "name": "strategy",
+      "type": "\"absolute\" | \"fixed\"",
+      "default": "\"absolute\"",
+      "description": "Absolute sits in the nearest positioned parent; fixed pins to the viewport."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "The surface the toast sits on. Its ink, tracks and shadow follow it."
+    },
+    {
+      "name": "onUndo",
+      "type": "() => void",
+      "description": "Runs when Undo is pressed. Put the change back here."
+    },
+    {
+      "name": "onDismiss",
+      "type": "() => void",
+      "description": "Runs when the toast leaves: the countdown ended, it was swiped or dismissed, or Esc was pressed."
+    },
+    {
+      "name": "outcome",
+      "type": "\"success\" | \"error\"",
+      "default": "\"success\"",
+      "description": "Demo only. What the demo job settles with. Changing it replays the job."
+    },
+    {
+      "name": "trigger",
+      "type": "\"archive\" | \"bin\"",
+      "default": "\"archive\"",
+      "description": "Demo only. Which job the toast follows: archive the 12 threads, or move 3 drafts to the bin."
+    }
+  ],
+  "added": "2026-10-10",
+  "demo": {
+    "steps": [
+      "wait:400",
+      "hover:@archive",
+      "click",
+      "wait:1500",
+      "hover:@toast",
+      "wait:900",
+      "click:@undo",
+      "wait:1400"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "outcome",
+      "label": "Outcome",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "success",
+          "label": "Success"
+        },
+        {
+          "value": "error",
+          "label": "Error"
+        }
+      ],
+      "default": "success"
+    },
+    {
+      "prop": "duration",
+      "label": "Undo for",
+      "kind": "slider",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "default": 5
+    },
+    {
+      "prop": "undo",
+      "label": "Undo",
+      "kind": "toggle",
+      "default": true
+    },
+    {
+      "prop": "position",
+      "label": "Position",
+      "kind": "select",
+      "options": [
+        {
+          "value": "bottom-right",
+          "label": "Bottom right"
+        },
+        {
+          "value": "bottom-center",
+          "label": "Bottom centre"
+        },
+        {
+          "value": "top-right",
+          "label": "Top right"
+        }
+      ],
+      "default": "bottom-right"
+    },
+    {
+      "prop": "trigger",
+      "label": "Run job",
+      "kind": "action",
+      "options": [
+        {
+          "value": "archive",
+          "label": "Archive 12"
+        },
+        {
+          "value": "bin",
+          "label": "Bin 3 drafts"
+        }
+      ]
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark"
+    },
+    {
+      "prop": "$replay",
+      "label": "Replay",
+      "kind": "action"
+    }
+  ]
+}
