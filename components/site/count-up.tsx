@@ -102,10 +102,12 @@ export function CountUp({ value, pad = 0, delay = 0, className = "" }: { value: 
   }, [value, go, reduce]);
 
   return (
-    <span ref={root} className={`inline-grid tabular-nums ${className}`}>
-      <span aria-hidden="true" className="invisible col-start-1 row-start-1">
-        {sizer}
-      </span>
+    // The widest figure reserves the width through a pseudo-element, so the page text reads "89", not "8989".
+    <span
+      ref={root}
+      data-sizer={sizer}
+      className={`inline-grid tabular-nums before:invisible before:col-start-1 before:row-start-1 before:content-[attr(data-sizer)] ${className}`}
+    >
       <span ref={digits} className="col-start-1 row-start-1 text-right" suppressHydrationWarning>
         {initial}
       </span>
