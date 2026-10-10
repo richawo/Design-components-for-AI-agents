@@ -4,7 +4,7 @@
   "tier": "free",
   "platform": "web",
   "category": "selects",
-  "description": "Switches with weight: the thumb stretches in its direction of travel and lands on a spring, glyphs sit in the track, and async switches hold a spinner until confirmed.",
+  "description": "Switches with weight: the thumb stretches as it travels and lands on a spring, async switches hold a spinner, and a refused change shakes back.",
   "tags": [
     "switch",
     "toggle",
@@ -21,7 +21,7 @@
   ],
   "theme": "dark",
   "previewHeight": 460,
-  "usage": "import { SwitchSpring } from \"@/components/design-for-ai/switch-spring\";\n\n<SwitchSpring\n  label=\"Sync to devices\"\n  description=\"Pushes changes to your other devices.\"\n  defaultChecked\n  async\n  onCheckedChange={(next) => api.settings.update({ sync: next })} // return the promise to hold the thumb\n/>\n\n<SwitchSpring label=\"Product updates\" size=\"sm\" icons labelSide=\"right\" accent=\"#7dd3a8\" />",
+  "usage": "import { SwitchSpring } from \"@/components/design-for-ai/switch-spring\";\n\n<SwitchSpring\n  label=\"Push to this phone\"\n  description=\"Registers this device for alerts.\"\n  defaultChecked\n  async\n  onCheckedChange={(next) => api.settings.update({ push: next })} // return the promise to hold the thumb\n/>\n\n<SwitchSpring label=\"Product updates\" size=\"sm\" icons labelSide=\"right\" accent=\"#7dd3a8\" />",
   "props": [
     {
       "name": "label",
@@ -54,12 +54,18 @@
       "name": "async",
       "type": "boolean",
       "default": "false",
-      "description": "Holds the thumb in a spinner until the promise settles, then lands it. Off, the thumb moves at once and a rejection rolls it back. Either way a rejection shakes the thumb, shows the message in red in place of the description, and announces it."
+      "description": "Holds the thumb in a spinner until the promise from onCheckedChange settles, then lands it; a handler that returns nothing lands at once. Off, the thumb moves at once and a rejection rolls it back. Either way a rejection shakes the thumb, shows the message in red in place of the description, and announces it."
     },
     {
       "name": "errorMessage",
       "type": "string",
       "description": "The line shown in red, and announced politely, when a change is refused, in place of the description for about 3.5 s. Defaults to \"Couldn't turn on <label>. Try again.\" (or off)."
+    },
+    {
+      "name": "pendingHint",
+      "type": "string",
+      "default": "\"Confirms with the server before it switches.\"",
+      "description": "The visually hidden line an async switch adds to aria-describedby, so screen readers know the change waits. Pass a translated string."
     },
     {
       "name": "size",
@@ -77,7 +83,7 @@
       "name": "labelSide",
       "type": "\"left\" | \"right\"",
       "default": "\"left\"",
-      "description": "Which side of the track the label sits on. Left reads like a settings list; right suits forms."
+      "description": "Which side of the track the label sits on. Left reads like a settings list, with the track centred on the row; right suits forms, with the track centred on the label's first line."
     },
     {
       "name": "accent",
@@ -114,7 +120,7 @@
       "wait:200",
       "click",
       "wait:520",
-      "hover:@switch-sync:0.3,0.5",
+      "hover:@switch-push:0.3,0.5",
       "wait:200",
       "click",
       "wait:1500",

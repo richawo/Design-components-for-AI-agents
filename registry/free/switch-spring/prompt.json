@@ -8,14 +8,14 @@
     "animation": "motion/react: one spring motion value for position (spring.ui, stiffness 500, damping 40), useVelocity for the stretch, animate for the spring and the count tween, useInView and useReducedMotion for the demo"
   },
   "layout": {
-    "row": "label element wrapping the text column and the track; the whole row is the hit target; labelSide left puts the text first, right puts the track first",
+    "row": "label element wrapping the text column and the track, at least 44px tall; the whole row is the hit target; labelSide left puts the text first and centres the track on the row; right puts the track first, aligns to the top and drops the shorter of the track and the label's first line by half the difference, so the track centres on that first line",
     "gap": "12px sm, 14px md, 16px lg between text and track; 4px tighter inside a container under 20rem (@max-xs)",
     "track": "button role=switch, fixed size: sm 32x18 with 14px thumb, md 40x22 with 18px, lg 52x30 with 24px; thumb inset 2px; travel = track - thumb - 4px",
     "root": "@container, full width, no padding of its own",
-    "demo": "440px card on a theme-following stage that fills the frame (min-h-dvh), header row (Notifications, count of 3 on), three rows with 1px hairline dividers, the third row async; the demo starts with Weekly digest on"
+    "demo": "440px card on a theme-following stage that fills the frame (min-h-dvh), header row (Notifications, count of 3 on), three notification rows with 1px hairline dividers, the third row async; the demo starts with Weekly digest on"
   },
   "typography": {
-    "label": "Geist 500, tracking -0.01em, 13px sm / 14px md / 16px lg",
+    "label": "Geist 500, tracking -0.01em, 13px/18px sm, 14px/20px md, 16px/24px lg",
     "description": "Geist 400, 12px sm / 12.5px md / 13.5px lg, line-height 1.45, muted ink",
     "demoHeader": "mono 11px uppercase, tracking 0.12em, muted; count uses tabular numerals"
   },
@@ -25,7 +25,7 @@
     "thumb": "Off: the thumb-off colour (white in the dark theme). On: the paper colour (near-black in the dark theme) when no accent is set; with an accent, near-black on a light accent (relative luminance over 0.6) and white on a darker one. The thumb swaps between its off and on colour across the middle of its travel (progress 0.44 to 0.56), never at rest, so it is never grey on grey. Shadow: 0 1px 2px at 45% black plus a 0.5px hairline in black at 35% (dark), so a white thumb keeps its edge on a white fill.",
     "glyphs": "Check in whichever of white or near-black contrasts more on the fill; cross in ink at 45%.",
     "accent": "One prop, used as given. The first swatch in the playground (#f4f4f5) means the theme's ink: the demo maps it to no accent, so the ink shows (near-black in the light theme).",
-    "disabled": "Row at 40% opacity, cursor-not-allowed, no hover. The playground's Disabled control shows it on the Sync row.",
+    "disabled": "Row at 40% opacity, cursor-not-allowed, no hover. The playground's Disabled control shows it on the Push row.",
     "error": "Refusal line in #f87171 (dark) or #dc2626 (light), both AA on their card."
   },
   "motion": {
@@ -34,11 +34,11 @@
     "colour": "The track and fill colours cross-fade over 150ms ease-out on hover only. The thumb's on colour is revealed across the middle of its travel (progress 0.44 to 0.56), in step with the spring, so the swap happens while the stretch peaks.",
     "press": "track scales to 0.97 over 150ms (scale property) while the track or its label row is pressed, enabled only",
     "glyphs": "check draws on 80ms after the thumb starts moving on; cross draws off with the thumb; opacity 200ms ease-out",
-    "pending": "Thumb keeps its old position and shows a spinner (animate-spin, stopped under reduced motion); on resolve the thumb springs to the new state and the stretch plays; on reject it stays. Pending drops hover and press styling and shows cursor-progress.",
+    "pending": "Thumb keeps its old position and shows a spinner (animate-spin, stopped under reduced motion); on resolve the thumb springs to the new state and the stretch plays; on reject it stays. Pending drops hover and press styling and shows cursor-progress. A handler that returns no promise lands at once, with no spinner frame.",
     "reducedMotion": "Position jumps, the thumb swaps colour at once, no stretch, no glyph draw, no spinner rotation, no shake; colour and opacity fades stay at 150ms.",
-    "demo": "Card rises 12px out of 8px blur over 500ms ease-out; header at 60ms; rows from 160ms, 60ms apart; count tweens 0 to n over 500ms. The cursor hovers each label (not the track), clicks Product updates on, Weekly digest off, then Sync to devices on, which holds its spinner for 800ms. The first attempt to pause Sync is refused in red, so a retry works.",
-    "refusal": "A rejected change replaces the description with the message in red for 3.5 s or until the next attempt: a cross-fade with a 4px offset and 3px blur over 180ms (opacity only under reduced motion). The thumb shakes in two beats, [0, +4, -2, 0] px toward the requested side, on spring.ui. Reduced motion dims the thumb to half and back over 150ms instead.",
-    "fill": "A child span grows with the thumb from nothing (off) to the whole track (on): width = thumb position / travel * track width. It is the wake the thumb leaves behind, so the stretch reads as weight rather than a ghost."
+    "demo": "Card rises 12px out of 8px blur over 500ms ease-out; header at 60ms; rows from 160ms, 60ms apart; count tweens 0 to n over 500ms. The cursor hovers each label (not the track), clicks Product updates on, Weekly digest off, then Push to this phone on, which holds its spinner for 800ms. The first attempt to turn push off is refused in red with a shake, so a retry works.",
+    "refusal": "A rejected change replaces the description with the message in red for 3.5 s or until the next attempt: a cross-fade with a 4px offset and 3px blur over 180ms (opacity only under reduced motion). The thumb shakes in two beats, [0, +4, -2, 0] px toward the requested side, as a 320ms ease-out tween with times [0, 0.3, 0.65, 1] (a spring accepts only two keyframes); a new refusal stops the one in flight. Reduced motion dims the thumb to half and back over 150ms instead.",
+    "fill": "A child span the size of the track at full strength, revealed by clip-path inset(0 R 0 0 round 999px). The clip's leading edge sits under the thumb's centre and eases out to the track's end over the travel: edge = 2 + thumbX + thumb/2 + (thumb/2 + 2) * progress. The thumb always covers the edge, so there is no translucent disc or seam, and the 2px ring ahead of the thumb fills as it lands. Hidden outright while the thumb is under 0.5px from the off end."
   },
   "responsive": {
     "root": "@container, the row flexes; the text column shrinks with min-width 0 and wraps",
@@ -47,14 +47,15 @@
   },
   "accessibility": [
     "role=switch with aria-checked; name via aria-labelledby on the label span; description via aria-describedby",
-    "async adds a visually hidden line 'Confirms with the server before it switches.' referenced from aria-describedby",
+    "async adds a visually hidden line from the pendingHint prop (default 'Confirms with the server before it switches.') referenced from aria-describedby, so it can be translated",
     "aria-busy while pending; further clicks ignored while pending",
     "A refused change shows its message in a visible red line that replaces the description, and in a visually hidden role=status live region (polite), so it is announced once. The visible line is aria-hidden so it is not read twice.",
     "Space and Enter toggle through the native button",
     "focus-visible: 2px outline offset 2px in the ink colour, instant, keyboard only",
     "decorative glyphs and spinner are aria-hidden",
     "disabled uses the native disabled attribute",
-    "reduced motion keeps colour and opacity changes and removes transforms, stretch, glyph drawing and spinner rotation"
+    "reduced motion keeps colour and opacity changes and removes transforms, stretch, glyph drawing and spinner rotation",
+    "the row is at least 44px tall, so a label-only small switch is still a full touch target"
   ],
   "content": {
     "label": "Email digests (default), or any short setting name",
@@ -62,9 +63,9 @@
     "demoRows": [
       "Product updates: One note a month, when something you use changes. (starts off)",
       "Weekly digest: Mondays at 8:00, summarising what changed in your notes. (starts on)",
-      "Sync to devices: Pushes changes to your other devices. (async; the first attempt to pause it is refused in red, and the retry works)"
+      "Push to this phone: Registers this device for alerts. (async; the first attempt to turn it off is refused with 'Couldn't turn off push for this phone. Try again.', and the retry works)"
     ],
-    "asyncHint": "Confirms with the server before it switches. (visually hidden)"
+    "asyncHint": "pendingHint, default: Confirms with the server before it switches. (visually hidden)"
   },
   "avoid": [
     "a gradient or glowing track, sparkle or AI iconography, emoji",

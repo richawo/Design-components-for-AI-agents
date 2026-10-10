@@ -37,6 +37,8 @@ export type SwitchSpringProps = {
   async?: boolean;
   /** The line shown in red, and announced, when a change is refused. */
   errorMessage?: string;
+  /** The visually hidden line an async switch adds to its description, so screen readers know it waits. */
+  pendingHint?: string;
   size?: SwitchSpringSize;
   /** Glyphs in the track: a check on the side the thumb has left, a cross on the side it is heading to. */
   icons?: boolean;
@@ -60,8 +62,12 @@ const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 /** Space between the thumb and the track edge, in px. */
 const PAD = 2;
 
-/** A refused change shakes the thumb in two beats toward the side it asked for, in px. */
+/**
+ * A refused change shakes the thumb in two beats toward the side it asked for, in px.
+ * Four keyframes need a tween (a spring only takes two), timed so the first beat is the sharpest.
+ */
 const REFUSAL_SHAKE = [4, -2] as const;
+const REFUSAL_SHAKE_TWEEN = { duration: 0.32, ease: EASE_OUT, times: [0, 0.3, 0.65, 1] };
 
 /** How long a refusal line replaces the description, in ms. */
 const REFUSAL_HOLD_MS = 3500;
@@ -89,16 +95,31 @@ const STRETCH_MAX = 0.14;
 const PEAK_SPEED_PER_TRAVEL = 8;
 
 /*
+ * `leading` is the label's line height in px. With the label on the right the
+ * row aligns to the top, and whichever of the track and the first line is
+ * shorter drops by half the difference, so the track centres on the label's
+ * first line rather than on the whole text block.
+ *
  * The row gap and the description tighten inside a container narrower than
  * 20rem (@xs), which is where a settings list sits on a phone.
  */
 const SIZES = {
-  sm: { width: 32, height: 18, thumb: 14, glyph: 8, text: "text-[13px]", desc: "text-[12px]", row: "gap-3 @max-xs:gap-2" },
+  sm: {
+    width: 32,
+    height: 18,
+    thumb: 14,
+    glyph: 8,
+    leading: 18,
+    text: "text-[13px]",
+    desc: "text-[12px]",
+    row: "gap-3 @max-xs:gap-2",
+  },
   md: {
     width: 40,
     height: 22,
     thumb: 18,
     glyph: 9,
+    leading: 20,
     text: "text-[14px]",
     desc: "text-[12.5px] @max-xs:text-[12px]",
     row: "gap-3.5 @max-xs:gap-2.5",
@@ -108,6 +129,7 @@ const SIZES = {
     height: 30,
     thumb: 24,
     glyph: 11,
+    leading: 24,
     text: "text-[16px]",
     desc: "text-[13.5px] @max-xs:text-[12px]",
     row: "gap-4 @max-xs:gap-3",
@@ -196,7 +218,14 @@ type Geometry = (typeof SIZES)[SwitchSpringSize];
 
 /** A check on the side the thumb has left and a cross on the side it is heading to: each sits where the thumb is not. */
 function TrackGlyphs({ on, geometry, reduce, check }: { on: boolean; geometry: Geometry; reduce: boolean; check: string }) {
-  const glyphAt = (centreX: number): CSSProperties => ({
+  /*
+   * Each glyph is placed by a plain span, not by the motion svg itself: motion keeps
+   * the svg's own style values once set, so a size or theme change would leave the
+   * glyphs at the old coordinates and colour. The span re-renders with the geometry
+   * and the palette, and the strokes read its colour through currentColor.
+   */
+  const glyphAt = (centreX: number, color: string): CSSProperties => ({
+    color,
     position: "absolute",
     left: centreX - geometry.glyph / 2,
     top: (geometry.height - geometry.glyph) / 2,
@@ -207,47 +236,47 @@ function TrackGlyphs({ on, geometry, reduce, check }: { on: boolean; geometry: G
   const transition = { duration: reduce ? 0 : 0.2, ease: EASE_OUT, delay: reduce ? 0 : on ? 0.08 : 0 };
   return (
     <>
-      <motion.svg
-        aria-hidden="true"
-        viewBox="0 0 16 16"
-        fill="none"
-        className="pointer-events-none"
-        style={glyphAt((geometry.width - geometry.thumb) / 2)}
-        initial={false}
-        animate={{ opacity: on ? 1 : 0 }}
-        transition={transition}
-      >
-        <motion.path
-          d="M3.5 8.5 6.5 11.5 12.5 4.5"
-          strokeWidth={2}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          style={{ stroke: check }}
+      <span aria-hidden="true" className="pointer-events-none" style={glyphAt((geometry.width - geometry.thumb) / 2, check)}>
+        <motion.svg
+          viewBox="0 0 16 16"
+          fill="none"
+          className="block size-full"
           initial={false}
-          animate={{ pathLength: on ? 1 : 0 }}
+          animate={{ opacity: on ? 1 : 0 }}
           transition={transition}
-        />
-      </motion.svg>
-      <motion.svg
-        aria-hidden="true"
-        viewBox="0 0 16 16"
-        fill="none"
-        className="pointer-events-none"
-        style={glyphAt((geometry.width + geometry.thumb) / 2)}
-        initial={false}
-        animate={{ opacity: on ? 0 : 1 }}
-        transition={transition}
-      >
-        <motion.path
-          d="M5 5 11 11M11 5 5 11"
-          strokeWidth={2}
-          strokeLinecap="round"
-          style={{ stroke: "var(--sw-glyph-off)" }}
+        >
+          <motion.path
+            d="M3.5 8.5 6.5 11.5 12.5 4.5"
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            stroke="currentColor"
+            initial={false}
+            animate={{ pathLength: on ? 1 : 0 }}
+            transition={transition}
+          />
+        </motion.svg>
+      </span>
+      <span aria-hidden="true" className="pointer-events-none" style={glyphAt((geometry.width + geometry.thumb) / 2, "var(--sw-glyph-off)")}>
+        <motion.svg
+          viewBox="0 0 16 16"
+          fill="none"
+          className="block size-full"
           initial={false}
-          animate={{ pathLength: on ? 0 : 1 }}
+          animate={{ opacity: on ? 0 : 1 }}
           transition={transition}
-        />
-      </motion.svg>
+        >
+          <motion.path
+            d="M5 5 11 11M11 5 5 11"
+            strokeWidth={2}
+            strokeLinecap="round"
+            stroke="currentColor"
+            initial={false}
+            animate={{ pathLength: on ? 0 : 1 }}
+            transition={transition}
+          />
+        </motion.svg>
+      </span>
     </>
   );
 }
@@ -264,6 +293,7 @@ export function SwitchSpring({
   onCheckedChange,
   async: waitsForChange = false,
   errorMessage,
+  pendingHint = "Confirms with the server before it switches.",
   size = "md",
   icons = false,
   labelSide = "left",
@@ -316,30 +346,42 @@ export function SwitchSpring({
     live.current = { travel, reduce };
   }, [travel, reduce]);
 
+  /* Refusal. The shake is kept apart from the position so it never fights the spring. */
+  const nudge = useMotionValue(0);
+  const thumbX = useTransform([x, nudge], ([base, pull]: number[]) => base + pull);
+  const dim = useMotionValue(1);
+  const shake = useRef<{ stop: () => void } | null>(null);
+
   /*
    * The fill and the on-thumb colour follow the thumb's position, not `on`, so they
-   * travel with the spring. The fill is the wake behind the thumb: it grows from
-   * nothing at the off end to the whole track at the on end. The on-thumb colour
-   * swaps across the middle of the travel, so the thumb is never grey on grey.
+   * travel with the spring. The fill is the wake behind the thumb: a full-size,
+   * full-strength span revealed by a clip whose leading edge sits under the thumb's
+   * centre, so the thumb always covers it and no translucent edge ever shows. Over
+   * the travel the edge eases from the centre out to the track's end, which fills
+   * the 2px ring ahead of the thumb as it lands. The on-thumb colour swaps across
+   * the middle of the travel, so the thumb is never grey on grey.
    */
   const fillRef = useRef<HTMLSpanElement>(null);
   const onLayerRef = useRef<HTMLSpanElement>(null);
   useLayoutEffect(() => {
-    const paint = (position: number) => {
-      const progress = clamp(position / travel, 0, 1);
-      const wake = progress * geometry.width;
+    const half = geometry.thumb / 2;
+    const paint = () => {
+      const base = x.get();
+      const progress = clamp(base / travel, 0, 1);
       if (fillRef.current) {
-        fillRef.current.style.width = `${wake}px`;
-        // A rounded span only a few px wide renders as a bar, so the wake fades in over its first track-height.
-        fillRef.current.style.opacity = String(clamp(wake / geometry.height, 0, 1));
+        const edge = PAD + thumbX.get() + half + (half + PAD) * progress;
+        const style = fillRef.current.style;
+        // At rest off there is no wake at all, rather than a faint one.
+        style.visibility = base < 0.5 ? "hidden" : "visible";
+        style.clipPath = `inset(0 ${Math.max(geometry.width - edge, 0)}px 0 0 round 999px)`;
       }
       if (onLayerRef.current) {
         onLayerRef.current.style.opacity = String(clamp((progress - SWAP_FROM) / (SWAP_TO - SWAP_FROM), 0, 1));
       }
     };
-    paint(x.get());
-    return x.on("change", paint);
-  }, [x, travel, geometry.width]);
+    paint();
+    return thumbX.on("change", paint);
+  }, [x, thumbX, travel, geometry.width, geometry.thumb]);
 
   const stretch = useTransform(velocity, (v) => {
     const { travel: distance, reduce: still } = live.current;
@@ -350,11 +392,6 @@ export function SwitchSpring({
   const scaleY = useTransform(stretch, (s) => 1 - s * 0.5);
   // Stretch from the trailing edge so the leading edge is the part that reaches ahead.
   const originX = useTransform(velocity, (v) => (v >= 0 ? 0 : 1));
-
-  /* Refusal. The shake is kept apart from the position so it never fights the spring. */
-  const nudge = useMotionValue(0);
-  const thumbX = useTransform([x, nudge], ([base, pull]: number[]) => base + pull);
-  const dim = useMotionValue(1);
 
   useEffect(() => {
     const target = on ? travel : 0;
@@ -369,23 +406,32 @@ export function SwitchSpring({
   const refuse = (next: boolean) => {
     if (!mounted.current) return;
     setRefusal(errorMessage ?? `Couldn't turn ${next ? "on" : "off"} ${label}. Try again.`);
+    // A second refusal restarts the beat from rest instead of stacking on the first.
+    shake.current?.stop();
     // Reduced motion keeps the meaning as an opacity dip; the shake is a transform.
     if (reduce) {
-      animate(dim, [1, 0.5, 1], { duration: 0.15, ease: EASE_OUT });
+      nudge.set(0);
+      shake.current = animate(dim, [1, 0.5, 1], { duration: 0.15, ease: EASE_OUT });
       return;
     }
     const side = next ? 1 : -1;
-    animate(nudge, [0, side * REFUSAL_SHAKE[0], side * REFUSAL_SHAKE[1], 0], SPRING_UI);
+    shake.current = animate(nudge, [0, side * REFUSAL_SHAKE[0], side * REFUSAL_SHAKE[1], 0], REFUSAL_SHAKE_TWEEN);
   };
+
+  useEffect(() => () => shake.current?.stop(), []);
 
   const request = (next: boolean) => {
     if (disabled || pending) return;
     setRefusal(null);
-    if (!onCheckedChange) {
+    const result = onCheckedChange?.(next);
+    // Only a promise is worth waiting on. A handler that returns nothing lands at once,
+    // so an async switch never paints a frame of spinner for a change that already happened.
+    const thenable = typeof (result as PromiseLike<unknown> | undefined)?.then === "function";
+    if (!thenable) {
       if (!isControlled) setOn(next);
       return;
     }
-    const outcome = Promise.resolve(onCheckedChange(next)).then(
+    const outcome = Promise.resolve(result).then(
       () => true,
       () => false,
     );
@@ -409,6 +455,14 @@ export function SwitchSpring({
       }
     });
   };
+
+  /*
+   * Label on the left reads as a settings list: the track centres on the whole row.
+   * Label on the right reads as a form: the track centres on the label's first line.
+   */
+  const alignRight = labelSide === "right";
+  const trackDrop = Math.max((geometry.leading - geometry.height) / 2, 0);
+  const textDrop = Math.max((geometry.height - geometry.leading) / 2, 0);
 
   const describedBy = [description ? `${id}-desc` : null, waitsForChange ? `${id}-async` : null].filter(Boolean).join(" ");
 
@@ -451,14 +505,14 @@ export function SwitchSpring({
       aria-busy={pending || undefined}
       disabled={disabled}
       onClick={() => request(!on)}
-      style={{ width: geometry.width, height: geometry.height }}
+      style={{ width: geometry.width, height: geometry.height, marginTop: alignRight ? trackDrop : undefined }}
       className={`relative shrink-0 rounded-full bg-(--sw-track) ring-1 ring-inset ring-(--sw-track-ring) transition-[background-color,scale] duration-150 ease-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--sw-ink) disabled:cursor-not-allowed ${hoverTrack} ${pressed}`}
     >
-      {/* The wake: grows with the thumb from nothing (off) to the whole track (on). */}
+      {/* The wake: the whole track in the fill colour, clipped to end under the thumb (see the painter above). */}
       <span
         ref={fillRef}
         aria-hidden="true"
-        className={`pointer-events-none absolute inset-y-0 left-0 rounded-full bg-(--sw-fill) transition-colors duration-150 ease-out ${hoverFill}`}
+        className={`pointer-events-none absolute inset-0 rounded-full bg-(--sw-fill) transition-colors duration-150 ease-out ${hoverFill}`}
       />
       {icons ? <TrackGlyphs on={on} geometry={geometry} reduce={reduce} check={checkInk} /> : null}
       <motion.span
@@ -488,8 +542,12 @@ export function SwitchSpring({
   const showSecondLine = Boolean(description) || refusal !== null;
 
   const text = (
-    <span className="flex min-w-0 flex-1 flex-col gap-1">
-      <span id={`${id}-label`} className={`${geometry.text} font-medium tracking-[-0.01em] text-(--sw-ink)`}>
+    <span className="flex min-w-0 flex-1 flex-col gap-1" style={{ marginTop: alignRight ? textDrop : undefined }}>
+      <span
+        id={`${id}-label`}
+        style={{ lineHeight: `${geometry.leading}px` }}
+        className={`${geometry.text} font-medium tracking-[-0.01em] text-(--sw-ink)`}
+      >
         {label}
       </span>
       {showSecondLine ? (
@@ -526,7 +584,7 @@ export function SwitchSpring({
       ) : null}
       {waitsForChange ? (
         <span id={`${id}-async`} className="sr-only">
-          Confirms with the server before it switches.
+          {pendingHint}
         </span>
       ) : null}
       <span role="status" aria-live="polite" className="sr-only">
@@ -539,7 +597,11 @@ export function SwitchSpring({
 
   return (
     <div className={`@container w-full ${className}`} style={vars}>
-      <label htmlFor={id} className={`group/switch flex items-center ${geometry.row} ${cursor}`}>
+      {/* At least 44px tall, so a label-only small switch is still a full touch target. */}
+      <label
+        htmlFor={id}
+        className={`group/switch flex min-h-11 ${alignRight ? "items-start" : "items-center"} ${geometry.row} ${cursor}`}
+      >
         {labelSide === "right" ? (
           <>
             {track}
@@ -563,8 +625,8 @@ export function SwitchSpring({
 /** How long the async row holds its thumb in the demo before it lands. */
 const DEMO_HOLD_MS = 800;
 
-/** The message for the first attempt to pause sync. The retry succeeds, so a visitor can see both beats. */
-const SYNC_REFUSAL = "Couldn't pause sync. Try again.";
+/** The message for the first attempt to turn push off. The retry succeeds, so a visitor can see both beats. */
+const PUSH_REFUSAL = "Couldn't turn off push for this phone. Try again.";
 
 const DEMO_ROWS = [
   {
@@ -584,10 +646,10 @@ const DEMO_ROWS = [
     defaultOn: true,
   },
   {
-    key: "sync",
-    target: "switch-sync",
-    label: "Sync to devices",
-    description: "Pushes changes to your other devices.",
+    key: "push",
+    target: "switch-push",
+    label: "Push to this phone",
+    description: "Registers this device for alerts.",
     async: true,
     defaultOn: false,
   },
@@ -641,8 +703,8 @@ export default function SwitchSpringDemo({
   const cardRef = useRef<HTMLDivElement>(null);
   const inView = useInView(cardRef, { once: true, amount: 0.3 });
   const [flags, setFlags] = useState<boolean[]>(() => DEMO_ROWS.map((row) => row.defaultOn));
-  // The first attempt to pause sync is refused, so a visitor sees the refusal and can retry.
-  const syncRefusals = useRef(0);
+  // The first attempt to turn push off is refused, so a visitor sees the refusal and can retry.
+  const pushRefusals = useRef(0);
   const setFlag = (index: number, value: boolean) => setFlags((prev) => prev.map((f, i) => (i === index ? value : f)));
   const onCount = flags.filter(Boolean).length;
   const shownCount = useCountUp(inView ? onCount : 0, reduce);
@@ -658,9 +720,9 @@ export default function SwitchSpringDemo({
     if (!holdsChange) setFlag(index, next);
     return wait(DEMO_HOLD_MS)
       .then(() => {
-        if (!next && syncRefusals.current === 0) {
-          syncRefusals.current += 1;
-          throw new Error("Sync can't be paused right now.");
+        if (!next && pushRefusals.current === 0) {
+          pushRefusals.current += 1;
+          throw new Error("The server didn't release this phone.");
         }
         setFlag(index, next);
       })
@@ -716,7 +778,7 @@ export default function SwitchSpringDemo({
                   defaultChecked={row.defaultOn}
                   onCheckedChange={flipFor(i, row)}
                   async={row.async ? holdsChange : false}
-                  errorMessage={row.async ? SYNC_REFUSAL : undefined}
+                  errorMessage={row.async ? PUSH_REFUSAL : undefined}
                   size={size}
                   icons={icons}
                   labelSide={labelSide}
