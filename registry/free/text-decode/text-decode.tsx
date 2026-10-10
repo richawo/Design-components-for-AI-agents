@@ -412,7 +412,8 @@ function useReadings(ref: RefObject<HTMLElement | null>) {
   return readings[reading];
 }
 
-function TextDecodeDemo() {
+/** The decode on its stage. Overrides (the page's Customize panel) go to the headline; any change to the effect replays the whole frame so it can be seen. */
+function TextDecodeDemo(overrides: Partial<TextDecodeProps> = {}) {
   const [replay, setReplay] = useState(0);
   const reduce = useReducedMotion() ?? false;
   const stageRef = useRef<HTMLDivElement>(null);
@@ -421,6 +422,17 @@ function TextDecodeDemo() {
   const inView = useInView(stageRef, { once: true, amount: 0.3 });
   const v = reduce ? fade : rise;
 
+  // Tuning the effect (glyphs, speed, flash) replays the frame; typing new text is handled by the component itself.
+  const { glyphs, speed, flashColor } = overrides;
+  const tuned = useRef(false);
+  useEffect(() => {
+    if (!tuned.current) {
+      tuned.current = true;
+      return;
+    }
+    setReplay((r) => r + 1);
+  }, [glyphs, speed, flashColor]);
+
   return (
     <div className="flex min-h-dvh w-full items-center justify-center bg-black px-5 py-16 text-white sm:px-10">
       <motion.div ref={stageRef} initial="hidden" animate={inView ? "show" : "hidden"} className="@container w-full max-w-[960px]">
@@ -428,18 +440,21 @@ function TextDecodeDemo() {
           as="p"
           text="Observation log · Dish 04 / 07"
           trigger="both"
+          glyphs={glyphs}
+          flashColor={flashColor}
           replayKey={replay}
           className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/45"
         />
 
         <TextDecode
           as="h2"
-          text={"Signal found\nat 1420 MHz."}
+          text="Signal found at 1420 MHz."
           trigger="view"
           delay={DEMO_T.heading * 1000}
           speed={26}
           replayKey={replay}
-          className="mt-6 font-display text-[clamp(2.75rem,1.1rem+6.2cqi,6.5rem)] font-medium leading-[0.95] tracking-[-0.045em] text-white"
+          className="mt-6 max-w-[6.5em] text-balance font-display text-[clamp(2.75rem,1.1rem+6.2cqi,6.5rem)] font-medium leading-[0.95] tracking-[-0.045em] text-white"
+          {...overrides}
         />
 
         <p className="mt-9 flex items-start gap-3 font-mono text-[12.5px] leading-[1.6] text-white/60 @xl:text-[13px]">
@@ -447,7 +462,7 @@ function TextDecodeDemo() {
             {!reduce && <span className="absolute inset-0 animate-ping rounded-full opacity-60" style={{ background: LIVE }} />}
             <span className="relative size-1.5 rounded-full" style={{ background: LIVE }} />
           </motion.span>
-          <TextDecode text={reading} trigger="view" glyphs="binary" delay={DEMO_T.status * 1000} speed={60} replayKey={replay} />
+          <TextDecode text={reading} trigger="view" glyphs="binary" flashColor={flashColor} delay={DEMO_T.status * 1000} speed={60} replayKey={replay} />
         </p>
 
         <div className="relative mt-14 flex flex-col gap-6 pt-5 @xl:flex-row @xl:items-center @xl:justify-between">
@@ -458,12 +473,13 @@ function TextDecodeDemo() {
                 <motion.li key={l} variants={v} custom={DEMO_T.nav + i * DEMO_T.navStep}>
                   <a
                     href={`#${l.toLowerCase()}`}
+                    data-demo={`link-${l.toLowerCase()}`}
                     className="group inline-flex h-11 items-center gap-2.5 rounded-[6px] px-2 font-mono text-[12px] uppercase tracking-[0.14em] text-white/55 outline-none transition-colors duration-150 hover:text-white focus-visible:text-white focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black active:translate-y-px"
                   >
                     <span aria-hidden="true" className="tabular-nums text-white/25 transition-colors duration-150 group-hover:text-white/60">
                       {String(i + 1).padStart(2, "0")}
                     </span>
-                    <TextDecode text={l} trigger="hover" glyphs="symbols" speed={40} />
+                    <TextDecode text={l} trigger="hover" glyphs="symbols" flashColor={flashColor} speed={40} />
                   </a>
                 </motion.li>
               ))}
@@ -471,6 +487,7 @@ function TextDecodeDemo() {
           </nav>
           <motion.button
             type="button"
+            data-demo="replay"
             variants={v}
             custom={DEMO_T.replay}
             onClick={() => setReplay((r) => r + 1)}
