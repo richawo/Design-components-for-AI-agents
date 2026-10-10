@@ -2,6 +2,7 @@
   "slug": "dialog-confirm-typed",
   "name": "Typed Confirm Dialog",
   "tier": "free",
+  "status": "draft",
   "platform": "web",
   "category": "overlays",
   "description": "A destructive confirm that grows out of its trigger, traps focus and enables Delete only once the exact name is typed. It lists what is lost and offers Archive instead.",
