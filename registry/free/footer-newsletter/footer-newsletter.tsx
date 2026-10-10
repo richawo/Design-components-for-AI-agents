@@ -457,6 +457,7 @@ function Capture({
                 </label>
                 <input
                   ref={inputRef}
+                  data-demo="email"
                   id={`${id}-email`}
                   type="email"
                   inputMode="email"
@@ -477,6 +478,7 @@ function Capture({
                 />
                 <button
                   type="submit"
+                  data-demo="submit"
                   disabled={!value.trim()}
                   className={`group/btn gap-2 px-5 enabled:hover:bg-(--fn-solid-hover) enabled:active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40 ${SOLID_BUTTON}`}
                 >
@@ -549,6 +551,7 @@ function Capture({
             <Line key="fix" reduce={reduce}>
               <button
                 type="button"
+                data-demo="typo-fix"
                 onClick={() => {
                   setValue(fix);
                   inputRef.current?.focus();
@@ -782,10 +785,14 @@ const STAGE = { dark: "#000000", light: "#ebe8e1" } as const;
 /**
  * Demo: a pretend backend (ada@… is already subscribed, anything with "fail"
  * in it rejects, everything else succeeds) and a theme switch, above the
- * footer at the foot of the page.
+ * footer at the foot of the page. Overrides (the page's Customize panel) go
+ * straight to the footer; `theme` is synced into the demo's own switch.
  */
-export default function FooterNewsletterDemo() {
-  const [theme, setTheme] = useState<"dark" | "light">("dark");
+export default function FooterNewsletterDemo({ theme: forced, ...overrides }: Partial<FooterNewsletterProps> = {}) {
+  const [theme, setTheme] = useState<"dark" | "light">(forced ?? "dark");
+  useEffect(() => {
+    if (forced) setTheme(forced);
+  }, [forced]);
   const sleep = useSleep();
   const fake = async (email: string): Promise<SubscribeResult> => {
     await sleep(DEMO_LATENCY_MS);
@@ -827,7 +834,7 @@ export default function FooterNewsletterDemo() {
         </div>
         <p className="opacity-45">Try ada@pressroom.co (already in) · you@fail.com (error) · sam@gmial.com (typo)</p>
       </motion.div>
-      <FooterNewsletter onSubscribe={fake} theme={theme} />
+      <FooterNewsletter onSubscribe={fake} {...overrides} theme={theme} />
     </div>
   );
 }

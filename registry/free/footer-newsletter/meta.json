@@ -119,5 +119,82 @@
       "description": "Extra classes on the footer element."
     }
   ],
-  "added": "2026-10-09"
+  "added": "2026-10-09",
+  "demo": {
+    "steps": [
+      "wait:700",
+      "click:@email",
+      "type:sam@Gmial.com",
+      "wait:600",
+      "click:@typo-fix",
+      "wait:300",
+      "click:@submit",
+      "wait:2000"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "title",
+      "label": "Title",
+      "kind": "text",
+      "default": "One good email, every Thursday.",
+      "group": "Content"
+    },
+    {
+      "prop": "kicker",
+      "label": "Kicker",
+      "kind": "text",
+      "default": "The Thursday Letter · Issue 112",
+      "group": "Content"
+    },
+    {
+      "prop": "placeholder",
+      "label": "Placeholder",
+      "kind": "text",
+      "default": "you@work.com",
+      "group": "Content"
+    },
+    {
+      "prop": "buttonLabel",
+      "label": "Button",
+      "kind": "text",
+      "default": "Subscribe",
+      "group": "Content"
+    },
+    {
+      "prop": "readers",
+      "label": "Readers",
+      "kind": "slider",
+      "min": 0,
+      "max": 99999,
+      "step": 100,
+      "default": 4812,
+      "group": "Content"
+    },
+    {
+      "prop": "alreadySubscribed",
+      "label": "Already subscribed",
+      "kind": "toggle",
+      "default": false,
+      "remount": true,
+      "group": "State"
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark",
+      "group": "Look"
+    }
+  ]
 }
