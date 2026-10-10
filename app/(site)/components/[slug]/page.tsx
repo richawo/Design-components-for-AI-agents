@@ -147,7 +147,19 @@ export default async function ComponentPage({ params }: { params: Promise<{ slug
 
       <div className="site-in [--i:5]">
         {e.hasSource ? (
-          <PreviewFrame slug={slug} name={e.name} height={e.previewHeight} platform={e.platform} theme={e.theme} />
+          <PreviewFrame
+            slug={slug}
+            name={e.name}
+            height={e.previewHeight}
+            platform={e.platform}
+            theme={e.theme}
+            tier={e.tier}
+            hasDemo={!!e.demo}
+            controls={e.controls}
+            usage={e.usage}
+            props={e.props}
+            prompt={initial?.prompt ?? null}
+          />
         ) : (
           <div className="relative overflow-hidden rounded-[20px] border border-white/[0.08] bg-site-raised">
             {thumb ? (

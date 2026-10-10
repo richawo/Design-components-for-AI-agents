@@ -15,5 +15,5 @@ export default async function PreviewPage({ params }: { params: Promise<{ slug: 
   const { slug } = await params;
   const entry = getComponent(slug);
   if (!entry || !entry.hasSource) notFound();
-  return <PreviewRenderer slug={slug} platform={entry.platform} theme={entry.theme} />;
+  return <PreviewRenderer slug={slug} platform={entry.platform} theme={entry.theme} demo={entry.demo} />;
 }

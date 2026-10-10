@@ -3,15 +3,10 @@
 import { motion } from "motion/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { fetchProSource, type SourcePayload } from "@/lib/pro-source-client";
 import { CopyButton } from "./copy-button";
 
-export type SourcePayload = {
-  code: string;
-  codeHtml: string;
-  prompt: string;
-  promptJson: string;
-  promptJsonHtml: string;
-};
+export type { SourcePayload };
 
 type Tab = "code" | "prompt" | "json" | "install";
 
@@ -46,16 +41,12 @@ export function SourceTabs({
   useEffect(() => {
     if (initial) return;
     let live = true;
-    fetch(`/api/pro/source/${slug}`, { credentials: "same-origin" })
-      .then(async (r) => {
-        if (!live) return;
-        const data = r.ok ? ((await r.json()) as SourcePayload | { locked: true }) : null;
-        if (!live) return;
-        if (!data || "locked" in data) return setStatus("locked");
-        setSource(data);
-        setStatus("ready");
-      })
-      .catch(() => live && setStatus("locked"));
+    fetchProSource(slug).then((data) => {
+      if (!live) return;
+      if (!data) return setStatus("locked");
+      setSource(data);
+      setStatus("ready");
+    });
     return () => {
       live = false;
     };

@@ -1,7 +1,7 @@
 import "server-only";
 import { CATEGORIES, type Category, type ComponentSource, type RegistryEntry } from "./registry-types";
 import index from "@/registry/__generated__/index.json";
-import { proItemLoaders, sourceLoaders, thumbnails } from "@/registry/__generated__/server-data";
+import { proItemLoaders, sourceLoaders, thumbnails, videos } from "@/registry/__generated__/server-data";
 
 const entries = index as RegistryEntry[];
 
@@ -49,8 +49,15 @@ export function thumbnailFor(slug: string): string | null {
   return thumbnails.has(`${slug}.webp`) ? `/previews/${slug}.webp` : null;
 }
 
+/** Hover video recorded by scripts/record-demos.mjs from meta.demo, if present. */
+export function videoFor(slug: string): { mp4: string; webm: string | null } | null {
+  if (!videos.has(`${slug}.mp4`)) return null;
+  return { mp4: `/previews/${slug}.mp4`, webm: videos.has(`${slug}.webm`) ? `/previews/${slug}.webm` : null };
+}
+
 export type CardData = Pick<RegistryEntry, "slug" | "name" | "tier" | "platform" | "category" | "description" | "tags" | "theme" | "added"> & {
   thumb: string | null;
+  video: { mp4: string; webm: string | null } | null;
 };
 
 export function toCard(e: RegistryEntry): CardData {
@@ -65,5 +72,6 @@ export function toCard(e: RegistryEntry): CardData {
     theme: e.theme,
     added: e.added,
     thumb: thumbnailFor(e.slug),
+    video: videoFor(e.slug),
   };
 }

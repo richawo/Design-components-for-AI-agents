@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { CSSProperties } from "react";
 import { CATEGORIES } from "@/lib/registry-types";
 import type { CardData } from "@/lib/registry";
+import { CardMedia } from "./card-media";
 
 /** Cards that can be on screen at first paint. They arrive with the page; the rest reveal on scroll. */
 export const FIRST_VIEW_CARDS = 6;
@@ -34,17 +35,7 @@ export function ComponentCard({ c, priority = false }: { c: CardData; priority?:
       className="group relative flex w-full flex-col overflow-hidden rounded-[18px] border border-white/[0.08] bg-site-raised shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] transition-[border-color,background-color,scale] duration-150 ease-site hover:border-white/[0.16] hover:bg-site-raised-2 active:scale-[0.98] active:duration-75"
     >
       <div className="relative aspect-[16/10] overflow-hidden border-b border-white/[0.06] bg-site-sunken">
-        {c.thumb ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={c.thumb}
-            alt={`${c.name} preview`}
-            loading={priority ? "eager" : "lazy"}
-            className={`absolute inset-0 size-full transition-transform duration-500 ease-site group-hover:scale-[1.02] ${c.platform === "mobile" ? "object-contain py-3" : "object-cover object-top"}`}
-          />
-        ) : (
-          <div className="absolute inset-0 site-dots opacity-60" />
-        )}
+        <CardMedia name={c.name} thumb={c.thumb} video={c.video} platform={c.platform} priority={priority} />
       </div>
       <div className="flex flex-1 flex-col gap-1.5 px-4 py-3.5">
         <div className="flex items-center justify-between gap-3">

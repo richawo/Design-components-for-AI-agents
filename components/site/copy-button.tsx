@@ -5,12 +5,15 @@ import { useEffect, useRef, useState } from "react";
 export function CopyButton({
   text,
   label = "Copy",
+  shortLabel,
   copiedLabel = "Copied",
   className = "",
   variant = "dark",
 }: {
   text: string;
   label?: string;
+  /** Shown instead of label below the sm breakpoint, where the full label won't fit. */
+  shortLabel?: string;
   copiedLabel?: string;
   className?: string;
   variant?: "dark" | "light" | "accent";
@@ -43,6 +46,7 @@ export function CopyButton({
       }}
       className={`site-btn h-8 gap-1.5 px-3.5 text-xs font-semibold ${styles} ${className}`}
       aria-live="polite"
+      aria-label={shortLabel && !copied ? label : undefined}
     >
       {copied ? (
         <svg key="check" viewBox="0 0 16 16" className="site-pop size-3.5" fill="none" aria-hidden="true">
@@ -54,7 +58,16 @@ export function CopyButton({
           <path d="M10.5 5V3.8c0-.7-.6-1.3-1.3-1.3H3.8c-.7 0-1.3.6-1.3 1.3v5.4c0 .7.6 1.3 1.3 1.3H5" stroke="currentColor" strokeWidth="1.6" />
         </svg>
       )}
-      {copied ? copiedLabel : label}
+      {copied ? (
+        copiedLabel
+      ) : shortLabel ? (
+        <>
+          <span className="sm:hidden">{shortLabel}</span>
+          <span className="hidden sm:inline">{label}</span>
+        </>
+      ) : (
+        label
+      )}
     </button>
   );
 }
