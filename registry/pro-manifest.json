@@ -1157,6 +1157,96 @@
         "description": "Extra classes on the root."
       }
     ],
+    "demo": {
+      "steps": [
+        "wait:200",
+        "click:@code:0.08,0.5",
+        "type:11111111",
+        "wait:1700",
+        "type:31415926",
+        "wait:2900"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "length",
+        "label": "Digits",
+        "kind": "slider",
+        "min": 4,
+        "max": 8,
+        "step": 1,
+        "default": 6,
+        "remount": true
+      },
+      {
+        "prop": "channel",
+        "label": "Channel",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "email",
+            "label": "Email"
+          },
+          {
+            "value": "sms",
+            "label": "SMS"
+          }
+        ],
+        "default": "email"
+      },
+      {
+        "prop": "destination",
+        "label": "Sent to",
+        "kind": "text",
+        "default": "ines.moreau@halyard.app",
+        "remount": true
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent (1st = theme)",
+        "kind": "color",
+        "default": "#ededef",
+        "options": [
+          "#ededef",
+          "#7c9cff",
+          "#3ddc97",
+          "#ffb454"
+        ]
+      },
+      {
+        "prop": "resendAfter",
+        "label": "Resend after",
+        "kind": "slider",
+        "min": 5,
+        "max": 60,
+        "step": 5,
+        "unit": "s",
+        "default": 30,
+        "remount": true
+      },
+      {
+        "prop": "$replay",
+        "label": "Demo",
+        "kind": "action",
+        "value": "Replay"
+      }
+    ],
     "added": "2026-10-09"
   },
   {
@@ -1240,7 +1330,7 @@
       {
         "name": "title",
         "type": "string",
-        "default": "\"Sign in to Plinth\"",
+        "default": "\"Sign in to {brand}\"",
         "description": "Card heading."
       },
       {
@@ -1272,7 +1362,84 @@
         "description": "Extra classes on the root."
       }
     ],
-    "added": "2026-10-09"
+    "added": "2026-10-09",
+    "demo": {
+      "steps": [
+        "move:0.1,0.2",
+        "click:@email",
+        "type:sam@globex.com",
+        "wait:1000",
+        "click:@workspace-globex-research",
+        "wait:200",
+        "click:@submit",
+        "wait:1700"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "email",
+        "label": "Scenario",
+        "kind": "action",
+        "options": [
+          {
+            "value": "ada@acme.com",
+            "label": "Okta · acme"
+          },
+          {
+            "value": "sam@globex.com",
+            "label": "Picker · globex"
+          },
+          {
+            "value": "lee@contoso.com",
+            "label": "Fails · contoso"
+          },
+          {
+            "value": "jo@gmail.com",
+            "label": "Password · gmail"
+          }
+        ]
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#ededef",
+        "options": [
+          "#ededef",
+          "#ff7a45",
+          "#34d399",
+          "#60a5fa"
+        ]
+      },
+      {
+        "prop": "brand",
+        "label": "Brand",
+        "kind": "text",
+        "default": "Plinth"
+      },
+      {
+        "prop": "description",
+        "label": "Subheading",
+        "kind": "text",
+        "default": "Use your work email. If your company signs in with SSO, we’ll send you the right way."
+      }
+    ]
   },
   {
     "slug": "bg-dither-flow",
@@ -1832,7 +1999,113 @@
         "description": "Locale for number formatting."
       }
     ],
-    "added": "2026-10-07"
+    "added": "2026-10-07",
+    "demo": {
+      "steps": [
+        "wait:300",
+        "hover:@row-0",
+        "wait:500",
+        "click:@tab-region",
+        "wait:800",
+        "click:@tab-sector",
+        "wait:600",
+        "hover:@row-0",
+        "wait:600",
+        "click:@tab-asset",
+        "wait:700"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "title",
+        "label": "Title",
+        "kind": "text",
+        "default": "Allocation"
+      },
+      {
+        "prop": "defaultView",
+        "label": "Opens on",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "asset",
+            "label": "Asset"
+          },
+          {
+            "value": "region",
+            "label": "Region"
+          },
+          {
+            "value": "sector",
+            "label": "Sector"
+          }
+        ],
+        "default": "asset",
+        "remount": true
+      },
+      {
+        "prop": "tolerance",
+        "label": "Drift tolerance",
+        "kind": "slider",
+        "min": 0,
+        "max": 6,
+        "step": 0.5,
+        "unit": "pt",
+        "default": 1.5
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#ff7a45",
+        "options": [
+          "#ff7a45",
+          "#34d399",
+          "#60a5fa",
+          "#e5e5e5"
+        ]
+      },
+      {
+        "prop": "currency",
+        "label": "Currency",
+        "kind": "select",
+        "options": [
+          {
+            "value": "USD",
+            "label": "US dollar (USD)"
+          },
+          {
+            "value": "GBP",
+            "label": "Pound (GBP)"
+          },
+          {
+            "value": "EUR",
+            "label": "Euro (EUR)"
+          },
+          {
+            "value": "JPY",
+            "label": "Yen (JPY)"
+          }
+        ],
+        "default": "USD"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark"
+      }
+    ]
   },
   {
     "slug": "chart-candlestick",
@@ -1937,7 +2210,114 @@
         "description": "Near-black card with white ink, or a white card with near-black ink. Up and down colours adjust for contrast."
       }
     ],
-    "added": "2026-10-07"
+    "added": "2026-10-07",
+    "demo": {
+      "steps": [
+        "hover:@plot:0.8,0.35",
+        "hover:@plot:0.4,0.55",
+        "wait:200",
+        "click:@interval-1h",
+        "wait:900",
+        "click:@zoom-in",
+        "wait:350",
+        "hover:@plot:0.6,0.4",
+        "wait:300",
+        "click:@interval-4h",
+        "wait:1000"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "defaultInterval",
+        "label": "Interval",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "15m",
+            "label": "15m"
+          },
+          {
+            "value": "1H",
+            "label": "1H"
+          },
+          {
+            "value": "4H",
+            "label": "4H"
+          },
+          {
+            "value": "1D",
+            "label": "1D"
+          }
+        ],
+        "default": "4H",
+        "remount": true,
+        "group": "Data"
+      },
+      {
+        "prop": "maFast",
+        "label": "Fast period",
+        "kind": "slider",
+        "min": 5,
+        "max": 30,
+        "step": 1,
+        "unit": "",
+        "default": 20,
+        "group": "Data"
+      },
+      {
+        "prop": "maSlow",
+        "label": "Slow period",
+        "kind": "slider",
+        "min": 30,
+        "max": 120,
+        "step": 1,
+        "unit": "",
+        "default": 50,
+        "group": "Data"
+      },
+      {
+        "prop": "height",
+        "label": "Plot height",
+        "kind": "slider",
+        "min": 260,
+        "max": 460,
+        "step": 10,
+        "unit": "px",
+        "default": 380,
+        "group": "Look"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Fast line (theme)",
+        "kind": "color",
+        "default": "#ffb38a",
+        "options": [
+          "#ffb38a",
+          "#ea580c",
+          "#7dd3fc",
+          "#fde047"
+        ],
+        "group": "Look"
+      }
+    ]
   },
   {
     "slug": "chart-channel-breakdown",
@@ -2019,7 +2399,118 @@
         "description": "Locale for figures."
       }
     ],
-    "added": "2026-10-09"
+    "added": "2026-10-09",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@period-7d",
+        "wait:1100",
+        "hover:@row-wholesale",
+        "wait:700",
+        "click:@period-90d",
+        "wait:1000",
+        "click:@period-30d",
+        "wait:900"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "defaultPeriod",
+        "label": "Opens on",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "7d",
+            "label": "7D"
+          },
+          {
+            "value": "30d",
+            "label": "30D"
+          },
+          {
+            "value": "90d",
+            "label": "90D"
+          }
+        ],
+        "default": "30d",
+        "remount": true
+      },
+      {
+        "prop": "format",
+        "label": "Figures",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "currency",
+            "label": "Currency"
+          },
+          {
+            "value": "number",
+            "label": "Number"
+          }
+        ],
+        "default": "currency"
+      },
+      {
+        "prop": "currency",
+        "label": "Currency",
+        "kind": "select",
+        "options": [
+          {
+            "value": "USD",
+            "label": "USD"
+          },
+          {
+            "value": "EUR",
+            "label": "EUR"
+          },
+          {
+            "value": "GBP",
+            "label": "GBP"
+          },
+          {
+            "value": "JPY",
+            "label": "JPY"
+          }
+        ],
+        "default": "USD"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent (1st = ink)",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#7dd3fc",
+          "#4ade80",
+          "#fbbf24",
+          "#f472b6"
+        ]
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "title",
+        "label": "Title",
+        "kind": "text",
+        "default": "Revenue by channel"
+      }
+    ]
   },
   {
     "slug": "chart-revenue-trend",
@@ -2123,6 +2614,148 @@
         "type": "string",
         "default": "\"en-US\"",
         "description": "Locale for every figure."
+      }
+    ],
+    "demo": {
+      "steps": [
+        "move:0.97,0.3",
+        "wait:250",
+        "click:@range-90d",
+        "wait:700",
+        "hover:@plot:0.3,0.45",
+        "hover:@plot:0.81,0.35",
+        "wait:300",
+        "click:@range-7d",
+        "wait:600",
+        "click:@range-30d",
+        "wait:1300"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "defaultRange",
+        "label": "Opens on",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "7d",
+            "label": "7D"
+          },
+          {
+            "value": "30d",
+            "label": "30D"
+          },
+          {
+            "value": "90d",
+            "label": "90D"
+          }
+        ],
+        "default": "30d",
+        "remount": true,
+        "group": "Data"
+      },
+      {
+        "prop": "aggregate",
+        "label": "Headline",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "sum",
+            "label": "Total"
+          },
+          {
+            "value": "average",
+            "label": "Average"
+          }
+        ],
+        "default": "sum",
+        "group": "Data"
+      },
+      {
+        "prop": "title",
+        "label": "Metric",
+        "kind": "text",
+        "default": "Revenue",
+        "group": "Data"
+      },
+      {
+        "prop": "currency",
+        "label": "Currency",
+        "kind": "select",
+        "options": [
+          {
+            "value": "USD",
+            "label": "US dollar"
+          },
+          {
+            "value": "EUR",
+            "label": "Euro"
+          },
+          {
+            "value": "GBP",
+            "label": "British pound"
+          }
+        ],
+        "default": "USD",
+        "group": "Data"
+      },
+      {
+        "prop": "decimals",
+        "label": "Decimals",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": 0,
+            "label": "0"
+          },
+          {
+            "value": 1,
+            "label": "0.0"
+          },
+          {
+            "value": 2,
+            "label": "0.00"
+          }
+        ],
+        "default": 0,
+        "group": "Data"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#7dd3fc",
+          "#fb923c",
+          "#a3e635"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Demo",
+        "kind": "action",
+        "value": "Replay"
       }
     ],
     "added": "2026-10-09"
@@ -2403,6 +3036,11 @@
         "description": "Period key shown first."
       },
       {
+        "name": "period",
+        "type": "string",
+        "description": "Controlled period key. Pair it with onPeriodChange, or omit it and use defaultPeriod to let the switch manage it."
+      },
+      {
         "name": "onPeriodChange",
         "type": "(key: string) => void",
         "description": "Called when the period switch changes."
@@ -2454,7 +3092,158 @@
         "description": "Locale for every figure."
       }
     ],
-    "added": "2026-10-09"
+    "added": "2026-10-09",
+    "demo": {
+      "steps": [
+        "wait:300",
+        "click:@period-90d",
+        "wait:700",
+        "click:@card-orders",
+        "wait:400",
+        "click:@period-7d",
+        "wait:600",
+        "click:@card-revenue",
+        "wait:300",
+        "click:@period-30d",
+        "wait:700"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "defaultPeriod",
+        "label": "Starts on range",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "7d",
+            "label": "7D"
+          },
+          {
+            "value": "30d",
+            "label": "30D"
+          },
+          {
+            "value": "90d",
+            "label": "90D"
+          }
+        ],
+        "default": "30d",
+        "group": "Data",
+        "remount": true
+      },
+      {
+        "prop": "selected",
+        "label": "Selected card",
+        "kind": "action",
+        "options": [
+          {
+            "value": "revenue",
+            "label": "Revenue"
+          },
+          {
+            "value": "orders",
+            "label": "Orders"
+          },
+          {
+            "value": "aov",
+            "label": "AOV"
+          },
+          {
+            "value": "conversion",
+            "label": "Conv."
+          }
+        ],
+        "group": "Data"
+      },
+      {
+        "prop": "currency",
+        "label": "Currency",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "USD",
+            "label": "USD"
+          },
+          {
+            "value": "EUR",
+            "label": "EUR"
+          },
+          {
+            "value": "GBP",
+            "label": "GBP"
+          },
+          {
+            "value": "JPY",
+            "label": "JPY"
+          }
+        ],
+        "default": "USD",
+        "group": "Data"
+      },
+      {
+        "prop": "locale",
+        "label": "Number style",
+        "kind": "select",
+        "options": [
+          {
+            "value": "en-US",
+            "label": "US 1,234.5"
+          },
+          {
+            "value": "de-DE",
+            "label": "German 1.234,5"
+          },
+          {
+            "value": "fr-FR",
+            "label": "French 1 234,5"
+          },
+          {
+            "value": "en-IN",
+            "label": "Indian 12,34,567"
+          }
+        ],
+        "default": "en-US",
+        "group": "Data"
+      },
+      {
+        "prop": "title",
+        "label": "Title",
+        "kind": "text",
+        "default": "Store overview",
+        "group": "Content"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#7dd3fc",
+          "#fbbf24",
+          "#f472b6"
+        ],
+        "group": "Look"
+      }
+    ]
   },
   {
     "slug": "dashboard-orders-table",
@@ -2535,9 +3324,154 @@
         "type": "string",
         "default": "\"en-US\"",
         "description": "Locale for totals."
+      },
+      {
+        "name": "filter",
+        "type": "\"All\" | OrderStatus",
+        "default": "uncontrolled (\"All\")",
+        "description": "Optional. Set it to drive the active filter tab from outside; pair with onFilterChange to keep it in sync."
+      },
+      {
+        "name": "onFilterChange",
+        "type": "(filter: \"All\" | OrderStatus) => void",
+        "default": "none",
+        "description": "Called when a filter tab is chosen."
+      },
+      {
+        "name": "sort",
+        "type": "\"placed\" | \"total-desc\" | \"total-asc\"",
+        "default": "uncontrolled (\"placed\")",
+        "description": "Optional. Set it to drive the Total sort from outside: “placed” keeps your order, then highest first, then lowest first."
+      },
+      {
+        "name": "onSortChange",
+        "type": "(sort: \"placed\" | \"total-desc\" | \"total-asc\") => void",
+        "default": "none",
+        "description": "Called when the Total header cycles the sort."
       }
     ],
-    "added": "2026-10-09"
+    "added": "2026-10-09",
+    "demo": {
+      "steps": [
+        "wait:800",
+        "click:@filter-pending",
+        "wait:750",
+        "click:@filter-all",
+        "wait:600",
+        "click:@sort-total",
+        "wait:750",
+        "click:@sort-total",
+        "wait:700"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "filter",
+        "label": "Filter",
+        "kind": "action",
+        "options": [
+          {
+            "value": "All",
+            "label": "All"
+          },
+          {
+            "value": "Paid",
+            "label": "Paid"
+          },
+          {
+            "value": "Pending",
+            "label": "Pending"
+          },
+          {
+            "value": "Fulfilled",
+            "label": "Fulfilled"
+          },
+          {
+            "value": "Refunded",
+            "label": "Refunded"
+          }
+        ],
+        "group": "State"
+      },
+      {
+        "prop": "sort",
+        "label": "Sort by total",
+        "kind": "action",
+        "options": [
+          {
+            "value": "placed",
+            "label": "Newest"
+          },
+          {
+            "value": "total-desc",
+            "label": "Highest"
+          },
+          {
+            "value": "total-asc",
+            "label": "Lowest"
+          }
+        ],
+        "group": "State"
+      },
+      {
+        "prop": "title",
+        "label": "Heading",
+        "kind": "text",
+        "default": "Recent orders",
+        "group": "Content"
+      },
+      {
+        "prop": "currency",
+        "label": "Currency",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "USD",
+            "label": "USD"
+          },
+          {
+            "value": "EUR",
+            "label": "EUR"
+          },
+          {
+            "value": "GBP",
+            "label": "GBP"
+          }
+        ],
+        "default": "USD",
+        "group": "Content"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Count accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#ff7a45",
+          "#4ade80",
+          "#60a5fa"
+        ],
+        "group": "Look"
+      }
+    ]
   },
   {
     "slug": "feature-sticky-scroll",
@@ -2610,9 +3544,133 @@
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
         "description": "Near-black (default) or warm paper; the panel, wells and invoice paper follow."
+      },
+      {
+        "name": "client",
+        "type": "string",
+        "default": "\"Halcyon Coffee Ltd\"",
+        "description": "Client named in the timer, the invoice and the payment."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"£\"",
+        "description": "Currency symbol for every amount in the panel."
+      },
+      {
+        "name": "step",
+        "type": "number",
+        "description": "Scrolls to this step (0-based) whenever it changes. Unset by default, so the reader drives."
       }
     ],
-    "added": "2026-10-07"
+    "added": "2026-10-07",
+    "demo": {
+      "steps": [
+        "wait:300",
+        "scroll:420",
+        "click:@step-next",
+        "wait:700",
+        "click:@step-next",
+        "wait:700",
+        "click:@step-next",
+        "wait:1700"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "step",
+        "label": "Go to step",
+        "kind": "action",
+        "options": [
+          {
+            "value": 0,
+            "label": "Track"
+          },
+          {
+            "value": 1,
+            "label": "Invoice"
+          },
+          {
+            "value": 2,
+            "label": "Paid"
+          },
+          {
+            "value": 3,
+            "label": "Set aside"
+          }
+        ]
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#ff8a4c",
+        "options": [
+          "#ff8a4c",
+          "#4cc9a0",
+          "#7aa2ff",
+          "#f4f4f2"
+        ]
+      },
+      {
+        "prop": "brand",
+        "label": "Product name",
+        "kind": "text",
+        "default": "Ferry",
+        "group": "Content"
+      },
+      {
+        "prop": "heading",
+        "label": "Heading",
+        "kind": "text",
+        "default": "Get paid like you have",
+        "group": "Content"
+      },
+      {
+        "prop": "client",
+        "label": "Client",
+        "kind": "text",
+        "default": "Halcyon Coffee Ltd",
+        "group": "Content"
+      },
+      {
+        "prop": "currency",
+        "label": "Currency",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "£",
+            "label": "£"
+          },
+          {
+            "value": "$",
+            "label": "$"
+          },
+          {
+            "value": "€",
+            "label": "€"
+          }
+        ],
+        "default": "£",
+        "group": "Content"
+      }
+    ]
   },
   {
     "slug": "footer-ascii-wordmark",
@@ -2700,10 +3758,112 @@
         "name": "glyphs",
         "type": "string",
         "default": "\"/\\\\|<>{}[]=+*#%&$@01?\"",
-        "description": "Glyphs the lens scrambles through."
+        "description": "Glyphs the lens scrambles through. A new set sweeps across the field once."
       }
     ],
-    "added": "2026-10-09"
+    "added": "2026-10-09",
+    "demo": {
+      "steps": [
+        "wait:300",
+        "hover:@wordmark:0.08,0.6",
+        "hover:@wordmark:0.43,0.62",
+        "wait:650",
+        "move:0.74,0.82",
+        "wait:450"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "wordmark",
+        "label": "Wordmark",
+        "kind": "text",
+        "default": "fieldnote",
+        "group": "Content"
+      },
+      {
+        "prop": "signOff",
+        "label": "Sign-off",
+        "kind": "text",
+        "default": "Production notes for teams of one to fifty. Written by people who still get paged.",
+        "group": "Content"
+      },
+      {
+        "prop": "ink",
+        "label": "Field ink",
+        "kind": "color",
+        "default": "#ece9e2",
+        "options": [
+          "#ece9e2",
+          "#7dd3fc",
+          "#a3e635",
+          "#f0abfc"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Lens accent",
+        "kind": "color",
+        "default": "#ff7a3d",
+        "options": [
+          "#ff7a3d",
+          "#7dd3fc",
+          "#34d399",
+          "#f472b6"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "glyphs",
+        "label": "Lens glyphs",
+        "kind": "select",
+        "options": [
+          {
+            "value": "/\\|<>{}[]=+*#%&$@01?",
+            "label": "Code"
+          },
+          {
+            "value": "01",
+            "label": "Binary"
+          },
+          {
+            "value": "░▒▓█",
+            "label": "Blocks"
+          }
+        ],
+        "default": "/\\|<>{}[]=+*#%&$@01?",
+        "group": "Look"
+      },
+      {
+        "prop": "ramp",
+        "label": "Density ramp",
+        "kind": "select",
+        "options": [
+          {
+            "value": " .·:-=+*#%@",
+            "label": "Classic"
+          },
+          {
+            "value": " 01",
+            "label": "Binary"
+          },
+          {
+            "value": " .:/\\|+x#@",
+            "label": "Weave"
+          }
+        ],
+        "default": " .·:-=+*#%@",
+        "group": "Look"
+      },
+      {
+        "kind": "action",
+        "prop": "$replay",
+        "label": "Demo",
+        "options": [
+          "Replay"
+        ]
+      }
+    ]
   },
   {
     "slug": "header-island",
@@ -2788,9 +3948,99 @@
         "type": "string",
         "default": "\"\"",
         "description": "Extra classes on the header."
+      },
+      {
+        "name": "state",
+        "type": "\"idle\" | \"search\" | \"account\"",
+        "description": "Stage only, not a HeaderIsland prop. The demo page folds the island into this view; used by the Customize panel."
+      },
+      {
+        "name": "deploy",
+        "type": "\"running\" | \"success\" | \"error\"",
+        "description": "Stage only, not a HeaderIsland prop. Holds that notification on the island (running at 60%, a finished deploy, or a failed build) so you can inspect each shape; used by the Customize panel."
       }
     ],
-    "added": "2026-10-09"
+    "added": "2026-10-09",
+    "demo": {
+      "steps": [
+        "wait:500",
+        "click:@search",
+        "wait:450",
+        "type:redeploy",
+        "wait:400",
+        "key:Enter",
+        "move:0.62,0.32",
+        "wait:2700"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "state",
+        "label": "Island",
+        "kind": "action",
+        "options": [
+          {
+            "value": "idle",
+            "label": "Idle"
+          },
+          {
+            "value": "search",
+            "label": "Search"
+          },
+          {
+            "value": "account",
+            "label": "Account"
+          }
+        ],
+        "group": "View"
+      },
+      {
+        "prop": "deploy",
+        "label": "Notification",
+        "kind": "action",
+        "options": [
+          {
+            "value": "running",
+            "label": "Running"
+          },
+          {
+            "value": "success",
+            "label": "Success"
+          },
+          {
+            "value": "error",
+            "label": "Error"
+          }
+        ],
+        "group": "View"
+      },
+      {
+        "prop": "activeIndex",
+        "label": "Current link",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": 0,
+            "label": "Overview"
+          },
+          {
+            "value": 1,
+            "label": "Deploys"
+          },
+          {
+            "value": 2,
+            "label": "Docs"
+          }
+        ],
+        "default": 0,
+        "group": "Pill"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
   },
   {
     "slug": "header-morph-mega",
@@ -2866,7 +4116,7 @@
         "name": "closeDelay",
         "type": "number",
         "default": "200",
-        "description": "Grace period after the pointer leaves before the panel closes, in ms."
+        "description": "Delay after the pointer leaves before the panel closes, in ms."
       },
       {
         "name": "theme",
@@ -2881,7 +4131,91 @@
         "description": "Extra classes on the header."
       }
     ],
-    "added": "2026-10-09"
+    "added": "2026-10-09",
+    "demo": {
+      "steps": [
+        "hover:@trigger-developers",
+        "wait:150",
+        "hover:@snippet-code:0.3,0.7",
+        "hover:@copy-snippet",
+        "wait:500",
+        "hover:@trigger-company",
+        "wait:200",
+        "hover:@panel-about",
+        "hover:@trigger-products:0.5,0.9",
+        "wait:400"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "defaultOpenIndex",
+        "label": "Opens on",
+        "kind": "select",
+        "options": [
+          {
+            "value": 0,
+            "label": "Products"
+          },
+          {
+            "value": 1,
+            "label": "Solutions"
+          },
+          {
+            "value": 2,
+            "label": "Developers"
+          },
+          {
+            "value": 3,
+            "label": "Company"
+          }
+        ],
+        "default": 0,
+        "remount": true
+      },
+      {
+        "prop": "openDelay",
+        "label": "Open delay",
+        "kind": "slider",
+        "min": 0,
+        "max": 400,
+        "step": 20,
+        "unit": "ms",
+        "default": 80,
+        "group": "Behaviour"
+      },
+      {
+        "prop": "closeDelay",
+        "label": "Close delay",
+        "kind": "slider",
+        "min": 0,
+        "max": 600,
+        "step": 50,
+        "unit": "ms",
+        "default": 200,
+        "group": "Behaviour"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
   },
   {
     "slug": "hero-ghost-cursor",
@@ -3324,7 +4658,78 @@
         "description": "Ink on black, or ink on white paper; the marquee band inverts either way."
       }
     ],
-    "added": "2026-10-07"
+    "added": "2026-10-07",
+    "demo": {
+      "steps": [
+        "wait:350",
+        "hover:@word-0-0:0.2,0.55",
+        "hover:@word-1-0:0.8,0.4",
+        "hover:@word-1-1:0.5,0.6",
+        "hover:@word-2-0:0.5,0.15",
+        "hover:@word-2-0:0.5,0.9",
+        "move:0.55,0.85",
+        "wait:400"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "minWeight",
+        "label": "Lightest weight",
+        "kind": "slider",
+        "min": 100,
+        "max": 400,
+        "step": 50,
+        "default": 200,
+        "group": "Type"
+      },
+      {
+        "prop": "maxWeight",
+        "label": "Heaviest weight",
+        "kind": "slider",
+        "min": 500,
+        "max": 900,
+        "step": 50,
+        "default": 800,
+        "group": "Type"
+      },
+      {
+        "prop": "specimen",
+        "label": "Specimen",
+        "kind": "text",
+        "default": "Ondine Grotesk Variable",
+        "group": "Content"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#4353ff",
+        "options": [
+          "#4353ff",
+          "#d93a1f",
+          "#0f7a47",
+          "#7a3cff"
+        ],
+        "group": "Look"
+      }
+    ]
   },
   {
     "slug": "hero-prism",
@@ -3395,10 +4800,50 @@
         "name": "readout",
         "type": "boolean",
         "default": "true",
-        "description": "Show the live incidence and deviation readout beside the prism (wide containers only)."
+        "description": "Show the live incidence and deviation readout beside the prism. Wide containers only: hidden below the @2xl container width."
       }
     ],
-    "added": "2026-10-09"
+    "added": "2026-10-09",
+    "demo": {
+      "steps": [
+        "wait:300",
+        "hover:@stage:0.6,0.0",
+        "wait:450",
+        "hover:@stage:0.6,1.0",
+        "wait:500",
+        "hover:@stage:0.6,0.45",
+        "wait:600"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "dispersion",
+        "label": "Dispersion",
+        "kind": "slider",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "default": 0.5
+      },
+      {
+        "prop": "readout",
+        "label": "Angle readout (wide)",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "muted",
+        "label": "Muted phrase",
+        "kind": "text",
+        "default": "Every answer out."
+      },
+      {
+        "prop": "headline",
+        "label": "Headline",
+        "kind": "text",
+        "default": "One stream in. Every answer out."
+      }
+    ]
   },
   {
     "slug": "hero-product-stack",
@@ -3507,7 +4952,100 @@
         "description": "Near-black stage with graphite windows, or cool grey with white windows."
       }
     ],
-    "added": "2026-10-07"
+    "added": "2026-10-07",
+    "demo": {
+      "steps": [
+        "wait:1300",
+        "hover:@stack:0.92,0.06",
+        "wait:300",
+        "hover:@thread:0.85,0.9",
+        "wait:350",
+        "move:0.12,0.86",
+        "wait:300",
+        "hover:@calendar:0.5,0.4",
+        "wait:600"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#ff6a3d",
+        "options": [
+          "#ff6a3d",
+          "#3d7bff",
+          "#22c55e",
+          "#a78bfa"
+        ]
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "today",
+        "label": "Today",
+        "kind": "slider",
+        "min": 0,
+        "max": 4,
+        "step": 1,
+        "default": 2
+      },
+      {
+        "prop": "now",
+        "label": "Now line (hour)",
+        "kind": "slider",
+        "min": 9.1,
+        "max": 17.6,
+        "step": 0.25,
+        "unit": "h",
+        "default": 12.6
+      },
+      {
+        "prop": "emphasis",
+        "label": "Italic word",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "hate",
+            "label": "hate"
+          },
+          {
+            "value": "planning",
+            "label": "planning"
+          },
+          {
+            "value": "teams",
+            "label": "teams"
+          }
+        ],
+        "default": "hate"
+      },
+      {
+        "prop": "weekLabel",
+        "label": "Week title",
+        "kind": "text",
+        "default": "Week 41 · 5–9 Oct"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
   },
   {
     "slug": "input-ai-prompt",
@@ -4083,7 +5621,86 @@
         "description": "Call the courier."
       }
     ],
-    "added": "2026-10-07"
+    "added": "2026-10-07",
+    "demo": {
+      "steps": [
+        "wait:150",
+        "hover:@handle",
+        "down",
+        "hover:@chip",
+        "up",
+        "wait:1500",
+        "click:@handle",
+        "wait:1300"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "initialSnap",
+        "label": "Sheet snap",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "collapsed",
+            "label": "Peek"
+          },
+          {
+            "value": "half",
+            "label": "Half"
+          },
+          {
+            "value": "full",
+            "label": "Full"
+          }
+        ],
+        "default": "half",
+        "remount": true
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#FFB547",
+        "options": [
+          "#FFB547",
+          "#4ADE80",
+          "#7CC4FF",
+          "#FF6B6B"
+        ]
+      },
+      {
+        "prop": "etaMinutes",
+        "label": "ETA",
+        "kind": "slider",
+        "min": 3,
+        "max": 30,
+        "step": 1,
+        "unit": " min",
+        "default": 9,
+        "remount": true
+      },
+      {
+        "prop": "progress",
+        "label": "Route progress",
+        "kind": "slider",
+        "min": 0.1,
+        "max": 0.9,
+        "step": 0.05,
+        "default": 0.46,
+        "remount": true
+      },
+      {
+        "prop": "restaurant",
+        "label": "Restaurant",
+        "kind": "text",
+        "default": "Bao Bao Kitchen"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
   },
   {
     "slug": "mobile-chat",
@@ -4162,13 +5779,13 @@
         "name": "thinkingMs",
         "type": "number",
         "default": "1100",
-        "description": "How long the shimmering typing indicator shows before streaming starts."
+        "description": "How long the shimmering typing indicator shows before streaming starts. The live demo uses 700."
       },
       {
         "name": "wordMs",
         "type": "number",
         "default": "55",
-        "description": "Base delay between streamed words (punctuation pauses longer)."
+        "description": "Base delay between streamed words (punctuation pauses longer). The live demo uses 32."
       },
       {
         "name": "onSend",
@@ -4201,7 +5818,75 @@
         "description": "The header’s care-log button."
       }
     ],
-    "added": "2026-10-07"
+    "added": "2026-10-07",
+    "demo": {
+      "steps": [
+        "wait:300",
+        "click:@reminder",
+        "wait:300",
+        "click:@input",
+        "type:Should I mist it?",
+        "click:@send",
+        "wait:1900",
+        "move:0.62,0.55",
+        "wait:500"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "assistantName",
+        "label": "Assistant name",
+        "kind": "text",
+        "default": "Moss"
+      },
+      {
+        "prop": "assistantRole",
+        "label": "Role line",
+        "kind": "text",
+        "default": "Plant care"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#cdf27e",
+        "options": [
+          "#cdf27e",
+          "#7dd3fc",
+          "#ff7a45",
+          "#f2f2f2"
+        ]
+      },
+      {
+        "prop": "thinkingMs",
+        "label": "Thinking time",
+        "kind": "slider",
+        "min": 300,
+        "max": 2500,
+        "step": 100,
+        "unit": "ms",
+        "default": 700,
+        "group": "Streaming"
+      },
+      {
+        "prop": "wordMs",
+        "label": "Word pace",
+        "kind": "slider",
+        "min": 15,
+        "max": 120,
+        "step": 5,
+        "unit": "ms",
+        "default": 32,
+        "group": "Streaming"
+      },
+      {
+        "prop": "$replay",
+        "label": "Demo",
+        "kind": "action",
+        "value": "Replay"
+      }
+    ]
   },
   {
     "slug": "mobile-checkout-sheet",
@@ -4403,6 +6088,16 @@
         "description": "How long the island stays open after a stage change."
       },
       {
+        "name": "step",
+        "type": "number",
+        "description": "Show this update (an index into updates). Changing it moves the activity there and alerts through the island on a stage change, as a real push update would."
+      },
+      {
+        "name": "island",
+        "type": "\"open\" | \"closed\"",
+        "description": "Open or fold the Dynamic Island when this changes; taps and update alerts still move it afterwards."
+      },
+      {
         "name": "onOpenApp",
         "type": "() => void",
         "description": "Card tapped."
@@ -4413,7 +6108,103 @@
         "description": "Fires when the demo control advances."
       }
     ],
-    "added": "2026-10-09"
+    "added": "2026-10-09",
+    "demo": {
+      "steps": [
+        "wait:350",
+        "click:@next-update",
+        "wait:600",
+        "click:@next-update",
+        "wait:1300",
+        "click:@next-update",
+        "wait:350",
+        "click:@next-update",
+        "wait:1300"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "step",
+        "label": "Update",
+        "kind": "action",
+        "options": [
+          {
+            "value": 0,
+            "label": "On the way"
+          },
+          {
+            "value": 1,
+            "label": "Elm Row"
+          },
+          {
+            "value": 2,
+            "label": "Nearby"
+          },
+          {
+            "value": 3,
+            "label": "Delivered"
+          }
+        ],
+        "group": "State"
+      },
+      {
+        "prop": "island",
+        "label": "Island",
+        "kind": "action",
+        "options": [
+          {
+            "value": "open",
+            "label": "Expand"
+          },
+          {
+            "value": "closed",
+            "label": "Fold"
+          }
+        ],
+        "group": "State"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action",
+        "group": "State"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#b9f26a",
+        "options": [
+          "#b9f26a",
+          "#7cc4ff",
+          "#ff9d7a",
+          "#d6b8ff"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "appName",
+        "label": "App name",
+        "kind": "text",
+        "default": "Larder",
+        "group": "Content"
+      },
+      {
+        "prop": "courierInitials",
+        "label": "Courier initials",
+        "kind": "text",
+        "default": "AO",
+        "group": "Content"
+      },
+      {
+        "prop": "date",
+        "label": "Date line",
+        "kind": "text",
+        "default": "Friday 9 October",
+        "group": "Content"
+      }
+    ]
   },
   {
     "slug": "mobile-now-playing",
@@ -4508,6 +6299,16 @@
         "description": "Badge under the scrubber. Pass \"\" to hide it."
       },
       {
+        "name": "view",
+        "type": "\"player\" | \"lyrics\" | \"airplay\" | \"queue\"",
+        "description": "Puts the screen in a view: the plain player, synced lyrics, or the AirPlay or Up next popover. Taps still work; mirror them back with onViewChange."
+      },
+      {
+        "name": "onViewChange",
+        "type": "(view) => void",
+        "description": "The visible view changed, from a tap or from the view prop."
+      },
+      {
         "name": "onDismiss",
         "type": "() => void",
         "description": "Chevron in the header."
@@ -4533,7 +6334,98 @@
         "description": "Volume dragged or stepped, 0–1."
       }
     ],
-    "added": "2026-10-09"
+    "added": "2026-10-09",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@lyrics",
+        "wait:1700",
+        "click:@airplay",
+        "wait:900",
+        "click:@device-living",
+        "wait:1100"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "view",
+        "label": "View",
+        "kind": "action",
+        "options": [
+          {
+            "value": "player",
+            "label": "Player"
+          },
+          {
+            "value": "lyrics",
+            "label": "Lyrics"
+          },
+          {
+            "value": "airplay",
+            "label": "AirPlay"
+          },
+          {
+            "value": "queue",
+            "label": "Up next"
+          }
+        ]
+      },
+      {
+        "prop": "initialIndex",
+        "label": "Track",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": 0,
+            "label": "Lanterns"
+          },
+          {
+            "value": 1,
+            "label": "Glasshouse"
+          },
+          {
+            "value": 2,
+            "label": "Night Ferry"
+          }
+        ],
+        "default": 0,
+        "remount": true
+      },
+      {
+        "prop": "ambience",
+        "label": "Cover light",
+        "kind": "slider",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "default": 0.62
+      },
+      {
+        "prop": "autoPlay",
+        "label": "Playing",
+        "kind": "toggle",
+        "default": true,
+        "remount": true
+      },
+      {
+        "prop": "qualityBadge",
+        "label": "Quality badge",
+        "kind": "text",
+        "default": "Lossless"
+      },
+      {
+        "prop": "source",
+        "label": "Playlist",
+        "kind": "text",
+        "default": "Late Ferry"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
   },
   {
     "slug": "mobile-paywall",
@@ -4656,7 +6548,125 @@
         "description": "The button after a successful purchase."
       }
     ],
-    "added": "2026-10-07"
+    "added": "2026-10-07",
+    "demo": {
+      "steps": [
+        "wait:250",
+        "click:@plan-monthly",
+        "wait:450",
+        "click:@plan-annual",
+        "wait:250",
+        "click:@cta",
+        "wait:1600",
+        "click",
+        "wait:2900"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#F4AE4B",
+        "options": [
+          "#F4AE4B",
+          "#E8E8EA",
+          "#7DDB9B",
+          "#8AB4FF",
+          "#F0766B"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "title",
+        "label": "Headline",
+        "kind": "text",
+        "default": "Sleep like you mean it.",
+        "group": "Look"
+      },
+      {
+        "prop": "initialPlan",
+        "label": "Starts on",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "annual",
+            "label": "Yearly"
+          },
+          {
+            "value": "monthly",
+            "label": "Monthly"
+          }
+        ],
+        "default": "annual",
+        "remount": true,
+        "group": "Plans"
+      },
+      {
+        "prop": "annualPrice",
+        "label": "Yearly price ($)",
+        "kind": "slider",
+        "min": 19.99,
+        "max": 44.99,
+        "step": 1,
+        "default": 35.99,
+        "group": "Plans"
+      },
+      {
+        "prop": "monthlyPrice",
+        "label": "Monthly price ($)",
+        "kind": "slider",
+        "min": 3.99,
+        "max": 9.99,
+        "step": 0.5,
+        "default": 4.99,
+        "group": "Plans"
+      },
+      {
+        "prop": "trialDays",
+        "label": "Free trial",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": 3,
+            "label": "3 days"
+          },
+          {
+            "value": 7,
+            "label": "7 days"
+          },
+          {
+            "value": 14,
+            "label": "14 days"
+          }
+        ],
+        "default": 7,
+        "group": "Plans"
+      },
+      {
+        "prop": "currency",
+        "label": "Currency",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "$",
+            "label": "$"
+          },
+          {
+            "value": "£",
+            "label": "£"
+          }
+        ],
+        "default": "$",
+        "group": "Plans"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action",
+        "group": "State"
+      }
+    ]
   },
   {
     "slug": "mobile-swipe-list",
@@ -4804,6 +6814,16 @@
         "description": "Cards and passes: issuer, label, peek field, kind, pattern (guilloche | contour | rings | halftone | brushed), face colours (3–4 gradient stops, ink, accent), figure, meta and transactions. Card faces are the only colour on screen."
       },
       {
+        "name": "maxCards",
+        "type": "number",
+        "description": "Show only the first n cards; the stack re-spaces itself and a card that is no longer shown closes. Defaults to all of them."
+      },
+      {
+        "name": "activeId",
+        "type": "string | null",
+        "description": "Holds a card open by id so a host can drive the stack. Any other value, or null, returns to the stack. Changes after mount move it; leave it out and the visitor opens cards by tapping."
+      },
+      {
         "name": "title",
         "type": "string",
         "default": "\"Wallet\"",
@@ -4812,8 +6832,8 @@
       {
         "name": "subtitle",
         "type": "string",
-        "default": "\"5 cards and passes\"",
-        "description": "Line under the title."
+        "default": "\"{n} cards and passes\"",
+        "description": "Line under the title. Defaults to a count of the cards shown."
       },
       {
         "name": "summary",
@@ -4919,7 +6939,100 @@
         "description": "Near-black or white surfaces; both are tuned."
       }
     ],
-    "added": "2026-10-07"
+    "added": "2026-10-07",
+    "demo": {
+      "steps": [
+        "wait:300",
+        "scroll:480",
+        "click:@group-1",
+        "wait:400",
+        "click:@group-1",
+        "wait:600",
+        "hover:@hint-sequential-testing",
+        "wait:950",
+        "move:0.86,0.42",
+        "wait:200",
+        "scroll:-480",
+        "wait:200"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "recommendedId",
+        "label": "Recommended",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "hobby",
+            "label": "Hobby"
+          },
+          {
+            "value": "team",
+            "label": "Team"
+          },
+          {
+            "value": "business",
+            "label": "Business"
+          },
+          {
+            "value": "enterprise",
+            "label": "Enterprise"
+          }
+        ],
+        "default": "team",
+        "group": "Plans"
+      },
+      {
+        "prop": "recommendedLabel",
+        "label": "Badge label",
+        "kind": "text",
+        "default": "Recommended",
+        "group": "Plans"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Highlight edge",
+        "kind": "color",
+        "default": "#2dd4bf",
+        "options": [
+          "#2dd4bf",
+          "#f59e0b",
+          "#a78bfa"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "title",
+        "label": "Headline",
+        "kind": "text",
+        "default": "Every line of the contract, in one table.",
+        "group": "Content"
+      },
+      {
+        "prop": "eyebrow",
+        "label": "Eyebrow",
+        "kind": "text",
+        "default": "Compare plans",
+        "group": "Content"
+      }
+    ]
   },
   {
     "slug": "pricing-receipt",
@@ -5014,12 +7127,94 @@
         "description": "Small print under the CTA."
       },
       {
+        "name": "stampColor",
+        "type": "string",
+        "default": "\"#b5442c\"",
+        "description": "Colour of the rubber stamp across the total."
+      },
+      {
+        "name": "selectedId",
+        "type": "string",
+        "description": "Option id of the receipt on the printer; changing it prints that receipt. Defaults to the first option."
+      },
+      {
+        "name": "onSelectedChange",
+        "type": "(id: string) => void",
+        "description": "Called with the option id when a ticket is chosen."
+      },
+      {
         "name": "className",
         "type": "string",
         "description": "Classes on the outer block (max width 420px, centred)."
       }
     ],
-    "added": "2026-10-07"
+    "added": "2026-10-07",
+    "demo": {
+      "steps": [
+        "wait:500",
+        "click:@ticket-team",
+        "wait:1500",
+        "click:@ticket-solo",
+        "wait:1400"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "brand",
+        "label": "Brand (~16 chars)",
+        "kind": "text",
+        "default": "QUIRE",
+        "group": "Content"
+      },
+      {
+        "prop": "stamp",
+        "label": "Stamp (~14 chars)",
+        "kind": "text",
+        "default": "Paid once",
+        "group": "Content"
+      },
+      {
+        "prop": "thanks",
+        "label": "Sign-off",
+        "kind": "text",
+        "default": "Thank you for not subscribing",
+        "group": "Content"
+      },
+      {
+        "prop": "currency",
+        "label": "Currency symbol",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "$",
+            "label": "$"
+          },
+          {
+            "value": "£",
+            "label": "£"
+          },
+          {
+            "value": "€",
+            "label": "€"
+          }
+        ],
+        "default": "$",
+        "group": "Pricing"
+      },
+      {
+        "prop": "stampColor",
+        "label": "Stamp ink",
+        "kind": "color",
+        "default": "#b5442c",
+        "options": [
+          "#b5442c",
+          "#1f5fa8",
+          "#2f7a4f"
+        ],
+        "group": "Look"
+      }
+    ]
   },
   {
     "slug": "three-ascii-object",
@@ -5121,7 +7316,114 @@
         "description": "Classes for the host, which fills its parent."
       }
     ],
-    "added": "2026-10-09"
+    "added": "2026-10-09",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "hover:@object:0.34,0.5",
+        "drag:0.64,0.44",
+        "wait:300",
+        "click:@ramp-blocks",
+        "wait:900",
+        "click:@shape-twist",
+        "wait:1400"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "shape",
+        "label": "Shape",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "knot",
+            "label": "Knot"
+          },
+          {
+            "value": "twist",
+            "label": "Twist"
+          }
+        ],
+        "default": "knot",
+        "group": "Object"
+      },
+      {
+        "prop": "ramp",
+        "label": "Ramp",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": " .:-=+*#%@",
+            "label": "Classic"
+          },
+          {
+            "value": " .'`,:;~-=+*!?icoxz7%#&$@0BWM",
+            "label": "Fine"
+          },
+          {
+            "value": " .:░▒▓█",
+            "label": "Blocks"
+          }
+        ],
+        "default": " .:-=+*#%@",
+        "group": "Object"
+      },
+      {
+        "prop": "cellSize",
+        "label": "Cell size",
+        "kind": "slider",
+        "min": 8,
+        "max": 24,
+        "step": 1,
+        "unit": "px",
+        "default": 12,
+        "group": "Object"
+      },
+      {
+        "prop": "edges",
+        "label": "Edge strokes",
+        "kind": "toggle",
+        "default": true,
+        "group": "Object"
+      },
+      {
+        "prop": "autoRotate",
+        "label": "Spin",
+        "kind": "slider",
+        "min": 0,
+        "max": 1.5,
+        "step": 0.05,
+        "unit": "rad/s",
+        "default": 0.32,
+        "group": "Motion"
+      },
+      {
+        "prop": "accent",
+        "label": "Torch",
+        "kind": "color",
+        "default": "#ff7a45",
+        "options": [
+          "#ff7a45",
+          "#7dd3fc",
+          "#a3e635",
+          "#f472b6"
+        ],
+        "group": "Colour"
+      },
+      {
+        "prop": "color",
+        "label": "Glyphs",
+        "kind": "color",
+        "default": "#ececec",
+        "options": [
+          "#ececec",
+          "#fde68a",
+          "#bae6fd",
+          "#bbf7d0"
+        ],
+        "group": "Colour"
+      }
+    ]
   },
   {
     "slug": "three-contour-terrain",
@@ -5223,7 +7525,105 @@
         "description": "Classes for the root, which fills its parent."
       }
     ],
-    "added": "2026-10-09"
+    "added": "2026-10-09",
+    "demo": {
+      "steps": [
+        "click",
+        "wait:300",
+        "click:@terrain:0.52,0.56",
+        "wait:1300",
+        "click:@clear",
+        "wait:900"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "seed",
+        "label": "Terrain",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": 7,
+            "label": "Kestrel"
+          },
+          {
+            "value": 23,
+            "label": "Vire"
+          },
+          {
+            "value": 41,
+            "label": "Alder"
+          }
+        ],
+        "default": 7,
+        "group": "Terrain"
+      },
+      {
+        "prop": "interval",
+        "label": "Interval",
+        "kind": "slider",
+        "min": 10,
+        "max": 50,
+        "step": 5,
+        "unit": " m",
+        "default": 20,
+        "group": "Terrain"
+      },
+      {
+        "prop": "speed",
+        "label": "Drift",
+        "kind": "slider",
+        "min": 0,
+        "max": 3,
+        "step": 0.25,
+        "unit": "x",
+        "default": 1,
+        "group": "Terrain"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f5a524",
+        "options": [
+          "#f5a524",
+          "#7ee0b8",
+          "#7dd3fc",
+          "#ff6b5e"
+        ],
+        "group": "Colour"
+      },
+      {
+        "prop": "lineColor",
+        "label": "Line colour",
+        "kind": "color",
+        "default": "#e6e6e6",
+        "options": [
+          "#e6e6e6",
+          "#9fb8c8",
+          "#d8c8a8"
+        ],
+        "group": "Colour"
+      },
+      {
+        "prop": "maxPins",
+        "label": "Max pins",
+        "kind": "slider",
+        "min": 1,
+        "max": 7,
+        "step": 1,
+        "unit": "",
+        "default": 6,
+        "group": "Survey"
+      },
+      {
+        "prop": "chrome",
+        "label": "Sheet chrome",
+        "kind": "toggle",
+        "default": true,
+        "group": "Survey"
+      }
+    ]
   },
   {
     "slug": "three-globe-arcs",
@@ -5281,6 +7681,12 @@
         "description": "Drag or arrow keys to spin with inertia and tilt."
       },
       {
+        "name": "maxRoutes",
+        "type": "number",
+        "default": "all routes",
+        "description": "Draw only the first N routes, so a sparser network can be shown without editing the array."
+      },
+      {
         "name": "label",
         "type": "string",
         "default": "\"Route globe\"",
@@ -5292,7 +7698,52 @@
         "description": "Classes for the root, which fills its parent."
       }
     ],
-    "added": "2026-10-07"
+    "added": "2026-10-07",
+    "demo": {
+      "steps": [
+        "wait:350",
+        "hover:@globe:0.3,0.5",
+        "down",
+        "hover:@globe:0.62,0.5",
+        "up",
+        "wait:400",
+        "hover:@globe:0.63,0.33",
+        "wait:1100",
+        "down",
+        "hover:@globe:0.21,0.35",
+        "wait:150",
+        "up",
+        "wait:400"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#ff7a45",
+        "options": [
+          "#ff7a45",
+          "#4cc3ff",
+          "#a3e635",
+          "#f5f5f7"
+        ]
+      },
+      {
+        "prop": "maxRoutes",
+        "label": "Routes shown",
+        "kind": "slider",
+        "min": 3,
+        "max": 11,
+        "step": 1,
+        "default": 11
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
   },
   {
     "slug": "three-holo-card",
@@ -5360,8 +7811,8 @@
       {
         "name": "finePrint",
         "type": "[string, string]",
-        "default": "Ferro’s return-address lines",
-        "description": "Two lines of fine print on the back."
+        "default": "Follows the issuer, plus a return address",
+        "description": "Two lines of fine print on the back. The first names the issuer."
       },
       {
         "name": "finish",
@@ -5402,7 +7853,79 @@
         "description": "Classes for the root, which fills its parent."
       }
     ],
-    "added": "2026-10-09"
+    "added": "2026-10-09",
+    "demo": {
+      "steps": [
+        "wait:250",
+        "hover:@card:0.26,0.3",
+        "hover:@card:0.72,0.64",
+        "click",
+        "wait:1000",
+        "click:@side-front",
+        "wait:500"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "finish",
+        "label": "Finish",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "graphite",
+            "label": "Graphite"
+          },
+          {
+            "value": "titanium",
+            "label": "Titanium"
+          },
+          {
+            "value": "champagne",
+            "label": "Champagne"
+          }
+        ],
+        "default": "graphite"
+      },
+      {
+        "prop": "side",
+        "label": "Side",
+        "kind": "action",
+        "options": [
+          {
+            "value": "front",
+            "label": "Front"
+          },
+          {
+            "value": "back",
+            "label": "Back"
+          }
+        ]
+      },
+      {
+        "prop": "holder",
+        "label": "Cardholder",
+        "kind": "text",
+        "default": "Amara Okafor"
+      },
+      {
+        "prop": "tier",
+        "label": "Tier",
+        "kind": "text",
+        "default": "Reserve"
+      },
+      {
+        "prop": "issuer",
+        "label": "Issuer",
+        "kind": "text",
+        "default": "Ferro"
+      },
+      {
+        "prop": "interactive",
+        "label": "Tilt with pointer",
+        "kind": "toggle",
+        "default": true
+      }
+    ]
   },
   {
     "slug": "three-keycaps",
@@ -5450,9 +7973,9 @@
       },
       {
         "name": "palette",
-        "type": "{ alpha?, mod?, legend? }",
-        "default": "{ alpha: \"#34353a\", mod: \"#232428\", legend: \"#e6e6e6\" }",
-        "description": "The neutral cap plastics and legend ink."
+        "type": "\"graphite\" | \"chalk\" | \"slate\" | { alpha?, mod?, legend? }",
+        "default": "\"graphite\"",
+        "description": "The neutral cap plastics and legend ink: a preset name, or your own { alpha, mod, legend } colours (graphite is { alpha: \"#34353a\", mod: \"#232428\", legend: \"#e6e6e6\" }). Changing it recolours the caps in place."
       },
       {
         "name": "demo",
@@ -5467,6 +7990,18 @@
         "description": "Mirror the physical keyboard while the caps are on screen (ignored while typing in a field)."
       },
       {
+        "name": "pressed",
+        "type": "string",
+        "default": "\"\"",
+        "description": "Key ids held down from outside, joined with \"+\" (\"cmd+k\"): the caps sink and the chord's caption shows, as if typed. Anything that names no key lets go."
+      },
+      {
+        "name": "showCaption",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show the caption row under the caps. The chord is still announced to screen readers when it is off."
+      },
+      {
         "name": "captureShortcuts",
         "type": "boolean",
         "default": "false",
@@ -5478,7 +8013,92 @@
         "description": "Classes for the root, which fills its parent."
       }
     ],
-    "added": "2026-10-09"
+    "added": "2026-10-09",
+    "demo": {
+      "steps": [
+        "wait:150",
+        "move:0.42,0.55",
+        "click:@key-cmd",
+        "click:@key-k",
+        "wait:800",
+        "click:@key-opt",
+        "click:@key-space",
+        "wait:2700"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "pressed",
+        "label": "Hold a chord",
+        "kind": "action",
+        "options": [
+          {
+            "value": "none",
+            "label": "Release"
+          },
+          {
+            "value": "cmd+k",
+            "label": "⌘K"
+          },
+          {
+            "value": "shift+cmd+k",
+            "label": "⇧⌘K"
+          },
+          {
+            "value": "opt+space",
+            "label": "⌥Space"
+          },
+          {
+            "value": "esc",
+            "label": "Esc"
+          }
+        ]
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#e9572b",
+        "options": [
+          "#e9572b",
+          "#3b82f6",
+          "#22c55e",
+          "#ededef"
+        ]
+      },
+      {
+        "prop": "palette",
+        "label": "Plastics",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "graphite",
+            "label": "Graphite"
+          },
+          {
+            "value": "chalk",
+            "label": "Chalk"
+          },
+          {
+            "value": "slate",
+            "label": "Slate"
+          }
+        ],
+        "default": "graphite"
+      },
+      {
+        "prop": "showCaption",
+        "label": "Caption",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "$replay",
+        "label": "Demo",
+        "kind": "action",
+        "value": "Replay"
+      }
+    ]
   },
   {
     "slug": "three-particle-sphere",
@@ -5547,7 +8167,78 @@
         "description": "Classes for the host element, which fills its parent."
       }
     ],
-    "added": "2026-10-07"
+    "added": "2026-10-07",
+    "demo": {
+      "steps": [
+        "wait:300",
+        "hover:@sphere:0.42,0.42",
+        "wait:250",
+        "click",
+        "wait:1300",
+        "hover:@sphere:0.6,0.58",
+        "click",
+        "wait:1500"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "accent",
+        "label": "Touch colour",
+        "kind": "color",
+        "default": "#ff7a45",
+        "options": [
+          "#ff7a45",
+          "#4cc3ff",
+          "#a3e635",
+          "#f5f5f7"
+        ]
+      },
+      {
+        "prop": "density",
+        "label": "Particles",
+        "kind": "slider",
+        "min": 3000,
+        "max": 20000,
+        "step": 1000,
+        "default": 14000
+      },
+      {
+        "prop": "turbulence",
+        "label": "Turbulence",
+        "kind": "slider",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "default": 0.55
+      },
+      {
+        "prop": "speed",
+        "label": "Speed",
+        "kind": "slider",
+        "min": 0.25,
+        "max": 3,
+        "step": 0.25,
+        "default": 1,
+        "unit": "×"
+      },
+      {
+        "prop": "ring",
+        "label": "Orbit ring",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "interactive",
+        "label": "Pointer touch",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
   },
   {
     "slug": "three-voice-orb",
@@ -5952,7 +8643,7 @@
       "motion"
     ],
     "theme": "dark",
-    "previewHeight": 1100,
+    "previewHeight": 900,
     "usage": "import { WorkIndexHover } from \"@/components/design-for-ai/work-index-hover\";\n\n<WorkIndexHover\n  title=\"Recent work\"\n  projects={[{ year: \"2026\", client: \"Acme\", discipline: \"Brand\", href: \"/work/acme\", cover: \"ferry\" }]}\n  theme=\"dark\"\n/>",
     "props": [
       {
@@ -6001,6 +8692,71 @@
         "description": "Near-black or paper. Covers keep their own colours."
       }
     ],
-    "added": "2026-10-07"
+    "added": "2026-10-07",
+    "demo": {
+      "steps": [
+        "wait:250",
+        "hover:@row-0:0.6,0.5",
+        "wait:500",
+        "hover:@row-2:0.58,0.5",
+        "wait:450",
+        "hover:@row-3:0.76,0.5",
+        "wait:900"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "title",
+        "label": "Title",
+        "kind": "text",
+        "default": "Selected work",
+        "group": "Content"
+      },
+      {
+        "prop": "intro",
+        "label": "Intro",
+        "kind": "text",
+        "default": "A partial list. The full archive, and the ones under NDA, are a coffee away.",
+        "group": "Content"
+      },
+      {
+        "prop": "previewLabel",
+        "label": "Card label",
+        "kind": "text",
+        "default": "View case",
+        "group": "Content"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f2",
+        "options": [
+          "#f4f4f2",
+          "#0c0c0b",
+          "#2f7de1",
+          "#ff6b2c",
+          "#16a05d"
+        ],
+        "group": "Look"
+      }
+    ]
   }
 ]
