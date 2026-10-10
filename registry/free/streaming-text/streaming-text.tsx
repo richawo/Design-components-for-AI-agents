@@ -603,18 +603,29 @@ export function StreamingText({
 
 /** A shorter answer for the showcase, so the whole card (question to footer) stays in frame while the demo plays. */
 const STAGE_ANSWER = [
-  "A loaf usually collapses because the dough ran out of strength before the oven could set it.[1] The usual culprit is **overproofing**: if the poke-test dent springs back slowly and only partway, bake it.[2] Left too long, acids loosen the gluten and the loaf sighs the moment you score it.[3] Shorten the final proof by 30 to 45 minutes.",
+  "A loaf usually collapses because the dough ran out of strength before the oven could set it. The gas is still there; the structure holding it up isn’t.[1]",
+  "The usual culprit is **overproofing**: left too long, acids loosen the gluten and the loaf sighs the moment you score it.[2] If the poke-test dent springs back slowly and only partway, bake it. Otherwise shorten the final proof by 30 to 45 minutes.[3]",
 ];
 
 /**
  * The answer card on its stage. It opens on the finished answer so Regenerate
  * is there from the first frame; overrides (the page’s Customize panel) go
- * straight to the card, and the stage follows the theme.
+ * straight to the card, and the stage follows the theme. A new pace only
+ * shapes the next stream, so changing it replays the answer at once: mid-stream
+ * the card restarts by itself, and a finished answer is regenerated here.
  */
 export default function StreamingTextDemo(overrides: Partial<StreamingTextProps> = {}) {
+  const stage = useRef<HTMLDivElement>(null);
+  const pace = overrides.pace ?? 1;
+  const lastPace = useRef(pace);
+  useEffect(() => {
+    if (lastPace.current === pace) return;
+    lastPace.current = pace;
+    stage.current?.querySelector<HTMLButtonElement>('[data-demo="regenerate"]')?.click();
+  }, [pace]);
   return (
     <div className="flex min-h-dvh items-start justify-center px-4 pb-10 pt-[max(2rem,calc((100dvh-860px)/2))] sm:px-8" style={{ background: STAGE[overrides.theme ?? "dark"] }}>
-      <div className="w-full max-w-[820px]">
+      <div ref={stage} className="w-full max-w-[820px]">
         <StreamingText answer={STAGE_ANSWER} sources={DEMO_SOURCES.slice(0, 3)} autoStart={false} {...overrides} />
       </div>
     </div>

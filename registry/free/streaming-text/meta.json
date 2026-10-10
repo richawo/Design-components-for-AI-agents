@@ -78,11 +78,12 @@
   "added": "2026-10-07",
   "demo": {
     "steps": [
-      "wait:300",
       "click:@regenerate",
-      "wait:3000",
+      "wait:4200",
       "hover:@cite-2",
-      "wait:1400"
+      "wait:1100",
+      "move:0.74,0.82",
+      "wait:300"
     ]
   },
   "controls": [
@@ -100,7 +101,7 @@
     },
     {
       "prop": "pace",
-      "label": "Word delay",
+      "label": "Delay (higher = slower)",
       "kind": "slider",
       "min": 0.25,
       "max": 2,
