@@ -99,7 +99,7 @@
       "Sign-in paused. Too many wrong passwords, so we’re giving this account a short breather."
     ],
     "result": "onSubmit resolves {ok:true} | {ok:false, reason:'invalid_credentials', attemptsLeft} | {ok:false, reason:'unknown_email'} | {ok:false, reason:'locked', retryAfter}; throwing = network failure",
-    "demo": "password correct-horse; three misses lock for 30s"
+    "demo": "password halyard; three misses lock for 30s"
   },
   "avoid": [
     "floating labels that jump",

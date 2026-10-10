@@ -1434,8 +1434,10 @@ function CapsGlyph() {
 /* Demo                                                                 */
 /* ------------------------------------------------------------------ */
 
-const DEMO_PASSWORD = "correct-horse";
-const DEMO_LATENCY_MS = 1150;
+const DEMO_PASSWORD = "halyard";
+const DEMO_LATENCY_MS = 800;
+// Hold the settled "Signed in" frame before the hint swaps to "Reset demo".
+const DEMO_RESET_DELAY_MS = 1800;
 const DEMO_MAX_MISSES = 3;
 const DEMO_LOCK_SECONDS = 30;
 
@@ -1468,7 +1470,7 @@ export default function AuthSignInDemo(overrides: Partial<AuthSignInProps> = {})
 
   return (
     <div className="flex min-h-dvh flex-col items-center justify-center px-4 py-12 sm:py-16" style={{ background: light ? STAGE_LIGHT : STAGE }}>
-      <AuthSignIn key={run} onSubmit={onSubmit} onSuccess={() => setSignedIn(true)} onForgotPassword={() => undefined} {...overrides} />
+      <AuthSignIn key={run} onSubmit={onSubmit} onSuccess={() => void wait(DEMO_RESET_DELAY_MS).then(() => setSignedIn(true))} onForgotPassword={() => undefined} {...overrides} />
       <div
         className={`mt-6 flex min-h-11 max-w-[400px] flex-wrap items-center justify-center gap-x-3 gap-y-1 px-2 text-center font-mono text-[11px] uppercase leading-[1.6] tracking-[0.12em] ${light ? "text-[#71717a]" : "text-[#7d7d86]"}`}
       >

@@ -36,7 +36,7 @@ Build an email-and-password sign-in card in React + Tailwind CSS v4 + `motion/re
 - Focus-visible rings: 2px ink outline offset 2px, instant. Every button presses at 0.97–0.98.
 
 **Demo**
-- Password `correct-horse` signs in; wrong passwords count down tries; the third miss locks for 30 seconds. A mono hint under the card says so, and turns into “Reset demo” after success. Its fake latency uses the same cleaned-up timeouts.
+- Password `halyard` signs in; wrong passwords count down tries; the third miss locks for 30 seconds. A mono hint under the card says so, and turns into “Reset demo” after success. Its fake latency uses the same cleaned-up timeouts.
 
 **Don’t**
 - No glow around the card, no gradient buttons, no green success fill, no floating labels that jump, no generic grey disabled button for the lockout, no `outline-none` on buttons (it kills the focus ring in Tailwind v4), no inline hex outside the palette, no setTimeout left running after unmount.

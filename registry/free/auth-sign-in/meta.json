@@ -31,17 +31,16 @@
     {"name": "theme", "type": "\"dark\" | \"light\"", "default": "\"dark\"", "description": "Surface palette. Both are tuned; error and warning tones shift to stay AA on each."}
   ],
   "demo": {
-    "steps": ["wait:600", "click:@email", "type:ada@acme.io", "click:@password", "type:wrong", "key:Enter", "wait:1450", "type:correct-horse", "key:Enter", "wait:1700"]
+    "steps": ["wait:100", "click:@email", "type:ada@acme.io", "click:@password", "type:nope", "key:Enter", "wait:2000", "type:halyard", "key:Enter", "wait:1150"]
   },
   "controls": [
     {"prop": "theme", "label": "Theme", "kind": "segmented", "options": [{"value": "dark", "label": "Dark"}, {"value": "light", "label": "Light"}], "default": "dark"},
-    {"prop": "accent", "label": "Button", "kind": "color", "default": "#ededef", "options": ["#ededef", "#7c9cff", "#3ddc97", "#ff7a45"]},
+    {"prop": "accent", "label": "Button (theme ink)", "kind": "color", "default": "#ededef", "options": ["#ededef", "#7c9cff", "#3ddc97", "#ff7a45"]},
     {"prop": "title", "label": "Heading", "kind": "text", "default": "Sign in to Halyard", "group": "Content"},
     {"prop": "subtitle", "label": "Subheading", "kind": "text", "default": "Welcome back. The backlog didn’t groom itself.", "group": "Content"},
     {"prop": "submitLabel", "label": "Button label", "kind": "text", "default": "Sign in", "group": "Content"},
     {"prop": "defaultRemember", "label": "Remember me on", "kind": "toggle", "default": true, "remount": true},
-    {"prop": "autoFocus", "label": "Focus email on load", "kind": "toggle", "default": false, "remount": true},
-    {"prop": "$replay", "label": "Replay", "kind": "action"}
+      {"prop": "$replay", "label": "Replay", "kind": "action"}
   ],
   "added": "2026-10-09"
 }
