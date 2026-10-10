@@ -81,6 +81,10 @@ export type MobileTabBarProps = {
   actions?: QuickAction[];
   /** The one colour: centre action, selected tab and the week's ring. */
   accent?: string;
+  /** Drive the selected tab from outside. Changing it plays the same transition as a tap. */
+  tab?: TabKey;
+  /** Drive the quick-action arc from outside: "open" fans it out, "closed" folds it away. */
+  menu?: "open" | "closed";
   onTabChange?: (key: TabKey) => void;
   onAction?: (key: string) => void;
 };
@@ -105,6 +109,14 @@ const HERO_FILL = ["#202020", "#171717", "#111111"] as const;
 const MILK = ["#FFFFFF", "#EDEDED", "#D6D6D6"] as const;
 
 const DEFAULT_ACCENT = "#FF6B3D";
+
+/**
+ * Names a part for the live demo script. React Native Web turns `dataSet` into
+ * a `data-demo` attribute; on device it is ignored. The demo taps the tabs
+ * (data-demo="tab-today", data-demo="tab-routes", data-demo="tab-club"), the
+ * centre action (data-demo="fab") and an arc action (data-demo="action-log").
+ */
+const demoTarget = (name: string): { dataSet: { demo: string } } => ({ dataSet: { demo: name } });
 
 const MONO = Platform.select({ ios: "Menlo", default: "monospace" });
 const EASE_OUT = Easing.bezier(0.22, 1, 0.36, 1);
@@ -544,9 +556,11 @@ type PressProps = {
   scaleTo?: number;
   label: string;
   hint?: string;
+  /** data-demo name for the live demo script. */
+  demo?: string;
 };
 
-function Press({ children, onPress, style, scaleTo = 0.97, label, hint }: PressProps) {
+function Press({ children, onPress, style, scaleTo = 0.97, label, hint, demo }: PressProps) {
   const reduce = useReduce();
   const scale = useRef(new Animated.Value(1)).current;
   const springTo = (toValue: number, held: boolean) =>
@@ -559,6 +573,7 @@ function Press({ children, onPress, style, scaleTo = 0.97, label, hint }: PressP
       accessibilityRole="button"
       accessibilityLabel={label}
       accessibilityHint={hint}
+      {...(demo ? demoTarget(demo) : null)}
     >
       <Animated.View style={[style, { transform: [{ scale }] }]}>{children}</Animated.View>
     </Pressable>
@@ -1600,6 +1615,7 @@ function TabButton({ tab, selected, badge, onPress }: { tab: TabItem; selected: 
       onPress={onPress}
       onPressIn={() => !reduce && springPress(0.9, true)}
       onPressOut={() => springPress(1, false)}
+      {...demoTarget(`tab-${tab.key}`)}
       accessibilityRole="tab"
       accessibilityLabel={label}
       accessibilityState={{ selected }}
@@ -1769,6 +1785,7 @@ function CentreAction({ open, menu, rise, onToggle }: { open: boolean; menu: Ani
         onPress={onToggle}
         onPressIn={() => !reduce && springPress(1, true)}
         onPressOut={() => springPress(0, false)}
+        {...demoTarget("fab")}
         accessibilityRole="button"
         accessibilityLabel={open ? "Close quick actions" : "Start an activity"}
         accessibilityState={{ expanded: open }}
@@ -1830,7 +1847,7 @@ function ArcMenu({ actions, items, open, onPick }: { actions: QuickAction[]; ite
     <View style={[s.arc, { bottom: FAB_CENTRE }]}>
       {placed.map(({ action, style }) => (
         <Animated.View key={action.key} style={[s.arcItem, style, !open && s.inert]}>
-          <Press label={action.label} onPress={() => onPick(action)} scaleTo={0.9} style={s.arcBtn}>
+          <Press label={action.label} onPress={() => onPick(action)} scaleTo={0.9} style={s.arcBtn} demo={`action-${action.key}`}>
             <LinearGradient colors={MILK} locations={[0, 0.5, 1]} style={StyleSheet.absoluteFill} />
             <ActionGlyph icon={action.icon} color={INK.black} />
           </Press>
@@ -1884,6 +1901,8 @@ export function MobileTabBar({
   week = DEFAULT_WEEK,
   actions = DEFAULT_ACTIONS,
   accent = DEFAULT_ACCENT,
+  tab,
+  menu: menuState,
   onTabChange,
   onAction,
 }: MobileTabBarProps) {
@@ -1993,6 +2012,16 @@ export function MobileTabBar({
     }, TOAST_FOR);
   };
 
+  /* controlled drivers: a changed `tab` or `menu` plays like a tap would */
+  const latest = useRef({ select, toggleMenu, open });
+  latest.current = { select, toggleMenu, open };
+  useEffect(() => {
+    if (tab) latest.current.select(tab);
+  }, [tab]);
+  useEffect(() => {
+    if (menuState && (menuState === "open") !== latest.current.open) latest.current.toggleMenu(menuState === "open");
+  }, [menuState]);
+
   const motion = useMemo(
     () => ({
       recede: { transform: [{ scale: menu.interpolate({ inputRange: [0, 1], outputRange: [1, reduce ? 1 : 0.965] }) }] },
@@ -2056,8 +2085,8 @@ export function MobileTabBar({
   );
 }
 
-export default function MobileTabBarDemo() {
-  return <MobileTabBar />;
+export default function MobileTabBarDemo(overrides: Partial<MobileTabBarProps> = {}) {
+  return <MobileTabBar {...overrides} />;
 }
 
 /* ------------------------------------------------------------------ */

@@ -30,8 +30,32 @@
     { "name": "week", "type": "WeekDay[]", "description": "Seven days of distance with done, today or planned state." },
     { "name": "actions", "type": "QuickAction[]", "description": "Up to three arc-menu actions with toast copy and optional kilometres to add." },
     { "name": "accent", "type": "string", "default": "\"#FF6B3D\"", "description": "The one colour: centre action, selected tab, the week ring and today's bar." },
+    { "name": "tab", "type": "TabKey", "description": "Drive the selected tab from outside. Changing it plays the same lens, icon and content transition as a tap." },
+    { "name": "menu", "type": "\"open\" | \"closed\"", "description": "Drive the quick-action arc from outside: \"open\" fans the actions out, \"closed\" folds them away." },
     { "name": "onTabChange", "type": "(key: TabKey) => void", "description": "Fired when a tab is selected." },
     { "name": "onAction", "type": "(key: string) => void", "description": "Fired when a quick action is picked." }
+  ],
+  "demo": {
+    "steps": [
+      "wait:250",
+      "click:@tab-club",
+      "wait:600",
+      "click:@fab",
+      "wait:500",
+      "click:@action-log",
+      "wait:500",
+      "click:@tab-today",
+      "wait:900"
+    ],
+    "loop": false
+  },
+  "controls": [
+    {"prop": "accent", "label": "Accent", "kind": "color", "default": "#FF6B3D", "options": ["#FF6B3D", "#3DDC97", "#4C9AFF", "#F5C542", "#F5F5F5"]},
+    {"prop": "goalKm", "label": "Weekly goal", "kind": "slider", "min": 20, "max": 80, "step": 5, "unit": "km", "default": 40},
+    {"prop": "dateLine", "label": "Date line", "kind": "text", "default": "THU 9 OCT · WEEK 41"},
+    {"prop": "initialTab", "label": "Opens on", "kind": "segmented", "options": [{"value": "today", "label": "Today"}, {"value": "routes", "label": "Routes"}, {"value": "club", "label": "Club"}, {"value": "you", "label": "You"}], "default": "today", "remount": true},
+    {"prop": "tab", "label": "Tab", "kind": "action", "options": [{"value": "today", "label": "Today"}, {"value": "routes", "label": "Routes"}, {"value": "club", "label": "Club"}, {"value": "you", "label": "You"}]},
+    {"prop": "menu", "label": "Quick actions", "kind": "action", "options": [{"value": "closed", "label": "Close"}, {"value": "open", "label": "Open"}]}
   ],
   "added": "2026-10-07"
 }
