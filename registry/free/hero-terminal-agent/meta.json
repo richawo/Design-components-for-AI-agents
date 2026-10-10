@@ -83,7 +83,84 @@
       "type": "string",
       "default": "\"#d4ff3a\"",
       "description": "The one signal colour, used only for the install chip's Copied confirmation."
+    },
+    {
+      "name": "playback",
+      "type": "\"play\" | \"pause\"",
+      "description": "Holds or resumes the session from outside. The pause button in the tab bar toggles the same state."
     }
   ],
-  "added": "2026-10-07"
+  "added": "2026-10-07",
+  "demo": {
+    "steps": [
+      "wait:300",
+      "click:@copy-command",
+      "hover:@terminal:0.55,0.45",
+      "wait:200",
+      "click:@session-pause",
+      "wait:900",
+      "click",
+      "wait:600"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "playback",
+      "label": "Session",
+      "kind": "action",
+      "options": [
+        "pause",
+        "play"
+      ],
+      "group": "Terminal"
+    },
+    {
+      "prop": "tabTitle",
+      "label": "Tab title",
+      "kind": "text",
+      "default": "checkout-api",
+      "group": "Terminal"
+    },
+    {
+      "prop": "version",
+      "label": "Version",
+      "kind": "text",
+      "default": "relay 2.4.1",
+      "group": "Terminal"
+    },
+    {
+      "prop": "installCommand",
+      "label": "Install command",
+      "kind": "text",
+      "default": "npx relay@latest init",
+      "group": "Copy"
+    },
+    {
+      "prop": "emphasis",
+      "label": "Dimmed phrase",
+      "kind": "text",
+      "default": "boring parts",
+      "group": "Copy"
+    },
+    {
+      "prop": "accent",
+      "label": "Copied colour",
+      "kind": "color",
+      "default": "#d4ff3a",
+      "options": [
+        "#d4ff3a",
+        "#ffffff",
+        "#7dd3a8",
+        "#60a5fa"
+      ],
+      "group": "Look"
+    },
+    {
+      "prop": "$replay",
+      "label": "Demo",
+      "kind": "action",
+      "value": "Replay",
+      "group": "Terminal"
+    }
+  ]
 }

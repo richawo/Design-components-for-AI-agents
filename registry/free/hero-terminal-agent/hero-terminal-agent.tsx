@@ -69,6 +69,8 @@ export type HeroTerminalAgentProps = {
   loopPause?: number;
   /** The one signal colour: the install chip's "Copied" confirmation. */
   accent?: string;
+  /** Holds or resumes the session from outside. The pause button in the tab bar toggles it too. */
+  playback?: "play" | "pause";
 };
 
 /* ------------------------------------------------------------------ */
@@ -317,6 +319,7 @@ export function HeroTerminalAgent({
   session = DEFAULT_SESSION,
   loopPause = 5200,
   accent = DEFAULT_ACCENT,
+  playback,
 }: HeroTerminalAgentProps) {
   const rootRef = useRef<HTMLElement>(null);
   const headingId = useId();
@@ -377,7 +380,7 @@ export function HeroTerminalAgent({
         </div>
 
         <div className="relative min-w-0 @5xl:col-span-6">
-          <Terminal session={session} tabTitle={tabTitle} version={version} loopPause={loopPause} reduce={reduce} variants={v} />
+          <Terminal session={session} tabTitle={tabTitle} version={version} loopPause={loopPause} playback={playback} reduce={reduce} variants={v} />
         </div>
       </div>
     </motion.section>
@@ -437,6 +440,7 @@ function CopyCommand({ command }: { command: string }) {
       type="button"
       onClick={copy}
       aria-label={`Copy install command: ${command}`}
+      data-demo="copy-command"
       className={`group inline-flex h-12 min-w-0 items-center justify-between gap-4 rounded-[10px] border border-(--ta-ink)/15 bg-(--ta-surface) pl-4 pr-2 font-mono text-[13.5px] text-(--ta-ink)/85 transition-[border-color,transform] duration-150 hover:border-(--ta-ink)/30 active:scale-[0.98] ${FOCUS}`}
     >
       <span className="truncate">
@@ -487,6 +491,7 @@ function Terminal({
   tabTitle,
   version,
   loopPause,
+  playback,
   reduce,
   variants: v,
 }: {
@@ -494,6 +499,7 @@ function Terminal({
   tabTitle: string;
   version: string;
   loopPause: number;
+  playback?: "play" | "pause";
   reduce: boolean;
   variants: VariantPicker;
 }) {
@@ -505,7 +511,10 @@ function Terminal({
   const onScreen = useInView(frameRef, { amount: 0.25 });
   const { rows, total, marks } = useMemo(() => buildTimeline(session), [session]);
   // The pause button holds the session so a line can be read.
-  const [held, setHeld] = useState(false);
+  const [held, setHeld] = useState(playback === "pause");
+  useEffect(() => {
+    if (playback) setHeld(playback === "pause");
+  }, [playback]);
   const { time, now: clockNow } = useSessionClock({ marks, total, loopPause, running: revealed && onScreen && !held && !reduce });
   const now = reduce ? Number.POSITIVE_INFINITY : clockNow;
   const visible = rows.filter((r) => r.at <= now);
@@ -530,6 +539,7 @@ function Terminal({
   return (
     <motion.div
       ref={frameRef}
+      data-demo="terminal"
       initial="hidden"
       animate={revealed ? "show" : "hidden"}
       variants={v(frameIn)}
@@ -655,6 +665,7 @@ function HoldButton({ held, disabled, onToggle }: { held: boolean; disabled: boo
       disabled={disabled}
       aria-label={held ? "Resume session" : "Pause session"}
       aria-pressed={held}
+      data-demo="session-pause"
       className="group/p flex items-center justify-center px-4 transition-colors duration-150 hover:bg-(--ta-ink)/[0.04] focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-(--ta-ink) disabled:pointer-events-none"
     >
       <span className="relative flex size-3 items-center justify-center transition-transform duration-100 group-active/p:scale-90">
@@ -835,4 +846,7 @@ function TerminalRow({ row, now, spin, session }: { row: Row; now: number; spin:
   }
 }
 
-export default HeroTerminalAgent;
+/** The featured instance. Overrides from the page's controls win over the demo's own props. */
+export default function HeroTerminalAgentDemo(overrides: Partial<HeroTerminalAgentProps> = {}) {
+  return <HeroTerminalAgent {...overrides} />;
+}
