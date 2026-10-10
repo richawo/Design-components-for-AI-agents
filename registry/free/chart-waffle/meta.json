@@ -1,0 +1,180 @@
+{
+  "slug": "chart-waffle",
+  "name": "Waffle Chart",
+  "tier": "free",
+  "platform": "web",
+  "category": "charts",
+  "description": "A ten-by-ten unit chart of who closed each support ticket: switch quarters and the cells fly to their new group on springs while the counts roll.",
+  "tags": [
+    "waffle chart",
+    "unit chart",
+    "part to whole",
+    "percentage",
+    "support",
+    "dashboard",
+    "svg",
+    "dark",
+    "monochrome"
+  ],
+  "dependencies": [
+    "motion"
+  ],
+  "theme": "dark",
+  "previewHeight": 720,
+  "usage": "import { ChartWaffle } from \"@/components/design-for-ai/chart-waffle\";\n\n<ChartWaffle\n  title=\"Where a renewal comes from\"\n  subtitle=\"Per 100 renewals\"\n  unit=\"renewal\"\n  groups={[\n    { key: \"auto\", label: \"Renewed on autopay\" },\n    { key: \"nudge\", label: \"Renewed after a reminder\" },\n    { key: \"call\", label: \"Saved by a call\" },\n  ]}\n  periods={[\n    { key: \"h1\", label: \"H1\", counts: [58, 30, 12] },\n    { key: \"h2\", label: \"H2\", counts: [66, 25, 9] },\n  ]}\n  accent=\"#34d399\"\n/>",
+  "props": [
+    {
+      "name": "groups",
+      "type": "{ key: string; label: string; note?: string }[]",
+      "default": "Agent / Agent drafted / Person / Engineering",
+      "description": "The categories, in fill order. The first takes the accent; the rest step down a grey ramp. Up to five read well."
+    },
+    {
+      "name": "periods",
+      "type": "{ key: string; label: string; caption?: string; counts: number[] }[]",
+      "default": "Q4 ’25 to Q3 ’26",
+      "description": "One count per group for each period. Counts are rounded to exactly 100 cells by largest remainder."
+    },
+    {
+      "name": "defaultPeriod",
+      "type": "string",
+      "default": "last period",
+      "description": "Period key shown first."
+    },
+    {
+      "name": "onPeriodChange",
+      "type": "(key: string) => void",
+      "description": "Called when the period tab changes."
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "default": "\"Who closed the ticket\"",
+      "description": "Card title."
+    },
+    {
+      "name": "subtitle",
+      "type": "string",
+      "default": "\"Per 100 support tickets\"",
+      "description": "Mono line beside the title."
+    },
+    {
+      "name": "unit",
+      "type": "string",
+      "default": "\"ticket\"",
+      "description": "Singular noun for one cell, used in the headline, hover readout and labels."
+    },
+    {
+      "name": "fill",
+      "type": "\"columns\" | \"rows\"",
+      "default": "\"columns\"",
+      "description": "Fill the grid column by column (groups read as bands) or row by row."
+    },
+    {
+      "name": "shape",
+      "type": "\"square\" | \"round\"",
+      "default": "\"square\"",
+      "description": "Cell shape."
+    },
+    {
+      "name": "gap",
+      "type": "number",
+      "default": "4",
+      "description": "Space between cells, px."
+    },
+    {
+      "name": "accent",
+      "type": "string",
+      "default": "\"#ff7a45\"",
+      "description": "The one colour: the first group's cells, swatch and headline figure."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Near-black card with white ink, or a white card with near-black ink."
+    }
+  ],
+  "added": "2026-10-10",
+  "demo": {
+    "steps": [
+      "wait:400",
+      "hover:@legend-0",
+      "wait:400",
+      "click:@period-q1",
+      "wait:1100",
+      "click:@period-q3",
+      "wait:1100",
+      "hover:@legend-2",
+      "wait:600"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "title",
+      "label": "Title",
+      "kind": "text",
+      "default": "Who closed the ticket"
+    },
+    {
+      "prop": "defaultPeriod",
+      "label": "Opens on",
+      "kind": "segmented",
+      "options": [
+        { "value": "q4", "label": "Q4 ’25" },
+        { "value": "q1", "label": "Q1" },
+        { "value": "q2", "label": "Q2" },
+        { "value": "q3", "label": "Q3" }
+      ],
+      "default": "q3",
+      "remount": true
+    },
+    {
+      "prop": "fill",
+      "label": "Fill order",
+      "kind": "segmented",
+      "options": [
+        { "value": "columns", "label": "Columns" },
+        { "value": "rows", "label": "Rows" }
+      ],
+      "default": "columns"
+    },
+    {
+      "prop": "shape",
+      "label": "Cell shape",
+      "kind": "segmented",
+      "options": [
+        { "value": "square", "label": "Square" },
+        { "value": "round", "label": "Round" }
+      ],
+      "default": "square"
+    },
+    {
+      "prop": "gap",
+      "label": "Cell gap",
+      "kind": "slider",
+      "min": 0,
+      "max": 8,
+      "step": 1,
+      "unit": "px",
+      "default": 4
+    },
+    {
+      "prop": "accent",
+      "label": "Accent",
+      "kind": "color",
+      "default": "#ff7a45",
+      "options": ["#ff7a45", "#34d399", "#60a5fa", "#e5e5e5"]
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        { "value": "dark", "label": "Dark" },
+        { "value": "light", "label": "Light" }
+      ],
+      "default": "dark"
+    }
+  ]
+}

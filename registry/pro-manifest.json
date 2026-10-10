@@ -1765,6 +1765,651 @@
     ]
   },
   {
+    "slug": "billing-cancel-flow",
+    "name": "Honest Cancel Flow",
+    "tier": "pro",
+    "platform": "web",
+    "category": "billing",
+    "description": "A cancellation flow that answers each reason with an honest alternative (pause, downgrade, export), then a dated what-happens-now timeline and a calm hold-to-cancel.",
+    "tags": [
+      "billing",
+      "cancel subscription",
+      "churn",
+      "retention",
+      "hold to confirm",
+      "pause plan",
+      "saas"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 820,
+    "usage": "import { CancelFlow } from \"@/components/design-for-ai/billing-cancel-flow\";\n\n<CancelFlow\n  planName=\"Studio\"\n  today=\"2026-10-10\"\n  accessUntil=\"2026-10-23\"\n  lastChargeDate=\"2026-09-24\"\n  lastChargeAmount={128}\n  retentionDays={30}\n  email=\"ines@copperline.studio\"\n  onCancel={({ reasonId, note }) => fetch(\"/api/subscription/cancel\", { method: \"POST\", body: JSON.stringify({ reasonId, note }) })}\n  onAcceptOffer={({ offer }) => fetch(`/api/subscription/${offer}`, { method: \"POST\" })}\n/>",
+    "props": [
+      {
+        "name": "planName",
+        "type": "string",
+        "default": "\"Studio\"",
+        "description": "The plan being cancelled, as named in the headings, the hold button and the summary."
+      },
+      {
+        "name": "reasons",
+        "type": "{ id: string; label: string; offer: CancelOffer }[]",
+        "default": "five reasons",
+        "description": "Each reason and the alternative it opens: { kind: \"pause\", months } | { kind: \"downgrade\", planName } | { kind: \"export\", size } | { kind: \"feedback\", placeholder } | { kind: \"none\" }, each with a title and body."
+      },
+      {
+        "name": "defaultReason",
+        "type": "string",
+        "default": "\"\"",
+        "description": "The reason selected on mount, by id. Anything that isn't a reason id means none is selected."
+      },
+      {
+        "name": "step",
+        "type": "\"reason\" | \"confirm\" | \"done\"",
+        "description": "Controlled step. Update it from onStepChange. Leave it out and the flow keeps its own."
+      },
+      {
+        "name": "onStepChange",
+        "type": "(step) => void",
+        "description": "Called when the flow moves to another step."
+      },
+      {
+        "name": "today",
+        "type": "string",
+        "default": "\"2026-10-10\"",
+        "description": "Today, ISO date. Pause offers count their months from it."
+      },
+      {
+        "name": "accessUntil",
+        "type": "string",
+        "default": "\"2026-10-23\"",
+        "description": "The last day of paid access, ISO date."
+      },
+      {
+        "name": "lastChargeDate",
+        "type": "string",
+        "default": "\"2026-09-24\"",
+        "description": "When the last invoice was paid, ISO date."
+      },
+      {
+        "name": "lastChargeAmount",
+        "type": "number",
+        "default": "128",
+        "description": "What the last invoice charged."
+      },
+      {
+        "name": "retentionDays",
+        "type": "number",
+        "default": "30",
+        "description": "Days data is kept after access ends. The deletion date on the timeline is accessUntil plus this."
+      },
+      {
+        "name": "email",
+        "type": "string",
+        "default": "\"ines@copperline.studio\"",
+        "description": "Where reminders go, as printed in the timeline and the summary."
+      },
+      {
+        "name": "holdMs",
+        "type": "number",
+        "default": "1400",
+        "description": "How long the cancel button has to be held. The button shows the time; a release drains the fill back."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Locale for dates and money."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"USD\"",
+        "description": "ISO 4217 code for the last charge."
+      },
+      {
+        "name": "onCancel",
+        "type": "({ kind: \"cancelled\", reasonId, note? }) => void",
+        "description": "Called when the hold completes, with the reason and any note typed into the feedback offer."
+      },
+      {
+        "name": "onAcceptOffer",
+        "type": "({ kind: \"accepted\", reasonId, offer }) => void",
+        "description": "Called when the pause or downgrade offer is taken instead."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#7dd3a8\"",
+        "description": "The one accent: the selected reason and the offer's action. Cancelling itself stays in ink."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface and ink."
+      }
+    ],
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@reason-not-using",
+        "wait:1100",
+        "click:@continue",
+        "wait:500",
+        "hover:@hold",
+        "down",
+        "wait:1600",
+        "up",
+        "wait:1300"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "step",
+        "label": "Step",
+        "kind": "action",
+        "options": [
+          {
+            "value": "reason",
+            "label": "Reason"
+          },
+          {
+            "value": "confirm",
+            "label": "Confirm"
+          },
+          {
+            "value": "done",
+            "label": "Done"
+          }
+        ]
+      },
+      {
+        "prop": "defaultReason",
+        "label": "Reason",
+        "kind": "select",
+        "options": [
+          {
+            "value": "none",
+            "label": "None yet"
+          },
+          {
+            "value": "expensive",
+            "label": "Too expensive"
+          },
+          {
+            "value": "not-using",
+            "label": "Not using it"
+          },
+          {
+            "value": "missing",
+            "label": "Missing a feature"
+          },
+          {
+            "value": "switching",
+            "label": "Switching tools"
+          },
+          {
+            "value": "other",
+            "label": "Something else"
+          }
+        ],
+        "default": "none",
+        "remount": true
+      },
+      {
+        "prop": "planName",
+        "label": "Plan name",
+        "kind": "text",
+        "default": "Studio"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#7dd3a8",
+        "options": [
+          "#7dd3a8",
+          "#f5a524",
+          "#60a5fa",
+          "#ececee"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ],
+    "added": "2026-10-10"
+  },
+  {
+    "slug": "billing-plan-change",
+    "name": "Plan Change Proration",
+    "tier": "pro",
+    "platform": "web",
+    "category": "billing",
+    "description": "A plan switcher that prints the proration as a receipt before you confirm: unused credit, new charge, due today and the next invoice, over a strip of the period.",
+    "tags": [
+      "billing",
+      "plan change",
+      "proration",
+      "upgrade",
+      "subscription",
+      "receipt",
+      "saas"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 860,
+    "usage": "import { PlanChange } from \"@/components/design-for-ai/billing-plan-change\";\n\n<PlanChange\n  currentPlanId=\"studio\"\n  currentInterval=\"monthly\"\n  seats={8}\n  periodStart=\"2026-09-24\"\n  periodEnd=\"2026-10-23\"\n  today=\"2026-10-10\"\n  paymentLabel=\"•••• 4242\"\n  onConfirm={async (quote) => {\n    await fetch(\"/api/subscription\", { method: \"PATCH\", body: JSON.stringify(quote.to) });\n  }}\n/>",
+    "props": [
+      {
+        "name": "plans",
+        "type": "{ id: string; name: string; blurb: string; monthly: number; yearly: number }[]",
+        "default": "Hobby, Studio, Scale",
+        "description": "The plans to choose between. Prices are per seat: per month when billed monthly, per year when billed yearly."
+      },
+      {
+        "name": "currentPlanId",
+        "type": "string",
+        "default": "\"studio\"",
+        "description": "The plan the workspace is on now. It carries a Current tag and is the source of the credit line."
+      },
+      {
+        "name": "currentInterval",
+        "type": "\"monthly\" | \"yearly\"",
+        "default": "\"monthly\"",
+        "description": "How the current plan is billed."
+      },
+      {
+        "name": "defaultPlanId",
+        "type": "string",
+        "default": "currentPlanId",
+        "description": "The plan selected on mount. Picking the current plan (with the current interval) means no change, so the receipt shows its empty state."
+      },
+      {
+        "name": "defaultInterval",
+        "type": "\"monthly\" | \"yearly\"",
+        "default": "currentInterval",
+        "description": "The interval the toggle opens on. A new interval starts a fresh period today and charges the new plan in full."
+      },
+      {
+        "name": "seats",
+        "type": "number",
+        "default": "8",
+        "description": "Seats on the subscription. Every price and line on the receipt scales with it."
+      },
+      {
+        "name": "periodStart",
+        "type": "string",
+        "default": "\"2026-09-24\"",
+        "description": "First day of the current period, ISO date."
+      },
+      {
+        "name": "periodEnd",
+        "type": "string",
+        "default": "\"2026-10-23\"",
+        "description": "Last day of the current period, ISO date, inclusive."
+      },
+      {
+        "name": "today",
+        "type": "string",
+        "default": "\"2026-10-10\"",
+        "description": "The day the change takes effect, ISO date. Pass the real date in production."
+      },
+      {
+        "name": "paymentLabel",
+        "type": "string",
+        "default": "\"•••• 4242\"",
+        "description": "The card that pays, as printed in the fine print and the confirmation."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Locale for money and dates."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"USD\"",
+        "description": "ISO 4217 code."
+      },
+      {
+        "name": "yearlyBadge",
+        "type": "string",
+        "default": "\"−17%\"",
+        "description": "The saving shown beside Yearly on the toggle. Empty hides it."
+      },
+      {
+        "name": "onConfirm",
+        "type": "(quote: PlanChangeQuote) => Promise<void> | void",
+        "description": "Called with the quote the receipt showed. Return a promise to hold the loading state; reject it to show the declined state. Defaults to a 900ms fake."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#7dd3a8\"",
+        "description": "The one accent: the selection ring, the new plan's stretch of the period and the confirm button."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface and ink. Light deepens the accent for text so it stays readable."
+      }
+    ],
+    "demo": {
+      "steps": [
+        "wait:500",
+        "click:@plan-scale",
+        "wait:1500",
+        "click:@confirm",
+        "wait:1900"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "seats",
+        "label": "Seats",
+        "kind": "slider",
+        "min": 1,
+        "max": 40,
+        "step": 1,
+        "default": 8,
+        "group": "Subscription"
+      },
+      {
+        "prop": "defaultPlanId",
+        "label": "Selected plan",
+        "kind": "select",
+        "options": [
+          {
+            "value": "studio",
+            "label": "Studio (current)"
+          },
+          {
+            "value": "scale",
+            "label": "Scale"
+          },
+          {
+            "value": "hobby",
+            "label": "Hobby"
+          }
+        ],
+        "default": "studio",
+        "remount": true,
+        "group": "Subscription"
+      },
+      {
+        "prop": "defaultInterval",
+        "label": "Interval",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "monthly",
+            "label": "Monthly"
+          },
+          {
+            "value": "yearly",
+            "label": "Yearly"
+          }
+        ],
+        "default": "monthly",
+        "remount": true,
+        "group": "Subscription"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#7dd3a8",
+        "options": [
+          "#7dd3a8",
+          "#f5a524",
+          "#60a5fa",
+          "#ececee"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ],
+    "added": "2026-10-10"
+  },
+  {
+    "slug": "billing-usage-forecast",
+    "name": "Usage Forecast Cone",
+    "tier": "pro",
+    "platform": "web",
+    "category": "billing",
+    "description": "Spend over the billing period as a line with a forecast cone that keeps your weekly rhythm, and a budget line you drag to date the day you cross it.",
+    "tags": [
+      "billing",
+      "usage forecast",
+      "spend",
+      "budget",
+      "forecast cone",
+      "chart",
+      "cloud costs"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 720,
+    "usage": "import { UsageForecast } from \"@/components/design-for-ai/billing-usage-forecast\";\n\n<UsageForecast\n  title=\"October spend\"\n  daily={[96, 141, 44, 61, 128, 162, 109, 151, 117, 49]}\n  periodStart=\"2026-10-01\"\n  periodDays={31}\n  budget={3000}\n  onBudgetChange={(budget) => saveBudget(budget)}\n  confidence={80}\n/>",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"October spend\"",
+        "description": "The small label above the figure."
+      },
+      {
+        "name": "daily",
+        "type": "number[]",
+        "default": "ten days of October",
+        "description": "Spend per day so far, oldest first. Its length is the days elapsed, counting today. Weekdays and weekends each project their own mean."
+      },
+      {
+        "name": "periodStart",
+        "type": "string",
+        "default": "\"2026-10-01\"",
+        "description": "First day of the period, ISO date. Used for dates and to tell weekends from weekdays."
+      },
+      {
+        "name": "periodDays",
+        "type": "number",
+        "default": "31",
+        "description": "Days in the period."
+      },
+      {
+        "name": "budget",
+        "type": "number",
+        "default": "3000",
+        "description": "Where the budget line sits. Dragging it calls onBudgetChange; passing a new value moves it."
+      },
+      {
+        "name": "onBudgetChange",
+        "type": "(budget: number) => void",
+        "description": "Called while the budget line is dragged or stepped with the keyboard."
+      },
+      {
+        "name": "budgetStep",
+        "type": "number",
+        "default": "50",
+        "description": "The budget snaps to this step. PageUp and PageDown move ten steps."
+      },
+      {
+        "name": "confidence",
+        "type": "80 | 95",
+        "default": "80",
+        "description": "The cone's interval. 95 widens it, and the likely crossing window with it."
+      },
+      {
+        "name": "cone",
+        "type": "boolean",
+        "default": "true",
+        "description": "Draw the forecast cone. Off, only the dashed median forecast is drawn."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Locale for money, the compact axis and dates."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"USD\"",
+        "description": "ISO 4217 code."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#f5a524\"",
+        "description": "The one accent: the budget line and handle, the crossing marker and window, and the crossing date."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface and ink. Light deepens the accent for text so it stays readable."
+      }
+    ],
+    "demo": {
+      "steps": [
+        "wait:500",
+        "hover:@plot:0.3,0.5",
+        "wait:600",
+        "hover:@budget:0.03,0.5",
+        "down",
+        "hover:@plot:0.1,0.41",
+        "up",
+        "wait:600",
+        "hover:@plot:0.86,0.5",
+        "wait:1100"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "budget",
+        "label": "Budget",
+        "kind": "slider",
+        "min": 1500,
+        "max": 4000,
+        "step": 50,
+        "unit": "$",
+        "default": 3000,
+        "group": "Forecast"
+      },
+      {
+        "prop": "confidence",
+        "label": "Confidence",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": 80,
+            "label": "80%"
+          },
+          {
+            "value": 95,
+            "label": "95%"
+          }
+        ],
+        "default": 80,
+        "group": "Forecast"
+      },
+      {
+        "prop": "cone",
+        "label": "Cone",
+        "kind": "toggle",
+        "default": true,
+        "group": "Forecast"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f5a524",
+        "options": [
+          "#f5a524",
+          "#7dd3a8",
+          "#60a5fa",
+          "#ececee"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ],
+    "added": "2026-10-10"
+  },
+  {
     "slug": "button-magnetic",
     "name": "Magnetic CTA",
     "tier": "pro",
@@ -2513,6 +3158,211 @@
     ]
   },
   {
+    "slug": "chart-cohort-retention",
+    "name": "Cohort Retention",
+    "tier": "pro",
+    "platform": "web",
+    "category": "charts",
+    "description": "A weekly retention triangle whose cells shrink into dots on one curve per cohort; switch segment and the wash re-sweeps along the diagonal.",
+    "tags": [
+      "cohort analysis",
+      "retention",
+      "heatmap",
+      "line chart",
+      "product analytics",
+      "saas",
+      "svg",
+      "dashboard",
+      "dark"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 760,
+    "usage": "import { ChartCohortRetention } from \"@/components/design-for-ai/chart-cohort-retention\";\n\n<ChartCohortRetention\n  title=\"Monthly retention\"\n  subtitle=\"Paid accounts\"\n  periodPrefix=\"M\"\n  periodName=\"month\"\n  focusPeriod={3}\n  segments={[\n    {\n      key: \"all\",\n      label: \"All\",\n      cohorts: [\n        { label: \"Jan\", size: 412, retention: [1, 0.82, 0.74, 0.7] },\n        { label: \"Feb\", size: 455, retention: [1, 0.85, 0.77] },\n        { label: \"Mar\", size: 498, retention: [1, 0.88] },\n      ],\n    },\n  ]}\n/>",
+    "props": [
+      {
+        "name": "segments",
+        "type": "{ key: string; label: string; cohorts: Cohort[] }[]",
+        "default": "All / Self-serve / Sales-led / Mobile",
+        "description": "One set of cohorts per segment. Cohort: { label, size, retention: number[] } with retention as 0–1 per period since start, oldest cohort first."
+      },
+      {
+        "name": "defaultSegment",
+        "type": "string",
+        "default": "first segment",
+        "description": "Segment key shown first."
+      },
+      {
+        "name": "onSegmentChange",
+        "type": "(key: string) => void",
+        "description": "Called when the segment changes."
+      },
+      {
+        "name": "defaultView",
+        "type": "\"grid\" | \"curves\"",
+        "default": "\"grid\"",
+        "description": "Open as the retention triangle or as one curve per cohort."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Weekly retention\"",
+        "description": "Card title."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "default": "\"Signups by week · active users\"",
+        "description": "Mono line beside the title."
+      },
+      {
+        "name": "periodPrefix",
+        "type": "string",
+        "default": "\"W\"",
+        "description": "Column prefix: W0, W1 … or M0, M1 …"
+      },
+      {
+        "name": "periodName",
+        "type": "string",
+        "default": "\"week\"",
+        "description": "One period in words, used in the headline (Week-4 retention)."
+      },
+      {
+        "name": "focusPeriod",
+        "type": "number",
+        "default": "4",
+        "description": "The period the headline averages (size-weighted) and whose column head is lit."
+      },
+      {
+        "name": "showValues",
+        "type": "boolean",
+        "default": "true",
+        "description": "Print each cell's percentage when the column is wide enough."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#2dd4bf\"",
+        "description": "The one colour: the retention wash, the average curve and the headline."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Near-black card with white ink, or a white card with near-black ink."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "hover:@cohort-6",
+        "wait:400",
+        "click:@segment-sales",
+        "wait:900",
+        "click:@view-curves",
+        "wait:1300",
+        "click:@segment-mobile",
+        "wait:900"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "title",
+        "label": "Title",
+        "kind": "text",
+        "default": "Weekly retention"
+      },
+      {
+        "prop": "defaultView",
+        "label": "Opens as",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "grid",
+            "label": "Triangle"
+          },
+          {
+            "value": "curves",
+            "label": "Curves"
+          }
+        ],
+        "default": "grid",
+        "remount": true
+      },
+      {
+        "prop": "defaultSegment",
+        "label": "Segment",
+        "kind": "select",
+        "options": [
+          {
+            "value": "all",
+            "label": "All"
+          },
+          {
+            "value": "self-serve",
+            "label": "Self-serve"
+          },
+          {
+            "value": "sales",
+            "label": "Sales-led"
+          },
+          {
+            "value": "mobile",
+            "label": "Mobile"
+          }
+        ],
+        "default": "all",
+        "remount": true
+      },
+      {
+        "prop": "focusPeriod",
+        "label": "Headline week",
+        "kind": "slider",
+        "min": 1,
+        "max": 8,
+        "step": 1,
+        "default": 4
+      },
+      {
+        "prop": "showValues",
+        "label": "Cell values",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#2dd4bf",
+        "options": [
+          "#2dd4bf",
+          "#ff7a45",
+          "#60a5fa",
+          "#e5e5e5"
+        ]
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "chart-revenue-trend",
     "name": "Revenue Trend",
     "tier": "pro",
@@ -2759,6 +3609,1030 @@
       }
     ],
     "added": "2026-10-09"
+  },
+  {
+    "slug": "chart-treemap-drill",
+    "name": "Drill-down Treemap",
+    "tier": "pro",
+    "platform": "web",
+    "category": "charts",
+    "description": "A squarified treemap of a cloud bill: click a tile and its children grow out of it to fill the plot while the rest zooms away, with a breadcrumb back up.",
+    "tags": [
+      "treemap",
+      "drill down",
+      "hierarchy",
+      "breadcrumb",
+      "cloud costs",
+      "finops",
+      "dashboard",
+      "dark",
+      "monochrome"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 760,
+    "usage": "import { ChartTreemapDrill } from \"@/components/design-for-ai/chart-treemap-drill\";\nimport type { TreemapNode } from \"@/components/design-for-ai/chart-treemap-drill\";\n\nconst bill: TreemapNode = {\n  name: \"All teams\",\n  children: [\n    { name: \"Search\", children: [{ name: \"indexers\", value: 8_400, previous: 7_900 }, { name: \"query-api\", value: 3_100 }] },\n    { name: \"Payments\", children: [{ name: \"ledger-db\", value: 6_200, previous: 6_500 }] },\n  ],\n};\n\n<ChartTreemapDrill\n  data={bill}\n  title=\"Spend by team\"\n  subtitle=\"Q3 2026\"\n  previousLabel=\"Q2\"\n  currency=\"EUR\"\n  locale=\"de-DE\"\n  onDrill={(path) => console.log(path)}\n/>",
+    "props": [
+      {
+        "name": "data",
+        "type": "TreemapNode",
+        "default": "Larkspur's October cloud bill",
+        "description": "The root: { name, value?, previous?, children? }. Leaves carry value (and optionally previous); groups sum their children. Any depth."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Infrastructure spend\"",
+        "description": "Card title."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "default": "\"October 2026\"",
+        "description": "Mono line beside the title."
+      },
+      {
+        "name": "previousLabel",
+        "type": "string",
+        "default": "\"Sep\"",
+        "description": "The previous period's name in the change label under the total."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"USD\"",
+        "description": "ISO currency for values."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-US\"",
+        "description": "Locale for number formatting."
+      },
+      {
+        "name": "height",
+        "type": "number",
+        "default": "440",
+        "description": "Plot height in px, capped at 110% of the card's width on narrow containers."
+      },
+      {
+        "name": "gap",
+        "type": "number",
+        "default": "4",
+        "description": "Space between tiles, px."
+      },
+      {
+        "name": "showChange",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show change against the previous period on the total and on tiles big enough to hold it."
+      },
+      {
+        "name": "increase",
+        "type": "\"good\" | \"bad\"",
+        "default": "\"bad\"",
+        "description": "Whether a rise is good news (revenue: green) or bad (spend: rose)."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ff7a45\"",
+        "description": "The one colour: the tile under the pointer or in keyboard focus, and its value."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Near-black card with white ink, or a white card with near-black ink."
+      },
+      {
+        "name": "onDrill",
+        "type": "(path: string[]) => void",
+        "description": "Called with the names from the root to the level now shown."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "hover:@tile-databases",
+        "wait:250",
+        "click:@tile-compute",
+        "wait:850",
+        "click:@tile-inference-gpu-pool",
+        "wait:900",
+        "click:@crumb-0",
+        "wait:900"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "title",
+        "label": "Title",
+        "kind": "text",
+        "default": "Infrastructure spend"
+      },
+      {
+        "prop": "height",
+        "label": "Plot height",
+        "kind": "slider",
+        "min": 320,
+        "max": 560,
+        "step": 10,
+        "unit": "px",
+        "default": 440
+      },
+      {
+        "prop": "gap",
+        "label": "Tile gap",
+        "kind": "slider",
+        "min": 0,
+        "max": 10,
+        "step": 1,
+        "unit": "px",
+        "default": 4
+      },
+      {
+        "prop": "showChange",
+        "label": "Show change",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "increase",
+        "label": "A rise is",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "bad",
+            "label": "Bad (spend)"
+          },
+          {
+            "value": "good",
+            "label": "Good"
+          }
+        ],
+        "default": "bad"
+      },
+      {
+        "prop": "currency",
+        "label": "Currency",
+        "kind": "select",
+        "options": [
+          {
+            "value": "USD",
+            "label": "US dollar (USD)"
+          },
+          {
+            "value": "EUR",
+            "label": "Euro (EUR)"
+          },
+          {
+            "value": "GBP",
+            "label": "Pound (GBP)"
+          },
+          {
+            "value": "JPY",
+            "label": "Yen (JPY)"
+          }
+        ],
+        "default": "USD"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#ff7a45",
+        "options": [
+          "#ff7a45",
+          "#34d399",
+          "#60a5fa",
+          "#e5e5e5"
+        ]
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
+    "slug": "collab-activity-feed",
+    "name": "Activity Feed",
+    "tier": "pro",
+    "platform": "web",
+    "category": "collaboration",
+    "description": "A workspace activity timeline grouped by day, filtered by type and person, with word-level diffs, before-and-after values and status moves shown inline.",
+    "tags": [
+      "activity",
+      "timeline",
+      "feed",
+      "audit",
+      "diff",
+      "collaboration",
+      "history",
+      "filters",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 960,
+    "usage": "import { CollabActivityFeed } from \"@/components/design-for-ai/collab-activity-feed\";\n\nexport default function History() {\n  return (\n    <CollabActivityFeed\n      title=\"Activity\"\n      subtitle=\"Ledgerline · Website\"\n      people={[{ id: \"mara\", name: \"Mara Ilić\" }]}\n      events={[\n        {\n          id: \"e1\", day: \"Today\", date: \"Sat 10 Oct\", time: \"09:42\", actorId: \"mara\", type: \"edit\",\n          action: \"changed the price of\", target: \"Pro\",\n          change: { kind: \"value\", before: \"$24 / seat\", after: \"$29 / seat\" },\n        },\n      ]}\n    />\n  );\n}",
+    "props": [
+      {
+        "name": "events",
+        "type": "{ id; day; date?; time; actorId; type: \"edit\" | \"comment\" | \"status\" | \"member\"; action; target; change? }[]",
+        "default": "9 demo events",
+        "description": "Newest first. Consecutive events with the same `day` share a heading. `change` is a word-level text diff, a before/after value, a status move, or a quote."
+      },
+      {
+        "name": "people",
+        "type": "{ id; name }[]",
+        "default": "4 demo people",
+        "description": "Actors, and the avatar filter in the header."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Activity\"",
+        "description": "Heading."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "default": "\"Ledgerline · Website\"",
+        "description": "Mono line under the heading."
+      },
+      {
+        "name": "showDiffs",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show the inline changes under each event."
+      },
+      {
+        "name": "density",
+        "type": "\"comfortable\" | \"compact\"",
+        "default": "\"comfortable\"",
+        "description": "Row spacing."
+      },
+      {
+        "name": "filter",
+        "type": "\"all\" | ActivityType",
+        "default": "uncontrolled (\"all\")",
+        "description": "Optional. Drive the type filter from outside; pair with onFilterChange."
+      },
+      {
+        "name": "onFilterChange",
+        "type": "(filter) => void",
+        "default": "none",
+        "description": "Called when a type chip is chosen."
+      },
+      {
+        "name": "person",
+        "type": "string | null",
+        "default": "uncontrolled (null)",
+        "description": "Optional. Drive the person filter from outside; pair with onPersonChange."
+      },
+      {
+        "name": "onPersonChange",
+        "type": "(personId: string | null) => void",
+        "default": "none",
+        "description": "Called when an avatar is toggled."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "theme ink",
+        "description": "The one accent: the active chip’s count and the selected person’s ring. Diff colours are semantic (added, removed)."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface palette."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:900",
+        "click:@type-edit",
+        "wait:800",
+        "click:@person-mara",
+        "wait:900",
+        "click:@clear-filters",
+        "wait:900"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "showDiffs",
+        "label": "Inline diffs",
+        "kind": "toggle",
+        "default": true,
+        "group": "Content"
+      },
+      {
+        "prop": "density",
+        "label": "Density",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "comfortable",
+            "label": "Comfortable"
+          },
+          {
+            "value": "compact",
+            "label": "Compact"
+          }
+        ],
+        "default": "comfortable",
+        "group": "Look"
+      },
+      {
+        "prop": "subtitle",
+        "label": "Workspace",
+        "kind": "text",
+        "default": "Ledgerline · Website",
+        "group": "Content"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#60a5fa",
+          "#f5a524",
+          "#ff7a45"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "filter",
+        "label": "Type",
+        "kind": "action",
+        "options": [
+          {
+            "value": "all",
+            "label": "All"
+          },
+          {
+            "value": "edit",
+            "label": "Edits"
+          },
+          {
+            "value": "comment",
+            "label": "Comments"
+          },
+          {
+            "value": "status",
+            "label": "Status"
+          },
+          {
+            "value": "member",
+            "label": "People"
+          }
+        ],
+        "group": "State"
+      }
+    ]
+  },
+  {
+    "slug": "collab-annotation-pins",
+    "name": "Annotation Pins",
+    "tier": "pro",
+    "platform": "web",
+    "category": "collaboration",
+    "description": "Design review on a drawn landing page: numbered pins open comment popovers, resolving fades a pin and ticks the counter down, and comment mode drops new pins.",
+    "tags": [
+      "annotations",
+      "pins",
+      "design review",
+      "comments",
+      "feedback",
+      "collaboration",
+      "canvas",
+      "figma",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 820,
+    "usage": "import { CollabAnnotationPins } from \"@/components/design-for-ai/collab-annotation-pins\";\n\nexport default function Review() {\n  return (\n    <CollabAnnotationPins\n      title=\"Fieldnote · Marketing\"\n      frameLabel=\"Landing — v4\"\n      currentUser=\"Sam Okoye\"\n      pins={[\n        { id: \"p1\", x: 0.47, y: 0.27, author: \"Inês Duarte\", time: \"10:31\", body: \"Drop the full stop in the headline?\" },\n      ]}\n      onAdd={(pin) => savePin(pin)}\n      onResolve={(pin) => resolvePin(pin.id)}\n    />\n  );\n}",
+    "props": [
+      {
+        "name": "pins",
+        "type": "{ id; x: number; y: number; author; body; time; resolved?: boolean }[]",
+        "default": "5 demo pins",
+        "description": "Comments placed on the design. x and y are fractions (0–1) of the frame, so pins stay put at any size."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Fieldnote · Marketing\"",
+        "description": "File name in the toolbar."
+      },
+      {
+        "name": "frameLabel",
+        "type": "string",
+        "default": "\"Landing — v4\"",
+        "description": "Frame name above the design and in the toolbar."
+      },
+      {
+        "name": "currentUser",
+        "type": "string",
+        "default": "\"Sam Okoye\"",
+        "description": "Author of pins you drop."
+      },
+      {
+        "name": "showResolved",
+        "type": "boolean",
+        "default": "true",
+        "description": "Keep resolved pins on the canvas as faded ticks, or hide them."
+      },
+      {
+        "name": "pinShape",
+        "type": "\"teardrop\" | \"circle\"",
+        "default": "\"teardrop\"",
+        "description": "Teardrops point at their spot with the bottom-left corner; circles centre on it."
+      },
+      {
+        "name": "commentMode",
+        "type": "boolean",
+        "default": "uncontrolled (false)",
+        "description": "Optional. Drive comment mode from outside; pair with onCommentModeChange. C toggles it too."
+      },
+      {
+        "name": "onCommentModeChange",
+        "type": "(on: boolean) => void",
+        "default": "none",
+        "description": "Called when comment mode turns on or off."
+      },
+      {
+        "name": "onResolve",
+        "type": "(pin) => void",
+        "default": "none",
+        "description": "Called when a pin is resolved."
+      },
+      {
+        "name": "onAdd",
+        "type": "(pin) => void",
+        "default": "none",
+        "description": "Called with a new pin after it’s posted."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ff6b3d\"",
+        "description": "The one accent: pins, the open counter dot and the active comment-mode button. Pin numbers flip black or white to stay readable."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "The app chrome. The design under review stays a light page."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:1000",
+        "click:@pin-2",
+        "wait:500",
+        "click:@resolve",
+        "wait:500",
+        "click:@comment-mode",
+        "click:@canvas:0.72,0.6",
+        "type:Tighten this",
+        "key:Enter",
+        "wait:1000"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "showResolved",
+        "label": "Show resolved",
+        "kind": "toggle",
+        "default": true,
+        "group": "Content"
+      },
+      {
+        "prop": "pinShape",
+        "label": "Pin shape",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "teardrop",
+            "label": "Teardrop"
+          },
+          {
+            "value": "circle",
+            "label": "Circle"
+          }
+        ],
+        "default": "teardrop",
+        "group": "Look"
+      },
+      {
+        "prop": "title",
+        "label": "File name",
+        "kind": "text",
+        "default": "Fieldnote · Marketing",
+        "group": "Content"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Pin colour",
+        "kind": "color",
+        "default": "#ff6b3d",
+        "options": [
+          "#ff6b3d",
+          "#f5a524",
+          "#3b82f6",
+          "#22c55e",
+          "#f4f4f5"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "commentMode",
+        "label": "Comment mode",
+        "kind": "action",
+        "options": [
+          {
+            "value": false,
+            "label": "Off"
+          },
+          {
+            "value": true,
+            "label": "On"
+          }
+        ],
+        "group": "State"
+      }
+    ]
+  },
+  {
+    "slug": "collab-comment-thread",
+    "name": "Comment Thread",
+    "tier": "pro",
+    "platform": "web",
+    "category": "collaboration",
+    "description": "A comment thread anchored to a highlighted quote: @mentions become tokens, unread replies carry a marker, your comments edit inline and Resolve folds it to one line.",
+    "tags": [
+      "comments",
+      "thread",
+      "collaboration",
+      "mentions",
+      "resolve",
+      "unread",
+      "review",
+      "docs",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 860,
+    "usage": "import { CollabCommentThread } from \"@/components/design-for-ai/collab-comment-thread\";\n\nexport default function HeroThread() {\n  return (\n    <CollabCommentThread\n      location=\"Pricing page · Hero headline\"\n      quote=\"Pricing your finance team can actually read.\"\n      people={[\n        { id: \"sam\", name: \"Sam Okoye\", handle: \"sam\" },\n        { id: \"mara\", name: \"Mara Ilić\", handle: \"mara\" },\n      ]}\n      currentUserId=\"sam\"\n      comments={[{ id: \"c1\", authorId: \"mara\", body: \"Too much promise in “actually read”.\", time: \"Tue 14:02\", unread: true }]}\n      onPost={(body) => saveReply(body)}\n      onResolvedChange={(resolved) => setThreadResolved(resolved)}\n    />\n  );\n}",
+    "props": [
+      {
+        "name": "comments",
+        "type": "{ id; authorId; body; time; unread?: boolean; edited?: boolean }[]",
+        "default": "5 demo comments",
+        "description": "The thread, oldest first. `@handle` in a body renders as a mention token; unread comments get a marker and a “new” divider."
+      },
+      {
+        "name": "people",
+        "type": "{ id; name; handle }[]",
+        "default": "5 demo people",
+        "description": "Everyone on the doc: comment authors and the @mention suggestions."
+      },
+      {
+        "name": "currentUserId",
+        "type": "string",
+        "default": "\"sam\"",
+        "description": "The signed-in person. Their comments show Edit; replies post as them."
+      },
+      {
+        "name": "location",
+        "type": "string",
+        "default": "\"Pricing page · Hero headline\"",
+        "description": "Where the thread is anchored, shown in mono above the quote."
+      },
+      {
+        "name": "quote",
+        "type": "string",
+        "default": "\"Pricing your finance team can actually read.\"",
+        "description": "The highlighted document text the thread is about."
+      },
+      {
+        "name": "showUnread",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show unread markers until you reply, resolve or mark them read."
+      },
+      {
+        "name": "resolved",
+        "type": "boolean",
+        "default": "uncontrolled (false)",
+        "description": "Optional. Drive the resolved state from outside; pair with onResolvedChange."
+      },
+      {
+        "name": "onResolvedChange",
+        "type": "(resolved: boolean) => void",
+        "default": "none",
+        "description": "Called when Resolve or Reopen is pressed."
+      },
+      {
+        "name": "onPost",
+        "type": "(body: string) => void",
+        "default": "none",
+        "description": "Called with the text of a new reply (mentions as @handle)."
+      },
+      {
+        "name": "composerPlaceholder",
+        "type": "string",
+        "default": "\"Reply, or @ to mention\"",
+        "description": "Placeholder in the reply field."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#f5a524\"",
+        "description": "The one accent: quote highlight, mention tokens and unread markers. Used as a tint, never as text colour."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface palette."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:600",
+        "click:@reply",
+        "type:@pr",
+        "wait:350",
+        "click:@mention-priya",
+        "type:thank you",
+        "key:Enter",
+        "wait:900",
+        "click:@resolve",
+        "wait:1500"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "showUnread",
+        "label": "Unread markers",
+        "kind": "toggle",
+        "default": true,
+        "group": "Content"
+      },
+      {
+        "prop": "quote",
+        "label": "Quoted text",
+        "kind": "text",
+        "default": "Pricing your finance team can actually read.",
+        "group": "Content"
+      },
+      {
+        "prop": "location",
+        "label": "Location",
+        "kind": "text",
+        "default": "Pricing page · Hero headline",
+        "group": "Content"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Highlight",
+        "kind": "color",
+        "default": "#f5a524",
+        "options": [
+          "#f5a524",
+          "#f4f4f5",
+          "#60a5fa",
+          "#4ade80",
+          "#ff7a45"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "resolved",
+        "label": "Thread",
+        "kind": "action",
+        "options": [
+          {
+            "value": false,
+            "label": "Open"
+          },
+          {
+            "value": true,
+            "label": "Resolved"
+          }
+        ],
+        "group": "State"
+      }
+    ]
+  },
+  {
+    "slug": "collab-share-access",
+    "name": "Share Access Panel",
+    "tier": "pro",
+    "platform": "web",
+    "category": "collaboration",
+    "description": "A share panel where typed emails become validated chips, roles sit in a compact menu, removals offer Undo, and link access steps from restricted to public.",
+    "tags": [
+      "share",
+      "permissions",
+      "invite",
+      "collaboration",
+      "roles",
+      "email chips",
+      "access",
+      "copy link",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 820,
+    "usage": "import { CollabShareAccess } from \"@/components/design-for-ai/collab-share-access\";\n\nexport default function ShareDialog() {\n  return (\n    <CollabShareAccess\n      docTitle=\"Q4 launch plan\"\n      orgDomain=\"northwind.co\"\n      orgName=\"Northwind\"\n      members={[\n        { email: \"hana@northwind.co\", name: \"Hana Sato\", role: \"owner\" },\n        { email: \"mateo@northwind.co\", name: \"Mateo Herrera\", role: \"edit\" },\n      ]}\n      link=\"https://docs.northwind.co/d/q4-launch-plan\"\n      onInvite={(emails, role) => sendInvites(emails, role)}\n      onRemove={(member) => revoke(member.email)}\n      onLinkAccessChange={(access) => saveLinkAccess(access)}\n    />\n  );\n}",
+    "props": [
+      {
+        "name": "docTitle",
+        "type": "string",
+        "default": "\"Q4 launch plan\"",
+        "description": "The thing being shared, in the heading."
+      },
+      {
+        "name": "members",
+        "type": "{ email; name?; role: \"owner\" | \"view\" | \"comment\" | \"edit\"; pending?: boolean }[]",
+        "default": "4 demo members",
+        "description": "People with access. The owner can’t be changed; pending invites get a dashed avatar."
+      },
+      {
+        "name": "orgDomain",
+        "type": "string",
+        "default": "\"northwind.co\"",
+        "description": "Addresses on this domain are your organisation; anyone else gets a Guest tag."
+      },
+      {
+        "name": "orgName",
+        "type": "string",
+        "default": "\"Northwind\"",
+        "description": "Used in the “Anyone at …” link level."
+      },
+      {
+        "name": "defaultRole",
+        "type": "\"view\" | \"comment\" | \"edit\"",
+        "default": "\"edit\"",
+        "description": "Role pre-selected for new invites."
+      },
+      {
+        "name": "linkAccess",
+        "type": "\"restricted\" | \"organisation\" | \"anyone\"",
+        "default": "uncontrolled (\"organisation\")",
+        "description": "Optional. Drive the general access level from outside; pair with onLinkAccessChange."
+      },
+      {
+        "name": "linkRole",
+        "type": "\"view\" | \"comment\" | \"edit\"",
+        "default": "\"view\"",
+        "description": "What people arriving by link can do."
+      },
+      {
+        "name": "link",
+        "type": "string",
+        "default": "\"https://docs.northwind.co/d/q4-launch-plan\"",
+        "description": "Written to the clipboard by Copy link."
+      },
+      {
+        "name": "undoMs",
+        "type": "number",
+        "default": "5000",
+        "description": "How long Undo stays after removing someone."
+      },
+      {
+        "name": "onInvite",
+        "type": "(emails: string[], role) => void",
+        "default": "none",
+        "description": "Called with the valid addresses when Invite is pressed. Invalid chips stay behind."
+      },
+      {
+        "name": "onRemove",
+        "type": "(member) => void",
+        "default": "none",
+        "description": "Called when someone is removed (Undo puts them back)."
+      },
+      {
+        "name": "onRoleChange",
+        "type": "(email: string, role) => void",
+        "default": "none",
+        "description": "Called when a member’s role changes."
+      },
+      {
+        "name": "onLinkAccessChange",
+        "type": "(access) => void",
+        "default": "none",
+        "description": "Called when the general access level changes."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "theme ink",
+        "description": "The one accent: the Invite button, selected checks and the Copied tick. Button text flips black or white to stay readable."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface palette."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:600",
+        "click:@invite-input",
+        "type:ines@northwind.co,",
+        "type:lu@nw,",
+        "wait:400",
+        "click:@invite",
+        "wait:700",
+        "click:@copy-link",
+        "wait:1200"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "docTitle",
+        "label": "Document",
+        "kind": "text",
+        "default": "Q4 launch plan",
+        "group": "Content"
+      },
+      {
+        "prop": "orgName",
+        "label": "Organisation",
+        "kind": "text",
+        "default": "Northwind",
+        "group": "Content"
+      },
+      {
+        "prop": "defaultRole",
+        "label": "Invite as",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "view",
+            "label": "Viewer"
+          },
+          {
+            "value": "comment",
+            "label": "Commenter"
+          },
+          {
+            "value": "edit",
+            "label": "Editor"
+          }
+        ],
+        "default": "edit",
+        "group": "Content"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#60a5fa",
+          "#4ade80",
+          "#ff7a45",
+          "#f5a524"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "linkAccess",
+        "label": "General access",
+        "kind": "action",
+        "options": [
+          {
+            "value": "restricted",
+            "label": "Restricted"
+          },
+          {
+            "value": "organisation",
+            "label": "Organisation"
+          },
+          {
+            "value": "anyone",
+            "label": "Anyone"
+          }
+        ],
+        "group": "State"
+      }
+    ]
   },
   {
     "slug": "combobox-async",
@@ -3472,6 +5346,1636 @@
         "group": "Look"
       }
     ]
+  },
+  {
+    "slug": "devtools-api-playground",
+    "name": "API Playground",
+    "tier": "pro",
+    "platform": "web",
+    "category": "devtools",
+    "description": "An API explorer for docs and dashboards: toggleable params, a masked key, Send with a timing waterfall, a tinted JSON response and copyable curl, fetch and Python.",
+    "tags": [
+      "api",
+      "playground",
+      "api explorer",
+      "developer tools",
+      "docs",
+      "request",
+      "response",
+      "json",
+      "code snippet"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 820,
+    "usage": "import { ApiPlayground } from \"@/components/design-for-ai/devtools-api-playground\";\n\n<ApiPlayground\n  baseUrl=\"https://api.example.com\"\n  path=\"/v1/invoices\"\n  method=\"GET\"\n  params={[{ key: \"status\", value: \"open\", enabled: true }]}\n  apiKey={publishableTestKey} // shown masked; never a live secret\n  onSend={({ method, url, body }) => runRequest(method, url, body)}\n/>\n\n// `outcome` picks the sample server's reply (success, invalid, rate-limited) for docs.\n// Swap `respond()` for your own call to show real responses.",
+    "props": [
+      {
+        "name": "baseUrl",
+        "type": "string",
+        "default": "\"https://api.ledgerline.dev\"",
+        "description": "API origin, shown muted before the path."
+      },
+      {
+        "name": "path",
+        "type": "string",
+        "default": "\"/v1/invoices\"",
+        "description": "Resource path, shown in ink."
+      },
+      {
+        "name": "method",
+        "type": "\"GET\" | \"POST\"",
+        "default": "\"GET\"",
+        "description": "HTTP method. GET opens on Params, POST on Body."
+      },
+      {
+        "name": "params",
+        "type": "ApiParam[]",
+        "description": "Query parameters for GET: key, value and enabled. Each can be switched off without deleting it."
+      },
+      {
+        "name": "body",
+        "type": "Record<string, unknown>",
+        "description": "JSON body for POST, shown tinted and used in the snippets."
+      },
+      {
+        "name": "apiKey",
+        "type": "string",
+        "default": "\"sk_test_51Lr9vQ2xK8f4a\"",
+        "description": "Key shown masked in the Authorization header and the curl snippet."
+      },
+      {
+        "name": "outcome",
+        "type": "\"success\" | \"invalid\" | \"rate-limited\"",
+        "default": "\"success\"",
+        "description": "Which reply the sample server sends: 200/201, 422 with the offending param, or 429 with retry-after."
+      },
+      {
+        "name": "showTiming",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show the DNS, TCP, TLS, server and download waterfall above the response."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface the playground sits on."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#7cc4ff\"",
+        "description": "The one accent: the server-time bar, the active tab underline and numbers in JSON."
+      },
+      {
+        "name": "onSend",
+        "type": "(request: { method, url, body? }) => void",
+        "description": "Called with the built request when Send or ⌘↵ is pressed."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root section."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@send",
+        "wait:1700",
+        "click:@response-tab-code",
+        "wait:400",
+        "click:@lang-python",
+        "wait:800"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "method",
+        "label": "Method",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "GET",
+            "label": "GET"
+          },
+          {
+            "value": "POST",
+            "label": "POST"
+          }
+        ],
+        "default": "GET",
+        "group": "Request"
+      },
+      {
+        "prop": "outcome",
+        "label": "Outcome",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "success",
+            "label": "Success"
+          },
+          {
+            "value": "invalid",
+            "label": "Invalid"
+          },
+          {
+            "value": "rate-limited",
+            "label": "Rate limited"
+          }
+        ],
+        "default": "success",
+        "group": "Request"
+      },
+      {
+        "prop": "path",
+        "label": "Path",
+        "kind": "text",
+        "default": "/v1/invoices",
+        "group": "Request"
+      },
+      {
+        "prop": "showTiming",
+        "label": "Timing",
+        "kind": "toggle",
+        "default": true,
+        "group": "Layout"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#7cc4ff",
+        "options": [
+          "#7cc4ff",
+          "#ff9d5c",
+          "#7dd3a8"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
+  },
+  {
+    "slug": "devtools-log-stream",
+    "name": "Log Stream",
+    "tier": "pro",
+    "platform": "web",
+    "category": "devtools",
+    "description": "A live log tail that behaves: level filters with counts, search that highlights in place, follow mode that pauses when you scroll back, and lines that open into fields.",
+    "tags": [
+      "logs",
+      "log viewer",
+      "tail",
+      "observability",
+      "developer tools",
+      "search",
+      "streaming",
+      "monospace",
+      "console"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 760,
+    "usage": "import { LogStream } from \"@/components/design-for-ai/devtools-log-stream\";\n\n<LogStream\n  source=\"api-gateway · production\"\n  live={false} // turn off the sample stream\n  initialLines={lines} // { id, time, level, service, message, fields }[], oldest first\n  height={480}\n/>\n\n// Feed it from your socket by appending to `lines`; follow mode keeps the newest line on the floor.\n// Scrolling up pauses follow and counts what arrives; the pill jumps back. Click a line to see its fields.",
+    "props": [
+      {
+        "name": "source",
+        "type": "string",
+        "default": "\"api-gateway · production\"",
+        "description": "Name of the source being tailed, shown in mono beside the live dot."
+      },
+      {
+        "name": "initialLines",
+        "type": "LogLine[]",
+        "description": "Lines to show, oldest first: id, time (ms), level, service, message and structured fields. Defaults to a seeded API-gateway sample."
+      },
+      {
+        "name": "live",
+        "type": "boolean",
+        "default": "true",
+        "description": "Stream sample lines. The stream pauses while off screen, in a hidden tab and under reduced motion."
+      },
+      {
+        "name": "rate",
+        "type": "number",
+        "default": "3",
+        "description": "Sample lines a second while live, with jittered arrivals."
+      },
+      {
+        "name": "wrap",
+        "type": "boolean",
+        "default": "false",
+        "description": "Wrap long messages instead of truncating them to one line."
+      },
+      {
+        "name": "showService",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show the service column between the level tag and the message."
+      },
+      {
+        "name": "density",
+        "type": "\"compact\" | \"comfortable\"",
+        "default": "\"comfortable\"",
+        "description": "Row spacing: 3px or 6px of vertical padding."
+      },
+      {
+        "name": "defaultLevel",
+        "type": "\"all\" | \"error\" | \"warn\" | \"info\" | \"debug\"",
+        "default": "\"all\"",
+        "description": "The level filter to start on. Read on mount."
+      },
+      {
+        "name": "height",
+        "type": "number",
+        "default": "420",
+        "description": "Height of the log viewport, in px."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface the console sits on."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#7cc4ff\"",
+        "description": "The one accent: the live dot, search matches and numeric field values."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root section."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:500",
+        "click:@search",
+        "type:timeout",
+        "wait:500",
+        "click:@level-error",
+        "wait:500",
+        "click:@log-line:0.6,0.5",
+        "wait:900"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "live",
+        "label": "Live",
+        "kind": "toggle",
+        "default": true,
+        "group": "Stream"
+      },
+      {
+        "prop": "rate",
+        "label": "Rate",
+        "kind": "slider",
+        "min": 1,
+        "max": 12,
+        "step": 1,
+        "unit": "/s",
+        "default": 3,
+        "group": "Stream"
+      },
+      {
+        "prop": "showService",
+        "label": "Service",
+        "kind": "toggle",
+        "default": true,
+        "group": "Layout"
+      },
+      {
+        "prop": "density",
+        "label": "Density",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "compact",
+            "label": "Compact"
+          },
+          {
+            "value": "comfortable",
+            "label": "Comfortable"
+          }
+        ],
+        "default": "comfortable",
+        "group": "Layout"
+      },
+      {
+        "prop": "height",
+        "label": "Height",
+        "kind": "slider",
+        "min": 280,
+        "max": 560,
+        "step": 20,
+        "unit": "px",
+        "default": 420,
+        "group": "Layout"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#7cc4ff",
+        "options": [
+          "#7cc4ff",
+          "#ff9d5c",
+          "#7dd3a8"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
+  },
+  {
+    "slug": "devtools-webhook-inspector",
+    "name": "Webhook Inspector",
+    "tier": "pro",
+    "platform": "web",
+    "category": "devtools",
+    "description": "A webhook endpoint console: 24-hour delivery chart, a filterable deliveries list, an attempt timeline with backoff, signed payloads and a Retry that lands live.",
+    "tags": [
+      "webhooks",
+      "deliveries",
+      "retry",
+      "developer tools",
+      "dashboard",
+      "events",
+      "observability",
+      "json",
+      "status"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 880,
+    "usage": "import { WebhookInspector } from \"@/components/design-for-ai/devtools-webhook-inspector\";\n\n<WebhookInspector\n  endpoint=\"https://example.com/webhooks/billing\"\n  deliveries={deliveries} // { id, event, time, attempts: { at, status, ms }[], maxAttempts, nextRetry?, payload }[]\n  onRetry={(d) => redeliver(d.id)}\n/>\n\n// Append the new attempt to that delivery when your redelivery call returns.\n// `retryOutcome` decides how the built-in sample resolves (succeed or fail).",
+    "props": [
+      {
+        "name": "endpoint",
+        "type": "string",
+        "default": "\"https://hooks.fieldnote.app/ledgerline\"",
+        "description": "The receiving URL, shown in mono beside the Enabled pill."
+      },
+      {
+        "name": "deliveries",
+        "type": "WebhookDelivery[]",
+        "description": "Newest first: id, event type, relative time, attempts (time, status or \"timeout\", ms), max attempts, next retry and the signed payload."
+      },
+      {
+        "name": "filter",
+        "type": "\"all\" | \"failed\"",
+        "default": "\"all\"",
+        "description": "Which deliveries the list shows. The list's own toggle changes it too."
+      },
+      {
+        "name": "showChart",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show the 24-hour chart with first-attempt failures stacked in the error tone."
+      },
+      {
+        "name": "retryOutcome",
+        "type": "\"succeed\" | \"fail\"",
+        "default": "\"succeed\"",
+        "description": "How a manual retry resolves in the sample: 200 in 192 ms, or 503."
+      },
+      {
+        "name": "density",
+        "type": "\"compact\" | \"comfortable\"",
+        "default": "\"comfortable\"",
+        "description": "Row spacing in the deliveries list."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface the console sits on."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#7cc4ff\"",
+        "description": "The one accent: the selected row's edge, the active tab, the sending attempt and numbers in JSON."
+      },
+      {
+        "name": "onRetry",
+        "type": "(delivery: WebhookDelivery) => void",
+        "description": "Called when Retry now or Redeliver is pressed."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root section."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:500",
+        "click:@retry",
+        "wait:1900",
+        "click:@tab-response",
+        "wait:600",
+        "click:@filter-failed",
+        "wait:900"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "filter",
+        "label": "Filter",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "all",
+            "label": "All"
+          },
+          {
+            "value": "failed",
+            "label": "Failed"
+          }
+        ],
+        "default": "all",
+        "group": "List"
+      },
+      {
+        "prop": "density",
+        "label": "Density",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "compact",
+            "label": "Compact"
+          },
+          {
+            "value": "comfortable",
+            "label": "Comfortable"
+          }
+        ],
+        "default": "comfortable",
+        "group": "List"
+      },
+      {
+        "prop": "showChart",
+        "label": "Chart",
+        "kind": "toggle",
+        "default": true,
+        "group": "Layout"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#7cc4ff",
+        "options": [
+          "#7cc4ff",
+          "#ff9d5c",
+          "#7dd3a8"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
+  },
+  {
+    "slug": "diagram-deploy-canary",
+    "name": "Canary Deploy",
+    "tier": "pro",
+    "platform": "web",
+    "category": "diagrams",
+    "description": "A release you can watch: build, sharded tests, then 5% and 25% canaries under a live error-rate guardrail that rolls a bad build back on its own.",
+    "tags": [
+      "deploy",
+      "canary",
+      "release",
+      "rollback",
+      "ci/cd",
+      "guardrail",
+      "animated diagram",
+      "devops",
+      "pipeline"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 860,
+    "usage": "import { DeployCanary } from \"@/components/design-for-ai/diagram-deploy-canary\";\n\n<DeployCanary\n  version=\"v2.15.0\"\n  previous=\"v2.14.3\"\n  commit=\"Cache invoice totals per account\"\n  threshold={1} // 5xx rate in percent; crossing it during a canary rolls back\n  canarySteps={[5, 25]}\n/>\n\n// The sample plays a healthy build to 100%, or a regression that trips at the second canary.\n// Use it on a platform landing page, a docs page about progressive delivery, or an incident write-up.",
+    "props": [
+      {
+        "name": "version",
+        "type": "string",
+        "default": "\"v2.15.0\"",
+        "description": "Version being released; labels the canary share."
+      },
+      {
+        "name": "previous",
+        "type": "string",
+        "default": "\"v2.14.3\"",
+        "description": "Version running now, which a rollback returns to."
+      },
+      {
+        "name": "commit",
+        "type": "string",
+        "default": "\"Cache invoice totals per account\"",
+        "description": "Commit message on the release card."
+      },
+      {
+        "name": "sha",
+        "type": "string",
+        "default": "\"a41d9c2\"",
+        "description": "Short commit sha, shown on the card and the Build stage."
+      },
+      {
+        "name": "author",
+        "type": "string",
+        "default": "\"maya\"",
+        "description": "Author shown on the release card."
+      },
+      {
+        "name": "build",
+        "type": "\"healthy\" | \"regressed\"",
+        "default": "\"healthy\"",
+        "description": "Which build the sample ships. The card's own toggle changes it too."
+      },
+      {
+        "name": "threshold",
+        "type": "number",
+        "default": "1",
+        "description": "Error-rate guardrail in percent, drawn as a dashed line on the chart."
+      },
+      {
+        "name": "canarySteps",
+        "type": "[number, number]",
+        "default": "[5, 25]",
+        "description": "Traffic share of the two canary steps, in percent."
+      },
+      {
+        "name": "showShards",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show the four parallel test shards filling inside the Test stage."
+      },
+      {
+        "name": "orientation",
+        "type": "\"auto\" | \"vertical\"",
+        "default": "\"auto\"",
+        "description": "Auto puts stages in a row from 672px of container width; vertical always stacks them."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface the diagram sits on."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#7cc4ff\"",
+        "description": "The one accent: the canary traffic share, the error-rate line and the running stage."
+      },
+      {
+        "name": "onDeploy",
+        "type": "(build: \"healthy\" | \"regressed\") => void",
+        "description": "Called when Deploy is pressed."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root section."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@build-regressed",
+        "wait:300",
+        "click:@deploy",
+        "wait:4600"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "build",
+        "label": "Build",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "healthy",
+            "label": "Healthy"
+          },
+          {
+            "value": "regressed",
+            "label": "Regression"
+          }
+        ],
+        "default": "healthy",
+        "group": "Release"
+      },
+      {
+        "prop": "threshold",
+        "label": "Guardrail",
+        "kind": "slider",
+        "min": 0.5,
+        "max": 3,
+        "step": 0.25,
+        "unit": "%",
+        "default": 1,
+        "group": "Release"
+      },
+      {
+        "prop": "showShards",
+        "label": "Test shards",
+        "kind": "toggle",
+        "default": true,
+        "group": "Layout"
+      },
+      {
+        "prop": "orientation",
+        "label": "Layout",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "auto",
+            "label": "Auto"
+          },
+          {
+            "value": "vertical",
+            "label": "Stacked"
+          }
+        ],
+        "default": "auto",
+        "group": "Layout"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#7cc4ff",
+        "options": [
+          "#7cc4ff",
+          "#ff9d5c",
+          "#7dd3a8"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
+  },
+  {
+    "slug": "diagram-payment-hops",
+    "name": "Payment Hops Diagram",
+    "tier": "pro",
+    "platform": "web",
+    "category": "diagrams",
+    "description": "A card payment's round trip drawn live: the amount travels terminal to issuer as a chip, an auth code or a decline rides back, and each hop shows its latency.",
+    "tags": [
+      "diagram",
+      "payments",
+      "card authorisation",
+      "fintech",
+      "explainer",
+      "latency",
+      "animated diagram",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 800,
+    "usage": "import { DiagramPaymentHops } from \"@/components/design-for-ai/diagram-payment-hops\";\n\n<DiagramPaymentHops\n  amount={24.5}\n  currency=\"EUR\"\n  locale=\"de-DE\"\n  outcome=\"declined\"\n  declineReason=\"Card expired\"\n  declineCode=\"54\"\n  onComplete={({ outcome, roundTripMs }) => track(\"demo_payment\", { outcome, roundTripMs })}\n/>\n\n// Your own route: terminal first, issuer last. Times are real milliseconds.\n<DiagramPaymentHops hops={[{ id: \"pos\", kind: \"terminal\", role: \"Terminal\", name: \"Kiosk 7\", linkMs: 30 }, /* … */]} />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Follow one card tap\"",
+        "description": "Heading over the diagram."
+      },
+      {
+        "name": "summary",
+        "type": "string",
+        "description": "One line under the heading."
+      },
+      {
+        "name": "hops",
+        "type": "PaymentHop[]",
+        "description": "The route, terminal first and issuer last: id, kind (terminal, acquirer, network, issuer), role, name, place, linkMs, workMs, replyMs, message and fields. Defaults to a four-party card payment built from the amount and outcome."
+      },
+      {
+        "name": "amount",
+        "type": "number",
+        "default": "4.8",
+        "description": "The amount in major units, carried out as the chip."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"GBP\"",
+        "description": "ISO 4217 currency code."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Locale for the money format."
+      },
+      {
+        "name": "outcome",
+        "type": "\"approved\" | \"declined\"",
+        "default": "\"approved\"",
+        "description": "What the issuer will say. The Approve and Decline switch in the footer changes it too."
+      },
+      {
+        "name": "onOutcomeChange",
+        "type": "(outcome: PaymentOutcome) => void",
+        "description": "Called when the footer switch changes the answer."
+      },
+      {
+        "name": "authCode",
+        "type": "string",
+        "default": "\"A7K2Q9\"",
+        "description": "The code an approval carries back to the terminal."
+      },
+      {
+        "name": "declineCode",
+        "type": "string",
+        "default": "\"51\"",
+        "description": "Response code a decline carries back."
+      },
+      {
+        "name": "declineReason",
+        "type": "string",
+        "default": "\"Insufficient funds\"",
+        "description": "Plain words for the decline, shown at the issuer and the terminal."
+      },
+      {
+        "name": "pace",
+        "type": "number",
+        "default": "6",
+        "description": "How many times slower than real time the payment plays. The milliseconds shown stay real."
+      },
+      {
+        "name": "showLatency",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show link latency on each lane and work time on each hop."
+      },
+      {
+        "name": "onComplete",
+        "type": "(result: { outcome: PaymentOutcome; roundTripMs: number }) => void",
+        "description": "Runs when the answer reaches the terminal."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#f2a65a\"",
+        "description": "The one colour: the amount in flight, the hop at work and the Tap card button. Approved and declined keep their green and red."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Near-black card or the white inverse."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@pay",
+        "wait:2700",
+        "click:@hop-issuer",
+        "wait:1100"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "outcome",
+        "label": "Issuer says",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "approved",
+            "label": "Approve"
+          },
+          {
+            "value": "declined",
+            "label": "Decline"
+          }
+        ],
+        "default": "approved",
+        "group": "Payment"
+      },
+      {
+        "prop": "amount",
+        "label": "Amount",
+        "kind": "slider",
+        "min": 1,
+        "max": 250,
+        "step": 0.5,
+        "default": 4.8,
+        "group": "Payment"
+      },
+      {
+        "prop": "currency",
+        "label": "Currency",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "GBP",
+            "label": "GBP"
+          },
+          {
+            "value": "EUR",
+            "label": "EUR"
+          },
+          {
+            "value": "USD",
+            "label": "USD"
+          }
+        ],
+        "default": "GBP",
+        "group": "Payment"
+      },
+      {
+        "prop": "showLatency",
+        "label": "Latency",
+        "kind": "toggle",
+        "default": true,
+        "group": "Diagram"
+      },
+      {
+        "prop": "title",
+        "label": "Title",
+        "kind": "text",
+        "default": "Follow one card tap",
+        "group": "Diagram"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f2a65a",
+        "options": [
+          "#f2a65a",
+          "#7aa2ff",
+          "#ececee"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Play again",
+        "kind": "action"
+      }
+    ]
+  },
+  {
+    "slug": "diagram-rag-pipeline",
+    "name": "RAG Pipeline",
+    "tier": "pro",
+    "platform": "web",
+    "category": "diagrams",
+    "description": "A retrieval-augmented answer traced stage by stage: tokens, the embedding, scored chunks that rerank in place, then a grounded answer with numbered sources.",
+    "tags": [
+      "rag",
+      "retrieval",
+      "embeddings",
+      "vector search",
+      "rerank",
+      "pipeline",
+      "diagram",
+      "llm",
+      "observability"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 900,
+    "usage": "import { RagPipeline } from \"@/components/design-for-ai/diagram-rag-pipeline\";\n\n<RagPipeline\n  query={trace.query}\n  chunks={trace.hits} // { id, source, text, similarity, rerankScore }[]\n  answer={trace.answer} // { text, cite? }[]: cite is a chunk id\n  topK={6}\n  contextSize={3}\n  rerank\n  onRun={() => analytics.track(\"rag_trace_replayed\")}\n/>\n\n// The resting state is a finished trace. Run replays it stage by stage and the inspector follows;\n// clicking a stage pins the inspector to it. Turn rerank off to show plain top-k retrieval.",
+    "props": [
+      {
+        "name": "query",
+        "type": "string",
+        "default": "\"Can I get a refund if I cancel an annual plan halfway through the year?\"",
+        "description": "The question being traced. It is tokenised for the Query view and seeds the drawn embedding."
+      },
+      {
+        "name": "chunks",
+        "type": "RagChunk[]",
+        "description": "Corpus hits with id, source, text, cosine similarity and cross-encoder score. Retrieve sorts by similarity, Rerank by score. Defaults to a refund-policy corpus."
+      },
+      {
+        "name": "answer",
+        "type": "RagAnswerPart[]",
+        "description": "The answer as sentences, each optionally citing a chunk id. A marker shows only when that chunk made it into the prompt context."
+      },
+      {
+        "name": "topK",
+        "type": "number",
+        "default": "6",
+        "description": "How many chunks vector search returns. Changes the retrieve detail, the list length and the measured latency."
+      },
+      {
+        "name": "contextSize",
+        "type": "number",
+        "default": "3",
+        "description": "How many chunks go into the prompt after search and rerank."
+      },
+      {
+        "name": "rerank",
+        "type": "boolean",
+        "default": "true",
+        "description": "Include the rerank stage. Off, the prompt takes the top chunks by similarity and the stage folds out of the row."
+      },
+      {
+        "name": "showLatency",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show measured latency under each stage and the end-to-end total in the header."
+      },
+      {
+        "name": "orientation",
+        "type": "\"auto\" | \"horizontal\" | \"vertical\"",
+        "default": "\"auto\"",
+        "description": "auto lays stages in a row from 672px of container width and stacks them below that."
+      },
+      {
+        "name": "embedModel",
+        "type": "string",
+        "default": "\"atlas-embed-v3\"",
+        "description": "Embedding model name under the Embed stage."
+      },
+      {
+        "name": "generateModel",
+        "type": "string",
+        "default": "\"halcyon-2\"",
+        "description": "Generation model name under the Generate stage."
+      },
+      {
+        "name": "indexSize",
+        "type": "number",
+        "default": "12480",
+        "description": "Chunks in the index, for the retrieve readout."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface the diagram sits on."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#7cc4ff\"",
+        "description": "The one accent: the running stage's ring, the travelling packet and the citation markers."
+      },
+      {
+        "name": "onRun",
+        "type": "() => void",
+        "description": "Called when Run is pressed, before the trace replays."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root section."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:300",
+        "click:@run",
+        "wait:3500",
+        "click:@stage-retrieve",
+        "wait:700"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "query",
+        "label": "Question",
+        "kind": "text",
+        "default": "Can I get a refund if I cancel an annual plan halfway through the year?",
+        "group": "Trace"
+      },
+      {
+        "prop": "topK",
+        "label": "Top k",
+        "kind": "slider",
+        "min": 3,
+        "max": 8,
+        "step": 1,
+        "default": 6,
+        "group": "Trace"
+      },
+      {
+        "prop": "rerank",
+        "label": "Rerank",
+        "kind": "toggle",
+        "default": true,
+        "group": "Trace"
+      },
+      {
+        "prop": "showLatency",
+        "label": "Latency",
+        "kind": "toggle",
+        "default": true,
+        "group": "Layout"
+      },
+      {
+        "prop": "orientation",
+        "label": "Stages",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "auto",
+            "label": "Auto"
+          },
+          {
+            "value": "vertical",
+            "label": "Stacked"
+          }
+        ],
+        "default": "auto",
+        "group": "Layout"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#7cc4ff",
+        "options": [
+          "#7cc4ff",
+          "#ff9d5c",
+          "#7dd3a8"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Run again",
+        "kind": "action"
+      }
+    ]
+  },
+  {
+    "slug": "editor-node-graph",
+    "name": "Node Graph Editor",
+    "tier": "pro",
+    "platform": "web",
+    "category": "editors",
+    "description": "A workflow editor for AI pipelines: wire typed ports, then Run lights each wire as data passes and a failing step explains why it stopped.",
+    "tags": [
+      "editors",
+      "node editor",
+      "workflow",
+      "pipeline",
+      "canvas",
+      "ai agents",
+      "automation",
+      "graph",
+      "low code",
+      "inspector"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 860,
+    "usage": "import { EditorNodeGraph } from \"@/components/design-for-ai/editor-node-graph\";\n\n<EditorNodeGraph\n  name=\"support-autoreply\"\n  nodes={steps}\n  edges={wires}\n  testCases={samples}\n  onConnect={(edge) => save(edge)}\n  onRun={(result) => log(result)}\n/>\n\n// Ports are typed (text, json, docs) and an input only takes its own type. Click an output, then an input, to wire them, or drag between them; Enter on a focused port does the same.\n// Run plans the whole pass first: a step starts once every wire into it has delivered, an input with no wire stops the run at that step (with a one-click fix), and the chosen test case can fail one step with its own explanation.\n// Plain wheel scrolls the page. Ctrl-scroll or pinch zooms, and dragging the canvas pans.",
+    "props": [
+      {
+        "name": "name",
+        "type": "string",
+        "default": "\"support-autoreply\"",
+        "description": "The workflow's name, shown in the breadcrumb and the inspector overview."
+      },
+      {
+        "name": "nodes",
+        "type": "GraphNode[]",
+        "default": "six steps: New ticket, Classify intent, Search help center, Draft reply, Policy check, Send to Zendesk",
+        "description": "The steps. Each has an id, title, kind (trigger, llm, search, guard, action), a position, typed inputs and outputs, config pairs, how long it runs and what it produced."
+      },
+      {
+        "name": "edges",
+        "type": "{ from: string; to: string }[]",
+        "default": "seven wires, with Draft reply's context left unwired",
+        "description": "Wires written as \"nodeId.portId\", from an output to an input. Read on mount and whenever the array changes; wiring in the editor keeps its own copy and reports each new wire through onConnect."
+      },
+      {
+        "name": "testCases",
+        "type": "{ id; label; summary; failure?: { node; title; detail; excerpt?; hint } }[]",
+        "default": "a late refund that the policy check blocks, and a fresh refund that passes",
+        "description": "Sample inputs to run with. A case's failure names the step that stops and the words it shows on the canvas and in the inspector."
+      },
+      {
+        "name": "summary",
+        "type": "string",
+        "default": "\"Answers billing tickets, checks the reply against refund policy, then posts it.\"",
+        "description": "One line under the workflow name in the inspector."
+      },
+      {
+        "name": "testCase",
+        "type": "string",
+        "default": "\"late-refund\"",
+        "description": "The id of the test case Run uses. The toolbar's Test with menu changes it too."
+      },
+      {
+        "name": "snapToGrid",
+        "type": "boolean",
+        "default": "true",
+        "description": "Snap dragged and nudged steps to an 8px grid. The magnet button in the toolbar toggles it."
+      },
+      {
+        "name": "showGrid",
+        "type": "boolean",
+        "default": "true",
+        "description": "The dot grid behind the canvas. It pans and scales with the view."
+      },
+      {
+        "name": "showInspector",
+        "type": "boolean",
+        "default": "true",
+        "description": "The panel that explains the selected step: why it stopped, what it produced, its wires and config. Beside the canvas on wide containers, under it on narrow ones."
+      },
+      {
+        "name": "showMinimap",
+        "type": "boolean",
+        "default": "true",
+        "description": "The overview in the canvas corner, with run status per step and the visible area outlined. Hidden on narrow containers."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#f4f4f5\"",
+        "description": "The one brand accent: Run, lit wires, packets, the running ring and the selection. Defaults to ink for the theme; either theme's ink follows the theme. Port types and failure colours are fixed."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Near-black editor with white ink, or the white inverse."
+      },
+      {
+        "name": "onRun",
+        "type": "(result: { status: \"passed\" | \"failed\"; failedAt?: string; ms: number }) => void",
+        "description": "Called once a run finishes, with the step it stopped at."
+      },
+      {
+        "name": "onConnect",
+        "type": "(edge: { from: string; to: string }) => void",
+        "description": "Called for each wire the person adds. A wire into an input that already had one replaces it."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the editor."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:500",
+        "click:@port-search-docs",
+        "wait:250",
+        "click:@port-draft-context",
+        "wait:400",
+        "click:@run",
+        "wait:3300"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "testCase",
+        "label": "Test input",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "late-refund",
+            "label": "Late refund"
+          },
+          {
+            "value": "fresh-refund",
+            "label": "Fresh refund"
+          }
+        ],
+        "default": "late-refund",
+        "group": "Run"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action",
+        "group": "Run"
+      },
+      {
+        "prop": "snapToGrid",
+        "label": "Snap to grid",
+        "kind": "toggle",
+        "default": true,
+        "group": "Canvas"
+      },
+      {
+        "prop": "showGrid",
+        "label": "Dot grid",
+        "kind": "toggle",
+        "default": true,
+        "group": "Canvas"
+      },
+      {
+        "prop": "showMinimap",
+        "label": "Minimap",
+        "kind": "toggle",
+        "default": true,
+        "group": "Canvas"
+      },
+      {
+        "prop": "showInspector",
+        "label": "Inspector",
+        "kind": "toggle",
+        "default": true,
+        "group": "Canvas"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#8ab4ff",
+          "#7dd3a8",
+          "#f4b267"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      }
+    ]
+  },
+  {
+    "slug": "effect-gravity-grid",
+    "name": "Gravity Grid",
+    "tier": "pro",
+    "platform": "web",
+    "category": "effects",
+    "description": "A tile grid that bends toward the cursor like spacetime around a mass, its slope catching light, while a click sends a shockwave ring through the tiles.",
+    "tags": [
+      "effect",
+      "cursor",
+      "grid",
+      "gravity",
+      "shockwave",
+      "canvas",
+      "background",
+      "interactive",
+      "monochrome"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 760,
+    "usage": "import { GravityGrid } from \"@/components/design-for-ai/effect-gravity-grid\";\n\n// Fills its parent; give the parent a height. Content inside sits above the field.\n<section className=\"relative h-[640px]\">\n  <GravityGrid cell={28} pull={0.5} radius={240}>\n    <div className=\"grid h-full place-items-center\">\n      <h2 className=\"font-display text-7xl tracking-tight\">Weight, made visible.</h2>\n    </div>\n  </GravityGrid>\n</section>\n\n// Fire a shockwave from the centre from outside the field.\n<GravityGrid pulseKey={launches} onPulse={(x, y) => track(\"pulse\", { x, y })} accent=\"#8ab4ff\" />",
+    "props": [
+      {
+        "name": "cell",
+        "type": "number",
+        "default": "28",
+        "description": "Tile pitch in CSS px, clamped to 14–64. The lattice gets one tile of overscan on every side, so the well never drags an edge into view."
+      },
+      {
+        "name": "gap",
+        "type": "number",
+        "default": "3",
+        "description": "Space between tiles in px. Tiles are inset toward their own centre, so the gap stretches and shrinks with the warp."
+      },
+      {
+        "name": "pull",
+        "type": "number",
+        "default": "0.5",
+        "description": "How hard the mass pulls, 0 to 1. Internally capped below the point where a Gaussian well would fold tiles over each other."
+      },
+      {
+        "name": "radius",
+        "type": "number",
+        "default": "240",
+        "description": "Reach of the well in px (the Gaussian's sigma is half of it). Capped at 45% of the field's shorter side, so a small field keeps a proportionate well."
+      },
+      {
+        "name": "shockwave",
+        "type": "boolean",
+        "default": "true",
+        "description": "A click, a tap or Enter sends a shockwave ring out from the point. Off, the field only bends."
+      },
+      {
+        "name": "rest",
+        "type": "\"centre\" | \"none\"",
+        "default": "\"centre\"",
+        "description": "Where the mass rests while the pointer is away. centre settles into a gentle well (62% strength) in the middle, so the field shows its idea at rest; none lets it go flat. Either way the loop sleeps once settled."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#f4f4f5\"",
+        "description": "Tint of the shockwave front, as a hex colour."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "White tiles on #070708, or ink tiles on #f3f2ee paper."
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "description": "Content drawn above the field. It lets the pointer through, except links and buttons."
+      },
+      {
+        "name": "onPulse",
+        "type": "(x: number, y: number) => void",
+        "description": "Called with the point (px from the field's top left) each time a shockwave starts."
+      },
+      {
+        "name": "pulseKey",
+        "type": "string | number",
+        "description": "Change it to send a shockwave from the centre, e.g. from a button outside the field."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root, which fills its parent."
+      }
+    ],
+    "demo": {
+      "steps": [
+        "wait:300",
+        "hover:@field:0.28,0.42",
+        "hover:@field:0.5,0.56",
+        "click",
+        "wait:700",
+        "hover:@field:0.74,0.36",
+        "click",
+        "wait:900",
+        "click:@pulse",
+        "wait:1100"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "pull",
+        "label": "Pull",
+        "kind": "slider",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "default": 0.5
+      },
+      {
+        "prop": "radius",
+        "label": "Well radius",
+        "kind": "slider",
+        "min": 100,
+        "max": 480,
+        "step": 10,
+        "unit": "px",
+        "default": 240
+      },
+      {
+        "prop": "cell",
+        "label": "Tile size",
+        "kind": "slider",
+        "min": 16,
+        "max": 56,
+        "step": 2,
+        "unit": "px",
+        "default": 28
+      },
+      {
+        "prop": "gap",
+        "label": "Gap",
+        "kind": "slider",
+        "min": 0,
+        "max": 10,
+        "step": 1,
+        "unit": "px",
+        "default": 3
+      },
+      {
+        "prop": "shockwave",
+        "label": "Shockwave",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "rest",
+        "label": "At rest",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "centre",
+            "label": "Centre well"
+          },
+          {
+            "value": "none",
+            "label": "Flat"
+          }
+        ],
+        "default": "centre"
+      },
+      {
+        "prop": "accent",
+        "label": "Wave tint",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#8ab4ff",
+          "#7dd3a8",
+          "#ffb454",
+          "#ff7a9c"
+        ]
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ],
+    "added": "2026-10-10"
   },
   {
     "slug": "feature-sticky-scroll",
