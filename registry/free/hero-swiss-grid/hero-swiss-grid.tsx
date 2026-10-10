@@ -46,6 +46,20 @@ const PALETTE = {
 
 const SWISS_RED = "#e10600";
 
+/** Black or white, whichever reads better on the accent fill (WCAG luminance). */
+function onAccent(hex: string): string {
+  const m = /^#?([0-9a-f]{6})$/i.exec(hex.trim());
+  if (!m) return "#ffffff";
+  const n = parseInt(m[1], 16);
+  const lin = (c: number) => {
+    const s = c / 255;
+    return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+  };
+  const L = 0.2126 * lin((n >> 16) & 255) + 0.7152 * lin((n >> 8) & 255) + 0.0722 * lin(n & 255);
+  // White text wins unless the fill is light enough that black has more contrast.
+  return 1.05 / (L + 0.05) >= (L + 0.05) / 0.05 ? "#ffffff" : "#0a0a0a";
+}
+
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 // One timeline, in seconds, so the order reads top to bottom:
@@ -138,7 +152,7 @@ export function HeroSwissGrid({
   // Reveal once, when a fifth of the hero is on screen.
   const inView = useInView(rootRef, { once: true, amount: 0.2 });
   const p = PALETTE[theme];
-  const vars = { "--sg-bg": p.bg, "--sg-ink": p.ink, "--sg-on-ink": p.onInk, "--sg-accent": accent } as CSSProperties;
+  const vars = { "--sg-bg": p.bg, "--sg-ink": p.ink, "--sg-on-ink": p.onInk, "--sg-accent": accent, "--sg-on-accent": onAccent(accent) } as CSSProperties;
   const v = (variants: Variants) => (reduce ? fade : variants);
 
   return (
@@ -253,7 +267,7 @@ function PrimaryButton({ link }: { link: Link }) {
       href={link.href}
       data-demo="primary"
       {...hot}
-      className={`group inline-flex h-14 items-center gap-6 bg-(--sg-ink) pl-5 pr-4 text-[15px] font-semibold text-(--sg-on-ink) transition-[color,background-color,transform] duration-150 data-[hot=true]:bg-(--sg-accent) data-[hot=true]:text-white active:scale-[0.97] ${FOCUS}`}
+      className={`group inline-flex h-14 items-center gap-6 bg-(--sg-ink) pl-5 pr-4 text-[15px] font-semibold text-(--sg-on-ink) transition-[color,background-color,transform] duration-150 data-[hot=true]:bg-(--sg-accent) data-[hot=true]:text-(--sg-on-accent) active:scale-[0.97] ${FOCUS}`}
     >
       {link.label}
       <svg viewBox="0 0 16 16" className="size-4 transition-transform duration-150 group-data-[hot=true]:translate-x-1" fill="none" aria-hidden="true">

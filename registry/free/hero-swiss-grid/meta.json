@@ -91,17 +91,13 @@
   "added": "2026-10-07",
   "demo": {
     "steps": [
-      "wait:1600",
-      "hover:@track-1",
-      "wait:300",
-      "hover:@track-3",
-      "wait:300",
-      "hover:@track-4",
-      "wait:200",
+      "wait:400",
       "hover:@primary",
-      "wait:700",
+      "wait:800",
       "hover:@secondary",
-      "wait:700"
+      "wait:700",
+      "hover:@track-1:0.3,0.5",
+      "wait:1100"
     ],
     "loop": false
   },
@@ -114,8 +110,8 @@
       "options": [
         "#e10600",
         "#2563eb",
-        "#16a34a",
-        "#f59e0b"
+        "#15803d",
+        "#b45309"
       ]
     },
     {
@@ -136,15 +132,9 @@
     },
     {
       "prop": "showGrid",
-      "label": "Column guides",
+      "label": "Grid guides",
       "kind": "toggle",
       "default": true
-    },
-    {
-      "prop": "indexLabel",
-      "label": "Index heading",
-      "kind": "text",
-      "default": "Index"
     }
   ]
 }
