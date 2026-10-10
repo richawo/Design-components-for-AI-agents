@@ -392,6 +392,7 @@ function Sources({ sources, hover, onHover, anchor, reduce }: { sources: Streami
             <motion.li key={s.title} id={anchor(i + 1)} {...enter(true, 0.14 + i * MOTION.listStep, reduce)}>
               <a
                 href={s.href}
+                data-demo={`source-${i + 1}`}
                 onMouseEnter={() => onHover(i + 1)}
                 onMouseLeave={() => onHover(null)}
                 onFocus={() => onHover(i + 1)}
@@ -601,11 +602,18 @@ export function StreamingText({
   );
 }
 
-/** A shorter answer for the showcase, so the whole card (question to footer) stays in frame while the demo plays. */
+/**
+ * The showcase answer: short enough, with two sources, that the whole card
+ * (question to footer) stays in one wide frame, and opening with the same words as the
+ * gallery poster.
+ */
 const STAGE_ANSWER = [
   "A loaf usually collapses because the dough ran out of strength before the oven could set it. The gas is still there; the structure holding it up isn’t.[1]",
-  "The usual culprit is **overproofing**: left too long, acids loosen the gluten and the loaf sighs the moment you score it.[2] If the poke-test dent springs back slowly and only partway, bake it. Otherwise shorten the final proof by 30 to 45 minutes.[3]",
+  "The usual culprit is **overproofing**. Left too long, the yeast keeps making gas while acids slowly loosen the gluten, so the loaf sighs the moment you score it.[2] Shorten the final proof by 30 to 45 minutes.",
 ];
+
+/** The showcase streams a little quicker than the component’s default, so the whole answer fits one breath. */
+const STAGE_PACE = 0.75;
 
 /**
  * The answer card on its stage. It opens on the finished answer so Regenerate
@@ -616,7 +624,7 @@ const STAGE_ANSWER = [
  */
 export default function StreamingTextDemo(overrides: Partial<StreamingTextProps> = {}) {
   const stage = useRef<HTMLDivElement>(null);
-  const pace = overrides.pace ?? 1;
+  const pace = overrides.pace ?? STAGE_PACE;
   const lastPace = useRef(pace);
   useEffect(() => {
     if (lastPace.current === pace) return;
@@ -624,9 +632,9 @@ export default function StreamingTextDemo(overrides: Partial<StreamingTextProps>
     stage.current?.querySelector<HTMLButtonElement>('[data-demo="regenerate"]')?.click();
   }, [pace]);
   return (
-    <div className="flex min-h-dvh items-start justify-center px-4 pb-10 pt-[max(2rem,calc((100dvh-860px)/2))] sm:px-8" style={{ background: STAGE[overrides.theme ?? "dark"] }}>
-      <div ref={stage} className="w-full max-w-[820px]">
-        <StreamingText answer={STAGE_ANSWER} sources={DEMO_SOURCES.slice(0, 3)} autoStart={false} {...overrides} />
+    <div className="flex min-h-dvh items-start justify-center px-4 pb-10 pt-[max(2rem,calc((100dvh-780px)/2))] sm:px-8" style={{ background: STAGE[overrides.theme ?? "dark"] }}>
+      <div ref={stage} className="w-full max-w-[1090px]">
+        <StreamingText answer={STAGE_ANSWER} sources={DEMO_SOURCES.slice(0, 2)} autoStart={false} pace={STAGE_PACE} {...overrides} />
       </div>
     </div>
   );

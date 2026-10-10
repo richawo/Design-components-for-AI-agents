@@ -20,7 +20,7 @@
     "lucide-react"
   ],
   "theme": "dark",
-  "previewHeight": 1040,
+  "previewHeight": 900,
   "usage": "import { StreamingText } from \"@/components/design-for-ai/streaming-text\";\n\nexport default function Answer() {\n  return (\n    <StreamingText\n      question=\"Is it worth replacing our cron jobs with a queue?\"\n      askedBy=\"Asked by Sam · 16:02\"\n      answer={[\n        \"Probably, once retries matter more than timing.[1] A queue gives you backpressure for free.[2]\",\n      ]}\n      sources={[\n        { title: \"Retries without regret\", publisher: \"Ops Weekly\", href: \"/r/1\" },\n        { title: \"Backpressure, explained slowly\", publisher: \"Systems Field Guide\", href: \"/r/2\" },\n      ]}\n    />\n  );\n}",
   "props": [
     {
@@ -75,5 +75,74 @@
       "description": "Extra classes on the root article."
     }
   ],
-  "added": "2026-10-07"
+  "added": "2026-10-07",
+  "demo": {
+    "steps": [
+      "click:@regenerate",
+      "wait:2500",
+      "hover:@cite-1",
+      "wait:900",
+      "hover:@source-2:0.84,0.5",
+      "wait:900"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "question",
+      "label": "Question",
+      "kind": "text",
+      "default": "Why does my sourdough collapse when it goes in the oven?"
+    },
+    {
+      "prop": "askedBy",
+      "label": "Asked by",
+      "kind": "text",
+      "default": "Asked by Noor · 09:14"
+    },
+    {
+      "prop": "pace",
+      "label": "Word delay",
+      "kind": "slider",
+      "min": 0.25,
+      "max": 2,
+      "step": 0.25,
+      "unit": "x",
+      "default": 0.75
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark"
+    },
+    {
+      "prop": "accent",
+      "label": "Accent",
+      "kind": "color",
+      "default": "#ff9a6b",
+      "options": [
+        "#ff9a6b",
+        "#ededef",
+        "#34d399",
+        "#60a5fa"
+      ]
+    },
+    {
+      "prop": "autoStart",
+      "label": "Stream on load",
+      "kind": "toggle",
+      "default": false,
+      "remount": true
+    }
+  ]
 }
