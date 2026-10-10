@@ -153,8 +153,14 @@ describe("registry demos and controls", () => {
     expect(validateControls(c.meta.controls, c.meta.props.map((p) => p.name))).toEqual([]);
     if (c.meta.demo) expect(demoDuration(parseSteps(c.meta.demo.steps))).toBeLessThanOrEqual(DEMO_MAX_MS);
     if (c.meta.controls?.length) {
-      // The default export takes the overrides the preview sends.
-      expect(c.code).toMatch(/export default function \w+\((overrides|\{)[^)]*Partial<\w+Props>/);
+      // The default export takes the overrides the preview sends: either
+      // `Partial<XProps>` directly, or an `XDemoProps` alias that extends it
+      // with demo-only settings (`type XDemoProps = Partial<XProps> & {...}`).
+      const sig = /export default function \w+\(\s*(?:\w+|\{[^)]*\})\s*:\s*(Partial<\w+Props>|\w+DemoProps)\s*=\s*\{\}\s*\)/.exec(c.code);
+      expect(sig, "default export signature").not.toBeNull();
+      if (sig && !sig[1].startsWith("Partial<")) {
+        expect(c.code).toMatch(new RegExp(`type ${sig[1]}\\s*=\\s*Partial<\\w+Props>`));
+      }
     }
     if (c.meta.demo) {
       const names = new Set(c.meta.demo.steps.map((s) => /@([a-z][a-z0-9-]*)/.exec(s)?.[1]).filter(Boolean));
