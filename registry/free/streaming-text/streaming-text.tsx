@@ -83,10 +83,11 @@ const MOTION = {
   listStep: 0.05, // reading list and sources, row to row
   footerAt: 0.4,
   lead: 0.35, // after the card lands, before reading starts counting
-  reading: 0.9, // “Reading 5 sources” before the first word (× pace)
+  reading: 1.1, // “Reading 5 sources” before the first word (× pace, never shorter, so the rows sit sharp for a beat)
   ink: 420, // ms: each chunk settles from a blur, like ink drying
   inkBlur: 4, // px
   exit: 0.16,
+  release: 420, // ms: a held body height easing back after Stop
   copiedFor: 1600, // ms
   fade: 0.15, // reduced motion
 } as const;
@@ -169,7 +170,7 @@ function delayAfter(t: Tok | undefined, endOfParagraph: boolean) {
   if (!t || t.kind === "cite") return 40;
   const s = t.text.trimEnd();
   if (/[.!?]["”’)]?$/.test(s)) return 110 + Math.random() * 160;
-  if (/[,;:—]$/.test(s)) return 50 + Math.random() * 70;
+  if (/[,;:\u2014]$/.test(s)) return 50 + Math.random() * 70;
   if (Math.random() < 0.04) return 180 + Math.random() * 200; // the odd hesitation
   return 14 + Math.random() * 34;
 }
@@ -226,7 +227,7 @@ function useTokenStream(flat: { t: Tok; end: boolean }[], { play, reduce, autoSt
     timer.current = window.setTimeout(() => {
       setPhase("streaming");
       tick();
-    }, (lead + MOTION.reading * pace) * 1000);
+    }, (lead + Math.max(MOTION.reading, MOTION.reading * pace)) * 1000);
     return () => window.clearTimeout(timer.current);
   }, [play, reduce, autoStart, run, total, flat, pace]);
 
@@ -236,7 +237,16 @@ function useTokenStream(flat: { t: Tok; end: boolean }[], { play, reduce, autoSt
     setPhase("stopped");
   }, []);
 
-  const restart = useCallback(() => setRun((r) => r + 1), []);
+  // One batch: the new run key and the reading phase land in the same render, so a
+  // finished frame with a fresh key (an empty second Sources block) can never exist.
+  const restart = useCallback(() => {
+    window.clearTimeout(timer.current);
+    setRun((r) => r + 1);
+    setElapsed(0);
+    if (reduce) return;
+    setCount(0);
+    setPhase("reading");
+  }, [reduce]);
 
   return { count, phase, elapsed, run, stop, restart };
 }
@@ -494,20 +504,33 @@ export function StreamingText({
   const live = phase === "streaming" || phase === "reading";
   const words = wordsAt[count] ?? 0;
   const seconds = (stream.elapsed / 1000).toFixed(1);
+  // A finished answer always reads the same, however it got there, so a replay ends where it began.
   const status =
     phase === "reading"
       ? `Reading ${sources.length} sources`
       : phase === "streaming"
         ? `Writing · ${words} words`
         : phase === "stopped"
-          ? `Stopped after ${seconds}s · ${words} words`
-          : stream.run === 0 && instant
-            ? `${words} words · ${sources.length} sources`
-            : `${words} words in ${seconds}s`;
+          ? stream.elapsed > 0
+            ? `Stopped after ${seconds}s · ${words} words`
+            : `Stopped · ${words} words`
+          : `${words} words · ${sources.length} sources`;
+
+  /*
+   * Regenerate holds the body at its finished height until the new answer is
+   * done, so reading, streaming and the returning sources happen inside a frame
+   * that never moves and the footer stays put. Stop lets it ease back.
+   */
+  const body = useRef<HTMLDivElement>(null);
+  const [hold, setHold] = useState<number | null>(null);
+  useEffect(() => {
+    if (phase === "done" || phase === "stopped") setHold(null);
+  }, [phase]);
 
   const regenerate = () => {
     reset();
     setHover(null);
+    if (!reduce && body.current) setHold(body.current.offsetHeight);
     stream.restart();
   };
 
@@ -546,7 +569,11 @@ export function StreamingText({
           </motion.h2>
         </header>
 
-        <div className="border-t border-[var(--st-line)] px-6 py-7 @xl:px-12 @xl:py-9">
+        <div
+          ref={body}
+          style={{ minHeight: hold ?? 0, transition: hold === null && !reduce ? `min-height ${MOTION.release}ms cubic-bezier(0.22, 1, 0.36, 1)` : "none" }}
+          className="border-t border-[var(--st-line)] px-6 py-7 @xl:px-12 @xl:py-9"
+        >
           <motion.div {...enter(play, MOTION.step * 3, reduce)} className="mb-5 flex h-6 items-center gap-2.5 font-mono text-[12px] text-[var(--st-muted)]">
             <StatusMark phase={phase} />
             <span className="tabular-nums">{status}</span>
@@ -573,11 +600,13 @@ export function StreamingText({
             </AnimatePresence>
           </div>
 
-          <AnimatePresence>{phase === "done" ? <Sources key={`sources-${stream.run}`} sources={sources} hover={hover} onHover={setHover} anchor={anchor} reduce={reduce} /> : null}</AnimatePresence>
+          <AnimatePresence>{phase === "done" ? <Sources key="sources" sources={sources} hover={hover} onHover={setHover} anchor={anchor} reduce={reduce} /> : null}</AnimatePresence>
         </div>
 
         <motion.footer {...enter(play, MOTION.footerAt, reduce)} className="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--st-line)] px-4 py-3 @xl:px-10">
-          <p className="pl-2 font-mono text-[11px] text-[var(--st-faint)]">Answers can be wrong. Check the sources.</p>
+          <p data-demo="note" className="pl-2 font-mono text-[11px] text-[var(--st-faint)]">
+            Answers can be wrong. Check the sources.
+          </p>
           <div className="flex items-center gap-1">
             {live ? (
               <ControlButton demo="stop" onClick={stream.stop} label="Stop">

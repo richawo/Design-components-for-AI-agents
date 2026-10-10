@@ -1,7 +1,7 @@
 Build a streaming AI answer card in React + Tailwind CSS (v4), using `motion/react` for the entrance and `lucide-react` for the control icons. It should read like a well-edited reference answer arriving live: monochrome, calm and legible, with words that settle onto the page like ink and sources treated as first-class.
 
 **Layout**
-- The component is one `@container` article; the demo centres it on a black stage at max 820px with 16/32px gutters.
+- The component is one `@container` article; the demo centres it on a black stage at max 1090px with 16/32px gutters.
 - Card: `#0e0e10`, radius 24px, a 1px `#232327` border, an inset top highlight at white/5% and a deep shadow (`0 32px 80px -32px` black at 90%). Three bands split by 1px rules:
   1. **Header** (28/44px top padding, 24/48px sides from a 576px container): a mono line ("Asked by Noor · 09:14") led by a 20px hairline, then the question.
   2. **Answer**: a 24px status row, a body with min-height 12rem (so the card doesn't jump), then the sources.
@@ -20,12 +20,12 @@ Build a streaming AI answer card in React + Tailwind CSS (v4), using `motion/rea
 
 **Motion** (one `MOTION` object; ease-out `[0.22, 1, 0.36, 1]`)
 - **Entrance** once 20% in view: the card rises 12px out of an 8px blur over 500ms; then the asked-by line (60ms, its hairline drawing from scaleX 0), the question (120ms), the status row (180ms), the reading list (260ms + 50ms a row) and the footer (400ms).
-- **Reading** (350ms lead, then 900ms × pace): a breathing ink dot, "Reading 5 sources", and the five publishers listed in mono (`01 The Crumb Quarterly`). They leave upward with a 4px blur when writing starts. No skeleton bars.
+- **Reading** (350ms lead, then 1.1s × pace, never shorter than 1.1s so the rows sit sharp for a beat): a breathing ink dot, "Reading 5 sources", and the five publishers listed in mono (`01 The Crumb Quarterly`). They leave upward with a 4px blur when writing starts. No skeleton bars.
 - **Streaming**: tokenise into words (keeping whitespace), each citation and bold run intact. Emit 1–3 tokens per tick (55% one, then 70% two). Wait 14–48ms between ordinary words, 50–120ms after commas, semicolons and dashes, 110–270ms after a sentence, 260–480ms between paragraphs, and 4% of the time a 180–380ms hesitation. `pace` multiplies every delay. One timer at a time, cleared on unmount and on Stop.
 - **Ink**: every token settles from opacity 0 and a 4px blur over 420ms, without moving, from one namespaced CSS keyframe (`st-ink`). A 2px × 1.05em ink caret breathes (0.85 → 0.2 opacity, 1.1s) at the live end.
-- The status counts live: "Writing · 42 words", then "156 words in 6.2s" or "Stopped after 2.3s · 61 words".
+- The status counts live: "Writing · 42 words", then "156 words · 5 sources" (the same line however the answer arrived) or "Stopped after 2.3s · 61 words".
 - When it finishes, the "Sources" label and rows rise from a blur, 50ms apart. Hovering or focusing a citation lights its source in the accent, and the reverse.
-- **Regenerate** restarts from Reading without the card entrance. **Copy** copies plain text (markers stripped) and pops to a check for 1.6s.
+- **Regenerate** restarts from Reading without the card entrance. Set the new run, phase and count in one batch, and hold the answer band at its finished height (min-height) until the new answer is done, so the footer never moves; after Stop the hold eases back over 420ms. **Copy** copies plain text (markers stripped) and pops to a check for 1.6s.
 - Reduced motion: the full answer and sources render immediately; entrances are 150ms fades; no ink settle, caret or ping.
 
 **Accessibility**

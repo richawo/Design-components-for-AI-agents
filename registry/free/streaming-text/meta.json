@@ -55,7 +55,7 @@
       "name": "pace",
       "type": "number",
       "default": "1",
-      "description": "Multiplies every delay; 0.5 streams twice as fast."
+      "description": "Multiplies every delay; 0.5 streams twice as fast. The reading beat never gets shorter than 1.1s."
     },
     {
       "name": "accent",
@@ -79,11 +79,13 @@
   "demo": {
     "steps": [
       "click:@regenerate",
-      "wait:2500",
+      "wait:2900",
       "hover:@cite-1",
-      "wait:900",
+      "wait:600",
       "hover:@source-2:0.84,0.5",
-      "wait:900"
+      "wait:800",
+      "hover:@note:0.5,0.5",
+      "wait:300"
     ]
   },
   "controls": [
@@ -101,7 +103,7 @@
     },
     {
       "prop": "pace",
-      "label": "Word delay",
+      "label": "Pace (lower is faster)",
       "kind": "slider",
       "min": 0.25,
       "max": 2,
