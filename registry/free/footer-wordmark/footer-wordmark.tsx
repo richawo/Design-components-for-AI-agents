@@ -312,6 +312,7 @@ function EmailLink({ email, start, reduce }: { email: string; start: number | nu
   return (
     <motion.a
       href={`mailto:${email}`}
+      data-demo="email"
       variants={reduce ? fade : reveal}
       custom={at(T.email)}
       className={`group mt-8 inline-flex max-w-full items-center gap-3 font-display text-[clamp(1.25rem,0.9rem+1.6cqi,2.25rem)] font-semibold tracking-[-0.035em] transition-transform duration-150 active:scale-[0.99] ${RING}`}
@@ -523,6 +524,7 @@ function Newsletter({ title, body, placeholder, button, success, onSubscribe, re
               >
                 <input
                   id={id}
+                  data-demo="newsletter-email"
                   type="email"
                   inputMode="email"
                   autoComplete="email"
@@ -538,6 +540,7 @@ function Newsletter({ title, body, placeholder, button, success, onSubscribe, re
                 />
                 <button
                   type="submit"
+                  data-demo="newsletter-submit"
                   className="h-full shrink-0 rounded-full bg-(--fw-ink) px-5 text-[14px] font-semibold text-(--fw-on-ink) outline-none transition-transform duration-150 hover:-translate-y-px active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-(--fw-bg)"
                 >
                   {button}
@@ -633,12 +636,12 @@ function Wordmark({ text, clip, start, reduce }: { text: string; clip: number; s
 /* ------------------------------------------------------------------ */
 
 /** Demo: the footer at the foot of a quiet page, with a short run-up so its reveal plays as it arrives. */
-export default function FooterWordmarkDemo() {
+export default function FooterWordmarkDemo(overrides: Partial<FooterWordmarkProps> = {}) {
   return (
     <div className="flex min-h-dvh flex-col justify-end bg-black">
       {/* A short run-up of empty page, so the reveal plays as the footer arrives. */}
       <div aria-hidden className="h-28" />
-      <FooterWordmark />
+      <FooterWordmark {...overrides} />
     </div>
   );
 }

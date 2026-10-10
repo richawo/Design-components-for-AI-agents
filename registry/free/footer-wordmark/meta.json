@@ -90,5 +90,67 @@
       "description": "How much of the wordmark's cap height the bottom edge cuts off (0–0.3)."
     }
   ],
-  "added": "2026-10-07"
+  "added": "2026-10-07",
+  "demo": {
+    "steps": [
+      "wait:600",
+      "scroll:420",
+      "wait:400",
+      "click:@newsletter-email",
+      "type:ana@",
+      "type:studio",
+      "key:Enter",
+      "wait:450",
+      "type:.co",
+      "key:Enter",
+      "wait:1500"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "wordmark",
+      "label": "Wordmark",
+      "kind": "text",
+      "default": "saltmarsh",
+      "group": "Content"
+    },
+    {
+      "prop": "headline",
+      "label": "Closing line",
+      "kind": "text",
+      "default": "Got a brief, a hunch or a half-built thing?",
+      "group": "Content"
+    },
+    {
+      "prop": "email",
+      "label": "Email",
+      "kind": "text",
+      "default": "hello@saltmarsh.studio",
+      "group": "Content"
+    },
+    {
+      "prop": "city",
+      "label": "City",
+      "kind": "text",
+      "default": "London",
+      "group": "Content"
+    },
+    {
+      "prop": "clip",
+      "label": "Wordmark cut",
+      "kind": "slider",
+      "min": 0,
+      "max": 0.3,
+      "step": 0.01,
+      "default": 0.14,
+      "group": "Look"
+    },
+    {
+      "prop": "$replay",
+      "label": "Reveal",
+      "kind": "action",
+      "value": "Replay",
+      "group": "Look"
+    }
+  ]
 }
