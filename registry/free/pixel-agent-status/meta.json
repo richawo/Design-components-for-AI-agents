@@ -26,24 +26,24 @@
     {
       "name": "state",
       "type": "\"thinking\" | \"searching\" | \"writing\" | \"listening\" | \"syncing\" | \"done\" | \"error\" | \"idle\"",
-      "description": "Which glyph to animate."
+      "description": "Which glyph to animate. On the PixelAgentStatus gallery, holds the run row on this state."
     },
     {
       "name": "size",
       "type": "number",
       "default": "24",
-      "description": "Rendered size in px. Under 28px dots thicken and the glow drops so it stays crisp."
+      "description": "Rendered size in px. Under 28px dots thicken and the glow drops so it stays crisp. On the gallery it sets the tile glyphs (default 96)."
     },
     {
       "name": "color",
       "type": "string",
-      "description": "Override the state’s colour. Work-in-progress states default to currentColor, idle to #a1a1aa, done #34d399, error #f87171 (see STATE_COLORS)."
+      "description": "Override the state’s colour. Work-in-progress states default to currentColor, idle to #a1a1aa, done #34d399, error #f87171 (see STATE_COLORS). On the gallery it tints only the work-in-progress tiles."
     },
     {
       "name": "grid",
       "type": "boolean",
       "default": "true",
-      "description": "Show the faint unlit dots behind the glyph."
+      "description": "Show the faint unlit dots behind the glyph (also each gallery tile)."
     },
     {
       "name": "label",
@@ -67,5 +67,81 @@
       "description": "Classes for the svg element."
     }
   ],
-  "added": "2026-10-07"
+  "added": "2026-10-07",
+  "demo": {
+    "steps": [
+      "wait:900",
+      "click:@tile-thinking",
+      "wait:500",
+      "click:@tile-listening",
+      "wait:500",
+      "click:@tile-done",
+      "wait:500",
+      "click:@tile-error",
+      "wait:1000"
+    ],
+    "loop": false
+  },
+  "controls": [
+    {
+      "prop": "state",
+      "label": "Run row state",
+      "kind": "action",
+      "options": [
+        {
+          "value": "thinking",
+          "label": "Thinking"
+        },
+        {
+          "value": "writing",
+          "label": "Writing"
+        },
+        {
+          "value": "listening",
+          "label": "Listening"
+        },
+        {
+          "value": "syncing",
+          "label": "Syncing"
+        },
+        {
+          "value": "done",
+          "label": "Done"
+        },
+        {
+          "value": "error",
+          "label": "Error"
+        }
+      ]
+    },
+    {
+      "prop": "size",
+      "label": "Glyph size",
+      "kind": "slider",
+      "min": 40,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 96
+    },
+    {
+      "prop": "grid",
+      "label": "Dot grid",
+      "kind": "toggle",
+      "default": true
+    },
+    {
+      "prop": "color",
+      "label": "Glyph colour",
+      "kind": "color",
+      "default": "#f4f4f5",
+      "options": [
+        "#f4f4f5",
+        "#fbbf24",
+        "#7dd3fc",
+        "#c4b5fd",
+        "#fb923c"
+      ]
+    }
+  ]
 }

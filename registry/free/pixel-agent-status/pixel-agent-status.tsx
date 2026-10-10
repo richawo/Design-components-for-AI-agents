@@ -347,6 +347,18 @@ const STATES: { state: AgentState; note: string }[] = [
   { state: "idle", note: "Waiting for the next task" },
 ];
 
+/** What the run row says when a state is held (the other three have no step in the run). */
+const HELD_TEXT: Record<AgentState, string> = {
+  thinking: "Planning the migration",
+  searching: "Reading the Postgres 17 release notes",
+  writing: "Writing 0042_split_orders.sql",
+  listening: "Listening for the next instruction",
+  syncing: "Pushing branch orders-split",
+  done: "Migration ready for review",
+  error: "Tests failed: 2 need attention",
+  idle: "Waiting for the next task",
+};
+
 const RUN: { state: AgentState; text: string }[] = [
   { state: "thinking", text: "Planning the migration" },
   { state: "searching", text: "Reading the Postgres 17 release notes" },
@@ -376,23 +388,35 @@ function useAfter(play: boolean, delay: number, reduce: boolean) {
 }
 
 /** Steps through the demo run, starting once the gallery has arrived. */
-function useRunStep(start: boolean, reduce: boolean) {
+function useRunStep(start: boolean, reduce: boolean, held?: AgentState) {
   const [step, setStep] = useState(0);
   useEffect(() => {
-    if (!start || reduce) return;
+    if (!start || reduce || held) return;
     const id = window.setInterval(() => setStep((s) => (s + 1) % (RUN.length + 1)), MOTION.runStepMs);
     return () => window.clearInterval(id);
-  }, [start, reduce]);
-  return RUN[Math.min(step, RUN.length - 1)];
+  }, [start, reduce, held]);
+  return held ? { state: held, text: HELD_TEXT[held] } : RUN[Math.min(step, RUN.length - 1)];
 }
 
-export function PixelAgentStatus({ className = "" }: { className?: string }) {
+export type PixelAgentStatusProps = {
+  /** Hold the run row on this state instead of stepping through the demo run. */
+  state?: AgentState;
+  /** Glyph size in the gallery tiles, in px. */
+  size?: number;
+  /** Tint for the work-in-progress glyphs; done and error keep their outcome colours. */
+  color?: string;
+  /** Show the faint unlit dots behind each tile’s glyph. */
+  grid?: boolean;
+  className?: string;
+};
+
+export function PixelAgentStatus({ state: held, size = 96, color, grid = true, className = "" }: PixelAgentStatusProps) {
   const reduce = useReducedMotion() ?? false;
   const root = useRef<HTMLElement>(null);
   const play = useInView(root, { once: true, amount: 0.2 });
   const lastTile = MOTION.tilesAt + (STATES.length - 1) * MOTION.tileStep + MOTION.block;
   const settled = useAfter(play, lastTile, reduce);
-  const current = useRunStep(settled, reduce);
+  const current = useRunStep(settled, reduce, held);
   const pillLive = useAfter(play, MOTION.step * 3 + MOTION.powerOn, reduce);
 
   return (
@@ -414,6 +438,7 @@ export function PixelAgentStatus({ className = "" }: { className?: string }) {
         {/* Inline usage: the glyph at text size in a live run row. */}
         <motion.div
           {...enter(play, MOTION.step * 3, reduce)}
+          data-demo="run-row"
           className="flex min-w-0 items-center gap-3 overflow-hidden rounded-full border py-2 pl-2.5 pr-4 @2xl:max-w-[60%]"
           style={{ borderColor: PALETTE.line, background: PALETTE.pill }}
           aria-live="polite"
@@ -448,7 +473,7 @@ export function PixelAgentStatus({ className = "" }: { className?: string }) {
           const delay = MOTION.tilesAt + i * MOTION.tileStep;
           return (
             <motion.li key={state} {...enter(play, delay, reduce)} style={{ background: PALETTE.tile, boxShadow: `0 0 0 1px ${PALETTE.divider}` }}>
-              <Tile state={state} note={note} reduce={reduce} powerOnAt={delay + MOTION.powerOn} play={play} />
+              <Tile state={state} note={note} reduce={reduce} powerOnAt={delay + MOTION.powerOn} play={play} size={size} color={color} grid={grid} />
             </motion.li>
           );
         })}
@@ -458,7 +483,25 @@ export function PixelAgentStatus({ className = "" }: { className?: string }) {
 }
 
 /** A gallery tile: its glyph powers on as the tile lands; hover replays it, click copies its usage. */
-function Tile({ state, note, reduce, powerOnAt, play }: { state: AgentState; note: string; reduce: boolean; powerOnAt: number; play: boolean }) {
+function Tile({
+  state,
+  note,
+  reduce,
+  powerOnAt,
+  play,
+  size,
+  color,
+  grid,
+}: {
+  state: AgentState;
+  note: string;
+  reduce: boolean;
+  powerOnAt: number;
+  play: boolean;
+  size: number;
+  color?: string;
+  grid: boolean;
+}) {
   const [replay, setReplay] = useState(0);
   const [copied, setCopied] = useState(false);
   const on = useAfter(play, powerOnAt, reduce);
@@ -473,6 +516,7 @@ function Tile({ state, note, reduce, powerOnAt, play }: { state: AgentState; not
   return (
     <button
       type="button"
+      data-demo={`tile-${state}`}
       onPointerEnter={(e) => e.pointerType === "mouse" && setReplay((r) => r + 1)}
       onFocus={() => setReplay((r) => r + 1)}
       onClick={() => {
@@ -491,7 +535,7 @@ function Tile({ state, note, reduce, powerOnAt, play }: { state: AgentState; not
         style={{ background: `linear-gradient(90deg, transparent, ${STATE_COLORS[state]}, transparent)`, color: PALETTE.muted }}
       />
       <span className="flex aspect-[5/4] items-center justify-center transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]" style={{ color: PALETTE.ink }}>
-        <PixelStatus state={state} size={96} replay={replay} active={on} />
+        <PixelStatus state={state} size={size} grid={grid} color={STATE_COLORS[state] === "currentColor" ? color : undefined} replay={replay} active={on} />
       </span>
       <span className="mt-3 flex items-baseline justify-between gap-2">
         <span className="text-[14px] font-medium tracking-[-0.01em]">{LABELS[state]}</span>
@@ -519,11 +563,11 @@ function Tile({ state, note, reduce, powerOnAt, play }: { state: AgentState; not
 }
 
 /** Demo: the set on a dark stage. */
-export default function PixelAgentStatusDemo() {
+export default function PixelAgentStatusDemo({ state, size, color, grid }: Partial<PixelStatusProps> = {}) {
   return (
     <div className="flex min-h-dvh w-full items-center justify-center bg-black px-4 py-10 sm:px-10">
       <div className="w-full max-w-5xl">
-        <PixelAgentStatus />
+        <PixelAgentStatus state={state} size={size} color={color} grid={grid} />
       </div>
     </div>
   );
