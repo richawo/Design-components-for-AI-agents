@@ -17,22 +17,159 @@
     "large title",
     "action sheet"
   ],
-  "dependencies": ["expo-blur", "expo-linear-gradient", "react-native-svg"],
+  "dependencies": [
+    "expo-blur",
+    "expo-linear-gradient",
+    "react-native-svg"
+  ],
   "theme": "dark",
   "previewHeight": 940,
   "usage": "// Bare React Native apps: run `npx install-expo-modules` once for expo-blur and expo-linear-gradient.\nimport { MobileSettings } from \"@/components/design-for-ai/native/mobile-settings\";\n\n<MobileSettings\n  appName=\"Inkwell\"\n  accent=\"#7C9CFF\"\n  initial={{ paper: \"night\", textSize: 18 }}\n  onChange={(settings) => save(settings)}\n  onDeleteAll={moveEntriesToTrash}\n  onDone={navigation.goBack}\n/>",
   "props": [
-    { "name": "theme", "type": "\"dark\" | \"light\"", "default": "\"dark\"", "description": "Dark by default; the light variant is designed, not inverted." },
-    { "name": "accent", "type": "string", "default": "\"#34C77B\"", "description": "The one colour: switches, the slider, the selected time and Done." },
-    { "name": "appName", "type": "string", "default": "\"Folio\"", "description": "App name in the colophon." },
-    { "name": "version", "type": "string", "default": "\"4.2 (1180)\"", "description": "Version string in the colophon." },
-    { "name": "profile", "type": "SettingsProfile", "description": "Name, email, plan, renewal, entries, streak and word count." },
-    { "name": "initial", "type": "Partial<SettingsState>", "description": "Starting paper, text size, reminder, time, prompts, Face ID and sync values." },
-    { "name": "reminderTimes", "type": "string[]", "description": "Four reminder times shown when the row expands." },
-    { "name": "sample", "type": "{ date: string; text: string }", "description": "Journal excerpt shown in the reading preview." },
-    { "name": "onChange", "type": "(state: SettingsState) => void", "description": "Fired with the full state after any change." },
-    { "name": "onDeleteAll", "type": "() => void", "description": "Fired when deletion is confirmed in the sheet." },
-    { "name": "onDone", "type": "() => void", "description": "Fired by the Done button." }
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Dark by default; the light variant is designed, not inverted."
+    },
+    {
+      "name": "accent",
+      "type": "string",
+      "default": "\"#34C77B\"",
+      "description": "The one colour: switches, the slider, the selected time and Done."
+    },
+    {
+      "name": "appName",
+      "type": "string",
+      "default": "\"Folio\"",
+      "description": "App name in the colophon."
+    },
+    {
+      "name": "version",
+      "type": "string",
+      "default": "\"4.2 (1180)\"",
+      "description": "Version string in the colophon."
+    },
+    {
+      "name": "profile",
+      "type": "SettingsProfile",
+      "description": "Name, email, plan, renewal, entries, streak and word count."
+    },
+    {
+      "name": "initial",
+      "type": "Partial<SettingsState>",
+      "description": "Starting paper, text size, reminder, time, prompts, Face ID and sync values."
+    },
+    {
+      "name": "reminderTimes",
+      "type": "string[]",
+      "description": "Four reminder times shown when the row expands."
+    },
+    {
+      "name": "sample",
+      "type": "{ date: string; text: string }",
+      "description": "Journal excerpt shown in the reading preview."
+    },
+    {
+      "name": "paper",
+      "type": "\"white\" | \"sepia\" | \"night\"",
+      "description": "Moves the reading paper whenever the value changes (a host control, a test); tapping the segmented control still works."
+    },
+    {
+      "name": "textSize",
+      "type": "number",
+      "description": "Moves the text-size slider to this point size (14 to 22) whenever the value changes."
+    },
+    {
+      "name": "reminder",
+      "type": "boolean",
+      "description": "Switches the daily reminder on or off whenever the value changes; the reminder time row opens and closes with it."
+    },
+    {
+      "name": "onChange",
+      "type": "(state: SettingsState) => void",
+      "description": "Fired with the full state after any change."
+    },
+    {
+      "name": "onDeleteAll",
+      "type": "() => void",
+      "description": "Fired when deletion is confirmed in the sheet."
+    },
+    {
+      "name": "onDone",
+      "type": "() => void",
+      "description": "Fired by the Done button."
+    }
   ],
-  "added": "2026-10-07"
+  "added": "2026-10-07",
+  "demo": {
+    "steps": [
+      "wait:250",
+      "click:@paper-night",
+      "wait:150",
+      "hover:@size-slider:0.39,0.5",
+      "drag:0.74,0.58",
+      "click:@delete-all",
+      "wait:600",
+      "click:@delete-confirm",
+      "wait:1300"
+    ],
+    "loop": false
+  },
+  "controls": [
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark"
+    },
+    {
+      "prop": "accent",
+      "label": "Accent",
+      "kind": "color",
+      "default": "#34C77B",
+      "options": [
+        "#34C77B",
+        "#7C9CFF",
+        "#F5A524",
+        "#F5F5F5"
+      ]
+    },
+    {
+      "prop": "paper",
+      "label": "Paper",
+      "kind": "action",
+      "options": [
+        "white",
+        "sepia",
+        "night"
+      ]
+    },
+    {
+      "prop": "textSize",
+      "label": "Text size",
+      "kind": "slider",
+      "min": 14,
+      "max": 22,
+      "step": 1,
+      "unit": "pt",
+      "default": 17
+    },
+    {
+      "prop": "reminder",
+      "label": "Daily reminder",
+      "kind": "toggle",
+      "default": true
+    }
+  ]
 }

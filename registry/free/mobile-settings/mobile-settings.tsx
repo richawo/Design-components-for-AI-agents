@@ -87,6 +87,12 @@ export type MobileSettingsProps = {
   reminderTimes?: string[];
   /** Sample entry shown in the reading preview. */
   sample?: { date: string; text: string };
+  /** Moves the reading paper whenever the value changes; the segmented control stays live. */
+  paper?: Paper;
+  /** Moves the text-size slider whenever the value changes (14 to 22 pt). */
+  textSize?: number;
+  /** Switches the daily reminder on or off whenever the value changes. */
+  reminder?: boolean;
   onChange?: (state: SettingsState) => void;
   onDeleteAll?: () => void;
   onDone?: () => void;
@@ -97,6 +103,15 @@ export type MobileSettingsProps = {
 /* ------------------------------------------------------------------ */
 
 const DEFAULT_ACCENT = "#34C77B";
+
+/**
+ * React Native Web turns `dataSet` into the `data-demo` attribute the live demo
+ * script finds its targets by; native ignores it. Plain `data-*` props are dropped.
+ * The demo picks night paper (data-demo="paper-night"), drags the text-size
+ * slider (data-demo="size-slider") and deletes every entry
+ * (data-demo="delete-all", then data-demo="delete-confirm" in the sheet).
+ */
+const demoTarget = (name: string): { dataSet: { demo: string } } => ({ dataSet: { demo: name } });
 
 /**
  * One neutral family per theme. Every surface, tile and glyph is a grey;
@@ -908,9 +923,10 @@ type RowProps = {
   label?: string;
   role?: "button" | "switch";
   state?: { checked?: boolean; expanded?: boolean };
+  demo?: string;
 };
 
-function Row({ icon, title, tone = "default", subtitle, value, right, chevron, onPress, first, label, role = "button", state }: RowProps) {
+function Row({ icon, title, tone = "default", subtitle, value, right, chevron, onPress, first, label, role = "button", state, demo }: RowProps) {
   const reduce = useReduce();
   const { t, s, accent } = useTheme();
   const highlight = useRef(new Animated.Value(0)).current;
@@ -928,7 +944,7 @@ function Row({ icon, title, tone = "default", subtitle, value, right, chevron, o
   const toneColor = tone === "destructive" ? t.red : tone === "accent" ? accent : undefined;
 
   return (
-    <Pressable onPress={onPress} onPressIn={pressIn} onPressOut={pressOut} accessibilityRole={role} accessibilityLabel={label ?? title} accessibilityState={state} style={s.row}>
+    <Pressable onPress={onPress} onPressIn={pressIn} onPressOut={pressOut} accessibilityRole={role} accessibilityLabel={label ?? title} accessibilityState={state} style={s.row} {...(demo ? demoTarget(demo) : null)}>
       <Animated.View style={[s.rowHighlight, { opacity: highlight }]} />
       <Animated.View style={{ transform: [{ scale: tile }] }}>
         <Tile name={icon} glyphColor={toneColor} />
@@ -959,7 +975,7 @@ const TOGGLE_H = 31;
 const KNOB = 27;
 const KNOB_STRETCH = 6; // pt the knob grows toward the centre while held
 
-function Toggle({ value, onChange, label }: { value: boolean; onChange: (v: boolean) => void; label: string }) {
+function Toggle({ value, onChange, label, demo }: { value: boolean; onChange: (v: boolean) => void; label: string; demo?: string }) {
   const reduce = useReduce();
   const { s, accent } = useTheme();
   const on = useRef(new Animated.Value(value ? 1 : 0)).current;
@@ -1001,6 +1017,7 @@ function Toggle({ value, onChange, label }: { value: boolean; onChange: (v: bool
       accessibilityState={{ checked: value }}
       hitSlop={8}
       style={s.toggle}
+      {...(demo ? demoTarget(demo) : null)}
     >
       <View style={s.toggleTrack} />
       <Animated.View style={[s.toggleTrack, { backgroundColor: accent }, motion.fill]}>
@@ -1059,6 +1076,7 @@ function Segmented({ value, onChange }: { value: Paper; onChange: (p: Paper) => 
             accessibilityLabel={`${PAPERS[k].label} paper`}
             accessibilityState={{ selected: on }}
             style={s.segItem}
+            {...demoTarget(`paper-${k}`)}
           >
             <View style={[s.swatch, { backgroundColor: PAPERS[k].bg }]} />
             <Text style={[s.segLabel, on && s.segLabelOn]}>{PAPERS[k].label}</Text>
@@ -1226,6 +1244,17 @@ function SizeSlider({ value, onChange }: { value: number; onChange: (v: number) 
 
   const step = (d: number) => settle(Math.round(live.current) + d);
 
+  /* A value that arrives from outside (a host control) glides the thumb there. */
+  useEffect(() => {
+    if (!w || Math.round(live.current) === value) return;
+    live.current = value;
+    setShown(value);
+    entered.current = true;
+    if (reduce) x.setValue(toX(value));
+    else Animated.spring(x, { toValue: toX(value), stiffness: 420, damping: 30, useNativeDriver: false }).start();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]);
+
   const motion = useMemo(
     () => ({
       fill: { width: Animated.add(x, THUMB / 2) },
@@ -1252,6 +1281,7 @@ function SizeSlider({ value, onChange }: { value: number; onChange: (v: number) 
       accessibilityActions={[{ name: "increment" }, { name: "decrement" }]}
       onAccessibilityAction={(e) => step(e.nativeEvent.actionName === "increment" ? 1 : -1)}
       {...responder.panHandlers}
+      {...demoTarget("size-slider")}
     >
       {/* Step marks sit under the fill, so they show only on the part still to go. */}
       <View style={s.sliderTrack}>
@@ -1314,7 +1344,7 @@ function Expand({ open, children }: { open: boolean; children: ReactNode }) {
   );
 }
 
-function TimeChip({ label, selected, onPress }: { label: string; selected: boolean; onPress: () => void }) {
+function TimeChip({ label, selected, onPress, demo }: { label: string; selected: boolean; onPress: () => void; demo?: string }) {
   const reduce = useReduce();
   const { s, accent, onAccent } = useTheme();
   const on = useRef(new Animated.Value(selected ? 1 : 0)).current;
@@ -1333,6 +1363,7 @@ function TimeChip({ label, selected, onPress }: { label: string; selected: boole
       accessibilityLabel={label}
       accessibilityState={{ checked: selected }}
       style={s.flex}
+      {...(demo ? demoTarget(demo) : null)}
     >
       <Animated.View style={[s.chip, { transform: [{ scale: press.scale }] }]}>
         <Animated.View style={[s.chipOn, { backgroundColor: accent, boxShadow: `0 4px 12px ${withAlpha(accent, 0.3)}`, opacity: on }]} />
@@ -1565,7 +1596,7 @@ function ConfirmSheet({ open, entries, onCancel, onConfirm }: { open: boolean; e
           <Text style={s.sheetTitle}>Delete all {entries} entries?</Text>
           <Text style={s.sheetBody}>They wait in Recently Deleted on every device for 30 days, then they’re gone.</Text>
           <Animated.View style={[s.stretch, { transform: [{ scale: confirmScale }] }]}>
-            <SheetButton label={phase === "done" ? "Moved to Recently Deleted" : `Delete ${entries} entries`} onPress={confirm} destructive phase={phase} />
+            <SheetButton label={phase === "done" ? "Moved to Recently Deleted" : `Delete ${entries} entries`} onPress={confirm} destructive phase={phase} demo="delete-confirm" />
           </Animated.View>
           <SheetButton label="Cancel" onPress={onCancel} />
         </View>
@@ -1574,7 +1605,7 @@ function ConfirmSheet({ open, entries, onCancel, onConfirm }: { open: boolean; e
   );
 }
 
-function SheetButton({ label, onPress, destructive, phase = "idle" }: { label: string; onPress: () => void; destructive?: boolean; phase?: SheetPhase }) {
+function SheetButton({ label, onPress, destructive, phase = "idle", demo }: { label: string; onPress: () => void; destructive?: boolean; phase?: SheetPhase; demo?: string }) {
   const { t, s, accent, onAccent } = useTheme();
   const press = usePressScale(0.97);
   const fill = destructive ? (phase === "done" ? accent : t.red) : undefined;
@@ -1588,6 +1619,7 @@ function SheetButton({ label, onPress, destructive, phase = "idle" }: { label: s
       accessibilityLabel={phase === "working" ? "Deleting" : label}
       accessibilityState={{ busy: phase === "working", disabled: phase !== "idle" }}
       style={s.stretch}
+      {...(demo ? demoTarget(demo) : null)}
     >
       <Animated.View
         style={[
@@ -1664,6 +1696,9 @@ export function MobileSettings({
   initial,
   reminderTimes = DEFAULT_TIMES,
   sample = DEFAULT_SAMPLE,
+  paper,
+  textSize,
+  reminder,
   onChange,
   onDeleteAll,
   onDone,
@@ -1686,6 +1721,20 @@ export function MobileSettings({
       return next;
     });
   const toggle = (k: "reminder" | "weekdaysOnly" | "prompts" | "faceId" | "sync") => set(k, !st[k]);
+
+  /* Values pushed in from a host (a settings panel, a test) win when they change; taps in between still work. */
+  useEffect(() => {
+    if (paper !== undefined && paper !== st.paper) set("paper", paper);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [paper]);
+  useEffect(() => {
+    if (textSize !== undefined && Math.round(textSize) !== st.textSize) set("textSize", Math.round(Math.min(Math.max(textSize, MIN_SIZE), MAX_SIZE)));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [textSize]);
+  useEffect(() => {
+    if (reminder !== undefined && reminder !== st.reminder) set("reminder", reminder);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reminder]);
 
   /* scroll-linked chrome */
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -1765,11 +1814,12 @@ export function MobileSettings({
                   role="switch"
                   onPress={() => toggle("reminder")}
                   state={{ checked: st.reminder }}
-                  right={<Toggle value={st.reminder} onChange={(v) => set("reminder", v)} label="Daily reminder" />}
+                  right={<Toggle value={st.reminder} onChange={(v) => set("reminder", v)} label="Daily reminder" demo="reminder-toggle" />}
                 />
                 <Expand open={st.reminder}>
                   <Row
                     icon="clock"
+                    demo="reminder-time"
                     title="Reminder time"
                     label={`Reminder time, ${st.reminderTime}${st.weekdaysOnly ? ", weekdays" : ", every day"}`}
                     state={{ expanded: timeOpen }}
@@ -1780,8 +1830,8 @@ export function MobileSettings({
                   <Expand open={timeOpen}>
                     {/* Chips align with the text column; on narrow phones they take the full row. */}
                     <View style={[s.times, width < NARROW && s.timesNarrow]} accessibilityRole="radiogroup">
-                      {reminderTimes.map((time) => (
-                        <TimeChip key={time} label={time} selected={st.reminderTime === time} onPress={() => set("reminderTime", time)} />
+                      {reminderTimes.map((time, i) => (
+                        <TimeChip key={time} label={time} demo={`time-${i}`} selected={st.reminderTime === time} onPress={() => set("reminderTime", time)} />
                       ))}
                     </View>
                     <View style={s.inlineToggle}>
@@ -1835,6 +1885,7 @@ export function MobileSettings({
                   icon={deleted ? "restore" : "trash"}
                   tone={deleted ? "accent" : "destructive"}
                   first
+                  demo="delete-all"
                   title={deleted ? `Restore ${profile.entries} entries` : "Delete all entries"}
                   onPress={() => (deleted ? setDeleted(false) : setSheet(true))}
                 />
@@ -1865,8 +1916,8 @@ export function MobileSettings({
   );
 }
 
-export default function MobileSettingsDemo() {
-  return <MobileSettings />;
+export default function MobileSettingsDemo(overrides: Partial<MobileSettingsProps> = {}) {
+  return <MobileSettings {...overrides} />;
 }
 
 /* ------------------------------------------------------------------ */
