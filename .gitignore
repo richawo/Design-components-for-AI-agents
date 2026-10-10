@@ -11,6 +11,8 @@ registry/pro
 # Editorial source and translations belong to the private repository.
 content/blog
 content/i18n
+public/blog-images
+public/.well-known/design-build.json
 registry/__generated__
 test-results
 public/r

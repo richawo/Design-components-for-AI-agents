@@ -1,0 +1,10 @@
+export type SourcePost = { file: string; raw: string; content: string; data: Record<string, any> };
+export type BlogSource = { base: string; posts: SourcePost[]; config: Record<string, any> };
+export function keyOf(value: string): string;
+export function readJson(file: string, fallback?: object): Record<string, any>;
+export function loadBlogSource(root: string): BlogSource;
+export function inlineUnit(text: string): { key: string; opaque: string[] };
+export function postUnits(post: SourcePost): string[];
+export function corpusUnits(source: BlogSource): string[];
+export function stableSlugs(source: BlogSource, locale: import("../../lib/blog/locales.mjs").BlogLocale, strings: Record<string, string>, existing?: Record<string, string>): Record<string, string>;
+export function bundleBlog(source: BlogSource): { blog: Record<string, string>; localizedBlog: Record<string, Record<string, string>>; config: Record<string, any>; localizedConfig: Record<string, any>; ui: Record<string, Record<string, string>>; coverage: Record<string, { total: number; missing: number }> };
