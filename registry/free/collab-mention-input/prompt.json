@@ -1,0 +1,67 @@
+{
+  "component": "CollabMentionInput",
+  "intent": "A dark, monochrome note where @people and #channels become single tokens, and the suggestion list follows the caret rather than sitting under the field.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 with @container queries; colour tokens as CSS variables on the root; color-mix() for person tokens, the active avatar ring and the selection",
+    "animation": "motion/react: entrance blur, the list’s arrival, layoutId for the suggestion highlight. Inserted tokens use the Web Animations API so the contenteditable DOM can move without a React re-render",
+    "fonts": "font-sans (Geist) for the UI and the note, font-display (Geist) for the heading, font-mono (Geist Mono) for labels, channel tokens and the hint. font-serif is the optional document voice"
+  },
+  "layout": {
+    "card": "surface, 1px line, 14px radius, inset highlight + deep shadow, no overflow hidden, @container root, 560px max in the demo",
+    "header": "18px display title and a mono 11px uppercase workspace",
+    "well": "sunken, 12px radius, inset 20px (24px from @md). Contenteditable, min-height 9.5rem, muted body, ink tokens",
+    "tokens": "person: accent 16% fill, 28% inset, first name. channel: raised, mono, 1px line, #name. Both nowrap, 5px radius",
+    "list": "absolute at the caret, 8px below, or above when it would leave the viewport. Width min(272, well-16), left clamped inside the well. Mono label, then 44px rows: 28px avatar, 13px name, 11px mono meta",
+    "footer": "hairline and a mono 11px hint that changes while the list is open"
+  },
+  "typography": {
+    "title": "display 18px semibold, tracking -0.03em",
+    "workspace": "mono 11px uppercase, tracking 0.1em, faint",
+    "note": "15px sans, leading 1.65, muted; or 17px serif, leading 1.55",
+    "token": "inherits the note, medium, ink; channels are mono at 0.92em",
+    "list": "name 13px medium ink; meta mono 11px faint; label mono 10px uppercase tracking 0.12em",
+    "hint": "mono 11px faint"
+  },
+  "color": {
+    "approach": "greyscale; one accent on person tokens, the active person avatar and the text selection. Channels stay neutral",
+    "dark": { "surface": "#111113", "raised": "#17171a", "sunken": "#0c0c0e", "line": "#232327", "rule": "#1b1b1e", "avatar": "#1f1f23", "ink": "#f4f4f5", "muted": "#a1a1aa", "faint": "#8a8a93", "stage": "#0a0a0b (demo only)" },
+    "light": { "surface": "#ffffff", "raised": "#f6f6f7", "sunken": "#fafafa", "line": "#e4e4e7", "rule": "#efeff1", "avatar": "#f0f0f2", "ink": "#18181b", "muted": "#52525b", "faint": "#71717a", "stage": "#e9e9ec (demo only)" },
+    "accent": "#f5a524 by default. Person fill 16%, inset 28%, active ring 55%, selection 35%"
+  },
+  "motion": {
+    "trigger": "once at 20% in view",
+    "order": "card, header, well, hint: 12px rise, 8px blur, 0.5s, 60ms apart",
+    "list": "6px offset and 4px blur over 0.2s; exit 120ms ease-in; highlight on spring 500/40; row press 0.98",
+    "token": "inserted tokens rise 2px out of a 4px blur in 280ms. The initial paint does not",
+    "reducedMotion": "150ms fades only"
+  },
+  "responsive": {
+    "320": "the well stays inset, the list clamps to the well width, rows stay 44px and names truncate",
+    "390": "the seeded sentence wraps to two or three lines inside the 9.5rem well; the list still opens at the caret",
+    "768+": "the well’s side inset grows from 20px to 24px; the note keeps a comfortable measure inside the 560px card"
+  },
+  "accessibility": [
+    "textbox is multiline, named by the title, with aria-autocomplete, aria-expanded, aria-controls and aria-activedescendant",
+    "suggestions are options in a listbox labelled People or Channels",
+    "tokens expose Mention or Channel in their accessible name; avatars are aria-hidden",
+    "a polite live region announces the inserted person or channel; the hint is polite too",
+    "2px focus-visible outline in ink"
+  ],
+  "content": {
+    "product": "Ledgerline’s website, a Friday note on the v3 headline",
+    "people": "Mara Ilić, Jonas Weber, Priya Raman, Sam Okoye, Pablo Ferreira",
+    "channels": "legal, pricing, billing, launch, design",
+    "seed": "@mara, the v3 headline is ready for a last look in #legal before Friday.",
+    "demo": "clicks the empty end of the note, types @pr, Enter inserts @Priya, then types “ can sign off”"
+  },
+  "avoid": [
+    "a comment thread with authors, replies and resolve",
+    "a suggestion list pinned to the top or bottom of the field",
+    "accent on channel tokens, or a different hue per person",
+    "tokens that wrap or that take two backspaces to delete",
+    "repainting the contenteditable on every keystroke",
+    "accent-coloured body text"
+  ]
+}
