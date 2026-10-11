@@ -45,6 +45,17 @@ describe.skipIf(!allPosts().length)("published multilingual blog SEO", () => {
       if (language.code !== "en") expect(entries.every((entry) => entry.path.startsWith(`/${language.code}/blog`))).toBe(true);
     }
   });
+  it("keeps translated hub and category search previews concise", () => {
+    for (const language of blogLocales()) {
+      for (const category of [undefined, ...Object.keys(hubInfo({ locale: language.code })!.config.categories)]) {
+        const info = hubInfo({ locale: language.code, category });
+        if (!info) continue;
+        const metadata = hubMetadata({ locale: language.code, category });
+        expect((metadata.title as { absolute: string }).absolute.length).toBeLessThanOrEqual(70);
+        expect(metadata.description!.length).toBeLessThanOrEqual(170);
+      }
+    }
+  });
   it("adds procedural markup only for visible steps and keeps their canonical anchors", () => {
     const post = allPosts()[0];
     const steps = [{ name: "Choose a file", text: "Choose the project file.", id: "choose-a-file" }, { name: "Check the result", text: "Check the rendered result.", id: "check-the-result" }];

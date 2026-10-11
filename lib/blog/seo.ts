@@ -20,8 +20,8 @@ export function hubInfo(options: HubOptions = {}) {
   const all = allPosts(locale).filter((post) => !category || post.categoryKey === category);
   const pages = Math.ceil(all.length / PAGE_SIZE);
   if (!pages || page > pages) return null;
-  const title = (topic ? `${topic.name}: ${config.seoTitle ?? config.title}` : config.seoTitle ?? config.title) + (page > 1 ? ` (${blogText("Page", locale)} ${page})` : "");
-  return { locale, page, category, config, topic, all, pages, posts: all.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE), title, description: topic?.description ?? config.description, path: hubPath(options), indexable: !category || all.filter((post) => !post.noindex).length >= MIN_INDEXED_TOPIC_POSTS, lastModified: all.map((post) => post.dateModified).sort().at(-1) };
+  const title = (topic ? topic.seoTitle ?? `${topic.name}: ${config.seoTitle ?? config.title}` : config.seoTitle ?? config.title) + (page > 1 ? ` (${blogText("Page", locale)} ${page})` : "");
+  return { locale, page, category, config, topic, all, pages, posts: all.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE), title, description: topic?.seoDescription ?? topic?.description ?? config.seoDescription ?? config.description, path: hubPath(options), indexable: !category || all.filter((post) => !post.noindex).length >= MIN_INDEXED_TOPIC_POSTS, lastModified: all.map((post) => post.dateModified).sort().at(-1) };
 }
 
 export function blogAlternates(options: HubOptions & { sourceSlug?: string } = {}) {
