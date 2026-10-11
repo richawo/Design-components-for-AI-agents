@@ -6,6 +6,7 @@ import { highlight } from "./highlight";
 // (the Markdown twins) work on Cloudflare Workers, which have no filesystem.
 // Edited a post in dev? Re-run `npm run registry`.
 import { BLOG_DATA, blogFiles, blogConfig, blogPath } from "./blog/runtime";
+import { imageDimensions } from "./blog/image-markup";
 
 /**
  * Markdown content for the blog and docs. Mirrors the yaps.ai blog setup:
@@ -34,6 +35,7 @@ export type PostMeta = {
   categoryKey: string;
   image: string;
   imageAlt: string;
+  editorialCover: boolean;
   noindex: boolean;
 };
 
@@ -82,6 +84,7 @@ async function render(markdown: string, locale = "en") {
     },
   });
   let html = await marked.parse(markdown);
+  html = imageDimensions(html, BLOG_DATA.blogImages);
   const langs = new Set(["tsx", "ts", "json", "bash", "markdown", "css"]);
   for (let i = 0; i < codeBlocks.length; i++) {
     const { lang, text } = codeBlocks[i];
@@ -152,6 +155,7 @@ export function allPosts(locale = "en"): PostMeta[] {
         categoryKey: data.categoryKey ?? Object.entries(blogConfig("en")?.categories ?? {}).find(([, category]) => category.name === data.category)?.[0] ?? "guides",
         image: data.heroImage ?? `/blog-images/${data.sourceSlug ?? data.slug}.png`,
         imageAlt: data.heroImageAlt ?? data.title,
+        editorialCover: Boolean(data.heroAsset),
         noindex: data.noindex === true,
       } satisfies PostMeta;
     })

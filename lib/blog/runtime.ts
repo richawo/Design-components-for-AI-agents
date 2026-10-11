@@ -13,6 +13,7 @@ export type BlogBundle = {
   localizedBlog?: Record<string, Record<string, string>>;
   config?: BlogConfig; localizedConfig?: Record<string, BlogConfig>;
   ui?: Record<string, Record<string, string>>;
+  blogImages?: Record<string, { width: number; height: number }>;
 };
 export const BLOG_DATA = bundled as unknown as BlogBundle;
 export const blogFiles = (locale = "en") => locale === "en" ? BLOG_DATA.blog : BLOG_DATA.localizedBlog?.[locale] ?? {};

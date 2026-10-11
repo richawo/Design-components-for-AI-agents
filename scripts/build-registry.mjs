@@ -382,6 +382,7 @@ const mdFiles = (dir) => {
 };
 const editorial = loadBlogSource(root);
 const editorialBundle = bundleBlog(editorial);
+let blogImages = {};
 if (editorial.posts.length) {
   const audit = auditBlog(editorial);
   for (const [locale, coverage] of Object.entries(editorialBundle.coverage)) {
@@ -389,10 +390,10 @@ if (editorial.posts.length) {
   }
   if (STRICT && audit.errors.length) throw new Error(`Blog audit failed:\n${audit.errors.join("\n")}`);
   for (const error of audit.errors) console.warn(`blog: ${error}`);
-  await buildBlogImages(root, editorial);
+  blogImages = await buildBlogImages(root, editorial);
   console.log(`blog: ${editorial.posts.length} articles in ${Object.keys(editorialBundle.localizedBlog).length + 1} complete languages`);
 }
-writeJson(path.join(outDir, "content.json"), { ...editorialBundle, docs: mdFiles("docs") });
+writeJson(path.join(outDir, "content.json"), { ...editorialBundle, blogImages, docs: mdFiles("docs") });
 writeJson(path.join(root, "public", ".well-known", "design-build.json"), {
   publicCommit: execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim(),
   privateContentCommit: editorial.posts.length && fs.existsSync(path.join(root, "registry", "pro", ".git"))
