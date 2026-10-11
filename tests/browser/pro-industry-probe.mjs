@@ -128,6 +128,23 @@ try {
     .fill("Product,SKU,Unit price\nOne,SAME,10\nTwo,SAME,20");
   await page.getByRole("button", { name: "Read CSV" }).click();
   assert.match(await page.getByRole("alert").innerText(), /SKU must be unique/);
+  await fixture("commerce-variant-stock", `window.saves=[];window.attempt=0;createRoot(document.getElementById('root')).render(<Subject.VariantStock onSave={async rows=>{window.saves.push(rows);if(window.attempt++===0)throw Error('offline')}}/>);`);
+  const stock = page.getByRole("spinbutton", { name: "Ink / XL stock", exact: true });
+  await stock.fill("12");
+  await page.getByRole("button", { name: "Save stock" }).click();
+  await page.waitForTimeout(100);
+  assert.match(await page.getByRole("status").innerText(), /could not be saved/);
+  assert.equal(await stock.inputValue(), "12");
+  await page.getByRole("button", { name: "Save stock" }).click();
+  await page.waitForTimeout(100);
+  assert.match(await page.getByRole("status").innerText(), /levels saved/);
+  assert.equal(await page.evaluate(() => window.saves[1][0].stock.xl), 12);
+  assert.equal(await page.getByRole("button", { name: "Save stock" }).isDisabled(), true);
+  await stock.fill("1.5");
+  assert.equal(await page.getByRole("button", { name: "Save stock" }).isDisabled(), true);
+  assert.match(await page.getByRole("alert").innerText(), /whole number/);
+  await page.getByRole("button", { name: "Reset", exact: true }).click();
+  assert.equal(await stock.inputValue(), "12", "reset returns to the last acknowledged save");
   assert.deepEqual(errors, []);
   console.log("Pro industry workflows: behavioral regression checks passed.");
 } finally {

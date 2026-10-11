@@ -8875,6 +8875,106 @@
     ]
   },
   {
+    "slug": "commerce-variant-stock",
+    "name": "Fashion Variant Stockroom",
+    "tier": "pro",
+    "platform": "web",
+    "category": "commerce",
+    "description": "A colour-by-size inventory matrix with editable stock, low-stock signals, live totals and an awaited save action. Designed for fashion operations.",
+    "tags": [
+      "commerce",
+      "workflow",
+      "interactive",
+      "responsive",
+      "keyboard",
+      "fashion",
+      "e-commerce",
+      "inventory",
+      "sizes"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "light",
+    "previewHeight": 780,
+    "usage": "import { VariantStock } from \"@/components/design-for-ai/commerce-variant-stock\";\n\n<VariantStock />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Product or collection heading."
+      },
+      {
+        "name": "collection",
+        "type": "string",
+        "description": "Collection identifier above the heading."
+      },
+      {
+        "name": "sizes",
+        "type": "StockSize[]",
+        "description": "Size column IDs and display labels."
+      },
+      {
+        "name": "defaultVariants",
+        "type": "StockVariant[]",
+        "description": "Initial colour variants with swatches, SKU labels and integer stock by size. Remount for a different product."
+      },
+      {
+        "name": "lowStockThreshold",
+        "type": "number",
+        "default": "4",
+        "description": "Nonnegative stock level at which a variant needs attention."
+      },
+      {
+        "name": "onSave",
+        "type": "(variants: StockVariant[]) => void | Promise<void>",
+        "description": "Awaited persistence callback; errors preserve draft cells. The component updates its saved baseline only after success."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"light\"",
+        "description": "Surface and ink palette; the preview stage follows it."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:500",
+        "click:@stock-0-4",
+        "key:End",
+        "key:Backspace",
+        "type:12",
+        "wait:550",
+        "click:@save-stock",
+        "wait:1200"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "light"
+      },
+      {
+        "prop": "lowStockThreshold",
+        "label": "Low stock",
+        "kind": "slider",
+        "min": 0,
+        "max": 12,
+        "step": 1,
+        "default": 4
+      }
+    ]
+  },
+  {
     "slug": "content-release-notes",
     "name": "Editorial Release Notes",
     "tier": "pro",
