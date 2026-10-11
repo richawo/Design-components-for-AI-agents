@@ -14373,6 +14373,89 @@
     "added": "2026-10-10"
   },
   {
+    "slug": "fashion-collection-line-plan",
+    "name": "Collection Line Plan",
+    "tier": "pro",
+    "platform": "web",
+    "category": "commerce",
+    "description": "Edit style counts and target costs within a collection budget. A considered, responsive fashion workspace with typed integration points.",
+    "tags": [
+      "fashion",
+      "workflow",
+      "responsive",
+      "keyboard",
+      "commerce"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "light",
+    "previewHeight": 960,
+    "usage": "import { CollectionLinePlan } from \"@/components/design-for-ai/fashion-collection-line-plan\";\n\n<CollectionLinePlan />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Main heading."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "description": "Supporting context."
+      },
+      {
+        "name": "categories",
+        "type": "LinePlanCategory[]",
+        "description": "Unique category IDs with initial style counts, units per style and two-decimal unit cost/retail. Drafts are seeded on mount."
+      },
+      {
+        "name": "budgetMinor",
+        "type": "number",
+        "description": "Non-negative safe integer collection cost budget in two-decimal minor units."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "description": "ISO currency for costs, retail and the collection budget."
+      },
+      {
+        "name": "onSave",
+        "type": "(plan:CollectionPlan)=>void|Promise<void>",
+        "description": "Persist a validated collection plan within budget."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"light\"",
+        "description": "Surface, border and ink palette."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@category-1",
+        "click:@add-style",
+        "wait:650",
+        "click:@save",
+        "wait:1100"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "light"
+      }
+    ]
+  },
+  {
     "slug": "fashion-merchandising-dashboard",
     "name": "Merchandising Dashboard",
     "tier": "pro",
