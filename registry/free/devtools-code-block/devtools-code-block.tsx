@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useMemo, useState, type CSSProperties } from "react";
+import { useEffect, useId, useMemo, useRef, useState, type CSSProperties } from "react";
 import { AnimatePresence, motion, useReducedMotion, type Variants } from "motion/react";
 
 /* ------------------------------------------------------------------ */
@@ -11,9 +11,22 @@ type Kind = "k" | "n" | "s" | "c" | "d" | "t" | "p";
 type Tok = { kind: Kind; text: string };
 type Mark = "+" | "-" | " ";
 
+export type CodeFile = {
+  id: string;
+  name: string;
+  lines: string[];
+  highlight?: number[];
+  diff?: { mark: "+" | "-" | " "; text: string }[];
+};
+
 export type CodeBlockProps = {
+  /** Files to display. Omit for the example snippets; an empty array shows an empty state. */
+  files?: CodeFile[];
+  onFileChange?: (id: string) => void;
+  emptyMessage?: string;
+  copyErrorMessage?: string;
   /** Which file is open. The tabs change it too. */
-  file?: "verify" | "handler";
+  file?: string;
   /** Show the file as a diff. */
   diff?: boolean;
   theme?: "dark" | "light";
@@ -54,7 +67,7 @@ const PALETTE = {
     faint: "#6f6f72",
     line: "rgba(17,17,19,0.09)",
     lineStrong: "rgba(17,17,19,0.18)",
-    ok: "#23884a",
+    ok: "#1d7a40",
     err: "#c2353b",
     shadow: "inset 0 0 0 1px rgba(17,17,19,0.08), 0 1px 2px rgba(17,17,19,0.05), 0 40px 80px -40px rgba(17,17,19,0.25)",
   },
@@ -151,7 +164,7 @@ const FILES = {
   handler: { name: "handler.ts", lines: HANDLER, highlight: [6] as number[], diff: HANDLER_DIFF },
 } as const;
 
-type FileId = keyof typeof FILES;
+const DEMO_FILES: CodeFile[] = Object.entries(FILES).map(([id, file]) => ({ id, ...file }));
 
 function lex(line: string): Tok[] {
   const out: Tok[] = [];
@@ -200,13 +213,24 @@ function lex(line: string): Tok[] {
 /* Component                                                           */
 /* ------------------------------------------------------------------ */
 
-export function CodeBlock({ file: fileProp = "verify", diff: diffProp = false, theme = "dark", accent = DEFAULT_ACCENT, className = "" }: CodeBlockProps) {
+export function CodeBlock(props: CodeBlockProps) {
+  if (props.files?.length === 0) {
+    const p = PALETTE[props.theme ?? "dark"];
+    return <section className={`w-full rounded-[20px] p-6 font-sans ${props.className ?? ""}`} style={{ background: p.surface, color: p.muted }}><p role="status">{props.emptyMessage ?? "No files to show."}</p></section>;
+  }
+  return <CodeBlockWithFiles {...props} />;
+}
+
+function CodeBlockWithFiles({ files = DEMO_FILES, file: fileProp = "verify", onFileChange, copyErrorMessage = "Couldn't copy. Select the code and copy it manually.", diff: diffProp = false, theme = "dark", accent = DEFAULT_ACCENT, className = "" }: CodeBlockProps) {
   const reduce = !!useReducedMotion();
   const uid = useId();
   const reveal = useMemo(() => entrance(reduce), [reduce]);
-  const [file, setFile] = useState<FileId>(fileProp);
+  const [file, setFile] = useState(fileProp);
   const [diff, setDiff] = useState(diffProp);
   const [copied, setCopied] = useState(false);
+  const [copying, setCopying] = useState(false);
+  const [copyError, setCopyError] = useState(false);
+  const copyRun = useRef(0);
 
   useEffect(() => setFile(fileProp), [fileProp]);
   useEffect(() => setDiff(diffProp), [diffProp]);
@@ -216,13 +240,43 @@ export function CodeBlock({ file: fileProp = "verify", diff: diffProp = false, t
     return () => window.clearTimeout(id);
   }, [copied]);
 
-  const current = FILES[file] ?? FILES.verify;
-  const rows = diff ? current.diff.map((row) => ({ mark: row.mark, text: row.text, hl: false })) : current.lines.map((text, index) => ({ mark: " " as Mark, text, hl: current.highlight.includes(index + 1) }));
-  const source = (diff ? current.diff.filter((row) => row.mark !== "-").map((row) => row.text) : current.lines).join("\n");
+  const current = files.find((entry) => entry.id === file) ?? files[0];
+  const activeIndex = files.indexOf(current);
+  const changedRows = current.diff ?? current.lines.map((text) => ({ mark: " " as Mark, text }));
+  const rows = diff ? changedRows.map((row) => ({ mark: row.mark, text: row.text, hl: false })) : current.lines.map((text, index) => ({ mark: " " as Mark, text, hl: (current.highlight ?? []).includes(index + 1) }));
+  const source = (diff ? changedRows.filter((row) => row.mark !== "-").map((row) => row.text) : current.lines).join("\n");
 
-  const copy = () => {
-    setCopied(true);
-    navigator.clipboard?.writeText(source).catch(() => undefined);
+  useEffect(() => {
+    copyRun.current++;
+    setCopied(false);
+    setCopying(false);
+    setCopyError(false);
+    return () => { copyRun.current++; };
+  }, [source]);
+
+  const copy = async () => {
+    const run = ++copyRun.current;
+    setCopied(false);
+    setCopyError(false);
+    setCopying(true);
+    try {
+      if (!navigator.clipboard?.writeText) throw new Error("Clipboard unavailable");
+      await navigator.clipboard.writeText(source);
+      if (run === copyRun.current) setCopied(true);
+    } catch {
+      if (run === copyRun.current) setCopyError(true);
+    } finally {
+      if (run === copyRun.current) setCopying(false);
+    }
+  };
+
+  const chooseFile = (id: string) => {
+    copyRun.current++;
+    setFile(id);
+    setCopied(false);
+    setCopyError(false);
+    setCopying(false);
+    onFileChange?.(id);
   };
 
   return (
@@ -236,23 +290,32 @@ export function CodeBlock({ file: fileProp = "verify", diff: diffProp = false, t
       custom={0}
     >
       <motion.div variants={reveal} custom={1} className="flex flex-wrap items-end justify-between gap-x-4 gap-y-2 px-5 pt-4 @xl:px-6">
-        <div role="tablist" aria-label="Files" className="flex gap-4" style={{ boxShadow: "inset 0 -1px 0 var(--cb-line)" }}>
-          {(Object.keys(FILES) as FileId[]).map((id) => {
-            const active = id === file;
+        <div role="tablist" aria-label="Files" className="flex min-w-0 max-w-full gap-4 overflow-x-auto" style={{ boxShadow: "inset 0 -1px 0 var(--cb-line)" }}>
+          {files.map((entry, index) => {
+            const id = entry.id;
+            const active = id === current.id;
             return (
               <button
                 key={id}
                 type="button"
                 role="tab"
+                id={`${uid}-file-${index}`}
+                aria-controls={`${uid}-code`}
                 aria-selected={active}
-                data-demo={id === "handler" ? "tab-handler" : undefined}
-                onClick={() => {
-                  setFile(id);
-                  setCopied(false);
+                tabIndex={active ? 0 : -1}
+                onKeyDown={(event) => {
+                  const delta = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
+                  const next = event.key === "Home" ? 0 : event.key === "End" ? files.length - 1 : delta ? (index + delta + files.length) % files.length : -1;
+                  if (next < 0) return;
+                  event.preventDefault();
+                  chooseFile(files[next].id);
+                  (event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>('[role="tab"]')[next])?.focus();
                 }}
-                className={`relative inline-flex h-11 cursor-pointer items-center font-mono text-[12.5px] transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--cb-ink) @lg:h-9 ${active ? "text-(--cb-ink)" : "text-(--cb-muted) hover:text-(--cb-ink)"}`}
+                data-demo={id === "handler" ? "tab-handler" : undefined}
+                onClick={() => chooseFile(id)}
+                className={`relative inline-flex h-11 shrink-0 cursor-pointer items-center font-mono text-[12.5px] transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--cb-ink) @lg:h-9 ${active ? "text-(--cb-ink)" : "text-(--cb-muted) hover:text-(--cb-ink)"}`}
               >
-                {FILES[id].name}
+                {entry.name}
                 {active && <motion.span layoutId={`${uid}-tab`} transition={reduce ? { duration: 0 } : UI_SPRING} className="absolute inset-x-0 -bottom-px h-[1.5px] rounded-full" style={{ background: "var(--cb-accent-ink)" }} />}
               </button>
             );
@@ -276,6 +339,8 @@ export function CodeBlock({ file: fileProp = "verify", diff: diffProp = false, t
             type="button"
             data-demo="copy"
             onClick={copy}
+            disabled={copying}
+            aria-label={copied ? "Copied" : copying ? "Copying" : "Copy code"}
             className="inline-flex h-11 w-[4.75rem] cursor-pointer items-center justify-center rounded-[9px] text-[13px] font-medium transition-transform duration-100 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--cb-ink) @lg:h-8"
             style={{ background: "var(--cb-ink)", color: "var(--cb-surface)" }}
           >
@@ -288,7 +353,7 @@ export function CodeBlock({ file: fileProp = "verify", diff: diffProp = false, t
                 </motion.span>
               ) : (
                 <motion.span key="label" exit={{ opacity: 0 }} transition={{ duration: 0.1 }}>
-                  Copy
+                  {copying ? "Copying" : "Copy"}
                 </motion.span>
               )}
             </AnimatePresence>
@@ -297,8 +362,10 @@ export function CodeBlock({ file: fileProp = "verify", diff: diffProp = false, t
       </motion.div>
 
       <motion.div variants={reveal} custom={2} className="px-5 pt-3 pb-5 @xl:px-6 @xl:pb-6">
-        <div className="overflow-x-auto rounded-[14px]" style={{ background: "var(--cb-well)", boxShadow: "inset 0 0 0 1px var(--cb-line)" }}>
-          <div className="w-max min-w-full py-2" role="region" aria-label={diff ? `${current.name} diff` : current.name}>
+        {copyError && <p role="alert" className="mb-3 text-[13px] text-(--cb-err)">{copyErrorMessage}</p>}
+        <span role="status" className="sr-only">{copied ? "Code copied to clipboard." : ""}</span>
+        <div id={`${uid}-code`} role="tabpanel" aria-labelledby={`${uid}-file-${activeIndex}`} tabIndex={0} className="overflow-x-auto rounded-[14px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--cb-ink)" style={{ background: "var(--cb-well)", boxShadow: "inset 0 0 0 1px var(--cb-line)" }}>
+          <div className="w-max min-w-full py-2">
             <AnimatePresence mode="wait" initial={false}>
               <motion.div key={`${file}-${diff ? "diff" : "src"}`} initial={reduce ? { opacity: 0 } : { opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={reduce ? { opacity: 0 } : { opacity: 0 }} transition={{ duration: reduce ? 0.12 : 0.22, ease: EASE }}>
                 {rows.map((row, index) => (

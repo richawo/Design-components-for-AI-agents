@@ -23,8 +23,24 @@
     "actions": "Geist 13px"
   },
   "color": {
-    "dark": { "surface": "#0d0d0f", "well": "#09090a", "ink": "#ededef", "muted": "#98989a", "faint": "#7d7d80", "ok": "#5fc284", "err": "#f07c80" },
-    "light": { "surface": "#ffffff", "well": "#fafafa", "ink": "#17171a", "muted": "#5d5d5f", "faint": "#6f6f72", "ok": "#23884a", "err": "#c2353b" },
+    "dark": {
+      "surface": "#0d0d0f",
+      "well": "#09090a",
+      "ink": "#ededef",
+      "muted": "#98989a",
+      "faint": "#7d7d80",
+      "ok": "#5fc284",
+      "err": "#f07c80"
+    },
+    "light": {
+      "surface": "#ffffff",
+      "well": "#fafafa",
+      "ink": "#17171a",
+      "muted": "#5d5d5f",
+      "faint": "#6f6f72",
+      "ok": "#23884a",
+      "err": "#c2353b"
+    },
     "accent": "#7cc4ff by default; the tab rule, the highlight edge, function names and numbers",
     "syntax": "keywords and punctuation are muted, comments are faint, strings and plain identifiers are ink. No second hue."
   },
@@ -36,7 +52,7 @@
     "reducedMotion": "opacity only, 150ms or less; no blur, rise or spring"
   },
   "responsive": {
-    "container": "tabs and buttons are 44px tall below @lg and 32–36px from @lg",
+    "container": "tabs and buttons are 44px tall below @lg and 32\u201336px from @lg",
     "code": "long lines stay intact and scroll inside the well; the card does not widen the page",
     "overflow": "the gutter, the highlight and the accent bar are one continuous row"
   },
@@ -58,5 +74,10 @@
     "a floating copy toast",
     "letting the copy button change width when the check appears",
     "scrolling the page sideways"
-  ]
+  ],
+  "productionBehavior": {
+    "data": "Accept typed CodeFile[] with source lines, optional highlight indices and optional diff lines. Empty arrays display emptyMessage. If the selected file disappears, use the first available file.",
+    "copy": "Show success only after clipboard.writeText resolves. Missing or rejected clipboard access shows copyErrorMessage in role=alert; keep the code selectable. Disable while pending, invalidate stale completions on content changes or unmount.",
+    "keyboard": "Use a roving tabindex for file tabs; arrows, Home and End select and focus. Link each tab to the code tabpanel. The scrollable tabpanel is focusable so arrow keys can scroll code."
+  }
 }

@@ -33,3 +33,8 @@ Build a code block in React 19 + Tailwind CSS v4 (with `@container` queries) + `
 - Don't fill a highlighted line with a solid band. The edge is 2px and the wash is 8%.
 - Don't show a toast for copy. The button itself changes, and it does not change width.
 - Don't let a long line widen the page, and don't wrap it. It scrolls inside the well, and the gutter stays one cell with that row.
+
+**Production behavior**
+- Accept `files: CodeFile[]`, with stable id, filename, source lines, optional highlight indices and optional diff lines. `[]` displays `emptyMessage`. Missing selection falls back to the first available file.
+- Filename tabs use roving focus with Left, Right, Home and End. Connect tabs to the focusable, horizontally scrollable code tabpanel.
+- Copy only shows its success check after the clipboard promise resolves. Disable while pending. Show `copyErrorMessage` as an alert if permission is denied or the clipboard is unavailable. Ignore stale completions after code changes or unmount.
