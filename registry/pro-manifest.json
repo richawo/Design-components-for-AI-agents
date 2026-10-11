@@ -8203,6 +8203,104 @@
     ]
   },
   {
+    "slug": "commerce-product-configurator",
+    "name": "Sculpted Product Configurator",
+    "tier": "pro",
+    "platform": "web",
+    "category": "commerce",
+    "description": "A product configurator with an original lamp drawn in CSS, finish and size selection, transparent pricing and an awaited add-to-bag callback.",
+    "tags": [
+      "commerce",
+      "commerce",
+      "product",
+      "configurator",
+      "responsive",
+      "keyboard"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 800,
+    "usage": "import { ProductConfigurator } from \"@/components/design-for-ai/commerce-product-configurator\";\n\n<ProductConfigurator />",
+    "props": [
+      {
+        "name": "name",
+        "type": "string",
+        "default": "\"Arc task lamp\"",
+        "description": "Product title."
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "default": "lamp description",
+        "description": "Product copy."
+      },
+      {
+        "name": "basePrice",
+        "type": "number",
+        "default": "145",
+        "description": "Base price in major currency units."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"GBP\"",
+        "description": "Intl currency code; invalid codes fall back to a plain amount and code."
+      },
+      {
+        "name": "finishes",
+        "type": "ProductFinish[]",
+        "default": "Chalk, Ink, Clay",
+        "description": "Named six-digit hex finishes and price differences."
+      },
+      {
+        "name": "sizes",
+        "type": "ProductSize[]",
+        "default": "Desk, Tall",
+        "description": "Size IDs, labels and price differences. The tall ID scales the demo illustration."
+      },
+      {
+        "name": "onAdd",
+        "type": "(configuration: ProductConfiguration) => void | Promise<void>",
+        "default": "undefined",
+        "description": "Awaited cart action; missing options, invalid prices or absent callbacks disable it. The demo simulates a cart response."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface and ink palette; the demo stage follows the chosen theme."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:500",
+        "click:@finish-2",
+        "wait:400",
+        "click:@size-1",
+        "wait:400",
+        "click:@add-product",
+        "wait:1100"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "dashboard-kpi-cards",
     "name": "KPI Cards",
     "tier": "pro",
