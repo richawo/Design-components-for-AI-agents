@@ -449,7 +449,7 @@ function ReasonPopover({ author, reasons, reduce, onSend, onClose }: ReasonPopov
               aria-pressed={on}
               data-demo={`reason-${r.id}`}
               onClick={() => toggle(r.id)}
-              className={`inline-flex h-8 items-center rounded-full border px-3 text-[12.5px] transition-[background-color,border-color,color,translate] duration-150 active:translate-y-px [@media(pointer:coarse)]:h-10 ${focusRing} ${
+              className={`inline-flex h-8 items-center rounded-full border px-3 text-[12.5px] transition-[background-color,border-color,color,translate] duration-150 active:translate-y-px [@media(pointer:coarse)]:h-11 ${focusRing} ${
                 on
                   ? "border-[color-mix(in_srgb,var(--ma-accent)_55%,transparent)] bg-[color-mix(in_srgb,var(--ma-accent)_14%,transparent)] text-[var(--ma-ink)]"
                   : "border-[var(--ma-pop-line)] bg-[var(--ma-chip)] text-[var(--ma-muted)] hover:text-[var(--ma-ink)]"
@@ -788,7 +788,7 @@ export function AiMessageActions({
         transition={{ duration: reduce ? 0.15 : 0.4, ease: EASE_OUT, delay: reduce ? 0 : 0.28 }}
         className="relative mt-3"
       >
-        <div role="toolbar" aria-label="Message actions" onKeyDown={onToolbarKey} className={`-ml-1.5 flex min-h-8 items-center ${s.gap} [@media(pointer:coarse)]:min-h-11`}>
+        <div role="toolbar" aria-label="Message actions" onKeyDown={onToolbarKey} className={`-ml-1.5 flex min-h-8 flex-wrap items-center gap-y-1 ${s.gap} [@media(pointer:coarse)]:min-h-11`}>
           <AnimatePresence initial={false}>
             {total > 1 && (
               <motion.div
