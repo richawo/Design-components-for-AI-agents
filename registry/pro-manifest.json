@@ -17803,6 +17803,94 @@
     ]
   },
   {
+    "slug": "hr-policy-acknowledgement",
+    "name": "Policy Acknowledgement Desk",
+    "tier": "pro",
+    "platform": "web",
+    "category": "forms",
+    "description": "Read a versioned policy and acknowledge the exact revision. A considered, responsive hr workspace with typed integration points.",
+    "tags": [
+      "hr",
+      "workflow",
+      "responsive",
+      "keyboard",
+      "forms"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "light",
+    "previewHeight": 1220,
+    "usage": "import { PolicyAcknowledgement } from \"@/components/design-for-ai/hr-policy-acknowledgement\";\n\n<PolicyAcknowledgement />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Main heading."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "description": "Supporting context."
+      },
+      {
+        "name": "policies",
+        "type": "EmployeePolicy[]",
+        "description": "Unique policies with a stable version, full section content and explicit acknowledgement statements. Replace the sample content with the organisation’s approved policy."
+      },
+      {
+        "name": "employeeId",
+        "type": "string",
+        "description": "Authenticated employee identifier supplied by the host."
+      },
+      {
+        "name": "employeeName",
+        "type": "string",
+        "description": "Name displayed with the acknowledgement."
+      },
+      {
+        "name": "acknowledgements",
+        "type": "PolicyAcknowledgementRecord[]",
+        "description": "Existing exact policy/version/employee acknowledgements."
+      },
+      {
+        "name": "onAcknowledge",
+        "type": "(record:PolicyAcknowledgementRecord)=>void|Promise<void>",
+        "description": "Persist the exact revision and authenticated actor. The host owns identity, audit timestamps and record retention."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"light\"",
+        "description": "Surface, border and ink palette."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@statement-0",
+        "click:@statement-1",
+        "wait:500",
+        "click:@acknowledge",
+        "wait:1100"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "light"
+      }
+    ]
+  },
+  {
     "slug": "input-ai-prompt",
     "name": "AI Prompt Composer",
     "tier": "pro",
