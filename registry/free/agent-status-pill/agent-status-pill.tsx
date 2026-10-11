@@ -78,7 +78,7 @@ const PALETTE = {
   dark: {
     ink: "#f4f4f5",
     muted: "#a1a1aa",
-    faint: "#71717a",
+    faint: "#8a8a93",
     surface: "rgba(255,255,255,0.045)",
     surfaceHover: "rgba(255,255,255,0.08)",
     ring: "rgba(255,255,255,0.10)",
@@ -171,8 +171,19 @@ function useNow(active: boolean) {
   useEffect(() => {
     setNow(Date.now());
     if (!active) return;
-    const id = window.setInterval(() => setNow(Date.now()), 1000);
-    return () => window.clearInterval(id);
+    let id: number | undefined;
+    const sync = () => {
+      window.clearInterval(id);
+      if (document.hidden) return;
+      setNow(Date.now());
+      id = window.setInterval(() => setNow(Date.now()), 1000);
+    };
+    sync();
+    document.addEventListener("visibilitychange", sync);
+    return () => {
+      window.clearInterval(id);
+      document.removeEventListener("visibilitychange", sync);
+    };
   }, [active]);
   return now;
 }
@@ -877,7 +888,7 @@ export default function AgentStatusPillDemo({ state: forced, ...overrides }: Par
           </ul>
         </motion.section>
 
-        <motion.p {...enter(play, 0.5, reduce)} className="mt-4 text-center font-mono text-[11px]" style={{ color: "#5d5d66" }}>
+        <motion.p {...enter(play, 0.5, reduce)} className="mt-4 text-center font-mono text-[11px]" style={{ color: STAGE.muted }}>
           Hover or click a status for its activity · Esc closes
         </motion.p>
       </div>
