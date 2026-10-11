@@ -27,10 +27,10 @@
     "approach": "monochrome first; only the dot carries hue, and only needs-you and failed tint the pill itself because they ask the user to act",
     "states": "idle #71717a hollow ring; running = ink with a ping; waiting #f5a524 with a slower ping; error #f2555a; done #3fcf8e",
     "tint": "label color-mix(tone 74%, ink) on dark, 52% on light; surface tone 9% over the base surface; ring tone 34%",
-    "dark": "ink #f4f4f5, muted #a1a1aa, faint #71717a, surface white 4.5%, ring white 10%, highlight white 6%, hover white 8%, panel #111113, panel ring white 9%, well #09090b",
+    "dark": "ink #f4f4f5, muted #a1a1aa, faint #8a8a93, surface white 4.5%, ring white 10%, highlight white 6%, hover white 8%, panel #111113, panel ring white 9%, well #09090b",
     "light": "ink #18181b, muted #52525b, surface ink 4%, ring ink 12%, panel #ffffff, well #f4f4f5",
     "tokens": "exposed as --asp-* custom properties on the wrapper; `tones` overrides a state colour",
-    "demo": "#000 stage, #0b0b0c card, white 8% hairlines, #8a8a93 muted text, #18181b monogram tile"
+    "demo": "The complete demo follows theme: dark #000 stage, #0b0b0c card, #8a8a93 muted text; light #f4f4f5 stage, white card, #62626b muted text and a soft shadow. All status instances inherit theme."
   },
   "motion": {
     "width": "animates to the measured content width, spring stiffness 500 damping 40",
@@ -72,10 +72,10 @@
     },
     "demoFeatured": "Fixer, 'Migrate billing webhooks to v2', waiting 1:14 on a 6:12 run: 'Approve a migration?' with `pnpm prisma migrate deploy`, Deny and Approve",
     "demoRows": [
-      "lint-sweeper · Fix 23 ESLint warnings in packages/ui · running",
-      "docs-writer · Draft the 4.12 changelog · done 3:07",
-      "test-doctor · Quarantine the flaky checkout e2e suite · failed",
-      "dep-bot · Weekly dependency bump · idle, Run now"
+      "lint-sweeper \u00b7 Fix 23 ESLint warnings in packages/ui \u00b7 running",
+      "docs-writer \u00b7 Draft the 4.12 changelog \u00b7 done 3:07",
+      "test-doctor \u00b7 Quarantine the flaky checkout e2e suite \u00b7 failed",
+      "dep-bot \u00b7 Weekly dependency bump \u00b7 idle, Run now"
     ]
   },
   "avoid": [

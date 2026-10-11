@@ -13,7 +13,7 @@ Build a compact status pill for AI agents in React + Tailwind CSS v4 + `motion/r
 - Clock: `since` and `until` epoch props. Running counts run time, Needs you counts time spent waiting, Failed and Done freeze at `until`. Format `m:ss`, then `h:mm:ss`; wrapped in `<time dateTime="PT…">`. It ticks once a second only while open-ended and on screen, and renders nothing until mount so server and client markup match.
 
 **Colour (monochrome first)**
-- Dark: ink `#f4f4f5`, muted `#a1a1aa`, faint `#71717a`, pill surface white 4.5% with a white 10% inset ring and a white 6% top highlight; hover adds white 8%. Panel `#111113`, ring white 9%, command well `#09090b`.
+- Dark: ink `#f4f4f5`, muted `#a1a1aa`, faint `#8a8a93`, pill surface white 4.5% with a white 10% inset ring and a white 6% top highlight; hover adds white 8%. Panel `#111113`, ring white 9%, command well `#09090b`.
 - Light: ink `#18181b`, muted `#52525b`, surface ink 4%, ring ink 12%, panel `#ffffff`, well `#f4f4f5`.
 - Everything is exposed as `--asp-*` custom properties on the wrapper; `tones` overrides a state's colour.
 
@@ -40,3 +40,5 @@ Build a compact status pill for AI agents in React + Tailwind CSS v4 + `motion/r
 
 **Don't**
 - No colour on running, no gradient or glow around the pill, no pulsing label, no spinner next to the dot. No width jump between states, no scaled text from a layout animation. No percentage progress. Don't announce the clock. Don't add pills that only assert a quality: every state here changes what the user does next.
+
+The demo stage and every status instance follow `theme`. Light uses a #f4f4f5 stage, white card, #62626b secondary text and a soft shadow; dark uses #000, #0b0b0c and #8a8a93.

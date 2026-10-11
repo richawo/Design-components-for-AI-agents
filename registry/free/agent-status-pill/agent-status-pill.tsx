@@ -612,7 +612,7 @@ type DemoAgent = {
   copy: Partial<Record<AgentStatus, StateCopy>>;
 };
 
-const STAGE = {
+const DARK_STAGE = {
   backdrop: "#000000",
   card: "#0b0b0c",
   line: "rgba(255,255,255,0.08)",
@@ -620,6 +620,9 @@ const STAGE = {
   muted: "#8a8a93",
   tile: "#18181b",
 } as const;
+
+type Stage = { [K in keyof typeof DARK_STAGE]: string };
+const LIGHT_STAGE: Stage = { backdrop: "#f4f4f5", card: "#ffffff", line: "rgba(24,24,27,0.10)", ink: "#18181b", muted: "#62626b", tile: "#ededf0" };
 
 const FEATURED: DemoAgent = {
   id: "fixer",
@@ -793,35 +796,36 @@ function enter(play: boolean, delay: number, reduce: boolean) {
   };
 }
 
-function Monogram({ text }: { text: string }) {
+function Monogram({ text, stage }: { text: string; stage: Stage }) {
   return (
     <span
       aria-hidden="true"
       className="grid size-9 shrink-0 place-items-center rounded-[10px] font-mono text-[11px] font-medium"
-      style={{ background: STAGE.tile, color: "#a1a1aa", boxShadow: `inset 0 0 0 1px ${STAGE.line}` }}
+      style={{ background: stage.tile, color: stage.muted, boxShadow: `inset 0 0 0 1px ${stage.line}` }}
     >
       {text}
     </span>
   );
 }
 
-function RunRow({ agent, index, play, reduce }: { agent: DemoAgent; index: number; play: boolean; reduce: boolean }) {
+function RunRow({ agent, index, play, reduce, theme, stage }: { agent: DemoAgent; index: number; play: boolean; reduce: boolean; theme: "dark" | "light"; stage: Stage }) {
   const [run, go] = useRun(agent);
   return (
     <motion.li
       {...enter(play, 0.22 + index * 0.06, reduce)}
       className="relative flex items-center gap-4 border-t px-5 py-3.5 has-[[aria-expanded=true]]:z-20 @md:px-6"
-      style={{ borderColor: STAGE.line }}
+      style={{ borderColor: stage.line }}
     >
       <div className="min-w-0 flex-1">
-        <p className="truncate font-mono text-[12.5px]" style={{ color: STAGE.ink }}>
+        <p className="truncate font-mono text-[12.5px]" style={{ color: stage.ink }}>
           {agent.name}
         </p>
-        <p className="mt-0.5 truncate text-[13px]" style={{ color: STAGE.muted }}>
+        <p className="mt-0.5 truncate text-[13px]" style={{ color: stage.muted }}>
           {agent.task}
         </p>
       </div>
       <AgentStatusPill
+        theme={theme}
         size="sm"
         agent={agent.name}
         state={run.state}
@@ -840,6 +844,8 @@ export default function AgentStatusPillDemo({ state: forced, ...overrides }: Par
   const cardRef = useRef<HTMLElement>(null);
   const play = useInView(cardRef, { once: true, amount: 0.3 });
   const [run, go] = useRun(FEATURED);
+  const theme = overrides.theme ?? "dark";
+  const stage = theme === "light" ? LIGHT_STAGE : DARK_STAGE;
 
   // The State control drives the featured run; Approve, Retry and the rest keep working on top of it.
   const target = forced ?? FEATURED.initial;
@@ -848,19 +854,19 @@ export default function AgentStatusPillDemo({ state: forced, ...overrides }: Par
   }, [target, go]);
 
   return (
-    <div className="flex min-h-dvh w-full items-center justify-center px-4 py-16 font-sans antialiased sm:px-8" style={{ background: STAGE.backdrop, color: STAGE.ink }}>
+    <div className="flex min-h-dvh w-full items-center justify-center px-4 py-16 font-sans antialiased sm:px-8" style={{ background: stage.backdrop, color: stage.ink }}>
       <div className="@container w-full max-w-[640px]">
         <motion.section
           ref={cardRef}
           aria-labelledby={`${uid}-title`}
           {...enter(play, 0, reduce)}
           className="rounded-[18px]"
-          style={{ background: STAGE.card, boxShadow: `inset 0 0 0 1px ${STAGE.line}, inset 0 1px 0 rgba(255,255,255,0.05), 0 40px 80px -40px rgba(0,0,0,0.9)` }}
+          style={{ background: stage.card, boxShadow: theme === "light" ? `inset 0 0 0 1px ${stage.line}, 0 20px 50px -30px rgba(24,24,27,0.2)` : `inset 0 0 0 1px ${stage.line}, inset 0 1px 0 rgba(255,255,255,0.05), 0 40px 80px -40px rgba(0,0,0,0.9)` }}
         >
           <motion.header {...enter(play, 0.08, reduce)} className="relative flex items-center gap-3 px-5 pb-5 pt-5 has-[[aria-expanded=true]]:z-20 @md:gap-3.5 @md:px-6">
-            <Monogram text="Fx" />
+            <Monogram text="Fx" stage={stage} />
             <div className="min-w-0 flex-1">
-              <p className="truncate font-mono text-[11px]" style={{ color: STAGE.muted }}>
+              <p className="truncate font-mono text-[11px]" style={{ color: stage.muted }}>
                 <span className="hidden @md:inline">northwind / agents / </span>fixer
               </p>
               <h2 id={`${uid}-title`} className="mt-0.5 text-balance text-[15px] font-medium leading-[1.3] tracking-[-0.015em] @md:truncate">
@@ -878,17 +884,17 @@ export default function AgentStatusPillDemo({ state: forced, ...overrides }: Par
             />
           </motion.header>
 
-          <motion.p {...enter(play, 0.16, reduce)} className="border-t px-5 pb-2 pt-4 font-mono text-[10.5px] uppercase tracking-[0.08em] @md:px-6" style={{ borderColor: STAGE.line, color: STAGE.muted }}>
+          <motion.p {...enter(play, 0.16, reduce)} className="border-t px-5 pb-2 pt-4 font-mono text-[10.5px] uppercase tracking-[0.08em] @md:px-6" style={{ borderColor: stage.line, color: stage.muted }}>
             Other runs
           </motion.p>
           <ul className="[&>li:first-child]:border-t-0">
             {LIST.map((a, i) => (
-              <RunRow key={a.id} agent={a} index={i} play={play} reduce={reduce} />
+              <RunRow key={a.id} agent={a} index={i} play={play} reduce={reduce} theme={theme} stage={stage} />
             ))}
           </ul>
         </motion.section>
 
-        <motion.p {...enter(play, 0.5, reduce)} className="mt-4 text-center font-mono text-[11px]" style={{ color: STAGE.muted }}>
+        <motion.p {...enter(play, 0.5, reduce)} className="mt-4 text-center font-mono text-[11px]" style={{ color: stage.muted }}>
           Hover or click a status for its activity · Esc closes
         </motion.p>
       </div>
