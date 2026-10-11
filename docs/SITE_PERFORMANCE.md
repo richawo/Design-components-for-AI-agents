@@ -50,6 +50,21 @@ in every case. The 250 ms blocking-input negative control also failed as expecte
 
 Reports are `test-results/site-performance/gallery-growth-{before,after,negative}.json`.
 The catalogue and initial visible cards were unchanged between these runs.
+The archive is `test-results/frontend-latency-replays/design-gallery-growth/`.
+
+Further experiments isolated the tier control from typing, restricted layout
+measurement and delayed new video sources until filter input settled. They
+passed functional checks but did not establish a repeatable frame-latency win,
+so they were not retained. The layout experiment measured 358 / 571 / 149 ms and
+the input/video experiment 494 / 1059 / 510 ms (first / second frame / long task).
+Later runs coincided with several other GPU-intensive Chromium processes on
+the shared machine; those runs are not a clean causal comparison. Their raw
+reports, CPU profile, trace and discarded patch remain in the ignored
+`test-results/site-performance/` directory. The source changes are also saved
+in the stash named `Preserve unshipped gallery input latency experiments`.
+No further video playback delay or layout-animation restriction is shipped,
+and the remaining frame-budget failure is recorded rather than being labelled
+a complete resolution of choppiness.
 
 The video audit found 220 MP4s totalling 27.46 MB, roughly 125 KB on average;
 the largest was 409 KB. Samples already use H.264, no audio and fast-start MP4
@@ -123,6 +138,8 @@ PERF_BASE=http://localhost:3000 PERF_OUT=test-results/site-performance/navigatio
 PERF_BASE=http://localhost:3000 PERF_NEGATIVE=1 PERF_OUT=test-results/site-performance/navigation-negative.json node tests/browser/navigation-performance.mjs
 TEST_BASE=http://localhost:3000 node tests/browser/site-preferences.mjs
 TEST_BASE=http://localhost:3000 node tests/browser/gallery-focus.mjs
+TEST_BASE=http://localhost:3000 node tests/browser/gallery-progressive.mjs
+TEST_BASE=http://localhost:3000 node tests/browser/gallery-navigation.mjs
 ```
 
 ## Personalisation
