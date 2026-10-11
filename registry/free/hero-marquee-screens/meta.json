@@ -1,0 +1,207 @@
+{
+  "slug": "hero-marquee-screens",
+  "name": "Marquee Screens Hero",
+  "tier": "free",
+  "platform": "web",
+  "category": "hero",
+  "description": "A tight headline over rows of markup-built product screens drifting in opposite directions, masked at the edges, slowing under the pointer, with a tabletop tilt.",
+  "tags": [
+    "hero",
+    "marquee",
+    "product screens",
+    "landing page",
+    "saas",
+    "infinite scroll",
+    "logistics",
+    "dark",
+    "light",
+    "tilt"
+  ],
+  "dependencies": [
+    "motion",
+    "lucide-react"
+  ],
+  "theme": "dark",
+  "previewHeight": 1000,
+  "usage": "import { HeroMarqueeScreens } from \"@/components/design-for-ai/hero-marquee-screens\";\n\n// Pass your own screens: each one is a title, a meta note and a body you draw in markup\n// on a 320 × 176 canvas (the row scales it). Omit `screens` for the built-in freight desk.\n<HeroMarqueeScreens\n  headline=\"Run freight like a team of fifty.\"\n  primary={{ label: \"Start a free trial\", href: \"/signup\" }}\n  secondary={{ label: \"Book a 20-minute demo\", href: \"/demo\" }}\n  rows={3}\n  speed={22}\n  tilt={false}\n  align=\"center\"\n  accent=\"#ff5a1f\"\n  theme=\"dark\"\n/>",
+  "props": [
+    {
+      "name": "eyebrow",
+      "type": "string",
+      "default": "\"Halyard 3.0 · Freight ops for teams under twenty\"",
+      "description": "Mono line above the headline, after a small accent dot."
+    },
+    {
+      "name": "headline",
+      "type": "string",
+      "default": "\"Run freight like a team of fifty.\"",
+      "description": "Display headline, balanced to about 15ch; its words rise in one after another."
+    },
+    {
+      "name": "body",
+      "type": "string",
+      "description": "Supporting paragraph, max 52ch."
+    },
+    {
+      "name": "primary",
+      "type": "{ label: string; href: string }",
+      "description": "Solid ink pill with an arrow that nudges on hover."
+    },
+    {
+      "name": "secondary",
+      "type": "{ label: string; href: string }",
+      "description": "Quiet underlined link beside the primary action."
+    },
+    {
+      "name": "product",
+      "type": "string",
+      "default": "\"Halyard\"",
+      "description": "Product name in every frame header and in the screen-reader description of the rows."
+    },
+    {
+      "name": "screens",
+      "type": "{ title: string; meta?: string; body: ReactNode }[]",
+      "description": "The screens the rows are built from, drawn in markup on a 320 × 176 canvas. Each row starts three screens further along so no two rows line up. Defaults to eight Halyard screens: shipments, tracking, invoice, reliability, customs, carrier chat, pickups and quotes."
+    },
+    {
+      "name": "rows",
+      "type": "number",
+      "default": "3",
+      "description": "How many rows drift under the copy, 2 or 3. Neighbouring rows run in opposite directions at slightly different speeds."
+    },
+    {
+      "name": "speed",
+      "type": "number",
+      "default": "22",
+      "description": "Drift speed in px per second. The row under the pointer glides down to a fifth of it; rows pause offscreen and in hidden tabs."
+    },
+    {
+      "name": "tilt",
+      "type": "boolean",
+      "default": "false",
+      "description": "Lays the rows on a tabletop: tipped back 24° and turned −7°, springing between poses."
+    },
+    {
+      "name": "align",
+      "type": "\"left\" | \"center\"",
+      "default": "\"center\"",
+      "description": "Copy alignment. Left splits headline and body into two columns on wide containers."
+    },
+    {
+      "name": "accent",
+      "type": "string",
+      "default": "\"#ff5a1f\"",
+      "description": "The one signal colour: the eyebrow dot and the live or selected thing on each screen (a moving vessel, today’s pickups, the booked quote)."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Near-black stage with charcoal screens, or a daylight grey stage with white ones."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "description": "Extra classes on the section."
+    }
+  ],
+  "added": "2026-10-10",
+  "demo": {
+    "steps": [
+      "wait:900",
+      "hover:@row-1:0.5,0.5",
+      "wait:1900",
+      "hover:@cta",
+      "wait:1000"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "headline",
+      "label": "Headline",
+      "kind": "text",
+      "default": "Run freight like a team of fifty.",
+      "group": "Content"
+    },
+    {
+      "prop": "rows",
+      "label": "Rows",
+      "kind": "slider",
+      "min": 2,
+      "max": 3,
+      "step": 1,
+      "default": 3,
+      "group": "Marquee"
+    },
+    {
+      "prop": "speed",
+      "label": "Speed",
+      "kind": "slider",
+      "min": 8,
+      "max": 60,
+      "step": 2,
+      "unit": "px/s",
+      "default": 22,
+      "group": "Marquee"
+    },
+    {
+      "prop": "tilt",
+      "label": "Tabletop tilt",
+      "kind": "toggle",
+      "default": false,
+      "group": "Marquee"
+    },
+    {
+      "prop": "align",
+      "label": "Align",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        }
+      ],
+      "default": "center",
+      "group": "Look"
+    },
+    {
+      "prop": "accent",
+      "label": "Accent",
+      "kind": "color",
+      "default": "#ff5a1f",
+      "options": [
+        "#ff5a1f",
+        "#f2c46d",
+        "#34d399",
+        "#60a5fa"
+      ],
+      "group": "Look"
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark",
+      "group": "Look"
+    },
+    {
+      "prop": "$replay",
+      "label": "Replay",
+      "kind": "action"
+    }
+  ]
+}

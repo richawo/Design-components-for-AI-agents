@@ -1,0 +1,107 @@
+{
+  "component": "HeroMarqueeScreens",
+  "intent": "Dark-first marquee hero: a tight display headline over two or three slow rows of markup-drawn product screens drifting in opposite directions, masked at every edge, slowing under the pointer, with an optional tabletop tilt.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 (container queries, cqi units, CSS variables for theme tokens)",
+    "animation": "motion/react: variants with a custom start time, useInView, useReducedMotion, a spring for the tilt pose; one requestAnimationFrame loop per row for the drift",
+    "icons": "lucide-react (ArrowRight, Check, Pause, Play)"
+  },
+  "layout": {
+    "section": "@container, overflow hidden, near-black stage; copy column max-w 1320px, px 16/40/56px, pt 64/96/112px",
+    "center": "eyebrow, headline (max 15ch), body (max 52ch) and actions stacked and centred",
+    "left": "from @5xl a grid 1.45fr / 1fr aligned to the bottom: headline left (max 14ch), body and actions right; stacked below @5xl",
+    "actions": "48px solid ink pill with an arrow plus an underlined text link, gap 24px, wrapping on phones",
+    "band": "mt 56/80px, pt 16px, pb 64/80px, overflow hidden, mask = intersect(horizontal transparent→#000 11%→#000 89%→transparent, vertical transparent→#000 7%→#000 78%→transparent)",
+    "rows": "gap 14/18px; each track holds three identical sets (clone, real, clone), translated by x − 1.5 × period so it overhangs both ends; sets repeat their screens until wider than the row (max 6 repeats)",
+    "screen": "designed on a 320 × 208 canvas (32px header, 176px body, 12px padding), scaled by --hms-s 0.72 / 0.84 @3xl / 0.92 @6xl; frame radius 12px, inset 1px hairline plus soft deep shadow",
+    "phasing": "row r starts 3 screens further along and at phase period × ((r × 0.41 + 0.17) mod 1), so screens never form columns",
+    "pause": "44px round button bottom right (16px in, 32px from @3xl)"
+  },
+  "typography": {
+    "headline": {
+      "font": "display",
+      "weight": 600,
+      "size": "clamp(2.5rem, 7.6cqi, 6.4rem)",
+      "leading": 0.92,
+      "tracking": "-0.055em",
+      "wrap": "balance"
+    },
+    "eyebrow": {
+      "font": "mono",
+      "size": "11/12px",
+      "case": "uppercase",
+      "tracking": "0.16em",
+      "color": "ink/60"
+    },
+    "body": {
+      "size": "15/17px",
+      "leading": 1.6,
+      "color": "ink/65",
+      "maxWidth": "52ch"
+    },
+    "screens": "10px UI text, 9px mono uppercase labels tracking 0.12em, 30px KPI figure tracking -0.04em, 17px mono invoice total; every figure tabular-nums"
+  },
+  "color": {
+    "approach": "monochrome; every tone is ink at an opacity; one accent prop, used once per screen",
+    "dark": {
+      "page": "#08080a",
+      "ink": "#f5f5f6",
+      "card": "#111114",
+      "cardHover": "#16161a",
+      "line": "rgba(255,255,255,0.08)",
+      "lineHover": "rgba(255,255,255,0.2)"
+    },
+    "light": {
+      "page": "#ececea",
+      "ink": "#111113",
+      "card": "#ffffff",
+      "line": "rgba(17,17,19,0.08)",
+      "lineHover": "rgba(17,17,19,0.22)"
+    },
+    "accent": "#ff5a1f, international orange, meaning live or selected: eyebrow dot, In transit dots, the travelled part of the route and the vessel, today's bar, the pending customs arc, the typing dot, today's pickup rule, the booked quote's ring"
+  },
+  "motion": {
+    "entrance": "useInView 20% once: eyebrow 0s, headline words from 0.06s every 35ms, body 0.24s, actions 0.32s (opacity, y 12px, blur 8px, 600ms, cubic-bezier(0.22,1,0.36,1)); rows from 0.46s every 80ms (y 24px, blur 8px, 750ms)",
+    "drift": "each row launches 0.45s after it lands; velocity eases to its goal with tau 0.8s up and 0.3s down; even rows left, odd rows right, at 1 / 0.78 / 1.14 × speed (default 22px/s); dt clamped to 50ms; transform written imperatively",
+    "hover": "the row under a mouse pointer eases to 20% of its speed; the card under the pointer lifts 4px and its hairline brightens over 200ms",
+    "pause": "button eases every row to 0 and back",
+    "tilt": "spring stiffness 180 damping 26 to rotateX 24deg, rotateZ -7deg, scale 1.16, perspective 1600px, origin 50% 35%",
+    "power": "loops run only while the band intersects the viewport and the tab is visible",
+    "reducedMotion": "rows static at their seeded phase, 150ms opacity fades, no pause button"
+  },
+  "responsive": {
+    "phone": "screens at 0.72 scale (230px wide), copy stacked, actions wrap, pause button 16px from the corner",
+    "tablet": "screens at 0.84, centred or stacked-left copy",
+    "desktop": "screens at 0.92, left alignment splits into two columns from @5xl"
+  },
+  "accessibility": [
+    "section aria-labelledby the h1",
+    "band is aria-hidden; a visually hidden sentence names every screen",
+    "pause button satisfies WCAG 2.2.2 and flips its aria-label between pause and play",
+    "CTAs are links with a 2px ink focus-visible ring offset 4px and a 0.97 press",
+    "hover slow-down is mouse only; touch scrolls normally",
+    "reduced motion freezes the rows and keeps only short opacity fades"
+  ],
+  "content": {
+    "eyebrow": "Halyard 3.0 · Freight ops for teams under twenty",
+    "headline": "Run freight like a team of fifty.",
+    "body": "Quotes, bookings, customs and invoices on one quiet desk. Halyard watches every container, so your four people only open the ones that need them.",
+    "ctas": [
+      "Start a free trial",
+      "Book a 20-minute demo"
+    ],
+    "screens": "Shipments (5 refs, HLY-20418 NGB → RTM in transit), HLY-20418 tracking (MSC Aurelia, Ningbo → Rotterdam, day 23 of 37), INV-3307 (Kestrel Foods, £18,420.00, paid 3 Oct), Reliability (97.4% on time, +2.1 pts), Customs (3 of 4 documents), Brightline Haulage chat, Pickups week 42, Quotes (Corvid Line, Saltmarsh booked, Meridian Box)"
+  },
+  "avoid": [
+    "screenshots, stock images or any network media",
+    "a different hue per screen or coloured traffic-light window chrome",
+    "a CSS keyframe marquee that snaps to a stop on hover",
+    "rows moving in lockstep or screens lining up into columns",
+    "hard edges where rows leave the band, or empty corners when tilted",
+    "gradient text, a glow behind the headline, an Introducing pill",
+    "Unlock, Supercharge, Seamless and other launch-copy filler"
+  ],
+  "textContrast": "Keep secondary text at least 65% of ink in both themes; selected, skipped and inactive content remains readable. Use outlines, status labels and icons for state instead of dimming whole content groups."
+}
