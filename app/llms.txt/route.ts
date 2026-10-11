@@ -1,6 +1,7 @@
 import { allDocs, allPosts } from "@/lib/content";
 import { allComponents, categoriesWithCounts, stats } from "@/lib/registry";
 import { absoluteUrl, site } from "@/lib/site";
+import { blogLocales, blogPath } from "@/lib/blog/runtime";
 
 export const dynamic = "force-static";
 
@@ -30,6 +31,8 @@ export function GET() {
     "- Pro components need the header Authorization: Bearer $DESIGN_FOR_AI_LICENSE",
     `- Markdown version of every page: append .md to any URL (${absoluteUrl("/pricing.md")}, ${absoluteUrl("/docs/agents.md")}, ${absoluteUrl("/categories/charts.md")}, ${absoluteUrl("/components/{slug}.md")}); the home page is ${absoluteUrl("/index.md")}`,
     `- Every free component's prompts in one file: ${absoluteUrl("/llms-full.txt")}`,
+    `- Complete page index, including all blog language editions: ${absoluteUrl("/sitemap.md")}`,
+    "- Blog hubs, topics, pagination and articles also support Accept: text/markdown. Their Markdown frontmatter identifies the canonical HTML URL and language.",
     "",
     "## Key pages",
     `- [All components](${absoluteUrl("/components.md")})`,
@@ -51,6 +54,7 @@ export function GET() {
     "",
     "## Blog",
     ...allPosts().map((p) => `- [${p.title}](${absoluteUrl(`/blog/${p.slug}.md`)}): ${p.description}`),
+    ...(allPosts().length ? ["", "## Blog language editions", ...blogLocales().map((locale) => `- [${locale.label}](${absoluteUrl(`${blogPath(locale.code)}.md`)})`)] : []),
     "",
   ];
   return new Response(lines.join("\n"), { headers: { "Content-Type": "text/plain; charset=utf-8", "X-Robots-Tag": "noindex, follow" } });

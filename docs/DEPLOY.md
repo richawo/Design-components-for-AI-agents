@@ -46,8 +46,8 @@ registrations; no active registrations were returned during setup.
    → Settings → Builds → Connect* → `richawo/Design-components-for-AI-agents`.
    - Worker name: `design-yaps` (must match `name` in `wrangler.jsonc`)
    - Production branch: `main`
-   - Build command: `npm run pro:sync -- --require-source && node scripts/build-registry.mjs --strict && npm run typecheck && npm test && npm run cf:build`
-   - Deploy command: `npx opennextjs-cloudflare deploy`
+   - Build command: `npm run pro:sync -- --require-source && npm run blog:audit -- --require-source --require-locales && node scripts/build-registry.mjs --strict && npm run typecheck && npm test && npm run cf:build`
+   - Deploy command: `npm run cf:deploy`
    - Build watch paths: include `*`, no exclusions
    - Preview builds: disabled
 2. **Build variables** (*Settings → Build → Variables and secrets*):

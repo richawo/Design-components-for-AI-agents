@@ -174,7 +174,7 @@ export const TOOLS: Tool[] = [
   {
     name: "get_page",
     title: "Read a site page",
-    description: "Any page of design.yaps.ai as Markdown, e.g. 'pricing', 'docs/installation', 'docs/agents', 'categories/auth', 'components'.",
+    description: "Any page of design.yaps.ai as Markdown, e.g. 'pricing', 'docs/installation', 'categories/auth', 'components', 'blog', 'fr/blog', 'blog/<slug>' or 'sitemap'. Blog editions keep their selected language and canonical URL.",
     inputSchema: { type: "object", properties: { path: { type: "string", description: "Page path without the domain or .md" } }, required: ["path"], additionalProperties: false },
     annotations: readOnly,
     async run(a) {
