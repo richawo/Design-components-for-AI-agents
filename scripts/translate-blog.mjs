@@ -20,6 +20,7 @@ if (wanted && locales.length !== wanted.length) throw new Error("Unknown or dupl
 const keys = corpusUnits(source);
 const seedDir = args.includes("--seed-dir") ? flag("--seed-dir") : null;
 const dryRun = args.includes("--dry-run");
+const houseStyle = (text) => text.replace(/\s*\u2014\s*/g, ": ");
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const save = (file, value) => {
   fs.mkdirSync(path.dirname(file), { recursive: true });
@@ -61,7 +62,7 @@ async function translatedUnit(locale, key, reply) {
     restored = runs.rebuild(texts);
   }
   if (!restored || isUntouched(key, restored) || !protectedIntact(key, restored) || /\[\[\[|\]\]\]/.test(restored)) throw new Error(`Invalid translation (${locale.code}): ${key.slice(0, 80)}`);
-  return restored;
+  return houseStyle(restored);
 }
 
 async function translateLocale(locale) {
@@ -71,7 +72,7 @@ async function translateLocale(locale) {
   const strings = {};
   for (const key of keys) {
     const saved = old[key] ?? seed[key];
-    if (saved && !isUntouched(key, saved) && protectedIntact(key, saved)) strings[key] = saved;
+    if (saved && !isUntouched(key, saved) && protectedIntact(key, saved)) strings[key] = houseStyle(saved);
   }
   const missing = keys.filter((key) => !strings[key]);
   console.log(`${locale.code}: ${missing.length} of ${keys.length} units need translation`);

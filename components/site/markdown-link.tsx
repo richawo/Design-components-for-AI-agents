@@ -14,11 +14,11 @@ export function MarkdownAlternate() {
   return <link rel="alternate" type="text/markdown" href={markdownHref(pathname)} />;
 }
 
-export function MarkdownLink({ className = "" }: { className?: string }) {
+export function MarkdownLink({ className = "", label = "View this page as Markdown" }: { className?: string; label?: string }) {
   const pathname = usePathname();
   return (
     <a href={markdownHref(pathname)} className={className}>
-      View this page as Markdown
+      {label}
     </a>
   );
 }

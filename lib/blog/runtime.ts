@@ -3,7 +3,7 @@ import bundled from "@/registry/__generated__/content.json";
 import { LOCALES, localeByCode } from "./locales.mjs";
 
 export type BlogConfig = {
-  title: string; description: string; heading: string; intro: string;
+  title: string; seoTitle?: string; description: string; heading: string; intro: string;
   author: { name: string; type: "Person" | "Organization"; url: string; bio: string; sameAs?: string[] };
   categories: Record<string, { name: string; description: string }>;
   cta: { heading: string; body: string };

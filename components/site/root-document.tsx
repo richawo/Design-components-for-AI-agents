@@ -4,25 +4,28 @@ import "@fontsource/instrument-serif/400.css";
 import "@fontsource/instrument-serif/400-italic.css";
 import "@fontsource-variable/geist";
 import "@fontsource-variable/geist-mono";
-import "./globals.css";
+import "@/app/globals.css";
 import { site } from "@/lib/site";
+import { localeByCode } from "@/lib/blog/locales.mjs";
 
-export const metadata: Metadata = {
+export const rootMetadata: Metadata = {
   metadataBase: new URL(site.url),
   title: { default: `${site.name}: ${site.tagline}`, template: `%s | ${site.name}` },
   description: site.description,
   applicationName: site.name,
+  icons: { icon: "/icon.svg" },
   openGraph: { siteName: site.name, type: "website", locale: "en_GB" },
   twitter: { card: "summary_large_image", site: site.twitter },
   robots: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
   alternates: { types: { "application/rss+xml": "/rss.xml", "text/plain": "/llms.txt" } },
 };
 
-export const viewport: Viewport = { themeColor: "#000000", width: "device-width", initialScale: 1 };
+export const rootViewport: Viewport = { themeColor: "#000000", width: "device-width", initialScale: 1 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export function RootDocument({ children, locale = "en" }: { children: React.ReactNode; locale?: string }) {
+  const language = localeByCode(locale) ?? localeByCode("en")!;
   return (
-    <html lang="en" data-scroll-behavior="smooth">
+    <html lang={language.htmlLang} dir={language.direction} data-scroll-behavior="smooth">
       <body>{children}</body>
     </html>
   );

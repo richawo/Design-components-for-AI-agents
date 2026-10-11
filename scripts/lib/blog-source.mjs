@@ -61,7 +61,7 @@ function mapMarkdown(content, map) {
 export function postUnits(post) {
   const keys = new Set();
   mapMarkdown(post.content, (key) => { keys.add(key); return key; });
-  for (const field of ["title", "description", "excerpt", "category", "heroImageAlt"]) {
+  for (const field of ["title", "seoTitle", "description", "seoDescription", "excerpt", "category", "heroImageAlt"]) {
     if (post.data[field]) keys.add(keyOf(escapeText(String(post.data[field]))));
   }
   for (const keyword of String(post.data.keywords ?? "").split(",")) if (keyword.trim()) keys.add(escapeText(keyword.trim()));
@@ -109,7 +109,7 @@ export function bundleBlog(source) {
       if (!slug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) throw new Error(`Missing or invalid stable slug: ${locale.code}/${post.data.slug}`);
       const data = { ...post.data, sourceSlug: post.data.slug, categoryKey: Object.keys(source.config.categories ?? {}).find((key) => source.config.categories[key].name === post.data.category), slug };
       data.faqHeading = t("Frequently asked questions");
-      for (const field of ["title", "description", "excerpt", "category", "heroImageAlt"]) if (data[field]) data[field] = t(data[field]);
+      for (const field of ["title", "seoTitle", "description", "seoDescription", "excerpt", "category", "heroImageAlt"]) if (data[field]) data[field] = t(data[field]);
       data.keywords = String(data.keywords ?? "").split(",").map((keyword) => t(keyword.trim())).join(", ");
       const localLink = (href) => {
         const pathname = href.replace(/^https:\/\/design\.yaps\.ai/, "");

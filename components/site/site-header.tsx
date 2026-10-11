@@ -16,7 +16,9 @@ const NAV = [
 
 const isActive = (pathname: string, href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
-export function SiteHeader() {
+export function SiteHeader({ locale = "en", copy = {} }: { locale?: string; copy?: Record<string, string> }) {
+  const t = (text: string) => copy[text] ?? text;
+  const nav = NAV.map((item) => ({ href: item.href === "/blog" && locale !== "en" ? `/${locale}/blog` : item.href, label: t(item.label) }));
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -41,8 +43,8 @@ export function SiteHeader() {
         <div className="mx-auto flex h-16 max-w-[80rem] items-center justify-between gap-6 px-5 sm:px-8">
           <div className="flex items-center gap-10">
             <Logo />
-            <nav aria-label="Main" className="hidden items-center gap-1 md:flex" onMouseLeave={() => setHovered(null)}>
-              {NAV.map((item) => {
+            <nav aria-label={t("Main")} className="hidden items-center gap-1 md:flex" onMouseLeave={() => setHovered(null)}>
+              {nav.map((item) => {
                 const active = isActive(pathname, item.href);
                 return (
                   <Link
@@ -89,13 +91,13 @@ export function SiteHeader() {
               GitHub
             </a>
             <Link href="/account" className="site-btn site-btn-ghost h-9 px-3 text-[14px] font-normal">
-              Account
+              {t("Account")}
             </Link>
             <Link
               href="/pricing"
               className="site-btn site-btn-accent ml-1 h-9 px-4 text-[14px]"
             >
-              Get Pro
+              {t("Get Pro")}
             </Link>
           </div>
           <button
@@ -103,7 +105,7 @@ export function SiteHeader() {
             className="relative flex size-10 items-center justify-center rounded-full border border-white/10 transition duration-150 active:scale-95 active:bg-white/[0.06] md:hidden"
             aria-expanded={open}
             aria-controls="mobile-nav"
-            aria-label={open ? "Close menu" : "Open menu"}
+            aria-label={open ? t("Close menu") : t("Open menu")}
             onClick={() => setOpen((v) => !v)}
           >
             <span className={`absolute h-px w-4 bg-site-fg transition-transform duration-300 ease-site ${open ? "rotate-45" : "-translate-y-[3px]"}`} />
@@ -118,8 +120,8 @@ export function SiteHeader() {
         id="mobile-nav"
         className={`fixed inset-x-0 bottom-0 top-16 z-[45] flex flex-col bg-site-bg px-5 pb-8 pt-4 transition-[opacity,visibility] duration-300 md:hidden ${open ? "visible opacity-100" : "invisible opacity-0"}`}
       >
-        <nav aria-label="Mobile" className="flex flex-col">
-          {NAV.map((item, i) => (
+        <nav aria-label={t("Mobile")} className="flex flex-col">
+          {nav.map((item, i) => (
             <Link
               key={item.href}
               href={item.href}
@@ -134,13 +136,13 @@ export function SiteHeader() {
         </nav>
         <div className="mt-auto grid grid-cols-2 gap-3">
           <Link href="/account" className="site-btn site-btn-secondary col-span-2 h-12 text-[15px]">
-            Account
+            {t("Account")}
           </Link>
           <a href={site.github} className="site-btn site-btn-secondary h-12 text-[15px]">
             <GitHubMark className="size-4" /> GitHub
           </a>
           <Link href="/pricing" className="site-btn site-btn-accent h-12 text-[15px]">
-            Get Pro
+            {t("Get Pro")}
           </Link>
         </div>
       </div>

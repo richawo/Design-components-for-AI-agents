@@ -19,6 +19,25 @@ Latin-script languages have translated ASCII slugs; other scripts retain the
 English slug, following Post Yaps. Arabic uses right-to-left layout. Incomplete
 editions are omitted rather than published under a misleading language URL.
 
+Every edition renders its language and direction on the server. Its HTML has a
+self canonical, reciprocal language alternates including `x-default`, translated
+search snippets, Open Graph and Twitter cards, and article, FAQ and breadcrumb
+structured data. Source-language aliases redirect to the stable local URL.
+Language navigation and related article links work without JavaScript.
+
+`/sitemap.xml` indexes one XML sitemap per language under `/sitemaps/`. Only
+indexable HTML pages enter those files. Entries include truthful modification
+dates, image URLs and language alternates. `/sitemap.md` indexes the Markdown
+companions. Blog hubs, topics, pagination and articles support both `.md` URLs
+and `Accept: text/markdown`; feeds live at `/blog/rss.xml` and each localised
+equivalent, with `/rss.xml` retained for existing subscribers. Social images are
+generated as real 1200 by 630 PNGs, with a separate 512px publisher logo.
+
+The hub paginates after 12 articles. Each page has its own canonical. Invalid
+articles, locales, topics and page numbers return a real 404. A public-only
+checkout builds successfully with the blog unavailable; production builds
+require the private source and complete translation coverage.
+
 Run `npm run blog:audit -- --require-source --require-locales` before a production
 deployment. Errors cover missing metadata, invalid publication dates, unknown
 authors or topics, duplicate titles and slugs, extra H1s and broken article links.

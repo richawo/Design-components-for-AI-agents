@@ -21,7 +21,9 @@ export type PostMeta = {
   slug: string;
   sourceSlug: string;
   title: string;
+  seoTitle: string;
   description: string;
+  seoDescription: string;
   excerpt: string;
   date: string;
   dateModified: string;
@@ -128,12 +130,15 @@ export function allPosts(locale = "en"): PostMeta[] {
     .map((f) => {
       const raw = files[f];
       const { data, content } = matter(raw);
-      const words = content.split(/\s+/).filter(Boolean).length;
+      const source = locale === "en" ? content : matter(FILES.blog[f]).content;
+      const words = source.split(/\s+/).filter(Boolean).length;
       return {
         slug: data.slug ?? f.replace(/\.md$/, ""),
         sourceSlug: data.sourceSlug ?? f.replace(/\.md$/, ""),
         title: data.title,
+        seoTitle: data.seoTitle ?? data.title,
         description: data.description,
+        seoDescription: data.seoDescription ?? data.description,
         excerpt: data.excerpt ?? data.description,
         date: String(data.date instanceof Date ? data.date.toISOString().slice(0, 10) : data.date),
         dateModified: String(data.dateModified instanceof Date ? data.dateModified.toISOString().slice(0, 10) : (data.dateModified ?? data.date)),

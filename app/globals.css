@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+/* Code retains its reading direction inside Arabic articles. */
+html[dir="rtl"] .site-prose pre,
+html[dir="rtl"] .site-prose code {
+  direction: ltr;
+  unicode-bidi: isolate;
+  text-align: left;
+}
+
 /* Pro components live in a private repo (gitignored here), and Tailwind
    skips gitignored files by default, so register both trees explicitly. */
 @source "../registry/pro";

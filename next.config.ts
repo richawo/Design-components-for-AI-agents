@@ -11,19 +11,25 @@ const config: NextConfig = {
     },
     resolveExtensions: [".web.tsx", ".web.ts", ".web.jsx", ".web.js", ".web.mjs", ".tsx", ".ts", ".jsx", ".js", ".mjs", ".json"],
   },
+  experimental: { globalNotFound: true },
   devIndicators: false,
   agentRules: false,
   transpilePackages: ["react-native-web", "react-native-svg", "expo-blur", "expo-linear-gradient", "expo-modules-core"],
   async rewrites() {
-    return [
+    return { beforeFiles: [
       // Markdown companions for agents: /components/hero-editorial.md
       { source: "/components/:slug.md", destination: "/md/components/:slug" },
-      { source: "/blog/:slug.md", destination: "/md/blog/:slug" },
-      // ...and of every other page: /index.md, /pricing.md, /docs/agents.md, /categories/charts.md
+      { source: "/blog.md", destination: "/md/blog/en" },
+      { source: "/blog/:path*.md", destination: "/md/blog/en/:path*" },
+      { source: "/:locale/blog.md", destination: "/md/blog/:locale" },
+      { source: "/:locale/blog/:path*.md", destination: "/md/blog/:locale/:path*" },
+      { source: "/docs/:page.md", destination: "/md/page/docs/:page" },
+      { source: "/categories/:page.md", destination: "/md/page/categories/:page" },
+    ], fallback: [
+      // Root page companions run after real sitemap/verification routes.
       { source: "/index.md", destination: "/md/page/index" },
       { source: "/:page.md", destination: "/md/page/:page" },
-      { source: "/:section/:page.md", destination: "/md/page/:section/:page" },
-    ];
+    ] };
   },
 };
 
