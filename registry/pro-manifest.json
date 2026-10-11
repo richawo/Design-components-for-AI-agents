@@ -21961,6 +21961,78 @@
     ]
   },
   {
+    "slug": "saas-audit-trail",
+    "name": "Audit Trail Explorer",
+    "tier": "pro",
+    "platform": "web",
+    "category": "app",
+    "description": "Filter immutable events and inspect actor, target and before/after details. A considered, responsive SaaS workspace with typed integration points.",
+    "tags": [
+      "saas",
+      "workflow",
+      "responsive",
+      "keyboard",
+      "app"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 1120,
+    "usage": "import { AuditTrail } from \"@/components/design-for-ai/saas-audit-trail\";\n\n<AuditTrail />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Main heading."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "description": "Supporting context."
+      },
+      {
+        "name": "events",
+        "type": "WorkspaceAuditEvent[]",
+        "description": "Unique read-only events with UTC ISO timestamps and before/after field snapshots. The host owns authoritative audit storage."
+      },
+      {
+        "name": "onExport",
+        "type": "(selection:AuditExport)=>void|Promise<void>",
+        "description": "Export the exact currently filtered event IDs with their filter context."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface, border and ink palette."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:350",
+        "click:@event-2",
+        "wait:700",
+        "click:@changed-only",
+        "wait:1200"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "saas-notification-inbox",
     "name": "Notification Triage Inbox",
     "tier": "pro",
