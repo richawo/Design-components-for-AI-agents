@@ -10406,20 +10406,19 @@
     "tier": "pro",
     "platform": "web",
     "category": "data",
-    "description": "A compact task board with clear lanes, detailed cards and keyboard-friendly move controls, preserving focus as tasks move between columns.",
+    "description": "A monochrome sprint board with pointer, touch and keyboard task movement, editable columns, preserved tasks and a choice of custom or native status menus.",
     "tags": [
       "data",
-      "data",
       "kanban",
-      "compact",
-      "responsive",
-      "keyboard"
+      "drag-and-drop",
+      "keyboard",
+      "responsive"
     ],
     "dependencies": [
       "motion"
     ],
     "theme": "dark",
-    "previewHeight": 720,
+    "previewHeight": 850,
     "usage": "import { CompactKanban } from \"@/components/design-for-ai/data-kanban-compact\";\n\n<CompactKanban />",
     "props": [
       {
@@ -10431,8 +10430,8 @@
       {
         "name": "columns",
         "type": "KanbanColumn[]",
-        "default": "Ready, In progress, Done",
-        "description": "Unique destination IDs and lane titles; reserve __unassigned for orphaned items."
+        "default": "undefined",
+        "description": "Controlled columns. Supply onColumnsChange or onBoardChange to enable column management."
       },
       {
         "name": "items",
@@ -10450,22 +10449,50 @@
         "name": "onChange",
         "type": "(items: KanbanCard[]) => void",
         "default": "undefined",
-        "description": "Entire board after a move. Host persistence is separate; unknown columns remain visible in Unassigned."
+        "description": "Task array after moves or column removal. Controlled items without a change callback are read-only; persistence is the host’s responsibility."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
         "description": "Surface and ink palette; the demo stage follows the chosen theme."
+      },
+      {
+        "name": "defaultColumns",
+        "type": "KanbanColumn[]",
+        "default": "Ready, In progress, Done",
+        "description": "Initial columns for an uncontrolled board. IDs must be unique; __unassigned is reserved."
+      },
+      {
+        "name": "onColumnsChange",
+        "type": "(columns: KanbanColumn[]) => void",
+        "default": "undefined",
+        "description": "Receives add, rename and remove changes. Controlled columns without a callback are read-only."
+      },
+      {
+        "name": "onBoardChange",
+        "type": "(board: KanbanBoard) => void",
+        "default": "undefined",
+        "description": "Atomic items and columns snapshot. Takes precedence over the separate callbacks; update both controlled arrays together."
+      },
+      {
+        "name": "selectMode",
+        "type": "\"custom\" | \"native\"",
+        "default": "\"custom\"",
+        "description": "Animated, keyboard-accessible listboxes or native platform pickers, with matching 12px insets."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
         "wait:600",
-        "click:@advance-demo",
+        "click:@move-ds-14",
+        "key:ArrowDown",
+        "key:Enter",
         "wait:900",
-        "click:@advance-demo",
+        "click:@move-ds-18",
+        "key:ArrowDown",
+        "key:Enter",
         "wait:900"
       ],
       "loop": false
@@ -10480,6 +10507,16 @@
           "light"
         ],
         "default": "dark"
+      },
+      {
+        "prop": "selectMode",
+        "label": "Status menu",
+        "kind": "segmented",
+        "options": [
+          "custom",
+          "native"
+        ],
+        "default": "custom"
       }
     ]
   },

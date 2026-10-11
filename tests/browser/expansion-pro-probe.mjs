@@ -150,7 +150,7 @@ try {
   ]);
   await fixture(
     "data-kanban-compact",
-    `window.cards=[];createRoot(document.getElementById('root')).render(<Subject.CompactKanban defaultItems={[{id:'constructor',title:'Safe object key',description:'Move me',columnId:'ready',owner:'Jo'}]} onChange={v=>window.cards=v}/>);`,
+    `window.cards=[];createRoot(document.getElementById('root')).render(<Subject.CompactKanban selectMode="native" defaultItems={[{id:'constructor',title:'Safe object key',description:'Move me',columnId:'ready',owner:'Jo'}]} onChange={v=>window.cards=v}/>);`,
   );
   await page.getByRole("combobox").selectOption("working");
   assert.equal(await page.evaluate(() => window.cards[0].columnId), "working");
