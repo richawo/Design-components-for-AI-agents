@@ -225,7 +225,7 @@ export function PaymentMethods({
                 type="button"
                 data-demo="undo"
                 onClick={undo}
-                className="h-9 shrink-0 rounded-full px-3 text-[13px] font-medium text-(--pay-accent-text) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--pay-ink)"
+                className="[@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 h-9 shrink-0 rounded-full px-3 text-[13px] font-medium text-(--pay-accent-text) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--pay-ink)"
               >
                 Undo
               </button>
@@ -243,7 +243,7 @@ export function PaymentMethods({
             type="button"
             data-demo="add"
             onClick={() => setView("add")}
-            className="flex h-12 w-full items-center justify-center rounded-[12px] text-[14.5px] font-medium shadow-[inset_0_0_0_1px_var(--pay-line)] transition-colors duration-150 hover:bg-(--pay-raised) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--pay-ink) active:scale-[0.985]"
+            className="[@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 flex h-12 w-full items-center justify-center rounded-[12px] text-[14.5px] font-medium shadow-[inset_0_0_0_1px_var(--pay-line)] transition-colors duration-150 hover:bg-(--pay-raised) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--pay-ink) active:scale-[0.985]"
           >
             Add a card
           </button>
@@ -298,7 +298,7 @@ function CardItem({
             type="button"
             data-demo={`set-default-${card.last4}`}
             onClick={onDefault}
-            className="h-9 rounded-full px-1 text-[13px] font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--pay-ink)"
+            className="[@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 h-9 rounded-full px-1 text-[13px] font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--pay-ink)"
           >
             Set default
           </button>
@@ -307,7 +307,7 @@ function CardItem({
           type="button"
           data-demo={`remove-${card.last4}`}
           onClick={onRemove}
-          className="h-9 rounded-full px-2 text-[13px] text-(--pay-muted) hover:text-(--pay-ink) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--pay-ink)"
+          className="[@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 h-9 rounded-full px-2 text-[13px] text-(--pay-muted) hover:text-(--pay-ink) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--pay-ink)"
         >
           Remove
         </button>
@@ -368,7 +368,7 @@ function AddForm({ cards, onCancel, onAdd, reduce }: { cards: SavedCard[]; onCan
     <form onSubmit={submit} className="rounded-[14px] p-4 shadow-[inset_0_0_0_1px_var(--pay-line)]">
       <div className="flex items-baseline justify-between gap-3">
         <p className="font-mono text-[11px] font-medium tracking-[0.08em] text-(--pay-muted) uppercase">New card</p>
-        <button type="button" onClick={onCancel} className="text-[13px] text-(--pay-muted) hover:text-(--pay-ink) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--pay-ink)">
+        <button type="button" onClick={onCancel} className="[@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 text-[13px] text-(--pay-muted) hover:text-(--pay-ink) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--pay-ink)">
           Cancel
         </button>
       </div>
@@ -386,7 +386,7 @@ function AddForm({ cards, onCancel, onAdd, reduce }: { cards: SavedCard[]; onCan
         type="submit"
         data-demo="add-card"
         whileTap={reduce ? undefined : { scale: 0.98 }}
-        className={`mt-4 flex h-11 w-full items-center justify-center rounded-[12px] text-[14px] font-medium transition-[background-color,color] duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--pay-ink) ${ready ? "bg-(--pay-accent) text-(--pay-on-accent)" : "bg-(--pay-raised) text-(--pay-muted) shadow-[inset_0_0_0_1px_var(--pay-line)]"}`}
+        className={`[@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 mt-4 flex h-11 w-full items-center justify-center rounded-[12px] text-[14px] font-medium transition-[background-color,color] duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--pay-ink) ${ready ? "bg-(--pay-accent) text-(--pay-on-accent)" : "bg-(--pay-raised) text-(--pay-muted) shadow-[inset_0_0_0_1px_var(--pay-line)]"}`}
       >
         Add card
       </motion.button>
