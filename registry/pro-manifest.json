@@ -18955,6 +18955,89 @@
     ]
   },
   {
+    "slug": "legal-renewal-planner",
+    "name": "Contract Renewal Planner",
+    "tier": "pro",
+    "platform": "web",
+    "category": "date-time",
+    "description": "Inspect renewal terms and record an owner’s decision before a supplied deadline.",
+    "tags": [
+      "legal-tech",
+      "workflow",
+      "responsive",
+      "keyboard",
+      "date-time"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "light",
+    "previewHeight": 1190,
+    "usage": "import { RenewalPlanner } from \"@/components/design-for-ai/legal-renewal-planner\";\n\n<RenewalPlanner />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Main heading."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "description": "Supporting context."
+      },
+      {
+        "name": "contracts",
+        "type": "RenewalContract[]",
+        "description": "Unique contracts with explicit owner-supplied renewal and notice dates. Deadlines are not derived from contract wording."
+      },
+      {
+        "name": "referenceDate",
+        "type": "string",
+        "description": "ISO calendar date for notice-window status."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "description": "Shared two-decimal ISO currency for annual values."
+      },
+      {
+        "name": "onDecision",
+        "type": "(decision:RenewalDecision)=>void|Promise<void>",
+        "description": "Record an internal owner decision. The host is responsible for any contractual notice and subsequent approval."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"light\"",
+        "description": "Surface, border and ink palette."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:350",
+        "click:@contract-1",
+        "wait:750",
+        "click:@scope-all",
+        "click:@contract-2",
+        "wait:1000"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "light"
+      }
+    ]
+  },
+  {
     "slug": "legal-signature-request",
     "name": "Signature Request Composer",
     "tier": "pro",
