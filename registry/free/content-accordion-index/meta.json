@@ -1,0 +1,84 @@
+{
+  "slug": "content-accordion-index",
+  "name": "Editorial Question Index",
+  "tier": "free",
+  "platform": "web",
+  "category": "content",
+  "description": "An editorial accordion with serif headline, numbered questions and quietly revealed answers for studio FAQs, product details and help sections.",
+  "tags": [
+    "content",
+    "content",
+    "accordion",
+    "index",
+    "responsive",
+    "keyboard"
+  ],
+  "dependencies": [
+    "motion",
+    "lucide-react"
+  ],
+  "theme": "dark",
+  "previewHeight": 640,
+  "usage": "import { AccordionIndex } from \"@/components/design-for-ai/content-accordion-index\";\n\n<AccordionIndex />",
+  "props": [
+    {
+      "name": "title",
+      "type": "string",
+      "default": "\"A few useful answers.\"",
+      "description": "Section heading."
+    },
+    {
+      "name": "kicker",
+      "type": "string",
+      "default": "\"Before we begin\"",
+      "description": "Small editorial label."
+    },
+    {
+      "name": "items",
+      "type": "AccordionEntry[]",
+      "default": "three studio questions",
+      "description": "Questions with unique IDs and plain-text answers."
+    },
+    {
+      "name": "defaultOpen",
+      "type": "string",
+      "default": "\"ownership\"",
+      "description": "Initially expanded item ID."
+    },
+    {
+      "name": "onOpenChange",
+      "type": "(id: string | null) => void",
+      "default": "undefined",
+      "description": "Reports expanded item or closure."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Surface and ink palette; the demo stage follows the chosen theme."
+    }
+  ],
+  "added": "2026-10-11",
+  "demo": {
+    "steps": [
+      "wait:500",
+      "click:@question-1",
+      "wait:700",
+      "click:@question-2",
+      "wait:700"
+    ],
+    "loop": false
+  },
+  "controls": [
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        "dark",
+        "light"
+      ],
+      "default": "dark"
+    }
+  ]
+}
