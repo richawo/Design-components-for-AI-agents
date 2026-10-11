@@ -838,6 +838,232 @@
     ]
   },
   {
+    "slug": "ai-mcp-elicitation",
+    "name": "MCP Elicitation",
+    "tier": "pro",
+    "platform": "web",
+    "category": "ai",
+    "description": "A tool call that pauses the thread and asks for the fields it cannot guess. A bad time is refused, a free one books, and the assistant continues.",
+    "tags": [
+      "ai",
+      "mcp",
+      "elicitation",
+      "tool call",
+      "form",
+      "calendar",
+      "chat",
+      "agent"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 920,
+    "usage": "import { AiMcpElicitation } from \"@/components/design-for-ai/ai-mcp-elicitation\";\n\n<AiMcpElicitation\n  tool=\"calendar.hold\"\n  room=\"Studio B\"\n  onSubmit={(fields) => resume(fields)}\n/>\n\n// Drive the result from outside with status (\"asking\" | \"booked\") and onStatusChange.\n// The first slot starts selected, including when it is unavailable, so Continue can show the conflict.\n// Pass guests to control the count; omit it and the stepper owns it. More guests than capacity disables Continue.",
+    "props": [
+      {
+        "name": "userName",
+        "type": "string",
+        "default": "\"Mara\"",
+        "description": "Who asked for the tool to run. Shown above their message."
+      },
+      {
+        "name": "request",
+        "type": "string",
+        "default": "\"Hold Studio B for the design review on Thursday.\"",
+        "description": "The message above the form."
+      },
+      {
+        "name": "agent",
+        "type": "string",
+        "default": "\"Ada\"",
+        "description": "The assistant that paused for the tool."
+      },
+      {
+        "name": "pause",
+        "type": "string",
+        "default": "\"calendar.hold stopped. It needs the fields it can’t guess.\"",
+        "description": "The line under the request, before the form."
+      },
+      {
+        "name": "tool",
+        "type": "string",
+        "default": "\"calendar.hold\"",
+        "description": "Tool that asked for the fields. Shown in mono in the card header."
+      },
+      {
+        "name": "room",
+        "type": "string",
+        "default": "\"Studio B\"",
+        "description": "Room the tool is trying to hold. Used in the people line, the conflict and the receipt."
+      },
+      {
+        "name": "slots",
+        "type": "ElicitSlot[]",
+        "description": "Choices for when: { id, label, detail, available }. One of them is unavailable. detail is a short availability note such as “Held until 3”."
+      },
+      {
+        "name": "defaultSlot",
+        "type": "string",
+        "default": "\"thu-1400\"",
+        "description": "Slot id selected before anyone touches the form. Read on mount. The default is the unavailable slot, so the conflict can be shown."
+      },
+      {
+        "name": "lengths",
+        "type": "number[]",
+        "default": "[45, 90, 120]",
+        "description": "Lengths in minutes, shown as a segmented control."
+      },
+      {
+        "name": "defaultLength",
+        "type": "number",
+        "default": "90",
+        "description": "Length selected before anyone touches the form. Read on mount."
+      },
+      {
+        "name": "guests",
+        "type": "number",
+        "default": "4",
+        "description": "How many people. Pass it to control the count. Omit it and the stepper owns it, from 1 to 12."
+      },
+      {
+        "name": "capacity",
+        "type": "number",
+        "default": "6",
+        "description": "Seats in the room. More guests than this blocks Continue and names the limit."
+      },
+      {
+        "name": "conflict",
+        "type": "string",
+        "default": "\"Studio B is held by Finance until 3. 4:30 is open.\"",
+        "description": "Why the unavailable slot is refused. Shown after Continue, not before."
+      },
+      {
+        "name": "confirmation",
+        "type": "string",
+        "default": "\"Held. {room}, {when}, for {length} minutes.\"",
+        "description": "The line after a valid submit. {when}, {length}, {room} and {guests} are filled in."
+      },
+      {
+        "name": "status",
+        "type": "\"asking\" | \"booked\"",
+        "description": "Controlled state. Asking shows the form. Booked replaces it with the receipt and the assistant’s next line. Omit it and the thread owns the state."
+      },
+      {
+        "name": "onStatusChange",
+        "type": "(status: \"asking\" | \"booked\") => void",
+        "description": "Called when a valid Continue books the room."
+      },
+      {
+        "name": "onSubmit",
+        "type": "(value: { slotId: string; length: number; guests: number }) => void",
+        "description": "Called with the accepted fields when the run resumes. A refused slot does not call it."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#f4f4f5\"",
+        "description": "The one accent: the selection dot, the length marker’s ink, and Continue. A #rrggbb colour. Near-white or near-black values use the theme’s ink so the button stays readable. Ink on the button is chosen for contrast."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Near-black surface with white ink, or the white inverse."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:280",
+        "click:@continue",
+        "wait:520",
+        "click:@slot-thu-1630",
+        "wait:220",
+        "click:@length-45",
+        "wait:220",
+        "click:@continue",
+        "wait:700"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "agent",
+        "label": "Assistant",
+        "kind": "text",
+        "default": "Ada",
+        "group": "Copy"
+      },
+      {
+        "prop": "guests",
+        "label": "People",
+        "kind": "slider",
+        "min": 1,
+        "max": 8,
+        "step": 1,
+        "default": 4,
+        "group": "Request"
+      },
+      {
+        "prop": "status",
+        "label": "State",
+        "kind": "action",
+        "options": [
+          {
+            "value": "asking",
+            "label": "Asking"
+          },
+          {
+            "value": "booked",
+            "label": "Booked"
+          }
+        ],
+        "group": "State"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action",
+        "group": "State"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#22c55e",
+          "#7dd3fc",
+          "#f5c66b"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      }
+    ]
+  },
+  {
     "slug": "ai-reasoning-trace",
     "name": "Reasoning Trace",
     "tier": "pro",
