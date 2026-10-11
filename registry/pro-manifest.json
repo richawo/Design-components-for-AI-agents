@@ -5727,6 +5727,198 @@
     ]
   },
   {
+    "slug": "devtools-feature-flags",
+    "name": "Feature Flags",
+    "tier": "pro",
+    "platform": "web",
+    "category": "devtools",
+    "description": "Feature flags with per-environment switches, a rollout you drag, targeting rules written as one sentence, and a kill switch that asks once.",
+    "tags": [
+      "feature flags",
+      "rollout",
+      "targeting",
+      "kill switch",
+      "developer tools",
+      "config",
+      "dashboard"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 920,
+    "usage": "import { FeatureFlags } from \"@/components/design-for-ai/devtools-feature-flags\";\n\n<FeatureFlags\n  project=\"ledgerline\"\n  flag=\"new-checkout\"\n  rollout={25}\n  flags={flags} // { key, name, description, owner, environments, rollout, rules }[]\n  onChange={(next) => save(next)}\n/>\n\n// Rules read as one sentence. The kill switch asks once, then sets the rollout to 0.",
+    "props": [
+      {
+        "name": "project",
+        "type": "string",
+        "default": "\"ledgerline\"",
+        "description": "Project name in the header, in mono beside the accent dot."
+      },
+      {
+        "name": "flags",
+        "type": "Flag[]",
+        "description": "Flags with environments, a rollout percentage and targeting clauses. Defaults to a ledgerline sample."
+      },
+      {
+        "name": "flag",
+        "type": "string",
+        "default": "\"new-checkout\"",
+        "description": "Which flag is open. The list updates it too."
+      },
+      {
+        "name": "rollout",
+        "type": "number",
+        "default": "25",
+        "description": "Rollout of the open flag, 0–100. The slider updates it too."
+      },
+      {
+        "name": "showRules",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show the targeting sentence and its clause switches."
+      },
+      {
+        "name": "density",
+        "type": "\"compact\" | \"comfortable\"",
+        "default": "\"comfortable\"",
+        "description": "Closed-row padding: 8px or 12px."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface the panel sits on."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#7cc4ff\"",
+        "description": "The one accent: the open flag’s edge, the rollout fill, and a served verdict."
+      },
+      {
+        "name": "onChange",
+        "type": "(flags: Flag[]) => void",
+        "description": "Called with the next list after a switch, a rollout edit or a kill."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root section."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@rollout:0.82,0.5",
+        "wait:500",
+        "click:@rule-region",
+        "wait:400",
+        "click:@kill",
+        "wait:400",
+        "click:@kill-confirm",
+        "wait:800"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "flag",
+        "label": "Flag",
+        "kind": "select",
+        "options": [
+          {
+            "value": "new-checkout",
+            "label": "New checkout"
+          },
+          {
+            "value": "invoice-pdf-v2",
+            "label": "Invoice PDF"
+          },
+          {
+            "value": "usage-forecast",
+            "label": "Usage forecast"
+          },
+          {
+            "value": "strict-idempotency",
+            "label": "Strict idempotency"
+          }
+        ],
+        "default": "new-checkout",
+        "group": "View"
+      },
+      {
+        "prop": "rollout",
+        "label": "Rollout",
+        "kind": "slider",
+        "min": 0,
+        "max": 100,
+        "step": 5,
+        "unit": "%",
+        "default": 25,
+        "group": "View"
+      },
+      {
+        "prop": "showRules",
+        "label": "Rules",
+        "kind": "toggle",
+        "default": true,
+        "group": "View"
+      },
+      {
+        "prop": "density",
+        "label": "Density",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "compact",
+            "label": "Compact"
+          },
+          {
+            "value": "comfortable",
+            "label": "Comfortable"
+          }
+        ],
+        "default": "comfortable",
+        "group": "View"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#7cc4ff",
+        "options": [
+          "#7cc4ff",
+          "#ff9d5c",
+          "#7dd3a8"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
+  },
+  {
     "slug": "devtools-log-stream",
     "name": "Log Stream",
     "tier": "pro",
