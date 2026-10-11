@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { fetchProSource, type SourcePayload } from "@/lib/pro-source-client";
 import { CopyButton } from "./copy-button";
 
@@ -34,6 +34,7 @@ export function SourceTabs({
   installText: string;
   installHtml: string;
 }) {
+  const uid = useId();
   const [tab, setTab] = useState<Tab>("code");
   const [source, setSource] = useState<SourcePayload | null>(initial);
   const [status, setStatus] = useState<"ready" | "loading" | "locked">(initial ? "ready" : "loading");
@@ -59,16 +60,30 @@ export function SourceTabs({
   return (
     <div className="overflow-hidden rounded-[20px] border border-white/[0.08] bg-site-raised text-site-fg shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
       <div className="flex flex-col gap-3 border-b border-white/[0.06] px-3 pt-2 sm:flex-row sm:items-center sm:justify-between sm:px-4">
-        <div role="tablist" aria-label="Component source" className="-mb-px flex gap-1 overflow-x-auto [scrollbar-width:none]">
+        <div role="tablist" aria-label="Component source" aria-orientation="horizontal" className="-mb-px flex gap-1 overflow-x-auto [scrollbar-width:none]">
           {TABS.map((t) => (
             <button
               key={t.key}
+              type="button"
               role="tab"
-              id={`tab-${t.key}`}
+              id={`${uid}-tab-${t.key}`}
               aria-selected={tab === t.key}
-              aria-controls={`panel-${t.key}`}
+              aria-controls={`${uid}-panel-${t.key}`}
+              tabIndex={tab === t.key ? 0 : -1}
               onClick={() => setTab(t.key)}
-              className={`group relative shrink-0 px-3.5 pb-3 pt-2.5 text-[13px] font-medium transition-colors duration-150 ${tab === t.key ? "text-site-fg" : "text-site-fg-3 hover:text-site-fg-2"}`}
+              onKeyDown={(event) => {
+                if (event.altKey || event.ctrlKey || event.metaKey) return;
+                const index = TABS.indexOf(t);
+                const rtl = getComputedStyle(event.currentTarget).direction === "rtl";
+                const direction = event.key === "ArrowRight" ? (rtl ? -1 : 1) : event.key === "ArrowLeft" ? (rtl ? 1 : -1) : 0;
+                const next = event.key === "Home" ? 0 : event.key === "End" ? TABS.length - 1 : direction ? (index + direction + TABS.length) % TABS.length : null;
+                if (next === null) return;
+                event.preventDefault();
+                setTab(TABS[next].key);
+                const buttons = event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>("[role='tab']");
+                buttons?.[next]?.focus();
+              }}
+              className={`group relative min-h-11 shrink-0 px-3.5 pb-3 pt-2.5 text-[13px] font-medium transition-colors duration-150 ${tab === t.key ? "text-site-fg" : "text-site-fg-3 hover:text-site-fg-2"}`}
             >
               <span className="relative inline-block transition-transform duration-150 group-active:scale-[0.95]">{t.label}</span>
               {tab === t.key && (
@@ -97,8 +112,8 @@ export function SourceTabs({
         {tab === "code" ? fileName : TABS.find((t) => t.key === tab)!.hint}
       </p>
 
-      <div key={`${tab}-${status}`} role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`} className="site-rise relative">
-        {tab === "install" ? (
+      {TABS.map((item) => <div key={item.key} role="tabpanel" id={`${uid}-panel-${item.key}`} aria-labelledby={`${uid}-tab-${item.key}`} hidden={tab !== item.key} tabIndex={tab === item.key ? 0 : -1} className="relative">
+        {tab !== item.key ? null : tab === "install" ? (
           <Scroll html={installHtml} />
         ) : status === "loading" ? (
           <div className="flex h-64 items-center justify-center">
@@ -115,7 +130,7 @@ export function SourceTabs({
             <pre className="whitespace-pre-wrap break-words font-mono text-[13px] leading-[1.75] text-site-fg-2">{source.prompt}</pre>
           </div>
         )}
-      </div>
+      </div>)}
       {tier === "pro" && status === "ready" && (
         <p className="flex items-center gap-2 border-t border-white/[0.06] px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-site-fg-3">
           <span aria-hidden="true" className="size-1.5 rounded-full bg-site-accent" />
