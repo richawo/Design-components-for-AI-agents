@@ -9354,6 +9354,89 @@
     ]
   },
   {
+    "slug": "commerce-shipping-estimator",
+    "name": "Shipping Rate Workbench",
+    "tier": "pro",
+    "platform": "web",
+    "category": "commerce",
+    "description": "Compare eligible services from destination, parcel weight and order value. A considered, responsive commerce workspace with typed integration points.",
+    "tags": [
+      "e-commerce",
+      "workflow",
+      "responsive",
+      "keyboard",
+      "commerce"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 900,
+    "usage": "import { ShippingEstimator } from \"@/components/design-for-ai/commerce-shipping-estimator\";\n\n<ShippingEstimator />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Main heading."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "description": "Supporting context."
+      },
+      {
+        "name": "destinations",
+        "type": "ShippingDestination[]",
+        "description": "Selectable regions. Service destination IDs must match these entries."
+      },
+      {
+        "name": "services",
+        "type": "ShippingService[]",
+        "description": "Supplied tariff bands, two-decimal minor-unit costs and delivery estimates. Invalid service configurations are excluded."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "description": "ISO currency for tariffs and order value."
+      },
+      {
+        "name": "onSelect",
+        "type": "(quote:ShippingQuote)=>void|Promise<void>",
+        "description": "Accept the quote snapshot. The host must revalidate current rates before purchase."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface, border and ink palette."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:450",
+        "click:@sort-speed",
+        "wait:500",
+        "click:@service-0",
+        "click:@select",
+        "wait:1100"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "commerce-variant-stock",
     "name": "Fashion Variant Stockroom",
     "tier": "pro",
