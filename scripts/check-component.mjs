@@ -81,8 +81,9 @@ if (status === 0) {
 }
 const generated = path.join(root, "registry", "__generated__", "index.json");
 const listed = () => fs.existsSync(generated) && JSON.parse(fs.readFileSync(generated, "utf8")).some((e) => e.slug === slug);
-if (status !== 200 && !listed()) {
-  node("build-registry.mjs");
+if (status !== 200) {
+  // Next dev may briefly serve its cached 404 after the generated registry updates.
+  if (!listed()) node("build-registry.mjs");
   for (let i = 0; i < 30 && status !== 200; i++) {
     await new Promise((r) => setTimeout(r, 1000));
     status = await previewStatus();
