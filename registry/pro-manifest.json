@@ -5543,6 +5543,190 @@
     ]
   },
   {
+    "slug": "devtools-env-vars",
+    "name": "Environment Variables",
+    "tier": "pro",
+    "platform": "web",
+    "category": "devtools",
+    "description": "Masked secrets with a reveal, per-environment scope toggles, a .env paste that flags duplicates and invalid keys, and a redeploy banner after edits.",
+    "tags": [
+      "environment variables",
+      "secrets",
+      "dotenv",
+      "developer tools",
+      "config",
+      "deploy",
+      "dashboard"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 780,
+    "usage": "import { EnvVars } from \"@/components/design-for-ai/devtools-env-vars\";\n\n<EnvVars\n  project=\"ledgerline\"\n  environment=\"production\"\n  variables={variables} // { key, sensitive, updated, scopes, values }[]\n  onChange={(next) => save(next)}\n  onRedeploy={(env) => redeploy(env)}\n/>\n\n// Secrets stay masked until revealed. Import parses a .env paste and skips duplicates.\n// A redeploy banner appears after a scope change or a successful import.",
+    "props": [
+      {
+        "name": "project",
+        "type": "string",
+        "default": "\"ledgerline\"",
+        "description": "Project name in the header, in mono beside the accent dot."
+      },
+      {
+        "name": "variables",
+        "type": "EnvVar[]",
+        "description": "Keys with a sensitive flag, a relative updated time, per-environment scopes and stored values. Defaults to a ledgerline sample."
+      },
+      {
+        "name": "environment",
+        "type": "\"production\" | \"preview\" | \"development\"",
+        "default": "\"production\"",
+        "description": "Which environment is on screen. The switcher updates it too."
+      },
+      {
+        "name": "mask",
+        "type": "boolean",
+        "default": "true",
+        "description": "Mask secrets until their reveal control is pressed. Plain values stay readable."
+      },
+      {
+        "name": "density",
+        "type": "\"compact\" | \"comfortable\"",
+        "default": "\"comfortable\"",
+        "description": "Row padding: 8px or 12px, tighter from the large container."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface the editor sits on."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#7cc4ff\"",
+        "description": "The one accent: the project dot, a new key in a paste, and the redeploy mark."
+      },
+      {
+        "name": "onChange",
+        "type": "(variables: EnvVar[]) => void",
+        "description": "Called with the next list after a scope edit or an import."
+      },
+      {
+        "name": "onRedeploy",
+        "type": "(environment: EnvName) => void",
+        "description": "Called when a redeploy finishes."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root section."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@reveal-stripe",
+        "wait:450",
+        "click:@scope-production-sentry",
+        "wait:550",
+        "click:@import",
+        "wait:400",
+        "click:@import-field",
+        "type:BAD KEY=1",
+        "wait:800"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "environment",
+        "label": "Environment",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "production",
+            "label": "Production"
+          },
+          {
+            "value": "preview",
+            "label": "Preview"
+          },
+          {
+            "value": "development",
+            "label": "Development"
+          }
+        ],
+        "default": "production",
+        "group": "View"
+      },
+      {
+        "prop": "mask",
+        "label": "Mask",
+        "kind": "toggle",
+        "default": true,
+        "group": "View"
+      },
+      {
+        "prop": "density",
+        "label": "Density",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "compact",
+            "label": "Compact"
+          },
+          {
+            "value": "comfortable",
+            "label": "Comfortable"
+          }
+        ],
+        "default": "comfortable",
+        "group": "View"
+      },
+      {
+        "prop": "project",
+        "label": "Project",
+        "kind": "text",
+        "default": "ledgerline",
+        "group": "View"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#7cc4ff",
+        "options": [
+          "#7cc4ff",
+          "#ff9d5c",
+          "#7dd3a8"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
+  },
+  {
     "slug": "devtools-log-stream",
     "name": "Log Stream",
     "tier": "pro",
