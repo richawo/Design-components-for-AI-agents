@@ -14528,6 +14528,95 @@
     ]
   },
   {
+    "slug": "fashion-preorder-planner",
+    "name": "Preorder Production Planner",
+    "tier": "pro",
+    "platform": "web",
+    "category": "commerce",
+    "description": "Plan size-level production against preorders and minimum factory quantities. A considered, responsive fashion workspace with typed integration points.",
+    "tags": [
+      "fashion",
+      "workflow",
+      "responsive",
+      "keyboard",
+      "commerce"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "light",
+    "previewHeight": 1280,
+    "usage": "import { PreorderPlanner } from \"@/components/design-for-ai/fashion-preorder-planner\";\n\n<PreorderPlanner />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Main heading."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "description": "Supporting context."
+      },
+      {
+        "name": "style",
+        "type": "string",
+        "description": "Style identifier or display name being planned."
+      },
+      {
+        "name": "sizes",
+        "type": "PreorderSize[]",
+        "description": "Unique size IDs with non-negative whole-unit preorders and on-hand stock, each at most 1,000,000."
+      },
+      {
+        "name": "minimumUnits",
+        "type": "number",
+        "description": "Minimum whole units required across this production run."
+      },
+      {
+        "name": "packMultiple",
+        "type": "number",
+        "description": "Every size production quantity must be a multiple of this positive whole number."
+      },
+      {
+        "name": "onSave",
+        "type": "(plan:ProductionPlan)=>void|Promise<void>",
+        "description": "Persist the reviewed production proposal. Host approval and factory ordering remain outside this component."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"light\"",
+        "description": "Surface, border and ink palette."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:350",
+        "click:@suggest",
+        "wait:500",
+        "click:@review",
+        "wait:450",
+        "click:@save",
+        "wait:1100"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "light"
+      }
+    ]
+  },
+  {
     "slug": "fashion-size-guide",
     "name": "Garment Size Guide Studio",
     "tier": "pro",
