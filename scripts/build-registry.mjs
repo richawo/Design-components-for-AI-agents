@@ -395,6 +395,8 @@ if (editorial.posts.length) {
 writeJson(path.join(outDir, "content.json"), { ...editorialBundle, docs: mdFiles("docs") });
 writeJson(path.join(root, "public", ".well-known", "design-build.json"), {
   publicCommit: execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim(),
+  privateContentCommit: editorial.posts.length && fs.existsSync(path.join(root, "registry", "pro", ".git"))
+    ? execFileSync("git", ["rev-parse", "HEAD"], { cwd: path.join(root, "registry", "pro"), encoding: "utf8" }).trim() : null,
   blogPosts: editorial.posts.filter((post) => !post.data.draft).length,
   blogLocales: editorial.posts.length ? ["en", ...Object.keys(editorialBundle.localizedBlog)] : [],
 });

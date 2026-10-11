@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { handleMessage, TOOLS } from "@/lib/mcp";
+import { allPosts } from "@/lib/content";
 
 const anon = { license: { ok: false as const, reason: "missing" as const } };
 const call = (name: string, args: Record<string, unknown> = {}, ctx = anon) =>
@@ -8,6 +9,15 @@ const call = (name: string, args: Record<string, unknown> = {}, ctx = anon) =>
   }>;
 
 describe("remote MCP server", () => {
+  it.skipIf(!allPosts("fr").length)("reads localised blog articles with canonical provenance through the anonymous page tool", async () => {
+    const post = allPosts("fr")[0];
+    const result = await call("get_page", { path: `fr/blog/${post.slug}` });
+    expect(result.result.isError).not.toBe(true);
+    expect(result.result.content[0].text).toContain(`canonical: https://design.yaps.ai/fr/blog/${post.slug}`);
+    expect(result.result.content[0].text).toContain(`title: ${JSON.stringify(post.title)}`);
+    const missing = await call("get_page", { path: "fr/blog/missing-article" });
+    expect(missing.result.isError).toBe(true);
+  });
   it("negotiates the protocol version", async () => {
     const r = (await handleMessage({ jsonrpc: "2.0", id: 1, method: "initialize", params: { protocolVersion: "2025-06-18" } }, anon)) as { result: { protocolVersion: string; capabilities: object } };
     expect(r.result.protocolVersion).toBe("2025-06-18");

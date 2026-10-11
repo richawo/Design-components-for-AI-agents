@@ -18,7 +18,7 @@ Build a typographic statement hero in React + Tailwind CSS v4 with `motion/react
 
 **Rotation clock**
 - One rAF clock drives the name and a 32–40px hairline progress bar beside the counter (scaleX 0→1). Interval 2600ms; the first name holds an extra 900ms during the entrance. Pause while hovering the h1 (mouse only), while held by the control, offscreen (IntersectionObserver) and in hidden tabs; the bar freezes with it.
-- Control (a real `button`, min-h 44px): ring icon (pause ↔ play), `01 / 06` in tabular mono (white/80, total white/30), the progress hairline, and the name’s `note`, which cross-fades with a 6px offset and 3px blur. `aria-pressed` reflects the hold.
+- Control (a real `button`, min-h 44px): ring icon (pause ↔ play), `01 / 06` in tabular mono (white/80, total white/30), the progress hairline, and the name’s `note`, which cross-fades with a 6px offset and 3px blur. `aria-pressed` reflects the hold. Pressing play steps straight to the next name and gives it a full hold, so resuming answers at once.
 
 **Entrance (one `T` timeline object, seconds)**
 - Top row: eyebrow at 0, status at 0.06, each rising 10px out of an 8px blur (600ms).

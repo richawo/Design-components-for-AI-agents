@@ -1,0 +1,79 @@
+{
+  "component": "AiMessageActions",
+  "intent": "The action row under an AI reply. It owns the reply's versions: Copy morphs into a check, Regenerate dims the text and inks a new take in word by word, thumbs up pops, thumbs down asks an optional why, and a 2 / 3 counter rolls between versions that cross-fade with direction. Quiet at rest: state stays visible, actions appear on hover.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 with an @container root and a small inline <style> for the hover reveal",
+    "animation": "motion/react (AnimatePresence with directional custom variants, pathLength morphs, measured height tween, useInView for the first view)",
+    "icons": "lucide-react for chevrons and thumbs; copy and regenerate glyphs drawn inline so they can morph and turn"
+  },
+  "layout": {
+    "root": "article, @container, author line (20px mark + name) above the reply body",
+    "body": "15.5px / 1.65 paragraphs 12px apart inside a wrapper whose height tweens to the measured content height",
+    "row": "role=toolbar 12px under the body, pulled 6px left for optical alignment: [chevron, mono '2 / 3', chevron, 1x16px hairline] [copy, regenerate, thumbs up, thumbs down] [meta slot, right aligned, hidden below 26rem]",
+    "buttons": "md 32px square radius 8px icon 16px; sm 28px radius 7px icon 14px; 44px on pointer: coarse",
+    "popover": "absolute above the row, left aligned, width min(340px, 100%), radius 14px, padding 14px: title, optional line, wrapping toggle chips (32px tall, full radius), 2-row note field, Skip + Send feedback right aligned",
+    "tooltip": "above its button, centred, 6px radius, 11.5px 500, inverted colours",
+    "demo": "black stage, 640px panel (#0b0b0c, 20px radius, hairline ring), right-aligned user bubble with 'You · 09:41', then the component"
+  },
+  "typography": {
+    "author": "13px 500, tracking -0.01em; mark initial mono 10.5px semibold",
+    "body": "15.5px, line-height 1.65, text-wrap pretty",
+    "counter": "mono tabular 12.5px (md) / 11.5px (sm), each number in a fixed ch-width box",
+    "meta": "mono tabular 12.5px, faint",
+    "popover": "title 13.5px 500; helper 12.5px / 1.5; chips and buttons 12.5px"
+  },
+  "color": {
+    "approach": "monochrome first; the accent prop is the only colour and marks a choice (a rating, picked reasons, the Send button)",
+    "dark": "ink #f4f4f5, body #c9c9cf, muted #a1a1aa, faint #8a8a93, hover rgba(255,255,255,0.07), press rgba(255,255,255,0.11), rule rgba(255,255,255,0.08), popover #141416 with #27272a border, chips #1a1a1d, field #0d0d0f",
+    "light": "ink #18181b, body #3f3f46, muted #52525b, faint #6b6b73, hover rgba(24,24,27,0.06), press rgba(24,24,27,0.1), popover #ffffff with #e4e4e7 border, chips #f4f4f5",
+    "accent": "#ff9a6b default; a chosen thumb fills with it and is outlined in color-mix(accent 62%, ink); picked chips use accent 14% fill and 55% border; Send is solid accent with near-black text",
+    "tooltip": "ink background with the page colour as text"
+  },
+  "motion": {
+    "reveal": "at rest the four actions sit at opacity 0 and 2px low; on hover they fade in left to right 28ms apart (one micro step), leave together with no delay; shown on focus-within, on hover: none screens and with alwaysVisible",
+    "copy": "two sheets retract (pathLength 1 to 0, 220ms in-out [0.65,0,0.35,1]) while a check draws in the same box (0 to 1, 300ms, 80ms delay); tooltip says Copied; reverses after 1.6s",
+    "regenerate": "current text dims to 0.32 with a 1.5px blur, the arrow turns once per 0.9s, the meta slot reads 'Writing version N…'; the new take enters and inks in word by word (opacity and 4px blur, 16ms per word, capped so the last word lands by 900ms)",
+    "branches": "old version exits 6px against the direction with a 3px blur (150ms ease-in), the new one enters from 8px in the direction (260ms ease-out [0.22,1,0.36,1]); counter numerals roll 70% vertically with a 2px blur (240ms); body height tweens 340ms; the branch group grows in from zero width on spring 500/40",
+    "thumbs": "up fills and pops once (scale 1 to 1.22 to 1, rotate 0 to -10 to 0, 340ms); down fills and opens the popover (6px rise, scale 0.98, 4px blur, 220ms; exit 140ms ease-in)",
+    "tooltip": "opens after 420ms, instantly when moving to a neighbour within 320ms, closes instantly",
+    "press": "scale 0.94 with a stronger fill, 150ms",
+    "firstView": "author line and paragraphs rise 8px out of a 6px blur (500ms, 60ms apart), row fades in at 280ms; once, never on version switches",
+    "reducedMotion": "no transforms, blur, roll, spin or pop; opacity fades of 150ms or less; a regenerated take appears whole"
+  },
+  "responsive": {
+    "container": "the meta slot hides below a 26rem container so the row never wraps or overflows",
+    "touch": "actions always visible on hover: none; buttons and popover controls grow to 44px on pointer: coarse",
+    "popover": "width min(340px, 100%) so it fits a 320px column"
+  },
+  "accessibility": [
+    "article labelled with the author and 'version N of M'",
+    "role=toolbar with aria-label 'Message actions'; ArrowLeft, ArrowRight, Home and End move focus; Tab still reaches every button",
+    "icon buttons have aria-labels; thumbs use aria-pressed; thumbs down has aria-haspopup=dialog and aria-expanded; Regenerate is aria-busy while writing",
+    "the popover is role=dialog labelled by its title, focuses its first chip, traps Tab, closes on Escape, Skip, Send or an outside click, and returns focus to thumbs down",
+    "a polite live region announces Copied, Writing, Version ready, Feedback sent and errors",
+    "2px keyboard-only focus outline offset 2px; prev and next disabled at the ends at 40% opacity"
+  ],
+  "content": {
+    "author": "Wren",
+    "prompt": "Write the release note for Tern 4.2. Under 80 words, no hype.",
+    "versions": [
+      "v1 'Wren 2 · 4.1s': Tern 4.2 makes offline edits safe to merge… / Also in this release: search across archived projects…",
+      "v2 'Wren 2 · 3.2s': Offline edits finally merge cleanly… / Smaller things: archived projects are searchable…",
+      "v3 'Wren 2 · 2.8s' (from Regenerate): Tern 4.2 is about trust… / Plus searchable archives…"
+    ],
+    "reasons": ["Not accurate", "Missed the brief", "Too long", "Wrong tone"],
+    "status": ["Writing version 3…", "Thanks. That helps.", "Couldn't regenerate. Try again."]
+  },
+  "avoid": [
+    "sparkle icons, gradients or glows",
+    "a different colour per action, or labels under the icons",
+    "hiding the version counter or a chosen rating on mouse-out",
+    "cutting between the copy and check icons",
+    "a toast for Copied",
+    "the row changing height between states",
+    "making the reason popover required to rate",
+    "replaying the first-view entrance on every version switch"
+  ]
+}

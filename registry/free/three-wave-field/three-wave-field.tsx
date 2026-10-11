@@ -138,7 +138,10 @@ void main(){
   float ring = rd - uRippleAge * 3.2;
   float wave = exp(-ring * ring * 6.0) * exp(-uRippleAge * 1.1) * step(0.0, uRippleAge);
   h += wave * 0.32;
-  vTouch = clamp(mound * 0.7 + wave * 2.2, 0.0, 1.0);
+  // The accent spreads a little wider than the lift, so the touched patch of sea
+  // reads as colour, not just a few tinted points on the crest.
+  float glow = exp(-d * d * 0.75) * uPointerStrength;
+  vTouch = clamp(glow * 1.1 + wave * 2.2, 0.0, 1.0);
 
   p.y += h * uAmp;
   vec4 mv = modelViewMatrix * vec4(p, 1.0);
@@ -180,7 +183,7 @@ void main(){
   col += uCrest * vFront * 0.35;
   float fog = 1.0 - smoothstep(uNear, uFar, vDepth);
   float near = smoothstep(0.4, 1.6, vDepth);
-  float a = soft * fog * near * vEdge * vSpot * (0.75 + crest * 0.7 + vTouch * 0.5) * vShown;
+  float a = soft * fog * near * vEdge * vSpot * (0.75 + crest * 0.7 + vTouch * 0.9) * vShown;
   gl_FragColor = vec4(col, a);
 }`;
 
@@ -548,7 +551,7 @@ function BuoyReadout({ accent, amplitude, speed, interactive }: Required<Omit<Th
     <div ref={ref} className="pointer-events-none flex flex-col gap-4 @2xl:flex-row @2xl:items-end @2xl:justify-between">
       <div>
         <motion.p custom={0} variants={variants} initial="hidden" animate={state} className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/45">
-          Tidewater buoy 41 · Rockall Trough
+          <span className="whitespace-nowrap">Tidewater buoy 41 ·</span> <span className="whitespace-nowrap">Rockall Trough</span>
         </motion.p>
         <dl className="mt-3 flex gap-7 @md:gap-10">
           {readings.map((r, i) => (
@@ -596,7 +599,7 @@ export default function ThreeWaveFieldDemo(overrides: Partial<ThreeWaveFieldProp
       </div>
       {/* Keeps the readout legible over the moving field. */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-56 bg-gradient-to-t from-black via-black/70 to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 px-6 pb-7 @md:px-10 @md:pb-9">
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 px-6 pb-7 @md:px-10 @md:pb-9">
         <BuoyReadout accent={accent} amplitude={amplitude} speed={speed} interactive={interactive} />
       </div>
     </section>

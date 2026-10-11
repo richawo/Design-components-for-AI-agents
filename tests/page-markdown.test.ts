@@ -1,11 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { markdownForPage, markdownPagePaths } from "@/lib/page-markdown";
+import { allPosts } from "@/lib/content";
 
 describe("Markdown twins of every page", () => {
   const paths = markdownPagePaths();
 
   it("covers the main pages", () => {
-    for (const p of ["index", "components", "pricing", "docs", "blog", "account"]) expect(paths).toContain(p);
+    for (const p of ["index", "components", "pricing", "docs", "account"]) expect(paths).toContain(p);
+    expect(paths.includes("blog")).toBe(Boolean(allPosts().length));
     expect(paths.some((p) => p.startsWith("docs/"))).toBe(true);
     expect(paths.some((p) => p.startsWith("categories/"))).toBe(true);
   });

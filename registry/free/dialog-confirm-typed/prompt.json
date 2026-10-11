@@ -5,56 +5,58 @@
   "stack": {
     "framework": "React 19",
     "styling": "Tailwind CSS v4 with @container queries and CSS variables on the root",
-    "animation": "motion/react: animate() on the panel (clip-path circle, scale, opacity), stagger() for content blocks, useMotionValue and animate() for ledger counts, AnimatePresence for the confirm label and the match tick"
+    "animation": "motion/react: animate() on a disc behind the panel (transform scale and opacity, composited) and on the content blocks with stagger(), useMotionValue and animate() for ledger counts, AnimatePresence for the confirm label and the match tick"
   },
   "layout": {
-    "root": "@container, relative, isolate, min-height max(640px, measured panel height + 48px) via ResizeObserver, centred, transparent, padding 16px / 32px",
+    "root": "@container, relative, centred, transparent, padding 16px / 40px (32px / 48px from sm). Sized by the card alone: the dialog is fixed to the viewport, so the root never reserves height for it",
     "card": "max 560px wide, radius 16px, padding 20px (24px from @md); flex row from @md with the trigger at the end",
-    "panel": "absolute, centred on both axes via translate, width min(460px, 100% - 2rem), radius 18px, padding 24px (28px from @md), z-index above the scrim",
+    "panel": "position fixed, centred in the viewport via translate, width min(460px, 100vw - 2rem), max-height 100dvh - 2rem with overflow-y auto so it is always reachable on a short screen, radius 18px, padding 24px (28px from 480px wide and 641px tall, 20px at 640px tall or less), z-index 61 over a fixed full-viewport scrim at 60; the panel is its own @container for the footer",
     "ledger": "definition list with hairline rules; each row label left, mono figure right",
-    "footer": "Cancel and Delete first in the DOM. From @lg one row: Archive instead left (-12px optical offset), Cancel and Delete right, Delete min-width 168px so its states never resize it. Below @lg: Cancel + Delete full width (Delete fills), Archive instead centred under them. Below @xs: Delete stacked over a full-width Cancel.",
-    "errorLine": "no reserved line: the kicker and the error copy both sit invisibly in one grid cell and the visible one cross-fades, so an error never moves anything even when it wraps"
+    "footer": "Cancel and Delete first in the DOM. From 400px of panel content (@[25rem]) one row: Archive instead left (-12px optical offset), Cancel and Delete right, Delete min-width 168px so its states never resize it. From 280px (@[17.5rem]): Cancel + Delete full width (Delete fills), Archive instead centred under them. Below that (a 320px phone): Delete stacked over a full-width Cancel.",
+    "errorLine": "no reserved line: the kicker and the error copy both sit invisibly in one grid cell and the visible one cross-fades, so an error never moves anything even when it wraps",
+    "shortScreens": "at 640px tall or less the panel padding drops to 20px and the ledger, field and footer spacing tightens by 4px steps so the whole dialog fits a 560px-tall viewport; if it still overflows it scrolls inside itself and the focused field is scrolled into view"
   },
   "typography": {
     "kicker": "mono 10.5px uppercase, letter-spacing 0.14em, muted",
     "title": "display face 24px, line-height 1.1, letter-spacing -0.03em",
     "body": "14px, line-height 1.55",
-    "ledger": "label 13.5px body colour; figure mono 13.5px tabular numerals",
+    "ledger": "label 13.5px body colour; figure mono 13.5px tabular numerals; a suffix such as h ago is body sans in the muted colour, joined to the figure by a thin space",
     "field": "mono 14px, height 44px, radius 11px",
     "buttons": "14px, weight 500, letter-spacing -0.01em"
   },
   "color": {
     "approach": "one destructive accent per tone; everything else monochrome",
-    "dark": "card #121214, panel #161618, field #0e0e10, hairline rgba(255,255,255,0.08), ink #f4f4f5, body #b4b4bc, muted #8a8a93, scrim rgba(0,0,0,0.62), success #5cb86f",
-    "light": "card and panel #ffffff, field #f6f6f7, hairline rgba(24,24,27,0.10), ink #18181b, body #3f3f46, muted #6b6b74, scrim rgba(18,18,20,0.42), success #2f7d43",
-    "danger": "fill #d63b40 with white text; ink #ff8b8f on dark, #b91c1c on light; wash 10% dark, 7% light",
-    "neutral": "fill is the theme ink with the inverse text; ink is the same ink",
+    "dark": "card #121214, panel #161618, field #0e0e10, hairline rgba(255,255,255,0.08), ink #f4f4f5, body #b4b4bc, muted #8a8a93, scrim rgba(0,0,0,0.72), success #5cb86f",
+    "light": "card and panel #ffffff, field #f6f6f7, hairline rgba(24,24,27,0.10), ink #18181b, body #3f3f46, muted #6b6b74, scrim rgba(18,18,20,0.5), success #2f7d43",
+    "danger": "fill #d63b40 with white text, hover #e2484d; ink #ff8b8f on dark; on light fill #dc2626, hover #c51f1f, ink #b91c1c; wash 10% dark, 7% light",
+    "neutral": "fill #e9e9ec (hover #ffffff) with #0b0b0c text on dark; #18181b (hover #2e2e33) with white text on light; ink is the theme ink",
     "rule": "no warning triangle, no gradient, no tinted surfaces beyond the tone wash"
   },
   "motion": {
-    "open": "panel clip-path circle grows from radius 0 at the trigger centre to 960px over 500ms on [0.22,1,0.36,1]; scale 0.965 to 1 from the same origin; opacity 0.5 to 1",
-    "content": "blocks rise 8px with 4px blur clearing, 420ms each, staggered 50ms from 140ms, in reading order",
+    "open": "a fixed, rounded 18px, overflow-hidden frame the size of the panel's resting box sits behind the panel and holds a disc in the panel colour, centred on the trigger centre (measured against that box), radius the distance to the box's farthest corner; the disc scales 0 to 1 with a transform string (composited) and fades from 0.6 over 750ms on [0.45,0.1,0.2,1] (soft start, so the growth spreads over many frames) while the panel above is clear (no surface, hairline or shadow); when it lands the panel takes back its surface, its hairline and shadow fade in over 300ms and the frame hides. Not a clip-path circle over the panel: that repaints the panel every frame and steps the grow on a busy machine",
+    "content": "blocks rise 8px with opacity (no blur), 320ms each, staggered 35ms from 520ms when the disc is nearly whole, in reading order, so nothing shows outside the disc; the last block lands by about 1.05s",
     "figures": "ledger numbers count up from zero over 700ms each time the dialog opens",
-    "close": "the same circle shrinks back into the trigger over 260ms on [0.4,0,1,1]; the panel hides only when that run finishes and is still current",
+    "close": "content fades out over 100ms while the panel clears, and the same disc scales back into the trigger over 420ms on [0.4,0,1,1]; the panel hides only when that run finishes and is still current",
     "pending": "label cross-fades to a spinner while onConfirm's promise is unsettled; button width is locked",
-    "done": "check path draws in over 340ms, holds for 520ms, then the dialog closes and focus returns to the trigger",
+    "done": "check path draws in over 340ms, holds for 800ms so it can be read, then the dialog closes and focus returns to the trigger",
     "error": "panel shakes x [0,-3,3,-2,2,-1,0] over 340ms; the label reads “Couldn’t delete” and the kicker cross-fades to “Couldn’t delete. Nothing was removed.” in the tone ink for 2.6s; typed name is kept",
-    "reducedMotion": "no clip, scale, rise or shake; 150ms opacity fades; figures set immediately; spinner stops"
+    "reducedMotion": "no disc, rise or shake; 150ms opacity fades; figures set immediately; spinner stops"
   },
   "responsive": {
-    "panel": "min(460px, 100% - 2rem) so it fits a 320px viewport; the footer is laid out per container width (@lg row, then stacked) rather than wrapping",
+    "panel": "min(460px, 100vw - 2rem) wide and at most 100dvh - 2rem tall, centred in the viewport, so it is reachable from a 320px-wide or 560px-tall screen wherever the card sits; the footer is laid out per panel width rather than wrapping",
     "card": "stacks the trigger under the copy below @md",
-    "touch": "every control is at least 40px tall; the field is 44px"
+    "touch": "every control is at least 44px tall, the trigger and the field included"
   },
   "behaviour": {
     "match": "Delete enables when the trimmed field equals resourceName; a green check appears at the field's right edge",
     "enter": "Enter in the field runs Delete only when it is enabled",
     "dismiss": "Cancel, Escape, a click on the scrim and a finished delete close the dialog and return focus to the trigger; nothing closes while a delete is pending; the panel has tabIndex=-1 so Escape works after clicking its text",
     "focus": "field focused on open, or Cancel when typing is off; Tab and Shift+Tab wrap inside the dialog",
-    "page": "the card is inert while open and page scroll is locked",
+    "page": "the card is inert and the page scroll is locked while open (padding for the vanished scrollbar so nothing shifts); the scrim covers the viewport, so no click reaches the page, and focus that lands outside the panel is pulled back to it",
     "archive": "calls onArchive; closes when a returned promise resolves",
     "busy": "only an unmatched name sets disabled on Delete; while pending and done it keeps full opacity and focus with aria-disabled=true, a progress cursor and no press scale; the field is read-only; on error focus stays on (or returns to) Delete",
-    "status": "status and onStatusChange make the status controllable (idle, pending, done, error); opening into a status past idle fills the field with the confirmed name; the status returns to idle after the error hold or once the dialog has folded away"
+    "status": "status and onStatusChange make the status controllable (idle, pending, done, error); opening into a status past idle fills the field with the confirmed name; the status returns to idle after the error hold or once the dialog has folded away",
+    "hover": "every enabled control has one hover step: trigger, Cancel and Archive take the tone wash; an enabled, idle Delete lightens its fill (darkens on light) and has no hover while disabled, pending or done"
   },
   "accessibility": [
     "role=dialog with aria-modal=true, labelled by its h2 title and described by the body; the card heading level is a prop",
@@ -62,7 +64,7 @@
     "polite live region announces deleting, deleted, the error and archive failures",
     "focus trap with Tab and Shift+Tab; Escape dismisses, including after a click on non-focusable panel content; focus returns to the trigger",
     "a busy confirm uses aria-disabled rather than disabled, so focus never falls to the body",
-    "spinner and drawn icons are aria-hidden; every focus ring, the field included, is a 2px keyboard-only outline offset 2px",
+    "spinner and drawn icons are aria-hidden; every focus ring is a 2px keyboard-only outline offset 2px: tone ink on the trigger, the fill on Delete, the theme ink on quiet buttons, and a quieter 40% ink on the field, which shows it on open",
     "truly unavailable controls are 40% opacity with a not-allowed cursor"
   ],
   "content": {

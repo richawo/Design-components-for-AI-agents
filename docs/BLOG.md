@@ -38,6 +38,22 @@ articles, locales, topics and page numbers return a real 404. A public-only
 checkout builds successfully with the blog unavailable; production builds
 require the private source and complete translation coverage.
 
+Agents can discover every language through `llms.txt` and `/sitemap.md`. The
+remote MCP `get_page` tool reads the same localized hubs and articles as their
+Markdown routes, including canonical provenance.
+
+Private `_site/` changes trigger the private repository's publishing workflow.
+It uses a scoped Cloudflare deployment hook stored as a GitHub secret; the hook
+URL must never appear in public source or logs. Production builds run the blog
+audit and tests before deploying. `/.well-known/design-build.json` identifies
+the public and private commits used to build the site.
+
+`npm run cf:deploy` deploys the built Worker and submits indexable sitemap URLs
+to IndexNow after verifying the live build and public key file. `npm run
+blog:index -- --all --dry-run` previews the URL count. The public repository's
+manual IndexNow workflow can retry a failed submission. IndexNow receipt
+confirms notification, not inclusion in a search index.
+
 Run `npm run blog:audit -- --require-source --require-locales` before a production
 deployment. Errors cover missing metadata, invalid publication dates, unknown
 authors or topics, duplicate titles and slugs, extra H1s and broken article links.

@@ -1,0 +1,33 @@
+{
+  "slug": "collab-presence-bar",
+  "name": "Presence Bar",
+  "tier": "free",
+  "platform": "web",
+  "category": "collaboration",
+  "description": "Who is in the document, and what they are doing. Idle people fade, and following someone pins their sentence on the bar.",
+  "tags": ["presence", "collaboration", "follow", "avatars", "idle", "document", "dark"],
+  "dependencies": ["motion"],
+  "theme": "dark",
+  "previewHeight": 560,
+  "usage": "import { CollabPresenceBar } from \"@/components/design-for-ai/collab-presence-bar\";\n\nexport default function PricingPresence() {\n  return (\n    <CollabPresenceBar\n      title=\"Pricing\"\n      workspace=\"Ledgerline · Website\"\n      people={[\n        { id: \"mara\", name: \"Mara Ilić\", status: \"editing\", place: \"Pricing\" },\n        { id: \"jonas\", name: \"Jonas Weber\", status: \"idle\" },\n      ]}\n      onFollow={(id) => trackFollow(id)}\n    />\n  );\n}",
+  "props": [
+    { "name": "title", "type": "string", "default": "\"Pricing\"", "description": "The document these people are in." },
+    { "name": "workspace", "type": "string", "default": "\"Ledgerline · Website\"", "description": "Mono line under the heading." },
+    { "name": "people", "type": "{ id; name; status: \"editing\" | \"commenting\" | \"viewing\" | \"idle\"; place? }[]", "default": "4 demo people", "description": "Who is here. Idle people have no place. The first active person carries the live dot." },
+    { "name": "showIdle", "type": "boolean", "default": "true", "description": "Show people who are idle. They fade until hovered or followed." },
+    { "name": "onFollow", "type": "(id: string | null) => void", "default": "none", "description": "Called with a person id when follow starts, and null when it stops." },
+    { "name": "accent", "type": "string", "default": "theme ink", "description": "The one accent: the ring around the person you are following." },
+    { "name": "theme", "type": "\"dark\" | \"light\"", "default": "\"dark\"", "description": "Surface palette." }
+  ],
+  "added": "2026-10-11",
+  "demo": {
+    "steps": ["wait:500", "click:@person-priya", "wait:1000", "click:@person-jonas", "wait:1400"]
+  },
+  "controls": [
+    { "prop": "showIdle", "label": "Idle people", "kind": "toggle", "default": true, "group": "Content" },
+    { "prop": "title", "label": "Document", "kind": "text", "default": "Pricing", "group": "Content" },
+    { "prop": "workspace", "label": "Workspace", "kind": "text", "default": "Ledgerline · Website", "group": "Content" },
+    { "prop": "theme", "label": "Theme", "kind": "segmented", "options": [{ "value": "dark", "label": "Dark" }, { "value": "light", "label": "Light" }], "default": "dark", "group": "Look" },
+    { "prop": "accent", "label": "Accent", "kind": "color", "default": "#f4f4f5", "options": ["#f4f4f5", "#60a5fa", "#f5a524", "#4ade80", "#ff7a45"], "group": "Look" }
+  ]
+}

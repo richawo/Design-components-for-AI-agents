@@ -6,6 +6,8 @@ import { PLANS } from "./pricing";
 import { categoriesWithCounts, componentsIn, stats } from "./registry";
 import { CATEGORIES, type Category, type RegistryEntry } from "./registry-types";
 import { absoluteUrl, site } from "./site";
+import { blogMarkdown, markdownSitemap, sitemapLocales } from "./blog/feeds";
+import { localeByCode } from "./blog/locales.mjs";
 
 /**
  * Markdown twins of the site's pages, for agents and anyone who'd rather
@@ -154,15 +156,6 @@ async function doc(slug: string) {
   ].join("\n");
 }
 
-async function blog() {
-  return [
-    front("Blog", "/blog", "Notes on designing with AI agents."),
-    "# Blog",
-    "",
-    ...allPosts().flatMap((p) => [`## [${p.title}](${absoluteUrl(`/blog/${p.slug}.md`)})`, "", `${p.date} · ${p.readingTime} min read`, "", p.description, ""]),
-  ].join("\n");
-}
-
 async function account() {
   return [
     front("Your licence", "/account"),
@@ -189,7 +182,7 @@ export function markdownPagePaths(): string[] {
     ...allDocs()
       .filter((d) => d.slug !== "introduction")
       .map((d) => `docs/${d.slug}`),
-    "blog",
+    ...(allPosts().length ? ["blog"] : []),
     "account",
     ...categoriesWithCounts().map((c) => `categories/${c.key}`),
   ];
@@ -197,11 +190,15 @@ export function markdownPagePaths(): string[] {
 
 export async function markdownForPage(path: string): Promise<string | null> {
   const p = path.replace(/^\/+|\/+$/g, "") || "index";
+  const parts = p.split("/");
+  const locale = localeByCode(parts[0]) && parts[1] === "blog" ? parts.shift()! : "en";
+  if (parts[0] === "blog") return blogMarkdown([locale, ...parts.slice(1)])?.body ?? null;
+  if (p === "sitemap") return markdownSitemap();
+  if (parts[0] === "sitemaps" && parts.length === 2 && sitemapLocales().includes(parts[1])) return markdownSitemap(parts[1]);
   if (p === "index") return home();
   if (p === "components") return componentsIndex();
   if (p === "pricing") return pricing();
   if (p === "docs") return doc("introduction");
-  if (p === "blog") return blog();
   if (p === "account") return account();
   const [section, slug, ...rest] = p.split("/");
   if (rest.length || !slug) return null;

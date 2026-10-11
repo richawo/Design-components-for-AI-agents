@@ -14,7 +14,7 @@ Build a wave field in React 19 + plain Three.js (no react-three-fiber) + Tailwin
 - The pointer, ray-cast onto the y=0 plane, adds a Gaussian mound (0.38) that follows with a 0.08 lerp per 60 fps frame (scaled by dt). Its strength eases in on move, out on leave.
 - `pointerdown` drops a ring that travels outward at 3.2 units/s and decays over about 3s.
 - Point size ≈ 15 × DPR ÷ depth.
-- Pass height, depth, an edge fade on |x|, a centre spotlight (45%→100%), a touch amount (mound × 0.7 + ring × 2.2) and the reveal values to the fragment shader.
+- Pass height, depth, an edge fade on |x|, a centre spotlight (45%→100%), a touch amount (a pointer glow `exp(−d²·0.75)` × strength × 1.1, slightly wider than the lift, plus ring × 2.2, clamped to 1; touched points also gain up to 0.9 extra alpha) and the reveal values to the fragment shader.
 
 **Colour (monochrome first)**
 - Points run from grey `#c2c2c2` to white `#ffffff` as height rises from 0.04 to 0.42, sinking toward `#333333` in the deepest troughs.
@@ -32,7 +32,7 @@ Build a wave field in React 19 + plain Three.js (no react-three-fiber) + Tailwin
 
 **Demo stage**
 - Black, 760px tall, `@container`; the field fills it. No headline, no buttons.
-- A buoy readout bottom-left over a black-to-transparent gradient (224px): a mono eyebrow “Tidewater buoy 41 · Rockall Trough” (11px, 0.2em, white/45), then three readings — Swell 2.4 m, Period 11.2 s, Heading 248° — as mono 10.5px labels over Geist 500 figures (`clamp(1.5rem, 1.2rem + 1.4cqi, 2.25rem)`, −0.04em, tabular) with a white/45 unit. The hint (“Move to lift the swell · click to drop a stone”, or “Tap to drop a stone” on touch) sits bottom-right (stacked under 672px), led by a 6px dot in the accent colour as a legend key; each clause is kept whole and the `·` rides the first so a wrap never starts a line with it. With `interactive` off it reads “Pointer off · watching the swell”.
+- A buoy readout bottom-left over a black-to-transparent gradient (224px): a mono eyebrow “Tidewater buoy 41 · Rockall Trough” (11px, 0.2em, white/45; each half kept whole so a wrap never splits the place name), then three readings — Swell 2.4 m, Period 11.2 s, Heading 248° — as mono 10.5px labels over Geist 500 figures (`clamp(1.5rem, 1.2rem + 1.4cqi, 2.25rem)`, −0.04em, tabular) with a white/45 unit. The hint (“Move to lift the swell · click to drop a stone”, or “Tap to drop a stone” on touch) sits bottom-right (stacked under 672px), led by a 6px dot in the accent colour as a legend key; each clause is kept whole and the `·` rides the first so a wrap never starts a line with it. With `interactive` off it reads “Pointer off · watching the swell”.
 - Choreography: once the readout is 30% in view, the eyebrow, each reading and the hint rise 12px from an 8px blur over 600ms, starting at 350ms and 60ms apart; each figure counts up from zero over 900ms with a 4px blur clearing as it lands. Motion values drive the numbers; React never re-renders per frame.
 
 **Behaviour**

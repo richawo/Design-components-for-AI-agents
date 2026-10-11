@@ -1,0 +1,203 @@
+{
+  "slug": "ai-message-actions",
+  "name": "Message Actions",
+  "tier": "free",
+  "platform": "web",
+  "category": "ai",
+  "description": "The action row under an AI reply: Copy morphs to a check, Regenerate inks in a new take, thumbs ask why, and 2 / 3 rolls between versions.",
+  "tags": [
+    "ai",
+    "chat",
+    "message actions",
+    "copy button",
+    "regenerate",
+    "feedback",
+    "thumbs up",
+    "branches",
+    "toolbar",
+    "dark",
+    "monochrome"
+  ],
+  "dependencies": [
+    "motion",
+    "lucide-react"
+  ],
+  "theme": "dark",
+  "previewHeight": 640,
+  "usage": "import { AiMessageActions } from \"@/components/design-for-ai/ai-message-actions\";\n\n<AiMessageActions\n  author=\"Wren\"\n  versions={[{ id: \"a1\", meta: \"Wren 2 · 3.2s\", paragraphs: [answer] }]}\n  onRegenerate={async () => {\n    const text = await regenerate(messageId); // your streaming call, awaited\n    return { id: crypto.randomUUID(), meta: \"Wren 2\", paragraphs: text.split(\"\\n\\n\") };\n  }}\n  onFeedback={({ versionId, value, reasons, note }) => track(\"rating\", { versionId, value, reasons, note })}\n/>\n\n// The reason popover is positioned inside the component (no portal). If the reply sits in a\n// scroll container that clips, give the container room above the row or lift the popover\n// into a portal on document.body.",
+  "props": [
+    {
+      "name": "versions",
+      "type": "ReplyVersion[]",
+      "default": "two takes of a release note",
+      "description": "Every version of the reply so far, oldest first: { id, paragraphs: string[], meta? }. Each Regenerate appends one."
+    },
+    {
+      "name": "defaultVersion",
+      "type": "number",
+      "default": "newest",
+      "description": "Which version shows first (0-based)."
+    },
+    {
+      "name": "author",
+      "type": "string",
+      "default": "\"Wren\"",
+      "description": "The assistant's name, above the reply and in the reason popover."
+    },
+    {
+      "name": "onRegenerate",
+      "type": "() => Promise<ReplyVersion> | ReplyVersion",
+      "description": "Produces a new version. The row shows Writing version N… until it resolves; reject to show an error line. Without it the Regenerate button is hidden."
+    },
+    {
+      "name": "onCopy",
+      "type": "(text: string) => void",
+      "description": "Called with the plain text after it is written to the clipboard."
+    },
+    {
+      "name": "onFeedback",
+      "type": "(feedback: MessageFeedback) => void",
+      "description": "Called when a rating is set, cleared, or sent with reasons: { versionId, value: \"up\" | \"down\" | null, reasons, note }. Ratings are kept per version."
+    },
+    {
+      "name": "onVersionChange",
+      "type": "(index: number) => void",
+      "description": "Called when the visible version changes (0-based)."
+    },
+    {
+      "name": "feedback",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show thumbs up and down. Thumbs down opens an optional reason popover."
+    },
+    {
+      "name": "reasons",
+      "type": "FeedbackReason[]",
+      "default": "Not accurate, Missed the brief, Too long, Wrong tone",
+      "description": "Choices offered in the thumbs-down popover."
+    },
+    {
+      "name": "alwaysVisible",
+      "type": "boolean",
+      "default": "false",
+      "description": "Keep the actions on screen. Off, they fade in on hover or keyboard focus, and are always shown on touch screens. A chosen rating and the version counter stay visible either way."
+    },
+    {
+      "name": "size",
+      "type": "\"sm\" | \"md\"",
+      "default": "\"md\"",
+      "description": "Action row scale: 28px or 32px buttons (44px on coarse pointers)."
+    },
+    {
+      "name": "accent",
+      "type": "string",
+      "default": "\"#ff9a6b\"",
+      "description": "The one accent: a chosen rating, picked reasons and the Send feedback button."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Ink and surfaces for dark or light pages."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "description": "Extra classes on the root."
+    },
+    {
+      "name": "branches",
+      "type": "number",
+      "default": "2",
+      "description": "Demo only. How many versions exist before the first Regenerate (1–4)."
+    }
+  ],
+  "demo": {
+    "steps": [
+      "wait:300",
+      "hover:@reply:0.5,0.4",
+      "wait:250",
+      "click:@copy",
+      "wait:750",
+      "click:@regenerate",
+      "wait:1550",
+      "click:@prev",
+      "wait:600"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "branches",
+      "label": "Versions",
+      "kind": "slider",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 2,
+      "remount": true
+    },
+    {
+      "prop": "feedback",
+      "label": "Thumbs",
+      "kind": "toggle",
+      "default": true
+    },
+    {
+      "prop": "alwaysVisible",
+      "label": "Always visible",
+      "kind": "toggle",
+      "default": false
+    },
+    {
+      "prop": "size",
+      "label": "Size",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "sm",
+          "label": "Small"
+        },
+        {
+          "value": "md",
+          "label": "Medium"
+        }
+      ],
+      "default": "md"
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark"
+    },
+    {
+      "prop": "accent",
+      "label": "Accent",
+      "kind": "color",
+      "default": "#ff9a6b",
+      "options": [
+        "#ff9a6b",
+        "#ededef",
+        "#7dd3a8",
+        "#60a5fa"
+      ]
+    },
+    {
+      "prop": "$replay",
+      "label": "Replay",
+      "kind": "action",
+      "value": "replay"
+    }
+  ],
+  "added": "2026-10-10"
+}

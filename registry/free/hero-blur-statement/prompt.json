@@ -80,7 +80,7 @@
   },
   "accessibility": [
     "h1 has an sr-only sentence listing every name; animated copy is aria-hidden",
-    "rotation pause control is a button with aria-pressed and a descriptive aria-label (WCAG 2.2.2)",
+    "rotation pause control is a button with aria-pressed and a descriptive aria-label (WCAG 2.2.2); pressing play steps straight to the next name with a full hold",
     "hover pause is mouse-only; keyboard users use the control",
     "focus-visible: 2px white ring, offset 2-4px",
     "touch targets at least 44px"
