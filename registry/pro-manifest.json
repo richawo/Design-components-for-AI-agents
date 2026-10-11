@@ -9109,6 +9109,83 @@
     ]
   },
   {
+    "slug": "commerce-purchase-order",
+    "name": "Purchase Order Composer",
+    "tier": "pro",
+    "platform": "web",
+    "category": "commerce",
+    "description": "Supplier order lines with quantity, unit cost, totals and review. A considered, responsive commerce workspace with typed integration points.",
+    "tags": [
+      "e-commerce",
+      "workflow",
+      "responsive",
+      "keyboard",
+      "commerce"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 940,
+    "usage": "import { PurchaseOrder } from \"@/components/design-for-ai/commerce-purchase-order\";\n\n<PurchaseOrder />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Main heading."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "description": "Supporting context."
+      },
+      {
+        "name": "suppliers",
+        "type": "PurchaseSupplier[]",
+        "description": "Suppliers and catalogue items with non-negative integer unit costs in two-decimal minor units."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "description": "ISO currency for all values. No exchange conversion is performed."
+      },
+      {
+        "name": "onSubmit",
+        "type": "(draft:PurchaseOrderDraft)=>void|Promise<void>",
+        "description": "Save the reviewed purchase order draft. The host owns order placement and persistence."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface, border and ink palette."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:450",
+        "click:@review",
+        "wait:800",
+        "click:@save",
+        "wait:1100"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "commerce-return-desk",
     "name": "Order Returns Desk",
     "tier": "pro",
