@@ -862,6 +862,217 @@
     ]
   },
   {
+    "slug": "agent-run-trace",
+    "name": "Agent Run Trace",
+    "tier": "pro",
+    "platform": "web",
+    "category": "agents",
+    "description": "A tracing waterfall for one agent run: nested LLM, tool and retrieval spans on a shared time axis, tokens and cost per span, a marked critical path and a details pane.",
+    "tags": [
+      "agent",
+      "trace",
+      "waterfall",
+      "observability",
+      "critical path",
+      "spans",
+      "llm",
+      "tool calls",
+      "timeline",
+      "monochrome"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1000,
+    "usage": "import { AgentRunTrace } from \"@/components/design-for-ai/agent-run-trace\";\nimport type { TraceSpan } from \"@/components/design-for-ai/agent-run-trace\";\n\n// Flat spans from your tracer: parentId links the tree, start and duration are in ms.\nconst spans: TraceSpan[] = run.spans.map((s) => ({\n  id: s.spanId,\n  parentId: s.parentSpanId ?? null,\n  name: s.name,\n  kind: s.attributes[\"gen_ai.operation\"] ? \"llm\" : s.kind === \"tool\" ? \"tool\" : \"step\",\n  start: s.startMs,\n  duration: s.endMs - s.startMs,\n  model: s.attributes[\"gen_ai.request.model\"],\n  tokensIn: s.attributes[\"gen_ai.usage.input_tokens\"],\n  tokensOut: s.attributes[\"gen_ai.usage.output_tokens\"],\n  cost: s.costUsd,\n  input: s.input,\n  output: s.output,\n}));\n\n<AgentRunTrace\n  trace={spans}\n  runName=\"support-triage\"\n  runLabel=\"Ticket #4471\"\n  runId={run.id}\n  onSelectSpan={(span) => setInspected(span?.id)}\n/>\n\n// Tooltips and the details pane are positioned inside the component, so it needs no portal.",
+    "props": [
+      {
+        "name": "trace",
+        "type": "TraceSpan[]",
+        "description": "Your run as flat spans: id, parentId, name, kind (agent, step, llm, tool, retrieval), start and duration in ms, plus optional model, tokensIn, tokensOut, cost, status, statusNote, input and output. Omit it to show the sample support-triage run."
+      },
+      {
+        "name": "spans",
+        "type": "number",
+        "default": "22",
+        "description": "How many spans of the sample run to show, 6 to 30, cut in call order. Ignored when trace is set."
+      },
+      {
+        "name": "groupBy",
+        "type": "\"step\" | \"type\"",
+        "default": "\"step\"",
+        "description": "Nest rows as the call tree, with collapsible steps and the critical path joined by connectors, or group them into LLM calls, tool calls and retrieval."
+      },
+      {
+        "name": "zoom",
+        "type": "number",
+        "default": "1",
+        "description": "Time axis magnification, 1 to 4. Above 1 the lanes scroll sideways under a pinned span column and the selected span is kept in view."
+      },
+      {
+        "name": "showCost",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show cost in the totals, the span column, tooltips and the details pane."
+      },
+      {
+        "name": "live",
+        "type": "boolean",
+        "default": "false",
+        "description": "Replays the run as if it were still in progress: spans arrive as they start, bars grow, totals count and a live edge sweeps the axis. Loops while on screen; a still snapshot with reduced motion."
+      },
+      {
+        "name": "defaultSelectedId",
+        "type": "string | null",
+        "description": "The span open in the details pane on mount. Defaults to the root span; null starts with the pane closed."
+      },
+      {
+        "name": "onSelectSpan",
+        "type": "(span: TraceSpan | null) => void",
+        "description": "Called when a span is selected, or with null when the details pane closes."
+      },
+      {
+        "name": "runName",
+        "type": "string",
+        "default": "\"support-triage\"",
+        "description": "The agent or run name in the header."
+      },
+      {
+        "name": "runLabel",
+        "type": "string",
+        "default": "\"Ticket #4471 · “Charged twice for March”\"",
+        "description": "The line beside the name: what the run was for."
+      },
+      {
+        "name": "runId",
+        "type": "string",
+        "default": "\"run_01JA8Q3KZ7\"",
+        "description": "Shown in mono above the name."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ff9d5c\"",
+        "description": "The one accent: critical path bars, connectors and the live edge."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Greyscale palette for the surface, bars and text."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Classes on the root, for width and placement."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:100",
+        "click:@replay",
+        "wait:900",
+        "click:@bar-list-charges",
+        "wait:400",
+        "hover:@ruler:0.3,0.5",
+        "drag:0.55,0.325",
+        "wait:400"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "spans",
+        "label": "Spans",
+        "kind": "slider",
+        "min": 6,
+        "max": 30,
+        "step": 1,
+        "default": 22,
+        "group": "Run"
+      },
+      {
+        "prop": "live",
+        "label": "Live",
+        "kind": "toggle",
+        "default": false,
+        "group": "Run"
+      },
+      {
+        "prop": "groupBy",
+        "label": "Group by",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "step",
+            "label": "Step"
+          },
+          {
+            "value": "type",
+            "label": "Type"
+          }
+        ],
+        "default": "step",
+        "group": "View"
+      },
+      {
+        "prop": "zoom",
+        "label": "Zoom",
+        "kind": "slider",
+        "min": 1,
+        "max": 4,
+        "step": 0.5,
+        "unit": "×",
+        "default": 1,
+        "group": "View"
+      },
+      {
+        "prop": "showCost",
+        "label": "Cost",
+        "kind": "toggle",
+        "default": true,
+        "group": "View"
+      },
+      {
+        "prop": "accent",
+        "label": "Critical path",
+        "kind": "color",
+        "default": "#ff9d5c",
+        "options": [
+          "#ff9d5c",
+          "#6fd3a0",
+          "#7ab8ff",
+          "#ededef"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay run",
+        "kind": "action"
+      }
+    ]
+  },
+  {
     "slug": "agent-tool-call",
     "name": "Agent Tool Call",
     "tier": "pro",
@@ -9251,7 +9462,7 @@
       {
         "name": "deliveries",
         "type": "WebhookDelivery[]",
-        "description": "Newest first: id, event type, relative time, attempts (time, status or \"timeout\", ms), max attempts, next retry and the signed payload."
+        "description": "Newest first: id, event type, relative time, attempts (time, status or \"timeout\", ms), max attempts, next retry and the signed payload. Optional requestHeaders on a delivery and body/headers on each attempt provide recorded payload metadata. Empty attempts show Waiting."
       },
       {
         "name": "filter",
@@ -9291,8 +9502,24 @@
       },
       {
         "name": "onRetry",
-        "type": "(delivery: WebhookDelivery) => void",
-        "description": "Called when Retry now or Redeliver is pressed."
+        "type": "(delivery: WebhookDelivery) => void | Promise<void>",
+        "description": "Runs the real retry without fabricating an attempt. Pending lasts until the returned promise settles; the host updates deliveries. Failures show an alert."
+      },
+      {
+        "name": "hourlyDeliveries",
+        "type": "[number, number][]",
+        "description": "Hourly [delivered, failed] counts for the reporting period. Sample data is only used with sample deliveries."
+      },
+      {
+        "name": "medianLatencyMs",
+        "type": "number",
+        "description": "Median latency for the reporting period. Omitted custom data shows an unavailable marker."
+      },
+      {
+        "name": "retryErrorMessage",
+        "type": "string",
+        "default": "\"Could not retry this delivery. Try again.\"",
+        "description": "Alert shown when the real retry handler throws or rejects."
       },
       {
         "name": "className",
