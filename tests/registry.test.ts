@@ -8,6 +8,39 @@ const freeDir = path.join(root, "registry/free");
 const slugs = fs.readdirSync(freeDir).filter((d) => fs.statSync(path.join(freeDir, d)).isDirectory());
 const categories = new Set<string>(Object.keys(CATEGORIES));
 
+// Usage examples may include inline type imports, aliases, and line breaks.
+// Keep failures about missing names, without dumping the entire source file.
+function missingUsageExports(code: string, usage: string) {
+  const names = new Set([...code.matchAll(/\bexport\s+(?:async\s+)?(?:function|const|let|var|class|type|interface|enum)\s+(\w+)/g)].map((match) => match[1]));
+  for (const match of code.matchAll(/\bexport\s+(?:type\s+)?\{([^}]+)\}/g)) {
+    for (const item of match[1].split(",")) {
+      const name = item.trim().replace(/^type\s+/, "").split(/\s+as\s+/).at(-1)?.trim();
+      if (name) names.add(name);
+    }
+  }
+  const imports = [...usage.matchAll(/\bimport\s+(?:type\s+)?\{([^}]+)\}\s+from\s+["']([^"']+)["']/g)]
+    .filter((match) => match[2].startsWith(".") || match[2].includes("components/design-for-ai/"))
+    .flatMap((match) =>
+    match[1].split(",").map((item) => item.trim().replace(/^type\s+/, "").split(/\s+as\s+/)[0].trim()).filter(Boolean),
+  );
+  return { imports, missing: imports.filter((name) => !names.has(name)) };
+}
+
+describe("registry usage export validation", () => {
+  it("recognizes type imports, aliases, multiline imports and exported bindings", () => {
+    const result = missingUsageExports(
+      "export type Entry = { id: string }; export interface Props {} export const Menu = () => null; const Inner = 1; export { Inner as Choice };",
+      'import {\n Menu as CustomMenu, type Entry, Props, Choice\n} from "./menu"; import { Copy } from "lucide-react";',
+    );
+    expect(result.imports).toEqual(["Menu", "Entry", "Props", "Choice"]);
+    expect(result.missing).toEqual([]);
+  });
+
+  it("rejects a private declaration and an export name that does not exist", () => {
+    expect(missingUsageExports("type Private = {}; export const Menu = 1;", 'import { Private, Missing } from "./menu";').missing).toEqual(["Private", "Missing"]);
+  });
+});
+
 describe("free registry", () => {
   it("has components", () => expect(slugs.length).toBeGreaterThan(10));
 
@@ -35,9 +68,9 @@ describe("free registry", () => {
     });
 
     it.skipIf(draft)("exports what its usage imports", () => {
-      const named = /import \{ ([^}]+) \}/.exec(meta.usage)?.[1].split(",").map((s: string) => s.trim()) ?? [];
-      expect(named.length).toBeGreaterThan(0);
-      for (const n of named) expect(code).toMatch(new RegExp(`export (function|const|type|\\{[^}]*\\b)${n}\\b|export function ${n}\\b`));
+      const result = missingUsageExports(code, meta.usage);
+      expect(result.imports.length).toBeGreaterThan(0);
+      expect(result.missing).toEqual([]);
     });
 
     it("imports nothing from Pro or the site", () => {
