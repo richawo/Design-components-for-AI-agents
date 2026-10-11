@@ -490,7 +490,7 @@ function DensitySwitch({ value, onChange, uid }: { value: DataTableDensity; onCh
             data-demo={`density-${d}`}
             onClick={() => onChange(d)}
             onKeyDown={onKey}
-            className={`relative h-8 min-w-[76px] rounded-[7px] px-3 text-[12.5px] font-medium capitalize transition-[color,transform] duration-150 active:scale-[0.97] ${FOCUS_RING} ${
+            className={`[@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 relative h-8 min-w-[76px] rounded-[7px] px-3 text-[12.5px] font-medium capitalize transition-[color,transform] duration-150 active:scale-[0.97] ${FOCUS_RING} ${
               on ? "text-[var(--dt-ink)]" : `${INK[45]} hover:text-[color-mix(in_srgb,var(--dt-ink)_80%,transparent)]`
             }`}
           >
@@ -1260,7 +1260,7 @@ function SortableTableWithColumns({
               type="button"
               aria-pressed={on}
               onClick={() => sortBy(col)}
-              className={`group/sort inline-flex h-9 shrink-0 items-center gap-1.5 rounded-[8px] px-2.5 text-[12.5px] font-medium transition-[background-color,color,transform] duration-150 active:scale-[0.97] ${FOCUS_RING} ${
+              className={`[@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 group/sort inline-flex h-9 shrink-0 items-center gap-1.5 rounded-[8px] px-2.5 text-[12.5px] font-medium transition-[background-color,color,transform] duration-150 active:scale-[0.97] ${FOCUS_RING} ${
                 on ? "bg-[color-mix(in_srgb,var(--dt-ink)_8%,transparent)] text-[var(--dt-ink)]" : `${INK[45]} hover:text-[color-mix(in_srgb,var(--dt-ink)_80%,transparent)]`
               }`}
             >
@@ -1372,7 +1372,7 @@ function SortableTableWithColumns({
                         data-cell={`0:${c}`}
                         data-demo={`sort-${col.key}`}
                         onClick={() => sortBy(col)}
-                        className={`group/sort flex h-full w-full min-w-0 items-center gap-1.5 px-3 transition-colors duration-150 hover:bg-[color-mix(in_srgb,var(--dt-ink)_3%,transparent)] active:translate-y-px ${
+                        className={`[@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 group/sort flex h-full w-full min-w-0 items-center gap-1.5 px-3 transition-colors duration-150 hover:bg-[color-mix(in_srgb,var(--dt-ink)_3%,transparent)] active:translate-y-px ${
                           right ? "flex-row-reverse justify-start" : ""
                         } ${FOCUS_RING}`}
                       >
@@ -1484,7 +1484,7 @@ function SortableTableWithColumns({
                 key={a.id}
                 type="button"
                 onClick={() => onBulkAction?.(a.id, selectedRows.map((r) => r.id))}
-                className={`h-9 shrink-0 rounded-[9px] px-3 text-[13px] font-medium text-[color-mix(in_srgb,var(--dt-bar-ink)_85%,transparent)] transition-[background-color,color,transform] duration-150 hover:bg-[color-mix(in_srgb,var(--dt-bar-ink)_8%,transparent)] hover:text-[var(--dt-bar-ink)] active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--dt-bar-ink)] ${
+                className={`[@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 h-9 shrink-0 rounded-[9px] px-3 text-[13px] font-medium text-[color-mix(in_srgb,var(--dt-bar-ink)_85%,transparent)] transition-[background-color,color,transform] duration-150 hover:bg-[color-mix(in_srgb,var(--dt-bar-ink)_8%,transparent)] hover:text-[var(--dt-bar-ink)] active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--dt-bar-ink)] ${
                   i > 0 ? "@max-[520px]:hidden" : "@max-[420px]:hidden"
                 }`}
               >
@@ -1495,7 +1495,7 @@ function SortableTableWithColumns({
               type="button"
               aria-label="Clear selection"
               onClick={() => commit(new Set())}
-              className="grid size-9 shrink-0 place-items-center rounded-[9px] text-[color-mix(in_srgb,var(--dt-bar-ink)_65%,transparent)] transition-[background-color,color,transform] duration-150 hover:bg-[color-mix(in_srgb,var(--dt-bar-ink)_8%,transparent)] hover:text-[var(--dt-bar-ink)] active:scale-[0.95] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--dt-bar-ink)]"
+              className="[@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 grid size-9 shrink-0 place-items-center rounded-[9px] text-[color-mix(in_srgb,var(--dt-bar-ink)_65%,transparent)] transition-[background-color,color,transform] duration-150 hover:bg-[color-mix(in_srgb,var(--dt-bar-ink)_8%,transparent)] hover:text-[var(--dt-bar-ink)] active:scale-[0.95] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--dt-bar-ink)]"
             >
               <X className="size-4" strokeWidth={2} />
             </button>
