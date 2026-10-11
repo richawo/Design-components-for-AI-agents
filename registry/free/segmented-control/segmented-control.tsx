@@ -376,7 +376,7 @@ export function SegmentedControl({
                   onClick={() => choose(index)}
                   onKeyDown={(event) => onKeyDown(event, index)}
                   style={{ height: geometry.height, borderRadius: geometry.track - 3 }}
-                  className={`group relative flex items-center justify-center px-2.5 font-medium tracking-[-0.01em] whitespace-nowrap transition-[color] duration-150 ease-out focus-visible:outline-2 focus-visible:-outline-offset-[3px] focus-visible:outline-(--sg-focus) enabled:cursor-pointer disabled:cursor-not-allowed disabled:opacity-40 @[22rem]:px-3.5 ${geometry.text} ${
+                  className={`[@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 group relative flex items-center justify-center px-2.5 font-medium tracking-[-0.01em] whitespace-nowrap transition-[color] duration-150 ease-out focus-visible:outline-2 focus-visible:-outline-offset-[3px] focus-visible:outline-(--sg-focus) enabled:cursor-pointer disabled:cursor-not-allowed disabled:opacity-40 @[22rem]:px-3.5 ${geometry.text} ${
                     scrolls ? "shrink-0" : "min-w-max flex-1 basis-0"
                   } ${active ? "text-(--sg-ink)" : "text-(--sg-muted) enabled:hover:text-(--sg-ink)"}`}
                 >
@@ -567,7 +567,7 @@ export default function SegmentedControlDemo({
             data-demo="narrow"
             aria-pressed={narrow}
             onClick={() => setNarrow((on) => !on)}
-            className="-ml-2 rounded-md px-2 py-1 font-mono text-[11px] tracking-[0.12em] text-(--stage-muted) uppercase transition-[color,transform] duration-150 ease-out hover:text-(--stage-ink) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--stage-ink) active:scale-[0.97] aria-pressed:text-(--stage-ink)"
+            className="[@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 -ml-2 rounded-md px-2 py-1 font-mono text-[11px] tracking-[0.12em] text-(--stage-muted) uppercase transition-[color,transform] duration-150 ease-out hover:text-(--stage-ink) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--stage-ink) active:scale-[0.97] aria-pressed:text-(--stage-ink)"
           >
             Narrow column
           </button>
