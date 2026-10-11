@@ -5368,6 +5368,12 @@
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
         "description": "Near-black card with white ink, or a white card with near-black ink."
+      },
+      {
+        "name": "emptyMessage",
+        "type": "string",
+        "default": "\"No retention data for this segment.\"",
+        "description": "Message for missing chart data; renders safely when required arrays are empty."
       }
     ],
     "added": "2026-10-10",
@@ -5764,6 +5770,12 @@
         "name": "onSelectionChange",
         "type": "(keys: string[]) => void",
         "description": "Called with the profile keys on the web, accent first."
+      },
+      {
+        "name": "emptyMessage",
+        "type": "string",
+        "default": "\"Add profiles with scores for at least three axes.\"",
+        "description": "Message for missing chart data; renders safely when required arrays are empty."
       }
     ],
     "added": "2026-10-11",
