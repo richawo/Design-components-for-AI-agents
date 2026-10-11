@@ -1,0 +1,98 @@
+{
+  "slug": "input-tag-editor",
+  "name": "Topic Tag Editor",
+  "tier": "free",
+  "platform": "web",
+  "category": "inputs",
+  "description": "An expanding topic field with removable tags, comma and paste parsing, duplicate handling and a visible limit for content and knowledge tools.",
+  "tags": [
+    "inputs",
+    "input",
+    "tag",
+    "editor",
+    "responsive",
+    "keyboard"
+  ],
+  "dependencies": [
+    "motion",
+    "lucide-react"
+  ],
+  "theme": "dark",
+  "previewHeight": 620,
+  "usage": "import { TagEditor } from \"@/components/design-for-ai/input-tag-editor\";\n\n<TagEditor />",
+  "props": [
+    {
+      "name": "label",
+      "type": "string",
+      "default": "\"Topics\"",
+      "description": "Visible label."
+    },
+    {
+      "name": "hint",
+      "type": "string",
+      "default": "keyboard guidance",
+      "description": "Field description."
+    },
+    {
+      "name": "placeholder",
+      "type": "string",
+      "default": "\"Add a topic\"",
+      "description": "Empty entry prompt."
+    },
+    {
+      "name": "value",
+      "type": "string[]",
+      "default": "undefined",
+      "description": "Controlled tags."
+    },
+    {
+      "name": "defaultValue",
+      "type": "string[]",
+      "default": "two sample topics",
+      "description": "Initial uncontrolled tags."
+    },
+    {
+      "name": "maxTags",
+      "type": "number",
+      "default": "8",
+      "description": "Maximum additions; existing host tags are never silently removed."
+    },
+    {
+      "name": "onChange",
+      "type": "(tags: string[]) => void",
+      "default": "undefined",
+      "description": "New tag array after additions and removals."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Surface and ink palette; the demo stage follows the chosen theme."
+    }
+  ],
+  "added": "2026-10-11",
+  "demo": {
+    "steps": [
+      "wait:500",
+      "click:@tag-input",
+      "type:Typography",
+      "key:Enter",
+      "wait:500",
+      "click:@remove-0",
+      "wait:700"
+    ],
+    "loop": false
+  },
+  "controls": [
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        "dark",
+        "light"
+      ],
+      "default": "dark"
+    }
+  ]
+}
