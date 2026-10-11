@@ -222,6 +222,22 @@ try {
   assert.equal(await page.getByRole("button", { name: "Save plan" }).isDisabled(), true);
   await page.getByRole("button", { name: "Reset", exact: true }).click();
   assert.equal(await page.getByRole("spinbutton").count(), 2);
+  await fixture("legal-version-history", `window.diff=Subject.compareRevisions;window.restored=[];createRoot(document.getElementById('root')).render(<Subject.VersionHistory onRestore={async revision=>{window.restored.push(revision.id);throw Error('offline')}}/>);`);
+  const lines = await page.evaluate(() => window.diff('A\nB\nA', 'A\nA\nC'));
+  assert.equal(lines.filter(line => line.kind !== "added").map(line => line.text).join("\n"), 'A\nB\nA');
+  assert.equal(lines.filter(line => line.kind !== "removed").map(line => line.text).join("\n"), 'A\nA\nC');
+  assert.equal(await page.evaluate(() => window.diff('x'.repeat(100001), 'x')), null);
+  assert.equal(await page.evaluate(() => window.diff(Array(401).fill('x').join('\n'), 'x')), null);
+  await page.getByRole("button", { name: "Restore this revision" }).click();
+  assert.deepEqual(await page.evaluate(() => window.restored), []);
+  await page.getByRole("button", { name: "Confirm restore" }).click();
+  await page.waitForTimeout(100);
+  assert.deepEqual(await page.evaluate(() => window.restored), ["r2"]);
+  assert.match(await page.getByRole("status").innerText(), /Restoration failed/);
+  await page.getByRole("button", { name: "Cancel", exact: true }).click();
+  assert.equal(await page.getByRole("button", { name: "Restore this revision" }).evaluate(el => el === document.activeElement), true);
+  await page.getByRole("button", { name: /Revision 3 CURRENT/ }).click();
+  assert.equal(await page.getByRole("button", { name: "Restore this revision" }).isDisabled(), true);
   assert.deepEqual(errors, []);
   console.log("Pro industry workflows: behavioral regression checks passed.");
 } finally {

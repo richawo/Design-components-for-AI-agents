@@ -15836,6 +15836,102 @@
     ]
   },
   {
+    "slug": "legal-version-history",
+    "name": "Document Revision Review",
+    "tier": "pro",
+    "platform": "web",
+    "category": "editors",
+    "description": "A legal document revision desk with bounded line comparison, readable change markers and explicit restoration that retains the original history.",
+    "tags": [
+      "editors",
+      "workflow",
+      "interactive",
+      "responsive",
+      "keyboard",
+      "legal-tech",
+      "contracts",
+      "version-history",
+      "document-review"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "light",
+    "previewHeight": 1040,
+    "usage": "import { VersionHistory } from \"@/components/design-for-ai/legal-version-history\";\n\n<VersionHistory />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Document title."
+      },
+      {
+        "name": "documentId",
+        "type": "string",
+        "description": "Document reference above the heading."
+      },
+      {
+        "name": "versions",
+        "type": "DocumentRevision[]",
+        "description": "Ordered revisions with unique IDs, author, display date, summary and plain text."
+      },
+      {
+        "name": "currentId",
+        "type": "string",
+        "description": "Current revision ID; defaults to the final supplied revision. The host publishes a new revision after restore."
+      },
+      {
+        "name": "changesOnly",
+        "type": "boolean",
+        "default": "false",
+        "description": "Show only additions and removals in the comparison view."
+      },
+      {
+        "name": "onRestore",
+        "type": "(revision: DocumentRevision) => void | Promise<void>",
+        "description": "Awaited restoration callback, called only after explicit confirmation. Create a new revision and update versions/currentId; do not delete history."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"light\"",
+        "description": "Surface and ink palette; the preview stage follows it."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:500",
+        "click:@revision-0",
+        "wait:450",
+        "click:@restore-revision",
+        "wait:550",
+        "click:@confirm-restore",
+        "wait:1300"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "light"
+      },
+      {
+        "prop": "changesOnly",
+        "label": "Changes only",
+        "kind": "toggle",
+        "default": false
+      }
+    ]
+  },
+  {
     "slug": "media-before-after",
     "name": "Before and After Comparator",
     "tier": "pro",
