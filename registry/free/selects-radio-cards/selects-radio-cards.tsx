@@ -6,6 +6,7 @@ import { motion, useReducedMotion } from "motion/react";
 const muted = "text-[var(--muted)]";
 function colors(theme: "dark" | "light"): CSSProperties {
   return {
+    overflowWrap: "anywhere",
     "--panel": theme === "dark" ? "#111111" : "#ffffff",
     "--ink": theme === "dark" ? "#f5f5f5" : "#171717",
     "--muted": theme === "dark" ? "#a3a3a3" : "#525252",
