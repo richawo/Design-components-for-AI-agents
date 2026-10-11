@@ -9251,6 +9251,164 @@
     ]
   },
   {
+    "slug": "diagram-vector-space",
+    "name": "Vector Space",
+    "tier": "pro",
+    "platform": "web",
+    "category": "diagrams",
+    "description": "A question drops into a 2D embedding. The nearest documents light, and a ranked list shows how close each one sits.",
+    "tags": [
+      "embeddings",
+      "vector search",
+      "nearest neighbours",
+      "cosine",
+      "rag",
+      "animated diagram",
+      "retrieval",
+      "index"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 860,
+    "usage": "import { VectorSpace } from \"@/components/design-for-ai/diagram-vector-space\";\n\n<VectorSpace\n  query=\"Who can download an audit export?\"\n  topK={4}\n  showLabels\n/>\n\n// The resting picture is a finished search: the query is already in the plane and its neighbours are lit.\n// Replay reveals them one at a time. Suggested questions move the query into another cluster.",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Nearest in the embedding\"",
+        "description": "Heading."
+      },
+      {
+        "name": "summary",
+        "type": "string",
+        "default": "\"A question lands in the same space as the docs. The closest ones light, with the similarity beside each.\"",
+        "description": "One or two sentences under the heading."
+      },
+      {
+        "name": "query",
+        "type": "string",
+        "default": "\"Who can download an audit export?\"",
+        "description": "The question in the field. It lands next to the document whose title it matches."
+      },
+      {
+        "name": "topK",
+        "type": "number",
+        "default": "4",
+        "description": "How many neighbours light, and how many rows the list keeps."
+      },
+      {
+        "name": "showLabels",
+        "type": "boolean",
+        "default": "true",
+        "description": "Draw the topic names in the plane."
+      },
+      {
+        "name": "documents",
+        "type": "VectorDoc[]",
+        "description": "The corpus. Each document has a title, a source path, a topic and a position from 0 to 100."
+      },
+      {
+        "name": "suggestions",
+        "type": "VectorSuggestion[]",
+        "description": "Short questions under the field. Each one sets the query."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface the diagram sits on."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#7cc4ff\"",
+        "description": "The one accent: the query, the neighbour links, and the selected row."
+      },
+      {
+        "name": "onReplay",
+        "type": "() => void",
+        "description": "Called when Replay is pressed, before the neighbours reveal again."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root section."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@query-invites",
+        "wait:1500",
+        "click:@neighbour-1",
+        "wait:900"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "query",
+        "label": "Query",
+        "kind": "text",
+        "default": "Who can download an audit export?",
+        "group": "Index"
+      },
+      {
+        "prop": "topK",
+        "label": "Neighbours",
+        "kind": "slider",
+        "min": 2,
+        "max": 6,
+        "step": 1,
+        "default": 4,
+        "group": "Index"
+      },
+      {
+        "prop": "showLabels",
+        "label": "Topics",
+        "kind": "toggle",
+        "default": true,
+        "group": "Index"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#7cc4ff",
+        "options": [
+          "#7cc4ff",
+          "#ff9d5c",
+          "#7dd3a8"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
+  },
+  {
     "slug": "editor-node-graph",
     "name": "Node Graph Editor",
     "tier": "pro",
