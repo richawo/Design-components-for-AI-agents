@@ -245,7 +245,7 @@ export function CollabPresenceBar({
                       onClick={() => follow(on ? null : person.id)}
                       onPointerEnter={() => setPreview(person.id)}
                       onPointerLeave={() => setPreview((cur) => (cur === person.id ? null : cur))}
-                      className={`relative grid size-11 place-items-center rounded-full transition-[opacity,transform] duration-200 active:scale-[0.97] ${dim ? "opacity-50" : "opacity-100"} ${FOCUS_RING}`}
+                      className={`relative grid size-11 place-items-center rounded-full transition-transform duration-200 active:scale-[0.97] ${FOCUS_RING}`}
                     >
                       {on && (
                         <motion.span
@@ -256,7 +256,7 @@ export function CollabPresenceBar({
                       )}
                       <span
                         aria-hidden="true"
-                        className="relative flex size-8 items-center justify-center rounded-full bg-[var(--pb-avatar)] text-[11px] font-semibold tracking-[0.02em] text-[var(--pb-muted)]"
+                        className={`relative flex size-8 items-center justify-center rounded-full text-[11px] font-semibold tracking-[0.02em] text-[var(--pb-muted)] ${dim ? "bg-transparent ring-1 ring-inset ring-[var(--pb-rule)]" : "bg-[var(--pb-avatar)]"}`}
                       >
                         {initials(person.name)}
                       </span>
