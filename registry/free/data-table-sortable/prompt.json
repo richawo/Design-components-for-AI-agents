@@ -1,0 +1,105 @@
+{
+  "component": "DataTableSortable",
+  "intent": "A dark invoice table where sorting is physical: rows travel to their new places and a spotlight glides to the sorted column. Resizable columns, sweep-select checkboxes with a counting selection total, a sticky header, density switch and an ARIA grid with roving focus. Folds into cards under 520px.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 (@container, container variants, CSS variables)",
+    "animation": "motion/react (layout=\"position\" on rows, motion values, variants with custom delays, useInView, AnimatePresence, layoutId)",
+    "icons": "lucide-react (ArrowDown, X)"
+  },
+  "layout": {
+    "root": "@container, max-width 1040px, radius 16px; head (title + count + description, density switch right), then the scroller",
+    "grid": "role=grid of CSS grid rows sharing --dt-cols: 48px checkbox column, each column at its width, the last minmax(width, 1fr)",
+    "fit": "unresized columns shrink proportionally towards minWidth to fit the measured container; then the table scrolls sideways in its own scroller",
+    "rows": "header 40px; rows 52px regular, 36px compact; cells padded 12px; hairline ink/7% under each row",
+    "stickyHeader": "on: rows scroll inside maxHeight (440px) under a pinned header that gains a soft shadow once scrolled; off: the table grows to fit",
+    "selectionBar": "floating, centred, 12px from the bottom, 48px tall, radius 13px; body gains 68px bottom padding while it shows",
+    "narrow": "under 520px rows become cards: checkbox, title, value on one line; other columns as an indented 12.5px meta line; header replaced by a Sort button row"
+  },
+  "typography": {
+    "title": "Geist 17px semibold, tracking -0.02em; row count mono 11px ink/38",
+    "description": "13px ink/45",
+    "headerLabels": "mono 11px uppercase, tracking 0.08em, ink/45; sorted column full ink",
+    "entity": "14px medium with a 24px monogram tile (mono 9.5px initials)",
+    "mono": "12.5px mono ink/60",
+    "date": "13.5px tabular ink/75, Intl short month + day",
+    "currency": "14px medium, tabular-nums, right-aligned; fraction at ink/38",
+    "bar": "13.5px tabular; TOTAL label mono 10.5px uppercase"
+  },
+  "color": {
+    "tokens": "PALETTE.dark / PALETTE.light → --dt-card, --dt-ink, --dt-accent, --dt-on-accent, --dt-bar, --dt-bar-ink, --dt-shadow",
+    "dark": "stage #000000, card #0b0b0c with inset white/8% hairline and white/5% top highlight, ink #f4f4f5, bar #1c1c1f",
+    "light": "stage #f4f4f5, card #ffffff, ink #111113, bar #111113 with #fafafa ink",
+    "accent": "#5e9eff via the accent prop: checked boxes, selected rows (11%, 15% hover), resize guide and width chip, the selection total",
+    "status": "semantic dots with 3px 16% halos: positive #4ade80, warning #fbbf24, negative #f87171, neutral #71717a (light: #16a34a, #d97706, #dc2626, #a1a1aa)",
+    "spotlight": "sorted column ink/3.5% with ink/5% side hairlines"
+  },
+  "motion": {
+    "sort": "rows layout=position on spring 340/36 (mass 0.9): every row travels to its new slot together; ties keep original order",
+    "spotlight": "x and width motion values, spring 500/40, glide to the sorted column",
+    "arrow": "rotates 180deg on spring 500/40 between directions; hidden until hover (40%), solid when sorted",
+    "resize": "template written to the grid element during the drag (no render per move), committed on release; handle line grows 14→24px on hover and goes accent full-height with a guide and width chip while dragging",
+    "checkbox": "accent fill, check path draws 220ms",
+    "bar": "rises 14px from a 4px blur in 320ms; leaves 10px in 200ms ease-in; total counts to its new value in 600ms",
+    "density": "row height transitions 150ms; switch thumb is a layoutId on spring 500/40",
+    "entrance": "once at 20% in view: card 0s (16px rise from 8px blur, 600ms), head 0.08s, labels 0.14s, rows from 0.2s 35ms apart (capped after 12), amounts count from zero 100ms after their row, spotlight fades in at 0.55s",
+    "reducedMotion": "150ms opacity fades only; no row travel; figures set instantly; spotlight jumps"
+  },
+  "responsive": {
+    "container": "columns fit the container down to their minimums, then scroll sideways inside the table; never the page",
+    "narrow": "cards under 520px with a Sort row; selection bar hides the total label under 520px and the actions under 420px",
+    "touch": "checkbox hit areas 44px; sweep-select uses pointer capture and touch-action none on the boxes only"
+  },
+  "accessibility": [
+    "role=grid with aria-rowcount, aria-colcount and aria-multiselectable; rows aria-selected and aria-rowindex",
+    "sortable columnheaders carry aria-sort; header labels are buttons",
+    "roving tabindex: one tabbable cell; arrows, Home/End, Ctrl/Cmd+Home/End, PageUp/PageDown",
+    "Space toggles the row, Shift+Up/Down extends, Ctrl/Cmd+A selects all, Escape clears",
+    "Shift+Left/Right on a header resizes by 16px; separators expose aria-valuenow/min/max",
+    "polite live region for sort, selection and resize",
+    "density switch is a radiogroup with arrow keys; icon button labelled 'Clear selection'",
+    "keyboard-only 2px focus rings inset on cells"
+  ],
+  "content": {
+    "title": "Invoices",
+    "description": "Ferro Studio · last 90 days",
+    "columns": [
+      "Invoice (mono)",
+      "Client (entity)",
+      "Issued (date)",
+      "Status (status)",
+      "Amount (currency)"
+    ],
+    "statuses": {
+      "overdue": "Overdue",
+      "due": "Due",
+      "draft": "Draft",
+      "paid": "Paid"
+    },
+    "clients": [
+      "Harbour & Finch",
+      "Odd Lot Coffee",
+      "Ninefold Labs",
+      "Marlowe Press",
+      "Tessellate",
+      "Kiln & Co.",
+      "Saltmarsh Records"
+    ],
+    "data": "40 seeded invoices INV-2084 down to INV-2045, the demo shows 14",
+    "bulkActions": [
+      "Send reminder",
+      "Export CSV"
+    ]
+  },
+  "avoid": [
+    "zebra stripes, vertical gridlines or a coloured header band",
+    "pill badges for status",
+    "rows that snap to their new order instead of travelling",
+    "React state updated on every pointer move while resizing",
+    "left-aligned or proportional figures",
+    "horizontal page scroll at any width",
+    "colour anywhere but selection and semantic status dots"
+  ],
+  "dataRobustness": "An empty columns array shows the themed title and emptyLabel status. Metadata and numbers use at least 65% ink so both themes remain legible."
+}

@@ -1,0 +1,258 @@
+{
+  "slug": "data-table-sortable",
+  "name": "Sortable Data Table",
+  "tier": "free",
+  "platform": "web",
+  "category": "data",
+  "description": "A dark invoice table whose rows travel to their new places when sorted, with resizable columns, sweep-select checkboxes, a sticky header and keyboard grid navigation.",
+  "tags": [
+    "data table",
+    "table",
+    "sortable",
+    "resizable columns",
+    "row selection",
+    "sticky header",
+    "keyboard navigation",
+    "aria grid",
+    "dark",
+    "monochrome"
+  ],
+  "dependencies": [
+    "motion",
+    "lucide-react"
+  ],
+  "theme": "dark",
+  "previewHeight": 700,
+  "usage": "import { DataTableSortable } from \"@/components/design-for-ai/data-table-sortable\";\n\n// Rows render without virtualisation, so pass a page at a time (a few hundred rows at most).\n<DataTableSortable\n  title=\"Payouts\"\n  description=\"September · 4 creators\"\n  columns={[\n    { key: \"creator\", header: \"Creator\", kind: \"entity\", width: 240 },\n    { key: \"paidOn\", header: \"Paid on\", kind: \"date\", width: 120 },\n    { key: \"state\", header: \"State\", kind: \"status\", width: 120 },\n    { key: \"net\", header: \"Net\", kind: \"currency\", width: 140 },\n  ]}\n  statuses={{\n    sent: { label: \"Sent\", tone: \"positive\", rank: 1 },\n    held: { label: \"On hold\", tone: \"warning\", rank: 0 },\n  }}\n  data={payouts} // [{ id, creator, paidOn: \"2026-09-30\", state: \"sent\", net: 1840.5 }, …]\n  defaultSort={{ key: \"net\", direction: \"descending\" }}\n  currency=\"EUR\"\n  locale=\"de-DE\"\n  onSelectionChange={(ids) => setPicked(ids)}\n  onBulkAction={(action, ids) => run(action, ids)}\n/>",
+  "props": [
+    {
+      "name": "columns",
+      "type": "DataTableColumn[]",
+      "default": "Invoice, Client, Issued, Status, Amount",
+      "description": "Column key, header and kind (text, mono, entity, date, status, currency, number), plus width, minWidth, maxWidth, sortable and firstSort. The last column takes spare room."
+    },
+    {
+      "name": "data",
+      "type": "DataTableRow[]",
+      "default": "40 invoices",
+      "description": "Rows: an id plus a string or number per column key. Dates are ISO yyyy-mm-dd."
+    },
+    {
+      "name": "rows",
+      "type": "number",
+      "default": "all of data",
+      "description": "Caps how many rows of data render. There is no virtualisation, so keep it to a page."
+    },
+    {
+      "name": "density",
+      "type": "\"compact\" | \"regular\"",
+      "default": "\"regular\"",
+      "description": "36px or 52px rows. The table's own switch changes it too; onDensityChange reports it."
+    },
+    {
+      "name": "selectable",
+      "type": "boolean",
+      "default": "true",
+      "description": "Checkbox column with select-all, sweep-select (press and drag across boxes), shift-click ranges and the floating selection bar."
+    },
+    {
+      "name": "resizable",
+      "type": "boolean",
+      "default": "true",
+      "description": "Drag a header edge to resize, double-click it to reset, or Shift + ← / → with the header focused."
+    },
+    {
+      "name": "stickyHeader",
+      "type": "boolean",
+      "default": "true",
+      "description": "Pin the header and scroll rows inside maxHeight. Off, the table grows to fit every row."
+    },
+    {
+      "name": "maxHeight",
+      "type": "number",
+      "default": "440",
+      "description": "Height of the scroll area, in px, when the header is sticky."
+    },
+    {
+      "name": "defaultSort",
+      "type": "{ key: string; direction: \"ascending\" | \"descending\" } | null",
+      "default": "{ key: \"issued\", direction: \"descending\" }",
+      "description": "Initial sort. Headers cycle first direction, the other, then unsorted."
+    },
+    {
+      "name": "statuses",
+      "type": "Record<string, { label: string; tone: \"positive\" | \"warning\" | \"negative\" | \"neutral\"; rank: number }>",
+      "default": "overdue, due, draft, paid",
+      "description": "Labels, dot colours and sort order for status columns."
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "default": "\"Invoices\"",
+      "description": "Heading, also the grid's accessible name."
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "default": "\"Ferro Studio · last 90 days\"",
+      "description": "One quiet line under the title."
+    },
+    {
+      "name": "bulkActions",
+      "type": "{ id: string; label: string }[]",
+      "default": "Send reminder, Export CSV",
+      "description": "Buttons on the selection bar."
+    },
+    {
+      "name": "emptyLabel",
+      "type": "string",
+      "default": "\"No invoices yet…\"",
+      "description": "Empty-state text for no rows or no columns. An empty columns array renders a titled status instead of an invalid table."
+    },
+    {
+      "name": "locale",
+      "type": "string",
+      "default": "\"en-US\"",
+      "description": "Locale for figures, dates and text sorting."
+    },
+    {
+      "name": "currency",
+      "type": "string",
+      "default": "\"USD\"",
+      "description": "ISO currency for currency columns."
+    },
+    {
+      "name": "accent",
+      "type": "string",
+      "default": "\"#5e9eff\"",
+      "description": "The one colour: checked boxes, selected rows, the resize guide and the selection total."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Greyscale palette for the card, rows and selection bar."
+    },
+    {
+      "name": "onSortChange",
+      "type": "(sort: DataTableSort) => void",
+      "description": "Called when a header changes the sort (null when cleared)."
+    },
+    {
+      "name": "onSelectionChange",
+      "type": "(ids: string[]) => void",
+      "description": "Called with the selected row ids after every change."
+    },
+    {
+      "name": "onDensityChange",
+      "type": "(density: DataTableDensity) => void",
+      "description": "Called when the density switch changes."
+    },
+    {
+      "name": "onColumnResize",
+      "type": "(key: string, width: number) => void",
+      "description": "Called when a resize ends, with the new width in px."
+    },
+    {
+      "name": "onBulkAction",
+      "type": "(actionId: string, ids: string[]) => void",
+      "description": "Called when a selection bar button is pressed."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "description": "Extra classes on the root."
+    }
+  ],
+  "added": "2026-10-10",
+  "demo": {
+    "steps": [
+      "wait:600",
+      "click:@sort-amount",
+      "wait:800",
+      "hover:@resize-client",
+      "down",
+      "hover:@sort-issued:0.55,0.5",
+      "up",
+      "wait:350",
+      "hover:@select-1",
+      "down",
+      "hover:@select-5",
+      "up",
+      "wait:1100"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "density",
+      "label": "Density",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "compact",
+          "label": "Compact"
+        },
+        {
+          "value": "regular",
+          "label": "Regular"
+        }
+      ],
+      "default": "regular"
+    },
+    {
+      "prop": "rows",
+      "label": "Rows",
+      "kind": "slider",
+      "min": 5,
+      "max": 40,
+      "step": 1,
+      "default": 14
+    },
+    {
+      "prop": "selectable",
+      "label": "Selectable",
+      "kind": "toggle",
+      "default": true
+    },
+    {
+      "prop": "resizable",
+      "label": "Resizable columns",
+      "kind": "toggle",
+      "default": true
+    },
+    {
+      "prop": "stickyHeader",
+      "label": "Sticky header",
+      "kind": "toggle",
+      "default": true
+    },
+    {
+      "prop": "accent",
+      "label": "Accent",
+      "kind": "color",
+      "default": "#5e9eff",
+      "options": [
+        "#5e9eff",
+        "#ececee",
+        "#34d399",
+        "#ff7a45"
+      ]
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark"
+    }
+  ]
+}
