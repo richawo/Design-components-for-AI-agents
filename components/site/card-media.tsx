@@ -82,6 +82,7 @@ export function CardMedia({
           src={thumb}
           alt={`${name} preview`}
           loading={priority ? "eager" : "lazy"}
+          decoding="async"
           className={`absolute inset-0 size-full transition-transform duration-500 ease-site group-hover:scale-[1.02] ${fit}`}
         />
       ) : (

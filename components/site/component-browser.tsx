@@ -3,7 +3,7 @@
 import "./gallery-focus.css";
 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   FILTER_KEY,
   clampResultsScroll,
@@ -23,6 +23,10 @@ type Cat = { key: string; label: string; count: number };
 
 /** The first cards' stagger continues on from the page header and toolbar. */
 const FIRST_CARD_STEP = 4;
+// Keep the first render independent of catalogue size. Media remains lazy
+// inside these cards; another batch mounts shortly before the reader reaches it.
+const CARD_BATCH = 12;
+const BrowserCard = memo(ComponentCard);
 
 export function ComponentBrowser({ cards, categories, category, initialFilters }: { cards: CardData[]; categories: Cat[]; category: string; initialFilters?: { q: string; tier: "all" | "free" | "pro" } }) {
   const [q, setQ] = useState(initialFilters?.q ?? "");
@@ -139,6 +143,40 @@ export function ComponentBrowser({ cards, categories, category, initialFilters }
     });
   }, [cards, q, tier, cat]);
 
+  const filterKey = JSON.stringify([cat, tier, q.trim().toLowerCase()]);
+  const [pageWindow, setPageWindow] = useState({ key: filterKey, count: CARD_BATCH });
+  const shownCount = pageWindow.key === filterKey ? pageWindow.count : CARD_BATCH;
+  const shown = filtered.slice(0, shownCount);
+  const hasMore = shown.length < filtered.length;
+  const moreRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+  const focusNext = useRef<string | null>(null);
+  useEffect(() => {
+    setPageWindow({ key: filterKey, count: CARD_BATCH });
+  }, [filterKey]);
+  useEffect(() => {
+    if (!focusNext.current) return;
+    const next = gridRef.current?.querySelector<HTMLAnchorElement>(`a[href="/components/${focusNext.current}"]`);
+    if (next) { focusNext.current = null; next.focus(); }
+  }, [shown.length]);
+  const loadMore = useCallback(() => {
+    setPageWindow(current => ({
+      key: filterKey,
+      count: Math.min(filtered.length, (current.key === filterKey ? current.count : CARD_BATCH) + CARD_BATCH),
+    }));
+  }, [filterKey, filtered.length]);
+  useEffect(() => {
+    const target = moreRef.current;
+    if (!hasMore || !target || !window.IntersectionObserver) return;
+    const observer = new IntersectionObserver(entries => {
+      if (!entries.some(entry => entry.isIntersecting)) return;
+      observer.disconnect();
+      loadMore();
+    }, { rootMargin: "600px 0px" });
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [hasMore, loadMore, shown.length]);
+
   return (
     <div className="grid gap-3 lg:grid-cols-[220px_1fr] lg:gap-10">
       <CategorySidebar categories={categories} total={cards.length} active={cat} onSelect={setCat} />
@@ -198,9 +236,9 @@ export function ComponentBrowser({ cards, categories, category, initialFilters }
           {filtered.length} {filtered.length === 1 ? "component" : "components"}
         </p>
         {filtered.length ? (
-          <motion.div layout={!reduce} className="component-grid mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          <motion.div ref={gridRef} layout={!reduce} className="component-grid mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             <AnimatePresence initial={false} mode="popLayout">
-              {filtered.map((c, i) => (
+              {shown.map((c, i) => (
                 <motion.div
                   key={c.slug}
                   layout={!reduce}
@@ -211,7 +249,7 @@ export function ComponentBrowser({ cards, categories, category, initialFilters }
                   className="flex"
                 >
                   <CardSlot entrance={firstRender.current ? cardEntrance(i, FIRST_CARD_STEP) : undefined}>
-                    <ComponentCard c={c} priority={i < FIRST_VIEW_CARDS} />
+                    <BrowserCard c={c} priority={i < FIRST_VIEW_CARDS} />
                   </CardSlot>
                 </motion.div>
               ))}
@@ -231,6 +269,15 @@ export function ComponentBrowser({ cards, categories, category, initialFilters }
               className="site-btn site-btn-secondary mt-5 h-11 px-4 text-[13px]"
             >
               Clear filters
+            </button>
+          </div>
+        )}
+        {hasMore && (
+          <div ref={moreRef} className="relative mt-4 h-px">
+            {/* Automatic for scrolling, with an explicit path for keyboard and
+                screen-reader navigation. Focus continues at the new cards. */}
+            <button type="button" onClick={() => { focusNext.current = filtered[shown.length]?.slug ?? null; loadMore(); }} className="site-btn site-btn-secondary sr-only focus:not-sr-only focus:absolute focus:inset-x-0 focus:top-0 focus:mx-auto focus:h-11 focus:w-fit focus:px-5 focus:text-sm">
+              Load more components
             </button>
           </div>
         )}

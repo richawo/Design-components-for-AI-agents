@@ -21,8 +21,16 @@ try {
   assert.equal(await page.locator('[data-row="item:charts"]').getAttribute("aria-pressed"), "true");
   assert.equal(categoryRequests.length, 0, "local filtering must not request another server render");
   const count = Number((await page.locator('[data-row="item:charts"]').innerText()).match(/\d+$/)[0]);
-  // Outgoing cards remain mounted until their exit animation finishes.
-  await page.waitForFunction(count => document.querySelectorAll(".component-card").length === count, count);
+  const label = (await page.locator('[data-row="item:charts"]').innerText()).replace(/\d+$/, "").trim();
+  async function expectCharts() {
+    // Only the first batch needs to mount. Check card identity as well as count
+    // so a stale all-category render cannot masquerade as the right batch.
+    await page.waitForFunction(({ count, label }) => {
+      const cards = [...document.querySelectorAll(".component-card")];
+      return cards.length >= Math.min(12, count) && cards.length <= count && cards.every(card => card.querySelector("p")?.textContent.includes(label));
+    }, { count, label });
+  }
+  await expectCharts();
   await page.evaluate(() => window.scrollTo({ top: 600, behavior: "instant" }));
   await page.locator('header nav a[href="/pricing"]').scrollIntoViewIfNeeded();
   await page.locator('header nav a[href="/pricing"]').click();
@@ -30,13 +38,13 @@ try {
   await page.goBack();
   await page.waitForURL("**/components?category=charts");
   await page.locator('[data-row="item:charts"][aria-pressed="true"]').waitFor();
-  assert.equal(await page.locator(".component-card").count(), count);
+  await expectCharts();
   await page.screenshot({ path: "test-results/site-performance/gallery-history.png" });
   await page.goForward();
   await page.waitForURL("**/pricing");
   await page.goto(`${base}/components?category=charts`);
   await page.locator(".site-reveal[data-reveal]").first().waitFor({ state: "attached" });
-  assert.equal(await page.locator(".component-card").count(), count);
+  await expectCharts();
   assert.deepEqual(errors, []);
   console.log("Categories update without a server render; back/forward restores the URL, selection and cards.");
 } finally { await browser.close(); }

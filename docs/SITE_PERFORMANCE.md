@@ -26,6 +26,38 @@ preview controls and visible animation design.
 
 ## Replay evidence
 
+### Growing gallery
+
+The gallery now mounts 12 cards initially and adds batches of 12 within 600 px
+of the list's end. Search and category counts still use the complete lightweight
+catalogue index. A keyboard-accessible load action continues focus at the first
+new card. This is incremental rendering, not a virtual list: visited cards stay
+mounted until a filter changes or the page is left. Posters decode asynchronously;
+the existing nearby-video loading and playback limits remain in place.
+
+With the same 233-item catalogue, the production browser replay confirmed all
+233 cards remain reachable in order, without duplicates, on desktop and mobile.
+An initially unmounted component can be found directly through search. Gallery
+browsing requests neither live-preview documents nor component source APIs.
+The history, keyboard-focus and hover-emphasis checks also passed.
+
+The fourfold-CPU, 40 ms / 10 Mbps gallery replay measured first-render DOM count
+3476 to 612 and maximum long task 1055 to 234 ms. Search first-frame maximum was
+262 to 274 ms; second-frame maximum was 664 to 511 ms. The 200 ms feedback budget
+still failed, so this slice proves reduced rendering work, not smooth filtering
+in every case. The 250 ms blocking-input negative control also failed as expected
+(326 / 566 / 312 ms, first frame / second frame / long task).
+
+Reports are `test-results/site-performance/gallery-growth-{before,after,negative}.json`.
+The catalogue and initial visible cards were unchanged between these runs.
+
+The video audit found 220 MP4s totalling 27.46 MB, roughly 125 KB on average;
+the largest was 409 KB. Samples already use H.264, no audio and fast-start MP4
+packaging. A lossless stream-copy/remux of the largest file remained exactly
+408609 bytes. No blanket recompression or reduction of video fidelity was made.
+
+### Source navigation
+
 The scripts use Chromium, a 1440 by 900 viewport, fourfold CPU throttling,
 80 ms simulated network latency and 5 Mbps download throughput for navigation.
 The navigation replay opens three components and switches their source tabs.
