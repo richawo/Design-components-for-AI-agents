@@ -509,6 +509,7 @@ export function DialogConfirmTyped({
 
   /* Focus stays inside the dialog while it is open; Esc dismisses it. The panel itself takes focus on a click, so Esc keeps working after one. */
   const onPanelKey = (e: ReactKeyboardEvent<HTMLDivElement>) => {
+    if (e.nativeEvent.isComposing || e.nativeEvent.keyCode === 229) return;
     if (e.key === "Escape") {
       e.preventDefault();
       dismiss();
@@ -653,6 +654,7 @@ export function DialogConfirmTyped({
                 readOnly={busy}
                 onChange={(e) => setTyped(e.target.value)}
                 onKeyDown={(e) => {
+                  if (e.nativeEvent.isComposing || e.nativeEvent.keyCode === 229) return;
                   if (e.key !== "Enter") return;
                   e.preventDefault();
                   confirm();

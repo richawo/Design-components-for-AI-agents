@@ -373,6 +373,7 @@ export function CollabMentionInput({
   };
 
   const onKeyDown = (e: ReactKeyboardEvent<HTMLDivElement>) => {
+    if (e.nativeEvent.isComposing || e.nativeEvent.keyCode === 229) return;
     if (query) {
       if (hits.length && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
         e.preventDefault();

@@ -451,6 +451,7 @@ export function SelectListbox({
 
   // Keyboard model: the trigger keeps focus while the panel is open (or the filter field, when searchable).
   const onKey = (e: ReactKeyboardEvent<HTMLElement>, fromSearch: boolean) => {
+    if (e.nativeEvent.isComposing || e.nativeEvent.keyCode === 229) return;
     // Only Tab gets through while a choice is being confirmed: it closes the panel at once.
     if (committing.current && e.key !== "Tab") {
       e.preventDefault();
