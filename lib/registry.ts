@@ -32,7 +32,11 @@ export async function readSource(slug: string): Promise<ComponentSource | null> 
 /** A Pro shadcn registry item. Check the licence first. */
 export async function readProItem(slug: string): Promise<unknown | null> {
   const load = Object.hasOwn(proItemLoaders, slug) ? proItemLoaders[slug] : undefined;
-  return load ? (await load()).default : null;
+  if (!load) return null;
+  const [item, source] = await Promise.all([load(), readSource(slug)]);
+  if (!source) return null;
+  const envelope = item.default as { files: [Record<string, unknown>] };
+  return { ...envelope, files: [{ ...envelope.files[0], content: source.code }] };
 }
 
 export function stats() {

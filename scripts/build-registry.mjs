@@ -436,7 +436,9 @@ export const videos: ReadonlySet<string> = new Set(${JSON.stringify(videos)});
 // shadcn registry: free items are public files, Pro items are served by the API.
 prune(publicR, new Set([...free.map((c) => `${c.meta.slug}.json`), "theme.json", "registry.json"]));
 for (const c of free) writeJson(path.join(publicR, `${c.meta.slug}.json`), registryItem(c));
-for (const c of pro) writeJson(path.join(outDir, "r-pro", `${c.meta.slug}.json`), registryItem(c));
+// Pro source already ships in sources/. Keep only the registry envelope here;
+// readProItem fills its single component file from that same source at runtime.
+for (const c of pro) writeJson(path.join(outDir, "r-pro", `${c.meta.slug}.json`), registryItem({ ...c, code: "" }));
 writeJson(path.join(publicR, "theme.json"), THEME_ITEM);
 writeJson(path.join(publicR, "registry.json"), {
   $schema: "https://ui.shadcn.com/schema/registry.json",
