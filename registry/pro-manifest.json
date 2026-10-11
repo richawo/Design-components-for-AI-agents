@@ -17553,6 +17553,94 @@
     ]
   },
   {
+    "slug": "hr-interview-scorecard",
+    "name": "Interview Scorecard",
+    "tier": "pro",
+    "platform": "web",
+    "category": "forms",
+    "description": "Anchored competency ratings, evidence notes and explicit recommendation. A considered, responsive hr workspace with typed integration points.",
+    "tags": [
+      "hr",
+      "workflow",
+      "responsive",
+      "keyboard",
+      "forms"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "light",
+    "previewHeight": 1320,
+    "usage": "import { InterviewScorecard } from \"@/components/design-for-ai/hr-interview-scorecard\";\n\n<InterviewScorecard />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Main heading."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "description": "Supporting context."
+      },
+      {
+        "name": "candidate",
+        "type": "string",
+        "description": "Candidate name supplied for this interview."
+      },
+      {
+        "name": "role",
+        "type": "string",
+        "description": "Role being assessed."
+      },
+      {
+        "name": "interviewer",
+        "type": "string",
+        "description": "Reviewer responsible for the evidence and recommendation."
+      },
+      {
+        "name": "competencies",
+        "type": "InterviewCompetency[]",
+        "description": "Unique role-relevant competencies with concrete evidence prompts."
+      },
+      {
+        "name": "onSubmit",
+        "type": "(evaluation:InterviewEvaluation)=>void|Promise<void>",
+        "description": "Submit the reviewed scorecard. The host owns any subsequent hiring process; this component makes no automated decision."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"light\"",
+        "description": "Surface, border and ink palette."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:350",
+        "click:@rating-3",
+        "wait:650",
+        "click:@competency-1",
+        "click:@rating-2",
+        "wait:1000"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "light"
+      }
+    ]
+  },
+  {
     "slug": "hr-leave-approval",
     "name": "Leave Approval Workspace",
     "tier": "pro",
