@@ -21,7 +21,7 @@
     "demoHeader": "mono 11px uppercase, tracking 0.12em, muted; the period word cross-fades on change"
   },
   "color": {
-    "approach": "CSS variables on the root from the theme prop. Dark: track #19191c, pill #2c2c31, ink #f4f4f5, muted #8a8a93, focus ring ink at 70%, track ring 1px inset at 7% white. Light: track #f1f1f3, pill #ffffff, ink #18181b, muted #64646e, focus ring ink at 70%, track ring 1px inset at 7% ink.",
+    "approach": "CSS variables on the root from the theme prop. Dark: track #19191c, pill #2c2c31, ink #f4f4f5, muted #a1a1aa, focus ring ink at 70%, track ring 1px inset at 7% white. Light: track #f1f1f3, pill #ffffff, ink #18181b, muted #64646e, focus ring ink at 70%, track ring 1px inset at 7% ink.",
     "pill": "dark: 1px inset hairline at 8% white, 1px inset top highlight, 1px 2px drop at 50% black, soft 6px 14px drop at 70% black; light: 5% ink hairline, white top highlight, 10% drop, 28% soft drop",
     "states": "selected label ink; unselected label muted, moving to ink on hover (text only, no surface); disabled at 40% opacity with cursor-not-allowed and no hover colour",
     "accent": "none. Monochrome by design: the selection is ink on paper."

@@ -19,7 +19,7 @@ Build a segmented control in React 19 + Tailwind CSS v4 + `motion/react` that fe
 - Nothing is uppercase or mono inside the control. The demo's card header and its column toggle are the only mono text.
 
 **Colour (dark first, no accent)**
-- Tokens are CSS variables set on the root from a `theme` prop. Dark: track `#19191c`, track ring 1px inset at 7% white, pill `#2c2c31`, ink `#f4f4f5`, muted `#8a8a93`, focus ring ink at 70%. Light: track `#f1f1f3`, track ring 1px inset at 7% ink, pill `#ffffff`, ink `#18181b`, muted `#64646e`, focus ring ink at 70%.
+- Tokens are CSS variables set on the root from a `theme` prop. Dark: track `#19191c`, track ring 1px inset at 7% white, pill `#2c2c31`, ink `#f4f4f5`, muted `#a1a1aa`, focus ring ink at 70%. Light: track `#f1f1f3`, track ring 1px inset at 7% ink, pill `#ffffff`, ink `#18181b`, muted `#64646e`, focus ring ink at 70%.
 - The track is opaque, so the edge fades can mask into the track colour without a seam.
 - Pill shadow: a 1px inset hairline at 8% white (dark) or 5% ink (light), a 1px inset top highlight, a 1px 2px drop at 50% black and a soft 6px 14px drop at 70% black (dark). Light uses a 10% drop and a 28% soft drop instead.
 - Selected label: ink. Unselected label: muted, moving to ink on hover (enabled segments only). Hover changes the text colour only, with no surface, so the hovered segment never reads as a second pill.

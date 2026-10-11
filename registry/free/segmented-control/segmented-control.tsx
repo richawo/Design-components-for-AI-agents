@@ -94,7 +94,7 @@ const THEMES = {
     pillShadow:
       "inset 0 0 0 1px rgb(255 255 255 / 0.08), inset 0 1px 0 rgb(255 255 255 / 0.08), 0 1px 2px rgb(0 0 0 / 0.5), 0 6px 14px -6px rgb(0 0 0 / 0.7)",
     ink: "#f4f4f5",
-    muted: "#8a8a93",
+    muted: "#a1a1aa",
     focus: "rgb(244 244 245 / 0.7)",
   },
   light: {
@@ -421,7 +421,7 @@ const STAGE_DARK = {
   "--stage-card": "#111113",
   "--stage-ring": "rgb(255 255 255 / 0.08)",
   "--stage-line": "rgb(255 255 255 / 0.07)",
-  "--stage-muted": "#8a8a93",
+  "--stage-muted": "#a1a1aa",
   "--stage-ink": "#f4f4f5",
   "--stage-shadow": "0 24px 60px -28px rgb(0 0 0 / 0.7)",
 } as CSSProperties;
