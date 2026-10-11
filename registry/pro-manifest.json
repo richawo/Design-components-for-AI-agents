@@ -8656,15 +8656,11 @@
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:500",
-        "click:@move-ds-14",
-        "key:ArrowDown",
-        "key:Enter",
+        "wait:600",
+        "click:@advance-demo",
         "wait:900",
-        "click:@move-ds-18",
-        "key:ArrowDown",
-        "key:Enter",
-        "wait:700"
+        "click:@advance-demo",
+        "wait:900"
       ],
       "loop": false
     },
