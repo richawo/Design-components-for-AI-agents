@@ -5,8 +5,8 @@ Build a ten-by-ten waffle (unit) chart in React + Tailwind CSS v4 (container que
 - An ink/8% border, 22px radius, an inset top highlight and a deep soft shadow.
 
 **Header**
-- The title "Who closed the ticket" (15px medium, tracking −0.01em) with a mono 11px subtitle "Per 100 support tickets" at ink/45.
-- Under it, the period caption ("Jul–Sep 2026 · 52,604 tickets", 13px ink/50). It cross-fades on change (6px slide, 3px blur, 240ms in, 140ms out).
+- The title "Who closed the ticket" (15px medium, tracking −0.01em) with a mono 11px subtitle "Per 100 support tickets" at semantic muted ink.
+- Under it, the period caption ("Jul–Sep 2026 · 52,604 tickets", 13px semantic muted ink). It cross-fades on change (6px slide, 3px blur, 240ms in, 140ms out).
 - Period tabs (Q4 ’25 / Q1 / Q2 / Q3) with an ink pill that slides on a `layoutId` spring (500/40). They go full width in narrow containers.
 
 **Grid**
@@ -22,7 +22,7 @@ Build a ten-by-ten waffle (unit) chart in React + Tailwind CSS v4 (container que
 
 **Headline and legend**
 - The first group's count is the headline: Geist 600 at `clamp(3.25rem, 2.2rem + 4cqi, 5.25rem)`, tracking −0.055em, leading 0.9, in the accent. Beside it: "of every 100 tickets: resolved by the agent" (14px ink/60, max 16ch).
-- Legend rows are buttons with a swatch, the label (13.5px), a note (12px ink/42), a mono delta against the previous period (green or rose for the lead group, grey otherwise) and the count (15px tabular).
+- Legend rows are buttons with a swatch, the label (13.5px), a note (12px semantic muted ink), a mono delta against the previous period (green or rose for the lead group, grey otherwise) and the count (15px tabular).
 - A mono footnote reads: "Change vs Q2, in tickets per 100".
 
 **Motion** (ease `[0.22, 1, 0.36, 1]`)
@@ -36,10 +36,16 @@ Build a ten-by-ten waffle (unit) chart in React + Tailwind CSS v4 (container que
 
 **Accessibility**
 - The grid is `role="img"` with every group's count in its label.
-- Tabs use `role="tablist"`/`"tab"` with `aria-selected`. Legend rows are buttons with spoken labels and they highlight on focus. The hover readout is `aria-live="polite"`. Counting figures carry an `sr-only` final value.
+- Tabs use `role="group"`/`"tab"` with `aria-pressed`. Legend rows are buttons with spoken labels and they highlight on focus. The hover readout is `aria-live="polite"`. Counting figures carry an `sr-only` final value.
 
 **Don't**
 - Use a chart library or a canvas.
 - Recolour cells in place on a change. The point is that they move.
 - Shuffle cells randomly or animate all 100 at once with no stagger.
 - Use a rainbow of group colours, icons inside cells, a pie chart beside it or a percentage on every cell.
+
+**Data and legibility**
+- Expose `emptyMessage` for empty categories, empty periods and periods with no positive finite values. Keep the period selector available for an all-zero period. Do not fabricate cells or percentages for missing data.
+- Clamp negative and nonfinite counts to zero, normalize positive values before summing to avoid numeric overflow, then allocate exactly 100 cells by largest remainder. Recreate the cell set when data returns and recycle cells from removed categories.
+- Use solid muted text (#98989f dark, #62626b light). Keep legend text readable while cells dim. Light positive deltas use #047857. The headline mixes accent 65% with theme ink.
+- Period controls are native buttons at least 44px high with `aria-pressed` inside a labelled group.

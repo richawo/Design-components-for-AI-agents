@@ -11,25 +11,33 @@
   "layout": {
     "card": "bg #0b0b0c (light #ffffff), border ink/8%, radius 22px, inset top highlight, deep shadow, @container root",
     "header": "title + mono subtitle, caption under it; period tabs on the right, full width in narrow containers",
-    "grid": "square box max 360px; each cell 10%×10%, positioned by x = col×100%, y = row×100%; gap is inner padding (default 4px); radius 3px or round",
+    "grid": "square box max 360px; each cell 10%\u00d710%, positioned by x = col\u00d7100%, y = row\u00d7100%; gap is inner padding (default 4px); radius 3px or round",
     "fill": "column by column by default (bands), or row by row",
     "body": "grid left and headline + legend right from @3xl; stacked below",
     "legend": "rows: swatch, label, note, delta vs previous period, count"
   },
   "typography": {
     "title": "15px medium tracking -0.01em",
-    "subtitle": "mono 11px ink/45",
+    "subtitle": "mono 11px, semantic muted ink",
     "headline": "Geist 600 clamp(3.25rem, 2.2rem + 4cqi, 5.25rem) tracking -0.055em leading 0.9 in the accent",
-    "legend": "13.5px labels, 12px notes ink/42, 15px tabular counts, mono 11px deltas",
-    "readout": "mono 10.5px ink/40"
+    "legend": "13.5px labels, 12px notes in muted ink, 15px tabular counts, mono 11px deltas; labels remain readable while other cells dim",
+    "readout": "mono 10.5px, semantic muted ink"
   },
   "color": {
     "approach": "monochrome; the first group is the one accent, the rest step down the ink",
-    "dark": { "surface": "#0b0b0c", "ink": "#f5f5f4" },
-    "light": { "surface": "#ffffff", "ink": "#0b0b0c" },
-    "accent": "#ff7a45 (prop): first group's cells, swatch and headline",
-    "ramp": "color-mix of ink at 62%, 34%, 17%, 10% for groups 2–5",
-    "deltas": "green #34d399 / rose #fb7185 for the lead group only; grey for the others",
+    "dark": {
+      "surface": "#0b0b0c",
+      "ink": "#f5f5f4",
+      "muted": "#98989f"
+    },
+    "light": {
+      "surface": "#ffffff",
+      "ink": "#0b0b0c",
+      "muted": "#62626b"
+    },
+    "accent": "The accent colors cells and swatches. Mix it 65% with theme ink for the headline so it remains readable in light mode.",
+    "ramp": "color-mix of ink at 62%, 34%, 17%, 10% for groups 2\u20135",
+    "deltas": "green #34d399 / rose #fb7185 in dark, #047857 / #e11d48 in light; lead group only",
     "tokens": "one PALETTE object per theme written to --cw-* CSS variables"
   },
   "motion": {
@@ -39,7 +47,7 @@
     "reducedMotion": "cells jump, colours and counts final, 150ms fades only"
   },
   "interaction": {
-    "tabs": "switch period; onPeriodChange(key)",
+    "tabs": "44px period buttons in a labelled group with aria-pressed; each is keyboard reachable; onPeriodChange(key)",
     "legend": "hover, focus or tap a row to isolate its group",
     "cells": "hovering a cell isolates its group and names it"
   },
@@ -48,7 +56,7 @@
   },
   "accessibility": [
     "grid is role=img with every group's count in its label",
-    "tabs use role=tablist/tab with aria-selected",
+    "Period buttons use aria-pressed inside role=group labelled Period.",
     "legend rows are buttons with spoken labels and highlight on focus",
     "the hover readout is aria-live=polite",
     "counting figures carry an sr-only final value"
@@ -57,7 +65,7 @@
     "title": "Who closed the ticket",
     "subtitle": "Per 100 support tickets",
     "groups": "Resolved by the agent, Agent drafted / person sent, Handled by a person, Escalated to engineering",
-    "periods": "Q4 ’25 [31,22,38,9], Q1 [42,24,27,7], Q2 [53,21,20,6], Q3 [64,17,14,5]",
+    "periods": "Q4 \u201925 [31,22,38,9], Q1 [42,24,27,7], Q2 [53,21,20,6], Q3 [64,17,14,5]",
     "unit": "ticket"
   },
   "avoid": [
@@ -67,5 +75,6 @@
     "a rainbow of group colours",
     "icons or percentages inside cells",
     "a pie chart beside the waffle"
-  ]
+  ],
+  "dataHandling": "Empty groups or periods show emptyMessage. Negative and nonfinite counts become zero. All-zero periods show emptyMessage while retaining period controls. Normalize positive counts to 100 using overflow-safe largest-remainder rounding. Recreate cells when transitioning between zero and populated data; recycle removed groups when categories shrink."
 }

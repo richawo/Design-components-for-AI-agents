@@ -32,14 +32,20 @@
     {
       "name": "periods",
       "type": "{ key: string; label: string; caption?: string; counts: number[] }[]",
-      "default": "Q4 ’25 to Q3 ’26",
-      "description": "One count per group for each period. Counts are rounded to exactly 100 cells by largest remainder."
+      "default": "Q4 \u201925 to Q3 \u201926",
+      "description": "One count per group. Positive finite counts are rounded to 100 cells by largest remainder. Negative or nonfinite values count as zero; an all-zero period shows the empty state."
     },
     {
       "name": "defaultPeriod",
       "type": "string",
       "default": "last period",
       "description": "Period key shown first."
+    },
+    {
+      "name": "emptyMessage",
+      "type": "string",
+      "default": "\"No data for this period.\"",
+      "description": "Shown for an empty groups or periods array and periods with no positive finite counts. No cells or percentages are invented."
     },
     {
       "name": "onPeriodChange",
@@ -121,10 +127,22 @@
       "label": "Opens on",
       "kind": "segmented",
       "options": [
-        { "value": "q4", "label": "Q4 ’25" },
-        { "value": "q1", "label": "Q1" },
-        { "value": "q2", "label": "Q2" },
-        { "value": "q3", "label": "Q3" }
+        {
+          "value": "q4",
+          "label": "Q4 \u201925"
+        },
+        {
+          "value": "q1",
+          "label": "Q1"
+        },
+        {
+          "value": "q2",
+          "label": "Q2"
+        },
+        {
+          "value": "q3",
+          "label": "Q3"
+        }
       ],
       "default": "q3",
       "remount": true
@@ -134,8 +152,14 @@
       "label": "Fill order",
       "kind": "segmented",
       "options": [
-        { "value": "columns", "label": "Columns" },
-        { "value": "rows", "label": "Rows" }
+        {
+          "value": "columns",
+          "label": "Columns"
+        },
+        {
+          "value": "rows",
+          "label": "Rows"
+        }
       ],
       "default": "columns"
     },
@@ -144,8 +168,14 @@
       "label": "Cell shape",
       "kind": "segmented",
       "options": [
-        { "value": "square", "label": "Square" },
-        { "value": "round", "label": "Round" }
+        {
+          "value": "square",
+          "label": "Square"
+        },
+        {
+          "value": "round",
+          "label": "Round"
+        }
       ],
       "default": "square"
     },
@@ -164,15 +194,26 @@
       "label": "Accent",
       "kind": "color",
       "default": "#ff7a45",
-      "options": ["#ff7a45", "#34d399", "#60a5fa", "#e5e5e5"]
+      "options": [
+        "#ff7a45",
+        "#34d399",
+        "#60a5fa",
+        "#e5e5e5"
+      ]
     },
     {
       "prop": "theme",
       "label": "Theme",
       "kind": "segmented",
       "options": [
-        { "value": "dark", "label": "Dark" },
-        { "value": "light", "label": "Light" }
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
       ],
       "default": "dark"
     }
