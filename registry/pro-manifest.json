@@ -2004,6 +2004,229 @@
     "added": "2026-10-10"
   },
   {
+    "slug": "billing-overview",
+    "name": "Billing Overview",
+    "tier": "pro",
+    "platform": "web",
+    "category": "billing",
+    "description": "One billing home: the plan and its price, a usage meter near its limit, the card on file and recent invoices, each opening in place.",
+    "tags": [
+      "billing",
+      "subscription",
+      "usage",
+      "invoices",
+      "payment",
+      "plan",
+      "saas"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 880,
+    "usage": "import { BillingOverview } from \"@/components/design-for-ai/billing-overview\";\n\n<BillingOverview\n  workspace=\"Copperline\"\n  planName=\"Studio\"\n  seats={8}\n  pricePerSeat={16}\n  periodStart=\"2026-09-24\"\n  periodEnd=\"2026-10-23\"\n  today=\"2026-10-10\"\n  last4=\"4242\"\n  expiry=\"08/28\"\n  cardholder=\"Ines Varga\"\n  onOpenChange={(open) => console.log(open)}\n/>",
+    "props": [
+      {
+        "name": "workspace",
+        "type": "string",
+        "default": "\"Copperline\"",
+        "description": "The workspace the bill belongs to, used as the heading and printed on the card."
+      },
+      {
+        "name": "planName",
+        "type": "string",
+        "default": "\"Studio\"",
+        "description": "The current plan, named in the subtitle and the plan row."
+      },
+      {
+        "name": "seats",
+        "type": "number",
+        "default": "8",
+        "description": "Seats on the plan. The monthly price is this times pricePerSeat."
+      },
+      {
+        "name": "pricePerSeat",
+        "type": "number",
+        "default": "16",
+        "description": "Price per seat per month."
+      },
+      {
+        "name": "periodStart",
+        "type": "string",
+        "default": "\"2026-09-24\"",
+        "description": "First day of the current period, ISO date."
+      },
+      {
+        "name": "periodEnd",
+        "type": "string",
+        "default": "\"2026-10-23\"",
+        "description": "Last day of the current period, ISO date, inclusive. Renewal is the next day."
+      },
+      {
+        "name": "today",
+        "type": "string",
+        "default": "\"2026-10-10\"",
+        "description": "The day the home is being read, ISO date. Pass the real date in production."
+      },
+      {
+        "name": "meters",
+        "type": "{ id: string; label: string; used: number; limit: number; unit?: string }[]",
+        "default": "Boards, Renders, Storage",
+        "description": "Usage this period. The row shows the meter closest to its cap; opening lists every meter."
+      },
+      {
+        "name": "invoices",
+        "type": "{ id: string; date: string; amount: number }[]",
+        "default": "three paid invoices",
+        "description": "Issued invoices, newest first once sorted. The row shows the latest; opening lists them."
+      },
+      {
+        "name": "last4",
+        "type": "string",
+        "default": "\"4242\"",
+        "description": "Last four digits of the card on file."
+      },
+      {
+        "name": "expiry",
+        "type": "string",
+        "default": "\"08/28\"",
+        "description": "Expiry as printed, already formatted."
+      },
+      {
+        "name": "cardholder",
+        "type": "string",
+        "default": "\"Ines Varga\"",
+        "description": "Name printed on the card when the payment row is open."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Locale for money, dates and meter figures."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"USD\"",
+        "description": "ISO 4217 code."
+      },
+      {
+        "name": "open",
+        "type": "\"none\" | \"plan\" | \"usage\" | \"payment\" | \"invoices\"",
+        "default": "\"none\"",
+        "description": "Which row is open. Pass it with onOpenChange to control the home; omit it and the home keeps its own state."
+      },
+      {
+        "name": "onOpenChange",
+        "type": "(open: OverviewOpen) => void",
+        "description": "Called when a row is opened or closed. Closing the open row reports \"none\"."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#7dd3a8\"",
+        "description": "The one accent: the meter nearest its limit, that meter's figure, and the near-limit note."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface and ink. Light deepens the accent for text so it stays readable. The card stays a dark object in both."
+      }
+    ],
+    "demo": {
+      "steps": [
+        "wait:450",
+        "click:@card-usage",
+        "wait:1400",
+        "click:@card-invoices",
+        "wait:1100"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "seats",
+        "label": "Seats",
+        "kind": "slider",
+        "min": 1,
+        "max": 40,
+        "step": 1,
+        "default": 8,
+        "group": "Plan"
+      },
+      {
+        "prop": "planName",
+        "label": "Plan name",
+        "kind": "text",
+        "default": "Studio",
+        "group": "Plan"
+      },
+      {
+        "prop": "open",
+        "label": "Open",
+        "kind": "action",
+        "options": [
+          {
+            "value": "none",
+            "label": "None"
+          },
+          {
+            "value": "plan",
+            "label": "Plan"
+          },
+          {
+            "value": "usage",
+            "label": "Usage"
+          },
+          {
+            "value": "payment",
+            "label": "Payment"
+          },
+          {
+            "value": "invoices",
+            "label": "Invoices"
+          }
+        ]
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#7dd3a8",
+        "options": [
+          "#7dd3a8",
+          "#f5a524",
+          "#60a5fa",
+          "#ececee"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ],
+    "added": "2026-10-11"
+  },
+  {
     "slug": "billing-plan-change",
     "name": "Plan Change Proration",
     "tier": "pro",
