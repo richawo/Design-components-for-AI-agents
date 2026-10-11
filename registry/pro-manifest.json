@@ -21961,6 +21961,78 @@
     ]
   },
   {
+    "slug": "saas-notification-inbox",
+    "name": "Notification Triage Inbox",
+    "tier": "pro",
+    "platform": "web",
+    "category": "app",
+    "description": "Filter, inspect and mark notifications read without losing selection. A considered, responsive SaaS workspace with typed integration points.",
+    "tags": [
+      "saas",
+      "workflow",
+      "responsive",
+      "keyboard",
+      "app"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 1040,
+    "usage": "import { NotificationInbox } from \"@/components/design-for-ai/saas-notification-inbox\";\n\n<NotificationInbox />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Main heading."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "description": "Supporting context."
+      },
+      {
+        "name": "notifications",
+        "type": "InboxNotification[]",
+        "description": "Unique notifications in display order, with full body, context and host read state."
+      },
+      {
+        "name": "onReadChange",
+        "type": "(change:NotificationReadChange)=>void|Promise<void>",
+        "description": "Persist read state for the exact IDs. Local state updates only after acknowledgement."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface, border and ink palette."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:350",
+        "click:@notification-1",
+        "wait:550",
+        "click:@toggle-read",
+        "wait:1200"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "saas-workspace-dashboard",
     "name": "Workspace Command Centre",
     "tier": "pro",
