@@ -8,16 +8,22 @@
   border-radius: inherit;
   background: #000;
   opacity: 0;
-  transition: opacity 180ms ease;
+  /* Hold the emphasis across the narrow gaps between cards. A new hovered
+     card cancels this pending release before its neighbours can flash. */
+  transition: opacity 380ms cubic-bezier(0.2, 0, 0.2, 1) 180ms;
 }
 @media (hover: hover) and (pointer: fine) {
   .component-grid:has(.component-card:hover) .component-card:not(:hover):not(:focus-visible)::after {
     opacity: 0.18;
+    transition-delay: 0ms;
   }
 }
 .component-grid:has(.component-card:focus-visible) .component-card:not(:hover):not(:focus-visible)::after {
   opacity: 0.18;
+  transition-delay: 0ms;
 }
+/* A selected card clears promptly; only releasing the whole gallery waits. */
+.component-grid .component-card:is(:hover, :focus-visible)::after { transition-delay: 0ms; }
 @media (prefers-reduced-motion: reduce) {
-  .component-grid .component-card::after { transition: none; }
+  .component-grid .component-card::after { transition-duration: 0ms; }
 }

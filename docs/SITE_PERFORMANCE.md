@@ -229,3 +229,15 @@ Custom colours use contrasting foregrounds on supported component accent fills.
 Gallery hover and keyboard focus use an 18% black overlay on surrounding cards.
 The effect uses CSS, adds no React hover state and does not shift layout.
 Pointer hover is disabled on touch devices; reduced motion removes the fade.
+The fade now lasts 380 ms, with a 180 ms release delay when leaving cards, so
+crossing a small gap does not flash the other cards. Hovered and keyboard-focused
+cards clear without that delay. The per-frame gap replay reproduces the old
+neighbour opacity falling from 0.18 to 0.0205; it stays at 0.18 after the fix.
+The measured fade rises in 357 ms (previously 173 ms). Pointer-to-first/second
+frame maxima are 0.6/6.6 ms, versus 0.8/7.5 ms before, with no long tasks in
+either replay. Disabling transitions fails the negative control. Keyboard,
+reduced-motion, touch and layout checks pass.
+
+Evidence: `test-results/frontend-latency-replays/design-gallery-hover-gap/2026-10-11T23-52-27Z/`.
+This is the first archive for this case, so no previous after-run comparison
+exists. Replay with `TEST_BASE=http://localhost:3000 node tests/browser/gallery-hover-transition.mjs`.
