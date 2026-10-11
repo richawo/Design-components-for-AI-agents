@@ -9123,6 +9123,78 @@
     ]
   },
   {
+    "slug": "commerce-customer-timeline",
+    "name": "Customer Order Timeline",
+    "tier": "pro",
+    "platform": "web",
+    "category": "commerce",
+    "description": "Search customers and inspect order, refund and service history. A considered, responsive commerce workspace with typed integration points.",
+    "tags": [
+      "e-commerce",
+      "workflow",
+      "responsive",
+      "keyboard",
+      "commerce"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 900,
+    "usage": "import { CustomerTimeline } from \"@/components/design-for-ai/commerce-customer-timeline\";\n\n<CustomerTimeline />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Main heading."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "description": "Supporting context."
+      },
+      {
+        "name": "customers",
+        "type": "TimelineCustomer[]",
+        "description": "Customers with unique event IDs, ISO timestamps and optional non-negative two-decimal amounts. Invalid amounts are excluded from monetary summaries."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "description": "ISO currency used by every monetary event."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface, border and ink palette."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:450",
+        "click:@event-1",
+        "wait:800",
+        "click:@filter-2",
+        "wait:1000"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "commerce-fulfilment-desk",
     "name": "Fulfilment Exception Desk",
     "tier": "pro",
