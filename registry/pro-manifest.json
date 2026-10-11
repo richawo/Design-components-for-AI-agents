@@ -230,7 +230,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "agents",
-    "description": "An agent\u2019s commit as a card. The subject, the files it touched, checks that roll from queued to passed, then Open PR.",
+    "description": "An agent’s commit as a card. The subject, the files it touched, checks that roll from queued to passed, then Open PR.",
     "tags": [
       "agent",
       "commit",
@@ -313,7 +313,7 @@
         "name": "accent",
         "type": "string",
         "default": "\"#f4f4f5\"",
-        "description": "The one accent, used on Open PR. A #rrggbb colour. Near-white or near-black values use the theme\u2019s ink. Passed checks stay green either way."
+        "description": "The one accent, used on Open PR. A #rrggbb colour. Near-white or near-black values use the theme’s ink. Passed checks stay green either way."
       },
       {
         "name": "theme",
@@ -412,7 +412,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "agents",
-    "description": "Review an agent's changes hunk by hunk: Accept or Reject each, rejected hunks fold to a stub, a file rail with +/\u2212 counts and a summary that applies what you kept.",
+    "description": "Review an agent's changes hunk by hunk: Accept or Reject each, rejected hunks fold to a stub, a file rail with +/− counts and a summary that applies what you kept.",
     "tags": [
       "agents",
       "diff",
@@ -443,13 +443,13 @@
       {
         "name": "title",
         "type": "string",
-        "default": "\"Round money once, in each currency\u2019s own minor unit\"",
+        "default": "\"Round money once, in each currency’s own minor unit\"",
         "description": "What the change does, in the agent's words."
       },
       {
         "name": "summary",
         "type": "string",
-        "default": "\"Yen totals were 100\u00d7 too large\u2026\"",
+        "default": "\"Yen totals were 100× too large…\"",
         "description": "One or two sentences under the title: why, and what happens on apply."
       },
       {
@@ -1320,7 +1320,7 @@
         "name": "accent",
         "type": "string",
         "default": "\"#f4f4f5\"",
-        "description": "The one accent, used on Upscale. A #rrggbb colour. Near-white or near-black values use the theme\u2019s ink. The selected study is ringed in the print\u2019s ink, and the sunlight in the pictures stays warm."
+        "description": "The one accent, used on Upscale. A #rrggbb colour. Near-white or near-black values use the theme’s ink. The selected study is ringed in the print’s ink, and the sunlight in the pictures stays warm."
       },
       {
         "name": "theme",
@@ -1463,7 +1463,7 @@
       {
         "name": "pause",
         "type": "string",
-        "default": "\"calendar.hold stopped. It needs the fields it can\u2019t guess.\"",
+        "default": "\"calendar.hold stopped. It needs the fields it can’t guess.\"",
         "description": "The line under the request, before the form."
       },
       {
@@ -1481,7 +1481,7 @@
       {
         "name": "slots",
         "type": "ElicitSlot[]",
-        "description": "Choices for when: { id, label, detail, available }. One of them is unavailable. detail is a short availability note such as \u201cHeld until 3\u201d."
+        "description": "Choices for when: { id, label, detail, available }. One of them is unavailable. detail is a short availability note such as “Held until 3”."
       },
       {
         "name": "defaultSlot",
@@ -1528,7 +1528,7 @@
       {
         "name": "status",
         "type": "\"asking\" | \"booked\"",
-        "description": "Controlled state. Asking shows the form. Booked replaces it with the receipt and the assistant\u2019s next line. Omit it and the thread owns the state."
+        "description": "Controlled state. Asking shows the form. Booked replaces it with the receipt and the assistant’s next line. Omit it and the thread owns the state."
       },
       {
         "name": "onStatusChange",
@@ -1544,7 +1544,7 @@
         "name": "accent",
         "type": "string",
         "default": "\"#f4f4f5\"",
-        "description": "The one accent: the selection dot, the length marker\u2019s ink, and Continue. A #rrggbb colour. Near-white or near-black values use the theme\u2019s ink so the button stays readable. Ink on the button is chosen for contrast."
+        "description": "The one accent: the selection dot, the length marker’s ink, and Continue. A #rrggbb colour. Near-white or near-black values use the theme’s ink so the button stays readable. Ink on the button is chosen for contrast."
       },
       {
         "name": "theme",
@@ -1842,7 +1842,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "ai",
-    "description": "\u201cThought for 14s\u201d, done properly: a ticking timer while thinking, a one-line summary that rewrites per step, and a dimmed trace that folds away when the reply starts.",
+    "description": "“Thought for 14s”, done properly: a ticking timer while thinking, a one-line summary that rewrites per step, and a dimmed trace that folds away when the reply starts.",
     "tags": [
       "ai",
       "reasoning",
@@ -1982,7 +1982,7 @@
         "min": 0.5,
         "max": 2,
         "step": 0.1,
-        "unit": "\u00d7",
+        "unit": "×",
         "default": 1,
         "group": "Stream"
       },
@@ -2119,7 +2119,7 @@
       {
         "name": "elapsedMs",
         "type": "number",
-        "description": "How long the search took, shown in the status line once done (8 sources \u00b7 3.4 s)."
+        "description": "How long the search took, shown in the status line once done (8 sources · 3.4 s)."
       },
       {
         "name": "headingLevel",
@@ -2225,7 +2225,7 @@
         "min": 0.5,
         "max": 2,
         "step": 0.1,
-        "unit": "\u00d7",
+        "unit": "×",
         "default": 1,
         "group": "Search"
       },
@@ -2364,7 +2364,7 @@
         "name": "defaultContext",
         "type": "string[]",
         "default": "[\"credit\"]",
-        "description": "Sentence ids already pulled into the margin. Read on mount. The note\u2019s sentence starts pulled, so the pair is visible before a click."
+        "description": "Sentence ids already pulled into the margin. Read on mount. The note’s sentence starts pulled, so the pair is visible before a click."
       },
       {
         "name": "status",
@@ -2528,7 +2528,7 @@
     ],
     "theme": "dark",
     "previewHeight": 820,
-    "usage": "import { AiVoiceMode } from \"@/components/design-for-ai/ai-voice-mode\";\n\n// Your voice pipeline drives it: state, the turns so far and the live levels.\nconst analyser = audioCtx.createAnalyser(); // fed by getUserMedia\nconst buf = new Float32Array(analyser.fftSize);\nconst micRms = () => {\n  analyser.getFloatTimeDomainData(buf);\n  return Math.sqrt(buf.reduce((s, v) => s + v * v, 0) / buf.length);\n};\n\n<AiVoiceMode\n  name=\"Marlo\"\n  state={state} // \"idle\" | \"listening\" | \"thinking\" | \"speaking\" | \"interrupted\"\n  turns={turns} // [{ id, role: \"user\", text, interim }, { id, role: \"assistant\", text, spoken, cutAt }]\n  getLevel={micRms} // sampled once a frame\n  getOutputLevel={playbackRms}\n  sensitivity={60} // noise gate at \u221244 dB\n  onStart={openMic}\n  onStop={sendTurn}\n  onInterrupt={() => { player.stop(); markCut(); }}\n  onEnd={closeSession}\n/>",
+    "usage": "import { AiVoiceMode } from \"@/components/design-for-ai/ai-voice-mode\";\n\n// Your voice pipeline drives it: state, the turns so far and the live levels.\nconst analyser = audioCtx.createAnalyser(); // fed by getUserMedia\nconst buf = new Float32Array(analyser.fftSize);\nconst micRms = () => {\n  analyser.getFloatTimeDomainData(buf);\n  return Math.sqrt(buf.reduce((s, v) => s + v * v, 0) / buf.length);\n};\n\n<AiVoiceMode\n  name=\"Marlo\"\n  state={state} // \"idle\" | \"listening\" | \"thinking\" | \"speaking\" | \"interrupted\"\n  turns={turns} // [{ id, role: \"user\", text, interim }, { id, role: \"assistant\", text, spoken, cutAt }]\n  getLevel={micRms} // sampled once a frame\n  getOutputLevel={playbackRms}\n  sensitivity={60} // noise gate at −44 dB\n  onStart={openMic}\n  onStop={sendTurn}\n  onInterrupt={() => { player.stop(); markCut(); }}\n  onEnd={closeSession}\n/>",
     "props": [
       {
         "name": "state",
@@ -2546,7 +2546,7 @@
         "name": "name",
         "type": "string",
         "default": "\"Marlo\"",
-        "description": "The assistant\u2019s name, in the header, the transcript and the button labels."
+        "description": "The assistant’s name, in the header, the transcript and the button labels."
       },
       {
         "name": "language",
@@ -2564,7 +2564,7 @@
         "name": "sensitivity",
         "type": "number",
         "default": "60",
-        "description": "0 to 100. Sets the noise gate from \u221220 dB (0) to \u221260 dB (100). The gate is drawn as a tick on the mic meter; only sound past it moves the mark."
+        "description": "0 to 100. Sets the noise gate from −20 dB (0) to −60 dB (100). The gate is drawn as a tick on the mic meter; only sound past it moves the mark."
       },
       {
         "name": "mark",
@@ -2597,12 +2597,12 @@
       {
         "name": "getLevel",
         "type": "() => number",
-        "description": "The mic\u2019s RMS amplitude, 0 to 1, sampled once a frame. Without it the mark runs a synthetic speech envelope while listening."
+        "description": "The mic’s RMS amplitude, 0 to 1, sampled once a frame. Without it the mark runs a synthetic speech envelope while listening."
       },
       {
         "name": "getOutputLevel",
         "type": "() => number",
-        "description": "The assistant\u2019s playback amplitude, 0 to 1, sampled once a frame while speaking. Synthetic when omitted."
+        "description": "The assistant’s playback amplitude, 0 to 1, sampled once a frame while speaking. Synthetic when omitted."
       },
       {
         "name": "onStart",
@@ -2781,12 +2781,12 @@
       {
         "name": "onChangeDestination",
         "type": "(value: string) => Promise<void>",
-        "description": "Inline \u201cEdit\u201d: send a code to a new address. Resolve when sent."
+        "description": "Inline “Edit”: send a code to a new address. Resolve when sent."
       },
       {
         "name": "onEdit",
         "type": "() => void",
-        "description": "If set, \u201cEdit\u201d calls this instead of opening the inline editor."
+        "description": "If set, “Edit” calls this instead of opening the inline editor."
       },
       {
         "name": "onVerified",
@@ -2973,7 +2973,7 @@
     ],
     "theme": "dark",
     "previewHeight": 900,
-    "usage": "import { AuthSsoDetect } from \"@/components/design-for-ai/auth-sso-detect\";\n\n<AuthSsoDetect\n  brand=\"Acme\"\n  title=\"Sign in to Acme\"\n  detect={async (domain) => {\n    const res = await fetch(`/api/sso/lookup?domain=${domain}`);\n    return res.json(); // SsoWorkspace[]: [] means password sign-in\n  }}\n  onSsoContinue={async (workspace, email) => {\n    window.location.assign(`/api/sso/start?ws=${workspace.id}&login_hint=${encodeURIComponent(email)}`);\n  }}\n  onPasswordSignIn={async (email, password) => {\n    const res = await fetch(\"/api/login\", { method: \"POST\", body: JSON.stringify({ email, password }) });\n    if (!res.ok) throw new Error(\"That password doesn\u2019t match.\");\n  }}\n/>",
+    "usage": "import { AuthSsoDetect } from \"@/components/design-for-ai/auth-sso-detect\";\n\n<AuthSsoDetect\n  brand=\"Acme\"\n  title=\"Sign in to Acme\"\n  detect={async (domain) => {\n    const res = await fetch(`/api/sso/lookup?domain=${domain}`);\n    return res.json(); // SsoWorkspace[]: [] means password sign-in\n  }}\n  onSsoContinue={async (workspace, email) => {\n    window.location.assign(`/api/sso/start?ws=${workspace.id}&login_hint=${encodeURIComponent(email)}`);\n  }}\n  onPasswordSignIn={async (email, password) => {\n    const res = await fetch(\"/api/login\", { method: \"POST\", body: JSON.stringify({ email, password }) });\n    if (!res.ok) throw new Error(\"That password doesn’t match.\");\n  }}\n/>",
     "props": [
       {
         "name": "detect",
@@ -2983,7 +2983,7 @@
       {
         "name": "directory",
         "type": "Record<string, SsoWorkspace[]>",
-        "description": "Static domain \u2192 workspaces map used when `detect` is not given. Demo domains: acme.com, globex.com, contoso.com, initech.io."
+        "description": "Static domain → workspaces map used when `detect` is not given. Demo domains: acme.com, globex.com, contoso.com, initech.io."
       },
       {
         "name": "debounceMs",
@@ -3020,7 +3020,7 @@
       {
         "name": "onForgotPassword",
         "type": "() => void",
-        "description": "The \u201cForgot?\u201d link."
+        "description": "The “Forgot?” link."
       },
       {
         "name": "brand",
@@ -3043,7 +3043,7 @@
         "name": "signUpHref",
         "type": "string",
         "default": "\"#\"",
-        "description": "Target of the \u201cStart a free trial\u201d link."
+        "description": "Target of the “Start a free trial” link."
       },
       {
         "name": "accent",
@@ -3084,19 +3084,19 @@
         "options": [
           {
             "value": "ada@acme.com",
-            "label": "Okta \u00b7 acme"
+            "label": "Okta · acme"
           },
           {
             "value": "sam@globex.com",
-            "label": "Picker \u00b7 globex"
+            "label": "Picker · globex"
           },
           {
             "value": "lee@contoso.com",
-            "label": "Fails \u00b7 contoso"
+            "label": "Fails · contoso"
           },
           {
             "value": "jo@gmail.com",
-            "label": "Password \u00b7 gmail"
+            "label": "Password · gmail"
           }
         ]
       },
@@ -3138,7 +3138,7 @@
         "prop": "description",
         "label": "Subheading",
         "kind": "text",
-        "default": "Use your work email. If your company signs in with SSO, we\u2019ll send you the right way."
+        "default": "Use your work email. If your company signs in with SSO, we’ll send you the right way."
       }
     ]
   },
@@ -3148,7 +3148,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "backgrounds",
-    "description": "A slowly advecting noise field rendered as an ordered Bayer 8\u00d78 dither in two inks, like a risograph in motion. The pointer leaves a short wake of ink behind it.",
+    "description": "A slowly advecting noise field rendered as an ordered Bayer 8×8 dither in two inks, like a risograph in motion. The pointer leaves a short wake of ink behind it.",
     "tags": [
       "background",
       "shader",
@@ -3298,7 +3298,7 @@
         "min": 0,
         "max": 2,
         "step": 0.1,
-        "unit": "\u00d7",
+        "unit": "×",
         "default": 0.4,
         "group": "Motion"
       },
@@ -3448,7 +3448,7 @@
         "min": 0,
         "max": 2,
         "step": 0.1,
-        "unit": "\u00d7",
+        "unit": "×",
         "default": 1
       },
       {
@@ -3948,7 +3948,7 @@
     ],
     "theme": "dark",
     "previewHeight": 960,
-    "usage": "import { PlanChange } from \"@/components/design-for-ai/billing-plan-change\";\n\n<PlanChange\n  currentPlanId=\"studio\"\n  currentInterval=\"monthly\"\n  seats={8}\n  periodStart=\"2026-09-24\"\n  periodEnd=\"2026-10-23\"\n  today=\"2026-10-10\"\n  paymentLabel=\"\u2022\u2022\u2022\u2022 4242\"\n  onConfirm={async (quote) => {\n    await fetch(\"/api/subscription\", { method: \"PATCH\", body: JSON.stringify(quote.to) });\n  }}\n/>",
+    "usage": "import { PlanChange } from \"@/components/design-for-ai/billing-plan-change\";\n\n<PlanChange\n  currentPlanId=\"studio\"\n  currentInterval=\"monthly\"\n  seats={8}\n  periodStart=\"2026-09-24\"\n  periodEnd=\"2026-10-23\"\n  today=\"2026-10-10\"\n  paymentLabel=\"•••• 4242\"\n  onConfirm={async (quote) => {\n    await fetch(\"/api/subscription\", { method: \"PATCH\", body: JSON.stringify(quote.to) });\n  }}\n/>",
     "props": [
       {
         "name": "plans",
@@ -4007,7 +4007,7 @@
       {
         "name": "paymentLabel",
         "type": "string",
-        "default": "\"\u2022\u2022\u2022\u2022 4242\"",
+        "default": "\"•••• 4242\"",
         "description": "The card that pays, as printed in the fine print and the confirmation."
       },
       {
@@ -4025,7 +4025,7 @@
       {
         "name": "yearlyBadge",
         "type": "string",
-        "default": "\"\u221217%\"",
+        "default": "\"−17%\"",
         "description": "The saving shown beside Yearly on the toggle. Empty hides it."
       },
       {
@@ -4044,6 +4044,12 @@
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
         "description": "Surface and ink. Light deepens the accent for text so it stays readable."
+      },
+      {
+        "name": "emptyMessage",
+        "type": "string",
+        "default": "\"No plans are available.\"",
+        "description": "Shown when required data is unavailable. The empty state has no confirm or playback action."
       }
     ],
     "demo": {
@@ -4165,7 +4171,7 @@
     ],
     "theme": "dark",
     "previewHeight": 820,
-    "usage": "import { SeatManager } from \"@/components/design-for-ai/billing-seat-manager\";\n\n<SeatManager\n  planName=\"Studio\"\n  pricePerSeat={16}\n  billedSeats={8}\n  members={[{ id: \"ines\", name: \"Ines Varga\", email: \"ines@copperline.studio\", role: \"Owner\" }]}\n  periodStart=\"2026-09-24\"\n  periodEnd=\"2026-10-23\"\n  today=\"2026-10-10\"\n  paymentLabel=\"\u2022\u2022\u2022\u2022 4242\"\n  onConfirm={async (change) => {\n    await fetch(\"/api/seats\", { method: \"POST\", body: JSON.stringify(change) });\n  }}\n/>",
+    "usage": "import { SeatManager } from \"@/components/design-for-ai/billing-seat-manager\";\n\n<SeatManager\n  planName=\"Studio\"\n  pricePerSeat={16}\n  billedSeats={8}\n  members={[{ id: \"ines\", name: \"Ines Varga\", email: \"ines@copperline.studio\", role: \"Owner\" }]}\n  periodStart=\"2026-09-24\"\n  periodEnd=\"2026-10-23\"\n  today=\"2026-10-10\"\n  paymentLabel=\"•••• 4242\"\n  onConfirm={async (change) => {\n    await fetch(\"/api/seats\", { method: \"POST\", body: JSON.stringify(change) });\n  }}\n/>",
     "props": [
       {
         "name": "planName",
@@ -4218,7 +4224,7 @@
       {
         "name": "paymentLabel",
         "type": "string",
-        "default": "\"\u2022\u2022\u2022\u2022 4242\"",
+        "default": "\"•••• 4242\"",
         "description": "The card that pays, as printed in the fine print and the confirmation."
       },
       {
@@ -5296,7 +5302,7 @@
         "name": "segments",
         "type": "{ key: string; label: string; cohorts: Cohort[] }[]",
         "default": "All / Self-serve / Sales-led / Mobile",
-        "description": "One set of cohorts per segment. Cohort: { label, size, retention: number[] } with retention as 0\u20131 per period since start, oldest cohort first."
+        "description": "One set of cohorts per segment. Cohort: { label, size, retention: number[] } with retention as 0–1 per period since start, oldest cohort first."
       },
       {
         "name": "defaultSegment",
@@ -5324,14 +5330,14 @@
       {
         "name": "subtitle",
         "type": "string",
-        "default": "\"Signups by week \u00b7 active users\"",
+        "default": "\"Signups by week · active users\"",
         "description": "Mono line beside the title."
       },
       {
         "name": "periodPrefix",
         "type": "string",
         "default": "\"W\"",
-        "description": "Column prefix: W0, W1 \u2026 or M0, M1 \u2026"
+        "description": "Column prefix: W0, W1 … or M0, M1 …"
       },
       {
         "name": "periodName",
@@ -5494,7 +5500,7 @@
     ],
     "theme": "dark",
     "previewHeight": 760,
-    "usage": "import { ChartRaceBars } from \"@/components/design-for-ai/chart-race-bars\";\nimport type { RaceSeries, RaceWeek } from \"@/components/design-for-ai/chart-race-bars\";\n\nconst weeks: RaceWeek[] = [\n  { label: \"3 Aug\", caption: \"Week of 3 Aug\" },\n  { label: \"10 Aug\", caption: \"Week of 10 Aug\" },\n];\n\nconst series: RaceSeries[] = [\n  { key: \"web\", label: \"Web\", values: [48, 50] },\n  { key: \"inference\", label: \"Inference\", values: [8, 11] },\n];\n\n<ChartRaceBars\n  title=\"Who shipped\"\n  subtitle=\"Pylon \u00b7 deploys\"\n  unit=\"deploys\"\n  lead=\"inference\"\n  weeks={weeks}\n  series={series}\n  onWeekChange={(index) => console.log(index)}\n/>",
+    "usage": "import { ChartRaceBars } from \"@/components/design-for-ai/chart-race-bars\";\nimport type { RaceSeries, RaceWeek } from \"@/components/design-for-ai/chart-race-bars\";\n\nconst weeks: RaceWeek[] = [\n  { label: \"3 Aug\", caption: \"Week of 3 Aug\" },\n  { label: \"10 Aug\", caption: \"Week of 10 Aug\" },\n];\n\nconst series: RaceSeries[] = [\n  { key: \"web\", label: \"Web\", values: [48, 50] },\n  { key: \"inference\", label: \"Inference\", values: [8, 11] },\n];\n\n<ChartRaceBars\n  title=\"Who shipped\"\n  subtitle=\"Pylon · deploys\"\n  unit=\"deploys\"\n  lead=\"inference\"\n  weeks={weeks}\n  series={series}\n  onWeekChange={(index) => console.log(index)}\n/>",
     "props": [
       {
         "name": "series",
@@ -5505,7 +5511,7 @@
       {
         "name": "weeks",
         "type": "RaceWeek[]",
-        "default": "3 Aug \u2013 19 Oct",
+        "default": "3 Aug – 19 Oct",
         "description": "One column of the race: { label, caption }. label sits by the scrubber; caption is the sentence in the header."
       },
       {
@@ -5517,7 +5523,7 @@
       {
         "name": "subtitle",
         "type": "string",
-        "default": "\"Pylon \u00b7 deploys\"",
+        "default": "\"Pylon · deploys\"",
         "description": "Mono line beside the title."
       },
       {
@@ -5602,7 +5608,7 @@
         "prop": "subtitle",
         "label": "Subtitle",
         "kind": "text",
-        "default": "Pylon \u00b7 deploys"
+        "default": "Pylon · deploys"
       },
       {
         "prop": "showDelta",
@@ -5687,13 +5693,13 @@
     ],
     "theme": "dark",
     "previewHeight": 760,
-    "usage": "import { ChartRadarCompare } from \"@/components/design-for-ai/chart-radar-compare\";\nimport type { RadarAxis, RadarProfile } from \"@/components/design-for-ai/chart-radar-compare\";\n\nconst axes: RadarAxis[] = [\n  { key: \"writing\", label: \"Writing\" },\n  { key: \"tools\", label: \"Tool use\" },\n];\n\nconst profiles: RadarProfile[] = [\n  { key: \"mara\", label: \"Mara\", scores: [92, 54] },\n  { key: \"north\", label: \"North\", scores: [71, 90] },\n];\n\n<ChartRadarCompare\n  title=\"The bench\"\n  subtitle=\"Halcyon \u00b7 six axes\"\n  axes={axes}\n  profiles={profiles}\n  defaultProfiles=\"mara,north\"\n  onAxisChange={(index) => console.log(index)}\n/>",
+    "usage": "import { ChartRadarCompare } from \"@/components/design-for-ai/chart-radar-compare\";\nimport type { RadarAxis, RadarProfile } from \"@/components/design-for-ai/chart-radar-compare\";\n\nconst axes: RadarAxis[] = [\n  { key: \"writing\", label: \"Writing\" },\n  { key: \"tools\", label: \"Tool use\" },\n];\n\nconst profiles: RadarProfile[] = [\n  { key: \"mara\", label: \"Mara\", scores: [92, 54] },\n  { key: \"north\", label: \"North\", scores: [71, 90] },\n];\n\n<ChartRadarCompare\n  title=\"The bench\"\n  subtitle=\"Halcyon · six axes\"\n  axes={axes}\n  profiles={profiles}\n  defaultProfiles=\"mara,north\"\n  onAxisChange={(index) => console.log(index)}\n/>",
     "props": [
       {
         "name": "profiles",
         "type": "RadarProfile[]",
         "default": "Mara, North, Sable, Quill",
-        "description": "One shape each. RadarProfile: { key, label, scores: number[] }. scores line up with axes, 0\u2013100, higher is better."
+        "description": "One shape each. RadarProfile: { key, label, scores: number[] }. scores line up with axes, 0–100, higher is better."
       },
       {
         "name": "axes",
@@ -5710,7 +5716,7 @@
       {
         "name": "subtitle",
         "type": "string",
-        "default": "\"Halcyon \u00b7 six axes\"",
+        "default": "\"Halcyon · six axes\"",
         "description": "Mono line beside the title."
       },
       {
@@ -5781,7 +5787,7 @@
         "prop": "subtitle",
         "label": "Subtitle",
         "kind": "text",
-        "default": "Halcyon \u00b7 six axes"
+        "default": "Halcyon · six axes"
       },
       {
         "prop": "showFill",
@@ -5880,7 +5886,7 @@
     ],
     "theme": "dark",
     "previewHeight": 640,
-    "usage": "import { ChartRevenueTrend } from \"@/components/design-for-ai/chart-revenue-trend\";\n\nexport default function Revenue({ days }: { days: { date: string; value: number }[] }) {\n  return (\n    <ChartRevenueTrend\n      title=\"Revenue\"\n      data={days} // oldest first, at least 2\u00d7 the longest range\n      defaultRange=\"30d\"\n      currency=\"EUR\"\n      locale=\"fr-FR\"\n      accent=\"#7dd3fc\"\n    />\n  );\n}",
+    "usage": "import { ChartRevenueTrend } from \"@/components/design-for-ai/chart-revenue-trend\";\n\nexport default function Revenue({ days }: { days: { date: string; value: number }[] }) {\n  return (\n    <ChartRevenueTrend\n      title=\"Revenue\"\n      data={days} // oldest first, at least 2× the longest range\n      defaultRange=\"30d\"\n      currency=\"EUR\"\n      locale=\"fr-FR\"\n      accent=\"#7dd3fc\"\n    />\n  );\n}",
     "props": [
       {
         "name": "data",
@@ -6128,7 +6134,7 @@
     ],
     "theme": "dark",
     "previewHeight": 760,
-    "usage": "import { ChartStreamgraph } from \"@/components/design-for-ai/chart-streamgraph\";\nimport type { StreamSeries, StreamWeek } from \"@/components/design-for-ai/chart-streamgraph\";\n\nconst weeks: StreamWeek[] = [\n  { label: \"3 Aug\", caption: \"Week of 3 Aug\" },\n  { label: \"10 Aug\", caption: \"Week of 10 Aug\" },\n];\n\nconst series: StreamSeries[] = [\n  { key: \"compose\", label: \"Compose\", note: \"The September rewrite\", lead: true, values: [18, 19] },\n  { key: \"inbox\", label: \"Inbox\", note: \"Triage, then out\", values: [134, 129] },\n];\n\n<ChartStreamgraph\n  title=\"Where a minute goes\"\n  subtitle=\"Vesper \u00b7 per person\"\n  unit=\"min\"\n  baseline=\"wiggle\"\n  weeks={weeks}\n  series={series}\n  onIsolate={(key) => console.log(key)}\n/>",
+    "usage": "import { ChartStreamgraph } from \"@/components/design-for-ai/chart-streamgraph\";\nimport type { StreamSeries, StreamWeek } from \"@/components/design-for-ai/chart-streamgraph\";\n\nconst weeks: StreamWeek[] = [\n  { label: \"3 Aug\", caption: \"Week of 3 Aug\" },\n  { label: \"10 Aug\", caption: \"Week of 10 Aug\" },\n];\n\nconst series: StreamSeries[] = [\n  { key: \"compose\", label: \"Compose\", note: \"The September rewrite\", lead: true, values: [18, 19] },\n  { key: \"inbox\", label: \"Inbox\", note: \"Triage, then out\", values: [134, 129] },\n];\n\n<ChartStreamgraph\n  title=\"Where a minute goes\"\n  subtitle=\"Vesper · per person\"\n  unit=\"min\"\n  baseline=\"wiggle\"\n  weeks={weeks}\n  series={series}\n  onIsolate={(key) => console.log(key)}\n/>",
     "props": [
       {
         "name": "series",
@@ -6139,7 +6145,7 @@
       {
         "name": "weeks",
         "type": "StreamWeek[]",
-        "default": "3 Aug \u2013 16 Nov",
+        "default": "3 Aug – 16 Nov",
         "description": "One column per week: { label, caption }. label sits on the axis; caption is the sentence in the header."
       },
       {
@@ -6151,7 +6157,7 @@
       {
         "name": "subtitle",
         "type": "string",
-        "default": "\"Vesper \u00b7 per person\"",
+        "default": "\"Vesper · per person\"",
         "description": "Mono line beside the title."
       },
       {
@@ -6588,7 +6594,7 @@
     ],
     "theme": "dark",
     "previewHeight": 960,
-    "usage": "import { CollabActivityFeed } from \"@/components/design-for-ai/collab-activity-feed\";\n\nexport default function History() {\n  return (\n    <CollabActivityFeed\n      title=\"Activity\"\n      subtitle=\"Ledgerline \u00b7 Website\"\n      people={[{ id: \"mara\", name: \"Mara Ili\u0107\" }]}\n      events={[\n        {\n          id: \"e1\", day: \"Today\", date: \"Sat 10 Oct\", time: \"09:42\", actorId: \"mara\", type: \"edit\",\n          action: \"changed the price of\", target: \"Pro\",\n          change: { kind: \"value\", before: \"$24 / seat\", after: \"$29 / seat\" },\n        },\n      ]}\n    />\n  );\n}",
+    "usage": "import { CollabActivityFeed } from \"@/components/design-for-ai/collab-activity-feed\";\n\nexport default function History() {\n  return (\n    <CollabActivityFeed\n      title=\"Activity\"\n      subtitle=\"Ledgerline · Website\"\n      people={[{ id: \"mara\", name: \"Mara Ilić\" }]}\n      events={[\n        {\n          id: \"e1\", day: \"Today\", date: \"Sat 10 Oct\", time: \"09:42\", actorId: \"mara\", type: \"edit\",\n          action: \"changed the price of\", target: \"Pro\",\n          change: { kind: \"value\", before: \"$24 / seat\", after: \"$29 / seat\" },\n        },\n      ]}\n    />\n  );\n}",
     "props": [
       {
         "name": "events",
@@ -6611,7 +6617,7 @@
       {
         "name": "subtitle",
         "type": "string",
-        "default": "\"Ledgerline \u00b7 Website\"",
+        "default": "\"Ledgerline · Website\"",
         "description": "Mono line under the heading."
       },
       {
@@ -6654,7 +6660,7 @@
         "name": "accent",
         "type": "string",
         "default": "theme ink",
-        "description": "The one accent: the active chip\u2019s count and the selected person\u2019s ring. Diff colours are semantic (added, removed)."
+        "description": "The one accent: the active chip’s count and the selected person’s ring. Diff colours are semantic (added, removed)."
       },
       {
         "name": "theme",
@@ -6704,7 +6710,7 @@
         "prop": "subtitle",
         "label": "Workspace",
         "kind": "text",
-        "default": "Ledgerline \u00b7 Website",
+        "default": "Ledgerline · Website",
         "group": "Content"
       },
       {
@@ -6791,24 +6797,24 @@
     ],
     "theme": "dark",
     "previewHeight": 820,
-    "usage": "import { CollabAnnotationPins } from \"@/components/design-for-ai/collab-annotation-pins\";\n\nexport default function Review() {\n  return (\n    <CollabAnnotationPins\n      title=\"Fieldnote \u00b7 Marketing\"\n      frameLabel=\"Landing \u2014 v4\"\n      currentUser=\"Sam Okoye\"\n      pins={[\n        { id: \"p1\", x: 0.47, y: 0.27, author: \"In\u00eas Duarte\", time: \"10:31\", body: \"Drop the full stop in the headline?\" },\n      ]}\n      onAdd={(pin) => savePin(pin)}\n      onResolve={(pin) => resolvePin(pin.id)}\n    />\n  );\n}",
+    "usage": "import { CollabAnnotationPins } from \"@/components/design-for-ai/collab-annotation-pins\";\n\nexport default function Review() {\n  return (\n    <CollabAnnotationPins\n      title=\"Fieldnote · Marketing\"\n      frameLabel=\"Landing — v4\"\n      currentUser=\"Sam Okoye\"\n      pins={[\n        { id: \"p1\", x: 0.47, y: 0.27, author: \"Inês Duarte\", time: \"10:31\", body: \"Drop the full stop in the headline?\" },\n      ]}\n      onAdd={(pin) => savePin(pin)}\n      onResolve={(pin) => resolvePin(pin.id)}\n    />\n  );\n}",
     "props": [
       {
         "name": "pins",
         "type": "{ id; x: number; y: number; author; body; time; resolved?: boolean }[]",
         "default": "5 demo pins",
-        "description": "Comments placed on the design. x and y are fractions (0\u20131) of the frame, so pins stay put at any size."
+        "description": "Comments placed on the design. x and y are fractions (0–1) of the frame, so pins stay put at any size."
       },
       {
         "name": "title",
         "type": "string",
-        "default": "\"Fieldnote \u00b7 Marketing\"",
+        "default": "\"Fieldnote · Marketing\"",
         "description": "File name in the toolbar."
       },
       {
         "name": "frameLabel",
         "type": "string",
-        "default": "\"Landing \u2014 v4\"",
+        "default": "\"Landing — v4\"",
         "description": "Frame name above the design and in the toolbar."
       },
       {
@@ -6851,7 +6857,7 @@
         "name": "onAdd",
         "type": "(pin) => void",
         "default": "none",
-        "description": "Called with a new pin after it\u2019s posted."
+        "description": "Called with a new pin after it’s posted."
       },
       {
         "name": "accent",
@@ -6910,7 +6916,7 @@
         "prop": "title",
         "label": "File name",
         "kind": "text",
-        "default": "Fieldnote \u00b7 Marketing",
+        "default": "Fieldnote · Marketing",
         "group": "Content"
       },
       {
@@ -6986,13 +6992,13 @@
     ],
     "theme": "dark",
     "previewHeight": 860,
-    "usage": "import { CollabCommentThread } from \"@/components/design-for-ai/collab-comment-thread\";\n\nexport default function HeroThread() {\n  return (\n    <CollabCommentThread\n      location=\"Pricing page \u00b7 Hero headline\"\n      quote=\"Pricing your finance team can actually read.\"\n      people={[\n        { id: \"sam\", name: \"Sam Okoye\", handle: \"sam\" },\n        { id: \"mara\", name: \"Mara Ili\u0107\", handle: \"mara\" },\n      ]}\n      currentUserId=\"sam\"\n      comments={[{ id: \"c1\", authorId: \"mara\", body: \"Too much promise in \u201cactually read\u201d.\", time: \"Tue 14:02\", unread: true }]}\n      onPost={(body) => saveReply(body)}\n      onResolvedChange={(resolved) => setThreadResolved(resolved)}\n    />\n  );\n}",
+    "usage": "import { CollabCommentThread } from \"@/components/design-for-ai/collab-comment-thread\";\n\nexport default function HeroThread() {\n  return (\n    <CollabCommentThread\n      location=\"Pricing page · Hero headline\"\n      quote=\"Pricing your finance team can actually read.\"\n      people={[\n        { id: \"sam\", name: \"Sam Okoye\", handle: \"sam\" },\n        { id: \"mara\", name: \"Mara Ilić\", handle: \"mara\" },\n      ]}\n      currentUserId=\"sam\"\n      comments={[{ id: \"c1\", authorId: \"mara\", body: \"Too much promise in “actually read”.\", time: \"Tue 14:02\", unread: true }]}\n      onPost={(body) => saveReply(body)}\n      onResolvedChange={(resolved) => setThreadResolved(resolved)}\n    />\n  );\n}",
     "props": [
       {
         "name": "comments",
         "type": "{ id; authorId; body; time; unread?: boolean; edited?: boolean }[]",
         "default": "5 demo comments",
-        "description": "The thread, oldest first. `@handle` in a body renders as a mention token; unread comments get a marker and a \u201cnew\u201d divider."
+        "description": "The thread, oldest first. `@handle` in a body renders as a mention token; unread comments get a marker and a “new” divider."
       },
       {
         "name": "people",
@@ -7009,7 +7015,7 @@
       {
         "name": "location",
         "type": "string",
-        "default": "\"Pricing page \u00b7 Hero headline\"",
+        "default": "\"Pricing page · Hero headline\"",
         "description": "Where the thread is anchored, shown in mono above the quote."
       },
       {
@@ -7095,7 +7101,7 @@
         "prop": "location",
         "label": "Location",
         "kind": "text",
-        "default": "Pricing page \u00b7 Hero headline",
+        "default": "Pricing page · Hero headline",
         "group": "Content"
       },
       {
@@ -7171,7 +7177,7 @@
     ],
     "theme": "dark",
     "previewHeight": 920,
-    "usage": "import { CollabInvitePeople } from \"@/components/design-for-ai/collab-invite-people\";\n\nexport default function ReviewInvite() {\n  return (\n    <CollabInvitePeople\n      workspace=\"Ledgerline \u00b7 Website review\"\n      orgDomain=\"ledgerline.co\"\n      includedSeats={8}\n      team={[{ email: \"sam@ledgerline.co\", name: \"Sam Okoye\", role: \"owner\" }]}\n      drafts={[\n        { email: \"ines@ledgerline.co\", role: \"edit\" },\n        { email: \"priya@\" },\n      ]}\n      onInvite={(people) => sendInvites(people)}\n    />\n  );\n}",
+    "usage": "import { CollabInvitePeople } from \"@/components/design-for-ai/collab-invite-people\";\n\nexport default function ReviewInvite() {\n  return (\n    <CollabInvitePeople\n      workspace=\"Ledgerline · Website review\"\n      orgDomain=\"ledgerline.co\"\n      includedSeats={8}\n      team={[{ email: \"sam@ledgerline.co\", name: \"Sam Okoye\", role: \"owner\" }]}\n      drafts={[\n        { email: \"ines@ledgerline.co\", role: \"edit\" },\n        { email: \"priya@\" },\n      ]}\n      onInvite={(people) => sendInvites(people)}\n    />\n  );\n}",
     "props": [
       {
         "name": "title",
@@ -7182,7 +7188,7 @@
       {
         "name": "workspace",
         "type": "string",
-        "default": "\"Ledgerline \u00b7 Website review\"",
+        "default": "\"Ledgerline · Website review\"",
         "description": "Mono line under the heading."
       },
       {
@@ -7213,7 +7219,7 @@
         "name": "drafts",
         "type": "{ email; role?: \"view\" | \"comment\" | \"edit\" }[]",
         "default": "5 pasted addresses",
-        "description": "Addresses in the paste well, in order. A missing role uses defaultRole until that row\u2019s menu is used."
+        "description": "Addresses in the paste well, in order. A missing role uses defaultRole until that row’s menu is used."
       },
       {
         "name": "directory",
@@ -7281,7 +7287,7 @@
         "prop": "workspace",
         "label": "Workspace",
         "kind": "text",
-        "default": "Ledgerline \u00b7 Website review",
+        "default": "Ledgerline · Website review",
         "group": "Content"
       },
       {
@@ -7384,7 +7390,7 @@
         "name": "members",
         "type": "{ email; name?; role: \"owner\" | \"view\" | \"comment\" | \"edit\"; pending?: boolean }[]",
         "default": "4 demo members",
-        "description": "People with access. The owner can\u2019t be changed; pending invites get a dashed avatar."
+        "description": "People with access. The owner can’t be changed; pending invites get a dashed avatar."
       },
       {
         "name": "orgDomain",
@@ -7396,7 +7402,7 @@
         "name": "orgName",
         "type": "string",
         "default": "\"Northwind\"",
-        "description": "Used in the \u201cAnyone at \u2026\u201d link level."
+        "description": "Used in the “Anyone at …” link level."
       },
       {
         "name": "defaultRole",
@@ -7444,7 +7450,7 @@
         "name": "onRoleChange",
         "type": "(email: string, role) => void",
         "default": "none",
-        "description": "Called when a member\u2019s role changes."
+        "description": "Called when a member’s role changes."
       },
       {
         "name": "onLinkAccessChange",
@@ -7591,7 +7597,7 @@
     ],
     "theme": "dark",
     "previewHeight": 720,
-    "usage": "import { ComboboxAsync } from \"@/components/design-for-ai/combobox-async\";\n\nasync function searchClients(query: string, signal: AbortSignal) {\n  const res = await fetch(`/api/clients?q=${encodeURIComponent(query)}`, { signal });\n  return (await res.json()) as { id: string; label: string; detail?: string }[];\n}\n\nexport default function ClientPicker() {\n  return (\n    <ComboboxAsync\n      label=\"Client\"\n      placeholder=\"Search clients\u2026\"\n      resultsLabel=\"Clients\"\n      search={searchClients}\n      onCreate={(name) => createClient(name)}\n      onChange={(picked) => setClient(picked[0] ?? null)}\n    />\n  );\n}",
+    "usage": "import { ComboboxAsync } from \"@/components/design-for-ai/combobox-async\";\n\nasync function searchClients(query: string, signal: AbortSignal) {\n  const res = await fetch(`/api/clients?q=${encodeURIComponent(query)}`, { signal });\n  return (await res.json()) as { id: string; label: string; detail?: string }[];\n}\n\nexport default function ClientPicker() {\n  return (\n    <ComboboxAsync\n      label=\"Client\"\n      placeholder=\"Search clients…\"\n      resultsLabel=\"Clients\"\n      search={searchClients}\n      onCreate={(name) => createClient(name)}\n      onChange={(picked) => setClient(picked[0] ?? null)}\n    />\n  );\n}",
     "props": [
       {
         "name": "label",
@@ -7602,8 +7608,8 @@
       {
         "name": "placeholder",
         "type": "string",
-        "default": "\"Search accounts\u2026\"",
-        "description": "Field placeholder, shown while the field is empty. Pass the noun your list holds, e.g. \"Search clients\u2026\"."
+        "default": "\"Search accounts…\"",
+        "description": "Field placeholder, shown while the field is empty. Pass the noun your list holds, e.g. \"Search clients…\"."
       },
       {
         "name": "search",
@@ -7632,7 +7638,7 @@
         "name": "allowCreate",
         "type": "boolean",
         "default": "true",
-        "description": "Offer \u201cCreate \u2018name\u2019\u201d when a search finds nothing."
+        "description": "Offer “Create ‘name’” when a search finds nothing."
       },
       {
         "name": "onCreate",
@@ -7678,7 +7684,7 @@
         "name": "createLabel",
         "type": "string",
         "default": "\"Create\"",
-        "description": "The verb on the Create row: \u201cCreate \u2018Northwind\u2019\u201d."
+        "description": "The verb on the Create row: “Create ‘Northwind’”."
       },
       {
         "name": "createHint",
@@ -7695,7 +7701,7 @@
       {
         "name": "errorText",
         "type": "string",
-        "default": "\"Couldn\u2019t reach the directory.\"",
+        "default": "\"Couldn’t reach the directory.\"",
         "description": "Line shown when the source fails."
       },
       {
@@ -7829,7 +7835,7 @@
     ],
     "theme": "dark",
     "previewHeight": 560,
-    "usage": "import { DashboardKpiCards } from \"@/components/design-for-ai/dashboard-kpi-cards\";\n\nexport default function Overview() {\n  return (\n    <DashboardKpiCards\n      title=\"Store overview\"\n      periods={[\n        {\n          key: \"30d\",\n          label: \"30D\",\n          caption: \"7 Sep \u2013 6 Oct \u00b7 vs the 30 days before\",\n          stats: [{ key: \"revenue\", label: \"Revenue\", format: \"currency\", value: 284120, previous: 252930, series: daily }],\n        },\n      ]}\n      onSelect={(key) => setChartMetric(key)}\n      accent=\"#7dd3fc\"\n    />\n  );\n}",
+    "usage": "import { DashboardKpiCards } from \"@/components/design-for-ai/dashboard-kpi-cards\";\n\nexport default function Overview() {\n  return (\n    <DashboardKpiCards\n      title=\"Store overview\"\n      periods={[\n        {\n          key: \"30d\",\n          label: \"30D\",\n          caption: \"7 Sep – 6 Oct · vs the 30 days before\",\n          stats: [{ key: \"revenue\", label: \"Revenue\", format: \"currency\", value: 284120, previous: 252930, series: daily }],\n        },\n      ]}\n      onSelect={(key) => setChartMetric(key)}\n      accent=\"#7dd3fc\"\n    />\n  );\n}",
     "props": [
       {
         "name": "periods",
@@ -8077,7 +8083,7 @@
     ],
     "theme": "dark",
     "previewHeight": 720,
-    "usage": "import { DashboardOrdersTable } from \"@/components/design-for-ai/dashboard-orders-table\";\n\nexport default function Orders() {\n  return (\n    <DashboardOrdersTable\n      orders={[\n        { id: \"#4823\", customer: \"Amara Okafor\", items: \"Tidepool mug \u00d72\", channel: \"Online store\", status: \"Paid\", total: 96, placed: \"Today, 09:42\" },\n      ]}\n      viewAllHref=\"/orders\"\n      currency=\"EUR\"\n      locale=\"fr-FR\"\n    />\n  );\n}",
+    "usage": "import { DashboardOrdersTable } from \"@/components/design-for-ai/dashboard-orders-table\";\n\nexport default function Orders() {\n  return (\n    <DashboardOrdersTable\n      orders={[\n        { id: \"#4823\", customer: \"Amara Okafor\", items: \"Tidepool mug ×2\", channel: \"Online store\", status: \"Paid\", total: 96, placed: \"Today, 09:42\" },\n      ]}\n      viewAllHref=\"/orders\"\n      currency=\"EUR\"\n      locale=\"fr-FR\"\n    />\n  );\n}",
     "props": [
       {
         "name": "orders",
@@ -8089,7 +8095,7 @@
         "name": "statuses",
         "type": "OrderStatus[]",
         "default": "[\"Paid\", \"Pending\", \"Fulfilled\", \"Refunded\"]",
-        "description": "Filter tabs after \u201cAll\u201d, each with a live count. An empty filter shows a designed empty state."
+        "description": "Filter tabs after “All”, each with a live count. An empty filter shows a designed empty state."
       },
       {
         "name": "title",
@@ -8101,7 +8107,7 @@
         "name": "viewAllHref",
         "type": "string",
         "default": "\"#orders\"",
-        "description": "Where the \u201cView all orders\u201d link goes."
+        "description": "Where the “View all orders” link goes."
       },
       {
         "name": "viewAllLabel",
@@ -8149,7 +8155,7 @@
         "name": "sort",
         "type": "\"placed\" | \"total-desc\" | \"total-asc\"",
         "default": "uncontrolled (\"placed\")",
-        "description": "Optional. Set it to drive the Total sort from outside: \u201cplaced\u201d keeps your order, then highest first, then lowest first."
+        "description": "Optional. Set it to drive the Total sort from outside: “placed” keeps your order, then highest first, then lowest first."
       },
       {
         "name": "onSortChange",
@@ -8367,7 +8373,7 @@
       {
         "name": "onSend",
         "type": "(request: { method, url, body? }) => void",
-        "description": "Called with the built request when Send or \u2318\u21b5 is pressed."
+        "description": "Called with the built request when Send or ⌘↵ is pressed."
       },
       {
         "name": "className",
@@ -8704,7 +8710,7 @@
         "name": "rollout",
         "type": "number",
         "default": "25",
-        "description": "Rollout of the open flag, 0\u2013100. The slider updates it too."
+        "description": "Rollout of the open flag, 0–100. The slider updates it too."
       },
       {
         "name": "showRules",
@@ -8728,7 +8734,7 @@
         "name": "accent",
         "type": "string",
         "default": "\"#7cc4ff\"",
-        "description": "The one accent: the open flag\u2019s edge, the rollout fill, and a served verdict."
+        "description": "The one accent: the open flag’s edge, the rollout fill, and a served verdict."
       },
       {
         "name": "onChange",
@@ -8875,12 +8881,12 @@
     ],
     "theme": "dark",
     "previewHeight": 760,
-    "usage": "import { LogStream } from \"@/components/design-for-ai/devtools-log-stream\";\n\n<LogStream\n  source=\"api-gateway \u00b7 production\"\n  live={false} // turn off the sample stream\n  initialLines={lines} // { id, time, level, service, message, fields }[], oldest first\n  height={480}\n/>\n\n// Feed it from your socket by appending to `lines`; follow mode keeps the newest line on the floor.\n// Scrolling up pauses follow and counts what arrives; the pill jumps back. Click a line to see its fields.",
+    "usage": "import { LogStream } from \"@/components/design-for-ai/devtools-log-stream\";\n\n<LogStream\n  source=\"api-gateway · production\"\n  live={false} // turn off the sample stream\n  initialLines={lines} // { id, time, level, service, message, fields }[], oldest first\n  height={480}\n/>\n\n// Feed it from your socket by appending to `lines`; follow mode keeps the newest line on the floor.\n// Scrolling up pauses follow and counts what arrives; the pill jumps back. Click a line to see its fields.",
     "props": [
       {
         "name": "source",
         "type": "string",
-        "default": "\"api-gateway \u00b7 production\"",
+        "default": "\"api-gateway · production\"",
         "description": "Name of the source being tailed, shown in mono beside the live dot."
       },
       {
@@ -9737,7 +9743,7 @@
     ],
     "theme": "dark",
     "previewHeight": 800,
-    "usage": "import { DiagramPaymentHops } from \"@/components/design-for-ai/diagram-payment-hops\";\n\n<DiagramPaymentHops\n  amount={24.5}\n  currency=\"EUR\"\n  locale=\"de-DE\"\n  outcome=\"declined\"\n  declineReason=\"Card expired\"\n  declineCode=\"54\"\n  onComplete={({ outcome, roundTripMs }) => track(\"demo_payment\", { outcome, roundTripMs })}\n/>\n\n// Your own route: terminal first, issuer last. Times are real milliseconds.\n<DiagramPaymentHops hops={[{ id: \"pos\", kind: \"terminal\", role: \"Terminal\", name: \"Kiosk 7\", linkMs: 30 }, /* \u2026 */]} />",
+    "usage": "import { DiagramPaymentHops } from \"@/components/design-for-ai/diagram-payment-hops\";\n\n<DiagramPaymentHops\n  amount={24.5}\n  currency=\"EUR\"\n  locale=\"de-DE\"\n  outcome=\"declined\"\n  declineReason=\"Card expired\"\n  declineCode=\"54\"\n  onComplete={({ outcome, roundTripMs }) => track(\"demo_payment\", { outcome, roundTripMs })}\n/>\n\n// Your own route: terminal first, issuer last. Times are real milliseconds.\n<DiagramPaymentHops hops={[{ id: \"pos\", kind: \"terminal\", role: \"Terminal\", name: \"Kiosk 7\", linkMs: 30 }, /* … */]} />",
     "props": [
       {
         "name": "title",
@@ -9835,6 +9841,12 @@
         "name": "className",
         "type": "string",
         "description": "Extra classes on the root."
+      },
+      {
+        "name": "emptyMessage",
+        "type": "string",
+        "default": "\"Add at least two payment hops.\"",
+        "description": "Shown when required data is unavailable. The empty state has no confirm or playback action."
       }
     ],
     "added": "2026-10-10",
@@ -10358,7 +10370,7 @@
     ],
     "theme": "dark",
     "previewHeight": 860,
-    "usage": "import { SequenceAuth } from \"@/components/design-for-ai/diagram-sequence-auth\";\n\n<SequenceAuth\n  clientId=\"halden-web\"\n  showResource\n  open=\"token\"\n  onReplay={() => analytics.track(\"pkce_replayed\")}\n/>\n\n// The resting state is a finished handshake, with the token request open \u2014 the only call that carries the verifier.\n// Replay draws the arrows again. Hover or focus a message to read its payload; a click keeps it open.",
+    "usage": "import { SequenceAuth } from \"@/components/design-for-ai/diagram-sequence-auth\";\n\n<SequenceAuth\n  clientId=\"halden-web\"\n  showResource\n  open=\"token\"\n  onReplay={() => analytics.track(\"pkce_replayed\")}\n/>\n\n// The resting state is a finished handshake, with the token request open — the only call that carries the verifier.\n// Replay draws the arrows again. Hover or focus a message to read its payload; a click keeps it open.",
     "props": [
       {
         "name": "title",
@@ -11046,7 +11058,7 @@
     ],
     "theme": "dark",
     "previewHeight": 920,
-    "usage": "import { EditorRichText } from \"@/components/design-for-ai/editor-rich-text\";\n\n<EditorRichText\n  title=\"Pricing memo\"\n  kicker=\"Harbor\"\n  author=\"Mira Chen\"\n  updated=\"11 Oct 2026\"\n  blocks={memo}\n  onChange={(next) => save(next)}\n/>\n\n// Type #, ##, >, - or ``` at the start of a line, or / to open the block menu. **bold**, *italic*, `code` and ==highlight== convert as you close them.\n// Select text for the floating bar (bold, italic, code, highlight, link). \u2318B, \u2318I and \u2318E do the first three.\n// On a narrow container the outline hides and the bar docks along the bottom.",
+    "usage": "import { EditorRichText } from \"@/components/design-for-ai/editor-rich-text\";\n\n<EditorRichText\n  title=\"Pricing memo\"\n  kicker=\"Harbor\"\n  author=\"Mira Chen\"\n  updated=\"11 Oct 2026\"\n  blocks={memo}\n  onChange={(next) => save(next)}\n/>\n\n// Type #, ##, >, - or ``` at the start of a line, or / to open the block menu. **bold**, *italic*, `code` and ==highlight== convert as you close them.\n// Select text for the floating bar (bold, italic, code, highlight, link). ⌘B, ⌘I and ⌘E do the first three.\n// On a narrow container the outline hides and the bar docks along the bottom.",
     "props": [
       {
         "name": "title",
@@ -11234,7 +11246,7 @@
     ],
     "theme": "dark",
     "previewHeight": 820,
-    "usage": "import { EditorSignaturePad } from \"@/components/design-for-ai/editor-signature-pad\";\n\n<EditorSignaturePad\n  title=\"Mutual NDA\"\n  parties={parties}\n  openId=\"jordan\"\n  onChange={(id, strokes) => save(id, strokes)}\n/>\n\n// The open plate takes pointer ink. Strokes are normalized 0\u20131 points with timestamps, so a fast pen draws thin.\n// Undo drops the last stroke, Clear empties the plate, Replay draws the mark again, Export downloads an SVG.\n// \u2318Z undoes. On a narrow container the two plates stack.",
+    "usage": "import { EditorSignaturePad } from \"@/components/design-for-ai/editor-signature-pad\";\n\n<EditorSignaturePad\n  title=\"Mutual NDA\"\n  parties={parties}\n  openId=\"jordan\"\n  onChange={(id, strokes) => save(id, strokes)}\n/>\n\n// The open plate takes pointer ink. Strokes are normalized 0–1 points with timestamps, so a fast pen draws thin.\n// Undo drops the last stroke, Clear empties the plate, Replay draws the mark again, Export downloads an SVG.\n// ⌘Z undoes. On a narrow container the two plates stack.",
     "props": [
       {
         "name": "title",
@@ -11393,7 +11405,7 @@
     ],
     "theme": "dark",
     "previewHeight": 780,
-    "usage": "import { EditorWhiteboard } from \"@/components/design-for-ai/editor-whiteboard\";\n\n<EditorWhiteboard\n  title=\"Pricing review\"\n  notes={notes}\n  edges={edges}\n  onChange={(next) => save(next)}\n/>\n\n// Drag a note and the orthogonal connector reroutes. Drag the board to pan. \u2318-scroll or the zoom cluster changes scale, and Fit frames every note.\n// Below 640px the notes stack at full size so the type stays readable, and a drag still pulls the line.",
+    "usage": "import { EditorWhiteboard } from \"@/components/design-for-ai/editor-whiteboard\";\n\n<EditorWhiteboard\n  title=\"Pricing review\"\n  notes={notes}\n  edges={edges}\n  onChange={(next) => save(next)}\n/>\n\n// Drag a note and the orthogonal connector reroutes. Drag the board to pan. ⌘-scroll or the zoom cluster changes scale, and Fit frames every note.\n// Below 640px the notes stack at full size so the type stays readable, and a drag still pulls the line.",
     "props": [
       {
         "name": "title",
@@ -11544,7 +11556,7 @@
         "name": "cell",
         "type": "number",
         "default": "28",
-        "description": "Tile pitch in CSS px, clamped to 14\u201364. The lattice gets one tile of overscan on every side, so the well never drags an edge into view."
+        "description": "Tile pitch in CSS px, clamped to 14–64. The lattice gets one tile of overscan on every side, so the well never drags an edge into view."
       },
       {
         "name": "gap",
@@ -11803,7 +11815,7 @@
       {
         "name": "currency",
         "type": "string",
-        "default": "\"\u00a3\"",
+        "default": "\"£\"",
         "description": "Currency symbol for every amount in the panel."
       },
       {
@@ -11904,19 +11916,19 @@
         "kind": "segmented",
         "options": [
           {
-            "value": "\u00a3",
-            "label": "\u00a3"
+            "value": "£",
+            "label": "£"
           },
           {
             "value": "$",
             "label": "$"
           },
           {
-            "value": "\u20ac",
-            "label": "\u20ac"
+            "value": "€",
+            "label": "€"
           }
         ],
-        "default": "\u00a3",
+        "default": "£",
         "group": "Content"
       }
     ]
@@ -11944,7 +11956,7 @@
     ],
     "theme": "dark",
     "previewHeight": 580,
-    "usage": "import { FooterAsciiWordmark } from \"@/components/design-for-ai/footer-ascii-wordmark\";\n\nexport default function SiteFooter() {\n  return (\n    <FooterAsciiWordmark\n      wordmark=\"tidepool\"\n      stacked={[\"tide\", \"pool\"]}\n      kicker=\"Tidepool \u00b7 Lisbon\"\n      signOff=\"Feature flags for teams who ship on Fridays and sleep anyway.\"\n      accent=\"#7dd3fc\"\n    />\n  );\n}",
+    "usage": "import { FooterAsciiWordmark } from \"@/components/design-for-ai/footer-ascii-wordmark\";\n\nexport default function SiteFooter() {\n  return (\n    <FooterAsciiWordmark\n      wordmark=\"tidepool\"\n      stacked={[\"tide\", \"pool\"]}\n      kicker=\"Tidepool · Lisbon\"\n      signOff=\"Feature flags for teams who ship on Fridays and sleep anyway.\"\n      accent=\"#7dd3fc\"\n    />\n  );\n}",
     "props": [
       {
         "name": "wordmark",
@@ -11961,7 +11973,7 @@
       {
         "name": "kicker",
         "type": "string",
-        "default": "\"Fieldnote \u00b7 Brooklyn, NY\"",
+        "default": "\"Fieldnote · Brooklyn, NY\"",
         "description": "Mono line above the sign-off."
       },
       {
@@ -11977,7 +11989,7 @@
       {
         "name": "legal",
         "type": "string",
-        "default": "\"\u00a9 2026 Fieldnote Systems, Inc.\"",
+        "default": "\"© 2026 Fieldnote Systems, Inc.\"",
         "description": "Mono legal line under the wordmark."
       },
       {
@@ -12000,7 +12012,7 @@
       {
         "name": "ramp",
         "type": "string",
-        "default": "\" .\u00b7:-=+*#%@\"",
+        "default": "\" .·:-=+*#%@\"",
         "description": "Density ramp, lightest first; the first character is empty space."
       },
       {
@@ -12076,7 +12088,7 @@
             "label": "Binary"
           },
           {
-            "value": "\u2591\u2592\u2593\u2588",
+            "value": "░▒▓█",
             "label": "Blocks"
           }
         ],
@@ -12089,7 +12101,7 @@
         "kind": "select",
         "options": [
           {
-            "value": " .\u00b7:-=+*#%@",
+            "value": " .·:-=+*#%@",
             "label": "Classic"
           },
           {
@@ -12101,7 +12113,7 @@
             "label": "Weave"
           }
         ],
-        "default": " .\u00b7:-=+*#%@",
+        "default": " .·:-=+*#%@",
         "group": "Look"
       },
       {
@@ -12169,7 +12181,7 @@
       {
         "name": "account",
         "type": "{ name, email, initials, plan?, usage? }",
-        "description": "Avatar (its ring draws on first view), the menu header and an optional usage meter (0\u20131) that fills and counts up."
+        "description": "Avatar (its ring draws on first view), the menu header and an optional usage meter (0–1) that fills and counts up."
       },
       {
         "name": "accountItems",
@@ -12504,7 +12516,7 @@
       {
         "name": "eyebrow",
         "type": "string",
-        "default": "\"Northwind \u00b7 releases\"",
+        "default": "\"Northwind · releases\"",
         "description": "Small mono line above the headline."
       },
       {
@@ -12528,7 +12540,7 @@
         "name": "handOver",
         "type": "boolean",
         "default": "true",
-        "description": "When the visitor\u2019s pointer enters the window, the ghost fades out and hands them control. Off, the ghost keeps running alongside them."
+        "description": "When the visitor’s pointer enters the window, the ghost fades out and hands them control. Off, the ghost keeps running alongside them."
       },
       {
         "name": "resumeAfter",
@@ -12612,7 +12624,7 @@
         "min": 0.5,
         "max": 2,
         "step": 0.1,
-        "unit": "\u00d7",
+        "unit": "×",
         "default": 1
       },
       {
@@ -13004,12 +13016,12 @@
     ],
     "theme": "dark",
     "previewHeight": 900,
-    "usage": "import { HeroPrism } from \"@/components/design-for-ai/hero-prism\";\n\n<HeroPrism\n  eyebrow=\"Halide 3 \u2014 Event analytics\"\n  headline=\"One stream in. Every answer out.\"\n  muted=\"Every answer out.\"\n  primary={{ label: \"Start free\", href: \"/signup\" }}\n/>",
+    "usage": "import { HeroPrism } from \"@/components/design-for-ai/hero-prism\";\n\n<HeroPrism\n  eyebrow=\"Halide 3 — Event analytics\"\n  headline=\"One stream in. Every answer out.\"\n  muted=\"Every answer out.\"\n  primary={{ label: \"Start free\", href: \"/signup\" }}\n/>",
     "props": [
       {
         "name": "eyebrow",
         "type": "string",
-        "default": "\"Halide 3 \u2014 Event analytics\"",
+        "default": "\"Halide 3 — Event analytics\"",
         "description": "Mono line above the headline."
       },
       {
@@ -13043,7 +13055,7 @@
         "name": "dispersion",
         "type": "number",
         "default": "0.5",
-        "description": "How wide the spectrum fans, 0\u20131. 0.5 is restrained; 1 is still tasteful."
+        "description": "How wide the spectrum fans, 0–1. 0.5 is restrained; 1 is still tasteful."
       },
       {
         "name": "readout",
@@ -13153,7 +13165,7 @@
       {
         "name": "weekLabel",
         "type": "string",
-        "default": "\"Week 41 \u00b7 5\u20139 Oct\"",
+        "default": "\"Week 41 · 5–9 Oct\"",
         "description": "Calendar window title."
       },
       {
@@ -13287,7 +13299,7 @@
         "prop": "weekLabel",
         "label": "Week title",
         "kind": "text",
-        "default": "Week 41 \u00b7 5\u20139 Oct"
+        "default": "Week 41 · 5–9 Oct"
       },
       {
         "prop": "$replay",
@@ -13325,7 +13337,7 @@
       {
         "name": "status",
         "type": "\"ready\" | \"submitted\" | \"streaming\" | \"error\"",
-        "description": "Controlled request status, the same shape as the AI SDK's useChat. Undefined simulates thinking \u2192 streaming \u2192 ready."
+        "description": "Controlled request status, the same shape as the AI SDK's useChat. Undefined simulates thinking → streaming → ready."
       },
       {
         "name": "error",
@@ -13335,7 +13347,7 @@
       {
         "name": "onSubmit",
         "type": "(s: PromptSubmission) => void",
-        "description": "Called with { text, model, attachments } on Send or \u2318/Ctrl+Enter. Only finished uploads are included."
+        "description": "Called with { text, model, attachments } on Send or ⌘/Ctrl+Enter. Only finished uploads are included."
       },
       {
         "name": "onStop",
@@ -13371,7 +13383,7 @@
         "name": "maxTokens",
         "type": "number",
         "default": "8000",
-        "description": "Budget for the token hint (\u2248 chars / 4). Amber past 80%; over it, Send disables."
+        "description": "Budget for the token hint (≈ chars / 4). Amber past 80%; over it, Send disables."
       },
       {
         "name": "maxFileSize",
@@ -13387,7 +13399,7 @@
       {
         "name": "onUpload",
         "type": "(file: File, onProgress: (p: number) => void, signal: AbortSignal) => Promise<void>",
-        "description": "Upload one file and report progress 0\u20131; honour the signal (aborted on remove, retry and unmount). Reject to show an error chip with Retry. Defaults to a simulated upload."
+        "description": "Upload one file and report progress 0–1; honour the signal (aborted on remove, retry and unmount). Reject to show an error chip with Retry. Defaults to a simulated upload."
       },
       {
         "name": "defaultAttachments",
@@ -13774,13 +13786,13 @@
         "name": "routeKm",
         "type": "number",
         "default": "2.6",
-        "description": "Whole route length, for the live \u201ckm away\u201d figure."
+        "description": "Whole route length, for the live “km away” figure."
       },
       {
         "name": "progress",
         "type": "number",
         "default": "0.46",
-        "description": "How far along the route the courier is, 0\u20131. Drives the marker, trail, ring and timeline."
+        "description": "How far along the route the courier is, 0–1. Drives the marker, trail, ring and timeline."
       },
       {
         "name": "live",
@@ -13812,7 +13824,7 @@
       {
         "name": "currency",
         "type": "string",
-        "default": "\"\u00a3\"",
+        "default": "\"£\"",
         "description": "Currency symbol."
       },
       {
@@ -13989,7 +14001,7 @@
         "name": "assistantRole",
         "type": "string",
         "default": "\"Plant care\"",
-        "description": "Shown after the live dot; swaps to Thinking\u2026 / Writing\u2026 while replying."
+        "description": "Shown after the live dot; swaps to Thinking… / Writing… while replying."
       },
       {
         "name": "dayLabel",
@@ -14022,7 +14034,7 @@
         "name": "accent",
         "type": "string",
         "default": "\"#cdf27e\"",
-        "description": "The one brand colour (6-digit hex): your bubbles, the send button and the chart\u2019s key line. Everything else is neutral."
+        "description": "The one brand colour (6-digit hex): your bubbles, the send button and the chart’s key line. Everything else is neutral."
       },
       {
         "name": "thinkingMs",
@@ -14054,17 +14066,17 @@
       {
         "name": "onAction",
         "type": "(schedule: CareSchedule) => void",
-        "description": "Fired by the schedule card\u2019s reminder button."
+        "description": "Fired by the schedule card’s reminder button."
       },
       {
         "name": "onAttach",
         "type": "() => void",
-        "description": "The composer\u2019s + button."
+        "description": "The composer’s + button."
       },
       {
         "name": "onOpenLog",
         "type": "() => void",
-        "description": "The header\u2019s care-log button."
+        "description": "The header’s care-log button."
       }
     ],
     "added": "2026-10-07",
@@ -14216,7 +14228,7 @@
       {
         "name": "currency",
         "type": "string",
-        "default": "\"\u00a3\"",
+        "default": "\"£\"",
         "description": "Currency symbol."
       },
       {
@@ -14307,19 +14319,19 @@
         "kind": "select",
         "options": [
           {
-            "value": "\u00a3",
-            "label": "Pounds (\u00a3)"
+            "value": "£",
+            "label": "Pounds (£)"
           },
           {
             "value": "$",
             "label": "Dollars ($)"
           },
           {
-            "value": "\u20ac",
-            "label": "Euros (\u20ac)"
+            "value": "€",
+            "label": "Euros (€)"
           }
         ],
-        "default": "\u00a3",
+        "default": "£",
         "group": "Payment"
       },
       {
@@ -14382,7 +14394,7 @@
       {
         "name": "updates",
         "type": "DeliveryUpdate[]",
-        "description": "The delivery's states in order: stage, ETA minutes, clock, route progress (0\u20131), headline and detail."
+        "description": "The delivery's states in order: stage, ETA minutes, clock, route progress (0–1), headline and detail."
       },
       {
         "name": "stops",
@@ -14629,7 +14641,7 @@
         "name": "initialVolume",
         "type": "number",
         "default": "0.64",
-        "description": "Starting volume, 0\u20131."
+        "description": "Starting volume, 0–1."
       },
       {
         "name": "ambience",
@@ -14687,7 +14699,7 @@
       {
         "name": "onVolumeChange",
         "type": "(volume) => void",
-        "description": "Volume dragged or stepped, 0\u20131."
+        "description": "Volume dragged or stepped, 0–1."
       }
     ],
     "added": "2026-10-09",
@@ -14807,7 +14819,7 @@
     ],
     "theme": "dark",
     "previewHeight": 940,
-    "usage": "// Expo: npx expo install expo-blur expo-linear-gradient react-native-svg\n// Bare React Native: npx install-expo-modules, then install the three packages.\nimport { MobilePaywall } from \"@/components/design-for-ai/native/mobile-paywall\";\n\n<MobilePaywall\n  annualPrice={35.99}\n  monthlyPrice={4.99}\n  trialEnds=\"16 Oct\"\n  onSubscribe={(plan) => purchase(plan)}   // resolve \u2192 success, reject(new Error(msg)) \u2192 error\n  onRestore={() => restorePurchases()}     // resolve(true) when something was restored\n  onClose={close}\n  onContinue={() => navigation.replace(\"WindDown\")}\n/>",
+    "usage": "// Expo: npx expo install expo-blur expo-linear-gradient react-native-svg\n// Bare React Native: npx install-expo-modules, then install the three packages.\nimport { MobilePaywall } from \"@/components/design-for-ai/native/mobile-paywall\";\n\n<MobilePaywall\n  annualPrice={35.99}\n  monthlyPrice={4.99}\n  trialEnds=\"16 Oct\"\n  onSubscribe={(plan) => purchase(plan)}   // resolve → success, reject(new Error(msg)) → error\n  onRestore={() => restorePurchases()}     // resolve(true) when something was restored\n  onClose={close}\n  onContinue={() => navigation.replace(\"WindDown\")}\n/>",
     "props": [
       {
         "name": "kicker",
@@ -14876,12 +14888,12 @@
       {
         "name": "onSubscribe",
         "type": "(plan) => Promise<void> | void",
-        "description": "Drives loading \u2192 success; a rejection shows the error state with its message."
+        "description": "Drives loading → success; a rejection shows the error state with its message."
       },
       {
         "name": "onRestore",
         "type": "() => Promise<boolean> | void",
-        "description": "Restore purchases; the link reads Restoring\u2026, then Restored or Nothing to restore."
+        "description": "Restore purchases; the link reads Restoring…, then Restored or Nothing to restore."
       },
       {
         "name": "onClose",
@@ -15009,8 +15021,8 @@
             "label": "$"
           },
           {
-            "value": "\u00a3",
-            "label": "\u00a3"
+            "value": "£",
+            "label": "£"
           }
         ],
         "default": "$",
@@ -15180,7 +15192,7 @@
       {
         "name": "cards",
         "type": "WalletCard[]",
-        "description": "Cards and passes: issuer, label, peek field, kind, pattern (guilloche | contour | rings | halftone | brushed), face colours (3\u20134 gradient stops, ink, accent), figure, meta and transactions. Card faces are the only colour on screen."
+        "description": "Cards and passes: issuer, label, peek field, kind, pattern (guilloche | contour | rings | halftone | brushed), face colours (3–4 gradient stops, ink, accent), figure, meta and transactions. Card faces are the only colour on screen."
       },
       {
         "name": "maxCards",
@@ -15207,7 +15219,7 @@
       {
         "name": "summary",
         "type": "WalletSummary",
-        "description": "Collapsed-state month summary: label, value (a number that counts up, with prefix and decimals), note, daily bar heights (0\u20131, last is today) and a day letter per bar."
+        "description": "Collapsed-state month summary: label, value (a number that counts up, with prefix and decimals), note, daily bar heights (0–1, last is today) and a day letter per bar."
       },
       {
         "name": "onAdd",
@@ -15373,7 +15385,7 @@
       {
         "name": "placeholder",
         "type": "string",
-        "default": "\"Search regions\u2026\"",
+        "default": "\"Search regions…\"",
         "description": "Field placeholder while searchable."
       },
       {
@@ -15722,7 +15734,7 @@
     ],
     "theme": "dark",
     "previewHeight": 1180,
-    "usage": "import { PricingReceipt } from \"@/components/design-for-ai/pricing-receipt\";\n\nexport default function Page() {\n  return (\n    <PricingReceipt\n      brand=\"LUMEN\"\n      options={[\n        {\n          id: \"solo\", label: \"Solo\", caption: \"1 seat\", total: 89, licence: \"SOLO\", order: \"L-1007-0001\",\n          lines: [{ qty: \"1\", item: \"Lumen for macOS\", amount: 89 }, { qty: \"\u221e\", item: \"Monthly fees\", amount: 0 }],\n          summary: [{ label: \"NEXT BILL\", value: \"NEVER\" }],\n          cta: { label: \"Buy Lumen\", href: \"/checkout\" }\n        }\n      ]}\n    />\n  );\n}",
+    "usage": "import { PricingReceipt } from \"@/components/design-for-ai/pricing-receipt\";\n\nexport default function Page() {\n  return (\n    <PricingReceipt\n      brand=\"LUMEN\"\n      options={[\n        {\n          id: \"solo\", label: \"Solo\", caption: \"1 seat\", total: 89, licence: \"SOLO\", order: \"L-1007-0001\",\n          lines: [{ qty: \"1\", item: \"Lumen for macOS\", amount: 89 }, { qty: \"∞\", item: \"Monthly fees\", amount: 0 }],\n          summary: [{ label: \"NEXT BILL\", value: \"NEVER\" }],\n          cta: { label: \"Buy Lumen\", href: \"/checkout\" }\n        }\n      ]}\n    />\n  );\n}",
     "props": [
       {
         "name": "label",
@@ -15857,12 +15869,12 @@
             "label": "$"
           },
           {
-            "value": "\u00a3",
-            "label": "\u00a3"
+            "value": "£",
+            "label": "£"
           },
           {
-            "value": "\u20ac",
-            "label": "\u20ac"
+            "value": "€",
+            "label": "€"
           }
         ],
         "default": "$",
@@ -16076,7 +16088,7 @@
         "name": "cellSize",
         "type": "number",
         "default": "12",
-        "description": "Character cell height in CSS px; width is 0.6\u00d7. Rounded to whole device pixels so glyphs stay crisp. Updates live."
+        "description": "Character cell height in CSS px; width is 0.6×. Rounded to whole device pixels so glyphs stay crisp. Updates live."
       },
       {
         "name": "color",
@@ -16180,7 +16192,7 @@
             "label": "Fine"
           },
           {
-            "value": " .:\u2591\u2592\u2593\u2588",
+            "value": " .:░▒▓█",
             "label": "Blocks"
           }
         ],
@@ -16270,18 +16282,18 @@
     ],
     "theme": "dark",
     "previewHeight": 780,
-    "usage": "import { ThreeContourTerrain } from \"@/components/design-for-ai/three-contour-terrain\";\n\n<div className=\"relative h-[640px] overflow-hidden rounded-2xl\">\n  <ThreeContourTerrain title=\"Vire Basin \u2014 Sheet 4\" accent=\"#7ee0b8\" />\n</div>",
+    "usage": "import { ThreeContourTerrain } from \"@/components/design-for-ai/three-contour-terrain\";\n\n<div className=\"relative h-[640px] overflow-hidden rounded-2xl\">\n  <ThreeContourTerrain title=\"Vire Basin — Sheet 4\" accent=\"#7ee0b8\" />\n</div>",
     "props": [
       {
         "name": "title",
         "type": "string",
-        "default": "\"Kestrel Range \u2014 Sheet 12\"",
+        "default": "\"Kestrel Range — Sheet 12\"",
         "description": "Sheet title, top left."
       },
       {
         "name": "subtitle",
         "type": "string",
-        "default": "\"Survey 1 : 25 000 \u00b7 NAD-21\"",
+        "default": "\"Survey 1 : 25 000 · NAD-21\"",
         "description": "Second line under the title."
       },
       {
@@ -16752,7 +16764,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "three-d",
-    "description": "Sculpted Three.js keycaps that drop onto their plate in reading order, then answer your real keyboard: caps sink on a spring and chords like \u2318K show a caption.",
+    "description": "Sculpted Three.js keycaps that drop onto their plate in reading order, then answer your real keyboard: caps sink on a spring and chords like ⌘K show a caption.",
     "tags": [
       "three.js",
       "webgl",
@@ -16775,13 +16787,13 @@
       {
         "name": "rows",
         "type": "KeycapDef[][]",
-        "default": "esc \u2318 K \u21b5 / \u21e7 \u2325 space",
+        "default": "esc ⌘ K ↵ / ⇧ ⌥ space",
         "description": "Rows of caps, back row first (up to 10 caps). Each: id, label or glyph, sub word, KeyboardEvent codes, width in units, tone."
       },
       {
         "name": "chords",
         "type": "KeyChord[]",
-        "default": "\u2318K, \u21e7\u2318K, \u2318\u21b5, \u2325Space, esc, \u21e7\u21b5",
+        "default": "⌘K, ⇧⌘K, ⌘↵, ⌥Space, esc, ⇧↵",
         "description": "Key-id combinations that light together and show a caption."
       },
       {
@@ -16800,7 +16812,7 @@
         "name": "demo",
         "type": "boolean",
         "default": "true",
-        "description": "Press \u2318K once by itself the first time the caps come into view."
+        "description": "Press ⌘K once by itself the first time the caps come into view."
       },
       {
         "name": "listen",
@@ -16824,7 +16836,7 @@
         "name": "captureShortcuts",
         "type": "boolean",
         "default": "false",
-        "description": "Prevent the default action of a completed chord (e.g. \u2318K). Off by default so the host page's own shortcuts still work."
+        "description": "Prevent the default action of a completed chord (e.g. ⌘K). Off by default so the host page's own shortcuts still work."
       },
       {
         "name": "className",
@@ -16857,15 +16869,15 @@
           },
           {
             "value": "cmd+k",
-            "label": "\u2318K"
+            "label": "⌘K"
           },
           {
             "value": "shift+cmd+k",
-            "label": "\u21e7\u2318K"
+            "label": "⇧⌘K"
           },
           {
             "value": "opt+space",
-            "label": "\u2325Space"
+            "label": "⌥Space"
           },
           {
             "value": "esc",
@@ -16966,7 +16978,7 @@
         "name": "turbulence",
         "type": "number",
         "default": "0.55",
-        "description": "Noise displacement strength, 0\u20131."
+        "description": "Noise displacement strength, 0–1."
       },
       {
         "name": "interactive",
@@ -17038,7 +17050,7 @@
         "max": 3,
         "step": 0.25,
         "default": 1,
-        "unit": "\u00d7"
+        "unit": "×"
       },
       {
         "prop": "ring",
@@ -17082,7 +17094,7 @@
     ],
     "theme": "dark",
     "previewHeight": 860,
-    "usage": "import { ThreeVoiceOrb } from \"@/components/design-for-ai/three-voice-orb\";\n\nconst [state, setState] = useState<\"idle\" | \"listening\" | \"thinking\" | \"speaking\">(\"idle\");\n\n<ThreeVoiceOrb\n  name=\"Wren\"\n  state={state}\n  onStateChange={setState}\n  speakingLines={[\"Your 3pm moved to 3:30. Coffee\u2019s on Priya.\"]}\n/>",
+    "usage": "import { ThreeVoiceOrb } from \"@/components/design-for-ai/three-voice-orb\";\n\nconst [state, setState] = useState<\"idle\" | \"listening\" | \"thinking\" | \"speaking\">(\"idle\");\n\n<ThreeVoiceOrb\n  name=\"Wren\"\n  state={state}\n  onStateChange={setState}\n  speakingLines={[\"Your 3pm moved to 3:30. Coffee’s on Priya.\"]}\n/>",
     "props": [
       {
         "name": "state",
@@ -17104,7 +17116,7 @@
         "name": "name",
         "type": "string",
         "default": "\"Wren\"",
-        "description": "The assistant\u2019s name, used in the idle caption and labels."
+        "description": "The assistant’s name, used in the idle caption and labels."
       },
       {
         "name": "captions",
