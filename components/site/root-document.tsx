@@ -13,6 +13,7 @@ export const rootMetadata: Metadata = {
   title: { default: `${site.name}: ${site.tagline}`, template: `%s | ${site.name}` },
   description: site.description,
   applicationName: site.name,
+  verification: { other: { "msvalidate.01": "7249F2B57E686284704E0A75B0323CD2" } },
   icons: { icon: "/icon.svg" },
   openGraph: { siteName: site.name, type: "website", locale: "en_GB" },
   twitter: { card: "summary_large_image", site: site.twitter },

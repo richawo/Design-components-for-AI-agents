@@ -1,0 +1,110 @@
+{
+  "slug": "billing-invoice-list",
+  "name": "Invoice List",
+  "tier": "free",
+  "platform": "web",
+  "category": "billing",
+  "description": "A filterable invoice list with paid, open and failed marks, tabular amounts, and a download that turns into a check. Narrow widths collapse it into cards.",
+  "tags": ["billing", "invoices", "filter", "download", "table", "subscription", "saas"],
+  "dependencies": ["motion"],
+  "theme": "dark",
+  "previewHeight": 820,
+  "usage": "import { InvoiceList } from \"@/components/design-for-ai/billing-invoice-list\";\n\n<InvoiceList\n  invoices={[\n    { id: \"INV-1046\", date: \"2026-10-02\", amount: 48, status: \"open\" },\n    { id: \"INV-1042\", date: \"2026-09-24\", amount: 128, status: \"paid\" },\n  ]}\n  onDownload={(invoice) => fetch(`/api/invoices/${invoice.id}/pdf`)}\n/>",
+  "props": [
+    {
+      "name": "invoices",
+      "type": "{ id: string; date: string; amount: number; status: \"paid\" | \"open\" | \"failed\" }[]",
+      "default": "five Copperline invoices",
+      "description": "Invoices, newest first once sorted. date is an ISO date."
+    },
+    {
+      "name": "filter",
+      "type": "\"all\" | \"paid\" | \"open\" | \"failed\"",
+      "default": "\"all\"",
+      "description": "Which status is showing. Pass it with onFilterChange to control the filter; omit it and the list keeps its own."
+    },
+    {
+      "name": "onFilterChange",
+      "type": "(filter: InvoiceFilter) => void",
+      "description": "Called when a filter chip is chosen."
+    },
+    {
+      "name": "onDownload",
+      "type": "(invoice: InvoiceRow) => void",
+      "description": "Called when a row's download is pressed. The button turns into a check either way."
+    },
+    {
+      "name": "locale",
+      "type": "string",
+      "default": "\"en-GB\"",
+      "description": "Locale for money and dates."
+    },
+    {
+      "name": "currency",
+      "type": "string",
+      "default": "\"USD\"",
+      "description": "ISO 4217 code."
+    },
+    {
+      "name": "accent",
+      "type": "string",
+      "default": "\"#7dd3a8\"",
+      "description": "The one accent: an open invoice, the open total, and a download after it has been saved."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Surface and ink. Light deepens the accent for text so it stays readable."
+    }
+  ],
+  "demo": {
+    "steps": [
+      "wait:400",
+      "click:@filter-open",
+      "wait:900",
+      "click:@download-inv-1046",
+      "wait:1400"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "filter",
+      "label": "Filter",
+      "kind": "segmented",
+      "options": [
+        { "value": "all", "label": "All" },
+        { "value": "paid", "label": "Paid" },
+        { "value": "open", "label": "Open" },
+        { "value": "failed", "label": "Failed" }
+      ],
+      "default": "all",
+      "group": "List"
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        { "value": "dark", "label": "Dark" },
+        { "value": "light", "label": "Light" }
+      ],
+      "default": "dark",
+      "group": "Look"
+    },
+    {
+      "prop": "accent",
+      "label": "Accent",
+      "kind": "color",
+      "default": "#7dd3a8",
+      "options": ["#7dd3a8", "#f5a524", "#60a5fa", "#ececee"],
+      "group": "Look"
+    },
+    {
+      "prop": "$replay",
+      "label": "Replay",
+      "kind": "action"
+    }
+  ],
+  "added": "2026-10-11"
+}

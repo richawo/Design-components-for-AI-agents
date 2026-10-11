@@ -18,12 +18,14 @@
     "pro:sync": "node scripts/sync-pro.mjs",
     "cf:build": "opennextjs-cloudflare build",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "deploy": "npm run pro:sync && opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "deploy": "npm run pro:sync -- --require-source && opennextjs-cloudflare build && npm run cf:deploy",
+    "cf:deploy": "opennextjs-cloudflare deploy && npm run blog:index -- --all --wait-for-commit",
     "deploy:dry-run": "opennextjs-cloudflare build && wrangler deploy --dry-run",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "postinstall": "node scripts/patch-opennext.mjs",
     "blog:translate": "node scripts/translate-blog.mjs",
-    "blog:audit": "node scripts/blog-audit.mjs"
+    "blog:audit": "node scripts/blog-audit.mjs",
+    "blog:index": "node scripts/ping-indexnow.mjs"
   },
   "dependencies": {
     "@fontsource-variable/bricolage-grotesque": "^5.3.0",

@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { ComponentBrowser } from "@/components/site/component-browser";
 import { CountUp } from "@/components/site/count-up";
 import { DitherGlow } from "@/components/site/dither-glow";
 import { JsonLd } from "@/components/site/json-ld";
+import { readCategoryParam } from "@/lib/gallery-sidebar";
 import { allComponents, categoriesWithCounts, stats, toCard } from "@/lib/registry";
 import { absoluteUrl, site } from "@/lib/site";
 
@@ -13,11 +15,16 @@ export const metadata: Metadata = {
   alternates: { canonical: "/components" },
 };
 
-export default function ComponentsPage() {
+export default async function ComponentsPage({ searchParams }: { searchParams: Promise<{ category?: string | string[] }> }) {
+  const sp = await searchParams;
   const s = stats();
   const all = allComponents();
   const cards = all.map(toCard);
   const categories = categoriesWithCounts().map(({ key, label, count }) => ({ key, label, count }));
+  const raw = Array.isArray(sp.category) ? sp.category[0] : sp.category;
+  const valid = new Set<string>(categories.map((c) => c.key));
+  if (typeof raw === "string" && !valid.has(raw.trim())) redirect("/components");
+  const category = readCategoryParam(raw, valid);
   return (
     <div className="relative mx-auto max-w-[80rem] px-5 pb-28 sm:px-8">
       <JsonLd
@@ -49,7 +56,7 @@ export default function ComponentsPage() {
           <CountUp value={s.free} delay={0.35} /> free and open source, <CountUp value={s.pro} delay={0.4} /> Pro, <CountUp value={s.mobile} delay={0.45} /> React Native. Each ships with its code, a prompt and a JSON prompt.
         </p>
       </section>
-      <ComponentBrowser cards={cards} categories={categories} />
+      <ComponentBrowser cards={cards} categories={categories} category={category} />
     </div>
   );
 }

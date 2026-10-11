@@ -1,0 +1,63 @@
+{
+  "component": "PaymentMethods",
+  "intent": "A dark list of saved cards drawn as generic objects, with no network logos. The accent outline travels to whichever card is default, and removing a card leaves an inline undo rather than a toast.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 with @md for the two-column grid; colour tokens as CSS variables (--pay-surface, --pay-raised, --pay-track, --pay-ink, --pay-muted, --pay-accent, --pay-accent-text)",
+    "animation": "motion/react for the entrance, the travelling default outline and the undo row",
+    "icons": "none; the chip is markup",
+    "fonts": "font-display (Geist) for the heading; font-sans for actions; font-mono for the cards, the eyebrow and the masked number"
+  },
+  "layout": {
+    "root": "section, max-width 560px, 20px radius, 20px padding (28px from @sm)",
+    "header": "mono BILLING, 22px heading Cards, a line naming the default card",
+    "grid": "one column below 448px, two columns from there",
+    "card": "dark object, aspect 1.7, workspace, chip, masked last 4, holder, expiry; Default or Set default, and Remove, under the object",
+    "undo": "a hairline row under the grid: the masked number, removed, and Undo",
+    "add": "a full-width Add a card button that is replaced by the form: name, last 4, expiry, Cancel"
+  },
+  "typography": {
+    "label": "mono 11px, weight 500, uppercase, tracking 0.08em, muted",
+    "heading": "font-display 22px, weight 600, tracking -0.025em, leading 1.1",
+    "card": "number mono 13px, 14px in the two-column layout, tracking 0.14em; holder and expiry mono 10.5px",
+    "actions": "13px; form fields 14px in a 44px control"
+  },
+  "color": {
+    "approach": "greys with one accent prop (default #7dd3a8) for the default outline, the Default label and a valid Add button; cards stay dark in both themes; the chip #d9c7a3 is material, not a second accent; no red",
+    "dark": { "surface": "#131317", "raised": "#1a1a1f", "track": "#24242b", "ink": "#f4f4f5", "muted": "#8a8a93", "line": "rgba(255,255,255,0.08)" },
+    "light": { "surface": "#ffffff", "raised": "#f6f6f7", "track": "#ececef", "ink": "#18181b", "muted": "#6b6b75", "line": "rgba(24,24,27,0.09)" },
+    "accentText": "on light, color-mix(in oklch, accent 45%, ink)",
+    "onAccent": "#07130d",
+    "card": "linear gradient #2c2c34 to #121216, chip #d9c7a3"
+  },
+  "motion": {
+    "entrance": "header, cards at 100ms, add button at 200ms; rise 10px out of an 8px blur over 500ms, cubic-bezier(0.22, 1, 0.36, 1), then filter cleared",
+    "default": "the outline springs from the old default to the new one, stiffness 420, damping 36",
+    "remove": "the card fades; the undo row rises 6px over 240ms",
+    "press": "scale 0.985 on Add a card, 0.98 on the form submit",
+    "reducedMotion": "opacity only; the outline jumps; no scale"
+  },
+  "responsive": {
+    "390": "the two cards stack; the number stays one line; Set default and Remove stay on one row",
+    "1440": "the two cards sit side by side inside the 560px panel"
+  },
+  "accessibility": [
+    "Set default, Remove, Undo, Cancel and Add are buttons",
+    "the subtitle and the undo row are polite live regions",
+    "form fields are labelled; a refused draft is an alert",
+    "2px ink focus outlines with a 2px offset, keyboard only"
+  ],
+  "content": {
+    "cards": "•••• 4242, Ines Varga, 08/28, default; •••• 1881, Jonah Adeyemi, 04/28",
+    "workspace": "Copperline, printed on both cards",
+    "demo": "make 1881 the default, then remove 4242, and leave the undo row on screen"
+  },
+  "avoid": [
+    "Visa, Mastercard or any network logo",
+    "a toast for undo",
+    "a red remove button",
+    "disabling Add instead of explaining the draft",
+    "a modal to confirm removal"
+  ]
+}
