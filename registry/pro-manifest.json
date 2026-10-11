@@ -18657,6 +18657,78 @@
     ]
   },
   {
+    "slug": "legal-document-requests",
+    "name": "Document Request Portal",
+    "tier": "pro",
+    "platform": "web",
+    "category": "data",
+    "description": "Track requested documents, validate selected files and await upload acknowledgement.",
+    "tags": [
+      "legal-tech",
+      "workflow",
+      "responsive",
+      "keyboard",
+      "data"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "light",
+    "previewHeight": 1110,
+    "usage": "import { DocumentRequests } from \"@/components/design-for-ai/legal-document-requests\";\n\n<DocumentRequests />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Main heading."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "description": "Supporting context."
+      },
+      {
+        "name": "requests",
+        "type": "RequestedDocument[]",
+        "description": "Unique authorised document requests with lowercase dot-prefixed extensions, byte limits and explicit review state."
+      },
+      {
+        "name": "onUpload",
+        "type": "(submission:DocumentSubmission)=>void|Promise<void>",
+        "description": "Upload the actual File and resolve only when receipt is acknowledged. The host must enforce access, content validation and storage rules server-side."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"light\"",
+        "description": "Surface, border and ink palette."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@request-1",
+        "wait:950",
+        "click:@request-2",
+        "wait:1200"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "light"
+      }
+    ]
+  },
+  {
     "slug": "legal-evidence-index",
     "name": "Evidence Index Workspace",
     "tier": "pro",
