@@ -230,7 +230,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "agents",
-    "description": "An agent’s commit as a card. The subject, the files it touched, checks that roll from queued to passed, then Open PR.",
+    "description": "An agent\u2019s commit as a card. The subject, the files it touched, checks that roll from queued to passed, then Open PR.",
     "tags": [
       "agent",
       "commit",
@@ -313,7 +313,7 @@
         "name": "accent",
         "type": "string",
         "default": "\"#f4f4f5\"",
-        "description": "The one accent, used on Open PR. A #rrggbb colour. Near-white or near-black values use the theme’s ink. Passed checks stay green either way."
+        "description": "The one accent, used on Open PR. A #rrggbb colour. Near-white or near-black values use the theme\u2019s ink. Passed checks stay green either way."
       },
       {
         "name": "theme",
@@ -384,6 +384,252 @@
           "#22c55e",
           "#7dd3fc",
           "#f5c66b"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      }
+    ]
+  },
+  {
+    "slug": "agent-diff-review",
+    "name": "Agent Diff Review",
+    "tier": "pro",
+    "platform": "web",
+    "category": "agents",
+    "description": "Review an agent's changes hunk by hunk: Accept or Reject each, rejected hunks fold to a stub, a file rail with +/\u2212 counts and a summary that applies what you kept.",
+    "tags": [
+      "agents",
+      "diff",
+      "code review",
+      "pull request",
+      "accept reject",
+      "hunks",
+      "human in the loop",
+      "coding agent",
+      "split view",
+      "keyboard",
+      "monochrome",
+      "dark"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 920,
+    "usage": "import { AgentDiffReview } from \"@/components/design-for-ai/agent-diff-review\";\n\n<AgentDiffReview\n  agent=\"Atlas\"\n  title=\"Round money once, in each currency's own minor unit\"\n  changes={proposal.files} // [{ path, language?, hunks: [{ id, oldStart, newStart, scope, note?, lines: [{ kind, text }] }] }]\n  view=\"unified\"\n  onDecisionsChange={(d) => saveDraft(d)}\n  onApply={(ids) => agent.applyHunks(ids)} // return a promise for the applying state; reject it to stay in review\n/>\n\n// Hunk ids must be unique across the change set: decisions are keyed by them.\n// Keyboard: with a hunk focused, A accepts, R rejects or reopens, J and K move between hunks.\n// Split view needs about 900px of width; narrower, the same diff reads as unified.\n// No virtualisation: keep a review to a few hundred lines, or page it by file.",
+    "props": [
+      {
+        "name": "agent",
+        "type": "string",
+        "default": "\"Atlas\"",
+        "description": "Name of the agent that proposed the change. Shown in the eyebrow, beside each hunk note and in the applied receipt."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Round money once, in each currency\u2019s own minor unit\"",
+        "description": "What the change does, in the agent's words."
+      },
+      {
+        "name": "summary",
+        "type": "string",
+        "default": "\"Yen totals were 100\u00d7 too large\u2026\"",
+        "description": "One or two sentences under the title: why, and what happens on apply."
+      },
+      {
+        "name": "proposedAt",
+        "type": "string",
+        "default": "\"2 min ago\"",
+        "description": "When the agent proposed it, shown in the eyebrow on wider containers."
+      },
+      {
+        "name": "runId",
+        "type": "string",
+        "default": "\"run 4f2a\"",
+        "description": "Short run id shown in the eyebrow on wider containers."
+      },
+      {
+        "name": "changes",
+        "type": "DiffFile[]",
+        "default": "a five-file billing fix",
+        "description": "The change set. Each file has a path, an optional language (\"code\" or \"prose\") and hunks with an id, oldStart, newStart, scope, optional note and unified diff lines ({ kind: \"ctx\" | \"add\" | \"del\", text })."
+      },
+      {
+        "name": "files",
+        "type": "number",
+        "description": "Show only the first N files of changes. Defaults to all of them; the demo shows 3."
+      },
+      {
+        "name": "view",
+        "type": "\"unified\" | \"split\"",
+        "default": "\"unified\"",
+        "description": "One column with old and new interleaved, or old and new side by side. The header toggle switches it too. Split needs about 900px; narrower, it reads as unified."
+      },
+      {
+        "name": "wrap",
+        "type": "boolean",
+        "default": "false",
+        "description": "Wrap long lines instead of scrolling them sideways. Unwrapped, each hunk (or each side in split) scrolls on its own."
+      },
+      {
+        "name": "lineNumbers",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show old and new line numbers in a gutter."
+      },
+      {
+        "name": "defaultDecisions",
+        "type": "Record<string, \"pending\" | \"accepted\" | \"rejected\">",
+        "description": "Decisions to start from, keyed by hunk id. Anything missing starts pending."
+      },
+      {
+        "name": "onDecisionsChange",
+        "type": "(decisions: Record<string, HunkDecision>) => void",
+        "description": "Called whenever a hunk is accepted, rejected or reopened, and when a whole file is accepted."
+      },
+      {
+        "name": "status",
+        "type": "\"review\" | \"applied\"",
+        "description": "Drive the review from outside: review reopens it with decisions kept, applied locks it into the receipt."
+      },
+      {
+        "name": "onStatusChange",
+        "type": "(status: \"review\" | \"applied\") => void",
+        "description": "Called when Apply succeeds and when the person goes back to review."
+      },
+      {
+        "name": "onApply",
+        "type": "(acceptedHunkIds: string[]) => void | Promise<unknown>",
+        "description": "Runs on Apply accepted. Return a promise to show the applying state; reject it to stay in review."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#f4f4f5\"",
+        "description": "The one brand accent: the Apply button, accepted marks and the summary strip. Defaults to the theme's ink; either ink (\"#f4f4f5\" or \"#111113\") follows the theme. The ink on it is picked for contrast. Additions and removals keep their own green and red."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Near-black review with white ink, or the white inverse."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes for the root."
+      },
+      {
+        "name": "emptyMessage",
+        "type": "string",
+        "default": "\"No changes to review.\"",
+        "description": "Shown when changes is an empty array."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:200",
+        "click:@accept-h1",
+        "wait:300",
+        "click:@reject-h2",
+        "wait:450",
+        "click:@file-2",
+        "wait:400",
+        "click:@accept-file",
+        "wait:250",
+        "click:@apply",
+        "wait:1400"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "view",
+        "label": "View",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "unified",
+            "label": "Unified"
+          },
+          {
+            "value": "split",
+            "label": "Split"
+          }
+        ],
+        "default": "unified",
+        "group": "Diff"
+      },
+      {
+        "prop": "wrap",
+        "label": "Wrap lines",
+        "kind": "toggle",
+        "default": false,
+        "group": "Diff"
+      },
+      {
+        "prop": "lineNumbers",
+        "label": "Line numbers",
+        "kind": "toggle",
+        "default": true,
+        "group": "Diff"
+      },
+      {
+        "prop": "files",
+        "label": "Files",
+        "kind": "slider",
+        "min": 1,
+        "max": 5,
+        "step": 1,
+        "default": 3,
+        "group": "Diff"
+      },
+      {
+        "prop": "status",
+        "label": "Apply",
+        "kind": "action",
+        "options": [
+          {
+            "value": "review",
+            "label": "Back to review"
+          },
+          {
+            "value": "applied",
+            "label": "Apply accepted"
+          }
+        ],
+        "group": "State"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action",
+        "group": "State"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#8ab4ff",
+          "#f59e0b"
         ],
         "group": "Look"
       },
@@ -1074,7 +1320,7 @@
         "name": "accent",
         "type": "string",
         "default": "\"#f4f4f5\"",
-        "description": "The one accent, used on Upscale. A #rrggbb colour. Near-white or near-black values use the theme’s ink. The selected study is ringed in the print’s ink, and the sunlight in the pictures stays warm."
+        "description": "The one accent, used on Upscale. A #rrggbb colour. Near-white or near-black values use the theme\u2019s ink. The selected study is ringed in the print\u2019s ink, and the sunlight in the pictures stays warm."
       },
       {
         "name": "theme",
@@ -1217,7 +1463,7 @@
       {
         "name": "pause",
         "type": "string",
-        "default": "\"calendar.hold stopped. It needs the fields it can’t guess.\"",
+        "default": "\"calendar.hold stopped. It needs the fields it can\u2019t guess.\"",
         "description": "The line under the request, before the form."
       },
       {
@@ -1235,7 +1481,7 @@
       {
         "name": "slots",
         "type": "ElicitSlot[]",
-        "description": "Choices for when: { id, label, detail, available }. One of them is unavailable. detail is a short availability note such as “Held until 3”."
+        "description": "Choices for when: { id, label, detail, available }. One of them is unavailable. detail is a short availability note such as \u201cHeld until 3\u201d."
       },
       {
         "name": "defaultSlot",
@@ -1282,7 +1528,7 @@
       {
         "name": "status",
         "type": "\"asking\" | \"booked\"",
-        "description": "Controlled state. Asking shows the form. Booked replaces it with the receipt and the assistant’s next line. Omit it and the thread owns the state."
+        "description": "Controlled state. Asking shows the form. Booked replaces it with the receipt and the assistant\u2019s next line. Omit it and the thread owns the state."
       },
       {
         "name": "onStatusChange",
@@ -1298,7 +1544,7 @@
         "name": "accent",
         "type": "string",
         "default": "\"#f4f4f5\"",
-        "description": "The one accent: the selection dot, the length marker’s ink, and Continue. A #rrggbb colour. Near-white or near-black values use the theme’s ink so the button stays readable. Ink on the button is chosen for contrast."
+        "description": "The one accent: the selection dot, the length marker\u2019s ink, and Continue. A #rrggbb colour. Near-white or near-black values use the theme\u2019s ink so the button stays readable. Ink on the button is chosen for contrast."
       },
       {
         "name": "theme",
@@ -1399,12 +1645,204 @@
     ]
   },
   {
+    "slug": "ai-model-picker",
+    "name": "Model Picker",
+    "tier": "pro",
+    "platform": "web",
+    "category": "ai",
+    "description": "A model select that helps you choose: aligned speed, price and context bars, capability tags, typeahead, and a compare that diffs any model against the current one.",
+    "tags": [
+      "model picker",
+      "model selector",
+      "llm",
+      "ai",
+      "select",
+      "listbox",
+      "compare",
+      "typeahead",
+      "pricing",
+      "context window",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 820,
+    "usage": "import { ModelPicker } from \"@/components/design-for-ai/ai-model-picker\";\n\n<ModelPicker\n  catalog={[\n    { id: \"atlas-large\", name: \"Atlas Large\", note: \"Careful reasoning\", tokensPerSecond: 48, usdPerMillion: 12, contextTokens: 400_000, capabilities: [\"vision\", \"tools\"] },\n    { id: \"atlas-fast\", name: \"Atlas Fast\", note: \"Chat and autocomplete\", tokensPerSecond: 220, usdPerMillion: 0.8, contextTokens: 256_000, capabilities: [\"tools\"] },\n    { id: \"atlas-long\", name: \"Atlas Long\", note: \"Whole repositories\", tokensPerSecond: 70, usdPerMillion: 6, contextTokens: 2_000_000, capabilities: [\"tools\", \"long-context\"] },\n  ]}\n  models={3}\n  value={modelId}\n  onValueChange={(id) => setModelId(id)}\n  layout=\"list\"\n  showCost\n  showCompare\n/>\n\n// The panel is positioned inside the component's own box. To float it above\n// clipped containers, render the panel through your app's portal and keep the\n// trigger's id references (aria-controls, aria-activedescendant) intact.",
+    "props": [
+      {
+        "name": "catalog",
+        "type": "ModelOption[]",
+        "default": "Eight fictional models from three labs",
+        "description": "Every model on offer: id, name, a one-line note, tokensPerSecond, usdPerMillion (blended), contextTokens and capabilities (\"vision\", \"tools\", \"long-context\")."
+      },
+      {
+        "name": "models",
+        "type": "number",
+        "default": "6",
+        "description": "How many models from the catalogue to show, 3 to 8. Bars share one scale across what is visible."
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "description": "Controlled model id. Leave out to let the picker keep its own."
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "default": "\"meridian-pro\" in the demo, otherwise the first model",
+        "description": "Model id on first render when uncontrolled."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(id: string, model: ModelOption) => void",
+        "description": "Runs when a model is chosen by pointer or keyboard."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "default": "\"Model\"",
+        "description": "Mono label above the trigger, and the accessible name of the list."
+      },
+      {
+        "name": "layout",
+        "type": "\"list\" | \"grid\"",
+        "default": "\"list\"",
+        "description": "List: rows with the bars aligned in columns under a header. Grid: two columns of cards, each with its own labelled bars."
+      },
+      {
+        "name": "showCost",
+        "type": "boolean",
+        "default": "true",
+        "description": "Shows the price column, its bars, its delta and the price on the trigger."
+      },
+      {
+        "name": "showCompare",
+        "type": "boolean",
+        "default": "true",
+        "description": "Marks the current model on every bar and diffs the highlighted model against it, in the bars and in words. Off, the footer shows a count and a typeahead hint."
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "default": "false",
+        "description": "Opens the panel on first render without moving focus into it. The demo opens it."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#b8f26b\" (dark) or \"#5c9a12\" (light)",
+        "description": "The one colour: the check, the stretch of a bar where the highlighted model beats the current one, and the winning deltas. Darkened toward the ink on light."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Near-black trigger and panel with white ink, or the white inverse."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root. The panel opens below the trigger, so leave room under it."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:500",
+        "hover:@model-tessera-large",
+        "wait:600",
+        "hover:@model-meridian-swift",
+        "wait:700",
+        "click:@model-meridian-swift",
+        "wait:800",
+        "click:@trigger",
+        "wait:900"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "layout",
+        "label": "Layout",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "list",
+            "label": "List"
+          },
+          {
+            "value": "grid",
+            "label": "Grid"
+          }
+        ],
+        "default": "list"
+      },
+      {
+        "prop": "models",
+        "label": "Models",
+        "kind": "slider",
+        "min": 3,
+        "max": 8,
+        "step": 1,
+        "default": 6
+      },
+      {
+        "prop": "showCost",
+        "label": "Price",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "showCompare",
+        "label": "Compare",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#b8f26b",
+        "options": [
+          "#b8f26b",
+          "#ff7a45",
+          "#60a5fa",
+          "#ededef"
+        ]
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "$replay",
+        "label": "Demo",
+        "kind": "action",
+        "value": "Replay"
+      }
+    ]
+  },
+  {
     "slug": "ai-reasoning-trace",
     "name": "Reasoning Trace",
     "tier": "pro",
     "platform": "web",
     "category": "ai",
-    "description": "“Thought for 14s”, done properly: a ticking timer while thinking, a one-line summary that rewrites per step, and a dimmed trace that folds away when the reply starts.",
+    "description": "\u201cThought for 14s\u201d, done properly: a ticking timer while thinking, a one-line summary that rewrites per step, and a dimmed trace that folds away when the reply starts.",
     "tags": [
       "ai",
       "reasoning",
@@ -1544,7 +1982,7 @@
         "min": 0.5,
         "max": 2,
         "step": 0.1,
-        "unit": "×",
+        "unit": "\u00d7",
         "default": 1,
         "group": "Stream"
       },
@@ -1599,6 +2037,255 @@
       {
         "prop": "$replay",
         "label": "Restart",
+        "kind": "action"
+      }
+    ]
+  },
+  {
+    "slug": "ai-search-answer",
+    "name": "Search Answer",
+    "tier": "pro",
+    "platform": "web",
+    "category": "ai",
+    "description": "An AI search answer page set like an editorial: a sources strip that loads first, the answer streaming with inline markers, follow-ups that fill the query box.",
+    "tags": [
+      "ai",
+      "ai search",
+      "answer engine",
+      "sources",
+      "citations",
+      "streaming",
+      "follow-up questions",
+      "rag",
+      "perplexity style",
+      "search results"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 980,
+    "usage": "import { SearchAnswer } from \"@/components/design-for-ai/ai-search-answer\";\n\n// Your search drives it: pass sources as they arrive, then the answer as it streams.\nexport default function AnswerPage({ run, ask }) {\n  return (\n    <SearchAnswer\n      query={run.query}\n      status={run.status} // \"searching\" | \"answering\" | \"done\"\n      sources={run.sources} // [{ id, title, domain, snippet, date?, href? }], in ranked order\n      answer={run.text} // paragraphs split by a blank line; [n] cites the nth source\n      followUps={run.related} // slide in once done; a click puts one in the query box\n      elapsedMs={run.ms}\n      maxSources={6}\n      density=\"reading\" // or \"compact\" for a side panel\n      onAsk={(q) => ask(q)}\n    />\n  );\n}",
+    "props": [
+      {
+        "name": "query",
+        "type": "string",
+        "default": "\"Why does sourdough rise so slowly in winter?\"",
+        "description": "The question that was asked, set as the page's serif headline. A new query cross-fades the headline, folds the source list and drops any pinned source."
+      },
+      {
+        "name": "status",
+        "type": "\"searching\" | \"answering\" | \"done\"",
+        "default": "\"done\"",
+        "description": "Searching fills the sources strip, with shimmering slots for sources still to come. Answering streams the answer under it with a caret. Done adds the follow-ups and the time taken."
+      },
+      {
+        "name": "sources",
+        "type": "SearchSource[]",
+        "default": "[]",
+        "description": "Retrieved sources in ranked order: { id, title, domain, snippet, monogram?, date?, href? }. Pass them as they arrive; each lands in the strip with a short rise. With href, tiles and rows are links that open in a new tab."
+      },
+      {
+        "name": "answer",
+        "type": "string",
+        "default": "\"\"",
+        "description": "The answer so far, as the model writes it. Paragraphs are split by a blank line and [n] cites the nth source. The first paragraph is set as the lede. New words settle in as they arrive, and a marker still arriving ('[1') is held back until it closes."
+      },
+      {
+        "name": "followUps",
+        "type": "string[]",
+        "default": "[]",
+        "description": "Questions to ask next. They slide in once the answer is done; a click types one into the query box and focuses it, so the reader can edit it before asking."
+      },
+      {
+        "name": "showFollowUps",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show the follow-ups section above the query box."
+      },
+      {
+        "name": "maxSources",
+        "type": "number",
+        "default": "6",
+        "description": "How many sources, from the top of the list, are shown and may be cited. Markers pointing past it are dropped, so the answer only ever cites what the strip shows. The strip shows four tiles: all four sources, or three and a +N tile that opens the full list."
+      },
+      {
+        "name": "density",
+        "type": "\"compact\" | \"reading\"",
+        "default": "\"reading\"",
+        "description": "Reading sets a 16.5px answer with an 18.5px lede and two-line source titles; compact is 14.5px with one-line titles, for a side panel."
+      },
+      {
+        "name": "elapsedMs",
+        "type": "number",
+        "description": "How long the search took, shown in the status line once done (8 sources \u00b7 3.4 s)."
+      },
+      {
+        "name": "headingLevel",
+        "type": "\"h1\" | \"h2\" | \"h3\"",
+        "default": "\"h2\"",
+        "description": "The headline's level. The Sources and Ask next headings step down one level from it."
+      },
+      {
+        "name": "onAsk",
+        "type": "(query: string) => void",
+        "description": "Called with the trimmed text when the query box is submitted (Enter, or the Ask button). Shift+Enter adds a line. The box clears itself."
+      },
+      {
+        "name": "onSourceOpen",
+        "type": "(source: SearchSource) => void",
+        "description": "Called when a source tile or list row is clicked. A click also pins that source's spotlight; a second click or Escape releases it."
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "default": "\"Ask a follow-up\"",
+        "description": "Placeholder and accessible label for the query box."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#f0a35e\"",
+        "description": "The one accent, a #rrggbb colour: the live dot while searching, the spotlight wash behind the sentences a source backs, lit markers and the Ask button once there is text."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Greyscale surfaces and ink. The accent stays the same in both."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
+      },
+      {
+        "name": "ask",
+        "type": "\"winter\" | \"water\" | \"proofing\" | \"overnight\"",
+        "description": "Demo only. Default export only, not part of the component API. Runs one of the four scripted questions: sources load, then the answer streams."
+      },
+      {
+        "name": "speed",
+        "type": "number",
+        "default": "1",
+        "description": "Demo only. Default export only, not part of the component API. Stream pace: 2 runs twice as fast. Changing it replays the current search at the new pace."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "move:0.5,0.32",
+        "wait:1200",
+        "hover:@source-1",
+        "wait:1700",
+        "click:@followup-1",
+        "wait:1400"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "ask",
+        "label": "Ask",
+        "kind": "action",
+        "options": [
+          {
+            "value": "winter",
+            "label": "Winter rise"
+          },
+          {
+            "value": "water",
+            "label": "Water temp"
+          },
+          {
+            "value": "proofing",
+            "label": "Proofing box"
+          },
+          {
+            "value": "overnight",
+            "label": "Overnight"
+          }
+        ],
+        "group": "Search"
+      },
+      {
+        "prop": "maxSources",
+        "label": "Sources",
+        "kind": "slider",
+        "min": 3,
+        "max": 8,
+        "step": 1,
+        "default": 6,
+        "group": "Search"
+      },
+      {
+        "prop": "speed",
+        "label": "Pace",
+        "kind": "slider",
+        "min": 0.5,
+        "max": 2,
+        "step": 0.1,
+        "unit": "\u00d7",
+        "default": 1,
+        "group": "Search"
+      },
+      {
+        "prop": "showFollowUps",
+        "label": "Follow-ups",
+        "kind": "toggle",
+        "default": true,
+        "group": "Page"
+      },
+      {
+        "prop": "density",
+        "label": "Density",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "compact",
+            "label": "Compact"
+          },
+          {
+            "value": "reading",
+            "label": "Reading"
+          }
+        ],
+        "default": "reading",
+        "group": "Page"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f0a35e",
+        "options": [
+          "#f0a35e",
+          "#7cc4ff",
+          "#b5e36a",
+          "#ededef"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
         "kind": "action"
       }
     ]
@@ -1677,7 +2364,7 @@
         "name": "defaultContext",
         "type": "string[]",
         "default": "[\"credit\"]",
-        "description": "Sentence ids already pulled into the margin. Read on mount. The note’s sentence starts pulled, so the pair is visible before a click."
+        "description": "Sentence ids already pulled into the margin. Read on mount. The note\u2019s sentence starts pulled, so the pair is visible before a click."
       },
       {
         "name": "status",
@@ -1817,6 +2504,246 @@
     ]
   },
   {
+    "slug": "ai-voice-mode",
+    "name": "Voice Mode",
+    "tier": "pro",
+    "platform": "web",
+    "category": "ai",
+    "description": "A voice conversation surface: hairline rings that breathe with the mic, a transcript that settles word by word, clear turns, and a tap that cuts the reply mid-sentence.",
+    "tags": [
+      "ai",
+      "voice",
+      "voice mode",
+      "assistant",
+      "speech",
+      "microphone",
+      "transcript",
+      "barge-in",
+      "monochrome",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 820,
+    "usage": "import { AiVoiceMode } from \"@/components/design-for-ai/ai-voice-mode\";\n\n// Your voice pipeline drives it: state, the turns so far and the live levels.\nconst analyser = audioCtx.createAnalyser(); // fed by getUserMedia\nconst buf = new Float32Array(analyser.fftSize);\nconst micRms = () => {\n  analyser.getFloatTimeDomainData(buf);\n  return Math.sqrt(buf.reduce((s, v) => s + v * v, 0) / buf.length);\n};\n\n<AiVoiceMode\n  name=\"Marlo\"\n  state={state} // \"idle\" | \"listening\" | \"thinking\" | \"speaking\" | \"interrupted\"\n  turns={turns} // [{ id, role: \"user\", text, interim }, { id, role: \"assistant\", text, spoken, cutAt }]\n  getLevel={micRms} // sampled once a frame\n  getOutputLevel={playbackRms}\n  sensitivity={60} // noise gate at \u221244 dB\n  onStart={openMic}\n  onStop={sendTurn}\n  onInterrupt={() => { player.stop(); markCut(); }}\n  onEnd={closeSession}\n/>",
+    "props": [
+      {
+        "name": "state",
+        "type": "\"idle\" | \"listening\" | \"thinking\" | \"speaking\" | \"interrupted\"",
+        "default": "\"idle\"",
+        "description": "Whose turn it is. The host drives it; the component never advances on its own. Interrupted shows the cut until the host reopens the mic."
+      },
+      {
+        "name": "turns",
+        "type": "VoiceTurn[]",
+        "default": "[]",
+        "description": "The conversation, oldest first. User turns carry committed text plus a dim interim tail; assistant turns carry the full reply, spoken (words voiced so far) and cutAt (where the user cut in)."
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "default": "\"Marlo\"",
+        "description": "The assistant\u2019s name, in the header, the transcript and the button labels."
+      },
+      {
+        "name": "language",
+        "type": "string",
+        "default": "\"English (UK)\"",
+        "description": "The recognition language, shown under the name."
+      },
+      {
+        "name": "transcript",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show the live transcript under the mark. Off, it folds away and the surface is the mark alone."
+      },
+      {
+        "name": "sensitivity",
+        "type": "number",
+        "default": "60",
+        "description": "0 to 100. Sets the noise gate from \u221220 dB (0) to \u221260 dB (100). The gate is drawn as a tick on the mic meter; only sound past it moves the mark."
+      },
+      {
+        "name": "mark",
+        "type": "\"rings\" | \"bars\"",
+        "default": "\"rings\"",
+        "description": "The level-reactive form around the button: four hairline rings that ripple outward, or three mirrored bars either side."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ff9f0a\"",
+        "description": "The one colour, and it means the mic is open: listening rings, the button core, the live dot, the meter fill and the cut marker. The glyph on it picks black or white for contrast."
+      },
+      {
+        "name": "muted",
+        "type": "boolean",
+        "description": "Controlled mute. Pair with onMutedChange. Omit to let the Mute button own it."
+      },
+      {
+        "name": "defaultMuted",
+        "type": "boolean",
+        "default": "false",
+        "description": "Starting mute state when uncontrolled."
+      },
+      {
+        "name": "onMutedChange",
+        "type": "(muted: boolean) => void",
+        "description": "Called by the Mute button."
+      },
+      {
+        "name": "getLevel",
+        "type": "() => number",
+        "description": "The mic\u2019s RMS amplitude, 0 to 1, sampled once a frame. Without it the mark runs a synthetic speech envelope while listening."
+      },
+      {
+        "name": "getOutputLevel",
+        "type": "() => number",
+        "description": "The assistant\u2019s playback amplitude, 0 to 1, sampled once a frame while speaking. Synthetic when omitted."
+      },
+      {
+        "name": "onStart",
+        "type": "() => void",
+        "description": "Tap on the mark while idle or interrupted: open the mic."
+      },
+      {
+        "name": "onStop",
+        "type": "() => void",
+        "description": "Tap on the mark while listening: the user is done, send the turn."
+      },
+      {
+        "name": "onInterrupt",
+        "type": "() => void",
+        "description": "Tap on the mark while thinking or speaking: stop playback and set cutAt on the reply."
+      },
+      {
+        "name": "onEnd",
+        "type": "() => void",
+        "description": "The End button."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface palette."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Classes for the root section."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:300",
+        "click:@mic",
+        "wait:2900",
+        "click:@mic",
+        "wait:1400"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "state",
+        "label": "State",
+        "kind": "select",
+        "options": [
+          {
+            "value": "idle",
+            "label": "Idle"
+          },
+          {
+            "value": "listening",
+            "label": "Listening"
+          },
+          {
+            "value": "thinking",
+            "label": "Thinking"
+          },
+          {
+            "value": "speaking",
+            "label": "Speaking"
+          }
+        ],
+        "default": "idle",
+        "group": "Conversation"
+      },
+      {
+        "prop": "transcript",
+        "label": "Transcript",
+        "kind": "toggle",
+        "default": true,
+        "group": "Conversation"
+      },
+      {
+        "prop": "sensitivity",
+        "label": "Sensitivity",
+        "kind": "slider",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 60,
+        "group": "Microphone"
+      },
+      {
+        "prop": "mark",
+        "label": "Mark",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "rings",
+            "label": "Rings"
+          },
+          {
+            "value": "bars",
+            "label": "Bars"
+          }
+        ],
+        "default": "rings",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#ff9f0a",
+        "options": [
+          "#ff9f0a",
+          "#4ade80",
+          "#7dd3fc",
+          "#ededef"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
+  },
+  {
     "slug": "auth-otp",
     "name": "One-time Code",
     "tier": "pro",
@@ -1854,12 +2781,12 @@
       {
         "name": "onChangeDestination",
         "type": "(value: string) => Promise<void>",
-        "description": "Inline “Edit”: send a code to a new address. Resolve when sent."
+        "description": "Inline \u201cEdit\u201d: send a code to a new address. Resolve when sent."
       },
       {
         "name": "onEdit",
         "type": "() => void",
-        "description": "If set, “Edit” calls this instead of opening the inline editor."
+        "description": "If set, \u201cEdit\u201d calls this instead of opening the inline editor."
       },
       {
         "name": "onVerified",
@@ -2046,7 +2973,7 @@
     ],
     "theme": "dark",
     "previewHeight": 900,
-    "usage": "import { AuthSsoDetect } from \"@/components/design-for-ai/auth-sso-detect\";\n\n<AuthSsoDetect\n  brand=\"Acme\"\n  title=\"Sign in to Acme\"\n  detect={async (domain) => {\n    const res = await fetch(`/api/sso/lookup?domain=${domain}`);\n    return res.json(); // SsoWorkspace[]: [] means password sign-in\n  }}\n  onSsoContinue={async (workspace, email) => {\n    window.location.assign(`/api/sso/start?ws=${workspace.id}&login_hint=${encodeURIComponent(email)}`);\n  }}\n  onPasswordSignIn={async (email, password) => {\n    const res = await fetch(\"/api/login\", { method: \"POST\", body: JSON.stringify({ email, password }) });\n    if (!res.ok) throw new Error(\"That password doesn’t match.\");\n  }}\n/>",
+    "usage": "import { AuthSsoDetect } from \"@/components/design-for-ai/auth-sso-detect\";\n\n<AuthSsoDetect\n  brand=\"Acme\"\n  title=\"Sign in to Acme\"\n  detect={async (domain) => {\n    const res = await fetch(`/api/sso/lookup?domain=${domain}`);\n    return res.json(); // SsoWorkspace[]: [] means password sign-in\n  }}\n  onSsoContinue={async (workspace, email) => {\n    window.location.assign(`/api/sso/start?ws=${workspace.id}&login_hint=${encodeURIComponent(email)}`);\n  }}\n  onPasswordSignIn={async (email, password) => {\n    const res = await fetch(\"/api/login\", { method: \"POST\", body: JSON.stringify({ email, password }) });\n    if (!res.ok) throw new Error(\"That password doesn\u2019t match.\");\n  }}\n/>",
     "props": [
       {
         "name": "detect",
@@ -2056,7 +2983,7 @@
       {
         "name": "directory",
         "type": "Record<string, SsoWorkspace[]>",
-        "description": "Static domain → workspaces map used when `detect` is not given. Demo domains: acme.com, globex.com, contoso.com, initech.io."
+        "description": "Static domain \u2192 workspaces map used when `detect` is not given. Demo domains: acme.com, globex.com, contoso.com, initech.io."
       },
       {
         "name": "debounceMs",
@@ -2093,7 +3020,7 @@
       {
         "name": "onForgotPassword",
         "type": "() => void",
-        "description": "The “Forgot?” link."
+        "description": "The \u201cForgot?\u201d link."
       },
       {
         "name": "brand",
@@ -2116,7 +3043,7 @@
         "name": "signUpHref",
         "type": "string",
         "default": "\"#\"",
-        "description": "Target of the “Start a free trial” link."
+        "description": "Target of the \u201cStart a free trial\u201d link."
       },
       {
         "name": "accent",
@@ -2157,19 +3084,19 @@
         "options": [
           {
             "value": "ada@acme.com",
-            "label": "Okta · acme"
+            "label": "Okta \u00b7 acme"
           },
           {
             "value": "sam@globex.com",
-            "label": "Picker · globex"
+            "label": "Picker \u00b7 globex"
           },
           {
             "value": "lee@contoso.com",
-            "label": "Fails · contoso"
+            "label": "Fails \u00b7 contoso"
           },
           {
             "value": "jo@gmail.com",
-            "label": "Password · gmail"
+            "label": "Password \u00b7 gmail"
           }
         ]
       },
@@ -2211,7 +3138,7 @@
         "prop": "description",
         "label": "Subheading",
         "kind": "text",
-        "default": "Use your work email. If your company signs in with SSO, we’ll send you the right way."
+        "default": "Use your work email. If your company signs in with SSO, we\u2019ll send you the right way."
       }
     ]
   },
@@ -2221,7 +3148,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "backgrounds",
-    "description": "A slowly advecting noise field rendered as an ordered Bayer 8×8 dither in two inks, like a risograph in motion. The pointer leaves a short wake of ink behind it.",
+    "description": "A slowly advecting noise field rendered as an ordered Bayer 8\u00d78 dither in two inks, like a risograph in motion. The pointer leaves a short wake of ink behind it.",
     "tags": [
       "background",
       "shader",
@@ -2371,7 +3298,7 @@
         "min": 0,
         "max": 2,
         "step": 0.1,
-        "unit": "×",
+        "unit": "\u00d7",
         "default": 0.4,
         "group": "Motion"
       },
@@ -2521,7 +3448,7 @@
         "min": 0,
         "max": 2,
         "step": 0.1,
-        "unit": "×",
+        "unit": "\u00d7",
         "default": 1
       },
       {
@@ -3021,7 +3948,7 @@
     ],
     "theme": "dark",
     "previewHeight": 960,
-    "usage": "import { PlanChange } from \"@/components/design-for-ai/billing-plan-change\";\n\n<PlanChange\n  currentPlanId=\"studio\"\n  currentInterval=\"monthly\"\n  seats={8}\n  periodStart=\"2026-09-24\"\n  periodEnd=\"2026-10-23\"\n  today=\"2026-10-10\"\n  paymentLabel=\"•••• 4242\"\n  onConfirm={async (quote) => {\n    await fetch(\"/api/subscription\", { method: \"PATCH\", body: JSON.stringify(quote.to) });\n  }}\n/>",
+    "usage": "import { PlanChange } from \"@/components/design-for-ai/billing-plan-change\";\n\n<PlanChange\n  currentPlanId=\"studio\"\n  currentInterval=\"monthly\"\n  seats={8}\n  periodStart=\"2026-09-24\"\n  periodEnd=\"2026-10-23\"\n  today=\"2026-10-10\"\n  paymentLabel=\"\u2022\u2022\u2022\u2022 4242\"\n  onConfirm={async (quote) => {\n    await fetch(\"/api/subscription\", { method: \"PATCH\", body: JSON.stringify(quote.to) });\n  }}\n/>",
     "props": [
       {
         "name": "plans",
@@ -3080,7 +4007,7 @@
       {
         "name": "paymentLabel",
         "type": "string",
-        "default": "\"•••• 4242\"",
+        "default": "\"\u2022\u2022\u2022\u2022 4242\"",
         "description": "The card that pays, as printed in the fine print and the confirmation."
       },
       {
@@ -3098,7 +4025,7 @@
       {
         "name": "yearlyBadge",
         "type": "string",
-        "default": "\"−17%\"",
+        "default": "\"\u221217%\"",
         "description": "The saving shown beside Yearly on the toggle. Empty hides it."
       },
       {
@@ -3238,7 +4165,7 @@
     ],
     "theme": "dark",
     "previewHeight": 820,
-    "usage": "import { SeatManager } from \"@/components/design-for-ai/billing-seat-manager\";\n\n<SeatManager\n  planName=\"Studio\"\n  pricePerSeat={16}\n  billedSeats={8}\n  members={[{ id: \"ines\", name: \"Ines Varga\", email: \"ines@copperline.studio\", role: \"Owner\" }]}\n  periodStart=\"2026-09-24\"\n  periodEnd=\"2026-10-23\"\n  today=\"2026-10-10\"\n  paymentLabel=\"•••• 4242\"\n  onConfirm={async (change) => {\n    await fetch(\"/api/seats\", { method: \"POST\", body: JSON.stringify(change) });\n  }}\n/>",
+    "usage": "import { SeatManager } from \"@/components/design-for-ai/billing-seat-manager\";\n\n<SeatManager\n  planName=\"Studio\"\n  pricePerSeat={16}\n  billedSeats={8}\n  members={[{ id: \"ines\", name: \"Ines Varga\", email: \"ines@copperline.studio\", role: \"Owner\" }]}\n  periodStart=\"2026-09-24\"\n  periodEnd=\"2026-10-23\"\n  today=\"2026-10-10\"\n  paymentLabel=\"\u2022\u2022\u2022\u2022 4242\"\n  onConfirm={async (change) => {\n    await fetch(\"/api/seats\", { method: \"POST\", body: JSON.stringify(change) });\n  }}\n/>",
     "props": [
       {
         "name": "planName",
@@ -3291,7 +4218,7 @@
       {
         "name": "paymentLabel",
         "type": "string",
-        "default": "\"•••• 4242\"",
+        "default": "\"\u2022\u2022\u2022\u2022 4242\"",
         "description": "The card that pays, as printed in the fine print and the confirmation."
       },
       {
@@ -4369,7 +5296,7 @@
         "name": "segments",
         "type": "{ key: string; label: string; cohorts: Cohort[] }[]",
         "default": "All / Self-serve / Sales-led / Mobile",
-        "description": "One set of cohorts per segment. Cohort: { label, size, retention: number[] } with retention as 0–1 per period since start, oldest cohort first."
+        "description": "One set of cohorts per segment. Cohort: { label, size, retention: number[] } with retention as 0\u20131 per period since start, oldest cohort first."
       },
       {
         "name": "defaultSegment",
@@ -4397,14 +5324,14 @@
       {
         "name": "subtitle",
         "type": "string",
-        "default": "\"Signups by week · active users\"",
+        "default": "\"Signups by week \u00b7 active users\"",
         "description": "Mono line beside the title."
       },
       {
         "name": "periodPrefix",
         "type": "string",
         "default": "\"W\"",
-        "description": "Column prefix: W0, W1 … or M0, M1 …"
+        "description": "Column prefix: W0, W1 \u2026 or M0, M1 \u2026"
       },
       {
         "name": "periodName",
@@ -4567,7 +5494,7 @@
     ],
     "theme": "dark",
     "previewHeight": 760,
-    "usage": "import { ChartRaceBars } from \"@/components/design-for-ai/chart-race-bars\";\nimport type { RaceSeries, RaceWeek } from \"@/components/design-for-ai/chart-race-bars\";\n\nconst weeks: RaceWeek[] = [\n  { label: \"3 Aug\", caption: \"Week of 3 Aug\" },\n  { label: \"10 Aug\", caption: \"Week of 10 Aug\" },\n];\n\nconst series: RaceSeries[] = [\n  { key: \"web\", label: \"Web\", values: [48, 50] },\n  { key: \"inference\", label: \"Inference\", values: [8, 11] },\n];\n\n<ChartRaceBars\n  title=\"Who shipped\"\n  subtitle=\"Pylon · deploys\"\n  unit=\"deploys\"\n  lead=\"inference\"\n  weeks={weeks}\n  series={series}\n  onWeekChange={(index) => console.log(index)}\n/>",
+    "usage": "import { ChartRaceBars } from \"@/components/design-for-ai/chart-race-bars\";\nimport type { RaceSeries, RaceWeek } from \"@/components/design-for-ai/chart-race-bars\";\n\nconst weeks: RaceWeek[] = [\n  { label: \"3 Aug\", caption: \"Week of 3 Aug\" },\n  { label: \"10 Aug\", caption: \"Week of 10 Aug\" },\n];\n\nconst series: RaceSeries[] = [\n  { key: \"web\", label: \"Web\", values: [48, 50] },\n  { key: \"inference\", label: \"Inference\", values: [8, 11] },\n];\n\n<ChartRaceBars\n  title=\"Who shipped\"\n  subtitle=\"Pylon \u00b7 deploys\"\n  unit=\"deploys\"\n  lead=\"inference\"\n  weeks={weeks}\n  series={series}\n  onWeekChange={(index) => console.log(index)}\n/>",
     "props": [
       {
         "name": "series",
@@ -4578,7 +5505,7 @@
       {
         "name": "weeks",
         "type": "RaceWeek[]",
-        "default": "3 Aug – 19 Oct",
+        "default": "3 Aug \u2013 19 Oct",
         "description": "One column of the race: { label, caption }. label sits by the scrubber; caption is the sentence in the header."
       },
       {
@@ -4590,7 +5517,7 @@
       {
         "name": "subtitle",
         "type": "string",
-        "default": "\"Pylon · deploys\"",
+        "default": "\"Pylon \u00b7 deploys\"",
         "description": "Mono line beside the title."
       },
       {
@@ -4675,7 +5602,7 @@
         "prop": "subtitle",
         "label": "Subtitle",
         "kind": "text",
-        "default": "Pylon · deploys"
+        "default": "Pylon \u00b7 deploys"
       },
       {
         "prop": "showDelta",
@@ -4760,13 +5687,13 @@
     ],
     "theme": "dark",
     "previewHeight": 760,
-    "usage": "import { ChartRadarCompare } from \"@/components/design-for-ai/chart-radar-compare\";\nimport type { RadarAxis, RadarProfile } from \"@/components/design-for-ai/chart-radar-compare\";\n\nconst axes: RadarAxis[] = [\n  { key: \"writing\", label: \"Writing\" },\n  { key: \"tools\", label: \"Tool use\" },\n];\n\nconst profiles: RadarProfile[] = [\n  { key: \"mara\", label: \"Mara\", scores: [92, 54] },\n  { key: \"north\", label: \"North\", scores: [71, 90] },\n];\n\n<ChartRadarCompare\n  title=\"The bench\"\n  subtitle=\"Halcyon · six axes\"\n  axes={axes}\n  profiles={profiles}\n  defaultProfiles=\"mara,north\"\n  onAxisChange={(index) => console.log(index)}\n/>",
+    "usage": "import { ChartRadarCompare } from \"@/components/design-for-ai/chart-radar-compare\";\nimport type { RadarAxis, RadarProfile } from \"@/components/design-for-ai/chart-radar-compare\";\n\nconst axes: RadarAxis[] = [\n  { key: \"writing\", label: \"Writing\" },\n  { key: \"tools\", label: \"Tool use\" },\n];\n\nconst profiles: RadarProfile[] = [\n  { key: \"mara\", label: \"Mara\", scores: [92, 54] },\n  { key: \"north\", label: \"North\", scores: [71, 90] },\n];\n\n<ChartRadarCompare\n  title=\"The bench\"\n  subtitle=\"Halcyon \u00b7 six axes\"\n  axes={axes}\n  profiles={profiles}\n  defaultProfiles=\"mara,north\"\n  onAxisChange={(index) => console.log(index)}\n/>",
     "props": [
       {
         "name": "profiles",
         "type": "RadarProfile[]",
         "default": "Mara, North, Sable, Quill",
-        "description": "One shape each. RadarProfile: { key, label, scores: number[] }. scores line up with axes, 0–100, higher is better."
+        "description": "One shape each. RadarProfile: { key, label, scores: number[] }. scores line up with axes, 0\u2013100, higher is better."
       },
       {
         "name": "axes",
@@ -4783,7 +5710,7 @@
       {
         "name": "subtitle",
         "type": "string",
-        "default": "\"Halcyon · six axes\"",
+        "default": "\"Halcyon \u00b7 six axes\"",
         "description": "Mono line beside the title."
       },
       {
@@ -4854,7 +5781,7 @@
         "prop": "subtitle",
         "label": "Subtitle",
         "kind": "text",
-        "default": "Halcyon · six axes"
+        "default": "Halcyon \u00b7 six axes"
       },
       {
         "prop": "showFill",
@@ -4953,7 +5880,7 @@
     ],
     "theme": "dark",
     "previewHeight": 640,
-    "usage": "import { ChartRevenueTrend } from \"@/components/design-for-ai/chart-revenue-trend\";\n\nexport default function Revenue({ days }: { days: { date: string; value: number }[] }) {\n  return (\n    <ChartRevenueTrend\n      title=\"Revenue\"\n      data={days} // oldest first, at least 2× the longest range\n      defaultRange=\"30d\"\n      currency=\"EUR\"\n      locale=\"fr-FR\"\n      accent=\"#7dd3fc\"\n    />\n  );\n}",
+    "usage": "import { ChartRevenueTrend } from \"@/components/design-for-ai/chart-revenue-trend\";\n\nexport default function Revenue({ days }: { days: { date: string; value: number }[] }) {\n  return (\n    <ChartRevenueTrend\n      title=\"Revenue\"\n      data={days} // oldest first, at least 2\u00d7 the longest range\n      defaultRange=\"30d\"\n      currency=\"EUR\"\n      locale=\"fr-FR\"\n      accent=\"#7dd3fc\"\n    />\n  );\n}",
     "props": [
       {
         "name": "data",
@@ -5201,7 +6128,7 @@
     ],
     "theme": "dark",
     "previewHeight": 760,
-    "usage": "import { ChartStreamgraph } from \"@/components/design-for-ai/chart-streamgraph\";\nimport type { StreamSeries, StreamWeek } from \"@/components/design-for-ai/chart-streamgraph\";\n\nconst weeks: StreamWeek[] = [\n  { label: \"3 Aug\", caption: \"Week of 3 Aug\" },\n  { label: \"10 Aug\", caption: \"Week of 10 Aug\" },\n];\n\nconst series: StreamSeries[] = [\n  { key: \"compose\", label: \"Compose\", note: \"The September rewrite\", lead: true, values: [18, 19] },\n  { key: \"inbox\", label: \"Inbox\", note: \"Triage, then out\", values: [134, 129] },\n];\n\n<ChartStreamgraph\n  title=\"Where a minute goes\"\n  subtitle=\"Vesper · per person\"\n  unit=\"min\"\n  baseline=\"wiggle\"\n  weeks={weeks}\n  series={series}\n  onIsolate={(key) => console.log(key)}\n/>",
+    "usage": "import { ChartStreamgraph } from \"@/components/design-for-ai/chart-streamgraph\";\nimport type { StreamSeries, StreamWeek } from \"@/components/design-for-ai/chart-streamgraph\";\n\nconst weeks: StreamWeek[] = [\n  { label: \"3 Aug\", caption: \"Week of 3 Aug\" },\n  { label: \"10 Aug\", caption: \"Week of 10 Aug\" },\n];\n\nconst series: StreamSeries[] = [\n  { key: \"compose\", label: \"Compose\", note: \"The September rewrite\", lead: true, values: [18, 19] },\n  { key: \"inbox\", label: \"Inbox\", note: \"Triage, then out\", values: [134, 129] },\n];\n\n<ChartStreamgraph\n  title=\"Where a minute goes\"\n  subtitle=\"Vesper \u00b7 per person\"\n  unit=\"min\"\n  baseline=\"wiggle\"\n  weeks={weeks}\n  series={series}\n  onIsolate={(key) => console.log(key)}\n/>",
     "props": [
       {
         "name": "series",
@@ -5212,7 +6139,7 @@
       {
         "name": "weeks",
         "type": "StreamWeek[]",
-        "default": "3 Aug – 16 Nov",
+        "default": "3 Aug \u2013 16 Nov",
         "description": "One column per week: { label, caption }. label sits on the axis; caption is the sentence in the header."
       },
       {
@@ -5224,7 +6151,7 @@
       {
         "name": "subtitle",
         "type": "string",
-        "default": "\"Vesper · per person\"",
+        "default": "\"Vesper \u00b7 per person\"",
         "description": "Mono line beside the title."
       },
       {
@@ -5661,7 +6588,7 @@
     ],
     "theme": "dark",
     "previewHeight": 960,
-    "usage": "import { CollabActivityFeed } from \"@/components/design-for-ai/collab-activity-feed\";\n\nexport default function History() {\n  return (\n    <CollabActivityFeed\n      title=\"Activity\"\n      subtitle=\"Ledgerline · Website\"\n      people={[{ id: \"mara\", name: \"Mara Ilić\" }]}\n      events={[\n        {\n          id: \"e1\", day: \"Today\", date: \"Sat 10 Oct\", time: \"09:42\", actorId: \"mara\", type: \"edit\",\n          action: \"changed the price of\", target: \"Pro\",\n          change: { kind: \"value\", before: \"$24 / seat\", after: \"$29 / seat\" },\n        },\n      ]}\n    />\n  );\n}",
+    "usage": "import { CollabActivityFeed } from \"@/components/design-for-ai/collab-activity-feed\";\n\nexport default function History() {\n  return (\n    <CollabActivityFeed\n      title=\"Activity\"\n      subtitle=\"Ledgerline \u00b7 Website\"\n      people={[{ id: \"mara\", name: \"Mara Ili\u0107\" }]}\n      events={[\n        {\n          id: \"e1\", day: \"Today\", date: \"Sat 10 Oct\", time: \"09:42\", actorId: \"mara\", type: \"edit\",\n          action: \"changed the price of\", target: \"Pro\",\n          change: { kind: \"value\", before: \"$24 / seat\", after: \"$29 / seat\" },\n        },\n      ]}\n    />\n  );\n}",
     "props": [
       {
         "name": "events",
@@ -5684,7 +6611,7 @@
       {
         "name": "subtitle",
         "type": "string",
-        "default": "\"Ledgerline · Website\"",
+        "default": "\"Ledgerline \u00b7 Website\"",
         "description": "Mono line under the heading."
       },
       {
@@ -5727,7 +6654,7 @@
         "name": "accent",
         "type": "string",
         "default": "theme ink",
-        "description": "The one accent: the active chip’s count and the selected person’s ring. Diff colours are semantic (added, removed)."
+        "description": "The one accent: the active chip\u2019s count and the selected person\u2019s ring. Diff colours are semantic (added, removed)."
       },
       {
         "name": "theme",
@@ -5777,7 +6704,7 @@
         "prop": "subtitle",
         "label": "Workspace",
         "kind": "text",
-        "default": "Ledgerline · Website",
+        "default": "Ledgerline \u00b7 Website",
         "group": "Content"
       },
       {
@@ -5864,24 +6791,24 @@
     ],
     "theme": "dark",
     "previewHeight": 820,
-    "usage": "import { CollabAnnotationPins } from \"@/components/design-for-ai/collab-annotation-pins\";\n\nexport default function Review() {\n  return (\n    <CollabAnnotationPins\n      title=\"Fieldnote · Marketing\"\n      frameLabel=\"Landing — v4\"\n      currentUser=\"Sam Okoye\"\n      pins={[\n        { id: \"p1\", x: 0.47, y: 0.27, author: \"Inês Duarte\", time: \"10:31\", body: \"Drop the full stop in the headline?\" },\n      ]}\n      onAdd={(pin) => savePin(pin)}\n      onResolve={(pin) => resolvePin(pin.id)}\n    />\n  );\n}",
+    "usage": "import { CollabAnnotationPins } from \"@/components/design-for-ai/collab-annotation-pins\";\n\nexport default function Review() {\n  return (\n    <CollabAnnotationPins\n      title=\"Fieldnote \u00b7 Marketing\"\n      frameLabel=\"Landing \u2014 v4\"\n      currentUser=\"Sam Okoye\"\n      pins={[\n        { id: \"p1\", x: 0.47, y: 0.27, author: \"In\u00eas Duarte\", time: \"10:31\", body: \"Drop the full stop in the headline?\" },\n      ]}\n      onAdd={(pin) => savePin(pin)}\n      onResolve={(pin) => resolvePin(pin.id)}\n    />\n  );\n}",
     "props": [
       {
         "name": "pins",
         "type": "{ id; x: number; y: number; author; body; time; resolved?: boolean }[]",
         "default": "5 demo pins",
-        "description": "Comments placed on the design. x and y are fractions (0–1) of the frame, so pins stay put at any size."
+        "description": "Comments placed on the design. x and y are fractions (0\u20131) of the frame, so pins stay put at any size."
       },
       {
         "name": "title",
         "type": "string",
-        "default": "\"Fieldnote · Marketing\"",
+        "default": "\"Fieldnote \u00b7 Marketing\"",
         "description": "File name in the toolbar."
       },
       {
         "name": "frameLabel",
         "type": "string",
-        "default": "\"Landing — v4\"",
+        "default": "\"Landing \u2014 v4\"",
         "description": "Frame name above the design and in the toolbar."
       },
       {
@@ -5924,7 +6851,7 @@
         "name": "onAdd",
         "type": "(pin) => void",
         "default": "none",
-        "description": "Called with a new pin after it’s posted."
+        "description": "Called with a new pin after it\u2019s posted."
       },
       {
         "name": "accent",
@@ -5983,7 +6910,7 @@
         "prop": "title",
         "label": "File name",
         "kind": "text",
-        "default": "Fieldnote · Marketing",
+        "default": "Fieldnote \u00b7 Marketing",
         "group": "Content"
       },
       {
@@ -6059,13 +6986,13 @@
     ],
     "theme": "dark",
     "previewHeight": 860,
-    "usage": "import { CollabCommentThread } from \"@/components/design-for-ai/collab-comment-thread\";\n\nexport default function HeroThread() {\n  return (\n    <CollabCommentThread\n      location=\"Pricing page · Hero headline\"\n      quote=\"Pricing your finance team can actually read.\"\n      people={[\n        { id: \"sam\", name: \"Sam Okoye\", handle: \"sam\" },\n        { id: \"mara\", name: \"Mara Ilić\", handle: \"mara\" },\n      ]}\n      currentUserId=\"sam\"\n      comments={[{ id: \"c1\", authorId: \"mara\", body: \"Too much promise in “actually read”.\", time: \"Tue 14:02\", unread: true }]}\n      onPost={(body) => saveReply(body)}\n      onResolvedChange={(resolved) => setThreadResolved(resolved)}\n    />\n  );\n}",
+    "usage": "import { CollabCommentThread } from \"@/components/design-for-ai/collab-comment-thread\";\n\nexport default function HeroThread() {\n  return (\n    <CollabCommentThread\n      location=\"Pricing page \u00b7 Hero headline\"\n      quote=\"Pricing your finance team can actually read.\"\n      people={[\n        { id: \"sam\", name: \"Sam Okoye\", handle: \"sam\" },\n        { id: \"mara\", name: \"Mara Ili\u0107\", handle: \"mara\" },\n      ]}\n      currentUserId=\"sam\"\n      comments={[{ id: \"c1\", authorId: \"mara\", body: \"Too much promise in \u201cactually read\u201d.\", time: \"Tue 14:02\", unread: true }]}\n      onPost={(body) => saveReply(body)}\n      onResolvedChange={(resolved) => setThreadResolved(resolved)}\n    />\n  );\n}",
     "props": [
       {
         "name": "comments",
         "type": "{ id; authorId; body; time; unread?: boolean; edited?: boolean }[]",
         "default": "5 demo comments",
-        "description": "The thread, oldest first. `@handle` in a body renders as a mention token; unread comments get a marker and a “new” divider."
+        "description": "The thread, oldest first. `@handle` in a body renders as a mention token; unread comments get a marker and a \u201cnew\u201d divider."
       },
       {
         "name": "people",
@@ -6082,7 +7009,7 @@
       {
         "name": "location",
         "type": "string",
-        "default": "\"Pricing page · Hero headline\"",
+        "default": "\"Pricing page \u00b7 Hero headline\"",
         "description": "Where the thread is anchored, shown in mono above the quote."
       },
       {
@@ -6168,7 +7095,7 @@
         "prop": "location",
         "label": "Location",
         "kind": "text",
-        "default": "Pricing page · Hero headline",
+        "default": "Pricing page \u00b7 Hero headline",
         "group": "Content"
       },
       {
@@ -6244,7 +7171,7 @@
     ],
     "theme": "dark",
     "previewHeight": 920,
-    "usage": "import { CollabInvitePeople } from \"@/components/design-for-ai/collab-invite-people\";\n\nexport default function ReviewInvite() {\n  return (\n    <CollabInvitePeople\n      workspace=\"Ledgerline · Website review\"\n      orgDomain=\"ledgerline.co\"\n      includedSeats={8}\n      team={[{ email: \"sam@ledgerline.co\", name: \"Sam Okoye\", role: \"owner\" }]}\n      drafts={[\n        { email: \"ines@ledgerline.co\", role: \"edit\" },\n        { email: \"priya@\" },\n      ]}\n      onInvite={(people) => sendInvites(people)}\n    />\n  );\n}",
+    "usage": "import { CollabInvitePeople } from \"@/components/design-for-ai/collab-invite-people\";\n\nexport default function ReviewInvite() {\n  return (\n    <CollabInvitePeople\n      workspace=\"Ledgerline \u00b7 Website review\"\n      orgDomain=\"ledgerline.co\"\n      includedSeats={8}\n      team={[{ email: \"sam@ledgerline.co\", name: \"Sam Okoye\", role: \"owner\" }]}\n      drafts={[\n        { email: \"ines@ledgerline.co\", role: \"edit\" },\n        { email: \"priya@\" },\n      ]}\n      onInvite={(people) => sendInvites(people)}\n    />\n  );\n}",
     "props": [
       {
         "name": "title",
@@ -6255,7 +7182,7 @@
       {
         "name": "workspace",
         "type": "string",
-        "default": "\"Ledgerline · Website review\"",
+        "default": "\"Ledgerline \u00b7 Website review\"",
         "description": "Mono line under the heading."
       },
       {
@@ -6286,7 +7213,7 @@
         "name": "drafts",
         "type": "{ email; role?: \"view\" | \"comment\" | \"edit\" }[]",
         "default": "5 pasted addresses",
-        "description": "Addresses in the paste well, in order. A missing role uses defaultRole until that row’s menu is used."
+        "description": "Addresses in the paste well, in order. A missing role uses defaultRole until that row\u2019s menu is used."
       },
       {
         "name": "directory",
@@ -6354,7 +7281,7 @@
         "prop": "workspace",
         "label": "Workspace",
         "kind": "text",
-        "default": "Ledgerline · Website review",
+        "default": "Ledgerline \u00b7 Website review",
         "group": "Content"
       },
       {
@@ -6457,7 +7384,7 @@
         "name": "members",
         "type": "{ email; name?; role: \"owner\" | \"view\" | \"comment\" | \"edit\"; pending?: boolean }[]",
         "default": "4 demo members",
-        "description": "People with access. The owner can’t be changed; pending invites get a dashed avatar."
+        "description": "People with access. The owner can\u2019t be changed; pending invites get a dashed avatar."
       },
       {
         "name": "orgDomain",
@@ -6469,7 +7396,7 @@
         "name": "orgName",
         "type": "string",
         "default": "\"Northwind\"",
-        "description": "Used in the “Anyone at …” link level."
+        "description": "Used in the \u201cAnyone at \u2026\u201d link level."
       },
       {
         "name": "defaultRole",
@@ -6517,7 +7444,7 @@
         "name": "onRoleChange",
         "type": "(email: string, role) => void",
         "default": "none",
-        "description": "Called when a member’s role changes."
+        "description": "Called when a member\u2019s role changes."
       },
       {
         "name": "onLinkAccessChange",
@@ -6664,7 +7591,7 @@
     ],
     "theme": "dark",
     "previewHeight": 720,
-    "usage": "import { ComboboxAsync } from \"@/components/design-for-ai/combobox-async\";\n\nasync function searchClients(query: string, signal: AbortSignal) {\n  const res = await fetch(`/api/clients?q=${encodeURIComponent(query)}`, { signal });\n  return (await res.json()) as { id: string; label: string; detail?: string }[];\n}\n\nexport default function ClientPicker() {\n  return (\n    <ComboboxAsync\n      label=\"Client\"\n      placeholder=\"Search clients…\"\n      resultsLabel=\"Clients\"\n      search={searchClients}\n      onCreate={(name) => createClient(name)}\n      onChange={(picked) => setClient(picked[0] ?? null)}\n    />\n  );\n}",
+    "usage": "import { ComboboxAsync } from \"@/components/design-for-ai/combobox-async\";\n\nasync function searchClients(query: string, signal: AbortSignal) {\n  const res = await fetch(`/api/clients?q=${encodeURIComponent(query)}`, { signal });\n  return (await res.json()) as { id: string; label: string; detail?: string }[];\n}\n\nexport default function ClientPicker() {\n  return (\n    <ComboboxAsync\n      label=\"Client\"\n      placeholder=\"Search clients\u2026\"\n      resultsLabel=\"Clients\"\n      search={searchClients}\n      onCreate={(name) => createClient(name)}\n      onChange={(picked) => setClient(picked[0] ?? null)}\n    />\n  );\n}",
     "props": [
       {
         "name": "label",
@@ -6675,8 +7602,8 @@
       {
         "name": "placeholder",
         "type": "string",
-        "default": "\"Search accounts…\"",
-        "description": "Field placeholder, shown while the field is empty. Pass the noun your list holds, e.g. \"Search clients…\"."
+        "default": "\"Search accounts\u2026\"",
+        "description": "Field placeholder, shown while the field is empty. Pass the noun your list holds, e.g. \"Search clients\u2026\"."
       },
       {
         "name": "search",
@@ -6705,7 +7632,7 @@
         "name": "allowCreate",
         "type": "boolean",
         "default": "true",
-        "description": "Offer “Create ‘name’” when a search finds nothing."
+        "description": "Offer \u201cCreate \u2018name\u2019\u201d when a search finds nothing."
       },
       {
         "name": "onCreate",
@@ -6751,7 +7678,7 @@
         "name": "createLabel",
         "type": "string",
         "default": "\"Create\"",
-        "description": "The verb on the Create row: “Create ‘Northwind’”."
+        "description": "The verb on the Create row: \u201cCreate \u2018Northwind\u2019\u201d."
       },
       {
         "name": "createHint",
@@ -6768,7 +7695,7 @@
       {
         "name": "errorText",
         "type": "string",
-        "default": "\"Couldn’t reach the directory.\"",
+        "default": "\"Couldn\u2019t reach the directory.\"",
         "description": "Line shown when the source fails."
       },
       {
@@ -6902,7 +7829,7 @@
     ],
     "theme": "dark",
     "previewHeight": 560,
-    "usage": "import { DashboardKpiCards } from \"@/components/design-for-ai/dashboard-kpi-cards\";\n\nexport default function Overview() {\n  return (\n    <DashboardKpiCards\n      title=\"Store overview\"\n      periods={[\n        {\n          key: \"30d\",\n          label: \"30D\",\n          caption: \"7 Sep – 6 Oct · vs the 30 days before\",\n          stats: [{ key: \"revenue\", label: \"Revenue\", format: \"currency\", value: 284120, previous: 252930, series: daily }],\n        },\n      ]}\n      onSelect={(key) => setChartMetric(key)}\n      accent=\"#7dd3fc\"\n    />\n  );\n}",
+    "usage": "import { DashboardKpiCards } from \"@/components/design-for-ai/dashboard-kpi-cards\";\n\nexport default function Overview() {\n  return (\n    <DashboardKpiCards\n      title=\"Store overview\"\n      periods={[\n        {\n          key: \"30d\",\n          label: \"30D\",\n          caption: \"7 Sep \u2013 6 Oct \u00b7 vs the 30 days before\",\n          stats: [{ key: \"revenue\", label: \"Revenue\", format: \"currency\", value: 284120, previous: 252930, series: daily }],\n        },\n      ]}\n      onSelect={(key) => setChartMetric(key)}\n      accent=\"#7dd3fc\"\n    />\n  );\n}",
     "props": [
       {
         "name": "periods",
@@ -7150,7 +8077,7 @@
     ],
     "theme": "dark",
     "previewHeight": 720,
-    "usage": "import { DashboardOrdersTable } from \"@/components/design-for-ai/dashboard-orders-table\";\n\nexport default function Orders() {\n  return (\n    <DashboardOrdersTable\n      orders={[\n        { id: \"#4823\", customer: \"Amara Okafor\", items: \"Tidepool mug ×2\", channel: \"Online store\", status: \"Paid\", total: 96, placed: \"Today, 09:42\" },\n      ]}\n      viewAllHref=\"/orders\"\n      currency=\"EUR\"\n      locale=\"fr-FR\"\n    />\n  );\n}",
+    "usage": "import { DashboardOrdersTable } from \"@/components/design-for-ai/dashboard-orders-table\";\n\nexport default function Orders() {\n  return (\n    <DashboardOrdersTable\n      orders={[\n        { id: \"#4823\", customer: \"Amara Okafor\", items: \"Tidepool mug \u00d72\", channel: \"Online store\", status: \"Paid\", total: 96, placed: \"Today, 09:42\" },\n      ]}\n      viewAllHref=\"/orders\"\n      currency=\"EUR\"\n      locale=\"fr-FR\"\n    />\n  );\n}",
     "props": [
       {
         "name": "orders",
@@ -7162,7 +8089,7 @@
         "name": "statuses",
         "type": "OrderStatus[]",
         "default": "[\"Paid\", \"Pending\", \"Fulfilled\", \"Refunded\"]",
-        "description": "Filter tabs after “All”, each with a live count. An empty filter shows a designed empty state."
+        "description": "Filter tabs after \u201cAll\u201d, each with a live count. An empty filter shows a designed empty state."
       },
       {
         "name": "title",
@@ -7174,7 +8101,7 @@
         "name": "viewAllHref",
         "type": "string",
         "default": "\"#orders\"",
-        "description": "Where the “View all orders” link goes."
+        "description": "Where the \u201cView all orders\u201d link goes."
       },
       {
         "name": "viewAllLabel",
@@ -7222,7 +8149,7 @@
         "name": "sort",
         "type": "\"placed\" | \"total-desc\" | \"total-asc\"",
         "default": "uncontrolled (\"placed\")",
-        "description": "Optional. Set it to drive the Total sort from outside: “placed” keeps your order, then highest first, then lowest first."
+        "description": "Optional. Set it to drive the Total sort from outside: \u201cplaced\u201d keeps your order, then highest first, then lowest first."
       },
       {
         "name": "onSortChange",
@@ -7440,7 +8367,7 @@
       {
         "name": "onSend",
         "type": "(request: { method, url, body? }) => void",
-        "description": "Called with the built request when Send or ⌘↵ is pressed."
+        "description": "Called with the built request when Send or \u2318\u21b5 is pressed."
       },
       {
         "name": "className",
@@ -7777,7 +8704,7 @@
         "name": "rollout",
         "type": "number",
         "default": "25",
-        "description": "Rollout of the open flag, 0–100. The slider updates it too."
+        "description": "Rollout of the open flag, 0\u2013100. The slider updates it too."
       },
       {
         "name": "showRules",
@@ -7801,7 +8728,7 @@
         "name": "accent",
         "type": "string",
         "default": "\"#7cc4ff\"",
-        "description": "The one accent: the open flag’s edge, the rollout fill, and a served verdict."
+        "description": "The one accent: the open flag\u2019s edge, the rollout fill, and a served verdict."
       },
       {
         "name": "onChange",
@@ -7948,12 +8875,12 @@
     ],
     "theme": "dark",
     "previewHeight": 760,
-    "usage": "import { LogStream } from \"@/components/design-for-ai/devtools-log-stream\";\n\n<LogStream\n  source=\"api-gateway · production\"\n  live={false} // turn off the sample stream\n  initialLines={lines} // { id, time, level, service, message, fields }[], oldest first\n  height={480}\n/>\n\n// Feed it from your socket by appending to `lines`; follow mode keeps the newest line on the floor.\n// Scrolling up pauses follow and counts what arrives; the pill jumps back. Click a line to see its fields.",
+    "usage": "import { LogStream } from \"@/components/design-for-ai/devtools-log-stream\";\n\n<LogStream\n  source=\"api-gateway \u00b7 production\"\n  live={false} // turn off the sample stream\n  initialLines={lines} // { id, time, level, service, message, fields }[], oldest first\n  height={480}\n/>\n\n// Feed it from your socket by appending to `lines`; follow mode keeps the newest line on the floor.\n// Scrolling up pauses follow and counts what arrives; the pill jumps back. Click a line to see its fields.",
     "props": [
       {
         "name": "source",
         "type": "string",
-        "default": "\"api-gateway · production\"",
+        "default": "\"api-gateway \u00b7 production\"",
         "description": "Name of the source being tailed, shown in mono beside the live dot."
       },
       {
@@ -8446,6 +9373,141 @@
     ]
   },
   {
+    "slug": "diagram-agent-loop",
+    "name": "Agent Loop",
+    "tier": "pro",
+    "platform": "web",
+    "category": "diagrams",
+    "description": "An agent loops through observe, plan, act and reflect. Tools hang off the act, and the count ticks until the goal check passes.",
+    "tags": [
+      "agent",
+      "loop",
+      "tools",
+      "observe plan act",
+      "goal",
+      "animated diagram",
+      "workflow",
+      "reflection"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 780,
+    "usage": "import { AgentLoop } from \"@/components/design-for-ai/diagram-agent-loop\";\n\n<AgentLoop\n  goal=\"Mark invoice 1842 chased.\"\n  showTools\n/>\n\n// The resting picture is the finished lap: loop 2 has closed and the goal check has passed.\n// Replay runs both laps. Tool calls hang off Act.",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Until the goal is met\"",
+        "description": "Heading."
+      },
+      {
+        "name": "summary",
+        "type": "string",
+        "default": "\"Observe, plan, act, reflect. The tools hang off the act, and the count ticks until the check passes.\"",
+        "description": "One or two sentences under the heading."
+      },
+      {
+        "name": "goal",
+        "type": "string",
+        "default": "\"Mark invoice 1842 chased.\"",
+        "description": "The sentence the loop is trying to make true, shown in the goal row."
+      },
+      {
+        "name": "turns",
+        "type": "AgentTurn[]",
+        "description": "Each turn is one lap of observe, plan, act and reflect. Mark the last turn met when the check should pass."
+      },
+      {
+        "name": "showTools",
+        "type": "boolean",
+        "default": "true",
+        "description": "The tool rows that hang off Act."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface the diagram sits on."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#7cc4ff\"",
+        "description": "The one accent: the step in progress, and the side of the cycle just drawn."
+      },
+      {
+        "name": "onReplay",
+        "type": "() => void",
+        "description": "Called when Replay is pressed, before the loop runs from the first observe."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root section."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@replay",
+        "wait:5200"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "goal",
+        "label": "Goal",
+        "kind": "text",
+        "default": "Mark invoice 1842 chased.",
+        "group": "Loop"
+      },
+      {
+        "prop": "showTools",
+        "label": "Tool calls",
+        "kind": "toggle",
+        "default": true,
+        "group": "Loop"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#7cc4ff",
+        "options": [
+          "#7cc4ff",
+          "#ff9d5c",
+          "#7dd3a8"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
+  },
+  {
     "slug": "diagram-deploy-canary",
     "name": "Canary Deploy",
     "tier": "pro",
@@ -8675,7 +9737,7 @@
     ],
     "theme": "dark",
     "previewHeight": 800,
-    "usage": "import { DiagramPaymentHops } from \"@/components/design-for-ai/diagram-payment-hops\";\n\n<DiagramPaymentHops\n  amount={24.5}\n  currency=\"EUR\"\n  locale=\"de-DE\"\n  outcome=\"declined\"\n  declineReason=\"Card expired\"\n  declineCode=\"54\"\n  onComplete={({ outcome, roundTripMs }) => track(\"demo_payment\", { outcome, roundTripMs })}\n/>\n\n// Your own route: terminal first, issuer last. Times are real milliseconds.\n<DiagramPaymentHops hops={[{ id: \"pos\", kind: \"terminal\", role: \"Terminal\", name: \"Kiosk 7\", linkMs: 30 }, /* … */]} />",
+    "usage": "import { DiagramPaymentHops } from \"@/components/design-for-ai/diagram-payment-hops\";\n\n<DiagramPaymentHops\n  amount={24.5}\n  currency=\"EUR\"\n  locale=\"de-DE\"\n  outcome=\"declined\"\n  declineReason=\"Card expired\"\n  declineCode=\"54\"\n  onComplete={({ outcome, roundTripMs }) => track(\"demo_payment\", { outcome, roundTripMs })}\n/>\n\n// Your own route: terminal first, issuer last. Times are real milliseconds.\n<DiagramPaymentHops hops={[{ id: \"pos\", kind: \"terminal\", role: \"Terminal\", name: \"Kiosk 7\", linkMs: 30 }, /* \u2026 */]} />",
     "props": [
       {
         "name": "title",
@@ -9092,6 +10154,508 @@
     ]
   },
   {
+    "slug": "diagram-region-failover",
+    "name": "Region Failover",
+    "tier": "pro",
+    "platform": "web",
+    "category": "diagrams",
+    "description": "Frankfurt misses three probes, the ribbon of traffic swings to Ashburn, and the weight ramps back once the region recovers.",
+    "tags": [
+      "failover",
+      "regions",
+      "load balancer",
+      "health checks",
+      "traffic",
+      "animated diagram",
+      "multi-region",
+      "edge"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 860,
+    "usage": "import { RegionFailover } from \"@/components/design-for-ai/diagram-region-failover\";\n\n<RegionFailover\n  hostname=\"edge.marlow\"\n  primaryCity=\"Frankfurt\"\n  standbyCity=\"Ashburn\"\n  resting=\"failed-over\"\n/>\n\n// The resting picture is the failover itself: three missed probes, Ashburn holding the address.\n// Replay plays it from a healthy steady state. Any moment on the timeline opens that weight.",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Two regions, one address\"",
+        "description": "Heading."
+      },
+      {
+        "name": "summary",
+        "type": "string",
+        "default": "\"Frankfurt holds the address until three probes miss. The ribbon follows the weight to Ashburn, then home.\"",
+        "description": "One or two sentences under the heading. Omit it and the line names the two cities."
+      },
+      {
+        "name": "hostname",
+        "type": "string",
+        "default": "\"edge.marlow\"",
+        "description": "Name on the balancer pill, and in the steady and failed-over sentences."
+      },
+      {
+        "name": "primaryCity",
+        "type": "string",
+        "default": "\"Frankfurt\"",
+        "description": "City that serves when the system is healthy."
+      },
+      {
+        "name": "primaryCode",
+        "type": "string",
+        "default": "\"fra1\"",
+        "description": "Region code under the primary city, and on the narrow weight bar."
+      },
+      {
+        "name": "standbyCity",
+        "type": "string",
+        "default": "\"Ashburn\"",
+        "description": "City that takes traffic after three missed probes."
+      },
+      {
+        "name": "standbyCode",
+        "type": "string",
+        "default": "\"iad1\"",
+        "description": "Region code under the standby city."
+      },
+      {
+        "name": "showMetrics",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show p95 and the 5xx rate on each region."
+      },
+      {
+        "name": "resting",
+        "type": "\"failed-over\" | \"steady\"",
+        "default": "\"failed-over\"",
+        "description": "Where the diagram sits before Replay. Failed-over is Ashburn at 100%."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface the diagram sits on."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#7cc4ff\"",
+        "description": "The one accent: the region currently serving, the phase you are on, and a slow probe."
+      },
+      {
+        "name": "onReplay",
+        "type": "() => void",
+        "description": "Called when Replay is pressed, before the incident plays from the top."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root section."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@replay",
+        "wait:5600"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "hostname",
+        "label": "Balancer",
+        "kind": "text",
+        "default": "edge.marlow",
+        "group": "Regions"
+      },
+      {
+        "prop": "primaryCity",
+        "label": "Primary",
+        "kind": "text",
+        "default": "Frankfurt",
+        "group": "Regions"
+      },
+      {
+        "prop": "showMetrics",
+        "label": "Latency",
+        "kind": "toggle",
+        "default": true,
+        "group": "Regions"
+      },
+      {
+        "prop": "resting",
+        "label": "Resting",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "failed-over",
+            "label": "Failed over"
+          },
+          {
+            "value": "steady",
+            "label": "Steady"
+          }
+        ],
+        "default": "failed-over",
+        "group": "Regions"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#7cc4ff",
+        "options": [
+          "#7cc4ff",
+          "#ff9d5c",
+          "#7dd3a8"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
+  },
+  {
+    "slug": "diagram-sequence-auth",
+    "name": "PKCE Handshake",
+    "tier": "pro",
+    "platform": "web",
+    "category": "diagrams",
+    "description": "A PKCE sign-in as a sequence diagram: lifelines for the browser, app, auth server and API, arrows that draw in order, and each message's payload.",
+    "tags": [
+      "oauth",
+      "pkce",
+      "sequence diagram",
+      "authentication",
+      "lifelines",
+      "animated diagram",
+      "security"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 860,
+    "usage": "import { SequenceAuth } from \"@/components/design-for-ai/diagram-sequence-auth\";\n\n<SequenceAuth\n  clientId=\"halden-web\"\n  showResource\n  open=\"token\"\n  onReplay={() => analytics.track(\"pkce_replayed\")}\n/>\n\n// The resting state is a finished handshake, with the token request open \u2014 the only call that carries the verifier.\n// Replay draws the arrows again. Hover or focus a message to read its payload; a click keeps it open.",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"PKCE handshake\"",
+        "description": "Heading."
+      },
+      {
+        "name": "summary",
+        "type": "string",
+        "default": "\"The browser carries the challenge. The verifier stays in the app until the token call.\"",
+        "description": "One or two sentences under the heading."
+      },
+      {
+        "name": "parties",
+        "type": "SequenceParty[]",
+        "description": "Lifelines left to right: id, role and name. Defaults to browser, app, auth and API."
+      },
+      {
+        "name": "messages",
+        "type": "SequenceMessage[]",
+        "description": "Messages in time order: from, to, label, title, verb, summary, channel, ms and fields. Defaults to one authorisation-code handshake with PKCE."
+      },
+      {
+        "name": "clientId",
+        "type": "string",
+        "default": "\"halden-web\"",
+        "description": "Public client id, used as the app's name and in the sample payloads."
+      },
+      {
+        "name": "showResource",
+        "type": "boolean",
+        "default": "true",
+        "description": "Draw the API lifeline and the calls that touch it."
+      },
+      {
+        "name": "showLatency",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show each message's time and the end-to-end total."
+      },
+      {
+        "name": "open",
+        "type": "string",
+        "default": "\"token\"",
+        "description": "Id of the message selected when the diagram is at rest."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface the diagram sits on."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#7cc4ff\"",
+        "description": "The one accent: the selected arrow, its label and the rule beside a secret."
+      },
+      {
+        "name": "onReplay",
+        "type": "() => void",
+        "description": "Called when Replay is pressed, before the arrows draw again."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root section."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@replay",
+        "wait:2400",
+        "click:@msg-token",
+        "wait:900"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "clientId",
+        "label": "Client id",
+        "kind": "text",
+        "default": "halden-web",
+        "group": "Handshake"
+      },
+      {
+        "prop": "showResource",
+        "label": "API calls",
+        "kind": "toggle",
+        "default": true,
+        "group": "Handshake"
+      },
+      {
+        "prop": "showLatency",
+        "label": "Latency",
+        "kind": "toggle",
+        "default": true,
+        "group": "Handshake"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#7cc4ff",
+        "options": [
+          "#7cc4ff",
+          "#ff9d5c",
+          "#7dd3a8"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
+  },
+  {
+    "slug": "diagram-vector-space",
+    "name": "Vector Space",
+    "tier": "pro",
+    "platform": "web",
+    "category": "diagrams",
+    "description": "A question drops into a 2D embedding. The nearest documents light, and a ranked list shows how close each one sits.",
+    "tags": [
+      "embeddings",
+      "vector search",
+      "nearest neighbours",
+      "cosine",
+      "rag",
+      "animated diagram",
+      "retrieval",
+      "index"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 860,
+    "usage": "import { VectorSpace } from \"@/components/design-for-ai/diagram-vector-space\";\n\n<VectorSpace\n  query=\"Who can download an audit export?\"\n  topK={4}\n  showLabels\n/>\n\n// The resting picture is a finished search: the query is already in the plane and its neighbours are lit.\n// Replay reveals them one at a time. Suggested questions move the query into another cluster.",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Nearest in the embedding\"",
+        "description": "Heading."
+      },
+      {
+        "name": "summary",
+        "type": "string",
+        "default": "\"A question lands in the same space as the docs. The closest ones light, with the similarity beside each.\"",
+        "description": "One or two sentences under the heading."
+      },
+      {
+        "name": "query",
+        "type": "string",
+        "default": "\"Who can download an audit export?\"",
+        "description": "The question in the field. It lands next to the document whose title it matches."
+      },
+      {
+        "name": "topK",
+        "type": "number",
+        "default": "4",
+        "description": "How many neighbours light, and how many rows the list keeps."
+      },
+      {
+        "name": "showLabels",
+        "type": "boolean",
+        "default": "true",
+        "description": "Draw the topic names in the plane."
+      },
+      {
+        "name": "documents",
+        "type": "VectorDoc[]",
+        "description": "The corpus. Each document has a title, a source path, a topic and a position from 0 to 100."
+      },
+      {
+        "name": "suggestions",
+        "type": "VectorSuggestion[]",
+        "description": "Short questions under the field. Each one sets the query."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface the diagram sits on."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#7cc4ff\"",
+        "description": "The one accent: the query, the neighbour links, and the selected row."
+      },
+      {
+        "name": "onReplay",
+        "type": "() => void",
+        "description": "Called when Replay is pressed, before the neighbours reveal again."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root section."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@query-invites",
+        "wait:1500",
+        "click:@neighbour-1",
+        "wait:900"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "query",
+        "label": "Query",
+        "kind": "text",
+        "default": "Who can download an audit export?",
+        "group": "Index"
+      },
+      {
+        "prop": "topK",
+        "label": "Neighbours",
+        "kind": "slider",
+        "min": 2,
+        "max": 6,
+        "step": 1,
+        "default": 4,
+        "group": "Index"
+      },
+      {
+        "prop": "showLabels",
+        "label": "Topics",
+        "kind": "toggle",
+        "default": true,
+        "group": "Index"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#7cc4ff",
+        "options": [
+          "#7cc4ff",
+          "#ff9d5c",
+          "#7dd3a8"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
+  },
+  {
     "slug": "editor-markdown-split",
     "name": "Markdown Split",
     "tier": "pro",
@@ -9482,7 +11046,7 @@
     ],
     "theme": "dark",
     "previewHeight": 920,
-    "usage": "import { EditorRichText } from \"@/components/design-for-ai/editor-rich-text\";\n\n<EditorRichText\n  title=\"Pricing memo\"\n  kicker=\"Harbor\"\n  author=\"Mira Chen\"\n  updated=\"11 Oct 2026\"\n  blocks={memo}\n  onChange={(next) => save(next)}\n/>\n\n// Type #, ##, >, - or ``` at the start of a line, or / to open the block menu. **bold**, *italic*, `code` and ==highlight== convert as you close them.\n// Select text for the floating bar (bold, italic, code, highlight, link). ⌘B, ⌘I and ⌘E do the first three.\n// On a narrow container the outline hides and the bar docks along the bottom.",
+    "usage": "import { EditorRichText } from \"@/components/design-for-ai/editor-rich-text\";\n\n<EditorRichText\n  title=\"Pricing memo\"\n  kicker=\"Harbor\"\n  author=\"Mira Chen\"\n  updated=\"11 Oct 2026\"\n  blocks={memo}\n  onChange={(next) => save(next)}\n/>\n\n// Type #, ##, >, - or ``` at the start of a line, or / to open the block menu. **bold**, *italic*, `code` and ==highlight== convert as you close them.\n// Select text for the floating bar (bold, italic, code, highlight, link). \u2318B, \u2318I and \u2318E do the first three.\n// On a narrow container the outline hides and the bar docks along the bottom.",
     "props": [
       {
         "name": "title",
@@ -9670,7 +11234,7 @@
     ],
     "theme": "dark",
     "previewHeight": 820,
-    "usage": "import { EditorSignaturePad } from \"@/components/design-for-ai/editor-signature-pad\";\n\n<EditorSignaturePad\n  title=\"Mutual NDA\"\n  parties={parties}\n  openId=\"jordan\"\n  onChange={(id, strokes) => save(id, strokes)}\n/>\n\n// The open plate takes pointer ink. Strokes are normalized 0–1 points with timestamps, so a fast pen draws thin.\n// Undo drops the last stroke, Clear empties the plate, Replay draws the mark again, Export downloads an SVG.\n// ⌘Z undoes. On a narrow container the two plates stack.",
+    "usage": "import { EditorSignaturePad } from \"@/components/design-for-ai/editor-signature-pad\";\n\n<EditorSignaturePad\n  title=\"Mutual NDA\"\n  parties={parties}\n  openId=\"jordan\"\n  onChange={(id, strokes) => save(id, strokes)}\n/>\n\n// The open plate takes pointer ink. Strokes are normalized 0\u20131 points with timestamps, so a fast pen draws thin.\n// Undo drops the last stroke, Clear empties the plate, Replay draws the mark again, Export downloads an SVG.\n// \u2318Z undoes. On a narrow container the two plates stack.",
     "props": [
       {
         "name": "title",
@@ -9829,7 +11393,7 @@
     ],
     "theme": "dark",
     "previewHeight": 780,
-    "usage": "import { EditorWhiteboard } from \"@/components/design-for-ai/editor-whiteboard\";\n\n<EditorWhiteboard\n  title=\"Pricing review\"\n  notes={notes}\n  edges={edges}\n  onChange={(next) => save(next)}\n/>\n\n// Drag a note and the orthogonal connector reroutes. Drag the board to pan. ⌘-scroll or the zoom cluster changes scale, and Fit frames every note.\n// Below 640px the notes stack at full size so the type stays readable, and a drag still pulls the line.",
+    "usage": "import { EditorWhiteboard } from \"@/components/design-for-ai/editor-whiteboard\";\n\n<EditorWhiteboard\n  title=\"Pricing review\"\n  notes={notes}\n  edges={edges}\n  onChange={(next) => save(next)}\n/>\n\n// Drag a note and the orthogonal connector reroutes. Drag the board to pan. \u2318-scroll or the zoom cluster changes scale, and Fit frames every note.\n// Below 640px the notes stack at full size so the type stays readable, and a drag still pulls the line.",
     "props": [
       {
         "name": "title",
@@ -9980,7 +11544,7 @@
         "name": "cell",
         "type": "number",
         "default": "28",
-        "description": "Tile pitch in CSS px, clamped to 14–64. The lattice gets one tile of overscan on every side, so the well never drags an edge into view."
+        "description": "Tile pitch in CSS px, clamped to 14\u201364. The lattice gets one tile of overscan on every side, so the well never drags an edge into view."
       },
       {
         "name": "gap",
@@ -10239,7 +11803,7 @@
       {
         "name": "currency",
         "type": "string",
-        "default": "\"£\"",
+        "default": "\"\u00a3\"",
         "description": "Currency symbol for every amount in the panel."
       },
       {
@@ -10340,19 +11904,19 @@
         "kind": "segmented",
         "options": [
           {
-            "value": "£",
-            "label": "£"
+            "value": "\u00a3",
+            "label": "\u00a3"
           },
           {
             "value": "$",
             "label": "$"
           },
           {
-            "value": "€",
-            "label": "€"
+            "value": "\u20ac",
+            "label": "\u20ac"
           }
         ],
-        "default": "£",
+        "default": "\u00a3",
         "group": "Content"
       }
     ]
@@ -10380,7 +11944,7 @@
     ],
     "theme": "dark",
     "previewHeight": 580,
-    "usage": "import { FooterAsciiWordmark } from \"@/components/design-for-ai/footer-ascii-wordmark\";\n\nexport default function SiteFooter() {\n  return (\n    <FooterAsciiWordmark\n      wordmark=\"tidepool\"\n      stacked={[\"tide\", \"pool\"]}\n      kicker=\"Tidepool · Lisbon\"\n      signOff=\"Feature flags for teams who ship on Fridays and sleep anyway.\"\n      accent=\"#7dd3fc\"\n    />\n  );\n}",
+    "usage": "import { FooterAsciiWordmark } from \"@/components/design-for-ai/footer-ascii-wordmark\";\n\nexport default function SiteFooter() {\n  return (\n    <FooterAsciiWordmark\n      wordmark=\"tidepool\"\n      stacked={[\"tide\", \"pool\"]}\n      kicker=\"Tidepool \u00b7 Lisbon\"\n      signOff=\"Feature flags for teams who ship on Fridays and sleep anyway.\"\n      accent=\"#7dd3fc\"\n    />\n  );\n}",
     "props": [
       {
         "name": "wordmark",
@@ -10397,7 +11961,7 @@
       {
         "name": "kicker",
         "type": "string",
-        "default": "\"Fieldnote · Brooklyn, NY\"",
+        "default": "\"Fieldnote \u00b7 Brooklyn, NY\"",
         "description": "Mono line above the sign-off."
       },
       {
@@ -10413,7 +11977,7 @@
       {
         "name": "legal",
         "type": "string",
-        "default": "\"© 2026 Fieldnote Systems, Inc.\"",
+        "default": "\"\u00a9 2026 Fieldnote Systems, Inc.\"",
         "description": "Mono legal line under the wordmark."
       },
       {
@@ -10436,7 +12000,7 @@
       {
         "name": "ramp",
         "type": "string",
-        "default": "\" .·:-=+*#%@\"",
+        "default": "\" .\u00b7:-=+*#%@\"",
         "description": "Density ramp, lightest first; the first character is empty space."
       },
       {
@@ -10512,7 +12076,7 @@
             "label": "Binary"
           },
           {
-            "value": "░▒▓█",
+            "value": "\u2591\u2592\u2593\u2588",
             "label": "Blocks"
           }
         ],
@@ -10525,7 +12089,7 @@
         "kind": "select",
         "options": [
           {
-            "value": " .·:-=+*#%@",
+            "value": " .\u00b7:-=+*#%@",
             "label": "Classic"
           },
           {
@@ -10537,7 +12101,7 @@
             "label": "Weave"
           }
         ],
-        "default": " .·:-=+*#%@",
+        "default": " .\u00b7:-=+*#%@",
         "group": "Look"
       },
       {
@@ -10605,7 +12169,7 @@
       {
         "name": "account",
         "type": "{ name, email, initials, plan?, usage? }",
-        "description": "Avatar (its ring draws on first view), the menu header and an optional usage meter (0–1) that fills and counts up."
+        "description": "Avatar (its ring draws on first view), the menu header and an optional usage meter (0\u20131) that fills and counts up."
       },
       {
         "name": "accountItems",
@@ -10940,7 +12504,7 @@
       {
         "name": "eyebrow",
         "type": "string",
-        "default": "\"Northwind · releases\"",
+        "default": "\"Northwind \u00b7 releases\"",
         "description": "Small mono line above the headline."
       },
       {
@@ -10964,7 +12528,7 @@
         "name": "handOver",
         "type": "boolean",
         "default": "true",
-        "description": "When the visitor’s pointer enters the window, the ghost fades out and hands them control. Off, the ghost keeps running alongside them."
+        "description": "When the visitor\u2019s pointer enters the window, the ghost fades out and hands them control. Off, the ghost keeps running alongside them."
       },
       {
         "name": "resumeAfter",
@@ -11048,7 +12612,7 @@
         "min": 0.5,
         "max": 2,
         "step": 0.1,
-        "unit": "×",
+        "unit": "\u00d7",
         "default": 1
       },
       {
@@ -11440,12 +13004,12 @@
     ],
     "theme": "dark",
     "previewHeight": 900,
-    "usage": "import { HeroPrism } from \"@/components/design-for-ai/hero-prism\";\n\n<HeroPrism\n  eyebrow=\"Halide 3 — Event analytics\"\n  headline=\"One stream in. Every answer out.\"\n  muted=\"Every answer out.\"\n  primary={{ label: \"Start free\", href: \"/signup\" }}\n/>",
+    "usage": "import { HeroPrism } from \"@/components/design-for-ai/hero-prism\";\n\n<HeroPrism\n  eyebrow=\"Halide 3 \u2014 Event analytics\"\n  headline=\"One stream in. Every answer out.\"\n  muted=\"Every answer out.\"\n  primary={{ label: \"Start free\", href: \"/signup\" }}\n/>",
     "props": [
       {
         "name": "eyebrow",
         "type": "string",
-        "default": "\"Halide 3 — Event analytics\"",
+        "default": "\"Halide 3 \u2014 Event analytics\"",
         "description": "Mono line above the headline."
       },
       {
@@ -11479,7 +13043,7 @@
         "name": "dispersion",
         "type": "number",
         "default": "0.5",
-        "description": "How wide the spectrum fans, 0–1. 0.5 is restrained; 1 is still tasteful."
+        "description": "How wide the spectrum fans, 0\u20131. 0.5 is restrained; 1 is still tasteful."
       },
       {
         "name": "readout",
@@ -11589,7 +13153,7 @@
       {
         "name": "weekLabel",
         "type": "string",
-        "default": "\"Week 41 · 5–9 Oct\"",
+        "default": "\"Week 41 \u00b7 5\u20139 Oct\"",
         "description": "Calendar window title."
       },
       {
@@ -11723,7 +13287,7 @@
         "prop": "weekLabel",
         "label": "Week title",
         "kind": "text",
-        "default": "Week 41 · 5–9 Oct"
+        "default": "Week 41 \u00b7 5\u20139 Oct"
       },
       {
         "prop": "$replay",
@@ -11761,7 +13325,7 @@
       {
         "name": "status",
         "type": "\"ready\" | \"submitted\" | \"streaming\" | \"error\"",
-        "description": "Controlled request status, the same shape as the AI SDK's useChat. Undefined simulates thinking → streaming → ready."
+        "description": "Controlled request status, the same shape as the AI SDK's useChat. Undefined simulates thinking \u2192 streaming \u2192 ready."
       },
       {
         "name": "error",
@@ -11771,7 +13335,7 @@
       {
         "name": "onSubmit",
         "type": "(s: PromptSubmission) => void",
-        "description": "Called with { text, model, attachments } on Send or ⌘/Ctrl+Enter. Only finished uploads are included."
+        "description": "Called with { text, model, attachments } on Send or \u2318/Ctrl+Enter. Only finished uploads are included."
       },
       {
         "name": "onStop",
@@ -11807,7 +13371,7 @@
         "name": "maxTokens",
         "type": "number",
         "default": "8000",
-        "description": "Budget for the token hint (≈ chars / 4). Amber past 80%; over it, Send disables."
+        "description": "Budget for the token hint (\u2248 chars / 4). Amber past 80%; over it, Send disables."
       },
       {
         "name": "maxFileSize",
@@ -11823,7 +13387,7 @@
       {
         "name": "onUpload",
         "type": "(file: File, onProgress: (p: number) => void, signal: AbortSignal) => Promise<void>",
-        "description": "Upload one file and report progress 0–1; honour the signal (aborted on remove, retry and unmount). Reject to show an error chip with Retry. Defaults to a simulated upload."
+        "description": "Upload one file and report progress 0\u20131; honour the signal (aborted on remove, retry and unmount). Reject to show an error chip with Retry. Defaults to a simulated upload."
       },
       {
         "name": "defaultAttachments",
@@ -12210,13 +13774,13 @@
         "name": "routeKm",
         "type": "number",
         "default": "2.6",
-        "description": "Whole route length, for the live “km away” figure."
+        "description": "Whole route length, for the live \u201ckm away\u201d figure."
       },
       {
         "name": "progress",
         "type": "number",
         "default": "0.46",
-        "description": "How far along the route the courier is, 0–1. Drives the marker, trail, ring and timeline."
+        "description": "How far along the route the courier is, 0\u20131. Drives the marker, trail, ring and timeline."
       },
       {
         "name": "live",
@@ -12248,7 +13812,7 @@
       {
         "name": "currency",
         "type": "string",
-        "default": "\"£\"",
+        "default": "\"\u00a3\"",
         "description": "Currency symbol."
       },
       {
@@ -12425,7 +13989,7 @@
         "name": "assistantRole",
         "type": "string",
         "default": "\"Plant care\"",
-        "description": "Shown after the live dot; swaps to Thinking… / Writing… while replying."
+        "description": "Shown after the live dot; swaps to Thinking\u2026 / Writing\u2026 while replying."
       },
       {
         "name": "dayLabel",
@@ -12458,7 +14022,7 @@
         "name": "accent",
         "type": "string",
         "default": "\"#cdf27e\"",
-        "description": "The one brand colour (6-digit hex): your bubbles, the send button and the chart’s key line. Everything else is neutral."
+        "description": "The one brand colour (6-digit hex): your bubbles, the send button and the chart\u2019s key line. Everything else is neutral."
       },
       {
         "name": "thinkingMs",
@@ -12490,17 +14054,17 @@
       {
         "name": "onAction",
         "type": "(schedule: CareSchedule) => void",
-        "description": "Fired by the schedule card’s reminder button."
+        "description": "Fired by the schedule card\u2019s reminder button."
       },
       {
         "name": "onAttach",
         "type": "() => void",
-        "description": "The composer’s + button."
+        "description": "The composer\u2019s + button."
       },
       {
         "name": "onOpenLog",
         "type": "() => void",
-        "description": "The header’s care-log button."
+        "description": "The header\u2019s care-log button."
       }
     ],
     "added": "2026-10-07",
@@ -12652,7 +14216,7 @@
       {
         "name": "currency",
         "type": "string",
-        "default": "\"£\"",
+        "default": "\"\u00a3\"",
         "description": "Currency symbol."
       },
       {
@@ -12678,7 +14242,114 @@
         "description": "Present the sheet once the product page has made its entrance."
       }
     ],
-    "added": "2026-10-09"
+    "added": "2026-10-09",
+    "demo": {
+      "steps": [
+        "move:0.5,0.6",
+        "wait:300",
+        "click:@delivery-courier",
+        "hover:@pay:0.5,0.5",
+        "down",
+        "wait:1100",
+        "up",
+        "move:0.5,0.3",
+        "wait:3500"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "initialCard",
+        "label": "Card",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "fern",
+            "label": "Fern"
+          },
+          {
+            "value": "kite",
+            "label": "Kite"
+          },
+          {
+            "value": "northwind",
+            "label": "Northwind"
+          }
+        ],
+        "default": "fern",
+        "remount": true,
+        "group": "Payment"
+      },
+      {
+        "prop": "initialDelivery",
+        "label": "Delivery",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "standard",
+            "label": "Standard"
+          },
+          {
+            "value": "express",
+            "label": "Express"
+          },
+          {
+            "value": "courier",
+            "label": "Courier"
+          }
+        ],
+        "default": "express",
+        "remount": true,
+        "group": "Payment"
+      },
+      {
+        "prop": "currency",
+        "label": "Currency",
+        "kind": "select",
+        "options": [
+          {
+            "value": "\u00a3",
+            "label": "Pounds (\u00a3)"
+          },
+          {
+            "value": "$",
+            "label": "Dollars ($)"
+          },
+          {
+            "value": "\u20ac",
+            "label": "Euros (\u20ac)"
+          }
+        ],
+        "default": "\u00a3",
+        "group": "Payment"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#F5F5F5",
+        "options": [
+          "#F5F5F5",
+          "#D4775B",
+          "#8AB4FF",
+          "#7DDB9B"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "initiallyOpen",
+        "label": "Open on load",
+        "kind": "toggle",
+        "default": true,
+        "remount": true,
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action",
+        "group": "State"
+      }
+    ]
   },
   {
     "slug": "mobile-live-activity",
@@ -12711,7 +14382,7 @@
       {
         "name": "updates",
         "type": "DeliveryUpdate[]",
-        "description": "The delivery's states in order: stage, ETA minutes, clock, route progress (0–1), headline and detail."
+        "description": "The delivery's states in order: stage, ETA minutes, clock, route progress (0\u20131), headline and detail."
       },
       {
         "name": "stops",
@@ -12958,7 +14629,7 @@
         "name": "initialVolume",
         "type": "number",
         "default": "0.64",
-        "description": "Starting volume, 0–1."
+        "description": "Starting volume, 0\u20131."
       },
       {
         "name": "ambience",
@@ -13016,7 +14687,7 @@
       {
         "name": "onVolumeChange",
         "type": "(volume) => void",
-        "description": "Volume dragged or stepped, 0–1."
+        "description": "Volume dragged or stepped, 0\u20131."
       }
     ],
     "added": "2026-10-09",
@@ -13136,7 +14807,7 @@
     ],
     "theme": "dark",
     "previewHeight": 940,
-    "usage": "// Expo: npx expo install expo-blur expo-linear-gradient react-native-svg\n// Bare React Native: npx install-expo-modules, then install the three packages.\nimport { MobilePaywall } from \"@/components/design-for-ai/native/mobile-paywall\";\n\n<MobilePaywall\n  annualPrice={35.99}\n  monthlyPrice={4.99}\n  trialEnds=\"16 Oct\"\n  onSubscribe={(plan) => purchase(plan)}   // resolve → success, reject(new Error(msg)) → error\n  onRestore={() => restorePurchases()}     // resolve(true) when something was restored\n  onClose={close}\n  onContinue={() => navigation.replace(\"WindDown\")}\n/>",
+    "usage": "// Expo: npx expo install expo-blur expo-linear-gradient react-native-svg\n// Bare React Native: npx install-expo-modules, then install the three packages.\nimport { MobilePaywall } from \"@/components/design-for-ai/native/mobile-paywall\";\n\n<MobilePaywall\n  annualPrice={35.99}\n  monthlyPrice={4.99}\n  trialEnds=\"16 Oct\"\n  onSubscribe={(plan) => purchase(plan)}   // resolve \u2192 success, reject(new Error(msg)) \u2192 error\n  onRestore={() => restorePurchases()}     // resolve(true) when something was restored\n  onClose={close}\n  onContinue={() => navigation.replace(\"WindDown\")}\n/>",
     "props": [
       {
         "name": "kicker",
@@ -13205,12 +14876,12 @@
       {
         "name": "onSubscribe",
         "type": "(plan) => Promise<void> | void",
-        "description": "Drives loading → success; a rejection shows the error state with its message."
+        "description": "Drives loading \u2192 success; a rejection shows the error state with its message."
       },
       {
         "name": "onRestore",
         "type": "() => Promise<boolean> | void",
-        "description": "Restore purchases; the link reads Restoring…, then Restored or Nothing to restore."
+        "description": "Restore purchases; the link reads Restoring\u2026, then Restored or Nothing to restore."
       },
       {
         "name": "onClose",
@@ -13338,8 +15009,8 @@
             "label": "$"
           },
           {
-            "value": "£",
-            "label": "£"
+            "value": "\u00a3",
+            "label": "\u00a3"
           }
         ],
         "default": "$",
@@ -13509,7 +15180,7 @@
       {
         "name": "cards",
         "type": "WalletCard[]",
-        "description": "Cards and passes: issuer, label, peek field, kind, pattern (guilloche | contour | rings | halftone | brushed), face colours (3–4 gradient stops, ink, accent), figure, meta and transactions. Card faces are the only colour on screen."
+        "description": "Cards and passes: issuer, label, peek field, kind, pattern (guilloche | contour | rings | halftone | brushed), face colours (3\u20134 gradient stops, ink, accent), figure, meta and transactions. Card faces are the only colour on screen."
       },
       {
         "name": "maxCards",
@@ -13525,7 +15196,7 @@
         "name": "title",
         "type": "string",
         "default": "\"Wallet\"",
-        "description": "Large title."
+        "description": "Large title. A long one stays on one line beside the add button, shrinking to fit before it truncates."
       },
       {
         "name": "subtitle",
@@ -13536,7 +15207,7 @@
       {
         "name": "summary",
         "type": "WalletSummary",
-        "description": "Collapsed-state month summary: label, value (a number that counts up, with prefix and decimals), note, daily bar heights (0–1, last is today) and a day letter per bar."
+        "description": "Collapsed-state month summary: label, value (a number that counts up, with prefix and decimals), note, daily bar heights (0\u20131, last is today) and a day letter per bar."
       },
       {
         "name": "onAdd",
@@ -13554,7 +15225,304 @@
         "description": "Fired by See all in the detail view."
       }
     ],
-    "added": "2026-10-07"
+    "added": "2026-10-07",
+    "demo": {
+      "steps": [
+        "wait:100",
+        "click:@card-front:0.5,0.42",
+        "wait:1500",
+        "hover:@card-front:0.5,0.55",
+        "drag:0.6,0.68",
+        "wait:1300"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "activeId",
+        "label": "Open card",
+        "kind": "action",
+        "options": [
+          {
+            "value": "stack",
+            "label": "Stack"
+          },
+          {
+            "value": "halden",
+            "label": "Halden"
+          },
+          {
+            "value": "ferro",
+            "label": "Ferro"
+          },
+          {
+            "value": "northline",
+            "label": "Northline"
+          },
+          {
+            "value": "kettle",
+            "label": "Kettle"
+          },
+          {
+            "value": "ironhouse",
+            "label": "Ironhouse"
+          }
+        ]
+      },
+      {
+        "prop": "maxCards",
+        "label": "Cards",
+        "kind": "slider",
+        "min": 2,
+        "max": 5,
+        "step": 1,
+        "default": 5
+      },
+      {
+        "prop": "title",
+        "label": "Title",
+        "kind": "text",
+        "default": "Wallet"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
+  },
+  {
+    "slug": "multiselect-chips",
+    "name": "Multi-select Chips",
+    "tier": "pro",
+    "platform": "web",
+    "category": "selects",
+    "description": "A multi-select where each pick's code badge flies from its row into the field as a chip, with a tri-state select-all, grouped search, Backspace removal and a +3 fold.",
+    "tags": [
+      "multi-select",
+      "multiselect",
+      "chips",
+      "tags input",
+      "select all",
+      "indeterminate checkbox",
+      "shared layout animation",
+      "combobox",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 760,
+    "usage": "import { MultiselectChips } from \"@/components/design-for-ai/multiselect-chips\";\n\nconst regions = [\n  { id: \"fra1\", code: \"fra1\", label: \"Frankfurt\", group: \"Europe\", meta: \"14 ms\" },\n  { id: \"iad1\", code: \"iad1\", label: \"Washington, D.C.\", group: \"Americas\", meta: \"76 ms\" },\n  { id: \"sin1\", code: \"sin1\", label: \"Singapore\", group: \"Asia Pacific\", meta: \"168 ms\" },\n];\n\nexport default function RegionPicker() {\n  return (\n    <MultiselectChips\n      label=\"Deploy regions\"\n      options={regions}\n      defaultSelected={[\"fra1\"]}\n      maxVisibleChips={3}\n      onChange={(picked) => setRegions(picked.map((r) => r.id))}\n    />\n  );\n}\n\n// The list is positioned inside the component's own box (no portal). Give the\n// parent room below the field, or lift the sheet into a portal of your own.",
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "default": "\"Deploy regions\"",
+        "description": "Mono label above the field, and the accessible name of the list."
+      },
+      {
+        "name": "options",
+        "type": "{ id: string; label: string; code: string; group?: string; meta?: string }[]",
+        "default": "12 edge regions in three groups",
+        "description": "The options. `code` is the mono badge that flies into the field; `group` feeds the headings; `meta` is a mono note on the right of the row."
+      },
+      {
+        "name": "defaultSelected",
+        "type": "string[]",
+        "default": "[]",
+        "description": "Ids selected on first render, in selection order. The demo starts with five."
+      },
+      {
+        "name": "onChange",
+        "type": "(selected: MultiselectChipOption[]) => void",
+        "description": "Called with the selection, in the order it was picked."
+      },
+      {
+        "name": "maxVisibleChips",
+        "type": "number",
+        "default": "3",
+        "description": "Chips shown before older picks fold into a \"+N\" counter at the front of the field. The newest picks stay visible; the counter expands and folds them."
+      },
+      {
+        "name": "selectAll",
+        "type": "boolean",
+        "default": "true",
+        "description": "A tri-state row (off, mixed, on) that selects or clears every option the list is showing, including just the matches of a search."
+      },
+      {
+        "name": "searchable",
+        "type": "boolean",
+        "default": "true",
+        "description": "Type to filter by name or code. Off, the field is a picker: no caret, a globe icon, and Backspace still drops the last chip."
+      },
+      {
+        "name": "grouped",
+        "type": "boolean",
+        "default": "true",
+        "description": "Mono group headings over the options, in the order groups first appear."
+      },
+      {
+        "name": "size",
+        "type": "\"sm\" | \"md\"",
+        "default": "\"md\"",
+        "description": "Density of the field, chips, rows and checkboxes: 42px or 52px field."
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "default": "\"Search regions\u2026\"",
+        "description": "Field placeholder while searchable."
+      },
+      {
+        "name": "pickerPlaceholder",
+        "type": "string",
+        "default": "\"Choose regions\"",
+        "description": "Field placeholder while not searchable and nothing is picked."
+      },
+      {
+        "name": "noun",
+        "type": "[string, string]",
+        "default": "[\"region\", \"regions\"]",
+        "description": "What one option is called, singular then plural. Used in the select-all row, the empty state and announcements."
+      },
+      {
+        "name": "metaLabel",
+        "type": "string",
+        "default": "\"from you\"",
+        "description": "Mono note over the meta column, on the first group heading."
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "default": "false",
+        "description": "Open the list on first render. The demo opens it."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#d6f36b\"",
+        "description": "The one accent: filled checkboxes. Chips, badges and rows stay greyscale."
+      },
+      {
+        "name": "accentInk",
+        "type": "string",
+        "default": "\"#0b0b0c\"",
+        "description": "The tick and the dash on the accent. Dark ink for a light accent, light ink for a dark one."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Greyscale palette for the field, chips and sheet."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
+      }
+    ],
+    "added": "2026-10-10",
+    "demo": {
+      "steps": [
+        "wait:100",
+        "click:@input",
+        "key:Escape",
+        "wait:250",
+        "key:ArrowDown",
+        "wait:350",
+        "click:@option-arn1",
+        "click:@option-cdg1",
+        "click:@option-sfo1",
+        "wait:250",
+        "type:sin",
+        "wait:350",
+        "key:Enter",
+        "wait:350",
+        "key:Backspace",
+        "wait:550"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "maxVisibleChips",
+        "label": "Visible chips",
+        "kind": "slider",
+        "min": 1,
+        "max": 6,
+        "step": 1,
+        "default": 3
+      },
+      {
+        "prop": "selectAll",
+        "label": "Select all row",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "searchable",
+        "label": "Searchable",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "grouped",
+        "label": "Grouped",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "size",
+        "label": "Size",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "sm",
+            "label": "Small"
+          },
+          {
+            "value": "md",
+            "label": "Medium"
+          }
+        ],
+        "default": "md"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#d6f36b",
+        "options": [
+          "#d6f36b",
+          "#ededef",
+          "#7dd3fc",
+          "#ff7a45"
+        ]
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
   },
   {
     "slug": "pricing-comparison-matrix",
@@ -13754,7 +15722,7 @@
     ],
     "theme": "dark",
     "previewHeight": 1180,
-    "usage": "import { PricingReceipt } from \"@/components/design-for-ai/pricing-receipt\";\n\nexport default function Page() {\n  return (\n    <PricingReceipt\n      brand=\"LUMEN\"\n      options={[\n        {\n          id: \"solo\", label: \"Solo\", caption: \"1 seat\", total: 89, licence: \"SOLO\", order: \"L-1007-0001\",\n          lines: [{ qty: \"1\", item: \"Lumen for macOS\", amount: 89 }, { qty: \"∞\", item: \"Monthly fees\", amount: 0 }],\n          summary: [{ label: \"NEXT BILL\", value: \"NEVER\" }],\n          cta: { label: \"Buy Lumen\", href: \"/checkout\" }\n        }\n      ]}\n    />\n  );\n}",
+    "usage": "import { PricingReceipt } from \"@/components/design-for-ai/pricing-receipt\";\n\nexport default function Page() {\n  return (\n    <PricingReceipt\n      brand=\"LUMEN\"\n      options={[\n        {\n          id: \"solo\", label: \"Solo\", caption: \"1 seat\", total: 89, licence: \"SOLO\", order: \"L-1007-0001\",\n          lines: [{ qty: \"1\", item: \"Lumen for macOS\", amount: 89 }, { qty: \"\u221e\", item: \"Monthly fees\", amount: 0 }],\n          summary: [{ label: \"NEXT BILL\", value: \"NEVER\" }],\n          cta: { label: \"Buy Lumen\", href: \"/checkout\" }\n        }\n      ]}\n    />\n  );\n}",
     "props": [
       {
         "name": "label",
@@ -13889,12 +15857,12 @@
             "label": "$"
           },
           {
-            "value": "£",
-            "label": "£"
+            "value": "\u00a3",
+            "label": "\u00a3"
           },
           {
-            "value": "€",
-            "label": "€"
+            "value": "\u20ac",
+            "label": "\u20ac"
           }
         ],
         "default": "$",
@@ -14108,7 +16076,7 @@
         "name": "cellSize",
         "type": "number",
         "default": "12",
-        "description": "Character cell height in CSS px; width is 0.6×. Rounded to whole device pixels so glyphs stay crisp. Updates live."
+        "description": "Character cell height in CSS px; width is 0.6\u00d7. Rounded to whole device pixels so glyphs stay crisp. Updates live."
       },
       {
         "name": "color",
@@ -14212,7 +16180,7 @@
             "label": "Fine"
           },
           {
-            "value": " .:░▒▓█",
+            "value": " .:\u2591\u2592\u2593\u2588",
             "label": "Blocks"
           }
         ],
@@ -14302,18 +16270,18 @@
     ],
     "theme": "dark",
     "previewHeight": 780,
-    "usage": "import { ThreeContourTerrain } from \"@/components/design-for-ai/three-contour-terrain\";\n\n<div className=\"relative h-[640px] overflow-hidden rounded-2xl\">\n  <ThreeContourTerrain title=\"Vire Basin — Sheet 4\" accent=\"#7ee0b8\" />\n</div>",
+    "usage": "import { ThreeContourTerrain } from \"@/components/design-for-ai/three-contour-terrain\";\n\n<div className=\"relative h-[640px] overflow-hidden rounded-2xl\">\n  <ThreeContourTerrain title=\"Vire Basin \u2014 Sheet 4\" accent=\"#7ee0b8\" />\n</div>",
     "props": [
       {
         "name": "title",
         "type": "string",
-        "default": "\"Kestrel Range — Sheet 12\"",
+        "default": "\"Kestrel Range \u2014 Sheet 12\"",
         "description": "Sheet title, top left."
       },
       {
         "name": "subtitle",
         "type": "string",
-        "default": "\"Survey 1 : 25 000 · NAD-21\"",
+        "default": "\"Survey 1 : 25 000 \u00b7 NAD-21\"",
         "description": "Second line under the title."
       },
       {
@@ -14784,7 +16752,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "three-d",
-    "description": "Sculpted Three.js keycaps that drop onto their plate in reading order, then answer your real keyboard: caps sink on a spring and chords like ⌘K show a caption.",
+    "description": "Sculpted Three.js keycaps that drop onto their plate in reading order, then answer your real keyboard: caps sink on a spring and chords like \u2318K show a caption.",
     "tags": [
       "three.js",
       "webgl",
@@ -14807,13 +16775,13 @@
       {
         "name": "rows",
         "type": "KeycapDef[][]",
-        "default": "esc ⌘ K ↵ / ⇧ ⌥ space",
+        "default": "esc \u2318 K \u21b5 / \u21e7 \u2325 space",
         "description": "Rows of caps, back row first (up to 10 caps). Each: id, label or glyph, sub word, KeyboardEvent codes, width in units, tone."
       },
       {
         "name": "chords",
         "type": "KeyChord[]",
-        "default": "⌘K, ⇧⌘K, ⌘↵, ⌥Space, esc, ⇧↵",
+        "default": "\u2318K, \u21e7\u2318K, \u2318\u21b5, \u2325Space, esc, \u21e7\u21b5",
         "description": "Key-id combinations that light together and show a caption."
       },
       {
@@ -14832,7 +16800,7 @@
         "name": "demo",
         "type": "boolean",
         "default": "true",
-        "description": "Press ⌘K once by itself the first time the caps come into view."
+        "description": "Press \u2318K once by itself the first time the caps come into view."
       },
       {
         "name": "listen",
@@ -14856,7 +16824,7 @@
         "name": "captureShortcuts",
         "type": "boolean",
         "default": "false",
-        "description": "Prevent the default action of a completed chord (e.g. ⌘K). Off by default so the host page's own shortcuts still work."
+        "description": "Prevent the default action of a completed chord (e.g. \u2318K). Off by default so the host page's own shortcuts still work."
       },
       {
         "name": "className",
@@ -14889,15 +16857,15 @@
           },
           {
             "value": "cmd+k",
-            "label": "⌘K"
+            "label": "\u2318K"
           },
           {
             "value": "shift+cmd+k",
-            "label": "⇧⌘K"
+            "label": "\u21e7\u2318K"
           },
           {
             "value": "opt+space",
-            "label": "⌥Space"
+            "label": "\u2325Space"
           },
           {
             "value": "esc",
@@ -14998,7 +16966,7 @@
         "name": "turbulence",
         "type": "number",
         "default": "0.55",
-        "description": "Noise displacement strength, 0–1."
+        "description": "Noise displacement strength, 0\u20131."
       },
       {
         "name": "interactive",
@@ -15070,7 +17038,7 @@
         "max": 3,
         "step": 0.25,
         "default": 1,
-        "unit": "×"
+        "unit": "\u00d7"
       },
       {
         "prop": "ring",
@@ -15114,7 +17082,7 @@
     ],
     "theme": "dark",
     "previewHeight": 860,
-    "usage": "import { ThreeVoiceOrb } from \"@/components/design-for-ai/three-voice-orb\";\n\nconst [state, setState] = useState<\"idle\" | \"listening\" | \"thinking\" | \"speaking\">(\"idle\");\n\n<ThreeVoiceOrb\n  name=\"Wren\"\n  state={state}\n  onStateChange={setState}\n  speakingLines={[\"Your 3pm moved to 3:30. Coffee’s on Priya.\"]}\n/>",
+    "usage": "import { ThreeVoiceOrb } from \"@/components/design-for-ai/three-voice-orb\";\n\nconst [state, setState] = useState<\"idle\" | \"listening\" | \"thinking\" | \"speaking\">(\"idle\");\n\n<ThreeVoiceOrb\n  name=\"Wren\"\n  state={state}\n  onStateChange={setState}\n  speakingLines={[\"Your 3pm moved to 3:30. Coffee\u2019s on Priya.\"]}\n/>",
     "props": [
       {
         "name": "state",
@@ -15136,7 +17104,7 @@
         "name": "name",
         "type": "string",
         "default": "\"Wren\"",
-        "description": "The assistant’s name, used in the idle caption and labels."
+        "description": "The assistant\u2019s name, used in the idle caption and labels."
       },
       {
         "name": "captions",
@@ -15607,643 +17575,6 @@
           "#16a05d"
         ],
         "group": "Look"
-      }
-    ]
-  },
-  {
-    "slug": "diagram-sequence-auth",
-    "name": "PKCE Handshake",
-    "tier": "pro",
-    "platform": "web",
-    "category": "diagrams",
-    "description": "A PKCE sign-in as a sequence diagram: lifelines for the browser, app, auth server and API, arrows that draw in order, and each message's payload.",
-    "tags": [
-      "oauth",
-      "pkce",
-      "sequence diagram",
-      "authentication",
-      "lifelines",
-      "animated diagram",
-      "security"
-    ],
-    "dependencies": [
-      "motion"
-    ],
-    "theme": "dark",
-    "previewHeight": 860,
-    "usage": "import { SequenceAuth } from \"@/components/design-for-ai/diagram-sequence-auth\";\n\n<SequenceAuth\n  clientId=\"halden-web\"\n  showResource\n  open=\"token\"\n  onReplay={() => analytics.track(\"pkce_replayed\")}\n/>\n\n// The resting state is a finished handshake, with the token request open — the only call that carries the verifier.\n// Replay draws the arrows again. Hover or focus a message to read its payload; a click keeps it open.",
-    "props": [
-      {
-        "name": "title",
-        "type": "string",
-        "default": "\"PKCE handshake\"",
-        "description": "Heading."
-      },
-      {
-        "name": "summary",
-        "type": "string",
-        "default": "\"The browser carries the challenge. The verifier stays in the app until the token call.\"",
-        "description": "One or two sentences under the heading."
-      },
-      {
-        "name": "parties",
-        "type": "SequenceParty[]",
-        "description": "Lifelines left to right: id, role and name. Defaults to browser, app, auth and API."
-      },
-      {
-        "name": "messages",
-        "type": "SequenceMessage[]",
-        "description": "Messages in time order: from, to, label, title, verb, summary, channel, ms and fields. Defaults to one authorisation-code handshake with PKCE."
-      },
-      {
-        "name": "clientId",
-        "type": "string",
-        "default": "\"halden-web\"",
-        "description": "Public client id, used as the app's name and in the sample payloads."
-      },
-      {
-        "name": "showResource",
-        "type": "boolean",
-        "default": "true",
-        "description": "Draw the API lifeline and the calls that touch it."
-      },
-      {
-        "name": "showLatency",
-        "type": "boolean",
-        "default": "true",
-        "description": "Show each message's time and the end-to-end total."
-      },
-      {
-        "name": "open",
-        "type": "string",
-        "default": "\"token\"",
-        "description": "Id of the message selected when the diagram is at rest."
-      },
-      {
-        "name": "theme",
-        "type": "\"dark\" | \"light\"",
-        "default": "\"dark\"",
-        "description": "Surface the diagram sits on."
-      },
-      {
-        "name": "accent",
-        "type": "string",
-        "default": "\"#7cc4ff\"",
-        "description": "The one accent: the selected arrow, its label and the rule beside a secret."
-      },
-      {
-        "name": "onReplay",
-        "type": "() => void",
-        "description": "Called when Replay is pressed, before the arrows draw again."
-      },
-      {
-        "name": "className",
-        "type": "string",
-        "description": "Extra classes on the root section."
-      }
-    ],
-    "added": "2026-10-11",
-    "demo": {
-      "steps": [
-        "wait:400",
-        "click:@replay",
-        "wait:2400",
-        "click:@msg-token",
-        "wait:900"
-      ]
-    },
-    "controls": [
-      {
-        "prop": "clientId",
-        "label": "Client id",
-        "kind": "text",
-        "default": "halden-web",
-        "group": "Handshake"
-      },
-      {
-        "prop": "showResource",
-        "label": "API calls",
-        "kind": "toggle",
-        "default": true,
-        "group": "Handshake"
-      },
-      {
-        "prop": "showLatency",
-        "label": "Latency",
-        "kind": "toggle",
-        "default": true,
-        "group": "Handshake"
-      },
-      {
-        "prop": "theme",
-        "label": "Theme",
-        "kind": "segmented",
-        "options": [
-          {
-            "value": "dark",
-            "label": "Dark"
-          },
-          {
-            "value": "light",
-            "label": "Light"
-          }
-        ],
-        "default": "dark",
-        "group": "Look"
-      },
-      {
-        "prop": "accent",
-        "label": "Accent",
-        "kind": "color",
-        "default": "#7cc4ff",
-        "options": [
-          "#7cc4ff",
-          "#ff9d5c",
-          "#7dd3a8"
-        ],
-        "group": "Look"
-      },
-      {
-        "prop": "$replay",
-        "label": "Replay",
-        "kind": "action"
-      }
-    ]
-  },
-  {
-    "slug": "diagram-region-failover",
-    "name": "Region Failover",
-    "tier": "pro",
-    "platform": "web",
-    "category": "diagrams",
-    "description": "Frankfurt misses three probes, the ribbon of traffic swings to Ashburn, and the weight ramps back once the region recovers.",
-    "tags": [
-      "failover",
-      "regions",
-      "load balancer",
-      "health checks",
-      "traffic",
-      "animated diagram",
-      "multi-region",
-      "edge"
-    ],
-    "dependencies": [
-      "motion"
-    ],
-    "theme": "dark",
-    "previewHeight": 860,
-    "usage": "import { RegionFailover } from \"@/components/design-for-ai/diagram-region-failover\";\n\n<RegionFailover\n  hostname=\"edge.marlow\"\n  primaryCity=\"Frankfurt\"\n  standbyCity=\"Ashburn\"\n  resting=\"failed-over\"\n/>\n\n// The resting picture is the failover itself: three missed probes, Ashburn holding the address.\n// Replay plays it from a healthy steady state. Any moment on the timeline opens that weight.",
-    "props": [
-      {
-        "name": "title",
-        "type": "string",
-        "default": "\"Two regions, one address\"",
-        "description": "Heading."
-      },
-      {
-        "name": "summary",
-        "type": "string",
-        "default": "\"Frankfurt holds the address until three probes miss. The ribbon follows the weight to Ashburn, then home.\"",
-        "description": "One or two sentences under the heading. Omit it and the line names the two cities."
-      },
-      {
-        "name": "hostname",
-        "type": "string",
-        "default": "\"edge.marlow\"",
-        "description": "Name on the balancer pill, and in the steady and failed-over sentences."
-      },
-      {
-        "name": "primaryCity",
-        "type": "string",
-        "default": "\"Frankfurt\"",
-        "description": "City that serves when the system is healthy."
-      },
-      {
-        "name": "primaryCode",
-        "type": "string",
-        "default": "\"fra1\"",
-        "description": "Region code under the primary city, and on the narrow weight bar."
-      },
-      {
-        "name": "standbyCity",
-        "type": "string",
-        "default": "\"Ashburn\"",
-        "description": "City that takes traffic after three missed probes."
-      },
-      {
-        "name": "standbyCode",
-        "type": "string",
-        "default": "\"iad1\"",
-        "description": "Region code under the standby city."
-      },
-      {
-        "name": "showMetrics",
-        "type": "boolean",
-        "default": "true",
-        "description": "Show p95 and the 5xx rate on each region."
-      },
-      {
-        "name": "resting",
-        "type": "\"failed-over\" | \"steady\"",
-        "default": "\"failed-over\"",
-        "description": "Where the diagram sits before Replay. Failed-over is Ashburn at 100%."
-      },
-      {
-        "name": "theme",
-        "type": "\"dark\" | \"light\"",
-        "default": "\"dark\"",
-        "description": "Surface the diagram sits on."
-      },
-      {
-        "name": "accent",
-        "type": "string",
-        "default": "\"#7cc4ff\"",
-        "description": "The one accent: the region currently serving, the phase you are on, and a slow probe."
-      },
-      {
-        "name": "onReplay",
-        "type": "() => void",
-        "description": "Called when Replay is pressed, before the incident plays from the top."
-      },
-      {
-        "name": "className",
-        "type": "string",
-        "description": "Extra classes on the root section."
-      }
-    ],
-    "added": "2026-10-11",
-    "demo": {
-      "steps": [
-        "wait:400",
-        "click:@replay",
-        "wait:5600"
-      ]
-    },
-    "controls": [
-      {
-        "prop": "hostname",
-        "label": "Balancer",
-        "kind": "text",
-        "default": "edge.marlow",
-        "group": "Regions"
-      },
-      {
-        "prop": "primaryCity",
-        "label": "Primary",
-        "kind": "text",
-        "default": "Frankfurt",
-        "group": "Regions"
-      },
-      {
-        "prop": "showMetrics",
-        "label": "Latency",
-        "kind": "toggle",
-        "default": true,
-        "group": "Regions"
-      },
-      {
-        "prop": "resting",
-        "label": "Resting",
-        "kind": "segmented",
-        "options": [
-          {
-            "value": "failed-over",
-            "label": "Failed over"
-          },
-          {
-            "value": "steady",
-            "label": "Steady"
-          }
-        ],
-        "default": "failed-over",
-        "group": "Regions"
-      },
-      {
-        "prop": "theme",
-        "label": "Theme",
-        "kind": "segmented",
-        "options": [
-          {
-            "value": "dark",
-            "label": "Dark"
-          },
-          {
-            "value": "light",
-            "label": "Light"
-          }
-        ],
-        "default": "dark",
-        "group": "Look"
-      },
-      {
-        "prop": "accent",
-        "label": "Accent",
-        "kind": "color",
-        "default": "#7cc4ff",
-        "options": [
-          "#7cc4ff",
-          "#ff9d5c",
-          "#7dd3a8"
-        ],
-        "group": "Look"
-      },
-      {
-        "prop": "$replay",
-        "label": "Replay",
-        "kind": "action"
-      }
-    ]
-  },
-  {
-    "slug": "diagram-vector-space",
-    "name": "Vector Space",
-    "tier": "pro",
-    "platform": "web",
-    "category": "diagrams",
-    "description": "A question drops into a 2D embedding. The nearest documents light, and a ranked list shows how close each one sits.",
-    "tags": [
-      "embeddings",
-      "vector search",
-      "nearest neighbours",
-      "cosine",
-      "rag",
-      "animated diagram",
-      "retrieval",
-      "index"
-    ],
-    "dependencies": [
-      "motion"
-    ],
-    "theme": "dark",
-    "previewHeight": 860,
-    "usage": "import { VectorSpace } from \"@/components/design-for-ai/diagram-vector-space\";\n\n<VectorSpace\n  query=\"Who can download an audit export?\"\n  topK={4}\n  showLabels\n/>\n\n// The resting picture is a finished search: the query is already in the plane and its neighbours are lit.\n// Replay reveals them one at a time. Suggested questions move the query into another cluster.",
-    "props": [
-      {
-        "name": "title",
-        "type": "string",
-        "default": "\"Nearest in the embedding\"",
-        "description": "Heading."
-      },
-      {
-        "name": "summary",
-        "type": "string",
-        "default": "\"A question lands in the same space as the docs. The closest ones light, with the similarity beside each.\"",
-        "description": "One or two sentences under the heading."
-      },
-      {
-        "name": "query",
-        "type": "string",
-        "default": "\"Who can download an audit export?\"",
-        "description": "The question in the field. It lands next to the document whose title it matches."
-      },
-      {
-        "name": "topK",
-        "type": "number",
-        "default": "4",
-        "description": "How many neighbours light, and how many rows the list keeps."
-      },
-      {
-        "name": "showLabels",
-        "type": "boolean",
-        "default": "true",
-        "description": "Draw the topic names in the plane."
-      },
-      {
-        "name": "documents",
-        "type": "VectorDoc[]",
-        "description": "The corpus. Each document has a title, a source path, a topic and a position from 0 to 100."
-      },
-      {
-        "name": "suggestions",
-        "type": "VectorSuggestion[]",
-        "description": "Short questions under the field. Each one sets the query."
-      },
-      {
-        "name": "theme",
-        "type": "\"dark\" | \"light\"",
-        "default": "\"dark\"",
-        "description": "Surface the diagram sits on."
-      },
-      {
-        "name": "accent",
-        "type": "string",
-        "default": "\"#7cc4ff\"",
-        "description": "The one accent: the query, the neighbour links, and the selected row."
-      },
-      {
-        "name": "onReplay",
-        "type": "() => void",
-        "description": "Called when Replay is pressed, before the neighbours reveal again."
-      },
-      {
-        "name": "className",
-        "type": "string",
-        "description": "Extra classes on the root section."
-      }
-    ],
-    "added": "2026-10-11",
-    "demo": {
-      "steps": [
-        "wait:400",
-        "click:@query-invites",
-        "wait:1500",
-        "click:@neighbour-1",
-        "wait:900"
-      ]
-    },
-    "controls": [
-      {
-        "prop": "query",
-        "label": "Query",
-        "kind": "text",
-        "default": "Who can download an audit export?",
-        "group": "Index"
-      },
-      {
-        "prop": "topK",
-        "label": "Neighbours",
-        "kind": "slider",
-        "min": 2,
-        "max": 6,
-        "step": 1,
-        "default": 4,
-        "group": "Index"
-      },
-      {
-        "prop": "showLabels",
-        "label": "Topics",
-        "kind": "toggle",
-        "default": true,
-        "group": "Index"
-      },
-      {
-        "prop": "theme",
-        "label": "Theme",
-        "kind": "segmented",
-        "options": [
-          {
-            "value": "dark",
-            "label": "Dark"
-          },
-          {
-            "value": "light",
-            "label": "Light"
-          }
-        ],
-        "default": "dark",
-        "group": "Look"
-      },
-      {
-        "prop": "accent",
-        "label": "Accent",
-        "kind": "color",
-        "default": "#7cc4ff",
-        "options": [
-          "#7cc4ff",
-          "#ff9d5c",
-          "#7dd3a8"
-        ],
-        "group": "Look"
-      },
-      {
-        "prop": "$replay",
-        "label": "Replay",
-        "kind": "action"
-      }
-    ]
-  },
-  {
-    "slug": "diagram-agent-loop",
-    "name": "Agent Loop",
-    "tier": "pro",
-    "platform": "web",
-    "category": "diagrams",
-    "description": "An agent loops through observe, plan, act and reflect. Tools hang off the act, and the count ticks until the goal check passes.",
-    "tags": [
-      "agent",
-      "loop",
-      "tools",
-      "observe plan act",
-      "goal",
-      "animated diagram",
-      "workflow",
-      "reflection"
-    ],
-    "dependencies": [
-      "motion"
-    ],
-    "theme": "dark",
-    "previewHeight": 780,
-    "usage": "import { AgentLoop } from \"@/components/design-for-ai/diagram-agent-loop\";\n\n<AgentLoop\n  goal=\"Mark invoice 1842 chased.\"\n  showTools\n/>\n\n// The resting picture is the finished lap: loop 2 has closed and the goal check has passed.\n// Replay runs both laps. Tool calls hang off Act.",
-    "props": [
-      {
-        "name": "title",
-        "type": "string",
-        "default": "\"Until the goal is met\"",
-        "description": "Heading."
-      },
-      {
-        "name": "summary",
-        "type": "string",
-        "default": "\"Observe, plan, act, reflect. The tools hang off the act, and the count ticks until the check passes.\"",
-        "description": "One or two sentences under the heading."
-      },
-      {
-        "name": "goal",
-        "type": "string",
-        "default": "\"Mark invoice 1842 chased.\"",
-        "description": "The sentence the loop is trying to make true, shown in the goal row."
-      },
-      {
-        "name": "turns",
-        "type": "AgentTurn[]",
-        "description": "Each turn is one lap of observe, plan, act and reflect. Mark the last turn met when the check should pass."
-      },
-      {
-        "name": "showTools",
-        "type": "boolean",
-        "default": "true",
-        "description": "The tool rows that hang off Act."
-      },
-      {
-        "name": "theme",
-        "type": "\"dark\" | \"light\"",
-        "default": "\"dark\"",
-        "description": "Surface the diagram sits on."
-      },
-      {
-        "name": "accent",
-        "type": "string",
-        "default": "\"#7cc4ff\"",
-        "description": "The one accent: the step in progress, and the side of the cycle just drawn."
-      },
-      {
-        "name": "onReplay",
-        "type": "() => void",
-        "description": "Called when Replay is pressed, before the loop runs from the first observe."
-      },
-      {
-        "name": "className",
-        "type": "string",
-        "description": "Extra classes on the root section."
-      }
-    ],
-    "added": "2026-10-11",
-    "demo": {
-      "steps": [
-        "wait:400",
-        "click:@replay",
-        "wait:5200"
-      ]
-    },
-    "controls": [
-      {
-        "prop": "goal",
-        "label": "Goal",
-        "kind": "text",
-        "default": "Mark invoice 1842 chased.",
-        "group": "Loop"
-      },
-      {
-        "prop": "showTools",
-        "label": "Tool calls",
-        "kind": "toggle",
-        "default": true,
-        "group": "Loop"
-      },
-      {
-        "prop": "theme",
-        "label": "Theme",
-        "kind": "segmented",
-        "options": [
-          {
-            "value": "dark",
-            "label": "Dark"
-          },
-          {
-            "value": "light",
-            "label": "Light"
-          }
-        ],
-        "default": "dark",
-        "group": "Look"
-      },
-      {
-        "prop": "accent",
-        "label": "Accent",
-        "kind": "color",
-        "default": "#7cc4ff",
-        "options": [
-          "#7cc4ff",
-          "#ff9d5c",
-          "#7dd3a8"
-        ],
-        "group": "Look"
-      },
-      {
-        "prop": "$replay",
-        "label": "Replay",
-        "kind": "action"
       }
     ]
   }
