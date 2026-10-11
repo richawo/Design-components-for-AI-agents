@@ -18734,6 +18734,83 @@
     ]
   },
   {
+    "slug": "legal-obligation-tracker",
+    "name": "Contract Obligation Tracker",
+    "tier": "pro",
+    "platform": "web",
+    "category": "data",
+    "description": "Filter duties by owner and due date and record completion evidence. A considered, responsive legal workspace with typed integration points.",
+    "tags": [
+      "legal-tech",
+      "workflow",
+      "responsive",
+      "keyboard",
+      "data"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "light",
+    "previewHeight": 1180,
+    "usage": "import { ObligationTracker } from \"@/components/design-for-ai/legal-obligation-tracker\";\n\n<ObligationTracker />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Main heading."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "description": "Supporting context."
+      },
+      {
+        "name": "obligations",
+        "type": "ContractObligation[]",
+        "description": "Unique obligations with host-supplied ISO due dates, source references and completion state."
+      },
+      {
+        "name": "referenceDate",
+        "type": "string",
+        "description": "ISO date for overdue classification."
+      },
+      {
+        "name": "onComplete",
+        "type": "(completion:ObligationCompletion)=>void|Promise<void>",
+        "description": "Persist completion evidence against the selected obligation."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"light\"",
+        "description": "Surface, border and ink palette."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:350",
+        "click:@obligation-1",
+        "wait:750",
+        "click:@filter-complete",
+        "wait:1200"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "light"
+      }
+    ]
+  },
+  {
     "slug": "legal-version-history",
     "name": "Document Revision Review",
     "tier": "pro",
