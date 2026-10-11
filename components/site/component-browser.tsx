@@ -28,13 +28,15 @@ export function ComponentBrowser({ cards, categories, category, initialFilters }
   const [q, setQ] = useState(initialFilters?.q ?? "");
   const [tier, setTier] = useState<"all" | "free" | "pro">(initialFilters?.tier ?? "all");
   const [filtersReady, setFiltersReady] = useState(false);
-  const [cat, setCatState] = useState(category);
-  // The click updates the grid immediately. The URL follows, and a slower
-  // response for an earlier click must not overwrite the newer choice.
-  const pending = useRef(category);
+  // A router cache entry can remount with the server's original category.
+  // Read the current URL immediately so returning visitors never animate the
+  // old full catalogue out before showing their selected category.
+  const [cat, setCatState] = useState(() => typeof window === "undefined" ? category : readCategoryParam(new URLSearchParams(window.location.search).get("category"), new Set(categories.map(c => c.key))));
+  // A cached server prop must not overwrite a newer local choice.
+  const pending = useRef(cat);
   const input = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLParagraphElement>(null);
-  const seenCat = useRef(category);
+  const seenCat = useRef(cat);
   const reduce = useReducedMotion();
   // Entrance classes belong to the first render only. Cards that mount later
   // (after a filter) are animated by AnimatePresence instead, never twice.
@@ -60,7 +62,7 @@ export function ComponentBrowser({ cards, categories, category, initialFilters }
       sessionStorage.setItem(FILTER_KEY, JSON.stringify({ q, tier }));
     } catch {}
     const href = filterHref(window.location.search, q, tier);
-    if (`${window.location.pathname}${window.location.search}` !== href) window.history.replaceState(window.history.state, "", `${href}${window.location.hash}`);
+    if (`${window.location.pathname}${window.location.search}` !== href) window.history.replaceState(null, "", `${href}${window.location.hash}`);
   }, [q, tier, filtersReady]);
 
   useEffect(() => {
@@ -86,7 +88,7 @@ export function ComponentBrowser({ cards, categories, category, initialFilters }
   // otherwise leave the reader in the footer. Stop before that scroll pushes
   // the sidebar under the header: a one-card list is only as tall as the sidebar.
   useEffect(() => {
-    if (seenCat.current === cat) return;
+    if (cat !== pending.current || seenCat.current === cat) return;
     seenCat.current = cat;
     const el = resultsRef.current;
     if (!el) return;
@@ -110,7 +112,8 @@ export function ComponentBrowser({ cards, categories, category, initialFilters }
     const href = galleryHref(window.location.search, key);
     if (`${window.location.pathname}${window.location.search}` === href) return;
     // The full catalogue is already here; changing a filter needs no server render.
-    window.history.replaceState(window.history.state, "", `${href}${window.location.hash}`);
+    // Next copies its own history metadata when given null and tracks the URL.
+    window.history.replaceState(null, "", `${href}${window.location.hash}`);
   };
 
   // "/" jumps to search from anywhere on the page, as on most libraries.

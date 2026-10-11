@@ -9,7 +9,12 @@ preview controls and visible animation design.
   Registry utilities load in the preview document. The registry cascade and
   theme tokens stay independent of the shell.
 - Category selection updates the existing catalogue and URL without another
-  server request. Back/forward handling remains in the browser component.
+  server request. A returning router cache entry reads its category from the
+  current URL instead of displaying stale server props. The history replay
+  verifies selection, card count, direct links and zero category RSC requests.
+  The existing Next history behaviour resets page scroll when returning from
+  Pricing, reproduced with both filtered and unfiltered galleries; this change
+  does not introduce a separate scroll-restoration system.
 - Free highlighted source is generated separately at `/api/source/:slug` and
   requested when its panel approaches the viewport. The static route rejects
   Pro slugs. Pro source still uses the authenticated route.
