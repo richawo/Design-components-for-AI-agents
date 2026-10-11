@@ -2,8 +2,8 @@
 
 import { motion } from "motion/react";
 import Link from "next/link";
-import { useEffect, useId, useState } from "react";
-import { fetchProSource, type SourcePayload } from "@/lib/pro-source-client";
+import { memo, useEffect, useId, useRef, useState } from "react";
+import { fetchFreeSource, fetchProSource, type SourcePayload } from "@/lib/pro-source-client";
 import { CopyButton } from "./copy-button";
 
 export type { SourcePayload };
@@ -35,16 +35,30 @@ export function SourceTabs({
   installHtml: string;
 }) {
   const uid = useId();
+  const container = useRef<HTMLDivElement>(null);
+  const [near, setNear] = useState(!!initial);
+  const [visited, setVisited] = useState<Set<Tab>>(() => new Set(["code"]));
+  const selectTab = (next: Tab) => { setTab(next); setVisited(current => current.has(next) ? current : new Set([...current, next])); };
   const [tab, setTab] = useState<Tab>("code");
   const [source, setSource] = useState<SourcePayload | null>(initial);
   const [status, setStatus] = useState<"ready" | "loading" | "locked" | "error">(initial ? "ready" : "loading");
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
-    if (initial) return;
+    const node = container.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) { setNear(true); observer.disconnect(); }
+    }, { rootMargin: "400px" });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (initial || !near) return;
     let live = true;
     setStatus("loading");
-    fetchProSource(slug).then((data) => {
+    (tier === "free" ? fetchFreeSource(slug) : fetchProSource(slug)).then((data) => {
       if (!live) return;
       if (!data) return setStatus("locked");
       setSource(data);
@@ -53,14 +67,14 @@ export function SourceTabs({
     return () => {
       live = false;
     };
-  }, [initial, slug, attempt]);
+  }, [initial, slug, tier, near, attempt]);
 
   const agentBrief = source
     ? `Add the "${name}" component from Design for AI to this project.\n\n## Install\n${installText}\n\n## Design brief\n${source.prompt.trim()}\n\n## Source (${fileName})\n\`\`\`tsx\n${source.code.trim()}\n\`\`\`\n`
     : "";
 
   return (
-    <div className="overflow-hidden rounded-[20px] border border-white/[0.08] bg-site-raised text-site-fg shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+    <div ref={container} className="overflow-hidden rounded-[20px] border border-white/[0.08] bg-site-raised text-site-fg shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
       <div className="flex flex-col gap-3 border-b border-white/[0.06] px-3 pt-2 sm:flex-row sm:items-center sm:justify-between sm:px-4">
         <div role="tablist" aria-label="Component source" aria-orientation="horizontal" className="-mb-px flex gap-1 overflow-x-auto [scrollbar-width:none]">
           {TABS.map((t) => (
@@ -72,7 +86,7 @@ export function SourceTabs({
               aria-selected={tab === t.key}
               aria-controls={`${uid}-panel-${t.key}`}
               tabIndex={tab === t.key ? 0 : -1}
-              onClick={() => setTab(t.key)}
+              onClick={() => selectTab(t.key)}
               onKeyDown={(event) => {
                 if (event.altKey || event.ctrlKey || event.metaKey) return;
                 const index = TABS.indexOf(t);
@@ -81,7 +95,7 @@ export function SourceTabs({
                 const next = event.key === "Home" ? 0 : event.key === "End" ? TABS.length - 1 : direction ? (index + direction + TABS.length) % TABS.length : null;
                 if (next === null) return;
                 event.preventDefault();
-                setTab(TABS[next].key);
+                selectTab(TABS[next].key);
                 const buttons = event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>("[role='tab']");
                 buttons?.[next]?.focus();
               }}
@@ -115,7 +129,7 @@ export function SourceTabs({
       </p>
 
       {TABS.map((item) => <div key={item.key} role="tabpanel" id={`${uid}-panel-${item.key}`} aria-labelledby={`${uid}-tab-${item.key}`} hidden={tab !== item.key} tabIndex={tab === item.key ? 0 : -1} className="relative">
-        {tab !== item.key ? null : tab === "install" ? (
+        {!visited.has(item.key) ? null : item.key === "install" ? (
           <Scroll html={installHtml} />
         ) : status === "loading" ? (
           <div className="flex h-64 items-center justify-center">
@@ -127,10 +141,10 @@ export function SourceTabs({
             <button type="button" className="site-btn site-btn-secondary min-h-11 px-5" onClick={() => setAttempt((value) => value + 1)}>Retry source</button>
           </div>
         ) : status === "locked" || !source ? (
-          <Locked name={name} tab={tab} />
-        ) : tab === "code" ? (
+          <Locked name={name} tab={item.key} />
+        ) : item.key === "code" ? (
           <Scroll html={source.codeHtml} />
-        ) : tab === "json" ? (
+        ) : item.key === "json" ? (
           <Scroll html={source.promptJsonHtml} />
         ) : (
           <div className="max-h-[560px] overflow-auto px-4 pb-6 pt-3 sm:px-5">
@@ -148,14 +162,14 @@ export function SourceTabs({
   );
 }
 
-function Scroll({ html }: { html: string }) {
+const Scroll = memo(function Scroll({ html }: { html: string }) {
   return (
     <div
       className="max-h-[560px] overflow-auto px-4 pb-6 pt-3 font-mono text-[13px] leading-[1.7] sm:px-5 [&_pre]:!bg-transparent [&_pre]:outline-none"
       dangerouslySetInnerHTML={{ __html: html }}
     />
   );
-}
+});
 
 const FAKE = [
   "export function Component({ items = defaults }: Props) {",

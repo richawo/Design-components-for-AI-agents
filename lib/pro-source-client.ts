@@ -20,9 +20,18 @@ const cache = new Map<string, Promise<SourcePayload | null>>();
  * sure the page asks once, however many panels need it.
  */
 export function fetchProSource(slug: string): Promise<SourcePayload | null> {
-  let p = cache.get(slug);
+  return fetchSource(slug, "pro");
+}
+
+export function fetchFreeSource(slug: string): Promise<SourcePayload | null> {
+  return fetchSource(slug, "free");
+}
+
+function fetchSource(slug: string, tier: "free" | "pro"): Promise<SourcePayload | null> {
+  const key = `${tier}:${slug}`;
+  let p = cache.get(key);
   if (!p) {
-    p = fetch(`/api/pro/source/${slug}`, { credentials: "same-origin" })
+    p = fetch(tier === "free" ? `/api/source/${slug}` : `/api/pro/source/${slug}`, { credentials: "same-origin" })
       .then(async (r) => {
         if (r.status === 401 || r.status === 403) return null;
         if (!r.ok) throw new SourceLoadError();
@@ -32,10 +41,10 @@ export function fetchProSource(slug: string): Promise<SourcePayload | null> {
         if (!data || typeof data !== "object" || !fields.every((field) => field in data && typeof (data as Record<string, unknown>)[field] === "string")) throw new SourceLoadError();
         return data as SourcePayload;
       }).catch(() => { throw new SourceLoadError(); });
-    cache.set(slug, p);
+    cache.set(key, p);
     // A failure shouldn't stick for the life of the page.
     const request = p;
-    const clear = () => { if (cache.get(slug) === request) cache.delete(slug); };
+    const clear = () => { if (cache.get(key) === request) cache.delete(key); };
     p.then((v) => { if (v === null) clear(); }, clear);
   }
   return p;

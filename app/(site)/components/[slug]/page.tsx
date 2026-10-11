@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { Chip, ComponentCard, TierBadge } from "@/components/site/component-card";
 import { JsonLd } from "@/components/site/json-ld";
 import { PreviewFrame } from "@/components/site/preview-frame";
-import { SourceTabs, type SourcePayload } from "@/components/site/source-tabs";
+import { SourceTabs } from "@/components/site/source-tabs";
 import { highlight } from "@/lib/highlight";
 import { fileNameFor, installText } from "@/lib/install";
 import { allComponents, componentsIn, getComponent, readSource, thumbnailFor, toCard } from "@/lib/registry";
@@ -44,20 +44,9 @@ export default async function ComponentPage({ params }: { params: Promise<{ slug
   const install = installText(e);
   const [installHtml, usageHtml] = await Promise.all([highlight(install, "bash"), highlight(e.usage, "tsx")]);
 
-  // Pro source is never rendered into the page. The client fetches it with a licence.
-  let initial: SourcePayload | null = null;
-  if (e.tier === "free") {
-    const src = await readSource(slug);
-    if (src) {
-      initial = {
-        code: src.code,
-        codeHtml: await highlight(src.code, "tsx"),
-        prompt: src.prompt,
-        promptJson: src.promptJson,
-        promptJsonHtml: await highlight(src.promptJson, "json"),
-      };
-    }
-  }
+  // Keep highlighted source out of the navigation payload. The source panel
+  // fetches the prebuilt free payload as it approaches the viewport.
+  const prompt = e.tier === "free" ? (await readSource(slug))?.prompt ?? null : null;
 
   const related = componentsIn(e.category).filter((c) => c.slug !== slug).slice(0, 3);
   const cat = CATEGORIES[e.category];
@@ -158,7 +147,7 @@ export default async function ComponentPage({ params }: { params: Promise<{ slug
             controls={e.controls}
             usage={e.usage}
             props={e.props}
-            prompt={initial?.prompt ?? null}
+            prompt={prompt}
           />
         ) : (
           <div className="relative overflow-hidden rounded-[20px] border border-white/[0.08] bg-site-raised">
@@ -179,7 +168,7 @@ export default async function ComponentPage({ params }: { params: Promise<{ slug
             name={e.name}
             tier={e.tier}
             fileName={fileNameFor(e)}
-            initial={initial}
+            initial={null}
             installText={install}
             installHtml={installHtml}
           />
