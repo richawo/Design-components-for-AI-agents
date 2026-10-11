@@ -1,0 +1,174 @@
+{
+  "slug": "dropdown-menu-nested",
+  "name": "Nested Dropdown Menu",
+  "tier": "free",
+  "platform": "web",
+  "category": "overlays",
+  "description": "An action menu whose submenus survive a diagonal hover path, with ticks, a gliding radio dot, mono shortcuts and a delete set apart. Full menu keyboard model.",
+  "tags": [
+    "dropdown menu",
+    "submenu",
+    "nested menu",
+    "action menu",
+    "safe triangle",
+    "menuitemcheckbox",
+    "menuitemradio",
+    "keyboard shortcuts",
+    "typeahead",
+    "overlay",
+    "dark",
+    "monochrome"
+  ],
+  "dependencies": [
+    "motion",
+    "lucide-react"
+  ],
+  "theme": "dark",
+  "previewHeight": 760,
+  "usage": "import { DropdownMenuNested, MenuEntry } from \"@/components/design-for-ai/dropdown-menu-nested\";\nimport { Copy, Tag, Trash2 } from \"lucide-react\";\n\nconst items: MenuEntry[] = [\n  { kind: \"action\", id: \"duplicate\", label: \"Duplicate\", icon: Copy, shortcut: \"⌘D\" },\n  {\n    kind: \"submenu\", id: \"labels\", label: \"Labels\", icon: Tag,\n    items: [\n      { kind: \"checkbox\", id: \"urgent\", label: \"Urgent\" },\n      { kind: \"checkbox\", id: \"legal\", label: \"Legal hold\", defaultChecked: true },\n    ],\n  },\n  { kind: \"separator\", id: \"sep\" },\n  { kind: \"action\", id: \"delete\", label: \"Delete brief\", icon: Trash2, destructive: true, description: \"Removes it for everyone\" },\n];\n\n<DropdownMenuNested\n  triggerLabel=\"Q4 launch brief\"\n  items={items}\n  onSelect={(id) => run(id)}\n  onCheckedChange={(id, on) => setLabel(id, on)}\n/>\n\n// The menu and its submenus position inside the component (no portal). To escape a\n// clipping parent, render the component inside a fixed layer on document.body.",
+  "props": [
+    {
+      "name": "items",
+      "type": "MenuEntry[]",
+      "default": "A brief's actions: open, rename, duplicate, Move to, Labels, Share, View, Page width, Delete",
+      "description": "The menu in order. Kinds: action (shortcut, hint, description, destructive), checkbox (defaultChecked), radio (options, defaultValue), submenu (items), separator and label."
+    },
+    {
+      "name": "triggerLabel",
+      "type": "string",
+      "default": "\"Q4 launch brief\"",
+      "description": "Text on the trigger button."
+    },
+    {
+      "name": "triggerIcon",
+      "type": "LucideIcon | null",
+      "default": "FileText",
+      "description": "Icon before the trigger label. Pass null for none."
+    },
+    {
+      "name": "submenus",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show entries that open a submenu. Off, they are left out and the menu is one level."
+    },
+    {
+      "name": "shortcuts",
+      "type": "boolean",
+      "default": "true",
+      "description": "Mono keyboard shortcuts on the right of each row. They also step aside on their own below a 208px menu."
+    },
+    {
+      "name": "checkable",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show checkbox and radio items. Off, headings and submenus left empty are tidied away."
+    },
+    {
+      "name": "align",
+      "type": "\"start\" | \"end\"",
+      "default": "\"start\"",
+      "description": "Which edge of the trigger the menu lines up with. Submenus cascade away from that edge and flip when there is no room."
+    },
+    {
+      "name": "width",
+      "type": "number",
+      "default": "256",
+      "description": "Width of the top-level menu in px, capped to the viewport. Submenus are 224px."
+    },
+    {
+      "name": "showSafeArea",
+      "type": "boolean",
+      "default": "false (true in the demo)",
+      "description": "Draws the safe-triangle hover path while it protects an open submenu. A teaching aid; leave it off in production."
+    },
+    {
+      "name": "defaultOpen",
+      "type": "boolean",
+      "default": "false (true in the demo)",
+      "description": "Opens once the trigger has landed on first view, without moving focus."
+    },
+    {
+      "name": "onSelect",
+      "type": "(id: string) => void",
+      "description": "Runs when an action is chosen. The row blinks once and the menu closes, returning focus to the trigger."
+    },
+    {
+      "name": "onCheckedChange",
+      "type": "(id: string, checked: boolean) => void",
+      "description": "Runs when a checkbox item is toggled. The menu stays open so several can be ticked in a row."
+    },
+    {
+      "name": "onValueChange",
+      "type": "(groupId: string, value: string) => void",
+      "description": "Runs when a radio option is chosen."
+    },
+    {
+      "name": "onOpenChange",
+      "type": "(open: boolean) => void",
+      "description": "Runs when the menu opens or closes."
+    },
+    {
+      "name": "accent",
+      "type": "string",
+      "default": "\"#8fb0ff\" (dark) or \"#2f5bd3\" (light)",
+      "description": "The one colour: ticks and the radio dot."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Near-black surfaces with white ink, or the white inverse. The demo stage follows it."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "description": "Extra classes on the root."
+    }
+  ],
+  "added": "2026-10-10",
+  "demo": {
+    "steps": [
+      "wait:700",
+      "hover:@item-labels:0.16,0.5",
+      "wait:420",
+      "hover:@item-label-waiting",
+      "wait:260",
+      "click",
+      "wait:700",
+      "key:Escape",
+      "wait:420",
+      "key:Escape",
+      "wait:600",
+      "click:@trigger",
+      "wait:900"
+    ]
+  },
+  "controls": [
+    { "prop": "submenus", "label": "Submenus", "kind": "toggle", "default": true },
+    { "prop": "shortcuts", "label": "Shortcuts", "kind": "toggle", "default": true },
+    { "prop": "checkable", "label": "Checkable items", "kind": "toggle", "default": true },
+    {
+      "prop": "align",
+      "label": "Align",
+      "kind": "segmented",
+      "options": [
+        { "value": "start", "label": "Start" },
+        { "value": "end", "label": "End" }
+      ],
+      "default": "start"
+    },
+    { "prop": "width", "label": "Width", "kind": "slider", "min": 200, "max": 320, "step": 8, "unit": "px", "default": 256 },
+    { "prop": "showSafeArea", "label": "Show safe area", "kind": "toggle", "default": true },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        { "value": "dark", "label": "Dark" },
+        { "value": "light", "label": "Light" }
+      ],
+      "default": "dark"
+    },
+    { "prop": "$replay", "label": "Replay", "kind": "action" }
+  ]
+}

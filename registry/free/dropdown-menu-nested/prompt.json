@@ -1,0 +1,81 @@
+{
+  "component": "DropdownMenuNested",
+  "intent": "A nested action menu for a document: commands, submenus that survive a diagonal hover path through a safe triangle, checkbox and radio items, mono shortcuts and a destructive item set apart, with the full APG menu keyboard model and typeahead. Monochrome, one accent on ticks and the radio dot.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 (@container, CSS variables, arbitrary values)",
+    "animation": "motion/react (variants, layoutId, pathLength, AnimatePresence, useReducedMotion), lucide-react icons at 15px stroke 1.75"
+  },
+  "layout": {
+    "trigger": "40px (44px coarse), radius 10px, inset hairline, file icon, 14px/500 label, chevron that rotates 180 degrees when open",
+    "menu": "8px below the trigger, anchored to its start or end edge, width prop (default 256, capped at 100vw - 32px), radius 12px, 6px padding, inset hairline, layered shadow",
+    "submenu": "224px, 4px beside the menu, first row aligned with its trigger row, slides up when it would overflow the viewport bottom",
+    "rows": "32px (44px coarse), radius 7px, 16px leading slot for icon, tick or dot, 13.5px label truncating, trailing mono shortcut, status or chevron plus ticked count",
+    "headings": "mono 10.5px uppercase, tracking 0.14em, muted; full-bleed hairline separators with 6px space",
+    "destructive": "last, after a separator: red label, icon and tinted shortcut, a muted 11.5px second line naming the consequence, 44px tall",
+    "direction": "submenus cascade away from the aligned edge and flip when out of room; with no room either side they drill in place with a Back row and an animated surface height",
+    "container": "@container on each menu surface; shortcuts hide below 208px (@max-[13rem])"
+  },
+  "typography": {
+    "trigger": "14px, weight 500, ink",
+    "row": "13.5px, leading 20px, body colour, ink when highlighted",
+    "shortcut": "mono 11px, tracking 0.06em, muted",
+    "status": "mono 10.5px uppercase, tracking 0.1em",
+    "heading": "mono 10.5px uppercase, tracking 0.14em",
+    "description": "11.5px, leading 16px, muted"
+  },
+  "color": {
+    "tokens": "PALETTE dark and light written to --dm-* variables; accent prop overrides the per-theme default",
+    "dark": "stage #09090b, trigger #141416 (hover #1a1a1d), surface #121214, submenu #151518, ink #f4f4f5, body #d0d0d6, muted #8b8b94, hairline 8% white, highlight 7.5% white, danger #ff7a70 (highlight 13%), accent #8fb0ff",
+    "light": "stage #f3f3f0, surfaces #ffffff, ink #18181b, body #3a3a41, muted #6b6b74, hairline 9% ink, highlight 5.5% ink, danger #c8321f (highlight 8%), accent #2f5bd3",
+    "rules": "accent only on ticks and the radio dot; red only on the destructive row; everything else grey"
+  },
+  "motion": {
+    "reveal": "trigger rises 8px out of a 6px blur, 500ms ease-out [0.22, 1, 0.36, 1]; the menu then opens on first view",
+    "menuOpen": "scale 0.96 to 1, 4px rise, 4px blur clearing, 220ms ease-out from the anchored corner; rows stagger 14ms with a 3px drop; close 140ms ease-in",
+    "submenu": "6px slide out from its row with a 3px blur, 180ms; exit 110ms",
+    "highlight": "one layoutId element per menu on spring.ui (500/40); tint fades to red on the destructive row; open submenu row keeps a quieter mark",
+    "tick": "pathLength 0 to 1 over 280ms whenever an item turns on",
+    "radio": "7px dot with a shared layoutId so it travels between options",
+    "select": "action row blinks once over 150ms, then the menu closes and focus returns to the trigger; checkable items keep the menu open",
+    "count": "ticked-children count cross-fades with a 7px rise",
+    "safeArea": "optional dashed triangle with 6% fill while the grace path is active",
+    "reducedMotion": "opacity only, 150ms or less, no stagger, no blink, spring jumps, tick pre-drawn"
+  },
+  "responsive": {
+    "wide": "submenus cascade to the side away from the aligned edge, flipping when there is no room",
+    "narrow": "when neither side fits, submenus open in place as pages with a Back row; surface height animates between pages",
+    "touch": "44px trigger and rows on coarse pointers; no hover-only action, every submenu opens on click or tap"
+  },
+  "accessibility": [
+    "trigger aria-haspopup menu, aria-expanded, aria-controls while open; focus-visible ring 2px ink at 60% offset 2px",
+    "role menu labelled by the trigger or its submenu row; rows menuitem, menuitemcheckbox, menuitemradio with aria-checked; submenu rows aria-haspopup, aria-expanded, aria-controls; aria-disabled on disabled rows",
+    "headings label role group containers; separators role separator",
+    "Enter, Space, ArrowDown open on the first item; ArrowUp opens on the last",
+    "ArrowUp and ArrowDown wrap, Home End PageUp PageDown jump, disabled rows skipped",
+    "the arrow toward a submenu opens it on its first item; the opposite arrow returns to its row",
+    "Escape closes the innermost level and finally returns focus to the trigger; Tab closes and continues from the trigger",
+    "typeahead with a 500ms buffer; a repeated letter cycles",
+    "keyboard use adds a 1px inset ring to the highlight",
+    "polite live region announces toggles and actions"
+  ],
+  "content": {
+    "trigger": "Q4 launch brief",
+    "items": "Open in new tab ⌘↵, Rename… ⌘R, Duplicate ⌘D, Move to (Halden Studio: Inbox, Q4 launch CURRENT disabled, Campaigns 2026, Archive, New folder… ⌘⇧N), Labels (Design review ticked, Needs copy, Urgent, Waiting on client, Legal hold, Manage labels…), Share (Copy link ⌘L, Invite people… ⌘I, Export as PDF ⌘⇧E), View (Show comments ⌘⇧C ticked, Word count ⌘⇧W), Page width (Readable ⌘1 chosen, Full width ⌘2), Delete brief ⌘⌫ with 'Removes it for 6 collaborators'",
+    "demo": "the menu is open; the cursor rests on Labels until its submenu opens, then moves diagonally down to Waiting on client across Share and the View heading while the safe triangle keeps Labels open, ticks it (the count on Labels goes from 1 to 2), presses Escape twice to close the submenu and then the menu, and clicks the trigger to open it again"
+  },
+  "avoid": [
+    "glass, gradients, glow or a radius above 12px",
+    "coloured icon tiles or accent on the highlight or trigger",
+    "closing a submenu as soon as the pointer crosses a sibling row",
+    "opening a submenu on the first pixel of hover",
+    "a destructive item in the same voice as the rest",
+    "unaligned labels when some rows have icons and others ticks",
+    "a portal or positioning library",
+    "menus that run off the viewport on a phone instead of drilling in place",
+    "closing the menu on every checkbox toggle",
+    "placeholder copy such as Item 1"
+  ],
+  "robustness": "The actual focused row owns keyboard activation. Keep its highlight synchronized when assistive technology, pointer movement or script changes focus; never activate a stale highlighted row."
+}
