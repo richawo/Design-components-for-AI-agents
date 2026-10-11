@@ -4794,6 +4794,245 @@
     "added": "2026-10-09"
   },
   {
+    "slug": "chart-streamgraph",
+    "name": "Streamgraph",
+    "tier": "pro",
+    "platform": "web",
+    "category": "charts",
+    "description": "Layered streams of where a minute in Vesper goes. Five surfaces sit on a wiggle baseline; isolate one and read that week against the last.",
+    "tags": [
+      "streamgraph",
+      "time series",
+      "stacked area",
+      "wiggle",
+      "weekly",
+      "product analytics",
+      "dashboard",
+      "dark",
+      "monochrome"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 760,
+    "usage": "import { ChartStreamgraph } from \"@/components/design-for-ai/chart-streamgraph\";\nimport type { StreamSeries, StreamWeek } from \"@/components/design-for-ai/chart-streamgraph\";\n\nconst weeks: StreamWeek[] = [\n  { label: \"3 Aug\", caption: \"Week of 3 Aug\" },\n  { label: \"10 Aug\", caption: \"Week of 10 Aug\" },\n];\n\nconst series: StreamSeries[] = [\n  { key: \"compose\", label: \"Compose\", note: \"The September rewrite\", lead: true, values: [18, 19] },\n  { key: \"inbox\", label: \"Inbox\", note: \"Triage, then out\", values: [134, 129] },\n];\n\n<ChartStreamgraph\n  title=\"Where a minute goes\"\n  subtitle=\"Vesper · per person\"\n  unit=\"min\"\n  baseline=\"wiggle\"\n  weeks={weeks}\n  series={series}\n  onIsolate={(key) => console.log(key)}\n/>",
+    "props": [
+      {
+        "name": "series",
+        "type": "StreamSeries[]",
+        "default": "Compose, Inbox, Search, Calendar, Rules",
+        "description": "One river each. StreamSeries: { key, label, note?, values: number[], lead? }. values line up with weeks, oldest first. The lead river takes the accent."
+      },
+      {
+        "name": "weeks",
+        "type": "StreamWeek[]",
+        "default": "3 Aug – 16 Nov",
+        "description": "One column per week: { label, caption }. label sits on the axis; caption is the sentence in the header."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Where a minute goes\"",
+        "description": "Card title."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "default": "\"Vesper · per person\"",
+        "description": "Mono line beside the title."
+      },
+      {
+        "name": "unit",
+        "type": "string",
+        "default": "\"min\"",
+        "description": "Singular unit after the headline figure."
+      },
+      {
+        "name": "baseline",
+        "type": "\"wiggle\" | \"silhouette\" | \"zero\"",
+        "default": "\"wiggle\"",
+        "description": "Wiggle keeps the organic offset, silhouette centres every column, zero sits the stack on a flat baseline."
+      },
+      {
+        "name": "height",
+        "type": "number",
+        "default": "300",
+        "description": "Plot height in px, capped at 62% of the card width on narrow containers."
+      },
+      {
+        "name": "showNotes",
+        "type": "boolean",
+        "default": "true",
+        "description": "Print the note under each surface in the legend."
+      },
+      {
+        "name": "defaultWeek",
+        "type": "number",
+        "default": "6",
+        "description": "Week index shown first. 6 is the week of 14 Sep."
+      },
+      {
+        "name": "defaultLayer",
+        "type": "string",
+        "default": "\"\"",
+        "description": "Series key isolated on first paint. Empty shows every surface."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ff7a45\"",
+        "description": "The one colour: the lead river, the headline figure and the week marker."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Near-black card with white ink, or a white card with near-black ink."
+      },
+      {
+        "name": "onWeekChange",
+        "type": "(index: number) => void",
+        "description": "Called with the week index now shown."
+      },
+      {
+        "name": "onIsolate",
+        "type": "(key: string | null) => void",
+        "description": "Called with the isolated series key, or null when every surface is shown."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:450",
+        "hover:@layer-compose",
+        "wait:350",
+        "click:@layer-compose",
+        "wait:800",
+        "click:@week-next",
+        "wait:280",
+        "click:@week-next",
+        "wait:500"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "title",
+        "label": "Title",
+        "kind": "text",
+        "default": "Where a minute goes"
+      },
+      {
+        "prop": "baseline",
+        "label": "Baseline",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "wiggle",
+            "label": "Wiggle"
+          },
+          {
+            "value": "silhouette",
+            "label": "Center"
+          },
+          {
+            "value": "zero",
+            "label": "Bottom"
+          }
+        ],
+        "default": "wiggle"
+      },
+      {
+        "prop": "height",
+        "label": "Plot height",
+        "kind": "slider",
+        "min": 220,
+        "max": 420,
+        "step": 10,
+        "unit": "px",
+        "default": 300
+      },
+      {
+        "prop": "showNotes",
+        "label": "Notes",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "defaultWeek",
+        "label": "Opens on week",
+        "kind": "slider",
+        "min": 0,
+        "max": 15,
+        "step": 1,
+        "default": 6,
+        "remount": true
+      },
+      {
+        "prop": "defaultLayer",
+        "label": "Opens on",
+        "kind": "select",
+        "options": [
+          {
+            "value": "",
+            "label": "Every surface"
+          },
+          {
+            "value": "compose",
+            "label": "Compose"
+          },
+          {
+            "value": "inbox",
+            "label": "Inbox"
+          },
+          {
+            "value": "search",
+            "label": "Search"
+          },
+          {
+            "value": "calendar",
+            "label": "Calendar"
+          },
+          {
+            "value": "rules",
+            "label": "Rules"
+          }
+        ],
+        "default": "",
+        "remount": true
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#ff7a45",
+        "options": [
+          "#ff7a45",
+          "#34d399",
+          "#60a5fa",
+          "#e5e5e5"
+        ]
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "chart-treemap-drill",
     "name": "Drill-down Treemap",
     "tier": "pro",
