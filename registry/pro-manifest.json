@@ -18811,6 +18811,88 @@
     ]
   },
   {
+    "slug": "legal-signature-request",
+    "name": "Signature Request Composer",
+    "tier": "pro",
+    "platform": "web",
+    "category": "forms",
+    "description": "Prepare a document, signer order and reviewed signature-request payload. A considered, responsive legal workspace with typed integration points.",
+    "tags": [
+      "legal-tech",
+      "workflow",
+      "responsive",
+      "keyboard",
+      "forms"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "light",
+    "previewHeight": 1300,
+    "usage": "import { SignatureRequest } from \"@/components/design-for-ai/legal-signature-request\";\n\n<SignatureRequest />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Main heading."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "description": "Supporting context."
+      },
+      {
+        "name": "documents",
+        "type": "SigningDocument[]",
+        "description": "Available document revisions with unique IDs and positive page counts. The host owns the document bytes and signature fields."
+      },
+      {
+        "name": "defaultRecipients",
+        "type": "SigningRecipient[]",
+        "description": "Initial signer rows. Each signer needs a unique ID and email."
+      },
+      {
+        "name": "referenceDate",
+        "type": "string",
+        "description": "ISO date for expiry validation."
+      },
+      {
+        "name": "onCreate",
+        "type": "(request:SignatureRequestDraft)=>void|Promise<void>",
+        "description": "Prepare the reviewed request with the signing provider. Delivery, authentication and legal execution remain the host’s responsibility."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"light\"",
+        "description": "Surface, border and ink palette."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:350",
+        "click:@up-1",
+        "wait:600",
+        "click:@review",
+        "wait:1200"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "light"
+      }
+    ]
+  },
+  {
     "slug": "legal-version-history",
     "name": "Document Revision Review",
     "tier": "pro",
