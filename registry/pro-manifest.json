@@ -17553,6 +17553,91 @@
     ]
   },
   {
+    "slug": "hr-leave-approval",
+    "name": "Leave Approval Workspace",
+    "tier": "pro",
+    "platform": "web",
+    "category": "date-time",
+    "description": "Inspect requests, remaining allowance and coverage before a decision. A considered, responsive hr workspace with typed integration points.",
+    "tags": [
+      "hr",
+      "workflow",
+      "responsive",
+      "keyboard",
+      "date-time"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "light",
+    "previewHeight": 1160,
+    "usage": "import { LeaveApproval } from \"@/components/design-for-ai/hr-leave-approval\";\n\n<LeaveApproval />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Main heading."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "description": "Supporting context."
+      },
+      {
+        "name": "requests",
+        "type": "LeaveRequest[]",
+        "description": "Unique pending requests. Each date occurs once and uses one half-day unit or two full-day units; the host supplies chargeable working days."
+      },
+      {
+        "name": "balances",
+        "type": "LeaveBalance[]",
+        "description": "Unique employee allowance balances in non-negative half-day units before these pending requests."
+      },
+      {
+        "name": "coverage",
+        "type": "LeaveCoverage[]",
+        "description": "Unique team/date coverage rows before pending requests, expressed in half-person-day units."
+      },
+      {
+        "name": "onDecision",
+        "type": "(decision:LeaveDecision)=>void|Promise<void>",
+        "description": "Persist a manager decision. Acknowledged approvals consume local allowance and coverage, preventing conflicting follow-on approvals."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"light\"",
+        "description": "Surface, border and ink palette."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:350",
+        "click:@request-2",
+        "wait:650",
+        "click:@request-0",
+        "click:@approve",
+        "wait:450",
+        "click:@confirm",
+        "wait:1000"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "light"
+      }
+    ]
+  },
+  {
     "slug": "input-ai-prompt",
     "name": "AI Prompt Composer",
     "tier": "pro",
