@@ -86,6 +86,26 @@ async function stableAccessibility(frame) {
   return { violations: await accessibility(frame), transient: first };
 }
 
+async function screenshotTouch(page, frame, file) {
+  // A body screenshot inside an 844px iframe clips everything below that frame.
+  // Expand only for the capture, then restore the measured viewport for checks.
+  const height = await frame.evaluate(() =>
+    Math.max(
+      844,
+      document.documentElement.scrollHeight,
+      document.body.scrollHeight,
+    ),
+  );
+  await page.evaluate((height) => {
+    document.querySelector("iframe").style.height = `${height}px`;
+  }, height);
+  await frame.waitForTimeout(100);
+  await page.screenshot({ path: file, fullPage: true });
+  await page.evaluate(() => {
+    document.querySelector("iframe").style.height = "844px";
+  });
+}
+
 const browser = await launchChromium();
 let cursor = 0;
 const results = [];
@@ -210,9 +230,7 @@ try {
             const scan = await stableAccessibility(content);
             const measurement = await geometry(content);
             result.themes.push({ theme, ...measurement, ...scan });
-            await content
-              .locator("body")
-              .screenshot({ path: path.join(dir, `${theme}-touch.png`) });
+            await screenshotTouch(touch, content, path.join(dir, `${theme}-touch.png`));
             await touch.setViewportSize({ width: 320, height: 844 });
             await content.waitForTimeout(350);
             result.viewports.push({
@@ -221,9 +239,7 @@ try {
               theme,
               ...(await geometry(content)),
             });
-            await content
-              .locator("body")
-              .screenshot({ path: path.join(dir, `${theme}-touch-320.png`) });
+            await screenshotTouch(touch, content, path.join(dir, `${theme}-touch-320.png`));
             await touch.setViewportSize({ width: 390, height: 844 });
           }
         } catch (error) {
