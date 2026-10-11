@@ -8143,7 +8143,7 @@
       "motion"
     ],
     "theme": "dark",
-    "previewHeight": 900,
+    "previewHeight": 940,
     "usage": "import { StatusPage } from \"@/components/design-for-ai/devtools-status-page\";\n\n<StatusPage\n  product=\"ledgerline\"\n  state=\"degraded\"\n  showBars\n  onSubscribe={(email) => save(email)}\n/>\n\n// Each component is 90 days. Pointing at a bar names that day.\n// Subscribe keeps its box and swaps the label for a check.",
     "props": [
       {
@@ -8174,7 +8174,7 @@
         "name": "accent",
         "type": "string",
         "default": "\"#7cc4ff\"",
-        "description": "The degraded signal: the status dot, the Degraded label and the latest incident mark. Up and down stay semantic."
+        "description": "The degraded signal: the status dot, the Degraded label, degraded days, and the latest incident mark. The day under the pointer is ink. Up and down stay semantic."
       },
       {
         "name": "onSubscribe",
