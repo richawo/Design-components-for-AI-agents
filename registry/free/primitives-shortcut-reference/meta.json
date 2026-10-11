@@ -1,0 +1,73 @@
+{
+  "slug": "primitives-shortcut-reference",
+  "name": "Shortcut Reference",
+  "tier": "free",
+  "platform": "web",
+  "category": "primitives",
+  "description": "A searchable shortcut reference with engraved keycaps and grouped commands, built for help panels and desktop-style web applications.",
+  "tags": [
+    "primitives",
+    "primitives",
+    "shortcut",
+    "reference",
+    "responsive",
+    "keyboard"
+  ],
+  "dependencies": [
+    "motion",
+    "lucide-react"
+  ],
+  "theme": "dark",
+  "previewHeight": 720,
+  "usage": "import { ShortcutReference } from \"@/components/design-for-ai/primitives-shortcut-reference\";\n\n<ShortcutReference />",
+  "props": [
+    {
+      "name": "title",
+      "type": "string",
+      "default": "\"Make yourself quicker.\"",
+      "description": "Panel headline."
+    },
+    {
+      "name": "items",
+      "type": "ShortcutEntry[]",
+      "default": "five sample Mac shortcuts",
+      "description": "Grouped command labels and display key sequences. Display only; no global shortcuts are registered."
+    },
+    {
+      "name": "searchPlaceholder",
+      "type": "string",
+      "default": "\"Find a shortcut\"",
+      "description": "Search label and prompt."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Surface and ink palette; the demo stage follows the chosen theme."
+    }
+  ],
+  "added": "2026-10-11",
+  "demo": {
+    "steps": [
+      "wait:500",
+      "click:@shortcut-search",
+      "type:Writing",
+      "wait:700",
+      "click:@clear-query",
+      "wait:700"
+    ],
+    "loop": false
+  },
+  "controls": [
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        "dark",
+        "light"
+      ],
+      "default": "dark"
+    }
+  ]
+}
