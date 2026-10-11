@@ -16,6 +16,7 @@ const publicCases = [
   "ime-probe",
   "expansion-inputs-probe",
   "demo-editing-probe",
+  "preview-cascade-probe",
 ];
 const cases = [...publicCases];
 if (fs.existsSync(path.join(root, "registry/pro/devtools-webhook-inspector")))
