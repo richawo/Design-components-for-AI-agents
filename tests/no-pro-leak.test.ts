@@ -11,7 +11,27 @@ import { describe, expect, it } from "vitest";
 const root = path.resolve(__dirname, "..");
 const tracked = execSync("git ls-files", { cwd: root, encoding: "utf8" }).split("\n").filter(Boolean);
 const manifest: { slug: string; usage: string }[] = JSON.parse(fs.readFileSync(path.join(root, "registry/pro-manifest.json"), "utf8"));
-const proNames = manifest.map((m) => /import \{ (\w+) \}/.exec(m.usage)?.[1]).filter((n): n is string => !!n);
+function componentImports(usage: string) {
+  return [...usage.matchAll(/import\s+(?:type\s+)?\{([^}]+)\}\s*from\s*["']([^"']+)["']/g)]
+    .filter((match) => match[2].includes("components/design-for-ai/"))
+    .flatMap((match) => match[1].split(",").map((name) => name.trim().replace(/^type\s+/, "").split(/\s+as\s+/)[0].trim()).filter(Boolean));
+}
+const importsByComponent = manifest.map((m) => componentImports(m.usage));
+const proNames = [...new Set(importsByComponent.flat())];
+
+describe("Pro usage import detection", () => {
+  it("checks every component name in compound, aliased and type imports", () => {
+    expect(componentImports(`import {
+  BentoGrid as Grid, TrendTile, type MapTileProps,
+} from "@/components/design-for-ai/bento-grid";
+import type { TrendTileProps as Props } from "@/components/design-for-ai/bento-grid";
+import { MapPin } from "lucide-react";`)).toEqual(["BentoGrid", "TrendTile", "MapTileProps", "TrendTileProps"]);
+  });
+
+  it("does not treat unrelated imports as Pro names", () => {
+    expect(componentImports('import { Copy } from "lucide-react"; import { Header } from "./header";')).toEqual([]);
+  });
+});
 
 describe("no Pro source in the public repository", () => {
   it("tracks nothing under registry/pro", () => {
@@ -24,7 +44,7 @@ describe("no Pro source in the public repository", () => {
   });
 
   it("defines no Pro component in any tracked source file", () => {
-    expect(proNames.length).toBe(manifest.length);
+    expect(manifest.filter((_, i) => importsByComponent[i].length === 0).map((m) => m.slug)).toEqual([]);
     const code = tracked.filter((f) => /\.(tsx?|jsx?|mjs|html)$/.test(f) && !f.startsWith("tests/"));
     const hits: string[] = [];
     for (const f of code) {
