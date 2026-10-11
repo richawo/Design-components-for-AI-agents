@@ -14,11 +14,14 @@ const publicCases = [
   "new-free-probe",
   "table-probe",
   "ime-probe",
+  "expansion-inputs-probe",
 ];
 const cases = [...publicCases];
 if (fs.existsSync(path.join(root, "registry/pro/devtools-webhook-inspector")))
   cases.push("webhook-probe", "focus-probe", "chart-data-probe");
-else
+if (fs.existsSync(path.join(root, "registry/pro/content-release-notes")))
+  cases.push("expansion-pro-probe");
+if (cases.length === publicCases.length)
   console.log(
     "Pro integration cases skipped: private sources are not checked out.",
   );
