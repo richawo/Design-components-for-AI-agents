@@ -4,6 +4,21 @@ export const COLLAPSED_KEY = "dfa:browser-collapsed-groups";
 export const SCROLL_KEY = "dfa:browser-sidebar-scroll";
 export const FILTER_KEY = "dfa:browser-filters";
 
+/** An explicit browsing link takes precedence over remembered filters. */
+export function galleryFilters(search: URLSearchParams, saved: string | null): { q: string; tier: "all" | "free" | "pro" } {
+  if (!search.has("tier") && !search.has("q")) return parseFilters(saved);
+  const tier = search.get("tier");
+  return { q: search.get("q") ?? "", tier: tier === "free" || tier === "pro" ? tier : "all" };
+}
+
+export function filterHref(search: string, q: string, tier: "all" | "free" | "pro") {
+  const params = new URLSearchParams(search);
+  if (q.trim()) params.set("q", q); else params.delete("q");
+  if (tier === "all") params.delete("tier"); else params.set("tier", tier);
+  const value = params.toString();
+  return value ? `/components?${value}` : "/components";
+}
+
 export const ALL_ROW_ID = "all";
 
 export function groupRowId(label: string) {

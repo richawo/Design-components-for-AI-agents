@@ -304,7 +304,7 @@ export default async function HomePage() {
                 <Link href="/pricing" className="site-btn site-btn-primary h-12 px-6 text-[15px]">
                   See pricing
                 </Link>
-                <Link href="/components" className="site-btn site-btn-secondary h-12 px-6 text-[15px]">
+                <Link href="/components?tier=free" className="site-btn site-btn-secondary h-12 px-6 text-[15px]">
                   Start free
                 </Link>
               </div>

@@ -7,7 +7,8 @@ import {
   FILTER_KEY,
   clampResultsScroll,
   galleryHref,
-  parseFilters,
+  galleryFilters,
+  filterHref,
   readCategoryParam,
   resultsScrollTop,
   sidebarScrollRoom,
@@ -21,10 +22,10 @@ type Cat = { key: string; label: string; count: number };
 /** The first cards' stagger continues on from the page header and toolbar. */
 const FIRST_CARD_STEP = 4;
 
-export function ComponentBrowser({ cards, categories, category }: { cards: CardData[]; categories: Cat[]; category: string }) {
+export function ComponentBrowser({ cards, categories, category, initialFilters }: { cards: CardData[]; categories: Cat[]; category: string; initialFilters?: { q: string; tier: "all" | "free" | "pro" } }) {
   const router = useRouter();
-  const [q, setQ] = useState("");
-  const [tier, setTier] = useState<"all" | "free" | "pro">("all");
+  const [q, setQ] = useState(initialFilters?.q ?? "");
+  const [tier, setTier] = useState<"all" | "free" | "pro">(initialFilters?.tier ?? "all");
   const [filtersReady, setFiltersReady] = useState(false);
   const [cat, setCatState] = useState(category);
   // The click updates the grid immediately. The URL follows, and a slower
@@ -44,7 +45,9 @@ export function ComponentBrowser({ cards, categories, category }: { cards: CardD
   // Search and tier live for the tab. Coming back from a component remounts
   // this view, and the category is already in the URL.
   useLayoutEffect(() => {
-    const saved = parseFilters(sessionStorage.getItem(FILTER_KEY));
+    let stored: string | null = null;
+    try { stored = sessionStorage.getItem(FILTER_KEY); } catch {}
+    const saved = galleryFilters(new URLSearchParams(window.location.search), stored);
     setQ(saved.q);
     setTier(saved.tier);
     setFiltersReady(true);
@@ -55,6 +58,8 @@ export function ComponentBrowser({ cards, categories, category }: { cards: CardD
     try {
       sessionStorage.setItem(FILTER_KEY, JSON.stringify({ q, tier }));
     } catch {}
+    const href = filterHref(window.location.search, q, tier);
+    if (`${window.location.pathname}${window.location.search}` !== href) window.history.replaceState(window.history.state, "", `${href}${window.location.hash}`);
   }, [q, tier, filtersReady]);
 
   useEffect(() => {
@@ -68,6 +73,9 @@ export function ComponentBrowser({ cards, categories, category }: { cards: CardD
       const next = readCategoryParam(new URLSearchParams(window.location.search).get("category"), new Set(categories.map((c) => c.key)));
       pending.current = next;
       setCatState(next);
+      const filters = galleryFilters(new URLSearchParams(window.location.search), null);
+      setQ(filters.q);
+      setTier(filters.tier);
     };
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);
@@ -176,8 +184,18 @@ export function ComponentBrowser({ cards, categories, category }: { cards: CardD
               <button
                 key={t}
                 role="radio"
+                tabIndex={tier === t ? 0 : -1}
                 aria-checked={tier === t}
                 onClick={() => setTier(t)}
+                onKeyDown={(event) => {
+                  const choices = ["all", "free", "pro"] as const;
+                  const direction = event.key === "ArrowRight" || event.key === "ArrowDown" ? 1 : event.key === "ArrowLeft" || event.key === "ArrowUp" ? -1 : 0;
+                  if (!direction || event.altKey || event.ctrlKey || event.metaKey) return;
+                  event.preventDefault();
+                  const next = (choices.indexOf(t) + direction + choices.length) % choices.length;
+                  setTier(choices[next]);
+                  event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>("[role='radio']")[next]?.focus();
+                }}
                 className={`relative flex-1 rounded-lg px-4 text-[13px] font-medium capitalize transition-colors duration-150 ${tier === t ? "text-site-fg" : "text-site-fg-3 hover:text-site-fg-2"}`}
               >
                 {tier === t && (

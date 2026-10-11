@@ -75,7 +75,7 @@ export function PricingPlans({ counts, prices }: { counts: Counts; prices: Recor
           blurb="The open core. MIT licensed, no account, no email."
           features={features.free}
           cta={
-            <Link href="/components" className="site-btn site-btn-secondary h-11 w-full text-[14px]">
+            <Link href="/components?tier=free" className="site-btn site-btn-secondary h-11 w-full text-[14px]">
               Browse free components
             </Link>
           }

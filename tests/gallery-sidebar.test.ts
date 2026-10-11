@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
   galleryHref,
+  galleryFilters,
+  filterHref,
   groupRowId,
   itemRowId,
   moveSidebarRow,
@@ -65,6 +67,15 @@ describe("collapsed groups", () => {
 });
 
 describe("gallery filters", () => {
+  it("an explicit Free entry overrides a remembered Pro search", () => {
+    expect(galleryFilters(new URLSearchParams("tier=free"), '{"q":"candlestick","tier":"pro"}')).toEqual({ q: "", tier: "free" });
+    expect(galleryFilters(new URLSearchParams("tier=free&q=chart"), null)).toEqual({ q: "chart", tier: "free" });
+    expect(galleryFilters(new URLSearchParams(), '{"q":"chart","tier":"pro"}')).toEqual({ q: "chart", tier: "pro" });
+  });
+  it("keeps search and tier in the URL without dropping the chosen category", () => {
+    expect(filterHref("?category=charts", "price", "free")).toBe("/components?category=charts&q=price&tier=free");
+    expect(filterHref("?q=old&tier=pro&category=charts", "", "all")).toBe("/components?category=charts");
+  });
   it("restores a search and tier, and ignores junk", () => {
     expect(parseFilters('{"q":"chart","tier":"pro"}')).toEqual({ q: "chart", tier: "pro" });
     expect(parseFilters('{"q":"chart","tier":"nope"}')).toEqual({ q: "chart", tier: "all" });
