@@ -1,7 +1,7 @@
 /* Keep registry variants above shell utilities regardless of chunk order. */
 @layer theme, base, components, utilities, registry;
+@import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/utilities.css" layer(registry) source(none);
-@reference "../globals.css";
 @source "../../registry/free";
 @source "../../registry/pro";
 @theme {

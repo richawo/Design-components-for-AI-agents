@@ -6,6 +6,7 @@ if(fs.existsSync('registry/pro/fashion-launch-calendar')){
  try{for(const reducedMotion of ['reduce','no-preference']){
   const page=await browser.newPage({viewport:{width:1440,height:980},reducedMotion});
   await page.goto(base+'/preview/fashion-launch-calendar',{waitUntil:'networkidle'});
+  assert.match(await page.locator("h2").evaluate(e=>getComputedStyle(e).fontFamily),/Instrument Serif/,"Preview font tokens must be emitted even when absent from the shell");
   const day=page.locator('[data-demo="day-20"]');assert.equal(await day.isVisible(),true,'Desktop calendar must survive shell CSS ordering');
   await day.click();assert.match(await page.locator('section').innerText(),/Wholesale appointments/);
   await page.setViewportSize({width:390,height:900});assert.equal(await day.isVisible(),false);
