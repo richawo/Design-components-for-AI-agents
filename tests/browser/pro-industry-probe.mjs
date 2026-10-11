@@ -128,23 +128,85 @@ try {
     .fill("Product,SKU,Unit price\nOne,SAME,10\nTwo,SAME,20");
   await page.getByRole("button", { name: "Read CSV" }).click();
   assert.match(await page.getByRole("alert").innerText(), /SKU must be unique/);
-  await fixture("commerce-variant-stock", `window.saves=[];window.attempt=0;createRoot(document.getElementById('root')).render(<Subject.VariantStock onSave={async rows=>{window.saves.push(rows);if(window.attempt++===0)throw Error('offline')}}/>);`);
-  const stock = page.getByRole("spinbutton", { name: "Ink / XL stock", exact: true });
+  await fixture(
+    "commerce-variant-stock",
+    `window.saves=[];window.attempt=0;createRoot(document.getElementById('root')).render(<Subject.VariantStock onSave={async rows=>{window.saves.push(rows);if(window.attempt++===0)throw Error('offline')}}/>);`,
+  );
+  const stock = page.getByRole("spinbutton", {
+    name: "Ink / XL stock",
+    exact: true,
+  });
   await stock.fill("12");
   await page.getByRole("button", { name: "Save stock" }).click();
   await page.waitForTimeout(100);
-  assert.match(await page.getByRole("status").innerText(), /could not be saved/);
+  assert.match(
+    await page.getByRole("status").innerText(),
+    /could not be saved/,
+  );
   assert.equal(await stock.inputValue(), "12");
   await page.getByRole("button", { name: "Save stock" }).click();
   await page.waitForTimeout(100);
   assert.match(await page.getByRole("status").innerText(), /levels saved/);
   assert.equal(await page.evaluate(() => window.saves[1][0].stock.xl), 12);
-  assert.equal(await page.getByRole("button", { name: "Save stock" }).isDisabled(), true);
+  assert.equal(
+    await page.getByRole("button", { name: "Save stock" }).isDisabled(),
+    true,
+  );
   await stock.fill("1.5");
-  assert.equal(await page.getByRole("button", { name: "Save stock" }).isDisabled(), true);
+  assert.equal(
+    await page.getByRole("button", { name: "Save stock" }).isDisabled(),
+    true,
+  );
   assert.match(await page.getByRole("alert").innerText(), /whole number/);
   await page.getByRole("button", { name: "Reset", exact: true }).click();
-  assert.equal(await stock.inputValue(), "12", "reset returns to the last acknowledged save");
+  assert.equal(
+    await stock.inputValue(),
+    "12",
+    "reset returns to the last acknowledged save",
+  );
+  await fixture(
+    "finance-reconciliation",
+    `window.matches=[];window.attempt=0;createRoot(document.getElementById('root')).render(<Subject.Reconciliation onMatch={async match=>{window.matches.push(match);if(window.attempt++===0)throw Error('offline')}}/>);`,
+  );
+  await page
+    .getByRole("checkbox", {
+      name: "Select Northline / online store",
+      exact: true,
+    })
+    .check();
+  assert.equal(
+    await page.getByRole("button", { name: "Record match" }).isDisabled(),
+    true,
+  );
+  await page.getByRole("button", { name: "Select same reference" }).click();
+  assert.equal(
+    await page.getByRole("button", { name: "Record match" }).isEnabled(),
+    true,
+  );
+  await page.getByRole("button", { name: "Record match" }).click();
+  await page.waitForTimeout(100);
+  assert.match(
+    await page.getByRole("status").innerText(),
+    /could not be recorded/,
+  );
+  assert.equal(await page.getByRole("checkbox").nth(0).isChecked(), true);
+  await page.getByRole("button", { name: "Record match" }).click();
+  await page.waitForTimeout(100);
+  assert.deepEqual(await page.evaluate(() => window.matches[1]), {
+    statementId: "s1",
+    ledgerIds: ["l1", "l2"],
+  });
+  await page.getByRole("radio", { name: "Cedar Studio", exact: true }).check();
+  assert.equal(await page.getByRole("checkbox").nth(0).isDisabled(), true);
+  assert.equal(await page.getByRole("checkbox").nth(1).isDisabled(), true);
+  await fixture(
+    "finance-reconciliation",
+    `createRoot(document.getElementById('root')).render(<Subject.Reconciliation statement={[{id:'max',label:'Exact large amount',reference:'R',date:'Today',amountMinor:9007199254740991}]} ledger={[]}/>);`,
+  );
+  assert.match(
+    await page.locator("section").innerText(),
+    /90,071,992,547,409.91/,
+  );
   assert.deepEqual(errors, []);
   console.log("Pro industry workflows: behavioral regression checks passed.");
 } finally {

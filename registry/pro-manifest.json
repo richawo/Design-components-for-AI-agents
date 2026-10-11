@@ -13777,6 +13777,102 @@
     ]
   },
   {
+    "slug": "finance-reconciliation",
+    "name": "Settlement Reconciliation",
+    "tier": "pro",
+    "platform": "web",
+    "category": "billing",
+    "description": "A statement-to-ledger workbench with split matches, exact minor-unit totals, reference selection and an awaited reconciliation action with retry.",
+    "tags": [
+      "billing",
+      "workflow",
+      "interactive",
+      "responsive",
+      "keyboard",
+      "finance",
+      "ledger",
+      "reconciliation",
+      "e-commerce"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 860,
+    "usage": "import { Reconciliation } from \"@/components/design-for-ai/finance-reconciliation\";\n\n<Reconciliation />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Workbench heading."
+      },
+      {
+        "name": "statement",
+        "type": "ReconciliationEntry[]",
+        "description": "Statement entries with unique IDs, display date, reference and safe integer amounts in minor units."
+      },
+      {
+        "name": "ledger",
+        "type": "ReconciliationEntry[]",
+        "description": "Available ledger entries in the same currency and minor-unit scale as the statement."
+      },
+      {
+        "name": "defaultMatches",
+        "type": "ReconciliationMatch[]",
+        "description": "Previously reconciled statement/ledger ID groups. Ledger IDs must belong to at most one match."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"GBP\"",
+        "description": "ISO currency code for display; this component performs no currency conversion."
+      },
+      {
+        "name": "minorUnitDigits",
+        "type": "0 | 2 | 3",
+        "default": "2",
+        "description": "Explicit scale of integer amounts. Use 0 for whole units or 3 for thousandths."
+      },
+      {
+        "name": "onMatch",
+        "type": "(match: ReconciliationMatch) => void | Promise<void>",
+        "description": "Awaited persistence callback. The host must enforce permissions and prevent duplicate ledger assignments atomically."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface and ink palette; the preview stage follows it."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:500",
+        "click:@match-reference",
+        "wait:600",
+        "click:@record-match",
+        "wait:1200",
+        "click:@statement-1",
+        "wait:600"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "footer-ascii-wordmark",
     "name": "ASCII Wordmark Footer",
     "tier": "pro",
