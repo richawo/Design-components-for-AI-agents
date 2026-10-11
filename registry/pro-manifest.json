@@ -15622,6 +15622,90 @@
     ]
   },
   {
+    "slug": "finance-receivables-aging",
+    "name": "Receivables Aging Board",
+    "tier": "pro",
+    "platform": "web",
+    "category": "billing",
+    "description": "Overdue buckets, customer balances and a reviewed follow-up request. A considered, responsive finance workspace with typed integration points.",
+    "tags": [
+      "finance",
+      "workflow",
+      "responsive",
+      "keyboard",
+      "billing"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 1160,
+    "usage": "import { ReceivablesAging } from \"@/components/design-for-ai/finance-receivables-aging\";\n\n<ReceivablesAging />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Main heading."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "description": "Supporting context."
+      },
+      {
+        "name": "invoices",
+        "type": "OpenReceivable[]",
+        "description": "Unique invoices with civil YYYY-MM-DD due dates and non-negative safe integer amounts and payments in two-decimal minor units. Payments cannot exceed the amount."
+      },
+      {
+        "name": "referenceDate",
+        "type": "string",
+        "description": "Host-supplied aging date, YYYY-MM-DD from 2000 through 2100."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "description": "Shared ISO currency using two-decimal minor units."
+      },
+      {
+        "name": "onCreateFollowUp",
+        "type": "(draft:ReceivableFollowUp)=>void|Promise<void>",
+        "description": "Create a reviewed follow-up draft. The host owns recipient resolution and any later sending."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface, border and ink palette."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@bucket-2",
+        "wait:650",
+        "click:@review",
+        "wait:600",
+        "click:@create",
+        "wait:1000"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "finance-reconciliation",
     "name": "Settlement Reconciliation",
     "tier": "pro",
