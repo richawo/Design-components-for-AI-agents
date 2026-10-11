@@ -1,0 +1,90 @@
+{
+  "slug": "feedback-empty-search",
+  "name": "Editorial Empty Search",
+  "tier": "free",
+  "platform": "web",
+  "category": "feedback",
+  "description": "A considered no-results state with a drawn document stack, readable query context and actionable suggestions, designed for search and knowledge libraries.",
+  "tags": [
+    "feedback",
+    "feedback",
+    "empty",
+    "search",
+    "responsive",
+    "keyboard"
+  ],
+  "dependencies": [
+    "motion",
+    "lucide-react"
+  ],
+  "theme": "dark",
+  "previewHeight": 680,
+  "usage": "import { EmptySearch } from \"@/components/design-for-ai/feedback-empty-search\";\n\n<EmptySearch />",
+  "props": [
+    {
+      "name": "query",
+      "type": "string",
+      "default": "\"kinetic typography\"",
+      "description": "The search phrase that returned no results."
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "default": "\"Nothing here. Yet.\"",
+      "description": "Empty-state heading."
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "default": "broader search guidance",
+      "description": "Helpful next-step copy."
+    },
+    {
+      "name": "suggestions",
+      "type": "SearchSuggestion[]",
+      "default": "three design topics",
+      "description": "Suggested queries as label/query pairs."
+    },
+    {
+      "name": "onSearch",
+      "type": "(query: string) => void",
+      "default": "undefined",
+      "description": "Runs the chosen suggestion; buttons disable without a handler."
+    },
+    {
+      "name": "onClear",
+      "type": "() => void",
+      "default": "undefined",
+      "description": "Clears the host search; disabled without a handler."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Surface and ink palette; the demo stage follows the chosen theme."
+    }
+  ],
+  "added": "2026-10-11",
+  "demo": {
+    "steps": [
+      "wait:700",
+      "click:@suggestion-0",
+      "wait:700",
+      "click:@suggestion-1",
+      "wait:700"
+    ],
+    "loop": false
+  },
+  "controls": [
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        "dark",
+        "light"
+      ],
+      "default": "dark"
+    }
+  ]
+}
