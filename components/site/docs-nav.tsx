@@ -21,7 +21,7 @@ export function DocsNav({ groups, scope }: { groups: { section: string; docs: { 
                   <Link
                     href={href}
                     aria-current={active ? "page" : undefined}
-                    className={`group relative block rounded-xl px-3 py-1.5 text-[14px] transition-colors duration-150 ${active ? "font-medium text-site-fg" : "text-site-fg-2 hover:bg-white/[0.04] hover:text-site-fg"}`}
+                    className={`group relative flex min-h-11 items-center rounded-xl px-3 py-2 text-[14px] transition-colors duration-150 ${active ? "font-medium text-site-fg" : "text-site-fg-2 hover:bg-white/[0.04] hover:text-site-fg"}`}
                   >
                     {active && (
                       <motion.span

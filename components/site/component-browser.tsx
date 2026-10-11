@@ -140,14 +140,15 @@ export function ComponentBrowser({ cards, categories, category, initialFilters }
       <CategorySidebar categories={categories} total={cards.length} active={cat} onSelect={setCat} />
       <div className="min-w-0">
         <div className="site-in flex flex-col gap-3 [--i:3] sm:flex-row">
-          <label className="group/search relative flex-1">
-            <span className="sr-only">Search components</span>
+          <div className="group/search relative flex-1">
+            <label htmlFor="component-search" className="sr-only">Search components</label>
             <svg viewBox="0 0 20 20" className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-site-fg-3 transition-colors group-focus-within/search:text-site-fg-2" fill="none" aria-hidden="true">
               <circle cx="9" cy="9" r="6" stroke="currentColor" strokeWidth="1.6" />
               <path d="M13.5 13.5L17 17" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
             </svg>
             <input
               ref={input}
+              id="component-search"
               type="search"
               value={q}
               onChange={(e) => setQ(e.target.value)}
@@ -179,7 +180,7 @@ export function ComponentBrowser({ cards, categories, category, initialFilters }
                 /
               </kbd>
             )}
-          </label>
+          </div>
           <SegmentedControl
             label="Tier"
             value={tier}
@@ -213,8 +214,8 @@ export function ComponentBrowser({ cards, categories, category, initialFilters }
             </AnimatePresence>
           </motion.div>
         ) : (
-          <div className="site-rise mt-4 rounded-[18px] border border-dashed border-white/10 p-12 text-center">
-            <p className="text-lg font-medium tracking-[-0.02em]">{q ? <>Nothing matches “{q}”.</> : "Nothing in this combination yet."}</p>
+          <div className="site-rise mt-4 rounded-[18px] border border-dashed border-white/10 p-6 text-center sm:p-12">
+            <p className="break-words text-lg font-medium tracking-[-0.02em]">{q ? <>Nothing matches “{q}”.</> : "Nothing in this combination yet."}</p>
             <p className="mt-2 text-[14px] text-site-fg-3">Try a broader word, or ask for it on GitHub.</p>
             <button
               type="button"
@@ -223,7 +224,7 @@ export function ComponentBrowser({ cards, categories, category, initialFilters }
                 setTier("all");
                 setCat("all");
               }}
-              className="site-btn site-btn-secondary mt-5 h-9 px-4 text-[13px]"
+              className="site-btn site-btn-secondary mt-5 h-11 px-4 text-[13px]"
             >
               Clear filters
             </button>
