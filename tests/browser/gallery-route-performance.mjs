@@ -7,7 +7,10 @@ import { launchChromium } from "../../scripts/lib/browser.mjs";
 const base = process.env.PERF_BASE || "http://localhost:3225";
 const out = process.env.PERF_OUT || "test-results/site-performance/gallery-route.json";
 const negative = process.env.PERF_NEGATIVE === "1";
-const browser = await launchChromium();
+const native = process.env.PERF_NATIVE === "1";
+const cpu = Number(process.env.PERF_CPU || 4);
+fs.mkdirSync(path.dirname(out), { recursive: true });
+const browser = await launchChromium(native ? { args: [] } : {});
 const reports = [];
 try {
   for (const origin of ["/pricing", "/"]) {
@@ -16,7 +19,7 @@ try {
     const cdp = await context.newCDPSession(page);
     await cdp.send("Network.enable");
     await cdp.send("Network.emulateNetworkConditions", { offline: false, latency: 80, downloadThroughput: 625000, uploadThroughput: 312500 });
-    await cdp.send("Emulation.setCPUThrottlingRate", { rate: 4 });
+    await cdp.send("Emulation.setCPUThrottlingRate", { rate: cpu });
     const errors = [];
     page.on("pageerror", e => errors.push(e.message));
     await page.addInitScript(({ negative }) => {
@@ -75,7 +78,6 @@ try {
       }
       reports.push({ origin, visit, ...result, errors: [...errors] });
       if (visit === "first") {
-        fs.mkdirSync(path.dirname(out), { recursive: true });
         await page.screenshot({ path: out.replace(/\.json$/, `-${origin === "/" ? "home" : "pricing"}.png`) });
         await page.locator('header nav a[href="/pricing"]').click();
         await page.waitForURL("**/pricing");
@@ -85,7 +87,6 @@ try {
   }
 } finally { await browser.close(); }
 const observed = Object.fromEntries(["firstFrame", "secondFrame", "cardsReady", "cardsSecondFrame", "longTaskMax"].map(key => [key, Math.max(...reports.map(r => r[key]))]));
-const result = { environment: { viewport: "1440x900", cpu: 4, latency: 80, mbps: 5, renderer: "SwiftShader", negative }, summary: { ok: reports.every(r => !r.errors.length && r.cardsSecondFrame < 350 && r.secondFrame < 200), observed }, reports };
-fs.mkdirSync(path.dirname(out), { recursive: true });
+const result = { environment: { viewport: "1440x900", cpu, latency: 80, mbps: 5, renderer: native ? "browser default" : "SwiftShader", negative }, summary: { ok: reports.every(r => !r.errors.length && r.cardsSecondFrame < 350 && r.secondFrame < 200), observed }, reports };
 fs.writeFileSync(out, JSON.stringify(result, null, 2));
 console.log(JSON.stringify(result, null, 2));

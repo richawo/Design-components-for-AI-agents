@@ -1,6 +1,6 @@
 # Site performance and preview preferences
 
-Verified on 11 October 2026. The changes preserve the existing navigation,
+Updated on 12 October 2026. The changes preserve the existing navigation,
 preview controls and visible animation design.
 
 ## Loading and navigation
@@ -25,6 +25,73 @@ preview controls and visible animation design.
   uncompressed sizes, not network transfer claims.
 
 ## Replay evidence
+
+### First navigation into Components
+
+The new `gallery-route-performance.mjs` replay follows the actual header links
+from Pricing and Home, first in a fresh context and then on a repeat visit.
+It records click feedback, card DOM readiness, the following animation frame,
+long tasks and the catalogue request timeline. It never inserts fallback links.
+The existing entrance animations remain; card readiness does not mean the
+700 ms decorative entrance has finished or prove physical screen presentation.
+
+Components reads query filters on the server, making its route dynamic. Default
+Link prefetch downloaded only a small shell, leaving a 163 KB decoded catalogue
+(roughly 37 KB transferred locally) to download on every click. The header and
+homepage primary link now request a full prefetch. This follows
+[Next.js's prefetch behaviour](https://nextjs.org/docs/app/guides/prefetching)
+while retaining server-rendered filters and deep links. Desktop and mobile
+checks verify the complete payload arrives before the click and that navigation
+reuses it. Progressive rendering still starts with 12 cards, and all 243 entries
+in this test catalogue remain reachable.
+
+The background trace also exposed two identical initial rasterisations: an
+explicit mount draw followed by the first ResizeObserver notification. The
+observer now supplies the initial size, avoiding that forced size read, and
+unchanged pixel dimensions skip repeat work. The browser test requires exactly
+one initial draw and one redraw on resize. Pixels match the original recipe
+exactly at desktop/mobile widths and device pixel ratios 1 and 2.
+
+All timing runs use 80 ms latency and 5 Mbps. Local timing remains sensitive to
+other GPU-heavy tasks on this shared computer:
+
+| Run | Max first / second click frame | Max cards + following frame | Max long task |
+| --- | --- | --- | --- |
+| Before, 4x CPU / SwiftShader | 178 / 192 ms | 519 ms | 198 ms |
+| Prefetch only, same setup | 154 / 371 ms | 433 ms | 180 ms |
+| Both fixes, same setup | 799 / 886 ms | 886 ms | 152 ms |
+| Both fixes, 4x CPU / browser renderer | 44 / 52 ms | 406 ms | 139 ms |
+| Both fixes, normal CPU / browser renderer | 37 / 39 ms | 95 ms | 0 ms |
+
+The normal-device run passes the 200 ms click-feedback and 350 ms card-readiness
+budgets: first visits were 86/95 ms and repeat visits 38/39 ms. It is a separate
+environment, not a before/after speedup claim. The stressed runs still fail the
+card budget, and the final software-renderer run regresses versus the earlier
+after-run. Those failures are retained. Verified wins are elimination of the
+click-time catalogue round trip after prefetch and the redundant rasterisation;
+these samples do not establish a uniform latency percentage across devices.
+The final 4x CPU negative control deliberately blocks the click for 300 ms and
+correctly fails: 363 / 370 ms feedback, 720 ms cards and a 336 ms long task.
+The normal-device negative control also fails (331 / 332 ms feedback,
+391 ms cards and a 304 ms long task).
+Long-task collection was corrected during profiling to include a task beginning
+before, but overlapping, the click; the first two rows used the older interval.
+
+Raw reports, profiles and screenshots are in `test-results/site-performance/`.
+The archive is `test-results/frontend-latency-replays/design-gallery-route/`,
+including the previous after-run and the final regression. New browser checks
+are `gallery-prefetch.mjs` and `gallery-background.mjs`; history and progressive
+gallery checks also pass. The production build, strict registry generation,
+TypeScript and all 729 unit tests pass.
+Production build `361e18a` was confirmed through the live build marker; the
+desktop/mobile prefetch, background pixel comparison and history checks also
+passed against `https://design.yaps.ai`.
+
+```sh
+PERF_BASE=http://localhost:3227 PERF_NATIVE=1 PERF_CPU=1 PERF_OUT=test-results/site-performance/gallery-route-native-device.json node tests/browser/gallery-route-performance.mjs
+TEST_BASE=http://localhost:3227 node tests/browser/gallery-prefetch.mjs
+TEST_BASE=http://localhost:3227 node tests/browser/gallery-background.mjs
+```
 
 ### Growing gallery
 

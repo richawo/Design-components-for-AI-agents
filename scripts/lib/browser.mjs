@@ -52,15 +52,17 @@ function fromCache() {
   return found.sort((a, b) => b.v - a.v)[0]?.p;
 }
 
-export async function launchChromium() {
+// Recordings keep their deterministic software renderer. Latency replays can
+// pass an empty args array to exercise the browser's usual rendering path.
+export async function launchChromium({ args = ARGS } = {}) {
   const explicit = process.env.CHROMIUM_PATH || fromCi();
-  if (explicit) return chromium.launch({ executablePath: explicit, args: ARGS });
+  if (explicit) return chromium.launch({ executablePath: explicit, args });
   try {
     // The full build in new-headless mode, not the headless shell (see above).
-    return await chromium.launch({ channel: "chromium", args: ARGS });
+    return await chromium.launch({ channel: "chromium", args });
   } catch (e) {
     const cached = fromCache();
     if (!cached || !/Executable doesn't exist/.test(String(e))) throw e;
-    return chromium.launch({ executablePath: cached, args: ARGS });
+    return chromium.launch({ executablePath: cached, args });
   }
 }
