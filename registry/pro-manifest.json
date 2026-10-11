@@ -7695,6 +7695,165 @@
     ]
   },
   {
+    "slug": "editor-markdown-split",
+    "name": "Markdown Split",
+    "tier": "pro",
+    "platform": "web",
+    "category": "editors",
+    "description": "A pricing memo with markdown on the left, the typeset page on the right, and scroll that stays in step.",
+    "tags": [
+      "editors",
+      "markdown",
+      "split view",
+      "writing",
+      "preview",
+      "word count",
+      "document"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 820,
+    "usage": "import { EditorMarkdownSplit } from \"@/components/design-for-ai/editor-markdown-split\";\n\n<EditorMarkdownSplit\n  title=\"Pricing memo\"\n  source={markdown}\n  onChange={(next) => save(next)}\n/>\n\n// The source is a textarea. Headings, lists, quotes, links, **bold**, *italic*, `code` and ==highlight== render in the preview.\n// Scroll either pane and the other follows by the same fraction. The header counts words.\n// Below the wide container, Write and Preview are tabs so the type stays full size.",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Pricing memo\"",
+        "description": "File name in the header."
+      },
+      {
+        "name": "kicker",
+        "type": "string",
+        "default": "\"Harbor\"",
+        "description": "Mono eyebrow above the file name."
+      },
+      {
+        "name": "author",
+        "type": "string",
+        "default": "\"Mira Chen\"",
+        "description": "Shown with the date in the header."
+      },
+      {
+        "name": "updated",
+        "type": "string",
+        "default": "\"11 Oct 2026\"",
+        "description": "The date as you want it written. It is not parsed."
+      },
+      {
+        "name": "source",
+        "type": "string",
+        "default": "Harbor's pricing memo as markdown",
+        "description": "The document. A small markdown: headings, paragraphs, lists, quotes, a note, links, bold, italic, code and highlight."
+      },
+      {
+        "name": "face",
+        "type": "\"serif\" | \"sans\"",
+        "default": "\"serif\"",
+        "description": "Serif for the preview, or the UI sans. Bold still steps into the sans, because the serif has no bold weight."
+      },
+      {
+        "name": "showLines",
+        "type": "boolean",
+        "default": "true",
+        "description": "Line numbers in the source gutter. They scroll with the textarea."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#f4f4f5\"",
+        "description": "Highlight wash, quote rule and the draft dot. Either theme's ink follows the theme."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Near-black editor, or the white inverse. The preview sits on a slightly raised surface."
+      },
+      {
+        "name": "onChange",
+        "type": "(source: string) => void",
+        "description": "Called with the markdown after each edit."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the shell."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@source:0.55,0.22",
+        "type: We mean it.",
+        "wait:1200"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "face",
+        "label": "Preview",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "serif",
+            "label": "Serif"
+          },
+          {
+            "value": "sans",
+            "label": "Sans"
+          }
+        ],
+        "default": "serif",
+        "group": "Type"
+      },
+      {
+        "prop": "showLines",
+        "label": "Lines",
+        "kind": "toggle",
+        "default": true,
+        "group": "Type"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action",
+        "group": "Type"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#8ab4ff",
+          "#7dd3a8",
+          "#f4b267"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      }
+    ]
+  },
+  {
     "slug": "editor-node-graph",
     "name": "Node Graph Editor",
     "tier": "pro",
