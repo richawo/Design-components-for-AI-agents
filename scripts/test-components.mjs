@@ -37,6 +37,8 @@ if (fs.existsSync(path.join(root, "registry/pro/hr-people-dashboard")))
   cases.push("pro-50-hr-probe");
 if (fs.existsSync(path.join(root, "registry/pro/legal-matter-dashboard")))
   cases.push("pro-50-legal-probe");
+if (fs.existsSync(path.join(root, "registry/pro/saas-workspace-dashboard")))
+  cases.push("pro-50-saas-probe");
 if (cases.length === publicCases.length)
   console.log(
     "Pro integration cases skipped: private sources are not checked out.",
