@@ -22641,6 +22641,78 @@
     ]
   },
   {
+    "slug": "scroll-background-wipe",
+    "name": "Scroll Background Wipe",
+    "tier": "pro",
+    "platform": "web",
+    "category": "backgrounds",
+    "description": "A circular reveal transforms the entire background between two editorial scenes while preserving readable copy and a static alternative for reduced motion.",
+    "tags": [
+      "scroll",
+      "scroll-driven",
+      "motion",
+      "responsive",
+      "backgrounds"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 900,
+    "usage": "import { ScrollBackgroundWipe } from \"@/components/design-for-ai/scroll-background-wipe\";\n\n<ScrollBackgroundWipe />\n\n// Place in normal document flow. Keep ancestors free of overflow clipping so viewport sticky positioning can work.",
+    "props": [
+      {
+        "name": "opening",
+        "type": "string",
+        "description": "First scene heading."
+      },
+      {
+        "name": "closing",
+        "type": "string",
+        "description": "Second scene heading."
+      },
+      {
+        "name": "openingNote",
+        "type": "string",
+        "description": "First scene context."
+      },
+      {
+        "name": "closingNote",
+        "type": "string",
+        "description": "Second scene context."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Neutral surface and text palette."
+      }
+    ],
+    "added": "2026-10-12",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@change-scene",
+        "wait:2000",
+        "scroll:200",
+        "wait:1000"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "scroll-cinema-frame",
     "name": "Scroll Cinema Frame",
     "tier": "pro",
