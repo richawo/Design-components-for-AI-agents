@@ -15769,5 +15769,189 @@
         "kind": "action"
       }
     ]
+  },
+  {
+    "slug": "diagram-region-failover",
+    "name": "Region Failover",
+    "tier": "pro",
+    "platform": "web",
+    "category": "diagrams",
+    "description": "Frankfurt misses three probes, the ribbon of traffic swings to Ashburn, and the weight ramps back once the region recovers.",
+    "tags": [
+      "failover",
+      "regions",
+      "load balancer",
+      "health checks",
+      "traffic",
+      "animated diagram",
+      "multi-region",
+      "edge"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 860,
+    "usage": "import { RegionFailover } from \"@/components/design-for-ai/diagram-region-failover\";\n\n<RegionFailover\n  hostname=\"edge.marlow\"\n  primaryCity=\"Frankfurt\"\n  standbyCity=\"Ashburn\"\n  resting=\"failed-over\"\n/>\n\n// The resting picture is the failover itself: three missed probes, Ashburn holding the address.\n// Replay plays it from a healthy steady state. Any moment on the timeline opens that weight.",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Two regions, one address\"",
+        "description": "Heading."
+      },
+      {
+        "name": "summary",
+        "type": "string",
+        "default": "\"Frankfurt holds the address until three probes miss. The ribbon follows the weight to Ashburn, then home.\"",
+        "description": "One or two sentences under the heading. Omit it and the line names the two cities."
+      },
+      {
+        "name": "hostname",
+        "type": "string",
+        "default": "\"edge.marlow\"",
+        "description": "Name on the balancer pill, and in the steady and failed-over sentences."
+      },
+      {
+        "name": "primaryCity",
+        "type": "string",
+        "default": "\"Frankfurt\"",
+        "description": "City that serves when the system is healthy."
+      },
+      {
+        "name": "primaryCode",
+        "type": "string",
+        "default": "\"fra1\"",
+        "description": "Region code under the primary city, and on the narrow weight bar."
+      },
+      {
+        "name": "standbyCity",
+        "type": "string",
+        "default": "\"Ashburn\"",
+        "description": "City that takes traffic after three missed probes."
+      },
+      {
+        "name": "standbyCode",
+        "type": "string",
+        "default": "\"iad1\"",
+        "description": "Region code under the standby city."
+      },
+      {
+        "name": "showMetrics",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show p95 and the 5xx rate on each region."
+      },
+      {
+        "name": "resting",
+        "type": "\"failed-over\" | \"steady\"",
+        "default": "\"failed-over\"",
+        "description": "Where the diagram sits before Replay. Failed-over is Ashburn at 100%."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface the diagram sits on."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#7cc4ff\"",
+        "description": "The one accent: the region currently serving, the phase you are on, and a slow probe."
+      },
+      {
+        "name": "onReplay",
+        "type": "() => void",
+        "description": "Called when Replay is pressed, before the incident plays from the top."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root section."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@replay",
+        "wait:5600"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "hostname",
+        "label": "Balancer",
+        "kind": "text",
+        "default": "edge.marlow",
+        "group": "Regions"
+      },
+      {
+        "prop": "primaryCity",
+        "label": "Primary",
+        "kind": "text",
+        "default": "Frankfurt",
+        "group": "Regions"
+      },
+      {
+        "prop": "showMetrics",
+        "label": "Latency",
+        "kind": "toggle",
+        "default": true,
+        "group": "Regions"
+      },
+      {
+        "prop": "resting",
+        "label": "Resting",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "failed-over",
+            "label": "Failed over"
+          },
+          {
+            "value": "steady",
+            "label": "Steady"
+          }
+        ],
+        "default": "failed-over",
+        "group": "Regions"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#7cc4ff",
+        "options": [
+          "#7cc4ff",
+          "#ff9d5c",
+          "#7dd3a8"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
   }
 ]
