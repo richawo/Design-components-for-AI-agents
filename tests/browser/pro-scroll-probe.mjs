@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
+import { webkit } from "playwright-core";
 import { launchChromium } from "../../scripts/lib/browser.mjs";
 import { mountFixture } from "../../scripts/lib/component-fixture.mjs";
 const specs = [
@@ -24,7 +25,10 @@ const specs = [
   ],
   ["scroll-image-curtain", "ScrollImageCurtain", "reveal", "curtain"],
 ];
-const browser = await launchChromium();
+const browser =
+  process.env.SCROLL_BROWSER === "webkit"
+    ? await webkit.launch({ headless: true })
+    : await launchChromium();
 const page = await browser.newPage({
   viewport: { width: 1440, height: 900 },
   reducedMotion: "no-preference",
@@ -80,10 +84,19 @@ try {
         .getByRole("button", { name: "Return to cover ↑", exact: true })
         .waitFor();
       await page.waitForTimeout(1000);
-      const returnButton = page.getByRole("button", {name: "Return to cover ↑", exact: true});
+      const returnButton = page.getByRole("button", {
+        name: "Return to cover ↑",
+        exact: true,
+      });
       await returnButton.hover();
       await page.waitForTimeout(250);
-      assert.equal(await returnButton.evaluate(el => getComputedStyle(el).backgroundColor), "rgb(18, 18, 18)", "Curtain control retains opaque contrast over the image");
+      assert.equal(
+        await returnButton.evaluate(
+          (el) => getComputedStyle(el).backgroundColor,
+        ),
+        "rgb(18, 18, 18)",
+        "Curtain control retains opaque contrast over the image",
+      );
       await page
         .getByRole("button", { name: "Return to cover ↑", exact: true })
         .click();

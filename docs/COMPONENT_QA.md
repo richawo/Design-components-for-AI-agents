@@ -54,3 +54,16 @@ node scripts/record-demos.mjs <slug> --sheet=test-results/demo-sheets --base=htt
 Inspect the recording's contact sheet. For demos that expand beyond the initial card, pass `--frame-viewport` to keep the entire preview visible; this also refreshes its matching poster. Then commit the matching source and preview updates. Keep scratch recordings, JSON evidence, and browser captures in `test-results/`.
 
 Stop the development server before `npm run build`, because development and production builds share `.next`. Start the production server and smoke-test the changed previews after a successful build.
+
+
+## Optional WebKit verification
+
+The Pro workflow and scroll batch also has a second-engine smoke test. Install the Playwright WebKit runtime once, then use the same stable preview server:
+
+```sh
+npx playwright-core install webkit
+node tests/browser/pro-webkit-render-probe.mjs
+SCROLL_BROWSER=webkit node tests/browser/pro-scroll-probe.mjs
+```
+
+The rendering probe exercises the 50 workflow components and six scroll components at desktop and phone widths, checking nonempty content, runtime errors and document overflow. The scroll probe checks native progress, reversal, motion-preference changes, long-content fallbacks and video playback handling. The regular `npm run test:components` command keeps Chromium as its default. Playwright WebKit coverage does not replace testing the Safari application or physical iOS devices.
