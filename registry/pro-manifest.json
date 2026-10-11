@@ -9702,6 +9702,77 @@
     ]
   },
   {
+    "slug": "devtools-request-waterfall",
+    "name": "Request Timing Waterfall",
+    "tier": "pro",
+    "platform": "web",
+    "category": "devtools",
+    "description": "A responsive network waterfall with proportional request timings, selectable rows and a clear response inspector for performance and developer tools.",
+    "tags": [
+      "devtools",
+      "devtools",
+      "request",
+      "waterfall",
+      "responsive",
+      "keyboard"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 720,
+    "usage": "import { RequestWaterfall } from \"@/components/design-for-ai/devtools-request-waterfall\";\n\n<RequestWaterfall />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Page load\"",
+        "description": "Capture title."
+      },
+      {
+        "name": "requests",
+        "type": "RequestTiming[]",
+        "default": "five sample requests",
+        "description": "Method, path, HTTP status and non-negative timing values. Invalid timings normalize to zero; extreme values are bounded before arithmetic."
+      },
+      {
+        "name": "onSelect",
+        "type": "(request: RequestTiming) => void",
+        "default": "undefined",
+        "description": "Receives the selected request."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface and ink palette; the demo stage follows the chosen theme."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:700",
+        "click:@request-3",
+        "wait:700",
+        "click:@request-0",
+        "wait:700"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "devtools-status-page",
     "name": "Status Page",
     "tier": "pro",
