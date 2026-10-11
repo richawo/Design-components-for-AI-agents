@@ -22409,6 +22409,73 @@
     ]
   },
   {
+    "slug": "scroll-expanding-mosaic",
+    "name": "Expanding Scroll Mosaic",
+    "tier": "pro",
+    "platform": "web",
+    "category": "portfolio",
+    "description": "An editorial mosaic gathers around a central image that grows to fill the viewport as the reader scrolls, with a complete static gallery for reduced motion.",
+    "tags": [
+      "scroll",
+      "scroll-driven",
+      "motion",
+      "responsive",
+      "portfolio"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 900,
+    "usage": "import { ExpandingScrollMosaic } from \"@/components/design-for-ai/scroll-expanding-mosaic\";\n\n<ExpandingScrollMosaic />\n\n// Place in normal document flow. Keep ancestors free of overflow clipping so viewport sticky positioning can work.",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Heading above the mosaic."
+      },
+      {
+        "name": "caption",
+        "type": "string",
+        "description": "Caption for the central image."
+      },
+      {
+        "name": "tiles",
+        "type": "MosaicTile[]",
+        "description": "Up to nine unique gallery tiles; the first is the expanding central image. Supply real image assets."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Neutral surface and text palette."
+      }
+    ],
+    "added": "2026-10-12",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@expand",
+        "wait:1700",
+        "scroll:180",
+        "wait:1200"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "text-decode",
     "name": "Text Decode",
     "tier": "pro",
