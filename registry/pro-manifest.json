@@ -15622,6 +15622,95 @@
     ]
   },
   {
+    "slug": "finance-payment-run",
+    "name": "Payment Run Review",
+    "tier": "pro",
+    "platform": "web",
+    "category": "billing",
+    "description": "Select payable invoices within a funding limit and create a reviewed batch. A considered, responsive finance workspace with typed integration points.",
+    "tags": [
+      "finance",
+      "workflow",
+      "responsive",
+      "keyboard",
+      "billing"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 1200,
+    "usage": "import { PaymentRun } from \"@/components/design-for-ai/finance-payment-run\";\n\n<PaymentRun />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Main heading."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "description": "Supporting context."
+      },
+      {
+        "name": "invoices",
+        "type": "PayableInvoice[]",
+        "description": "Unique outstanding invoices with safe positive two-decimal amounts, host approval and beneficiary-verification flags."
+      },
+      {
+        "name": "fundingMinor",
+        "type": "number",
+        "description": "Non-negative safe integer funding available for this draft in two-decimal minor units."
+      },
+      {
+        "name": "referenceDate",
+        "type": "string",
+        "description": "Earliest scheduling date, civil YYYY-MM-DD from 2000 through 2100."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "description": "Single ISO currency for the batch."
+      },
+      {
+        "name": "onCreateBatch",
+        "type": "(batch:PaymentBatch)=>void|Promise<void>",
+        "description": "Persist a reviewed payment batch draft. The host revalidates funding, approval, duplicate invoices and bank details before any payment."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface, border and ink palette."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:350",
+        "click:@invoice-0",
+        "click:@invoice-1",
+        "click:@review",
+        "wait:650",
+        "click:@create",
+        "wait:1000"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "finance-receivables-aging",
     "name": "Receivables Aging Board",
     "tier": "pro",
