@@ -1,0 +1,66 @@
+{
+  "slug": "navigation-breadcrumb-fold",
+  "name": "Folding Breadcrumb",
+  "tier": "free",
+  "platform": "web",
+  "category": "navigation",
+  "description": "A wrapping breadcrumb trail that folds intermediate locations into an explicit disclosure, preserving real links and a clearly marked current page.",
+  "tags": [
+    "navigation",
+    "navigation",
+    "breadcrumb",
+    "fold",
+    "responsive",
+    "keyboard"
+  ],
+  "dependencies": [
+    "motion",
+    "lucide-react"
+  ],
+  "theme": "dark",
+  "previewHeight": 440,
+  "usage": "import { BreadcrumbFold } from \"@/components/design-for-ai/navigation-breadcrumb-fold\";\n\n<BreadcrumbFold />",
+  "props": [
+    {
+      "name": "items",
+      "type": "BreadcrumbItem[]",
+      "default": "five-level project path",
+      "description": "Ordered real hrefs; last item is the current page. Empty data renders a location hint."
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "default": "\"Breadcrumb\"",
+      "description": "Accessible navigation label."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Surface and ink palette; the demo stage follows the chosen theme."
+    }
+  ],
+  "added": "2026-10-11",
+  "demo": {
+    "steps": [
+      "wait:700",
+      "click:@expand-path",
+      "wait:800",
+      "click:@collapse-path",
+      "wait:700"
+    ],
+    "loop": false
+  },
+  "controls": [
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        "dark",
+        "light"
+      ],
+      "default": "dark"
+    }
+  ]
+}
