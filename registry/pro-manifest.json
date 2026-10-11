@@ -22080,7 +22080,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "app",
-    "description": "Filter immutable events and inspect actor, target and before/after details. A considered, responsive SaaS workspace with typed integration points.",
+    "description": "A monochrome audit timeline with animated event details, field diffs, date filters and keyboard-accessible custom or native menus.",
     "tags": [
       "saas",
       "workflow",
@@ -22092,18 +22092,20 @@
       "motion"
     ],
     "theme": "dark",
-    "previewHeight": 1120,
+    "previewHeight": 980,
     "usage": "import { AuditTrail } from \"@/components/design-for-ai/saas-audit-trail\";\n\n<AuditTrail />",
     "props": [
       {
         "name": "title",
         "type": "string",
-        "description": "Main heading."
+        "description": "Main heading.",
+        "default": "\"Audit trail\""
       },
       {
         "name": "subtitle",
         "type": "string",
-        "description": "Supporting context."
+        "description": "Supporting context.",
+        "default": "\"Every change, in context. Trace the action, inspect the record.\""
       },
       {
         "name": "events",
@@ -22120,6 +22122,12 @@
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
         "description": "Surface, border and ink palette."
+      },
+      {
+        "name": "selectMode",
+        "type": "\"custom\" | \"native\"",
+        "default": "\"custom\"",
+        "description": "Animated custom listboxes or native pickers with matched 12px text and chevron insets."
       }
     ],
     "added": "2026-10-11",
@@ -22143,6 +22151,16 @@
           "light"
         ],
         "default": "dark"
+      },
+      {
+        "prop": "selectMode",
+        "label": "Filter menus",
+        "kind": "segmented",
+        "options": [
+          "custom",
+          "native"
+        ],
+        "default": "custom"
       }
     ]
   },

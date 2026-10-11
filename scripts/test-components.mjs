@@ -20,7 +20,7 @@ const publicCases = [
 ];
 const cases = [...publicCases];
 if (fs.existsSync(path.join(root, "registry/pro/saas-customer-health")))
-  cases.push("pro-50-demo-probe");
+  cases.push("pro-50-demo-probe", "audit-trail-polish-probe");
 if (fs.existsSync(path.join(root, "registry/pro/commerce-promotion-builder")))
   cases.push("pro-native-themes-probe");
 if (fs.existsSync(path.join(root, "registry/pro/scroll-expanding-mosaic")))
