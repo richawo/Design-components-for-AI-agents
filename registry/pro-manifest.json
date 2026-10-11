@@ -22713,6 +22713,68 @@
     ]
   },
   {
+    "slug": "scroll-chapter-stack",
+    "name": "Scroll Chapter Stack",
+    "tier": "pro",
+    "platform": "web",
+    "category": "content",
+    "description": "Large editorial chapters stack as the reader scrolls, pairing each story with an image and direct chapter links while preserving normal reading order.",
+    "tags": [
+      "scroll",
+      "scroll-driven",
+      "motion",
+      "responsive",
+      "content"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 900,
+    "usage": "import { ScrollChapterStack } from \"@/components/design-for-ai/scroll-chapter-stack\";\n\n<ScrollChapterStack />\n\n// Place in normal document flow. Keep ancestors free of overflow clipping so viewport sticky positioning can work.",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Story title."
+      },
+      {
+        "name": "chapters",
+        "type": "ScrollChapter[]",
+        "description": "Unique ordered chapters. All copy is present in the document; supplied images use meaningful alternatives."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Neutral surface and text palette."
+      }
+    ],
+    "added": "2026-10-12",
+    "demo": {
+      "steps": [
+        "wait:350",
+        "click:@chapter-1",
+        "wait:1100",
+        "click:@next-1",
+        "wait:1300"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "scroll-cinema-frame",
     "name": "Scroll Cinema Frame",
     "tier": "pro",
