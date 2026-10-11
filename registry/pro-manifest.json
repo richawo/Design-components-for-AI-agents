@@ -18513,6 +18513,83 @@
     ]
   },
   {
+    "slug": "legal-matter-intake",
+    "name": "Matter Intake Workspace",
+    "tier": "pro",
+    "platform": "web",
+    "category": "forms",
+    "description": "Structured client intake with parties, jurisdiction and conflict-check handoff. A considered, responsive legal workspace with typed integration points.",
+    "tags": [
+      "legal-tech",
+      "workflow",
+      "responsive",
+      "keyboard",
+      "forms"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "light",
+    "previewHeight": 1270,
+    "usage": "import { MatterIntake } from \"@/components/design-for-ai/legal-matter-intake\";\n\n<MatterIntake />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Main heading."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "description": "Supporting context."
+      },
+      {
+        "name": "practices",
+        "type": "IntakeOption[]",
+        "description": "Available practice areas with unique IDs."
+      },
+      {
+        "name": "owners",
+        "type": "IntakeOption[]",
+        "description": "Available intake owners."
+      },
+      {
+        "name": "onSubmit",
+        "type": "(draft:MatterIntakeDraft)=>void|Promise<void>",
+        "description": "Hand the reviewed draft to the host intake process. This does not clear conflicts, accept instructions or create an engagement."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"light\"",
+        "description": "Surface, border and ink palette."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@next",
+        "wait:700",
+        "click:@next",
+        "wait:1000"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "light"
+      }
+    ]
+  },
+  {
     "slug": "legal-version-history",
     "name": "Document Revision Review",
     "tier": "pro",
