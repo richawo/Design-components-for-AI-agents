@@ -1,0 +1,96 @@
+{
+  "component": "Milestone Progress Rail",
+  "intent": "A vertical milestone rail with numbered checkpoints, an animated completion rule and focused stage notes for reviews, onboarding and handovers.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4",
+    "motion": "motion/react"
+  },
+  "layout": {
+    "direction": "A measured rail with 28px step markers inside 44px rows. Completed steps invert, current step gains an arrow, and its explanation crossfades below a rule.",
+    "container": "Size to the parent with @container. Keep the root width at 100%, capped to the focused component, with 24px desktop and 16px narrow padding.",
+    "rhythm": "4/8px spacing; 1px edges; 44px minimum interactive targets."
+  },
+  "typography": {
+    "body": "font-sans, 14-16px, line-height 1.5",
+    "metadata": "font-mono, 11-12px, restrained tracking",
+    "heading": "font-display or font-serif, 24-36px, tracking -0.035em"
+  },
+  "color": {
+    "dark": {
+      "surface": "#111111",
+      "ink": "#f5f5f5",
+      "muted": "#a3a3a3",
+      "edge": "#333333"
+    },
+    "light": {
+      "surface": "#ffffff",
+      "ink": "#171717",
+      "muted": "#525252",
+      "edge": "#d4d4d4"
+    }
+  },
+  "motion": {
+    "entrance": "A single opacity and 8px rise over 320ms.",
+    "interaction": "150ms press response; 240ms state changes. No ambient loops.",
+    "reduced": "Remove transforms and layout motion; keep opacity at 120ms or less."
+  },
+  "responsive": {
+    "widths": [
+      320,
+      390,
+      768,
+      1024,
+      1440,
+      1920
+    ],
+    "rules": "Wrap long copy; stack secondary details inside narrow containers; keep any horizontal scrolling local and keyboard accessible."
+  },
+  "accessibility": [
+    "Use native buttons and form controls with visible 2px focus rings.",
+    "Provide labels, meaningful states and polite feedback where actions update content.",
+    "Keep IDs instance-scoped with useId; support multiple instances and empty custom data.",
+    "Respect prefers-reduced-motion; no automatic action or navigation."
+  ],
+  "content": {
+    "defaults": "Use the realistic default content from the source; expose content and collection inputs as typed props.",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Studio sprint\"",
+        "description": "Workflow title."
+      },
+      {
+        "name": "steps",
+        "type": "Milestone[]",
+        "default": "four studio milestones",
+        "description": "Ordered labels and detailed explanations."
+      },
+      {
+        "name": "current",
+        "type": "number",
+        "default": "1",
+        "description": "Zero-based current index; steps.length means all complete."
+      },
+      {
+        "name": "onStepChange",
+        "type": "(index: number) => void",
+        "default": "undefined",
+        "description": "Optional host navigation. Without it rows are non-interactive."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface and ink palette; the demo stage follows the chosen theme."
+      }
+    ]
+  },
+  "avoid": [
+    "Remote images, fake network success or hidden external dependencies.",
+    "Decorative status badges, gradients as filler, low-contrast text.",
+    "Unlabelled controls, hover-only functionality, overflow at 320px."
+  ]
+}

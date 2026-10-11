@@ -1,0 +1,77 @@
+{
+  "slug": "progress-milestones",
+  "name": "Milestone Progress Rail",
+  "tier": "free",
+  "platform": "web",
+  "category": "progress",
+  "description": "A vertical milestone rail with numbered checkpoints, an animated completion rule and focused stage notes for reviews, onboarding and handovers.",
+  "tags": [
+    "progress",
+    "progress",
+    "milestones",
+    "responsive",
+    "keyboard"
+  ],
+  "dependencies": [
+    "motion",
+    "lucide-react"
+  ],
+  "theme": "dark",
+  "previewHeight": 660,
+  "usage": "import { MilestoneProgress } from \"@/components/design-for-ai/progress-milestones\";\n\n<MilestoneProgress />",
+  "props": [
+    {
+      "name": "title",
+      "type": "string",
+      "default": "\"Studio sprint\"",
+      "description": "Workflow title."
+    },
+    {
+      "name": "steps",
+      "type": "Milestone[]",
+      "default": "four studio milestones",
+      "description": "Ordered labels and detailed explanations."
+    },
+    {
+      "name": "current",
+      "type": "number",
+      "default": "1",
+      "description": "Zero-based current index; steps.length means all complete."
+    },
+    {
+      "name": "onStepChange",
+      "type": "(index: number) => void",
+      "default": "undefined",
+      "description": "Optional host navigation. Without it rows are non-interactive."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Surface and ink palette; the demo stage follows the chosen theme."
+    }
+  ],
+  "added": "2026-10-11",
+  "demo": {
+    "steps": [
+      "wait:600",
+      "click:@step-2",
+      "wait:700",
+      "click:@step-3",
+      "wait:700"
+    ],
+    "loop": false
+  },
+  "controls": [
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        "dark",
+        "light"
+      ],
+      "default": "dark"
+    }
+  ]
+}
