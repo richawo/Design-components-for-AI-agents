@@ -1,7 +1,6 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   FILTER_KEY,
@@ -24,7 +23,6 @@ type Cat = { key: string; label: string; count: number };
 const FIRST_CARD_STEP = 4;
 
 export function ComponentBrowser({ cards, categories, category, initialFilters }: { cards: CardData[]; categories: Cat[]; category: string; initialFilters?: { q: string; tier: "all" | "free" | "pro" } }) {
-  const router = useRouter();
   const [q, setQ] = useState(initialFilters?.q ?? "");
   const [tier, setTier] = useState<"all" | "free" | "pro">(initialFilters?.tier ?? "all");
   const [filtersReady, setFiltersReady] = useState(false);
@@ -109,7 +107,8 @@ export function ComponentBrowser({ cards, categories, category, initialFilters }
     setCatState(key);
     const href = galleryHref(window.location.search, key);
     if (`${window.location.pathname}${window.location.search}` === href) return;
-    router.replace(href, { scroll: false });
+    // The full catalogue is already here; changing a filter needs no server render.
+    window.history.replaceState(window.history.state, "", `${href}${window.location.hash}`);
   };
 
   // "/" jumps to search from anywhere on the page, as on most libraries.
