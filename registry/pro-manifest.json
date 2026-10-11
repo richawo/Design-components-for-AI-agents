@@ -4740,6 +4740,196 @@
     ]
   },
   {
+    "slug": "chart-radar-compare",
+    "name": "Radar compare",
+    "tier": "pro",
+    "platform": "web",
+    "category": "charts",
+    "description": "Three Halcyon agents on one web. Swap a profile and the shape morphs; a sweep reads the six axes one at a time.",
+    "tags": [
+      "radar",
+      "comparison",
+      "benchmark",
+      "agents",
+      "dashboard",
+      "dark",
+      "monochrome"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 760,
+    "usage": "import { ChartRadarCompare } from \"@/components/design-for-ai/chart-radar-compare\";\nimport type { RadarAxis, RadarProfile } from \"@/components/design-for-ai/chart-radar-compare\";\n\nconst axes: RadarAxis[] = [\n  { key: \"writing\", label: \"Writing\" },\n  { key: \"tools\", label: \"Tool use\" },\n];\n\nconst profiles: RadarProfile[] = [\n  { key: \"mara\", label: \"Mara\", scores: [92, 54] },\n  { key: \"north\", label: \"North\", scores: [71, 90] },\n];\n\n<ChartRadarCompare\n  title=\"The bench\"\n  subtitle=\"Halcyon · six axes\"\n  axes={axes}\n  profiles={profiles}\n  defaultProfiles=\"mara,north\"\n  onAxisChange={(index) => console.log(index)}\n/>",
+    "props": [
+      {
+        "name": "profiles",
+        "type": "RadarProfile[]",
+        "default": "Mara, North, Sable, Quill",
+        "description": "One shape each. RadarProfile: { key, label, scores: number[] }. scores line up with axes, 0–100, higher is better."
+      },
+      {
+        "name": "axes",
+        "type": "RadarAxis[]",
+        "default": "Writing, Tool use, Speed, Cost, Recovery, Citation",
+        "description": "The spokes. RadarAxis: { key, label }. Cost is the cheap run, scored high."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"The bench\"",
+        "description": "Card title."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "default": "\"Halcyon · six axes\"",
+        "description": "Mono line beside the title."
+      },
+      {
+        "name": "defaultProfiles",
+        "type": "string",
+        "default": "\"mara,north,sable\"",
+        "description": "Comma-separated keys shown first, at most three. The first key is the accent shape."
+      },
+      {
+        "name": "defaultAxis",
+        "type": "number",
+        "default": "0",
+        "description": "Axis index highlighted first. 0 is Writing."
+      },
+      {
+        "name": "showFill",
+        "type": "boolean",
+        "default": "true",
+        "description": "Fill the accent profile. Its stroke stays either way."
+      },
+      {
+        "name": "showGrid",
+        "type": "boolean",
+        "default": "true",
+        "description": "Draw the rings and the spokes."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ff7a45\"",
+        "description": "The one colour: the first profile, the headline, the active spoke and the swept row."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Near-black card with white ink, or a white card with near-black ink."
+      },
+      {
+        "name": "onAxisChange",
+        "type": "(index: number) => void",
+        "description": "Called with the axis index now highlighted."
+      },
+      {
+        "name": "onSelectionChange",
+        "type": "(keys: string[]) => void",
+        "description": "Called with the profile keys on the web, accent first."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@profile-quill",
+        "wait:800",
+        "click:@sweep",
+        "wait:2000"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "title",
+        "label": "Title",
+        "kind": "text",
+        "default": "The bench"
+      },
+      {
+        "prop": "subtitle",
+        "label": "Subtitle",
+        "kind": "text",
+        "default": "Halcyon · six axes"
+      },
+      {
+        "prop": "showFill",
+        "label": "Fill",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "showGrid",
+        "label": "Grid",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "defaultAxis",
+        "label": "Opens on axis",
+        "kind": "slider",
+        "min": 0,
+        "max": 5,
+        "step": 1,
+        "default": 0,
+        "remount": true
+      },
+      {
+        "prop": "defaultProfiles",
+        "label": "Opens with",
+        "kind": "select",
+        "options": [
+          {
+            "value": "mara,north,sable",
+            "label": "Mara, North, Sable"
+          },
+          {
+            "value": "mara,north",
+            "label": "Mara and North"
+          },
+          {
+            "value": "mara,north,quill",
+            "label": "Mara, North, Quill"
+          }
+        ],
+        "default": "mara,north,sable",
+        "remount": true
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#ff7a45",
+        "options": [
+          "#ff7a45",
+          "#34d399",
+          "#60a5fa",
+          "#e5e5e5"
+        ]
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "chart-revenue-trend",
     "name": "Revenue Trend",
     "tier": "pro",
@@ -13273,7 +13463,20 @@
         "description": "Fired when a row is tapped."
       }
     ],
-    "added": "2026-10-07"
+    "added": "2026-10-07",
+    "demo": {
+      "steps": [
+        "wait:800",
+        "hover:@row-m3:0.86,0.5",
+        "down",
+        "hover:@row-m3:0.04,0.5",
+        "up",
+        "wait:1100",
+        "click:@undo",
+        "wait:1300"
+      ],
+      "loop": false
+    }
   },
   {
     "slug": "mobile-wallet-stack",
