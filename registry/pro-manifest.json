@@ -8446,6 +8446,141 @@
     ]
   },
   {
+    "slug": "diagram-agent-loop",
+    "name": "Agent Loop",
+    "tier": "pro",
+    "platform": "web",
+    "category": "diagrams",
+    "description": "An agent loops through observe, plan, act and reflect. Tools hang off the act, and the count ticks until the goal check passes.",
+    "tags": [
+      "agent",
+      "loop",
+      "tools",
+      "observe plan act",
+      "goal",
+      "animated diagram",
+      "workflow",
+      "reflection"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 780,
+    "usage": "import { AgentLoop } from \"@/components/design-for-ai/diagram-agent-loop\";\n\n<AgentLoop\n  goal=\"Mark invoice 1842 chased.\"\n  showTools\n/>\n\n// The resting picture is the finished lap: loop 2 has closed and the goal check has passed.\n// Replay runs both laps. Tool calls hang off Act.",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Until the goal is met\"",
+        "description": "Heading."
+      },
+      {
+        "name": "summary",
+        "type": "string",
+        "default": "\"Observe, plan, act, reflect. The tools hang off the act, and the count ticks until the check passes.\"",
+        "description": "One or two sentences under the heading."
+      },
+      {
+        "name": "goal",
+        "type": "string",
+        "default": "\"Mark invoice 1842 chased.\"",
+        "description": "The sentence the loop is trying to make true, shown in the goal row."
+      },
+      {
+        "name": "turns",
+        "type": "AgentTurn[]",
+        "description": "Each turn is one lap of observe, plan, act and reflect. Mark the last turn met when the check should pass."
+      },
+      {
+        "name": "showTools",
+        "type": "boolean",
+        "default": "true",
+        "description": "The tool rows that hang off Act."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface the diagram sits on."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#7cc4ff\"",
+        "description": "The one accent: the step in progress, and the side of the cycle just drawn."
+      },
+      {
+        "name": "onReplay",
+        "type": "() => void",
+        "description": "Called when Replay is pressed, before the loop runs from the first observe."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root section."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@replay",
+        "wait:5200"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "goal",
+        "label": "Goal",
+        "kind": "text",
+        "default": "Mark invoice 1842 chased.",
+        "group": "Loop"
+      },
+      {
+        "prop": "showTools",
+        "label": "Tool calls",
+        "kind": "toggle",
+        "default": true,
+        "group": "Loop"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#7cc4ff",
+        "options": [
+          "#7cc4ff",
+          "#ff9d5c",
+          "#7dd3a8"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
+  },
+  {
     "slug": "diagram-deploy-canary",
     "name": "Canary Deploy",
     "tier": "pro",
