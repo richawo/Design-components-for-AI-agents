@@ -8883,6 +8883,90 @@
     ]
   },
   {
+    "slug": "commerce-backorder-allocation",
+    "name": "Backorder Allocation Desk",
+    "tier": "pro",
+    "platform": "web",
+    "category": "commerce",
+    "description": "Distribute incoming inventory without exceeding supply or demand. A considered, responsive commerce workspace with typed integration points.",
+    "tags": [
+      "e-commerce",
+      "workflow",
+      "responsive",
+      "keyboard",
+      "commerce"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 1120,
+    "usage": "import { BackorderAllocation } from \"@/components/design-for-ai/commerce-backorder-allocation\";\n\n<BackorderAllocation />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Main heading."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "description": "Supporting context."
+      },
+      {
+        "name": "sku",
+        "type": "string",
+        "description": "SKU for the incoming stock and every request."
+      },
+      {
+        "name": "incomingUnits",
+        "type": "number",
+        "description": "Safe integer units available to allocate, from 0 to 1,000,000."
+      },
+      {
+        "name": "requests",
+        "type": "BackorderRequest[]",
+        "description": "Unique orders with outstanding units and YYYY-MM-DD order dates. Invalid quantities are excluded."
+      },
+      {
+        "name": "onAllocate",
+        "type": "(plan:AllocationPlan)=>void|Promise<void>",
+        "description": "Save a reviewed allocation plan. The host must verify and reserve stock atomically."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface, border and ink palette."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@fill",
+        "wait:550",
+        "click:@review",
+        "wait:450",
+        "click:@save",
+        "wait:1000"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "commerce-bundle-builder",
     "name": "Product Bundle Builder",
     "tier": "pro",
