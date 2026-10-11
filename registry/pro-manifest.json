@@ -22409,6 +22409,98 @@
     ]
   },
   {
+    "slug": "scroll-cinema-frame",
+    "name": "Scroll Cinema Frame",
+    "tier": "pro",
+    "platform": "web",
+    "category": "media",
+    "description": "A compact film frame expands into an edge-to-edge viewing stage on scroll, with native playback controls, captions and a quiet offline poster.",
+    "tags": [
+      "scroll",
+      "scroll-driven",
+      "motion",
+      "responsive",
+      "media"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 900,
+    "usage": "import { ScrollCinemaFrame } from \"@/components/design-for-ai/scroll-cinema-frame\";\n\n<ScrollCinemaFrame />\n\n// Place in normal document flow. Keep ancestors free of overflow clipping so viewport sticky positioning can work.",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Editorial film title."
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Supporting film context."
+      },
+      {
+        "name": "videoSrc",
+        "type": "string",
+        "description": "Host-owned video URL. Playback is always initiated by the visitor."
+      },
+      {
+        "name": "posterSrc",
+        "type": "string",
+        "description": "Host-owned poster image URL."
+      },
+      {
+        "name": "captionSrc",
+        "type": "string",
+        "description": "WebVTT captions URL for the supplied video."
+      },
+      {
+        "name": "captionLanguage",
+        "type": "string",
+        "description": "BCP 47 caption language."
+      },
+      {
+        "name": "captionLabel",
+        "type": "string",
+        "description": "Caption track name."
+      },
+      {
+        "name": "posterLabel",
+        "type": "string",
+        "description": "Offline poster caption."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Neutral surface and text palette."
+      }
+    ],
+    "added": "2026-10-12",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@expand",
+        "wait:1700",
+        "scroll:160",
+        "wait:1200"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "scroll-expanding-mosaic",
     "name": "Expanding Scroll Mosaic",
     "tier": "pro",
