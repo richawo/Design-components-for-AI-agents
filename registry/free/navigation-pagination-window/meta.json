@@ -1,0 +1,86 @@
+{
+  "slug": "navigation-pagination-window",
+  "name": "Windowed Pagination",
+  "tier": "free",
+  "platform": "web",
+  "category": "navigation",
+  "description": "A compact pagination rail with first and last anchors, moving selection and a live page count that stays usable in narrow result panels.",
+  "tags": [
+    "navigation",
+    "navigation",
+    "pagination",
+    "window",
+    "responsive",
+    "keyboard"
+  ],
+  "dependencies": [
+    "motion",
+    "lucide-react"
+  ],
+  "theme": "dark",
+  "previewHeight": 440,
+  "usage": "import { PaginationWindow } from \"@/components/design-for-ai/navigation-pagination-window\";\n\n<PaginationWindow />",
+  "props": [
+    {
+      "name": "label",
+      "type": "string",
+      "default": "\"Results\"",
+      "description": "Names the result set and navigation landmark."
+    },
+    {
+      "name": "page",
+      "type": "number",
+      "default": "undefined",
+      "description": "Controlled one-based page, clamped to available bounds."
+    },
+    {
+      "name": "defaultPage",
+      "type": "number",
+      "default": "1",
+      "description": "Initial uncontrolled page."
+    },
+    {
+      "name": "pageCount",
+      "type": "number",
+      "default": "24",
+      "description": "Non-negative integer page total; zero renders a disabled empty state."
+    },
+    {
+      "name": "onPageChange",
+      "type": "(page: number) => void",
+      "default": "undefined",
+      "description": "Receives a valid one-based destination."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Surface and ink palette; the demo stage follows the chosen theme."
+    }
+  ],
+  "added": "2026-10-11",
+  "demo": {
+    "steps": [
+      "wait:500",
+      "click:@next",
+      "wait:400",
+      "click:@next",
+      "wait:400",
+      "click:@page-24",
+      "wait:700"
+    ],
+    "loop": false
+  },
+  "controls": [
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        "dark",
+        "light"
+      ],
+      "default": "dark"
+    }
+  ]
+}
