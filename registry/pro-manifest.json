@@ -4546,6 +4546,200 @@
     ]
   },
   {
+    "slug": "chart-race-bars",
+    "name": "Bar chart race",
+    "tier": "pro",
+    "platform": "web",
+    "category": "charts",
+    "description": "A deploy race for Pylon. Six services trade places on springs; play it, or scrub to the week inference takes the lead.",
+    "tags": [
+      "bar chart race",
+      "ranking",
+      "time series",
+      "deploys",
+      "dashboard",
+      "dark",
+      "monochrome"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 760,
+    "usage": "import { ChartRaceBars } from \"@/components/design-for-ai/chart-race-bars\";\nimport type { RaceSeries, RaceWeek } from \"@/components/design-for-ai/chart-race-bars\";\n\nconst weeks: RaceWeek[] = [\n  { label: \"3 Aug\", caption: \"Week of 3 Aug\" },\n  { label: \"10 Aug\", caption: \"Week of 10 Aug\" },\n];\n\nconst series: RaceSeries[] = [\n  { key: \"web\", label: \"Web\", values: [48, 50] },\n  { key: \"inference\", label: \"Inference\", values: [8, 11] },\n];\n\n<ChartRaceBars\n  title=\"Who shipped\"\n  subtitle=\"Pylon · deploys\"\n  unit=\"deploys\"\n  lead=\"inference\"\n  weeks={weeks}\n  series={series}\n  onWeekChange={(index) => console.log(index)}\n/>",
+    "props": [
+      {
+        "name": "series",
+        "type": "RaceSeries[]",
+        "default": "Web, API, iOS, Workers, Billing, Inference",
+        "description": "One row each. RaceSeries: { key, label, values: number[] }. values line up with weeks, oldest first."
+      },
+      {
+        "name": "weeks",
+        "type": "RaceWeek[]",
+        "default": "3 Aug – 19 Oct",
+        "description": "One column of the race: { label, caption }. label sits by the scrubber; caption is the sentence in the header."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Who shipped\"",
+        "description": "Card title."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "default": "\"Pylon · deploys\"",
+        "description": "Mono line beside the title."
+      },
+      {
+        "name": "unit",
+        "type": "string",
+        "default": "\"deploys\"",
+        "description": "Singular unit beside the headline figure."
+      },
+      {
+        "name": "lead",
+        "type": "string",
+        "default": "\"inference\"",
+        "description": "Series key drawn in the accent. The headline follows it until a row is pinned."
+      },
+      {
+        "name": "defaultWeek",
+        "type": "number",
+        "default": "4",
+        "description": "Week index shown first. 4 is the week of 31 Aug, just before inference takes the lead."
+      },
+      {
+        "name": "showDelta",
+        "type": "boolean",
+        "default": "true",
+        "description": "Print the week-over-week change beside each value."
+      },
+      {
+        "name": "showRanks",
+        "type": "boolean",
+        "default": "true",
+        "description": "Print the rank numeral at the left of each row."
+      },
+      {
+        "name": "radius",
+        "type": "number",
+        "default": "8",
+        "description": "Bar corner radius in px."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ff7a45\"",
+        "description": "The one colour: the followed bar, the headline figure and the scrubber."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Near-black card with white ink, or a white card with near-black ink."
+      },
+      {
+        "name": "onWeekChange",
+        "type": "(index: number) => void",
+        "description": "Called with the week index now shown."
+      },
+      {
+        "name": "onPin",
+        "type": "(key: string | null) => void",
+        "description": "Called with the pinned series key, or null when the lead is followed again."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:350",
+        "hover:@bar-web",
+        "wait:400",
+        "click:@play",
+        "wait:2300",
+        "click:@scrub:0.92,0.5",
+        "wait:450"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "title",
+        "label": "Title",
+        "kind": "text",
+        "default": "Who shipped"
+      },
+      {
+        "prop": "subtitle",
+        "label": "Subtitle",
+        "kind": "text",
+        "default": "Pylon · deploys"
+      },
+      {
+        "prop": "showDelta",
+        "label": "Deltas",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "showRanks",
+        "label": "Ranks",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "radius",
+        "label": "Bar radius",
+        "kind": "slider",
+        "min": 2,
+        "max": 16,
+        "step": 1,
+        "unit": "px",
+        "default": 8
+      },
+      {
+        "prop": "defaultWeek",
+        "label": "Opens on week",
+        "kind": "slider",
+        "min": 0,
+        "max": 11,
+        "step": 1,
+        "default": 4,
+        "remount": true
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#ff7a45",
+        "options": [
+          "#ff7a45",
+          "#34d399",
+          "#60a5fa",
+          "#e5e5e5"
+        ]
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "chart-revenue-trend",
     "name": "Revenue Trend",
     "tier": "pro",
