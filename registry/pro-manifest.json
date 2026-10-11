@@ -4892,6 +4892,114 @@
     ]
   },
   {
+    "slug": "cards-event-ticket",
+    "name": "Editorial Event Ticket",
+    "tier": "pro",
+    "platform": "web",
+    "category": "cards",
+    "description": "An event ticket with oversized serif type, a perforated information stub and an expandable programme, built entirely in code without a fake scan code.",
+    "tags": [
+      "cards",
+      "cards",
+      "event",
+      "ticket",
+      "responsive",
+      "keyboard"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 860,
+    "usage": "import { EventTicket } from \"@/components/design-for-ai/cards-event-ticket\";\n\n<EventTicket />",
+    "props": [
+      {
+        "name": "event",
+        "type": "string",
+        "default": "\"Field Notes\"",
+        "description": "Event name."
+      },
+      {
+        "name": "edition",
+        "type": "string",
+        "default": "gathering description",
+        "description": "Short event description."
+      },
+      {
+        "name": "date",
+        "type": "string",
+        "default": "\"24 October 2026\"",
+        "description": "Host-formatted event date."
+      },
+      {
+        "name": "time",
+        "type": "string",
+        "default": "\"10:00–17:00 BST\"",
+        "description": "Time range including timezone."
+      },
+      {
+        "name": "venue",
+        "type": "string",
+        "default": "\"The Assembly, London\"",
+        "description": "Venue name and location."
+      },
+      {
+        "name": "attendee",
+        "type": "string",
+        "default": "\"Alex Morgan\"",
+        "description": "Guest display name."
+      },
+      {
+        "name": "admission",
+        "type": "string",
+        "default": "\"General admission\"",
+        "description": "Admission or seating description."
+      },
+      {
+        "name": "ticketCode",
+        "type": "string",
+        "default": "\"FN-2048-AM\"",
+        "description": "Human-readable ticket reference, not a generated barcode."
+      },
+      {
+        "name": "agenda",
+        "type": "TicketAgendaItem[]",
+        "default": "three programme entries",
+        "description": "Time and title rows for the expandable programme."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface and ink palette; the demo stage follows the chosen theme."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:600",
+        "click:@ticket-details",
+        "wait:900",
+        "click:@ticket-details",
+        "wait:700"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "chart-allocation",
     "name": "Allocation Donut",
     "tier": "pro",
