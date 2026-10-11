@@ -1,0 +1,90 @@
+{
+  "slug": "input-color-swatches",
+  "name": "Brand Colour Swatches",
+  "tier": "free",
+  "platform": "web",
+  "category": "inputs",
+  "description": "A typographic colour specimen with named swatches and a native custom picker, automatically choosing readable ink for the selected brand colour.",
+  "tags": [
+    "inputs",
+    "input",
+    "color",
+    "swatches",
+    "responsive",
+    "keyboard"
+  ],
+  "dependencies": [
+    "motion",
+    "lucide-react"
+  ],
+  "theme": "dark",
+  "previewHeight": 620,
+  "usage": "import { ColorSwatches } from \"@/components/design-for-ai/input-color-swatches\";\n\n<ColorSwatches />",
+  "props": [
+    {
+      "name": "label",
+      "type": "string",
+      "default": "\"Brand colour\"",
+      "description": "Panel and option label."
+    },
+    {
+      "name": "specimen",
+      "type": "string",
+      "default": "\"Aa\"",
+      "description": "Short type specimen."
+    },
+    {
+      "name": "swatches",
+      "type": "ColorSwatch[]",
+      "default": "five curated colours",
+      "description": "Named six-digit hex colours; malformed values are excluded."
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "default": "undefined",
+      "description": "Controlled six-digit hex colour."
+    },
+    {
+      "name": "defaultValue",
+      "type": "string",
+      "default": "\"#e7b75b\"",
+      "description": "Uncontrolled initial colour."
+    },
+    {
+      "name": "onChange",
+      "type": "(hex: string) => void",
+      "default": "undefined",
+      "description": "Selected preset or custom colour."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Surface and ink palette; the demo stage follows the chosen theme."
+    }
+  ],
+  "added": "2026-10-11",
+  "demo": {
+    "steps": [
+      "wait:600",
+      "click:@swatch-2",
+      "wait:600",
+      "click:@swatch-3",
+      "wait:800"
+    ],
+    "loop": false
+  },
+  "controls": [
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        "dark",
+        "light"
+      ],
+      "default": "dark"
+    }
+  ]
+}
