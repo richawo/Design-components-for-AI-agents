@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { copyText } from "@/lib/clipboard";
 
 export function CopyButton({
   text,
@@ -18,35 +19,40 @@ export function CopyButton({
   className?: string;
   variant?: "dark" | "light" | "accent";
 }) {
-  const [copied, setCopied] = useState(false);
+  const [status, setStatus] = useState<"idle" | "copying" | "copied" | "error">("idle");
+  const copied = status === "copied";
+  const pending = useRef(false);
+  const mounted = useRef(true);
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
-  useEffect(() => () => clearTimeout(timer.current), []);
+  useEffect(() => {
+    mounted.current = true;
+    return () => { mounted.current = false; clearTimeout(timer.current); };
+  }, []);
   const styles = {
     dark: "bg-white/[0.07] text-site-fg shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] hover:bg-white/[0.11]",
     light: "site-btn-primary",
     accent: "site-btn-accent",
   }[variant];
   return (
+    <>
     <button
       type="button"
       onClick={async () => {
-        try {
-          await navigator.clipboard.writeText(text);
-        } catch {
-          const ta = document.createElement("textarea");
-          ta.value = text;
-          document.body.appendChild(ta);
-          ta.select();
-          document.execCommand("copy");
-          ta.remove();
-        }
-        setCopied(true);
+        if (pending.current) return;
+        pending.current = true;
+        setStatus("copying");
         clearTimeout(timer.current);
-        timer.current = setTimeout(() => setCopied(false), 1600);
+        const ok = await copyText(text);
+        pending.current = false;
+        if (!mounted.current) return;
+        setStatus(ok ? "copied" : "error");
+        if (ok) timer.current = setTimeout(() => setStatus("idle"), 1600);
       }}
-      className={`site-btn h-8 gap-1.5 px-3.5 text-xs font-semibold ${styles} ${className}`}
-      aria-live="polite"
-      aria-label={shortLabel && !copied ? label : undefined}
+      disabled={status === "copying"}
+      aria-busy={status === "copying"}
+      className={`site-btn h-8 gap-1.5 px-3.5 text-xs font-semibold pointer-coarse:min-h-11 ${styles} ${className}`}
+      aria-label={status === "error" ? `Retry ${label.toLowerCase()}` : shortLabel && !copied ? label : undefined}
+      title={status === "error" ? "Copy failed. Try again, or select the text and copy it manually." : undefined}
     >
       {copied ? (
         <svg key="check" viewBox="0 0 16 16" className="site-pop size-3.5" fill="none" aria-hidden="true">
@@ -58,7 +64,7 @@ export function CopyButton({
           <path d="M10.5 5V3.8c0-.7-.6-1.3-1.3-1.3H3.8c-.7 0-1.3.6-1.3 1.3v5.4c0 .7.6 1.3 1.3 1.3H5" stroke="currentColor" strokeWidth="1.6" />
         </svg>
       )}
-      {copied ? (
+      {status === "error" ? "Copy failed" : copied ? (
         copiedLabel
       ) : shortLabel ? (
         <>
@@ -69,5 +75,9 @@ export function CopyButton({
         label
       )}
     </button>
+    <span className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+      {status === "error" ? "Copy failed. Try again, or select the text and copy it manually." : copied ? copiedLabel : ""}
+    </span>
+    </>
   );
 }
