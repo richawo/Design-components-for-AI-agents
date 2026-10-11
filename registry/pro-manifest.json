@@ -8093,6 +8093,165 @@
     ]
   },
   {
+    "slug": "editor-signature-pad",
+    "name": "Signature Pad",
+    "tier": "pro",
+    "platform": "web",
+    "category": "editors",
+    "description": "A Harbor agreement with ink that thins as the pen speeds up, plus undo, a stroke replay and an SVG export.",
+    "tags": [
+      "editors",
+      "signature",
+      "ink",
+      "agreement",
+      "canvas",
+      "export",
+      "drawing"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 820,
+    "usage": "import { EditorSignaturePad } from \"@/components/design-for-ai/editor-signature-pad\";\n\n<EditorSignaturePad\n  title=\"Mutual NDA\"\n  parties={parties}\n  openId=\"jordan\"\n  onChange={(id, strokes) => save(id, strokes)}\n/>\n\n// The open plate takes pointer ink. Strokes are normalized 0–1 points with timestamps, so a fast pen draws thin.\n// Undo drops the last stroke, Clear empties the plate, Replay draws the mark again, Export downloads an SVG.\n// ⌘Z undoes. On a narrow container the two plates stack.",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Mutual NDA\"",
+        "description": "Document name in the header."
+      },
+      {
+        "name": "kicker",
+        "type": "string",
+        "default": "\"Harbor\"",
+        "description": "Mono eyebrow above the title."
+      },
+      {
+        "name": "clause",
+        "type": "string",
+        "default": "The three-year confidentiality clause",
+        "description": "The sentence block above the signature plates."
+      },
+      {
+        "name": "parties",
+        "type": "Signatory[]",
+        "default": "Mira Chen for Harbor, Jordan Hale for Northwind",
+        "description": "Everyone on the agreement. Each has a name, role, org, date and strokes. A stroke is normalized points with timestamps."
+      },
+      {
+        "name": "openId",
+        "type": "string",
+        "default": "the last party",
+        "description": "Which plate accepts ink, undo, replay and export."
+      },
+      {
+        "name": "weight",
+        "type": "\"fine\" | \"mark\"",
+        "default": "\"mark\"",
+        "description": "Fine is a note in the margin. Mark is a signature. Both still thin as the pen speeds up."
+      },
+      {
+        "name": "showBaseline",
+        "type": "boolean",
+        "default": "true",
+        "description": "The rule the ink sits on."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#1c1917\"",
+        "description": "Pen colour. Near-black reads as ink on the paper."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Near-black shell with paper plates, or the white inverse. The paper stays warm either way."
+      },
+      {
+        "name": "onChange",
+        "type": "(partyId: string, strokes: InkStroke[]) => void",
+        "description": "Called with the open party's strokes after a draw, undo or clear."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the shell."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@replay",
+        "wait:2800"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "weight",
+        "label": "Pen",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "fine",
+            "label": "Fine"
+          },
+          {
+            "value": "mark",
+            "label": "Mark"
+          }
+        ],
+        "default": "mark",
+        "group": "Ink"
+      },
+      {
+        "prop": "showBaseline",
+        "label": "Baseline",
+        "kind": "toggle",
+        "default": true,
+        "group": "Ink"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action",
+        "group": "Ink"
+      },
+      {
+        "prop": "accent",
+        "label": "Ink",
+        "kind": "color",
+        "default": "#1c1917",
+        "options": [
+          "#1d4ed8",
+          "#7f1d1d",
+          "#14532d"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      }
+    ]
+  },
+  {
     "slug": "effect-gravity-grid",
     "name": "Gravity Grid",
     "tier": "pro",
