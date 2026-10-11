@@ -540,7 +540,7 @@ export default function MorphLoaderDemo({ status: forced, ...overrides }: Partia
               {done} / {STEPS.length} done
             </p>
             {run.phase === "failed" ? (
-              <button type="button" data-demo="retry" onClick={retry} className={`${BUTTON} bg-[#f4f4f5] text-[#0b0b0c] hover:bg-white`}>
+              <button type="button" data-demo="retry" onClick={retry} className={`[@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 ${BUTTON} bg-[#f4f4f5] text-[#0b0b0c] hover:bg-white`}>
                 Retry step 3
               </button>
             ) : (
@@ -549,7 +549,7 @@ export default function MorphLoaderDemo({ status: forced, ...overrides }: Partia
                 data-demo="publish"
                 disabled={running}
                 onClick={publish}
-                className={`${BUTTON} text-[#f4f4f5] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)] hover:bg-white/[0.05] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent`}
+                className={`[@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 ${BUTTON} text-[#f4f4f5] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)] hover:bg-white/[0.05] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent`}
               >
                 {running ? (
                   <>
