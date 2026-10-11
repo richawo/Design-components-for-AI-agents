@@ -1,7 +1,9 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { FILTER_KEY, galleryHref, parseFilters, readCategoryParam } from "@/lib/gallery-sidebar";
 import { CategorySidebar } from "./category-sidebar";
 import { cardEntrance, ComponentCard, FIRST_VIEW_CARDS } from "./component-card";
 import type { CardData } from "@/lib/registry";
@@ -11,10 +13,15 @@ type Cat = { key: string; label: string; count: number };
 /** The first cards' stagger continues on from the page header and toolbar. */
 const FIRST_CARD_STEP = 4;
 
-export function ComponentBrowser({ cards, categories }: { cards: CardData[]; categories: Cat[] }) {
+export function ComponentBrowser({ cards, categories, category }: { cards: CardData[]; categories: Cat[]; category: string }) {
+  const router = useRouter();
   const [q, setQ] = useState("");
   const [tier, setTier] = useState<"all" | "free" | "pro">("all");
-  const [cat, setCat] = useState<string>("all");
+  const [filtersReady, setFiltersReady] = useState(false);
+  const [cat, setCatState] = useState(category);
+  // The click updates the grid immediately. The URL follows, and a slower
+  // response for an earlier click must not overwrite the newer choice.
+  const pending = useRef(category);
   const input = useRef<HTMLInputElement>(null);
   const reduce = useReducedMotion();
   // Entrance classes belong to the first render only. Cards that mount later
@@ -23,6 +30,46 @@ export function ComponentBrowser({ cards, categories }: { cards: CardData[]; cat
   useEffect(() => {
     firstRender.current = false;
   }, []);
+
+  // Search and tier live for the tab. Coming back from a component remounts
+  // this view, and the category is already in the URL.
+  useLayoutEffect(() => {
+    const saved = parseFilters(sessionStorage.getItem(FILTER_KEY));
+    setQ(saved.q);
+    setTier(saved.tier);
+    setFiltersReady(true);
+  }, []);
+
+  useLayoutEffect(() => {
+    if (!filtersReady) return;
+    try {
+      sessionStorage.setItem(FILTER_KEY, JSON.stringify({ q, tier }));
+    } catch {}
+  }, [q, tier, filtersReady]);
+
+  useEffect(() => {
+    if (pending.current === category) setCatState(category);
+  }, [category]);
+
+  // Back and forward restore the category from the URL. replace() does not
+  // push those entries, so this only fires when leaving and returning.
+  useEffect(() => {
+    const onPop = () => {
+      const next = readCategoryParam(new URLSearchParams(window.location.search).get("category"), new Set(categories.map((c) => c.key)));
+      pending.current = next;
+      setCatState(next);
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, [categories]);
+
+  const setCat = (key: string) => {
+    pending.current = key;
+    setCatState(key);
+    const href = galleryHref(window.location.search, key);
+    if (`${window.location.pathname}${window.location.search}` === href) return;
+    router.replace(href, { scroll: false });
+  };
 
   // "/" jumps to search from anywhere on the page, as on most libraries.
   useEffect(() => {
