@@ -1,0 +1,23 @@
+/* Composited overlays keep hover emphasis off React's render path. */
+.component-grid .component-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  border-radius: inherit;
+  background: #000;
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .component-grid:has(.component-card:hover) .component-card:not(:hover):not(:focus-visible)::after {
+    opacity: 0.18;
+  }
+}
+.component-grid:has(.component-card:focus-visible) .component-card:not(:hover):not(:focus-visible)::after {
+  opacity: 0.18;
+}
+@media (prefers-reduced-motion: reduce) {
+  .component-grid .component-card::after { transition: none; }
+}

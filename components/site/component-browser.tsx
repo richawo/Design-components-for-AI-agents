@@ -1,5 +1,7 @@
 "use client";
 
+import "./gallery-focus.css";
+
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
@@ -193,7 +195,7 @@ export function ComponentBrowser({ cards, categories, category, initialFilters }
           {filtered.length} {filtered.length === 1 ? "component" : "components"}
         </p>
         {filtered.length ? (
-          <motion.div layout={!reduce} className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          <motion.div layout={!reduce} className="component-grid mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             <AnimatePresence initial={false} mode="popLayout">
               {filtered.map((c, i) => (
                 <motion.div
