@@ -7069,6 +7069,90 @@
     ]
   },
   {
+    "slug": "chart-waterfall-bridge",
+    "name": "Change Waterfall Bridge",
+    "tier": "pro",
+    "platform": "web",
+    "category": "charts",
+    "description": "A signed-change waterfall with explicit opening and closing balances, selectable contributions and readable scrolling columns for revenue or resource analysis.",
+    "tags": [
+      "charts",
+      "chart",
+      "waterfall",
+      "bridge",
+      "responsive",
+      "keyboard"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 720,
+    "usage": "import { WaterfallBridge } from \"@/components/design-for-ai/chart-waterfall-bridge\";\n\n<WaterfallBridge />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"What moved the number.\"",
+        "description": "Chart heading."
+      },
+      {
+        "name": "opening",
+        "type": "number",
+        "default": "120",
+        "description": "Opening balance; invalid input becomes zero."
+      },
+      {
+        "name": "changes",
+        "type": "WaterfallChange[]",
+        "default": "four sample changes",
+        "description": "Signed contributions. Invalid individual values become zero; overflowing totals show a numeric-range message."
+      },
+      {
+        "name": "unit",
+        "type": "string",
+        "default": "\"$k\"",
+        "description": "Unit displayed alongside values."
+      },
+      {
+        "name": "onSelect",
+        "type": "(index: number) => void",
+        "default": "undefined",
+        "description": "Selected bar index including opening and closing bars."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface and ink palette; the demo stage follows the chosen theme."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:700",
+        "click:@bridge-3",
+        "wait:800",
+        "click:@bridge-5",
+        "wait:700"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "collab-activity-feed",
     "name": "Activity Feed",
     "tier": "pro",
