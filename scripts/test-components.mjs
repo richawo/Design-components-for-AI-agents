@@ -28,6 +28,8 @@ if (fs.existsSync(path.join(root, "registry/pro/data-query-builder")))
   cases.push("pro-industry-probe", "pro-demo-probe");
 if (fs.existsSync(path.join(root, "registry/pro/commerce-operations-dashboard")))
   cases.push("pro-50-commerce-probe");
+if (fs.existsSync(path.join(root, "registry/pro/fashion-merchandising-dashboard")))
+  cases.push("pro-50-fashion-probe");
 if (cases.length === publicCases.length)
   console.log(
     "Pro integration cases skipped: private sources are not checked out.",
