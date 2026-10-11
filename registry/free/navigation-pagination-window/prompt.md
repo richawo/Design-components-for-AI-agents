@@ -4,7 +4,7 @@ Build a standalone React 19 and Tailwind v4 component. A compact pagination rail
 
 ## Layout
 
-A two-line rail: results label and mono page count above, arrow controls framing a short window of page buttons. The selected surface travels between numbers. Size to the container. Use a 4/8px rhythm, 1px surface edges, 16px narrow padding and 24px desktop padding. Controls have 44px targets.
+A results label and mono page count sit above a centred window of page buttons. Previous and Next controls sit on a separate row below. The selected surface travels between numbers. Size to the container. Use a 4/8px rhythm, 1px surface edges, 16px narrow padding and 24px desktop padding. Controls have 44px targets.
 
 ## Typography and colour
 

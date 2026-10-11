@@ -8,7 +8,7 @@
     "motion": "motion/react"
   },
   "layout": {
-    "direction": "A two-line rail: results label and mono page count above, arrow controls framing a short window of page buttons. The selected surface travels between numbers.",
+    "direction": "A results label and mono page count sit above a centred window of page buttons. Previous and Next controls sit on a separate row below. The selected surface travels between numbers.",
     "container": "Size to the parent with @container. Keep the root width at 100%, capped to the focused component, with 24px desktop and 16px narrow padding.",
     "rhythm": "4/8px spacing; 1px edges; 44px minimum interactive targets."
   },
@@ -37,14 +37,7 @@
     "reduced": "Remove transforms and layout motion; keep opacity at 120ms or less."
   },
   "responsive": {
-    "widths": [
-      320,
-      390,
-      768,
-      1024,
-      1440,
-      1920
-    ],
+    "widths": [320, 390, 768, 1024, 1440, 1920],
     "rules": "Wrap long copy; stack secondary details inside narrow containers; keep any horizontal scrolling local and keyboard accessible."
   },
   "accessibility": [
