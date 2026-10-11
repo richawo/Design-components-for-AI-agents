@@ -14296,6 +14296,110 @@
     ]
   },
   {
+    "slug": "media-before-after",
+    "name": "Before and After Comparator",
+    "tier": "pro",
+    "platform": "web",
+    "category": "media",
+    "description": "A full-surface comparison slider with a crisp divider and keyboard control, shown with an original typographic wireframe and finished editorial cover.",
+    "tags": [
+      "media",
+      "media",
+      "before",
+      "after",
+      "responsive",
+      "keyboard"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 720,
+    "usage": "import { BeforeAfter } from \"@/components/design-for-ai/media-before-after\";\n\n<BeforeAfter />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"From structure to character\"",
+        "description": "Comparison caption."
+      },
+      {
+        "name": "beforeLabel",
+        "type": "string",
+        "default": "\"Wireframe\"",
+        "description": "First version label."
+      },
+      {
+        "name": "afterLabel",
+        "type": "string",
+        "default": "\"Final design\"",
+        "description": "Second version label."
+      },
+      {
+        "name": "before",
+        "type": "ReactNode",
+        "default": "drawn wireframe cover",
+        "description": "First visual layer; provide non-interactive content. Exposed through the comparison label, decorative visual content is hidden from screen readers."
+      },
+      {
+        "name": "after",
+        "type": "ReactNode",
+        "default": "drawn editorial cover",
+        "description": "Second visual layer; no remote imagery is required."
+      },
+      {
+        "name": "value",
+        "type": "number",
+        "default": "undefined",
+        "description": "Controlled split percentage."
+      },
+      {
+        "name": "defaultValue",
+        "type": "number",
+        "default": "48",
+        "description": "Initial split, clamped to 0-100."
+      },
+      {
+        "name": "onChange",
+        "type": "(value: number) => void",
+        "default": "undefined",
+        "description": "New comparison percentage."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface and ink palette; the demo stage follows the chosen theme."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:600",
+        "click:@compare-slider:0.7,0.5",
+        "wait:800",
+        "key:Home",
+        "wait:700",
+        "key:End",
+        "wait:700"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "mobile-agent-approval",
     "name": "Agent Approval Sheet",
     "tier": "pro",
