@@ -8962,6 +8962,81 @@
     ]
   },
   {
+    "slug": "commerce-fulfilment-desk",
+    "name": "Fulfilment Exception Desk",
+    "tier": "pro",
+    "platform": "web",
+    "category": "commerce",
+    "description": "Select a shipment, inspect blockers and submit a recovery action. A considered, responsive commerce workspace with typed integration points.",
+    "tags": [
+      "e-commerce",
+      "workflow",
+      "responsive",
+      "keyboard",
+      "commerce"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 1000,
+    "usage": "import { FulfilmentDesk } from \"@/components/design-for-ai/commerce-fulfilment-desk\";\n\n<FulfilmentDesk />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Main heading."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "description": "Supporting context."
+      },
+      {
+        "name": "shipments",
+        "type": "FulfilmentShipment[]",
+        "description": "Open shipments with unique IDs, operational context, items and host-approved recovery actions."
+      },
+      {
+        "name": "onResolve",
+        "type": "(action:FulfilmentAction)=>void|Promise<void>",
+        "description": "Record the reviewed recovery action. Resolving the callback acknowledges the request, not delivery of the shipment."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface, border and ink palette."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:350",
+        "click:@action-0",
+        "click:@note",
+        "type:Address verified",
+        "click:@review",
+        "wait:350",
+        "click:@confirm",
+        "wait:900"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "commerce-operations-dashboard",
     "name": "Commerce Operations Dashboard",
     "tier": "pro",
