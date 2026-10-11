@@ -15350,6 +15350,106 @@
     ]
   },
   {
+    "slug": "hr-capacity-planner",
+    "name": "Team Capacity Planner",
+    "tier": "pro",
+    "platform": "web",
+    "category": "date-time",
+    "description": "A weekly resource planner with project allocations, daily capacity meters and an editable inspector. Overbooking and invalid hours stay visible before save.",
+    "tags": [
+      "date-time",
+      "workflow",
+      "interactive",
+      "responsive",
+      "keyboard",
+      "hr",
+      "resource-planning",
+      "capacity",
+      "scheduling"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 940,
+    "usage": "import { CapacityPlanner } from \"@/components/design-for-ai/hr-capacity-planner\";\n\n<CapacityPlanner />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Planner heading."
+      },
+      {
+        "name": "period",
+        "type": "string",
+        "description": "Display label for the planning period; dates are supplied explicitly."
+      },
+      {
+        "name": "people",
+        "type": "CapacityPerson[]",
+        "description": "People with unique IDs, display roles and daily capacity in quarter hours."
+      },
+      {
+        "name": "days",
+        "type": "CapacityDay[]",
+        "description": "Working-day IDs with weekday and date labels."
+      },
+      {
+        "name": "projects",
+        "type": "CapacityProject[]",
+        "description": "Available project IDs and names."
+      },
+      {
+        "name": "defaultBookings",
+        "type": "CapacityBooking[]",
+        "description": "Initial project allocations. Hours must be 0.25–24 in quarter-hour steps. Remount for a new planning period."
+      },
+      {
+        "name": "allowOverbooking",
+        "type": "boolean",
+        "default": "false",
+        "description": "Allows saving over-capacity days while preserving visible warnings."
+      },
+      {
+        "name": "onSave",
+        "type": "(bookings: CapacityBooking[]) => void | Promise<void>",
+        "description": "Awaited persistence callback. Failed saves retain edits; reset uses the last acknowledged baseline."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface and ink palette; the preview stage follows it."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:500",
+        "click:@add-allocation",
+        "wait:600",
+        "click:@save-plan",
+        "wait:1200",
+        "click:@capacity-jo-thu",
+        "wait:800"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "input-ai-prompt",
     "name": "AI Prompt Composer",
     "tier": "pro",
