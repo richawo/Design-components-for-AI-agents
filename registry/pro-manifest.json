@@ -7905,6 +7905,194 @@
     ]
   },
   {
+    "slug": "editor-rich-text",
+    "name": "Rich Text Editor",
+    "tier": "pro",
+    "platform": "web",
+    "category": "editors",
+    "description": "A dark memo editor with markdown shortcuts, a slash menu for blocks, and a floating bar on the selection.",
+    "tags": [
+      "editors",
+      "rich text",
+      "markdown",
+      "slash menu",
+      "writing",
+      "toolbar",
+      "document"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 920,
+    "usage": "import { EditorRichText } from \"@/components/design-for-ai/editor-rich-text\";\n\n<EditorRichText\n  title=\"Pricing memo\"\n  kicker=\"Harbor\"\n  author=\"Mira Chen\"\n  updated=\"11 Oct 2026\"\n  blocks={memo}\n  onChange={(next) => save(next)}\n/>\n\n// Type #, ##, >, - or ``` at the start of a line, or / to open the block menu. **bold**, *italic*, `code` and ==highlight== convert as you close them.\n// Select text for the floating bar (bold, italic, code, highlight, link). ⌘B, ⌘I and ⌘E do the first three.\n// On a narrow container the outline hides and the bar docks along the bottom.",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Pricing memo\"",
+        "description": "File name in the header. The memo's own title is the first heading in the document."
+      },
+      {
+        "name": "kicker",
+        "type": "string",
+        "default": "\"Harbor\"",
+        "description": "Mono eyebrow above the file name."
+      },
+      {
+        "name": "author",
+        "type": "string",
+        "default": "\"Mira Chen\"",
+        "description": "Shown with the date in the header."
+      },
+      {
+        "name": "updated",
+        "type": "string",
+        "default": "\"11 Oct 2026\"",
+        "description": "The date as you want it written. It is not parsed."
+      },
+      {
+        "name": "blocks",
+        "type": "RichBlock[]",
+        "default": "Harbor's pricing memo, ending on an empty line",
+        "description": "The document. A block is a heading, subhead, paragraph, quote, list, note, code block or divider. Text is runs with bold, italic, code, highlight and link. A list's lines are items. Passed again only when the value changes; typing stays local and is reported through onChange."
+      },
+      {
+        "name": "face",
+        "type": "\"serif\" | \"sans\"",
+        "default": "\"serif\"",
+        "description": "Serif for the writing, or the UI sans for the whole note. Bold always steps into the sans, because the serif has no bold weight."
+      },
+      {
+        "name": "measure",
+        "type": "\"narrow\" | \"wide\"",
+        "default": "\"narrow\"",
+        "description": "Width of the writing column: 64ch or 76ch."
+      },
+      {
+        "name": "showOutline",
+        "type": "boolean",
+        "default": "true",
+        "description": "The heading index beside the note. It only appears once the editor is wide enough."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#f4f4f5\"",
+        "description": "The one accent: highlight, quote rule, draft dot and selection. Either theme's ink follows the theme. On-accent text is chosen by luminance."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Near-black editor with white ink, or the white inverse."
+      },
+      {
+        "name": "onChange",
+        "type": "(blocks: RichBlock[]) => void",
+        "description": "Called with the whole document after each edit."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the editor."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@compose",
+        "wait:150",
+        "type:/qu",
+        "wait:400",
+        "click:@slash-quote",
+        "wait:150",
+        "type:Twelve dollars, and we mean it.",
+        "wait:600"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "face",
+        "label": "Type",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "serif",
+            "label": "Serif"
+          },
+          {
+            "value": "sans",
+            "label": "Sans"
+          }
+        ],
+        "default": "serif",
+        "group": "Type"
+      },
+      {
+        "prop": "measure",
+        "label": "Measure",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "narrow",
+            "label": "Narrow"
+          },
+          {
+            "value": "wide",
+            "label": "Wide"
+          }
+        ],
+        "default": "narrow",
+        "group": "Type"
+      },
+      {
+        "prop": "showOutline",
+        "label": "Outline",
+        "kind": "toggle",
+        "default": true,
+        "group": "Type"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action",
+        "group": "Type"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#8ab4ff",
+          "#7dd3a8",
+          "#f4b267"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      }
+    ]
+  },
+  {
     "slug": "effect-gravity-grid",
     "name": "Gravity Grid",
     "tier": "pro",
