@@ -477,7 +477,6 @@ export function CollabMentionInput({
             aria-multiline="true"
             aria-label={title}
             aria-autocomplete="list"
-            aria-expanded={!!query}
             aria-controls={query ? `${uid}-list` : undefined}
             aria-activedescendant={query && current ? `${uid}-opt-${current.id}` : undefined}
             contentEditable
