@@ -3020,7 +3020,7 @@
       "motion"
     ],
     "theme": "dark",
-    "previewHeight": 860,
+    "previewHeight": 960,
     "usage": "import { PlanChange } from \"@/components/design-for-ai/billing-plan-change\";\n\n<PlanChange\n  currentPlanId=\"studio\"\n  currentInterval=\"monthly\"\n  seats={8}\n  periodStart=\"2026-09-24\"\n  periodEnd=\"2026-10-23\"\n  today=\"2026-10-10\"\n  paymentLabel=\"•••• 4242\"\n  onConfirm={async (quote) => {\n    await fetch(\"/api/subscription\", { method: \"PATCH\", body: JSON.stringify(quote.to) });\n  }}\n/>",
     "props": [
       {
@@ -3045,7 +3045,7 @@
         "name": "defaultPlanId",
         "type": "string",
         "default": "currentPlanId",
-        "description": "The plan selected on mount. Picking the current plan (with the current interval) means no change, so the receipt shows its empty state."
+        "description": "The plan selected on mount. Picking the current plan (with the current interval) keeps the next invoice on the receipt; a different plan or interval prints the proration."
       },
       {
         "name": "defaultInterval",
