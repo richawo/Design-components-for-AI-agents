@@ -13735,6 +13735,114 @@
     ]
   },
   {
+    "slug": "input-file-dropzone",
+    "name": "Source File Dropzone",
+    "tier": "pro",
+    "platform": "web",
+    "category": "inputs",
+    "description": "A document dropzone with local file selection, type and size validation, duplicate handling and a removable file list for knowledge and upload flows.",
+    "tags": [
+      "inputs",
+      "input",
+      "file",
+      "dropzone",
+      "responsive",
+      "keyboard"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 720,
+    "usage": "import { FileDropzone } from \"@/components/design-for-ai/input-file-dropzone\";\n\n<FileDropzone />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Bring your source material.\"",
+        "description": "Dropzone heading."
+      },
+      {
+        "name": "hint",
+        "type": "string",
+        "default": "drop or choose guidance",
+        "description": "Instructions."
+      },
+      {
+        "name": "files",
+        "type": "File[]",
+        "default": "undefined",
+        "description": "Controlled local files; uploading remains the host responsibility."
+      },
+      {
+        "name": "defaultFiles",
+        "type": "File[]",
+        "default": "[]",
+        "description": "Initial uncontrolled files."
+      },
+      {
+        "name": "accept",
+        "type": "string",
+        "default": "\".pdf,.md,.txt\"",
+        "description": "Comma-separated extensions or MIME types, including image/* style wildcards. Client-side convenience; validate again on your server."
+      },
+      {
+        "name": "maxBytes",
+        "type": "number",
+        "default": "10485760",
+        "description": "Maximum bytes per file."
+      },
+      {
+        "name": "maxFiles",
+        "type": "number",
+        "default": "5",
+        "description": "Maximum accepted file count."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "default": "false",
+        "description": "Disables selecting, dropping and removing files."
+      },
+      {
+        "name": "onChange",
+        "type": "(files: File[]) => void",
+        "default": "undefined",
+        "description": "The entire new local file selection."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface and ink palette; the demo stage follows the chosen theme."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:700",
+        "click:@sample-file",
+        "wait:900",
+        "click:@remove-file-0",
+        "wait:700"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "input-shortcut-recorder",
     "name": "Keyboard Shortcut Recorder",
     "tier": "pro",
