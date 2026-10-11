@@ -1,0 +1,96 @@
+{
+  "slug": "feedback-inline-alert",
+  "name": "Actionable Inline Notice",
+  "tier": "free",
+  "platform": "web",
+  "category": "feedback",
+  "description": "A restrained inline notice with semantic icon, optional dismissal and an async action that preserves its layout and reports failures honestly.",
+  "tags": [
+    "feedback",
+    "feedback",
+    "inline",
+    "alert",
+    "responsive",
+    "keyboard"
+  ],
+  "dependencies": [
+    "motion",
+    "lucide-react"
+  ],
+  "theme": "dark",
+  "previewHeight": 500,
+  "usage": "import { InlineAlert } from \"@/components/design-for-ai/feedback-inline-alert\";\n\n<InlineAlert />",
+  "props": [
+    {
+      "name": "title",
+      "type": "string",
+      "default": "\"Your export is ready\"",
+      "description": "Notice heading."
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "default": "export details",
+      "description": "Notice body."
+    },
+    {
+      "name": "tone",
+      "type": "\"info\" | \"warning\" | \"success\"",
+      "default": "\"success\"",
+      "description": "Semantic icon; not a fabricated severity score."
+    },
+    {
+      "name": "actionLabel",
+      "type": "string",
+      "default": "\"Open archive\"",
+      "description": "Action button label."
+    },
+    {
+      "name": "onAction",
+      "type": "() => void | Promise<void>",
+      "default": "undefined",
+      "description": "Optional awaited action; errors remain visible and duplicate clicks are blocked."
+    },
+    {
+      "name": "onDismiss",
+      "type": "() => void",
+      "default": "undefined",
+      "description": "Optional host dismissal; caller removes the notice."
+    },
+    {
+      "name": "errorMessage",
+      "type": "string",
+      "default": "action failure guidance",
+      "description": "User-facing action failure copy."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Surface and ink palette; the demo stage follows the chosen theme."
+    }
+  ],
+  "added": "2026-10-11",
+  "demo": {
+    "steps": [
+      "wait:600",
+      "click:@alert-action",
+      "wait:700",
+      "click:@alert-action",
+      "wait:700"
+    ],
+    "loop": false
+  },
+  "controls": [
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        "dark",
+        "light"
+      ],
+      "default": "dark"
+    }
+  ]
+}

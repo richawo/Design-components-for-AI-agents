@@ -1,0 +1,114 @@
+{
+  "component": "Actionable Inline Notice",
+  "intent": "A restrained inline notice with semantic icon, optional dismissal and an async action that preserves its layout and reports failures honestly.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4",
+    "motion": "motion/react"
+  },
+  "layout": {
+    "direction": "One horizontal notice with a line icon and a strong text column. The action sits on its own lower rule and error text wraps alongside it.",
+    "container": "Size to the parent with @container. Keep the root width at 100%, capped to the focused component, with 24px desktop and 16px narrow padding.",
+    "rhythm": "4/8px spacing; 1px edges; 44px minimum interactive targets."
+  },
+  "typography": {
+    "body": "font-sans, 14-16px, line-height 1.5",
+    "metadata": "font-mono, 11-12px, restrained tracking",
+    "heading": "font-display or font-serif, 24-36px, tracking -0.035em"
+  },
+  "color": {
+    "dark": {
+      "surface": "#111111",
+      "ink": "#f5f5f5",
+      "muted": "#a3a3a3",
+      "edge": "#333333"
+    },
+    "light": {
+      "surface": "#ffffff",
+      "ink": "#171717",
+      "muted": "#525252",
+      "edge": "#d4d4d4"
+    }
+  },
+  "motion": {
+    "entrance": "A single opacity and 8px rise over 320ms.",
+    "interaction": "150ms press response; 240ms state changes. No ambient loops.",
+    "reduced": "Remove transforms and layout motion; keep opacity at 120ms or less."
+  },
+  "responsive": {
+    "widths": [
+      320,
+      390,
+      768,
+      1024,
+      1440,
+      1920
+    ],
+    "rules": "Wrap long copy; stack secondary details inside narrow containers; keep any horizontal scrolling local and keyboard accessible."
+  },
+  "accessibility": [
+    "Use native buttons and form controls with visible 2px focus rings.",
+    "Provide labels, meaningful states and polite feedback where actions update content.",
+    "Keep IDs instance-scoped with useId; support multiple instances and empty custom data.",
+    "Respect prefers-reduced-motion; no automatic action or navigation."
+  ],
+  "content": {
+    "defaults": "Use the realistic default content from the source; expose content and collection inputs as typed props.",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Your export is ready\"",
+        "description": "Notice heading."
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "default": "export details",
+        "description": "Notice body."
+      },
+      {
+        "name": "tone",
+        "type": "\"info\" | \"warning\" | \"success\"",
+        "default": "\"success\"",
+        "description": "Semantic icon; not a fabricated severity score."
+      },
+      {
+        "name": "actionLabel",
+        "type": "string",
+        "default": "\"Open archive\"",
+        "description": "Action button label."
+      },
+      {
+        "name": "onAction",
+        "type": "() => void | Promise<void>",
+        "default": "undefined",
+        "description": "Optional awaited action; errors remain visible and duplicate clicks are blocked."
+      },
+      {
+        "name": "onDismiss",
+        "type": "() => void",
+        "default": "undefined",
+        "description": "Optional host dismissal; caller removes the notice."
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "default": "action failure guidance",
+        "description": "User-facing action failure copy."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface and ink palette; the demo stage follows the chosen theme."
+      }
+    ]
+  },
+  "avoid": [
+    "Remote images, fake network success or hidden external dependencies.",
+    "Decorative status badges, gradients as filler, low-contrast text.",
+    "Unlabelled controls, hover-only functionality, overflow at 320px."
+  ]
+}
