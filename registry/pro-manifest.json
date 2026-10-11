@@ -22492,6 +22492,78 @@
     ]
   },
   {
+    "slug": "saas-usage-policy",
+    "name": "Usage Limit Policy Editor",
+    "tier": "pro",
+    "platform": "web",
+    "category": "progress",
+    "description": "Configure warning and hard limits with a live consumption preview. A considered, responsive SaaS workspace with typed integration points.",
+    "tags": [
+      "saas",
+      "workflow",
+      "responsive",
+      "keyboard",
+      "progress"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 1230,
+    "usage": "import { UsagePolicy } from \"@/components/design-for-ai/saas-usage-policy\";\n\n<UsagePolicy />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Main heading."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "description": "Supporting context."
+      },
+      {
+        "name": "metrics",
+        "type": "UsageMetric[]",
+        "description": "Unique metered resources with whole-unit counts and warning/limit values from 0 to one billion. Warning must be below a positive limit."
+      },
+      {
+        "name": "onSave",
+        "type": "(policy:UsagePolicyDraft)=>void|Promise<void>",
+        "description": "Persist the complete reviewed policy. Actual metering, alerts and enforcement belong to the host service."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface, border and ink palette."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:350",
+        "click:@metric-1",
+        "wait:700",
+        "click:@review",
+        "wait:1200"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "saas-workspace-dashboard",
     "name": "Workspace Command Centre",
     "tier": "pro",
