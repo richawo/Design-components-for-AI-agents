@@ -15609,5 +15609,165 @@
         "group": "Look"
       }
     ]
+  },
+  {
+    "slug": "diagram-sequence-auth",
+    "name": "PKCE Handshake",
+    "tier": "pro",
+    "platform": "web",
+    "category": "diagrams",
+    "description": "A PKCE sign-in as a sequence diagram: lifelines for the browser, app, auth server and API, arrows that draw in order, and each message's payload.",
+    "tags": [
+      "oauth",
+      "pkce",
+      "sequence diagram",
+      "authentication",
+      "lifelines",
+      "animated diagram",
+      "security"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 860,
+    "usage": "import { SequenceAuth } from \"@/components/design-for-ai/diagram-sequence-auth\";\n\n<SequenceAuth\n  clientId=\"halden-web\"\n  showResource\n  open=\"token\"\n  onReplay={() => analytics.track(\"pkce_replayed\")}\n/>\n\n// The resting state is a finished handshake, with the token request open — the only call that carries the verifier.\n// Replay draws the arrows again. Hover or focus a message to read its payload; a click keeps it open.",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"PKCE handshake\"",
+        "description": "Heading."
+      },
+      {
+        "name": "summary",
+        "type": "string",
+        "default": "\"The browser carries the challenge. The verifier stays in the app until the token call.\"",
+        "description": "One or two sentences under the heading."
+      },
+      {
+        "name": "parties",
+        "type": "SequenceParty[]",
+        "description": "Lifelines left to right: id, role and name. Defaults to browser, app, auth and API."
+      },
+      {
+        "name": "messages",
+        "type": "SequenceMessage[]",
+        "description": "Messages in time order: from, to, label, title, verb, summary, channel, ms and fields. Defaults to one authorisation-code handshake with PKCE."
+      },
+      {
+        "name": "clientId",
+        "type": "string",
+        "default": "\"halden-web\"",
+        "description": "Public client id, used as the app's name and in the sample payloads."
+      },
+      {
+        "name": "showResource",
+        "type": "boolean",
+        "default": "true",
+        "description": "Draw the API lifeline and the calls that touch it."
+      },
+      {
+        "name": "showLatency",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show each message's time and the end-to-end total."
+      },
+      {
+        "name": "open",
+        "type": "string",
+        "default": "\"token\"",
+        "description": "Id of the message selected when the diagram is at rest."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface the diagram sits on."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#7cc4ff\"",
+        "description": "The one accent: the selected arrow, its label and the rule beside a secret."
+      },
+      {
+        "name": "onReplay",
+        "type": "() => void",
+        "description": "Called when Replay is pressed, before the arrows draw again."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root section."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@replay",
+        "wait:2400",
+        "click:@msg-token",
+        "wait:900"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "clientId",
+        "label": "Client id",
+        "kind": "text",
+        "default": "halden-web",
+        "group": "Handshake"
+      },
+      {
+        "prop": "showResource",
+        "label": "API calls",
+        "kind": "toggle",
+        "default": true,
+        "group": "Handshake"
+      },
+      {
+        "prop": "showLatency",
+        "label": "Latency",
+        "kind": "toggle",
+        "default": true,
+        "group": "Handshake"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#7cc4ff",
+        "options": [
+          "#7cc4ff",
+          "#ff9d5c",
+          "#7dd3a8"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ]
   }
 ]
