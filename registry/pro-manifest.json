@@ -8595,6 +8595,93 @@
     ]
   },
   {
+    "slug": "data-kanban-compact",
+    "name": "Accessible Sprint Board",
+    "tier": "pro",
+    "platform": "web",
+    "category": "data",
+    "description": "A compact task board with clear lanes, detailed cards and keyboard-friendly move controls, preserving focus as tasks move between columns.",
+    "tags": [
+      "data",
+      "data",
+      "kanban",
+      "compact",
+      "responsive",
+      "keyboard"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 720,
+    "usage": "import { CompactKanban } from \"@/components/design-for-ai/data-kanban-compact\";\n\n<CompactKanban />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Interface sprint\"",
+        "description": "Board title."
+      },
+      {
+        "name": "columns",
+        "type": "KanbanColumn[]",
+        "default": "Ready, In progress, Done",
+        "description": "Unique destination IDs and lane titles; reserve __unassigned for orphaned items."
+      },
+      {
+        "name": "items",
+        "type": "KanbanCard[]",
+        "default": "undefined",
+        "description": "Controlled task array."
+      },
+      {
+        "name": "defaultItems",
+        "type": "KanbanCard[]",
+        "default": "three sample tasks",
+        "description": "Initial uncontrolled board items. Task IDs must be unique."
+      },
+      {
+        "name": "onChange",
+        "type": "(items: KanbanCard[]) => void",
+        "default": "undefined",
+        "description": "Entire board after a move. Host persistence is separate; unknown columns remain visible in Unassigned."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface and ink palette; the demo stage follows the chosen theme."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:500",
+        "click:@move-ds-14",
+        "key:ArrowDown",
+        "key:Enter",
+        "wait:900",
+        "click:@move-ds-18",
+        "key:ArrowDown",
+        "key:Enter",
+        "wait:700"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "date-booking-slots",
     "name": "Booking Slot Selector",
     "tier": "pro",
