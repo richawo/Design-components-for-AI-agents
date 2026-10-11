@@ -8796,6 +8796,85 @@
     ]
   },
   {
+    "slug": "commerce-catalog-import",
+    "name": "Catalogue Import Desk",
+    "tier": "pro",
+    "platform": "web",
+    "category": "commerce",
+    "description": "A three-step catalogue importer with quoted CSV parsing, column mapping, record validation and an awaited import action that preserves failed attempts.",
+    "tags": [
+      "commerce",
+      "workflow",
+      "interactive",
+      "responsive",
+      "keyboard",
+      "e-commerce",
+      "fashion",
+      "csv",
+      "catalogue"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 900,
+    "usage": "import { CatalogImport } from \"@/components/design-for-ai/commerce-catalog-import\";\n\n<CatalogImport />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Import desk heading."
+      },
+      {
+        "name": "fields",
+        "type": "ImportField[]",
+        "description": "Unique destination IDs, labels, text/number/email types, required flags and optional numeric minimums. Optional unique flags reject duplicate nonempty values; the default SKU field is unique."
+      },
+      {
+        "name": "initialCsv",
+        "type": "string",
+        "description": "Initial pasted source. Maximum 200,000 characters, 1,000 records and 40 columns."
+      },
+      {
+        "name": "onImport",
+        "type": "(rows: CatalogImportRow[]) => void | Promise<void>",
+        "description": "Persist mapped records. Awaited; rejection keeps the mapping for retry. Import is disabled without this callback."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface and ink palette; the preview stage follows it."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:500",
+        "click:@import-next",
+        "wait:450",
+        "click:@import-next",
+        "wait:450",
+        "click:@import-next",
+        "wait:1300"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "content-release-notes",
     "name": "Editorial Release Notes",
     "tier": "pro",

@@ -65,6 +65,69 @@ try {
     await page.getByRole("status").first().innerText(),
     /0 matching records/,
   );
+  await fixture(
+    "commerce-catalog-import",
+    `window.parse=Subject.parseCatalogCsv;window.imported=[];createRoot(document.getElementById('root')).render(<Subject.CatalogImport onImport={async rows=>{window.imported.push(rows);throw Error('offline')}}/>);`,
+  );
+  const parsed = await page.evaluate(() =>
+    window.parse(
+      '\ufeffName,Note\r\n"Form, Studio","A ""quoted"" note\ncontinued"',
+    ),
+  );
+  assert.deepEqual(parsed, {
+    headers: ["Name", "Note"],
+    rows: [["Form, Studio", 'A "quoted" note\ncontinued']],
+  });
+  for (const source of [
+    'Name\n"unfinished',
+    'Name\n"closed"junk',
+    "Name\nextra,column",
+  ]) {
+    assert.equal(
+      await page.evaluate((source) => {
+        try {
+          window.parse(source);
+          return false;
+        } catch {
+          return true;
+        }
+      }, source),
+      true,
+    );
+  }
+  await page.getByRole("button", { name: "Read CSV" }).click();
+  await page.getByRole("button", { name: "Review import" }).click();
+  await page.getByRole("button", { name: "Import records" }).click();
+  await page.waitForTimeout(100);
+  assert.match(await page.getByRole("status").innerText(), /import failed/);
+  assert.equal(await page.evaluate(() => window.imported[0][0].price), 89);
+  assert.equal(
+    await page.getByRole("button", { name: "Import records" }).isEnabled(),
+    true,
+  );
+  await page.getByRole("button", { name: "Back", exact: true }).click();
+  await page.getByRole("combobox", { name: /column 3/ }).selectOption("");
+  assert.match(
+    await page.getByRole("alert").innerText(),
+    /Map the required Unit price/,
+  );
+  assert.equal(
+    await page.getByRole("button", { name: "Review import" }).isDisabled(),
+    true,
+  );
+  await page.getByRole("button", { name: "Back", exact: true }).click();
+  await page
+    .getByRole("textbox")
+    .fill("Product,SKU,Unit price,Supplier email\nTest,A,-1,no-email");
+  await page.getByRole("button", { name: "Read CSV" }).click();
+  assert.match(await page.getByRole("alert").innerText(), /at least 0/);
+  assert.match(await page.getByRole("alert").innerText(), /valid email/);
+  await page.getByRole("button", { name: "Back", exact: true }).click();
+  await page
+    .getByRole("textbox")
+    .fill("Product,SKU,Unit price\nOne,SAME,10\nTwo,SAME,20");
+  await page.getByRole("button", { name: "Read CSV" }).click();
+  assert.match(await page.getByRole("alert").innerText(), /SKU must be unique/);
   assert.deepEqual(errors, []);
   console.log("Pro industry workflows: behavioral regression checks passed.");
 } finally {
