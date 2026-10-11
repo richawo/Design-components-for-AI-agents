@@ -19,6 +19,8 @@ const publicCases = [
   "preview-cascade-probe",
 ];
 const cases = [...publicCases];
+if (fs.existsSync(path.join(root, "registry/pro/saas-customer-health")))
+  cases.push("pro-50-demo-probe");
 if (fs.existsSync(path.join(root, "registry/pro/commerce-promotion-builder")))
   cases.push("pro-native-themes-probe");
 if (fs.existsSync(path.join(root, "registry/pro/scroll-expanding-mosaic")))
@@ -52,7 +54,7 @@ for (const name of cases) {
   const result = spawnSync(
     process.execPath,
     [path.join(root, "tests/browser", `${name}.mjs`)],
-    { cwd: root, encoding: "utf8", timeout: 180000 },
+    { cwd: root, encoding: "utf8", timeout: name === "pro-50-demo-probe" ? 900000 : 180000 },
   );
   if (result.stdout) process.stdout.write(result.stdout);
   if (result.stderr) process.stderr.write(result.stderr);
