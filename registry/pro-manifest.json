@@ -15226,6 +15226,88 @@
     ]
   },
   {
+    "slug": "finance-budget-variance",
+    "name": "Budget Variance Explorer",
+    "tier": "pro",
+    "platform": "web",
+    "category": "billing",
+    "description": "Compare actuals with plans and explain selected variances. A considered, responsive finance workspace with typed integration points.",
+    "tags": [
+      "finance",
+      "workflow",
+      "responsive",
+      "keyboard",
+      "billing"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 1120,
+    "usage": "import { BudgetVariance } from \"@/components/design-for-ai/finance-budget-variance\";\n\n<BudgetVariance />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Main heading."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "description": "Supporting context."
+      },
+      {
+        "name": "lines",
+        "type": "BudgetLine[]",
+        "description": "Unique budget lines with non-negative safe integer two-decimal amounts and supplied actual-cost drivers."
+      },
+      {
+        "name": "period",
+        "type": "string",
+        "description": "Period label shared by actuals and budget."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "description": "Single ISO currency in two-decimal minor units."
+      },
+      {
+        "name": "onSaveExplanation",
+        "type": "(value:VarianceExplanation)=>void|Promise<void>",
+        "description": "Persist the selected variance explanation without changing financial records."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface, border and ink palette."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:350",
+        "click:@line-subscription",
+        "wait:750",
+        "click:@line-events",
+        "wait:1100"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "finance-cashflow-dashboard",
     "name": "Cash Position Dashboard",
     "tier": "pro",
