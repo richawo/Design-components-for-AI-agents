@@ -398,7 +398,30 @@ export class DemoPlayer {
     const ok = el.dispatchEvent(new W.KeyboardEvent("keydown", init));
     // The browser's default actions for activation keys.
     const activates = el.matches("button, a[href], [role='button'], [role='option'], [role='radio'], [role='tab'], [role='checkbox'], [role='switch']");
-    if (ok && init.key === "Enter" && activates) el.click();
+    if (ok && (el instanceof W.HTMLInputElement || el instanceof W.HTMLTextAreaElement) && ["Home", "End", "Backspace", "Delete"].includes(init.key)) {
+      if (!el.readOnly && !el.matches(":disabled")) {
+        const start = el.selectionStart ?? el.value.length;
+        const end = el.selectionEnd ?? el.value.length;
+        if (init.key === "Home" || init.key === "End") {
+          if (el.selectionStart !== null) {
+            const lineEnd = el.value.indexOf("\n", end);
+            const caret = el instanceof W.HTMLTextAreaElement
+              ? init.key === "Home" ? el.value.slice(0, start).lastIndexOf("\n") + 1 : lineEnd < 0 ? el.value.length : lineEnd
+              : init.key === "Home" ? 0 : el.value.length;
+            el.setSelectionRange(caret, caret);
+          }
+        } else {
+          // Fields without a selection API use the same end-of-value fallback as typeChar.
+          const from = start === end && init.key === "Backspace"
+            ? start - (Array.from(el.value.slice(0, start)).at(-1)?.length ?? 0)
+            : start;
+          const to = start === end && init.key === "Delete"
+            ? end + (Array.from(el.value.slice(end))[0]?.length ?? 0)
+            : end;
+          if (from !== to) this.setText(el, el.value.slice(0, from) + el.value.slice(to), from, init.key === "Backspace" ? "deleteContentBackward" : "deleteContentForward", null);
+        }
+      }
+    } else if (ok && init.key === "Enter" && activates) el.click();
     // Implicit submission: Enter in a single-line field submits its form through the default button.
     else if (ok && init.key === "Enter" && el instanceof W.HTMLInputElement && el.form && el.matches(TEXT_ENTRY)) {
       const submit = el.form.querySelector<HTMLElement>('button:not([type]), button[type="submit"], input[type="submit"]');
@@ -410,6 +433,17 @@ export class DemoPlayer {
     if (ok && init.key === " " && activates) el.click();
   }
 
+  private setText(el: HTMLInputElement | HTMLTextAreaElement, value: string, caret: number, inputType: string, data: string | null) {
+    const W = this.win as Window & typeof globalThis;
+    if (el.readOnly || el.matches(":disabled")) return;
+    if (!el.dispatchEvent(new W.InputEvent("beforeinput", { bubbles: true, composed: true, cancelable: true, inputType, data }))) return;
+    const proto = el instanceof W.HTMLInputElement ? W.HTMLInputElement.prototype : W.HTMLTextAreaElement.prototype;
+    // The native setter makes React's value tracker observe the edit.
+    Object.getOwnPropertyDescriptor(proto, "value")?.set?.call(el, value);
+    if (el.selectionStart !== null) el.setSelectionRange(caret, caret);
+    el.dispatchEvent(new W.InputEvent("input", { bubbles: true, composed: true, inputType, data }));
+  }
+
   private typeChar(ch: string) {
     const W = this.win as Window & typeof globalThis;
     const el = this.focused();
@@ -417,16 +451,10 @@ export class DemoPlayer {
     const ok = el.dispatchEvent(new W.KeyboardEvent("keydown", init));
     if (ok) {
       if (el instanceof W.HTMLInputElement || el instanceof W.HTMLTextAreaElement) {
-        const proto = el instanceof W.HTMLInputElement ? W.HTMLInputElement.prototype : W.HTMLTextAreaElement.prototype;
-        const setter = Object.getOwnPropertyDescriptor(proto, "value")?.set;
         const start = el.selectionStart ?? el.value.length;
         const end = el.selectionEnd ?? el.value.length;
         const next = el.value.slice(0, start) + ch + el.value.slice(end);
-        // The native setter, so React's value tracker sees a real change.
-        setter?.call(el, next);
-        // email, number and a few other types have no selection API and throw on setSelectionRange.
-        if (el.selectionStart !== null) el.setSelectionRange(start + 1, start + 1);
-        el.dispatchEvent(new W.InputEvent("input", { bubbles: true, composed: true, inputType: "insertText", data: ch }));
+        if (el.maxLength < 0 || next.length <= el.maxLength) this.setText(el, next, start + ch.length, "insertText", ch);
       } else if (el.isContentEditable) {
         this.win.document.execCommand("insertText", false, ch);
       }

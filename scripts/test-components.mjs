@@ -15,6 +15,7 @@ const publicCases = [
   "table-probe",
   "ime-probe",
   "expansion-inputs-probe",
+  "demo-editing-probe",
 ];
 const cases = [...publicCases];
 if (fs.existsSync(path.join(root, "registry/pro/devtools-webhook-inspector")))
@@ -24,7 +25,7 @@ if (fs.existsSync(path.join(root, "registry/pro/content-release-notes")))
 if (fs.existsSync(path.join(root, "registry/pro/bento-grid")))
   cases.push("bento-rhythm-probe");
 if (fs.existsSync(path.join(root, "registry/pro/data-query-builder")))
-  cases.push("pro-industry-probe");
+  cases.push("pro-industry-probe", "pro-demo-probe");
 if (cases.length === publicCases.length)
   console.log(
     "Pro integration cases skipped: private sources are not checked out.",
