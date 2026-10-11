@@ -16067,6 +16067,98 @@
     ]
   },
   {
+    "slug": "onboarding-setup-checklist",
+    "name": "Workspace Setup Checklist",
+    "tier": "pro",
+    "platform": "web",
+    "category": "onboarding",
+    "description": "An actionable setup checklist with a drawn completion ring, expandable instructions and native checkboxes, designed for thoughtful first-run experiences.",
+    "tags": [
+      "onboarding",
+      "onboarding",
+      "setup",
+      "checklist",
+      "responsive",
+      "keyboard"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 680,
+    "usage": "import { SetupChecklist } from \"@/components/design-for-ai/onboarding-setup-checklist\";\n\n<SetupChecklist />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"A good place to start.\"",
+        "description": "Setup heading."
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "default": "three-step guidance",
+        "description": "Introductory copy."
+      },
+      {
+        "name": "tasks",
+        "type": "SetupTask[]",
+        "default": "three workspace tasks",
+        "description": "Unique IDs, titles, descriptions and estimated duration labels."
+      },
+      {
+        "name": "completed",
+        "type": "string[]",
+        "default": "undefined",
+        "description": "Controlled completed task IDs."
+      },
+      {
+        "name": "defaultCompleted",
+        "type": "string[]",
+        "default": "[\"profile\"]",
+        "description": "Initial completion state."
+      },
+      {
+        "name": "onChange",
+        "type": "(completed: string[]) => void",
+        "default": "undefined",
+        "description": "New completion IDs after explicit user check or uncheck; no external work is performed."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface and ink palette; the demo stage follows the chosen theme."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:600",
+        "click:@complete-1",
+        "wait:500",
+        "click:@setup-task-2",
+        "wait:500",
+        "click:@complete-2",
+        "wait:700"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "pricing-comparison-matrix",
     "name": "Comparison Matrix",
     "tier": "pro",
