@@ -160,7 +160,7 @@ describe("registry demos and controls", () => {
       // separate `export default X;`.
       const named = /export default (\w+);/.exec(c.code)?.[1];
       const head = named ? `function ${named}` : "export default function \\w+";
-      const sig = new RegExp(`${head}\\(\\s*(?:\\w+|\\{[^)]*\\})\\s*:\\s*(Partial<\\w+Props>|\\w+DemoProps)\\s*=\\s*\\{\\}\\s*\\)`).exec(c.code);
+      const sig = new RegExp(`${head}\\(\\s*(?:\\w+|\\{[^)]*\\})\\s*:\\s*(Partial<\\w+Props>|\\w+DemoProps)\\s*=\\s*\\{\\}\\s*,?\\s*\\)`).exec(c.code);
       expect(sig, "default export signature").not.toBeNull();
       if (sig && !sig[1].startsWith("Partial<")) {
         expect(c.code).toMatch(new RegExp(`type ${sig[1]}\\s*=\\s*Partial<\\w+Props>`));
