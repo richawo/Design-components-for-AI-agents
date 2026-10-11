@@ -18657,6 +18657,78 @@
     ]
   },
   {
+    "slug": "legal-evidence-index",
+    "name": "Evidence Index Workspace",
+    "tier": "pro",
+    "platform": "web",
+    "category": "data",
+    "description": "Search exhibit metadata, inspect custody events and curate an export manifest. A considered, responsive legal workspace with typed integration points.",
+    "tags": [
+      "legal-tech",
+      "workflow",
+      "responsive",
+      "keyboard",
+      "data"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "light",
+    "previewHeight": 1180,
+    "usage": "import { EvidenceIndex } from \"@/components/design-for-ai/legal-evidence-index\";\n\n<EvidenceIndex />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Main heading."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "description": "Supporting context."
+      },
+      {
+        "name": "exhibits",
+        "type": "EvidenceExhibit[]",
+        "description": "Unique exhibits the host has authorised this viewer to see, with immutable metadata and supplied custody events. A checksum is displayed, not independently verified here."
+      },
+      {
+        "name": "onExport",
+        "type": "(manifest:EvidenceManifest)=>void|Promise<void>",
+        "description": "Export the reviewed metadata manifest through the host. Binary files are not embedded or fetched by this component."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"light\"",
+        "description": "Surface, border and ink palette."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:350",
+        "click:@include-0",
+        "click:@include-1",
+        "click:@review",
+        "wait:1300"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "light"
+      }
+    ]
+  },
+  {
     "slug": "legal-matter-dashboard",
     "name": "Matter Operations Dashboard",
     "tier": "pro",
