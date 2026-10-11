@@ -152,7 +152,7 @@ function validateCompleteness(slug, m, prompt, promptJson, code) {
   // The usage example must import a name the file actually exports.
   const named = /import\s*\{([^}]+)\}\s*from/.exec(m.usage ?? "");
   if (named) {
-    for (const name of named[1].split(",").map((x) => x.trim().split(/\s+as\s+/)[0]).filter(Boolean)) {
+    for (const name of named[1].split(",").map((x) => x.trim().replace(/^type\s+/, "").split(/\s+as\s+/)[0]).filter(Boolean)) {
       if (!new RegExp(`export\\s+(function|const|class|type)\\s+${name}\\b`).test(code)) fail(slug, `usage imports { ${name} } but the file doesn't export it`);
     }
   } else if (/import\s+\w+\s+from/.test(m.usage ?? "")) {
