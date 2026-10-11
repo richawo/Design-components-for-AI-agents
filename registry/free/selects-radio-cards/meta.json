@@ -1,0 +1,84 @@
+{
+  "slug": "selects-radio-cards",
+  "name": "Response Style Radio Cards",
+  "tier": "free",
+  "platform": "web",
+  "category": "selects",
+  "description": "A native radio-card group with generous typographic options, concise tradeoffs and keyboard selection for assistant settings, formats or service modes.",
+  "tags": [
+    "selects",
+    "selects",
+    "radio",
+    "cards",
+    "responsive",
+    "keyboard"
+  ],
+  "dependencies": [
+    "motion",
+    "lucide-react"
+  ],
+  "theme": "dark",
+  "previewHeight": 600,
+  "usage": "import { RadioCards } from \"@/components/design-for-ai/selects-radio-cards\";\n\n<RadioCards />",
+  "props": [
+    {
+      "name": "label",
+      "type": "string",
+      "default": "assistant response question",
+      "description": "Accessible group legend and visible heading."
+    },
+    {
+      "name": "options",
+      "type": "RadioCardOption[]",
+      "default": "three response styles",
+      "description": "Unique ID, label, description, optional note and disabled state."
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "default": "undefined",
+      "description": "Controlled selected option ID."
+    },
+    {
+      "name": "defaultValue",
+      "type": "string",
+      "default": "\"explained\"",
+      "description": "Initial uncontrolled selection."
+    },
+    {
+      "name": "onChange",
+      "type": "(value: string) => void",
+      "default": "undefined",
+      "description": "New selected ID from native keyboard or pointer selection."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Surface and ink palette; the demo stage follows the chosen theme."
+    }
+  ],
+  "added": "2026-10-11",
+  "demo": {
+    "steps": [
+      "wait:500",
+      "click:@option-0",
+      "wait:700",
+      "click:@option-2",
+      "wait:700"
+    ],
+    "loop": false
+  },
+  "controls": [
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        "dark",
+        "light"
+      ],
+      "default": "dark"
+    }
+  ]
+}
