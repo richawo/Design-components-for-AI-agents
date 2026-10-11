@@ -12,6 +12,14 @@ Instructions for AI coding agents (Claude Code, Codex, Cursor and others) workin
 
 Pro components live in a separate private repository, `richawo/Design-for-AI`, cloned into `registry/pro/`. It's its own git repo with the same rules: work on its `main`, and commit and push there separately.
 
+## Product direction (11 October 2026)
+
+- New additions default to **Pro**. All industry-specific components belong in Pro, including e-commerce, fashion, finance, HR and legal technology.
+- Build coherent industry suites around useful workflows and difficult interactions. A larger count alone does not make a component worth buying.
+- The long-term catalogue direction is approximately 90% Pro. Treat this as a direction for future additions, not a quota to fill with variants or authorization to reclassify existing free components.
+- Keep the free offering as a compelling introduction. Add free components only when there is a clear acquisition purpose; do not default routine additions to free.
+- This supersedes the old tier split in `docs/CATALOGUE_ROADMAP.md`. Existing quality, accessibility, offline-demo and authentic-product-imagery requirements remain the release bar.
+
 ## The project
 
 Design for AI (https://design.yaps.ai) is a premium component library for AI coding agents. Every component ships as code, a design prompt and a JSON prompt.

@@ -1,5 +1,7 @@
 # Catalogue roadmap: 68 → 218 components
 
+**Tier policy updated 11 October 2026:** new additions default to Pro and every industry-specific addition is Pro. The long-term mix should approach 90% Pro through useful additions. The original allocation below is historical, not the current tier policy. Existing free components are not automatically reclassified. See `AGENTS.md`.
+
 Decided 2026-10-10. This is the build plan for roughly 150 new components, built in parallel by fast builder agents and reviewed by critic agents. Every row below is a brief, not a spec: builders still hold each component to `docs/COMPONENT_SPEC.md` (files, taste bar, slop list, interaction tokens, responsive, accessibility, visual QA) and to the cursor demo and live controls contract defined there.
 
 **Ground rules for this expansion**
