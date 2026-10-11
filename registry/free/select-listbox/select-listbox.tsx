@@ -759,8 +759,10 @@ export function SelectListbox({
  */
 export default function SelectListboxDemo(overrides: Partial<SelectListboxProps> = {}) {
   const opensUp = overrides.placement === "top";
+  const theme = overrides.theme ?? "dark";
   return (
     <div
+      style={{ background: theme === "light" ? "#f4f4f5" : "#000000", colorScheme: theme }}
       className={`flex min-h-[100dvh] justify-center px-4 ${
         opensUp ? "items-end pb-[clamp(40px,9vh,96px)] pt-12" : "items-start pb-12 pt-[clamp(80px,22vh,200px)]"
       }`}

@@ -42,3 +42,5 @@ Build a custom single-value select in React 19 + Tailwind CSS v4 + `motion/react
 **Don't**
 - No oversized rounded panels (nothing above 12px radius), no glass, no gradient, no icon on each option, no coloured group tiles, no accent on the highlight or the trigger.
 - Do not move focus into the list when it opens with the pointer, and do not wrap the arrow keys. Do not use a portal: the panel positions inside the component.
+
+The default demo follows the component theme: #f4f4f5 stage in light mode, #000 in dark mode, with `color-scheme` set to match.

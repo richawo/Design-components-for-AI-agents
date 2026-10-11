@@ -70,5 +70,6 @@
     "a check that only draws on reopen (it must draw on the choice itself)",
     "a mint accent on white (fails 3:1)",
     "a typeahead that swallows the second search on the closed trigger"
-  ]
+  ],
+  "demoTheme": "Match the demo background and color-scheme to theme: #f4f4f5 light and #000 dark."
 }
