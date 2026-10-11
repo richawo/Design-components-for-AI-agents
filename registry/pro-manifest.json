@@ -9469,7 +9469,7 @@
         "name": "maxDepth",
         "type": "number",
         "default": "12",
-        "description": "Maximum depth, clamped to 1-24. At most 100 children are rendered per branch."
+        "description": "Maximum depth, clamped to 1-24. At most 100 children are rendered per branch. Rendering also stops after 500 entries in total."
       },
       {
         "name": "theme",
