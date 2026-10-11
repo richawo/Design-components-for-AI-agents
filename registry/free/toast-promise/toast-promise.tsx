@@ -476,7 +476,7 @@ export function PromiseToast({
                               type="button"
                               data-demo="undo"
                               onClick={undoNow}
-                              className={`relative z-10 grid h-8 w-[76px] place-items-center rounded-full text-[13px] font-medium tracking-[-0.01em] transition-[background-color,scale] duration-150 ease-out before:absolute before:-inset-[6px] before:content-[''] active:scale-[0.96] focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-current ${palette.controlClass} ${palette.hoverClass}`}
+                              className={`[@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 relative z-10 grid h-8 w-[76px] place-items-center rounded-full text-[13px] font-medium tracking-[-0.01em] transition-[background-color,scale] duration-150 ease-out before:absolute before:-inset-[6px] before:content-[''] active:scale-[0.96] focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-current ${palette.controlClass} ${palette.hoverClass}`}
                               style={{ color: palette.ink, boxShadow: `inset 0 0 0 1px ${palette.line}` }}
                             >
                               {undoLabel}
@@ -515,7 +515,7 @@ export function PromiseToast({
                             type="button"
                             data-demo="retry"
                             onClick={retry}
-                            className={`relative -ml-2.5 grid h-8 place-items-center rounded-full px-2.5 text-[13px] font-medium tracking-[-0.01em] text-(color:--tp-rest) transition-[background-color,color,scale] duration-150 ease-out before:absolute before:-inset-x-1 before:-inset-y-[6px] before:content-[''] hover:text-(color:--tp-hover) active:scale-[0.96] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current @md:ml-0 ${palette.hoverClass}`}
+                            className={`[@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 relative -ml-2.5 grid h-8 place-items-center rounded-full px-2.5 text-[13px] font-medium tracking-[-0.01em] text-(color:--tp-rest) transition-[background-color,color,scale] duration-150 ease-out before:absolute before:-inset-x-1 before:-inset-y-[6px] before:content-[''] hover:text-(color:--tp-hover) active:scale-[0.96] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current @md:ml-0 ${palette.hoverClass}`}
                             style={{ "--tp-rest": palette.muted, "--tp-hover": palette.ink } as CSSProperties}
                           >
                             {retryLabel}
@@ -532,7 +532,7 @@ export function PromiseToast({
                   type="button"
                   onClick={() => close()}
                   aria-label="Dismiss"
-                  className={`relative col-start-3 row-start-1 -mt-1 grid size-7 place-items-center rounded-full before:absolute before:-inset-2 before:content-[''] transition-[background-color,scale] duration-150 ease-out active:scale-[0.92] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current @md:col-start-4 @md:mt-0.5 ${palette.hoverClass}`}
+                  className={`[@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 relative col-start-3 row-start-1 -mt-1 grid size-7 place-items-center rounded-full before:absolute before:-inset-2 before:content-[''] transition-[background-color,scale] duration-150 ease-out active:scale-[0.92] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current @md:col-start-4 @md:mt-0.5 ${palette.hoverClass}`}
                   style={{ color: palette.muted }}
                 >
                   <CloseGlyph />
