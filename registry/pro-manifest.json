@@ -8143,7 +8143,7 @@
       "motion"
     ],
     "theme": "dark",
-    "previewHeight": 940,
+    "previewHeight": 1504,
     "usage": "import { StatusPage } from \"@/components/design-for-ai/devtools-status-page\";\n\n<StatusPage\n  product=\"ledgerline\"\n  state=\"degraded\"\n  showBars\n  onSubscribe={(email) => save(email)}\n/>\n\n// Each component is 90 days. Pointing at a bar names that day.\n// Subscribe keeps its box and swaps the label for a check.",
     "props": [
       {
