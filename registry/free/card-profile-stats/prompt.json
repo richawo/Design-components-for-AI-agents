@@ -1,0 +1,97 @@
+{
+  "component": "ProfileStatsCard",
+  "intent": "One monochrome profile card: an accent ring draws around an initials avatar, the name, mono meta and bio rise from blur, three stats count up from zero, and Follow folds its plus into a check in the same box. The card lifts under a pointer spotlight.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 (@container, CSS variables, color-mix)",
+    "animation": "motion/react (useInView, motion values, useMotionTemplate, useSpring, animate, AnimatePresence, SVG pathLength and d morphs)",
+    "icons": "lucide-react (MessageCircle only)"
+  },
+  "layout": {
+    "root": "@container; vertical max-width 380px, horizontal max-width 640px",
+    "card": "radius 22px, padding 24px (28px from @sm / @lg), overflow hidden for the spotlight layers",
+    "vertical": "centred stack: avatar 88px, name (20px gap), mono meta, bio max 34ch, stats panel, actions",
+    "horizontal": "one grid. Narrow: 64px | 1fr with avatar beside name, bio and full-width actions below. From @lg: 84px | 1fr | auto, avatar spans two rows, actions top right at their own width, bio under the name; stats along the foot under a hairline",
+    "avatar": "SVG ring (2px ink/8% track + 2.25px accent circle rotated -90deg) around a disc inset 9%",
+    "stats": "dl with N equal columns split by ink/8% hairlines; vertical inside an ink/3% panel with inset ink/6% and radius 14px",
+    "actions": "Follow 44px tall, radius 12px, beside a 44px square message button"
+  },
+  "typography": {
+    "name": "Instrument Serif 400, 34px (vertical) or 28-32px (horizontal), leading 1.02, tracking -0.015em",
+    "initials": "Geist 500, 27px (88px avatar), tracking -0.03em",
+    "meta": "Geist Mono 11px uppercase, tracking 0.08em, ink/52, slash separators at 50% opacity; clock ink/38 tabular",
+    "bio": "14.5px, leading 1.6, ink/66",
+    "figures": "Geist 500, 20px (22px from @md), tracking -0.03em, tabular-nums",
+    "statLabels": "Geist Mono 10.5px uppercase, tracking 0.09em, ink/45",
+    "button": "14px 500, tracking -0.01em"
+  },
+  "color": {
+    "tokens": "PALETTE.dark / PALETTE.light -> --pc-card, --pc-ink, --pc-on-ink, --pc-danger, --pc-spot, --pc-edge, --pc-accent",
+    "dark": "card #0c0c0d, ink #f4f4f5, on-ink #0b0b0c, danger #ff6b6b; stage #000000",
+    "light": "card #ffffff, ink #111113, on-ink #ffffff, danger #d93636; stage #f4f4f5",
+    "accent": "#ff8a4c via the accent prop, only on the avatar ring and the Following check (mixed 85% with ink)",
+    "follow": "ink fill with on-ink text; following: ink/5% with an ink/14% hairline; unfollow hover: danger text and a danger/40% hairline",
+    "spotlight": "240px radial, ink 5% (dark) or 3.5% (light); edge copy at 28% / 22% masked to 1px"
+  },
+  "motion": {
+    "entrance": "once at 30% in view; blocks rise 6-16px from an 8px blur over 550ms: card 0, avatar 0.12, name 0.2, meta 0.26, bio 0.32, stats 0.4, actions 0.46 (s)",
+    "ring": "pathLength 0 -> 1 over 800ms from 0.22s, ease [0.22, 1, 0.36, 1]",
+    "countUp": "from 0.52s, 70ms apart, 900ms, blur 5px -> 0, motion value text (no per-frame state); compact notation from 100,000 decided by the target",
+    "followMorph": "fill drains to a hairline in 200ms; two SVG strokes animate d (320ms, ease [0.65, 0, 0.35, 1]) plus -> check (accent) -> x on unfollow hover; labels cross-fade in one grid cell (in y 6px + 3px blur over 240ms, out y -6px in 140ms ease-in); invisible copies of every label fix the size",
+    "unfollowGuard": "Unfollow only appears after the pointer has left the button once",
+    "followerTick": "tracksFollow stat tweens +1 over 420ms, rising 6px from a 2.5px blur (falls from above on unfollow)",
+    "hover": "mouse only: lift -4px on spring 180/22, deeper shadow, pointer spotlight and edge light fade in on a spring",
+    "press": "buttons scale 0.97 (message 0.96) in 90ms",
+    "ambient": "the local clock refreshes every 30s; nothing else moves on its own",
+    "reducedMotion": "150ms fades only; ring pre-drawn, figures set instantly, no lift, no blur, no icon morph"
+  },
+  "responsive": {
+    "vertical": "fluid to 380px; padding steps up at @sm",
+    "horizontal": "actions drop under the bio and go full width below @lg; stat padding grows at @md",
+    "touch": "44px targets; spotlight and lift are mouse only, so touch never sees a stuck hover"
+  },
+  "accessibility": [
+    "article labelled by the name heading",
+    "avatar aria-hidden; the name carries the identity",
+    "Follow is a toggle with aria-pressed and a constant aria-label; visible labels aria-hidden",
+    "polite status region announces follow and unfollow",
+    "message button labelled 'Message <first name>'",
+    "counting figures aria-hidden with sr-only final values; clock prefixed 'Local time'",
+    "2px ink focus outlines offset 2px, keyboard only"
+  ],
+  "content": {
+    "name": "Mara Okonkwo",
+    "role": "Type designer",
+    "location": "Lisbon, PT",
+    "timeZone": "Europe/Lisbon",
+    "bio": "Draws letters for screens people read at 2am. Currently losing an argument with the lowercase g of a grotesque.",
+    "stats": [
+      {
+        "label": "Followers",
+        "value": 12481,
+        "tracksFollow": true
+      },
+      {
+        "label": "Following",
+        "value": 318
+      },
+      {
+        "label": "Typefaces",
+        "value": 27
+      }
+    ],
+    "labels": "Follow / Following / Unfollow"
+  },
+  "avoid": [
+    "a cover image, gradient banner or verified badge",
+    "network or placeholder avatar images",
+    "accent on the Follow fill, stats or text",
+    "a button that resizes between Follow and Following",
+    "an Unfollow flash right after following",
+    "a glow, tilt or bouncing entrance",
+    "per-frame React state for counting figures",
+    "blocks that pop in without the staggered blur rise"
+  ],
+  "robustness": "Secondary text uses at least 65% ink. Announce following only after the effective controlled or internal state changes. Reset the local clock when the time zone changes, including invalid zones."
+}

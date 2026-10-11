@@ -1,0 +1,71 @@
+{
+  "slug": "card-profile-stats",
+  "name": "Profile Card",
+  "tier": "free",
+  "platform": "web",
+  "category": "cards",
+  "description": "A profile card whose accent ring draws around an initials avatar, stats count up from zero and Follow folds its plus into a check. Lifts under a pointer spotlight.",
+  "tags": [
+    "card",
+    "profile card",
+    "user card",
+    "follow button",
+    "avatar",
+    "stats",
+    "count up",
+    "spotlight",
+    "dark",
+    "monochrome"
+  ],
+  "dependencies": [
+    "motion",
+    "lucide-react"
+  ],
+  "theme": "dark",
+  "previewHeight": 760,
+  "usage": "import { ProfileStatsCard } from \"@/components/design-for-ai/card-profile-stats\";\n\n<ProfileStatsCard\n  name=\"Mara Okonkwo\"\n  role=\"Type designer\"\n  location=\"Lisbon, PT\"\n  timeZone=\"Europe/Lisbon\"\n  bio=\"Draws letters for screens people read at 2am.\"\n  stats={[\n    { label: \"Followers\", value: 12481, tracksFollow: true },\n    { label: \"Following\", value: 318 },\n    { label: \"Typefaces\", value: 27 },\n  ]}\n  followed={isFollowing}\n  onFollowChange={(next) => (next ? api.follow(id) : api.unfollow(id))}\n  onMessage={() => openThread(id)}\n/>\n\n<ProfileStatsCard layout=\"horizontal\" theme=\"light\" accent=\"#2f6bff\" stats={false} />",
+  "props": [
+    { "name": "name", "type": "string", "default": "\"Mara Okonkwo\"", "description": "Display name, set in Instrument Serif. Also the source of the avatar initials." },
+    { "name": "initials", "type": "string", "description": "Two letters for the avatar. Derived from the first and last word of name when left out." },
+    { "name": "role", "type": "string", "default": "\"Type designer\"", "description": "First item of the mono meta line." },
+    { "name": "location", "type": "string", "default": "\"Lisbon, PT\"", "description": "Second item of the mono meta line." },
+    { "name": "timeZone", "type": "string | null", "default": "\"Europe/Lisbon\"", "description": "IANA zone for the person’s local time, shown after the location and refreshed every 30s. null hides it." },
+    { "name": "bio", "type": "string", "default": "\"Draws letters for screens people read at 2am. …\"", "description": "One or two sentences under the meta line. An empty string hides it." },
+    { "name": "stats", "type": "ProfileStat[] | boolean", "default": "true", "description": "The figures row: { label, value, tracksFollow? }[]. true shows the defaults, false hides the row. A stat with tracksFollow ticks up by one while the viewer follows." },
+    { "name": "layout", "type": "\"vertical\" | \"horizontal\"", "default": "\"vertical\"", "description": "vertical is a centred portrait card; horizontal puts the avatar left, actions top right and the stats along the foot (actions drop under the bio in narrow containers)." },
+    { "name": "followed", "type": "boolean", "description": "Controlled follow state. Leave it out to let the card keep its own." },
+    { "name": "defaultFollowed", "type": "boolean", "default": "false", "description": "Initial follow state when uncontrolled." },
+    { "name": "onFollowChange", "type": "(followed: boolean) => void", "description": "Runs with the next state on every Follow press." },
+    { "name": "onMessage", "type": "() => void", "description": "Runs when the message button is pressed." },
+    { "name": "followLabel", "type": "string", "default": "\"Follow\"", "description": "Label before following." },
+    { "name": "followingLabel", "type": "string", "default": "\"Following\"", "description": "Label while following." },
+    { "name": "unfollowLabel", "type": "string", "default": "\"Unfollow\"", "description": "Shown on hover while following, once the pointer has left the button and come back." },
+    { "name": "locale", "type": "string", "default": "\"en-US\"", "description": "Locale for the figures and the clock." },
+    { "name": "accent", "type": "string", "default": "\"#ff8a4c\"", "description": "The one signal colour: the avatar ring and the Following check." },
+    { "name": "theme", "type": "\"dark\" | \"light\"", "default": "\"dark\"", "description": "Card surface and ink." },
+    { "name": "className", "type": "string", "description": "Classes for the outer container." }
+  ],
+  "added": "2026-10-10",
+  "demo": {
+    "steps": [
+      "wait:500",
+      "hover:@card:0.28,0.3",
+      "wait:350",
+      "hover:@follow",
+      "wait:250",
+      "click",
+      "wait:1000",
+      "click",
+      "wait:800"
+    ]
+  },
+  "controls": [
+    { "prop": "layout", "label": "Layout", "kind": "segmented", "options": [{ "value": "vertical", "label": "Vertical" }, { "value": "horizontal", "label": "Horizontal" }], "default": "vertical", "group": "Layout" },
+    { "prop": "stats", "label": "Stats", "kind": "toggle", "default": true, "group": "Layout" },
+    { "prop": "followed", "label": "Following", "kind": "toggle", "default": false, "group": "State" },
+    { "prop": "name", "label": "Name", "kind": "text", "default": "Mara Okonkwo", "group": "Content" },
+    { "prop": "theme", "label": "Theme", "kind": "segmented", "options": [{ "value": "dark", "label": "Dark" }, { "value": "light", "label": "Light" }], "default": "dark", "group": "Look" },
+    { "prop": "accent", "label": "Accent", "kind": "color", "default": "#ff8a4c", "options": ["#ff8a4c", "#7dd3a8", "#8fb4ff", "#f4f4f5"], "group": "Look" },
+    { "prop": "$replay", "label": "Demo", "kind": "action", "value": "Replay", "group": "Demo" }
+  ]
+}
