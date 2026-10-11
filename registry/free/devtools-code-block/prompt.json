@@ -12,7 +12,7 @@
   "layout": {
     "root": "section, @container, max-width 920px, 20px radius, overflow hidden, padding 20px and 24px from @xl",
     "chrome": "filename tabs on the left with a hairline under them; Diff and Copy on the right, wrapping below the tabs when the row is narrow",
-    "code": "a well, 14px radius; lines wrap inside the card; line number, an optional diff mark, then the line",
+    "code": "a well, 14px radius, overflow-x-auto; each source line is whitespace-pre so it stays one row; the number cell stretches with that row; an optional diff mark, then the line",
     "highlight": "a 2px accent edge and an 8% accent wash on two lines, not a solid bar",
     "diff": "a plus or minus in the gutter and a 9% wash, ok for additions and err for removals"
   },
@@ -37,8 +37,8 @@
   },
   "responsive": {
     "container": "tabs and buttons are 44px tall below @lg and 32–36px from @lg",
-    "code": "long lines wrap inside the well; the card does not widen the page",
-    "overflow": "a wrapped line keeps its number on the first row"
+    "code": "long lines stay intact and scroll inside the well; the card does not widen the page",
+    "overflow": "the gutter, the highlight and the accent bar are one continuous row"
   },
   "accessibility": [
     "The filenames are a tablist of tabs with aria-selected",

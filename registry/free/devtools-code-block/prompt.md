@@ -3,7 +3,7 @@ Build a code block in React 19 + Tailwind CSS v4 (with `@container` queries) + `
 **Layout**
 - A `section` with `@container`, max-width 920px, 20px radius, surface `#0d0d0f` (light `#ffffff`), an inset 1px hairline, a 1px top highlight and a deep shadow `0 40px 80px -40px rgba(0,0,0,0.9)`. Padding 20px, 24px from `@xl`.
 - Chrome: `verify.ts` and `handler.ts` as tabs, with a hairline under the row. Diff and Copy sit on the right and wrap under the tabs when the row is narrow. Tabs and buttons are 44px tall below `@lg`, and 36px or 32px from `@lg`.
-- The code sits in a well (`#09090a`, light `#fafafa`), 14px radius, hairline. A line wraps inside the well instead of widening the card. Each row is a line number, then the code. In diff mode a plus or minus sits between them.
+- The code sits in a well (`#09090a`, light `#fafafa`), 14px radius, hairline, with `overflow-x-auto`. Each source line stays intact (`whitespace-pre`) and the well scrolls sideways. A row is one line: the number cell stretches the full row, then the code. In diff mode a plus or minus sits between them. The highlight wash and its accent bar run the whole row.
 
 **Typography**
 - Filenames, numbers and code are Geist Mono. Code is 12.5px, leading 1.65. Numbers are 12px and faint. Diff and Copy are Geist 13px.
@@ -32,4 +32,4 @@ Build a code block in React 19 + Tailwind CSS v4 (with `@container` queries) + `
 - Don't paint tokens in more than one accent. Keywords are not blue, and strings are not green.
 - Don't fill a highlighted line with a solid band. The edge is 2px and the wash is 8%.
 - Don't show a toast for copy. The button itself changes, and it does not change width.
-- Don't let a long line widen the page. It wraps inside the well.
+- Don't let a long line widen the page, and don't wrap it. It scrolls inside the well, and the gutter stays one cell with that row.

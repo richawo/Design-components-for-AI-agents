@@ -297,33 +297,32 @@ export function CodeBlock({ file: fileProp = "verify", diff: diffProp = false, t
       </motion.div>
 
       <motion.div variants={reveal} custom={2} className="px-5 pt-3 pb-5 @xl:px-6 @xl:pb-6">
-        <div className="overflow-hidden rounded-[14px]" style={{ background: "var(--cb-well)", boxShadow: "inset 0 0 0 1px var(--cb-line)" }}>
-          <div className="py-2" role="region" aria-label={diff ? `${current.name} diff` : current.name}>
+        <div className="overflow-x-auto rounded-[14px]" style={{ background: "var(--cb-well)", boxShadow: "inset 0 0 0 1px var(--cb-line)" }}>
+          <div className="w-max min-w-full py-2" role="region" aria-label={diff ? `${current.name} diff` : current.name}>
             <AnimatePresence mode="wait" initial={false}>
               <motion.div key={`${file}-${diff ? "diff" : "src"}`} initial={reduce ? { opacity: 0 } : { opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={reduce ? { opacity: 0 } : { opacity: 0 }} transition={{ duration: reduce ? 0.12 : 0.22, ease: EASE }}>
                 {rows.map((row, index) => (
                   <div
                     key={`${row.mark}-${index}`}
-                    className="grid items-start pr-4"
+                    className="grid w-max min-w-full items-stretch"
                     style={{
-                      gridTemplateColumns: diff ? "2.5rem 1.25rem minmax(0,1fr)" : "2.5rem minmax(0,1fr)",
+                      gridTemplateColumns: diff ? "2.5rem 1.25rem max-content" : "2.5rem max-content",
                       background: row.hl ? "color-mix(in oklab, var(--cb-accent) 8%, transparent)" : row.mark === "+" ? "color-mix(in oklab, var(--cb-ok) 9%, transparent)" : row.mark === "-" ? "color-mix(in oklab, var(--cb-err) 9%, transparent)" : undefined,
                       boxShadow: row.hl ? "inset 2px 0 0 var(--cb-accent)" : undefined,
                     }}
                   >
-                    <span className="sticky left-0 bg-(--cb-well) py-[3px] pr-3 text-right font-mono text-[12px] text-(--cb-faint) tabular-nums select-none" style={row.hl ? { background: "color-mix(in oklab, var(--cb-accent) 8%, var(--cb-well))" } : row.mark === "+" ? { background: "color-mix(in oklab, var(--cb-ok) 9%, var(--cb-well))" } : row.mark === "-" ? { background: "color-mix(in oklab, var(--cb-err) 9%, var(--cb-well))" } : undefined}>
+                    <span className="sticky left-0 flex items-start justify-end bg-(--cb-well) py-[3px] pr-3 font-mono text-[12px] text-(--cb-faint) tabular-nums select-none" style={row.hl ? { background: "color-mix(in oklab, var(--cb-accent) 8%, var(--cb-well))" } : row.mark === "+" ? { background: "color-mix(in oklab, var(--cb-ok) 9%, var(--cb-well))" } : row.mark === "-" ? { background: "color-mix(in oklab, var(--cb-err) 9%, var(--cb-well))" } : undefined}>
                       {row.mark === "-" ? "" : index + 1 - rows.slice(0, index).filter((item) => item.mark === "-").length}
                     </span>
                     {diff && (
-                      <span className="py-[3px] text-center font-mono text-[12px] select-none" style={{ color: row.mark === "+" ? "var(--cb-ok)" : row.mark === "-" ? "var(--cb-err)" : "transparent" }} aria-hidden="true">
+                      <span className="flex items-start justify-center py-[3px] font-mono text-[12px] select-none" style={{ color: row.mark === "+" ? "var(--cb-ok)" : row.mark === "-" ? "var(--cb-err)" : "transparent" }} aria-hidden="true">
                         {row.mark === " " ? " " : row.mark}
                       </span>
                     )}
-                    <code className="py-[3px] pr-4 font-mono text-[12.5px] leading-[1.65] whitespace-pre-wrap">
+                    <code className="py-[3px] pr-4 font-mono text-[12.5px] leading-[1.65] whitespace-pre">
                       {row.text ? lex(row.text).map((tok, tokenIndex) => (
                         <span key={tokenIndex} style={{ color: COLOR[tok.kind] }}>
                           {tok.text}
-                          {tok.kind === "p" && (tok.text === "." || tok.text === "," || tok.text === "(" || tok.text === ")") ? <wbr /> : null}
                         </span>
                       )) : "\u00a0"}
                     </code>
