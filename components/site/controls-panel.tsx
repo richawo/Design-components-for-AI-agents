@@ -37,15 +37,19 @@ export type ControlsPanelProps = {
  */
 export function ControlsPanel(p: ControlsPanelProps) {
   const uid = useId();
-  const [proPrompt, setProPrompt] = useState<string | null | "locked">(null);
+  const [proPrompt, setProPrompt] = useState<string | null>(null);
+  const [promptError, setPromptError] = useState(false);
+  const [attempt, setAttempt] = useState(0);
   useEffect(() => {
     if (p.tier !== "pro" || p.prompt) return;
     let live = true;
-    fetchProSource(p.slug).then((s) => live && setProPrompt(s ? s.prompt : "locked"));
+    setPromptError(false);
+    setProPrompt(null);
+    fetchProSource(p.slug).then((s) => live && setProPrompt(s ? s.prompt : "locked")).catch(() => { if (live) setPromptError(true); });
     return () => {
       live = false;
     };
-  }, [p.tier, p.prompt, p.slug]);
+  }, [p.tier, p.prompt, p.slug, attempt]);
 
   const prompt = p.prompt ?? (typeof proPrompt === "string" && proPrompt !== "locked" ? proPrompt : null);
   const tuned = Object.keys(diffValues(p.controls, p.values)).length;
@@ -78,6 +82,8 @@ export function ControlsPanel(p: ControlsPanelProps) {
           <CopyButton text={configuredSnippet(p.usage, p.controls, p.values, p.props)} label="Copy configured" shortLabel="Copy code" />
           {prompt ? (
             <CopyButton text={configuredPrompt(prompt, p.name, p.controls, p.values)} label="Copy configured prompt" shortLabel="Copy prompt" />
+          ) : promptError ? (
+            <button type="button" className="site-btn site-btn-secondary min-h-11 px-3 text-xs" onClick={() => setAttempt((value) => value + 1)}>Retry prompt</button>
           ) : p.tier === "pro" && proPrompt === "locked" ? (
             <Link href="/pricing" className="site-btn site-btn-secondary h-8 gap-1.5 px-3.5 text-xs font-semibold" title="The configured prompt needs a Pro licence">
               <svg viewBox="0 0 16 16" className="size-3.5" fill="none" aria-hidden="true">
@@ -89,6 +95,8 @@ export function ControlsPanel(p: ControlsPanelProps) {
           ) : null}
         </div>
       </div>
+
+      {promptError && <p role="status" className="mt-3 text-sm text-site-fg-2">The configured prompt couldn't be loaded. Please try again.</p>}
 
       <div className="mt-3.5 space-y-4">
         {groups.map(([group, list]) => (

@@ -8,6 +8,10 @@ export type SourcePayload = {
   promptJsonHtml: string;
 };
 
+export class SourceLoadError extends Error {
+  constructor() { super("The component source could not be loaded."); }
+}
+
 const cache = new Map<string, Promise<SourcePayload | null>>();
 
 /**
@@ -20,13 +24,19 @@ export function fetchProSource(slug: string): Promise<SourcePayload | null> {
   if (!p) {
     p = fetch(`/api/pro/source/${slug}`, { credentials: "same-origin" })
       .then(async (r) => {
-        const data = r.ok ? ((await r.json()) as SourcePayload | { locked: true }) : null;
-        return !data || "locked" in data ? null : data;
-      })
-      .catch(() => null);
+        if (r.status === 401 || r.status === 403) return null;
+        if (!r.ok) throw new SourceLoadError();
+        const data: unknown = await r.json();
+        if (data && typeof data === "object" && "locked" in data && data.locked === true) return null;
+        const fields = ["code", "codeHtml", "prompt", "promptJson", "promptJsonHtml"] as const;
+        if (!data || typeof data !== "object" || !fields.every((field) => field in data && typeof (data as Record<string, unknown>)[field] === "string")) throw new SourceLoadError();
+        return data as SourcePayload;
+      }).catch(() => { throw new SourceLoadError(); });
     cache.set(slug, p);
     // A failure shouldn't stick for the life of the page.
-    p.then((v) => v === null && cache.delete(slug));
+    const request = p;
+    const clear = () => { if (cache.get(slug) === request) cache.delete(slug); };
+    p.then((v) => { if (v === null) clear(); }, clear);
   }
   return p;
 }

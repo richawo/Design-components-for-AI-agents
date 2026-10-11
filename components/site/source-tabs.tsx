@@ -37,21 +37,23 @@ export function SourceTabs({
   const uid = useId();
   const [tab, setTab] = useState<Tab>("code");
   const [source, setSource] = useState<SourcePayload | null>(initial);
-  const [status, setStatus] = useState<"ready" | "loading" | "locked">(initial ? "ready" : "loading");
+  const [status, setStatus] = useState<"ready" | "loading" | "locked" | "error">(initial ? "ready" : "loading");
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     if (initial) return;
     let live = true;
+    setStatus("loading");
     fetchProSource(slug).then((data) => {
       if (!live) return;
       if (!data) return setStatus("locked");
       setSource(data);
       setStatus("ready");
-    });
+    }).catch(() => { if (live) setStatus("error"); });
     return () => {
       live = false;
     };
-  }, [initial, slug]);
+  }, [initial, slug, attempt]);
 
   const agentBrief = source
     ? `Add the "${name}" component from Design for AI to this project.\n\n## Install\n${installText}\n\n## Design brief\n${source.prompt.trim()}\n\n## Source (${fileName})\n\`\`\`tsx\n${source.code.trim()}\n\`\`\`\n`
@@ -117,7 +119,12 @@ export function SourceTabs({
           <Scroll html={installHtml} />
         ) : status === "loading" ? (
           <div className="flex h-64 items-center justify-center">
-            <span className="size-5 animate-spin rounded-full border-2 border-white/10 border-t-white/50" aria-label="Loading source" />
+            <span role="status" className="size-5 animate-spin rounded-full border-2 border-white/10 border-t-white/50" aria-label="Loading source" />
+          </div>
+        ) : status === "error" ? (
+          <div className="flex min-h-64 flex-col items-center justify-center gap-4 p-6 text-center">
+            <p role="status" className="text-sm text-site-fg-2">We couldn't load the source. Please try again.</p>
+            <button type="button" className="site-btn site-btn-secondary min-h-11 px-5" onClick={() => setAttempt((value) => value + 1)}>Retry source</button>
           </div>
         ) : status === "locked" || !source ? (
           <Locked name={name} tab={tab} />
