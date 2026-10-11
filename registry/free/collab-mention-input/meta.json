@@ -1,0 +1,37 @@
+{
+  "slug": "collab-mention-input",
+  "name": "Mention Input",
+  "tier": "free",
+  "platform": "web",
+  "category": "collaboration",
+  "description": "@people and #channels become single tokens inside a note. The suggestion list follows the caret, and backspace takes a token whole.",
+  "tags": ["mention", "collaboration", "channels", "tokens", "composer", "caret", "dark"],
+  "dependencies": ["motion"],
+  "theme": "dark",
+  "previewHeight": 640,
+  "usage": "import { CollabMentionInput } from \"@/components/design-for-ai/collab-mention-input\";\n\nexport default function HeadlineNote() {\n  return (\n    <CollabMentionInput\n      title=\"Friday note\"\n      workspace=\"Ledgerline · Website\"\n      people={[{ id: \"mara\", name: \"Mara Ilić\", handle: \"mara\" }]}\n      channels={[{ id: \"legal\", name: \"legal\" }]}\n      onChange={(value) => saveNote(value)}\n    />\n  );\n}",
+  "props": [
+    { "name": "title", "type": "string", "default": "\"Friday note\"", "description": "Heading, also the textbox’s accessible name." },
+    { "name": "workspace", "type": "string", "default": "\"Ledgerline · Website\"", "description": "Mono line under the heading." },
+    { "name": "value", "type": "string", "default": "a note that already mentions @mara and #legal", "description": "The note. @handle and #channel that match people and channels paint as tokens. Read once, when the field mounts." },
+    { "name": "people", "type": "{ id; name; handle }[]", "default": "the Ledgerline cast", "description": "People an @ can turn into a token. The label is the first name; the stored value keeps the handle." },
+    { "name": "channels", "type": "{ id; name }[]", "default": "legal, pricing, billing, launch, design", "description": "Channels a # can turn into a token. The name is both the label and the stored value." },
+    { "name": "placeholder", "type": "string", "default": "\"Write a note. @ mentions a person, # a channel.\"", "description": "Shown in the empty well. It is not part of the value." },
+    { "name": "showHint", "type": "boolean", "default": "true", "description": "The mono line under the well. It changes while a suggestion list is open." },
+    { "name": "voice", "type": "\"sans\" | \"serif\"", "default": "\"sans\"", "description": "Sans for a working note, serif when the sentence should read like the document. Channel tokens stay mono." },
+    { "name": "onChange", "type": "(value: string) => void", "default": "none", "description": "The note as plain text, with tokens written back to @handle and #name." },
+    { "name": "accent", "type": "string", "default": "\"#f5a524\"", "description": "The one accent: person tokens, their active avatar ring, and the text selection. Channel tokens stay neutral." },
+    { "name": "theme", "type": "\"dark\" | \"light\"", "default": "\"dark\"", "description": "Surface palette." }
+  ],
+  "added": "2026-10-11",
+  "demo": {
+    "steps": ["wait:450", "click:@editor:0.15,0.82", "type:@pr", "wait:550", "key:Enter", "wait:350", "type: can sign off", "wait:1100"]
+  },
+  "controls": [
+    { "prop": "showHint", "label": "Hint", "kind": "toggle", "default": true, "group": "Content" },
+    { "prop": "title", "label": "Title", "kind": "text", "default": "Friday note", "group": "Content" },
+    { "prop": "voice", "label": "Voice", "kind": "segmented", "options": [{ "value": "sans", "label": "Sans" }, { "value": "serif", "label": "Serif" }], "default": "sans", "group": "Look" },
+    { "prop": "theme", "label": "Theme", "kind": "segmented", "options": [{ "value": "dark", "label": "Dark" }, { "value": "light", "label": "Light" }], "default": "dark", "group": "Look" },
+    { "prop": "accent", "label": "Accent", "kind": "color", "default": "#f5a524", "options": ["#f5a524", "#f4f4f5", "#60a5fa", "#4ade80", "#ff7a45"], "group": "Look" }
+  ]
+}

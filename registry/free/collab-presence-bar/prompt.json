@@ -1,0 +1,64 @@
+{
+  "component": "CollabPresenceBar",
+  "intent": "A dark, monochrome bar that says who is in the document and what they are doing. Idle people fade. Following someone pins their sentence and moves a ring to their avatar.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 with @container queries; colour tokens as CSS variables on the root",
+    "animation": "motion/react: entrance blur, a rolling count, sentence cross-fades, layoutId for the follow ring, and one ambient pulse on the live dot",
+    "fonts": "font-sans (Geist) for the sentence, font-display (Geist) for the title and count, font-mono (Geist Mono) for labels"
+  },
+  "layout": {
+    "card": "surface, 1px line, 14px radius, inset highlight + deep shadow, @container root, 560px max in the demo",
+    "header": "18px display title and mono workspace on the left; 20px tabular count and mono HERE on the right",
+    "avatars": "four 44px buttons, 32px initials, 4px apart. A 6px ink live dot on the first active person. Idle at 50% opacity",
+    "sentence": "to the right of the avatars from @md, on the next line below that. A long sentence wraps in its column. 15px. Name and place in ink, verb muted. FOLLOWING and STOP appear only while following",
+    "empty": "one faint line: No one else is in this document"
+  },
+  "typography": {
+    "title": "display 18px semibold, tracking -0.03em",
+    "count": "display 20px semibold, tracking -0.04em, tabular",
+    "labels": "mono 11px uppercase, tracking 0.1em, faint",
+    "sentence": "15px, leading 1.4; name medium ink, activity muted"
+  },
+  "color": {
+    "approach": "greyscale; one accent, and only as the follow ring. The live dot is ink",
+    "dark": { "surface": "#111113", "raised": "#17171a", "line": "#232327", "rule": "#1b1b1e", "avatar": "#1f1f23", "ink": "#f4f4f5", "muted": "#a1a1aa", "faint": "#8a8a93", "stage": "#0a0a0b (demo only)" },
+    "light": { "surface": "#ffffff", "raised": "#f6f6f7", "line": "#e4e4e7", "rule": "#efeff1", "avatar": "#f0f0f2", "ink": "#18181b", "muted": "#52525b", "faint": "#71717a", "stage": "#e9e9ec (demo only)" },
+    "accent": "theme ink by default. A 2px ring on the followed avatar"
+  },
+  "motion": {
+    "trigger": "once at 20% in view",
+    "order": "card, header, row: 12px rise, 8px blur, 0.5s, 60ms apart",
+    "count": "rolls on change, 3px blur, 0.32s",
+    "sentence": "4px rise and 3px blur, 0.22s, when the person or the follow state changes",
+    "ring": "layoutId spring 500/40",
+    "dot": "opacity 1 to 0.35 over 2.4s while in view",
+    "press": "avatars and Stop scale to 0.97",
+    "reducedMotion": "150ms fades, no ring travel, solid dot"
+  },
+  "responsive": {
+    "320": "avatars stay on one line; the sentence drops below them, full width, with Stop at the end of that line",
+    "390": "same stack. Four 44px targets fit; the sentence wraps inside its line rather than truncating a name",
+    "768+": "the sentence sits to the right of the avatars inside the 560px card"
+  },
+  "accessibility": [
+    "avatar row is a toolbar; each button is aria-pressed and named with the person and their activity",
+    "arrow keys move between the buttons",
+    "the count is named “4 here”; avatars and the live dot are aria-hidden",
+    "a polite live region announces follow, not hover",
+    "2px focus-visible outline in ink"
+  ],
+  "content": {
+    "product": "Ledgerline’s Pricing document",
+    "people": "Mara Ilić is editing Pricing (live), Priya Raman is commenting in Legal, Sam Okoye is reading the headline, Jonas Weber is idle",
+    "demo": "follows Priya, then follows Jonas, so the ring travels onto the faded avatar and the sentence becomes idle"
+  },
+  "avoid": [
+    "multiplayer cursors, carets or selections on a canvas",
+    "a different hue per person",
+    "accent-coloured text",
+    "hiding the activity in a tooltip",
+    "idle people drawn at full strength"
+  ]
+}
