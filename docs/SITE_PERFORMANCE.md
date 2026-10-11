@@ -72,6 +72,15 @@ licence gate are unchanged. The packaged Worker passed the preview preference
 and gallery checks, served free source successfully and rejected an
 unauthenticated Pro download.
 
+Live QA also reproduced a deployment crossing an open browser session: old
+hashed preview assets returned 404 after the next release. A small pre-framework
+handler now reloads on a missing same-origin Next chunk, once per failed asset
+with a 60-second per-tab cooldown. It ignores application errors and external
+resources, and never retries automatically if session storage is unavailable.
+The browser fault-injection test blocks a chunk and requires exactly one full
+reload followed by a working preview. This is recovery, not asset retention
+across versions; an open preview can briefly reload during a release.
+
 ```sh
 PERF_BASE=http://localhost:3000 PERF_OUT=test-results/site-performance/navigation-after.json node tests/browser/navigation-performance.mjs
 PERF_BASE=http://localhost:3000 PERF_NEGATIVE=1 PERF_OUT=test-results/site-performance/navigation-negative.json node tests/browser/navigation-performance.mjs
