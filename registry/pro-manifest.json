@@ -9429,6 +9429,84 @@
     ]
   },
   {
+    "slug": "devtools-json-inspector",
+    "name": "Structured JSON Inspector",
+    "tier": "pro",
+    "platform": "web",
+    "category": "devtools",
+    "description": "A nested JSON inspector with keyboard-accessible disclosures, readable values and bounded rendering for large, deep or circular developer payloads.",
+    "tags": [
+      "devtools",
+      "devtools",
+      "json",
+      "inspector",
+      "responsive",
+      "keyboard"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 760,
+    "usage": "import { JsonInspector } from \"@/components/design-for-ai/devtools-json-inspector\";\n\n<JsonInspector />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Response payload\"",
+        "description": "Inspector title."
+      },
+      {
+        "name": "data",
+        "type": "InspectValue",
+        "default": "sample completed run",
+        "description": "JSON-like data; null and empty arrays remain visible. Circular references display a marker rather than recursing forever."
+      },
+      {
+        "name": "rootLabel",
+        "type": "string",
+        "default": "\"response\"",
+        "description": "Root entry label."
+      },
+      {
+        "name": "maxDepth",
+        "type": "number",
+        "default": "12",
+        "description": "Maximum depth, clamped to 1-24. At most 100 children are rendered per branch."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface and ink palette; the demo stage follows the chosen theme."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:600",
+        "click:@json-root-3",
+        "wait:700",
+        "click:@json-root-4",
+        "wait:700"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "devtools-log-stream",
     "name": "Log Stream",
     "tier": "pro",
