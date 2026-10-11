@@ -8511,6 +8511,98 @@
     ]
   },
   {
+    "slug": "date-booking-slots",
+    "name": "Booking Slot Selector",
+    "tier": "pro",
+    "platform": "web",
+    "category": "date-time",
+    "description": "A compact booking selector with date cards, available time slots and explicit timezone context, using native radios for reliable keyboard selection.",
+    "tags": [
+      "date-time",
+      "date",
+      "booking",
+      "slots",
+      "responsive",
+      "keyboard"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 680,
+    "usage": "import { BookingSlots } from \"@/components/design-for-ai/date-booking-slots\";\n\n<BookingSlots />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Find a moment to talk.\"",
+        "description": "Booking heading."
+      },
+      {
+        "name": "duration",
+        "type": "string",
+        "default": "\"30 minutes\"",
+        "description": "Appointment length label."
+      },
+      {
+        "name": "timezone",
+        "type": "string",
+        "default": "\"Europe/London\"",
+        "description": "Explicit timezone label. The host supplies correctly converted slot labels."
+      },
+      {
+        "name": "days",
+        "type": "BookingDay[]",
+        "default": "three sample dates",
+        "description": "Ordered date cards and time slots; available:false disables a slot."
+      },
+      {
+        "name": "value",
+        "type": "BookingSelection | null",
+        "default": "undefined",
+        "description": "Controlled selection. Undefined enables internal state; null explicitly clears selection."
+      },
+      {
+        "name": "onChange",
+        "type": "(selection: BookingSelection) => void",
+        "default": "undefined",
+        "description": "Selection only; the host validates availability and confirms the booking."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface and ink palette; the demo stage follows the chosen theme."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:600",
+        "click:@slot-1",
+        "wait:600",
+        "click:@day-1",
+        "wait:500",
+        "click:@slot-0",
+        "wait:600"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "devtools-api-playground",
     "name": "API Playground",
     "tier": "pro",
