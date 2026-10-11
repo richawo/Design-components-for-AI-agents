@@ -209,16 +209,6 @@ try {
   );
   assert.match(await page.getByRole("status").innerText(), /numeric range/);
   await fixture(
-    "commerce-product-configurator",
-    `window.cart=null;createRoot(document.getElementById('root')).render(<Subject.ProductConfigurator onAdd={async v=>{window.cart=v;throw Error('offline')}}/>);`,
-  );
-  await choose(page.getByRole("radio", { name: "Clay", exact: true }));
-  await choose(page.getByRole("radio", { name: "Tall", exact: true }));
-  await page.getByRole("button", { name: "Add to bag" }).click();
-  await page.waitForTimeout(100);
-  assert.match(await page.getByRole("status").innerText(), /Could not add/);
-  assert.equal(await page.evaluate(() => window.cart.price), 205);
-  await fixture(
     "content-release-notes",
     `createRoot(document.getElementById('root')).render(<Subject.ReleaseNotes/>);`,
   );
@@ -233,7 +223,7 @@ try {
   assert.equal(await page.getByRole("article").count(), 3);
   assert.deepEqual(errors, []);
   console.log(
-    "File validation, shortcut capture, stale booking data, failed preferences, board focus, circular/bounded JSON, mobile timing tracks, comparison keyboard bounds, chart overflow, cart rejection and release filtering passed.",
+    "File validation, shortcut capture, stale booking data, failed preferences, board focus, circular/bounded JSON, mobile timing tracks, comparison keyboard bounds, chart overflow and release filtering passed.",
   );
 } finally {
   await browser.close();

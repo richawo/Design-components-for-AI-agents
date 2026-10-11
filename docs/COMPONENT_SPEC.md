@@ -78,6 +78,7 @@ Broken components are skipped (and reported) in dev; `--strict` fails CI.
   inline SVG, gradients used sparingly, real-looking UI drawn in markup,
   initials avatars, abstract patterns. This is a feature: components work
   offline and never ship broken image links.
+- **Product imagery:** Do not use generated Three.js stand-ins in place of actual products. Commerce components should accept real product assets from the host; keep bundled demos offline-safe.
 - **No `any`.** TypeScript strict. No unused variables.
 
 ### `meta.json`

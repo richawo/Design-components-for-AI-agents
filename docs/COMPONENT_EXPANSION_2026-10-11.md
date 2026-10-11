@@ -1,6 +1,8 @@
 # Component expansion, 11 October 2026
 
-Added 30 standalone React 19 and Tailwind v4 components: 12 free and 18 Pro. The local catalog now contains 180 components, split into 70 free and 110 Pro.
+Added 30 standalone React 19 and Tailwind v4 components: 12 free and 18 Pro. At completion, the catalog contained 180 components, split into 70 free and 110 Pro.
+
+Curation update later on 11 October: Cart Drawer moved from Free to Pro, and Sculpted Product Configurator was removed. The catalog now contains 179 components: 69 free and 110 Pro. The additions and validation below describe the original expansion.
 
 The expansion fills practical gaps in input, navigation, scheduling, document management, developer tools, charts, commerce and editorial content. Every addition includes a typed named component, zero-prop demo, metadata, design prompt, structured JSON prompt, theme control, recorded interaction preview and poster.
 
@@ -35,7 +37,7 @@ The expansion fills practical gaps in input, navigation, scheduling, document ma
 | Bullet Target Comparison | Pro | charts | `chart-bullet-targets` |
 | Change Waterfall Bridge | Pro | charts | `chart-waterfall-bridge` |
 | Period Slope Comparison | Pro | charts | `chart-slope-comparison` |
-| Sculpted Product Configurator | Pro | commerce | `commerce-product-configurator` |
+| Sculpted Product Configurator (subsequently removed) | Pro | commerce | `commerce-product-configurator` |
 | Editorial Event Ticket | Pro | cards | `cards-event-ticket` |
 | Editorial Release Notes | Pro | content | `content-release-notes` |
 
