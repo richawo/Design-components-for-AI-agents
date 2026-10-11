@@ -1,8 +1,8 @@
-# Pro expansion: 50-component implementation plan
+# Pro expansion: 50 workflows and six scroll components
 
-Requested on 11 October 2026. All entries below are new Pro components. The target is eight additions in each of e-commerce, fashion, finance, HR and legal tech, plus ten shared SaaS components. Each suite includes a dashboard and substantial working workflows. This plan records intended scope, not completed delivery.
+Requested on 11 October 2026. All entries below are new Pro components. The target is eight additions in each of e-commerce, fashion, finance, HR and legal tech, plus ten shared SaaS components. Each suite includes a dashboard and substantial working workflows. All 50 entries have been implemented, individually verified, committed and pushed. Six additional Pro scroll components complete the follow-up request.
 
-Every entry requires a self-contained typed implementation, design prompts, both themes, functional host callbacks, documented data contracts, a recorded interaction, visual review, responsive and accessibility audits, empty-data and multiple-instance checks, and meaningful behaviour regressions. Components are committed and pushed individually after verification.
+Each entry ships with a self-contained typed implementation, design prompts, both themes, documented data contracts and a recorded interaction. Applicable write actions use host callbacks with explicit pending, success and failure states. Every component received visual review, responsive and automated accessibility audits, empty-data and multiple-instance checks, and behaviour regressions. The six dashboards cover commerce, merchandising, cash position, people, legal matters and a general SaaS workspace.
 
 | Suite | Component | Distinct interaction |
 | --- | --- | --- |
@@ -58,3 +58,33 @@ Every entry requires a self-contained typed implementation, design prompts, both
 | saas | Customer Health Board (`saas-customer-health`) | Inspect transparent health signals and record the next customer action. |
 
 The earlier [suite foundations](PRO_INDUSTRY_SUITES_2026-10-11.md) remain part of these suites. Category and workflow inspiration comes from [21st.dev](https://21st.dev/community/components) and [UIARC](https://uiarc.dev/); implementations are original.
+
+
+## Scroll additions
+
+| Component | Behaviour |
+| --- | --- |
+| Expanding Scroll Mosaic (`scroll-expanding-mosaic`) | A contact sheet expands its lead image to fill the viewport; reduced motion presents the complete gallery. |
+| Scroll Cinema Frame (`scroll-cinema-frame`) | A centred video frame expands with scroll, with native controls, optional captions and offscreen pause. |
+| Scroll Background Wipe (`scroll-background-wipe`) | A circular reveal changes the complete scene and its typography together, preserving contrast. |
+| Scroll Chapter Stack (`scroll-chapter-stack`) | Sticky editorial chapters layer during scrolling; long content, small screens and reduced motion use ordinary flow. |
+| Horizontal Scroll Showcase (`scroll-horizontal-showcase`) | Vertical page progress moves through a horizontal project sequence; mobile and reduced motion stack the projects. |
+| Scroll Image Curtain (`scroll-image-curtain`) | Two panels open to reveal an image; an opaque control can reveal it or return to the cover. |
+
+These use native document scrolling with no wheel interception, flashing or perpetual animation. Scroll effects reverse naturally. Changing the system motion preference while the component is mounted switches to the complete static layout. The standalone demos use local abstract artwork; host applications can supply authentic images and video.
+
+## Verification and integration boundaries
+
+- All 56 component audits passed at 320, 390, 768, 1024, 1440 and 1920 pixels, with additional 320px touch checks in both themes. The audit checks runtime errors, horizontal overflow, duplicate IDs, automated accessibility rules and reduced-motion animations.
+- Desktop, tablet and phone screenshots and recorded interaction contact sheets were visually reviewed. Empty array inputs and multiple instances were exercised separately.
+- Browser regressions cover all 50 workflow components and the six scroll patterns. They exercise valid actions, invalid inputs, callback rejection and retry where applicable, calculated boundaries, keyboard interaction and selection persistence.
+- All 50 workflow demo scripts were also replayed through the actual demo player. Native input palettes have a separate regression in both themes.
+- Registry validation, TypeScript, the unit suite and the Node 24 production build pass. Broader integration and deployed-route evidence is recorded separately in the release verification report.
+
+These are frontend components with realistic offline demonstrations. The host remains responsible for authentication, authorization, persistence, billing enforcement, delivery, uploads and industry rules. Saving a draft does not execute a payment, send a message or sign a document. Finance displays supplied rates and assumptions; legal components track supplied records and deadlines.
+
+The catalogue now contains 243 components: 175 Pro and 68 free. This batch adds 56 Pro components and keeps the free catalogue unchanged.
+
+## Industry content opportunities
+
+The suites support practical guides around fulfilment exceptions and inventory allocation; fashion buying and size planning; financial close and cash forecasting; employee onboarding and staffing coverage; and legal matter intake and document collection. The scroll set supports a separate guide to accessible editorial storytelling, expanding media and mobile fallbacks.
