@@ -23083,6 +23083,78 @@
     ]
   },
   {
+    "slug": "scroll-image-curtain",
+    "name": "Scroll Image Curtain",
+    "tier": "pro",
+    "platform": "web",
+    "category": "media",
+    "description": "A pair of typographic curtains slide apart with page scroll to reveal a full image, with an accessible caption and a complete static reduced-motion composition.",
+    "tags": [
+      "scroll",
+      "scroll-driven",
+      "motion",
+      "responsive",
+      "media"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 900,
+    "usage": "import { ScrollImageCurtain } from \"@/components/design-for-ai/scroll-image-curtain\";\n\n<ScrollImageCurtain />\n\n// Place in normal document flow. Keep ancestors free of overflow clipping so viewport sticky positioning can work.",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Title printed on the opening curtain."
+      },
+      {
+        "name": "caption",
+        "type": "string",
+        "description": "Meaningful image caption."
+      },
+      {
+        "name": "imageSrc",
+        "type": "string",
+        "description": "Real image URL supplied by the host. The offline demo uses an abstract print."
+      },
+      {
+        "name": "imageAlt",
+        "type": "string",
+        "description": "Descriptive alternative for the supplied image."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Neutral surface and text palette."
+      }
+    ],
+    "added": "2026-10-12",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@reveal",
+        "wait:1800",
+        "scroll:180",
+        "wait:1200"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "text-decode",
     "name": "Text Decode",
     "tier": "pro",
