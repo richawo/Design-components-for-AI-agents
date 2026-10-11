@@ -100,12 +100,12 @@ export function AccountPanel({ welcome, pending, plan }: { welcome: boolean; pen
       ) : (
         <>
           {!signedIn && <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,440px)_1fr] lg:gap-14">
-            <AccountSignIn onSignedIn={load} onBusyChange={(pending) => setBusy(pending ? "signin" : null)} />
+            <AccountSignIn onSignedIn={load} onBusyChange={(pending) => { setBusy(pending ? "signin" : null); if (pending) setError(null); }} />
             <div className="site-in min-w-0 px-1 py-3 lg:py-8">
               <h2 className="text-2xl font-semibold tracking-[-0.035em]">{selected ? names[selected.id] : "Make something worth shipping."}</h2>
               <p className="mt-3 text-[15px] leading-relaxed text-site-fg-2">{selected ? `$${selected.price} USD ${selected.cadence === "year" ? "per year, renewed annually" : "once, with lifetime access"}. ${selected.seats === 1 ? "One person" : "Up to 10 people"}. Sign in, then continue to secure checkout.` : "Your components, prompts and agent connections, together in one place. Sign in with your purchase email to pick up where you left off."}</p>
               <Link href="/pricing" className="site-btn site-btn-secondary mt-6 h-11 px-5 text-sm">{selected ? "Change plan" : "Explore Pro"}</Link>
-              <details className="mt-8 border-t border-white/[0.08] pt-5"><summary className="min-h-11 cursor-pointer text-sm leading-[44px] text-site-fg-2">Or use an existing licence key</summary><form onSubmit={activate} className="mt-4"><label htmlFor="licence-key" className="mb-2 block text-sm text-site-fg-2">Licence key</label><textarea id="licence-key" rows={3} spellCheck={false} value={key} onChange={(e) => setKey(e.target.value)} placeholder="dfa_…" className={`${field} resize-none break-all font-mono text-[12px]`} /><button type="submit" disabled={busy !== null || !key.trim()} className="site-btn site-btn-primary mt-3 h-11 px-5 text-sm">{busy === "activate" ? "Checking…" : "Activate key"}</button></form></details>
+              <details className="mt-8 border-t border-white/[0.08] pt-5"><summary className="min-h-11 cursor-pointer text-sm leading-[44px] text-site-fg-2">Or use an existing licence key</summary><form onSubmit={activate} className="mt-4"><label htmlFor="licence-key" className="mb-2 block text-sm text-site-fg-2">Licence key</label><textarea id="licence-key" rows={3} spellCheck={false} value={key} onChange={(e) => setKey(e.target.value)} placeholder="dfa_…" className={`${field} resize-none break-all font-mono text-base sm:text-[12px]`} /><button type="submit" disabled={busy !== null || !key.trim()} className="site-btn site-btn-primary mt-3 h-11 px-5 text-sm">{busy === "activate" ? "Checking…" : "Activate key"}</button></form></details>
             </div>
           </div>}
 

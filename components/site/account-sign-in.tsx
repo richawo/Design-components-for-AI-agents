@@ -95,7 +95,7 @@ export function AccountSignIn({ onSignedIn, onBusyChange }: { onSignedIn: () => 
       <div key={sent ? "code" : "email"} className="site-rise">
         <h2 className="mt-6 text-[28px] font-semibold leading-tight tracking-[-0.04em]">{verified ? "You're signed in." : sent ? "Check your inbox." : "Welcome to your library."}</h2>
         <p id="signin-description" className="mt-3 text-[15px] leading-relaxed text-site-fg-2">
-          {verified ? "Your email is verified. Open your account to continue." : sent ? <>We sent a six-digit code to <span className="break-all font-medium text-site-fg">{email}</span>.</> : "Enter your email to access your licence and connect your agents. No password to remember."}
+          {verified ? "Your email is verified. Open your account to continue." : sent ? <>We sent a six-digit code to<span className="mt-1 block break-words font-medium text-site-fg">{email}</span></> : "Enter your email to access your licence and connect your agents. No password to remember."}
         </p>
         {!sent ? <div className="mt-7">
           <label htmlFor="account-email" className="mb-2 block text-sm text-site-fg-2">Email address</label>
