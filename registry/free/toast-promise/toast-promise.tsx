@@ -646,8 +646,8 @@ const DEMO_JOB_MS = 1500;
 
 /** The demo's own stage. Greyscale: the toast is the only thing with a colour meaning. */
 const STAGE = {
-  dark: { backdrop: "#000000", card: "#0b0b0c", shadow: "0 40px 80px -40px rgba(0,0,0,0.9)", line: "rgba(255,255,255,0.08)", ink: "#f4f4f5", muted: "#8a8a93", faint: "#5b5b63", pill: "#f4f4f5", onPill: "#0b0b0c", chip: "#18181b", chipInk: "#a1a1aa" },
-  light: { backdrop: "#f4f4f5", card: "#ffffff", shadow: "0 32px 64px -32px rgba(24,24,27,0.12)", line: "rgba(24,24,27,0.08)", ink: "#18181b", muted: "#71717a", faint: "#a1a1aa", pill: "#18181b", onPill: "#ffffff", chip: "#f4f4f5", chipInk: "#52525b" },
+  dark: { backdrop: "#000000", card: "#0b0b0c", shadow: "0 40px 80px -40px rgba(0,0,0,0.9)", line: "rgba(255,255,255,0.08)", ink: "#f4f4f5", muted: "#8a8a93", faint: "#8a8a93", pill: "#f4f4f5", onPill: "#0b0b0c", chip: "#18181b", chipInk: "#a1a1aa" },
+  light: { backdrop: "#f4f4f5", card: "#ffffff", shadow: "0 32px 64px -32px rgba(24,24,27,0.12)", line: "rgba(24,24,27,0.08)", ink: "#18181b", muted: "#71717a", faint: "#696973", pill: "#18181b", onPill: "#ffffff", chip: "#f4f4f5", chipInk: "#52525b" },
 } as const;
 
 const DEMO_MOTION = { rise: 12, blur: 8, block: 0.5, step: 0.07 } as const;
