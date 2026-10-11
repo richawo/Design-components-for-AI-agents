@@ -8252,6 +8252,150 @@
     ]
   },
   {
+    "slug": "editor-whiteboard",
+    "name": "Whiteboard",
+    "tier": "pro",
+    "platform": "web",
+    "category": "editors",
+    "description": "A pricing board you can pan and zoom, with cream notes and connectors that follow when a note moves.",
+    "tags": [
+      "editors",
+      "whiteboard",
+      "canvas",
+      "sticky notes",
+      "connectors",
+      "infinite",
+      "planning"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 780,
+    "usage": "import { EditorWhiteboard } from \"@/components/design-for-ai/editor-whiteboard\";\n\n<EditorWhiteboard\n  title=\"Pricing review\"\n  notes={notes}\n  edges={edges}\n  onChange={(next) => save(next)}\n/>\n\n// Drag a note and the orthogonal connector reroutes. Drag the board to pan. ⌘-scroll or the zoom cluster changes scale, and Fit frames every note.\n// Below 640px the notes stack at full size so the type stays readable, and a drag still pulls the line.",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Pricing review\"",
+        "description": "Board name in the header."
+      },
+      {
+        "name": "kicker",
+        "type": "string",
+        "default": "\"Harbor\"",
+        "description": "Mono eyebrow above the title."
+      },
+      {
+        "name": "notes",
+        "type": "BoardNote[]",
+        "default": "The twelve-dollar seat and the three things it implies",
+        "description": "Sticky notes. Each has a kicker, title, body and a top-left in board units."
+      },
+      {
+        "name": "edges",
+        "type": "BoardEdge[]",
+        "default": "From the decision to the thread, the chart builder and the refusal",
+        "description": "Connectors, each from one note id to another. They leave the near side and turn once."
+      },
+      {
+        "name": "showGrid",
+        "type": "boolean",
+        "default": "true",
+        "description": "Dot grid on the board. It pans and zooms with the camera."
+      },
+      {
+        "name": "showLines",
+        "type": "boolean",
+        "default": "true",
+        "description": "The connectors. Hide them to read the notes alone."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#f4f4f5\"",
+        "description": "Connector colour and the ring on the selected note. Either theme's ink follows the theme."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Near-black board with cream notes, or the light inverse."
+      },
+      {
+        "name": "onChange",
+        "type": "(notes: BoardNote[]) => void",
+        "description": "Called with every note after one is dropped."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the shell."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:450",
+        "hover:@tools",
+        "drag:0.75,0.62",
+        "wait:1700"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "showGrid",
+        "label": "Grid",
+        "kind": "toggle",
+        "default": true,
+        "group": "Board"
+      },
+      {
+        "prop": "showLines",
+        "label": "Lines",
+        "kind": "toggle",
+        "default": true,
+        "group": "Board"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action",
+        "group": "Board"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#8ab4ff",
+          "#7dd3a8",
+          "#f4b267"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      }
+    ]
+  },
+  {
     "slug": "effect-gravity-grid",
     "name": "Gravity Grid",
     "tier": "pro",
