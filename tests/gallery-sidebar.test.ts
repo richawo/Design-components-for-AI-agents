@@ -9,9 +9,11 @@ import {
   parseFilters,
   parseScroll,
   readCategoryParam,
+  clampResultsScroll,
   resultsScrollTop,
   scrollDelta,
   sidebarMaxHeight,
+  sidebarScrollRoom,
   toggleCollapsed,
   typeaheadRow,
   type SidebarRow,
@@ -90,6 +92,15 @@ describe("sidebar scroll", () => {
     expect(resultsScrollTop(400, 0, 900)).toBeNull();
     expect(resultsScrollTop(-180, 620, 900)).toBe(344);
     expect(resultsScrollTop(800, 0, 900)).toBe(704);
+  });
+
+  it("stops a short list from sliding the sidebar under the header", () => {
+    expect(sidebarScrollRoom(-518, 195, 195)).toBe(-614);
+    expect(clampResultsScroll(960, 410, -614)).toBe(346);
+    expect(sidebarScrollRoom(96, 876, 2400)).toBe(1524);
+    expect(clampResultsScroll(200, 500, 1524)).toBe(500);
+    expect(clampResultsScroll(100, 400, 0)).toBe(100);
+    expect(clampResultsScroll(800, 200, 400)).toBe(200);
   });
 
   it("scrolls only far enough to clear the fade", () => {

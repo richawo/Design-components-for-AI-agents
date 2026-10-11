@@ -3,7 +3,15 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { FILTER_KEY, galleryHref, parseFilters, readCategoryParam, resultsScrollTop } from "@/lib/gallery-sidebar";
+import {
+  FILTER_KEY,
+  clampResultsScroll,
+  galleryHref,
+  parseFilters,
+  readCategoryParam,
+  resultsScrollTop,
+  sidebarScrollRoom,
+} from "@/lib/gallery-sidebar";
 import { CategorySidebar } from "./category-sidebar";
 import { cardEntrance, ComponentCard, FIRST_VIEW_CARDS } from "./component-card";
 import type { CardData } from "@/lib/registry";
@@ -66,7 +74,8 @@ export function ComponentBrowser({ cards, categories, category }: { cards: CardD
   }, [categories]);
 
   // A short category, chosen while the long list is scrolled down, would
-  // otherwise leave the reader in the footer.
+  // otherwise leave the reader in the footer. Stop before that scroll pushes
+  // the sidebar under the header: a one-card list is only as tall as the sidebar.
   useEffect(() => {
     if (seenCat.current === cat) return;
     seenCat.current = cat;
@@ -74,7 +83,16 @@ export function ComponentBrowser({ cards, categories, category }: { cards: CardD
     if (!el) return;
     const next = resultsScrollTop(el.getBoundingClientRect().top, window.scrollY, window.innerHeight);
     if (next === null) return;
-    window.scrollTo({ top: next, behavior: reduce ? "auto" : "smooth" });
+    const aside = document.querySelector("aside");
+    const parent = aside?.parentElement;
+    let top = next;
+    if (aside && parent && window.matchMedia("(min-width: 1024px)").matches) {
+      const box = aside.getBoundingClientRect();
+      const room = sidebarScrollRoom(box.top, box.bottom, parent.getBoundingClientRect().bottom);
+      top = clampResultsScroll(window.scrollY, next, room);
+    }
+    if (Math.abs(top - window.scrollY) < 2) return;
+    window.scrollTo({ top, behavior: reduce ? "auto" : "smooth" });
   }, [cat, reduce]);
 
   const setCat = (key: string) => {

@@ -96,6 +96,20 @@ export function resultsScrollTop(elementTop: number, scrollY: number, viewport: 
   return Math.max(0, Math.round(scrollY + elementTop - header));
 }
 
+/**
+ * How far the window can scroll before a sticky sidebar is pushed under the header.
+ * Negative when a short list has already slid the sidebar up.
+ */
+export function sidebarScrollRoom(asideTop: number, asideBottom: number, parentBottom: number, stick = 96): number {
+  return asideTop - stick + (parentBottom - asideBottom);
+}
+
+/** Keep a result scroll from carrying the sidebar under the header. */
+export function clampResultsScroll(scrollY: number, next: number, room: number): number {
+  if (next - scrollY > room) return Math.max(0, Math.round(scrollY + room));
+  return next;
+}
+
 /** How many pixels to add to a scrollport so `row` clears `pad` inside it. */
 export function scrollDelta(containerTop: number, containerBottom: number, rowTop: number, rowBottom: number, pad = 24): number {
   if (rowTop < containerTop + pad) return rowTop - (containerTop + pad);
