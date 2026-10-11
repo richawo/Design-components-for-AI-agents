@@ -1,5 +1,5 @@
 "use client";
-import { type CSSProperties, useId, useState } from "react";
+import { type CSSProperties, useId, useState, useRef, useEffect } from "react";
 import { ChevronRight, Folder, MoreHorizontal } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 
@@ -37,9 +37,22 @@ export function BreadcrumbFold({
   const id = useId();
   const reduced = useReducedMotion();
   const [expanded, setExpanded] = useState(false);
+  const nav = useRef<HTMLElement>(null);
+  const moveFocus = useRef(false);
+  useEffect(() => {
+    if (moveFocus.current) {
+      nav.current
+        ?.querySelector<HTMLButtonElement>(
+          expanded ? "[data-demo=collapse-path]" : "[data-demo=expand-path]",
+        )
+        ?.focus();
+      moveFocus.current = false;
+    }
+  }, [expanded]);
   const folded = items.length > 3 && !expanded;
   return (
     <motion.nav
+      ref={nav}
       initial={{ opacity: 0, y: reduced ? 0 : 8 }}
       animate={{ opacity: 1, y: 0 }}
       aria-label={label}
@@ -58,7 +71,10 @@ export function BreadcrumbFold({
                     aria-label="Show full path"
                     aria-expanded={expanded}
                     aria-controls={id}
-                    onClick={() => setExpanded(true)}
+                    onClick={() => {
+                      moveFocus.current = true;
+                      setExpanded(true);
+                    }}
                     className={control}
                   >
                     <MoreHorizontal size={18} aria-hidden="true" />
@@ -118,7 +134,10 @@ export function BreadcrumbFold({
         <button
           type="button"
           data-demo="collapse-path"
-          onClick={() => setExpanded(false)}
+          onClick={() => {
+            moveFocus.current = true;
+            setExpanded(false);
+          }}
           className={`${control} mt-2 text-[var(--muted)]`}
         >
           Collapse path
