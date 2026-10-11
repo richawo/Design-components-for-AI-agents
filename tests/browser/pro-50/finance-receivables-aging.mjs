@@ -1,9 +1,14 @@
 export async function check({page,mount,assert}){
+ await page.setViewportSize({width:768,height:1100});
+ await page.goto((process.env.PREVIEW_BASE||'http://localhost:3100')+'/preview/finance-receivables-aging',{waitUntil:'networkidle'});
+ const metric=await page.locator('[data-demo="bucket-0"] > span').nth(1).evaluate(e=>({height:e.getBoundingClientRect().height,line:parseFloat(getComputedStyle(e).lineHeight)}));
+ assert.ok(metric.height<=metric.line*1.1,'Aging amounts must remain on one line at tablet width');
+ await page.setViewportSize({width:390,height:900});
  await mount(`window.drafts=[];window.fail=true;createRoot(document.getElementById('root')).render(<Subject.ReceivablesAging onCreateFollowUp={async p=>{window.drafts.push(p);if(window.fail)throw Error('offline')}}/>);`);
  assert.match(await page.locator('section').innerText(),/£10,770.00/);
  await page.getByRole('button',{name:/^31–60 days/}).click();assert.match(await page.locator('section').innerText(),/36 calendar days overdue/);
  await page.getByRole('button',{name:'Review follow-up',exact:true}).click();await page.getByRole('button',{name:'Create follow-up draft',exact:true}).click();await page.getByRole('status').filter({hasText:'request failed'}).waitFor();await page.evaluate(()=>window.fail=false);await page.getByRole('button',{name:'Create follow-up draft',exact:true}).click();await page.getByRole('status').filter({hasText:'draft created'}).waitFor();const p=await page.evaluate(()=>window.drafts[1]);assert.equal(p.invoiceId,'INV-2058');assert.equal(p.outstandingMinor,325000);
  await page.getByRole('button',{name:/^Not overdue/}).click();assert.equal(await page.getByRole('button',{name:'Review follow-up',exact:true}).isDisabled(),true);
  await page.getByRole('button',{name:'Clear aging filter',exact:true}).click();await page.getByLabel('Customer or invoice',{exact:true}).fill('Common');assert.match(await page.locator('section').innerText(),/£1,320.00/);
- await mount(`createRoot(document.getElementById('root')).render(<Subject.ReceivablesAging referenceDate="2028-03-01" invoices={[{id:'a',customerId:'a',customer:'Leap',owner:'A',due:'2028-02-29',amountMinor:100,paidMinor:1},{id:'b',customerId:'b',customer:'Bad',owner:'B',due:'2026-02-30',amountMinor:100,paidMinor:0}]}/>);`);assert.match(await page.locator('section').innerText(),/1 calendar days overdue/);assert.match(await page.getByRole('alert').innerText(),/invalid dates/);assert.match(await page.locator('section').innerText(),/£0.99/);
+ await mount(`createRoot(document.getElementById('root')).render(<Subject.ReceivablesAging referenceDate="2028-03-01" invoices={[{id:'a',customerId:'a',customer:'Leap',owner:'A',due:'2028-02-29',amountMinor:100,paidMinor:1},{id:'b',customerId:'b',customer:'Bad',owner:'B',due:'2026-02-30',amountMinor:100,paidMinor:0}]}/>);`);assert.match(await page.locator('section').innerText(),/1 calendar day overdue/);assert.match(await page.getByRole('alert').innerText(),/invalid dates/);assert.match(await page.locator('section').innerText(),/£0.99/);
 }
