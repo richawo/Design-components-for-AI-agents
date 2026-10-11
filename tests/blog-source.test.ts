@@ -27,6 +27,19 @@ describe("private blog localization", () => {
     expect(inlineUnit("Use `Widget()` with **care**.").opaque).toEqual(["<code>Widget()</code>"]);
     expect(postUnits(source.posts[0]).join("\n")).not.toContain("never translate this");
   });
+  it("localises standalone image descriptions and escapes attribute quotes", () => {
+    const source = fixture();
+    source.posts[0].content += '\n![A copper token diagram](/blog-images/example.png)\n';
+    source.posts[0].raw = matter.stringify(source.posts[0].content, source.posts[0].data);
+    const strings = Object.fromEntries(corpusUnits(source).map((key) => [key, `FR ${key}`]));
+    strings["A copper token diagram"] = 'Un schéma "cuivré"';
+    for (const dir of ["strings", "slugs"]) fs.mkdirSync(path.join(source.base, "i18n", dir), { recursive: true });
+    fs.writeFileSync(path.join(source.base, "i18n/strings/fr.json"), JSON.stringify(strings));
+    fs.writeFileSync(path.join(source.base, "i18n/slugs/fr.json"), JSON.stringify({ "fixture-guide": "guide-stable" }));
+    const translated = bundleBlog(source).localizedBlog.fr["fixture-guide.md"];
+    expect(translated).toContain('alt="Un schéma &quot;cuivré&quot;"');
+    expect(translated).toContain('src="/blog-images/example.png"');
+  });
   it("preserves published slugs even when the translated title changes", () => {
     const source = fixture();
     expect(stableSlugs(source, localeByCode("fr")!, {}, { "fixture-guide": "guide-stable" })).toEqual({ "fixture-guide": "guide-stable" });

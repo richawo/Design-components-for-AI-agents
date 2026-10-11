@@ -35,7 +35,8 @@ export function inlineUnit(text) {
 function mapMarkdown(content, map) {
   const inline = (text) => {
     const { key, opaque } = inlineUnit(text);
-    return map(key).replace(/\{\{(\d+)\}\}/g, (_, index) => opaque[Number(index)] ?? "");
+    return map(key).replace(/\{\{(\d+)\}\}/g, (_, index) => opaque[Number(index)] ?? "")
+      .replace(/(<img\b[^>]*\balt=")([^"]*)(")/gi, (_, start, alt, end) => `${start}${escapeText(decodeEntities(map(keyOf(alt)))).replaceAll('"', "&quot;")}${end}`);
   };
   const render = (tokens) => tokens.map((token) => {
     switch (token.type) {
