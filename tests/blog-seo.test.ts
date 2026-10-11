@@ -45,6 +45,15 @@ describe.skipIf(!allPosts().length)("published multilingual blog SEO", () => {
       if (language.code !== "en") expect(entries.every((entry) => entry.path.startsWith(`/${language.code}/blog`))).toBe(true);
     }
   });
+  it("adds procedural markup only for visible steps and keeps their canonical anchors", () => {
+    const post = allPosts()[0];
+    const steps = [{ name: "Choose a file", text: "Choose the project file.", id: "choose-a-file" }, { name: "Check the result", text: "Check the rendered result.", id: "check-the-result" }];
+    const data = articleJsonLd(post, "en", 700, [], steps) as Record<string, any>[];
+    const howTo = data.find((item) => item["@type"] === "HowTo");
+    expect(howTo).toMatchObject({ inLanguage: "en", name: post.title });
+    expect(howTo!.step[1]).toMatchObject({ position: 2, text: steps[1].text, url: `${absoluteUrl(blogPath("en", post.slug))}#check-the-result` });
+    expect(articleJsonLd(post, "en", 700, []).some((item: any) => item["@type"] === "HowTo")).toBe(false);
+  });
   it("emits every language sitemap and reciprocal image/lastmod entries", () => {
     expect(sitemapIndex().match(/<sitemap>/g)).toHaveLength(30);
     for (const language of blogLocales()) {

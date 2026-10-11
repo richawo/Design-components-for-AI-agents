@@ -7,6 +7,7 @@ import { highlight } from "./highlight";
 // Edited a post in dev? Re-run `npm run registry`.
 import { BLOG_DATA, blogFiles, blogConfig, blogPath } from "./blog/runtime";
 import { imageDimensions } from "./blog/image-markup";
+import { visibleHowToSteps } from "./blog/how-to";
 
 /**
  * Markdown content for the blog and docs. Mirrors the yaps.ai blog setup:
@@ -85,7 +86,7 @@ async function render(markdown: string, locale = "en") {
   });
   let html = await marked.parse(markdown);
   html = imageDimensions(html, BLOG_DATA.blogImages);
-  const langs = new Set(["tsx", "ts", "json", "bash", "markdown", "css"]);
+  const langs = new Set(["tsx", "ts", "json", "bash", "markdown", "css", "html"]);
   for (let i = 0; i < codeBlocks.length; i++) {
     const { lang, text } = codeBlocks[i];
     const l = lang === "sh" || lang === "shell" ? "bash" : lang === "jsx" ? "tsx" : lang;
@@ -176,7 +177,7 @@ export async function getPost(slug: string, locale = "en") {
   const raw = rawPost(slug, locale);
   if (!meta || !raw) return null;
   const { html, headings } = await render(raw.content, locale);
-  return { meta, html, headings, faqs: extractFaqs(html, raw.data.faqHeading), markdown: raw.content };
+  return { meta, html, headings, faqs: extractFaqs(html, raw.data.faqHeading), howToSteps: visibleHowToSteps(html, raw.data.howToSteps), markdown: raw.content };
 }
 
 export function relatedPosts(slug: string, n = 3, locale = "en") {

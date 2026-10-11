@@ -32,6 +32,14 @@ export function auditBlog(source, now = new Date()) {
       if (token.type === "image") images.push(token);
     });
     if (headings.some((h) => h.depth === 1)) fail("the page title must be the only H1");
+    if (data.howToSteps) {
+      if (!Array.isArray(data.howToSteps) || data.howToSteps.length < 2 || new Set(data.howToSteps).size !== data.howToSteps.length) fail("howToSteps must contain at least two unique heading names");
+      else for (const step of data.howToSteps) {
+        const index = tokens.findIndex((token) => token.type === "heading" && token.depth === 2 && token.text === step);
+        const next = tokens.slice(index + 1).find((token) => token.type !== "space");
+        if (index < 0 || next?.type !== "paragraph") fail(`HowTo step needs an exact H2 and an opening paragraph: ${step}`);
+      }
+    }
     for (const href of links) {
       const match = href.replace(/^https:\/\/design\.yaps\.ai/, "").match(/^\/blog\/([\w-]+)(?:\/?|#.*)$/);
       if (match && !["category", "page"].includes(match[1]) && !published.has(match[1])) fail(`link points to unpublished article ${match[1]}`);

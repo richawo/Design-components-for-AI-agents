@@ -41,13 +41,14 @@ function getHighlighter() {
       import("shiki/langs/bash.mjs"),
       import("shiki/langs/markdown.mjs"),
       import("shiki/langs/css.mjs"),
+      import("shiki/langs/html.mjs"),
     ],
     engine: createJavaScriptRegexEngine(),
   });
   return highlighter;
 }
 
-export async function highlight(code: string, lang: "tsx" | "json" | "bash" | "markdown" | "css" | "ts" = "tsx") {
+export async function highlight(code: string, lang: "tsx" | "json" | "bash" | "markdown" | "css" | "ts" | "html" = "tsx") {
   const h = await getHighlighter();
   return h.codeToHtml(code.trimEnd(), { lang: lang === "ts" ? "typescript" : lang, theme: THEME });
 }

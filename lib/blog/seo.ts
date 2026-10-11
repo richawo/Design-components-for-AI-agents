@@ -3,6 +3,7 @@ import { allPosts, type PostMeta } from "@/lib/content";
 import { absoluteUrl, site } from "@/lib/site";
 import { blogConfig, blogLocales, blogPath, blogFeedPath, blogText } from "./runtime";
 import { localeByCode } from "./locales.mjs";
+import type { HowToStep } from "./how-to";
 
 export const PAGE_SIZE = 12;
 export const MIN_INDEXED_TOPIC_POSTS = 3;
@@ -71,7 +72,7 @@ export const publisher = {
   sameAs: [site.github], parentOrganization: { "@type": "Organization", name: "Yaps", url: "https://www.yaps.ai" },
 };
 
-export function articleJsonLd(post: PostMeta, locale: string, wordCount: number, faqs: { q: string; a: string }[]) {
+export function articleJsonLd(post: PostMeta, locale: string, wordCount: number, faqs: { q: string; a: string }[], steps: HowToStep[] = []) {
   const config = blogConfig(locale)!, url = absoluteUrl(blogPath(locale, post.slug)), language = localeByCode(locale)!.htmlLang;
   const data: object[] = [
     { "@context": "https://schema.org", "@type": "BlogPosting", "@id": `${url}#article`, headline: post.title, description: post.description, datePublished: post.date, dateModified: post.dateModified, wordCount, inLanguage: language, articleSection: post.category, keywords: post.keywords.join(", "), url, image: { "@type": "ImageObject", url: absoluteUrl(post.image), width: 1200, height: 630 }, isAccessibleForFree: true, author: { "@type": config.author.type, name: config.author.name, url: config.author.url, description: config.author.bio, sameAs: config.author.sameAs }, publisher, mainEntityOfPage: { "@type": "WebPage", "@id": url }, isPartOf: { "@type": "Blog", "@id": absoluteUrl(blogPath(locale)), name: config.title } },
@@ -83,6 +84,7 @@ export function articleJsonLd(post: PostMeta, locale: string, wordCount: number,
     ] },
   ];
   if (faqs.length) data.push({ "@context": "https://schema.org", "@type": "FAQPage", inLanguage: language, mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })) });
+  if (steps.length >= 2) data.push({ "@context": "https://schema.org", "@type": "HowTo", "@id": `${url}#how-to`, name: post.title, description: post.description, inLanguage: language, image: absoluteUrl(post.image), step: steps.map((step, index) => ({ "@type": "HowToStep", position: index + 1, name: step.name, text: step.text, url: `${url}#${step.id}` })) });
   return data;
 }
 

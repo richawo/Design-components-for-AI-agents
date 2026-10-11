@@ -47,6 +47,7 @@ describe("private blog localization", () => {
   });
   it("omits incomplete editions and bundles complete ones without mutating code", () => {
     const source = fixture();
+    source.posts[0].data.howToSteps = ["Using a component", "Frequently asked questions"];
     expect(bundleBlog(source).localizedBlog).toEqual({});
     const strings = Object.fromEntries(corpusUnits(source).map((key) => [key, `FR ${key}`]));
     for (const dir of ["strings", "slugs"]) fs.mkdirSync(path.join(source.base, "i18n", dir), { recursive: true });
@@ -57,12 +58,18 @@ describe("private blog localization", () => {
     const parsed = matter(result.localizedBlog.fr["fixture-guide.md"]);
     expect(parsed.data.sourceSlug).toBe("fixture-guide");
     expect(parsed.data.slug).toBe("guide-stable");
+    expect(parsed.data.howToSteps).toEqual(["FR Using a component", "FR Frequently asked questions"]);
     expect(parsed.content).toContain("const example = 'never translate this';");
     expect(parsed.content).toContain("<code>Widget()</code>");
   });
 });
 
 describe("blog SEO audit", () => {
+  it("requires procedural metadata to match visible H2 steps and paragraphs", () => {
+    const source = fixture();
+    source.posts[0].data.howToSteps = ["Using a component", "Missing step"];
+    expect(auditBlog(source).errors.join("\n")).toContain("Missing step");
+  });
   it("uses London publication dates across the BST midnight boundary", () => {
     expect(auditBlog(fixture(), new Date("2026-10-10T23:30:00Z")).errors).toEqual([]);
   });

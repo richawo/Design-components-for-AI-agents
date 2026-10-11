@@ -11,14 +11,14 @@ import { BlogLanguages } from "./blog-languages";
 export default async function BlogPost({ slug, locale = "en" }: { slug: string; locale?: string }) {
   const post = await getPost(slug, locale);
   if (!post) notFound();
-  const { meta, html, headings, faqs, markdown } = post;
+  const { meta, html, headings, faqs, howToSteps, markdown } = post;
   if (slug !== meta.slug) permanentRedirect(blogPath(locale, meta.slug));
   const config = blogConfig(locale)!;
   const related = relatedPosts(meta.slug, 3, locale);
   const t = (text: string) => blogText(text, locale);
   const fmt = (date: string) => new Date(date).toLocaleDateString(localeByCode(locale)!.htmlLang, { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 
-  const jsonLd = articleJsonLd(meta, locale, markdown.split(/\s+/).length, faqs);
+  const jsonLd = articleJsonLd(meta, locale, markdown.split(/\s+/).length, faqs, howToSteps);
 
   return (
     <article className="mx-auto max-w-[80rem] px-5 pb-28 sm:px-8">
