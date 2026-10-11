@@ -1,0 +1,181 @@
+{
+  "slug": "tooltip-group",
+  "name": "Tooltip Group",
+  "tier": "free",
+  "platform": "web",
+  "category": "overlays",
+  "description": "Toolbar tooltips with real timing: a 400 ms rest to open, instant close, and one surface that glides between neighbours. Keycaps, a tracking arrow and collision flips.",
+  "tags": [
+    "tooltip",
+    "tooltip group",
+    "toolbar",
+    "keyboard shortcuts",
+    "keycaps",
+    "hover delay",
+    "collision",
+    "overlays",
+    "editor",
+    "dark",
+    "monochrome"
+  ],
+  "dependencies": [
+    "motion",
+    "lucide-react"
+  ],
+  "theme": "dark",
+  "previewHeight": 640,
+  "usage": "import { TooltipGroup, Tooltip } from \"@/components/design-for-ai/tooltip-group\";\n\n// The group owns the timing and the one floating surface, and is the collision boundary.\n<TooltipGroup delay={400} side=\"top\" className=\"relative rounded-xl\">\n  <div role=\"toolbar\" aria-label=\"Formatting\" className=\"flex\">\n    <Tooltip id=\"bold\" label=\"Bold\" shortcut={[\"⌘\", \"B\"]}>\n      <button aria-label=\"Bold\" onClick={toggleBold}><BoldIcon /></button>\n    </Tooltip>\n    <Tooltip id=\"italic\" label=\"Italic\" shortcut={[\"⌘\", \"I\"]}>\n      <button aria-label=\"Italic\" onClick={toggleItalic}><ItalicIcon /></button>\n    </Tooltip>\n  </div>\n</TooltipGroup>\n\n// Tooltips render inside the group (no portal). To escape a clipping parent, render the group high in the tree\n// (for example around the whole editor) so it is a large enough boundary, or lift the surface to document.body.",
+  "props": [
+    {
+      "name": "children",
+      "type": "ReactNode",
+      "description": "Triggers wrapped in <Tooltip label shortcut>, plus any other content. The group's box is the collision boundary."
+    },
+    {
+      "name": "delay",
+      "type": "number",
+      "default": "400",
+      "description": "How long the pointer must rest on a cold trigger before its tooltip opens, in ms."
+    },
+    {
+      "name": "skipDelay",
+      "type": "number",
+      "default": "300",
+      "description": "How long the group stays warm after a tooltip closes, so a neighbour opens instantly."
+    },
+    {
+      "name": "side",
+      "type": "\"top\" | \"right\" | \"bottom\" | \"left\"",
+      "default": "\"top\"",
+      "description": "Preferred side. A tooltip that would leave the group flips to the opposite side and shifts along the other axis."
+    },
+    {
+      "name": "arrow",
+      "type": "boolean",
+      "default": "true",
+      "description": "Draws an arrow that keeps pointing at the centre of its trigger, even when the tooltip shifts to fit."
+    },
+    {
+      "name": "shortcuts",
+      "type": "boolean",
+      "default": "true",
+      "description": "Shows each Tooltip's shortcut as keycaps."
+    },
+    {
+      "name": "offset",
+      "type": "number",
+      "default": "6",
+      "description": "Space between the trigger and the tooltip, on top of the arrow, in px."
+    },
+    {
+      "name": "collisionPadding",
+      "type": "number",
+      "default": "8",
+      "description": "Closest a tooltip may sit to the group's edge before it shifts or flips, in px."
+    },
+    {
+      "name": "defaultActive",
+      "type": "string | null",
+      "default": "null",
+      "description": "A Tooltip id to show once on mount, as if hovered. The first pointer or focus in the group takes over."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "The surface the group sits on, so the tooltip's hairline and shadow keep their contrast."
+    },
+    {
+      "name": "onTimingEvent",
+      "type": "(event: TooltipTimingEvent) => void",
+      "description": "Every timing decision: wait, cancel, open (with why: delay, skip, focus, press or pinned, and the side it landed on) and close."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "description": "Classes for the group's root, which is position: relative."
+    },
+    {
+      "name": "Tooltip.label",
+      "type": "string",
+      "description": "On each <Tooltip>: what the trigger does, in two or three words."
+    },
+    {
+      "name": "Tooltip.shortcut",
+      "type": "string[]",
+      "description": "On each <Tooltip>: keys as printed, e.g. [\"⌘\", \"⇧\", \"X\"]. Also sets aria-keyshortcuts on the trigger."
+    }
+  ],
+  "added": "2026-10-10",
+  "demo": {
+    "steps": [
+      "wait:400",
+      "hover:@tool-bold",
+      "wait:950",
+      "hover:@tool-italic",
+      "hover:@tool-underline",
+      "hover:@tool-strike",
+      "hover:@tool-code",
+      "wait:450",
+      "move:0.5,0.32",
+      "wait:700"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "delay",
+      "label": "Open delay",
+      "kind": "slider",
+      "min": 0,
+      "max": 800,
+      "step": 50,
+      "unit": "ms",
+      "default": 400
+    },
+    {
+      "prop": "side",
+      "label": "Side",
+      "kind": "select",
+      "options": [
+        "top",
+        "right",
+        "bottom",
+        "left"
+      ],
+      "default": "top"
+    },
+    {
+      "prop": "arrow",
+      "label": "Arrow",
+      "kind": "toggle",
+      "default": true
+    },
+    {
+      "prop": "shortcuts",
+      "label": "Shortcuts",
+      "kind": "toggle",
+      "default": true
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark"
+    },
+    {
+      "prop": "$replay",
+      "label": "Replay",
+      "kind": "action"
+    }
+  ]
+}

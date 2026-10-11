@@ -1,0 +1,85 @@
+{
+  "component": "TooltipGroup",
+  "intent": "Toolbar tooltips with correct timing: a 400ms rest before the first opens, instant close, and instant neighbours because one floating surface glides between triggers. Keycaps for shortcuts, an arrow that tracks its trigger, and collision flipping inside the group.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4",
+    "animation": "motion/react (motion values for x, y, width, height and arrow position; animate() with springs; AnimatePresence for the label cross-fade; useInView for the demo entrance)",
+    "icons": "lucide-react"
+  },
+  "layout": {
+    "api": "TooltipGroup (relative wrapper: timing, the one surface, collision boundary) + Tooltip (wraps one trigger, registers label/shortcut/element through context, clones aria-describedby and aria-keyshortcuts onto its child)",
+    "surface": "one absolutely positioned box inside the group, always mounted; 28px tall, 8px radius, label then keycaps",
+    "placement": "measure content with an invisible w-max copy; preferred side if it fits inside the group minus collisionPadding (8), else the opposite side, else preferred; cross axis centred on the trigger then clamped; gap offset (6) + arrow depth (6)",
+    "arrow": "14x6 rounded triangle in a 14px box centred on the box edge, overlapping it by 1px; rotated 0/180/-90/90 for top/bottom/left/right; tracks the trigger centre, clamped 10px from the corners",
+    "demo": "640px document card that is the group: mono breadcrumb row, headline, two paragraphs with a formatted selection, bottom toolbar of 40px icon buttons in two clusters with a 1px separator, word count on the right; timing readout under the card"
+  },
+  "typography": {
+    "tooltipLabel": "Geist (font-sans) 500, 12.5px, tracking -0.005em, #f4f4f5",
+    "keycap": "mono 10.5px 500, #a1a1aa, 18px tall, min 18px wide, 5px radius",
+    "demoHeadline": "font-display 600, clamp(1.5rem, 5cqi, 2rem), tracking -0.035em, leading 1.05",
+    "demoBody": "15px, leading 1.65, max 60ch",
+    "demoMeta": "mono 11px muted, tabular numbers in the readout"
+  },
+  "color": {
+    "approach": "monochrome; the tooltip is the only raised surface and carries no accent",
+    "tooltipDark": "#1c1c1f box, inset hairline rgba(255,255,255,0.1), top highlight 0.06, shadows 0 12px 32px -12px rgba(0,0,0,0.95) and 0 3px 8px -3px rgba(0,0,0,0.7)",
+    "tooltipLight": "#18181b box with a 0.06 hairline and a softer shadow rgba(24,24,27,0.5)",
+    "keycap": "rgba(255,255,255,0.07) fill, inset 1px rgba(255,255,255,0.09), inset bottom 1px rgba(0,0,0,0.45)",
+    "arrow": "fill = box colour; hairline only on the two slanted edges",
+    "demoDark": "#050505 stage, #0c0c0e card, white 8% ring, #f4f4f5 ink, #a1a1aa body, #71717a muted, pressed tool white 10%",
+    "demoLight": "#efeeea stage, #ffffff card, black 8% ring, #18181b ink, #52525b body, #8a8a93 muted"
+  },
+  "motion": {
+    "coldOpen": "wait `delay` (400ms) while the pointer rests, then opacity 0->1, scale 0.97->1, blur 2px->0, 4px slide away from the trigger, 180ms cubic-bezier(0.22,1,0.36,1)",
+    "close": "instant: opacity to 0 in 70ms ease-in, then visibility hidden; group stays warm for skipDelay (300ms)",
+    "neighbour": "no wait; x, y, width, height and arrow spring (stiffness 500, damping 40) to the new trigger; label cross-fades 6px in the travel direction with a 3px blur (200ms in, 120ms out); crossing a separator within 120ms of a close still glides",
+    "pinned": "defaultActive opens after delay + 300ms; the first pointer or focus closes it and leaves the group cold",
+    "touch": "450ms long press opens, the following click is swallowed, closes 1.4s after lift",
+    "reducedMotion": "no slide, scale, blur or glide; positions jump; 120ms opacity fades",
+    "demoEntrance": "once at 30% in view: blocks rise 12px out of an 8px blur over 0.5s, 60ms apart; the readout's hairline charges linearly over the delay and its ms count runs up with tabular numbers"
+  },
+  "responsive": {
+    "group": "collision boundary is the group's own box; tooltips flip and shift to stay inside at any width",
+    "demo": "card fluid to 640px; word count and the timing contract appear from @md (28rem); toolbar of seven 40px tools fits at 320px"
+  },
+  "accessibility": [
+    "role=tooltip with an id; the open trigger gets aria-describedby, closed tooltips are aria-hidden",
+    "aria-keyshortcuts on triggers from the printed keys (Meta, Shift, Alt, Control)",
+    "keyboard focus (:focus-visible) opens instantly; Escape closes and keeps it shut until the pointer moves on",
+    "clicks close and never open a tooltip; icon buttons keep their own aria-label",
+    "demo toolbar is role=toolbar with roving tabindex (arrows, Home, End) and aria-pressed toggles"
+  ],
+  "content": {
+    "tools": [
+      "Bold ⌘ B",
+      "Italic ⌘ I",
+      "Underline ⌘ U",
+      "Strikethrough ⌘ ⇧ X",
+      "Inline code ⌘ E",
+      "Add link ⌘ K",
+      "Comment ⌘ ⌥ M"
+    ],
+    "document": "Drafts / Lisbon offsite · Edited 4 min ago · What we decided in Lisbon · selection: before the pricing change",
+    "readout": [
+      "Rest on a tool for 400 ms",
+      "Waiting 312 ms",
+      "Bold opened after 400 ms",
+      "Italic skipped the wait",
+      "Closed instantly",
+      "open 400 · neighbours 0 · close 0 ms"
+    ]
+  },
+  "avoid": [
+    "a delay on close or a fade longer than ~70ms",
+    "each neighbour re-entering instead of the one surface gliding",
+    "one tooltip element per trigger",
+    "opening tooltips on click",
+    "bounce, glow or coloured tooltips",
+    "an arrow that stays centred on the box after the box shifts to fit",
+    "tooltips as the only accessible name of an icon button",
+    "portal libraries or positioning libraries"
+  ],
+  "robustness": "Keep the demo metadata readable: dark muted #8a8a93, light muted #62626b."
+}
