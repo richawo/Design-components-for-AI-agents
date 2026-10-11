@@ -43,7 +43,7 @@ export default async function BlogPost({ slug, locale = "en" }: { slug: string; 
         </div>
       </header>
 
-      <img src={meta.image} alt={meta.imageAlt} width={1200} height={630} loading="lazy" className="mx-auto mb-12 aspect-[1200/630] w-full max-w-4xl rounded-2xl border border-white/[0.08] object-cover" />
+      <img src={meta.displayImage} alt={meta.imageAlt} width={1200} height={630} loading="eager" fetchPriority="high" decoding="async" className="mx-auto mb-12 aspect-[1200/630] w-full max-w-4xl rounded-2xl border border-white/[0.08] object-cover" />
 
       <div className="grid gap-12 lg:grid-cols-12">
         <aside className="site-in hidden [--i:4] lg:col-span-3 lg:block">

@@ -54,6 +54,22 @@ describe.skipIf(!allPosts().length)("published multilingual blog SEO", () => {
     expect(howTo!.step[1]).toMatchObject({ position: 2, text: steps[1].text, url: `${absoluteUrl(blogPath("en", post.slug))}#check-the-result` });
     expect(articleJsonLd(post, "en", 700, []).some((item: any) => item["@type"] === "HowTo")).toBe(false);
   });
+  it("keeps each published procedure tied to its localized visible steps", async () => {
+    for (const language of blogLocales()) for (const meta of allPosts(language.code)) {
+      const post = (await getPost(meta.slug, language.code))!;
+      const data = articleJsonLd(meta, language.code, 700, post.faqs, post.howToSteps) as Record<string, any>[];
+      const howTo = data.find((item) => item["@type"] === "HowTo");
+      if (!post.howToSteps.length) { expect(howTo).toBeUndefined(); continue; }
+      expect(howTo?.inLanguage).toBe(language.htmlLang);
+      expect(howTo?.step).toHaveLength(post.howToSteps.length);
+      expect(new Set(post.howToSteps.map((step) => step.id)).size).toBe(post.howToSteps.length);
+      for (const [index, step] of post.howToSteps.entries()) {
+        expect(post.html).toContain(`id="${step.id}"`);
+        expect(howTo?.step[index]).toMatchObject({ name: step.name, text: step.text, url: `${absoluteUrl(blogPath(language.code, meta.slug))}#${step.id}` });
+      }
+      if (meta.editorialCover) expect(meta.displayImage).toBe(`/blog-images/${meta.sourceSlug}.webp`);
+    }
+  });
   it("emits every language sitemap and reciprocal image/lastmod entries", () => {
     expect(sitemapIndex().match(/<sitemap>/g)).toHaveLength(30);
     for (const language of blogLocales()) {

@@ -26,6 +26,8 @@ describe("private editorial visuals", () => {
     source.posts[0].content = '![Diagram](/blog-images/diagram.svg)';
     const images = await buildBlogImages(root, source);
     expect(images["/blog-images/guide.png"]).toEqual({ width: 1200, height: 630 });
+    expect(images["/blog-images/guide.webp"]).toEqual({ width: 1200, height: 630 });
+    expect(await sharp(path.join(root, "public/blog-images/guide.webp")).metadata()).toMatchObject({ format: "webp", width: 1200, height: 630 });
     expect(images["/blog-images/diagram.svg"]).toEqual({ width: 900, height: 460 });
     expect(fs.existsSync(path.join(root, "public/blog-images/unpublished.svg"))).toBe(false);
     const { data } = await sharp(path.join(root, "public/blog-images/guide.png")).raw().toBuffer({ resolveWithObject: true });

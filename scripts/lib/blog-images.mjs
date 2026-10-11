@@ -35,6 +35,10 @@ export async function buildBlogImages(root, source) {
     if (post?.data.heroAsset && (!dimensions.width || !dimensions.height || dimensions.width < 1200 || dimensions.height < 630)) throw new Error(`Hero image needs at least 1200 by 630 pixels: ${seed}`);
     write(path.join(directory, `${seed}.png`), await picture.resize(1200, 630, { fit: "cover" }).png().toBuffer());
     images[`/blog-images/${seed}.png`] = { width: 1200, height: 630 };
+    if (post?.data.heroAsset) {
+      write(path.join(directory, `${seed}.webp`), await sharp(input).resize(1200, 630, { fit: "cover" }).webp({ quality: 85, effort: 6 }).toBuffer());
+      images[`/blog-images/${seed}.webp`] = { width: 1200, height: 630 };
+    }
   }
   write(path.join(directory, "logo.png"), await sharp(path.join(root, "app", "icon.svg")).resize(512, 512).png().toBuffer());
   images["/blog-images/logo.png"] = { width: 512, height: 512 };

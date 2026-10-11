@@ -5,7 +5,7 @@
  * leaves and swapped back after. Longest first, so "YouTube Shorts" wins over
  * "YouTube".
  */
-export const GLOSSARY = ["Design for AI Pro","Design for AI","design.yaps.ai","React Native","React","Expo","Tailwind CSS","Tailwind","Claude Code","Claude","Cursor","Codex","ChatGPT","MCP","shadcn/ui","shadcn","Three.js","Motion","JSON","Markdown","GitHub","TypeScript","JavaScript","CSS","HTML","WCAG","SVG","API","CLI","npm","WebGL","Bricolage Grotesque","Geist","Instrument Serif","Yaps","v0","Lovable","Bolt","AGENTS.override.md","AGENTS.md","CLAUDE.md","DESIGN.md","DTCG","Figma","axe-core","Playwright"].sort((a, b) => b.length - a.length);
+export const GLOSSARY = ["Design for AI Pro","Design for AI","design.yaps.ai","React Native","React","Expo","Tailwind CSS","Tailwind","Claude Code","Claude","Cursor","Codex","ChatGPT","MCP","shadcn/ui","shadcn","Three.js","Motion","JSON","Markdown","GitHub","TypeScript","JavaScript","CSS","HTML","WCAG","SVG","API","CLI","npm","WebGL","Bricolage Grotesque","Geist","Instrument Serif","Yaps","v0","Lovable","Bolt","AGENTS.override.md","AGENTS.md","CLAUDE.md","DESIGN.md","DTCG","Figma","axe-core","Playwright","prefers-reduced-motion","useSyncExternalStore","MotionConfig","Next.js","MDN","WAI-ARIA","SSR"].sort((a, b) => b.length - a.length);
 
 const escapeRegExp = (value        ) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 

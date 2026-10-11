@@ -35,6 +35,7 @@ export type PostMeta = {
   readingTime: number;
   categoryKey: string;
   image: string;
+  displayImage: string;
   imageAlt: string;
   editorialCover: boolean;
   noindex: boolean;
@@ -156,6 +157,7 @@ export function allPosts(locale = "en"): PostMeta[] {
         readingTime: Math.max(1, Math.round(words / 220)),
         categoryKey: data.categoryKey ?? Object.entries(blogConfig("en")?.categories ?? {}).find(([, category]) => category.name === data.category)?.[0] ?? "guides",
         image: data.heroImage ?? `/blog-images/${data.sourceSlug ?? data.slug}.png`,
+        displayImage: data.heroAsset ? `/blog-images/${data.sourceSlug ?? data.slug}.webp` : data.heroImage ?? `/blog-images/${data.sourceSlug ?? data.slug}.png`,
         imageAlt: data.heroImageAlt ?? data.title,
         editorialCover: Boolean(data.heroAsset),
         noindex: data.noindex === true,
