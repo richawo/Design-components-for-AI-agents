@@ -510,7 +510,7 @@ function Group({
         className={`group flex w-full items-center justify-between gap-3 rounded-lg px-3 py-1.5 text-left font-mono text-[11px] uppercase tracking-[0.14em] transition-colors duration-150 hover:text-site-fg-2 ${FOCUS} ${hasActive && !open ? "text-site-fg-2" : "text-site-fg-3"}`}
       >
         <span className="flex min-w-0 items-center gap-2">
-          <span className="truncate">{label}</span>
+          <span className="whitespace-nowrap tracking-[0.06em]">{label}</span>
           {hasActive && !open && <span aria-hidden="true" className="site-pop size-1 shrink-0 rounded-full bg-site-fg-2" />}
           {hasActive && !open && <span className="sr-only">contains the selected category</span>}
         </span>
