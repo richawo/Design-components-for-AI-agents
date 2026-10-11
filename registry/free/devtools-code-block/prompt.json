@@ -1,0 +1,62 @@
+{
+  "component": "CodeBlock",
+  "intent": "A code block for a webhook signature: filename tabs, line numbers, two highlighted lines, a diff of the same file, and a copy button that becomes a check without changing width.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 with @container queries; colours as CSS variables on the root (--cb-surface, --cb-well, --cb-ink, --cb-muted, --cb-faint, --cb-line, --cb-line-strong, --cb-ok, --cb-err, --cb-accent)",
+    "animation": "motion/react: variants for the entrance, layoutId for the tab rule, AnimatePresence for the file swap and the copy check",
+    "icons": "one inline check mark; no icon package",
+    "fonts": "font-mono (Geist Mono) for filenames, line numbers and code; font-sans (Geist) for Diff and Copy"
+  },
+  "layout": {
+    "root": "section, @container, max-width 920px, 20px radius, overflow hidden, padding 20px and 24px from @xl",
+    "chrome": "filename tabs on the left with a hairline under them; Diff and Copy on the right, wrapping below the tabs when the row is narrow",
+    "code": "a well, 14px radius; lines wrap inside the card; line number, an optional diff mark, then the line",
+    "highlight": "a 2px accent edge and an 8% accent wash on two lines, not a solid bar",
+    "diff": "a plus or minus in the gutter and a 9% wash, ok for additions and err for removals"
+  },
+  "typography": {
+    "code": "Geist Mono 12.5px, leading 1.65",
+    "numbers": "Geist Mono 12px, faint, tabular",
+    "tabs": "Geist Mono 12.5px",
+    "actions": "Geist 13px"
+  },
+  "color": {
+    "dark": { "surface": "#0d0d0f", "well": "#09090a", "ink": "#ededef", "muted": "#98989a", "faint": "#7d7d80", "ok": "#5fc284", "err": "#f07c80" },
+    "light": { "surface": "#ffffff", "well": "#fafafa", "ink": "#17171a", "muted": "#5d5d5f", "faint": "#6f6f72", "ok": "#23884a", "err": "#c2353b" },
+    "accent": "#7cc4ff by default; the tab rule, the highlight edge, function names and numbers",
+    "syntax": "keywords and punctuation are muted, comments are faint, strings and plain identifiers are ink. No second hue."
+  },
+  "motion": {
+    "entrance": "the chrome and the code rise 10px out of a 6px blur, 60ms apart, 560ms, cubic-bezier(0.22, 1, 0.36, 1)",
+    "tab": "the underline travels with layoutId on a spring, stiffness 500, damping 40",
+    "swap": "the file fades and rises 4px over 220ms",
+    "copy": "the label fades and the check scales in over 180ms, inside the same 4.75rem button, then returns after 1.6s",
+    "reducedMotion": "opacity only, 150ms or less; no blur, rise or spring"
+  },
+  "responsive": {
+    "container": "tabs and buttons are 44px tall below @lg and 32–36px from @lg",
+    "code": "long lines wrap inside the well; the card does not widen the page",
+    "overflow": "a wrapped line keeps its number on the first row"
+  },
+  "accessibility": [
+    "The filenames are a tablist of tabs with aria-selected",
+    "Diff is a toggle with aria-pressed",
+    "The check exposes the accessible name Copied",
+    "The code region is named with the filename, or the filename plus diff",
+    "Keyboard-only 2px ink focus rings; tabs and buttons are 44px tall below @lg"
+  ],
+  "content": {
+    "files": "verify.ts checks a ledgerline webhook signature; handler.ts calls it from a POST route",
+    "highlight": "the five-minute window and the timing-safe compare",
+    "diff": "the old code compared a hex digest to the header and read the secret from the environment; the new code takes the secret as an argument and rejects a stale timestamp"
+  },
+  "avoid": [
+    "a rainbow of token colours",
+    "a solid highlight behind a whole line",
+    "a floating copy toast",
+    "letting the copy button change width when the check appears",
+    "scrolling the page sideways"
+  ]
+}

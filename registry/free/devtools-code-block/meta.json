@@ -1,0 +1,31 @@
+{
+  "slug": "devtools-code-block",
+  "name": "Code Block",
+  "tier": "free",
+  "platform": "web",
+  "category": "devtools",
+  "description": "Filename tabs, a restrained line highlight, a diff of the same file, line numbers and a copy button that becomes a check.",
+  "tags": ["code block", "syntax", "diff", "copy", "developer tools", "snippet"],
+  "dependencies": ["motion"],
+  "theme": "dark",
+  "previewHeight": 680,
+  "usage": "import { CodeBlock } from \"@/components/design-for-ai/devtools-code-block\";\n\n<CodeBlock file=\"verify\" />\n\n// Tabs switch verify.ts and handler.ts. Diff shows the same file as a change.\n// Copy keeps its width and swaps the label for a check.",
+  "props": [
+    { "name": "file", "type": "\"verify\" | \"handler\"", "default": "\"verify\"", "description": "Which file is open. The tabs update it too." },
+    { "name": "diff", "type": "boolean", "default": "false", "description": "Show the open file as a diff instead of the finished source." },
+    { "name": "theme", "type": "\"dark\" | \"light\"", "default": "\"dark\"", "description": "Surface the block sits on." },
+    { "name": "accent", "type": "string", "default": "\"#7cc4ff\"", "description": "The one accent: the active tab rule, a highlighted line’s edge, and names in the code." },
+    { "name": "className", "type": "string", "description": "Extra classes on the root section." }
+  ],
+  "added": "2026-10-10",
+  "demo": {
+    "steps": ["wait:400", "click:@tab-handler", "wait:450", "click:@diff", "wait:500", "click:@copy", "wait:900"]
+  },
+  "controls": [
+    { "prop": "file", "label": "File", "kind": "segmented", "options": [{ "value": "verify", "label": "verify.ts" }, { "value": "handler", "label": "handler.ts" }], "default": "verify", "group": "View" },
+    { "prop": "diff", "label": "Diff", "kind": "toggle", "default": false, "group": "View" },
+    { "prop": "theme", "label": "Theme", "kind": "segmented", "options": [{ "value": "dark", "label": "Dark" }, { "value": "light", "label": "Light" }], "default": "dark", "group": "Look" },
+    { "prop": "accent", "label": "Accent", "kind": "color", "default": "#7cc4ff", "options": ["#7cc4ff", "#ff9d5c", "#7dd3a8"], "group": "Look" },
+    { "prop": "$replay", "label": "Replay", "kind": "action" }
+  ]
+}
