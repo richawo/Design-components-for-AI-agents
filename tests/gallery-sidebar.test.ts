@@ -9,6 +9,7 @@ import {
   parseFilters,
   parseScroll,
   readCategoryParam,
+  resultsScrollTop,
   scrollDelta,
   sidebarMaxHeight,
   toggleCollapsed,
@@ -83,6 +84,12 @@ describe("sidebar scroll", () => {
     expect(sidebarMaxHeight(96, 900)).toBe(780);
     expect(sidebarMaxHeight(20, 900)).toBe(780);
     expect(sidebarMaxHeight(1200, 900)).toBe(0);
+  });
+
+  it("brings an off-screen result count back under the header", () => {
+    expect(resultsScrollTop(400, 0, 900)).toBeNull();
+    expect(resultsScrollTop(-180, 620, 900)).toBe(344);
+    expect(resultsScrollTop(800, 0, 900)).toBe(704);
   });
 
   it("scrolls only far enough to clear the fade", () => {

@@ -86,6 +86,16 @@ export function sidebarMaxHeight(top: number, viewport: number, stick = 96, gap 
   return Math.max(0, Math.round(viewport - origin - gap));
 }
 
+/**
+ * Window scroll that puts the result count just under the sticky header.
+ * Null when that count is already on screen, so picking a category does not
+ * jump a list the reader can already see.
+ */
+export function resultsScrollTop(elementTop: number, scrollY: number, viewport: number, header = 96): number | null {
+  if (elementTop >= header && elementTop <= viewport * 0.7) return null;
+  return Math.max(0, Math.round(scrollY + elementTop - header));
+}
+
 /** How many pixels to add to a scrollport so `row` clears `pad` inside it. */
 export function scrollDelta(containerTop: number, containerBottom: number, rowTop: number, rowBottom: number, pad = 24): number {
   if (rowTop < containerTop + pad) return rowTop - (containerTop + pad);

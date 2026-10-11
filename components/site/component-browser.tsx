@@ -3,7 +3,7 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { FILTER_KEY, galleryHref, parseFilters, readCategoryParam } from "@/lib/gallery-sidebar";
+import { FILTER_KEY, galleryHref, parseFilters, readCategoryParam, resultsScrollTop } from "@/lib/gallery-sidebar";
 import { CategorySidebar } from "./category-sidebar";
 import { cardEntrance, ComponentCard, FIRST_VIEW_CARDS } from "./component-card";
 import type { CardData } from "@/lib/registry";
@@ -23,6 +23,8 @@ export function ComponentBrowser({ cards, categories, category }: { cards: CardD
   // response for an earlier click must not overwrite the newer choice.
   const pending = useRef(category);
   const input = useRef<HTMLInputElement>(null);
+  const resultsRef = useRef<HTMLParagraphElement>(null);
+  const seenCat = useRef(category);
   const reduce = useReducedMotion();
   // Entrance classes belong to the first render only. Cards that mount later
   // (after a filter) are animated by AnimatePresence instead, never twice.
@@ -62,6 +64,18 @@ export function ComponentBrowser({ cards, categories, category }: { cards: CardD
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);
   }, [categories]);
+
+  // A short category, chosen while the long list is scrolled down, would
+  // otherwise leave the reader in the footer.
+  useEffect(() => {
+    if (seenCat.current === cat) return;
+    seenCat.current = cat;
+    const el = resultsRef.current;
+    if (!el) return;
+    const next = resultsScrollTop(el.getBoundingClientRect().top, window.scrollY, window.innerHeight);
+    if (next === null) return;
+    window.scrollTo({ top: next, behavior: reduce ? "auto" : "smooth" });
+  }, [cat, reduce]);
 
   const setCat = (key: string) => {
     pending.current = key;
@@ -160,7 +174,7 @@ export function ComponentBrowser({ cards, categories, category }: { cards: CardD
             ))}
           </div>
         </div>
-        <p className="site-in mt-5 font-mono text-[11px] uppercase tracking-[0.14em] text-site-fg-3 [--i:4]" aria-live="polite">
+        <p ref={resultsRef} className="site-in mt-5 font-mono text-[11px] uppercase tracking-[0.14em] text-site-fg-3 [--i:4]" aria-live="polite">
           {filtered.length} {filtered.length === 1 ? "component" : "components"}
         </p>
         {filtered.length ? (
