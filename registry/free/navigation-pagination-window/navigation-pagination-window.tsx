@@ -77,18 +77,7 @@ export function PaginationWindow({
                   …
                 </span>
               )}
-              <div className="mt-3 flex items-center justify-between gap-3">
-        <button
-          type="button"
-          data-demo="previous"
-          aria-label="Previous page"
-          disabled={current <= 1}
-          onClick={() => choose(current - 1)}
-          className={control}
-        >
-          <ArrowLeft size={16} aria-hidden="true" /><span>Previous</span>
-        </button>
-        <button
+              <button
                 type="button"
                 data-demo={`page-${n}`}
                 aria-label={`Page ${n}`}
@@ -113,16 +102,29 @@ export function PaginationWindow({
             </li>
           ))}
         </ol>
-        <button
-          type="button"
-          data-demo="next"
-          aria-label="Next page"
-          disabled={!count || current >= count}
-          onClick={() => choose(current + 1)}
-          className={control}
-        >
-          <span>Next</span><ArrowRight size={16} aria-hidden="true" />
-        </button>
+        <div className="mt-3 flex items-center justify-between gap-3">
+          <button
+            type="button"
+            data-demo="previous"
+            aria-label="Previous page"
+            disabled={current <= 1}
+            onClick={() => choose(current - 1)}
+            className={control}
+          >
+            <ArrowLeft size={16} aria-hidden="true" />
+            <span>Previous</span>
+          </button>
+          <button
+            type="button"
+            data-demo="next"
+            aria-label="Next page"
+            disabled={!count || current >= count}
+            onClick={() => choose(current + 1)}
+            className={control}
+          >
+            <span>Next</span>
+            <ArrowRight size={16} aria-hidden="true" />
+          </button>
         </div>
       </div>
     </motion.nav>
