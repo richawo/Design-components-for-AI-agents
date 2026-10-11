@@ -133,22 +133,13 @@ export function CategorySidebar({
     el.scrollTop += scrollDelta(box.top, box.bottom, row.top, row.bottom);
   }, [prefsReady, active]);
 
-  // The phone panel is closed on first paint, so the restore above measures
-  // a hidden list. Opening it is the moment the selection needs to be in view.
+  // The phone list is a different height from the desktop one, so a saved
+  // desktop offset would hide the selection. Opening the panel shows it.
   useLayoutEffect(() => {
     if (!open) return;
     const el = scrollRef.current;
-    if (!el) return;
-    let saved: ReturnType<typeof parseScroll> = null;
-    try {
-      saved = parseScroll(sessionStorage.getItem(SCROLL_KEY));
-    } catch {}
-    if (saved?.cat === active) {
-      el.scrollTop = saved.top;
-      return;
-    }
-    const current = el.querySelector<HTMLElement>("[data-current='true']");
-    if (!current) return;
+    const current = el?.querySelector<HTMLElement>("[data-current='true']");
+    if (!el || !current) return;
     const box = el.getBoundingClientRect();
     const row = current.getBoundingClientRect();
     el.scrollTop += scrollDelta(box.top, box.bottom, row.top, row.bottom);
@@ -241,7 +232,7 @@ export function CategorySidebar({
     }
     if (open) {
       setOpen(false);
-      disclosureRef.current?.focus();
+      disclosureRef.current?.focus({ preventScroll: true });
     }
   };
 
@@ -256,7 +247,7 @@ export function CategorySidebar({
       if (open) {
         e.preventDefault();
         setOpen(false);
-        disclosureRef.current?.focus();
+        disclosureRef.current?.focus({ preventScroll: true });
       }
       return;
     }
