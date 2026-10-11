@@ -200,10 +200,19 @@ export function PreviewFrame({
                   key={v.key}
                   role="radio"
                   aria-checked={vp === v.key}
+                  tabIndex={vp === v.key ? 0 : -1}
+                  onKeyDown={(event) => {
+                    const direction = ["ArrowRight", "ArrowDown"].includes(event.key) ? 1 : ["ArrowLeft", "ArrowUp"].includes(event.key) ? -1 : 0;
+                    if (!direction && event.key !== "Home" && event.key !== "End") return;
+                    event.preventDefault();
+                    const next = event.key === "Home" ? 0 : event.key === "End" ? VIEWPORTS.length - 1 : (VIEWPORTS.indexOf(v) + direction + VIEWPORTS.length) % VIEWPORTS.length;
+                    setVp(VIEWPORTS[next].key);
+                    event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>("button")[next]?.focus();
+                  }}
                   aria-label={v.label}
                   title={v.label}
                   onClick={() => setVp(v.key)}
-                  className={`relative flex h-7 w-8 items-center justify-center rounded-md transition-colors duration-150 ${vp === v.key ? "text-site-fg" : "text-site-fg-3 hover:text-site-fg-2"}`}
+                  className={`relative flex h-11 w-11 items-center justify-center rounded-md transition-colors duration-150 ${vp === v.key ? "text-site-fg" : "text-site-fg-3 hover:text-site-fg-2"}`}
                 >
                   {vp === v.key && (
                     <motion.span
@@ -225,7 +234,7 @@ export function PreviewFrame({
               onClick={replay}
               aria-label="Replay demo"
               title="Replay demo"
-              className="group/replay flex h-8 items-center gap-1.5 rounded-md px-2 text-site-fg-3 transition duration-150 hover:bg-white/[0.05] hover:text-site-fg active:scale-95"
+              className="group/replay flex h-11 items-center gap-1.5 rounded-md px-2 text-site-fg-3 transition duration-150 hover:bg-white/[0.05] hover:text-site-fg active:scale-95"
             >
               <svg viewBox="0 0 16 16" className="size-4" fill="none" aria-hidden="true">
                 <path d="M5.25 3.9v8.2a.6.6 0 0 0 .92.5l6.3-4.1a.6.6 0 0 0 0-1l-6.3-4.1a.6.6 0 0 0-.92.5Z" fill="currentColor" className={playing ? "opacity-40" : ""} />
@@ -243,7 +252,7 @@ export function PreviewFrame({
             }}
             aria-label="Reload preview"
             title="Reload"
-            className="flex size-8 items-center justify-center rounded-md text-site-fg-3 transition duration-150 hover:bg-white/[0.05] hover:text-site-fg active:scale-95"
+            className="flex size-11 items-center justify-center rounded-md text-site-fg-3 transition duration-150 hover:bg-white/[0.05] hover:text-site-fg active:scale-95"
           >
             <svg
               viewBox="0 0 16 16"
@@ -261,7 +270,7 @@ export function PreviewFrame({
             rel="noreferrer"
             aria-label="Open preview in a new tab"
             title="Open in new tab"
-            className="group/open flex size-8 items-center justify-center rounded-md text-site-fg-3 transition duration-150 hover:bg-white/[0.05] hover:text-site-fg active:scale-95"
+            className="group/open flex size-11 items-center justify-center rounded-md text-site-fg-3 transition duration-150 hover:bg-white/[0.05] hover:text-site-fg active:scale-95"
           >
             <svg viewBox="0 0 16 16" className="size-4 transition-transform duration-150 ease-site group-hover/open:-translate-y-px group-hover/open:translate-x-px" fill="none" aria-hidden="true">
               <path d="M9 2.5h4.5V7M13.5 2.5L7.5 8.5M11.5 9.5v3a1 1 0 0 1-1 1h-7a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1h3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />

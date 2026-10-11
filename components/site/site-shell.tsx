@@ -1,4 +1,5 @@
 import { blogUI } from "@/lib/blog/runtime";
+import { SiteMotion } from "./site-motion";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
 import { MarkdownAlternate } from "@/components/site/markdown-link";
@@ -8,7 +9,7 @@ export function SiteShell({ children, locale = "en" }: { children: React.ReactNo
   const copy = blogUI(locale);
   const t = (text: string) => copy[text] ?? text;
   return (
-    <div className="site-grain flex min-h-dvh flex-col bg-site-bg text-site-fg">
+    <SiteMotion><div className="site-grain flex min-h-dvh flex-col bg-site-bg text-site-fg">
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-white focus:px-4 focus:py-2 focus:text-black">
         {t("Skip to content")}
       </a>
@@ -19,6 +20,6 @@ export function SiteShell({ children, locale = "en" }: { children: React.ReactNo
       </main>
       <SiteFooter locale={locale} copy={copy} />
       <RevealObserver />
-    </div>
+    </div></SiteMotion>
   );
 }

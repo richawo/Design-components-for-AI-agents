@@ -1,8 +1,9 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import Link from "next/link";
 import { useState, type CSSProperties } from "react";
+import { SegmentedControl } from "@/registry/free/segmented-control/segmented-control";
 import { CountUp } from "./count-up";
 import { planFeatures } from "@/lib/copy";
 
@@ -44,26 +45,15 @@ export function PricingPlans({ counts, prices }: { counts: Counts; prices: Recor
   return (
     <div>
       <div className="site-in flex justify-center" style={step(TOGGLE_STEP)}>
-        <div role="radiogroup" aria-label="Billing" className="relative flex rounded-full border border-white/[0.08] bg-white/[0.03] p-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
-          {(["lifetime", "yearly"] as const).map((c) => (
-            <button
-              key={c}
-              role="radio"
-              aria-checked={cadence === c}
-              onClick={() => setCadence(c)}
-              className={`group relative h-10 rounded-full px-5 text-[14px] font-medium transition-colors duration-200 ${cadence === c ? "text-black" : "text-site-fg-2 hover:text-site-fg"}`}
-            >
-              {cadence === c && (
-                <motion.span
-                  layoutId="pricing-cadence"
-                  className="absolute inset-0 rounded-full bg-white shadow-[inset_0_-1px_0_rgba(0,0,0,0.12)]"
-                  transition={{ type: "spring", stiffness: 500, damping: 40 }}
-                />
-              )}
-              <span className="relative inline-block transition-transform duration-150 group-active:scale-[0.97]">{c === "lifetime" ? "Pay once, keep forever" : "Yearly"}</span>
-            </button>
-          ))}
-        </div>
+        <SegmentedControl
+          label="Billing"
+          value={cadence}
+          onValueChange={(value) => setCadence(value as "lifetime" | "yearly")}
+          options={[{ value: "lifetime", label: "Pay once, keep forever" }, { value: "yearly", label: "Yearly" }]}
+          icons={false}
+          width="content"
+          className="!w-[300px] max-w-full [&_button]:min-h-11"
+        />
       </div>
 
       <div className="mt-12 grid gap-4 lg:grid-cols-3 lg:items-stretch">
@@ -150,6 +140,7 @@ function Card({
   cta: React.ReactNode;
   featured?: boolean;
 }) {
+  const reduce = useReducedMotion();
   return (
     <div
       className={`site-surface site-in relative flex flex-col rounded-[24px] p-7 sm:p-8 ${featured ? "site-beam" : ""}`}
@@ -169,7 +160,7 @@ function Card({
         <AnimatePresence initial={false} mode="popLayout">
           <motion.span
             key={suffix}
-            initial={{ opacity: 0, y: 4, filter: "blur(2px)" }}
+            initial={reduce ? { opacity: 0 } : { opacity: 0, y: 4, filter: "blur(2px)" }}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             exit={{ opacity: 0, transition: { duration: 0.16 } }}
             transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}

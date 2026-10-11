@@ -13,6 +13,7 @@ import {
   resultsScrollTop,
   sidebarScrollRoom,
 } from "@/lib/gallery-sidebar";
+import { SegmentedControl } from "@/registry/free/segmented-control/segmented-control";
 import { CategorySidebar } from "./category-sidebar";
 import { cardEntrance, ComponentCard, FIRST_VIEW_CARDS } from "./component-card";
 import type { CardData } from "@/lib/registry";
@@ -157,7 +158,7 @@ export function ComponentBrowser({ cards, categories, category, initialFilters }
                 }
               }}
               placeholder="Search charts, three.js, pricing, chat…"
-              className="h-11 w-full rounded-xl border border-white/[0.08] bg-white/[0.03] pl-11 pr-12 text-[14px] text-site-fg shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] outline-none transition duration-200 placeholder:text-site-fg-3 hover:border-white/[0.14] focus:border-white/25 focus:bg-white/[0.05] focus-visible:outline-none [&::-webkit-search-cancel-button]:appearance-none"
+              className="h-11 w-full rounded-xl border border-white/[0.08] bg-white/[0.03] pl-11 pr-12 text-base sm:text-[14px] text-site-fg shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] outline-none transition duration-200 placeholder:text-site-fg-3 hover:border-white/[0.14] focus:border-white/25 focus:bg-white/[0.05] focus-visible:outline-none [&::-webkit-search-cancel-button]:appearance-none"
             />
             {q ? (
               <button
@@ -167,7 +168,7 @@ export function ComponentBrowser({ cards, categories, category, initialFilters }
                   input.current?.focus();
                 }}
                 aria-label="Clear search"
-                className="site-pop absolute right-2.5 top-1/2 flex size-6 -translate-y-1/2 items-center justify-center rounded-full bg-white/[0.08] text-site-fg-2 transition-colors duration-150 hover:bg-white/[0.14] hover:text-site-fg active:scale-95"
+                className="site-pop absolute right-0 top-1/2 flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/[0.08] text-site-fg-2 transition-colors duration-150 hover:bg-white/[0.14] hover:text-site-fg active:scale-95"
               >
                 <svg viewBox="0 0 12 12" className="size-2.5" fill="none" aria-hidden="true">
                   <path d="M2.5 2.5l7 7M9.5 2.5l-7 7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
@@ -179,36 +180,14 @@ export function ComponentBrowser({ cards, categories, category, initialFilters }
               </kbd>
             )}
           </label>
-          <div role="radiogroup" aria-label="Tier" className="flex h-11 shrink-0 rounded-xl border border-white/[0.08] bg-white/[0.03] p-1">
-            {(["all", "free", "pro"] as const).map((t) => (
-              <button
-                key={t}
-                role="radio"
-                tabIndex={tier === t ? 0 : -1}
-                aria-checked={tier === t}
-                onClick={() => setTier(t)}
-                onKeyDown={(event) => {
-                  const choices = ["all", "free", "pro"] as const;
-                  const direction = event.key === "ArrowRight" || event.key === "ArrowDown" ? 1 : event.key === "ArrowLeft" || event.key === "ArrowUp" ? -1 : 0;
-                  if (!direction || event.altKey || event.ctrlKey || event.metaKey) return;
-                  event.preventDefault();
-                  const next = (choices.indexOf(t) + direction + choices.length) % choices.length;
-                  setTier(choices[next]);
-                  event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>("[role='radio']")[next]?.focus();
-                }}
-                className={`relative flex-1 rounded-lg px-4 text-[13px] font-medium capitalize transition-colors duration-150 ${tier === t ? "text-site-fg" : "text-site-fg-3 hover:text-site-fg-2"}`}
-              >
-                {tier === t && (
-                  <motion.span
-                    layoutId="browser-tier"
-                    className="absolute inset-0 rounded-lg bg-white/[0.1] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
-                    transition={{ type: "spring", stiffness: 500, damping: 40 }}
-                  />
-                )}
-                <span className="relative inline-block transition-transform duration-150 active:scale-95">{t}</span>
-              </button>
-            ))}
-          </div>
+          <SegmentedControl
+            label="Tier"
+            value={tier}
+            onValueChange={(value) => setTier(value as "all" | "free" | "pro")}
+            options={[{ value: "all", label: "All" }, { value: "free", label: "Free" }, { value: "pro", label: "Pro" }]}
+            icons={false}
+            className="sm:!w-[200px] sm:shrink-0 [&_button]:min-h-11"
+          />
         </div>
         <p ref={resultsRef} className="site-in mt-5 font-mono text-[11px] uppercase tracking-[0.14em] text-site-fg-3 [--i:4]" aria-live="polite">
           {filtered.length} {filtered.length === 1 ? "component" : "components"}
@@ -220,9 +199,9 @@ export function ComponentBrowser({ cards, categories, category, initialFilters }
                 <motion.div
                   key={c.slug}
                   layout={!reduce}
-                  initial={{ opacity: 0, scale: 0.97, y: 8, filter: "blur(4px)" }}
+                  initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.97, y: 8, filter: "blur(4px)" }}
                   animate={{ opacity: 1, scale: 1, y: 0, filter: "blur(0px)" }}
-                  exit={{ opacity: 0, scale: 0.97, filter: "blur(4px)", transition: { duration: 0.18 } }}
+                  exit={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.97, filter: "blur(4px)", transition: { duration: 0.18 } }}
                   transition={{ type: "spring", stiffness: 500, damping: 40 }}
                   className="flex"
                 >
