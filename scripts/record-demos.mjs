@@ -101,7 +101,8 @@ async function record(browser, slug) {
   const mobile = meta.platform === "mobile";
   const strip = meta.category === "headers" || meta.category === "footers";
   const vw = mobile ? 390 : strip ? 1024 : 1440;
-  const vh = mobile ? 844 : strip ? 640 : 900;
+  // Expanded workspace recordings honour the validated preview height.
+  const vh = mobile ? 844 : strip ? 640 : frameViewport ? Math.max(900, Math.min(1600, Number(meta.previewHeight) || 900)) : 900;
   const dpr = mobile ? 2 : 1;
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), `dfa-rec-${slug}-`));
   const problems = [];
