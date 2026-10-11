@@ -32,11 +32,14 @@ export function DitherGlow({ cell = 3, className = "" }: { cell?: number; classN
     const octx = off.getContext("2d")!;
     const L = LEVELS.length - 1;
 
-    const draw = () => {
-      const r = canvas.parentElement!.getBoundingClientRect();
+    let painted = "";
+    const draw = (width: number, height: number) => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const w = Math.max(1, Math.ceil(r.width / cell));
-      const h = Math.max(1, Math.ceil(r.height / cell));
+      const w = Math.max(1, Math.ceil(width / cell));
+      const h = Math.max(1, Math.ceil(height / cell));
+      const size = `${w}:${h}:${dpr}`;
+      if (painted === size) return;
+      painted = size;
       canvas.width = Math.round(w * cell * dpr);
       canvas.height = Math.round(h * cell * dpr);
       canvas.style.width = `${w * cell}px`;
@@ -69,15 +72,19 @@ export function DitherGlow({ cell = 3, className = "" }: { cell?: number; classN
       ctx.imageSmoothingEnabled = false;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(off, 0, 0, canvas.width, canvas.height);
+      // The light comes up once it exists, rather than snapping on at hydration.
+      canvas.style.opacity = "1";
     };
 
-    draw();
-    // The light comes up once it exists, rather than snapping on at hydration.
-    canvas.style.opacity = "1";
     let frame = 0;
-    const ro = new ResizeObserver(() => {
+    const ro = new ResizeObserver(([entry]) => {
+      // The observer supplies the first size after layout. Reading a bounding
+      // rect and drawing on mount forced layout, then repeated the same draw
+      // when this initial notification arrived.
+      const { width, height } = entry.contentRect;
       cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(draw);
+      if (!painted) draw(width, height);
+      else frame = requestAnimationFrame(() => draw(width, height));
     });
     ro.observe(canvas.parentElement!);
     return () => {
