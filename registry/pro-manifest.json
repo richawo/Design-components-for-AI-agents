@@ -18585,6 +18585,78 @@
     ]
   },
   {
+    "slug": "legal-matter-dashboard",
+    "name": "Matter Operations Dashboard",
+    "tier": "pro",
+    "platform": "web",
+    "category": "app",
+    "description": "Matter workload, upcoming dates and a selected matter’s status and owner. A considered, responsive legal workspace with typed integration points.",
+    "tags": [
+      "legal-tech",
+      "workflow",
+      "responsive",
+      "keyboard",
+      "app"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "light",
+    "previewHeight": 1410,
+    "usage": "import { MatterDashboard } from \"@/components/design-for-ai/legal-matter-dashboard\";\n\n<MatterDashboard />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Main heading."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "description": "Supporting context."
+      },
+      {
+        "name": "matters",
+        "type": "LegalMatter[]",
+        "description": "Unique matters with accountable owners, lifecycle state and host-supplied dates. Dates are not inferred from legal rules."
+      },
+      {
+        "name": "referenceDate",
+        "type": "string",
+        "description": "ISO calendar date used for upcoming and overdue calculations."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"light\"",
+        "description": "Surface, border and ink palette."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@matter-1",
+        "wait:1000",
+        "click:@matter-2",
+        "wait:1200"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "light"
+      }
+    ]
+  },
+  {
     "slug": "legal-matter-intake",
     "name": "Matter Intake Workspace",
     "tier": "pro",
