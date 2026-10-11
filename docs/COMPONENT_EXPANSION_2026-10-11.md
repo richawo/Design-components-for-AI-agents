@@ -2,7 +2,7 @@
 
 Added 30 standalone React 19 and Tailwind v4 components: 12 free and 18 Pro. At completion, the catalog contained 180 components, split into 70 free and 110 Pro.
 
-Curation update later on 11 October: Cart Drawer and Live Bento Grid moved from Free to Pro, and Sculpted Product Configurator was removed. The catalog now contains 179 components: 68 free and 111 Pro. The additions and validation below describe the original expansion.
+Curation update later on 11 October: Cart Drawer and Live Bento Grid moved from Free to Pro, and Sculpted Product Configurator was removed. At that point the catalog contained 179 components: 68 free and 111 Pro. The additions and validation below describe the original expansion. The subsequent [Pro industry suite batch](PRO_INDUSTRY_SUITES_2026-10-11.md) adds eight more Pro components.
 
 The expansion fills practical gaps in input, navigation, scheduling, document management, developer tools, charts, commerce and editorial content. Every addition includes a typed named component, zero-prop demo, metadata, design prompt, structured JSON prompt, theme control, recorded interaction preview and poster.
 
