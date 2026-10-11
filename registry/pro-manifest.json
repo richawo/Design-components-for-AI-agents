@@ -22255,6 +22255,83 @@
     ]
   },
   {
+    "slug": "saas-saved-views",
+    "name": "Saved View Organiser",
+    "tier": "pro",
+    "platform": "web",
+    "category": "data",
+    "description": "Create, rename, pin and reorder validated saved filter views. A considered, responsive SaaS workspace with typed integration points.",
+    "tags": [
+      "saas",
+      "workflow",
+      "responsive",
+      "keyboard",
+      "data"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 1090,
+    "usage": "import { SavedViews } from \"@/components/design-for-ai/saas-saved-views\";\n\n<SavedViews />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Main heading."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "description": "Supporting context."
+      },
+      {
+        "name": "defaultViews",
+        "type": "SavedFilterView[]",
+        "description": "Initial saved views with unique IDs and names. Pinning groups views before unpinned items; order is preserved within each group."
+      },
+      {
+        "name": "onSave",
+        "type": "(views:SavedFilterView[])=>void|Promise<void>",
+        "description": "Persist the complete reviewed view collection including order, names, filters and removals."
+      },
+      {
+        "name": "onApply",
+        "type": "(filters:SavedFilterView[\"filters\"])=>void|Promise<void>",
+        "description": "Apply the selected draft filters to the host collection without implicitly saving them."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface, border and ink palette."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:350",
+        "click:@view-1",
+        "wait:550",
+        "click:@apply",
+        "wait:1200"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "saas-workspace-dashboard",
     "name": "Workspace Command Centre",
     "tier": "pro",
