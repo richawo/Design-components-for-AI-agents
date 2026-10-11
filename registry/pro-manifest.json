@@ -225,6 +225,188 @@
     ]
   },
   {
+    "slug": "agent-commit-card",
+    "name": "Commit Card",
+    "tier": "pro",
+    "platform": "web",
+    "category": "agents",
+    "description": "An agent’s commit as a card. The subject, the files it touched, checks that roll from queued to passed, then Open PR.",
+    "tags": [
+      "agent",
+      "commit",
+      "pull request",
+      "checks",
+      "diff",
+      "ci",
+      "files",
+      "git"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 780,
+    "usage": "import { AgentCommitCard } from \"@/components/design-for-ai/agent-commit-card\";\n\n<AgentCommitCard\n  agent=\"Ada\"\n  message=\"Name when the seat credit lands\"\n  hash=\"c4e19a2\"\n  onOpen={(pr) => openPullRequest(pr)}\n/>\n\n// Drive it from outside with status (\"ready\" | \"opened\") and onStatusChange.\n// Ready rolls the checks. Opened shows them passed and the pull request number.\n// Open PR stays disabled until every check has passed.",
+    "props": [
+      {
+        "name": "agent",
+        "type": "string",
+        "default": "\"Ada\"",
+        "description": "Who made the commit. Shown as the micro label."
+      },
+      {
+        "name": "message",
+        "type": "string",
+        "default": "\"Name when the seat credit lands\"",
+        "description": "The subject line."
+      },
+      {
+        "name": "detail",
+        "type": "string",
+        "default": "\"The pricing answer said the credit existed, not when.\"",
+        "description": "One sentence under the subject."
+      },
+      {
+        "name": "hash",
+        "type": "string",
+        "default": "\"c4e19a2\"",
+        "description": "Short hash, shown in mono."
+      },
+      {
+        "name": "branch",
+        "type": "string",
+        "default": "\"pricing-faq\"",
+        "description": "Branch the commit is on."
+      },
+      {
+        "name": "files",
+        "type": "CommitFile[]",
+        "description": "Files the commit touched: { path, add, del }. add and del are line counts."
+      },
+      {
+        "name": "checks",
+        "type": "CommitCheck[]",
+        "description": "CI checks, in the order they run: { id, label }. Each goes queued, then running, then passed."
+      },
+      {
+        "name": "prNumber",
+        "type": "number",
+        "default": "482",
+        "description": "Number used once Open PR has landed. The button then reads PR #482."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"opened\"",
+        "description": "Controlled state. Ready rolls the checks and offers Open PR once they pass. Opened shows the checks passed and the pull request number. Omit it and the card owns the state."
+      },
+      {
+        "name": "onStatusChange",
+        "type": "(status: \"ready\" | \"opened\") => void",
+        "description": "Called when Open PR lands, and when Re-run returns the card to ready."
+      },
+      {
+        "name": "onOpen",
+        "type": "(prNumber: number) => void",
+        "description": "Called with the pull request number when Open PR is used. A click while checks are still running does nothing."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#f4f4f5\"",
+        "description": "The one accent, used on Open PR. A #rrggbb colour. Near-white or near-black values use the theme’s ink. Passed checks stay green either way."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Near-black surface with white ink, or the white inverse."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:240",
+        "click:@rerun",
+        "wait:2100",
+        "click:@open",
+        "wait:560"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "agent",
+        "label": "Agent",
+        "kind": "text",
+        "default": "Ada",
+        "group": "Copy"
+      },
+      {
+        "prop": "message",
+        "label": "Subject",
+        "kind": "text",
+        "default": "Name when the seat credit lands",
+        "group": "Copy"
+      },
+      {
+        "prop": "status",
+        "label": "State",
+        "kind": "action",
+        "options": [
+          {
+            "value": "ready",
+            "label": "Checks"
+          },
+          {
+            "value": "opened",
+            "label": "Opened"
+          }
+        ],
+        "group": "State"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action",
+        "group": "State"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#22c55e",
+          "#7dd3fc",
+          "#f5c66b"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      }
+    ]
+  },
+  {
     "slug": "agent-plan-steps",
     "name": "Agent Plan",
     "tier": "pro",
@@ -838,6 +1020,385 @@
     ]
   },
   {
+    "slug": "ai-image-generation",
+    "name": "Image Generation",
+    "tier": "pro",
+    "platform": "web",
+    "category": "ai",
+    "description": "Four studies from one prompt, drawn in code. Each develops out of grain. Vary redraws the one you picked, and Upscale enlarges it.",
+    "tags": [
+      "ai",
+      "image",
+      "generation",
+      "seed",
+      "canvas",
+      "studies",
+      "upscale",
+      "prompt"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 980,
+    "usage": "import { AiImageGeneration } from \"@/components/design-for-ai/ai-image-generation\";\n\n<AiImageGeneration\n  prompt=\"North light through a paper screen, one branch.\"\n  seed={1842}\n  onVary={(study, seed) => save(study, seed)}\n/>\n\n// Drive the frame from outside with status (\"grid\" | \"upscaled\") and onStatusChange.\n// The four studies are the base seed and the next three. Vary adds 17 to the selected one.\n// Pictures are canvas drawings. Nothing is fetched.",
+    "props": [
+      {
+        "name": "prompt",
+        "type": "string",
+        "default": "\"North light through a paper screen, one branch.\"",
+        "description": "The brief, set in serif above the studies."
+      },
+      {
+        "name": "seed",
+        "type": "number",
+        "default": "1842",
+        "description": "Base seed. The studies use this value, then the next three. Changing it redraws all four. Read again whenever it changes."
+      },
+      {
+        "name": "status",
+        "type": "\"grid\" | \"upscaled\"",
+        "description": "Controlled frame. Grid is the four studies. Upscaled enlarges the selected one and keeps the others as a strip. Omit it and the desk owns the state."
+      },
+      {
+        "name": "onStatusChange",
+        "type": "(status: \"grid\" | \"upscaled\") => void",
+        "description": "Called when Upscale or All four changes the frame."
+      },
+      {
+        "name": "onVary",
+        "type": "(study: number, seed: number) => void",
+        "description": "Called with the study index and its new seed when Vary redraws it."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#f4f4f5\"",
+        "description": "The one accent, used on Upscale. A #rrggbb colour. Near-white or near-black values use the theme’s ink. The selected study is ringed in the print’s ink, and the sunlight in the pictures stays warm."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Near-black surface with white ink, or the white inverse. The prints keep their paper."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:200",
+        "click:@study-1",
+        "wait:120",
+        "click:@upscale",
+        "wait:280",
+        "click:@vary",
+        "wait:1400"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "prompt",
+        "label": "Prompt",
+        "kind": "text",
+        "default": "North light through a paper screen, one branch.",
+        "group": "Copy"
+      },
+      {
+        "prop": "seed",
+        "label": "Seed",
+        "kind": "slider",
+        "min": 100,
+        "max": 9999,
+        "step": 1,
+        "default": 1842,
+        "group": "Studies"
+      },
+      {
+        "prop": "status",
+        "label": "Frame",
+        "kind": "action",
+        "options": [
+          {
+            "value": "grid",
+            "label": "Grid"
+          },
+          {
+            "value": "upscaled",
+            "label": "Upscaled"
+          }
+        ],
+        "group": "State"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action",
+        "group": "State"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#22c55e",
+          "#7dd3fc",
+          "#f5c66b"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      }
+    ]
+  },
+  {
+    "slug": "ai-mcp-elicitation",
+    "name": "MCP Elicitation",
+    "tier": "pro",
+    "platform": "web",
+    "category": "ai",
+    "description": "A tool call that pauses the thread and asks for the fields it cannot guess. A bad time is refused, a free one books, and the assistant continues.",
+    "tags": [
+      "ai",
+      "mcp",
+      "elicitation",
+      "tool call",
+      "form",
+      "calendar",
+      "chat",
+      "agent"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 920,
+    "usage": "import { AiMcpElicitation } from \"@/components/design-for-ai/ai-mcp-elicitation\";\n\n<AiMcpElicitation\n  tool=\"calendar.hold\"\n  room=\"Studio B\"\n  onSubmit={(fields) => resume(fields)}\n/>\n\n// Drive the result from outside with status (\"asking\" | \"booked\") and onStatusChange.\n// The first slot starts selected, including when it is unavailable, so Continue can show the conflict.\n// Pass guests to control the count; omit it and the stepper owns it. More guests than capacity disables Continue.",
+    "props": [
+      {
+        "name": "userName",
+        "type": "string",
+        "default": "\"Mara\"",
+        "description": "Who asked for the tool to run. Shown above their message."
+      },
+      {
+        "name": "request",
+        "type": "string",
+        "default": "\"Hold Studio B for the design review on Thursday.\"",
+        "description": "The message above the form."
+      },
+      {
+        "name": "agent",
+        "type": "string",
+        "default": "\"Ada\"",
+        "description": "The assistant that paused for the tool."
+      },
+      {
+        "name": "pause",
+        "type": "string",
+        "default": "\"calendar.hold stopped. It needs the fields it can’t guess.\"",
+        "description": "The line under the request, before the form."
+      },
+      {
+        "name": "tool",
+        "type": "string",
+        "default": "\"calendar.hold\"",
+        "description": "Tool that asked for the fields. Shown in mono in the card header."
+      },
+      {
+        "name": "room",
+        "type": "string",
+        "default": "\"Studio B\"",
+        "description": "Room the tool is trying to hold. Used in the people line, the conflict and the receipt."
+      },
+      {
+        "name": "slots",
+        "type": "ElicitSlot[]",
+        "description": "Choices for when: { id, label, detail, available }. One of them is unavailable. detail is a short availability note such as “Held until 3”."
+      },
+      {
+        "name": "defaultSlot",
+        "type": "string",
+        "default": "\"thu-1400\"",
+        "description": "Slot id selected before anyone touches the form. Read on mount. The default is the unavailable slot, so the conflict can be shown."
+      },
+      {
+        "name": "lengths",
+        "type": "number[]",
+        "default": "[45, 90, 120]",
+        "description": "Lengths in minutes, shown as a segmented control."
+      },
+      {
+        "name": "defaultLength",
+        "type": "number",
+        "default": "90",
+        "description": "Length selected before anyone touches the form. Read on mount."
+      },
+      {
+        "name": "guests",
+        "type": "number",
+        "default": "4",
+        "description": "How many people. Pass it to control the count. Omit it and the stepper owns it, from 1 to 12."
+      },
+      {
+        "name": "capacity",
+        "type": "number",
+        "default": "6",
+        "description": "Seats in the room. More guests than this blocks Continue and names the limit."
+      },
+      {
+        "name": "conflict",
+        "type": "string",
+        "default": "\"Studio B is held by Finance until 3. 4:30 is open.\"",
+        "description": "Why the unavailable slot is refused. Shown after Continue, not before."
+      },
+      {
+        "name": "confirmation",
+        "type": "string",
+        "default": "\"Held. {room}, {when}, for {length} minutes.\"",
+        "description": "The line after a valid submit. {when}, {length}, {room} and {guests} are filled in."
+      },
+      {
+        "name": "status",
+        "type": "\"asking\" | \"booked\"",
+        "description": "Controlled state. Asking shows the form. Booked replaces it with the receipt and the assistant’s next line. Omit it and the thread owns the state."
+      },
+      {
+        "name": "onStatusChange",
+        "type": "(status: \"asking\" | \"booked\") => void",
+        "description": "Called when a valid Continue books the room."
+      },
+      {
+        "name": "onSubmit",
+        "type": "(value: { slotId: string; length: number; guests: number }) => void",
+        "description": "Called with the accepted fields when the run resumes. A refused slot does not call it."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#f4f4f5\"",
+        "description": "The one accent: the selection dot, the length marker’s ink, and Continue. A #rrggbb colour. Near-white or near-black values use the theme’s ink so the button stays readable. Ink on the button is chosen for contrast."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Near-black surface with white ink, or the white inverse."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:280",
+        "click:@continue",
+        "wait:520",
+        "click:@slot-thu-1630",
+        "wait:220",
+        "click:@length-45",
+        "wait:220",
+        "click:@continue",
+        "wait:700"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "agent",
+        "label": "Assistant",
+        "kind": "text",
+        "default": "Ada",
+        "group": "Copy"
+      },
+      {
+        "prop": "guests",
+        "label": "People",
+        "kind": "slider",
+        "min": 1,
+        "max": 8,
+        "step": 1,
+        "default": 4,
+        "group": "Request"
+      },
+      {
+        "prop": "status",
+        "label": "State",
+        "kind": "action",
+        "options": [
+          {
+            "value": "asking",
+            "label": "Asking"
+          },
+          {
+            "value": "booked",
+            "label": "Booked"
+          }
+        ],
+        "group": "State"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action",
+        "group": "State"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#22c55e",
+          "#7dd3fc",
+          "#f5c66b"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      }
+    ]
+  },
+  {
     "slug": "ai-reasoning-trace",
     "name": "Reasoning Trace",
     "tier": "pro",
@@ -1039,6 +1600,219 @@
         "prop": "$replay",
         "label": "Restart",
         "kind": "action"
+      }
+    ]
+  },
+  {
+    "slug": "ai-side-panel",
+    "name": "Side Panel",
+    "tier": "pro",
+    "platform": "web",
+    "category": "ai",
+    "description": "An editor docked beside a draft. Mark a sentence to pull it in as a chip, then apply the rewrite so the line highlights, with one undo.",
+    "tags": [
+      "ai",
+      "side panel",
+      "assistant",
+      "editor",
+      "rewrite",
+      "context",
+      "undo",
+      "draft"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 860,
+    "usage": "import { AiSidePanel } from \"@/components/design-for-ai/ai-side-panel\";\n\n<AiSidePanel\n  agent=\"Reed\"\n  heading=\"What happens to unused seats?\"\n  onApply={(id, rewrite) => saveDraft(id, rewrite)}\n  onUndo={(id) => restoreDraft(id)}\n/>\n\n// Drive the rewrite from outside with status (\"idle\" | \"applied\") and onStatusChange.\n// defaultContext lists sentence ids already pulled into the margin. It is read on mount.\n// Clicking a sentence toggles its chip. Apply is enabled only while the sentence the note rewrites is marked.",
+    "props": [
+      {
+        "name": "agent",
+        "type": "string",
+        "default": "\"Reed\"",
+        "description": "Name of the editor in the margin. The monogram is the first letter."
+      },
+      {
+        "name": "role",
+        "type": "string",
+        "default": "\"Editor\"",
+        "description": "Role under the name."
+      },
+      {
+        "name": "eyebrow",
+        "type": "string",
+        "default": "\"lumenledger.com/pricing\"",
+        "description": "Mono path above the draft. Truncates rather than wrapping."
+      },
+      {
+        "name": "draftMark",
+        "type": "string",
+        "default": "\"Draft 4\"",
+        "description": "Quiet mark at the right of the path, such as a draft number."
+      },
+      {
+        "name": "heading",
+        "type": "string",
+        "default": "\"What happens to unused seats?\"",
+        "description": "The question the draft answers, set in serif."
+      },
+      {
+        "name": "lede",
+        "type": "string",
+        "default": "\"The answer on the pricing page.\"",
+        "description": "One line under the question."
+      },
+      {
+        "name": "sentences",
+        "type": "DraftSentence[]",
+        "description": "The draft, one sentence per block: { id, text, chip }. Clicking a sentence pulls its chip into the margin. chip is the short label."
+      },
+      {
+        "name": "suggestion",
+        "type": "SideSuggestion",
+        "description": "The note in the margin: { sentenceId, reason, rewrite }. sentenceId must match a sentence. Apply replaces that sentence with rewrite."
+      },
+      {
+        "name": "defaultContext",
+        "type": "string[]",
+        "default": "[\"credit\"]",
+        "description": "Sentence ids already pulled into the margin. Read on mount. The note’s sentence starts pulled, so the pair is visible before a click."
+      },
+      {
+        "name": "status",
+        "type": "\"idle\" | \"applied\"",
+        "description": "Controlled state. Idle shows the suggestion. Applied shows the rewrite in the draft, with the wash and Undo. Omit it and the panel owns the state."
+      },
+      {
+        "name": "onStatusChange",
+        "type": "(status: \"idle\" | \"applied\") => void",
+        "description": "Called when Apply or Undo changes the state."
+      },
+      {
+        "name": "onApply",
+        "type": "(sentenceId: string, rewrite: string) => void",
+        "description": "Called with the sentence id and the rewrite when Apply is used."
+      },
+      {
+        "name": "onUndo",
+        "type": "(sentenceId: string) => void",
+        "description": "Called with the sentence id when the rewrite is undone."
+      },
+      {
+        "name": "showContext",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show the chips pulled from the draft. Marks on the sentences stay either way."
+      },
+      {
+        "name": "applyLabel",
+        "type": "string",
+        "default": "\"Apply change\"",
+        "description": "Label on the button before the change lands."
+      },
+      {
+        "name": "undoLabel",
+        "type": "string",
+        "default": "\"Undo\"",
+        "description": "Label on the same button once the change has landed. The button keeps its size."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#f5c66b\"",
+        "description": "The one accent: the mark number, the rule on a marked sentence, the wash behind a rewrite, and Apply. A #rrggbb colour. Ink on the button is chosen for contrast."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Near-black surface with white ink, or the white inverse. The accent stays the same."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:240",
+        "click:@sentence-cancel",
+        "wait:380",
+        "click:@apply",
+        "wait:980",
+        "hover:@undo",
+        "wait:420"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "agent",
+        "label": "Editor",
+        "kind": "text",
+        "default": "Reed",
+        "group": "Copy"
+      },
+      {
+        "prop": "showContext",
+        "label": "Context chips",
+        "kind": "toggle",
+        "default": true,
+        "group": "Copy"
+      },
+      {
+        "prop": "status",
+        "label": "State",
+        "kind": "action",
+        "options": [
+          {
+            "value": "idle",
+            "label": "Reading"
+          },
+          {
+            "value": "applied",
+            "label": "Applied"
+          }
+        ],
+        "group": "State"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action",
+        "group": "State"
+      },
+      {
+        "prop": "accent",
+        "label": "Mark",
+        "kind": "color",
+        "default": "#f5c66b",
+        "options": [
+          "#f5c66b",
+          "#7dd3fc",
+          "#a3e635",
+          "#ededef"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
       }
     ]
   },
