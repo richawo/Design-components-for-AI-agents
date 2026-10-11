@@ -4,7 +4,8 @@ export function compactGeneratedSourceMap(map) {
   let omitted = 0;
   for (let index = 0; index < (map.sources ?? []).length; index++) {
     const source = String(map.sources[index]).replaceAll("\\", "/");
-    if (content[index] && /\.open-next\/(?:server-functions\/default|middleware)\/handler\.mjs$/.test(source)) {
+    const compiled = /\.open-next\/(?:server-functions\/default|middleware)\/handler\.mjs$/.test(source) || /^(?:\.\.?\/)*(?:server-functions\/default|middleware)\/handler\.mjs$/.test(source);
+    if (content[index] && compiled) {
       content[index] = null;
       omitted++;
     }

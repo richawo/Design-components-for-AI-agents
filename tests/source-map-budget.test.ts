@@ -13,4 +13,8 @@ describe("Cloudflare source-map budget", () => {
     const map = { version: 3, sources: ["src/index.ts"], names: [], mappings: "AAAA" };
     expect(compactGeneratedSourceMap(map)).toEqual({ map, omitted: 0 });
   });
+  it("handles the relative source paths emitted when the bundle stays inside .open-next", () => {
+    const map = { sources: ["../server-functions/default/handler.mjs", "../middleware/handler.mjs", "../lib/middleware/handler.mjs"], sourcesContent: ["server", "middleware", "app code"], mappings: "AAAA" };
+    expect(compactGeneratedSourceMap(map)).toEqual({ map: { ...map, sourcesContent: [null, null, "app code"] }, omitted: 2 });
+  });
 });

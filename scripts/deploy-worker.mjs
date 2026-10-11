@@ -29,4 +29,8 @@ for (const name of fs.readdirSync(directory).filter((file) => file.endsWith(".ma
 if (total >= 15_000_000) throw new Error(`Source maps exceed Cloudflare's 15 MB limit: ${total} bytes`);
 
 // Prebundled code is unchanged. Avoid regenerating the oversized map on upload.
+const entry = path.join(directory, "worker.js");
+if (!/\/\/# sourceMappingURL=/.test(fs.readFileSync(entry, "utf8"))) {
+  fs.appendFileSync(entry, "\n//# sourceMappingURL=worker.js.map\n");
+}
 run(["deploy", path.join(directory, "worker.js"), "--no-bundle", ...(process.argv.includes("--dry-run") ? ["--dry-run", "--outdir", path.join(root, ".open-next", "deploy-verified")] : [])]);
