@@ -1,0 +1,9 @@
+export async function check({page,mount,assert}){
+ await mount(`window.scenarios=[];window.fail=true;createRoot(document.getElementById('root')).render(<Subject.ScenarioForecast onSaveScenario={async p=>{window.scenarios.push(p);if(window.fail)throw Error('offline')}}/>);`);
+ await page.getByLabel('Monthly revenue growth / %',{exact:true}).fill('0');assert.match(await page.locator('tbody tr').last().innerText(),/-£8,000.00/);
+ await page.getByLabel('Monthly revenue growth / %',{exact:true}).fill('51');assert.equal(await page.getByRole('button',{name:'Save scenario',exact:true}).isDisabled(),true);
+ await page.getByLabel('Monthly revenue growth / %',{exact:true}).fill('8');await page.getByRole('button',{name:'Save scenario',exact:true}).click();await page.getByRole('status').filter({hasText:'request failed'}).waitFor();await page.evaluate(()=>window.fail=false);await page.getByRole('button',{name:'Save scenario',exact:true}).click();await page.getByRole('status').filter({hasText:'Scenario saved'}).waitFor();
+ const p=await page.evaluate(()=>window.scenarios[1]);let cash=10000000n,revenue=4000000n;for(const row of p.months){const cost=5000000n+(revenue*2000n+5000n)/10000n;cash+=revenue-cost;assert.equal(row.revenueMinor,Number(revenue));assert.equal(row.costMinor,Number(cost));assert.equal(row.closingMinor,Number(cash));revenue=(revenue*10800n+5000n)/10000n}
+ await page.getByRole('button',{name:'Reset to baseline',exact:true}).click();assert.equal(await page.getByLabel('Monthly revenue growth / %',{exact:true}).inputValue(),'5.00');
+ await mount(`createRoot(document.getElementById('root')).render(<Subject.ScenarioForecast months={[]}/>);`);assert.equal(await page.getByRole('button',{name:'Save scenario',exact:true}).isDisabled(),true);assert.doesNotMatch(await page.locator('section').innerText(),/NaN|Infinity/);
+}
