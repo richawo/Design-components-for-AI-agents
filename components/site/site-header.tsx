@@ -60,7 +60,7 @@ export function SiteHeader({ locale = "en", copy = {} }: { locale?: string; copy
         (event.shiftKey ? last : first).focus();
       }
     };
-    const desktop = window.matchMedia("(min-width: 48rem)");
+    const desktop = window.matchMedia("(min-width: 64rem)");
     const onResize = () => {
       if (!desktop.matches) return;
       setOpen(false);
@@ -86,7 +86,7 @@ export function SiteHeader({ locale = "en", copy = {} }: { locale?: string; copy
         <div className="mx-auto flex h-16 max-w-[80rem] items-center justify-between gap-6 px-5 sm:px-8">
           <div className="flex items-center gap-10">
             <Logo />
-            <nav aria-label={t("Main")} className="hidden items-center gap-1 md:flex" onMouseLeave={() => setHovered(null)}>
+            <nav aria-label={t("Main")} className="hidden items-center gap-1 lg:flex" onMouseLeave={() => setHovered(null)}>
               {nav.map((item) => {
                 const active = isActive(pathname, item.href);
                 return (
@@ -125,7 +125,7 @@ export function SiteHeader({ locale = "en", copy = {} }: { locale?: string; copy
               })}
             </nav>
           </div>
-          <div className="hidden items-center gap-2 md:flex">
+          <div className="hidden items-center gap-2 lg:flex">
             <a
               href={site.github}
               className="site-btn site-btn-ghost h-9 px-3 text-[14px] font-normal"
@@ -146,7 +146,7 @@ export function SiteHeader({ locale = "en", copy = {} }: { locale?: string; copy
           <button
             ref={trigger}
             type="button"
-            className="relative flex size-11 items-center justify-center rounded-full border border-white/10 transition duration-150 active:scale-95 active:bg-white/[0.06] md:hidden"
+            className="relative flex size-11 items-center justify-center rounded-full border border-white/10 transition duration-150 active:scale-95 active:bg-white/[0.06] lg:hidden"
             aria-expanded={open}
             aria-controls="mobile-nav"
             aria-label={open ? t("Close menu") : t("Open menu")}
@@ -163,7 +163,7 @@ export function SiteHeader({ locale = "en", copy = {} }: { locale?: string; copy
       <div
         ref={menu}
         id="mobile-nav"
-        className={`fixed inset-x-0 bottom-0 top-16 z-[45] flex flex-col bg-site-bg px-5 pb-8 pt-4 transition-[opacity,visibility] duration-300 md:hidden ${open ? "visible opacity-100" : "invisible opacity-0"}`}
+        className={`fixed inset-x-0 bottom-0 top-16 z-[45] flex flex-col bg-site-bg px-5 pb-8 pt-4 transition-[opacity,visibility] duration-300 lg:hidden ${open ? "visible opacity-100" : "invisible opacity-0"}`}
       >
         <nav aria-label={t("Mobile")} className="flex flex-col">
           {nav.map((item, i) => (
