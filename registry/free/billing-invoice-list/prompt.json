@@ -1,0 +1,63 @@
+{
+  "component": "InvoiceList",
+  "intent": "A dark invoice list for one workspace. Paid, open and failed are distinct without a rainbow, a filter with counts narrows the list, amounts are tabular, and a download turns into a drawn check. Below 448px the table becomes cards.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4; colour tokens as CSS variables on the root (--inv-surface, --inv-raised, --inv-track, --inv-ink, --inv-muted, --inv-accent, --inv-accent-text)",
+    "animation": "motion/react for the entrance, the filter pill, the list height and the check",
+    "icons": "none; the download arrow and the saved check are inline SVG",
+    "fonts": "font-display (Geist) for the heading; font-sans for rows; font-mono for the eyebrow, filter counts and the tally"
+  },
+  "layout": {
+    "root": "section, max-width 560px, 20px radius, 20px padding (28px from @sm)",
+    "header": "mono BILLING, 22px heading Invoices, a line for the open total",
+    "filter": "four equal chips in a capsule: All, Paid, Open, Failed, each with a count",
+    "table": "from a card width of 448px: Invoice, Issued, Status, Amount, and a 44px download",
+    "cards": "below 448px: id, date and status on the left, amount and download on the right, 14px radius, 8px gap",
+    "tally": "mono line, right aligned, showing how many of the ledger the filter left"
+  },
+  "typography": {
+    "label": "mono 11px, weight 500, uppercase, tracking 0.08em, muted",
+    "heading": "font-display 22px, weight 600, tracking -0.025em, leading 1.1",
+    "filter": "12.5px medium, counts mono 11px tabular",
+    "rows": "table id and amount 14px medium; card id and amount 15px medium; dates 13 to 13.5px muted tabular"
+  },
+  "color": {
+    "approach": "greys with one accent prop (default #7dd3a8) for an open invoice, the open total and a saved download; paid is muted; failed is ink, not red",
+    "dark": { "surface": "#131317", "raised": "#1a1a1f", "track": "#24242b", "ink": "#f4f4f5", "muted": "#8a8a93", "line": "rgba(255,255,255,0.08)" },
+    "light": { "surface": "#ffffff", "raised": "#f6f6f7", "track": "#ececef", "ink": "#18181b", "muted": "#6b6b75", "line": "rgba(24,24,27,0.09)" },
+    "accentText": "on light, color-mix(in oklch, accent 45%, ink)",
+    "onAccent": "#07130d"
+  },
+  "motion": {
+    "entrance": "header, filter at 80ms, list at 160ms; rise 10px out of an 8px blur over 500ms, cubic-bezier(0.22, 1, 0.36, 1), then filter cleared",
+    "filter": "the selected chip's pill springs (stiffness 500, damping 40); the list fades and rises 6px; its height eases over 320ms",
+    "download": "the icon swaps over 180ms; the check draws over 320ms; the button fills with the accent; press scale 0.97",
+    "reducedMotion": "opacity only; the pill jumps; the check is already drawn; height changes instantly"
+  },
+  "responsive": {
+    "390": "cards, not a table; the four filter chips stay on one row; the download stays 44px",
+    "1440": "a 560px card with a real table; the amount column is right aligned"
+  },
+  "accessibility": [
+    "the filter is a radiogroup; arrow keys, Home and End move the selection and focus",
+    "the table has a caption and column headers; each invoice id is a row header",
+    "narrow widths use a list instead of the table",
+    "the download button is named with the invoice id, and the name changes once it is saved",
+    "2px ink focus outlines with a 2px offset, keyboard only"
+  ],
+  "content": {
+    "ledger": "INV-1046, 2 Oct 2026, $48.00, open; INV-1042, 24 Sep, $128.00, paid; INV-1038, 24 Aug, $128.00, paid; INV-1031, 24 Jul, $96.00, paid; INV-1019, 24 Jun, $96.00, failed",
+    "subtitle": "1 open · $48.00",
+    "demo": "filter to Open, then download INV-1046, which is the only row left and turns into a check"
+  },
+  "avoid": [
+    "a red failed banner",
+    "a different colour for each status",
+    "card network logos",
+    "a modal to confirm the download",
+    "keeping five table columns at 390px",
+    "making the whole row the download control"
+  ]
+}

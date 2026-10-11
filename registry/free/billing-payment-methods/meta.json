@@ -1,0 +1,123 @@
+{
+  "slug": "billing-payment-methods",
+  "name": "Payment Methods",
+  "tier": "free",
+  "platform": "web",
+  "category": "billing",
+  "description": "Saved cards drawn without network logos. The default outline travels when you change it, and removing a card leaves an undo in the list.",
+  "tags": ["billing", "cards", "payment", "undo", "subscription", "saas"],
+  "dependencies": ["motion"],
+  "theme": "dark",
+  "previewHeight": 720,
+  "usage": "import { PaymentMethods } from \"@/components/design-for-ai/billing-payment-methods\";\n\n<PaymentMethods\n  workspace=\"Copperline\"\n  cards={[\n    { id: \"4242\", last4: \"4242\", expiry: \"08/28\", holder: \"Ines Varga\" },\n    { id: \"1881\", last4: \"1881\", expiry: \"04/28\", holder: \"Jonah Adeyemi\" },\n  ]}\n  defaultCardId=\"4242\"\n  onDefaultChange={(id) => fetch(\"/api/card/default\", { method: \"POST\", body: id })}\n/>",
+  "props": [
+    {
+      "name": "cards",
+      "type": "{ id: string; last4: string; expiry: string; holder: string }[]",
+      "default": "4242 and 1881",
+      "description": "The cards on file. Read on mount; adding and removing happen in the component."
+    },
+    {
+      "name": "defaultCardId",
+      "type": "string",
+      "default": "\"4242\"",
+      "description": "The card that pays, by id. Read on mount."
+    },
+    {
+      "name": "view",
+      "type": "\"cards\" | \"add\"",
+      "default": "\"cards\"",
+      "description": "\"add\" opens the new-card form. Pass it with onViewChange to control the form; omit it and the list keeps its own."
+    },
+    {
+      "name": "onViewChange",
+      "type": "(view: \"cards\" | \"add\") => void",
+      "description": "Called when the form opens or closes."
+    },
+    {
+      "name": "onDefaultChange",
+      "type": "(id: string) => void",
+      "description": "Called with the id of the card just made default."
+    },
+    {
+      "name": "onRemove",
+      "type": "(card: SavedCard) => void",
+      "description": "Called when a card is removed. Undo puts it back locally."
+    },
+    {
+      "name": "onAdd",
+      "type": "(card: SavedCard) => void",
+      "description": "Called with the card the form just added."
+    },
+    {
+      "name": "workspace",
+      "type": "string",
+      "default": "\"Copperline\"",
+      "description": "Printed in small caps on every card."
+    },
+    {
+      "name": "accent",
+      "type": "string",
+      "default": "\"#7dd3a8\"",
+      "description": "The one accent: the default card's outline, the Default label, and Add once the draft is valid."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Surface and ink. The cards stay dark objects in both. Light deepens the accent for text."
+    }
+  ],
+  "demo": {
+    "steps": [
+      "wait:400",
+      "click:@set-default-1881",
+      "wait:900",
+      "click:@remove-4242",
+      "wait:1400"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "view",
+      "label": "View",
+      "kind": "action",
+      "options": [
+        { "value": "cards", "label": "Cards" },
+        { "value": "add", "label": "Add" }
+      ]
+    },
+    {
+      "prop": "workspace",
+      "label": "Workspace",
+      "kind": "text",
+      "default": "Copperline",
+      "group": "Card"
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        { "value": "dark", "label": "Dark" },
+        { "value": "light", "label": "Light" }
+      ],
+      "default": "dark",
+      "group": "Look"
+    },
+    {
+      "prop": "accent",
+      "label": "Accent",
+      "kind": "color",
+      "default": "#7dd3a8",
+      "options": ["#7dd3a8", "#f5a524", "#60a5fa", "#ececee"],
+      "group": "Look"
+    },
+    {
+      "prop": "$replay",
+      "label": "Replay",
+      "kind": "action"
+    }
+  ],
+  "added": "2026-10-11"
+}

@@ -2004,6 +2004,229 @@
     "added": "2026-10-10"
   },
   {
+    "slug": "billing-overview",
+    "name": "Billing Overview",
+    "tier": "pro",
+    "platform": "web",
+    "category": "billing",
+    "description": "One billing home: the plan and its price, a usage meter near its limit, the card on file and recent invoices, each opening in place.",
+    "tags": [
+      "billing",
+      "subscription",
+      "usage",
+      "invoices",
+      "payment",
+      "plan",
+      "saas"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 880,
+    "usage": "import { BillingOverview } from \"@/components/design-for-ai/billing-overview\";\n\n<BillingOverview\n  workspace=\"Copperline\"\n  planName=\"Studio\"\n  seats={8}\n  pricePerSeat={16}\n  periodStart=\"2026-09-24\"\n  periodEnd=\"2026-10-23\"\n  today=\"2026-10-10\"\n  last4=\"4242\"\n  expiry=\"08/28\"\n  cardholder=\"Ines Varga\"\n  onOpenChange={(open) => console.log(open)}\n/>",
+    "props": [
+      {
+        "name": "workspace",
+        "type": "string",
+        "default": "\"Copperline\"",
+        "description": "The workspace the bill belongs to, used as the heading and printed on the card."
+      },
+      {
+        "name": "planName",
+        "type": "string",
+        "default": "\"Studio\"",
+        "description": "The current plan, named in the subtitle and the plan row."
+      },
+      {
+        "name": "seats",
+        "type": "number",
+        "default": "8",
+        "description": "Seats on the plan. The monthly price is this times pricePerSeat."
+      },
+      {
+        "name": "pricePerSeat",
+        "type": "number",
+        "default": "16",
+        "description": "Price per seat per month."
+      },
+      {
+        "name": "periodStart",
+        "type": "string",
+        "default": "\"2026-09-24\"",
+        "description": "First day of the current period, ISO date."
+      },
+      {
+        "name": "periodEnd",
+        "type": "string",
+        "default": "\"2026-10-23\"",
+        "description": "Last day of the current period, ISO date, inclusive. Renewal is the next day."
+      },
+      {
+        "name": "today",
+        "type": "string",
+        "default": "\"2026-10-10\"",
+        "description": "The day the home is being read, ISO date. Pass the real date in production."
+      },
+      {
+        "name": "meters",
+        "type": "{ id: string; label: string; used: number; limit: number; unit?: string }[]",
+        "default": "Boards, Renders, Storage",
+        "description": "Usage this period. The row shows the meter closest to its cap; opening lists every meter."
+      },
+      {
+        "name": "invoices",
+        "type": "{ id: string; date: string; amount: number }[]",
+        "default": "three paid invoices",
+        "description": "Issued invoices, newest first once sorted. The row shows the latest; opening lists them."
+      },
+      {
+        "name": "last4",
+        "type": "string",
+        "default": "\"4242\"",
+        "description": "Last four digits of the card on file."
+      },
+      {
+        "name": "expiry",
+        "type": "string",
+        "default": "\"08/28\"",
+        "description": "Expiry as printed, already formatted."
+      },
+      {
+        "name": "cardholder",
+        "type": "string",
+        "default": "\"Ines Varga\"",
+        "description": "Name printed on the card when the payment row is open."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Locale for money, dates and meter figures."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"USD\"",
+        "description": "ISO 4217 code."
+      },
+      {
+        "name": "open",
+        "type": "\"none\" | \"plan\" | \"usage\" | \"payment\" | \"invoices\"",
+        "default": "\"none\"",
+        "description": "Which row is open. Pass it with onOpenChange to control the home; omit it and the home keeps its own state."
+      },
+      {
+        "name": "onOpenChange",
+        "type": "(open: OverviewOpen) => void",
+        "description": "Called when a row is opened or closed. Closing the open row reports \"none\"."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#7dd3a8\"",
+        "description": "The one accent: the meter nearest its limit, that meter's figure, and the near-limit note."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface and ink. Light deepens the accent for text so it stays readable. The card stays a dark object in both."
+      }
+    ],
+    "demo": {
+      "steps": [
+        "wait:450",
+        "click:@card-usage",
+        "wait:1400",
+        "click:@card-invoices",
+        "wait:1100"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "seats",
+        "label": "Seats",
+        "kind": "slider",
+        "min": 1,
+        "max": 40,
+        "step": 1,
+        "default": 8,
+        "group": "Plan"
+      },
+      {
+        "prop": "planName",
+        "label": "Plan name",
+        "kind": "text",
+        "default": "Studio",
+        "group": "Plan"
+      },
+      {
+        "prop": "open",
+        "label": "Open",
+        "kind": "action",
+        "options": [
+          {
+            "value": "none",
+            "label": "None"
+          },
+          {
+            "value": "plan",
+            "label": "Plan"
+          },
+          {
+            "value": "usage",
+            "label": "Usage"
+          },
+          {
+            "value": "payment",
+            "label": "Payment"
+          },
+          {
+            "value": "invoices",
+            "label": "Invoices"
+          }
+        ]
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#7dd3a8",
+        "options": [
+          "#7dd3a8",
+          "#f5a524",
+          "#60a5fa",
+          "#ececee"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ],
+    "added": "2026-10-11"
+  },
+  {
     "slug": "billing-plan-change",
     "name": "Plan Change Proration",
     "tier": "pro",
@@ -2181,6 +2404,192 @@
         "default": "monthly",
         "remount": true,
         "group": "Subscription"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#7dd3a8",
+        "options": [
+          "#7dd3a8",
+          "#f5a524",
+          "#60a5fa",
+          "#ececee"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ],
+    "added": "2026-10-10"
+  },
+  {
+    "slug": "billing-seat-manager",
+    "name": "Seat Manager",
+    "tier": "pro",
+    "platform": "web",
+    "category": "billing",
+    "description": "A seat stepper whose monthly bill counts as you add or remove seats, with invited emails flying into a pending list and a warning when an invite has no spare seat.",
+    "tags": [
+      "billing",
+      "seats",
+      "invite",
+      "subscription",
+      "team",
+      "proration",
+      "saas"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 820,
+    "usage": "import { SeatManager } from \"@/components/design-for-ai/billing-seat-manager\";\n\n<SeatManager\n  planName=\"Studio\"\n  pricePerSeat={16}\n  billedSeats={8}\n  members={[{ id: \"ines\", name: \"Ines Varga\", email: \"ines@copperline.studio\", role: \"Owner\" }]}\n  periodStart=\"2026-09-24\"\n  periodEnd=\"2026-10-23\"\n  today=\"2026-10-10\"\n  paymentLabel=\"•••• 4242\"\n  onConfirm={async (change) => {\n    await fetch(\"/api/seats\", { method: \"POST\", body: JSON.stringify(change) });\n  }}\n/>",
+    "props": [
+      {
+        "name": "planName",
+        "type": "string",
+        "default": "\"Studio\"",
+        "description": "The plan the seats belong to, named in the heading and the status line."
+      },
+      {
+        "name": "pricePerSeat",
+        "type": "number",
+        "default": "16",
+        "description": "Price per seat per month. The monthly total, the delta and the prorated due-today all scale with it."
+      },
+      {
+        "name": "billedSeats",
+        "type": "number",
+        "default": "8",
+        "description": "Seats the workspace is already paying for. The delta is the stepper minus this."
+      },
+      {
+        "name": "defaultSeats",
+        "type": "number",
+        "default": "billedSeats",
+        "description": "Where the stepper opens. Read on mount."
+      },
+      {
+        "name": "members",
+        "type": "{ id: string; name: string; email: string; role: string }[]",
+        "default": "eight people on Studio",
+        "description": "People who already hold a seat. The stepper cannot go below this count, and their emails cannot be invited again."
+      },
+      {
+        "name": "periodStart",
+        "type": "string",
+        "default": "\"2026-09-24\"",
+        "description": "First day of the current period, ISO date."
+      },
+      {
+        "name": "periodEnd",
+        "type": "string",
+        "default": "\"2026-10-23\"",
+        "description": "Last day of the current period, ISO date, inclusive."
+      },
+      {
+        "name": "today",
+        "type": "string",
+        "default": "\"2026-10-10\"",
+        "description": "The day a seat change takes effect, ISO date. Pass the real date in production."
+      },
+      {
+        "name": "paymentLabel",
+        "type": "string",
+        "default": "\"•••• 4242\"",
+        "description": "The card that pays, as printed in the fine print and the confirmation."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Locale for money and dates."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"USD\"",
+        "description": "ISO 4217 code."
+      },
+      {
+        "name": "onConfirm",
+        "type": "(change: SeatChange) => Promise<void> | void",
+        "description": "Called with the quote the panel showed. Return a promise to hold the saving state; reject it to show the declined state. Defaults to a 900ms fake."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#7dd3a8\"",
+        "description": "The one accent: add-seat, a ready Invite button, a pending seat and the confirm button."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface and ink. Light deepens the accent for text so it stays readable."
+      }
+    ],
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@invite-email",
+        "type:lea@copperline.studio",
+        "key:Enter",
+        "wait:800",
+        "click:@seat-plus",
+        "wait:1100"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "pricePerSeat",
+        "label": "Price per seat",
+        "kind": "slider",
+        "min": 8,
+        "max": 48,
+        "step": 1,
+        "unit": "$",
+        "default": 16,
+        "group": "Plan"
+      },
+      {
+        "prop": "defaultSeats",
+        "label": "Starting seats",
+        "kind": "slider",
+        "min": 8,
+        "max": 16,
+        "step": 1,
+        "default": 8,
+        "remount": true,
+        "group": "Plan"
+      },
+      {
+        "prop": "planName",
+        "label": "Plan name",
+        "kind": "text",
+        "default": "Studio",
+        "group": "Plan"
       },
       {
         "prop": "theme",
