@@ -12066,7 +12066,20 @@
         "description": "Fired when a row is tapped."
       }
     ],
-    "added": "2026-10-07"
+    "added": "2026-10-07",
+    "demo": {
+      "steps": [
+        "wait:800",
+        "hover:@row-m3:0.86,0.5",
+        "down",
+        "hover:@row-m3:0.04,0.5",
+        "up",
+        "wait:1100",
+        "click:@undo",
+        "wait:1300"
+      ],
+      "loop": false
+    }
   },
   {
     "slug": "mobile-wallet-stack",
