@@ -25,7 +25,7 @@ const selections = [
   ["hero-terminal-agent", "AI agent hero", "Free"],
   ["three-globe-arcs", "WebGL globe", "Pro"],
   ["chart-portfolio", "Portfolio chart", "Free"],
-  ["bento-grid", "Live analytics bento", "Free"],
+  ["bento-grid", "Live analytics bento", "Pro"],
   ["mobile-tab-bar", "React Native navigation", "Free"],
   ["three-particle-sphere", "Particle sphere", "Pro"],
 ];

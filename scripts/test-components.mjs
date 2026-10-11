@@ -21,6 +21,8 @@ if (fs.existsSync(path.join(root, "registry/pro/devtools-webhook-inspector")))
   cases.push("webhook-probe", "focus-probe", "chart-data-probe");
 if (fs.existsSync(path.join(root, "registry/pro/content-release-notes")))
   cases.push("expansion-pro-probe");
+if (fs.existsSync(path.join(root, "registry/pro/bento-grid")))
+  cases.push("bento-rhythm-probe");
 if (cases.length === publicCases.length)
   console.log(
     "Pro integration cases skipped: private sources are not checked out.",

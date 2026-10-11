@@ -71,7 +71,7 @@ These are recordings of the actual components. Open any preview to try its contr
           <img src=".github/assets/bento-grid.gif" alt="Animated React analytics bento grid with a drawing chart, counting metrics and activity tiles" width="100%">
         </picture>
       </a>
-      <p><strong>Live analytics bento</strong><br>Drawing charts, counting figures and six tiles that tell one story.<br><a href="https://design.yaps.ai/components/bento-grid">Try the component</a> · Free</p>
+      <p><strong>Live analytics bento</strong><br>Drawing charts, counting figures and six tiles that tell one story.<br><a href="https://design.yaps.ai/components/bento-grid">Try the component</a> · Pro</p>
     </td>
   </tr>
   <tr>
