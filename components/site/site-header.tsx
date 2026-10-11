@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Logo } from "./logo";
 import { site } from "@/lib/site";
 
@@ -23,6 +23,9 @@ export function SiteHeader({ locale = "en", copy = {} }: { locale?: string; copy
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [hovered, setHovered] = useState<string | null>(null);
+  const scope = useRef<HTMLDivElement>(null);
+  const menu = useRef<HTMLDivElement>(null);
+  const trigger = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -32,13 +35,53 @@ export function SiteHeader({ locale = "en", copy = {} }: { locale?: string; copy
   }, []);
   useEffect(() => setOpen(false), [pathname]);
   useEffect(() => {
-    document.documentElement.style.overflow = open ? "hidden" : "";
+    if (!open) return;
+    const previous = document.activeElement as HTMLElement | null;
+    const oldOverflow = document.documentElement.style.overflow;
+    const siblings = [...(scope.current?.parentElement?.children ?? [])]
+      .filter((node): node is HTMLElement => node instanceof HTMLElement && (node.tagName === "MAIN" || node.tagName === "FOOTER"))
+      .map((node) => ({ node, inert: node.inert }));
+    document.documentElement.style.overflow = "hidden";
+    for (const { node } of siblings) node.inert = true;
+    menu.current?.querySelector<HTMLAnchorElement>("a[href]")?.focus({ preventScroll: true });
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        event.stopPropagation();
+        setOpen(false);
+        trigger.current?.focus({ preventScroll: true });
+      }
+      if (event.key !== "Tab") return;
+      const items = [...(scope.current?.querySelectorAll<HTMLElement>("a[href],button:not(:disabled),[tabindex='0']") ?? [])].filter((node) => node.getClientRects().length > 0);
+      if (!items.length) return;
+      const first = items[0], last = items[items.length - 1];
+      if (!scope.current?.contains(document.activeElement) || (event.shiftKey ? document.activeElement === first : document.activeElement === last)) {
+        event.preventDefault();
+        (event.shiftKey ? last : first).focus();
+      }
+    };
+    const desktop = window.matchMedia("(min-width: 48rem)");
+    const onResize = () => {
+      if (!desktop.matches) return;
+      setOpen(false);
+      if (scope.current?.contains(document.activeElement)) scope.current.querySelector<HTMLAnchorElement>("header nav a[href]")?.focus({ preventScroll: true });
+    };
+    window.addEventListener("keydown", onKey, true);
+    desktop.addEventListener("change", onResize);
+    onResize();
+    return () => {
+      window.removeEventListener("keydown", onKey, true);
+      desktop.removeEventListener("change", onResize);
+      document.documentElement.style.overflow = oldOverflow;
+      for (const { node, inert } of siblings) node.inert = inert;
+      if (previous?.isConnected && previous.getClientRects().length && (scope.current?.contains(document.activeElement) || document.activeElement === document.body)) previous.focus({ preventScroll: true });
+    };
   }, [open]);
 
   return (
-    <>
+    <div ref={scope} className="sticky top-0 z-50" role={open ? "dialog" : undefined} aria-modal={open ? true : undefined} aria-label={open ? t("Main navigation") : undefined}>
       <header
-        className={`sticky top-0 z-50 border-b transition-[background-color,border-color] duration-300 ${scrolled || open ? "border-white/[0.07] bg-site-bg/75 backdrop-blur-xl backdrop-saturate-150" : "border-transparent bg-transparent"}`}
+        className={`relative border-b transition-[background-color,border-color] duration-300 ${scrolled || open ? "border-white/[0.07] bg-site-bg/75 backdrop-blur-xl backdrop-saturate-150" : "border-transparent bg-transparent"}`}
       >
         <div className="mx-auto flex h-16 max-w-[80rem] items-center justify-between gap-6 px-5 sm:px-8">
           <div className="flex items-center gap-10">
@@ -101,8 +144,9 @@ export function SiteHeader({ locale = "en", copy = {} }: { locale?: string; copy
             </Link>
           </div>
           <button
+            ref={trigger}
             type="button"
-            className="relative flex size-10 items-center justify-center rounded-full border border-white/10 transition duration-150 active:scale-95 active:bg-white/[0.06] md:hidden"
+            className="relative flex size-11 items-center justify-center rounded-full border border-white/10 transition duration-150 active:scale-95 active:bg-white/[0.06] md:hidden"
             aria-expanded={open}
             aria-controls="mobile-nav"
             aria-label={open ? t("Close menu") : t("Open menu")}
@@ -117,6 +161,7 @@ export function SiteHeader({ locale = "en", copy = {} }: { locale?: string; copy
       {/* A sibling of the header, not a child: the header's backdrop-filter would
           otherwise become this fixed panel's containing block and collapse it. */}
       <div
+        ref={menu}
         id="mobile-nav"
         className={`fixed inset-x-0 bottom-0 top-16 z-[45] flex flex-col bg-site-bg px-5 pb-8 pt-4 transition-[opacity,visibility] duration-300 md:hidden ${open ? "visible opacity-100" : "invisible opacity-0"}`}
       >
@@ -146,7 +191,7 @@ export function SiteHeader({ locale = "en", copy = {} }: { locale?: string; copy
           </Link>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
