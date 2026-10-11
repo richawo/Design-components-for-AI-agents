@@ -114,7 +114,7 @@ const THEMES = {
   dark: {
     ink: "#f4f4f5",
     muted: "#8a8a93",
-    faint: "#5d5d66",
+    faint: "#8a8a93",
     rail: "rgb(255 255 255 / 0.08)",
     line: "rgb(255 255 255 / 0.06)",
     surface: "#18181b",
@@ -132,7 +132,7 @@ const THEMES = {
   light: {
     ink: "#18181b",
     muted: "#63636c",
-    faint: "#9b9ba4",
+    faint: "#696973",
     rail: "rgb(24 24 27 / 0.1)",
     line: "rgb(24 24 27 / 0.07)",
     surface: "#f4f4f5",
@@ -783,10 +783,10 @@ function StatsBody({ data, rise, run, reduce }: LiveBodyProps<"stats">) {
   const peak = Math.max(...data.spark);
   return (
     <>
-      <motion.dl variants={rise} className="grid grid-cols-3 gap-3 @md:gap-6">
+      <motion.dl variants={rise} className="grid grid-cols-2 gap-x-4 gap-y-5 @[420px]:grid-cols-3 @md:gap-6">
         {data.stats.map((stat, i) => (
-          <div key={stat.label} className="flex min-w-0 flex-col gap-2">
-            <dt className="truncate font-mono text-[10.5px] tracking-[0.12em] text-(--tu-faint) uppercase">{stat.label}</dt>
+          <div key={stat.label} className={`flex min-w-0 flex-col gap-2 ${i === 0 ? "col-span-2 @[420px]:col-span-1" : ""}`}>
+            <dt className="font-mono text-[10.5px] tracking-[0.12em] text-(--tu-faint) uppercase">{stat.label}</dt>
             <dd>
               <Figure value={stat.value} decimals={stat.decimals} unit={stat.unit} run={run} reduce={reduce} delay={0.12 + i * STAGGER} />
             </dd>

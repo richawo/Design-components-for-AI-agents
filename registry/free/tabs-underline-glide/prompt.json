@@ -25,8 +25,8 @@
     "metadata": "mono 10.5px uppercase, tracking 0.12em"
   },
   "color": {
-    "dark": "ink #f4f4f5, muted #8a8a93, faint #5d5d66, rail 8% white, lines 6% white, surface #18181b, pill #26262b with 8% white hairline and soft black drops, arrow chip #1f1f23 (hover #28282d), focus ink at 75%, ok #3dd68c, busy and warn #f5b946",
-    "light": "ink #18181b, muted #63636c, faint #9b9ba4, rail 10% ink, lines 7% ink, surface #f4f4f5, pill #ffffff, arrow chip #ffffff (hover #f4f4f5), focus ink at 70%, ok #1f9d5c, busy and warn #d08a00",
+    "dark": "ink #f4f4f5, muted #8a8a93, faint #8a8a93, rail 8% white, lines 6% white, surface #18181b, pill #26262b with 8% white hairline and soft black drops, arrow chip #1f1f23 (hover #28282d), focus ink at 75%, ok #3dd68c, busy and warn #f5b946",
+    "light": "ink #18181b, muted #63636c, faint #696973, rail 10% ink, lines 7% ink, surface #f4f4f5, pill #ffffff, arrow chip #ffffff (hover #f4f4f5), focus ink at 70%, ok #1f9d5c, busy and warn #d08a00",
     "states": "selected label ink, others muted moving to ink on hover with no surface; selected count muted, others faint; disabled 40% with cursor-not-allowed",
     "accent": "the underline takes the accent prop when given, otherwise the ink; the pill stays neutral; status colour only on 7px dots and the WARN log level"
   },

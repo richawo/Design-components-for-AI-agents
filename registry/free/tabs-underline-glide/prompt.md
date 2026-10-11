@@ -17,8 +17,8 @@ Build underline tabs in React 19 + Tailwind CSS v4 + `motion/react` (icons from 
 - Demo panel lead: 15px, leading 1.55, max 56ch, muted, `text-wrap: pretty` so no single word is left on the last line. Figures: Geist display 600, `clamp(1.375rem, 4.2cqi, 1.75rem)`, tracking -0.03em, tabular. Metadata: mono 10.5px uppercase, tracking 0.12em.
 
 **Colour (CSS variables on the root from `theme`)**
-- Dark: ink `#f4f4f5`, muted `#8a8a93`, faint `#5d5d66`, rail 8% white, row lines 6% white, log surface `#18181b`, pill `#26262b` with a 1px inset hairline at 8% white, a 1px top highlight, a 1px 2px drop at 50% black and a 6px 14px drop at 70% black. Arrow chip `#1f1f23` (hover `#28282d`) with a 1px inset ring at 9% white and a soft drop. Focus ring ink at 75%. Status: ok `#3dd68c`, busy and warn `#f5b946`.
-- Light: ink `#18181b`, muted `#63636c`, faint `#9b9ba4`, rail 10% ink, lines 7% ink, surface `#f4f4f5`, pill `#ffffff` with a 7% ink hairline and a 30% soft drop, arrow chip `#ffffff` (hover `#f4f4f5`), focus ink at 70%, ok `#1f9d5c`, busy and warn `#d08a00`.
+- Dark: ink `#f4f4f5`, muted `#8a8a93`, faint `#8a8a93`, rail 8% white, row lines 6% white, log surface `#18181b`, pill `#26262b` with a 1px inset hairline at 8% white, a 1px top highlight, a 1px 2px drop at 50% black and a 6px 14px drop at 70% black. Arrow chip `#1f1f23` (hover `#28282d`) with a 1px inset ring at 9% white and a soft drop. Focus ring ink at 75%. Status: ok `#3dd68c`, busy and warn `#f5b946`.
+- Light: ink `#18181b`, muted `#63636c`, faint `#696973`, rail 10% ink, lines 7% ink, surface `#f4f4f5`, pill `#ffffff` with a 7% ink hairline and a 30% soft drop, arrow chip `#ffffff` (hover `#f4f4f5`), focus ink at 70%, ok `#1f9d5c`, busy and warn `#d08a00`.
 - Selected label ink; others muted, moving to ink on hover (text only, no surface, so hover never reads as a second indicator). Selected count muted; others faint. Disabled tabs 40% opacity, `cursor-not-allowed`.
 - The underline takes `accent` when given, otherwise the ink. Status colours appear only as 7px dots and the WARN level in the demo; everything else is grey.
 
@@ -41,7 +41,7 @@ Build underline tabs in React 19 + Tailwind CSS v4 + `motion/react` (icons from 
 **Demo (the default export)**
 - A stage (`#09090b` dark, `#ececee` light) filling the frame with `min-h-dvh`, centring a 680px card: 20px radius, `#0f0f11` (or `#fbfbfb`), a 1px inset ring at 8%, a deep soft shadow. The card rises 12px out of an 8px blur over 500ms; header at 60ms, tabs at 140ms, footer at 240ms.
 - Header: mono kicker "TIDEWELL / PRODUCTION", the project name "tidewell-web" in display type at `clamp(1.5rem, 5vw, 1.875rem)` with tracking -0.04em, and "LHR1 · IAD1" on the right from the sm breakpoint.
-- Tabs: Overview, Deployments 24, Logs, Analytics, Domains 3, Variables 18 (Storage and Settings join at 7 and 8). Each panel is a real console view: three counted stats over a 24-bar sparkline, recent deploys with status dots, a live log tail, seven days of visitors, domains, masked variables, storage meters and build settings.
+- Tabs: Overview, Deployments 24, Logs, Analytics, Domains 3, Variables 18 (Storage and Settings join at 7 and 8). Each panel is a real console view: three counted stats over a 24-bar sparkline (the first stat spans the full row below a 420px container width, with the other two beneath it), recent deploys with status dots, a live log tail, seven days of visitors, domains, masked variables, storage meters and build settings.
 - Footer: a hairline, then a mono button "Narrow column" (toggles to "Full width") that animates the tabs' column to 300px over 420ms on `cubic-bezier(0.65, 0, 0.35, 1)`, and on the right a key hint that follows `activation`: "← → switch tabs" or "← → move · Enter opens".
 - The cursor clicks Deployments, Analytics and Logs (the line stretches and travels, panels swap), presses Narrow column, then the end arrow scrolls the strip to reveal Domains and Variables.
 
