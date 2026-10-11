@@ -2955,6 +2955,93 @@
     ]
   },
   {
+    "slug": "app-permission-matrix",
+    "name": "Enterprise Permission Matrix",
+    "tier": "pro",
+    "platform": "web",
+    "category": "app",
+    "description": "A role-by-permission editor with prerequisite-aware grants, cascading revocation, fixed roles and an awaited policy save with preserved drafts.",
+    "tags": [
+      "app",
+      "workflow",
+      "interactive",
+      "responsive",
+      "keyboard",
+      "legal-tech",
+      "hr",
+      "enterprise",
+      "permissions"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1060,
+    "usage": "import { PermissionMatrix } from \"@/components/design-for-ai/app-permission-matrix\";\n\n<PermissionMatrix />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Policy heading."
+      },
+      {
+        "name": "scope",
+        "type": "string",
+        "description": "Workspace or matter identifier."
+      },
+      {
+        "name": "roles",
+        "type": "PolicyRole[]",
+        "description": "Unique role IDs, names and descriptions. Locked roles cannot be changed in this editor."
+      },
+      {
+        "name": "permissions",
+        "type": "PolicyPermission[]",
+        "description": "Up to 100 unique permissions with group, description and prerequisite IDs. Cycles and missing references block editing."
+      },
+      {
+        "name": "defaultGrants",
+        "type": "PolicyGrants",
+        "description": "Initial permission IDs by role. Unknown roles, permissions or unmet prerequisites block saving."
+      },
+      {
+        "name": "onSave",
+        "type": "(grants: PolicyGrants) => void | Promise<void>",
+        "description": "Awaited persistence callback. The host must independently authorize and validate policy updates on the server."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface and ink palette; the preview stage follows it."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:500",
+        "click:@permission-reviewer-approve",
+        "wait:800",
+        "click:@save-policy",
+        "wait:1200"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "auth-otp",
     "name": "One-time Code",
     "tier": "pro",

@@ -235,9 +235,26 @@ try {
   assert.deepEqual(await page.evaluate(() => window.restored), ["r2"]);
   assert.match(await page.getByRole("status").innerText(), /Restoration failed/);
   await page.getByRole("button", { name: "Cancel", exact: true }).click();
+  await page.waitForFunction(() => document.activeElement?.textContent?.includes("Restore this revision"));
   assert.equal(await page.getByRole("button", { name: "Restore this revision" }).evaluate(el => el === document.activeElement), true);
   await page.getByRole("button", { name: /Revision 3 CURRENT/ }).click();
   assert.equal(await page.getByRole("button", { name: "Restore this revision" }).isDisabled(), true);
+  await fixture("app-permission-matrix", `window.policies=[];createRoot(document.getElementById('root')).render(<Subject.PermissionMatrix onSave={async grants=>{window.policies.push(grants);throw Error('offline')}}/>);`);
+  await page.getByRole("checkbox", { name: "Approve revisions for Reviewer", exact: true }).check();
+  assert.equal(await page.getByRole("checkbox", { name: "View documents for Reviewer", exact: true }).isChecked(), true);
+  assert.equal(await page.getByRole("checkbox", { name: "Edit documents for Reviewer", exact: true }).isChecked(), true);
+  await page.getByRole("button", { name: "Save policy" }).click();
+  await page.waitForTimeout(100);
+  assert.match(await page.getByRole("status").innerText(), /could not be saved/);
+  assert.deepEqual((await page.evaluate(() => window.policies[0].reviewer)).sort(), ["approve", "edit", "view"]);
+  await page.getByRole("checkbox", { name: "View documents for Reviewer", exact: true }).uncheck();
+  assert.equal(await page.getByRole("checkbox", { name: "Edit documents for Reviewer", exact: true }).isChecked(), false);
+  assert.equal(await page.getByRole("checkbox", { name: "Approve revisions for Reviewer", exact: true }).isChecked(), false);
+  assert.equal(await page.getByRole("checkbox", { name: "View documents for Owner", exact: true }).isDisabled(), true);
+  assert.equal(await page.getByRole("checkbox", { name: "View documents for Owner", exact: true }).isChecked(), true);
+  await fixture("app-permission-matrix", `createRoot(document.getElementById('root')).render(<Subject.PermissionMatrix permissions={[{id:'a',name:'A',group:'Test',description:'A',requires:['b']},{id:'b',name:'B',group:'Test',description:'B',requires:['a']}]}/>);`);
+  assert.match(await page.getByRole("alert").innerText(), /cycle/);
+  assert.equal(await page.getByRole("button", { name: "Save policy" }).isDisabled(), true);
   assert.deepEqual(errors, []);
   console.log("Pro industry workflows: behavioral regression checks passed.");
 } finally {
