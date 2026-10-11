@@ -1,0 +1,116 @@
+{
+  "slug": "input-number-stepper",
+  "name": "Ruler Number Stepper",
+  "tier": "free",
+  "platform": "web",
+  "category": "inputs",
+  "description": "A precise quantity field with a sliding ruler, large editable numerals and bounded step controls for seats, workers or concurrent tasks.",
+  "tags": [
+    "inputs",
+    "input",
+    "number",
+    "stepper",
+    "responsive",
+    "keyboard"
+  ],
+  "dependencies": [
+    "motion",
+    "lucide-react"
+  ],
+  "theme": "dark",
+  "previewHeight": 620,
+  "usage": "import { NumberStepper } from \"@/components/design-for-ai/input-number-stepper\";\n\n<NumberStepper />",
+  "props": [
+    {
+      "name": "label",
+      "type": "string",
+      "default": "\"Parallel runs\"",
+      "description": "Field label."
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "default": "workspace guidance",
+      "description": "Supporting explanation."
+    },
+    {
+      "name": "unit",
+      "type": "string",
+      "default": "\"workers\"",
+      "description": "Value suffix below the figure."
+    },
+    {
+      "name": "value",
+      "type": "number",
+      "default": "undefined",
+      "description": "Controlled value; host must update it in onChange."
+    },
+    {
+      "name": "defaultValue",
+      "type": "number",
+      "default": "4",
+      "description": "Initial uncontrolled value."
+    },
+    {
+      "name": "min",
+      "type": "number",
+      "default": "1",
+      "description": "Lower bound; invalid values become zero."
+    },
+    {
+      "name": "max",
+      "type": "number",
+      "default": "16",
+      "description": "Upper bound, normalized to at least min."
+    },
+    {
+      "name": "step",
+      "type": "number",
+      "default": "1",
+      "description": "Positive finite increment; otherwise one."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": "false",
+      "description": "Disables editing and increment controls."
+    },
+    {
+      "name": "onChange",
+      "type": "(value: number) => void",
+      "default": "undefined",
+      "description": "Emits a finite bounded number after committed edits."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Surface and ink palette; the demo stage follows the chosen theme."
+    }
+  ],
+  "added": "2026-10-11",
+  "demo": {
+    "steps": [
+      "wait:700",
+      "click:@increase",
+      "wait:400",
+      "click:@increase",
+      "wait:400",
+      "click:@decrease",
+      "wait:700"
+    ],
+    "loop": false
+  },
+  "controls": [
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        "dark",
+        "light"
+      ],
+      "default": "dark"
+    }
+  ]
+}
