@@ -5,7 +5,7 @@
 // so the video fades in over the poster without a jump.
 //
 //   node scripts/record-demos.mjs [slug...] [--base=http://localhost:3100]
-//        [--out=public/previews] [--webm] [--sheet=dir] [--max-kb=400]
+//        [--out=public/previews] [--webm] [--sheet=dir] [--max-kb=400] [--frame-viewport]
 //
 // With no slugs it records every component that has a demo. Drives the
 // preview with real input (so CSS :hover shows) and draws the same branded
@@ -34,6 +34,9 @@ const base = flag("base", process.env.PREVIEW_BASE || "http://localhost:3100");
 const out = path.resolve(root, flag("out", "public/previews"));
 const sheetDir = flag("sheet", "");
 const webm = args.includes("--webm");
+// Expanding demos need room beyond the initial card bounds. Refresh the poster
+// with this framing too, so hovering never changes the component scale.
+const frameViewport = args.includes("--frame-viewport");
 const maxBytes = Number(flag("max-kb", "400")) * 1024;
 const only = args.filter((a) => !a.startsWith("--"));
 
@@ -141,7 +144,8 @@ async function record(browser, slug) {
 
     // Poster framing from the frame we're about to start on.
     const first = await page.screenshot({ type: "png" });
-    const frame = mobile ? null : await framing(first, vw, vh);
+    const initialFrame = mobile ? null : await framing(first, vw, vh);
+    const frame = initialFrame && frameViewport ? { cw: vw, ch: vh, cx: 0, cy: 0, bg: initialFrame.bg } : initialFrame;
 
     // Frames: Chrome's screencast, with timestamps, at full quality.
     const cdp = await context.newCDPSession(page);
@@ -289,7 +293,7 @@ async function record(browser, slug) {
     }
 
     const poster = path.join(out, `${slug}.webp`);
-    if (!fs.existsSync(poster)) {
+    if (!fs.existsSync(poster) || frameViewport) {
       const png = path.join(tmp, "poster.png");
       execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-i", mp4Tmp, "-frames:v", "1", png]);
       await sharp(png).webp({ quality: 82 }).toFile(poster);

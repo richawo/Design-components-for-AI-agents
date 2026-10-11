@@ -51,6 +51,6 @@ node scripts/check-component.mjs <slug> --no-video --keep-going --base=http://lo
 node scripts/record-demos.mjs <slug> --sheet=test-results/demo-sheets --base=http://localhost:3100
 ```
 
-Inspect the recording's contact sheet, then commit the matching source and preview updates. Keep scratch recordings, JSON evidence, and browser captures in `test-results/`.
+Inspect the recording's contact sheet. For demos that expand beyond the initial card, pass `--frame-viewport` to keep the entire preview visible; this also refreshes its matching poster. Then commit the matching source and preview updates. Keep scratch recordings, JSON evidence, and browser captures in `test-results/`.
 
 Stop the development server before `npm run build`, because development and production builds share `.next`. Start the production server and smoke-test the changed previews after a successful build.
