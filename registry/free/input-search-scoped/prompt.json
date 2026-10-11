@@ -1,0 +1,94 @@
+{
+  "component": "ScopedSearch",
+  "intent": "A dark, monochrome search field that understands a small query grammar. Typing in:, from: or is: offers that operator's values; a finished token becomes a removable chip inside the field, one per operator. The empty focused field shows recent searches, and the ⌘K keycap at rest morphs into the round clear button once there is content. It reports { query, scopes }; results are the host's job.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 (@container on the root, arbitrary values) plus one iss- namespaced style block for the field ring, hover, focus halo, hidden scrollbar and extended hit areas",
+    "animation": "motion/react: layout springs for chips, AnimatePresence popLayout for chips, the clear-button contents and panel modes, a shared layoutId for the active row, measured height for the panel",
+    "icons": "lucide-react: Search, X, History, CornerDownLeft, FileText, CircleDot, MessagesSquare, PenTool, CalendarDays, Circle, CircleDashed, CircleCheck, Archive"
+  },
+  "layout": {
+    "root": "@container, full width up to 600px; the panel is absolutely positioned 8px under the field at the same width, inside the root",
+    "field": "48px (md) or 56px (lg) tall, radius 12px / 14px, side padding 14px / 16px: search glyph 18px / 20px, a scrolling row (hidden scrollbar, scrolled to the end when chips change) of chips then the input (flex 1, min 9ch), then the keycap/clear slot",
+    "chip": "26px / 30px tall, radius 7px, padding 8px left 4px right, 6px apart: mono operator key, value glyph (icon or initials avatar), short name, 18px remove button with a hit area extended 9px vertically",
+    "panel": "radius 14px, 6px padding; mono header row (title left, key hint right from @md); rows 40px / 44px, radius 9px, 26px tile, label, 13px detail from @sm, mono tabular meta, 22px slot for the active key; footer 'Narrow with' plus 28px mono operator buttons in recents and idle modes",
+    "modes": "recents (empty field), values (trailing key:partial for a known operator), query (text or chips: a Search row plus operator suggestions when the last bare word starts an operator key), idle (footer only)",
+    "collapse": "at narrow widths the detail line and the header key hint hide below the @sm and @md container widths; chips and text scroll horizontally inside the field rather than wrapping"
+  },
+  "typography": {
+    "input": "sans 16px (md) / 18px (lg), tracking -0.005em, so iOS never zooms",
+    "rows": "14px / 15px; detail 13px; matched run in the accent at weight 600",
+    "chips": "13px / 14px; operator key mono 11px",
+    "meta": "Geist Mono 11.5px, tabular-nums, counts formatted 1,284",
+    "header": "mono 10.5px uppercase, tracking 0.08em",
+    "keycap": "mono 11.5px, '⌘ K' with 3px between glyphs"
+  },
+  "color": {
+    "dark": {
+      "stage": "#050506",
+      "field": "#0e0e10",
+      "ring": "rgba(255,255,255,0.09)",
+      "ringHover": "rgba(255,255,255,0.17)",
+      "ringFocus": "rgba(255,255,255,0.32)",
+      "panel": "#111113",
+      "panelRing": "rgba(255,255,255,0.08)",
+      "ink": "#f4f4f5",
+      "body": "#c9c9cf",
+      "muted": "#a1a1aa",
+      "faint": "#8a8a93",
+      "chip": "rgba(255,255,255,0.07)",
+      "chipRing": "rgba(255,255,255,0.10)",
+      "chipArmed": "rgba(255,255,255,0.16)",
+      "activeRow": "rgba(255,255,255,0.065)",
+      "tile": "#1b1b1e"
+    },
+    "light": {
+      "stage": "#f1f1f2",
+      "field": "#ffffff",
+      "ring": "rgba(17,17,19,0.12)",
+      "ringHover": "rgba(17,17,19,0.22)",
+      "ringFocus": "rgba(17,17,19,0.40)",
+      "panel": "#ffffff",
+      "ink": "#111113",
+      "body": "#3f3f46",
+      "muted": "#52525b",
+      "faint": "#6b6b74",
+      "chip": "rgba(17,17,19,0.05)",
+      "activeRow": "rgba(17,17,19,0.05)",
+      "tile": "#f4f4f5"
+    },
+    "accent": "one prop, default the theme's ink: matched letters, caret, the active row's key and a 4px focus halo mixed to 14%"
+  },
+  "motion": {
+    "clearMorph": "one button animates width, height, radius and fill between a 38x22px keycap (radius 6) and a 26px circle over 300ms cubic-bezier(0.65,0,0.35,1); '⌘ K' and the X swap inside with scale 0.6 and a 3px blur; with the hint off the circle grows from width 0",
+    "chips": "enter from scale 0.88 and 4px blur in 220ms ease-out [0.22,1,0.36,1]; layout spring stiffness 500 damping 40; a replaced value cross-fades 5px up",
+    "panel": "opens from y -6, scale 0.985, 4px blur in 240ms; closes in 160ms ease-in; height follows measured content over 280ms; modes cross-fade with 4px offset and 3px blur; rows stagger 40ms (capped after five); active fill travels with a shared layoutId on the same spring",
+    "reducedMotion": "opacity only, 140ms; no transforms, blur, stagger or springs"
+  },
+  "responsive": "Container-driven. Works from a 320px column (chips scroll inside the field, detail and key hints hide) to a 600px max width. Touch targets for chip removal and operator buttons are extended with pseudo-element hit areas.",
+  "accessibility": [
+    "Input is a combobox with aria-autocomplete=list, aria-expanded, aria-controls and aria-activedescendant; suggestions are a listbox of options with aria-selected",
+    "Chips are a labelled list; each remove button is labelled 'Remove scope in: Docs'",
+    "Clear button is labelled 'Clear search'; while it is the keycap it is aria-hidden and out of the tab order",
+    "aria-keyshortcuts names Meta+K and Control+K; the shortcut focuses and selects the field",
+    "Arrow keys move and wrap, Enter picks or submits, Tab completes values and operators, Esc closes then clears, Backspace at the start arms then removes the last chip",
+    "A polite live region announces added, changed and removed scopes, searches and clears",
+    "The closed panel is inert and aria-hidden; keyboard focus shows a 2px outline offset 2px"
+  ],
+  "content": {
+    "operators": "in: Docs (Specs, RFCs and the wiki, 1,284), Issues (3,906), Threads (712), Designs (248), Meetings (96); from: Mara Ilić @mara Design, Jonah Feld @jonah Platform, Inès Okafor @ines Growth, Theo Brandt @theo Support; is: Open, Draft, Shipped, Archived",
+    "recents": "in:issues is:open 'checkout timeout' 12m; from:mara 'Q3 roadmap' 2h; in:docs 'onboarding email copy' Yesterday; 'billing webhook retries' Mon",
+    "placeholder": "Search docs, issues and people",
+    "demo": "Focus shows recents, type in:, pick Docs, type 'onboarding flow', clear with the X; searches you run join the recents"
+  },
+  "avoid": [
+    "A results list, network calls or a fake loading state: results belong to the host",
+    "Coloured chips per operator, glows or gradients",
+    "A panel that pushes content down instead of floating",
+    "The ⌘K hint and an X shown side by side instead of one shape that morphs",
+    "Chips that wrap the field onto two lines",
+    "Losing input focus when a suggestion is clicked"
+  ],
+  "robustness": "Resolve all complete known tokens in pasted text as well as individually typed tokens. Preserve unknown operators and values as free text. Never submit or complete a suggestion during IME composition."
+}

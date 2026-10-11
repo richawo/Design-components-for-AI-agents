@@ -1,0 +1,202 @@
+{
+  "slug": "input-search-scoped",
+  "name": "Scoped Search",
+  "tier": "free",
+  "platform": "web",
+  "category": "inputs",
+  "description": "A search bar that turns scope tokens like in:docs and from:@mara into removable chips as you type, shows recents on focus and morphs its ⌘K hint into a clear button.",
+  "tags": [
+    "search",
+    "search bar",
+    "scoped search",
+    "filters",
+    "chips",
+    "tokens",
+    "combobox",
+    "command k",
+    "autocomplete",
+    "dark",
+    "monochrome"
+  ],
+  "dependencies": [
+    "motion",
+    "lucide-react"
+  ],
+  "theme": "dark",
+  "previewHeight": 620,
+  "usage": "import { ScopedSearch } from \"@/components/design-for-ai/input-search-scoped\";\nimport type { ScopedSearchValue } from \"@/components/design-for-ai/input-search-scoped\";\n\n// The field parses \"in:docs\" and \"from:@mara\" into chips and hands you the result.\n// Fetching and showing results is up to you.\nconst [search, setSearch] = useState<ScopedSearchValue>({ query: \"\", scopes: [] });\n\n<ScopedSearch\n  placeholder=\"Search docs, issues and people\"\n  recentSearches={recent}\n  onChange={setSearch}\n  onSubmit={({ query, scopes }) => runSearch(query, scopes)}\n/>\n\n// Your own operators: typing \"team:\" offers these values.\n<ScopedSearch\n  operators={[\n    { key: \"team\", label: \"Team\", hint: \"a team, like Growth\", values: [{ id: \"growth\", label: \"Growth\", meta: 14 }] },\n  ]}\n/>\n\n// The suggestions sit absolutely under the field, inside its own box. Give the parent room\n// below, or lift the panel into a portal at document.body if it must escape an overflow clip.",
+  "props": [
+    {
+      "name": "operators",
+      "type": "ScopeOperator[]",
+      "default": "in:, from:, is:",
+      "description": "Operators the field understands. Each has a key (the word before the colon), a label, a one-line hint and its values ({ id, label, chip?, detail?, meta?, icon?, initials? }). Typing key: opens that operator's values."
+    },
+    {
+      "name": "scopes",
+      "type": "boolean",
+      "default": "true",
+      "description": "Parse scope tokens into chips. On, a finished token (picked from the list, completed with Tab, or followed by a space) becomes a removable chip, one per operator, and the panel offers the operators. Off, in:docs stays plain text and recents show their scopes as text."
+    },
+    {
+      "name": "recents",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show recent searches when the empty field is focused. Off, an empty focused field shows only the Narrow with operators (or nothing when scopes is off too)."
+    },
+    {
+      "name": "recentSearches",
+      "type": "RecentSearch[]",
+      "default": "4 sample searches",
+      "description": "Recent searches as { id, query, scopes?, when? }. Picking one restores its text and chips and submits it. The demo adds every search you run to the top."
+    },
+    {
+      "name": "shortcutHint",
+      "type": "boolean",
+      "default": "true",
+      "description": "Shows a ⌘K keycap (Ctrl K off Apple platforms) at the right of the empty field and binds that shortcut to focus it. Once there is something to clear, the keycap morphs into the round clear button. Off, the clear button grows out of nothing."
+    },
+    {
+      "name": "size",
+      "type": "\"md\" | \"lg\"",
+      "default": "\"md\"",
+      "description": "48px or 56px tall. Text steps from 16px to 18px, chips from 26px to 30px, suggestion rows from 40px to 44px."
+    },
+    {
+      "name": "placeholder",
+      "type": "string",
+      "default": "\"Search docs, issues and people\"",
+      "description": "Shown while the field has no text and no chips."
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "default": "\"Search\"",
+      "description": "Accessible name of the combobox."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Near-black field and panel with white ink, or the white inverse on a pale stage."
+    },
+    {
+      "name": "accent",
+      "type": "string",
+      "default": "theme ink",
+      "description": "The one accent: the matched letters in suggestions, the caret, the focus halo and the active row's key. Monochrome until you set it."
+    },
+    {
+      "name": "defaultQuery",
+      "type": "string",
+      "default": "\"\"",
+      "description": "Text on first render."
+    },
+    {
+      "name": "defaultScopes",
+      "type": "ScopeToken[]",
+      "default": "[]",
+      "description": "Chips on first render, as { key, value } pairs."
+    },
+    {
+      "name": "onChange",
+      "type": "(value: { query: string; scopes: ScopeToken[] }) => void",
+      "description": "Called whenever the text or the scopes change, with the free text and the parsed scopes."
+    },
+    {
+      "name": "onSubmit",
+      "type": "(value: { query: string; scopes: ScopeToken[] }) => void",
+      "description": "Called on Enter, on the Search row, or when a recent search is picked."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "description": "Extra classes on the root, for width or margin in the host layout."
+    }
+  ],
+  "added": "2026-10-10",
+  "demo": {
+    "steps": [
+      "wait:300",
+      "click:@field",
+      "wait:750",
+      "type:in:",
+      "wait:450",
+      "click:@scope-docs",
+      "wait:200",
+      "type:onboarding flow",
+      "wait:500",
+      "click:@clear",
+      "wait:800"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "scopes",
+      "label": "Scope chips",
+      "kind": "toggle",
+      "default": true,
+      "group": "Behaviour"
+    },
+    {
+      "prop": "recents",
+      "label": "Recent searches",
+      "kind": "toggle",
+      "default": true,
+      "group": "Behaviour"
+    },
+    {
+      "prop": "shortcutHint",
+      "label": "⌘K hint",
+      "kind": "toggle",
+      "default": true,
+      "group": "Behaviour"
+    },
+    {
+      "prop": "placeholder",
+      "label": "Placeholder",
+      "kind": "text",
+      "default": "Search docs, issues and people",
+      "group": "Content"
+    },
+    {
+      "prop": "size",
+      "label": "Size",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "md",
+          "label": "Medium"
+        },
+        {
+          "value": "lg",
+          "label": "Large"
+        }
+      ],
+      "default": "md",
+      "group": "Look"
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark",
+      "group": "Look"
+    },
+    {
+      "prop": "$replay",
+      "label": "Replay",
+      "kind": "action"
+    }
+  ]
+}
