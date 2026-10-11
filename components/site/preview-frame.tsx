@@ -1,9 +1,11 @@
 "use client";
 
 import { motion } from "motion/react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PREVIEW_CHANNEL, decodeHash, defaultValues, diffValues, encodeHash, parseFromPreview, type Body, type ToPreview } from "@/lib/demo/protocol";
 import type { ComponentControl, ControlValue, PropDoc } from "@/lib/registry-types";
+import { useAccent } from "@/lib/accent-client";
+import { previewAccent } from "@/lib/preview-accent";
 import { ControlsPanel } from "./controls-panel";
 
 const VIEWPORTS = [
@@ -53,7 +55,10 @@ export function PreviewFrame({
   /* -------------------------------------------------------------- */
   /* Tuned values and the demo, over the preview protocol            */
   /* -------------------------------------------------------------- */
-  const [values, setValues] = useState<Record<string, ControlValue>>(() => defaultValues(controls));
+  const accent = useAccent();
+  const accentProp = previewAccent("", controls, props).prop;
+  const [tuned, setTuned] = useState<Record<string, ControlValue>>({});
+  const values = useMemo(() => ({ ...defaultValues(controls), ...(accent && accentProp ? { [accentProp]: accent } : {}), ...tuned }), [controls, accent, accentProp, tuned]);
   const [actions, setActions] = useState<Record<string, ControlValue>>({});
   const [playing, setPlaying] = useState(false);
   const ready = useRef(false);
@@ -78,7 +83,7 @@ export function PreviewFrame({
   useEffect(() => {
     if (!controls.length) return;
     const fromHash = decodeHash(controls, window.location.hash);
-    if (Object.keys(fromHash).length) setValues((v) => ({ ...v, ...fromHash }));
+    if (Object.keys(fromHash).length) setTuned(fromHash);
     // Only on first load; later edits write the hash themselves.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -86,12 +91,14 @@ export function PreviewFrame({
   // Push tuned values to the preview and into the URL (diff only, so a clean page has a clean URL).
   useEffect(() => {
     if (!controls.length) return;
-    send({ type: "props", props: { ...diffValues(controls, values), ...actions }, remount: remountNext.current });
+    send({ type: "props", props: { ...diffValues(controls, values), ...(accentProp && values[accentProp] !== undefined ? { [accentProp]: values[accentProp] } : {}), ...actions }, remount: remountNext.current });
     remountNext.current = false;
-    const hash = encodeHash(controls, values);
+    // Only component edits belong to a shared link. A browser preference must
+    // not turn into a sticky per-component override after reloading.
+    const hash = encodeHash(controls, tuned);
     const url = `${window.location.pathname}${window.location.search}${hash ? `#${hash}` : ""}`;
     if (url !== `${window.location.pathname}${window.location.search}${window.location.hash}`) window.history.replaceState(window.history.state, "", url);
-  }, [values, actions, controls, send]);
+  }, [values, tuned, actions, controls, accentProp, send]);
 
   const tryAutoplay = useCallback(() => {
     if (hasDemo && autoplay.current && visible.current && ready.current) send({ type: "demo", action: "play" });
@@ -104,7 +111,7 @@ export function PreviewFrame({
       if (!msg) return;
       if (msg.type === "ready") {
         ready.current = true;
-        if (controls.length) send({ type: "props", props: { ...diffValues(controls, valuesRef.current), ...actionsRef.current } });
+        if (controls.length) send({ type: "props", props: { ...diffValues(controls, valuesRef.current), ...(accentProp && valuesRef.current[accentProp] !== undefined ? { [accentProp]: valuesRef.current[accentProp] } : {}), ...actionsRef.current } });
         tryAutoplay();
       } else {
         setPlaying(msg.playing);
@@ -120,7 +127,7 @@ export function PreviewFrame({
       // Not ours yet (still navigating); it will announce itself when it loads.
     }
     return () => window.removeEventListener("message", onMessage);
-  }, [controls, send, tryAutoplay]);
+  }, [controls, accentProp, send, tryAutoplay]);
 
   // Play when the preview is mostly on screen; stop when it leaves.
   useEffect(() => {
@@ -145,7 +152,7 @@ export function PreviewFrame({
 
   const onChange = (c: ComponentControl, v: ControlValue) => {
     if (c.remount) remountNext.current = true;
-    setValues((cur) => ({ ...cur, [c.prop]: v }));
+    setTuned((cur) => ({ ...cur, [c.prop]: v }));
   };
   const onAction = (c: ComponentControl, v: ControlValue | null) => {
     if (v === null) return replay();
@@ -155,7 +162,7 @@ export function PreviewFrame({
   };
   const onReset = () => {
     remountNext.current = controls.some((c) => c.remount && values[c.prop] !== c.default);
-    setValues(defaultValues(controls));
+    setTuned({});
     setActions({});
   };
 

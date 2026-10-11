@@ -5,6 +5,7 @@ import "@fontsource/instrument-serif/400-italic.css";
 import "@fontsource-variable/geist";
 import "@fontsource-variable/geist-mono";
 import "@/app/globals.css";
+import { ACCENT_BOOTSTRAP } from "@/lib/accent";
 import { site } from "@/lib/site";
 import { localeByCode } from "@/lib/blog/locales.mjs";
 
@@ -26,7 +27,8 @@ export const rootViewport: Viewport = { themeColor: "#000000", width: "device-wi
 export function RootDocument({ children, locale = "en" }: { children: React.ReactNode; locale?: string }) {
   const language = localeByCode(locale) ?? localeByCode("en")!;
   return (
-    <html lang={language.htmlLang} dir={language.direction} data-scroll-behavior="smooth">
+    <html suppressHydrationWarning lang={language.htmlLang} dir={language.direction} data-scroll-behavior="smooth">
+      <head><script dangerouslySetInnerHTML={{ __html: ACCENT_BOOTSTRAP }} /></head>
       <body>{children}</body>
     </html>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type ComponentType } from "react";
+import { useAccent } from "@/lib/accent-client";
 import { previews } from "@/registry/__generated__/previews";
 
 /**
@@ -18,6 +19,7 @@ export function LiveSlot({
   props?: Record<string, unknown>;
   fallback?: React.ReactNode;
 }) {
+  const accent = useAccent();
   const [Comp, setComp] = useState<ComponentType<Record<string, unknown>> | null>(null);
   useEffect(() => {
     let live = true;
@@ -32,5 +34,5 @@ export function LiveSlot({
     };
   }, [slug, exportName]);
   if (!previews[slug]) return <>{fallback}</>;
-  return Comp ? <Comp {...props} /> : null;
+  return Comp ? <Comp {...(accent ? { accent } : {})} {...props} /> : null;
 }

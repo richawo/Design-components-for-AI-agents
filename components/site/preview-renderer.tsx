@@ -1,6 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState, type ComponentType } from "react";
+import { useAccent } from "@/lib/accent-client";
+import { accentInk, parseAccent } from "@/lib/accent";
+import type { PreviewAccent } from "@/lib/preview-accent";
 import { previews } from "@/registry/__generated__/previews";
 import { DemoAborted, DemoPlayer, whenSmooth, type CursorHandle } from "@/lib/demo/player";
 import { PREVIEW_CHANNEL, parseToPreview, type Body, type FromPreview } from "@/lib/demo/protocol";
@@ -25,7 +28,8 @@ type AnyComponent = ComponentType<Record<string, ControlValue>>;
  * demo's own, and the parent can play, stop or replay the demo script. Opened
  * on its own (screenshots, a new tab) nothing autoplays.
  */
-export function PreviewRenderer({ slug, platform, theme, demo }: { slug: string; platform: "web" | "mobile"; theme: "light" | "dark"; demo?: DemoScript }) {
+export function PreviewRenderer({ slug, platform, theme, demo, accentConfig }: { accentConfig: PreviewAccent; slug: string; platform: "web" | "mobile"; theme: "light" | "dark"; demo?: DemoScript }) {
+  const accent = useAccent();
   const [Comp, setComp] = useState<AnyComponent | null>(null);
   const [overrides, setOverrides] = useState<Record<string, ControlValue>>({});
   const [mount, setMount] = useState(0);
@@ -128,7 +132,13 @@ export function PreviewRenderer({ slug, platform, theme, demo }: { slug: string;
 
   useEffect(() => () => run.current?.abort(), []);
 
-  const node = Comp ? <Comp key={mount} {...overrides} /> : null;
+  const effectiveAccent = (accentConfig.prop && parseAccent(overrides[accentConfig.prop])) || accent;
+  const accentProps = accent && accentConfig.prop ? { [accentConfig.prop]: accent } : {};
+  const accentCss = effectiveAccent ? accentConfig.variables.map(token =>
+    `[style*="${token}"]{${token}:${effectiveAccent}!important;${token === "--accent" ? `--on:${accentInk(effectiveAccent)}!important;` : ""}}` +
+    `[class~="bg-(${token})"],[class~="bg-[var(${token})]"]{color:${accentInk(effectiveAccent)}!important;}`
+  ).join("\n") : "";
+  const node = <>{accentCss && <style data-preview-accent>{accentCss}</style>}{Comp ? <Comp key={mount} {...accentProps} {...overrides} /> : null}</>;
 
   if (platform === "mobile") {
     return (

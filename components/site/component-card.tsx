@@ -22,7 +22,7 @@ export function Chip({ children, className = "" }: { children: React.ReactNode; 
 
 export function TierBadge({ tier, className = "" }: { tier: "free" | "pro"; className?: string }) {
   return tier === "pro" ? (
-    <span className={`${CHIP} bg-site-accent/12 text-site-accent ring-site-accent/30 ${className}`}>Pro</span>
+    <span className={`${CHIP} bg-site-accent/12 text-site-accent-readable ring-site-accent/30 ${className}`}>Pro</span>
   ) : (
     <Chip className={className}>Free</Chip>
   );

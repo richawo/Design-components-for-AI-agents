@@ -147,7 +147,7 @@ function Card({
       style={step(CARD_STEP + order)}
     >
       {featured && (
-        <span className="absolute right-6 top-7 rounded-full bg-site-accent px-2.5 py-1 font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-black sm:right-8 sm:top-8">
+        <span className="absolute right-6 top-7 rounded-full bg-site-accent px-2.5 py-1 font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-site-on-accent sm:right-8 sm:top-8">
           Most popular
         </span>
       )}

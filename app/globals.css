@@ -47,6 +47,8 @@ html[dir="rtl"] .site-prose code {
   --color-site-fg-2: #a0a0a8;
   --color-site-fg-3: #8a8a94;
   --color-site-accent: #ff7a45;
+  --color-site-on-accent: #000000;
+  --color-site-accent-readable: #ff7a45;
   --color-site-ok: #3ecf8e;
   --color-site-danger: #ff6b6b;
 
@@ -72,7 +74,7 @@ html[dir="rtl"] .site-prose code {
     color: #fff;
   }
   :focus-visible {
-    outline: 2px solid var(--color-site-accent);
+    outline: 2px solid var(--color-site-accent-readable);
     outline-offset: 2px;
     border-radius: 6px;
   }
@@ -320,7 +322,7 @@ details.site-disclosure[open]::details-content {
   /* The one coloured button: buying Pro. */
   .site-btn-accent {
     background: var(--color-site-accent);
-    color: #000;
+    color: var(--color-site-on-accent);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 1px 2px rgba(0, 0, 0, 0.4);
   }
   .site-btn-secondary {
