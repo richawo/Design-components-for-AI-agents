@@ -375,7 +375,7 @@ const STAGE = {
   card: "#111113",
   ink: "#f4f4f5",
   muted: "#a1a1aa",
-  faint: "#71717a",
+  faint: "#8a8a93",
 } as const;
 
 const rise: Variants = {

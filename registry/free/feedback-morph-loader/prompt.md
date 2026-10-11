@@ -12,7 +12,7 @@ Build a tiny loader in React 19 + Tailwind CSS v4 + `motion/react` whose two str
 **Colour**
 - Loading and idle ink is `currentColor` (the demo uses #f4f4f5 on #111113). Idle drops the whole glyph to 45% opacity.
 - Semantic only: success #6fd08c, error #ff7a6b. The stroke colour transitions over 200ms as the fold starts. Nothing else is coloured.
-- Demo: stage #050506, card #111113 with an inset 1px rgba(255,255,255,0.08) ring, a 1px top highlight at 4% and a deep soft shadow; specimen tile white 2.5% with a 6% ring; muted text #a1a1aa, faint #71717a, hairlines white 6%.
+- Demo: stage #050506, card #111113 with an inset 1px rgba(255,255,255,0.08) ring, a 1px top highlight at 4% and a deep soft shadow; specimen tile white 2.5% with a 6% ring; muted text #a1a1aa, faint #8a8a93, hairlines white 6%.
 
 **Motion**
 - One rAF loop writes the two `d` attributes straight to the DOM (never through React state), and only runs while loading or mid-fold; it stops offscreen (IntersectionObserver) and in hidden tabs.

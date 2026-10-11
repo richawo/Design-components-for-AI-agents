@@ -21,7 +21,7 @@
   "typography": {
     "title": "display, clamp(1.25rem, 0.9rem + 2.2cqi, 1.75rem), 500, leading 1.1, tracking -0.03em, text-balance",
     "sub": "13px / 20px, tabular-nums, #a1a1aa",
-    "eyebrow": "mono 11px uppercase, tracking 0.16em, #71717a",
+    "eyebrow": "mono 11px uppercase, tracking 0.16em, #8a8a93",
     "rows": "14px / 20px, tracking -0.01em; meta mono 11px tabular"
   },
   "color": {
