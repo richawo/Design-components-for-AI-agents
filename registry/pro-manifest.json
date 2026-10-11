@@ -8409,6 +8409,78 @@
     ]
   },
   {
+    "slug": "content-release-notes",
+    "name": "Editorial Release Notes",
+    "tier": "pro",
+    "platform": "web",
+    "category": "content",
+    "description": "An editorial release timeline with version markers, feature and fix filters, and progressive disclosure for older entries, built for product changelogs.",
+    "tags": [
+      "content",
+      "content",
+      "release",
+      "notes",
+      "responsive",
+      "keyboard"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 860,
+    "usage": "import { ReleaseNotes } from \"@/components/design-for-ai/content-release-notes\";\n\n<ReleaseNotes />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"The work keeps moving.\"",
+        "description": "Section heading."
+      },
+      {
+        "name": "releases",
+        "type": "ReleaseNote[]",
+        "default": "three sample product releases",
+        "description": "Ordered versions, ISO date labels, summaries and typed feature/fix entries."
+      },
+      {
+        "name": "initialCount",
+        "type": "number",
+        "default": "2",
+        "description": "Initial number of matching releases; remaining entries can be disclosed."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface and ink palette; the demo stage follows the chosen theme."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:600",
+        "click:@release-fix",
+        "wait:700",
+        "click:@release-feature",
+        "wait:700"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "dashboard-kpi-cards",
     "name": "KPI Cards",
     "tier": "pro",
