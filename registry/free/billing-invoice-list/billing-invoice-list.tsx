@@ -277,7 +277,7 @@ function Filter({ value, counts, onChange, reduce }: { value: InvoiceFilter; cou
             data-demo={`filter-${o.value}`}
             onClick={() => onChange(o.value)}
             onKeyDown={(e) => onKey(e, i)}
-            className={`relative flex h-9 items-center justify-center gap-1 rounded-full text-[12.5px] font-medium whitespace-nowrap focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--inv-ink) ${on ? "text-(--inv-ink)" : "text-(--inv-muted) hover:text-(--inv-ink)"}`}
+            className={`[@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 relative flex h-9 items-center justify-center gap-1 rounded-full text-[12.5px] font-medium whitespace-nowrap focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--inv-ink) ${on ? "text-(--inv-ink)" : "text-(--inv-muted) hover:text-(--inv-ink)"}`}
           >
             {on && <motion.span layoutId={pillId} aria-hidden="true" className="absolute inset-0 rounded-full bg-(--inv-track) shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]" transition={reduce ? { duration: 0 } : SPRING_UI} />}
             <span className="relative">{o.label}</span>
@@ -374,7 +374,7 @@ function DownloadButton({ invoice, saved, onSave, reduce }: { invoice: InvoiceRo
       aria-label={saved ? `${invoice.id} saved` : `Download ${invoice.id}`}
       onClick={onSave}
       whileTap={reduce ? undefined : { scale: 0.97 }}
-      className={`grid size-11 place-items-center rounded-[12px] transition-[background-color,color] duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--inv-ink) ${saved ? "bg-(--inv-accent) text-(--inv-on-accent)" : "text-(--inv-ink) shadow-[inset_0_0_0_1px_var(--inv-line)] hover:bg-(--inv-raised)"}`}
+      className={`[@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 grid size-11 place-items-center rounded-[12px] transition-[background-color,color] duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--inv-ink) ${saved ? "bg-(--inv-accent) text-(--inv-on-accent)" : "text-(--inv-ink) shadow-[inset_0_0_0_1px_var(--inv-line)] hover:bg-(--inv-raised)"}`}
     >
       <AnimatePresence mode="popLayout" initial={false}>
         <motion.span key={saved ? "saved" : "download"} initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: reduce ? 1 : 0.8, transition: { duration: 0.12 } }} transition={{ duration: 0.18, ease: EASE }}>
