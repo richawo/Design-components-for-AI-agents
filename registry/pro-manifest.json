@@ -14528,6 +14528,85 @@
     ]
   },
   {
+    "slug": "fashion-size-guide",
+    "name": "Garment Size Guide Studio",
+    "tier": "pro",
+    "platform": "web",
+    "category": "commerce",
+    "description": "Editable garment measurements with centimetre and inch previews. A considered, responsive fashion workspace with typed integration points.",
+    "tags": [
+      "fashion",
+      "workflow",
+      "responsive",
+      "keyboard",
+      "commerce"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "light",
+    "previewHeight": 1060,
+    "usage": "import { SizeGuide } from \"@/components/design-for-ai/fashion-size-guide\";\n\n<SizeGuide />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Main heading."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "description": "Supporting context."
+      },
+      {
+        "name": "sizes",
+        "type": "GuideSize[]",
+        "description": "Unique size identifiers and display labels in presentation order."
+      },
+      {
+        "name": "measurements",
+        "type": "GuideMeasurement[]",
+        "description": "Measurement definitions and initial integer millimetres for every size. Draft values are seeded on mount."
+      },
+      {
+        "name": "onSave",
+        "type": "(guide:SizeGuideDraft)=>void|Promise<void>",
+        "description": "Save validated measurements as integer millimetres, preserving full precision."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"light\"",
+        "description": "Surface, border and ink palette."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@measure-1",
+        "wait:500",
+        "click:@unit-in",
+        "wait:650",
+        "click:@save",
+        "wait:1000"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "light"
+      }
+    ]
+  },
+  {
     "slug": "feature-sticky-scroll",
     "name": "Sticky Scroll Story",
     "tier": "pro",
