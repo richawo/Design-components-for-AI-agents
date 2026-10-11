@@ -75,12 +75,13 @@
     "field": "Height glides to the mirror's measured height over 180ms ease-out as lines are added, and snaps under reduced motion."
   },
   "behaviour": {
-    "enter": "Sends the trimmed message and clears the field. Empty or busy: nothing happens.",
+    "enter": "Sends the trimmed message. Clear only after callback acceptance, and only if the user has not edited the draft meanwhile. Keep the draft during a returned promise. Empty or busy: nothing happens.",
     "shiftEnter": "Breaks the line.",
     "menus": "@ opens files at the start of a word, / opens commands only at the start of a line. Up and Down move, Enter or Tab pick, Escape closes and stays closed for that trigger. Picking writes @name or /name with a trailing space.",
     "escape": "While generating, Escape stops.",
     "uncontrolled": "Generating lasts replyMs (1800) or until a returned promise settles. defaultValue sets the starting text. Tuning maxRows in the demo seeds a five-line draft so the cap is visible at rest.",
-    "controlled": "Pass state and onStateChange; the host receives generating on send and idle on stop, and ends the reply itself."
+    "controlled": "Pass state and onStateChange. Send requests generating; Stop, failure, and returned-promise completion request idle. A void callback leaves completion to the host.",
+    "failure": "Catch synchronous throws and rejected promises, keep the editable draft, reset to idle, and show configurable errorMessage in a role=alert paragraph described by the field. Ignore stopped, stale or unmounted requests."
   },
   "responsive": {
     "widths": "Designed at 320, 390, 768, 1024, 1440 and 1920px. The field fills the width, the popover clamps to the field, and under 420px of container width the footer hides the shift-return hint (and the @ and / hints only while generating). No horizontal overflow."
@@ -91,7 +92,8 @@
     "A single polite live region announces the open menu (count, highlighted row, or no matches), otherwise Generating a reply while a reply runs.",
     "The send button's label changes between Send message and Stop generating; it is aria-disabled (not disabled) when there is nothing to send and has a 44px hit area.",
     "Focus stays in the field, including when a menu row is pressed (mousedown is prevented). Focus-visible uses a 2px ink ring with offset on the send button, and a 2px line-strong ring around the frame only after keyboard (Tab) focus, never on click; a pointer focus shows only the brighter border.",
-    "Reduced motion keeps every state change readable without movement."
+    "Reduced motion keeps every state change readable without movement.",
+    "Submission failure is visible and announced by role=alert; aria-describedby connects it to the field."
   ],
   "content": {
     "placeholder": "Ask anything…",

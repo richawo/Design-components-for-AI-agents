@@ -42,10 +42,12 @@ export type AiComposerMinimalProps = {
   defaultValue?: string;
   /** Controlled state. Leave undefined and the composer owns it. */
   state?: AiComposerState;
-  /** Fires when the composer wants to change state: on send, and on stop. */
+  /** Fires on send, stop, failure, and completion of a returned promise. */
   onStateChange?: (next: AiComposerState) => void;
   /** Receives the trimmed message. Return a promise to keep the composer generating until it settles. */
   onSubmit?: (message: string) => void | Promise<unknown>;
+  /** Shown when submission throws or a returned promise rejects. */
+  errorMessage?: string;
   /** Fires when Stop is pressed while generating. */
   onStop?: () => void;
   /** Uncontrolled only: how long a send keeps generating when onSubmit returns nothing. */
@@ -197,6 +199,7 @@ export function AiComposerMinimal({
   state: stateProp,
   onStateChange,
   onSubmit,
+  errorMessage = "Couldn't send. Your draft is still here.",
   onStop,
   replyMs = DEFAULT_REPLY_MS,
   files = DEFAULT_FILES,
@@ -239,6 +242,7 @@ export function AiComposerMinimal({
   const busy = (controlled ? stateProp : ownState) === "generating";
 
   const [value, setValue] = useState(defaultValue);
+  const [submissionError, setSubmissionError] = useState(false);
   const [caret, setCaret] = useState(defaultValue.length);
   const [active, setActive] = useState(0);
   const [dismissed, setDismissed] = useState<string | null>(null);
@@ -366,32 +370,42 @@ export function AiComposerMinimal({
   const stop = () => {
     runId.current += 1;
     window.clearTimeout(replyTimer.current);
-    onStop?.();
-    onStateChange?.("idle");
     if (!controlled) setOwnState("idle");
+    onStateChange?.("idle");
+    onStop?.();
   };
 
   const submit = () => {
     const message = value.trim();
     if (!message || busy) return;
+    const draft = value;
     const id = ++runId.current;
-    setValue("");
-    setCaret(0);
+    setSubmissionError(false);
     setDismissed(null);
     onStateChange?.("generating");
-    if (controlled) {
-      onSubmit?.(message);
-      return;
-    }
-    setOwnState("generating");
-    const settle = () => {
-      if (runId.current === id && mounted.current) setOwnState("idle");
+    if (!controlled) setOwnState("generating");
+    const current = () => runId.current === id && mounted.current;
+    // Keep the draft until acceptance. A late completion must never erase a
+    // newer edit, revive a stopped request, or update an unmounted composer.
+    const accepted = () => {
+      if (current()) setValue((text) => text === draft ? "" : text);
     };
-    const result = onSubmit?.(message);
-    if (result && typeof (result as PromiseLike<unknown>).then === "function") {
-      (result as Promise<unknown>).then(settle, settle);
-    } else {
-      replyTimer.current = window.setTimeout(settle, replyMs);
+    const settle = (failed = false) => {
+      if (!current()) return;
+      setSubmissionError(failed);
+      if (!controlled) setOwnState("idle");
+      onStateChange?.("idle");
+    };
+    try {
+      const result = onSubmit?.(message);
+      if (result && typeof result.then === "function") {
+        Promise.resolve(result).then(() => { accepted(); settle(); }, () => settle(true));
+      } else {
+        accepted();
+        if (!controlled) replyTimer.current = window.setTimeout(() => settle(), replyMs);
+      }
+    } catch {
+      settle(true);
     }
   };
 
@@ -500,8 +514,9 @@ export function AiComposerMinimal({
                 aria-autocomplete="list"
                 aria-controls={open ? `${uid}-list` : undefined}
                 aria-activedescendant={open && options.length > 0 ? optionId(index) : undefined}
-                aria-describedby={open ? hintId : undefined}
+                aria-describedby={[open ? hintId : "", submissionError ? `${uid}-error` : ""].filter(Boolean).join(" ") || undefined}
                 onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
+                  setSubmissionError(false);
                   setValue(event.target.value);
                   setCaret(event.target.selectionStart);
                   setActive(0);
@@ -692,6 +707,12 @@ export function AiComposerMinimal({
           )}
         </span>
       </motion.div>
+
+      {submissionError && (
+        <p id={`${uid}-error`} role="alert" className="mt-3 px-1 text-[13px] leading-5" style={{ color: theme === "dark" ? "#fda4af" : "#b42335" }}>
+          {errorMessage}
+        </p>
+      )}
 
       <span id={hintId} className="sr-only">
         Up and down to choose, Enter to insert, Escape to close

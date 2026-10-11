@@ -19,7 +19,7 @@
   ],
   "theme": "dark",
   "previewHeight": 720,
-  "usage": "import { AiComposerMinimal } from \"@/components/design-for-ai/ai-composer-minimal\";\n\n<AiComposerMinimal\n  placeholder=\"Ask anything…\"\n  files={[{ id: \"roadmap\", name: \"q3-launch-roadmap.md\", detail: \"Edited today\" }]}\n  onSubmit={async (message) => { await ask(message); }} // return a promise to keep it generating\n  onStop={() => abort()}\n/>\n\n// Controlled: you own the state\nconst [state, setState] = useState<AiComposerState>(\"idle\");\n<AiComposerMinimal state={state} onStateChange={setState} onSubmit={(m) => send(m)} />",
+  "usage": "import { AiComposerMinimal, type AiComposerState } from \"@/components/design-for-ai/ai-composer-minimal\";\n\n<AiComposerMinimal\n  placeholder=\"Ask anything…\"\n  files={[{ id: \"roadmap\", name: \"q3-launch-roadmap.md\", detail: \"Edited today\" }]}\n  onSubmit={async (message) => { await ask(message); }} // return a promise to keep it generating\n  onStop={() => abort()}\n/>\n\n// Controlled: import useState from React; you own the state\nconst [state, setState] = useState<AiComposerState>(\"idle\");\n<AiComposerMinimal state={state} onStateChange={setState} onSubmit={(m) => send(m)} />",
   "props": [
     {
       "name": "placeholder",
@@ -41,12 +41,18 @@
     {
       "name": "onStateChange",
       "type": "(next: AiComposerState) => void",
-      "description": "Fires on send (generating) and on Stop (idle). Required when you pass state, because the host ends the reply."
+      "description": "Fires generating on send and idle on Stop, submission failure, or returned-promise completion. Pass it with controlled state."
     },
     {
       "name": "onSubmit",
       "type": "(message: string) => void | Promise<unknown>",
-      "description": "Receives the trimmed message. Return a promise to keep generating until it settles."
+      "description": "Receives the trimmed message. A returned promise keeps the draft until acceptance; rejection or a synchronous throw keeps it editable and shows an error."
+    },
+    {
+      "name": "errorMessage",
+      "type": "string",
+      "default": "\"Couldn't send. Your draft is still here.\"",
+      "description": "Visible, announced failure copy for a thrown submission or rejected promise."
     },
     {
       "name": "onStop",
