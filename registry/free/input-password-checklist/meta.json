@@ -1,0 +1,97 @@
+{
+  "slug": "input-password-checklist",
+  "name": "Password Requirements",
+  "tier": "free",
+  "platform": "web",
+  "category": "inputs",
+  "description": "A quiet password field with a reveal control and live requirement checklist, showing exactly which rules are met without inventing a security score.",
+  "tags": [
+    "inputs",
+    "input",
+    "password",
+    "checklist",
+    "responsive",
+    "keyboard"
+  ],
+  "dependencies": [
+    "motion",
+    "lucide-react"
+  ],
+  "theme": "dark",
+  "previewHeight": 620,
+  "usage": "import { PasswordChecklist } from \"@/components/design-for-ai/input-password-checklist\";\n\n<PasswordChecklist />",
+  "props": [
+    {
+      "name": "label",
+      "type": "string",
+      "default": "\"Choose a password\"",
+      "description": "Field heading and accessible label."
+    },
+    {
+      "name": "hint",
+      "type": "string",
+      "default": "unique phrase guidance",
+      "description": "Supporting copy."
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "default": "undefined",
+      "description": "Controlled password, never persisted by the component."
+    },
+    {
+      "name": "defaultValue",
+      "type": "string",
+      "default": "\"\"",
+      "description": "Initial uncontrolled text."
+    },
+    {
+      "name": "rules",
+      "type": "PasswordRule[]",
+      "default": "three sample rules",
+      "description": "Named predicates; empty arrays show no configured requirements. Rules are policy checks, not a password strength estimate."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": "false",
+      "description": "Disables the field and reveal control."
+    },
+    {
+      "name": "onChange",
+      "type": "(value: string) => void",
+      "default": "undefined",
+      "description": "Receives each edit for host validation."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Surface and ink palette; the demo stage follows the chosen theme."
+    }
+  ],
+  "added": "2026-10-11",
+  "demo": {
+    "steps": [
+      "wait:500",
+      "click:@password",
+      "type:Cedar-river42!",
+      "wait:500",
+      "click:@visibility",
+      "wait:700"
+    ],
+    "loop": false
+  },
+  "controls": [
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        "dark",
+        "light"
+      ],
+      "default": "dark"
+    }
+  ]
+}
