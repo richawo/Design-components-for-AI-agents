@@ -4546,6 +4546,390 @@
     ]
   },
   {
+    "slug": "chart-race-bars",
+    "name": "Bar chart race",
+    "tier": "pro",
+    "platform": "web",
+    "category": "charts",
+    "description": "A deploy race for Pylon. Six services trade places on springs; play it, or scrub to the week inference takes the lead.",
+    "tags": [
+      "bar chart race",
+      "ranking",
+      "time series",
+      "deploys",
+      "dashboard",
+      "dark",
+      "monochrome"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 760,
+    "usage": "import { ChartRaceBars } from \"@/components/design-for-ai/chart-race-bars\";\nimport type { RaceSeries, RaceWeek } from \"@/components/design-for-ai/chart-race-bars\";\n\nconst weeks: RaceWeek[] = [\n  { label: \"3 Aug\", caption: \"Week of 3 Aug\" },\n  { label: \"10 Aug\", caption: \"Week of 10 Aug\" },\n];\n\nconst series: RaceSeries[] = [\n  { key: \"web\", label: \"Web\", values: [48, 50] },\n  { key: \"inference\", label: \"Inference\", values: [8, 11] },\n];\n\n<ChartRaceBars\n  title=\"Who shipped\"\n  subtitle=\"Pylon · deploys\"\n  unit=\"deploys\"\n  lead=\"inference\"\n  weeks={weeks}\n  series={series}\n  onWeekChange={(index) => console.log(index)}\n/>",
+    "props": [
+      {
+        "name": "series",
+        "type": "RaceSeries[]",
+        "default": "Web, API, iOS, Workers, Billing, Inference",
+        "description": "One row each. RaceSeries: { key, label, values: number[] }. values line up with weeks, oldest first."
+      },
+      {
+        "name": "weeks",
+        "type": "RaceWeek[]",
+        "default": "3 Aug – 19 Oct",
+        "description": "One column of the race: { label, caption }. label sits by the scrubber; caption is the sentence in the header."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Who shipped\"",
+        "description": "Card title."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "default": "\"Pylon · deploys\"",
+        "description": "Mono line beside the title."
+      },
+      {
+        "name": "unit",
+        "type": "string",
+        "default": "\"deploys\"",
+        "description": "Singular unit beside the headline figure."
+      },
+      {
+        "name": "lead",
+        "type": "string",
+        "default": "\"inference\"",
+        "description": "Series key drawn in the accent. The headline follows it until a row is pinned."
+      },
+      {
+        "name": "defaultWeek",
+        "type": "number",
+        "default": "4",
+        "description": "Week index shown first. 4 is the week of 31 Aug, just before inference takes the lead."
+      },
+      {
+        "name": "showDelta",
+        "type": "boolean",
+        "default": "true",
+        "description": "Print the week-over-week change beside each value."
+      },
+      {
+        "name": "showRanks",
+        "type": "boolean",
+        "default": "true",
+        "description": "Print the rank numeral at the left of each row."
+      },
+      {
+        "name": "radius",
+        "type": "number",
+        "default": "8",
+        "description": "Bar corner radius in px."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ff7a45\"",
+        "description": "The one colour: the followed bar, the headline figure and the scrubber."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Near-black card with white ink, or a white card with near-black ink."
+      },
+      {
+        "name": "onWeekChange",
+        "type": "(index: number) => void",
+        "description": "Called with the week index now shown."
+      },
+      {
+        "name": "onPin",
+        "type": "(key: string | null) => void",
+        "description": "Called with the pinned series key, or null when the lead is followed again."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:350",
+        "hover:@bar-web",
+        "wait:400",
+        "click:@play",
+        "wait:2300",
+        "click:@scrub:0.92,0.5",
+        "wait:450"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "title",
+        "label": "Title",
+        "kind": "text",
+        "default": "Who shipped"
+      },
+      {
+        "prop": "subtitle",
+        "label": "Subtitle",
+        "kind": "text",
+        "default": "Pylon · deploys"
+      },
+      {
+        "prop": "showDelta",
+        "label": "Deltas",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "showRanks",
+        "label": "Ranks",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "radius",
+        "label": "Bar radius",
+        "kind": "slider",
+        "min": 2,
+        "max": 16,
+        "step": 1,
+        "unit": "px",
+        "default": 8
+      },
+      {
+        "prop": "defaultWeek",
+        "label": "Opens on week",
+        "kind": "slider",
+        "min": 0,
+        "max": 11,
+        "step": 1,
+        "default": 4,
+        "remount": true
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#ff7a45",
+        "options": [
+          "#ff7a45",
+          "#34d399",
+          "#60a5fa",
+          "#e5e5e5"
+        ]
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
+    "slug": "chart-radar-compare",
+    "name": "Radar compare",
+    "tier": "pro",
+    "platform": "web",
+    "category": "charts",
+    "description": "Three Halcyon agents on one web. Swap a profile and the shape morphs; a sweep reads the six axes one at a time.",
+    "tags": [
+      "radar",
+      "comparison",
+      "benchmark",
+      "agents",
+      "dashboard",
+      "dark",
+      "monochrome"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 760,
+    "usage": "import { ChartRadarCompare } from \"@/components/design-for-ai/chart-radar-compare\";\nimport type { RadarAxis, RadarProfile } from \"@/components/design-for-ai/chart-radar-compare\";\n\nconst axes: RadarAxis[] = [\n  { key: \"writing\", label: \"Writing\" },\n  { key: \"tools\", label: \"Tool use\" },\n];\n\nconst profiles: RadarProfile[] = [\n  { key: \"mara\", label: \"Mara\", scores: [92, 54] },\n  { key: \"north\", label: \"North\", scores: [71, 90] },\n];\n\n<ChartRadarCompare\n  title=\"The bench\"\n  subtitle=\"Halcyon · six axes\"\n  axes={axes}\n  profiles={profiles}\n  defaultProfiles=\"mara,north\"\n  onAxisChange={(index) => console.log(index)}\n/>",
+    "props": [
+      {
+        "name": "profiles",
+        "type": "RadarProfile[]",
+        "default": "Mara, North, Sable, Quill",
+        "description": "One shape each. RadarProfile: { key, label, scores: number[] }. scores line up with axes, 0–100, higher is better."
+      },
+      {
+        "name": "axes",
+        "type": "RadarAxis[]",
+        "default": "Writing, Tool use, Speed, Cost, Recovery, Citation",
+        "description": "The spokes. RadarAxis: { key, label }. Cost is the cheap run, scored high."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"The bench\"",
+        "description": "Card title."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "default": "\"Halcyon · six axes\"",
+        "description": "Mono line beside the title."
+      },
+      {
+        "name": "defaultProfiles",
+        "type": "string",
+        "default": "\"mara,north,sable\"",
+        "description": "Comma-separated keys shown first, at most three. The first key is the accent shape."
+      },
+      {
+        "name": "defaultAxis",
+        "type": "number",
+        "default": "0",
+        "description": "Axis index highlighted first. 0 is Writing."
+      },
+      {
+        "name": "showFill",
+        "type": "boolean",
+        "default": "true",
+        "description": "Fill the accent profile. Its stroke stays either way."
+      },
+      {
+        "name": "showGrid",
+        "type": "boolean",
+        "default": "true",
+        "description": "Draw the rings and the spokes."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ff7a45\"",
+        "description": "The one colour: the first profile, the headline, the active spoke and the swept row."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Near-black card with white ink, or a white card with near-black ink."
+      },
+      {
+        "name": "onAxisChange",
+        "type": "(index: number) => void",
+        "description": "Called with the axis index now highlighted."
+      },
+      {
+        "name": "onSelectionChange",
+        "type": "(keys: string[]) => void",
+        "description": "Called with the profile keys on the web, accent first."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@profile-quill",
+        "wait:800",
+        "click:@sweep",
+        "wait:2000"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "title",
+        "label": "Title",
+        "kind": "text",
+        "default": "The bench"
+      },
+      {
+        "prop": "subtitle",
+        "label": "Subtitle",
+        "kind": "text",
+        "default": "Halcyon · six axes"
+      },
+      {
+        "prop": "showFill",
+        "label": "Fill",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "showGrid",
+        "label": "Grid",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "defaultAxis",
+        "label": "Opens on axis",
+        "kind": "slider",
+        "min": 0,
+        "max": 5,
+        "step": 1,
+        "default": 0,
+        "remount": true
+      },
+      {
+        "prop": "defaultProfiles",
+        "label": "Opens with",
+        "kind": "select",
+        "options": [
+          {
+            "value": "mara,north,sable",
+            "label": "Mara, North, Sable"
+          },
+          {
+            "value": "mara,north",
+            "label": "Mara and North"
+          },
+          {
+            "value": "mara,north,quill",
+            "label": "Mara, North, Quill"
+          }
+        ],
+        "default": "mara,north,sable",
+        "remount": true
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#ff7a45",
+        "options": [
+          "#ff7a45",
+          "#34d399",
+          "#60a5fa",
+          "#e5e5e5"
+        ]
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "chart-revenue-trend",
     "name": "Revenue Trend",
     "tier": "pro",
@@ -4792,6 +5176,245 @@
       }
     ],
     "added": "2026-10-09"
+  },
+  {
+    "slug": "chart-streamgraph",
+    "name": "Streamgraph",
+    "tier": "pro",
+    "platform": "web",
+    "category": "charts",
+    "description": "Layered streams of where a minute in Vesper goes. Five surfaces sit on a wiggle baseline; isolate one and read that week against the last.",
+    "tags": [
+      "streamgraph",
+      "time series",
+      "stacked area",
+      "wiggle",
+      "weekly",
+      "product analytics",
+      "dashboard",
+      "dark",
+      "monochrome"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 760,
+    "usage": "import { ChartStreamgraph } from \"@/components/design-for-ai/chart-streamgraph\";\nimport type { StreamSeries, StreamWeek } from \"@/components/design-for-ai/chart-streamgraph\";\n\nconst weeks: StreamWeek[] = [\n  { label: \"3 Aug\", caption: \"Week of 3 Aug\" },\n  { label: \"10 Aug\", caption: \"Week of 10 Aug\" },\n];\n\nconst series: StreamSeries[] = [\n  { key: \"compose\", label: \"Compose\", note: \"The September rewrite\", lead: true, values: [18, 19] },\n  { key: \"inbox\", label: \"Inbox\", note: \"Triage, then out\", values: [134, 129] },\n];\n\n<ChartStreamgraph\n  title=\"Where a minute goes\"\n  subtitle=\"Vesper · per person\"\n  unit=\"min\"\n  baseline=\"wiggle\"\n  weeks={weeks}\n  series={series}\n  onIsolate={(key) => console.log(key)}\n/>",
+    "props": [
+      {
+        "name": "series",
+        "type": "StreamSeries[]",
+        "default": "Compose, Inbox, Search, Calendar, Rules",
+        "description": "One river each. StreamSeries: { key, label, note?, values: number[], lead? }. values line up with weeks, oldest first. The lead river takes the accent."
+      },
+      {
+        "name": "weeks",
+        "type": "StreamWeek[]",
+        "default": "3 Aug – 16 Nov",
+        "description": "One column per week: { label, caption }. label sits on the axis; caption is the sentence in the header."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Where a minute goes\"",
+        "description": "Card title."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "default": "\"Vesper · per person\"",
+        "description": "Mono line beside the title."
+      },
+      {
+        "name": "unit",
+        "type": "string",
+        "default": "\"min\"",
+        "description": "Singular unit after the headline figure."
+      },
+      {
+        "name": "baseline",
+        "type": "\"wiggle\" | \"silhouette\" | \"zero\"",
+        "default": "\"wiggle\"",
+        "description": "Wiggle keeps the organic offset, silhouette centres every column, zero sits the stack on a flat baseline."
+      },
+      {
+        "name": "height",
+        "type": "number",
+        "default": "300",
+        "description": "Plot height in px, capped at 62% of the card width on narrow containers."
+      },
+      {
+        "name": "showNotes",
+        "type": "boolean",
+        "default": "true",
+        "description": "Print the note under each surface in the legend."
+      },
+      {
+        "name": "defaultWeek",
+        "type": "number",
+        "default": "6",
+        "description": "Week index shown first. 6 is the week of 14 Sep."
+      },
+      {
+        "name": "defaultLayer",
+        "type": "string",
+        "default": "\"\"",
+        "description": "Series key isolated on first paint. Empty shows every surface."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ff7a45\"",
+        "description": "The one colour: the lead river, the headline figure and the week marker."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Near-black card with white ink, or a white card with near-black ink."
+      },
+      {
+        "name": "onWeekChange",
+        "type": "(index: number) => void",
+        "description": "Called with the week index now shown."
+      },
+      {
+        "name": "onIsolate",
+        "type": "(key: string | null) => void",
+        "description": "Called with the isolated series key, or null when every surface is shown."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:450",
+        "hover:@layer-compose",
+        "wait:350",
+        "click:@layer-compose",
+        "wait:800",
+        "click:@week-next",
+        "wait:280",
+        "click:@week-next",
+        "wait:500"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "title",
+        "label": "Title",
+        "kind": "text",
+        "default": "Where a minute goes"
+      },
+      {
+        "prop": "baseline",
+        "label": "Baseline",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "wiggle",
+            "label": "Wiggle"
+          },
+          {
+            "value": "silhouette",
+            "label": "Center"
+          },
+          {
+            "value": "zero",
+            "label": "Bottom"
+          }
+        ],
+        "default": "wiggle"
+      },
+      {
+        "prop": "height",
+        "label": "Plot height",
+        "kind": "slider",
+        "min": 220,
+        "max": 420,
+        "step": 10,
+        "unit": "px",
+        "default": 300
+      },
+      {
+        "prop": "showNotes",
+        "label": "Notes",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "defaultWeek",
+        "label": "Opens on week",
+        "kind": "slider",
+        "min": 0,
+        "max": 15,
+        "step": 1,
+        "default": 6,
+        "remount": true
+      },
+      {
+        "prop": "defaultLayer",
+        "label": "Opens on",
+        "kind": "select",
+        "options": [
+          {
+            "value": "",
+            "label": "Every surface"
+          },
+          {
+            "value": "compose",
+            "label": "Compose"
+          },
+          {
+            "value": "inbox",
+            "label": "Inbox"
+          },
+          {
+            "value": "search",
+            "label": "Search"
+          },
+          {
+            "value": "calendar",
+            "label": "Calendar"
+          },
+          {
+            "value": "rules",
+            "label": "Rules"
+          }
+        ],
+        "default": "",
+        "remount": true
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#ff7a45",
+        "options": [
+          "#ff7a45",
+          "#34d399",
+          "#60a5fa",
+          "#e5e5e5"
+        ]
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark"
+      }
+    ]
   },
   {
     "slug": "chart-treemap-drill",
