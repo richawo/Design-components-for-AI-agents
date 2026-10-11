@@ -27,6 +27,10 @@
 
 import fs from "node:fs";
 import path from "node:path";
+import { execFileSync } from "node:child_process";
+import { loadBlogSource, bundleBlog } from "./lib/blog-source.mjs";
+import { auditBlog } from "./lib/blog-audit.mjs";
+import { buildBlogImages } from "./lib/blog-images.mjs";
 import { validateControls, validateDemo } from "../lib/demo/schema.mjs";
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
@@ -376,7 +380,24 @@ const mdFiles = (dir) => {
     fs.readdirSync(d).filter((f) => f.endsWith(".md")).sort().map((f) => [f, fs.readFileSync(path.join(d, f), "utf8")]),
   );
 };
-writeJson(path.join(outDir, "content.json"), { blog: mdFiles("blog"), docs: mdFiles("docs") });
+const editorial = loadBlogSource(root);
+const editorialBundle = bundleBlog(editorial);
+if (editorial.posts.length) {
+  const audit = auditBlog(editorial);
+  for (const [locale, coverage] of Object.entries(editorialBundle.coverage)) {
+    if (coverage.missing) audit.errors.push(`${locale}: ${coverage.missing}/${coverage.total} untranslated blog units; run npm run blog:translate`);
+  }
+  if (STRICT && audit.errors.length) throw new Error(`Blog audit failed:\n${audit.errors.join("\n")}`);
+  for (const error of audit.errors) console.warn(`blog: ${error}`);
+  await buildBlogImages(root, editorial);
+  console.log(`blog: ${editorial.posts.length} articles in ${Object.keys(editorialBundle.localizedBlog).length + 1} complete languages`);
+}
+writeJson(path.join(outDir, "content.json"), { ...editorialBundle, docs: mdFiles("docs") });
+writeJson(path.join(root, "public", ".well-known", "design-build.json"), {
+  publicCommit: execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim(),
+  blogPosts: editorial.posts.filter((post) => !post.data.draft).length,
+  blogLocales: editorial.posts.length ? ["en", ...Object.keys(editorialBundle.localizedBlog)] : [],
+});
 const previewsDir = path.join(root, "public", "previews");
 const previewFiles = fs.existsSync(previewsDir) ? fs.readdirSync(previewsDir).sort() : [];
 const thumbs = previewFiles.filter((f) => f.endsWith(".webp"));

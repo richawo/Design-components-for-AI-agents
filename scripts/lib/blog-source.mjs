@@ -108,9 +108,17 @@ export function bundleBlog(source) {
       const slug = slugs[post.data.slug];
       if (!slug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) throw new Error(`Missing or invalid stable slug: ${locale.code}/${post.data.slug}`);
       const data = { ...post.data, sourceSlug: post.data.slug, categoryKey: Object.keys(source.config.categories ?? {}).find((key) => source.config.categories[key].name === post.data.category), slug };
+      data.faqHeading = t("Frequently asked questions");
       for (const field of ["title", "description", "excerpt", "category", "heroImageAlt"]) if (data[field]) data[field] = t(data[field]);
       data.keywords = String(data.keywords ?? "").split(",").map((keyword) => t(keyword.trim())).join(", ");
-      const markdown = mapMarkdown(post.content, (key) => strings[key] ?? key);
+      const localLink = (href) => {
+        const pathname = href.replace(/^https:\/\/design\.yaps\.ai/, "");
+        if (!/^\/blog(?:\/|$)/.test(pathname)) return href;
+        const match = /^\/blog\/([^/?#]+)(.*)$/.exec(pathname);
+        if (match && slugs[match[1]]) return `/${locale.code}/blog/${slugs[match[1]]}${match[2]}`;
+        return `/${locale.code}${pathname}`;
+      };
+      const markdown = mapMarkdown(post.content, (key) => (strings[key] ?? key).replace(/href="([^"]+)"/g, (_, href) => `href="${localLink(href)}"`));
       translated[post.file] = matter.stringify(markdown, data);
     }
     const values = Object.values(translated).map((raw) => matter(raw).data.slug);
