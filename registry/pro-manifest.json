@@ -14865,6 +14865,91 @@
     ]
   },
   {
+    "slug": "fashion-wholesale-order",
+    "name": "Wholesale Order Sheet",
+    "tier": "pro",
+    "platform": "web",
+    "category": "commerce",
+    "description": "Order size packs with minimum quantities, availability and line totals. A considered, responsive fashion workspace with typed integration points.",
+    "tags": [
+      "fashion",
+      "workflow",
+      "responsive",
+      "keyboard",
+      "commerce"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "light",
+    "previewHeight": 1160,
+    "usage": "import { WholesaleOrder } from \"@/components/design-for-ai/fashion-wholesale-order\";\n\n<WholesaleOrder />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Main heading."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "description": "Supporting context."
+      },
+      {
+        "name": "styles",
+        "type": "WholesaleStyle[]",
+        "description": "Unique styles with two-decimal wholesale unit prices, minimum pack counts and stock for each unique size in the pack."
+      },
+      {
+        "name": "minimumOrderMinor",
+        "type": "number",
+        "description": "Non-negative safe integer minimum merchandise spend in two-decimal minor units."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "description": "ISO currency shared by all wholesale prices."
+      },
+      {
+        "name": "onSubmit",
+        "type": "(draft:WholesaleDraft)=>void|Promise<void>",
+        "description": "Submit the reviewed buying draft. The host confirms terms, taxes, delivery and stock reservation."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"light\"",
+        "description": "Surface, border and ink palette."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:350",
+        "click:@add-0",
+        "click:@add-1",
+        "wait:450",
+        "click:@review",
+        "wait:350",
+        "click:@submit",
+        "wait:1100"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "light"
+      }
+    ]
+  },
+  {
     "slug": "feature-sticky-scroll",
     "name": "Sticky Scroll Story",
     "tier": "pro",
