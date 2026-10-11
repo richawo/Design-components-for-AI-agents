@@ -89,7 +89,8 @@ async function render(markdown: string, locale = "en") {
   const langs = new Set(["tsx", "ts", "json", "bash", "markdown", "css", "html"]);
   for (let i = 0; i < codeBlocks.length; i++) {
     const { lang, text } = codeBlocks[i];
-    const l = lang === "sh" || lang === "shell" ? "bash" : lang === "jsx" ? "tsx" : lang;
+    const name = lang.split(/\s+/)[0];
+    const l = name === "sh" || name === "shell" ? "bash" : name === "jsx" ? "tsx" : name;
     const block = langs.has(l)
       ? await highlight(text, l as "tsx")
       : `<pre><code>${text.replace(/&/g, "&amp;").replace(/</g, "&lt;")}</code></pre>`;

@@ -33,6 +33,13 @@ export function inlineUnit(text) {
 }
 
 function mapMarkdown(content, map) {
+  const template = (text) => text.split("\n").map((line) => {
+    if (!line.trim()) return line;
+    const [, prefix, prose] = /^(\s*(?:#{1,6}\s+|[-*+]\s+|\d+\.\s+)?)(.*)$/.exec(line);
+    const opaque = [];
+    const key = keyOf(escapeText(prose.replace(/`[^`]+`/g, (code) => { opaque.push(code); return `{{${opaque.length - 1}}}`; })));
+    return prefix + decodeEntities(map(key)).replace(/\{\{(\d+)\}\}/g, (_, index) => opaque[Number(index)] ?? "");
+  }).join("\n");
   const inline = (text) => {
     const { key, opaque } = inlineUnit(text);
     return map(key).replace(/\{\{(\d+)\}\}/g, (_, index) => opaque[Number(index)] ?? "")
@@ -52,6 +59,7 @@ function mapMarkdown(content, map) {
         const row = (cells) => "| " + cells.map((cell) => inline(cell.text)).join(" | ") + " |\n";
         return row(token.header) + row(token.align.map(() => ({ text: "---" }))) + token.rows.map(row).join("") + "\n";
       }
+      case "code": return token.lang === "markdown i18n" ? `\`\`\`markdown\n${template(token.text)}\n\`\`\`\n\n` : token.raw;
       // Code, HTML blocks and other non-prose syntax never go to a translator.
       default: return token.raw;
     }

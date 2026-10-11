@@ -45,6 +45,20 @@ describe("private blog localization", () => {
     expect(stableSlugs(source, localeByCode("fr")!, {}, { "fixture-guide": "guide-stable" })).toEqual({ "fixture-guide": "guide-stable" });
     expect(stableSlugs(source, localeByCode("ja")!, {})).toEqual({ "fixture-guide": "fixture-guide" });
   });
+  it("translates opted-in prose templates while preserving Markdown structure and code paths", () => {
+    const source = fixture();
+    source.posts[0].content += '\n```markdown i18n\n## Review\n- Read `src/styles/tokens.css` before editing.\n- Run `npm test`.\n```\n';
+    source.posts[0].raw = matter.stringify(source.posts[0].content, source.posts[0].data);
+    const strings = Object.fromEntries(corpusUnits(source).map((key) => [key, `FR ${key}`]));
+    strings["Read {{0}} before editing."] = "Lisez {{0}} avant de modifier.";
+    for (const dir of ["strings", "slugs"]) fs.mkdirSync(path.join(source.base, "i18n", dir), { recursive: true });
+    fs.writeFileSync(path.join(source.base, "i18n/strings/fr.json"), JSON.stringify(strings));
+    fs.writeFileSync(path.join(source.base, "i18n/slugs/fr.json"), JSON.stringify({ "fixture-guide": "guide-stable" }));
+    const translated = bundleBlog(source).localizedBlog.fr["fixture-guide.md"];
+    expect(translated).toContain('```markdown\n## FR Review\n- Lisez `src/styles/tokens.css` avant de modifier.');
+    expect(translated).toContain("`npm test`");
+    expect(translated).toContain("const example = 'never translate this';");
+  });
   it("omits incomplete editions and bundles complete ones without mutating code", () => {
     const source = fixture();
     source.posts[0].data.howToSteps = ["Using a component", "Frequently asked questions"];
