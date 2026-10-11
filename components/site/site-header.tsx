@@ -93,6 +93,9 @@ export function SiteHeader({ locale = "en", copy = {} }: { locale?: string; copy
                   <Link
                     key={item.href}
                     href={item.href}
+                    // Filters make the gallery dynamic. Fully prefetch this
+                    // main destination so its first click need not wait for RSC.
+                    prefetch={item.href === "/components" ? true : undefined}
                     aria-current={active ? "page" : undefined}
                     onMouseEnter={() => setHovered(item.href)}
                     onFocus={() => setHovered(item.href)}
@@ -172,6 +175,7 @@ export function SiteHeader({ locale = "en", copy = {} }: { locale?: string; copy
             <Link
               key={item.href}
               href={item.href}
+              prefetch={item.href === "/components" ? true : undefined}
               aria-current={isActive(pathname, item.href) ? "page" : undefined}
               style={{ transitionDelay: open ? `${40 + i * 50}ms` : "0ms" }}
               className={`flex items-center justify-between border-b border-white/[0.07] py-4 text-2xl font-medium tracking-[-0.03em] transition-[translate,opacity,filter,color] duration-500 ease-site active:text-site-fg-2 aria-[current=page]:text-site-fg ${open ? "translate-y-0 text-site-fg opacity-100 blur-0" : "translate-y-3 text-site-fg-2 opacity-0 blur-[4px]"}`}

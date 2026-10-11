@@ -93,7 +93,7 @@ export default async function HomePage() {
           </p>
 
           <div className="site-in mt-10 flex flex-col items-center justify-center gap-3 [--i:3] sm:flex-row">
-            <Link href="/components" className="site-btn site-btn-primary group h-12 w-full px-6 text-[15px] sm:w-auto">
+            <Link href="/components" prefetch className="site-btn site-btn-primary group h-12 w-full px-6 text-[15px] sm:w-auto">
               Browse {s.total} components
               <svg viewBox="0 0 16 16" className="size-4 transition-transform duration-150 ease-site group-hover:translate-x-0.5" fill="none" aria-hidden="true">
                 <path d="M3 8h10m0 0L8.5 3.5M13 8l-4.5 4.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
