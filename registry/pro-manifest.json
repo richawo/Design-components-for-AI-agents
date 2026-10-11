@@ -15303,6 +15303,86 @@
     ]
   },
   {
+    "slug": "finance-close-checklist",
+    "name": "Period Close Workspace",
+    "tier": "pro",
+    "platform": "web",
+    "category": "billing",
+    "description": "Dependency-aware close tasks with ownership and completion evidence. A considered, responsive finance workspace with typed integration points.",
+    "tags": [
+      "finance",
+      "workflow",
+      "responsive",
+      "keyboard",
+      "billing"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 1040,
+    "usage": "import { CloseChecklist } from \"@/components/design-for-ai/finance-close-checklist\";\n\n<CloseChecklist />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Main heading."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "description": "Supporting context."
+      },
+      {
+        "name": "period",
+        "type": "string",
+        "description": "Human-readable reporting period."
+      },
+      {
+        "name": "tasks",
+        "type": "CloseTask[]",
+        "description": "Unique close tasks, prerequisite IDs, ownership, due labels and acknowledged evidence."
+      },
+      {
+        "name": "onComplete",
+        "type": "(completion:CloseCompletion)=>void|Promise<void>",
+        "description": "Persist completion evidence. The task only becomes complete after acknowledgement."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface, border and ink palette."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:350",
+        "click:@task-accrual",
+        "wait:650",
+        "click:@task-bank",
+        "click:@evidence",
+        "type:Bank statement reconciled.",
+        "click:@complete",
+        "wait:1000"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "finance-reconciliation",
     "name": "Settlement Reconciliation",
     "tier": "pro",
