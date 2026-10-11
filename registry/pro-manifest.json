@@ -1043,6 +1043,219 @@
     ]
   },
   {
+    "slug": "ai-side-panel",
+    "name": "Side Panel",
+    "tier": "pro",
+    "platform": "web",
+    "category": "ai",
+    "description": "An editor docked beside a draft. Mark a sentence to pull it in as a chip, then apply the rewrite so the line highlights, with one undo.",
+    "tags": [
+      "ai",
+      "side panel",
+      "assistant",
+      "editor",
+      "rewrite",
+      "context",
+      "undo",
+      "draft"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 860,
+    "usage": "import { AiSidePanel } from \"@/components/design-for-ai/ai-side-panel\";\n\n<AiSidePanel\n  agent=\"Reed\"\n  heading=\"What happens to unused seats?\"\n  onApply={(id, rewrite) => saveDraft(id, rewrite)}\n  onUndo={(id) => restoreDraft(id)}\n/>\n\n// Drive the rewrite from outside with status (\"idle\" | \"applied\") and onStatusChange.\n// defaultContext lists sentence ids already pulled into the margin. It is read on mount.\n// Clicking a sentence toggles its chip. Apply is enabled only while the sentence the note rewrites is marked.",
+    "props": [
+      {
+        "name": "agent",
+        "type": "string",
+        "default": "\"Reed\"",
+        "description": "Name of the editor in the margin. The monogram is the first letter."
+      },
+      {
+        "name": "role",
+        "type": "string",
+        "default": "\"Editor\"",
+        "description": "Role under the name."
+      },
+      {
+        "name": "eyebrow",
+        "type": "string",
+        "default": "\"lumenledger.com/pricing\"",
+        "description": "Mono path above the draft. Truncates rather than wrapping."
+      },
+      {
+        "name": "draftMark",
+        "type": "string",
+        "default": "\"Draft 4\"",
+        "description": "Quiet mark at the right of the path, such as a draft number."
+      },
+      {
+        "name": "heading",
+        "type": "string",
+        "default": "\"What happens to unused seats?\"",
+        "description": "The question the draft answers, set in serif."
+      },
+      {
+        "name": "lede",
+        "type": "string",
+        "default": "\"The answer on the pricing page.\"",
+        "description": "One line under the question."
+      },
+      {
+        "name": "sentences",
+        "type": "DraftSentence[]",
+        "description": "The draft, one sentence per block: { id, text, chip }. Clicking a sentence pulls its chip into the margin. chip is the short label."
+      },
+      {
+        "name": "suggestion",
+        "type": "SideSuggestion",
+        "description": "The note in the margin: { sentenceId, reason, rewrite }. sentenceId must match a sentence. Apply replaces that sentence with rewrite."
+      },
+      {
+        "name": "defaultContext",
+        "type": "string[]",
+        "default": "[\"credit\"]",
+        "description": "Sentence ids already pulled into the margin. Read on mount. The note’s sentence starts pulled, so the pair is visible before a click."
+      },
+      {
+        "name": "status",
+        "type": "\"idle\" | \"applied\"",
+        "description": "Controlled state. Idle shows the suggestion. Applied shows the rewrite in the draft, with the wash and Undo. Omit it and the panel owns the state."
+      },
+      {
+        "name": "onStatusChange",
+        "type": "(status: \"idle\" | \"applied\") => void",
+        "description": "Called when Apply or Undo changes the state."
+      },
+      {
+        "name": "onApply",
+        "type": "(sentenceId: string, rewrite: string) => void",
+        "description": "Called with the sentence id and the rewrite when Apply is used."
+      },
+      {
+        "name": "onUndo",
+        "type": "(sentenceId: string) => void",
+        "description": "Called with the sentence id when the rewrite is undone."
+      },
+      {
+        "name": "showContext",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show the chips pulled from the draft. Marks on the sentences stay either way."
+      },
+      {
+        "name": "applyLabel",
+        "type": "string",
+        "default": "\"Apply change\"",
+        "description": "Label on the button before the change lands."
+      },
+      {
+        "name": "undoLabel",
+        "type": "string",
+        "default": "\"Undo\"",
+        "description": "Label on the same button once the change has landed. The button keeps its size."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#f5c66b\"",
+        "description": "The one accent: the mark number, the rule on a marked sentence, the wash behind a rewrite, and Apply. A #rrggbb colour. Ink on the button is chosen for contrast."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Near-black surface with white ink, or the white inverse. The accent stays the same."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:240",
+        "click:@sentence-cancel",
+        "wait:380",
+        "click:@apply",
+        "wait:980",
+        "hover:@undo",
+        "wait:420"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "agent",
+        "label": "Editor",
+        "kind": "text",
+        "default": "Reed",
+        "group": "Copy"
+      },
+      {
+        "prop": "showContext",
+        "label": "Context chips",
+        "kind": "toggle",
+        "default": true,
+        "group": "Copy"
+      },
+      {
+        "prop": "status",
+        "label": "State",
+        "kind": "action",
+        "options": [
+          {
+            "value": "idle",
+            "label": "Reading"
+          },
+          {
+            "value": "applied",
+            "label": "Applied"
+          }
+        ],
+        "group": "State"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action",
+        "group": "State"
+      },
+      {
+        "prop": "accent",
+        "label": "Mark",
+        "kind": "color",
+        "default": "#f5c66b",
+        "options": [
+          "#f5c66b",
+          "#7dd3fc",
+          "#a3e635",
+          "#ededef"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      }
+    ]
+  },
+  {
     "slug": "auth-otp",
     "name": "One-time Code",
     "tier": "pro",
