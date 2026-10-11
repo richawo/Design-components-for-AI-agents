@@ -766,7 +766,7 @@ function FormattingToolbar({ marks, onToggle, palette: t }: { marks: Set<Mark>; 
 
   let index = -1;
   return (
-    <div role="toolbar" aria-label="Formatting" onKeyDown={onKeyDown} className="flex min-w-0 items-center">
+    <div role="toolbar" aria-label="Formatting" onKeyDown={onKeyDown} className="flex min-w-0 flex-wrap items-center">
       {TOOLS.map((cluster, c) => (
         <div key={c} className="flex items-center">
           {c > 0 && <span aria-hidden="true" className="mx-1.5 h-5 w-px" style={{ background: t.rule }} />}
@@ -788,7 +788,7 @@ function FormattingToolbar({ marks, onToggle, palette: t }: { marks: Set<Mark>; 
                   tabIndex={i === focusAt ? 0 : -1}
                   onFocus={() => setFocusAt(i)}
                   onClick={() => onToggle(tool.id)}
-                  className="grid size-10 place-items-center rounded-[9px] transition-[background-color,color,scale] duration-150 ease-out hover:bg-[var(--tb-hover)] hover:text-[var(--tb-ink)] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--tb-ink)] active:scale-[0.97] active:duration-75 aria-pressed:bg-[var(--tb-pressed)] aria-pressed:text-[var(--tb-ink)]"
+                  className="[@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 grid size-10 place-items-center rounded-[9px] transition-[background-color,color,scale] duration-150 ease-out hover:bg-[var(--tb-hover)] hover:text-[var(--tb-ink)] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--tb-ink)] active:scale-[0.97] active:duration-75 aria-pressed:bg-[var(--tb-pressed)] aria-pressed:text-[var(--tb-ink)]"
                   style={{ color: t.body, "--tb-hover": t.hover, "--tb-pressed": t.pressed, "--tb-ink": t.ink } as CSSProperties}
                 >
                   <Icon size={16} strokeWidth={1.75} aria-hidden="true" />
