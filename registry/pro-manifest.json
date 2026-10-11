@@ -8962,6 +8962,97 @@
     ]
   },
   {
+    "slug": "commerce-return-desk",
+    "name": "Order Returns Desk",
+    "tier": "pro",
+    "platform": "web",
+    "category": "commerce",
+    "description": "A retail return workflow with eligible quantities, reasons, resolution choices, explicit review and a request receipt after server acknowledgement.",
+    "tags": [
+      "commerce",
+      "workflow",
+      "interactive",
+      "responsive",
+      "keyboard",
+      "fashion",
+      "e-commerce",
+      "returns",
+      "customer-service"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 900,
+    "usage": "import { ReturnDesk } from \"@/components/design-for-ai/commerce-return-desk\";\n\n<ReturnDesk />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Returns desk heading."
+      },
+      {
+        "name": "order",
+        "type": "ReturnOrder",
+        "description": "Order identity, display labels, currency scale and items with server-provided eligible quantities and refundable unit amounts. A new order ID resets the workflow."
+      },
+      {
+        "name": "reasons",
+        "type": "ReturnReason[]",
+        "description": "Reason IDs and labels."
+      },
+      {
+        "name": "resolutions",
+        "type": "ReturnResolution[]",
+        "description": "Allowed refund, exchange and credit choices."
+      },
+      {
+        "name": "policyNote",
+        "type": "string",
+        "description": "Merchant-supplied explanation of what happens after a request."
+      },
+      {
+        "name": "onSubmit",
+        "type": "(request: ReturnRequest) => Promise<{ reference: string }>",
+        "description": "Create the return request and return its reference. The host validates eligibility, amounts and permissions; this UI does not issue refunds. expectedAmountMinor is an exact integer string."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface and ink palette; the preview stage follows it."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@return-item-0",
+        "wait:250",
+        "click:@return-reason-0",
+        "wait:250",
+        "click:@return-next",
+        "wait:450",
+        "click:@return-next",
+        "wait:1300"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "commerce-variant-stock",
     "name": "Fashion Variant Stockroom",
     "tier": "pro",

@@ -207,54 +207,291 @@ try {
     await page.locator("section").innerText(),
     /90,071,992,547,409.91/,
   );
-  await fixture("hr-capacity-planner", `window.plans=[];createRoot(document.getElementById('root')).render(<Subject.CapacityPlanner onSave={async value=>{window.plans.push(value);throw Error('offline')}}/>);`);
+  await fixture(
+    "hr-capacity-planner",
+    `window.plans=[];createRoot(document.getElementById('root')).render(<Subject.CapacityPlanner onSave={async value=>{window.plans.push(value);throw Error('offline')}}/>);`,
+  );
   await page.getByRole("button", { name: "Add 2 hours" }).click();
-  assert.equal(await page.getByRole("button", { name: "Save plan" }).isEnabled(), true);
+  assert.equal(
+    await page.getByRole("button", { name: "Save plan" }).isEnabled(),
+    true,
+  );
   await page.getByRole("button", { name: "Add 2 hours" }).click();
   assert.match(await page.getByRole("alert").innerText(), /over-capacity/);
-  assert.equal(await page.getByRole("button", { name: "Save plan" }).isDisabled(), true);
+  assert.equal(
+    await page.getByRole("button", { name: "Save plan" }).isDisabled(),
+    true,
+  );
   await page.getByRole("button", { name: "Remove allocation 4" }).click();
   await page.getByRole("button", { name: "Save plan" }).click();
   await page.waitForTimeout(100);
-  assert.match(await page.getByRole("status").innerText(), /could not be saved/);
+  assert.match(
+    await page.getByRole("status").innerText(),
+    /could not be saved/,
+  );
   assert.equal(await page.evaluate(() => window.plans[0].length), 8);
-  await page.getByRole("spinbutton", { name: "Hours for allocation 1" }).fill("0.1");
-  assert.equal(await page.getByRole("button", { name: "Save plan" }).isDisabled(), true);
+  await page
+    .getByRole("spinbutton", { name: "Hours for allocation 1" })
+    .fill("0.1");
+  assert.equal(
+    await page.getByRole("button", { name: "Save plan" }).isDisabled(),
+    true,
+  );
   await page.getByRole("button", { name: "Reset", exact: true }).click();
   assert.equal(await page.getByRole("spinbutton").count(), 2);
-  await fixture("legal-version-history", `window.diff=Subject.compareRevisions;window.restored=[];createRoot(document.getElementById('root')).render(<Subject.VersionHistory onRestore={async revision=>{window.restored.push(revision.id);throw Error('offline')}}/>);`);
-  const lines = await page.evaluate(() => window.diff('A\nB\nA', 'A\nA\nC'));
-  assert.equal(lines.filter(line => line.kind !== "added").map(line => line.text).join("\n"), 'A\nB\nA');
-  assert.equal(lines.filter(line => line.kind !== "removed").map(line => line.text).join("\n"), 'A\nA\nC');
-  assert.equal(await page.evaluate(() => window.diff('x'.repeat(100001), 'x')), null);
-  assert.equal(await page.evaluate(() => window.diff(Array(401).fill('x').join('\n'), 'x')), null);
+  await fixture(
+    "legal-version-history",
+    `window.diff=Subject.compareRevisions;window.restored=[];createRoot(document.getElementById('root')).render(<Subject.VersionHistory onRestore={async revision=>{window.restored.push(revision.id);throw Error('offline')}}/>);`,
+  );
+  const lines = await page.evaluate(() => window.diff("A\nB\nA", "A\nA\nC"));
+  assert.equal(
+    lines
+      .filter((line) => line.kind !== "added")
+      .map((line) => line.text)
+      .join("\n"),
+    "A\nB\nA",
+  );
+  assert.equal(
+    lines
+      .filter((line) => line.kind !== "removed")
+      .map((line) => line.text)
+      .join("\n"),
+    "A\nA\nC",
+  );
+  assert.equal(
+    await page.evaluate(() => window.diff("x".repeat(100001), "x")),
+    null,
+  );
+  assert.equal(
+    await page.evaluate(() =>
+      window.diff(Array(401).fill("x").join("\n"), "x"),
+    ),
+    null,
+  );
   await page.getByRole("button", { name: "Restore this revision" }).click();
   assert.deepEqual(await page.evaluate(() => window.restored), []);
   await page.getByRole("button", { name: "Confirm restore" }).click();
   await page.waitForTimeout(100);
   assert.deepEqual(await page.evaluate(() => window.restored), ["r2"]);
-  assert.match(await page.getByRole("status").innerText(), /Restoration failed/);
+  assert.match(
+    await page.getByRole("status").innerText(),
+    /Restoration failed/,
+  );
   await page.getByRole("button", { name: "Cancel", exact: true }).click();
-  await page.waitForFunction(() => document.activeElement?.textContent?.includes("Restore this revision"));
-  assert.equal(await page.getByRole("button", { name: "Restore this revision" }).evaluate(el => el === document.activeElement), true);
+  await page.waitForFunction(() =>
+    document.activeElement?.textContent?.includes("Restore this revision"),
+  );
+  assert.equal(
+    await page
+      .getByRole("button", { name: "Restore this revision" })
+      .evaluate((el) => el === document.activeElement),
+    true,
+  );
   await page.getByRole("button", { name: /Revision 3 CURRENT/ }).click();
-  assert.equal(await page.getByRole("button", { name: "Restore this revision" }).isDisabled(), true);
-  await fixture("app-permission-matrix", `window.policies=[];createRoot(document.getElementById('root')).render(<Subject.PermissionMatrix onSave={async grants=>{window.policies.push(grants);throw Error('offline')}}/>);`);
-  await page.getByRole("checkbox", { name: "Approve revisions for Reviewer", exact: true }).check();
-  assert.equal(await page.getByRole("checkbox", { name: "View documents for Reviewer", exact: true }).isChecked(), true);
-  assert.equal(await page.getByRole("checkbox", { name: "Edit documents for Reviewer", exact: true }).isChecked(), true);
+  assert.equal(
+    await page
+      .getByRole("button", { name: "Restore this revision" })
+      .isDisabled(),
+    true,
+  );
+  await fixture(
+    "app-permission-matrix",
+    `window.policies=[];createRoot(document.getElementById('root')).render(<Subject.PermissionMatrix onSave={async grants=>{window.policies.push(grants);throw Error('offline')}}/>);`,
+  );
+  await page
+    .getByRole("checkbox", {
+      name: "Approve revisions for Reviewer",
+      exact: true,
+    })
+    .check();
+  assert.equal(
+    await page
+      .getByRole("checkbox", {
+        name: "View documents for Reviewer",
+        exact: true,
+      })
+      .isChecked(),
+    true,
+  );
+  assert.equal(
+    await page
+      .getByRole("checkbox", {
+        name: "Edit documents for Reviewer",
+        exact: true,
+      })
+      .isChecked(),
+    true,
+  );
   await page.getByRole("button", { name: "Save policy" }).click();
   await page.waitForTimeout(100);
-  assert.match(await page.getByRole("status").innerText(), /could not be saved/);
-  assert.deepEqual((await page.evaluate(() => window.policies[0].reviewer)).sort(), ["approve", "edit", "view"]);
-  await page.getByRole("checkbox", { name: "View documents for Reviewer", exact: true }).uncheck();
-  assert.equal(await page.getByRole("checkbox", { name: "Edit documents for Reviewer", exact: true }).isChecked(), false);
-  assert.equal(await page.getByRole("checkbox", { name: "Approve revisions for Reviewer", exact: true }).isChecked(), false);
-  assert.equal(await page.getByRole("checkbox", { name: "View documents for Owner", exact: true }).isDisabled(), true);
-  assert.equal(await page.getByRole("checkbox", { name: "View documents for Owner", exact: true }).isChecked(), true);
-  await fixture("app-permission-matrix", `createRoot(document.getElementById('root')).render(<Subject.PermissionMatrix permissions={[{id:'a',name:'A',group:'Test',description:'A',requires:['b']},{id:'b',name:'B',group:'Test',description:'B',requires:['a']}]}/>);`);
+  assert.match(
+    await page.getByRole("status").innerText(),
+    /could not be saved/,
+  );
+  assert.deepEqual(
+    (await page.evaluate(() => window.policies[0].reviewer)).sort(),
+    ["approve", "edit", "view"],
+  );
+  await page
+    .getByRole("checkbox", { name: "View documents for Reviewer", exact: true })
+    .uncheck();
+  assert.equal(
+    await page
+      .getByRole("checkbox", {
+        name: "Edit documents for Reviewer",
+        exact: true,
+      })
+      .isChecked(),
+    false,
+  );
+  assert.equal(
+    await page
+      .getByRole("checkbox", {
+        name: "Approve revisions for Reviewer",
+        exact: true,
+      })
+      .isChecked(),
+    false,
+  );
+  assert.equal(
+    await page
+      .getByRole("checkbox", { name: "View documents for Owner", exact: true })
+      .isDisabled(),
+    true,
+  );
+  assert.equal(
+    await page
+      .getByRole("checkbox", { name: "View documents for Owner", exact: true })
+      .isChecked(),
+    true,
+  );
+  await fixture(
+    "app-permission-matrix",
+    `createRoot(document.getElementById('root')).render(<Subject.PermissionMatrix permissions={[{id:'a',name:'A',group:'Test',description:'A',requires:['b']},{id:'b',name:'B',group:'Test',description:'B',requires:['a']}]}/>);`,
+  );
   assert.match(await page.getByRole("alert").innerText(), /cycle/);
-  assert.equal(await page.getByRole("button", { name: "Save policy" }).isDisabled(), true);
+  assert.equal(
+    await page.getByRole("button", { name: "Save policy" }).isDisabled(),
+    true,
+  );
+  await fixture(
+    "commerce-return-desk",
+    `window.returns=[];window.attempt=0;createRoot(document.getElementById('root')).render(<Subject.ReturnDesk onSubmit={async request=>{window.returns.push(request);if(window.attempt++===0)throw Error('offline');return {reference:'RET-TEST'}}}/>);`,
+  );
+  const nextReturn = () =>
+    page.getByRole("button", { name: "Review return", exact: true });
+  assert.equal(await nextReturn().isDisabled(), true);
+  await page
+    .getByRole("checkbox", { name: "Return Everyday tote", exact: true })
+    .check();
+  assert.equal(
+    await nextReturn().isDisabled(),
+    true,
+    "a reason must be chosen explicitly",
+  );
+  await page
+    .getByRole("radio", { name: "The fit was not right", exact: true })
+    .check();
+  const returnQuantity = page.getByRole("spinbutton", {
+    name: "Return quantity for Everyday tote",
+  });
+  for (const value of ["3", "1.5", "0"]) {
+    await returnQuantity.fill(value);
+    assert.equal(await nextReturn().isDisabled(), true);
+    assert.equal(await returnQuantity.getAttribute("aria-invalid"), "true");
+  }
+  await returnQuantity.fill("2");
+  await page
+    .getByRole("textbox", { name: /Anything else/ })
+    .fill("  Keep this note  ");
+  await nextReturn().click();
+  await page.waitForFunction(
+    () => document.activeElement?.textContent === "Review your return",
+  );
+  assert.deepEqual(await page.evaluate(() => window.returns), []);
+  await page
+    .getByRole("button", { name: "Submit return", exact: true })
+    .click();
+  await page.waitForFunction(() =>
+    document
+      .querySelector('[role="status"]')
+      ?.textContent?.includes("could not be created"),
+  );
+  assert.equal(
+    await page.getByText("Keep this note", { exact: true }).count(),
+    1,
+  );
+  assert.deepEqual(await page.evaluate(() => window.returns[0]), {
+    orderId: "ORD-1042",
+    lines: [{ itemId: "tote", quantity: 2 }],
+    reasonId: "fit",
+    resolution: "refund",
+    note: "Keep this note",
+    expectedAmountMinor: "6800",
+  });
+  await page
+    .getByRole("button", { name: "Submit return", exact: true })
+    .click();
+  await page.getByText("RET-TEST", { exact: true }).waitFor();
+  assert.equal(
+    await page
+      .getByRole("button", { name: "Submit return", exact: true })
+      .count(),
+    0,
+  );
+  await fixture(
+    "commerce-return-desk",
+    `createRoot(document.getElementById('root')).render(<Subject.ReturnDesk/>);`,
+  );
+  await page
+    .getByRole("checkbox", { name: "Return Merino crew", exact: true })
+    .check();
+  await page
+    .getByRole("radio", { name: "The fit was not right", exact: true })
+    .check();
+  await nextReturn().click();
+  assert.equal(
+    await page
+      .getByRole("button", { name: "Submit return", exact: true })
+      .isDisabled(),
+    true,
+  );
+  await fixture(
+    "commerce-return-desk",
+    `window.returnRoot=createRoot(document.getElementById('root'));window.order={id:'one',customer:'Test',date:'Today',currency:'GBP',minorUnitDigits:2,items:[{id:'large',name:'Exact value',variant:'Only',sku:'L',returnableQuantity:2,unitRefundMinor:9007199254740991}]};window.renderReturn=id=>window.returnRoot.render(<Subject.ReturnDesk order={{...window.order,id}} onSubmit={request=>{window.returnPayload=request;return new Promise(resolve=>{window.finishReturn=resolve})}}/>);window.renderReturn('one');`,
+  );
+  await page
+    .getByRole("checkbox", { name: "Return Exact value", exact: true })
+    .check();
+  await page
+    .getByRole("spinbutton", { name: "Return quantity for Exact value" })
+    .fill("2");
+  await page
+    .getByRole("radio", { name: "The fit was not right", exact: true })
+    .check();
+  await nextReturn().click();
+  await page
+    .getByRole("button", { name: "Submit return", exact: true })
+    .click();
+  assert.equal(
+    await page.evaluate(() => window.returnPayload.expectedAmountMinor),
+    "18014398509481982",
+  );
+  assert.equal(
+    await page.getByRole("button", { name: "Submitting…" }).isDisabled(),
+    true,
+  );
+  await page.evaluate(() => window.renderReturn("two"));
+  await page.getByText("Returns / two", { exact: true }).waitFor();
+  await page.evaluate(() => window.finishReturn({ reference: "OLD-RECEIPT" }));
+  assert.equal(
+    await page
+      .getByRole("checkbox", { name: "Return Exact value", exact: true })
+      .isChecked(),
+    false,
+  );
+  assert.equal(await nextReturn().isDisabled(), true);
+  assert.equal(await page.getByText("OLD-RECEIPT", { exact: true }).count(), 0);
   assert.deepEqual(errors, []);
   console.log("Pro industry workflows: behavioral regression checks passed.");
 } finally {
