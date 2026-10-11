@@ -9510,6 +9510,107 @@
     ]
   },
   {
+    "slug": "data-query-builder",
+    "name": "Audience Query Builder",
+    "tier": "pro",
+    "platform": "web",
+    "category": "data",
+    "description": "A typed segment builder with all/any conditions, live record matching and inline validation. An inspection rail makes every rule’s effect visible.",
+    "tags": [
+      "data",
+      "workflow",
+      "interactive",
+      "responsive",
+      "keyboard",
+      "e-commerce",
+      "audience",
+      "segmentation"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 840,
+    "usage": "import { QueryBuilder } from \"@/components/design-for-ai/data-query-builder\";\n\n<QueryBuilder />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Find your next conversation.\"",
+        "description": "Panel heading."
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Supporting explanation."
+      },
+      {
+        "name": "fields",
+        "type": "SegmentField[]",
+        "description": "Available text and numeric fields with unique IDs."
+      },
+      {
+        "name": "records",
+        "type": "SegmentRecord[]",
+        "description": "Local preview records, each with ID, label and field values."
+      },
+      {
+        "name": "value",
+        "type": "SegmentQuery",
+        "description": "Controlled query, when provided."
+      },
+      {
+        "name": "defaultValue",
+        "type": "SegmentQuery",
+        "description": "Initial uncontrolled all/any query and rules. An empty rules array matches every record."
+      },
+      {
+        "name": "onChange",
+        "type": "(query: SegmentQuery) => void",
+        "description": "Emits each edit; the host owns controlled updates."
+      },
+      {
+        "name": "onApply",
+        "type": "(query: SegmentQuery, matchingIds: string[]) => void | Promise<void>",
+        "description": "Awaited application callback. Without it, Use segment is disabled. Failed requests retain the query for retry."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface and ink palette; the preview stage follows it."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:600",
+        "click:@rule-value-1",
+        "key:End",
+        "key:Backspace",
+        "key:Backspace",
+        "type:20",
+        "wait:600",
+        "click:@apply-segment",
+        "wait:1100"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "date-booking-slots",
     "name": "Booking Slot Selector",
     "tier": "pro",

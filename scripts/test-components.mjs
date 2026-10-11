@@ -23,6 +23,8 @@ if (fs.existsSync(path.join(root, "registry/pro/content-release-notes")))
   cases.push("expansion-pro-probe");
 if (fs.existsSync(path.join(root, "registry/pro/bento-grid")))
   cases.push("bento-rhythm-probe");
+if (fs.existsSync(path.join(root, "registry/pro/data-query-builder")))
+  cases.push("pro-industry-probe");
 if (cases.length === publicCases.length)
   console.log(
     "Pro integration cases skipped: private sources are not checked out.",
