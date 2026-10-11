@@ -2221,6 +2221,192 @@
     "added": "2026-10-10"
   },
   {
+    "slug": "billing-seat-manager",
+    "name": "Seat Manager",
+    "tier": "pro",
+    "platform": "web",
+    "category": "billing",
+    "description": "A seat stepper whose monthly bill counts as you add or remove seats, with invited emails flying into a pending list and a warning when an invite has no spare seat.",
+    "tags": [
+      "billing",
+      "seats",
+      "invite",
+      "subscription",
+      "team",
+      "proration",
+      "saas"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 820,
+    "usage": "import { SeatManager } from \"@/components/design-for-ai/billing-seat-manager\";\n\n<SeatManager\n  planName=\"Studio\"\n  pricePerSeat={16}\n  billedSeats={8}\n  members={[{ id: \"ines\", name: \"Ines Varga\", email: \"ines@copperline.studio\", role: \"Owner\" }]}\n  periodStart=\"2026-09-24\"\n  periodEnd=\"2026-10-23\"\n  today=\"2026-10-10\"\n  paymentLabel=\"•••• 4242\"\n  onConfirm={async (change) => {\n    await fetch(\"/api/seats\", { method: \"POST\", body: JSON.stringify(change) });\n  }}\n/>",
+    "props": [
+      {
+        "name": "planName",
+        "type": "string",
+        "default": "\"Studio\"",
+        "description": "The plan the seats belong to, named in the heading and the status line."
+      },
+      {
+        "name": "pricePerSeat",
+        "type": "number",
+        "default": "16",
+        "description": "Price per seat per month. The monthly total, the delta and the prorated due-today all scale with it."
+      },
+      {
+        "name": "billedSeats",
+        "type": "number",
+        "default": "8",
+        "description": "Seats the workspace is already paying for. The delta is the stepper minus this."
+      },
+      {
+        "name": "defaultSeats",
+        "type": "number",
+        "default": "billedSeats",
+        "description": "Where the stepper opens. Read on mount."
+      },
+      {
+        "name": "members",
+        "type": "{ id: string; name: string; email: string; role: string }[]",
+        "default": "eight people on Studio",
+        "description": "People who already hold a seat. The stepper cannot go below this count, and their emails cannot be invited again."
+      },
+      {
+        "name": "periodStart",
+        "type": "string",
+        "default": "\"2026-09-24\"",
+        "description": "First day of the current period, ISO date."
+      },
+      {
+        "name": "periodEnd",
+        "type": "string",
+        "default": "\"2026-10-23\"",
+        "description": "Last day of the current period, ISO date, inclusive."
+      },
+      {
+        "name": "today",
+        "type": "string",
+        "default": "\"2026-10-10\"",
+        "description": "The day a seat change takes effect, ISO date. Pass the real date in production."
+      },
+      {
+        "name": "paymentLabel",
+        "type": "string",
+        "default": "\"•••• 4242\"",
+        "description": "The card that pays, as printed in the fine print and the confirmation."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Locale for money and dates."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"USD\"",
+        "description": "ISO 4217 code."
+      },
+      {
+        "name": "onConfirm",
+        "type": "(change: SeatChange) => Promise<void> | void",
+        "description": "Called with the quote the panel showed. Return a promise to hold the saving state; reject it to show the declined state. Defaults to a 900ms fake."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#7dd3a8\"",
+        "description": "The one accent: add-seat, a ready Invite button, a pending seat and the confirm button."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface and ink. Light deepens the accent for text so it stays readable."
+      }
+    ],
+    "demo": {
+      "steps": [
+        "wait:400",
+        "click:@invite-email",
+        "type:lea@copperline.studio",
+        "key:Enter",
+        "wait:800",
+        "click:@seat-plus",
+        "wait:1100"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "pricePerSeat",
+        "label": "Price per seat",
+        "kind": "slider",
+        "min": 8,
+        "max": 48,
+        "step": 1,
+        "unit": "$",
+        "default": 16,
+        "group": "Plan"
+      },
+      {
+        "prop": "defaultSeats",
+        "label": "Starting seats",
+        "kind": "slider",
+        "min": 8,
+        "max": 16,
+        "step": 1,
+        "default": 8,
+        "remount": true,
+        "group": "Plan"
+      },
+      {
+        "prop": "planName",
+        "label": "Plan name",
+        "kind": "text",
+        "default": "Studio",
+        "group": "Plan"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#7dd3a8",
+        "options": [
+          "#7dd3a8",
+          "#f5a524",
+          "#60a5fa",
+          "#ececee"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      }
+    ],
+    "added": "2026-10-10"
+  },
+  {
     "slug": "billing-usage-forecast",
     "name": "Usage Forecast Cone",
     "tier": "pro",
