@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { Logo } from "./logo";
-import { AccentPicker } from "./accent-picker";
 import { site } from "@/lib/site";
 
 const NAV = [
@@ -46,7 +45,7 @@ export function SiteHeader({ locale = "en", copy = {} }: { locale?: string; copy
     for (const { node } of siblings) node.inert = true;
     menu.current?.querySelector<HTMLAnchorElement>("a[href]")?.focus({ preventScroll: true });
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && !(event.target as HTMLElement).closest("[data-accent-picker]")) {
+      if (event.key === "Escape") {
         event.preventDefault();
         event.stopPropagation();
         setOpen(false);
@@ -127,7 +126,6 @@ export function SiteHeader({ locale = "en", copy = {} }: { locale?: string; copy
             </nav>
           </div>
           <div className="ml-auto flex items-center gap-2">
-            <AccentPicker />
           <div className="hidden items-center gap-2 lg:flex">
             <a
               href={site.github}

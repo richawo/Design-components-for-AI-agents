@@ -1,6 +1,6 @@
 "use client";
 import { useSyncExternalStore } from "react";
-import { ACCENT_KEY, DEFAULT_ACCENT, accentInk, accentText, parseAccent } from "./accent";
+import { ACCENT_KEY, parseAccent } from "./accent";
 const EVENT = "dfa-accent-change";
 let current: string | null | undefined;
 export function readAccent(): string | null {
@@ -8,16 +8,9 @@ export function readAccent(): string | null {
   try { current = parseAccent(localStorage.getItem(ACCENT_KEY)); } catch { current = null; }
   return current;
 }
-function applyAccent(value: string | null) {
-  const root = document.documentElement;
-  const hex = value ?? DEFAULT_ACCENT;
-  root.style.setProperty("--color-site-accent", hex);
-  root.style.setProperty("--color-site-on-accent", accentInk(hex));
-  root.style.setProperty("--color-site-accent-readable", accentText(hex));
-}
+// This preference belongs to component demos. Never rewrite the site's theme.
 export function setAccent(value: string | null) {
   current = parseAccent(value);
-  applyAccent(current);
   try { if (current) localStorage.setItem(ACCENT_KEY, current); else localStorage.removeItem(ACCENT_KEY); } catch { /* Private browsing still supports a session choice. */ }
   window.dispatchEvent(new Event(EVENT));
   // Storage can be unavailable. Explicitly notify embedded previews as well.
@@ -26,7 +19,7 @@ export function setAccent(value: string | null) {
   }
 }
 function subscribe(listener: () => void) {
-  const changed = () => { applyAccent(readAccent()); listener(); };
+  const changed = () => listener();
   const storage = (event: StorageEvent) => {
     if (event.key !== ACCENT_KEY && event.key !== null) return;
     current = parseAccent(event.newValue);
@@ -37,7 +30,6 @@ function subscribe(listener: () => void) {
     current = parseAccent(event.data.accent);
     changed();
   };
-  applyAccent(readAccent());
   window.addEventListener(EVENT, changed);
   window.addEventListener("storage", storage);
   window.addEventListener("message", message);

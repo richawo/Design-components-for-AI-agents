@@ -5,7 +5,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PREVIEW_CHANNEL, decodeHash, defaultValues, diffValues, encodeHash, parseFromPreview, type Body, type ToPreview } from "@/lib/demo/protocol";
 import type { ComponentControl, ControlValue, PropDoc } from "@/lib/registry-types";
 import { useAccent } from "@/lib/accent-client";
+import { parseAccent } from "@/lib/accent";
 import { previewAccent } from "@/lib/preview-accent";
+import { AccentPicker } from "./accent-picker";
 import { ControlsPanel } from "./controls-panel";
 
 const VIEWPORTS = [
@@ -180,7 +182,7 @@ export function PreviewFrame({
   }, [key]);
 
   return (
-    <div className="overflow-hidden rounded-[20px] border border-white/[0.08] bg-site-raised shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_40px_100px_-40px_rgba(0,0,0,0.9)]">
+    <div className="rounded-[20px] border border-white/[0.08] bg-site-raised shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_40px_100px_-40px_rgba(0,0,0,0.9)]">
       <div className="flex items-center justify-between gap-3 border-b border-white/[0.06] px-3 py-2 sm:px-4">
         <div className="flex min-w-0 items-center gap-2.5">
           <span className="relative flex size-2" aria-hidden="true">
@@ -199,7 +201,7 @@ export function PreviewFrame({
             )}
           </span>
         </div>
-        <div className="flex items-center gap-1">
+        <div className="flex shrink-0 items-center gap-1">
           {platform === "web" && (
             <div role="radiogroup" aria-label="Preview width" className="hidden rounded-lg border border-white/[0.06] bg-white/[0.02] p-0.5 md:flex">
               {VIEWPORTS.map((v) => (
@@ -283,9 +285,10 @@ export function PreviewFrame({
               <path d="M9 2.5h4.5V7M13.5 2.5L7.5 8.5M11.5 9.5v3a1 1 0 0 1-1 1h-7a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1h3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </a>
+          <AccentPicker defaultColor={parseAccent(controls.find(c => c.prop === accentProp)?.default) ?? undefined} />
         </div>
       </div>
-      <div ref={box} className="site-dots relative flex justify-center bg-site-sunken">
+      <div ref={box} className={`site-dots relative flex justify-center overflow-hidden bg-site-sunken ${controls.length ? "" : "rounded-b-[19px]"}`}>
         {!loaded && (
           <div className="absolute inset-0 flex items-center justify-center">
             <span className="size-5 animate-spin rounded-full border-2 border-white/10 border-t-white/50" aria-label="Loading preview" />

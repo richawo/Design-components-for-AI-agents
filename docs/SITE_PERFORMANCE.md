@@ -95,8 +95,11 @@ TEST_BASE=http://localhost:3000 node tests/browser/gallery-focus.mjs
 
 ## Personalisation
 
-The header's colour swatch accepts a native colour-picker value or a hex value.
-The preference is stored in this browser and applied before the shell paints.
+The Accent control in each live preview's toolbar accepts a native colour-picker
+value or a hex value. The shared preference is stored in this browser and applies
+to live component demos, including those embedded on the landing page. The site
+branding, navigation and Pro badges retain their original colours. There is no
+colour setting in the site header.
 Null means template defaults. Live previews use documented accent props and
 explicit accent CSS variables; semantic status and data colours are preserved.
 Monochrome components without a brand-accent token retain their palette.
@@ -105,7 +108,7 @@ Recorded gallery posters and videos retain the recorded template colours.
 Per-component controls and shared-link overrides take precedence. The global
 preference is included in configured snippets where a component has a colour
 control, but is not written into its URL as an accidental permanent override.
-Dark custom colours use contrasting foregrounds on the site's filled controls.
+Custom colours use contrasting foregrounds on supported component accent fills.
 
 Gallery hover and keyboard focus use an 18% black overlay on surrounding cards.
 The effect uses CSS, adds no React hover state and does not shift layout.
