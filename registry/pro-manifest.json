@@ -838,6 +838,159 @@
     ]
   },
   {
+    "slug": "ai-image-generation",
+    "name": "Image Generation",
+    "tier": "pro",
+    "platform": "web",
+    "category": "ai",
+    "description": "Four studies from one prompt, drawn in code. Each develops out of grain. Vary redraws the one you picked, and Upscale enlarges it.",
+    "tags": [
+      "ai",
+      "image",
+      "generation",
+      "seed",
+      "canvas",
+      "studies",
+      "upscale",
+      "prompt"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 980,
+    "usage": "import { AiImageGeneration } from \"@/components/design-for-ai/ai-image-generation\";\n\n<AiImageGeneration\n  prompt=\"North light through a paper screen, one branch.\"\n  seed={1842}\n  onVary={(study, seed) => save(study, seed)}\n/>\n\n// Drive the frame from outside with status (\"grid\" | \"upscaled\") and onStatusChange.\n// The four studies are the base seed and the next three. Vary adds 17 to the selected one.\n// Pictures are canvas drawings. Nothing is fetched.",
+    "props": [
+      {
+        "name": "prompt",
+        "type": "string",
+        "default": "\"North light through a paper screen, one branch.\"",
+        "description": "The brief, set in serif above the studies."
+      },
+      {
+        "name": "seed",
+        "type": "number",
+        "default": "1842",
+        "description": "Base seed. The studies use this value, then the next three. Changing it redraws all four. Read again whenever it changes."
+      },
+      {
+        "name": "status",
+        "type": "\"grid\" | \"upscaled\"",
+        "description": "Controlled frame. Grid is the four studies. Upscaled enlarges the selected one and keeps the others as a strip. Omit it and the desk owns the state."
+      },
+      {
+        "name": "onStatusChange",
+        "type": "(status: \"grid\" | \"upscaled\") => void",
+        "description": "Called when Upscale or All four changes the frame."
+      },
+      {
+        "name": "onVary",
+        "type": "(study: number, seed: number) => void",
+        "description": "Called with the study index and its new seed when Vary redraws it."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#f4f4f5\"",
+        "description": "The one accent, used on Upscale. A #rrggbb colour. Near-white or near-black values use the theme’s ink. The selected study is ringed in the print’s ink, and the sunlight in the pictures stays warm."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Near-black surface with white ink, or the white inverse. The prints keep their paper."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
+      }
+    ],
+    "added": "2026-10-11",
+    "demo": {
+      "steps": [
+        "wait:200",
+        "click:@study-1",
+        "wait:120",
+        "click:@upscale",
+        "wait:400",
+        "click:@vary",
+        "wait:1200"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "prompt",
+        "label": "Prompt",
+        "kind": "text",
+        "default": "North light through a paper screen, one branch.",
+        "group": "Copy"
+      },
+      {
+        "prop": "seed",
+        "label": "Seed",
+        "kind": "slider",
+        "min": 100,
+        "max": 9999,
+        "step": 1,
+        "default": 1842,
+        "group": "Studies"
+      },
+      {
+        "prop": "status",
+        "label": "Frame",
+        "kind": "action",
+        "options": [
+          {
+            "value": "grid",
+            "label": "Grid"
+          },
+          {
+            "value": "upscaled",
+            "label": "Upscaled"
+          }
+        ],
+        "group": "State"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action",
+        "group": "State"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#22c55e",
+          "#7dd3fc",
+          "#f5c66b"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      }
+    ]
+  },
+  {
     "slug": "ai-mcp-elicitation",
     "name": "MCP Elicitation",
     "tier": "pro",
