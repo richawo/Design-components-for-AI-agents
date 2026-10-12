@@ -3376,5 +3376,19 @@
       "block-financial-report"
     ],
     "updated": "2026-10-12"
+  },
+  "block-commerce-workspace": {
+    "useWhen": "A store operations team needs reporting context, order inspection and a reviewed returns workflow in one page.",
+    "avoidWhen": "Moving money, reserving inventory or authorising a return solely from frontend state.",
+    "integration": [
+      "Align the records in each `periods` entry. Selecting a measure updates its target comparison, while the order and return views keep the same period context.",
+      "Return drafts remain mounted separately for each period and order. The callback includes the period ID and the exact typed return request.",
+      "Use `onReturn` to validate and record requests. A returned reference confirms the request; refunds and exchanges remain host operations."
+    ],
+    "related": [
+      "block-financial-report",
+      "block-fashion-workspace"
+    ],
+    "updated": "2026-10-12"
   }
 }

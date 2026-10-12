@@ -5007,6 +5007,90 @@
     "added": "2026-10-10"
   },
   {
+    "slug": "block-commerce-workspace",
+    "name": "Commerce Operations Workspace",
+    "tier": "pro",
+    "platform": "web",
+    "category": "commerce",
+    "description": "A full store workspace connecting reporting periods, linked measures, the order book and reviewed returns. Order and period drafts stay separate with typed handoffs.",
+    "tags": [
+      "block",
+      "workspace",
+      "composition",
+      "keyboard",
+      "monochrome"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1500,
+    "usage": "import { CommerceWorkspace } from \"@/components/design-for-ai/block-commerce-workspace\";\n\n<CommerceWorkspace />",
+    "props": [
+      {
+        "name": "brand",
+        "type": "string",
+        "default": "\"Northstar\"",
+        "description": "Store identity."
+      },
+      {
+        "name": "periods",
+        "type": "CommerceWorkspacePeriod[]",
+        "description": "Unique reporting periods with aligned measures, order records and eligible return orders. Comparison measures require a positive supplied prior value."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"GBP\"",
+        "description": "Reporting currency for the supplied headline and order amounts."
+      },
+      {
+        "name": "onReturn",
+        "type": "(payload: { periodId: string; request: ReturnRequest }) => Promise<{ reference: string }>",
+        "description": "Validate and record a reviewed return within its period. The host issues a request reference and separately controls any refund or exchange."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Shared palette."
+      }
+    ],
+    "added": "2026-10-12",
+    "kind": "block",
+    "blockType": "workspace",
+    "components": [
+      "layout-workspace-shell",
+      "select-listbox",
+      "segmented-control",
+      "dashboard-kpi-cards",
+      "chart-bullet-targets",
+      "dashboard-orders-table",
+      "commerce-return-desk"
+    ],
+    "demo": {
+      "steps": [
+        "wait:350",
+        "click:@returns",
+        "wait:2200"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "block-fashion-workspace",
     "name": "Fashion Collection Workspace",
     "tier": "pro",
