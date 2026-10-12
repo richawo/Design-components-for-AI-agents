@@ -343,7 +343,7 @@ export function AuthMagicLink({
   const root = useRef<HTMLDivElement>(null);
   const play = useInView(root, { once: true, amount: 0.3 });
   const palette = PALETTE[theme];
-  const { later, wait } = useTimeouts();
+  const { later } = useTimeouts();
 
   const [view, setView] = useState<"form" | "sent">("form");
   const [email, setEmail] = useState(defaultEmail);
@@ -366,7 +366,7 @@ export function AuthMagicLink({
 
   const send = async (e?: FormEvent) => {
     e?.preventDefault();
-    if (sending) return;
+    if (!onSend || sending) return;
     const problem = emailProblem(email);
     setBanner(null);
     if (problem) {
@@ -380,7 +380,7 @@ export function AuthMagicLink({
     setSending(true);
     setAnnounce("Sending your link…");
     try {
-      await (onSend ? onSend(target) : wait(1100));
+      await onSend(target);
       setSentTo(target);
       setShowExpired(false);
       cooldown.start(resendAfter);
@@ -396,10 +396,10 @@ export function AuthMagicLink({
   };
 
   const resend = async () => {
-    if (cooldown.left > 0 || resendState !== "idle") return;
+    if (!onSend || cooldown.left > 0 || resendState !== "idle") return;
     setResendState("sending");
     try {
-      await (onSend ? onSend(sentTo) : wait(1000));
+      await onSend(sentTo);
       setResendState("sent");
       setReplay((r) => r + 1);
       setAnnounce(`Sent another link to ${sentTo}. Only the newest one works.`);
@@ -460,6 +460,7 @@ export function AuthMagicLink({
                     email={email}
                     error={error}
                     sending={sending}
+                    canSend={!!onSend}
                     submitLabel={submitLabel}
                     alternateLabel={alternateLabel}
                     alternateHref={alternateHref}
@@ -491,7 +492,7 @@ export function AuthMagicLink({
                     provider={detectProvider(sentTo, sender, providers)}
                     resendLeft={cooldown.left}
                     resendState={resendState}
-                    onResend={() => void resend()}
+                    onResend={onSend ? () => void resend() : undefined}
                     onBack={back}
                     reduce={reduce}
                   />
@@ -527,6 +528,7 @@ function FormView({
   email,
   error,
   sending,
+  canSend,
   submitLabel,
   alternateLabel,
   alternateHref,
@@ -553,6 +555,7 @@ function FormView({
   email: string;
   error: string | null;
   sending: boolean;
+  canSend: boolean;
   submitLabel: string;
   alternateLabel: string;
   alternateHref: string;
@@ -682,7 +685,7 @@ function FormView({
         </motion.div>
 
         <motion.div {...(animateCta ? enter(play, at(4), reduce) : {})}>
-          <PrimaryButton layoutId={`${uid}-cta`} demo="send" type="submit" disabled={sending} reduce={reduce} className="mt-5">
+          <PrimaryButton layoutId={`${uid}-cta`} demo="send" type="submit" disabled={sending || !canSend} reduce={reduce} className="mt-5">
             <AnimatePresence mode="popLayout" initial={false}>
               {sending ? (
                 <motion.span key="sending" {...swap} transition={{ duration: MOTION.swap, ease: EASE_OUT }} className="relative flex items-center gap-2.5">
@@ -734,7 +737,7 @@ function SentView({
   provider: MailProvider | null;
   resendLeft: number;
   resendState: ResendState;
-  onResend: () => void;
+  onResend?: () => void;
   onBack: () => void;
   reduce: boolean;
 }) {
@@ -951,8 +954,8 @@ function PrimaryButton({
   );
 }
 
-function ResendButton({ left, state, onClick, reduce }: { left: number; state: ResendState; onClick: () => void; reduce: boolean }) {
-  const ready = left <= 0 && state === "idle";
+function ResendButton({ left, state, onClick, reduce }: { left: number; state: ResendState; onClick?: () => void; reduce: boolean }) {
+  const ready = !!onClick && left <= 0 && state === "idle";
   const key = state !== "idle" ? state : ready ? "ready" : "wait";
   return (
     <button
