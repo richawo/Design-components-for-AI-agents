@@ -28,6 +28,7 @@ export function CardMedia({
   video,
   platform,
   priority,
+  compact = false,
 }: {
   name: string;
   thumb: string | null;
@@ -36,6 +37,7 @@ export function CardMedia({
   video: { mp4: string; webm: string | null } | null;
   platform: "web" | "mobile";
   priority: boolean;
+  compact?: boolean;
 }) {
   const posterRef = useRef<HTMLImageElement>(null);
   const ref = useRef<HTMLVideoElement>(null);
@@ -73,7 +75,7 @@ export function CardMedia({
         else if (committed.current) restart();
         // Otherwise the source is still committing; the effect below starts it.
       },
-    });
+    }, compact);
     // A hover-only recording may mount after pointer/focus entry already fired.
     if (card.matches(":hover, :focus-visible")) handle.engage(true);
     const engage = () => {
@@ -96,7 +98,7 @@ export function CardMedia({
       card.removeEventListener("focusin", focusIn);
       card.removeEventListener("focusout", leave);
     };
-  }, [video]);
+  }, [video, compact]);
 
   // <source> changes need an explicit load(); dropping them also releases the decoder.
   useEffect(() => {

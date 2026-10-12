@@ -12,6 +12,7 @@ import {
   thumbnails,
   cardThumbnails,
   videos,
+  conveyorVideos,
 } from "@/registry/__generated__/server-data";
 
 const entries = index as RegistryEntry[];
@@ -115,6 +116,7 @@ export type CardData = Pick<
   thumb: string | null;
   thumbSrcSet?: string;
   video: { mp4: string; webm: string | null } | null;
+  conveyorVideo?: { mp4: string; webm: null } | null;
 };
 
 export function toCard(e: RegistryEntry): CardData {
@@ -133,5 +135,6 @@ export function toCard(e: RegistryEntry): CardData {
     thumb: thumbnailFor(e.slug),
     thumbSrcSet: cardThumbnails[`${e.slug}.webp`],
     video: videoFor(e.slug),
+    conveyorVideo: conveyorVideos[e.slug] ? { mp4: conveyorVideos[e.slug], webm: null } : null,
   };
 }

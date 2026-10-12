@@ -11,6 +11,7 @@ import { getComponent, stats, toCard } from "@/lib/registry";
 import { absoluteUrl, site } from "@/lib/site";
 import { ChartPortfolio } from "@/registry/free/chart-portfolio/chart-portfolio";
 import { BookingSlots } from "@/registry/free/date-booking-slots/date-booking-slots";
+import { showcaseCollections } from "@/lib/showcase-collections.mjs";
 
 export const metadata: Metadata = {
   title: { absolute: "Design for AI: design components for AI agents" },
@@ -18,10 +19,6 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-const COLLECTIONS = [
-  { id: "interfaces", label: "Product interfaces", href: "/components", slugs: ["mobile-now-playing", "chart-race-bars", "feature-sticky-scroll", "agent-diff-review", "mobile-wallet-stack", "chart-candlestick", "hero-ghost-cursor"] },
-  { id: "motion", label: "Marketing and motion", href: "/categories/hero", slugs: ["hero-prism", "three-keycaps", "scroll-expanding-mosaic", "hero-marquee-screens", "three-holo-card", "hero-kinetic-type", "pixel-matrix-display", "bg-dither-flow", "three-particle-sphere"] },
-];
 
 function cardsFor(slugs: string[]) {
   return slugs.flatMap((slug) => {
@@ -35,7 +32,7 @@ function cardsFor(slugs: string[]) {
 export default function HomePage() {
   const s = stats();
   const lifetime = PLANS.find((plan) => plan.id === "pro-lifetime")!;
-  const collections = COLLECTIONS.map((collection) => ({ ...collection, cards: cardsFor(collection.slugs) }));
+  const collections = showcaseCollections.map((collection) => ({ ...collection, cards: cardsFor(collection.slugs) }));
   const blocks = cardsFor(["block-financial-report", "block-saas-landing", "block-fashion-workspace"]);
   const install = `npx shadcn@latest add ${site.url}/r/chart-portfolio.json`;
   const mcp = `claude mcp add --transport http design-for-ai ${site.url}/mcp`;

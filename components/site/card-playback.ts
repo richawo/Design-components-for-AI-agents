@@ -1,3 +1,5 @@
+import { withinPlaybackBudget } from "@/lib/playback-budget";
+
 /**
  * One scheduler for every gallery card's demo video, so a page full of cards
  * plays like a page and not like forty decoders at once.
@@ -49,6 +51,7 @@ type Entry = {
   loaded: boolean;
   playing: boolean;
   engaged: boolean;
+  cost: number;
   unload?: number;
 };
 
@@ -84,7 +87,7 @@ function apply() {
       return { e, engaged: e.engaged, ratio: e.ratio, off: Math.abs(r.top + r.height / 2 - mid) };
     })
     .sort((a, b) => Number(b.engaged) - Number(a.engaged) || b.ratio - a.ratio || a.off - b.off);
-  const play = new Set(hidden || disabled ? [] : ranked.slice(0, cap()).map((x) => x.e));
+  const play = new Set(hidden || disabled ? [] : withinPlaybackBudget(ranked, cap(), x => x.e.cost).map((x) => x.e));
   for (const e of entries.values()) {
     const want = play.has(e);
     if (want !== e.playing) {
@@ -146,9 +149,9 @@ function init() {
 }
 
 /** Hand a card to the scheduler. Returns the cleanup and an engage(on) for hover and focus. */
-export function registerCard(card: Element, client: PlaybackClient): { engage(on: boolean): void; release(): void } {
+export function registerCard(card: Element, client: PlaybackClient, compact = false): { engage(on: boolean): void; release(): void } {
   init();
-  const entry: Entry = { client, ratio: 0, near: false, loaded: false, playing: false, engaged: false };
+  const entry: Entry = { client, ratio: 0, near: false, loaded: false, playing: false, engaged: false, cost: compact ? .5 : 1 };
   entries.set(card, entry);
   nearIO!.observe(card);
   viewIO!.observe(card);

@@ -33,6 +33,8 @@ import { loadBlogSource, bundleBlog } from "./lib/blog-source.mjs";
 import { auditBlog } from "./lib/blog-audit.mjs";
 import { buildBlogImages } from "./lib/blog-images.mjs";
 import { buildCardImages } from "./lib/card-images.mjs";
+import { conveyorVideoManifest } from "./lib/conveyor-videos.mjs";
+import { showcaseCollections } from "../lib/showcase-collections.mjs";
 import { validateControls, validateDemo } from "../lib/demo/schema.mjs";
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
@@ -426,6 +428,7 @@ const thumbs = previewFiles.filter((f) => f.endsWith(".webp"));
 const cardThumbnails = await buildCardImages(root, thumbs);
 // Hover videos recorded by scripts/record-demos.mjs from meta.demo.
 const videos = previewFiles.filter((f) => f.endsWith(".mp4") || f.endsWith(".webm"));
+const conveyorVideos = conveyorVideoManifest(root, showcaseCollections.flatMap(c => c.slugs));
 const sourceLoaders = [...free, ...pro]
   .map((c) => `  ${JSON.stringify(c.meta.slug)}: () => import(${JSON.stringify(`./sources/${c.meta.slug}.json`)}),`)
   .join("\n");
@@ -452,6 +455,8 @@ export const thumbnails: ReadonlySet<string> = new Set(${JSON.stringify(thumbs)}
 export const cardThumbnails: Readonly<Record<string, string>> = ${JSON.stringify(cardThumbnails)};
 
 export const videos: ReadonlySet<string> = new Set(${JSON.stringify(videos)});
+
+export const conveyorVideos: Readonly<Record<string, string>> = ${JSON.stringify(conveyorVideos)};
 `,
 );
 
