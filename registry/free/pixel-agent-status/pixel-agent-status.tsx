@@ -552,7 +552,7 @@ function Tile({
             animate={{ opacity: 1, y: 0 }}
             exit={reduce ? { opacity: 0 } : { opacity: 0, y: -8 }}
             transition={{ duration: 0.2, ease: EASE_OUT }}
-            className={`block ${copied ? "text-white" : "text-white/35 transition-colors group-hover:text-white/60"}`}
+            className={`block ${copied ? "text-white" : "text-white/65 transition-colors group-hover:text-white/60"}`}
           >
             {copied ? "Copied snippet" : `state="${state}"`}
           </motion.span>
