@@ -381,13 +381,14 @@ function Capture({
   const fix = phase === "idle" || phase === "invalid" ? suggestion(value) : null;
 
   const send = async (email: string) => {
+    if (!onSubscribe) return;
     setSubmitted(email);
     setPhase("loading");
     setMessage("");
     const started = performance.now();
     const hold = () => sleep(Math.max(0, MIN_LOADING_MS - (performance.now() - started)));
     try {
-      const res = await (onSubscribe ? onSubscribe(email) : sleep(900));
+      const res = await onSubscribe(email);
       await hold();
       setPhase(res === "already-subscribed" ? "already" : "success");
     } catch {
@@ -479,7 +480,7 @@ function Capture({
                 <button
                   type="submit"
                   data-demo="submit"
-                  disabled={!value.trim()}
+                  disabled={!onSubscribe || !value.trim()}
                   className={`group/btn gap-2 px-5 enabled:hover:bg-(--fn-solid-hover) enabled:active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40 ${SOLID_BUTTON}`}
                 >
                   {buttonLabel}
