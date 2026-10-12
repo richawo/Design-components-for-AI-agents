@@ -15777,7 +15777,7 @@
     "dependencies": [
       "motion"
     ],
-    "theme": "light",
+    "theme": "dark",
     "previewHeight": 1130,
     "usage": "import { ClauseLibrary } from \"@/components/design-for-ai/legal-clause-library\";\n\n<ClauseLibrary />",
     "props": [
@@ -15806,7 +15806,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "default": "\"light\"",
+        "default": "\"dark\"",
         "description": "Surface, border and ink palette."
       },
       {
@@ -15836,7 +15836,7 @@
           "dark",
           "light"
         ],
-        "default": "light"
+        "default": "dark"
       },
       {
         "prop": "selectMode",
@@ -15867,7 +15867,7 @@
     "dependencies": [
       "motion"
     ],
-    "theme": "light",
+    "theme": "dark",
     "previewHeight": 1110,
     "usage": "import { DocumentRequests } from \"@/components/design-for-ai/legal-document-requests\";\n\n<DocumentRequests />",
     "props": [
@@ -15896,7 +15896,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "default": "\"light\"",
+        "default": "\"dark\"",
         "description": "Surface, border and ink palette."
       }
     ],
@@ -15920,7 +15920,7 @@
           "dark",
           "light"
         ],
-        "default": "light"
+        "default": "dark"
       }
     ]
   },
@@ -15941,7 +15941,7 @@
     "dependencies": [
       "motion"
     ],
-    "theme": "light",
+    "theme": "dark",
     "previewHeight": 1180,
     "usage": "import { EvidenceIndex } from \"@/components/design-for-ai/legal-evidence-index\";\n\n<EvidenceIndex />",
     "props": [
@@ -15970,7 +15970,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "default": "\"light\"",
+        "default": "\"dark\"",
         "description": "Surface, border and ink palette."
       },
       {
@@ -16000,7 +16000,7 @@
           "dark",
           "light"
         ],
-        "default": "light"
+        "default": "dark"
       },
       {
         "prop": "selectMode",
@@ -16031,7 +16031,7 @@
     "dependencies": [
       "motion"
     ],
-    "theme": "light",
+    "theme": "dark",
     "previewHeight": 1410,
     "usage": "import { MatterDashboard } from \"@/components/design-for-ai/legal-matter-dashboard\";\n\n<MatterDashboard />",
     "props": [
@@ -16060,7 +16060,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "default": "\"light\"",
+        "default": "\"dark\"",
         "description": "Surface, border and ink palette."
       },
       {
@@ -16090,7 +16090,7 @@
           "dark",
           "light"
         ],
-        "default": "light"
+        "default": "dark"
       },
       {
         "prop": "selectMode",
@@ -16121,7 +16121,7 @@
     "dependencies": [
       "motion"
     ],
-    "theme": "light",
+    "theme": "dark",
     "previewHeight": 1270,
     "usage": "import { MatterIntake } from \"@/components/design-for-ai/legal-matter-intake\";\n\n<MatterIntake />",
     "props": [
@@ -16155,7 +16155,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "default": "\"light\"",
+        "default": "\"dark\"",
         "description": "Surface, border and ink palette."
       },
       {
@@ -16185,7 +16185,7 @@
           "dark",
           "light"
         ],
-        "default": "light"
+        "default": "dark"
       },
       {
         "prop": "selectMode",
@@ -16216,7 +16216,7 @@
     "dependencies": [
       "motion"
     ],
-    "theme": "light",
+    "theme": "dark",
     "previewHeight": 1180,
     "usage": "import { ObligationTracker } from \"@/components/design-for-ai/legal-obligation-tracker\";\n\n<ObligationTracker />",
     "props": [
@@ -16250,7 +16250,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "default": "\"light\"",
+        "default": "\"dark\"",
         "description": "Surface, border and ink palette."
       },
       {
@@ -16280,7 +16280,7 @@
           "dark",
           "light"
         ],
-        "default": "light"
+        "default": "dark"
       },
       {
         "prop": "selectMode",
@@ -16311,7 +16311,7 @@
     "dependencies": [
       "motion"
     ],
-    "theme": "light",
+    "theme": "dark",
     "previewHeight": 1190,
     "usage": "import { RenewalPlanner } from \"@/components/design-for-ai/legal-renewal-planner\";\n\n<RenewalPlanner />",
     "props": [
@@ -16350,7 +16350,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "default": "\"light\"",
+        "default": "\"dark\"",
         "description": "Surface, border and ink palette."
       },
       {
@@ -16381,7 +16381,7 @@
           "dark",
           "light"
         ],
-        "default": "light"
+        "default": "dark"
       },
       {
         "prop": "selectMode",
@@ -16412,7 +16412,7 @@
     "dependencies": [
       "motion"
     ],
-    "theme": "light",
+    "theme": "dark",
     "previewHeight": 1300,
     "usage": "import { SignatureRequest } from \"@/components/design-for-ai/legal-signature-request\";\n\n<SignatureRequest />",
     "props": [
@@ -16451,7 +16451,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "default": "\"light\"",
+        "default": "\"dark\"",
         "description": "Surface, border and ink palette."
       },
       {
@@ -16481,7 +16481,7 @@
           "dark",
           "light"
         ],
-        "default": "light"
+        "default": "dark"
       },
       {
         "prop": "selectMode",
@@ -16517,7 +16517,7 @@
       "motion",
       "lucide-react"
     ],
-    "theme": "light",
+    "theme": "dark",
     "previewHeight": 1040,
     "usage": "import { VersionHistory } from \"@/components/design-for-ai/legal-version-history\";\n\n<VersionHistory />",
     "props": [
@@ -16555,7 +16555,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "default": "\"light\"",
+        "default": "\"dark\"",
         "description": "Surface and ink palette; the preview stage follows it."
       }
     ],
@@ -16581,7 +16581,7 @@
           "dark",
           "light"
         ],
-        "default": "light"
+        "default": "dark"
       },
       {
         "prop": "changesOnly",
