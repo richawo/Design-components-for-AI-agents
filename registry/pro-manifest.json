@@ -5007,6 +5007,100 @@
     "added": "2026-10-10"
   },
   {
+    "slug": "block-fashion-workspace",
+    "name": "Fashion Collection Workspace",
+    "tier": "pro",
+    "platform": "web",
+    "category": "commerce",
+    "description": "A complete fashion workspace linking collection performance, line planning and launch readiness. Shared collection context keeps drafts and typed save payloads aligned.",
+    "tags": [
+      "block",
+      "workspace",
+      "composition",
+      "keyboard",
+      "monochrome"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1500,
+    "usage": "import { FashionWorkspace } from \"@/components/design-for-ai/block-fashion-workspace\";\n\n<FashionWorkspace />",
+    "props": [
+      {
+        "name": "brand",
+        "type": "string",
+        "default": "\"Northstar\"",
+        "description": "Workspace identity."
+      },
+      {
+        "name": "scopes",
+        "type": "FashionWorkspaceScope[]",
+        "description": "Unique collection contexts with merchandising records, line categories, a minor-unit budget and launch records."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"GBP\"",
+        "description": "Currency shared by the collection records."
+      },
+      {
+        "name": "referenceDate",
+        "type": "string",
+        "default": "\"2026-10-12\"",
+        "description": "ISO date for launch validation; provide the host reporting date."
+      },
+      {
+        "name": "onSavePlan",
+        "type": "(payload: { collectionId: string; plan: CollectionPlan }) => void | Promise<void>",
+        "description": "Persist a reviewed plan within its collection context. Reject to keep the draft."
+      },
+      {
+        "name": "onSchedule",
+        "type": "(payload: { collectionId: string; schedule: LaunchSchedule }) => void | Promise<void>",
+        "description": "Persist a reviewed launch schedule in the selected collection."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Shared palette."
+      }
+    ],
+    "added": "2026-10-12",
+    "kind": "block",
+    "blockType": "workspace",
+    "components": [
+      "layout-workspace-shell",
+      "select-listbox",
+      "segmented-control",
+      "fashion-merchandising-dashboard",
+      "fashion-collection-line-plan",
+      "fashion-launch-calendar"
+    ],
+    "demo": {
+      "steps": [
+        "wait:350",
+        "click:@planning",
+        "wait:2000"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "block-financial-report",
     "name": "Monthly Financial Report",
     "tier": "pro",
