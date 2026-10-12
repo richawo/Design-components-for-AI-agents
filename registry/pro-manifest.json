@@ -17802,6 +17802,12 @@
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
         "description": "Surface and ink palette; the preview stage follows it."
+      },
+      {
+        "name": "selectMode",
+        "type": "\"custom\" | \"native\"",
+        "default": "\"custom\"",
+        "description": "Keyboard-accessible custom menus or native platform pickers, with balanced 12px text and chevron insets."
       }
     ],
     "added": "2026-10-11",
@@ -17827,6 +17833,16 @@
           "light"
         ],
         "default": "dark"
+      },
+      {
+        "prop": "selectMode",
+        "label": "Select menus",
+        "kind": "segmented",
+        "options": [
+          "custom",
+          "native"
+        ],
+        "default": "custom"
       }
     ]
   },
