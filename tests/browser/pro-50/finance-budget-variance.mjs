@@ -1,9 +1,9 @@
-export async function check({page,mount,assert}){
+export async function check({page,mount,assert,choose}){
  await mount(`window.notes=[];window.fail=true;createRoot(document.getElementById('root')).render(<Subject.BudgetVariance onSaveExplanation={async p=>{window.notes.push(p);if(window.fail)throw Error('offline')}}/>);`);
  assert.match(await page.locator('dl').first().innerText(),/£4,200.00/);
  await page.getByRole('button',{name:/Subscription revenue/}).click();assert.match(await page.getByRole('button',{name:/Subscription revenue/}).innerText(),/Favourable/);
  await page.getByRole('button',{name:/Infrastructure/}).click();assert.match(await page.getByRole('button',{name:/Infrastructure/}).innerText(),/Adverse/);
  await page.getByLabel('Variance explanation',{exact:true}).fill('Compute usage rose during the data migration.');await page.getByRole('button',{name:'Save explanation',exact:true}).click();await page.getByRole('status').filter({hasText:'request failed'}).waitFor();await page.evaluate(()=>window.fail=false);await page.getByRole('button',{name:'Save explanation',exact:true}).click();await page.getByRole('status').filter({hasText:'explanation saved'}).waitFor();assert.equal((await page.evaluate(()=>window.notes[1])).lineId,'infra');assert.equal(await page.getByRole('button',{name:'Save explanation',exact:true}).isDisabled(),true);
- await page.getByLabel('Department',{exact:true}).selectOption('Product');assert.match(await page.locator('dl').first().innerText(),/-£2,700.00/);
+ await choose(page.getByLabel('Department',{exact:true}), 'Product');assert.match(await page.locator('dl').first().innerText(),/-£2,700.00/);
  await mount(`createRoot(document.getElementById('root')).render(<Subject.BudgetVariance lines={[{id:'a',name:'New spend',department:'A',kind:'expense',budgetMinor:0,actualMinor:1,drivers:[]}]}/>);`);assert.match(await page.locator('section').innerText(),/Unbudgeted/);assert.doesNotMatch(await page.locator('section').innerText(),/NaN|Infinity/);
 }
