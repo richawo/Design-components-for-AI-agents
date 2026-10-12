@@ -123,7 +123,7 @@ const PALETTE = {
     ink: "#18181b",
     label: "#3f3f46",
     muted: "#52525b",
-    faint: "#71717a",
+    faint: "#666670",
     placeholder: "#a1a1aa",
     error: "#dc2626",
     errorInk: "#b91c1c",
@@ -1472,7 +1472,7 @@ export default function AuthSignInDemo(overrides: Partial<AuthSignInProps> = {})
     <div className="flex min-h-dvh flex-col items-center justify-center px-4 py-12 sm:py-16" style={{ background: light ? STAGE_LIGHT : STAGE }}>
       <AuthSignIn key={run} onSubmit={onSubmit} onSuccess={() => void wait(DEMO_RESET_DELAY_MS).then(() => setSignedIn(true))} onForgotPassword={() => undefined} {...overrides} />
       <div
-        className={`mt-6 flex min-h-11 max-w-[400px] flex-wrap items-center justify-center gap-x-3 gap-y-1 px-2 text-center font-mono text-[11px] uppercase leading-[1.6] tracking-[0.12em] ${light ? "text-[#71717a]" : "text-[#7d7d86]"}`}
+        className={`mt-6 flex min-h-11 max-w-[400px] flex-wrap items-center justify-center gap-x-3 gap-y-1 px-2 text-center font-mono text-[11px] uppercase leading-[1.6] tracking-[0.12em] ${light ? "text-[#666670]" : "text-[#7d7d86]"}`}
       >
         <AnimatePresence mode="popLayout">
           {signedIn ? (
