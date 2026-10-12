@@ -556,7 +556,7 @@ export function AgentToolCall({
   const failureVisible = status === "failed" || (retrying && status === "running") || (settling && status === "done");
   const busy = retrying || settling;
   // A controlled call without onRetry cannot change its own status, so a Retry there would do nothing.
-  const canRetry = statusProp === undefined || onRetry !== undefined;
+  const canRetry = onRetry !== undefined;
 
   // Transitions are announced once, politely, as they happen; the state a line mounts in is history, not news.
   const sentence =
@@ -582,6 +582,7 @@ export function AgentToolCall({
   const visibleLines = showAll ? resultLines : resultLines.slice(0, COLLAPSED_LINES);
 
   const retry = useCallback(async () => {
+    if (!onRetry) return;
     // A controlled status belongs to the host, which moves it through its own onRetry.
     const ownStatus = statusProp === undefined;
     setRetrying(true);
@@ -590,7 +591,7 @@ export function AgentToolCall({
       setInternal("running");
     }
     try {
-      await (onRetry ? onRetry() : wait(DEFAULT_RETRY_MS));
+      await onRetry();
       if (ownStatus) setInternal("done");
       setSettling(true);
       window.clearTimeout(settleTimer.current);
