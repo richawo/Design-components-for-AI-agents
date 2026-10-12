@@ -1,0 +1,30 @@
+import { describe, expect, it } from "vitest";
+import { captureQuality, gallerySteps } from "../scripts/lib/recording-quality.mjs";
+
+describe("recording frame quality", () => {
+  it("measures captured cadence rather than the encoded frame-rate label", () => {
+    const smooth = captureQuality(Array.from({ length: 61 }, (_, i) => i / 60));
+    expect(smooth.activeFps).toBeCloseTo(60);
+    expect(smooth.p95GapMs).toBeLessThan(17);
+    // Negative control: a nominal 60fps encoder cannot repair a 6fps capture.
+    const dropped = captureQuality(Array.from({ length: 7 }, (_, i) => i / 6));
+    expect(dropped.activeFps).toBeCloseTo(6);
+    expect(dropped.stallsOver100Ms).toBe(6);
+  });
+  it("excludes a deliberate reading pause from active-motion gaps", () => {
+    const result = captureQuality([0, .02, .04, 2, 2.02, 2.04], [[0, .05], [2, 2.05]]);
+    expect(result.maxGapMs).toBeCloseTo(20);
+    expect(result.stallsOver100Ms).toBe(0);
+  });
+  it("drops idle lead-in and caps the idle tail without changing action order", () => {
+    const steps = [{ cmd: "wait", ms: 2000 }, { cmd: "click", target: "send" }, { cmd: "wait", ms: 1700 }, { cmd: "hover", target: "result" }, { cmd: "wait", ms: 3000 }];
+    expect(gallerySteps(steps)).toEqual([{ cmd: "click", target: "send" }, { cmd: "wait", ms: 1700 }, { cmd: "hover", target: "result" }, { cmd: "wait", ms: 1300 }]);
+    expect(steps[0].ms).toBe(2000);
+  });
+  it("preserves a held-button wait that completes the interaction", () => {
+    expect(gallerySteps([{ cmd: "down" }, { cmd: "wait", ms: 3000 }])).toEqual([{ cmd: "down" }, { cmd: "wait", ms: 3000 }]);
+  });
+  it("keeps ambient demonstrations that contain only waits", () => {
+    expect(gallerySteps([{ cmd: "wait", ms: 4000 }])).toEqual([{ cmd: "wait", ms: 4000 }]);
+  });
+});

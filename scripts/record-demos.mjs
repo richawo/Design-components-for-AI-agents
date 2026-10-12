@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Records each component's demo script (meta.demo) into the gallery card's
-// hover video: public/previews/<slug>.mp4 (H.264, yuv420p, 1280×800, muted,
-// faststart). Framed exactly like the WebP poster from scripts/screenshot.mjs,
+// preview video: public/previews/<slug>.mp4 (H.264, yuv420p, 1280×800, muted,
+// faststart, 60fps). Framed exactly like the WebP poster from scripts/screenshot.mjs,
 // so the video fades in over the poster without a jump.
 //
 //   node scripts/record-demos.mjs [slug...] [--base=http://localhost:3100]
@@ -20,6 +20,7 @@ import os from "node:os";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
 import sharp from "sharp";
+import { captureQuality, gallerySteps } from "./lib/recording-quality.mjs";
 import { launchChromium } from "./lib/browser.mjs";
 import { CURSOR_CSS, CURSOR_HTML, CURSOR_START } from "../lib/demo/cursor.mjs";
 import { TIMING, demoDuration, parseSteps, targetSelector } from "../lib/demo/schema.mjs";
@@ -33,6 +34,11 @@ const flag = (name, dflt) => {
 const base = flag("base", process.env.PREVIEW_BASE || "http://localhost:3100");
 const out = path.resolve(root, flag("out", "public/previews"));
 const sheetDir = flag("sheet", "");
+const reportDir = flag("report", "");
+const gallery = !args.includes("--original-timing");
+const skipLeadScroll = args.includes("--skip-lead-scroll");
+const refreshPoster = args.includes("--refresh-poster");
+const timings = gallery ? { ...TIMING, glide: 450, tabGap: 220, keyGap: 150, typeGap: 45 } : TIMING;
 const webm = args.includes("--webm");
 // Expanding demos need room beyond the initial card bounds. Refresh the poster
 // with this framing too, so hovering never changes the component scale.
@@ -42,7 +48,8 @@ const only = args.filter((a) => !a.startsWith("--"));
 
 const OUT_W = 1280;
 const OUT_H = 800;
-const FPS = 30;
+const FPS = Number(flag("fps", "60"));
+if (![30, 60].includes(FPS)) throw new Error("--fps must be 30 or 60");
 
 // Read metas from source (not the generated index) so a component being
 // built right now can be recorded before anyone rebuilds the registry.
@@ -97,7 +104,9 @@ async function phoneMask(file, vw, vh) {
 async function record(browser, slug) {
   const meta = readMeta(slug);
   if (!meta?.demo) throw new Error("no demo in meta.json");
-  const steps = parseSteps(meta.demo.steps);
+  const parsed = parseSteps(meta.demo.steps);
+  const steps = gallery ? gallerySteps(parsed) : parsed;
+  const setupScroll = skipLeadScroll && steps[0]?.cmd === "scroll" ? steps.shift().px : 0;
   const mobile = meta.platform === "mobile";
   const strip = meta.category === "headers" || meta.category === "footers";
   const vw = mobile ? 390 : strip ? 1024 : 1440;
@@ -143,6 +152,21 @@ async function record(browser, slug) {
     let py = vh * CURSOR_START[1];
     await page.mouse.move(px, py);
 
+    if (setupScroll) {
+      await page.mouse.wheel(0, setupScroll);
+      await page.waitForTimeout(700);
+    }
+    // Start near the first target instead of spending the opening on travel.
+    let firstTarget = null;
+    if (gallery && steps[0]?.target) {
+      firstTarget = await page.locator(targetSelector(steps[0].target.name)).first().boundingBox();
+      if (firstTarget && firstTarget.y >= 0 && firstTarget.y + firstTarget.height <= vh) {
+        const [fx, fy] = steps[0].target.at ?? [.5, .5];
+        px = firstTarget.x + firstTarget.width * fx;
+        py = firstTarget.y + firstTarget.height * fy;
+        await page.mouse.move(px, py);
+      }
+    }
     // Poster framing from the frame we're about to start on.
     const first = await page.screenshot({ type: "png" });
     const initialFrame = mobile ? null : await framing(first, vw, vh);
@@ -151,20 +175,25 @@ async function record(browser, slug) {
     // Frames: Chrome's screencast, with timestamps, at full quality.
     const cdp = await context.newCDPSession(page);
     const frames = [];
-    cdp.on("Page.screencastFrame", async (f) => {
-      const file = path.join(tmp, `f${String(frames.length).padStart(5, "0")}.jpg`);
-      fs.writeFileSync(file, Buffer.from(f.data, "base64"));
+    const writes = [];
+    let frameIndex = 0;
+    cdp.on("Page.screencastFrame", (f) => {
+      // Release Chrome's capture buffer immediately. Encoding and disk I/O
+      // must not hold up the compositor's next frame.
+      void cdp.send("Page.screencastFrameAck", { sessionId: f.sessionId }).catch(() => {});
+      const file = path.join(tmp, `f${String(frameIndex++).padStart(5, "0")}.jpg`);
       frames.push({ file, t: f.metadata.timestamp });
-      await cdp.send("Page.screencastFrameAck", { sessionId: f.sessionId }).catch(() => {});
+      writes.push(fs.promises.writeFile(file, Buffer.from(f.data, "base64")));
     });
     await cdp.send("Page.startScreencast", { format: "jpeg", quality: 92, everyNthFrame: 1, maxWidth: vw * dpr, maxHeight: vh * dpr });
     const t0 = Date.now() / 1000;
     await page.evaluate(() => (window.__dfaCursor.dataset.on = "1"));
-    await page.waitForTimeout(150);
+    await page.waitForTimeout(gallery ? 60 : 150);
 
     // Paced by the clock, not by step count, so a glide takes exactly as long
     // as it does in the live player however slow each mouse.move is.
     const glide = async (x, y, ms) => {
+      if (Math.hypot(x - px, y - py) < 1) { px = x; py = y; return; }
       const x0 = px;
       const y0 = py;
       const start = Date.now();
@@ -211,13 +240,15 @@ async function record(browser, slug) {
       return [r.x + r.w * fx, r.y + r.h * fy];
     };
 
+    const motionWindows = [];
     for (const s of steps) {
+      const actionStart = Date.now() / 1000;
       if (s.cmd === "wait") await page.waitForTimeout(s.ms);
-      else if (s.cmd === "move") await glide(s.point[0] * vw, s.point[1] * vh, TIMING.glide);
+      else if (s.cmd === "move") await glide(s.point[0] * vw, s.point[1] * vh, timings.glide);
       else if (s.cmd === "hover" || (s.cmd === "click" && s.target)) {
         const p = await pointOf(s.target);
         if (!p) continue;
-        await glide(p[0], p[1], TIMING.glide);
+        await glide(p[0], p[1], timings.glide);
         // A container can start resizing after the first measurement. Correct
         // the landing point before pressing, just as the live cursor does.
         const landing = await pointOf(s.target);
@@ -226,41 +257,49 @@ async function record(browser, slug) {
           await glide(landing[0], landing[1], 120);
         if (s.cmd === "click") {
           await page.mouse.down();
-          await page.waitForTimeout(TIMING.press);
+          await page.waitForTimeout(timings.press);
           await page.mouse.up();
         }
       } else if (s.cmd === "click") {
         await page.mouse.down();
-        await page.waitForTimeout(TIMING.press);
+        await page.waitForTimeout(timings.press);
         await page.mouse.up();
       } else if (s.cmd === "down") await page.mouse.down();
       else if (s.cmd === "up") await page.mouse.up();
       else if (s.cmd === "drag") {
         await page.mouse.down();
-        await glide(s.point[0] * vw, s.point[1] * vh, TIMING.drag);
+        await glide(s.point[0] * vw, s.point[1] * vh, timings.drag);
         await page.mouse.up();
       } else if (s.cmd === "tab") {
         for (let i = 0; i < s.n; i++) {
           await page.keyboard.press("Tab");
-          await page.waitForTimeout(TIMING.tabGap);
+          await page.waitForTimeout(timings.tabGap);
         }
       } else if (s.cmd === "key") {
         await page.keyboard.press(s.key);
-        await page.waitForTimeout(TIMING.keyGap);
-      } else if (s.cmd === "type") await page.keyboard.type(s.text, { delay: TIMING.typeGap });
+        await page.waitForTimeout(timings.keyGap);
+      } else if (s.cmd === "type") await page.keyboard.type(s.text, { delay: timings.typeGap });
       else if (s.cmd === "scroll") {
         await page.mouse.wheel(0, s.px);
-        await page.waitForTimeout(TIMING.scrollSettle);
+        await page.waitForTimeout(timings.scrollSettle);
       }
+      if (s.cmd !== "wait") motionWindows.push([actionStart, Date.now() / 1000 + .3]);
     }
     // A short tail so the last state lands before the loop restarts.
     await page.evaluate(() => (window.__dfaCursor.dataset.on = "0"));
-    await page.waitForTimeout(350);
+    await page.waitForTimeout(Math.max(350, gallery ? 3000 - (Date.now() / 1000 - t0) * 1000 : 350));
     const t1 = Date.now() / 1000;
     await cdp.send("Page.stopScreencast");
     await page.waitForTimeout(100);
+    await Promise.all(writes);
 
     if (!frames.length) throw new Error("screencast produced no frames");
+    const quality = captureQuality(frames.map((frame) => frame.t), motionWindows);
+    if (reportDir) {
+      const directory = path.resolve(root, reportDir);
+      fs.mkdirSync(directory, { recursive: true });
+      fs.writeFileSync(path.join(directory, `${slug}.json`), JSON.stringify({ slug, quality, viewport: { vw, vh, dpr }, timestamps: frames.map((frame) => frame.t), motionWindows }, null, 2));
+    }
     // Each frame holds until the next one; the last holds to the end.
     frames.sort((a, b) => a.t - b.t);
     const list = frames
@@ -295,6 +334,8 @@ async function record(browser, slug) {
     const dur = Number(execFileSync("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", mp4Tmp]).toString().trim());
     if (dur < 2.5 || dur > 9.5) problems.push(`video runs ${dur.toFixed(1)}s; demos should be 3–8s (script estimate ${(demoDuration(steps) / 1000).toFixed(1)}s)`);
 
+    if (motionWindows.length && quality.activeSamples && quality.p95GapMs > 67 && !args.includes("--allow-dropped-frames")) problems.push(`capture has ${quality.p95GapMs.toFixed(1)}ms p95 active frame gaps; keep the last good clip and retry without competing rendering work`);
+    if (problems.length) return { written: [], problems };
     fs.mkdirSync(out, { recursive: true });
     const finalMp4 = path.join(out, `${slug}.mp4`);
     fs.copyFileSync(mp4Tmp, `${finalMp4}.${process.pid}.tmp`);
@@ -314,7 +355,7 @@ async function record(browser, slug) {
     }
 
     const poster = path.join(out, `${slug}.webp`);
-    if (!fs.existsSync(poster) || frameViewport) {
+    if (!fs.existsSync(poster) || frameViewport || refreshPoster) {
       const png = path.join(tmp, "poster.png");
       execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-i", mp4Tmp, "-frames:v", "1", png]);
       await sharp(png).webp({ quality: 82 }).toFile(poster);
@@ -341,7 +382,7 @@ if (!slugs.length) {
   console.log("No components with a demo.");
   process.exit(0);
 }
-const browser = await launchChromium();
+const browser = await launchChromium(args.includes("--software-rendering") ? {} : { args: [] });
 let failed = 0;
 for (const slug of slugs) {
   try {
