@@ -342,7 +342,7 @@ function BillingToggle({ billing, onChange, uid, reduce }: { billing: Billing; o
               data-demo={`billing-${o.value}`}
               onClick={() => onChange(o.value)}
               className={`relative h-10 min-w-[104px] rounded-full px-5 text-[14px] font-medium transition-[color,scale] duration-150 active:scale-[0.97] ${FOCUS} ${
-                on ? "text-(--pt-on-ink)" : "text-(--pt-ink)/55 hover:text-(--pt-ink)"
+                on ? "text-(--pt-on-ink)" : "text-(--pt-ink)/65 hover:text-(--pt-ink)"
               }`}
             >
               {on ? (
@@ -364,14 +364,14 @@ function BillingToggle({ billing, onChange, uid, reduce }: { billing: Billing; o
 /** The saving is offered in grey, and earns the accent once annual is on. */
 function SavingNote({ saving, earned, reduce }: { saving: string; earned: boolean; reduce: boolean }) {
   return (
-    <p className="flex items-center gap-2 text-[13px] text-(--pt-ink)/50">
+    <p className="flex items-center gap-2 text-[13px] text-(--pt-ink)/65">
       Pay annually, get
       <motion.span
         data-demo="saving"
         animate={earned && !reduce ? { scale: [1, 1.06, 1] } : { scale: 1 }}
         transition={{ duration: 0.32, ease: EASE }}
         className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 font-medium ring-1 ring-inset transition-colors duration-200 ${
-          earned ? "bg-(--pt-accent)/12 text-(--pt-ink) ring-(--pt-accent)/35" : "bg-(--pt-ink)/[0.03] text-(--pt-ink)/50 ring-(--pt-ring)"
+          earned ? "bg-(--pt-accent)/12 text-(--pt-ink) ring-(--pt-accent)/35" : "bg-(--pt-ink)/[0.03] text-(--pt-ink)/65 ring-(--pt-ring)"
         }`}
       >
         <span className={`size-1.5 rounded-full transition-colors duration-200 ${earned ? "bg-(--pt-accent)" : "bg-(--pt-ink)/30"}`} aria-hidden="true" />
@@ -450,7 +450,7 @@ function PlanCard({
               </span>
             ) : null}
           </div>
-          <p className="mt-1 text-[14px] text-(--pt-ink)/50">{plan.audience}</p>
+          <p className="mt-1 text-[14px] text-(--pt-ink)/65">{plan.audience}</p>
         </motion.header>
 
         <motion.div variants={v(reveal)} custom={at(T.price)} className="mt-8 flex items-start">
@@ -458,13 +458,13 @@ function PlanCard({
             {currency}
             {price} per month, {note}
           </span>
-          <span aria-hidden="true" className="mr-1 mt-[0.45em] text-[22px] font-medium tracking-[-0.02em] text-(--pt-ink)/50">
+          <span aria-hidden="true" className="mr-1 mt-[0.45em] text-[22px] font-medium tracking-[-0.02em] text-(--pt-ink)/65">
             {currency}
           </span>
           <span aria-hidden="true" className="text-[clamp(3.25rem,2.8rem+1.6cqi,4.25rem)] font-semibold leading-none tracking-[-0.055em]">
             <Odometer value={shown} digits={digitCount(Math.max(plan.monthly, plan.annual))} reduce={reduce} />
           </span>
-          <span aria-hidden="true" className="ml-2 flex flex-col items-start self-end pb-2 text-[14px] leading-tight text-(--pt-ink)/40">
+          <span aria-hidden="true" className="ml-2 flex flex-col items-start self-end pb-2 text-[14px] leading-tight text-(--pt-ink)/65">
             {/* On annual, the monthly price it replaced sits struck through above the unit. */}
             <AnimatePresence initial={false}>
               {billing === "annual" && plan.monthly !== plan.annual ? (
@@ -474,7 +474,7 @@ function PlanCard({
                   animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                   exit={reduce ? { opacity: 0 } : { opacity: 0, y: -4, filter: "blur(2px)", transition: { duration: 0.16, ease: EASE_IN } }}
                   transition={{ duration: 0.24, ease: EASE }}
-                  className="text-[13px] text-(--pt-ink)/30 decoration-(--pt-ink)/40"
+                  className="text-[13px] text-(--pt-ink)/65 decoration-(--pt-ink)/40"
                 >
                   {currency}
                   {plan.monthly}
@@ -485,7 +485,7 @@ function PlanCard({
           </span>
         </motion.div>
 
-        <motion.div variants={v(reveal)} custom={at(T.note)} aria-hidden="true" className="relative mt-2 h-5 overflow-hidden text-[13px] text-(--pt-ink)/40">
+        <motion.div variants={v(reveal)} custom={at(T.note)} aria-hidden="true" className="relative mt-2 h-5 overflow-hidden text-[13px] text-(--pt-ink)/65">
           <AnimatePresence mode="popLayout" initial={false}>
             <motion.p
               key={note}
@@ -514,7 +514,7 @@ function PlanCard({
         />
         <span aria-hidden="true" className="absolute inset-y-0 left-0 hidden w-px bg-(--pt-ink)/[0.08] @2xl:block @5xl:hidden" />
         {plan.lead ? (
-          <motion.p variants={v(reveal)} custom={at(T.rule)} className="text-[13px] text-(--pt-ink)/45">
+          <motion.p variants={v(reveal)} custom={at(T.rule)} className="text-[13px] text-(--pt-ink)/65">
             {plan.lead}
           </motion.p>
         ) : null}
@@ -613,7 +613,7 @@ function PlanCta({ cta, solid }: { cta: PricingPlan["cta"]; solid: boolean }) {
 
 function Check({ variants, delay, strong }: { variants: Variants; delay: number; strong: boolean }) {
   return (
-    <svg viewBox="0 0 16 16" className={`mt-[1px] size-4 shrink-0 ${strong ? "text-(--pt-ink)" : "text-(--pt-ink)/40"}`} fill="none" aria-hidden="true">
+    <svg viewBox="0 0 16 16" className={`mt-[1px] size-4 shrink-0 ${strong ? "text-(--pt-ink)" : "text-(--pt-ink)/65"}`} fill="none" aria-hidden="true">
       <motion.path d="M3.5 8.4l2.8 2.8 6.2-6.4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" variants={variants} custom={delay} />
     </svg>
   );
@@ -630,7 +630,7 @@ function NoteMarker({ note, uid, hot, onNote }: { note: number; uid: string; hot
         onFocus={() => onNote(note)}
         onBlur={() => onNote(null)}
         className={`rounded-[3px] px-0.5 font-mono text-[10px] transition-colors duration-150 focus-visible:outline-1 focus-visible:outline-(--pt-ink) ${
-          hot ? "bg-(--pt-ink)/10 text-(--pt-ink)" : "text-(--pt-ink)/40 hover:text-(--pt-ink)/70"
+          hot ? "bg-(--pt-ink)/10 text-(--pt-ink)" : "text-(--pt-ink)/65 hover:text-(--pt-ink)/70"
         }`}
       >
         {String(note).padStart(2, "0")}
@@ -645,7 +645,7 @@ function Footnotes({ footnotes, uid, hotNote, variants: v }: { footnotes: string
   return (
     <motion.div ref={ref} initial="hidden" animate={inView ? "show" : "hidden"} className="relative mt-12 pt-6 @5xl:mt-16">
       <motion.span variants={v(drawX)} custom={T.footnotes} aria-hidden="true" className="absolute inset-x-0 top-0 h-px origin-left bg-(--pt-ink)/[0.08]" />
-      <ol className="grid gap-2 text-[13px] leading-relaxed text-(--pt-ink)/45 @2xl:grid-cols-2 @2xl:gap-10">
+      <ol className="grid gap-2 text-[13px] leading-relaxed text-(--pt-ink)/65 @2xl:grid-cols-2 @2xl:gap-10">
         {footnotes.map((f, n) => {
           const hot = hotNote === n + 1;
           return (
@@ -656,7 +656,7 @@ function Footnotes({ footnotes, uid, hotNote, variants: v }: { footnotes: string
               custom={T.footnotes + n * 0.05}
               className={`flex scroll-mt-24 gap-3 transition-colors duration-150 ${hot ? "text-(--pt-ink)/85" : ""}`}
             >
-              <span className={`font-mono text-[11px] leading-[1.9] transition-colors duration-150 ${hot ? "text-(--pt-ink)" : "text-(--pt-ink)/30"}`}>
+              <span className={`font-mono text-[11px] leading-[1.9] transition-colors duration-150 ${hot ? "text-(--pt-ink)" : "text-(--pt-ink)/65"}`}>
                 {String(n + 1).padStart(2, "0")}
               </span>
               <span className="max-w-[60ch]">{f}</span>
