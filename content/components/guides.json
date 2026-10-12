@@ -3431,5 +3431,110 @@
       "block-commerce-workspace"
     ],
     "updated": "2026-10-12"
+  },
+  "media-audio-transport": {
+    "updated": "2026-10-12",
+    "useWhen": "Keeping real audio playback, seeking and volume available while a listener moves through another interface.",
+    "avoidWhen": "Streaming commercial media without appropriate rights or using a visual timer to pretend that audio is playing.",
+    "integration": [
+      "Supply a licensed media URL through track.src. The transport observes actual HTML audio events and exposes load and playback failures.",
+      "Increment playRequest only after an explicit play-selection action. Ordinary track navigation retains the current pause state.",
+      "The host owns queue selection and media URLs; release owned object URLs after unmount. Offline previews start muted."
+    ],
+    "related": [
+      "media-track-list",
+      "block-music-workspace",
+      "mobile-now-playing"
+    ]
+  },
+  "media-track-list": {
+    "updated": "2026-10-12",
+    "useWhen": "Browsing a music collection or editable queue with linked selection, liked state and context-specific actions.",
+    "avoidWhen": "Using a decorative list to imply playback without connecting selection to a real player and licensed source.",
+    "integration": [
+      "Pass unique track IDs and stable title, artist, album and duration records. onSelect drives the host selection or player.",
+      "Like, queue and removal actions are separate sibling controls; omit callbacks to hide actions the host does not support.",
+      "Optional host artwork should be licensed and served reliably. The default cover studies are original, offline-safe illustrations."
+    ],
+    "related": [
+      "media-audio-transport",
+      "block-music-workspace",
+      "input-search-scoped"
+    ]
+  },
+  "block-music-workspace": {
+    "updated": "2026-10-12",
+    "useWhen": "Composing a full listening application with discovery, a searchable collection, a shared queue and persistent playback.",
+    "avoidWhen": "Copying a streaming service brand or publishing an audio catalogue without rights to its media and artwork.",
+    "integration": [
+      "Supply MusicTrack records with licensed src URLs. Selection and playback remain distinct and actual media events govern playing state.",
+      "Persist queue and liked-state changes through host observers. Retained views keep the collection, search and player position intact.",
+      "The offline demo uses fictional releases and original 12-second audio; it begins muted. Production integrations own licensed assets."
+    ],
+    "related": [
+      "media-audio-transport",
+      "media-track-list",
+      "layout-workspace-shell"
+    ]
+  },
+  "collab-message-list": {
+    "updated": "2026-10-12",
+    "useWhen": "Showing a readable team conversation with reply affordances, reversible reactions and respectful arrival of new posts.",
+    "avoidWhen": "Treating a visual conversation as a transport layer or asserting delivery before a host returns an authoritative message.",
+    "integration": [
+      "Pass stable message IDs and author identities. Drive reactions and thread navigation through host callbacks.",
+      "The viewport follows own posts and preserves earlier reading positions for incoming posts.",
+      "Animate reaction figures in both directions; live announcements apply to added messages rather than every count frame."
+    ],
+    "related": [
+      "block-team-workspace",
+      "collab-comment-thread",
+      "collab-mention-input"
+    ]
+  },
+  "block-team-workspace": {
+    "updated": "2026-10-12",
+    "useWhen": "Composing channels and direct-message rooms with persistent drafts, an asynchronous send contract and retained threads.",
+    "avoidWhen": "Publishing a communication application without supplying its transport, user identity and persistence requirements.",
+    "integration": [
+      "Supply channels, people and initialMessages with stable IDs. onSend returns the server’s authoritative channel-scoped message.",
+      "Channel drafts and opened threads remain mounted. A late response never clears text edited during the request.",
+      "Reactions and thread interactions are session state in the example; hosts own durable storage and realtime transport."
+    ],
+    "related": [
+      "collab-message-list",
+      "collab-comment-thread",
+      "collab-mention-input"
+    ]
+  },
+  "collab-call-stage": {
+    "updated": "2026-10-12",
+    "useWhen": "Presenting real participant video streams with camera-off fallbacks, a spotlight layout and clear host-owned media controls.",
+    "avoidWhen": "Using placeholder portraits or animation to claim a live media connection, active speaker or hardware permission.",
+    "integration": [
+      "Supply participant streams from your own session transport. The stage never acquires a camera or microphone by itself.",
+      "Use CallControls separately when controls must remain visible across other application views.",
+      "Only supply captions and activeSpeakerId when the host has real data. The host owns track lifetimes and audio routing."
+    ],
+    "related": [
+      "block-meetings-workspace",
+      "date-week-agenda",
+      "collab-presence-bar"
+    ]
+  },
+  "block-meetings-workspace": {
+    "updated": "2026-10-12",
+    "useWhen": "Composing a working meeting application with linked agenda context, persistent room controls and independently retained notes.",
+    "avoidWhen": "Treating an interface block as a conferencing transport or declaring a room joined before the host acknowledges it.",
+    "integration": [
+      "Supply agenda days, participant streams and join/leave callbacks. Keep selected meeting separate from the joined session.",
+      "Media callbacks resolve after host state changes succeed; failures preserve the previous control state.",
+      "Notes remain scoped by meeting ID. Hosts own storage, permissions and transport; the offline room uses fictional, camera-off participants."
+    ],
+    "related": [
+      "collab-call-stage",
+      "date-week-agenda",
+      "collab-mention-input"
+    ]
   }
 }

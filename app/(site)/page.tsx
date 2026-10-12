@@ -32,7 +32,7 @@ export default function HomePage() {
   const s = stats();
   const lifetime = PLANS.find((plan) => plan.id === "pro-lifetime")!;
   const collections = showcaseCollections.map((collection) => ({ ...collection, cards: cardsFor(collection.slugs) }));
-  const blocks = cardsFor(["block-financial-report", "block-saas-landing", "block-fashion-workspace"]);
+  const blocks = cardsFor(["block-music-workspace", "block-team-workspace", "block-meetings-workspace"]);
   const install = `npx shadcn@latest add ${site.url}/r/chart-portfolio.json`;
   const mcp = `claude mcp add --transport http design-for-ai ${site.url}/mcp`;
 

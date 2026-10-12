@@ -4193,7 +4193,7 @@
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1500,
+    "previewHeight": 940,
     "usage": "import { CommerceWorkspace } from \"@/components/design-for-ai/block-commerce-workspace\";\n\n<CommerceWorkspace />",
     "props": [
       {
@@ -4231,7 +4231,6 @@
     "components": [
       "layout-workspace-shell",
       "select-listbox",
-      "segmented-control",
       "dashboard-kpi-cards",
       "chart-bullet-targets",
       "dashboard-orders-table",
@@ -4240,7 +4239,7 @@
     "demo": {
       "steps": [
         "wait:350",
-        "click:@returns",
+        "click:@nav-returns",
         "wait:2200"
       ],
       "loop": false
@@ -4280,7 +4279,7 @@
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1500,
+    "previewHeight": 940,
     "usage": "import { FashionWorkspace } from \"@/components/design-for-ai/block-fashion-workspace\";\n\n<FashionWorkspace />",
     "props": [
       {
@@ -4329,7 +4328,6 @@
     "components": [
       "layout-workspace-shell",
       "select-listbox",
-      "segmented-control",
       "fashion-merchandising-dashboard",
       "fashion-collection-line-plan",
       "fashion-launch-calendar"
@@ -4337,7 +4335,7 @@
     "demo": {
       "steps": [
         "wait:350",
-        "click:@planning",
+        "click:@nav-planning",
         "wait:2000"
       ],
       "loop": false
@@ -4464,7 +4462,7 @@
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1500,
+    "previewHeight": 940,
     "usage": "import { LegalWorkspace } from \"@/components/design-for-ai/block-legal-workspace\";\n\n<LegalWorkspace />",
     "props": [
       {
@@ -4507,7 +4505,6 @@
     "components": [
       "layout-workspace-shell",
       "select-listbox",
-      "segmented-control",
       "legal-matter-dashboard",
       "legal-obligation-tracker",
       "legal-document-requests"
@@ -4515,10 +4512,224 @@
     "demo": {
       "steps": [
         "wait:350",
-        "click:@obligations",
+        "click:@nav-obligations",
         "wait:2200"
       ],
       "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
+    "slug": "block-meetings-workspace",
+    "name": "Meetings and Notes Workspace",
+    "tier": "pro",
+    "platform": "web",
+    "category": "app",
+    "description": "A complete meeting workspace linking an agenda, a retained call stage and meeting-scoped notes. Persistent controls stay reachable across views.",
+    "tags": [
+      "team",
+      "workspace",
+      "keyboard",
+      "composition",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 940,
+    "usage": "import { MeetingsWorkspace } from \"@/components/design-for-ai/block-meetings-workspace\";\n\n<MeetingsWorkspace days={days} participants={participants} onJoin={joinRoom} onLeave={leaveRoom} onNotesChange={saveNotes} />",
+    "props": [
+      {
+        "name": "brand",
+        "type": "string",
+        "default": "\"Roundtable\"",
+        "description": "Workspace identity."
+      },
+      {
+        "name": "days",
+        "type": "AgendaDay[]",
+        "description": "Host-owned agenda days and unique meeting records."
+      },
+      {
+        "name": "participants",
+        "type": "CallParticipant[]",
+        "description": "Participant data and streams for the current host session."
+      },
+      {
+        "name": "currentUserId",
+        "type": "string",
+        "default": "\"sam\"",
+        "description": "Own participant identity."
+      },
+      {
+        "name": "captions",
+        "type": "string",
+        "description": "Host-supplied captions; omit when none are available."
+      },
+      {
+        "name": "onJoin",
+        "type": "(meetingId: string) => Promise<void>",
+        "description": "Open the authoritative host session; both join and leave callbacks are required for joining."
+      },
+      {
+        "name": "onLeave",
+        "type": "(meetingId: string) => void | Promise<void>",
+        "description": "Close and release the host session."
+      },
+      {
+        "name": "onMicrophoneChange",
+        "type": "(meetingId: string, muted: boolean) => void | Promise<void>",
+        "description": "Apply media state and resolve only after it succeeds."
+      },
+      {
+        "name": "onCameraChange",
+        "type": "(meetingId: string, on: boolean) => void | Promise<void>",
+        "description": "Acquire or release camera through the host and update supplied streams."
+      },
+      {
+        "name": "onHandChange",
+        "type": "(meetingId: string, raised: boolean) => void | Promise<void>",
+        "description": "Apply participant signalling."
+      },
+      {
+        "name": "onNotesChange",
+        "type": "(meetingId: string, text: string) => void",
+        "description": "Observe actual edits, scoped to the selected meeting."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface, border and text palette."
+      }
+    ],
+    "added": "2026-10-12",
+    "demo": {
+      "steps": [
+        "click:@join-meeting",
+        "wait:500",
+        "click:@spotlight-mara",
+        "wait:500",
+        "click:@call-hand",
+        "wait:600"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ],
+    "kind": "block",
+    "blockType": "workspace",
+    "components": [
+      "layout-workspace-shell",
+      "date-week-agenda",
+      "collab-mention-input",
+      "collab-call-stage"
+    ]
+  },
+  {
+    "slug": "block-music-workspace",
+    "name": "Music Listening Workspace",
+    "kind": "block",
+    "blockType": "workspace",
+    "components": [
+      "layout-workspace-shell",
+      "input-search-scoped",
+      "media-audio-transport",
+      "media-track-list"
+    ],
+    "tier": "pro",
+    "platform": "web",
+    "category": "app",
+    "description": "A complete listening workspace with discovery, searchable releases, a persistent audio transport and a linked queue. Four reusable components share real session state.",
+    "tags": [
+      "block",
+      "music",
+      "workspace",
+      "composition",
+      "audio",
+      "queue",
+      "keyboard",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 940,
+    "usage": "import { MusicWorkspace } from \"@/components/design-for-ai/block-music-workspace\";\n\n<MusicWorkspace tracks={licensedTracks} onQueueChange={saveQueue} />",
+    "props": [
+      {
+        "name": "brand",
+        "type": "string",
+        "default": "\"Side A\"",
+        "description": "Music workspace identity."
+      },
+      {
+        "name": "tracks",
+        "type": "MusicTrack[]",
+        "description": "Unique track records with licensed media URLs, titles, artist, album and duration."
+      },
+      {
+        "name": "initialQueue",
+        "type": "string[]",
+        "description": "Unique track IDs in playback order."
+      },
+      {
+        "name": "onQueueChange",
+        "type": "(ids: string[]) => void",
+        "description": "Observe the session queue for host-owned persistence."
+      },
+      {
+        "name": "onLikeChange",
+        "type": "(id: string, liked: boolean) => void",
+        "description": "Observe changes to liked tracks."
+      },
+      {
+        "name": "mutedPreview",
+        "type": "boolean",
+        "default": "false",
+        "description": "Initial audio mute state. The offline preview starts muted."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Shared workspace, player, search and collection palettes."
+      }
+    ],
+    "added": "2026-10-12",
+    "demo": {
+      "steps": [
+        "click:@music-listen",
+        "wait:500",
+        "click:@queue-blue",
+        "wait:300",
+        "click:@nav-queue",
+        "wait:900"
+      ]
     },
     "controls": [
       {
@@ -4556,7 +4767,7 @@
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1500,
+    "previewHeight": 940,
     "usage": "import { PeopleWorkspace } from \"@/components/design-for-ai/block-people-workspace\";\n\n<PeopleWorkspace />",
     "props": [
       {
@@ -4599,7 +4810,6 @@
     "components": [
       "layout-workspace-shell",
       "select-listbox",
-      "segmented-control",
       "hr-people-dashboard",
       "hr-employee-onboarding",
       "hr-leave-approval"
@@ -4607,7 +4817,7 @@
     "demo": {
       "steps": [
         "wait:350",
-        "click:@onboarding",
+        "click:@nav-onboarding",
         "wait:2200"
       ],
       "loop": false
@@ -4646,7 +4856,7 @@
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1500,
+    "previewHeight": 940,
     "usage": "import { SaasDashboard } from \"@/components/design-for-ai/block-saas-dashboard\";\n\n<SaasDashboard />",
     "props": [
       {
@@ -4708,7 +4918,7 @@
         "wait:350",
         "click:@card-signups",
         "wait:500",
-        "click:@period-7d",
+        "click:@range-7d",
         "wait:1500"
       ],
       "loop": false
@@ -4810,6 +5020,99 @@
     ]
   },
   {
+    "slug": "block-team-workspace",
+    "name": "Team Conversation Workspace",
+    "tier": "pro",
+    "platform": "web",
+    "category": "app",
+    "description": "A complete team workspace with channel views, mention-aware drafts, message reactions and retained threads. Scoped sending preserves edits and failed drafts.",
+    "tags": [
+      "team",
+      "workspace",
+      "keyboard",
+      "composition",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 940,
+    "usage": "import { TeamWorkspace } from \"@/components/design-for-ai/block-team-workspace\";\n\n<TeamWorkspace channels={channels} people={people} initialMessages={messages} currentUserId={user.id} onSend={postMessage} />",
+    "props": [
+      {
+        "name": "brand",
+        "type": "string",
+        "default": "\"Common room\"",
+        "description": "Workspace identity."
+      },
+      {
+        "name": "channels",
+        "type": "TeamChannel[]",
+        "description": "Unique channel or direct-message IDs, names and context."
+      },
+      {
+        "name": "people",
+        "type": "TeamPerson[]",
+        "description": "Author identities and mention suggestions."
+      },
+      {
+        "name": "currentUserId",
+        "type": "string",
+        "default": "\"sam\"",
+        "description": "Own-message identity."
+      },
+      {
+        "name": "initialMessages",
+        "type": "Record<string, TeamMessage[]>",
+        "description": "Initial session messages scoped by channel ID."
+      },
+      {
+        "name": "onSend",
+        "type": "(body: string, channelId: string) => Promise<TeamMessage>",
+        "description": "Return the authoritative posted message. Missing senders disable channel sending. Failed and edited drafts remain intact."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface, border and readable text palettes."
+      }
+    ],
+    "added": "2026-10-12",
+    "demo": {
+      "steps": [
+        "click:@reply-m1",
+        "wait:800",
+        "click:@close-thread",
+        "wait:300",
+        "click:@nav-product",
+        "wait:700"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ],
+    "kind": "block",
+    "blockType": "workspace",
+    "components": [
+      "layout-workspace-shell",
+      "collab-mention-input",
+      "collab-comment-thread",
+      "collab-message-list"
+    ]
+  },
+  {
     "slug": "block-workspace-settings",
     "name": "Workspace Settings Page",
     "tier": "pro",
@@ -4830,7 +5133,7 @@
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 2200,
+    "previewHeight": 940,
     "usage": "import { WorkspaceSettings } from \"@/components/design-for-ai/block-workspace-settings\";\n\n<WorkspaceSettings />",
     "props": [
       {
@@ -4898,6 +5201,7 @@
     "demo": {
       "steps": [
         "wait:350",
+        "click:@nav-notifications",
         "click:@preference-1",
         "wait:400",
         "click:@save-preferences",
@@ -7262,6 +7566,130 @@
     ]
   },
   {
+    "slug": "collab-call-stage",
+    "name": "Meeting Call Stage",
+    "tier": "pro",
+    "platform": "web",
+    "category": "collaboration",
+    "description": "A responsive meeting stage with real host video streams, spotlight layout and explicit media controls. Camera-off states remain readable and useful.",
+    "tags": [
+      "team",
+      "workspace",
+      "keyboard",
+      "composition",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 740,
+    "usage": "import { CallStage } from \"@/components/design-for-ai/collab-call-stage\";\n\n<CallStage participants={participants} microphoneMuted={muted} onMicrophoneChange={setMuted} onLeave={leaveRoom} />",
+    "props": [
+      {
+        "name": "participants",
+        "type": "CallParticipant[]",
+        "description": "Stable participant IDs, names, optional roles and host-owned MediaStreams."
+      },
+      {
+        "name": "currentUserId",
+        "type": "string",
+        "default": "\"sam\"",
+        "description": "Own video identity; local video visibility follows cameraOn."
+      },
+      {
+        "name": "activeSpeakerId",
+        "type": "string",
+        "description": "Optional speaker identity supplied by the host, never inferred from a decorative animation."
+      },
+      {
+        "name": "microphoneMuted",
+        "type": "boolean",
+        "default": "true",
+        "description": "Host media state."
+      },
+      {
+        "name": "cameraOn",
+        "type": "boolean",
+        "default": "false",
+        "description": "Host camera state. An absent stream remains explicitly unavailable."
+      },
+      {
+        "name": "handRaised",
+        "type": "boolean",
+        "default": "false",
+        "description": "Own signalling state."
+      },
+      {
+        "name": "onMicrophoneChange",
+        "type": "(muted: boolean) => void",
+        "description": "Change host microphone state; omit to disable the control."
+      },
+      {
+        "name": "onCameraChange",
+        "type": "(on: boolean) => void",
+        "description": "Change host camera state; omit to disable the control."
+      },
+      {
+        "name": "onHandChange",
+        "type": "(raised: boolean) => void",
+        "description": "Change host hand state; omit to disable the control."
+      },
+      {
+        "name": "onLeave",
+        "type": "() => void",
+        "description": "Leave the host room; omit to disable leaving."
+      },
+      {
+        "name": "captions",
+        "type": "string",
+        "description": "Caption text supplied by the host. Omit to hide caption controls."
+      },
+      {
+        "name": "showControls",
+        "type": "boolean",
+        "default": "true",
+        "description": "Render controls here or use the exported CallControls in a persistent host footer."
+      },
+      {
+        "name": "busy",
+        "type": "boolean",
+        "default": "false",
+        "description": "Prevent concurrent transport actions."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface, border and text palette."
+      }
+    ],
+    "added": "2026-10-12",
+    "demo": {
+      "steps": [
+        "click:@spotlight-mara",
+        "wait:600",
+        "click:@call-hand",
+        "wait:700",
+        "click:@call-grid",
+        "wait:600"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "collab-comment-thread",
     "name": "Comment Thread",
     "tier": "pro",
@@ -7443,6 +7871,89 @@
           }
         ],
         "group": "State"
+      }
+    ]
+  },
+  {
+    "slug": "collab-message-list",
+    "name": "Team Message List",
+    "tier": "pro",
+    "platform": "web",
+    "category": "collaboration",
+    "description": "A grouped team conversation with anchored scrolling, useful reply actions and reversible reaction counts. New messages preserve the reader’s place.",
+    "tags": [
+      "team",
+      "workspace",
+      "keyboard",
+      "composition",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 680,
+    "usage": "import { MessageList } from \"@/components/design-for-ai/collab-message-list\";\n\n<MessageList messages={messages} people={people} currentUserId={user.id} onReply={openThread} onReaction={toggleReaction} />",
+    "props": [
+      {
+        "name": "messages",
+        "type": "TeamMessage[]",
+        "description": "Stable message IDs, author IDs, plain-text bodies, time labels, reaction state and reply counts."
+      },
+      {
+        "name": "people",
+        "type": "TeamPerson[]",
+        "description": "Author names and optional mention handles."
+      },
+      {
+        "name": "currentUserId",
+        "type": "string",
+        "default": "\"sam\"",
+        "description": "Own-message identity. Own sent posts may follow into view."
+      },
+      {
+        "name": "onReaction",
+        "type": "(messageId: string, reaction: \"like\" | \"agree\") => void",
+        "description": "Host-owned reaction changes; omit for read-only counts."
+      },
+      {
+        "name": "onReply",
+        "type": "(messageId: string) => void",
+        "description": "Open the host thread view; omit to hide reply actions."
+      },
+      {
+        "name": "height",
+        "type": "number | string",
+        "default": "440",
+        "description": "Conversation viewport height."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface, border and readable text palettes."
+      }
+    ],
+    "added": "2026-10-12",
+    "demo": {
+      "steps": [
+        "click:@react-m1-like",
+        "wait:600",
+        "click:@react-m1-like",
+        "wait:1000"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
       }
     ]
   },
@@ -16588,6 +17099,192 @@
         "label": "Changes only",
         "kind": "toggle",
         "default": false
+      }
+    ]
+  },
+  {
+    "slug": "media-audio-transport",
+    "name": "Audio Transport",
+    "tier": "pro",
+    "platform": "web",
+    "category": "media",
+    "description": "A persistent audio transport with real playback, seeking, volume and repeat. Clear loading failures, keyboard controls and original offline preview audio.",
+    "tags": [
+      "music",
+      "audio",
+      "media",
+      "keyboard",
+      "composition",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 600,
+    "usage": "import { AudioTransport } from \"@/components/design-for-ai/media-audio-transport\";\n\n<AudioTransport track={currentTrack} onNext={nextTrack} onPrevious={previousTrack} />",
+    "props": [
+      {
+        "name": "track",
+        "type": "AudioTrack",
+        "description": "Stable ID, title, artist and a host-owned, licensed media URL. Artwork and an initial duration are optional."
+      },
+      {
+        "name": "onNext",
+        "type": "() => void",
+        "description": "Choose the next track. Omit to disable next."
+      },
+      {
+        "name": "onPrevious",
+        "type": "() => void",
+        "description": "Choose the previous track. Omit to disable previous."
+      },
+      {
+        "name": "onPlaybackChange",
+        "type": "(playing: boolean) => void",
+        "description": "Observe actual media play and pause events."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface and text palette."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "theme ink",
+        "description": "A six-digit hex colour for the play button. Its text automatically chooses readable ink."
+      },
+      {
+        "name": "playRequest",
+        "type": "number",
+        "default": "0",
+        "description": "Increment after a deliberate play-selection action. A new request resumes the selected source; ordinary queue navigation respects pause state."
+      },
+      {
+        "name": "defaultMuted",
+        "type": "boolean",
+        "default": "false",
+        "description": "Initial mute state. Offline previews start muted and offer explicit volume controls."
+      }
+    ],
+    "added": "2026-10-12",
+    "demo": {
+      "steps": [
+        "click:@audio-play",
+        "wait:1000",
+        "click:@audio-seek:0.55,0.5",
+        "wait:500",
+        "click:@audio-play",
+        "wait:600"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
+    "slug": "media-track-list",
+    "name": "Music Track List",
+    "tier": "pro",
+    "platform": "web",
+    "category": "media",
+    "description": "A responsive music collection with original cover studies, selected-track state, likes and queue actions. Typed records and host-owned selection make it composable.",
+    "tags": [
+      "music",
+      "audio",
+      "media",
+      "keyboard",
+      "composition",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 680,
+    "usage": "import { TrackList } from \"@/components/design-for-ai/media-track-list\";\n\n<TrackList tracks={tracks} activeId={activeId} onSelect={selectTrack} onLike={toggleLike} />",
+    "props": [
+      {
+        "name": "tracks",
+        "type": "LibraryTrack[]",
+        "description": "Unique IDs, titles, artists, albums and non-negative duration in seconds. Optional artwork and liked state."
+      },
+      {
+        "name": "activeId",
+        "type": "string",
+        "description": "Selected track ID."
+      },
+      {
+        "name": "playing",
+        "type": "boolean",
+        "default": "false",
+        "description": "Whether the selected track is actually playing."
+      },
+      {
+        "name": "onSelect",
+        "type": "(track: LibraryTrack) => void",
+        "description": "Required host-owned selection or playback action."
+      },
+      {
+        "name": "onLike",
+        "type": "(id: string) => void",
+        "description": "Toggle host-owned liked state. Omit to hide like controls."
+      },
+      {
+        "name": "onQueue",
+        "type": "(id: string) => void",
+        "description": "Add a stable track ID to the host queue. Omit to hide queue controls."
+      },
+      {
+        "name": "onRemove",
+        "type": "(id: string) => void",
+        "description": "Remove a queued track. Omit to hide remove controls."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"The collection\"",
+        "description": "List heading and accessible region name."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface and ink palette."
+      }
+    ],
+    "added": "2026-10-12",
+    "demo": {
+      "steps": [
+        "click:@track-motion",
+        "wait:350",
+        "click:@like-motion",
+        "wait:1200"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
       }
     ]
   },
