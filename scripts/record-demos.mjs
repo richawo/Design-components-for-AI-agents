@@ -218,6 +218,12 @@ async function record(browser, slug) {
         const p = await pointOf(s.target);
         if (!p) continue;
         await glide(p[0], p[1], TIMING.glide);
+        // A container can start resizing after the first measurement. Correct
+        // the landing point before pressing, just as the live cursor does.
+        const landing = await pointOf(s.target);
+        if (!landing) continue;
+        if (Math.hypot(landing[0] - px, landing[1] - py) > 1)
+          await glide(landing[0], landing[1], 120);
         if (s.cmd === "click") {
           await page.mouse.down();
           await page.waitForTimeout(TIMING.press);
