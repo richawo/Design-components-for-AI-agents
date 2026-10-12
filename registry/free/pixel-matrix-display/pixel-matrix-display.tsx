@@ -40,7 +40,7 @@ const PALETTE = {
   panel: "#070707",
   line: "rgba(255,255,255,0.08)",
   off: "rgba(255,255,255,0.055)", // unlit dots
-  caption: "rgba(255,255,255,0.45)",
+  caption: "rgba(255,255,255,0.65)",
   control: "rgba(255,255,255,0.6)",
   controlHover: "rgba(255,255,255,0.06)",
   track: "rgba(255,255,255,0.1)",
@@ -320,24 +320,42 @@ function useSceneCycle(count: number, interval: number, running: boolean) {
 function useMicrophone(audio: RefObject<AudioState>) {
   const [state, setState] = useState<"off" | "asking" | "on" | "blocked">("off");
   const mic = useRef<Mic | null>(null);
+  const mounted = useRef(true);
+  const generation = useRef(0);
+  const pending = useRef(false);
 
   const stop = useCallback(() => {
+    generation.current += 1;
+    pending.current = false;
     const m = mic.current;
     mic.current = null;
     audio.current.live = false;
-    m?.stream.getTracks().forEach((tr) => tr.stop());
+    m?.stream.getTracks().forEach((track) => track.stop());
     m?.ctx.close().catch(() => {});
-    setState((s) => (s === "on" ? "off" : s));
+    if (mounted.current) setState("off");
   }, [audio]);
 
-  useEffect(() => stop, [stop]);
+  useEffect(() => {
+    mounted.current = true;
+    return () => { mounted.current = false; stop(); };
+  }, [stop]);
 
   const toggle = async () => {
-    if (state === "on") return stop();
+    if (mic.current) return stop();
+    if (pending.current) return;
+    const request = ++generation.current;
+    pending.current = true;
     setState("asking");
+    let stream: MediaStream | undefined;
+    let ctx: AudioContext | undefined;
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
-      const ctx = new AudioContext();
+      stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
+      // Permission may finish after unmount, scene changes or cancellation.
+      if (!mounted.current || request !== generation.current) {
+        stream.getTracks().forEach((track) => track.stop());
+        return;
+      }
+      ctx = new AudioContext();
       const analyser = ctx.createAnalyser();
       analyser.fftSize = 256;
       analyser.smoothingTimeConstant = 0.55;
@@ -348,10 +366,13 @@ function useMicrophone(audio: RefObject<AudioState>) {
       audio.current.live = true;
       setState("on");
     } catch {
-      setState("blocked");
+      stream?.getTracks().forEach((track) => track.stop());
+      ctx?.close().catch(() => {});
+      if (mounted.current && request === generation.current) setState("blocked");
+    } finally {
+      if (request === generation.current) pending.current = false;
     }
   };
-
   return { state, toggle, stop, mic };
 }
 
@@ -537,7 +558,7 @@ export function PixelMatrixDisplay({
   const [poweredOn, setPoweredOn] = useState(false);
   const mic = useMicrophone(audioRef);
   // Reduced motion: no autoplay; the controls still step through scenes.
-  const running = poweredOn && !reduce && !paused && !hovering && mic.state !== "on";
+  const running = scenes.length > 1 && poweredOn && !reduce && !paused && !hovering && mic.state !== "on";
   const cycle = useSceneCycle(scenes.length, interval, running);
 
   // Listening holds the equaliser on screen.
@@ -599,12 +620,14 @@ export function PixelMatrixDisplay({
   }, [cycle.index]);
 
   const step = (by: number) => {
+    if (!scenes.length) return;
     mic.stop();
     cycle.setIndex((i) => (i + by + scenes.length) % scenes.length);
   };
 
-  const current = scenes[cycle.index] ?? scenes[0];
+  const current = scenes[cycle.index] ?? scenes[0] ?? "marquee";
   const label = SCENE_LABELS[current];
+  if (!scenes.length) return <div ref={root} className={`w-full rounded-xl border border-neutral-700 bg-neutral-950 p-8 text-neutral-300 ${className}`}><p role="status" className="text-sm">No scenes configured.</p></div>;
 
   return (
     <div ref={root} className={`@container w-full font-sans ${className}`} style={cssVars()}>
