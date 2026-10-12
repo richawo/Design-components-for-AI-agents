@@ -22,6 +22,7 @@ const publicCases = [
   "catalogue-empty-recovery",
   "mobile-accessibility-probe",
   "terminal-scroll-probe",
+  "component-pages-probe",
 ];
 const cases = [...publicCases];
 if (fs.existsSync(path.join(root, "registry/pro/saas-customer-health")))
@@ -70,7 +71,9 @@ for (const name of cases) {
       encoding: "utf8",
       timeout: ["pro-50-demo-probe", "pro-select-polish-probe"].includes(name)
         ? 900000
-        : 180000,
+        : name === "component-pages-probe"
+          ? 300000
+          : 180000,
     },
   );
   if (result.stdout) process.stdout.write(result.stdout);

@@ -1,0 +1,3043 @@
+{
+  "agent-status-pill": {
+    "useWhen": "Compact agent presence beside a conversation, task or run.",
+    "avoidWhen": "A complete execution history, where a run trace gives the steps and evidence.",
+    "integration": [
+      "Supply your own records through `activity`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "agent-diff-review",
+      "agent-plan-steps",
+      "agent-run-trace"
+    ]
+  },
+  "ai-composer-minimal": {
+    "useWhen": "A focused text composer at the bottom of an assistant conversation.",
+    "avoidWhen": "Rich attachments, model selection or advanced prompt controls in the same composer.",
+    "integration": [
+      "Supply your own records through `files`, `commandList`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onSubmit` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "ai-message-actions",
+      "ai-reasoning-trace",
+      "ai-voice-mode"
+    ]
+  },
+  "ai-message-actions": {
+    "useWhen": "Copy, retry and feedback actions attached to one assistant message.",
+    "avoidWhen": "Actions that change an entire conversation or workspace.",
+    "integration": [
+      "Supply your own records through `versions`, `reasons`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "ai-reasoning-trace",
+      "ai-voice-mode",
+      "ai-composer-minimal"
+    ]
+  },
+  "ai-thinking-states": {
+    "useWhen": "A short explanation of an assistant's current processing state.",
+    "avoidWhen": "A fabricated reasoning transcript or a precise completion estimate without real progress data.",
+    "integration": [
+      "Supply your own records through `reserve`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "ai-reasoning-trace",
+      "streaming-text",
+      "ai-message-actions"
+    ]
+  },
+  "auth-magic-link": {
+    "useWhen": "Email sign-in without asking someone to choose a password.",
+    "avoidWhen": "An offline identity flow or an application that requires passkeys or enterprise SSO.",
+    "integration": [
+      "Connect `onSend` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "auth-sign-in",
+      "auth-passkey",
+      "auth-sso-detect"
+    ]
+  },
+  "auth-passkey": {
+    "useWhen": "A passwordless entry point backed by your application's WebAuthn flow.",
+    "avoidWhen": "A visual substitute for server challenges, origin checks and credential verification.",
+    "integration": [
+      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+    ],
+    "related": [
+      "auth-magic-link",
+      "auth-sign-in",
+      "auth-sso-detect"
+    ]
+  },
+  "auth-sign-in": {
+    "useWhen": "A compact account entry form with a clear next action.",
+    "avoidWhen": "A long registration questionnaire or an enterprise domain discovery flow.",
+    "integration": [
+      "Supply your own records through `providers`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onSubmit` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "auth-magic-link",
+      "auth-sso-detect",
+      "auth-passkey"
+    ]
+  },
+  "billing-invoice-list": {
+    "useWhen": "An account's invoice history with document and payment actions.",
+    "avoidWhen": "Invoice authoring or a ledger that requires reconciled accounting data.",
+    "integration": [
+      "Supply your own records through `invoices`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "billing-overview",
+      "billing-payment-methods",
+      "billing-plan-change"
+    ]
+  },
+  "billing-payment-methods": {
+    "useWhen": "Reviewing and managing saved payment methods in account settings.",
+    "avoidWhen": "Collecting raw card details or replacing a payment provider's secure fields.",
+    "integration": [
+      "Supply your own records through `cards`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onRemove` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "billing-overview",
+      "billing-invoice-list",
+      "billing-plan-change"
+    ]
+  },
+  "button-hold-confirm": {
+    "useWhen": "A deliberate hold before a consequential but clearly described action.",
+    "avoidWhen": "Routine actions that need quick repeated activation, or the only way to operate a critical control.",
+    "integration": [
+      "Connect `onConfirm` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "toast-stack",
+      "primitives-shortcut-reference",
+      "dialog-confirm-typed"
+    ]
+  },
+  "button-press-depth": {
+    "useWhen": "A tactile primary action in a restrained interface.",
+    "avoidWhen": "A control whose state or availability is conveyed only through depth and animation.",
+    "integration": [
+      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+    ],
+    "related": [
+      "button-magnetic",
+      "ai-thinking-states",
+      "button-hold-confirm"
+    ]
+  },
+  "card-profile-stats": {
+    "useWhen": "A concise person or account summary with a few supporting figures.",
+    "avoidWhen": "A directory with many searchable records or a detailed analytics dashboard.",
+    "integration": [
+      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+    ],
+    "related": [
+      "cards-event-ticket",
+      "agent-diff-review",
+      "agent-status-pill"
+    ]
+  },
+  "chart-portfolio": {
+    "useWhen": "Inspecting a portfolio value across a selected time range.",
+    "avoidWhen": "OHLC trading data or a comparison between many categorical series.",
+    "integration": [
+      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+    ],
+    "related": [
+      "chart-revenue-trend",
+      "chart-candlestick",
+      "chart-allocation"
+    ]
+  },
+  "chart-waffle": {
+    "useWhen": "Showing discrete units or a part-to-whole count as a readable grid.",
+    "avoidWhen": "Continuous time series or extremely large unit counts that cannot be read meaningfully.",
+    "integration": [
+      "Supply your own records through `groups`, `periods`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "chart-allocation",
+      "chart-cohort-retention",
+      "chart-portfolio"
+    ]
+  },
+  "chat-thread": {
+    "useWhen": "A conversation with authored messages and a usable composer.",
+    "avoidWhen": "A multi-channel inbox or an agent execution console with tool-by-tool evidence.",
+    "integration": [
+      "Supply your own records through `messages`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onSend` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "ai-reasoning-trace",
+      "streaming-text",
+      "ai-mcp-elicitation"
+    ]
+  },
+  "collab-mention-input": {
+    "useWhen": "Inviting attention to a person while writing a short collaborative message.",
+    "avoidWhen": "A complete document editor or an authoritative check of a person's permissions.",
+    "integration": [
+      "Supply your own records through `people`, `channels`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "collab-activity-feed",
+      "collab-annotation-pins",
+      "collab-comment-thread"
+    ]
+  },
+  "collab-presence-bar": {
+    "useWhen": "Showing who is currently present in a shared workspace.",
+    "avoidWhen": "A team directory or a guarantee that a connection is still live.",
+    "integration": [
+      "Supply your own records through `people`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "collab-activity-feed",
+      "collab-annotation-pins",
+      "collab-comment-thread"
+    ]
+  },
+  "command-palette": {
+    "useWhen": "Quick navigation and discoverable keyboard actions across an application.",
+    "avoidWhen": "A large multi-step form or the only entry point to an essential action.",
+    "integration": [
+      "Supply your own records through `groups`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "streaming-text",
+      "ai-citations-inline",
+      "ai-composer-minimal"
+    ]
+  },
+  "content-accordion-index": {
+    "useWhen": "An editorial FAQ or compact question index with progressive disclosure.",
+    "avoidWhen": "A long document people need to compare or scan with every section visible.",
+    "integration": [
+      "Supply your own records through `items`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "content-release-notes",
+      "scroll-chapter-stack",
+      "app-permission-matrix"
+    ]
+  },
+  "cta-horizon": {
+    "useWhen": "A focused closing section with one clear next step.",
+    "avoidWhen": "A page that still needs to explain the product or compare several purchase decisions.",
+    "integration": [
+      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+    ],
+    "related": [
+      "button-magnetic",
+      "agent-diff-review",
+      "agent-status-pill"
+    ]
+  },
+  "data-table-sortable": {
+    "useWhen": "A readable collection of typed rows with sorting and selection.",
+    "avoidWhen": "A spreadsheet requiring cell editing, formulas or server-scale virtualization.",
+    "integration": [
+      "Supply your own records through `columns`, `data`, `bulkActions`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "dashboard-orders-table",
+      "data-file-explorer",
+      "data-kanban-compact"
+    ]
+  },
+  "devtools-code-block": {
+    "useWhen": "Readable code examples with language styling and copying.",
+    "avoidWhen": "An interactive source editor or an execution sandbox.",
+    "integration": [
+      "Supply your own records through `files`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "devtools-api-playground",
+      "devtools-env-vars",
+      "devtools-feature-flags"
+    ]
+  },
+  "dialog-confirm-typed": {
+    "useWhen": "A clearly explained destructive action requiring an exact confirmation phrase.",
+    "avoidWhen": "Low-impact actions that do not warrant interrupting a person's workflow.",
+    "integration": [
+      "Supply your own records through `ledger`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onConfirm` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "dropdown-menu-nested",
+      "tooltip-group",
+      "button-hold-confirm"
+    ]
+  },
+  "dropdown-menu-nested": {
+    "useWhen": "Related commands with a small number of nested groups.",
+    "avoidWhen": "A long selection list, where a listbox or searchable combobox is clearer.",
+    "integration": [
+      "Supply your own records through `items`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "tooltip-group",
+      "dialog-confirm-typed",
+      "select-listbox"
+    ]
+  },
+  "feedback-empty-search": {
+    "useWhen": "A search with no matches and useful ways to recover.",
+    "avoidWhen": "An initial loading state or an unexplained application failure.",
+    "integration": [
+      "Supply your own records through `suggestions`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "feedback-inline-alert",
+      "feedback-morph-loader",
+      "toast-promise"
+    ]
+  },
+  "feedback-inline-alert": {
+    "useWhen": "An actionable notice attached to the part of the page it affects.",
+    "avoidWhen": "Transient confirmations better delivered as a toast, or silent background logs.",
+    "integration": [
+      "Connect `onAction` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "feedback-empty-search",
+      "feedback-morph-loader",
+      "toast-promise"
+    ]
+  },
+  "feedback-morph-loader": {
+    "useWhen": "A brief loading interval where continuity between states helps.",
+    "avoidWhen": "Measured upload or processing progress that should expose a real percentage.",
+    "integration": [
+      "Supply your own records through `shapes`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "toast-promise",
+      "feedback-empty-search",
+      "feedback-inline-alert"
+    ]
+  },
+  "footer-columns-status": {
+    "useWhen": "A multi-column footer with a real service-state reference.",
+    "avoidWhen": "A minimal one-action closing section or status copy without a real data source.",
+    "integration": [
+      "Supply your own records through `columns`, `locales`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "footer-wordmark",
+      "footer-ascii-wordmark",
+      "footer-newsletter"
+    ]
+  },
+  "footer-newsletter": {
+    "useWhen": "A closing newsletter form with a clear subscription action.",
+    "avoidWhen": "An automatic subscription or a promise of successful delivery without a server response.",
+    "integration": [
+      "Supply your own records through `socials`, `legalLinks`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "footer-wordmark",
+      "footer-ascii-wordmark",
+      "footer-columns-status"
+    ]
+  },
+  "footer-wordmark": {
+    "useWhen": "A typography-led ending for a brand or studio page.",
+    "avoidWhen": "Dense legal or support navigation that needs a full multi-column footer.",
+    "integration": [
+      "Supply your own records through `columns`, `address`, `legalLinks`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "footer-ascii-wordmark",
+      "footer-newsletter",
+      "footer-columns-status"
+    ]
+  },
+  "header-announcement": {
+    "useWhen": "A short, timely announcement above a site's main navigation.",
+    "avoidWhen": "Permanent product explanation or urgent operational incidents requiring richer context.",
+    "integration": [
+      "Supply your own records through `messages`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "header-hairline",
+      "header-island",
+      "header-morph-mega"
+    ]
+  },
+  "header-hairline": {
+    "useWhen": "Quiet site navigation on a restrained marketing page.",
+    "avoidWhen": "A large application sidebar or an information architecture with many nested destinations.",
+    "integration": [
+      "Supply your own records through `links`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "navbar-floating",
+      "header-island",
+      "header-morph-mega"
+    ]
+  },
+  "hero-app-tilt": {
+    "useWhen": "A product-led introduction built around a real interface or product visual.",
+    "avoidWhen": "A substitute for showing the actual product or a page where motion obscures the headline.",
+    "integration": [
+      "Supply your own records through `folders`, `labels`, `threads`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "hero-product-stack",
+      "hero-marquee-screens",
+      "hero-blur-statement"
+    ]
+  },
+  "hero-blur-statement": {
+    "useWhen": "A concise editorial introduction whose typography carries the story.",
+    "avoidWhen": "A dense explanation that requires charts, screenshots or several competing actions.",
+    "integration": [
+      "Supply your own records through `nouns`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "hero-app-tilt",
+      "hero-marquee-screens",
+      "hero-swiss-grid"
+    ]
+  },
+  "hero-marquee-screens": {
+    "useWhen": "Showing a small collection of authentic product screens in a launch page.",
+    "avoidWhen": "A continuously moving gallery containing essential instructions or long text.",
+    "integration": [
+      "Supply your own records through `screens`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "hero-app-tilt",
+      "hero-product-stack",
+      "hero-blur-statement"
+    ]
+  },
+  "hero-swiss-grid": {
+    "useWhen": "An organised product introduction with a clear typographic hierarchy.",
+    "avoidWhen": "A richly narrative case study that needs a different reading structure.",
+    "integration": [
+      "Supply your own records through `lines`, `notes`, `items`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "hero-blur-statement",
+      "hero-app-tilt",
+      "hero-ghost-cursor"
+    ]
+  },
+  "hero-terminal-agent": {
+    "useWhen": "A developer or agent product introduction with readable terminal activity.",
+    "avoidWhen": "A real production console or invented live execution results presented as evidence.",
+    "integration": [
+      "Supply your own records through `headline`, `facts`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "hero-ghost-cursor",
+      "hero-inline-objects",
+      "hero-marquee-screens"
+    ]
+  },
+  "input-color-swatches": {
+    "useWhen": "Choosing a small, curated set of brand colours.",
+    "avoidWhen": "Unrestricted colour editing or a choice whose meaning depends on colour alone.",
+    "integration": [
+      "Supply your own records through `swatches`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "input-file-dropzone",
+      "input-number-stepper",
+      "input-password-checklist"
+    ]
+  },
+  "input-floating-label": {
+    "useWhen": "A concise, labelled text field in a compact form.",
+    "avoidWhen": "Complex input guidance that should remain outside the field at all times.",
+    "integration": [
+      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+    ],
+    "related": [
+      "input-search-scoped",
+      "input-color-swatches",
+      "input-file-dropzone"
+    ]
+  },
+  "input-number-stepper": {
+    "useWhen": "Adjusting a bounded numerical value with direct entry and stepping.",
+    "avoidWhen": "An unbounded measurement or a numerical choice with no meaningful step.",
+    "integration": [
+      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "input-color-swatches",
+      "input-file-dropzone",
+      "input-password-checklist"
+    ]
+  },
+  "input-password-checklist": {
+    "useWhen": "Explaining password requirements while someone enters a new password.",
+    "avoidWhen": "A strength guarantee or a replacement for server-side password policy.",
+    "integration": [
+      "Supply your own records through `rules`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "input-color-swatches",
+      "input-file-dropzone",
+      "input-number-stepper"
+    ]
+  },
+  "input-search-scoped": {
+    "useWhen": "Searching within a clearly identified collection or area.",
+    "avoidWhen": "An ambiguous global search across unrelated object types.",
+    "integration": [
+      "Supply your own records through `operators`, `recentSearches`, `defaultScopes`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onChange`, `onSubmit` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "input-floating-label",
+      "header-island",
+      "combobox-async"
+    ]
+  },
+  "input-tag-editor": {
+    "useWhen": "Managing a small set of discrete, editable labels.",
+    "avoidWhen": "A long taxonomy with hierarchical permissions or thousands of options.",
+    "integration": [
+      "Supply your own records through `value`, `defaultValue`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "input-color-swatches",
+      "input-file-dropzone",
+      "input-number-stepper"
+    ]
+  },
+  "mobile-health-summary": {
+    "useWhen": "A mobile summary of a few health or activity measurements.",
+    "avoidWhen": "Clinical interpretation or measurements that cannot be supported by a reliable source.",
+    "integration": [
+      "Supply your own records through `days`, `rings`. Preserve stable keys or IDs when the data contract provides them.",
+      "Install this in a React Native app. The web preview is a review surface; verify gestures, text scaling and assistive technology on your target devices."
+    ],
+    "related": [
+      "mobile-checkout-sheet",
+      "mobile-tab-bar",
+      "mobile-bottom-sheet"
+    ]
+  },
+  "mobile-onboarding": {
+    "useWhen": "A short sequence introducing an app before the first meaningful task.",
+    "avoidWhen": "A long tutorial that prevents people from reaching the product.",
+    "integration": [
+      "Supply your own records through `steps`. Preserve stable keys or IDs when the data contract provides them.",
+      "Install this in a React Native app. The web preview is a review surface; verify gestures, text scaling and assistive technology on your target devices."
+    ],
+    "related": [
+      "mobile-bottom-sheet",
+      "mobile-chat",
+      "mobile-live-activity"
+    ]
+  },
+  "mobile-settings": {
+    "useWhen": "A mobile preference screen with labelled switches and navigation.",
+    "avoidWhen": "Settings changes that appear saved before your host has accepted them.",
+    "integration": [
+      "Supply your own records through `reminderTimes`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onChange`, `onDeleteAll` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
+      "Install this in a React Native app. The web preview is a review surface; verify gestures, text scaling and assistive technology on your target devices."
+    ],
+    "related": [
+      "mobile-bottom-sheet",
+      "mobile-chat",
+      "mobile-live-activity"
+    ]
+  },
+  "mobile-tab-bar": {
+    "useWhen": "A small set of persistent top-level mobile destinations.",
+    "avoidWhen": "A large menu of infrequent actions or deeply nested navigation.",
+    "integration": [
+      "Supply your own records through `tabs`, `week`, `actions`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onAction` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
+      "Install this in a React Native app. The web preview is a review surface; verify gestures, text scaling and assistive technology on your target devices."
+    ],
+    "related": [
+      "mobile-bottom-sheet",
+      "mobile-chat",
+      "mobile-health-summary"
+    ]
+  },
+  "navbar-floating": {
+    "useWhen": "A compact floating navigation surface over a marketing page.",
+    "avoidWhen": "A dense enterprise navigation tree or essential content hidden under a floating element.",
+    "integration": [
+      "Supply your own records through `links`, `socials`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "header-hairline",
+      "header-morph-mega",
+      "header-island"
+    ]
+  },
+  "navigation-breadcrumb-fold": {
+    "useWhen": "An ancestry trail that remains usable in narrow spaces.",
+    "avoidWhen": "A substitute for primary navigation or unrelated recent-page history.",
+    "integration": [
+      "Supply your own records through `items`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "navigation-pagination-window",
+      "tabs-underline-glide",
+      "app-permission-matrix"
+    ]
+  },
+  "navigation-pagination-window": {
+    "useWhen": "Moving through a bounded collection of numbered result pages.",
+    "avoidWhen": "An endless feed or server data with no reliable page count.",
+    "integration": [
+      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+    ],
+    "related": [
+      "navigation-breadcrumb-fold",
+      "tabs-underline-glide",
+      "app-permission-matrix"
+    ]
+  },
+  "pixel-agent-status": {
+    "useWhen": "A small animated character communicating an agent's current state.",
+    "avoidWhen": "A status indicator that needs detailed error information or exact progress.",
+    "integration": [
+      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+    ],
+    "related": [
+      "pixel-matrix-display",
+      "feedback-morph-loader",
+      "agent-status-pill"
+    ]
+  },
+  "pixel-matrix-display": {
+    "useWhen": "A dot-matrix treatment for short phrases or compact display content.",
+    "avoidWhen": "Long body copy or text that must be read without an accessible text equivalent.",
+    "integration": [
+      "Supply your own records through `scenes`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "pixel-agent-status",
+      "ai-thinking-states",
+      "cta-horizon"
+    ]
+  },
+  "pricing-plan-toggle": {
+    "useWhen": "Comparing one plan across billing intervals with a clear amount.",
+    "avoidWhen": "A full multi-plan comparison or a live price promise without your billing source.",
+    "integration": [
+      "Supply your own records through `features`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "pricing-three-tier",
+      "pricing-comparison-matrix",
+      "pricing-receipt"
+    ]
+  },
+  "pricing-three-tier": {
+    "useWhen": "A deliberate comparison between three distinct purchase options.",
+    "avoidWhen": "A complex enterprise quotation flow or plans that differ only through decorative wording.",
+    "integration": [
+      "Supply your own records through `plans`, `footnotes`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "pricing-plan-toggle",
+      "pricing-comparison-matrix",
+      "pricing-receipt"
+    ]
+  },
+  "primitives-shortcut-reference": {
+    "useWhen": "A discoverable list of keyboard shortcuts close to the task.",
+    "avoidWhen": "A replacement for visible controls or platform shortcuts that your product does not implement.",
+    "integration": [
+      "Supply your own records through `items`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "button-hold-confirm",
+      "toast-stack",
+      "input-shortcut-recorder"
+    ]
+  },
+  "progress-milestones": {
+    "useWhen": "Communicating discrete, ordered stages of a task or journey.",
+    "avoidWhen": "Continuous percentage progress or stages that have no verified completion state.",
+    "integration": [
+      "Supply your own records through `steps`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "saas-usage-policy",
+      "usage-meter-tokens",
+      "app-permission-matrix"
+    ]
+  },
+  "segmented-control": {
+    "useWhen": "Switching between a small number of related views or values.",
+    "avoidWhen": "A long option list or navigation between unrelated pages.",
+    "integration": [
+      "Supply your own records through `options`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "select-listbox",
+      "switch-spring",
+      "combobox-async"
+    ]
+  },
+  "select-listbox": {
+    "useWhen": "A labelled choice from a manageable set of discrete options.",
+    "avoidWhen": "Hundreds of searchable results or a multi-selection tag collection.",
+    "integration": [
+      "Supply your own records through `options`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "combobox-async",
+      "segmented-control",
+      "multiselect-chips"
+    ]
+  },
+  "selects-radio-cards": {
+    "useWhen": "Choosing one clearly explained mode or configuration.",
+    "avoidWhen": "Several independent preferences that should be separate checkboxes or switches.",
+    "integration": [
+      "Supply your own records through `options`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "cards-event-ticket",
+      "segmented-control",
+      "select-listbox"
+    ]
+  },
+  "settings-panel": {
+    "useWhen": "A compact group of editable preferences with an explicit save action.",
+    "avoidWhen": "An entire account area with billing, members and security workflows.",
+    "integration": [
+      "Supply your own records through `sections`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onSave`, `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "app-permission-matrix",
+      "commerce-operations-dashboard",
+      "dashboard-kpi-cards"
+    ]
+  },
+  "streaming-text": {
+    "useWhen": "Displaying an assistant answer as its content arrives.",
+    "avoidWhen": "Essential instructions that disappear, or simulated streaming passed off as a live response.",
+    "integration": [
+      "Supply your own records through `answer`, `sources`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "ai-citations-inline",
+      "ai-reasoning-trace",
+      "ai-search-answer"
+    ]
+  },
+  "switch-spring": {
+    "useWhen": "A binary preference whose current value is immediately legible.",
+    "avoidWhen": "Choosing between several values or triggering a destructive one-off action.",
+    "integration": [
+      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+    ],
+    "related": [
+      "segmented-control",
+      "select-listbox",
+      "combobox-async"
+    ]
+  },
+  "tabs-underline-glide": {
+    "useWhen": "Related panels where a moving underline helps preserve orientation.",
+    "avoidWhen": "A large navigation tree or tabs whose labels do not describe their contents.",
+    "integration": [
+      "Supply your own records through `items`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "navigation-breadcrumb-fold",
+      "navigation-pagination-window",
+      "segmented-control"
+    ]
+  },
+  "testimonial-wall": {
+    "useWhen": "A considered set of customer quotations and attributed social proof.",
+    "avoidWhen": "Invented customer claims or a dense case study requiring supporting evidence.",
+    "integration": [
+      "Supply your own records through `testimonials`, `speeds`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "hero-marquee-screens",
+      "agent-diff-review",
+      "agent-status-pill"
+    ]
+  },
+  "three-wave-field": {
+    "useWhen": "A restrained atmospheric background behind readable content.",
+    "avoidWhen": "Essential data visualisation or a background that competes with text and controls.",
+    "integration": [
+      "Keep this scene in a bounded visual region and retain ordinary text and controls for the main task. Check its rendering cost on the devices your audience uses."
+    ],
+    "related": [
+      "three-particle-sphere",
+      "three-contour-terrain",
+      "three-ascii-object"
+    ]
+  },
+  "toast-promise": {
+    "useWhen": "Reporting the pending, success and failure states of an asynchronous action.",
+    "avoidWhen": "Errors that require detailed form corrections or persistent instructions.",
+    "integration": [
+      "Connect `onRetry` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "feedback-morph-loader",
+      "feedback-empty-search",
+      "feedback-inline-alert"
+    ]
+  },
+  "toast-stack": {
+    "useWhen": "A small stream of dismissible application notifications.",
+    "avoidWhen": "The only record of important events that people must be able to review later.",
+    "integration": [
+      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+    ],
+    "related": [
+      "button-hold-confirm",
+      "primitives-shortcut-reference",
+      "toast-promise"
+    ]
+  },
+  "tooltip-group": {
+    "useWhen": "Brief supplementary explanations for nearby controls.",
+    "avoidWhen": "Required instructions, interactive content or a substitute for visible accessible labels.",
+    "integration": [
+      "Supply your own records through `Tooltip.shortcut`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "dropdown-menu-nested",
+      "dialog-confirm-typed",
+      "ai-message-actions"
+    ]
+  },
+  "agent-approval-gate": {
+    "useWhen": "Reviewing a proposed agent action before a person approves execution.",
+    "avoidWhen": "Automatic authorisation or a guarantee that an action is safe without checking its real payload.",
+    "integration": [
+      "Connect `onDecision` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "agent-diff-review",
+      "agent-commit-card",
+      "agent-plan-steps"
+    ]
+  },
+  "agent-commit-card": {
+    "useWhen": "Presenting a proposed repository change and its supporting context.",
+    "avoidWhen": "A full diff review or a fabricated commit state without repository evidence.",
+    "integration": [
+      "Supply your own records through `files`, `checks`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "agent-diff-review",
+      "agent-approval-gate",
+      "agent-plan-steps"
+    ]
+  },
+  "agent-diff-review": {
+    "useWhen": "Inspecting an agent's file changes before accepting them.",
+    "avoidWhen": "A general-purpose IDE or an authorisation mechanism for repository writes.",
+    "integration": [
+      "Supply your own records through `changes`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onDecisionsChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "agent-approval-gate",
+      "agent-commit-card",
+      "agent-status-pill"
+    ]
+  },
+  "agent-plan-steps": {
+    "useWhen": "Showing ordered work, dependencies and the currently active step.",
+    "avoidWhen": "An invented plan presented as execution evidence or continuous percentage progress.",
+    "integration": [
+      "Supply your own records through `steps`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onApprove` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "agent-run-trace",
+      "agent-status-pill",
+      "agent-tool-call"
+    ]
+  },
+  "agent-run-trace": {
+    "useWhen": "Reviewing a run's recorded steps, tools and outcomes.",
+    "avoidWhen": "Private internal reasoning or events your backend has not actually recorded.",
+    "integration": [
+      "Supply your own records through `trace`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "agent-plan-steps",
+      "agent-tool-call",
+      "agent-status-pill"
+    ]
+  },
+  "agent-tool-call": {
+    "useWhen": "Presenting a tool's inputs, status and result within an agent workflow.",
+    "avoidWhen": "Approving a privileged action without an explicit review step.",
+    "integration": [
+      "Connect `onRetry` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "agent-run-trace",
+      "agent-plan-steps",
+      "agent-status-pill"
+    ]
+  },
+  "ai-citations-inline": {
+    "useWhen": "Attaching readable references to an assistant answer.",
+    "avoidWhen": "Citations that have not been verified against the supplied sources.",
+    "integration": [
+      "Supply your own records through `answer`, `sources`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "ai-search-answer",
+      "streaming-text",
+      "ai-image-generation"
+    ]
+  },
+  "ai-image-generation": {
+    "useWhen": "Reviewing an image-generation request and its outputs.",
+    "avoidWhen": "A substitute for an actual generation backend or unsupported processing estimates.",
+    "integration": [
+      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+    ],
+    "related": [
+      "input-ai-prompt",
+      "ai-citations-inline",
+      "ai-mcp-elicitation"
+    ]
+  },
+  "ai-mcp-elicitation": {
+    "useWhen": "Collecting a focused answer an agent needs to continue.",
+    "avoidWhen": "Requesting secrets or granting permission without clear scope and host-side checks.",
+    "integration": [
+      "Supply your own records through `slots`, `lengths`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onSubmit` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "ai-message-actions",
+      "chat-thread",
+      "ai-citations-inline"
+    ]
+  },
+  "ai-model-picker": {
+    "useWhen": "Choosing among models with clearly stated capabilities and costs.",
+    "avoidWhen": "A catalogue whose pricing or availability is not kept in sync with your provider.",
+    "integration": [
+      "Supply your own records through `catalog`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "ai-reasoning-trace",
+      "ai-message-actions",
+      "ai-voice-mode"
+    ]
+  },
+  "ai-reasoning-trace": {
+    "useWhen": "Showing supplied reasoning summaries or labelled processing stages.",
+    "avoidWhen": "Claims that the display reveals a model's private internal chain of thought.",
+    "integration": [
+      "Supply your own records through `trace`, `answer`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "ai-thinking-states",
+      "streaming-text",
+      "ai-message-actions"
+    ]
+  },
+  "ai-search-answer": {
+    "useWhen": "An answer with source context and an inspectable research trail.",
+    "avoidWhen": "Unverified search results or citations presented as authoritative facts.",
+    "integration": [
+      "Supply your own records through `sources`, `followUps`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "ai-citations-inline",
+      "streaming-text",
+      "ai-reasoning-trace"
+    ]
+  },
+  "ai-side-panel": {
+    "useWhen": "Keeping contextual assistant help beside the primary workspace.",
+    "avoidWhen": "A full-width editing task that needs the main content area.",
+    "integration": [
+      "Supply your own records through `sentences`, `defaultContext`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "ai-voice-mode",
+      "chat-thread",
+      "ai-citations-inline"
+    ]
+  },
+  "ai-voice-mode": {
+    "useWhen": "A voice-session surface with understandable listening and speaking states.",
+    "avoidWhen": "A microphone permission flow or speech service implemented only through visual simulation.",
+    "integration": [
+      "Supply your own records through `turns`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "ai-message-actions",
+      "ai-reasoning-trace",
+      "ai-composer-minimal"
+    ]
+  },
+  "app-permission-matrix": {
+    "useWhen": "Comparing explicit permissions across roles and resources.",
+    "avoidWhen": "Client-side enforcement of access that must be checked by the server.",
+    "integration": [
+      "Supply your own records through `roles`, `permissions`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onSave` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "hr-org-explorer",
+      "hr-people-dashboard",
+      "legal-matter-dashboard"
+    ]
+  },
+  "auth-otp": {
+    "useWhen": "Entering and verifying a short one-time authentication code.",
+    "avoidWhen": "A replacement for expiry, rate limiting and server-side code verification.",
+    "integration": [
+      "Connect `onChangeDestination` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "auth-magic-link",
+      "auth-sign-in",
+      "auth-sso-detect"
+    ]
+  },
+  "auth-sso-detect": {
+    "useWhen": "Discovering an enterprise sign-in route from a person's organisation.",
+    "avoidWhen": "SSO discovery or authentication implemented only by matching text in the browser.",
+    "integration": [
+      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+    ],
+    "related": [
+      "auth-sign-in",
+      "auth-magic-link",
+      "auth-otp"
+    ]
+  },
+  "bento-grid": {
+    "useWhen": "A live product overview with independent panels and purposeful activity.",
+    "avoidWhen": "Essential text in perpetually moving panels or animation without a readable state change.",
+    "integration": [
+      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+    ],
+    "related": [
+      "feature-sticky-scroll",
+      "chart-allocation",
+      "chart-channel-breakdown"
+    ]
+  },
+  "bg-dither-flow": {
+    "useWhen": "A subtle generative backdrop with a controlled visual texture.",
+    "avoidWhen": "A background behind dense reading or frequent interaction if it reduces clarity.",
+    "integration": [
+      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+    ],
+    "related": [
+      "bg-grain-gradient",
+      "three-contour-terrain",
+      "hero-prism"
+    ]
+  },
+  "bg-grain-gradient": {
+    "useWhen": "A restrained light field and grain behind an editorial section.",
+    "avoidWhen": "Using atmosphere to compensate for missing hierarchy or insufficient text contrast.",
+    "integration": [
+      "Keep this scene in a bounded visual region and retain ordinary text and controls for the main task. Check its rendering cost on the devices your audience uses."
+    ],
+    "related": [
+      "bg-dither-flow",
+      "hero-prism",
+      "scroll-background-wipe"
+    ]
+  },
+  "billing-cancel-flow": {
+    "useWhen": "A clear subscription cancellation journey with an explicit outcome.",
+    "avoidWhen": "Obstructive retention tactics or pretending a cancellation reached your billing provider.",
+    "integration": [
+      "Supply your own records through `reasons`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onCancel` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "billing-invoice-list",
+      "billing-overview",
+      "billing-payment-methods"
+    ]
+  },
+  "billing-overview": {
+    "useWhen": "A summary of an account's plan, invoices and subscription state.",
+    "avoidWhen": "Accounting reconciliation or values disconnected from the billing provider.",
+    "integration": [
+      "Supply your own records through `meters`, `invoices`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "billing-invoice-list",
+      "billing-payment-methods",
+      "billing-plan-change"
+    ]
+  },
+  "billing-plan-change": {
+    "useWhen": "Reviewing a plan change and its supplied proration before confirmation.",
+    "avoidWhen": "Calculating authoritative billing proration entirely in the browser.",
+    "integration": [
+      "Supply your own records through `plans`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onConfirm` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "billing-seat-manager",
+      "billing-invoice-list",
+      "billing-overview"
+    ]
+  },
+  "billing-seat-manager": {
+    "useWhen": "Reviewing licensed seats and changes to member allocation.",
+    "avoidWhen": "Granting product access without checking the subscription and membership server-side.",
+    "integration": [
+      "Supply your own records through `members`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onConfirm` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "billing-plan-change",
+      "billing-invoice-list",
+      "billing-overview"
+    ]
+  },
+  "billing-usage-forecast": {
+    "useWhen": "Comparing current usage with a clearly labelled forecast.",
+    "avoidWhen": "A guarantee of future costs or a forecast with no explained source and assumptions.",
+    "integration": [
+      "Supply your own records through `daily`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "billing-cancel-flow",
+      "billing-invoice-list",
+      "billing-overview"
+    ]
+  },
+  "button-magnetic": {
+    "useWhen": "A deliberate primary marketing action with restrained pointer response.",
+    "avoidWhen": "Dense repeated controls or motion required to understand or activate an action.",
+    "integration": [
+      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+    ],
+    "related": [
+      "button-press-depth",
+      "cta-horizon",
+      "button-hold-confirm"
+    ]
+  },
+  "cards-event-ticket": {
+    "useWhen": "A concise ticket containing event and admission details.",
+    "avoidWhen": "An admission credential whose validity is determined only by its appearance.",
+    "integration": [
+      "Supply your own records through `agenda`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "card-profile-stats",
+      "selects-radio-cards",
+      "app-permission-matrix"
+    ]
+  },
+  "cart-drawer": {
+    "useWhen": "Reviewing basket items, quantities and totals while continuing to shop.",
+    "avoidWhen": "A complete checkout or payment authorisation flow.",
+    "integration": [
+      "Supply your own records through `items`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "commerce-backorder-allocation",
+      "commerce-bundle-builder",
+      "commerce-catalog-import"
+    ]
+  },
+  "chart-allocation": {
+    "useWhen": "Comparing positive parts of a whole with readable amounts and shares.",
+    "avoidWhen": "Negative values, time-series trends or a total that does not represent a meaningful whole.",
+    "integration": [
+      "Supply your own records through `views`, `palette`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "chart-portfolio",
+      "chart-waffle",
+      "chart-candlestick"
+    ]
+  },
+  "chart-bullet-targets": {
+    "useWhen": "Comparing actual measures with their targets in a compact view.",
+    "avoidWhen": "A complex distribution or uncertainty range requiring a richer chart.",
+    "integration": [
+      "Supply your own records through `periods`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "chart-slope-comparison",
+      "chart-waterfall-bridge",
+      "chart-candlestick"
+    ]
+  },
+  "chart-candlestick": {
+    "useWhen": "Inspecting open, high, low and close data over time.",
+    "avoidWhen": "A simple categorical comparison or financial conclusions unsupported by the underlying data.",
+    "integration": [
+      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+    ],
+    "related": [
+      "chart-portfolio",
+      "chart-revenue-trend",
+      "chart-allocation"
+    ]
+  },
+  "chart-channel-breakdown": {
+    "useWhen": "Comparing channel contributions and changes between periods.",
+    "avoidWhen": "Fine-grained time-series inspection or channels with incompatible definitions.",
+    "integration": [
+      "Supply your own records through `periods`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "chart-revenue-trend",
+      "chart-portfolio",
+      "chart-race-bars"
+    ]
+  },
+  "chart-cohort-retention": {
+    "useWhen": "Comparing retention across cohorts and elapsed periods.",
+    "avoidWhen": "A single trend line or cohorts measured with inconsistent retention rules.",
+    "integration": [
+      "Supply your own records through `segments`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "chart-revenue-trend",
+      "chart-allocation",
+      "chart-portfolio"
+    ]
+  },
+  "chart-race-bars": {
+    "useWhen": "Showing changing rankings across a small sequence of supplied frames.",
+    "avoidWhen": "A static category comparison or motion that prevents exact values being read.",
+    "integration": [
+      "Supply your own records through `series`, `weeks`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "chart-streamgraph",
+      "chart-allocation",
+      "chart-channel-breakdown"
+    ]
+  },
+  "chart-radar-compare": {
+    "useWhen": "Comparing several entities across a shared set of meaningful axes.",
+    "avoidWhen": "Metrics with incompatible scales or too many series to distinguish.",
+    "integration": [
+      "Supply your own records through `profiles`, `axes`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "chart-allocation",
+      "chart-race-bars",
+      "chart-streamgraph"
+    ]
+  },
+  "chart-revenue-trend": {
+    "useWhen": "Inspecting revenue over time with clear range and comparison controls.",
+    "avoidWhen": "OHLC prices, parts of a whole or a missing baseline presented as a percentage change.",
+    "integration": [
+      "Supply your own records through `data`, `ranges`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "chart-portfolio",
+      "chart-candlestick",
+      "chart-channel-breakdown"
+    ]
+  },
+  "chart-slope-comparison": {
+    "useWhen": "Showing the direction and size of change between two periods.",
+    "avoidWhen": "A longer time series where the intermediate values matter.",
+    "integration": [
+      "Supply your own records through `series`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "chart-bullet-targets",
+      "chart-waterfall-bridge",
+      "chart-candlestick"
+    ]
+  },
+  "chart-streamgraph": {
+    "useWhen": "Showing how several contributions change across time.",
+    "avoidWhen": "Exact comparison against a common baseline or very small differences between series.",
+    "integration": [
+      "Supply your own records through `series`, `weeks`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "chart-race-bars",
+      "chart-allocation",
+      "chart-cohort-retention"
+    ]
+  },
+  "chart-treemap-drill": {
+    "useWhen": "Exploring hierarchical proportions from an overview into a category.",
+    "avoidWhen": "Negative values or hierarchies with no meaningful shared total.",
+    "integration": [
+      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+    ],
+    "related": [
+      "chart-allocation",
+      "chart-race-bars",
+      "chart-radar-compare"
+    ]
+  },
+  "chart-waterfall-bridge": {
+    "useWhen": "Explaining the contributions between a starting and ending value.",
+    "avoidWhen": "A continuous trend or contributions that do not reconcile to the stated total.",
+    "integration": [
+      "Supply your own records through `changes`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "chart-bullet-targets",
+      "chart-slope-comparison",
+      "chart-candlestick"
+    ]
+  },
+  "collab-activity-feed": {
+    "useWhen": "Reviewing authored activity associated with a shared workspace.",
+    "avoidWhen": "An immutable audit log or a complete source of security events.",
+    "integration": [
+      "Supply your own records through `events`, `people`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "collab-annotation-pins",
+      "collab-comment-thread",
+      "collab-invite-people"
+    ]
+  },
+  "collab-annotation-pins": {
+    "useWhen": "Attaching comments to a specific point on a visual or document.",
+    "avoidWhen": "A discussion with no spatial context or authoritative document markup storage.",
+    "integration": [
+      "Supply your own records through `pins`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "collab-comment-thread",
+      "collab-activity-feed",
+      "collab-invite-people"
+    ]
+  },
+  "collab-comment-thread": {
+    "useWhen": "A focused conversation attached to a resource.",
+    "avoidWhen": "A multi-channel support inbox or a rich document editor.",
+    "integration": [
+      "Supply your own records through `comments`, `people`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "collab-annotation-pins",
+      "collab-activity-feed",
+      "collab-invite-people"
+    ]
+  },
+  "collab-invite-people": {
+    "useWhen": "Preparing invitations with explicit roles and recipients.",
+    "avoidWhen": "Sending invitations or assigning access before the host validates the request.",
+    "integration": [
+      "Supply your own records through `team`, `pending`, `drafts`, `directory`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onInvite` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "collab-share-access",
+      "collab-activity-feed",
+      "collab-annotation-pins"
+    ]
+  },
+  "collab-share-access": {
+    "useWhen": "Reviewing who may view or edit a specific resource.",
+    "avoidWhen": "Client-only access control or links that bypass your application's authorisation.",
+    "integration": [
+      "Supply your own records through `members`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onInvite`, `onRemove` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "collab-invite-people",
+      "collab-activity-feed",
+      "collab-annotation-pins"
+    ]
+  },
+  "combobox-async": {
+    "useWhen": "Choosing an item from remotely loaded, searchable results.",
+    "avoidWhen": "A small fixed list that is clearer as a standard select.",
+    "integration": [
+      "Supply your own records through `recentItems`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onCreate`, `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "multiselect-chips",
+      "select-listbox",
+      "segmented-control"
+    ]
+  },
+  "commerce-backorder-allocation": {
+    "useWhen": "Allocating available stock against open backorders with a reviewed decision.",
+    "avoidWhen": "An authoritative inventory ledger or allocation unsupported by current stock data.",
+    "integration": [
+      "Supply your own records through `requests`. Preserve stable keys or IDs when the data contract provides them.",
+      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+    ],
+    "related": [
+      "commerce-bundle-builder",
+      "commerce-catalog-import",
+      "commerce-customer-timeline"
+    ]
+  },
+  "commerce-bundle-builder": {
+    "useWhen": "Building a product bundle with explicit quantities and pricing.",
+    "avoidWhen": "Replacing your product catalogue or allowing invalid stock and pricing combinations.",
+    "integration": [
+      "Supply your own records through `products`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onCreate` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "commerce-backorder-allocation",
+      "commerce-catalog-import",
+      "commerce-customer-timeline"
+    ]
+  },
+  "commerce-catalog-import": {
+    "useWhen": "Mapping and reviewing catalogue rows before a host import.",
+    "avoidWhen": "An unvalidated bulk write or a complete data-transformation pipeline.",
+    "integration": [
+      "Supply your own records through `fields`. Preserve stable keys or IDs when the data contract provides them.",
+      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+    ],
+    "related": [
+      "commerce-return-desk",
+      "commerce-variant-stock",
+      "commerce-backorder-allocation"
+    ]
+  },
+  "commerce-customer-timeline": {
+    "useWhen": "Inspecting a customer's supplied order and service history.",
+    "avoidWhen": "A complete CRM or events not supported by the connected commerce data.",
+    "integration": [
+      "Supply your own records through `customers`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "commerce-backorder-allocation",
+      "commerce-bundle-builder",
+      "commerce-catalog-import"
+    ]
+  },
+  "commerce-fulfilment-desk": {
+    "useWhen": "Reviewing shipment exceptions and recording a recovery action.",
+    "avoidWhen": "A guarantee that a carrier action or refund has been completed without a host response.",
+    "integration": [
+      "Supply your own records through `shipments`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "commerce-backorder-allocation",
+      "commerce-bundle-builder",
+      "commerce-catalog-import"
+    ]
+  },
+  "commerce-operations-dashboard": {
+    "useWhen": "A commerce overview that connects headline measures with operational queues.",
+    "avoidWhen": "A real-time stock or accounting authority disconnected from the backend.",
+    "integration": [
+      "Supply your own records through `periods`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "app-permission-matrix",
+      "fashion-merchandising-dashboard",
+      "finance-cashflow-dashboard"
+    ]
+  },
+  "commerce-promotion-builder": {
+    "useWhen": "Preparing promotion conditions and reviewing their intended scope.",
+    "avoidWhen": "A checkout pricing engine or an unvalidated discount rule applied automatically.",
+    "integration": [
+      "Supply your own records through `basket`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onSave` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
+      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+    ],
+    "related": [
+      "commerce-backorder-allocation",
+      "commerce-bundle-builder",
+      "commerce-catalog-import"
+    ]
+  },
+  "commerce-purchase-order": {
+    "useWhen": "Drafting a purchase order from supplied catalogue and supplier data.",
+    "avoidWhen": "Posting an accounting document or sending an order without explicit host acceptance.",
+    "integration": [
+      "Supply your own records through `suppliers`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onSubmit` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
+      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+    ],
+    "related": [
+      "commerce-backorder-allocation",
+      "commerce-bundle-builder",
+      "commerce-catalog-import"
+    ]
+  },
+  "commerce-return-desk": {
+    "useWhen": "Reviewing eligible return items and an explicit return decision.",
+    "avoidWhen": "A refund processor or a browser-only interpretation of return eligibility.",
+    "integration": [
+      "Supply your own records through `reasons`, `resolutions`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onSubmit` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "commerce-catalog-import",
+      "commerce-variant-stock",
+      "commerce-backorder-allocation"
+    ]
+  },
+  "commerce-shipping-estimator": {
+    "useWhen": "Comparing supplied shipping services and their estimated costs.",
+    "avoidWhen": "A guaranteed delivery promise or a substitute for carrier-rated quotes.",
+    "integration": [
+      "Supply your own records through `destinations`, `services`. Preserve stable keys or IDs when the data contract provides them.",
+      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+    ],
+    "related": [
+      "commerce-backorder-allocation",
+      "commerce-bundle-builder",
+      "commerce-catalog-import"
+    ]
+  },
+  "commerce-variant-stock": {
+    "useWhen": "Inspecting stock across fashion sizes and colours.",
+    "avoidWhen": "Invented inventory quantities or a replacement for warehouse allocation rules.",
+    "integration": [
+      "Supply your own records through `sizes`, `defaultVariants`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onSave` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "commerce-catalog-import",
+      "commerce-return-desk",
+      "commerce-backorder-allocation"
+    ]
+  },
+  "content-release-notes": {
+    "useWhen": "A readable release history with useful filtering and version context.",
+    "avoidWhen": "An incident log or unsupported claims about shipped product behaviour.",
+    "integration": [
+      "Supply your own records through `releases`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "content-accordion-index",
+      "scroll-chapter-stack",
+      "app-permission-matrix"
+    ]
+  },
+  "dashboard-kpi-cards": {
+    "useWhen": "A compact overview of related measures with readable trends.",
+    "avoidWhen": "Detailed analysis or percentages with undefined or unavailable baselines.",
+    "integration": [
+      "Supply your own records through `periods`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "dashboard-orders-table",
+      "settings-panel",
+      "app-permission-matrix"
+    ]
+  },
+  "dashboard-orders-table": {
+    "useWhen": "Reviewing supplied orders with useful filtering and row actions.",
+    "avoidWhen": "A replacement for transaction processing or authoritative fulfilment state.",
+    "integration": [
+      "Supply your own records through `orders`, `statuses`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "dashboard-kpi-cards",
+      "settings-panel",
+      "app-permission-matrix"
+    ]
+  },
+  "data-file-explorer": {
+    "useWhen": "Navigating a supplied hierarchy of folders and files.",
+    "avoidWhen": "Access to a local filesystem without a host integration or permission model.",
+    "integration": [
+      "Supply your own records through `nodes`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "data-kanban-compact",
+      "data-query-builder",
+      "legal-document-requests"
+    ]
+  },
+  "data-kanban-compact": {
+    "useWhen": "Planning tasks across editable columns with pointer, touch and keyboard movement.",
+    "avoidWhen": "Authoritative workflow enforcement or a board that hides another user's concurrent changes.",
+    "integration": [
+      "Supply your own records through `columns`, `items`, `defaultItems`, `defaultColumns`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
+      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+    ],
+    "related": [
+      "data-file-explorer",
+      "data-query-builder",
+      "legal-document-requests"
+    ]
+  },
+  "data-query-builder": {
+    "useWhen": "Preparing a readable audience or filter expression from typed fields.",
+    "avoidWhen": "Executing untrusted database queries or silently changing the meaning of a filter.",
+    "integration": [
+      "Supply your own records through `fields`, `records`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
+      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+    ],
+    "related": [
+      "data-file-explorer",
+      "legal-document-requests",
+      "legal-evidence-index"
+    ]
+  },
+  "date-booking-slots": {
+    "useWhen": "Choosing a supplied available appointment slot.",
+    "avoidWhen": "A guarantee that a booking is reserved before the scheduling host accepts it.",
+    "integration": [
+      "Supply your own records through `days`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "date-week-agenda",
+      "fashion-launch-calendar",
+      "hr-capacity-planner"
+    ]
+  },
+  "date-week-agenda": {
+    "useWhen": "Reviewing a small weekly schedule with day and event context.",
+    "avoidWhen": "A full resource calendar or events with unresolved timezone rules.",
+    "integration": [
+      "Supply your own records through `days`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "date-booking-slots",
+      "fashion-launch-calendar",
+      "hr-capacity-planner"
+    ]
+  },
+  "devtools-api-playground": {
+    "useWhen": "Preparing a request and inspecting a host-supplied response.",
+    "avoidWhen": "Arbitrary privileged network access or executing requests without a trusted boundary.",
+    "integration": [
+      "Supply your own records through `params`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onSend` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "devtools-webhook-inspector",
+      "devtools-code-block",
+      "devtools-env-vars"
+    ]
+  },
+  "devtools-env-vars": {
+    "useWhen": "Reviewing environment values and deliberate configuration edits.",
+    "avoidWhen": "Exposing production secrets or treating browser state as deployed configuration.",
+    "integration": [
+      "Supply your own records through `variables`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "devtools-feature-flags",
+      "devtools-webhook-inspector",
+      "devtools-api-playground"
+    ]
+  },
+  "devtools-feature-flags": {
+    "useWhen": "Reviewing explicit flag changes and rollout configuration.",
+    "avoidWhen": "A substitute for the host's targeting, authorisation and rollout evaluation.",
+    "integration": [
+      "Supply your own records through `flags`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "devtools-env-vars",
+      "devtools-webhook-inspector",
+      "devtools-api-playground"
+    ]
+  },
+  "devtools-json-inspector": {
+    "useWhen": "Inspecting structured JSON with readable nesting and bounded output.",
+    "avoidWhen": "Executing embedded code or treating arbitrary data as trusted HTML.",
+    "integration": [
+      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+    ],
+    "related": [
+      "devtools-request-waterfall",
+      "devtools-api-playground",
+      "devtools-webhook-inspector"
+    ]
+  },
+  "devtools-log-stream": {
+    "useWhen": "Reviewing a supplied stream of operational logs.",
+    "avoidWhen": "A complete observability backend or a log view with no retention and redaction policy.",
+    "integration": [
+      "Supply your own records through `initialLines`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "devtools-webhook-inspector",
+      "devtools-api-playground",
+      "devtools-code-block"
+    ]
+  },
+  "devtools-request-waterfall": {
+    "useWhen": "Explaining the timing of supplied request phases.",
+    "avoidWhen": "Performance conclusions based on invented durations or a complete tracing platform.",
+    "integration": [
+      "Supply your own records through `requests`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "devtools-json-inspector",
+      "devtools-api-playground",
+      "chart-waterfall-bridge"
+    ]
+  },
+  "devtools-status-page": {
+    "useWhen": "A readable service-health page backed by supplied status and incidents.",
+    "avoidWhen": "A guarantee of uptime or operational state without a current source.",
+    "integration": [
+      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+    ],
+    "related": [
+      "devtools-api-playground",
+      "devtools-code-block",
+      "devtools-env-vars"
+    ]
+  },
+  "devtools-webhook-inspector": {
+    "useWhen": "Inspecting recorded delivery attempts and a deliberate retry request.",
+    "avoidWhen": "Invented attempt history or retrying external effects without idempotency controls.",
+    "integration": [
+      "Supply your own records through `deliveries`, `hourlyDeliveries`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onRetry` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "devtools-api-playground",
+      "devtools-env-vars",
+      "devtools-feature-flags"
+    ]
+  },
+  "diagram-agent-loop": {
+    "useWhen": "Explaining the stages and handoffs of an agent loop.",
+    "avoidWhen": "A live execution monitor unless it is connected to real run events.",
+    "integration": [
+      "Supply your own records through `turns`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "diagram-deploy-canary",
+      "diagram-payment-hops",
+      "diagram-region-failover"
+    ]
+  },
+  "diagram-deploy-canary": {
+    "useWhen": "Illustrating how a canary rollout proceeds and changes traffic.",
+    "avoidWhen": "A deployment controller or evidence that a rollout is safe.",
+    "integration": [
+      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+    ],
+    "related": [
+      "diagram-agent-loop",
+      "diagram-payment-hops",
+      "diagram-rag-pipeline"
+    ]
+  },
+  "diagram-payment-hops": {
+    "useWhen": "Explaining the participants and sequence of a payment flow.",
+    "avoidWhen": "Financial settlement evidence or a substitute for a provider integration.",
+    "integration": [
+      "Supply your own records through `hops`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "diagram-agent-loop",
+      "diagram-deploy-canary",
+      "diagram-rag-pipeline"
+    ]
+  },
+  "diagram-rag-pipeline": {
+    "useWhen": "Explaining retrieval, context assembly and answer generation.",
+    "avoidWhen": "A real retrieval engine or guarantees about answer quality.",
+    "integration": [
+      "Supply your own records through `chunks`, `answer`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "diagram-vector-space",
+      "diagram-deploy-canary",
+      "diagram-payment-hops"
+    ]
+  },
+  "diagram-region-failover": {
+    "useWhen": "Explaining a service's routing and failover topology.",
+    "avoidWhen": "A failover controller or a claim about actual regional availability.",
+    "integration": [
+      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+    ],
+    "related": [
+      "diagram-agent-loop",
+      "diagram-deploy-canary",
+      "diagram-payment-hops"
+    ]
+  },
+  "diagram-sequence-auth": {
+    "useWhen": "Explaining the participants and sequence of a PKCE exchange.",
+    "avoidWhen": "An authentication implementation or a security guarantee by illustration.",
+    "integration": [
+      "Supply your own records through `parties`, `messages`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "diagram-agent-loop",
+      "diagram-deploy-canary",
+      "diagram-payment-hops"
+    ]
+  },
+  "diagram-vector-space": {
+    "useWhen": "Introducing embeddings and neighbourhoods through a visual explanation.",
+    "avoidWhen": "A quantitatively faithful projection without a real dataset and stated projection method.",
+    "integration": [
+      "Supply your own records through `documents`, `suggestions`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "diagram-rag-pipeline",
+      "diagram-agent-loop",
+      "diagram-deploy-canary"
+    ]
+  },
+  "editor-markdown-split": {
+    "useWhen": "Writing Markdown with an adjacent rendered preview.",
+    "avoidWhen": "A rich document suite or rendering untrusted HTML without appropriate sanitisation.",
+    "integration": [
+      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "editor-rich-text",
+      "editor-node-graph",
+      "editor-signature-pad"
+    ]
+  },
+  "editor-node-graph": {
+    "useWhen": "Editing a small graph of connected nodes and relationships.",
+    "avoidWhen": "A backend execution engine or very large graphs needing specialised rendering.",
+    "integration": [
+      "Supply your own records through `nodes`, `edges`, `testCases`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onConnect` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "editor-signature-pad",
+      "editor-whiteboard",
+      "legal-clause-library"
+    ]
+  },
+  "editor-rich-text": {
+    "useWhen": "Authoring structured rich text in a focused application surface.",
+    "avoidWhen": "A complete collaborative document system or unvalidated server-side content storage.",
+    "integration": [
+      "Supply your own records through `blocks`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "editor-markdown-split",
+      "editor-node-graph",
+      "editor-signature-pad"
+    ]
+  },
+  "editor-signature-pad": {
+    "useWhen": "Capturing a drawn mark with an explicit confirmation action.",
+    "avoidWhen": "A legally binding signing process by itself or an identity verification mechanism.",
+    "integration": [
+      "Supply your own records through `parties`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "editor-node-graph",
+      "editor-whiteboard",
+      "editor-markdown-split"
+    ]
+  },
+  "editor-whiteboard": {
+    "useWhen": "Working with simple marks and objects in a visual canvas.",
+    "avoidWhen": "A large collaborative design editor or durable storage without a host integration.",
+    "integration": [
+      "Supply your own records through `notes`, `edges`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "editor-node-graph",
+      "editor-signature-pad",
+      "editor-markdown-split"
+    ]
+  },
+  "effect-gravity-grid": {
+    "useWhen": "A decorative grid with restrained pointer-responsive movement.",
+    "avoidWhen": "Essential information that moves away from a person's pointer or depends on hover.",
+    "integration": [
+      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+    ],
+    "related": [
+      "bento-grid",
+      "cta-horizon",
+      "footer-ascii-wordmark"
+    ]
+  },
+  "fashion-assortment-planner": {
+    "useWhen": "Planning product allocations across stores and assortment groups.",
+    "avoidWhen": "An authoritative stock allocation without current catalogue and inventory validation.",
+    "integration": [
+      "Supply your own records through `sizeRun`, `stores`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onSave` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "commerce-catalog-import",
+      "commerce-return-desk",
+      "commerce-variant-stock"
+    ]
+  },
+  "fashion-collection-line-plan": {
+    "useWhen": "Reviewing a collection's styles, planned quantities and line-level decisions.",
+    "avoidWhen": "A product information system or manufacturing commitment created solely in the browser.",
+    "integration": [
+      "Supply your own records through `categories`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onSave` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "commerce-catalog-import",
+      "commerce-return-desk",
+      "commerce-variant-stock"
+    ]
+  },
+  "fashion-exchange-selector": {
+    "useWhen": "Choosing an eligible replacement variant for an existing order item.",
+    "avoidWhen": "An inventory reservation or a completed exchange without host confirmation.",
+    "integration": [
+      "Supply your own records through `variants`, `reasons`. Preserve stable keys or IDs when the data contract provides them.",
+      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+    ],
+    "related": [
+      "commerce-catalog-import",
+      "commerce-return-desk",
+      "commerce-variant-stock"
+    ]
+  },
+  "fashion-launch-calendar": {
+    "useWhen": "Planning collection launch dates and reviewing schedule conflicts.",
+    "avoidWhen": "A publication scheduler or a promise that a launch has been executed.",
+    "integration": [
+      "Supply your own records through `launches`. Preserve stable keys or IDs when the data contract provides them.",
+      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+    ],
+    "related": [
+      "hr-capacity-planner",
+      "hr-leave-approval",
+      "hr-shift-coverage"
+    ]
+  },
+  "fashion-merchandising-dashboard": {
+    "useWhen": "Reviewing collection performance alongside merchandising actions.",
+    "avoidWhen": "A forecast or stock authority unsupported by the supplied retail data.",
+    "integration": [
+      "Supply your own records through `collections`. Preserve stable keys or IDs when the data contract provides them.",
+      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+    ],
+    "related": [
+      "app-permission-matrix",
+      "commerce-operations-dashboard",
+      "finance-cashflow-dashboard"
+    ]
+  },
+  "fashion-preorder-planner": {
+    "useWhen": "Comparing preorders with production thresholds and planned quantities.",
+    "avoidWhen": "A purchase commitment or manufacturing instruction without host acceptance.",
+    "integration": [
+      "Supply your own records through `sizes`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onSave` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "commerce-catalog-import",
+      "commerce-return-desk",
+      "commerce-variant-stock"
+    ]
+  },
+  "fashion-size-guide": {
+    "useWhen": "Editing and reviewing a garment's supplied measurements and size guidance.",
+    "avoidWhen": "Universal fit claims or measurements unrelated to the actual garment.",
+    "integration": [
+      "Supply your own records through `sizes`, `measurements`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onSave` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "commerce-catalog-import",
+      "commerce-return-desk",
+      "commerce-variant-stock"
+    ]
+  },
+  "fashion-wholesale-order": {
+    "useWhen": "Preparing a wholesale order across styles, sizes and quantities.",
+    "avoidWhen": "A stock reservation or commercial acceptance before your order service confirms it.",
+    "integration": [
+      "Supply your own records through `styles`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onSubmit` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "commerce-catalog-import",
+      "commerce-return-desk",
+      "commerce-variant-stock"
+    ]
+  },
+  "feature-sticky-scroll": {
+    "useWhen": "A sequential feature story with a stable visual beside changing copy.",
+    "avoidWhen": "Long reference material that readers need to scan or compare simultaneously.",
+    "integration": [
+      "Supply your own records through `steps`, `items`, `pots`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "bento-grid",
+      "header-hairline",
+      "navbar-floating"
+    ]
+  },
+  "finance-budget-variance": {
+    "useWhen": "Comparing supplied budget and actual values with readable differences.",
+    "avoidWhen": "Accounting conclusions without consistent periods, currencies and definitions.",
+    "integration": [
+      "Supply your own records through `lines`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onSaveExplanation` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
+      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+    ],
+    "related": [
+      "finance-close-checklist",
+      "finance-expense-review",
+      "finance-invoice-composer"
+    ]
+  },
+  "finance-cashflow-dashboard": {
+    "useWhen": "Reviewing supplied cash balances, movements and near-term context.",
+    "avoidWhen": "A bank connection or assurance that displayed balances are current.",
+    "integration": [
+      "Supply your own records through `accounts`, `movements`. Preserve stable keys or IDs when the data contract provides them.",
+      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+    ],
+    "related": [
+      "app-permission-matrix",
+      "commerce-operations-dashboard",
+      "fashion-merchandising-dashboard"
+    ]
+  },
+  "finance-close-checklist": {
+    "useWhen": "Coordinating period-close tasks and collecting clear completion evidence.",
+    "avoidWhen": "An accounting approval or audit conclusion created only through checklist state.",
+    "integration": [
+      "Supply your own records through `tasks`. Preserve stable keys or IDs when the data contract provides them.",
+      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+    ],
+    "related": [
+      "finance-budget-variance",
+      "finance-expense-review",
+      "finance-invoice-composer"
+    ]
+  },
+  "finance-expense-review": {
+    "useWhen": "Reviewing a claim's supplied receipt lines, policy exceptions and decision.",
+    "avoidWhen": "Tax interpretation or reimbursement before your expense service accepts the decision.",
+    "integration": [
+      "Supply your own records through `expenses`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onDecision` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
+      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+    ],
+    "related": [
+      "finance-budget-variance",
+      "finance-close-checklist",
+      "finance-invoice-composer"
+    ]
+  },
+  "finance-invoice-composer": {
+    "useWhen": "Preparing an invoice draft with explicit lines and reconciled amounts.",
+    "avoidWhen": "Posting a legal or accounting invoice before the host validates and issues it.",
+    "integration": [
+      "Supply your own records through `initialLines`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onSaveDraft` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "finance-budget-variance",
+      "finance-close-checklist",
+      "finance-expense-review"
+    ]
+  },
+  "finance-payment-run": {
+    "useWhen": "Reviewing payees and payment amounts before an explicit handoff.",
+    "avoidWhen": "Moving money or authorising a transfer solely through browser state.",
+    "integration": [
+      "Supply your own records through `invoices`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onCreateBatch` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "finance-budget-variance",
+      "finance-close-checklist",
+      "finance-expense-review"
+    ]
+  },
+  "finance-receivables-aging": {
+    "useWhen": "Reviewing overdue invoices by age and preparing an appropriate follow-up.",
+    "avoidWhen": "An authoritative collections ledger or automatic customer contact without approval.",
+    "integration": [
+      "Supply your own records through `invoices`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onCreateFollowUp` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "finance-budget-variance",
+      "finance-close-checklist",
+      "finance-expense-review"
+    ]
+  },
+  "finance-reconciliation": {
+    "useWhen": "Comparing supplied settlement records and identifying mismatches.",
+    "avoidWhen": "Accounting reconciliation without complete and consistent source records.",
+    "integration": [
+      "Supply your own records through `statement`, `ledger`, `defaultMatches`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "finance-budget-variance",
+      "finance-close-checklist",
+      "finance-expense-review"
+    ]
+  },
+  "finance-scenario-forecast": {
+    "useWhen": "Exploring cash-flow assumptions in clearly labelled scenarios.",
+    "avoidWhen": "A prediction guarantee or advice based on unstated financial assumptions.",
+    "integration": [
+      "Supply your own records through `months`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onSaveScenario` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "finance-budget-variance",
+      "finance-close-checklist",
+      "finance-expense-review"
+    ]
+  },
+  "footer-ascii-wordmark": {
+    "useWhen": "A distinctive typographic close for a developer or creative brand.",
+    "avoidWhen": "Essential reading content rendered only as decorative ASCII.",
+    "integration": [
+      "Supply your own records through `stacked`, `links`, `legalLinks`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "footer-wordmark",
+      "footer-columns-status",
+      "footer-newsletter"
+    ]
+  },
+  "forms-preference-center": {
+    "useWhen": "Reviewing communication channels and saving explicit preferences.",
+    "avoidWhen": "A subscription backend or consent record without server-side persistence.",
+    "integration": [
+      "Supply your own records through `options`, `value`, `defaultValue`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onChange`, `onSave` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "hr-interview-scorecard",
+      "hr-policy-acknowledgement",
+      "legal-matter-intake"
+    ]
+  },
+  "header-island": {
+    "useWhen": "A compact site header that expands into contextual navigation.",
+    "avoidWhen": "A large application tree or important destinations discoverable only through motion.",
+    "integration": [
+      "Supply your own records through `links`, `searchItems`, `accountItems`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "header-hairline",
+      "header-morph-mega",
+      "navbar-floating"
+    ]
+  },
+  "header-morph-mega": {
+    "useWhen": "A marketing site with several groups of related destinations.",
+    "avoidWhen": "A simple one-page site that does not need a large navigation panel.",
+    "integration": [
+      "Supply your own records through `sections`, `links`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "header-hairline",
+      "header-island",
+      "navbar-floating"
+    ]
+  },
+  "hero-ghost-cursor": {
+    "useWhen": "Demonstrating a product interaction within a clearly framed hero.",
+    "avoidWhen": "A simulated cursor presented as a real user session or essential navigation.",
+    "integration": [
+      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+    ],
+    "related": [
+      "hero-terminal-agent",
+      "hero-inline-objects",
+      "hero-marquee-screens"
+    ]
+  },
+  "hero-inline-objects": {
+    "useWhen": "An editorial product headline with a small number of meaningful objects.",
+    "avoidWhen": "A dense technical explanation or product imagery that misrepresents the actual product.",
+    "integration": [
+      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+    ],
+    "related": [
+      "hero-ghost-cursor",
+      "hero-terminal-agent",
+      "hero-app-tilt"
+    ]
+  },
+  "hero-kinetic-type": {
+    "useWhen": "A concise product statement with deliberate typographic movement.",
+    "avoidWhen": "Long text or motion that delays access to the page's main message.",
+    "integration": [
+      "Supply your own records through `lines`, `services`, `meta`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "hero-marquee-screens",
+      "hero-app-tilt",
+      "hero-blur-statement"
+    ]
+  },
+  "hero-prism": {
+    "useWhen": "A visually expressive introduction with a clear headline and action.",
+    "avoidWhen": "A performance-sensitive interface where the effect distracts from the task.",
+    "integration": [
+      "Keep this scene in a bounded visual region and retain ordinary text and controls for the main task. Check its rendering cost on the devices your audience uses."
+    ],
+    "related": [
+      "hero-app-tilt",
+      "hero-blur-statement",
+      "hero-ghost-cursor"
+    ]
+  },
+  "hero-product-stack": {
+    "useWhen": "A product introduction built around supplied, authentic product visuals.",
+    "avoidWhen": "Generated objects standing in for real products or visuals without accessible context.",
+    "integration": [
+      "Supply your own records through `headline`, `days`, `events`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "hero-app-tilt",
+      "hero-marquee-screens",
+      "hero-ghost-cursor"
+    ]
+  },
+  "hr-capacity-planner": {
+    "useWhen": "Reviewing assigned work against supplied team capacity.",
+    "avoidWhen": "A workforce authority or scheduling decision based on incomplete availability data.",
+    "integration": [
+      "Supply your own records through `people`, `days`, `projects`, `defaultBookings`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onSave` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
+      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+    ],
+    "related": [
+      "hr-leave-approval",
+      "hr-shift-coverage",
+      "fashion-launch-calendar"
+    ]
+  },
+  "hr-compensation-review": {
+    "useWhen": "Reviewing supplied pay proposals and their budget impact.",
+    "avoidWhen": "Automated compensation decisions or assumptions about employment rules and equity.",
+    "integration": [
+      "Supply your own records through `employees`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onSubmit` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "finance-budget-variance",
+      "finance-close-checklist",
+      "finance-expense-review"
+    ]
+  },
+  "hr-employee-onboarding": {
+    "useWhen": "Coordinating a new employee's explicit setup and onboarding tasks.",
+    "avoidWhen": "A payroll or identity-provisioning system without host integrations.",
+    "integration": [
+      "Supply your own records through `hires`. Preserve stable keys or IDs when the data contract provides them.",
+      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+    ],
+    "related": [
+      "onboarding-setup-checklist",
+      "app-permission-matrix",
+      "hr-capacity-planner"
+    ]
+  },
+  "hr-interview-scorecard": {
+    "useWhen": "Recording structured interview evidence against consistent criteria.",
+    "avoidWhen": "An automatic hiring decision or scores without supporting observations.",
+    "integration": [
+      "Supply your own records through `competencies`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onSubmit` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
+      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+    ],
+    "related": [
+      "hr-policy-acknowledgement",
+      "forms-preference-center",
+      "legal-matter-intake"
+    ]
+  },
+  "hr-leave-approval": {
+    "useWhen": "Reviewing dates, coverage and an explicit leave decision.",
+    "avoidWhen": "An entitlement calculation or approval disconnected from your HR source of truth.",
+    "integration": [
+      "Supply your own records through `requests`, `balances`, `coverage`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onDecision` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "hr-capacity-planner",
+      "hr-shift-coverage",
+      "fashion-launch-calendar"
+    ]
+  },
+  "hr-org-explorer": {
+    "useWhen": "Exploring a supplied organisational hierarchy and reporting relationships.",
+    "avoidWhen": "A team directory whose reporting data is inferred rather than supplied.",
+    "integration": [
+      "Supply your own records through `people`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "app-permission-matrix",
+      "hr-people-dashboard",
+      "commerce-operations-dashboard"
+    ]
+  },
+  "hr-people-dashboard": {
+    "useWhen": "A concise overview of supplied people measures and operational queues.",
+    "avoidWhen": "Sensitive HR data presented without appropriate access and aggregation rules.",
+    "integration": [
+      "Supply your own records through `employees`, `milestones`. Preserve stable keys or IDs when the data contract provides them.",
+      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+    ],
+    "related": [
+      "app-permission-matrix",
+      "hr-org-explorer",
+      "commerce-operations-dashboard"
+    ]
+  },
+  "hr-policy-acknowledgement": {
+    "useWhen": "Reading a specific policy revision and recording an explicit acknowledgement.",
+    "avoidWhen": "Proof of understanding or a consent and compliance guarantee by checkbox alone.",
+    "integration": [
+      "Supply your own records through `policies`, `acknowledgements`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "hr-interview-scorecard",
+      "forms-preference-center",
+      "legal-matter-intake"
+    ]
+  },
+  "hr-shift-coverage": {
+    "useWhen": "Reviewing open shifts and a proposed coverage assignment.",
+    "avoidWhen": "Automatic scheduling without checking qualifications, availability and local rules.",
+    "integration": [
+      "Supply your own records through `shifts`, `staff`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onSave` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "hr-capacity-planner",
+      "hr-leave-approval",
+      "fashion-launch-calendar"
+    ]
+  },
+  "input-ai-prompt": {
+    "useWhen": "An assistant composer that needs richer prompt and attachment controls.",
+    "avoidWhen": "A small text-only conversation that benefits from a simpler composer.",
+    "integration": [
+      "Supply your own records through `models`, `commands`, `defaultAttachments`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onSubmit`, `onRetry`, `onUpload` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "ai-composer-minimal",
+      "ai-image-generation",
+      "ai-message-actions"
+    ]
+  },
+  "input-file-dropzone": {
+    "useWhen": "Choosing and validating supplied file types before a host upload.",
+    "avoidWhen": "A completed upload or secure file storage implemented only by a drop animation.",
+    "integration": [
+      "Supply your own records through `files`, `defaultFiles`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "input-color-swatches",
+      "input-number-stepper",
+      "input-password-checklist"
+    ]
+  },
+  "input-shortcut-recorder": {
+    "useWhen": "Recording a deliberate keyboard combination in a preference screen.",
+    "avoidWhen": "Unconditionally overriding operating-system or browser shortcuts.",
+    "integration": [
+      "Supply your own records through `value`, `defaultValue`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "input-color-swatches",
+      "input-file-dropzone",
+      "input-number-stepper"
+    ]
+  },
+  "legal-clause-library": {
+    "useWhen": "Finding and reviewing supplied clause text, revisions and usage context.",
+    "avoidWhen": "Automatically generated legal advice or unreviewed language applied to an agreement.",
+    "integration": [
+      "Supply your own records through `clauses`. Preserve stable keys or IDs when the data contract provides them.",
+      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+    ],
+    "related": [
+      "legal-version-history",
+      "editor-node-graph",
+      "app-permission-matrix"
+    ]
+  },
+  "legal-document-requests": {
+    "useWhen": "Tracking requested documents and their supplied submission state.",
+    "avoidWhen": "Document storage or a guarantee that submitted evidence is authentic.",
+    "integration": [
+      "Supply your own records through `requests`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onUpload` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "legal-evidence-index",
+      "legal-obligation-tracker",
+      "data-file-explorer"
+    ]
+  },
+  "legal-evidence-index": {
+    "useWhen": "Organising supplied evidence records, provenance and review notes.",
+    "avoidWhen": "A chain-of-custody system or evidential conclusion without verified source records.",
+    "integration": [
+      "Supply your own records through `exhibits`. Preserve stable keys or IDs when the data contract provides them.",
+      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+    ],
+    "related": [
+      "legal-document-requests",
+      "legal-obligation-tracker",
+      "data-file-explorer"
+    ]
+  },
+  "legal-matter-dashboard": {
+    "useWhen": "Reviewing supplied matter workload, deadlines and operational queues.",
+    "avoidWhen": "A legal docket authority or decisions based on unverified deadlines.",
+    "integration": [
+      "Supply your own records through `matters`. Preserve stable keys or IDs when the data contract provides them.",
+      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+    ],
+    "related": [
+      "app-permission-matrix",
+      "commerce-operations-dashboard",
+      "fashion-merchandising-dashboard"
+    ]
+  },
+  "legal-matter-intake": {
+    "useWhen": "Collecting and reviewing a matter's supplied facts before handoff.",
+    "avoidWhen": "Legal advice, conflict clearance or an accepted engagement generated by the form alone.",
+    "integration": [
+      "Supply your own records through `practices`, `owners`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onSubmit` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
+      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+    ],
+    "related": [
+      "legal-signature-request",
+      "forms-preference-center",
+      "hr-interview-scorecard"
+    ]
+  },
+  "legal-obligation-tracker": {
+    "useWhen": "Reviewing contractual obligations, owners and recorded completion.",
+    "avoidWhen": "An automatic interpretation of contract language or proof of compliance by status alone.",
+    "integration": [
+      "Supply your own records through `obligations`. Preserve stable keys or IDs when the data contract provides them.",
+      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+    ],
+    "related": [
+      "legal-document-requests",
+      "legal-evidence-index",
+      "data-file-explorer"
+    ]
+  },
+  "legal-renewal-planner": {
+    "useWhen": "Planning action around supplied contract renewal and notice dates.",
+    "avoidWhen": "Authoritative deadline calculation without reviewing the relevant contract and jurisdiction.",
+    "integration": [
+      "Supply your own records through `contracts`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onDecision` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
+      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+    ],
+    "related": [
+      "fashion-launch-calendar",
+      "hr-capacity-planner",
+      "hr-leave-approval"
+    ]
+  },
+  "legal-signature-request": {
+    "useWhen": "Reviewing a document revision, signer order and provider handoff payload.",
+    "avoidWhen": "Identity verification, delivery or legally binding execution implemented only in the composer.",
+    "integration": [
+      "Supply your own records through `documents`, `defaultRecipients`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onCreate` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
+      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+    ],
+    "related": [
+      "legal-matter-intake",
+      "forms-preference-center",
+      "hr-interview-scorecard"
+    ]
+  },
+  "legal-version-history": {
+    "useWhen": "Comparing supplied document revisions and reviewing their differences.",
+    "avoidWhen": "A document management system or an automatic legal interpretation of the changes.",
+    "integration": [
+      "Supply your own records through `versions`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "legal-clause-library",
+      "app-permission-matrix",
+      "editor-node-graph"
+    ]
+  },
+  "media-before-after": {
+    "useWhen": "Comparing two authentic visuals with a controllable divider.",
+    "avoidWhen": "Claims of product results unsupported by the actual before and after assets.",
+    "integration": [
+      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "media-story-deck",
+      "scroll-cinema-frame",
+      "scroll-image-curtain"
+    ]
+  },
+  "media-story-deck": {
+    "useWhen": "A short visual story with deliberate sequencing and readable captions.",
+    "avoidWhen": "Long reference text or essential content available only through autoplay.",
+    "integration": [
+      "Supply your own records through `slides`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "media-before-after",
+      "scroll-cinema-frame",
+      "scroll-image-curtain"
+    ]
+  },
+  "mobile-agent-approval": {
+    "useWhen": "A mobile review of an agent's proposed action before confirmation.",
+    "avoidWhen": "Authorising backend actions solely through an animated sheet.",
+    "integration": [
+      "Connect `onDecision` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
+      "Install this in a React Native app. The web preview is a review surface; verify gestures, text scaling and assistive technology on your target devices."
+    ],
+    "related": [
+      "mobile-checkout-sheet",
+      "mobile-bottom-sheet",
+      "mobile-chat"
+    ]
+  },
+  "mobile-bottom-sheet": {
+    "useWhen": "A contextual mobile sheet for supplied delivery details and actions.",
+    "avoidWhen": "A full application screen with navigation better served by a normal page.",
+    "integration": [
+      "Supply your own records through `steps`, `items`, `tips`. Preserve stable keys or IDs when the data contract provides them.",
+      "Install this in a React Native app. The web preview is a review surface; verify gestures, text scaling and assistive technology on your target devices."
+    ],
+    "related": [
+      "mobile-chat",
+      "mobile-checkout-sheet",
+      "mobile-live-activity"
+    ]
+  },
+  "mobile-chat": {
+    "useWhen": "A mobile assistant conversation with a focused composer.",
+    "avoidWhen": "A full multi-channel inbox or a visual substitute for a messaging backend.",
+    "integration": [
+      "Supply your own records through `messages`, `quickReplies`, `fallbackReplies`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onSend`, `onAction` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
+      "Install this in a React Native app. The web preview is a review surface; verify gestures, text scaling and assistive technology on your target devices."
+    ],
+    "related": [
+      "mobile-bottom-sheet",
+      "mobile-live-activity",
+      "mobile-now-playing"
+    ]
+  },
+  "mobile-checkout-sheet": {
+    "useWhen": "Reviewing a mobile order and deliberately confirming payment intent.",
+    "avoidWhen": "Collecting raw card credentials or claiming a payment completed before provider confirmation.",
+    "integration": [
+      "Supply your own records through `items`, `cards`, `delivery`, `declineOnce`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onPay` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
+      "Install this in a React Native app. The web preview is a review surface; verify gestures, text scaling and assistive technology on your target devices."
+    ],
+    "related": [
+      "mobile-wallet-stack",
+      "mobile-bottom-sheet",
+      "mobile-health-summary"
+    ]
+  },
+  "mobile-live-activity": {
+    "useWhen": "A glanceable summary of supplied delivery progress.",
+    "avoidWhen": "A guaranteed live update or a replacement for the operating system's native activity integration.",
+    "integration": [
+      "Supply your own records through `updates`, `stops`. Preserve stable keys or IDs when the data contract provides them.",
+      "Install this in a React Native app. The web preview is a review surface; verify gestures, text scaling and assistive technology on your target devices."
+    ],
+    "related": [
+      "mobile-now-playing",
+      "mobile-bottom-sheet",
+      "mobile-chat"
+    ]
+  },
+  "mobile-now-playing": {
+    "useWhen": "A mobile playback surface with readable track and position controls.",
+    "avoidWhen": "An audio engine or a claim that media is playing without a real playback connection.",
+    "integration": [
+      "Supply your own records through `tracks`, `devices`. Preserve stable keys or IDs when the data contract provides them.",
+      "Install this in a React Native app. The web preview is a review surface; verify gestures, text scaling and assistive technology on your target devices."
+    ],
+    "related": [
+      "mobile-live-activity",
+      "mobile-bottom-sheet",
+      "mobile-chat"
+    ]
+  },
+  "mobile-paywall": {
+    "useWhen": "A clear mobile subscription offer with explicit price and benefits.",
+    "avoidWhen": "A purchase receipt or store entitlement granted solely through UI state.",
+    "integration": [
+      "Supply your own records through `features`. Preserve stable keys or IDs when the data contract provides them.",
+      "Install this in a React Native app. The web preview is a review surface; verify gestures, text scaling and assistive technology on your target devices."
+    ],
+    "related": [
+      "mobile-bottom-sheet",
+      "mobile-chat",
+      "mobile-live-activity"
+    ]
+  },
+  "mobile-swipe-list": {
+    "useWhen": "A mobile inbox with reversible row actions and clear item state.",
+    "avoidWhen": "An action discoverable only by swiping or irreversible deletion with no explicit recovery.",
+    "integration": [
+      "Supply your own records through `items`. Preserve stable keys or IDs when the data contract provides them.",
+      "Install this in a React Native app. The web preview is a review surface; verify gestures, text scaling and assistive technology on your target devices."
+    ],
+    "related": [
+      "mobile-wallet-stack",
+      "mobile-bottom-sheet",
+      "mobile-chat"
+    ]
+  },
+  "mobile-wallet-stack": {
+    "useWhen": "Browsing a small set of supplied wallet cards and their details.",
+    "avoidWhen": "A payment credential store or balance authority determined only by the UI.",
+    "integration": [
+      "Supply your own records through `cards`. Preserve stable keys or IDs when the data contract provides them.",
+      "Install this in a React Native app. The web preview is a review surface; verify gestures, text scaling and assistive technology on your target devices."
+    ],
+    "related": [
+      "mobile-checkout-sheet",
+      "mobile-swipe-list",
+      "mobile-bottom-sheet"
+    ]
+  },
+  "multiselect-chips": {
+    "useWhen": "Selecting several searchable options and reviewing the chosen set.",
+    "avoidWhen": "A single choice or a large hierarchical taxonomy requiring a dedicated browser.",
+    "integration": [
+      "Supply your own records through `options`, `defaultSelected`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "combobox-async",
+      "select-listbox",
+      "segmented-control"
+    ]
+  },
+  "onboarding-setup-checklist": {
+    "useWhen": "Coordinating a small set of actionable workspace setup tasks.",
+    "avoidWhen": "Blocking the product behind a long tutorial or marking steps complete without evidence.",
+    "integration": [
+      "Supply your own records through `tasks`, `completed`, `defaultCompleted`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "hr-employee-onboarding",
+      "input-password-checklist",
+      "app-permission-matrix"
+    ]
+  },
+  "pricing-comparison-matrix": {
+    "useWhen": "Comparing plan capabilities in a readable, structured matrix.",
+    "avoidWhen": "An unbounded feature list or pricing claims that differ from your checkout.",
+    "integration": [
+      "Supply your own records through `plans`, `groups`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "pricing-three-tier",
+      "pricing-plan-toggle",
+      "pricing-receipt"
+    ]
+  },
+  "pricing-receipt": {
+    "useWhen": "A focused, transparent price presentation with explicit inclusions.",
+    "avoidWhen": "A complex quotation or invented tax and billing calculations.",
+    "integration": [
+      "Supply your own records through `options`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "pricing-comparison-matrix",
+      "pricing-plan-toggle",
+      "pricing-three-tier"
+    ]
+  },
+  "saas-access-requests": {
+    "useWhen": "Reviewing requested privileges, duration and an explicit grant or decline.",
+    "avoidWhen": "Client-side permission enforcement or access granted without server validation.",
+    "integration": [
+      "Supply your own records through `requests`, `roles`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onDecision` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
+      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+    ],
+    "related": [
+      "saas-audit-trail",
+      "saas-customer-health",
+      "saas-integration-manager"
+    ]
+  },
+  "saas-audit-trail": {
+    "useWhen": "Exploring recorded actor, resource and configuration changes with filters and details.",
+    "avoidWhen": "Creating an immutable security log or inferring events that the backend did not record.",
+    "integration": [
+      "Supply your own records through `events`. Preserve stable keys or IDs when the data contract provides them.",
+      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+    ],
+    "related": [
+      "saas-access-requests",
+      "saas-customer-health",
+      "saas-integration-manager"
+    ]
+  },
+  "saas-customer-health": {
+    "useWhen": "Reviewing supplied customer signals and prioritising account follow-up.",
+    "avoidWhen": "A guaranteed churn prediction or scores based on unexplained customer data.",
+    "integration": [
+      "Supply your own records through `customers`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onAction` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
+      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+    ],
+    "related": [
+      "saas-access-requests",
+      "saas-audit-trail",
+      "saas-integration-manager"
+    ]
+  },
+  "saas-integration-manager": {
+    "useWhen": "Reviewing connector state and explicit connection or disconnection actions.",
+    "avoidWhen": "Storing credentials in the browser or claiming a connection before host verification.",
+    "integration": [
+      "Supply your own records through `integrations`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "saas-access-requests",
+      "saas-audit-trail",
+      "saas-customer-health"
+    ]
+  },
+  "saas-notification-inbox": {
+    "useWhen": "Triaging supplied notifications through read, archive and filter states.",
+    "avoidWhen": "The only record of important events or a real notification-delivery service.",
+    "integration": [
+      "Supply your own records through `notifications`. Preserve stable keys or IDs when the data contract provides them.",
+      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+    ],
+    "related": [
+      "saas-access-requests",
+      "saas-audit-trail",
+      "saas-customer-health"
+    ]
+  },
+  "saas-report-scheduler": {
+    "useWhen": "Preparing report recipients, frequency and delivery preferences.",
+    "avoidWhen": "A report delivery service or a schedule whose timezone is not explicitly defined.",
+    "integration": [
+      "Supply your own records through `sections`, `timeZones`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onSave` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
+      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+    ],
+    "related": [
+      "forms-preference-center",
+      "hr-interview-scorecard",
+      "hr-policy-acknowledgement"
+    ]
+  },
+  "saas-saved-views": {
+    "useWhen": "Naming, pinning and saving reusable filters for a host collection.",
+    "avoidWhen": "Saving application records implicitly when only view configuration was edited.",
+    "integration": [
+      "Supply your own records through `defaultViews`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onSave` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
+      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+    ],
+    "related": [
+      "data-file-explorer",
+      "data-query-builder",
+      "legal-document-requests"
+    ]
+  },
+  "saas-support-triage": {
+    "useWhen": "Reviewing a support queue and recording explicit assignment or priority changes.",
+    "avoidWhen": "A communication backend or automatic customer messages without host confirmation.",
+    "integration": [
+      "Supply your own records through `tickets`, `agents`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onSave` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
+      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+    ],
+    "related": [
+      "saas-access-requests",
+      "saas-audit-trail",
+      "saas-customer-health"
+    ]
+  },
+  "saas-usage-policy": {
+    "useWhen": "Reviewing limits, thresholds and actions for a supplied usage policy.",
+    "avoidWhen": "Authoritative metering or enforcement implemented only in the browser.",
+    "integration": [
+      "Supply your own records through `metrics`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onSave` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
+      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+    ],
+    "related": [
+      "progress-milestones",
+      "saas-access-requests",
+      "saas-audit-trail"
+    ]
+  },
+  "saas-workspace-dashboard": {
+    "useWhen": "A workspace overview connecting supplied usage, setup and activity.",
+    "avoidWhen": "An operating status authority disconnected from the application's actual data.",
+    "integration": [
+      "Supply your own records through `teams`, `days`, `projects`. Preserve stable keys or IDs when the data contract provides them.",
+      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+    ],
+    "related": [
+      "saas-access-requests",
+      "saas-audit-trail",
+      "saas-customer-health"
+    ]
+  },
+  "scroll-background-wipe": {
+    "useWhen": "Changing a decorative background as a readable section progresses.",
+    "avoidWhen": "An animation carrying essential meaning without a static or reduced-motion equivalent.",
+    "integration": [
+      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+    ],
+    "related": [
+      "scroll-chapter-stack",
+      "scroll-cinema-frame",
+      "scroll-expanding-mosaic"
+    ]
+  },
+  "scroll-chapter-stack": {
+    "useWhen": "A short chapter-based narrative with deliberate panel progression.",
+    "avoidWhen": "Long reference content that needs unrestricted scanning and comparison.",
+    "integration": [
+      "Supply your own records through `chapters`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "content-accordion-index",
+      "content-release-notes",
+      "scroll-background-wipe"
+    ]
+  },
+  "scroll-cinema-frame": {
+    "useWhen": "Expanding an authentic video or image within a scroll-led product story.",
+    "avoidWhen": "Replacing readable media controls or relying on autoplay to communicate essential content.",
+    "integration": [
+      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+    ],
+    "related": [
+      "scroll-image-curtain",
+      "media-before-after",
+      "media-story-deck"
+    ]
+  },
+  "scroll-expanding-mosaic": {
+    "useWhen": "Opening a visual mosaic into a larger product or editorial moment.",
+    "avoidWhen": "A dense interactive grid whose controls become hard to reach while scrolling.",
+    "integration": [
+      "Supply your own records through `tiles`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "scroll-horizontal-showcase",
+      "scroll-background-wipe",
+      "scroll-chapter-stack"
+    ]
+  },
+  "scroll-horizontal-showcase": {
+    "useWhen": "A short horizontal product sequence driven by a readable vertical story.",
+    "avoidWhen": "A long catalogue or content that can only be reached with a precise scroll gesture.",
+    "integration": [
+      "Supply your own records through `projects`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "scroll-expanding-mosaic",
+      "scroll-background-wipe",
+      "scroll-chapter-stack"
+    ]
+  },
+  "scroll-image-curtain": {
+    "useWhen": "Revealing paired visuals through a controlled scroll progression.",
+    "avoidWhen": "A before-and-after claim without authentic paired assets and clear context.",
+    "integration": [
+      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+    ],
+    "related": [
+      "scroll-cinema-frame",
+      "media-before-after",
+      "media-story-deck"
+    ]
+  },
+  "text-decode": {
+    "useWhen": "A short decorative text reveal in an introductory section.",
+    "avoidWhen": "Body text, instructions or text that must remain immediately readable.",
+    "integration": [
+      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+    ],
+    "related": [
+      "button-magnetic",
+      "devtools-log-stream",
+      "footer-ascii-wordmark"
+    ]
+  },
+  "three-ascii-object": {
+    "useWhen": "A restrained generative object within a creative or developer brand page.",
+    "avoidWhen": "Essential information available only through the 3D scene or ASCII rendering.",
+    "integration": [
+      "Keep this scene in a bounded visual region and retain ordinary text and controls for the main task. Check its rendering cost on the devices your audience uses."
+    ],
+    "related": [
+      "three-contour-terrain",
+      "three-holo-card",
+      "three-keycaps"
+    ]
+  },
+  "three-contour-terrain": {
+    "useWhen": "An atmospheric terrain visual behind a clear editorial message.",
+    "avoidWhen": "A geographic map or quantitative landscape without an actual data model.",
+    "integration": [
+      "Keep this scene in a bounded visual region and retain ordinary text and controls for the main task. Check its rendering cost on the devices your audience uses."
+    ],
+    "related": [
+      "three-holo-card",
+      "three-particle-sphere",
+      "three-wave-field"
+    ]
+  },
+  "three-globe-arcs": {
+    "useWhen": "Illustrating supplied routes or connections on a globe.",
+    "avoidWhen": "A geographic authority or fabricated coverage and routing claims.",
+    "integration": [
+      "Supply your own records through `routes`. Preserve stable keys or IDs when the data contract provides them.",
+      "Keep this scene in a bounded visual region and retain ordinary text and controls for the main task. Check its rendering cost on the devices your audience uses."
+    ],
+    "related": [
+      "three-contour-terrain",
+      "three-particle-sphere",
+      "three-wave-field"
+    ]
+  },
+  "three-holo-card": {
+    "useWhen": "A decorative material treatment for a supplied card or brand visual.",
+    "avoidWhen": "A real product represented by an unrelated synthetic 3D object.",
+    "integration": [
+      "Keep this scene in a bounded visual region and retain ordinary text and controls for the main task. Check its rendering cost on the devices your audience uses."
+    ],
+    "related": [
+      "three-contour-terrain",
+      "three-particle-sphere",
+      "three-ascii-object"
+    ]
+  },
+  "three-keycaps": {
+    "useWhen": "Explaining a small set of keyboard shortcuts with tactile key visuals.",
+    "avoidWhen": "The only accessible shortcut reference or shortcuts your product does not implement.",
+    "integration": [
+      "Supply your own records through `rows`, `chords`. Preserve stable keys or IDs when the data contract provides them.",
+      "Keep this scene in a bounded visual region and retain ordinary text and controls for the main task. Check its rendering cost on the devices your audience uses."
+    ],
+    "related": [
+      "three-ascii-object",
+      "three-contour-terrain",
+      "three-holo-card"
+    ]
+  },
+  "three-particle-sphere": {
+    "useWhen": "A restrained generative scene in a landing-page introduction.",
+    "avoidWhen": "An essential data visualisation or an effect competing with reading and interaction.",
+    "integration": [
+      "Keep this scene in a bounded visual region and retain ordinary text and controls for the main task. Check its rendering cost on the devices your audience uses."
+    ],
+    "related": [
+      "three-wave-field",
+      "three-contour-terrain",
+      "three-holo-card"
+    ]
+  },
+  "three-voice-orb": {
+    "useWhen": "A decorative visual accompanying clearly labelled voice states.",
+    "avoidWhen": "A microphone permission mechanism or voice state inferred solely from animation.",
+    "integration": [
+      "Supply your own records through `speakingLines`. Preserve stable keys or IDs when the data contract provides them.",
+      "Keep this scene in a bounded visual region and retain ordinary text and controls for the main task. Check its rendering cost on the devices your audience uses."
+    ],
+    "related": [
+      "three-particle-sphere",
+      "three-wave-field",
+      "three-ascii-object"
+    ]
+  },
+  "usage-meter-tokens": {
+    "useWhen": "Showing supplied token consumption, limits and remaining allowance.",
+    "avoidWhen": "A billing authority or a usage estimate presented as a measured total.",
+    "integration": [
+      "Supply your own records through `catalog`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "progress-milestones",
+      "saas-usage-policy",
+      "agent-approval-gate"
+    ]
+  },
+  "work-index-hover": {
+    "useWhen": "An editorial work index with authentic project previews.",
+    "avoidWhen": "Essential project context discoverable only through mouse hover.",
+    "integration": [
+      "Supply your own records through `projects`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "hero-blur-statement",
+      "scroll-expanding-mosaic",
+      "scroll-horizontal-showcase"
+    ]
+  }
+}

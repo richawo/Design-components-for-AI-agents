@@ -13,6 +13,7 @@ const THEME = "site-mono";
  * ink (white names, lighter strings, dimmer keywords and comments), not hue.
  */
 const VESPER_TO_GREY: Record<string, string> = {
+  "#8B8B8B94": "#8A8A94", // comments must remain readable on code surfaces
   "#FFC799": "#FFFFFF", // functions, tags
   "#99FFE4": "#B4B4BC", // strings, keys
   "#A0A0A0": "#7C7C85", // keywords, storage
