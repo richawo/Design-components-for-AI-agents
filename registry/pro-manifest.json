@@ -17838,12 +17838,14 @@
       {
         "name": "title",
         "type": "string",
-        "description": "Main heading."
+        "description": "Main heading.",
+        "default": "\"Compensation review\""
       },
       {
         "name": "subtitle",
         "type": "string",
-        "description": "Supporting context."
+        "description": "Supporting context.",
+        "default": "\"Draft explicit salary adjustments, inspect ranges and document the reason for each change.\""
       },
       {
         "name": "employees",
