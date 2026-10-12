@@ -5607,7 +5607,7 @@
       "steps": [
         "wait:450",
         "click:@cta",
-        "wait:2200"
+        "wait:4000"
       ],
       "loop": false
     },
