@@ -1,4 +1,6 @@
-# Showcase motion and dark-theme review
+# Initial showcase motion and dark-theme review
+
+This records the first pass. The later [catalogue motion and state review](CATALOGUE_STATE_REVIEW_2026-10-12.md) supersedes the published scope and verification below, including site-wide recording replacements and autoplay without hover.
 
 The landing page now presents two moving collections of real component previews. Cards stop moving under the pointer or keyboard focus. Recordings start at the beginning on entry, including catalogue cards that were already autoplaying. Playback also restarts after the scheduler pauses a card. Mobile, reduced-motion and Save-Data visitors get a stationary, swipeable collection.
 

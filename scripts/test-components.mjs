@@ -85,8 +85,11 @@ if (cases.length === publicCases.length)
   console.log(
     "Pro integration cases skipped: private sources are not checked out.",
   );
+const requested = new Set(process.argv.slice(2));
+for (const name of requested) if (!cases.includes(name)) throw new Error(`Unknown or unavailable browser suite: ${name}`);
+const runCases = requested.size ? cases.filter(name => requested.has(name)) : cases;
 let failed = 0;
-for (const name of cases) {
+for (const name of runCases) {
   const result = spawnSync(
     process.execPath,
     [path.join(root, "tests/browser", `${name}.mjs`)],
@@ -109,5 +112,5 @@ for (const name of cases) {
     );
   } else console.log(`PASS ${name}`);
 }
-console.log(`${cases.length - failed}/${cases.length} browser suites passed.`);
+console.log(`${runCases.length - failed}/${runCases.length} browser suites passed.`);
 if (failed) process.exitCode = 1;
