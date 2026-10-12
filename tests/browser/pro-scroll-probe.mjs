@@ -48,7 +48,9 @@ async function mount(slug, name, props = "") {
     el.style.padding = "0";
   });
   await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
-  await page.waitForTimeout(200);
+  // Removing the fixture width changes the measured journey geometry. Let the
+  // initial spring settle before using it as the return-to-top baseline.
+  await page.waitForTimeout(700);
 }
 try {
   for (const [slug, name, target, property] of specs.filter(
