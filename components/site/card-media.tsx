@@ -68,6 +68,8 @@ export function CardMedia({
         // Otherwise the source is still committing; the effect below starts it.
       },
     });
+    // A hover-only recording may mount after pointer/focus entry already fired.
+    if (card.matches(":hover, :focus-visible")) handle.engage(true);
     const enter = (e: PointerEvent) => e.pointerType === "mouse" && handle.engage(true);
     const leave = () => handle.engage(false);
     const focusIn = () => card.matches(":focus-visible") && handle.engage(true);

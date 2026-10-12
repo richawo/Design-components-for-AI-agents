@@ -19,10 +19,8 @@ export const metadata: Metadata = {
 };
 
 const COLLECTIONS = [
-  { id: "selected", label: "Selected", href: "/components", slugs: ["bento-grid", "hero-app-tilt", "fashion-launch-calendar", "three-holo-card", "chart-portfolio", "agent-diff-review", "mobile-health-summary", "data-kanban-compact", "legal-obligation-tracker"] },
-  { id: "product", label: "Product UI", href: "/components?category=app", slugs: ["data-table-sortable", "auth-otp", "legal-obligation-tracker", "chart-portfolio", "date-week-agenda", "data-kanban-compact", "saas-workspace-dashboard", "agent-diff-review"] },
-  { id: "marketing", label: "Marketing", href: "/categories/hero", slugs: ["hero-marquee-screens", "hero-app-tilt", "hero-swiss-grid", "hero-prism", "hero-inline-objects", "pricing-three-tier", "footer-wordmark", "bento-grid"] },
-  { id: "native", label: "Native", href: "/categories/mobile", slugs: ["mobile-now-playing", "mobile-health-summary", "mobile-wallet-stack", "mobile-chat", "mobile-agent-approval", "mobile-settings", "mobile-onboarding", "mobile-paywall"] },
+  { id: "interfaces", label: "Product interfaces", href: "/components", slugs: ["mobile-now-playing", "chart-race-bars", "feature-sticky-scroll", "agent-diff-review", "mobile-wallet-stack", "chart-candlestick", "hero-ghost-cursor"] },
+  { id: "motion", label: "Marketing and motion", href: "/categories/hero", slugs: ["hero-prism", "three-keycaps", "scroll-expanding-mosaic", "hero-marquee-screens", "three-holo-card", "hero-kinetic-type", "pixel-matrix-display", "bg-dither-flow", "three-particle-sphere"] },
 ];
 
 function cardsFor(slugs: string[]) {

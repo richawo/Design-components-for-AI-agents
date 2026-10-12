@@ -1,49 +1,111 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { useReducedMotion } from "motion/react";
+import { useEffect, useRef, useState } from "react";
+import { Pause, Play } from "lucide-react";
 import { CardMedia } from "./card-media";
 import { TierBadge } from "./component-card";
-import { SegmentedControl } from "@/registry/free/segmented-control/segmented-control";
 import { cataloguePath } from "@/lib/catalogue-path";
-import { CATEGORIES } from "@/lib/registry-types";
+import { advanceConveyor } from "@/lib/conveyor-motion";
 import type { CardData } from "@/lib/registry";
 
-/**
- * Catalogue cover: short introduction, then the real work. One large specimen
- * anchors a mosaic of different interfaces. Every frame links to its design.
- * Phone rows stay still and reachable; recordings share the gallery's decoder
- * budget, stop offscreen, respect reduced motion and have an explicit pause.
- */
+/** Two quiet conveyor tracks. Still artwork moves; only an engaged card decodes
+ * its recording. Touch/reduced-motion readers get a native, swipeable row. */
 export function HomeCatalogue({ groups }: { groups: { id: string; label: string; cards: CardData[]; href: string }[] }) {
-  const [selected, setSelected] = useState(groups[0].id);
-  const [playing, setPlaying] = useState(true);
-  const reduced = useReducedMotion();
-  const group = groups.find((item) => item.id === selected) ?? groups[0];
-  return <div>
-    <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
-      <SegmentedControl label="Explore the library" options={groups.map(({ id, label }) => ({ value: id, label }))} value={selected} onValueChange={setSelected} icons={false} className="!w-full sm:!w-[460px] [&_button]:min-h-11" />
-      <div className="flex items-center justify-between gap-5">
-        {!reduced && <button type="button" onClick={() => setPlaying((current) => !current)} className="inline-flex min-h-11 items-center gap-2 rounded-md text-[13px] text-site-fg-3 hover:text-site-fg"><span aria-hidden="true">{playing ? "Ⅱ" : "▷"}</span>{playing ? "Pause previews" : "Play previews"}</button>}
-        <Link href={group.href} className="inline-flex min-h-11 items-center gap-2 rounded-md text-sm text-site-fg-2 transition-colors hover:text-site-fg">Explore {group.label === "Selected" ? "all" : group.label.toLowerCase()} <span aria-hidden="true">↗</span></Link>
-      </div>
+  const [paused, setPaused] = useState(false);
+  const [stationary, setStationary] = useState(true);
+  useEffect(() => {
+    const preference = window.matchMedia("(max-width: 47.999rem), (prefers-reduced-motion: reduce), (hover: none)");
+    const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+    const update = () => setStationary(preference.matches || !!connection?.saveData);
+    update(); preference.addEventListener("change", update);
+    return () => preference.removeEventListener("change", update);
+  }, []);
+  return <div className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden">
+    <div className="mx-auto mb-4 flex max-w-[80rem] flex-wrap items-center justify-between gap-3 px-5 sm:px-8">
+      <p className="text-[13px] text-site-fg-3">{stationary ? "Swipe or scroll to explore. Open any design to try it." : "A little of what you can build. Hover to see it in motion."}</p>
+      {!stationary && <button type="button" onClick={() => setPaused((current) => !current)} className="inline-flex min-h-11 items-center gap-2 rounded-md text-[13px] text-site-fg-2 hover:text-site-fg">{paused ? <Play size={14} aria-hidden="true" /> : <Pause size={14} aria-hidden="true" />}{paused ? "Resume conveyor" : "Pause conveyor"}</button>}
     </div>
-    <div aria-live="polite" className="sr-only">Showing {group.label.toLowerCase()} examples.</div>
-    <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4">
-      {group.cards.map((card, index) => <GalleryPreview key={card.slug} card={card} featured={selected === groups[0].id && index === 0} priority={selected === groups[0].id && index < 3} playing={playing && !reduced} />)}
-    </div>
+    <div className="space-y-4 sm:space-y-5">{groups.slice(0, 2).map((group, index) => <ConveyorRow key={group.id} cards={group.cards} label={group.label} index={index} paused={paused} stationary={stationary} />)}</div>
+    <div className="mx-auto mt-5 flex max-w-[80rem] flex-wrap justify-between gap-3 px-5 sm:px-8"><Link href="/components" className="inline-flex min-h-11 items-center gap-2 rounded-md text-sm text-site-fg-2 hover:text-site-fg">Explore all components <span aria-hidden="true">↗</span></Link><Link href="/categories/mobile" className="inline-flex min-h-11 items-center gap-2 rounded-md text-sm text-site-fg-3 hover:text-site-fg">React Native collection <span aria-hidden="true">→</span></Link></div>
   </div>;
 }
 
-function GalleryPreview({ card, featured, priority, playing }: { card: CardData; featured: boolean; priority: boolean; playing: boolean }) {
-  return <Link href={cataloguePath(card)} className={`group flex min-w-0 flex-col overflow-hidden rounded-[18px] border border-white/10 bg-site-raised transition-colors hover:border-white/25 ${featured ? "col-span-2 lg:row-span-2" : ""}`}>
-    <div className={`relative min-h-0 overflow-hidden bg-site-sunken ${featured ? "aspect-[16/10] lg:aspect-auto lg:flex-1" : "aspect-[16/10]"}`}>
-      <CardMedia name={card.name} thumb={card.thumb} srcSet={card.thumbSrcSet} sizes={featured ? "(min-width: 1280px) 620px, (min-width: 1024px) 50vw, 100vw" : "(min-width: 1280px) 300px, (min-width: 1024px) 25vw, 50vw"} video={playing ? card.video : null} platform={card.platform} priority={priority} />
-    </div>
-    <div className="border-t border-white/[0.06] px-3 py-3 sm:px-4 sm:py-3.5">
-      <div className="flex min-w-0 items-center justify-between gap-2"><h3 className="min-w-0 text-[13px] font-medium leading-snug tracking-[-0.02em] sm:text-[15px]">{card.name}</h3><span className="hidden shrink-0 sm:inline-flex"><TierBadge tier={card.tier} /></span></div>
-      <p className="mt-1.5 font-mono text-[10px] text-site-fg-3 sm:text-[11px]">{card.platform === "mobile" ? "React Native" : CATEGORIES[card.category].label}<span className="sm:hidden"> · {card.tier === "pro" ? "Pro" : "Free"}</span></p>
-    </div>
+function ConveyorRow({ cards, label, index, paused, stationary }: { cards: CardData[]; label: string; index: number; paused: boolean; stationary: boolean }) {
+  const viewport = useRef<HTMLDivElement>(null);
+  const track = useRef<HTMLDivElement>(null);
+  const realSet = useRef<HTMLDivElement>(null);
+  const state = useRef({ position: 0, velocity: 0, period: 0, hover: false, focus: false, visible: true });
+  const wake = useRef<() => void>(() => {});
+
+  useEffect(() => {
+    const root = viewport.current, belt = track.current, set = realSet.current;
+    if (!root || !belt || !set) return;
+    if (stationary) {
+      belt.style.transform = "none"; root.scrollLeft = 0;
+      if (root.contains(document.activeElement)) (document.activeElement as HTMLElement)?.scrollIntoView({ block: "nearest", inline: "center" });
+      return;
+    }
+    let frame = 0, previous = performance.now();
+    const paint = () => { belt.style.transform = `translate3d(${-state.current.period - state.current.position}px,0,0)`; };
+    const tick = (now: number) => {
+      frame = 0;
+      const motion = state.current;
+      if (!motion.visible || document.hidden) return;
+      const held = paused || motion.hover || motion.focus;
+      if (!motion.focus) {
+        const next = advanceConveyor(motion.position, motion.velocity, held ? 0 : (index ? -46 : 40), (now - previous) / 1000, motion.period);
+        motion.position = next.position; motion.velocity = next.velocity;
+      } else motion.velocity = 0;
+      previous = now; paint();
+      if (!held || Math.abs(motion.velocity) > .01) frame = requestAnimationFrame(tick);
+    };
+    const start = () => { if (!frame && state.current.visible && !document.hidden) { previous = performance.now(); frame = requestAnimationFrame(tick); } };
+    wake.current = start;
+    const measure = () => {
+      state.current.period = set.offsetWidth;
+      const link = document.activeElement as HTMLElement | null;
+      if (state.current.focus && link && root.contains(link)) state.current.position = link.offsetLeft - state.current.period - (root.clientWidth - link.offsetWidth) / 2;
+      paint(); start();
+    };
+    measure();
+    const resize = new ResizeObserver(measure); resize.observe(set);
+    const visibility = new IntersectionObserver(([entry]) => {
+      state.current.visible = entry.isIntersecting;
+      if (entry.isIntersecting) start(); else { cancelAnimationFrame(frame); frame = 0; }
+    });
+    visibility.observe(root);
+    const onVisibility = () => { if (document.hidden) { cancelAnimationFrame(frame); frame = 0; } else start(); };
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => { cancelAnimationFrame(frame); resize.disconnect(); visibility.disconnect(); document.removeEventListener("visibilitychange", onVisibility); wake.current = () => {}; };
+  }, [index, paused, stationary]);
+
+  const set = (copy: number) => <div key={copy} ref={copy === 1 ? realSet : undefined} aria-hidden={copy !== 1 || undefined} className="flex shrink-0 gap-4 pr-4 sm:gap-5 sm:pr-5">{cards.map((card, cardIndex) => <ConveyorCard key={card.slug} card={card} duplicate={copy !== 1} allowVideo={!paused && !stationary} priority={cardIndex < 4 && index === 0} />)}</div>;
+  return <div ref={viewport} role="region" aria-label={label} data-conveyor-row={index} className={`relative overflow-x-auto overflow-y-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${stationary ? "px-5 sm:px-8" : "[mask-image:linear-gradient(to_right,transparent,#000_5%,#000_95%,transparent)]"}`}
+    onPointerEnter={(event) => { if (event.pointerType !== "touch") { state.current.hover = true; wake.current(); } }}
+    onPointerLeave={() => { state.current.hover = false; wake.current(); }}
+    onFocusCapture={(event) => {
+      if (stationary) return;
+      const link = (event.target as HTMLElement).closest("a");
+      if (!link || !viewport.current || !link.matches(":focus-visible")) return;
+      state.current.focus = true; state.current.velocity = 0;
+      // Canonical links stay reachable even when the conveyor has carried them away.
+      state.current.position = link.offsetLeft - state.current.period - (viewport.current.clientWidth - link.offsetWidth) / 2;
+      track.current!.style.transform = `translate3d(${-state.current.period - state.current.position}px,0,0)`;
+      viewport.current.scrollLeft = 0; wake.current();
+    }}
+    onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) { state.current.focus = false; wake.current(); } }}>
+    <div ref={track} data-conveyor-track className="relative flex w-max motion-safe:will-change-transform">{stationary ? set(1) : [set(0), set(1), set(2)]}</div>
+  </div>;
+}
+
+function ConveyorCard({ card, duplicate, allowVideo, priority }: { card: CardData; duplicate: boolean; allowVideo: boolean; priority: boolean }) {
+  const [engaged, setEngaged] = useState(false);
+  const native = card.platform === "mobile";
+  return <Link href={cataloguePath(card)} tabIndex={duplicate ? -1 : undefined} aria-label={`Explore ${card.name}, ${card.tier === "pro" ? "Pro" : "Free"}`} className={`group flex shrink-0 flex-col overflow-hidden rounded-[18px] border border-white/10 bg-site-raised transition-colors hover:border-white/30 focus-visible:border-site-accent ${native ? "w-[180px] sm:w-[220px] xl:w-[240px]" : "w-[280px] sm:w-[360px] xl:w-[420px]"}`}
+    onPointerEnter={(event) => { if (event.pointerType !== "touch") setEngaged(true); }} onPointerLeave={() => setEngaged(false)}
+    onFocus={(event) => { if (event.currentTarget.matches(":focus-visible")) setEngaged(true); }} onBlur={() => setEngaged(false)}>
+    <div className={`relative h-[175px] overflow-hidden bg-site-sunken sm:h-[225px] xl:h-[262px] ${native ? "[&_img]:object-cover [&_img]:object-center [&_img]:py-0 [&_video]:object-cover [&_video]:object-center [&_video]:py-0" : ""}`}><CardMedia name={card.name} thumb={card.thumb} srcSet={card.thumbSrcSet} sizes="(min-width:1280px) 420px, (min-width:640px) 360px, 280px" video={allowVideo && engaged ? card.video : null} platform={card.platform} priority={priority} /></div>
+    <div className="flex min-h-[64px] items-center justify-between gap-3 border-t border-white/[0.06] px-4 py-3"><h3 className="min-w-0 text-[14px] font-medium leading-snug tracking-[-0.02em] sm:text-[15px]">{card.name}</h3><TierBadge tier={card.tier} /></div>
   </Link>;
 }
