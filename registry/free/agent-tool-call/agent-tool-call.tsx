@@ -65,7 +65,6 @@ const RING_QUEUED = "2 2.9";
 const STALL_MS = 20_000;
 const COLLAPSED_LINES = 6;
 const ERROR_TAIL_LINES = 4;
-const DEFAULT_RETRY_MS = 1100;
 /** After a retry lands, the error waits this long so the drawn check registers before the line closes up. */
 const SETTLE_HOLD_MS = 480;
 
@@ -270,10 +269,6 @@ function summarise(args: AgentToolCallArgs): string {
 
 function toLines(text: string | undefined): string[] {
   return text ? text.split("\n") : [];
-}
-
-function wait(ms: number): Promise<void> {
-  return new Promise((resolve) => window.setTimeout(resolve, ms));
 }
 
 /** Milliseconds since the call started running, updated every frame while it does. */
