@@ -21,22 +21,22 @@
   ],
   "theme": "dark",
   "previewHeight": 720,
-  "usage": "import { AuthOtp } from \"@/components/design-for-ai/auth-otp\";\n\n<AuthOtp\n  channel=\"email\"\n  destination={user.email}\n  onVerify={async (code) => {\n    const res = await fetch(\"/api/verify\", { method: \"POST\", body: JSON.stringify({ code }) });\n    if (res.status === 410) return { ok: false, reason: \"expired\" };\n    if (res.status === 429) return { ok: false, reason: \"locked\" };\n    if (!res.ok) return { ok: false, reason: \"invalid\", attemptsLeft: Number(res.headers.get(\"X-Attempts-Left\")) };\n    return { ok: true };\n  }}\n  onResend={() => fetch(\"/api/verify/resend\", { method: \"POST\" }).then(() => undefined)}\n  onChangeDestination={(email) => sendCode(email)}\n  onVerified={() => router.push(\"/app\")}\n/>",
+  "usage": "import { AuthOtp } from \"@/components/design-for-ai/auth-otp\";\n\n<AuthOtp\n  channel=\"email\"\n  destination={user.email}\n  onVerify={async (code) => {\n    const res = await fetch(\"/api/verify\", { method: \"POST\", body: JSON.stringify({ code }) });\n    if (res.status === 410) return { ok: false, reason: \"expired\" };\n    if (res.status === 429) return { ok: false, reason: \"locked\" };\n    if (!res.ok) return { ok: false, reason: \"invalid\", attemptsLeft: Number(res.headers.get(\"X-Attempts-Left\")) };\n    return { ok: true };\n  }}\n  onResend={async () => {\n    const res = await fetch(\"/api/verify/resend\", { method: \"POST\" });\n    if (!res.ok) throw new Error(\"Resend failed\");\n  }}\n  onChangeDestination={(email) => sendCode(email)}\n  onVerified={() => router.push(\"/app\")}\n/>",
   "props": [
     {
       "name": "onVerify",
       "type": "(code: string) => Promise<OtpVerifyResult | void>",
-      "description": "Runs as soon as the last digit lands. Resolve { ok: true }, { ok: false, reason: \"invalid\", attemptsLeft }, { ok: false, reason: \"expired\" } or { ok: false, reason: \"locked\" }."
+      "description": "Runs as soon as the last digit lands. Resolve { ok: true }, { ok: false, reason: \"invalid\", attemptsLeft }, { ok: false, reason: \"expired\" } or { ok: false, reason: \"locked\" }. A missing verifier leaves the code field read-only; verification never succeeds without a callback."
     },
     {
       "name": "onResend",
       "type": "() => Promise<void>",
-      "description": "Sends a fresh code. The countdown restarts once it resolves."
+      "description": "Sends a fresh code. The countdown restarts once it resolves. Resolve only after the server accepts the send. A missing callback disables resending."
     },
     {
       "name": "onChangeDestination",
       "type": "(value: string) => Promise<void>",
-      "description": "Inline “Edit”: send a code to a new address. Resolve when sent."
+      "description": "Inline “Edit”: send a code to a new address. Resolve when sent. Required for the inline editor to submit; a missing callback hides that edit action unless onEdit is supplied."
     },
     {
       "name": "onEdit",

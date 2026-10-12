@@ -106,5 +106,9 @@
     "clearing the code on a network error",
     "inline hex outside the palette",
     "rAF or timeouts that outlive the component"
-  ]
+  ],
+  "integration": {
+    "verification": "No verifier means read-only code entry. A verifier may explicitly acknowledge success with the documented result or resolved void, but missing callbacks never succeed. Prevent duplicate in-flight requests and ignore late results after unmount.",
+    "sending": "Resend and inline destination editing require callbacks. Resolve them only after server acknowledgement; reject failed HTTP responses and preserve retry state. Demo callbacks are explicitly supplied by the default export."
+  }
 }

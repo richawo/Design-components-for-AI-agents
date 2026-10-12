@@ -484,8 +484,15 @@ export function AuthOtp({
   const root = useRef<HTMLDivElement>(null);
   const play = useInView(root, { once: true, amount: 0.3 });
   const palette = PALETTE[theme];
-  const { later, frame, wait } = useScheduler();
+  const { later, frame } = useScheduler();
   const runAnimation = useImperative();
+  const alive = useRef(true);
+  const verifying = useRef(false);
+  const resending = useRef(false);
+  useEffect(() => {
+    alive.current = true;
+    return () => { alive.current = false; };
+  }, []);
 
   const [destination, setDestination] = useState(destinationProp);
   const [phase, setPhase] = useState<Phase>("idle");
@@ -500,21 +507,27 @@ export function AuthOtp({
 
   const locked = phase === "locked";
   const busy = phase === "verifying" || phase === "sweep" || phase === "merge" || phase === "done";
-  const inert = busy || locked || editing;
+  const inert = busy || locked || editing || phase === "error" || !onVerify;
 
   const verify = async (code: string) => {
+    if (!onVerify || verifying.current || inert) return;
+    verifying.current = true;
     setPhase("verifying");
     setMsg({ tone: "muted", text: "Checking your code…" });
     field.inputRef.current?.blur();
     let res: OtpVerifyResult | void;
     try {
-      res = await (onVerify ? onVerify(code) : wait(900));
+      res = await onVerify(code);
     } catch {
+      if (!alive.current) return;
       setPhase("idle");
       setMsg({ tone: "error", text: "We couldn’t reach the server. Your code is still here. Press Enter to try again." });
       field.focus();
       return;
+    } finally {
+      verifying.current = false;
     }
+    if (!alive.current) return;
     if (!res || res.ok) return succeed();
     setMsg({ tone: "error", text: errorText(res) });
     if (res.reason === "locked") {
@@ -541,7 +554,7 @@ export function AuthOtp({
   };
 
   const succeed = () => {
-    setMsg({ tone: "ok", text: "You’re in. Opening your workspace…" });
+    setMsg({ tone: "ok", text: "Code verified." });
     if (reduce) {
       setPhase("done");
       later(() => onVerified?.(), REDUCED_VERIFIED_MS);
@@ -584,10 +597,12 @@ export function AuthOtp({
   }, []);
 
   const resend = async () => {
-    if (cooldown.left > 0 || resendState !== "idle" || busy) return;
+    if (!onResend || resending.current || cooldown.left > 0 || resendState !== "idle" || busy) return;
+    resending.current = true;
     setResendState("sending");
     try {
-      await (onResend ? onResend() : wait(900));
+      await onResend();
+      if (!alive.current) return;
       setResendState("sent");
       if (phase === "locked" || phase === "error") setPhase("idle");
       field.reset();
@@ -598,13 +613,18 @@ export function AuthOtp({
         cooldown.start(resendAfter);
       }, RESENT_HOLD_MS);
     } catch {
+      if (!alive.current) return;
       setResendState("idle");
       setMsg({ tone: "error", text: "Couldn’t send a new code just now. Give it a few seconds and try again." });
+    } finally {
+      resending.current = false;
     }
   };
 
   const saveDestination = async (next: string) => {
-    await (onChangeDestination ? onChangeDestination(next) : wait(900));
+    if (!onChangeDestination) throw new Error("We couldn't update where your code is sent. Try again.");
+    await onChangeDestination(next);
+    if (!alive.current) return;
     setDestination(next);
     setEditing(false);
     setPhase("idle");
@@ -651,7 +671,7 @@ export function AuthOtp({
             lead={description.replace(/\b6\b/, String(length))}
             destination={destination}
             editing={editing}
-            canEdit={!busy}
+            canEdit={!busy && (!!onEdit || !!onChangeDestination)}
             onEdit={() => (onEdit ? onEdit() : setEditing(true))}
             onCancel={() => {
               setEditing(false);
@@ -682,7 +702,7 @@ export function AuthOtp({
             reduce={reduce}
           />
           <motion.div {...enter(play, afterCells, reduce)}>
-            <StatusLine id={`${uid}-msg`} msg={msg} spinning={phase === "verifying"} reduce={reduce} />
+            <StatusLine id={`${uid}-msg`} msg={onVerify ? msg : { tone: "muted", text: "Verification is unavailable right now." }} spinning={phase === "verifying"} reduce={reduce} />
           </motion.div>
         </form>
 
@@ -691,7 +711,7 @@ export function AuthOtp({
           className={`mt-3 flex min-h-11 items-center justify-between gap-3 border-t border-[var(--otp-line)] pt-4 transition-opacity duration-300 ${busy ? "opacity-40" : ""}`}
         >
           <span className="text-[13.5px] text-[var(--otp-muted)]">Didn’t get it?</span>
-          <ResendButton left={cooldown.left} state={resendState} disabled={busy} emphasise={locked} onClick={() => void resend()} reduce={reduce} />
+          <ResendButton left={onResend ? cooldown.left : 0} state={resendState} disabled={busy || !onResend} emphasise={locked} onClick={() => void resend()} reduce={reduce} />
         </motion.div>
         {footnote && (
           <motion.p {...enter(play, afterCells + MOTION.stagger * 2, reduce)} className="mt-2 text-pretty text-[12.5px] leading-[1.5] text-[var(--otp-faint)]">
@@ -1007,12 +1027,12 @@ function DestinationLine({
   reduce: boolean;
 }) {
   return (
-    <motion.div layout={!reduce} transition={{ layout: { duration: 0.32, ease: EASE_OUT } }} className="mt-2">
+    <motion.div id={id} layout={!reduce} transition={{ layout: { duration: 0.32, ease: EASE_OUT } }} className="mt-2">
       <AnimatePresence mode="popLayout" initial={false}>
         {editing ? (
           <DestinationEditor key="edit" channel={channel} initial={destination} onCancel={onCancel} onSave={onSave} reduce={reduce} />
         ) : (
-          <motion.p key="show" id={id} {...swapProps(reduce, 4)} transition={{ duration: MOTION.swap, ease: EASE_OUT }} className="text-pretty text-[14.5px] leading-[1.55] text-[var(--otp-muted)]">
+          <motion.p key="show" {...swapProps(reduce, 4)} transition={{ duration: MOTION.swap, ease: EASE_OUT }} className="text-pretty text-[14.5px] leading-[1.55] text-[var(--otp-muted)]">
             {lead}{" "}
             <span className="inline-flex max-w-full items-baseline gap-1 align-baseline">
               <span className="min-w-0 break-all font-medium text-[var(--otp-ink)]">{destination}</span>
@@ -1042,12 +1062,12 @@ function StatusLine({ id, msg, spinning, reduce }: { id: string; msg: Msg; spinn
   const tone = msg?.tone ?? "hint";
   const color = { error: "text-[var(--otp-error-ink)]", ok: "text-[var(--otp-ok)]", muted: "text-[var(--otp-muted)]", hint: "text-[var(--otp-faint)]" }[tone];
   return (
-    <div className="mt-4 min-h-[42px]">
+    <div id={id} role={msg?.tone === "error" ? "alert" : "status"} aria-atomic="true" className="mt-4 min-h-[42px]">
+      <span className="sr-only">{msg?.text ?? "Paste the whole code into any box."}</span>
       <AnimatePresence mode="popLayout" initial={false}>
         <motion.p
           key={msg?.text ?? "hint"}
-          id={id}
-          role={msg?.tone === "error" ? "alert" : "status"}
+          aria-hidden="true"
           initial={reduce ? { opacity: 0 } : { opacity: 0, y: -4, filter: "blur(2px)" }}
           animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
           exit={reduce ? { opacity: 0 } : { opacity: 0, y: 4, filter: "blur(2px)", transition: { duration: 0.14 } }}
@@ -1376,6 +1396,7 @@ export default function AuthOtpDemo(overrides: Partial<AuthOtpProps> = {}) {
           }, DEMO_RESET_MS);
         }}
         onResend={() => wait(900)}
+        onChangeDestination={() => wait(900)}
         {...overrides}
         accent={overrides.accent && overrides.accent.toLowerCase() !== "#ededef" ? overrides.accent : undefined}
       />

@@ -41,3 +41,5 @@ Build a six-digit one-time-code verification card in React + Tailwind CSS v4 + `
 
 **Don’t**
 - No six separate inputs fighting over focus, no native caret flashing in a transparent field, no confetti or glow on success, no auto-advance that skips cells, no spinner replacing the cells.
+
+Require an explicit verifier before enabling code entry. Missing resend and destination callbacks disable their actions, and only acknowledged host callbacks can claim a code was sent or verified. Prevent concurrent verification or resend calls, retain the code on connection failure and ignore acknowledgements after unmount. Keep all simulated callbacks in the default demo.
