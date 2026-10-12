@@ -277,7 +277,7 @@ export function FooterNewsletter({
         <motion.div ref={captureRef} initial="hidden" animate={captureAt === null ? "hidden" : "show"} className="flex w-full max-w-[560px] flex-col items-center text-center">
           {/* The top rule spans the footer, not just the column. */}
           <motion.span aria-hidden="true" variants={draw} custom={at(captureAt, T.rule)} className="absolute inset-x-0 top-0 h-px bg-(--fn-ink)/10" />
-          <motion.p variants={v} custom={at(captureAt, T.kicker)} className="font-mono text-[11px] uppercase tracking-[0.16em] text-(--fn-ink)/55">
+          <motion.p variants={v} custom={at(captureAt, T.kicker)} className="font-mono text-[11px] uppercase tracking-[0.16em] text-(--fn-ink)/65">
             {kicker}
           </motion.p>
           <h2 className="mt-5 text-balance font-serif text-[clamp(2.5rem,1.7rem+3.2cqi,3.9rem)] leading-[0.98] tracking-[-0.02em]">
@@ -474,7 +474,7 @@ function Capture({
                       setMessage("");
                     }
                   }}
-                  className="h-full min-w-0 flex-1 bg-transparent text-[16px] tracking-[-0.005em] text-(--fn-ink) caret-(--fn-ink) outline-none placeholder:text-(--fn-ink)/35"
+                  className="h-full min-w-0 flex-1 bg-transparent text-[16px] tracking-[-0.005em] text-(--fn-ink) caret-(--fn-ink) outline-none placeholder:text-(--fn-ink)/65"
                 />
                 <button
                   type="submit"
@@ -564,7 +564,7 @@ function Capture({
               </button>
             </Line>
           ) : phase === "loading" ? (
-            <Line key="loading" reduce={reduce} className="pt-1 text-(--fn-ink)/55">
+            <Line key="loading" reduce={reduce} className="pt-1 text-(--fn-ink)/65">
               Adding {submitted}…
             </Line>
           ) : phase === "error" ? (
@@ -588,7 +588,7 @@ function Capture({
               variants={noteVariants}
               custom={noteDelay}
               exit={{ opacity: 0, transition: { duration: 0.12 } }}
-              className="pt-1 font-mono text-[11px] uppercase tracking-[0.12em] text-(--fn-ink)/50"
+              className="pt-1 font-mono text-[11px] uppercase tracking-[0.12em] text-(--fn-ink)/65"
             >
               {note}
             </motion.p>
@@ -657,7 +657,7 @@ function BottomRow({
               href={s.href}
               target={s.external ? "_blank" : undefined}
               rel={s.external ? "noreferrer" : undefined}
-              className="inline-flex min-h-11 items-center gap-1.5 rounded-md px-2.5 text-[13.5px] text-(--fn-ink)/65 transition-[color] duration-150 group-has-[a:hover]/soc:text-(--fn-ink)/40 hover:text-(--fn-ink)! focus-visible:text-(--fn-ink)! focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-(--fn-ink) active:translate-y-px @4xl:min-h-9"
+              className="inline-flex min-h-11 items-center gap-1.5 rounded-md px-2.5 text-[13.5px] text-(--fn-ink)/65 transition-[color] duration-150 group-has-[a:hover]/soc:text-(--fn-ink)/65 hover:text-(--fn-ink)! focus-visible:text-(--fn-ink)! focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-(--fn-ink) active:translate-y-px @4xl:min-h-9"
             >
               {s.label === "RSS" ? <RssIcon /> : null}
               {s.label}
@@ -673,7 +673,7 @@ function BottomRow({
           </motion.li>
         ))}
       </ul>
-      <motion.div variants={v} custom={at(T.legal)} className="flex flex-col items-center gap-1 text-center text-[12.5px] text-(--fn-ink)/55 @lg:flex-row @lg:gap-4">
+      <motion.div variants={v} custom={at(T.legal)} className="flex flex-col items-center gap-1 text-center text-[12.5px] text-(--fn-ink)/65 @lg:flex-row @lg:gap-4">
         <span>{legal}</span>
         <span className="flex">
           {legalLinks.map((l) => (
@@ -818,7 +818,7 @@ export default function FooterNewsletterDemo({ theme: forced, ...overrides }: Pa
               aria-checked={theme === t}
               onClick={() => setTheme(t)}
               className="relative h-8 rounded-full px-3.5 uppercase tracking-[0.14em] transition-opacity duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 active:translate-y-px"
-              style={{ opacity: theme === t ? 0.9 : 0.5, outlineColor: ink }}
+              style={{ opacity: theme === t ? 0.9 : 0.7, outlineColor: ink }}
             >
               {theme === t ? (
                 <motion.span
@@ -832,7 +832,7 @@ export default function FooterNewsletterDemo({ theme: forced, ...overrides }: Pa
             </button>
           ))}
         </div>
-        <p className="opacity-45">Try ada@pressroom.co (already in) · you@fail.com (error) · sam@gmial.com (typo)</p>
+        <p className="opacity-75">Try ada@pressroom.co (already in) · you@fail.com (error) · sam@gmial.com (typo)</p>
       </motion.div>
       <FooterNewsletter onSubscribe={fake} {...overrides} theme={theme} />
     </div>
