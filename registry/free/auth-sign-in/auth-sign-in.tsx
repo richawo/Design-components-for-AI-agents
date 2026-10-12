@@ -371,7 +371,7 @@ export function AuthSignIn({
   const root = useRef<HTMLDivElement>(null);
   const play = useInView(root, { once: true, amount: 0.3 });
   const palette = PALETTE[theme];
-  const { later, wait } = useTimeouts();
+  const { later } = useTimeouts();
 
   const [email, setEmail] = useState(defaultEmail);
   const [password, setPassword] = useState("");
@@ -409,7 +409,7 @@ export function AuthSignIn({
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
-    if (busy || done || lockout.locked) return;
+    if (!onSubmit || busy || done || lockout.locked) return;
     setBanner(null);
     const next: Partial<Record<FieldName, string>> = {};
     const emailError = emailProblem(email, productName);
@@ -427,7 +427,7 @@ export function AuthSignIn({
     setAnnounce("Signing in…");
     let res: SignInResult | void;
     try {
-      res = await (onSubmit ? onSubmit({ email: email.trim(), password, remember }) : wait(1100));
+      res = await onSubmit({ email: email.trim(), password, remember });
     } catch {
       setStatus("idle");
       setBanner(`Couldn’t reach ${productName}. Check your connection and try again.`);
@@ -463,12 +463,12 @@ export function AuthSignIn({
   };
 
   const sso = async (p: SsoProvider) => {
-    if (busy || done || lockout.locked) return;
+    if (!onSso || busy || done || lockout.locked) return;
     setBanner(null);
     setSsoBusy(p);
     setAnnounce(`Opening ${PROVIDER_LABEL[p]}…`);
     try {
-      const res = await (onSso ? onSso(p) : wait(1300));
+      const res = await onSso(p);
       setSsoBusy(null);
       if (res && !res.ok) {
         setBanner(res.message ?? `${PROVIDER_LABEL[p]} didn’t confirm your account. Try again, or use your email.`);
@@ -521,7 +521,7 @@ export function AuthSignIn({
               providers={providers}
               busy={ssoBusy}
               done={ssoDone}
-              blocked={status !== "idle" || lockout.locked}
+              blocked={!onSso || status !== "idle" || lockout.locked}
               onPick={(p) => void sso(p)}
               play={play}
               delay={at("sso")}
@@ -584,7 +584,7 @@ export function AuthSignIn({
               state={status}
               label={submitLabel}
               lockLeft={lockout.left}
-              disabled={lockout.locked || ssoBusy !== null || ssoDone !== null}
+              disabled={!onSubmit || lockout.locked || ssoBusy !== null || ssoDone !== null}
               reduce={reduce}
             />
           </motion.div>
@@ -1470,7 +1470,7 @@ export default function AuthSignInDemo(overrides: Partial<AuthSignInProps> = {})
 
   return (
     <div className="flex min-h-dvh flex-col items-center justify-center px-4 py-12 sm:py-16" style={{ background: light ? STAGE_LIGHT : STAGE }}>
-      <AuthSignIn key={run} onSubmit={onSubmit} onSuccess={() => void wait(DEMO_RESET_DELAY_MS).then(() => setSignedIn(true))} onForgotPassword={() => undefined} {...overrides} />
+      <AuthSignIn key={run} onSubmit={onSubmit} onSso={async () => { await wait(DEMO_LATENCY_MS); return { ok: true }; }} onSuccess={() => void wait(DEMO_RESET_DELAY_MS).then(() => setSignedIn(true))} onForgotPassword={() => undefined} {...overrides} />
       <div
         className={`mt-6 flex min-h-11 max-w-[400px] flex-wrap items-center justify-center gap-x-3 gap-y-1 px-2 text-center font-mono text-[11px] uppercase leading-[1.6] tracking-[0.12em] ${light ? "text-[#666670]" : "text-[#7d7d86]"}`}
       >
