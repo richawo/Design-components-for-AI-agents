@@ -9240,12 +9240,14 @@
       {
         "name": "title",
         "type": "string",
-        "description": "Main heading."
+        "description": "Main heading.",
+        "default": "\"Fulfilment exceptions\""
       },
       {
         "name": "subtitle",
         "type": "string",
-        "description": "Supporting context."
+        "description": "Supporting context.",
+        "default": "\"Resolve shipment exceptions with the context and a clear next step.\""
       },
       {
         "name": "shipments",
