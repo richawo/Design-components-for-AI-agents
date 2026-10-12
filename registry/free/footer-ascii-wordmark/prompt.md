@@ -21,7 +21,7 @@ Build a black site footer in React + Tailwind CSS v4 (`motion/react` for the tex
   - Top row (0ms): the rule draws left to right (scaleX, 800ms), kicker at 60ms, sign-off at 120ms, links from 200ms, 35ms apart.
   - Field (300ms): the canvas stays blank until its slot, then cells resolve in a noisy left-to-right sweep over 1.0s (ease-out cubic; threshold = 55% column position + 45% per-cell noise), scrambling (accent in the first 7%) just before they land. The lens and shimmer start once the sweep is done.
   - Legal bar (600ms, lands last): legal line, links 50ms apart, the hint, then its accent dot pops in.
-- Pause the loop offscreen (IntersectionObserver at 15%) and in hidden tabs. Rebuild on width change only. Reduced motion: one static frame, no lens, no shimmer, no sweep; the text fades in over 150ms.
+- Pause the loop offscreen (IntersectionObserver at 15%) and in hidden tabs. Rebuild on width change only. Reduced motion: one static frame, no lens, no shimmer, no sweep; the text appears immediately.
 
 **Code**
 Keep the field in small pure functions: `rasterise` (one word → true ink box), `buildField` (grid, coverage, grain, atlas, cached resting layer), `drawReveal`, `drawLens`, `drawShimmer`, `drawCell`; a `useLensPointer` hook for mouse and touch; and a thin `AsciiField` component that wires build, ResizeObserver, IntersectionObserver and the rAF loop. Tuning numbers live in one `FIELD` object, the entrance in one `T` timeline.

@@ -44,7 +44,7 @@ Frame header: an 11px sail glyph, "Halyard / Title" at 10.5px (product at 45% in
 - The row under a mouse pointer glides down to a fifth of its speed (never frozen); the card under the pointer lifts 4px and its hairline brightens over 200ms. The pause button eases every row to a stop and back.
 - `tilt`: the stack springs (stiffness 180, damping 26) to `rotateX(24°) rotateZ(−7°) scale(1.16)` with perspective 1600px, origin 50% 35%.
 - Loops stop when the band is offscreen (IntersectionObserver) or the tab is hidden.
-- Reduced motion: rows are still, at their seeded phases; everything fades in over 150ms; no pause button.
+- Reduced motion: rows are still, at their seeded phases; everything appears immediately; no pause button.
 
 **Accessibility**
 

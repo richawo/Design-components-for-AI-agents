@@ -69,7 +69,7 @@
     "pause": "button eases every row to 0 and back",
     "tilt": "spring stiffness 180 damping 26 to rotateX 24deg, rotateZ -7deg, scale 1.16, perspective 1600px, origin 50% 35%",
     "power": "loops run only while the band intersects the viewport and the tab is visible",
-    "reducedMotion": "rows static at their seeded phase, 150ms opacity fades, no pause button"
+    "reducedMotion": "rows static at their seeded phase, immediate opacity changes, no pause button"
   },
   "responsive": {
     "phone": "screens at 0.72 scale (230px wide), copy stacked, actions wrap, pause button 16px from the corner",
@@ -82,7 +82,7 @@
     "pause button satisfies WCAG 2.2.2 and flips its aria-label between pause and play",
     "CTAs are links with a 2px ink focus-visible ring offset 4px and a 0.97 press",
     "hover slow-down is mouse only; touch scrolls normally",
-    "reduced motion freezes the rows and keeps only short opacity fades"
+    "reduced motion freezes the rows and reveals content immediately"
   ],
   "content": {
     "eyebrow": "Halyard 3.0 · Freight ops for teams under twenty",

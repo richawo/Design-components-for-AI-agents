@@ -106,10 +106,10 @@ const pop: Variants = {
   hidden: { opacity: 0, scale: 0.4 },
   show: (delay: number) => ({ opacity: 1, scale: 1, transition: { duration: 0.45, ease: EASE, delay } }),
 };
-/** Reduced motion: one short fade, no transforms, blur or stagger. */
+/** Reduced motion: reveal immediately, without transforms, blur or stagger. */
 const fade: Variants = {
   hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { duration: 0.15 } },
+  show: { opacity: 1, transition: { duration: 0 } },
 };
 
 const GUTTER = "mx-auto w-full max-w-[1440px] px-5 @2xl:px-10";
@@ -806,7 +806,7 @@ function AsciiField({ lines, stacked, label, ink, accent, ramp, glyphs, start, r
         data-ink={ink}
         data-ramp={ramp}
         data-glyphs={glyphs}
-        className={`block transition-opacity duration-500 ${ready ? "opacity-100" : "opacity-0"}`}
+        className={`block transition-opacity duration-500 motion-reduce:transition-none ${ready ? "opacity-100" : "opacity-0"}`}
       />
     </div>
   );

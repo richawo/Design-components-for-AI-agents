@@ -57,7 +57,7 @@
     "reveal": "once per block at 25% visible on a shared clock; field slot 300ms: canvas blank until then, then a noisy left-to-right resolve over 1.0s, ease-out cubic; cells scramble (accent at the leading edge) just before landing; lens and shimmer only after",
     "topRow": "rule draws (scaleX 800ms); kicker 60ms, sign-off 120ms, links from 200ms 35ms apart; each rises 12px out of an 8px blur over 600ms",
     "performance": "base layer cached; only lens/shimmer cells redrawn; DPR cap 2; IntersectionObserver pause at 15%; paused in hidden tabs; rebuild on width change",
-    "reducedMotion": "single static frame; no lens, shimmer or sweep; text fades 150ms; hint hidden",
+    "reducedMotion": "single static frame; no lens, shimmer or sweep; text appears immediately; hint hidden",
     "legalBar": "slot 600ms, lands last: legal line, links 50ms apart, hint, then its accent dot pops"
   },
   "responsive": {

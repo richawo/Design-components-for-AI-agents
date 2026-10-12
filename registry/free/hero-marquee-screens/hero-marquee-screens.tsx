@@ -116,7 +116,7 @@ const rowIn: Variants = {
 };
 const fade: Variants = {
   hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { duration: 0.15 } },
+  show: { opacity: 1, transition: { duration: 0 } },
 };
 
 const FOCUS = "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--hms-ink)";
