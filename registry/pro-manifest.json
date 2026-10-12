@@ -15901,12 +15901,14 @@
       {
         "name": "title",
         "type": "string",
-        "description": "Main heading."
+        "description": "Main heading.",
+        "default": "\"Payment run\""
       },
       {
         "name": "subtitle",
         "type": "string",
-        "description": "Supporting context."
+        "description": "Supporting context.",
+        "default": "\"Prepare a payable batch within the available funding limit. No bank instruction is sent from this workspace.\""
       },
       {
         "name": "invoices",
