@@ -948,7 +948,7 @@ function Row({ icon, title, tone = "default", subtitle, value, right, chevron, o
   const toneColor = tone === "destructive" ? t.red : tone === "accent" ? accent : undefined;
 
   return (
-    <Pressable onPress={onPress} onPressIn={pressIn} onPressOut={pressOut} accessibilityRole={role} accessibilityLabel={label ?? title} accessibilityState={state} style={s.row} {...(demo ? demoTarget(demo) : null)}>
+    <Pressable onPress={onPress} onPressIn={pressIn} onPressOut={pressOut} accessibilityRole={role} accessibilityLabel={label ?? title} accessibilityState={state} aria-checked={state?.checked} aria-expanded={state?.expanded} style={s.row} {...(demo ? demoTarget(demo) : null)}>
       <Animated.View style={[s.rowHighlight, { opacity: highlight }]} />
       <Animated.View style={{ transform: [{ scale: tile }] }}>
         <Tile name={icon} glyphColor={toneColor} />
@@ -979,7 +979,7 @@ const TOGGLE_H = 31;
 const KNOB = 27;
 const KNOB_STRETCH = 6; // pt the knob grows toward the centre while held
 
-function Toggle({ value, onChange, label, demo }: { value: boolean; onChange: (v: boolean) => void; label: string; demo?: string }) {
+function Toggle({ value, onChange, label, demo, interactive = true }: { value: boolean; onChange: (v: boolean) => void; label: string; demo?: string; interactive?: boolean }) {
   const reduce = useReduce();
   const { s, accent } = useTheme();
   const on = useRef(new Animated.Value(value ? 1 : 0)).current;
@@ -1011,14 +1011,24 @@ function Toggle({ value, onChange, label, demo }: { value: boolean; onChange: (v
     };
   }, [on, held]);
 
+  const Control = interactive ? Pressable : View;
   return (
-    <Pressable
-      onPress={() => onChange(!value)}
-      onPressIn={() => hold(1)}
-      onPressOut={() => hold(0)}
-      accessibilityRole="switch"
-      accessibilityLabel={label}
-      accessibilityState={{ checked: value }}
+    <Control
+      {...(interactive ? {
+        onPress: () => onChange(!value),
+        onPressIn: () => hold(1),
+        onPressOut: () => hold(0),
+        accessibilityRole: "switch" as const,
+        accessibilityLabel: label,
+        accessibilityState: { checked: value },
+        "aria-checked": value,
+      } : {
+        accessible: false,
+        "aria-hidden": true,
+        accessibilityElementsHidden: true,
+        importantForAccessibility: "no-hide-descendants" as const,
+        pointerEvents: "none" as const,
+      })}
       hitSlop={8}
       style={s.toggle}
       {...(demo ? demoTarget(demo) : null)}
@@ -1030,7 +1040,7 @@ function Toggle({ value, onChange, label, demo }: { value: boolean; onChange: (v
       <Animated.View style={[s.knob, motion.knob]}>
         <LinearGradient colors={["#FFFFFF", "#F2F2F2"]} style={s.knobFill} />
       </Animated.View>
-    </Pressable>
+    </Control>
   );
 }
 
@@ -1078,7 +1088,7 @@ function Segmented({ value, onChange }: { value: Paper; onChange: (p: Paper) => 
             onPressOut={() => squeeze(1)}
             accessibilityRole="tab"
             accessibilityLabel={`${PAPERS[k].label} paper`}
-            accessibilityState={{ selected: on }}
+            accessibilityState={{ selected: on }} aria-selected={on}
             style={s.segItem}
             {...demoTarget(`paper-${k}`)}
           >
@@ -1281,7 +1291,8 @@ function SizeSlider({ value, onChange }: { value: number; onChange: (v: number) 
       onLayout={(e) => setW(e.nativeEvent.layout.width - THUMB)}
       accessibilityRole="adjustable"
       accessibilityLabel="Text size"
-      accessibilityValue={{ min: MIN_SIZE, max: MAX_SIZE, now: Math.round(shown), text: `${Math.round(shown)} point` }}
+      {...webAdjustment(step, () => step(MIN_SIZE - shown), () => step(MAX_SIZE - shown))}
+      accessibilityValue={{ min: MIN_SIZE, max: MAX_SIZE, now: Math.round(shown), text: `${Math.round(shown)} point` }} aria-valuetext={`${Math.round(shown)} point`} aria-valuenow={Math.round(shown)} aria-valuemax={MAX_SIZE} aria-valuemin={MIN_SIZE}
       accessibilityActions={[{ name: "increment" }, { name: "decrement" }]}
       onAccessibilityAction={(e) => step(e.nativeEvent.actionName === "increment" ? 1 : -1)}
       {...responder.panHandlers}
@@ -1365,7 +1376,7 @@ function TimeChip({ label, selected, onPress, demo }: { label: string; selected:
       onPressOut={press.onPressOut}
       accessibilityRole="radio"
       accessibilityLabel={label}
-      accessibilityState={{ checked: selected }}
+      accessibilityState={{ checked: selected }} aria-checked={selected}
       style={s.flex}
       {...(demo ? demoTarget(demo) : null)}
     >
@@ -1621,7 +1632,7 @@ function SheetButton({ label, onPress, destructive, phase = "idle", demo }: { la
       onPressOut={press.onPressOut}
       accessibilityRole="button"
       accessibilityLabel={phase === "working" ? "Deleting" : label}
-      accessibilityState={{ busy: phase === "working", disabled: phase !== "idle" }}
+      accessibilityState={{ busy: phase === "working", disabled: phase !== "idle" }} aria-disabled={phase !== "idle"} aria-busy={phase === "working"}
       style={s.stretch}
       {...(demo ? demoTarget(demo) : null)}
     >
@@ -1818,7 +1829,7 @@ export function MobileSettings({
                   role="switch"
                   onPress={() => toggle("reminder")}
                   state={{ checked: st.reminder }}
-                  right={<Toggle value={st.reminder} onChange={(v) => set("reminder", v)} label="Daily reminder" demo="reminder-toggle" />}
+                  right={<Toggle interactive={false} value={st.reminder} onChange={(v) => set("reminder", v)} label="Daily reminder" demo="reminder-toggle" />}
                 />
                 <Expand open={st.reminder}>
                   <Row
@@ -1851,7 +1862,7 @@ export function MobileSettings({
                   role="switch"
                   onPress={() => toggle("prompts")}
                   state={{ checked: st.prompts }}
-                  right={<Toggle value={st.prompts} onChange={(v) => set("prompts", v)} label="Writing prompts" />}
+                  right={<Toggle interactive={false} value={st.prompts} onChange={(v) => set("prompts", v)} label="Writing prompts" />}
                 />
               </Group>
 
@@ -1863,7 +1874,7 @@ export function MobileSettings({
                   role="switch"
                   onPress={() => toggle("faceId")}
                   state={{ checked: st.faceId }}
-                  right={<Toggle value={st.faceId} onChange={(v) => set("faceId", v)} label="Lock with Face ID" />}
+                  right={<Toggle interactive={false} value={st.faceId} onChange={(v) => set("faceId", v)} label="Lock with Face ID" />}
                 />
                 <Row
                   icon="cloud"
@@ -1879,7 +1890,7 @@ export function MobileSettings({
                   }
                   onPress={() => toggle("sync")}
                   state={{ checked: st.sync }}
-                  right={<Toggle value={st.sync} onChange={(v) => set("sync", v)} label="iCloud sync" />}
+                  right={<Toggle interactive={false} value={st.sync} onChange={(v) => set("sync", v)} label="iCloud sync" />}
                 />
                 <Row icon="export" title="Export journal" value="Markdown" chevron label="Export journal, Markdown" />
               </Group>
@@ -2135,3 +2146,20 @@ const makeStyles = (t: Palette) =>
 type Styles = ReturnType<typeof makeStyles>;
 
 const STYLES: Record<SettingsTheme, Styles> = { dark: makeStyles(THEMES.dark), light: makeStyles(THEMES.light) };
+
+
+/** Native accessibility actions and browser arrow keys drive the same adjustment. */
+function webAdjustment(adjust: (delta: number) => void, start?: () => void, end?: () => void) {
+  return Platform.OS === "web" ? {
+    tabIndex: 0 as const,
+    onKeyDown: (event: { key?: string; nativeEvent?: unknown; preventDefault: () => void }) => {
+      const native = event.nativeEvent;
+      const key = event.key ?? (native && typeof native === "object" && "key" in native && typeof native.key === "string" ? native.key : "");
+      if (["ArrowRight", "ArrowUp", "ArrowLeft", "ArrowDown"].includes(key)) {
+        event.preventDefault();
+        adjust(key === "ArrowRight" || key === "ArrowUp" ? 1 : -1);
+      } else if (key === "Home" && start) { event.preventDefault(); start(); }
+      else if (key === "End" && end) { event.preventDefault(); end(); }
+    },
+  } : {};
+}
