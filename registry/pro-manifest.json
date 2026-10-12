@@ -18463,12 +18463,14 @@
       {
         "name": "title",
         "type": "string",
-        "description": "Main heading."
+        "description": "Main heading.",
+        "default": "\"Shift coverage\""
       },
       {
         "name": "subtitle",
         "type": "string",
-        "description": "Supporting context."
+        "description": "Supporting context.",
+        "default": "\"Assign available, qualified colleagues while checking overlapping shifts and weekly hour limits.\""
       },
       {
         "name": "shifts",
