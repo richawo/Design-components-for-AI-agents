@@ -868,7 +868,7 @@ export default function AuthPasskeyDemo({ supported: forcedSupported, ...overrid
             );
           })}
         </div>
-        <p className={`h-4 font-mono text-[11px] ${light ? "text-black/55" : "text-white/45"}`} aria-live="polite">
+        <p className={`h-4 font-mono text-[11px] ${light ? "text-black/65" : "text-white/65"}`} aria-live="polite">
           {note || "Demo: pick how the device answers, then sign in."}
         </p>
       </motion.div>
