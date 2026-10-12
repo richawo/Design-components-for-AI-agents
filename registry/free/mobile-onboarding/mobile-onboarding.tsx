@@ -516,7 +516,12 @@ function useStepEntrances(pos: Animated.Value, count: number, index: number, rea
 /* Component                                                           */
 /* ------------------------------------------------------------------ */
 
-export function MobileOnboarding({
+export function MobileOnboarding(props: MobileOnboardingProps) {
+  if (props.steps?.length === 0) return <View style={{ flex: 1, backgroundColor: "#080808", padding: 28, justifyContent: "center", alignItems: "center" }}><Text accessibilityRole="header" style={{ color: "#f5f5f5", fontSize: 24, fontWeight: "600", textAlign: "center" }}>No onboarding steps available</Text><Text style={{ color: "#a3a3a3", fontSize: 14, lineHeight: 21, textAlign: "center", marginTop: 12 }}>You can continue when the setup steps are ready.</Text></View>;
+  return <OnboardingContent {...props} />;
+}
+
+function OnboardingContent({
   brand = "grove",
   steps = DEFAULT_STEPS,
   accent = DEFAULT_ACCENT,
