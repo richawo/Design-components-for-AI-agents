@@ -115,7 +115,7 @@ const fade: Variants = {
   show: { opacity: 1, transition: { duration: 0.15 } },
 };
 
-const MONO_LABEL = "font-mono text-[11px] uppercase tracking-[0.16em] text-white/45";
+const MONO_LABEL = "font-mono text-[11px] uppercase tracking-[0.16em] text-white/65";
 const RING = "outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-4 focus-visible:ring-offset-(--fw-bg)";
 
 /* ------------------------------------------------------------------ */
@@ -289,7 +289,7 @@ export function FooterWordmark({
           ref={legalRef}
           initial="hidden"
           animate={state(legalAt)}
-          className="relative mt-14 flex flex-col gap-3 py-5 font-mono text-[11px] uppercase tracking-[0.12em] text-white/55 @5xl:flex-row @5xl:items-center @5xl:justify-between"
+          className="relative mt-14 flex flex-col gap-3 py-5 font-mono text-[11px] uppercase tracking-[0.12em] text-white/65 @5xl:flex-row @5xl:items-center @5xl:justify-between"
         >
           <motion.span aria-hidden="true" variants={draw} custom={at(legalAt, 0)} className="absolute inset-x-0 top-0 h-px origin-left bg-white/[0.08]" />
           <motion.p variants={v} custom={at(legalAt, 0.06)}>
@@ -546,7 +546,7 @@ function Newsletter({ title, body, placeholder, button, success, onSubscribe, re
                     setValue(e.target.value);
                     if (state === "error") setState("idle");
                   }}
-                  className="min-w-0 flex-1 bg-transparent text-[16px] outline-none placeholder:text-white/35"
+                  className="min-w-0 flex-1 bg-transparent text-[16px] outline-none placeholder:text-white/65"
                 />
                 <button
                   type="submit"
