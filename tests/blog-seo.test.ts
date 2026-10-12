@@ -65,8 +65,8 @@ describe.skipIf(!allPosts().length)("published multilingual blog SEO", () => {
     expect(howTo!.step[1]).toMatchObject({ position: 2, text: steps[1].text, url: `${absoluteUrl(blogPath("en", post.slug))}#check-the-result` });
     expect(articleJsonLd(post, "en", 700, []).some((item: any) => item["@type"] === "HowTo")).toBe(false);
   });
-  it("keeps each published procedure tied to its localized visible steps", async () => {
-    for (const language of blogLocales()) for (const meta of allPosts(language.code)) {
+  it.each(blogLocales())("keeps $code procedures tied to their localized visible steps", async (language) => {
+    for (const meta of allPosts(language.code)) {
       const post = (await getPost(meta.slug, language.code))!;
       const data = articleJsonLd(meta, language.code, 700, post.faqs, post.howToSteps) as Record<string, any>[];
       const howTo = data.find((item) => item["@type"] === "HowTo");
