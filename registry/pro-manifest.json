@@ -14594,12 +14594,14 @@
       {
         "name": "title",
         "type": "string",
-        "description": "Main heading."
+        "description": "Main heading.",
+        "default": "\"Collection plan\""
       },
       {
         "name": "subtitle",
         "type": "string",
-        "description": "Supporting context."
+        "description": "Supporting context.",
+        "default": "\"Balance style breadth, buying depth and cost before committing the collection.\""
       },
       {
         "name": "categories",
