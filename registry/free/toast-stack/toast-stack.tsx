@@ -587,7 +587,7 @@ function ToastItem({
 /** The demo’s quiet backdrop and card; not part of the component. */
 const STAGE = {
   dark: { backdrop: "#0a0a0b", card: "#111113", line: "#232327", rule: "#1c1c1f", ink: "#f4f4f5", muted: "#a1a1aa", faint: "#8a8a93", hover: "rgba(255,255,255,0.03)", hint: "#d4d4d8", shadow: "inset 0 1px 0 rgba(255,255,255,0.04), 0 32px 64px -32px rgba(0,0,0,0.9)" },
-  light: { backdrop: "#f4f4f5", card: "#ffffff", line: "#e4e4e7", rule: "#ececee", ink: "#18181b", muted: "#52525b", faint: "#71717a", hover: "rgba(24,24,27,0.04)", hint: "#3f3f46", shadow: "0 32px 64px -36px rgba(24,24,27,0.28), 0 1px 2px rgba(24,24,27,0.05)" },
+  light: { backdrop: "#f4f4f5", card: "#ffffff", line: "#e4e4e7", rule: "#ececee", ink: "#18181b", muted: "#52525b", faint: "#666670", hover: "rgba(24,24,27,0.04)", hint: "#3f3f46", shadow: "0 32px 64px -36px rgba(24,24,27,0.28), 0 1px 2px rgba(24,24,27,0.05)" },
 } as const;
 const DEMO_MOTION = { block: 0.5, step: 0.06, buttonsAt: 0.24, hintAt: 0.5, count: 0.9, seedAt: 0.3, seedStep: 0.16, redealAfter: 1.2 } as const;
 /** The first accent swatch is the dark theme's ink; picking it means "theme ink", so it never paints a white button on a white card. */
