@@ -134,9 +134,10 @@ export class DemoPlayer {
       case "move":
         return this.glide(s.point[0] * this.win.innerWidth, s.point[1] * this.win.innerHeight, TIMING.glide);
       case "hover":
-        return this.glideTo(s.target);
+        await this.glideTo(s.target);
+        return;
       case "click":
-        if (s.target) await this.glideTo(s.target);
+        if (s.target && !(await this.glideTo(s.target))) return;
         this.down();
         await this.sleep(TIMING.press);
         this.up();
@@ -179,26 +180,48 @@ export class DemoPlayer {
   /* ---------------------------------------------------------------- */
 
   private point(t: DemoTarget): [number, number] | null {
-    const el = this.win.document.querySelector(targetSelector(t.name));
+    const el = [...this.win.document.querySelectorAll(targetSelector(t.name))].find(node =>
+      !node.closest("[inert], [hidden]") && node.getClientRects().length > 0 &&
+      this.win.getComputedStyle(node).visibility !== "hidden",
+    );
     if (!el) return null;
-    const r = el.getBoundingClientRect();
-    if (!r.width && !r.height) return null;
+    let r = el.getBoundingClientRect();
+    if (!r.width || !r.height) return null;
     const [fx, fy] = t.at ?? [0.5, 0.5];
     // Off screen (a tall preview): bring it into view first.
     if (r.bottom < 0 || r.top > this.win.innerHeight) {
       el.scrollIntoView({ block: "center", behavior: "instant" as ScrollBehavior });
-      return this.point(t);
+      r = el.getBoundingClientRect();
     }
     return [r.left + r.width * fx, r.top + r.height * fy];
   }
 
   private async glideTo(t: DemoTarget) {
-    const p = this.point(t);
-    if (!p) return; // A missing target is skipped, not fatal: the check script reports it.
-    await this.glide(p[0], p[1], TIMING.glide);
+    // An exiting scene can temporarily share a target name with its replacement.
+    // Wait for a live target, then follow its bounds throughout the cursor glide.
+    const deadline = this.win.performance.now() + 2000;
+    let p = this.point(t);
+    while (!p && this.win.performance.now() < deadline) {
+      await this.sleep(16);
+      p = this.point(t);
+    }
+    if (!p) return false;
+    await this.glide(p[0], p[1], TIMING.glide, () => this.point(t));
+    // Do not press while an entrance is still moving the button beneath us.
+    const settleDeadline = this.win.performance.now() + 2000;
+    let previous = this.point(t), stable = 0;
+    while (previous && stable < 2 && this.win.performance.now() < settleDeadline) {
+      await this.sleep(32);
+      const next = this.point(t);
+      if (!next) return false;
+      stable = Math.hypot(next[0] - previous[0], next[1] - previous[1]) <= 0.5 ? stable + 1 : 0;
+      this.pointerAt(next[0], next[1]);
+      previous = next;
+    }
+    return previous !== null && stable >= 2;
   }
 
-  private glide(x: number, y: number, ms: number) {
+  private glide(x: number, y: number, ms: number, follow?: () => [number, number] | null) {
     const x0 = this.x;
     const y0 = this.y;
     return new Promise<void>((resolve, reject) => {
@@ -207,7 +230,8 @@ export class DemoPlayer {
         if (this.signal.aborted) return reject(new DemoAborted());
         const t = Math.min(1, (now - start) / ms);
         const e = ease(t);
-        this.pointerAt(x0 + (x - x0) * e, y0 + (y - y0) * e);
+        const [destinationX, destinationY] = follow?.() ?? [x, y];
+        this.pointerAt(x0 + (destinationX - x0) * e, y0 + (destinationY - y0) * e);
         if (t < 1) this.win.requestAnimationFrame(frame);
         else resolve();
       };

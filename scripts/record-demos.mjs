@@ -178,20 +178,33 @@ async function record(browser, slug) {
       px = x;
       py = y;
     };
-    // One round trip per target, so a busy page doesn't stretch the recording.
+    // Resolve after consecutive stable animation frames inside the page. Keeping
+    // this to one browser round trip avoids stretching every recorded step.
     const pointOf = async (t) => {
-      const r = await page.evaluate((sel) => {
-        const el = document.querySelector(sel);
-        if (!el) return null;
-        let b = el.getBoundingClientRect();
-        if (b.bottom < 0 || b.top > innerHeight) {
-          el.scrollIntoView({ block: "center" });
-          b = el.getBoundingClientRect();
-        }
-        return { x: b.x, y: b.y, w: b.width, h: b.height };
-      }, targetSelector(t.name));
+      const r = await page.evaluate(sel => new Promise(resolve => {
+        let previous, stable = 0, frame;
+        const finish = value => { clearTimeout(timer); cancelAnimationFrame(frame); resolve(value); };
+        const timer = setTimeout(() => finish(null), 2500);
+        const sample = () => {
+          const el = [...document.querySelectorAll(sel)].find(node =>
+            !node.closest('[inert], [hidden]') && node.getClientRects().length && getComputedStyle(node).visibility !== 'hidden');
+          if (el) {
+            let b = el.getBoundingClientRect();
+            if (b.bottom < 0 || b.top > innerHeight) {
+              el.scrollIntoView({block:'center',behavior:'instant'});
+              b = el.getBoundingClientRect();
+            }
+            const next = {x:b.x,y:b.y,w:b.width,h:b.height};
+            stable = previous && Object.keys(next).every(key => Math.abs(next[key]-previous[key]) <= 0.5) ? stable + 1 : 0;
+            previous = next;
+            if (b.width && b.height && stable >= 2) return finish(next);
+          } else { previous = undefined; stable = 0; }
+          frame = requestAnimationFrame(sample);
+        };
+        frame = requestAnimationFrame(sample);
+      }), targetSelector(t.name));
       if (!r) {
-        problems.push(`demo target @${t.name} not found when its step ran`);
+        problems.push(`demo target @${t.name} unavailable or still moving when its step ran`);
         return null;
       }
       const [fx, fy] = t.at ?? [0.5, 0.5];
@@ -203,7 +216,8 @@ async function record(browser, slug) {
       else if (s.cmd === "move") await glide(s.point[0] * vw, s.point[1] * vh, TIMING.glide);
       else if (s.cmd === "hover" || (s.cmd === "click" && s.target)) {
         const p = await pointOf(s.target);
-        if (p) await glide(p[0], p[1], TIMING.glide);
+        if (!p) continue;
+        await glide(p[0], p[1], TIMING.glide);
         if (s.cmd === "click") {
           await page.mouse.down();
           await page.waitForTimeout(TIMING.press);
