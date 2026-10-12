@@ -1,4 +1,4 @@
-export async function check({page,mount,assert}){
+export async function check({page,mount,assert,choose}){
  await mount(`createRoot(document.getElementById('root')).render(<Subject.MerchandisingDashboard/>);`);
  assert.match(await page.locator('dl').innerText(),/£28,200.00/);
  await page.getByRole('button',{name:'The ribbed crew',exact:false}).click();
@@ -6,7 +6,7 @@ export async function check({page,mount,assert}){
  await page.getByRole('button',{name:'Knitwear',exact:true}).click();
  assert.match(await page.locator('dl').innerText(),/£15,660.00/);
  assert.match(await page.getByRole('status').innerText(),/2 styles/);
- await page.getByRole('combobox',{name:'Collection',exact:true}).selectOption('resort');
+ await choose(page.getByRole('combobox',{name:'Collection',exact:true}), 'resort');
  assert.match(await page.locator('dl').innerText(),/£3,840.00/);
  assert.match(await page.getByRole('status').innerText(),/1 style/);
  await mount(`createRoot(document.getElementById('root')).render(<Subject.MerchandisingDashboard collections={[{id:'empty',name:'Empty',season:'2026',styles:[]}]}/>);`);
