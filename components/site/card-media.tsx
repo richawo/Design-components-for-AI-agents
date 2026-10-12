@@ -3,6 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import { registerCard, videoAllowed } from "./card-playback";
 
+function restoreOriginalPoster(image: HTMLImageElement) {
+  const original = image.getAttribute("src");
+  if (!original || !image.srcset) return;
+  image.removeAttribute("srcset");
+  image.removeAttribute("sizes");
+  image.src = original;
+}
+
 /**
  * A gallery card's picture: the poster, and over it a short recording of the
  * component in use, playing on its own while the card is in view (see
@@ -15,22 +23,33 @@ import { registerCard, videoAllowed } from "./card-playback";
 export function CardMedia({
   name,
   thumb,
+  srcSet,
+  sizes,
   video,
   platform,
   priority,
 }: {
   name: string;
   thumb: string | null;
+  srcSet?: string;
+  sizes?: string;
   video: { mp4: string; webm: string | null } | null;
   platform: "web" | "mobile";
   priority: boolean;
 }) {
+  const posterRef = useRef<HTMLImageElement>(null);
   const ref = useRef<HTMLVideoElement>(null);
   const [src, setSrc] = useState(false);
   const want = useRef(false);
   const committed = useRef(false);
   const [showing, setShowing] = useState(false);
   const fit = platform === "mobile" ? "object-contain py-3" : "object-cover object-top";
+
+  useEffect(() => {
+    // A missing server-rendered image can fail before hydration attaches onError.
+    const image = posterRef.current;
+    if (image?.complete && image.naturalWidth === 0) restoreOriginalPoster(image);
+  }, [thumb, srcSet]);
 
   useEffect(() => {
     const v = ref.current;
@@ -79,10 +98,19 @@ export function CardMedia({
       {thumb ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
+          ref={posterRef}
           src={thumb}
+          srcSet={srcSet}
+          sizes={srcSet ? sizes : undefined}
           alt={`${name} preview`}
           loading={priority ? "eager" : "lazy"}
+          fetchPriority={priority ? "high" : undefined}
           decoding="async"
+          onError={(event) => {
+            // A tab can outlive a deployment's hashed derivatives. Retry the
+            // stable original once, without a reload or a broken card image.
+            restoreOriginalPoster(event.currentTarget);
+          }}
           className={`absolute inset-0 size-full transition-transform duration-500 ease-site group-hover:scale-[1.02] ${fit}`}
         />
       ) : (

@@ -26,6 +26,64 @@ preview controls and visible animation design.
 
 ## Replay evidence
 
+### Gallery images on slower connections
+
+Gallery cards previously downloaded 1280 px posters even at a rendered width of
+308 px. The registry builder now makes 480/768 px WebP candidates at quality 90,
+with content-addressed filenames, cached encoding and bounded build concurrency.
+It skips candidates that would not save bytes and never enlarges a source.
+The originals remain untouched and available in `srcset` for larger displays.
+These are high-quality resized derivatives, not a lossless recompression claim.
+Videos retain their existing files and playback behaviour.
+
+The gallery supplies sizes matching its one-, two- and three-column layouts.
+The first six posters have high fetch priority; subsequent posters stay lazy.
+An unavailable hashed file falls back once to the stable original, including
+when the failure happens before hydration. Browser checks cover 1440/1100/390 px
+viewports at pixel ratios 1, 2 and 3, missing derivatives, stable card bounds,
+progressive loading, category/history restoration and full route prefetch.
+The first six desktop posters total 50,898 bytes, down from 199,718 bytes (75%
+less). Smaller images are only requested when the browser selects them.
+
+The same fresh-context Pricing-to-Components replay runs three times at 1 Mbps,
+150 ms latency, 4x CPU slowdown and the browser's default renderer, with network
+cache disabled. Both builds contain 243 entries and receive the same 3 seconds
+for normal route prefetch. The baseline reproduces a 2.28 second image wait,
+even though card DOM is ready much earlier. Image decode completion and the next
+frame are proxies for visible readiness, not a physical screen measurement.
+
+| Metric | Before | Final after |
+| --- | ---: | ---: |
+| Median visible poster readiness | 2,284 ms | 777 ms |
+| Median posters + following frame | 2,292 ms | 786 ms |
+| Max first / second click frame | 51 / 55 ms | 52 / 56 ms |
+| Median card DOM readiness | 312 ms | 344 ms |
+| Max long task | 151 ms | 172 ms |
+
+The image improvement is 66%; click feedback is essentially unchanged. Both
+runs pass the replay's deliberately generous 2.5 second image budget. Delaying
+image responses fails the negative control at 10,009 ms. The initial patched
+run measured 724 ms for images and a 144 ms maximum task; the final rebuilt run
+is 7% slower for images and regresses 19% on the maximum task. That regression
+is retained, not dismissed as a speedup. This shared machine is also running
+other browser workloads; these samples establish the image-transfer saving,
+not a uniform reduction in CPU latency. A separate existing 5 Mbps route replay
+improves card readiness from the previous archived 406 ms to 366 ms and long
+tasks from 139 ms to 129 ms, but still misses its 350 ms card budget on first
+navigation from Home.
+
+The final archive is
+`test-results/frontend-latency-replays/design-gallery-slow-images/2026-10-11T23-59-28Z/`.
+Its previous after-run is in the sibling `2026-10-11T23-56-18Z/` directory.
+Production build, strict registry validation, TypeScript and all 732 unit tests
+pass. An unrelated multilingual SEO test timed out while a build was running;
+the complete suite passed with two workers after the build finished.
+
+```sh
+PERF_BASE=http://localhost:3000 node tests/browser/gallery-slow-connection.mjs
+TEST_BASE=http://localhost:3000 node tests/browser/gallery-responsive-images.mjs
+```
+
 ### First navigation into Components
 
 The new `gallery-route-performance.mjs` replay follows the actual header links

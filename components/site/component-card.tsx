@@ -28,14 +28,14 @@ export function TierBadge({ tier, className = "" }: { tier: "free" | "pro"; clas
   );
 }
 
-export function ComponentCard({ c, priority = false }: { c: CardData; priority?: boolean }) {
+export function ComponentCard({ c, priority = false, imageSizes = "100vw" }: { c: CardData; priority?: boolean; imageSizes?: string }) {
   return (
     <Link
       href={`/components/${c.slug}`}
       className="component-card group relative flex w-full flex-col overflow-hidden rounded-[18px] border border-white/[0.08] bg-site-raised shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] transition-[border-color,background-color,scale] duration-150 ease-site hover:border-white/[0.16] hover:bg-site-raised-2 active:scale-[0.98] active:duration-75"
     >
       <div className="relative aspect-[16/10] overflow-hidden border-b border-white/[0.06] bg-site-sunken">
-        <CardMedia name={c.name} thumb={c.thumb} video={c.video} platform={c.platform} priority={priority} />
+        <CardMedia name={c.name} thumb={c.thumb} srcSet={c.thumbSrcSet} sizes={imageSizes} video={c.video} platform={c.platform} priority={priority} />
       </div>
       <div className="flex flex-1 flex-col gap-1.5 px-4 py-3.5">
         <div className="flex items-center justify-between gap-3">

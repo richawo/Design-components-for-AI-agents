@@ -12,6 +12,7 @@ registry/pro
 content/blog
 content/i18n
 public/blog-images
+public/card-previews
 public/.well-known/design-build.json
 registry/__generated__
 test-results

@@ -31,6 +31,7 @@ import { execFileSync } from "node:child_process";
 import { loadBlogSource, bundleBlog } from "./lib/blog-source.mjs";
 import { auditBlog } from "./lib/blog-audit.mjs";
 import { buildBlogImages } from "./lib/blog-images.mjs";
+import { buildCardImages } from "./lib/card-images.mjs";
 import { validateControls, validateDemo } from "../lib/demo/schema.mjs";
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
@@ -404,6 +405,7 @@ writeJson(path.join(root, "public", ".well-known", "design-build.json"), {
 const previewsDir = path.join(root, "public", "previews");
 const previewFiles = fs.existsSync(previewsDir) ? fs.readdirSync(previewsDir).sort() : [];
 const thumbs = previewFiles.filter((f) => f.endsWith(".webp"));
+const cardThumbnails = await buildCardImages(root, thumbs);
 // Hover videos recorded by scripts/record-demos.mjs from meta.demo.
 const videos = previewFiles.filter((f) => f.endsWith(".mp4") || f.endsWith(".webm"));
 const sourceLoaders = [...free, ...pro]
@@ -428,6 +430,8 @@ ${proItemLoaders}
 };
 
 export const thumbnails: ReadonlySet<string> = new Set(${JSON.stringify(thumbs)});
+
+export const cardThumbnails: Readonly<Record<string, string>> = ${JSON.stringify(cardThumbnails)};
 
 export const videos: ReadonlySet<string> = new Set(${JSON.stringify(videos)});
 `,

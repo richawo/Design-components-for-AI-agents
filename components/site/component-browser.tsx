@@ -249,7 +249,7 @@ export function ComponentBrowser({ cards, categories, category, initialFilters }
                   className="flex"
                 >
                   <CardSlot entrance={firstRender.current ? cardEntrance(i, FIRST_CARD_STEP) : undefined}>
-                    <BrowserCard c={c} priority={i < FIRST_VIEW_CARDS} />
+                    <BrowserCard c={c} priority={i < FIRST_VIEW_CARDS} imageSizes="(min-width: 1280px) 308px, (min-width: 1024px) calc(50vw - 170px), (min-width: 640px) calc(50vw - 40px), calc(100vw - 40px)" />
                   </CardSlot>
                 </motion.div>
               ))}

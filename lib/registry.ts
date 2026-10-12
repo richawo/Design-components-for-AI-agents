@@ -1,7 +1,7 @@
 import "server-only";
 import { CATEGORIES, type Category, type ComponentSource, type RegistryEntry } from "./registry-types";
 import index from "@/registry/__generated__/index.json";
-import { proItemLoaders, sourceLoaders, thumbnails, videos } from "@/registry/__generated__/server-data";
+import { proItemLoaders, sourceLoaders, thumbnails, cardThumbnails, videos } from "@/registry/__generated__/server-data";
 
 const entries = index as RegistryEntry[];
 
@@ -61,6 +61,7 @@ export function videoFor(slug: string): { mp4: string; webm: string | null } | n
 
 export type CardData = Pick<RegistryEntry, "slug" | "name" | "tier" | "platform" | "category" | "description" | "tags" | "theme" | "added"> & {
   thumb: string | null;
+  thumbSrcSet?: string;
   video: { mp4: string; webm: string | null } | null;
 };
 
@@ -76,6 +77,7 @@ export function toCard(e: RegistryEntry): CardData {
     theme: e.theme,
     added: e.added,
     thumb: thumbnailFor(e.slug),
+    thumbSrcSet: cardThumbnails[`${e.slug}.webp`],
     video: videoFor(e.slug),
   };
 }
