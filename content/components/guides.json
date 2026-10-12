@@ -56,7 +56,8 @@
     "useWhen": "Email sign-in without asking someone to choose a password.",
     "avoidWhen": "An offline identity flow or an application that requires passkeys or enterprise SSO.",
     "integration": [
-      "Connect `onSend` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+      "Connect `onSend` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
+      "Provide onSend before enabling send or resend. Resolve after your email service accepts the request and reject failed HTTP responses so the address remains available for retry."
     ],
     "related": [
       "auth-sign-in",
@@ -83,7 +84,8 @@
     "avoidWhen": "A long registration questionnaire or an enterprise domain discovery flow.",
     "integration": [
       "Supply your own records through `providers`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onSubmit` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+      "Connect `onSubmit` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
+      "Provide onSubmit and onSso for the authentication methods you enable. Await a server decision before resolving success; missing methods remain unavailable."
     ],
     "related": [
       "auth-magic-link",
@@ -373,7 +375,8 @@
     "useWhen": "A closing newsletter form with a clear subscription action.",
     "avoidWhen": "An automatic subscription or a promise of successful delivery without a server response.",
     "integration": [
-      "Supply your own records through `socials`, `legalLinks`. Preserve stable keys or IDs when the data contract provides them."
+      "Supply your own records through `socials`, `legalLinks`. Preserve stable keys or IDs when the data contract provides them.",
+      "Provide onSubscribe and resolve only after the subscription is accepted. Reject server failures so the retry flow retains the submitted address."
     ],
     "related": [
       "footer-wordmark",
@@ -399,7 +402,8 @@
     "useWhen": "A short, timely announcement above a site's main navigation.",
     "avoidWhen": "Permanent product explanation or urgent operational incidents requiring richer context.",
     "integration": [
-      "Supply your own records through `messages`. Preserve stable keys or IDs when the data contract provides them."
+      "Supply your own records through `messages`. Preserve stable keys or IDs when the data contract provides them.",
+      "Each rotating message keeps a unique ID, and leaving links become inert while the exit animation completes. Keep message IDs stable through content updates."
     ],
     "related": [
       "header-hairline",
@@ -573,7 +577,8 @@
     "avoidWhen": "Clinical interpretation or measurements that cannot be supported by a reliable source.",
     "integration": [
       "Supply your own records through `days`, `rings`. Preserve stable keys or IDs when the data contract provides them.",
-      "Install this in a React Native app. The web preview is a review surface; verify gestures, text scaling and assistive technology on your target devices."
+      "Install this in a React Native app. The web preview is a review surface; verify gestures, text scaling and assistive technology on your target devices.",
+      "Provide both day records and ring definitions. Empty collections render an unavailable summary and recover when real data arrives."
     ],
     "related": [
       "mobile-checkout-sheet",
@@ -587,7 +592,8 @@
     "avoidWhen": "A long tutorial that prevents people from reaching the product.",
     "integration": [
       "Supply your own records through `steps`. Preserve stable keys or IDs when the data contract provides them.",
-      "Install this in a React Native app. The web preview is a review surface; verify gestures, text scaling and assistive technology on your target devices."
+      "Install this in a React Native app. The web preview is a review surface; verify gestures, text scaling and assistive technology on your target devices.",
+      "Empty step collections render an unavailable setup state. Supplying steps again creates a fresh sequence with valid animation values."
     ],
     "related": [
       "mobile-bottom-sheet",
@@ -932,7 +938,8 @@
     "avoidWhen": "A general-purpose IDE or an authorisation mechanism for repository writes.",
     "integration": [
       "Supply your own records through `changes`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onDecisionsChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+      "Connect `onDecisionsChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
+      "Provide onApply before enabling application. Resolve after the host applies the accepted hunks; a rejection keeps the review decisions available."
     ],
     "related": [
       "agent-approval-gate",
@@ -972,7 +979,8 @@
     "useWhen": "Presenting a tool's inputs, status and result within an agent workflow.",
     "avoidWhen": "Approving a privileged action without an explicit review step.",
     "integration": [
-      "Connect `onRetry` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+      "Connect `onRetry` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
+      "Provide onRetry to enable a retry. For live tools, control status from the host and reject unsuccessful retries instead of marking the call complete."
     ],
     "related": [
       "agent-run-trace",
@@ -1104,7 +1112,8 @@
     "useWhen": "Entering and verifying a short one-time authentication code.",
     "avoidWhen": "A replacement for expiry, rate limiting and server-side code verification.",
     "integration": [
-      "Connect `onChangeDestination` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+      "Connect `onChangeDestination` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
+      "Provide onVerify for code entry, onResend for resending and onChangeDestination for the inline editor. Missing methods stay unavailable; errors retain the code and only an acknowledged verification can continue."
     ],
     "related": [
       "auth-magic-link",
@@ -1117,7 +1126,8 @@
     "useWhen": "Discovering an enterprise sign-in route from a person's organisation.",
     "avoidWhen": "SSO discovery or authentication implemented only by matching text in the browser.",
     "integration": [
-      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export.",
+      "Supply the sign-in handler for each available method. Domain detection selects the presentation; your identity service decides whether authentication succeeds."
     ],
     "related": [
       "auth-sign-in",
@@ -1197,7 +1207,8 @@
     "avoidWhen": "Calculating authoritative billing proration entirely in the browser.",
     "integration": [
       "Supply your own records through `plans`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onConfirm` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+      "Connect `onConfirm` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
+      "Provide onConfirm and resolve only after the billing change is accepted. Treat the displayed quote as presentation data and use the server as the authority for pricing and confirmation."
     ],
     "related": [
       "billing-seat-manager",
@@ -1211,7 +1222,8 @@
     "avoidWhen": "Granting product access without checking the subscription and membership server-side.",
     "integration": [
       "Supply your own records through `members`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onConfirm` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+      "Connect `onConfirm` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
+      "Provide onConfirm for seat and invitation billing changes. Await acknowledgement before updating the paid seat count or describing an invitation as sent."
     ],
     "related": [
       "billing-plan-change",
@@ -1472,7 +1484,8 @@
     "avoidWhen": "Sending invitations or assigning access before the host validates the request.",
     "integration": [
       "Supply your own records through `team`, `pending`, `drafts`, `directory`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onInvite` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+      "Connect `onInvite` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
+      "Invite and withdrawal handlers may return promises. The component waits before moving drafts to Pending or removing invitations; rejected requests retain their data."
     ],
     "related": [
       "collab-share-access",
@@ -2002,7 +2015,8 @@
     "avoidWhen": "A complete collaborative document system or unvalidated server-side content storage.",
     "integration": [
       "Supply your own records through `blocks`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
+      "Outline motion is scoped to the editor instance and respects reduced motion. Connect onChange to your own document state and persistence."
     ],
     "related": [
       "editor-markdown-split",
@@ -2553,7 +2567,8 @@
     "avoidWhen": "A small text-only conversation that benefits from a simpler composer.",
     "integration": [
       "Supply your own records through `models`, `commands`, `defaultAttachments`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onSubmit`, `onRetry`, `onUpload` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+      "Connect `onSubmit`, `onRetry`, `onUpload` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
+      "Provide onSubmit to send prompts. Device dictation requires onTranscribe; only the explicit simulated microphone mode uses sample transcription text."
     ],
     "related": [
       "ai-composer-minimal",
@@ -2793,7 +2808,8 @@
     "integration": [
       "Supply your own records through `items`, `cards`, `delivery`, `declineOnce`. Preserve stable keys or IDs when the data contract provides them.",
       "Connect `onPay` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
-      "Install this in a React Native app. The web preview is a review surface; verify gestures, text scaling and assistive technology on your target devices."
+      "Install this in a React Native app. The web preview is a review surface; verify gestures, text scaling and assistive technology on your target devices.",
+      "Provide onPay and return success only after confirmation from the payment service. Missing handlers disable payment, and empty items, cards or delivery options produce an unavailable state."
     ],
     "related": [
       "mobile-wallet-stack",
@@ -2807,7 +2823,8 @@
     "avoidWhen": "A guaranteed live update or a replacement for the operating system's native activity integration.",
     "integration": [
       "Supply your own records through `updates`, `stops`. Preserve stable keys or IDs when the data contract provides them.",
-      "Install this in a React Native app. The web preview is a review surface; verify gestures, text scaling and assistive technology on your target devices."
+      "Install this in a React Native app. The web preview is a review surface; verify gestures, text scaling and assistive technology on your target devices.",
+      "Empty updates produce an honest unavailable state. Replace sample updates with your tracking feed while keeping the declared stage and progress contract."
     ],
     "related": [
       "mobile-now-playing",
@@ -2821,7 +2838,8 @@
     "avoidWhen": "An audio engine or a claim that media is playing without a real playback connection.",
     "integration": [
       "Supply your own records through `tracks`, `devices`. Preserve stable keys or IDs when the data contract provides them.",
-      "Install this in a React Native app. The web preview is a review surface; verify gestures, text scaling and assistive technology on your target devices."
+      "Install this in a React Native app. The web preview is a review surface; verify gestures, text scaling and assistive technology on your target devices.",
+      "An empty track collection produces an unavailable player; an empty output-device collection disables routing without replacing it with sample devices."
     ],
     "related": [
       "mobile-live-activity",
@@ -2835,7 +2853,8 @@
     "avoidWhen": "A purchase receipt or store entitlement granted solely through UI state.",
     "integration": [
       "Supply your own records through `features`. Preserve stable keys or IDs when the data contract provides them.",
-      "Install this in a React Native app. The web preview is a review surface; verify gestures, text scaling and assistive technology on your target devices."
+      "Install this in a React Native app. The web preview is a review surface; verify gestures, text scaling and assistive technology on your target devices.",
+      "Provide purchase and restore handlers. Resolve subscription success after confirmation; return a verified boolean for restore results instead of treating a transport error as no purchases."
     ],
     "related": [
       "mobile-bottom-sheet",
