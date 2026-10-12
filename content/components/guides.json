@@ -3348,5 +3348,19 @@
       "block-saas-dashboard"
     ],
     "updated": "2026-10-12"
+  },
+  "block-people-workspace": {
+    "useWhen": "A people team needs department context, new-hire tasks and leave coverage in one product workspace.",
+    "avoidWhen": "Payroll processing, automatic hiring decisions or leave approvals disconnected from authoritative HR records.",
+    "integration": [
+      "Provide consistent employee IDs across department members, milestones, onboarding and leave records.",
+      "The block retains the separate views and their drafts. Each completion or decision carries its department ID and the underlying typed payload.",
+      "Connect the callbacks to your HR service. The default export is an offline example; production actions require a supplied host callback."
+    ],
+    "related": [
+      "block-workspace-settings",
+      "block-saas-dashboard"
+    ],
+    "updated": "2026-10-12"
   }
 }

@@ -5185,6 +5185,94 @@
     ]
   },
   {
+    "slug": "block-people-workspace",
+    "name": "People Operations Workspace",
+    "tier": "pro",
+    "platform": "web",
+    "category": "app",
+    "description": "A complete HR workspace linking a department overview, employee onboarding and leave review. Retained views preserve drafts and include department context in callbacks.",
+    "tags": [
+      "block",
+      "workspace",
+      "composition",
+      "keyboard",
+      "monochrome"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1500,
+    "usage": "import { PeopleWorkspace } from \"@/components/design-for-ai/block-people-workspace\";\n\n<PeopleWorkspace />",
+    "props": [
+      {
+        "name": "brand",
+        "type": "string",
+        "default": "\"Northstar\"",
+        "description": "Workspace identity."
+      },
+      {
+        "name": "scopes",
+        "type": "PeopleWorkspaceScope[]",
+        "description": "Unique department contexts with employees, milestones, new hires, leave requests, balances and coverage."
+      },
+      {
+        "name": "referenceDate",
+        "type": "string",
+        "default": "\"2026-10-12\"",
+        "description": "Host ISO reporting date for the people overview."
+      },
+      {
+        "name": "onComplete",
+        "type": "(payload: { departmentId: string; completion: OnboardingCompletion }) => void | Promise<void>",
+        "description": "Record an onboarding task after host validation."
+      },
+      {
+        "name": "onDecision",
+        "type": "(payload: { departmentId: string; decision: LeaveDecision }) => void | Promise<void>",
+        "description": "Persist a reviewed leave decision with department context."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Shared palette."
+      }
+    ],
+    "added": "2026-10-12",
+    "kind": "block",
+    "blockType": "workspace",
+    "components": [
+      "layout-workspace-shell",
+      "select-listbox",
+      "segmented-control",
+      "hr-people-dashboard",
+      "hr-employee-onboarding",
+      "hr-leave-approval"
+    ],
+    "demo": {
+      "steps": [
+        "wait:350",
+        "click:@onboarding",
+        "wait:2200"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "block-saas-dashboard",
     "name": "SaaS Metrics Dashboard",
     "tier": "pro",
