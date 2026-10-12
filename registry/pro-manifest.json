@@ -18121,12 +18121,14 @@
       {
         "name": "title",
         "type": "string",
-        "description": "Main heading."
+        "description": "Main heading.",
+        "default": "\"Leave requests\""
       },
       {
         "name": "subtitle",
         "type": "string",
-        "description": "Supporting context."
+        "description": "Supporting context.",
+        "default": "\"Review the requested working days, available allowance and daily coverage before making a decision.\""
       },
       {
         "name": "requests",
@@ -18162,6 +18164,7 @@
         "click:@request-2",
         "wait:650",
         "click:@request-0",
+        "wait:500",
         "click:@approve",
         "wait:450",
         "click:@confirm",
