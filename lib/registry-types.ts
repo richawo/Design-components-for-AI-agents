@@ -1,4 +1,5 @@
 export type Tier = "free" | "pro";
+export type BlockType = "dashboard" | "report" | "settings" | "landing-page" | "workspace";
 export type Platform = "web" | "mobile";
 
 export const CATEGORIES = {
@@ -109,6 +110,11 @@ export interface ComponentControl {
 /** The contents of a component's meta.json. */
 export interface ComponentMeta {
   slug: string;
+  /** Missing kind means an individual component. */
+  kind?: "component" | "block";
+  /** Blocks compose these existing catalogue files. */
+  components?: string[];
+  blockType?: BlockType;
   name: string;
   tier: Tier;
   platform: Platform;

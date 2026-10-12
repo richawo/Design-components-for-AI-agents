@@ -28,6 +28,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
+import { validateComposition, installedBlockSource, compositionRegistryDependencies } from "./lib/block-composition.mjs";
 import { loadBlogSource, bundleBlog } from "./lib/blog-source.mjs";
 import { auditBlog } from "./lib/blog-audit.mjs";
 import { buildBlogImages } from "./lib/blog-images.mjs";
@@ -191,10 +192,10 @@ function registryItem(c) {
     description: m.description,
     author: "Design for AI <hello@yaps.ai>",
     dependencies: m.dependencies,
-    registryDependencies: m.platform === "web" ? [`${SITE_URL}/r/theme.json`] : [],
-    files: [{ path: `registry/${c.tier}/${m.slug}/${m.slug}.tsx`, content: c.code, type: "registry:component", target }],
+    registryDependencies: m.platform === "web" ? [`${SITE_URL}/r/theme.json`, ...compositionRegistryDependencies(m, compositionCatalogue, SITE_URL)] : [],
+    files: [{ path: `registry/${c.tier}/${m.slug}/${m.slug}.tsx`, content: installedBlockSource(m, c.code), type: "registry:component", target }],
     categories: [m.category, ...m.tags].slice(0, 8),
-    docs: `Prompt: ${SITE_URL}/components/${m.slug}.md`,
+    docs: `Reference: ${SITE_URL}/${m.kind === "block" ? "blocks" : "components"}/${m.slug}.md`,
   };
 }
 
@@ -302,6 +303,18 @@ if (ONLY.size) {
   }
 }
 
+// Resolve against the complete metadata catalogue, including dependencies outside --only.
+const compositionCatalogue = ["free", "pro"].flatMap(tier => {
+  const dir = path.join(registryDir, tier);
+  return fs.existsSync(dir) ? fs.readdirSync(dir).flatMap(slug => {
+    const file = path.join(dir, slug, "meta.json");
+    if (slug.startsWith("_") || !fs.existsSync(file)) return [];
+    try { return [JSON.parse(fs.readFileSync(file, "utf8"))]; } catch { return []; }
+  }) : [];
+});
+if (!pro.length && fs.existsSync(proManifestPath)) compositionCatalogue.push(...JSON.parse(fs.readFileSync(proManifestPath, "utf8")));
+for (const c of [...free, ...pro]) for (const message of validateComposition(c.meta, c.code, compositionCatalogue)) fail(c.meta.slug, message);
+
 if (errors.length) {
   console.error(`\nRegistry has ${errors.length} problem(s)${STRICT || DRY_RUN ? "" : " (skipped those components)"}:\n  - ${errors.join("\n  - ")}\n`);
   if (STRICT || DRY_RUN) process.exit(1);
@@ -353,7 +366,7 @@ prune(path.join(outDir, "r-pro"), new Set(pro.map((c) => `${c.meta.slug}.json`))
 for (const c of [...free, ...pro]) {
   writeJson(path.join(outDir, "sources", `${c.meta.slug}.json`), {
     slug: c.meta.slug,
-    code: c.code,
+    code: installedBlockSource(c.meta, c.code),
     prompt: c.prompt,
     promptJson: c.promptJson,
   });

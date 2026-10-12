@@ -9,7 +9,7 @@ const temporary = fs.mkdtempSync(path.join(os.tmpdir(), "design-cli-pack-"));
 try {
   for (const name of ["cli", "mcp"]) {
     const [packed] = JSON.parse(execFileSync("npm", ["pack", path.join(root, `packages/${name}`), "--json", "--pack-destination", temporary], { encoding: "utf8" }));
-    const allowed = new Set(["index.mjs", "package.json", "README.md", "LICENSE", ...(name === "mcp" ? ["principles.md", "server.json"] : [])]);
+    const allowed = new Set(["index.mjs", "package.json", "README.md", "LICENSE", ...(name === "mcp" ? ["principles.md", "server.json"] : ["composition.mjs"])]);
     if (!packed.files.every((file) => allowed.has(file.path))) throw new Error(`${name} archive includes an unexpected file`);
     fs.copyFileSync(path.join(temporary, packed.filename), path.join(root, `public/${name}.tgz`));
     console.log(`${name}: packaged ${packed.files.length} public files`);

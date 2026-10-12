@@ -558,3 +558,25 @@ starves animation frames while a button is held.
 - `registry/pro/**` is proprietary (see `LICENSE-PRO.md` in the private
   repo). It's never committed to the public repository. The folder is
   gitignored, and CI clones the private repo into it at build time.
+
+## Composed blocks
+
+A block is a complete page or workflow built from existing catalogue components.
+It uses the same four-file contract and the same Pro licence boundary. New blocks
+default to Pro. Set `kind: "block"`, a `blockType` (`dashboard`, `report`,
+`settings`, `landing-page` or `workspace`), and `components` with at least two
+published web component slugs in `meta.json`.
+
+The block is the explicit exception to standalone component imports. Its source
+may import only the catalogue files declared in `components`, using their real
+relative repository paths. The build converts these imports to sibling files
+for installation. It rejects unknown imports, unpublished or mobile dependencies,
+cycles and free blocks that depend on Pro source. Individual components remain
+self-contained.
+
+The shadcn registry resolves public dependencies by URL and Pro dependencies
+through `@design-for-ai-pro`, preserving its configured authorization header.
+The Design for AI CLI resolves and fetches the entire composition before writing
+any file. Blocks must expose real data and callback contracts, preserve the
+underlying components' keyboard behaviour, provide an honest offline demo, and
+receive narrow-layout, reduced-motion and integration checks.

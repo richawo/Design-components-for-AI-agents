@@ -6,6 +6,7 @@
 //   npx https://design.yaps.ai/cli.tgz add chart-portfolio
 //   npx https://design.yaps.ai/cli.tgz prompt chart-portfolio | pbcopy
 
+import { installationOrder } from "./composition.mjs";
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
@@ -223,8 +224,12 @@ async function add(slugs) {
   const cwd = process.cwd();
   const all = await index();
   const needed = new Set();
-  for (const slug of slugs) {
-    const meta = all.find((x) => x.slug === slug);
+  let plan;
+  try { plan = installationOrder(slugs, all); } catch (error) { die(error.message); }
+  // Fetch every licensed payload before writing the first file.
+  const payloads = [];
+  for (const meta of plan) {
+    const slug = meta.slug;
     if (!meta) explain({ code: "NOT_FOUND" }, slug);
     let code;
     try {
@@ -232,6 +237,10 @@ async function add(slugs) {
     } catch (e) {
       explain(e, slug);
     }
+    payloads.push({ meta, code });
+  }
+  for (const { meta, code } of payloads) {
+    const slug = meta.slug;
     const dir = typeof flags.dir === "string" ? path.join(flags.dir, meta.platform === "mobile" ? "native" : "") : defaultDir(cwd, meta.platform);
     const file = path.join(cwd, dir, `${slug}.tsx`);
     if (fs.existsSync(file) && !flags.force) {
