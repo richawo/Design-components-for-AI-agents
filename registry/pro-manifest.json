@@ -18373,12 +18373,14 @@
       {
         "name": "title",
         "type": "string",
-        "description": "Main heading."
+        "description": "Main heading.",
+        "default": "\"Policy acknowledgement\""
       },
       {
         "name": "subtitle",
         "type": "string",
-        "description": "Supporting context."
+        "description": "Supporting context.",
+        "default": "\"Present the policy in full and capture an explicit acknowledgement tied to its version.\""
       },
       {
         "name": "policies",
