@@ -98,7 +98,7 @@
     {
       "name": "onRetry",
       "type": "() => void | Promise<unknown>",
-      "description": "Runs on Retry. Return a promise to show the running state; it resolves to done and rejects to failed. Without it, an uncontrolled call reruns for 1.1 s, and a controlled call hides Retry because only the host can change its status."
+      "description": "Required to show Retry. An acknowledged retry resolves to done when uncontrolled and rejects to failed; live hosts should control status themselves."
     },
     {
       "name": "retryLabel",
