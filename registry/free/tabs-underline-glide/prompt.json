@@ -61,9 +61,8 @@
     "panels": "Overview: 1,418,204 requests, 182 ms p95, 0.04% errors over a 24-bar sparkline. Deployments: three commits with status dots. Logs: a four-line live tail with one WARN 429. Analytics: 48,210 visitors over seven days. Domains: tidewell.app and two siblings. Variables: three masked keys. Storage: three meters, Postgres at 81%. Settings: region, build command and Node version.",
     "demoFrame": "card with a TIDEWELL / PRODUCTION kicker, the title tidewell-web, the tabs, and a footer with a Narrow column toggle and a key hint that follows activation",
     "demoSteps": [
-      "click Deployments (the line stretches right and lands, the panel slides in from the right)",
-      "click Analytics (the line travels two tabs further)",
-      "click Logs (the line travels back, the panel slides in from the left)",
+      "click Analytics (the line stretches across the strip and lands)",
+      "click Logs (the line travels back and the panel cross-fades)",
       "press Narrow column (the column narrows to 300px, fades and arrows arrive)",
       "press the end arrow (the strip scrolls to reveal Domains and Variables)"
     ]

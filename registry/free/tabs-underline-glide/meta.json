@@ -96,8 +96,6 @@
   "demo": {
     "steps": [
       "wait:400",
-      "click:@tab-deployments",
-      "wait:350",
       "click:@tab-analytics",
       "wait:350",
       "click:@tab-logs",
@@ -131,8 +129,14 @@
       "label": "Activation",
       "kind": "segmented",
       "options": [
-        { "value": "auto", "label": "Auto" },
-        { "value": "manual", "label": "Manual" }
+        {
+          "value": "auto",
+          "label": "Auto"
+        },
+        {
+          "value": "manual",
+          "label": "Manual"
+        }
       ],
       "default": "auto",
       "group": "Behaviour"
@@ -142,8 +146,14 @@
       "label": "Indicator",
       "kind": "segmented",
       "options": [
-        { "value": "underline", "label": "Underline" },
-        { "value": "pill", "label": "Pill" }
+        {
+          "value": "underline",
+          "label": "Underline"
+        },
+        {
+          "value": "pill",
+          "label": "Pill"
+        }
       ],
       "default": "underline",
       "group": "Look"
@@ -153,8 +163,14 @@
       "label": "Theme",
       "kind": "segmented",
       "options": [
-        { "value": "dark", "label": "Dark" },
-        { "value": "light", "label": "Light" }
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
       ],
       "default": "dark",
       "group": "Look"
