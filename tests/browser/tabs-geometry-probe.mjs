@@ -12,6 +12,24 @@ const errors = [];
 page.on("pageerror", (error) => errors.push(error.message));
 
 async function aligned() {
+  await page.waitForFunction(
+    () => {
+      const tab = document.querySelector("[role=tab][aria-selected=true]");
+      const indicator = document.querySelector("[role=tablist] > span");
+      if (!tab || !indicator) return false;
+      const label =
+        tab.firstElementChild.firstElementChild.getBoundingClientRect();
+      const line = indicator.getBoundingClientRect();
+      return (
+        Math.max(
+          Math.abs(label.left - line.left),
+          Math.abs(label.right - line.right),
+        ) < 0.25
+      );
+    },
+    undefined,
+    { timeout: 3000 },
+  );
   const error = await page.evaluate(() => {
     const tab = document.querySelector("[role=tab][aria-selected=true]");
     const label =
