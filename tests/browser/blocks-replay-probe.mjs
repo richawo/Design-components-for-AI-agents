@@ -3,7 +3,7 @@ import fs from "node:fs";
 import { launchChromium } from "../../scripts/lib/browser.mjs";
 import { mountFixture } from "../../scripts/lib/component-fixture.mjs";
 const specs = [
-  ["block-saas-dashboard", "Last 7 supplied days"],
+  ["block-saas-dashboard", "Trial signups per day"],
   ["block-workspace-settings", "Preferences saved."],
   ["block-financial-report", "September 2026"],
   ["block-fashion-workspace", "Line plan"],

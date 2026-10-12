@@ -25,6 +25,7 @@ const publicCases = [
   "ime-probe",
   "expansion-inputs-probe",
   "demo-editing-probe",
+  "demo-pointer-focus",
   "demo-transition-targets",
   "preview-cascade-probe",
   "pixel-microphone-lifecycle",

@@ -3,15 +3,16 @@ export async function check({ page, mount, assert }) {
     `createRoot(document.getElementById('root')).render(<Subject.SaasDashboard/>);`,
   );
   await page.locator('[data-demo="card-signups"]').click();
-  await page.locator('[data-demo="period-7d"]').click();
-  await page.getByRole("heading", { name: /Trial signups/ }).waitFor();
+  await page.locator('[data-demo="range-7d"]').click();
+  await page.getByRole("heading", { name: "Trial signups per day", exact:true }).waitFor();
   const downloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Export metric CSV" }).click();
   const download = await downloadPromise;
   assert.equal(download.suggestedFilename(), "signups-7d.csv");
+  await page.getByRole("tab",{name:"Workspaces",exact:true}).click();
   await page.getByRole("searchbox").fill("Harbour");
   await page.waitForFunction(
-    () => document.querySelectorAll('[role="row"],table tr').length === 2,
+    () => [...document.querySelectorAll('[role="row"],table tr')].filter(row=>row.getClientRects().length&&!row.closest('[inert]')).length === 2,
   );
   assert.equal(await page.getByRole("row").count(), 2);
   await page.getByRole("searchbox").fill("No match");
@@ -40,5 +41,6 @@ export async function check({ page, mount, assert }) {
   assert.ok(
     await page.getByRole("button", { name: "Export metric CSV" }).isDisabled(),
   );
+  await page.getByRole("tab",{name:"Workspaces",exact:true}).click();
   assert.ok(await page.getByText("No workspace records supplied.").isVisible());
 }

@@ -317,7 +317,10 @@ export class DemoPlayer {
    * before the next key or type step, which needs a focused element.
    */
   private focusFromPointer(f: HTMLElement) {
-    this.pendingFocus = null;
+    // Some engines accept pointer-focus options without actually moving focus.
+    // Retain the target for the next key, while respecting focus the component
+    // moves into a popup or dialog itself.
+    this.pendingFocus = f;
     if (f.matches(TEXT_ENTRY)) {
       f.focus({ preventScroll: true });
       return;
@@ -336,7 +339,8 @@ export class DemoPlayer {
   private applyPendingFocus() {
     const f = this.pendingFocus;
     this.pendingFocus = null;
-    if (f?.isConnected && this.win.document.activeElement !== f) f.focus({ preventScroll: true });
+    const active = this.win.document.activeElement;
+    if (f?.isConnected && (!active || active === this.win.document.body) && !f.closest("[inert], [hidden]")) f.focus({ preventScroll: true });
   }
 
   private up() {
