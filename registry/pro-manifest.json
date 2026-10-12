@@ -15822,12 +15822,14 @@
       {
         "name": "title",
         "type": "string",
-        "description": "Main heading."
+        "description": "Main heading.",
+        "default": "\"Invoice draft\""
       },
       {
         "name": "subtitle",
         "type": "string",
-        "description": "Supporting context."
+        "description": "Supporting context.",
+        "default": "\"Build a draft with explicit quantities, discount and tax. Review every total before saving.\""
       },
       {
         "name": "initialLines",
