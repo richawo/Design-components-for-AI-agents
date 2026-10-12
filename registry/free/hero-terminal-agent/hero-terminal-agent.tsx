@@ -375,7 +375,7 @@ export function HeroTerminalAgent({
             <PrimaryLink link={primary} />
             <CopyCommand command={installCommand} />
           </motion.div>
-          <ul className="mt-9 flex flex-wrap gap-x-5 gap-y-2 font-mono text-[11px] uppercase tracking-[0.12em] text-(--ta-ink)/45">
+          <ul className="mt-9 flex flex-wrap gap-x-5 gap-y-2 font-mono text-[11px] uppercase tracking-[0.12em] text-(--ta-ink)/65">
             {facts.map((f, i) => (
               <motion.li key={f} variants={v(reveal)} custom={T.facts + i * T.factStep} className="flex items-center gap-2">
                 <span className="h-px w-3 bg-(--ta-ink)/30" aria-hidden="true" />
@@ -400,7 +400,7 @@ function Emphasised({ text, phrase }: { text: string; phrase: string }) {
   return (
     <>
       {text.slice(0, i)}
-      <span className="whitespace-nowrap text-(--ta-ink)/45">{phrase}</span>
+      <span className="whitespace-nowrap text-(--ta-ink)/65">{phrase}</span>
       {text.slice(i + phrase.length)}
     </>
   );
@@ -450,7 +450,7 @@ function CopyCommand({ command }: { command: string }) {
       className={`group inline-flex h-12 min-w-0 items-center justify-between gap-4 rounded-[10px] border border-(--ta-ink)/15 bg-(--ta-surface) pl-4 pr-2 font-mono text-[13.5px] text-(--ta-ink)/85 transition-[border-color,transform] duration-150 hover:border-(--ta-ink)/30 active:scale-[0.98] ${FOCUS}`}
     >
       <span className="truncate">
-        <span className="select-none text-(--ta-ink)/35">$ </span>
+        <span className="select-none text-(--ta-ink)/65">$ </span>
         {command}
       </span>
       {/* The accent appears here and only here: it confirms the copy. */}
@@ -569,7 +569,7 @@ function Terminal({
       className="relative overflow-hidden rounded-[14px] border border-(--ta-ink)/[0.09] bg-(--ta-surface) shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_50px_100px_-40px_rgba(0,0,0,0.9),0_20px_40px_-20px_rgba(0,0,0,0.6)]"
     >
       {/* Header: a tab, not traffic lights. */}
-      <div className="relative flex h-11 items-stretch justify-between pr-3 font-mono text-[12px] text-(--ta-ink)/50">
+      <div className="relative flex h-11 items-stretch justify-between pr-3 font-mono text-[12px] text-(--ta-ink)/65">
         <div className="flex min-w-0 items-stretch">
           <motion.div variants={v(reveal)} custom={T.header} className="flex">
             <HoldButton held={held} disabled={reduce} onToggle={toggleHold} />
@@ -580,10 +580,10 @@ function Terminal({
             className="relative flex min-w-0 items-center gap-2.5 border-x border-(--ta-ink)/[0.07] bg-(--ta-ink)/[0.03] px-4 text-(--ta-ink)/85"
           >
             <span className="truncate">{tabTitle}</span>
-            <span className="hidden text-(--ta-ink)/35 @md:inline">— relay ship</span>
+            <span className="hidden text-(--ta-ink)/65 @md:inline">— relay ship</span>
             <motion.span variants={v(drawX)} custom={T.header + T.headerStep * 2} className="absolute inset-x-0 top-0 h-px origin-left bg-(--ta-ink)/40" aria-hidden="true" />
           </motion.div>
-          <motion.div variants={v(reveal)} custom={T.header + T.headerStep * 2} className="hidden items-center px-4 text-(--ta-ink)/30 @md:flex" aria-hidden="true">
+          <motion.div variants={v(reveal)} custom={T.header + T.headerStep * 2} className="hidden items-center px-4 text-(--ta-ink)/65 @md:flex" aria-hidden="true">
             +
           </motion.div>
         </div>
@@ -618,7 +618,7 @@ function Terminal({
       <motion.div
         variants={v(reveal)}
         custom={T.status}
-        className="relative flex h-8 items-center justify-between gap-4 bg-(--ta-ink)/[0.02] px-4 font-mono text-[11px] tabular-nums text-(--ta-ink)/45"
+        className="relative flex h-8 items-center justify-between gap-4 bg-(--ta-ink)/[0.02] px-4 font-mono text-[11px] tabular-nums text-(--ta-ink)/65"
       >
         <motion.span variants={v(drawX)} custom={T.status} className="absolute inset-x-0 top-0 h-px origin-left bg-(--ta-ink)/[0.07]" aria-hidden="true" />
         <span className="flex min-w-0 items-center gap-3 truncate">
@@ -736,7 +736,7 @@ const GUTTER = "inline-block w-[1.5ch]";
 const INDENT = "pl-[calc(1.5ch+0.5rem)]";
 
 function Spinner({ ch }: { ch: MotionValue<string> }) {
-  return <motion.span className={`${GUTTER} text-(--ta-ink)/50`}>{ch}</motion.span>;
+  return <motion.span className={`${GUTTER} text-(--ta-ink)/65`}>{ch}</motion.span>;
 }
 
 function Tick() {
@@ -756,7 +756,7 @@ function TerminalRow({ row, now, spin, session }: { row: Row; now: number; spin:
   switch (row.kind) {
     case "cwd":
       return (
-        <p className="text-(--ta-ink)/45">
+        <p className="text-(--ta-ink)/65">
           <span className="text-(--ta-ink)/75">{session.cwd}</span> on <span className="text-(--ta-ink)/75">⎇ {session.branch}</span>
         </p>
       );
@@ -764,7 +764,7 @@ function TerminalRow({ row, now, spin, session }: { row: Row; now: number; spin:
       const n = row.typedAt.filter((x) => x <= now).length;
       return (
         <p className="whitespace-pre-wrap break-words">
-          <span className="text-(--ta-ink)/45">❯ </span>
+          <span className="text-(--ta-ink)/65">❯ </span>
           <span className="text-(--ta-ink)">{session.command.slice(0, n)}</span>
           {n < session.command.length ? <Cursor solid /> : null}
         </p>
@@ -774,11 +774,11 @@ function TerminalRow({ row, now, spin, session }: { row: Row; now: number; spin:
       const done = now >= row.doneAt;
       return (
         <p className="mt-3 flex gap-2">
-          {done ? <span className={`${GUTTER} text-(--ta-ink)/45`}>◇</span> : <Spinner ch={spin} />}
+          {done ? <span className={`${GUTTER} text-(--ta-ink)/65`}>◇</span> : <Spinner ch={spin} />}
           <span className="min-w-0 flex-1">
             {done ? (
               <>
-                Read <span className="text-(--ta-ink)/50">{row.done}</span>
+                Read <span className="text-(--ta-ink)/65">{row.done}</span>
               </>
             ) : (
               <span className="text-(--ta-ink)/70">{row.label}…</span>
@@ -790,14 +790,14 @@ function TerminalRow({ row, now, spin, session }: { row: Row; now: number; spin:
     case "heading":
       return (
         <p className="mt-3 flex gap-2">
-          <span className={`${GUTTER} text-(--ta-ink)/45`}>◇</span>
+          <span className={`${GUTTER} text-(--ta-ink)/65`}>◇</span>
           <span className="text-(--ta-ink)">{row.label}</span>
         </p>
       );
     case "plan":
       return (
         <p className={`flex gap-2 ${INDENT} text-(--ta-ink)/70`}>
-          <span className="w-[2ch] shrink-0 tabular-nums text-(--ta-ink)/35">{row.n}</span>
+          <span className="w-[2ch] shrink-0 tabular-nums text-(--ta-ink)/65">{row.n}</span>
           <span className="min-w-0">{row.text}</span>
         </p>
       );
@@ -806,12 +806,12 @@ function TerminalRow({ row, now, spin, session }: { row: Row; now: number; spin:
       return (
         <p className={`flex items-baseline gap-3 ${INDENT}`}>
           <span className="min-w-0 flex-1 break-words">
-            <span className="text-(--ta-ink)/25">{"│  ".repeat(Math.max(0, f.depth - 1))}</span>
-            {f.depth > 0 ? <span className="text-(--ta-ink)/25">{f.last ? "└─ " : "├─ "}</span> : null}
-            <span className={f.name.endsWith("/") ? "text-(--ta-ink)/55" : "text-(--ta-ink)/90"}>{f.name}</span>
+            <span className="text-(--ta-ink)/65">{"│  ".repeat(Math.max(0, f.depth - 1))}</span>
+            {f.depth > 0 ? <span className="text-(--ta-ink)/65">{f.last ? "└─ " : "├─ "}</span> : null}
+            <span className={f.name.endsWith("/") ? "text-(--ta-ink)/65" : "text-(--ta-ink)/90"}>{f.name}</span>
           </span>
           {f.added || f.removed ? (
-            <span className="shrink-0 tabular-nums text-(--ta-ink)/40">
+            <span className="shrink-0 tabular-nums text-(--ta-ink)/65">
               {f.added ? <span className="text-(--ta-ink)/80">+{f.added}</span> : null}
               {f.removed ? <span className="ml-2">−{f.removed}</span> : null}
             </span>
@@ -824,8 +824,8 @@ function TerminalRow({ row, now, spin, session }: { row: Row; now: number; spin:
       return (
         <p className={`flex items-baseline gap-2 ${INDENT}`}>
           {done ? <Tick /> : <Spinner ch={spin} />}
-          <span className={`min-w-0 flex-1 ${done ? "text-(--ta-ink)/80" : "text-(--ta-ink)/55"}`}>{row.test.name}</span>
-          <span className="shrink-0 tabular-nums text-(--ta-ink)/35">{done ? row.test.time : ""}</span>
+          <span className={`min-w-0 flex-1 ${done ? "text-(--ta-ink)/80" : "text-(--ta-ink)/65"}`}>{row.test.name}</span>
+          <span className="shrink-0 tabular-nums text-(--ta-ink)/65">{done ? row.test.time : ""}</span>
         </p>
       );
     }
@@ -854,11 +854,11 @@ function TerminalRow({ row, now, spin, session }: { row: Row; now: number; spin:
     case "prTitle":
       return <p className={`${INDENT} text-(--ta-ink)/70`}>“{session.pr.title}”</p>;
     case "note":
-      return <p className={`${INDENT} text-(--ta-ink)/40`}>{session.pr.note}</p>;
+      return <p className={`${INDENT} text-(--ta-ink)/65`}>{session.pr.note}</p>;
     case "idle":
       return (
         <p className="mt-3">
-          <span className="text-(--ta-ink)/45">❯ </span>
+          <span className="text-(--ta-ink)/65">❯ </span>
           <Cursor />
         </p>
       );
