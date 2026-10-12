@@ -206,6 +206,12 @@ export class DemoPlayer {
       p = this.point(t);
     }
     if (!p) return false;
+    // Reordering moves the destination row underneath a held pointer. Following that row after
+    // crossing it can reverse the reorder repeatedly; a drag lands at the point chosen on arrival.
+    if (this.pressedOn) {
+      await this.glide(p[0], p[1], TIMING.glide);
+      return true;
+    }
     await this.glide(p[0], p[1], TIMING.glide, () => this.point(t));
     // Do not press while an entrance is still moving the button beneath us.
     const settleDeadline = this.win.performance.now() + 2000;
@@ -291,9 +297,9 @@ export class DemoPlayer {
     this.cursor.pulse();
     moveMark(ACTIVE_ATTR, null, el);
     const ok = this.fire(el, "pointerdown", { buttons: 1 });
-    this.fire(el, "mousedown", { buttons: 1 }, true);
+    const mouseOk = this.fire(el, "mousedown", { buttons: 1 }, true);
     // A real press focuses the nearest focusable ancestor (unless prevented).
-    if (ok) {
+    if (ok && mouseOk) {
       const f = el.closest<HTMLElement>(FOCUSABLE);
       if (f && this.win.document.activeElement !== f) this.focusFromPointer(f);
     }

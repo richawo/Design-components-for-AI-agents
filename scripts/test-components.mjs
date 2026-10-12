@@ -52,6 +52,8 @@ if (fs.existsSync(path.join(root, "registry/pro/bento-grid")))
   cases.push("bento-rhythm-probe");
 if (fs.existsSync(path.join(root, "registry/pro/data-query-builder")))
   cases.push("pro-industry-probe", "pro-demo-probe", "pro-select-polish-probe");
+if (fs.existsSync(path.join(root, "registry/pro/agent-plan-steps")))
+  cases.push("demo-native-interactions");
 if (fs.existsSync(path.join(root, "registry/pro/chart-revenue-trend")))
   cases.push("revenue-history-probe");
 if (
