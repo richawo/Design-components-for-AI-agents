@@ -46,10 +46,34 @@ try {
     "pro",
     `createRoot(document.getElementById('root')).render(<Subject.ChartAllocation palette={[]} views={[{key:'edge',label:'Edge cases',slices:[{id:'valid',name:'Valid allocation',value:100,change:1},{id:'zero',name:'Zero allocation',value:0},{id:'negative',name:'Negative allocation',value:-10}]}]}/>);`,
   );
-  await page.getByText(/no comparison/).waitFor();
+  await page.getByText(/100.00%/).waitFor();
   assert.doesNotMatch(
     await page.locator("#root").innerText(),
     /NaN|Infinity|Negative allocation|Zero allocation/,
+  );
+  await mountFixture(
+    page,
+    "chart-allocation",
+    "pro",
+    `createRoot(document.getElementById('root')).render(<Subject.ChartAllocation totalLabel="Operating spend" showComparison={false} decimals={2} views={[{key:'spend',label:'Spend',slices:[{name:'Software',value:68.52}]}]}/>);`,
+  );
+  assert.ok(
+    await page.getByText("Operating spend", { exact: true }).isVisible(),
+  );
+  assert.doesNotMatch(
+    await page.locator("#root").innerText(),
+    /today|all on target/,
+  );
+  await mountFixture(
+    page,
+    "chart-allocation",
+    "pro",
+    `createRoot(document.getElementById('root')).render(<Subject.ChartAllocation views={[{key:'unknown',label:'Unknown',slices:[{name:'Unknown comparison',value:100}]}]}/>);`,
+  );
+  assert.ok(
+    await page
+      .getByText("Comparison not supplied", { exact: true })
+      .isVisible(),
   );
   await mountFixture(
     page,

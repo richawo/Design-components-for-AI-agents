@@ -5771,6 +5771,30 @@
         "type": "string",
         "default": "\"en-US\"",
         "description": "Locale for number formatting."
+      },
+      {
+        "name": "totalLabel",
+        "type": "string",
+        "default": "\"Total balance\"",
+        "description": "Label for the total readout, such as Operating spend."
+      },
+      {
+        "name": "showComparison",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show the supplied change comparison. Missing changes are labelled as unavailable, and a comparison can be hidden for a plain distribution."
+      },
+      {
+        "name": "comparisonLabel",
+        "type": "string",
+        "default": "\"today\"",
+        "description": "Time context for a supplied change comparison."
+      },
+      {
+        "name": "decimals",
+        "type": "number",
+        "default": "0",
+        "description": "Currency precision for exact values in rows and selected-slice details, from zero to six fractional digits."
       }
     ],
     "added": "2026-10-07",
