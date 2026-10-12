@@ -57,7 +57,7 @@ export type SegmentedControlProps = {
 /* ------------------------------------------------------------------ */
 
 /** spring.ui from the library's motion tokens: the pill travels with no bounce. */
-const SPRING_UI = { type: "spring", stiffness: 500, damping: 40 } as const;
+const SPRING_UI = { type: "spring", stiffness: 500, damping: 40, restDelta: 0.001, restSpeed: 0.01 } as const;
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 const EASE_IN_OUT = [0.65, 0, 0.35, 1] as const;
 

@@ -68,3 +68,6 @@ Build a segmented control in React 19 + Tailwind CSS v4 + `motion/react` that fe
 - No scrollbar in the scrolling track, and no fade on a track that is not overflowing.
 - No fade drawn as an overlay that breaks the track's corners or hairline. No fade that covers the selected segment or its focus ring.
 - No hover-only affordances: every segment is reachable and selectable by keyboard and touch.
+
+
+Use spring stiffness 500 and damping 40 with `restDelta: 0.001` and `restSpeed: 0.01` for the selection surface, so fractional-width and scaled controls settle exactly on the measured segment.

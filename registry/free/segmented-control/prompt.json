@@ -33,7 +33,8 @@
     "edges": "mask fade variables transition over 200ms ease-out as a scroll edge appears or disappears",
     "scroll": "selected segment scrolled into view, clear of any faded edge, with a smooth scroll when the selection moves and an instant scroll while the box resizes",
     "demo": "card rises 12px out of an 8px blur over 500ms ease-out; header at 60ms, control at 160ms, column toggle at 260ms; header count tweens from 0 over 500ms and tallies on each change; the header period word cross-fades with a 5px offset and 3px blur over 180ms; column narrows 100% to 216px over 420ms on cubic-bezier(0.65, 0, 0.35, 1) without changing the control's width mode",
-    "reducedMotion": "pill jumps, scroll jumps, column narrows at once, entrance is a 150ms opacity fade; colour transitions stay"
+    "reducedMotion": "pill jumps, scroll jumps, column narrows at once, entrance is a 150ms opacity fade; colour transitions stay",
+    "settlePrecision": "The selection spring uses restDelta 0.001 and restSpeed 0.01 so scaled, fractional segment widths settle on their exact measured bounds."
   },
   "responsive": {
     "equal": "works from 320px upward; at 390px the three segments fit without icons, and where labels cannot fit the track scrolls instead of truncating",
