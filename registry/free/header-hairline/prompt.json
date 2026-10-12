@@ -47,7 +47,8 @@
     "1440": "links centred on the page, search chip with label",
     "1024": "auto|1fr|auto grid, chip shows only ⌘K",
     "768": "burger menu, primary button stays in the bar",
-    "390": "wordmark, search icon, burger; 44px targets"
+    "390": "wordmark, search icon, burger; 44px targets",
+    "measurement": "Measure fractional item bounds relative to the row, correcting for ancestor scale; observe the row and each item for geometry changes."
   },
   "accessibility": [
     "nav aria-label=Main with aria-current=page on the current link",

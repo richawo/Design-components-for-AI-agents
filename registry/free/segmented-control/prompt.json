@@ -38,7 +38,8 @@
   "responsive": {
     "equal": "works from 320px upward; at 390px the three segments fit without icons, and where labels cannot fit the track scrolls instead of truncating",
     "content": "scrolls inside its own box; the page never scrolls sideways",
-    "demo": "card max-width 440px, 24px stage padding and 40px from sm; the demo column narrows to 216px so the overflow shows at every width"
+    "demo": "card max-width 440px, 24px stage padding and 40px from sm; the demo column narrows to 216px so the overflow shows at every width",
+    "measurement": "Measure fractional item bounds relative to the row, correcting for ancestor scale; observe the row and each item for geometry changes."
   },
   "accessibility": [
     "track role=radiogroup with aria-label; each segment a native button with role=radio and aria-checked",

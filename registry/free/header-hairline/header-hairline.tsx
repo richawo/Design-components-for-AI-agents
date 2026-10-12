@@ -340,6 +340,7 @@ function HoverLinks({
   // Measure the <li>s, not the links: each li carries the entrance filter, which makes it the
   // links' offsetParent, so a link's offsetLeft would always read 0.
   const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
+  const listRef = useRef<HTMLUListElement>(null);
   const [hovered, setHovered] = useState<number | null>(null);
   // The current-route dot pops in once, after its link lands; later route changes glide via layoutId instead.
   const [dotLanded, setDotLanded] = useState(false);
@@ -358,8 +359,15 @@ function HoverLinks({
         animate(opacity, 0, { duration: reduce ? 0.1 : 0.16, ease: EASE_IN });
         return;
       }
-      const L = el.offsetLeft;
-      const R = L + el.offsetWidth;
+      const row = listRef.current;
+      if (!row) return;
+      const bounds = row.getBoundingClientRect();
+      const rowWidth = Number.parseFloat(getComputedStyle(row).width);
+      const scale = rowWidth > 0 ? bounds.width / rowWidth : 1;
+      if (!(scale > 0)) return;
+      const target = el.getBoundingClientRect();
+      const L = (target.left - bounds.left) / scale;
+      const R = (target.right - bounds.left) / scale;
       if (!shown.current || reduce) {
         // Appear in place; only glide once it is already visible.
         left.jump(L);
@@ -380,10 +388,19 @@ function HoverLinks({
     moveTo(hovered);
   }, [hovered, moveTo]);
 
+  useEffect(() => {
+    const row = listRef.current;
+    if (!row) return;
+    const observer = new ResizeObserver(() => moveTo(hovered));
+    observer.observe(row);
+    for (const item of itemRefs.current) if (item) observer.observe(item);
+    return () => observer.disconnect();
+  }, [hovered, links, moveTo]);
+
   return (
     <nav aria-label="Main" className="hidden justify-center @4xl:flex">
       <LayoutGroup id={groupId}>
-        <ul className="relative flex items-center" onPointerLeave={() => setHovered(null)}>
+        <ul ref={listRef} className="relative flex items-center" onPointerLeave={() => setHovered(null)}>
           <motion.span
             aria-hidden="true"
             className="pointer-events-none absolute left-0 top-1/2 h-8 -translate-y-1/2 rounded-lg bg-white/[0.075]"

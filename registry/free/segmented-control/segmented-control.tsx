@@ -208,11 +208,17 @@ export function SegmentedControl({
   // painted over by a pill that is passing it, and it follows the track's own scroll for free.
   const measurePill = useCallback(() => {
     const button = buttons.current[selectedIndex];
-    if (!button) {
+    const row = content.current;
+    if (!button || !row) {
       setPill(null);
       return;
     }
-    const next = { x: button.offsetLeft, width: button.offsetWidth };
+    const bounds = row.getBoundingClientRect();
+    const rowWidth = Number.parseFloat(getComputedStyle(row).width);
+    const scale = rowWidth > 0 ? bounds.width / rowWidth : 1;
+    if (!(scale > 0)) return;
+    const target = button.getBoundingClientRect();
+    const next = { x: (target.left - bounds.left) / scale, width: target.width / scale };
     setPill((previous) => (previous && previous.x === next.x && previous.width === next.width ? previous : next));
   }, [selectedIndex]);
 
@@ -249,8 +255,9 @@ export function SegmentedControl({
     });
     observer.observe(box);
     observer.observe(inner);
+    for (const button of buttons.current) if (button) observer.observe(button);
     return () => observer.disconnect();
-  }, [readEdges, measurePill, reveal]);
+  }, [readEdges, measurePill, reveal, items.length]);
 
   // Measured before paint, so the pill is never seen at a stale position.
   useLayoutEffect(() => {
