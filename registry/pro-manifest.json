@@ -18209,12 +18209,14 @@
       {
         "name": "title",
         "type": "string",
-        "description": "Main heading."
+        "description": "Main heading.",
+        "default": "\"Organisation\""
       },
       {
         "name": "subtitle",
         "type": "string",
-        "description": "Supporting context."
+        "description": "Supporting context.",
+        "default": "\"Explore reporting relationships, move through a team and inspect the person behind each role.\""
       },
       {
         "name": "people",
