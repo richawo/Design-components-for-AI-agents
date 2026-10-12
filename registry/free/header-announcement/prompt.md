@@ -42,3 +42,5 @@ Build a slim, monochrome announcement strip that sits above a site header, in Re
 - No full-bleed brand gradient, no orange or tinted badge by default, no marquee scroll, no emoji, no confetti badge.
 - Don't remove the strip with `display: none` — the page below must glide, not jump.
 - Don't loop the shimmer or pulse the badge.
+
+Each announcement slide has an instance-scoped ID that includes its message ID. A leaving slide becomes inert and aria-hidden immediately, so its link cannot stay in the tab order or compete with the new slide while fading.

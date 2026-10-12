@@ -49,7 +49,8 @@
     "aria-live off while rotating, polite when paused",
     "pager buttons labelled 'Announcement n of N' with aria-current",
     "icon-only dismiss labelled 'Dismiss announcements'",
-    "rotation pauses whenever focus is inside the strip"
+    "rotation pauses whenever focus is inside the strip",
+    "Give each slide an instance- and message-scoped ID; exiting slides become inert and aria-hidden immediately while their visual exit finishes."
   ],
   "content": {
     "brand": "Outpost (incident management)",

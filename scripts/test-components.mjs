@@ -15,6 +15,7 @@ const publicCases = [
   "tabs-geometry-probe",
   "tooltip-arrival-probe",
   "pagination-motion-probe",
+  "announcement-transition-probe",
   "table-probe",
   "ime-probe",
   "expansion-inputs-probe",

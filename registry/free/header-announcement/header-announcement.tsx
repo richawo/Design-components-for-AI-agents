@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useId, useRef, useState, type CSSProperties, type ReactNode, type RefObject } from "react";
-import { AnimatePresence, motion, useMotionValue, useReducedMotion, type MotionValue, type Variants } from "motion/react";
+import { AnimatePresence, motion, useIsPresent, useMotionValue, useReducedMotion, type MotionValue, type Variants } from "motion/react";
 
 /* ------------------------------------------------------------------ */
 /* Types                                                                */
@@ -278,25 +278,16 @@ function Strip({
           {/* Message roll: the first message rolls up into place as part of the entrance. */}
           <div className="relative h-full min-w-0 overflow-hidden" aria-live={paused ? "polite" : "off"} aria-atomic="true">
             <AnimatePresence initial custom={dir}>
-              <motion.div
+              <AnnouncementSlide
                 key={current.id}
-                custom={dir}
-                variants={{
-                  enter: (d: number) => (reduce ? { opacity: 0 } : { y: d > 0 ? "100%" : "-100%", opacity: 0, filter: "blur(4px)" }),
-                  center: { y: "0%", opacity: 1, filter: "blur(0px)" },
-                  exit: (d: number) => (reduce ? { opacity: 0 } : { y: d > 0 ? "-100%" : "100%", opacity: 0, filter: "blur(4px)" }),
-                }}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{ duration: reduce ? MOTION.fade : MOTION.roll, ease: EASE_OUT, delay: landed || reduce ? 0 : INTRO.messageAt }}
-                className="absolute inset-0 flex items-center gap-2.5 @2xl:justify-center"
-                id={`${uid}-msg`}
-                aria-roledescription="slide"
-                aria-label={`${index + 1} of ${count}`}
+                direction={dir}
+                reduce={reduce}
+                landed={landed}
+                id={`${uid}-msg-${current.id}`}
+                label={`${index + 1} of ${count}`}
               >
                 <Message message={current} accent={accent} reduce={reduce} shimmerDelay={(landed ? 0 : INTRO.messageAt) + MOTION.shimmerDelay} />
-              </motion.div>
+              </AnnouncementSlide>
             </AnimatePresence>
           </div>
 
@@ -320,6 +311,39 @@ function Strip({
         </div>
       </motion.div>
     </motion.section>
+  );
+}
+
+function AnnouncementSlide({ children, direction, reduce, landed, id, label }: {
+  children: ReactNode;
+  direction: number;
+  reduce: boolean;
+  landed: boolean;
+  id: string;
+  label: string;
+}) {
+  const present = useIsPresent();
+  return (
+    <motion.div
+      id={id}
+      inert={!present}
+      aria-hidden={!present || undefined}
+      aria-roledescription="slide"
+      aria-label={label}
+      custom={direction}
+      variants={{
+        enter: (d: number) => (reduce ? { opacity: 0 } : { y: d > 0 ? "100%" : "-100%", opacity: 0, filter: "blur(4px)" }),
+        center: { y: "0%", opacity: 1, filter: "blur(0px)" },
+        exit: (d: number) => (reduce ? { opacity: 0 } : { y: d > 0 ? "-100%" : "100%", opacity: 0, filter: "blur(4px)" }),
+      }}
+      initial="enter"
+      animate="center"
+      exit="exit"
+      transition={{ duration: reduce ? MOTION.fade : MOTION.roll, ease: EASE_OUT, delay: landed || reduce ? 0 : INTRO.messageAt }}
+      className="absolute inset-0 flex items-center gap-2.5 @2xl:justify-center"
+    >
+      {children}
+    </motion.div>
   );
 }
 
