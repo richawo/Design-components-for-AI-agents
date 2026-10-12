@@ -15063,12 +15063,14 @@
       {
         "name": "title",
         "type": "string",
-        "description": "Main heading."
+        "description": "Main heading.",
+        "default": "\"Size guide\""
       },
       {
         "name": "subtitle",
         "type": "string",
-        "description": "Supporting context."
+        "description": "Supporting context.",
+        "default": "\"Maintain garment measurements in centimetres and preview a clear size guide.\""
       },
       {
         "name": "sizes",
