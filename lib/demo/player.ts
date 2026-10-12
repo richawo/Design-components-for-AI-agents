@@ -189,8 +189,8 @@ export class DemoPlayer {
     if (!r.width || !r.height) return null;
     const [fx, fy] = t.at ?? [0.5, 0.5];
     // Off screen (a tall preview): bring it into view first.
-    if (r.bottom < 0 || r.top > this.win.innerHeight) {
-      el.scrollIntoView({ block: "center", behavior: "instant" as ScrollBehavior });
+    if (r.top < 0 || r.bottom > this.win.innerHeight || r.left < 0 || r.right > this.win.innerWidth) {
+      el.scrollIntoView({ block: "center", inline: "center", behavior: "instant" as ScrollBehavior });
       r = el.getBoundingClientRect();
     }
     return [r.left + r.width * fx, r.top + r.height * fy];

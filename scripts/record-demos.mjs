@@ -62,7 +62,14 @@ if (![30, 60].includes(FPS)) throw new Error("--fps must be 30 or 60");
 function readMeta(slug) {
   for (const tier of ["free", "pro"]) {
     const p = path.join(root, "registry", tier, slug, "meta.json");
-    if (fs.existsSync(p)) return JSON.parse(fs.readFileSync(p, "utf8"));
+    if (fs.existsSync(p)) {
+      if (args.includes("--published-meta")) {
+        const repository = tier === "pro" ? path.join(root, "registry/pro") : root;
+        const file = tier === "pro" ? `${slug}/meta.json` : `registry/free/${slug}/meta.json`;
+        return JSON.parse(execFileSync("git", ["-C", repository, "show", `HEAD:${file}`], { encoding: "utf8" }));
+      }
+      return JSON.parse(fs.readFileSync(p, "utf8"));
+    }
   }
   return null;
 }
@@ -217,8 +224,8 @@ async function record(browser, slug) {
     };
     // Resolve after consecutive stable animation frames inside the page. Keeping
     // this to one browser round trip avoids stretching every recorded step.
-    const pointOf = async (t) => {
-      const r = await page.evaluate(sel => new Promise(resolve => {
+    const pointOf = async (t, moving = false) => {
+      const r = await page.evaluate(({ sel, moving }) => new Promise(resolve => {
         let previous, stable = 0, frame;
         const finish = value => { clearTimeout(timer); cancelAnimationFrame(frame); resolve(value); };
         const timer = setTimeout(() => finish(null), 2500);
@@ -227,19 +234,19 @@ async function record(browser, slug) {
             !node.closest('[inert], [hidden]') && node.getClientRects().length && getComputedStyle(node).visibility !== 'hidden');
           if (el) {
             let b = el.getBoundingClientRect();
-            if (b.bottom < 0 || b.top > innerHeight) {
-              el.scrollIntoView({block:'center',behavior:'instant'});
+            if (b.top < 0 || b.bottom > innerHeight || b.left < 0 || b.right > innerWidth) {
+              el.scrollIntoView({block:'center',inline:'center',behavior:'instant'});
               b = el.getBoundingClientRect();
             }
             const next = {x:b.x,y:b.y,w:b.width,h:b.height};
             stable = previous && Object.keys(next).every(key => Math.abs(next[key]-previous[key]) <= 0.5) ? stable + 1 : 0;
             previous = next;
-            if (b.width && b.height && stable >= 2) return finish(next);
+            if (b.width && b.height && (moving || stable >= 2)) return finish(next);
           } else { previous = undefined; stable = 0; }
           frame = requestAnimationFrame(sample);
         };
         frame = requestAnimationFrame(sample);
-      }), targetSelector(t.name));
+      }), { sel: targetSelector(t.name), moving });
       if (!r) {
         problems.push(`demo target @${t.name} unavailable or still moving when its step ran`);
         return null;
@@ -254,7 +261,9 @@ async function record(browser, slug) {
       if (s.cmd === "wait") await page.waitForTimeout(s.ms);
       else if (s.cmd === "move") await glide(s.point[0] * vw, s.point[1] * vh, timings.glide);
       else if (s.cmd === "hover" || (s.cmd === "click" && s.target)) {
-        const p = await pointOf(s.target);
+        // A marquee stops only after the pointer enters it. Waiting for it
+        // to stop before a hover creates a circular wait. Clicks still settle.
+        const p = await pointOf(s.target, s.cmd === "hover");
         if (!p) continue;
         await glide(p[0], p[1], timings.glide);
         // A container can start resizing after the first measurement. Correct
@@ -384,7 +393,7 @@ if (!slugs.length) {
   console.log("No components with a demo.");
   process.exit(0);
 }
-const browser = await launchChromium(args.includes("--software-rendering") ? {} : { args: [] });
+const browser = await launchChromium(args.includes("--software-rendering") ? {} : { args: ["--mute-audio"] });
 let failed = 0;
 for (const slug of slugs) {
   try {

@@ -92,6 +92,10 @@ export function CardMedia({
     card.addEventListener("focusin", focusIn);
     card.addEventListener("focusout", leave);
     return () => {
+      // Removing a paused showcase's <video> must also stop the detached
+      // decoder. A fresh registration starts only after the scheduler selects it.
+      want.current = false;
+      v.pause();
       handle.release();
       card.removeEventListener("pointerenter", enter);
       card.removeEventListener("pointerleave", leave);
@@ -107,7 +111,7 @@ export function CardMedia({
     if (!v) return;
     v.load();
     if (src && want.current) v.play().catch(() => {});
-  }, [src]);
+  }, [src, video?.mp4, video?.webm]);
 
   return (
     <>
