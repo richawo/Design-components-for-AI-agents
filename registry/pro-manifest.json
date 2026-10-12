@@ -16174,12 +16174,14 @@
       {
         "name": "title",
         "type": "string",
-        "description": "Main heading."
+        "description": "Main heading.",
+        "default": "\"Cash flow scenarios\""
       },
       {
         "name": "subtitle",
         "type": "string",
-        "description": "Supporting context."
+        "description": "Supporting context.",
+        "default": "\"Explore a simple monthly cash model. Compare a proposed scenario with the baseline.\""
       },
       {
         "name": "baseline",
