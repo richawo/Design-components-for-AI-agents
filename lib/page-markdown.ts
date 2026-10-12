@@ -69,9 +69,11 @@ async function home() {
     "",
     site.description,
     "",
-    `${s.total} components: ${s.free} free (MIT) and ${s.pro} Pro, ${s.mobile} of them React Native. Every component ships three ways: a single self-contained source file, a design prompt written like a design director's brief, and the same brief as a JSON prompt.`,
+    `${s.total} components and ${s.blocks} complete blocks: ${s.free} free (MIT) and ${s.pro} Pro, ${s.mobile} of them React Native. Every component ships three ways: a single self-contained source file, a design prompt written like a design director's brief, and the same brief as a JSON prompt.`,
     "",
     ...quickStart(),
+    `Browse complete workflows: [all blocks](${absoluteUrl("/blocks.md")}).`,
+    "",
     "## Browse by category",
     "",
     ...categoriesWithCounts().map(

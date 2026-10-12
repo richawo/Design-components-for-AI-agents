@@ -1,14 +1,13 @@
 @import "tailwindcss" source(none);
 
-/* The shell needs only its own utilities and the four embedded showcases.
+/* The shell needs only its own utilities and the embedded homepage components.
    Full registry styles load inside /preview, not on every site page. */
 @source "../app";
 @source "../components";
 @source "../lib";
 @source "../registry/free/segmented-control";
 @source "../registry/free/chart-portfolio";
-@source "../registry/free/pixel-matrix-display";
-@source "../registry/pro/three-particle-sphere";
+@source "../registry/free/date-booking-slots";
 
 /* Code retains its reading direction inside Arabic articles. */
 html[dir="rtl"] .site-prose pre,
