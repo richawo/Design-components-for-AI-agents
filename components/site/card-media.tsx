@@ -56,6 +56,12 @@ export function CardMedia({
     const card = v?.closest("a");
     if (!v || !card || !video || !videoAllowed()) return;
 
+    const restart = () => {
+      setShowing(false);
+      v.pause();
+      if (v.readyState > 0) v.currentTime = 0;
+      v.play().catch(() => {});
+    };
     const handle = registerCard(card, {
       setLoaded(loaded) {
         if (!loaded) setShowing(false);
@@ -64,15 +70,21 @@ export function CardMedia({
       setPlaying(playing) {
         want.current = playing;
         if (!playing) v.pause();
-        else if (committed.current) v.play().catch(() => {});
+        else if (committed.current) restart();
         // Otherwise the source is still committing; the effect below starts it.
       },
     });
     // A hover-only recording may mount after pointer/focus entry already fired.
     if (card.matches(":hover, :focus-visible")) handle.engage(true);
-    const enter = (e: PointerEvent) => e.pointerType === "mouse" && handle.engage(true);
+    const engage = () => {
+      // In-view autoplay may already be halfway through its loop. Entering
+      // deliberately always starts the walkthrough at its first state.
+      if (committed.current && want.current) restart();
+      handle.engage(true);
+    };
+    const enter = (e: PointerEvent) => e.pointerType === "mouse" && engage();
     const leave = () => handle.engage(false);
-    const focusIn = () => card.matches(":focus-visible") && handle.engage(true);
+    const focusIn = () => card.matches(":focus-visible") && engage();
     card.addEventListener("pointerenter", enter);
     card.addEventListener("pointerleave", leave);
     card.addEventListener("focusin", focusIn);

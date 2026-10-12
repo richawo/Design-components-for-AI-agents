@@ -80,7 +80,7 @@ export default function HomePage() {
             <PreviewCaption name="Portfolio Chart" hint="Scrub the line or change the period." href="/components/chart-portfolio" />
           </div>
           <div className="min-w-0">
-            <div className="min-h-[360px] rounded-[22px] bg-[#f3f3f1] p-3 sm:p-6"><BookingSlots theme="light" /></div>
+            <div className="min-h-[360px] rounded-[22px] bg-[#0a0a0b] p-3 sm:p-6"><BookingSlots theme="dark" /></div>
             <PreviewCaption name="Booking Slot Selector" hint="Choose a day, then an available time." href="/components/date-booking-slots" />
           </div>
         </div>
