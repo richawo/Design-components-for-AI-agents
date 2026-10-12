@@ -1569,7 +1569,12 @@ function SleepCard({ day, intro, reduce }: Omit<CardProps, "uid" | "accent">) {
 /* Component                                                            */
 /* ------------------------------------------------------------------ */
 
-export function MobileHealthSummary({
+export function MobileHealthSummary(props: MobileHealthSummaryProps) {
+  if (props.days?.length === 0) return <View style={{ flex: 1, backgroundColor: "#080808", padding: 28, justifyContent: "center", alignItems: "center" }}><Text accessibilityRole="header" style={{ color: "#f5f5f5", fontSize: 24, fontWeight: "600", textAlign: "center" }}>No summaries available</Text><Text style={{ color: "#a3a3a3", fontSize: 14, lineHeight: 21, textAlign: "center", marginTop: 12 }}>Your daily summary will appear when data is available.</Text></View>;
+  return <HealthSummaryContent {...props} />;
+}
+
+function HealthSummaryContent({
   title = "Summary",
   initials = "NA",
   rings = DEFAULT_RINGS,
