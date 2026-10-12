@@ -9008,12 +9008,14 @@
       {
         "name": "title",
         "type": "string",
-        "description": "Main heading."
+        "description": "Main heading.",
+        "default": "\"Product bundle\""
       },
       {
         "name": "subtitle",
         "type": "string",
-        "description": "Supporting context."
+        "description": "Supporting context.",
+        "default": "\"Compose an offer from real inventory, with a clear view of price and capacity.\""
       },
       {
         "name": "products",
