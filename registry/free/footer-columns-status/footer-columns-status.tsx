@@ -493,7 +493,7 @@ export function FooterColumnsStatus({
             <motion.div variants={v} custom={at(barAt, 0)}>
               <StatusPill status={status} label={statusLabels[status]} href={statusHref} uptime={uptime} start={barAt} reduce={reduce} />
             </motion.div>
-            <motion.p variants={v} custom={at(barAt, T.barStep)} className="hidden font-mono text-[11px] uppercase tracking-[0.12em] text-white/40 @2xl:block">
+            <motion.p variants={v} custom={at(barAt, T.barStep)} className="hidden font-mono text-[11px] uppercase tracking-[0.12em] text-white/65 @2xl:block">
               {copyright}
             </motion.p>
           </div>
@@ -505,7 +505,7 @@ export function FooterColumnsStatus({
               <ThemeSwitch value={currentTheme} onChange={pickTheme} compact={compact} />
             </motion.div>
           </div>
-          <motion.p variants={v} custom={at(barAt, T.barStep * 4)} className="pt-2 font-mono text-[11px] uppercase tracking-[0.12em] text-white/40 @2xl:hidden">
+          <motion.p variants={v} custom={at(barAt, T.barStep * 4)} className="pt-2 font-mono text-[11px] uppercase tracking-[0.12em] text-white/65 @2xl:hidden">
             {copyright}
           </motion.p>
         </motion.div>
@@ -537,7 +537,7 @@ function BrandBlock({
             {brand.name}
           </motion.span>
         </a>
-        <motion.p variants={v} custom={delay + T.item * 2} className="mt-4 max-w-[30ch] text-pretty text-[15px] leading-[1.6] text-white/55">
+        <motion.p variants={v} custom={delay + T.item * 2} className="mt-4 max-w-[30ch] text-pretty text-[15px] leading-[1.6] text-white/65">
           {description}
         </motion.p>
       </div>
@@ -550,7 +550,7 @@ function BrandBlock({
         >
           <span className="rounded-full bg-white/[0.08] px-2 py-0.5 font-mono text-[10.5px] tracking-[0.02em] text-white/85 tabular-nums">{release.version}</span>
           <span className="truncate">{release.label}</span>
-          <Arrow className="size-3 shrink-0 text-white/45 transition-[transform,color] duration-150 group-hover:translate-x-0.5 group-hover:text-white/80" />
+          <Arrow className="size-3 shrink-0 text-white/65 transition-[transform,color] duration-150 group-hover:translate-x-0.5 group-hover:text-white/80" />
         </motion.a>
       ) : null}
     </div>
@@ -609,7 +609,7 @@ function LinkColumn({
           </button>
         </motion.h3>
       ) : (
-        <motion.h3 id={headId} variants={v} custom={delay} className="font-mono text-[11px] uppercase tracking-[0.14em] text-white/40">
+        <motion.h3 id={headId} variants={v} custom={delay} className="font-mono text-[11px] uppercase tracking-[0.14em] text-white/65">
           {column.title}
         </motion.h3>
       )}
@@ -628,7 +628,7 @@ function LinkColumn({
                 href={l.href}
                 target={l.external ? "_blank" : undefined}
                 rel={l.external ? "noreferrer" : undefined}
-                className={`inline-flex max-w-full items-center gap-2 rounded-[5px] text-[14.5px] tracking-[-0.005em] text-white/60 transition-[color] duration-150 group-has-[a:hover]/list:text-white/40 group-has-[a:focus-visible]/list:text-white/40 hover:text-white! focus-visible:text-white! active:translate-y-px ${FOCUS} ${
+                className={`inline-flex max-w-full items-center gap-2 rounded-[5px] text-[14.5px] tracking-[-0.005em] text-white/60 transition-[color] duration-150 group-has-[a:hover]/list:text-white/65 group-has-[a:focus-visible]/list:text-white/65 hover:text-white! focus-visible:text-white! active:translate-y-px ${FOCUS} ${
                   compact ? "min-h-11" : "min-h-8"
                 }`}
               >
@@ -747,7 +747,7 @@ function StatusPill({
         </AnimatePresence>
       </span>
       {uptime !== null ? (
-        <span className="flex items-center gap-2.5 font-mono text-[11px] text-white/45">
+        <span className="flex items-center gap-2.5 font-mono text-[11px] text-white/65">
           <span aria-hidden="true" className="h-3 w-px bg-white/[0.12]" />
           <motion.span className="inline-block tabular-nums" style={{ filter }} aria-hidden="true">
             {figure}
@@ -755,7 +755,7 @@ function StatusPill({
           <span className="sr-only">{`${uptime.toFixed(2)}% uptime over 90 days`}</span>
         </span>
       ) : null}
-      <Arrow className="-ml-0.5 size-3 text-white/35 transition-[transform,color] duration-150 group-hover:translate-x-0.5 group-hover:text-white/70" />
+      <Arrow className="-ml-0.5 size-3 text-white/65 transition-[transform,color] duration-150 group-hover:translate-x-0.5 group-hover:text-white/70" />
     </a>
   );
 }
@@ -830,7 +830,7 @@ function ThemeSwitch({ value, onChange, compact }: { value: FooterTheme; onChang
             onKeyDown={(e) => onKey(e, i)}
             className={`relative flex items-center justify-center rounded-full transition-[color,scale] duration-150 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-white/70 active:scale-[0.94] ${
               compact ? "size-11" : "size-[30px]"
-            } ${on ? "text-white" : "text-white/45 hover:text-white/85"}`}
+            } ${on ? "text-white" : "text-white/65 hover:text-white/85"}`}
           >
             {on ? (
               <motion.span
@@ -863,7 +863,8 @@ function LocaleSelect({
   const id = useId();
   const selected = locales.findIndex((l) => l.code === value);
   const current = locales[selected] ?? locales[0];
-  const lb = useListbox(locales.length, selected, (i) => onChange(locales[i].code));
+  const lb = useListbox(locales.length, selected, (i) => { if (locales[i]) onChange(locales[i].code); });
+  if (!current) return null;
 
   return (
     <div ref={lb.wrapRef} className="relative">
@@ -881,7 +882,7 @@ function LocaleSelect({
           lb.open ? "bg-white/[0.06] text-white" : "bg-white/[0.025]"
         } ${compact ? "h-[50px]" : "h-9"}`}
       >
-        <svg viewBox="0 0 16 16" fill="none" className="size-[15px] text-white/50" aria-hidden="true">
+        <svg viewBox="0 0 16 16" fill="none" className="size-[15px] text-white/65" aria-hidden="true">
           <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.2" />
           <path d="M2 8h12M8 2c1.7 1.7 2.5 3.7 2.5 6S9.7 12.3 8 14M8 2C6.3 3.7 5.5 5.7 5.5 8s.8 4.3 2.5 6" stroke="currentColor" strokeWidth="1.2" />
         </svg>
@@ -889,7 +890,7 @@ function LocaleSelect({
         <motion.svg
           viewBox="0 0 16 16"
           fill="none"
-          className="size-3 text-white/40"
+          className="size-3 text-white/65"
           aria-hidden="true"
           initial={false}
           animate={{ rotate: lb.open ? 180 : 0 }}
@@ -970,7 +971,7 @@ function LocaleOption({
     >
       {active ? <motion.span layoutId={highlightId} transition={reduce ? { duration: 0 } : SPRING_UI} className="absolute inset-0 rounded-[9px] bg-white/[0.07]" /> : null}
       <span className="relative flex-1 truncate">{locale.label}</span>
-      <span className="relative font-mono text-[10.5px] tracking-[0.04em] text-white/35">{locale.code}</span>
+      <span className="relative font-mono text-[10.5px] tracking-[0.04em] text-white/65">{locale.code}</span>
       <span className="relative flex w-3.5 justify-center" aria-hidden="true">
         {selected ? (
           <svg viewBox="0 0 16 16" fill="none" className="size-3.5 text-white">
@@ -1032,7 +1033,7 @@ export default function FooterColumnsStatusDemo({ status: forcedStatus, theme: f
   return (
     <div className="flex min-h-dvh flex-col justify-between bg-black">
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4 }} className="flex justify-center px-5 pb-10 pt-8">
-        <div className="flex items-center gap-3 font-mono text-[10.5px] uppercase tracking-[0.14em] text-white/35">
+        <div className="flex items-center gap-3 font-mono text-[10.5px] uppercase tracking-[0.14em] text-white/65">
           <span>Preview status</span>
           <div className="flex rounded-full p-0.5 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]">
             {(["ok", "degraded", "outage"] as const).map((s) => (
