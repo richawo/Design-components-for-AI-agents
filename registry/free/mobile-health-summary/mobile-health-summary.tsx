@@ -834,7 +834,7 @@ function WeekSelector({
 
   return (
     <Surface radius={22}>
-      <View style={styles.weekInner} onLayout={(e: LayoutChangeEvent) => setWidth(e.nativeEvent.layout.width)}>
+      <View accessibilityRole="tablist" accessibilityLabel="Day of the week" style={styles.weekInner} onLayout={(e: LayoutChangeEvent) => setWidth(e.nativeEvent.layout.width)}>
         {itemW > 0 ? (
           <Animated.View pointerEvents="none" style={[styles.pill, { width: itemW - 4 }, pillMotion]}>
             <LinearGradient colors={["rgba(255,255,255,0.15)", "rgba(255,255,255,0.06)"]} style={StyleSheet.absoluteFill} />
@@ -852,7 +852,7 @@ function WeekSelector({
               {...demoTarget(`day-${i}`)}
               accessibilityRole="tab"
               accessibilityLabel={d.dateLabel}
-              accessibilityState={{ selected: isSelected, disabled: !!d.future }}
+              accessibilityState={{ selected: isSelected, disabled: !!d.future }} aria-disabled={!!d.future} aria-selected={isSelected}
               style={[styles.dayItem, d.future ? styles.dayFuture : null]}
             >
               <Text style={[styles.dayLetter, { color: isSelected ? COLOR.ink : COLOR.sub }]}>{d.letter}</Text>
@@ -1466,7 +1466,7 @@ function SleepBar({ sleep, delay, reduce }: { sleep: SleepStages; delay: number;
     });
   }, [sleep, grow, reduce]);
   return (
-    <View style={styles.sleepBar} accessible accessibilityLabel={SLEEP_STAGES.map((s) => `${s.label} ${hm(sleep[s.key])}`).join(", ")}>
+    <View style={styles.sleepBar} accessibilityRole="image" accessible accessibilityLabel={SLEEP_STAGES.map((s) => `${s.label} ${hm(sleep[s.key])}`).join(", ")}>
       {SLEEP_STAGES.map((s, i) => (
         <SleepSegment key={s.key} grow={grow[i]} tone={s.tone} delay={delay + i * 70} gap={i < SLEEP_STAGES.length - 1 ? 2 : 0} reduce={reduce} />
       ))}
