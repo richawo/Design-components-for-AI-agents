@@ -307,7 +307,7 @@ function Strip({
                 data-demo="dismiss"
                 onClick={() => onDismiss(current.id)}
                 aria-label="Dismiss announcements"
-                className="relative z-10 flex size-11 items-center justify-center rounded-lg text-white/45 outline-none transition-[color,background-color,transform] duration-150 hover:bg-white/[0.06] hover:text-white active:scale-[0.94] focus-visible:ring-2 focus-visible:ring-white/70 @2xl:size-7 @2xl:rounded-md"
+                className="relative z-10 flex size-11 items-center justify-center rounded-lg text-white/65 outline-none transition-[color,background-color,transform] duration-150 hover:bg-white/[0.06] hover:text-white active:scale-[0.94] focus-visible:ring-2 focus-visible:ring-white/70 @2xl:size-7 @2xl:rounded-md"
               >
                 <svg viewBox="0 0 16 16" className="size-3.5" fill="none" aria-hidden="true">
                   <path d="m4 4 8 8m0-8-8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
@@ -472,7 +472,7 @@ export default function HeaderAnnouncementDemo({ open: forcedOpen, onDismiss, ..
         </motion.div>
       </div>
       <main className="mx-auto max-w-[1280px] px-4 pb-20 pt-12 sm:px-6 sm:pt-16">
-        <motion.p variants={rise} initial="hidden" animate="shown" custom={at(1)} className="font-mono text-[11px] uppercase tracking-[0.14em] text-white/40">
+        <motion.p variants={rise} initial="hidden" animate="shown" custom={at(1)} className="font-mono text-[11px] uppercase tracking-[0.14em] text-white/65">
           Release notes · 3.0 · 9 Oct 2026
         </motion.p>
         <motion.h1
@@ -497,9 +497,9 @@ export default function HeaderAnnouncementDemo({ open: forcedOpen, onDismiss, ..
               custom={at(4 + i)}
               className="grid grid-cols-[32px_1fr] gap-x-4 gap-y-1.5 border-t border-white/[0.08] py-5 sm:grid-cols-[48px_240px_1fr] sm:gap-x-6"
             >
-              <p className="font-mono text-[11px] leading-[22px] tabular-nums text-white/35">{n.k}</p>
+              <p className="font-mono text-[11px] leading-[22px] tabular-nums text-white/65">{n.k}</p>
               <p className="text-[15px] font-medium leading-[22px] tracking-[-0.015em]">{n.title}</p>
-              <p className="col-start-2 text-pretty text-[14px] leading-[1.6] text-white/55 sm:col-start-3">{n.body}</p>
+              <p className="col-start-2 text-pretty text-[14px] leading-[1.6] text-white/65 sm:col-start-3">{n.body}</p>
             </motion.li>
           ))}
         </ol>
@@ -520,7 +520,7 @@ function BringBack({ onClick, children }: { onClick: () => void; children: React
         type="button"
         data-demo="bring-back"
         onClick={onClick}
-        className="h-9 rounded-full px-4 font-mono text-[11.5px] uppercase tracking-[0.12em] text-white/45 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1)] outline-none transition-[color,background-color,transform] duration-150 hover:bg-white/[0.04] hover:text-white active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-white/70"
+        className="h-9 rounded-full px-4 font-mono text-[11.5px] uppercase tracking-[0.12em] text-white/65 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1)] outline-none transition-[color,background-color,transform] duration-150 hover:bg-white/[0.04] hover:text-white active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-white/70"
       >
         {children}
       </button>
