@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react";
 import Link from "next/link";
-import { useEffect, useId, useState, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { configuredPrompt, configuredSnippet, diffValues, isReplay } from "@/lib/demo/protocol";
 import { optionOf } from "@/lib/demo/schema.mjs";
 import { fetchProSource } from "@/lib/pro-source-client";
@@ -37,11 +37,19 @@ export type ControlsPanelProps = {
  */
 export function ControlsPanel(p: ControlsPanelProps) {
   const uid = useId();
+  const container = useRef<HTMLElement>(null);
+  const [near, setNear] = useState(false);
+  useEffect(() => {
+    const node = container.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) { setNear(true); observer.disconnect(); } }, { rootMargin: "100px" });
+    observer.observe(node);return () => observer.disconnect();
+  }, []);
   const [proPrompt, setProPrompt] = useState<string | null>(null);
   const [promptError, setPromptError] = useState(false);
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
-    if (p.tier !== "pro" || p.prompt) return;
+    if (p.tier !== "pro" || p.prompt || !near) return;
     let live = true;
     setPromptError(false);
     setProPrompt(null);
@@ -49,14 +57,14 @@ export function ControlsPanel(p: ControlsPanelProps) {
     return () => {
       live = false;
     };
-  }, [p.tier, p.prompt, p.slug, attempt]);
+  }, [p.tier, p.prompt, p.slug, attempt, near]);
 
   const prompt = p.prompt ?? (typeof proPrompt === "string" && proPrompt !== "locked" ? proPrompt : null);
   const tuned = Object.keys(diffValues(p.controls, p.values)).length;
   const groups = groupControls(p.controls);
 
   return (
-    <section aria-labelledby={`${uid}-h`} className="border-t border-white/[0.06] px-3 pb-4 pt-3.5 sm:px-4 sm:pb-5">
+    <section ref={container} aria-labelledby={`${uid}-h`} className="border-t border-white/[0.06] px-3 pb-4 pt-3.5 sm:px-4 sm:pb-5">
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2.5">
         <div className="flex items-center gap-2.5">
           <h2 id={`${uid}-h`} className="font-mono text-[11px] uppercase tracking-[0.14em] text-site-fg-3">

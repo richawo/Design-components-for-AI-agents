@@ -307,6 +307,7 @@ export function PreviewFrame({
       </div>
       {controls.length > 0 && (
         <ControlsPanel
+          key={slug}
           slug={slug}
           name={name}
           tier={tier}

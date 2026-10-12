@@ -98,10 +98,29 @@ try {
       body: JSON.stringify({ active: true }),
     }),
   );
+  let sourceRequests = 0;
+  const sourceRoute = "**/api/pro/source/saas-audit-trail";
+  await page.route(sourceRoute, (route) => {
+    sourceRequests++;
+    return route.fulfill({
+      contentType: "application/json",
+      body: JSON.stringify({
+        code: "licensed fixture",
+        codeHtml: "<pre>licensed fixture</pre>",
+        prompt: "fixture",
+        promptJson: "{}",
+        promptJsonHtml: "<pre>{}</pre>",
+      }),
+    });
+  });
   await page.goto(`${base}/components/saas-audit-trail`, {
     waitUntil: "networkidle",
   });
   await page.locator('[data-pro-access="active"]').waitFor();
+  assert.equal(sourceRequests, 0, "Checking access must not download source");
+  await page.locator("#source").scrollIntoViewIfNeeded();
+  await page.getByText("licensed fixture", { exact: true }).waitFor();
+  assert.equal(sourceRequests, 1, "Source loads when its panel is reached");
   assert.equal(
     await page
       .locator("#installation")
