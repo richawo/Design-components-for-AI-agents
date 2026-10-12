@@ -5544,6 +5544,87 @@
     ]
   },
   {
+    "slug": "block-saas-landing",
+    "name": "SaaS Product Landing Page",
+    "tier": "pro",
+    "platform": "web",
+    "category": "hero",
+    "description": "A complete monochrome launch page with navigation, kinetic introduction, scroll-led workflow, plan comparison and a context-aware workspace request form.",
+    "tags": [
+      "block",
+      "landing-page",
+      "composition",
+      "keyboard",
+      "monochrome"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1050,
+    "usage": "import { SaasLanding } from \"@/components/design-for-ai/block-saas-landing\";\n\n<SaasLanding />",
+    "props": [
+      {
+        "name": "brand",
+        "type": "string",
+        "default": "\"Ledgerline\"",
+        "description": "Product identity across the page."
+      },
+      {
+        "name": "plans",
+        "type": "LandingPlan[]",
+        "description": "Unique plan IDs, display prices, units and CTA labels. Choices lead to the request form with the selected plan context."
+      },
+      {
+        "name": "groups",
+        "type": "MatrixGroup[]",
+        "description": "Feature groups with values aligned to the supplied plan order."
+      },
+      {
+        "name": "onStart",
+        "type": "(request: WorkspaceStartRequest) => Promise<void>",
+        "description": "Accept a workspace request containing the valid email and chosen plan ID. Reject to preserve the address for retry; account creation and billing remain host flows."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Paper or dark page; navigation stays on a black surface."
+      }
+    ],
+    "added": "2026-10-12",
+    "kind": "block",
+    "blockType": "landing-page",
+    "components": [
+      "header-hairline",
+      "hero-blur-statement",
+      "feature-sticky-scroll",
+      "pricing-comparison-matrix",
+      "footer-newsletter"
+    ],
+    "demo": {
+      "steps": [
+        "wait:450",
+        "click:@cta",
+        "wait:2200"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "block-workspace-settings",
     "name": "Workspace Settings Page",
     "tier": "pro",

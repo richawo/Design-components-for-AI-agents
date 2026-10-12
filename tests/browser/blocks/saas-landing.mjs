@@ -1,0 +1,7 @@
+export async function check({page,mount,assert}){
+ await mount(`window.calls=[];window.attempt=0;createRoot(document.getElementById('root')).render(<Subject.SaasLanding onStart={async request=>{window.calls.push(request);if(!window.attempt++)throw Error('fixture');}}/>);`);
+ await page.getByRole('link',{name:'Choose Studio',exact:true}).click();await page.getByRole('heading',{name:'Your Studio workspace.',exact:true}).waitFor();const email=page.getByRole('textbox',{name:/Email/i});await email.fill('person@studio.example');await page.getByRole('button',{name:'Request workspace',exact:true}).click();await page.getByText('The request failed. Your email is still here; please try again.',{exact:true}).waitFor();
+ await page.getByRole('button',{name:'Retry',exact:true}).click();await page.getByText('Your Studio workspace request is received.',{exact:true}).waitFor();assert.deepEqual(await page.evaluate(()=>window.calls),[{email:'person@studio.example',planId:'studio'},{email:'person@studio.example',planId:'studio'}]);
+ await mount(`createRoot(document.getElementById('root')).render(<Subject.SaasLanding/>);`);await page.getByRole('textbox',{name:/Email/i}).fill('person@studio.example');await page.getByRole('button',{name:'Request workspace',exact:true}).click();await page.getByText('Workspace requests are currently unavailable.',{exact:true}).waitFor();
+ await mount(`createRoot(document.getElementById('root')).render(<Subject.SaasLanding plans={[]} groups={[]}/>);`);assert.ok(await page.getByText('Pricing is currently unavailable.').isVisible());
+}

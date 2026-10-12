@@ -3390,5 +3390,19 @@
       "block-fashion-workspace"
     ],
     "updated": "2026-10-12"
+  },
+  "block-saas-landing": {
+    "useWhen": "A SaaS launch needs one considered story from the product introduction through workflow, plan comparison and an actionable request form.",
+    "avoidWhen": "A checkout, authentication service or immediate subscription entitlement implemented only in frontend state.",
+    "integration": [
+      "Replace `plans` and `groups` with your actual offer. The example prices and workflow records are clearly labelled sample data.",
+      "Plan CTAs carry their plan ID to the request form. Pending requests lock the plan comparison, and rejected requests retain the email.",
+      "Connect `onStart` to your signup or request service. Each anchor reaches a real section, and the default export uses a local offline example."
+    ],
+    "related": [
+      "block-saas-dashboard",
+      "block-workspace-settings"
+    ],
+    "updated": "2026-10-12"
   }
 }
