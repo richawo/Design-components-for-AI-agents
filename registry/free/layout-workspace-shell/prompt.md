@@ -18,3 +18,9 @@ Use brief opacity and position entrances with reduced-motion alternatives. Avoid
 Also export WorkspacePanels, with activeId and panels ({ id, content }). Keep every supplied view mounted so unfinished drafts survive a switch. Measure the active view with ResizeObserver and animate the container height without scaling text. Fade inactive views out, make them inert and hidden from assistive technology immediately, then hide them visually after the exit. Unique panel IDs keep their state independent.
 
 Header controls must stack above the page panels. Do not clip their menus at the shell edge; preserve the rounded identity rail with its own corner radii.
+
+## Application navigation
+
+For dashboards and workspaces, supply activeId and onNavigate. Render real tab buttons with roving focus, arrow/Home/End support, aria-selected and aria-controls pointing at unique host panel IDs. Use WorkspacePanels to retain unfinished drafts. A fixed-height shell keeps its navigation and header visible while only the current content pane scrolls. Without onNavigate, retain normal route and document-anchor links.
+
+WorkspacePanels also accepts fill for fixed-height applications. In that mode it fills the content pane, retains independent scroll positions and fades views without resizing the surrounding application.

@@ -12,7 +12,8 @@
     "components": [],
     "container": "Responsive to the host container; narrow screens use a single column",
     "retainedViews": "WorkspacePanels accepts activeId and panels with unique IDs and React content. Measure the active view, animate height, retain mounted drafts and make inactive content inert.",
-    "headerControls": "Header actions stack above main content; the shell does not clip dropdown menus."
+    "headerControls": "Header actions stack above main content; the shell does not clip dropdown menus.",
+    "applicationNavigation": "Controlled activeId and onNavigate render keyboard-accessible view tabs; retain ordinary routes and anchors when not supplied. Fixed-height shells keep the identity, navigation and header visible while the content pane scrolls."
   },
   "typography": {
     "heading": "font-display, medium weight, tight tracking",

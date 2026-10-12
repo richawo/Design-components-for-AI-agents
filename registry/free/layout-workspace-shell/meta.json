@@ -72,6 +72,21 @@
       "name": "className",
       "type": "string",
       "description": "Host layout classes."
+    },
+    {
+      "name": "activeId",
+      "type": "string",
+      "description": "Controlled selected view. Pair with onNavigate for real tab navigation; omit both for normal route or anchor links."
+    },
+    {
+      "name": "onNavigate",
+      "type": "(id: string) => void",
+      "description": "Turns navigation into keyboard-accessible tabs. The host changes activeId and the corresponding WorkspacePanels view."
+    },
+    {
+      "name": "contentClassName",
+      "type": "string",
+      "description": "Host classes on the scrolling content pane. A fixed-height shell keeps navigation and header in place."
     }
   ],
   "added": "2026-10-12",
