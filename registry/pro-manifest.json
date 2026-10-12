@@ -9391,12 +9391,14 @@
       {
         "name": "title",
         "type": "string",
-        "description": "Main heading."
+        "description": "Main heading.",
+        "default": "\"Promotion rules\""
       },
       {
         "name": "subtitle",
         "type": "string",
-        "description": "Supporting context."
+        "description": "Supporting context.",
+        "default": "\"Define the offer, then see exactly how it behaves against a test basket.\""
       },
       {
         "name": "basket",
@@ -9418,6 +9420,12 @@
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
         "description": "Surface, border and ink palette."
+      },
+      {
+        "name": "selectMode",
+        "type": "\"custom\" | \"native\"",
+        "default": "\"custom\"",
+        "description": "Animated keyboard-accessible custom listboxes, or native platform pickers with matched 12px insets."
       }
     ],
     "added": "2026-10-11",
@@ -9441,6 +9449,16 @@
           "light"
         ],
         "default": "dark"
+      },
+      {
+        "prop": "selectMode",
+        "label": "Select menus",
+        "kind": "segmented",
+        "options": [
+          "custom",
+          "native"
+        ],
+        "default": "custom"
       }
     ]
   },

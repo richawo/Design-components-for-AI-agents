@@ -1,13 +1,13 @@
-export async function check({page,mount,assert}){
+export async function check({page,mount,assert,choose}){
  await mount(`window.rules=[];window.fail=true;createRoot(document.getElementById('root')).render(<Subject.PromotionBuilder onSave={async p=>{window.rules.push(p);if(window.fail)throw Error('offline')}}/>);`);
  assert.match(await page.locator('dl').innerText(),/£65.00/);
  await page.getByRole('button',{name:'Returning',exact:true}).click();
  assert.match(await page.locator('dl').innerText(),/£80.00/);
  assert.match(await page.getByRole('status').first().innerText(),/outside the selected audience/);
  await page.getByRole('button',{name:'New customer',exact:true}).click();
- await page.getByRole('combobox',{name:'Eligible category',exact:true}).selectOption('Accessories');
+ await choose(page.getByRole('combobox',{name:'Eligible category',exact:true}), 'Accessories');
  assert.match(await page.locator('dl').innerText(),/£75.20/);
- await page.getByRole('combobox',{name:'Discount type',exact:true}).selectOption('fixed');
+ await choose(page.getByRole('combobox',{name:'Discount type',exact:true}), 'fixed');
  await page.getByRole('textbox',{name:'Discount value',exact:true}).fill('100.00');
  await page.getByRole('textbox',{name:'Maximum saving',exact:true}).fill('');
  assert.match(await page.locator('dl').innerText(),/£56.00/);
