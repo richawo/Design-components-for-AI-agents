@@ -36,7 +36,7 @@ function onScreen(el: Element): boolean {
  * the rest wait to be scrolled to. Tabular numerals and a reserved width mean
  * nothing around it reflows.
  */
-export function CountUp({ value, pad = 0, delay = 0, className = "" }: { value: number; pad?: number; delay?: number; className?: string }) {
+export function CountUp({ value, pad = 0, delay = 0, className = "", initialAnimation = true }: { value: number; pad?: number; delay?: number; className?: string; initialAnimation?: boolean }) {
   const root = useRef<HTMLSpanElement>(null);
   const digits = useRef<HTMLSpanElement>(null);
   const shown = useRef<number | null>(null);
@@ -57,7 +57,7 @@ export function CountUp({ value, pad = 0, delay = 0, className = "" }: { value: 
     const el = root.current!;
     const visible = onScreen(el);
     const settled = visible && !mountedOnClient.current && performance.now() > SETTLED_AFTER_MS;
-    if (reduce || settled || countStart(value) === value) {
+    if (!initialAnimation || reduce || settled || countStart(value) === value) {
       shown.current = value;
       return;
     }
@@ -73,6 +73,7 @@ export function CountUp({ value, pad = 0, delay = 0, className = "" }: { value: 
     const target = format(value);
     if (reduce) {
       el.textContent = target;
+      el.style.filter = "";
       shown.current = value;
       setSizer(target);
       return;
@@ -105,10 +106,12 @@ export function CountUp({ value, pad = 0, delay = 0, className = "" }: { value: 
     // The widest figure reserves the width through a pseudo-element, so the page text reads "89", not "8989".
     <span
       ref={root}
+      data-animated-number
+      data-target={value}
       data-sizer={sizer}
       className={`inline-grid tabular-nums before:invisible before:col-start-1 before:row-start-1 before:content-[attr(data-sizer)] ${className}`}
     >
-      <span ref={digits} className="col-start-1 row-start-1 text-right" suppressHydrationWarning>
+      <span ref={digits} data-number-digits className="col-start-1 row-start-1 text-right" suppressHydrationWarning>
         {initial}
       </span>
     </span>

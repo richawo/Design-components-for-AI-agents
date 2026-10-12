@@ -51,3 +51,5 @@ Build a product hero in React + Tailwind CSS v4 with `motion/react`: headline, s
 
 **Don’t**
 - No coloured traffic lights, hue-per-avatar, gradient borders, glass or glow around the window. No gold fills or gold text: the accent is a dot or a meter. Don’t pop the window in as one block, don’t start the meter before its card lands, don’t keep tilting after it’s flat, and don’t hijack page scroll.
+
+Subsequent numeric changes move from the currently displayed value in either direction. A quick reversal continues from its interrupted position. Reduced motion shows the target immediately and clears any residual blur.

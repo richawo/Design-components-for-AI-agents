@@ -17,6 +17,7 @@ import {
 import { SegmentedControl } from "@/registry/free/segmented-control/segmented-control";
 import { CategorySidebar } from "./category-sidebar";
 import { cardEntrance, ComponentCard, FIRST_VIEW_CARDS } from "./component-card";
+import { CountUp } from "./count-up";
 import type { CardData } from "@/lib/registry";
 
 type Cat = { key: string; label: string; count: number };
@@ -233,7 +234,8 @@ export function ComponentBrowser({ cards, categories, category, initialFilters }
           />
         </div>
         <p ref={resultsRef} className="site-in mt-5 font-mono text-[11px] uppercase tracking-[0.14em] text-site-fg-3 [--i:4]" aria-live="polite">
-          {filtered.length} {filtered.length === 1 ? "component" : "components"}
+          <span className="sr-only">{filtered.length} {filtered.length === 1 ? "component" : "components"}</span>
+          <span aria-hidden="true"><CountUp value={filtered.length} initialAnimation={false} /> {filtered.length === 1 ? "component" : "components"}</span>
         </p>
         {filtered.length ? (
           <motion.div ref={gridRef} layout={!reduce} className="component-grid mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">

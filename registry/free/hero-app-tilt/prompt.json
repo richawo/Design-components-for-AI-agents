@@ -14,15 +14,41 @@
     "window": "radius 14/18px; title bar 44px; body 440/520/600px; sidebar 212px (>= @4xl/win) with the overnight card directly under the three triage folders; list 340-372px (full width < @2xl/win); detail flex-1 (>= @2xl/win)"
   },
   "typography": {
-    "headline": { "font": "display", "weight": 600, "size": "clamp(2.6rem, 1.1rem + 5.4cqw, 5.75rem)", "leading": 0.97, "tracking": "-0.055em", "muted": "ink/45, its own inline-block" },
-    "body": { "size": "16/17px", "leading": 1.6, "color": "ink/60", "maxWidth": "50ch" },
-    "eyebrow": { "font": "mono", "size": "11px", "tracking": "0.2em" },
+    "headline": {
+      "font": "display",
+      "weight": 600,
+      "size": "clamp(2.6rem, 1.1rem + 5.4cqw, 5.75rem)",
+      "leading": 0.97,
+      "tracking": "-0.055em",
+      "muted": "ink/45, its own inline-block"
+    },
+    "body": {
+      "size": "16/17px",
+      "leading": 1.6,
+      "color": "ink/60",
+      "maxWidth": "50ch"
+    },
+    "eyebrow": {
+      "font": "mono",
+      "size": "11px",
+      "tracking": "0.2em"
+    },
     "app": "one scale: mono 10px labels, 11.5px meta, 12.5px UI, 13px rows, 13.5px/1.65 prose, subject 19-21px semibold; all figures tabular-nums"
   },
   "color": {
     "approach": "monochrome first; every tone is ink at an opacity; one accent prop",
-    "dark": { "page": "#000000", "window": "#0a0a0b", "ink": "#ffffff", "avatar": "#1d1d20" },
-    "light": { "page": "#ececee", "window": "#ffffff", "ink": "#0b0b0c", "avatar": "#ececef" },
+    "dark": {
+      "page": "#000000",
+      "window": "#0a0a0b",
+      "ink": "#ffffff",
+      "avatar": "#1d1d20"
+    },
+    "light": {
+      "page": "#ececee",
+      "window": "#ffffff",
+      "ink": "#0b0b0c",
+      "avatar": "#ececef"
+    },
     "accent": "prop, default #f2c46d, meaning 'Tern prepared this': eyebrow dot, the dot inside Draft marks, the dot before 'Drafted by Tern', the overnight meter fill. Never text or fills.",
     "avatars": "one neutral grey for everyone; label swatches differ by grey weight"
   },
@@ -34,7 +60,8 @@
     "numbers": "folder counts, list count and 'done of triaged' count up from 0 over 700ms with a 3px blur clearing; motion values only, no per-frame setState",
     "progress": "overnight meter scaleX 0 -> done/triaged at 0.92s for 700ms, after its card lands",
     "buttons": "150ms hover, press 0.97 in 75ms, icon nudges 2px",
-    "reducedMotion": "window flat, spotlight full, 150ms opacity fades, numbers and meter set instantly"
+    "reducedMotion": "window flat, spotlight full, 150ms opacity fades, numbers and meter set instantly",
+    "numericUpdates": "Interpolate upward and downward from the current displayed value; resume interrupted transitions and clear number blur with reduced motion."
   },
   "responsive": {
     "phone": "CTAs stacked full width; window shows the list only and choreographs when scrolled into view",
@@ -52,7 +79,10 @@
     "eyebrow": "Tern 2.4 · Now on Windows",
     "headline": "Your inbox, triaged before coffee.",
     "body": "Tern reads the overnight pile, sorts it into Reply, Read later and Ignored, and drafts the boring answers in your voice. You just press send.",
-    "ctas": ["Download for Mac", "See how triage works"],
+    "ctas": [
+      "Download for Mac",
+      "See how triage works"
+    ],
     "app": "7 threads (Priya Raman: renewal 40 seats; Jonas Lindqvist: offer letter; Halcyon Capital: Q3 update; ...), overnight 182 of 251 sorted, open thread with a reply drafted by Tern and Northwind_order_40.pdf attached"
   },
   "avoid": [

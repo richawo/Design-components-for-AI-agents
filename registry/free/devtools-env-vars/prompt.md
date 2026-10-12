@@ -39,3 +39,5 @@ Build an environment-variable editor in React 19 + Tailwind CSS v4 (with `@conta
 - Don't colour environments or whole rows. Tone belongs to the verdict word and the deployed dot.
 - Don't ping the header dot. This panel is not a live stream.
 - Don't write invalid keys, and don't treat the line still being typed as an error.
+
+Subsequent numeric changes move from the currently displayed value in either direction. A quick reversal continues from its interrupted position. Reduced motion shows the target immediately and clears any residual blur.

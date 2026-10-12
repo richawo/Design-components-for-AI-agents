@@ -295,7 +295,9 @@ function Count({ value, reduce }: { value: number; reduce: boolean }) {
     const tick = (now: number) => {
       const t = Math.min(1, (now - t0) / 420);
       const e = 1 - (1 - t) ** 3;
-      setShown(Math.round(start + (value - start) * e));
+      const next = start + (value - start) * e;
+      from.current = next;
+      setShown(Math.round(next));
       if (t < 1) raf = requestAnimationFrame(tick);
       else from.current = value;
     };

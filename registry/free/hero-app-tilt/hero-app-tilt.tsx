@@ -782,9 +782,22 @@ function CountUp({
   duration?: number;
   className?: string;
 }) {
-  const p = useProgress(active, reduce, delay, duration);
-  const text = useTransform(p, (t) => String(Math.round(t * value)));
-  const filter = useTransform(p, (t) => `blur(${((1 - t) * 3).toFixed(2)}px)`);
+  const n = useMotionValue(0);
+  const blur = useMotionValue(3);
+  const entered = useRef(false);
+  useEffect(() => {
+    if (!active) return;
+    if (reduce) { n.jump(value); blur.jump(0); entered.current = true; return; }
+    const first = !entered.current;
+    entered.current = true;
+    const options = { duration: first ? duration : .38, delay: first ? delay : 0, ease: EASE };
+    if (!first) blur.jump(1.5);
+    const count = animate(n, value, options);
+    const settle = animate(blur, 0, options);
+    return () => { count.stop(); settle.stop(); };
+  }, [value, active, reduce, delay, duration, n, blur]);
+  const text = useTransform(n, v => String(Math.round(v)));
+  const filter = useTransform(blur, v => `blur(${v.toFixed(2)}px)`);
   return (
     <motion.span className={`inline-block tabular-nums ${className}`} style={reduce ? undefined : { filter }}>
       {text}

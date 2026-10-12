@@ -26,8 +26,26 @@
     "import": "Geist Mono 12.5px, leading 1.55"
   },
   "color": {
-    "dark": { "surface": "#0d0d0f", "well": "#09090a", "ink": "#ededef", "muted": "#98989a", "faint": "#7d7d80", "warn": "#f5b452", "err": "#f07c80", "ok": "#5fc284" },
-    "light": { "surface": "#ffffff", "well": "#fafafa", "ink": "#17171a", "muted": "#5d5d5f", "faint": "#6f6f72", "warn": "#a8620a", "err": "#c2353b", "ok": "#23884a" },
+    "dark": {
+      "surface": "#0d0d0f",
+      "well": "#09090a",
+      "ink": "#ededef",
+      "muted": "#98989a",
+      "faint": "#7d7d80",
+      "warn": "#f5b452",
+      "err": "#f07c80",
+      "ok": "#5fc284"
+    },
+    "light": {
+      "surface": "#ffffff",
+      "well": "#fafafa",
+      "ink": "#17171a",
+      "muted": "#5d5d5f",
+      "faint": "#6f6f72",
+      "warn": "#a8620a",
+      "err": "#c2353b",
+      "ok": "#23884a"
+    },
     "accent": "#7cc4ff by default; project dot, the word new, and the redeploy mark",
     "secrets": "muted while masked, ink when revealed or plain; never a title tooltip of the raw secret while masked"
   },
@@ -39,7 +57,8 @@
     "values": "cross-fade with a 4px rise and a 2px blur over 200ms",
     "banner": "8px rise and a 3px blur; set-count eases over 420ms",
     "redeploy": "spinner for 880ms inside the same button, then Deployed",
-    "reducedMotion": "opacity only, 150ms or less; no blur, rise or count"
+    "reducedMotion": "opacity only, 150ms or less; no blur, rise or count",
+    "numericUpdates": "Interpolate upward and downward from the current displayed value; resume interrupted transitions and clear number blur with reduced motion."
   },
   "responsive": {
     "container": "short environment labels and 44px controls below @lg; full names from @lg; import beside the chips and 32px chips from @2xl; list scrolls inside 28rem from @lg",
