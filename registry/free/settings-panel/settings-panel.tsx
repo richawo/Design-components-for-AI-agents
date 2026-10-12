@@ -10,6 +10,7 @@ import {
   type CSSProperties,
   type KeyboardEvent as ReactKeyboardEvent,
   type ReactNode,
+  type RefObject,
 } from "react";
 import { AnimatePresence, motion, useInView, useReducedMotion } from "motion/react";
 import { Check, ChevronDown, LoaderCircle, RotateCcw } from "lucide-react";
@@ -283,17 +284,21 @@ function useSettingsForm(sections: SettingsSection[], initialValues: SettingsVal
     [onChange],
   );
 
+  const saving = useRef(false);
   const save = useCallback(async () => {
-    if (!changed.length || status === "saving") return;
+    if (!changed.length || !onSave || saving.current) return;
+    saving.current = true;
     setStatus("saving");
     try {
-      await (onSave ? onSave(values) : new Promise<void>((r) => setTimeout(r, FAKE_SAVE_MS)));
+      await onSave(values);
       setSaved(values);
       setStatus("saved");
     } catch {
       setStatus("error");
+    } finally {
+      saving.current = false;
     }
-  }, [changed.length, status, onSave, values]);
+  }, [changed.length, onSave, values]);
 
   const discard = useCallback(() => {
     setValues(saved);
@@ -311,13 +316,14 @@ function useSettingsForm(sections: SettingsSection[], initialValues: SettingsVal
 }
 
 /** ⌘S / Ctrl+S, without re-binding the listener on every keystroke. */
-function useSaveShortcut(save: () => void) {
+function useSaveShortcut(save: () => void, scope: RefObject<HTMLElement | null>) {
   const latest = useRef(save);
   useEffect(() => {
     latest.current = save;
   }, [save]);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      if (e.isComposing || e.defaultPrevented || !(e.target instanceof Node) || !scope.current?.contains(e.target)) return;
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "s") {
         e.preventDefault();
         latest.current();
@@ -325,7 +331,7 @@ function useSaveShortcut(save: () => void) {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, []);
+  }, [scope]);
 }
 
 /** Content height, so the card can ease between sections instead of jumping. */
@@ -661,10 +667,10 @@ function SectionTabs({ sections, value, dirty, onChange, uid }: { sections: Sett
 }
 
 /** Slides up from the card’s foot while there’s something to save, then says so and leaves. */
-function SaveBar({ count, status, onSave, onDiscard }: { count: number; status: SaveStatus; onSave: () => void; onDiscard: () => void }) {
+function SaveBar({ count, status, onSave, onDiscard, canSave }: { count: number; status: SaveStatus; onSave: () => void; onDiscard: () => void; canSave: boolean }) {
   const reduce = useReducedMotion() ?? false;
   const show = count > 0 || status === "saved";
-  const message = status === "saved" && count === 0 ? "saved" : status === "error" ? "error" : "dirty";
+  const message = !canSave ? "unavailable" : status === "saved" && count === 0 ? "saved" : status === "error" ? "error" : "dirty";
   const swap = reduce
     ? { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 } }
     : { initial: { opacity: 0, y: 6, filter: "blur(3px)" }, animate: { opacity: 1, y: 0, filter: "blur(0px)" }, exit: { opacity: 0, y: -6, filter: "blur(3px)" } };
@@ -690,6 +696,7 @@ function SaveBar({ count, status, onSave, onDiscard }: { count: number; status: 
                       Changes saved
                     </>
                   )}
+                  {message === "unavailable" && <span className="text-[var(--sp-muted)]">Saving is unavailable.</span>}
                   {message === "error" && <span className="text-[var(--sp-danger)]">Couldn’t save. Check your connection.</span>}
                   {message === "dirty" && (
                     <span className="truncate text-[var(--sp-muted)]">
@@ -714,7 +721,7 @@ function SaveBar({ count, status, onSave, onDiscard }: { count: number; status: 
                   type="button"
                   onClick={onSave}
                   data-demo="save"
-                  disabled={status === "saving"}
+                  disabled={!canSave || status === "saving"}
                   className={`relative inline-flex h-9 min-w-[7.5rem] shrink-0 items-center justify-center gap-2 rounded-lg bg-[var(--sp-accent)] px-3.5 text-[13px] font-semibold text-[var(--sp-on-accent)] transition-[filter,transform] duration-150 hover:brightness-110 active:scale-[0.97] disabled:cursor-progress ${focusRing}`}
                 >
                   {status === "saving" ? (
@@ -772,7 +779,7 @@ export function SettingsPanel({
   const [switched, setSwitched] = useState(false);
   const section = sections.find((s) => s.id === active) ?? sections[0];
 
-  useSaveShortcut(() => void form.save());
+  useSaveShortcut(() => void form.save(), root);
 
   const dirtySections = useMemo(() => new Set(sections.filter((s) => s.rows.some((r) => form.changed.includes(r.id))).map((s) => s.id)), [sections, form.changed]);
 
@@ -834,7 +841,7 @@ export function SettingsPanel({
           </div>
         </motion.div>
 
-        <SaveBar count={form.changed.length} status={form.status} onSave={() => void form.save()} onDiscard={form.discard} />
+        <SaveBar canSave={!!onSave} count={form.changed.length} status={form.status} onSave={() => void form.save()} onDiscard={form.discard} />
       </motion.div>
     </section>
   );
@@ -844,7 +851,7 @@ export default function SettingsPanelDemo(overrides: Partial<SettingsPanelProps>
   return (
     <div className="flex min-h-dvh items-center justify-center px-4 py-16 sm:px-8" style={{ background: overrides.theme === "light" ? STAGE_LIGHT : STAGE }}>
       <div className="w-full max-w-[680px]">
-        <SettingsPanel {...overrides} />
+        <SettingsPanel onSave={() => new Promise<void>(resolve => window.setTimeout(resolve, FAKE_SAVE_MS))} {...overrides} />
       </div>
     </div>
   );

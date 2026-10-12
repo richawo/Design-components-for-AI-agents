@@ -98,7 +98,8 @@
   ],
   "content": {
     "brand": "Fieldnote, a research notes app",
-    "sections": "Notifications (Mentions, Replies, Weekly digest, Product news, Delivery), Appearance (Theme, Density, Week starts on, Calm mode), Profile (Display name, Username with prefix, Time zone)"
+    "sections": "Notifications (Mentions, Replies, Weekly digest, Product news, Delivery), Appearance (Theme, Density, Week starts on, Calm mode), Profile (Display name, Username with prefix, Time zone)",
+    "saveOwnership": "The host persists onSave. Missing callbacks disable saving. Keyboard save is scoped to the focused panel; pending submissions are guarded and rejected drafts remain editable."
   },
   "avoid": [
     "lime or brand colour on focus rings and nav",

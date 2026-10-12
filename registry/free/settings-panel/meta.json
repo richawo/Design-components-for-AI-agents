@@ -22,7 +22,7 @@
   ],
   "theme": "dark",
   "previewHeight": 760,
-  "usage": "import { SettingsPanel } from \"@/components/design-for-ai/settings-panel\";\n\nexport default function Preferences() {\n  return (\n    <SettingsPanel\n      title=\"Settings\"\n      sections={[\n        {\n          id: \"notifications\",\n          label: \"Notifications\",\n          rows: [\n            { kind: \"toggle\", id: \"mentions\", label: \"Mentions\", hint: \"Someone @mentions you.\" },\n            { kind: \"segmented\", id: \"delivery\", label: \"Delivery\", options: [{ value: \"instant\", label: \"Instantly\" }, { value: \"daily\", label: \"Daily\" }] },\n          ],\n        },\n      ]}\n      initialValues={{ mentions: true, delivery: \"daily\" }}\n      onSave={async (values) => {\n        await fetch(\"/api/settings\", { method: \"PUT\", body: JSON.stringify(values) });\n      }}\n      accent=\"#7dd3fc\"\n    />\n  );\n}",
+  "usage": "import { SettingsPanel } from \"@/components/design-for-ai/settings-panel\";\n\nexport default function Preferences() {\n  return (\n    <SettingsPanel\n      title=\"Settings\"\n      sections={[\n        {\n          id: \"notifications\",\n          label: \"Notifications\",\n          rows: [\n            { kind: \"toggle\", id: \"mentions\", label: \"Mentions\", hint: \"Someone @mentions you.\" },\n            { kind: \"segmented\", id: \"delivery\", label: \"Delivery\", options: [{ value: \"instant\", label: \"Instantly\" }, { value: \"daily\", label: \"Daily\" }] },\n          ],\n        },\n      ]}\n      initialValues={{ mentions: true, delivery: \"daily\" }}\n      onSave={async (values) => {\n        const response = await fetch(\"/api/settings\", { method: \"PUT\", body: JSON.stringify(values) });\n        if (!response.ok) throw new Error(\"Settings could not be saved\");\n      }}\n      accent=\"#7dd3fc\"\n    />\n  );\n}",
   "props": [
     {
       "name": "sections",
@@ -38,7 +38,7 @@
     {
       "name": "onSave",
       "type": "(values) => Promise<void> | void",
-      "description": "Called on Save or ⌘S. Return a promise to hold the saving state; reject it to show the error state with Try again. Defaults to a 900ms fake save."
+      "description": "Called on Save or Command-S / Control-S while focus is in this panel. Resolve after persistence, or reject to retain the draft and show a retry. Without a callback, saving is unavailable."
     },
     {
       "name": "onChange",
@@ -101,7 +101,7 @@
       "prop": "description",
       "label": "Description",
       "kind": "text",
-      "default": "How Fieldnote looks, and how often it’s allowed to interrupt you.",
+      "default": "How Fieldnote looks, and how often it\u2019s allowed to interrupt you.",
       "group": "Content"
     },
     {

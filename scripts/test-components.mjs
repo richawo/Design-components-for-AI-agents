@@ -23,6 +23,7 @@ const publicCases = [
   "mobile-accessibility-probe",
   "terminal-scroll-probe",
   "component-pages-probe",
+  "settings-composition-probe",
 ];
 const cases = [...publicCases];
 if (fs.existsSync(path.join(root, "registry/pro/block-saas-dashboard")))

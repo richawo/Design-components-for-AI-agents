@@ -30,3 +30,6 @@ Build a settings card in React + Tailwind CSS v4 with `motion/react` and `lucide
 
 **Don’t**
 - No lime or any brand colour on focus rings, nav or initials. No glass, glow or gradients. No modal for saving. No div-only controls without roles. No full page around it.
+
+## Save ownership
+The production component saves only through a supplied onSave callback. Without one, the save action is unavailable. Command-S and Control-S act only while keyboard focus is within this panel. Guard duplicate pending submissions and preserve the draft on rejection. The offline default export supplies its own local demonstration callback.
