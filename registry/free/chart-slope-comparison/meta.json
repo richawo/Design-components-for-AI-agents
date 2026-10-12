@@ -1,0 +1,89 @@
+{
+  "slug": "chart-slope-comparison",
+  "name": "Period Slope Comparison",
+  "tier": "free",
+  "platform": "web",
+  "category": "charts",
+  "description": "A paired-period slope chart with selectable series, prominent endpoint values and accessible comparisons for adoption, retention or operational change.",
+  "tags": [
+    "charts",
+    "chart",
+    "slope",
+    "comparison",
+    "responsive",
+    "keyboard"
+  ],
+  "dependencies": [
+    "motion"
+  ],
+  "theme": "dark",
+  "previewHeight": 760,
+  "usage": "import { SlopeComparison } from \"@/components/design-for-ai/chart-slope-comparison\";\n\n<SlopeComparison />",
+  "props": [
+    {
+      "name": "title",
+      "type": "string",
+      "default": "\"Where adoption moved.\"",
+      "description": "Chart title."
+    },
+    {
+      "name": "beforeLabel",
+      "type": "string",
+      "default": "\"September\"",
+      "description": "Earlier period label."
+    },
+    {
+      "name": "afterLabel",
+      "type": "string",
+      "default": "\"October\"",
+      "description": "Later period label."
+    },
+    {
+      "name": "unit",
+      "type": "string",
+      "default": "\"%\"",
+      "description": "Value unit."
+    },
+    {
+      "name": "series",
+      "type": "SlopeSeries[]",
+      "default": "four adoption metrics",
+      "description": "Named paired values with unique IDs. Invalid numbers become zero; overflowing ranges show an explicit message."
+    },
+    {
+      "name": "onSelect",
+      "type": "(series: SlopeSeries) => void",
+      "default": "undefined",
+      "description": "Receives the highlighted series."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Surface and ink palette; the demo stage follows the chosen theme."
+    }
+  ],
+  "added": "2026-10-11",
+  "demo": {
+    "steps": [
+      "wait:700",
+      "click:@slope-3",
+      "wait:800",
+      "click:@slope-1",
+      "wait:700"
+    ],
+    "loop": false
+  },
+  "controls": [
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        "dark",
+        "light"
+      ],
+      "default": "dark"
+    }
+  ]
+}

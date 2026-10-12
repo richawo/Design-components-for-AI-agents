@@ -1,0 +1,220 @@
+{
+  "slug": "collab-share-access",
+  "name": "Share Access Panel",
+  "tier": "free",
+  "platform": "web",
+  "category": "collaboration",
+  "description": "A share panel where typed emails become validated chips, roles sit in a compact menu, removals offer Undo, and link access steps from restricted to public.",
+  "tags": [
+    "share",
+    "permissions",
+    "invite",
+    "collaboration",
+    "roles",
+    "email chips",
+    "access",
+    "copy link",
+    "dark"
+  ],
+  "dependencies": [
+    "motion",
+    "lucide-react"
+  ],
+  "theme": "dark",
+  "previewHeight": 820,
+  "usage": "import { CollabShareAccess } from \"@/components/design-for-ai/collab-share-access\";\n\nexport default function ShareDialog() {\n  return (\n    <CollabShareAccess\n      docTitle=\"Q4 launch plan\"\n      orgDomain=\"northwind.co\"\n      orgName=\"Northwind\"\n      members={[\n        { email: \"hana@northwind.co\", name: \"Hana Sato\", role: \"owner\" },\n        { email: \"mateo@northwind.co\", name: \"Mateo Herrera\", role: \"edit\" },\n      ]}\n      link=\"https://docs.northwind.co/d/q4-launch-plan\"\n      onInvite={(emails, role) => sendInvites(emails, role)}\n      onRemove={(member) => revoke(member.email)}\n      onLinkAccessChange={(access) => saveLinkAccess(access)}\n    />\n  );\n}",
+  "props": [
+    {
+      "name": "docTitle",
+      "type": "string",
+      "default": "\"Q4 launch plan\"",
+      "description": "The thing being shared, in the heading."
+    },
+    {
+      "name": "members",
+      "type": "{ email; name?; role: \"owner\" | \"view\" | \"comment\" | \"edit\"; pending?: boolean }[]",
+      "default": "4 demo members",
+      "description": "People with access. The owner can’t be changed; pending invites get a dashed avatar."
+    },
+    {
+      "name": "orgDomain",
+      "type": "string",
+      "default": "\"northwind.co\"",
+      "description": "Addresses on this domain are your organisation; anyone else gets a Guest tag."
+    },
+    {
+      "name": "orgName",
+      "type": "string",
+      "default": "\"Northwind\"",
+      "description": "Used in the “Anyone at …” link level."
+    },
+    {
+      "name": "defaultRole",
+      "type": "\"view\" | \"comment\" | \"edit\"",
+      "default": "\"edit\"",
+      "description": "Role pre-selected for new invites."
+    },
+    {
+      "name": "linkAccess",
+      "type": "\"restricted\" | \"organisation\" | \"anyone\"",
+      "default": "uncontrolled (\"organisation\")",
+      "description": "Optional. Drive the general access level from outside; pair with onLinkAccessChange."
+    },
+    {
+      "name": "linkRole",
+      "type": "\"view\" | \"comment\" | \"edit\"",
+      "default": "\"view\"",
+      "description": "What people arriving by link can do."
+    },
+    {
+      "name": "link",
+      "type": "string",
+      "default": "\"https://docs.northwind.co/d/q4-launch-plan\"",
+      "description": "Written to the clipboard by Copy link."
+    },
+    {
+      "name": "undoMs",
+      "type": "number",
+      "default": "5000",
+      "description": "How long Undo stays after removing someone."
+    },
+    {
+      "name": "onInvite",
+      "type": "(emails: string[], role) => void",
+      "default": "none",
+      "description": "Called with the valid addresses when Invite is pressed. Invalid chips stay behind."
+    },
+    {
+      "name": "onRemove",
+      "type": "(member) => void",
+      "default": "none",
+      "description": "Called when someone is removed (Undo puts them back)."
+    },
+    {
+      "name": "onRoleChange",
+      "type": "(email: string, role) => void",
+      "default": "none",
+      "description": "Called when a member’s role changes."
+    },
+    {
+      "name": "onLinkAccessChange",
+      "type": "(access) => void",
+      "default": "none",
+      "description": "Called when the general access level changes."
+    },
+    {
+      "name": "accent",
+      "type": "string",
+      "default": "theme ink",
+      "description": "The one accent: the Invite button, selected checks and the Copied tick. Button text flips black or white to stay readable."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Surface palette."
+    }
+  ],
+  "added": "2026-10-10",
+  "demo": {
+    "steps": [
+      "wait:600",
+      "click:@invite-input",
+      "type:ines@northwind.co,",
+      "type:lu@nw,",
+      "wait:400",
+      "click:@invite",
+      "wait:700",
+      "click:@copy-link",
+      "wait:1200"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "docTitle",
+      "label": "Document",
+      "kind": "text",
+      "default": "Q4 launch plan",
+      "group": "Content"
+    },
+    {
+      "prop": "orgName",
+      "label": "Organisation",
+      "kind": "text",
+      "default": "Northwind",
+      "group": "Content"
+    },
+    {
+      "prop": "defaultRole",
+      "label": "Invite as",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "view",
+          "label": "Viewer"
+        },
+        {
+          "value": "comment",
+          "label": "Commenter"
+        },
+        {
+          "value": "edit",
+          "label": "Editor"
+        }
+      ],
+      "default": "edit",
+      "group": "Content"
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark",
+      "group": "Look"
+    },
+    {
+      "prop": "accent",
+      "label": "Accent",
+      "kind": "color",
+      "default": "#f4f4f5",
+      "options": [
+        "#f4f4f5",
+        "#60a5fa",
+        "#4ade80",
+        "#ff7a45",
+        "#f5a524"
+      ],
+      "group": "Look"
+    },
+    {
+      "prop": "linkAccess",
+      "label": "General access",
+      "kind": "action",
+      "options": [
+        {
+          "value": "restricted",
+          "label": "Restricted"
+        },
+        {
+          "value": "organisation",
+          "label": "Organisation"
+        },
+        {
+          "value": "anyone",
+          "label": "Anyone"
+        }
+      ],
+      "group": "State"
+    }
+  ]
+}

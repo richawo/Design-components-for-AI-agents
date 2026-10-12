@@ -1,0 +1,89 @@
+{
+  "component": "ChartChannelBreakdown",
+  "intent": "A dark, monochrome ranked breakdown: a share strip that grows segment by segment, rows that land with counting figures and filling bars, and a period switch that re-sorts rows on a spring.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 with @container queries; colour tokens as CSS variables on the root",
+    "animation": "motion/react: motion values and useTransform for counting figures and path geometry (no per-frame React setState), layoutId for selection, AnimatePresence for swaps",
+    "icons": "lucide-react",
+    "fonts": "font-display (Geist) for headlines, font-sans (Geist) with tnum, font-mono (Geist Mono) for small labels"
+  },
+  "layout": {
+    "card": "surface, 1px line, 14px radius, inset highlight + deep shadow, p-4 (@md p-6), @container root",
+    "header": "title over counting total | period switch; caption below",
+    "strip": "10px tall, 3px gaps, flex-grow = share",
+    "rows": "rank, name, optional delta (≥ @sm), amount, share %; 4px bar under, indented to the name"
+  },
+  "typography": {
+    "total": {
+      "font": "display",
+      "size": "clamp(1.6rem, 1.2rem + 2cqi, 2.2rem)",
+      "weight": 600,
+      "tracking": "-0.04em",
+      "numerals": "tabular"
+    },
+    "rank": "mono 11px faint",
+    "name": "14px medium",
+    "share": "12px faint, 3.4ch"
+  },
+  "color": {
+    "approach": "rank as lightness: leader in the accent (default theme ink), others the ink at 62/44/30/20/14%; green/red only on deltas",
+    "dark": {
+      "surface": "#111113",
+      "raised": "#17171a",
+      "line": "#232327",
+      "ink": "#f4f4f5",
+      "muted": "#a1a1aa",
+      "faint": "#8a8a93",
+      "up": "#4ade80",
+      "down": "#f87171",
+      "shadow": "inset 0 1px 0 rgba(255,255,255,0.04), 0 32px 64px -32px rgba(0,0,0,0.9)",
+      "stage": "#0a0a0b (demo only)",
+      "track": "#1c1c20"
+    },
+    "light": {
+      "surface": "#ffffff",
+      "raised": "#f4f4f5",
+      "line": "#e4e4e7",
+      "ink": "#18181b",
+      "muted": "#52525b",
+      "faint": "#71717a",
+      "up": "#60606a",
+      "down": "#b91c1c",
+      "track": "#efeff1"
+    },
+    "hover": "hovered channel's segment full, others 35%"
+  },
+  "motion": {
+    "trigger": "once at 25% in view",
+    "order": "card → title/total/switch/caption 60ms apart → strip segments grow in rank order (0.22s, 50ms apart) → rows land (0.16s, 50ms apart) → each row's figures count and its bar fills 0.22s after landing",
+    "figures": "count from 0 over 0.75s with 6px blur settle",
+    "periodSwitch": "rows re-sort with layout='position' spring 500/40, rank numbers roll, figures and bars tween without stagger, segments retarget together",
+    "implementation": "figures are useTransform of motion values; first-view delays drop to 0 after onAnimationComplete",
+    "reducedMotion": "150ms fades, values set instantly, no layout springs"
+  },
+  "responsive": {
+    "390": "deltas hidden below @sm; card padding 16px",
+    "wide": "deltas shown; padding 24px"
+  },
+  "accessibility": [
+    "period switch is a radiogroup with arrow keys",
+    "counting figures expose an sr-only final value",
+    "delta arrows have sr-only up/down",
+    "share strip is aria-hidden; rows carry every number",
+    "2px focus-visible outline in ink"
+  ],
+  "content": {
+    "brand": "Kiln & Co., a small ceramics shop",
+    "channels": "Online store, Instagram, Email, Wholesale, Studio shop",
+    "story": "in the last 7 days a café's wholesale order lifts Wholesale above Email"
+  },
+  "avoid": [
+    "donut charts",
+    "a colour per channel",
+    "glow",
+    "re-staggering rows on every switch",
+    "proportional figures"
+  ]
+}

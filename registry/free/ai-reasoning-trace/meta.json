@@ -1,0 +1,205 @@
+{
+  "slug": "ai-reasoning-trace",
+  "name": "Reasoning Trace",
+  "tier": "free",
+  "platform": "web",
+  "category": "ai",
+  "description": "“Thought for 14s”, done properly: a ticking timer while thinking, a one-line summary that rewrites per step, and a dimmed trace that folds away when the reply starts.",
+  "tags": [
+    "ai",
+    "reasoning",
+    "thinking",
+    "chain of thought",
+    "trace",
+    "streaming",
+    "llm",
+    "monochrome",
+    "dark"
+  ],
+  "dependencies": [
+    "motion",
+    "lucide-react"
+  ],
+  "theme": "dark",
+  "previewHeight": 780,
+  "usage": "import { ReasoningTrace } from \"@/components/design-for-ai/ai-reasoning-trace\";\n\n// Your model drives it: append each step as it reasons, and each word of the reply as it streams.\nexport default function Reply({ status, startedAt, steps, reply, thoughtForMs }) {\n  return (\n    <ReasoningTrace\n      state={status} // \"thinking\" | \"answering\" | \"done\"\n      startedAt={startedAt} // Date.now() when thinking began. Starts the live timer.\n      trace={steps} // [{ summary: \"Checking the billing rule\", detail: \"Seats are prorated by day.\", atMs: 600 }]\n      answer={reply} // [\"The jump is proration, not a double charge.\"]\n      thoughtForMs={thoughtForMs} // optional final time in ms. Without it the measured time is kept.\n    />\n  );\n}\n\n// The reader's open or closed choice holds across runs (rememberChoice, default true).\n// Pass storageKey=\"reasoning-trace\" to keep it across reloads, or open and onOpenChange to own it yourself.",
+  "props": [
+    {
+      "name": "state",
+      "type": "\"thinking\" | \"answering\" | \"done\"",
+      "default": "\"done\"",
+      "description": "Thinking shows the live timer, the rewriting summary and the steps as they arrive. Answering streams the reply in and the trace folds. Done is the finished card. The host drives it; the component never advances on its own."
+    },
+    {
+      "name": "trace",
+      "type": "{ summary: string; detail: string; atMs?: number }[]",
+      "default": "[]",
+      "description": "Every step so far, in order. Summary is the one-line headline shown while the model is on it; detail is the dimmed line kept in the trace; atMs, when given, stamps the step's landing time as a quiet +0.6s. The trace region caps its height and scrolls, and follows the newest step while thinking."
+    },
+    {
+      "name": "answer",
+      "type": "string[]",
+      "default": "[]",
+      "description": "The reply so far, as paragraphs. Words settle in as they arrive; words already on screen when the card first renders stay put."
+    },
+    {
+      "name": "startedAt",
+      "type": "number",
+      "description": "When thinking began, as Date.now(). Starts the live timer. Without it the header shows the bare label, Thinking or Thought."
+    },
+    {
+      "name": "thoughtForMs",
+      "type": "number",
+      "description": "The final thinking time in milliseconds, for the Thought for label. Once the answer starts it wins over the time the card measured."
+    },
+    {
+      "name": "open",
+      "type": "boolean",
+      "description": "Controlled open state for the trace. Pair it with onOpenChange to own the reader's choice yourself. When set, auto-collapse and rememberChoice no longer apply."
+    },
+    {
+      "name": "defaultOpen",
+      "type": "boolean",
+      "default": "true",
+      "description": "The open state before the reader or auto-collapse has spoken. Ignored when open is set."
+    },
+    {
+      "name": "onOpenChange",
+      "type": "(open: boolean) => void",
+      "description": "Called when the reader opens or closes the trace."
+    },
+    {
+      "name": "autoCollapse",
+      "type": "boolean",
+      "default": "true",
+      "description": "Folds the trace away when the answer starts, unless the reader has chosen."
+    },
+    {
+      "name": "rememberChoice",
+      "type": "boolean",
+      "default": "true",
+      "description": "Keeps the reader's open or closed choice across runs in this instance, so a reader who always wants the trace open is never folded again. Off, the choice lasts one run and auto-collapse applies at the next hand-off."
+    },
+    {
+      "name": "storageKey",
+      "type": "string",
+      "description": "Persists the reader's choice in localStorage under this key, so it survives reloads. Read after mount; storage errors are ignored. Implies rememberChoice."
+    },
+    {
+      "name": "showTimer",
+      "type": "boolean",
+      "default": "true",
+      "description": "Shows the seconds in the header: live while thinking, frozen once done. Off keeps the bare label."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Near-black surface with white ink, or the white inverse."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "description": "Extra classes on the root section."
+    },
+    {
+      "name": "steps",
+      "type": "number",
+      "default": "7",
+      "description": "Demo only. Default export only, not part of the component API. How many steps the scripted stream runs, from 3 to 12. Hosts pass their own trace."
+    },
+    {
+      "name": "speed",
+      "type": "number",
+      "default": "1",
+      "description": "Demo only. Default export only, not part of the component API. Stream pace. 2 streams twice as fast and the timer reads the shorter time."
+    }
+  ],
+  "added": "2026-10-10",
+  "demo": {
+    "steps": [
+      "move:0.5,0.45",
+      "wait:3600",
+      "click:@trace-toggle",
+      "hover:@trace-steps:0.5,0.5",
+      "scroll:600",
+      "wait:300"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "steps",
+      "label": "Steps",
+      "kind": "slider",
+      "min": 3,
+      "max": 12,
+      "step": 1,
+      "default": 7,
+      "group": "Stream"
+    },
+    {
+      "prop": "speed",
+      "label": "Pace",
+      "kind": "slider",
+      "min": 0.5,
+      "max": 2,
+      "step": 0.1,
+      "unit": "×",
+      "default": 1,
+      "group": "Stream"
+    },
+    {
+      "prop": "state",
+      "label": "State",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "thinking",
+          "label": "Thinking"
+        },
+        {
+          "value": "done",
+          "label": "Done"
+        }
+      ],
+      "default": "thinking",
+      "group": "Stream"
+    },
+    {
+      "prop": "autoCollapse",
+      "label": "Auto-collapse",
+      "kind": "toggle",
+      "default": true,
+      "group": "Trace"
+    },
+    {
+      "prop": "showTimer",
+      "label": "Show timer",
+      "kind": "toggle",
+      "default": true,
+      "group": "Trace"
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark",
+      "group": "Look"
+    },
+    {
+      "prop": "$replay",
+      "label": "Restart",
+      "kind": "action"
+    }
+  ]
+}

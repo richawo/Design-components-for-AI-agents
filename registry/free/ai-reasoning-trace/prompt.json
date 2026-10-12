@@ -1,0 +1,89 @@
+{
+  "component": "ReasoningTrace",
+  "intent": "A quiet, monochrome 'Thought for 14s' card for AI replies, driven entirely by the host's model. While the model thinks it shows a live timer, one summary line that rewrites per step, and a dimmed, indented trace that the host appends to. When the reply starts the trace folds away unless the reader opened it, and the reply settles in word by word. It is a flight log, not a spinner, and it never runs its own timeline.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 (@container, arbitrary values, CSS variables for the palette)",
+    "animation": "motion/react (AnimatePresence mode wait for the summary, motion.li entrances) plus CSS grid-template-rows for the folds and keyframes for the header label cross-fade, word settle and the status-dot breathe",
+    "icons": "lucide-react ChevronDown"
+  },
+  "api": {
+    "state": "\"thinking\" | \"answering\" | \"done\", default \"done\"; the host drives it",
+    "trace": "{ summary: string; detail: string; atMs?: number }[]; every step so far; the host appends",
+    "answer": "string[] paragraphs; the host appends words as they stream",
+    "startedAt": "number, Date.now() when thinking began; starts the live timer",
+    "thoughtForMs": "number, final thinking time; wins over the measured time once the answer starts",
+    "open": "boolean, controlled trace state; pair with onOpenChange; stops auto-collapse and overrides rememberChoice",
+    "defaultOpen": "boolean, default true; open state before the reader or auto-collapse has spoken",
+    "onOpenChange": "(open: boolean) => void",
+    "autoCollapse": "boolean, default true; folds the trace when the answer starts unless the reader chose",
+    "showTimer": "boolean, default true",
+    "theme": "\"dark\" | \"light\", default \"dark\"",
+    "demo": "the default export streams a scripted billing reply through the same component via a hook that is not part of the API; steps (3 to 12, default 7) and speed feed that hook",
+    "rememberChoice": "boolean, default true; the reader's open or closed choice holds across runs in this instance; off, it lasts one run",
+    "storageKey": "string, optional; persists the choice in localStorage (read after mount, try/catch) and implies rememberChoice"
+  },
+  "layout": {
+    "root": "section, @container, aria-label Reasoning; a card with 18px radius, 1px line border, padding 16px 20px (24px 28px from @md), inset top highlight and deep shadow",
+    "header": "flex row, min-height 44px (36px from @md), gap 12px: status dot, label, step-count button pushed right with ml-auto; button h-11 (h-9 from @md)",
+    "summary": "grid rows 0fr to 1fr over 300ms; inner pt-3 and min-h-[1.5em]; one line, truncates; at the hand-off the row folds and its text fades with it over 300ms (no exit slide)",
+    "trace": "outer grid rows 0fr to 1fr over 420ms, inner min-h-0 overflow hidden, inert when folded; ol with aria-label Reasoning steps, max-h 14rem, overflow-y auto, overscroll contain; tabIndex 0 only while the list can scroll; 1px left rule, indent 16px (20px from @md); steps are grid 1.75rem index + text (+ auto stamp column when atMs is given), gap 10px; edge fade mask built per end: top 20px once scrolled, bottom 24px while more lies below; follows the newest step while thinking",
+    "reply": "own fold region, grid rows 0fr to 1fr (420ms ease-out in, ease-in-out out); grows in while the trace folds so the card changes height once; a cleared reply folds and fades out (260ms ease-in, 3px blur) showing the last reply until closed; 1px top rule, 20px above and below it, paragraphs max 62ch, gap 1.1em",
+    "resting": "before the first run the card rests finished with its trace open and the full reply shown; it is the tallest state, so framing and screenshots include the whole card"
+  },
+  "typography": {
+    "label": "mono 12px, tracking 0.01em, tabular-nums, muted ink; 'Thinking ·' then ink time, then 'Thought for' then ink time; the whole label (verb, separator, digits) is one unit; on change the outgoing label stays frozen in the same grid cell and fades out (120ms ease-in, 3px blur) while the incoming fades in (200ms ease-out, 60ms delay), so there is no empty slot and the parts never disagree",
+    "digits": "ink, tabular-nums, one stable span updated every 100ms in place (no remount, no blur, no per-tick animation); the clock is an Elapsed child that owns its own interval and pauses offscreen and in hidden tabs; the frozen time is measured in a layout effect, never during render",
+    "count": "mono 12px tabular muted; 'Reasoning' before the first step, then '1 step' or 'N steps'; chevron 14px rotating 180deg",
+    "summary": "Geist 15px (16px from @md), line-height 1.5, tracking -0.005em, full ink",
+    "steps": "13.5px line-height 1.55; index mono 11px tabular dim ink; optional stamp mono 11px tabular dim ink shown as +0.6s; latest step body ink while thinking, others dim",
+    "reply": "16px (16.5px from @md), line-height 1.65, body ink"
+  },
+  "color": {
+    "dark": "surface #0d0d0f, line #26262c, ink #f4f4f5, body #d4d4d8, muted #a1a1aa, dim #8b8b95, hover rgba(255,255,255,0.06)",
+    "light": "surface #ffffff, line #e4e4e7, ink #18181b, body #3f3f46, muted #52525b, dim #60606a, hover rgba(24,24,27,0.05)",
+    "accent": "none. The status dot is ink while thinking and dim ink once done (200ms colour fade); no semantic colour is used for the trace",
+    "stage": "demo only: #000000 dark, #f4f4f5 light"
+  },
+  "motion": {
+    "demoTimeline": "demo only: a run asked for holds the finished card 300ms, then folds its trace and reply away over 420ms (real time), then streams from empty. Model ms from there: lead 500 before the first step; step gap 480 times a fixed rhythm [1, .82, 1.18, .94, 1.08, .9, 1.15, .86, 1.04, .97, 1.12, .92]; answer 480ms after the last step; first words 55ms later while the trace folds; two words per tick every 55ms; done +150ms after the last word. Autoplay starts 3.6s after page load once in view; the first pointer movement starts a run at once. The demo pace divides the model times. Seven steps think for about 3.8s",
+    "steps": "each step rises 6px out of a 4px blur over 320ms, once, on mount; steps mounting in the same render stagger 50ms in reading order (cap 8)",
+    "summary": "AnimatePresence mode wait: exit 6px up over 140ms, then enter 6px rise from 3px blur over 260ms",
+    "words": "each reply word settles from a 3px blur over 320ms (keyframe ai-rt-word), once, on arrival",
+    "fold": "summary row, trace region and reply region all grid-template-rows (300ms, 420ms, 420ms); at the hand-off the reply grows while the trace folds, so the height changes once",
+    "clock": "real elapsed time, Date.now() minus startedAt, updated every 100ms by Elapsed while thinking; measured time frozen at the hand-off unless thoughtForMs is given",
+    "ambient": "status dot breathes (opacity 0.45 to 1, 1.6s, alternating) in ink while thinking and rests in dim ink otherwise; nothing else loops",
+    "reducedMotion": "states still arrive as they happen; steps, words and the summary use 150ms opacity fades only; no blur, rise, breathe, fold or smooth scroll; the demo does not autoplay and shows the finished card"
+  },
+  "responsive": {
+    "all": "designed from 320px to 1920px; the card follows its container width via @container; the demo stage is top-anchored so the header never moves",
+    "narrow": "summary truncates; step text wraps; header stays one line; trace caps its height and scrolls; padding and indent step up at @md"
+  },
+  "accessibility": [
+    "step-count control is a button with aria-expanded, aria-controls pointing at the trace region, and aria-label Show or Hide reasoning; the count is included only once a step has landed",
+    "button is 44px tall on mobile and 36px from @md; focus-visible draws a 2px ink ring with 2px offset, immediately, keyboard only",
+    "folded trace is inert so nothing inside is reachable",
+    "trace list is keyboard scrollable (tabIndex 0) only while it can scroll, with an inset focus ring",
+    "visually hidden role=status with aria-live polite speaks the first step, then at most one summary every 5 seconds, then Thought for 2.7s once the reply starts",
+    "the live summary line is not itself a live region and is aria-hidden once thinking ends, to avoid announcing every step",
+    "aria-busy marks only the step list while thinking and the reply while it streams; the section is never busy, and the role=status region sits outside every busy region so its polite announcements are spoken",
+    "section has aria-label Reasoning; trace list has aria-label Reasoning steps; dots and chevrons are aria-hidden"
+  ],
+  "content": {
+    "question": "Why did the invoice jump when I added two seats mid-cycle?",
+    "steps": "12 reasoning steps in the demo, each with a one-line summary and a detail line, about proration, day counting, pricing two seats at $24 for 11 of 30 days ($17.60), the renewal line, duplicate and tax checks and tone; the demo streams seven by default",
+    "answer": "Two paragraphs: proration, not a double charge, with the $17.60 figure; then the renewal line that can sit beside it"
+  },
+  "avoid": [
+    "sparkle or brain icons",
+    "purple or rainbow gradients and gradient text",
+    "glow, glass or shimmer",
+    "a progress bar that pretends to know the duration",
+    "bouncing or rotating entrances",
+    "an infinite pulse on content (only the status dot breathes)",
+    "folding the reply away with the trace",
+    "lorem ipsum or placeholder steps",
+    "a timeline inside the component: the host's model owns timing"
+  ]
+}

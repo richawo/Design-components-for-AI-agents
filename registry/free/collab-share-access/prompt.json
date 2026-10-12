@@ -1,0 +1,70 @@
+{
+  "component": "CollabShareAccess",
+  "intent": "A dark, monochrome share panel: emails become validated chips, roles live in a compact menu, removals offer Undo, link access steps from restricted to public, and Copy link morphs into a tick.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 with @container queries; colour tokens as CSS variables on the root; color-mix() for tints",
+    "animation": "motion/react: AnimatePresence for chips, rows, menus and swaps; layoutId for the menu highlight; layout='position' for rows",
+    "icons": "lucide-react (AlertCircle, Building2, Check, ChevronDown, Globe, Link2, Lock, X)",
+    "fonts": "font-display (Geist) for the heading, font-sans (Geist) for UI, font-mono (Geist Mono) for labels and tags"
+  },
+  "layout": {
+    "card": "surface, 1px line, 14px radius, inset highlight + deep shadow; no overflow hidden so menus can float out; 600px max in the demo",
+    "header": "‘Share “Q4 launch plan”’ in display 18px, mono people count right",
+    "inviteRow": "sunken wrapping field (chips + input + quiet role trigger) and a 44px accent Invite button; stacks below @md",
+    "hintLine": "12px hint, or the first problem in danger",
+    "people": "32px avatar (dashed ring when pending), name + (you) + GUEST tag, email or pending note, role menu (Owner is plain text)",
+    "footer": "Undo bar when needed; GENERAL ACCESS: 36px icon tile, level menu, ‘· can view’ menu when open, consequence line, fixed-width Copy link",
+    "menus": "256–288px popover listbox; label + hint per option; accent ✓ on selected; Remove access under a hairline in danger; footer menus open upward"
+  },
+  "typography": {
+    "heading": { "font": "display", "size": "18px", "weight": 600, "tracking": "-0.025em" },
+    "labels": "mono 11px uppercase 0.1em faint",
+    "names": "14px medium",
+    "secondary": "12px faint",
+    "chips": "13px",
+    "menu": "13px medium label, 12px hint"
+  },
+  "color": {
+    "approach": "greyscale; one accent prop for the primary button, selected checks and the Copied tick; danger only for invalid chips and removal",
+    "dark": { "surface": "#111113", "raised": "#17171a", "sunken": "#0c0c0e", "line": "#232327", "rule": "#1b1b1e", "avatar": "#1f1f23", "ink": "#f4f4f5", "muted": "#a1a1aa", "faint": "#8a8a93", "danger": "#f87171", "stage": "#0a0a0b (demo only)" },
+    "light": { "surface": "#ffffff", "raised": "#f6f6f7", "sunken": "#fafafa", "line": "#e4e4e7", "rule": "#efeff1", "avatar": "#f0f0f2", "ink": "#18181b", "muted": "#52525b", "faint": "#71717a", "danger": "#b91c1c", "stage": "#e9e9ec (demo only)" },
+    "onAccent": "black or white, computed from the accent's relative luminance"
+  },
+  "motion": {
+    "trigger": "once at 20% in view",
+    "order": "card → header → invite row → section label → rows 50ms apart from 0.24s → footer",
+    "chips": "commit on , ; space Enter Tab, paste or blur; 0.9→1 scale with 3px blur (0.2s); Backspace removes the last",
+    "invite": "valid chips become pending rows that rise in; invalid chips stay with the error",
+    "remove": "row collapses (height, padding, 4px blur, 0.28s); Undo bar unfolds with a draining hairline over undoMs",
+    "menus": "6px offset, 0.98 scale, 4px blur (0.2s); highlight slides on spring 500/40",
+    "copy": "label rolls to ‘✓ Copied’ for 1.6s at fixed width",
+    "reducedMotion": "150ms fades only"
+  },
+  "responsive": {
+    "320": "Invite button under the field; long names and emails truncate",
+    "768+": "Invite beside the field; menus anchored to their trigger"
+  },
+  "accessibility": [
+    "menu triggers: aria-haspopup=listbox, aria-expanded, aria-label naming the person",
+    "listbox options with ↑/↓, Enter/Space, Esc, Tab; close on outside press",
+    "email input: aria-invalid and aria-describedby on the live hint/error line",
+    "chip remove buttons labelled with the address",
+    "Undo bar is role=status",
+    "2px focus-visible outlines in ink"
+  ],
+  "content": {
+    "doc": "Northwind’s Q4 launch plan",
+    "people": "Hana Sato (owner, you), Mateo Herrera (can edit), Jonas Weber (can comment), Elif Demir from studio-demir.com (guest, can view)",
+    "linkLevels": "Restricted · Anyone at Northwind · Anyone with the link, each with a one-line consequence"
+  },
+  "avoid": [
+    "coloured role badges",
+    "avatar photos",
+    "silently dropping invalid emails",
+    "removal without Undo",
+    "a Copy button that changes width",
+    "overflow hidden on the card (it clips the menus)"
+  ]
+}

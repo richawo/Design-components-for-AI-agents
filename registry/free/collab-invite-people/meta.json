@@ -1,0 +1,201 @@
+{
+  "slug": "collab-invite-people",
+  "name": "Invite People",
+  "tier": "free",
+  "platform": "web",
+  "category": "collaboration",
+  "description": "Pasted emails become rows with their own roles. Invalid ones stay flagged, and sending flies each avatar into a pending list while a seat meter fills.",
+  "tags": [
+    "invite",
+    "collaboration",
+    "seats",
+    "email",
+    "roles",
+    "bulk paste",
+    "pending",
+    "team",
+    "dark"
+  ],
+  "dependencies": [
+    "motion",
+    "lucide-react"
+  ],
+  "theme": "dark",
+  "previewHeight": 920,
+  "usage": "import { CollabInvitePeople } from \"@/components/design-for-ai/collab-invite-people\";\n\nexport default function ReviewInvite() {\n  return (\n    <CollabInvitePeople\n      workspace=\"Ledgerline · Website review\"\n      orgDomain=\"ledgerline.co\"\n      includedSeats={8}\n      team={[{ email: \"sam@ledgerline.co\", name: \"Sam Okoye\", role: \"owner\" }]}\n      drafts={[\n        { email: \"ines@ledgerline.co\", role: \"edit\" },\n        { email: \"priya@\" },\n      ]}\n      onInvite={(people) => sendInvites(people)}\n    />\n  );\n}",
+  "props": [
+    {
+      "name": "title",
+      "type": "string",
+      "default": "\"Invite people\"",
+      "description": "Heading."
+    },
+    {
+      "name": "workspace",
+      "type": "string",
+      "default": "\"Ledgerline · Website review\"",
+      "description": "Mono line under the heading."
+    },
+    {
+      "name": "orgDomain",
+      "type": "string",
+      "default": "\"ledgerline.co\"",
+      "description": "Addresses on this domain are the company. Anyone else gets a Guest tag."
+    },
+    {
+      "name": "includedSeats",
+      "type": "number",
+      "default": "8",
+      "description": "Seats the plan includes. The meter shows a preview of the valid rows, and invites past this number are marked as over."
+    },
+    {
+      "name": "team",
+      "type": "{ email; name; role: \"owner\" | \"view\" | \"comment\" | \"edit\" }[]",
+      "default": "5 demo people",
+      "description": "People already in the workspace. They fill the meter and reject duplicate invites."
+    },
+    {
+      "name": "pending",
+      "type": "{ email; name; role }[]",
+      "default": "[]",
+      "description": "Invites already sent and not yet accepted."
+    },
+    {
+      "name": "drafts",
+      "type": "{ email; role?: \"view\" | \"comment\" | \"edit\" }[]",
+      "default": "5 pasted addresses",
+      "description": "Addresses in the paste well, in order. A missing role uses defaultRole until that row’s menu is used."
+    },
+    {
+      "name": "directory",
+      "type": "{ email; name }[]",
+      "default": "4 known people",
+      "description": "Known names, so a pasted address can show a person instead of a bare local-part."
+    },
+    {
+      "name": "defaultRole",
+      "type": "\"view\" | \"comment\" | \"edit\"",
+      "default": "\"edit\"",
+      "description": "Role given to a newly typed or pasted address."
+    },
+    {
+      "name": "showTeam",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show the overlapping avatars and names of people already on the team."
+    },
+    {
+      "name": "onInvite",
+      "type": "(people: { email; name; role }[]) => void",
+      "default": "none",
+      "description": "Called with the valid rows when Send is pressed. Flagged rows stay in the well."
+    },
+    {
+      "name": "onWithdraw",
+      "type": "(email: string) => void",
+      "default": "none",
+      "description": "Called when a pending invite is withdrawn and the seat opens again."
+    },
+    {
+      "name": "accent",
+      "type": "string",
+      "default": "theme ink",
+      "description": "The one accent: the Send button and the check on the selected role. Button text flips black or white to stay readable."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Surface palette."
+    }
+  ],
+  "added": "2026-10-11",
+  "demo": {
+    "steps": [
+      "wait:400",
+      "click:@invite-field",
+      "type:leah@ledgerline.co,",
+      "wait:550",
+      "click:@send",
+      "wait:1600"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "showTeam",
+      "label": "Team row",
+      "kind": "toggle",
+      "default": true,
+      "group": "Content"
+    },
+    {
+      "prop": "workspace",
+      "label": "Workspace",
+      "kind": "text",
+      "default": "Ledgerline · Website review",
+      "group": "Content"
+    },
+    {
+      "prop": "includedSeats",
+      "label": "Included seats",
+      "kind": "slider",
+      "min": 4,
+      "max": 12,
+      "step": 1,
+      "default": 8,
+      "group": "Content"
+    },
+    {
+      "prop": "defaultRole",
+      "label": "New people join as",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "view",
+          "label": "Viewer"
+        },
+        {
+          "value": "comment",
+          "label": "Commenter"
+        },
+        {
+          "value": "edit",
+          "label": "Editor"
+        }
+      ],
+      "default": "edit",
+      "group": "Content"
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark",
+      "group": "Look"
+    },
+    {
+      "prop": "accent",
+      "label": "Accent",
+      "kind": "color",
+      "default": "#f4f4f5",
+      "options": [
+        "#f4f4f5",
+        "#60a5fa",
+        "#4ade80",
+        "#ff7a45",
+        "#f5a524"
+      ],
+      "group": "Look"
+    }
+  ]
+}

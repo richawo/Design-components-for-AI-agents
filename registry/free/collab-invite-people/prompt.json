@@ -1,0 +1,72 @@
+{
+  "component": "CollabInvitePeople",
+  "intent": "A dark, monochrome bulk invite that treats seats as the subject: pasted emails become rows with their own roles, invalid addresses stay flagged, and Send flies each avatar into a pending list while the seat meter fills.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 with @container queries; colour tokens as CSS variables on the root; color-mix() for preview pills and focus rings",
+    "animation": "motion/react: entrance blur, layoutId so avatars fly from the paste well into Pending, layoutId for the role-menu highlight, rolling seat and send counts",
+    "icons": "lucide-react (AlertCircle, Check, ChevronDown, X)",
+    "fonts": "font-sans (Geist) for UI, font-display (Geist) for the heading and seat count, font-mono (Geist Mono) for labels and the Guest tag"
+  },
+  "layout": {
+    "card": "surface, 1px line, 14px radius, inset highlight + deep shadow, no overflow hidden, @container root, 560px max in the demo",
+    "header": "18px display title and mono workspace on the left; 32px tabular seat count with a mono ‘of 8’ on the right",
+    "meter": "8px pills, 3px gap: ink taken, ghost preview, line empty, danger over-seat. 13px sentence under it",
+    "team": "five 24px overlapping initials and a truncated ‘5 on the team · first names’ line, removable with showTeam",
+    "well": "sunken, 12px radius. Rows then a 36px paste field. Valid row is avatar, name, Guest tag, email, role menu, remove. Invalid row is an alert icon, danger text, a 2px danger rail, and the reason instead of a role",
+    "footer": "hairline, PENDING count, dashed empty tray or pending rows with the flown avatar, ‘Invited · role · email’, and withdraw"
+  },
+  "typography": {
+    "title": "display 18px semibold, tracking -0.03em",
+    "seats": "display 32px semibold, tracking -0.04em, tabular, leading none",
+    "labels": "mono 11px uppercase, tracking 0.1em, faint",
+    "name": "14px medium",
+    "email": "12px faint, or danger when the row is flagged",
+    "hint": "12px faint, leading 1.45",
+    "button": "14px medium"
+  },
+  "color": {
+    "approach": "greyscale; one accent on the Send button and the selected role check; danger only for flagged addresses and seats past the plan",
+    "dark": { "surface": "#111113", "raised": "#17171a", "sunken": "#0c0c0e", "line": "#232327", "rule": "#1b1b1e", "avatar": "#1f1f23", "ink": "#f4f4f5", "muted": "#a1a1aa", "faint": "#8a8a93", "danger": "#f87171", "stage": "#0a0a0b (demo only)" },
+    "light": { "surface": "#ffffff", "raised": "#f6f6f7", "sunken": "#fafafa", "line": "#e4e4e7", "rule": "#efeff1", "avatar": "#f0f0f2", "ink": "#18181b", "muted": "#52525b", "faint": "#71717a", "danger": "#b91c1c", "stage": "#e9e9ec (demo only)" },
+    "accent": "theme ink by default. Button label is black or white from relative luminance"
+  },
+  "motion": {
+    "trigger": "once at 20% in view",
+    "order": "card, header, meter, team, well, then seat pills scaling from the left 35ms apart",
+    "counts": "seat total and the Send count roll with a 3px blur",
+    "paste": "separators and paste split addresses into rows; blur commits; a ref stops Send’s blur from inserting twice",
+    "send": "valid avatars share a layoutId with their pending row and fly on a 380/34 spring; invalid rows stay",
+    "menus": "6px offset, 0.98 scale, 4px blur; highlight on spring 500/40",
+    "reducedMotion": "150ms fades only, no flight and no pill scale"
+  },
+  "responsive": {
+    "320": "avatar, full name and remove stay on one line; the role trigger drops under the email; Send is full width; the team line is just the count",
+    "390": "same stack as 320. Names such as Kade Adeyemi stay whole, with the Guest tag beside them",
+    "768+": "role trigger sits on the row’s right; Send sits on the hint’s right at a 9.5rem minimum width"
+  },
+  "accessibility": [
+    "seat meter is role=img with a name that includes taken, included and how many the send would add",
+    "paste field is aria-invalid when any row is flagged and aria-describedby the hint",
+    "seat sentence and the pending list update in a polite live region",
+    "role menu is a listbox: arrows, Enter, Space, Escape, Tab, dismiss on outside pointer",
+    "remove and withdraw buttons name the address or person",
+    "avatars are aria-hidden; 2px focus-visible outlines in ink"
+  ],
+  "content": {
+    "product": "Ledgerline’s website review, filling the last seats before Friday",
+    "team": "Sam Okoye (owner), Mara Ilić, Jonas Weber, Priya Raman, Pablo Ferreira — 5 of 8",
+    "pasted": "Inês Duarte (editor), Rafi Mendel (commenter), Kade Adeyemi (guest, viewer), the broken ‘priya@’, and sam@ledgerline.co who is already on the team",
+    "demo": "types leah@ledgerline.co, who resolves to Leah Okon, then sends; the four valid people land in Pending and the meter reads 9 of 8"
+  },
+  "avoid": [
+    "a share dialog with link access and a full member list",
+    "one role for the whole batch",
+    "dropping invalid emails instead of flagging them in place",
+    "blocking send when the invite goes past the included seats",
+    "a different hue per avatar",
+    "accent-coloured text",
+    "closing the role menu on blur in a way that eats the option click"
+  ]
+}

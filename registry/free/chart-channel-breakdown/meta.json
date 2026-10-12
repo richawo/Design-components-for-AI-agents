@@ -1,0 +1,193 @@
+{
+  "slug": "chart-channel-breakdown",
+  "name": "Channel Breakdown",
+  "tier": "free",
+  "platform": "web",
+  "category": "charts",
+  "description": "A dark ranked breakdown: a share strip grows segment by segment, rows land with counting figures, bars fill, and switching period re-sorts rows on a spring.",
+  "tags": [
+    "chart",
+    "bar chart",
+    "breakdown",
+    "channels",
+    "share",
+    "ranking",
+    "dashboard",
+    "analytics",
+    "dark"
+  ],
+  "dependencies": [
+    "motion",
+    "lucide-react"
+  ],
+  "theme": "dark",
+  "previewHeight": 640,
+  "usage": "import { ChartChannelBreakdown } from \"@/components/design-for-ai/chart-channel-breakdown\";\n\nexport default function Channels() {\n  return (\n    <ChartChannelBreakdown\n      title=\"Revenue by channel\"\n      periods={[\n        {\n          key: \"30d\",\n          label: \"30D\",\n          caption: \"Last 30 days\",\n          channels: [\n            { name: \"Online store\", value: 106853, previous: 98110 },\n            { name: \"Instagram\", value: 59639, previous: 48870 },\n          ],\n        },\n      ]}\n      accent=\"#7dd3fc\"\n    />\n  );\n}",
+  "props": [
+    {
+      "name": "periods",
+      "type": "{ key: string; label: string; caption?: string; channels: { name: string; value: number; previous?: number }[] }[]",
+      "default": "7D / 30D / 90D of a ceramics shop",
+      "description": "One entry per period. Channels are ranked by value; shares are computed from the period total. previous adds a small delta."
+    },
+    {
+      "name": "defaultPeriod",
+      "type": "string",
+      "default": "\"30d\"",
+      "description": "Period key shown first."
+    },
+    {
+      "name": "onPeriodChange",
+      "type": "(key: string) => void",
+      "description": "Called when the period changes."
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "default": "\"Revenue by channel\"",
+      "description": "Label above the total."
+    },
+    {
+      "name": "format",
+      "type": "\"currency\" | \"number\"",
+      "default": "\"currency\"",
+      "description": "How values and the total are written."
+    },
+    {
+      "name": "accent",
+      "type": "string",
+      "default": "theme ink",
+      "description": "The one accent: the leading channel's segment and bar. The rest step down a grey ramp."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Surface palette."
+    },
+    {
+      "name": "currency",
+      "type": "string",
+      "default": "\"USD\"",
+      "description": "ISO currency code."
+    },
+    {
+      "name": "locale",
+      "type": "string",
+      "default": "\"en-US\"",
+      "description": "Locale for figures."
+    }
+  ],
+  "added": "2026-10-09",
+  "demo": {
+    "steps": [
+      "wait:400",
+      "click:@period-7d",
+      "wait:1100",
+      "hover:@row-wholesale",
+      "wait:700",
+      "click:@period-90d",
+      "wait:1000",
+      "click:@period-30d",
+      "wait:900"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "defaultPeriod",
+      "label": "Opens on",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "7d",
+          "label": "7D"
+        },
+        {
+          "value": "30d",
+          "label": "30D"
+        },
+        {
+          "value": "90d",
+          "label": "90D"
+        }
+      ],
+      "default": "30d",
+      "remount": true
+    },
+    {
+      "prop": "format",
+      "label": "Figures",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "currency",
+          "label": "Currency"
+        },
+        {
+          "value": "number",
+          "label": "Number"
+        }
+      ],
+      "default": "currency"
+    },
+    {
+      "prop": "currency",
+      "label": "Currency",
+      "kind": "select",
+      "options": [
+        {
+          "value": "USD",
+          "label": "USD"
+        },
+        {
+          "value": "EUR",
+          "label": "EUR"
+        },
+        {
+          "value": "GBP",
+          "label": "GBP"
+        },
+        {
+          "value": "JPY",
+          "label": "JPY"
+        }
+      ],
+      "default": "USD"
+    },
+    {
+      "prop": "accent",
+      "label": "Accent (1st = ink)",
+      "kind": "color",
+      "default": "#f4f4f5",
+      "options": [
+        "#f4f4f5",
+        "#7dd3fc",
+        "#4ade80",
+        "#fbbf24",
+        "#f472b6"
+      ]
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark"
+    },
+    {
+      "prop": "title",
+      "label": "Title",
+      "kind": "text",
+      "default": "Revenue by channel"
+    }
+  ]
+}

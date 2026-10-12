@@ -1,0 +1,151 @@
+{
+  "component": "AgentToolCall",
+  "intent": "One agent tool invocation as a line in a flight recorder: a mono tool name, a one-line argument summary, a live duration and a status glyph that morphs between queued, running, done and failed. Expanding shows tinted JSON arguments and a truncated result; a failure shows the stderr tail and a Retry. Dark, monochrome, one accent on the running arc only.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19 client component",
+    "styling": "Tailwind CSS v4 with container queries (@container, @sm:)",
+    "animation": "motion/react for the glyph morph, the disclosure and the chevron; requestAnimationFrame for the live duration",
+    "allowed_imports": [
+      "react",
+      "motion/react"
+    ]
+  },
+  "layout": {
+    "root": "@container, full width of its column, border-bottom hairline",
+    "header": "one full-width button, 10px radius, 12px horizontal padding, gap 12px: index (w-5, hidden below 384px), glyph 16px, tool name, summary (truncated, flex-1), duration (right), chevron 14px",
+    "row_padding": "14px vertical comfortable, 8px compact (compact rows grow to a 44px minimum on coarse pointers)",
+    "inset": "failure block and details panel start at 72px (40px below a 384px container, where the index hides) so content sits under the tool name",
+    "failure": "10px radius tinted box, 12px and 14px padding; first row: stderr label, 'last 4 of 6 lines' (the whole count hides below a 448px container and truncates rather than wraps), Retry at the right (28px tall, 8px invisible hit extension; hidden on a controlled call with no onRetry); then the last four stderr lines 10px below, wrapping below a 448px container and scrolling with a right-edge fade above it; while a retry runs the block stays, stderr dims to 45%, the arrow spins and the button reads Retrying at the same width; once the call lands the block holds 480ms so the drawn check registers, then collapses",
+    "details": "arguments block, then result block, 20px apart, 16px bottom padding",
+    "result": "six lines at first; full result in a scroll region capped at 184px after Show more; long lines scroll sideways inside the panel",
+    "overflow": "zero horizontal page overflow; summary truncates; JSON, stderr (448px and up) and result scroll inside their own boxes, fading their right 24px until scrolled to the end, and become focusable labelled regions only when something is hidden",
+    "stage": "demo card max 640px wide and a fixed 680px tall, centred on the stage; the log body is column-reverse with overflow-y auto so it reads from the bottom, earlier calls scroll off the top under a 32px mask fade and an expanding call grows upward"
+  },
+  "typography": {
+    "tool_name": {
+      "font": "mono",
+      "size": "13px (12px compact)",
+      "weight": 500
+    },
+    "summary_and_duration": {
+      "font": "mono",
+      "size": "12px",
+      "tabular_nums": true,
+      "color": "muted token (#98989a dark, #5d5d5f light)"
+    },
+    "body_blocks": {
+      "font": "mono",
+      "size": "12px",
+      "leading": "1.65 result, 1.7 arguments, 1.6 stderr"
+    },
+    "micro_labels": {
+      "font": "mono",
+      "size": "10.5px",
+      "case": "uppercase",
+      "tracking": "0.18em",
+      "color": "faint token (#88888a dark, #68686a light)"
+    },
+    "line_numbers": {
+      "font": "mono",
+      "size": "12px",
+      "color": "ink at 25%, decorative and aria-hidden (the index is ink at 30%, also aria-hidden)",
+      "align": "right"
+    }
+  },
+  "color": {
+    "dark": {
+      "stage": "#000000",
+      "surface": "#0d0d0f",
+      "ink": "#ededef",
+      "hairline": "rgba(255,255,255,0.08)",
+      "queued": "rgba(237,237,239,0.42)",
+      "ring": "rgba(237,237,239,0.16)",
+      "success": "#5fc284",
+      "error": "#f07c80",
+      "muted": "#98989a",
+      "faint": "#88888a"
+    },
+    "light": {
+      "stage": "#f4f4f5",
+      "surface": "#ffffff",
+      "ink": "#17171a",
+      "hairline": "rgba(17,17,19,0.09)",
+      "queued": "rgba(23,23,26,0.42)",
+      "ring": "rgba(23,23,26,0.16)",
+      "success": "#23884a",
+      "error": "#c2353b",
+      "muted": "#5d5d5f",
+      "faint": "#68686a"
+    },
+    "accent": {
+      "default": "#ff9d5c",
+      "use": "running arc and the tint behind arguments only; light theme uses color-mix(in oklab, accent 70%, #000) for text and the arc",
+      "argument_tint": "accent at 7% fill with a 16% inset hairline",
+      "string_tokens": "accent for JSON strings"
+    },
+    "contrast": "secondary text is solid, not an alpha of ink: muted (summary, duration, JSON keys, Show more) and faint (micro labels, card header, chevron) both clear WCAG AA 4.5:1 on the surface, hover, error tint and argument tint in both themes"
+  },
+  "motion": {
+    "glyph": "queued dash (2 2.9) resolves to a solid ring over 300ms; running arc turns once per 1.1s, linear, infinite; stalled arc (past 20s) stops at 55% opacity; check and cross draw with pathLength over 360ms after an 80ms delay",
+    "duration": "live counter updates every frame while running; 480ms under a second, then 1.52s",
+    "disclosure": "height 0 to auto with opacity over 320ms on [0.22, 1, 0.36, 1]; collapses over 200ms on [0.4, 0, 1, 1]",
+    "chevron": "rotates 180 degrees over 220ms, ease-out",
+    "reduced_motion": "disclosure becomes a 150ms opacity fade; the arc stops turning; the counter still updates",
+    "no": "no bounce, no idle loop except the running arc, no glass or glow",
+    "entrance": "first view: card, header and each line rise 10px out of a 6px blur, 60ms apart, 560ms on [0.22, 1, 0.36, 1]",
+    "press": "header row press: ink at 5% and scale 0.995; Retry press scale 0.97"
+  },
+  "responsive": {
+    "widths": [
+      320,
+      390,
+      768,
+      1024,
+      1440,
+      1920
+    ],
+    "rules": [
+      "below a 384px container the index hides and the summary takes the space",
+      "compact density fits a dense log at 320px",
+      "stage column max 640px with 16px side padding on small screens"
+    ]
+  },
+  "accessibility": [
+    "header is a native button with aria-expanded and aria-controls pointing at the details panel",
+    "accessible name includes the status word (Queued, Running, Still running, Done, Failed) in visually hidden text",
+    "status glyph, index and line numbers are aria-hidden",
+    "one visually hidden aria-live=polite region per call announces transitions only ('read_file done in 1.52s', 'bash failed'), never the state it mounts in",
+    "failure block is a labelled group ('bash error output'), not an alert, so a historical failure is not announced on load",
+    "Retry and Show more are native buttons with a 2px focus-visible ring, offset 2px, ink colour; Show more extends its hit area to 44px, Retry by 8px on every side",
+    "argument, stderr and result blocks become focusable labelled regions only when they scroll, so a keyboard can reach hidden text",
+    "every action is a button, so touch works without hover",
+    "Retry is disabled with aria-busy while its retry runs; its label swaps to Retrying without changing width"
+  ],
+  "content": {
+    "demo_calls": [
+      "01 to 09: earlier done calls (git log, docs/billing.md, web.search, read_file, sql.query, rg) that fill the log and scroll off its top",
+      "10 bash pnpm test billing: failed with an AssertionError, stderr tail visible, Retry reruns it for 0.65 s and lands done",
+      "11 read_file src/billing/invoices.ts (utf8): queued until the visitor moves, keys or scrolls (or 4 s), runs for 1.52 s, lands done, expands to show arguments and a 45-line result; when the Status control forces it failed, its Retry reruns it locally for 0.65 s"
+    ],
+    "sample_tools": [
+      "read_file",
+      "web.search",
+      "bash",
+      "sql.query"
+    ],
+    "copy": "Mono and factual: tool names, paths and assertion messages. Never invented output when none is given."
+  },
+  "avoid": [
+    "chat bubbles, avatars or any conversational framing",
+    "sparkle icons, emoji or decorative icon tiles",
+    "a different hue per tool; every tool name is the same ink",
+    "a spinner that never resolves; a running call past 20s says so and its arc stops",
+    "gradients, glass blur, glow, pills or badges on the row",
+    "bounce or overshoot in any motion",
+    "the accent anywhere other than the running arc and the argument tint",
+    "fake results when none were supplied",
+    "a long result that grows the page instead of scrolling inside its region",
+    "em dashes in any copy"
+  ]
+}

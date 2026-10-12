@@ -1,0 +1,182 @@
+{
+  "slug": "agent-commit-card",
+  "name": "Commit Card",
+  "tier": "free",
+  "platform": "web",
+  "category": "agents",
+  "description": "An agent’s commit as a card. The subject, the files it touched, checks that roll from queued to passed, then Open PR.",
+  "tags": [
+    "agent",
+    "commit",
+    "pull request",
+    "checks",
+    "diff",
+    "ci",
+    "files",
+    "git"
+  ],
+  "dependencies": [
+    "motion"
+  ],
+  "theme": "dark",
+  "previewHeight": 780,
+  "usage": "import { AgentCommitCard } from \"@/components/design-for-ai/agent-commit-card\";\n\n<AgentCommitCard\n  agent=\"Ada\"\n  message=\"Name when the seat credit lands\"\n  hash=\"c4e19a2\"\n  onOpen={(pr) => openPullRequest(pr)}\n/>\n\n// Drive it from outside with status (\"ready\" | \"opened\") and onStatusChange.\n// Ready rolls the checks. Opened shows them passed and the pull request number.\n// Open PR stays disabled until every check has passed.",
+  "props": [
+    {
+      "name": "agent",
+      "type": "string",
+      "default": "\"Ada\"",
+      "description": "Who made the commit. Shown as the micro label."
+    },
+    {
+      "name": "message",
+      "type": "string",
+      "default": "\"Name when the seat credit lands\"",
+      "description": "The subject line."
+    },
+    {
+      "name": "detail",
+      "type": "string",
+      "default": "\"The pricing answer said the credit existed, not when.\"",
+      "description": "One sentence under the subject."
+    },
+    {
+      "name": "hash",
+      "type": "string",
+      "default": "\"c4e19a2\"",
+      "description": "Short hash, shown in mono."
+    },
+    {
+      "name": "branch",
+      "type": "string",
+      "default": "\"pricing-faq\"",
+      "description": "Branch the commit is on."
+    },
+    {
+      "name": "files",
+      "type": "CommitFile[]",
+      "description": "Files the commit touched: { path, add, del }. add and del are line counts."
+    },
+    {
+      "name": "checks",
+      "type": "CommitCheck[]",
+      "description": "CI checks, in the order they run: { id, label }. Each goes queued, then running, then passed."
+    },
+    {
+      "name": "prNumber",
+      "type": "number",
+      "default": "482",
+      "description": "Number used once Open PR has landed. The button then reads PR #482."
+    },
+    {
+      "name": "status",
+      "type": "\"ready\" | \"opened\"",
+      "description": "Controlled state. Ready rolls the checks and offers Open PR once they pass. Opened shows the checks passed and the pull request number. Omit it and the card owns the state."
+    },
+    {
+      "name": "onStatusChange",
+      "type": "(status: \"ready\" | \"opened\") => void",
+      "description": "Called when Open PR lands, and when Re-run returns the card to ready."
+    },
+    {
+      "name": "onOpen",
+      "type": "(prNumber: number) => void",
+      "description": "Called with the pull request number when Open PR is used. A click while checks are still running does nothing."
+    },
+    {
+      "name": "accent",
+      "type": "string",
+      "default": "\"#f4f4f5\"",
+      "description": "The one accent, used on Open PR. A #rrggbb colour. Near-white or near-black values use the theme’s ink. Passed checks stay green either way."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Near-black surface with white ink, or the white inverse."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "description": "Extra classes on the root."
+    }
+  ],
+  "added": "2026-10-11",
+  "demo": {
+    "steps": [
+      "wait:240",
+      "click:@rerun",
+      "wait:2100",
+      "click:@open",
+      "wait:560"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "agent",
+      "label": "Agent",
+      "kind": "text",
+      "default": "Ada",
+      "group": "Copy"
+    },
+    {
+      "prop": "message",
+      "label": "Subject",
+      "kind": "text",
+      "default": "Name when the seat credit lands",
+      "group": "Copy"
+    },
+    {
+      "prop": "status",
+      "label": "State",
+      "kind": "action",
+      "options": [
+        {
+          "value": "ready",
+          "label": "Checks"
+        },
+        {
+          "value": "opened",
+          "label": "Opened"
+        }
+      ],
+      "group": "State"
+    },
+    {
+      "prop": "$replay",
+      "label": "Replay",
+      "kind": "action",
+      "group": "State"
+    },
+    {
+      "prop": "accent",
+      "label": "Accent",
+      "kind": "color",
+      "default": "#f4f4f5",
+      "options": [
+        "#f4f4f5",
+        "#22c55e",
+        "#7dd3fc",
+        "#f5c66b"
+      ],
+      "group": "Look"
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark",
+      "group": "Look"
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "component": "CollabActivityFeed",
+  "intent": "A dark, monochrome activity timeline grouped by day, filtered by type and person, showing what changed inline: word-level diffs, before/after values, status moves and quoted comments.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 with @container queries; colour tokens as CSS variables; color-mix() for diff tints",
+    "animation": "motion/react: layoutId for the chip pill, layout='position' and AnimatePresence popLayout for refiltering, height for diff toggles",
+    "icons": "lucide-react (ArrowRight, CircleDot, MessageSquare, Pencil, UserPlus, X)",
+    "fonts": "font-display (Geist) heading, font-sans (Geist) UI, font-mono (Geist Mono) times, counts, days, values"
+  },
+  "layout": {
+    "card": "surface, 1px line, 14px radius, inset highlight + deep shadow, overflow hidden; 720px max in the demo",
+    "header": "title + mono workspace line; 32px avatar filter on the right; type chips with counts below; Clear appears when filtered",
+    "dayHeading": "mono 11px uppercase: day (muted), date (faint), hairline, count",
+    "event": "grid 28px node + content; node is a ringed circle with the type icon; 1px rail joins nodes within a day; sentence with actor and target in ink, mono time right",
+    "changes": {
+      "text": "sunken box, after-sentence with removed words struck on red tint and added words on green tint",
+      "value": "mono 12px before (struck, red tint) → after (green tint)",
+      "status": "two pills with an arrow; the new one raised and in ink",
+      "quote": "2px left rule, 13px muted"
+    },
+    "empty": "ringed icon, ‘No comments from Sam this week’, Show everything"
+  },
+  "typography": {
+    "title": { "font": "display", "size": "18px", "weight": 600, "tracking": "-0.025em" },
+    "sentence": "14px, leading 1.45, muted; names and targets medium ink",
+    "meta": "mono 11px faint, tabular",
+    "diff": "13px, leading 1.6",
+    "chips": "13px medium with mono 11px counts"
+  },
+  "color": {
+    "approach": "greyscale; semantic added/removed tints only behind text; one accent for the active count and selected person ring",
+    "dark": { "surface": "#111113", "raised": "#17171a", "sunken": "#0c0c0e", "line": "#232327", "rule": "#1b1b1e", "avatar": "#1f1f23", "ink": "#f4f4f5", "muted": "#a1a1aa", "faint": "#8a8a93", "added": "#4ade80", "removed": "#f87171", "stage": "#0a0a0b (demo only)" },
+    "light": { "surface": "#ffffff", "raised": "#f6f6f7", "sunken": "#fafafa", "line": "#e4e4e7", "rule": "#efeff1", "avatar": "#f0f0f2", "ink": "#18181b", "muted": "#52525b", "faint": "#62626b", "added": "#15803d", "removed": "#b91c1c", "stage": "#e9e9ec (demo only)" },
+    "tints": "added 14%, removed 12%"
+  },
+  "motion": {
+    "trigger": "once at 20% in view",
+    "order": "card → header rows 60ms apart → day headings and events in reading order, 45ms apart from 0.26s",
+    "filter": "chip pill slides on spring 500/40; staying events glide (layout position); leaving fade up 6px with 4px blur (0.18s); arriving stagger 30ms",
+    "diffs": "height collapse/expand 0.3s when toggled",
+    "reducedMotion": "150ms fades only"
+  },
+  "responsive": {
+    "390": "avatars stay beside the title; type chips wrap onto a second line, every label fully visible; diffs wrap",
+    "576+": "all chips sit on one line",
+    "720": "comfortable 24px padding"
+  },
+  "accessibility": [
+    "type chips are a tablist with roving tabindex and arrow keys",
+    "person avatars are toggle buttons (aria-pressed) labelled ‘Only <name>’",
+    "each day is a labelled section; the feed is aria-live polite",
+    "diffs use <ins>/<del>; values add sr-only ‘was’/‘now’; each event starts with an sr-only type",
+    "2px focus-visible outlines in ink"
+  ],
+  "content": {
+    "workspace": "Ledgerline · Website",
+    "events": "Mara rewrote the Pricing headline (text diff); Priya commented on it; Jonas moved Pricing page v3 In review → Approved; Mara changed Pro $24 → $29 / seat; Sam added Elif Demir as a viewer; Jonas renamed Team → Studio; Priya asked ‘seat’ or ‘member’; Sam moved v3 Draft → In review; Mara edited the annual note (15% → 20%)",
+    "people": "Mara Ilić, Jonas Weber, Priya Raman, Sam Okoye"
+  },
+  "avoid": [
+    "a coloured icon per event type",
+    "green or red text",
+    "full-width code diff blocks for one-word changes",
+    "network avatars",
+    "jumpy refiltering without layout animation"
+  ]
+}

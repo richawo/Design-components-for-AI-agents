@@ -1,0 +1,242 @@
+{
+  "slug": "agent-tool-call",
+  "name": "Agent Tool Call",
+  "tier": "free",
+  "platform": "web",
+  "category": "agents",
+  "description": "One agent tool call as a flight-recorder line: mono tool name, argument summary, live duration and a status glyph that morphs through queued, running, done and failed.",
+  "tags": [
+    "agent",
+    "tool call",
+    "trace",
+    "log",
+    "streaming",
+    "json",
+    "retry",
+    "monochrome"
+  ],
+  "dependencies": [
+    "motion"
+  ],
+  "theme": "dark",
+  "previewHeight": 760,
+  "usage": "import { AgentToolCall } from \"@/components/design-for-ai/agent-tool-call\";\n\n<AgentToolCall\n  seq={3}\n  tool=\"web.search\"\n  args={{ query: \"stripe proration rules\", limit: 5 }}\n  status={run.status}\n  durationMs={run.durationMs}\n  result={run.output}\n  stderr={run.stderr}\n  onRetry={() => agent.retry(run.id)} // return a promise: resolves to done, rejects to failed\n/>\n\n// Uncontrolled: omit status and let Retry drive it (defaultStatus=\"failed\" starts it failed).\n<AgentToolCall tool=\"sql.query\" defaultStatus=\"failed\" stderr={sqlError} />",
+  "props": [
+    {
+      "name": "seq",
+      "type": "number",
+      "default": "1",
+      "description": "Position in the log, shown as a two-digit index on wide containers."
+    },
+    {
+      "name": "tool",
+      "type": "string",
+      "default": "\"read_file\"",
+      "description": "Tool name, set in mono. read_file, web.search, bash and sql.query get realistic sample arguments, output and errors."
+    },
+    {
+      "name": "args",
+      "type": "Record<string, string | number | boolean>",
+      "description": "Flat arguments. Shown as a one-line summary and, expanded, as tinted JSON. Defaults to the sample for the tool."
+    },
+    {
+      "name": "status",
+      "type": "\"pending\" | \"running\" | \"done\" | \"failed\"",
+      "description": "Controlled status. Omit it to let the component track its own status, which Retry drives."
+    },
+    {
+      "name": "defaultStatus",
+      "type": "\"pending\" | \"running\" | \"done\" | \"failed\"",
+      "default": "\"done\"",
+      "description": "Starting status when uncontrolled."
+    },
+    {
+      "name": "durationMs",
+      "type": "number",
+      "description": "Recorded duration once the call has finished. While it runs, the line counts live; without it, a finished call shows the time it was observed running."
+    },
+    {
+      "name": "result",
+      "type": "string",
+      "description": "Output of the call. Six lines show at first, with the rest one click away in a scroll area that keeps the page still."
+    },
+    {
+      "name": "stderr",
+      "type": "string",
+      "description": "Standard error. A failed call shows its last four lines beside a Retry button."
+    },
+    {
+      "name": "defaultExpanded",
+      "type": "boolean",
+      "default": "false",
+      "description": "Whether the arguments and result panel starts open."
+    },
+    {
+      "name": "showTiming",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show the duration column."
+    },
+    {
+      "name": "density",
+      "type": "\"compact\" | \"comfortable\"",
+      "default": "\"comfortable\"",
+      "description": "Row height and type size. Compact fits a dense log; comfortable suits a single call on its own."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "The surface the line sits on, so its text, rules and tints keep their contrast."
+    },
+    {
+      "name": "accent",
+      "type": "string",
+      "default": "\"#ff9d5c\"",
+      "description": "The one accent: the arc of a running call and the tint behind arguments. Light theme darkens it for text."
+    },
+    {
+      "name": "onRetry",
+      "type": "() => void | Promise<unknown>",
+      "description": "Runs on Retry. Return a promise to show the running state; it resolves to done and rejects to failed. Without it, an uncontrolled call reruns for 1.1 s, and a controlled call hides Retry because only the host can change its status."
+    },
+    {
+      "name": "retryLabel",
+      "type": "string",
+      "default": "\"Retry\"",
+      "description": "Label on the retry button in a failed call."
+    },
+    {
+      "name": "retryingLabel",
+      "type": "string",
+      "default": "\"Retrying\"",
+      "description": "Label on the retry button while the retry runs. The button keeps its width, and the error above stays visible, dimmed, until the call lands."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "description": "Extra classes on the root."
+    }
+  ],
+  "added": "2026-10-10",
+  "demo": {
+    "steps": [
+      "move:0.5,0.3",
+      "wait:900",
+      "click:@call-toggle:0.3,0.5",
+      "wait:200",
+      "click:@call-more",
+      "wait:100",
+      "hover:@call-result:0.5,0.35",
+      "scroll:200",
+      "wait:80",
+      "click:@call-retry",
+      "wait:1380"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "status",
+      "label": "Status",
+      "kind": "action",
+      "options": [
+        {
+          "value": "pending",
+          "label": "Queued"
+        },
+        {
+          "value": "running",
+          "label": "Running"
+        },
+        {
+          "value": "done",
+          "label": "Done"
+        },
+        {
+          "value": "failed",
+          "label": "Failed"
+        }
+      ],
+      "group": "Call"
+    },
+    {
+      "prop": "tool",
+      "label": "Tool",
+      "kind": "select",
+      "options": [
+        {
+          "value": "read_file",
+          "label": "read_file"
+        },
+        {
+          "value": "web.search",
+          "label": "web.search"
+        },
+        {
+          "value": "bash",
+          "label": "bash"
+        },
+        {
+          "value": "sql.query",
+          "label": "sql.query"
+        }
+      ],
+      "default": "read_file",
+      "group": "Call"
+    },
+    {
+      "prop": "defaultExpanded",
+      "label": "Expanded",
+      "kind": "toggle",
+      "default": false,
+      "remount": true,
+      "group": "Layout"
+    },
+    {
+      "prop": "showTiming",
+      "label": "Duration",
+      "kind": "toggle",
+      "default": true,
+      "group": "Layout"
+    },
+    {
+      "prop": "density",
+      "label": "Density",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "compact",
+          "label": "Compact"
+        },
+        {
+          "value": "comfortable",
+          "label": "Comfortable"
+        }
+      ],
+      "default": "comfortable",
+      "group": "Layout"
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark",
+      "group": "Look"
+    },
+    {
+      "prop": "$replay",
+      "label": "Run again",
+      "kind": "action"
+    }
+  ]
+}

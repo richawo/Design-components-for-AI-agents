@@ -1,0 +1,95 @@
+{
+  "component": "AgentCommitCard",
+  "intent": "An agent’s commit as a card: the subject, the files it touched, checks that roll from queued to passed, then Open PR.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19 client component",
+    "styling": "Tailwind CSS v4 with container queries (@container, @md) and CSS variables (--cmt-*)",
+    "animation": "motion/react for the entrance and the check-word swap; a CSS spin on the running mark",
+    "allowed_imports": ["react", "motion/react"]
+  },
+  "layout": {
+    "root": "card, max 480px on the stage, 20px radius, overflow hidden, four bands with hairlines",
+    "head": "16px padding, 20px from @md. Agent label and hash, subject, one sentence, branch",
+    "files": "one row per file, path truncates, counts stay on the right",
+    "checks": "Re-run at the right of the label. Each row is a 14px mark, the name, and the state word",
+    "footer": "Open PR, full width, 40px, 11px radius, 44px on pointer-coarse",
+    "stage": "demo only, centred, 12px side padding (32px from sm), top 32px (64px from sm), black or #f4f4f5"
+  },
+  "typography": {
+    "subject": "17px medium, tracking -0.02em, text-balance",
+    "detail": "13.5px, leading 1.45, max 46ch",
+    "paths": "mono 12.5px",
+    "counts": "mono 12px, tabular",
+    "checks": "14px names, mono 11px state words",
+    "hash": "mono 12px, tabular, muted",
+    "button": "14px medium, tracking -0.01em",
+    "micro": "mono 10.5px, uppercase, tracking 0.16em, faint"
+  },
+  "color": {
+    "dark": {
+      "surface": "#0d0d0f",
+      "ink": "#ededef",
+      "body": "#c6c6cc",
+      "muted": "#98989a",
+      "faint": "#88888a",
+      "line": "rgba(255,255,255,0.08)",
+      "ok": "#5fc284"
+    },
+    "light": {
+      "surface": "#ffffff",
+      "ink": "#17171a",
+      "body": "#3f3f46",
+      "muted": "#5d5d5f",
+      "faint": "#68686a",
+      "line": "rgba(17,17,19,0.09)",
+      "ok": "#1d7a40"
+    },
+    "accent": "#f4f4f5 by default, mapped to the theme ink, used only on Open PR. Pass green is only a passed check and an added-line count. The check glyph on the disc is #06210f."
+  },
+  "motion": {
+    "entrance": "head, files, checks and the button rise 10px out of a 6px blur over 500ms, delays 40, 120, 200 and 280ms",
+    "checks": "each check is queued, running, then passed, 320ms a step, the next starting as the previous passes. Six steps, done at 1920ms. Re-run starts them again",
+    "word": "the state word fades and rises 4px over 200ms",
+    "spin": "the running mark spins; it does not spin under reduced motion",
+    "press": "Open PR scales to 0.98 for 90ms",
+    "reducedMotion": "150ms opacity, checks already passed, no spin"
+  },
+  "responsive": {
+    "column": "fluid to 480px from 320 through 1920",
+    "touch": "Open PR grows to 44px on pointer-coarse",
+    "overflow": "file paths truncate; the subject wraps"
+  },
+  "accessibility": [
+    "section named Commit by {agent}",
+    "the subject is an h2",
+    "files and checks are lists",
+    "marks are aria-hidden; the state is the visible word",
+    "Re-run and Open PR are buttons; Open PR is disabled until every check has passed, then keeps its weight and reads PR #",
+    "a polite live region announces a re-run and an opened pull request after the click",
+    "focus-visible is a 2px ink outline, offset 2px"
+  ],
+  "content": {
+    "defaults": {
+      "agent": "Ada",
+      "message": "Name when the seat credit lands",
+      "detail": "The pricing answer said the credit existed, not when.",
+      "hash": "c4e19a2",
+      "branch": "pricing-faq",
+      "files": [
+        { "path": "app/pricing/faq.tsx", "add": 12, "del": 3 },
+        { "path": "lib/billing/seats.ts", "add": 4, "del": 0 },
+        { "path": "components/credit.tsx", "add": 9, "del": 2 }
+      ],
+      "checks": ["Typecheck", "Registry", "Preview"],
+      "prNumber": 482
+    },
+    "rules": "Open PR does nothing while a check is queued or running. Once opened the button reads PR # and the number."
+  },
+  "avoid": [
+    "an avatar, a GitHub logo, rainbow file icons, a sparkle, or an AI badge",
+    "enabling Open PR before every check has passed",
+    "using the pass green on the button",
+    "a spinner that keeps spinning under reduced motion"
+  ]
+}
