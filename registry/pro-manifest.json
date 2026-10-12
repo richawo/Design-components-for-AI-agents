@@ -15691,6 +15691,7 @@
         "click:@task-accrual",
         "wait:650",
         "click:@task-bank",
+        "wait:500",
         "click:@evidence",
         "type:Bank statement reconciled.",
         "click:@complete",
