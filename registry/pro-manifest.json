@@ -14883,7 +14883,7 @@
     "dependencies": [
       "motion"
     ],
-    "theme": "light",
+    "theme": "dark",
     "previewHeight": 1260,
     "usage": "import { CompensationReview } from \"@/components/design-for-ai/hr-compensation-review\";\n\n<CompensationReview />",
     "props": [
@@ -14922,7 +14922,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "default": "\"light\"",
+        "default": "\"dark\"",
         "description": "Surface, border and ink palette."
       }
     ],
@@ -14949,7 +14949,7 @@
           "dark",
           "light"
         ],
-        "default": "light"
+        "default": "dark"
       }
     ]
   },
@@ -14970,7 +14970,7 @@
     "dependencies": [
       "motion"
     ],
-    "theme": "light",
+    "theme": "dark",
     "previewHeight": 1240,
     "usage": "import { EmployeeOnboarding } from \"@/components/design-for-ai/hr-employee-onboarding\";\n\n<EmployeeOnboarding />",
     "props": [
@@ -14999,7 +14999,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "default": "\"light\"",
+        "default": "\"dark\"",
         "description": "Surface, border and ink palette."
       },
       {
@@ -15029,7 +15029,7 @@
           "dark",
           "light"
         ],
-        "default": "light"
+        "default": "dark"
       },
       {
         "prop": "selectMode",
@@ -15060,7 +15060,7 @@
     "dependencies": [
       "motion"
     ],
-    "theme": "light",
+    "theme": "dark",
     "previewHeight": 1320,
     "usage": "import { InterviewScorecard } from \"@/components/design-for-ai/hr-interview-scorecard\";\n\n<InterviewScorecard />",
     "props": [
@@ -15104,7 +15104,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "default": "\"light\"",
+        "default": "\"dark\"",
         "description": "Surface, border and ink palette."
       },
       {
@@ -15135,7 +15135,7 @@
           "dark",
           "light"
         ],
-        "default": "light"
+        "default": "dark"
       },
       {
         "prop": "selectMode",
@@ -15166,7 +15166,7 @@
     "dependencies": [
       "motion"
     ],
-    "theme": "light",
+    "theme": "dark",
     "previewHeight": 1160,
     "usage": "import { LeaveApproval } from \"@/components/design-for-ai/hr-leave-approval\";\n\n<LeaveApproval />",
     "props": [
@@ -15205,7 +15205,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "default": "\"light\"",
+        "default": "\"dark\"",
         "description": "Surface, border and ink palette."
       }
     ],
@@ -15229,7 +15229,7 @@
           "dark",
           "light"
         ],
-        "default": "light"
+        "default": "dark"
       }
     ]
   },
@@ -15250,7 +15250,7 @@
     "dependencies": [
       "motion"
     ],
-    "theme": "light",
+    "theme": "dark",
     "previewHeight": 1120,
     "usage": "import { OrgExplorer } from \"@/components/design-for-ai/hr-org-explorer\";\n\n<OrgExplorer />",
     "props": [
@@ -15274,7 +15274,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "default": "\"light\"",
+        "default": "\"dark\"",
         "description": "Surface, border and ink palette."
       }
     ],
@@ -15298,7 +15298,7 @@
           "dark",
           "light"
         ],
-        "default": "light"
+        "default": "dark"
       }
     ]
   },
@@ -15319,7 +15319,7 @@
     "dependencies": [
       "motion"
     ],
-    "theme": "light",
+    "theme": "dark",
     "previewHeight": 1240,
     "usage": "import { PeopleDashboard } from \"@/components/design-for-ai/hr-people-dashboard\";\n\n<PeopleDashboard />",
     "props": [
@@ -15353,7 +15353,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "default": "\"light\"",
+        "default": "\"dark\"",
         "description": "Surface, border and ink palette."
       },
       {
@@ -15383,7 +15383,7 @@
           "dark",
           "light"
         ],
-        "default": "light"
+        "default": "dark"
       },
       {
         "prop": "selectMode",
@@ -15414,7 +15414,7 @@
     "dependencies": [
       "motion"
     ],
-    "theme": "light",
+    "theme": "dark",
     "previewHeight": 1220,
     "usage": "import { PolicyAcknowledgement } from \"@/components/design-for-ai/hr-policy-acknowledgement\";\n\n<PolicyAcknowledgement />",
     "props": [
@@ -15458,7 +15458,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "default": "\"light\"",
+        "default": "\"dark\"",
         "description": "Surface, border and ink palette."
       }
     ],
@@ -15483,7 +15483,7 @@
           "dark",
           "light"
         ],
-        "default": "light"
+        "default": "dark"
       }
     ]
   },
@@ -15504,7 +15504,7 @@
     "dependencies": [
       "motion"
     ],
-    "theme": "light",
+    "theme": "dark",
     "previewHeight": 1180,
     "usage": "import { ShiftCoverage } from \"@/components/design-for-ai/hr-shift-coverage\";\n\n<ShiftCoverage />",
     "props": [
@@ -15543,7 +15543,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "default": "\"light\"",
+        "default": "\"dark\"",
         "description": "Surface, border and ink palette."
       }
     ],
@@ -15569,7 +15569,7 @@
           "dark",
           "light"
         ],
-        "default": "light"
+        "default": "dark"
       }
     ]
   },
