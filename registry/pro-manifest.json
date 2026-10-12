@@ -5073,7 +5073,7 @@
         "click:@trigger",
         "key:ArrowDown",
         "key:Enter",
-        "wait:1800"
+        "wait:4000"
       ],
       "loop": false
     },
