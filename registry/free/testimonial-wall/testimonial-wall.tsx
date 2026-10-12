@@ -488,7 +488,6 @@ function Column({ items, index, speed, active, play, paused }: { items: Testimon
     <ul
       ref={copy === "real" ? setRef : undefined}
       aria-hidden={copy === "clone" || undefined}
-      inert={copy === "clone" || undefined}
       className="relative flex flex-col gap-4 pb-4 @3xl:gap-5 @3xl:pb-5"
     >
       {Array.from({ length: reps }, (_, r) => (
