@@ -5185,6 +5185,94 @@
     ]
   },
   {
+    "slug": "block-legal-workspace",
+    "name": "Legal Matter Workspace",
+    "tier": "pro",
+    "platform": "web",
+    "category": "app",
+    "description": "A legal workspace combining matter details, obligations and document requests. Retained evidence drafts and typed handoffs stay within the selected matter.",
+    "tags": [
+      "block",
+      "workspace",
+      "composition",
+      "keyboard",
+      "monochrome"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1500,
+    "usage": "import { LegalWorkspace } from \"@/components/design-for-ai/block-legal-workspace\";\n\n<LegalWorkspace />",
+    "props": [
+      {
+        "name": "brand",
+        "type": "string",
+        "default": "\"Northstar\"",
+        "description": "Workspace identity."
+      },
+      {
+        "name": "scopes",
+        "type": "LegalWorkspaceScope[]",
+        "description": "Unique matter contexts with the corresponding matter records, contract obligations and document requests."
+      },
+      {
+        "name": "referenceDate",
+        "type": "string",
+        "default": "\"2026-10-12\"",
+        "description": "Host ISO reporting date for due-date displays."
+      },
+      {
+        "name": "onComplete",
+        "type": "(payload: { matterId: string; completion: ObligationCompletion }) => void | Promise<void>",
+        "description": "Record obligation completion with the supplied evidence and matter context."
+      },
+      {
+        "name": "onUpload",
+        "type": "(payload: { matterId: string; submission: DocumentSubmission }) => void | Promise<void>",
+        "description": "Validate and store the selected File in the host document service. The payload includes matter and request IDs."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Shared palette."
+      }
+    ],
+    "added": "2026-10-12",
+    "kind": "block",
+    "blockType": "workspace",
+    "components": [
+      "layout-workspace-shell",
+      "select-listbox",
+      "segmented-control",
+      "legal-matter-dashboard",
+      "legal-obligation-tracker",
+      "legal-document-requests"
+    ],
+    "demo": {
+      "steps": [
+        "wait:350",
+        "click:@obligations",
+        "wait:2200"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "block-people-workspace",
     "name": "People Operations Workspace",
     "tier": "pro",

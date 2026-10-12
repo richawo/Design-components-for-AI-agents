@@ -3362,5 +3362,19 @@
       "block-saas-dashboard"
     ],
     "updated": "2026-10-12"
+  },
+  "block-legal-workspace": {
+    "useWhen": "A legal operations team needs matter context, contractual work and requested evidence in one coherent workspace.",
+    "avoidWhen": "Automatically interpreting obligations, calculating authoritative legal deadlines or treating UI uploads as verified evidence.",
+    "integration": [
+      "Provide related records through `scopes`. Each view stays within its selected matter, and callbacks include the matter ID.",
+      "The retained panels preserve unfinished evidence notes when you change matter or view.",
+      "The host validates permissions, deadlines, uploaded files and recorded completion. The preview demonstrates local sample handoffs."
+    ],
+    "related": [
+      "block-workspace-settings",
+      "block-financial-report"
+    ],
+    "updated": "2026-10-12"
   }
 }
