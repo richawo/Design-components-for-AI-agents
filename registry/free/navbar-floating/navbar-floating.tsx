@@ -284,7 +284,7 @@ function DesktopLinks({ links, activeIndex, reduce, groupId }: { links: NavLink[
                 </AnimatePresence>
                 <span className="relative">
                   {l.label}
-                  {l.count ? <sup className="ml-1 font-mono text-[9.5px] font-normal tabular-nums text-white/40">{l.count}</sup> : null}
+                  {l.count ? <sup className="ml-1 font-mono text-[9.5px] font-normal tabular-nums text-white/65">{l.count}</sup> : null}
                 </span>
                 {n === activeIndex ? (
                   // The current-page rule draws from its centre once its link has landed.
@@ -417,10 +417,10 @@ function MobileSheet({
               <span className="flex items-baseline gap-3 font-display text-[clamp(2.25rem,11vw,3.5rem)] font-semibold leading-[1] tracking-[-0.05em]">
                 <span>
                   {l.label}
-                  {l.count ? <sup className="ml-1.5 align-super font-mono text-xs font-normal tracking-normal text-white/40">{l.count}</sup> : null}
+                  {l.count ? <sup className="ml-1.5 align-super font-mono text-xs font-normal tracking-normal text-white/65">{l.count}</sup> : null}
                 </span>
               </span>
-              <span className="flex items-center gap-2 font-mono text-xs tabular-nums text-white/35">
+              <span className="flex items-center gap-2 font-mono text-xs tabular-nums text-white/65">
                 {n === activeIndex ? <span aria-hidden="true" className="size-1.5 rounded-full bg-white" /> : null}
                 {String(n + 1).padStart(2, "0")}
               </span>
@@ -443,7 +443,7 @@ function MobileSheet({
         </SheetBlock>
         <dl className="mt-10 grid grid-cols-2 gap-x-6 gap-y-6 text-[14px] leading-snug text-white/75">
           <SheetBlock variants={rise} delay={restAt(1)}>
-            <dt className="mb-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-white/40">Say hello</dt>
+            <dt className="mb-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-white/65">Say hello</dt>
             <dd>
               <a href={`mailto:${contact.email}`} data-nf-focus className="underline decoration-white/30 underline-offset-4 outline-none focus-visible:bg-white/10">
                 {contact.email}
@@ -456,7 +456,7 @@ function MobileSheet({
             </dd>
           </SheetBlock>
           <SheetBlock variants={rise} delay={restAt(2)}>
-            <dt className="mb-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-white/40">Visit</dt>
+            <dt className="mb-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-white/65">Visit</dt>
             {contact.address.map((line) => (
               <dd key={line}>{line}</dd>
             ))}
@@ -575,7 +575,7 @@ export default function NavbarFloatingDemo(overrides: Partial<NavbarFloatingProp
     <div className="min-h-[1700px] text-white" style={{ backgroundColor: COLOR.page }}>
       <NavbarFloating activeIndex={3} {...overrides} />
       <main className="mx-auto max-w-[1240px] px-6 pb-32 pt-36 sm:px-9 sm:pt-44">
-        <motion.p variants={rise} initial="hidden" animate="shown" custom={PAGE.at} className="font-mono text-[11px] uppercase tracking-[0.16em] text-white/45">
+        <motion.p variants={rise} initial="hidden" animate="shown" custom={PAGE.at} className="font-mono text-[11px] uppercase tracking-[0.16em] text-white/65">
           Changelog · Updated 8 Oct 2026
         </motion.p>
         <motion.h1
@@ -585,7 +585,7 @@ export default function NavbarFloatingDemo(overrides: Partial<NavbarFloatingProp
           custom={PAGE.at + PAGE.stagger}
           className="mt-6 max-w-[14ch] text-balance font-display text-[clamp(2.75rem,1.6rem+4.6vw,5.5rem)] font-semibold leading-[0.95] tracking-[-0.05em]"
         >
-          Small releases, <span className="text-white/40">every week.</span>
+          Small releases, <span className="text-white/65">every week.</span>
         </motion.h1>
         <motion.p variants={rise} initial="hidden" animate="shown" custom={PAGE.at + PAGE.stagger * 2} className="mt-6 max-w-[52ch] text-[16px] leading-[1.65] text-white/60 sm:text-[17px]">
           Everything we shipped to Meridian this autumn, newest first. Each entry links to the docs that changed with it.
@@ -613,7 +613,7 @@ function ReleaseEntry({ release, reduce, startedAt }: { release: Release; reduce
       animate={delay === null ? "hidden" : "shown"}
       className="grid gap-4 border-b border-white/[0.08] py-10 sm:grid-cols-[200px_1fr] sm:gap-10 sm:py-14"
     >
-      <motion.p variants={rise} custom={step(0)} className="flex items-baseline gap-3 font-mono text-[12px] tabular-nums text-white/45 sm:flex-col sm:gap-1.5">
+      <motion.p variants={rise} custom={step(0)} className="flex items-baseline gap-3 font-mono text-[12px] tabular-nums text-white/65 sm:flex-col sm:gap-1.5">
         <span className="text-white/85">v{release.version}</span>
         <span>{release.date}</span>
       </motion.p>
