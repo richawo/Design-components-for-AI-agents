@@ -73,6 +73,33 @@ try {
   await aligned();
   assert.equal(await page.getByRole("tabpanel").textContent(), "Last panel");
   if (out) await page.screenshot({ path: `${out}/tabs-scaled-light.png` });
+  await mountFixture(
+    page,
+    "tabs-underline-glide",
+    "free",
+    `createRoot(document.getElementById('root')).render(<Subject.TabsUnderlineGlide items={[{value:'short',label:'Short',content:<div style={{height:120}}><button>Short action</button></div>},{value:'tall',label:'Tall',content:<div style={{height:440}}><button>Tall action</button></div>}]}/>);`,
+  );
+  const heights = [];
+  const panelBox = page.getByRole("tabpanel").locator("..");
+  const start = (await panelBox.boundingBox()).height;
+  await page.getByRole("tab", { name: "Tall", exact: true }).click();
+  assert.equal(await page.getByRole("tabpanel").count(), 1);
+  assert.equal(
+    await page.getByRole("button", { name: "Short action" }).count(),
+    0,
+  );
+  for (let i = 0; i < 10; i++) {
+    heights.push((await panelBox.boundingBox()).height);
+    await page.waitForTimeout(35);
+  }
+  assert.ok(
+    heights.some((height) => height > start + 2 && height < 458),
+    "Panel height must pass through intermediate sizes",
+  );
+  assert.ok(
+    Math.abs(heights.at(-1) - 460) < 1,
+    "The panel settles at its measured content height",
+  );
   await page.emulateMedia({ reducedMotion: "reduce" });
   await mountFixture(
     page,
@@ -87,7 +114,7 @@ try {
   await aligned();
   assert.deepEqual(errors, []);
   console.log(
-    "Tab geometry passes across scrolling, resizing, held presses, fractional scale and manual keyboard activation.",
+    "Tab geometry passes across scrolling, resizing, held presses, fractional scale, manual keyboard activation, measured panel heights and inert exits.",
   );
 } finally {
   await browser.close();

@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  forwardRef,
   useCallback,
   useEffect,
   useId,
@@ -17,6 +18,7 @@ import {
   animate,
   motion,
   useInView,
+  useIsPresent,
   useMotionValue,
   useReducedMotion,
   useTransform,
@@ -386,6 +388,10 @@ export function TabsUnderlineGlide({
   const [edges, setEdges] = useState({ start: false, end: false });
   const span = useGlidingSpan(reduce);
   const { moveTo } = span;
+  const panelBox = useRef<HTMLDivElement>(null);
+  const panelHeight = useMotionValue(0);
+  const heightPlaced = useRef(false);
+  const [heightReady, setHeightReady] = useState(false);
 
   const readEdges = useCallback(() => {
     const box = scroller.current;
@@ -452,6 +458,23 @@ export function TabsUnderlineGlide({
     for (const button of buttons.current) if (button) observer.observe(button);
     return () => observer.disconnect();
   }, [readEdges, measure, reveal, selectedIndex, list.length]);
+
+  useLayoutEffect(() => {
+    const panel = selected ? document.getElementById(`${baseId}-panel-${selected.value}`) : null;
+    if (!panel || !panelBox.current?.contains(panel)) return;
+    const measureHeight = () => {
+      const height = Number.parseFloat(getComputedStyle(panel).height);
+      if (!Number.isFinite(height)) return;
+      if (!heightPlaced.current || reduce) panelHeight.jump(height);
+      else animate(panelHeight, height, { duration: 0.26, ease: EASE_OUT });
+      heightPlaced.current = true;
+      setHeightReady(true);
+    };
+    measureHeight();
+    const observer = new ResizeObserver(measureHeight);
+    observer.observe(panel);
+    return () => observer.disconnect();
+  }, [selected?.value, baseId, items, reduce, panelHeight]);
 
   const choose = (index: number) => {
     const item = list[index];
@@ -645,28 +668,51 @@ export function TabsUnderlineGlide({
 
       {/* Panels cross-fade with a 6px slide in the direction of travel. popLayout lifts the leaving
           panel out of flow, so the arriving one takes its place without the area doubling in height. */}
-      <div className="relative">
+      <motion.div ref={panelBox} className="relative overflow-hidden" style={{ height: heightReady ? panelHeight : undefined }}>
         <AnimatePresence initial={false} mode="popLayout" custom={direction}>
-          <motion.div
+          <TabPanel
             key={selected.value}
             id={panelId(selected)}
-            role="tabpanel"
-            aria-labelledby={tabId(selected)}
-            tabIndex={0}
-            custom={direction}
+            labelledBy={tabId(selected)}
+            direction={direction}
             variants={panelMotion}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            className="w-full rounded-[10px] pt-5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--tu-focus)"
           >
             {selected.content}
-          </motion.div>
+          </TabPanel>
         </AnimatePresence>
-      </div>
+      </motion.div>
     </div>
   );
 }
+
+const TabPanel = forwardRef<HTMLDivElement, {
+  id: string;
+  labelledBy: string;
+  direction: number;
+  variants: Variants;
+  children: ReactNode;
+}>(function TabPanel({ id, labelledBy, direction, variants, children }, ref) {
+  const present = useIsPresent();
+  return (
+    <motion.div
+      ref={ref}
+      id={id}
+      role="tabpanel"
+      aria-labelledby={labelledBy}
+      aria-hidden={!present || undefined}
+      inert={!present}
+      tabIndex={present ? 0 : -1}
+      custom={direction}
+      variants={variants}
+      initial="enter"
+      animate="center"
+      exit="exit"
+      className="w-full rounded-[10px] pt-5 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-(--tu-focus)"
+    >
+      {children}
+    </motion.div>
+  );
+});
 
 /* ------------------------------------------------------------------ */
 /* Overflow arrows                                                     */

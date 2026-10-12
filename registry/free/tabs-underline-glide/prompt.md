@@ -9,7 +9,7 @@ Build underline tabs in React 19 + Tailwind CSS v4 + `motion/react` (icons from 
 - Edge fades: a 56px fade at each edge, applied as `mask-image` on the scroller (never an overlay): `linear-gradient(to right, transparent 0, #000 var(--tu-fade-start), #000 calc(100% - var(--tu-fade-end)), transparent 100%)`. Each variable is 56px while more tabs lie past that edge and 0px otherwise. Register both with `@property` as `<length>` (not inherited, initial 0px) so the mask eases over 220ms.
 - Overflow arrows: one per edge with more tabs past it, absolutely positioned over the fade, 40px wide by 44px tall as a hit area, with a 28px round chip pinned to the outer edge holding a 16px chevron (2 stroke). A press scrolls the strip by 70% of its visible width, smoothly.
 - Scroll into view: whenever a tab is selected or focused, the strip scrolls so that tab sits at least 60px inside any faded edge (the fade plus 4px), clear of the arrows. Smooth on a pick, instant while the box is resizing, instant under reduced motion. The page never scrolls sideways.
-- Panel area: `position: relative`, panel padding-top 20px. Only the selected panel is in the DOM.
+- Panel area: `position: relative`, panel padding-top 20px. Measure the selected panel with ResizeObserver and animate the enclosing height over 260ms. Outgoing panels remain only for their exit fade, immediately inert and aria-hidden. Keep the panel focus ring inset so the height clip does not crop it.
 
 **Typography**
 - Tab labels: Geist 500, 14px, tracking -0.01em.

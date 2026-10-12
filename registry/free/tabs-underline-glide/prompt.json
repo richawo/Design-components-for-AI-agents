@@ -38,7 +38,8 @@
     "press": "label dims to 70% opacity without scaling over 90ms (not the tab); arrow chip to 0.94",
     "arrows": "arrive with a 4px slide and fade over 200ms, leave over 140ms",
     "fades": "mask variables ease over 220ms",
-    "reducedMotion": "indicator and scrolling jump, panels and contents fade over 150ms or less, figures land at once"
+    "reducedMotion": "indicator and scrolling jump, panels and contents fade over 150ms or less, figures land at once",
+    "panelHeight": "ResizeObserver measures the active panel; the enclosing height eases to it over 260ms, jumps under reduced motion and clips during the cross-fade. Outgoing panels become inert and aria-hidden immediately; the panel focus outline sits inside the clip."
   },
   "responsive": {
     "strip": "never wraps or truncates; scrolls inside its own box with fades and arrows from 320px upward",
@@ -74,7 +75,7 @@
     "counts as tinted chips, sparkle icons, emoji or a gradient underline",
     "a visible scrollbar, an overlay fade, a fade on a strip that does not overflow, or an arrow covering the selected tab",
     "truncated or wrapping tab labels",
-    "a panel area that doubles in height while panels cross-fade",
+    "a panel area that doubles in height or jumps while panels cross-fade, or an outgoing panel that remains interactive",
     "decorative colour: status colours only on dots and the warning log level"
   ]
 }
