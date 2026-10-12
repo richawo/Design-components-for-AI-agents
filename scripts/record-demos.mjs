@@ -5,7 +5,7 @@
 // so the video fades in over the poster without a jump.
 //
 //   node scripts/record-demos.mjs [slug...] [--base=http://localhost:3100]
-//        [--out=public/previews] [--webm] [--sheet=dir] [--max-kb=400] [--frame-viewport]
+//        [--out=public/previews] [--webm] [--sheet=dir] [--max-kb=600] [--frame-viewport]
 //
 // With no slugs it records every component that has a demo. Drives the
 // preview with real input (so CSS :hover shows) and draws the same branded
@@ -38,12 +38,16 @@ const reportDir = flag("report", "");
 const gallery = !args.includes("--original-timing");
 const skipLeadScroll = args.includes("--skip-lead-scroll");
 const refreshPoster = args.includes("--refresh-poster");
+// Also usable as a temporal quality probe for the page that presents the clips.
+const pagePath = flag("page-path", "");
+const ambientMs = Number(flag("ambient-ms", "0"));
+if (ambientMs && (ambientMs < 3000 || ambientMs > 6000)) throw new Error("--ambient-ms must be between 3000 and 6000");
 const timings = gallery ? { ...TIMING, glide: 450, tabGap: 220, keyGap: 150, typeGap: 45 } : TIMING;
 const webm = args.includes("--webm");
 // Expanding demos need room beyond the initial card bounds. Refresh the poster
 // with this framing too, so hovering never changes the component scale.
 const frameViewport = args.includes("--frame-viewport");
-const maxBytes = Number(flag("max-kb", "400")) * 1024;
+const maxBytes = Number(flag("max-kb", "600")) * 1024;
 const only = args.filter((a) => !a.startsWith("--"));
 
 const OUT_W = 1280;
@@ -104,7 +108,7 @@ async function phoneMask(file, vw, vh) {
 async function record(browser, slug) {
   const meta = readMeta(slug);
   if (!meta?.demo) throw new Error("no demo in meta.json");
-  const parsed = parseSteps(meta.demo.steps);
+  const parsed = parseSteps(ambientMs ? [`wait:${ambientMs}`] : meta.demo.steps);
   const steps = gallery ? gallerySteps(parsed) : parsed;
   const setupScroll = skipLeadScroll && steps[0]?.cmd === "scroll" ? steps.shift().px : 0;
   const mobile = meta.platform === "mobile";
@@ -121,7 +125,7 @@ async function record(browser, slug) {
   page.on("pageerror", (e) => problems.push(`page error: ${e.message}`));
   page.on("console", (m) => m.type() === "error" && problems.push(`console error: ${m.text()}`));
   try {
-    await page.goto(`${base}/preview/${slug}`, { waitUntil: "load", timeout: 120000 });
+    await page.goto(`${base}${pagePath || `/preview/${slug}`}`, { waitUntil: "load", timeout: 120000 });
     await page.waitForTimeout(meta.category === "three-d" || meta.dependencies?.includes("three") ? 6000 : 3200);
 
     // The branded cursor, following the real mouse.
@@ -146,10 +150,10 @@ async function record(browser, slug) {
         addEventListener("pointerup", () => (c.dataset.down = "0"), true);
         window.__dfaCursor = c;
       },
-      { html: CURSOR_HTML, start: CURSOR_START },
+      { html: CURSOR_HTML, start: ambientMs ? [0, 0] : CURSOR_START },
     );
-    let px = vw * CURSOR_START[0];
-    let py = vh * CURSOR_START[1];
+    let px = ambientMs ? 0 : vw * CURSOR_START[0];
+    let py = ambientMs ? 0 : vh * CURSOR_START[1];
     await page.mouse.move(px, py);
 
     if (setupScroll) {
@@ -187,11 +191,12 @@ async function record(browser, slug) {
     });
     await cdp.send("Page.startScreencast", { format: "jpeg", quality: 92, everyNthFrame: 1, maxWidth: vw * dpr, maxHeight: vh * dpr });
     const t0 = Date.now() / 1000;
-    await page.evaluate(() => (window.__dfaCursor.dataset.on = "1"));
+    await page.evaluate((ambient) => (window.__dfaCursor.dataset.on = ambient ? "0" : "1"), !!ambientMs);
     await page.waitForTimeout(gallery ? 60 : 150);
 
     // Paced by the clock, not by step count, so a glide takes exactly as long
     // as it does in the live player however slow each mouse.move is.
+    const continuousWindows = [];
     const glide = async (x, y, ms) => {
       if (Math.hypot(x - px, y - py) < 1) { px = x; py = y; return; }
       const x0 = px;
@@ -204,6 +209,7 @@ async function record(browser, slug) {
         if (t >= 1) break;
         await page.waitForTimeout(12);
       }
+      continuousWindows.push([start / 1000, Date.now() / 1000]);
       px = x;
       py = y;
     };
@@ -295,10 +301,11 @@ async function record(browser, slug) {
 
     if (!frames.length) throw new Error("screencast produced no frames");
     const quality = captureQuality(frames.map((frame) => frame.t), motionWindows);
+    const continuousQuality = captureQuality(frames.map((frame) => frame.t), continuousWindows);
     if (reportDir) {
       const directory = path.resolve(root, reportDir);
       fs.mkdirSync(directory, { recursive: true });
-      fs.writeFileSync(path.join(directory, `${slug}.json`), JSON.stringify({ slug, quality, viewport: { vw, vh, dpr }, timestamps: frames.map((frame) => frame.t), motionWindows }, null, 2));
+      fs.writeFileSync(path.join(directory, `${slug}.json`), JSON.stringify({ slug, quality, continuousQuality, viewport: { vw, vh, dpr }, timestamps: frames.map((frame) => frame.t), motionWindows }, null, 2));
     }
     // Each frame holds until the next one; the last holds to the end.
     frames.sort((a, b) => a.t - b.t);
@@ -326,7 +333,7 @@ async function record(browser, slug) {
     let crf = 24;
     for (;;) {
       execFileSync("ffmpeg", ["-y", "-loglevel", "error", ...inputs, "-filter_complex", graph, "-an", "-c:v", "libx264", "-preset", "slow", "-tune", "animation", "-crf", String(crf), "-profile:v", "high", "-pix_fmt", "yuv420p", "-movflags", "+faststart", mp4Tmp]);
-      if (fs.statSync(mp4Tmp).size <= maxBytes || crf >= 36) break;
+      if (fs.statSync(mp4Tmp).size <= maxBytes || crf >= 30) break;
       crf += 2;
     }
     const size = fs.statSync(mp4Tmp).size;
@@ -334,7 +341,7 @@ async function record(browser, slug) {
     const dur = Number(execFileSync("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", mp4Tmp]).toString().trim());
     if (dur < 2.5 || dur > 9.5) problems.push(`video runs ${dur.toFixed(1)}s; demos should be 3–8s (script estimate ${(demoDuration(steps) / 1000).toFixed(1)}s)`);
 
-    if (motionWindows.length && quality.activeSamples && quality.p95GapMs > 67 && !args.includes("--allow-dropped-frames")) problems.push(`capture has ${quality.p95GapMs.toFixed(1)}ms p95 active frame gaps; keep the last good clip and retry without competing rendering work`);
+    if (continuousWindows.length && continuousQuality.activeSamples && continuousQuality.p95GapMs > 67 && !args.includes("--allow-dropped-frames")) problems.push(`capture has ${continuousQuality.p95GapMs.toFixed(1)}ms p95 moving-frame gaps; keep the last good clip and retry without competing rendering work`);
     if (problems.length) return { written: [], problems };
     fs.mkdirSync(out, { recursive: true });
     const finalMp4 = path.join(out, `${slug}.mp4`);
