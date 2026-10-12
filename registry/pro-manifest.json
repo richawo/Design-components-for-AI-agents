@@ -6804,6 +6804,11 @@
         "description": "Range key shown first."
       },
       {
+        "name": "range",
+        "type": "string",
+        "description": "Controlled range key. Pair with onRangeChange to share period state with KPI cards or another panel without remounting the chart."
+      },
+      {
         "name": "onRangeChange",
         "type": "(key: string) => void",
         "description": "Called when the range changes."

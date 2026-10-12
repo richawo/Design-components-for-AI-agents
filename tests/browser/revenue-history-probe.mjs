@@ -51,6 +51,26 @@ try {
     await page.locator("#root").innerText(),
     /NaN|Infinity|Negative allocation|Zero allocation/,
   );
+  await mountFixture(
+    page,
+    "chart-revenue-trend",
+    "pro",
+    `window.keys=[];function Host(){const [range,setRange]=useState('30d');return <><button onClick={()=>setRange('90d')}>Quarter</button><Subject.ChartRevenueTrend range={range} onRangeChange={key=>{window.keys.push(key);setRange(key);}}/></>};createRoot(document.getElementById('root')).render(<Host/>);`,
+  );
+  const seven = page.locator('[data-demo="range-7d"]');
+  await seven.focus();
+  await seven.press("Enter");
+  assert.equal(await seven.getAttribute("aria-checked"), "true");
+  assert.equal(
+    await seven.evaluate((el) => el === document.activeElement),
+    true,
+  );
+  await page.getByRole("button", { name: "Quarter", exact: true }).click();
+  assert.equal(
+    await page.locator('[data-demo="range-90d"]').getAttribute("aria-checked"),
+    "true",
+  );
+  assert.deepEqual(await page.evaluate(() => window.keys), ["7d"]);
   assert.deepEqual(errors, []);
   console.log(
     "PASS revenue chart missing history, zero baseline, single-point labels and valid comparison.",
