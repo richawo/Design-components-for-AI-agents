@@ -411,7 +411,7 @@ function HoverLinks({
                   onBlur={() => setHovered(null)}
                   onClick={(e) => onChoose(i, e)}
                   className={`relative flex h-10 items-center whitespace-nowrap rounded-lg px-3 text-[13.5px] tracking-[-0.005em] outline-none transition-[color,transform] duration-150 active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black ${
-                    hovered === i || i === active ? "text-white" : "text-white/55"
+                    hovered === i || i === active ? "text-white" : "text-white/65"
                   }`}
                 >
                   {l.label}
@@ -453,7 +453,7 @@ function SearchChip({ label, mac, held, onSearch }: { label: string; mac: boolea
       data-demo="search"
       aria-label={`${label} (${mac ? "Command" : "Control"} K)`}
       aria-keyshortcuts={mac ? "Meta+K" : "Control+K"}
-      className={`group/s flex h-11 min-w-11 items-center justify-center gap-2 rounded-lg px-2.5 text-[13px] text-white/55 outline-none transition-[background-color,color,transform,box-shadow] duration-150 hover:text-white active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black @4xl:h-8 @4xl:min-w-0 @4xl:justify-start @4xl:pl-2.5 @4xl:pr-1 @4xl:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1)] @4xl:hover:bg-white/[0.04] @4xl:hover:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.16)] ${
+      className={`group/s flex h-11 min-w-11 items-center justify-center gap-2 rounded-lg px-2.5 text-[13px] text-white/65 outline-none transition-[background-color,color,transform,box-shadow] duration-150 hover:text-white active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black @4xl:h-8 @4xl:min-w-0 @4xl:justify-start @4xl:pl-2.5 @4xl:pr-1 @4xl:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1)] @4xl:hover:bg-white/[0.04] @4xl:hover:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.16)] ${
         held ? "text-white @4xl:bg-white/[0.05]" : ""
       }`}
     >
@@ -562,7 +562,7 @@ function MobileMenu({
                   {l.label}
                   {i === active ? <span aria-hidden="true" className="size-[5px] rounded-full bg-white" /> : null}
                 </span>
-                <svg viewBox="0 0 16 16" className="size-4 text-white/30 transition-[transform,color] duration-150 group-hover:translate-x-0.5 group-hover:text-white/70" fill="none" aria-hidden="true">
+                <svg viewBox="0 0 16 16" className="size-4 text-white/65 transition-[transform,color] duration-150 group-hover:translate-x-0.5 group-hover:text-white/70" fill="none" aria-hidden="true">
                   <path d="m6 3.5 4.5 4.5L6 12.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </a>
@@ -646,8 +646,8 @@ function Stage(props: HeaderHairlineProps) {
       <HeaderHairline {...props} />
       <article className="mx-auto max-w-[1280px] px-4 pb-40 pt-14 sm:px-6 sm:pt-20">
         <div className="max-w-[680px]">
-          <motion.p variants={rise} initial="hidden" animate="shown" custom={intro(0)} className="font-mono text-[11px] uppercase tracking-[0.14em] text-white/40">
-            Docs <span className="text-white/20">/</span> Deployments <span className="text-white/20">/</span> <span className="text-white/70">Rollbacks</span>
+          <motion.p variants={rise} initial="hidden" animate="shown" custom={intro(0)} className="font-mono text-[11px] uppercase tracking-[0.14em] text-white/65">
+            Docs <span className="text-white/65">/</span> Deployments <span className="text-white/65">/</span> <span className="text-white/70">Rollbacks</span>
           </motion.p>
           <motion.h1
             variants={rise}
@@ -662,7 +662,7 @@ function Stage(props: HeaderHairlineProps) {
             Every deploy on Kestrel is immutable, so a rollback is a pointer move rather than a rebuild. Production switches back in under two seconds and keeps its domains, secrets and
             cache.
           </motion.p>
-          <motion.p variants={rise} initial="hidden" animate="shown" custom={intro(3)} className="mt-6 font-mono text-[12px] tabular-nums text-white/40">
+          <motion.p variants={rise} initial="hidden" animate="shown" custom={intro(3)} className="mt-6 font-mono text-[12px] tabular-nums text-white/65">
             6 min read · Updated 3 Oct 2026
           </motion.p>
 
@@ -676,8 +676,8 @@ function Stage(props: HeaderHairlineProps) {
             <pre className="overflow-x-auto rounded-xl bg-white/[0.035] p-5 font-mono text-[13px] leading-[1.8] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]">
               <code>
                 {CLI.map((l) => (
-                  <span key={l.text} className={`block whitespace-pre ${l.prompt ? "text-white" : "text-white/45"}`}>
-                    {l.prompt ? <span className="select-none text-white/30">$ </span> : null}
+                  <span key={l.text} className={`block whitespace-pre ${l.prompt ? "text-white" : "text-white/65"}`}>
+                    {l.prompt ? <span className="select-none text-white/65">$ </span> : null}
                     {l.text}
                   </span>
                 ))}
@@ -693,7 +693,7 @@ function Stage(props: HeaderHairlineProps) {
                 ["Cache", "edge caches are keyed by deploy, so nothing stale is served."],
               ].map(([k, v]) => (
                 <li key={k} className="flex gap-4">
-                  <span className="w-20 shrink-0 font-mono text-[12px] uppercase leading-[1.6rem] tracking-[0.1em] text-white/40">{k}</span>
+                  <span className="w-20 shrink-0 font-mono text-[12px] uppercase leading-[1.6rem] tracking-[0.1em] text-white/65">{k}</span>
                   <span>{v}</span>
                 </li>
               ))}
