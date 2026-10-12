@@ -203,7 +203,7 @@ function Locked({ name, tab }: { name: string; tab: Tab }) {
             The {tab === "code" ? "code" : tab === "json" ? "JSON prompt" : "prompt"} for {name} is Pro
           </p>
           <p className="mt-2 text-[14px] leading-relaxed text-site-fg-2">
-            One licence unlocks every Pro component, its prompts and the private registry, for good. Every new component is included too.
+            Pro includes every Pro component and block, its code and both briefs, plus the private registry. Choose yearly or lifetime access.
           </p>
           <div className="mt-5 flex flex-wrap justify-center gap-2">
             <Link href="/pricing" className="site-btn site-btn-accent h-10 px-5 text-[14px]">

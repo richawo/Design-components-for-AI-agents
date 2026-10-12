@@ -327,6 +327,7 @@ export async function ComponentDetail({ entry: e }: { entry: RegistryEntry }) {
                 html={installHtml}
                 dependencies={e.dependencies}
                 platform={e.platform}
+                kind={e.kind}
               />
             </div>
           </section>

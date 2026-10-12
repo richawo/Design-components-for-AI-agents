@@ -27,7 +27,7 @@ const publicCases = [
 ];
 const cases = [...publicCases];
 if (fs.existsSync(path.join(root, "registry/pro/block-saas-dashboard")))
-  cases.push("blocks-probe", "blocks-pages-probe");
+  cases.push("blocks-probe", "blocks-pages-probe", "workspace-panels-probe");
 if (fs.existsSync(path.join(root, "registry/pro/saas-customer-health")))
   cases.push("pro-50-demo-probe", "audit-trail-polish-probe");
 if (fs.existsSync(path.join(root, "registry/pro/commerce-promotion-builder")))

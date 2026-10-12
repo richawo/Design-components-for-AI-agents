@@ -1,8 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { fetchProSource } from "@/lib/pro-source-client";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { fetchProAccess } from "@/lib/pro-access-client";
+import {
+  AnimatePresence,
+  motion,
+  useIsPresent,
+  useReducedMotion,
+} from "motion/react";
 import { CopyButton } from "./copy-button";
 
 export function ComponentInstall({
@@ -13,6 +19,7 @@ export function ComponentInstall({
   html,
   dependencies,
   platform,
+  kind,
 }: {
   slug: string;
   name: string;
@@ -21,6 +28,7 @@ export function ComponentInstall({
   html: string;
   dependencies: string[];
   platform: "web" | "mobile";
+  kind?: "component" | "block";
 }) {
   const [access, setAccess] = useState<
     "checking" | "active" | "locked" | "error"
@@ -30,7 +38,7 @@ export function ComponentInstall({
     if (tier !== "pro") return;
     let live = true;
     setAccess("checking");
-    fetchProSource(slug)
+    fetchProAccess()
       .then((source) => {
         if (live) setAccess(source ? "active" : "locked");
       })
@@ -44,60 +52,63 @@ export function ComponentInstall({
   return (
     <div>
       {tier === "pro" && (
-        <div
-          className="mb-5 rounded-2xl border border-site-line-2 bg-site-raised p-5 sm:p-6"
-          data-pro-access={access}
-        >
-          {access === "active" ? (
-            <p className="text-sm leading-relaxed text-site-fg-2">
-              Your Pro access is active. Install {name} below or copy its source
-              and briefs.
-            </p>
-          ) : access === "error" ? (
-            <div role="status">
-              <p className="text-sm text-site-fg-2">
-                We couldn't check your Pro access. Please try again.
-              </p>
-              <button
-                type="button"
-                onClick={() => setAttempt((value) => value + 1)}
-                className="site-btn site-btn-secondary mt-4 min-h-11 px-5"
-              >
-                Retry access check
-              </button>
-            </div>
-          ) : (
-            <>
-              <p className="text-lg font-medium tracking-tight">
-                Build with {name}.
-              </p>
-              <p className="mt-2 max-w-[62ch] text-sm leading-relaxed text-site-fg-2">
-                Pro includes the source, design brief and JSON prompt, plus the
-                private registry for installation. Already own a licence? Sign
-                in to unlock them here.
-              </p>
-              <div className="mt-5 flex flex-wrap gap-3">
-                <Link
-                  href="/pricing"
-                  className="site-btn site-btn-accent min-h-11 px-5"
-                >
-                  Get Pro access <span aria-hidden="true">↗</span>
-                </Link>
-                <Link
-                  href="/account"
-                  className="site-btn site-btn-secondary min-h-11 px-5"
-                >
-                  Sign in
-                </Link>
-              </div>
-            </>
-          )}
-        </div>
+        <AccessPanel access={access}>
+          <AnimatePresence mode="wait" initial={false}>
+            <AccessScene key={access === "checking" ? "locked" : access}>
+              {access === "active" ? (
+                <p className="text-sm leading-relaxed text-site-fg-2">
+                  Your Pro access is active. Install {name} below or copy its
+                  source and briefs.
+                </p>
+              ) : access === "error" ? (
+                <div role="status">
+                  <p className="text-sm text-site-fg-2">
+                    We couldn't check your Pro access. Please try again.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setAttempt((value) => value + 1)}
+                    className="site-btn site-btn-secondary mt-4 min-h-11 px-5"
+                  >
+                    Retry access check
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <p className="text-lg font-medium tracking-tight">
+                    Build with {name}.
+                  </p>
+                  <p className="mt-2 max-w-[62ch] text-sm leading-relaxed text-site-fg-2">
+                    Pro includes the source, design brief and JSON prompt, plus
+                    the private registry for installation. Already own a
+                    licence? Sign in to unlock them here.
+                  </p>
+                  <div className="mt-5 flex flex-wrap gap-3">
+                    <Link
+                      href="/pricing"
+                      className="site-btn site-btn-accent min-h-11 px-5"
+                    >
+                      Get Pro access <span aria-hidden="true">↗</span>
+                    </Link>
+                    <Link
+                      href="/account"
+                      className="site-btn site-btn-secondary min-h-11 px-5"
+                    >
+                      Sign in
+                    </Link>
+                  </div>
+                </>
+              )}
+            </AccessScene>
+          </AnimatePresence>
+        </AccessPanel>
       )}
       <p className="text-[15px] leading-relaxed text-site-fg-2">
         {platform === "mobile"
           ? "Copy the React Native file into your app and install its dependencies."
-          : "Add the component with shadcn, or use the Design for AI CLI and your connected agent."}{" "}
+          : kind === "block"
+            ? "Install the block and its component dependencies together with shadcn or the Design for AI CLI."
+            : "Add the component with shadcn, or use the Design for AI CLI and your connected agent."}{" "}
         {tier === "pro" &&
           "The registry checks your licence before returning source."}
       </p>
@@ -137,5 +148,54 @@ export function ComponentInstall({
         )}
       </div>
     </div>
+  );
+}
+
+function AccessPanel({
+  access,
+  children,
+}: {
+  access: string;
+  children: ReactNode;
+}) {
+  const reduce = useReducedMotion();
+  const inner = useRef<HTMLDivElement>(null);
+  const [height, setHeight] = useState<number | "auto">("auto");
+  useEffect(() => {
+    const node = inner.current;
+    if (!node) return;
+    const observer = new ResizeObserver(() => setHeight(node.offsetHeight));
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+  return (
+    <motion.div
+      data-pro-access={access}
+      initial={false}
+      animate={{ height }}
+      transition={{ duration: reduce ? 0 : 0.26, ease: [0.22, 1, 0.36, 1] }}
+      className="mb-5 overflow-hidden rounded-2xl border border-site-line-2 bg-site-raised"
+    >
+      <div ref={inner} className="p-5 sm:p-6">
+        {children}
+      </div>
+    </motion.div>
+  );
+}
+function AccessScene({ children }: { children: ReactNode }) {
+  const present = useIsPresent(),
+    reduce = useReducedMotion();
+  return (
+    <motion.div
+      inert={!present}
+      aria-hidden={!present || undefined}
+      initial={{ opacity: 0, y: reduce ? 0 : 4 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: reduce ? 0 : -4 }}
+      transition={{ duration: reduce ? 0.1 : 0.18 }}
+      className="motion-reduce:!transform-none"
+    >
+      {children}
+    </motion.div>
   );
 }

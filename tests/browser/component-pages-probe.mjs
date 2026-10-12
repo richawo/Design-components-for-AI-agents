@@ -91,17 +91,11 @@ try {
     console.log("PASS component page " + slug);
   }
   await page.setViewportSize({ width: 1440, height: 1000 });
-  const route = "**/api/pro/source/saas-audit-trail";
+  const route = "**/api/license/me";
   await page.route(route, (r) =>
     r.fulfill({
       contentType: "application/json",
-      body: JSON.stringify({
-        code: "licensed fixture",
-        codeHtml: "<pre>licensed fixture</pre>",
-        prompt: "fixture",
-        promptJson: "{}",
-        promptJsonHtml: "<pre>{}</pre>",
-      }),
+      body: JSON.stringify({ active: true }),
     }),
   );
   await page.goto(`${base}/components/saas-audit-trail`, {
@@ -121,7 +115,7 @@ try {
   await page.locator('[data-pro-access="error"]').waitFor();
   await page.unroute(route);
   await page.route(route, (r) =>
-    r.fulfill({ contentType: "application/json", body: '{"locked":true}' }),
+    r.fulfill({ contentType: "application/json", body: '{"active":false}' }),
   );
   await page.getByRole("button", { name: "Retry access check" }).click();
   await page.locator('[data-pro-access="locked"]').waitFor();
