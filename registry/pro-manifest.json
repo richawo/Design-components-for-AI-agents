@@ -19209,7 +19209,7 @@
       {
         "name": "actions",
         "type": "ReactNode",
-        "description": "Host-owned action controls beside the heading."
+        "description": "Host-owned controls beside the heading. Header controls stack above the content so dropdowns remain reachable."
       },
       {
         "name": "children",
