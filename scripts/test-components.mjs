@@ -16,7 +16,12 @@ const publicCases = [
   "ime-probe",
   "expansion-inputs-probe",
   "demo-editing-probe",
+  "demo-transition-targets",
   "preview-cascade-probe",
+  "pixel-microphone-lifecycle",
+  "catalogue-empty-recovery",
+  "mobile-accessibility-probe",
+  "terminal-scroll-probe",
 ];
 const cases = [...publicCases];
 if (fs.existsSync(path.join(root, "registry/pro/saas-customer-health")))
@@ -32,10 +37,16 @@ if (fs.existsSync(path.join(root, "registry/pro/content-release-notes")))
 if (fs.existsSync(path.join(root, "registry/pro/bento-grid")))
   cases.push("bento-rhythm-probe");
 if (fs.existsSync(path.join(root, "registry/pro/data-query-builder")))
-  cases.push("pro-industry-probe", "pro-demo-probe");
-if (fs.existsSync(path.join(root, "registry/pro/commerce-operations-dashboard")))
+  cases.push("pro-industry-probe", "pro-demo-probe", "pro-select-polish-probe");
+if (fs.existsSync(path.join(root, "registry/pro/chart-revenue-trend")))
+  cases.push("revenue-history-probe");
+if (
+  fs.existsSync(path.join(root, "registry/pro/commerce-operations-dashboard"))
+)
   cases.push("pro-50-commerce-probe");
-if (fs.existsSync(path.join(root, "registry/pro/fashion-merchandising-dashboard")))
+if (
+  fs.existsSync(path.join(root, "registry/pro/fashion-merchandising-dashboard"))
+)
   cases.push("pro-50-fashion-probe");
 if (fs.existsSync(path.join(root, "registry/pro/finance-cashflow-dashboard")))
   cases.push("pro-50-finance-probe");
@@ -54,7 +65,13 @@ for (const name of cases) {
   const result = spawnSync(
     process.execPath,
     [path.join(root, "tests/browser", `${name}.mjs`)],
-    { cwd: root, encoding: "utf8", timeout: name === "pro-50-demo-probe" ? 900000 : 180000 },
+    {
+      cwd: root,
+      encoding: "utf8",
+      timeout: ["pro-50-demo-probe", "pro-select-polish-probe"].includes(name)
+        ? 900000
+        : 180000,
+    },
   );
   if (result.stdout) process.stdout.write(result.stdout);
   if (result.stderr) process.stderr.write(result.stderr);
@@ -65,4 +82,5 @@ for (const name of cases) {
     );
   } else console.log(`PASS ${name}`);
 }
+console.log(`${cases.length - failed}/${cases.length} browser suites passed.`);
 if (failed) process.exitCode = 1;

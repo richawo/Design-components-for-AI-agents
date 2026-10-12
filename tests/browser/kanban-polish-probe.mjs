@@ -163,9 +163,64 @@ try {
       false,
     );
   }
+  const touchContext = await browser.newContext({
+    viewport: { width: 1100, height: 900 },
+    hasTouch: true,
+    reducedMotion: "reduce",
+  });
+  const touchPage = await touchContext.newPage();
+  touchPage.on("pageerror", (error) => errors.push(error.message));
+  await mountFixture(
+    touchPage,
+    "data-kanban-compact",
+    "pro",
+    `createRoot(document.getElementById('root')).render(<Subject.CompactKanban/>);`,
+  );
+  const touchHandle = touchPage.getByRole("button", {
+    name: "Move Tighten the type scale with keyboard or pointer",
+  });
+  const from = await touchHandle.boundingBox();
+  const destination = await touchPage
+    .getByRole("region", { name: "In progress", exact: true })
+    .boundingBox();
+  const client = await touchContext.newCDPSession(touchPage);
+  const start = { x: from.x + from.width / 2, y: from.y + from.height / 2 };
+  const finish = {
+    x: destination.x + destination.width / 2,
+    y: destination.y + destination.height - 24,
+  };
+  await client.send("Input.dispatchTouchEvent", {
+    type: "touchStart",
+    touchPoints: [{ ...start, id: 1 }],
+  });
+  for (let step = 1; step <= 12; step++) {
+    await client.send("Input.dispatchTouchEvent", {
+      type: "touchMove",
+      touchPoints: [
+        {
+          x: start.x + ((finish.x - start.x) * step) / 12,
+          y: start.y + ((finish.y - start.y) * step) / 12,
+          id: 1,
+        },
+      ],
+    });
+  }
+  await client.send("Input.dispatchTouchEvent", {
+    type: "touchEnd",
+    touchPoints: [],
+  });
+  await touchPage
+    .getByRole("region", { name: "In progress", exact: true })
+    .getByText("Tighten the type scale", { exact: true })
+    .waitFor();
+  await touchPage
+    .getByRole("region", { name: "Ready", exact: true })
+    .getByText("Tighten the type scale", { exact: true })
+    .waitFor({ state: "detached" });
+  await touchContext.close();
   assert.deepEqual(errors, []);
   console.log(
-    "PASS Kanban custom/native menus, keyboard/pointer movement, cancellation, column CRUD, task preservation, atomic control and responsive widths.",
+    "PASS Kanban custom/native menus, keyboard/pointer/touch movement, cancellation, column CRUD, task preservation, atomic control and responsive widths.",
   );
 } finally {
   await browser.close();

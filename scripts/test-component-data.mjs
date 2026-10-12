@@ -58,7 +58,11 @@ await Promise.all(
         continue;
       }
       const arrays = meta.props
-        .filter((p) => /\[\]|Array</.test(p.type) && !p.type.includes("=>"))
+        .filter(
+          (p) =>
+            /(?:\[\]\s*$|^(?:Readonly)?Array<)/.test(p.type.trim()) &&
+            !p.type.includes("=>"),
+        )
         .map((p) => p.name);
       const empty = Object.fromEntries(arrays.map((name) => [name, []]));
       const page = await browser.newPage({

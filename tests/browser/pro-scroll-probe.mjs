@@ -74,7 +74,24 @@ try {
     assert.notEqual(await measure(), initial, slug + " follows native scroll");
     await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
     await page.waitForFunction(() => window.scrollY === 0);
-    await page.waitForTimeout(800);
+    // Springs settle on animation frames, which can arrive slowly on a busy runner.
+    await page.waitForFunction(
+      ({ target, property, initial }) => {
+        const el = document.querySelector(
+          property === "curtain"
+            ? 'section > div > div[aria-hidden="true"]'
+            : `[data-demo="${target}"]`,
+        );
+        return (
+          el &&
+          getComputedStyle(el)[
+            property === "curtain" ? "transform" : property
+          ] === initial
+        );
+      },
+      { target, property, initial },
+      { timeout: 10000 },
+    );
     assert.equal(await measure(), initial, slug + " reverses precisely");
     if (slug === "scroll-image-curtain") {
       await page

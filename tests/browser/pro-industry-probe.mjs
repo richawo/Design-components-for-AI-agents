@@ -106,7 +106,8 @@ try {
     true,
   );
   await page.getByRole("button", { name: "Back", exact: true }).click();
-  await page.getByRole("combobox", { name: /column 3/ }).selectOption("");
+  await page.getByRole("combobox", { name: /column 3/ }).click();
+  await page.getByRole("option", { name: "Skip column", exact: true }).click();
   assert.match(
     await page.getByRole("alert").innerText(),
     /Map the required Unit price/,
