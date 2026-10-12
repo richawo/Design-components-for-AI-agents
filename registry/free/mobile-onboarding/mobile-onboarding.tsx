@@ -663,7 +663,8 @@ export function MobileOnboarding({
               accessible
               accessibilityRole="adjustable"
               accessibilityLabel={`${steps[index].title} ${steps[index].body}`}
-              accessibilityValue={{ text: `Step ${index + 1} of ${n}` }}
+               {...webAdjustment((delta) => goTo(index + delta), () => goTo(0), () => goTo(n - 1))}
+              accessibilityValue={{ min: 1, max: n, now: index + 1, text: `Step ${index + 1} of ${n}` }} aria-valuetext={`Step ${index + 1} of ${n}`} aria-valuenow={index + 1} aria-valuemax={n} aria-valuemin={1}
               accessibilityActions={[{ name: "increment" }, { name: "decrement" }]}
               onAccessibilityAction={(e) => goTo(e.nativeEvent.actionName === "increment" ? index + 1 : index - 1)}
               {...demoTarget("copy")}
@@ -1956,7 +1957,7 @@ function Primary({
         disabled={done}
         accessibilityRole="button"
         accessibilityLabel={done ? doneLabel : isLast ? finishLabel : nextLabel}
-        accessibilityState={{ disabled: done }}
+        accessibilityState={{ disabled: done }} aria-disabled={done}
         style={styles.cta}
         {...demoTarget("next")}
       >
@@ -2129,4 +2130,21 @@ export default function MobileOnboardingDemo(props: Partial<MobileOnboardingProp
     }
   });
   return <MobileOnboarding {...overrides} step={toLast ? last : step} stepKey={stepKey} />;
+}
+
+
+/** Native accessibility actions and browser arrow keys drive the same adjustment. */
+function webAdjustment(adjust: (delta: number) => void, start?: () => void, end?: () => void) {
+  return Platform.OS === "web" ? {
+    tabIndex: 0 as const,
+    onKeyDown: (event: { key?: string; nativeEvent?: unknown; preventDefault: () => void }) => {
+      const native = event.nativeEvent;
+      const key = event.key ?? (native && typeof native === "object" && "key" in native && typeof native.key === "string" ? native.key : "");
+      if (["ArrowRight", "ArrowUp", "ArrowLeft", "ArrowDown"].includes(key)) {
+        event.preventDefault();
+        adjust(key === "ArrowRight" || key === "ArrowUp" ? 1 : -1);
+      } else if (key === "Home" && start) { event.preventDefault(); start(); }
+      else if (key === "End" && end) { event.preventDefault(); end(); }
+    },
+  } : {};
 }
