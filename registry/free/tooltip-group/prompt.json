@@ -80,7 +80,8 @@
     "bounce, glow or coloured tooltips",
     "an arrow that stays centred on the box after the box shifts to fit",
     "tooltips as the only accessible name of an icon button",
-    "portal libraries or positioning libraries"
+    "portal libraries or positioning libraries",
+    "Opening a neighbour after trigger removal without a deliberate pointer move or keyboard focus."
   ],
   "robustness": "Keep the demo metadata readable: dark muted #8a8a93, light muted #62626b."
 }

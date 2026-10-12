@@ -268,6 +268,8 @@ export function TooltipGroup({
     closedAt: -Infinity,
     suppress: null as string | null,
     pinned: false,
+    hoverBlocked: false,
+    pointer: null as {x:number;y:number} | null,
     swallowClick: false,
     via: "delay" as TooltipOpenReason,
   }).current;
@@ -337,7 +339,10 @@ export function TooltipGroup({
   const unregister = useCallback((id: string) => {
     entries.current.delete(id);
     setVersion((v) => v + 1);
-    if (s.active === id || s.pending === id) close(false);
+    if (s.active === id || s.pending === id) {
+      s.hoverBlocked = true;
+      close(false);
+    }
   }, [close, s]);
 
   /** A pinned preview tooltip gives way to the first real interaction, and leaves the group cold. */
@@ -485,12 +490,22 @@ export function TooltipGroup({
         style={{ ...style, "--tg-bg": palette.bg, "--tg-line": palette.line } as CSSProperties}
         onPointerOver={(e) => {
           if (e.pointerType === "touch") return;
+          if (s.hoverBlocked) return;
+          s.pointer = {x:e.clientX,y:e.clientY};
           target(triggerOf(e.target, rootRef.current));
+        }}
+        onPointerMove={(e) => {
+          if (e.pointerType === "touch") return;
+          if (s.hoverBlocked && s.pointer && Math.hypot(e.clientX-s.pointer.x,e.clientY-s.pointer.y) <= 1) return;
+          const wasBlocked=s.hoverBlocked; s.hoverBlocked=false; s.pointer={x:e.clientX,y:e.clientY};
+          if (wasBlocked) target(triggerOf(e.target,rootRef.current));
         }}
         onPointerLeave={(e) => {
           if (e.pointerType === "touch") return;
           unpin();
           s.suppress = null;
+          s.hoverBlocked = false;
+          s.pointer = null;
           close();
         }}
         onPointerDown={(e) => {
@@ -717,6 +732,7 @@ export default function TooltipGroupDemo({ theme = "dark", ...overrides }: Parti
       <div className="@container w-full max-w-[640px]">
         <motion.div ref={cardRef} {...enter(play, 0, reduce)}>
           <TooltipGroup
+            defaultActive="bold"
             theme={theme}
             onTimingEvent={setEvent}
             className="rounded-[18px]"

@@ -47,3 +47,6 @@ Build a tooltip group for toolbars in React + Tailwind CSS v4 + `motion/react` (
 
 **Robustness**
 Keep the demo metadata readable: dark muted #8a8a93, light muted #62626b.
+
+
+If the active or pending trigger is removed, close immediately and wait for a deliberate pointer move or keyboard focus before another trigger can open. A layout shift under a stationary pointer is not a new hover request.

@@ -75,5 +75,8 @@ export async function mountFixture(page, slug, tier, fixture) {
   );
   await page.goto(`${base}/__component_audit__`);
   await page.addScriptTag({ content: compiled.outputFiles[0].text });
+  // Newly rendered labels can request a font not used by the default preview.
+  // Measure geometry and hover hit targets after those glyph metrics settle.
+  await page.evaluate(() => document.fonts.ready);
   await page.waitForTimeout(700);
 }
