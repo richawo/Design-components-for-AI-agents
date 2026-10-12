@@ -422,6 +422,23 @@ may show one visible overshoot; nothing else bounces.
 10. **Reduced motion keeps meaning.** Opacity changes stay (150ms or less);
     transforms, parallax, magnetism, tilt and loops go.
 
+### Workflow polish checks
+
+- Review editing, review, confirmation, pending, success, failure and empty states.
+  Preserve draft values across these transitions and after rejected host callbacks.
+- Animate the measured container height separately from its content. Do not scale
+  text to imitate resizing. Use short, keyed entrances and exits for changing
+  details, with staggered text where it helps the reading order.
+- Make outgoing content inert and hide it from assistive technology while its
+  exit runs. Hidden panels must not retain reachable buttons or scroll regions.
+- Keep dropdown labels and chevrons equally inset. Custom menus must support
+  arrows, Home, End, Escape, disabled-option skipping and focus restoration;
+  constrain them to both dimensions of the viewport. Document a native option
+  for workflow selects that ship a custom default.
+- Check the live replay against `meta.demo.steps`. A recorded cursor must wait
+  for a changed field to settle before targeting it; an attractive video is not
+  evidence that its final action actually completed.
+
 ### Checking the feel
 
 Record it. `node scripts/rec.mjs <slug> --steps="..."` drives the preview
