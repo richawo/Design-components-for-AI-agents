@@ -25,7 +25,7 @@ try {
         "A held-pointer replay moves Backfill ahead of Schema",
       );
       assert.match(
-        await p.locator("[data-demo=title-dedupe]").innerText(),
+        await p.locator("[data-demo=step-dedupe]").innerText(),
         /in staging/,
       );
     } else {
