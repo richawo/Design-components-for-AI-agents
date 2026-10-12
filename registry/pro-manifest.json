@@ -17104,11 +17104,11 @@
   },
   {
     "slug": "media-audio-transport",
-    "name": "Audio Transport",
+    "name": "Audio Player",
     "tier": "pro",
     "platform": "web",
     "category": "media",
-    "description": "A persistent audio transport with real playback, seeking, volume and repeat. Clear loading failures, keyboard controls and original offline preview audio.",
+    "description": "A standalone audio player with an editorial cover view, precise seeking, playback speed, volume and repeat. A compact transport uses the same real playback state.",
     "tags": [
       "music",
       "audio",
@@ -17122,8 +17122,8 @@
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 600,
-    "usage": "import { AudioTransport } from \"@/components/design-for-ai/media-audio-transport\";\n\n<AudioTransport track={currentTrack} onNext={nextTrack} onPrevious={previousTrack} />",
+    "previewHeight": 800,
+    "usage": "import { AudioPlayer, AudioTransport } from \"@/components/design-for-ai/media-audio-transport\";\n\n<AudioPlayer track={currentTrack} onNext={nextTrack} onPrevious={previousTrack} />\n// Use AudioTransport inside a workspace footer.",
     "props": [
       {
         "name": "track",
@@ -17168,6 +17168,12 @@
         "type": "boolean",
         "default": "false",
         "description": "Initial mute state. Offline previews start muted and offer explicit volume controls."
+      },
+      {
+        "name": "variant",
+        "type": "\"studio\" | \"compact\"",
+        "default": "\"studio\"",
+        "description": "The standalone cover player or the compact persistent transport. Both share real media events and controls. AudioTransport defaults to compact."
       }
     ],
     "added": "2026-10-12",
@@ -17191,6 +17197,16 @@
           "light"
         ],
         "default": "dark"
+      },
+      {
+        "prop": "variant",
+        "label": "Layout",
+        "kind": "segmented",
+        "options": [
+          "studio",
+          "compact"
+        ],
+        "default": "studio"
       }
     ]
   },
@@ -17264,6 +17280,12 @@
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
         "description": "Surface and ink palette."
+      },
+      {
+        "name": "emptyLabel",
+        "type": "string",
+        "default": "\"Your collection is empty. Add a track when you are ready.\"",
+        "description": "Contextual empty-state guidance for collections, queues or filtered results."
       }
     ],
     "added": "2026-10-12",

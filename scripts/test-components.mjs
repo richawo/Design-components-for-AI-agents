@@ -42,6 +42,10 @@ if (fs.existsSync(path.join(root, "registry/pro/block-saas-dashboard")))
     "workspace-panels-probe",
     "blocks-replay-probe",
   );
+if (fs.existsSync(path.join(root, "registry/pro/collab-call-stage")))
+  cases.push("call-stage-states");
+if (fs.existsSync(path.join(root, "registry/pro/media-audio-transport")))
+  cases.push("audio-player-states");
 if (fs.existsSync(path.join(root, "registry/pro/saas-customer-health")))
   cases.push("pro-50-demo-probe", "audit-trail-polish-probe");
 if (fs.existsSync(path.join(root, "registry/pro/commerce-promotion-builder")))
