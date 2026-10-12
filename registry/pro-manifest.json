@@ -9166,12 +9166,14 @@
       {
         "name": "title",
         "type": "string",
-        "description": "Main heading."
+        "description": "Main heading.",
+        "default": "\"Customer history\""
       },
       {
         "name": "subtitle",
         "type": "string",
-        "description": "Supporting context."
+        "description": "Supporting context.",
+        "default": "\"Orders, refunds and conversations in one inspectable history.\""
       },
       {
         "name": "customers",
