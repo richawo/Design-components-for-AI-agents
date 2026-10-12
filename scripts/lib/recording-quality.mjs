@@ -42,3 +42,16 @@ export function concatFrameList(frames, startTime, endTime) {
     return `file '${frame.file}'\noption framerate 1000\nduration ${Math.max(.001, next - start).toFixed(6)}`;
   }).join("\n") + `\nfile '${frames.at(-1).file}'\noption framerate 1000\n`;
 }
+
+/** Add only the stage pixels the crop needs. Padding every frame by 2,000px
+ * on all sides needlessly processed tens of millions of invisible pixels. */
+export function framedCropFilter(vw, vh, frame) {
+  const w = Math.round(frame.cw), h = Math.round(frame.ch);
+  const x = Math.round(frame.cx), y = Math.round(frame.cy);
+  // Even offsets preserve the original JPEG chroma alignment.
+  const even = value => Math.ceil(Math.max(0, value) / 2) * 2;
+  const left = even(-x), top = even(-y);
+  const right = even(x + w - vw), bottom = even(y + h - vh);
+  const pad = left || top || right || bottom ? `pad=${vw + left + right}:${vh + top + bottom}:${left}:${top}:color=${frame.bg},` : "";
+  return `${pad}crop=${w}:${h}:${x + left}:${y + top}`;
+}

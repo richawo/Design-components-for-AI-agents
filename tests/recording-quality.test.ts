@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { captureQuality, gallerySteps, concatFrameList } from "../scripts/lib/recording-quality.mjs";
+import { captureQuality, gallerySteps, concatFrameList, framedCropFilter } from "../scripts/lib/recording-quality.mjs";
 
 describe("recording frame quality", () => {
   it("measures captured cadence rather than the encoded frame-rate label", () => {
@@ -26,6 +26,15 @@ describe("recording frame quality", () => {
   });
   it("keeps ambient demonstrations that contain only waits", () => {
     expect(gallerySteps([{ cmd: "wait", ms: 4000 }])).toEqual([{ cmd: "wait", ms: 4000 }]);
+  });
+});
+
+describe("recording crop bounds", () => {
+  it("avoids allocating invisible stage pixels for an in-bounds crop", () => {
+    expect(framedCropFilter(1440, 900, { cw: 600, ch: 400, cx: 400, cy: 200, bg: "0x050505" })).toBe("crop=600:400:400:200");
+  });
+  it("adds the exact missing edges without shifting the source chroma grid", () => {
+    expect(framedCropFilter(1440, 900, { cw: 1500, ch: 1000, cx: -31, cy: -21, bg: "0x050505" })).toBe("pad=1502:1002:32:22:color=0x050505,crop=1500:1000:1:1");
   });
 });
 

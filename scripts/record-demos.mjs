@@ -20,7 +20,7 @@ import os from "node:os";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
 import sharp from "sharp";
-import { captureQuality, gallerySteps, concatFrameList } from "./lib/recording-quality.mjs";
+import { captureQuality, gallerySteps, concatFrameList, framedCropFilter } from "./lib/recording-quality.mjs";
 import { launchChromium } from "./lib/browser.mjs";
 import { CURSOR_CSS, CURSOR_HTML, CURSOR_START } from "../lib/demo/cursor.mjs";
 import { TIMING, demoDuration, parseSteps, targetSelector } from "../lib/demo/schema.mjs";
@@ -313,7 +313,6 @@ async function record(browser, slug) {
     frames.sort((a, b) => a.t - b.t);
     fs.writeFileSync(path.join(tmp, "frames.txt"), concatFrameList(frames, t0, t1));
 
-    const P = 2000;
     let inputs = ["-f", "concat", "-safe", "0", "-i", path.join(tmp, "frames.txt")];
     let graph;
     if (mobile) {
@@ -322,7 +321,7 @@ async function record(browser, slug) {
       inputs = [...inputs, "-i", mask];
       graph = `[0:v]scale=-2:${h}:flags=lanczos,pad=${OUT_W}:${OUT_H}:(ow-iw)/2:(oh-ih)/2:color=0x050505[v];[v][1:v]overlay=0:0,fps=${FPS},format=yuv420p`;
     } else {
-      graph = `[0:v]pad=${vw + 2 * P}:${vh + 2 * P}:${P}:${P}:color=${frame.bg},crop=${Math.round(frame.cw)}:${Math.round(frame.ch)}:${Math.round(frame.cx + P)}:${Math.round(frame.cy + P)},scale=${OUT_W}:${OUT_H}:flags=lanczos,fps=${FPS},format=yuv420p`;
+      graph = `[0:v]${framedCropFilter(vw, vh, frame)},scale=${OUT_W}:${OUT_H}:flags=lanczos,fps=${FPS},format=yuv420p`;
     }
     const mp4Tmp = path.join(tmp, `${slug}.mp4`);
     let crf = 24;
