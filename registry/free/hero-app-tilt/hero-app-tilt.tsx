@@ -277,7 +277,7 @@ export function HeroAppTilt({
       className="@container relative isolate overflow-hidden bg-(--at-page) text-(--at-ink)"
     >
       <div className="mx-auto flex max-w-[1240px] flex-col items-center px-5 pt-20 text-center @md:px-8 @3xl:pt-28">
-        <motion.p variants={v(reveal)} custom={T.eyebrow} className="inline-flex items-center gap-2.5 font-mono text-[11px] uppercase tracking-[0.2em] text-(--at-ink)/55">
+        <motion.p variants={v(reveal)} custom={T.eyebrow} className="inline-flex items-center gap-2.5 font-mono text-[11px] uppercase tracking-[0.2em] text-(--at-ink)/65">
           <span aria-hidden="true" className="size-1.5 rounded-full bg-(--at-accent)" />
           {eyebrow}
         </motion.p>
@@ -415,7 +415,7 @@ function Headline({ text, muted, variants }: { text: string; muted: string; vari
         <span key={k}>
           {/* Inline-blocks swallow edge spaces, so the gap between parts is written out explicitly. */}
           {k > 0 && (/\s$/.test(parts[k - 1].text) || /^\s/.test(part.text)) ? " " : null}
-          <motion.span variants={variants} custom={T.headline + k * T.line} className={`inline-block text-balance ${part.dim ? "text-(--at-ink)/45" : ""}`}>
+          <motion.span variants={variants} custom={T.headline + k * T.line} className={`inline-block text-balance ${part.dim ? "text-(--at-ink)/65" : ""}`}>
             {part.text.trim()}
           </motion.span>
         </span>
@@ -507,13 +507,13 @@ function TitleBar({ account, v }: { account: { name: string; initials: string };
           <span key={k} className="size-[11px] rounded-full bg-(--at-ink)/[0.14]" />
         ))}
       </div>
-      <div className={`mx-auto flex h-7 w-full max-w-[340px] items-center gap-2 rounded-lg bg-(--at-ink)/[0.045] px-2.5 text-[12px] text-(--at-ink)/40 ring-1 ring-inset ring-(--at-ink)/5`}>
+      <div className={`mx-auto flex h-7 w-full max-w-[340px] items-center gap-2 rounded-lg bg-(--at-ink)/[0.045] px-2.5 text-[12px] text-(--at-ink)/65 ring-1 ring-inset ring-(--at-ink)/5`}>
         <svg viewBox="0 0 16 16" className="size-3.5" aria-hidden="true">
           <circle cx="7" cy="7" r="4.25" stroke="currentColor" strokeWidth="1.4" fill="none" />
           <path d="m10.2 10.2 3 3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
         </svg>
         <span className="truncate">Search or jump to…</span>
-        <span className="ml-auto hidden font-mono text-[10.5px] text-(--at-ink)/30 @md/win:inline">⌘K</span>
+        <span className="ml-auto hidden font-mono text-[10.5px] text-(--at-ink)/65 @md/win:inline">⌘K</span>
       </div>
       <Avatar initials={account.initials} size={24} />
     </motion.div>
@@ -559,9 +559,9 @@ function Sidebar({
       </motion.div>
       <motion.div variants={v(settle)} custom={next()} className={`mt-4 flex h-8 items-center justify-between rounded-lg bg-(--at-ink)/[0.06] px-2.5 ${TYPE.ui} text-(--at-ink)/80 ring-1 ring-inset ring-(--at-ink)/[0.06]`}>
         Compose
-        <span className="font-mono text-[10.5px] text-(--at-ink)/35">C</span>
+        <span className="font-mono text-[10.5px] text-(--at-ink)/65">C</span>
       </motion.div>
-      <motion.p variants={v(settle)} custom={next()} className={`mt-5 px-2 ${TYPE.meta} text-(--at-ink)/35`}>
+      <motion.p variants={v(settle)} custom={next()} className={`mt-5 px-2 ${TYPE.meta} text-(--at-ink)/65`}>
         Triage
       </motion.p>
       <ul className="mt-2 space-y-0.5">{triage.map(folderRow)}</ul>
@@ -573,12 +573,12 @@ function Sidebar({
           <ul className="space-y-0.5">{rest.map((f, i) => folderRow(f, i + TRIAGE_FOLDERS))}</ul>
         </>
       ) : null}
-      <motion.p variants={v(settle)} custom={next()} className={`mt-5 px-2 ${TYPE.meta} text-(--at-ink)/35`}>
+      <motion.p variants={v(settle)} custom={next()} className={`mt-5 px-2 ${TYPE.meta} text-(--at-ink)/65`}>
         Labels
       </motion.p>
       <ul className="mt-2 space-y-0.5">
         {labels.map((l, i) => (
-          <motion.li key={l} variants={v(settle)} custom={next()} className={`flex h-8 items-center gap-2.5 px-2 ${TYPE.row} text-(--at-ink)/55`}>
+          <motion.li key={l} variants={v(settle)} custom={next()} className={`flex h-8 items-center gap-2.5 px-2 ${TYPE.row} text-(--at-ink)/65`}>
             {/* Labels are told apart by weight of grey, not by hue. */}
             <span className="size-2 rounded-[3px] bg-(--at-ink)" style={{ opacity: 0.5 - i * 0.12 }} />
             {l}
@@ -592,11 +592,11 @@ function Sidebar({
 function FolderRow({ folder: f, on, delay, active, reduce, v }: { folder: TiltFolder; on: boolean; delay: number; active: boolean; reduce: boolean; v: Pick }) {
   return (
     <motion.li variants={v(settle)} custom={delay}>
-      <div className={`flex h-8 items-center gap-2.5 rounded-[7px] px-2 ${TYPE.row} ${on ? "bg-(--at-ink)/[0.07] text-(--at-ink)" : "text-(--at-ink)/55"}`}>
+      <div className={`flex h-8 items-center gap-2.5 rounded-[7px] px-2 ${TYPE.row} ${on ? "bg-(--at-ink)/[0.07] text-(--at-ink)" : "text-(--at-ink)/65"}`}>
         <FolderIcon name={f.icon} />
         <span className="truncate">{f.label}</span>
         {f.count != null ? (
-          <CountUp value={f.count} active={active} reduce={reduce} delay={delay + 0.08} className={`ml-auto ${TYPE.small} ${on ? "text-(--at-ink)/70" : "text-(--at-ink)/35"}`} />
+          <CountUp value={f.count} active={active} reduce={reduce} delay={delay + 0.08} className={`ml-auto ${TYPE.small} ${on ? "text-(--at-ink)/70" : "text-(--at-ink)/65"}`} />
         ) : null}
       </div>
     </motion.li>
@@ -656,10 +656,10 @@ function ThreadList({
     <section className={`flex w-full min-w-0 flex-col @2xl/win:w-85 @2xl/win:shrink-0 @2xl/win:border-r @5xl/win:w-93 ${HAIRLINE}`}>
       <motion.div variants={v(settle)} custom={T.list} className={`flex h-12 items-center gap-2 border-b px-4 ${HAIRLINE}`}>
         <h2 className="text-[14px] font-semibold tracking-[-0.015em] text-(--at-ink)/90">{title}</h2>
-        <CountUp value={count} active={active} reduce={reduce} delay={T.count} className="text-[12px] text-(--at-ink)/35" />
+        <CountUp value={count} active={active} reduce={reduce} delay={T.count} className="text-[12px] text-(--at-ink)/65" />
         <div className={`ml-auto flex rounded-[7px] bg-(--at-ink)/[0.04] p-0.5 ${TYPE.small} ring-1 ring-inset ring-(--at-ink)/5`}>
           <span className="rounded-[5px] bg-(--at-ink)/[0.09] px-2 py-0.5 text-(--at-ink)/85">All</span>
-          <span className="px-2 py-0.5 text-(--at-ink)/40">Drafted</span>
+          <span className="px-2 py-0.5 text-(--at-ink)/65">Drafted</span>
         </div>
       </motion.div>
       <ul className="min-h-0 flex-1 overflow-hidden">
@@ -680,11 +680,11 @@ function ThreadRow({ thread: t, on, delay, v }: { thread: TiltThread; on: boolea
         <div className="flex items-baseline gap-2">
           <span className={`truncate ${TYPE.row} ${t.unread ? "font-semibold text-(--at-ink)" : "font-medium text-(--at-ink)/70"}`}>{t.from}</span>
           {t.unread ? <span className="size-1.5 shrink-0 -translate-y-px rounded-full bg-(--at-ink)/80" /> : null}
-          <span className={`ml-auto shrink-0 ${TYPE.small} tabular-nums text-(--at-ink)/40`}>{t.time}</span>
+          <span className={`ml-auto shrink-0 ${TYPE.small} tabular-nums text-(--at-ink)/65`}>{t.time}</span>
         </div>
         <p className={`mt-0.5 truncate ${TYPE.ui} ${t.unread ? "text-(--at-ink)/85" : "text-(--at-ink)/60"}`}>{t.subject}</p>
         <div className="mt-1 flex items-center gap-2">
-          <p className="min-w-0 flex-1 truncate text-[12px] text-(--at-ink)/40">{t.preview}</p>
+          <p className="min-w-0 flex-1 truncate text-[12px] text-(--at-ink)/65">{t.preview}</p>
           {t.drafted ? <DraftMark /> : null}
         </div>
       </div>
@@ -705,13 +705,13 @@ function DraftMark() {
 function MessagePane({ message, product, initials, position, v }: { message: TiltMessage; product: string; initials: string; position: string; v: Pick }) {
   return (
     <article className="hidden min-w-0 flex-1 flex-col @2xl/win:flex">
-      <motion.div variants={v(settle)} custom={T.list} className={`flex h-12 items-center gap-1 border-b px-5 text-(--at-ink)/45 ${HAIRLINE}`}>
+      <motion.div variants={v(settle)} custom={T.list} className={`flex h-12 items-center gap-1 border-b px-5 text-(--at-ink)/65 ${HAIRLINE}`}>
         {["Archive", "Snooze", "Label"].map((a) => (
           <span key={a} className="rounded-md px-2 py-1 text-[12px]">
             {a}
           </span>
         ))}
-        <span className="ml-auto font-mono text-[11px] tabular-nums text-(--at-ink)/35">{position}</span>
+        <span className="ml-auto font-mono text-[11px] tabular-nums text-(--at-ink)/65">{position}</span>
       </motion.div>
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden px-6 py-5 @4xl/win:px-8 @4xl/win:py-6">
         <motion.h3 variants={v(settle)} custom={T.subject} className="text-[19px] font-semibold leading-[1.25] tracking-[-0.025em] @4xl/win:text-[21px]">
@@ -721,11 +721,11 @@ function MessagePane({ message, product, initials, position, v }: { message: Til
           <Avatar initials={initials} size={34} />
           <div className={`min-w-0 ${TYPE.ui} leading-[1.4]`}>
             <p className="truncate text-(--at-ink)/85">
-              {message.from} <span className="text-(--at-ink)/40">&lt;{message.fromEmail}&gt;</span>
+              {message.from} <span className="text-(--at-ink)/65">&lt;{message.fromEmail}&gt;</span>
             </p>
-            <p className="text-(--at-ink)/40">to {message.to}</p>
+            <p className="text-(--at-ink)/65">to {message.to}</p>
           </div>
-          <span className={`ml-auto shrink-0 ${TYPE.small} text-(--at-ink)/40`}>{message.time}</span>
+          <span className={`ml-auto shrink-0 ${TYPE.small} text-(--at-ink)/65`}>{message.time}</span>
         </motion.div>
         <div className={`mt-5 max-w-[60ch] space-y-3 ${TYPE.prose} text-(--at-ink)/70`}>
           {message.body.map((b, k) => (
@@ -760,7 +760,7 @@ function DraftCard({ message, product, v }: { message: TiltMessage; product: str
           <span className="font-mono text-[10.5px] opacity-50">⌘↵</span>
         </span>
         <span className={`inline-flex h-8 items-center rounded-lg px-3 ${TYPE.ui} text-(--at-ink)/70 ring-1 ring-inset ring-(--at-ink)/[0.12]`}>Edit</span>
-        {message.attachment ? <span className={`ml-auto hidden ${TYPE.small} text-(--at-ink)/40 @3xl/win:inline`}>Attached: {message.attachment}</span> : null}
+        {message.attachment ? <span className={`ml-auto hidden ${TYPE.small} text-(--at-ink)/65 @3xl/win:inline`}>Attached: {message.attachment}</span> : null}
       </motion.div>
     </motion.div>
   );
