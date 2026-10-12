@@ -9317,12 +9317,14 @@
       {
         "name": "title",
         "type": "string",
-        "description": "Main heading."
+        "description": "Main heading.",
+        "default": "\"Commerce overview\""
       },
       {
         "name": "subtitle",
         "type": "string",
-        "description": "Supporting context."
+        "description": "Supporting context.",
+        "default": "\"Sales, checkout intent and the work that needs attention.\""
       },
       {
         "name": "periods",
