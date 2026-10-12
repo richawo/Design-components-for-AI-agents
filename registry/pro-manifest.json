@@ -8579,7 +8579,7 @@
       "motion",
       "lucide-react"
     ],
-    "theme": "light",
+    "theme": "dark",
     "previewHeight": 780,
     "usage": "import { VariantStock } from \"@/components/design-for-ai/commerce-variant-stock\";\n\n<VariantStock />",
     "props": [
@@ -8617,7 +8617,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "default": "\"light\"",
+        "default": "\"dark\"",
         "description": "Surface and ink palette; the preview stage follows it."
       }
     ],
@@ -8644,7 +8644,7 @@
           "dark",
           "light"
         ],
-        "default": "light"
+        "default": "dark"
       },
       {
         "prop": "lowStockThreshold",
