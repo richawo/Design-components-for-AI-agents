@@ -48,7 +48,7 @@ const PALETTE = {
     surface: "#ffffff",
     ink: "#0b0b0c",
     raised: "#ffffff",
-    up: "#059669",
+    up: "#047857",
     down: "#e11d48",
     shadow: "0 1px 2px rgba(0,0,0,0.06), 0 24px 60px -30px rgba(0,0,0,0.22)",
   },
@@ -203,7 +203,7 @@ export function ChartPortfolio({
               {ticker.slice(0, 2)}
             </span>
             <p className="truncate text-sm font-medium text-(--cp-ink)/80">{name}</p>
-            <span className="hidden shrink-0 font-mono text-[11px] text-(--cp-ink)/40 @md:inline">
+            <span className="hidden shrink-0 font-mono text-[11px] text-(--cp-ink)/65 @md:inline">
               {ticker} · {exchange}
             </span>
           </motion.div>
@@ -221,7 +221,7 @@ export function ChartPortfolio({
                 %)
               </span>
             </span>
-            <span className="text-(--cp-ink)/45">{hover === null ? caption : formatTime(target[hover].t, range, locale, true)}</span>
+            <span className="text-(--cp-ink)/65">{hover === null ? caption : formatTime(target[hover].t, range, locale, true)}</span>
           </motion.p>
         </div>
 
@@ -340,7 +340,7 @@ export function ChartPortfolio({
             custom={T.stats + i * T.statStep}
             className="bg-(--cp-surface) px-4 py-3 shadow-[0_0_0_1px_color-mix(in_oklab,var(--cp-ink)_7%,var(--cp-surface))]"
           >
-            <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-(--cp-ink)/40">{s.label}</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-(--cp-ink)/65">{s.label}</p>
             <p className="mt-1 text-sm font-medium text-(--cp-ink)/85">
               <Ticker value={s.value} instant={false} entered={entered} reduce={reduce} delay={T.stats + i * T.statStep + 0.08} format={s.format} />
             </p>
@@ -365,7 +365,7 @@ function RangeControl({ value, uid, reduce, onChange }: { value: RangeKey; uid: 
           aria-checked={value === r.key}
           data-demo={`range-${r.key.toLowerCase()}`}
           onClick={() => onChange(r.key)}
-          className={`relative h-8 flex-1 rounded-full px-3 font-mono text-[11px] font-medium transition-[color,transform] duration-150 active:scale-[0.95] ${FOCUS} @2xl:flex-none ${value === r.key ? "text-(--cp-surface)" : "text-(--cp-ink)/55 hover:text-(--cp-ink)"}`}
+          className={`relative h-8 flex-1 rounded-full px-3 font-mono text-[11px] font-medium transition-[color,transform] duration-150 active:scale-[0.95] ${FOCUS} @2xl:flex-none ${value === r.key ? "text-(--cp-surface)" : "text-(--cp-ink)/65 hover:text-(--cp-ink)"}`}
         >
           {value === r.key && (
             <motion.span layoutId={`${uid}-range`} className="absolute inset-0 rounded-full bg-(--cp-ink)" transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 500, damping: 40 }} />
