@@ -1,4 +1,4 @@
-export async function check({page,mount,assert}){
+export async function check({page,mount,assert,choose}){
  await mount(`window.plans=[];window.fail=true;createRoot(document.getElementById('root')).render(<Subject.BackorderAllocation onAllocate={async p=>{window.plans.push(p);if(window.fail)throw Error('offline')}}/>);`);
  assert.equal(await page.getByRole('button',{name:'Review allocations',exact:true}).isDisabled(),true);
  await page.getByRole('button',{name:'Replace with autofill',exact:true}).click();
@@ -7,7 +7,7 @@ export async function check({page,mount,assert}){
  await page.getByRole('textbox',{name:'Allocate ORD-2052',exact:true}).fill('1');
  assert.match(await page.getByRole('alert').innerText(),/exceeds incoming/);
  assert.equal(await page.getByRole('button',{name:'Review allocations',exact:true}).isDisabled(),true);
- await page.getByRole('combobox',{name:'Autofill order',exact:true}).selectOption('risk');
+ await choose(page.getByRole('combobox',{name:'Autofill order',exact:true}), 'risk');
  await page.getByRole('button',{name:'Replace with autofill',exact:true}).click();
  assert.equal(await page.getByRole('textbox',{name:'Allocate ORD-2052',exact:true}).inputValue(),'20');
  assert.equal(await page.getByRole('textbox',{name:'Allocate ORD-2046',exact:true}).inputValue(),'20');
