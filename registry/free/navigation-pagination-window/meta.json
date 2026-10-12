@@ -7,7 +7,6 @@
   "description": "A compact pagination rail with first and last anchors, moving selection and a live page count that stays usable in narrow result panels.",
   "tags": [
     "navigation",
-    "navigation",
     "pagination",
     "window",
     "responsive",

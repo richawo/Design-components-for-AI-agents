@@ -8,7 +8,7 @@
     "motion": "motion/react"
   },
   "layout": {
-    "direction": "A results label and mono page count sit above a centred window of page buttons. Previous and Next controls sit on a separate row below. The selected surface travels between numbers.",
+    "direction": "A results label and mono page count sit above a centred window of page buttons. Previous and Next controls sit on a separate row below. The selected surface travels between numbers. Five or seven stable 44px slots with persistent first and last anchors and explicit ellipses; a neutral selection surface preserves readable ink during movement.",
     "container": "Size to the parent with @container. Keep the root width at 100%, capped to the focused component, with 24px desktop and 16px narrow padding.",
     "rhythm": "4/8px spacing; 1px edges; 44px minimum interactive targets."
   },
@@ -32,19 +32,28 @@
     }
   },
   "motion": {
-    "entrance": "A single opacity and 8px rise over 320ms.",
-    "interaction": "150ms press response; 240ms state changes. No ambient loops.",
+    "entrance": "Opacity and 8px rise over 280ms.",
+    "interaction": "Retained page slots move over 260ms; entries and exits fade for 120ms with a 4px directional offset and popLayout exits. Selected surface glides for 280ms; visual page caption cross-fades for 180ms. All use cubic-bezier(0.22,1,0.36,1).",
     "reduced": "Remove transforms and layout motion; keep opacity at 120ms or less."
   },
   "responsive": {
-    "widths": [320, 390, 768, 1024, 1440, 1920],
-    "rules": "Wrap long copy; stack secondary details inside narrow containers; keep any horizontal scrolling local and keyboard accessible."
+    "widths": [
+      320,
+      390,
+      768,
+      1024,
+      1440,
+      1920
+    ],
+    "rules": "Seven slots at rail width >=320px, five below; show all pages for smaller totals. Rail remains one 44px row; header can wrap and the nav controls retain 44px targets."
   },
   "accessibility": [
     "Use native buttons and form controls with visible 2px focus rings.",
     "Provide labels, meaningful states and polite feedback where actions update content.",
     "Keep IDs instance-scoped with useId; support multiple instances and empty custom data.",
-    "Respect prefers-reduced-motion; no automatic action or navigation."
+    "Respect prefers-reduced-motion; no automatic action or navigation.",
+    "Exiting slots are immediately inert and aria-hidden. Preserve clicked page focus through window movement and restore to the clamped selection when a controlled update removes a focused page.",
+    "One polite status caption announces the current page; its animated visual copy is aria-hidden. Large visual labels are compact but accessible names retain full numbers."
   ],
   "content": {
     "defaults": "Use the realistic default content from the source; expose content and collection inputs as typed props.",
@@ -85,7 +94,8 @@
         "default": "\"dark\"",
         "description": "Surface and ink palette; the demo stage follows the chosen theme."
       }
-    ]
+    ],
+    "state": "Uncontrolled selection updates locally. Controlled selection calls onPageChange and waits for the host. Clamp invalid selection and totals safely; zero disables both navigation buttons."
   },
   "avoid": [
     "Remote images, fake network success or hidden external dependencies.",
