@@ -12237,7 +12237,7 @@
     "dependencies": [
       "motion"
     ],
-    "theme": "light",
+    "theme": "dark",
     "previewHeight": 1080,
     "usage": "import { AssortmentPlanner } from \"@/components/design-for-ai/fashion-assortment-planner\";\n\n<AssortmentPlanner />",
     "props": [
@@ -12271,7 +12271,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "default": "\"light\"",
+        "default": "\"dark\"",
         "description": "Surface, border and ink palette."
       }
     ],
@@ -12297,7 +12297,7 @@
           "dark",
           "light"
         ],
-        "default": "light"
+        "default": "dark"
       }
     ]
   },
@@ -12318,7 +12318,7 @@
     "dependencies": [
       "motion"
     ],
-    "theme": "light",
+    "theme": "dark",
     "previewHeight": 960,
     "usage": "import { CollectionLinePlan } from \"@/components/design-for-ai/fashion-collection-line-plan\";\n\n<CollectionLinePlan />",
     "props": [
@@ -12357,7 +12357,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "default": "\"light\"",
+        "default": "\"dark\"",
         "description": "Surface, border and ink palette."
       }
     ],
@@ -12382,7 +12382,7 @@
           "dark",
           "light"
         ],
-        "default": "light"
+        "default": "dark"
       }
     ]
   },
@@ -12403,7 +12403,7 @@
     "dependencies": [
       "motion"
     ],
-    "theme": "light",
+    "theme": "dark",
     "previewHeight": 1000,
     "usage": "import { ExchangeSelector } from \"@/components/design-for-ai/fashion-exchange-selector\";\n\n<ExchangeSelector />",
     "props": [
@@ -12447,7 +12447,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "default": "\"light\"",
+        "default": "\"dark\"",
         "description": "Surface, border and ink palette."
       },
       {
@@ -12480,7 +12480,7 @@
           "dark",
           "light"
         ],
-        "default": "light"
+        "default": "dark"
       },
       {
         "prop": "selectMode",
@@ -12511,7 +12511,7 @@
     "dependencies": [
       "motion"
     ],
-    "theme": "light",
+    "theme": "dark",
     "previewHeight": 980,
     "usage": "import { LaunchCalendar } from \"@/components/design-for-ai/fashion-launch-calendar\";\n\n<LaunchCalendar />",
     "props": [
@@ -12545,7 +12545,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "default": "\"light\"",
+        "default": "\"dark\"",
         "description": "Surface, border and ink palette."
       },
       {
@@ -12575,7 +12575,7 @@
           "dark",
           "light"
         ],
-        "default": "light"
+        "default": "dark"
       },
       {
         "prop": "selectMode",
@@ -12606,7 +12606,7 @@
     "dependencies": [
       "motion"
     ],
-    "theme": "light",
+    "theme": "dark",
     "previewHeight": 1000,
     "usage": "import { MerchandisingDashboard } from \"@/components/design-for-ai/fashion-merchandising-dashboard\";\n\n<MerchandisingDashboard />",
     "props": [
@@ -12635,7 +12635,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "default": "\"light\"",
+        "default": "\"dark\"",
         "description": "Surface, border and ink palette."
       },
       {
@@ -12665,7 +12665,7 @@
           "dark",
           "light"
         ],
-        "default": "light"
+        "default": "dark"
       },
       {
         "prop": "selectMode",
@@ -12696,7 +12696,7 @@
     "dependencies": [
       "motion"
     ],
-    "theme": "light",
+    "theme": "dark",
     "previewHeight": 1280,
     "usage": "import { PreorderPlanner } from \"@/components/design-for-ai/fashion-preorder-planner\";\n\n<PreorderPlanner />",
     "props": [
@@ -12740,7 +12740,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "default": "\"light\"",
+        "default": "\"dark\"",
         "description": "Surface, border and ink palette."
       }
     ],
@@ -12766,7 +12766,7 @@
           "dark",
           "light"
         ],
-        "default": "light"
+        "default": "dark"
       }
     ]
   },
@@ -12787,7 +12787,7 @@
     "dependencies": [
       "motion"
     ],
-    "theme": "light",
+    "theme": "dark",
     "previewHeight": 1060,
     "usage": "import { SizeGuide } from \"@/components/design-for-ai/fashion-size-guide\";\n\n<SizeGuide />",
     "props": [
@@ -12821,7 +12821,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "default": "\"light\"",
+        "default": "\"dark\"",
         "description": "Surface, border and ink palette."
       }
     ],
@@ -12847,7 +12847,7 @@
           "dark",
           "light"
         ],
-        "default": "light"
+        "default": "dark"
       }
     ]
   },
@@ -12868,7 +12868,7 @@
     "dependencies": [
       "motion"
     ],
-    "theme": "light",
+    "theme": "dark",
     "previewHeight": 1160,
     "usage": "import { WholesaleOrder } from \"@/components/design-for-ai/fashion-wholesale-order\";\n\n<WholesaleOrder />",
     "props": [
@@ -12907,7 +12907,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "default": "\"light\"",
+        "default": "\"dark\"",
         "description": "Surface, border and ink palette."
       }
     ],
@@ -12934,7 +12934,7 @@
           "dark",
           "light"
         ],
-        "default": "light"
+        "default": "dark"
       }
     ]
   },
