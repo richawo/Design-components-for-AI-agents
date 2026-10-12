@@ -15992,12 +15992,14 @@
       {
         "name": "title",
         "type": "string",
-        "description": "Main heading."
+        "description": "Main heading.",
+        "default": "\"Receivables\""
       },
       {
         "name": "subtitle",
         "type": "string",
-        "description": "Supporting context."
+        "description": "Supporting context.",
+        "default": "\"Inspect open invoices by age, then prepare a follow-up draft for the responsible account owner.\""
       },
       {
         "name": "invoices",
