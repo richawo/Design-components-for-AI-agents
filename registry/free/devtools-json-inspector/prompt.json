@@ -1,0 +1,97 @@
+{
+  "component": "Structured JSON Inspector",
+  "intent": "A nested JSON inspector with keyboard-accessible disclosures, readable values and bounded rendering for large, deep or circular developer payloads.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4",
+    "motion": "motion/react"
+  },
+  "layout": {
+    "direction": "A mono data surface with a restrained header, indentation guides and 44px disclosure buttons. Long values wrap and oversized payloads scroll inside a focusable region.",
+    "container": "Size to the parent with @container. Keep the root width at 100%, capped to the focused component, with 24px desktop and 16px narrow padding.",
+    "rhythm": "4/8px spacing; 1px edges; 44px minimum interactive targets.",
+    "renderingLimits": "At most 100 children per branch, maxDepth (clamped to 1-24), and 500 total entries; circular references show a label. Collapsed descendants do not use the budget. Show a visible limit notice explaining how collapsing earlier branches reveals more entries."
+  },
+  "typography": {
+    "body": "font-sans, 14-16px, line-height 1.5",
+    "metadata": "font-mono, 11-12px, restrained tracking",
+    "heading": "font-display or font-serif, 24-36px, tracking -0.035em"
+  },
+  "color": {
+    "dark": {
+      "surface": "#111111",
+      "ink": "#f5f5f5",
+      "muted": "#a3a3a3",
+      "edge": "#333333"
+    },
+    "light": {
+      "surface": "#ffffff",
+      "ink": "#171717",
+      "muted": "#525252",
+      "edge": "#d4d4d4"
+    }
+  },
+  "motion": {
+    "entrance": "A single opacity and 8px rise over 320ms.",
+    "interaction": "150ms press response; 240ms state changes. No ambient loops.",
+    "reduced": "Remove transforms and layout motion; keep opacity at 120ms or less."
+  },
+  "responsive": {
+    "widths": [
+      320,
+      390,
+      768,
+      1024,
+      1440,
+      1920
+    ],
+    "rules": "Wrap long copy; stack secondary details inside narrow containers; keep any horizontal scrolling local and keyboard accessible."
+  },
+  "accessibility": [
+    "Use native buttons and form controls with visible 2px focus rings.",
+    "Provide labels, meaningful states and polite feedback where actions update content.",
+    "Keep IDs instance-scoped with useId; support multiple instances and empty custom data.",
+    "Respect prefers-reduced-motion; no automatic action or navigation."
+  ],
+  "content": {
+    "defaults": "Use the realistic default content from the source; expose content and collection inputs as typed props.",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Response payload\"",
+        "description": "Inspector title."
+      },
+      {
+        "name": "data",
+        "type": "InspectValue",
+        "default": "sample completed run",
+        "description": "JSON-like data; null and empty arrays remain visible. Circular references display a marker rather than recursing forever."
+      },
+      {
+        "name": "rootLabel",
+        "type": "string",
+        "default": "\"response\"",
+        "description": "Root entry label."
+      },
+      {
+        "name": "maxDepth",
+        "type": "number",
+        "default": "12",
+        "description": "Maximum depth, clamped to 1-24. At most 100 children are rendered per branch. Rendering also stops after 500 entries in total."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface and ink palette; the demo stage follows the chosen theme."
+      }
+    ]
+  },
+  "avoid": [
+    "Remote images, fake network success or hidden external dependencies.",
+    "Decorative status badges, gradients as filler, low-contrast text.",
+    "Unlabelled controls, hover-only functionality, overflow at 320px."
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "component": "Workspace Shell",
+  "intent": "Build a restrained, reusable workspace frame that can hold a complete dashboard, report or settings page without imposing application data or a routing framework.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind v4",
+    "motion": "motion/react"
+  },
+  "layout": {
+    "description": "The wide layout has a 188px navigation rail and a flexible main column. In containers narrower than 48rem the rail becomes a compact identity row with horizontal navigation. The main column has an editorial header, a spaced content area and an optional footnote.",
+    "components": [],
+    "container": "Responsive to the host container; narrow screens use a single column",
+    "retainedViews": "WorkspacePanels accepts activeId and panels with unique IDs and React content. Measure the active view, animate height, retain mounted drafts and make inactive content inert.",
+    "headerControls": "Header actions stack above main content; the shell does not clip dropdown menus."
+  },
+  "typography": {
+    "heading": "font-display, medium weight, tight tracking",
+    "body": "font-sans, readable secondary text",
+    "labels": "font-mono for small contextual labels"
+  },
+  "color": {
+    "dark": "Near-black surfaces, neutral borders, off-white text",
+    "light": "Warm neutral canvas, white surfaces, charcoal text",
+    "accent": "Reserved for meaningful data or state"
+  },
+  "motion": {
+    "entrance": "Short opacity and small position changes",
+    "reducedMotion": "Remove transforms and continuous movement"
+  },
+  "responsive": {
+    "narrow": "Stack content; keep actions and controls reachable",
+    "wide": "Use a composed workspace with clear reading order"
+  },
+  "accessibility": [
+    "Real section anchors and visible keyboard focus",
+    "Labelled native controls and useful status feedback",
+    "Preserve each underlying component keyboard contract"
+  ],
+  "content": {
+    "sample": "Deterministic offline preview",
+    "integration": [
+      "Pass real routes or unique section anchors through `links`. Navigation reflows from a sidebar to a horizontal strip based on the shell container.",
+      "Place your page panels in `children` and host actions in `actions`. The shell owns presentation; each supplied panel keeps its interaction and data contract."
+    ]
+  },
+  "avoid": [
+    "Unconnected action buttons",
+    "Invented production events",
+    "Substandard contrast",
+    "Decorative status badges",
+    "Hidden focusable outgoing content"
+  ]
+}

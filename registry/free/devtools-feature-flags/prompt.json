@@ -1,0 +1,63 @@
+{
+  "component": "FeatureFlags",
+  "intent": "A feature-flag panel for a deployment console: each flag opens to environment switches, a rollout you drag, targeting rules that read as one sentence, a verdict for a named organisation, and a kill switch that asks once.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 with @container queries; colours as CSS variables on the root (--ff-surface, --ff-well, --ff-raised, --ff-ink, --ff-muted, --ff-faint, --ff-line, --ff-line-strong, --ff-track, --ff-err, --ff-accent)",
+    "animation": "motion/react: variants for the entrance, height for the open flag, a spring for switch thumbs",
+    "icons": "none; the switches and slider are drawn in CSS",
+    "fonts": "font-sans (Geist) for names, sentences and buttons; font-mono (Geist Mono) for keys, percentages, the verdict and the owner line"
+  },
+  "layout": {
+    "root": "section, @container, max-width 920px, 20px radius, overflow hidden, padding 20px and 24px from @xl",
+    "header": "accent dot and project name left; flag count right",
+    "list": "well, 14px radius; one flag open; closed rows show the name, key, percentage and which environments are on",
+    "detail": "description, owner, three environment switches, rollout slider, targeting sentence with a switch per clause, verdict, kill switch",
+    "environments": "full-width rows below @lg; from @lg each label sits beside its switch and the three share one row",
+    "kill": "full-width Kill below @lg; from @lg the button sits at the end of the sentence"
+  },
+  "typography": {
+    "names": "Geist 14px, tracking -0.01em",
+    "keys": "Geist Mono 11px, faint",
+    "sentence": "Geist 13.5px, leading 1.55; the active clauses are ink",
+    "verdict": "Geist Mono 12px",
+    "percentage": "Geist Mono 13px, tabular numerals"
+  },
+  "color": {
+    "dark": { "surface": "#0d0d0f", "well": "#09090a", "ink": "#ededef", "muted": "#98989a", "faint": "#939399", "err": "#f07c80" },
+    "light": { "surface": "#ffffff", "well": "#fafafa", "ink": "#17171a", "muted": "#5d5d5f", "faint": "#62626b", "err": "#c2353b" },
+    "accent": "#7cc4ff by default; the open flag’s edge, the rollout fill, and a served verdict",
+    "kill": "the word Killed and the Kill label use the error colour; the confirm button is ink on the surface"
+  },
+  "motion": {
+    "entrance": "header and list rise 10px out of a 6px blur, 60ms apart, 560ms, cubic-bezier(0.22, 1, 0.36, 1)",
+    "open": "the detail grows over 320ms and closes in 180ms on ease-in",
+    "switch": "the thumb travels 16px on a spring, stiffness 500, damping 40",
+    "reducedMotion": "opacity only, 150ms or less; no blur, rise or spring"
+  },
+  "responsive": {
+    "container": "environment switches stack below @lg and sit in three columns from @lg; kill actions sit under the sentence below @lg",
+    "rows": "the key truncates; the percentage stays on the right",
+    "overflow": "nothing scrolls the page sideways; the slider uses touch-action pan-y so a drag does not scroll the page"
+  },
+  "accessibility": [
+    "Each flag row is a button with aria-expanded",
+    "Environment and rule controls are switches with aria-checked",
+    "The rollout is a slider with aria-valuemin, aria-valuemax and aria-valuenow, and arrow keys step by 5",
+    "The verdict is aria-live polite",
+    "Keyboard-only 2px ink focus rings; 44px targets below @lg"
+  ],
+  "content": {
+    "project": "ledgerline",
+    "flags": "New checkout at 25%, Invoice PDF at 100%, Usage forecast off in production, Strict idempotency in development only",
+    "sample": "Northwind Ltd sits in rollout bucket 41, so 25% leaves them outside and about 80% serves them",
+    "kill": "Kill asks once, then sets the rollout to 0 and turns every environment off; Undo restores the snapshot"
+  },
+  "avoid": [
+    "a hue per environment or a tinted row",
+    "a modal for the kill switch",
+    "resetting every flag when the rollout control changes",
+    "a pinging header dot"
+  ]
+}

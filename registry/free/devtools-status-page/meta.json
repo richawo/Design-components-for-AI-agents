@@ -1,0 +1,148 @@
+{
+  "slug": "devtools-status-page",
+  "name": "Status Page",
+  "tier": "free",
+  "platform": "web",
+  "category": "devtools",
+  "description": "A public status page with 90-day uptime bars, a day you can point at, the current incident as a timeline, and subscribe that becomes a check.",
+  "tags": [
+    "status page",
+    "uptime",
+    "incident",
+    "subscribe",
+    "developer tools",
+    "reliability"
+  ],
+  "dependencies": [
+    "motion"
+  ],
+  "theme": "dark",
+  "previewHeight": 918,
+  "usage": "import { StatusPage } from \"@/components/design-for-ai/devtools-status-page\";\n\n<StatusPage\n  product=\"ledgerline\"\n  state=\"degraded\"\n  showBars\n  onSubscribe={(email) => save(email)}\n/>\n\n// Each component is 90 days. Pointing at a bar names that day.\n// Subscribe keeps its box and swaps the label for a check.",
+  "props": [
+    {
+      "name": "product",
+      "type": "string",
+      "default": "\"ledgerline\"",
+      "description": "Product name in the header, in mono beside the status dot."
+    },
+    {
+      "name": "state",
+      "type": "\"operational\" | \"degraded\" | \"outage\"",
+      "default": "\"degraded\"",
+      "description": "Overall condition. It chooses the headline, the bars and the incident."
+    },
+    {
+      "name": "showBars",
+      "type": "boolean",
+      "default": "true",
+      "description": "Draw the 90-day bars under each component."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Surface the page sits on."
+    },
+    {
+      "name": "accent",
+      "type": "string",
+      "default": "\"#7cc4ff\"",
+      "description": "The degraded signal: the status dot, the Degraded label, degraded days, and the latest incident mark. The day under the pointer is ink. Up and down stay semantic."
+    },
+    {
+      "name": "onSubscribe",
+      "type": "(email: string) => void",
+      "description": "Called with the address when subscribe succeeds."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "description": "Extra classes on the root section."
+    }
+  ],
+  "added": "2026-10-10",
+  "demo": {
+    "steps": [
+      "wait:400",
+      "click:@bars-webhooks:0.99,0.5",
+      "wait:550",
+      "click:@email",
+      "type:ada@nw.io",
+      "wait:250",
+      "click:@subscribe",
+      "wait:900"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "state",
+      "label": "State",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "operational",
+          "label": "Operational"
+        },
+        {
+          "value": "degraded",
+          "label": "Degraded"
+        },
+        {
+          "value": "outage",
+          "label": "Outage"
+        }
+      ],
+      "default": "degraded",
+      "group": "View"
+    },
+    {
+      "prop": "showBars",
+      "label": "Bars",
+      "kind": "toggle",
+      "default": true,
+      "group": "View"
+    },
+    {
+      "prop": "product",
+      "label": "Product",
+      "kind": "text",
+      "default": "ledgerline",
+      "group": "View"
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark",
+      "group": "Look"
+    },
+    {
+      "prop": "accent",
+      "label": "Accent",
+      "kind": "color",
+      "default": "#7cc4ff",
+      "options": [
+        "#7cc4ff",
+        "#ff9d5c",
+        "#7dd3a8"
+      ],
+      "group": "Look"
+    },
+    {
+      "prop": "$replay",
+      "label": "Replay",
+      "kind": "action"
+    }
+  ]
+}

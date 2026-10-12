@@ -1,0 +1,84 @@
+{
+  "slug": "data-file-explorer",
+  "name": "Project File Explorer",
+  "tier": "free",
+  "platform": "web",
+  "category": "data",
+  "description": "A compact project explorer with nested folder disclosures, a selected-file inspector and keyboard-accessible file actions, ready for developer workspaces.",
+  "tags": [
+    "data",
+    "data",
+    "file",
+    "explorer",
+    "responsive",
+    "keyboard"
+  ],
+  "dependencies": [
+    "motion",
+    "lucide-react"
+  ],
+  "theme": "dark",
+  "previewHeight": 680,
+  "usage": "import { FileExplorer } from \"@/components/design-for-ai/data-file-explorer\";\n\n<FileExplorer />",
+  "props": [
+    {
+      "name": "title",
+      "type": "string",
+      "default": "\"studio-kit\"",
+      "description": "Project name."
+    },
+    {
+      "name": "nodes",
+      "type": "ExplorerNode[]",
+      "default": "sample source tree",
+      "description": "Nested files and folders with globally unique IDs. Depth is capped at 24 to keep malformed structures bounded."
+    },
+    {
+      "name": "selectedId",
+      "type": "string",
+      "default": "undefined",
+      "description": "Controlled selected file ID."
+    },
+    {
+      "name": "defaultSelectedId",
+      "type": "string",
+      "default": "\"readme\"",
+      "description": "Initial uncontrolled selected file."
+    },
+    {
+      "name": "onSelect",
+      "type": "(file: ExplorerNode) => void",
+      "default": "undefined",
+      "description": "Receives the chosen file. Folders use native button disclosures, not an ARIA tree requiring a different keyboard model."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Surface and ink palette; the demo stage follows the chosen theme."
+    }
+  ],
+  "added": "2026-10-11",
+  "demo": {
+    "steps": [
+      "wait:600",
+      "click:@node-button",
+      "wait:700",
+      "click:@node-components",
+      "wait:700"
+    ],
+    "loop": false
+  },
+  "controls": [
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        "dark",
+        "light"
+      ],
+      "default": "dark"
+    }
+  ]
+}

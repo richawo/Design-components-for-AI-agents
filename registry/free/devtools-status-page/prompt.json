@@ -1,0 +1,69 @@
+{
+  "component": "StatusPage",
+  "intent": "A public status page: each component has a 90-day strip you can point at, the open incident is a short timeline, and subscribe swaps its label for a check in the same box.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 with @container queries; colours as CSS variables on the root (--sp-surface, --sp-well, --sp-raised, --sp-ink, --sp-ink-hover, --sp-muted, --sp-faint, --sp-line, --sp-line-strong, --sp-ok, --sp-err, --sp-accent, --sp-accent-ink)",
+    "animation": "motion/react: variants for the entrance, scaleY for the days, a layout spring for the column under the pointer, animate() for the uptime figure, AnimatePresence for the day sentence, the incident and the subscribe check",
+    "icons": "one inline check mark; no icon package",
+    "fonts": "font-sans (Geist) for the headline, names and incident copy; font-mono (Geist Mono) for the status, times, dates and percentages"
+  },
+  "layout": {
+    "root": "section, @container, max-width 920px, 20px radius, overflow hidden, padding 20px and 24px from @xl",
+    "header": "status dot and product name left; updated time right",
+    "headline": "the condition in 22px, 26px from @lg, with the status word on the right",
+    "bars": "a well of five components; name and percentage, then 90 day columns with a 1px gap in one strip while each day is at least 5px wide, otherwise two or three equal rows; a component that is not up has a 2px edge and a raised row; the first and last dates sit once under the list",
+    "incident": "an uppercase label, a title, and a hairline timeline, or one line when nothing is open",
+    "subscribe": "email and button share a row; the button is 7.5rem below @lg and 8rem from @lg"
+  },
+  "typography": {
+    "headline": "Geist 22px, 26px from @lg, tracking -0.03em, leading 1.15",
+    "names": "Geist 14px",
+    "body": "Geist 14px under the headline, incident notes 13.5px leading 1.55",
+    "meta": "Geist Mono 11px and 12px, tabular percentages at 12px"
+  },
+  "color": {
+    "dark": { "surface": "#0d0d0f", "well": "#09090a", "ink": "#ededef", "muted": "#98989a", "faint": "#7d7d80", "ok": "#5fc284", "err": "#f07c80" },
+    "light": { "surface": "#ffffff", "well": "#fafafa", "ink": "#17171a", "muted": "#5d5d5f", "faint": "#6f6f72", "ok": "#23884a", "err": "#c2353b" },
+    "accent": "#7cc4ff by default, darkened on light, used for the degraded signal",
+    "bars": "28% ink for an up day, accent for degraded, err for down; the day under the pointer is ink"
+  },
+  "motion": {
+    "entrance": "header, headline, strips, incident and subscribe rise 10px out of a 6px blur, 60ms apart, 560ms, cubic-bezier(0.22, 1, 0.36, 1)",
+    "bars": "each day grows from the baseline over 400ms, 1.8ms apart",
+    "pointer": "the column travels on a spring, stiffness 500, damping 40; the day sentence opens over 220ms",
+    "percent": "the uptime figure eases the last 0.8 points over 700ms",
+    "subscribe": "the label fades and the check scales in over 180ms, inside the same button",
+    "reducedMotion": "opacity only, 150ms or less; no blur, rise, scale, travel or count"
+  },
+  "responsive": {
+    "container": "the headline stays beside the status word; the email and button share a row",
+    "bars": "90 integer columns and a 1px gap; a narrow track wraps into two or three equal rows of 8px stitches, packed tight so the phone card is the same height as the desktop card, and the page never scrolls sideways",
+    "overflow": "names truncate; the day sentence wraps inside the row"
+  },
+  "accessibility": [
+    "Each row is one slider named with the component, with aria-valuetext for the day under the pointer",
+    "Arrow keys move the selected day; Home and End jump to the ends",
+    "A vertical drag scrolls the page; a horizontal drag scrubs the days",
+    "The subscribe field has a visible label; the confirmation and the validation hint are aria-live polite",
+    "The check exposes the accessible name Subscribed",
+    "Keyboard-only 2px ink focus rings; the row, the email and the button are at least 44px tall below @lg"
+  ],
+  "content": {
+    "product": "ledgerline",
+    "components": "API, Dashboard, Webhooks, Invoices, Email",
+    "degraded": "Webhooks were degraded on 7–10 Oct 2026. The incident started 7 Oct at 09:14 UTC and is being monitored.",
+    "subscribe": "ada@nw.io is a valid address; an empty field asks for an email and does not subscribe"
+  },
+  "avoid": [
+    "a green bar for every healthy day",
+    "fusing the ninety days into one solid bar, or dropping the gap on a phone",
+    "a tooltip that clips at the edge of the card",
+    "a date axis repeated under every component",
+    "a second hue for degraded days",
+    "capturing the pointer on a vertical drag",
+    "changing the subscribe button’s width when the check appears",
+    "a looping pulse on the status dot"
+  ]
+}

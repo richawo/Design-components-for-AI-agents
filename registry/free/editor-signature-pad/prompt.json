@@ -1,0 +1,46 @@
+{
+  "component": "EditorSignaturePad",
+  "intent": "A Harbor mutual NDA that is already signed by both parties. Ink is a variable-width pen that thins as it speeds up. The open plate supports drawing, undo, clear, a replay of the stored strokes and an SVG export.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 with @container queries and CSS variables for the shell palette. Paper colours are inline.",
+    "animation": "motion/react for the plate entrance. Replay is requestAnimationFrame over 2300ms, revealing stored points in order.",
+    "icons": "lucide-react: Undo2, Eraser, RotateCcw, Download"
+  },
+  "layout": {
+    "shell": "@container, max-width 960px, radius 18px. Header, serif clause, two plates, footer.",
+    "header": "Harbor eyebrow, an Executed chip, the document name on the left. '2 of 2 signed' and Northwind · 11 Oct 2026 on the right.",
+    "clause": "Instrument Serif, 17px (18px from @md), max 68ch, centered above the plates.",
+    "plates": "Side by side from @3xl, stacked below. Warm paper, radius 14px, org and date in mono, an SVG at 148px (168px from @md) with viewBox 640×220, then the printed name and role under a hairline.",
+    "tools": "Only under the open plate, outside the paper. Undo, Clear, Replay, Export. 44px tall, 36px from @md. Replay is filled with the theme ink."
+  },
+  "typography": {
+    "clause": "Instrument Serif 17–18px, leading 1.45, tracking -0.01em",
+    "name": "Geist 13.5px medium, tracking -0.011em, near-black on the paper",
+    "meta": "Geist Mono 10–12px. Eyebrows are uppercase with 0.14–0.16em tracking.",
+    "empty": "Instrument Serif italic 22px inside the SVG: Sign here"
+  },
+  "color": {
+    "dark": "shell #0c0c0e, ink #f4f4f5, muted #a1a1aa, faint #9a9aa3, line white at 8%, raise #16161a, paper #f4f0e6",
+    "light": "shell #ffffff, ink #18181b, muted #52525b, faint #71717a, paper #fffdf8",
+    "pen": "default #1c1917. The accent control replaces the pen fill. Chrome, including the Replay button, stays on the theme ink.",
+    "paperInk": "#6b6459 for the org, date, role and baseline"
+  },
+  "motion": {
+    "entrance": "plates rise 10px from a 6px blur over 460ms, 60ms apart, ease [0.22, 1, 0.36, 1]. The ink is fully drawn on entrance.",
+    "replay": "2300ms. Strokes reveal in order with a 110ms gap so the underline waits. Ends taper. Reduced motion skips the replay.",
+    "press": "buttons scale to 0.97 in 100ms",
+    "reducedMotion": "plates fade in over 120ms. Replay shows the finished mark."
+  },
+  "responsive": "Plates stack below the @3xl container. Buttons wrap and stay at least 44px tall below @md. The SVG scales with the plate; points are normalized 0–1.",
+  "accessibility": "The open plate is role=application with an accessible name. The witness plate is an image. Undo, Clear, Replay and Export are named buttons. A polite live region announces replay, undo, clear and export. ⌘Z or Ctrl+Z undoes after the shell has been focused by a draw. Visible focus rings. The pen never relies on colour alone: weight still varies.",
+  "content": "Mutual NDA between Harbor and Northwind. Mira Chen, general counsel, Harbor. Jordan Hale, operations, Northwind. Both dated 11 Oct 2026. The clause is three sentences about pricing, models and customer lists, three years, and the signature being the whole agreement.",
+  "avoid": [
+    "A constant-width stroke or a chain of circles",
+    "An empty pad as the default state",
+    "A sine-wave signature or a handwriting font",
+    "Tools sitting on the paper",
+    "More than one accent. The pen is the accent; the shell stays monochrome."
+  ]
+}
