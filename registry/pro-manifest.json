@@ -5106,6 +5106,113 @@
     ]
   },
   {
+    "slug": "block-workspace-settings",
+    "name": "Workspace Settings Page",
+    "tier": "pro",
+    "platform": "web",
+    "category": "app",
+    "description": "A complete administration page combining profile settings, communication preferences and role permissions. Scoped saves preserve drafts and expose typed host callbacks.",
+    "tags": [
+      "block",
+      "settings",
+      "composition",
+      "keyboard",
+      "monochrome"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 2200,
+    "usage": "import { WorkspaceSettings } from \"@/components/design-for-ai/block-workspace-settings\";\n\n<WorkspaceSettings />",
+    "props": [
+      {
+        "name": "brand",
+        "type": "string",
+        "default": "\"Northstar\"",
+        "description": "Workspace identity."
+      },
+      {
+        "name": "sections",
+        "type": "SettingsSection[]",
+        "description": "Profile and working convention fields."
+      },
+      {
+        "name": "initialValues",
+        "type": "SettingsValues",
+        "description": "Saved profile values, read initially and after accepted saves."
+      },
+      {
+        "name": "notifications",
+        "type": "PreferenceOption[]",
+        "description": "Notification choices; required channels remain enabled."
+      },
+      {
+        "name": "initialNotifications",
+        "type": "string[]",
+        "description": "Initially selected channel IDs."
+      },
+      {
+        "name": "roles",
+        "type": "PolicyRole[]",
+        "description": "Roles with unique IDs; locked roles cannot be edited."
+      },
+      {
+        "name": "permissions",
+        "type": "PolicyPermission[]",
+        "description": "Permissions and their prerequisites."
+      },
+      {
+        "name": "initialGrants",
+        "type": "PolicyGrants",
+        "description": "Initial role-to-permission assignments."
+      },
+      {
+        "name": "onSave",
+        "type": "(change: WorkspaceSettingsChange) => void | Promise<void>",
+        "description": "Receives a discriminated profile, notifications or access payload. Reject to retain the draft and show the underlying panel error."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Palette shared by all panels."
+      }
+    ],
+    "added": "2026-10-12",
+    "kind": "block",
+    "blockType": "settings",
+    "components": [
+      "layout-workspace-shell",
+      "settings-panel",
+      "forms-preference-center",
+      "app-permission-matrix"
+    ],
+    "demo": {
+      "steps": [
+        "wait:350",
+        "click:@preference-1",
+        "wait:400",
+        "click:@save-preferences",
+        "wait:1800"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "button-magnetic",
     "name": "Magnetic CTA",
     "tier": "pro",

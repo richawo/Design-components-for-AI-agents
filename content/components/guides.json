@@ -3307,5 +3307,18 @@
     ],
     "related": [],
     "updated": "2026-10-12"
+  },
+  "block-workspace-settings": {
+    "useWhen": "An account or workspace needs one considered page for its profile, notification choices and role permissions.",
+    "avoidWhen": "A small single-preference panel or an authorisation service implemented entirely in the browser.",
+    "integration": [
+      "Connect `onSave` to your administration service. Its discriminated payload identifies the section and preserves the underlying component contracts.",
+      "Command-S or Control-S saves the section containing keyboard focus. Rejected saves retain the current draft.",
+      "Provide consistent roles, permission prerequisites and grants. The server must enforce the resulting access policy."
+    ],
+    "related": [
+      "block-saas-dashboard"
+    ],
+    "updated": "2026-10-12"
   }
 }
