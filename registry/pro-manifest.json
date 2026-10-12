@@ -15144,12 +15144,14 @@
       {
         "name": "title",
         "type": "string",
-        "description": "Main heading."
+        "description": "Main heading.",
+        "default": "\"Wholesale order\""
       },
       {
         "name": "subtitle",
         "type": "string",
-        "description": "Supporting context."
+        "description": "Supporting context.",
+        "default": "\"Order complete size packs with clear minimums, availability and merchandise totals.\""
       },
       {
         "name": "styles",
