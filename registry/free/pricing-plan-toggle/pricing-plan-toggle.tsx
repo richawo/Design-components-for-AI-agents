@@ -233,19 +233,19 @@ export function PricingPlanToggle({
             <h3 id={`${uid}-name`} className="text-[16px] font-medium tracking-[-0.015em]">
               {name}
             </h3>
-            <p className="mt-1.5 max-w-[30ch] text-pretty text-[14px] leading-[1.5] text-(--pp-ink)/50">{description}</p>
+            <p className="mt-1.5 max-w-[30ch] text-pretty text-[14px] leading-[1.5] text-(--pp-ink)/65">{description}</p>
           </motion.div>
           <SaveBadge label={saveLabel} shown={inView && billing === "annual"} reduce={reduce} delay={firstSpin ? T.badge : 0} />
         </div>
 
         <motion.div variants={v(reveal)} custom={T.price} className="mt-8 flex items-end gap-3">
           <p className="flex items-start font-semibold tracking-[-0.05em]" aria-hidden="true">
-            <span className="mr-1 mt-[0.32em] text-[22px] font-medium tracking-[-0.02em] text-(--pp-ink)/45">{currency}</span>
+            <span className="mr-1 mt-[0.32em] text-[22px] font-medium tracking-[-0.02em] text-(--pp-ink)/65">{currency}</span>
             <span className="text-[clamp(3.25rem,2.6rem+3cqi,4rem)] leading-none">
               <RollingNumber value={inView ? price : 0} locale={locale} reduce={reduce} delay={firstSpin ? T.price : 0} />
             </span>
           </p>
-          <p aria-hidden="true" className="pb-[0.45rem] text-[13px] leading-[1.3] text-(--pp-ink)/45">
+          <p aria-hidden="true" className="pb-[0.45rem] text-[13px] leading-[1.3] text-(--pp-ink)/65">
             {unit.split("\n").map((u) => (
               <span key={u} className="block">
                 {u}
@@ -270,7 +270,7 @@ export function PricingPlanToggle({
               <Stepper value={count} min={minSeats} max={maxSeats} onChange={setCount} labelledBy={`${uid}-seats`} reduce={reduce} />
             </div>
             <div className="flex items-baseline justify-between gap-3 border-t border-(--pp-ink)/[0.06] px-3 pb-2.5 pt-3">
-              <span className="text-[13px] text-(--pp-ink)/45">Total</span>
+              <span className="text-[13px] text-(--pp-ink)/65">Total</span>
               <span className="flex items-baseline gap-1.5">
                 <TweenNumber
                   value={inView ? total : 0}
@@ -279,7 +279,7 @@ export function PricingPlanToggle({
                   delay={firstSpin ? T.total : 0}
                   className="inline-block text-[15px] font-medium tabular-nums tracking-[-0.01em]"
                 />
-                <span className="relative inline-grid text-[13px] text-(--pp-ink)/45">
+                <span className="relative inline-grid text-[13px] text-(--pp-ink)/65">
                   {/* Both units reserve their width so the total never jumps sideways. */}
                   <span className="invisible col-start-1 row-start-1">/ month</span>
                   <AnimatePresence initial={false}>
@@ -325,7 +325,7 @@ export function PricingPlanToggle({
         </div>
 
         {footnote ? (
-          <motion.p variants={v(reveal)} custom={T.footnote} className="mt-7 font-mono text-[11px] tracking-[0.01em] text-(--pp-ink)/35">
+          <motion.p variants={v(reveal)} custom={T.footnote} className="mt-7 font-mono text-[11px] tracking-[0.01em] text-(--pp-ink)/65">
             {footnote}
           </motion.p>
         ) : null}
@@ -419,7 +419,7 @@ function BillingSwitch({ billing, onChange, uid, reduce }: { billing: Billing; o
               data-demo={`billing-${o.value}`}
               onClick={() => onChange(o.value)}
               className={`relative h-9 min-w-[104px] rounded-full px-5 text-[14px] font-medium tracking-[-0.01em] transition-[color,scale] duration-150 active:scale-[0.97] ${FOCUS} ${
-                on ? "text-(--pp-on-ink)" : "text-(--pp-ink)/55 hover:text-(--pp-ink)"
+                on ? "text-(--pp-on-ink)" : "text-(--pp-ink)/65 hover:text-(--pp-ink)"
               }`}
             >
               {on ? (
@@ -450,7 +450,7 @@ function SaveBadge({ label, shown, reduce, delay }: { label: string; shown: bool
             animate={{ opacity: 1, scale: 1, y: 0, filter: "blur(0px)" }}
             exit={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.85, transition: { duration: 0.14, ease: EASE_IN } }}
             transition={reduce ? { duration: 0.15 } : { ...SPRING_BADGE, delay }}
-            className="inline-flex h-6 origin-right items-center rounded-full bg-(--pp-accent)/[0.12] px-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-[color-mix(in_srgb,var(--pp-accent)_60%,var(--pp-ink))] ring-1 ring-inset ring-(--pp-accent)/30"
+            className="inline-flex h-6 origin-right items-center rounded-full bg-(--pp-accent)/[0.12] px-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-[color-mix(in_srgb,var(--pp-accent)_35%,var(--pp-ink))] ring-1 ring-inset ring-(--pp-accent)/30"
           >
             {label}
           </motion.span>
@@ -463,7 +463,7 @@ function SaveBadge({ label, shown, reduce, delay }: { label: string; shown: bool
 /** Both notes sit invisibly in one grid cell, so the block is always as tall as the longer one and wrapping never jumps. */
 function BillingNote({ notes, billing, reduce }: { notes: Record<Billing, string>; billing: Billing; reduce: boolean }) {
   return (
-    <div aria-hidden="true" className="mt-3 grid text-[13px] leading-[1.45] text-(--pp-ink)/45">
+    <div aria-hidden="true" className="mt-3 grid text-[13px] leading-[1.45] text-(--pp-ink)/65">
       {BILLING_OPTIONS.map((b) => (
         <p key={b.value} className="invisible col-start-1 row-start-1">
           {notes[b.value]}
