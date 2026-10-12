@@ -385,7 +385,7 @@ export function PromiseToast({
               ref={cardRef}
               role="group"
               data-demo="toast"
-              aria-labelledby={`${uid}-title`}
+              aria-labelledby={`${uid}-title-${status}`}
               variants={cardVariants}
               initial="from"
               animate="rest"
@@ -438,7 +438,7 @@ export function PromiseToast({
                 <div className="relative col-start-2 row-start-1 min-w-0">
                   <AnimatePresence mode="popLayout" initial={false}>
                     <motion.div key={status} {...swap}>
-                      <p id={`${uid}-title`} className="text-balance text-[14px] font-medium leading-5 tracking-[-0.01em]" style={{ color: palette.ink }}>
+                      <p id={`${uid}-title-${status}`} className="text-balance text-[14px] font-medium leading-5 tracking-[-0.01em]" style={{ color: palette.ink }}>
                         {copy.title}
                       </p>
                       <p className="mt-0.5 text-pretty text-[13px] leading-[1.45] tabular-nums" style={{ color: palette.muted }}>
