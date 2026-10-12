@@ -1,0 +1,78 @@
+{
+  "slug": "chart-bullet-targets",
+  "name": "Bullet Target Comparison",
+  "tier": "free",
+  "platform": "web",
+  "category": "charts",
+  "description": "A clear target-versus-actual chart with animated bars, explicit scale labels and period selection for team goals, service levels and operational metrics.",
+  "tags": [
+    "charts",
+    "chart",
+    "bullet",
+    "targets",
+    "responsive",
+    "keyboard"
+  ],
+  "dependencies": [
+    "motion",
+    "lucide-react"
+  ],
+  "theme": "dark",
+  "previewHeight": 740,
+  "usage": "import { BulletTargets } from \"@/components/design-for-ai/chart-bullet-targets\";\n\n<BulletTargets />",
+  "props": [
+    {
+      "name": "title",
+      "type": "string",
+      "default": "target progress heading",
+      "description": "Chart heading."
+    },
+    {
+      "name": "periods",
+      "type": "BulletPeriod[]",
+      "default": "October and September",
+      "description": "Periods containing metrics, targets, ceilings and unit labels. Invalid or negative values become zero."
+    },
+    {
+      "name": "defaultPeriod",
+      "type": "string",
+      "default": "\"oct\"",
+      "description": "Initial period ID, falling back to the first period."
+    },
+    {
+      "name": "onPeriodChange",
+      "type": "(id: string) => void",
+      "default": "undefined",
+      "description": "Reports the chosen period."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Surface and ink palette; the demo stage follows the chosen theme."
+    }
+  ],
+  "added": "2026-10-11",
+  "demo": {
+    "steps": [
+      "wait:700",
+      "click:@bullet-period-1",
+      "wait:800",
+      "click:@bullet-period-0",
+      "wait:700"
+    ],
+    "loop": false
+  },
+  "controls": [
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        "dark",
+        "light"
+      ],
+      "default": "dark"
+    }
+  ]
+}

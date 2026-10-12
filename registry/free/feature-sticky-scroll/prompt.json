@@ -1,0 +1,94 @@
+{
+  "component": "FeatureStickyScroll",
+  "intent": "Scroll story: a pinned product panel that changes through four choreographed states as steps scroll past. Monochrome, dark first, one accent.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4",
+    "animation": "motion/react (useScroll, useSpring, variants, motion values for counting figures) + IntersectionObserver",
+    "fonts": "font-sans (Geist), font-mono"
+  },
+  "layout": {
+    "header": "eyebrow + two-tone heading (8 cols) + intro (4 cols)",
+    "desktop": "panel sticky top-0 h-screen in 6 cols; steps ~80vh each on a rail in 6 cols",
+    "mobile": "each step renders its panel state inline"
+  },
+  "typography": {
+    "heading": {
+      "weight": 600,
+      "size": "clamp(2.5rem, 1.3rem + 4.4vw, 5.25rem)",
+      "leading": 0.95,
+      "tracking": "-0.055em",
+      "secondClause": "ink at 45%"
+    },
+    "stepTitle": {
+      "size": "32-40px",
+      "weight": 600
+    },
+    "meta": {
+      "font": "mono",
+      "size": "11px",
+      "case": "uppercase",
+      "tracking": "0.14-0.18em"
+    }
+  },
+  "color": {
+    "approach": "black, white and greys; one accent prop for progress, the primary action and the money that's yours",
+    "dark": {
+      "background": "#0a0a0a",
+      "ink": "#f4f4f2",
+      "panel": "#121212",
+      "well": "#0a0a0a",
+      "invoicePaper": "#f4f4f2 with #0a0a0a ink"
+    },
+    "light": {
+      "background": "#f6f5f2",
+      "ink": "#0a0a0a",
+      "panel": "#ffffff",
+      "well": "#f6f5f2",
+      "invoicePaper": "#fbfaf7"
+    },
+    "accent": "#ff8a4c (prop): rail fill, reached step rings, eyebrow dot, running dot, timer button, Send invoice, paid ring, Paid timeline dot, the Yours pot",
+    "tokens": "one PALETTE object per theme written to --fs-* CSS variables"
+  },
+  "motion": {
+    "header": "eyebrow, heading, intro rise 12px out of an 8px blur at 0 / 60 / 140ms when the header enters",
+    "steps": "each step's copy reveals once at 25% in view (rise out of blur)",
+    "panel": "the pinned panel rises in at 220ms; its first state plays once it has; states cross-fade with a 16px offset and 4px blur over 0.5s",
+    "stateChoreography": "every time a state becomes active, its blocks replay: container at 80ms, then text and rows at 60ms steps (rise out of blur), figures count up from zero out of a blur from 160ms over 0.9s, bars and pots fill from their base from 450ms (0.8s). Track: the clock fast-forwards from 00:00:00 then ticks each second. Invoice: line items stagger, the total counts, Send rises last. Paid: the accent ring draws round, then the tick draws, the amount counts, the timeline staggers. Set aside: pots rise, then fill, amounts count.",
+    "rail": "useScroll offset ['start 50%','end 50%'] → spring 220/40 → scaleY",
+    "activeStep": "IntersectionObserver band through the viewport middle; inactive titles 35%, bodies 30% (wide); rings up to active take the accent",
+    "tabs": "underline on a layoutId spring 500/40",
+    "implementation": "figures are motion values rendered as text (no per-frame React state); one timer for the clock, always cleared",
+    "reducedMotion": "short fades only, instant swaps, figures final, no spring on the rail",
+    "navigation": "rail markers are buttons (hover 1.1, press 0.95) that smooth-scroll their step to centre; prev/next arrows under the panel; step name slides in with blur"
+  },
+  "responsive": {
+    "narrow": "no sticky; each step shows its own panel state inline and plays it at 35% in view",
+    "@5xl": "sticky two-column story (container query)"
+  },
+  "accessibility": [
+    "each step is a section with a heading",
+    "panel states aria-hidden",
+    "no scroll-jacking"
+  ],
+  "content": {
+    "brand": "Ferry",
+    "steps": [
+      "Track: Hit start. Forget it’s running.",
+      "Invoice: The invoice writes itself.",
+      "Paid: Paid by card, bank or a firm reminder.",
+      "Set aside: Tax money goes where you can’t spend it."
+    ]
+  },
+  "avoid": [
+    "scroll-jacking",
+    "snap scrolling",
+    "serif accents",
+    "purple gradients",
+    "laptop mockup images",
+    "navy or cream tints",
+    "the accent on labels, eyebrows or every bar",
+    "per-frame React state for counting"
+  ]
+}

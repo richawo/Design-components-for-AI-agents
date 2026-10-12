@@ -1,0 +1,78 @@
+{
+  "slug": "media-story-deck",
+  "name": "Editorial Story Deck",
+  "tier": "free",
+  "platform": "web",
+  "category": "media",
+  "description": "A manual story carousel pairing original geometric studies with editorial copy and large figures, with clear controls and no autoplay.",
+  "tags": [
+    "media",
+    "media",
+    "story",
+    "deck",
+    "responsive",
+    "keyboard"
+  ],
+  "dependencies": [
+    "motion",
+    "lucide-react"
+  ],
+  "theme": "dark",
+  "previewHeight": 760,
+  "usage": "import { StoryDeck } from \"@/components/design-for-ai/media-story-deck\";\n\n<StoryDeck />",
+  "props": [
+    {
+      "name": "label",
+      "type": "string",
+      "default": "\"The studio process\"",
+      "description": "Accessible carousel name."
+    },
+    {
+      "name": "slides",
+      "type": "StorySlide[]",
+      "default": "three studio process stories",
+      "description": "Unique IDs, headings, copy, figures and orbit/grid/steps artwork variants."
+    },
+    {
+      "name": "defaultIndex",
+      "type": "number",
+      "default": "0",
+      "description": "Initial slide; clamped to the available range."
+    },
+    {
+      "name": "onSlideChange",
+      "type": "(index: number) => void",
+      "default": "undefined",
+      "description": "Zero-based active slide after explicit navigation."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Surface and ink palette; the demo stage follows the chosen theme."
+    }
+  ],
+  "added": "2026-10-11",
+  "demo": {
+    "steps": [
+      "wait:700",
+      "click:@story-next",
+      "wait:700",
+      "click:@story-next",
+      "wait:700"
+    ],
+    "loop": false
+  },
+  "controls": [
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        "dark",
+        "light"
+      ],
+      "default": "dark"
+    }
+  ]
+}

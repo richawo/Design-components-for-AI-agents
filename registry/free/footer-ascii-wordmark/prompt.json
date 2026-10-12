@@ -1,0 +1,94 @@
+{
+  "component": "FooterAsciiWordmark",
+  "intent": "A black footer whose giant wordmark is a 2D-canvas field of mono characters sampled from the rasterised word. The cursor is a lens that scrambles, brightens and thickens the glyphs under it.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 with container queries",
+    "animation": "requestAnimationFrame on canvas 2D; motion/react for the top-row entrance only",
+    "rendering": "offscreen raster + glyph atlas + cached base layer"
+  },
+  "layout": {
+    "root": "footer @container, bg black, overflow hidden; content max-w 1440px, gutters 20/40px",
+    "topRow": "white/8% top border; kicker + 17px sign-off (max 34ch) left, compact link row right at @4xl; stacked below; links in a 3-col grid of 44px targets below @lg",
+    "canvas": "full footer width; ink aligned to the content column via an invisible measuring copy; dot field edge to edge",
+    "stacked": "below 560px draw ['field','note'] as two lines with a 1-row gap",
+    "legalRow": "mono 11px uppercase white/40 legal + links; right-aligned hint with a 6px accent dot"
+  },
+  "typography": {
+    "kicker": {
+      "font": "mono",
+      "size": "11px",
+      "case": "uppercase",
+      "tracking": "0.16em",
+      "color": "white/40"
+    },
+    "signOff": {
+      "font": "sans (Geist)",
+      "size": "17px",
+      "leading": 1.5,
+      "tracking": "-0.01em",
+      "color": "white/80"
+    },
+    "links": {
+      "size": "14.5px",
+      "color": "white/60, hover white"
+    },
+    "field": {
+      "font": "Geist Mono 500",
+      "size": "clamp(6.5px, width/150, 10px) × DPR (cap 2)",
+      "cell": "ceil(measure('M')) × round(fs × 1.22) device px"
+    },
+    "wordmarkRaster": {
+      "font": "Geist 800 at 200px, −8px tracking",
+      "fit": "pixel-scanned ink box scaled to the column width"
+    }
+  },
+  "color": {
+    "background": "#000000",
+    "ink": "#ece9e2",
+    "accent": "#ff7a3d (hottest scrambled glyphs only)",
+    "dotField": "ink at 7% alpha",
+    "text": "white at 80/60/40%"
+  },
+  "motion": {
+    "lens": "radius clamp(width×0.085, 84, 150)px; position lerp 0.22; strength in 0.12 / out 0.07; f=(1−d²/R²)²; density v+f(0.3+0.55v); alpha +0.4f; scramble probability f^1.3×0.85 at ~9Hz per-cell phase; accent when f>0.45 on ink",
+    "shimmer": "every 10s a slanted Gaussian band (6% of columns wide) crosses the ink over 6.5s, +0.28 alpha, rare glyph flips; suppressed while the lens is active",
+    "reveal": "once per block at 25% visible on a shared clock; field slot 300ms: canvas blank until then, then a noisy left-to-right resolve over 1.0s, ease-out cubic; cells scramble (accent at the leading edge) just before landing; lens and shimmer only after",
+    "topRow": "rule draws (scaleX 800ms); kicker 60ms, sign-off 120ms, links from 200ms 35ms apart; each rises 12px out of an 8px blur over 600ms",
+    "performance": "base layer cached; only lens/shimmer cells redrawn; DPR cap 2; IntersectionObserver pause at 15%; paused in hidden tabs; rebuild on width change",
+    "reducedMotion": "single static frame; no lens, shimmer or sweep; text fades 150ms; hint hidden",
+    "legalBar": "slot 600ms, lands last: legal line, links 50ms apart, hint, then its accent dot pops"
+  },
+  "responsive": {
+    "desktop": "one-line wordmark, side-by-side top row",
+    "tablet": "one-line wordmark, stacked top row",
+    "mobile": "stacked two-line wordmark below 560px; 44px link targets; touch lens with pan-y"
+  },
+  "accessibility": [
+    "canvas role=img with a descriptive aria-label",
+    "links in a labelled nav; sibling dimming on hover/focus",
+    "2px white/70 focus outline, keyboard only",
+    "external links announce (opens in a new tab)",
+    "reduced motion renders a still field"
+  ],
+  "content": {
+    "brand": "Fieldnote, production notes for teams of one to fifty",
+    "kicker": "Fieldnote · Brooklyn, NY",
+    "signOff": "Production notes for teams of one to fifty. Written by people who still get paged.",
+    "links": "Docs, Changelog, Pricing, Status, Careers, GitHub ↗",
+    "legal": "© 2026 Fieldnote Systems, Inc. · Privacy · Terms",
+    "ramp": " .·:-=+*#%@",
+    "glyphs": "/\\|<>{}[]=+*#%&$@01?"
+  },
+  "avoid": [
+    "green Matrix rain or katakana",
+    "CRT scanlines, bloom or glow",
+    "per-frame fillText across the whole grid",
+    "WebGL for a 2D effect",
+    "a wordmark touching the viewport edges",
+    "scrambling the whole field at rest",
+    "a sweep longer than about a second, or revealing the text as one block"
+  ],
+  "code": "pure helpers rasterise / buildField / drawReveal / drawLens / drawShimmer / drawCell; useLensPointer hook; thin AsciiField component; FIELD tuning object and T timeline"
+}

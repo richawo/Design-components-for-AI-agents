@@ -1,0 +1,176 @@
+{
+  "slug": "pricing-comparison-matrix",
+  "name": "Comparison Matrix",
+  "tier": "free",
+  "platform": "web",
+  "category": "pricing",
+  "description": "A dark plan comparison table: headers stagger in with counting prices, rows rise group by group as checks draw, and a lit column marks the pick. Mobile plan switcher.",
+  "tags": [
+    "pricing",
+    "comparison table",
+    "feature matrix",
+    "plans",
+    "sticky header",
+    "tooltips",
+    "saas",
+    "dark",
+    "monochrome"
+  ],
+  "dependencies": [
+    "motion"
+  ],
+  "theme": "dark",
+  "previewHeight": 1400,
+  "usage": "import { PricingComparisonMatrix } from \"@/components/design-for-ai/pricing-comparison-matrix\";\n\n<PricingComparisonMatrix\n  plans={plans}        // { id, name, price, unit, blurb, cta }[]\n  groups={groups}      // { name, features: { name, hint?, values }[] }[]\n  recommendedId=\"team\"\n/>",
+  "props": [
+    {
+      "name": "plans",
+      "type": "MatrixPlan[]",
+      "description": "Plans in column order: id, name, price (a number inside it counts up), unit, blurb, cta."
+    },
+    {
+      "name": "groups",
+      "type": "MatrixGroup[]",
+      "description": "Collapsible feature groups; values are boolean or a string per plan."
+    },
+    {
+      "name": "recommendedId",
+      "type": "string",
+      "default": "\"team\"",
+      "description": "Plan id that gets the lit column, the accent edge and the solid CTA."
+    },
+    {
+      "name": "recommendedLabel",
+      "type": "string",
+      "default": "\"Recommended\"",
+      "description": "Label above the recommended plan."
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "description": "Headline."
+    },
+    {
+      "name": "footnote",
+      "type": "string",
+      "description": "Fine print under the table."
+    },
+    {
+      "name": "eyebrow",
+      "type": "string",
+      "default": "\"Compare plans\"",
+      "description": "Mono label above the headline."
+    },
+    {
+      "name": "body",
+      "type": "string",
+      "description": "One sentence under the headline."
+    },
+    {
+      "name": "accent",
+      "type": "string",
+      "default": "\"#2dd4bf\"",
+      "description": "The one signal colour: the recommended column's top edge and label dot."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Near-black or white surfaces; both are tuned."
+    }
+  ],
+  "added": "2026-10-07",
+  "demo": {
+    "steps": [
+      "wait:300",
+      "scroll:480",
+      "click:@group-1",
+      "wait:400",
+      "click:@group-1",
+      "wait:600",
+      "hover:@hint-sequential-testing",
+      "wait:950",
+      "move:0.86,0.42",
+      "wait:200",
+      "scroll:-480",
+      "wait:200"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "recommendedId",
+      "label": "Recommended",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "hobby",
+          "label": "Hobby"
+        },
+        {
+          "value": "team",
+          "label": "Team"
+        },
+        {
+          "value": "business",
+          "label": "Business"
+        },
+        {
+          "value": "enterprise",
+          "label": "Enterprise"
+        }
+      ],
+      "default": "team",
+      "group": "Plans"
+    },
+    {
+      "prop": "recommendedLabel",
+      "label": "Badge label",
+      "kind": "text",
+      "default": "Recommended",
+      "group": "Plans"
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark",
+      "group": "Look"
+    },
+    {
+      "prop": "accent",
+      "label": "Highlight edge",
+      "kind": "color",
+      "default": "#2dd4bf",
+      "options": [
+        "#2dd4bf",
+        "#f59e0b",
+        "#a78bfa"
+      ],
+      "group": "Look"
+    },
+    {
+      "prop": "title",
+      "label": "Headline",
+      "kind": "text",
+      "default": "Every line of the contract, in one table.",
+      "group": "Content"
+    },
+    {
+      "prop": "eyebrow",
+      "label": "Eyebrow",
+      "kind": "text",
+      "default": "Compare plans",
+      "group": "Content"
+    }
+  ]
+}

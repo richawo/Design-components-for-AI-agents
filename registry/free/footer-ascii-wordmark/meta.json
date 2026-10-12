@@ -1,0 +1,193 @@
+{
+  "slug": "footer-ascii-wordmark",
+  "name": "ASCII Wordmark Footer",
+  "tier": "free",
+  "platform": "web",
+  "category": "footers",
+  "description": "A black footer whose giant wordmark is a canvas field of mono characters that sweeps on as you arrive. The cursor is a lens: glyphs scramble and brighten beneath it.",
+  "tags": [
+    "footer",
+    "ascii",
+    "canvas",
+    "wordmark",
+    "big type",
+    "interactive",
+    "monospace",
+    "developer",
+    "scroll reveal"
+  ],
+  "dependencies": [
+    "motion"
+  ],
+  "theme": "dark",
+  "previewHeight": 580,
+  "usage": "import { FooterAsciiWordmark } from \"@/components/design-for-ai/footer-ascii-wordmark\";\n\nexport default function SiteFooter() {\n  return (\n    <FooterAsciiWordmark\n      wordmark=\"tidepool\"\n      stacked={[\"tide\", \"pool\"]}\n      kicker=\"Tidepool · Lisbon\"\n      signOff=\"Feature flags for teams who ship on Fridays and sleep anyway.\"\n      accent=\"#7dd3fc\"\n    />\n  );\n}",
+  "props": [
+    {
+      "name": "wordmark",
+      "type": "string",
+      "default": "\"fieldnote\"",
+      "description": "The giant word. Rasterised with the display face at weight 800 and fitted to the full footer width. Words without descenders read best."
+    },
+    {
+      "name": "stacked",
+      "type": "string[]",
+      "default": "[\"field\", \"note\"]",
+      "description": "Lines used instead below 560px so the mark keeps enough rows to stay legible. Pass [] to keep one line."
+    },
+    {
+      "name": "kicker",
+      "type": "string",
+      "default": "\"Fieldnote · Brooklyn, NY\"",
+      "description": "Mono line above the sign-off."
+    },
+    {
+      "name": "signOff",
+      "type": "string",
+      "description": "One or two sentences above the wordmark, max 34ch."
+    },
+    {
+      "name": "links",
+      "type": "{ label: string; href: string; external?: boolean }[]",
+      "description": "The compact link row. Hovering one dims its siblings."
+    },
+    {
+      "name": "legal",
+      "type": "string",
+      "default": "\"© 2026 Fieldnote Systems, Inc.\"",
+      "description": "Mono legal line under the wordmark."
+    },
+    {
+      "name": "legalLinks",
+      "type": "{ label: string; href: string }[]",
+      "description": "Privacy, terms and similar."
+    },
+    {
+      "name": "ink",
+      "type": "string",
+      "default": "\"#ece9e2\"",
+      "description": "Colour of the character field."
+    },
+    {
+      "name": "accent",
+      "type": "string",
+      "default": "\"#ff7a3d\"",
+      "description": "The one accent: the hottest scrambling glyphs under the lens, the reveal's leading edge and the hint dot."
+    },
+    {
+      "name": "ramp",
+      "type": "string",
+      "default": "\" .·:-=+*#%@\"",
+      "description": "Density ramp, lightest first; the first character is empty space."
+    },
+    {
+      "name": "glyphs",
+      "type": "string",
+      "default": "\"/\\\\|<>{}[]=+*#%&$@01?\"",
+      "description": "Glyphs the lens scrambles through. A new set sweeps across the field once."
+    }
+  ],
+  "added": "2026-10-09",
+  "demo": {
+    "steps": [
+      "wait:300",
+      "hover:@wordmark:0.08,0.6",
+      "hover:@wordmark:0.43,0.62",
+      "wait:650",
+      "move:0.74,0.82",
+      "wait:450"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "wordmark",
+      "label": "Wordmark",
+      "kind": "text",
+      "default": "fieldnote",
+      "group": "Content"
+    },
+    {
+      "prop": "signOff",
+      "label": "Sign-off",
+      "kind": "text",
+      "default": "Production notes for teams of one to fifty. Written by people who still get paged.",
+      "group": "Content"
+    },
+    {
+      "prop": "ink",
+      "label": "Field ink",
+      "kind": "color",
+      "default": "#ece9e2",
+      "options": [
+        "#ece9e2",
+        "#7dd3fc",
+        "#a3e635",
+        "#f0abfc"
+      ],
+      "group": "Look"
+    },
+    {
+      "prop": "accent",
+      "label": "Lens accent",
+      "kind": "color",
+      "default": "#ff7a3d",
+      "options": [
+        "#ff7a3d",
+        "#7dd3fc",
+        "#34d399",
+        "#f472b6"
+      ],
+      "group": "Look"
+    },
+    {
+      "prop": "glyphs",
+      "label": "Lens glyphs",
+      "kind": "select",
+      "options": [
+        {
+          "value": "/\\|<>{}[]=+*#%&$@01?",
+          "label": "Code"
+        },
+        {
+          "value": "01",
+          "label": "Binary"
+        },
+        {
+          "value": "░▒▓█",
+          "label": "Blocks"
+        }
+      ],
+      "default": "/\\|<>{}[]=+*#%&$@01?",
+      "group": "Look"
+    },
+    {
+      "prop": "ramp",
+      "label": "Density ramp",
+      "kind": "select",
+      "options": [
+        {
+          "value": " .·:-=+*#%@",
+          "label": "Classic"
+        },
+        {
+          "value": " 01",
+          "label": "Binary"
+        },
+        {
+          "value": " .:/\\|+x#@",
+          "label": "Weave"
+        }
+      ],
+      "default": " .·:-=+*#%@",
+      "group": "Look"
+    },
+    {
+      "kind": "action",
+      "prop": "$replay",
+      "label": "Demo",
+      "options": [
+        "Replay"
+      ]
+    }
+  ]
+}

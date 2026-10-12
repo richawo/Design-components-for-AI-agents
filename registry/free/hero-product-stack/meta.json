@@ -1,0 +1,202 @@
+{
+  "slug": "hero-product-stack",
+  "name": "Product Stack Hero",
+  "tier": "free",
+  "platform": "web",
+  "category": "hero",
+  "description": "A dark SaaS hero: headline lines blur in, then three CSS-drawn app windows assemble in a pointer-tilted 3D stack, the burndown draws and one block moves.",
+  "tags": [
+    "hero",
+    "saas",
+    "product shot",
+    "3d tilt",
+    "app ui",
+    "calendar",
+    "dark",
+    "landing page"
+  ],
+  "dependencies": [
+    "motion"
+  ],
+  "theme": "dark",
+  "previewHeight": 880,
+  "usage": "import { HeroProductStack } from \"@/components/design-for-ai/hero-product-stack\";\n\n<HeroProductStack\n  headline={[\"Roadmaps\", \"your team will\", \"actually read.\"]}\n  emphasis=\"actually\"\n  primary={{ label: \"Try it free\", href: \"/signup\" }}\n  accent=\"#3d7bff\"\n/>",
+  "props": [
+    {
+      "name": "headline",
+      "type": "string[]",
+      "default": "[\"Planning\", \"for teams\", \"who hate\", \"planning.\"]",
+      "description": "Headline, one string per line; each line blurs in on its own beat."
+    },
+    {
+      "name": "emphasis",
+      "type": "string",
+      "default": "\"hate\"",
+      "description": "Word set in serif italic (emphasis by voice, not colour)."
+    },
+    {
+      "name": "body",
+      "type": "string",
+      "description": "Supporting paragraph."
+    },
+    {
+      "name": "primary",
+      "type": "{ label: string; href: string }",
+      "description": "Solid ink CTA pill."
+    },
+    {
+      "name": "secondary",
+      "type": "{ label: string; href: string }",
+      "description": "Tour link with a play button."
+    },
+    {
+      "name": "rating",
+      "type": "{ score: string; note: string }",
+      "description": "Rating line; a numeric score counts up from zero."
+    },
+    {
+      "name": "weekLabel",
+      "type": "string",
+      "default": "\"Week 41 · 5–9 Oct\"",
+      "description": "Calendar window title."
+    },
+    {
+      "name": "days",
+      "type": "string[]",
+      "description": "Day column labels."
+    },
+    {
+      "name": "today",
+      "type": "number",
+      "default": "2",
+      "description": "Index of today in `days`."
+    },
+    {
+      "name": "now",
+      "type": "number",
+      "default": "12.6",
+      "description": "Current time as a decimal hour, for the now line."
+    },
+    {
+      "name": "events",
+      "type": "CalendarEvent[]",
+      "description": "Calendar blocks: day, start, hours, title, tone (solid, muted, hatch, accent). The accent block is the one the thread moved and lands last."
+    },
+    {
+      "name": "sprint",
+      "type": "{ name; status; actual: number[]; total; days }",
+      "description": "Burndown data; the line draws and the points-left figure tracks its tip."
+    },
+    {
+      "name": "thread",
+      "type": "{ title; messages; moved; placeholder }",
+      "description": "Comment card data; `moved` is the chip on the last message."
+    },
+    {
+      "name": "accent",
+      "type": "string",
+      "default": "\"#ff6a3d\"",
+      "description": "The one signal colour: now line, moved block and chip, focus rings."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Near-black stage with graphite windows, or cool grey with white windows."
+    }
+  ],
+  "added": "2026-10-07",
+  "demo": {
+    "steps": [
+      "wait:1300",
+      "hover:@stack:0.92,0.06",
+      "wait:300",
+      "hover:@thread:0.85,0.9",
+      "wait:350",
+      "move:0.12,0.86",
+      "wait:300",
+      "hover:@calendar:0.5,0.4",
+      "wait:600"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "accent",
+      "label": "Accent",
+      "kind": "color",
+      "default": "#ff6a3d",
+      "options": [
+        "#ff6a3d",
+        "#3d7bff",
+        "#22c55e",
+        "#a78bfa"
+      ]
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark"
+    },
+    {
+      "prop": "today",
+      "label": "Today",
+      "kind": "slider",
+      "min": 0,
+      "max": 4,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "prop": "now",
+      "label": "Now line (hour)",
+      "kind": "slider",
+      "min": 9.1,
+      "max": 17.6,
+      "step": 0.25,
+      "unit": "h",
+      "default": 12.6
+    },
+    {
+      "prop": "emphasis",
+      "label": "Italic word",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "hate",
+          "label": "hate"
+        },
+        {
+          "value": "planning",
+          "label": "planning"
+        },
+        {
+          "value": "teams",
+          "label": "teams"
+        }
+      ],
+      "default": "hate"
+    },
+    {
+      "prop": "weekLabel",
+      "label": "Week title",
+      "kind": "text",
+      "default": "Week 41 · 5–9 Oct"
+    },
+    {
+      "prop": "$replay",
+      "label": "Replay",
+      "kind": "action"
+    }
+  ]
+}

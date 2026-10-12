@@ -1,0 +1,119 @@
+{
+  "component": "HeroProductStack",
+  "intent": "Dark-first SaaS hero: headline lines blur in, then a pointer-tilted 3D stack of three CSS-drawn app windows assembles; one accent marks the block a comment just moved.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 (@container, CSS variables)",
+    "animation": "motion/react (variants with custom delays, useMotionValue, useSpring, useTransform, animate)",
+    "fonts": "font-display (Geist), font-serif (Instrument Serif italic for the emphasis word), font-sans"
+  },
+  "layout": {
+    "grid": "@container root; 12 cols from @5xl (64rem): copy 5, stack 7; stacked below",
+    "container": "max-w 1280px, px 20/32/48px, py 64/80/112px",
+    "stage": "fixed 640×560 scaled to its container by ResizeObserver into a motion value",
+    "layers": [
+      {
+        "name": "calendar",
+        "box": "x70 y10 560×392",
+        "z": 0
+      },
+      {
+        "name": "burndown",
+        "box": "x0 y262 290×222",
+        "z": 70
+      },
+      {
+        "name": "thread",
+        "box": "x322 y298 300×236",
+        "z": 140
+      }
+    ],
+    "calendar": "40px hour gutter, 9:00–18:00 at 31px per hour, 5 day columns"
+  },
+  "typography": {
+    "headline": {
+      "font": "display",
+      "weight": 600,
+      "size": "clamp(2.75rem, 1.6rem + 4.6cqi, 5.25rem)",
+      "leading": 0.98,
+      "tracking": "-0.05em",
+      "lines": "one prop string per line"
+    },
+    "emphasis": "font-serif italic, weight 400, tracking -0.02em",
+    "body": {
+      "size": "17px",
+      "leading": 1.6,
+      "color": "ink/70",
+      "maxWidth": "46ch"
+    },
+    "figures": "30px display tabular points-left; tabular rating score",
+    "ui": "9.5–12.5px real UI type inside windows"
+  },
+  "color": {
+    "tokens": "PALETTE object → --ps-page, --ps-window, --ps-ink, --ps-on-ink, --ps-shadow, --ps-accent",
+    "dark": {
+      "page": "#0a0a0b",
+      "window": "#141416",
+      "ink": "#f4f4f5",
+      "onInk": "#0a0a0b"
+    },
+    "light": {
+      "page": "#eef0f3",
+      "window": "#ffffff",
+      "ink": "#14161a",
+      "onInk": "#ffffff"
+    },
+    "accent": "#ff6a3d via the accent prop: today dot, now line, the moved block, the moved chip, focus rings only",
+    "tones": "solid ink/90 · muted ink/7% · hatch dashed ink/20 over an ink/7% 135° hatch · accent",
+    "chart": "ink line, ink/7% area, ink/30 dashed ideal",
+    "avatars": "ink solid or ink/12%, inside ink/35 hairline rings"
+  },
+  "motion": {
+    "trigger": "useInView once at 20% for the copy; the stack has its own 30% trigger; ease [0.22,1,0.36,1]",
+    "copy": "headline lines rise 12px from blur(8px), 500ms, 65ms apart; body 0.24s, actions 0.29s, rating 0.34s; stars pop 40ms apart; score counts 0→4.8 with a clearing 3px blur",
+    "windows": "calendar 0.22s, burndown 0.32s, thread 0.40s: rise 28px from blur(8px), 700ms; filter dropped at rest",
+    "calendar": "header, hairlines and hour rules draw (scaleX, 15ms apart), column rules draw down, blocks drop in by column then time (y -6, scaleY 0.82→1, blur 4px, 420ms), now line draws at 0.56s",
+    "burndown": "one progress value (0.44s, 550ms) clips line and area from the left, moves the tip dot and counts points down to today's figure; status pill lands after",
+    "thread": "messages rise 70ms apart while avatar rings draw (pathLength); composer last",
+    "payoff": "moved chip at 0.64s, accent block drops 14px into Thursday at 0.72s",
+    "tilt": "springs 120/18/0.6 from window pointer position; rotateY -20→-4°, rotateX 14→2°; mouse only",
+    "ambient": "each window drifts ±7px on a 6–8.6s CSS loop, paused offscreen",
+    "reducedMotion": "fixed rotateX 8° rotateY -12° pose, no drift, one 150ms fade, numbers set instantly",
+    "press": "0.97 in 150ms on buttons and links"
+  },
+  "responsive": {
+    "narrow": "copy then stack; actions stack vertically below @md; stage scales to width",
+    "@5xl+": "side by side, 5/7 columns"
+  },
+  "accessibility": [
+    "section labelled by the h1",
+    "stage role=img with a descriptive aria-label",
+    "real links for actions",
+    "2px accent focus rings, offset 3px, instant",
+    "reduced motion respected",
+    "Secondary text uses at least 65% ink opacity on these surfaces; quiet typography must remain readable in both themes."
+  ],
+  "content": {
+    "headline": [
+      "Planning",
+      "for teams",
+      "who hate",
+      "planning."
+    ],
+    "emphasis": "hate",
+    "week": "Week 41 · 5–9 Oct",
+    "sprint": "Sprint 14, 64 → 23 pts left, 2 days ahead",
+    "thread": "Checkout copy: Maya asks to drop the second Continue button; Dev moves the rewrite into Thursday's no-meeting block",
+    "moved": "Moved to Thu, 12:00"
+  },
+  "avoid": [
+    "gradient or tinted headline words",
+    "brand bar, sign-in link or nav inside the hero",
+    "coloured avatars or event tones beyond the one accent",
+    "glow blobs and glassmorphism",
+    "screenshots and scribbles",
+    "tilts beyond ~20°",
+    "per-frame React state"
+  ]
+}

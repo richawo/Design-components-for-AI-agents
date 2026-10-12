@@ -1,0 +1,103 @@
+{
+  "component": "PricingComparisonMatrix",
+  "intent": "Dark, monochrome plan-comparison table: plan headers stagger in with counting prices, rows rise group by group as checks draw, and the recommended column is lifted with one accent edge. Becomes a plan switcher on phones.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 (@container, CSS variables)",
+    "animation": "motion/react (variants with custom delays, useInView, useMotionValue, useTransform, useVelocity, animate, AnimatePresence, LayoutGroup)",
+    "fonts": "font-display (Geist), font-sans, font-mono"
+  },
+  "layout": {
+    "container": "@container root, max-w 1152px, px 16/32/40px, py 64/80/96px",
+    "header": "eyebrow, headline (max 18ch), body; mobile controls under it",
+    "desktop": "@3xl+: real table, first column 28% (30% @5xl), 4 plan columns, sticky thead, recommended band continuous from head to foot with rounded top/bottom",
+    "groups": "tbody per group: a row-spanning toggle row, then feature rows",
+    "mobile": "<@3xl: sticky tablist + selected plan card; each row shows only the selected plan's column"
+  },
+  "typography": {
+    "headline": {
+      "font": "display",
+      "weight": 600,
+      "size": "clamp(2.1rem, 1.3rem + 3.2cqi, 3.75rem)",
+      "leading": 1,
+      "tracking": "-0.04em"
+    },
+    "planName": "display 19px semibold",
+    "price": "display clamp(1.6rem, 1rem + 1.2vw, 2.25rem), tracking -0.04em, tabular",
+    "unit": "12px ink/50",
+    "group": "display 17px semibold + mono count",
+    "cells": "14px; values tabular",
+    "meta": "mono 11px uppercase, tracking 0.12em"
+  },
+  "color": {
+    "tokens": "PALETTE.dark / PALETTE.light → --cm-page, --cm-ink, --cm-on-ink, --cm-band, --cm-tip, --cm-tip-ink, --cm-tip-shadow, --cm-accent",
+    "dark": {
+      "page": "#08080a",
+      "ink": "#f4f4f5",
+      "band": "#111114",
+      "tooltip": "#1c1c20 / #e4e4e7"
+    },
+    "light": {
+      "page": "#ffffff",
+      "ink": "#111113",
+      "band": "#f5f5f6",
+      "tooltip": "#111113 / #e4e4e7"
+    },
+    "accent": "#2dd4bf via the accent prop: 2px top edge of the recommended column and the RECOMMENDED dot (and the phone tab dot). Nothing else.",
+    "checks": "ink in the recommended column, ink/75 elsewhere; dashes ink/30",
+    "ctas": "recommended solid ink; others ink/4% with an ink/14% inset ring",
+    "hairlines": "ink at 6-12%"
+  },
+  "motion": {
+    "timeline": "T (s): eyebrow 0, title 0.05, body 0.1, plan headers 0.16 + 0.06 each (price +0.06, CTA +0.12), accent edge 0.5, rows 0.42 + 0.12 per group, 30ms per row",
+    "reveal": "rise 10px from blur(8px), 500ms, ease [0.22, 1, 0.36, 1]; filter dropped at rest",
+    "prices": "motion value counts 0→price over 600ms with a velocity blur; tweens 450ms between plans on mobile",
+    "rows": "each tbody has its own in-view trigger; its slot is measured from the moment the section was revealed, so on-screen groups keep timeline order and later ones start at once; rows rise 6px from blur(6px) 400ms",
+    "marks": "checks draw pathLength 320ms, dashes scaleX, 80ms after the row + 30ms per column; they own their state so a swapped-in mark still draws",
+    "expand": "rows replay the stagger; collapse fades in 120ms",
+    "mobileSwitch": "layoutId thumb spring 500/40; values swap with 4px rise + 3px blur, 250ms",
+    "tooltip": "rise 4px from blur 2px, 200ms; exit 120ms",
+    "reducedMotion": "one 150ms fade, prices set instantly, no transforms or blur"
+  },
+  "responsive": {
+    "<@3xl": "sticky plan switcher; two visible columns per row; no horizontal scroll",
+    "@3xl+": "full table with sticky header",
+    "@5xl+": "blurbs shown, wider cell padding"
+  },
+  "accessibility": [
+    "table with caption and th scopes (col, row, colgroup)",
+    "group toggles with aria-expanded and aria-controls",
+    "tooltips on hover, focus and tap; Escape closes",
+    "mobile tablist with roving tabindex and arrow keys; aria-live on the selected plan summary",
+    "sr-only Included / Not included; counted prices keep the real price as sr-only text",
+    "2px ink focus-visible rings, instant",
+    "reduced motion: fades only",
+    "Secondary text uses at least 65% ink opacity on these surfaces; quiet typography must remain readable in both themes."
+  ],
+  "content": {
+    "product": "Hatch",
+    "plans": [
+      "Hobby $0",
+      "Team $24 (recommended)",
+      "Business $64",
+      "Enterprise Custom"
+    ],
+    "groups": [
+      "Flags & rollouts",
+      "Experimentation",
+      "Collaboration",
+      "Security & compliance",
+      "Support"
+    ],
+    "features": 20
+  },
+  "avoid": [
+    "teal or slate tints, washed recommended columns, coloured checks",
+    "more than one accent use beyond the edge and the dot",
+    "per-frame React state for counting prices",
+    "rows that pop in without the staggered blur rise",
+    "cramped multi-column grids on phones",
+    "horizontal page scroll"
+  ]
+}

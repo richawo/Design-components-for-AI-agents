@@ -1,0 +1,199 @@
+{
+  "slug": "feature-sticky-scroll",
+  "name": "Sticky Scroll Story",
+  "tier": "free",
+  "platform": "web",
+  "category": "features",
+  "description": "A scroll-driven feature story in black and white: a sticky product panel steps through four states, each choreographed in, as the steps scroll past.",
+  "tags": [
+    "features",
+    "scroll",
+    "sticky",
+    "storytelling",
+    "product tour",
+    "dark",
+    "invoicing",
+    "monochrome"
+  ],
+  "dependencies": [
+    "motion"
+  ],
+  "theme": "dark",
+  "previewHeight": 900,
+  "usage": "import { FeatureStickyScroll } from \"@/components/design-for-ai/feature-sticky-scroll\";\n\n<FeatureStickyScroll\n  brand=\"Ledgerly\"\n  heading=\"Bookkeeping that\"\n  headingMuted=\"does itself.\"\n/>",
+  "props": [
+    {
+      "name": "heading",
+      "type": "string",
+      "description": "First clause of the heading."
+    },
+    {
+      "name": "headingMuted",
+      "type": "string",
+      "description": "Muted second clause of the heading."
+    },
+    {
+      "name": "intro",
+      "type": "string",
+      "description": "Intro paragraph."
+    },
+    {
+      "name": "steps",
+      "type": "{ tab; title; body; detail }[]",
+      "description": "Four steps, each driving one panel state."
+    },
+    {
+      "name": "brand",
+      "type": "string",
+      "default": "\"Ferry\"",
+      "description": "Product name in the panel."
+    },
+    {
+      "name": "items",
+      "type": "{ label; qty; amount }[]",
+      "description": "Invoice line items."
+    },
+    {
+      "name": "pots",
+      "type": "{ label; share }[]",
+      "description": "Set-aside shares for the final state."
+    },
+    {
+      "name": "accent",
+      "type": "string",
+      "default": "\"#ff8a4c\"",
+      "description": "The one colour: the progress rail, reached step markers, the timer and Send buttons, the paid ring and your pot."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Near-black (default) or warm paper; the panel, wells and invoice paper follow."
+    },
+    {
+      "name": "client",
+      "type": "string",
+      "default": "\"Halcyon Coffee Ltd\"",
+      "description": "Client named in the timer, the invoice and the payment."
+    },
+    {
+      "name": "currency",
+      "type": "string",
+      "default": "\"£\"",
+      "description": "Currency symbol for every amount in the panel."
+    },
+    {
+      "name": "step",
+      "type": "number",
+      "description": "Scrolls to this step (0-based) whenever it changes. Unset by default, so the reader drives."
+    }
+  ],
+  "added": "2026-10-07",
+  "demo": {
+    "steps": [
+      "wait:300",
+      "scroll:420",
+      "click:@step-next",
+      "wait:700",
+      "click:@step-next",
+      "wait:700",
+      "click:@step-next",
+      "wait:1700"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "step",
+      "label": "Go to step",
+      "kind": "action",
+      "options": [
+        {
+          "value": 0,
+          "label": "Track"
+        },
+        {
+          "value": 1,
+          "label": "Invoice"
+        },
+        {
+          "value": 2,
+          "label": "Paid"
+        },
+        {
+          "value": 3,
+          "label": "Set aside"
+        }
+      ]
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark"
+    },
+    {
+      "prop": "accent",
+      "label": "Accent",
+      "kind": "color",
+      "default": "#ff8a4c",
+      "options": [
+        "#ff8a4c",
+        "#4cc9a0",
+        "#7aa2ff",
+        "#f4f4f2"
+      ]
+    },
+    {
+      "prop": "brand",
+      "label": "Product name",
+      "kind": "text",
+      "default": "Ferry",
+      "group": "Content"
+    },
+    {
+      "prop": "heading",
+      "label": "Heading",
+      "kind": "text",
+      "default": "Get paid like you have",
+      "group": "Content"
+    },
+    {
+      "prop": "client",
+      "label": "Client",
+      "kind": "text",
+      "default": "Halcyon Coffee Ltd",
+      "group": "Content"
+    },
+    {
+      "prop": "currency",
+      "label": "Currency",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "£",
+          "label": "£"
+        },
+        {
+          "value": "$",
+          "label": "$"
+        },
+        {
+          "value": "€",
+          "label": "€"
+        }
+      ],
+      "default": "£",
+      "group": "Content"
+    }
+  ]
+}
