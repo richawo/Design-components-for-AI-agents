@@ -86,15 +86,15 @@
     },
     {
       "name": "onInvite",
-      "type": "(people: { email; name; role }[]) => void",
+      "type": "(people: { email; name; role }[]) => void | Promise<void>",
       "default": "none",
-      "description": "Called with the valid rows when Send is pressed. Flagged rows stay in the well."
+      "description": "Called with the valid rows when Send is pressed. Flagged rows stay in the well. Required to enable the action. Resolve only after acknowledgement; a rejection preserves the draft or pending invitation."
     },
     {
       "name": "onWithdraw",
-      "type": "(email: string) => void",
+      "type": "(email: string) => void | Promise<void>",
       "default": "none",
-      "description": "Called when a pending invite is withdrawn and the seat opens again."
+      "description": "Called when a pending invite is withdrawn and the seat opens again. Required to enable the action. Resolve only after acknowledgement; a rejection preserves the draft or pending invitation."
     },
     {
       "name": "accent",

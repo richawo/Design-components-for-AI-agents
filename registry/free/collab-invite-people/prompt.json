@@ -28,8 +28,32 @@
   },
   "color": {
     "approach": "greyscale; one accent on the Send button and the selected role check; danger only for flagged addresses and seats past the plan",
-    "dark": { "surface": "#111113", "raised": "#17171a", "sunken": "#0c0c0e", "line": "#232327", "rule": "#1b1b1e", "avatar": "#1f1f23", "ink": "#f4f4f5", "muted": "#a1a1aa", "faint": "#8a8a93", "danger": "#f87171", "stage": "#0a0a0b (demo only)" },
-    "light": { "surface": "#ffffff", "raised": "#f6f6f7", "sunken": "#fafafa", "line": "#e4e4e7", "rule": "#efeff1", "avatar": "#f0f0f2", "ink": "#18181b", "muted": "#52525b", "faint": "#71717a", "danger": "#b91c1c", "stage": "#e9e9ec (demo only)" },
+    "dark": {
+      "surface": "#111113",
+      "raised": "#17171a",
+      "sunken": "#0c0c0e",
+      "line": "#232327",
+      "rule": "#1b1b1e",
+      "avatar": "#1f1f23",
+      "ink": "#f4f4f5",
+      "muted": "#a1a1aa",
+      "faint": "#8a8a93",
+      "danger": "#f87171",
+      "stage": "#0a0a0b (demo only)"
+    },
+    "light": {
+      "surface": "#ffffff",
+      "raised": "#f6f6f7",
+      "sunken": "#fafafa",
+      "line": "#e4e4e7",
+      "rule": "#efeff1",
+      "avatar": "#f0f0f2",
+      "ink": "#18181b",
+      "muted": "#52525b",
+      "faint": "#71717a",
+      "danger": "#b91c1c",
+      "stage": "#e9e9ec (demo only)"
+    },
     "accent": "theme ink by default. Button label is black or white from relative luminance"
   },
   "motion": {
@@ -68,5 +92,6 @@
     "a different hue per avatar",
     "accent-coloured text",
     "closing the role menu on blur in a way that eats the option click"
-  ]
+  ],
+  "integration": "Host invite and withdrawal callbacks enable those actions. Await acknowledgement before changing pending membership; preserve drafts and pending requests on rejection and block overlapping actions. Only the default demo supplies simulated handlers."
 }

@@ -58,8 +58,8 @@ export type CollabInvitePeopleProps = {
   defaultRole?: InviteRole;
   /** Show the “on the team” row under the meter. */
   showTeam?: boolean;
-  onInvite?: (people: { email: string; name: string; role: InviteRole }[]) => void;
-  onWithdraw?: (email: string) => void;
+  onInvite?: (people: { email: string; name: string; role: InviteRole }[]) => void | Promise<void>;
+  onWithdraw?: (email: string) => void | Promise<void>;
   /** The one accent: the Send button and the selected role’s check. */
   accent?: string;
   theme?: "dark" | "light";
@@ -444,12 +444,13 @@ function SeatMeter({ taken, preview, included, play }: { taken: number; preview:
   );
 }
 
-function IconButton({ label, onClick }: { label: string; onClick: () => void }) {
+function IconButton({ label, onClick, disabled = false }: { label: string; onClick: () => void; disabled?: boolean }) {
   return (
     <button
       type="button"
       onClick={onClick}
       aria-label={label}
+      disabled={disabled}
       className={`[@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 flex size-8 shrink-0 items-center justify-center rounded-md text-[var(--ip-faint)] transition-[color,background-color,transform] duration-150 hover:bg-[var(--ip-raised)] hover:text-[var(--ip-ink)] active:scale-[0.97] ${FOCUS_RING}`}
     >
       <X className="size-3.5" strokeWidth={2.25} aria-hidden="true" />
@@ -498,6 +499,9 @@ export function CollabInvitePeople({
   const [drafts, setDrafts] = useState<Draft[]>(() => seed(initialDrafts));
   const [pending, setPending] = useState<InvitePerson[]>(initialPending);
   const [text, setText] = useState("");
+  const [sending, setSending] = useState(false);
+  const pendingAction = useRef(false);
+  const [requestError, setRequestError] = useState<string | null>(null);
   const draftsRef = useRef(drafts);
   const textRef = useRef("");
   draftsRef.current = drafts;
@@ -540,7 +544,8 @@ export function CollabInvitePeople({
     return next;
   };
 
-  const send = () => {
+  const send = async () => {
+    if (!onInvite || pendingAction.current) return;
     const list = textRef.current.trim() ? commit(textRef.current) : draftsRef.current;
     const ready = list
       .map((d, i) => ({ ...d, problem: diagnose(d.email, i, list, team, pending) }))
@@ -551,12 +556,23 @@ export function CollabInvitePeople({
       name: personName(d.email, directory, team),
       role: d.role,
     }));
-    const stay = list.filter((d) => !ready.some((r) => r.id === d.id));
-    draftsRef.current = stay;
-    setDrafts(stay);
-    setPending((ps) => [...ps, ...people]);
-    onInvite?.(people);
-    field.current?.focus({ preventScroll: true });
+    pendingAction.current = true;
+    setSending(true);
+    setRequestError(null);
+    try {
+      await onInvite(people);
+      const accepted = new Set(ready.map((draft) => draft.id));
+      const stay = draftsRef.current.filter((draft) => !accepted.has(draft.id));
+      draftsRef.current = stay;
+      setDrafts(stay);
+      setPending((ps) => [...ps, ...people]);
+    } catch {
+      setRequestError("We couldn't send these invitations. Your draft is kept.");
+    } finally {
+      pendingAction.current = false;
+      setSending(false);
+      requestAnimationFrame(() => field.current?.focus({ preventScroll: true }));
+    }
   };
 
   const onKey = (e: ReactKeyboardEvent<HTMLInputElement>) => {
@@ -590,9 +606,20 @@ export function CollabInvitePeople({
     draftsRef.current = next;
     setDrafts(next);
   };
-  const withdraw = (email: string) => {
-    setPending((ps) => ps.filter((p) => p.email !== email));
-    onWithdraw?.(email);
+  const withdraw = async (email: string) => {
+    if (!onWithdraw || pendingAction.current) return;
+    pendingAction.current = true;
+    setSending(true);
+    setRequestError(null);
+    try {
+      await onWithdraw(email);
+      setPending((ps) => ps.filter((person) => person.email !== email));
+    } catch {
+      setRequestError("We couldn't withdraw this invitation. It is still pending.");
+    } finally {
+      pendingAction.current = false;
+      setSending(false);
+    }
   };
 
   const firstNames = team.map((p) => p.name.split(" ")[0]).join(", ");
@@ -605,8 +632,8 @@ export function CollabInvitePeople({
       className={`@container w-full font-sans text-[var(--ip-ink)] antialiased ${className}`}
     >
       <LayoutGroup id={uid}>
-        <motion.div {...enter(play, 0, reduce)} className="rounded-[14px] border border-[var(--ip-line)] bg-[var(--ip-surface)] shadow-[var(--ip-shadow)]">
-          <div className="px-5 pb-5 pt-5 @md:px-6">
+        <motion.div aria-busy={sending} {...enter(play, 0, reduce)} className="rounded-[14px] border border-[var(--ip-line)] bg-[var(--ip-surface)] shadow-[var(--ip-shadow)]">
+          <div inert={sending} className="px-5 pb-5 pt-5 @md:px-6">
             <motion.header {...enter(play, MOTION.step, reduce)} className="flex items-end justify-between gap-4">
               <div className="min-w-0">
                 <h2 id={`${uid}-title`} className="truncate font-display text-[18px] font-semibold tracking-[-0.03em]">
@@ -746,7 +773,7 @@ export function CollabInvitePeople({
                 type="button"
                 data-demo="send"
                 onClick={send}
-                disabled={!valid.length && !text.trim()}
+                disabled={!onInvite || sending || (!valid.length && !text.trim())}
                 className={`[@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 inline-flex h-11 shrink-0 items-center justify-center gap-1.5 rounded-xl bg-[var(--ip-accent)] px-4 text-[14px] font-medium text-[var(--ip-on-accent)] transition-[opacity,transform,filter] duration-150 hover:brightness-110 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:brightness-100 @md:min-w-[9.5rem] ${FOCUS_RING}`}
               >
                 {valid.length ? (
@@ -762,6 +789,7 @@ export function CollabInvitePeople({
             </div>
           </div>
 
+          {requestError && <motion.p role="alert" initial={{ opacity: 0, y: reduce ? 0 : 4 }} animate={{ opacity: 1, y: 0 }} className="px-5 pb-4 text-[13px] text-[var(--ip-danger)] @md:px-6">{requestError}</motion.p>}
           <motion.div {...enter(play, MOTION.rowsAt + rows.length * MOTION.rowStep, reduce)} className="border-t border-[var(--ip-rule)] px-5 pb-5 pt-4 @md:px-6">
             <h3 className="flex items-baseline justify-between font-mono text-[11px] uppercase tracking-[0.1em] text-[var(--ip-faint)]">
               Pending
@@ -802,7 +830,7 @@ export function CollabInvitePeople({
                             Invited · {ROLE_LABEL[p.role === "owner" ? "edit" : p.role]} · {p.email}
                           </span>
                         </div>
-                        <IconButton label={`Withdraw invite to ${p.name}`} onClick={() => withdraw(p.email)} />
+                        <IconButton label={`Withdraw invite to ${p.name}`} disabled={!onWithdraw || sending} onClick={() => void withdraw(p.email)} />
                       </motion.li>
                     ))}
                   </AnimatePresence>
@@ -822,7 +850,7 @@ export default function CollabInvitePeopleDemo(overrides: Partial<CollabInvitePe
   return (
     <div className="flex min-h-dvh items-start justify-center px-4 py-10 sm:items-center sm:px-8 sm:py-16" style={{ background: light ? STAGE_LIGHT : STAGE }}>
       <div className="w-full max-w-[560px]">
-        <CollabInvitePeople {...overrides} />
+        <CollabInvitePeople onInvite={async () => { await new Promise(resolve => setTimeout(resolve, 450)); }} onWithdraw={async () => { await new Promise(resolve => setTimeout(resolve, 300)); }} {...overrides} />
       </div>
     </div>
   );

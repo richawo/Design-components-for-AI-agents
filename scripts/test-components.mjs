@@ -18,6 +18,7 @@ const publicCases = [
   "announcement-transition-probe",
   "navigation-surface-probe",
   "otp-acknowledgement-probe",
+  "invitation-acknowledgement",
   "table-probe",
   "ime-probe",
   "expansion-inputs-probe",

@@ -31,3 +31,5 @@ Build an invite panel in React + Tailwind CSS v4 with `motion/react` and `lucide
 - Don’t make it a second share dialog: no link access, no per-person access list, no undo-on-remove of teammates.
 - Don’t tint avatars per person, don’t use the accent as text, and don’t block Send when the invite goes past the included seats — show it and allow it.
 - Don’t drop invalid addresses on the floor. Don’t close a role menu on blur in a way that eats the option click.
+
+Sending and withdrawing need host callbacks. Await their acknowledgement before moving drafts into Pending or removing pending invitations. Reject failed requests with quiet inline feedback and retain their data. Prevent overlapping actions; the default demo explicitly provides simulated callbacks.
