@@ -10,7 +10,6 @@ import { PLANS } from "@/lib/pricing";
 import { getComponent, stats, toCard } from "@/lib/registry";
 import { absoluteUrl, site } from "@/lib/site";
 import { ChartPortfolio } from "@/registry/free/chart-portfolio/chart-portfolio";
-import { BookingSlots } from "@/registry/free/date-booking-slots/date-booking-slots";
 import { showcaseCollections } from "@/lib/showcase-collections.mjs";
 
 export const metadata: Metadata = {
@@ -68,17 +67,13 @@ export default function HomePage() {
     <section aria-labelledby="try-title" className="border-y border-white/[0.07] bg-site-raised/40">
       <div className="mx-auto max-w-[80rem] px-5 py-14 sm:px-8 lg:py-20">
         <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
-          <div><h2 id="try-title" className="text-[clamp(1.8rem,3.2vw,2.75rem)] font-semibold leading-tight tracking-[-0.045em]">Try the details.</h2><p className="mt-2 text-[15px] leading-relaxed text-site-fg-2">Change the period. Pick a time. This is the code you can install.</p></div>
+          <div><h2 id="try-title" className="text-[clamp(1.8rem,3.2vw,2.75rem)] font-semibold leading-tight tracking-[-0.045em]">Try the details.</h2><p className="mt-2 text-[15px] leading-relaxed text-site-fg-2">Scrub the line. Change the period. This is the code you can install.</p></div>
           <Link href="/components" className="inline-flex min-h-11 items-center rounded-md text-sm text-site-fg-2 hover:text-site-fg">More to explore <span aria-hidden="true" className="ml-2">↗</span></Link>
         </div>
-        <div className="grid items-start gap-5 lg:grid-cols-2">
+        <div className="mx-auto max-w-[64rem]">
           <div className="min-w-0">
             <div className="flex min-h-[360px] items-center rounded-[22px] bg-[#0a0a0b] p-3 sm:p-6 [&_section]:w-full"><ChartPortfolio height={220} /></div>
             <PreviewCaption name="Portfolio Chart" hint="Scrub the line or change the period." href="/components/chart-portfolio" />
-          </div>
-          <div className="min-w-0">
-            <div className="min-h-[360px] rounded-[22px] bg-[#0a0a0b] p-3 sm:p-6"><BookingSlots theme="dark" /></div>
-            <PreviewCaption name="Booking Slot Selector" hint="Choose a day, then an available time." href="/components/date-booking-slots" />
           </div>
         </div>
         <div className="mt-6 flex min-w-0 flex-wrap items-center gap-3 rounded-xl border border-white/10 bg-site-bg p-3 sm:p-4">
