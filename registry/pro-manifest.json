@@ -18457,7 +18457,7 @@
         "click:@statement-1",
         "wait:500",
         "click:@acknowledge",
-        "wait:1100"
+        "wait:1800"
       ],
       "loop": false
     },
