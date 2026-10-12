@@ -19176,7 +19176,7 @@
     ],
     "theme": "dark",
     "previewHeight": 1050,
-    "usage": "import { WorkspaceShell } from \"@/components/design-for-ai/layout-workspace-shell\";\n\n<WorkspaceShell />",
+    "usage": "import { WorkspaceShell, WorkspacePanels } from \"@/components/design-for-ai/layout-workspace-shell\";\n\n<WorkspaceShell title=\"Overview\">\n  <WorkspacePanels activeId=\"overview\" panels={[\n    { id: \"overview\", content: <p>Overview content</p> },\n    { id: \"details\", content: <p>Details content</p> },\n  ]} />\n</WorkspaceShell>",
     "props": [
       {
         "name": "brand",
