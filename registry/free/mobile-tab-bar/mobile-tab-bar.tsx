@@ -1034,7 +1034,7 @@ function StreakTile({ days }: { days: number }) {
         <CountUp value={days} format={(v) => String(Math.round(v))} style={s.tileNum} />
         <Text style={s.tileUnit}>days</Text>
       </View>
-      <View style={s.streakRow} accessibilityLabel={`Ran on each of the last ${days} days`}>
+      <View style={s.streakRow} accessibilityRole="image" accessibilityLabel={`Ran on each of the last ${days} days`}>
         {Array.from({ length: STREAK_SLOTS }, (_, i) => {
           const on = i >= firstOn;
           const today = i === STREAK_SLOTS - 1;
@@ -1628,7 +1628,7 @@ function TabButton({ tab, selected, badge, onPress }: { tab: TabItem; selected: 
       {...demoTarget(`tab-${tab.key}`)}
       accessibilityRole="tab"
       accessibilityLabel={label}
-      accessibilityState={{ selected }}
+      accessibilityState={{ selected }} aria-selected={selected}
       style={s.tab}
     >
       <Animated.View style={[s.tabInner, { transform: [{ scale: press }, { translateY: morph.lift }] }]}>
@@ -1798,7 +1798,7 @@ function CentreAction({ open, menu, rise, onToggle }: { open: boolean; menu: Ani
         {...demoTarget("fab")}
         accessibilityRole="button"
         accessibilityLabel={open ? "Close quick actions" : "Start an activity"}
-        accessibilityState={{ expanded: open }}
+        accessibilityState={{ expanded: open }} aria-expanded={open}
         hitSlop={8}
       >
         <Animated.View style={[s.fab, { backgroundColor: accent }, motion.disc]}>
