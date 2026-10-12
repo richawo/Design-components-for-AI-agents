@@ -9282,7 +9282,7 @@
         "click:@review",
         "wait:350",
         "click:@confirm",
-        "wait:900"
+        "wait:1500"
       ],
       "loop": false
     },
