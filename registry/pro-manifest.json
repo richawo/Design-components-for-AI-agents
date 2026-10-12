@@ -16060,7 +16060,7 @@
         "click:@review",
         "wait:600",
         "click:@create",
-        "wait:1000"
+        "wait:1800"
       ],
       "loop": false
     },
