@@ -42,6 +42,7 @@ export function CardMedia({
   const posterRef = useRef<HTMLImageElement>(null);
   const ref = useRef<HTMLVideoElement>(null);
   const [src, setSrc] = useState(false);
+  const [allowed, setAllowed] = useState(true);
   const want = useRef(false);
   const committed = useRef(false);
   const [showing, setShowing] = useState(false);
@@ -54,9 +55,22 @@ export function CardMedia({
   }, [thumb, srcSet]);
 
   useEffect(() => {
+    const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const connection = (navigator as Navigator & { connection?: EventTarget }).connection;
+    const update = () => setAllowed(videoAllowed());
+    update();
+    preference.addEventListener("change", update);
+    connection?.addEventListener("change", update);
+    return () => {
+      preference.removeEventListener("change", update);
+      connection?.removeEventListener("change", update);
+    };
+  }, []);
+
+  useEffect(() => {
     const v = ref.current;
     const card = v?.closest("a");
-    if (!v || !card || !video || !videoAllowed()) return;
+    if (!v || !card || !video || !allowed || !videoAllowed()) return;
 
     const restart = () => {
       setShowing(false);
@@ -102,7 +116,7 @@ export function CardMedia({
       card.removeEventListener("focusin", focusIn);
       card.removeEventListener("focusout", leave);
     };
-  }, [video, compact]);
+  }, [video, compact, allowed]);
 
   // <source> changes need an explicit load(); dropping them also releases the decoder.
   useEffect(() => {

@@ -10,7 +10,7 @@ import { withinPlaybackBudget } from "@/lib/playback-budget";
  *   the rest hold their frame. A hovered or keyboard-focused card always
  *   plays, taking the place of the least visible one.
  * - Off screen for UNLOAD_AFTER_MS, a card drops its source and its decoder.
- * - Everything pauses while the tab is hidden, and stops for good if the
+ * - Everything pauses while the tab is hidden, and stops if the
  *   reader turns on reduced motion.
  */
 
@@ -59,11 +59,9 @@ const entries = new Map<Element, Entry>();
 let nearIO: IntersectionObserver | null = null;
 let viewIO: IntersectionObserver | null = null;
 let frame = 0;
-let disabled = false;
 
 /** Reduced motion and Save-Data readers get the poster only. */
 export function videoAllowed(): boolean {
-  if (disabled) return false;
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
   const conn = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
   return !conn?.saveData;
@@ -87,7 +85,7 @@ function apply() {
       return { e, engaged: e.engaged, ratio: e.ratio, off: Math.abs(r.top + r.height / 2 - mid) };
     })
     .sort((a, b) => Number(b.engaged) - Number(a.engaged) || b.ratio - a.ratio || a.off - b.off);
-  const play = new Set(hidden || disabled ? [] : withinPlaybackBudget(ranked, cap(), x => x.e.cost).map((x) => x.e));
+  const play = new Set(hidden || !videoAllowed() ? [] : withinPlaybackBudget(ranked, cap(), x => x.e.cost).map((x) => x.e));
   for (const e of entries.values()) {
     const want = play.has(e);
     if (want !== e.playing) {
@@ -103,7 +101,7 @@ function setNear(card: Element, near: boolean) {
   e.near = near;
   window.clearTimeout(e.unload);
   if (near) {
-    if (!e.loaded) {
+    if (!e.loaded && videoAllowed()) {
       e.loaded = true;
       e.client.setLoaded(true);
     }
@@ -137,8 +135,7 @@ function init() {
   document.addEventListener("visibilitychange", schedule);
   window.addEventListener("resize", schedule, { passive: true });
   window.matchMedia("(prefers-reduced-motion: reduce)").addEventListener("change", (m) => {
-    if (!m.matches) return;
-    disabled = true;
+    if (!m.matches) { schedule(); return; }
     for (const e of entries.values()) {
       e.playing = false;
       e.client.setPlaying(false);

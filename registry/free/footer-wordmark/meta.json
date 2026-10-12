@@ -93,10 +93,7 @@
   "added": "2026-10-07",
   "demo": {
     "steps": [
-      "wait:150",
-      "move:0.6,0.62",
       "scroll:600",
-      "wait:250",
       "hover:@newsletter-email",
       "click",
       "type:ana@",
