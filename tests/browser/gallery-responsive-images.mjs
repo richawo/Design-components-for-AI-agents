@@ -1,9 +1,11 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
+import { webkit } from "playwright-core";
 import { launchChromium } from "../../scripts/lib/browser.mjs";
 
 const base = process.env.TEST_BASE || "http://localhost:3232";
-const browser = await launchChromium({ args: [] });
+const engine = process.env.TEST_BROWSER || "chromium";
+const browser = engine === "webkit" ? await webkit.launch() : await launchChromium({ args: [] });
 const out = "test-results/site-performance";
 fs.mkdirSync(out, { recursive: true });
 const results = [];
@@ -23,7 +25,7 @@ try {
     if (candidate.startsWith(".")) assert.ok(!requests.some(r => r.endsWith(original)), "Unused full-size image downloaded");
     const card = page.locator(".component-card").first();
     const before = await card.boundingBox();
-    await page.screenshot({ path: `${out}/gallery-responsive-${width}-${dpr}.png` });
+    await page.screenshot({ path: `${out}/gallery-responsive-${width}-${dpr}-${engine}.png` });
     assert.deepEqual(await card.boundingBox(), before);
     assert.equal(await page.locator(".component-card").count(), 12);
     assert.deepEqual(errors, []);
@@ -36,13 +38,17 @@ try {
   await page.route("**/card-previews/*", route => { failures++; return route.fulfill({ status: 404, body: "Missing previous deployment asset" }); });
   await page.goto(`${base}/components`);
   await page.waitForFunction(() => {
-    const i = document.querySelector(".component-card img");
-    return i?.complete && i.naturalWidth > 0 && !i.srcset;
+    const images = [...document.querySelectorAll('.component-card img[loading="eager"]')];
+    return images.length === 6 && images.every(i => i.complete && i.naturalWidth > 0 && !i.srcset);
   });
   assert.ok(failures > 0);
   assert.ok(await page.locator(".component-card img").first().evaluate(i => i.currentSrc.endsWith("/previews/chart-candlestick.webp")));
   await page.waitForTimeout(500);
-  assert.ok(failures <= 12, "Fallback retried failed derivatives repeatedly");
+  // WebKit's preload scanner can attempt the six eager images before hydration
+  // and again on attachment. Require recovery to settle, not a Chromium count.
+  const settledFailures = failures;
+  await page.waitForTimeout(1000);
+  assert.equal(failures, settledFailures, "Fallback kept requesting failed derivatives after recovery");
   await context.close();
-  console.log(JSON.stringify({ ok: true, results, missingDerivativeFallback: true }));
+  console.log(JSON.stringify({ ok: true, engine, results, missingDerivativeFallback: true }));
 } finally { await browser.close(); }

@@ -1,10 +1,11 @@
 import fs from "node:fs";
 import path from "node:path";
+import { webkit } from "playwright-core";
 import { launchChromium } from "../../scripts/lib/browser.mjs";
 
 const base = process.env.TEST_BASE || "http://localhost:3230";
 const out = process.env.HOVER_OUT || "test-results/site-performance/hover-after.json";
-const browser = await launchChromium({ args: [] });
+const browser = process.env.TEST_BROWSER === "webkit" ? await webkit.launch() : await launchChromium({ args: [] });
 fs.mkdirSync(path.dirname(out), { recursive: true });
 try {
   const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
@@ -17,8 +18,8 @@ try {
   if (process.env.HOVER_NEGATIVE) await page.addStyleTag({ content: ".component-grid .component-card::after { transition: none !important; }" });
   await page.mouse.move(0, 0);
   await page.evaluate(() => {
-    window.__hover = { phase: "entry", samples: [], tasks: [], feedback: [] };
-    new PerformanceObserver(list => window.__hover.tasks.push(...list.getEntries().map(e => ({ start: e.startTime, duration: e.duration })))).observe({ type: "longtask" });
+    window.__hover = { phase: "entry", samples: [], tasks: [], feedback: [], longTasksSupported: PerformanceObserver.supportedEntryTypes.includes("longtask") };
+    if (window.__hover.longTasksSupported) new PerformanceObserver(list => window.__hover.tasks.push(...list.getEntries().map(e => ({ start: e.startTime, duration: e.duration })))).observe({ type: "longtask" });
     const cards = [...document.querySelectorAll(".component-card")].slice(0, 3);
     const tick = () => {
       window.__hover.samples.push({ time: performance.now(), phase: window.__hover.phase, opacity: cards.map(c => Number(getComputedStyle(c, "::after").opacity)) });
@@ -52,7 +53,7 @@ try {
   const minimumGapOpacity = Math.min(...gap.map(s => s.opacity[2]));
   const riseDuration = entry.find(s => s.opacity[2] >= .179)?.time - report.entered;
   const end = report.samples.at(-1);
-  const observed = { minimumGapOpacity, riseDuration, firstFrameMax: Math.max(0, ...report.feedback.map(f => f.first)), secondFrameMax: Math.max(0, ...report.feedback.map(f => f.second)), longTaskMax: Math.max(0, ...report.tasks.map(t => t.duration)) };
+  const observed = { minimumGapOpacity, riseDuration, firstFrameMax: Math.max(0, ...report.feedback.map(f => f.first)), secondFrameMax: Math.max(0, ...report.feedback.map(f => f.second)), longTaskMax: report.longTasksSupported ? Math.max(0, ...report.tasks.map(t => t.duration)) : null };
   const result = { summary: { ok: minimumGapOpacity >= .17 && riseDuration >= 250 && end.opacity.every(v => v === 0) && !errors.length, observed }, report, errors };
   fs.writeFileSync(out, JSON.stringify(result, null, 2));
   console.log(JSON.stringify(result.summary));

@@ -82,7 +82,14 @@ the complete suite passed with two workers after the build finished.
 ```sh
 PERF_BASE=http://localhost:3000 node tests/browser/gallery-slow-connection.mjs
 TEST_BASE=http://localhost:3000 node tests/browser/gallery-responsive-images.mjs
+TEST_BASE=http://localhost:3000 TEST_BROWSER=webkit node tests/browser/gallery-responsive-images.mjs
 ```
+
+The same image-selection, layout and missing-file recovery checks pass in
+Chromium and WebKit against production build `088528b`, confirmed by the live
+build marker. WebKit can speculatively request an eager image twice before
+hydration; the recovery check verifies that every eager poster recovers and
+requests stop, rather than imposing Chromium's request count on both engines.
 
 ### First navigation into Components
 
@@ -299,3 +306,8 @@ reduced-motion, touch and layout checks pass.
 Evidence: `test-results/frontend-latency-replays/design-gallery-hover-gap/2026-10-11T23-52-27Z/`.
 This is the first archive for this case, so no previous after-run comparison
 exists. Replay with `TEST_BASE=http://localhost:3000 node tests/browser/gallery-hover-transition.mjs`.
+WebKit also passes the temporal gap replay: neighbour opacity remains 0.18 and
+the fade reaches its target in 349 ms. The harness reports unavailable long-task
+instrumentation as null on WebKit. The live Chromium replay passes as well
+(364 ms fade, 0.18 gap opacity); these unthrottled checks establish behaviour,
+not a cross-browser speed comparison.
