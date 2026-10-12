@@ -45,7 +45,7 @@ for (let i = 0; i < argv.length; i++) {
   if (a.startsWith("--")) {
     const [k, v] = a.slice(2).split("=");
     if (v !== undefined) flags[k] = v;
-    else if (argv[i + 1] && !argv[i + 1].startsWith("-") && ["dir", "category", "tier", "platform", "limit"].includes(k)) flags[k] = argv[++i];
+    else if (argv[i + 1] && !argv[i + 1].startsWith("-") && ["dir", "category", "tier", "platform", "kind", "limit"].includes(k)) flags[k] = argv[++i];
     else flags[k] = true;
   } else if (a === "-h") flags.help = true;
   else if (a === "-v") flags.version = true;
@@ -137,7 +137,7 @@ const row = (x) => `  ${accent(x.slug.padEnd(28))} ${x.tier === "pro" ? accent("
 async function search(query) {
   const words = (query || "").toLowerCase().split(/\s+/).filter(Boolean);
   const hits = (await index())
-    .filter((x) => (!flags.category || x.category === flags.category) && (!flags.tier || x.tier === flags.tier) && (!flags.platform || x.platform === flags.platform))
+    .filter((x) => (!flags.kind || (x.kind ?? "component") === flags.kind) && (!flags.category || x.category === flags.category) && (!flags.tier || x.tier === flags.tier) && (!flags.platform || x.platform === flags.platform))
     .map((x) => {
       const hay = [x.name, x.slug, x.description, x.category, ...(x.tags || [])].join(" ").toLowerCase();
       return { x, score: words.reduce((s, w) => s + (hay.includes(w) ? (x.slug.includes(w) || x.name.toLowerCase().includes(w) ? 3 : 1) : 0), 0) };

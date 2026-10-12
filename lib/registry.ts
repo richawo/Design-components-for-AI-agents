@@ -1,7 +1,18 @@
 import "server-only";
-import { CATEGORIES, type Category, type ComponentSource, type RegistryEntry } from "./registry-types";
+import {
+  CATEGORIES,
+  type Category,
+  type ComponentSource,
+  type RegistryEntry,
+} from "./registry-types";
 import index from "@/registry/__generated__/index.json";
-import { proItemLoaders, sourceLoaders, thumbnails, cardThumbnails, videos } from "@/registry/__generated__/server-data";
+import {
+  proItemLoaders,
+  sourceLoaders,
+  thumbnails,
+  cardThumbnails,
+  videos,
+} from "@/registry/__generated__/server-data";
 
 const entries = index as RegistryEntry[];
 
@@ -9,41 +20,64 @@ export function allComponents(): RegistryEntry[] {
   return entries;
 }
 
+export function individualComponents(): RegistryEntry[] {
+  return entries.filter((entry) => entry.kind !== "block");
+}
+
+export function allBlocks(): RegistryEntry[] {
+  return entries.filter((entry) => entry.kind === "block");
+}
+
 export function getComponent(slug: string): RegistryEntry | undefined {
   return entries.find((e) => e.slug === slug);
 }
 
 export function componentsIn(category: Category): RegistryEntry[] {
-  return entries.filter((e) => e.category === category);
+  return entries.filter((e) => e.category === category && e.kind !== "block");
 }
 
 export function categoriesWithCounts() {
   return (Object.keys(CATEGORIES) as Category[])
-    .map((key) => ({ key, ...CATEGORIES[key], count: entries.filter((e) => e.category === key).length }))
+    .map((key) => ({
+      key,
+      ...CATEGORIES[key],
+      count: entries.filter((e) => e.category === key && e.kind !== "block")
+        .length,
+    }))
     .filter((c) => c.count > 0);
 }
 
 /** Code and prompts. Never call this for a Pro component without checking the licence. */
-export async function readSource(slug: string): Promise<ComponentSource | null> {
-  const load = Object.hasOwn(sourceLoaders, slug) ? sourceLoaders[slug] : undefined;
+export async function readSource(
+  slug: string,
+): Promise<ComponentSource | null> {
+  const load = Object.hasOwn(sourceLoaders, slug)
+    ? sourceLoaders[slug]
+    : undefined;
   return load ? ((await load()).default as ComponentSource) : null;
 }
 
 /** A Pro shadcn registry item. Check the licence first. */
 export async function readProItem(slug: string): Promise<unknown | null> {
-  const load = Object.hasOwn(proItemLoaders, slug) ? proItemLoaders[slug] : undefined;
+  const load = Object.hasOwn(proItemLoaders, slug)
+    ? proItemLoaders[slug]
+    : undefined;
   if (!load) return null;
   const [item, source] = await Promise.all([load(), readSource(slug)]);
   if (!source) return null;
   const envelope = item.default as { files: [Record<string, unknown>] };
-  return { ...envelope, files: [{ ...envelope.files[0], content: source.code }] };
+  return {
+    ...envelope,
+    files: [{ ...envelope.files[0], content: source.code }],
+  };
 }
 
 export function stats() {
   return {
-    total: entries.length,
-    free: entries.filter((e) => e.tier === "free").length,
-    pro: entries.filter((e) => e.tier === "pro").length,
+    total: individualComponents().length,
+    blocks: allBlocks().length,
+    free: individualComponents().filter((e) => e.tier === "free").length,
+    pro: individualComponents().filter((e) => e.tier === "pro").length,
     mobile: entries.filter((e) => e.platform === "mobile").length,
   };
 }
@@ -54,12 +88,30 @@ export function thumbnailFor(slug: string): string | null {
 }
 
 /** Hover video recorded by scripts/record-demos.mjs from meta.demo, if present. */
-export function videoFor(slug: string): { mp4: string; webm: string | null } | null {
+export function videoFor(
+  slug: string,
+): { mp4: string; webm: string | null } | null {
   if (!videos.has(`${slug}.mp4`)) return null;
-  return { mp4: `/previews/${slug}.mp4`, webm: videos.has(`${slug}.webm`) ? `/previews/${slug}.webm` : null };
+  return {
+    mp4: `/previews/${slug}.mp4`,
+    webm: videos.has(`${slug}.webm`) ? `/previews/${slug}.webm` : null,
+  };
 }
 
-export type CardData = Pick<RegistryEntry, "slug" | "name" | "tier" | "platform" | "category" | "description" | "tags" | "theme" | "added"> & {
+export type CardData = Pick<
+  RegistryEntry,
+  | "slug"
+  | "kind"
+  | "blockType"
+  | "name"
+  | "tier"
+  | "platform"
+  | "category"
+  | "description"
+  | "tags"
+  | "theme"
+  | "added"
+> & {
   thumb: string | null;
   thumbSrcSet?: string;
   video: { mp4: string; webm: string | null } | null;
@@ -68,6 +120,8 @@ export type CardData = Pick<RegistryEntry, "slug" | "name" | "tier" | "platform"
 export function toCard(e: RegistryEntry): CardData {
   return {
     slug: e.slug,
+    kind: e.kind,
+    blockType: e.blockType,
     name: e.name,
     tier: e.tier,
     platform: e.platform,

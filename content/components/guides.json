@@ -9,7 +9,8 @@
       "agent-diff-review",
       "agent-plan-steps",
       "agent-run-trace"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "ai-composer-minimal": {
     "useWhen": "A focused text composer at the bottom of an assistant conversation.",
@@ -22,7 +23,8 @@
       "ai-message-actions",
       "ai-reasoning-trace",
       "ai-voice-mode"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "ai-message-actions": {
     "useWhen": "Copy, retry and feedback actions attached to one assistant message.",
@@ -34,7 +36,8 @@
       "ai-reasoning-trace",
       "ai-voice-mode",
       "ai-composer-minimal"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "ai-thinking-states": {
     "useWhen": "A short explanation of an assistant's current processing state.",
@@ -46,7 +49,8 @@
       "ai-reasoning-trace",
       "streaming-text",
       "ai-message-actions"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "auth-magic-link": {
     "useWhen": "Email sign-in without asking someone to choose a password.",
@@ -58,7 +62,8 @@
       "auth-sign-in",
       "auth-passkey",
       "auth-sso-detect"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "auth-passkey": {
     "useWhen": "A passwordless entry point backed by your application's WebAuthn flow.",
@@ -70,7 +75,8 @@
       "auth-magic-link",
       "auth-sign-in",
       "auth-sso-detect"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "auth-sign-in": {
     "useWhen": "A compact account entry form with a clear next action.",
@@ -83,7 +89,8 @@
       "auth-magic-link",
       "auth-sso-detect",
       "auth-passkey"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "billing-invoice-list": {
     "useWhen": "An account's invoice history with document and payment actions.",
@@ -95,7 +102,8 @@
       "billing-overview",
       "billing-payment-methods",
       "billing-plan-change"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "billing-payment-methods": {
     "useWhen": "Reviewing and managing saved payment methods in account settings.",
@@ -108,7 +116,8 @@
       "billing-overview",
       "billing-invoice-list",
       "billing-plan-change"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "button-hold-confirm": {
     "useWhen": "A deliberate hold before a consequential but clearly described action.",
@@ -120,7 +129,8 @@
       "toast-stack",
       "primitives-shortcut-reference",
       "dialog-confirm-typed"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "button-press-depth": {
     "useWhen": "A tactile primary action in a restrained interface.",
@@ -132,7 +142,8 @@
       "button-magnetic",
       "ai-thinking-states",
       "button-hold-confirm"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "card-profile-stats": {
     "useWhen": "A concise person or account summary with a few supporting figures.",
@@ -144,7 +155,8 @@
       "cards-event-ticket",
       "agent-diff-review",
       "agent-status-pill"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "chart-portfolio": {
     "useWhen": "Inspecting a portfolio value across a selected time range.",
@@ -156,7 +168,8 @@
       "chart-revenue-trend",
       "chart-candlestick",
       "chart-allocation"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "chart-waffle": {
     "useWhen": "Showing discrete units or a part-to-whole count as a readable grid.",
@@ -168,7 +181,8 @@
       "chart-allocation",
       "chart-cohort-retention",
       "chart-portfolio"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "chat-thread": {
     "useWhen": "A conversation with authored messages and a usable composer.",
@@ -181,7 +195,8 @@
       "ai-reasoning-trace",
       "streaming-text",
       "ai-mcp-elicitation"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "collab-mention-input": {
     "useWhen": "Inviting attention to a person while writing a short collaborative message.",
@@ -194,7 +209,8 @@
       "collab-activity-feed",
       "collab-annotation-pins",
       "collab-comment-thread"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "collab-presence-bar": {
     "useWhen": "Showing who is currently present in a shared workspace.",
@@ -206,7 +222,8 @@
       "collab-activity-feed",
       "collab-annotation-pins",
       "collab-comment-thread"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "command-palette": {
     "useWhen": "Quick navigation and discoverable keyboard actions across an application.",
@@ -218,7 +235,8 @@
       "streaming-text",
       "ai-citations-inline",
       "ai-composer-minimal"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "content-accordion-index": {
     "useWhen": "An editorial FAQ or compact question index with progressive disclosure.",
@@ -230,7 +248,8 @@
       "content-release-notes",
       "scroll-chapter-stack",
       "app-permission-matrix"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "cta-horizon": {
     "useWhen": "A focused closing section with one clear next step.",
@@ -242,7 +261,8 @@
       "button-magnetic",
       "agent-diff-review",
       "agent-status-pill"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "data-table-sortable": {
     "useWhen": "A readable collection of typed rows with sorting and selection.",
@@ -254,7 +274,8 @@
       "dashboard-orders-table",
       "data-file-explorer",
       "data-kanban-compact"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "devtools-code-block": {
     "useWhen": "Readable code examples with language styling and copying.",
@@ -266,7 +287,8 @@
       "devtools-api-playground",
       "devtools-env-vars",
       "devtools-feature-flags"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "dialog-confirm-typed": {
     "useWhen": "A clearly explained destructive action requiring an exact confirmation phrase.",
@@ -279,7 +301,8 @@
       "dropdown-menu-nested",
       "tooltip-group",
       "button-hold-confirm"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "dropdown-menu-nested": {
     "useWhen": "Related commands with a small number of nested groups.",
@@ -291,7 +314,8 @@
       "tooltip-group",
       "dialog-confirm-typed",
       "select-listbox"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "feedback-empty-search": {
     "useWhen": "A search with no matches and useful ways to recover.",
@@ -303,7 +327,8 @@
       "feedback-inline-alert",
       "feedback-morph-loader",
       "toast-promise"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "feedback-inline-alert": {
     "useWhen": "An actionable notice attached to the part of the page it affects.",
@@ -315,7 +340,8 @@
       "feedback-empty-search",
       "feedback-morph-loader",
       "toast-promise"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "feedback-morph-loader": {
     "useWhen": "A brief loading interval where continuity between states helps.",
@@ -327,7 +353,8 @@
       "toast-promise",
       "feedback-empty-search",
       "feedback-inline-alert"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "footer-columns-status": {
     "useWhen": "A multi-column footer with a real service-state reference.",
@@ -339,7 +366,8 @@
       "footer-wordmark",
       "footer-ascii-wordmark",
       "footer-newsletter"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "footer-newsletter": {
     "useWhen": "A closing newsletter form with a clear subscription action.",
@@ -351,7 +379,8 @@
       "footer-wordmark",
       "footer-ascii-wordmark",
       "footer-columns-status"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "footer-wordmark": {
     "useWhen": "A typography-led ending for a brand or studio page.",
@@ -363,7 +392,8 @@
       "footer-ascii-wordmark",
       "footer-newsletter",
       "footer-columns-status"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "header-announcement": {
     "useWhen": "A short, timely announcement above a site's main navigation.",
@@ -375,7 +405,8 @@
       "header-hairline",
       "header-island",
       "header-morph-mega"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "header-hairline": {
     "useWhen": "Quiet site navigation on a restrained marketing page.",
@@ -387,7 +418,8 @@
       "navbar-floating",
       "header-island",
       "header-morph-mega"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "hero-app-tilt": {
     "useWhen": "A product-led introduction built around a real interface or product visual.",
@@ -399,7 +431,8 @@
       "hero-product-stack",
       "hero-marquee-screens",
       "hero-blur-statement"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "hero-blur-statement": {
     "useWhen": "A concise editorial introduction whose typography carries the story.",
@@ -411,7 +444,8 @@
       "hero-app-tilt",
       "hero-marquee-screens",
       "hero-swiss-grid"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "hero-marquee-screens": {
     "useWhen": "Showing a small collection of authentic product screens in a launch page.",
@@ -423,7 +457,8 @@
       "hero-app-tilt",
       "hero-product-stack",
       "hero-blur-statement"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "hero-swiss-grid": {
     "useWhen": "An organised product introduction with a clear typographic hierarchy.",
@@ -435,7 +470,8 @@
       "hero-blur-statement",
       "hero-app-tilt",
       "hero-ghost-cursor"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "hero-terminal-agent": {
     "useWhen": "A developer or agent product introduction with readable terminal activity.",
@@ -447,7 +483,8 @@
       "hero-ghost-cursor",
       "hero-inline-objects",
       "hero-marquee-screens"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "input-color-swatches": {
     "useWhen": "Choosing a small, curated set of brand colours.",
@@ -460,7 +497,8 @@
       "input-file-dropzone",
       "input-number-stepper",
       "input-password-checklist"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "input-floating-label": {
     "useWhen": "A concise, labelled text field in a compact form.",
@@ -472,7 +510,8 @@
       "input-search-scoped",
       "input-color-swatches",
       "input-file-dropzone"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "input-number-stepper": {
     "useWhen": "Adjusting a bounded numerical value with direct entry and stepping.",
@@ -484,7 +523,8 @@
       "input-color-swatches",
       "input-file-dropzone",
       "input-password-checklist"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "input-password-checklist": {
     "useWhen": "Explaining password requirements while someone enters a new password.",
@@ -497,7 +537,8 @@
       "input-color-swatches",
       "input-file-dropzone",
       "input-number-stepper"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "input-search-scoped": {
     "useWhen": "Searching within a clearly identified collection or area.",
@@ -510,7 +551,8 @@
       "input-floating-label",
       "header-island",
       "combobox-async"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "input-tag-editor": {
     "useWhen": "Managing a small set of discrete, editable labels.",
@@ -523,7 +565,8 @@
       "input-color-swatches",
       "input-file-dropzone",
       "input-number-stepper"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "mobile-health-summary": {
     "useWhen": "A mobile summary of a few health or activity measurements.",
@@ -536,7 +579,8 @@
       "mobile-checkout-sheet",
       "mobile-tab-bar",
       "mobile-bottom-sheet"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "mobile-onboarding": {
     "useWhen": "A short sequence introducing an app before the first meaningful task.",
@@ -549,7 +593,8 @@
       "mobile-bottom-sheet",
       "mobile-chat",
       "mobile-live-activity"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "mobile-settings": {
     "useWhen": "A mobile preference screen with labelled switches and navigation.",
@@ -563,7 +608,8 @@
       "mobile-bottom-sheet",
       "mobile-chat",
       "mobile-live-activity"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "mobile-tab-bar": {
     "useWhen": "A small set of persistent top-level mobile destinations.",
@@ -577,7 +623,8 @@
       "mobile-bottom-sheet",
       "mobile-chat",
       "mobile-health-summary"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "navbar-floating": {
     "useWhen": "A compact floating navigation surface over a marketing page.",
@@ -589,7 +636,8 @@
       "header-hairline",
       "header-morph-mega",
       "header-island"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "navigation-breadcrumb-fold": {
     "useWhen": "An ancestry trail that remains usable in narrow spaces.",
@@ -601,7 +649,8 @@
       "navigation-pagination-window",
       "tabs-underline-glide",
       "app-permission-matrix"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "navigation-pagination-window": {
     "useWhen": "Moving through a bounded collection of numbered result pages.",
@@ -613,7 +662,8 @@
       "navigation-breadcrumb-fold",
       "tabs-underline-glide",
       "app-permission-matrix"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "pixel-agent-status": {
     "useWhen": "A small animated character communicating an agent's current state.",
@@ -625,7 +675,8 @@
       "pixel-matrix-display",
       "feedback-morph-loader",
       "agent-status-pill"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "pixel-matrix-display": {
     "useWhen": "A dot-matrix treatment for short phrases or compact display content.",
@@ -637,7 +688,8 @@
       "pixel-agent-status",
       "ai-thinking-states",
       "cta-horizon"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "pricing-plan-toggle": {
     "useWhen": "Comparing one plan across billing intervals with a clear amount.",
@@ -649,7 +701,8 @@
       "pricing-three-tier",
       "pricing-comparison-matrix",
       "pricing-receipt"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "pricing-three-tier": {
     "useWhen": "A deliberate comparison between three distinct purchase options.",
@@ -661,7 +714,8 @@
       "pricing-plan-toggle",
       "pricing-comparison-matrix",
       "pricing-receipt"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "primitives-shortcut-reference": {
     "useWhen": "A discoverable list of keyboard shortcuts close to the task.",
@@ -673,7 +727,8 @@
       "button-hold-confirm",
       "toast-stack",
       "input-shortcut-recorder"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "progress-milestones": {
     "useWhen": "Communicating discrete, ordered stages of a task or journey.",
@@ -685,7 +740,8 @@
       "saas-usage-policy",
       "usage-meter-tokens",
       "app-permission-matrix"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "segmented-control": {
     "useWhen": "Switching between a small number of related views or values.",
@@ -697,7 +753,8 @@
       "select-listbox",
       "switch-spring",
       "combobox-async"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "select-listbox": {
     "useWhen": "A labelled choice from a manageable set of discrete options.",
@@ -709,7 +766,8 @@
       "combobox-async",
       "segmented-control",
       "multiselect-chips"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "selects-radio-cards": {
     "useWhen": "Choosing one clearly explained mode or configuration.",
@@ -722,7 +780,8 @@
       "cards-event-ticket",
       "segmented-control",
       "select-listbox"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "settings-panel": {
     "useWhen": "A compact group of editable preferences with an explicit save action.",
@@ -735,7 +794,8 @@
       "app-permission-matrix",
       "commerce-operations-dashboard",
       "dashboard-kpi-cards"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "streaming-text": {
     "useWhen": "Displaying an assistant answer as its content arrives.",
@@ -747,7 +807,8 @@
       "ai-citations-inline",
       "ai-reasoning-trace",
       "ai-search-answer"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "switch-spring": {
     "useWhen": "A binary preference whose current value is immediately legible.",
@@ -759,7 +820,8 @@
       "segmented-control",
       "select-listbox",
       "combobox-async"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "tabs-underline-glide": {
     "useWhen": "Related panels where a moving underline helps preserve orientation.",
@@ -771,7 +833,8 @@
       "navigation-breadcrumb-fold",
       "navigation-pagination-window",
       "segmented-control"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "testimonial-wall": {
     "useWhen": "A considered set of customer quotations and attributed social proof.",
@@ -783,7 +846,8 @@
       "hero-marquee-screens",
       "agent-diff-review",
       "agent-status-pill"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "three-wave-field": {
     "useWhen": "A restrained atmospheric background behind readable content.",
@@ -795,7 +859,8 @@
       "three-particle-sphere",
       "three-contour-terrain",
       "three-ascii-object"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "toast-promise": {
     "useWhen": "Reporting the pending, success and failure states of an asynchronous action.",
@@ -807,7 +872,8 @@
       "feedback-morph-loader",
       "feedback-empty-search",
       "feedback-inline-alert"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "toast-stack": {
     "useWhen": "A small stream of dismissible application notifications.",
@@ -819,7 +885,8 @@
       "button-hold-confirm",
       "primitives-shortcut-reference",
       "toast-promise"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "tooltip-group": {
     "useWhen": "Brief supplementary explanations for nearby controls.",
@@ -831,7 +898,8 @@
       "dropdown-menu-nested",
       "dialog-confirm-typed",
       "ai-message-actions"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "agent-approval-gate": {
     "useWhen": "Reviewing a proposed agent action before a person approves execution.",
@@ -843,7 +911,8 @@
       "agent-diff-review",
       "agent-commit-card",
       "agent-plan-steps"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "agent-commit-card": {
     "useWhen": "Presenting a proposed repository change and its supporting context.",
@@ -855,7 +924,8 @@
       "agent-diff-review",
       "agent-approval-gate",
       "agent-plan-steps"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "agent-diff-review": {
     "useWhen": "Inspecting an agent's file changes before accepting them.",
@@ -868,7 +938,8 @@
       "agent-approval-gate",
       "agent-commit-card",
       "agent-status-pill"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "agent-plan-steps": {
     "useWhen": "Showing ordered work, dependencies and the currently active step.",
@@ -881,7 +952,8 @@
       "agent-run-trace",
       "agent-status-pill",
       "agent-tool-call"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "agent-run-trace": {
     "useWhen": "Reviewing a run's recorded steps, tools and outcomes.",
@@ -893,7 +965,8 @@
       "agent-plan-steps",
       "agent-tool-call",
       "agent-status-pill"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "agent-tool-call": {
     "useWhen": "Presenting a tool's inputs, status and result within an agent workflow.",
@@ -905,7 +978,8 @@
       "agent-run-trace",
       "agent-plan-steps",
       "agent-status-pill"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "ai-citations-inline": {
     "useWhen": "Attaching readable references to an assistant answer.",
@@ -917,7 +991,8 @@
       "ai-search-answer",
       "streaming-text",
       "ai-image-generation"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "ai-image-generation": {
     "useWhen": "Reviewing an image-generation request and its outputs.",
@@ -929,7 +1004,8 @@
       "input-ai-prompt",
       "ai-citations-inline",
       "ai-mcp-elicitation"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "ai-mcp-elicitation": {
     "useWhen": "Collecting a focused answer an agent needs to continue.",
@@ -942,7 +1018,8 @@
       "ai-message-actions",
       "chat-thread",
       "ai-citations-inline"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "ai-model-picker": {
     "useWhen": "Choosing among models with clearly stated capabilities and costs.",
@@ -954,7 +1031,8 @@
       "ai-reasoning-trace",
       "ai-message-actions",
       "ai-voice-mode"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "ai-reasoning-trace": {
     "useWhen": "Showing supplied reasoning summaries or labelled processing stages.",
@@ -966,7 +1044,8 @@
       "ai-thinking-states",
       "streaming-text",
       "ai-message-actions"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "ai-search-answer": {
     "useWhen": "An answer with source context and an inspectable research trail.",
@@ -978,7 +1057,8 @@
       "ai-citations-inline",
       "streaming-text",
       "ai-reasoning-trace"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "ai-side-panel": {
     "useWhen": "Keeping contextual assistant help beside the primary workspace.",
@@ -990,7 +1070,8 @@
       "ai-voice-mode",
       "chat-thread",
       "ai-citations-inline"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "ai-voice-mode": {
     "useWhen": "A voice-session surface with understandable listening and speaking states.",
@@ -1002,7 +1083,8 @@
       "ai-message-actions",
       "ai-reasoning-trace",
       "ai-composer-minimal"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "app-permission-matrix": {
     "useWhen": "Comparing explicit permissions across roles and resources.",
@@ -1015,7 +1097,8 @@
       "hr-org-explorer",
       "hr-people-dashboard",
       "legal-matter-dashboard"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "auth-otp": {
     "useWhen": "Entering and verifying a short one-time authentication code.",
@@ -1027,7 +1110,8 @@
       "auth-magic-link",
       "auth-sign-in",
       "auth-sso-detect"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "auth-sso-detect": {
     "useWhen": "Discovering an enterprise sign-in route from a person's organisation.",
@@ -1039,7 +1123,8 @@
       "auth-sign-in",
       "auth-magic-link",
       "auth-otp"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "bento-grid": {
     "useWhen": "A live product overview with independent panels and purposeful activity.",
@@ -1051,7 +1136,8 @@
       "feature-sticky-scroll",
       "chart-allocation",
       "chart-channel-breakdown"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "bg-dither-flow": {
     "useWhen": "A subtle generative backdrop with a controlled visual texture.",
@@ -1063,7 +1149,8 @@
       "bg-grain-gradient",
       "three-contour-terrain",
       "hero-prism"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "bg-grain-gradient": {
     "useWhen": "A restrained light field and grain behind an editorial section.",
@@ -1075,7 +1162,8 @@
       "bg-dither-flow",
       "hero-prism",
       "scroll-background-wipe"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "billing-cancel-flow": {
     "useWhen": "A clear subscription cancellation journey with an explicit outcome.",
@@ -1088,7 +1176,8 @@
       "billing-invoice-list",
       "billing-overview",
       "billing-payment-methods"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "billing-overview": {
     "useWhen": "A summary of an account's plan, invoices and subscription state.",
@@ -1100,7 +1189,8 @@
       "billing-invoice-list",
       "billing-payment-methods",
       "billing-plan-change"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "billing-plan-change": {
     "useWhen": "Reviewing a plan change and its supplied proration before confirmation.",
@@ -1113,7 +1203,8 @@
       "billing-seat-manager",
       "billing-invoice-list",
       "billing-overview"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "billing-seat-manager": {
     "useWhen": "Reviewing licensed seats and changes to member allocation.",
@@ -1126,7 +1217,8 @@
       "billing-plan-change",
       "billing-invoice-list",
       "billing-overview"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "billing-usage-forecast": {
     "useWhen": "Comparing current usage with a clearly labelled forecast.",
@@ -1138,7 +1230,8 @@
       "billing-cancel-flow",
       "billing-invoice-list",
       "billing-overview"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "button-magnetic": {
     "useWhen": "A deliberate primary marketing action with restrained pointer response.",
@@ -1150,7 +1243,8 @@
       "button-press-depth",
       "cta-horizon",
       "button-hold-confirm"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "cards-event-ticket": {
     "useWhen": "A concise ticket containing event and admission details.",
@@ -1162,7 +1256,8 @@
       "card-profile-stats",
       "selects-radio-cards",
       "app-permission-matrix"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "cart-drawer": {
     "useWhen": "Reviewing basket items, quantities and totals while continuing to shop.",
@@ -1174,7 +1269,8 @@
       "commerce-backorder-allocation",
       "commerce-bundle-builder",
       "commerce-catalog-import"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "chart-allocation": {
     "useWhen": "Comparing positive parts of a whole with readable amounts and shares.",
@@ -1186,7 +1282,8 @@
       "chart-portfolio",
       "chart-waffle",
       "chart-candlestick"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "chart-bullet-targets": {
     "useWhen": "Comparing actual measures with their targets in a compact view.",
@@ -1198,7 +1295,8 @@
       "chart-slope-comparison",
       "chart-waterfall-bridge",
       "chart-candlestick"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "chart-candlestick": {
     "useWhen": "Inspecting open, high, low and close data over time.",
@@ -1210,7 +1308,8 @@
       "chart-portfolio",
       "chart-revenue-trend",
       "chart-allocation"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "chart-channel-breakdown": {
     "useWhen": "Comparing channel contributions and changes between periods.",
@@ -1222,7 +1321,8 @@
       "chart-revenue-trend",
       "chart-portfolio",
       "chart-race-bars"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "chart-cohort-retention": {
     "useWhen": "Comparing retention across cohorts and elapsed periods.",
@@ -1234,7 +1334,8 @@
       "chart-revenue-trend",
       "chart-allocation",
       "chart-portfolio"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "chart-race-bars": {
     "useWhen": "Showing changing rankings across a small sequence of supplied frames.",
@@ -1246,7 +1347,8 @@
       "chart-streamgraph",
       "chart-allocation",
       "chart-channel-breakdown"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "chart-radar-compare": {
     "useWhen": "Comparing several entities across a shared set of meaningful axes.",
@@ -1258,7 +1360,8 @@
       "chart-allocation",
       "chart-race-bars",
       "chart-streamgraph"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "chart-revenue-trend": {
     "useWhen": "Inspecting revenue over time with clear range and comparison controls.",
@@ -1270,7 +1373,8 @@
       "chart-portfolio",
       "chart-candlestick",
       "chart-channel-breakdown"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "chart-slope-comparison": {
     "useWhen": "Showing the direction and size of change between two periods.",
@@ -1282,7 +1386,8 @@
       "chart-bullet-targets",
       "chart-waterfall-bridge",
       "chart-candlestick"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "chart-streamgraph": {
     "useWhen": "Showing how several contributions change across time.",
@@ -1294,7 +1399,8 @@
       "chart-race-bars",
       "chart-allocation",
       "chart-cohort-retention"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "chart-treemap-drill": {
     "useWhen": "Exploring hierarchical proportions from an overview into a category.",
@@ -1306,7 +1412,8 @@
       "chart-allocation",
       "chart-race-bars",
       "chart-radar-compare"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "chart-waterfall-bridge": {
     "useWhen": "Explaining the contributions between a starting and ending value.",
@@ -1318,7 +1425,8 @@
       "chart-bullet-targets",
       "chart-slope-comparison",
       "chart-candlestick"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "collab-activity-feed": {
     "useWhen": "Reviewing authored activity associated with a shared workspace.",
@@ -1330,7 +1438,8 @@
       "collab-annotation-pins",
       "collab-comment-thread",
       "collab-invite-people"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "collab-annotation-pins": {
     "useWhen": "Attaching comments to a specific point on a visual or document.",
@@ -1342,7 +1451,8 @@
       "collab-comment-thread",
       "collab-activity-feed",
       "collab-invite-people"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "collab-comment-thread": {
     "useWhen": "A focused conversation attached to a resource.",
@@ -1354,7 +1464,8 @@
       "collab-annotation-pins",
       "collab-activity-feed",
       "collab-invite-people"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "collab-invite-people": {
     "useWhen": "Preparing invitations with explicit roles and recipients.",
@@ -1367,7 +1478,8 @@
       "collab-share-access",
       "collab-activity-feed",
       "collab-annotation-pins"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "collab-share-access": {
     "useWhen": "Reviewing who may view or edit a specific resource.",
@@ -1380,7 +1492,8 @@
       "collab-invite-people",
       "collab-activity-feed",
       "collab-annotation-pins"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "combobox-async": {
     "useWhen": "Choosing an item from remotely loaded, searchable results.",
@@ -1393,7 +1506,8 @@
       "multiselect-chips",
       "select-listbox",
       "segmented-control"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "commerce-backorder-allocation": {
     "useWhen": "Allocating available stock against open backorders with a reviewed decision.",
@@ -1406,7 +1520,8 @@
       "commerce-bundle-builder",
       "commerce-catalog-import",
       "commerce-customer-timeline"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "commerce-bundle-builder": {
     "useWhen": "Building a product bundle with explicit quantities and pricing.",
@@ -1419,7 +1534,8 @@
       "commerce-backorder-allocation",
       "commerce-catalog-import",
       "commerce-customer-timeline"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "commerce-catalog-import": {
     "useWhen": "Mapping and reviewing catalogue rows before a host import.",
@@ -1432,7 +1548,8 @@
       "commerce-return-desk",
       "commerce-variant-stock",
       "commerce-backorder-allocation"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "commerce-customer-timeline": {
     "useWhen": "Inspecting a customer's supplied order and service history.",
@@ -1444,7 +1561,8 @@
       "commerce-backorder-allocation",
       "commerce-bundle-builder",
       "commerce-catalog-import"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "commerce-fulfilment-desk": {
     "useWhen": "Reviewing shipment exceptions and recording a recovery action.",
@@ -1456,7 +1574,8 @@
       "commerce-backorder-allocation",
       "commerce-bundle-builder",
       "commerce-catalog-import"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "commerce-operations-dashboard": {
     "useWhen": "A commerce overview that connects headline measures with operational queues.",
@@ -1468,7 +1587,8 @@
       "app-permission-matrix",
       "fashion-merchandising-dashboard",
       "finance-cashflow-dashboard"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "commerce-promotion-builder": {
     "useWhen": "Preparing promotion conditions and reviewing their intended scope.",
@@ -1482,7 +1602,8 @@
       "commerce-backorder-allocation",
       "commerce-bundle-builder",
       "commerce-catalog-import"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "commerce-purchase-order": {
     "useWhen": "Drafting a purchase order from supplied catalogue and supplier data.",
@@ -1496,7 +1617,8 @@
       "commerce-backorder-allocation",
       "commerce-bundle-builder",
       "commerce-catalog-import"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "commerce-return-desk": {
     "useWhen": "Reviewing eligible return items and an explicit return decision.",
@@ -1509,7 +1631,8 @@
       "commerce-catalog-import",
       "commerce-variant-stock",
       "commerce-backorder-allocation"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "commerce-shipping-estimator": {
     "useWhen": "Comparing supplied shipping services and their estimated costs.",
@@ -1522,7 +1645,8 @@
       "commerce-backorder-allocation",
       "commerce-bundle-builder",
       "commerce-catalog-import"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "commerce-variant-stock": {
     "useWhen": "Inspecting stock across fashion sizes and colours.",
@@ -1535,7 +1659,8 @@
       "commerce-catalog-import",
       "commerce-return-desk",
       "commerce-backorder-allocation"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "content-release-notes": {
     "useWhen": "A readable release history with useful filtering and version context.",
@@ -1547,7 +1672,8 @@
       "content-accordion-index",
       "scroll-chapter-stack",
       "app-permission-matrix"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "dashboard-kpi-cards": {
     "useWhen": "A compact overview of related measures with readable trends.",
@@ -1559,7 +1685,8 @@
       "dashboard-orders-table",
       "settings-panel",
       "app-permission-matrix"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "dashboard-orders-table": {
     "useWhen": "Reviewing supplied orders with useful filtering and row actions.",
@@ -1571,7 +1698,8 @@
       "dashboard-kpi-cards",
       "settings-panel",
       "app-permission-matrix"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "data-file-explorer": {
     "useWhen": "Navigating a supplied hierarchy of folders and files.",
@@ -1583,7 +1711,8 @@
       "data-kanban-compact",
       "data-query-builder",
       "legal-document-requests"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "data-kanban-compact": {
     "useWhen": "Planning tasks across editable columns with pointer, touch and keyboard movement.",
@@ -1597,7 +1726,8 @@
       "data-file-explorer",
       "data-query-builder",
       "legal-document-requests"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "data-query-builder": {
     "useWhen": "Preparing a readable audience or filter expression from typed fields.",
@@ -1611,7 +1741,8 @@
       "data-file-explorer",
       "legal-document-requests",
       "legal-evidence-index"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "date-booking-slots": {
     "useWhen": "Choosing a supplied available appointment slot.",
@@ -1624,7 +1755,8 @@
       "date-week-agenda",
       "fashion-launch-calendar",
       "hr-capacity-planner"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "date-week-agenda": {
     "useWhen": "Reviewing a small weekly schedule with day and event context.",
@@ -1636,7 +1768,8 @@
       "date-booking-slots",
       "fashion-launch-calendar",
       "hr-capacity-planner"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "devtools-api-playground": {
     "useWhen": "Preparing a request and inspecting a host-supplied response.",
@@ -1649,7 +1782,8 @@
       "devtools-webhook-inspector",
       "devtools-code-block",
       "devtools-env-vars"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "devtools-env-vars": {
     "useWhen": "Reviewing environment values and deliberate configuration edits.",
@@ -1662,7 +1796,8 @@
       "devtools-feature-flags",
       "devtools-webhook-inspector",
       "devtools-api-playground"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "devtools-feature-flags": {
     "useWhen": "Reviewing explicit flag changes and rollout configuration.",
@@ -1675,7 +1810,8 @@
       "devtools-env-vars",
       "devtools-webhook-inspector",
       "devtools-api-playground"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "devtools-json-inspector": {
     "useWhen": "Inspecting structured JSON with readable nesting and bounded output.",
@@ -1687,7 +1823,8 @@
       "devtools-request-waterfall",
       "devtools-api-playground",
       "devtools-webhook-inspector"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "devtools-log-stream": {
     "useWhen": "Reviewing a supplied stream of operational logs.",
@@ -1699,7 +1836,8 @@
       "devtools-webhook-inspector",
       "devtools-api-playground",
       "devtools-code-block"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "devtools-request-waterfall": {
     "useWhen": "Explaining the timing of supplied request phases.",
@@ -1711,7 +1849,8 @@
       "devtools-json-inspector",
       "devtools-api-playground",
       "chart-waterfall-bridge"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "devtools-status-page": {
     "useWhen": "A readable service-health page backed by supplied status and incidents.",
@@ -1723,7 +1862,8 @@
       "devtools-api-playground",
       "devtools-code-block",
       "devtools-env-vars"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "devtools-webhook-inspector": {
     "useWhen": "Inspecting recorded delivery attempts and a deliberate retry request.",
@@ -1736,7 +1876,8 @@
       "devtools-api-playground",
       "devtools-env-vars",
       "devtools-feature-flags"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "diagram-agent-loop": {
     "useWhen": "Explaining the stages and handoffs of an agent loop.",
@@ -1748,7 +1889,8 @@
       "diagram-deploy-canary",
       "diagram-payment-hops",
       "diagram-region-failover"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "diagram-deploy-canary": {
     "useWhen": "Illustrating how a canary rollout proceeds and changes traffic.",
@@ -1760,7 +1902,8 @@
       "diagram-agent-loop",
       "diagram-payment-hops",
       "diagram-rag-pipeline"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "diagram-payment-hops": {
     "useWhen": "Explaining the participants and sequence of a payment flow.",
@@ -1772,7 +1915,8 @@
       "diagram-agent-loop",
       "diagram-deploy-canary",
       "diagram-rag-pipeline"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "diagram-rag-pipeline": {
     "useWhen": "Explaining retrieval, context assembly and answer generation.",
@@ -1784,7 +1928,8 @@
       "diagram-vector-space",
       "diagram-deploy-canary",
       "diagram-payment-hops"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "diagram-region-failover": {
     "useWhen": "Explaining a service's routing and failover topology.",
@@ -1796,7 +1941,8 @@
       "diagram-agent-loop",
       "diagram-deploy-canary",
       "diagram-payment-hops"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "diagram-sequence-auth": {
     "useWhen": "Explaining the participants and sequence of a PKCE exchange.",
@@ -1808,7 +1954,8 @@
       "diagram-agent-loop",
       "diagram-deploy-canary",
       "diagram-payment-hops"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "diagram-vector-space": {
     "useWhen": "Introducing embeddings and neighbourhoods through a visual explanation.",
@@ -1820,7 +1967,8 @@
       "diagram-rag-pipeline",
       "diagram-agent-loop",
       "diagram-deploy-canary"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "editor-markdown-split": {
     "useWhen": "Writing Markdown with an adjacent rendered preview.",
@@ -1832,7 +1980,8 @@
       "editor-rich-text",
       "editor-node-graph",
       "editor-signature-pad"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "editor-node-graph": {
     "useWhen": "Editing a small graph of connected nodes and relationships.",
@@ -1845,7 +1994,8 @@
       "editor-signature-pad",
       "editor-whiteboard",
       "legal-clause-library"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "editor-rich-text": {
     "useWhen": "Authoring structured rich text in a focused application surface.",
@@ -1858,7 +2008,8 @@
       "editor-markdown-split",
       "editor-node-graph",
       "editor-signature-pad"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "editor-signature-pad": {
     "useWhen": "Capturing a drawn mark with an explicit confirmation action.",
@@ -1871,7 +2022,8 @@
       "editor-node-graph",
       "editor-whiteboard",
       "editor-markdown-split"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "editor-whiteboard": {
     "useWhen": "Working with simple marks and objects in a visual canvas.",
@@ -1884,7 +2036,8 @@
       "editor-node-graph",
       "editor-signature-pad",
       "editor-markdown-split"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "effect-gravity-grid": {
     "useWhen": "A decorative grid with restrained pointer-responsive movement.",
@@ -1896,7 +2049,8 @@
       "bento-grid",
       "cta-horizon",
       "footer-ascii-wordmark"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "fashion-assortment-planner": {
     "useWhen": "Planning product allocations across stores and assortment groups.",
@@ -1909,7 +2063,8 @@
       "commerce-catalog-import",
       "commerce-return-desk",
       "commerce-variant-stock"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "fashion-collection-line-plan": {
     "useWhen": "Reviewing a collection's styles, planned quantities and line-level decisions.",
@@ -1922,7 +2077,8 @@
       "commerce-catalog-import",
       "commerce-return-desk",
       "commerce-variant-stock"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "fashion-exchange-selector": {
     "useWhen": "Choosing an eligible replacement variant for an existing order item.",
@@ -1935,7 +2091,8 @@
       "commerce-catalog-import",
       "commerce-return-desk",
       "commerce-variant-stock"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "fashion-launch-calendar": {
     "useWhen": "Planning collection launch dates and reviewing schedule conflicts.",
@@ -1948,7 +2105,8 @@
       "hr-capacity-planner",
       "hr-leave-approval",
       "hr-shift-coverage"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "fashion-merchandising-dashboard": {
     "useWhen": "Reviewing collection performance alongside merchandising actions.",
@@ -1961,7 +2119,8 @@
       "app-permission-matrix",
       "commerce-operations-dashboard",
       "finance-cashflow-dashboard"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "fashion-preorder-planner": {
     "useWhen": "Comparing preorders with production thresholds and planned quantities.",
@@ -1974,7 +2133,8 @@
       "commerce-catalog-import",
       "commerce-return-desk",
       "commerce-variant-stock"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "fashion-size-guide": {
     "useWhen": "Editing and reviewing a garment's supplied measurements and size guidance.",
@@ -1987,7 +2147,8 @@
       "commerce-catalog-import",
       "commerce-return-desk",
       "commerce-variant-stock"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "fashion-wholesale-order": {
     "useWhen": "Preparing a wholesale order across styles, sizes and quantities.",
@@ -2000,7 +2161,8 @@
       "commerce-catalog-import",
       "commerce-return-desk",
       "commerce-variant-stock"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "feature-sticky-scroll": {
     "useWhen": "A sequential feature story with a stable visual beside changing copy.",
@@ -2012,7 +2174,8 @@
       "bento-grid",
       "header-hairline",
       "navbar-floating"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "finance-budget-variance": {
     "useWhen": "Comparing supplied budget and actual values with readable differences.",
@@ -2026,7 +2189,8 @@
       "finance-close-checklist",
       "finance-expense-review",
       "finance-invoice-composer"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "finance-cashflow-dashboard": {
     "useWhen": "Reviewing supplied cash balances, movements and near-term context.",
@@ -2039,7 +2203,8 @@
       "app-permission-matrix",
       "commerce-operations-dashboard",
       "fashion-merchandising-dashboard"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "finance-close-checklist": {
     "useWhen": "Coordinating period-close tasks and collecting clear completion evidence.",
@@ -2052,7 +2217,8 @@
       "finance-budget-variance",
       "finance-expense-review",
       "finance-invoice-composer"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "finance-expense-review": {
     "useWhen": "Reviewing a claim's supplied receipt lines, policy exceptions and decision.",
@@ -2066,7 +2232,8 @@
       "finance-budget-variance",
       "finance-close-checklist",
       "finance-invoice-composer"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "finance-invoice-composer": {
     "useWhen": "Preparing an invoice draft with explicit lines and reconciled amounts.",
@@ -2079,7 +2246,8 @@
       "finance-budget-variance",
       "finance-close-checklist",
       "finance-expense-review"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "finance-payment-run": {
     "useWhen": "Reviewing payees and payment amounts before an explicit handoff.",
@@ -2092,7 +2260,8 @@
       "finance-budget-variance",
       "finance-close-checklist",
       "finance-expense-review"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "finance-receivables-aging": {
     "useWhen": "Reviewing overdue invoices by age and preparing an appropriate follow-up.",
@@ -2105,7 +2274,8 @@
       "finance-budget-variance",
       "finance-close-checklist",
       "finance-expense-review"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "finance-reconciliation": {
     "useWhen": "Comparing supplied settlement records and identifying mismatches.",
@@ -2117,7 +2287,8 @@
       "finance-budget-variance",
       "finance-close-checklist",
       "finance-expense-review"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "finance-scenario-forecast": {
     "useWhen": "Exploring cash-flow assumptions in clearly labelled scenarios.",
@@ -2130,7 +2301,8 @@
       "finance-budget-variance",
       "finance-close-checklist",
       "finance-expense-review"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "footer-ascii-wordmark": {
     "useWhen": "A distinctive typographic close for a developer or creative brand.",
@@ -2142,7 +2314,8 @@
       "footer-wordmark",
       "footer-columns-status",
       "footer-newsletter"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "forms-preference-center": {
     "useWhen": "Reviewing communication channels and saving explicit preferences.",
@@ -2155,7 +2328,8 @@
       "hr-interview-scorecard",
       "hr-policy-acknowledgement",
       "legal-matter-intake"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "header-island": {
     "useWhen": "A compact site header that expands into contextual navigation.",
@@ -2167,7 +2341,8 @@
       "header-hairline",
       "header-morph-mega",
       "navbar-floating"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "header-morph-mega": {
     "useWhen": "A marketing site with several groups of related destinations.",
@@ -2179,7 +2354,8 @@
       "header-hairline",
       "header-island",
       "navbar-floating"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "hero-ghost-cursor": {
     "useWhen": "Demonstrating a product interaction within a clearly framed hero.",
@@ -2191,7 +2367,8 @@
       "hero-terminal-agent",
       "hero-inline-objects",
       "hero-marquee-screens"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "hero-inline-objects": {
     "useWhen": "An editorial product headline with a small number of meaningful objects.",
@@ -2203,7 +2380,8 @@
       "hero-ghost-cursor",
       "hero-terminal-agent",
       "hero-app-tilt"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "hero-kinetic-type": {
     "useWhen": "A concise product statement with deliberate typographic movement.",
@@ -2215,7 +2393,8 @@
       "hero-marquee-screens",
       "hero-app-tilt",
       "hero-blur-statement"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "hero-prism": {
     "useWhen": "A visually expressive introduction with a clear headline and action.",
@@ -2227,7 +2406,8 @@
       "hero-app-tilt",
       "hero-blur-statement",
       "hero-ghost-cursor"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "hero-product-stack": {
     "useWhen": "A product introduction built around supplied, authentic product visuals.",
@@ -2239,7 +2419,8 @@
       "hero-app-tilt",
       "hero-marquee-screens",
       "hero-ghost-cursor"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "hr-capacity-planner": {
     "useWhen": "Reviewing assigned work against supplied team capacity.",
@@ -2253,7 +2434,8 @@
       "hr-leave-approval",
       "hr-shift-coverage",
       "fashion-launch-calendar"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "hr-compensation-review": {
     "useWhen": "Reviewing supplied pay proposals and their budget impact.",
@@ -2266,7 +2448,8 @@
       "finance-budget-variance",
       "finance-close-checklist",
       "finance-expense-review"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "hr-employee-onboarding": {
     "useWhen": "Coordinating a new employee's explicit setup and onboarding tasks.",
@@ -2279,7 +2462,8 @@
       "onboarding-setup-checklist",
       "app-permission-matrix",
       "hr-capacity-planner"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "hr-interview-scorecard": {
     "useWhen": "Recording structured interview evidence against consistent criteria.",
@@ -2293,7 +2477,8 @@
       "hr-policy-acknowledgement",
       "forms-preference-center",
       "legal-matter-intake"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "hr-leave-approval": {
     "useWhen": "Reviewing dates, coverage and an explicit leave decision.",
@@ -2306,7 +2491,8 @@
       "hr-capacity-planner",
       "hr-shift-coverage",
       "fashion-launch-calendar"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "hr-org-explorer": {
     "useWhen": "Exploring a supplied organisational hierarchy and reporting relationships.",
@@ -2318,7 +2504,8 @@
       "app-permission-matrix",
       "hr-people-dashboard",
       "commerce-operations-dashboard"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "hr-people-dashboard": {
     "useWhen": "A concise overview of supplied people measures and operational queues.",
@@ -2331,7 +2518,8 @@
       "app-permission-matrix",
       "hr-org-explorer",
       "commerce-operations-dashboard"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "hr-policy-acknowledgement": {
     "useWhen": "Reading a specific policy revision and recording an explicit acknowledgement.",
@@ -2343,7 +2531,8 @@
       "hr-interview-scorecard",
       "forms-preference-center",
       "legal-matter-intake"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "hr-shift-coverage": {
     "useWhen": "Reviewing open shifts and a proposed coverage assignment.",
@@ -2356,7 +2545,8 @@
       "hr-capacity-planner",
       "hr-leave-approval",
       "fashion-launch-calendar"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "input-ai-prompt": {
     "useWhen": "An assistant composer that needs richer prompt and attachment controls.",
@@ -2369,7 +2559,8 @@
       "ai-composer-minimal",
       "ai-image-generation",
       "ai-message-actions"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "input-file-dropzone": {
     "useWhen": "Choosing and validating supplied file types before a host upload.",
@@ -2382,7 +2573,8 @@
       "input-color-swatches",
       "input-number-stepper",
       "input-password-checklist"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "input-shortcut-recorder": {
     "useWhen": "Recording a deliberate keyboard combination in a preference screen.",
@@ -2395,7 +2587,8 @@
       "input-color-swatches",
       "input-file-dropzone",
       "input-number-stepper"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "legal-clause-library": {
     "useWhen": "Finding and reviewing supplied clause text, revisions and usage context.",
@@ -2408,7 +2601,8 @@
       "legal-version-history",
       "editor-node-graph",
       "app-permission-matrix"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "legal-document-requests": {
     "useWhen": "Tracking requested documents and their supplied submission state.",
@@ -2421,7 +2615,8 @@
       "legal-evidence-index",
       "legal-obligation-tracker",
       "data-file-explorer"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "legal-evidence-index": {
     "useWhen": "Organising supplied evidence records, provenance and review notes.",
@@ -2434,7 +2629,8 @@
       "legal-document-requests",
       "legal-obligation-tracker",
       "data-file-explorer"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "legal-matter-dashboard": {
     "useWhen": "Reviewing supplied matter workload, deadlines and operational queues.",
@@ -2447,7 +2643,8 @@
       "app-permission-matrix",
       "commerce-operations-dashboard",
       "fashion-merchandising-dashboard"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "legal-matter-intake": {
     "useWhen": "Collecting and reviewing a matter's supplied facts before handoff.",
@@ -2461,7 +2658,8 @@
       "legal-signature-request",
       "forms-preference-center",
       "hr-interview-scorecard"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "legal-obligation-tracker": {
     "useWhen": "Reviewing contractual obligations, owners and recorded completion.",
@@ -2474,7 +2672,8 @@
       "legal-document-requests",
       "legal-evidence-index",
       "data-file-explorer"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "legal-renewal-planner": {
     "useWhen": "Planning action around supplied contract renewal and notice dates.",
@@ -2488,7 +2687,8 @@
       "fashion-launch-calendar",
       "hr-capacity-planner",
       "hr-leave-approval"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "legal-signature-request": {
     "useWhen": "Reviewing a document revision, signer order and provider handoff payload.",
@@ -2502,7 +2702,8 @@
       "legal-matter-intake",
       "forms-preference-center",
       "hr-interview-scorecard"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "legal-version-history": {
     "useWhen": "Comparing supplied document revisions and reviewing their differences.",
@@ -2514,7 +2715,8 @@
       "legal-clause-library",
       "app-permission-matrix",
       "editor-node-graph"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "media-before-after": {
     "useWhen": "Comparing two authentic visuals with a controllable divider.",
@@ -2526,7 +2728,8 @@
       "media-story-deck",
       "scroll-cinema-frame",
       "scroll-image-curtain"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "media-story-deck": {
     "useWhen": "A short visual story with deliberate sequencing and readable captions.",
@@ -2538,7 +2741,8 @@
       "media-before-after",
       "scroll-cinema-frame",
       "scroll-image-curtain"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "mobile-agent-approval": {
     "useWhen": "A mobile review of an agent's proposed action before confirmation.",
@@ -2551,7 +2755,8 @@
       "mobile-checkout-sheet",
       "mobile-bottom-sheet",
       "mobile-chat"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "mobile-bottom-sheet": {
     "useWhen": "A contextual mobile sheet for supplied delivery details and actions.",
@@ -2564,7 +2769,8 @@
       "mobile-chat",
       "mobile-checkout-sheet",
       "mobile-live-activity"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "mobile-chat": {
     "useWhen": "A mobile assistant conversation with a focused composer.",
@@ -2578,7 +2784,8 @@
       "mobile-bottom-sheet",
       "mobile-live-activity",
       "mobile-now-playing"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "mobile-checkout-sheet": {
     "useWhen": "Reviewing a mobile order and deliberately confirming payment intent.",
@@ -2592,7 +2799,8 @@
       "mobile-wallet-stack",
       "mobile-bottom-sheet",
       "mobile-health-summary"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "mobile-live-activity": {
     "useWhen": "A glanceable summary of supplied delivery progress.",
@@ -2605,7 +2813,8 @@
       "mobile-now-playing",
       "mobile-bottom-sheet",
       "mobile-chat"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "mobile-now-playing": {
     "useWhen": "A mobile playback surface with readable track and position controls.",
@@ -2618,7 +2827,8 @@
       "mobile-live-activity",
       "mobile-bottom-sheet",
       "mobile-chat"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "mobile-paywall": {
     "useWhen": "A clear mobile subscription offer with explicit price and benefits.",
@@ -2631,7 +2841,8 @@
       "mobile-bottom-sheet",
       "mobile-chat",
       "mobile-live-activity"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "mobile-swipe-list": {
     "useWhen": "A mobile inbox with reversible row actions and clear item state.",
@@ -2644,7 +2855,8 @@
       "mobile-wallet-stack",
       "mobile-bottom-sheet",
       "mobile-chat"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "mobile-wallet-stack": {
     "useWhen": "Browsing a small set of supplied wallet cards and their details.",
@@ -2657,7 +2869,8 @@
       "mobile-checkout-sheet",
       "mobile-swipe-list",
       "mobile-bottom-sheet"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "multiselect-chips": {
     "useWhen": "Selecting several searchable options and reviewing the chosen set.",
@@ -2670,7 +2883,8 @@
       "combobox-async",
       "select-listbox",
       "segmented-control"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "onboarding-setup-checklist": {
     "useWhen": "Coordinating a small set of actionable workspace setup tasks.",
@@ -2683,7 +2897,8 @@
       "hr-employee-onboarding",
       "input-password-checklist",
       "app-permission-matrix"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "pricing-comparison-matrix": {
     "useWhen": "Comparing plan capabilities in a readable, structured matrix.",
@@ -2695,7 +2910,8 @@
       "pricing-three-tier",
       "pricing-plan-toggle",
       "pricing-receipt"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "pricing-receipt": {
     "useWhen": "A focused, transparent price presentation with explicit inclusions.",
@@ -2707,7 +2923,8 @@
       "pricing-comparison-matrix",
       "pricing-plan-toggle",
       "pricing-three-tier"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "saas-access-requests": {
     "useWhen": "Reviewing requested privileges, duration and an explicit grant or decline.",
@@ -2721,7 +2938,8 @@
       "saas-audit-trail",
       "saas-customer-health",
       "saas-integration-manager"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "saas-audit-trail": {
     "useWhen": "Exploring recorded actor, resource and configuration changes with filters and details.",
@@ -2734,7 +2952,8 @@
       "saas-access-requests",
       "saas-customer-health",
       "saas-integration-manager"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "saas-customer-health": {
     "useWhen": "Reviewing supplied customer signals and prioritising account follow-up.",
@@ -2748,7 +2967,8 @@
       "saas-access-requests",
       "saas-audit-trail",
       "saas-integration-manager"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "saas-integration-manager": {
     "useWhen": "Reviewing connector state and explicit connection or disconnection actions.",
@@ -2761,7 +2981,8 @@
       "saas-access-requests",
       "saas-audit-trail",
       "saas-customer-health"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "saas-notification-inbox": {
     "useWhen": "Triaging supplied notifications through read, archive and filter states.",
@@ -2774,7 +2995,8 @@
       "saas-access-requests",
       "saas-audit-trail",
       "saas-customer-health"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "saas-report-scheduler": {
     "useWhen": "Preparing report recipients, frequency and delivery preferences.",
@@ -2788,7 +3010,8 @@
       "forms-preference-center",
       "hr-interview-scorecard",
       "hr-policy-acknowledgement"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "saas-saved-views": {
     "useWhen": "Naming, pinning and saving reusable filters for a host collection.",
@@ -2802,7 +3025,8 @@
       "data-file-explorer",
       "data-query-builder",
       "legal-document-requests"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "saas-support-triage": {
     "useWhen": "Reviewing a support queue and recording explicit assignment or priority changes.",
@@ -2816,7 +3040,8 @@
       "saas-access-requests",
       "saas-audit-trail",
       "saas-customer-health"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "saas-usage-policy": {
     "useWhen": "Reviewing limits, thresholds and actions for a supplied usage policy.",
@@ -2830,7 +3055,8 @@
       "progress-milestones",
       "saas-access-requests",
       "saas-audit-trail"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "saas-workspace-dashboard": {
     "useWhen": "A workspace overview connecting supplied usage, setup and activity.",
@@ -2843,7 +3069,8 @@
       "saas-access-requests",
       "saas-audit-trail",
       "saas-customer-health"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "scroll-background-wipe": {
     "useWhen": "Changing a decorative background as a readable section progresses.",
@@ -2855,7 +3082,8 @@
       "scroll-chapter-stack",
       "scroll-cinema-frame",
       "scroll-expanding-mosaic"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "scroll-chapter-stack": {
     "useWhen": "A short chapter-based narrative with deliberate panel progression.",
@@ -2867,7 +3095,8 @@
       "content-accordion-index",
       "content-release-notes",
       "scroll-background-wipe"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "scroll-cinema-frame": {
     "useWhen": "Expanding an authentic video or image within a scroll-led product story.",
@@ -2879,7 +3108,8 @@
       "scroll-image-curtain",
       "media-before-after",
       "media-story-deck"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "scroll-expanding-mosaic": {
     "useWhen": "Opening a visual mosaic into a larger product or editorial moment.",
@@ -2891,7 +3121,8 @@
       "scroll-horizontal-showcase",
       "scroll-background-wipe",
       "scroll-chapter-stack"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "scroll-horizontal-showcase": {
     "useWhen": "A short horizontal product sequence driven by a readable vertical story.",
@@ -2903,7 +3134,8 @@
       "scroll-expanding-mosaic",
       "scroll-background-wipe",
       "scroll-chapter-stack"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "scroll-image-curtain": {
     "useWhen": "Revealing paired visuals through a controlled scroll progression.",
@@ -2915,7 +3147,8 @@
       "scroll-cinema-frame",
       "media-before-after",
       "media-story-deck"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "text-decode": {
     "useWhen": "A short decorative text reveal in an introductory section.",
@@ -2927,7 +3160,8 @@
       "button-magnetic",
       "devtools-log-stream",
       "footer-ascii-wordmark"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "three-ascii-object": {
     "useWhen": "A restrained generative object within a creative or developer brand page.",
@@ -2939,7 +3173,8 @@
       "three-contour-terrain",
       "three-holo-card",
       "three-keycaps"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "three-contour-terrain": {
     "useWhen": "An atmospheric terrain visual behind a clear editorial message.",
@@ -2951,7 +3186,8 @@
       "three-holo-card",
       "three-particle-sphere",
       "three-wave-field"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "three-globe-arcs": {
     "useWhen": "Illustrating supplied routes or connections on a globe.",
@@ -2964,7 +3200,8 @@
       "three-contour-terrain",
       "three-particle-sphere",
       "three-wave-field"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "three-holo-card": {
     "useWhen": "A decorative material treatment for a supplied card or brand visual.",
@@ -2976,7 +3213,8 @@
       "three-contour-terrain",
       "three-particle-sphere",
       "three-ascii-object"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "three-keycaps": {
     "useWhen": "Explaining a small set of keyboard shortcuts with tactile key visuals.",
@@ -2989,7 +3227,8 @@
       "three-ascii-object",
       "three-contour-terrain",
       "three-holo-card"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "three-particle-sphere": {
     "useWhen": "A restrained generative scene in a landing-page introduction.",
@@ -3001,7 +3240,8 @@
       "three-wave-field",
       "three-contour-terrain",
       "three-holo-card"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "three-voice-orb": {
     "useWhen": "A decorative visual accompanying clearly labelled voice states.",
@@ -3014,7 +3254,8 @@
       "three-particle-sphere",
       "three-wave-field",
       "three-ascii-object"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "usage-meter-tokens": {
     "useWhen": "Showing supplied token consumption, limits and remaining allowance.",
@@ -3026,7 +3267,8 @@
       "progress-milestones",
       "saas-usage-policy",
       "agent-approval-gate"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "work-index-hover": {
     "useWhen": "An editorial work index with authentic project previews.",
@@ -3038,7 +3280,8 @@
       "hero-blur-statement",
       "scroll-expanding-mosaic",
       "scroll-horizontal-showcase"
-    ]
+    ],
+    "updated": "2026-10-12"
   },
   "layout-workspace-shell": {
     "useWhen": "A complete product page needs consistent identity, navigation and a quiet frame around several working panels.",
@@ -3051,6 +3294,18 @@
       "navigation-breadcrumb-fold",
       "tabs-underline-glide",
       "header-hairline"
-    ]
+    ],
+    "updated": "2026-10-12"
+  },
+  "block-saas-dashboard": {
+    "useWhen": "A SaaS overview needs connected headline measures, a selectable metric trend and the account records behind the numbers.",
+    "avoidWhen": "A single metric card or a large analytics warehouse requiring server aggregation and virtualised tables.",
+    "integration": [
+      "Supply `metrics`, `records` and `columns` from the same reporting source. Selecting a KPI or time range updates the shared chart context.",
+      "Use `onExport` for your own reporting service, or keep the built-in metric CSV download. Failed callbacks preserve the current view.",
+      "Install the four declared components with the block. Each remains available for independent customisation."
+    ],
+    "related": [],
+    "updated": "2026-10-12"
   }
 }

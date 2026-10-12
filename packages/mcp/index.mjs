@@ -74,15 +74,16 @@ server.tool(
   {
     query: z.string().optional().describe("Keywords, e.g. 'pricing', 'chart', 'bottom sheet', 'three.js'"),
     category: z.string().optional().describe("Category key, e.g. hero, pricing, charts, three-d, pixel, ai, app, mobile"),
+    kind: z.enum(["component", "block"]).optional(),
     tier: z.enum(["free", "pro"]).optional(),
     platform: z.enum(["web", "mobile"]).optional(),
     limit: z.number().int().min(1).max(50).optional(),
   },
-  async ({ query, category, tier, platform, limit = 12 }) => {
+  async ({ query, category, kind, tier, platform, limit = 12 }) => {
     const all = await index();
     const words = (query ?? "").toLowerCase().split(/\s+/).filter(Boolean);
     const scored = all
-      .filter((c) => (!category || c.category === category) && (!tier || c.tier === tier) && (!platform || c.platform === platform))
+      .filter((c) => (!kind || (c.kind ?? "component") === kind) && (!category || c.category === category) && (!tier || c.tier === tier) && (!platform || c.platform === platform))
       .map((c) => {
         const hay = [c.name, c.slug, c.description, c.category, ...(c.tags ?? [])].join(" ").toLowerCase();
         const score = words.reduce((s, w) => s + (hay.includes(w) ? (c.name.toLowerCase().includes(w) ? 3 : 1) : 0), 0);

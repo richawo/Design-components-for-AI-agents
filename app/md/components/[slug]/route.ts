@@ -1,3 +1,4 @@
+import { cataloguePath } from "@/lib/catalogue-path";
 import { componentGuide, guideMarkdown } from "@/lib/component-guidance";
 import { controlsSection } from "@/lib/demo/describe";
 import { fileNameFor, installText } from "@/lib/install";
@@ -17,7 +18,7 @@ export async function GET(
   const md = [
     "---",
     `title: ${JSON.stringify(e.name)}`,
-    `canonical: ${absoluteUrl(`/components/${slug}`)}`,
+    `canonical: ${absoluteUrl(cataloguePath(e))}`,
     `tier: ${e.tier}`,
     `platform: ${e.platform}`,
     `category: ${e.category}`,
@@ -29,6 +30,20 @@ export async function GET(
     "",
     `Category: ${CATEGORIES[e.category].label} · ${e.tier === "free" ? "Free (MIT)" : "Pro"} · ${e.platform === "mobile" ? "React Native" : "React + Tailwind v4"}${e.dependencies.length ? ` · deps: ${e.dependencies.join(", ")}` : ""}`,
     "",
+    ...(e.kind === "block"
+      ? [
+          "## Built from",
+          "",
+          ...(e.components ?? [])
+            .map((id) => getComponent(id))
+            .filter(Boolean)
+            .map(
+              (child) =>
+                `- [${child!.name}](${absoluteUrl(`${cataloguePath(child!)}.md`)})`,
+            ),
+          "",
+        ]
+      : []),
     ...guideMarkdown(componentGuide(slug)),
     "## Installation",
     "",
@@ -63,7 +78,7 @@ export async function GET(
       .filter(Boolean)
       .map(
         (item) =>
-          `- [${item!.name}](${absoluteUrl(`/components/${item!.slug}.md`)}): ${item!.description}`,
+          `- [${item!.name}](${absoluteUrl(`${cataloguePath(item!)}.md`)}): ${item!.description}`,
       ),
     "",
     ...(src
@@ -96,7 +111,7 @@ export async function GET(
     headers: {
       "Content-Type": "text/markdown; charset=utf-8",
       "X-Robots-Tag": "noindex, follow",
-      Link: `<${absoluteUrl(`/components/${slug}`)}>; rel="canonical"`,
+      Link: `<${absoluteUrl(cataloguePath(e))}>; rel="canonical"`,
     },
   });
 }

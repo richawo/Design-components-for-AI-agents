@@ -55,7 +55,10 @@ export const PRICING_FAQ: QA[] = [
 ];
 
 /** Plan features. Counts come from the registry so they never go stale. */
-export function planFeatures(counts: { free: number; pro: number }, cadence: "lifetime" | "yearly") {
+export function planFeatures(
+  counts: { free: number; pro: number; blocks?: number },
+  cadence: "lifetime" | "yearly",
+) {
   return {
     free: [
       `${counts.free} free components`,
@@ -66,10 +69,13 @@ export function planFeatures(counts: { free: number; pro: number }, cadence: "li
     ],
     pro: [
       `Everything in Free, plus ${counts.pro} Pro components`,
+      ...(counts.blocks ? [`${counts.blocks} complete Pro page blocks`] : []),
       "Pro prompts and JSON prompts",
       "Private shadcn registry, MCP and CLI access",
       "React Native Pro screens",
-      cadence === "lifetime" ? "Every future Pro release, no renewal" : "Every release while subscribed",
+      cadence === "lifetime"
+        ? "Every future Pro release, no renewal"
+        : "Every release while subscribed",
       "Unlimited personal and client projects",
     ],
     team: [

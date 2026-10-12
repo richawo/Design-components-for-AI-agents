@@ -1,10 +1,20 @@
 import "server-only";
+import { cataloguePath } from "./catalogue-path";
 import { allDocs, allPosts, getDoc } from "./content";
 import { HOME_FAQ, PRICING_FAQ, planFeatures } from "./copy";
 import { installText } from "./install";
 import { PLANS } from "./pricing";
-import { categoriesWithCounts, componentsIn, stats } from "./registry";
-import { CATEGORIES, type Category, type RegistryEntry } from "./registry-types";
+import {
+  allBlocks,
+  categoriesWithCounts,
+  componentsIn,
+  stats,
+} from "./registry";
+import {
+  CATEGORIES,
+  type Category,
+  type RegistryEntry,
+} from "./registry-types";
 import { absoluteUrl, site } from "./site";
 import { blogMarkdown, markdownSitemap, sitemapLocales } from "./blog/feeds";
 import { localeByCode } from "./blog/locales.mjs";
@@ -17,12 +27,20 @@ import { localeByCode } from "./blog/locales.mjs";
  */
 
 const front = (title: string, path: string, description?: string) =>
-  ["---", `title: ${JSON.stringify(title)}`, ...(description ? [`description: ${JSON.stringify(description)}`] : []), `canonical: ${absoluteUrl(path)}`, "---", ""].join("\n");
+  [
+    "---",
+    `title: ${JSON.stringify(title)}`,
+    ...(description ? [`description: ${JSON.stringify(description)}`] : []),
+    `canonical: ${absoluteUrl(path)}`,
+    "---",
+    "",
+  ].join("\n");
 
 const row = (e: RegistryEntry) =>
-  `- [${e.name}](${absoluteUrl(`/components/${e.slug}.md`)}) \`${e.slug}\` · ${e.tier === "pro" ? "Pro" : "Free"}${e.platform === "mobile" ? " · React Native" : ""}: ${e.description}`;
+  `- [${e.name}](${absoluteUrl(`${cataloguePath(e)}.md`)}) \`${e.slug}\` · ${e.tier === "pro" ? "Pro" : "Free"}${e.platform === "mobile" ? " · React Native" : ""}: ${e.description}`;
 
-const faq = (items: { q: string; a: string }[]) => items.flatMap((x) => [`### ${x.q}`, "", x.a, ""]);
+const faq = (items: { q: string; a: string }[]) =>
+  items.flatMap((x) => [`### ${x.q}`, "", x.a, ""]);
 
 const quickStart = () => [
   "## Install",
@@ -56,7 +74,10 @@ async function home() {
     ...quickStart(),
     "## Browse by category",
     "",
-    ...categoriesWithCounts().map((c) => `- [${c.label}](${absoluteUrl(`/categories/${c.key}.md`)}) (${c.count}): ${c.blurb}`),
+    ...categoriesWithCounts().map(
+      (c) =>
+        `- [${c.label}](${absoluteUrl(`/categories/${c.key}.md`)}) (${c.count}): ${c.blurb}`,
+    ),
     "",
     `Everything in one list: [all components](${absoluteUrl("/components.md")}). For a map built for language models, see [llms.txt](${absoluteUrl("/llms.txt")}).`,
     "",
@@ -69,12 +90,23 @@ async function home() {
 async function componentsIndex() {
   const s = stats();
   return [
-    front("All components", "/components", `${s.total} components, every one with code, a prompt and a JSON prompt.`),
+    front(
+      "All components",
+      "/components",
+      `${s.total} components, every one with code, a prompt and a JSON prompt.`,
+    ),
     `# ${s.total} components`,
     "",
     `${s.free} free and open source, ${s.pro} Pro, ${s.mobile} React Native. Each links to its Markdown page with install command, props, prompt and (for free components) the full source.`,
     "",
-    ...categoriesWithCounts().flatMap((c) => [`## ${c.label}`, "", c.blurb, "", ...componentsIn(c.key).map(row), ""]),
+    ...categoriesWithCounts().flatMap((c) => [
+      `## ${c.label}`,
+      "",
+      c.blurb,
+      "",
+      ...componentsIn(c.key).map(row),
+      "",
+    ]),
   ].join("\n");
 }
 
@@ -106,7 +138,11 @@ async function pricing() {
   const once = planFeatures(s, "lifetime");
   const yearly = planFeatures(s, "yearly");
   return [
-    front("Pricing", "/pricing", "Free and open source, or Pro once and for good."),
+    front(
+      "Pricing",
+      "/pricing",
+      "Free and open source, or Pro once and for good.",
+    ),
     "# Pricing",
     "",
     `${s.free} components are free and always will be. Pro unlocks the other ${s.pro}, their prompts and the private registry, yearly or with one payment that covers every future release.`,
@@ -151,7 +187,10 @@ async function doc(slug: string) {
     "",
     "## More docs",
     "",
-    ...others.map((x) => `- [${x.title}](${absoluteUrl(x.slug === "introduction" ? "/docs.md" : `/docs/${x.slug}.md`)}): ${x.description}`),
+    ...others.map(
+      (x) =>
+        `- [${x.title}](${absoluteUrl(x.slug === "introduction" ? "/docs.md" : `/docs/${x.slug}.md`)}): ${x.description}`,
+    ),
     "",
   ].join("\n");
 }
@@ -177,6 +216,7 @@ export function markdownPagePaths(): string[] {
   return [
     "index",
     "components",
+    "blocks",
     "pricing",
     "docs",
     ...allDocs()
@@ -191,18 +231,44 @@ export function markdownPagePaths(): string[] {
 export async function markdownForPage(path: string): Promise<string | null> {
   const p = path.replace(/^\/+|\/+$/g, "") || "index";
   const parts = p.split("/");
-  const locale = localeByCode(parts[0]) && parts[1] === "blog" ? parts.shift()! : "en";
-  if (parts[0] === "blog") return blogMarkdown([locale, ...parts.slice(1)])?.body ?? null;
+  const locale =
+    localeByCode(parts[0]) && parts[1] === "blog" ? parts.shift()! : "en";
+  if (parts[0] === "blog")
+    return blogMarkdown([locale, ...parts.slice(1)])?.body ?? null;
   if (p === "sitemap") return markdownSitemap();
-  if (parts[0] === "sitemaps" && parts.length === 2 && sitemapLocales().includes(parts[1])) return markdownSitemap(parts[1]);
+  if (
+    parts[0] === "sitemaps" &&
+    parts.length === 2 &&
+    sitemapLocales().includes(parts[1])
+  )
+    return markdownSitemap(parts[1]);
   if (p === "index") return home();
   if (p === "components") return componentsIndex();
+  if (p === "blocks")
+    return [
+      front("Complete Pro blocks", "/blocks"),
+      "# Complete Pro blocks",
+      "",
+      "Complete dashboards, reports, settings and landing pages composed from the Design for AI catalogue. Installing a block includes its declared component dependencies.",
+      "",
+      ...allBlocks().flatMap((entry) => [
+        row(entry),
+        "",
+        "Built from: " + (entry.components ?? []).join(", "),
+        "",
+      ]),
+    ].join("\n");
   if (p === "pricing") return pricing();
   if (p === "docs") return doc("introduction");
   if (p === "account") return account();
   const [section, slug, ...rest] = p.split("/");
   if (rest.length || !slug) return null;
   if (section === "docs") return doc(slug);
-  if (section === "categories" && slug in CATEGORIES && componentsIn(slug as Category).length) return category(slug as Category);
+  if (
+    section === "categories" &&
+    slug in CATEGORIES &&
+    componentsIn(slug as Category).length
+  )
+    return category(slug as Category);
   return null;
 }

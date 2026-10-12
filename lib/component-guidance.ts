@@ -1,6 +1,7 @@
 import guides from "@/content/components/guides.json";
 
 export interface ComponentGuide {
+  updated?: string;
   useWhen: string;
   avoidWhen: string;
   integration: string[];

@@ -9,6 +9,7 @@ import { site } from "@/lib/site";
 
 const NAV = [
   { href: "/components", label: "Components" },
+  { href: "/blocks", label: "Blocks" },
   { href: "/pricing", label: "Pricing" },
   { href: "/docs", label: "Docs" },
   { href: "/blog", label: "Blog" },

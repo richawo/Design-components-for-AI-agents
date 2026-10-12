@@ -169,7 +169,12 @@ function validateCompleteness(slug, m, prompt, promptJson, code) {
   }
   if (m.demo && Array.isArray(m.demo.steps) && code) {
     const names = [...new Set(m.demo.steps.map((st) => /@([a-z][a-z0-9-]*)/.exec(String(st))?.[1]).filter(Boolean))];
-    const dynamic = /data-demo=\{/.test(code);
+    // A block's walkthrough can target elements in a declared child component.
+    const nestedDemoCode = m.kind === "block" && Array.isArray(m.components) ? m.components.flatMap(id => ["free", "pro"].flatMap(tier => {
+      const file = path.join(registryDir, tier, id, `${id}.tsx`);
+      return fs.existsSync(file) ? [fs.readFileSync(file, "utf8")] : [];
+    })).join("\n") : "";
+    const dynamic = /data-demo=\{/.test(code + nestedDemoCode);
     for (const n of names) if (!code.includes(`data-demo="${n}"`) && !dynamic) fail(slug, `demo targets @${n} but no element has data-demo="${n}"`);
   }
   if ((prompt ?? "").trim().length < 600) fail(slug, "prompt.md is too short to rebuild the component (min 600 chars)");

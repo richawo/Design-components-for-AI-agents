@@ -5007,6 +5007,105 @@
     "added": "2026-10-10"
   },
   {
+    "slug": "block-saas-dashboard",
+    "name": "SaaS Metrics Dashboard",
+    "tier": "pro",
+    "platform": "web",
+    "category": "app",
+    "description": "A complete analytics page connecting KPI periods, an inspectable trend and searchable workspace records. Composed from four reusable components with real CSV export.",
+    "tags": [
+      "block",
+      "dashboard",
+      "composition",
+      "keyboard",
+      "monochrome"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1500,
+    "usage": "import { SaasDashboard } from \"@/components/design-for-ai/block-saas-dashboard\";\n\n<SaasDashboard />",
+    "props": [
+      {
+        "name": "brand",
+        "type": "string",
+        "default": "\"Northstar\"",
+        "description": "Workspace identity."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Workspace overview\"",
+        "description": "Page heading."
+      },
+      {
+        "name": "metrics",
+        "type": "DashboardMetric[]",
+        "description": "Unique metric keys with finite daily points; sum for counts and revenue, or average for percentages. Complete seven-day comparisons need 14 points per metric."
+      },
+      {
+        "name": "records",
+        "type": "DataTableRow[]",
+        "description": "Workspace rows for search and table inspection."
+      },
+      {
+        "name": "columns",
+        "type": "DataTableColumn[]",
+        "description": "Typed columns for the supplied workspace rows."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"GBP\"",
+        "description": "Currency code for financial measures."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Shared palette across the page."
+      },
+      {
+        "name": "onExport",
+        "type": "(report: DashboardExport) => void | Promise<void>",
+        "description": "Host export receives the selected metric, complete period, point records and filtered workspace rows. Without a callback, the button downloads a CSV of the metric points."
+      }
+    ],
+    "added": "2026-10-12",
+    "kind": "block",
+    "blockType": "dashboard",
+    "components": [
+      "layout-workspace-shell",
+      "dashboard-kpi-cards",
+      "chart-revenue-trend",
+      "data-table-sortable"
+    ],
+    "demo": {
+      "steps": [
+        "wait:350",
+        "click:@card-signups",
+        "wait:500",
+        "click:@period-7d",
+        "wait:1500"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "button-magnetic",
     "name": "Magnetic CTA",
     "tier": "pro",

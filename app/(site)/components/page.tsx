@@ -5,7 +5,12 @@ import { CountUp } from "@/components/site/count-up";
 import { DitherGlow } from "@/components/site/dither-glow";
 import { JsonLd } from "@/components/site/json-ld";
 import { galleryFilters, readCategoryParam } from "@/lib/gallery-sidebar";
-import { allComponents, categoriesWithCounts, stats, toCard } from "@/lib/registry";
+import {
+  individualComponents,
+  categoriesWithCounts,
+  stats,
+  toCard,
+} from "@/lib/registry";
 import { absoluteUrl, site } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -15,22 +20,37 @@ export const metadata: Metadata = {
   alternates: { canonical: "/components" },
 };
 
-export default async function ComponentsPage({ searchParams }: { searchParams: Promise<{ category?: string | string[]; tier?: string | string[]; q?: string | string[] }> }) {
+export default async function ComponentsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    category?: string | string[];
+    tier?: string | string[];
+    q?: string | string[];
+  }>;
+}) {
   const sp = await searchParams;
   const s = stats();
-  const all = allComponents();
+  const all = individualComponents();
   const cards = all.map(toCard);
-  const categories = categoriesWithCounts().map(({ key, label, count }) => ({ key, label, count }));
+  const categories = categoriesWithCounts().map(({ key, label, count }) => ({
+    key,
+    label,
+    count,
+  }));
   const raw = Array.isArray(sp.category) ? sp.category[0] : sp.category;
   const valid = new Set<string>(categories.map((c) => c.key));
-  if (typeof raw === "string" && !valid.has(raw.trim())) redirect("/components");
+  if (typeof raw === "string" && !valid.has(raw.trim()))
+    redirect("/components");
   const category = readCategoryParam(raw, valid);
   const filterParams = new URLSearchParams();
   for (const key of ["tier", "q"] as const) {
     const value = Array.isArray(sp[key]) ? sp[key]?.[0] : sp[key];
     if (typeof value === "string") filterParams.set(key, value);
   }
-  const initialFilters = filterParams.size ? galleryFilters(filterParams, null) : undefined;
+  const initialFilters = filterParams.size
+    ? galleryFilters(filterParams, null)
+    : undefined;
   return (
     <div className="relative mx-auto max-w-[80rem] px-5 pb-28 sm:px-8">
       <JsonLd
@@ -43,15 +63,25 @@ export default async function ComponentsPage({ searchParams }: { searchParams: P
           mainEntity: {
             "@type": "ItemList",
             numberOfItems: all.length,
-            itemListElement: all.map((c, i) => ({ "@type": "ListItem", position: i + 1, url: absoluteUrl(`/components/${c.slug}`), name: c.name })),
+            itemListElement: all.map((c, i) => ({
+              "@type": "ListItem",
+              position: i + 1,
+              url: absoluteUrl(`/components/${c.slug}`),
+              name: c.name,
+            })),
           },
         }}
       />
       <section className="relative isolate pb-12 pt-14 lg:pb-16 lg:pt-20">
-        <div aria-hidden="true" className="absolute -inset-x-5 -top-16 -z-10 h-[30rem] sm:-inset-x-8">
+        <div
+          aria-hidden="true"
+          className="absolute -inset-x-5 -top-16 -z-10 h-[30rem] sm:-inset-x-8"
+        >
           <DitherGlow className="opacity-70 [mask-image:linear-gradient(180deg,#000_35%,transparent)]" />
         </div>
-        <p className="site-in font-mono text-[11px] uppercase tracking-[0.18em] text-site-fg-3">Library</p>
+        <p className="site-in font-mono text-[11px] uppercase tracking-[0.18em] text-site-fg-3">
+          Library
+        </p>
         <h1 className="site-in mt-4 max-w-[18ch] text-[clamp(2.25rem,1.4rem+3.4vw,4rem)] font-semibold leading-[1] tracking-[-0.05em] [--i:1]">
           <span className="text-site-fg">
             <CountUp value={s.total} delay={0.25} /> components.
@@ -59,10 +89,18 @@ export default async function ComponentsPage({ searchParams }: { searchParams: P
           <span className="text-site-fg-3">Every one designed.</span>
         </h1>
         <p className="site-in mt-5 max-w-[60ch] text-[16px] leading-relaxed text-site-fg-2 [--i:2]">
-          <CountUp value={s.free} delay={0.35} /> free and open source, <CountUp value={s.pro} delay={0.4} /> Pro, <CountUp value={s.mobile} delay={0.45} /> React Native. Each ships with its code, a prompt and a JSON prompt.
+          <CountUp value={s.free} delay={0.35} /> free and open source,{" "}
+          <CountUp value={s.pro} delay={0.4} /> Pro,{" "}
+          <CountUp value={s.mobile} delay={0.45} /> React Native. Each ships
+          with its code, a prompt and a JSON prompt.
         </p>
       </section>
-      <ComponentBrowser cards={cards} categories={categories} category={category} initialFilters={initialFilters} />
+      <ComponentBrowser
+        cards={cards}
+        categories={categories}
+        category={category}
+        initialFilters={initialFilters}
+      />
     </div>
   );
 }

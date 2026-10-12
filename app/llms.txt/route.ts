@@ -1,5 +1,11 @@
+import { cataloguePath } from "@/lib/catalogue-path";
 import { allDocs, allPosts } from "@/lib/content";
-import { allComponents, categoriesWithCounts, stats } from "@/lib/registry";
+import {
+  allBlocks,
+  allComponents,
+  categoriesWithCounts,
+  stats,
+} from "@/lib/registry";
 import { absoluteUrl, site } from "@/lib/site";
 import { blogLocales, blogPath } from "@/lib/blog/runtime";
 
@@ -7,7 +13,7 @@ export const dynamic = "force-static";
 
 export function GET() {
   const s = stats();
-  const comps = allComponents();
+  const comps = allComponents().filter((entry) => entry.kind !== "block");
   const lines = [
     `# ${site.name}`,
     "",
@@ -35,6 +41,7 @@ export function GET() {
     "- Blog hubs, topics, pagination and articles also support Accept: text/markdown. Their Markdown frontmatter identifies the canonical HTML URL and language.",
     "",
     "## Key pages",
+    `- [Complete Pro blocks](${absoluteUrl("/blocks.md")})`,
     `- [All components](${absoluteUrl("/components.md")})`,
     `- [Anti-slop design principles](${absoluteUrl("/docs/principles.md")}): rules and a checklist to use as a system prompt`,
     `- [AI agents & MCP](${absoluteUrl("/docs/agents.md")})`,
@@ -46,16 +53,45 @@ export function GET() {
       `## [${c.label}](${absoluteUrl(`/categories/${c.key}.md`)}) (${c.count})`,
       ...comps
         .filter((e) => e.category === c.key)
-        .map((e) => `- [${e.name}](${absoluteUrl(`/components/${e.slug}.md`)}) \`${e.slug}\` (${e.tier}${e.platform === "mobile" ? ", React Native" : ""}): ${e.description}`),
+        .map(
+          (e) =>
+            `- [${e.name}](${absoluteUrl(`/components/${e.slug}.md`)}) \`${e.slug}\` (${e.tier}${e.platform === "mobile" ? ", React Native" : ""}): ${e.description}`,
+        ),
       "",
     ]),
+    "## Complete Pro blocks",
+    ...allBlocks().map(
+      (entry) =>
+        `- [${entry.name}](${absoluteUrl(`${cataloguePath(entry)}.md`)}) \`${entry.slug}\`: ${entry.description}`,
+    ),
+    "",
     "## Docs",
-    ...allDocs().map((d) => `- [${d.title}](${absoluteUrl(d.slug === "introduction" ? "/docs.md" : `/docs/${d.slug}.md`)}): ${d.description}`),
+    ...allDocs().map(
+      (d) =>
+        `- [${d.title}](${absoluteUrl(d.slug === "introduction" ? "/docs.md" : `/docs/${d.slug}.md`)}): ${d.description}`,
+    ),
     "",
     "## Blog",
-    ...allPosts().map((p) => `- [${p.title}](${absoluteUrl(`/blog/${p.slug}.md`)}): ${p.description}`),
-    ...(allPosts().length ? ["", "## Blog language editions", ...blogLocales().map((locale) => `- [${locale.label}](${absoluteUrl(`${blogPath(locale.code)}.md`)})`)] : []),
+    ...allPosts().map(
+      (p) =>
+        `- [${p.title}](${absoluteUrl(`/blog/${p.slug}.md`)}): ${p.description}`,
+    ),
+    ...(allPosts().length
+      ? [
+          "",
+          "## Blog language editions",
+          ...blogLocales().map(
+            (locale) =>
+              `- [${locale.label}](${absoluteUrl(`${blogPath(locale.code)}.md`)})`,
+          ),
+        ]
+      : []),
     "",
   ];
-  return new Response(lines.join("\n"), { headers: { "Content-Type": "text/plain; charset=utf-8", "X-Robots-Tag": "noindex, follow" } });
+  return new Response(lines.join("\n"), {
+    headers: {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Robots-Tag": "noindex, follow",
+    },
+  });
 }
