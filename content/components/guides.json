@@ -3039,5 +3039,18 @@
       "scroll-expanding-mosaic",
       "scroll-horizontal-showcase"
     ]
+  },
+  "layout-workspace-shell": {
+    "useWhen": "A complete product page needs consistent identity, navigation and a quiet frame around several working panels.",
+    "avoidWhen": "A single isolated card or a marketing introduction that does not need workspace navigation.",
+    "integration": [
+      "Pass real routes or unique section anchors through `links`. Navigation reflows from a sidebar to a horizontal strip based on the shell container.",
+      "Place your page panels in `children` and host actions in `actions`. The shell owns presentation; each supplied panel keeps its interaction and data contract."
+    ],
+    "related": [
+      "navigation-breadcrumb-fold",
+      "tabs-underline-glide",
+      "header-hairline"
+    ]
   }
 }

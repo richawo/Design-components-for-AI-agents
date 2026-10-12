@@ -18947,6 +18947,104 @@
     ]
   },
   {
+    "slug": "layout-workspace-shell",
+    "name": "Workspace Shell",
+    "tier": "pro",
+    "platform": "web",
+    "category": "navigation",
+    "description": "A responsive workspace frame with quiet navigation, page actions and named content sections. Compose your own dashboard, report or settings area inside it.",
+    "tags": [
+      "layout",
+      "responsive",
+      "navigation",
+      "keyboard",
+      "monochrome"
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "theme": "dark",
+    "previewHeight": 1050,
+    "usage": "import { WorkspaceShell } from \"@/components/design-for-ai/layout-workspace-shell\";\n\n<WorkspaceShell />",
+    "props": [
+      {
+        "name": "brand",
+        "type": "string",
+        "default": "\"Northstar\"",
+        "description": "Workspace identity."
+      },
+      {
+        "name": "eyebrow",
+        "type": "string",
+        "default": "\"Workspace\"",
+        "description": "Small contextual label."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Overview\"",
+        "description": "Page heading."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "description": "Supporting context."
+      },
+      {
+        "name": "links",
+        "type": "WorkspaceLink[]",
+        "description": "Unique IDs, labels and real routes or section anchors."
+      },
+      {
+        "name": "actions",
+        "type": "ReactNode",
+        "description": "Host-owned action controls beside the heading."
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "description": "The page panels, each retaining its own API."
+      },
+      {
+        "name": "footer",
+        "type": "ReactNode",
+        "description": "Optional quiet footer content."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface and ink palette."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Host layout classes."
+      }
+    ],
+    "added": "2026-10-12",
+    "demo": {
+      "steps": [
+        "wait:350",
+        "click:@nav-activity",
+        "wait:2100"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "legal-clause-library",
     "name": "Clause Library Browser",
     "tier": "pro",
