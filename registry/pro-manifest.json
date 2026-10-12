@@ -5007,6 +5007,90 @@
     "added": "2026-10-10"
   },
   {
+    "slug": "block-financial-report",
+    "name": "Monthly Financial Report",
+    "tier": "pro",
+    "platform": "web",
+    "category": "charts",
+    "description": "An editorial financial report combining budget targets, spend allocation, commentary and line-level evidence. Includes period selection, CSV export and print.",
+    "tags": [
+      "block",
+      "report",
+      "composition",
+      "keyboard",
+      "monochrome"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 2100,
+    "usage": "import { FinancialReport } from \"@/components/design-for-ai/block-financial-report\";\n\n<FinancialReport />",
+    "props": [
+      {
+        "name": "brand",
+        "type": "string",
+        "default": "\"Northstar\"",
+        "description": "Report identity."
+      },
+      {
+        "name": "periods",
+        "type": "FinancialReportPeriod[]",
+        "description": "Unique periods with nonnegative safe integer minor-unit amounts, cost lines and commentary. The monetary scale is two minor-unit digits."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"GBP\"",
+        "description": "Currency code with two minor-unit digits, such as GBP, USD or EUR."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Shared palette."
+      },
+      {
+        "name": "onExport",
+        "type": "(period: FinancialReportPeriod) => void | Promise<void>",
+        "description": "Optional host export. Without a callback the block downloads the selected period cost lines as CSV in minor units."
+      }
+    ],
+    "added": "2026-10-12",
+    "kind": "block",
+    "blockType": "report",
+    "components": [
+      "layout-workspace-shell",
+      "chart-bullet-targets",
+      "chart-allocation",
+      "data-table-sortable",
+      "select-listbox"
+    ],
+    "demo": {
+      "steps": [
+        "wait:350",
+        "click:@trigger",
+        "key:ArrowDown",
+        "key:Enter",
+        "wait:1800"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "block-saas-dashboard",
     "name": "SaaS Metrics Dashboard",
     "tier": "pro",

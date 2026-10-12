@@ -3320,5 +3320,19 @@
       "block-saas-dashboard"
     ],
     "updated": "2026-10-12"
+  },
+  "block-financial-report": {
+    "useWhen": "A financial review needs an intelligible narrative, budget comparison, spend allocation and the underlying cost records in one printable page.",
+    "avoidWhen": "Posting accounting transactions, calculating tax obligations or presenting an authoritative ledger without validated source data.",
+    "integration": [
+      "Provide complete `periods` with integer minor-unit amounts and unique line IDs. Invalid records disable export rather than inventing a total.",
+      "Every panel follows the selected period. CSV export uses that period; Print report opens a plain, readable print layout.",
+      "Use `onExport` to connect a reporting service, or keep the built-in CSV download. Rejected exports preserve the selected context."
+    ],
+    "related": [
+      "block-saas-dashboard",
+      "block-workspace-settings"
+    ],
+    "updated": "2026-10-12"
   }
 }
