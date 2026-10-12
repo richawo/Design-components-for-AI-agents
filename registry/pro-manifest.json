@@ -19063,12 +19063,14 @@
       {
         "name": "title",
         "type": "string",
-        "description": "Main heading."
+        "description": "Main heading.",
+        "default": "\"Document requests\""
       },
       {
         "name": "subtitle",
         "type": "string",
-        "description": "Supporting context."
+        "description": "Supporting context.",
+        "default": "\"Inspect each request, choose the right file and track receipt separately from reviewer acceptance.\""
       },
       {
         "name": "requests",
