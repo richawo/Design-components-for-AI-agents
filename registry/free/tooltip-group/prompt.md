@@ -29,7 +29,7 @@ Build a tooltip group for toolbars in React + Tailwind CSS v4 + `motion/react` (
 - Fresh open: opacity 0→1, scale 0.97→1, blur 2px→0 over 180ms `cubic-bezier(.22,1,.36,1)`, sliding 4px away from the trigger; transform origin on the trigger's side.
 - Close: opacity to 0 in 70ms ease-in (reads as instant), then `visibility: hidden`.
 - Between neighbours: x, y, width, height and the arrow all spring (stiffness 500, damping 40) to the new trigger; the label cross-fades 6px in the direction of travel with a 3px blur (in 200ms, out 120ms). Crossing a separator within 120ms of a close still glides.
-- Every position is a motion value, so a reversal mid-glide just retargets.
+- Every position is a motion value, so a reversal mid-glide just retargets. A cold arrival stops unfinished springs and resets the label presence so an old tooltip never flashes at a new trigger. Updating a trigger label keeps the active tooltip open; removing the active or pending trigger closes it. Cancelled touch gestures clear the pending press and click suppression.
 - Reduced motion: no slide, scale, blur or glide; positions jump and opacity fades in 120ms.
 
 **Demo (true near-black stage)**

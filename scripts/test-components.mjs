@@ -13,6 +13,7 @@ const publicCases = [
   "waffle-probe",
   "new-free-probe",
   "tabs-geometry-probe",
+  "tooltip-arrival-probe",
   "table-probe",
   "ime-probe",
   "expansion-inputs-probe",

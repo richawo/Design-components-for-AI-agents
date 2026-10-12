@@ -32,11 +32,11 @@
     "demoLight": "#efeeea stage, #ffffff card, black 8% ring, #18181b ink, #52525b body, #8a8a93 muted"
   },
   "motion": {
-    "coldOpen": "wait `delay` (400ms) while the pointer rests, then opacity 0->1, scale 0.97->1, blur 2px->0, 4px slide away from the trigger, 180ms cubic-bezier(0.22,1,0.36,1)",
+    "coldOpen": "wait `delay` (400ms) while the pointer rests, then opacity 0->1, scale 0.97->1, blur 2px->0, 4px slide away from the trigger, 180ms cubic-bezier(0.22,1,0.36,1); stop unfinished springs and reset label presence before a fresh arrival so only its own content appears",
     "close": "instant: opacity to 0 in 70ms ease-in, then visibility hidden; group stays warm for skipDelay (300ms)",
     "neighbour": "no wait; x, y, width, height and arrow spring (stiffness 500, damping 40) to the new trigger; label cross-fades 6px in the travel direction with a 3px blur (200ms in, 120ms out); crossing a separator within 120ms of a close still glides",
     "pinned": "defaultActive opens after delay + 300ms; the first pointer or focus closes it and leaves the group cold",
-    "touch": "450ms long press opens, the following click is swallowed, closes 1.4s after lift",
+    "touch": "450ms long press opens, the following click is swallowed, closes 1.4s after lift; pointer cancellation clears press and click suppression",
     "reducedMotion": "no slide, scale, blur or glide; positions jump; 120ms opacity fades",
     "demoEntrance": "once at 30% in view: blocks rise 12px out of an 8px blur over 0.5s, 60ms apart; the readout's hairline charges linearly over the delay and its ms count runs up with tabular numbers"
   },
@@ -49,7 +49,8 @@
     "aria-keyshortcuts on triggers from the printed keys (Meta, Shift, Alt, Control)",
     "keyboard focus (:focus-visible) opens instantly; Escape closes and keeps it shut until the pointer moves on",
     "clicks close and never open a tooltip; icon buttons keep their own aria-label",
-    "demo toolbar is role=toolbar with roving tabindex (arrows, Home, End) and aria-pressed toggles"
+    "demo toolbar is role=toolbar with roving tabindex (arrows, Home, End) and aria-pressed toggles",
+    "Updating an active trigger label retains its tooltip; removing an active or pending trigger closes it"
   ],
   "content": {
     "tools": [

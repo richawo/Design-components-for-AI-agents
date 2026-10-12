@@ -206,10 +206,10 @@ export function Tooltip({ id: idProp, label, shortcut, children }: TooltipProps)
   const unregister = ctx?.unregister;
 
   useIsoLayoutEffect(() => {
-    if (!register || !unregister || !ref.current) return;
+    if (!register || !ref.current) return;
     register(id, { label, shortcut: keys, el: ref.current });
-    return () => unregister(id);
-  }, [register, unregister, id, label, keys]);
+  }, [register, id, label, keys]);
+  useIsoLayoutEffect(() => () => unregister?.(id), [unregister, id]);
 
   if (!isValidElement(children)) return null;
   const extra = {
@@ -250,6 +250,7 @@ export function TooltipGroup({
   const [version, setVersion] = useState(0);
   const [active, setActiveState] = useState<string | null>(null);
   const [shownId, setShownId] = useState<string | null>(defaultActive);
+  const [contentEpoch, setContentEpoch] = useState(0);
   const [placed, setPlaced] = useState<{ side: TooltipSide; dir: number }>({ side, dir: 0 });
   const [layoutTick, setLayoutTick] = useState(0);
 
@@ -287,15 +288,14 @@ export function TooltipGroup({
     entries.current.set(id, entry);
     setVersion((v) => v + 1);
   }, []);
-  const unregister = useCallback((id: string) => {
-    entries.current.delete(id);
-    setVersion((v) => v + 1);
-  }, []);
-
   const emit = useCallback((e: TooltipTimingEvent) => emitRef.current?.(e), [emitRef]);
 
   const setActive = useCallback(
     (id: string | null) => {
+      // A cold open is a new arrival. Previous labels must not exit inside the newly placed surface.
+      if (id && s.active === null && performance.now() - s.closedAt >= TIMING.rejoinMs) {
+        setContentEpoch((epoch) => epoch + 1);
+      }
       s.active = id;
       setActiveState(id);
       if (id) setShownId(id);
@@ -333,6 +333,12 @@ export function TooltipGroup({
     },
     [emit, s, setActive, stopWaiting],
   );
+
+  const unregister = useCallback((id: string) => {
+    entries.current.delete(id);
+    setVersion((v) => v + 1);
+    if (s.active === id || s.pending === id) close(false);
+  }, [close, s]);
 
   /** A pinned preview tooltip gives way to the first real interaction, and leaves the group cold. */
   const unpin = useCallback(() => {
@@ -427,12 +433,13 @@ export function TooltipGroup({
     setPlaced({ side: p.side, dir });
 
     if (reduce || !continuing) {
-      w.set(size.w);
-      h.set(size.h);
-      ax.set(p.ax);
-      ay.set(p.ay);
-      x.set(p.x);
-      y.set(p.y);
+      // Stop any unfinished neighbour spring before placing a fresh tooltip.
+      w.jump(size.w);
+      h.jump(size.h);
+      ax.jump(p.ax);
+      ay.jump(p.ay);
+      x.jump(p.x);
+      y.jump(p.y);
       if (!reduce) {
         // Arrive from a few px nearer the trigger.
         const n = TIMING.nudge;
@@ -508,7 +515,11 @@ export function TooltipGroup({
           window.clearTimeout(s.press);
           if (s.via === "press" && s.active) s.linger = window.setTimeout(() => close(), TIMING.touchLingerMs);
         }}
-        onPointerCancel={() => window.clearTimeout(s.press)}
+        onPointerCancel={() => {
+          window.clearTimeout(s.press);
+          s.swallowClick = false;
+          if (s.via === "press") close(false);
+        }}
         onClickCapture={(e) => {
           if (!s.swallowClick) return;
           s.swallowClick = false;
@@ -555,7 +566,7 @@ export function TooltipGroup({
             className="relative overflow-hidden rounded-[8px] bg-[var(--tg-bg)] text-[#f4f4f5]"
             style={{ width: w, height: h, boxShadow: palette.shadow }}
           >
-            <AnimatePresence initial={false} custom={placed.dir}>
+            <AnimatePresence key={contentEpoch} initial={false} custom={placed.dir}>
               {shown && (
                 <motion.span
                   key={shownId}
@@ -706,7 +717,6 @@ export default function TooltipGroupDemo({ theme = "dark", ...overrides }: Parti
       <div className="@container w-full max-w-[640px]">
         <motion.div ref={cardRef} {...enter(play, 0, reduce)}>
           <TooltipGroup
-            defaultActive="link"
             theme={theme}
             onTimingEvent={setEvent}
             className="rounded-[18px]"
