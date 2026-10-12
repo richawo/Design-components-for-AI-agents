@@ -1,0 +1,84 @@
+{
+  "slug": "date-week-agenda",
+  "name": "Weekly Agenda",
+  "tier": "free",
+  "platform": "web",
+  "category": "date-time",
+  "description": "A compact weekly agenda with a travelling day selector, time-anchored event cards and expandable meeting notes, including a considered empty day.",
+  "tags": [
+    "date-time",
+    "date",
+    "week",
+    "agenda",
+    "responsive",
+    "keyboard"
+  ],
+  "dependencies": [
+    "motion",
+    "lucide-react"
+  ],
+  "theme": "dark",
+  "previewHeight": 740,
+  "usage": "import { WeekAgenda } from \"@/components/design-for-ai/date-week-agenda\";\n\n<WeekAgenda />",
+  "props": [
+    {
+      "name": "title",
+      "type": "string",
+      "default": "\"This week\"",
+      "description": "Agenda title."
+    },
+    {
+      "name": "timezone",
+      "type": "string",
+      "default": "\"London time\"",
+      "description": "Display timezone for host-supplied local times."
+    },
+    {
+      "name": "days",
+      "type": "AgendaDay[]",
+      "default": "five sample weekdays",
+      "description": "Ordered days with events, local time labels and notes."
+    },
+    {
+      "name": "defaultDay",
+      "type": "string",
+      "default": "\"mon\"",
+      "description": "Initial day ID; missing IDs fall back to the first day."
+    },
+    {
+      "name": "onEventSelect",
+      "type": "(event: AgendaEvent) => void",
+      "default": "undefined",
+      "description": "Called when an event disclosure is activated."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Surface and ink palette; the demo stage follows the chosen theme."
+    }
+  ],
+  "added": "2026-10-11",
+  "demo": {
+    "steps": [
+      "wait:600",
+      "click:@event-0",
+      "wait:700",
+      "click:@agenda-day-1",
+      "wait:700"
+    ],
+    "loop": false
+  },
+  "controls": [
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        "dark",
+        "light"
+      ],
+      "default": "dark"
+    }
+  ]
+}

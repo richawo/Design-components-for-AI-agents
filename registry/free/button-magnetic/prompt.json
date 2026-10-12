@@ -1,0 +1,82 @@
+{
+  "component": "MagneticCta",
+  "intent": "One primary call-to-action button that leans toward the pointer as it approaches, the way a magnet pulls a small object. The surface follows the cursor by a few pixels, the label and arrow travel at nearly the same depth, and a soft light tracks the cursor across the fill. It settles on a spring and never bounces.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 (arbitrary values, focus-visible outline utilities)",
+    "animation": "motion/react (useMotionValue for the pull and pointer, useSpring on spring.soft for the lean and spring.ui for hover and press, useTransform for scale, opacity and the arrow nudge)"
+  },
+  "layout": {
+    "root": "inline element, relative inline-flex max-w-full align-middle, intrinsic width; no w-full, no justify-center, no container query; className applies to the root",
+    "anchor": "untransformed relative inline-flex max-w-full span used as the measuring reference, so the lean never shifts its own origin",
+    "lean": "inline-flex max-w-full span with a CSS translate calc on the lean variables; it carries the surface offset",
+    "button": "min-h-14 (56px minimum), 14px radius, 28px horizontal and 16px vertical padding, intrinsic width capped at max-w-full; a long label wraps inside the button rather than overflowing it",
+    "content": "label and optional 16px arrow in one row with a 10px gap; row and label are min-w-0 with text-balance on the label; arrow shrink-0",
+    "spotlight": "absolute inset-0 layer inside the button, a 90px radial gradient sized from the button (about 1.6x its height), opacity bound to the hover spring; not sized from the reach",
+    "responsive": "the button keeps its intrinsic width up to its container; the label stays 15px; a long label wraps, and the component never overflows a container from 320px to 1920px"
+  },
+  "typography": {
+    "label": "Geist (font-sans) 500, 15px, letter-spacing -0.01em, line-height 1.25 (leading-tight) so a wrapped label breathes; a single line matches line-height 1",
+    "arrow": "16x16 SVG, 16-unit grid, shaft from x 2.75 to 12.25, chevron (8.75,4.5) to (12.25,8) to (8.75,11.5), 1.6 stroke, round caps and joins"
+  },
+  "color": {
+    "approach": "monochrome first: the fill is the one accent. Three CSS variables are set on the root, --mb-accent (fill), --mb-ink (label) and --mb-ring (focus)",
+    "fill": "unset accent: #e9e9eb on the dark surface, #0a0a0b (ink) on the light surface. The accent prop replaces it on either surface",
+    "label": "whichever of #0a0a0b or #ffffff has the higher WCAG contrast on the fill",
+    "surface": "background var(--mb-accent); shadow on dark inset 0 1px 0 rgba(255,255,255,0.28), inset 0 0 0 1px rim, 0 1px 2px rgba(0,0,0,0.4), 0 12px 24px -12px rgba(0,0,0,0.6); shadow on light inset 0 1px 0 rgba(255,255,255,0.12), inset 0 0 0 1px rim, 0 1px 2px rgba(0,0,0,0.12), 0 10px 20px -12px rgba(0,0,0,0.28); rim rgba(0,0,0,0.06) on a light fill, rgba(255,255,255,0.08) on a dark one",
+    "spotlight": "white radial gradient of 90px radius centred on the pointer, transparent at 70%; alpha = clamp(0.14 + 0.4 * relativeLuminance(fill), 0.14, 0.42), so dark fills take about 0.14, ember about 0.25 and near-white about 0.42; never a dark spot",
+    "focus": "solid 2px outline, 4px offset, keyboard focus only; the fill when it contrasts the page more than the opposite ink, otherwise #f4f4f5 on dark or #0a0a0b on light",
+    "stage": "demo only: #0b0b0c dark or #f4f4f2 light, caption #8a8a93 or #6b6b73"
+  },
+  "motion": {
+    "lean": "window pointermove (mouse and pen only). d = distance from the anchor centre; edge = distance from the pointer to the nearest point of the button body; nearness = 1 - clamp(edge / radius, 0, 1); pull = (1 - (1 - nearness)^2) * clamp(d / 48, 0, 1); lean = unit vector from centre toward the pointer times pull, per axis",
+    "settle": "useSpring on spring.soft (stiffness 180, damping 22) for each lean axis; leaving the page sends both to 0",
+    "depths": "CSS translate calc on the lean variables times strength in px: surface 1.0, label -0.2 (nets 0.8), arrow +0.1 (nets 1.1); the label-to-arrow gap moves by 0.3 of the lean, 2.4px at the 8px cap; keep the differential at or below 0.375",
+    "strength": "maximum lean in px, 0 to 8, default 6; reach (radius) defaults to 200px from the button edge and governs the pull only",
+    "hover": "spotlight opacity on spring.ui (stiffness 500, damping 40); the arrow nudges 2px right on the same spring",
+    "press": "scale 0.97 on spring.ui on pointer down or Space or Enter down (not repeat); released on pointer up, leave or cancel, key up or blur",
+    "reducedMotion": "no lean, no scale, no arrow nudge; the spotlight parks at the middle; a press dips opacity to 0.9; the hover fade stays as an opacity change",
+    "disabled": "no lean, no hover, no press; any hover or press held at the moment of disabling is cleared",
+    "idle": "nothing animates without a pointer; nothing loops"
+  },
+  "responsive": {
+    "behaviour": "the button keeps its intrinsic width at every size and the label stays 15px",
+    "touch": "touch pointers never lean, so no finger tracking across the page"
+  },
+  "accessibility": [
+    "native button with type=button; Enter and Space activate it with no custom handler",
+    "key press (not a repeat) sets the pressed state so keyboard users get the same press feedback",
+    "arrow is aria-hidden; the label is the accessible name",
+    "disabled: 40% opacity, cursor-not-allowed, no lean, no hover, no press",
+    "focus-visible: solid 2px outline in a colour that contrasts the page, 4px offset, never shown on click",
+    "reduced motion removes every transform and keeps only opacity changes"
+  ],
+  "content": {
+    "defaults": {
+      "label": "Start building",
+      "arrow": true,
+      "strength": 6,
+      "radius": 200,
+      "accent": "unset: #e9e9eb on dark, #0a0a0b on light",
+      "theme": "dark"
+    },
+    "demoCaption": "Move toward the button. It leans in, then settles back when you leave."
+  },
+  "avoid": [
+    "a glow around the button, a gradient fill, a gradient label or a sparkle icon",
+    "an accent-coloured shadow, which becomes a bloom on dark pages",
+    "a dark spotlight on a light fill, which reads as a grey smudge",
+    "a spotlight alpha that ignores fill luminance, which blows out a mid-tone accent such as ember",
+    "a near-white fill on a light surface, which reads as a grey slab",
+    "a label-to-arrow depth differential above 0.375 of the lean, which squashes the arrow into the label",
+    "a pulsing ring, idle motion or any loop",
+    "a lean larger than strength, a lean that moves the anchor, or a bouncing spring",
+    "a root that forces full width or centring, or a button that overflows its container",
+    "hard-coded colours that ignore accent or theme",
+    "lean driven by CSS :hover, because the demo player dispatches pointer events rather than hover states",
+    "two lean-enabled buttons in one view",
+    "a secondary button, badge or headline inside the component",
+    "em dashes or filler copy"
+  ]
+}

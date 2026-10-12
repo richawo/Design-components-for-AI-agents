@@ -1,0 +1,120 @@
+{
+  "component": "Communication Preferences",
+  "intent": "A calm preference form with explicit required updates, generous checkbox rows and an awaited save action that keeps failures visible for retry.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4",
+    "motion": "motion/react"
+  },
+  "layout": {
+    "direction": "A serif invitation over ruled preference rows. The copy takes the width, and a 44px checkbox target sits at the edge; the save row wraps below.",
+    "container": "Size to the parent with @container. Keep the root width at 100%, capped to the focused component, with 24px desktop and 16px narrow padding.",
+    "rhythm": "4/8px spacing; 1px edges; 44px minimum interactive targets."
+  },
+  "typography": {
+    "body": "font-sans, 14-16px, line-height 1.5",
+    "metadata": "font-mono, 11-12px, restrained tracking",
+    "heading": "font-display or font-serif, 24-36px, tracking -0.035em"
+  },
+  "color": {
+    "dark": {
+      "surface": "#111111",
+      "ink": "#f5f5f5",
+      "muted": "#a3a3a3",
+      "edge": "#333333"
+    },
+    "light": {
+      "surface": "#ffffff",
+      "ink": "#171717",
+      "muted": "#525252",
+      "edge": "#d4d4d4"
+    }
+  },
+  "motion": {
+    "entrance": "A single opacity and 8px rise over 320ms.",
+    "interaction": "150ms press response; 240ms state changes. No ambient loops.",
+    "reduced": "Remove transforms and layout motion; keep opacity at 120ms or less."
+  },
+  "responsive": {
+    "widths": [
+      320,
+      390,
+      768,
+      1024,
+      1440,
+      1920
+    ],
+    "rules": "Wrap long copy; stack secondary details inside narrow containers; keep any horizontal scrolling local and keyboard accessible."
+  },
+  "accessibility": [
+    "Use native buttons and form controls with visible 2px focus rings.",
+    "Provide labels, meaningful states and polite feedback where actions update content.",
+    "Keep IDs instance-scoped with useId; support multiple instances and empty custom data.",
+    "Respect prefers-reduced-motion; no automatic action or navigation."
+  ],
+  "content": {
+    "defaults": "Use the realistic default content from the source; expose content and collection inputs as typed props.",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Keep the useful things.\"",
+        "description": "Panel heading."
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "default": "inbox guidance",
+        "description": "Supporting copy."
+      },
+      {
+        "name": "options",
+        "type": "PreferenceOption[]",
+        "default": "three communication choices",
+        "description": "Option IDs, labels and descriptions; required options stay selected."
+      },
+      {
+        "name": "value",
+        "type": "string[]",
+        "default": "undefined",
+        "description": "Controlled selected IDs."
+      },
+      {
+        "name": "defaultValue",
+        "type": "string[]",
+        "default": "essential and digest",
+        "description": "Initial selected IDs."
+      },
+      {
+        "name": "onChange",
+        "type": "(value: string[]) => void",
+        "default": "undefined",
+        "description": "Emits each local preference change."
+      },
+      {
+        "name": "onSave",
+        "type": "(value: string[]) => void | Promise<void>",
+        "default": "undefined",
+        "description": "Awaited persistence callback. The save button is disabled without it; the demo simulates persistence only."
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "default": "save failure copy",
+        "description": "Retryable failure message."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface and ink palette; the demo stage follows the chosen theme."
+      }
+    ]
+  },
+  "avoid": [
+    "Remote images, fake network success or hidden external dependencies.",
+    "Decorative status badges, gradients as filler, low-contrast text.",
+    "Unlabelled controls, hover-only functionality, overflow at 320px."
+  ]
+}

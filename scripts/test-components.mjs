@@ -44,7 +44,7 @@ if (fs.existsSync(path.join(root, "registry/pro/scroll-expanding-mosaic")))
   cases.push("pro-scroll-probe");
 if (fs.existsSync(path.join(root, "registry/pro/devtools-webhook-inspector")))
   cases.push("webhook-probe", "focus-probe", "chart-data-probe");
-if (fs.existsSync(path.join(root, "registry/pro/content-release-notes")))
+if (fs.existsSync(path.join(root, "registry/pro/data-kanban-compact")))
   cases.push("expansion-pro-probe", "kanban-polish-probe");
 if (fs.existsSync(path.join(root, "registry/pro/bento-grid")))
   cases.push("bento-rhythm-probe");

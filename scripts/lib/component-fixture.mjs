@@ -1,5 +1,7 @@
 /** Bundle a local component in isolation for browser regression fixtures. Nothing is written to the registry. */
 import { build } from "esbuild";
+import fs from "node:fs";
+import path from "node:path";
 
 export async function mountFixture(page, slug, tier, fixture) {
   const base = (process.env.PREVIEW_BASE || "http://localhost:3100").replace(
@@ -7,6 +9,11 @@ export async function mountFixture(page, slug, tier, fixture) {
     "",
   );
   const root = process.cwd();
+  // A tier change must retain its browser regression coverage. Resolve the checked-out source.
+  if (!fs.existsSync(path.join(root, "registry", tier, slug, `${slug}.tsx`))) {
+    const alternate = tier === "pro" ? "free" : "pro";
+    if (fs.existsSync(path.join(root, "registry", alternate, slug, `${slug}.tsx`))) tier = alternate;
+  }
   const compiled = await build({
     stdin: {
       contents: `import React, {useState} from 'react'; import {createRoot} from 'react-dom/client'; import * as Subject from './registry/${tier}/${slug}/${slug}.tsx'; ${fixture}`,

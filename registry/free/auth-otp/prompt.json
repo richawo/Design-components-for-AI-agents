@@ -1,0 +1,110 @@
+{
+  "component": "AuthOtp",
+  "intent": "A six-digit verification code card that feels physical: digits roll in, paste ripples, wrong codes shake away cell by cell, and success sweeps light across the cells before they fuse into one Verified pill. Dark and monochrome: the card rises from blur and its contents, cell by cell, stagger in.",
+  "platform": "web",
+  "stack": {
+    "framework": "React 19",
+    "styling": "Tailwind CSS v4 (container queries); one PALETTE (dark + light) → --otp-* CSS variables",
+    "animation": "motion/react; useScheduler (timeouts + rAF cancelled on unmount), useImperative (keyframe shakes stopped on unmount), useOtpField (selection, paste merge, keys), useCooldown",
+    "input": "one transparent native input over aria-hidden cells"
+  },
+  "layout": {
+    "card": "max-width 400px, radius 20px, surface + inset hairline + deep shadow, padding 36/32/32 from 384px container up, 28/24/24 below",
+    "order": "channel tile → heading → lead-in + destination + Edit → cells → 42px status line → hairline → resend row (44px) → footnote",
+    "cells": "flex-1, 52px tall (56px ≥384px container), radius 12px, 8px gaps, 16–20px gap between the two groups of three",
+    "pill": "188×48, radius 24, centred in the row",
+    "code": "AuthOtp orchestrates phases; CodeRow (input over cells + VerifiedPill), Cell, DestinationLine + DestinationEditor, StatusLine, ResendButton"
+  },
+  "typography": {
+    "heading": {
+      "size": "clamp(1.375rem, 1.2rem + .6cqi, 1.5rem)",
+      "weight": 600,
+      "tracking": "-0.025em"
+    },
+    "body": {
+      "size": "14.5px",
+      "leading": 1.55,
+      "color": "#a0a0a8"
+    },
+    "digits": {
+      "font": "Geist Mono",
+      "size": "clamp(1.25rem, 1.05rem + 1cqi, 1.5rem)",
+      "weight": 500,
+      "numerals": "tabular"
+    },
+    "status": "13.5px",
+    "footnote": "12.5px #6e6e76"
+  },
+  "color": {
+    "approach": "monochrome; one accent prop (default = theme ink) for the active-cell ring, caret, Send and the emphasised Resend; colour only for meaning: error and the success sweep/pill",
+    "dark": {
+      "surface": "#0a0a0b",
+      "tile": "#141416",
+      "ink": "#ededef",
+      "muted": "#a0a0a8",
+      "faint": "#7d7d86",
+      "cellEmpty": "white 2% fill, 9% ring",
+      "cellFilled": "white 4% fill, 16% ring",
+      "error": "#ff6b5e ring 70%, 6% fill, digits #ff8f84",
+      "success": "#3ddc97 ring 50%, 7% fill, digits #c9f7e1; pill = 12% success mixed into the surface, 45% ring, 4px 6% halo"
+    },
+    "light": {
+      "surface": "#ffffff",
+      "tile": "#f4f4f5",
+      "ink": "#18181b",
+      "muted": "#52525b",
+      "faint": "#71717a",
+      "cellEmpty": "ink 2% fill, 13% ring",
+      "error": "#dc2626 (digits #b91c1c)",
+      "success": "#16a34a (digits #15803d)"
+    },
+    "active": "1.5px ring of the accent at 80%"
+  },
+  "motion": {
+    "activeCell": "shared layoutId ring, spring stiffness 500 damping 40",
+    "caret": "2×22px bar, 1.06s stepped blink, only while focused and on an empty cell",
+    "digits": "each digit settles: y 60%→0, scale .86→1, blur 4→0 over 300ms ease-out; exits upward; per-cell change stamps so repeats still roll",
+    "paste": "45ms stagger from the paste point; each cell lifts 4px",
+    "error": "cells shake x 0,−6,5,−3,2,0 over 400ms with 45ms stagger, tint coral, then digits exit upward with 30ms stagger and focus returns to cell 1",
+    "success": "80% band of pale green light crosses each cell (340ms linear, 55ms stagger) → cells slide by barLeft + i·w − offsetLeft into one bar, inner corners square, digits blur out (260ms in-out) → pill at the bar's size animates to 188×48 r24 (460ms in-out), check draws, 'Verified' fades in",
+    "resend": "countdown digits roll; wait → Resend code → Sending… → Sent ✓ → new 30s countdown",
+    "reducedMotion": "150ms fades only; no rolls, shakes, sweep or glide; pill appears directly",
+    "entrance": "once at 30% in view: card y 16→0 + blur 10→0 (600ms); glyph → heading → destination 50ms apart from 120ms; then each cell rises 12px out of a 6px blur, 35ms apart; then status line, resend row, footnote",
+    "cleanup": "every setTimeout and requestAnimationFrame goes through useScheduler and is cancelled on unmount; imperative shakes, nudges and ripples are stopped on unmount"
+  },
+  "responsive": {
+    "390px": "cells 52px tall and ~44px wide, card padding 24px",
+    "1440px": "cells 56px, card centred on black"
+  },
+  "accessibility": [
+    "single input: inputMode=numeric, autocomplete=one-time-code, pattern=[0-9]*, maxLength=6, labelled '6-digit verification code'",
+    "aria-describedby points at the destination line and the status line",
+    "status uses role=status; errors role=alert",
+    "arrows, Home, End, Backspace, Delete and Enter all behave per cell",
+    "Edit is a real button labelled 'Edit email address'; inline editor validates, Esc cancels",
+    "focus-visible: 2px #ededef outline offset 2px; buttons press at .97"
+  ],
+  "content": {
+    "heading": "Check your inbox",
+    "destination": "ines.moreau@halyard.app",
+    "hint": "Paste the whole code into any box.",
+    "footnote": "Codes last 10 minutes. Not there? Check spam — it’s shy.",
+    "errors": [
+      "That code didn’t match. 2 tries left.",
+      "That code has expired. Send yourself a fresh one.",
+      "Too many wrong codes. Request a new one to keep going."
+    ],
+    "result": "onVerify resolves {ok:true} | {ok:false, reason:'invalid', attemptsLeft} | {ok:false, reason:'expired'} | {ok:false, reason:'locked'}",
+    "demo": "314159 verifies, 000000 is expired, three misses lock; Copy pill to try paste"
+  },
+  "avoid": [
+    "six separate inputs",
+    "visible native caret or selection highlight",
+    "auto-advance that skips cells",
+    "confetti, sparkles or glow bursts on success",
+    "replacing the cells with a spinner while verifying",
+    "clearing the code on a network error",
+    "inline hex outside the palette",
+    "rAF or timeouts that outlive the component"
+  ]
+}

@@ -1,0 +1,207 @@
+{
+  "slug": "auth-otp",
+  "name": "One-time Code",
+  "tier": "free",
+  "platform": "web",
+  "category": "auth",
+  "description": "A dark one-time-code card: cells stagger in from blur, each digit settles, paste ripples, wrong codes shake away and success fuses the row into one Verified pill.",
+  "tags": [
+    "otp",
+    "one-time code",
+    "verification",
+    "2fa",
+    "auth",
+    "pin input",
+    "magic code",
+    "form",
+    "dark"
+  ],
+  "dependencies": [
+    "motion"
+  ],
+  "theme": "dark",
+  "previewHeight": 720,
+  "usage": "import { AuthOtp } from \"@/components/design-for-ai/auth-otp\";\n\n<AuthOtp\n  channel=\"email\"\n  destination={user.email}\n  onVerify={async (code) => {\n    const res = await fetch(\"/api/verify\", { method: \"POST\", body: JSON.stringify({ code }) });\n    if (res.status === 410) return { ok: false, reason: \"expired\" };\n    if (res.status === 429) return { ok: false, reason: \"locked\" };\n    if (!res.ok) return { ok: false, reason: \"invalid\", attemptsLeft: Number(res.headers.get(\"X-Attempts-Left\")) };\n    return { ok: true };\n  }}\n  onResend={() => fetch(\"/api/verify/resend\", { method: \"POST\" }).then(() => undefined)}\n  onChangeDestination={(email) => sendCode(email)}\n  onVerified={() => router.push(\"/app\")}\n/>",
+  "props": [
+    {
+      "name": "onVerify",
+      "type": "(code: string) => Promise<OtpVerifyResult | void>",
+      "description": "Runs as soon as the last digit lands. Resolve { ok: true }, { ok: false, reason: \"invalid\", attemptsLeft }, { ok: false, reason: \"expired\" } or { ok: false, reason: \"locked\" }."
+    },
+    {
+      "name": "onResend",
+      "type": "() => Promise<void>",
+      "description": "Sends a fresh code. The countdown restarts once it resolves."
+    },
+    {
+      "name": "onChangeDestination",
+      "type": "(value: string) => Promise<void>",
+      "description": "Inline “Edit”: send a code to a new address. Resolve when sent."
+    },
+    {
+      "name": "onEdit",
+      "type": "() => void",
+      "description": "If set, “Edit” calls this instead of opening the inline editor."
+    },
+    {
+      "name": "onVerified",
+      "type": "() => void",
+      "description": "Called after the merge-to-pill animation settles."
+    },
+    {
+      "name": "length",
+      "type": "number",
+      "default": "6",
+      "description": "Number of digits, split into two groups."
+    },
+    {
+      "name": "channel",
+      "type": "\"email\" | \"sms\"",
+      "default": "\"email\"",
+      "description": "Sets the glyph, heading and editor input type."
+    },
+    {
+      "name": "destination",
+      "type": "string",
+      "default": "\"ines.moreau@halyard.app\"",
+      "description": "Where the code went, shown in full."
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "default": "\"Check your inbox\" / \"Check your phone\"",
+      "description": "Card heading."
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "default": "\"Enter the 6-digit code we just sent to\"",
+      "description": "Lead-in before the destination."
+    },
+    {
+      "name": "resendAfter",
+      "type": "number",
+      "default": "30",
+      "description": "Seconds before Resend unlocks."
+    },
+    {
+      "name": "footnote",
+      "type": "string",
+      "description": "Fine print under the resend row."
+    },
+    {
+      "name": "autoFocus",
+      "type": "boolean",
+      "default": "true",
+      "description": "Focus the code on mount."
+    },
+    {
+      "name": "accent",
+      "type": "string",
+      "default": "theme ink",
+      "description": "The one accent: the active-cell ring, the caret, the Send button and the emphasised Resend after a lockout."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Surface palette. Both are tuned; success and error tones shift to stay AA."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "description": "Extra classes on the root."
+    }
+  ],
+  "demo": {
+    "steps": [
+      "wait:200",
+      "click:@code:0.08,0.5",
+      "type:11111111",
+      "wait:1700",
+      "type:31415926",
+      "wait:2900"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "length",
+      "label": "Digits",
+      "kind": "slider",
+      "min": 4,
+      "max": 8,
+      "step": 1,
+      "default": 6,
+      "remount": true
+    },
+    {
+      "prop": "channel",
+      "label": "Channel",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "email",
+          "label": "Email"
+        },
+        {
+          "value": "sms",
+          "label": "SMS"
+        }
+      ],
+      "default": "email"
+    },
+    {
+      "prop": "destination",
+      "label": "Sent to",
+      "kind": "text",
+      "default": "ines.moreau@halyard.app",
+      "remount": true
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark"
+    },
+    {
+      "prop": "accent",
+      "label": "Accent (1st = theme)",
+      "kind": "color",
+      "default": "#ededef",
+      "options": [
+        "#ededef",
+        "#7c9cff",
+        "#3ddc97",
+        "#ffb454"
+      ]
+    },
+    {
+      "prop": "resendAfter",
+      "label": "Resend after",
+      "kind": "slider",
+      "min": 5,
+      "max": 60,
+      "step": 5,
+      "unit": "s",
+      "default": 30,
+      "remount": true
+    },
+    {
+      "prop": "$replay",
+      "label": "Demo",
+      "kind": "action",
+      "value": "Replay"
+    }
+  ],
+  "added": "2026-10-09"
+}

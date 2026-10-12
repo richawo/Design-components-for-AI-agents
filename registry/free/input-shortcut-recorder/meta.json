@@ -1,0 +1,91 @@
+{
+  "slug": "input-shortcut-recorder",
+  "name": "Keyboard Shortcut Recorder",
+  "tier": "free",
+  "platform": "web",
+  "category": "inputs",
+  "description": "A focused shortcut recorder with engraved keycaps, modifier validation, cancellation and reset, designed for desktop-style app preferences.",
+  "tags": [
+    "inputs",
+    "input",
+    "shortcut",
+    "recorder",
+    "responsive",
+    "keyboard"
+  ],
+  "dependencies": [
+    "motion",
+    "lucide-react"
+  ],
+  "theme": "dark",
+  "previewHeight": 620,
+  "usage": "import { ShortcutRecorder } from \"@/components/design-for-ai/input-shortcut-recorder\";\n\n<ShortcutRecorder />",
+  "props": [
+    {
+      "name": "label",
+      "type": "string",
+      "default": "\"Quick capture\"",
+      "description": "Setting name."
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "default": "new note guidance",
+      "description": "Setting explanation."
+    },
+    {
+      "name": "value",
+      "type": "string[]",
+      "default": "undefined",
+      "description": "Controlled sequence of KeyboardEvent modifier names and final key."
+    },
+    {
+      "name": "defaultValue",
+      "type": "string[]",
+      "default": "Control Shift K",
+      "description": "Initial and reset key sequence."
+    },
+    {
+      "name": "onChange",
+      "type": "(keys: string[]) => void",
+      "default": "undefined",
+      "description": "New display sequence. The component does not register a global shortcut; the host must resolve collisions and unsupported OS shortcuts."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": "false",
+      "description": "Disables recording and reset."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Surface and ink palette; the demo stage follows the chosen theme."
+    }
+  ],
+  "added": "2026-10-11",
+  "demo": {
+    "steps": [
+      "wait:600",
+      "click:@record-shortcut",
+      "key:F8",
+      "wait:700",
+      "click:@reset-shortcut",
+      "wait:700"
+    ],
+    "loop": false
+  },
+  "controls": [
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        "dark",
+        "light"
+      ],
+      "default": "dark"
+    }
+  ]
+}

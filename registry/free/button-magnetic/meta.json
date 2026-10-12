@@ -1,0 +1,155 @@
+{
+  "slug": "button-magnetic",
+  "name": "Magnetic CTA",
+  "tier": "free",
+  "platform": "web",
+  "category": "buttons",
+  "description": "A primary button that leans toward the pointer as it nears, with its label and arrow on separate depths and a soft light that tracks the cursor.",
+  "tags": [
+    "button",
+    "cta",
+    "magnetic",
+    "hover",
+    "spring",
+    "call to action",
+    "monochrome"
+  ],
+  "dependencies": [
+    "motion"
+  ],
+  "theme": "dark",
+  "previewHeight": 560,
+  "usage": "import { MagneticCta } from \"@/components/design-for-ai/button-magnetic\";\n\n<MagneticCta label=\"Start building\" onClick={() => router.push(\"/signup\")} />\n\n<MagneticCta theme=\"light\" strength={4} radius={160} arrow={false} accent=\"#d4775b\" className=\"mt-8\" />",
+  "props": [
+    {
+      "name": "label",
+      "type": "string",
+      "default": "\"Start building\"",
+      "description": "The action's label. A few words, in sentence case."
+    },
+    {
+      "name": "arrow",
+      "type": "boolean",
+      "default": "true",
+      "description": "Shows an arrow after the label. The arrow sits on a nearer depth than the label, so the two move almost together and never collide."
+    },
+    {
+      "name": "strength",
+      "type": "number",
+      "default": "6",
+      "description": "The furthest the button leans toward the pointer, in px. Capped at 8; 0 turns the lean off."
+    },
+    {
+      "name": "radius",
+      "type": "number",
+      "default": "200",
+      "description": "Distance from the button edge, in px, at which the pull begins. It governs the pull only; the spotlight is sized from the button."
+    },
+    {
+      "name": "accent",
+      "type": "string",
+      "default": "\"#e9e9eb\" on dark, \"#0a0a0b\" on light",
+      "description": "The fill, as a hex colour. Unset, it is #e9e9eb on a dark surface and #0a0a0b (ink) on a light one. The label colour, spotlight and rim are chosen for contrast against it."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "The surface the button sits on. It sets the default fill, the drop shadow and the focus ring so each keeps its contrast."
+    },
+    {
+      "name": "onClick",
+      "type": "() => void",
+      "description": "Runs on click, after the press has been felt."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": "false",
+      "description": "Disables the button. It stops leaning and drops to 40% opacity."
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "description": "Extra classes on the root, for layout such as margin, or alignment beside a secondary link."
+    }
+  ],
+  "added": "2026-10-10",
+  "demo": {
+    "steps": [
+      "wait:250",
+      "move:0.12,0.7",
+      "move:0.4,0.22",
+      "move:0.62,0.22",
+      "move:0.7,0.36",
+      "hover:@magnetic-cta:0.8,0.5",
+      "wait:200",
+      "down",
+      "wait:260",
+      "up",
+      "wait:150",
+      "move:0.9,0.85",
+      "wait:800"
+    ]
+  },
+  "controls": [
+    {
+      "prop": "strength",
+      "label": "Lean",
+      "kind": "slider",
+      "min": 0,
+      "max": 8,
+      "step": 1,
+      "unit": "px",
+      "default": 6,
+      "group": "Field"
+    },
+    {
+      "prop": "label",
+      "label": "Label",
+      "kind": "text",
+      "default": "Start building",
+      "group": "Content"
+    },
+    {
+      "prop": "arrow",
+      "label": "Arrow",
+      "kind": "toggle",
+      "default": true,
+      "group": "Content"
+    },
+    {
+      "prop": "accent",
+      "label": "Fill",
+      "kind": "color",
+      "default": "#e9e9eb",
+      "options": [
+        "#18181b",
+        "#d4775b"
+      ],
+      "group": "Look"
+    },
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "light",
+          "label": "Light"
+        }
+      ],
+      "default": "dark",
+      "group": "Look"
+    },
+    {
+      "prop": "$replay",
+      "label": "Replay",
+      "kind": "action"
+    }
+  ]
+}

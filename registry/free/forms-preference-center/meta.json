@@ -1,0 +1,102 @@
+{
+  "slug": "forms-preference-center",
+  "name": "Communication Preferences",
+  "tier": "free",
+  "platform": "web",
+  "category": "forms",
+  "description": "A calm preference form with explicit required updates, generous checkbox rows and an awaited save action that keeps failures visible for retry.",
+  "tags": [
+    "forms",
+    "forms",
+    "preference",
+    "center",
+    "responsive",
+    "keyboard"
+  ],
+  "dependencies": [
+    "motion",
+    "lucide-react"
+  ],
+  "theme": "dark",
+  "previewHeight": 760,
+  "usage": "import { PreferenceCenter } from \"@/components/design-for-ai/forms-preference-center\";\n\n<PreferenceCenter />",
+  "props": [
+    {
+      "name": "title",
+      "type": "string",
+      "default": "\"Keep the useful things.\"",
+      "description": "Panel heading."
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "default": "inbox guidance",
+      "description": "Supporting copy."
+    },
+    {
+      "name": "options",
+      "type": "PreferenceOption[]",
+      "default": "three communication choices",
+      "description": "Option IDs, labels and descriptions; required options stay selected."
+    },
+    {
+      "name": "value",
+      "type": "string[]",
+      "default": "undefined",
+      "description": "Controlled selected IDs."
+    },
+    {
+      "name": "defaultValue",
+      "type": "string[]",
+      "default": "essential and digest",
+      "description": "Initial selected IDs."
+    },
+    {
+      "name": "onChange",
+      "type": "(value: string[]) => void",
+      "default": "undefined",
+      "description": "Emits each local preference change."
+    },
+    {
+      "name": "onSave",
+      "type": "(value: string[]) => void | Promise<void>",
+      "default": "undefined",
+      "description": "Awaited persistence callback. The save button is disabled without it; the demo simulates persistence only."
+    },
+    {
+      "name": "errorMessage",
+      "type": "string",
+      "default": "save failure copy",
+      "description": "Retryable failure message."
+    },
+    {
+      "name": "theme",
+      "type": "\"dark\" | \"light\"",
+      "default": "\"dark\"",
+      "description": "Surface and ink palette; the demo stage follows the chosen theme."
+    }
+  ],
+  "added": "2026-10-11",
+  "demo": {
+    "steps": [
+      "wait:500",
+      "click:@preference-2",
+      "wait:600",
+      "click:@save-preferences",
+      "wait:1100"
+    ],
+    "loop": false
+  },
+  "controls": [
+    {
+      "prop": "theme",
+      "label": "Theme",
+      "kind": "segmented",
+      "options": [
+        "dark",
+        "light"
+      ],
+      "default": "dark"
+    }
+  ]
+}
