@@ -22311,12 +22311,14 @@
       {
         "name": "title",
         "type": "string",
-        "description": "Main heading."
+        "description": "Main heading.",
+        "default": "\"Integrations\""
       },
       {
         "name": "subtitle",
         "type": "string",
-        "description": "Supporting context."
+        "description": "Supporting context.",
+        "default": "\"Inspect each integration’s purpose and requested scopes before an acknowledged connection change.\""
       },
       {
         "name": "integrations",
