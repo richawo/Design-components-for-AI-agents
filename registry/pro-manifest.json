@@ -14513,12 +14513,14 @@
       {
         "name": "title",
         "type": "string",
-        "description": "Main heading."
+        "description": "Main heading.",
+        "default": "\"Store assortment\""
       },
       {
         "name": "subtitle",
         "type": "string",
-        "description": "Supporting context."
+        "description": "Supporting context.",
+        "default": "\"Allocate complete size runs without overselling inventory or filling more space than a store has.\""
       },
       {
         "name": "sizeRun",
