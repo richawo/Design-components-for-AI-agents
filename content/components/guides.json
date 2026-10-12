@@ -3305,7 +3305,11 @@
       "Use `onExport` for your own reporting service, or keep the built-in metric CSV download. Failed callbacks preserve the current view.",
       "Install the four declared components with the block. Each remains available for independent customisation."
     ],
-    "related": [],
+    "related": [
+      "block-commerce-workspace",
+      "block-financial-report",
+      "block-workspace-settings"
+    ],
     "updated": "2026-10-12"
   },
   "block-workspace-settings": {
@@ -3317,7 +3321,9 @@
       "Provide consistent roles, permission prerequisites and grants. The server must enforce the resulting access policy."
     ],
     "related": [
-      "block-saas-dashboard"
+      "block-saas-dashboard",
+      "block-people-workspace",
+      "block-legal-workspace"
     ],
     "updated": "2026-10-12"
   },
@@ -3331,7 +3337,8 @@
     ],
     "related": [
       "block-saas-dashboard",
-      "block-workspace-settings"
+      "block-commerce-workspace",
+      "block-fashion-workspace"
     ],
     "updated": "2026-10-12"
   },
@@ -3401,7 +3408,8 @@
     ],
     "related": [
       "block-saas-dashboard",
-      "block-workspace-settings"
+      "block-workspace-settings",
+      "block-commerce-workspace"
     ],
     "updated": "2026-10-12"
   }

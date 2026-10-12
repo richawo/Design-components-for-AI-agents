@@ -5018,7 +5018,11 @@
       "workspace",
       "composition",
       "keyboard",
-      "monochrome"
+      "monochrome",
+      "e-commerce",
+      "commerce",
+      "retail",
+      "dashboard"
     ],
     "dependencies": [
       "motion",
@@ -5102,7 +5106,10 @@
       "workspace",
       "composition",
       "keyboard",
-      "monochrome"
+      "monochrome",
+      "fashion",
+      "merchandising",
+      "dashboard"
     ],
     "dependencies": [
       "motion",
@@ -5196,7 +5203,9 @@
       "report",
       "composition",
       "keyboard",
-      "monochrome"
+      "monochrome",
+      "finance",
+      "financial-report"
     ],
     "dependencies": [
       "motion",
@@ -5280,7 +5289,11 @@
       "workspace",
       "composition",
       "keyboard",
-      "monochrome"
+      "monochrome",
+      "legal-tech",
+      "legal",
+      "matters",
+      "dashboard"
     ],
     "dependencies": [
       "motion",
@@ -5368,7 +5381,11 @@
       "workspace",
       "composition",
       "keyboard",
-      "monochrome"
+      "monochrome",
+      "hr",
+      "human-resources",
+      "people",
+      "dashboard"
     ],
     "dependencies": [
       "motion",
@@ -5456,7 +5473,9 @@
       "dashboard",
       "composition",
       "keyboard",
-      "monochrome"
+      "monochrome",
+      "saas",
+      "analytics"
     ],
     "dependencies": [
       "motion",
@@ -5555,7 +5574,9 @@
       "landing-page",
       "composition",
       "keyboard",
-      "monochrome"
+      "monochrome",
+      "saas",
+      "marketing"
     ],
     "dependencies": [
       "motion",
@@ -5636,7 +5657,9 @@
       "settings",
       "composition",
       "keyboard",
-      "monochrome"
+      "monochrome",
+      "saas",
+      "permissions"
     ],
     "dependencies": [
       "motion",
