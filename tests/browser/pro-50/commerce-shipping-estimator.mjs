@@ -1,4 +1,4 @@
-export async function check({page,mount,assert}){
+export async function check({page,mount,assert,choose}){
  await mount(`window.quotes=[];window.fail=true;createRoot(document.getElementById('root')).render(<Subject.ShippingEstimator onSelect={async p=>{window.quotes.push(p);if(window.fail)throw Error('offline')}}/>);`);
  assert.equal(await page.getByRole('radio').count(),2);
  assert.match(await page.locator('section').innerText(),/£4.45/);
@@ -8,7 +8,7 @@ export async function check({page,mount,assert}){
  assert.equal(await page.getByRole('radio').count(),0);
  assert.equal(await page.getByRole('button',{name:'Use this quote',exact:true}).isDisabled(),true);
  await page.getByRole('textbox',{name:'Parcel weight',exact:true}).fill('1.250');
- await page.getByRole('combobox',{name:'Destination',exact:true}).selectOption('eu');
+ await choose(page.getByRole('combobox',{name:'Destination',exact:true}), 'eu');
  assert.equal(await page.getByRole('radio').count(),1);
  assert.match(await page.locator('section').innerText(),/£14.95/);
  await page.getByRole('button',{name:'Use this quote',exact:true}).click();
@@ -20,6 +20,6 @@ export async function check({page,mount,assert}){
  await page.getByRole('textbox',{name:'Parcel weight',exact:true}).fill('1.0001');
  assert.equal(await page.getByRole('button',{name:'Use this quote',exact:true}).isDisabled(),true);
  await page.getByRole('textbox',{name:'Parcel weight',exact:true}).fill('1');
- await page.getByRole('combobox',{name:'Destination',exact:true}).selectOption('us');
+ await choose(page.getByRole('combobox',{name:'Destination',exact:true}), 'us');
  assert.match(await page.locator('section').innerText(),/No service matches/);
 }
