@@ -12,7 +12,7 @@
     "root": "@container, full width: a 44px tab row, then a relative panel area with 20px top padding",
     "row": "relative; a 1px full-width rail at the foot outside the scroller; a horizontal scroller with a hidden scrollbar holding the tablist (flex, width max-content, min-width 100%, gap 2px, 4px from a 28rem container)",
     "tabs": "44px tall, 10px horizontal padding (14px from 28rem), label then an optional count 6px after; never wrap or truncate",
-    "underline": "2px, rounded, on the rail at the foot of the row, spanning the selected label's text only, measured as button.offsetLeft + label.offsetLeft and label.offsetWidth in the strip's coordinates",
+    "underline": "2px, rounded, on the rail at the foot of the row, spanning the selected label's text only, measured as fractional label bounds relative to strip bounds, corrected for ancestor scale and fractional label width in the strip's coordinates",
     "pill": "the selected tab box inset 2px horizontally and 7px vertically, 9px radius, beneath the labels",
     "overflow": "56px mask fades on the scroller driven by two @property length variables (220ms ease); a 40 by 44px arrow over each edge with more tabs past it, holding a 28px round chip; a press scrolls 70% of the visible width; selected or focused tabs scroll to at least 60px inside a faded edge",
     "panel": "only the selected panel is rendered; the leaving panel is lifted out of flow by popLayout"
@@ -35,7 +35,7 @@
     "panels": "enter from 6px on the side the selection came from with opacity 0 and 3px blur over 260ms cubic-bezier(0.22, 1, 0.36, 1); exit 6px the other way over 170ms cubic-bezier(0.4, 0, 1, 1); no animation on first render",
     "panelContents": "lead and rows stagger 50ms apart, rising 10px out of a 6px blur over 420ms; figures count up over 700ms; bars and sparkline grow from the baseline after a 300ms delay; meters fill last",
     "hover": "label colour over 150ms ease-out; arrow chip background and ink step, chevron nudges 1px outward",
-    "press": "label scales to 0.97 over 90ms (not the tab); arrow chip to 0.94",
+    "press": "label dims to 70% opacity without scaling over 90ms (not the tab); arrow chip to 0.94",
     "arrows": "arrive with a 4px slide and fade over 200ms, leave over 140ms",
     "fades": "mask variables ease over 220ms",
     "reducedMotion": "indicator and scrolling jump, panels and contents fade over 150ms or less, figures land at once"

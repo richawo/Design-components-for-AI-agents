@@ -397,15 +397,21 @@ export function TabsUnderlineGlide({
 
   // The underline spans the label only, so it reads as underlining a word. The pill takes the whole tab.
   const measure = useCallback(() => {
+    const row = strip.current;
     const button = buttons.current[selectedIndex];
     const text = labels.current[selectedIndex];
-    if (!button || !text) return;
-    if (indicator === "pill") {
-      moveTo({ left: button.offsetLeft + PILL_INSET.x, right: button.offsetLeft + button.offsetWidth - PILL_INSET.x });
-    } else {
-      const start = button.offsetLeft + text.offsetLeft;
-      moveTo({ left: start, right: start + text.offsetWidth });
-    }
+    if (!row || !button || !text) return;
+    // offsetLeft/offsetWidth round fractional font metrics, and a transformed label can change
+    // its offset parent during a press. Measure both boxes in the same, unscrolled coordinate space.
+    const rowBox = row.getBoundingClientRect();
+    const rowWidth = Number.parseFloat(getComputedStyle(row).width);
+    const scale = rowWidth > 0 ? rowBox.width / rowWidth : 1;
+    if (!(scale > 0)) return;
+    const target = (indicator === "pill" ? button : text).getBoundingClientRect();
+    const inset = indicator === "pill" ? PILL_INSET.x : 0;
+    const start = (target.left - rowBox.left) / scale + inset;
+    const end = (target.right - rowBox.left) / scale - inset;
+    moveTo({ left: start, right: end });
   }, [selectedIndex, indicator, moveTo]);
 
   // Brings a tab inside the visible strip, clear of both arrows. A pick scrolls smoothly; a resize snaps.
@@ -442,8 +448,10 @@ export function TabsUnderlineGlide({
     });
     observer.observe(box);
     observer.observe(inner);
+    // A font swap can resize a tab without resizing a strip stretched to min-width: 100%.
+    for (const button of buttons.current) if (button) observer.observe(button);
     return () => observer.disconnect();
-  }, [readEdges, measure, reveal, selectedIndex]);
+  }, [readEdges, measure, reveal, selectedIndex, list.length]);
 
   const choose = (index: number) => {
     const item = list[index];
@@ -606,8 +614,8 @@ export function TabsUnderlineGlide({
                     active ? "text-(--tu-ink)" : "text-(--tu-muted) enabled:hover:text-(--tu-ink)"
                   }`}
                 >
-                  {/* The press lives on the label, so the indicator beneath never sits in a scaled box. */}
-                  <span className="flex items-center transition-transform duration-[90ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-enabled:group-active:scale-[0.97]">
+                  {/* Keep text geometry stable during a press so the underline stays on its label. */}
+                  <span className="flex items-center transition-opacity duration-[90ms] ease-out group-enabled:group-active:opacity-70">
                     <span
                       ref={(node) => {
                         labels.current[index] = node;
