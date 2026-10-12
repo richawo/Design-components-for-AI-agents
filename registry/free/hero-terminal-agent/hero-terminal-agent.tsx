@@ -597,9 +597,10 @@ function Terminal({
       <div
         ref={bodyRef}
         role="log"
+        tabIndex={0}
         aria-label="Example Relay session"
         aria-live="off"
-        className="h-[380px] overflow-y-auto px-4 py-4 font-mono text-[12px] leading-[1.75] text-(--ta-ink)/85 [scrollbar-color:rgba(255,255,255,0.12)_transparent] [scrollbar-width:thin] @md:h-[440px] @md:px-5 @md:text-[13px] @5xl:h-[480px]"
+        className="focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-(--ta-ink) h-[380px] overflow-y-auto px-4 py-4 font-mono text-[12px] leading-[1.75] text-(--ta-ink)/85 [scrollbar-color:rgba(255,255,255,0.12)_transparent] [scrollbar-width:thin] @md:h-[440px] @md:px-5 @md:text-[13px] @5xl:h-[480px]"
       >
         {visible.map((r, i) => (
           <motion.div
