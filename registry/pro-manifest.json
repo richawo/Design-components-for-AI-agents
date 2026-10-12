@@ -18200,14 +18200,10 @@
     "demo": {
       "steps": [
         "wait:350",
-        "click:@request-2",
-        "wait:650",
-        "click:@request-0",
-        "wait:500",
         "click:@approve",
-        "wait:450",
+        "wait:500",
         "click:@confirm",
-        "wait:1000"
+        "wait:1600"
       ],
       "loop": false
     },
