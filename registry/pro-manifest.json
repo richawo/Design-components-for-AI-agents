@@ -18278,12 +18278,14 @@
       {
         "name": "title",
         "type": "string",
-        "description": "Main heading."
+        "description": "Main heading.",
+        "default": "\"People overview\""
       },
       {
         "name": "subtitle",
         "type": "string",
-        "description": "Supporting context."
+        "description": "Supporting context.",
+        "default": "\"Understand team composition and upcoming milestones from the same employee roster.\""
       },
       {
         "name": "employees",
@@ -18305,6 +18307,12 @@
         "type": "\"dark\" | \"light\"",
         "default": "\"light\"",
         "description": "Surface, border and ink palette."
+      },
+      {
+        "name": "selectMode",
+        "type": "\"custom\" | \"native\"",
+        "default": "\"custom\"",
+        "description": "Animated keyboard-accessible custom listboxes, or native platform pickers with matched 12px insets."
       }
     ],
     "added": "2026-10-11",
@@ -18328,6 +18336,16 @@
           "light"
         ],
         "default": "light"
+      },
+      {
+        "prop": "selectMode",
+        "label": "Select menus",
+        "kind": "segmented",
+        "options": [
+          "custom",
+          "native"
+        ],
+        "default": "custom"
       }
     ]
   },
