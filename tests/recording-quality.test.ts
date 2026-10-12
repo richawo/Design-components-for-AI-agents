@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { captureQuality, gallerySteps } from "../scripts/lib/recording-quality.mjs";
+import { captureQuality, gallerySteps, concatFrameList } from "../scripts/lib/recording-quality.mjs";
 
 describe("recording frame quality", () => {
   it("measures captured cadence rather than the encoded frame-rate label", () => {
@@ -26,5 +26,15 @@ describe("recording frame quality", () => {
   });
   it("keeps ambient demonstrations that contain only waits", () => {
     expect(gallerySteps([{ cmd: "wait", ms: 4000 }])).toEqual([{ cmd: "wait", ms: 4000 }]);
+  });
+});
+
+
+describe("capture encoding timestamps", () => {
+  it("preserves 10ms frame spacing and applies the precise time base to the tail", () => {
+    const list = concatFrameList([{ file: "/a.jpg", t: 0 }, { file: "/b.jpg", t: .01 }, { file: "/c.jpg", t: .02 }], 0, .03);
+    expect(list.match(/option framerate 1000/g)).toHaveLength(4);
+    expect(list.match(/duration 0.010000/g)).toHaveLength(3);
+    expect(list).toContain("file '/c.jpg'\noption framerate 1000\n");
   });
 });

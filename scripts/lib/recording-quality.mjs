@@ -31,3 +31,14 @@ export function gallerySteps(steps) {
     return step.cmd === "wait" && index === result.length - 1 && !held ? { ...step, ms: Math.min(step.ms, 1300) } : step;
   });
 }
+
+/** JPEG inputs otherwise default to a 1/25s time base and round away smooth
+ * captured motion. Give every concat entry, including the repeated tail, the
+ * same millisecond time base before the final CFR filter samples it. */
+export function concatFrameList(frames, startTime, endTime) {
+  return frames.map((frame, index) => {
+    const next = index + 1 < frames.length ? frames[index + 1].t : Math.max(endTime, frame.t + .001);
+    const start = index === 0 ? Math.min(frame.t, startTime) : frame.t;
+    return `file '${frame.file}'\noption framerate 1000\nduration ${Math.max(.001, next - start).toFixed(6)}`;
+  }).join("\n") + `\nfile '${frames.at(-1).file}'\noption framerate 1000\n`;
+}

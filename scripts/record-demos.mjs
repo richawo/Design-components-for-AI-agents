@@ -20,7 +20,7 @@ import os from "node:os";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
 import sharp from "sharp";
-import { captureQuality, gallerySteps } from "./lib/recording-quality.mjs";
+import { captureQuality, gallerySteps, concatFrameList } from "./lib/recording-quality.mjs";
 import { launchChromium } from "./lib/browser.mjs";
 import { CURSOR_CSS, CURSOR_HTML, CURSOR_START } from "../lib/demo/cursor.mjs";
 import { TIMING, demoDuration, parseSteps, targetSelector } from "../lib/demo/schema.mjs";
@@ -52,6 +52,8 @@ const only = args.filter((a) => !a.startsWith("--"));
 
 const OUT_W = 1280;
 const OUT_H = 800;
+const captureJpegQuality = Number(flag("capture-quality", "92"));
+if (!Number.isInteger(captureJpegQuality) || captureJpegQuality < 75 || captureJpegQuality > 95) throw new Error("--capture-quality must be 75–95");
 const FPS = Number(flag("fps", "60"));
 if (![30, 60].includes(FPS)) throw new Error("--fps must be 30 or 60");
 
@@ -189,7 +191,7 @@ async function record(browser, slug) {
       frames.push({ file, t: f.metadata.timestamp });
       writes.push(fs.promises.writeFile(file, Buffer.from(f.data, "base64")));
     });
-    await cdp.send("Page.startScreencast", { format: "jpeg", quality: 92, everyNthFrame: 1, maxWidth: vw * dpr, maxHeight: vh * dpr });
+    await cdp.send("Page.startScreencast", { format: "jpeg", quality: captureJpegQuality, everyNthFrame: 1, maxWidth: vw * dpr, maxHeight: vh * dpr });
     const t0 = Date.now() / 1000;
     await page.evaluate((ambient) => (window.__dfaCursor.dataset.on = ambient ? "0" : "1"), !!ambientMs);
     await page.waitForTimeout(gallery ? 60 : 150);
@@ -309,14 +311,7 @@ async function record(browser, slug) {
     }
     // Each frame holds until the next one; the last holds to the end.
     frames.sort((a, b) => a.t - b.t);
-    const list = frames
-      .map((f, i) => {
-        const next = i + 1 < frames.length ? frames[i + 1].t : Math.max(t1, f.t + 1 / FPS);
-        const start = i === 0 ? Math.min(f.t, t0) : f.t;
-        return `file '${f.file}'\nduration ${Math.max(1 / 240, next - start).toFixed(4)}`;
-      })
-      .join("\n");
-    fs.writeFileSync(path.join(tmp, "frames.txt"), `${list}\nfile '${frames.at(-1).file}'\n`);
+    fs.writeFileSync(path.join(tmp, "frames.txt"), concatFrameList(frames, t0, t1));
 
     const P = 2000;
     let inputs = ["-f", "concat", "-safe", "0", "-i", path.join(tmp, "frames.txt")];
@@ -341,7 +336,7 @@ async function record(browser, slug) {
     const dur = Number(execFileSync("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", mp4Tmp]).toString().trim());
     if (dur < 2.5 || dur > 9.5) problems.push(`video runs ${dur.toFixed(1)}s; demos should be 3–8s (script estimate ${(demoDuration(steps) / 1000).toFixed(1)}s)`);
 
-    if (continuousWindows.length && continuousQuality.activeSamples && continuousQuality.p95GapMs > 67 && !args.includes("--allow-dropped-frames")) problems.push(`capture has ${continuousQuality.p95GapMs.toFixed(1)}ms p95 moving-frame gaps; keep the last good clip and retry without competing rendering work`);
+    if (continuousWindows.length && continuousQuality.activeSamples && continuousQuality.p95GapMs > 34 && !args.includes("--allow-dropped-frames")) problems.push(`capture has ${continuousQuality.p95GapMs.toFixed(1)}ms p95 moving-frame gaps; keep the last good clip and retry without competing rendering work`);
     if (problems.length) return { written: [], problems };
     fs.mkdirSync(out, { recursive: true });
     const finalMp4 = path.join(out, `${slug}.mp4`);
