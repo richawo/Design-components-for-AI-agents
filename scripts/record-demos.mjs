@@ -307,7 +307,7 @@ async function record(browser, slug) {
     if (reportDir) {
       const directory = path.resolve(root, reportDir);
       fs.mkdirSync(directory, { recursive: true });
-      fs.writeFileSync(path.join(directory, `${slug}.json`), JSON.stringify({ slug, quality, continuousQuality, viewport: { vw, vh, dpr }, timestamps: frames.map((frame) => frame.t), motionWindows }, null, 2));
+      fs.writeFileSync(path.join(directory, `${slug}.json`), JSON.stringify({ slug, quality, continuousQuality, viewport: { vw, vh, dpr }, timestamps: frames.map((frame) => frame.t), motionWindows, continuousWindows }, null, 2));
     }
     // Each frame holds until the next one; the last holds to the end.
     frames.sort((a, b) => a.t - b.t);
@@ -337,6 +337,7 @@ async function record(browser, slug) {
     if (dur < 2.5 || dur > 9.5) problems.push(`video runs ${dur.toFixed(1)}s; demos should be 3–8s (script estimate ${(demoDuration(steps) / 1000).toFixed(1)}s)`);
 
     if (continuousWindows.length && continuousQuality.activeSamples && continuousQuality.p95GapMs > 34 && !args.includes("--allow-dropped-frames")) problems.push(`capture has ${continuousQuality.p95GapMs.toFixed(1)}ms p95 moving-frame gaps; keep the last good clip and retry without competing rendering work`);
+    if (continuousWindows.length && continuousQuality.stallsOver100Ms && !args.includes("--allow-dropped-frames")) problems.push(`capture has ${continuousQuality.stallsOver100Ms} moving-frame stalls over 100ms; keep the last good clip and retry`);
     if (problems.length) return { written: [], problems };
     fs.mkdirSync(out, { recursive: true });
     const finalMp4 = path.join(out, `${slug}.mp4`);

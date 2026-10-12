@@ -52,8 +52,8 @@ function fromCache() {
   return found.sort((a, b) => b.v - a.v)[0]?.p;
 }
 
-// Recordings keep their deterministic software renderer. Latency replays can
-// pass an empty args array to exercise the browser's usual rendering path.
+// Static checks can use the deterministic software renderer. Motion recordings
+// and latency replays pass an empty args array for native rendering.
 export async function launchChromium({ args = ARGS } = {}) {
   const explicit = process.env.CHROMIUM_PATH || fromCi();
   if (explicit) return chromium.launch({ executablePath: explicit, args });
