@@ -19,6 +19,12 @@ try {
     await page.waitForFunction(
       () => document.querySelector('[role="log"]').scrollTop === 0,
     );
+    await log.press("PageDown");
+    assert.ok(
+      (await log.evaluate((el) => el.scrollTop)) > 0,
+      "PageDown scrolls the focused terminal",
+    );
+    await log.press("ArrowUp");
     await log.press("End");
     await page.waitForFunction(() => {
       const el = document.querySelector('[role="log"]');

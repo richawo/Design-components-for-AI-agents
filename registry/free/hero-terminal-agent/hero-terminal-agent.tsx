@@ -515,6 +515,7 @@ function Terminal({
 }) {
   const frameRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
+  const following = useRef(true);
   // The terminal has its own reveal because it sits below the fold on phones;
   // the session clock also needs it on screen, and stops when it leaves.
   const revealed = useInView(frameRef, { once: true, amount: 0.3 });
@@ -549,7 +550,7 @@ function Terminal({
   const typed = visible.find((r): r is Extract<Row, { kind: "cmd" }> => r.kind === "cmd")?.typedAt.filter((x) => x <= now).length ?? 0;
   useEffect(() => {
     const el = bodyRef.current;
-    if (el) el.scrollTop = el.scrollHeight;
+    if (el && following.current) el.scrollTop = el.scrollHeight;
   }, [visible.length, typed]);
 
   const spin = useTransform(time, (t) => SPIN[Math.floor(t / (SPIN_FRAME * speedRef.current)) % SPIN.length] ?? SPIN[0]!);
@@ -600,6 +601,20 @@ function Terminal({
         tabIndex={0}
         aria-label="Example Relay session"
         aria-live="off"
+        onScroll={(event) => {
+          const el = event.currentTarget;
+          following.current = el.scrollHeight - el.scrollTop - el.clientHeight <= 2;
+        }}
+        onKeyDown={(event) => {
+          const el = event.currentTarget;
+          const step = event.key === "ArrowUp" ? -24 : event.key === "ArrowDown" ? 24 : event.key === "PageUp" ? -el.clientHeight * 0.9 : event.key === "PageDown" ? el.clientHeight * 0.9 : null;
+          if (event.key === "Home" || event.key === "End" || step !== null) {
+            event.preventDefault();
+            const top = event.key === "Home" ? 0 : event.key === "End" ? el.scrollHeight : el.scrollTop + (step ?? 0);
+            el.scrollTop = top;
+            following.current = el.scrollHeight - el.scrollTop - el.clientHeight <= 2;
+          }
+        }}
         className="focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-(--ta-ink) h-[380px] overflow-y-auto px-4 py-4 font-mono text-[12px] leading-[1.75] text-(--ta-ink)/85 [scrollbar-color:rgba(255,255,255,0.12)_transparent] [scrollbar-width:thin] @md:h-[440px] @md:px-5 @md:text-[13px] @5xl:h-[480px]"
       >
         {visible.map((r, i) => (

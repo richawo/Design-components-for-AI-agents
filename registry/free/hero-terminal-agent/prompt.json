@@ -23,7 +23,12 @@
       "tracking": "-0.05em",
       "lines": "one prop string per line; emphasis phrase at ink/45, no-wrap"
     },
-    "body": { "size": "17px", "leading": 1.6, "color": "ink/65", "maxWidth": "46ch" },
+    "body": {
+      "size": "17px",
+      "leading": 1.6,
+      "color": "ink/65",
+      "maxWidth": "46ch"
+    },
     "terminal": "mono 12px (13px from @md), leading 1.75",
     "facts": "mono 11px uppercase, tracking 0.12em, ink/45"
   },
@@ -56,13 +61,23 @@
     "pause button with aria-pressed and a label",
     "copy chip with a descriptive aria-label and a polite live region",
     "2px ink focus rings, offset 3px, instant",
-    "reduced motion shows the finished session"
+    "reduced motion shows the finished session",
+    "A focusable terminal log handles Home, End, Page Up/Down and arrow scrolling locally. Auto-follow pauses while the reader scrolls back, and resumes at the bottom."
   ],
   "content": {
-    "headline": ["The agent", "that does the", "boring parts", "of shipping."],
+    "headline": [
+      "The agent",
+      "that does the",
+      "boring parts",
+      "of shipping."
+    ],
     "emphasis": "boring parts",
     "install": "npx relay@latest init",
-    "facts": ["Runs locally or in CI", "Never pushes to main", "Free for open source"],
+    "facts": [
+      "Runs locally or in CI",
+      "Never pushes to main",
+      "Free for open source"
+    ],
     "command": "relay ship \"rate-limit /v1/checkout and /v1/refunds\"",
     "pr": "#482 Rate-limit checkout and refunds"
   },

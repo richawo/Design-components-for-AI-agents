@@ -48,3 +48,5 @@ Build a developer-tool hero in React + Tailwind CSS v4 with `motion/react`. On t
 **Feel**
 - The terminal tilts up to 1.5° toward a mouse pointer on a soft spring (stiffness 180, damping 22) and levels out on leave.
 - The CTA lightens to white on hover and presses to 0.98; the chip presses to 0.98 and its icon pops between copy and check on `spring.ui` (500/30).
+
+The terminal log owns Home, End, Page Up/Down and arrow scrolling while focused. New output follows the bottom only while the reader is already there; scrolling back preserves the reading position, and End resumes following.
