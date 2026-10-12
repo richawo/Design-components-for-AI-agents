@@ -14972,12 +14972,14 @@
       {
         "name": "title",
         "type": "string",
-        "description": "Main heading."
+        "description": "Main heading.",
+        "default": "\"Preorder production\""
       },
       {
         "name": "subtitle",
         "type": "string",
-        "description": "Supporting context."
+        "description": "Supporting context.",
+        "default": "\"Turn size-level preorders into a production plan that respects factory constraints.\""
       },
       {
         "name": "style",
