@@ -46,6 +46,11 @@ try {
     /Complete the conditions/,
   );
   await page.getByRole("button", { name: "Remove condition 2" }).click();
+  await page.waitForFunction(
+    () =>
+      document.activeElement?.matches("button") &&
+      document.activeElement.textContent?.includes("Add condition"),
+  );
   assert.equal(
     await page
       .getByRole("button", { name: /Add condition/ })
@@ -279,8 +284,10 @@ try {
     /Restoration failed/,
   );
   await page.getByRole("button", { name: "Cancel", exact: true }).click();
-  await page.waitForFunction(() =>
-    document.activeElement?.textContent?.includes("Restore this revision"),
+  await page.waitForFunction(
+    () =>
+      document.activeElement?.matches("button") &&
+      document.activeElement.textContent?.includes("Restore this revision"),
   );
   assert.equal(
     await page

@@ -12,8 +12,19 @@ export async function mountFixture(page, slug, tier, fixture) {
   // A tier change must retain its browser regression coverage. Resolve the checked-out source.
   if (!fs.existsSync(path.join(root, "registry", tier, slug, `${slug}.tsx`))) {
     const alternate = tier === "pro" ? "free" : "pro";
-    if (fs.existsSync(path.join(root, "registry", alternate, slug, `${slug}.tsx`))) tier = alternate;
+    if (
+      fs.existsSync(path.join(root, "registry", alternate, slug, `${slug}.tsx`))
+    )
+      tier = alternate;
   }
+  const metadata = JSON.parse(
+    fs.readFileSync(
+      path.join(root, "registry", tier, slug, "meta.json"),
+      "utf8",
+    ),
+  );
+  const mobile = metadata.platform === "mobile";
+  if (mobile) await page.setViewportSize({ width: 390, height: 844 });
   const compiled = await build({
     stdin: {
       contents: `import React, {useState} from 'react'; import {createRoot} from 'react-dom/client'; import * as Subject from './registry/${tier}/${slug}/${slug}.tsx'; ${fixture}`,
@@ -24,7 +35,33 @@ export async function mountFixture(page, slug, tier, fixture) {
     write: false,
     format: "iife",
     platform: "browser",
-    define: { "process.env.NODE_ENV": '"production"' },
+    define: {
+      "process.env.NODE_ENV": '"production"',
+      __DEV__: "false",
+      global: "globalThis",
+    },
+    ...(mobile
+      ? {
+          alias: {
+            "react-native": "react-native-web",
+            "@react-native/assets-registry/registry": path.join(
+              root,
+              "lib/shims/assets-registry.js",
+            ),
+          },
+          resolveExtensions: [
+            ".web.tsx",
+            ".tsx",
+            ".web.ts",
+            ".ts",
+            ".web.jsx",
+            ".jsx",
+            ".web.js",
+            ".js",
+            ".json",
+          ],
+        }
+      : {}),
   });
   await page.goto(`${base}/preview/${slug}`, { waitUntil: "networkidle" });
   const styles = await page
@@ -33,7 +70,7 @@ export async function mountFixture(page, slug, tier, fixture) {
   await page.route("**/__component_audit__", (route) =>
     route.fulfill({
       contentType: "text/html",
-      body: `<!doctype html><html lang="en"><head><title>Component audit</title>${styles.map((h) => `<link rel="stylesheet" href="${h}">`).join("")}</head><body style="margin:0;background:#09090b;color:#f4f4f5"><main style="padding:32px;max-width:720px;margin:auto" id="root"></main></body></html>`,
+      body: `<!doctype html><html lang="en"><head><meta name="viewport" content="width=device-width, initial-scale=1"><title>Component audit</title>${styles.map((h) => `<link rel="stylesheet" href="${h}">`).join("")}</head><body style="margin:0;background:#09090b;color:#f4f4f5"><main style="${mobile ? "display:flex;flex-direction:column;width:390px;height:844px" : "padding:32px;max-width:720px"};margin:auto" id="root"></main></body></html>`,
     }),
   );
   await page.goto(`${base}/__component_audit__`);

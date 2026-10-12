@@ -19,6 +19,7 @@ const publicCases = [
   "navigation-surface-probe",
   "otp-acknowledgement-probe",
   "invitation-acknowledgement",
+  "unconfigured-action-probe",
   "table-probe",
   "ime-probe",
   "expansion-inputs-probe",
