@@ -891,6 +891,116 @@
     ]
   },
   {
+    "slug": "agents-dependency-board",
+    "name": "Dependency Plan Board",
+    "tier": "pro",
+    "platform": "web",
+    "category": "agents",
+    "description": "An inspectable supplied dependency graph with a complete linear alternative, honest missing/cyclic relationships and authoritative task status.",
+    "tags": [
+      "agents",
+      "dependencies",
+      "graph",
+      "tasks",
+      "blockers",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1120,
+    "usage": "import { AgentsDependencyBoard } from \"@/components/design-for-ai/agents-dependency-board\";\n\n<AgentsDependencyBoard tasks={tasks} value={taskId} onValueChange={inspectTask} resetKey={planId} />",
+    "props": [
+      {
+        "name": "tasks",
+        "type": "DependencyBoardTask[]",
+        "description": "Stable task IDs, title/description, actual queued/running/blocked/complete/error state, raw dependency ID entries and optional owner.",
+        "default": "6 original offline navigation-study tasks"
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "description": "Controlled inspected task ID. Missing identity stays explicit; without observer selection is read-only."
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "description": "Initial local inspected ID; reset reuses it or first available task."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(id: string, task: DependencyBoardTask) => void",
+        "description": "Synchronous inspection callback. Host rejection keeps the authoritative selected task. No execution."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Supplied plan identity; resets local selection/view/trace."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Concise relationship heading.",
+        "default": "\"Dependencies, made legible.\""
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Explain grounded relationship inspection.",
+        "default": "\"Trace the supplied relationships, inspect the blockers and keep the next decision grounded in the actual plan.\""
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Neutral dark and paper graph palettes with semantic supplied states.",
+        "default": "\"dark\""
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Outer board class.",
+        "default": "\"\""
+      }
+    ],
+    "added": "2026-10-13",
+    "demo": {
+      "steps": [
+        "click:@trace-dependencies",
+        "wait:350",
+        "click:@graph-keyboard",
+        "wait:400",
+        "click:@view-list",
+        "wait:350",
+        "click:@list-release",
+        "wait:400",
+        "click:@view-graph",
+        "wait:350",
+        "click:@trace-all",
+        "wait:300"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "title",
+        "label": "Heading",
+        "kind": "text",
+        "default": "Dependencies, made legible."
+      }
+    ]
+  },
+  {
     "slug": "ai-answer-compare",
     "name": "Answer Comparison",
     "tier": "pro",

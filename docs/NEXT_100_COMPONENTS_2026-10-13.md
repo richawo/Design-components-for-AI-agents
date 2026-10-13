@@ -135,7 +135,7 @@ Validate all six web widths, both supported themes, multiple instances and empty
 | 71 | `ai-context-budget` | ai | Inspect context sources and their token budget; include/exclude items with a clear over-limit explanation. | Released |
 | 72 | `ai-answer-compare` | ai | Compare supplied responses to the same request using shared evidence and explicit preference selection. | Released |
 | 73 | `ai-structured-output` | ai | Inspect streamed structured fields, distinguish incomplete values and recover validation errors. | Released |
-| 74 | `agents-dependency-board` | agents | Inspect task dependencies and blockers with a readable graph and a linear keyboard alternative. | Planned |
+| 74 | `agents-dependency-board` | agents | Inspect task dependencies and blockers with a readable graph and a linear keyboard alternative. | Released |
 | 75 | `agents-run-replay` | agents | Scrub a supplied event history and reconstruct the visible run state without executing tools. | Planned |
 | 76 | `agents-budget-guard` | agents | Review estimated and actual usage against supplied limits before authorizing a bounded action. | Planned |
 | 77 | `devtools-release-compare` | devtools | Compare deployments, inspect changed resources and request a reviewed rollback. | Planned |
@@ -175,4 +175,4 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 ## Progress
 
-Planned: 65. Released: 35. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
+Planned: 64. Released: 36. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
