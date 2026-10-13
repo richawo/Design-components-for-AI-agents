@@ -30,7 +30,7 @@ Validate all six web widths, both supported themes, multiple instances and empty
 | 1 | `navigation-context-rail` | navigation | Icon rail changes a second-level navigation list; remember each section's selection, collapse context, support a narrow-container drawer. | Released |
 | 2 | `navigation-lens-dock` | navigation | Pointer-distance magnification and a moving glass lens; keyboard selection, disabled tools and touch remain stable. | Planned |
 | 3 | `cards-prismatic-folder` | cards | A translucent folder opens to its actual file list; preview, empty and unavailable content stay legible. | Released |
-| 4 | `input-detent-dial` | inputs | A knurled rotary control with finite detents; drag, keys and precise numeric entry share one bounded value. | Planned |
+| 4 | `input-detent-dial` | inputs | A knurled rotary control with finite detents; drag, keys and precise numeric entry share one bounded value. | Released |
 | 5 | `devtools-icon-workbench` | devtools | Search host-supplied SVG glyphs, adjust size and stroke, inspect and copy real SVG; clipboard failure is actionable. | Planned |
 | 6 | `hero-signal-workbench` | hero | Connected parameter nodes drive a live waveform preview; compare signals and adjust gain without a perpetual background loop. | Planned |
 | 7 | `button-shimmer-track` | buttons | A fine light travels the button edge; async actions preserve geometry through pending, success, failure and retry. | Released |
@@ -175,4 +175,4 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 ## Progress
 
-Planned: 97. Released: 3. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
+Planned: 96. Released: 4. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
