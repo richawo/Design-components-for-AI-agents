@@ -33,7 +33,7 @@ export function ComponentCard({ c, priority = false, imageSizes = "100vw" }: { c
   return (
     <Link
       href={cataloguePath(c)}
-      className="component-card group relative flex w-full flex-col overflow-hidden rounded-[18px] border border-white/[0.08] bg-site-raised shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] transition-[border-color,background-color,scale] duration-150 ease-site hover:border-white/[0.16] hover:bg-site-raised-2 active:scale-[0.98] active:duration-75"
+      className="component-card group relative flex w-full flex-col overflow-hidden rounded-[18px] border border-white/[0.08] bg-site-raised shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] transition-[border-color,background-color,scale] duration-150 ease-site hover:border-white/[0.16] hover:bg-site-raised-2 active:scale-[0.98] motion-reduce:!scale-100 active:duration-75"
     >
       <div className="relative aspect-[16/10] overflow-hidden border-b border-white/[0.06] bg-site-sunken">
         <CardMedia name={c.name} thumb={c.thumb} srcSet={c.thumbSrcSet} sizes={imageSizes} video={c.video} platform={c.platform} priority={priority} />
@@ -48,7 +48,7 @@ export function ComponentCard({ c, priority = false, imageSizes = "100vw" }: { c
         </div>
         <p className="flex items-center justify-between font-mono text-[11px] text-site-fg-3">
           {c.kind === "block" && c.blockType ? BLOCK_LABELS[c.blockType] : CATEGORIES[c.category].label}
-          <span aria-hidden="true" className="-translate-x-1 text-site-fg-2 opacity-0 transition duration-200 ease-site group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:opacity-100">
+          <span aria-hidden="true" className="-translate-x-1 text-site-fg-2 opacity-0 transition duration-200 ease-site group-hover:translate-x-0 motion-reduce:!translate-none group-hover:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:opacity-100">
             View →
           </span>
         </p>

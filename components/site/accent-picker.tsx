@@ -32,7 +32,7 @@ export function AccentPicker({ defaultColor = DEFAULT_ACCENT }: { defaultColor?:
       <p className="text-sm font-medium">Component accent</p>
       <p className="mt-1 text-xs leading-relaxed text-site-fg-2">Use one colour for accents across live component previews.</p>
       <div className="mt-4 flex justify-between gap-1" aria-label="Suggested colours">
-        {SWATCHES.map(hex => <button key={hex} type="button" aria-label={`Use ${hex}`} aria-pressed={accent === hex} onClick={() => setAccent(hex)} className="flex size-8 items-center justify-center rounded-full border border-white/15 transition-transform active:scale-90" style={{background:hex}}>
+        {SWATCHES.map(hex => <button key={hex} type="button" aria-label={`Use ${hex}`} aria-pressed={accent === hex} onClick={() => setAccent(hex)} className="flex size-8 items-center justify-center rounded-full border border-white/15 transition-transform active:scale-90 motion-reduce:!scale-100" style={{background:hex}}>
           {accent === hex && <span aria-hidden="true" className="size-1.5 rounded-full bg-black" />}
         </button>)}
       </div>

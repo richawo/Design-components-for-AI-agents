@@ -358,7 +358,7 @@ function ColorControl({ id, c, value, onChange }: { id: string; c: ComponentCont
               aria-checked={on}
               aria-label={hex}
               onClick={() => onChange(hex)}
-              className="relative grid size-6 place-items-center rounded-full before:absolute before:-inset-1 before:content-[''] active:scale-[0.92]"
+              className="relative grid size-6 place-items-center rounded-full before:absolute before:-inset-1 before:content-[''] active:scale-[0.92] motion-reduce:!scale-100"
             >
               <span className={`size-4 rounded-full ring-1 ring-inset ring-white/20 transition-transform duration-150 ${on ? "scale-100" : "scale-[0.8]"}`} style={{ background: hex }} />
               {on && <motion.span layoutId={reduce ? undefined : `${id}-ring`} className="absolute inset-0 rounded-full ring-1 ring-white/70" transition={SPRING_UI} />}

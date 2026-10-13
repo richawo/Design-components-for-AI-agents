@@ -1,10 +1,13 @@
 "use client";
 
+import { useReducedMotion } from "@/lib/use-reduced-motion";
+
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
 import type { Heading } from "@/lib/content";
 
 export function Toc({ headings, label = "On this page" }: { headings: Heading[]; label?: string }) {
+  const reduce = useReducedMotion();
   const [active, setActive] = useState<string | null>(headings[0]?.id ?? null);
   // The active heading is the last one that has scrolled past the header.
   // Measuring on scroll (not IntersectionObserver) stays right after big
@@ -46,7 +49,7 @@ export function Toc({ headings, label = "On this page" }: { headings: Heading[];
           <li key={h.id} className="relative">
             {active === h.id && (
               <motion.span
-                layoutId="toc-active"
+                layoutId={reduce ? undefined : "toc-active"}
                 aria-hidden="true"
                 className="absolute inset-y-0 -left-px w-0.5 rounded-full bg-site-accent"
                 transition={{ type: "spring", stiffness: 500, damping: 40 }}

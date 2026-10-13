@@ -16,7 +16,7 @@ export function LogoMark({ className = "size-7" }: { className?: string }) {
 export function Logo() {
   return (
     <Link href="/" className="group inline-flex shrink-0 items-center whitespace-nowrap gap-2.5 rounded-lg" aria-label="Design for AI home">
-      <LogoMark className="size-7 transition-transform duration-300 ease-site group-hover:rotate-[-6deg] group-active:scale-95" />
+      <LogoMark className="size-7 transition-transform duration-300 ease-site group-hover:rotate-[-6deg] motion-reduce:!rotate-0 group-active:scale-95 motion-reduce:!scale-100" />
       <span className="text-[15px] font-semibold tracking-[-0.025em] text-site-fg">
         Design for AI
       </span>

@@ -236,7 +236,7 @@ export function ComponentBrowser({ cards, categories }: { cards: CardData[]; cat
                   input.current?.focus();
                 }}
                 aria-label="Clear search"
-                className="site-pop absolute right-0 top-1/2 flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/[0.08] text-site-fg-2 transition-colors duration-150 hover:bg-white/[0.14] hover:text-site-fg active:scale-95"
+                className="site-pop absolute right-0 top-1/2 flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/[0.08] text-site-fg-2 transition-colors duration-150 hover:bg-white/[0.14] hover:text-site-fg active:scale-95 motion-reduce:!scale-100"
               >
                 <svg viewBox="0 0 12 12" className="size-2.5" fill="none" aria-hidden="true">
                   <path d="M2.5 2.5l7 7M9.5 2.5l-7 7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />

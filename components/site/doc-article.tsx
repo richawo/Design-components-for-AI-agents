@@ -8,12 +8,12 @@ function PageLink({ href, title, direction }: { href: string; title: string; dir
   return (
     <Link
       href={href}
-      className={`site-surface group block rounded-[18px] p-5 transition-[border-color,background-color,scale] duration-150 ease-site hover:border-white/[0.16] hover:bg-white/[0.03] active:scale-[0.98] active:duration-75 ${next ? "text-right" : ""}`}
+      className={`site-surface group block rounded-[18px] p-5 transition-[border-color,background-color,scale] duration-150 ease-site hover:border-white/[0.16] hover:bg-white/[0.03] active:scale-[0.98] motion-reduce:!scale-100 active:duration-75 ${next ? "text-right" : ""}`}
     >
       <span className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-site-fg-3">
-        {!next && <span className="transition-transform duration-150 ease-site group-hover:-translate-x-0.5">←</span>}
+        {!next && <span className="transition-transform duration-150 ease-site group-hover:-translate-x-0.5 motion-reduce:!translate-none">←</span>}
         {next ? "Next" : "Previous"}
-        {next && <span className="transition-transform duration-150 ease-site group-hover:translate-x-0.5">→</span>}
+        {next && <span className="transition-transform duration-150 ease-site group-hover:translate-x-0.5 motion-reduce:!translate-none">→</span>}
       </span>
       <span className="mt-1.5 block text-xl font-semibold tracking-[-0.03em] text-site-fg">{title}</span>
     </Link>

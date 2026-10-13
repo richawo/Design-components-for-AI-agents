@@ -1,11 +1,14 @@
 "use client";
 
+import { useReducedMotion } from "@/lib/use-reduced-motion";
+
 import { motion } from "motion/react";
 import { SiteLink as Link } from "@/components/site/site-link";
 import { usePathname } from "next/navigation";
 
 /** `scope` keeps each rendered copy's active pill to itself (the layout renders one for mobile, one for desktop). */
 export function DocsNav({ groups, scope }: { groups: { section: string; docs: { slug: string; title: string }[] }[]; scope: string }) {
+  const reduce = useReducedMotion();
   const pathname = usePathname();
   return (
     <nav aria-label="Docs" className="space-y-7">
@@ -25,12 +28,12 @@ export function DocsNav({ groups, scope }: { groups: { section: string; docs: { 
                   >
                     {active && (
                       <motion.span
-                        layoutId={`docs-nav-active-${scope}`}
+                        layoutId={reduce ? undefined : `docs-nav-active-${scope}`}
                         className="absolute inset-0 rounded-xl bg-white/[0.07] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
                         transition={{ type: "spring", stiffness: 500, damping: 40 }}
                       />
                     )}
-                    <span className="relative inline-block transition-transform duration-150 group-active:scale-[0.97]">{d.title}</span>
+                    <span className="relative inline-block transition-transform duration-150 group-active:scale-[0.97] motion-reduce:!scale-100">{d.title}</span>
                   </Link>
                 </li>
               );

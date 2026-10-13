@@ -428,7 +428,7 @@ function FilterInput({
             input.current?.focus();
           }}
           aria-label="Clear category filter"
-          className={`site-pop absolute right-2 top-1/2 flex size-5 -translate-y-1/2 items-center justify-center rounded-full bg-white/[0.08] text-site-fg-2 transition-colors duration-150 hover:bg-white/[0.14] hover:text-site-fg active:scale-95 ${FOCUS}`}
+          className={`site-pop absolute right-2 top-1/2 flex size-5 -translate-y-1/2 items-center justify-center rounded-full bg-white/[0.08] text-site-fg-2 transition-colors duration-150 hover:bg-white/[0.14] hover:text-site-fg active:scale-95 motion-reduce:!scale-100 ${FOCUS}`}
         >
           <svg viewBox="0 0 12 12" className="size-2" fill="none" aria-hidden="true">
             <path d="M2.5 2.5l7 7M9.5 2.5l-7 7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
@@ -568,6 +568,7 @@ function CatItem({
   label: string;
   count: number;
 }) {
+  const reduce = useReducedMotion();
   return (
     <li className="shrink-0">
       <button
@@ -581,12 +582,12 @@ function CatItem({
       >
         {active && (
           <motion.span
-            layoutId="browser-cat"
+            layoutId={reduce ? undefined : "browser-cat"}
             className="absolute inset-0 rounded-lg bg-white/[0.07] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
             transition={{ type: "spring", stiffness: 500, damping: 40 }}
           />
         )}
-        <span className="relative min-w-0 truncate transition-transform duration-150 group-active:scale-[0.97]">{label}</span>
+        <span className="relative min-w-0 truncate transition-transform duration-150 group-active:scale-[0.97] motion-reduce:!scale-100">{label}</span>
         <span className={`relative font-mono text-[11px] tabular-nums transition-colors ${active ? "text-site-fg-2" : "text-site-fg-3"}`}>{count}</span>
       </button>
     </li>

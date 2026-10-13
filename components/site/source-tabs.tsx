@@ -1,5 +1,7 @@
 "use client";
 
+import { useReducedMotion } from "@/lib/use-reduced-motion";
+
 import { motion } from "motion/react";
 import { SiteLink as Link } from "@/components/site/site-link";
 import { memo, useEffect, useId, useRef, useState } from "react";
@@ -34,6 +36,7 @@ export function SourceTabs({
   installText: string;
   installHtml: string;
 }) {
+  const reduce = useReducedMotion();
   const uid = useId();
   const container = useRef<HTMLDivElement>(null);
   const [near, setNear] = useState(!!initial);
@@ -101,10 +104,10 @@ export function SourceTabs({
               }}
               className={`group relative min-h-11 shrink-0 px-3.5 pb-3 pt-2.5 text-[13px] font-medium transition-colors duration-150 ${tab === t.key ? "text-site-fg" : "text-site-fg-3 hover:text-site-fg-2"}`}
             >
-              <span className="relative inline-block transition-transform duration-150 group-active:scale-[0.95]">{t.label}</span>
+              <span className="relative inline-block transition-transform duration-150 group-active:scale-[0.95] motion-reduce:!scale-100">{t.label}</span>
               {tab === t.key && (
                 <motion.span
-                  layoutId={`source-tab-${slug}`}
+                  layoutId={reduce ? undefined : `source-tab-${slug}`}
                   className="absolute inset-x-3 -bottom-px h-px bg-site-accent"
                   transition={{ type: "spring", stiffness: 500, damping: 40 }}
                 />

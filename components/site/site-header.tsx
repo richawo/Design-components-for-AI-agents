@@ -1,5 +1,7 @@
 "use client";
 
+import { useReducedMotion } from "@/lib/use-reduced-motion";
+
 import { SiteLink as Link } from "@/components/site/site-link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
@@ -20,6 +22,7 @@ const isActive = (pathname: string, href: string) => pathname === href || pathna
 export function SiteHeader({ locale = "en", copy = {} }: { locale?: string; copy?: Record<string, string> }) {
   const t = (text: string) => copy[text] ?? text;
   const nav = NAV.map((item) => ({ href: item.href === "/blog" && locale !== "en" ? `/${locale}/blog` : item.href, label: t(item.label) }));
+  const reduce = useReducedMotion();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -98,12 +101,12 @@ export function SiteHeader({ locale = "en", copy = {} }: { locale?: string; copy
                     onMouseEnter={() => setHovered(item.href)}
                     onFocus={() => setHovered(item.href)}
                     onBlur={() => setHovered(null)}
-                    className={`relative isolate rounded-full px-3.5 py-1.5 text-[14px] transition-[color,scale] duration-200 active:scale-[0.96] ${active ? "text-site-fg" : "text-site-fg-2 hover:text-site-fg"}`}
+                    className={`relative isolate rounded-full px-3.5 py-1.5 text-[14px] transition-[color,scale] duration-200 active:scale-[0.96] motion-reduce:!scale-100 ${active ? "text-site-fg" : "text-site-fg-2 hover:text-site-fg"}`}
                   >
                     <AnimatePresence>
                       {hovered === item.href && (
                         <motion.span
-                          layoutId="site-nav-hover"
+                          layoutId={reduce ? undefined : "site-nav-hover"}
                           className="absolute inset-0 -z-10 rounded-full bg-white/[0.07] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
@@ -115,7 +118,7 @@ export function SiteHeader({ locale = "en", copy = {} }: { locale?: string; copy
                     {item.label}
                     {active && (
                       <motion.span
-                        layoutId="site-nav-active"
+                        layoutId={reduce ? undefined : "site-nav-active"}
                         aria-hidden="true"
                         className="absolute inset-x-3.5 -bottom-[15px] h-px bg-site-accent"
                         transition={{ type: "spring", stiffness: 500, damping: 40 }}
@@ -148,7 +151,7 @@ export function SiteHeader({ locale = "en", copy = {} }: { locale?: string; copy
           <button
             ref={trigger}
             type="button"
-            className="relative flex size-11 items-center justify-center rounded-full border border-white/10 transition duration-150 active:scale-95 active:bg-white/[0.06] lg:hidden"
+            className="relative flex size-11 items-center justify-center rounded-full border border-white/10 transition duration-150 active:scale-95 motion-reduce:!scale-100 active:bg-white/[0.06] lg:hidden"
             aria-expanded={open}
             aria-controls="mobile-nav"
             aria-label={open ? t("Close menu") : t("Open menu")}
