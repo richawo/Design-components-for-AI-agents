@@ -3929,8 +3929,9 @@
     "useWhen": "Offering a useful grouped site index with real destinations in a compact footer.",
     "avoidWhen": "A full application command palette or decorative navigation labels with no destination.",
     "integration": [
-      "Supply groups and actual destination URLs. Keep empty or unavailable groups clear and make the current destination distinguishable.",
-      "Use the compact treatment in narrow containers without losing keyboard access or turning expansion into unexpected page navigation."
+      "Supply actual site/brand/copyright and groups with stable IDs, real optional URLs and availability reasons. currentHref marks an exact destination; the component never invents routes or executes navigation while expanding.",
+      "Exact query/onQueryChange and openGroups/onOpenGroupsChange pairs are independently controlled. Rejected changes preserve the actual result set/disclosures. Local defaults are seeds; resetKey explicitly resets them. Matching is accent/case insensitive against supplied labels and descriptions.",
+      "Below700px of actual container width, groups become44px disclosures with inert closed links. Search reveals matches without mutating saved compact expansion. Measure actual content height; live reduced motion stops/sets height and count owners. Retired/disabled links recover only owned focus, while a primary outside-background click clears memory."
     ],
     "related": [
       "navigation-context-rail",
@@ -4073,8 +4074,9 @@
     "useWhen": "Choosing a bounded interval with two handles and precise numeric endpoints.",
     "avoidWhen": "A single-value slider or a timeline that also needs actual media playback.",
     "integration": [
-      "Supply interval bounds, step and collision rules. Numeric entry and keyboard handles must request the same accepted range.",
-      "Keep the active endpoint and draft intact after rejected or invalid changes; offer large touch targets even when handles approach each other."
+      "Supply one atomic lower/upper pair with finite ordered min/max, equally spaced step, whole-step minimumGap and clamp/push collision policy. Domains support up to six decimal places and100,000 steps within ±1,000,000. Invalid configuration or out-of-domain host values stays explicit; repairing is a requested minimum interval, never automatic coercion.",
+      "Native lower/upper handles and exact decimal fields share the same accepted pair. Exact drafts follow host authority until actually edited, preserve newer revisions through older acknowledgements and remain visible when controlled callbacks reject a request. Absent controlled handlers lock editing; resetKey explicitly resets local seeds.",
+      "The ruler band and tabular interval/width figures move in both directions from current visible state. Live reduced motion stops/sets every owner. Provide native touch/keyboard handles, readable limits and minimum gap, actual focus rings, and primary outside-background ownership guards."
     ],
     "related": [
       "input-detent-dial",
@@ -4489,8 +4491,9 @@
     "useWhen": "Inspecting supplied structured fields as they become complete, valid or invalid during an actual stream.",
     "avoidWhen": "Inventing completed values, hiding validation failures or claiming to execute a schema-driven workflow.",
     "integration": [
-      "Supply field definitions, current values and actual completeness/validation status. Preserve partially received data rather than filling gaps with fabricated content.",
-      "Keep failed fields actionable through host callbacks and distinguish streaming, completed and unavailable output."
+      "Supply stable fields with actual path, declared JSON type (string, number, boolean, null, object or array), value, waiting/partial/valid/invalid/unavailable state and meaningful messages. outputState/outputMessage describes actual host streaming/completion/failure; rawOutput is received text, not invented validated JSON.",
+      "Selection is an exact value/defaultValue/onValueChange ID contract; inspection filters are local. Only unique, valid, type-matching, finite, acyclic and bounded field values can be copied as validated output. Explicit raw copying keeps the received state clear.",
+      "Real onRetry(field, AbortSignal) and clipboard jobs are owned by the exact field content/state, output/reset scope, availability and callback identity. Cancel/retire stale acknowledgements while preserving the latest visible data. Missing handlers never show fake recovery controls."
     ],
     "related": [
       "streaming-text",
