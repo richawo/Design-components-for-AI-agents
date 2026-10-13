@@ -91,7 +91,7 @@ Validate all six web widths, both supported themes, multiple instances and empty
 | 42 | `input-unit-converter` | inputs | Change a display unit without losing the underlying quantity or accepting invalid precision. | Released |
 | 43 | `input-cron-builder` | inputs | Compose a supported schedule and inspect its next occurrences in the chosen timezone. | Released |
 | 44 | `input-expression-editor` | inputs | Edit a small typed expression with syntax, validation and a transparent evaluated example. | Released |
-| 45 | `selects-tree-picker` | selects | Select hierarchical items with indeterminate parents, search and disabled-node explanations. | Planned |
+| 45 | `selects-tree-picker` | selects | Select hierarchical items with indeterminate parents, search and disabled-node explanations. | Released |
 | 46 | `date-range-calendar` | date-time | A two-ended date range with keyboard grid navigation, invalid-range recovery and locale-aware display. | Planned |
 | 47 | `date-timezone-overlap` | date-time | Compare working hours across supplied zones and daylight-saving boundaries before choosing a time. | Planned |
 | 48 | `forms-branching-survey` | forms | Conditional questions preserve prior answers when branches change and expose a final review. | Planned |
@@ -175,4 +175,4 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 ## Progress
 
-Planned: 53. Released: 47. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
+Planned: 52. Released: 48. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.

@@ -27643,6 +27643,170 @@
     ]
   },
   {
+    "slug": "selects-tree-picker",
+    "name": "Hierarchy Tree Picker",
+    "tier": "pro",
+    "platform": "web",
+    "category": "selects",
+    "description": "A native checkbox hierarchy preserves actual selected leaves, indeterminate groups, explicit disabled ancestry and temporary search expansion.",
+    "tags": [
+      "tree",
+      "hierarchy",
+      "checkbox",
+      "select",
+      "indeterminate",
+      "search"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1100,
+    "usage": "import { SelectsTreePicker } from \"@/components/design-for-ai/selects-tree-picker\";\n\n<SelectsTreePicker nodes={items} value={selectedIds} onValueChange={setSelectedIds} />\n\n// Group selection includes all selectable descendants, even outside the current search.",
+    "props": [
+      {
+        "name": "nodes",
+        "type": "readonly PickerNode[]",
+        "description": "Unique nonempty identities/labels, at most128 nodes and eight levels. Parent unavailability propagates to its actual descendants; supplied reading context is retained."
+      },
+      {
+        "name": "value",
+        "type": "readonly string[]",
+        "description": "Controlled selected leaf identities. Rejected changes retain actual selection; missing/non-leaf/unavailable supplied selections remain explicit and do not become fabricated leaf records."
+      },
+      {
+        "name": "defaultValue",
+        "type": "readonly string[]",
+        "description": "Local selection seed; reset explicitly using resetKey."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(ids: readonly string[]) => void",
+        "description": "Request a cloned atomic selection. A parent selects or clears all eligible leaf descendants, including outside search, while retaining unavailable existing selection."
+      },
+      {
+        "name": "expandedIds",
+        "type": "readonly string[]",
+        "description": "Optional controlled expanded branch identities, pair with onExpandedIdsChange."
+      },
+      {
+        "name": "defaultExpandedIds",
+        "type": "readonly string[]",
+        "description": "Local expansion seed. Search temporarily reveals relevant branches without replacing retained disclosure choices."
+      },
+      {
+        "name": "onExpandedIdsChange",
+        "type": "(ids: readonly string[]) => void",
+        "description": "Request cloned branch expansion without changing selection."
+      },
+      {
+        "name": "query",
+        "type": "string",
+        "description": "Optional controlled exact search. Pair with onQueryChange to edit; absent handler gives a readable fixed filter."
+      },
+      {
+        "name": "defaultQuery",
+        "type": "string",
+        "description": "Local search seed."
+      },
+      {
+        "name": "onQueryChange",
+        "type": "(query: string) => void",
+        "description": "Request search text separately from accepted selection."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Explicit local selection, expansion and search reset."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"error\"",
+        "description": "Host availability preserves actual choices and reading context."
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "description": "Meaningful host failure explanation, default when blank."
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Actual recovery request."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Lock interaction while preserving readable hierarchy and selection."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Complete dark ochre or pale-paper palette."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<TreePickerLabels>",
+        "description": "All heading, search, branch, selection and recovery copy."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Host layout responsive to actual container width."
+      }
+    ],
+    "added": "2026-10-13",
+    "demo": {
+      "steps": [
+        "click:@tree-check-controls",
+        "wait:450",
+        "click:@tree-expand-visuals",
+        "wait:450",
+        "click:@tree-check-controls",
+        "wait:450",
+        "click:@tree-expand-visuals",
+        "wait:450"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "disabled",
+        "label": "Read only",
+        "kind": "toggle",
+        "default": false
+      },
+      {
+        "prop": "query",
+        "label": "Filter text",
+        "kind": "text",
+        "default": ""
+      },
+      {
+        "prop": "status",
+        "label": "Availability",
+        "kind": "select",
+        "options": [
+          "ready",
+          "loading",
+          "error"
+        ],
+        "default": "ready"
+      }
+    ]
+  },
+  {
     "slug": "social-proof-case-ledger",
     "name": "Evidence Case Ledger",
     "tier": "pro",
