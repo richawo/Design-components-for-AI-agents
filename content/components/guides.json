@@ -3648,5 +3648,31 @@
       "hero-app-tilt"
     ],
     "updated": "2026-10-13"
+  },
+  "navigation-stacked-tabs": {
+    "useWhen": "Several documents share one working area and people need to reorder, close and restore tabs while preserving unsaved state.",
+    "avoidWhen": "A short set of fixed product sections, where an ordinary tab bar is easier to scan and does not need document lifecycle controls.",
+    "integration": [
+      "Keep stable document IDs and distinguish dirty changes from acknowledged saves.",
+      "The host owns document contents and closure decisions; preserve drafts when a close request is rejected."
+    ],
+    "related": [
+      "tabs-underline-glide",
+      "data-file-explorer"
+    ],
+    "updated": "2026-10-13"
+  },
+  "layout-split-resizer": {
+    "useWhen": "Two related views need adjustable space, such as an editor beside a preview or a record list beside its details.",
+    "avoidWhen": "Independent page sections that should stack and scroll naturally, or a split whose minimum usable widths cannot fit the available container.",
+    "integration": [
+      "Set meaningful minimum pane sizes and provide content that remains usable at each supported size.",
+      "Persist the chosen split in the host when needed; keyboard resizing and collapse should preserve a useful restoration size."
+    ],
+    "related": [
+      "layout-workspace-shell",
+      "editor-markdown-split"
+    ],
+    "updated": "2026-10-13"
   }
 }
