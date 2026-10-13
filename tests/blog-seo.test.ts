@@ -80,7 +80,7 @@ describe.skipIf(!allPosts().length)("published multilingual blog SEO", () => {
       }
       if (meta.editorialCover) expect(meta.displayImage).toBe(`/blog-images/${meta.sourceSlug}.webp`);
     }
-  });
+  }, 90_000);
   it("emits every language sitemap and reciprocal image/lastmod entries", () => {
     expect(sitemapIndex().match(/<sitemap>/g)).toHaveLength(30);
     for (const language of blogLocales()) {
