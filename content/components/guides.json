@@ -3825,8 +3825,8 @@
     "useWhen": "Explaining a supplied integration by following its data through inspectable transformation stages.",
     "avoidWhen": "A decorative logo cloud, a general workflow editor or a claim of a live integration without host evidence.",
     "integration": [
-      "Supply a stable integration identity and actual input, transformation and output examples. Clearly distinguish demonstration data from live host results.",
-      "Keep stage selection keyboard accessible and retain the selected journey when its detail expands or a host request fails."
+      "Supply stable integration and stage IDs, typed JSON input/output examples and actual availability. The offline demonstration computes its examples locally and does not claim to execute an external integration.",
+      "Control selection as an integration/stage pair when the host owns it. Retry receives an AbortSignal, and real clipboard failure needs an actionable copy fallback."
     ],
     "related": [
       "editor-node-graph",
