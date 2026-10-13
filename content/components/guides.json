@@ -3696,7 +3696,7 @@
     "avoidWhen": "Full-size zooming, pixel editing or autoplaying a promotional image carousel.",
     "integration": [
       "Supply stable image IDs, real sources and descriptive alternative text. Empty images and empty selection are separate states; expose collection loading and host errors honestly.",
-      "Control selection, query and comparison independently when the host owns them. A rejected request keeps the actual values; per-image retry receives an AbortSignal so retired assets cannot replace current results."
+      "Pair controlled selection, query and comparison with their corresponding observers; without one, that branch is read-only. Rejected requests keep actual values, and per-image retry receives an AbortSignal so retired assets cannot replace current results."
     ],
     "related": [
       "cards-prismatic-folder",
@@ -3799,7 +3799,7 @@
     "useWhen": "Tuning supplied caption text against footage or a still with safe-area and readability guides.",
     "avoidWhen": "A speech transcription service, an automatic subtitle translator or a complete video export engine.",
     "integration": [
-      "Supply caption text and the visual context being reviewed. Treat styling changes as a typed configuration that the host may save or render.",
+      "Supply caption text and the visual context being reviewed. Match the configurable frame aspect ratio to the actual output, including portrait footage; the saved style uses a 1080 px reference width.",
       "Expose wrapping, size and safe-area controls without relying on hover. Missing footage should preserve a useful text and style preview."
     ],
     "related": [
