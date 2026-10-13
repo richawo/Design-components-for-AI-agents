@@ -19008,6 +19008,186 @@
     "added": "2026-10-13"
   },
   {
+    "slug": "input-dual-range",
+    "name": "Dual Range Window",
+    "tier": "pro",
+    "platform": "web",
+    "category": "inputs",
+    "description": "Two native interval handles share an exact decimal grid, atomic collision rules, a measured ruler window and revision-owned precision drafts.",
+    "tags": [
+      "range",
+      "interval",
+      "slider",
+      "decimal",
+      "bounds",
+      "input"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 900,
+    "usage": "import { InputDualRange } from \"@/components/design-for-ai/input-dual-range\";\n\n<InputDualRange value={window} onValueChange={setWindow} min={0} max={100} step={1} minimumGap={5} collision=\"push\" unit=\"minutes\" />",
+    "props": [
+      {
+        "name": "value",
+        "type": "DualRange",
+        "description": "Optional controlled atomic lower/upper pair. Pair with onValueChange; rejected requests retain the accepted ruler and exact edited draft."
+      },
+      {
+        "name": "defaultValue",
+        "type": "DualRange",
+        "description": "Initial local interval. When omitted, a valid seeded interval uses the supplied domain; later domain changes are explicit if they invalidate it."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(range: DualRange) => void",
+        "description": "Request both endpoints together. No implicit submission, persistence or sorting of invalid host values."
+      },
+      {
+        "name": "min",
+        "type": "number",
+        "description": "Finite minimum within ±1,000,000, at most six decimal places.",
+        "default": "0"
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "description": "Finite maximum above min. The span must contain a whole number of steps, at most100,000.",
+        "default": "100"
+      },
+      {
+        "name": "step",
+        "type": "number",
+        "description": "Positive equally sized decimal step supported by the exact integer grid.",
+        "default": "1"
+      },
+      {
+        "name": "minimumGap",
+        "type": "number",
+        "description": "Nonnegative minimum difference that contains whole steps and fits the domain.",
+        "default": "5"
+      },
+      {
+        "name": "collision",
+        "type": "\"clamp\" | \"push\"",
+        "description": "Clamp the moving end at the gap, or move its neighbour atomically without crossing the domain boundary.",
+        "default": "\"clamp\""
+      },
+      {
+        "name": "unit",
+        "type": "string",
+        "description": "Literal display unit for the interval. No currency or unit conversion.",
+        "default": "\"minutes\""
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "description": "Intl display locale; exact fields preserve ordinary decimal text.",
+        "default": "\"en-GB\""
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Explicit local seed/draft lifecycle reset. Controlled value remains authoritative."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"error\"",
+        "description": "Host-owned availability that retains the actual interval and precise draft."
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "description": "Actual host availability explanation."
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Actual host recovery request; absent handlers show no fake retry."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Lock editing while preserving readable interval and draft."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Complete etched-teal or pale-paper palette."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<DualRangeLabels>",
+        "description": "Heading, endpoint, exact draft, collision and recovery copy."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Host layout classes responsive to the actual container."
+      }
+    ],
+    "added": "2026-10-13",
+    "demo": {
+      "steps": [
+        "click:@range-lower",
+        "key:End",
+        "wait:450",
+        "click:@range-upper",
+        "key:Home",
+        "wait:450",
+        "key:End",
+        "wait:450"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "collision",
+        "label": "Collision rule",
+        "kind": "segmented",
+        "options": [
+          "clamp",
+          "push"
+        ],
+        "default": "clamp"
+      },
+      {
+        "prop": "minimumGap",
+        "label": "Minimum gap",
+        "kind": "slider",
+        "min": 0,
+        "max": 20,
+        "step": 1,
+        "default": 5,
+        "unit": "units"
+      },
+      {
+        "prop": "disabled",
+        "label": "Read only",
+        "kind": "toggle",
+        "default": false
+      },
+      {
+        "prop": "unit",
+        "label": "Display unit",
+        "kind": "text",
+        "default": "minutes"
+      }
+    ]
+  },
+  {
     "slug": "layout-split-resizer",
     "name": "Split Resizer",
     "tier": "pro",

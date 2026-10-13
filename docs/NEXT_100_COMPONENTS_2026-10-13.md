@@ -87,7 +87,7 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 | # | Slug | Category | Distinct interaction and essential states | Status |
 | --- | --- | --- | --- | --- |
-| 41 | `input-dual-range` | inputs | Two bounded range handles with collision rules, numeric fields and keyboard equivalents. | Planned |
+| 41 | `input-dual-range` | inputs | Two bounded range handles with collision rules, numeric fields and keyboard equivalents. | Released |
 | 42 | `input-unit-converter` | inputs | Change a display unit without losing the underlying quantity or accepting invalid precision. | Planned |
 | 43 | `input-cron-builder` | inputs | Compose a supported schedule and inspect its next occurrences in the chosen timezone. | Planned |
 | 44 | `input-expression-editor` | inputs | Edit a small typed expression with syntax, validation and a transparent evaluated example. | Planned |
@@ -175,4 +175,4 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 ## Progress
 
-Planned: 61. Released: 39. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
+Planned: 60. Released: 40. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
