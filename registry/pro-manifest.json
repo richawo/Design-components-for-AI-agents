@@ -9831,6 +9831,137 @@
     ]
   },
   {
+    "slug": "cta-project-brief",
+    "name": "Reviewable Project Brief",
+    "tier": "pro",
+    "platform": "web",
+    "category": "cta",
+    "description": "A concise project inquiry becomes an exact reviewable brief, with accessible validation, real cancellable host submission and recoverable failures that preserve text.",
+    "tags": [
+      "cta",
+      "project",
+      "brief",
+      "form",
+      "review",
+      "submission"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1150,
+    "usage": "import { CtaProjectBrief } from \"@/components/design-for-ai/cta-project-brief\";\n\n<CtaProjectBrief value={brief} onValueChange={setBrief} onSubmit={(snapshot, signal) => submitBrief(snapshot, signal)} />\n\n// The host acknowledges the exact reviewed snapshot. The offline demo retains it only in preview memory.",
+    "props": [
+      {
+        "name": "value",
+        "type": "ProjectBrief",
+        "description": "Optional controlled exact name/email/project/details. Pair with onValueChange; absent editing callback makes the supplied text read only."
+      },
+      {
+        "name": "defaultValue",
+        "type": "ProjectBrief",
+        "description": "Initial local brief. resetKey explicitly resets local values; failures, cancellation and editing retain the actual text."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(brief: ProjectBrief) => void",
+        "description": "Request an exact changed brief without silently trimming or normalizing entered text."
+      },
+      {
+        "name": "onSubmit",
+        "type": "(brief: ProjectBrief, signal: AbortSignal) => void | ProjectBriefReceipt | Promise<void | ProjectBriefReceipt>",
+        "description": "Submit only the exact reviewed and currently valid snapshot. Pending requests cancel/retire on text, handler, availability, invalid constraints, reset or unmount changes; late acknowledgements are ignored. Absent handlers do not render fake send controls."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Explicit local lifecycle reset."
+      },
+      {
+        "name": "minimumDetails",
+        "type": "number",
+        "description": "Whole minimum detail length between 0 and 4000. Invalid configuration remains explicit and cannot submit."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"error\"",
+        "description": "Host-owned availability, preserving brief and review context."
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "description": "Actual host availability explanation."
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Explicit host recovery request."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Lock edits and submission while retaining content."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Complete dusk-ink or pale-paper palettes."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<ProjectBriefLabels>",
+        "description": "Every field, placeholder, state, action and validation message."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Host layout classes."
+      }
+    ],
+    "added": "2026-10-13",
+    "demo": {
+      "steps": [
+        "click:@brief-review",
+        "wait:450",
+        "click:@brief-edit",
+        "wait:400",
+        "click:@brief-review",
+        "wait:350",
+        "click:@brief-send",
+        "wait:500"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "disabled",
+        "label": "Read only",
+        "kind": "toggle",
+        "default": false
+      },
+      {
+        "prop": "minimumDetails",
+        "label": "Minimum detail length",
+        "kind": "slider",
+        "min": 0,
+        "max": 200,
+        "step": 1,
+        "default": 24
+      }
+    ]
+  },
+  {
     "slug": "dashboard-kpi-cards",
     "name": "KPI Cards",
     "tier": "pro",
