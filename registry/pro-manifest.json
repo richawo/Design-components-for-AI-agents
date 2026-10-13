@@ -23813,6 +23813,145 @@
     ]
   },
   {
+    "slug": "pricing-seat-simulator",
+    "name": "Team Seat Simulator",
+    "tier": "pro",
+    "platform": "web",
+    "category": "pricing",
+    "description": "Mix supplied team roles and billing terms in a tactile seat ledger, with bounded exact counts, transparent rates and an itemized integer-unit estimate.",
+    "tags": [
+      "pricing",
+      "seats",
+      "team",
+      "calculator",
+      "billing",
+      "currency"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1200,
+    "usage": "import { PricingSeatSimulator } from \"@/components/design-for-ai/pricing-seat-simulator\";\n\n<PricingSeatSimulator roles={roles} value={mix} onValueChange={setMix} currency=\"USD\" />\n\n// Rates are integer minor units per seat per selected term. Annual rates are the full yearly charge.",
+    "props": [
+      {
+        "name": "roles",
+        "type": "readonly SeatRole[]",
+        "description": "Supplied distinct roles with label/description, whole minimum/maximum, integer full-term monthly/annual minor-unit rates and optional unavailability. Missing counts use each minimum; duplicate or empty IDs invalidate the estimate."
+      },
+      {
+        "name": "value",
+        "type": "SeatMix",
+        "description": "Optional atomic controlled billing term and role counts. Pair with onValueChange; rejected changes leave the actual itemized bill intact."
+      },
+      {
+        "name": "defaultValue",
+        "type": "SeatMix",
+        "description": "Initial local mix. A semantic change or resetKey resets local state while dirty exact-count fields remain available until accepted or cancelled."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(next: SeatMix, estimate: SeatEstimate) => void",
+        "description": "Request a validated whole mix and derived estimate. No payment or subscription action is performed."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Explicit reset of internal term/count state."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "description": "Currency used to format integer minor-unit prices, with Intl minor-unit precision."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "description": "Intl formatting locale."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"error\"",
+        "description": "Host-owned term availability. Preserve all exact-count drafts and actual supplied rows through pending and failure."
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "description": "Actual failure explanation."
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Explicit host recovery request; no fake control when absent."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Disable all mix changes while preserving the readable actual bill."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Complete palettes."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<SeatSimulatorLabels>",
+        "description": "Heading, term, field, rate, availability and disclaimer copy."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Host layout classes."
+      }
+    ],
+    "added": "2026-10-13",
+    "demo": {
+      "steps": [
+        "click:@seat-plus-editor",
+        "wait:350",
+        "click:@seat-term-annual",
+        "wait:400",
+        "click:@seat-minus-editor",
+        "wait:400",
+        "click:@seat-term-monthly",
+        "wait:400"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "disabled",
+        "label": "Read only",
+        "kind": "toggle",
+        "default": false
+      },
+      {
+        "prop": "currency",
+        "label": "Currency",
+        "kind": "select",
+        "options": [
+          "USD",
+          "EUR",
+          "GBP",
+          "JPY"
+        ],
+        "default": "USD"
+      }
+    ]
+  },
+  {
     "slug": "pricing-usage-calculator",
     "name": "Usage Cost Calculator",
     "tier": "pro",
