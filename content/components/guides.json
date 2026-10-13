@@ -4067,5 +4067,265 @@
       "editor-node-graph"
     ],
     "updated": "2026-10-13"
+  },
+  "input-dual-range": {
+    "useWhen": "Choosing a bounded interval with two handles and precise numeric endpoints.",
+    "avoidWhen": "A single-value slider or a timeline that also needs actual media playback.",
+    "integration": [
+      "Supply interval bounds, step and collision rules. Numeric entry and keyboard handles must request the same accepted range.",
+      "Keep the active endpoint and draft intact after rejected or invalid changes; offer large touch targets even when handles approach each other."
+    ],
+    "related": [
+      "input-detent-dial",
+      "input-number-stepper"
+    ],
+    "updated": "2026-10-13"
+  },
+  "input-unit-converter": {
+    "useWhen": "Changing display units while preserving one underlying physical quantity and explicit precision.",
+    "avoidWhen": "Currency exchange with stale rates or silently changing the underlying value when the display unit changes.",
+    "integration": [
+      "Supply supported units and their exact conversions to the canonical quantity. Show the active unit beside every field and result.",
+      "Round display values deliberately, preserve valid precision through round trips and retain invalid drafts until corrected."
+    ],
+    "related": [
+      "input-number-stepper",
+      "input-detent-dial"
+    ],
+    "updated": "2026-10-13"
+  },
+  "input-cron-builder": {
+    "useWhen": "Composing a supported recurring schedule and inspecting actual upcoming occurrences in a supplied timezone.",
+    "avoidWhen": "Accepting arbitrary scheduler syntax or promising execution when no host scheduler exists.",
+    "integration": [
+      "Define the supported schedule subset, timezone and reference time. Calculate occurrences from that contract, including daylight-saving behavior.",
+      "Keep invalid or unsupported combinations visible and only send an explicit accepted schedule to the host."
+    ],
+    "related": [
+      "saas-report-scheduler",
+      "date-week-agenda"
+    ],
+    "updated": "2026-10-13"
+  },
+  "input-expression-editor": {
+    "useWhen": "Editing a small, explicitly supported expression with syntax feedback and a transparent computed example.",
+    "avoidWhen": "Evaluating arbitrary JavaScript or implying support for a complete programming language.",
+    "integration": [
+      "Supply available fields, supported operators and example values. Parse the permitted expression without eval and report errors at the relevant position.",
+      "Preserve the draft after invalid input and keep keyboard completion, suggestions and evaluation ownership consistent."
+    ],
+    "related": [
+      "data-query-builder",
+      "editor-markdown-split"
+    ],
+    "updated": "2026-10-13"
+  },
+  "selects-tree-picker": {
+    "useWhen": "Selecting hierarchical items with indeterminate parents, search and explainable disabled branches.",
+    "avoidWhen": "A flat select, a general file browser or bulk selection that ignores unavailable descendants.",
+    "integration": [
+      "Supply stable node IDs and clear parent/child relationships. Define whether selecting a parent includes its eligible descendants.",
+      "Search must preserve selected items and reading order; keyboard navigation and touch expansion should not accidentally select an unrelated branch."
+    ],
+    "related": [
+      "data-file-explorer",
+      "multiselect-chips"
+    ],
+    "updated": "2026-10-13"
+  },
+  "date-range-calendar": {
+    "useWhen": "Choosing a two-ended calendar range with readable bounds and keyboard date navigation.",
+    "avoidWhen": "A time-slot booking system or converting date-only selections through an unintended timezone.",
+    "integration": [
+      "Supply locale, unavailable dates, minimum/maximum dates and range rules. Keep date-only values in a representation that cannot shift across timezones.",
+      "Retain the selected endpoint after an invalid range and make keyboard grid movement and touch selection agree."
+    ],
+    "related": [
+      "date-week-agenda",
+      "date-booking-slots"
+    ],
+    "updated": "2026-10-13"
+  },
+  "date-timezone-overlap": {
+    "useWhen": "Comparing supplied working hours across timezones before explicitly choosing a meeting time.",
+    "avoidWhen": "A guessed timezone offset, a scheduling service or a guarantee that participants are available.",
+    "integration": [
+      "Supply timezone identifiers, date and each participant’s working hours. Use the actual date when calculating daylight-saving offsets.",
+      "Show local labels for the same instant and explain no-overlap or missing-hour states before requesting a selection."
+    ],
+    "related": [
+      "date-week-agenda",
+      "hr-capacity-planner"
+    ],
+    "updated": "2026-10-13"
+  },
+  "forms-branching-survey": {
+    "useWhen": "Collecting conditional answers while retaining prior input when a branch changes, then reviewing the result.",
+    "avoidWhen": "A fixed linear form or automatically submitting hidden branch answers without explaining scope.",
+    "integration": [
+      "Supply question identities, branch rules and validation. Preserve prior answers deliberately and state which branch answers are included in the final payload.",
+      "Keep review, edit and submission failures recoverable; a changed branch must not move focus into hidden content."
+    ],
+    "related": [
+      "forms-preference-center",
+      "legal-matter-intake"
+    ],
+    "updated": "2026-10-13"
+  },
+  "auth-recovery-codes": {
+    "useWhen": "Presenting host-supplied recovery codes for explicit reveal, copying and acknowledgement.",
+    "avoidWhen": "Generating authentication secrets in the UI or treating a copied code as proof it was stored safely.",
+    "integration": [
+      "Provide codes from the real authentication service. Keep printing or downloading an explicit host action and avoid leaking codes into analytics or logs.",
+      "Acknowledge only the user’s explicit confirmation, preserve clipboard failure feedback and restore focus when the reveal flow closes."
+    ],
+    "related": [
+      "auth-passkey",
+      "auth-otp"
+    ],
+    "updated": "2026-10-13"
+  },
+  "forms-draft-rescue": {
+    "useWhen": "Resolving differences between a local draft and a newer supplied host version at field level.",
+    "avoidWhen": "Silently overwriting a newer document or presenting a conflict that has no actual competing values.",
+    "integration": [
+      "Supply both versions and stable field identities with a clear default retention policy. Show exactly what each choice will retain.",
+      "Keep decisions editable until explicit resolution succeeds; host failure must preserve the local draft and selected choices."
+    ],
+    "related": [
+      "legal-version-history",
+      "editor-rich-text"
+    ],
+    "updated": "2026-10-13"
+  },
+  "chart-sunburst-explorer": {
+    "useWhen": "Exploring a supplied hierarchy through radial drill-down with equivalent readable values.",
+    "avoidWhen": "An unlabeled decorative ring or a hierarchy whose totals do not reconcile with its children.",
+    "integration": [
+      "Supply stable hierarchy IDs, numeric values and clear aggregation rules. Keep the table and radial selection tied to the same active node.",
+      "Expose empty and zero totals honestly, preserve context through drill-down and make reduced motion immediately readable."
+    ],
+    "related": [
+      "chart-treemap-drill",
+      "chart-allocation"
+    ],
+    "updated": "2026-10-13"
+  },
+  "chart-sankey-paths": {
+    "useWhen": "Tracing supplied quantities from sources through destinations while keeping the whole flow in context.",
+    "avoidWhen": "Invented traffic, unbalanced quantities or a diagram that can only be understood by color.",
+    "integration": [
+      "Supply stable node/link identities, units and actual values. Explain any loss or gain rather than silently normalizing it away.",
+      "Keep source/destination selection keyboard accessible and provide the same quantities in a readable alternative."
+    ],
+    "related": [
+      "chart-streamgraph",
+      "chart-waterfall-bridge"
+    ],
+    "updated": "2026-10-13"
+  },
+  "chart-box-distribution": {
+    "useWhen": "Comparing real medians, quartiles and outliers with explicit sample sizes and units.",
+    "avoidWhen": "A chart generated from invented percentiles or an unlabeled statistic without its sample context.",
+    "integration": [
+      "Supply measured distribution summaries or actual samples and define the whisker policy. Keep quartile ordering and sample size visible.",
+      "Allow selection of distributions and outliers through readable controls; missing or invalid summaries need a clear state."
+    ],
+    "related": [
+      "chart-radar-compare",
+      "chart-slope-comparison"
+    ],
+    "updated": "2026-10-13"
+  },
+  "chart-calendar-heatmap": {
+    "useWhen": "Inspecting daily values through a calendar with meaningful missing-data and filtering states.",
+    "avoidWhen": "A punitive streak display or treating unobserved days as measured zero.",
+    "integration": [
+      "Supply date-only records, units, locale and an explicit color scale. Keep missing, zero and unavailable dates distinct.",
+      "Connect keyboard date navigation and filters to readable day details without depending on hover-only tooltips."
+    ],
+    "related": [
+      "date-week-agenda",
+      "chart-waffle"
+    ],
+    "updated": "2026-10-13"
+  },
+  "chart-scatter-brush": {
+    "useWhen": "Selecting a bounded region of supplied points and inspecting the matching records.",
+    "avoidWhen": "A purely decorative cloud or brushing whose selection cannot be reproduced with keyboard filters.",
+    "integration": [
+      "Supply stable point IDs, axis units and real coordinates. Apply the same inclusive bounds to the visual brush and numeric filtering.",
+      "Keep the selected record list usable on narrow containers and distinguish an empty result from unavailable data."
+    ],
+    "related": [
+      "chart-radar-compare",
+      "data-table-sortable"
+    ],
+    "updated": "2026-10-13"
+  },
+  "chart-funnel-dots": {
+    "useWhen": "Showing discrete quantities passing through stages with explicit totals and conversion denominators.",
+    "avoidWhen": "A fabricated growth animation or percentages whose denominator changes without explanation.",
+    "integration": [
+      "Supply stage totals and units. Keep absolute counts, previous-stage conversion and overall conversion distinct.",
+      "Bound displayed dots without hiding exact totals, animate changes in both directions and offer a readable stage list."
+    ],
+    "related": [
+      "chart-waffle",
+      "chart-waterfall-bridge"
+    ],
+    "updated": "2026-10-13"
+  },
+  "data-pivot-configurator": {
+    "useWhen": "Exploring a real computed pivot by selecting supplied dimensions and supported measures.",
+    "avoidWhen": "A database query console or a pivot whose displayed cells are fixed demonstration values.",
+    "integration": [
+      "Supply records, field definitions and the supported aggregation policy. Compute cells from the selected dimensions and explain unsupported combinations.",
+      "Retain configuration through empty results and keep row/column labels readable in an internally scrollable narrow view."
+    ],
+    "related": [
+      "data-query-builder",
+      "data-table-sortable"
+    ],
+    "updated": "2026-10-13"
+  },
+  "data-column-workbench": {
+    "useWhen": "Reordering, pinning and hiding columns while inspecting an actual supplied table.",
+    "avoidWhen": "An unrelated table filter or a decorative list of settings with no table effect.",
+    "integration": [
+      "Supply stable column IDs, visibility rules and real row data. Keep reorder, pin and visibility requests separate and honor controlled rejection.",
+      "Provide keyboard move controls, retain the active column after a change and keep the table scroll inside its container."
+    ],
+    "related": [
+      "data-table-sortable",
+      "navigation-stacked-tabs"
+    ],
+    "updated": "2026-10-13"
+  },
+  "data-bulk-action-review": {
+    "useWhen": "Reviewing exactly which supplied selected records a host action will affect, exclude or fail.",
+    "avoidWhen": "Applying actions implicitly or claiming success for every selected item after a partial host failure.",
+    "integration": [
+      "Supply stable record IDs, eligibility and a concrete action description. Show exclusions before submission and per-record results afterwards.",
+      "Preserve selection and retry only eligible failed records after a rejected or partial operation; stale requests must not update a newer review."
+    ],
+    "related": [
+      "agent-approval-gate",
+      "data-table-sortable"
+    ],
+    "updated": "2026-10-13"
+  },
+  "data-filter-history": {
+    "useWhen": "Comparing, naming and explicitly restoring supplied prior filter configurations.",
+    "avoidWhen": "Silently changing the active view while merely inspecting a previous state or replacing a full version-control system.",
+    "integration": [
+      "Supply stable filter-state identities, readable criteria and timestamps. Keep previewed history distinct from the currently active filter.",
+      "A host acknowledgement should determine restored state; preserve the active view and draft name after failure."
+    ],
+    "related": [
+      "saas-saved-views",
+      "data-query-builder"
+    ],
+    "updated": "2026-10-13"
   }
 }
