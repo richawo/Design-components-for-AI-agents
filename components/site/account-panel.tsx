@@ -19,6 +19,10 @@ async function post(path: string, body: unknown = {}, method = "POST") {
   return data;
 }
 
+export function AccountLoading() {
+  return <div className="site-surface h-72 rounded-[24px] p-8" aria-busy="true" aria-label="Loading your account"><div className="h-6 w-3/5 rounded bg-white/[0.05]" /><div className="mt-5 h-3 w-4/5 rounded bg-white/[0.04]" /></div>;
+}
+
 export function AccountPanel({ welcome, pending, plan }: { welcome: boolean; pending: boolean; plan?: string }) {
   const selected = plan ? planById(plan) : undefined;
   const [state, setState] = useState<State>({ status: "loading" });
@@ -90,7 +94,7 @@ export function AccountPanel({ welcome, pending, plan }: { welcome: boolean; pen
       {error && <p role="alert" className="rounded-xl border border-site-danger/30 bg-site-danger/10 px-5 py-4 text-sm text-site-danger">{error}</p>}
       {notice && <p role="status" className="text-sm leading-relaxed text-site-fg-2">{notice}</p>}
       {state.status === "loading" ? (
-        <div className="site-surface h-72 rounded-[24px] p-8" aria-busy="true" aria-label="Loading your account"><div className="h-6 w-3/5 rounded bg-white/[0.05]" /><div className="mt-5 h-3 w-4/5 rounded bg-white/[0.04]" /></div>
+        <AccountLoading />
       ) : state.status === "unavailable" ? (
         <div className="site-surface rounded-[24px] p-7 sm:p-8">
           <h2 className="text-2xl font-semibold tracking-tight">Your account couldn't load.</h2>

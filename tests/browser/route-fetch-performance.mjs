@@ -84,6 +84,10 @@ try {
     await page.goto(base + scenario.origin, { waitUntil: "load" });
     for (const visit of ["first", "repeat"]) {
       if (visit === "repeat") await page.goBack({ waitUntil: "commit" });
+      // A filtered static gallery replaces its default SSR cards once during
+      // hydration. Start the user journey from the restored, visible origin.
+      if (scenario.origin.startsWith("/components") && await page.locator("[data-gallery-ready]").count())
+        await page.locator('[data-gallery-ready="true"]').waitFor();
       if (scenario.mobile) await page.getByRole("button", { name: "Open menu", exact: true }).click();
       const link = page.locator(scenario.selector).first();
       await link.scrollIntoViewIfNeeded();

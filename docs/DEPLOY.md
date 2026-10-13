@@ -7,7 +7,7 @@ Yaps subdomains: one Worker per product, a custom-domain route in
 `main`. It doesn't touch the apex domain or the main `yaps-site` Worker.
 
 Next.js runs on Workers through the [OpenNext adapter](https://opennext.js.org/cloudflare).
-Content pages are prerendered at build time. Account, authentication, billing,
+Content pages and the generic account loading shell are prerendered at build time. Account data, authentication, billing,
 licence, Pro source and Markdown routes run in the Worker. Component and
 content routes use bundled data instead of reading the disk:
 `scripts/build-registry.mjs` bundles sources, docs and blog posts into
@@ -16,7 +16,7 @@ content routes use bundled data instead of reading the disk:
 `open-next.config.ts` publishes the prerendered HTML and React Server Component
 payloads through OpenNext's read-only Workers Static Assets cache and enables
 cache interception. Public content comes from the build rather than rendering
-again during navigation. Dynamic account, authentication and licensed-source
+again during navigation. Dynamic account-data, authentication and licensed-source
 routes keep their server authorization checks. Nothing uses runtime revalidation.
 See the [OpenNext SSG cache configuration](https://opennext.js.org/cloudflare/caching#ssg-site).
 The custom `scripts/deploy-worker.mjs` command runs OpenNext's cache preparation
