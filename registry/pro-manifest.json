@@ -5629,7 +5629,7 @@
       {
         "name": "open",
         "type": "boolean",
-        "description": "Optional controlled disclosure state."
+        "description": "Optional controlled disclosure state; pair with onOpenChange. Without a handler, only the disclosure is read-only and its hint describes the current state; file actions stay available."
       },
       {
         "name": "defaultOpen",
@@ -5656,7 +5656,7 @@
       {
         "name": "onFileOpen",
         "type": "(file: PrismaticFile) => void | Promise<void>",
-        "description": "Optional real host operation. Pending preserves geometry; rejection shows retry text without losing the selected file. Without a callback the component only offers its readable preview."
+        "description": "Optional real host operation. Pending retains focus and guards repeat activation. Selected file revisions/removal invalidate stale outcomes; rejection preserves selection and retry."
       },
       {
         "name": "onRetry",
@@ -5715,11 +5715,13 @@
     "demo": {
       "steps": [
         "click:@folder-toggle",
-        "wait:700",
-        "hover:@file-tokens",
         "wait:450",
+        "click:@file-tokens",
+        "wait:650",
+        "click:@file-tokens",
+        "wait:350",
         "click:@folder-toggle",
-        "wait:950"
+        "wait:650"
       ],
       "loop": false
     },
