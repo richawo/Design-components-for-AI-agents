@@ -3877,7 +3877,7 @@
     "useWhen": "Exploring a transparent bill for mixed seat types and billing terms before purchase.",
     "avoidWhen": "Automatically assigning seats, changing a subscription or concealing discounts inside a single unexplained total.",
     "integration": [
-      "Supply stable roles, bounded whole counts and integer minor-unit monthly or annual full-term prices. Missing role counts use each supplied minimum. Annual prices represent the complete year, not a disguised monthly amount.",
+      "Supply stable roles, bounded whole counts and integer minor-unit monthly or annual full-term prices. Missing role counts use each supplied minimum. Annual prices represent the complete year, not a disguised monthly amount. Duplicate or empty role IDs invalidate the bill; invalid alternative terms are visibly unavailable and excluded from keyboard selection.",
       "Control term and counts atomically through value/onValueChange. Preserve seat counts when terms change, retain dirty exact-entry drafts through host updates or unavailable rates, and reject invalid or overflowing mixes before any host-owned purchase action."
     ],
     "related": [
@@ -3890,8 +3890,8 @@
     "useWhen": "Presenting supplied case outcomes together with their measurement period and supporting evidence.",
     "avoidWhen": "Invented customer statistics, unsupported endorsements or a decorative testimonial carousel.",
     "integration": [
-      "Supply actual case titles, dated outcomes, units and evidence destinations. Missing evidence should remain visible rather than acquiring a fabricated link.",
-      "Keep figures, their denominator and the observation period together across navigation and narrow layouts."
+      "Supply stable records with actual baseline/follow-up observations, period, sample, methodology and supporting excerpts or real source links. Missing or nonfinite observations remain unavailable; percentage changes use a nonzero absolute baseline denominator.",
+      "Keep record navigation separate from native evidence disclosure. Retain the selected record after rejected changes, preserve outside focus and make unknown records, absent measurements and missing evidence readable rather than inventing values."
     ],
     "related": [
       "chart-revenue-trend",
@@ -3903,8 +3903,8 @@
     "useWhen": "Exploring a product specification through selectable annotations on a supplied diagram.",
     "avoidWhen": "A CAD editor, a decorative image hotspot or an unsupported claim about an actual product.",
     "integration": [
-      "Supply a useful diagram, stable annotated parts and the exact specification for each part. Keep a readable linear alternative for the same information.",
-      "Connect keyboard selection and touch targets to the same active annotation without allowing an enlarged label to obscure its neighboring controls."
+      "Supply static drawing content, its actual aspect ratio and stable parts with normalized physical coordinates, exact detail fields and real optional references. Invalid positions stay available through the equivalent parts list; artwork is inert.",
+      "Use physical directional keys for spatial targets and reading-order keys for the list. Touch targets retain safe margins, controlled rejection retains the actual ring/annotation, and live reduced motion stops coordinate and height owners immediately."
     ],
     "related": [
       "devtools-icon-workbench",
@@ -3916,8 +3916,8 @@
     "useWhen": "Collecting a concise project brief and presenting a review before an explicit host-owned submission.",
     "avoidWhen": "Submitting automatically, fabricating delivery confirmation or hiding a long sales questionnaire inside a small CTA.",
     "integration": [
-      "Define the fields and validation the host actually needs. Retain drafts while moving between editing, review and failed submission.",
-      "Acknowledge delivery only after the host accepts it; retire stale pending work when the brief or handler changes."
+      "Supply an exact name/email/project/details draft, the validation minimum and an acknowledged onSubmit(snapshot, AbortSignal) handler. Review preserves the exact entered text and failure or cancellation retains it.",
+      "Retire pending requests when text, handler, availability, validation or reset identity changes. A missing handler renders a review without a fake send action; the original offline demo retains its receipt only in preview memory."
     ],
     "related": [
       "legal-matter-intake",
@@ -3955,8 +3955,8 @@
     "useWhen": "Placing supplied text along a bounded curve while inspecting actual spacing and readable text content.",
     "avoidWhen": "A full vector drawing tool or turning essential body copy into an inaccessible decorative outline.",
     "integration": [
-      "Supply the text and path geometry. Preserve a readable linear equivalent and unique SVG path IDs for multiple instances.",
-      "Expose bounded spacing and curvature controls with keyboard equivalents; clipping and overly long text need an explicit useful state."
+      "Supply a quadratic curve with actual dimensions and start/control/end coordinates, selectable text and a real font role. Bend is a bounded delta from the supplied control point; zero preserves the supplied geometry.",
+      "Control font size, spacing, offset and bend atomically. Inspect actual native SVG path/glyph bounds, report curve overrun or viewport clipping, and preserve a readable linear equivalent and unique SVG IDs for multiple instances."
     ],
     "related": [
       "devtools-icon-workbench",
@@ -4475,8 +4475,8 @@
     "useWhen": "Comparing supplied responses to the same request with their evidence and an explicit preference.",
     "avoidWhen": "Generating answers, assuming a model is better without evidence or silently applying an inspected response.",
     "integration": [
-      "Supply the shared request, response identities, content and evidence. Keep comparable context visible and unavailable responses distinct.",
-      "Treat selection as an explicit host-owned preference and preserve reading position and decision state after rejection."
+      "Supply the shared request, stable response/section identities, actual content and evidence. Unknown evidence IDs and unavailable responses remain explicit; no model score or generated answer is inferred.",
+      "Treat preference as an explicit acknowledged host decision. Request-content changes and reset identity retire pending work even when response IDs are reused; controlled values remain authoritative and rejected preferences preserve reading positions."
     ],
     "related": [
       "ai-search-answer",
