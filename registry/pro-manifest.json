@@ -19747,6 +19747,171 @@
     ]
   },
   {
+    "slug": "navigation-context-rail",
+    "name": "Context Rail",
+    "tier": "pro",
+    "platform": "web",
+    "category": "navigation",
+    "description": "A metallic icon rail with remembered destination lists, quick search and a compact drawer. Async navigation keeps your place when a destination fails.",
+    "tags": [
+      "navigation",
+      "context rail",
+      "sidebar",
+      "drawer",
+      "keyboard",
+      "async navigation",
+      "metallic"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 680,
+    "usage": "import { NavigationContextRail } from \"@/components/design-for-ai/navigation-context-rail\";\n\n<NavigationContextRail\n  brand=\"Fieldwork\"\n  sections={sections}\n  value={selection}\n  onValueChange={async (next, _item, signal) => {\n    await loadDestination(next, { signal });\n    if (!signal.aborted) setSelection(next);\n  }}\n/>",
+    "props": [
+      {
+        "name": "sections",
+        "type": "ContextRailSection[]",
+        "description": "Unique section IDs, optional icons and disabled reasons, and item lists. Empty lists receive a deliberate empty state.",
+        "default": "Built-in studio sections"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "description": "Accessible name of the primary icon navigation.",
+        "default": "\"Studio navigation\""
+      },
+      {
+        "name": "brand",
+        "type": "string",
+        "description": "Workspace name used in the compact identity and context heading.",
+        "default": "\"Loom\""
+      },
+      {
+        "name": "value",
+        "type": "ContextRailSelection",
+        "description": "Controlled selection. The host owns the destination panel and updates this after navigation."
+      },
+      {
+        "name": "defaultValue",
+        "type": "ContextRailSelection",
+        "description": "Initial uncontrolled section and item selection."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(selection: ContextRailSelection, item: ContextRailItem, signal: AbortSignal) => void | Promise<void>",
+        "description": "Host-owned navigation. A rejected callback retains the previous item and offers a retry. Stale completions are ignored. The signal aborts when superseded, reset or unmounted. Choosing the current destination cancels pending navigation."
+      },
+      {
+        "name": "defaultCollapsed",
+        "type": "boolean",
+        "description": "Initial context disclosure state.",
+        "default": "false"
+      },
+      {
+        "name": "onCollapsedChange",
+        "type": "(collapsed: boolean) => void",
+        "description": "Reports expansion and collapse. Narrow containers close after item navigation and return focus to the toggle."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"empty\" | \"error\"",
+        "description": "Host-controlled loading, empty and unavailable section states.",
+        "default": "\"ready\""
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "description": "Specific explanation when the host reports an error.",
+        "default": "\"The sections could not be loaded.\""
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Requests a retry after a loading error. The host updates status."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Neutral metallic surface palette.",
+        "default": "\"dark\""
+      },
+      {
+        "name": "density",
+        "type": "\"comfortable\" | \"compact\"",
+        "description": "70px or 56px destination rows, both with touch-sized targets.",
+        "default": "\"comfortable\""
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Classes on the outer container."
+      }
+    ],
+    "added": "2026-10-13",
+    "demo": {
+      "steps": [
+        "wait:350",
+        "click:@section-library",
+        "wait:350",
+        "click:@item-type",
+        "wait:300",
+        "click:@section-projects",
+        "wait:300",
+        "click:@section-library",
+        "wait:500"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "density",
+        "label": "Density",
+        "kind": "segmented",
+        "options": [
+          "comfortable",
+          "compact"
+        ],
+        "default": "comfortable"
+      },
+      {
+        "prop": "brand",
+        "label": "Workspace",
+        "kind": "text",
+        "default": "Loom"
+      },
+      {
+        "prop": "defaultCollapsed",
+        "label": "Start collapsed",
+        "kind": "toggle",
+        "default": false,
+        "remount": true
+      },
+      {
+        "prop": "status",
+        "label": "Data state",
+        "kind": "action",
+        "options": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ]
+      }
+    ]
+  },
+  {
     "slug": "pricing-receipt",
     "name": "Receipt Pricing",
     "tier": "pro",
