@@ -19188,6 +19188,169 @@
     ]
   },
   {
+    "slug": "input-unit-converter",
+    "name": "Quantity-preserving Unit Converter",
+    "tier": "pro",
+    "platform": "web",
+    "category": "inputs",
+    "description": "A conversion instrument preserves one underlying quantity while changing display units, with affine definitions, explicit rounding and revision-owned exact drafts.",
+    "tags": [
+      "units",
+      "conversion",
+      "quantity",
+      "decimal",
+      "input",
+      "measurement"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 980,
+    "usage": "import { InputUnitConverter } from \"@/components/design-for-ai/input-unit-converter\";\n\n<InputUnitConverter value={quantity} onValueChange={setQuantity} units={units} canonicalUnit=\"metres\" precision={2} />\n\n// Supply actual affine definitions. Unit selection preserves the base number; only applying an edited amount changes it.",
+    "props": [
+      {
+        "name": "units",
+        "type": "readonly ConversionUnit[]",
+        "description": "Unique nonempty id/label/symbol with positive finite factor and finite optional offset. Display=base×factor+offset. Raw duplicate or invalid definitions remain unavailable."
+      },
+      {
+        "name": "value",
+        "type": "UnitConverterValue",
+        "description": "Optional controlled canonical base number and unitId. Pair with onValueChange; unit selection requests the exact unchanged base, and rejected changes remain truthful."
+      },
+      {
+        "name": "defaultValue",
+        "type": "UnitConverterValue",
+        "description": "Initial local base/unit seed. Use resetKey to reset local values explicitly."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(value: UnitConverterValue) => void",
+        "description": "Request atomic canonical quantity and display identity without rounding base while switching units."
+      },
+      {
+        "name": "canonicalUnit",
+        "type": "string",
+        "description": "Literal label for the supplied underlying unit. Keep it consistent with the unit factors and offsets."
+      },
+      {
+        "name": "precision",
+        "type": "number",
+        "description": "Integer display/edit precision0–6. Rounded output is marked approximately; the underlying amount remains unchanged until a real edited amount is applied.",
+        "default": "2"
+      },
+      {
+        "name": "minBase",
+        "type": "number",
+        "description": "Finite lower canonical bound, within ±1e12.",
+        "default": "-1000000"
+      },
+      {
+        "name": "maxBase",
+        "type": "number",
+        "description": "Finite upper canonical bound at or above minBase, within ±1e12.",
+        "default": "1000000"
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "description": "Intl numeric display locale. Exact fields use plain decimal text."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Explicit local quantity and precision-draft lifecycle reset; controlled quantity remains authoritative."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"error\"",
+        "description": "Host-owned availability preserving quantity and edited draft."
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "description": "Actual host availability explanation."
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Actual recovery callback, no fake retry when absent."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Lock editing and unit changes while retaining the supplied amount."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Complete warm-ink or paper palettes, including selected/focus/error states."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<UnitConverterLabels>",
+        "description": "Heading, unit, underlying amount, rounding, precision and recovery copy."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Host layout classes responsive to the actual container."
+      }
+    ],
+    "added": "2026-10-13",
+    "demo": {
+      "steps": [
+        "click:@unit-cm",
+        "wait:450",
+        "click:@unit-mm",
+        "wait:450",
+        "click:@unit-m",
+        "wait:450"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "precision",
+        "label": "Decimal places",
+        "kind": "slider",
+        "min": 0,
+        "max": 6,
+        "step": 1,
+        "default": 2
+      },
+      {
+        "prop": "disabled",
+        "label": "Read only",
+        "kind": "toggle",
+        "default": false
+      },
+      {
+        "prop": "status",
+        "label": "Availability",
+        "kind": "select",
+        "options": [
+          "ready",
+          "loading",
+          "error"
+        ],
+        "default": "ready"
+      }
+    ]
+  },
+  {
     "slug": "layout-split-resizer",
     "name": "Split Resizer",
     "tier": "pro",
