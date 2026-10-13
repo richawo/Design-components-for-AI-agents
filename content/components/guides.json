@@ -3864,8 +3864,8 @@
     "useWhen": "Estimating usage charges from explicit supplied rates, included units and bounded quantities.",
     "avoidWhen": "A checkout flow, an undisclosed pricing formula or a promise that an estimate is the final invoice.",
     "integration": [
-      "Supply currency, rates, billing units and rounding rules. Show which quantities are included and exactly how overages contribute to the total.",
-      "Keep the underlying quantity stable through formatting and animate totals in both directions. Use a separate explicit action for checkout."
+      "Supply integer minor currency-unit base and block rates, included units, block size and an explicit started-block or proportional-ceiling rounding policy. Intl supplies currency minor-unit precision; missing, invalid or overflowing terms remain unavailable.",
+      "Pair a controlled quantity with onQuantityChange. Whole pointer and exact quantities are retained even when they do not align with the keyboard step; host updates synchronize untouched fields and preserve dirty drafts until acceptance or Escape. Checkout remains a separate explicit action."
     ],
     "related": [
       "pricing-receipt",
@@ -3877,8 +3877,8 @@
     "useWhen": "Exploring a transparent bill for mixed seat types and billing terms before purchase.",
     "avoidWhen": "Automatically assigning seats, changing a subscription or concealing discounts inside a single unexplained total.",
     "integration": [
-      "Supply eligible seat roles, rates, limits and billing terms. Itemized figures must agree with the actual seat mix and rounding rule.",
-      "Preserve entered counts when terms change and expose invalid or unavailable combinations before any host-owned purchase action."
+      "Supply stable roles, bounded whole counts and integer minor-unit monthly or annual full-term prices. Missing role counts use each supplied minimum. Annual prices represent the complete year, not a disguised monthly amount.",
+      "Control term and counts atomically through value/onValueChange. Preserve seat counts when terms change, retain dirty exact-entry drafts through host updates or unavailable rates, and reject invalid or overflowing mixes before any host-owned purchase action."
     ],
     "related": [
       "pricing-receipt",
