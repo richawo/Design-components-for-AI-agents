@@ -15903,6 +15903,191 @@
     ]
   },
   {
+    "slug": "hero-layout-playground",
+    "name": "Layout Playground",
+    "tier": "pro",
+    "platform": "web",
+    "category": "hero",
+    "description": "A live layout boundary that lets visitors resize retained content and see real container reflow, with precise width controls and measured limits.",
+    "tags": [
+      "hero",
+      "layout",
+      "responsive",
+      "constraints",
+      "resizer",
+      "product demonstration"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1120,
+    "usage": "import { HeroLayoutPlayground } from \"@/components/design-for-ai/hero-layout-playground\";\n\n<HeroLayoutPlayground content={<ResponsiveProduct />} width={width} onWidthChange={setWidth} minWidth={280} maxWidth={960} />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Editorial heading for the live layout demonstration.",
+        "default": "\"Give your layout room to breathe.\""
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "One concise sentence explaining the boundary interaction.",
+        "default": "\"Move the boundary. Watch the same content find a different rhythm.\""
+      },
+      {
+        "name": "content",
+        "type": "ReactNode",
+        "description": "Real container-responsive content, retained through resizing and temporary host loading/error. Null or false is an explicit empty frame.",
+        "default": "Original editorial specimen with a retained caption editor"
+      },
+      {
+        "name": "width",
+        "type": "number",
+        "description": "Controlled requested frame width. Without onWidthChange controls are read-only; actual width is separately constrained by available space."
+      },
+      {
+        "name": "defaultWidth",
+        "type": "number",
+        "description": "Initial uncontrolled frame width and reset destination.",
+        "default": "640"
+      },
+      {
+        "name": "onWidthChange",
+        "type": "(width: number) => void",
+        "description": "Synchronous integer width request observer, bounded to current legal available geometry. Controlled hosts commit or reject requests."
+      },
+      {
+        "name": "minWidth",
+        "type": "number",
+        "description": "Minimum preferred width, bounded160..1600. Narrow hosts may have less space and honestly fit to it.",
+        "default": "280"
+      },
+      {
+        "name": "maxWidth",
+        "type": "number",
+        "description": "Maximum preferred width, bounded160..1600 and at least minWidth.",
+        "default": "960"
+      },
+      {
+        "name": "step",
+        "type": "number",
+        "description": "Keyboard/range/button increment, bounded1..64. Shift moves four increments; direct drag and precise entry allow integer pixels.",
+        "default": "8"
+      },
+      {
+        "name": "padding",
+        "type": "number",
+        "description": "Inset around supplied content, bounded0..48 CSS pixels.",
+        "default": "20"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Disable resizing while keeping actual content inspectable.",
+        "default": "false"
+      },
+      {
+        "name": "disabledReason",
+        "type": "string",
+        "description": "Visible and connected explanation when host resizing is disabled.",
+        "default": "\"Resizing is unavailable.\""
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"error\"",
+        "description": "Authoritative host content state; non-ready content is retained but inert.",
+        "default": "\"ready\""
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "description": "Host error explanation.",
+        "default": "\"The content could not be loaded.\""
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Optional real host content retry; named status remains authoritative."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Playground surfaces; default specimen keeps its independent content palette.",
+        "default": "\"dark\""
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Outer hero class.",
+        "default": "\"\""
+      }
+    ],
+    "added": "2026-10-13",
+    "demo": {
+      "steps": [
+        "click:@width-range:0.3,0.5",
+        "wait:400",
+        "hover:@layout-boundary",
+        "drag:0.78,0.55",
+        "wait:350",
+        "click:@reset-layout",
+        "wait:400"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "defaultWidth",
+        "label": "Initial width",
+        "kind": "slider",
+        "min": 280,
+        "max": 960,
+        "step": 8,
+        "unit": "px",
+        "default": 640,
+        "remount": true
+      },
+      {
+        "prop": "padding",
+        "label": "Content inset",
+        "kind": "slider",
+        "min": 0,
+        "max": 40,
+        "step": 4,
+        "unit": "px",
+        "default": 20
+      },
+      {
+        "prop": "title",
+        "label": "Heading",
+        "kind": "text",
+        "default": "Give your layout room to breathe."
+      },
+      {
+        "prop": "status",
+        "label": "Content state",
+        "kind": "action",
+        "options": [
+          "ready",
+          "loading",
+          "error"
+        ]
+      }
+    ]
+  },
+  {
     "slug": "hero-prism",
     "name": "Prism Hero",
     "tier": "pro",
