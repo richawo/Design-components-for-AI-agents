@@ -5552,6 +5552,180 @@
     ]
   },
   {
+    "slug": "cards-prismatic-folder",
+    "name": "Prismatic File Folder",
+    "tier": "pro",
+    "platform": "web",
+    "category": "cards",
+    "description": "A physical translucent folder opens into real files, readable previews and host actions, with considered empty, loading and unavailable states.",
+    "tags": [
+      "folder",
+      "files",
+      "glass",
+      "document preview",
+      "collection",
+      "material"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1000,
+    "usage": "import { CardsPrismaticFolder } from \"@/components/design-for-ai/cards-prismatic-folder\";\n\n<CardsPrismaticFolder\n  title=\"Brand assets\"\n  description=\"Approved files for the launch\"\n  files={files}\n  onFileOpen={(file) => openDocument(file.id)}\n  onRetry={() => reloadFiles()}\n/>",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Orbit Studio\"",
+        "description": "Collection identity on the folder front and its accessible label."
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "default": "\"Identity & working files\"",
+        "description": "Short context below the collection identity."
+      },
+      {
+        "name": "collection",
+        "type": "string",
+        "default": "\"COLLECTION / 04\"",
+        "description": "Small label on the folder tab."
+      },
+      {
+        "name": "files",
+        "type": "PrismaticFile[]",
+        "description": "Unique id, name, kind, size, modified, optional text preview and available flag. An empty array shows the empty state; available=false keeps unavailable files visible and disabled."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"unavailable\"",
+        "default": "\"ready\"",
+        "description": "Host-owned collection availability. No fetching or simulated delay occurs in the named export."
+      },
+      {
+        "name": "error",
+        "type": "string",
+        "description": "Useful recovery text when the collection is unavailable."
+      },
+      {
+        "name": "emptyTitle",
+        "type": "string",
+        "default": "\"Room for the next idea\"",
+        "description": "Title for a ready collection containing no files."
+      },
+      {
+        "name": "emptyDescription",
+        "type": "string",
+        "default": "\"Files added to this collection will appear here.\"",
+        "description": "Instruction shown beneath the empty state title."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#e6b782\"",
+        "description": "One restrained highlight on the tab and refractive top edge."
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "description": "Optional controlled disclosure state."
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "default": "false",
+        "description": "Initial disclosure state when open is uncontrolled."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "default": "false",
+        "description": "Disables collection and file actions, preserving all content."
+      },
+      {
+        "name": "onOpenChange",
+        "type": "(open: boolean) => void",
+        "description": "Called when the collection disclosure is activated."
+      },
+      {
+        "name": "onFileSelect",
+        "type": "(file: PrismaticFile) => void",
+        "description": "Observes selecting a file for its supplied text preview."
+      },
+      {
+        "name": "onFileOpen",
+        "type": "(file: PrismaticFile) => void | Promise<void>",
+        "description": "Optional real host operation. Pending preserves geometry; rejection shows retry text without losing the selected file. Without a callback the component only offers its readable preview."
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Optional host recovery action in the unavailable collection state."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "default": "\"\"",
+        "description": "Optional root classes. The component takes its container width up to 440px."
+      }
+    ],
+    "controls": [
+      {
+        "prop": "title",
+        "label": "Collection name",
+        "kind": "text",
+        "default": "Orbit Studio"
+      },
+      {
+        "prop": "accent",
+        "label": "Edge highlight",
+        "kind": "color",
+        "default": "#e6b782",
+        "options": [
+          "#e6b782",
+          "#d5d8dd",
+          "#a7c7ba"
+        ]
+      },
+      {
+        "prop": "defaultOpen",
+        "label": "Start open",
+        "kind": "toggle",
+        "default": false,
+        "remount": true
+      },
+      {
+        "prop": "disabled",
+        "label": "Disabled",
+        "kind": "toggle",
+        "default": false
+      },
+      {
+        "prop": "status",
+        "label": "Availability",
+        "kind": "action",
+        "options": [
+          "ready",
+          "loading",
+          "unavailable"
+        ]
+      }
+    ],
+    "demo": {
+      "steps": [
+        "click:@folder-toggle",
+        "wait:700",
+        "hover:@file-tokens",
+        "wait:450",
+        "click:@folder-toggle",
+        "wait:950"
+      ],
+      "loop": false
+    },
+    "added": "2026-10-13"
+  },
+  {
     "slug": "cart-drawer",
     "name": "Cart Drawer",
     "tier": "pro",
