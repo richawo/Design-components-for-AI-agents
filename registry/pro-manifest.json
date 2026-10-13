@@ -5223,6 +5223,227 @@
     ]
   },
   {
+    "slug": "button-shimmer-track",
+    "name": "Shimmer Track Button",
+    "tier": "pro",
+    "platform": "web",
+    "category": "buttons",
+    "description": "A fine light travels a physical button edge. Async actions keep the same size through loading, success and retry, with offscreen pause and reduced motion.",
+    "tags": [
+      "button",
+      "animated border",
+      "shimmer",
+      "async action",
+      "micro interaction"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 560,
+    "usage": "import { ButtonShimmerTrack } from \"@/components/design-for-ai/button-shimmer-track\";\n\n<ButtonShimmerTrack\n  label=\"Create project\"\n  status={status}\n  onStatusChange={setStatus}\n  onAction={(_, signal) => createProject(draft, { signal })}\n  motionMode=\"interaction\"\n/>\n\n// A rejected promise shows the retry state. Reset status to \"idle\" for a new task.\n// Native button attributes, including type, form and aria-label, are supported.",
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "default": "\"Create project\"",
+        "description": "Idle action label."
+      },
+      {
+        "name": "loadingLabel",
+        "type": "string",
+        "default": "\"Creating project\"",
+        "description": "Pending label, reserved before the action starts."
+      },
+      {
+        "name": "successLabel",
+        "type": "string",
+        "default": "\"Project ready\"",
+        "description": "Completed label; success blocks duplicate actions until the host resets status."
+      },
+      {
+        "name": "errorLabel",
+        "type": "string",
+        "default": "\"Try again\"",
+        "description": "Retry action after a rejected callback."
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "default": "\"That didn’t go through. Please try again.\"",
+        "description": "Visible error copy under the control."
+      },
+      {
+        "name": "icon",
+        "type": "ReactNode",
+        "default": "ArrowUpRight",
+        "description": "Optional trailing idle glyph."
+      },
+      {
+        "name": "status",
+        "type": "ShimmerButtonState",
+        "default": "uncontrolled idle",
+        "description": "Controlled state when supplied; pair with onStatusChange. The standalone demo synchronizes state controls with its local state."
+      },
+      {
+        "name": "onAction",
+        "type": "(event: MouseEvent<HTMLButtonElement>, signal: AbortSignal) => void | Promise<void>",
+        "description": "Awaited host action. Resolve for success or reject for retry. A controlled reset or unmount aborts the supplied signal and ignores stale completion."
+      },
+      {
+        "name": "onStatusChange",
+        "type": "(status: ShimmerButtonState) => void",
+        "description": "Receives pending and completion states; reset to idle when the host starts a new task."
+      },
+      {
+        "name": "onError",
+        "type": "(error: unknown) => void",
+        "description": "Optional host error handler after a rejected action."
+      },
+      {
+        "name": "shimmerColor",
+        "type": "string",
+        "default": "\"#ffffff\"",
+        "description": "The one moving edge-light color."
+      },
+      {
+        "name": "duration",
+        "type": "number",
+        "default": "3200",
+        "description": "Orbit duration in milliseconds, bounded to 1200 through 12000."
+      },
+      {
+        "name": "motionMode",
+        "type": "\"continuous\" | \"interaction\"",
+        "default": "\"continuous\"",
+        "description": "Always move while visible, or move only on pointer hover or keyboard focus."
+      },
+      {
+        "name": "size",
+        "type": "\"regular\" | \"large\"",
+        "default": "\"regular\"",
+        "description": "52px or 60px minimum-height controls."
+      },
+      {
+        "name": "shape",
+        "type": "\"pill\" | \"rounded\"",
+        "default": "\"pill\"",
+        "description": "Capsule or 15px rounded rectangle."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Neutral fill, ink and focus-ring palette."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "default": "false",
+        "description": "Disable the action and stop the border light."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "default": "\"\"",
+        "description": "Additional classes on the native button."
+      },
+      {
+        "name": "style",
+        "type": "CSSProperties",
+        "description": "Native button styles, merged over the local color and timing tokens."
+      }
+    ],
+    "added": "2026-10-13",
+    "demo": {
+      "steps": [
+        "wait:250",
+        "hover:@shimmer-action",
+        "wait:650",
+        "click",
+        "wait:1800",
+        "click:@shimmer-reset",
+        "wait:500"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "motionMode",
+        "label": "Border motion",
+        "kind": "segmented",
+        "options": [
+          "continuous",
+          "interaction"
+        ],
+        "default": "continuous"
+      },
+      {
+        "prop": "duration",
+        "label": "Orbit duration",
+        "kind": "slider",
+        "min": 1200,
+        "max": 8000,
+        "step": 200,
+        "unit": "ms",
+        "default": 3200
+      },
+      {
+        "prop": "shimmerColor",
+        "label": "Edge light",
+        "kind": "color",
+        "default": "#ffffff",
+        "options": [
+          "#ffffff",
+          "#e8a46c",
+          "#9bdac5"
+        ]
+      },
+      {
+        "prop": "size",
+        "label": "Size",
+        "kind": "segmented",
+        "options": [
+          "regular",
+          "large"
+        ],
+        "default": "regular"
+      },
+      {
+        "prop": "shape",
+        "label": "Shape",
+        "kind": "segmented",
+        "options": [
+          "pill",
+          "rounded"
+        ],
+        "default": "pill"
+      },
+      {
+        "prop": "status",
+        "label": "Action state",
+        "kind": "action",
+        "options": [
+          "idle",
+          "loading",
+          "error",
+          "success"
+        ]
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "cards-event-ticket",
     "name": "Editorial Event Ticket",
     "tier": "pro",
