@@ -64,10 +64,17 @@ export async function mountFixture(page, slug, tier, fixture, { frameStyle } = {
         }
       : {}),
   });
-  await page.goto(`${base}/preview/${slug}`, { waitUntil: "networkidle" });
+  const response = await page.goto(`${base}/preview/${slug}`, { waitUntil: "networkidle" });
+  if (!response?.ok()) throw new Error(`Preview ${slug} returned HTTP ${response?.status() ?? "unknown"}; refresh its registry/server before auditing.`);
+  // A streamed Next 404 can have HTTP200. Require the requested preview and
+  // its loaded source, rather than accepting unrelated global styles.
+  const preview = page.locator(`[data-preview-slug=${JSON.stringify(slug)}][data-preview-ready="true"]`);
+  try { await preview.waitFor({ state: "attached", timeout: 10000 }); }
+  catch { throw new Error(`Preview ${slug} did not load its registered source; regenerate the registry and refresh the preview server.`); }
   const styles = await page
     .locator('link[rel="stylesheet"]')
     .evaluateAll((links) => links.map((l) => l.href));
+  if (!styles.length) throw new Error(`Preview ${slug} has no registry stylesheet.`);
   await page.route("**/__component_audit__", (route) =>
     route.fulfill({
       contentType: "text/html",

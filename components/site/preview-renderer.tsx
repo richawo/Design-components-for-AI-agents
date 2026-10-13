@@ -142,7 +142,7 @@ export function PreviewRenderer({ slug, platform, theme, demo, accentConfig }: {
 
   if (platform === "mobile") {
     return (
-      <div className="flex min-h-dvh items-center justify-center bg-black p-0 sm:p-8">
+      <div data-preview-slug={slug} data-preview-ready={!!Comp} className="flex min-h-dvh items-center justify-center bg-black p-0 sm:p-8">
         <div className="relative h-dvh w-full overflow-hidden bg-white sm:h-[844px] sm:w-[390px] sm:rounded-[54px] sm:shadow-[0_0_0_10px_#1a1a1c,0_0_0_11px_#2e2e33,0_40px_120px_-20px_rgba(0,0,0,0.9)]">
           <div className="flex h-full w-full flex-col">{node}</div>
           <div className="pointer-events-none absolute left-1/2 top-[11px] hidden h-[34px] w-[122px] -translate-x-1/2 rounded-full bg-black sm:block" />
@@ -153,7 +153,7 @@ export function PreviewRenderer({ slug, platform, theme, demo, accentConfig }: {
   }
 
   return (
-    <div className={theme === "dark" ? "min-h-dvh bg-black" : "min-h-dvh bg-white"}>
+    <div data-preview-slug={slug} data-preview-ready={!!Comp} className={theme === "dark" ? "min-h-dvh bg-black" : "min-h-dvh bg-white"}>
       {node}
       {steps && <DemoCursor ref={cursor} />}
     </div>
