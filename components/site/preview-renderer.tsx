@@ -61,7 +61,7 @@ export function PreviewRenderer({ slug, platform, theme, demo, accentConfig }: {
 
   const play = useCallback(
     async (fresh: boolean) => {
-      if (!steps || !cursor.current) return;
+      if (!Comp || !steps || !cursor.current) return;
       run.current?.abort();
       const ctl = new AbortController();
       run.current = ctl;
@@ -89,7 +89,7 @@ export function PreviewRenderer({ slug, platform, theme, demo, accentConfig }: {
         if (!(e instanceof DemoAborted)) throw e;
       }
     },
-    [steps, demo?.loop, post],
+    [Comp, steps, demo?.loop, post],
   );
 
   // Messages from the component page.
@@ -100,7 +100,9 @@ export function PreviewRenderer({ slug, platform, theme, demo, accentConfig }: {
       if (e.origin !== window.location.origin || e.source !== window.parent) return;
       const msg = parseToPreview(e.data);
       if (!msg) return;
-      if (msg.type === "hello") post({ type: "ready", hasDemo: !!steps });
+      if (msg.type === "hello") {
+        if (Comp) post({ type: "ready", hasDemo: !!steps });
+      }
       else if (msg.type === "props") {
         setOverrides(msg.props);
         if (msg.remount) setMount((m) => m + 1);
@@ -111,9 +113,14 @@ export function PreviewRenderer({ slug, platform, theme, demo, accentConfig }: {
       } else void play(true);
     };
     window.addEventListener("message", onMessage);
-    post({ type: "ready", hasDemo: !!steps });
-    return () => window.removeEventListener("message", onMessage);
-  }, [play, stop, post, steps]);
+    if (Comp) post({ type: "ready", hasDemo: !!steps });
+    const motionPreference = () => { if (reduce.matches) stop("stopped"); };
+    reduce.addEventListener("change", motionPreference);
+    return () => {
+      window.removeEventListener("message", onMessage);
+      reduce.removeEventListener("change", motionPreference);
+    };
+  }, [Comp, play, stop, post, steps]);
 
   // Any real input hands control back to the visitor at once. Capture phase,
   // so the demo has stopped before the component sees the event.

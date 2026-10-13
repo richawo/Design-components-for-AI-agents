@@ -113,6 +113,7 @@ export function PreviewFrame({
       if (!msg) return;
       if (msg.type === "ready") {
         ready.current = true;
+        setLoaded(true);
         if (controls.length) send({ type: "props", props: { ...diffValues(controls, valuesRef.current), ...(accentProp && valuesRef.current[accentProp] !== undefined ? { [accentProp]: valuesRef.current[accentProp] } : {}), ...actionsRef.current } });
         tryAutoplay();
       } else {
@@ -134,7 +135,14 @@ export function PreviewFrame({
   // Play when the preview is mostly on screen; stop when it leaves.
   useEffect(() => {
     if (!hasDemo || !box.current) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) autoplay.current = false;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const motionPreference = () => {
+      if (!reduce.matches) return;
+      autoplay.current = false;
+      send({ type: "demo", action: "stop" });
+    };
+    motionPreference();
+    reduce.addEventListener("change", motionPreference);
     const io = new IntersectionObserver(
       ([entry]) => {
         visible.current = entry.intersectionRatio >= AUTOPLAY_AT;
@@ -144,7 +152,10 @@ export function PreviewFrame({
       { threshold: [0, AUTOPLAY_AT] },
     );
     io.observe(box.current);
-    return () => io.disconnect();
+    return () => {
+      io.disconnect();
+      reduce.removeEventListener("change", motionPreference);
+    };
   }, [hasDemo, send, tryAutoplay]);
 
   const replay = () => {
@@ -152,34 +163,38 @@ export function PreviewFrame({
     send({ type: "demo", action: "replay" });
   };
 
+  const takeOver = () => {
+    autoplay.current = false;
+    send({ type: "demo", action: "stop" });
+  };
+  const setViewport = (next: (typeof VIEWPORTS)[number]["key"]) => {
+    takeOver();
+    setVp(next);
+  };
   const onChange = (c: ComponentControl, v: ControlValue) => {
+    takeOver();
     if (c.remount) remountNext.current = true;
     setTuned((cur) => ({ ...cur, [c.prop]: v }));
   };
   const onAction = (c: ComponentControl, v: ControlValue | null) => {
     if (v === null) return replay();
-    send({ type: "demo", action: "stop" });
-    autoplay.current = false;
+    takeOver();
     setActions((cur) => ({ ...cur, [c.prop]: v }));
   };
   const onReset = () => {
+    takeOver();
     remountNext.current = controls.some((c) => c.remount && values[c.prop] !== c.default);
     setTuned({});
     setActions({});
   };
 
-  // The iframe is in the server HTML, so it often finishes loading before
-  // React hydrates and attaches onLoad. Check its document after mount (and
-  // after every reload) so the preview never stays hidden behind the spinner.
-  useEffect(() => {
-    const frame = ref.current;
-    try {
-      const doc = frame?.contentDocument;
-      if (doc && doc.readyState === "complete" && frame.contentWindow?.location.href !== "about:blank") setLoaded(true);
-    } catch {
-      setLoaded(true);
-    }
-  }, [key]);
+  // The document can finish before the component chunk loads, or before
+  // the parent hydrates. Ask the renderer for its actual mounted state.
+  const sayHello = useCallback(() => {
+    const win = ref.current?.contentWindow;
+    if (win) win.postMessage({ channel: PREVIEW_CHANNEL, type: "hello" }, window.location.origin);
+  }, []);
+  useEffect(sayHello, [key, sayHello]);
 
   return (
     <div className="rounded-[20px] border border-white/[0.08] bg-site-raised shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_40px_100px_-40px_rgba(0,0,0,0.9)]">
@@ -207,6 +222,7 @@ export function PreviewFrame({
               {VIEWPORTS.map((v) => (
                 <button
                   key={v.key}
+                  type="button"
                   role="radio"
                   aria-checked={vp === v.key}
                   tabIndex={vp === v.key ? 0 : -1}
@@ -215,12 +231,12 @@ export function PreviewFrame({
                     if (!direction && event.key !== "Home" && event.key !== "End") return;
                     event.preventDefault();
                     const next = event.key === "Home" ? 0 : event.key === "End" ? VIEWPORTS.length - 1 : (VIEWPORTS.indexOf(v) + direction + VIEWPORTS.length) % VIEWPORTS.length;
-                    setVp(VIEWPORTS[next].key);
+                    setViewport(VIEWPORTS[next].key);
                     event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>("button")[next]?.focus();
                   }}
                   aria-label={v.label}
                   title={v.label}
-                  onClick={() => setVp(v.key)}
+                  onClick={() => setViewport(v.key)}
                   className={`relative flex h-11 w-11 items-center justify-center rounded-md transition-colors duration-150 ${vp === v.key ? "text-site-fg" : "text-site-fg-3 hover:text-site-fg-2"}`}
                 >
                   {vp === v.key && (
@@ -230,7 +246,7 @@ export function PreviewFrame({
                       transition={{ type: "spring", stiffness: 500, damping: 40 }}
                     />
                   )}
-                  <svg viewBox="0 0 16 16" className="relative size-4 transition-transform duration-150 active:scale-90" fill="none" aria-hidden="true">
+                  <svg viewBox="0 0 16 16" className="relative size-4 transition-transform duration-150 active:scale-90 motion-reduce:transform-none" fill="none" aria-hidden="true">
                     <path d={v.icon} stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" strokeLinecap="round" />
                   </svg>
                 </button>
@@ -243,7 +259,7 @@ export function PreviewFrame({
               onClick={replay}
               aria-label="Replay demo"
               title="Replay demo"
-              className="group/replay flex h-11 items-center gap-1.5 rounded-md px-2 text-site-fg-3 transition duration-150 hover:bg-white/[0.05] hover:text-site-fg active:scale-95"
+              className="group/replay flex h-11 items-center gap-1.5 rounded-md px-2 text-site-fg-3 transition duration-150 hover:bg-white/[0.05] hover:text-site-fg active:scale-95 motion-reduce:transform-none"
             >
               <svg viewBox="0 0 16 16" className="size-4" fill="none" aria-hidden="true">
                 <path d="M5.25 3.9v8.2a.6.6 0 0 0 .92.5l6.3-4.1a.6.6 0 0 0 0-1l-6.3-4.1a.6.6 0 0 0-.92.5Z" fill="currentColor" className={playing ? "opacity-40" : ""} />
@@ -261,7 +277,7 @@ export function PreviewFrame({
             }}
             aria-label="Reload preview"
             title="Reload"
-            className="flex size-11 items-center justify-center rounded-md text-site-fg-3 transition duration-150 hover:bg-white/[0.05] hover:text-site-fg active:scale-95"
+            className="flex size-11 items-center justify-center rounded-md text-site-fg-3 transition duration-150 hover:bg-white/[0.05] hover:text-site-fg active:scale-95 motion-reduce:transform-none"
           >
             <svg
               viewBox="0 0 16 16"
@@ -279,19 +295,19 @@ export function PreviewFrame({
             rel="noreferrer"
             aria-label="Open preview in a new tab"
             title="Open in new tab"
-            className="group/open flex size-11 items-center justify-center rounded-md text-site-fg-3 transition duration-150 hover:bg-white/[0.05] hover:text-site-fg active:scale-95"
+            className="group/open flex size-11 items-center justify-center rounded-md text-site-fg-3 transition duration-150 hover:bg-white/[0.05] hover:text-site-fg active:scale-95 motion-reduce:transform-none"
           >
-            <svg viewBox="0 0 16 16" className="size-4 transition-transform duration-150 ease-site group-hover/open:-translate-y-px group-hover/open:translate-x-px" fill="none" aria-hidden="true">
+            <svg viewBox="0 0 16 16" className="size-4 transition-transform duration-150 ease-site group-hover/open:-translate-y-px group-hover/open:translate-x-px motion-reduce:transform-none" fill="none" aria-hidden="true">
               <path d="M9 2.5h4.5V7M13.5 2.5L7.5 8.5M11.5 9.5v3a1 1 0 0 1-1 1h-7a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1h3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </a>
           <AccentPicker defaultColor={parseAccent(controls.find(c => c.prop === accentProp)?.default) ?? undefined} />
         </div>
       </div>
-      <div ref={box} className={`site-dots relative flex justify-center overflow-hidden bg-site-sunken ${controls.length ? "" : "rounded-b-[19px]"}`}>
+      <div ref={box} aria-busy={!loaded} className={`site-dots relative flex justify-center overflow-hidden bg-site-sunken ${controls.length ? "" : "rounded-b-[19px]"}`}>
         {!loaded && (
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="size-5 animate-spin rounded-full border-2 border-white/10 border-t-white/50" aria-label="Loading preview" />
+            <span className="size-5 animate-spin rounded-full border-2 border-white/10 border-t-white/50 motion-reduce:animate-none" role="status" aria-label="Loading preview" />
           </div>
         )}
         <iframe
@@ -300,9 +316,9 @@ export function PreviewFrame({
           src={`/preview/${slug}`}
           title={`${name} live preview`}
           allow="microphone; clipboard-write"
-          onLoad={() => setLoaded(true)}
+          onLoad={sayHello}
           style={{ width, height: frameHeight, maxWidth: "100%" }}
-          className={`block transition-[width,opacity] duration-500 ease-site ${theme === "dark" ? "bg-black" : "bg-white"} ${loaded ? "opacity-100" : "opacity-0"} ${vp !== "desktop" && platform === "web" ? "border-x border-white/10" : ""}`}
+          className={`block transition-[width,opacity] duration-500 ease-site motion-reduce:transition-none ${theme === "dark" ? "bg-black" : "bg-white"} ${loaded ? "opacity-100" : "opacity-0"} ${vp !== "desktop" && platform === "web" ? "border-x border-white/10" : ""}`}
         />
       </div>
       {controls.length > 0 && (
