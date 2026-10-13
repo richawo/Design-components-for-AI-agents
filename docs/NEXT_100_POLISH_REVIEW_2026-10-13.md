@@ -22,3 +22,11 @@ The updated folder preview is 1280 × 800, 60 fps and 4.733 seconds. Its active 
 Local evidence is under `test-results/next-100` and `test-results/next-100-critic`. The final meeting retirement ledger is `root-final-polish/retirement-after/review.json`; navigation and material ledgers contain the independent component reviews. These generated proof artifacts stay outside Git. Public metadata was published from committed private source while preserving unrelated native work in progress.
 
 This slice used targeted registry/type checks and browser proof. It did not rerun the broad unit suite, in line with the user's priority on interaction quality. Production publication is checked separately against the deployed build marker; a Git release is not described as live before that verification.
+
+## Native outside-background focus
+
+An exact-source native probe reproduced an ownership defect in Crop Workbench and Caption Styler: after focusing an enabled control and clicking actual blank page, the browser correctly moved focus to BODY, but later disabling the component pulled it back to the component heading. Document-level primary pointer capture now clears only the stale ownership memory. Secondary contacts preserve it.
+
+The independent after check starts from the actual enabled Apply and Copy controls. Both retain BODY after a real outside-background click and later availability changes. The paired controls without an outside click still recover to their labelled heading when disabled. No draft, crop geometry, caption layout or settled default recording changed. Strict isolated types passed. The two source changes were committed and pushed separately.
+
+Archived evidence: `test-results/next-100/legacy-outside-pointer-before.json`, `legacy-outside-pointer-after.json` and `test-results/next-100-critic/late-polish-boundaries/review.json`, with native before/after screenshots. The first Crop fixture selected an unavailable action; that invalid fixture report is retained separately and was replaced by an enabled-target assertion before drawing a conclusion.
