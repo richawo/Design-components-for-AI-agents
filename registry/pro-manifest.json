@@ -18985,6 +18985,178 @@
     ]
   },
   {
+    "slug": "media-compare-grid",
+    "name": "Compare Grid",
+    "tier": "pro",
+    "platform": "web",
+    "category": "media",
+    "description": "Inspect real visual variants with bounded linked or independent zoom/pan, atomic host camera ownership, actual native image geometry and keyboard/touch controls.",
+    "tags": [
+      "image comparison",
+      "zoom",
+      "pan",
+      "media inspector",
+      "variants",
+      "proofing"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1200,
+    "usage": "import { MediaCompareGrid } from \"@/components/design-for-ai/media-compare-grid\";\n\n<MediaCompareGrid variants={proofs} value={viewState} onValueChange={setViewState} onValueCommit={persistViewState} />",
+    "props": [
+      {
+        "name": "variants",
+        "type": "CompareVariant[]",
+        "description": "Up to four supplied stable-id labelled real images. Source/alt/description are host data. Missing/failed images retain labels and explicit recovery.",
+        "default": "[]"
+      },
+      {
+        "name": "value",
+        "type": "CompareState",
+        "description": "Optional atomic controlled activeId/linked/views state. Missing handler is read-only; rejected requests retain actual rendered cameras and emit no false commit."
+      },
+      {
+        "name": "defaultValue",
+        "type": "CompareState",
+        "description": "Initial uncontrolled state. Defaults to first active variant, linked controls and fitted cameras."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(value: CompareState) => void",
+        "description": "Requests one bounded atomic state. Accept the full requested packet when controlling linked views; view maps describe the displayed variant IDs."
+      },
+      {
+        "name": "onValueCommit",
+        "type": "(value: CompareState) => void",
+        "description": "Observes accepted changed pointer releases or keyboard/toolbar actions. Rejection, cancellation and obsolete gestures never falsely commit."
+      },
+      {
+        "name": "maxZoom",
+        "type": "number",
+        "description": "Finite maximum from 1 to 8. Invalid settings disable inspection with a truthful remedy; actual camera rendering is bounded.",
+        "default": "4"
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"unavailable\"",
+        "description": "Host availability, independent of retained image labels and camera preferences.",
+        "default": "\"ready\""
+      },
+      {
+        "name": "error",
+        "type": "string",
+        "description": "Host error text alongside retained variants."
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Optional host archive recovery intent alongside local native image reload."
+      },
+      {
+        "name": "heading",
+        "type": "string",
+        "description": "Inspector heading.",
+        "default": "\"Compare, with intention.\""
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Short context.",
+        "default": "\"Inspect the details that make the difference.\""
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Neutral graphite or warm-paper surfaces.",
+        "default": "\"dark\""
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "description": "Active view edge. Light theme darkens the supplied tint for functional contrast.",
+        "default": "\"#e6b782\""
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Stops interaction and active pointer ownership while keeping image data readable.",
+        "default": "false"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Root classes, container-responsive up to 920 px.",
+        "default": "\"\""
+      }
+    ],
+    "controls": [
+      {
+        "prop": "heading",
+        "label": "Inspector title",
+        "kind": "text",
+        "default": "Compare, with intention."
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "accent",
+        "label": "Active view edge",
+        "kind": "color",
+        "default": "#e6b782",
+        "options": [
+          "#e6b782",
+          "#b0c1b5",
+          "#e3e1e9"
+        ]
+      },
+      {
+        "prop": "disabled",
+        "label": "Disabled",
+        "kind": "toggle",
+        "default": false
+      },
+      {
+        "prop": "status",
+        "label": "Availability",
+        "kind": "action",
+        "options": [
+          "ready",
+          "loading",
+          "unavailable"
+        ]
+      }
+    ],
+    "demo": {
+      "steps": [
+        "click:@compare-zoom-in",
+        "click:@compare-zoom-in",
+        "wait:300",
+        "hover:@compare-paper",
+        "drag:0.4,0.55",
+        "wait:350",
+        "click:@compare-link",
+        "click:@compare-zoom-out",
+        "wait:350",
+        "click:@compare-reset",
+        "click:@compare-link",
+        "wait:500"
+      ],
+      "loop": false
+    },
+    "added": "2026-10-13"
+  },
+  {
     "slug": "media-crop-workbench",
     "name": "Image Crop Workbench",
     "tier": "pro",

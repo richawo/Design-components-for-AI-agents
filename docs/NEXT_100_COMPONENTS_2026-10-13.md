@@ -48,7 +48,7 @@ Validate all six web widths, both supported themes, multiple instances and empty
 | 14 | `media-trim-timeline` | media | Set in/out points on an audio waveform; bounded keyboard handles, exact time fields and a reviewed processing range. | Released |
 | 15 | `media-spatial-collection` | media | Browse depth-layered album objects without obscuring labels; a list alternative supports keyboard and reduced motion. | Released |
 | 16 | `media-transcript-player` | media | Timed text follows actual playback, and selecting a passage seeks; unavailable media preserves the transcript. | Released |
-| 17 | `media-compare-grid` | media | Compare supplied variants with linked zoom and pan; independent viewing remains possible. | Planned |
+| 17 | `media-compare-grid` | media | Compare supplied variants with linked zoom and pan; independent viewing remains possible. | Released |
 | 18 | `portfolio-project-reel` | portfolio | A snap-based project reel with readable case notes and explicit previous/next controls. | Released |
 | 19 | `media-crop-workbench` | editors | Resize and move an image crop with fixed-ratio options, reset and a normalized crop callback. | Released |
 | 20 | `media-caption-styler` | editors | Edit caption typography against supplied footage and inspect safe-area, wrapping and contrast guides. | Released |
@@ -175,4 +175,4 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 ## Progress
 
-Planned: 80. Released: 20. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
+Planned: 79. Released: 21. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
