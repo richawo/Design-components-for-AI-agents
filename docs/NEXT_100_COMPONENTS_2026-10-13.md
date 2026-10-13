@@ -45,7 +45,7 @@ Validate all six web widths, both supported themes, multiple instances and empty
 | 11 | `media-device-switcher` | media | Inspect supplied content in phone, tablet and desktop frames with honest container dimensions. | Released |
 | 12 | `media-image-contact-sheet` | media | Select and compare a dense image collection, with loading, missing assets and an empty selection. | Planned |
 | 13 | `media-focus-lightbox` | media | Zoom, pan and navigate supplied images; focus trapping, Escape, touch and an accessible static alternative. | Planned |
-| 14 | `media-trim-timeline` | media | Set in/out points on a waveform or filmstrip; bounded keyboard handles and a reviewed export range. | Planned |
+| 14 | `media-trim-timeline` | media | Set in/out points on a waveform or filmstrip; bounded keyboard handles and a reviewed export range. | Released |
 | 15 | `media-spatial-collection` | media | Browse depth-layered album objects without obscuring labels; a list alternative supports keyboard and reduced motion. | Planned |
 | 16 | `media-transcript-player` | media | Timed text follows actual playback, and selecting a passage seeks; unavailable media preserves the transcript. | Planned |
 | 17 | `media-compare-grid` | media | Compare supplied variants with linked zoom and pan; independent viewing remains possible. | Planned |
@@ -175,4 +175,4 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 ## Progress
 
-Planned: 88. Released: 12. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
+Planned: 87. Released: 13. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
