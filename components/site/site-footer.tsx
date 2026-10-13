@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteLink as Link } from "@/components/site/site-link";
 import { CATEGORIES, type Category } from "@/lib/registry-types";
 import { site } from "@/lib/site";
 import { LogoMark } from "./logo";

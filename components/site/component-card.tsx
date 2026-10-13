@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteLink as Link } from "@/components/site/site-link";
 import { cataloguePath, BLOCK_LABELS } from "@/lib/catalogue-path";
 import type { CSSProperties } from "react";
 import { CATEGORIES } from "@/lib/registry-types";

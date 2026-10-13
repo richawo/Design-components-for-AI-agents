@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { SiteLink as Link } from "@/components/site/site-link";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { fetchProAccess } from "@/lib/pro-access-client";
 import {

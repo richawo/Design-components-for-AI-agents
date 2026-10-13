@@ -17,6 +17,11 @@ const cases = [
   { id: "block", origin: "/blocks", destination: "/blocks/block-music-workspace", selector: 'main a[href="/blocks/block-music-workspace"]', heading: "Music Listening Workspace", ready: "#preview iframe" },
   { id: "mobile-gallery", origin: "/pricing", destination: "/components", selector: '#mobile-nav a[href="/components"]', ready: ".component-grid .component-card", mobile: true },
   { id: "keyboard-gallery", origin: "/pricing", destination: "/components", selector: 'header nav a[href="/components"]', ready: ".component-grid .component-card", keyboard: true },
+  { id: "pricing", origin: "/blocks", destination: "/pricing", selector: 'header nav a[href="/pricing"]', heading: "Free to start.", ready: "main h1" },
+  { id: "account", origin: "/pricing", destination: "/account", selector: 'header a[href="/account"]', heading: "licence.", ready: "main h1" },
+  { id: "category", origin: "/pricing", destination: "/categories/charts", selector: 'footer a[href="/categories/charts"]', heading: "Charts & maps", ready: "main h1" },
+  { id: "docs", origin: "/pricing", destination: "/docs", selector: 'header nav a[href="/docs"]', heading: "Introduction", ready: "main h1" },
+  { id: "blog", origin: "/pricing", destination: "/blog", selector: 'header nav a[href="/blog"]', ready: 'main nav[aria-label="Topics"]' },
 ];
 const selected = process.env.PERF_CASES?.split(",");
 fs.mkdirSync(path.dirname(out), { recursive: true });

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteLink as Link } from "@/components/site/site-link";
 import type { Metadata } from "next";
 import { ComponentCard } from "@/components/site/component-card";
 import { HomeCatalogue } from "@/components/site/home-catalogue";

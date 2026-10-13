@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteLink as Link } from "@/components/site/site-link";
 import type { Metadata } from "next";
 import { cataloguePath, BLOCK_LABELS } from "@/lib/catalogue-path";
 import type { RegistryEntry } from "@/lib/registry-types";

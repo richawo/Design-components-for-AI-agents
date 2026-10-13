@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import Link from "next/link";
+import { SiteLink as Link } from "@/components/site/site-link";
 import { usePathname } from "next/navigation";
 
 /** `scope` keeps each rendered copy's active pill to itself (the layout renders one for mobile, one for desktop). */

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteLink as Link } from "@/components/site/site-link";
 
 /** Mark: a tile in the brand accent holding three primitives (square, circle, quarter). */
 export function LogoMark({ className = "size-7" }: { className?: string }) {

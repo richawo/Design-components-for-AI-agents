@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteLink as Link } from "@/components/site/site-link";
 import { notFound, permanentRedirect } from "next/navigation";
 import { JsonLd } from "@/components/site/json-ld";
 import { Toc } from "@/components/site/toc";

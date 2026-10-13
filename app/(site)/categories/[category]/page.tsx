@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteLink as Link } from "@/components/site/site-link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cardEntrance, ComponentCard, FIRST_VIEW_CARDS } from "@/components/site/component-card";

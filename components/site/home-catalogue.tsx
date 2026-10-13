@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { SiteLink as Link } from "@/components/site/site-link";
 import { useEffect, useRef, useState } from "react";
 import { Pause, Play } from "lucide-react";
 import { CardMedia } from "./card-media";

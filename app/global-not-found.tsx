@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteLink as Link } from "@/components/site/site-link";
 import { RootDocument } from "@/components/site/root-document";
 import { Logo } from "@/components/site/logo";
 

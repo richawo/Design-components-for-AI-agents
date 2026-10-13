@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import Link from "next/link";
+import { SiteLink as Link } from "@/components/site/site-link";
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { configuredPrompt, configuredSnippet, diffValues, isReplay } from "@/lib/demo/protocol";
 import { optionOf } from "@/lib/demo/schema.mjs";

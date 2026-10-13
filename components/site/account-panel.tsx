@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { SiteLink as Link } from "@/components/site/site-link";
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { AccountSignIn } from "./account-sign-in";
 import { CopyButton } from "./copy-button";

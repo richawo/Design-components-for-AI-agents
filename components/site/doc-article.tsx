@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { SiteLink as Link } from "@/components/site/site-link";
 import { ProseContent } from "./prose-content";
 import { Toc } from "./toc";
 import type { DocMeta, Heading } from "@/lib/content";

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import Link from "next/link";
+import { SiteLink as Link } from "@/components/site/site-link";
 import { memo, useEffect, useId, useRef, useState } from "react";
 import { fetchFreeSource, fetchProSource, type SourcePayload } from "@/lib/pro-source-client";
 import { CopyButton } from "./copy-button";
