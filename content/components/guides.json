@@ -4104,8 +4104,10 @@
     "useWhen": "Composing a supported recurring schedule and inspecting actual upcoming occurrences in a supplied timezone.",
     "avoidWhen": "Accepting arbitrary scheduler syntax or promising execution when no host scheduler exists.",
     "integration": [
-      "Define the supported schedule subset, timezone and reference time. Calculate occurrences from that contract, including daylight-saving behavior.",
-      "Keep invalid or unsupported combinations visible and only send an explicit accepted schedule to the host."
+      "Use CronSchedule: daily or weekly cadence, HH:mm local time, unique weekdays (Sunday0–Saturday6), actual supplied timeZone and first/second repeatedTime. The five-field cron string is exported separately from its time-zone and daylight-saving policies.",
+      "Pass a real Gregorian ISO referenceInstant with explicit Z or offset (1970–2100) and1–12 occurrences. The preview skips missing local times and resolves the chosen repeated occurrence, within a100-day horizon. The default reference is a visible fixed example.",
+      "Explicit Apply requests a cloned complete schedule through onValueChange. Controlled rejection keeps the accepted schedule and draft; an older acknowledgement cannot replace a newer edit. Local values reset through resetKey.",
+      "Copy uses actual Clipboard API success and produces cron,timeZone,repeatedTime and missingTime:skip. Configure your scheduler with matching policies; the component does not execute or persist schedules."
     ],
     "related": [
       "saas-report-scheduler",
