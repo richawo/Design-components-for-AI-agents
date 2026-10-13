@@ -18999,6 +18999,156 @@
     ]
   },
   {
+    "slug": "media-focus-lightbox",
+    "name": "Focus Lightbox",
+    "tier": "pro",
+    "platform": "web",
+    "category": "media",
+    "description": "A restrained native image viewer with anchored zoom, bounded pan, keyboard inspection and a readable filmstrip for real originals.",
+    "tags": [
+      "lightbox",
+      "image viewer",
+      "zoom",
+      "pan",
+      "media",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 900,
+    "usage": "import { MediaFocusLightbox } from \"@/components/design-for-ai/media-focus-lightbox\";\n\n<MediaFocusLightbox images={originals} open={viewerOpen} onOpenChange={setViewerOpen} value={imageId} onValueChange={setImageId} />",
+    "props": [
+      {
+        "name": "images",
+        "type": "FocusLightboxImage[]",
+        "description": "Unique image IDs, original source, descriptive alt/title, optional caption and authoritative availability. An empty array is a true empty viewer.",
+        "default": "3 original offline architectural vector studies"
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "description": "Controlled modal visibility. Rejected close requests leave the native dialog open. Without onOpenChange it is intentionally non-dismissible and the close action is disabled."
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "description": "Initial uncontrolled modal visibility. The default demo opens immediately.",
+        "default": "false"
+      },
+      {
+        "name": "onOpenChange",
+        "type": "(open: boolean) => void",
+        "description": "Synchronous open/close request observer; the host commits controlled visibility."
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "description": "Controlled selected image ID. Retired IDs honestly fall back to the first current image. Without onValueChange selection is read-only; zoom and fit remain available."
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "description": "Initial uncontrolled image ID, defaulting to the first image."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(id: string, image: FocusLightboxImage) => void",
+        "description": "Synchronous image selection observer. A controlled host may reject selection without resetting the committed view."
+      },
+      {
+        "name": "maxZoom",
+        "type": "number",
+        "description": "Maximum magnification relative to fit, bounded to 2..8.",
+        "default": "4"
+      },
+      {
+        "name": "showThumbnails",
+        "type": "boolean",
+        "description": "Show the scrollable original-selection filmstrip.",
+        "default": "true"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "description": "Collection label above the selected image title.",
+        "default": "\"Image studies\""
+      },
+      {
+        "name": "onImageRetry",
+        "type": "(image: FocusLightboxImage, signal: AbortSignal) => void | Promise<void>",
+        "description": "Optional real host asset recovery. Cancel, selection/source retirement, closure and unmount abort old work; honor the signal before committing."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Viewer surface and typography palette.",
+        "default": "\"dark\""
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Native dialog class.",
+        "default": "\"\""
+      }
+    ],
+    "added": "2026-10-13",
+    "demo": {
+      "steps": [
+        "click:@zoom-in",
+        "hover:@image-view:0.4,0.45",
+        "drag:0.6,0.5",
+        "click:@fit-image",
+        "click:@next-image",
+        "wait:500"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "maxZoom",
+        "label": "Maximum zoom",
+        "kind": "slider",
+        "min": 2,
+        "max": 8,
+        "step": 1,
+        "default": 4
+      },
+      {
+        "prop": "showThumbnails",
+        "label": "Filmstrip",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "label",
+        "label": "Collection label",
+        "kind": "text",
+        "default": "Image studies"
+      },
+      {
+        "prop": "open",
+        "label": "Viewer",
+        "kind": "action",
+        "options": [
+          true,
+          false
+        ]
+      }
+    ]
+  },
+  {
     "slug": "media-image-contact-sheet",
     "name": "Image Contact Sheet",
     "tier": "pro",
