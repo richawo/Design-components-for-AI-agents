@@ -3692,11 +3692,11 @@
     "updated": "2026-10-13"
   },
   "media-image-contact-sheet": {
-    "useWhen": "Fast visual selection and comparison within a host-owned image collection.",
-    "avoidWhen": "A deep image editor, a full-screen zoom viewer or an asset rights management workflow.",
+    "useWhen": "Reviewing a supplied image collection, making an explicit selection and comparing two or more selected images in the same contact sheet.",
+    "avoidWhen": "Full-size zooming, pixel editing or autoplaying a promotional image carousel.",
     "integration": [
-      "Supply stable image IDs, meaningful labels and host-controlled sources. Keep unavailable assets selectable only when their surrounding task permits it.",
-      "Handle selection independently from loading so a missing image cannot silently discard the selected records."
+      "Supply stable image IDs, real sources and descriptive alternative text. Empty images and empty selection are separate states; expose collection loading and host errors honestly.",
+      "Control selection, query and comparison independently when the host owns them. A rejected request keeps the actual values; per-image retry receives an AbortSignal so retired assets cannot replace current results."
     ],
     "related": [
       "cards-prismatic-folder",
@@ -3718,11 +3718,11 @@
     "updated": "2026-10-13"
   },
   "media-trim-timeline": {
-    "useWhen": "Reviewing precise in and out points on host-supplied audio before requesting a trim or export.",
-    "avoidWhen": "An automatic semantic clip editor, a full multitrack workstation or an interface claiming to encode files on its own.",
+    "useWhen": "Choosing an exact in/out range from real audio or video, using a waveform or supplied filmstrip alongside precise time entry.",
+    "avoidWhen": "Encoding a media file without a host export service, synthesizing a waveform from arbitrary values or showing a decorative scrubber.",
     "integration": [
-      "Supply media with a stable ID and honest duration or waveform data. Connect onApplyRange to your own rendering or export service.",
-      "The controlled range must reflect accepted values. Keep a minimum span and useful keyboard increments; unavailable playback must not erase the reviewed range."
+      "Supply a real source and measured waveform data when available. Native duration defines the trim bounds; keyboard steps and exact time entry serve different precision needs.",
+      "Use onApplyRange with its AbortSignal for host processing. Real playback follows native media events, and rejected controlled ranges must remain visibly unchanged."
     ],
     "related": [
       "media-audio-transport",
@@ -3731,11 +3731,11 @@
     "updated": "2026-10-13"
   },
   "media-spatial-collection": {
-    "useWhen": "Browsing a curated collection through a distinct spatial presentation with readable selected-item context.",
-    "avoidWhen": "A dense searchable inventory, a mandatory continuous 3D animation or a layout that makes labels depend on hover.",
+    "useWhen": "Browsing a small collection of albums or related media objects with visible depth and an equally usable readable list.",
+    "avoidWhen": "Playing media, presenting a huge sortable data collection or hiding important labels behind overlapping covers.",
     "integration": [
-      "Supply collection objects with stable identity, readable titles and artwork owned by the host. Use selection callbacks to connect a real detail or playback workflow.",
-      "Provide a list or static alternative for keyboard, touch and reduced motion. Selection must stay clear when artwork is absent."
+      "Supply stable collection IDs, titles, creators and the real entries each object contains. Provide artwork when available and preserve truthful missing or failed cover states.",
+      "Keep selected collection and spatial/list view controlled only when the host accepts those requests. Use the optional opening callback and its AbortSignal for a real host action; reduced motion keeps useful static poses."
     ],
     "related": [
       "media-track-list",
@@ -3770,11 +3770,11 @@
     "updated": "2026-10-13"
   },
   "portfolio-project-reel": {
-    "useWhen": "Presenting a focused set of supplied projects with a large visual and readable case context.",
+    "useWhen": "Presenting a focused set of supplied projects with a large visual and readable case notes, using deliberate previous/next navigation.",
     "avoidWhen": "A dense component catalogue, a continuous decorative marquee or an autoplay-only sales presentation.",
     "integration": [
-      "Supply project IDs, titles, summaries and optional real destinations or artwork. Navigation should reveal one project without stealing focus from surrounding content.",
-      "Keep previous and next controls available on narrow containers and preserve readable notes while visual transitions finish."
+      "Supply stable project IDs, titles, summaries and optional artwork, native image sources or actual case-study destinations. Absent links stay absent, and image loading is reported honestly.",
+      "Control selection with value/onValueChange when needed. The finite index, keyboard controls and touch swipes preserve readable notes, focus and measured container height while projects change."
     ],
     "related": [
       "media-story-deck",
@@ -3783,11 +3783,11 @@
     "updated": "2026-10-13"
   },
   "media-crop-workbench": {
-    "useWhen": "Reviewing a bounded crop for a supplied image with explicit aspect ratios and normalized output.",
-    "avoidWhen": "A destructive full image editor, a background remover or an interface claiming to encode a new image without a host service.",
+    "useWhen": "Framing a supplied image precisely with a real crop preview, ratio presets and matching normalized and pixel coordinates.",
+    "avoidWhen": "Retouching, removing a background or claiming an encoded export when the host has not provided processing.",
     "integration": [
-      "Supply source dimensions and image identity. Apply the normalized crop through a host-owned export or rendering workflow.",
-      "Numeric controls and keyboard handles must match accepted drag values; resets and new source images must retire any incomplete gesture."
+      "Provide a stable image ID, source and alternative text. Actual native dimensions determine pixels; the controlled box is normalized and rejected changes must not commit.",
+      "Handle onApply(payload, AbortSignal) with real processing and return a downloadable result only when available. The offline demo creates a Canvas PNG; live selection or image changes retire stale processing and download links."
     ],
     "related": [
       "input-detent-dial",
