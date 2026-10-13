@@ -8053,7 +8053,7 @@
         "name": "busy",
         "type": "boolean",
         "default": "false",
-        "description": "Prevent concurrent transport actions."
+        "description": "Guard pending media and leave actions with aria-disabled while preserving keyboard focus. Missing callbacks remain natively disabled."
       },
       {
         "name": "theme",
