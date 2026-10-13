@@ -23813,6 +23813,141 @@
     ]
   },
   {
+    "slug": "pricing-usage-calculator",
+    "name": "Usage Cost Calculator",
+    "tier": "pro",
+    "platform": "web",
+    "category": "pricing",
+    "description": "An inspectable usage estimate with bounded quantity controls, exact minor-unit arithmetic and an itemized bill that explains included units and rounding.",
+    "tags": [
+      "pricing",
+      "calculator",
+      "usage",
+      "cost",
+      "rounding",
+      "currency"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1100,
+    "usage": "import { PricingUsageCalculator } from \"@/components/design-for-ai/pricing-usage-calculator\";\n\n<PricingUsageCalculator rates={rates} quantity={quantity} onQuantityChange={setQuantity} />\n\n// Host rates use integer minor currency units. Review all taxes and other charges separately.",
+    "props": [
+      {
+        "name": "rates",
+        "type": "UsageRates | null",
+        "description": "Supplied integer minor currency-unit rates, included units, block units, an explicit rounding policy and unit/period labels. Null is an honest unavailable state."
+      },
+      {
+        "name": "quantity",
+        "type": "number",
+        "description": "Controlled nonnegative whole quantity within maxQuantity. Pair with onQuantityChange; rejected requests retain the actual estimate."
+      },
+      {
+        "name": "defaultQuantity",
+        "type": "number",
+        "description": "Initial local quantity. Later changes update local quantity without overwriting a dirty exact-entry draft."
+      },
+      {
+        "name": "onQuantityChange",
+        "type": "(quantity: number, estimate: UsageEstimate) => void",
+        "description": "Request a valid bounded quantity and its exact derived estimate. No invoice, checkout or payment action is performed."
+      },
+      {
+        "name": "maxQuantity",
+        "type": "number",
+        "description": "Positive whole limit up to one million. Invalid or overflowing terms remain explicitly unavailable."
+      },
+      {
+        "name": "step",
+        "type": "number",
+        "description": "Whole keyboard increment; Page keys use ten increments. Pointer and exact entry retain every whole quantity without step snapping."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "description": "Intl formatting locale. Currency minor-unit precision follows Intl currency rules; invalid formatting terms remain explicit."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"error\"",
+        "description": "Host-owned availability. Quantity and dirty input survive availability changes."
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "description": "Actual host failure explanation."
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Explicit pricing-term recovery request. Absent handlers do not render fake retry controls."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Disable quantity editing while retaining readable actual estimates."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Complete contrast-aware palettes."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<UsageCalculatorLabels>",
+        "description": "All heading, term, field, state and disclaimer copy."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Host layout classes."
+      }
+    ],
+    "added": "2026-10-13",
+    "demo": {
+      "steps": [
+        "click:@usage-range",
+        "key:End",
+        "wait:400",
+        "key:Home",
+        "wait:400",
+        "key:ArrowRight",
+        "wait:750"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "defaultQuantity",
+        "label": "Quantity",
+        "kind": "slider",
+        "min": 0,
+        "max": 12000,
+        "step": 100,
+        "default": 2800
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "disabled",
+        "label": "Read only",
+        "kind": "toggle",
+        "default": false
+      }
+    ]
+  },
+  {
     "slug": "saas-access-requests",
     "name": "Access Request Queue",
     "tier": "pro",

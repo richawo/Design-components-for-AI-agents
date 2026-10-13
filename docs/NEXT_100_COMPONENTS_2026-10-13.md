@@ -61,7 +61,7 @@ Validate all six web widths, both supported themes, multiple instances and empty
 | 22 | `features-integration-trace` | features | Follow a selected integration's data journey and inspect each transformation. | Released |
 | 23 | `features-shortcut-theatre` | features | Press accessible shortcut controls to demonstrate a product action in a supplied preview. | Released |
 | 24 | `features-compare-lenses` | features | Inspect two ways of completing one workflow with linked stages and honest differences. | Released |
-| 25 | `pricing-usage-calculator` | pricing | Estimate a bill from supplied rates and bounded quantities; explain included units and rounding. | Planned |
+| 25 | `pricing-usage-calculator` | pricing | Estimate a bill from supplied rates and bounded quantities; explain included units and rounding. | Released |
 | 26 | `pricing-seat-simulator` | pricing | Model seat mixes and billing terms, with a transparent itemized total and no automatic checkout. | Planned |
 | 27 | `social-proof-case-ledger` | social-proof | Browse supplied case outcomes alongside the evidence and time period that support each figure. | Planned |
 | 28 | `content-interactive-spec` | content | Inspect a product specification by selecting annotated parts of a supplied diagram. | Planned |
@@ -175,4 +175,4 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 ## Progress
 
-Planned: 75. Released: 25. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
+Planned: 74. Released: 26. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
