@@ -26098,6 +26098,188 @@
     ]
   },
   {
+    "slug": "text-number-odometer",
+    "name": "Number Odometer",
+    "tier": "pro",
+    "platform": "web",
+    "category": "text",
+    "description": "A composable numeric roll with native locale formatting, signed decimal values, interrupted up/down motion, accessible final text and exact native selection.",
+    "tags": [
+      "number animation",
+      "odometer",
+      "numeric roll",
+      "counter",
+      "decimals",
+      "locale"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 850,
+    "usage": "import { TextNumberOdometer } from \"@/components/design-for-ai/text-number-odometer\";\n\n<TextNumberOdometer value={recordCount} fractionDigits={0} label=\"Selected records\" />",
+    "props": [
+      {
+        "name": "value",
+        "type": "number",
+        "description": "Actual finite host value. Initial render is already final; changes roll from the currently visible glyph phase.",
+        "default": "2843.7"
+      },
+      {
+        "name": "fractionDigits",
+        "type": "number",
+        "description": "Integer decimal precision from 0 to 6. Native Intl formatting owns the final decimal/group/sign text.",
+        "default": "2"
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "description": "Supported Intl locale, including native digit glyphs and separators. Unsupported locale gets readable plain-value recovery.",
+        "default": "\"en-GB\""
+      },
+      {
+        "name": "useGrouping",
+        "type": "boolean",
+        "description": "Use native locale group separators.",
+        "default": "true"
+      },
+      {
+        "name": "signDisplay",
+        "type": "\"auto\" | \"always\" | \"exceptZero\"",
+        "description": "Native Intl sign policy, including negative zero.",
+        "default": "\"auto\""
+      },
+      {
+        "name": "prefix",
+        "type": "string",
+        "description": "Literal text before the formatted value.",
+        "default": "\"\""
+      },
+      {
+        "name": "suffix",
+        "type": "string",
+        "description": "Literal text after the formatted value.",
+        "default": "\"\""
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "description": "Accessible visible label for the output.",
+        "default": "\"Current value\""
+      },
+      {
+        "name": "caption",
+        "type": "string",
+        "description": "Optional actual context beneath the value."
+      },
+      {
+        "name": "durationMs",
+        "type": "number",
+        "description": "Finite roll duration 0–2000ms. Zero is instantaneous. Live reduced motion always stops immediately.",
+        "default": "420"
+      },
+      {
+        "name": "fontSize",
+        "type": "number",
+        "description": "Requested size 12–128px. Native font metrics fit it to the container; very long or too-small values retain a readable static form.",
+        "default": "64"
+      },
+      {
+        "name": "fontRole",
+        "type": "\"display\" | \"serif\" | \"mono\"",
+        "description": "Role-backed native numeral face with tabular layout.",
+        "default": "\"display\""
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Readable foreground/selection/error tones. The zero-prop demonstration also changes its full surface.",
+        "default": "\"dark\""
+      },
+      {
+        "name": "live",
+        "type": "boolean",
+        "description": "Opt into one atomic polite announcement of the actual final formatted value; animation glyphs stay hidden from assistive technology.",
+        "default": "false"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Root classes, responsive to the real container.",
+        "default": "\"\""
+      }
+    ],
+    "controls": [
+      {
+        "prop": "label",
+        "label": "Value label",
+        "kind": "text",
+        "default": "Current value"
+      },
+      {
+        "prop": "fractionDigits",
+        "label": "Decimal places",
+        "kind": "slider",
+        "min": 0,
+        "max": 6,
+        "step": 1,
+        "default": 2
+      },
+      {
+        "prop": "durationMs",
+        "label": "Roll time",
+        "kind": "slider",
+        "min": 100,
+        "max": 1000,
+        "step": 50,
+        "default": 420,
+        "unit": "ms"
+      },
+      {
+        "prop": "fontRole",
+        "label": "Number role",
+        "kind": "segmented",
+        "options": [
+          "display",
+          "serif",
+          "mono"
+        ],
+        "default": "display"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "useGrouping",
+        "label": "Group digits",
+        "kind": "toggle",
+        "default": true
+      }
+    ],
+    "demo": {
+      "steps": [
+        "click:@odometer-add",
+        "wait:200",
+        "click:@odometer-subtract",
+        "wait:350",
+        "click:@odometer-sign",
+        "wait:350",
+        "click:@odometer-reset",
+        "wait:500"
+      ],
+      "loop": false
+    },
+    "added": "2026-10-13"
+  },
+  {
     "slug": "text-optical-weight",
     "name": "Optical Weight",
     "tier": "pro",

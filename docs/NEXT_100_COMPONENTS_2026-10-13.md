@@ -74,7 +74,7 @@ Validate all six web widths, both supported themes, multiple instances and empty
 | --- | --- | --- | --- | --- |
 | 31 | `text-optical-weight` | text | A variable-font specimen demonstrates weight and optical scale while retaining selectable text. | Released |
 | 32 | `text-path-typesetter` | text | Place accessible text along a supplied curve and adjust spacing without losing the reading order. | Released |
-| 33 | `text-number-odometer` | text | An interruptible numeric roll handles increases, decreases, signs, decimals and reduced motion. | Planned |
+| 33 | `text-number-odometer` | text | An interruptible numeric roll handles increases, decreases, signs, decimals and reduced motion. | Released |
 | 34 | `text-outline-fill` | text | Reading progress fills outlined lettering with a fully legible static fallback. | Planned |
 | 35 | `bg-fluted-glass` | backgrounds | A refracted surface behind supplied content, with bounded quality, offscreen pause and static rendering. | Planned |
 | 36 | `bg-topographic-contours` | backgrounds | Contour density and light angle respond to a bounded input; no uncontrolled ambient drift. | Planned |
@@ -175,4 +175,4 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 ## Progress
 
-Planned: 67. Released: 33. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
+Planned: 66. Released: 34. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
