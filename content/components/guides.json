@@ -3654,7 +3654,8 @@
     "avoidWhen": "A short set of fixed product sections, where an ordinary tab bar is easier to scan and does not need document lifecycle controls.",
     "integration": [
       "Keep stable document IDs and distinguish dirty changes from acknowledged saves.",
-      "The host owns document contents and closure decisions; preserve drafts when a close request is rejected."
+      "The host owns document contents and closure decisions; preserve drafts when a close request is rejected.",
+      "Treat items as authoritative document availability. Removing a model retires its open tab, retained panel and closed history; keep it available while restoration is allowed."
     ],
     "related": [
       "tabs-underline-glide",
@@ -3667,7 +3668,9 @@
     "avoidWhen": "Independent page sections that should stack and scroll naturally, or a split whose minimum usable widths cannot fit the available container.",
     "integration": [
       "Set meaningful minimum pane sizes and provide content that remains usable at each supported size.",
-      "Persist the chosen split in the host when needed; keyboard resizing and collapse should preserve a useful restoration size."
+      "Persist the chosen split in the host when needed; keyboard resizing and collapse should preserve a useful restoration size.",
+      "Use orientation=\"auto\" to stack in narrow containers. A requested percentage is a preference; onPaneSizesChange reports bounded visible percentages and logical pixel sizes.",
+      "Keep the host panes mounted when retaining editor drafts, and provide usable scrolling when supplied minimum sizes cannot fit."
     ],
     "related": [
       "layout-workspace-shell",
