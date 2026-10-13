@@ -132,7 +132,7 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 | # | Slug | Category | Distinct interaction and essential states | Status |
 | --- | --- | --- | --- | --- |
-| 71 | `ai-context-budget` | ai | Inspect context sources and their token budget; include/exclude items with a clear over-limit explanation. | Planned |
+| 71 | `ai-context-budget` | ai | Inspect context sources and their token budget; include/exclude items with a clear over-limit explanation. | Released |
 | 72 | `ai-answer-compare` | ai | Compare supplied responses to the same request using shared evidence and explicit preference selection. | Planned |
 | 73 | `ai-structured-output` | ai | Inspect streamed structured fields, distinguish incomplete values and recover validation errors. | Planned |
 | 74 | `agents-dependency-board` | agents | Inspect task dependencies and blockers with a readable graph and a linear keyboard alternative. | Planned |
@@ -175,4 +175,4 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 ## Progress
 
-Planned: 72. Released: 28. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
+Planned: 71. Released: 29. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.

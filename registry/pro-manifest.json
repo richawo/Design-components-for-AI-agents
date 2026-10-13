@@ -1053,6 +1053,148 @@
     ]
   },
   {
+    "slug": "ai-context-budget",
+    "name": "Context Budget",
+    "tier": "pro",
+    "platform": "web",
+    "category": "ai",
+    "description": "An inspectable context planner with exact supplied source counts, reversible inclusion and a reserved answer budget that exposes over-limit choices.",
+    "tags": [
+      "ai",
+      "context",
+      "token budget",
+      "sources",
+      "inspector",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1050,
+    "usage": "import { AiContextBudget } from \"@/components/design-for-ai/ai-context-budget\";\n\n<AiContextBudget sources={context} budget={16000} reservedTokens={4000} value={includedIds} onValueChange={setIncludedIds} resetKey={workspaceId} />",
+    "props": [
+      {
+        "name": "sources",
+        "type": "ContextBudgetSource[]",
+        "description": "Unique source IDs, label/kind/description, externally counted complete-source tokens (null means unknown), optional supplied content/excerpt, required and disabled selection states.",
+        "default": "5 original offline source records and excerpts"
+      },
+      {
+        "name": "budget",
+        "type": "number",
+        "description": "Nonnegative safe-integer token capacity. Invalid values are unavailable, not guessed.",
+        "default": "16000"
+      },
+      {
+        "name": "reservedTokens",
+        "type": "number",
+        "description": "Nonnegative safe-integer answer reservation. Counts with selected sources and may itself exceed capacity.",
+        "default": "4000"
+      },
+      {
+        "name": "value",
+        "type": "string[]",
+        "description": "Controlled source inclusion IDs. Required sources always count; without observer inclusion is read-only. Inspection stays available."
+      },
+      {
+        "name": "defaultValue",
+        "type": "string[]",
+        "description": "Initial uncontrolled inclusion IDs; changes only apply with resetKey.",
+        "default": "[\"brief\", \"instructions\", \"thread\"]"
+      },
+      {
+        "name": "onValueChange",
+        "type": "(ids: string[], sources: ContextBudgetSource[]) => void",
+        "description": "Synchronous full inclusion request, normalized to available records and required sources. No execution or fetching."
+      },
+      {
+        "name": "onInspect",
+        "type": "(source: ContextBudgetSource) => void",
+        "description": "Optional observer of local source inspection, independent of inclusion."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Workspace identity; resets local selection/inspection and preview scroll while preserving controlled authority."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Concise planner heading.",
+        "default": "\"Choose what comes along.\""
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Explain the source review task.",
+        "default": "\"Inspect each source. Include the parts that help, and leave room for the answer.\""
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Warm dark or pale olive palette.",
+        "default": "\"dark\""
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Outer planner class.",
+        "default": "\"\""
+      }
+    ],
+    "added": "2026-10-13",
+    "demo": {
+      "steps": [
+        "click:@toggle-notes",
+        "wait:300",
+        "click:@toggle-archive",
+        "wait:400",
+        "click:@toggle-archive",
+        "wait:350",
+        "click:@inspect-notes",
+        "wait:400"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "budget",
+        "label": "Token limit",
+        "kind": "slider",
+        "min": 8000,
+        "max": 32000,
+        "step": 1000,
+        "default": 16000
+      },
+      {
+        "prop": "reservedTokens",
+        "label": "Answer reserve",
+        "kind": "slider",
+        "min": 0,
+        "max": 8000,
+        "step": 500,
+        "default": 4000
+      },
+      {
+        "prop": "title",
+        "label": "Heading",
+        "kind": "text",
+        "default": "Choose what comes along."
+      }
+    ]
+  },
+  {
     "slug": "ai-image-generation",
     "name": "Image Generation",
     "tier": "pro",
