@@ -5278,13 +5278,13 @@
         "name": "icon",
         "type": "ReactNode",
         "default": "ArrowUpRight",
-        "description": "Optional trailing idle glyph."
+        "description": "Optional trailing idle glyph, fitted to the same 17px slot as loading/success icons so state changes preserve geometry."
       },
       {
         "name": "status",
         "type": "ShimmerButtonState",
         "default": "uncontrolled idle",
-        "description": "Controlled state when supplied; pair with onStatusChange. The standalone demo synchronizes state controls with its local state."
+        "description": "Controlled state when supplied; pair with onStatusChange. Pending/completed actions use aria-disabled blocking to retain keyboard focus. The demo synchronizes state controls with local state."
       },
       {
         "name": "onAction",
@@ -5294,7 +5294,7 @@
       {
         "name": "onStatusChange",
         "type": "(status: ShimmerButtonState) => void",
-        "description": "Receives pending and completion states; reset to idle when the host starts a new task."
+        "description": "Receives pending and completion states. The standalone demo composes observers with its local status updates; reset to idle when the host starts a new task."
       },
       {
         "name": "onError",
