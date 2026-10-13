@@ -3996,8 +3996,9 @@
     "useWhen": "Separating supplied foreground content from a layered scene with a restrained fluted refraction treatment.",
     "avoidWhen": "Making text less legible, imitating unsupported live refraction or adding expensive animation behind every panel.",
     "integration": [
-      "Supply the scene and foreground content independently. Keep foreground interaction intact and use the quality bounds appropriate to the actual rendering method.",
-      "Pause unnecessary work offscreen and in hidden tabs, provide a static reduced-motion treatment and retain readable contrast."
+      "Supply a real scene image and independent foreground children. The surface applies SVG displacement to the supplied image; it does not capture or refract a live backdrop. Preserve foreground interaction, selectable content and intentional overflow.",
+      "Use strength0–32 and frost0–2.5 in host CSS pixels, integer flutes8–40, vertical/horizontal orientation and radius0–64. Standard/high quality bounds the decorative scene to640,000/1,280,000 layout pixels. Scale only that scene and normalize filter strength to host coordinates.",
+      "Use actual native Image load/decode dimensions and scoped onSceneStateChange receipts. Source replacement retires old image results, retry operates on the real current source, and unavailable content stays clear. Static displacement has no ambient loop to pause; preserve the same readable foreground under reduced motion."
     ],
     "related": [
       "bg-dither-flow",
