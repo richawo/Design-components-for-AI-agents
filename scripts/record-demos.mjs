@@ -210,6 +210,8 @@ async function record(browser, slug) {
     const frames = [];
     const writes = [];
     let frameIndex = 0;
+    let resolveOpeningFrame;
+    const openingFrame = new Promise((resolve) => { resolveOpeningFrame = resolve; });
     cdp.on("Page.screencastFrame", (f) => {
       // Release Chrome's capture buffer immediately. Encoding and disk I/O
       // must not hold up the compositor's next frame.
@@ -217,10 +219,19 @@ async function record(browser, slug) {
       const file = path.join(tmp, `f${String(frameIndex++).padStart(5, "0")}.jpg`);
       frames.push({ file, t: f.metadata.timestamp });
       writes.push(fs.promises.writeFile(file, Buffer.from(f.data, "base64")));
+      if (frames.length === 1) resolveOpeningFrame();
     });
-    await cdp.send("Page.startScreencast", { format: "jpeg", quality: captureJpegQuality, everyNthFrame: 1, maxWidth: vw * dpr, maxHeight: vh * dpr });
     const t0 = Date.now() / 1000;
+    await cdp.send("Page.startScreencast", { format: "jpeg", quality: captureJpegQuality, everyNthFrame: 1, maxWidth: vw * dpr, maxHeight: vh * dpr });
     await page.evaluate((ambient) => (window.__dfaCursor.dataset.on = ambient ? "0" : "1"), !!ambientMs);
+    // A screencast can wait for compositor damage before emitting its first
+    // frame. Do not let the first action become that damage: otherwise a clip
+    // begins halfway through its first change and its poster misses the demo's
+    // actual opening state. Fail without replacing the last good assets.
+    await Promise.race([
+      openingFrame,
+      page.waitForTimeout(1500).then(() => { throw new Error("No opening screencast frame before the demo actions; retry the capture."); }),
+    ]);
     await page.waitForTimeout(gallery ? 60 : 150);
 
     // Paced by the clock, not by step count, so a glide takes exactly as long
@@ -332,11 +343,11 @@ async function record(browser, slug) {
 
     if (!frames.length) throw new Error("screencast produced no frames");
     const quality = captureQuality(frames.map((frame) => frame.t), motionWindows);
-    const continuousQuality = captureQuality(frames.map((frame) => frame.t), continuousWindows);
+    const continuousQuality = captureQuality(continuousWindows.length ? frames.map((frame) => frame.t) : [], continuousWindows);
     if (reportDir) {
       const directory = path.resolve(root, reportDir);
       fs.mkdirSync(directory, { recursive: true });
-      fs.writeFileSync(path.join(directory, `${slug}.json`), JSON.stringify({ slug, renderMode: isolatedSource ? "isolated-production-source" : "preview", quality, continuousQuality, viewport: { vw, vh, dpr }, framing: frame, timestamps: frames.map((frame) => frame.t), motionWindows, continuousWindows }, null, 2));
+      fs.writeFileSync(path.join(directory, `${slug}.json`), JSON.stringify({ slug, renderMode: isolatedSource ? "isolated-production-source" : "preview", openingFrameBeforeActions: true, quality, continuousQuality, viewport: { vw, vh, dpr }, framing: frame, timestamps: frames.map((frame) => frame.t), motionWindows, continuousWindows }, null, 2));
     }
     // Each frame holds until the next one; the last holds to the end.
     frames.sort((a, b) => a.t - b.t);
