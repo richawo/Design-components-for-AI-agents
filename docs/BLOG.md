@@ -14,6 +14,11 @@ run; `--dry-run` reports missing units; `--seed-dir <directory>` reuses matching
 translations from an existing dictionary. Published localized slugs never change
 when their titles are retranslated.
 
+For a throttled translation run, use `--workers 1 --interval-ms 1500` to reduce
+parallel requests and increase spacing. Existing checkpoints resume without
+retranslating completed units. If the provider still returns HTTP 429, allow a
+cooldown before retrying rather than increasing request volume.
+
 English retains `/blog/<slug>`. The other 29 languages use their own prefix.
 Latin-script languages have translated ASCII slugs; other scripts retain the
 English slug, following Post Yaps. Arabic uses right-to-left layout. Incomplete

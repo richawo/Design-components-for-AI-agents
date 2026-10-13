@@ -20,6 +20,10 @@ if (wanted && locales.length !== wanted.length) throw new Error("Unknown or dupl
 const keys = corpusUnits(source);
 const seedDir = args.includes("--seed-dir") ? flag("--seed-dir") : null;
 const dryRun = args.includes("--dry-run");
+const workers = args.includes("--workers") ? Number(flag("--workers")) : 2;
+const intervalMs = args.includes("--interval-ms") ? Number(flag("--interval-ms")) : 350;
+if (!Number.isInteger(workers) || workers < 1 || workers > 2) throw new Error("--workers must be 1 or 2");
+if (!Number.isInteger(intervalMs) || intervalMs < 350 || intervalMs > 60_000) throw new Error("--interval-ms must be between 350 and 60000");
 const houseStyle = (text) => text.replace(/\s*\u2014\s*/g, ": ");
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const save = (file, value) => {
@@ -32,7 +36,7 @@ let lastRequest = 0;
 
 async function request(locale, text) {
   for (let attempt = 1; attempt <= 4; attempt++) {
-    await sleep(Math.max(0, lastRequest + 350 - Date.now()));
+    await sleep(Math.max(0, lastRequest + intervalMs - Date.now()));
     lastRequest = Date.now();
     try {
       const url = new URL("https://translate.googleapis.com/translate_a/single");
@@ -97,6 +101,6 @@ async function translateLocale(locale) {
 }
 
 let cursor = 0;
-await Promise.all([0, 1].map(async () => {
+await Promise.all(Array.from({ length: workers }, async () => {
   while (cursor < locales.length) await translateLocale(locales[cursor++]);
 }));
