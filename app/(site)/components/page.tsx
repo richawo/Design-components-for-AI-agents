@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
 import { ComponentBrowser } from "@/components/site/component-browser";
 import { CountUp } from "@/components/site/count-up";
 import { DitherGlow } from "@/components/site/dither-glow";
 import { JsonLd } from "@/components/site/json-ld";
-import { galleryFilters, readCategoryParam } from "@/lib/gallery-sidebar";
 import {
   individualComponents,
   categoriesWithCounts,
@@ -20,16 +18,9 @@ export const metadata: Metadata = {
   alternates: { canonical: "/components" },
 };
 
-export default async function ComponentsPage({
-  searchParams,
-}: {
-  searchParams: Promise<{
-    category?: string | string[];
-    tier?: string | string[];
-    q?: string | string[];
-  }>;
-}) {
-  const sp = await searchParams;
+// Every visitor gets the same catalogue. Query filters are restored locally
+// before the browser paints a navigation, so this route can be prerendered.
+export default function ComponentsPage() {
   const s = stats();
   const all = individualComponents();
   const cards = all.map(toCard);
@@ -38,19 +29,6 @@ export default async function ComponentsPage({
     label,
     count,
   }));
-  const raw = Array.isArray(sp.category) ? sp.category[0] : sp.category;
-  const valid = new Set<string>(categories.map((c) => c.key));
-  if (typeof raw === "string" && !valid.has(raw.trim()))
-    redirect("/components");
-  const category = readCategoryParam(raw, valid);
-  const filterParams = new URLSearchParams();
-  for (const key of ["tier", "q"] as const) {
-    const value = Array.isArray(sp[key]) ? sp[key]?.[0] : sp[key];
-    if (typeof value === "string") filterParams.set(key, value);
-  }
-  const initialFilters = filterParams.size
-    ? galleryFilters(filterParams, null)
-    : undefined;
   return (
     <div className="relative mx-auto max-w-[80rem] px-5 pb-28 sm:px-8">
       <JsonLd
@@ -98,8 +76,6 @@ export default async function ComponentsPage({
       <ComponentBrowser
         cards={cards}
         categories={categories}
-        category={category}
-        initialFilters={initialFilters}
       />
     </div>
   );

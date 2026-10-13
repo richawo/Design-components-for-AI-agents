@@ -4,6 +4,11 @@ export const COLLAPSED_KEY = "dfa:browser-collapsed-groups";
 export const SCROLL_KEY = "dfa:browser-sidebar-scroll";
 export const FILTER_KEY = "dfa:browser-filters";
 
+// A static gallery cannot know a URL/session selection at build time. Keep its
+// default results out of the first paint until that selection has been restored.
+// Without JavaScript this does not run, so the complete SSR catalogue stays visible.
+export const GALLERY_FILTER_BOOTSTRAP = `(function(){try{if(location.pathname!=="/components")return;var p=new URLSearchParams(location.search),pending=p.has("category")||p.has("q")||p.has("tier");if(!pending){var s=JSON.parse(sessionStorage.getItem("${FILTER_KEY}")||"null");pending=!!s&&((typeof s.q==="string"&&!!s.q.trim())||s.tier==="free"||s.tier==="pro");}if(pending)document.documentElement.dataset.galleryQueryPending="true";}catch(e){}})();`;
+
 /** An explicit browsing link takes precedence over remembered filters. */
 export function galleryFilters(search: URLSearchParams, saved: string | null): { q: string; tier: "all" | "free" | "pro" } {
   if (!search.has("tier") && !search.has("q")) return parseFilters(saved);

@@ -224,6 +224,15 @@ html[dir="rtl"] .site-prose code {
 .site-in {
   animation: site-in 0.7s var(--ease-site) calc(var(--i, 0) * 60ms + 40ms) backwards;
 }
+
+/* Filtered links share the static gallery. Preserve its geometry while the
+   browser restores the requested selection, without exposing unrelated cards. */
+html[data-gallery-query-pending="true"] [data-gallery-ready="false"] > :not([data-gallery-loading]) {
+  visibility: hidden;
+}
+html[data-gallery-query-pending="true"] [data-gallery-ready="false"] > [data-gallery-loading] {
+  display: block;
+}
 .site-reveal[data-reveal="pending"] {
   opacity: 0;
   transform: translateY(16px);

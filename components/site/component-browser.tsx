@@ -3,7 +3,8 @@
 import "./gallery-focus.css";
 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { memo, Suspense, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   FILTER_KEY,
   clampResultsScroll,
@@ -29,15 +30,17 @@ const FIRST_CARD_STEP = 4;
 const CARD_BATCH = 12;
 const BrowserCard = memo(ComponentCard);
 
-export function ComponentBrowser({ cards, categories, category, initialFilters }: { cards: CardData[]; categories: Cat[]; category: string; initialFilters?: { q: string; tier: "all" | "free" | "pro" } }) {
-  const [q, setQ] = useState(initialFilters?.q ?? "");
-  const [tier, setTier] = useState<"all" | "free" | "pro">(initialFilters?.tier ?? "all");
+export function ComponentBrowser({ cards, categories }: { cards: CardData[]; categories: Cat[] }) {
+  const [q, setQ] = useState("");
+  const [tier, setTier] = useState<"all" | "free" | "pro">("all");
   const [filtersReady, setFiltersReady] = useState(false);
-  // A router cache entry can remount with the server's original category.
-  // Read the current URL immediately so returning visitors never animate the
-  // old full catalogue out before showing their selected category.
-  const [cat, setCatState] = useState(() => typeof window === "undefined" ? category : readCategoryParam(new URLSearchParams(window.location.search).get("category"), new Set(categories.map(c => c.key))));
-  // A cached server prop must not overwrite a newer local choice.
+  // Match the static server HTML during hydration. A layout effect restores
+  // URL/session filters before a client navigation can paint stale results.
+  const [cat, setCatState] = useState("all");
+  const validCategories = useMemo(() => new Set(categories.map(c => c.key)), [categories]);
+  const handledQuery = useRef<string | null>(null);
+  const restoredFilters = useRef(false);
+  const initialPresence = useRef("initial");
   const pending = useRef(cat);
   const input = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLParagraphElement>(null);
@@ -52,14 +55,32 @@ export function ComponentBrowser({ cards, categories, category, initialFilters }
 
   // Search and tier live for the tab. Coming back from a component remounts
   // this view, and the category is already in the URL.
-  useLayoutEffect(() => {
+  const restoreFilters = useCallback((query: string) => {
+    const search = new URLSearchParams(query);
+    if (search.toString() === handledQuery.current) return;
     let stored: string | null = null;
-    try { stored = sessionStorage.getItem(FILTER_KEY); } catch {}
-    const saved = galleryFilters(new URLSearchParams(window.location.search), stored);
+    if (!restoredFilters.current) {
+      try { stored = sessionStorage.getItem(FILTER_KEY); } catch {}
+    }
+    const next = readCategoryParam(search.get("category"), validCategories);
+    pending.current = next;
+    setCatState(next);
+    const saved = galleryFilters(search, stored);
+    // Do not animate the static default results out underneath a restored
+    // selection. Reset presence once; later deliberate filters still animate.
+    if (!restoredFilters.current && (next !== "all" || saved.q || saved.tier !== "all")) initialPresence.current = "restored";
     setQ(saved.q);
     setTier(saved.tier);
+    // Invalid categories become the unfiltered catalogue without a server
+    // redirect. Keep explicit search/tier filters and the current history entry.
+    const href = galleryHref(window.location.search, next);
+    if (`${window.location.pathname}${window.location.search}` !== href)
+      window.history.replaceState(null, "", `${href}${window.location.hash}`);
+    handledQuery.current = new URLSearchParams(window.location.search).toString();
+    restoredFilters.current = true;
     setFiltersReady(true);
-  }, []);
+  }, [validCategories]);
+  useLayoutEffect(() => restoreFilters(window.location.search), [restoreFilters]);
 
   useLayoutEffect(() => {
     if (!filtersReady) return;
@@ -68,17 +89,14 @@ export function ComponentBrowser({ cards, categories, category, initialFilters }
     } catch {}
     const href = filterHref(window.location.search, q, tier);
     if (`${window.location.pathname}${window.location.search}` !== href) window.history.replaceState(null, "", `${href}${window.location.hash}`);
+    handledQuery.current = new URLSearchParams(window.location.search).toString();
   }, [q, tier, filtersReady]);
-
-  useEffect(() => {
-    if (pending.current === category) setCatState(category);
-  }, [category]);
 
   // Back and forward restore the category from the URL. replace() does not
   // push those entries, so this only fires when leaving and returning.
   useEffect(() => {
     const onPop = () => {
-      const next = readCategoryParam(new URLSearchParams(window.location.search).get("category"), new Set(categories.map((c) => c.key)));
+      const next = readCategoryParam(new URLSearchParams(window.location.search).get("category"), validCategories);
       pending.current = next;
       setCatState(next);
       const filters = galleryFilters(new URLSearchParams(window.location.search), null);
@@ -87,7 +105,7 @@ export function ComponentBrowser({ cards, categories, category, initialFilters }
     };
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);
-  }, [categories]);
+  }, [validCategories]);
 
   // A short category, chosen while the long list is scrolled down, would
   // otherwise leave the reader in the footer. Stop before that scroll pushes
@@ -179,7 +197,11 @@ export function ComponentBrowser({ cards, categories, category, initialFilters }
   }, [hasMore, loadMore, shown.length]);
 
   return (
-    <div className="grid gap-3 lg:grid-cols-[220px_1fr] lg:gap-10">
+    <div data-gallery-ready={filtersReady} className="relative grid gap-3 lg:grid-cols-[220px_1fr] lg:gap-10">
+      <p data-gallery-loading role="status" className="absolute inset-x-0 top-0 hidden py-4 text-sm text-site-fg-2">Loading your selection…</p>
+      {/* Only the URL observer needs the request's search params. Keeping it
+          in its own boundary preserves the server-rendered gallery. */}
+      <Suspense fallback={null}><GalleryLocationSync onSearchChange={restoreFilters} /></Suspense>
       <CategorySidebar categories={categories} total={cards.length} active={cat} onSelect={setCat} />
       <div className="min-w-0">
         <div className="site-in flex flex-col gap-3 [--i:3] sm:flex-row">
@@ -239,7 +261,7 @@ export function ComponentBrowser({ cards, categories, category, initialFilters }
         </p>
         {filtered.length ? (
           <motion.div ref={gridRef} layout={!reduce} className="component-grid mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            <AnimatePresence initial={false} mode="popLayout">
+            <AnimatePresence key={initialPresence.current} initial={false} mode="popLayout">
               {shown.map((c, i) => (
                 <motion.div
                   key={c.slug}
@@ -286,6 +308,16 @@ export function ComponentBrowser({ cards, categories, category, initialFilters }
       </div>
     </div>
   );
+}
+
+function GalleryLocationSync({ onSearchChange }: { onSearchChange: (query: string) => void }) {
+  const query = useSearchParams().toString();
+  useLayoutEffect(() => {
+    // A queued router snapshot must never overwrite more recent local typing
+    // or a category choice already committed through the native History API.
+    if (query === new URLSearchParams(window.location.search).toString()) onSearchChange(query);
+  }, [query, onSearchChange]);
+  return null;
 }
 
 /** The card's own wrapper, so entrance transforms never fight the layout animation around it. */

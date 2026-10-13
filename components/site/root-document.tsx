@@ -6,6 +6,7 @@ import "@fontsource-variable/geist";
 import "@fontsource-variable/geist-mono";
 import "@/app/globals.css";
 import { ASSET_RECOVERY_BOOTSTRAP } from "@/lib/asset-recovery";
+import { GALLERY_FILTER_BOOTSTRAP } from "@/lib/gallery-sidebar";
 import { site } from "@/lib/site";
 import { localeByCode } from "@/lib/blog/locales.mjs";
 
@@ -27,8 +28,10 @@ export const rootViewport: Viewport = { themeColor: "#000000", width: "device-wi
 export function RootDocument({ children, locale = "en" }: { children: React.ReactNode; locale?: string }) {
   const language = localeByCode(locale) ?? localeByCode("en")!;
   return (
-    <html lang={language.htmlLang} dir={language.direction} data-scroll-behavior="smooth">
-      <head><script dangerouslySetInnerHTML={{ __html: ASSET_RECOVERY_BOOTSTRAP }} /></head>
+    // The bootstrap deliberately adds one browser-only attribute to <html>.
+    // All content below it still uses normal hydration mismatch checks.
+    <html lang={language.htmlLang} dir={language.direction} data-scroll-behavior="smooth" suppressHydrationWarning>
+      <head><script dangerouslySetInnerHTML={{ __html: ASSET_RECOVERY_BOOTSTRAP + ";\n" + GALLERY_FILTER_BOOTSTRAP }} /></head>
       <body>{children}</body>
     </html>
   );
