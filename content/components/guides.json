@@ -3942,8 +3942,8 @@
     "useWhen": "Inspecting how supported font weight and optical scale change real, selectable specimen text.",
     "avoidWhen": "Synthesizing unsupported font axes or using a font specimen as a decorative loading animation.",
     "integration": [
-      "Supply the font family, supported ranges and specimen copy. Report unsupported axes honestly rather than claiming a visual effect the font cannot produce.",
-      "Keep exact controls keyboard accessible and preserve selection and readability as size or weight changes."
+      "Supply selectable specimen copy and a font role backed by your actual CSS font. The bundled Geist Variable display/mono roles declare weight100–900; Instrument Serif is fixed400. Optical size remains undeclared unless the host font actually supports its supplied optical axis.",
+      "Control weight, requested size and any declared optical size atomically. Keep exact controls keyboard accessible, report requested versus fitted rendered size and retain actual values after rejected changes."
     ],
     "related": [
       "text-decode",
@@ -4462,8 +4462,8 @@
     "useWhen": "Reviewing supplied context sources and their real token allocation against a bounded model budget.",
     "avoidWhen": "Guessing token counts or treating a visual budget as authority to read private sources.",
     "integration": [
-      "Supply source identities, token counts, eligibility and the actual budget. Distinguish included, excluded and over-limit context explicitly.",
-      "Keep inclusion requests controlled by the host and preserve the user’s selection after rejection or a changed budget."
+      "Supply stable context-source identities, kind, required/unavailable state and actual token counts. A null count remains unknown. Required sources count toward the limit and cannot be silently removed; reserved tokens remain explicit.",
+      "Control included IDs through value/onValueChange, with inspection separate from inclusion. Changed budgets never silently prune selected sources. This planner neither fetches source content nor runs an AI request."
     ],
     "related": [
       "ai-model-picker",
