@@ -19194,6 +19194,157 @@
     ]
   },
   {
+    "slug": "input-cron-builder",
+    "name": "Local-time Cron Builder",
+    "tier": "pro",
+    "platform": "web",
+    "category": "inputs",
+    "description": "Compose a daily or weekly local-time schedule with explicit zone, DST policies, actual next instants and a revision-owned reviewable draft.",
+    "tags": [
+      "cron",
+      "schedule",
+      "timezone",
+      "daylight-saving",
+      "input"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1100,
+    "usage": "import { InputCronBuilder } from \"@/components/design-for-ai/input-cron-builder\";\n\n<InputCronBuilder value={schedule} onValueChange={setSchedule} referenceInstant={instant} timeZones={zones} />\n\n// Configure your scheduler with the copied zone and explicit missing/repeated-time policies. This UI does not execute schedules.",
+    "props": [
+      {
+        "name": "value",
+        "type": "CronSchedule",
+        "description": "Controlled schedule. Rejected requests retain the accepted schedule and edited draft. Pair with onValueChange."
+      },
+      {
+        "name": "defaultValue",
+        "type": "CronSchedule",
+        "description": "Local seed, reset explicitly with resetKey. Default weekdays,09:15 in Europe/London."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(schedule: CronSchedule) => void",
+        "description": "Request a cloned complete draft schedule. No engine execution or persistence."
+      },
+      {
+        "name": "referenceInstant",
+        "type": "string",
+        "description": "Real ISO instant with explicit Z/offset, Gregorian years1970–2100. The default visibly fixes an example preview instant."
+      },
+      {
+        "name": "occurrences",
+        "type": "number",
+        "description": "Integer next-occurrence count1–12. Missing local times are skipped; repeated times use the chosen occurrence."
+      },
+      {
+        "name": "timeZones",
+        "type": "readonly { value: string; label: string }[]",
+        "description": "1–64 unique nonempty actual Intl zone identities with readable labels. The draft zone must be supplied."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "description": "Actual Intl day/date display; unsupported locale falls back to en-GB."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Explicit local seed, edited draft and clipboard receipt reset."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"error\"",
+        "description": "Host availability preserves the schedule and draft."
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "description": "Actual meaningful failure explanation, default when blank."
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Real host recovery request, no fake recovery when absent."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Lock interactions while keeping current and draft configuration readable."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Complete midnight-blue or pale-paper palette."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<CronBuilderLabels>",
+        "description": "Scheduling, policies, draft, configuration and recovery copy."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Host layout classes responsive to actual container width."
+      }
+    ],
+    "added": "2026-10-13",
+    "demo": {
+      "steps": [
+        "click:@cron-day-5",
+        "wait:450",
+        "click:@cron-daily",
+        "wait:450",
+        "click:@cron-weekly",
+        "wait:450",
+        "click:@cron-apply",
+        "wait:450"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "occurrences",
+        "label": "Preview count",
+        "kind": "slider",
+        "min": 1,
+        "max": 8,
+        "step": 1,
+        "default": 5
+      },
+      {
+        "prop": "disabled",
+        "label": "Read only",
+        "kind": "toggle",
+        "default": false
+      },
+      {
+        "prop": "status",
+        "label": "Availability",
+        "kind": "select",
+        "options": [
+          "ready",
+          "loading",
+          "error"
+        ],
+        "default": "ready"
+      }
+    ]
+  },
+  {
     "slug": "input-detent-dial",
     "name": "Detent Dial",
     "tier": "pro",
