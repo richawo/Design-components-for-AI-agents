@@ -288,7 +288,7 @@ export function CategorySidebar({
     <aside
       ref={asideRef}
       aria-label="Categories"
-      className="site-in relative min-w-0 [--i:3] lg:sticky lg:top-24 lg:flex lg:max-h-[calc(100dvh-8rem)] lg:flex-col lg:self-start"
+      className="site-in relative min-w-0 [--i:3] lg:sticky lg:top-24 lg:col-start-1 lg:row-start-1 lg:row-span-2 lg:flex lg:max-h-[calc(100dvh-8rem)] lg:flex-col lg:self-start lg:border-r lg:border-white/[0.08] lg:pr-5"
     >
       <p className="hidden font-mono text-[11px] uppercase tracking-[0.16em] text-site-fg-3 lg:block">Categories</p>
       <button

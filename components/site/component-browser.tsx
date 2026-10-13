@@ -5,7 +5,7 @@ import { useReducedMotion } from "@/lib/use-reduced-motion";
 import "./gallery-focus.css";
 
 import { AnimatePresence, motion } from "motion/react";
-import { memo, Suspense, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { memo, Suspense, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   FILTER_KEY,
@@ -30,9 +30,10 @@ const FIRST_CARD_STEP = 4;
 // Keep the first render independent of catalogue size. Media remains lazy
 // inside these cards; another batch mounts shortly before the reader reaches it.
 const CARD_BATCH = 12;
+const GRID_IMAGE_SIZES = "(min-width: 1680px) calc((100vw - 368px) / 4), (min-width: 1280px) calc((100vw - 352px) / 3), (min-width: 1024px) calc((100vw - 336px) / 2), (min-width: 640px) calc((100vw - 80px) / 2), calc(100vw - 40px)";
 const BrowserCard = memo(ComponentCard);
 
-export function ComponentBrowser({ cards, categories }: { cards: CardData[]; categories: Cat[] }) {
+export function ComponentBrowser({ cards, categories, introduction }: { cards: CardData[]; categories: Cat[]; introduction: ReactNode }) {
   const [q, setQ] = useState("");
   const [tier, setTier] = useState<"all" | "free" | "pro">("all");
   const [filtersReady, setFiltersReady] = useState(false);
@@ -199,13 +200,14 @@ export function ComponentBrowser({ cards, categories }: { cards: CardData[]; cat
   }, [hasMore, loadMore, shown.length]);
 
   return (
-    <div data-gallery-ready={filtersReady} className="relative grid gap-3 lg:grid-cols-[220px_1fr] lg:gap-10">
+    <div data-gallery-ready={filtersReady} className="relative grid gap-5 lg:grid-cols-[224px_minmax(0,1fr)] lg:gap-x-8 lg:gap-y-6">
       <p data-gallery-loading role="status" className="absolute inset-x-0 top-0 hidden py-4 text-sm text-site-fg-2">Loading your selection…</p>
       {/* Only the URL observer needs the request's search params. Keeping it
           in its own boundary preserves the server-rendered gallery. */}
       <Suspense fallback={null}><GalleryLocationSync onSearchChange={restoreFilters} /></Suspense>
+      <div className="lg:col-start-2">{introduction}</div>
       <CategorySidebar categories={categories} total={cards.length} active={cat} onSelect={setCat} />
-      <div className="min-w-0">
+      <div className="min-w-0 lg:col-start-2">
         <div className="site-in flex flex-col gap-3 [--i:3] sm:flex-row">
           <div className="group/search relative flex-1">
             <label htmlFor="component-search" className="sr-only">Search components</label>
@@ -262,7 +264,7 @@ export function ComponentBrowser({ cards, categories }: { cards: CardData[]; cat
           <span aria-hidden="true"><CountUp value={filtered.length} initialAnimation={false} /> {filtered.length === 1 ? "component" : "components"}</span>
         </p>
         {filtered.length ? (
-          <motion.div ref={gridRef} layout={!reduce} className="component-grid mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          <motion.div ref={gridRef} layout={!reduce} className="component-grid mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3 min-[105rem]:grid-cols-4">
             <AnimatePresence key={initialPresence.current} initial={false} mode="popLayout">
               {shown.map((c, i) => (
                 <motion.div
@@ -275,7 +277,7 @@ export function ComponentBrowser({ cards, categories }: { cards: CardData[]; cat
                   className="flex"
                 >
                   <CardSlot entrance={firstRender.current ? cardEntrance(i, FIRST_CARD_STEP) : undefined}>
-                    <BrowserCard c={c} priority={i < FIRST_VIEW_CARDS} imageSizes="(min-width: 1280px) 308px, (min-width: 1024px) calc(50vw - 170px), (min-width: 640px) calc(50vw - 40px), calc(100vw - 40px)" />
+                    <BrowserCard c={c} priority={i < FIRST_VIEW_CARDS} imageSizes={GRID_IMAGE_SIZES} />
                   </CardSlot>
                 </motion.div>
               ))}

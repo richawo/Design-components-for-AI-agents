@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { ComponentBrowser } from "@/components/site/component-browser";
 import { CountUp } from "@/components/site/count-up";
-import { DitherGlow } from "@/components/site/dither-glow";
 import { JsonLd } from "@/components/site/json-ld";
 import {
   individualComponents,
@@ -30,7 +29,7 @@ export default function ComponentsPage() {
     count,
   }));
   return (
-    <div className="relative mx-auto max-w-[80rem] px-5 pb-28 sm:px-8">
+    <div className="relative px-5 pb-28 pt-7 sm:px-8 lg:pt-8">
       <JsonLd
         data={{
           "@context": "https://schema.org",
@@ -50,32 +49,21 @@ export default function ComponentsPage() {
           },
         }}
       />
-      <section className="relative isolate pb-12 pt-14 lg:pb-16 lg:pt-20">
-        <div
-          aria-hidden="true"
-          className="absolute -inset-x-5 -top-16 -z-10 h-[30rem] sm:-inset-x-8"
-        >
-          <DitherGlow className="opacity-70 [mask-image:linear-gradient(180deg,#000_35%,transparent)]" />
-        </div>
-        <p className="site-in font-mono text-[11px] uppercase tracking-[0.18em] text-site-fg-3">
-          Library
-        </p>
-        <h1 className="site-in mt-4 max-w-[18ch] text-[clamp(2.25rem,1.4rem+3.4vw,4rem)] font-semibold leading-[1] tracking-[-0.05em] [--i:1]">
-          <span className="text-site-fg">
-            <CountUp value={s.total} delay={0.25} /> components.
-          </span>{" "}
-          <span className="text-site-fg-3">Every one designed.</span>
-        </h1>
-        <p className="site-in mt-5 max-w-[60ch] text-[16px] leading-relaxed text-site-fg-2 [--i:2]">
-          <CountUp value={s.free} delay={0.35} /> free and open source,{" "}
-          <CountUp value={s.pro} delay={0.4} /> Pro,{" "}
-          <CountUp value={s.mobile} delay={0.45} /> React Native. Each ships
-          with its code, a prompt and a JSON prompt.
-        </p>
-      </section>
       <ComponentBrowser
         cards={cards}
         categories={categories}
+        introduction={
+          <div>
+            <h1 className="site-in flex items-baseline gap-3 text-[32px] font-semibold leading-tight tracking-[-0.04em] [--i:1]">
+              Components
+              <CountUp value={s.total} delay={0.25} className="font-mono text-[13px] font-normal tracking-normal text-site-fg-3" />
+            </h1>
+            <p className="site-in mt-2 text-[14px] leading-relaxed text-site-fg-2 [--i:2]">
+              <CountUp value={s.free} delay={0.35} /> free and open source,{" "}
+              <CountUp value={s.pro} delay={0.4} /> Pro. Code, prompt and JSON prompt included.
+            </p>
+          </div>
+        }
       />
     </div>
   );
