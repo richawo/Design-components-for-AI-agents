@@ -14205,6 +14205,117 @@
     ]
   },
   {
+    "slug": "features-integration-trace",
+    "name": "Integration Trace",
+    "tier": "pro",
+    "platform": "web",
+    "category": "features",
+    "description": "A connected stage trace that lets visitors inspect supplied input and output JSON, see real field changes and recover unavailable steps.",
+    "tags": [
+      "features",
+      "integration",
+      "data trace",
+      "payload",
+      "transformation",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1000,
+    "usage": "import { FeaturesIntegrationTrace } from \"@/components/design-for-ai/features-integration-trace\";\n\n<FeaturesIntegrationTrace integrations={connections} value={selection} onValueChange={setSelection} onStageRetry={reloadStage} />",
+    "props": [
+      {
+        "name": "integrations",
+        "type": "TraceIntegration[]",
+        "description": "Unique integration IDs with unique local stage IDs, labels/descriptions and supplied JSON input/output. Stage availability and selection permission are explicit.",
+        "default": "2 original offline computed data journeys"
+      },
+      {
+        "name": "value",
+        "type": "IntegrationTraceSelection",
+        "description": "Controlled composite {integrationId,stageId}. Without onValueChange selection is read-only."
+      },
+      {
+        "name": "defaultValue",
+        "type": "IntegrationTraceSelection",
+        "description": "Initial uncontrolled composite selection. Empty integrations can be selected with an empty stageId.",
+        "default": "{integrationId: \"forms\", stageId: \"normalized\"}"
+      },
+      {
+        "name": "onValueChange",
+        "type": "(value: IntegrationTraceSelection, integration: TraceIntegration, stage: IntegrationTraceStage | undefined) => void",
+        "description": "Synchronous selection observer; stage is undefined for an integration with no stages."
+      },
+      {
+        "name": "onStageRetry",
+        "type": "(integration: TraceIntegration, stage: IntegrationTraceStage, signal: AbortSignal) => void | Promise<void>",
+        "description": "Real host recovery. Cancel, selection/input/callback retirement and unmount abort prior work; status/output acknowledgments keep their request."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Concise editorial feature title.",
+        "default": "\"A clear path from input to action.\""
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "One sentence explaining the inspection task.",
+        "default": "\"Choose a stage. Inspect what arrives, what changes and what leaves.\""
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Trace and payload palettes.",
+        "default": "\"dark\""
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Outer feature class.",
+        "default": "\"\""
+      }
+    ],
+    "added": "2026-10-13",
+    "demo": {
+      "steps": [
+        "click:@trace-forms-mapped",
+        "wait:350",
+        "click:@trace-forms-command",
+        "wait:450",
+        "click:@integration-files",
+        "wait:500"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "title",
+        "label": "Heading",
+        "kind": "text",
+        "default": "A clear path from input to action."
+      },
+      {
+        "prop": "description",
+        "label": "Description",
+        "kind": "text",
+        "default": "Choose a stage. Inspect what arrives, what changes and what leaves."
+      }
+    ]
+  },
+  {
     "slug": "finance-budget-variance",
     "name": "Budget Variance Explorer",
     "tier": "pro",

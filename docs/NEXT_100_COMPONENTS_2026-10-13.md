@@ -58,7 +58,7 @@ Validate all six web widths, both supported themes, multiple instances and empty
 | # | Slug | Category | Distinct interaction and essential states | Status |
 | --- | --- | --- | --- | --- |
 | 21 | `hero-layout-playground` | hero | A live layout constraint demo: move boundaries and see supplied content reflow within them. | Released |
-| 22 | `features-integration-trace` | features | Follow a selected integration's data journey and inspect each transformation. | Planned |
+| 22 | `features-integration-trace` | features | Follow a selected integration's data journey and inspect each transformation. | Released |
 | 23 | `features-shortcut-theatre` | features | Press accessible shortcut controls to demonstrate a product action in a supplied preview. | Planned |
 | 24 | `features-compare-lenses` | features | Inspect two ways of completing one workflow with linked stages and honest differences. | Planned |
 | 25 | `pricing-usage-calculator` | pricing | Estimate a bill from supplied rates and bounded quantities; explain included units and rounding. | Planned |
@@ -175,4 +175,4 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 ## Progress
 
-Planned: 79. Released: 21. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
+Planned: 78. Released: 22. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
