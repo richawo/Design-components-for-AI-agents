@@ -434,11 +434,34 @@ may show one visible overshoot; nothing else bounces.
 
 - Review editing, review, confirmation, pending, success, failure and empty states.
   Preserve draft values across these transitions and after rejected host callbacks.
+- Precise entry owns its current draft revision. An older accepted request must
+  not replace newer typing. Focus alone does not make a field dirty; untouched
+  fields still follow authoritative host updates.
+- Focus recovery belongs to the component only while the user stays with it.
+  A real primary click on blank space outside must retire remembered focus,
+  including the path where `blur.relatedTarget` is null. Secondary contacts must
+  not steal the primary interaction's ownership. Observe actual removal or
+  disabling of supplied controls even if their stage ID and height are unchanged.
+- Live reduced motion explicitly stops and sets every animated value. Changing
+  a transition duration while its target stays unchanged does not stop an older
+  tween. Keep ordinary motion and actual media or requests working.
 - Animate the measured container height separately from its content. Do not scale
   text to imitate resizing. Use short, keyed entrances and exits for changing
   details, with staggered text where it helps the reading order.
 - Make outgoing content inert and hide it from assistive technology while its
   exit runs. Hidden panels must not retain reachable buttons or scroll regions.
+  Readable old and new text must not overlap on the same baselines; retire the
+  outgoing text before the incoming text enters when a crossfade ghosts it.
+- Measure logical layout separately from transformed screen rectangles. Review
+  the actual painted text and every plain or linked label for containment.
+  Long filenames must wrap even when they are ordinary informational text.
+- Validate raw identities before computing aggregate bills or budgets. Visual
+  deduplication must not hide conflicting data. Missing or invalid values stay
+  explicit. Use a boolean length check before JSX conditionals so an empty array
+  does not paint a stray numeric zero.
+- Responsive proof includes the intended column and reading order, not only
+  zero document overflow. Named container queries need valid syntax; compare
+  their thresholds to the actual container width rather than the viewport.
 - Keep dropdown labels and chevrons equally inset. Custom menus must support
   arrows, Home, End, Escape, disabled-option skipping and focus restoration;
   constrain them to both dimensions of the viewport. Document a native option
