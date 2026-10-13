@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState, useLayoutEffect, useRef, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useId, useState, useLayoutEffect, useRef, type CSSProperties, type ReactNode } from "react";
 import { motion, useReducedMotion } from "motion/react";
 
 export type WorkspaceLink = { id: string; label: string; href: string };
@@ -20,9 +20,22 @@ export type WorkspaceShellProps = {
   className?: string;
 };
 
+function useLiveReducedMotion() {
+  const initial = useReducedMotion();
+  const [reduce, setReduce] = useState(!!initial);
+  useEffect(() => {
+    const media = matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReduce(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
+  return reduce;
+}
+
 /** A container-responsive frame; links point at actual host routes or section anchors. */
 export function WorkspaceShell({ brand = "Northstar", eyebrow = "Workspace", title = "Overview", subtitle, links = [], activeId, onNavigate, contentClassName = "", actions, children, footer, theme = "dark", className = "" }: WorkspaceShellProps) {
-  const reduce = useReducedMotion();
+  const reduce = useLiveReducedMotion();
   const [active, setActive] = useState<string | null>(null);
   const frame = useRef<HTMLDivElement>(null);
   const focused = useRef<HTMLElement | null>(null);
@@ -41,6 +54,10 @@ export function WorkspaceShell({ brand = "Northstar", eyebrow = "Workspace", tit
   // navigation tab after child panels have applied inert, including scope changes.
   useLayoutEffect(() => {
     if (!onNavigate || !focused.current?.closest("[data-workspace-panel][inert]")) return;
+    const shell = frame.current;
+    const doc = shell?.ownerDocument;
+    if (!shell || !doc?.hasFocus()) return;
+    if (doc.activeElement !== doc.body && doc.activeElement && !shell.contains(doc.activeElement)) return;
     const target = [...(frame.current?.querySelectorAll<HTMLButtonElement>('[role="tab"]') ?? [])].find(button => button.dataset.demo === `nav-${current}` && button.getClientRects().length);
     target?.focus({ preventScroll: true });
   });
@@ -60,7 +77,11 @@ export function WorkspaceShell({ brand = "Northstar", eyebrow = "Workspace", tit
       }}>{label}</button> : <a key={link.id} href={link.href} data-demo={`nav-${link.id}`} aria-current={selected ? "location" : undefined} onClick={() => navigate(link.id)} className={classes}>{label}</a>;
     })}
   </nav>;
-  return <div ref={frame} onFocusCapture={event => { focused.current = event.target as HTMLElement; }} style={style} className={`@container/ws isolate w-full rounded-2xl border border-[var(--ws-line)] bg-[var(--ws-bg)] text-[var(--ws-ink)] [overflow-wrap:anywhere] ${className}`}>
+  return <div ref={frame} onFocusCapture={event => { focused.current = event.target as HTMLElement; }} onBlurCapture={event => {
+    // Retiring an inert panel can blur to the body with no related target.
+    // Explicit outside focus belongs to the host and must never be reclaimed.
+    if (event.relatedTarget && !event.currentTarget.contains(event.relatedTarget as Node)) focused.current = null;
+  }} style={style} className={`@container/ws isolate w-full rounded-2xl border border-[var(--ws-line)] bg-[var(--ws-bg)] text-[var(--ws-ink)] [overflow-wrap:anywhere] ${className}`}>
     <div className="grid h-full min-h-0 grid-rows-[auto_minmax(0,1fr)] @3xl/ws:grid-cols-[188px_minmax(0,1fr)] @3xl/ws:grid-rows-1">
       <aside className="rounded-t-[15px] border-b border-[var(--ws-line)] bg-[var(--ws-surface)] @3xl/ws:rounded-tr-none @3xl/ws:rounded-bl-[15px] @3xl/ws:border-r @3xl/ws:border-b-0">
         <div className="flex min-h-[76px] items-center gap-3 px-6 @3xl/ws:mb-6"><span aria-hidden="true" className="grid size-8 shrink-0 place-items-center rounded-lg border border-[var(--ws-line)] font-serif text-xl">{brand.trim().slice(0,1).toUpperCase()||"N"}</span><span className="text-sm font-medium tracking-tight">{brand}</span></div>
@@ -69,7 +90,7 @@ export function WorkspaceShell({ brand = "Northstar", eyebrow = "Workspace", tit
       </aside>
       <div className="flex min-h-0 min-w-0 flex-col">
         {links.length > 0 && <div className="border-b border-[var(--ws-line)] bg-[var(--ws-surface)] @3xl/ws:hidden">{nav(true)}</div>}
-        <motion.header initial={reduce ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduce ? .12 : .32 }} className="relative z-20 flex shrink-0 flex-wrap items-end justify-between gap-5 border-b border-[var(--ws-line)] px-5 py-7 @lg/ws:px-8 @lg/ws:py-8">
+        <motion.header initial={reduce ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduce ? .12 : .32 }} className="motion-reduce:!transform-none relative z-20 flex shrink-0 flex-wrap items-end justify-between gap-5 border-b border-[var(--ws-line)] px-5 py-7 @lg/ws:px-8 @lg/ws:py-8">
           <div className="min-w-0"><p className="font-mono text-[10px] uppercase tracking-[.16em] text-[var(--ws-muted)]">{eyebrow}</p><h2 className="mt-3 font-display text-[clamp(1.8rem,3.3cqi,2.5rem)] font-medium leading-[1.08] tracking-[-.045em]">{title}</h2>{subtitle&&<p className="mt-3 max-w-[62ch] text-sm leading-[1.75] text-[var(--ws-muted)]">{subtitle}</p>}</div>
           {actions && <div className="flex max-w-full flex-wrap items-center gap-2">{actions}</div>}
         </motion.header>
@@ -94,7 +115,7 @@ export type WorkspacePanelsProps = { activeId: string; panels: WorkspacePanel[];
 
 /** Keep drafts mounted while the visible view changes without scaling its text. */
 export function WorkspacePanels({ activeId, panels, className = "", fill = false }: WorkspacePanelsProps) {
-  const reduce = useReducedMotion();
+  const reduce = useLiveReducedMotion();
   const nodes = useRef(new Map<string, HTMLDivElement>());
   const [height, setHeight] = useState<number | "auto">("auto");
   const valid = panels.filter((panel, index) => panel.id && panels.findIndex(other => other.id === panel.id) === index);
