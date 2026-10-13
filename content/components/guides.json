@@ -4039,15 +4039,15 @@
     "useWhen": "Adding a bounded, user-driven drawing mark that fades while ordinary controls remain usable.",
     "avoidWhen": "Capturing the whole page pointer, hiding essential content or creating an endless uncontrolled animation.",
     "integration": [
-      "Keep drawing inside its dedicated bounded surface; ordinary foreground overlays retain native input, touch, events and overflow. Keyboard arrows move the marker, and Space/Enter or Stamp mark create the same actual mark.",
-      "onStroke reports only completed normalized points with actual pressure/time and snapshotted ink width, color and lifetime. Host persistence is explicit. Pointer cancellation, Escape, resetKey, disabled and hidden state retire owned gestures; source arrays stay bounded to 24 marks and 1024 points per stroke.",
-      "New marks fade after release over 300–3000ms. Live reduced motion freezes current opacity until clear, and normal motion resumes from that pose. Main Canvas pixels are capped at 640,000 with max 4096px per side. Idle/offscreen work stops; do not intercept the whole page pointer."
+      "Keep drawing inside its dedicated bounded surface. Ordinary foreground overlays are separate from drawing disabled semantics and retain native input, touch, events, accessibility and overflow. Keyboard arrows move the drawing marker; Space/Enter or Stamp mark creates the same actual mark.",
+      "Omitted ink follows the current theme; an explicit six-digit color stays authoritative. onStroke reports completed normalized points with actual pressure/time and snapshotted width, color and lifetime. Host persistence is explicit. Pointer cancellation, Escape, resetKey, disabled and hidden state retire owned gestures; retained marks are bounded to 24 with 1024 points per stroke.",
+      "New marks fade after release over 300–3000ms. Live reduced motion freezes current opacity until clear, and normal motion resumes from that pose. Main Canvas pixels are capped at 640,000 with max 4096px per side. Idle/offscreen work stops. Bound any host overlay intentionally; the offline demo alone bounds its editable note resize to the actual drawing height."
     ],
     "related": [
       "effect-border-tracer",
       "editor-whiteboard"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "three-material-inspector": {
     "useWhen": "Comparing generic material samples under explicit, adjustable light in a small 3D inspection tool.",
@@ -4224,27 +4224,31 @@
     "useWhen": "Exploring a supplied hierarchy through radial drill-down with equivalent readable values.",
     "avoidWhen": "An unlabeled decorative ring or a hierarchy whose totals do not reconcile with its children.",
     "integration": [
-      "Supply stable hierarchy IDs, numeric values and clear aggregation rules. Keep the table and radial selection tied to the same active node.",
-      "Expose empty and zero totals honestly, preserve context through drill-down and make reduced motion immediately readable."
+      "Supply a unique-ID hierarchy with at most 80 nodes and depth 5. Leaf values are finite nonnegative numbers up to 1 trillion; group totals are computed from their children rather than accepted as a second total. Null source and zero totals have useful native alternatives.",
+      "Control the atomic focusId/selectedId packet when the host owns the view. Selecting a real segment or its full native row inspects the same node; Focus this group and the breadcrumbs drill explicitly. Unknown identities remain unavailable, and only accepted discrete requests produce commits.",
+      "Keep exact quantities in the complete native descendant table, including tiny and zero values. Very small quantities use a truthful scientific notation. Supply the unit and supported Intl locale, and use the native controls for narrow/touch layouts.",
+      "Loading or unavailable source preserves the current packet. Live reduced motion settles the actual partition and total, idle/offscreen work stops, and actual owner-document focus fencing preserves outside and parent-page actions."
     ],
     "related": [
       "chart-treemap-drill",
       "chart-allocation"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "chart-sankey-paths": {
     "useWhen": "Tracing supplied quantities from sources through destinations while keeping the whole flow in context.",
     "avoidWhen": "Invented traffic, unbalanced quantities or a diagram that can only be understood by color.",
     "integration": [
-      "Supply stable node/link identities, units and actual values. Explain any loss or gain rather than silently normalizing it away.",
-      "Keep source/destination selection keyboard accessible and provide the same quantities in a readable alternative."
+      "Supply up to 18 unique labeled nodes in explicit columns 0–5 and 40 unique forward links with finite nonnegative quantities up to 1 trillion. Incoming and outgoing are independent supplied-link sums; the component displays their actual difference and never invents a balancing flow.",
+      "One atomic nodeId/linkId selection chooses either a category or a connection. Category emphasis traces direct incoming/outgoing links only. Controlled requests remain host-owned, rejected requests do not commit, and an unknown identity needs an explicit clear or restored source.",
+      "Keep the full native Categories and Connections tabs available with exact values, units and supported Intl formatting. A narrow actual scene becomes a vertical flow instead of squeezing the horizontal plot. Small categories retain full native selection targets.",
+      "Data geometry changes are bounded and interruptible. Live reduced motion explicitly settles the actual drawing owner, hidden/idle work stops, and the focused owner-document fence preserves native parent-page actions. Persistence belongs to the host."
     ],
     "related": [
       "chart-streamgraph",
       "chart-waterfall-bridge"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "chart-box-distribution": {
     "useWhen": "Comparing real medians, quartiles and outliers with explicit sample sizes and units.",
