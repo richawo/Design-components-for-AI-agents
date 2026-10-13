@@ -12,8 +12,12 @@
 | Icon Workbench | Approved | An invalid container query squeezed the phone grid into collisions; it now adapts to the actual container. Buttons and search Enter no longer submit a surrounding host form. The phone grid is bounded so the specimen appears sooner. Failed and stale clipboard operations, selectable output, keyboard glyph selection and the decoded glyph/stroke/format sequence pass. Final recording evidence is in `test-results/next-100/devtools-icon-workbench/isolated-report/`. |
 | Signal Workbench | Approved | Phone connectors originally crossed and the empty state left a parameter emphasized. The connector routes now communicate the actual signal path and empty inputs neutralize it. Controlled arrow selection follows focus, narrow embedded headings use container dimensions, and gain zero produces a truly flat plot. The decoded clip demonstrates shape, upward frequency and downward gain. |
 | Border Tracer | Approved | The first popup cut abruptly, reduced-motion presses still scaled, and transformed host dimensions could mismeasure the border. Popup transitions now preserve focus and immediate exit inertness; reduced motion is static; fractional layout dimensions survive ancestor scaling. Actual integrated perimeter movement and pause conditions pass. The recorded popup opening with a capture gap was rejected. The final 5.5-second perimeter lap is smooth and its decoded loop boundary preserves the light's phase. |
+| Stacked Document Tabs | Approved | Workspace and action resets originally lost keyboard focus; a cached restored document could outlive host availability; a shared hover rule made Retry unreadable; and Close controls broke the tablist's accessible ownership. Focus recovery, authoritative membership, a dedicated primary action and a separate Close group fix these cases. The full selected tab and its Close target remain visible on a narrow container, actual dragging reaches the last slot, failed actions retain drafts, and a background close preserves newer editing. The decoded video cleanly shows reorder, close/restore and native dirty-close review. |
+| Split Resizer | Approved | The light grip originally lacked sufficient contrast, inline size observers could cause a render loop, and degenerate geometry could leave hidden content interactive or offer impossible actions. The corrected grip, stable observer reporting and geometry-aware inertness/controls pass. Rejected controlled requests keep actual sizes honest; partial drag acceptance rolls back on Escape; both pane restores retain the draft and useful focus. The default export now honors locked/forced ownership and keeps displayed pixel sizes live with caller observers. The decoded video shows smooth pane movement, real text reflow, figures in both directions and a complete reset. |
 
-Eight additions are approved and pushed. Stacked Tabs and Split Resizer remain in implementation and independent review. The other 90 rows are a defined implementation queue, not completed components.
+All ten foundation components have independent source, state, visual and recording approval. There are no unresolved release blockers within this first wave.
+
+Ten foundation components are approved and pushed. The remaining 90 rows form the implementation queue; they are not completed components.
 
 ## Browser and recording checks
 
@@ -31,9 +35,17 @@ The final clips are dark, have matching first-frame posters and are encoded at 6
 | `devtools-icon-workbench` | 3.7s | 21.8ms | 52.9ms | 0 |
 | `hero-signal-workbench` | 4.2s | 29.5ms | 64.2ms | 0 |
 | `effect-border-tracer` | 5.5s | 17.9ms | 25.9ms | 0 |
+| `navigation-stacked-tabs` | 6.0s | 18.3ms | 40.2ms | 0 |
+| `layout-split-resizer` | 3.5s | 21.0ms | 34.1ms | 0 |
 
 Early recordings made in a busy development page were rejected. The accepted recordings isolate the checked-out source with production React, retain real preview styling and fonts, and serialize browser work. The recorder now supports this through `--isolated-source`; the normal preview and whole-page capture modes remain available. This removes development instrumentation from a recording, and is distinct from proving a change to deployed UI performance.
 
 For Border, a recording pause was investigated against cold actual UI input. The first popup frame arrived in 59.8ms with no frame gap over 100ms; an injected 160ms blocking control increased it to 224.2ms and was detected. The final gallery lap demonstrates the perimeter effect itself. Popup entry, exit, focus, inertness and reduced motion were reviewed separately.
 
 The evidence is retained locally in ignored `test-results/next-100/` and `test-results/next-100-critic/`. Pro source is committed in the private registry; public commits contain metadata, selection guidance, posters, recordings and this review. See [the 100-component queue](NEXT_100_COMPONENTS_2026-10-13.md) and [the repeatable QA commands](COMPONENT_QA.md).
+
+## Publishing verification
+
+The larger 14-article, 30-language corpus took the earlier Worker to 68,015,528 bytes, above its 64 MiB module limit. Its optimized build and type checks passed; the deployment size guard correctly rejected it. The multilingual content packing change preserves the readable audit data and decodes the compressed runtime corpus once per isolate. The new deployment passed Cloudflare CI and its public build marker reports the complete corpus.
+
+Fresh deployed browser checks passed for the first eight previews and component pages, with no runtime exceptions or horizontal overflow. Anonymous source-panel responses stay locked, omit code and use private/no-store; installation registry endpoints remain unauthorized. The final two previews are checked after their release build. No purchase, billing or account mutation was used for verification.
