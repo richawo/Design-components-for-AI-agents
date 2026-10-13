@@ -4587,5 +4587,265 @@
       "devtools-request-waterfall"
     ],
     "updated": "2026-10-13"
+  },
+  "mobile-mood-map": {
+    "useWhen": "Choosing and refining a feeling in a calm, semantic mobile check-in.",
+    "avoidWhen": "Diagnosing a condition, scoring a person or imposing a mood label from activity data.",
+    "integration": [
+      "Supply meaningful feeling labels and an acknowledged check-in handler. Keep selection available through failure, and provide a readable list alternative to the spatial map.",
+      "Install in a React Native app. The web preview supports design review; verify touch gestures, large text, reduced motion and assistive technology on target devices."
+    ],
+    "related": [
+      "mobile-health-summary",
+      "mobile-settings"
+    ],
+    "updated": "2026-10-13"
+  },
+  "mobile-habit-grid": {
+    "useWhen": "Recording and correcting dated habit entries with an inspectable history.",
+    "avoidWhen": "Punitive streak messaging, automated health conclusions or silently backfilling missing entries.",
+    "integration": [
+      "Use stable local dates and host-owned history. Make corrections and undo explicit, distinguish missing entries from incomplete habits, and preserve the selected date.",
+      "Install in a React Native app. The web preview supports design review; verify touch gestures, large text, reduced motion and assistive technology on target devices."
+    ],
+    "related": [
+      "mobile-health-summary",
+      "mobile-settings"
+    ],
+    "updated": "2026-10-13"
+  },
+  "mobile-focus-session": {
+    "useWhen": "Starting, pausing and resuming a bounded personal focus session.",
+    "avoidWhen": "Measuring productivity or treating background timer ticks as elapsed-time evidence.",
+    "integration": [
+      "Derive elapsed time from timestamps, account for backgrounding and expose an explicit reset. Keep completion quiet and explain any host-owned persistence.",
+      "Install in a React Native app. The web preview supports design review; verify touch gestures, large text, reduced motion and assistive technology on target devices."
+    ],
+    "related": [
+      "mobile-live-activity",
+      "mobile-now-playing"
+    ],
+    "updated": "2026-10-13"
+  },
+  "mobile-day-planner": {
+    "useWhen": "Reordering and rescheduling a supplied daily agenda with accessible controls.",
+    "avoidWhen": "A full calendar service, an automatic scheduling agent or hiding constraints behind drag-only gestures.",
+    "integration": [
+      "Supply stable task identities, local date context and scheduling constraints. Pair gestures with explicit move controls, preserve the original order after rejection and describe accepted changes.",
+      "Install in a React Native app. The web preview supports design review; verify touch gestures, large text, reduced motion and assistive technology on target devices."
+    ],
+    "related": [
+      "mobile-settings",
+      "mobile-swipe-list"
+    ],
+    "updated": "2026-10-13"
+  },
+  "mobile-journal-prompt": {
+    "useWhen": "Expanding a writing prompt into a private, user-owned journal draft.",
+    "avoidWhen": "Generating a diary entry without consent or claiming storage success before host acknowledgement.",
+    "integration": [
+      "Supply prompt copy and a real save handler. Preserve exact text through pending and failure, expose retry and distinguish local drafts from saved entries.",
+      "Install in a React Native app. The web preview supports design review; verify touch gestures, large text, reduced motion and assistive technology on target devices."
+    ],
+    "related": [
+      "mobile-settings",
+      "mobile-chat"
+    ],
+    "updated": "2026-10-13"
+  },
+  "mobile-reading-progress": {
+    "useWhen": "Reviewing chapter progress, bookmarks and an explicit resume destination.",
+    "avoidWhen": "A document renderer or estimating reading comprehension from progress.",
+    "integration": [
+      "Supply actual reading history and valid chapter destinations. Separate unread from missing history, retain bookmark identity and request navigation only after a user action.",
+      "Install in a React Native app. The web preview supports design review; verify touch gestures, large text, reduced motion and assistive technology on target devices."
+    ],
+    "related": [
+      "mobile-health-summary",
+      "mobile-now-playing"
+    ],
+    "updated": "2026-10-13"
+  },
+  "mobile-trip-itinerary": {
+    "useWhen": "Inspecting supplied travel legs, local times and schedule changes.",
+    "avoidWhen": "Booking travel, tracking a live vehicle without data or inventing arrival confidence.",
+    "integration": [
+      "Supply timezone-qualified timestamps and current schedule status. Keep original and changed times readable and surface missing or cancelled legs explicitly.",
+      "Install in a React Native app. The web preview supports design review; verify touch gestures, large text, reduced motion and assistive technology on target devices."
+    ],
+    "related": [
+      "mobile-bottom-sheet",
+      "mobile-live-activity"
+    ],
+    "updated": "2026-10-13"
+  },
+  "mobile-packing-list": {
+    "useWhen": "Checking grouped items, correcting quantities and undoing supported removals.",
+    "avoidWhen": "An inventory database or automatically deleting completed items.",
+    "integration": [
+      "Supply stable item and group IDs and bounded quantities. Retain position after edits and offer an explicit undo only where the host supports restoration.",
+      "Install in a React Native app. The web preview supports design review; verify touch gestures, large text, reduced motion and assistive technology on target devices."
+    ],
+    "related": [
+      "mobile-swipe-list",
+      "mobile-settings"
+    ],
+    "updated": "2026-10-13"
+  },
+  "mobile-budget-envelope": {
+    "useWhen": "Allocating a supplied budget among categories while inspecting the remainder.",
+    "avoidWhen": "Financial advice, moving money or claiming that illustrative allocations are actual balances.",
+    "integration": [
+      "Use integer minor currency units and an explicit total. Explain any bounds, preserve rejected allocations and distinguish unallocated funds from overspending.",
+      "Install in a React Native app. The web preview supports design review; verify touch gestures, large text, reduced motion and assistive technology on target devices."
+    ],
+    "related": [
+      "mobile-wallet-stack",
+      "mobile-checkout-sheet"
+    ],
+    "updated": "2026-10-13"
+  },
+  "mobile-voice-memo": {
+    "useWhen": "Inspecting an actual supplied memo with waveform, markers and transcript.",
+    "avoidWhen": "Recording audio without a host recorder or animating a fake playback clock.",
+    "integration": [
+      "Connect playback to real host media callbacks and actual elapsed time. Keep transcript reading available when audio is unavailable and retire stale events when the recording changes.",
+      "Install in a React Native app. The web preview supports design review; verify touch gestures, large text, reduced motion and assistive technology on target devices."
+    ],
+    "related": [
+      "mobile-now-playing",
+      "media-audio-transport"
+    ],
+    "updated": "2026-10-13"
+  },
+  "mobile-project-switcher": {
+    "useWhen": "Searching and choosing a supplied project in a tactile mobile sheet.",
+    "avoidWhen": "Creating project data or silently switching to an unavailable workspace.",
+    "integration": [
+      "Supply project identities, current selection and availability reasons. Preserve selection on rejection, return focus on dismissal and expose the same actions without gestures.",
+      "Install in a React Native app. The web preview supports design review; verify touch gestures, large text, reduced motion and assistive technology on target devices."
+    ],
+    "related": [
+      "mobile-bottom-sheet",
+      "mobile-settings"
+    ],
+    "updated": "2026-10-13"
+  },
+  "mobile-file-preview": {
+    "useWhen": "Inspecting supplied file metadata and host-rendered preview content.",
+    "avoidWhen": "Downloading a file implicitly or promising support for formats the host cannot render.",
+    "integration": [
+      "Supply actual filename, format, size and preview availability. Retain metadata in unsupported and failed states and make open or download actions explicit.",
+      "Install in a React Native app. The web preview supports design review; verify touch gestures, large text, reduced motion and assistive technology on target devices."
+    ],
+    "related": [
+      "mobile-bottom-sheet",
+      "mobile-chat"
+    ],
+    "updated": "2026-10-13"
+  },
+  "mobile-attachment-tray": {
+    "useWhen": "Reviewing selected attachments and exact limits before sending.",
+    "avoidWhen": "Uploading automatically on selection or presenting an optimistic row as acknowledged success.",
+    "integration": [
+      "Supply stable attachment IDs, host-reported sizes and per-file errors. Keep failed items and drafts available, explain limits and submit only the reviewed selection.",
+      "Install in a React Native app. The web preview supports design review; verify touch gestures, large text, reduced motion and assistive technology on target devices."
+    ],
+    "related": [
+      "mobile-chat",
+      "mobile-bottom-sheet"
+    ],
+    "updated": "2026-10-13"
+  },
+  "mobile-meeting-preflight": {
+    "useWhen": "Reviewing host-reported microphone, camera and connection readiness before joining.",
+    "avoidWhen": "Requesting device permissions automatically or simulating a working camera without a host stream.",
+    "integration": [
+      "Supply real readiness and permission states and an explicit join handler. Explain unavailable controls, support cancellation and keep pending or failed joins recoverable.",
+      "Install in a React Native app. The web preview supports design review; verify touch gestures, large text, reduced motion and assistive technology on target devices."
+    ],
+    "related": [
+      "mobile-agent-approval",
+      "mobile-bottom-sheet"
+    ],
+    "updated": "2026-10-13"
+  },
+  "mobile-channel-thread": {
+    "useWhen": "Reading a selected message and replies while composing an acknowledged response.",
+    "avoidWhen": "A full messaging backend or mixing drafts between channels with repeated message IDs.",
+    "integration": [
+      "Scope message, reply and draft identity to the channel. Preserve text on failure, reject stale acknowledgements after scope changes and keep reading position stable.",
+      "Install in a React Native app. The web preview supports design review; verify touch gestures, large text, reduced motion and assistive technology on target devices."
+    ],
+    "related": [
+      "mobile-chat",
+      "mobile-swipe-list"
+    ],
+    "updated": "2026-10-13"
+  },
+  "mobile-task-move": {
+    "useWhen": "Reviewing and requesting a constrained task-state transition.",
+    "avoidWhen": "Drag-only task management or offering undo when the host cannot restore the previous state.",
+    "integration": [
+      "Supply allowed transitions and disabled reasons. Review the exact destination, wait for host acknowledgement and retain the current state after rejection.",
+      "Install in a React Native app. The web preview supports design review; verify touch gestures, large text, reduced motion and assistive technology on target devices."
+    ],
+    "related": [
+      "mobile-agent-approval",
+      "mobile-swipe-list"
+    ],
+    "updated": "2026-10-13"
+  },
+  "mobile-review-annotations": {
+    "useWhen": "Selecting supplied annotations over an asset and inspecting their context.",
+    "avoidWhen": "An image editing engine or requiring precise taps as the only way to reach a note.",
+    "integration": [
+      "Use normalized annotation coordinates and stable IDs. Pair touch targets with a readable list, handle missing assets and keep selection associated with the correct version.",
+      "Install in a React Native app. The web preview supports design review; verify touch gestures, large text, reduced motion and assistive technology on target devices."
+    ],
+    "related": [
+      "mobile-bottom-sheet",
+      "mobile-chat"
+    ],
+    "updated": "2026-10-13"
+  },
+  "mobile-notification-digest": {
+    "useWhen": "Reviewing grouped actionable notifications and acknowledging read or snooze requests.",
+    "avoidWhen": "A push delivery service or silently marking everything read when the view opens.",
+    "integration": [
+      "Supply stable notification IDs, timestamps and host-owned acknowledgement handlers. Preserve position during changes and clearly distinguish unread, pending and failed updates.",
+      "Install in a React Native app. The web preview supports design review; verify touch gestures, large text, reduced motion and assistive technology on target devices."
+    ],
+    "related": [
+      "mobile-swipe-list",
+      "mobile-live-activity"
+    ],
+    "updated": "2026-10-13"
+  },
+  "mobile-sync-conflict": {
+    "useWhen": "Comparing local and remote fields before requesting a reviewed resolution.",
+    "avoidWhen": "Choosing a winner automatically or hiding edits when a newer version arrives.",
+    "integration": [
+      "Supply version identities and comparable fields. Preserve local edits, show the exact selected resolution and retire stale completion when either version changes.",
+      "Install in a React Native app. The web preview supports design review; verify touch gestures, large text, reduced motion and assistive technology on target devices."
+    ],
+    "related": [
+      "mobile-agent-approval",
+      "mobile-settings"
+    ],
+    "updated": "2026-10-13"
+  },
+  "mobile-offline-outbox": {
+    "useWhen": "Inspecting queued changes and retrying host-reported delivery failures.",
+    "avoidWhen": "A background sync engine or presenting local queuing as a server acknowledgement.",
+    "integration": [
+      "Supply queue entries and truthful delivery states. Keep retry explicit, explain cancellation or editing limits and distinguish local drafts from accepted changes.",
+      "Install in a React Native app. The web preview supports design review; verify touch gestures, large text, reduced motion and assistive technology on target devices."
+    ],
+    "related": [
+      "mobile-live-activity",
+      "mobile-agent-approval"
+    ],
+    "updated": "2026-10-13"
   }
 }
