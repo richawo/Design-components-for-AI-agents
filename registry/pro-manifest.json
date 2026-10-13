@@ -18827,6 +18827,164 @@
     ]
   },
   {
+    "slug": "media-caption-styler",
+    "name": "Caption Style Studio",
+    "tier": "pro",
+    "platform": "web",
+    "category": "editors",
+    "description": "An actual caption style editor previews text over supplied footage, with measured wrapping, safe-area guides, panel contrast and usable CSS output.",
+    "tags": [
+      "captions",
+      "typography",
+      "video",
+      "editor",
+      "safe area",
+      "contrast"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1100,
+    "usage": "import { MediaCaptionStyler } from \"@/components/design-for-ai/media-caption-styler\";\n\n<MediaCaptionStyler media={media} caption={caption} onCaptionChange={setCaption} value={style} onChange={setStyle} onSave={saveStyle} />\n\n// Save receives a 1080 px reference style, actual caption and an AbortSignal.\n// Rendering subtitles into a video is a separate host operation.",
+    "added": "2026-10-13",
+    "props": [
+      {
+        "name": "media",
+        "type": "CaptionMedia | null",
+        "description": "Stable media ID, image or video kind, real source, alternative text and optional video poster. Null preserves a useful neutral caption frame."
+      },
+      {
+        "name": "caption",
+        "type": "string",
+        "description": "Optional controlled caption text. Pair with onCaptionChange; missing handlers make it read-only."
+      },
+      {
+        "name": "defaultCaption",
+        "type": "string",
+        "default": "\"Make room for the details.\"",
+        "description": "Initial local caption; later changes do not overwrite an edited draft."
+      },
+      {
+        "name": "onCaptionChange",
+        "type": "(caption: string) => void",
+        "description": "Request a text edit; rejected controlled requests retain the actual caption."
+      },
+      {
+        "name": "value",
+        "type": "CaptionStyle",
+        "description": "Optional controlled style: size, weight, font role, alignment, placement, width, text color, treatment and opaque box color."
+      },
+      {
+        "name": "defaultValue",
+        "type": "CaptionStyle",
+        "description": "Initial local style and explicit reset target. Values are normalized within supported ranges."
+      },
+      {
+        "name": "onChange",
+        "type": "(style: CaptionStyle) => void",
+        "description": "Request the complete normalized style. The host owns controlled acceptance."
+      },
+      {
+        "name": "onSave",
+        "type": "(snapshot: CaptionSnapshot, signal: AbortSignal) => void | Promise<void>",
+        "description": "Host-owned acknowledgement of caption/style/media ID, 1080 px reference width and safe inset. Edits, media, handler, disabled or lifecycle changes abort stale requests."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "default": "false",
+        "description": "Disables edits, copying and saving while preserving visible content."
+      },
+      {
+        "name": "aspectRatio",
+        "type": "number",
+        "default": "16 / 9",
+        "description": "Reference frame width/height ratio, clamped to 0.5–3. Use the actual output framing, including portrait footage; the save snapshot carries it."
+      },
+      {
+        "name": "safeInset",
+        "type": "number",
+        "default": "10",
+        "description": "Guide inset percentage, clamped to 0–24. The component reports measured text crossing the guide, not compliance with every publishing platform."
+      },
+      {
+        "name": "showGuides",
+        "type": "boolean",
+        "description": "Optional controlled guide visibility. Pair with onGuidesChange."
+      },
+      {
+        "name": "onGuidesChange",
+        "type": "(visible: boolean) => void",
+        "description": "Request guide visibility. Missing controlled handler locks this control."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Complete editor surface and text palettes."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<CaptionLabels>",
+        "description": "Heading, fields, safe-area, contrast, media, clipboard and save-state copy."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "default": "\"\"",
+        "description": "Host layout classes."
+      }
+    ],
+    "demo": {
+      "steps": [
+        "click:@caption-left",
+        "wait:200",
+        "click:@caption-size",
+        "key:ArrowRight",
+        "key:ArrowRight",
+        "click:@caption-save",
+        "wait:500"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "safeInset",
+        "label": "Safe-area inset",
+        "kind": "slider",
+        "min": 0,
+        "max": 24,
+        "step": 1,
+        "default": 10,
+        "unit": "%"
+      },
+      {
+        "prop": "showGuides",
+        "label": "Guides",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "disabled",
+        "label": "Read only",
+        "kind": "toggle",
+        "default": false
+      }
+    ]
+  },
+  {
     "slug": "media-crop-workbench",
     "name": "Image Crop Workbench",
     "tier": "pro",
