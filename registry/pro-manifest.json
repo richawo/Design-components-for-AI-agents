@@ -16283,6 +16283,171 @@
     ]
   },
   {
+    "slug": "footer-sitemap-atlas",
+    "name": "Sitemap Atlas",
+    "tier": "pro",
+    "platform": "web",
+    "category": "footers",
+    "description": "A useful grouped site index combines an editorial wordmark, actual destinations, accent-insensitive search and compact controlled disclosures.",
+    "tags": [
+      "footer",
+      "sitemap",
+      "navigation",
+      "search",
+      "disclosure"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 980,
+    "usage": "import { FooterSitemapAtlas } from \"@/components/design-for-ai/footer-sitemap-atlas\";\n\n<FooterSitemapAtlas name=\"Your product\" groups={destinations} currentHref={pathname} />\n\n// Supply real URLs and actual availability. The component does not invent page destinations.",
+    "props": [
+      {
+        "name": "name",
+        "type": "string",
+        "description": "Actual brand or site name. Long names wrap without horizontal overflow."
+      },
+      {
+        "name": "homeHref",
+        "type": "string",
+        "description": "Real optional brand destination. Omit or set empty text for a noninteractive wordmark."
+      },
+      {
+        "name": "copyright",
+        "type": "string",
+        "description": "Actual supplied copyright text. No automatic current year or ownership claim."
+      },
+      {
+        "name": "groups",
+        "type": "readonly SitemapGroup[]",
+        "description": "Stable nonempty group/link identities with labels, descriptions and optional actual destinations. Unavailable links retain their stated reason without a fake href."
+      },
+      {
+        "name": "currentHref",
+        "type": "string",
+        "description": "Exact current destination for aria-current page. No navigation is executed implicitly."
+      },
+      {
+        "name": "query",
+        "type": "string",
+        "description": "Optional controlled search. Pair with onQueryChange; rejected requests preserve actual matching results."
+      },
+      {
+        "name": "defaultQuery",
+        "type": "string",
+        "description": "Initial local search seed. Later host defaults do not overwrite editing; use resetKey for a lifecycle reset."
+      },
+      {
+        "name": "onQueryChange",
+        "type": "(query: string) => void",
+        "description": "Request the exact query. Search normalizes accents and case only for matching supplied text."
+      },
+      {
+        "name": "openGroups",
+        "type": "readonly string[]",
+        "description": "Optional controlled compact-container disclosure IDs. Rejection retains the actual expansion state."
+      },
+      {
+        "name": "defaultOpenGroups",
+        "type": "readonly string[]",
+        "description": "Initial local disclosure state. Desktop displays every group; search exposes matching groups without mutating saved compact expansion."
+      },
+      {
+        "name": "onOpenGroupsChange",
+        "type": "(ids: readonly string[]) => void",
+        "description": "Request compact-container expansion changes without navigating."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Explicit lifecycle reset for local query and disclosure seeds."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"error\"",
+        "description": "Host-owned availability, retaining readable links with navigation locked until ready."
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "description": "Actual host failure explanation. Empty messages use readable recovery copy."
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Actual host recovery action. No retry control when absent."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Lock editing, disclosures and navigation while retaining all content."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Complete charcoal or cream palettes, including focus and disabled link states."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<SitemapAtlasLabels>",
+        "description": "Tagline, navigation, search, result and availability copy."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Host layout classes responsive to the actual container."
+      }
+    ],
+    "added": "2026-10-13",
+    "demo": {
+      "steps": [
+        "click:@sitemap-search",
+        "type:prompt",
+        "wait:500",
+        "click:@sitemap-clear",
+        "wait:500"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "name",
+        "label": "Site name",
+        "kind": "text",
+        "default": "Design for AI"
+      },
+      {
+        "prop": "disabled",
+        "label": "Unavailable navigation",
+        "kind": "toggle",
+        "default": false
+      },
+      {
+        "prop": "status",
+        "label": "Availability",
+        "kind": "select",
+        "options": [
+          "ready",
+          "loading",
+          "error"
+        ],
+        "default": "ready"
+      }
+    ]
+  },
+  {
     "slug": "header-island",
     "name": "Dynamic Island Header",
     "tier": "pro",

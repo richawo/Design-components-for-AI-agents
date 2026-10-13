@@ -66,7 +66,7 @@ Validate all six web widths, both supported themes, multiple instances and empty
 | 27 | `social-proof-case-ledger` | social-proof | Browse supplied case outcomes alongside the evidence and time period that support each figure. | Released |
 | 28 | `content-interactive-spec` | content | Inspect a product specification by selecting annotated parts of a supplied diagram. | Released |
 | 29 | `cta-project-brief` | cta | A concise project brief folds into a reviewable submission with pending, failure and preserved input. | Released |
-| 30 | `footer-sitemap-atlas` | footers | A navigable site index with grouped destinations and a compact narrow-container treatment. | Planned |
+| 30 | `footer-sitemap-atlas` | footers | A navigable site index with grouped destinations and a compact narrow-container treatment. | Released |
 
 ## 4. Graphics and typography with purpose
 
@@ -175,4 +175,4 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 ## Progress
 
-Planned: 62. Released: 38. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
+Planned: 61. Released: 39. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
