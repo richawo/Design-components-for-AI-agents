@@ -4119,8 +4119,10 @@
     "useWhen": "Editing a small, explicitly supported expression with syntax feedback and a transparent computed example.",
     "avoidWhen": "Evaluating arbitrary JavaScript or implying support for a complete programming language.",
     "integration": [
-      "Supply available fields, supported operators and example values. Parse the permitted expression without eval and report errors at the relevant position.",
-      "Preserve the draft after invalid input and keep keyboard completion, suggestions and evaluation ownership consistent."
+      "Supply at most32 unique ExpressionField identifiers with a declared number, text or boolean kind and optional matching finite example. The parser accepts at most512 characters,128 tokens and32 nested operations. It never uses eval or accepts arbitrary JavaScript.",
+      "Supported syntax: decimal numbers, escaped quoted text, true/false, fields, parentheses, unary + / − / !, numeric + / − / * / /, numeric comparisons, same-type == / != and short-circuit && / ||. Missing examples, division by zero and non-finite or over-±1e12 results remain explicit.",
+      "The native textarea retains a separate unapplied draft; fields insert at its real selection. Control+Space inserts the first field, Control/Command+Enter requests Apply, and Escape returns to the accepted expression. Numeric display also exposes the exact computed JS number.",
+      "Explicit onValueChange requests the exact valid expression only when its supplied example can be computed. Controlled rejection preserves current expression and draft; an older acknowledgement cannot erase a newer edit. Local seeds change only through resetKey."
     ],
     "related": [
       "data-query-builder",
@@ -4132,8 +4134,10 @@
     "useWhen": "Selecting hierarchical items with indeterminate parents, search and explainable disabled branches.",
     "avoidWhen": "A flat select, a general file browser or bulk selection that ignores unavailable descendants.",
     "integration": [
-      "Supply stable node IDs and clear parent/child relationships. Define whether selecting a parent includes its eligible descendants.",
-      "Search must preserve selected items and reading order; keyboard navigation and touch expansion should not accidentally select an unrelated branch."
+      "Supply unique nonempty PickerNode identities/labels, at most128 items and eight hierarchy levels. Parent disabled state and its explanation propagate to descendants; duplicate identities make selection unavailable.",
+      "value is a leaf-identity array; onValueChange receives a cloned atomic request. Group checkboxes include all eligible descendant leaves, including items outside the search. Existing unavailable selections remain visible and retained. Clear selectable items preserves unavailable choices.",
+      "query/onQueryChange and expandedIds/onExpandedIdsChange are separately controlled. Accent/case-normalized search temporarily reveals matches and context without replacing stored expansion or selection; clearing it restores actual disclosure choices. Missing controlled handlers produce honest fixed controls.",
+      "Native indeterminate checkboxes have separate disclosure actions. Arrow keys visit actual visible targets, Home/End reveal endpoints and logical horizontal keys follow RTL. Folded content is inert; focus recovers only while the component still owns it."
     ],
     "related": [
       "data-file-explorer",
