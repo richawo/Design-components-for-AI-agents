@@ -13,6 +13,16 @@ content routes use bundled data instead of reading the disk:
 `scripts/build-registry.mjs` bundles sources, docs and blog posts into
 `registry/__generated__/` so they ship inside the Worker.
 
+`open-next.config.ts` publishes the prerendered HTML and React Server Component
+payloads through OpenNext's read-only Workers Static Assets cache and enables
+cache interception. Public content comes from the build rather than rendering
+again during navigation. Dynamic account, authentication and licensed-source
+routes keep their server authorization checks. Nothing uses runtime revalidation.
+See the [OpenNext SSG cache configuration](https://opennext.js.org/cloudflare/caching#ssg-site).
+The custom `scripts/deploy-worker.mjs` command runs OpenNext's cache preparation
+before Wrangler bundles or uploads, including during a dry run. Without that
+step the cache assets are absent and public requests fall back to rendering.
+
 Blog Markdown lives in the private repository at `_site/blog/`, cloned into
 `registry/pro/_site/blog/`. Its generated bundle is ignored by Git. Production
 sync requires these posts as well as the Pro components. A public clone without

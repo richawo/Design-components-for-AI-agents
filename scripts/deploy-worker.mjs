@@ -10,7 +10,13 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const directory = path.join(root, ".open-next", "deploy");
 const archive = path.join(root, ".open-next", "source-maps-full");
 const wrangler = path.join(root, "node_modules", ".bin", "wrangler");
+const openNext = path.join(root, "node_modules", ".bin", "opennextjs-cloudflare");
 const run = (args) => execFileSync(wrangler, [...args, "--config", path.join(root, "wrangler.jsonc")], { cwd: root, stdio: "inherit" });
+
+// This deploy path invokes Wrangler directly, so it must do the cache
+// preparation normally performed by OpenNext's deploy command. The configured
+// read-only cache copies build-time entries into the assets upload directory.
+execFileSync(openNext, ["populateCache", "remote", "--config", path.join(root, "wrangler.jsonc")], { cwd: root, stdio: "inherit" });
 
 // Let Wrangler resolve the entrypoint and WASM modules exactly as for deployment.
 run(["deploy", "--dry-run", "--minify", "--outdir", directory]);
