@@ -25171,6 +25171,189 @@
     ]
   },
   {
+    "slug": "text-optical-weight",
+    "name": "Optical Weight",
+    "tier": "pro",
+    "platform": "web",
+    "category": "text",
+    "description": "An interactive variable-font specimen with selectable type, declared weight and optical axes, exact controls and honest responsive pixel sizing.",
+    "tags": [
+      "typography",
+      "variable font",
+      "optical size",
+      "specimen",
+      "font weight",
+      "selectable text"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 950,
+    "usage": "import { TextOpticalWeight } from \"@/components/design-for-ai/text-optical-weight\";\n\n<TextOpticalWeight text={specimen} fontRole=\"display\" weightAxis={supportedWeight} value={typeValues} onValueChange={setTypeValues} onValueCommit={saveTypeValues} />",
+    "props": [
+      {
+        "name": "text",
+        "type": "string",
+        "description": "Selectable specimen copy, including intentional line breaks.",
+        "default": "\"Feel the\\nweight.\""
+      },
+      {
+        "name": "fontRole",
+        "type": "\"display\" | \"serif\" | \"mono\"",
+        "description": "CSS font role. Supply the actual host face through its role variable; the default role-backed faces are installed by the consuming project.",
+        "default": "\"display\""
+      },
+      {
+        "name": "fontLabel",
+        "type": "string",
+        "description": "Honest host label for the supplied face."
+      },
+      {
+        "name": "weightAxis",
+        "type": "OpticalFontAxis",
+        "description": "Declared finite supported weight range and step. Defaults to 100–900 for display/mono and fixed400 for the serif role."
+      },
+      {
+        "name": "opticalAxis",
+        "type": "OpticalFontAxis",
+        "description": "Optional real opsz declaration. Absent by default; unsupported axes are never presented as a working effect."
+      },
+      {
+        "name": "value",
+        "type": "OpticalWeightValue",
+        "description": "Atomic controlled weight, requested pixel size and optional optical size. Missing handler is read-only; invalid values show an actionable state."
+      },
+      {
+        "name": "defaultValue",
+        "type": "OpticalWeightValue",
+        "description": "Initial uncontrolled font values, bounded to the declared axes."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(value: OpticalWeightValue) => void",
+        "description": "Requests one bounded font-value packet. Controlled rejection retains the actual specimen and an entered draft."
+      },
+      {
+        "name": "onValueCommit",
+        "type": "(value: OpticalWeightValue) => void",
+        "description": "Reports accepted changed range releases or exact/keyboard actions. Rejection, cancellation and obsolete interactions do not falsely commit."
+      },
+      {
+        "name": "heading",
+        "type": "string",
+        "description": "Specimen panel heading.",
+        "default": "\"A matter of type.\""
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Short context for the visual type study.",
+        "default": "\"Feel the difference in the words themselves.\""
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Graphite or warm-paper surfaces with neutral readable text.",
+        "default": "\"dark\""
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "description": "Text-selection color.",
+        "default": "\"#e7b981\""
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"unavailable\"",
+        "description": "Host font availability, preserving readable fallback specimen text.",
+        "default": "\"ready\""
+      },
+      {
+        "name": "error",
+        "type": "string",
+        "description": "Host font recovery copy."
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Optional explicit host font-recovery intent."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Stops interactions while retaining selectable text.",
+        "default": "false"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Root classes for the responsive840px specimen.",
+        "default": "\"\""
+      }
+    ],
+    "controls": [
+      {
+        "prop": "heading",
+        "label": "Specimen title",
+        "kind": "text",
+        "default": "A matter of type."
+      },
+      {
+        "prop": "fontRole",
+        "label": "Font role",
+        "kind": "segmented",
+        "options": [
+          "display",
+          "serif",
+          "mono"
+        ],
+        "default": "display"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "disabled",
+        "label": "Disabled",
+        "kind": "toggle",
+        "default": false
+      },
+      {
+        "prop": "status",
+        "label": "Font availability",
+        "kind": "action",
+        "options": [
+          "ready",
+          "loading",
+          "unavailable"
+        ]
+      }
+    ],
+    "demo": {
+      "steps": [
+        "click:@optical-weight:0.82,0.5",
+        "wait:350",
+        "click:@optical-size:0.35,0.5",
+        "wait:350",
+        "click:@optical-weight:0.27,0.5",
+        "wait:350",
+        "click:@optical-reset",
+        "wait:450"
+      ],
+      "loop": false
+    },
+    "added": "2026-10-13"
+  },
+  {
     "slug": "three-ascii-object",
     "name": "ASCII Object",
     "tier": "pro",

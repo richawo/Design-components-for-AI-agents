@@ -72,7 +72,7 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 | # | Slug | Category | Distinct interaction and essential states | Status |
 | --- | --- | --- | --- | --- |
-| 31 | `text-optical-weight` | text | A variable-font specimen demonstrates weight and optical scale while retaining selectable text. | Planned |
+| 31 | `text-optical-weight` | text | A variable-font specimen demonstrates weight and optical scale while retaining selectable text. | Released |
 | 32 | `text-path-typesetter` | text | Place accessible text along a supplied curve and adjust spacing without losing the reading order. | Planned |
 | 33 | `text-number-odometer` | text | An interruptible numeric roll handles increases, decreases, signs, decimals and reduced motion. | Planned |
 | 34 | `text-outline-fill` | text | Reading progress fills outlined lettering with a fully legible static fallback. | Planned |
@@ -175,4 +175,4 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 ## Progress
 
-Planned: 76. Released: 24. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
+Planned: 75. Released: 25. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
