@@ -13172,7 +13172,7 @@
       {
         "name": "style",
         "type": "CSSProperties",
-        "description": "Optional inline host layout styles. Children receive no positioning overrides."
+        "description": "Optional host layout styles. The wrapper retains a positioned containing block and uniform corners controlled by radius, keeping its SVG aligned. Children receive no positioning overrides."
       },
       {
         "name": "HTMLAttributes",
