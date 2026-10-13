@@ -43,6 +43,13 @@ export function concatFrameList(frames, startTime, endTime) {
   }).join("\n") + `\nfile '${frames.at(-1).file}'\noption framerate 1000\n`;
 }
 
+/** Fit a whole viewport to the output aspect ratio without stretching its pixels. */
+export function fitViewportFrame(vw, vh, bg, outputWidth = 1280, outputHeight = 800) {
+  const cw = Math.max(vw, vh * outputWidth / outputHeight);
+  const ch = cw * outputHeight / outputWidth;
+  return { cw, ch, cx: (vw - cw) / 2, cy: (vh - ch) / 2, bg };
+}
+
 /** Add only the stage pixels the crop needs. Padding every frame by 2,000px
  * on all sides needlessly processed tens of millions of invisible pixels. */
 export function framedCropFilter(vw, vh, frame) {

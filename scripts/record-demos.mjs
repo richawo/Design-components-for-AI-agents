@@ -21,7 +21,7 @@ import os from "node:os";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
 import sharp from "sharp";
-import { captureQuality, gallerySteps, concatFrameList, framedCropFilter } from "./lib/recording-quality.mjs";
+import { captureQuality, gallerySteps, concatFrameList, framedCropFilter, fitViewportFrame } from "./lib/recording-quality.mjs";
 import { launchChromium } from "./lib/browser.mjs";
 import { mountFixture } from "./lib/component-fixture.mjs";
 import { CURSOR_CSS, CURSOR_HTML, CURSOR_START } from "../lib/demo/cursor.mjs";
@@ -203,7 +203,7 @@ async function record(browser, slug) {
     // Poster framing from the frame we're about to start on.
     const first = await page.screenshot({ type: "png" });
     const initialFrame = mobile ? null : await framing(first, vw, vh);
-    const frame = initialFrame && frameViewport ? { cw: vw, ch: vh, cx: 0, cy: 0, bg: initialFrame.bg } : initialFrame;
+    const frame = initialFrame && frameViewport ? fitViewportFrame(vw, vh, initialFrame.bg, OUT_W, OUT_H) : initialFrame;
 
     // Frames: Chrome's screencast, with timestamps, at full quality.
     const cdp = await context.newCDPSession(page);
@@ -336,7 +336,7 @@ async function record(browser, slug) {
     if (reportDir) {
       const directory = path.resolve(root, reportDir);
       fs.mkdirSync(directory, { recursive: true });
-      fs.writeFileSync(path.join(directory, `${slug}.json`), JSON.stringify({ slug, renderMode: isolatedSource ? "isolated-production-source" : "preview", quality, continuousQuality, viewport: { vw, vh, dpr }, timestamps: frames.map((frame) => frame.t), motionWindows, continuousWindows }, null, 2));
+      fs.writeFileSync(path.join(directory, `${slug}.json`), JSON.stringify({ slug, renderMode: isolatedSource ? "isolated-production-source" : "preview", quality, continuousQuality, viewport: { vw, vh, dpr }, framing: frame, timestamps: frames.map((frame) => frame.t), motionWindows, continuousWindows }, null, 2));
     }
     // Each frame holds until the next one; the last holds to the end.
     frames.sort((a, b) => a.t - b.t);
