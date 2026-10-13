@@ -17297,7 +17297,7 @@
       {
         "name": "value",
         "type": "number",
-        "description": "Controlled value. Host changes normalize to the nearest detent. Rejected change requests leave the host value untouched and preserve an entered numeric draft. The dial uses compact or scientific text for long values; the entry and ARIA value stay exact."
+        "description": "Controlled value normalized to a detent. Pair with onValueChange; omitted handlers make it read-only. Owner/range resets interrupt dragging. Rejected numeric drafts are retained; compact text fits the face while entry and ARIA remain exact."
       },
       {
         "name": "defaultValue",
@@ -17309,7 +17309,7 @@
         "name": "disabled",
         "type": "boolean",
         "default": "false",
-        "description": "Disables dial, numeric entry and actions; releases active pointer capture."
+        "description": "Disables dial, numeric entry and actions; releases active pointer capture and replaces interaction instructions with its unavailable state."
       },
       {
         "name": "error",
@@ -17330,7 +17330,7 @@
       {
         "name": "onValueCommit",
         "type": "(value: number) => void",
-        "description": "Commit notification after pointer release, a key step, Reset or valid numeric Enter. Cancellation restores the drag start and does not commit. The host owns asynchronous work and its error prop."
+        "description": "Notifies accepted changes after pointer release or synchronously accepted key, Reset and numeric Enter requests. Rejected/no-op requests and cancellation do not commit. The host owns asynchronous work and errors."
       },
       {
         "name": "resetLabel",
