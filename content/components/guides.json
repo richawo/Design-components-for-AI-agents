@@ -4498,7 +4498,7 @@
     "integration": [
       "Supply stable fields with actual path, declared JSON type (string, number, boolean, null, object or array), value, waiting/partial/valid/invalid/unavailable state and meaningful messages. outputState/outputMessage describes actual host streaming/completion/failure; rawOutput is received text, not invented validated JSON.",
       "Selection is an exact value/defaultValue/onValueChange ID contract; inspection filters are local. Only unique, valid, type-matching, finite, acyclic and bounded field values can be copied as validated output. Explicit raw copying keeps the received state clear.",
-      "Real onRetry(field, AbortSignal) and clipboard jobs are owned by the exact field content/state, output/reset scope, availability and callback identity. Cancel/retire stale acknowledgements while preserving the latest visible data. Missing handlers never show fake recovery controls."
+      "Real onRetry(field, AbortSignal) and field clipboard jobs are owned by exact field content/state and unique identity, output/reset scope, availability and callback identity. A newly duplicated active ID aborts recovery and retires field-copy receipts; old settlement cannot affect corrected newer work. Raw-text copying keeps its independent supplied-text scope. Missing handlers never show fake recovery controls."
     ],
     "related": [
       "streaming-text",
@@ -4510,8 +4510,9 @@
     "useWhen": "Inspecting supplied task dependencies and tracing actual blockers with a readable graph and linear alternative.",
     "avoidWhen": "A general node editor, invented agent activity or treating a circular dependency as a runnable plan.",
     "integration": [
-      "Supply stable task IDs, dependency relationships and actual statuses. Explain missing nodes and cycles rather than silently dropping them.",
-      "Keep keyboard task selection and blocker details consistent with the graph, and preserve selection when statuses change."
+      "Supply stable task IDs, raw dependency arrays and actual queued/running/blocked/complete/error statuses. Distinguish missing nodes, cycles and repeated IDs. A dependency with conflicting supplied records is ambiguous even when its first visual variant is complete; keep all raw variants inspectable.",
+      "Selection is controlled/uncontrolled, while graph/list and dependency/dependent tracing are local inspection. Preserve actual selection through status updates and use resetKey for a replacement plan. Keyboard focus reveals complete targets inside the bounded local graph/list.",
+      "This board does not execute tasks or infer permission from a valid graph. Local inspection is bounded to 200 unique tasks and 60 graph cards; expose incomplete or out-of-bound relationships rather than treating omitted data as complete."
     ],
     "related": [
       "agent-plan-steps",
@@ -4523,8 +4524,9 @@
     "useWhen": "Reconstructing visible state from a supplied event history while scrubbing a completed or partial run.",
     "avoidWhen": "Executing agent tools, generating an event history or presenting replayed actions as current live activity.",
     "integration": [
-      "Supply ordered event identities, timestamps and the state each event changes. Keep the reconstructed view tied to the selected point in history.",
-      "Offer exact and keyboard time navigation, identify missing events and stop playback when the user inspects a different point."
+      "Supply unique event IDs, nonnegative safe whole-millisecond timestamps and complete snapshots. The clock selects only the last supplied snapshot at or before it; equal-time events preserve order and explicit inspection can pin one actual snapshot. No intermediate workflow state is inferred.",
+      "Pair controlled time with synchronous onTimeChange. Accepted conventional inline observers may change reference without retiring the same-history clock owner. A rejected playback request stops; removing the required observer makes the controlled clock read-only. Exact entry preserves dirty drafts and later typing through older acknowledgements.",
+      "User-started 1x/2x playback executes nothing and stops for history/reset replacement, explicit seek, hidden/offscreen/window blur, rejection or unmount. Live reduced motion stops decorative tweens while preserving meaningful explicit clock playback. Invalid/duplicate records remain inspectable and cannot drive playback."
     ],
     "related": [
       "agent-run-trace",
@@ -4550,8 +4552,9 @@
     "useWhen": "Comparing supplied deployments and their changed resources before a reviewed host-owned rollback request.",
     "avoidWhen": "Performing an implicit deployment or claiming a rollback succeeded without an actual host result.",
     "integration": [
-      "Supply deployment IDs, timestamps, change summaries and real resource differences. Keep the current release distinguishable from the inspected candidate.",
-      "Review rollback scope explicitly, retain context after failure and retire results when the target deployment changes."
+      "Supply immutable current/candidate releases with ID, label, supported timestamp, resourcesComplete and actual resource ID/path/kind/bytes/digest/text. Equal size alone is unverified; complete opposite inventory is required to call a resource added or removed. Raw identity conflicts stay visible.",
+      "Pair target value with onValueChange for controlled inspection. Review requests require an earlier supported target, complete unique inventories and known content comparisons. Consent belongs to the exact current/target manifest pair and retires permanently on replacement; byte subtotals stay exact and unknown sizes remain separate.",
+      "Pass the copied reviewed pair to onRequestRollback(review, AbortSignal), preserve context through failure/cancel and fence old results by target/content/callback/reset ownership. Acknowledgement shows Awaiting current release, blocks duplicate requests and never invents a deployment change; only the supplied current release reports deployment."
     ],
     "related": [
       "agent-commit-card",
@@ -4563,8 +4566,9 @@
     "useWhen": "Editing a supplied request and inspecting the response returned by a real host request handler.",
     "avoidWhen": "Pretending a demonstration payload came from a live server or sending a request without an explicit action.",
     "integration": [
-      "Supply the request contract and a handler with cancellation. Clearly label any offline example and keep response status, headers and body tied to that request.",
-      "Preserve edited input after failure, retire previous pending work and prevent late responses from replacing a newer request."
+      "Supply request/defaultRequest with stable ID, supported HTTP method, HTTP(S) or root-relative URL, lossless header rows and text body. Pair controlled request with synchronous onRequestChange; without it, editing is read-only. Apply submits an exact draft while rejected controlled edits remain retained.",
+      "onReplay receives only the accepted applied snapshot and AbortSignal. The handler owns networking, authentication and CORS and returns actual HTTP status, header rows, body and optional measured elapsedMs. A void acknowledgement never fabricates a response or timing. Keep each returned exchange visibly paired to its exact sent request.",
+      "Pending typing stays a newer draft. Accepted request/content/session/handler replacement or unmount retires old jobs; cancel and newer-job/old-finally are fenced. Preserve the last response with an earlier-request label after changed input or failure. Native copying belongs to the actual returned body and bounded/truncated data is never copied as complete."
     ],
     "related": [
       "devtools-api-playground",
