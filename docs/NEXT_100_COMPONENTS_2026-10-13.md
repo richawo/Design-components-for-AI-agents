@@ -77,7 +77,7 @@ Validate all six web widths, both supported themes, multiple instances and empty
 | 33 | `text-number-odometer` | text | An interruptible numeric roll handles increases, decreases, signs, decimals and reduced motion. | Released |
 | 34 | `text-outline-fill` | text | Reading progress fills outlined lettering with a fully legible static fallback. | Released |
 | 35 | `bg-fluted-glass` | backgrounds | A refracted surface behind supplied content, with bounded quality, offscreen pause and static rendering. | Planned |
-| 36 | `bg-topographic-contours` | backgrounds | Contour density and light angle respond to a bounded input; no uncontrolled ambient drift. | Planned |
+| 36 | `bg-topographic-contours` | backgrounds | Contour density and light angle respond to a bounded input; no uncontrolled ambient drift. | Released |
 | 37 | `pixel-halftone-image` | pixel | A host image becomes a controllable halftone specimen with meaningful density and threshold controls. | Planned |
 | 38 | `effect-ink-trail` | effects | A pointer mark inside a bounded drawing region fades deliberately and leaves ordinary controls usable. | Planned |
 | 39 | `three-material-inspector` | three-d | Inspect a generic material sample under adjustable light; compare metal, frost and matte using one object. | Planned |
@@ -175,4 +175,4 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 ## Progress
 
-Planned: 58. Released: 42. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
+Planned: 57. Released: 43. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.

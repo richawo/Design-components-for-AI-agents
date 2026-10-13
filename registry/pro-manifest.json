@@ -3855,6 +3855,137 @@
     ]
   },
   {
+    "slug": "bg-topographic-contours",
+    "name": "Topographic Contours",
+    "tier": "pro",
+    "platform": "web",
+    "category": "backgrounds",
+    "description": "A bounded native contour surface traces supplied scalar samples, with interruptible density and directional edge lighting.",
+    "tags": [
+      "contours",
+      "height field",
+      "topography",
+      "material",
+      "canvas",
+      "bounded motion"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1200,
+    "usage": "import { BgTopographicContours } from \"@/components/design-for-ai/bg-topographic-contours\";\n\n<BgTopographicContours field={heightSamples} density={16} lightAngle={315}><YourForeground /></BgTopographicContours>",
+    "props": [
+      {
+        "name": "field",
+        "type": "TopographicField",
+        "description": "Finite2–48 by2–48 scalar grid, exactly one value per sample. Defaults to an explicitly synthetic original 32×24 field."
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "description": "Ordinary foreground content; events and overflowing menus stay usable."
+      },
+      {
+        "name": "density",
+        "type": "number",
+        "description": "Integer 8–24 target contour levels. Current-pose interpolation regenerates real native paths from the scalar field.",
+        "default": "16"
+      },
+      {
+        "name": "lightAngle",
+        "type": "number",
+        "description": "Finite 0–359 degree lighting bearing, following the shortest visible arc.",
+        "default": "315"
+      },
+      {
+        "name": "quality",
+        "type": "\"standard\" | \"high\"",
+        "description": "Actual Canvas backing-pixel budget: standard 640k/high 1.28M, bounded independently of DPR.",
+        "default": "\"standard\""
+      },
+      {
+        "name": "radius",
+        "type": "number",
+        "description": "Finite 0–64px radius clips the decorative canvas only.",
+        "default": "24"
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Quiet graphite/green or warm-paper contour palette and recovery text.",
+        "default": "\"dark\""
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"unavailable\"",
+        "description": "Host field availability. Existing valid field can remain as paused context while foreground stays available.",
+        "default": "\"ready\""
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Host root layout classes.",
+        "default": "\"\""
+      }
+    ],
+    "controls": [
+      {
+        "prop": "density",
+        "label": "Contour density",
+        "kind": "slider",
+        "min": 8,
+        "max": 24,
+        "step": 1,
+        "default": 16
+      },
+      {
+        "prop": "lightAngle",
+        "label": "Light bearing",
+        "kind": "slider",
+        "min": 0,
+        "max": 359,
+        "step": 1,
+        "default": 315
+      },
+      {
+        "prop": "quality",
+        "label": "Canvas quality",
+        "kind": "segmented",
+        "options": [
+          "standard",
+          "high"
+        ],
+        "default": "standard"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ],
+    "demo": {
+      "steps": [
+        "click:@contour-density:0.83,0.5",
+        "wait:400",
+        "click:@contour-light:0.29,0.5",
+        "wait:400",
+        "click:@contour-density:0.2,0.5",
+        "wait:400",
+        "click:@contour-reset",
+        "wait:450"
+      ],
+      "loop": false
+    },
+    "added": "2026-10-13"
+  },
+  {
     "slug": "billing-cancel-flow",
     "name": "Honest Cancel Flow",
     "tier": "pro",
