@@ -37,6 +37,9 @@
   ],
   "exclude": [
     "node_modules",
-    "packages"
+    "packages",
+    "test-results",
+    ".open-next",
+    "output"
   ]
 }
