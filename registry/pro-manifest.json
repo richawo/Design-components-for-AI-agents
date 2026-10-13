@@ -19683,6 +19683,178 @@
     ]
   },
   {
+    "slug": "media-spatial-collection",
+    "name": "Spatial Collection",
+    "tier": "pro",
+    "platform": "web",
+    "category": "media",
+    "description": "A tactile depth-layered collection browser with readable selection labels, actual contents, an accessible list view and optional host-owned opening.",
+    "tags": [
+      "collection",
+      "album",
+      "3d",
+      "media browser",
+      "folio",
+      "spatial"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1000,
+    "usage": "import { MediaSpatialCollection } from \"@/components/design-for-ai/media-spatial-collection\";\n\n<MediaSpatialCollection collections={collections} selectedId={selectedId} onSelectedChange={setSelectedId} onOpenCollection={(item, signal) => openArchive(item.id, { signal })} />",
+    "props": [
+      {
+        "name": "collections",
+        "type": "SpatialCollectionItem[]",
+        "description": "Host collections with unique non-empty ids, actual title/creator, optional cover, description, edition, entries and availability. Missing or failed covers have an honest fallback.",
+        "default": "[]"
+      },
+      {
+        "name": "selectedId",
+        "type": "string",
+        "description": "Optional controlled selection. Missing handler makes it read-only. Rejected requests never move actual selection; an unknown id shows a useful unselected state."
+      },
+      {
+        "name": "defaultSelectedId",
+        "type": "string",
+        "description": "Initial uncontrolled selection. Defaults to the first collection. A removed uncontrolled selection settles on the first remaining collection."
+      },
+      {
+        "name": "onSelectedChange",
+        "type": "(id: string) => void",
+        "description": "Requests selection of a supplied collection. Arrow keys and bounded pointer swipes use the same host ownership."
+      },
+      {
+        "name": "view",
+        "type": "\"spatial\" | \"list\"",
+        "description": "Optional controlled presentation. Pair with onViewChange; without it, view controls truthfully become read-only."
+      },
+      {
+        "name": "defaultView",
+        "type": "\"spatial\" | \"list\"",
+        "description": "Initial uncontrolled presentation.",
+        "default": "\"spatial\""
+      },
+      {
+        "name": "onViewChange",
+        "type": "(view: \"spatial\" | \"list\") => void",
+        "description": "Requests a view change. Rejected controlled requests retain the actual view."
+      },
+      {
+        "name": "onOpenCollection",
+        "type": "(collection: SpatialCollectionItem, signal: AbortSignal) => void | Promise<void>",
+        "description": "Optional real host opening. Selection/data/handler/availability changes abort pending work and ignore late results; keep handler identity stable during one operation. Rejection retains details and retry."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"unavailable\"",
+        "description": "Host archive availability. Selection survives temporary loading/unavailable states.",
+        "default": "\"ready\""
+      },
+      {
+        "name": "error",
+        "type": "string",
+        "description": "Host error text, visible without replacing inspectable collection data."
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Optional actual host archive recovery."
+      },
+      {
+        "name": "onCreate",
+        "type": "() => void",
+        "description": "Optional actual host creation action in a ready empty archive."
+      },
+      {
+        "name": "heading",
+        "type": "string",
+        "description": "Collection browser title.",
+        "default": "\"The listening room\""
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Brief context.",
+        "default": "\"Collected ideas, with room to explore.\""
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Neutral graphite or warm-paper host-compatible surfaces.",
+        "default": "\"dark\""
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "description": "Reserved selection accent.",
+        "default": "\"#e6b782\""
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Stops browsing, view changes and opening, cancels active gestures and work.",
+        "default": "false"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Root classes. Fits its container up to 900 px.",
+        "default": "\"\""
+      }
+    ],
+    "controls": [
+      {
+        "prop": "heading",
+        "label": "Collection title",
+        "kind": "text",
+        "default": "The listening room"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "disabled",
+        "label": "Disabled",
+        "kind": "toggle",
+        "default": false
+      },
+      {
+        "prop": "status",
+        "label": "Availability",
+        "kind": "action",
+        "options": [
+          "ready",
+          "loading",
+          "unavailable"
+        ]
+      }
+    ],
+    "demo": {
+      "steps": [
+        "click:@collection-next",
+        "wait:400",
+        "click:@collection-next",
+        "wait:400",
+        "click:@collection-prev",
+        "wait:400",
+        "click:@collection-prev",
+        "wait:500"
+      ],
+      "loop": false
+    },
+    "added": "2026-10-13"
+  },
+  {
     "slug": "media-track-list",
     "name": "Music Track List",
     "tier": "pro",
