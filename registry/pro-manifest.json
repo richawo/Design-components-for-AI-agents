@@ -18642,6 +18642,173 @@
     ]
   },
   {
+    "slug": "media-crop-workbench",
+    "name": "Image Crop Workbench",
+    "tier": "pro",
+    "platform": "web",
+    "category": "editors",
+    "description": "A precise image crop editor with a real framing preview, fixed ratios, keyboard resizing and exact fields. Its offline demo exports the selected pixels.",
+    "tags": [
+      "image",
+      "crop",
+      "editor",
+      "aspect ratio",
+      "photography",
+      "keyboard"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1000,
+    "usage": "import { MediaCropWorkbench } from \"@/components/design-for-ai/media-crop-workbench\";\n\n<MediaCropWorkbench image={image} value={crop} onChange={setCrop} onCommit={saveSelection} onApply={applyCrop} />\n\n// applyCrop receives the normalized box, measured pixel coordinates and AbortSignal.\n// The host owns actual processing and optional downloadable results.",
+    "props": [
+      {
+        "name": "image",
+        "type": "CropImage | null",
+        "description": "Stable image ID, source, alternative text, optional title and initial dimensions. Native load measures actual dimensions. Null renders the empty state."
+      },
+      {
+        "name": "value",
+        "type": "CropBox",
+        "description": "Optional controlled box: normalized x, y, width and height. Pair with onChange; rejected requests retain the actual selection."
+      },
+      {
+        "name": "defaultValue",
+        "type": "CropBox",
+        "default": "{ x: 0.1, y: 0.12, width: 0.8, height: 0.76 }",
+        "description": "Initial internal box and explicit reset target, clamped to the image. A new image resets internal selection."
+      },
+      {
+        "name": "onChange",
+        "type": "(box: CropBox) => void",
+        "description": "Request a bounded normalized selection. A controlled value without this callback is read-only."
+      },
+      {
+        "name": "onCommit",
+        "type": "(box: CropBox) => void",
+        "description": "A completed accepted keyboard, field, preset or pointer change. Rejected controlled requests do not commit."
+      },
+      {
+        "name": "onApply",
+        "type": "(payload: CropPayload, signal: AbortSignal) => void | CropResult | Promise<void | CropResult>",
+        "description": "Host-owned processing of the measured selection. The signal cancels on selection, image, handler, availability or lifecycle retirement; old results cannot settle a new crop. A result may supply a message, href and filename."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"error\"",
+        "default": "\"ready\"",
+        "description": "Host image availability, combined with actual native load/error events."
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "description": "A host-owned error explanation."
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Request another host fetch. Native image failures can retry the source directly; host errors need this callback."
+      },
+      {
+        "name": "minEdge",
+        "type": "number",
+        "default": "0.06",
+        "description": "Minimum normalized width and height, bounded to 0.001–1."
+      },
+      {
+        "name": "step",
+        "type": "number",
+        "default": "0.005",
+        "description": "Normalized keyboard increment, bounded to 0.0001–0.25. Shift multiplies it by ten; exact fields remain independently precise."
+      },
+      {
+        "name": "initialCorner",
+        "type": "CropCorner",
+        "default": "\"bottom-right\"",
+        "description": "The active 44 px corner grip. A changed value retires an incomplete gesture and selects that corner."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "default": "false",
+        "description": "Disables crop edits and processing while preserving the visible selection."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Complete dark or light editor palette."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<CropLabels>",
+        "description": "Heading, instructions, field labels and processing, unavailable, error and result copy."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "default": "\"\"",
+        "description": "Host layout classes."
+      }
+    ],
+    "added": "2026-10-13",
+    "demo": {
+      "steps": [
+        "click:@crop-square",
+        "wait:350",
+        "click:@crop-box",
+        "key:ArrowRight",
+        "key:ArrowLeft",
+        "click:@crop-apply",
+        "wait:500"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "initialCorner",
+        "label": "Resize corner",
+        "kind": "select",
+        "options": [
+          "top-left",
+          "top-right",
+          "bottom-left",
+          "bottom-right"
+        ],
+        "default": "bottom-right"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "status",
+        "label": "Image state",
+        "kind": "segmented",
+        "options": [
+          "ready",
+          "loading",
+          "error"
+        ],
+        "default": "ready"
+      },
+      {
+        "prop": "disabled",
+        "label": "Read only",
+        "kind": "toggle",
+        "default": false
+      }
+    ]
+  },
+  {
     "slug": "media-device-switcher",
     "name": "Device Preview Switcher",
     "tier": "pro",
