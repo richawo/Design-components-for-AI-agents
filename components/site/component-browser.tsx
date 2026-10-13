@@ -291,6 +291,7 @@ export function ComponentBrowser({ cards, categories }: { cards: CardData[]; cat
                 setQ("");
                 setTier("all");
                 setCat("all");
+                input.current?.focus({ preventScroll: true });
               }}
               className="site-btn site-btn-secondary mt-5 h-11 px-4 text-[13px]"
             >
