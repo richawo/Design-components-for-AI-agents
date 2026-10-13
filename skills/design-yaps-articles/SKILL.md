@@ -39,9 +39,9 @@ Use existing brand-consistent cover generation or a topic-specific asset in the 
 
 ## Verify and publish
 
-Use Node 24, matching deployment. Run `npm run blog:translate` after public copy changes; inspect coverage and repair failed units before publishing. Protect names and code with existing tooling. Keep stable localized slugs and required dictionaries with each article commit. Describe machine localization accurately; coverage is not professional linguistic review.
+Use Node 24, matching deployment. Run `npm run blog:translate` after public copy changes; inspect coverage and repair failed units before publishing. Protect names and code with existing tooling; add new product names to `scripts/lib/translation-glossary.mjs` before translation. Use `--workers 1 --interval-ms 1500` after throttling. If the provider remains unavailable, preserve checkpoints and use an authorized translation workflow that retains the same token and source-integrity checks. Keep stable localized slugs and required dictionaries with each article commit. Describe machine localization accurately; coverage is not professional linguistic review.
 
-Run `npm run blog:audit -- --require-source --require-locales`, `node scripts/build-registry.mjs --strict`, `npm run typecheck` and `npm test` under the working agreement. Check rendered content for owned links and product ordering. Inspect mobile widths around 375 to 412 pixels and desktop, including loaded covers and tables that scroll within the article.
+Run `npm run blog:audit -- --require-source --require-locales` and `node scripts/build-registry.mjs --strict` first, then `npm run typecheck` and `npm test`. Tests read the generated content bundle, so running them concurrently with registry generation can check stale articles. Check localized SEO titles and descriptions against the site’s limits and repair overlong translations. Check rendered content for owned links and product ordering. Inspect mobile widths around 375 to 412 pixels and desktop, including loaded covers and tables that scroll within the article.
 
 Commit and push each coherent verified slice on the current branch. Preserve pre-existing user changes. Fetch and incorporate upstream safely before every push. Private publication inputs request a Cloudflare build through `publish-blog.yml`; a successful hook request alone is insufficient.
 
