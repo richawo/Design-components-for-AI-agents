@@ -4227,7 +4227,7 @@
     ],
     "added": "2026-10-12",
     "kind": "block",
-    "blockType": "workspace",
+    "blockType": "dashboard",
     "components": [
       "layout-workspace-shell",
       "select-listbox",
@@ -4324,7 +4324,7 @@
     ],
     "added": "2026-10-12",
     "kind": "block",
-    "blockType": "workspace",
+    "blockType": "dashboard",
     "components": [
       "layout-workspace-shell",
       "select-listbox",
@@ -4535,7 +4535,7 @@
     "name": "Meetings and Notes Workspace",
     "tier": "pro",
     "platform": "web",
-    "category": "app",
+    "category": "collaboration",
     "description": "A complete meeting workspace linking an agenda, a retained call stage and meeting-scoped notes. Persistent controls stay reachable across views.",
     "tags": [
       "team",
@@ -4640,7 +4640,7 @@
       }
     ],
     "kind": "block",
-    "blockType": "workspace",
+    "blockType": "collaboration",
     "components": [
       "layout-workspace-shell",
       "date-week-agenda",
@@ -4652,7 +4652,7 @@
     "slug": "block-music-workspace",
     "name": "Music Listening Workspace",
     "kind": "block",
-    "blockType": "workspace",
+    "blockType": "media",
     "components": [
       "layout-workspace-shell",
       "input-search-scoped",
@@ -4661,7 +4661,7 @@
     ],
     "tier": "pro",
     "platform": "web",
-    "category": "app",
+    "category": "media",
     "description": "A complete listening workspace with discovery, searchable releases, a persistent audio transport and a linked queue. Four reusable components share real session state.",
     "tags": [
       "block",
@@ -4806,7 +4806,7 @@
     ],
     "added": "2026-10-12",
     "kind": "block",
-    "blockType": "workspace",
+    "blockType": "dashboard",
     "components": [
       "layout-workspace-shell",
       "select-listbox",
@@ -5024,7 +5024,7 @@
     "name": "Team Conversation Workspace",
     "tier": "pro",
     "platform": "web",
-    "category": "app",
+    "category": "collaboration",
     "description": "A complete team workspace with channel views, mention-aware drafts, message reactions and retained threads. Scoped sending preserves edits and failed drafts.",
     "tags": [
       "team",
@@ -5104,7 +5104,7 @@
       }
     ],
     "kind": "block",
-    "blockType": "workspace",
+    "blockType": "collaboration",
     "components": [
       "layout-workspace-shell",
       "collab-mention-input",

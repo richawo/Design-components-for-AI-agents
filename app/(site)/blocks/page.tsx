@@ -4,13 +4,15 @@ import { ComponentCard } from "@/components/site/component-card";
 import { JsonLd } from "@/components/site/json-ld";
 import { allBlocks, toCard } from "@/lib/registry";
 import { BLOCK_LABELS, cataloguePath } from "@/lib/catalogue-path";
+import { BLOCK_DESCRIPTIONS } from "@/lib/block-types.mjs";
+import type { BlockType } from "@/lib/registry-types";
 import { absoluteUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
   title:
-    "Complete React page blocks: dashboards, reports, settings and landing pages",
+    "Complete React blocks: dashboards, collaboration, media and product pages",
   description:
-    "Build complete product pages from Design for AI components. Pro blocks combine dashboards, reports, settings and landing pages with installable source and AI briefs.",
+    "Build complete product pages from Design for AI components. Browse dashboards, collaboration and media apps, reports, settings and landing pages with source and AI briefs.",
   alternates: {
     canonical: "/blocks",
     types: { "text/markdown": "/blocks.md" },
@@ -18,7 +20,7 @@ export const metadata: Metadata = {
 };
 export default function BlocksPage() {
   const blocks = allBlocks();
-  const groups = Object.entries(BLOCK_LABELS).filter(([key]) =>
+  const groups = (Object.entries(BLOCK_LABELS) as [BlockType, string][]).filter(([key]) =>
     blocks.some((block) => block.blockType === key),
   );
   return (
@@ -50,9 +52,9 @@ export default function BlocksPage() {
         </h1>
         <p className="site-in mt-6 max-w-[64ch] text-[16px] leading-[1.8] text-site-fg-2 [--i:2]">
           {blocks.length} complete {blocks.length === 1 ? "block" : "blocks"},
-          built from the components in this library. Dashboards with connected
-          measures, reports with readable evidence, settings with working saves,
-          and landing pages with a considered story.
+          built from the components in this library. Find the right starting
+          point for an operations dashboard, a team conversation, a listening
+          app or a complete product page.
         </p>
         <div className="site-in mt-7 flex flex-wrap gap-3 [--i:3]">
           <Link
@@ -77,7 +79,7 @@ export default function BlocksPage() {
           <a
             key={key}
             href={`#${key}`}
-            className="rounded-sm text-sm text-site-fg-2 transition-colors hover:text-site-fg"
+            className="rounded-sm text-sm text-site-fg-2 transition-colors hover:text-site-fg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-site-accent"
           >
             {label}
             <span className="ml-2 font-mono text-xs text-site-fg-3">
@@ -89,10 +91,10 @@ export default function BlocksPage() {
       <div className="space-y-16">
         {groups.map(([key, label]) => (
           <section key={key} id={key} className="scroll-mt-24">
-            <div className="mb-6 flex items-end justify-between gap-5">
+            <div className="mb-6">
               <h2 className="text-2xl font-medium tracking-tight">{label}</h2>
-              <p className="text-xs text-site-fg-3">
-                Source, composition and AI briefs
+              <p className="mt-2 text-sm leading-relaxed text-site-fg-2">
+                {BLOCK_DESCRIPTIONS[key]}
               </p>
             </div>
             <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">

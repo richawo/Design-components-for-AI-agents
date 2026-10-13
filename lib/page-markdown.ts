@@ -1,5 +1,6 @@
 import "server-only";
 import { cataloguePath } from "./catalogue-path";
+import { BLOCK_LABELS } from "./block-types.mjs";
 import { allDocs, allPosts, getDoc } from "./content";
 import { HOME_FAQ, PRICING_FAQ, planFeatures } from "./copy";
 import { installText } from "./install";
@@ -251,10 +252,12 @@ export async function markdownForPage(path: string): Promise<string | null> {
       front("Complete Pro blocks", "/blocks"),
       "# Complete Pro blocks",
       "",
-      "Complete dashboards, reports, settings and landing pages composed from the Design for AI catalogue. Installing a block includes its declared component dependencies.",
+      "Complete dashboards, collaboration and media apps, project workspaces, reports, settings and landing pages composed from the Design for AI catalogue. Installing a block includes its declared component dependencies.",
       "",
       ...allBlocks().flatMap((entry) => [
         row(entry),
+        "",
+        `Page type: ${entry.blockType ? BLOCK_LABELS[entry.blockType] : "Product page"}.`,
         "",
         "Built from: " + (entry.components ?? []).join(", "),
         "",

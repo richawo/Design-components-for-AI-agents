@@ -2,6 +2,7 @@ import { execSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
+import { BLOCK_TYPES } from "@/lib/block-types.mjs";
 
 /**
  * Pro components live in a private repository. These checks fail the build if
@@ -140,13 +141,7 @@ describe("no Pro source in the public repository", () => {
       components?: string[];
     }[]) {
       if (entry.kind === "block") {
-        expect([
-          "dashboard",
-          "report",
-          "settings",
-          "landing-page",
-          "workspace",
-        ]).toContain(entry.blockType);
+        expect(BLOCK_TYPES).toContain(entry.blockType);
         expect(entry.components?.length).toBeGreaterThanOrEqual(2);
         for (const slug of entry.components ?? [])
           expect(slug).toMatch(/^[a-z][a-z0-9-]*$/);

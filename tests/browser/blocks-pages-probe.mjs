@@ -10,6 +10,17 @@ const catalogue = (await (await fetch(base + "/api/registry")).json())
   .components;
 const blocks = catalogue.filter((entry) => entry.kind === "block");
 assert.ok(blocks.length, "Published blocks");
+const expectedGroups = {
+  "block-commerce-workspace": "dashboard",
+  "block-fashion-workspace": "dashboard",
+  "block-people-workspace": "dashboard",
+  "block-music-workspace": "media",
+  "block-team-workspace": "collaboration",
+  "block-meetings-workspace": "collaboration",
+  "block-legal-workspace": "workspace",
+};
+for (const [slug, group] of Object.entries(expectedGroups))
+  assert.equal(blocks.find(block => block.slug === slug)?.blockType, group, `${slug}: classify by the page's purpose`);
 const outcomes = [];
 for (const block of blocks) {
   assert.equal(block.tier, "pro");
@@ -56,7 +67,10 @@ try {
   const errors = [];
   page.on("pageerror", (error) => errors.push(error.message));
   for (const pathname of ["/blocks", `/blocks/${blocks[0].slug}`]) {
-    await page.goto(base + pathname, { waitUntil: "networkidle" });
+    // Live previews and card playback can keep doing background work. Verify
+    // the page's actual content rather than waiting for a quiet network.
+    await page.goto(base + pathname, { waitUntil: "load" });
+    await page.locator("main h1").waitFor();
     for (const width of [1440, 768, 390, 320]) {
       await page.setViewportSize({ width, height: 1000 });
       assert.ok(
@@ -77,13 +91,13 @@ try {
             values: ["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"],
           },
         })
-      ).violations.map((v) => v.id),
+      ).violations.map((v) => ({ id: v.id, nodes: v.nodes.map(n => ({ target: n.target, summary: n.failureSummary })) })),
     );
     assert.deepEqual(issues, [], pathname);
     if (pathname === "/blocks") {
       for (const block of blocks)
         assert.ok(
-          await page.locator(`a[href="/blocks/${block.slug}"]`).count(),
+          await page.locator(`section[id="${block.blockType}"] a[href="/blocks/${block.slug}"]`).count(),
         );
       await page.screenshot({
         path: "test-results/page-structure-20261012/blocks-index.png",

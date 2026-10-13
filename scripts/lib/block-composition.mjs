@@ -1,13 +1,7 @@
 import path from "node:path";
 import { parse } from "@babel/parser";
-
-export const BLOCK_TYPES = [
-  "dashboard",
-  "report",
-  "settings",
-  "landing-page",
-  "workspace",
-];
+import { BLOCK_TYPES } from "../../lib/block-types.mjs";
+export { BLOCK_TYPES } from "../../lib/block-types.mjs";
 
 function imports(code) {
   const file = parse(code, {

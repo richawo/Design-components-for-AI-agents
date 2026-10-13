@@ -1,5 +1,6 @@
 export type Tier = "free" | "pro";
-export type BlockType = "dashboard" | "report" | "settings" | "landing-page" | "workspace";
+import type { BlockType } from "./block-types.mjs";
+export type { BlockType } from "./block-types.mjs";
 export type Platform = "web" | "mobile";
 
 export const CATEGORIES = {
