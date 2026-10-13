@@ -30,3 +30,11 @@ An exact-source native probe reproduced an ownership defect in Crop Workbench an
 The independent after check starts from the actual enabled Apply and Copy controls. Both retain BODY after a real outside-background click and later availability changes. The paired controls without an outside click still recover to their labelled heading when disabled. No draft, crop geometry, caption layout or settled default recording changed. Strict isolated types passed. The two source changes were committed and pushed separately.
 
 Archived evidence: `test-results/next-100/legacy-outside-pointer-before.json`, `legacy-outside-pointer-after.json` and `test-results/next-100-critic/late-polish-boundaries/review.json`, with native before/after screenshots. The first Crop fixture selected an unavailable action; that invalid fixture report is retained separately and was replaced by an enabled-target assertion before drawing a conclusion.
+
+## Parent-frame focus and held press
+
+Integration Trace and Shortcut Theatre shared a reproduced focus defect when a real parent-page button updated a focused child preview. The child recovered stale focus and stole it back to IFRAME. Both now guard recovery against document focus and retire stale ownership when the child window blurs. The paired genuinely owned retirement still reaches a meaningful current control.
+
+A held keyboard press also kept a spatial CSS transition running after live reduced motion. Spatial transition properties are now removed when reduced motion changes; all15 independently sampled after-frames are immediately static. Ordinary approved default clips still represent these components. The source and prompt correction was checked and pushed separately as private commit `2fe8575e0465cb0a4b525409dd347253af348db5`.
+
+Evidence: `test-results/next-100/ownership-before/results.json` and `test-results/next-100-critic/navigation-frame-after/review.json`. A separate native parent-frame probe verifies Annotated Specification and Project Brief already preserve parent focus with their document-focus guards; no blanket rewrite was needed.
