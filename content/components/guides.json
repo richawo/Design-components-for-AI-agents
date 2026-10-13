@@ -4010,8 +4010,9 @@
     "useWhen": "Exploring a controlled contour surface by changing bounded density and lighting inputs.",
     "avoidWhen": "A geographic map, live terrain analysis or an endlessly drifting background with no controls.",
     "integration": [
-      "Supply the surface parameters and keep their limits explicit. Explain the visual effect through real controls rather than invented terrain measurements.",
-      "Resize to the actual container, pause ambient work when hidden and provide a static reduced-motion rendering."
+      "Supply a finite exact scalar grid with columns/rows2–48 and columns×rows values, independent foreground children and actual availability. Marching squares draws real iso-levels from the supplied range. The original32×24 default is synthetic artwork, not geographic data.",
+      "Integer density8–24 interpolates actual levels; lightAngle0–359 takes the shortest arc during real changes. Standard/high quality caps backing pixels at640,000/1,280,000 independently of DPR. Reuse crossing buffers and cached paths for light-only changes; do not rasterize foreground content.",
+      "Validate actual content revisions even when the field object/array identity is reused. There is no idle/offscreen animation loop. Stop/set decorative transition owners under live reduced motion, preserve foreground interaction/overflow and make invalid/loading/error states explicit."
     ],
     "related": [
       "three-contour-terrain",
@@ -4089,8 +4090,9 @@
     "useWhen": "Changing display units while preserving one underlying physical quantity and explicit precision.",
     "avoidWhen": "Currency exchange with stale rates or silently changing the underlying value when the display unit changes.",
     "integration": [
-      "Supply supported units and their exact conversions to the canonical quantity. Show the active unit beside every field and result.",
-      "Round display values deliberately, preserve valid precision through round trips and retain invalid drafts until corrected."
+      "Supply unique nonempty units with positive finite factor and finite offset, plus one canonical base/unitId pair. Display=base×factor+offset. Changing unit requests the unchanged base, never a rounded inverse; canonicalUnit is the actual underlying unit label.",
+      "Precision0–6 controls display/edit digits. Mark a rounded display explicitly, show canonical limits and preserve untouched authority. Dirty drafts retain their original unit definition when view units change; changed/removed definitions block stale application. Rejected requests and older acknowledgements preserve newer edits.",
+      "Use exact controlled value/onValueChange or local seeds/resetKey. Within an unchanged conversion definition, figures retarget up/down; new definitions show one actual entry value rather than fabricated intermediate units. Live reduced motion stops owners, native controls keep focus, and absent controlled handlers lock editing."
     ],
     "related": [
       "input-number-stepper",
@@ -4532,8 +4534,9 @@
     "useWhen": "Reviewing supplied estimated and actual usage against limits before explicitly authorizing a bounded action.",
     "avoidWhen": "Inventing costs, automatically approving an action or describing an estimate as the final charge.",
     "integration": [
-      "Supply currency/units, pricing basis, observed usage and the actual limit. Keep estimated and incurred amounts distinguishable.",
-      "Only invoke the host authorization callback after a clear scope review; preserve the decision after failure and reject stale acknowledgements."
+      "Supply exact action and independent token/call/cost budgets. Estimate is the host prospective total in its scope, not an amount the component adds to actual. Missing pre-action actual is Not measured yet; missing limits/estimates, explicit null/nonfinite data, duplicate IDs and unsupported currencies/scales block authorization.",
+      "Review consent belongs to the exact action and material budget data; replacement retires it permanently. Keep newer notes through bounds/status/error/cancel, and use resetKey for explicit lifecycle reset. Pass the exact reviewed snapshot and note to the real onAuthorize(payload, AbortSignal).",
+      "Pending, rejection, cancellation and late acknowledgements are owned by exact content/callback/availability. Fulfilment alone shows Awaiting action status and blocks duplicate authorization; only supplied authoritative status can mark authorization, execution or completion. Monetary minor units use exact BigInt formatting and remain separate across currencies."
     ],
     "related": [
       "agent-approval-gate",
