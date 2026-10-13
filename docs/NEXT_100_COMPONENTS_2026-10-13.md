@@ -76,7 +76,7 @@ Validate all six web widths, both supported themes, multiple instances and empty
 | 32 | `text-path-typesetter` | text | Place accessible text along a supplied curve and adjust spacing without losing the reading order. | Released |
 | 33 | `text-number-odometer` | text | An interruptible numeric roll handles increases, decreases, signs, decimals and reduced motion. | Released |
 | 34 | `text-outline-fill` | text | Reading progress fills outlined lettering with a fully legible static fallback. | Released |
-| 35 | `bg-fluted-glass` | backgrounds | A refracted surface behind supplied content, with bounded quality, offscreen pause and static rendering. | Planned |
+| 35 | `bg-fluted-glass` | backgrounds | A refracted surface behind supplied content, with bounded quality, offscreen pause and static rendering. | Released |
 | 36 | `bg-topographic-contours` | backgrounds | Contour density and light angle respond to a bounded input; no uncontrolled ambient drift. | Released |
 | 37 | `pixel-halftone-image` | pixel | A host image becomes a controllable halftone specimen with meaningful density and threshold controls. | Planned |
 | 38 | `effect-ink-trail` | effects | A pointer mark inside a bounded drawing region fades deliberately and leaves ordinary controls usable. | Planned |
@@ -175,4 +175,4 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 ## Progress
 
-Planned: 55. Released: 45. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
+Planned: 54. Released: 46. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.

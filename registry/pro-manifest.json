@@ -3702,6 +3702,149 @@
     "added": "2026-10-10"
   },
   {
+    "slug": "bg-fluted-glass",
+    "name": "Fluted Glass",
+    "tier": "pro",
+    "platform": "web",
+    "category": "backgrounds",
+    "description": "A bounded native refraction surface warps a supplied scene behind ordinary host content, with real source loading and recovery.",
+    "tags": [
+      "fluted glass",
+      "refraction",
+      "material",
+      "background",
+      "supplied scene",
+      "SVG displacement"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1200,
+    "usage": "import { BgFlutedGlass } from \"@/components/design-for-ai/bg-fluted-glass\";\n\n<BgFlutedGlass scene={scene} strength={16}><YourForeground /></BgFlutedGlass>",
+    "props": [
+      {
+        "name": "scene",
+        "type": "FlutedGlassScene",
+        "description": "Supplied image URL and optional host description. Actual native load/decode determines loading, ready or failure."
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "description": "Arbitrary foreground content. Its events, geometry, focus and overflowing menus remain intact."
+      },
+      {
+        "name": "strength",
+        "type": "number",
+        "description": "0–32 native SVG displacement scale in host pixels, normalized to the bounded render surface. Actual movement depends on the map.",
+        "default": "16"
+      },
+      {
+        "name": "frost",
+        "type": "number",
+        "description": "0–2.5 host-pixel native Gaussian blur.",
+        "default": "0.6"
+      },
+      {
+        "name": "flutes",
+        "type": "number",
+        "description": "Integer 8–40 bounded repeated refraction ridges.",
+        "default": "24"
+      },
+      {
+        "name": "orientation",
+        "type": "\"vertical\" | \"horizontal\"",
+        "description": "Vertical flutes displace horizontally; horizontal flutes displace vertically.",
+        "default": "\"vertical\""
+      },
+      {
+        "name": "quality",
+        "type": "\"standard\" | \"high\"",
+        "description": "SVG layout surface limit before background-only scaling: standard 640k/high 1.28M pixels. Physical rasterization remains browser-owned.",
+        "default": "\"standard\""
+      },
+      {
+        "name": "radius",
+        "type": "number",
+        "description": "Finite 0–64px background clipping radius; foreground overflow is preserved.",
+        "default": "24"
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Readable fallback/recovery colors. Foreground contrast remains the host content's responsibility.",
+        "default": "\"dark\""
+      },
+      {
+        "name": "onSceneStateChange",
+        "type": "(state: FlutedGlassState) => void",
+        "description": "Reports actual image state and natural dimensions; observer identity changes do not restart loading."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Classes for the composable root.",
+        "default": "\"\""
+      }
+    ],
+    "controls": [
+      {
+        "prop": "strength",
+        "label": "Displacement",
+        "kind": "slider",
+        "min": 0,
+        "max": 32,
+        "step": 0.5,
+        "default": 16
+      },
+      {
+        "prop": "orientation",
+        "label": "Flute direction",
+        "kind": "segmented",
+        "options": [
+          "vertical",
+          "horizontal"
+        ],
+        "default": "vertical"
+      },
+      {
+        "prop": "quality",
+        "label": "Render quality",
+        "kind": "segmented",
+        "options": [
+          "standard",
+          "high"
+        ],
+        "default": "standard"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ],
+    "demo": {
+      "steps": [
+        "click:@glass-strength:0.82,0.5",
+        "wait:400",
+        "click:@glass-original",
+        "wait:400",
+        "click:@glass-original",
+        "wait:400",
+        "click:@glass-strength:0.5,0.5",
+        "wait:450"
+      ],
+      "loop": false
+    },
+    "added": "2026-10-13"
+  },
+  {
     "slug": "bg-grain-gradient",
     "name": "Grain Light Field",
     "tier": "pro",
