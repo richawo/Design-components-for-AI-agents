@@ -136,15 +136,16 @@ if (controls.length) {
   // React's useId values (_r_0_, «r0», :r0:, and the same with punctuation
   // stripped) change on every mount; they aren't a visible change.
   // Counted, not a set: a change can reuse markup found elsewhere on the stage.
+  const sequence = (html) => html
+    .replace(/_[rR]_[0-9a-z]*_|«[rR][0-9a-z]*»|:[rR][0-9a-z]*:|\b[rR][0-9a-z]{0,3}(?=-)/g, "ID")
+    .split(/(?=<)|>|\s+/)
+    .filter(Boolean);
   const tokens = (html) => {
     const counts = new Map();
-    for (const t of html
-      .replace(/_[rR]_[0-9a-z]*_|«[rR][0-9a-z]*»|:[rR][0-9a-z]*:|\b[rR][0-9a-z]{0,3}(?=-)/g, "ID")
-      .split(/(?=<)|>|\s+/)
-      .filter(Boolean))
-      counts.set(t, (counts.get(t) ?? 0) + 1);
+    for (const t of sequence(html)) counts.set(t, (counts.get(t) ?? 0) + 1);
     return counts;
   };
+  const ordered = (html, ignore) => JSON.stringify(sequence(html).filter(t => !ignore.has(t)));
   const differs = (a, b, ignore) => {
     for (const k of new Set([...a.keys(), ...b.keys()])) if (!ignore.has(k) && a.get(k) !== b.get(k)) return true;
     return false;
@@ -152,22 +153,30 @@ if (controls.length) {
   await send({}, true);
   await page.waitForTimeout(2600);
   const noise = new Set();
-  let prev = tokens(await snap());
+  const baselineHtml = [await snap()];
+  let prev = tokens(baselineHtml[0]);
   for (let i = 0; i < 3; i++) {
     await page.waitForTimeout(SETTLE);
-    const next = tokens(await snap());
+    const html = await snap();
+    baselineHtml.push(html);
+    const next = tokens(html);
     for (const k of new Set([...next.keys(), ...prev.keys()])) if (next.get(k) !== prev.get(k)) noise.add(k);
     prev = next;
   }
+  // A permutation changes layout while retaining the same token counts.
+  // Only use order if the settled baseline itself has no ambient reorder.
+  const stableOrder = baselineHtml.every(html => ordered(html, noise) === ordered(baselineHtml[0], noise));
   const quiet = [];
   for (const c of controls) {
     const alt = alternative(c);
     if (alt === undefined) continue;
-    const before = tokens(await snap());
+    const beforeHtml = await snap();
+    const before = tokens(beforeHtml);
     await send({ [c.prop]: alt }, !!c.remount);
     await page.waitForTimeout(c.remount ? 2600 : SETTLE);
-    const after = tokens(await snap());
-    if (!differs(before, after, noise)) quiet.push(`${c.prop} → ${JSON.stringify(alt)}`);
+    const afterHtml = await snap();
+    const after = tokens(afterHtml);
+    if (!differs(before, after, noise) && (!stableOrder || ordered(beforeHtml, noise) === ordered(afterHtml, noise))) quiet.push(`${c.prop} → ${JSON.stringify(alt)}`);
     await send({}, !!c.remount);
     await page.waitForTimeout(c.remount ? 2600 : SETTLE);
   }
