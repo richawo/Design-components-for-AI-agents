@@ -3760,8 +3760,8 @@
     "useWhen": "Inspecting several supplied visual variants with coordinated zoom and pan.",
     "avoidWhen": "A simple before-and-after wipe or a data table that compares textual values.",
     "integration": [
-      "Supply variants with stable IDs, explicit labels and image sources. Link transforms only when the variants share a meaningful coordinate system.",
-      "Keep independent view controls and a readable reset so comparisons do not depend on pointer gestures alone."
+      "Supply stable variant IDs, labels and real image sources. One atomic view state contains active image, linked policy and the per-image cameras; link normalized coordinates only for meaningfully comparable framing.",
+      "Pair value/defaultValue with onValueChange and observe completed accepted gestures through onValueCommit. Rejected requests preserve actual cameras; keyboard controls, reset and Escape recovery make inspection usable without pointer dragging."
     ],
     "related": [
       "media-before-after",
