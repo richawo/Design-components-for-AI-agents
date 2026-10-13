@@ -5,7 +5,7 @@ import { useReducedMotion } from "@/lib/use-reduced-motion";
 import "./gallery-focus.css";
 
 import { AnimatePresence, motion } from "motion/react";
-import { memo, Suspense, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { memo, Suspense, useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   FILTER_KEY,
@@ -20,6 +20,7 @@ import {
 import { SegmentedControl } from "@/registry/free/segmented-control/segmented-control";
 import { CategorySidebar } from "./category-sidebar";
 import { cardEntrance, ComponentCard, FIRST_VIEW_CARDS } from "./component-card";
+import { ComponentShelf } from "./component-shelf";
 import { CountUp } from "./count-up";
 import type { CardData } from "@/lib/registry";
 
@@ -46,8 +47,14 @@ export function ComponentBrowser({ cards, categories, introduction }: { cards: C
   const initialPresence = useRef("initial");
   const pending = useRef(cat);
   const input = useRef<HTMLInputElement>(null);
+  const toolbarRef = useRef<HTMLDivElement>(null);
   const resultsRef = useRef<HTMLParagraphElement>(null);
-  const seenCat = useRef(cat);
+  const catalogueRef = useRef<HTMLElement>(null);
+  const catalogueHeading = useRef<HTMLHeadingElement>(null);
+  const focusResults = useRef(false);
+  const catalogueId = useId();
+  const filterKey = JSON.stringify([cat, tier, q.trim().toLowerCase()]);
+  const seenSelection = useRef(filterKey);
   const reduce = useReducedMotion();
   // Entrance classes belong to the first render only. Cards that mount later
   // (after a filter) are animated by AnimatePresence instead, never twice.
@@ -110,15 +117,16 @@ export function ComponentBrowser({ cards, categories, introduction }: { cards: C
     return () => window.removeEventListener("popstate", onPop);
   }, [validCategories]);
 
-  // A short category, chosen while the long list is scrolled down, would
+  // A short selection, chosen while the long list is scrolled down, would
   // otherwise leave the reader in the footer. Stop before that scroll pushes
   // the sidebar under the header: a one-card list is only as tall as the sidebar.
   useEffect(() => {
-    if (cat !== pending.current || seenCat.current === cat) return;
-    seenCat.current = cat;
+    if (cat !== pending.current || seenSelection.current === filterKey) return;
+    seenSelection.current = filterKey;
     const el = resultsRef.current;
     if (!el) return;
-    const next = resultsScrollTop(el.getBoundingClientRect().top, window.scrollY, window.innerHeight);
+    const resultOffset = 80 + (toolbarRef.current?.offsetHeight ?? 64);
+    const next = resultsScrollTop(el.getBoundingClientRect().top, window.scrollY, window.innerHeight, resultOffset);
     if (next === null) return;
     const aside = document.querySelector("aside");
     const parent = aside?.parentElement;
@@ -130,7 +138,13 @@ export function ComponentBrowser({ cards, categories, introduction }: { cards: C
     }
     if (Math.abs(top - window.scrollY) < 2) return;
     window.scrollTo({ top, behavior: reduce ? "auto" : "smooth" });
-  }, [cat, reduce]);
+  }, [filterKey, cat, reduce]);
+
+  useLayoutEffect(() => {
+    if (!focusResults.current) return;
+    focusResults.current = false;
+    catalogueHeading.current?.focus({ preventScroll: true });
+  }, [cat]);
 
   const setCat = (key: string) => {
     pending.current = key;
@@ -165,7 +179,11 @@ export function ComponentBrowser({ cards, categories, introduction }: { cards: C
     });
   }, [cards, q, tier, cat]);
 
-  const filterKey = JSON.stringify([cat, tier, q.trim().toLowerCase()]);
+  const showDiscovery = cat === "all" && tier === "all" && !q.trim();
+  const featured = useMemo(() => cards.slice(0, 8), [cards]);
+  const heroes = useMemo(() => cards.filter(card => card.category === "hero").slice(0, 8), [cards]);
+  const resultTitle = showDiscovery ? "Explore everything" : q.trim() ? "Search results" : cat !== "all" ? categories.find(category => category.key === cat)?.label : tier === "free" ? "Free components" : tier === "pro" ? "Pro components" : "All components";
+
   const [pageWindow, setPageWindow] = useState({ key: filterKey, count: CARD_BATCH });
   const shownCount = pageWindow.key === filterKey ? pageWindow.count : CARD_BATCH;
   const shown = filtered.slice(0, shownCount);
@@ -208,7 +226,7 @@ export function ComponentBrowser({ cards, categories, introduction }: { cards: C
       <div className="lg:col-start-2">{introduction}</div>
       <CategorySidebar categories={categories} total={cards.length} active={cat} onSelect={setCat} />
       <div className="min-w-0 lg:col-start-2">
-        <div className="site-in flex flex-col gap-3 [--i:3] sm:flex-row">
+        <div ref={toolbarRef} className="site-in sticky top-16 z-20 flex flex-col gap-3 border-b border-white/[0.07] bg-site-bg/95 py-3 backdrop-blur-xl [--i:3] sm:flex-row">
           <div className="group/search relative flex-1">
             <label htmlFor="component-search" className="sr-only">Search components</label>
             <svg viewBox="0 0 20 20" className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-site-fg-3 transition-colors group-focus-within/search:text-site-fg-2" fill="none" aria-hidden="true">
@@ -259,10 +277,24 @@ export function ComponentBrowser({ cards, categories, introduction }: { cards: C
             className="sm:!w-[200px] sm:shrink-0 [&_button]:min-h-11"
           />
         </div>
-        <p ref={resultsRef} className="site-in mt-5 font-mono text-[11px] uppercase tracking-[0.14em] text-site-fg-3 [--i:4]" aria-live="polite">
-          <span className="sr-only">{filtered.length} {filtered.length === 1 ? "component" : "components"}</span>
-          <span aria-hidden="true"><CountUp value={filtered.length} initialAnimation={false} /> {filtered.length === 1 ? "component" : "components"}</span>
-        </p>
+        {showDiscovery && (
+          <div className="mt-6 space-y-7 sm:mt-7 sm:space-y-8">
+            <ComponentShelf title="Featured" cards={featured} priority onBrowse={() => {
+              const element = catalogueRef.current;
+              catalogueHeading.current?.focus({ preventScroll: true });
+              if (element) window.scrollTo({ top: window.scrollY + element.getBoundingClientRect().top - 80 - (toolbarRef.current?.offsetHeight ?? 64), behavior: reduce ? "instant" : "smooth" });
+            }} />
+            {heroes.length > 0 && <ComponentShelf title="Heroes" cards={heroes} onBrowse={() => { focusResults.current = true; setCat("hero"); }} />}
+          </div>
+        )}
+        <section ref={catalogueRef} aria-labelledby={catalogueId} className="mt-7 sm:mt-9">
+        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
+          <h2 ref={catalogueHeading} id={catalogueId} tabIndex={-1} className="text-[20px] font-medium tracking-[-0.025em]">{resultTitle}</h2>
+          <p ref={resultsRef} className="font-mono text-[11px] uppercase tracking-[0.14em] text-site-fg-3" aria-live="polite">
+            <span className="sr-only">{filtered.length} {filtered.length === 1 ? "component" : "components"}</span>
+            <span aria-hidden="true"><CountUp value={filtered.length} initialAnimation={false} /> {filtered.length === 1 ? "component" : "components"}</span>
+          </p>
+        </div>
         {filtered.length ? (
           <motion.div ref={gridRef} layout={!reduce} className="component-grid mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3 min-[105rem]:grid-cols-4">
             <AnimatePresence key={initialPresence.current} initial={false} mode="popLayout">
@@ -276,8 +308,8 @@ export function ComponentBrowser({ cards, categories, introduction }: { cards: C
                   transition={{ type: "spring", stiffness: 500, damping: 40 }}
                   className="flex"
                 >
-                  <CardSlot entrance={firstRender.current ? cardEntrance(i, FIRST_CARD_STEP) : undefined}>
-                    <BrowserCard c={c} priority={i < FIRST_VIEW_CARDS} imageSizes={GRID_IMAGE_SIZES} />
+                  <CardSlot entrance={firstRender.current ? showDiscovery ? { className: "site-reveal" } : cardEntrance(i, FIRST_CARD_STEP) : undefined}>
+                    <BrowserCard c={c} priority={!showDiscovery && i < FIRST_VIEW_CARDS} imageSizes={GRID_IMAGE_SIZES} />
                   </CardSlot>
                 </motion.div>
               ))}
@@ -310,6 +342,7 @@ export function ComponentBrowser({ cards, categories, introduction }: { cards: C
             </button>
           </div>
         )}
+        </section>
       </div>
     </div>
   );
