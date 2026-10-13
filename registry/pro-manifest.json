@@ -14205,6 +14205,145 @@
     ]
   },
   {
+    "slug": "features-compare-lenses",
+    "name": "Workflow Comparison Lenses",
+    "tier": "pro",
+    "platform": "web",
+    "category": "features",
+    "description": "Inspect two workflows stage by stage, with readable explanations and actual outputs. Shared navigation reveals corresponding work and honest missing stages.",
+    "tags": [
+      "features",
+      "comparison",
+      "workflow",
+      "stages",
+      "outputs",
+      "keyboard"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1100,
+    "usage": "import { FeaturesCompareLenses } from \"@/components/design-for-ai/features-compare-lenses\";\n\n<FeaturesCompareLenses journeys={journeys} value={stageId} onValueChange={setStageId} />\n\n// Supply two comparable workflow stories and real output links when available.",
+    "props": [
+      {
+        "name": "journeys",
+        "type": "readonly CompareJourney[]",
+        "description": "Up to two supplied workflow stories with stable journey/stage IDs, titles, explanations, optional host content and actual output destinations. Duplicate journey IDs are ignored; provide the pair to compare."
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "description": "Optional controlled shared stage ID. Pair with onValueChange; rejected requests preserve the actual comparison and missing callbacks lock navigation."
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "default": "first available stage",
+        "description": "Initial internal selection; a changed prop resets local selection. Shared and unique stages are placed in a useful union order."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(stageId: string) => void",
+        "description": "Request a supplied stage. Each workflow shows its own corresponding stage or an honest missing-stage view."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"error\"",
+        "default": "\"ready\"",
+        "description": "Host-owned workflow availability."
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "description": "A real host failure explanation."
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Explicit host recovery request. No handler means no fake retry control."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "default": "false",
+        "description": "Disable navigation while retaining actual supplied content."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Complete dark or light surface and text palettes."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<CompareLensesLabels>",
+        "description": "Heading, description, navigation, availability, missing-stage, output and index copy."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "default": "\"\"",
+        "description": "Host layout classes."
+      }
+    ],
+    "added": "2026-10-13",
+    "demo": {
+      "steps": [
+        "click:@lens-draft",
+        "wait:350",
+        "click:@lens-structure",
+        "wait:350",
+        "click:@lens-context",
+        "wait:450"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "defaultValue",
+        "label": "Start stage",
+        "kind": "select",
+        "options": [
+          "context",
+          "structure",
+          "draft",
+          "review",
+          "handoff"
+        ],
+        "default": "context"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "status",
+        "label": "Availability",
+        "kind": "segmented",
+        "options": [
+          "ready",
+          "loading",
+          "error"
+        ],
+        "default": "ready"
+      },
+      {
+        "prop": "disabled",
+        "label": "Read only",
+        "kind": "toggle",
+        "default": false
+      }
+    ]
+  },
+  {
     "slug": "features-integration-trace",
     "name": "Integration Trace",
     "tier": "pro",
