@@ -137,7 +137,7 @@ Validate all six web widths, both supported themes, multiple instances and empty
 | 73 | `ai-structured-output` | ai | Inspect streamed structured fields, distinguish incomplete values and recover validation errors. | Released |
 | 74 | `agents-dependency-board` | agents | Inspect task dependencies and blockers with a readable graph and a linear keyboard alternative. | Released |
 | 75 | `agents-run-replay` | agents | Scrub a supplied event history and reconstruct the visible run state without executing tools. | Released |
-| 76 | `agents-budget-guard` | agents | Review estimated and actual usage against supplied limits before authorizing a bounded action. | Planned |
+| 76 | `agents-budget-guard` | agents | Review estimated and actual usage against supplied limits before authorizing a bounded action. | Released |
 | 77 | `devtools-release-compare` | devtools | Compare deployments, inspect changed resources and request a reviewed rollback. | Planned |
 | 78 | `devtools-request-replay` | devtools | Edit a supplied request and inspect a host-provided response; cancellation rejects stale results. | Planned |
 | 79 | `devtools-schema-migration` | devtools | Inspect a supplied migration plan, dependencies and impact before a host-owned apply request. | Planned |
@@ -175,4 +175,4 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 ## Progress
 
-Planned: 59. Released: 41. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
+Planned: 58. Released: 42. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.

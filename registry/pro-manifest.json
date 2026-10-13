@@ -891,6 +891,121 @@
     ]
   },
   {
+    "slug": "agents-budget-guard",
+    "name": "Bounded Action Review",
+    "tier": "pro",
+    "platform": "web",
+    "category": "agents",
+    "description": "An exact prospective-usage review that separates estimates, actual measurements and each limit before a real host-owned bounded authorization request.",
+    "tags": [
+      "agents",
+      "budget",
+      "limits",
+      "authorization",
+      "review",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1120,
+    "usage": "import { AgentsBudgetGuard } from \"@/components/design-for-ai/agents-budget-guard\";\n\n<AgentsBudgetGuard action={action} budgets={bounds} status={hostStatus} onAuthorize={requestAuthorization} resetKey={actionRevision} />",
+    "props": [
+      {
+        "name": "action",
+        "type": "BudgetGuardAction",
+        "description": "Stable bounded action ID, label/description and optional unavailable reason.",
+        "default": "Original bounded navigation review"
+      },
+      {
+        "name": "budgets",
+        "type": "BudgetGuardBudget[]",
+        "description": "Unique IDs/labels, tokens/calls/cost kind, known whole-unit limit and prospective total estimate, optional actual total, cost currency and supplied decimal unit scale.",
+        "default": "12000 tokens/6 calls/35 USD cents limits;8400/4/24 estimated"
+      },
+      {
+        "name": "status",
+        "type": "\"review\" | \"authorized\" | \"running\" | \"complete\" | \"error\"",
+        "description": "Authoritative host state. A fulfilled callback alone never marks an action authorized or running.",
+        "default": "\"review\""
+      },
+      {
+        "name": "statusMessage",
+        "type": "string",
+        "description": "Actual host explanation; blank error receives meaningful fallback."
+      },
+      {
+        "name": "onAuthorize",
+        "type": "(review: BudgetGuardReview, signal: AbortSignal) => void | Promise<void>",
+        "description": "Real request carrying exact reviewed action/budgets/note. Honor cancellation before host side effects. No execution in this inspector."
+      },
+      {
+        "name": "defaultReviewNote",
+        "type": "string",
+        "description": "Initial local note reused for a replacement action/reset; ordinary bound updates retain the draft.",
+        "default": "\"Keep the current working route available throughout this bounded review.\""
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Action/review identity; retires pending work, local confirmation and note."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Concise bounds heading.",
+        "default": "\"Bound the next action.\""
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Explain prospective total, actual and limits.",
+        "default": "\"Review the prospective total, the current measurements and the limits before asking the host to authorize this one action.\""
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Neutral graphite/paper bounds palettes with semantic errors and actual measurements.",
+        "default": "\"dark\""
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Outer guard class.",
+        "default": "\"\""
+      }
+    ],
+    "added": "2026-10-13",
+    "demo": {
+      "steps": [
+        "click:@review-confirm",
+        "wait:350",
+        "click:@authorize-action",
+        "wait:1100"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "title",
+        "label": "Heading",
+        "kind": "text",
+        "default": "Bound the next action."
+      }
+    ]
+  },
+  {
     "slug": "agents-dependency-board",
     "name": "Dependency Plan Board",
     "tier": "pro",
