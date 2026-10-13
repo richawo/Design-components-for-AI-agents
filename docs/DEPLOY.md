@@ -3,8 +3,8 @@
 The site runs on Cloudflare Workers as its own Worker, `design-yaps`, on
 `design.yaps.ai`. It follows the same pattern as `launch-yaps` and the other
 Yaps subdomains: one Worker per product, a custom-domain route in
-`wrangler.jsonc`, and Cloudflare Workers Builds deploying every push to
-`main`. It doesn't touch the apex domain or the main `yaps-site` Worker.
+`wrangler.jsonc`, and Cloudflare Workers Builds configured to deploy pushes to
+`main`. Verify the actual live commit marker after a release. It doesn't touch the apex domain or the main `yaps-site` Worker.
 
 Next.js runs on Workers through the [OpenNext adapter](https://opennext.js.org/cloudflare).
 Content pages and the generic account loading shell are prerendered at build time. Account data, authentication, billing,
@@ -49,6 +49,28 @@ uses its own D1 database, `design-yaps-commerce`, through `COMMERCE_DB`. See
 [COMMERCE.md](COMMERCE.md) for the customer flow, event handling, permissions
 and test procedure. Automatic tax remains disabled pending confirmed tax
 registrations; no active registrations were returned during setup.
+
+## Verified rollout (13 October 2026)
+
+A successful Git push is not proof that production has advanced. On13 October
+production was still serving an earlier public/private commit pair. The available
+Wrangler credential could deploy the Worker, but Workers Builds status requests
+returned403, so automatic build health could not be confirmed.
+
+The verified recovery used immutable archives of pushed public and private
+commits, preserving their exact Git identities. It included only Pro components
+present in the public committed manifest, kept unrelated local edits outside the
+build, and passed strict generation, TypeScript, the Cloudflare build and a Worker
+dry run before deployment. The direct deploy command was
+`node scripts/deploy-worker.mjs` inside that approved build artifact. No runtime
+bindings or commerce migrations changed.
+
+Read `/.well-known/design-build.json` on the actual production domain and compare
+both `publicCommit` and `privateContentCommit` with the expected pushed sources.
+Also check published component routes and anonymous licence guards. An
+unauthenticated Pro-source API response must remain locked and contain no source;
+registry installation must return401 with no-store caching. Retain the exact build
+provenance and the successful local/production smoke evidence.
 
 ## Automatic deploys (Workers Builds)
 
