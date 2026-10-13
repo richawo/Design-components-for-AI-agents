@@ -3807,5 +3807,265 @@
       "media-audio-transport"
     ],
     "updated": "2026-10-13"
+  },
+  "hero-layout-playground": {
+    "useWhen": "Demonstrating how actual supplied content reflows as a continuous layout boundary changes.",
+    "avoidWhen": "Switching between fixed device presets or pretending to emulate a browser or operating system.",
+    "integration": [
+      "Supply real React content that responds to its own container. Pointer, keyboard and precise width requests should describe the same constraint without remounting the content.",
+      "Keep requested width distinct from measured available width when the host is narrower. Controlled rejection and unavailable content must remain honest."
+    ],
+    "related": [
+      "hero-signal-workbench",
+      "layout-split-resizer"
+    ],
+    "updated": "2026-10-13"
+  },
+  "features-integration-trace": {
+    "useWhen": "Explaining a supplied integration by following its data through inspectable transformation stages.",
+    "avoidWhen": "A decorative logo cloud, a general workflow editor or a claim of a live integration without host evidence.",
+    "integration": [
+      "Supply a stable integration identity and actual input, transformation and output examples. Clearly distinguish demonstration data from live host results.",
+      "Keep stage selection keyboard accessible and retain the selected journey when its detail expands or a host request fails."
+    ],
+    "related": [
+      "editor-node-graph",
+      "devtools-webhook-inspector"
+    ],
+    "updated": "2026-10-13"
+  },
+  "features-shortcut-theatre": {
+    "useWhen": "Demonstrating a product action through explicit, accessible shortcut controls and a supplied live preview.",
+    "avoidWhen": "Registering global shortcuts without consent or animating a keyboard that performs no useful action.",
+    "integration": [
+      "Supply the demonstrated action and clear shortcut labels. Pointer, touch and keyboard controls should invoke the same bounded preview operation.",
+      "Keep unavailable actions explainable, respect host rejection and avoid intercepting ordinary typing in adjacent fields."
+    ],
+    "related": [
+      "input-shortcut-recorder",
+      "three-keycaps"
+    ],
+    "updated": "2026-10-13"
+  },
+  "features-compare-lenses": {
+    "useWhen": "Comparing two supplied approaches to the same workflow using corresponding, inspectable stages.",
+    "avoidWhen": "A before/after image wipe or unsupported claims that one product is faster or better.",
+    "integration": [
+      "Supply comparable stages and concrete differences. Keep timings and outcomes tied to the host evidence rather than invented numbers.",
+      "Let readers select stages and retain readable context on narrow containers; linked navigation should remain optional when the workflows differ."
+    ],
+    "related": [
+      "media-before-after",
+      "media-story-deck"
+    ],
+    "updated": "2026-10-13"
+  },
+  "pricing-usage-calculator": {
+    "useWhen": "Estimating usage charges from explicit supplied rates, included units and bounded quantities.",
+    "avoidWhen": "A checkout flow, an undisclosed pricing formula or a promise that an estimate is the final invoice.",
+    "integration": [
+      "Supply currency, rates, billing units and rounding rules. Show which quantities are included and exactly how overages contribute to the total.",
+      "Keep the underlying quantity stable through formatting and animate totals in both directions. Use a separate explicit action for checkout."
+    ],
+    "related": [
+      "pricing-receipt",
+      "input-number-stepper"
+    ],
+    "updated": "2026-10-13"
+  },
+  "pricing-seat-simulator": {
+    "useWhen": "Exploring a transparent bill for mixed seat types and billing terms before purchase.",
+    "avoidWhen": "Automatically assigning seats, changing a subscription or concealing discounts inside a single unexplained total.",
+    "integration": [
+      "Supply eligible seat roles, rates, limits and billing terms. Itemized figures must agree with the actual seat mix and rounding rule.",
+      "Preserve entered counts when terms change and expose invalid or unavailable combinations before any host-owned purchase action."
+    ],
+    "related": [
+      "pricing-receipt",
+      "input-detent-dial"
+    ],
+    "updated": "2026-10-13"
+  },
+  "social-proof-case-ledger": {
+    "useWhen": "Presenting supplied case outcomes together with their measurement period and supporting evidence.",
+    "avoidWhen": "Invented customer statistics, unsupported endorsements or a decorative testimonial carousel.",
+    "integration": [
+      "Supply actual case titles, dated outcomes, units and evidence destinations. Missing evidence should remain visible rather than acquiring a fabricated link.",
+      "Keep figures, their denominator and the observation period together across navigation and narrow layouts."
+    ],
+    "related": [
+      "chart-revenue-trend",
+      "scroll-chapter-stack"
+    ],
+    "updated": "2026-10-13"
+  },
+  "content-interactive-spec": {
+    "useWhen": "Exploring a product specification through selectable annotations on a supplied diagram.",
+    "avoidWhen": "A CAD editor, a decorative image hotspot or an unsupported claim about an actual product.",
+    "integration": [
+      "Supply a useful diagram, stable annotated parts and the exact specification for each part. Keep a readable linear alternative for the same information.",
+      "Connect keyboard selection and touch targets to the same active annotation without allowing an enlarged label to obscure its neighboring controls."
+    ],
+    "related": [
+      "devtools-icon-workbench",
+      "editor-whiteboard"
+    ],
+    "updated": "2026-10-13"
+  },
+  "cta-project-brief": {
+    "useWhen": "Collecting a concise project brief and presenting a review before an explicit host-owned submission.",
+    "avoidWhen": "Submitting automatically, fabricating delivery confirmation or hiding a long sales questionnaire inside a small CTA.",
+    "integration": [
+      "Define the fields and validation the host actually needs. Retain drafts while moving between editing, review and failed submission.",
+      "Acknowledge delivery only after the host accepts it; retire stale pending work when the brief or handler changes."
+    ],
+    "related": [
+      "legal-matter-intake",
+      "button-shimmer-track"
+    ],
+    "updated": "2026-10-13"
+  },
+  "footer-sitemap-atlas": {
+    "useWhen": "Offering a useful grouped site index with real destinations in a compact footer.",
+    "avoidWhen": "A full application command palette or decorative navigation labels with no destination.",
+    "integration": [
+      "Supply groups and actual destination URLs. Keep empty or unavailable groups clear and make the current destination distinguishable.",
+      "Use the compact treatment in narrow containers without losing keyboard access or turning expansion into unexpected page navigation."
+    ],
+    "related": [
+      "navigation-context-rail",
+      "navigation-stacked-tabs"
+    ],
+    "updated": "2026-10-13"
+  },
+  "text-optical-weight": {
+    "useWhen": "Inspecting how supported font weight and optical scale change real, selectable specimen text.",
+    "avoidWhen": "Synthesizing unsupported font axes or using a font specimen as a decorative loading animation.",
+    "integration": [
+      "Supply the font family, supported ranges and specimen copy. Report unsupported axes honestly rather than claiming a visual effect the font cannot produce.",
+      "Keep exact controls keyboard accessible and preserve selection and readability as size or weight changes."
+    ],
+    "related": [
+      "text-decode",
+      "devtools-icon-workbench"
+    ],
+    "updated": "2026-10-13"
+  },
+  "text-path-typesetter": {
+    "useWhen": "Placing supplied text along a bounded curve while inspecting actual spacing and readable text content.",
+    "avoidWhen": "A full vector drawing tool or turning essential body copy into an inaccessible decorative outline.",
+    "integration": [
+      "Supply the text and path geometry. Preserve a readable linear equivalent and unique SVG path IDs for multiple instances.",
+      "Expose bounded spacing and curvature controls with keyboard equivalents; clipping and overly long text need an explicit useful state."
+    ],
+    "related": [
+      "devtools-icon-workbench",
+      "editor-whiteboard"
+    ],
+    "updated": "2026-10-13"
+  },
+  "text-number-odometer": {
+    "useWhen": "Presenting changing numeric values with interruptible rolls for increases, decreases, signs and decimals.",
+    "avoidWhen": "A static counter, falsely precise analytics or animation that obscures the final accessible value.",
+    "integration": [
+      "Supply the actual numeric value and formatting policy. Preserve sign, decimal and grouping semantics and separate the accessible final value from decorative glyphs.",
+      "Retarget from the currently visible value and cancel motion immediately when reduced motion changes. Invalid numbers must not become an endless roll."
+    ],
+    "related": [
+      "input-number-stepper",
+      "chart-waffle"
+    ],
+    "updated": "2026-10-13"
+  },
+  "text-outline-fill": {
+    "useWhen": "Connecting a readable outlined text treatment to supplied reading progress.",
+    "avoidWhen": "Essential copy that only becomes legible after scrolling or an uncontrolled looping text effect.",
+    "integration": [
+      "Supply the text and bounded progress or a real progress source. Keep a fully readable static layer and preserve ordinary text selection.",
+      "Honor reduced motion and missing progress without hiding words; visual fill must not imply that a user actually completed the content."
+    ],
+    "related": [
+      "text-decode",
+      "scroll-chapter-stack"
+    ],
+    "updated": "2026-10-13"
+  },
+  "bg-fluted-glass": {
+    "useWhen": "Separating supplied foreground content from a layered scene with a restrained fluted refraction treatment.",
+    "avoidWhen": "Making text less legible, imitating unsupported live refraction or adding expensive animation behind every panel.",
+    "integration": [
+      "Supply the scene and foreground content independently. Keep foreground interaction intact and use the quality bounds appropriate to the actual rendering method.",
+      "Pause unnecessary work offscreen and in hidden tabs, provide a static reduced-motion treatment and retain readable contrast."
+    ],
+    "related": [
+      "bg-dither-flow",
+      "effect-border-tracer"
+    ],
+    "updated": "2026-10-13"
+  },
+  "bg-topographic-contours": {
+    "useWhen": "Exploring a controlled contour surface by changing bounded density and lighting inputs.",
+    "avoidWhen": "A geographic map, live terrain analysis or an endlessly drifting background with no controls.",
+    "integration": [
+      "Supply the surface parameters and keep their limits explicit. Explain the visual effect through real controls rather than invented terrain measurements.",
+      "Resize to the actual container, pause ambient work when hidden and provide a static reduced-motion rendering."
+    ],
+    "related": [
+      "three-contour-terrain",
+      "bg-dither-flow"
+    ],
+    "updated": "2026-10-13"
+  },
+  "pixel-halftone-image": {
+    "useWhen": "Inspecting a supplied image as a real halftone pattern with useful density and threshold adjustments.",
+    "avoidWhen": "Stock-image decoration, background removal or claiming an encoded export without an actual output.",
+    "integration": [
+      "Provide the image source and alternative description. Actual pixel access must handle loading, failed images and cross-origin restrictions honestly.",
+      "Bound sampling cost, preserve the original image for comparison and expose keyboard controls for the same density and threshold."
+    ],
+    "related": [
+      "pixel-matrix-display",
+      "media-before-after"
+    ],
+    "updated": "2026-10-13"
+  },
+  "effect-ink-trail": {
+    "useWhen": "Adding a bounded, user-driven drawing mark that fades while ordinary controls remain usable.",
+    "avoidWhen": "Capturing the whole page pointer, hiding essential content or creating an endless uncontrolled animation.",
+    "integration": [
+      "Limit the mark to its intended region and retain keyboard/touch alternatives where drawing carries meaning.",
+      "Clean up animation work and pointer ownership on retirement; respect live reduced motion and avoid obstructing nested controls."
+    ],
+    "related": [
+      "effect-border-tracer",
+      "editor-whiteboard"
+    ],
+    "updated": "2026-10-13"
+  },
+  "three-material-inspector": {
+    "useWhen": "Comparing generic material samples under explicit, adjustable light in a small 3D inspection tool.",
+    "avoidWhen": "Replacing an actual product photograph with a generated stand-in or making unsupported physical material claims.",
+    "integration": [
+      "Supply the material and lighting parameters with useful bounds. Provide a readable static alternative and report unavailable graphics support.",
+      "Cap pixel ratio, resize to the container, pause hidden rendering and dispose of resources when the component retires."
+    ],
+    "related": [
+      "three-holo-card",
+      "three-ascii-object"
+    ],
+    "updated": "2026-10-13"
+  },
+  "three-exploded-assembly": {
+    "useWhen": "Inspecting labeled parts of a generic supplied assembly through an explicit exploded view and diagram alternative.",
+    "avoidWhen": "Engineering certification, accurate manufacturing CAD or a product visualization based on invented geometry.",
+    "integration": [
+      "Supply part identities, geometry and explanation. Keep a linear parts list and ordinary selection controls alongside any spatial interaction.",
+      "Bound separation and restore the actual assembled pose; pause hidden rendering, support reduced motion and dispose of graphics resources."
+    ],
+    "related": [
+      "three-contour-terrain",
+      "editor-node-graph"
+    ],
+    "updated": "2026-10-13"
   }
 }
