@@ -3718,8 +3718,8 @@
     "updated": "2026-10-13"
   },
   "media-trim-timeline": {
-    "useWhen": "Choosing an exact in/out range from real audio or video, using a waveform or supplied filmstrip alongside precise time entry.",
-    "avoidWhen": "Encoding a media file without a host export service, synthesizing a waveform from arbitrary values or showing a decorative scrubber.",
+    "useWhen": "Choosing an exact in/out range from real audio, using a supplied measured waveform alongside precise time entry.",
+    "avoidWhen": "Encoding an audio file without a host export service, inspecting a video filmstrip or showing a decorative scrubber.",
     "integration": [
       "Supply a real source and measured waveform data when available. Native duration defines the trim bounds; keyboard steps and exact time entry serve different precision needs.",
       "Use onApplyRange with its AbortSignal for host processing. Real playback follows native media events, and rejected controlled ranges must remain visibly unchanged."
