@@ -5,6 +5,12 @@ Editorial source lives in the private `richawo/Design-for-AI` repository:
 The public site reads its ignored `registry/pro/` checkout at build time.
 Generated content and social cards stay out of the public Git index.
 
+The readable generated `content.json` remains available for audits. Runtime
+routes import `content-packed.json`, a gzip/base64 pack decoded once per Worker
+isolate through Node zlib. This keeps the multilingual corpus below the Worker
+module limit without removing text or language editions. The content-pack test
+checks the complete generated payload against the readable source.
+
 Use Node 24, matching production. Run `npm run blog:translate` after changing
 editorial copy. It uses the same translation provider and token protection as
 Post Yaps: complete sentences retain inline formatting, code is opaque, and

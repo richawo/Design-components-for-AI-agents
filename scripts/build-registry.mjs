@@ -36,6 +36,7 @@ import { buildCardImages } from "./lib/card-images.mjs";
 import { conveyorVideoManifest } from "./lib/conveyor-videos.mjs";
 import { showcaseCollections } from "../lib/showcase-collections.mjs";
 import { validateControls, validateDemo } from "../lib/demo/schema.mjs";
+import { packContent } from "./lib/content-pack.mjs";
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
 const registryDir = path.join(root, "registry");
@@ -414,7 +415,10 @@ if (editorial.posts.length) {
   blogImages = await buildBlogImages(root, editorial);
   console.log(`blog: ${editorial.posts.length} articles in ${Object.keys(editorialBundle.localizedBlog).length + 1} complete languages`);
 }
-writeJson(path.join(outDir, "content.json"), { ...editorialBundle, blogImages, docs: mdFiles("docs") });
+const siteContent = { ...editorialBundle, blogImages, docs: mdFiles("docs") };
+// The readable bundle supports audits; request-time code imports only its pack.
+writeJson(path.join(outDir, "content.json"), siteContent);
+writeJson(path.join(outDir, "content-packed.json"), packContent(siteContent));
 writeJson(path.join(root, "public", ".well-known", "design-build.json"), {
   publicCommit: execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim(),
   privateContentCommit: editorial.posts.length && fs.existsSync(path.join(root, "registry", "pro", ".git"))

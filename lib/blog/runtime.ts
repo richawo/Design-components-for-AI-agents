@@ -1,5 +1,6 @@
 import "server-only";
-import bundled from "@/registry/__generated__/content.json";
+import packed from "@/registry/__generated__/content-packed.json";
+import { unpackContent } from "../../scripts/lib/content-pack.mjs";
 import { LOCALES, localeByCode } from "./locales.mjs";
 
 export type BlogConfig = {
@@ -15,7 +16,8 @@ export type BlogBundle = {
   ui?: Record<string, Record<string, string>>;
   blogImages?: Record<string, { width: number; height: number }>;
 };
-export const BLOG_DATA = bundled as unknown as BlogBundle;
+// Decode once per isolate. Node zlib is supported by the Worker's compatibility date.
+export const BLOG_DATA = unpackContent(packed) as BlogBundle;
 export const blogFiles = (locale = "en") => locale === "en" ? BLOG_DATA.blog : BLOG_DATA.localizedBlog?.[locale] ?? {};
 export const blogConfig = (locale = "en") => (locale === "en" ? BLOG_DATA.config : BLOG_DATA.localizedConfig?.[locale]) ?? BLOG_DATA.config;
 export const blogUI = (locale = "en") => BLOG_DATA.ui?.[locale] ?? {};
