@@ -1,0 +1,4 @@
+interface:
+  display_name: "Design for AI Articles"
+  short_description: "Research and publish Design for AI buying guides"
+  default_prompt: "Use $design-yaps-articles to research and publish the next five Design for AI blog articles."
