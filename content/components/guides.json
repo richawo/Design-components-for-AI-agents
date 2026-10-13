@@ -4591,27 +4591,30 @@
     "useWhen": "Reviewing a supplied schema migration plan, its dependencies and actual impact before requesting application.",
     "avoidWhen": "Executing arbitrary SQL in the component or inventing the migration’s safety, backups or success.",
     "integration": [
-      "Supply the migration identity, ordered changes, dependency constraints and known impact. Distinguish inspection from host-owned execution.",
-      "Require an explicit scope review, preserve the plan after failure and ignore results for a retired migration."
+      "Supply plan identity, complete ordered inventory and change ID/title/operation/resource/statement/dependencyIds/impact. Keep row impact per change; overlapping counts are not a unique total. Missing, repeated, cyclic, later or ambiguous dependencies and unknown affected-row/lock/reversible facts block reviewed application.",
+      "Pair selected change value with onValueChange for controlled inspection. Statements and the full raw plan remain selectable escaped text; this component does not execute SQL. Exact consent belongs to plan facts, order, impact, status and handler and cannot resurrect after replacement. Later notes stay drafts while pending requests keep their exact copied note.",
+      "onApply receives a copied plan/note plus AbortSignal. Preserve context on failure/cancel and fence obsolete plan/session/handler/terminal ownership. Same-plan applying progress does not self-abort the real handler. Void acknowledgement shows Awaiting host status and blocks duplicate requests; only actual supplied status can report Applied."
     ],
     "related": [
       "agent-approval-gate",
       "data-query-builder"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "devtools-incident-timeline": {
     "useWhen": "Correlating supplied alerts, deployments and interventions on one inspectable incident history.",
     "avoidWhen": "A live monitoring service or assumed causal relationships between nearby events.",
     "integration": [
-      "Supply stable event IDs, timestamps, categories and actual evidence. Make timezone and missing data explicit; proximity alone does not establish cause.",
-      "Keep filters, keyboard selection and event details linked while preserving the inspected event through updates."
+      "Supply incident identity and actual event ID, explicit supported ISO timestamp, alert/deployment/intervention/note category, description, actor and event-scoped evidence. Equal times preserve supplied order. Missing/conflicting IDs and unsupported kinds/times remain inspectable as unplaced raw records; bound inspection explicitly rather than silently legitimizing a record.",
+      "Pair event value and timeZone with their respective synchronous observers for controlled inspection. Missing observers make only that branch read-only. Display-zone conversion uses actual IANA rules while retaining source timestamps; unavailable conversion shows raw times. Time-zone option IDs must be supported and unique.",
+      "Category filters keep the inspected event/evidence in view and explain when its row is hidden. Evidence identity includes event ID and local evidence ID; actual supplied HTTP(S) or root-relative links remain available, while missing/unsupported links stay honest. Use incident/resetKey to replace history and preserve explicit outside or parent-page focus.",
+      "This is history inspection, not monitoring, causal analysis or assumed recovery. Fixed row spacing is not a time scale and temporal proximity does not establish cause. Inspection is bounded to 200 supported records before chronological ordering and 100 evidence records per event; the host retains complete data."
     ],
     "related": [
       "devtools-log-stream",
       "devtools-request-waterfall"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "mobile-mood-map": {
     "useWhen": "Choosing and refining a feeling in a calm, semantic mobile check-in.",
