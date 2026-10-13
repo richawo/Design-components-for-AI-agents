@@ -4156,40 +4156,43 @@
     "useWhen": "Choosing a two-ended calendar range with readable bounds and keyboard date navigation.",
     "avoidWhen": "A time-slot booking system or converting date-only selections through an unintended timezone.",
     "integration": [
-      "Supply locale, unavailable dates, minimum/maximum dates and range rules. Keep date-only values in a representation that cannot shift across timezones.",
-      "Retain the selected endpoint after an invalid range and make keyboard grid movement and touch selection agree."
+      "Supply controlled `value` or local `defaultValue` as `{start,end}` real YYYY-MM-DD endpoints, with `onValueChange`. Date-only arithmetic uses Gregorian UTC and never turns a date into an unintended local instant. Missing controlled callbacks make the corresponding range or month actions read only.",
+      "Configure inclusive `minDate`/`maxDate`, unique `unavailableDates`, `minimumDays`/`maximumDays` and `weekStartsOn`. Completed ranges must satisfy every unavailable day and inclusive length rule; rejected ranges retain the current endpoint.",
+      "Use separately controlled `month`/`onMonthChange` or local `initialMonth`; `resetKey` explicitly resets local range/month context. Keyboard month requests only move focus after the host accepts that actual month and while the original widget-owned intent remains current."
     ],
     "related": [
       "date-week-agenda",
       "date-booking-slots"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "date-timezone-overlap": {
     "useWhen": "Comparing supplied working hours across timezones before explicitly choosing a meeting time.",
     "avoidWhen": "A guessed timezone offset, a scheduling service or a guarantee that participants are available.",
     "integration": [
-      "Supply timezone identifiers, date and each participant’s working hours. Use the actual date when calculating daylight-saving offsets.",
-      "Show local labels for the same instant and explain no-overlap or missing-hour states before requesting a selection."
+      "Supply actual YYYY-MM-DD `date`, Intl `anchorZone`, local `windowStart`/`windowEnd` and unique `participants` with local `start`/`end`, `timeZone` and Sunday0–Saturday6 `weekdays`. Overnight work belongs to the weekday on which it begins; equal hours mean no working time.",
+      "The comparison window uses the first repeated start and second repeated end; a missing local boundary is explained. `durationMinutes`1–120 and `stepMinutes`15–120 bound actual elapsed candidate starts. Every occupied minute must fit every included participant, not just its start.",
+      "Control `includedIds`/`onIncludedIdsChange` separately from `value`/`onValueChange`, whose atomic payload is `{instant,durationMinutes,participantIds}`. Inspection is not a choice; a retained selection outside a changed context stays visible. Reset local membership explicitly with `resetKey` when the participant dataset changes. Host owns real calendars, booking and persistence."
     ],
     "related": [
       "date-week-agenda",
       "hr-capacity-planner"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "forms-branching-survey": {
     "useWhen": "Collecting conditional answers while retaining prior input when a branch changes, then reviewing the result.",
     "avoidWhen": "A fixed linear form or automatically submitting hidden branch answers without explaining scope.",
     "integration": [
-      "Supply question identities, branch rules and validation. Preserve prior answers deliberately and state which branch answers are included in the final payload.",
-      "Keep review, edit and submission failures recoverable; a changed branch must not move focus into hidden content."
+      "Supply `formId` and up to20 unique typed `questions` (text or choice). `showWhen` refers only to a preceding question; choices are unique and bounded to12, text maximumLength1–2000. Required answers are validated before progression and submission.",
+      "Control the accepted `answers` object with `onAnswersChange`, or initialize local `defaultAnswers` and reset explicitly with `resetKey`. Earlier hidden branch answers remain in editing state but are excluded from the actual submission. Rejected requests cannot change the active branch.",
+      "Connect `onSubmit(submission,AbortSignal)` to actual persistence. The exact payload contains formId, active questionIds and copied active own answer fields only. Cancellation, changed context or handler retire stale results; failure preserves answers and review. The preview acknowledgement stores only the copied brief in preview memory."
     ],
     "related": [
       "forms-preference-center",
       "legal-matter-intake"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "auth-recovery-codes": {
     "useWhen": "Presenting host-supplied recovery codes for explicit reveal, copying and acknowledgement.",
