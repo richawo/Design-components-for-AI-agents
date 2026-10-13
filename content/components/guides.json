@@ -1,912 +1,4 @@
 {
-  "agent-status-pill": {
-    "useWhen": "Compact agent presence beside a conversation, task or run.",
-    "avoidWhen": "A complete execution history, where a run trace gives the steps and evidence.",
-    "integration": [
-      "Supply your own records through `activity`. Preserve stable keys or IDs when the data contract provides them."
-    ],
-    "related": [
-      "agent-diff-review",
-      "agent-plan-steps",
-      "agent-run-trace"
-    ],
-    "updated": "2026-10-12"
-  },
-  "ai-composer-minimal": {
-    "useWhen": "A focused text composer at the bottom of an assistant conversation.",
-    "avoidWhen": "Rich attachments, model selection or advanced prompt controls in the same composer.",
-    "integration": [
-      "Supply your own records through `files`, `commandList`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onSubmit` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
-    ],
-    "related": [
-      "ai-message-actions",
-      "ai-reasoning-trace",
-      "ai-voice-mode"
-    ],
-    "updated": "2026-10-12"
-  },
-  "ai-message-actions": {
-    "useWhen": "Copy, retry and feedback actions attached to one assistant message.",
-    "avoidWhen": "Actions that change an entire conversation or workspace.",
-    "integration": [
-      "Supply your own records through `versions`, `reasons`. Preserve stable keys or IDs when the data contract provides them."
-    ],
-    "related": [
-      "ai-reasoning-trace",
-      "ai-voice-mode",
-      "ai-composer-minimal"
-    ],
-    "updated": "2026-10-12"
-  },
-  "ai-thinking-states": {
-    "useWhen": "A short explanation of an assistant's current processing state.",
-    "avoidWhen": "A fabricated reasoning transcript or a precise completion estimate without real progress data.",
-    "integration": [
-      "Supply your own records through `reserve`. Preserve stable keys or IDs when the data contract provides them."
-    ],
-    "related": [
-      "ai-reasoning-trace",
-      "streaming-text",
-      "ai-message-actions"
-    ],
-    "updated": "2026-10-12"
-  },
-  "auth-magic-link": {
-    "useWhen": "Email sign-in without asking someone to choose a password.",
-    "avoidWhen": "An offline identity flow or an application that requires passkeys or enterprise SSO.",
-    "integration": [
-      "Connect `onSend` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
-      "Provide onSend before enabling send or resend. Resolve after your email service accepts the request and reject failed HTTP responses so the address remains available for retry."
-    ],
-    "related": [
-      "auth-sign-in",
-      "auth-passkey",
-      "auth-sso-detect"
-    ],
-    "updated": "2026-10-12"
-  },
-  "auth-passkey": {
-    "useWhen": "A passwordless entry point backed by your application's WebAuthn flow.",
-    "avoidWhen": "A visual substitute for server challenges, origin checks and credential verification.",
-    "integration": [
-      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
-    ],
-    "related": [
-      "auth-magic-link",
-      "auth-sign-in",
-      "auth-sso-detect"
-    ],
-    "updated": "2026-10-12"
-  },
-  "auth-sign-in": {
-    "useWhen": "A compact account entry form with a clear next action.",
-    "avoidWhen": "A long registration questionnaire or an enterprise domain discovery flow.",
-    "integration": [
-      "Supply your own records through `providers`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onSubmit` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
-      "Provide onSubmit and onSso for the authentication methods you enable. Await a server decision before resolving success; missing methods remain unavailable."
-    ],
-    "related": [
-      "auth-magic-link",
-      "auth-sso-detect",
-      "auth-passkey"
-    ],
-    "updated": "2026-10-12"
-  },
-  "billing-invoice-list": {
-    "useWhen": "An account's invoice history with document and payment actions.",
-    "avoidWhen": "Invoice authoring or a ledger that requires reconciled accounting data.",
-    "integration": [
-      "Supply your own records through `invoices`. Preserve stable keys or IDs when the data contract provides them."
-    ],
-    "related": [
-      "billing-overview",
-      "billing-payment-methods",
-      "billing-plan-change"
-    ],
-    "updated": "2026-10-12"
-  },
-  "billing-payment-methods": {
-    "useWhen": "Reviewing and managing saved payment methods in account settings.",
-    "avoidWhen": "Collecting raw card details or replacing a payment provider's secure fields.",
-    "integration": [
-      "Supply your own records through `cards`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onRemove` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
-    ],
-    "related": [
-      "billing-overview",
-      "billing-invoice-list",
-      "billing-plan-change"
-    ],
-    "updated": "2026-10-12"
-  },
-  "button-hold-confirm": {
-    "useWhen": "A deliberate hold before a consequential but clearly described action.",
-    "avoidWhen": "Routine actions that need quick repeated activation, or the only way to operate a critical control.",
-    "integration": [
-      "Connect `onConfirm` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
-    ],
-    "related": [
-      "toast-stack",
-      "primitives-shortcut-reference",
-      "dialog-confirm-typed"
-    ],
-    "updated": "2026-10-12"
-  },
-  "button-press-depth": {
-    "useWhen": "A tactile primary action in a restrained interface.",
-    "avoidWhen": "A control whose state or availability is conveyed only through depth and animation.",
-    "integration": [
-      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
-    ],
-    "related": [
-      "button-magnetic",
-      "ai-thinking-states",
-      "button-hold-confirm"
-    ],
-    "updated": "2026-10-12"
-  },
-  "card-profile-stats": {
-    "useWhen": "A concise person or account summary with a few supporting figures.",
-    "avoidWhen": "A directory with many searchable records or a detailed analytics dashboard.",
-    "integration": [
-      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
-    ],
-    "related": [
-      "cards-event-ticket",
-      "agent-diff-review",
-      "agent-status-pill"
-    ],
-    "updated": "2026-10-12"
-  },
-  "chart-portfolio": {
-    "useWhen": "Inspecting a portfolio value across a selected time range.",
-    "avoidWhen": "OHLC trading data or a comparison between many categorical series.",
-    "integration": [
-      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
-    ],
-    "related": [
-      "chart-revenue-trend",
-      "chart-candlestick",
-      "chart-allocation"
-    ],
-    "updated": "2026-10-12"
-  },
-  "chart-waffle": {
-    "useWhen": "Showing discrete units or a part-to-whole count as a readable grid.",
-    "avoidWhen": "Continuous time series or extremely large unit counts that cannot be read meaningfully.",
-    "integration": [
-      "Supply your own records through `groups`, `periods`. Preserve stable keys or IDs when the data contract provides them."
-    ],
-    "related": [
-      "chart-allocation",
-      "chart-cohort-retention",
-      "chart-portfolio"
-    ],
-    "updated": "2026-10-12"
-  },
-  "chat-thread": {
-    "useWhen": "A conversation with authored messages and a usable composer.",
-    "avoidWhen": "A multi-channel inbox or an agent execution console with tool-by-tool evidence.",
-    "integration": [
-      "Supply your own records through `messages`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onSend` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
-    ],
-    "related": [
-      "ai-reasoning-trace",
-      "streaming-text",
-      "ai-mcp-elicitation"
-    ],
-    "updated": "2026-10-12"
-  },
-  "collab-mention-input": {
-    "useWhen": "Inviting attention to a person while writing a short collaborative message.",
-    "avoidWhen": "A complete document editor or an authoritative check of a person's permissions.",
-    "integration": [
-      "Supply your own records through `people`, `channels`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
-    ],
-    "related": [
-      "collab-activity-feed",
-      "collab-annotation-pins",
-      "collab-comment-thread"
-    ],
-    "updated": "2026-10-12"
-  },
-  "collab-presence-bar": {
-    "useWhen": "Showing who is currently present in a shared workspace.",
-    "avoidWhen": "A team directory or a guarantee that a connection is still live.",
-    "integration": [
-      "Supply your own records through `people`. Preserve stable keys or IDs when the data contract provides them."
-    ],
-    "related": [
-      "collab-activity-feed",
-      "collab-annotation-pins",
-      "collab-comment-thread"
-    ],
-    "updated": "2026-10-12"
-  },
-  "command-palette": {
-    "useWhen": "Quick navigation and discoverable keyboard actions across an application.",
-    "avoidWhen": "A large multi-step form or the only entry point to an essential action.",
-    "integration": [
-      "Supply your own records through `groups`. Preserve stable keys or IDs when the data contract provides them."
-    ],
-    "related": [
-      "streaming-text",
-      "ai-citations-inline",
-      "ai-composer-minimal"
-    ],
-    "updated": "2026-10-12"
-  },
-  "content-accordion-index": {
-    "useWhen": "An editorial FAQ or compact question index with progressive disclosure.",
-    "avoidWhen": "A long document people need to compare or scan with every section visible.",
-    "integration": [
-      "Supply your own records through `items`. Preserve stable keys or IDs when the data contract provides them."
-    ],
-    "related": [
-      "content-release-notes",
-      "scroll-chapter-stack",
-      "app-permission-matrix"
-    ],
-    "updated": "2026-10-12"
-  },
-  "cta-horizon": {
-    "useWhen": "A focused closing section with one clear next step.",
-    "avoidWhen": "A page that still needs to explain the product or compare several purchase decisions.",
-    "integration": [
-      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
-    ],
-    "related": [
-      "button-magnetic",
-      "agent-diff-review",
-      "agent-status-pill"
-    ],
-    "updated": "2026-10-12"
-  },
-  "data-table-sortable": {
-    "useWhen": "A readable collection of typed rows with sorting and selection.",
-    "avoidWhen": "A spreadsheet requiring cell editing, formulas or server-scale virtualization.",
-    "integration": [
-      "Supply your own records through `columns`, `data`, `bulkActions`. Preserve stable keys or IDs when the data contract provides them."
-    ],
-    "related": [
-      "dashboard-orders-table",
-      "data-file-explorer",
-      "data-kanban-compact"
-    ],
-    "updated": "2026-10-12"
-  },
-  "devtools-code-block": {
-    "useWhen": "Readable code examples with language styling and copying.",
-    "avoidWhen": "An interactive source editor or an execution sandbox.",
-    "integration": [
-      "Supply your own records through `files`. Preserve stable keys or IDs when the data contract provides them."
-    ],
-    "related": [
-      "devtools-api-playground",
-      "devtools-env-vars",
-      "devtools-feature-flags"
-    ],
-    "updated": "2026-10-12"
-  },
-  "dialog-confirm-typed": {
-    "useWhen": "A clearly explained destructive action requiring an exact confirmation phrase.",
-    "avoidWhen": "Low-impact actions that do not warrant interrupting a person's workflow.",
-    "integration": [
-      "Supply your own records through `ledger`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onConfirm` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
-    ],
-    "related": [
-      "dropdown-menu-nested",
-      "tooltip-group",
-      "button-hold-confirm"
-    ],
-    "updated": "2026-10-12"
-  },
-  "dropdown-menu-nested": {
-    "useWhen": "Related commands with a small number of nested groups.",
-    "avoidWhen": "A long selection list, where a listbox or searchable combobox is clearer.",
-    "integration": [
-      "Supply your own records through `items`. Preserve stable keys or IDs when the data contract provides them."
-    ],
-    "related": [
-      "tooltip-group",
-      "dialog-confirm-typed",
-      "select-listbox"
-    ],
-    "updated": "2026-10-12"
-  },
-  "feedback-empty-search": {
-    "useWhen": "A search with no matches and useful ways to recover.",
-    "avoidWhen": "An initial loading state or an unexplained application failure.",
-    "integration": [
-      "Supply your own records through `suggestions`. Preserve stable keys or IDs when the data contract provides them."
-    ],
-    "related": [
-      "feedback-inline-alert",
-      "feedback-morph-loader",
-      "toast-promise"
-    ],
-    "updated": "2026-10-12"
-  },
-  "feedback-inline-alert": {
-    "useWhen": "An actionable notice attached to the part of the page it affects.",
-    "avoidWhen": "Transient confirmations better delivered as a toast, or silent background logs.",
-    "integration": [
-      "Connect `onAction` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
-    ],
-    "related": [
-      "feedback-empty-search",
-      "feedback-morph-loader",
-      "toast-promise"
-    ],
-    "updated": "2026-10-12"
-  },
-  "feedback-morph-loader": {
-    "useWhen": "A brief loading interval where continuity between states helps.",
-    "avoidWhen": "Measured upload or processing progress that should expose a real percentage.",
-    "integration": [
-      "Supply your own records through `shapes`. Preserve stable keys or IDs when the data contract provides them."
-    ],
-    "related": [
-      "toast-promise",
-      "feedback-empty-search",
-      "feedback-inline-alert"
-    ],
-    "updated": "2026-10-12"
-  },
-  "footer-columns-status": {
-    "useWhen": "A multi-column footer with a real service-state reference.",
-    "avoidWhen": "A minimal one-action closing section or status copy without a real data source.",
-    "integration": [
-      "Supply your own records through `columns`, `locales`. Preserve stable keys or IDs when the data contract provides them."
-    ],
-    "related": [
-      "footer-wordmark",
-      "footer-ascii-wordmark",
-      "footer-newsletter"
-    ],
-    "updated": "2026-10-12"
-  },
-  "footer-newsletter": {
-    "useWhen": "A closing newsletter form with a clear subscription action.",
-    "avoidWhen": "An automatic subscription or a promise of successful delivery without a server response.",
-    "integration": [
-      "Supply your own records through `socials`, `legalLinks`. Preserve stable keys or IDs when the data contract provides them.",
-      "Provide onSubscribe and resolve only after the subscription is accepted. Reject server failures so the retry flow retains the submitted address."
-    ],
-    "related": [
-      "footer-wordmark",
-      "footer-ascii-wordmark",
-      "footer-columns-status"
-    ],
-    "updated": "2026-10-12"
-  },
-  "footer-wordmark": {
-    "useWhen": "A typography-led ending for a brand or studio page.",
-    "avoidWhen": "Dense legal or support navigation that needs a full multi-column footer.",
-    "integration": [
-      "Supply your own records through `columns`, `address`, `legalLinks`. Preserve stable keys or IDs when the data contract provides them."
-    ],
-    "related": [
-      "footer-ascii-wordmark",
-      "footer-newsletter",
-      "footer-columns-status"
-    ],
-    "updated": "2026-10-12"
-  },
-  "header-announcement": {
-    "useWhen": "A short, timely announcement above a site's main navigation.",
-    "avoidWhen": "Permanent product explanation or urgent operational incidents requiring richer context.",
-    "integration": [
-      "Supply your own records through `messages`. Preserve stable keys or IDs when the data contract provides them.",
-      "Each rotating message keeps a unique ID, and leaving links become inert while the exit animation completes. Keep message IDs stable through content updates."
-    ],
-    "related": [
-      "header-hairline",
-      "header-island",
-      "header-morph-mega"
-    ],
-    "updated": "2026-10-12"
-  },
-  "header-hairline": {
-    "useWhen": "Quiet site navigation on a restrained marketing page.",
-    "avoidWhen": "A large application sidebar or an information architecture with many nested destinations.",
-    "integration": [
-      "Supply your own records through `links`. Preserve stable keys or IDs when the data contract provides them."
-    ],
-    "related": [
-      "navbar-floating",
-      "header-island",
-      "header-morph-mega"
-    ],
-    "updated": "2026-10-12"
-  },
-  "hero-app-tilt": {
-    "useWhen": "A product-led introduction built around a real interface or product visual.",
-    "avoidWhen": "A substitute for showing the actual product or a page where motion obscures the headline.",
-    "integration": [
-      "Supply your own records through `folders`, `labels`, `threads`. Preserve stable keys or IDs when the data contract provides them."
-    ],
-    "related": [
-      "hero-product-stack",
-      "hero-marquee-screens",
-      "hero-blur-statement"
-    ],
-    "updated": "2026-10-12"
-  },
-  "hero-blur-statement": {
-    "useWhen": "A concise editorial introduction whose typography carries the story.",
-    "avoidWhen": "A dense explanation that requires charts, screenshots or several competing actions.",
-    "integration": [
-      "Supply your own records through `nouns`. Preserve stable keys or IDs when the data contract provides them."
-    ],
-    "related": [
-      "hero-app-tilt",
-      "hero-marquee-screens",
-      "hero-swiss-grid"
-    ],
-    "updated": "2026-10-12"
-  },
-  "hero-marquee-screens": {
-    "useWhen": "Showing a small collection of authentic product screens in a launch page.",
-    "avoidWhen": "A continuously moving gallery containing essential instructions or long text.",
-    "integration": [
-      "Supply your own records through `screens`. Preserve stable keys or IDs when the data contract provides them."
-    ],
-    "related": [
-      "hero-app-tilt",
-      "hero-product-stack",
-      "hero-blur-statement"
-    ],
-    "updated": "2026-10-12"
-  },
-  "hero-swiss-grid": {
-    "useWhen": "An organised product introduction with a clear typographic hierarchy.",
-    "avoidWhen": "A richly narrative case study that needs a different reading structure.",
-    "integration": [
-      "Supply your own records through `lines`, `notes`, `items`. Preserve stable keys or IDs when the data contract provides them."
-    ],
-    "related": [
-      "hero-blur-statement",
-      "hero-app-tilt",
-      "hero-ghost-cursor"
-    ],
-    "updated": "2026-10-12"
-  },
-  "hero-terminal-agent": {
-    "useWhen": "A developer or agent product introduction with readable terminal activity.",
-    "avoidWhen": "A real production console or invented live execution results presented as evidence.",
-    "integration": [
-      "Supply your own records through `headline`, `facts`. Preserve stable keys or IDs when the data contract provides them."
-    ],
-    "related": [
-      "hero-ghost-cursor",
-      "hero-inline-objects",
-      "hero-marquee-screens"
-    ],
-    "updated": "2026-10-12"
-  },
-  "input-color-swatches": {
-    "useWhen": "Choosing a small, curated set of brand colours.",
-    "avoidWhen": "Unrestricted colour editing or a choice whose meaning depends on colour alone.",
-    "integration": [
-      "Supply your own records through `swatches`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
-    ],
-    "related": [
-      "input-file-dropzone",
-      "input-number-stepper",
-      "input-password-checklist"
-    ],
-    "updated": "2026-10-12"
-  },
-  "input-floating-label": {
-    "useWhen": "A concise, labelled text field in a compact form.",
-    "avoidWhen": "Complex input guidance that should remain outside the field at all times.",
-    "integration": [
-      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
-    ],
-    "related": [
-      "input-search-scoped",
-      "input-color-swatches",
-      "input-file-dropzone"
-    ],
-    "updated": "2026-10-12"
-  },
-  "input-number-stepper": {
-    "useWhen": "Adjusting a bounded numerical value with direct entry and stepping.",
-    "avoidWhen": "An unbounded measurement or a numerical choice with no meaningful step.",
-    "integration": [
-      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
-    ],
-    "related": [
-      "input-color-swatches",
-      "input-file-dropzone",
-      "input-password-checklist"
-    ],
-    "updated": "2026-10-12"
-  },
-  "input-password-checklist": {
-    "useWhen": "Explaining password requirements while someone enters a new password.",
-    "avoidWhen": "A strength guarantee or a replacement for server-side password policy.",
-    "integration": [
-      "Supply your own records through `rules`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
-    ],
-    "related": [
-      "input-color-swatches",
-      "input-file-dropzone",
-      "input-number-stepper"
-    ],
-    "updated": "2026-10-12"
-  },
-  "input-search-scoped": {
-    "useWhen": "Searching within a clearly identified collection or area.",
-    "avoidWhen": "An ambiguous global search across unrelated object types.",
-    "integration": [
-      "Supply your own records through `operators`, `recentSearches`, `defaultScopes`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onChange`, `onSubmit` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
-    ],
-    "related": [
-      "input-floating-label",
-      "header-island",
-      "combobox-async"
-    ],
-    "updated": "2026-10-12"
-  },
-  "input-tag-editor": {
-    "useWhen": "Managing a small set of discrete, editable labels.",
-    "avoidWhen": "A long taxonomy with hierarchical permissions or thousands of options.",
-    "integration": [
-      "Supply your own records through `value`, `defaultValue`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
-    ],
-    "related": [
-      "input-color-swatches",
-      "input-file-dropzone",
-      "input-number-stepper"
-    ],
-    "updated": "2026-10-12"
-  },
-  "mobile-health-summary": {
-    "useWhen": "A mobile summary of a few health or activity measurements.",
-    "avoidWhen": "Clinical interpretation or measurements that cannot be supported by a reliable source.",
-    "integration": [
-      "Supply your own records through `days`, `rings`. Preserve stable keys or IDs when the data contract provides them.",
-      "Install this in a React Native app. The web preview is a review surface; verify gestures, text scaling and assistive technology on your target devices.",
-      "Provide both day records and ring definitions. Empty collections render an unavailable summary and recover when real data arrives."
-    ],
-    "related": [
-      "mobile-checkout-sheet",
-      "mobile-tab-bar",
-      "mobile-bottom-sheet"
-    ],
-    "updated": "2026-10-12"
-  },
-  "mobile-onboarding": {
-    "useWhen": "A short sequence introducing an app before the first meaningful task.",
-    "avoidWhen": "A long tutorial that prevents people from reaching the product.",
-    "integration": [
-      "Supply your own records through `steps`. Preserve stable keys or IDs when the data contract provides them.",
-      "Install this in a React Native app. The web preview is a review surface; verify gestures, text scaling and assistive technology on your target devices.",
-      "Empty step collections render an unavailable setup state. Supplying steps again creates a fresh sequence with valid animation values."
-    ],
-    "related": [
-      "mobile-bottom-sheet",
-      "mobile-chat",
-      "mobile-live-activity"
-    ],
-    "updated": "2026-10-12"
-  },
-  "mobile-settings": {
-    "useWhen": "A mobile preference screen with labelled switches and navigation.",
-    "avoidWhen": "Settings changes that appear saved before your host has accepted them.",
-    "integration": [
-      "Supply your own records through `reminderTimes`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onChange`, `onDeleteAll` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
-      "Install this in a React Native app. The web preview is a review surface; verify gestures, text scaling and assistive technology on your target devices."
-    ],
-    "related": [
-      "mobile-bottom-sheet",
-      "mobile-chat",
-      "mobile-live-activity"
-    ],
-    "updated": "2026-10-12"
-  },
-  "mobile-tab-bar": {
-    "useWhen": "A small set of persistent top-level mobile destinations.",
-    "avoidWhen": "A large menu of infrequent actions or deeply nested navigation.",
-    "integration": [
-      "Supply your own records through `tabs`, `week`, `actions`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onAction` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
-      "Install this in a React Native app. The web preview is a review surface; verify gestures, text scaling and assistive technology on your target devices."
-    ],
-    "related": [
-      "mobile-bottom-sheet",
-      "mobile-chat",
-      "mobile-health-summary"
-    ],
-    "updated": "2026-10-12"
-  },
-  "navbar-floating": {
-    "useWhen": "A compact floating navigation surface over a marketing page.",
-    "avoidWhen": "A dense enterprise navigation tree or essential content hidden under a floating element.",
-    "integration": [
-      "Supply your own records through `links`, `socials`. Preserve stable keys or IDs when the data contract provides them."
-    ],
-    "related": [
-      "header-hairline",
-      "header-morph-mega",
-      "header-island"
-    ],
-    "updated": "2026-10-12"
-  },
-  "navigation-breadcrumb-fold": {
-    "useWhen": "An ancestry trail that remains usable in narrow spaces.",
-    "avoidWhen": "A substitute for primary navigation or unrelated recent-page history.",
-    "integration": [
-      "Supply your own records through `items`. Preserve stable keys or IDs when the data contract provides them."
-    ],
-    "related": [
-      "navigation-pagination-window",
-      "tabs-underline-glide",
-      "app-permission-matrix"
-    ],
-    "updated": "2026-10-12"
-  },
-  "navigation-pagination-window": {
-    "useWhen": "Moving through a bounded collection of numbered result pages.",
-    "avoidWhen": "An endless feed or server data with no reliable page count.",
-    "integration": [
-      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
-    ],
-    "related": [
-      "navigation-breadcrumb-fold",
-      "tabs-underline-glide",
-      "app-permission-matrix"
-    ],
-    "updated": "2026-10-12"
-  },
-  "pixel-agent-status": {
-    "useWhen": "A small animated character communicating an agent's current state.",
-    "avoidWhen": "A status indicator that needs detailed error information or exact progress.",
-    "integration": [
-      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
-    ],
-    "related": [
-      "pixel-matrix-display",
-      "feedback-morph-loader",
-      "agent-status-pill"
-    ],
-    "updated": "2026-10-12"
-  },
-  "pixel-matrix-display": {
-    "useWhen": "A dot-matrix treatment for short phrases or compact display content.",
-    "avoidWhen": "Long body copy or text that must be read without an accessible text equivalent.",
-    "integration": [
-      "Supply your own records through `scenes`. Preserve stable keys or IDs when the data contract provides them."
-    ],
-    "related": [
-      "pixel-agent-status",
-      "ai-thinking-states",
-      "cta-horizon"
-    ],
-    "updated": "2026-10-12"
-  },
-  "pricing-plan-toggle": {
-    "useWhen": "Comparing one plan across billing intervals with a clear amount.",
-    "avoidWhen": "A full multi-plan comparison or a live price promise without your billing source.",
-    "integration": [
-      "Supply your own records through `features`. Preserve stable keys or IDs when the data contract provides them."
-    ],
-    "related": [
-      "pricing-three-tier",
-      "pricing-comparison-matrix",
-      "pricing-receipt"
-    ],
-    "updated": "2026-10-12"
-  },
-  "pricing-three-tier": {
-    "useWhen": "A deliberate comparison between three distinct purchase options.",
-    "avoidWhen": "A complex enterprise quotation flow or plans that differ only through decorative wording.",
-    "integration": [
-      "Supply your own records through `plans`, `footnotes`. Preserve stable keys or IDs when the data contract provides them."
-    ],
-    "related": [
-      "pricing-plan-toggle",
-      "pricing-comparison-matrix",
-      "pricing-receipt"
-    ],
-    "updated": "2026-10-12"
-  },
-  "primitives-shortcut-reference": {
-    "useWhen": "A discoverable list of keyboard shortcuts close to the task.",
-    "avoidWhen": "A replacement for visible controls or platform shortcuts that your product does not implement.",
-    "integration": [
-      "Supply your own records through `items`. Preserve stable keys or IDs when the data contract provides them."
-    ],
-    "related": [
-      "button-hold-confirm",
-      "toast-stack",
-      "input-shortcut-recorder"
-    ],
-    "updated": "2026-10-12"
-  },
-  "progress-milestones": {
-    "useWhen": "Communicating discrete, ordered stages of a task or journey.",
-    "avoidWhen": "Continuous percentage progress or stages that have no verified completion state.",
-    "integration": [
-      "Supply your own records through `steps`. Preserve stable keys or IDs when the data contract provides them."
-    ],
-    "related": [
-      "saas-usage-policy",
-      "usage-meter-tokens",
-      "app-permission-matrix"
-    ],
-    "updated": "2026-10-12"
-  },
-  "segmented-control": {
-    "useWhen": "Switching between a small number of related views or values.",
-    "avoidWhen": "A long option list or navigation between unrelated pages.",
-    "integration": [
-      "Supply your own records through `options`. Preserve stable keys or IDs when the data contract provides them."
-    ],
-    "related": [
-      "select-listbox",
-      "switch-spring",
-      "combobox-async"
-    ],
-    "updated": "2026-10-12"
-  },
-  "select-listbox": {
-    "useWhen": "A labelled choice from a manageable set of discrete options.",
-    "avoidWhen": "Hundreds of searchable results or a multi-selection tag collection.",
-    "integration": [
-      "Supply your own records through `options`. Preserve stable keys or IDs when the data contract provides them."
-    ],
-    "related": [
-      "combobox-async",
-      "segmented-control",
-      "multiselect-chips"
-    ],
-    "updated": "2026-10-12"
-  },
-  "selects-radio-cards": {
-    "useWhen": "Choosing one clearly explained mode or configuration.",
-    "avoidWhen": "Several independent preferences that should be separate checkboxes or switches.",
-    "integration": [
-      "Supply your own records through `options`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
-    ],
-    "related": [
-      "cards-event-ticket",
-      "segmented-control",
-      "select-listbox"
-    ],
-    "updated": "2026-10-12"
-  },
-  "settings-panel": {
-    "useWhen": "A compact group of editable preferences with an explicit save action.",
-    "avoidWhen": "An entire account area with billing, members and security workflows.",
-    "integration": [
-      "Supply your own records through `sections`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onSave`, `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
-    ],
-    "related": [
-      "app-permission-matrix",
-      "commerce-operations-dashboard",
-      "dashboard-kpi-cards"
-    ],
-    "updated": "2026-10-12"
-  },
-  "streaming-text": {
-    "useWhen": "Displaying an assistant answer as its content arrives.",
-    "avoidWhen": "Essential instructions that disappear, or simulated streaming passed off as a live response.",
-    "integration": [
-      "Supply your own records through `answer`, `sources`. Preserve stable keys or IDs when the data contract provides them."
-    ],
-    "related": [
-      "ai-citations-inline",
-      "ai-reasoning-trace",
-      "ai-search-answer"
-    ],
-    "updated": "2026-10-12"
-  },
-  "switch-spring": {
-    "useWhen": "A binary preference whose current value is immediately legible.",
-    "avoidWhen": "Choosing between several values or triggering a destructive one-off action.",
-    "integration": [
-      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
-    ],
-    "related": [
-      "segmented-control",
-      "select-listbox",
-      "combobox-async"
-    ],
-    "updated": "2026-10-12"
-  },
-  "tabs-underline-glide": {
-    "useWhen": "Related panels where a moving underline helps preserve orientation.",
-    "avoidWhen": "A large navigation tree or tabs whose labels do not describe their contents.",
-    "integration": [
-      "Supply your own records through `items`. Preserve stable keys or IDs when the data contract provides them."
-    ],
-    "related": [
-      "navigation-breadcrumb-fold",
-      "navigation-pagination-window",
-      "segmented-control"
-    ],
-    "updated": "2026-10-12"
-  },
-  "testimonial-wall": {
-    "useWhen": "A considered set of customer quotations and attributed social proof.",
-    "avoidWhen": "Invented customer claims or a dense case study requiring supporting evidence.",
-    "integration": [
-      "Supply your own records through `testimonials`, `speeds`. Preserve stable keys or IDs when the data contract provides them."
-    ],
-    "related": [
-      "hero-marquee-screens",
-      "agent-diff-review",
-      "agent-status-pill"
-    ],
-    "updated": "2026-10-12"
-  },
-  "three-wave-field": {
-    "useWhen": "A restrained atmospheric background behind readable content.",
-    "avoidWhen": "Essential data visualisation or a background that competes with text and controls.",
-    "integration": [
-      "Keep this scene in a bounded visual region and retain ordinary text and controls for the main task. Check its rendering cost on the devices your audience uses."
-    ],
-    "related": [
-      "three-particle-sphere",
-      "three-contour-terrain",
-      "three-ascii-object"
-    ],
-    "updated": "2026-10-12"
-  },
-  "toast-promise": {
-    "useWhen": "Reporting the pending, success and failure states of an asynchronous action.",
-    "avoidWhen": "Errors that require detailed form corrections or persistent instructions.",
-    "integration": [
-      "Connect `onRetry` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
-    ],
-    "related": [
-      "feedback-morph-loader",
-      "feedback-empty-search",
-      "feedback-inline-alert"
-    ],
-    "updated": "2026-10-12"
-  },
-  "toast-stack": {
-    "useWhen": "A small stream of dismissible application notifications.",
-    "avoidWhen": "The only record of important events that people must be able to review later.",
-    "integration": [
-      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
-    ],
-    "related": [
-      "button-hold-confirm",
-      "primitives-shortcut-reference",
-      "toast-promise"
-    ],
-    "updated": "2026-10-12"
-  },
-  "tooltip-group": {
-    "useWhen": "Brief supplementary explanations for nearby controls.",
-    "avoidWhen": "Required instructions, interactive content or a substitute for visible accessible labels.",
-    "integration": [
-      "Supply your own records through `Tooltip.shortcut`. Preserve stable keys or IDs when the data contract provides them."
-    ],
-    "related": [
-      "dropdown-menu-nested",
-      "dialog-confirm-typed",
-      "ai-message-actions"
-    ],
-    "updated": "2026-10-12"
-  },
   "agent-approval-gate": {
     "useWhen": "Reviewing a proposed agent action before a person approves execution.",
     "avoidWhen": "Automatic authorisation or a guarantee that an action is safe without checking its real payload.",
@@ -975,6 +67,19 @@
     ],
     "updated": "2026-10-12"
   },
+  "agent-status-pill": {
+    "useWhen": "Compact agent presence beside a conversation, task or run.",
+    "avoidWhen": "A complete execution history, where a run trace gives the steps and evidence.",
+    "integration": [
+      "Supply your own records through `activity`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "agent-diff-review",
+      "agent-plan-steps",
+      "agent-run-trace"
+    ],
+    "updated": "2026-10-12"
+  },
   "agent-tool-call": {
     "useWhen": "Presenting a tool's inputs, status and result within an agent workflow.",
     "avoidWhen": "Approving a privileged action without an explicit review step.",
@@ -1002,6 +107,20 @@
     ],
     "updated": "2026-10-12"
   },
+  "ai-composer-minimal": {
+    "useWhen": "A focused text composer at the bottom of an assistant conversation.",
+    "avoidWhen": "Rich attachments, model selection or advanced prompt controls in the same composer.",
+    "integration": [
+      "Supply your own records through `files`, `commandList`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onSubmit` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "ai-message-actions",
+      "ai-reasoning-trace",
+      "ai-voice-mode"
+    ],
+    "updated": "2026-10-12"
+  },
   "ai-image-generation": {
     "useWhen": "Reviewing an image-generation request and its outputs.",
     "avoidWhen": "A substitute for an actual generation backend or unsupported processing estimates.",
@@ -1026,6 +145,19 @@
       "ai-message-actions",
       "chat-thread",
       "ai-citations-inline"
+    ],
+    "updated": "2026-10-12"
+  },
+  "ai-message-actions": {
+    "useWhen": "Copy, retry and feedback actions attached to one assistant message.",
+    "avoidWhen": "Actions that change an entire conversation or workspace.",
+    "integration": [
+      "Supply your own records through `versions`, `reasons`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "ai-reasoning-trace",
+      "ai-voice-mode",
+      "ai-composer-minimal"
     ],
     "updated": "2026-10-12"
   },
@@ -1081,6 +213,19 @@
     ],
     "updated": "2026-10-12"
   },
+  "ai-thinking-states": {
+    "useWhen": "A short explanation of an assistant's current processing state.",
+    "avoidWhen": "A fabricated reasoning transcript or a precise completion estimate without real progress data.",
+    "integration": [
+      "Supply your own records through `reserve`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "ai-reasoning-trace",
+      "streaming-text",
+      "ai-message-actions"
+    ],
+    "updated": "2026-10-12"
+  },
   "ai-voice-mode": {
     "useWhen": "A voice-session surface with understandable listening and speaking states.",
     "avoidWhen": "A microphone permission flow or speech service implemented only through visual simulation.",
@@ -1108,6 +253,20 @@
     ],
     "updated": "2026-10-12"
   },
+  "auth-magic-link": {
+    "useWhen": "Email sign-in without asking someone to choose a password.",
+    "avoidWhen": "An offline identity flow or an application that requires passkeys or enterprise SSO.",
+    "integration": [
+      "Connect `onSend` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
+      "Provide onSend before enabling send or resend. Resolve after your email service accepts the request and reject failed HTTP responses so the address remains available for retry."
+    ],
+    "related": [
+      "auth-sign-in",
+      "auth-passkey",
+      "auth-sso-detect"
+    ],
+    "updated": "2026-10-12"
+  },
   "auth-otp": {
     "useWhen": "Entering and verifying a short one-time authentication code.",
     "avoidWhen": "A replacement for expiry, rate limiting and server-side code verification.",
@@ -1119,6 +278,34 @@
       "auth-magic-link",
       "auth-sign-in",
       "auth-sso-detect"
+    ],
+    "updated": "2026-10-12"
+  },
+  "auth-passkey": {
+    "useWhen": "A passwordless entry point backed by your application's WebAuthn flow.",
+    "avoidWhen": "A visual substitute for server challenges, origin checks and credential verification.",
+    "integration": [
+      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+    ],
+    "related": [
+      "auth-magic-link",
+      "auth-sign-in",
+      "auth-sso-detect"
+    ],
+    "updated": "2026-10-12"
+  },
+  "auth-sign-in": {
+    "useWhen": "A compact account entry form with a clear next action.",
+    "avoidWhen": "A long registration questionnaire or an enterprise domain discovery flow.",
+    "integration": [
+      "Supply your own records through `providers`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onSubmit` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
+      "Provide onSubmit and onSso for the authentication methods you enable. Await a server decision before resolving success; missing methods remain unavailable."
+    ],
+    "related": [
+      "auth-magic-link",
+      "auth-sso-detect",
+      "auth-passkey"
     ],
     "updated": "2026-10-12"
   },
@@ -1189,6 +376,19 @@
     ],
     "updated": "2026-10-12"
   },
+  "billing-invoice-list": {
+    "useWhen": "An account's invoice history with document and payment actions.",
+    "avoidWhen": "Invoice authoring or a ledger that requires reconciled accounting data.",
+    "integration": [
+      "Supply your own records through `invoices`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "billing-overview",
+      "billing-payment-methods",
+      "billing-plan-change"
+    ],
+    "updated": "2026-10-12"
+  },
   "billing-overview": {
     "useWhen": "A summary of an account's plan, invoices and subscription state.",
     "avoidWhen": "Accounting reconciliation or values disconnected from the billing provider.",
@@ -1198,6 +398,20 @@
     "related": [
       "billing-invoice-list",
       "billing-payment-methods",
+      "billing-plan-change"
+    ],
+    "updated": "2026-10-12"
+  },
+  "billing-payment-methods": {
+    "useWhen": "Reviewing and managing saved payment methods in account settings.",
+    "avoidWhen": "Collecting raw card details or replacing a payment provider's secure fields.",
+    "integration": [
+      "Supply your own records through `cards`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onRemove` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "billing-overview",
+      "billing-invoice-list",
       "billing-plan-change"
     ],
     "updated": "2026-10-12"
@@ -1245,6 +459,180 @@
     ],
     "updated": "2026-10-12"
   },
+  "block-commerce-workspace": {
+    "useWhen": "A store operations team needs reporting context, order inspection and a reviewed returns workflow in one page.",
+    "avoidWhen": "Moving money, reserving inventory or authorising a return solely from frontend state.",
+    "integration": [
+      "Align the records in each `periods` entry. Selecting a measure updates its target comparison, while the order and return views keep the same period context.",
+      "Return drafts remain mounted separately for each period and order. The callback includes the period ID and the exact typed return request.",
+      "Use `onReturn` to validate and record requests. A returned reference confirms the request; refunds and exchanges remain host operations."
+    ],
+    "related": [
+      "block-financial-report",
+      "block-fashion-workspace"
+    ],
+    "updated": "2026-10-12"
+  },
+  "block-fashion-workspace": {
+    "useWhen": "A fashion team needs collection performance, a working line plan and launch readiness within the same product workspace.",
+    "avoidWhen": "An authoritative inventory or manufacturing system without current catalogue data and reviewed host actions.",
+    "integration": [
+      "Supply one `scopes` record per collection. Its performance records, line budget and launches share a single context.",
+      "The block keeps every view mounted so an unfinished line plan survives collection and view changes.",
+      "Save and schedule callbacks include the collection ID alongside the underlying typed payload. The offline preview accepts local example changes."
+    ],
+    "related": [
+      "block-financial-report",
+      "block-saas-dashboard"
+    ],
+    "updated": "2026-10-12"
+  },
+  "block-financial-report": {
+    "useWhen": "A financial review needs an intelligible narrative, budget comparison, spend allocation and the underlying cost records in one printable page.",
+    "avoidWhen": "Posting accounting transactions, calculating tax obligations or presenting an authoritative ledger without validated source data.",
+    "integration": [
+      "Provide complete `periods` with integer minor-unit amounts and unique line IDs. Invalid records disable export rather than inventing a total.",
+      "Every panel follows the selected period. CSV export uses that period; Print report opens a plain, readable print layout.",
+      "Use `onExport` to connect a reporting service, or keep the built-in CSV download. Rejected exports preserve the selected context."
+    ],
+    "related": [
+      "block-saas-dashboard",
+      "block-commerce-workspace",
+      "block-fashion-workspace"
+    ],
+    "updated": "2026-10-12"
+  },
+  "block-legal-workspace": {
+    "useWhen": "A legal operations team needs matter context, contractual work and requested evidence in one coherent workspace.",
+    "avoidWhen": "Automatically interpreting obligations, calculating authoritative legal deadlines or treating UI uploads as verified evidence.",
+    "integration": [
+      "Provide related records through `scopes`. Each view stays within its selected matter, and callbacks include the matter ID.",
+      "The retained panels preserve unfinished evidence notes when you change matter or view.",
+      "The host validates permissions, deadlines, uploaded files and recorded completion. The preview demonstrates local sample handoffs."
+    ],
+    "related": [
+      "block-workspace-settings",
+      "block-financial-report"
+    ],
+    "updated": "2026-10-12"
+  },
+  "block-meetings-workspace": {
+    "updated": "2026-10-12",
+    "useWhen": "Composing a working meeting application with linked agenda context, persistent room controls and independently retained notes.",
+    "avoidWhen": "Treating an interface block as a conferencing transport or declaring a room joined before the host acknowledges it.",
+    "integration": [
+      "Supply agenda days, participant streams and join/leave callbacks. Keep selected meeting separate from the joined session.",
+      "Media callbacks resolve after host state changes succeed; failures preserve the previous control state.",
+      "Notes remain scoped by meeting ID. Hosts own storage, permissions and transport; the offline room uses fictional, camera-off participants."
+    ],
+    "related": [
+      "collab-call-stage",
+      "date-week-agenda",
+      "collab-mention-input"
+    ]
+  },
+  "block-music-workspace": {
+    "updated": "2026-10-12",
+    "useWhen": "Composing a full listening application with discovery, a searchable collection, a shared queue and persistent playback.",
+    "avoidWhen": "Copying a streaming service brand or publishing an audio catalogue without rights to its media and artwork.",
+    "integration": [
+      "Supply MusicTrack records with licensed src URLs. Selection and playback remain distinct and actual media events govern playing state.",
+      "Persist queue and liked-state changes through host observers. Retained views keep the collection, search and player position intact.",
+      "The offline demo uses fictional releases and original 12-second audio; it begins muted. Production integrations own licensed assets."
+    ],
+    "related": [
+      "media-audio-transport",
+      "media-track-list",
+      "layout-workspace-shell"
+    ]
+  },
+  "block-people-workspace": {
+    "useWhen": "A people team needs department context, new-hire tasks and leave coverage in one product workspace.",
+    "avoidWhen": "Payroll processing, automatic hiring decisions or leave approvals disconnected from authoritative HR records.",
+    "integration": [
+      "Provide consistent employee IDs across department members, milestones, onboarding and leave records.",
+      "The block retains the separate views and their drafts. Each completion or decision carries its department ID and the underlying typed payload.",
+      "Connect the callbacks to your HR service. The default export is an offline example; production actions require a supplied host callback."
+    ],
+    "related": [
+      "block-workspace-settings",
+      "block-saas-dashboard"
+    ],
+    "updated": "2026-10-12"
+  },
+  "block-saas-dashboard": {
+    "useWhen": "A SaaS overview needs connected headline measures, a selectable metric trend and the account records behind the numbers.",
+    "avoidWhen": "A single metric card or a large analytics warehouse requiring server aggregation and virtualised tables.",
+    "integration": [
+      "Supply `metrics`, `records` and `columns` from the same reporting source. Selecting a KPI or time range updates the shared chart context.",
+      "Use `onExport` for your own reporting service, or keep the built-in metric CSV download. Failed callbacks preserve the current view.",
+      "Install the four declared components with the block. Each remains available for independent customisation."
+    ],
+    "related": [
+      "block-commerce-workspace",
+      "block-financial-report",
+      "block-workspace-settings"
+    ],
+    "updated": "2026-10-12"
+  },
+  "block-saas-landing": {
+    "useWhen": "A SaaS launch needs one considered story from the product introduction through workflow, plan comparison and an actionable request form.",
+    "avoidWhen": "A checkout, authentication service or immediate subscription entitlement implemented only in frontend state.",
+    "integration": [
+      "Replace `plans` and `groups` with your actual offer. The example prices and workflow records are clearly labelled sample data.",
+      "Plan CTAs carry their plan ID to the request form. Pending requests lock the plan comparison, and rejected requests retain the email.",
+      "Connect `onStart` to your signup or request service. Each anchor reaches a real section, and the default export uses a local offline example."
+    ],
+    "related": [
+      "block-saas-dashboard",
+      "block-workspace-settings",
+      "block-commerce-workspace"
+    ],
+    "updated": "2026-10-12"
+  },
+  "block-team-workspace": {
+    "updated": "2026-10-12",
+    "useWhen": "Composing channels and direct-message rooms with persistent drafts, an asynchronous send contract and retained threads.",
+    "avoidWhen": "Publishing a communication application without supplying its transport, user identity and persistence requirements.",
+    "integration": [
+      "Supply channels, people and initialMessages with stable IDs. onSend returns the server’s authoritative channel-scoped message.",
+      "Channel drafts and opened threads remain mounted. A late response never clears text edited during the request.",
+      "Reactions and thread interactions are session state in the example; hosts own durable storage and realtime transport."
+    ],
+    "related": [
+      "collab-message-list",
+      "collab-comment-thread",
+      "collab-mention-input"
+    ]
+  },
+  "block-workspace-settings": {
+    "useWhen": "An account or workspace needs one considered page for its profile, notification choices and role permissions.",
+    "avoidWhen": "A small single-preference panel or an authorisation service implemented entirely in the browser.",
+    "integration": [
+      "Connect `onSave` to your administration service. Its discriminated payload identifies the section and preserves the underlying component contracts.",
+      "Command-S or Control-S saves the section containing keyboard focus. Rejected saves retain the current draft.",
+      "Provide consistent roles, permission prerequisites and grants. The server must enforce the resulting access policy."
+    ],
+    "related": [
+      "block-saas-dashboard",
+      "block-people-workspace",
+      "block-legal-workspace"
+    ],
+    "updated": "2026-10-12"
+  },
+  "button-hold-confirm": {
+    "useWhen": "A deliberate hold before a consequential but clearly described action.",
+    "avoidWhen": "Routine actions that need quick repeated activation, or the only way to operate a critical control.",
+    "integration": [
+      "Connect `onConfirm` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "toast-stack",
+      "primitives-shortcut-reference",
+      "dialog-confirm-typed"
+    ],
+    "updated": "2026-10-12"
+  },
   "button-magnetic": {
     "useWhen": "A deliberate primary marketing action with restrained pointer response.",
     "avoidWhen": "Dense repeated controls or motion required to understand or activate an action.",
@@ -1255,6 +643,46 @@
       "button-press-depth",
       "cta-horizon",
       "button-hold-confirm"
+    ],
+    "updated": "2026-10-12"
+  },
+  "button-press-depth": {
+    "useWhen": "A tactile primary action in a restrained interface.",
+    "avoidWhen": "A control whose state or availability is conveyed only through depth and animation.",
+    "integration": [
+      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+    ],
+    "related": [
+      "button-magnetic",
+      "ai-thinking-states",
+      "button-hold-confirm"
+    ],
+    "updated": "2026-10-12"
+  },
+  "button-shimmer-track": {
+    "useWhen": "A primary async action needs clear pending, completed and retry states, with a restrained moving edge around the button.",
+    "avoidWhen": "Repeated immediate actions, or an effect being used as the only indication that an action is available or has succeeded.",
+    "integration": [
+      "Connect the action to a real awaited operation and provide useful failure text.",
+      "Keep controlled status synchronized with the host and reset it when starting a new task.",
+      "Preserve the native button label and focus treatment when changing colours or motion."
+    ],
+    "related": [
+      "button-press-depth",
+      "button-hold-confirm"
+    ],
+    "updated": "2026-10-13"
+  },
+  "card-profile-stats": {
+    "useWhen": "A concise person or account summary with a few supporting figures.",
+    "avoidWhen": "A directory with many searchable records or a detailed analytics dashboard.",
+    "integration": [
+      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+    ],
+    "related": [
+      "cards-event-ticket",
+      "agent-diff-review",
+      "agent-status-pill"
     ],
     "updated": "2026-10-12"
   },
@@ -1270,6 +698,20 @@
       "app-permission-matrix"
     ],
     "updated": "2026-10-12"
+  },
+  "cards-prismatic-folder": {
+    "useWhen": "A compact file collection benefits from a physical folder presentation, readable previews and clear availability states.",
+    "avoidWhen": "Large directory trees, bulk file administration or workflows that need a full file browser.",
+    "integration": [
+      "Supply stable file identifiers and the actual collection status rather than relying on demo content.",
+      "Connect file actions and recovery to the host application; the presentation does not fetch or store files.",
+      "Review empty collections, unavailable files and long file names in the intended container."
+    ],
+    "related": [
+      "data-file-explorer",
+      "input-file-dropzone"
+    ],
+    "updated": "2026-10-13"
   },
   "cart-drawer": {
     "useWhen": "Reviewing basket items, quantities and totals while continuing to shop.",
@@ -1346,6 +788,19 @@
       "chart-revenue-trend",
       "chart-allocation",
       "chart-portfolio"
+    ],
+    "updated": "2026-10-12"
+  },
+  "chart-portfolio": {
+    "useWhen": "Inspecting a portfolio value across a selected time range.",
+    "avoidWhen": "OHLC trading data or a comparison between many categorical series.",
+    "integration": [
+      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+    ],
+    "related": [
+      "chart-revenue-trend",
+      "chart-candlestick",
+      "chart-allocation"
     ],
     "updated": "2026-10-12"
   },
@@ -1427,6 +882,19 @@
     ],
     "updated": "2026-10-12"
   },
+  "chart-waffle": {
+    "useWhen": "Showing discrete units or a part-to-whole count as a readable grid.",
+    "avoidWhen": "Continuous time series or extremely large unit counts that cannot be read meaningfully.",
+    "integration": [
+      "Supply your own records through `groups`, `periods`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "chart-allocation",
+      "chart-cohort-retention",
+      "chart-portfolio"
+    ],
+    "updated": "2026-10-12"
+  },
   "chart-waterfall-bridge": {
     "useWhen": "Explaining the contributions between a starting and ending value.",
     "avoidWhen": "A continuous trend or contributions that do not reconcile to the stated total.",
@@ -1437,6 +905,20 @@
       "chart-bullet-targets",
       "chart-slope-comparison",
       "chart-candlestick"
+    ],
+    "updated": "2026-10-12"
+  },
+  "chat-thread": {
+    "useWhen": "A conversation with authored messages and a usable composer.",
+    "avoidWhen": "A multi-channel inbox or an agent execution console with tool-by-tool evidence.",
+    "integration": [
+      "Supply your own records through `messages`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onSend` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "ai-reasoning-trace",
+      "streaming-text",
+      "ai-mcp-elicitation"
     ],
     "updated": "2026-10-12"
   },
@@ -1466,6 +948,21 @@
     ],
     "updated": "2026-10-12"
   },
+  "collab-call-stage": {
+    "updated": "2026-10-12",
+    "useWhen": "Presenting real participant video streams with camera-off fallbacks, a spotlight layout and clear host-owned media controls.",
+    "avoidWhen": "Using placeholder portraits or animation to claim a live media connection, active speaker or hardware permission.",
+    "integration": [
+      "Supply participant streams from your own session transport. The stage never acquires a camera or microphone by itself.",
+      "Use CallControls separately when controls must remain visible across other application views.",
+      "Only supply captions and activeSpeakerId when the host has real data. The host owns track lifetimes and audio routing."
+    ],
+    "related": [
+      "block-meetings-workspace",
+      "date-week-agenda",
+      "collab-presence-bar"
+    ]
+  },
   "collab-comment-thread": {
     "useWhen": "A focused conversation attached to a resource.",
     "avoidWhen": "A multi-channel support inbox or a rich document editor.",
@@ -1494,6 +991,48 @@
     ],
     "updated": "2026-10-12"
   },
+  "collab-mention-input": {
+    "useWhen": "Inviting attention to a person while writing a short collaborative message.",
+    "avoidWhen": "A complete document editor or an authoritative check of a person's permissions.",
+    "integration": [
+      "Supply your own records through `people`, `channels`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "collab-activity-feed",
+      "collab-annotation-pins",
+      "collab-comment-thread"
+    ],
+    "updated": "2026-10-12"
+  },
+  "collab-message-list": {
+    "updated": "2026-10-12",
+    "useWhen": "Showing a readable team conversation with reply affordances, reversible reactions and respectful arrival of new posts.",
+    "avoidWhen": "Treating a visual conversation as a transport layer or asserting delivery before a host returns an authoritative message.",
+    "integration": [
+      "Pass stable message IDs and author identities. Drive reactions and thread navigation through host callbacks.",
+      "The viewport follows own posts and preserves earlier reading positions for incoming posts.",
+      "Animate reaction figures in both directions; live announcements apply to added messages rather than every count frame."
+    ],
+    "related": [
+      "block-team-workspace",
+      "collab-comment-thread",
+      "collab-mention-input"
+    ]
+  },
+  "collab-presence-bar": {
+    "useWhen": "Showing who is currently present in a shared workspace.",
+    "avoidWhen": "A team directory or a guarantee that a connection is still live.",
+    "integration": [
+      "Supply your own records through `people`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "collab-activity-feed",
+      "collab-annotation-pins",
+      "collab-comment-thread"
+    ],
+    "updated": "2026-10-12"
+  },
   "collab-share-access": {
     "useWhen": "Reviewing who may view or edit a specific resource.",
     "avoidWhen": "Client-only access control or links that bypass your application's authorisation.",
@@ -1519,6 +1058,19 @@
       "multiselect-chips",
       "select-listbox",
       "segmented-control"
+    ],
+    "updated": "2026-10-12"
+  },
+  "command-palette": {
+    "useWhen": "Quick navigation and discoverable keyboard actions across an application.",
+    "avoidWhen": "A large multi-step form or the only entry point to an essential action.",
+    "integration": [
+      "Supply your own records through `groups`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "streaming-text",
+      "ai-citations-inline",
+      "ai-composer-minimal"
     ],
     "updated": "2026-10-12"
   },
@@ -1675,6 +1227,19 @@
     ],
     "updated": "2026-10-12"
   },
+  "content-accordion-index": {
+    "useWhen": "An editorial FAQ or compact question index with progressive disclosure.",
+    "avoidWhen": "A long document people need to compare or scan with every section visible.",
+    "integration": [
+      "Supply your own records through `items`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "content-release-notes",
+      "scroll-chapter-stack",
+      "app-permission-matrix"
+    ],
+    "updated": "2026-10-12"
+  },
   "content-release-notes": {
     "useWhen": "A readable release history with useful filtering and version context.",
     "avoidWhen": "An incident log or unsupported claims about shipped product behaviour.",
@@ -1685,6 +1250,19 @@
       "content-accordion-index",
       "scroll-chapter-stack",
       "app-permission-matrix"
+    ],
+    "updated": "2026-10-12"
+  },
+  "cta-horizon": {
+    "useWhen": "A focused closing section with one clear next step.",
+    "avoidWhen": "A page that still needs to explain the product or compare several purchase decisions.",
+    "integration": [
+      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+    ],
+    "related": [
+      "button-magnetic",
+      "agent-diff-review",
+      "agent-status-pill"
     ],
     "updated": "2026-10-12"
   },
@@ -1757,6 +1335,19 @@
     ],
     "updated": "2026-10-12"
   },
+  "data-table-sortable": {
+    "useWhen": "A readable collection of typed rows with sorting and selection.",
+    "avoidWhen": "A spreadsheet requiring cell editing, formulas or server-scale virtualization.",
+    "integration": [
+      "Supply your own records through `columns`, `data`, `bulkActions`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "dashboard-orders-table",
+      "data-file-explorer",
+      "data-kanban-compact"
+    ],
+    "updated": "2026-10-12"
+  },
   "date-booking-slots": {
     "useWhen": "Choosing a supplied available appointment slot.",
     "avoidWhen": "A guarantee that a booking is reserved before the scheduling host accepts it.",
@@ -1798,6 +1389,19 @@
     ],
     "updated": "2026-10-12"
   },
+  "devtools-code-block": {
+    "useWhen": "Readable code examples with language styling and copying.",
+    "avoidWhen": "An interactive source editor or an execution sandbox.",
+    "integration": [
+      "Supply your own records through `files`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "devtools-api-playground",
+      "devtools-env-vars",
+      "devtools-feature-flags"
+    ],
+    "updated": "2026-10-12"
+  },
   "devtools-env-vars": {
     "useWhen": "Reviewing environment values and deliberate configuration edits.",
     "avoidWhen": "Exposing production secrets or treating browser state as deployed configuration.",
@@ -1825,6 +1429,20 @@
       "devtools-api-playground"
     ],
     "updated": "2026-10-12"
+  },
+  "devtools-icon-workbench": {
+    "useWhen": "A developer or design workflow needs searchable icon selection, construction previews and SVG or JSX output.",
+    "avoidWhen": "A static icon display, or a workflow that requires an external icon catalogue and assets not supplied by the host.",
+    "integration": [
+      "Supply the intended icon set and keep controlled selection synchronized with the host.",
+      "Choose size and stroke settings appropriate to the destination interface.",
+      "Connect custom copy handling when needed and keep clipboard failures visible and recoverable."
+    ],
+    "related": [
+      "command-palette",
+      "input-number-stepper"
+    ],
+    "updated": "2026-10-13"
   },
   "devtools-json-inspector": {
     "useWhen": "Inspecting structured JSON with readable nesting and bounded output.",
@@ -1983,6 +1601,33 @@
     ],
     "updated": "2026-10-12"
   },
+  "dialog-confirm-typed": {
+    "useWhen": "A clearly explained destructive action requiring an exact confirmation phrase.",
+    "avoidWhen": "Low-impact actions that do not warrant interrupting a person's workflow.",
+    "integration": [
+      "Supply your own records through `ledger`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onConfirm` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "dropdown-menu-nested",
+      "tooltip-group",
+      "button-hold-confirm"
+    ],
+    "updated": "2026-10-12"
+  },
+  "dropdown-menu-nested": {
+    "useWhen": "Related commands with a small number of nested groups.",
+    "avoidWhen": "A long selection list, where a listbox or searchable combobox is clearer.",
+    "integration": [
+      "Supply your own records through `items`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "tooltip-group",
+      "dialog-confirm-typed",
+      "select-listbox"
+    ],
+    "updated": "2026-10-12"
+  },
   "editor-markdown-split": {
     "useWhen": "Writing Markdown with an adjacent rendered preview.",
     "avoidWhen": "A rich document suite or rendering untrusted HTML without appropriate sanitisation.",
@@ -2052,6 +1697,20 @@
       "editor-markdown-split"
     ],
     "updated": "2026-10-12"
+  },
+  "effect-border-tracer": {
+    "useWhen": "An existing card or control needs a subtle perimeter accent that can follow hover and focus or move continuously while visible.",
+    "avoidWhen": "Dense reading surfaces, or a moving edge being used as the only focus or status indicator.",
+    "integration": [
+      "Wrap actual host content and keep its controls, labels and action handlers responsible for product behaviour.",
+      "Choose the trigger and corner radius to match the host container.",
+      "Retain visible focus outlines and review menus extending outside the wrapper, including reduced-motion presentation."
+    ],
+    "related": [
+      "button-shimmer-track",
+      "button-press-depth"
+    ],
+    "updated": "2026-10-13"
   },
   "effect-gravity-grid": {
     "useWhen": "A decorative grid with restrained pointer-responsive movement.",
@@ -2188,6 +1847,45 @@
       "bento-grid",
       "header-hairline",
       "navbar-floating"
+    ],
+    "updated": "2026-10-12"
+  },
+  "feedback-empty-search": {
+    "useWhen": "A search with no matches and useful ways to recover.",
+    "avoidWhen": "An initial loading state or an unexplained application failure.",
+    "integration": [
+      "Supply your own records through `suggestions`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "feedback-inline-alert",
+      "feedback-morph-loader",
+      "toast-promise"
+    ],
+    "updated": "2026-10-12"
+  },
+  "feedback-inline-alert": {
+    "useWhen": "An actionable notice attached to the part of the page it affects.",
+    "avoidWhen": "Transient confirmations better delivered as a toast, or silent background logs.",
+    "integration": [
+      "Connect `onAction` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "feedback-empty-search",
+      "feedback-morph-loader",
+      "toast-promise"
+    ],
+    "updated": "2026-10-12"
+  },
+  "feedback-morph-loader": {
+    "useWhen": "A brief loading interval where continuity between states helps.",
+    "avoidWhen": "Measured upload or processing progress that should expose a real percentage.",
+    "integration": [
+      "Supply your own records through `shapes`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "toast-promise",
+      "feedback-empty-search",
+      "feedback-inline-alert"
     ],
     "updated": "2026-10-12"
   },
@@ -2331,6 +2029,46 @@
     ],
     "updated": "2026-10-12"
   },
+  "footer-columns-status": {
+    "useWhen": "A multi-column footer with a real service-state reference.",
+    "avoidWhen": "A minimal one-action closing section or status copy without a real data source.",
+    "integration": [
+      "Supply your own records through `columns`, `locales`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "footer-wordmark",
+      "footer-ascii-wordmark",
+      "footer-newsletter"
+    ],
+    "updated": "2026-10-12"
+  },
+  "footer-newsletter": {
+    "useWhen": "A closing newsletter form with a clear subscription action.",
+    "avoidWhen": "An automatic subscription or a promise of successful delivery without a server response.",
+    "integration": [
+      "Supply your own records through `socials`, `legalLinks`. Preserve stable keys or IDs when the data contract provides them.",
+      "Provide onSubscribe and resolve only after the subscription is accepted. Reject server failures so the retry flow retains the submitted address."
+    ],
+    "related": [
+      "footer-wordmark",
+      "footer-ascii-wordmark",
+      "footer-columns-status"
+    ],
+    "updated": "2026-10-12"
+  },
+  "footer-wordmark": {
+    "useWhen": "A typography-led ending for a brand or studio page.",
+    "avoidWhen": "Dense legal or support navigation that needs a full multi-column footer.",
+    "integration": [
+      "Supply your own records through `columns`, `address`, `legalLinks`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "footer-ascii-wordmark",
+      "footer-newsletter",
+      "footer-columns-status"
+    ],
+    "updated": "2026-10-12"
+  },
   "forms-preference-center": {
     "useWhen": "Reviewing communication channels and saving explicit preferences.",
     "avoidWhen": "A subscription backend or consent record without server-side persistence.",
@@ -2342,6 +2080,33 @@
       "hr-interview-scorecard",
       "hr-policy-acknowledgement",
       "legal-matter-intake"
+    ],
+    "updated": "2026-10-12"
+  },
+  "header-announcement": {
+    "useWhen": "A short, timely announcement above a site's main navigation.",
+    "avoidWhen": "Permanent product explanation or urgent operational incidents requiring richer context.",
+    "integration": [
+      "Supply your own records through `messages`. Preserve stable keys or IDs when the data contract provides them.",
+      "Each rotating message keeps a unique ID, and leaving links become inert while the exit animation completes. Keep message IDs stable through content updates."
+    ],
+    "related": [
+      "header-hairline",
+      "header-island",
+      "header-morph-mega"
+    ],
+    "updated": "2026-10-12"
+  },
+  "header-hairline": {
+    "useWhen": "Quiet site navigation on a restrained marketing page.",
+    "avoidWhen": "A large application sidebar or an information architecture with many nested destinations.",
+    "integration": [
+      "Supply your own records through `links`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "navbar-floating",
+      "header-island",
+      "header-morph-mega"
     ],
     "updated": "2026-10-12"
   },
@@ -2368,6 +2133,32 @@
       "header-hairline",
       "header-island",
       "navbar-floating"
+    ],
+    "updated": "2026-10-12"
+  },
+  "hero-app-tilt": {
+    "useWhen": "A product-led introduction built around a real interface or product visual.",
+    "avoidWhen": "A substitute for showing the actual product or a page where motion obscures the headline.",
+    "integration": [
+      "Supply your own records through `folders`, `labels`, `threads`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "hero-product-stack",
+      "hero-marquee-screens",
+      "hero-blur-statement"
+    ],
+    "updated": "2026-10-12"
+  },
+  "hero-blur-statement": {
+    "useWhen": "A concise editorial introduction whose typography carries the story.",
+    "avoidWhen": "A dense explanation that requires charts, screenshots or several competing actions.",
+    "integration": [
+      "Supply your own records through `nouns`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "hero-app-tilt",
+      "hero-marquee-screens",
+      "hero-swiss-grid"
     ],
     "updated": "2026-10-12"
   },
@@ -2410,6 +2201,19 @@
     ],
     "updated": "2026-10-12"
   },
+  "hero-marquee-screens": {
+    "useWhen": "Showing a small collection of authentic product screens in a launch page.",
+    "avoidWhen": "A continuously moving gallery containing essential instructions or long text.",
+    "integration": [
+      "Supply your own records through `screens`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "hero-app-tilt",
+      "hero-product-stack",
+      "hero-blur-statement"
+    ],
+    "updated": "2026-10-12"
+  },
   "hero-prism": {
     "useWhen": "A visually expressive introduction with a clear headline and action.",
     "avoidWhen": "A performance-sensitive interface where the effect distracts from the task.",
@@ -2433,6 +2237,46 @@
       "hero-app-tilt",
       "hero-marquee-screens",
       "hero-ghost-cursor"
+    ],
+    "updated": "2026-10-12"
+  },
+  "hero-signal-workbench": {
+    "useWhen": "A product introduction benefits from an interactive waveform demonstration with understandable shape, frequency and gain controls.",
+    "avoidWhen": "A product whose value has no useful relationship to a signal demonstration, or a claim that the illustration supplies an audio engine.",
+    "integration": [
+      "Replace introductory copy and supply the intended primary-action destination.",
+      "Connect controlled parameters and change handling to the host if the demonstration needs shared state.",
+      "Keep the parameter labels and output understandable; the component does not make audio or network requests."
+    ],
+    "related": [
+      "hero-product-stack",
+      "hero-app-tilt"
+    ],
+    "updated": "2026-10-13"
+  },
+  "hero-swiss-grid": {
+    "useWhen": "An organised product introduction with a clear typographic hierarchy.",
+    "avoidWhen": "A richly narrative case study that needs a different reading structure.",
+    "integration": [
+      "Supply your own records through `lines`, `notes`, `items`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "hero-blur-statement",
+      "hero-app-tilt",
+      "hero-ghost-cursor"
+    ],
+    "updated": "2026-10-12"
+  },
+  "hero-terminal-agent": {
+    "useWhen": "A developer or agent product introduction with readable terminal activity.",
+    "avoidWhen": "A real production console or invented live execution results presented as evidence.",
+    "integration": [
+      "Supply your own records through `headline`, `facts`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "hero-ghost-cursor",
+      "hero-inline-objects",
+      "hero-marquee-screens"
     ],
     "updated": "2026-10-12"
   },
@@ -2577,6 +2421,34 @@
     ],
     "updated": "2026-10-12"
   },
+  "input-color-swatches": {
+    "useWhen": "Choosing a small, curated set of brand colours.",
+    "avoidWhen": "Unrestricted colour editing or a choice whose meaning depends on colour alone.",
+    "integration": [
+      "Supply your own records through `swatches`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "input-file-dropzone",
+      "input-number-stepper",
+      "input-password-checklist"
+    ],
+    "updated": "2026-10-12"
+  },
+  "input-detent-dial": {
+    "useWhen": "A bounded numeric setting benefits from tactile, stepped adjustment and a clear indication of the current value.",
+    "avoidWhen": "Unbounded quantities, or a form where a conventional number field with simple step buttons already fits the workflow.",
+    "integration": [
+      "Bind the value and its change handler to the actual setting in the host application.",
+      "Choose valid limits and step increments for the domain, and keep the visible value understandable.",
+      "Review keyboard adjustment, larger labels and pointer interaction before using the dial as the main control."
+    ],
+    "related": [
+      "input-number-stepper",
+      "button-press-depth"
+    ],
+    "updated": "2026-10-13"
+  },
   "input-file-dropzone": {
     "useWhen": "Choosing and validating supplied file types before a host upload.",
     "avoidWhen": "A completed upload or secure file storage implemented only by a drop animation.",
@@ -2591,6 +2463,60 @@
     ],
     "updated": "2026-10-12"
   },
+  "input-floating-label": {
+    "useWhen": "A concise, labelled text field in a compact form.",
+    "avoidWhen": "Complex input guidance that should remain outside the field at all times.",
+    "integration": [
+      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+    ],
+    "related": [
+      "input-search-scoped",
+      "input-color-swatches",
+      "input-file-dropzone"
+    ],
+    "updated": "2026-10-12"
+  },
+  "input-number-stepper": {
+    "useWhen": "Adjusting a bounded numerical value with direct entry and stepping.",
+    "avoidWhen": "An unbounded measurement or a numerical choice with no meaningful step.",
+    "integration": [
+      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "input-color-swatches",
+      "input-file-dropzone",
+      "input-password-checklist"
+    ],
+    "updated": "2026-10-12"
+  },
+  "input-password-checklist": {
+    "useWhen": "Explaining password requirements while someone enters a new password.",
+    "avoidWhen": "A strength guarantee or a replacement for server-side password policy.",
+    "integration": [
+      "Supply your own records through `rules`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "input-color-swatches",
+      "input-file-dropzone",
+      "input-number-stepper"
+    ],
+    "updated": "2026-10-12"
+  },
+  "input-search-scoped": {
+    "useWhen": "Searching within a clearly identified collection or area.",
+    "avoidWhen": "An ambiguous global search across unrelated object types.",
+    "integration": [
+      "Supply your own records through `operators`, `recentSearches`, `defaultScopes`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onChange`, `onSubmit` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "input-floating-label",
+      "header-island",
+      "combobox-async"
+    ],
+    "updated": "2026-10-12"
+  },
   "input-shortcut-recorder": {
     "useWhen": "Recording a deliberate keyboard combination in a preference screen.",
     "avoidWhen": "Unconditionally overriding operating-system or browser shortcuts.",
@@ -2602,6 +2528,49 @@
       "input-color-swatches",
       "input-file-dropzone",
       "input-number-stepper"
+    ],
+    "updated": "2026-10-12"
+  },
+  "input-tag-editor": {
+    "useWhen": "Managing a small set of discrete, editable labels.",
+    "avoidWhen": "A long taxonomy with hierarchical permissions or thousands of options.",
+    "integration": [
+      "Supply your own records through `value`, `defaultValue`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "input-color-swatches",
+      "input-file-dropzone",
+      "input-number-stepper"
+    ],
+    "updated": "2026-10-12"
+  },
+  "layout-split-resizer": {
+    "useWhen": "Two related views need adjustable space, such as an editor beside a preview or a record list beside its details.",
+    "avoidWhen": "Independent page sections that should stack and scroll naturally, or a split whose minimum usable widths cannot fit the available container.",
+    "integration": [
+      "Set meaningful minimum pane sizes and provide content that remains usable at each supported size.",
+      "Persist the chosen split in the host when needed; keyboard resizing and collapse should preserve a useful restoration size.",
+      "Use orientation=\"auto\" to stack in narrow containers. A requested percentage is a preference; onPaneSizesChange reports bounded visible percentages and logical pixel sizes.",
+      "Keep the host panes mounted when retaining editor drafts, and provide usable scrolling when supplied minimum sizes cannot fit."
+    ],
+    "related": [
+      "layout-workspace-shell",
+      "editor-markdown-split"
+    ],
+    "updated": "2026-10-13"
+  },
+  "layout-workspace-shell": {
+    "useWhen": "A complete product page needs consistent identity, navigation and a quiet frame around several working panels.",
+    "avoidWhen": "A single isolated card or a marketing introduction that does not need workspace navigation.",
+    "integration": [
+      "Pass real routes or unique section anchors through `links`. Navigation reflows from a sidebar to a horizontal strip based on the shell container.",
+      "Place your page panels in `children` and host actions in `actions`. The shell owns presentation; each supplied panel keeps its interaction and data contract."
+    ],
+    "related": [
+      "navigation-breadcrumb-fold",
+      "tabs-underline-glide",
+      "header-hairline"
     ],
     "updated": "2026-10-12"
   },
@@ -2733,6 +2702,21 @@
     ],
     "updated": "2026-10-12"
   },
+  "media-audio-transport": {
+    "updated": "2026-10-12",
+    "useWhen": "Keeping real audio playback, seeking and volume available while a listener moves through another interface.",
+    "avoidWhen": "Streaming commercial media without appropriate rights or using a visual timer to pretend that audio is playing.",
+    "integration": [
+      "Supply a licensed media URL through track.src. The transport observes actual HTML audio events and exposes load and playback failures.",
+      "Increment playRequest only after an explicit play-selection action. Ordinary track navigation retains the current pause state.",
+      "The host owns queue selection and media URLs; release owned object URLs after unmount. Offline previews start muted."
+    ],
+    "related": [
+      "media-track-list",
+      "block-music-workspace",
+      "mobile-now-playing"
+    ]
+  },
   "media-before-after": {
     "useWhen": "Comparing two authentic visuals with a controllable divider.",
     "avoidWhen": "Claims of product results unsupported by the actual before and after assets.",
@@ -2746,6 +2730,97 @@
     ],
     "updated": "2026-10-12"
   },
+  "media-caption-styler": {
+    "useWhen": "Tuning supplied caption text against footage or a still with safe-area and readability guides.",
+    "avoidWhen": "A speech transcription service, an automatic subtitle translator or a complete video export engine.",
+    "integration": [
+      "Supply caption text and the visual context being reviewed. Treat styling changes as a typed configuration that the host may save or render.",
+      "Expose wrapping, size and safe-area controls without relying on hover. Missing footage should preserve a useful text and style preview."
+    ],
+    "related": [
+      "media-story-deck",
+      "media-audio-transport"
+    ],
+    "updated": "2026-10-13"
+  },
+  "media-compare-grid": {
+    "useWhen": "Inspecting several supplied visual variants with coordinated zoom and pan.",
+    "avoidWhen": "A simple before-and-after wipe or a data table that compares textual values.",
+    "integration": [
+      "Supply variants with stable IDs, explicit labels and image sources. Link transforms only when the variants share a meaningful coordinate system.",
+      "Keep independent view controls and a readable reset so comparisons do not depend on pointer gestures alone."
+    ],
+    "related": [
+      "media-before-after",
+      "layout-split-resizer"
+    ],
+    "updated": "2026-10-13"
+  },
+  "media-crop-workbench": {
+    "useWhen": "Reviewing a bounded crop for a supplied image with explicit aspect ratios and normalized output.",
+    "avoidWhen": "A destructive full image editor, a background remover or an interface claiming to encode a new image without a host service.",
+    "integration": [
+      "Supply source dimensions and image identity. Apply the normalized crop through a host-owned export or rendering workflow.",
+      "Numeric controls and keyboard handles must match accepted drag values; resets and new source images must retire any incomplete gesture."
+    ],
+    "related": [
+      "input-detent-dial",
+      "media-before-after"
+    ],
+    "updated": "2026-10-13"
+  },
+  "media-device-switcher": {
+    "useWhen": "A responsive product demonstration that needs actual phone, tablet and desktop content widths.",
+    "avoidWhen": "A browser emulator, operating-system simulator or screenshot-only carousel.",
+    "integration": [
+      "Supply content that responds to its own container width. The frame selection reports a viewing preference and does not emulate native operating-system behavior.",
+      "Keep device labels, dimensions and initial selection explicit; use separate content only when the underlying experience truly differs."
+    ],
+    "related": [
+      "hero-signal-workbench",
+      "layout-split-resizer"
+    ],
+    "updated": "2026-10-13"
+  },
+  "media-focus-lightbox": {
+    "useWhen": "An image inspection task that benefits from focused zoom, pan and previous or next navigation.",
+    "avoidWhen": "A text document viewer, a video player or a decorative modal that contains no inspectable media.",
+    "integration": [
+      "Supply image sources with meaningful descriptions and stable IDs. Keep the trigger available so closing the viewer can restore logical focus.",
+      "Zoom and pan remain bounded to the visible image; use keyboard and static-view controls where a gesture is unavailable."
+    ],
+    "related": [
+      "media-before-after",
+      "cards-prismatic-folder"
+    ],
+    "updated": "2026-10-13"
+  },
+  "media-image-contact-sheet": {
+    "useWhen": "Fast visual selection and comparison within a host-owned image collection.",
+    "avoidWhen": "A deep image editor, a full-screen zoom viewer or an asset rights management workflow.",
+    "integration": [
+      "Supply stable image IDs, meaningful labels and host-controlled sources. Keep unavailable assets selectable only when their surrounding task permits it.",
+      "Handle selection independently from loading so a missing image cannot silently discard the selected records."
+    ],
+    "related": [
+      "cards-prismatic-folder",
+      "media-before-after"
+    ],
+    "updated": "2026-10-13"
+  },
+  "media-spatial-collection": {
+    "useWhen": "Browsing a curated collection through a distinct spatial presentation with readable selected-item context.",
+    "avoidWhen": "A dense searchable inventory, a mandatory continuous 3D animation or a layout that makes labels depend on hover.",
+    "integration": [
+      "Supply collection objects with stable identity, readable titles and artwork owned by the host. Use selection callbacks to connect a real detail or playback workflow.",
+      "Provide a list or static alternative for keyboard, touch and reduced motion. Selection must stay clear when artwork is absent."
+    ],
+    "related": [
+      "media-track-list",
+      "media-story-deck"
+    ],
+    "updated": "2026-10-13"
+  },
   "media-story-deck": {
     "useWhen": "A short visual story with deliberate sequencing and readable captions.",
     "avoidWhen": "Long reference text or essential content available only through autoplay.",
@@ -2758,6 +2833,47 @@
       "scroll-image-curtain"
     ],
     "updated": "2026-10-12"
+  },
+  "media-track-list": {
+    "updated": "2026-10-12",
+    "useWhen": "Browsing a music collection or editable queue with linked selection, liked state and context-specific actions.",
+    "avoidWhen": "Using a decorative list to imply playback without connecting selection to a real player and licensed source.",
+    "integration": [
+      "Pass unique track IDs and stable title, artist, album and duration records. onSelect drives the host selection or player.",
+      "Like, queue and removal actions are separate sibling controls; omit callbacks to hide actions the host does not support.",
+      "Optional host artwork should be licensed and served reliably. The default cover studies are original, offline-safe illustrations."
+    ],
+    "related": [
+      "media-audio-transport",
+      "block-music-workspace",
+      "input-search-scoped"
+    ]
+  },
+  "media-transcript-player": {
+    "useWhen": "Listening to supplied media while reading timed passages and seeking directly from the transcript.",
+    "avoidWhen": "A transcription service, an automatic caption generator or text that has no timing relationship to the supplied recording.",
+    "integration": [
+      "Supply actual playable media and timed transcript segments. Treat gaps, unavailable playback and invalid timing as honest states.",
+      "Keep transcript reading and selected passages available even when the media cannot play; synchronize against the real media clock."
+    ],
+    "related": [
+      "media-audio-transport",
+      "ai-reasoning-trace"
+    ],
+    "updated": "2026-10-13"
+  },
+  "media-trim-timeline": {
+    "useWhen": "Reviewing precise in and out points on host-supplied audio before requesting a trim or export.",
+    "avoidWhen": "An automatic semantic clip editor, a full multitrack workstation or an interface claiming to encode files on its own.",
+    "integration": [
+      "Supply media with a stable ID and honest duration or waveform data. Connect onApplyRange to your own rendering or export service.",
+      "The controlled range must reflect accepted values. Keep a minimum span and useful keyboard increments; unavailable playback must not erase the reviewed range."
+    ],
+    "related": [
+      "media-audio-transport",
+      "input-detent-dial"
+    ],
+    "updated": "2026-10-13"
   },
   "mobile-agent-approval": {
     "useWhen": "A mobile review of an agent's proposed action before confirmation.",
@@ -2818,6 +2934,21 @@
     ],
     "updated": "2026-10-12"
   },
+  "mobile-health-summary": {
+    "useWhen": "A mobile summary of a few health or activity measurements.",
+    "avoidWhen": "Clinical interpretation or measurements that cannot be supported by a reliable source.",
+    "integration": [
+      "Supply your own records through `days`, `rings`. Preserve stable keys or IDs when the data contract provides them.",
+      "Install this in a React Native app. The web preview is a review surface; verify gestures, text scaling and assistive technology on your target devices.",
+      "Provide both day records and ring definitions. Empty collections render an unavailable summary and recover when real data arrives."
+    ],
+    "related": [
+      "mobile-checkout-sheet",
+      "mobile-tab-bar",
+      "mobile-bottom-sheet"
+    ],
+    "updated": "2026-10-12"
+  },
   "mobile-live-activity": {
     "useWhen": "A glanceable summary of supplied delivery progress.",
     "avoidWhen": "A guaranteed live update or a replacement for the operating system's native activity integration.",
@@ -2848,6 +2979,21 @@
     ],
     "updated": "2026-10-12"
   },
+  "mobile-onboarding": {
+    "useWhen": "A short sequence introducing an app before the first meaningful task.",
+    "avoidWhen": "A long tutorial that prevents people from reaching the product.",
+    "integration": [
+      "Supply your own records through `steps`. Preserve stable keys or IDs when the data contract provides them.",
+      "Install this in a React Native app. The web preview is a review surface; verify gestures, text scaling and assistive technology on your target devices.",
+      "Empty step collections render an unavailable setup state. Supplying steps again creates a fresh sequence with valid animation values."
+    ],
+    "related": [
+      "mobile-bottom-sheet",
+      "mobile-chat",
+      "mobile-live-activity"
+    ],
+    "updated": "2026-10-12"
+  },
   "mobile-paywall": {
     "useWhen": "A clear mobile subscription offer with explicit price and benefits.",
     "avoidWhen": "A purchase receipt or store entitlement granted solely through UI state.",
@@ -2855,6 +3001,21 @@
       "Supply your own records through `features`. Preserve stable keys or IDs when the data contract provides them.",
       "Install this in a React Native app. The web preview is a review surface; verify gestures, text scaling and assistive technology on your target devices.",
       "Provide purchase and restore handlers. Resolve subscription success after confirmation; return a verified boolean for restore results instead of treating a transport error as no purchases."
+    ],
+    "related": [
+      "mobile-bottom-sheet",
+      "mobile-chat",
+      "mobile-live-activity"
+    ],
+    "updated": "2026-10-12"
+  },
+  "mobile-settings": {
+    "useWhen": "A mobile preference screen with labelled switches and navigation.",
+    "avoidWhen": "Settings changes that appear saved before your host has accepted them.",
+    "integration": [
+      "Supply your own records through `reminderTimes`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onChange`, `onDeleteAll` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
+      "Install this in a React Native app. The web preview is a review surface; verify gestures, text scaling and assistive technology on your target devices."
     ],
     "related": [
       "mobile-bottom-sheet",
@@ -2874,6 +3035,21 @@
       "mobile-wallet-stack",
       "mobile-bottom-sheet",
       "mobile-chat"
+    ],
+    "updated": "2026-10-12"
+  },
+  "mobile-tab-bar": {
+    "useWhen": "A small set of persistent top-level mobile destinations.",
+    "avoidWhen": "A large menu of infrequent actions or deeply nested navigation.",
+    "integration": [
+      "Supply your own records through `tabs`, `week`, `actions`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onAction` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
+      "Install this in a React Native app. The web preview is a review surface; verify gestures, text scaling and assistive technology on your target devices."
+    ],
+    "related": [
+      "mobile-bottom-sheet",
+      "mobile-chat",
+      "mobile-health-summary"
     ],
     "updated": "2026-10-12"
   },
@@ -2905,6 +3081,87 @@
     ],
     "updated": "2026-10-12"
   },
+  "navbar-floating": {
+    "useWhen": "A compact floating navigation surface over a marketing page.",
+    "avoidWhen": "A dense enterprise navigation tree or essential content hidden under a floating element.",
+    "integration": [
+      "Supply your own records through `links`, `socials`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "header-hairline",
+      "header-morph-mega",
+      "header-island"
+    ],
+    "updated": "2026-10-12"
+  },
+  "navigation-breadcrumb-fold": {
+    "useWhen": "An ancestry trail that remains usable in narrow spaces.",
+    "avoidWhen": "A substitute for primary navigation or unrelated recent-page history.",
+    "integration": [
+      "Supply your own records through `items`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "navigation-pagination-window",
+      "tabs-underline-glide",
+      "app-permission-matrix"
+    ],
+    "updated": "2026-10-12"
+  },
+  "navigation-context-rail": {
+    "useWhen": "A workspace has grouped destinations and needs remembered section context, search and a compact navigation drawer.",
+    "avoidWhen": "A simple page with one short navigation list, or navigation whose destination content should live inside the rail itself.",
+    "integration": [
+      "Use stable section and item identifiers, with useful reasons for disabled destinations.",
+      "Connect navigation to the host router or destination loader and update controlled selection after success.",
+      "Provide loading and recovery states, then review narrow containers and focus returning from the drawer."
+    ],
+    "related": [
+      "navigation-breadcrumb-fold",
+      "command-palette"
+    ],
+    "updated": "2026-10-13"
+  },
+  "navigation-lens-dock": {
+    "useWhen": "A compact set of workspace tools benefits from a dock with clear selection and pointer-based magnification.",
+    "avoidWhen": "Large hierarchical navigation, or navigation that depends on magnification to make labels or targets usable.",
+    "integration": [
+      "Provide stable tool identifiers, accessible labels and reasons for disabled items.",
+      "Connect activation to real host navigation and update controlled selection after success.",
+      "Review keyboard use and static touch or reduced-motion presentation, including recovery from failed activation."
+    ],
+    "related": [
+      "navigation-context-rail",
+      "navbar-floating"
+    ],
+    "updated": "2026-10-13"
+  },
+  "navigation-pagination-window": {
+    "useWhen": "Moving through a bounded collection of numbered result pages.",
+    "avoidWhen": "An endless feed or server data with no reliable page count.",
+    "integration": [
+      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+    ],
+    "related": [
+      "navigation-breadcrumb-fold",
+      "tabs-underline-glide",
+      "app-permission-matrix"
+    ],
+    "updated": "2026-10-12"
+  },
+  "navigation-stacked-tabs": {
+    "useWhen": "Several documents share one working area and people need to reorder, close and restore tabs while preserving unsaved state.",
+    "avoidWhen": "A short set of fixed product sections, where an ordinary tab bar is easier to scan and does not need document lifecycle controls.",
+    "integration": [
+      "Keep stable document IDs and distinguish dirty changes from acknowledged saves.",
+      "The host owns document contents and closure decisions; preserve drafts when a close request is rejected.",
+      "Treat items as authoritative document availability. Removing a model retires its open tab, retained panel and closed history; keep it available while restoration is allowed."
+    ],
+    "related": [
+      "tabs-underline-glide",
+      "data-file-explorer"
+    ],
+    "updated": "2026-10-13"
+  },
   "onboarding-setup-checklist": {
     "useWhen": "Coordinating a small set of actionable workspace setup tasks.",
     "avoidWhen": "Blocking the product behind a long tutorial or marking steps complete without evidence.",
@@ -2919,6 +3176,45 @@
     ],
     "updated": "2026-10-12"
   },
+  "pixel-agent-status": {
+    "useWhen": "A small animated character communicating an agent's current state.",
+    "avoidWhen": "A status indicator that needs detailed error information or exact progress.",
+    "integration": [
+      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+    ],
+    "related": [
+      "pixel-matrix-display",
+      "feedback-morph-loader",
+      "agent-status-pill"
+    ],
+    "updated": "2026-10-12"
+  },
+  "pixel-matrix-display": {
+    "useWhen": "A dot-matrix treatment for short phrases or compact display content.",
+    "avoidWhen": "Long body copy or text that must be read without an accessible text equivalent.",
+    "integration": [
+      "Supply your own records through `scenes`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "pixel-agent-status",
+      "ai-thinking-states",
+      "cta-horizon"
+    ],
+    "updated": "2026-10-12"
+  },
+  "portfolio-project-reel": {
+    "useWhen": "Presenting a focused set of supplied projects with a large visual and readable case context.",
+    "avoidWhen": "A dense component catalogue, a continuous decorative marquee or an autoplay-only sales presentation.",
+    "integration": [
+      "Supply project IDs, titles, summaries and optional real destinations or artwork. Navigation should reveal one project without stealing focus from surrounding content.",
+      "Keep previous and next controls available on narrow containers and preserve readable notes while visual transitions finish."
+    ],
+    "related": [
+      "media-story-deck",
+      "navigation-stacked-tabs"
+    ],
+    "updated": "2026-10-13"
+  },
   "pricing-comparison-matrix": {
     "useWhen": "Comparing plan capabilities in a readable, structured matrix.",
     "avoidWhen": "An unbounded feature list or pricing claims that differ from your checkout.",
@@ -2928,6 +3224,19 @@
     "related": [
       "pricing-three-tier",
       "pricing-plan-toggle",
+      "pricing-receipt"
+    ],
+    "updated": "2026-10-12"
+  },
+  "pricing-plan-toggle": {
+    "useWhen": "Comparing one plan across billing intervals with a clear amount.",
+    "avoidWhen": "A full multi-plan comparison or a live price promise without your billing source.",
+    "integration": [
+      "Supply your own records through `features`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "pricing-three-tier",
+      "pricing-comparison-matrix",
       "pricing-receipt"
     ],
     "updated": "2026-10-12"
@@ -2942,6 +3251,45 @@
       "pricing-comparison-matrix",
       "pricing-plan-toggle",
       "pricing-three-tier"
+    ],
+    "updated": "2026-10-12"
+  },
+  "pricing-three-tier": {
+    "useWhen": "A deliberate comparison between three distinct purchase options.",
+    "avoidWhen": "A complex enterprise quotation flow or plans that differ only through decorative wording.",
+    "integration": [
+      "Supply your own records through `plans`, `footnotes`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "pricing-plan-toggle",
+      "pricing-comparison-matrix",
+      "pricing-receipt"
+    ],
+    "updated": "2026-10-12"
+  },
+  "primitives-shortcut-reference": {
+    "useWhen": "A discoverable list of keyboard shortcuts close to the task.",
+    "avoidWhen": "A replacement for visible controls or platform shortcuts that your product does not implement.",
+    "integration": [
+      "Supply your own records through `items`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "button-hold-confirm",
+      "toast-stack",
+      "input-shortcut-recorder"
+    ],
+    "updated": "2026-10-12"
+  },
+  "progress-milestones": {
+    "useWhen": "Communicating discrete, ordered stages of a task or journey.",
+    "avoidWhen": "Continuous percentage progress or stages that have no verified completion state.",
+    "integration": [
+      "Supply your own records through `steps`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "saas-usage-policy",
+      "usage-meter-tokens",
+      "app-permission-matrix"
     ],
     "updated": "2026-10-12"
   },
@@ -3169,6 +3517,112 @@
     ],
     "updated": "2026-10-12"
   },
+  "segmented-control": {
+    "useWhen": "Switching between a small number of related views or values.",
+    "avoidWhen": "A long option list or navigation between unrelated pages.",
+    "integration": [
+      "Supply your own records through `options`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "select-listbox",
+      "switch-spring",
+      "combobox-async"
+    ],
+    "updated": "2026-10-12"
+  },
+  "select-listbox": {
+    "useWhen": "A labelled choice from a manageable set of discrete options.",
+    "avoidWhen": "Hundreds of searchable results or a multi-selection tag collection.",
+    "integration": [
+      "Supply your own records through `options`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "combobox-async",
+      "segmented-control",
+      "multiselect-chips"
+    ],
+    "updated": "2026-10-12"
+  },
+  "selects-radio-cards": {
+    "useWhen": "Choosing one clearly explained mode or configuration.",
+    "avoidWhen": "Several independent preferences that should be separate checkboxes or switches.",
+    "integration": [
+      "Supply your own records through `options`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "cards-event-ticket",
+      "segmented-control",
+      "select-listbox"
+    ],
+    "updated": "2026-10-12"
+  },
+  "settings-panel": {
+    "useWhen": "A compact group of editable preferences with an explicit save action.",
+    "avoidWhen": "An entire account area with billing, members and security workflows.",
+    "integration": [
+      "Supply your own records through `sections`. Preserve stable keys or IDs when the data contract provides them.",
+      "Connect `onSave`, `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "app-permission-matrix",
+      "commerce-operations-dashboard",
+      "dashboard-kpi-cards"
+    ],
+    "updated": "2026-10-12"
+  },
+  "streaming-text": {
+    "useWhen": "Displaying an assistant answer as its content arrives.",
+    "avoidWhen": "Essential instructions that disappear, or simulated streaming passed off as a live response.",
+    "integration": [
+      "Supply your own records through `answer`, `sources`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "ai-citations-inline",
+      "ai-reasoning-trace",
+      "ai-search-answer"
+    ],
+    "updated": "2026-10-12"
+  },
+  "switch-spring": {
+    "useWhen": "A binary preference whose current value is immediately legible.",
+    "avoidWhen": "Choosing between several values or triggering a destructive one-off action.",
+    "integration": [
+      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+    ],
+    "related": [
+      "segmented-control",
+      "select-listbox",
+      "combobox-async"
+    ],
+    "updated": "2026-10-12"
+  },
+  "tabs-underline-glide": {
+    "useWhen": "Related panels where a moving underline helps preserve orientation.",
+    "avoidWhen": "A large navigation tree or tabs whose labels do not describe their contents.",
+    "integration": [
+      "Supply your own records through `items`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "navigation-breadcrumb-fold",
+      "navigation-pagination-window",
+      "segmented-control"
+    ],
+    "updated": "2026-10-12"
+  },
+  "testimonial-wall": {
+    "useWhen": "A considered set of customer quotations and attributed social proof.",
+    "avoidWhen": "Invented customer claims or a dense case study requiring supporting evidence.",
+    "integration": [
+      "Supply your own records through `testimonials`, `speeds`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "hero-marquee-screens",
+      "agent-diff-review",
+      "agent-status-pill"
+    ],
+    "updated": "2026-10-12"
+  },
   "text-decode": {
     "useWhen": "A short decorative text reveal in an introductory section.",
     "avoidWhen": "Body text, instructions or text that must remain immediately readable.",
@@ -3276,6 +3730,58 @@
     ],
     "updated": "2026-10-12"
   },
+  "three-wave-field": {
+    "useWhen": "A restrained atmospheric background behind readable content.",
+    "avoidWhen": "Essential data visualisation or a background that competes with text and controls.",
+    "integration": [
+      "Keep this scene in a bounded visual region and retain ordinary text and controls for the main task. Check its rendering cost on the devices your audience uses."
+    ],
+    "related": [
+      "three-particle-sphere",
+      "three-contour-terrain",
+      "three-ascii-object"
+    ],
+    "updated": "2026-10-12"
+  },
+  "toast-promise": {
+    "useWhen": "Reporting the pending, success and failure states of an asynchronous action.",
+    "avoidWhen": "Errors that require detailed form corrections or persistent instructions.",
+    "integration": [
+      "Connect `onRetry` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+    ],
+    "related": [
+      "feedback-morph-loader",
+      "feedback-empty-search",
+      "feedback-inline-alert"
+    ],
+    "updated": "2026-10-12"
+  },
+  "toast-stack": {
+    "useWhen": "A small stream of dismissible application notifications.",
+    "avoidWhen": "The only record of important events that people must be able to review later.",
+    "integration": [
+      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+    ],
+    "related": [
+      "button-hold-confirm",
+      "primitives-shortcut-reference",
+      "toast-promise"
+    ],
+    "updated": "2026-10-12"
+  },
+  "tooltip-group": {
+    "useWhen": "Brief supplementary explanations for nearby controls.",
+    "avoidWhen": "Required instructions, interactive content or a substitute for visible accessible labels.",
+    "integration": [
+      "Supply your own records through `Tooltip.shortcut`. Preserve stable keys or IDs when the data contract provides them."
+    ],
+    "related": [
+      "dropdown-menu-nested",
+      "dialog-confirm-typed",
+      "ai-message-actions"
+    ],
+    "updated": "2026-10-12"
+  },
   "usage-meter-tokens": {
     "useWhen": "Showing supplied token consumption, limits and remaining allowance.",
     "avoidWhen": "A billing authority or a usage estimate presented as a measured total.",
@@ -3301,381 +3807,5 @@
       "scroll-horizontal-showcase"
     ],
     "updated": "2026-10-12"
-  },
-  "layout-workspace-shell": {
-    "useWhen": "A complete product page needs consistent identity, navigation and a quiet frame around several working panels.",
-    "avoidWhen": "A single isolated card or a marketing introduction that does not need workspace navigation.",
-    "integration": [
-      "Pass real routes or unique section anchors through `links`. Navigation reflows from a sidebar to a horizontal strip based on the shell container.",
-      "Place your page panels in `children` and host actions in `actions`. The shell owns presentation; each supplied panel keeps its interaction and data contract."
-    ],
-    "related": [
-      "navigation-breadcrumb-fold",
-      "tabs-underline-glide",
-      "header-hairline"
-    ],
-    "updated": "2026-10-12"
-  },
-  "block-saas-dashboard": {
-    "useWhen": "A SaaS overview needs connected headline measures, a selectable metric trend and the account records behind the numbers.",
-    "avoidWhen": "A single metric card or a large analytics warehouse requiring server aggregation and virtualised tables.",
-    "integration": [
-      "Supply `metrics`, `records` and `columns` from the same reporting source. Selecting a KPI or time range updates the shared chart context.",
-      "Use `onExport` for your own reporting service, or keep the built-in metric CSV download. Failed callbacks preserve the current view.",
-      "Install the four declared components with the block. Each remains available for independent customisation."
-    ],
-    "related": [
-      "block-commerce-workspace",
-      "block-financial-report",
-      "block-workspace-settings"
-    ],
-    "updated": "2026-10-12"
-  },
-  "block-workspace-settings": {
-    "useWhen": "An account or workspace needs one considered page for its profile, notification choices and role permissions.",
-    "avoidWhen": "A small single-preference panel or an authorisation service implemented entirely in the browser.",
-    "integration": [
-      "Connect `onSave` to your administration service. Its discriminated payload identifies the section and preserves the underlying component contracts.",
-      "Command-S or Control-S saves the section containing keyboard focus. Rejected saves retain the current draft.",
-      "Provide consistent roles, permission prerequisites and grants. The server must enforce the resulting access policy."
-    ],
-    "related": [
-      "block-saas-dashboard",
-      "block-people-workspace",
-      "block-legal-workspace"
-    ],
-    "updated": "2026-10-12"
-  },
-  "block-financial-report": {
-    "useWhen": "A financial review needs an intelligible narrative, budget comparison, spend allocation and the underlying cost records in one printable page.",
-    "avoidWhen": "Posting accounting transactions, calculating tax obligations or presenting an authoritative ledger without validated source data.",
-    "integration": [
-      "Provide complete `periods` with integer minor-unit amounts and unique line IDs. Invalid records disable export rather than inventing a total.",
-      "Every panel follows the selected period. CSV export uses that period; Print report opens a plain, readable print layout.",
-      "Use `onExport` to connect a reporting service, or keep the built-in CSV download. Rejected exports preserve the selected context."
-    ],
-    "related": [
-      "block-saas-dashboard",
-      "block-commerce-workspace",
-      "block-fashion-workspace"
-    ],
-    "updated": "2026-10-12"
-  },
-  "block-fashion-workspace": {
-    "useWhen": "A fashion team needs collection performance, a working line plan and launch readiness within the same product workspace.",
-    "avoidWhen": "An authoritative inventory or manufacturing system without current catalogue data and reviewed host actions.",
-    "integration": [
-      "Supply one `scopes` record per collection. Its performance records, line budget and launches share a single context.",
-      "The block keeps every view mounted so an unfinished line plan survives collection and view changes.",
-      "Save and schedule callbacks include the collection ID alongside the underlying typed payload. The offline preview accepts local example changes."
-    ],
-    "related": [
-      "block-financial-report",
-      "block-saas-dashboard"
-    ],
-    "updated": "2026-10-12"
-  },
-  "block-people-workspace": {
-    "useWhen": "A people team needs department context, new-hire tasks and leave coverage in one product workspace.",
-    "avoidWhen": "Payroll processing, automatic hiring decisions or leave approvals disconnected from authoritative HR records.",
-    "integration": [
-      "Provide consistent employee IDs across department members, milestones, onboarding and leave records.",
-      "The block retains the separate views and their drafts. Each completion or decision carries its department ID and the underlying typed payload.",
-      "Connect the callbacks to your HR service. The default export is an offline example; production actions require a supplied host callback."
-    ],
-    "related": [
-      "block-workspace-settings",
-      "block-saas-dashboard"
-    ],
-    "updated": "2026-10-12"
-  },
-  "block-legal-workspace": {
-    "useWhen": "A legal operations team needs matter context, contractual work and requested evidence in one coherent workspace.",
-    "avoidWhen": "Automatically interpreting obligations, calculating authoritative legal deadlines or treating UI uploads as verified evidence.",
-    "integration": [
-      "Provide related records through `scopes`. Each view stays within its selected matter, and callbacks include the matter ID.",
-      "The retained panels preserve unfinished evidence notes when you change matter or view.",
-      "The host validates permissions, deadlines, uploaded files and recorded completion. The preview demonstrates local sample handoffs."
-    ],
-    "related": [
-      "block-workspace-settings",
-      "block-financial-report"
-    ],
-    "updated": "2026-10-12"
-  },
-  "block-commerce-workspace": {
-    "useWhen": "A store operations team needs reporting context, order inspection and a reviewed returns workflow in one page.",
-    "avoidWhen": "Moving money, reserving inventory or authorising a return solely from frontend state.",
-    "integration": [
-      "Align the records in each `periods` entry. Selecting a measure updates its target comparison, while the order and return views keep the same period context.",
-      "Return drafts remain mounted separately for each period and order. The callback includes the period ID and the exact typed return request.",
-      "Use `onReturn` to validate and record requests. A returned reference confirms the request; refunds and exchanges remain host operations."
-    ],
-    "related": [
-      "block-financial-report",
-      "block-fashion-workspace"
-    ],
-    "updated": "2026-10-12"
-  },
-  "block-saas-landing": {
-    "useWhen": "A SaaS launch needs one considered story from the product introduction through workflow, plan comparison and an actionable request form.",
-    "avoidWhen": "A checkout, authentication service or immediate subscription entitlement implemented only in frontend state.",
-    "integration": [
-      "Replace `plans` and `groups` with your actual offer. The example prices and workflow records are clearly labelled sample data.",
-      "Plan CTAs carry their plan ID to the request form. Pending requests lock the plan comparison, and rejected requests retain the email.",
-      "Connect `onStart` to your signup or request service. Each anchor reaches a real section, and the default export uses a local offline example."
-    ],
-    "related": [
-      "block-saas-dashboard",
-      "block-workspace-settings",
-      "block-commerce-workspace"
-    ],
-    "updated": "2026-10-12"
-  },
-  "media-audio-transport": {
-    "updated": "2026-10-12",
-    "useWhen": "Keeping real audio playback, seeking and volume available while a listener moves through another interface.",
-    "avoidWhen": "Streaming commercial media without appropriate rights or using a visual timer to pretend that audio is playing.",
-    "integration": [
-      "Supply a licensed media URL through track.src. The transport observes actual HTML audio events and exposes load and playback failures.",
-      "Increment playRequest only after an explicit play-selection action. Ordinary track navigation retains the current pause state.",
-      "The host owns queue selection and media URLs; release owned object URLs after unmount. Offline previews start muted."
-    ],
-    "related": [
-      "media-track-list",
-      "block-music-workspace",
-      "mobile-now-playing"
-    ]
-  },
-  "media-track-list": {
-    "updated": "2026-10-12",
-    "useWhen": "Browsing a music collection or editable queue with linked selection, liked state and context-specific actions.",
-    "avoidWhen": "Using a decorative list to imply playback without connecting selection to a real player and licensed source.",
-    "integration": [
-      "Pass unique track IDs and stable title, artist, album and duration records. onSelect drives the host selection or player.",
-      "Like, queue and removal actions are separate sibling controls; omit callbacks to hide actions the host does not support.",
-      "Optional host artwork should be licensed and served reliably. The default cover studies are original, offline-safe illustrations."
-    ],
-    "related": [
-      "media-audio-transport",
-      "block-music-workspace",
-      "input-search-scoped"
-    ]
-  },
-  "block-music-workspace": {
-    "updated": "2026-10-12",
-    "useWhen": "Composing a full listening application with discovery, a searchable collection, a shared queue and persistent playback.",
-    "avoidWhen": "Copying a streaming service brand or publishing an audio catalogue without rights to its media and artwork.",
-    "integration": [
-      "Supply MusicTrack records with licensed src URLs. Selection and playback remain distinct and actual media events govern playing state.",
-      "Persist queue and liked-state changes through host observers. Retained views keep the collection, search and player position intact.",
-      "The offline demo uses fictional releases and original 12-second audio; it begins muted. Production integrations own licensed assets."
-    ],
-    "related": [
-      "media-audio-transport",
-      "media-track-list",
-      "layout-workspace-shell"
-    ]
-  },
-  "collab-message-list": {
-    "updated": "2026-10-12",
-    "useWhen": "Showing a readable team conversation with reply affordances, reversible reactions and respectful arrival of new posts.",
-    "avoidWhen": "Treating a visual conversation as a transport layer or asserting delivery before a host returns an authoritative message.",
-    "integration": [
-      "Pass stable message IDs and author identities. Drive reactions and thread navigation through host callbacks.",
-      "The viewport follows own posts and preserves earlier reading positions for incoming posts.",
-      "Animate reaction figures in both directions; live announcements apply to added messages rather than every count frame."
-    ],
-    "related": [
-      "block-team-workspace",
-      "collab-comment-thread",
-      "collab-mention-input"
-    ]
-  },
-  "block-team-workspace": {
-    "updated": "2026-10-12",
-    "useWhen": "Composing channels and direct-message rooms with persistent drafts, an asynchronous send contract and retained threads.",
-    "avoidWhen": "Publishing a communication application without supplying its transport, user identity and persistence requirements.",
-    "integration": [
-      "Supply channels, people and initialMessages with stable IDs. onSend returns the server’s authoritative channel-scoped message.",
-      "Channel drafts and opened threads remain mounted. A late response never clears text edited during the request.",
-      "Reactions and thread interactions are session state in the example; hosts own durable storage and realtime transport."
-    ],
-    "related": [
-      "collab-message-list",
-      "collab-comment-thread",
-      "collab-mention-input"
-    ]
-  },
-  "collab-call-stage": {
-    "updated": "2026-10-12",
-    "useWhen": "Presenting real participant video streams with camera-off fallbacks, a spotlight layout and clear host-owned media controls.",
-    "avoidWhen": "Using placeholder portraits or animation to claim a live media connection, active speaker or hardware permission.",
-    "integration": [
-      "Supply participant streams from your own session transport. The stage never acquires a camera or microphone by itself.",
-      "Use CallControls separately when controls must remain visible across other application views.",
-      "Only supply captions and activeSpeakerId when the host has real data. The host owns track lifetimes and audio routing."
-    ],
-    "related": [
-      "block-meetings-workspace",
-      "date-week-agenda",
-      "collab-presence-bar"
-    ]
-  },
-  "block-meetings-workspace": {
-    "updated": "2026-10-12",
-    "useWhen": "Composing a working meeting application with linked agenda context, persistent room controls and independently retained notes.",
-    "avoidWhen": "Treating an interface block as a conferencing transport or declaring a room joined before the host acknowledges it.",
-    "integration": [
-      "Supply agenda days, participant streams and join/leave callbacks. Keep selected meeting separate from the joined session.",
-      "Media callbacks resolve after host state changes succeed; failures preserve the previous control state.",
-      "Notes remain scoped by meeting ID. Hosts own storage, permissions and transport; the offline room uses fictional, camera-off participants."
-    ],
-    "related": [
-      "collab-call-stage",
-      "date-week-agenda",
-      "collab-mention-input"
-    ]
-  },
-  "button-shimmer-track": {
-    "useWhen": "A primary async action needs clear pending, completed and retry states, with a restrained moving edge around the button.",
-    "avoidWhen": "Repeated immediate actions, or an effect being used as the only indication that an action is available or has succeeded.",
-    "integration": [
-      "Connect the action to a real awaited operation and provide useful failure text.",
-      "Keep controlled status synchronized with the host and reset it when starting a new task.",
-      "Preserve the native button label and focus treatment when changing colours or motion."
-    ],
-    "related": [
-      "button-press-depth",
-      "button-hold-confirm"
-    ],
-    "updated": "2026-10-13"
-  },
-  "cards-prismatic-folder": {
-    "useWhen": "A compact file collection benefits from a physical folder presentation, readable previews and clear availability states.",
-    "avoidWhen": "Large directory trees, bulk file administration or workflows that need a full file browser.",
-    "integration": [
-      "Supply stable file identifiers and the actual collection status rather than relying on demo content.",
-      "Connect file actions and recovery to the host application; the presentation does not fetch or store files.",
-      "Review empty collections, unavailable files and long file names in the intended container."
-    ],
-    "related": [
-      "data-file-explorer",
-      "input-file-dropzone"
-    ],
-    "updated": "2026-10-13"
-  },
-  "navigation-context-rail": {
-    "useWhen": "A workspace has grouped destinations and needs remembered section context, search and a compact navigation drawer.",
-    "avoidWhen": "A simple page with one short navigation list, or navigation whose destination content should live inside the rail itself.",
-    "integration": [
-      "Use stable section and item identifiers, with useful reasons for disabled destinations.",
-      "Connect navigation to the host router or destination loader and update controlled selection after success.",
-      "Provide loading and recovery states, then review narrow containers and focus returning from the drawer."
-    ],
-    "related": [
-      "navigation-breadcrumb-fold",
-      "command-palette"
-    ],
-    "updated": "2026-10-13"
-  },
-  "effect-border-tracer": {
-    "useWhen": "An existing card or control needs a subtle perimeter accent that can follow hover and focus or move continuously while visible.",
-    "avoidWhen": "Dense reading surfaces, or a moving edge being used as the only focus or status indicator.",
-    "integration": [
-      "Wrap actual host content and keep its controls, labels and action handlers responsible for product behaviour.",
-      "Choose the trigger and corner radius to match the host container.",
-      "Retain visible focus outlines and review menus extending outside the wrapper, including reduced-motion presentation."
-    ],
-    "related": [
-      "button-shimmer-track",
-      "button-press-depth"
-    ],
-    "updated": "2026-10-13"
-  },
-  "input-detent-dial": {
-    "useWhen": "A bounded numeric setting benefits from tactile, stepped adjustment and a clear indication of the current value.",
-    "avoidWhen": "Unbounded quantities, or a form where a conventional number field with simple step buttons already fits the workflow.",
-    "integration": [
-      "Bind the value and its change handler to the actual setting in the host application.",
-      "Choose valid limits and step increments for the domain, and keep the visible value understandable.",
-      "Review keyboard adjustment, larger labels and pointer interaction before using the dial as the main control."
-    ],
-    "related": [
-      "input-number-stepper",
-      "button-press-depth"
-    ],
-    "updated": "2026-10-13"
-  },
-  "devtools-icon-workbench": {
-    "useWhen": "A developer or design workflow needs searchable icon selection, construction previews and SVG or JSX output.",
-    "avoidWhen": "A static icon display, or a workflow that requires an external icon catalogue and assets not supplied by the host.",
-    "integration": [
-      "Supply the intended icon set and keep controlled selection synchronized with the host.",
-      "Choose size and stroke settings appropriate to the destination interface.",
-      "Connect custom copy handling when needed and keep clipboard failures visible and recoverable."
-    ],
-    "related": [
-      "command-palette",
-      "input-number-stepper"
-    ],
-    "updated": "2026-10-13"
-  },
-  "navigation-lens-dock": {
-    "useWhen": "A compact set of workspace tools benefits from a dock with clear selection and pointer-based magnification.",
-    "avoidWhen": "Large hierarchical navigation, or navigation that depends on magnification to make labels or targets usable.",
-    "integration": [
-      "Provide stable tool identifiers, accessible labels and reasons for disabled items.",
-      "Connect activation to real host navigation and update controlled selection after success.",
-      "Review keyboard use and static touch or reduced-motion presentation, including recovery from failed activation."
-    ],
-    "related": [
-      "navigation-context-rail",
-      "navbar-floating"
-    ],
-    "updated": "2026-10-13"
-  },
-  "hero-signal-workbench": {
-    "useWhen": "A product introduction benefits from an interactive waveform demonstration with understandable shape, frequency and gain controls.",
-    "avoidWhen": "A product whose value has no useful relationship to a signal demonstration, or a claim that the illustration supplies an audio engine.",
-    "integration": [
-      "Replace introductory copy and supply the intended primary-action destination.",
-      "Connect controlled parameters and change handling to the host if the demonstration needs shared state.",
-      "Keep the parameter labels and output understandable; the component does not make audio or network requests."
-    ],
-    "related": [
-      "hero-product-stack",
-      "hero-app-tilt"
-    ],
-    "updated": "2026-10-13"
-  },
-  "navigation-stacked-tabs": {
-    "useWhen": "Several documents share one working area and people need to reorder, close and restore tabs while preserving unsaved state.",
-    "avoidWhen": "A short set of fixed product sections, where an ordinary tab bar is easier to scan and does not need document lifecycle controls.",
-    "integration": [
-      "Keep stable document IDs and distinguish dirty changes from acknowledged saves.",
-      "The host owns document contents and closure decisions; preserve drafts when a close request is rejected.",
-      "Treat items as authoritative document availability. Removing a model retires its open tab, retained panel and closed history; keep it available while restoration is allowed."
-    ],
-    "related": [
-      "tabs-underline-glide",
-      "data-file-explorer"
-    ],
-    "updated": "2026-10-13"
-  },
-  "layout-split-resizer": {
-    "useWhen": "Two related views need adjustable space, such as an editor beside a preview or a record list beside its details.",
-    "avoidWhen": "Independent page sections that should stack and scroll naturally, or a split whose minimum usable widths cannot fit the available container.",
-    "integration": [
-      "Set meaningful minimum pane sizes and provide content that remains usable at each supported size.",
-      "Persist the chosen split in the host when needed; keyboard resizing and collapse should preserve a useful restoration size.",
-      "Use orientation=\"auto\" to stack in narrow containers. A requested percentage is a preference; onPaneSizesChange reports bounded visible percentages and logical pixel sizes.",
-      "Keep the host panes mounted when retaining editor drafts, and provide usable scrolling when supplied minimum sizes cannot fit."
-    ],
-    "related": [
-      "layout-workspace-shell",
-      "editor-markdown-split"
-    ],
-    "updated": "2026-10-13"
   }
 }
