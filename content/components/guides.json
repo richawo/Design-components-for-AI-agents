@@ -3997,7 +3997,7 @@
     "avoidWhen": "Making text less legible, imitating unsupported live refraction or adding expensive animation behind every panel.",
     "integration": [
       "Supply a real scene image and independent foreground children. The surface applies SVG displacement to the supplied image; it does not capture or refract a live backdrop. Preserve foreground interaction, selectable content and intentional overflow.",
-      "Use strength0–32 and frost0–2.5 in host CSS pixels, integer flutes8–40, vertical/horizontal orientation and radius0–64. Standard/high quality bounds the decorative scene to640,000/1,280,000 layout pixels. Scale only that scene and normalize filter strength to host coordinates.",
+      "Use strength0–32 and frost0–2.5 in host CSS pixels, integer flutes8–40, vertical/horizontal orientation and radius0–64. Standard/high quality bounds the decorative scene to 640,000/1,280,000 layout pixels. Scale only that scene and normalize filter strength to host coordinates.",
       "Use actual native Image load/decode dimensions and scoped onSceneStateChange receipts. Source replacement retires old image results, retry operates on the real current source, and unavailable content stays clear. Static displacement has no ambient loop to pause; preserve the same readable foreground under reduced motion."
     ],
     "related": [
@@ -4011,7 +4011,7 @@
     "avoidWhen": "A geographic map, live terrain analysis or an endlessly drifting background with no controls.",
     "integration": [
       "Supply a finite exact scalar grid with columns/rows2–48 and columns×rows values, independent foreground children and actual availability. Marching squares draws real iso-levels from the supplied range. The original32×24 default is synthetic artwork, not geographic data.",
-      "Integer density8–24 interpolates actual levels; lightAngle0–359 takes the shortest arc during real changes. Standard/high quality caps backing pixels at640,000/1,280,000 independently of DPR. Reuse crossing buffers and cached paths for light-only changes; do not rasterize foreground content.",
+      "Integer density8–24 interpolates actual levels; lightAngle 0–359 takes the shortest arc during real changes. Standard/high quality caps backing pixels at 640,000/1,280,000 independently of DPR. Reuse crossing buffers and cached paths for light-only changes; do not rasterize foreground content.",
       "Validate actual content revisions even when the field object/array identity is reused. There is no idle/offscreen animation loop. Stop/set decorative transition owners under live reduced motion, preserve foreground interaction/overflow and make invalid/loading/error states explicit."
     ],
     "related": [
@@ -4024,8 +4024,10 @@
     "useWhen": "Inspecting a supplied image as a real halftone pattern with useful density and threshold adjustments.",
     "avoidWhen": "Stock-image decoration, background removal or claiming an encoded export without an actual output.",
     "integration": [
-      "Provide the image source and alternative description. Actual pixel access must handle loading, failed images and cross-origin restrictions honestly.",
-      "Bound sampling cost, preserve the original image for comparison and expose keyboard controls for the same density and threshold."
+      "Provide a stable source ID, actual image URL, alternative description and optional title. Native decoding and real pixel access determine readiness; cross-origin failures retain an honestly labeled original when ordinary image access succeeds.",
+      "Control one atomic spacing/threshold value: whole-pixel spacing 6–20 and threshold 0.10–1.00 in0.01 steps. Missing controlled handlers make editing read-only. Requests preserve host authority, and only accepted completed changes reach onValueCommit.",
+      "Original comparison fits the complete source. Actual sampling/output pixels are bounded to 640,000 standard or 1,280,000 high, max 4096px per side. onExport receives a real PNG Blob, output dimensions, source ID and accepted settings with AbortSignal. The PNG is the bounded view raster, not a claim of full source resolution; saving/downloading belongs to the host.",
+      "Keep the accepted settings and focus through export failure. Source/settings/handler revisions abort old work and ignore late settlement. Live reduced motion stops actual decorative owners; parent-page focus remains owned by the parent."
     ],
     "related": [
       "pixel-matrix-display",
@@ -4037,8 +4039,9 @@
     "useWhen": "Adding a bounded, user-driven drawing mark that fades while ordinary controls remain usable.",
     "avoidWhen": "Capturing the whole page pointer, hiding essential content or creating an endless uncontrolled animation.",
     "integration": [
-      "Limit the mark to its intended region and retain keyboard/touch alternatives where drawing carries meaning.",
-      "Clean up animation work and pointer ownership on retirement; respect live reduced motion and avoid obstructing nested controls."
+      "Keep drawing inside its dedicated bounded surface; ordinary foreground overlays retain native input, touch, events and overflow. Keyboard arrows move the marker, and Space/Enter or Stamp mark create the same actual mark.",
+      "onStroke reports only completed normalized points with actual pressure/time and snapshotted ink width, color and lifetime. Host persistence is explicit. Pointer cancellation, Escape, resetKey, disabled and hidden state retire owned gestures; source arrays stay bounded to 24 marks and 1024 points per stroke.",
+      "New marks fade after release over 300–3000ms. Live reduced motion freezes current opacity until clear, and normal motion resumes from that pose. Main Canvas pixels are capped at 640,000 with max 4096px per side. Idle/offscreen work stops; do not intercept the whole page pointer."
     ],
     "related": [
       "effect-border-tracer",
@@ -4050,8 +4053,10 @@
     "useWhen": "Comparing generic material samples under explicit, adjustable light in a small 3D inspection tool.",
     "avoidWhen": "Replacing an actual product photograph with a generated stand-in or making unsupported physical material claims.",
     "integration": [
-      "Supply the material and lighting parameters with useful bounds. Provide a readable static alternative and report unavailable graphics support.",
-      "Cap pixel ratio, resize to the container, pause hidden rendering and dispose of resources when the component retires."
+      "Supply 1–8 raw unique material IDs with labels/descriptions, hex color and bounded appearance parameters: metalness 0–1, roughness 0.15–1, transmission 0–0.8. The original generic coupon is illustrative; use real assets for actual products or calibrated material work.",
+      "One atomic value owns materialId, whole-degree azimuth −90–90 and lightAngle 0–359. Native radios/ranges, scaled pointer turning and keyboard arrows share host requests; rejected controlled values never create false commits. Unknown identities remain explicit, and absent controlled handlers make editing read-only.",
+      "Standard/high quality bounds the main drawing buffer to 480,000/960,000 pixels with max 2048px side; auxiliary environment/shadow/transmission targets are separately bounded. Data revisions prepare their own native context and ignore retired readiness. Label/description edits retain the context.",
+      "Keep the useful diagram and actual appearance parameters when graphics are unavailable, with explicit retry. Idle/hidden rendering stops, live reduced motion settles real owners, and owner-document focus fencing preserves native parent actions."
     ],
     "related": [
       "three-holo-card",
@@ -4063,8 +4068,10 @@
     "useWhen": "Inspecting labeled parts of a generic supplied assembly through an explicit exploded view and diagram alternative.",
     "avoidWhen": "Engineering certification, accurate manufacturing CAD or a product visualization based on invented geometry.",
     "integration": [
-      "Supply part identities, geometry and explanation. Keep a linear parts list and ordinary selection controls alongside any spatial interaction.",
-      "Bound separation and restore the actual assembled pose; pause hidden rendering, support reduced motion and dispose of graphics resources."
+      "Supply 1–12 raw unique labeled parametric box/cylinder/frame pieces with actual size, position, explosion vector and hex color. Dimensions are 0.05–6 model units, positions within ±8, vectors within ±4. Units are illustrative; the component is not a manufacturing CAD or imported-model viewer.",
+      "Control one atomic selectedId/null, separation 0–1 in0.01 steps and whole-degree azimuth −75–75. Real geometry selection and the complete native parts list share requests; rejected changes retain the accepted pose. Unknown identities never choose a fallback, and Reset pose is explicit.",
+      "Keep readable part names/notes and the schematic available without graphics. Standard/high main-buffer caps are 400,000/800,000 pixels, max 2048px side, with a separately bounded 512px shadow target. Data revisions own their actual native readiness, while copy edits retain their context.",
+      "Native bounded dragging, keyboard ranges and Escape preserve host authority. Live reduced motion settles actual pose owners, hidden/idle rendering stops, resources are retired on unmount and parent-page focus stays with the parent."
     ],
     "related": [
       "three-contour-terrain",
