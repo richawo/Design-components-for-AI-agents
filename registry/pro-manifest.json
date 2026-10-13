@@ -18642,6 +18642,196 @@
     ]
   },
   {
+    "slug": "media-device-switcher",
+    "name": "Device Preview Switcher",
+    "tier": "pro",
+    "platform": "web",
+    "category": "media",
+    "description": "A precise inspector for responsive content, with fitted phone, tablet and desktop frames, real viewport measurements, rotation and full-size scrolling.",
+    "tags": [
+      "responsive",
+      "device preview",
+      "media",
+      "container queries",
+      "dark",
+      "inspection"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 900,
+    "usage": "import { MediaDeviceSwitcher } from \"@/components/design-for-ai/media-device-switcher\";\n\n<MediaDeviceSwitcher content={<ResponsivePortfolio />} value={device} onValueChange={setDevice} />",
+    "props": [
+      {
+        "name": "presets",
+        "type": "DevicePreviewPreset[]",
+        "description": "Phone 393×720, tablet 820×1100 and desktop 1200×720. Unique ID, label, physical chrome kind, CSS viewport dimensions and optional availability.",
+        "default": "offline presets"
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "description": "Controlled selected preset. Invalid or unavailable selection falls back to the first available preset."
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "description": "Initial uncontrolled preset.",
+        "default": "\"phone\""
+      },
+      {
+        "name": "onValueChange",
+        "type": "(id: string, preset: DevicePreviewPreset) => void",
+        "description": "Synchronous observer for device selection; controlled hosts update value here."
+      },
+      {
+        "name": "rotated",
+        "type": "boolean",
+        "description": "Controlled dimension rotation; swaps width and height."
+      },
+      {
+        "name": "defaultRotated",
+        "type": "boolean",
+        "description": "Initial uncontrolled rotation.",
+        "default": "false"
+      },
+      {
+        "name": "onRotatedChange",
+        "type": "(rotated: boolean) => void",
+        "description": "Observe rotation and update controlled state."
+      },
+      {
+        "name": "fit",
+        "type": "boolean",
+        "description": "Controlled fitted or actual-size view."
+      },
+      {
+        "name": "defaultFit",
+        "type": "boolean",
+        "description": "Initial fit-to-stage mode.",
+        "default": "true"
+      },
+      {
+        "name": "onFitChange",
+        "type": "(fit: boolean) => void",
+        "description": "Observe fit mode and update controlled state."
+      },
+      {
+        "name": "content",
+        "type": "ReactNode",
+        "description": "Supplied content retained in one real CSS container through device/status changes. Use container queries or responsive components; window media queries are not emulated. Replacing or removing the supplied node retires its content; use status for temporary unavailability.",
+        "default": "original offline editorial study"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "description": "Inspector and browser chrome title.",
+        "default": "\"Viewport study\""
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"empty\" | \"error\"",
+        "description": "Host-owned content state; content remains mounted and is inert outside ready.",
+        "default": "\"ready\""
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "description": "Specific host error explanation.",
+        "default": "\"This preview could not be prepared.\""
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Optional real retry action. Its 44px control remains outside scaled content."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Disable toolbar changes while preserving content inspection.",
+        "default": "false"
+      },
+      {
+        "name": "stageHeight",
+        "type": "number",
+        "description": "Fixed scrollable stage, bounded 280..640CSS pixels.",
+        "default": "520"
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Inspector and chrome palette; host content owns its palette.",
+        "default": "\"dark\""
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Outer component class.",
+        "default": "\"\""
+      }
+    ],
+    "added": "2026-10-13",
+    "demo": {
+      "steps": [
+        "click:@device-desktop",
+        "wait:650",
+        "click:@device-tablet",
+        "wait:650",
+        "click:@device-phone",
+        "wait:450",
+        "click:@rotate-device",
+        "wait:650"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "defaultValue",
+        "label": "Starting frame",
+        "kind": "select",
+        "options": [
+          "phone",
+          "tablet",
+          "desktop"
+        ],
+        "default": "phone",
+        "remount": true
+      },
+      {
+        "prop": "stageHeight",
+        "label": "Stage height",
+        "kind": "slider",
+        "min": 320,
+        "max": 640,
+        "step": 20,
+        "unit": "px",
+        "default": 520
+      },
+      {
+        "prop": "status",
+        "label": "Content state",
+        "kind": "action",
+        "options": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ]
+      }
+    ]
+  },
+  {
     "slug": "media-track-list",
     "name": "Music Track List",
     "tier": "pro",
