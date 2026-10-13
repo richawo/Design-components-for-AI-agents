@@ -3968,8 +3968,9 @@
     "useWhen": "Presenting changing numeric values with interruptible rolls for increases, decreases, signs and decimals.",
     "avoidWhen": "A static counter, falsely precise analytics or animation that obscures the final accessible value.",
     "integration": [
-      "Supply the actual numeric value and formatting policy. Preserve sign, decimal and grouping semantics and separate the accessible final value from decorative glyphs.",
-      "Retarget from the currently visible value and cancel motion immediately when reduced motion changes. Invalid numbers must not become an endless roll."
+      "Supply the actual finite value and explicit fractionDigits (0–6), locale, grouping and signDisplay. Prefix/suffix are literal supplied text, not currency or unit conversion. The first render is already the actual formatted value.",
+      "Retarget each decorative digit from its current glyph phase on interrupted increases, decreases and sign/decimal changes. Invalid configuration and nonfinite values retain readable recovery; native font metrics fit actual numerals to the container and preserve exact selection.",
+      "Live reduced motion stops and sets every owner. Accessible final text stays separate from hidden rolling glyphs; opt into live only when a polite final-value announcement is useful. Use the named output in host controls rather than inventing additional counters."
     ],
     "related": [
       "input-number-stepper",
