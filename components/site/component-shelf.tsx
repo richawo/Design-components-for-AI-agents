@@ -66,7 +66,7 @@ export function ComponentShelf({ title, cards, onBrowse, priority = false }: {
           ))}
         </div>
       </div>
-      <ul ref={track} id={`${id}-track`} className="component-shelf-track grid auto-cols-[86%] grid-flow-col gap-4 overflow-x-auto overscroll-x-contain pb-2 [scrollbar-width:none] sm:auto-cols-[calc((100%-32px)/2.2)] lg:auto-cols-[calc((100%-32px)/2.2)] xl:auto-cols-[calc((100%-48px)/3.2)] min-[105rem]:auto-cols-[calc((100%-64px)/4.2)] [&::-webkit-scrollbar]:hidden">
+      <ul ref={track} id={`${id}-track`} className="component-shelf-track -mx-1 grid auto-cols-[86%] grid-flow-col gap-4 overflow-x-auto overscroll-x-contain px-1 pb-2 pt-1 [scrollbar-width:none] sm:auto-cols-[calc((100%-32px)/2.2)] lg:auto-cols-[calc((100%-32px)/2.2)] xl:auto-cols-[calc((100%-48px)/3.2)] min-[105rem]:auto-cols-[calc((100%-64px)/4.2)] [&::-webkit-scrollbar]:hidden">
         {cards.map((card, index) => (
           <li key={card.slug} className="flex min-w-0">
             <ComponentCard c={card} priority={priority && index < 3} imageSizes={SHELF_IMAGE_SIZES} />
