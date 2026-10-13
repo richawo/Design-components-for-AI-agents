@@ -11976,6 +11976,121 @@
     ]
   },
   {
+    "slug": "devtools-release-compare",
+    "name": "Release Manifest Review",
+    "tier": "pro",
+    "platform": "web",
+    "category": "devtools",
+    "description": "A paired supplied-release manifest inspector with honest partial/unknown resource comparisons and a reviewed, cancellable host rollback request.",
+    "tags": [
+      "devtools",
+      "release",
+      "deployment",
+      "rollback",
+      "manifest",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1260,
+    "usage": "import { DevtoolsReleaseCompare } from \"@/components/design-for-ai/devtools-release-compare\";\n\n<DevtoolsReleaseCompare current={current} candidates={history} value={targetId} onValueChange={setTarget} onRequestRollback={requestRollback} resetKey={environmentId} />",
+    "props": [
+      {
+        "name": "current",
+        "type": "ReleaseCompareRelease",
+        "description": "Supplied current immutable release ID/label/ISO timestamp, explicit resourcesComplete flag and raw resources with ID/path/kind/bytes/digest/preview text.",
+        "default": "Original Studio1.8.0 offline manifest"
+      },
+      {
+        "name": "candidates",
+        "type": "ReleaseCompareRelease[]",
+        "description": "Stable unique candidate identities with supplied complete/partial inventories. Earlier supported timestamp is required for a rollback request.",
+        "default": "Two original preceding offline manifests"
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "description": "Authoritative target ID. Missing ID stays explicit; no selection observer means target selection read-only."
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "description": "Initial local target; reset reuses it or first candidate."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(id: string, target: ReleaseCompareRelease) => void",
+        "description": "Synchronous target inspection observer. Host rejection keeps the actual selected target."
+      },
+      {
+        "name": "onRequestRollback",
+        "type": "(review: ReleaseRollbackReview, signal: AbortSignal) => void | Promise<void>",
+        "description": "Actual reviewed request with copied current/target manifests and comparisons. Honor cancellation; acknowledgment never invents current deployment updates."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Environment/review identity. Clears local selection/filter/review and retires old requests."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Concise release comparison heading.",
+        "default": "\"Read the release before returning.\""
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Explain exact current/target manifest review.",
+        "default": "\"Compare the supplied resource manifests, inspect what the target changes and request a rollback only after reviewing that exact pair.\""
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Neutral release-desk palettes; semantic target additions/removals.",
+        "default": "\"dark\""
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Outer comparison class.",
+        "default": "\"\""
+      }
+    ],
+    "added": "2026-10-13",
+    "demo": {
+      "steps": [
+        "click:@resource-policy",
+        "wait:350",
+        "click:@review-rollback",
+        "wait:350",
+        "click:@request-rollback",
+        "wait:500"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "title",
+        "label": "Heading",
+        "kind": "text",
+        "default": "Read the release before returning."
+      }
+    ]
+  },
+  {
     "slug": "devtools-request-waterfall",
     "name": "Request Timing Waterfall",
     "tier": "pro",
