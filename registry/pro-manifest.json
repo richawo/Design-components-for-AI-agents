@@ -25445,6 +25445,132 @@
     ]
   },
   {
+    "slug": "social-proof-case-ledger",
+    "name": "Evidence Case Ledger",
+    "tier": "pro",
+    "platform": "web",
+    "category": "social-proof",
+    "description": "An editorial case ledger pairs supplied outcomes with their sample, observation period, methodology and inspectable evidence, including honest missing measurements.",
+    "tags": [
+      "social proof",
+      "evidence",
+      "cases",
+      "outcomes",
+      "comparison",
+      "research"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1250,
+    "usage": "import { SocialProofCaseLedger } from \"@/components/design-for-ai/social-proof-case-ledger\";\n\n<SocialProofCaseLedger cases={records} value={recordId} onValueChange={setRecordId} />\n\n// Supply actual measurements and their evidence. A comparison alone does not establish causation.",
+    "props": [
+      {
+        "name": "cases",
+        "type": "readonly CaseRecord[]",
+        "description": "Supplied stable records with organization/title/description, actual observation period and sample, methodology, measured outcomes and their evidence. Illustrative offline defaults are explicitly fictional."
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "description": "Optional controlled record ID. Pair with onValueChange; rejected changes retain the actual case, and unknown IDs show an unavailable view."
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "description": "Initial internal record ID. Removed internal selections fall back to the first available supplied record."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(id: string, record: CaseRecord) => void",
+        "description": "Request actual supplied record selection. Missing handlers lock controlled navigation; reading supplied evidence remains possible."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "description": "Locale for actual numeric values and observed percentage changes. No percentage is computed against zero or missing baselines."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"error\"",
+        "description": "Host-owned case availability. Selection survives loading, failure and retry."
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "description": "Actual host failure explanation."
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Explicit host recovery request. No fake action when absent."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Lock case navigation while retaining readable evidence."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Complete warm ink or paper palettes."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<CaseLedgerLabels>",
+        "description": "Heading, metadata, comparison, evidence and availability copy."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Host layout classes."
+      }
+    ],
+    "added": "2026-10-13",
+    "demo": {
+      "steps": [
+        "click:@case-handoff",
+        "wait:400",
+        "click:@evidence-review",
+        "wait:450",
+        "click:@case-missing",
+        "wait:550"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "disabled",
+        "label": "Read only",
+        "kind": "toggle",
+        "default": false
+      },
+      {
+        "prop": "status",
+        "label": "Availability",
+        "kind": "select",
+        "options": [
+          "ready",
+          "loading",
+          "error"
+        ],
+        "default": "ready"
+      }
+    ]
+  },
+  {
     "slug": "text-optical-weight",
     "name": "Optical Weight",
     "tier": "pro",
