@@ -19843,6 +19843,150 @@
     ]
   },
   {
+    "slug": "input-expression-editor",
+    "name": "Typed Expression Editor",
+    "tier": "pro",
+    "platform": "web",
+    "category": "inputs",
+    "description": "A bounded expression editor exposes real syntax/type errors, actual field examples, short-circuit evaluation and a revision-owned applied draft.",
+    "tags": [
+      "expression",
+      "formula",
+      "parser",
+      "validation",
+      "typed",
+      "input"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1100,
+    "usage": "import { InputExpressionEditor } from \"@/components/design-for-ai/input-expression-editor\";\n\n<InputExpressionEditor fields={fields} value={expression} onValueChange={setExpression} examples={examples} />\n\n// The supported grammar is deliberately small. This component never evaluates JavaScript.",
+    "props": [
+      {
+        "name": "fields",
+        "type": "readonly ExpressionField[]",
+        "description": "At most32 unique identifier fields with declared number/text/boolean kind, readable label and an optional matching finite example. No eval."
+      },
+      {
+        "name": "examples",
+        "type": "readonly ExpressionExample[]",
+        "description": "Named sample expressions; unique nonempty IDs. Selecting one only replaces the unapplied draft."
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "description": "Controlled accepted expression, paired with onValueChange. Rejection retains draft and actual current expression."
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "description": "Local accepted seed; reset explicitly using resetKey."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(expression: string) => void",
+        "description": "Explicit Apply requests the exact valid expression with a computable finite example. No code execution, persistence or automatic backend evaluation."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Explicit local accepted value, revision-owned draft and selection lifecycle reset."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "description": "Intl numeric example display; unsupported locale falls back to en-GB."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"error\"",
+        "description": "Host availability preserves current and edited expression."
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "description": "Meaningful host failure explanation, default when blank."
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Real host recovery request."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Lock editing and requests while preserving selectable expression."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Complete dark evergreen or pale-paper palette."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<ExpressionLabels>",
+        "description": "Heading, grammar, example, draft and recovery copy."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Host layout classes responsive to the actual container."
+      }
+    ],
+    "added": "2026-10-13",
+    "demo": {
+      "steps": [
+        "click:@expression-example-yearly",
+        "wait:500",
+        "click:@expression-example-buffer",
+        "wait:500",
+        "click:@expression-example-monthly",
+        "wait:500",
+        "click:@expression-apply",
+        "wait:450"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "defaultValue",
+        "label": "Initial expression",
+        "kind": "text",
+        "default": "seats * seat_price - credit"
+      },
+      {
+        "prop": "disabled",
+        "label": "Read only",
+        "kind": "toggle",
+        "default": false
+      },
+      {
+        "prop": "status",
+        "label": "Availability",
+        "kind": "select",
+        "options": [
+          "ready",
+          "loading",
+          "error"
+        ],
+        "default": "ready"
+      }
+    ]
+  },
+  {
     "slug": "input-unit-converter",
     "name": "Quantity-preserving Unit Converter",
     "tier": "pro",
