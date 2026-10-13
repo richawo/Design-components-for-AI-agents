@@ -303,6 +303,7 @@ details.site-disclosure[open]::details-content {
   .site-beam::before { animation: none; }
   .site-leaks::before, .site-leaks::after { animation: none; }
   .site-pop, .site-draw, .site-rise { animation: none; }
+  .site-btn:active:not(:disabled) { transform: none; }
   /* Meaning survives as a short fade; movement and blur go. */
   .site-in { animation: site-fade 0.15s linear backwards; }
   .site-reveal[data-reveal="pending"] { transform: none; filter: none; }

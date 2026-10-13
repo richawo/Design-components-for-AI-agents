@@ -1,5 +1,7 @@
 "use client";
 
+import { useReducedMotion } from "@/lib/use-reduced-motion";
+
 import { motion } from "motion/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PREVIEW_CHANNEL, decodeHash, defaultValues, diffValues, encodeHash, parseFromPreview, type Body, type ToPreview } from "@/lib/demo/protocol";
@@ -46,6 +48,7 @@ export function PreviewFrame({
   /** The free design prompt, for "Copy configured prompt". Pro passes null and fetches it with a licence. */
   prompt?: string | null;
 }) {
+  const reduce = useReducedMotion();
   const [vp, setVp] = useState<(typeof VIEWPORTS)[number]["key"]>("desktop");
   const [key, setKey] = useState(0);
   const [loaded, setLoaded] = useState(false);
@@ -241,12 +244,12 @@ export function PreviewFrame({
                 >
                   {vp === v.key && (
                     <motion.span
-                      layoutId={`preview-vp-${slug}`}
+                      layoutId={reduce ? undefined : `preview-vp-${slug}`}
                       className="absolute inset-0 rounded-md bg-white/[0.1] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
                       transition={{ type: "spring", stiffness: 500, damping: 40 }}
                     />
                   )}
-                  <svg viewBox="0 0 16 16" className="relative size-4 transition-transform duration-150 active:scale-90 motion-reduce:transform-none" fill="none" aria-hidden="true">
+                  <svg viewBox="0 0 16 16" className="relative size-4 transition-transform duration-150 active:scale-90 motion-reduce:!scale-100" fill="none" aria-hidden="true">
                     <path d={v.icon} stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" strokeLinecap="round" />
                   </svg>
                 </button>
@@ -259,7 +262,7 @@ export function PreviewFrame({
               onClick={replay}
               aria-label="Replay demo"
               title="Replay demo"
-              className="group/replay flex h-11 items-center gap-1.5 rounded-md px-2 text-site-fg-3 transition duration-150 hover:bg-white/[0.05] hover:text-site-fg active:scale-95 motion-reduce:transform-none"
+              className="group/replay flex h-11 items-center gap-1.5 rounded-md px-2 text-site-fg-3 transition duration-150 hover:bg-white/[0.05] hover:text-site-fg active:scale-95 motion-reduce:!scale-100"
             >
               <svg viewBox="0 0 16 16" className="size-4" fill="none" aria-hidden="true">
                 <path d="M5.25 3.9v8.2a.6.6 0 0 0 .92.5l6.3-4.1a.6.6 0 0 0 0-1l-6.3-4.1a.6.6 0 0 0-.92.5Z" fill="currentColor" className={playing ? "opacity-40" : ""} />
@@ -277,7 +280,7 @@ export function PreviewFrame({
             }}
             aria-label="Reload preview"
             title="Reload"
-            className="flex size-11 items-center justify-center rounded-md text-site-fg-3 transition duration-150 hover:bg-white/[0.05] hover:text-site-fg active:scale-95 motion-reduce:transform-none"
+            className="flex size-11 items-center justify-center rounded-md text-site-fg-3 transition duration-150 hover:bg-white/[0.05] hover:text-site-fg active:scale-95 motion-reduce:!scale-100"
           >
             <svg
               viewBox="0 0 16 16"
@@ -295,9 +298,9 @@ export function PreviewFrame({
             rel="noreferrer"
             aria-label="Open preview in a new tab"
             title="Open in new tab"
-            className="group/open flex size-11 items-center justify-center rounded-md text-site-fg-3 transition duration-150 hover:bg-white/[0.05] hover:text-site-fg active:scale-95 motion-reduce:transform-none"
+            className="group/open flex size-11 items-center justify-center rounded-md text-site-fg-3 transition duration-150 hover:bg-white/[0.05] hover:text-site-fg active:scale-95 motion-reduce:!scale-100"
           >
-            <svg viewBox="0 0 16 16" className="size-4 transition-transform duration-150 ease-site group-hover/open:-translate-y-px group-hover/open:translate-x-px motion-reduce:transform-none" fill="none" aria-hidden="true">
+            <svg viewBox="0 0 16 16" className="size-4 transition-transform duration-150 ease-site group-hover/open:-translate-y-px group-hover/open:translate-x-px motion-reduce:!translate-none" fill="none" aria-hidden="true">
               <path d="M9 2.5h4.5V7M13.5 2.5L7.5 8.5M11.5 9.5v3a1 1 0 0 1-1 1h-7a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1h3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </a>

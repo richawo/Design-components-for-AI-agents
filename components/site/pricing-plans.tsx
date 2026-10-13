@@ -1,6 +1,8 @@
 "use client";
 
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { useReducedMotion } from "@/lib/use-reduced-motion";
+
+import { AnimatePresence, motion } from "motion/react";
 import { SiteLink as Link } from "@/components/site/site-link";
 import { useState, type CSSProperties } from "react";
 import { SegmentedControl } from "@/registry/free/segmented-control/segmented-control";

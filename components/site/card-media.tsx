@@ -145,7 +145,7 @@ export function CardMedia({
             // stable original once, without a reload or a broken card image.
             restoreOriginalPoster(event.currentTarget);
           }}
-          className={`absolute inset-0 size-full transition-transform duration-500 ease-site group-hover:scale-[1.02] ${fit}`}
+          className={`absolute inset-0 size-full transition-transform duration-500 ease-site group-hover:scale-[1.02] motion-reduce:!scale-100 motion-reduce:transition-none ${fit}`}
         />
       ) : (
         <div className="absolute inset-0 site-dots opacity-60" />
@@ -161,7 +161,7 @@ export function CardMedia({
           tabIndex={-1}
           disablePictureInPicture
           onPlaying={() => setShowing(true)}
-          className={`pointer-events-none absolute inset-0 size-full transition-[opacity,scale] duration-200 ease-site group-hover:scale-[1.02] ${fit} ${showing ? "opacity-100" : "opacity-0"}`}
+          className={`pointer-events-none absolute inset-0 size-full transition-[opacity,scale] duration-200 ease-site group-hover:scale-[1.02] motion-reduce:!scale-100 motion-reduce:transition-none ${fit} ${showing ? "opacity-100" : "opacity-0"}`}
         >
           {src && <source src={video.mp4} type="video/mp4" />}
           {src && video.webm && <source src={video.webm} type="video/webm" />}

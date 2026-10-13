@@ -1,5 +1,7 @@
 "use client";
 
+import { useReducedMotion } from "@/lib/use-reduced-motion";
+
 import { SiteLink as Link } from "@/components/site/site-link";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { fetchProAccess } from "@/lib/pro-access-client";
@@ -7,7 +9,6 @@ import {
   AnimatePresence,
   motion,
   useIsPresent,
-  useReducedMotion,
 } from "motion/react";
 import { CopyButton } from "./copy-button";
 

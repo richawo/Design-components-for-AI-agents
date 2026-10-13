@@ -1,8 +1,10 @@
 "use client";
 
+import { useReducedMotion } from "@/lib/use-reduced-motion";
+
 import "./gallery-focus.css";
 
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { memo, Suspense, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import {

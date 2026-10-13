@@ -1,5 +1,7 @@
 "use client";
 
+import { useReducedMotion } from "@/lib/use-reduced-motion";
+
 import { motion } from "motion/react";
 import { SiteLink as Link } from "@/components/site/site-link";
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
@@ -251,7 +253,7 @@ function Slider({ id, c, value, onChange }: { id: string; c: ComponentControl; v
   return (
     <div className={`${SURFACE} group relative h-10 overflow-hidden has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-site-accent [@media(hover:hover)]:hover:ring-white/[0.12]`}>
       {/* The fill is the value. Its leading edge only shows while the slider is in use, so it never cuts through the label at rest. */}
-      <span aria-hidden="true" className="absolute inset-y-0 left-0 bg-white/[0.07] transition-[width] duration-100 ease-site" style={{ width: `${pct}%` }}>
+      <span aria-hidden="true" className="absolute inset-y-0 left-0 bg-white/[0.07] transition-[width] duration-100 ease-site motion-reduce:transition-none" style={{ width: `${pct}%` }}>
         <span className="absolute inset-y-0 right-0 w-px bg-white/50 opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-has-[:focus-visible]:opacity-100" />
       </span>
       <span aria-hidden="true" className="pointer-events-none relative flex h-full items-center justify-between gap-3 px-3.5">
@@ -275,6 +277,7 @@ function Slider({ id, c, value, onChange }: { id: string; c: ComponentControl; v
 }
 
 function Switch({ on, onChange, labelledBy }: { on: boolean; onChange: (v: boolean) => void; labelledBy: string }) {
+  const reduce = useReducedMotion();
   return (
     <button
       type="button"
@@ -282,20 +285,21 @@ function Switch({ on, onChange, labelledBy }: { on: boolean; onChange: (v: boole
       aria-checked={on}
       aria-labelledby={labelledBy}
       onClick={() => onChange(!on)}
-      className={`relative h-5 w-9 shrink-0 rounded-full transition-colors duration-150 ease-site before:absolute before:-inset-2.5 before:content-[''] active:scale-[0.96] ${on ? "bg-site-fg" : "bg-white/[0.12]"}`}
+      className={`relative h-5 w-9 shrink-0 rounded-full transition-colors duration-150 ease-site before:absolute before:-inset-2.5 before:content-[''] active:scale-[0.96] motion-reduce:!scale-100 ${on ? "bg-site-fg" : "bg-white/[0.12]"}`}
     >
       <motion.span
         aria-hidden="true"
         className={`absolute left-0 top-0.5 size-4 rounded-full shadow-[0_1px_2px_rgba(0,0,0,0.4)] ${on ? "bg-black" : "bg-site-fg-2"}`}
         animate={{ x: on ? 18 : 2 }}
         initial={false}
-        transition={SPRING_UI}
+        transition={reduce ? { duration: 0 } : SPRING_UI}
       />
     </button>
   );
 }
 
 function Segmented({ id, labelledBy, options, value, onChange }: { id: string; labelledBy: string; options: { value: ControlValue; label: string }[]; value: ControlValue | undefined; onChange: (v: ControlValue) => void }) {
+  const reduce = useReducedMotion();
   const i = Math.max(0, options.findIndex((o) => o.value === value));
   return (
     <div
@@ -321,9 +325,9 @@ function Segmented({ id, labelledBy, options, value, onChange }: { id: string; l
             aria-checked={on}
             tabIndex={on ? 0 : -1}
             onClick={() => onChange(o.value)}
-            className={`relative h-7 rounded-[6px] px-2.5 text-[12px] font-medium transition-colors duration-150 active:scale-[0.97] ${on ? "text-site-fg" : "text-site-fg-3 [@media(hover:hover)]:hover:text-site-fg-2"}`}
+            className={`relative h-7 rounded-[6px] px-2.5 text-[12px] font-medium transition-colors duration-150 active:scale-[0.97] motion-reduce:!scale-100 ${on ? "text-site-fg" : "text-site-fg-3 [@media(hover:hover)]:hover:text-site-fg-2"}`}
           >
-            {on && <motion.span layoutId={`${id}-thumb`} className="absolute inset-0 rounded-[6px] bg-white/[0.1] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]" transition={SPRING_UI} />}
+            {on && <motion.span layoutId={reduce ? undefined : `${id}-thumb`} className="absolute inset-0 rounded-[6px] bg-white/[0.1] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]" transition={SPRING_UI} />}
             <span className="relative">{o.label}</span>
           </button>
         );
@@ -333,6 +337,7 @@ function Segmented({ id, labelledBy, options, value, onChange }: { id: string; l
 }
 
 function ColorControl({ id, c, value, onChange }: { id: string; c: ComponentControl; value: string; onChange: (v: string) => void }) {
+  const reduce = useReducedMotion();
   const swatches = (c.options ?? []).map(optionOf).map((o) => String(o.value).toLowerCase());
   const all = swatches.includes(String(c.default).toLowerCase()) ? swatches : [String(c.default).toLowerCase(), ...swatches];
   const custom = !all.includes(value.toLowerCase());
@@ -356,7 +361,7 @@ function ColorControl({ id, c, value, onChange }: { id: string; c: ComponentCont
               className="relative grid size-6 place-items-center rounded-full before:absolute before:-inset-1 before:content-[''] active:scale-[0.92]"
             >
               <span className={`size-4 rounded-full ring-1 ring-inset ring-white/20 transition-transform duration-150 ${on ? "scale-100" : "scale-[0.8]"}`} style={{ background: hex }} />
-              {on && <motion.span layoutId={`${id}-ring`} className="absolute inset-0 rounded-full ring-1 ring-white/70" transition={SPRING_UI} />}
+              {on && <motion.span layoutId={reduce ? undefined : `${id}-ring`} className="absolute inset-0 rounded-full ring-1 ring-white/70" transition={SPRING_UI} />}
             </button>
           );
         })}
@@ -381,7 +386,7 @@ function ActionButton({ pressed, onClick, children }: { pressed: boolean; onClic
       type="button"
       aria-pressed={pressed}
       onClick={onClick}
-      className={`h-7 rounded-[7px] px-2.5 text-[12px] font-medium transition-[background-color,color,box-shadow,scale] duration-150 active:scale-[0.97] ${
+      className={`h-7 rounded-[7px] px-2.5 text-[12px] font-medium transition-[background-color,color,box-shadow,scale] duration-150 active:scale-[0.97] motion-reduce:!scale-100 ${
         pressed ? "bg-white/[0.1] text-site-fg shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]" : "text-site-fg-2 ring-1 ring-inset ring-white/[0.08] [@media(hover:hover)]:hover:bg-white/[0.05] [@media(hover:hover)]:hover:text-site-fg"
       }`}
     >

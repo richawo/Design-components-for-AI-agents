@@ -1,6 +1,8 @@
 "use client";
 
-import { animate, useInView, useReducedMotion } from "motion/react";
+import { useReducedMotion } from "@/lib/use-reduced-motion";
+
+import { animate, useInView } from "motion/react";
 import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 
 const DURATION_S = 0.9;
