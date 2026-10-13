@@ -26827,6 +26827,137 @@
     "added": "2026-10-13"
   },
   {
+    "slug": "text-outline-fill",
+    "name": "Outline Fill",
+    "tier": "pro",
+    "platform": "web",
+    "category": "text",
+    "description": "Selectable outlined type fills with supplied progress, backed by native glyph fitting and a real reading-pane demonstration.",
+    "tags": [
+      "outlined type",
+      "reading progress",
+      "selectable text",
+      "editorial",
+      "scroll",
+      "typography"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1200,
+    "usage": "import { TextOutlineFill } from \"@/components/design-for-ai/text-outline-fill\";\n\n<TextOutlineFill text={chapterTitle} progress={actualScrollPosition} as=\"h2\" />",
+    "props": [
+      {
+        "name": "text",
+        "type": "string",
+        "description": "Selectable source words, including intentional line breaks.",
+        "default": "\"Good design\\nkeeps its word.\""
+      },
+      {
+        "name": "progress",
+        "type": "number",
+        "description": "Actual host-supplied position from 0 to 1. Omission or invalid input leaves complete static words visible."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "description": "Plain label for the progress output.",
+        "default": "\"Source position\""
+      },
+      {
+        "name": "as",
+        "type": "\"h1\" | \"h2\" | \"h3\" | \"p\"",
+        "description": "Semantic text element suited to the host document.",
+        "default": "\"h2\""
+      },
+      {
+        "name": "fontRole",
+        "type": "\"display\" | \"serif\" | \"mono\"",
+        "description": "Host CSS font role used by real native glyphs.",
+        "default": "\"serif\""
+      },
+      {
+        "name": "fontSize",
+        "type": "number",
+        "description": "Requested 24–160px text size. Native longest-line measurement fits actual container width.",
+        "default": "96"
+      },
+      {
+        "name": "durationMs",
+        "type": "number",
+        "description": "Finite 0–1200ms interruptible fill retargeting.",
+        "default": "240"
+      },
+      {
+        "name": "direction",
+        "type": "\"vertical\" | \"horizontal\"",
+        "description": "Top-down or left-to-right progress fill.",
+        "default": "\"vertical\""
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Graphite-compatible or warm-paper ink and outline colors.",
+        "default": "\"dark\""
+      },
+      {
+        "name": "showProgress",
+        "type": "boolean",
+        "description": "Show the labelled actual progress output.",
+        "default": "true"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Host root layout classes.",
+        "default": "\"\""
+      }
+    ],
+    "controls": [
+      {
+        "prop": "text",
+        "label": "Lettering",
+        "kind": "text",
+        "default": "Good design\nkeeps its\nword."
+      },
+      {
+        "prop": "direction",
+        "label": "Fill direction",
+        "kind": "segmented",
+        "options": [
+          "vertical",
+          "horizontal"
+        ],
+        "default": "vertical"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ],
+    "demo": {
+      "steps": [
+        "hover:@outline-passage:0.7,0.4",
+        "scroll:320",
+        "wait:350",
+        "scroll:320",
+        "wait:350",
+        "click:@outline-reset",
+        "wait:800"
+      ],
+      "loop": false
+    },
+    "added": "2026-10-13"
+  },
+  {
     "slug": "text-path-typesetter",
     "name": "Path Typesetter",
     "tier": "pro",
