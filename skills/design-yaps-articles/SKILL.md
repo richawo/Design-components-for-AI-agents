@@ -29,6 +29,14 @@ Use current primary documentation for technical and competitor claims. Retain fu
 - Compare equivalent scopes, currencies and seat allowances. Distinguish annual payment from a monthly equivalent, lifetime access from perpetual use of downloaded files, and a free core from paid templates or advanced features.
 - Keep named product sections in opening-table order. Use precise internal links and self-contained FAQ answers. Never use U+2014 in new prose.
 
+## Browser translation fallback
+
+When the existing translation endpoint repeatedly returns HTTP 429, preserve its checkpoints. For authorized editorial content, run `node skills/design-yaps-articles/scripts/browser-translation-bridge.mjs` from the repository using Node 24. It opens a temporary workbench on loopback and prints a fresh capability URL. Stop it with Ctrl+C when complete. Use the connected browser to translate its visible encoded work items; the server does not contact a translation provider itself.
+
+The workbench shows an encoded item and accepts its job ID and copied translation. Use the public text interface of the authorized translation provider, then submit the result through the local form. Keep source units under the provider's input limit. Numbered ASCII markers preserve batch boundaries more reliably than a repeated section symbol. The helper validates every marker, restores formatting and protected names, saves accepted units and retries rejected units individually. Reject malformed or untranslated entries; never paste their result into a public article. It keeps existing localized slugs stable.
+
+If possessive wording moves opening and closing link markers out of order, translate an equivalent sentence with a simpler phrase, such as “the server from [linked product name]”. Keep the original English key, names, href and meaning. Recheck the saved result. The workbench exposes intended article prose, not Pro component code, and needs no provider credentials. A completed queue still needs the usual coverage audit, metadata checks and rendered review.
+
 ## Metadata and images
 
 Follow current posts and the blog contract for frontmatter. Keep the primary keyword first in `keywords` and natural in the title, description, opening and a useful heading. Use London's publication date. Preserve existing slugs and dates; update `dateModified` only for substantive changes.
