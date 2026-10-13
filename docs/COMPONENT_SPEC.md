@@ -22,6 +22,14 @@ registry/free/chart-portfolio/
 After adding or changing a component, run `node scripts/build-registry.mjs`.
 Broken components are skipped (and reported) in dev; `--strict` fails CI.
 
+The public site also needs a selection guide in `content/components/guides.json`
+for every published slug. Write distinct `useWhen` and `avoidWhen` prose,
+practical `integration` notes and valid published `related` slugs. This guidance
+appears on the component page, its Markdown reference and search sitemaps; it
+must not contain Pro source or the private design brief. Prepare the public
+guide before publishing private source, so another build cannot discover a
+component whose page has no guidance.
+
 ### `<slug>.tsx`
 
 - **One file. Self-contained.** No imports from the site, from other
@@ -551,6 +559,13 @@ The scripts find Chromium in `$CHROMIUM_PATH`, the CI image, Playwright's
 own download, or failing that the newest full Chromium in the local
 Playwright cache. Prefer a full build to `chrome-headless-shell`, which
 starves animation frames while a button is held.
+
+For a parallel expansion, assemble the four files under private `_drafts/`
+and move the complete folder into its published location together. The site
+typecheck excludes those unpublished drafts. Serialize visual probes and
+recordings, and keep shared JSX/CSS and loader generation still during capture.
+Review the actual decoded motion as well as timestamp quality. Preserve failed
+captures as evidence; a nominal 60 fps export cannot establish smoothness.
 
 ## 8. Licence
 
