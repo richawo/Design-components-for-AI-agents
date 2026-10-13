@@ -64,7 +64,7 @@ Validate all six web widths, both supported themes, multiple instances and empty
 | 25 | `pricing-usage-calculator` | pricing | Estimate a bill from supplied rates and bounded quantities; explain included units and rounding. | Released |
 | 26 | `pricing-seat-simulator` | pricing | Model seat mixes and billing terms, with a transparent itemized total and no automatic checkout. | Released |
 | 27 | `social-proof-case-ledger` | social-proof | Browse supplied case outcomes alongside the evidence and time period that support each figure. | Released |
-| 28 | `content-interactive-spec` | content | Inspect a product specification by selecting annotated parts of a supplied diagram. | Planned |
+| 28 | `content-interactive-spec` | content | Inspect a product specification by selecting annotated parts of a supplied diagram. | Released |
 | 29 | `cta-project-brief` | cta | A concise project brief folds into a reviewable submission with pending, failure and preserved input. | Released |
 | 30 | `footer-sitemap-atlas` | footers | A navigable site index with grouped destinations and a compact narrow-container treatment. | Planned |
 
@@ -175,4 +175,4 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 ## Progress
 
-Planned: 68. Released: 32. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
+Planned: 67. Released: 33. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.

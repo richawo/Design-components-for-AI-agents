@@ -9831,6 +9831,137 @@
     ]
   },
   {
+    "slug": "content-interactive-spec",
+    "name": "Annotated Specification",
+    "tier": "pro",
+    "platform": "web",
+    "category": "content",
+    "description": "Select annotated parts of a supplied diagram and inspect their real specification details through touch targets, spatial keys or an equivalent readable parts list.",
+    "tags": [
+      "content",
+      "specification",
+      "diagram",
+      "annotations",
+      "hotspots",
+      "keyboard"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1100,
+    "usage": "import { ContentInteractiveSpec } from \"@/components/design-for-ai/content-interactive-spec\";\n\n<ContentInteractiveSpec parts={parts} diagram={diagram} aspectRatio={diagramWidth / diagramHeight} value={partId} onValueChange={setPartId} />\n\n// Coordinates describe the static drawing. Supply actual specifications and real optional references.",
+    "props": [
+      {
+        "name": "parts",
+        "type": "readonly SpecPart[]",
+        "description": "Stable annotated parts with normalized physical-left/top coordinates, title/description, supplied detail values, optional reference URL and unavailable reason. Invalid positions remain inspectable through the list."
+      },
+      {
+        "name": "diagram",
+        "type": "ReactNode",
+        "description": "Static host drawing or image that fills the declared aspect ratio. Artwork is inert; this component owns the diagram controls. The offline default is an original illustrative SVG."
+      },
+      {
+        "name": "aspectRatio",
+        "type": "number",
+        "description": "Actual diagram width/height ratio between0.5 and3. Coordinates are relative to the inner drawing, with a32px target-safe outer margin."
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "description": "Controlled selected part. Pair with onValueChange; rejected changes retain the actual annotation and ring."
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "description": "Initial internal part ID. Removed selections fall back to the first available supplied part."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(id: string, part: SpecPart) => void",
+        "description": "Request actual part selection. Missing callbacks lock controlled navigation, with real references still readable."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"error\"",
+        "description": "Host-owned availability. Preserve actual selection and use explicit recoverable views."
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "description": "Actual host error explanation."
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Explicit host recovery action; absent handlers do not render a fake retry."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Lock diagram/list selection while preserving readable specification data."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Complete forest-ink or pale-paper palettes."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<InteractiveSpecLabels>",
+        "description": "Heading, diagram, list, detail, reference and availability copy."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Host layout classes."
+      }
+    ],
+    "added": "2026-10-13",
+    "demo": {
+      "steps": [
+        "click:@spec-point-shape",
+        "wait:350",
+        "click:@spec-list-output",
+        "wait:400",
+        "click:@spec-list-input",
+        "wait:500"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "disabled",
+        "label": "Read only",
+        "kind": "toggle",
+        "default": false
+      },
+      {
+        "prop": "status",
+        "label": "Availability",
+        "kind": "select",
+        "options": [
+          "ready",
+          "loading",
+          "error"
+        ],
+        "default": "ready"
+      }
+    ]
+  },
+  {
     "slug": "cta-project-brief",
     "name": "Reviewable Project Brief",
     "tier": "pro",
