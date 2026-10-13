@@ -15824,6 +15824,216 @@
     ]
   },
   {
+    "slug": "hero-signal-workbench",
+    "name": "Signal Workbench Hero",
+    "tier": "pro",
+    "platform": "web",
+    "category": "hero",
+    "description": "An interactive signal hero connects shape, frequency and gain controls to a smoothly morphing waveform. Real parameters replace a static product screenshot.",
+    "tags": [
+      "hero",
+      "interactive demo",
+      "signal",
+      "waveform",
+      "node diagram",
+      "product"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1100,
+    "usage": "import { HeroSignalWorkbench } from \"@/components/design-for-ai/hero-signal-workbench\";\n\n<HeroSignalWorkbench\n  heading={\"Shape a signal.\\nSee it happen.\"}\n  value={parameters}\n  onChange={setParameters}\n  accent=\"#e8a46c\"\n/>\n\n// parameters: { waveform: \"sine\" | \"triangle\" | \"square\", frequency: 0.5..4, gain: 0..100 }.\n// This is an interactive visual model, with no audio, microphone or network access.",
+    "props": [
+      {
+        "name": "eyebrow",
+        "type": "string",
+        "default": "\"Signal studio\"",
+        "description": "Quiet product context above the display heading."
+      },
+      {
+        "name": "heading",
+        "type": "string",
+        "default": "\"Shape a signal.\\nSee it happen.\"",
+        "description": "Display copy with deliberate line breaks and safe wrapping."
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "default": "short control invitation",
+        "description": "Supporting copy beside the actual demonstration."
+      },
+      {
+        "name": "actionLabel",
+        "type": "string",
+        "default": "\"Try the controls\"",
+        "description": "Primary link label."
+      },
+      {
+        "name": "actionHref",
+        "type": "string",
+        "default": "instance-local graph anchor",
+        "description": "Optional real destination. Without it the link focuses and reveals this instance’s controls."
+      },
+      {
+        "name": "outputLabel",
+        "type": "string",
+        "default": "\"Your signal\"",
+        "description": "Preview heading."
+      },
+      {
+        "name": "shapeLabel",
+        "type": "string",
+        "default": "\"Wave shape\"",
+        "description": "Shape chooser and output metadata label."
+      },
+      {
+        "name": "frequencyLabel",
+        "type": "string",
+        "default": "\"Frequency\"",
+        "description": "Native range label."
+      },
+      {
+        "name": "gainLabel",
+        "type": "string",
+        "default": "\"Gain\"",
+        "description": "Native range and output value label."
+      },
+      {
+        "name": "emptyLabel",
+        "type": "string",
+        "default": "\"Add a wave shape to start the preview.\"",
+        "description": "Useful explanation when the shape options are empty."
+      },
+      {
+        "name": "waveforms",
+        "type": "readonly SignalShapeOption[]",
+        "default": "Sine, Triangle, Square",
+        "description": "Shape IDs (sine, triangle, square) and host labels. Duplicate IDs are collapsed; empty arrays disable the preview inputs."
+      },
+      {
+        "name": "waveform",
+        "type": "SignalShape",
+        "default": "\"sine\"",
+        "description": "Initial/configured waveform. A changed prop updates the internal model; controls remain interactive."
+      },
+      {
+        "name": "frequency",
+        "type": "number",
+        "default": "1.25",
+        "description": "Initial/configured Hz, bounded to 0.5–4 and normalized to 0.25Hz increments."
+      },
+      {
+        "name": "gain",
+        "type": "number",
+        "default": "75",
+        "description": "Initial/configured percent, bounded to 0–100 and normalized to 5% increments."
+      },
+      {
+        "name": "value",
+        "type": "SignalParameters",
+        "description": "Optional controlled model. Pair with onChange; it overrides individual configured values."
+      },
+      {
+        "name": "onChange",
+        "type": "(parameters: SignalParameters) => void",
+        "description": "Reports an explicit edit with normalized waveform, frequency and gain. No network or audio request is made."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#e8a46c\"",
+        "description": "The meaningful signal color. The neutral light-theme default becomes #99542f for contrast."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Complete surface and ink palette."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "default": "\"\"",
+        "description": "Host layout classes on the hero container."
+      }
+    ],
+    "added": "2026-10-13",
+    "demo": {
+      "steps": [
+        "wait:350",
+        "click:@wave-triangle",
+        "wait:450",
+        "click:@signal-frequency:0.73,0.5",
+        "wait:600",
+        "click:@signal-gain:0.25,0.5",
+        "wait:1100"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "waveform",
+        "label": "Wave shape",
+        "kind": "segmented",
+        "options": [
+          "sine",
+          "triangle",
+          "square"
+        ],
+        "default": "sine"
+      },
+      {
+        "prop": "frequency",
+        "label": "Frequency",
+        "kind": "slider",
+        "min": 0.5,
+        "max": 4,
+        "step": 0.25,
+        "unit": "Hz",
+        "default": 1.25
+      },
+      {
+        "prop": "gain",
+        "label": "Gain",
+        "kind": "slider",
+        "min": 0,
+        "max": 100,
+        "step": 5,
+        "unit": "%",
+        "default": 75
+      },
+      {
+        "prop": "accent",
+        "label": "Signal color",
+        "kind": "color",
+        "default": "#e8a46c",
+        "options": [
+          "#e8a46c",
+          "#ededf0",
+          "#a3d6bd"
+        ]
+      },
+      {
+        "prop": "heading",
+        "label": "Heading",
+        "kind": "text",
+        "default": "Shape a signal.\nSee it happen."
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "hr-capacity-planner",
     "name": "Team Capacity Planner",
     "tier": "pro",
