@@ -2351,6 +2351,146 @@
     ]
   },
   {
+    "slug": "ai-structured-output",
+    "name": "Structured Output Review",
+    "tier": "pro",
+    "platform": "web",
+    "category": "ai",
+    "description": "A received-field ledger that distinguishes partial values from host validation, with bounded inspection, explicit raw text and real recovery requests.",
+    "tags": [
+      "ai",
+      "structured output",
+      "schema",
+      "validation",
+      "streaming",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1060,
+    "usage": "import { AiStructuredOutput } from \"@/components/design-for-ai/ai-structured-output\";\n\n<AiStructuredOutput fields={fields} outputState={status} rawOutput={receivedText} onRetry={recoverField} resetKey={outputId} />",
+    "props": [
+      {
+        "name": "fields",
+        "type": "StructuredOutputField[]",
+        "description": "Stable unique IDs, path, label, declared JSON base type, received value, waiting/partial/valid/invalid/unavailable state, validation message and required marker.",
+        "default": "5 original offline project fields"
+      },
+      {
+        "name": "outputState",
+        "type": "\"streaming\" | \"complete\" | \"error\"",
+        "description": "Actual host output state. Complete does not override incomplete or invalid individual fields.",
+        "default": "\"complete\""
+      },
+      {
+        "name": "outputMessage",
+        "type": "string",
+        "description": "Optional host state explanation. Blank error text receives a useful fallback."
+      },
+      {
+        "name": "rawOutput",
+        "type": "string",
+        "description": "Actual supplied raw text. Copied as received and explicitly distinct from validated field JSON. No reconstruction or fabricated stream."
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "description": "Authoritative selected field ID. Without onValueChange field selection is read-only; missing controlled IDs stay explicit."
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "description": "Initial local field ID, reused after reset. Otherwise the first available field is selected."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(id: string, field: StructuredOutputField) => void",
+        "description": "Synchronous field-inspection observer. Controlled rejection keeps the host selection."
+      },
+      {
+        "name": "onRetry",
+        "type": "(field: StructuredOutputField, signal: AbortSignal) => void | Promise<void>",
+        "description": "Real recovery for invalid/unavailable fields. Supplied states stay authoritative. Honor cancellation; current content/state/handler/output/reset changes retire old requests."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Output identity. Clears local inspection/filter/feedback and retires asynchronous work."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Concise schema review heading.",
+        "default": "\"A schema you can inspect.\""
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Explain received values and validation.",
+        "default": "\"Keep received values readable, make incomplete fields explicit, and resolve validation issues without losing the output.\""
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Graphite and paper inspection palettes.",
+        "default": "\"dark\""
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Outer component class.",
+        "default": "\"\""
+      }
+    ],
+    "added": "2026-10-13",
+    "demo": {
+      "steps": [
+        "click:@field-date",
+        "wait:350",
+        "click:@retry-field",
+        "wait:400",
+        "click:@field-owner",
+        "wait:350",
+        "click:@filter-review",
+        "wait:350",
+        "click:@filter-all",
+        "wait:300"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "title",
+        "label": "Heading",
+        "kind": "text",
+        "default": "A schema you can inspect."
+      },
+      {
+        "prop": "outputState",
+        "label": "Output state",
+        "kind": "segmented",
+        "options": [
+          "streaming",
+          "complete",
+          "error"
+        ],
+        "default": "complete"
+      }
+    ]
+  },
+  {
     "slug": "ai-voice-mode",
     "name": "Voice Mode",
     "tier": "pro",
