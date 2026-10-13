@@ -43,7 +43,7 @@ Validate all six web widths, both supported themes, multiple instances and empty
 | # | Slug | Category | Distinct interaction and essential states | Status |
 | --- | --- | --- | --- | --- |
 | 11 | `media-device-switcher` | media | Inspect supplied content in phone, tablet and desktop frames with honest container dimensions. | Released |
-| 12 | `media-image-contact-sheet` | media | Select and compare a dense image collection, with loading, missing assets and an empty selection. | Planned |
+| 12 | `media-image-contact-sheet` | media | Select and compare a dense image collection, with loading, missing assets and an empty selection. | Released |
 | 13 | `media-focus-lightbox` | media | Zoom, pan and navigate supplied images; focus trapping, Escape, touch and an accessible static alternative. | Planned |
 | 14 | `media-trim-timeline` | media | Set in/out points on an audio waveform; bounded keyboard handles, exact time fields and a reviewed processing range. | Released |
 | 15 | `media-spatial-collection` | media | Browse depth-layered album objects without obscuring labels; a list alternative supports keyboard and reduced motion. | Planned |
@@ -175,4 +175,4 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 ## Progress
 
-Planned: 87. Released: 13. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
+Planned: 86. Released: 14. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.

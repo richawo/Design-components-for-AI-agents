@@ -18832,6 +18832,197 @@
     ]
   },
   {
+    "slug": "media-image-contact-sheet",
+    "name": "Image Contact Sheet",
+    "tier": "pro",
+    "platform": "web",
+    "category": "media",
+    "description": "An editorial image contact sheet with bounded selection, searchable originals, a stable inline comparison pane and honest loading or missing-image recovery.",
+    "tags": [
+      "images",
+      "contact sheet",
+      "comparison",
+      "media",
+      "selection",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 900,
+    "usage": "import { MediaImageContactSheet } from \"@/components/design-for-ai/media-image-contact-sheet\";\n\n<MediaImageContactSheet images={collection} value={selectedIds} onValueChange={setSelectedIds} onImageRetry={reloadOriginal} />",
+    "props": [
+      {
+        "name": "images",
+        "type": "ContactSheetImage[]",
+        "description": "Unique ID, original source, descriptive alt/title, optional note, known dimensions, availability and selection permission. Missing sources are explicit.",
+        "default": "8 original offline vector studies"
+      },
+      {
+        "name": "value",
+        "type": "string[]",
+        "description": "Controlled selected IDs, sanitized to current available records and the selection cap. Read-only without onValueChange."
+      },
+      {
+        "name": "defaultValue",
+        "type": "string[]",
+        "description": "Initial uncontrolled selected IDs.",
+        "default": "[]"
+      },
+      {
+        "name": "onValueChange",
+        "type": "(ids: string[], images: ContactSheetImage[]) => void",
+        "description": "Synchronous selection observer; controlled hosts commit the new IDs here."
+      },
+      {
+        "name": "maxSelection",
+        "type": "number",
+        "description": "Comparison selection cap, bounded to 2..6.",
+        "default": "4"
+      },
+      {
+        "name": "compareOpen",
+        "type": "boolean",
+        "description": "Controlled inline comparison disclosure. Read-only without onCompareOpenChange."
+      },
+      {
+        "name": "defaultCompareOpen",
+        "type": "boolean",
+        "description": "Initial uncontrolled comparison disclosure.",
+        "default": "false"
+      },
+      {
+        "name": "onCompareOpenChange",
+        "type": "(open: boolean, images: ContactSheetImage[]) => void",
+        "description": "Observe the real disclosure request and its selected records."
+      },
+      {
+        "name": "query",
+        "type": "string",
+        "description": "Controlled title/note filter; selection survives filtering. Read-only without onQueryChange."
+      },
+      {
+        "name": "defaultQuery",
+        "type": "string",
+        "description": "Initial uncontrolled filter.",
+        "default": "\"\""
+      },
+      {
+        "name": "onQueryChange",
+        "type": "(query: string) => void",
+        "description": "Synchronous filter observer."
+      },
+      {
+        "name": "onImageRetry",
+        "type": "(image: ContactSheetImage, signal: AbortSignal) => void | Promise<void>",
+        "description": "Optional real host recovery. Cancel, source retirement and unmount abort work. Host status progress does not cancel its own request; honor the signal before committing."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "description": "Collection title and accessible section label.",
+        "default": "\"Collected material\""
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"error\"",
+        "description": "Host collection state; images owns membership and an empty array is a true empty collection.",
+        "default": "\"ready\""
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "description": "Host collection error explanation.",
+        "default": "\"This collection could not be loaded.\""
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Optional real collection retry; named status remains host-owned."
+      },
+      {
+        "name": "height",
+        "type": "number",
+        "description": "Fixed shared sheet/comparison body height, bounded to 320..720 CSS pixels.",
+        "default": "480"
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Inspector surface and typography palette.",
+        "default": "\"dark\""
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Outer component class.",
+        "default": "\"\""
+      }
+    ],
+    "added": "2026-10-13",
+    "demo": {
+      "steps": [
+        "click:@select-fold",
+        "click:@select-relief",
+        "click:@compare-images",
+        "wait:800",
+        "click:@close-comparison",
+        "wait:350",
+        "click:@select-relief",
+        "wait:450"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "maxSelection",
+        "label": "Selection limit",
+        "kind": "slider",
+        "min": 2,
+        "max": 6,
+        "step": 1,
+        "default": 4
+      },
+      {
+        "prop": "height",
+        "label": "Sheet height",
+        "kind": "slider",
+        "min": 320,
+        "max": 720,
+        "step": 40,
+        "unit": "px",
+        "default": 480
+      },
+      {
+        "prop": "label",
+        "label": "Collection title",
+        "kind": "text",
+        "default": "Collected material"
+      },
+      {
+        "prop": "status",
+        "label": "Collection state",
+        "kind": "action",
+        "options": [
+          "ready",
+          "loading",
+          "error"
+        ]
+      }
+    ]
+  },
+  {
     "slug": "media-track-list",
     "name": "Music Track List",
     "tier": "pro",
