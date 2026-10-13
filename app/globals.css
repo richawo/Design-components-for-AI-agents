@@ -444,7 +444,7 @@ details.site-disclosure[open]::details-content {
   .site-prose pre code { font-family: var(--font-mono); }
   .site-prose table { width: 100%; border-collapse: collapse; font-size: 0.95rem; display: block; overflow-x: auto; }
   .site-prose th { text-align: start; font-weight: 500; color: var(--color-site-fg); }
-  .site-prose th, .site-prose td { border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-block: 0.65em; padding-inline: 0 0.9em; vertical-align: top; }
+  .site-prose th, .site-prose td { min-width: 10rem; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-block: 0.65em; padding-inline: 0 0.9em; vertical-align: top; }
   .site-prose hr { border: 0; border-top: 1px solid rgba(255, 255, 255, 0.08); margin: 2.5em 0; }
 }
 
