@@ -20087,6 +20087,127 @@
     ]
   },
   {
+    "slug": "navigation-lens-dock",
+    "name": "Lens Dock",
+    "tier": "pro",
+    "platform": "web",
+    "category": "navigation",
+    "description": "A glass tool dock with pointer-distance magnification, a traveling lens and stable hit targets. Keyboard, touch and recoverable async activation stay first-class.",
+    "tags": [
+      "navigation",
+      "dock",
+      "glass",
+      "magnification",
+      "keyboard",
+      "touch",
+      "async actions"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 560,
+    "usage": "import { NavigationLensDock } from \"@/components/design-for-ai/navigation-lens-dock\";\n\n<NavigationLensDock\n  items={tools}\n  value={activeTool}\n  onActivate={async (id, _item, signal) => {\n    await openTool(id, { signal });\n    if (!signal.aborted) setActiveTool(id);\n  }}\n  magnification={1.45}\n/>",
+    "props": [
+      {
+        "name": "items",
+        "type": "LensDockItem[]",
+        "description": "Unique IDs, labels, descriptions, offline SVG icons and optional disabled reasons.",
+        "default": "Original studio tools"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "description": "Accessible navigation name.",
+        "default": "\"Studio tools\""
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "description": "Controlled active tool. Update it after host navigation completes."
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "description": "Initial uncontrolled selection.",
+        "default": "First enabled tool"
+      },
+      {
+        "name": "onActivate",
+        "type": "(id: string, item: LensDockItem, signal: AbortSignal) => void | Promise<void>",
+        "description": "Host-owned action or navigation. Pending remains in the original icon box. Rejections preserve selection and expose retry; stale completions are ignored. The signal aborts when superseded, reset or unmounted. Choosing the current destination cancels pending navigation."
+      },
+      {
+        "name": "magnification",
+        "type": "number",
+        "description": "Pointer-distance icon enlargement, bounded to 1 through 1.8. Target boxes never change size. Fine mouse input only; static on touch and reduced motion.",
+        "default": "1.45"
+      },
+      {
+        "name": "labels",
+        "type": "boolean",
+        "description": "Always-visible captions. Icon-only mode keeps the same geometry and accessible names.",
+        "default": "true"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Disables activation without hiding tools or their reasons.",
+        "default": "false"
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Restrained translucent plate and metallic object palette.",
+        "default": "\"dark\""
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Classes on the outer measured container."
+      }
+    ],
+    "added": "2026-10-13",
+    "demo": {
+      "steps": [
+        "wait:350",
+        "hover:@tool-board",
+        "wait:250",
+        "hover:@tool-notes",
+        "wait:250",
+        "hover:@tool-files",
+        "click:@tool-files",
+        "wait:900"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "labels",
+        "label": "Captions",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "disabled",
+        "label": "Disabled",
+        "kind": "toggle",
+        "default": false
+      }
+    ]
+  },
+  {
     "slug": "pricing-receipt",
     "name": "Receipt Pricing",
     "tier": "pro",

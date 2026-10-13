@@ -28,7 +28,7 @@ Validate all six web widths, both supported themes, multiple instances and empty
 | # | Slug | Category | Distinct interaction and essential states | Status |
 | --- | --- | --- | --- | --- |
 | 1 | `navigation-context-rail` | navigation | Icon rail changes a second-level navigation list; remember each section's selection, collapse context, support a narrow-container drawer. | Released |
-| 2 | `navigation-lens-dock` | navigation | Pointer-distance magnification and a moving glass lens; keyboard selection, disabled tools and touch remain stable. | Planned |
+| 2 | `navigation-lens-dock` | navigation | Pointer-distance magnification and a moving glass lens; keyboard selection, disabled tools and touch remain stable. | Released |
 | 3 | `cards-prismatic-folder` | cards | A translucent folder opens to its actual file list; preview, empty and unavailable content stay legible. | Released |
 | 4 | `input-detent-dial` | inputs | A knurled rotary control with finite detents; drag, keys and precise numeric entry share one bounded value. | Released |
 | 5 | `devtools-icon-workbench` | devtools | Search host-supplied SVG glyphs, adjust size and stroke, inspect and copy real SVG; clipboard failure is actionable. | Planned |
@@ -175,4 +175,4 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 ## Progress
 
-Planned: 96. Released: 4. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
+Planned: 95. Released: 5. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
