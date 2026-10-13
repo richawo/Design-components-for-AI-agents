@@ -1001,6 +1001,120 @@
     ]
   },
   {
+    "slug": "agents-run-replay",
+    "name": "Recorded Run Replay",
+    "tier": "pro",
+    "platform": "web",
+    "category": "agents",
+    "description": "A precise replay desk for supplied event snapshots, with an exact clock, bounded native timeline inspection and playback that never executes agent tools.",
+    "tags": [
+      "agents",
+      "replay",
+      "timeline",
+      "history",
+      "snapshot",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1200,
+    "usage": "import { AgentsRunReplay } from \"@/components/design-for-ai/agents-run-replay\";\n\n<AgentsRunReplay events={history} time={position} onTimeChange={setInspectionTime} resetKey={runId} />",
+    "props": [
+      {
+        "name": "events",
+        "type": "RunReplayEvent[]",
+        "description": "Stable unique IDs, nonnegative safe whole-millisecond at values, label/kind/detail and actual full snapshot status/summary/steps. Equal timestamps preserve supplied order.",
+        "default": "5 original offline recorded example events"
+      },
+      {
+        "name": "initialSnapshot",
+        "type": "RunReplaySnapshot",
+        "description": "Actual supplied state before the first event; missing state remains unavailable."
+      },
+      {
+        "name": "time",
+        "type": "number",
+        "description": "Controlled inspection clock in whole milliseconds. Invalid/out-of-range position stays explicit; without observer playback/seek is read-only."
+      },
+      {
+        "name": "defaultTime",
+        "type": "number",
+        "description": "Initial local inspection position, reused after reset.",
+        "default": "0"
+      },
+      {
+        "name": "onTimeChange",
+        "type": "(time: number, event: RunReplayEvent | undefined) => void",
+        "description": "Synchronous clock request/observer. Controlled rejection keeps the real clock and stops playback rather than spinning. Honor explicit event inspection at a tied timestamp."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Supplied run identity. Stops playback and clears local time/pinned event/exact draft."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Concise replay heading.",
+        "default": "\"Return to the exact moment.\""
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Explain supplied history inspection.",
+        "default": "\"Inspect a supplied run history, compare the recorded states and keep playback separate from the live workflow.\""
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Neutral replay desk palettes with semantic recorded states.",
+        "default": "\"dark\""
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Outer replay class.",
+        "default": "\"\""
+      }
+    ],
+    "added": "2026-10-13",
+    "demo": {
+      "steps": [
+        "click:@replay-play",
+        "wait:650",
+        "click:@replay-play",
+        "wait:250",
+        "click:@replay-range:0.8,0.5",
+        "wait:400",
+        "click:@event-decision",
+        "wait:400",
+        "click:@replay-start",
+        "wait:350"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "title",
+        "label": "Heading",
+        "kind": "text",
+        "default": "Return to the exact moment."
+      }
+    ]
+  },
+  {
     "slug": "ai-answer-compare",
     "name": "Answer Comparison",
     "tier": "pro",
