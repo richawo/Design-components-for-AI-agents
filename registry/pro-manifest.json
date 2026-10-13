@@ -10471,6 +10471,173 @@
     ]
   },
   {
+    "slug": "devtools-icon-workbench",
+    "name": "Icon Workbench",
+    "tier": "pro",
+    "platform": "web",
+    "category": "devtools",
+    "description": "A tactile icon workbench with searchable glyphs, a construction-grid preview, precise size and stroke controls, and real SVG or JSX copy with failure recovery.",
+    "tags": [
+      "icons",
+      "svg",
+      "developer tools",
+      "design tools",
+      "export",
+      "stroke"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1080,
+    "usage": "import { DevtoolsIconWorkbench } from \"@/components/design-for-ai/devtools-icon-workbench\";\n\n<DevtoolsIconWorkbench\n  glyphs={icons}\n  selectedId={selectedIcon}\n  onSelect={(icon) => setSelectedIcon(icon.id)}\n  size={80}\n  strokeWidth={1.5}\n/>\n\n// Each glyph: { id, name, paths: [\"M...\"], keywords?: [], viewBox?: \"0 0 24 24\" }.\n// Clipboard rejection exposes the selectable source and a retry action.",
+    "props": [
+      {
+        "name": "glyphs",
+        "type": "readonly WorkbenchGlyph[]",
+        "default": "12 offline glyphs",
+        "description": "Supplied id, name, SVG path strings, optional keywords and viewBox. Empty arrays have a designed empty state."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Icon workbench\"",
+        "description": "Workbench heading."
+      },
+      {
+        "name": "selectedId",
+        "type": "string",
+        "default": "first available glyph",
+        "description": "Controlled glyph selection when supplied; pair with onSelect. Unknown IDs fall back to the first glyph."
+      },
+      {
+        "name": "onSelect",
+        "type": "(glyph: WorkbenchGlyph) => void",
+        "description": "Reports an explicit selection. The host owns controlled selection."
+      },
+      {
+        "name": "size",
+        "type": "number",
+        "default": "80",
+        "description": "Initial/configured pixel size, bounded to 16 through 128; the internal range remains interactive."
+      },
+      {
+        "name": "strokeWidth",
+        "type": "number",
+        "default": "1.5",
+        "description": "Initial/configured SVG stroke width, bounded to 0.5 through 4 in quarter-pixel steps."
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "default": "\"#ededf0\"",
+        "description": "The icon stroke color. The neutral default becomes #202024 in the light theme."
+      },
+      {
+        "name": "showGrid",
+        "type": "boolean",
+        "default": "true",
+        "description": "16px construction grid behind the specimen."
+      },
+      {
+        "name": "format",
+        "type": "\"svg\" | \"jsx\"",
+        "default": "\"svg\"",
+        "description": "Initial/configured export format; the format controls remain interactive."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface, ink, focus and neutral stroke palette."
+      },
+      {
+        "name": "onCopy",
+        "type": "(source: string, signal: AbortSignal) => void | Promise<void>",
+        "description": "Optional host copy handler. Default uses the browser clipboard. Configuration changes/unmount abort the signal and invalidate stale completion."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "default": "\"\"",
+        "description": "Host layout classes on the container."
+      }
+    ],
+    "added": "2026-10-13",
+    "demo": {
+      "steps": [
+        "wait:300",
+        "click:@glyph-aperture",
+        "wait:300",
+        "click:@icon-stroke:0.65,0.5",
+        "wait:500",
+        "click:@format-jsx",
+        "wait:900"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "size",
+        "label": "Icon size",
+        "kind": "slider",
+        "min": 16,
+        "max": 128,
+        "step": 4,
+        "unit": "px",
+        "default": 80
+      },
+      {
+        "prop": "strokeWidth",
+        "label": "Stroke width",
+        "kind": "slider",
+        "min": 0.5,
+        "max": 4,
+        "step": 0.25,
+        "unit": "px",
+        "default": 1.5
+      },
+      {
+        "prop": "color",
+        "label": "Stroke color",
+        "kind": "color",
+        "default": "#ededf0",
+        "options": [
+          "#ededf0",
+          "#e8a46c",
+          "#a3d6bd"
+        ]
+      },
+      {
+        "prop": "showGrid",
+        "label": "Construction grid",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "format",
+        "label": "Source format",
+        "kind": "segmented",
+        "options": [
+          "svg",
+          "jsx"
+        ],
+        "default": "svg"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ]
+  },
+  {
     "slug": "devtools-log-stream",
     "name": "Log Stream",
     "tier": "pro",
