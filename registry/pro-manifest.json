@@ -891,6 +891,129 @@
     ]
   },
   {
+    "slug": "ai-answer-compare",
+    "name": "Answer Comparison",
+    "tier": "pro",
+    "platform": "web",
+    "category": "ai",
+    "description": "Two supplied answers share an inspectable evidence ledger and an explicit preference, with honest pending, rejection and unavailable-content states.",
+    "tags": [
+      "ai",
+      "answer comparison",
+      "evidence",
+      "citations",
+      "preference",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1200,
+    "usage": "import { AiAnswerCompare } from \"@/components/design-for-ai/ai-answer-compare\";\n\n<AiAnswerCompare request={question} responses={answers} evidence={sources} value={preference} onValueChange={savePreference} resetKey={comparisonId} />",
+    "props": [
+      {
+        "name": "request",
+        "type": "string",
+        "description": "The shared question. Exact content changes start a new local comparison and retire pending work even when answer IDs are reused.",
+        "default": "\"How should we introduce a new navigation pattern without losing the team's current working flow?\""
+      },
+      {
+        "name": "responses",
+        "type": "AnswerCompareResponse[]",
+        "description": "Unique answer IDs, labels/descriptions, locally unique plain-text sections with optional evidence IDs, actual ready/loading/error availability and selection permission.",
+        "default": "2 original offline answers"
+      },
+      {
+        "name": "evidence",
+        "type": "AnswerCompareEvidence[]",
+        "description": "Unique supplied source IDs, label/provenance/excerpt and optional navigable URL. Unknown referenced IDs remain unavailable.",
+        "default": "3 original offline project records"
+      },
+      {
+        "name": "value",
+        "type": "string | null",
+        "description": "Controlled preference; null means no choice. Explicit authority survives new questions. Without observer selection is read-only."
+      },
+      {
+        "name": "defaultValue",
+        "type": "string | null",
+        "description": "Initial local preference for a new question/workspace; reused with reset, not the last prior local choice.",
+        "default": "null"
+      },
+      {
+        "name": "onValueChange",
+        "type": "(id: string | null, response: AnswerCompareResponse | undefined, signal: AbortSignal) => void | Promise<void>",
+        "description": "Real preference request. Local state commits only after acknowledgment; controlled authority stays truthful. Honor cancellation before committing host results."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Explicit comparison identity when replacing answers for the same question. Clears local feedback/inspection and retires old requests."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Concise comparison heading.",
+        "default": "\"Two answers. One shared question.\""
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Explain the shared evidence and explicit decision.",
+        "default": "\"Read the supplied answers against the same evidence, then choose the one you prefer.\""
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Warm violet reading palette.",
+        "default": "\"dark\""
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Outer comparison class.",
+        "default": "\"\""
+      }
+    ],
+    "added": "2026-10-13",
+    "demo": {
+      "steps": [
+        "click:@evidence-b-recommendation-constraints",
+        "wait:350",
+        "click:@prefer-b",
+        "wait:450",
+        "click:@clear-preference",
+        "wait:450"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "title",
+        "label": "Heading",
+        "kind": "text",
+        "default": "Two answers. One shared question."
+      },
+      {
+        "prop": "request",
+        "label": "Shared question",
+        "kind": "text",
+        "default": "How should we introduce a new navigation pattern without losing the team's current working flow?"
+      }
+    ]
+  },
+  {
     "slug": "ai-citations-inline",
     "name": "Inline Citations",
     "tier": "pro",
