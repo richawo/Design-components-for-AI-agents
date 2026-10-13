@@ -17410,6 +17410,297 @@
     "added": "2026-10-13"
   },
   {
+    "slug": "layout-split-resizer",
+    "name": "Split Resizer",
+    "tier": "pro",
+    "platform": "web",
+    "category": "navigation",
+    "description": "A tactile two-pane layout with bounded pointer and keyboard resizing, responsive stacking, preserved drafts and considered collapse-and-restore controls.",
+    "tags": [
+      "split pane",
+      "resizer",
+      "workspace",
+      "editor",
+      "keyboard",
+      "responsive"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 880,
+    "usage": "import { LayoutSplitResizer } from \"@/components/design-for-ai/layout-split-resizer\";\n\n<LayoutSplitResizer\n  primary={<YourEditor />}\n  secondary={<YourPreview />}\n  primaryLabel=\"Draft\"\n  secondaryLabel=\"Preview\"\n  minPrimary={220}\n  minSecondary={240}\n  orientation=\"auto\"\n  style={{ height: 560 }}\n/>",
+    "props": [
+      {
+        "name": "primary",
+        "type": "ReactNode",
+        "description": "First host pane. Its React subtree stays mounted while collapsed or reduced to zero space. Hidden content becomes inert and transfers focus safely."
+      },
+      {
+        "name": "secondary",
+        "type": "ReactNode",
+        "description": "Second host pane. The layout supplies a scrollable slot; host content and its actions remain caller-owned."
+      },
+      {
+        "name": "primaryLabel",
+        "type": "string",
+        "description": "Name of the first region and the focusable separator. Match the pane's visible heading.",
+        "default": "\"First panel\""
+      },
+      {
+        "name": "secondaryLabel",
+        "type": "string",
+        "description": "Name of the second region and its collapse control.",
+        "default": "\"Second panel\""
+      },
+      {
+        "name": "value",
+        "type": "number",
+        "description": "Controlled preferred percentage for the first pane, from 0 to 100. Geometry bounds the visible size. Without onValueChange, the split is read-only. Allowed endpoints fold a pane."
+      },
+      {
+        "name": "defaultValue",
+        "type": "number",
+        "description": "Uncontrolled initial preference, in percent. Site customization remounts the demo when this changes.",
+        "default": "44"
+      },
+      {
+        "name": "onValueChange",
+        "type": "(value: number, reason: SplitResizeReason) => void",
+        "description": "Requests a pointer, keyboard, collapse, restore or cancellation preference. A controlled host must accept it to move the split."
+      },
+      {
+        "name": "onValueCommit",
+        "type": "(value: number) => void",
+        "description": "Notifies an accepted pointer release or a synchronously accepted keyboard/collapse request. Rejected controlled changes and cancellation do not commit."
+      },
+      {
+        "name": "onPaneSizesChange",
+        "type": "(sizes: SplitPaneSizes) => void",
+        "description": "Actual target sizes in logical pixels, axis and bounded visible percentage. constrained reports geometry limited by the container or pane limits."
+      },
+      {
+        "name": "orientation",
+        "type": "\"auto\" | \"horizontal\" | \"vertical\"",
+        "description": "Side-by-side or stacked placement. Auto uses this component's own width, not the browser viewport.",
+        "default": "\"auto\""
+      },
+      {
+        "name": "autoBreakpoint",
+        "type": "number",
+        "description": "Container width below which auto mode stacks. Auto also stacks if the side-by-side minimums cannot fit.",
+        "default": "640"
+      },
+      {
+        "name": "minPrimary",
+        "type": "number",
+        "description": "First expanded pane's minimum in logical pixels along the current resize axis.",
+        "default": "180"
+      },
+      {
+        "name": "minSecondary",
+        "type": "number",
+        "description": "Second expanded pane's minimum in logical pixels along the current resize axis.",
+        "default": "180"
+      },
+      {
+        "name": "maxPrimary",
+        "type": "number",
+        "description": "Optional finite maximum while both panes share the frame. When the second pane is folded, the first fills the frame. Must be at least minPrimary."
+      },
+      {
+        "name": "maxSecondary",
+        "type": "number",
+        "description": "Optional finite maximum while both panes share the frame. When the first pane is folded, the second fills the frame. Must be at least minSecondary."
+      },
+      {
+        "name": "keyboardStep",
+        "type": "number",
+        "description": "Logical pixels per arrow press. Shift increases the step fourfold; Home/End reach the current bounds.",
+        "default": "16"
+      },
+      {
+        "name": "collapsible",
+        "type": "\"both\" | \"primary\" | \"secondary\" | \"none\"",
+        "description": "Which panes expose collapse controls. The last visible pane cannot collapse. Enter toggles the first pane when permitted.",
+        "default": "\"both\""
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Locks resizing and collapse controls while leaving host contents usable.",
+        "default": "false"
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Graphite or paper treatment for the frame and tactile grip. The demo uses matching editorial surfaces.",
+        "default": "\"dark\""
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Width and placement classes on the layout root. Set the frame height through style.",
+        "default": "\"\""
+      },
+      {
+        "name": "style",
+        "type": "CSSProperties",
+        "description": "Root dimensions, including height. Width and height are measured from the actual content box; layout direction and writing mode are owned by the splitter."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Demo-only headline.",
+        "default": "\"A little room to think.\""
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "description": "Demo-only supporting copy.",
+        "default": "\"Draft on one side. See how it reads on the other.\""
+      },
+      {
+        "name": "initialDraft",
+        "type": "string",
+        "description": "Editable demo seed. The first line becomes a heading; blank lines divide body paragraphs. No HTML is executed."
+      },
+      {
+        "name": "emptyTitle",
+        "type": "string",
+        "description": "Demo preview heading when the draft is empty.",
+        "default": "\"Start with a thought.\""
+      },
+      {
+        "name": "emptyDescription",
+        "type": "string",
+        "description": "Demo empty-preview explanation.",
+        "default": "\"Your words will appear here as you write.\""
+      },
+      {
+        "name": "resetLabel",
+        "type": "string",
+        "description": "Demo reset action label. Only the local split preference resets; the draft is retained. Locked or host-controlled demos disable this action.",
+        "default": "\"Reset split\""
+      },
+      {
+        "name": "kicker",
+        "type": "string",
+        "description": "Demo contextual metadata above the heading.",
+        "default": "\"STUDIO / WORKING DRAFT\""
+      },
+      {
+        "name": "wordLabels",
+        "type": "readonly [string, string]",
+        "description": "Demo singular and plural word-count labels.",
+        "default": "[\"word\", \"words\"]"
+      },
+      {
+        "name": "instructions",
+        "type": "string",
+        "description": "Optional demo keyboard/pointer explanation. The built-in fallback reflects collapse permissions."
+      },
+      {
+        "name": "disabledInstructions",
+        "type": "string",
+        "description": "Demo explanation when resizing is disabled.",
+        "default": "\"The split is locked. You can keep editing.\""
+      }
+    ],
+    "controls": [
+      {
+        "prop": "orientation",
+        "label": "Pane arrangement",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "auto",
+            "label": "Auto"
+          },
+          {
+            "value": "horizontal",
+            "label": "Side by side"
+          },
+          {
+            "value": "vertical",
+            "label": "Stacked"
+          }
+        ],
+        "default": "auto"
+      },
+      {
+        "prop": "theme",
+        "label": "Surface",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Graphite"
+          },
+          {
+            "value": "light",
+            "label": "Paper"
+          }
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "defaultValue",
+        "label": "Starting split",
+        "kind": "slider",
+        "min": 20,
+        "max": 80,
+        "step": 1,
+        "unit": "%",
+        "default": 44,
+        "remount": true
+      },
+      {
+        "prop": "collapsible",
+        "label": "Folding controls",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "both",
+            "label": "Both"
+          },
+          {
+            "value": "primary",
+            "label": "Draft"
+          },
+          {
+            "value": "none",
+            "label": "None"
+          }
+        ],
+        "default": "both"
+      },
+      {
+        "prop": "disabled",
+        "label": "Lock the split",
+        "kind": "toggle",
+        "default": false
+      }
+    ],
+    "demo": {
+      "steps": [
+        "hover:@split-handle",
+        "down",
+        "move:0.64,0.56",
+        "up",
+        "wait:350",
+        "key:ArrowLeft",
+        "key:ArrowLeft",
+        "wait:350",
+        "click:@split-reset",
+        "wait:700"
+      ],
+      "loop": false
+    },
+    "added": "2026-10-13"
+  },
+  {
     "slug": "legal-clause-library",
     "name": "Clause Library Browser",
     "tier": "pro",

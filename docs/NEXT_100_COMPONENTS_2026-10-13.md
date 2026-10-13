@@ -36,7 +36,7 @@ Validate all six web widths, both supported themes, multiple instances and empty
 | 7 | `button-shimmer-track` | buttons | A fine light travels the button edge; async actions preserve geometry through pending, success, failure and retry. | Released |
 | 8 | `navigation-stacked-tabs` | navigation | Reorder, close and restore document tabs; retain dirty state and provide a keyboard move mode. | Released |
 | 9 | `effect-border-tracer` | effects | A reusable perimeter light wraps host content; continuous or interaction-driven motion pauses offscreen and respects reduced motion. | Released |
-| 10 | `layout-split-resizer` | navigation | Resize two content panes within supplied limits; collapse, restore and keyboard resizing preserve useful widths. | Planned |
+| 10 | `layout-split-resizer` | navigation | Resize two content panes within supplied limits; collapse, restore and keyboard resizing preserve useful widths. | Released |
 
 ## 2. Media and product demonstration
 
@@ -175,4 +175,4 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 ## Progress
 
-Planned: 91. Released: 9. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
+Planned: 90. Released: 10. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
