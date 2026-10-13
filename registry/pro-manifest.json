@@ -4581,28 +4581,28 @@
       },
       {
         "name": "onJoin",
-        "type": "(meetingId: string) => Promise<void>",
-        "description": "Open the authoritative host session; both join and leave callbacks are required for joining."
+        "type": "(meetingId: string, signal: AbortSignal) => Promise<void>",
+        "description": "Open the authoritative host session; both join and leave callbacks are required for joining. Honor the signal while joining and for the accepted session: it aborts on superseded or removed meetings, successful leave and unmount. Late outcomes cannot restore a retired room."
       },
       {
         "name": "onLeave",
-        "type": "(meetingId: string) => void | Promise<void>",
-        "description": "Close and release the host session."
+        "type": "(meetingId: string, signal: AbortSignal) => void | Promise<void>",
+        "description": "Close and release the host session. The pending-operation signal aborts on meeting removal or unmount. Late outcomes cannot mutate a retired or newer room; accepted media belongs to the joined session."
       },
       {
         "name": "onMicrophoneChange",
-        "type": "(meetingId: string, muted: boolean) => void | Promise<void>",
-        "description": "Apply media state and resolve only after it succeeds."
+        "type": "(meetingId: string, muted: boolean, signal: AbortSignal) => void | Promise<void>",
+        "description": "Apply media state and resolve only after it succeeds. The pending-operation signal aborts on meeting removal or unmount. Late outcomes cannot mutate a retired or newer room; accepted media belongs to the joined session."
       },
       {
         "name": "onCameraChange",
-        "type": "(meetingId: string, on: boolean) => void | Promise<void>",
-        "description": "Acquire or release camera through the host and update supplied streams."
+        "type": "(meetingId: string, on: boolean, signal: AbortSignal) => void | Promise<void>",
+        "description": "Acquire or release camera through the host and update supplied streams. The pending-operation signal aborts on meeting removal or unmount. Late outcomes cannot mutate a retired or newer room; accepted media belongs to the joined session."
       },
       {
         "name": "onHandChange",
-        "type": "(meetingId: string, raised: boolean) => void | Promise<void>",
-        "description": "Apply participant signalling."
+        "type": "(meetingId: string, raised: boolean, signal: AbortSignal) => void | Promise<void>",
+        "description": "Apply participant signalling. The pending-operation signal aborts on meeting removal or unmount. Late outcomes cannot mutate a retired or newer room; accepted media belongs to the joined session."
       },
       {
         "name": "onNotesChange",
