@@ -3536,5 +3536,117 @@
       "date-week-agenda",
       "collab-mention-input"
     ]
+  },
+  "button-shimmer-track": {
+    "useWhen": "A primary async action needs clear pending, completed and retry states, with a restrained moving edge around the button.",
+    "avoidWhen": "Repeated immediate actions, or an effect being used as the only indication that an action is available or has succeeded.",
+    "integration": [
+      "Connect the action to a real awaited operation and provide useful failure text.",
+      "Keep controlled status synchronized with the host and reset it when starting a new task.",
+      "Preserve the native button label and focus treatment when changing colours or motion."
+    ],
+    "related": [
+      "button-press-depth",
+      "button-hold-confirm"
+    ],
+    "updated": "2026-10-13"
+  },
+  "cards-prismatic-folder": {
+    "useWhen": "A compact file collection benefits from a physical folder presentation, readable previews and clear availability states.",
+    "avoidWhen": "Large directory trees, bulk file administration or workflows that need a full file browser.",
+    "integration": [
+      "Supply stable file identifiers and the actual collection status rather than relying on demo content.",
+      "Connect file actions and recovery to the host application; the presentation does not fetch or store files.",
+      "Review empty collections, unavailable files and long file names in the intended container."
+    ],
+    "related": [
+      "data-file-explorer",
+      "input-file-dropzone"
+    ],
+    "updated": "2026-10-13"
+  },
+  "navigation-context-rail": {
+    "useWhen": "A workspace has grouped destinations and needs remembered section context, search and a compact navigation drawer.",
+    "avoidWhen": "A simple page with one short navigation list, or navigation whose destination content should live inside the rail itself.",
+    "integration": [
+      "Use stable section and item identifiers, with useful reasons for disabled destinations.",
+      "Connect navigation to the host router or destination loader and update controlled selection after success.",
+      "Provide loading and recovery states, then review narrow containers and focus returning from the drawer."
+    ],
+    "related": [
+      "navigation-breadcrumb-fold",
+      "command-palette"
+    ],
+    "updated": "2026-10-13"
+  },
+  "effect-border-tracer": {
+    "useWhen": "An existing card or control needs a subtle perimeter accent that can follow hover and focus or move continuously while visible.",
+    "avoidWhen": "Dense reading surfaces, or a moving edge being used as the only focus or status indicator.",
+    "integration": [
+      "Wrap actual host content and keep its controls, labels and action handlers responsible for product behaviour.",
+      "Choose the trigger and corner radius to match the host container.",
+      "Retain visible focus outlines and review menus extending outside the wrapper, including reduced-motion presentation."
+    ],
+    "related": [
+      "button-shimmer-track",
+      "button-press-depth"
+    ],
+    "updated": "2026-10-13"
+  },
+  "input-detent-dial": {
+    "useWhen": "A bounded numeric setting benefits from tactile, stepped adjustment and a clear indication of the current value.",
+    "avoidWhen": "Unbounded quantities, or a form where a conventional number field with simple step buttons already fits the workflow.",
+    "integration": [
+      "Bind the value and its change handler to the actual setting in the host application.",
+      "Choose valid limits and step increments for the domain, and keep the visible value understandable.",
+      "Review keyboard adjustment, larger labels and pointer interaction before using the dial as the main control."
+    ],
+    "related": [
+      "input-number-stepper",
+      "button-press-depth"
+    ],
+    "updated": "2026-10-13"
+  },
+  "devtools-icon-workbench": {
+    "useWhen": "A developer or design workflow needs searchable icon selection, construction previews and SVG or JSX output.",
+    "avoidWhen": "A static icon display, or a workflow that requires an external icon catalogue and assets not supplied by the host.",
+    "integration": [
+      "Supply the intended icon set and keep controlled selection synchronized with the host.",
+      "Choose size and stroke settings appropriate to the destination interface.",
+      "Connect custom copy handling when needed and keep clipboard failures visible and recoverable."
+    ],
+    "related": [
+      "command-palette",
+      "input-number-stepper"
+    ],
+    "updated": "2026-10-13"
+  },
+  "navigation-lens-dock": {
+    "useWhen": "A compact set of workspace tools benefits from a dock with clear selection and pointer-based magnification.",
+    "avoidWhen": "Large hierarchical navigation, or navigation that depends on magnification to make labels or targets usable.",
+    "integration": [
+      "Provide stable tool identifiers, accessible labels and reasons for disabled items.",
+      "Connect activation to real host navigation and update controlled selection after success.",
+      "Review keyboard use and static touch or reduced-motion presentation, including recovery from failed activation."
+    ],
+    "related": [
+      "navigation-context-rail",
+      "navbar-floating"
+    ],
+    "updated": "2026-10-13"
+  },
+  "hero-signal-workbench": {
+    "useWhen": "A product introduction benefits from an interactive waveform demonstration with understandable shape, frequency and gain controls.",
+    "avoidWhen": "A product whose value has no useful relationship to a signal demonstration, or a claim that the illustration supplies an audio engine.",
+    "integration": [
+      "Replace introductory copy and supply the intended primary-action destination.",
+      "Connect controlled parameters and change handling to the host if the demonstration needs shared state.",
+      "Keep the parameter labels and output understandable; the component does not make audio or network requests."
+    ],
+    "related": [
+      "hero-product-stack",
+      "hero-app-tilt"
+    ],
+    "updated": "2026-10-13"
   }
 }
