@@ -3,7 +3,7 @@ import { build } from "esbuild";
 import fs from "node:fs";
 import path from "node:path";
 
-export async function mountFixture(page, slug, tier, fixture) {
+export async function mountFixture(page, slug, tier, fixture, { frameStyle } = {}) {
   const base = (process.env.PREVIEW_BASE || "http://localhost:3100").replace(
     /\/$/,
     "",
@@ -24,6 +24,7 @@ export async function mountFixture(page, slug, tier, fixture) {
     ),
   );
   const mobile = metadata.platform === "mobile";
+  const frame = frameStyle ?? `${mobile ? "display:flex;flex-direction:column;width:390px;height:844px" : "padding:32px;max-width:720px"};margin:auto`;
   if (mobile) await page.setViewportSize({ width: 390, height: 844 });
   const compiled = await build({
     stdin: {
@@ -70,7 +71,7 @@ export async function mountFixture(page, slug, tier, fixture) {
   await page.route("**/__component_audit__", (route) =>
     route.fulfill({
       contentType: "text/html",
-      body: `<!doctype html><html lang="en"><head><meta name="viewport" content="width=device-width, initial-scale=1"><title>Component audit</title>${styles.map((h) => `<link rel="stylesheet" href="${h}">`).join("")}</head><body style="margin:0;background:#09090b;color:#f4f4f5"><main style="${mobile ? "display:flex;flex-direction:column;width:390px;height:844px" : "padding:32px;max-width:720px"};margin:auto" id="root"></main></body></html>`,
+      body: `<!doctype html><html lang="en"><head><meta name="viewport" content="width=device-width, initial-scale=1"><title>Component audit</title>${styles.map((h) => `<link rel="stylesheet" href="${h}">`).join("")}</head><body style="margin:0;background:#09090b;color:#f4f4f5"><main style="${frame}" id="root"></main></body></html>`,
     }),
   );
   await page.goto(`${base}/__component_audit__`);

@@ -6,6 +6,7 @@
 //
 //   node scripts/record-demos.mjs [slug...] [--base=http://localhost:3100]
 //        [--out=public/previews] [--webm] [--sheet=dir] [--max-kb=600] [--frame-viewport]
+//        [--isolated-source] bundles the exact checked-out demo with production React
 //
 // With no slugs it records every component that has a demo. Drives the
 // preview with real input (so CSS :hover shows) and draws the same branded
@@ -22,6 +23,7 @@ import { execFileSync } from "node:child_process";
 import sharp from "sharp";
 import { captureQuality, gallerySteps, concatFrameList, framedCropFilter } from "./lib/recording-quality.mjs";
 import { launchChromium } from "./lib/browser.mjs";
+import { mountFixture } from "./lib/component-fixture.mjs";
 import { CURSOR_CSS, CURSOR_HTML, CURSOR_START } from "../lib/demo/cursor.mjs";
 import { TIMING, demoDuration, parseSteps, targetSelector } from "../lib/demo/schema.mjs";
 
@@ -40,6 +42,8 @@ const skipLeadScroll = args.includes("--skip-lead-scroll");
 const refreshPoster = args.includes("--refresh-poster");
 // Also usable as a temporal quality probe for the page that presents the clips.
 const pagePath = flag("page-path", "");
+const isolatedSource = args.includes("--isolated-source");
+if (isolatedSource && pagePath) throw new Error("--isolated-source records a component demo; omit --page-path");
 const ambientMs = Number(flag("ambient-ms", "0"));
 if (ambientMs && (ambientMs < 3000 || ambientMs > 6000)) throw new Error("--ambient-ms must be between 3000 and 6000");
 const timings = gallery ? { ...TIMING, glide: 450, tabGap: 220, keyGap: 150, typeGap: 45 } : TIMING;
@@ -134,7 +138,23 @@ async function record(browser, slug) {
   page.on("pageerror", (e) => problems.push(`page error: ${e.message}`));
   page.on("console", (m) => m.type() === "error" && problems.push(`console error: ${m.text()}`));
   try {
-    await page.goto(`${base}${pagePath || `/preview/${slug}`}`, { waitUntil: "load", timeout: 120000 });
+    if (isolatedSource) {
+      // Keep dev React and hot reload out of motion measurements. Bundle the
+      // checked-out demo with production React, retaining the preview's CSS
+      // and same-origin fonts. The demo owns its actual frame dimensions.
+      const previousBase = process.env.PREVIEW_BASE;
+      try {
+        process.env.PREVIEW_BASE = base;
+        await mountFixture(page, slug, meta.tier, 'const root = createRoot(document.getElementById("root")); root.render(<Subject.default />);', {
+          frameStyle: mobile ? "display:flex;flex-direction:column;width:390px;height:844px;margin:auto" : "width:100%;min-height:100vh",
+        });
+      } finally {
+        if (previousBase === undefined) delete process.env.PREVIEW_BASE;
+        else process.env.PREVIEW_BASE = previousBase;
+      }
+    } else {
+      await page.goto(`${base}${pagePath || `/preview/${slug}`}`, { waitUntil: "load", timeout: 120000 });
+    }
     await page.waitForTimeout(meta.category === "three-d" || meta.dependencies?.includes("three") ? 6000 : 3200);
 
     // The branded cursor, following the real mouse.
@@ -316,7 +336,7 @@ async function record(browser, slug) {
     if (reportDir) {
       const directory = path.resolve(root, reportDir);
       fs.mkdirSync(directory, { recursive: true });
-      fs.writeFileSync(path.join(directory, `${slug}.json`), JSON.stringify({ slug, quality, continuousQuality, viewport: { vw, vh, dpr }, timestamps: frames.map((frame) => frame.t), motionWindows, continuousWindows }, null, 2));
+      fs.writeFileSync(path.join(directory, `${slug}.json`), JSON.stringify({ slug, renderMode: isolatedSource ? "isolated-production-source" : "preview", quality, continuousQuality, viewport: { vw, vh, dpr }, timestamps: frames.map((frame) => frame.t), motionWindows, continuousWindows }, null, 2));
     }
     // Each frame holds until the next one; the last holds to the end.
     frames.sort((a, b) => a.t - b.t);

@@ -48,8 +48,10 @@ The data sweep renders two instances of every selected web component, checks for
 
 ```sh
 node scripts/check-component.mjs <slug> --no-video --keep-going --base=http://localhost:3100
-node scripts/record-demos.mjs <slug> --sheet=test-results/demo-sheets --base=http://localhost:3100
+node scripts/record-demos.mjs <slug> --sheet=test-results/demo-sheets --base=http://localhost:3100 --isolated-source
 ```
+
+Use `--isolated-source` for component recordings made against a development server. It bundles the checked-out default demo with production React and keeps the preview’s real CSS and same-origin fonts, so development hydration and hot reload do not contaminate motion capture. It does not write bundled Pro source into the public tree. The normal recording mode remains available for checking the actual preview page, and `--page-path` uses that mode for whole-page recordings. Source isolation does not replace a deployed preview smoke check.
 
 Inspect the recording's contact sheet. For demos that expand beyond the initial card, pass `--frame-viewport` to keep the entire preview visible; this also refreshes its matching poster. Then commit the matching source and preview updates. Keep scratch recordings, JSON evidence, and browser captures in `test-results/`.
 
