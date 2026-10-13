@@ -5066,7 +5066,7 @@
       {
         "name": "initialMessages",
         "type": "Record<string, TeamMessage[]>",
-        "description": "Initial session messages scoped by channel ID."
+        "description": "Initial session messages scoped by channel ID. Message IDs only need to be unique within their channel; reactions, retained threads and replies remain channel-scoped."
       },
       {
         "name": "onSend",
