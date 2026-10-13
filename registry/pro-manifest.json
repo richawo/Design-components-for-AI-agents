@@ -14455,6 +14455,111 @@
     ]
   },
   {
+    "slug": "features-shortcut-theatre",
+    "name": "Shortcut Theatre",
+    "tier": "pro",
+    "platform": "web",
+    "category": "features",
+    "description": "A tactile keycap feature with real scoped shortcuts and accessible action controls that operate a supplied live product preview.",
+    "tags": [
+      "features",
+      "keyboard",
+      "shortcut",
+      "product demo",
+      "keycaps",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1000,
+    "usage": "import { FeaturesShortcutTheatre } from \"@/components/design-for-ai/features-shortcut-theatre\";\n\n<FeaturesShortcutTheatre actions={actions} preview={<NotesPreview />} onInvoke={invokeAction} resetKey={workspaceId} />",
+    "props": [
+      {
+        "name": "actions",
+        "type": "ShortcutTheatreAction[]",
+        "description": "Unique action IDs, labels, descriptions and exact key/modifier chords. Disabled actions remain explainable.",
+        "default": "3 original notes actions: find, view, new"
+      },
+      {
+        "name": "preview",
+        "type": "ReactNode",
+        "description": "Actual product surface. Remains mounted through invocation states. Named component is unavailable without content; default demo supplies original offline notes."
+      },
+      {
+        "name": "onInvoke",
+        "type": "(action: ShortcutTheatreAction, signal: AbortSignal) => void | Promise<void>",
+        "description": "Real action observer. Its return acknowledges completion; cancel, reset, action/callback/preview retirement and unmount abort old work."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Host session identity; changes clear interaction feedback and abort outstanding work without inventing a content reset."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Concise product-action heading.",
+        "default": "\"Try a shortcut. Keep your place.\""
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "One sentence explaining the useful action.",
+        "default": "\"A key should take you somewhere useful. Try an action in the preview.\""
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Dark or light keycap and preview palette.",
+        "default": "\"dark\""
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Outer feature class.",
+        "default": "\"\""
+      }
+    ],
+    "added": "2026-10-13",
+    "demo": {
+      "steps": [
+        "click:@invoke-sidebar",
+        "wait:420",
+        "click:@invoke-new",
+        "wait:400",
+        "click:@invoke-search",
+        "wait:500"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "title",
+        "label": "Heading",
+        "kind": "text",
+        "default": "Try a shortcut. Keep your place."
+      },
+      {
+        "prop": "description",
+        "label": "Description",
+        "kind": "text",
+        "default": "A key should take you somewhere useful. Try an action in the preview."
+      }
+    ]
+  },
+  {
     "slug": "finance-budget-variance",
     "name": "Budget Variance Explorer",
     "tier": "pro",
