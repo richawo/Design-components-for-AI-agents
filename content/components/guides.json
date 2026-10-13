@@ -4327,5 +4327,265 @@
       "data-query-builder"
     ],
     "updated": "2026-10-13"
+  },
+  "editor-layer-stack": {
+    "useWhen": "Reordering, locking, hiding and renaming supplied layers with actual selection and a readable move mode.",
+    "avoidWhen": "A complete drawing canvas or visual layers that have no corresponding host objects.",
+    "integration": [
+      "Supply stable layer IDs, names, order and constraints. Keep selection and layer edits tied to the same actual objects, including hidden or locked items.",
+      "Provide keyboard movement alongside pointer dragging, preserve rename drafts after rejection and keep the active layer reachable after removal."
+    ],
+    "related": [
+      "editor-whiteboard",
+      "navigation-stacked-tabs"
+    ],
+    "updated": "2026-10-13"
+  },
+  "editor-color-token-studio": {
+    "useWhen": "Editing semantic color tokens and checking actual supplied foreground/background contrast pairs.",
+    "avoidWhen": "Claiming accessibility for an entire application from a few colors or generating an arbitrary decorative palette.",
+    "integration": [
+      "Supply token identities, roles and usage pairs. Calculate luminance from accepted colors and state whether the measured pair represents an opaque surface.",
+      "Preserve invalid drafts, make linked token edits explicit and distinguish a computed ratio from a full accessibility audit."
+    ],
+    "related": [
+      "input-color-swatches",
+      "devtools-icon-workbench"
+    ],
+    "updated": "2026-10-13"
+  },
+  "editor-spacing-inspector": {
+    "useWhen": "Inspecting and adjusting actual padding and gaps around supplied content.",
+    "avoidWhen": "A full browser developer tool or drawing measurement labels unrelated to the rendered layout.",
+    "integration": [
+      "Supply the content and bounded spacing parameters. Measure the actual container and keep exact fields and pointer controls consistent.",
+      "Retain content state as boundaries change and provide keyboard controls without capturing unrelated page gestures."
+    ],
+    "related": [
+      "layout-split-resizer",
+      "media-device-switcher"
+    ],
+    "updated": "2026-10-13"
+  },
+  "editor-branch-compare": {
+    "useWhen": "Reviewing differences between two supplied document structures and explicitly accepting or retaining individual changes.",
+    "avoidWhen": "Automatically merging source control branches or pretending every conflicting change is safe to accept.",
+    "integration": [
+      "Supply stable block identities and both actual versions. Show the scope of each decision and keep unreviewed changes distinguishable.",
+      "Preserve decisions and surrounding context after host rejection; accepted state must come from the actual merge owner."
+    ],
+    "related": [
+      "agent-diff-review",
+      "legal-version-history"
+    ],
+    "updated": "2026-10-13"
+  },
+  "editor-asset-license-sheet": {
+    "useWhen": "Inspecting supplied asset provenance and usage terms before selecting an eligible asset.",
+    "avoidWhen": "Legal advice, invented license eligibility or using a visual badge as proof that every usage is allowed.",
+    "integration": [
+      "Supply provenance, actual terms, attribution and the host’s eligibility decision. Missing information must remain explicit.",
+      "Keep selection separate from accepting terms and provide real source destinations only when available."
+    ],
+    "related": [
+      "data-file-explorer",
+      "legal-document-requests"
+    ],
+    "updated": "2026-10-13"
+  },
+  "editor-storyboard-strip": {
+    "useWhen": "Arranging supplied scene cards and inspecting durations and cumulative sequence timing.",
+    "avoidWhen": "A video encoding engine or a storyboard whose changed durations have no effect on its timing.",
+    "integration": [
+      "Supply stable scene IDs, actual durations and content. Reordering and exact duration edits should update the same computed sequence.",
+      "Provide keyboard moves and an explicit review before any host export; retain drafts and position after rejection."
+    ],
+    "related": [
+      "media-story-deck",
+      "navigation-stacked-tabs"
+    ],
+    "updated": "2026-10-13"
+  },
+  "editor-keyframe-track": {
+    "useWhen": "Editing supplied discrete keyframes and inspecting the actual interpolated property over time.",
+    "avoidWhen": "A decorative timeline, unsupported interpolation modes or an implicit animation export.",
+    "integration": [
+      "Supply keyframe IDs, bounded times, values and interpolation rules. The sampled preview and keyboard timeline must share the same calculation.",
+      "Keep collision behavior explicit, preserve selected keyframes after edits and retire incomplete gestures when the host replaces the track."
+    ],
+    "related": [
+      "input-detent-dial",
+      "hero-signal-workbench"
+    ],
+    "updated": "2026-10-13"
+  },
+  "editor-version-restore": {
+    "useWhen": "Inspecting a supplied saved version and its scope before requesting a host-owned restoration.",
+    "avoidWhen": "Silently replacing the current document or implying a backup exists without host evidence.",
+    "integration": [
+      "Supply version identities, timestamps, summaries and actual preview content. Keep inspected history separate from the current document.",
+      "Confirm the exact restoration scope, preserve working edits after failure and ignore stale results from a superseded request."
+    ],
+    "related": [
+      "legal-version-history",
+      "agent-approval-gate"
+    ],
+    "updated": "2026-10-13"
+  },
+  "editor-export-preset": {
+    "useWhen": "Composing a supported export format, dimensions and quality, then reviewing the exact payload.",
+    "avoidWhen": "Encoding without a host export implementation or presenting unavailable formats as usable choices.",
+    "integration": [
+      "Supply actual host capabilities, limits and format-specific options. Validate dependent choices and show the final dimensions and format together.",
+      "Keep review and apply explicit, preserve settings after failure and retire pending work when configuration or capabilities change."
+    ],
+    "related": [
+      "input-detent-dial",
+      "media-story-deck"
+    ],
+    "updated": "2026-10-13"
+  },
+  "editor-font-pairing": {
+    "useWhen": "Comparing supplied font roles against actual copy with honest loading and fallback behavior.",
+    "avoidWhen": "A promise of font licensing or showing a specimen in a fallback font while naming another font as loaded.",
+    "integration": [
+      "Supply font identities, usable family names and specimen copy. Keep role assignment and actual measured font availability distinct.",
+      "Preserve the reading layout when a font loads or fails and expose usable static comparisons under reduced motion."
+    ],
+    "related": [
+      "devtools-icon-workbench",
+      "text-decode"
+    ],
+    "updated": "2026-10-13"
+  },
+  "ai-context-budget": {
+    "useWhen": "Reviewing supplied context sources and their real token allocation against a bounded model budget.",
+    "avoidWhen": "Guessing token counts or treating a visual budget as authority to read private sources.",
+    "integration": [
+      "Supply source identities, token counts, eligibility and the actual budget. Distinguish included, excluded and over-limit context explicitly.",
+      "Keep inclusion requests controlled by the host and preserve the user’s selection after rejection or a changed budget."
+    ],
+    "related": [
+      "ai-model-picker",
+      "agent-approval-gate"
+    ],
+    "updated": "2026-10-13"
+  },
+  "ai-answer-compare": {
+    "useWhen": "Comparing supplied responses to the same request with their evidence and an explicit preference.",
+    "avoidWhen": "Generating answers, assuming a model is better without evidence or silently applying an inspected response.",
+    "integration": [
+      "Supply the shared request, response identities, content and evidence. Keep comparable context visible and unavailable responses distinct.",
+      "Treat selection as an explicit host-owned preference and preserve reading position and decision state after rejection."
+    ],
+    "related": [
+      "ai-search-answer",
+      "ai-citations-inline"
+    ],
+    "updated": "2026-10-13"
+  },
+  "ai-structured-output": {
+    "useWhen": "Inspecting supplied structured fields as they become complete, valid or invalid during an actual stream.",
+    "avoidWhen": "Inventing completed values, hiding validation failures or claiming to execute a schema-driven workflow.",
+    "integration": [
+      "Supply field definitions, current values and actual completeness/validation status. Preserve partially received data rather than filling gaps with fabricated content.",
+      "Keep failed fields actionable through host callbacks and distinguish streaming, completed and unavailable output."
+    ],
+    "related": [
+      "streaming-text",
+      "ai-mcp-elicitation"
+    ],
+    "updated": "2026-10-13"
+  },
+  "agents-dependency-board": {
+    "useWhen": "Inspecting supplied task dependencies and tracing actual blockers with a readable graph and linear alternative.",
+    "avoidWhen": "A general node editor, invented agent activity or treating a circular dependency as a runnable plan.",
+    "integration": [
+      "Supply stable task IDs, dependency relationships and actual statuses. Explain missing nodes and cycles rather than silently dropping them.",
+      "Keep keyboard task selection and blocker details consistent with the graph, and preserve selection when statuses change."
+    ],
+    "related": [
+      "agent-plan-steps",
+      "editor-node-graph"
+    ],
+    "updated": "2026-10-13"
+  },
+  "agents-run-replay": {
+    "useWhen": "Reconstructing visible state from a supplied event history while scrubbing a completed or partial run.",
+    "avoidWhen": "Executing agent tools, generating an event history or presenting replayed actions as current live activity.",
+    "integration": [
+      "Supply ordered event identities, timestamps and the state each event changes. Keep the reconstructed view tied to the selected point in history.",
+      "Offer exact and keyboard time navigation, identify missing events and stop playback when the user inspects a different point."
+    ],
+    "related": [
+      "agent-run-trace",
+      "devtools-log-stream"
+    ],
+    "updated": "2026-10-13"
+  },
+  "agents-budget-guard": {
+    "useWhen": "Reviewing supplied estimated and actual usage against limits before explicitly authorizing a bounded action.",
+    "avoidWhen": "Inventing costs, automatically approving an action or describing an estimate as the final charge.",
+    "integration": [
+      "Supply currency/units, pricing basis, observed usage and the actual limit. Keep estimated and incurred amounts distinguishable.",
+      "Only invoke the host authorization callback after a clear scope review; preserve the decision after failure and reject stale acknowledgements."
+    ],
+    "related": [
+      "agent-approval-gate",
+      "pricing-receipt"
+    ],
+    "updated": "2026-10-13"
+  },
+  "devtools-release-compare": {
+    "useWhen": "Comparing supplied deployments and their changed resources before a reviewed host-owned rollback request.",
+    "avoidWhen": "Performing an implicit deployment or claiming a rollback succeeded without an actual host result.",
+    "integration": [
+      "Supply deployment IDs, timestamps, change summaries and real resource differences. Keep the current release distinguishable from the inspected candidate.",
+      "Review rollback scope explicitly, retain context after failure and retire results when the target deployment changes."
+    ],
+    "related": [
+      "agent-commit-card",
+      "legal-version-history"
+    ],
+    "updated": "2026-10-13"
+  },
+  "devtools-request-replay": {
+    "useWhen": "Editing a supplied request and inspecting the response returned by a real host request handler.",
+    "avoidWhen": "Pretending a demonstration payload came from a live server or sending a request without an explicit action.",
+    "integration": [
+      "Supply the request contract and a handler with cancellation. Clearly label any offline example and keep response status, headers and body tied to that request.",
+      "Preserve edited input after failure, retire previous pending work and prevent late responses from replacing a newer request."
+    ],
+    "related": [
+      "devtools-api-playground",
+      "devtools-webhook-inspector"
+    ],
+    "updated": "2026-10-13"
+  },
+  "devtools-schema-migration": {
+    "useWhen": "Reviewing a supplied schema migration plan, its dependencies and actual impact before requesting application.",
+    "avoidWhen": "Executing arbitrary SQL in the component or inventing the migration’s safety, backups or success.",
+    "integration": [
+      "Supply the migration identity, ordered changes, dependency constraints and known impact. Distinguish inspection from host-owned execution.",
+      "Require an explicit scope review, preserve the plan after failure and ignore results for a retired migration."
+    ],
+    "related": [
+      "agent-approval-gate",
+      "data-query-builder"
+    ],
+    "updated": "2026-10-13"
+  },
+  "devtools-incident-timeline": {
+    "useWhen": "Correlating supplied alerts, deployments and interventions on one inspectable incident history.",
+    "avoidWhen": "A live monitoring service or assumed causal relationships between nearby events.",
+    "integration": [
+      "Supply stable event IDs, timestamps, categories and actual evidence. Make timezone and missing data explicit; proximity alone does not establish cause.",
+      "Keep filters, keyboard selection and event details linked while preserving the inspected event through updates."
+    ],
+    "related": [
+      "devtools-log-stream",
+      "devtools-request-waterfall"
+    ],
+    "updated": "2026-10-13"
   }
 }
