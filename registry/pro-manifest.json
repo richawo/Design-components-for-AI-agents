@@ -19955,6 +19955,235 @@
     ]
   },
   {
+    "slug": "media-transcript-player",
+    "name": "Transcript Player",
+    "tier": "pro",
+    "platform": "web",
+    "category": "media",
+    "description": "A real audio player with selectable timed passages, native cue highlighting, accepted seek/rate ownership and a reader-friendly follow mode.",
+    "tags": [
+      "audio",
+      "transcript",
+      "timed text",
+      "media player",
+      "accessibility",
+      "reading"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1100,
+    "usage": "import { MediaTranscriptPlayer } from \"@/components/design-for-ai/media-transcript-player\";\n\n<MediaTranscriptPlayer media={recording} passages={passages} onBeforeSeek={seconds => seconds <= allowedEnd} onSeek={rememberPosition} />",
+    "props": [
+      {
+        "name": "media",
+        "type": "TranscriptMedia",
+        "description": "Actual host recording id/title/src, provisional duration, optional speaker/language. Native metadata is authoritative. Text remains available without src. The stable recording id retains the last actual position/reading state through source URL, retry or availability changes; a new recording id resets to initialTime."
+      },
+      {
+        "name": "passages",
+        "type": "TranscriptPassage[]",
+        "description": "Supplied unique-id timed text. Individual invalid/out-of-duration timings remain readable but do not seek or highlight.",
+        "default": "[]"
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"unavailable\"",
+        "description": "Host recording availability, independent of readable transcript contents.",
+        "default": "\"ready\""
+      },
+      {
+        "name": "error",
+        "type": "string",
+        "description": "Host error text alongside retained passages."
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Optional actual host recovery, alongside native source reload."
+      },
+      {
+        "name": "onChooseMedia",
+        "type": "() => void",
+        "description": "Optional actual host selection in an empty transcript."
+      },
+      {
+        "name": "heading",
+        "type": "string",
+        "description": "Player title.",
+        "default": "\"Listen, line by line.\""
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Brief context.",
+        "default": "\"The thought, and the words that carry it.\""
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Graphite or warm-paper surfaces.",
+        "default": "\"dark\""
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "description": "Restrained active-passage edge and wash; text stays neutral for contrast.",
+        "default": "\"#e6b782\""
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Stops native playback and seeking/rate/follow controls, keeping text readable.",
+        "default": "false"
+      },
+      {
+        "name": "initialTime",
+        "type": "number",
+        "description": "Initial bounded native position when this source loads. Never starts audio automatically.",
+        "default": "0"
+      },
+      {
+        "name": "autoFollow",
+        "type": "boolean",
+        "description": "Allows automatic internal transcript scrolling. Manual reading pauses it until Resume follow; false disables the policy.",
+        "default": "true"
+      },
+      {
+        "name": "rate",
+        "type": "number",
+        "description": "Optional controlled native playback rate between 0.5 and2. Missing handler makes rate read-only; rejected requests retain actual rate."
+      },
+      {
+        "name": "defaultRate",
+        "type": "number",
+        "description": "Initial uncontrolled native playback rate.",
+        "default": "1"
+      },
+      {
+        "name": "onRateChange",
+        "type": "(rate: number) => void",
+        "description": "Requests a playback rate. Native media changes only after accepted controlled state or local ownership."
+      },
+      {
+        "name": "onBeforeSeek",
+        "type": "(seconds: number, passage?: TranscriptPassage) => boolean | void",
+        "description": "Synchronous host seek gate. Returning false or throwing preserves the actual native position with useful feedback."
+      },
+      {
+        "name": "onSeek",
+        "type": "(seconds: number, passage?: TranscriptPassage) => void",
+        "description": "Observes accepted actual native seek requests."
+      },
+      {
+        "name": "onTimeChange",
+        "type": "(seconds: number) => void",
+        "description": "Observes actual native time, throttled to at most10 Hz during playback. No simulated timer."
+      },
+      {
+        "name": "onCueChange",
+        "type": "(passageId: string | undefined) => void",
+        "description": "Observes passage changes from actual native time; undefined describes timing gaps."
+      },
+      {
+        "name": "onPlaybackChange",
+        "type": "(playing: boolean) => void",
+        "description": "Observes actual native playing/paused state, including cleanup."
+      },
+      {
+        "name": "onFollowChange",
+        "type": "(following: boolean) => void",
+        "description": "Observes actual follow policy/manual reading state."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Root classes, container-responsive up to 800 px.",
+        "default": "\"\""
+      }
+    ],
+    "controls": [
+      {
+        "prop": "heading",
+        "label": "Player title",
+        "kind": "text",
+        "default": "Listen, line by line."
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "accent",
+        "label": "Passage edge",
+        "kind": "color",
+        "default": "#e6b782",
+        "options": [
+          "#e6b782",
+          "#b0c3b3",
+          "#e6e4ea"
+        ]
+      },
+      {
+        "prop": "rate",
+        "label": "Playback rate",
+        "kind": "segmented",
+        "options": [
+          0.75,
+          1,
+          1.25,
+          1.5,
+          2
+        ],
+        "default": 1
+      },
+      {
+        "prop": "autoFollow",
+        "label": "Allow follow",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "disabled",
+        "label": "Disabled",
+        "kind": "toggle",
+        "default": false
+      },
+      {
+        "prop": "status",
+        "label": "Availability",
+        "kind": "action",
+        "options": [
+          "ready",
+          "loading",
+          "unavailable"
+        ]
+      }
+    ],
+    "demo": {
+      "steps": [
+        "click:@transcript-cue-2",
+        "wait:420",
+        "click:@transcript-cue-1",
+        "wait:420",
+        "click:@transcript-next",
+        "wait:420",
+        "click:@transcript-cue-0",
+        "wait:450"
+      ],
+      "loop": false
+    },
+    "added": "2026-10-13"
+  },
+  {
     "slug": "media-trim-timeline",
     "name": "Trim Timeline",
     "tier": "pro",
