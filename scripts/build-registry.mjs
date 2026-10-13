@@ -345,11 +345,15 @@ if (hasProSource) {
 // The gallery opens with the flagships, mixing free and Pro, then everything
 // else alphabetically. Slugs missing from a build are simply skipped.
 const FEATURED = [
+  "work-index-hover", "feature-sticky-scroll", "chart-cohort-retention", "media-device-switcher",
+  "mobile-tab-bar", "effect-gravity-grid", "three-keycaps", "hero-kinetic-type",
+  "bento-grid", "hero-marquee-screens", "mobile-now-playing", "mobile-paywall",
+  "ai-side-panel", "toast-stack", "chart-waffle",
   "chart-candlestick", "three-globe-arcs", "chart-portfolio", "three-particle-sphere",
   "pixel-agent-status", "three-wave-field", "chart-allocation", "hero-terminal-agent",
   "pixel-matrix-display", "pricing-receipt", "cta-horizon", "command-palette",
-  "work-index-hover", "chat-thread", "mobile-wallet-stack", "streaming-text",
-  "feature-sticky-scroll", "navbar-floating", "mobile-chat", "cart-drawer",
+  "chat-thread", "mobile-wallet-stack", "streaming-text",
+  "navbar-floating", "mobile-chat", "cart-drawer",
 ];
 const rank = (slug) => {
   const i = FEATURED.indexOf(slug);
