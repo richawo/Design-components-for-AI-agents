@@ -6781,7 +6781,7 @@
       {
         "name": "accent",
         "type": "string",
-        "default": "\"#e6b782\"",
+        "default": "\"#dedede\"",
         "description": "One restrained highlight on the tab and refractive top edge."
       },
       {
@@ -6839,9 +6839,9 @@
         "prop": "accent",
         "label": "Edge highlight",
         "kind": "color",
-        "default": "#e6b782",
+        "default": "#dedede",
         "options": [
-          "#e6b782",
+          "#dedede",
           "#d5d8dd",
           "#a7c7ba"
         ]
