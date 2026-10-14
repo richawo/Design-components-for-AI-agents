@@ -10,6 +10,8 @@
 //        [--web-scale=1|2|3] captures small web specimens at higher pixel resolution
 //        [--web-width=720] [--web-height=560] choose a verified equivalent web scene
 //        [--isolated-source] bundles the exact checked-out demo with production React
+//        [--tab-capture] records that owned fixture directly, with source-stall guards
+//        [--extend-stage-edges] extends verified empty stage edges into crop padding
 //
 // With no slugs it records every component that has a demo. Drives the
 // preview with real input (so CSS :hover shows) and draws the same branded
@@ -27,6 +29,7 @@ import sharp from "sharp";
 import { captureQuality, gallerySteps, concatFrameList, framedCropFilter, fitViewportFrame } from "./lib/recording-quality.mjs";
 import { launchChromium } from "./lib/browser.mjs";
 import { mountFixture } from "./lib/component-fixture.mjs";
+import { startTabRecording, stopTabRecording } from "./lib/tab-recording.mjs";
 import { CURSOR_CSS, CURSOR_HTML, CURSOR_START } from "../lib/demo/cursor.mjs";
 import { TIMING, demoDuration, parseSteps, targetSelector } from "../lib/demo/schema.mjs";
 
@@ -47,6 +50,9 @@ const refreshPoster = args.includes("--refresh-poster");
 const pagePath = flag("page-path", "");
 const isolatedSource = args.includes("--isolated-source");
 if (isolatedSource && pagePath) throw new Error("--isolated-source records a component demo; omit --page-path");
+const tabCapture = args.includes("--tab-capture");
+const captureTitle = `Design for AI owned fixture ${Date.now()}`;
+if (tabCapture && (!isolatedSource || args.includes("--software-rendering"))) throw new Error("--tab-capture requires an isolated source fixture and native rendering");
 const ambientMs = Number(flag("ambient-ms", "0"));
 if (ambientMs && (ambientMs < 3000 || ambientMs > 6000)) throw new Error("--ambient-ms must be between 3000 and 6000");
 const timings = gallery ? { ...TIMING, glide: 450, tabGap: 220, keyGap: 150, typeGap: 45 } : TIMING;
@@ -54,6 +60,7 @@ const webm = args.includes("--webm");
 // Expanding demos need room beyond the initial card bounds. Refresh the poster
 // with this framing too, so hovering never changes the component scale.
 const frameViewport = args.includes("--frame-viewport");
+const extendStageEdges = args.includes("--extend-stage-edges");
 const frameUnionSelector = flag("frame-union", undefined);
 const frameUnionPadding = Number(flag("frame-padding", "32"));
 if (args.includes("--frame-union")) throw new Error("--frame-union needs a CSS selector after =");
@@ -162,6 +169,7 @@ async function record(browser, slug) {
   const steps = gallery ? gallerySteps(parsed) : parsed;
   const setupScroll = skipLeadScroll && steps[0]?.cmd === "scroll" ? steps.shift().px : 0;
   const mobile = meta.platform === "mobile";
+  if (mobile && extendStageEdges) throw new Error("--extend-stage-edges is for web stages; mobile keeps its complete phone mask");
   if (mobile && frameUnionSelector !== undefined) throw new Error("--frame-union is for web demos; mobile keeps its complete phone mask");
   if (mobile && webScaleFlag !== undefined) throw new Error("--web-scale is for web demos; mobile keeps its complete 2x phone mask");
   const strip = meta.category === "headers" || meta.category === "footers";
@@ -249,13 +257,13 @@ async function record(browser, slug) {
       : initialFrame && frameViewport ? fitViewportFrame(vw, vh, initialFrame.bg, OUT_W, OUT_H) : initialFrame;
 
     // Frames: Chrome's screencast, with timestamps, at full quality.
-    const cdp = await context.newCDPSession(page);
-    const frames = [];
+    const cdp = tabCapture ? null : await context.newCDPSession(page);
+    let frames = [];
     const writes = [];
     let frameIndex = 0;
     let resolveOpeningFrame;
     const openingFrame = new Promise((resolve) => { resolveOpeningFrame = resolve; });
-    cdp.on("Page.screencastFrame", (f) => {
+    cdp?.on("Page.screencastFrame", (f) => {
       // Release Chrome's capture buffer immediately. Encoding and disk I/O
       // must not hold up the compositor's next frame.
       void cdp.send("Page.screencastFrameAck", { sessionId: f.sessionId }).catch(() => {});
@@ -264,14 +272,15 @@ async function record(browser, slug) {
       writes.push(fs.promises.writeFile(file, Buffer.from(f.data, "base64")));
       if (frames.length === 1) resolveOpeningFrame();
     });
-    const t0 = Date.now() / 1000;
-    await cdp.send("Page.startScreencast", { format: "jpeg", quality: captureJpegQuality, everyNthFrame: 1, maxWidth: vw * dpr, maxHeight: vh * dpr });
+    const nativeStart = tabCapture ? await startTabRecording(page, { title: captureTitle, width: vw * dpr, height: vh * dpr }) : null;
+    const t0 = nativeStart?.startTime ?? Date.now() / 1000;
+    if (cdp) await cdp.send("Page.startScreencast", { format: "jpeg", quality: captureJpegQuality, everyNthFrame: 1, maxWidth: vw * dpr, maxHeight: vh * dpr });
     await page.evaluate((ambient) => (window.__dfaCursor.dataset.on = ambient ? "0" : "1"), !!ambientMs);
     // A screencast can wait for compositor damage before emitting its first
     // frame. Do not let the first action become that damage: otherwise a clip
     // begins halfway through its first change and its poster misses the demo's
     // actual opening state. Fail without replacing the last good assets.
-    await Promise.race([
+    if (cdp) await Promise.race([
       openingFrame,
       page.waitForTimeout(1500).then(() => { throw new Error("No opening screencast frame before the demo actions; retry the capture."); }),
     ]);
@@ -380,27 +389,33 @@ async function record(browser, slug) {
     await page.evaluate(() => (window.__dfaCursor.dataset.on = "0"));
     await page.waitForTimeout(Math.max(350, gallery ? 3000 - (Date.now() / 1000 - t0) * 1000 : 350));
     const t1 = Date.now() / 1000;
-    await cdp.send("Page.stopScreencast");
+    const nativeEnd = nativeStart ? await stopTabRecording(page, tmp, nativeStart) : null;
+    if (nativeEnd) frames = nativeEnd.frames;
+    if (cdp) await cdp.send("Page.stopScreencast");
     await page.waitForTimeout(100);
     await Promise.all(writes);
 
     if (!frames.length) throw new Error("screencast produced no frames");
-    if (!mobile && dpr > 1) {
+    if (!nativeEnd && !mobile && dpr > 1) {
       const captured = await sharp(frames[0].file).metadata();
       if (captured.width !== vw * dpr || captured.height !== vh * dpr) throw new Error("Higher-resolution screencast did not deliver the requested pixel dimensions; keep the last good assets.");
     }
     const quality = captureQuality(frames.map((frame) => frame.t), motionWindows);
     const continuousQuality = captureQuality(continuousWindows.length ? frames.map((frame) => frame.t) : [], continuousWindows);
+    const nativeSourceQuality = nativeEnd ? captureQuality(nativeEnd.evidence.sourceFrames, motionWindows) : null;
+    // Regular video timestamps can conceal a frozen JS animation. Grade both.
+    if (nativeSourceQuality?.maxGapMs > 100) problems.push(`Actual source animation stalled ${nativeSourceQuality.maxGapMs.toFixed(1)}ms; keep the last good clip.`);
     if (reportDir) {
       const directory = path.resolve(root, reportDir);
       fs.mkdirSync(directory, { recursive: true });
-      fs.writeFileSync(path.join(directory, `${slug}.json`), JSON.stringify({ slug, renderMode: isolatedSource ? "isolated-production-source" : "preview", openingFrameBeforeActions: true, quality, continuousQuality, viewport: { vw, vh, dpr }, framing: frame, timestamps: frames.map((frame) => frame.t), motionWindows, continuousWindows }, null, 2));
+      fs.writeFileSync(path.join(directory, `${slug}.json`), JSON.stringify({ slug, renderMode: isolatedSource ? "isolated-production-source" : "preview", ...(nativeEnd ? { captureTransport: "owned-browser-tab", nativeSourceQuality, native: nativeEnd.evidence } : {}), openingFrameBeforeActions: true, quality, continuousQuality, viewport: { vw, vh, dpr }, framing: frame, timestamps: frames.map((frame) => frame.t), motionWindows, continuousWindows }, null, 2));
+      if (nativeEnd) fs.copyFileSync(nativeEnd.file, path.join(directory, `${slug}-raw.${nativeEnd.extension}`));
     }
     // Each frame holds until the next one; the last holds to the end.
     frames.sort((a, b) => a.t - b.t);
-    fs.writeFileSync(path.join(tmp, "frames.txt"), concatFrameList(frames, t0, t1));
+    if (!nativeEnd) fs.writeFileSync(path.join(tmp, "frames.txt"), concatFrameList(frames, t0, t1));
 
-    let inputs = ["-f", "concat", "-safe", "0", "-i", path.join(tmp, "frames.txt")];
+    let inputs = nativeEnd ? ["-i", nativeEnd.file] : ["-f", "concat", "-safe", "0", "-i", path.join(tmp, "frames.txt")];
     let graph;
     if (mobile) {
       const mask = path.join(tmp, "mask.png");
@@ -409,7 +424,7 @@ async function record(browser, slug) {
       graph = `[0:v]scale=-2:${h}:flags=lanczos,pad=${OUT_W}:${OUT_H}:(ow-iw)/2:(oh-ih)/2:color=0x050505[v];[v][1:v]overlay=0:0,fps=${FPS},format=yuv420p`;
     } else {
       const pixelFrame = { ...frame, cw: frame.cw * dpr, ch: frame.ch * dpr, cx: frame.cx * dpr, cy: frame.cy * dpr };
-      graph = `[0:v]${framedCropFilter(vw * dpr, vh * dpr, pixelFrame)},scale=${OUT_W}:${OUT_H}:flags=lanczos,fps=${FPS},format=yuv420p`;
+      graph = `[0:v]${framedCropFilter(vw * dpr, vh * dpr, pixelFrame, extendStageEdges)},scale=${OUT_W}:${OUT_H}:flags=lanczos,fps=${FPS},format=yuv420p`;
     }
     const mp4Tmp = path.join(tmp, `${slug}.mp4`);
     let crf = 24;
@@ -472,8 +487,11 @@ if (!slugs.length) {
   console.log("No components with a demo.");
   process.exit(0);
 }
+const nativeTabMobile = tabCapture && slugs.every(slug => readMeta(slug)?.platform === "mobile");
+if (tabCapture && !nativeTabMobile && slugs.some(slug => readMeta(slug)?.platform === "mobile")) throw new Error("Record web and native tab fixtures separately to preserve their exact pixel density");
+const displayScale = nativeTabMobile ? 2 : webScale;
 if (webScale > 1 && args.includes("--software-rendering")) throw new Error("--web-scale above 1 requires the native renderer");
-const browser = await launchChromium(args.includes("--software-rendering") ? {} : { args: ["--mute-audio", ...(webScale > 1 ? [`--force-device-scale-factor=${webScale}`] : [])] });
+const browser = await launchChromium(args.includes("--software-rendering") ? {} : { args: ["--mute-audio", ...(displayScale > 1 ? [`--force-device-scale-factor=${displayScale}`] : []), ...(tabCapture ? [`--auto-select-tab-capture-source-by-title=${captureTitle}`] : [])] });
 let failed = 0;
 for (const slug of slugs) {
   try {

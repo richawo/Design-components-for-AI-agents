@@ -52,13 +52,13 @@ export function fitViewportFrame(vw, vh, bg, outputWidth = 1280, outputHeight = 
 
 /** Add only the stage pixels the crop needs. Padding every frame by 2,000px
  * on all sides needlessly processed tens of millions of invisible pixels. */
-export function framedCropFilter(vw, vh, frame) {
+export function framedCropFilter(vw, vh, frame, extendEdges = false) {
   const w = Math.round(frame.cw), h = Math.round(frame.ch);
   const x = Math.round(frame.cx), y = Math.round(frame.cy);
   // Even offsets preserve the original JPEG chroma alignment.
   const even = value => Math.ceil(Math.max(0, value) / 2) * 2;
   const left = even(-x), top = even(-y);
   const right = even(x + w - vw), bottom = even(y + h - vh);
-  const pad = left || top || right || bottom ? `pad=${vw + left + right}:${vh + top + bottom}:${left}:${top}:color=${frame.bg},` : "";
+  const pad = left || top || right || bottom ? `pad=${vw + left + right}:${vh + top + bottom}:${left}:${top}:color=${frame.bg},${extendEdges ? `fillborders=left=${left}:right=${right}:top=${top}:bottom=${bottom}:mode=smear,` : ""}` : "";
   return `${pad}crop=${w}:${h}:${x + left}:${y + top}`;
 }
