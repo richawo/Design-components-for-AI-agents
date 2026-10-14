@@ -7316,6 +7316,139 @@
     ]
   },
   {
+    "slug": "chart-box-distribution",
+    "name": "Box Distribution",
+    "tier": "pro",
+    "platform": "web",
+    "category": "charts",
+    "description": "Compare actual sample medians, quartiles, whiskers and outliers, with transparent sample sizes and a complete native observation table.",
+    "tags": [
+      "box plot",
+      "distribution",
+      "quartiles",
+      "median",
+      "outliers",
+      "sample size"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1280,
+    "usage": "import { ChartBoxDistribution } from \"@/components/design-for-ai/chart-box-distribution\";\n\n<ChartBoxDistribution groups={samples} value={selection} onValueChange={setSelection} unit=\"ms\" />",
+    "props": [
+      {
+        "name": "groups",
+        "type": "DistributionGroup[]",
+        "description": "At most 8 raw unique groups with up to 2048 finite observations each, bounded within ±1 billion. Empty groups remain explicit."
+      },
+      {
+        "name": "value",
+        "type": "DistributionSelection",
+        "description": "Atomic controlled groupId/original observationIndex. Null index inspects the median; unknown identity/index is not substituted."
+      },
+      {
+        "name": "defaultValue",
+        "type": "DistributionSelection",
+        "description": "Initial uncontrolled selection. First available supplied group initializes only an untouched empty source."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(value: DistributionSelection) => void",
+        "description": "Requests a host-owned group/observation selection."
+      },
+      {
+        "name": "onValueCommit",
+        "type": "(value: DistributionSelection) => void",
+        "description": "Accepted discrete selection changes only, no false rejected commits."
+      },
+      {
+        "name": "showMean",
+        "type": "boolean",
+        "description": "Shows an explicitly labeled arithmetic mean ring in the actual plot."
+      },
+      {
+        "name": "unit",
+        "type": "string",
+        "description": "Host quantity unit without inferred conversion."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "description": "Intl formatting locale; exact small quantities use truthful scientific notation."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Host distribution heading."
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Host sample provenance/context."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"unavailable\"",
+        "description": "Host availability; current selection and supplied measurements are retained."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Disables selection changes; original observations remain readable."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Neutral graphite and white chrome; colour is reserved for actual feature content and semantic data accents."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Classes applied to the independent root."
+      }
+    ],
+    "controls": [
+      {
+        "prop": "showMean",
+        "label": "Arithmetic mean",
+        "kind": "toggle",
+        "default": false
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "disabled",
+        "label": "Disabled",
+        "kind": "toggle",
+        "default": false
+      }
+    ],
+    "demo": {
+      "steps": [
+        "click:@distribution-mobile",
+        "wait:350",
+        "click:@distribution-api",
+        "wait:350",
+        "click:@distribution-observation-18",
+        "wait:350",
+        "click:@distribution-median",
+        "wait:450"
+      ],
+      "loop": false
+    },
+    "added": "2026-10-14"
+  },
+  {
     "slug": "chart-candlestick",
     "name": "Candlestick Chart",
     "tier": "pro",

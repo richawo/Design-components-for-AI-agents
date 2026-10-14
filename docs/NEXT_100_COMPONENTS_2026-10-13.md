@@ -104,7 +104,7 @@ Validate all six web widths, both supported themes, multiple instances and empty
 | --- | --- | --- | --- | --- |
 | 51 | `chart-sunburst-explorer` | charts | Drill into a supplied hierarchy with an animated radial partition and an equivalent readable table. | Released |
 | 52 | `chart-sankey-paths` | charts | Select a source or destination to trace flow without hiding the remaining context. | Released |
-| 53 | `chart-box-distribution` | charts | Inspect medians, quartiles and outliers with accessible values and transparent sample sizes. | Planned |
+| 53 | `chart-box-distribution` | charts | Inspect medians, quartiles and outliers with accessible values and transparent sample sizes. | Released |
 | 54 | `chart-calendar-heatmap` | charts | Explore daily values with keyboard navigation, date filtering and an honest missing-data state. | Planned |
 | 55 | `chart-scatter-brush` | charts | Select a bounded region of points and inspect the resulting records with keyboard filtering. | Planned |
 | 56 | `chart-funnel-dots` | charts | Show discrete flow through stages while preserving exact totals and conversion denominators. | Released |
@@ -175,4 +175,4 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 ## Progress
 
-Planned: 23. Released: 77. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
+Planned: 22. Released: 78. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
