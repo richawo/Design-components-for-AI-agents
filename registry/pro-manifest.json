@@ -12234,6 +12234,111 @@
     ]
   },
   {
+    "slug": "devtools-request-replay",
+    "name": "Request Replay Console",
+    "tier": "pro",
+    "platform": "web",
+    "category": "devtools",
+    "description": "A precise editable request console with applied-snapshot ownership, lossless headers and actual host-returned responses, cancellation and retained drafts.",
+    "tags": [
+      "devtools",
+      "request",
+      "http",
+      "response",
+      "replay",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1320,
+    "usage": "import { DevtoolsRequestReplay } from \"@/components/design-for-ai/devtools-request-replay\";\n\n<DevtoolsRequestReplay request={request} onRequestChange={setRequest} onReplay={replayRequest} resetKey={sessionId} />",
+    "props": [
+      {
+        "name": "request",
+        "type": "RequestReplayRequest",
+        "description": "Authoritative applied request. Without onRequestChange its editing controls are honest read-only."
+      },
+      {
+        "name": "defaultRequest",
+        "type": "RequestReplayRequest",
+        "description": "Initial local request, reused when resetKey or request identity changes. Headers are lossless typed rows.",
+        "default": "Original offline POST navigation study"
+      },
+      {
+        "name": "onRequestChange",
+        "type": "(request: RequestReplayRequest) => void",
+        "description": "Synchronous applied-snapshot observer. Rejected controlled apply retains the newer draft and accepted request."
+      },
+      {
+        "name": "onReplay",
+        "type": "(request: RequestReplayRequest, signal: AbortSignal) => RequestReplayResponse | void | Promise<RequestReplayResponse | void>",
+        "description": "Real host replay. Own networking/authentication/CORS, honor cancellation and return actual status/headers/body. Void never fabricates a response."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Request session identity; resets draft/reading/receipts and retires prior work."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Concise request replay heading.",
+        "default": "\"Change the request. Read the return.\""
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Explain applied input and actual returned response.",
+        "default": "\"Edit a precise request, apply that snapshot and inspect the response your handler actually returns.\""
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Warm copper/graphite or warm paper console palettes.",
+        "default": "\"dark\""
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Outer replay console classes.",
+        "default": "\"\""
+      }
+    ],
+    "added": "2026-10-13",
+    "demo": {
+      "steps": [
+        "click:@request-url",
+        "key:End",
+        "type:?view=wide",
+        "click:@request-apply",
+        "wait:250",
+        "click:@request-replay",
+        "wait:600"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "title",
+        "label": "Heading",
+        "kind": "text",
+        "default": "Change the request. Read the return."
+      }
+    ]
+  },
+  {
     "slug": "devtools-request-waterfall",
     "name": "Request Timing Waterfall",
     "tier": "pro",
