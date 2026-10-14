@@ -2745,6 +2745,12 @@
         "description": "Initial local field ID, reused after reset. Otherwise the first available field is selected."
       },
       {
+        "name": "defaultView",
+        "type": "\"field\" | \"raw\"",
+        "description": "Initial local inspection mode, reapplied on resetKey. Named default is field; the original demo begins with its actual complete raw payload.",
+        "default": "\"field\""
+      },
+      {
         "name": "onValueChange",
         "type": "(id: string, field: StructuredOutputField) => void",
         "description": "Synchronous field-inspection observer. Controlled rejection keeps the host selection."
@@ -2774,7 +2780,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Graphite and paper inspection palettes.",
+        "description": "Neutral black/white glass chrome, with colour reserved for actual data/feature accents.",
         "default": "\"dark\""
       },
       {
@@ -2788,6 +2794,7 @@
     "demo": {
       "steps": [
         "click:@field-date",
+        "click:@view-field",
         "wait:350",
         "click:@retry-field",
         "wait:400",
@@ -2826,6 +2833,17 @@
           "error"
         ],
         "default": "complete"
+      },
+      {
+        "prop": "defaultView",
+        "label": "Initial inspection",
+        "kind": "segmented",
+        "options": [
+          "raw",
+          "field"
+        ],
+        "default": "raw",
+        "remount": true
       }
     ]
   },
