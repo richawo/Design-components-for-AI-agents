@@ -152,7 +152,7 @@ Validate all six web widths, both supported themes, multiple instances and empty
 | 83 | `mobile-focus-session` | mobile | Start, pause and resume a timer using elapsed time rather than tick counts; handle app backgrounding. | Released |
 | 84 | `mobile-day-planner` | mobile | Reorder a bounded daily agenda and reschedule a task through accessible move controls. | Released |
 | 85 | `mobile-journal-prompt` | mobile | Expand a writing prompt into an editor, preserve the draft and handle acknowledged save failure. | Released |
-| 86 | `mobile-reading-progress` | mobile | Inspect chapter progress and bookmarks, with an explicit resume action and meaningful empty history. | Planned |
+| 86 | `mobile-reading-progress` | mobile | Inspect chapter progress and bookmarks, with an explicit resume action and meaningful empty history. | Released |
 | 87 | `mobile-trip-itinerary` | mobile | Browse supplied travel legs with local timezone labels and inspect schedule changes. | Planned |
 | 88 | `mobile-packing-list` | mobile | Group and check items, edit quantities and undo a completed-item removal. | Planned |
 | 89 | `mobile-budget-envelope` | mobile | Allocate a supplied budget among categories with bounded totals and transparent remainder. | Released |
@@ -175,4 +175,4 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 ## Progress
 
-Planned: 11. Released: 89. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
+Planned: 10. Released: 90. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.

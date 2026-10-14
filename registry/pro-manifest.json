@@ -29606,6 +29606,148 @@
     ]
   },
   {
+    "slug": "mobile-reading-progress",
+    "name": "Reading Progress",
+    "tier": "pro",
+    "platform": "mobile",
+    "category": "mobile",
+    "description": "A quiet typographic reading shelf with exact chapter history, saved pages and an explicit cancellable resume destination.",
+    "tags": [
+      "reading",
+      "chapter progress",
+      "bookmarks",
+      "resume reading",
+      "native shelf",
+      "reading history"
+    ],
+    "dependencies": [
+      "expo-blur",
+      "expo-linear-gradient",
+      "react-native-svg"
+    ],
+    "theme": "dark",
+    "usage": "import { MobileReadingProgress } from \"@/components/design-for-ai/native/mobile-reading-progress\";\n\n// Bare React Native: install Expo modules once with npx install-expo-modules.\n<MobileReadingProgress chapters={chapters} bookmarks={bookmarks} onBookmarksChange={setBookmarks} onResume={(destination, signal) => openReader(destination, signal)} />",
+    "props": [
+      {
+        "name": "bookId",
+        "type": "string",
+        "description": "Current book identity; replacing source/context retires pending resume work.",
+        "default": "fieldnotes"
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Actual book title rendered on the typographic cover and reading shelf.",
+        "default": "The patient reader"
+      },
+      {
+        "name": "author",
+        "type": "string",
+        "description": "Supplied book author label.",
+        "default": "Rowan Wells"
+      },
+      {
+        "name": "chapters",
+        "type": "ReadingChapter[]",
+        "description": "Up to24 raw unique chapters with title, optional detail, whole pages 1–10000, readPages0..pages or explicit null, and bounded resumePage."
+      },
+      {
+        "name": "selectedId",
+        "type": "string | null",
+        "description": "Controlled inspected chapter. Missing/null/unknown identities stay explicit; no onSelectionChange makes inspection read-only."
+      },
+      {
+        "name": "defaultSelectedId",
+        "type": "string | null",
+        "description": "Initial local chapter; untouched loading waits for first actual ready source."
+      },
+      {
+        "name": "onSelectionChange",
+        "type": "(id: string) => void",
+        "description": "Requests the inspected chapter without changing supplied progress. Rejection preserves actual chapter ownership."
+      },
+      {
+        "name": "bookmarks",
+        "type": "ReadingBookmark[]",
+        "description": "Controlled unique bookmark identities with exact chapterId/page/label. Missing chapters and invalid destination pages stay visibly unavailable."
+      },
+      {
+        "name": "defaultBookmarks",
+        "type": "ReadingBookmark[]",
+        "description": "Initial local bookmarks. Named component defaults to empty history.",
+        "default": "[]"
+      },
+      {
+        "name": "onBookmarksChange",
+        "type": "(value: ReadingBookmark[]) => void",
+        "description": "Requests copied bookmark records; failure or rejection preserves current bookmarks."
+      },
+      {
+        "name": "onBookmarksCommit",
+        "type": "(value: ReadingBookmark[]) => void",
+        "description": "Only current accepted bookmark changes commit; no false rejection/no-op/retired commit."
+      },
+      {
+        "name": "onResume",
+        "type": "(destination: ResumeDestination, signal: AbortSignal) => void | Promise<void>",
+        "description": "Explicit copied book/chapter/page navigation request. The host opens its reader; acknowledgement never fabricates read-page history."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"unavailable\"",
+        "description": "Retains supplied selection/progress while explaining source availability.",
+        "default": "ready"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Disables reading actions without removing source progress.",
+        "default": "false"
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Neutral graphite or white shelf and complete native canvas.",
+        "default": "dark"
+      }
+    ],
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "disabled",
+        "label": "Disabled actions",
+        "kind": "toggle",
+        "default": false
+      }
+    ],
+    "demo": {
+      "steps": [
+        "click:@reading-save",
+        "wait:300",
+        "click:@reading-tab-bookmarks",
+        "click:@reading-bookmark-margin-12",
+        "wait:300",
+        "click:@reading-resume",
+        "wait:520",
+        "click:@reading-tab-chapters",
+        "click:@reading-chapter-2",
+        "wait:320"
+      ],
+      "loop": false
+    },
+    "added": "2026-10-14",
+    "previewHeight": 844
+  },
+  {
     "slug": "mobile-swipe-list",
     "name": "Swipe Inbox",
     "tier": "pro",
