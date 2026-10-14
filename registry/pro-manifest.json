@@ -35805,7 +35805,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Graphite or pale studio palette with readable part notes.",
+        "description": "Neutral graphite and white chrome; colour is reserved for actual feature content and semantic data accents.",
         "default": "\"dark\""
       },
       {
