@@ -26727,7 +26727,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Graphite or warm-paper surfaces.",
+        "description": "Neutral graphite and white chrome; colour is reserved for actual feature content and semantic data accents.",
         "default": "\"dark\""
       },
       {
@@ -26757,7 +26757,7 @@
       {
         "name": "rate",
         "type": "number",
-        "description": "Optional controlled native playback rate between 0.5 and2. Missing handler makes rate read-only; rejected requests retain actual rate."
+        "description": "Optional controlled native playback rate between 0.5 and 2. Missing handler makes rate read-only; rejected requests retain actual rate."
       },
       {
         "name": "defaultRate",
@@ -26783,7 +26783,7 @@
       {
         "name": "onTimeChange",
         "type": "(seconds: number) => void",
-        "description": "Observes actual native time, throttled to at most10 Hz during playback. No simulated timer."
+        "description": "Observes actual native time, throttled to at most 10 Hz during playback. No simulated timer."
       },
       {
         "name": "onCueChange",
