@@ -3913,7 +3913,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Readable fallback/recovery colors. Foreground contrast remains the host content's responsibility.",
+        "description": "Neutral graphite and white chrome; colour is reserved for actual feature content and semantic data accents.",
         "default": "\"dark\""
       },
       {
