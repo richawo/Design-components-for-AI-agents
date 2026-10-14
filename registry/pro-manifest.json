@@ -29908,6 +29908,157 @@
     "previewHeight": 844
   },
   {
+    "slug": "mobile-review-annotations",
+    "name": "Native Asset Annotation Review",
+    "tier": "pro",
+    "platform": "mobile",
+    "category": "mobile",
+    "description": "A native image review with precise touch-sized annotation points, an original architectural study and a complete, locally navigable note list.",
+    "tags": [
+      "mobile",
+      "react native",
+      "annotations",
+      "image",
+      "review",
+      "asset",
+      "coordinates",
+      "dark"
+    ],
+    "dependencies": [
+      "expo-blur",
+      "expo-linear-gradient",
+      "react-native-svg"
+    ],
+    "theme": "dark",
+    "previewHeight": 844,
+    "usage": "import { MobileReviewAnnotations } from \"@/components/design-for-ai/native/mobile-review-annotations\";\n\n// Bare native apps: run npx install-expo-modules once.\n<MobileReviewAnnotations asset={asset} preview={preview} annotations={notes} value={selectedId} onValueChange={setSelectedId} onRetry={loadOriginal} resetKey={reviewId} />",
+    "props": [
+      {
+        "name": "asset",
+        "type": "AnnotationAsset",
+        "description": "Actual ID/title/nullable intrinsic dimensions/version. Unknown dimensions keep all notes unplaced.",
+        "default": "Original gallery stair study,960×720"
+      },
+      {
+        "name": "preview",
+        "type": "ReactNode",
+        "description": "Supplied renderable original. Known primitives/fragments are normalized; opaque components remain host-owned.",
+        "default": "Original neutral SVG only for exact matching default asset"
+      },
+      {
+        "name": "annotations",
+        "type": "ReviewAnnotation[]",
+        "description": "Raw IDs/labels/text/state/author/time and normalized position or null. All conflicting or unplaced notes remain inspectable.",
+        "default": "Three original notes over the actual stair drawing"
+      },
+      {
+        "name": "value",
+        "type": "string | null",
+        "description": "Controlled selected note. Explicit null selects none; no observer makes choice read-only."
+      },
+      {
+        "name": "defaultValue",
+        "type": "string | null",
+        "description": "Initial local note. Undefined picks the first unique source note; reset with resetKey.",
+        "default": "First unique supplied note"
+      },
+      {
+        "name": "onValueChange",
+        "type": "(id: string | null) => void",
+        "description": "Synchronous selection observer. Rejection retains actual current inspection."
+      },
+      {
+        "name": "filter",
+        "type": "AnnotationFilter",
+        "description": "Controlled all/open/resolved view. Missing observer is honest read-only."
+      },
+      {
+        "name": "defaultFilter",
+        "type": "AnnotationFilter",
+        "description": "Initial local view. Filtering preserves the selected note inspection.",
+        "default": "\"all\""
+      },
+      {
+        "name": "onFilterChange",
+        "type": "(filter: AnnotationFilter) => void",
+        "description": "Synchronous filter observer. Rejection retains actual current view."
+      },
+      {
+        "name": "status",
+        "type": "AnnotationAssetStatus",
+        "description": "Actual ready/loading/error/unavailable asset state. It never hides the note list.",
+        "default": "\"ready\""
+      },
+      {
+        "name": "statusMessage",
+        "type": "string",
+        "description": "Actual availability/recovery reason. Empty messages use a meaningful fallback."
+      },
+      {
+        "name": "onRetry",
+        "type": "(asset: AnnotationAsset, signal: AbortSignal) => void | Promise<void>",
+        "description": "Copied actual asset facts, isolated cancellable request. Acknowledgment never makes an unavailable image ready."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Replacement inspection. Resets local selection/filter, remounts original content and aborts old work."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Exact neutral black/white/graphite chrome; preserve actual supplied asset colours.",
+        "default": "\"dark\""
+      }
+    ],
+    "added": "2026-10-14",
+    "demo": {
+      "steps": [
+        "click:@annotation-point-1",
+        "wait:300",
+        "click:@annotation-filter-resolved",
+        "scroll:360",
+        "click:@annotation-list-2",
+        "wait:550"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "defaultFilter",
+        "label": "Initial view",
+        "kind": "segmented",
+        "options": [
+          "all",
+          "open",
+          "resolved"
+        ],
+        "default": "all",
+        "remount": true
+      },
+      {
+        "prop": "status",
+        "label": "Asset state",
+        "kind": "action",
+        "options": [
+          "ready",
+          "loading",
+          "error",
+          "unavailable"
+        ]
+      }
+    ]
+  },
+  {
     "slug": "mobile-swipe-list",
     "name": "Swipe Inbox",
     "tier": "pro",
