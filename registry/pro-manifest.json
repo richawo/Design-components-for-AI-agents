@@ -19977,6 +19977,11 @@
         "type": "string",
         "default": "\"\"",
         "description": "Host layout classes on the hero container."
+      },
+      {
+        "name": "changeErrorLabel",
+        "type": "string",
+        "description": "Useful failure copy when a synchronous parameter observer rejects an edit. The accepted local signal remains intact."
       }
     ],
     "added": "2026-10-13",
