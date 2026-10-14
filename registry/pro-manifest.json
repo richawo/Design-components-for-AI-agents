@@ -6825,7 +6825,7 @@
         "name": "className",
         "type": "string",
         "default": "\"\"",
-        "description": "Optional root classes. The component takes its container width up to 440px."
+        "description": "Optional root classes. The component fits its container up to 960px, with a large physical folder beside its real file/preview panel on wide embeds and stacked content on compact ones."
       }
     ],
     "controls": [
