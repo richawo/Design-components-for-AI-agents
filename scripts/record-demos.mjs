@@ -11,6 +11,7 @@
 //        [--web-width=720] [--web-height=560] choose a verified equivalent web scene
 //        [--isolated-source] bundles the exact checked-out demo with production React
 //        [--tab-capture] records that owned fixture directly, with source-stall guards
+//        [--page-frames] requests actual page images when tab capture omits a tween
 //        [--extend-stage-edges] extends verified empty stage edges into crop padding
 //
 // With no slugs it records every component that has a demo. Drives the
@@ -30,6 +31,7 @@ import { captureQuality, gallerySteps, concatFrameList, framedCropFilter, fitVie
 import { launchChromium } from "./lib/browser.mjs";
 import { mountFixture } from "./lib/component-fixture.mjs";
 import { startTabRecording, stopTabRecording, sourceChangeQuality } from "./lib/tab-recording.mjs";
+import { startPageFrameRecording, stopPageFrameRecording, discardPageFrameRecording } from "./lib/page-frame-recording.mjs";
 import { CURSOR_CSS, CURSOR_HTML, CURSOR_START } from "../lib/demo/cursor.mjs";
 import { TIMING, demoDuration, parseSteps, targetSelector } from "../lib/demo/schema.mjs";
 
@@ -51,8 +53,10 @@ const pagePath = flag("page-path", "");
 const isolatedSource = args.includes("--isolated-source");
 if (isolatedSource && pagePath) throw new Error("--isolated-source records a component demo; omit --page-path");
 const tabCapture = args.includes("--tab-capture");
+const pageFrames = args.includes("--page-frames");
+if (tabCapture && pageFrames) throw new Error("Choose --tab-capture or --page-frames, not both");
 const captureTitle = `Design for AI owned fixture ${Date.now()}`;
-if (tabCapture && (!isolatedSource || args.includes("--software-rendering"))) throw new Error("--tab-capture requires an isolated source fixture and native rendering");
+if ((tabCapture || pageFrames) && (!isolatedSource || args.includes("--software-rendering"))) throw new Error("Direct capture requires an isolated source fixture and native rendering");
 const ambientMs = Number(flag("ambient-ms", "0"));
 if (ambientMs && (ambientMs < 3000 || ambientMs > 6000)) throw new Error("--ambient-ms must be between 3000 and 6000");
 const timings = gallery ? { ...TIMING, glide: 450, tabGap: 220, keyGap: 150, typeGap: 45 } : TIMING;
@@ -81,7 +85,7 @@ const only = args.filter((a) => !a.startsWith("--"));
 
 const OUT_W = 1280;
 const OUT_H = 800;
-const captureJpegQuality = Number(flag("capture-quality", "92"));
+const captureJpegQuality = Number(flag("capture-quality", pageFrames ? "75" : "92"));
 if (!Number.isInteger(captureJpegQuality) || captureJpegQuality < 75 || captureJpegQuality > 95) throw new Error("--capture-quality must be 75–95");
 const FPS = Number(flag("fps", "60"));
 if (![30, 60].includes(FPS)) throw new Error("--fps must be 30 or 60");
@@ -257,7 +261,7 @@ async function record(browser, slug) {
       : initialFrame && frameViewport ? fitViewportFrame(vw, vh, initialFrame.bg, OUT_W, OUT_H) : initialFrame;
 
     // Frames: Chrome's screencast, with timestamps, at full quality.
-    const cdp = tabCapture ? null : await context.newCDPSession(page);
+    const cdp = tabCapture || pageFrames ? null : await context.newCDPSession(page);
     let frames = [];
     const writes = [];
     let frameIndex = 0;
@@ -272,7 +276,7 @@ async function record(browser, slug) {
       writes.push(fs.promises.writeFile(file, Buffer.from(f.data, "base64")));
       if (frames.length === 1) resolveOpeningFrame();
     });
-    const nativeStart = tabCapture ? await startTabRecording(page, { title: captureTitle, width: vw * dpr, height: vh * dpr }) : null;
+    const nativeStart = tabCapture ? await startTabRecording(page, { title: captureTitle, width: vw * dpr, height: vh * dpr }) : pageFrames ? await startPageFrameRecording(page, { width: vw * dpr, height: vh * dpr, quality: captureJpegQuality }) : null;
     const t0 = nativeStart?.startTime ?? Date.now() / 1000;
     if (cdp) await cdp.send("Page.startScreencast", { format: "jpeg", quality: captureJpegQuality, everyNthFrame: 1, maxWidth: vw * dpr, maxHeight: vh * dpr });
     await page.evaluate((ambient) => (window.__dfaCursor.dataset.on = ambient ? "0" : "1"), !!ambientMs);
@@ -389,7 +393,7 @@ async function record(browser, slug) {
     await page.evaluate(() => (window.__dfaCursor.dataset.on = "0"));
     await page.waitForTimeout(Math.max(350, gallery ? 3000 - (Date.now() / 1000 - t0) * 1000 : 350));
     const t1 = Date.now() / 1000;
-    const nativeEnd = nativeStart ? await stopTabRecording(page, tmp, nativeStart) : null;
+    const nativeEnd = nativeStart ? pageFrames ? await stopPageFrameRecording(page, tmp, nativeStart) : await stopTabRecording(page, tmp, nativeStart) : null;
     if (nativeEnd) frames = nativeEnd.frames;
     if (cdp) await cdp.send("Page.stopScreencast");
     await page.waitForTimeout(100);
@@ -410,7 +414,7 @@ async function record(browser, slug) {
     if (reportDir) {
       const directory = path.resolve(root, reportDir);
       fs.mkdirSync(directory, { recursive: true });
-      fs.writeFileSync(path.join(directory, `${slug}.json`), JSON.stringify({ slug, renderMode: isolatedSource ? "isolated-production-source" : "preview", ...(nativeEnd ? { captureTransport: "owned-browser-tab", nativeSourceQuality, nativeChangeQuality, native: nativeEnd.evidence } : {}), openingFrameBeforeActions: true, quality, continuousQuality, viewport: { vw, vh, dpr }, framing: frame, timestamps: frames.map((frame) => frame.t), motionWindows, continuousWindows }, null, 2));
+      fs.writeFileSync(path.join(directory, `${slug}.json`), JSON.stringify({ slug, renderMode: isolatedSource ? "isolated-production-source" : "preview", ...(nativeEnd ? { captureTransport: pageFrames ? "owned-page-screenshots" : "owned-browser-tab", nativeSourceQuality, nativeChangeQuality, native: nativeEnd.evidence } : {}), openingFrameBeforeActions: true, quality, continuousQuality, viewport: { vw, vh, dpr }, framing: frame, timestamps: frames.map((frame) => frame.t), motionWindows, continuousWindows }, null, 2));
       if (nativeEnd) fs.copyFileSync(nativeEnd.file, path.join(directory, `${slug}-raw.${nativeEnd.extension}`));
     }
     // Each frame holds until the next one; the last holds to the end.
@@ -479,6 +483,7 @@ async function record(browser, slug) {
     }
     return { written, problems };
   } finally {
+    if (pageFrames) for (const page of context.pages()) await discardPageFrameRecording(page);
     await context.close();
     fs.rmSync(tmp, { recursive: true, force: true });
   }
@@ -489,8 +494,8 @@ if (!slugs.length) {
   console.log("No components with a demo.");
   process.exit(0);
 }
-const nativeTabMobile = tabCapture && slugs.every(slug => readMeta(slug)?.platform === "mobile");
-if (tabCapture && !nativeTabMobile && slugs.some(slug => readMeta(slug)?.platform === "mobile")) throw new Error("Record web and native tab fixtures separately to preserve their exact pixel density");
+const nativeTabMobile = (tabCapture || pageFrames) && slugs.every(slug => readMeta(slug)?.platform === "mobile");
+if ((tabCapture || pageFrames) && !nativeTabMobile && slugs.some(slug => readMeta(slug)?.platform === "mobile")) throw new Error("Record web and native fixtures separately to preserve their exact pixel density");
 const displayScale = nativeTabMobile ? 2 : webScale;
 if (webScale > 1 && args.includes("--software-rendering")) throw new Error("--web-scale above 1 requires the native renderer");
 const browser = await launchChromium(args.includes("--software-rendering") ? {} : { args: ["--mute-audio", ...(displayScale > 1 ? [`--force-device-scale-factor=${displayScale}`] : []), ...(tabCapture ? [`--auto-select-tab-capture-source-by-title=${captureTitle}`] : [])] });
