@@ -32079,7 +32079,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "navigation",
-    "description": "Layered document tabs with close review, retained drafts, restore and real reordering. Cancellable host requests preserve content through pending and failure.",
+    "description": "Layered monochrome document tabs with retained editorial drafts, close/restore history, precise reorder controls and an interruptible dirty-close review.",
     "tags": [
       "navigation",
       "document tabs",
