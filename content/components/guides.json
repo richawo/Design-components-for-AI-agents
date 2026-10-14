@@ -4393,56 +4393,64 @@
     "updated": "2026-10-14"
   },
   "editor-spacing-inspector": {
-    "useWhen": "Inspecting and adjusting actual padding and gaps around supplied content.",
-    "avoidWhen": "A full browser developer tool or drawing measurement labels unrelated to the rendered layout.",
+    "useWhen": "Inspecting and changing real padding and gap on supplied content, with measurements from the rendered CSS box.",
+    "avoidWhen": "A full page-layout engine or measurement of intrinsic artwork outside the supplied box.",
     "integration": [
-      "Supply the content and bounded spacing parameters. Measure the actual container and keep exact fields and pointer controls consistent.",
-      "Retain content state as boundaries change and provide keyboard controls without capturing unrelated page gestures."
+      "Supply bounded integer SpacingValue padding0–96/gap0–64 and row/column direction. Linked editing requests all four edges atomically; gap remains independent.",
+      "Provide value and onValueChange for controlled accepted spacing. Incomplete numeric buffers and newer drafts remain separate from accepted layout; synchronous failures preserve the actual layout.",
+      "Measurements use logical computed CSS pixels, including animated padding/gap and independently scaled axes. Export contains accepted flex/padding/gap CSS; Clipboard failure leaves selectable output."
     ],
     "related": [
       "layout-split-resizer",
-      "media-device-switcher"
+      "editor-layer-stack",
+      "media-crop-workbench"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "editor-branch-compare": {
-    "useWhen": "Reviewing differences between two supplied document structures and explicitly accepting or retaining individual changes.",
-    "avoidWhen": "Automatically merging source control branches or pretending every conflicting change is safe to accept.",
+    "useWhen": "Choosing individual additions, removals, text and parent changes between two actual document structures.",
+    "avoidWhen": "A language-aware source-code merge, unbounded document parser or automatic persistence engine.",
     "integration": [
-      "Supply stable block identities and both actual versions. Show the scope of each decision and keep unreviewed changes distinguishable.",
-      "Preserve decisions and surrounding context after host rejection; accepted state must come from the actual merge owner."
+      "Supply distinct current/incoming version identities and up to48 unique acyclic nodes each, depth at most6, with actual parent identity, body and bounded sibling order.",
+      "Controlled decisions reference unique changed nodes. Unspecified nodes retain current; choosing an absent source explicitly omits it. A mixed structure with missing parents or cycles remains unavailable.",
+      "onApply receives both exact version IDs, cloned complete merged nodes and copied complete changed-node decisions plus AbortSignal. Awaiting fulfillment acknowledges the request only; your host supplies the persisted versions. Changed source facts, including in-place mutations, retire stale acknowledgment."
     ],
     "related": [
-      "agent-diff-review",
-      "legal-version-history"
+      "forms-draft-rescue",
+      "editor-layer-stack",
+      "selects-tree-picker"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "editor-asset-license-sheet": {
-    "useWhen": "Inspecting supplied asset provenance and usage terms before selecting an eligible asset.",
-    "avoidWhen": "Legal advice, invented license eligibility or using a visual badge as proof that every usage is allowed.",
+    "useWhen": "Reviewing actual asset provenance and host-supplied usage eligibility for a specific project before selecting an asset.",
+    "avoidWhen": "Interpreting a third-party licence or granting rights from a visual component.",
     "integration": [
-      "Supply provenance, actual terms, attribution and the host’s eligibility decision. Missing information must remain explicit.",
-      "Keep selection separate from accepting terms and provide real source destinations only when available."
+      "Supply exact project identity/title/usage and up to32 unique asset records with actual creator/source, terms and boolean-or-null project eligibility. Unknown eligibility stays unavailable.",
+      "Eligible assets need supplied terms and explicit review. If the host requires a credit, supply and review that exact credit. Availability interruptions preserve review; changed selected asset/project facts retire it.",
+      "onSelect receives a copied exact project, asset/all terms and review snapshot with AbortSignal. Fulfillment acknowledges only selection request; host owns rights evaluation, persistence and project attachment."
     ],
     "related": [
-      "data-file-explorer",
-      "legal-document-requests"
+      "media-image-contact-sheet",
+      "cards-prismatic-folder",
+      "media-compare-grid"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "editor-storyboard-strip": {
-    "useWhen": "Arranging supplied scene cards and inspecting durations and cumulative sequence timing.",
-    "avoidWhen": "A video encoding engine or a storyboard whose changed durations have no effect on its timing.",
+    "useWhen": "Arranging actual scenes and adjusting bounded durations while inspecting their cumulative sequence.",
+    "avoidWhen": "Rendered video playback, frame-accurate editing or an implicit export pipeline.",
     "integration": [
-      "Supply stable scene IDs, actual durations and content. Reordering and exact duration edits should update the same computed sequence.",
-      "Provide keyboard moves and an explicit review before any host export; retain drafts and position after rejection."
+      "Supply up to20 unique actual scene records. Each duration is0.25–120 seconds in quarter-second steps, with complete sequence total at most600 seconds. Optional thumbnails fail visibly.",
+      "Use scenes/onScenesChange for accepted controlled order and duration. The component requests a cloned complete sequence and retains newer numeric buffers after old acknowledgment. Native earlier/later and Alt+Left/Right provide keyboard order changes.",
+      "The native sequence range selects an actual cumulative interval. Scene preview represents supplied records and timing; your application owns rendered playback, persistence and export."
     ],
     "related": [
-      "media-story-deck",
-      "navigation-stacked-tabs"
+      "media-trim-timeline",
+      "media-device-switcher",
+      "media-transcript-player"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "editor-keyframe-track": {
     "useWhen": "Editing supplied discrete keyframes and inspecting the actual interpolated property over time.",
