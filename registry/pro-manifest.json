@@ -19514,7 +19514,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Complete charcoal or cream palettes, including focus and disabled link states."
+        "description": "Complete monochromatic graphite/white chrome. Colour is reserved for actual supplied content and purposeful feature accents."
       },
       {
         "name": "labels",
