@@ -8696,7 +8696,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Two deliberate, readable surfaces."
+        "description": "Neutral graphite and white chrome; colour is reserved for actual feature content and semantic data accents."
       },
       {
         "name": "className",
