@@ -18414,7 +18414,7 @@
       {
         "name": "questions",
         "type": "readonly SurveyQuestion[]",
-        "description": "At most20 unique questions, text or choice, with prior-question-only showWhen rules. Choices are unique and bounded to12; text maximumLength1–2000."
+        "description": "At most20 unique questions, text or choice, with prior-question-only showWhen rules. Choices are unique and bounded to12; text maximumLength1–2000. Choices may supply a decorative ReactElement illustration; its descendants are inert and do not replace the native radio or submitted identity."
       },
       {
         "name": "answers",
@@ -18464,7 +18464,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Complete deep-blue or pale-paper native palette."
+        "description": "Complete monochromatic graphite/white chrome. Colour is reserved for actual supplied content and purposeful feature accents."
       },
       {
         "name": "labels",
