@@ -87,7 +87,8 @@ export function SiteHeader({ locale = "en", copy = {} }: { locale?: string; copy
       <header
         className={`relative border-b transition-[background-color,border-color] duration-300 ${scrolled || open ? "border-white/[0.07] bg-site-bg/75 backdrop-blur-xl backdrop-saturate-150" : "border-transparent bg-transparent"}`}
       >
-        <div className={`mx-auto flex h-16 items-center justify-between gap-6 px-5 sm:px-8 ${pathname === "/components" ? "" : "max-w-[80rem]"}`}>
+        {/* Finite limits let the header interpolate between the reading width and the catalogue width. */}
+        <div className={`site-header-content mx-auto flex h-16 w-full items-center justify-between gap-6 px-5 transition-[max-width] duration-500 ease-site motion-reduce:transition-none sm:px-8 ${pathname === "/components" ? "max-w-full" : "max-w-[80rem]"}`}>
           <div className="flex items-center gap-10">
             <Logo />
             <nav aria-label={t("Main")} className="hidden items-center gap-1 lg:flex" onMouseLeave={() => setHovered(null)}>
