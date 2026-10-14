@@ -12286,6 +12286,152 @@
     ]
   },
   {
+    "slug": "devtools-incident-timeline",
+    "name": "Incident Observation Timeline",
+    "tier": "pro",
+    "platform": "web",
+    "category": "devtools",
+    "description": "A chronological supplied-incident folio with event-scoped evidence, explicit time zones, category filters and honest unsupported/conflicting records.",
+    "tags": [
+      "devtools",
+      "incident",
+      "timeline",
+      "evidence",
+      "timezone",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1320,
+    "usage": "import { DevtoolsIncidentTimeline } from \"@/components/design-for-ai/devtools-incident-timeline\";\n\n<DevtoolsIncidentTimeline incident={incident} events={history} value={eventId} onValueChange={setEvent} resetKey={historyId} />",
+    "props": [
+      {
+        "name": "incident",
+        "type": "IncidentTimelineIncident",
+        "description": "Actual supplied incident ID/title/context. Identity plus resetKey defines a replacement history.",
+        "default": "Original offline navigation wait study"
+      },
+      {
+        "name": "events",
+        "type": "IncidentTimelineEvent[]",
+        "description": "Stable event IDs, explicit ISO timestamps, supported categories, actual descriptions/actors and event-scoped evidence with optional actual links.",
+        "default": "Five original offline observations"
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "description": "Controlled selected event; missing IDs remain explicit and missing observer makes selection read-only."
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "description": "Initial local selected supported event, reused on reset."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(id: string, event: IncidentTimelineEvent) => void",
+        "description": "Synchronous event inspection observer. Rejection keeps actual selection."
+      },
+      {
+        "name": "timeZone",
+        "type": "string",
+        "description": "Authoritative IANA display zone; no observer makes the native zone picker read-only."
+      },
+      {
+        "name": "defaultTimeZone",
+        "type": "string",
+        "description": "Initial local IANA display zone; changes label conversion only.",
+        "default": "\"UTC\""
+      },
+      {
+        "name": "timeZones",
+        "type": "IncidentTimelineZone[]",
+        "description": "Supplied native zone options; IDs must be supported and unique. Current custom zone remains visible.",
+        "default": "UTC, London and New York"
+      },
+      {
+        "name": "onTimeZoneChange",
+        "type": "(zone: string) => void",
+        "description": "Synchronous display-zone observer; supplied timestamps never change."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Incident/history identity. Resets local selection/filter/zone and reading; preserves explicit outside focus."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "A clear uncertainty-aware incident heading.",
+        "default": "\"Read the events. Keep the uncertainty.\""
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Explain supplied chronology/evidence inspection.",
+        "default": "\"Put supplied alerts, deployments and interventions on one timeline, with their actual evidence and time zone in view.\""
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Restrained warm incident folio with semantic category inks.",
+        "default": "\"dark\""
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Outer incident folio classes.",
+        "default": "\"\""
+      }
+    ],
+    "added": "2026-10-13",
+    "demo": {
+      "steps": [
+        "click:@incident-event-first-alert",
+        "wait:350",
+        "click:@incident-filter-intervention",
+        "wait:350",
+        "click:@incident-event-intervention-prefetch",
+        "wait:450",
+        "click:@incident-filter-all",
+        "wait:450"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "title",
+        "label": "Heading",
+        "kind": "text",
+        "default": "Read the events. Keep the uncertainty."
+      },
+      {
+        "prop": "defaultTimeZone",
+        "label": "Display zone",
+        "kind": "select",
+        "options": [
+          "UTC",
+          "Europe/London",
+          "America/New_York"
+        ],
+        "default": "UTC",
+        "remount": true
+      }
+    ]
+  },
+  {
     "slug": "devtools-log-stream",
     "name": "Log Stream",
     "tier": "pro",

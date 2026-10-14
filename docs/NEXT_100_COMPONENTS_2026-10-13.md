@@ -141,7 +141,7 @@ Validate all six web widths, both supported themes, multiple instances and empty
 | 77 | `devtools-release-compare` | devtools | Compare deployments, inspect changed resources and request a reviewed rollback. | Released |
 | 78 | `devtools-request-replay` | devtools | Edit a supplied request and inspect a host-provided response; cancellation rejects stale results. | Released |
 | 79 | `devtools-schema-migration` | devtools | Inspect a supplied migration plan, dependencies and impact before a host-owned apply request. | Released |
-| 80 | `devtools-incident-timeline` | devtools | Correlate supplied alerts, deploys and interventions on one timeline with filters and accessible event details. | Planned |
+| 80 | `devtools-incident-timeline` | devtools | Correlate supplied alerts, deploys and interventions on one timeline with filters and accessible event details. | Released |
 
 ## 9. Native personal tools
 
@@ -175,4 +175,4 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 ## Progress
 
-Planned: 44. Released: 56. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
+Planned: 43. Released: 57. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
