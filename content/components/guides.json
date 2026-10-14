@@ -4552,13 +4552,14 @@
     "integration": [
       "Supply stable fields with actual path, declared JSON type (string, number, boolean, null, object or array), value, waiting/partial/valid/invalid/unavailable state and meaningful messages. outputState/outputMessage describes actual host streaming/completion/failure; rawOutput is received text, not invented validated JSON.",
       "Selection is an exact value/defaultValue/onValueChange ID contract; inspection filters are local. Only unique, valid, type-matching, finite, acyclic and bounded field values can be copied as validated output. Explicit raw copying keeps the received state clear.",
-      "Real onRetry(field, AbortSignal) and field clipboard jobs are owned by exact field content/state and unique identity, output/reset scope, availability and callback identity. A newly duplicated active ID aborts recovery and retires field-copy receipts; old settlement cannot affect corrected newer work. Raw-text copying keeps its independent supplied-text scope. Missing handlers never show fake recovery controls."
+      "Real onRetry(field, AbortSignal) and field clipboard jobs are owned by exact field content/state and unique identity, output/reset scope, availability and callback identity. A newly duplicated active ID aborts recovery and retires field-copy receipts; old settlement cannot affect corrected newer work. Raw-text copying keeps its independent supplied-text scope. Missing handlers never show fake recovery controls.",
+      "Optional defaultView starts named inspection in field or raw mode and reapplies on resetKey. The original demo begins with a complete raw payload derived only from its own fields; caller fields receive no unrelated stand-in. Raw copying remains explicitly separate from validated field output."
     ],
     "related": [
       "streaming-text",
       "ai-mcp-elicitation"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "agents-dependency-board": {
     "useWhen": "Inspecting supplied task dependencies and tracing actual blockers with a readable graph and linear alternative.",
