@@ -4656,69 +4656,109 @@
     "updated": "2026-10-14"
   },
   "mobile-mood-map": {
-    "useWhen": "Choosing and refining a feeling in a calm, semantic mobile check-in.",
-    "avoidWhen": "Diagnosing a condition, scoring a person or imposing a mood label from activity data.",
+    "useWhen": "A deliberate self-reported check-in with named supplied feeling choices, exact spatial coordinates and a retained personal note.",
+    "avoidWhen": "Inferring a feeling from text, clinical diagnosis, advice or implicit saving.",
     "integration": [
-      "Supply meaningful feeling labels and an acknowledged check-in handler. Keep selection available through failure, and provide a readable list alternative to the spatial map.",
-      "Install in a React Native app. The web preview supports design review; verify touch gestures, large text, reduced motion and assistive technology on target devices."
+      "choices: Exact unique identities, descriptions and finite pleasantness/energy coordinates within [-1,1]. Duplicate or invalid choices stay visible in the list and cannot select.",
+      "value: Authoritative choice identity. Missing, null or conflicting identity remains explicit. Without observer the controlled map is read-only.",
+      "defaultValue: Initial local choice. Default steady.",
+      "onValueChange: Copied synchronous selection observer runs before mutation. Throwing retains previous choice.",
+      "onSave: Exact selected choice, note and check-in context snapshot. Fulfillment is acknowledgment. Missing handler disables save; cancellation is cooperative.",
+      "contextId: Replacement check-in identity retires requests and resets local selection/note.",
+      "dateLabel: Host-authored check-in context, no inferred date or timezone.",
+      "defaultNote: Initial retained note for the actual context.",
+      "maxNoteLength: Integer1–12000. Invalid bound or over-limit draft blocks save; draft is retained.",
+      "Provide a full-height native canvas. Local horizontal shelves preserve touch target size at320px; vertical content scrolls under the translucent action footer. Install Expo modules once for bare React Native.",
+      "Verify real iOS/Android touch, large text and assistive technology in the host app. Browser previews exercise the actual React Native Web source and state contracts."
     ],
     "related": [
-      "mobile-health-summary",
+      "mobile-bottom-sheet",
       "mobile-settings"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "mobile-habit-grid": {
-    "useWhen": "Recording and correcting dated habit entries with an inspectable history.",
-    "avoidWhen": "Punitive streak messaging, automated health conclusions or silently backfilling missing entries.",
+    "useWhen": "Inspecting and editing exact completion records for seven consecutive calendar dates without treating missing records as incomplete.",
+    "avoidWhen": "Inferring streaks, creating an automatic tracker from missing data or silently overwriting duplicate records.",
     "integration": [
-      "Use stable local dates and host-owned history. Make corrections and undo explicit, distinguish missing entries from incomplete habits, and preserve the selected date.",
-      "Install in a React Native app. The web preview supports design review; verify touch gestures, large text, reduced motion and assistive technology on target devices."
+      "habits: Actual unique identity/name/detail and explicit enabled boolean. Conflicting identities cannot mutate.",
+      "days: Exactly seven consecutive valid ISO calendar dates, supplied weekday and label. Invalid date configurations block edits.",
+      "value: Authoritative completion records. Missing, duplicate or null cell is unknown; controlled with no observer is read-only.",
+      "defaultValue: Initial local actual records. A toggle replaces the exact supplied cell only.",
+      "onValueChange: Copied exact whole proposed records and current cell facts. Local mode accepts after fulfillment. Controlled mode waits for supplied value. Failed/cancelled requests preserve records.",
+      "weekId: Replacement week identity retires pending work and resets local records.",
+      "weekLabel: Actual host date range label; calendar dates govern eligibility.",
+      "Provide a full-height native canvas. Local horizontal shelves preserve touch target size at320px; vertical content scrolls under the translucent action footer. Install Expo modules once for bare React Native.",
+      "Verify real iOS/Android touch, large text and assistive technology in the host app. Browser previews exercise the actual React Native Web source and state contracts."
     ],
     "related": [
-      "mobile-health-summary",
+      "mobile-bottom-sheet",
       "mobile-settings"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "mobile-focus-session": {
-    "useWhen": "Starting, pausing and resuming a bounded personal focus session.",
-    "avoidWhen": "Measuring productivity or treating background timer ticks as elapsed-time evidence.",
+    "useWhen": "Presenting an actual host-owned focus timer and requesting explicit start, pause, resume, finish or reset actions.",
+    "avoidWhen": "A native background timer service, notification scheduler or assuming an acknowledgment means the session started.",
     "integration": [
-      "Derive elapsed time from timestamps, account for backgrounding and expose an explicit reset. Keep completion quiet and explain any host-owned persistence.",
-      "Install in a React Native app. The web preview supports design review; verify touch gestures, large text, reduced motion and assistive technology on target devices."
+      "session: Actual nonempty identity, ready/running/paused/finished state, integer duration60–14400 and finite elapsed0..duration. Invalid session is explicit and blocks actions.",
+      "onAction: Copied action and exact session snapshot. Fulfillment only acknowledges. Timer/action ownership and persistence belong to host.",
+      "onDurationChange: Synchronous actual duration proposal, available only while ready. Throwing leaves timer unchanged.",
+      "durations: Up to six supplied bounded duration choices, no inferred timer modes.",
+      "intention: Host-authored focus intention. Complete default demo runs an explicit local demonstration clock, not a native background service.",
+      "Provide a full-height native canvas. Local horizontal shelves preserve touch target size at320px; vertical content scrolls under the translucent action footer. Install Expo modules once for bare React Native.",
+      "Verify real iOS/Android touch, large text and assistive technology in the host app. Browser previews exercise the actual React Native Web source and state contracts."
     ],
     "related": [
-      "mobile-live-activity",
-      "mobile-now-playing"
+      "mobile-bottom-sheet",
+      "mobile-settings"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "mobile-day-planner": {
-    "useWhen": "Reordering and rescheduling a supplied daily agenda with accessible controls.",
-    "avoidWhen": "A full calendar service, an automatic scheduling agent or hiding constraints behind drag-only gestures.",
+    "useWhen": "Inspecting a supplied local-time day schedule and reviewing an exact reschedule proposal against current overlap constraints.",
+    "avoidWhen": "Timezone conversion, calendar sync or silently moving actual events before the host supplies that change.",
     "integration": [
-      "Supply stable task identities, local date context and scheduling constraints. Pair gestures with explicit move controls, preserve the original order after rejection and describe accepted changes.",
-      "Install in a React Native app. The web preview supports design review; verify touch gestures, large text, reduced motion and assistive technology on target devices."
+      "events: Exact event identities/title/detail, integer start/end within0–1440, explicit editable/reason. Invalid or duplicate identities remain readable but cannot select.",
+      "selectedId: Controlled actual inspected event. Missing observer makes controlled selection read-only.",
+      "defaultSelectedId: Initial local event identity. A missing selection is not replaced silently.",
+      "onSelectionChange: Synchronous copied selection observer before local mutation.",
+      "onReschedule: Exact copied current event, reviewed local-time range, note and current overlap evidence. Acknowledgment does not move supplied calendar. Cancel/failure/newer drafts remain separate.",
+      "dayId: Actual calendar-day identity. Context replacement retires review and pending work.",
+      "dayLabel: Host-authored readable date.",
+      "timezoneLabel: Host-authored zone context. Component does not convert timezones.",
+      "minuteStep: Integer1–60 required for whole-minute times; invalid configuration blocks request.",
+      "allowOverlap: Explicit host policy. Default false. Exact overlapping events are included in the request either way.",
+      "Provide a full-height native canvas. Local horizontal shelves preserve touch target size at320px; vertical content scrolls under the translucent action footer. Install Expo modules once for bare React Native.",
+      "Verify real iOS/Android touch, large text and assistive technology in the host app. Browser previews exercise the actual React Native Web source and state contracts."
     ],
     "related": [
-      "mobile-settings",
-      "mobile-swipe-list"
+      "mobile-bottom-sheet",
+      "mobile-settings"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "mobile-journal-prompt": {
-    "useWhen": "Expanding a writing prompt into a private, user-owned journal draft.",
-    "avoidWhen": "Generating a diary entry without consent or claiming storage success before host acknowledgement.",
+    "useWhen": "Prompt-led writing with separate retained drafts and exact cancellable saving that preserves newer text.",
+    "avoidWhen": "Generated reflections, mood interpretation or replacing the person's words with a summarized version.",
     "integration": [
-      "Supply prompt copy and a real save handler. Preserve exact text through pending and failure, expose retry and distinguish local drafts from saved entries.",
-      "Install in a React Native app. The web preview supports design review; verify touch gestures, large text, reduced motion and assistive technology on target devices."
+      "prompts: Exact unique identity/title/question/guidance and explicit availability. Unavailable prompts stay inspectable; duplicates cannot select.",
+      "answers: Actual supplied previous text/update label. Duplicate answers block saving instead of choosing an arbitrary version.",
+      "selectedId: Controlled selected prompt. Missing observer makes only prompt switching read-only; draft writing follows actual availability.",
+      "defaultSelectedId: Initial local prompt identity. Missing selection remains explicit.",
+      "onSelectionChange: Copied synchronous selection observer before mutation. Rejected changes retain current prompt and draft.",
+      "onSave: Exact prompt, current text and previous supplied answer snapshot. Fulfillment acknowledges that snapshot, never replaces newer writing.",
+      "journalId: Replacement journal context retires requests and clears local draft buckets.",
+      "dateLabel: Host-authored journal context.",
+      "maxLength: Integer1–20000. Invalid limit or over-limit text blocks submission while retaining the complete writing.",
+      "Provide a full-height native canvas. Local horizontal shelves preserve touch target size at320px; vertical content scrolls under the translucent action footer. Install Expo modules once for bare React Native.",
+      "Verify real iOS/Android touch, large text and assistive technology in the host app. Browser previews exercise the actual React Native Web source and state contracts."
     ],
     "related": [
-      "mobile-settings",
-      "mobile-chat"
+      "mobile-bottom-sheet",
+      "mobile-settings"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "mobile-reading-progress": {
     "useWhen": "Reviewing chapter progress, bookmarks and an explicit resume destination.",
