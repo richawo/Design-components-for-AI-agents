@@ -22993,7 +22993,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Complete warm-ink or paper palettes, including selected/focus/error states."
+        "description": "Complete monochromatic graphite/white chrome. Colour is reserved for actual supplied content and purposeful feature accents."
       },
       {
         "name": "labels",
