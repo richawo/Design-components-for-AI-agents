@@ -4288,7 +4288,7 @@
     "integration": [
       "Supply at most 500 raw unique labeled x/y records with finite coordinates within ±1 billion. Domains come from observed extents or explicit ordered host bounds; equal endpoints center that dimension. Points outside explicit domains remain counted and available in the exact native records.",
       "Control one atomic bounds/selectedId packet. A primary pointer drag is provisional until release; only a completed valid region requests a change. Escape, cancellation, source or host resets retire held gestures. Other contacts do not own or cancel the primary brush. Rejected requests preserve the accepted view and do not commit.",
-      "Four exact native fields provide keyboard filtering, retaining invalid and newer drafts through older acceptance. Arrow keys move an accepted region within domain bounds. Inspect every original record in source order, 24 per page, with complete exact coordinates. A selected record outside the accepted region is described explicitly; no correlation is inferred.",
+      "Four exact native fields provide keyboard filtering, retaining invalid and newer drafts through older acceptance. Arrow keys move an accepted region within domain bounds. Inspect every original record in source order, 24 per page, with complete exact coordinates. A selected record outside the accepted region is described explicitly; no correlation is inferred. Clear region retires only unchanged captured exact drafts after the full clear is accepted. Throwing or silently rejecting handlers retain them, newer edits survive an older delayed acceptance, and source or availability changes retire obsolete reset intent.",
       "Current rectangles and counts animate in both directions and stop or settle immediately on live reduced motion or hidden/blocked states. Draft SVG writes are coalesced instead of rerendering the full point set on every move. Full native targets and stacked compact controls retain touch access; focused owner-document fences preserve outside and parent-page actions."
     ],
     "related": [
@@ -4316,9 +4316,9 @@
     "useWhen": "Exploring a real computed pivot by selecting supplied dimensions and supported measures.",
     "avoidWhen": "A database query console or a pivot whose displayed cells are fixed demonstration values.",
     "integration": [
-      "Supply 1–8 unique declared category/number fields and up to 2000 unique labeled original scalar records through immutable source revisions. Numeric values are finite within ±1 billion. Actual own keys are read; missing keys, explicit null, typed categories and literal placeholder strings remain distinct.",
+      "Supply 1–8 unique declared category/number fields and up to 2000 unique labeled original scalar records through explicit source revisions. Numeric values are finite within ±1 billion. Actual own keys are read; missing keys, explicit null, typed categories and literal placeholder strings remain distinct. Validation and meaningful signatures are derived from current source values each render, so retained-array edits cannot leave stale buckets or duplicate identities.",
       "Control one atomic rowField/columnField/measure/valueField configuration. Category dimensions are distinct or null. Count retains all original records; compensated sum and mean use actual numeric contributors without imputed zeros. Totals are computed from original contributors, so a mean is not an average of group means. This is local bounded aggregation, not a server query.",
-      "Edit a genuine draft and apply it explicitly. Rejection and older host acceptance preserve newer draft intent; only accepted discrete configurations commit. Keep accepted and Default grouping are explicit reset actions. Untouched loading initializes at first ready fields; explicit unknown and later chosen context remain honest.",
+      "Edit a genuine draft and apply it explicitly. Rejection and older host acceptance preserve newer draft intent; only accepted discrete configurations commit. Keep accepted and Default grouping are explicit reset actions. Untouched loading initializes at first ready fields; explicit unknown and later chosen context remain honest. Default grouping clears only the unchanged captured draft after actual acceptance; refused resets and newer edits remain intact.",
       "Matrices exceeding 12 row groups or 8 columns receive a useful unsupported state while every original remains inspectable in source order, 24 per page. Inspect a real or empty cell for its exact originals; configuration-disabled mode still permits read-only inspection. A compact draft rail sits above the matrix and original-record inspector on wide embeds; narrow containers stack both native scrolling regions. Live reduced motion settles current totals/result emphasis, and actual owner-document fences preserve outside or parent-page focus."
     ],
     "related": [
@@ -4331,7 +4331,7 @@
     "useWhen": "Reordering, pinning and hiding columns while inspecting an actual supplied table.",
     "avoidWhen": "An unrelated table filter or a decorative list of settings with no table effect.",
     "integration": [
-      "Supply 1–10 raw unique labeled columns and up to 500 unique labeled immutable records with own declared scalar values. Column widths are 80–360px, with a 160px default. Required columns stay visible and at least one column is visible; missing values and explicit null remain distinct.",
+      "Supply 1–10 raw unique labeled columns and up to 500 unique labeled immutable records with own declared scalar values. Column widths are 80–360px, with a 160px default. Required columns stay visible and at least one column is visible; missing values and explicit null remain distinct. Native string cells are quoted and booleans labeled, so literal placeholder text, false, missing keys and null are distinct. Current source identities and facts are validated afresh per render.",
       "Control one full ColumnArrangement array containing every source ID exactly once with visible and pinned booleans. Move, pin, visibility and reset requests carry distinct typed reasons. Only current accepted arrangements commit; controlled rejection, no-op and cancellation preserve the actual table. The host owns persistence.",
       "Visible pinned columns precede visible unpinned columns in their chosen relative order and stay frozen at the left edge. Actual declared layout widths drive sticky offsets. The table axis is left-to-right, labels retain their supplied content, and every original record remains available through 16-record paging and a native focusable scroll region.",
       "Use a primary pointer grip or its ArrowUp/Down/Home/End keys, with native earlier/later controls as a touch alternative. Proposed insertion is distinct from accepted table order. Source/owner resets retire active gestures; focused offscreen moves reveal their logical destination. Unknown arrangements explicitly retain original source columns and offer Source arrangement instead of silently choosing a valid accepted fallback. Untouched loading initializes first real ready data; later chosen context remains authoritative."
@@ -4346,27 +4346,31 @@
     "useWhen": "Reviewing exactly which supplied selected records a host action will affect, exclude or fail.",
     "avoidWhen": "Applying actions implicitly or claiming success for every selected item after a partial host failure.",
     "integration": [
-      "Supply stable record IDs, eligibility and a concrete action description. Show exclusions before submission and per-record results afterwards.",
-      "Preserve selection and retry only eligible failed records after a rejected or partial operation; stale requests must not update a newer review."
+      "Supply up to 200 raw unique labeled records with explicit eligible booleans and optional exclusion reasons. Control selectedIds with onSelectionChange or initialize local defaultSelectedIds. Unknown selected identities remain visible as held exclusions, and the component never selects records implicitly.",
+      "An explicit review precedes confirmation. onApply receives actionId, exact eligible recordIds, a local correlation attemptId, apply/retry mode and an AbortSignal. The host performs the actual action and returns unique per-record succeeded/failed acknowledgements. Unacknowledged records stay distinct from failures; the component does not claim an entire selection succeeded.",
+      "Source, selection, action, availability or callback revisions abort the waiting context and ignore late results. Stop waiting does not prove an external action was cancelled. Accepted receipts retain immutable source labels and exact requested scope; caller observer mutation cannot rewrite that receipt.",
+      "Opt in to allowRetry only when the host supports retrying acknowledged failures in an unchanged context. Missing acknowledgements are not automatically retried. Pending activation retains native focus and admits one operation; manual browsing survives completion. Bounded measured review motion and counts settle immediately on live reduced motion."
     ],
     "related": [
       "agent-approval-gate",
       "data-table-sortable"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "data-filter-history": {
     "useWhen": "Comparing, naming and explicitly restoring supplied prior filter configurations.",
     "avoidWhen": "Silently changing the active view while merely inspecting a previous state or replacing a full version-control system.",
     "integration": [
-      "Supply stable filter-state identities, readable criteria and timestamps. Keep previewed history distinct from the currently active filter.",
-      "A host acknowledgement should determine restored state; preserve the active view and draft name after failure."
+      "Supply 1–8 raw unique labeled text/number/boolean fields, up to 500 unique original scalar records and up to 12 named filter snapshots with savedAt labels and at most 12 AND rules each. Exact is/is_not/contains/at_least/at_most rules distinguish missing keys, explicit null and literal strings; numeric limits are inclusive and values finite within ±1 billion.",
+      "Control the active rules through value/onValueChange or initialize defaultValue. Comparison selection has separate selectedId/onSelectionChange ownership; inspecting a snapshot never restores it. Explicit Restore requests the whole snapshot and emits onValueCommit only after the current host acceptance.",
+      "onRename receives snapshot ID, exact name and an AbortSignal. The host updates supplied history names. Fulfilment alone does not fabricate a renamed snapshot. Per-snapshot native name drafts survive failure and newer edits survive older matching acknowledgements; Escape explicitly returns to the supplied name.",
+      "Source, callback and selected rule-context revisions retire pending work and ignore late settlement, while expected name updates can complete in their current context. Actual matches and originals remain readable through 12-record paging, unsupported criteria retain a native equivalent, and live reduced motion settles counts and result emphasis immediately."
     ],
     "related": [
       "saas-saved-views",
       "data-query-builder"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "editor-layer-stack": {
     "useWhen": "Reordering, locking, hiding and renaming supplied layers with actual selection and a readable move mode.",
