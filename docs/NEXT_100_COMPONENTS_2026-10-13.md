@@ -81,7 +81,7 @@ Validate all six web widths, both supported themes, multiple instances and empty
 | 37 | `pixel-halftone-image` | pixel | A host image becomes a controllable halftone specimen with meaningful density and threshold controls. | Released |
 | 38 | `effect-ink-trail` | effects | A pointer mark inside a bounded drawing region fades deliberately and leaves ordinary controls usable. | Released |
 | 39 | `three-material-inspector` | three-d | Inspect a generic material sample under adjustable light; compare metal, frost and matte using one object. | Planned |
-| 40 | `three-exploded-assembly` | three-d | Separate labeled parts of a supplied generic assembly and restore them, with a complete diagram alternative. | Planned |
+| 40 | `three-exploded-assembly` | three-d | Separate labeled parts of a supplied generic assembly and restore them, with a complete diagram alternative. | Released |
 
 ## 5. Difficult inputs and forms
 
@@ -175,4 +175,4 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 ## Progress
 
-Planned: 43. Released: 57. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
+Planned: 42. Released: 58. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.

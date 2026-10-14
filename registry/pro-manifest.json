@@ -30305,6 +30305,136 @@
     ]
   },
   {
+    "slug": "three-exploded-assembly",
+    "name": "Exploded Assembly",
+    "tier": "pro",
+    "platform": "web",
+    "category": "three-d",
+    "description": "Separate actual supplied generic parts, inspect their notes and restore the assembled pose, with bounded 3D interaction and a complete schematic alternative.",
+    "tags": [
+      "3d",
+      "assembly",
+      "exploded view",
+      "parts",
+      "inspection",
+      "diagram"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react",
+      "three"
+    ],
+    "theme": "dark",
+    "previewHeight": 1280,
+    "usage": "import { ThreeExplodedAssembly } from \"@/components/design-for-ai/three-exploded-assembly\";\n\n<ThreeExplodedAssembly parts={parts} value={view} onValueChange={setView} />",
+    "props": [
+      {
+        "name": "parts",
+        "type": "AssemblyPart[]",
+        "description": "1–12 raw unique labeled box/cylinder/frame parts with actual positive dimensions, positions, explosion vectors and color. Empty/invalid arrays invent no geometry."
+      },
+      {
+        "name": "value",
+        "type": "AssemblyView",
+        "description": "Controlled atomic selectedId/null, separation0–1 in0.01 steps and whole-degree azimuth−75–75. Unknown IDs never select a fallback."
+      },
+      {
+        "name": "defaultValue",
+        "type": "AssemblyView",
+        "description": "Uncontrolled initial view, otherwise the first actual part at assembled0 and turn25°."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(value: AssemblyView) => void",
+        "description": "Requests one valid view. Rejected controlled requests preserve actual geometry and selection."
+      },
+      {
+        "name": "onValueCommit",
+        "type": "(value: AssemblyView) => void",
+        "description": "Only actually accepted completed native pointer/key/selection changes."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Host workbench heading.",
+        "default": "\"See how it comes together.\""
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Plain context that identifies the generic model and its limits."
+      },
+      {
+        "name": "quality",
+        "type": "\"standard\" | \"high\"",
+        "description": "400k/800k main drawing pixels, max2048px side and separately bounded512px shadow map.",
+        "default": "\"standard\""
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Graphite or pale studio palette with readable part notes.",
+        "default": "\"dark\""
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Host view lock; selected part, pose and notes remain available.",
+        "default": "false"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Host root layout classes.",
+        "default": "\"\""
+      }
+    ],
+    "controls": [
+      {
+        "prop": "quality",
+        "label": "Rendering quality",
+        "kind": "segmented",
+        "options": [
+          "standard",
+          "high"
+        ],
+        "default": "standard"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "disabled",
+        "label": "Read-only view",
+        "kind": "toggle",
+        "default": false
+      }
+    ],
+    "demo": {
+      "steps": [
+        "click:@assembly-separation:0.9,0.5",
+        "wait:450",
+        "click:@assembly-cover",
+        "wait:350",
+        "click:@assembly-turn:0.78,0.5",
+        "wait:400",
+        "click:@assembly-frame",
+        "wait:350",
+        "click:@assembly-reset",
+        "wait:450"
+      ],
+      "loop": false
+    },
+    "added": "2026-10-13"
+  },
+  {
     "slug": "three-globe-arcs",
     "name": "Route Globe",
     "tier": "pro",
