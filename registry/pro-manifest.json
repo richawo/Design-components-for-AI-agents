@@ -3242,7 +3242,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Complete olive-vault or pale-paper native palette."
+        "description": "Complete monochromatic graphite/white chrome. Colour is reserved for actual supplied content and purposeful feature accents."
       },
       {
         "name": "labels",
