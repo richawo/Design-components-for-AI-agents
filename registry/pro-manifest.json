@@ -18292,7 +18292,7 @@
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Complete dark or light surface and text palettes."
+        "description": "Complete monochromatic graphite/white chrome. Colour is reserved for actual supplied content and purposeful feature accents."
       },
       {
         "name": "labels",
