@@ -126,7 +126,7 @@ Validate all six web widths, both supported themes, multiple instances and empty
 | 67 | `editor-keyframe-track` | editors | Move discrete keyframes and inspect an interpolated property with a keyboard timeline alternative. | Planned |
 | 68 | `editor-version-restore` | editors | Preview a saved version, compare its scope and request restoration with recoverable pending/failure states. | Planned |
 | 69 | `editor-export-preset` | editors | Compose a valid export format, size and quality from host capabilities, then review the exact payload. | Planned |
-| 70 | `editor-font-pairing` | editors | Compare host-provided font roles against actual supplied copy, with robust fallback and loading states. | Planned |
+| 70 | `editor-font-pairing` | editors | Compare host-provided font roles against actual supplied copy, with robust fallback and loading states. | Released |
 
 ## 8. AI and delivery workflows
 
@@ -175,4 +175,4 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 ## Progress
 
-Planned: 32. Released: 68. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
+Planned: 31. Released: 69. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
