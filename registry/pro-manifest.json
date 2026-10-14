@@ -11737,6 +11737,193 @@
     ]
   },
   {
+    "slug": "date-timezone-overlap",
+    "name": "Working-hours Timezone Overlap",
+    "tier": "pro",
+    "platform": "web",
+    "category": "date-time",
+    "description": "Compare actual zoned instants across supplied working hours, including overnight weekdays and daylight-saving boundaries, before requesting an exact reviewed choice.",
+    "tags": [
+      "timezone",
+      "working-hours",
+      "overlap",
+      "daylight-saving",
+      "date-time",
+      "comparison"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1100,
+    "usage": "import { DateTimezoneOverlap } from \"@/components/design-for-ai/date-timezone-overlap\";\n\n<DateTimezoneOverlap participants={people} date=\"2026-10-13\" anchorZone=\"Europe/London\" value={selection} onValueChange={setSelection} />\n\n// This compares supplied hours, not calendar availability. Choose receives instant, durationMinutes and participantIds.",
+    "props": [
+      {
+        "name": "date",
+        "type": "string",
+        "description": "Valid Gregorian local anchor date YYYY-MM-DD, years1970–2100."
+      },
+      {
+        "name": "anchorZone",
+        "type": "string",
+        "description": "Actual Intl zone used to resolve the preview window. Missing local boundaries are explained; repeated starts choose first and repeated ends second."
+      },
+      {
+        "name": "windowStart",
+        "type": "string",
+        "description": "Local HH:mm window start."
+      },
+      {
+        "name": "windowEnd",
+        "type": "string",
+        "description": "Local HH:mm window end. At or before the start means the following local day."
+      },
+      {
+        "name": "participants",
+        "type": "readonly WorkingParticipant[]",
+        "description": "At most12 unique nonempty identities/names, real timeZone, HH:mm start/end and unique weekday numbers0–6. Overnight hours belong to their starting weekday; equal hours provide no working time."
+      },
+      {
+        "name": "includedIds",
+        "type": "readonly string[]",
+        "description": "Optional controlled exact comparison set; pair with onIncludedIdsChange."
+      },
+      {
+        "name": "defaultIncludedIds",
+        "type": "readonly string[]",
+        "description": "Local seed, defaultall supplied participants. Reset explicitly with resetKey when membership changes."
+      },
+      {
+        "name": "onIncludedIdsChange",
+        "type": "(ids: readonly string[]) => void",
+        "description": "Request a cloned comparison set independently from chosen instant. Rejection preserves accepted membership."
+      },
+      {
+        "name": "value",
+        "type": "OverlapSelection | null",
+        "description": "Controlled chosen instant, durationMinutes and participantIds. An older/outside-context choice remains visibly retained, never silently adapted."
+      },
+      {
+        "name": "defaultValue",
+        "type": "OverlapSelection | null",
+        "description": "Optional local chosen snapshot seed."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(selection: OverlapSelection) => void",
+        "description": "Explicit Choose requests the exact eligible instant, duration and cloned participant identities. No booking, invitations or calendar lookup."
+      },
+      {
+        "name": "durationMinutes",
+        "type": "number",
+        "description": "Whole-minute duration1–120. Every occupied minute must fit all included working hours."
+      },
+      {
+        "name": "stepMinutes",
+        "type": "number",
+        "description": "Whole-minute candidate step15–120, at most120 bounded starts."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "description": "Intl local date/time display; unsupported locale falls back to en-GB."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Explicit local selection/membership/inspection lifecycle reset."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"error\"",
+        "description": "Host availability preserves chosen values and reading context."
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "description": "Meaningful host failure explanation, default when blank."
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Actual recovery request."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Lock comparison/inspection and Choose while retaining actual supplied values."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Complete dark copper or pale-paper palette."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<OverlapLabels>",
+        "description": "Heading, working-hour, scope, choice and recovery copy."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Host layout responsive to actual container width."
+      }
+    ],
+    "added": "2026-10-13",
+    "demo": {
+      "steps": [
+        "click:@timezone-person-new-york",
+        "wait:450",
+        "click:@timezone-person-new-york",
+        "wait:450",
+        "click:@timezone-slot-9",
+        "wait:450",
+        "click:@timezone-choose",
+        "wait:450"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "durationMinutes",
+        "label": "Meeting length",
+        "kind": "slider",
+        "min": 15,
+        "max": 120,
+        "step": 15,
+        "default": 30,
+        "unit": "min"
+      },
+      {
+        "prop": "stepMinutes",
+        "label": "Start interval",
+        "kind": "slider",
+        "min": 15,
+        "max": 60,
+        "step": 15,
+        "default": 30,
+        "unit": "min"
+      },
+      {
+        "prop": "disabled",
+        "label": "Read only",
+        "kind": "toggle",
+        "default": false
+      }
+    ]
+  },
+  {
     "slug": "devtools-api-playground",
     "name": "API Playground",
     "tier": "pro",
