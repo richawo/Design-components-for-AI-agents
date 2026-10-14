@@ -7,6 +7,8 @@
 //   node scripts/record-demos.mjs [slug...] [--base=http://localhost:3100]
 //        [--out=public/previews] [--webm] [--sheet=dir] [--max-kb=600] [--frame-viewport]
 //        [--frame-union=CSS] [--frame-padding=32] fixes one DOM union crop for a web demo
+//        [--web-scale=1|2|3] captures small web specimens at higher pixel resolution
+//        [--web-width=720] [--web-height=560] choose a verified equivalent web scene
 //        [--isolated-source] bundles the exact checked-out demo with production React
 //
 // With no slugs it records every component that has a demo. Drives the
@@ -57,6 +59,16 @@ const frameUnionPadding = Number(flag("frame-padding", "32"));
 if (args.includes("--frame-union")) throw new Error("--frame-union needs a CSS selector after =");
 if (frameUnionSelector !== undefined && !frameUnionSelector.trim()) throw new Error("--frame-union needs a non-empty CSS selector");
 if (!Number.isInteger(frameUnionPadding) || frameUnionPadding < 0 || frameUnionPadding > 160) throw new Error("--frame-padding must be an integer from 0 to 160");
+const webScaleFlag = flag("web-scale", undefined);
+const webScale = Number(webScaleFlag ?? "1");
+if (args.includes("--web-scale")) throw new Error("--web-scale needs 1, 2 or 3 after =");
+if (![1, 2, 3].includes(webScale)) throw new Error("--web-scale must be 1, 2 or 3");
+const webWidthFlag = flag("web-width", undefined);
+const webHeightFlag = flag("web-height", undefined);
+for (const [name, value, min, max] of [["web-width", webWidthFlag, 320, 1920], ["web-height", webHeightFlag, 360, 1600]]) {
+  if (args.includes(`--${name}`)) throw new Error(`--${name} needs an integer after =`);
+  if (value !== undefined && (!Number.isInteger(Number(value)) || Number(value) < min || Number(value) > max)) throw new Error(`--${name} must be an integer from ${min} to ${max}`);
+}
 const maxBytes = Number(flag("max-kb", "600")) * 1024;
 const only = args.filter((a) => !a.startsWith("--"));
 
@@ -151,11 +163,13 @@ async function record(browser, slug) {
   const setupScroll = skipLeadScroll && steps[0]?.cmd === "scroll" ? steps.shift().px : 0;
   const mobile = meta.platform === "mobile";
   if (mobile && frameUnionSelector !== undefined) throw new Error("--frame-union is for web demos; mobile keeps its complete phone mask");
+  if (mobile && webScaleFlag !== undefined) throw new Error("--web-scale is for web demos; mobile keeps its complete 2x phone mask");
   const strip = meta.category === "headers" || meta.category === "footers";
-  const vw = mobile ? 390 : strip ? 1024 : 1440;
+  if (mobile && (webWidthFlag !== undefined || webHeightFlag !== undefined)) throw new Error("--web-width/height are for web demos; mobile keeps its complete phone geometry");
+  const vw = mobile ? 390 : webWidthFlag !== undefined ? Number(webWidthFlag) : strip ? 1024 : 1440;
   // Expanded workspace recordings honour the validated preview height.
-  const vh = mobile ? 844 : frameViewport ? Math.max(900, Math.min(1600, Number(meta.previewHeight) || 900)) : strip ? 640 : 900;
-  const dpr = mobile ? 2 : 1;
+  const vh = mobile ? 844 : webHeightFlag !== undefined ? Number(webHeightFlag) : frameViewport ? Math.max(900, Math.min(1600, Number(meta.previewHeight) || 900)) : strip ? 640 : 900;
+  const dpr = mobile ? 2 : webScale;
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), `dfa-rec-${slug}-`));
   const problems = [];
 
@@ -228,7 +242,8 @@ async function record(browser, slug) {
     }
     // Poster framing from the frame we're about to start on.
     const first = await page.screenshot({ type: "png" });
-    const initialFrame = mobile ? null : await framing(first, vw, vh);
+    const framingImage = !mobile && dpr > 1 ? await sharp(first).resize(vw, vh).png().toBuffer() : first;
+    const initialFrame = mobile ? null : await framing(framingImage, vw, vh);
     const frame = frameUnionSelector !== undefined
       ? await fixedUnionFrame(page, frameUnionSelector, frameUnionPadding, initialFrame.bg)
       : initialFrame && frameViewport ? fitViewportFrame(vw, vh, initialFrame.bg, OUT_W, OUT_H) : initialFrame;
@@ -370,6 +385,10 @@ async function record(browser, slug) {
     await Promise.all(writes);
 
     if (!frames.length) throw new Error("screencast produced no frames");
+    if (!mobile && dpr > 1) {
+      const captured = await sharp(frames[0].file).metadata();
+      if (captured.width !== vw * dpr || captured.height !== vh * dpr) throw new Error("Higher-resolution screencast did not deliver the requested pixel dimensions; keep the last good assets.");
+    }
     const quality = captureQuality(frames.map((frame) => frame.t), motionWindows);
     const continuousQuality = captureQuality(continuousWindows.length ? frames.map((frame) => frame.t) : [], continuousWindows);
     if (reportDir) {
@@ -389,7 +408,8 @@ async function record(browser, slug) {
       inputs = [...inputs, "-i", mask];
       graph = `[0:v]scale=-2:${h}:flags=lanczos,pad=${OUT_W}:${OUT_H}:(ow-iw)/2:(oh-ih)/2:color=0x050505[v];[v][1:v]overlay=0:0,fps=${FPS},format=yuv420p`;
     } else {
-      graph = `[0:v]${framedCropFilter(vw, vh, frame)},scale=${OUT_W}:${OUT_H}:flags=lanczos,fps=${FPS},format=yuv420p`;
+      const pixelFrame = { ...frame, cw: frame.cw * dpr, ch: frame.ch * dpr, cx: frame.cx * dpr, cy: frame.cy * dpr };
+      graph = `[0:v]${framedCropFilter(vw * dpr, vh * dpr, pixelFrame)},scale=${OUT_W}:${OUT_H}:flags=lanczos,fps=${FPS},format=yuv420p`;
     }
     const mp4Tmp = path.join(tmp, `${slug}.mp4`);
     let crf = 24;
@@ -452,7 +472,8 @@ if (!slugs.length) {
   console.log("No components with a demo.");
   process.exit(0);
 }
-const browser = await launchChromium(args.includes("--software-rendering") ? {} : { args: ["--mute-audio"] });
+if (webScale > 1 && args.includes("--software-rendering")) throw new Error("--web-scale above 1 requires the native renderer");
+const browser = await launchChromium(args.includes("--software-rendering") ? {} : { args: ["--mute-audio", ...(webScale > 1 ? [`--force-device-scale-factor=${webScale}`] : [])] });
 let failed = 0;
 for (const slug of slugs) {
   try {
