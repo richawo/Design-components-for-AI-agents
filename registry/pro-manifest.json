@@ -14481,7 +14481,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Restrained navy/ice or paper/ink palette.",
+        "description": "Neutral black/white glass chrome, with colour reserved for actual data/feature accents.",
         "default": "\"dark\""
       },
       {
