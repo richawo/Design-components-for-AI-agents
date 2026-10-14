@@ -4256,14 +4256,16 @@
     "useWhen": "Comparing real medians, quartiles and outliers with explicit sample sizes and units.",
     "avoidWhen": "A chart generated from invented percentiles or an unlabeled statistic without its sample context.",
     "integration": [
-      "Supply measured distribution summaries or actual samples and define the whisker policy. Keep quartile ordering and sample size visible.",
-      "Allow selection of distributions and outliers through readable controls; missing or invalid summaries need a clear state."
+      "Supply up to 8 unique labeled groups with up to 2048 finite original observations each, bounded within ±1 billion. Empty groups remain explicit; no sample is invented or discarded from the native alternative.",
+      "Quartiles use linear interpolation at p × (n − 1). Whiskers are the nearest actual observations inside the 1.5 interquartile-range fences; outside values retain their original source indices. The optional mean ring is explicitly labeled. This is not a significance or confidence-interval tool.",
+      "Control one atomic groupId/observationIndex packet; null index inspects the median. Native group and original-value controls share accepted-only requests with actual plot selection. Rejected/unknown selections remain honest. Original observations are paged 32 at a time in source order; reconcile the selected index if the host reorders its data.",
+      "Provide quantity units and source context. Narrow containers use ordinal plot labels tied to full native group controls, keeping exact original quantities readable. Current geometry and featured numbers stop or settle immediately on live reduced motion, idle/hidden work stops, and actual owner-document focus fences preserve native parent actions."
     ],
     "related": [
       "chart-radar-compare",
       "chart-slope-comparison"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "chart-calendar-heatmap": {
     "useWhen": "Inspecting daily values through a calendar with meaningful missing-data and filtering states.",
