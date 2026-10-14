@@ -30642,6 +30642,140 @@
     ]
   },
   {
+    "slug": "mobile-task-move",
+    "name": "Native Task Move Review",
+    "tier": "pro",
+    "platform": "mobile",
+    "category": "mobile",
+    "description": "A tactile native task move with constrained destinations, exact reviewed notes, retained drafts and honest host-owned movement and undo.",
+    "tags": [
+      "mobile",
+      "react native",
+      "task",
+      "workflow",
+      "move",
+      "review",
+      "undo",
+      "dark"
+    ],
+    "dependencies": [
+      "expo-blur",
+      "expo-linear-gradient",
+      "react-native-svg"
+    ],
+    "theme": "dark",
+    "previewHeight": 844,
+    "usage": "import { MobileTaskMove } from \"@/components/design-for-ai/native/mobile-task-move\";\n\n// Bare native apps: run npx install-expo-modules once.\n<MobileTaskMove task={task} destinations={states} value={proposedId} onValueChange={setProposedId} onMove={moveReviewedTask} onUndo={undoReviewedTask} resetKey={reviewId} />",
+    "props": [
+      {
+        "name": "task",
+        "type": "MoveTask",
+        "description": "Actual ID/title/current state, with optional supplied description, project, owner and due label.",
+        "default": "Original release handoff in review"
+      },
+      {
+        "name": "destinations",
+        "type": "TaskDestination[]",
+        "description": "Raw ID/label/availability/reason/detail. Duplicate and unavailable records remain inspectable.",
+        "default": "Four original workflow states"
+      },
+      {
+        "name": "value",
+        "type": "string | null",
+        "description": "Controlled proposed destination. Explicit null means no proposal; without observer choice is read-only."
+      },
+      {
+        "name": "defaultValue",
+        "type": "string | null",
+        "description": "Initial local proposal. Reset with resetKey.",
+        "default": "\"done\""
+      },
+      {
+        "name": "onValueChange",
+        "type": "(id: string | null) => void",
+        "description": "Synchronous proposal observer. Rejection retains actual choice."
+      },
+      {
+        "name": "defaultNote",
+        "type": "string",
+        "description": "Initial retained move note. Newer typing survives pending or older acknowledgments.",
+        "default": "\"The compact review and handoff copy have been checked.\""
+      },
+      {
+        "name": "onMove",
+        "type": "(review: TaskMoveReview, signal: AbortSignal) => void | TaskMoveResult | Promise<void | TaskMoveResult>",
+        "description": "Copied exact task/from/to/note. Fulfillment acknowledges only. Optional host undoToken does not imply actual movement."
+      },
+      {
+        "name": "onUndo",
+        "type": "(review: TaskMoveUndoReview, signal: AbortSignal) => void | Promise<void>",
+        "description": "Exact acknowledged move/token; available only after the supplied actual task reaches that exact target. Fulfillment never restores actual state itself."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Replacement task review session. Retires copied review, pending requests, receipt and local drafts."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Native task move heading.",
+        "default": "\"Move with context.\""
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Neutral black/white/graphite surfaces with purposeful actual error accents.",
+        "default": "\"dark\""
+      }
+    ],
+    "added": "2026-10-14",
+    "demo": {
+      "steps": [
+        "click:@task-destination-1",
+        "scroll:480",
+        "click:@task-review",
+        "wait:750",
+        "click:@task-move-request",
+        "wait:450",
+        "scroll:480",
+        "click:@task-undo",
+        "wait:450"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "defaultValue",
+        "label": "Initial proposal",
+        "kind": "select",
+        "options": [
+          "planned",
+          "in-progress",
+          "review",
+          "done"
+        ],
+        "default": "done",
+        "remount": true
+      },
+      {
+        "prop": "title",
+        "label": "Heading",
+        "kind": "text",
+        "default": "Move with context."
+      }
+    ]
+  },
+  {
     "slug": "mobile-trip-itinerary",
     "name": "Trip Itinerary",
     "tier": "pro",

@@ -167,7 +167,7 @@ Validate all six web widths, both supported themes, multiple instances and empty
 | 93 | `mobile-attachment-tray` | mobile | Review selected attachments, limits and per-file failures before a host-owned send action. | Released |
 | 94 | `mobile-meeting-preflight` | mobile | Review host-reported audio/video readiness and join explicitly; no automatic permission requests. | Released |
 | 95 | `mobile-channel-thread` | mobile | Inspect a channel message and replies, preserve a response draft and acknowledge send results. | Released |
-| 96 | `mobile-task-move` | mobile | Move a supplied task between states with constraints, confirmation and undo where the host supports it. | Planned |
+| 96 | `mobile-task-move` | mobile | Move a supplied task between states with constraints, confirmation and undo where the host supports it. | Released |
 | 97 | `mobile-review-annotations` | mobile | Navigate supplied annotations over an asset with a readable list and touch-sized selection targets. | Released |
 | 98 | `mobile-notification-digest` | mobile | Group actionable notifications and acknowledge read or snooze changes without losing position. | Released |
 | 99 | `mobile-sync-conflict` | mobile | Compare local and remote values and review a field-level resolution with preserved edits. | Released |
@@ -175,4 +175,4 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 ## Progress
 
-Planned: 4. Released: 96. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
+Planned: 3. Released: 97. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
