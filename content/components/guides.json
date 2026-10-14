@@ -4241,10 +4241,10 @@
     "useWhen": "Tracing supplied quantities from sources through destinations while keeping the whole flow in context.",
     "avoidWhen": "Invented traffic, unbalanced quantities or a diagram that can only be understood by color.",
     "integration": [
-      "Supply up to 18 unique labeled nodes in explicit columns 0–5 and 40 unique forward links with finite nonnegative quantities up to 1 trillion. Incoming and outgoing are independent supplied-link sums; the component displays their actual difference and never invents a balancing flow.",
-      "One atomic nodeId/linkId selection chooses either a category or a connection. Category emphasis traces direct incoming/outgoing links only. Controlled requests remain host-owned, rejected requests do not commit, and an unknown identity needs an explicit clear or restored source.",
-      "Keep the full native Categories and Connections tabs available with exact values, units and supported Intl formatting. A narrow actual scene becomes a vertical flow instead of squeezing the horizontal plot. Small categories retain full native selection targets.",
-      "Data geometry changes are bounded and interruptible. Live reduced motion explicitly settles the actual drawing owner, hidden/idle work stops, and the focused owner-document fence preserves native parent-page actions. Persistence belongs to the host."
+      "Supply up to 18 unique labeled nodes in columns 0–5 and 40 unique forward links with finite nonnegative quantities up to 1 trillion. Incoming and outgoing are independent supplied-link sums; no balancing flow is invented.",
+      "Proportional ribbons support adjacent occupied stages. Empty numeric column gaps are allowed. If any connection bypasses an occupied stage, an explicit diagram fallback preserves every original category, connection and exact incoming/outgoing quantity in the native tables. Use a different graph when such bypass topology is essential.",
+      "One atomic nodeId/linkId selection chooses either a category or a connection. Emphasis traces direct links only. Rejected requests do not commit; unknown identity needs explicit clear or restored source. Full native Categories/Connections tabs provide exact quantities, units and supported Intl formatting.",
+      "Narrow actual scenes use vertical flow with full native selection targets. Geometry and figures are bounded and interruptible; live reduced motion settles their actual owners, hidden/idle work stops, and focused owner-document fences preserve native parent actions. Persistence belongs to the host."
     ],
     "related": [
       "chart-streamgraph",
@@ -4271,14 +4271,16 @@
     "useWhen": "Inspecting daily values through a calendar with meaningful missing-data and filtering states.",
     "avoidWhen": "A punitive streak display or treating unobserved days as measured zero.",
     "integration": [
-      "Supply date-only records, units, locale and an explicit color scale. Keep missing, zero and unavailable dates distinct.",
-      "Connect keyboard date navigation and filters to readable day details without depending on hover-only tooltips."
+      "Supply up to 1464 unique real YYYY-MM-DD records with finite nonnegative quantities up to 1 billion, or null for an explicitly unmeasured day. Missing records and null are distinguished from an actual measured zero. No timezone aggregation is inferred; format and compare calendar dates in UTC.",
+      "Control the atomic start/end/selectedDate packet for a window of at most 366 days. Native date drafts survive invalid ranges, rejection and older host acceptances; explicitly apply or reset them. Only accepted discrete changes commit, and unknown or outside selections remain honest.",
+      "The Monday–Sunday grid preserves 44px daily hit targets with local horizontal scrolling and focused-day reveal. Arrows inspect calendar dates, Enter/Space selects, and native date filters offer an equivalent exact window interaction. Disabled selection preserves keyboard inspection and readable quantities.",
+      "Current quantities animate both directions and settle immediately on live reduced motion or hidden/blocked states. Functional cell edges and dashed missing states remain distinct in both supported themes. Retired focus recovers only in the actually focused owner document; host persistence and outside or parent-page focus remain authoritative."
     ],
     "related": [
       "date-week-agenda",
       "chart-waffle"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "chart-scatter-brush": {
     "useWhen": "Selecting a bounded region of supplied points and inspecting the matching records.",
