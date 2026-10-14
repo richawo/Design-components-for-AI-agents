@@ -18529,7 +18529,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Moss/graphite or warm-paper surface and readable instructions.",
+        "description": "Neutral graphite and white chrome; colour is reserved for actual feature content and semantic data accents.",
         "default": "\"dark\""
       },
       {
