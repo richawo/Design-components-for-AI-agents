@@ -29,7 +29,7 @@ import sharp from "sharp";
 import { captureQuality, gallerySteps, concatFrameList, framedCropFilter, fitViewportFrame } from "./lib/recording-quality.mjs";
 import { launchChromium } from "./lib/browser.mjs";
 import { mountFixture } from "./lib/component-fixture.mjs";
-import { startTabRecording, stopTabRecording } from "./lib/tab-recording.mjs";
+import { startTabRecording, stopTabRecording, sourceChangeQuality } from "./lib/tab-recording.mjs";
 import { CURSOR_CSS, CURSOR_HTML, CURSOR_START } from "../lib/demo/cursor.mjs";
 import { TIMING, demoDuration, parseSteps, targetSelector } from "../lib/demo/schema.mjs";
 
@@ -402,13 +402,15 @@ async function record(browser, slug) {
     }
     const quality = captureQuality(frames.map((frame) => frame.t), motionWindows);
     const continuousQuality = captureQuality(continuousWindows.length ? frames.map((frame) => frame.t) : [], continuousWindows);
-    const nativeSourceQuality = nativeEnd ? captureQuality(nativeEnd.evidence.sourceFrames, motionWindows) : null;
+    const nativeSourceQuality = nativeEnd ? captureQuality(nativeEnd.evidence.sourceFrames) : null;
+    const nativeChangeQuality = nativeEnd ? sourceChangeQuality(frames.map(frame => frame.t), nativeEnd.evidence.sourceChanges) : null;
     // Regular video timestamps can conceal a frozen JS animation. Grade both.
     if (nativeSourceQuality?.maxGapMs > 100) problems.push(`Actual source animation stalled ${nativeSourceQuality.maxGapMs.toFixed(1)}ms; keep the last good clip.`);
+    if (nativeChangeQuality?.stallsOver100Ms) problems.push(`Changed source waited ${nativeChangeQuality.maxDelayMs.toFixed(1)}ms for an encoded frame; keep the last good clip.`);
     if (reportDir) {
       const directory = path.resolve(root, reportDir);
       fs.mkdirSync(directory, { recursive: true });
-      fs.writeFileSync(path.join(directory, `${slug}.json`), JSON.stringify({ slug, renderMode: isolatedSource ? "isolated-production-source" : "preview", ...(nativeEnd ? { captureTransport: "owned-browser-tab", nativeSourceQuality, native: nativeEnd.evidence } : {}), openingFrameBeforeActions: true, quality, continuousQuality, viewport: { vw, vh, dpr }, framing: frame, timestamps: frames.map((frame) => frame.t), motionWindows, continuousWindows }, null, 2));
+      fs.writeFileSync(path.join(directory, `${slug}.json`), JSON.stringify({ slug, renderMode: isolatedSource ? "isolated-production-source" : "preview", ...(nativeEnd ? { captureTransport: "owned-browser-tab", nativeSourceQuality, nativeChangeQuality, native: nativeEnd.evidence } : {}), openingFrameBeforeActions: true, quality, continuousQuality, viewport: { vw, vh, dpr }, framing: frame, timestamps: frames.map((frame) => frame.t), motionWindows, continuousWindows }, null, 2));
       if (nativeEnd) fs.copyFileSync(nativeEnd.file, path.join(directory, `${slug}-raw.${nativeEnd.extension}`));
     }
     // Each frame holds until the next one; the last holds to the end.

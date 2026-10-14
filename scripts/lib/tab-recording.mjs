@@ -17,7 +17,7 @@ export async function startTabRecording(page, { title, width, height }) {
       const mimeType = ["video/mp4;codecs=avc1.42001e", "video/webm;codecs=vp8"].find(type => MediaRecorder.isTypeSupported(type));
       if (!mimeType || typeof MediaStreamTrackProcessor !== "function") throw new Error("This Chromium cannot record native tab frames.");
       const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 16000000 });
-      const chunks = [], timings = [], sourceFrames = [], longTasks = [];
+      const chunks = [], timings = [], sourceFrames = [], sourceChanges = [], longTasks = [];
       recorder.ondataavailable = event => { if (event.data.size) chunks.push(event.data); };
       const clone = track.clone(), reader = new MediaStreamTrackProcessor({ track: clone }).readable.getReader();
       let running = true, resolveOpening, raf;
@@ -35,10 +35,22 @@ export async function startTabRecording(page, { title, width, height }) {
       raf = requestAnimationFrame(sample);
       const observer = new PerformanceObserver(list => longTasks.push(...list.getEntries().map(entry => ({ start: entry.startTime, duration: entry.duration }))));
       observer.observe({ entryTypes: ["longtask"] });
+      // Watch the actual fixture, excluding the synthetic pointer on document.body.
+      // A late counter tween can outlast the pointer's moving-frame window.
+      const root = document.getElementById("root");
+      if (!root) throw new Error("Owned source fixture root is missing.");
+      const noteChange = () => sourceChanges.push(Date.now() / 1000);
+      const mutations = new MutationObserver(noteChange);
+      mutations.observe(root, { subtree: true, attributes: true, childList: true, characterData: true });
+      root.addEventListener("input", noteChange, true);
+      root.addEventListener("scroll", noteChange, true);
       const startTime = Date.now() / 1000;
       recorder.start();
-      window.__dfaTabRecording = { stream, recorder, chunks, timings, sourceFrames, longTasks, clone, reader, reading,
-        stop: () => { running = false; cancelAnimationFrame(raf); observer.disconnect(); } };
+      window.__dfaTabRecording = { stream, recorder, chunks, timings, sourceFrames, sourceChanges, longTasks, clone, reader, reading,
+        stop: () => {
+          running = false; cancelAnimationFrame(raf); observer.disconnect(); mutations.disconnect();
+          root.removeEventListener("input", noteChange, true); root.removeEventListener("scroll", noteChange, true);
+        } };
       let timer;
       try {
         await Promise.race([opening, new Promise((_, reject) => { timer = setTimeout(() => reject(new Error("No native opening frame before demo actions.")), 1500); })]);
@@ -69,7 +81,7 @@ export async function stopTabRecording(page, directory, start) {
     const bytes = new Uint8Array(await new Blob(capture.chunks, { type: capture.recorder.mimeType }).arrayBuffer());
     let binary = "";
     for (let index = 0; index < bytes.length; index += 8192) binary += String.fromCharCode(...bytes.subarray(index, index + 8192));
-    return { base64: btoa(binary), mimeType: capture.recorder.mimeType, timings: capture.timings, sourceFrames: capture.sourceFrames, longTasks: capture.longTasks };
+    return { base64: btoa(binary), mimeType: capture.recorder.mimeType, timings: capture.timings, sourceFrames: capture.sourceFrames, sourceChanges: capture.sourceChanges, longTasks: capture.longTasks };
   });
   const extension = result.mimeType.startsWith("video/mp4") ? "mp4" : "webm";
   const file = path.join(directory, `native.${extension}`);
@@ -80,5 +92,19 @@ export async function stopTabRecording(page, directory, start) {
   const frames = probe.frames.map(frame => ({ t: start.startTime + Number(frame.best_effort_timestamp_time) }));
   if (!frames.length) throw new Error("Native video encoder produced no frames.");
   return { file, extension, frames, evidence: { settings: start.settings, startTime: start.startTime,
-    timings: result.timings, sourceFrames: result.sourceFrames, longTasks: result.longTasks } };
+    timings: result.timings, sourceFrames: result.sourceFrames, sourceChanges: result.sourceChanges, longTasks: result.longTasks } };
+}
+
+/** Static reading holds are fine; changed source must reach an encoded frame. */
+export function sourceChangeQuality(timestamps, changes) {
+  const frames = [...new Set(timestamps.filter(Number.isFinite))].sort((a, b) => a - b);
+  const ordered = [...new Set(changes.filter(Number.isFinite))].sort((a, b) => a - b);
+  let next = 0;
+  const delays = [];
+  for (const change of ordered) {
+    if (change < frames[0] || change > frames.at(-1)) continue;
+    while (frames[next] < change) next++;
+    delays.push((frames[next] - change) * 1000);
+  }
+  return { changes: delays.length, maxDelayMs: Math.max(0, ...delays), stallsOver100Ms: delays.filter(delay => delay > 100).length };
 }
