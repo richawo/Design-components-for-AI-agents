@@ -12352,6 +12352,130 @@
     ]
   },
   {
+    "slug": "data-pivot-configurator",
+    "name": "Pivot Configurator",
+    "tier": "pro",
+    "platform": "web",
+    "category": "data",
+    "description": "Draft and explicitly apply a grouping over original supplied records, with real count, sum or weighted mean, complete source inspection and useful unsupported states.",
+    "tags": [
+      "pivot table",
+      "grouping",
+      "aggregation",
+      "original records",
+      "draft configuration",
+      "exact measures"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1080,
+    "usage": "import { DataPivotConfigurator } from \"@/components/design-for-ai/data-pivot-configurator\";\n\n<DataPivotConfigurator fields={schema} records={originals} value={grouping} onValueChange={setGrouping} />",
+    "props": [
+      {
+        "name": "fields",
+        "type": "PivotField[]",
+        "description": "1–8 raw unique labeled category or number fields. Numeric record values are finite within ±1 billion."
+      },
+      {
+        "name": "records",
+        "type": "PivotSourceRecord[]",
+        "description": "Up to 2000 raw unique labeled original records with declared-key scalar values. Missing keys and explicit null stay distinct; immutable source revisions are required."
+      },
+      {
+        "name": "value",
+        "type": "PivotConfig",
+        "description": "Atomic controlled rowField/columnField/measure/valueField. Dimensions must be distinct category fields or null; sum/mean need a declared numeric field."
+      },
+      {
+        "name": "defaultValue",
+        "type": "PivotConfig",
+        "description": "Initial uncontrolled grouping. Untouched loading initializes only at first valid ready fields; explicit unknown and later chosen context remain authoritative."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(config: PivotConfig) => void",
+        "description": "Request an explicitly applied draft or default grouping. Rejected requests preserve accepted results and newer draft."
+      },
+      {
+        "name": "onValueCommit",
+        "type": "(config: PivotConfig) => void",
+        "description": "Accepted discrete configurations only; rejected, interrupted and throwing requests do not falsely commit."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "description": "Supported Intl numeric locale, retaining original numeric precision."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Host grouping heading."
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Host source/context copy, without claiming a remote query."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"unavailable\"",
+        "description": "Host availability preserves the grouping and draft."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Disables configuration changes; existing cells and original records remain inspectable."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Neutral graphite and white chrome; colour is reserved for actual feature content and semantic data accents."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Classes for the self-contained root."
+      }
+    ],
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "disabled",
+        "label": "Disabled configuration",
+        "kind": "toggle",
+        "default": false
+      }
+    ],
+    "demo": {
+      "steps": [
+        "click:@pivot-measure",
+        "key:Escape",
+        "key:m",
+        "key:Tab",
+        "click:@pivot-apply",
+        "wait:450",
+        "click:@pivot-cell-0-0",
+        "wait:350",
+        "click:@pivot-default",
+        "wait:450"
+      ],
+      "loop": false
+    },
+    "added": "2026-10-14"
+  },
+  {
     "slug": "data-query-builder",
     "name": "Audience Query Builder",
     "tier": "pro",
