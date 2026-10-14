@@ -120,7 +120,7 @@ Validate all six web widths, both supported themes, multiple instances and empty
 | 61 | `editor-layer-stack` | editors | Reorder, lock, hide and rename supplied layers; selection and move mode are keyboard accessible. | Released |
 | 62 | `editor-color-token-studio` | editors | Edit semantic color tokens and compare supplied foreground/background pairs with real contrast calculation. | Released |
 | 63 | `editor-spacing-inspector` | editors | Measure and change padding/gap on supplied content with bounded values and clear hit targets. | Planned |
-| 64 | `editor-branch-compare` | editors | Compare two supplied document structures and explicitly accept or retain individual changes. | Planned |
+| 64 | `editor-branch-compare` | editors | Compare two supplied document structures and explicitly accept or retain individual changes. | Released |
 | 65 | `editor-asset-license-sheet` | editors | Inspect supplied asset provenance and usage terms, then select an eligible asset for a project. | Planned |
 | 66 | `editor-storyboard-strip` | editors | Reorder scene cards, adjust durations and inspect the cumulative sequence without exporting implicitly. | Planned |
 | 67 | `editor-keyframe-track` | editors | Move discrete keyframes and inspect an interpolated property with a keyboard timeline alternative. | Planned |
@@ -175,4 +175,4 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 ## Progress
 
-Planned: 31. Released: 69. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
+Planned: 30. Released: 70. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.

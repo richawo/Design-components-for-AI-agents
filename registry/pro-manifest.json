@@ -14927,6 +14927,142 @@
     ]
   },
   {
+    "slug": "editor-branch-compare",
+    "name": "Document Branch Comparison",
+    "tier": "pro",
+    "platform": "web",
+    "category": "editors",
+    "description": "Compare two real document structures, explicitly choose each change and request a valid exact-version merged tree with cancellable recovery.",
+    "tags": [
+      "branch",
+      "compare",
+      "document",
+      "merge",
+      "structure",
+      "editor"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1100,
+    "usage": "import { EditorBranchCompare } from \"@/components/design-for-ai/editor-branch-compare\";\n\n<EditorBranchCompare current={currentVersion} incoming={incomingVersion} decisions={decisions} onDecisionsChange={setDecisions} onApply={requestMerge} />\n\n// Host persists only after receiving an exact copied merge. Missing nodes are explicit omissions; mixed parent structures must remain valid.",
+    "props": [
+      {
+        "name": "current",
+        "type": "BranchDocument",
+        "description": "Actual current version identity/label and up to48 nodes. Every node has an identity, actual parent identity, bounded sibling order, title and body."
+      },
+      {
+        "name": "incoming",
+        "type": "BranchDocument",
+        "description": "Distinct actual incoming version with a valid acyclic structure of depth at most6."
+      },
+      {
+        "name": "decisions",
+        "type": "readonly BranchDecision[]",
+        "description": "Controlled accepted source choice per unique changed node. Unspecified nodes keep current; choosing an absent node explicitly omits it."
+      },
+      {
+        "name": "defaultDecisions",
+        "type": "readonly BranchDecision[]",
+        "description": "Local initial source choices. Reset explicitly through resetKey or changed version identities."
+      },
+      {
+        "name": "onDecisionsChange",
+        "type": "(decisions: BranchDecision[]) => void",
+        "description": "Requests a copied complete changed-node choice list. Rejection retains accepted choices; synchronous failures are contained."
+      },
+      {
+        "name": "onApply",
+        "type": "(merge: BranchMerge, signal: AbortSignal) => void | Promise<void>",
+        "description": "Receives exact current/incoming version IDs, copied changed-node decisions and cloned complete merged nodes. Host owns persistence. Stale/cancelled completions do not acknowledge newer facts."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Resets local decisions, inspection and the request lifecycle."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"error\"",
+        "description": "Host availability preserves readable supplied versions and decisions."
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "description": "Meaningful failure copy; blank falls back."
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Host recovery action."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Lock decisions, inspection and requests while preserving the comparison."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Complete monochromatic graphite/white chrome. Colour is reserved for actual supplied content and purposeful feature accents."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<BranchCompareLabels>",
+        "description": "Applied comparison, omission, invalid topology and actual request status copy."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Host responsive layout classes."
+      }
+    ],
+    "added": "2026-10-14",
+    "demo": {
+      "steps": [
+        "click:@branch-take",
+        "click:@branch-select-closing",
+        "click:@branch-take",
+        "click:@branch-select-legacy",
+        "click:@branch-take",
+        "click:@branch-apply"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "disabled",
+        "label": "Read only",
+        "kind": "toggle",
+        "default": false
+      },
+      {
+        "prop": "status",
+        "label": "Availability",
+        "kind": "select",
+        "options": [
+          "ready",
+          "loading",
+          "error"
+        ],
+        "default": "ready"
+      }
+    ]
+  },
+  {
     "slug": "editor-color-token-studio",
     "name": "Semantic Color Token Studio",
     "tier": "pro",
