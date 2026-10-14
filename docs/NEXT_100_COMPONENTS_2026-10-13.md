@@ -165,7 +165,7 @@ Validate all six web widths, both supported themes, multiple instances and empty
 | 91 | `mobile-project-switcher` | mobile | Choose or search a project in a tactile sheet; retain selection and show unavailable projects clearly. | Planned |
 | 92 | `mobile-file-preview` | mobile | Inspect supplied file metadata and preview content, including loading, unsupported and unavailable states. | Planned |
 | 93 | `mobile-attachment-tray` | mobile | Review selected attachments, limits and per-file failures before a host-owned send action. | Released |
-| 94 | `mobile-meeting-preflight` | mobile | Review host-reported audio/video readiness and join explicitly; no automatic permission requests. | Planned |
+| 94 | `mobile-meeting-preflight` | mobile | Review host-reported audio/video readiness and join explicitly; no automatic permission requests. | Released |
 | 95 | `mobile-channel-thread` | mobile | Inspect a channel message and replies, preserve a response draft and acknowledge send results. | Released |
 | 96 | `mobile-task-move` | mobile | Move a supplied task between states with constraints, confirmation and undo where the host supports it. | Planned |
 | 97 | `mobile-review-annotations` | mobile | Navigate supplied annotations over an asset with a readable list and touch-sized selection targets. | Planned |
@@ -175,4 +175,4 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 ## Progress
 
-Planned: 9. Released: 91. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
+Planned: 8. Released: 92. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.

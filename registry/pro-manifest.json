@@ -29034,6 +29034,166 @@
     ]
   },
   {
+    "slug": "mobile-meeting-preflight",
+    "name": "Native Meeting Preflight",
+    "tier": "pro",
+    "platform": "mobile",
+    "category": "mobile",
+    "description": "A native meeting preflight with a retained preview, explicit device choices, inspectable host readiness and a cancellable reviewed join request.",
+    "tags": [
+      "mobile",
+      "react native",
+      "meetings",
+      "devices",
+      "readiness",
+      "camera",
+      "dark"
+    ],
+    "dependencies": [
+      "expo-blur",
+      "expo-linear-gradient",
+      "react-native-svg"
+    ],
+    "theme": "dark",
+    "previewHeight": 844,
+    "usage": "import { MobileMeetingPreflight } from \"@/components/design-for-ai/native/mobile-meeting-preflight\";\n\n// Bare React Native apps: run npx install-expo-modules once.\n<MobileMeetingPreflight room={room} checks={checks} devices={devices} deviceValue={preferences} onDeviceChange={chooseDevice} preview={cameraView} onJoin={requestEntry} resetKey={sessionId} />",
+    "props": [
+      {
+        "name": "room",
+        "type": "MeetingRoom",
+        "description": "Actual room identity/title/scheduled label. Missing identity/title blocks join.",
+        "default": "Original design-systems review"
+      },
+      {
+        "name": "checks",
+        "type": "MeetingCheck[]",
+        "description": "Actual status/required/detail. Required unknown/warning/blocked and conflicting identities block join.",
+        "default": "Three required ready checks plus optional headphones warning"
+      },
+      {
+        "name": "devices",
+        "type": "MeetingDevice[]",
+        "description": "Actual microphone/speaker/camera rows with group+ID identity, availability and reason.",
+        "default": "Offline supplied device examples"
+      },
+      {
+        "name": "deviceValue",
+        "type": "MeetingDeviceValue",
+        "description": "Controlled group-to-ID preferences; missing observer makes choices read-only."
+      },
+      {
+        "name": "defaultDeviceValue",
+        "type": "MeetingDeviceValue",
+        "description": "Initial local preferences; first unique available per group by default. Reset replaces local session."
+      },
+      {
+        "name": "onDeviceChange",
+        "type": "(group: MeetingDeviceGroup, id: string) => void",
+        "description": "Synchronous preference proposal. Rejection/throw leaves actual choice and meaningful feedback."
+      },
+      {
+        "name": "muted",
+        "type": "boolean",
+        "description": "Controlled microphone preference; missing observer is unavailable."
+      },
+      {
+        "name": "defaultMuted",
+        "type": "boolean",
+        "description": "Initial local microphone preference.",
+        "default": "false"
+      },
+      {
+        "name": "onMutedChange",
+        "type": "(muted: boolean) => void",
+        "description": "Synchronous microphone preference observer. No OS device request."
+      },
+      {
+        "name": "cameraEnabled",
+        "type": "boolean",
+        "description": "Controlled camera preference; missing observer is unavailable."
+      },
+      {
+        "name": "defaultCameraEnabled",
+        "type": "boolean",
+        "description": "Initial local camera preference.",
+        "default": "true"
+      },
+      {
+        "name": "onCameraEnabledChange",
+        "type": "(enabled: boolean) => void",
+        "description": "Synchronous camera preference observer. No capture or permission request."
+      },
+      {
+        "name": "preview",
+        "type": "ReactNode",
+        "description": "Actual host-rendered preview. Retained mounted but inert/hidden when unavailable; null is honest missing content.",
+        "default": "Offline initial-avatar study"
+      },
+      {
+        "name": "onJoin",
+        "type": "(review: MeetingJoinReview, signal: AbortSignal) => void | Promise<void>",
+        "description": "Exact copied room/checks/group selections/preferences, cancellable one-owner request; acknowledgment never becomes joined."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Replacement session, local preferences/disclosures/receipts reset and pending abort."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Mobile preflight heading.",
+        "default": "\"Before you step in.\""
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Neutral black/white/graphite chrome with purposeful actual state accents.",
+        "default": "\"dark\""
+      }
+    ],
+    "added": "2026-10-14",
+    "demo": {
+      "steps": [
+        "click:@preflight-mute",
+        "wait:300",
+        "scroll:480",
+        "wait:250",
+        "click:@preflight-choices-speaker",
+        "wait:200",
+        "click:@preflight-device-speaker-1",
+        "wait:250",
+        "click:@preflight-join",
+        "wait:550"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "defaultCameraEnabled",
+        "label": "Camera on",
+        "kind": "toggle",
+        "default": true,
+        "remount": true
+      },
+      {
+        "prop": "title",
+        "label": "Heading",
+        "kind": "text",
+        "default": "Before you step in."
+      }
+    ]
+  },
+  {
     "slug": "mobile-mood-map",
     "name": "Mood Check-in Map",
     "tier": "pro",
