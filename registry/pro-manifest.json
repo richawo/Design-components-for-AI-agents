@@ -1185,7 +1185,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Neutral replay desk palettes with semantic recorded states.",
+        "description": "Neutral black/white glass chrome, with colour reserved for actual data/feature accents.",
         "default": "\"dark\""
       },
       {
