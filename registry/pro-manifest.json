@@ -29932,6 +29932,141 @@
     ]
   },
   {
+    "slug": "mobile-project-switcher",
+    "name": "Project Index Sheet",
+    "tier": "pro",
+    "platform": "mobile",
+    "category": "mobile",
+    "description": "A tactile native project index with exact current selection, searchable workspaces, readable availability and cancellable host-owned switching.",
+    "tags": [
+      "mobile",
+      "react native",
+      "projects",
+      "workspace",
+      "sheet",
+      "search",
+      "dark"
+    ],
+    "dependencies": [
+      "expo-blur",
+      "expo-linear-gradient",
+      "react-native-svg"
+    ],
+    "theme": "dark",
+    "previewHeight": 844,
+    "usage": "import { MobileProjectSwitcher } from \"@/components/design-for-ai/native/mobile-project-switcher\";\n\n// Bare React Native apps: run npx install-expo-modules once.\n<MobileProjectSwitcher projects={projects} value={projectId} onValueChange={switchProject} open={chooserOpen} onOpenChange={setChooserOpen} resetKey={accountId} />",
+    "props": [
+      {
+        "name": "projects",
+        "type": "SwitcherProject[]",
+        "description": "Actual identities, names, workspace/role and supplied availability/reasons. Conflicting identities remain inspectable and cannot switch.",
+        "default": "Four original offline projects"
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "description": "Controlled actual project. Missing or conflicting selection stays explicit; without observer, selection is read-only."
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "description": "Initial local project. Unavailable/removed current identity is retained honestly until an explicit selection.",
+        "default": "First unique available project"
+      },
+      {
+        "name": "onValueChange",
+        "type": "(id: string, project: SwitcherProject, signal: AbortSignal) => void | Promise<void>",
+        "description": "Host switch observer receives a copied exact project. Local mode commits after fulfillment; controlled mode waits for actual value. Cancellation is cooperative."
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "description": "Authoritative sheet visibility; no observer makes disclosure read-only."
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "description": "Initial local disclosure state. Named default false; complete demonstration begins open.",
+        "default": "false"
+      },
+      {
+        "name": "onOpenChange",
+        "type": "(open: boolean) => void",
+        "description": "Synchronous disclosure observer. Rejection keeps actual visibility."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Replacement project/session identity. Retires pending callbacks and resets local selection/query/disclosure."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Native sheet heading.",
+        "default": "\"Choose your next space.\""
+      },
+      {
+        "name": "searchPlaceholder",
+        "type": "string",
+        "description": "Search prompt for actual names, workspaces, roles and descriptions.",
+        "default": "\"Search projects or workspaces\""
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Neutral black/white/graphite chrome with purposeful actual state accents.",
+        "default": "\"dark\""
+      }
+    ],
+    "added": "2026-10-14",
+    "demo": {
+      "steps": [
+        "click:@project-row-1",
+        "wait:400",
+        "click:@project-open",
+        "wait:250",
+        "click:@project-search",
+        "type:Dispatch",
+        "wait:200",
+        "click:@project-row-2",
+        "wait:350"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "title",
+        "label": "Heading",
+        "kind": "text",
+        "default": "Choose your next space."
+      },
+      {
+        "prop": "open",
+        "label": "Sheet visibility",
+        "kind": "action",
+        "options": [
+          {
+            "value": true,
+            "label": "Open"
+          },
+          {
+            "value": false,
+            "label": "Close"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "slug": "mobile-reading-progress",
     "name": "Reading Progress",
     "tier": "pro",

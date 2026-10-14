@@ -162,7 +162,7 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 | # | Slug | Category | Distinct interaction and essential states | Status |
 | --- | --- | --- | --- | --- |
-| 91 | `mobile-project-switcher` | mobile | Choose or search a project in a tactile sheet; retain selection and show unavailable projects clearly. | Planned |
+| 91 | `mobile-project-switcher` | mobile | Choose or search a project in a tactile sheet; retain selection and show unavailable projects clearly. | Released |
 | 92 | `mobile-file-preview` | mobile | Inspect supplied file metadata and preview content, including loading, unsupported and unavailable states. | Planned |
 | 93 | `mobile-attachment-tray` | mobile | Review selected attachments, limits and per-file failures before a host-owned send action. | Released |
 | 94 | `mobile-meeting-preflight` | mobile | Review host-reported audio/video readiness and join explicitly; no automatic permission requests. | Released |
@@ -175,4 +175,4 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 ## Progress
 
-Planned: 5. Released: 95. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
+Planned: 4. Released: 96. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
