@@ -21887,7 +21887,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "navigation",
-    "description": "A tactile two-pane layout with bounded pointer and keyboard resizing, responsive stacking, preserved drafts and considered collapse-and-restore controls.",
+    "description": "A monochrome split workspace with an actual editable document and live structured preview, precise bounded resizing and retained collapse/restore state.",
     "tags": [
       "split pane",
       "resizer",
