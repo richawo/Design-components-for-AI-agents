@@ -4770,7 +4770,7 @@
     "avoidWhen": "A document renderer or estimating reading comprehension from progress.",
     "integration": [
       "Supply a stable book identity, up to 24 unique chapters and actual read-page counts. Null history remains unknown rather than unread; a resume destination is a bounded page in a supplied chapter.",
-      "Control chapter inspection separately from copied bookmark requests. A saved bookmark resumes its exact page. onResume receives the copied book/chapter/page and an AbortSignal; the host opens the reader, and acknowledgment never advances reading history.",
+      "Control chapter inspection separately from copied bookmark requests. Accepted facts ignore object-key order. A saved bookmark resumes its exact page. Changing bookId clears locally saved bookmarks and the old destination; supply controlled bookmarks from a host-owned per-book cache for persistence. onResume receives copied book/chapter/page plus an AbortSignal; acknowledgment never advances history.",
       "Install in a React Native app with Expo modules for the translucent footer and SVG details. The web preview supports design review; verify device fonts, larger text, reduced motion, touch and assistive technology on target devices."
     ],
     "related": [
@@ -4783,7 +4783,7 @@
     "useWhen": "Inspecting supplied travel legs, local times and schedule changes.",
     "avoidWhen": "Booking travel, tracking a live vehicle without data or inventing arrival confidence.",
     "integration": [
-      "Supply up to 16 unique legs with valid explicit-offset ISO instants, actual local IANA zones, original and optional revised times, host-authored status and opening permission. Local clocks are formatted from their real instants; cancelled originals remain available.",
+      "Supply up to 16 unique legs with valid explicit-offset ISO instants, including one-to-three fractional second digits, actual local IANA zones, original and optional revised times, host-authored status and opening permission. Exact local clocks and dates are formatted from their real instants; cancelled originals remain available.",
       "Control selectedId independently. onOpenLeg receives a copied trip and leg plus an AbortSignal. The host opens its existing travel details; acknowledgment does not book travel, replace a leg or change a schedule.",
       "Install in a React Native app with Expo modules for the translucent footer and SVG details. The web preview supports design review; verify device fonts, larger text, reduced motion, touch and assistive technology on target devices."
     ],
