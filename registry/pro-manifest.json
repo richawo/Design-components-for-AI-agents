@@ -1306,7 +1306,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Warm violet reading palette.",
+        "description": "Neutral black/white reading glass, with monochrome preference edges and purposeful error accents.",
         "default": "\"dark\""
       },
       {
