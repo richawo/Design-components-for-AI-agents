@@ -17423,6 +17423,145 @@
     ]
   },
   {
+    "slug": "forms-branching-survey",
+    "name": "Branching Brief Survey",
+    "tier": "pro",
+    "platform": "web",
+    "category": "forms",
+    "description": "Build a conditional brief with retained earlier answers, active-path review and real abortable exact-snapshot submission.",
+    "tags": [
+      "survey",
+      "conditional",
+      "questionnaire",
+      "branching",
+      "review",
+      "form"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1100,
+    "usage": "import { FormsBranchingSurvey } from \"@/components/design-for-ai/forms-branching-survey\";\n\n<FormsBranchingSurvey formId=\"project-brief\" questions={questions} answers={answers} onAnswersChange={setAnswers} onSubmit={saveBrief} />\n\n// saveBrief receives active questionIds, a copied answers object and an AbortSignal. Hidden branch answers remain in editing state but are excluded from submission.",
+    "props": [
+      {
+        "name": "formId",
+        "type": "string",
+        "description": "Identity of the host questionnaire. A changed identity retires pending submission."
+      },
+      {
+        "name": "questions",
+        "type": "readonly SurveyQuestion[]",
+        "description": "At most20 unique questions, text or choice, with prior-question-only showWhen rules. Choices are unique and bounded to12; text maximumLength1–2000."
+      },
+      {
+        "name": "answers",
+        "type": "Readonly<Record<string, string>>",
+        "description": "Controlled accepted answers. The exact current object determines the active branch. Rejected requests never change the active path."
+      },
+      {
+        "name": "defaultAnswers",
+        "type": "Readonly<Record<string, string>>",
+        "description": "Local initial answers. Hidden branch answers are retained for future editing. Reset explicitly with resetKey."
+      },
+      {
+        "name": "onAnswersChange",
+        "type": "(answers: Readonly<Record<string, string>>) => void",
+        "description": "Request a cloned complete answer object. Missing handler makes controlled answers read only."
+      },
+      {
+        "name": "onSubmit",
+        "type": "(submission: SurveySubmission, signal: AbortSignal) => void | Promise<void>",
+        "description": "Explicit exact active-question payload. Fulfillment acknowledges this snapshot. Context changes/cancel abort and retire its result; no fake persistence."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Explicit lifecycle reset of local answers, step and review state."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"error\"",
+        "description": "Host availability retains accepted answers and current reading context."
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "description": "Meaningful unavailable explanation, default when blank."
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Actual recovery request."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Lock actions while retaining the readable questionnaire."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Complete deep-blue or pale-paper native palette."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<SurveyLabels>",
+        "description": "Question/review/recovery and required/optional/length validation copy."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Responsive host layout classes."
+      }
+    ],
+    "added": "2026-10-14",
+    "demo": {
+      "steps": [
+        "click:@survey-choice-product",
+        "click:@survey-next",
+        "click:@survey-text-workflows",
+        "type:Playback",
+        "click:@survey-step-kind",
+        "click:@survey-choice-website",
+        "click:@survey-step-priority",
+        "click:@survey-next",
+        "click:@survey-submit"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "disabled",
+        "label": "Read only",
+        "kind": "toggle",
+        "default": false
+      },
+      {
+        "prop": "status",
+        "label": "Availability",
+        "kind": "select",
+        "options": [
+          "ready",
+          "loading",
+          "error"
+        ],
+        "default": "ready"
+      }
+    ]
+  },
+  {
     "slug": "forms-draft-rescue",
     "name": "Draft Rescue Comparison",
     "tier": "pro",

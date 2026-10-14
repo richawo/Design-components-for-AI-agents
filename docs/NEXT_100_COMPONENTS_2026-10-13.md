@@ -94,7 +94,7 @@ Validate all six web widths, both supported themes, multiple instances and empty
 | 45 | `selects-tree-picker` | selects | Select hierarchical items with indeterminate parents, search and disabled-node explanations. | Released |
 | 46 | `date-range-calendar` | date-time | A two-ended date range with keyboard grid navigation, invalid-range recovery and locale-aware display. | Released |
 | 47 | `date-timezone-overlap` | date-time | Compare working hours across supplied zones and daylight-saving boundaries before choosing a time. | Released |
-| 48 | `forms-branching-survey` | forms | Conditional questions preserve prior answers when branches change and expose a final review. | Planned |
+| 48 | `forms-branching-survey` | forms | Conditional questions preserve prior answers when branches change and expose a final review. | Released |
 | 49 | `auth-recovery-codes` | auth | Reveal, copy and acknowledge supplied recovery codes; printing or downloading remains an explicit action. | Planned |
 | 50 | `forms-draft-rescue` | forms | Compare a local draft with a newer host version, choose retained fields and acknowledge conflict resolution. | Released |
 
@@ -175,4 +175,4 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 ## Progress
 
-Planned: 47. Released: 53. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
+Planned: 46. Released: 54. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
