@@ -34924,7 +34924,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Graphite or warm-paper surfaces with neutral readable text.",
+        "description": "Neutral graphite and white chrome; colour is reserved for actual feature content and semantic data accents.",
         "default": "\"dark\""
       },
       {
