@@ -15489,6 +15489,128 @@
     ]
   },
   {
+    "slug": "editor-keyframe-track",
+    "name": "Linear Keyframe Property Track",
+    "tier": "pro",
+    "platform": "web",
+    "category": "editors",
+    "description": "Move actual discrete keyframes without collisions and inspect linear interpolation at an exact frame, with provisional pointer and native keyboard alternatives.",
+    "tags": [
+      "keyframe",
+      "timeline",
+      "interpolation",
+      "animation",
+      "property",
+      "editor"
+    ],
+    "dependencies": [
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1050,
+    "usage": "import { EditorKeyframeTrack } from \"@/components/design-for-ai/editor-keyframe-track\";\n\n<EditorKeyframeTrack value={track} onValueChange={setTrack} />\n\n// Values interpolate linearly; nearest supplied value holds outside the point range. Keys cannot cross adjacent frames. Pointer release requests one atomic move; cancellation preserves the accepted curve.",
+    "props": [
+      {
+        "name": "value",
+        "type": "KeyframeTrack",
+        "description": "Controlled actual property/unit, fps1–60, durationFrames1–3600, finite min/max domain and up to24 unique distinct-frame keyframes."
+      },
+      {
+        "name": "defaultValue",
+        "type": "KeyframeTrack",
+        "description": "Local initial exact property track. Reset with resetKey."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(value: KeyframeTrack) => void",
+        "description": "Request cloned complete track and original key identities. Controlled rejection preserves accepted curve; newer frame/value buffers survive old acknowledgments; synchronous observer failure is contained."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Resets local track, inspection, numeric field and move state."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"error\"",
+        "description": "Host availability keeps accepted curve and records readable."
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "description": "Meaningful host failure; blank falls back."
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Actual recovery, with contained synchronous failure."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Read-only editing/inspection with actual records preserved."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Complete monochromatic graphite/white chrome. Colour is reserved for actual supplied content and purposeful feature accents."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<KeyframeTrackLabels>",
+        "description": "Actual property/frame/interpolation/request and recovery copy."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Host responsive classes."
+      }
+    ],
+    "added": "2026-10-14",
+    "demo": {
+      "steps": [
+        "click:@keyframe-select-settle",
+        "click:@keyframe-earlier",
+        "click:@keyframe-later",
+        "click:@keyframe-value",
+        "key:ArrowDown",
+        "key:ArrowUp",
+        "click:@keyframe-position:0.18,0.5",
+        "click:@keyframe-position:0.72,0.5"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "disabled",
+        "label": "Read only",
+        "kind": "toggle",
+        "default": false
+      },
+      {
+        "prop": "status",
+        "label": "Availability",
+        "kind": "select",
+        "options": [
+          "ready",
+          "loading",
+          "error"
+        ],
+        "default": "ready"
+      }
+    ]
+  },
+  {
     "slug": "editor-layer-stack",
     "name": "Layer Stack Workbench",
     "tier": "pro",
