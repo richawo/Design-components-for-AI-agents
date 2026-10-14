@@ -12776,6 +12776,132 @@
     ]
   },
   {
+    "slug": "devtools-schema-migration",
+    "name": "Schema Migration Folio",
+    "tier": "pro",
+    "platform": "web",
+    "category": "devtools",
+    "description": "An ordered SQL plan and impact folio with raw dependency inspection, exact-scope review and a cancellable host-owned migration request.",
+    "tags": [
+      "devtools",
+      "schema",
+      "migration",
+      "sql",
+      "review",
+      "dark"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1260,
+    "usage": "import { DevtoolsSchemaMigration } from \"@/components/design-for-ai/devtools-schema-migration\";\n\n<DevtoolsSchemaMigration plan={migration} status={status} onApply={requestMigration} resetKey={reviewSession} />",
+    "props": [
+      {
+        "name": "plan",
+        "type": "SchemaMigrationPlan",
+        "description": "Exact ordered supplied inventory with ID/title/description/complete and changes carrying actual SQL, dependencies and per-change impact.",
+        "default": "Original offline review timestamp plan"
+      },
+      {
+        "name": "status",
+        "type": "\"review\" | \"applying\" | \"applied\" | \"error\"",
+        "description": "Authoritative host lifecycle. Pending callback or fulfillment never fabricates Applied. Same-plan applying progress keeps its request owner.",
+        "default": "\"review\""
+      },
+      {
+        "name": "statusMessage",
+        "type": "string",
+        "description": "Actual lifecycle context; blank errors receive a meaningful fallback."
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "description": "Controlled selected change ID. Missing values stay explicit; no observer means selection read-only."
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "description": "Initial local selected change reused on reset."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(id: string, change: SchemaMigrationChange) => void",
+        "description": "Synchronous selected-change observer; rejection keeps actual selection."
+      },
+      {
+        "name": "onApply",
+        "type": "(review: SchemaMigrationReview, signal: AbortSignal) => void | Promise<void>",
+        "description": "Actual host request for a copied reviewed plan and note. Own SQL execution, honor cancellation, and supply actual lifecycle status."
+      },
+      {
+        "name": "defaultReviewNote",
+        "type": "string",
+        "description": "Initial draft note; only explicit plan/session identity resets it.",
+        "default": "\"\""
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Review/session identity. Retires old consent, selection and work."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Migration review heading.",
+        "default": "\"Read the schema before the step.\""
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Describe exact order, statement and known impact.",
+        "default": "\"Inspect the supplied sequence, dependency constraints and actual impact before requesting that exact migration.\""
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Restrained navy/ice or paper/ink palette.",
+        "default": "\"dark\""
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Outer migration folio classes.",
+        "default": "\"\""
+      }
+    ],
+    "added": "2026-10-13",
+    "demo": {
+      "steps": [
+        "click:@migration-change-backfill-approved-at",
+        "wait:350",
+        "click:@migration-review",
+        "wait:350",
+        "click:@migration-apply",
+        "wait:700"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "title",
+        "label": "Heading",
+        "kind": "text",
+        "default": "Read the schema before the step."
+      }
+    ]
+  },
+  {
     "slug": "devtools-webhook-inspector",
     "name": "Webhook Inspector",
     "tier": "pro",
