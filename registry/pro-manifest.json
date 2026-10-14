@@ -25863,6 +25863,128 @@
     ]
   },
   {
+    "slug": "mobile-day-planner",
+    "name": "Day Schedule Studio",
+    "tier": "pro",
+    "platform": "mobile",
+    "category": "mobile",
+    "description": "A native day schedule with a precise interval overview, readable event agenda and retained time proposals, reviewed against actual overlap constraints.",
+    "tags": [
+      "mobile",
+      "react native",
+      "dark",
+      "glass",
+      "day",
+      "planner"
+    ],
+    "dependencies": [
+      "expo-blur",
+      "expo-linear-gradient",
+      "react-native-svg"
+    ],
+    "theme": "dark",
+    "previewHeight": 844,
+    "usage": "import { MobileDayPlanner } from \"@/components/design-for-ai/native/mobile-day-planner\";\n\n// Bare React Native: run npx install-expo-modules once.\n<MobileDayPlanner theme=\"dark\" />",
+    "props": [
+      {
+        "name": "events",
+        "type": "PlannerEvent[]",
+        "description": "Exact event identities/title/detail, integer start/end within0–1440, explicit editable/reason. Invalid or duplicate identities remain readable but cannot select."
+      },
+      {
+        "name": "selectedId",
+        "type": "string | null",
+        "description": "Controlled actual inspected event. Missing observer makes controlled selection read-only."
+      },
+      {
+        "name": "defaultSelectedId",
+        "type": "string | null",
+        "description": "Initial local event identity. A missing selection is not replaced silently."
+      },
+      {
+        "name": "onSelectionChange",
+        "type": "(id: string, event: PlannerEvent) => void",
+        "description": "Synchronous copied selection observer before local mutation."
+      },
+      {
+        "name": "onReschedule",
+        "type": "(request: { dayId: string; event: PlannerEvent; proposal: PlannerProposal; conflicts: PlannerEvent[] }, signal: AbortSignal) => void | Promise<void>",
+        "description": "Exact copied current event, reviewed local-time range, note and current overlap evidence. Acknowledgment does not move supplied calendar. Cancel/failure/newer drafts remain separate."
+      },
+      {
+        "name": "dayId",
+        "type": "string",
+        "description": "Actual calendar-day identity. Context replacement retires review and pending work."
+      },
+      {
+        "name": "dayLabel",
+        "type": "string",
+        "description": "Host-authored readable date."
+      },
+      {
+        "name": "timezoneLabel",
+        "type": "string",
+        "description": "Host-authored zone context. Component does not convert timezones."
+      },
+      {
+        "name": "minuteStep",
+        "type": "number",
+        "description": "Integer1–60 required for whole-minute times; invalid configuration blocks request."
+      },
+      {
+        "name": "allowOverlap",
+        "type": "boolean",
+        "description": "Explicit host policy. Default false. Exact overlapping events are included in the request either way."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Editable host heading. Keep working content dominant."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Neutral graphite/white themes with readable borders and actual focus states."
+      }
+    ],
+    "added": "2026-10-14",
+    "demo": {
+      "steps": [
+        "click:@planner-start",
+        "key:Home",
+        "key:End",
+        "key:Backspace",
+        "key:Backspace",
+        "key:Backspace",
+        "key:Backspace",
+        "key:Backspace",
+        "type:11:15",
+        "click:@planner-submit",
+        "wait:250",
+        "click:@planner-submit",
+        "wait:450"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "title",
+        "label": "Heading",
+        "kind": "text",
+        "default": "A day with a little room."
+      }
+    ]
+  },
+  {
     "slug": "mobile-focus-session",
     "name": "Focus Session Dial",
     "tier": "pro",
