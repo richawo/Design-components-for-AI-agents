@@ -25863,6 +25863,106 @@
     ]
   },
   {
+    "slug": "mobile-habit-grid",
+    "name": "Weekly Habit Ledger",
+    "tier": "pro",
+    "platform": "mobile",
+    "category": "mobile",
+    "description": "A native weekly completion ledger with exact known and unknown records, tactile day marks, an honest overview and cancellable cell updates.",
+    "tags": [
+      "mobile",
+      "react native",
+      "dark",
+      "glass",
+      "habit",
+      "grid"
+    ],
+    "dependencies": [
+      "expo-blur",
+      "expo-linear-gradient",
+      "react-native-svg"
+    ],
+    "theme": "dark",
+    "previewHeight": 844,
+    "usage": "import { MobileHabitGrid } from \"@/components/design-for-ai/native/mobile-habit-grid\";\n\n// Bare React Native: run npx install-expo-modules once.\n<MobileHabitGrid theme=\"dark\" />",
+    "props": [
+      {
+        "name": "habits",
+        "type": "HabitGridHabit[]",
+        "description": "Actual unique identity/name/detail and explicit enabled boolean. Conflicting identities cannot mutate."
+      },
+      {
+        "name": "days",
+        "type": "HabitGridDay[]",
+        "description": "Exactly seven consecutive valid ISO calendar dates, supplied weekday and label. Invalid date configurations block edits."
+      },
+      {
+        "name": "value",
+        "type": "HabitGridRecord[]",
+        "description": "Authoritative completion records. Missing, duplicate or null cell is unknown; controlled with no observer is read-only."
+      },
+      {
+        "name": "defaultValue",
+        "type": "HabitGridRecord[]",
+        "description": "Initial local actual records. A toggle replaces the exact supplied cell only."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(request: { weekId: string; habit: HabitGridHabit; day: HabitGridDay; before: boolean; after: boolean; records: HabitGridRecord[] }, signal: AbortSignal) => void | Promise<void>",
+        "description": "Copied exact whole proposed records and current cell facts. Local mode accepts after fulfillment. Controlled mode waits for supplied value. Failed/cancelled requests preserve records."
+      },
+      {
+        "name": "weekId",
+        "type": "string",
+        "description": "Replacement week identity retires pending work and resets local records."
+      },
+      {
+        "name": "weekLabel",
+        "type": "string",
+        "description": "Actual host date range label; calendar dates govern eligibility."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Editable host heading. Keep working content dominant."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Neutral graphite/white themes with readable borders and actual focus states."
+      }
+    ],
+    "added": "2026-10-14",
+    "demo": {
+      "steps": [
+        "click:@habit-0-3",
+        "wait:300",
+        "click:@habit-1-3",
+        "wait:300",
+        "click:@habit-0-3",
+        "wait:500"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "title",
+        "label": "Heading",
+        "kind": "text",
+        "default": "Small things, kept."
+      }
+    ]
+  },
+  {
     "slug": "mobile-live-activity",
     "name": "Delivery Live Activity",
     "tier": "pro",
