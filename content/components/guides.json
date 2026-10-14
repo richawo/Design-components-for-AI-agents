@@ -4316,14 +4316,16 @@
     "useWhen": "Exploring a real computed pivot by selecting supplied dimensions and supported measures.",
     "avoidWhen": "A database query console or a pivot whose displayed cells are fixed demonstration values.",
     "integration": [
-      "Supply records, field definitions and the supported aggregation policy. Compute cells from the selected dimensions and explain unsupported combinations.",
-      "Retain configuration through empty results and keep row/column labels readable in an internally scrollable narrow view."
+      "Supply 1–8 unique declared category/number fields and up to 2000 unique labeled original scalar records through immutable source revisions. Numeric values are finite within ±1 billion. Actual own keys are read; missing keys, explicit null, typed categories and literal placeholder strings remain distinct.",
+      "Control one atomic rowField/columnField/measure/valueField configuration. Category dimensions are distinct or null. Count retains all original records; compensated sum and mean use actual numeric contributors without imputed zeros. Totals are computed from original contributors, so a mean is not an average of group means. This is local bounded aggregation, not a server query.",
+      "Edit a genuine draft and apply it explicitly. Rejection and older host acceptance preserve newer draft intent; only accepted discrete configurations commit. Keep accepted and Default grouping are explicit reset actions. Untouched loading initializes at first ready fields; explicit unknown and later chosen context remain honest.",
+      "Matrices exceeding 12 row groups or 8 columns receive a useful unsupported state while every original remains inspectable in source order, 24 per page. Inspect a real or empty cell for its exact originals; configuration-disabled mode still permits read-only inspection. Compact controls stack while tables scroll locally. Live reduced motion settles current totals/result emphasis, and actual owner-document fences preserve outside or parent-page focus."
     ],
     "related": [
       "data-query-builder",
       "data-table-sortable"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "data-column-workbench": {
     "useWhen": "Reordering, pinning and hiding columns while inspecting an actual supplied table.",
