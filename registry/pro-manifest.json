@@ -14782,6 +14782,146 @@
     ]
   },
   {
+    "slug": "editor-layer-stack",
+    "name": "Layer Stack Workbench",
+    "tier": "pro",
+    "platform": "web",
+    "category": "editors",
+    "description": "Inspect, reorder, hide, lock and rename actual supplied layers with native dragging, keyboard equivalents and retained rejected rename drafts.",
+    "tags": [
+      "layers",
+      "editor",
+      "reorder",
+      "rename",
+      "visibility",
+      "stack"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1000,
+    "usage": "import { EditorLayerStack } from \"@/components/design-for-ai/editor-layer-stack\";\n\n<EditorLayerStack value={layers} onValueChange={setLayers} selectedId={selectedLayerId} onSelectedIdChange={setSelectedLayerId} />\n\n// Layer edits and inspection are separately controlled. Locked layers can be shown/hidden and unlocked, but cannot be directly renamed or moved.",
+    "props": [
+      {
+        "name": "value",
+        "type": "readonly StackLayer[]",
+        "description": "Controlled accepted flat layer order and visible/locked/name state. Up to64 unique IDs and nonempty names of at most160 characters."
+      },
+      {
+        "name": "defaultValue",
+        "type": "readonly StackLayer[]",
+        "description": "Local initial layer stack. Reset explicitly with resetKey. Kinds text/shape/image/group describe actual host layers; groups are flat records rather than a fabricated tree."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(layers: readonly StackLayer[]) => void",
+        "description": "Request a cloned complete stack. Missing handler makes controlled edits read only; rejected requests keep the actual accepted order and states."
+      },
+      {
+        "name": "selectedId",
+        "type": "string | null",
+        "description": "Separately controlled inspected identity. Missing onSelectedIdChange keeps controlled inspection read only."
+      },
+      {
+        "name": "defaultSelectedId",
+        "type": "string | null",
+        "description": "Local initial inspected identity; when omitted, choose the first supplied stack record. Local removal moves inspection to an actual neighboring record."
+      },
+      {
+        "name": "onSelectedIdChange",
+        "type": "(id: string | null) => void",
+        "description": "Actual inspection request, separate from modifying the stack."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Explicit local stack/inspection/rename/request/drag lifecycle reset."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"error\"",
+        "description": "Host availability locks actions and retires active gestures while retaining readable layers."
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "description": "Meaningful host failure explanation, default when blank."
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Actual recovery request."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Lock actions and retire pointer capture while retaining readable state."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Complete dark graphite-blue or pale-paper native palette."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<LayerStackLabels>",
+        "description": "Layer actions, selected/missing state, rename validity and recovery copy."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Responsive host layout classes."
+      }
+    ],
+    "added": "2026-10-14",
+    "demo": {
+      "steps": [
+        "click:@layer-visible-notes",
+        "click:@layer-visible-cover",
+        "click:@layer-select-cover",
+        "click:@layer-down",
+        "click:@layer-up",
+        "click:@layer-lock-cover",
+        "click:@layer-lock-cover",
+        "click:@layer-rename",
+        "type: v2",
+        "click:@layer-name-apply"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "disabled",
+        "label": "Read only",
+        "kind": "toggle",
+        "default": false
+      },
+      {
+        "prop": "status",
+        "label": "Availability",
+        "kind": "select",
+        "options": [
+          "ready",
+          "loading",
+          "error"
+        ],
+        "default": "ready"
+      }
+    ]
+  },
+  {
     "slug": "editor-markdown-split",
     "name": "Markdown Split",
     "tier": "pro",
