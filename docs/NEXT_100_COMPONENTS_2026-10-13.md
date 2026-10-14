@@ -118,7 +118,7 @@ Validate all six web widths, both supported themes, multiple instances and empty
 | # | Slug | Category | Distinct interaction and essential states | Status |
 | --- | --- | --- | --- | --- |
 | 61 | `editor-layer-stack` | editors | Reorder, lock, hide and rename supplied layers; selection and move mode are keyboard accessible. | Released |
-| 62 | `editor-color-token-studio` | editors | Edit semantic color tokens and compare supplied foreground/background pairs with real contrast calculation. | Planned |
+| 62 | `editor-color-token-studio` | editors | Edit semantic color tokens and compare supplied foreground/background pairs with real contrast calculation. | Released |
 | 63 | `editor-spacing-inspector` | editors | Measure and change padding/gap on supplied content with bounded values and clear hit targets. | Planned |
 | 64 | `editor-branch-compare` | editors | Compare two supplied document structures and explicitly accept or retain individual changes. | Planned |
 | 65 | `editor-asset-license-sheet` | editors | Inspect supplied asset provenance and usage terms, then select an eligible asset for a project. | Planned |
@@ -175,4 +175,4 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 ## Progress
 
-Planned: 39. Released: 61. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
+Planned: 38. Released: 62. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.

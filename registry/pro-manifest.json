@@ -14782,6 +14782,158 @@
     ]
   },
   {
+    "slug": "editor-color-token-studio",
+    "name": "Semantic Color Token Studio",
+    "tier": "pro",
+    "platform": "web",
+    "category": "editors",
+    "description": "Edit semantic color tokens, inspect real composited text contrast for supplied reading pairs and copy only accepted valid CSS variables.",
+    "tags": [
+      "color",
+      "tokens",
+      "contrast",
+      "accessibility",
+      "palette",
+      "css"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1200,
+    "usage": "import { EditorColorTokenStudio } from \"@/components/design-for-ai/editor-color-token-studio\";\n\n<EditorColorTokenStudio value={tokens} onValueChange={setTokens} pairs={readingPairs} canvasColor=\"#ffffff\" scopeSelector=\".product-theme\" />\n\n// Valid draft colors preview live. Apply requests the accepted palette; Copy exports only accepted token values. Text thresholds use actual font size/weight and unrounded ratios.",
+    "props": [
+      {
+        "name": "value",
+        "type": "readonly ColorToken[]",
+        "description": "Controlled accepted palette, up to24 unique CSS-safe token IDs. Color values support #RGB, #RGBA, #RRGGBB and #RRGGBBAA."
+      },
+      {
+        "name": "defaultValue",
+        "type": "readonly ColorToken[]",
+        "description": "Local initial semantic palette. Reset explicitly with resetKey. Unsupported supplied color values stay readable and repairable."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(tokens: readonly ColorToken[]) => void",
+        "description": "Explicit Apply requests a copied complete palette. Controlled rejection retains accepted CSS and the edited draft. Synchronous failures preserve accepted palette/export and the edited draft with useful feedback."
+      },
+      {
+        "name": "pairs",
+        "type": "readonly TokenContrastPair[]",
+        "description": "Up to32 unique reading pairs referencing actual token IDs with validated fontSize1–128 and fontWeight100–900. Missing references/colors are explicitly unavailable."
+      },
+      {
+        "name": "presets",
+        "type": "readonly TokenPreset[]",
+        "description": "Up to16 uniquely labelled valid supplied color suggestions. Selecting changes only the draft, then Apply accepts or requests it."
+      },
+      {
+        "name": "canvasColor",
+        "type": "string",
+        "description": "An opaque hexadecimal base for compositing transparent background/foreground colors. Pair samples use the same actual canvas."
+      },
+      {
+        "name": "sampleText",
+        "type": "string",
+        "description": "Actual text shown at each pair’s declared font size and weight."
+      },
+      {
+        "name": "scopeSelector",
+        "type": "string",
+        "description": "Accepted CSS export scope: :root, a simple class/ID or a simple data-attribute equality selector. Unsupported selectors are explained and cannot be copied."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Explicit local palette/selection/draft/request lifecycle reset."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"error\"",
+        "description": "Host availability retains accepted palette and draft while locking edits and retiring copy receipts."
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "description": "Meaningful host failure explanation, default when blank."
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Actual host recovery request."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Lock controls while preserving reading context."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Complete warm dark or pale-paper editor palette, independent from supplied token values."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<TokenStudioLabels>",
+        "description": "Token/draft/contrast/export/availability and recovery copy."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Responsive host layout classes."
+      }
+    ],
+    "added": "2026-10-14",
+    "demo": {
+      "steps": [
+        "click:@token-select-muted",
+        "click:@token-preset-2",
+        "click:@token-apply",
+        "click:@token-preset-0",
+        "click:@token-apply",
+        "click:@token-copy"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Editor theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "sampleText",
+        "label": "Actual sample text",
+        "kind": "text",
+        "default": "Room for thoughtful work."
+      },
+      {
+        "prop": "disabled",
+        "label": "Read only",
+        "kind": "toggle",
+        "default": false
+      },
+      {
+        "prop": "status",
+        "label": "Availability",
+        "kind": "select",
+        "options": [
+          "ready",
+          "loading",
+          "error"
+        ],
+        "default": "ready"
+      }
+    ]
+  },
+  {
     "slug": "editor-layer-stack",
     "name": "Layer Stack Workbench",
     "tier": "pro",
