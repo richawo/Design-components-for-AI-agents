@@ -19601,7 +19601,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Dark or light keycap and preview palette.",
+        "description": "Neutral black/white glass chrome, with colour reserved for actual data/feature accents.",
         "default": "\"dark\""
       },
       {
