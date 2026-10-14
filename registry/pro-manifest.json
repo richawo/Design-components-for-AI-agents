@@ -23550,7 +23550,7 @@
       {
         "name": "accent",
         "type": "string",
-        "default": "\"#e6b782\"",
+        "default": "\"#eeeeee\"",
         "description": "Selected detents and the machined dial's indicator stripe."
       },
       {
@@ -23609,9 +23609,9 @@
         "prop": "accent",
         "label": "Indicator",
         "kind": "color",
-        "default": "#e6b782",
+        "default": "#eeeeee",
         "options": [
-          "#e6b782",
+          "#eeeeee",
           "#e0e3e8",
           "#a7c7ba"
         ]
