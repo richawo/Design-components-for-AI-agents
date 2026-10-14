@@ -24,6 +24,19 @@ const config: NextConfig = {
       ".json",
     ],
   },
+  // Match native preview resolution when the supported webpack compiler is used.
+  webpack(config) {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      "react-native$": "react-native-web",
+      "@react-native/assets-registry/registry": `${process.cwd()}/lib/shims/assets-registry.js`,
+    };
+    config.resolve.extensions = [...new Set([
+      ".web.tsx", ".web.ts", ".web.jsx", ".web.js", ".web.mjs",
+      ...config.resolve.extensions,
+    ])];
+    return config;
+  },
   experimental: { globalNotFound: true },
   devIndicators: false,
   agentRules: false,
