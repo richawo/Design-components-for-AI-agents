@@ -8889,6 +8889,154 @@
     "added": "2026-10-14"
   },
   {
+    "slug": "chart-scatter-brush",
+    "name": "Scatter Brush",
+    "tier": "pro",
+    "platform": "web",
+    "category": "charts",
+    "description": "Brush a real two-dimensional point set and inspect original records with exact bounds, keyboard filtering and honest controlled selection.",
+    "tags": [
+      "scatter plot",
+      "brush selection",
+      "bounded region",
+      "point records",
+      "exact filter",
+      "keyboard alternative"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1320,
+    "usage": "import { ChartScatterBrush } from \"@/components/design-for-ai/chart-scatter-brush\";\n\n<ChartScatterBrush points={records} value={view} onValueChange={setView} xLabel=\"Duration\" xUnit=\"ms\" yLabel=\"Size\" yUnit=\"KB\" />",
+    "props": [
+      {
+        "name": "points",
+        "type": "ScatterPoint[]",
+        "description": "Up to 500 raw unique labeled original points with finite x/y within ±1 billion. Optional six-digit color and source description."
+      },
+      {
+        "name": "xDomain",
+        "type": "[number, number]",
+        "description": "Optional finite ordered horizontal domain within ±1 billion. Outside points remain in original native records; no domain silently discards data."
+      },
+      {
+        "name": "yDomain",
+        "type": "[number, number]",
+        "description": "Optional finite ordered vertical domain; equal endpoints honestly center that dimension."
+      },
+      {
+        "name": "value",
+        "type": "ScatterView",
+        "description": "Atomic host-controlled bounds or null, and selectedId or null. Bounds must be ordered inside current domains; unknown identities stay unavailable."
+      },
+      {
+        "name": "defaultValue",
+        "type": "ScatterView",
+        "description": "Initial uncontrolled view, default no bounds and no selection."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(view: ScatterView) => void",
+        "description": "Request a completed brush, exact filter, keyboard translation or selected original record. A held brush is local provisional geometry only."
+      },
+      {
+        "name": "onValueCommit",
+        "type": "(view: ScatterView) => void",
+        "description": "Accepted completed discrete changes only. Controlled rejection and interrupted gestures do not commit."
+      },
+      {
+        "name": "xLabel",
+        "type": "string",
+        "description": "Horizontal dimension label."
+      },
+      {
+        "name": "yLabel",
+        "type": "string",
+        "description": "Vertical dimension label."
+      },
+      {
+        "name": "xUnit",
+        "type": "string",
+        "description": "Horizontal original quantity unit."
+      },
+      {
+        "name": "yUnit",
+        "type": "string",
+        "description": "Vertical original quantity unit."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "description": "Supported Intl number locale. Exact original fields are retained in native records."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Host exploration heading."
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Host point-set context, without inferred correlation."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"unavailable\"",
+        "description": "Host source availability; current accepted view survives unavailable data."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Disables selection requests while original records and page controls stay readable."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Neutral graphite and white chrome; colour is reserved for actual feature content and semantic data accents."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Classes on the independent root."
+      }
+    ],
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "disabled",
+        "label": "Disabled selection",
+        "kind": "toggle",
+        "default": false
+      }
+    ],
+    "demo": {
+      "steps": [
+        "hover:@scatter-plot:0.3,0.7",
+        "down",
+        "hover:@scatter-plot:0.75,0.25",
+        "up",
+        "wait:350",
+        "key:ArrowRight",
+        "wait:350",
+        "click:@scatter-clear",
+        "wait:450"
+      ],
+      "loop": false
+    },
+    "added": "2026-10-14"
+  },
+  {
     "slug": "chart-streamgraph",
     "name": "Streamgraph",
     "tier": "pro",
