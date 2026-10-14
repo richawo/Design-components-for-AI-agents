@@ -34412,7 +34412,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Graphite-compatible or warm-paper ink and outline colors.",
+        "description": "Neutral graphite and white chrome; colour is reserved for actual feature content and semantic data accents.",
         "default": "\"dark\""
       },
       {
