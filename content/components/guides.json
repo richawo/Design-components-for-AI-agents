@@ -4661,7 +4661,7 @@
     "integration": [
       "choices: Exact unique identities, descriptions and finite pleasantness/energy coordinates within [-1,1]. Duplicate or invalid choices stay visible in the list and cannot select.",
       "value: Authoritative choice identity. Missing, null or conflicting identity remains explicit. Without observer the controlled map is read-only.",
-      "defaultValue: Initial local choice. Default steady.",
+      "defaultValue: Initial local self-reported choice, null by default. The complete offline demonstration explicitly selects steady.",
       "onValueChange: Copied synchronous selection observer runs before mutation. Throwing retains previous choice.",
       "onSave: Exact selected choice, note and check-in context snapshot. Fulfillment is acknowledgment. Missing handler disables save; cancellation is cooperative.",
       "contextId: Replacement check-in identity retires requests and resets local selection/note.",
