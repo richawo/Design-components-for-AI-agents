@@ -7739,6 +7739,128 @@
     ]
   },
   {
+    "slug": "chart-funnel-dots",
+    "name": "Funnel Dots",
+    "tier": "pro",
+    "platform": "web",
+    "category": "charts",
+    "description": "Inspect exact supplied stage counts through bounded weighted dots, with explicit previous-stage denominators, zero states and honest aggregate context.",
+    "tags": [
+      "funnel",
+      "stage counts",
+      "weighted dots",
+      "conversion denominator",
+      "aggregate data",
+      "exact quantities"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1220,
+    "usage": "import { ChartFunnelDots } from \"@/components/design-for-ai/chart-funnel-dots\";\n\n<ChartFunnelDots stages={stageCounts} value={selectedStage} onValueChange={setSelectedStage} unit=\"records\" />",
+    "props": [
+      {
+        "name": "stages",
+        "type": "FunnelStage[]",
+        "description": "Up to 8 unique labeled original stages with whole finite counts from 0 to 1 trillion. Optional host descriptions; order is authoritative."
+      },
+      {
+        "name": "value",
+        "type": "string | null",
+        "description": "Host-controlled selected stage ID, or explicit null. Unknown identities stay unavailable without fallback."
+      },
+      {
+        "name": "defaultValue",
+        "type": "string | null",
+        "description": "Initial uncontrolled stage; untouched loading source initializes only at first valid nonempty ready data."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(id: string | null) => void",
+        "description": "Requests actual stage selection or explicit clear; rejection preserves the accepted selection."
+      },
+      {
+        "name": "onValueCommit",
+        "type": "(id: string | null) => void",
+        "description": "Accepted discrete changes only; obsolete, rejected and throwing requests do not falsely commit."
+      },
+      {
+        "name": "unit",
+        "type": "string",
+        "description": "Host aggregate count unit. No same-cohort or individual identity inference."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "description": "Supported native Intl count and denominator-ratio locale."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Host stage-study heading."
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Host source and aggregate-count context."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"unavailable\"",
+        "description": "Availability retains the current choice."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Disables stage selection, preserving visible counts and native descriptions."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Neutral graphite and white chrome; colour is reserved for actual feature content and semantic data accents."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Classes on the self-contained root."
+      }
+    ],
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "disabled",
+        "label": "Disabled selection",
+        "kind": "toggle",
+        "default": false
+      }
+    ],
+    "demo": {
+      "steps": [
+        "click:@funnel-read",
+        "wait:300",
+        "click:@funnel-revision",
+        "wait:450",
+        "click:@funnel-reviewed",
+        "wait:300",
+        "click:@funnel-source-reset",
+        "wait:450"
+      ],
+      "loop": false
+    },
+    "added": "2026-10-14"
+  },
+  {
     "slug": "chart-race-bars",
     "name": "Bar chart race",
     "tier": "pro",

@@ -107,7 +107,7 @@ Validate all six web widths, both supported themes, multiple instances and empty
 | 53 | `chart-box-distribution` | charts | Inspect medians, quartiles and outliers with accessible values and transparent sample sizes. | Planned |
 | 54 | `chart-calendar-heatmap` | charts | Explore daily values with keyboard navigation, date filtering and an honest missing-data state. | Planned |
 | 55 | `chart-scatter-brush` | charts | Select a bounded region of points and inspect the resulting records with keyboard filtering. | Planned |
-| 56 | `chart-funnel-dots` | charts | Show discrete flow through stages while preserving exact totals and conversion denominators. | Planned |
+| 56 | `chart-funnel-dots` | charts | Show discrete flow through stages while preserving exact totals and conversion denominators. | Released |
 | 57 | `data-pivot-configurator` | data | Choose dimensions and measures, then inspect a computed pivot and its empty or unsupported combination. | Planned |
 | 58 | `data-column-workbench` | data | Reorder, pin and hide columns with a live table preview and keyboard movement. | Planned |
 | 59 | `data-bulk-action-review` | data | Review exactly which selected records an action affects, including excluded and failed records. | Planned |
@@ -175,4 +175,4 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 ## Progress
 
-Planned: 25. Released: 75. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
+Planned: 24. Released: 76. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
