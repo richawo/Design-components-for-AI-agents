@@ -12490,6 +12490,154 @@
     "added": "2026-10-14"
   },
   {
+    "slug": "data-filter-history",
+    "name": "Filter History",
+    "tier": "pro",
+    "platform": "web",
+    "category": "data",
+    "description": "Compare actual record matches from supplied filter snapshots, restore a view explicitly and name it without losing newer drafts or the active context.",
+    "tags": [
+      "filter history",
+      "saved views",
+      "comparison",
+      "restore filters",
+      "name draft",
+      "original records"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1180,
+    "usage": "import { DataFilterHistory } from \"@/components/design-for-ai/data-filter-history\";\n\n<DataFilterHistory fields={fields} records={records} history={snapshots} value={activeRules} onValueChange={setActiveRules} onRename={renameSnapshot} />",
+    "props": [
+      {
+        "name": "fields",
+        "type": "HistoryField[]",
+        "description": "1–8 raw unique labeled text/number/boolean field declarations."
+      },
+      {
+        "name": "records",
+        "type": "HistoryRecord[]",
+        "description": "Up to 500 raw unique labeled immutable originals with declared own scalar values. Null and missing keys remain distinct; finite numbers within ±1 billion."
+      },
+      {
+        "name": "history",
+        "type": "FilterSnapshot[]",
+        "description": "Up to 12 raw unique snapshots with 1–80-character names, supplied savedAt labels and at most 12 AND rules. Snapshot order and labels are authoritative."
+      },
+      {
+        "name": "value",
+        "type": "HistoryRule[]",
+        "description": "Actual controlled active filter rules. Inspection does not change them; explicit restoration requests a separate accepted set."
+      },
+      {
+        "name": "defaultValue",
+        "type": "HistoryRule[]",
+        "default": "[]",
+        "description": "Initial uncontrolled active rules. Empty rules match every real source record."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(rules: HistoryRule[], snapshotId: string) => void",
+        "description": "Explicit restore request; rejection retains current active data."
+      },
+      {
+        "name": "onValueCommit",
+        "type": "(rules: HistoryRule[], snapshotId: string) => void",
+        "description": "Accepted current restorations only; no rejected/no-op/obsolete commit."
+      },
+      {
+        "name": "selectedId",
+        "type": "string | null",
+        "description": "Controlled comparison snapshot ID; unknown/null is honest and never silently replaced."
+      },
+      {
+        "name": "defaultSelectedId",
+        "type": "string | null",
+        "description": "Initial comparison identity. Untouched loading waits for first actual ready history."
+      },
+      {
+        "name": "onSelectionChange",
+        "type": "(id: string | null) => void",
+        "description": "Independent comparison request; it never restores filters."
+      },
+      {
+        "name": "onRename",
+        "type": "(id: string, name: string, signal: AbortSignal) => Promise<void>",
+        "description": "Host-owned exact name request. Host updates history; fulfilled waiting does not invent a changed source name. Newer drafts survive older acceptance. Source/rule/handler retirement ignores obsolete completion."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Keep the view. Compare the past.\"",
+        "description": "Comparison heading."
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Actual source/history context."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"unavailable\"",
+        "description": "Availability preserves active view, comparison and name drafts."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "default": "false",
+        "description": "Disables restoration/selection/naming; matching originals remain inspectable."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Neutral graphite or white chrome and complete neutral demo stage."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Host root classes."
+      }
+    ],
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "disabled",
+        "label": "History locked",
+        "kind": "toggle",
+        "default": false
+      }
+    ],
+    "demo": {
+      "steps": [
+        "click:@history-short",
+        "wait:250",
+        "click:@history-restore",
+        "wait:300",
+        "click:@history-drafts",
+        "wait:250",
+        "click:@history-restore",
+        "wait:300",
+        "click:@history-snapshot-data",
+        "wait:300"
+      ],
+      "loop": false
+    },
+    "added": "2026-10-14"
+  },
+  {
     "slug": "data-kanban-compact",
     "name": "Accessible Sprint Board",
     "tier": "pro",

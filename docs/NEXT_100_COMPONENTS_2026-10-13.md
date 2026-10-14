@@ -111,7 +111,7 @@ Validate all six web widths, both supported themes, multiple instances and empty
 | 57 | `data-pivot-configurator` | data | Choose dimensions and measures, then inspect a computed pivot and its empty or unsupported combination. | Released |
 | 58 | `data-column-workbench` | data | Reorder, pin and hide columns with a live table preview and keyboard movement. | Released |
 | 59 | `data-bulk-action-review` | data | Review exactly which selected records an action affects, including excluded and failed records. | Released |
-| 60 | `data-filter-history` | data | Compare, restore and name previous filter states without silently changing the active view. | Planned |
+| 60 | `data-filter-history` | data | Compare, restore and name previous filter states without silently changing the active view. | Released |
 
 ## 7. Creator and editor workflows
 
@@ -175,4 +175,4 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 ## Progress
 
-Planned: 14. Released: 86. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
+Planned: 13. Released: 87. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
