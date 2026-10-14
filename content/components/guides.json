@@ -4794,17 +4794,21 @@
     "updated": "2026-10-14"
   },
   "mobile-attachment-tray": {
-    "useWhen": "Reviewing selected attachments and exact limits before sending.",
-    "avoidWhen": "Uploading automatically on selection or presenting an optimistic row as acknowledged success.",
+    "useWhen": "Reviewing exact selected attachment metadata, finite limits and a preserved note before an explicit host-owned send.",
+    "avoidWhen": "Automatically opening a picker or uploading, calling unknown limits unlimited, hiding invalid selections or presenting a request acknowledgment as delivered files.",
     "integration": [
-      "Supply stable attachment IDs, host-reported sizes and per-file errors. Keep failed items and drafts available, explain limits and submit only the reviewed selection.",
-      "Install in a React Native app. The web preview supports design review; verify touch gestures, large text, reduced motion and assistive technology on target devices."
+      "Supply stable file IDs, full names, MIME, nullable bytes and actual ready/loading/error/unavailable states with reasons. All selected missing/conflicting variants remain inspectable; choice shelf shows the first 100 raw records.",
+      "Use value/defaultValue and synchronous onValueChange for ordered selected IDs. Read-only or rejected control remains honest. Changing limits never silently removes selected evidence.",
+      "maxCount and maxBytes default to 5 and 5242880. Both require finite nonnegative integer values for a reviewed send; null means unknown and blocks authorization, never unlimited. Missing sizes or ambiguous selected identities make the exact total unavailable.",
+      "onSend receives a copied AttachmentReview with actual attachment records, exact note and exact limits, plus AbortSignal. One pending owner offers Cancel. File/selection/limit/owner/reset changes retire stale work; newer note typing alone preserves the real submitted request. Fulfillment acknowledges only and cannot label delivery complete.",
+      "Inspect the exact submitted or acknowledged note and filenames separately from the current draft. A failed request or an older acknowledgment cannot replace newer typing. Provide optional explicit onAdd and per-file onRetry; retries have independent cancellation, exact identity/fact ownership and actual same-file loading continuity.",
+      "Install Expo modules once in a bare React Native app. Verify native device touch, dynamic text and assistive technology. The browser proof covers actual source/state, focus and design."
     ],
     "related": [
       "mobile-chat",
       "mobile-bottom-sheet"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "mobile-meeting-preflight": {
     "useWhen": "Reviewing host-reported microphone, camera and connection readiness before joining.",
