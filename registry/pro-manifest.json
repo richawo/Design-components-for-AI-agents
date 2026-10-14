@@ -26969,7 +26969,7 @@
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface and stage theme with readable neutral focus rings."
+        "description": "Neutral graphite and white chrome; colour is reserved for actual feature content and semantic data accents."
       },
       {
         "name": "accent",
