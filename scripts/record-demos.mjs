@@ -6,6 +6,7 @@
 //
 //   node scripts/record-demos.mjs [slug...] [--base=http://localhost:3100]
 //        [--out=public/previews] [--webm] [--sheet=dir] [--max-kb=600] [--frame-viewport]
+//        [--frame-union=CSS] [--frame-padding=32] fixes one DOM union crop for a web demo
 //        [--isolated-source] bundles the exact checked-out demo with production React
 //
 // With no slugs it records every component that has a demo. Drives the
@@ -51,6 +52,11 @@ const webm = args.includes("--webm");
 // Expanding demos need room beyond the initial card bounds. Refresh the poster
 // with this framing too, so hovering never changes the component scale.
 const frameViewport = args.includes("--frame-viewport");
+const frameUnionSelector = flag("frame-union", undefined);
+const frameUnionPadding = Number(flag("frame-padding", "32"));
+if (args.includes("--frame-union")) throw new Error("--frame-union needs a CSS selector after =");
+if (frameUnionSelector !== undefined && !frameUnionSelector.trim()) throw new Error("--frame-union needs a non-empty CSS selector");
+if (!Number.isInteger(frameUnionPadding) || frameUnionPadding < 0 || frameUnionPadding > 160) throw new Error("--frame-padding must be an integer from 0 to 160");
 const maxBytes = Number(flag("max-kb", "600")) * 1024;
 const only = args.filter((a) => !a.startsWith("--"));
 
@@ -107,6 +113,25 @@ async function framing(png, vw, vh) {
   return { cw: vw, ch: vh, cx: 0, cy: 0, bg };
 }
 
+/** One initial union, including reserved future-state regions, stays fixed for every frame. */
+async function fixedUnionFrame(page, selector, padding, bg) {
+  const bounds = await page.evaluate((selector) => {
+    let matches;
+    try { matches = [...document.querySelectorAll(selector)]; }
+    catch { throw new Error(`Invalid CSS selector for --frame-union: ${selector}`); }
+    const rectangles = matches.map(node => node.getBoundingClientRect()).filter(rect => rect.width > 0 && rect.height > 0 && [rect.left, rect.top, rect.right, rect.bottom].every(Number.isFinite));
+    if (!rectangles.length) throw new Error(`--frame-union has no rendered matches: ${selector}`);
+    if (rectangles.some(rect => rect.left < -.5 || rect.top < -.5 || rect.right > innerWidth + .5 || rect.bottom > innerHeight + .5)) throw new Error("--frame-union includes content outside the recording viewport; choose a fully visible union");
+    return { left: Math.min(...rectangles.map(rect => rect.left)), top: Math.min(...rectangles.map(rect => rect.top)), right: Math.max(...rectangles.map(rect => rect.right)), bottom: Math.max(...rectangles.map(rect => rect.bottom)), count: rectangles.length };
+  }, selector);
+  const width = bounds.right - bounds.left + padding * 2;
+  const height = bounds.bottom - bounds.top + padding * 2;
+  // Multiples of16 keep the16:10 crop exact and both YUV420 dimensions even.
+  const cw = Math.ceil(Math.max(width, height * OUT_W / OUT_H) / 16) * 16;
+  const ch = cw * OUT_H / OUT_W;
+  return { cw, ch, cx: (bounds.left + bounds.right - cw) / 2, cy: (bounds.top + bounds.bottom - ch) / 2, bg, selector, padding, union: bounds };
+}
+
 /** Mobile posters are the phone at 700px tall with 44px corners on #050505; this is the mask that frames the video the same way. */
 async function phoneMask(file, vw, vh) {
   const h = 700;
@@ -125,6 +150,7 @@ async function record(browser, slug) {
   const steps = gallery ? gallerySteps(parsed) : parsed;
   const setupScroll = skipLeadScroll && steps[0]?.cmd === "scroll" ? steps.shift().px : 0;
   const mobile = meta.platform === "mobile";
+  if (mobile && frameUnionSelector !== undefined) throw new Error("--frame-union is for web demos; mobile keeps its complete phone mask");
   const strip = meta.category === "headers" || meta.category === "footers";
   const vw = mobile ? 390 : strip ? 1024 : 1440;
   // Expanded workspace recordings honour the validated preview height.
@@ -203,7 +229,9 @@ async function record(browser, slug) {
     // Poster framing from the frame we're about to start on.
     const first = await page.screenshot({ type: "png" });
     const initialFrame = mobile ? null : await framing(first, vw, vh);
-    const frame = initialFrame && frameViewport ? fitViewportFrame(vw, vh, initialFrame.bg, OUT_W, OUT_H) : initialFrame;
+    const frame = frameUnionSelector !== undefined
+      ? await fixedUnionFrame(page, frameUnionSelector, frameUnionPadding, initialFrame.bg)
+      : initialFrame && frameViewport ? fitViewportFrame(vw, vh, initialFrame.bg, OUT_W, OUT_H) : initialFrame;
 
     // Frames: Chrome's screencast, with timestamps, at full quality.
     const cdp = await context.newCDPSession(page);
