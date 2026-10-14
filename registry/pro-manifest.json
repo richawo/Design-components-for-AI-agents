@@ -8481,6 +8481,122 @@
     ]
   },
   {
+    "slug": "chart-sunburst-explorer",
+    "name": "Sunburst Explorer",
+    "tier": "pro",
+    "platform": "web",
+    "category": "charts",
+    "description": "An interruptible radial partition drills into a supplied hierarchy, with exact leaf totals, native selection rows and useful zero-data states.",
+    "tags": [
+      "sunburst",
+      "hierarchy",
+      "radial partition",
+      "data exploration",
+      "allocation",
+      "drill down"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1320,
+    "usage": "import { ChartSunburstExplorer } from \"@/components/design-for-ai/chart-sunburst-explorer\";\n\n<ChartSunburstExplorer hierarchy={allocation} value={view} onValueChange={setView} unit=\"hours\" />",
+    "props": [
+      {
+        "name": "hierarchy",
+        "type": "SunburstNode | null",
+        "description": "Supplied unique-ID hierarchy, at most 80 nodes/depth 5. Leaf values are finite, nonnegative and at most 1 trillion. Internal totals are computed; group values are rejected."
+      },
+      {
+        "name": "value",
+        "type": "SunburstView",
+        "description": "Controlled atomic branch and selection. Unknown or outside-branch IDs remain honestly unavailable."
+      },
+      {
+        "name": "defaultValue",
+        "type": "SunburstView",
+        "description": "Initial uncontrolled branch/selection; defaults to the actual root and no selection."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(value: SunburstView) => void",
+        "description": "Requests an atomic branch/selection change. Controlled rejection preserves the current view."
+      },
+      {
+        "name": "onValueCommit",
+        "type": "(value: SunburstView) => void",
+        "description": "Reports accepted discrete changes only. Rejected or interrupted requests do not commit."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"unavailable\"",
+        "description": "Host availability; selection is preserved while data is temporarily unavailable."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Disables changes while preserving the current allocation."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "description": "Supported Intl number locale. Exact native table values retain supplied precision."
+      },
+      {
+        "name": "unit",
+        "type": "string",
+        "description": "Host unit label; the component does not infer a measurement."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Host heading for the exploration."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Two deliberate, readable surfaces."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Classes applied to the standalone root."
+      }
+    ],
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "disabled",
+        "label": "Disabled",
+        "kind": "toggle",
+        "default": false
+      }
+    ],
+    "demo": {
+      "steps": [
+        "click:@sunburst-row-product",
+        "click:@sunburst-focus",
+        "wait:350",
+        "click:@sunburst-row-navigation",
+        "wait:350",
+        "click:@sunburst-root",
+        "wait:450"
+      ],
+      "loop": false
+    },
+    "added": "2026-10-14"
+  },
+  {
     "slug": "chart-treemap-drill",
     "name": "Drill-down Treemap",
     "tier": "pro",

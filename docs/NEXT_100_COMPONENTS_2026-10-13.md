@@ -102,7 +102,7 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 | # | Slug | Category | Distinct interaction and essential states | Status |
 | --- | --- | --- | --- | --- |
-| 51 | `chart-sunburst-explorer` | charts | Drill into a supplied hierarchy with an animated radial partition and an equivalent readable table. | Planned |
+| 51 | `chart-sunburst-explorer` | charts | Drill into a supplied hierarchy with an animated radial partition and an equivalent readable table. | Released |
 | 52 | `chart-sankey-paths` | charts | Select a source or destination to trace flow without hiding the remaining context. | Planned |
 | 53 | `chart-box-distribution` | charts | Inspect medians, quartiles and outliers with accessible values and transparent sample sizes. | Planned |
 | 54 | `chart-calendar-heatmap` | charts | Explore daily values with keyboard navigation, date filtering and an honest missing-data state. | Planned |
@@ -175,4 +175,4 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 ## Progress
 
-Planned: 42. Released: 58. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
+Planned: 41. Released: 59. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
