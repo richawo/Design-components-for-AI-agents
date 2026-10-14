@@ -25735,6 +25735,135 @@
     ]
   },
   {
+    "slug": "pixel-halftone-image",
+    "name": "Halftone Image",
+    "tier": "pro",
+    "platform": "web",
+    "category": "pixel",
+    "description": "Turn an actual supplied image into a bounded two-tone halftone, compare its original and hand a real PNG raster to the host.",
+    "tags": [
+      "halftone",
+      "image",
+      "raster",
+      "two tone",
+      "canvas",
+      "pixel"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1120,
+    "usage": "import { PixelHalftoneImage } from \"@/components/design-for-ai/pixel-halftone-image\";\n\n<PixelHalftoneImage source={image} value={settings} onValueChange={setSettings} onExport={receivePNG} />",
+    "props": [
+      {
+        "name": "source",
+        "type": "HalftoneSource",
+        "description": "Stable source ID, actual image URL, alternative description and optional title. Native decode and pixel access determine availability."
+      },
+      {
+        "name": "value",
+        "type": "HalftoneValue",
+        "description": "Controlled atomic whole-pixel spacing6–20 and threshold0.10–1.00 in0.01 steps. Invalid values retain the original; absent change handler makes settings read-only."
+      },
+      {
+        "name": "defaultValue",
+        "type": "HalftoneValue",
+        "description": "Uncontrolled initial spacing/threshold seed.",
+        "default": "{ spacing: 10, threshold: 0.72 }"
+      },
+      {
+        "name": "onValueChange",
+        "type": "(value: HalftoneValue) => void",
+        "description": "Requests one bounded atomic pair. Rejected controlled values never change the displayed authoritative settings."
+      },
+      {
+        "name": "onValueCommit",
+        "type": "(value: HalftoneValue) => void",
+        "description": "Reports only an actually accepted completed keyboard/pointer change."
+      },
+      {
+        "name": "onExport",
+        "type": "(result: HalftoneExport, signal: AbortSignal) => void | Promise<void>",
+        "description": "Receives the actual PNG Blob, backing dimensions, source ID and accepted settings. Host owns persistence; revised work aborts old settlement."
+      },
+      {
+        "name": "quality",
+        "type": "\"standard\" | \"high\"",
+        "description": "Actual sampling/output Canvas backing-pixel limit: 640,000/1,280,000, with 4096px maximum side.",
+        "default": "\"standard\""
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Graphite/paper two-tone image and readable workbench palette.",
+        "default": "\"dark\""
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Host editing/export lock with retained settings and honest helper copy.",
+        "default": "false"
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"unavailable\"",
+        "description": "Actual host source availability; native source state remains separately checked.",
+        "default": "\"ready\""
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Host root layout classes.",
+        "default": "\"\""
+      }
+    ],
+    "controls": [
+      {
+        "prop": "quality",
+        "label": "Raster quality",
+        "kind": "segmented",
+        "options": [
+          "standard",
+          "high"
+        ],
+        "default": "standard"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "disabled",
+        "label": "Editing unavailable",
+        "kind": "toggle",
+        "default": false
+      }
+    ],
+    "demo": {
+      "steps": [
+        "click:@halftone-spacing:0.78,0.5",
+        "wait:400",
+        "click:@halftone-threshold:0.37,0.5",
+        "wait:400",
+        "click:@halftone-original",
+        "wait:350",
+        "click:@halftone-original",
+        "click:@halftone-export",
+        "wait:450"
+      ],
+      "loop": false
+    },
+    "added": "2026-10-13"
+  },
+  {
     "slug": "portfolio-project-reel",
     "name": "Selected Project Reel",
     "tier": "pro",
