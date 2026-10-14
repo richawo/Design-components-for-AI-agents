@@ -23,6 +23,7 @@ import { cardEntrance, ComponentCard, FIRST_VIEW_CARDS } from "./component-card"
 import { ComponentShelf } from "./component-shelf";
 import { CountUp } from "./count-up";
 import type { CardData } from "@/lib/registry";
+import { catalogueOrderHref, newestFirst, readCatalogueOrder, type CatalogueOrder } from "@/lib/catalogue-order";
 
 type Cat = { key: string; label: string; count: number };
 
@@ -33,6 +34,7 @@ const FIRST_CARD_STEP = 4;
 const CARD_BATCH = 12;
 const GRID_IMAGE_SIZES = "(min-width: 1680px) calc((100vw - 368px) / 4), (min-width: 1280px) calc((100vw - 352px) / 3), (min-width: 1024px) calc((100vw - 336px) / 2), (min-width: 640px) calc((100vw - 80px) / 2), calc(100vw - 40px)";
 const BrowserCard = memo(ComponentCard);
+const DISCOVERY_CATEGORIES = ["hero", "features", "ai", "three-d"] as const;
 
 export function ComponentBrowser({ cards, categories, introduction }: { cards: CardData[]; categories: Cat[]; introduction: ReactNode }) {
   const [q, setQ] = useState("");
@@ -41,6 +43,7 @@ export function ComponentBrowser({ cards, categories, introduction }: { cards: C
   // Match the static server HTML during hydration. A layout effect restores
   // URL/session filters before a client navigation can paint stale results.
   const [cat, setCatState] = useState("all");
+  const [order, setOrderState] = useState<CatalogueOrder>("featured");
   const validCategories = useMemo(() => new Set(categories.map(c => c.key)), [categories]);
   const handledQuery = useRef<string | null>(null);
   const restoredFilters = useRef(false);
@@ -53,7 +56,7 @@ export function ComponentBrowser({ cards, categories, introduction }: { cards: C
   const catalogueHeading = useRef<HTMLHeadingElement>(null);
   const focusResults = useRef(false);
   const catalogueId = useId();
-  const filterKey = JSON.stringify([cat, tier, q.trim().toLowerCase()]);
+  const filterKey = JSON.stringify([cat, tier, q.trim().toLowerCase(), order]);
   const seenSelection = useRef(filterKey);
   const reduce = useReducedMotion();
   // Entrance classes belong to the first render only. Cards that mount later
@@ -73,17 +76,20 @@ export function ComponentBrowser({ cards, categories, introduction }: { cards: C
       try { stored = sessionStorage.getItem(FILTER_KEY); } catch {}
     }
     const next = readCategoryParam(search.get("category"), validCategories);
+    const nextOrder = readCatalogueOrder(search);
     pending.current = next;
     setCatState(next);
+    setOrderState(nextOrder);
     const saved = galleryFilters(search, stored);
     // Do not animate the static default results out underneath a restored
     // selection. Reset presence once; later deliberate filters still animate.
-    if (!restoredFilters.current && (next !== "all" || saved.q || saved.tier !== "all")) initialPresence.current = "restored";
+    if (!restoredFilters.current && (next !== "all" || saved.q || saved.tier !== "all" || nextOrder !== "featured")) initialPresence.current = "restored";
     setQ(saved.q);
     setTier(saved.tier);
     // Invalid categories become the unfiltered catalogue without a server
     // redirect. Keep explicit search/tier filters and the current history entry.
-    const href = galleryHref(window.location.search, next);
+    const categoryHref = galleryHref(window.location.search, next);
+    const href = catalogueOrderHref(categoryHref.split("?")[1] ?? "", nextOrder);
     if (`${window.location.pathname}${window.location.search}` !== href)
       window.history.replaceState(null, "", `${href}${window.location.hash}`);
     handledQuery.current = new URLSearchParams(window.location.search).toString();
@@ -109,6 +115,7 @@ export function ComponentBrowser({ cards, categories, introduction }: { cards: C
       const next = readCategoryParam(new URLSearchParams(window.location.search).get("category"), validCategories);
       pending.current = next;
       setCatState(next);
+      setOrderState(readCatalogueOrder(new URLSearchParams(window.location.search)));
       const filters = galleryFilters(new URLSearchParams(window.location.search), null);
       setQ(filters.q);
       setTier(filters.tier);
@@ -144,16 +151,25 @@ export function ComponentBrowser({ cards, categories, introduction }: { cards: C
     if (!focusResults.current) return;
     focusResults.current = false;
     catalogueHeading.current?.focus({ preventScroll: true });
-  }, [cat]);
+  }, [cat, order]);
 
   const setCat = (key: string) => {
     pending.current = key;
     setCatState(key);
-    const href = galleryHref(window.location.search, key);
+    setOrderState("featured");
+    const search = new URLSearchParams(window.location.search);
+    search.delete("sort");
+    const href = galleryHref(search.toString(), key);
     if (`${window.location.pathname}${window.location.search}` === href) return;
     // The full catalogue is already here; changing a filter needs no server render.
     // Next copies its own history metadata when given null and tracks the URL.
     window.history.replaceState(null, "", `${href}${window.location.hash}`);
+  };
+
+  const browseNew = () => {
+    focusResults.current = true;
+    setOrderState("new");
+    window.history.replaceState(null, "", `${catalogueOrderHref(window.location.search, "new")}${window.location.hash}`);
   };
 
   // "/" jumps to search from anywhere on the page, as on most libraries.
@@ -171,18 +187,24 @@ export function ComponentBrowser({ cards, categories, introduction }: { cards: C
 
   const filtered = useMemo(() => {
     const needle = q.trim().toLowerCase();
-    return cards.filter((c) => {
+    const matches = cards.filter((c) => {
       if (tier !== "all" && c.tier !== tier) return false;
       if (cat !== "all" && c.category !== cat) return false;
       if (!needle) return true;
       return [c.name, c.description, c.category, ...c.tags].join(" ").toLowerCase().includes(needle);
     });
-  }, [cards, q, tier, cat]);
+    return order === "new" ? newestFirst(matches) : matches;
+  }, [cards, q, tier, cat, order]);
 
-  const showDiscovery = cat === "all" && tier === "all" && !q.trim();
+  const showDiscovery = cat === "all" && tier === "all" && !q.trim() && order === "featured";
   const featured = useMemo(() => cards.slice(0, 8), [cards]);
-  const heroes = useMemo(() => cards.filter(card => card.category === "hero").slice(0, 8), [cards]);
-  const resultTitle = showDiscovery ? "Explore everything" : q.trim() ? "Search results" : cat !== "all" ? categories.find(category => category.key === cat)?.label : tier === "free" ? "Free components" : tier === "pro" ? "Pro components" : "All components";
+  const newCards = useMemo(() => newestFirst(cards).slice(0, 8), [cards]);
+  const collections = useMemo(() => DISCOVERY_CATEGORIES.flatMap(key => {
+    const category = categories.find(item => item.key === key);
+    const selection = cards.filter(card => card.category === key).slice(0, 8);
+    return category && selection.length ? [{ key, title: key === "ai" ? "AI chat" : category.label, cards: selection }] : [];
+  }), [cards, categories]);
+  const resultTitle = showDiscovery ? "Explore everything" : q.trim() ? "Search results" : cat !== "all" ? categories.find(category => category.key === cat)?.label : tier === "free" ? "Free components" : tier === "pro" ? "Pro components" : order === "new" ? "New components" : "All components";
 
   const [pageWindow, setPageWindow] = useState({ key: filterKey, count: CARD_BATCH });
   const shownCount = pageWindow.key === filterKey ? pageWindow.count : CARD_BATCH;
@@ -284,7 +306,8 @@ export function ComponentBrowser({ cards, categories, introduction }: { cards: C
               catalogueHeading.current?.focus({ preventScroll: true });
               if (element) window.scrollTo({ top: window.scrollY + element.getBoundingClientRect().top - 80 - (toolbarRef.current?.offsetHeight ?? 64), behavior: reduce ? "instant" : "smooth" });
             }} />
-            {heroes.length > 0 && <ComponentShelf title="Heroes" cards={heroes} onBrowse={() => { focusResults.current = true; setCat("hero"); }} />}
+            <ComponentShelf title="New" cards={newCards} onBrowse={browseNew} />
+            {collections.map(collection => <ComponentShelf key={collection.key} title={collection.title} cards={collection.cards} onBrowse={() => { focusResults.current = true; setCat(collection.key); }} />)}
           </div>
         )}
         <section ref={catalogueRef} aria-labelledby={catalogueId} className="mt-7 sm:mt-9">
