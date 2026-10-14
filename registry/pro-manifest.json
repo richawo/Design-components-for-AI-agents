@@ -12430,7 +12430,7 @@
         "name": "strokeWidth",
         "type": "number",
         "default": "1.5",
-        "description": "Initial/configured SVG stroke width, bounded to 0.5 through 4 in quarter-pixel steps."
+        "description": "Initial/configured SVG stroke width, bounded to 0.5 through 4 in quarter-pixel steps. Stroke width is in the supplied SVG viewBox units, not physical preview pixels."
       },
       {
         "name": "color",
@@ -12466,6 +12466,12 @@
         "type": "string",
         "default": "\"\"",
         "description": "Host layout classes on the container."
+      },
+      {
+        "name": "previewScale",
+        "type": "number",
+        "default": "3",
+        "description": "Requested inspection magnification1–3, fitted to the actual logical drawing surface. The true displayed factor is labelled; exported SVG dimensions stay exact."
       }
     ],
     "added": "2026-10-13",
@@ -12538,6 +12544,15 @@
           "light"
         ],
         "default": "dark"
+      },
+      {
+        "prop": "previewScale",
+        "label": "Preview magnification",
+        "kind": "slider",
+        "min": 1,
+        "max": 3,
+        "step": 0.25,
+        "default": 3
       }
     ]
   },
