@@ -18103,7 +18103,7 @@
       {
         "name": "color",
         "type": "string",
-        "default": "\"#e8d8c2\"",
+        "default": "\"#eeeeee\"",
         "description": "Single tracer colour. The underlying faint outline inherits the host ink colour."
       },
       {
@@ -18198,9 +18198,9 @@
         "prop": "color",
         "label": "Light colour",
         "kind": "color",
-        "default": "#e8d8c2",
+        "default": "#eeeeee",
         "options": [
-          "#e8d8c2",
+          "#eeeeee",
           "#e8e8ed",
           "#b3cabc"
         ]
