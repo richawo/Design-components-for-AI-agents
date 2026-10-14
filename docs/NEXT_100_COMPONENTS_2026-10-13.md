@@ -147,7 +147,7 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 | # | Slug | Category | Distinct interaction and essential states | Status |
 | --- | --- | --- | --- | --- |
-| 81 | `mobile-mood-map` | mobile | Choose a semantic feeling from a spatial word map, refine it and save a user-owned check-in. | Planned |
+| 81 | `mobile-mood-map` | mobile | Choose a semantic feeling from a spatial word map, refine it and save a user-owned check-in. | Released |
 | 82 | `mobile-habit-grid` | mobile | Record a habit on a date, correct a mistaken entry and inspect history without punitive streak copy. | Planned |
 | 83 | `mobile-focus-session` | mobile | Start, pause and resume a timer using elapsed time rather than tick counts; handle app backgrounding. | Planned |
 | 84 | `mobile-day-planner` | mobile | Reorder a bounded daily agenda and reschedule a task through accessible move controls. | Planned |
@@ -175,4 +175,4 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 ## Progress
 
-Planned: 37. Released: 63. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
+Planned: 36. Released: 64. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.

@@ -26074,6 +26074,116 @@
     ]
   },
   {
+    "slug": "mobile-mood-map",
+    "name": "Mood Check-in Map",
+    "tier": "pro",
+    "platform": "mobile",
+    "category": "mobile",
+    "description": "A native spatial check-in with supplied feeling coordinates, tactile choices and a retained personal note, reviewed through an exact cancellable save.",
+    "tags": [
+      "mobile",
+      "react native",
+      "dark",
+      "glass",
+      "mood",
+      "map"
+    ],
+    "dependencies": [
+      "expo-blur",
+      "expo-linear-gradient",
+      "react-native-svg"
+    ],
+    "theme": "dark",
+    "previewHeight": 844,
+    "usage": "import { MobileMoodMap } from \"@/components/design-for-ai/native/mobile-mood-map\";\n\n// Bare React Native: run npx install-expo-modules once.\n<MobileMoodMap theme=\"dark\" />",
+    "props": [
+      {
+        "name": "choices",
+        "type": "MoodMapChoice[]",
+        "description": "Exact unique identities, descriptions and finite pleasantness/energy coordinates within [-1,1]. Duplicate or invalid choices stay visible in the list and cannot select."
+      },
+      {
+        "name": "value",
+        "type": "string | null",
+        "description": "Authoritative choice identity. Missing, null or conflicting identity remains explicit. Without observer the controlled map is read-only."
+      },
+      {
+        "name": "defaultValue",
+        "type": "string | null",
+        "description": "Initial local self-reported choice, null by default. The complete offline demonstration explicitly selects steady."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(id: string, choice: MoodMapChoice) => void",
+        "description": "Copied synchronous selection observer runs before mutation. Throwing retains previous choice."
+      },
+      {
+        "name": "onSave",
+        "type": "(entry: MoodMapEntry & { choice: MoodMapChoice; contextId: string }, signal: AbortSignal) => void | Promise<void>",
+        "description": "Exact selected choice, note and check-in context snapshot. Fulfillment is acknowledgment. Missing handler disables save; cancellation is cooperative."
+      },
+      {
+        "name": "contextId",
+        "type": "string",
+        "description": "Replacement check-in identity retires requests and resets local selection/note."
+      },
+      {
+        "name": "dateLabel",
+        "type": "string",
+        "description": "Host-authored check-in context, no inferred date or timezone."
+      },
+      {
+        "name": "defaultNote",
+        "type": "string",
+        "description": "Initial retained note for the actual context."
+      },
+      {
+        "name": "maxNoteLength",
+        "type": "number",
+        "description": "Integer1–12000. Invalid bound or over-limit draft blocks save; draft is retained."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Editable host heading. Keep working content dominant."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Neutral graphite/white themes with readable borders and actual focus states."
+      }
+    ],
+    "added": "2026-10-14",
+    "demo": {
+      "steps": [
+        "click:@mood-choice-1",
+        "wait:300",
+        "click:@mood-choice-2",
+        "wait:300",
+        "click:@mood-save",
+        "wait:450"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "title",
+        "label": "Heading",
+        "kind": "text",
+        "default": "Make room for how you feel."
+      }
+    ]
+  },
+  {
     "slug": "mobile-now-playing",
     "name": "Now Playing",
     "tier": "pro",
