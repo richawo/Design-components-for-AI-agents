@@ -16186,6 +16186,130 @@
     ]
   },
   {
+    "slug": "editor-storyboard-strip",
+    "name": "Scene Storyboard Strip",
+    "tier": "pro",
+    "platform": "web",
+    "category": "editors",
+    "description": "Reorder supplied scenes, edit bounded durations and inspect the exact cumulative sequence with accessible controls and retained controlled drafts.",
+    "tags": [
+      "storyboard",
+      "scene",
+      "sequence",
+      "duration",
+      "timeline",
+      "editor"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1100,
+    "usage": "import { EditorStoryboardStrip } from \"@/components/design-for-ai/editor-storyboard-strip\";\n\n<EditorStoryboardStrip scenes={scenes} onScenesChange={setScenes} />\n\n// Scene preview and timing come from the supplied records. No rendered playback or export is implied; Alt+Left/Right on the inspected scene provides keyboard order changes.",
+    "props": [
+      {
+        "name": "scenes",
+        "type": "readonly StoryboardScene[]",
+        "description": "Controlled accepted sequence of up to20 actual identities, title/description, optional thumbnail and duration0.25–120 seconds in quarter-second increments. Total at most600 seconds."
+      },
+      {
+        "name": "defaultScenes",
+        "type": "readonly StoryboardScene[]",
+        "description": "Local initial scenes, copied when editing. Reset explicitly through resetKey."
+      },
+      {
+        "name": "onScenesChange",
+        "type": "(scenes: StoryboardScene[]) => void",
+        "description": "Request a copied complete sequence with changed order or duration. Controlled rejection preserves accepted scene/timing, newer numeric buffers survive old acknowledgement and synchronous failures are contained."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Resets local sequence, inspection, position, field state and request receipt."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"error\"",
+        "description": "Host availability preserves readable accepted scene records."
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "description": "Host failure explanation; blank falls back."
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Actual host recovery."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Locks editing and inspection, preserving accepted content."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Complete monochromatic graphite/white chrome. Colour is reserved for actual supplied content and purposeful feature accents."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<StoryboardLabels>",
+        "description": "Scene/timing/thumbnail failure/request and recovery copy."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Host responsive classes."
+      }
+    ],
+    "added": "2026-10-14",
+    "demo": {
+      "steps": [
+        "click:@story-next",
+        "click:@story-earlier",
+        "click:@story-number",
+        "key:End",
+        "key:ArrowUp",
+        "key:ArrowDown",
+        "click:@story-select-care",
+        "click:@story-earlier",
+        "click:@story-position:0.3,0.5"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "disabled",
+        "label": "Read only",
+        "kind": "toggle",
+        "default": false
+      },
+      {
+        "prop": "status",
+        "label": "Availability",
+        "kind": "select",
+        "options": [
+          "ready",
+          "loading",
+          "error"
+        ],
+        "default": "ready"
+      }
+    ]
+  },
+  {
     "slug": "editor-whiteboard",
     "name": "Whiteboard",
     "tier": "pro",
