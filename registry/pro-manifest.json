@@ -15254,7 +15254,7 @@
       {
         "name": "onValueChange",
         "type": "(layers: readonly StackLayer[]) => void",
-        "description": "Request a cloned complete stack. Missing handler makes controlled edits read only; rejected requests keep the actual accepted order and states."
+        "description": "Request a cloned complete stack. Missing handler makes controlled edits read only; rejected requests keep the actual accepted order and states. Synchronous rejection preserves accepted stack/selection and the editable draft with meaningful failure feedback."
       },
       {
         "name": "selectedId",
@@ -15269,7 +15269,7 @@
       {
         "name": "onSelectedIdChange",
         "type": "(id: string | null) => void",
-        "description": "Actual inspection request, separate from modifying the stack."
+        "description": "Actual inspection request, separate from modifying the stack. Synchronous rejection preserves accepted stack/selection and the editable draft with meaningful failure feedback."
       },
       {
         "name": "resetKey",
@@ -15299,7 +15299,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Complete dark graphite-blue or pale-paper native palette."
+        "description": "Complete monochromatic graphite/white chrome. Colour is reserved for actual supplied content and purposeful feature accents."
       },
       {
         "name": "labels",
