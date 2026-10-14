@@ -32306,7 +32306,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Graphite/paper two-tone image and readable workbench palette.",
+        "description": "Neutral graphite and white chrome; colour is reserved for actual feature content and semantic data accents.",
         "default": "\"dark\""
       },
       {
