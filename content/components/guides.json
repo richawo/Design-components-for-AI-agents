@@ -4286,27 +4286,31 @@
     "useWhen": "Selecting a bounded region of supplied points and inspecting the matching records.",
     "avoidWhen": "A purely decorative cloud or brushing whose selection cannot be reproduced with keyboard filters.",
     "integration": [
-      "Supply stable point IDs, axis units and real coordinates. Apply the same inclusive bounds to the visual brush and numeric filtering.",
-      "Keep the selected record list usable on narrow containers and distinguish an empty result from unavailable data."
+      "Supply at most 500 raw unique labeled x/y records with finite coordinates within ±1 billion. Domains come from observed extents or explicit ordered host bounds; equal endpoints center that dimension. Points outside explicit domains remain counted and available in the exact native records.",
+      "Control one atomic bounds/selectedId packet. A primary pointer drag is provisional until release; only a completed valid region requests a change. Escape, cancellation, source or host resets retire held gestures. Other contacts do not own or cancel the primary brush. Rejected requests preserve the accepted view and do not commit.",
+      "Four exact native fields provide keyboard filtering, retaining invalid and newer drafts through older acceptance. Arrow keys move an accepted region within domain bounds. Inspect every original record in source order, 24 per page, with complete exact coordinates. A selected record outside the accepted region is described explicitly; no correlation is inferred.",
+      "Current rectangles and counts animate in both directions and stop or settle immediately on live reduced motion or hidden/blocked states. Draft SVG writes are coalesced instead of rerendering the full point set on every move. Full native targets and stacked compact controls retain touch access; focused owner-document fences preserve outside and parent-page actions."
     ],
     "related": [
       "chart-radar-compare",
       "data-table-sortable"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "chart-funnel-dots": {
     "useWhen": "Showing discrete quantities passing through stages with explicit totals and conversion denominators.",
     "avoidWhen": "A fabricated growth animation or percentages whose denominator changes without explanation.",
     "integration": [
-      "Supply stage totals and units. Keep absolute counts, previous-stage conversion and overall conversion distinct.",
-      "Bound displayed dots without hiding exact totals, animate changes in both directions and offer a readable stage list."
+      "Supply up to 8 raw unique labeled stages in authoritative order with whole finite counts from 0 to 1 trillion. These are aggregate counts; the component does not infer matching individuals or a common cohort.",
+      "A common nice integer weight limits each stage to 80 full or partial dots. The final sector represents only the actual remainder, while native copy retains the exact count, dot weight and remainder. Actual zero has no invented dots. Quantities are not silently balanced or normalized.",
+      "Inspect one nullable host-owned stage ID with accepted-only commits. Exact ratios name both the previous supplied count and the first supplied count. Zero denominators are explicitly undefined; larger later counts can truthfully exceed 100% without claiming conversion success. Untouched loading initializes at first real ready data; explicit unknown and later chosen context remain authoritative.",
+      "Current weighted geometry and counts share bounded 320ms two-way owners with coalesced native writes. Live reduced motion, hidden/offscreen and blocked states settle them immediately, with no idle loop. Native stage controls stack in narrow containers, retain full labels and 44px targets, and actual document/window focus fencing preserves outside or parent actions."
     ],
     "related": [
       "chart-waffle",
       "chart-waterfall-bridge"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "data-pivot-configurator": {
     "useWhen": "Exploring a real computed pivot by selecting supplied dimensions and supported measures.",
