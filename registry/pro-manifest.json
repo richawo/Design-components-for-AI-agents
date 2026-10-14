@@ -16814,6 +16814,143 @@
     ]
   },
   {
+    "slug": "editor-spacing-inspector",
+    "name": "Rendered Spacing Inspector",
+    "tier": "pro",
+    "platform": "web",
+    "category": "editors",
+    "description": "Adjust real content padding and gap, inspect actual CSS-pixel measurements and copy the accepted layout with honest controlled recovery.",
+    "tags": [
+      "spacing",
+      "padding",
+      "gap",
+      "layout",
+      "measure",
+      "editor"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1360,
+    "usage": "import { EditorSpacingInspector } from \"@/components/design-for-ai/editor-spacing-inspector\";\n\n<EditorSpacingInspector value={spacing} onValueChange={setSpacing} items={contentItems} />\n\n// Hatching follows actual animated padding; measurements read the rendered logical CSS box. Linked editing applies four edges atomically. Export always uses accepted spacing.",
+    "props": [
+      {
+        "name": "value",
+        "type": "SpacingValue",
+        "description": "Controlled accepted CSS-pixel padding top/right/bottom/left0–96, gap0–64 and row/column direction. Values are bounded integers."
+      },
+      {
+        "name": "defaultValue",
+        "type": "SpacingValue",
+        "description": "Local initial spacing. Reset explicitly with resetKey."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(value: SpacingValue) => void",
+        "description": "Request a copied atomic spacing value. Rejected requests retain the actual accepted layout; synchronous failure is contained with useful feedback."
+      },
+      {
+        "name": "items",
+        "type": "readonly SpacingItem[]",
+        "description": "Up to20 unique actual content identities with supplied title/body. Empty input produces an honest empty-content state."
+      },
+      {
+        "name": "children",
+        "type": "React.ReactNode",
+        "description": "Optional host content instead of the item specimen. Host owns its meaning/styles; measurements describe the real inner layout box."
+      },
+      {
+        "name": "defaultLinked",
+        "type": "boolean",
+        "description": "Initial editing mode that changes all four padding edges together on the next edge edit; gap stays independent."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Explicit local value/field-buffer/link-mode and request lifecycle reset."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"error\"",
+        "description": "Host availability preserves the accepted layout and readable controls."
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "description": "Meaningful host unavailability text, default when blank."
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Actual recovery request."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Lock editing/export while retaining readable layout."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Complete monochromatic graphite/white chrome. Colour is reserved for actual supplied content and purposeful feature accents."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<SpacingLabels>",
+        "description": "Applied spacing, actual measurements, request/copy/empty and recovery copy."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Responsive host layout classes."
+      }
+    ],
+    "added": "2026-10-14",
+    "demo": {
+      "steps": [
+        "click:@spacing-top:0.68,0.5",
+        "click:@spacing-top:0.24,0.5",
+        "click:@spacing-link",
+        "click:@spacing-right:0.28,0.5",
+        "click:@spacing-column",
+        "click:@spacing-gap:0.45,0.5",
+        "click:@spacing-copy"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "disabled",
+        "label": "Read only",
+        "kind": "toggle",
+        "default": false
+      },
+      {
+        "prop": "status",
+        "label": "Availability",
+        "kind": "select",
+        "options": [
+          "ready",
+          "loading",
+          "error"
+        ],
+        "default": "ready"
+      }
+    ]
+  },
+  {
     "slug": "editor-storyboard-strip",
     "name": "Scene Storyboard Strip",
     "tier": "pro",
