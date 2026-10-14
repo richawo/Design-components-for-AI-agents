@@ -26668,6 +26668,153 @@
     ]
   },
   {
+    "slug": "mobile-attachment-tray",
+    "name": "Native Attachment Review Tray",
+    "tier": "pro",
+    "platform": "mobile",
+    "category": "mobile",
+    "description": "A native attachment shelf with original file thumbnails, exact limits, retained notes and cancellable host-owned send and recovery.",
+    "tags": [
+      "mobile",
+      "react native",
+      "attachments",
+      "files",
+      "review",
+      "send",
+      "dark"
+    ],
+    "dependencies": [
+      "expo-linear-gradient",
+      "react-native-svg"
+    ],
+    "theme": "dark",
+    "previewHeight": 844,
+    "usage": "import { MobileAttachmentTray } from \"@/components/design-for-ai/native/mobile-attachment-tray\";\n\n// Bare React Native apps: run npx install-expo-modules once.\n<MobileAttachmentTray attachments={files} value={selectedIds} onValueChange={setSelectedIds} maxCount={5} maxBytes={5 * 1024 * 1024} onSend={sendReviewed} onRetry={retryFile} resetKey={draftId} />",
+    "props": [
+      {
+        "name": "attachments",
+        "type": "TrayAttachment[]",
+        "description": "Actual file IDs/names/MIME/nullable bytes/status/reason. Missing or conflicting selected variants remain inspectable.",
+        "default": "Three original offline virtual files"
+      },
+      {
+        "name": "renderThumbnail",
+        "type": "(attachment: TrayAttachment) => ReactNode",
+        "description": "Optional non-interactive presentation of copied file metadata. It never authorizes an unavailable file or changes exact send/retry payloads.",
+        "default": "Original excerpts and SVG study in the default demo; unknown files use honest format silhouettes."
+      },
+      {
+        "name": "value",
+        "type": "string[]",
+        "description": "Controlled selected ID order; no observer makes choice read-only."
+      },
+      {
+        "name": "defaultValue",
+        "type": "string[]",
+        "description": "Initial local selected ID order; use resetKey to replace the session.",
+        "default": "First three unique ready files"
+      },
+      {
+        "name": "onValueChange",
+        "type": "(ids: string[]) => void",
+        "description": "Synchronous selection observer. Rejection preserves actual selected IDs."
+      },
+      {
+        "name": "maxCount",
+        "type": "number | null",
+        "description": "Known finite nonnegative integer count limit. Null means unknown and blocks reviewed send, never unlimited.",
+        "default": "5"
+      },
+      {
+        "name": "maxBytes",
+        "type": "number | null",
+        "description": "Known finite nonnegative integer total-byte limit. Null means unknown and blocks reviewed send.",
+        "default": "5242880"
+      },
+      {
+        "name": "defaultNote",
+        "type": "string",
+        "description": "Initial local note, preserved as a newer draft through pending/failure/older acknowledgment.",
+        "default": "\"The original notes and interface study for this handoff.\""
+      },
+      {
+        "name": "onAdd",
+        "type": "() => void",
+        "description": "Explicit host-owned picker action. Missing observer is unavailable; never opens automatically."
+      },
+      {
+        "name": "onRetry",
+        "type": "(attachment: TrayAttachment, signal: AbortSignal) => void | Promise<void>",
+        "description": "Real per-file retry; actual status remains authoritative. Each job is isolated, cancellable and source-fenced."
+      },
+      {
+        "name": "onSend",
+        "type": "(review: AttachmentReview, signal: AbortSignal) => void | Promise<void>",
+        "description": "Exact copied files/note/limits. Acknowledgment keeps actual delivery host-owned and never replaces newer typing."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Replacement review session. Clears local choice/note/receipts and aborts stale work."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Native attachment review heading.",
+        "default": "\"A last look, then send.\""
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Neutral black/white/graphite chrome with purposeful actual state accents.",
+        "default": "\"dark\""
+      }
+    ],
+    "added": "2026-10-14",
+    "demo": {
+      "steps": [
+        "click:@attachment-tile-1",
+        "wait:300",
+        "scroll:480",
+        "wait:200",
+        "click:@attachment-note",
+        "key:End",
+        "type: Reviewed.",
+        "click:@attachment-send",
+        "wait:500",
+        "click:@attachment-reviewed",
+        "wait:400"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "maxCount",
+        "label": "File limit",
+        "kind": "slider",
+        "min": 0,
+        "max": 5,
+        "step": 1,
+        "default": 5
+      },
+      {
+        "prop": "title",
+        "label": "Heading",
+        "kind": "text",
+        "default": "A last look, then send."
+      }
+    ]
+  },
+  {
     "slug": "mobile-bottom-sheet",
     "name": "Live Delivery Sheet",
     "tier": "pro",
