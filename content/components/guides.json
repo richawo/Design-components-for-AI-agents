@@ -4304,7 +4304,7 @@
       "Supply up to 8 raw unique labeled stages in authoritative order with whole finite counts from 0 to 1 trillion. These are aggregate counts; the component does not infer matching individuals or a common cohort.",
       "A common nice integer weight limits each stage to 80 full or partial dots. The final sector represents only the actual remainder, while native copy retains the exact count, dot weight and remainder. Actual zero has no invented dots. Quantities are not silently balanced or normalized.",
       "Inspect one nullable host-owned stage ID with accepted-only commits. Exact ratios name both the previous supplied count and the first supplied count. Zero denominators are explicitly undefined; larger later counts can truthfully exceed 100% without claiming conversion success. Untouched loading initializes at first real ready data; explicit unknown and later chosen context remain authoritative.",
-      "Current weighted geometry and counts share bounded 320ms two-way owners with coalesced native writes. Live reduced motion, hidden/offscreen and blocked states settle them immediately, with no idle loop. Native stage controls stack in narrow containers, retain full labels and 44px targets, and actual document/window focus fencing preserves outside or parent actions."
+      "Current weighted geometry and counts share bounded 320ms two-way owners with coalesced native writes when the common dot weight is unchanged. A new weight settles the matching count and geometry immediately, so the new legend never describes an old animated quantity. Live reduced motion, hidden/offscreen and blocked states settle them immediately, with no idle loop. Native stage bands stack in narrow containers, retain full labels and 44px targets, and actual document/window focus fencing preserves outside or parent actions."
     ],
     "related": [
       "chart-waffle",
@@ -4319,7 +4319,7 @@
       "Supply 1–8 unique declared category/number fields and up to 2000 unique labeled original scalar records through immutable source revisions. Numeric values are finite within ±1 billion. Actual own keys are read; missing keys, explicit null, typed categories and literal placeholder strings remain distinct.",
       "Control one atomic rowField/columnField/measure/valueField configuration. Category dimensions are distinct or null. Count retains all original records; compensated sum and mean use actual numeric contributors without imputed zeros. Totals are computed from original contributors, so a mean is not an average of group means. This is local bounded aggregation, not a server query.",
       "Edit a genuine draft and apply it explicitly. Rejection and older host acceptance preserve newer draft intent; only accepted discrete configurations commit. Keep accepted and Default grouping are explicit reset actions. Untouched loading initializes at first ready fields; explicit unknown and later chosen context remain honest.",
-      "Matrices exceeding 12 row groups or 8 columns receive a useful unsupported state while every original remains inspectable in source order, 24 per page. Inspect a real or empty cell for its exact originals; configuration-disabled mode still permits read-only inspection. Compact controls stack while tables scroll locally. Live reduced motion settles current totals/result emphasis, and actual owner-document fences preserve outside or parent-page focus."
+      "Matrices exceeding 12 row groups or 8 columns receive a useful unsupported state while every original remains inspectable in source order, 24 per page. Inspect a real or empty cell for its exact originals; configuration-disabled mode still permits read-only inspection. A compact draft rail sits above the matrix and original-record inspector on wide embeds; narrow containers stack both native scrolling regions. Live reduced motion settles current totals/result emphasis, and actual owner-document fences preserve outside or parent-page focus."
     ],
     "related": [
       "data-query-builder",
@@ -4331,14 +4331,16 @@
     "useWhen": "Reordering, pinning and hiding columns while inspecting an actual supplied table.",
     "avoidWhen": "An unrelated table filter or a decorative list of settings with no table effect.",
     "integration": [
-      "Supply stable column IDs, visibility rules and real row data. Keep reorder, pin and visibility requests separate and honor controlled rejection.",
-      "Provide keyboard move controls, retain the active column after a change and keep the table scroll inside its container."
+      "Supply 1–10 raw unique labeled columns and up to 500 unique labeled immutable records with own declared scalar values. Column widths are 80–360px, with a 160px default. Required columns stay visible and at least one column is visible; missing values and explicit null remain distinct.",
+      "Control one full ColumnArrangement array containing every source ID exactly once with visible and pinned booleans. Move, pin, visibility and reset requests carry distinct typed reasons. Only current accepted arrangements commit; controlled rejection, no-op and cancellation preserve the actual table. The host owns persistence.",
+      "Visible pinned columns precede visible unpinned columns in their chosen relative order and stay frozen at the left edge. Actual declared layout widths drive sticky offsets. The table axis is left-to-right, labels retain their supplied content, and every original record remains available through 16-record paging and a native focusable scroll region.",
+      "Use a primary pointer grip or its ArrowUp/Down/Home/End keys, with native earlier/later controls as a touch alternative. Proposed insertion is distinct from accepted table order. Source/owner resets retire active gestures; focused offscreen moves reveal their logical destination. Unknown arrangements explicitly retain original source columns and offer Source arrangement instead of silently choosing a valid accepted fallback. Untouched loading initializes first real ready data; later chosen context remains authoritative."
     ],
     "related": [
       "data-table-sortable",
       "navigation-stacked-tabs"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "data-bulk-action-review": {
     "useWhen": "Reviewing exactly which supplied selected records a host action will affect, exclude or fail.",
