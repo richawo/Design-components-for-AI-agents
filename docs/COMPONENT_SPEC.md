@@ -467,6 +467,10 @@ may show one visible overshoot; nothing else bounces.
   arrows, Home, End, Escape, disabled-option skipping and focus restoration;
   constrain them to both dimensions of the viewport. Document a native option
   for workflow selects that ship a custom default.
+- Native dropdowns need an inset indicator too. Reserve 40px at the text's end
+  for a 16px chevron positioned 12px from the edge; ordinary select padding
+  does not move the browser's arrow. Mirror the inset in RTL, retain native
+  keyboard behaviour, and restore the native indicator in forced colours.
 - Check the live replay against `meta.demo.steps`. A recorded cursor must wait
   for a changed field to settle before targeting it; an attractive video is not
   evidence that its final action actually completed.
