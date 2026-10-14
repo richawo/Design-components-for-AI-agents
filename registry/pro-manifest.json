@@ -33189,6 +33189,137 @@
     ]
   },
   {
+    "slug": "three-material-inspector",
+    "name": "Material Inspector",
+    "tier": "pro",
+    "platform": "web",
+    "category": "three-d",
+    "description": "Compare supplied appearance presets on one original generic 3D coupon, with adjustable lighting, honest parameters and a complete diagram alternative.",
+    "tags": [
+      "3d",
+      "material",
+      "appearance",
+      "lighting",
+      "sample",
+      "inspector"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react",
+      "three"
+    ],
+    "theme": "dark",
+    "previewHeight": 1240,
+    "usage": "import { ThreeMaterialInspector } from \"@/components/design-for-ai/three-material-inspector\";\n\n<ThreeMaterialInspector materials={samples} value={view} onValueChange={setView} />",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Host workbench heading.",
+        "default": "\"Compare the surface.\""
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Plain header context, including the illustrative geometry boundary.",
+        "default": "\"Original generic coupon. Illustrative appearance, not an actual product.\""
+      },
+      {
+        "name": "materials",
+        "type": "MaterialSample[]",
+        "description": "1–8 raw unique sample IDs, labels/descriptions, hex colors and bounded metalness/roughness/transmission appearance parameters. Empty/invalid arrays remain explicit."
+      },
+      {
+        "name": "value",
+        "type": "MaterialInspectorValue",
+        "description": "Controlled atomic materialId/azimuth/lightAngle view. Unknown material IDs never select a fallback."
+      },
+      {
+        "name": "defaultValue",
+        "type": "MaterialInspectorValue",
+        "description": "Uncontrolled initial view, otherwise first actual sample at22°/315°."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(value: MaterialInspectorValue) => void",
+        "description": "Requests one actual bounded view; controlled rejection preserves the rendered host view."
+      },
+      {
+        "name": "onValueCommit",
+        "type": "(value: MaterialInspectorValue) => void",
+        "description": "Reports only an actually accepted completed interaction, never a rejected request."
+      },
+      {
+        "name": "quality",
+        "type": "\"standard\" | \"high\"",
+        "description": "Main drawing-buffer limit480k/960k pixels with max2048px side. Environment/shadow/transmission textures are separately bounded.",
+        "default": "\"standard\""
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Neutral graphite and white chrome; colour is reserved for actual feature content and semantic data accents.",
+        "default": "\"dark\""
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Locks editing and settles decorative owners while retaining the actual sample.",
+        "default": "false"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Host root layout classes.",
+        "default": "\"\""
+      }
+    ],
+    "controls": [
+      {
+        "prop": "quality",
+        "label": "Rendering quality",
+        "kind": "segmented",
+        "options": [
+          "standard",
+          "high"
+        ],
+        "default": "standard"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "disabled",
+        "label": "Read-only inspection",
+        "kind": "toggle",
+        "default": false
+      }
+    ],
+    "demo": {
+      "steps": [
+        "click:@material-frost",
+        "wait:500",
+        "click:@material-light:0.25,0.5",
+        "wait:350",
+        "click:@material-matte",
+        "wait:400",
+        "click:@material-turn:0.72,0.5",
+        "wait:400",
+        "click:@material-reset",
+        "wait:450"
+      ],
+      "loop": false
+    },
+    "added": "2026-10-13"
+  },
+  {
     "slug": "three-particle-sphere",
     "name": "Particle Sphere",
     "tier": "pro",
