@@ -7449,6 +7449,128 @@
     "added": "2026-10-14"
   },
   {
+    "slug": "chart-calendar-heatmap",
+    "name": "Calendar Heatmap",
+    "tier": "pro",
+    "platform": "web",
+    "category": "charts",
+    "description": "Explore actual daily values through a keyboard calendar heatmap, with typed date-window filters and explicit missing, unmeasured and zero states.",
+    "tags": [
+      "calendar heatmap",
+      "daily values",
+      "activity",
+      "date filter",
+      "missing data",
+      "keyboard grid"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1200,
+    "usage": "import { ChartCalendarHeatmap } from \"@/components/design-for-ai/chart-calendar-heatmap\";\n\n<ChartCalendarHeatmap days={dailyRecords} value={window} onValueChange={setWindow} unit=\"events\" />",
+    "props": [
+      {
+        "name": "days",
+        "type": "HeatmapDay[]",
+        "description": "Up to 1464 unique real YYYY-MM-DD daily records, finite nonnegative values up to 1 billion, or null for explicitly not measured."
+      },
+      {
+        "name": "value",
+        "type": "HeatmapView",
+        "description": "Atomic controlled start/end/selectedDate. At most 366 calendar days; null selection is explicit. Unknown/outside identities are not substituted."
+      },
+      {
+        "name": "defaultValue",
+        "type": "HeatmapView",
+        "description": "Initial uncontrolled window; untouched source initializes only when the first valid ready records arrive."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(value: HeatmapView) => void",
+        "description": "Requests one atomic window/selection packet. Date drafts remain until accepted or explicitly reset."
+      },
+      {
+        "name": "onValueCommit",
+        "type": "(value: HeatmapView) => void",
+        "description": "Accepted discrete changes only, with no false rejected or interrupted commit."
+      },
+      {
+        "name": "unit",
+        "type": "string",
+        "description": "Host daily quantity unit; no timezone aggregation is inferred."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "description": "Native number/date formatting locale; ISO calendar dates are displayed with UTC date semantics."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Host activity heading."
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Host daily source/provenance context."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"unavailable\"",
+        "description": "Host availability; current view is preserved."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Disables selection requests; native keyboard inspection remains available."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Neutral graphite and white chrome; colour is reserved for actual feature content and semantic data accents."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Classes applied to the independent root."
+      }
+    ],
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "disabled",
+        "label": "Disabled selection",
+        "kind": "toggle",
+        "default": false
+      }
+    ],
+    "demo": {
+      "steps": [
+        "click:@heatmap-2026-06-16",
+        "wait:350",
+        "click:@heatmap-2026-06-22",
+        "wait:350",
+        "click:@heatmap-2026-06-25",
+        "wait:350",
+        "click:@heatmap-reset",
+        "wait:450"
+      ],
+      "loop": false
+    },
+    "added": "2026-10-14"
+  },
+  {
     "slug": "chart-candlestick",
     "name": "Candlestick Chart",
     "tier": "pro",
