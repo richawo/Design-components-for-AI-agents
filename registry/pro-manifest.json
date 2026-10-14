@@ -4197,7 +4197,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Quiet graphite/green or warm-paper contour palette and recovery text.",
+        "description": "Neutral graphite and white chrome; colour is reserved for actual feature content and semantic data accents.",
         "default": "\"dark\""
       },
       {
