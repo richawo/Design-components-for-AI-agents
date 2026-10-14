@@ -4198,27 +4198,29 @@
     "useWhen": "Presenting host-supplied recovery codes for explicit reveal, copying and acknowledgement.",
     "avoidWhen": "Generating authentication secrets in the UI or treating a copied code as proof it was stored safely.",
     "integration": [
-      "Provide codes from the real authentication service. Keep printing or downloading an explicit host action and avoid leaking codes into analytics or logs.",
-      "Acknowledge only the user’s explicit confirmation, preserve clipboard failure feedback and restore focus when the reveal flow closes."
+      "Supply stable `batchId`, `accountLabel` and up to20 unique host-issued `codes` with id, single-line code and optional used state. The named component starts empty; the default preview has visibly marked unusable examples. Used codes stay inspectable but are excluded from copied/exported/acknowledged payloads.",
+      "Clipboard success copies actual unused values and does not acknowledge storage. The user must explicitly check the saved confirmation before `onAcknowledge({batchId,codeIds},AbortSignal)`. Optional controlled `acknowledged` remains authoritative after fulfillment, with a truthful waiting state until the host updates it.",
+      "Connect explicit `onDownload`/`onPrint` handlers for copied unused-code payloads. Missing capabilities stay unavailable. One pending action, cancellation and exact set/handler/context retirement prevent obsolete receipts; errors retain supplied codes. Host owns authentication, file and print outcomes; never log codes."
     ],
     "related": [
       "auth-passkey",
       "auth-otp"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "forms-draft-rescue": {
     "useWhen": "Resolving differences between a local draft and a newer supplied host version at field level.",
     "avoidWhen": "Silently overwriting a newer document or presenting a conflict that has no actual competing values.",
     "integration": [
-      "Supply both versions and stable field identities with a clear default retention policy. Show exactly what each choice will retain.",
-      "Keep decisions editable until explicit resolution succeeds; host failure must preserve the local draft and selected choices."
+      "Supply up to20 unique `fields` and distinct actual `draft`/`latest` version IDs, labels and own text values (at most4000 characters per compared field). A missing field is distinct from an explicitly empty string. Only supplied comparison fields enter the resolution.",
+      "Use controlled `choices`/`onChoicesChange` or local `defaultChoices`, mapping field IDs to draft or latest. Unspecified choices keep the draft; rejected requests retain the actual accepted decisions. Individual and bulk choices remain editable until explicit resolution.",
+      "Connect `onResolve(resolution,AbortSignal)` to actual persistence. The exact payload includes both version IDs, every displayed field-source decision and merged own values. Cancellation, changed versions/choices/availability or handler retire stale completion; failure preserves both versions and decisions. The preview stores only the copied combined version in memory."
     ],
     "related": [
       "legal-version-history",
       "editor-rich-text"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "chart-sunburst-explorer": {
     "useWhen": "Exploring a supplied hierarchy through radial drill-down with equivalent readable values.",
