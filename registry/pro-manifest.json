@@ -8382,6 +8382,136 @@
     "added": "2026-10-09"
   },
   {
+    "slug": "chart-sankey-paths",
+    "name": "Sankey Paths",
+    "tier": "pro",
+    "platform": "web",
+    "category": "charts",
+    "description": "Trace actual quantities between adjacent occupied stages, with direct-connection emphasis and complete native category and connection tables.",
+    "tags": [
+      "sankey",
+      "flow",
+      "data exploration",
+      "source destination",
+      "linked quantities",
+      "native table"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1360,
+    "usage": "import { ChartSankeyPaths } from \"@/components/design-for-ai/chart-sankey-paths\";\n\n<ChartSankeyPaths nodes={categories} links={flows} value={trace} onValueChange={setTrace} unit=\"records\" />",
+    "props": [
+      {
+        "name": "nodes",
+        "type": "SankeyNode[]",
+        "description": "Actual uniquely identified categories in columns 0–5, at most 18. Optional six-digit colors and descriptions."
+      },
+      {
+        "name": "links",
+        "type": "SankeyLink[]",
+        "description": "At most 40 unique forward connections; source/target must exist and values are finite nonnegative numbers up to 1 trillion. Ribbons require adjacent occupied stages; unsupported bypass links remain fully readable in native tables without a misleading diagram."
+      },
+      {
+        "name": "value",
+        "type": "SankeySelection",
+        "description": "Atomic controlled nodeId/linkId, at most one non-null. Unknown identity is honestly unavailable."
+      },
+      {
+        "name": "defaultValue",
+        "type": "SankeySelection",
+        "description": "Initial uncontrolled selection, default both null."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(selection: SankeySelection) => void",
+        "description": "Host selection request; controlled rejection retains the actual trace."
+      },
+      {
+        "name": "onValueCommit",
+        "type": "(selection: SankeySelection) => void",
+        "description": "Accepted discrete selection changes only."
+      },
+      {
+        "name": "stageLabels",
+        "type": "string[]",
+        "description": "Host stage labels indexed by column; fallback names the actual supplied stage number."
+      },
+      {
+        "name": "unit",
+        "type": "string",
+        "description": "Host quantity unit without inferred conversion or conservation."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "description": "Supported native Intl formatting locale, retaining exact supplied precision."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Host flow exploration heading."
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Host source/context description."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"unavailable\"",
+        "description": "Host data availability; current selection is retained."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Disables trace requests while values remain readable."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Neutral graphite and white chrome; colour is reserved for actual feature content and semantic data accents."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Classes for the independent root."
+      }
+    ],
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "disabled",
+        "label": "Disabled",
+        "kind": "toggle",
+        "default": false
+      }
+    ],
+    "demo": {
+      "steps": [
+        "click:@sankey-node-walkthrough",
+        "wait:350",
+        "click:@sankey-node-activated",
+        "wait:350",
+        "click:@sankey-clear",
+        "wait:450"
+      ],
+      "loop": false
+    },
+    "added": "2026-10-14"
+  },
+  {
     "slug": "chart-streamgraph",
     "name": "Streamgraph",
     "tier": "pro",
