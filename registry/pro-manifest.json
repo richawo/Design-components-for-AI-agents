@@ -27048,6 +27048,156 @@
     ]
   },
   {
+    "slug": "mobile-channel-thread",
+    "name": "Native Channel Thread",
+    "tier": "pro",
+    "platform": "mobile",
+    "category": "mobile",
+    "description": "A native channel-thread reader with an original message, quoteable supplied replies, preserved response drafts and exact cancellable send acknowledgments.",
+    "tags": [
+      "mobile",
+      "react native",
+      "channel",
+      "thread",
+      "chat",
+      "replies",
+      "draft",
+      "dark"
+    ],
+    "dependencies": [
+      "expo-blur",
+      "expo-linear-gradient",
+      "react-native-svg"
+    ],
+    "theme": "dark",
+    "previewHeight": 844,
+    "usage": "import { MobileChannelThread } from \"@/components/design-for-ai/native/mobile-channel-thread\";\n\n// Bare React Native apps: run npx install-expo-modules once.\n<MobileChannelThread channel={channel} rootMessage={root} replies={replies} status={actualStatus} onSend={requestReply} onRetry={refreshThread} resetKey={sessionId} />",
+    "props": [
+      {
+        "name": "channel",
+        "type": "ThreadChannel",
+        "description": "Exact channel ID/name/topic. Combined with root ID/reset for conversation identity.",
+        "default": "Original interface-review channel"
+      },
+      {
+        "name": "rootMessage",
+        "type": "ThreadMessage",
+        "description": "Actual root ID/author/body/time label. All raw context remains inspectable.",
+        "default": "Original state-review message"
+      },
+      {
+        "name": "replies",
+        "type": "ThreadMessage[]",
+        "description": "Supplied replies in host order with raw duplicate variants and exact source facts.",
+        "default": "Three original interface review replies"
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"error\" | \"unavailable\"",
+        "description": "Actual thread availability. Nonready keeps messages/draft readable while new sends/quotes are unavailable.",
+        "default": "\"ready\""
+      },
+      {
+        "name": "statusMessage",
+        "type": "string",
+        "description": "Actual availability explanation, with meaningful missing/whitespace fallback."
+      },
+      {
+        "name": "quoteValue",
+        "type": "string | null",
+        "description": "Controlled quoted reply ID. Explicit null means no quote; absent handler makes quote choices read-only."
+      },
+      {
+        "name": "defaultQuoteValue",
+        "type": "string | null",
+        "description": "Initial local quote. Missing/duplicate references stay explicit and block send.",
+        "default": "null"
+      },
+      {
+        "name": "onQuoteChange",
+        "type": "(id: string | null) => void",
+        "description": "Synchronous quote proposal. Rejection/throw preserves actual reference and retained draft."
+      },
+      {
+        "name": "defaultDraft",
+        "type": "string",
+        "description": "Initial local response body, preserved through pending/failure/older acknowledgment.",
+        "default": "\"The compact states are ready for one final review.\""
+      },
+      {
+        "name": "onSend",
+        "type": "(review: ChannelThreadReview, signal: AbortSignal) => void | Promise<void>",
+        "description": "Copied channel/root/exact body/unique quote. One cancellable request. Acknowledgment never inserts a fake reply or replaces newer typing."
+      },
+      {
+        "name": "onRetry",
+        "type": "(context: ChannelThreadContext, signal: AbortSignal) => void | Promise<void>",
+        "description": "Real copied conversation refresh with genuine loading continuity. Actual thread readiness remains host-owned."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Replacement conversation context. Clears local quote/draft/receipts/scroll and aborts stale work."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Native thread heading.",
+        "default": "\"Thread\""
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Neutral black/white/graphite chrome with purposeful actual state accents.",
+        "default": "\"dark\""
+      }
+    ],
+    "added": "2026-10-14",
+    "demo": {
+      "steps": [
+        "hover:@thread-reading:0.8,0.6",
+        "scroll:240",
+        "wait:200",
+        "click:@thread-reply-0",
+        "wait:250",
+        "click:@thread-draft",
+        "key:End",
+        "type: Agreed.",
+        "click:@thread-send",
+        "wait:650"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "status",
+        "label": "Thread state",
+        "kind": "action",
+        "options": [
+          "ready",
+          "loading",
+          "error",
+          "unavailable"
+        ]
+      },
+      {
+        "prop": "title",
+        "label": "Heading",
+        "kind": "text",
+        "default": "Thread"
+      }
+    ]
+  },
+  {
     "slug": "mobile-chat",
     "name": "Assistant Chat",
     "tier": "pro",
