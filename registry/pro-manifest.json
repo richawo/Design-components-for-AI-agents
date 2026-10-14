@@ -16432,6 +16432,145 @@
     ]
   },
   {
+    "slug": "editor-version-restore",
+    "name": "Scoped Version Restoration",
+    "tier": "pro",
+    "platform": "web",
+    "category": "editors",
+    "description": "Inspect real saved versions and explicitly restore an exact field scope, with truthful missing/null values and cancellable host acknowledgment.",
+    "tags": [
+      "version",
+      "restore",
+      "history",
+      "scope",
+      "review",
+      "editor"
+    ],
+    "dependencies": [
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1100,
+    "usage": "import { EditorVersionRestore } from \"@/components/design-for-ai/editor-version-restore\";\n\n<EditorVersionRestore fields={fields} current={current} versions={savedVersions} scope={scope} onScopeChange={setScope} onRestore={requestRestore} />\n\n// Only selected changed fields with supplied saved values enter the exact before/after request. Host supplies authoritative restored current data.",
+    "props": [
+      {
+        "name": "fields",
+        "type": "readonly RestoreField[]",
+        "description": "Up to24 unique actual field definitions, with label/description."
+      },
+      {
+        "name": "current",
+        "type": "SavedEditorVersion",
+        "description": "Exact current version identity and actual field values. Missing values differ from explicitly supplied null or empty text."
+      },
+      {
+        "name": "versions",
+        "type": "readonly SavedEditorVersion[]",
+        "description": "Up to32 actual saved versions, each with unique own field values referencing supplied definitions."
+      },
+      {
+        "name": "scope",
+        "type": "RestoreScope",
+        "description": "Controlled actual target version identity plus unique changed, supplied field IDs. Scope mismatch remains explicit; rejected requests do not replace accepted scope."
+      },
+      {
+        "name": "defaultScope",
+        "type": "RestoreScope",
+        "description": "Local initial version and field selection. Changing inspected version resets local scope; resetKey resets the interaction."
+      },
+      {
+        "name": "onScopeChange",
+        "type": "(scope: RestoreScope) => void",
+        "description": "Request copied exact version/field scope. Synchronous rejection preserves the accepted scope."
+      },
+      {
+        "name": "onRestore",
+        "type": "(request: VersionRestoreRequest, signal: AbortSignal) => void | Promise<void>",
+        "description": "Receives exact current/target version identities and copied before-presence/after-value facts for precisely selected fields. Fulfillment acknowledges request only; host owns restoration."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Resets local target, field scope, review and request lifetime."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"error\"",
+        "description": "Host availability preserves readable versions and review."
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "description": "Host failure text; blank falls back."
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Actual contained recovery request."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Locks inspection, field scope and requests with content preserved."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Complete monochromatic graphite/white chrome. Colour is reserved for actual supplied content and purposeful feature accents."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<VersionRestoreLabels>",
+        "description": "Scope, actual null/missing, review, acknowledgment and recovery copy."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Host responsive layout."
+      }
+    ],
+    "added": "2026-10-14",
+    "demo": {
+      "steps": [
+        "click:@restore-field-title",
+        "click:@restore-field-intro",
+        "click:@restore-review",
+        "click:@restore-request",
+        "click:@restore-version-journal-v4"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "disabled",
+        "label": "Read only",
+        "kind": "toggle",
+        "default": false
+      },
+      {
+        "prop": "status",
+        "label": "Availability",
+        "kind": "select",
+        "options": [
+          "ready",
+          "loading",
+          "error"
+        ],
+        "default": "ready"
+      }
+    ]
+  },
+  {
     "slug": "editor-whiteboard",
     "name": "Whiteboard",
     "tier": "pro",
