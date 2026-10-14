@@ -12232,6 +12232,144 @@
     ]
   },
   {
+    "slug": "data-bulk-action-review",
+    "name": "Bulk Action Review",
+    "tier": "pro",
+    "platform": "web",
+    "category": "data",
+    "description": "Review exact selected identities, eligibility and held records before a real host-owned action, then inspect per-record acknowledgements and explicit failures.",
+    "tags": [
+      "bulk action",
+      "selected records",
+      "scope review",
+      "host acknowledgement",
+      "failure review"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1080,
+    "usage": "import { DataBulkActionReview } from \"@/components/design-for-ai/data-bulk-action-review\";\n\n<DataBulkActionReview records={records} selectedIds={selection} onSelectionChange={setSelection} onApply={applyToHost} />",
+    "props": [
+      {
+        "name": "records",
+        "type": "BulkReviewRecord[]",
+        "description": "Up to 200 raw unique labeled original records with explicit eligibility and optional detail/exclusion reason. Immutable source revisions."
+      },
+      {
+        "name": "selectedIds",
+        "type": "string[]",
+        "description": "Controlled raw unique selected identities. Unknown source IDs remain explicitly held without silent replacement."
+      },
+      {
+        "name": "defaultSelectedIds",
+        "type": "string[]",
+        "default": "[]",
+        "description": "Initial uncontrolled scope; no implicit bulk selection in the named component."
+      },
+      {
+        "name": "onSelectionChange",
+        "type": "(ids: string[]) => void",
+        "description": "Selection request. Rejection/throwing callbacks retain the actual prior scope."
+      },
+      {
+        "name": "onApply",
+        "type": "(request: BulkActionRequest, signal: AbortSignal) => Promise<BulkActionAcknowledgement>",
+        "description": "Explicit confirmed apply/retry with exact eligible IDs and a local attempt correlation ID. The host owns execution, idempotency and cancellation. Abort only retires the UI wait; it does not prove an external action stopped."
+      },
+      {
+        "name": "onReceipt",
+        "type": "(receipt: BulkActionAcknowledgement, request: BulkActionRequest) => void",
+        "description": "Validated current acknowledgement observer. Failed observers do not erase the displayed host receipt."
+      },
+      {
+        "name": "actionId",
+        "type": "string",
+        "default": "\"archive\"",
+        "description": "Actual host action identity."
+      },
+      {
+        "name": "actionLabel",
+        "type": "string",
+        "default": "\"Archive records\"",
+        "description": "Specific visible host action label."
+      },
+      {
+        "name": "allowRetry",
+        "type": "boolean",
+        "default": "false",
+        "description": "Host-declared retry capability. Explicit retry reviews only reported failures from the unchanged same scope; missing acknowledgements are not silently retried."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Confirm the scope.\"",
+        "description": "Review heading."
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Actual source/action context."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"unavailable\"",
+        "description": "Availability retains selection and the separately labelled last receipt."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "default": "false",
+        "description": "Disables selection and actions, preserving read-only scope and receipt inspection."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Neutral graphite/white chrome and full neutral demo stage."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Host root classes."
+      }
+    ],
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "disabled",
+        "label": "Action locked",
+        "kind": "toggle",
+        "default": false
+      }
+    ],
+    "demo": {
+      "steps": [
+        "click:@bulk-tab-held",
+        "wait:220",
+        "click:@bulk-review",
+        "wait:300",
+        "click:@bulk-confirm",
+        "wait:820",
+        "click:@bulk-close",
+        "wait:280"
+      ],
+      "loop": false
+    },
+    "added": "2026-10-14"
+  },
+  {
     "slug": "data-kanban-compact",
     "name": "Accessible Sprint Board",
     "tier": "pro",
