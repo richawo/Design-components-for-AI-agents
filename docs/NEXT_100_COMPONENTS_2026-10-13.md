@@ -96,7 +96,7 @@ Validate all six web widths, both supported themes, multiple instances and empty
 | 47 | `date-timezone-overlap` | date-time | Compare working hours across supplied zones and daylight-saving boundaries before choosing a time. | Planned |
 | 48 | `forms-branching-survey` | forms | Conditional questions preserve prior answers when branches change and expose a final review. | Planned |
 | 49 | `auth-recovery-codes` | auth | Reveal, copy and acknowledge supplied recovery codes; printing or downloading remains an explicit action. | Planned |
-| 50 | `forms-draft-rescue` | forms | Compare a local draft with a newer host version, choose retained fields and acknowledge conflict resolution. | Planned |
+| 50 | `forms-draft-rescue` | forms | Compare a local draft with a newer host version, choose retained fields and acknowledge conflict resolution. | Released |
 
 ## 6. Data exploration
 
@@ -175,4 +175,4 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 ## Progress
 
-Planned: 50. Released: 50. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
+Planned: 49. Released: 51. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.

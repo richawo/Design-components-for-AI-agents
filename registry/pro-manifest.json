@@ -17057,6 +17057,147 @@
     ]
   },
   {
+    "slug": "forms-draft-rescue",
+    "name": "Draft Rescue Comparison",
+    "tier": "pro",
+    "platform": "web",
+    "category": "forms",
+    "description": "Compare an earlier draft with an actual newer host version, choose retained values and explicitly resolve a cloned exact-version snapshot.",
+    "tags": [
+      "draft",
+      "conflict",
+      "compare",
+      "resolution",
+      "version",
+      "form"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1200,
+    "usage": "import { FormsDraftRescue } from \"@/components/design-for-ai/forms-draft-rescue\";\n\n<FormsDraftRescue fields={fields} draft={localDraft} latest={latestVersion} choices={choices} onChoicesChange={setChoices} onResolve={resolveConflict} />\n\n// Host persists only after receiving both version IDs, exact field decisions and merged own values. Missing values differ from empty strings.",
+    "props": [
+      {
+        "name": "fields",
+        "type": "readonly RescueField[]",
+        "description": "Up to20 unique field identities with labels/descriptions. Only these fields are compared and included in the resolution."
+      },
+      {
+        "name": "draft",
+        "type": "RescueVersion",
+        "description": "Local version identity, label and own text values. Missing fields are distinct from an explicitly empty string."
+      },
+      {
+        "name": "latest",
+        "type": "RescueVersion",
+        "description": "Distinct latest host version identity, label and own values. No guessed version or automatic overwrite."
+      },
+      {
+        "name": "choices",
+        "type": "RescueChoices",
+        "description": "Controlled accepted field-to-source mapping, draft or latest. Unspecified choices keep the draft; rejected requests preserve exact accepted decisions."
+      },
+      {
+        "name": "defaultChoices",
+        "type": "RescueChoices",
+        "description": "Local initial decisions. Unspecified fields retain the draft. Reset explicitly with resetKey."
+      },
+      {
+        "name": "onChoicesChange",
+        "type": "(choices: RescueChoices) => void",
+        "description": "Request a copied complete field decision map. Missing handler makes controlled choices read only."
+      },
+      {
+        "name": "onResolve",
+        "type": "(resolution: DraftResolution, signal: AbortSignal) => void | Promise<void>",
+        "description": "Explicit exact draft/latest version identities, copied field decisions and merged own values. Cancellation or context changes retire stale completion; host owns persistence."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Explicit local decision/inspection/request lifecycle reset."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"error\"",
+        "description": "Host availability preserves both versions and accepted choices."
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "description": "Meaningful host failure explanation, default when blank."
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Actual recovery request."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Lock inspection/choices/resolution while retaining readable versions."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Complete dark walnut or pale-paper native palette."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<DraftRescueLabels>",
+        "description": "Field comparison, source choices, pending/recovery and acknowledgement copy."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Responsive host layout classes."
+      }
+    ],
+    "added": "2026-10-14",
+    "demo": {
+      "steps": [
+        "click:@rescue-choice-latest",
+        "click:@rescue-field-summary",
+        "click:@rescue-choice-latest",
+        "click:@rescue-field-notes",
+        "click:@rescue-choice-draft",
+        "click:@rescue-resolve"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "disabled",
+        "label": "Read only",
+        "kind": "toggle",
+        "default": false
+      },
+      {
+        "prop": "status",
+        "label": "Availability",
+        "kind": "select",
+        "options": [
+          "ready",
+          "loading",
+          "error"
+        ],
+        "default": "ready"
+      }
+    ]
+  },
+  {
     "slug": "header-island",
     "name": "Dynamic Island Header",
     "tier": "pro",
