@@ -27726,6 +27726,128 @@
     ]
   },
   {
+    "slug": "mobile-budget-envelope",
+    "name": "Budget Envelope",
+    "tier": "pro",
+    "platform": "mobile",
+    "category": "mobile",
+    "description": "Inspect actual allocation and spending, propose an exact budget and preserve drafts through host rejection.",
+    "tags": [
+      "budget",
+      "envelopes",
+      "allocation",
+      "money",
+      "native"
+    ],
+    "dependencies": [
+      "expo-blur",
+      "expo-linear-gradient",
+      "react-native-svg"
+    ],
+    "theme": "dark",
+    "previewHeight": 844,
+    "usage": "import { MobileBudgetEnvelope } from \"@/components/design-for-ai/mobile-budget-envelope\";\n\n<MobileBudgetEnvelope envelopes={envelopes} incomeMinor={incomeMinor} periodId={periodId} onBudgetChange={requestBudgetChange} />",
+    "props": [
+      {
+        "name": "envelopes",
+        "type": "readonly BudgetEnvelope[]",
+        "description": "Up to 24 actual unique envelopes with safe nonnegative integer budgetMinor/spentMinor, title/detail, editability and optional reason. Empty by default; no personal spending history is inferred."
+      },
+      {
+        "name": "incomeMinor",
+        "type": "number | null",
+        "description": "Actual safe nonnegative income amount in hundredth units. Null/unknown by default, with unavailable allocation rather than an invented zero balance."
+      },
+      {
+        "name": "periodId",
+        "type": "string",
+        "description": "Meaningful nonempty actual period identity, empty/unknown by default. Retires pending requests on replacement; per-period/per-envelope drafts remain separately scoped."
+      },
+      {
+        "name": "periodLabel",
+        "type": "string",
+        "description": "Literal supplied period label."
+      },
+      {
+        "name": "unitLabel",
+        "type": "string",
+        "description": "Literal amount unit, default USD. All numeric amounts use hundredths; no exchange-rate conversion."
+      },
+      {
+        "name": "selectedId",
+        "type": "string | null",
+        "description": "Separately controlled inspected envelope. Missing observer makes controlled inspection read only."
+      },
+      {
+        "name": "defaultSelectedId",
+        "type": "string | null",
+        "description": "Initial local inspection; omitted selects the first actual supplied envelope."
+      },
+      {
+        "name": "onSelectedIdChange",
+        "type": "(id: string) => void",
+        "description": "Explicit inspection request, called before local acceptance. Synchronous refusal keeps selection and drafts."
+      },
+      {
+        "name": "onBudgetChange",
+        "type": "(request: BudgetEnvelopeRequest, signal: AbortSignal) => void | Promise<void>",
+        "description": "Copied exact period, selected envelope, before/after minor amount, income, note and all source envelope records. Host owns accepted budgets. Missing handler disables editing."
+      },
+      {
+        "name": "allowOverallocate",
+        "type": "boolean",
+        "description": "Whether an exact proposal may exceed supplied income. Default false; visible actual over-allocation remains inspectable."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Supplied display heading."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Complete neutral graphite/white chrome, with translucent glass over actual scrolling content."
+      }
+    ],
+    "added": "2026-10-14",
+    "demo": {
+      "steps": [
+        "click:@budget-select-1",
+        "click:@budget-select-0",
+        "click:@budget-amount",
+        "key:End",
+        "key:Backspace",
+        "key:Backspace",
+        "key:Backspace",
+        "key:Backspace",
+        "key:Backspace",
+        "key:Backspace",
+        "type:240",
+        "click:@budget-save",
+        "wait:500"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "title",
+        "label": "Heading",
+        "kind": "text",
+        "default": "Room for what matters."
+      }
+    ]
+  },
+  {
     "slug": "mobile-channel-thread",
     "name": "Native Channel Thread",
     "tier": "pro",

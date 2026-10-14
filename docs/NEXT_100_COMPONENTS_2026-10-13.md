@@ -155,7 +155,7 @@ Validate all six web widths, both supported themes, multiple instances and empty
 | 86 | `mobile-reading-progress` | mobile | Inspect chapter progress and bookmarks, with an explicit resume action and meaningful empty history. | Planned |
 | 87 | `mobile-trip-itinerary` | mobile | Browse supplied travel legs with local timezone labels and inspect schedule changes. | Planned |
 | 88 | `mobile-packing-list` | mobile | Group and check items, edit quantities and undo a completed-item removal. | Planned |
-| 89 | `mobile-budget-envelope` | mobile | Allocate a supplied budget among categories with bounded totals and transparent remainder. | Planned |
+| 89 | `mobile-budget-envelope` | mobile | Allocate a supplied budget among categories with bounded totals and transparent remainder. | Released |
 | 90 | `mobile-voice-memo` | mobile | Inspect a host-supplied recording waveform, markers and transcript with real media callbacks. | Planned |
 
 ## 10. Native shared workflows
@@ -175,4 +175,4 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 ## Progress
 
-Planned: 13. Released: 87. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
+Planned: 12. Released: 88. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
