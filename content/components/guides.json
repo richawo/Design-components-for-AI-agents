@@ -4907,17 +4907,18 @@
     "updated": "2026-10-14"
   },
   "mobile-channel-thread": {
-    "useWhen": "Reading a selected message and replies while composing an acknowledged response.",
-    "avoidWhen": "A full messaging backend or mixing drafts between channels with repeated message IDs.",
+    "useWhen": "Reading an actual channel conversation, quoting a uniquely identified reply and requesting an exact response while preserving newer typing.",
+    "avoidWhen": "A transport, delivery receipt service or fabricating a reply after a callback succeeds.",
     "integration": [
-      "Scope message, reply and draft identity to the channel. Preserve text on failure, reject stale acknowledgements after scope changes and keep reading position stable.",
-      "Install in a React Native app. The web preview supports design review; verify touch gestures, large text, reduced motion and assistive technology on target devices."
+      "Supply actual channel/root/reply facts and a real onSend(review, signal) handler. The copied review includes the exact body and optional quoted original; newer typing survives older acknowledgment. Controlled quote selection without its observer is honestly read-only.",
+      "Only supplied conversation data adds a delivered reply. Real retry refreshes the copied channel/root context, with duplicate identity, scope, handler/reset and late-response fencing. Native foreground text and focus stay above the pinned glass composer.",
+      "Install in a React Native app with Expo modules for the blur/gradient/SVG dependencies. Review native keyboard, safe insets, touch, large text and assistive technology on target devices."
     ],
     "related": [
-      "mobile-chat",
-      "mobile-swipe-list"
+      "mobile-attachment-tray",
+      "mobile-approval-sheet"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "mobile-task-move": {
     "useWhen": "Reviewing a constrained task destination and exact note before an explicit host-owned move, with undo only when supported by the acknowledged move and actual task state.",
@@ -4937,55 +4938,63 @@
     "updated": "2026-10-14"
   },
   "mobile-review-annotations": {
-    "useWhen": "Selecting supplied annotations over an asset and inspecting their context.",
-    "avoidWhen": "An image editing engine or requiring precise taps as the only way to reach a note.",
+    "useWhen": "Inspecting actual supplied notes over the correct asset version with explicit normalized positions and a complete list alternative.",
+    "avoidWhen": "Inferring coordinates from an image or marking a note resolved without actual host data.",
     "integration": [
-      "Use normalized annotation coordinates and stable IDs. Pair touch targets with a readable list, handle missing assets and keep selection associated with the correct version.",
-      "Install in a React Native app. The web preview supports design review; verify touch gestures, large text, reduced motion and assistive technology on target devices."
+      "Supply the asset ID/title/version and positive finite intrinsic dimensions, actual preview content and unique annotation IDs. Positions are declared top-left normalized coordinates from 0 to 1. Unknown dimensions or invalid positions stay unplaced and inspectable in the complete list.",
+      "Selection and all/open/resolved filters support controlled/local state. Explicit null unselects; missing controlled observers are read-only. Filtering retains the selected complete dossier. Duplicate raw variants cannot create a current point.",
+      "A real onRetry receives copied asset facts and AbortSignal. Fulfillment acknowledges only; actual availability remains supplied. Known text/number/fragment preview content receives native Text boundaries, known empty fragments show useful unavailability and opaque component contents remain the host’s responsibility.",
+      "Install core React Native and the listed Expo blur/gradient/SVG modules. Verify actual touch targets, native assistive technology, large text and asset rendering on target devices."
     ],
     "related": [
-      "mobile-bottom-sheet",
-      "mobile-chat"
+      "media-focus-lightbox",
+      "mobile-file-preview"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "mobile-notification-digest": {
-    "useWhen": "Reviewing grouped actionable notifications and acknowledging read or snooze requests.",
-    "avoidWhen": "A push delivery service or silently marking everything read when the view opens.",
+    "useWhen": "Reviewing actual grouped notifications and requesting explicit read or snooze updates while retaining complete reading and position.",
+    "avoidWhen": "A push delivery service, automatic read on opening or invented snooze scheduling.",
     "integration": [
-      "Supply stable notification IDs, timestamps and host-owned acknowledgement handlers. Preserve position during changes and clearly distinguish unread, pending and failed updates.",
-      "Install in a React Native app. The web preview supports design review; verify touch gestures, large text, reduced motion and assistive technology on target devices."
+      "Supply groups with composite group+notification identity and actual unread/read/snoozed or explicit unknown state. Controlled selection/filter require their respective observers; missing observers are read-only. Collapse or filter retains the selected original message.",
+      "onRead receives copied group metadata and notification. onSnooze additionally receives an explicit supplied time option with absolute UTC milliseconds. Null, unsupported, nonfinite, nonpositive or ambiguous times block that request. No duration is inferred.",
+      "Callback fulfillment acknowledges its exact request only; supplied state alone owns read/snoozed status. Exact fact/eligibility/owner/reset changes abort and fence pending work, while unrelated groups preserve the item owner. onRetry is an explicit copied-source refresh, never a background service.",
+      "Install in a React Native app with the listed Expo modules. Test native touch/nested scrolling, large text, reduced motion and assistive technology on target devices."
     ],
     "related": [
       "mobile-swipe-list",
-      "mobile-live-activity"
+      "mobile-offline-outbox"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "mobile-sync-conflict": {
-    "useWhen": "Comparing local and remote fields before requesting a reviewed resolution.",
-    "avoidWhen": "Choosing a winner automatically or hiding edits when a newer version arrives.",
+    "useWhen": "Comparing actual local and remote field values before requesting a complete explicitly reviewed resolution.",
+    "avoidWhen": "Automatically choosing a winner or inferring unknown values and versions.",
     "integration": [
-      "Supply version identities and comparable fields. Preserve local edits, show the exact selected resolution and retire stale completion when either version changes.",
-      "Install in a React Native app. The web preview supports design review; verify touch gestures, large text, reduced motion and assistive technology on target devices."
+      "Supply actual document and local/remote version identities with raw uniquely identified fields. Null values are unknown and block review; empty strings are deliberate known values. Controlled field inspection is separate from local/remote/custom resolution drafts.",
+      "Custom text and newer notes survive source revisions and older acknowledgment. A meaningful version/fact revision permanently retires old choice applicability and consent, including after a later revert; retained drafts need explicit current confirmation. A replacement document or resetKey starts a fresh session.",
+      "onResolve receives a deep immutable review of the document, versions, original fields, chosen sides/values and exact note with AbortSignal. Fulfillment acknowledges only. Actual supplied resolved status owns completion, and a newer draft can be independently reviewed.",
+      "Install in a React Native app with the blur/gradient/SVG dependencies. Verify actual local review visibility, native touch, keyboard, large text and assistive technology."
     ],
     "related": [
-      "mobile-agent-approval",
-      "mobile-settings"
+      "mobile-review-annotations",
+      "mobile-offline-outbox"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "mobile-offline-outbox": {
-    "useWhen": "Inspecting queued changes and retrying host-reported delivery failures.",
-    "avoidWhen": "A background sync engine or presenting local queuing as a server acknowledgement.",
+    "useWhen": "Inspecting exact queued originals, preserving independent local text drafts and retrying actual host-reported failures.",
+    "avoidWhen": "A background synchronization engine or presenting local queuing or callback fulfillment as delivery.",
     "integration": [
-      "Supply queue entries and truthful delivery states. Keep retry explicit, explain cancellation or editing limits and distinguish local drafts from accepted changes.",
-      "Install in a React Native app. The web preview supports design review; verify touch gestures, large text, reduced motion and assistive technology on target devices."
+      "Supply unique entries with actual operation, raw text payload, state and explicit edit/retry policy. Null means unknown. Empty text is known. A claimed acknowledged state without a supplied nonempty receipt ID remains explicitly unverified. Raw text is never claimed as validated JSON.",
+      "onRetry copies the actual failed/retryable queued original. onCommitDraft copies original facts and exact explicitly reviewed editor text. These actions are separate; retry never silently sends a newer editor draft. Fulfillment acknowledges only, while supplied entry state owns queue and delivery status.",
+      "Per-entry newer text survives pending or older acknowledgment. Fresh meaningful facts and uniqueness derive a revision epoch, so changed source permanently retires consent even after revert. Unrelated records preserve the pending owner. onRefresh is an optional explicit source refresh; cancellation aborts this request without claiming the server queue changed.",
+      "Install in React Native with the listed Expo modules. Test native scrolling, safe insets, text editing, large text, reduced motion and assistive technology on target devices."
     ],
     "related": [
-      "mobile-live-activity",
-      "mobile-agent-approval"
+      "mobile-sync-conflict",
+      "mobile-attachment-tray"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   }
 }
