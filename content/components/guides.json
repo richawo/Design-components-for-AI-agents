@@ -4756,30 +4756,36 @@
     "updated": "2026-10-13"
   },
   "mobile-project-switcher": {
-    "useWhen": "Searching and choosing a supplied project in a tactile mobile sheet.",
-    "avoidWhen": "Creating project data or silently switching to an unavailable workspace.",
+    "useWhen": "Searching and choosing a supplied project in a tactile native sheet while keeping the current choice through unavailable or rejected requests.",
+    "avoidWhen": "Creating projects, granting membership, inferring availability or silently picking another workspace when the current identity disappears.",
     "integration": [
-      "Supply project identities, current selection and availability reasons. Preserve selection on rejection, return focus on dismissal and expose the same actions without gestures.",
-      "Install in a React Native app. The web preview supports design review; verify touch gestures, large text, reduced motion and assistive technology on target devices."
+      "Supply projects with globally unique nonempty IDs, name, description, workspace, role and available/unavailable status with actual reasons. Conflicting variants stay inspectable and cannot switch; the collection is bounded to the first 100 raw projects.",
+      "Use value/defaultValue with onValueChange(id,copiedProject,AbortSignal). Local mode commits after actual fulfillment. Controlled mode waits for the supplied value, and a fulfilled request without that update stays an acknowledgment. No observer makes controlled selection read-only.",
+      "Use open/defaultOpen with synchronous onOpenChange. Rejection keeps real visibility; missing observer makes controlled disclosure read-only. Cancel, current-project activation, exact source/value/disclosure/handler changes and reset retire previous work and late settlement.",
+      "Give the component a full-height mobile canvas. It uses a native Modal on iOS/Android and a host-contained accessible dialog for browser review. Search, native scroll, explicit Close and native accessibility/keyboard actions provide alternatives to its dedicated grabber.",
+      "Install Expo modules once in a bare React Native app. Verify native touch, large text and assistive technology on target devices; browser proof covers actual source/state logic, focus boundaries and design."
     ],
     "related": [
       "mobile-bottom-sheet",
       "mobile-settings"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "mobile-file-preview": {
-    "useWhen": "Inspecting supplied file metadata and host-rendered preview content.",
-    "avoidWhen": "Downloading a file implicitly or promising support for formats the host cannot render.",
+    "useWhen": "Inspecting complete supplied file metadata and an actual host-rendered preview, with explicit cancellable file actions and retained content through availability changes.",
+    "avoidWhen": "Implicit downloads or fetching, assumed format support, unknown size reported as zero or callback fulfillment described as a verified external open/download.",
     "integration": [
-      "Supply actual filename, format, size and preview availability. Retain metadata in unsupported and failed states and make open or download actions explicit.",
-      "Install in a React Native app. The web preview supports design review; verify touch gestures, large text, reduced motion and assistive technology on target devices."
+      "Supply file id/name/format, optional MIME/modified timestamp and nullable sizeBytes. Unknown or invalid size stays unavailable. A custom file without actual preview content is explicitly empty; only the bundled virtual text file receives the original offline notes.",
+      "Supply preview as a stable ReactNode with authoritative ready/loading/unsupported/unavailable/error status and optional actual explanation. The retained renderer stays mounted but unavailable while loading/error; ready restores interaction without an inherited group disabled state.",
+      "onOpen, onDownload and onRetry receive copied exact metadata and AbortSignal. One pending action offers Cancel; missing handlers are unavailable. Fulfillment only acknowledges the request, while real viewing/downloading/preview availability remains host-owned.",
+      "Memoize retained preview and asynchronous observers across genuine progress. File facts, renderer replacement, status/reset and the relevant action owner retire stale receipts/jobs. Same-source Retry can observe loading progress; actual new content/ready/error remains authoritative. Another action observer does not erase an unrelated pending action or receipt.",
+      "Use the native window-height canvas with separate metadata/content scroll and pinned actions. Bare native apps install Expo modules once. Verify actual device touch, dynamic text and assistive technology; browser review covers real source/state, focus and design."
     ],
     "related": [
       "mobile-bottom-sheet",
       "mobile-chat"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "mobile-attachment-tray": {
     "useWhen": "Reviewing selected attachments and exact limits before sending.",
