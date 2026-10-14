@@ -4811,17 +4811,21 @@
     "updated": "2026-10-14"
   },
   "mobile-meeting-preflight": {
-    "useWhen": "Reviewing host-reported microphone, camera and connection readiness before joining.",
-    "avoidWhen": "Requesting device permissions automatically or simulating a working camera without a host stream.",
+    "useWhen": "Reviewing a supplied meeting room, audio/video preferences and host-reported required checks before explicit entry.",
+    "avoidWhen": "Probing permissions or hardware automatically, presenting local preferences as OS changes, or treating join acknowledgment as a room transition.",
     "integration": [
-      "Supply real readiness and permission states and an explicit join handler. Explain unavailable controls, support cancellation and keep pending or failed joins recoverable.",
-      "Install in a React Native app. The web preview supports design review; verify touch gestures, large text, reduced motion and assistive technology on target devices."
+      "Supply actual room ID/title/schedule, all check IDs/labels/status/required/details and device group+ID/label/availability/reason. Shared local IDs across microphone/speaker/camera are valid; duplicates within one group are ambiguous. Required checks must actually be ready. Optional warnings remain visible.",
+      "Speaker is always required to hear the call. Microphone is required only when unmuted and camera only when enabled. Each active selected device must be unique, supplied and available. Missing or blocked choices remain inspectable and never produce false ready.",
+      "Use controlled deviceValue/muted/cameraEnabled with synchronous observers, or default values for local preferences. Missing controlled observers are read-only. Observer exceptions preserve current values with meaningful retained-state feedback; local selection does not configure the operating system.",
+      "Supply actual preview content. The named component honestly shows missing content when no preview is supplied; the zero-prop demo provides a labelled offline initial-avatar study. Retained content becomes locally inert/hidden when unavailable and does not inherit disabled state from the full frame.",
+      "onJoin receives copied MeetingJoinReview room/checks, microphone/speaker/camera selections with each exact ID and unique actual record-or-null, plus mute/camera preferences and AbortSignal. One pending owner offers Cancel. Facts/preferences/reset/onJoin replacement retires stale work. Fulfillment only reports Join requested while the host owns the actual room transition.",
+      "Install Expo modules once in bare React Native. Validate device touch, dynamic text and assistive technology on target native devices. Browser checks cover exact source, state, focus ownership and design."
     ],
     "related": [
-      "mobile-agent-approval",
-      "mobile-bottom-sheet"
+      "mobile-bottom-sheet",
+      "mobile-project-switcher"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "mobile-channel-thread": {
     "useWhen": "Reading a selected message and replies while composing an acknowledged response.",
