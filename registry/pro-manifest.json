@@ -12181,7 +12181,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Complete midnight-plum or pale-paper palette."
+        "description": "Complete monochromatic graphite/white chrome. Colour is reserved for actual supplied content and purposeful feature accents."
       },
       {
         "name": "labels",
