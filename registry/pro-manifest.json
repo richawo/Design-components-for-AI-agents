@@ -3157,6 +3157,146 @@
     ]
   },
   {
+    "slug": "auth-recovery-codes",
+    "name": "Recovery Code Folio",
+    "tier": "pro",
+    "platform": "web",
+    "category": "auth",
+    "description": "Reveal host-supplied recovery codes, copy unused values and explicitly acknowledge an exact code set with truthful export and failure states.",
+    "tags": [
+      "recovery",
+      "codes",
+      "authentication",
+      "clipboard",
+      "account",
+      "backup"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1100,
+    "usage": "import { AuthRecoveryCodes } from \"@/components/design-for-ai/auth-recovery-codes\";\n\n<AuthRecoveryCodes batchId={codeSet.id} accountLabel={accountLabel} codes={codes} onAcknowledge={recordSavedConfirmation} onDownload={downloadCodeFile} />\n\n// Host supplies actual codes. The UI never generates authentication secrets. Copying a code is not an acknowledgement.",
+    "props": [
+      {
+        "name": "batchId",
+        "type": "string",
+        "description": "Stable identity of the exact supplied recovery code set. Changed codes/reset retire receipts, pending actions and local confirmation."
+      },
+      {
+        "name": "accountLabel",
+        "type": "string",
+        "description": "Host account context displayed and copied to explicit host export actions."
+      },
+      {
+        "name": "codes",
+        "type": "readonly RecoveryCode[]",
+        "description": "Up to20 unique code identities and unique nonempty single-line code values of at most128 characters. Used codes remain visible but are excluded from copy/download/print/confirmation payloads."
+      },
+      {
+        "name": "acknowledged",
+        "type": "boolean",
+        "description": "Optional controlled host acknowledgement. Callback fulfillment without a host update shows awaiting acknowledgement, never a false accepted state."
+      },
+      {
+        "name": "onAcknowledge",
+        "type": "(receipt: RecoveryCodeAcknowledgement, signal: AbortSignal) => void | Promise<void>",
+        "description": "Explicit user confirmation for exact batchId and unused codeIds. Requires the user confirmation checkbox; copied/downloaded status alone cannot acknowledge."
+      },
+      {
+        "name": "onDownload",
+        "type": "(payload: RecoveryCodePayload, signal: AbortSignal) => void | Promise<void>",
+        "description": "Explicit host export request with cloned unused codes. Missing handler keeps download disabled; host owns the actual browser/file result."
+      },
+      {
+        "name": "onPrint",
+        "type": "(payload: RecoveryCodePayload, signal: AbortSignal) => void | Promise<void>",
+        "description": "Explicit host print request. Missing handler keeps print disabled."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Explicit local reveal, confirmation and acknowledgement lifecycle reset."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"error\"",
+        "description": "Host availability locks actions while keeping supplied codes readable."
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "description": "Meaningful host failure text, default when blank."
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Actual host recovery request."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Lock actions while retaining reading context."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Complete olive-vault or pale-paper native palette."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<RecoveryLabels>",
+        "description": "Account instructions, explicit action/result and recovery copy."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Responsive host layout classes."
+      }
+    ],
+    "added": "2026-10-14",
+    "demo": {
+      "steps": [
+        "click:@recovery-reveal",
+        "click:@recovery-copy",
+        "click:@recovery-stored",
+        "click:@recovery-acknowledge",
+        "click:@recovery-reveal"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "disabled",
+        "label": "Read only",
+        "kind": "toggle",
+        "default": false
+      },
+      {
+        "prop": "status",
+        "label": "Availability",
+        "kind": "select",
+        "options": [
+          "ready",
+          "loading",
+          "error"
+        ],
+        "default": "ready"
+      }
+    ]
+  },
+  {
     "slug": "auth-sso-detect",
     "name": "SSO-Aware Sign-in",
     "tier": "pro",
