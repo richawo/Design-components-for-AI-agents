@@ -15353,6 +15353,147 @@
     "added": "2026-10-10"
   },
   {
+    "slug": "effect-ink-trail",
+    "name": "Ink Trail",
+    "tier": "pro",
+    "platform": "web",
+    "category": "effects",
+    "description": "Draw a deliberate, bounded ink mark that fades after release, with keyboard stamps and ordinary foreground controls left usable.",
+    "tags": [
+      "ink",
+      "drawing",
+      "pointer",
+      "trail",
+      "canvas",
+      "gesture"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1140,
+    "usage": "import { EffectInkTrail } from \"@/components/design-for-ai/effect-ink-trail\";\n\n<EffectInkTrail onStroke={receiveActualStroke}><YourForeground /></EffectInkTrail>",
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "description": "Optional ordinary foreground overlay. Its native input/events/overflow remain independent of drawing."
+      },
+      {
+        "name": "height",
+        "type": "number",
+        "description": "Finite 260–680px drawing surface height.",
+        "default": "420"
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "description": "Optional six-digit ink color, snapshotted per actual mark. Omission chooses readable ink for the current theme; an explicit host color is authoritative.",
+        "default": "\"#d5dec5\" (dark) / \"#34452b\" (light)"
+      },
+      {
+        "name": "width",
+        "type": "number",
+        "description": "Finite 0.75–12 logical pixel ink stroke width.",
+        "default": "4.5"
+      },
+      {
+        "name": "lifetimeMs",
+        "type": "number",
+        "description": "Integer 300–3000ms fade after release. New marks snapshot their own lifetime.",
+        "default": "1800"
+      },
+      {
+        "name": "maxStrokes",
+        "type": "number",
+        "description": "Bounded retained marks, integer 1–24, with at most 1024 points per stroke.",
+        "default": "8"
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Explicit host revision clears the surface and retires any owned pointer gesture."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Disables drawing and stamps; foreground stays usable and previous marks remain static.",
+        "default": "false"
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"unavailable\"",
+        "description": "Actual host availability. No fake loading operation is started.",
+        "default": "\"ready\""
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Moss/graphite or warm-paper surface and readable instructions.",
+        "default": "\"dark\""
+      },
+      {
+        "name": "onStroke",
+        "type": "(stroke: InkStroke) => void",
+        "description": "Completed actual bounded normalized points, pressure/timing, color, width and lifetime. Host owns any persistence."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Host root layout classes.",
+        "default": "\"\""
+      }
+    ],
+    "controls": [
+      {
+        "prop": "width",
+        "label": "Ink width",
+        "kind": "slider",
+        "min": 0.75,
+        "max": 12,
+        "step": 0.25,
+        "default": 4.5
+      },
+      {
+        "prop": "lifetimeMs",
+        "label": "Fade after release",
+        "kind": "slider",
+        "min": 300,
+        "max": 3000,
+        "step": 100,
+        "default": 1800
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      }
+    ],
+    "demo": {
+      "steps": [
+        "hover:@ink-stage:0.12,0.65",
+        "down",
+        "hover:@ink-stage:0.32,0.48",
+        "hover:@ink-stage:0.51,0.7",
+        "hover:@ink-stage:0.68,0.5",
+        "up",
+        "wait:750",
+        "click:@ink-stamp",
+        "wait:550",
+        "click:@ink-clear",
+        "wait:300"
+      ],
+      "loop": false
+    },
+    "added": "2026-10-13"
+  },
+  {
     "slug": "fashion-assortment-planner",
     "name": "Store Assortment Planner",
     "tier": "pro",
