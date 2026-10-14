@@ -29816,6 +29816,111 @@
     ]
   },
   {
+    "slug": "mobile-packing-list",
+    "name": "Packing List",
+    "tier": "pro",
+    "platform": "mobile",
+    "category": "mobile",
+    "description": "A native packing manifest with grouped checking, exact editable quantities and accepted removal/undo that preserves current list data.",
+    "tags": [
+      "packing",
+      "grouped checklist",
+      "exact quantities",
+      "remove completed",
+      "undo removal"
+    ],
+    "dependencies": [
+      "expo-blur",
+      "expo-linear-gradient",
+      "react-native-svg"
+    ],
+    "theme": "dark",
+    "previewHeight": 844,
+    "usage": "import { MobilePackingList } from \"@/components/design-for-ai/native/mobile-packing-list\";\n\n// Bare React Native: install Expo modules once with npx install-expo-modules.\n<MobilePackingList value={items} onValueChange={setItems} />",
+    "props": [
+      {
+        "name": "packingId",
+        "type": "string",
+        "description": "Logical list context. Replacement clears local inspection/drafts/undo and retires pending accepted-change intent."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Host-authored packing manifest title."
+      },
+      {
+        "name": "value",
+        "type": "PackingItem[]",
+        "description": "Controlled complete packing list: up to 100 raw unique named/grouped records, whole quantities 1–99 and explicit packed booleans."
+      },
+      {
+        "name": "defaultValue",
+        "type": "PackingItem[]",
+        "description": "Initial local packing records. Named default is the original illustrative studio manifest."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(items: PackingItem[], change: PackingChange) => void",
+        "description": "Copied full-list request with check/quantity/remove_completed/undo reason. Rejection preserves the current list and newer exact drafts."
+      },
+      {
+        "name": "onValueCommit",
+        "type": "(items: PackingItem[], change: PackingChange) => void",
+        "description": "Only current accepted complete-list changes commit. No rejected, no-op or context-retired commit."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"unavailable\"",
+        "description": "Preserves actual list and draft context with useful availability copy."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Disables changes; supplied group and quantity inspection remain available."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Neutral graphite or white manifest, with a real translucent action footer."
+      }
+    ],
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "disabled",
+        "label": "Disabled actions",
+        "kind": "toggle",
+        "default": false
+      }
+    ],
+    "demo": {
+      "steps": [
+        "click:@packing-check-notebook",
+        "wait:300",
+        "click:@packing-edit-notebook",
+        "wait:650",
+        "click:@packing-plus",
+        "wait:300",
+        "click:@packing-close",
+        "click:@packing-remove",
+        "wait:300",
+        "click:@packing-undo",
+        "wait:400"
+      ],
+      "loop": false
+    },
+    "added": "2026-10-14"
+  },
+  {
     "slug": "mobile-paywall",
     "name": "Night Sky Paywall",
     "tier": "pro",
