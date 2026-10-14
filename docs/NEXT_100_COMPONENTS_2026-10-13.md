@@ -125,7 +125,7 @@ Validate all six web widths, both supported themes, multiple instances and empty
 | 66 | `editor-storyboard-strip` | editors | Reorder scene cards, adjust durations and inspect the cumulative sequence without exporting implicitly. | Released |
 | 67 | `editor-keyframe-track` | editors | Move discrete keyframes and inspect an interpolated property with a keyboard timeline alternative. | Released |
 | 68 | `editor-version-restore` | editors | Preview a saved version, compare its scope and request restoration with recoverable pending/failure states. | Released |
-| 69 | `editor-export-preset` | editors | Compose a valid export format, size and quality from host capabilities, then review the exact payload. | Planned |
+| 69 | `editor-export-preset` | editors | Compose a valid export format, size and quality from host capabilities, then review the exact payload. | Released |
 | 70 | `editor-font-pairing` | editors | Compare host-provided font roles against actual supplied copy, with robust fallback and loading states. | Released |
 
 ## 8. AI and delivery workflows
@@ -175,4 +175,4 @@ Validate all six web widths, both supported themes, multiple instances and empty
 
 ## Progress
 
-Planned: 26. Released: 74. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
+Planned: 25. Released: 75. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
