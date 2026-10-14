@@ -4360,27 +4360,29 @@
     "useWhen": "Reordering, locking, hiding and renaming supplied layers with actual selection and a readable move mode.",
     "avoidWhen": "A complete drawing canvas or visual layers that have no corresponding host objects.",
     "integration": [
-      "Supply stable layer IDs, names, order and constraints. Keep selection and layer edits tied to the same actual objects, including hidden or locked items.",
-      "Provide keyboard movement alongside pointer dragging, preserve rename drafts after rejection and keep the active layer reachable after removal."
+      "Supply controlled `value`/`onValueChange` or local `defaultValue` as a flat ordered array of up to64 unique actual layer records. Each has id, name, kind, visible and locked fields. Groups are flat host records; the component does not invent a drawing canvas or tree.",
+      "Control inspection separately with `selectedId`/`onSelectedIdChange`, or use local `defaultSelectedId`. Locked layers remain inspectable and can be shown/hidden or unlocked, while direct moving/renaming is unavailable. Native dragging has cancel/context retirement; move buttons and Alt+Up/Down offer equivalent ordering.",
+      "Explicit Apply requests cloned stack state. Rejected edits retain accepted order and newer rename drafts through older acknowledgements. Availability or lock changes retain a read-only name draft for recovery. Local deletion selects an actual neighbor; a missing controlled selection stays explicit. Use `resetKey` for an explicit new editing lifecycle."
     ],
     "related": [
       "editor-whiteboard",
       "navigation-stacked-tabs"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "editor-color-token-studio": {
     "useWhen": "Editing semantic color tokens and checking actual supplied foreground/background contrast pairs.",
     "avoidWhen": "Claiming accessibility for an entire application from a few colors or generating an arbitrary decorative palette.",
     "integration": [
-      "Supply token identities, roles and usage pairs. Calculate luminance from accepted colors and state whether the measured pair represents an opaque surface.",
-      "Preserve invalid drafts, make linked token edits explicit and distinguish a computed ratio from a full accessibility audit."
+      "Supply controlled `value`/`onValueChange` or local `defaultValue` with up to24 unique CSS-safe semantic token IDs. Complete RGB/RGBA hexadecimal drafts preview separately from accepted token values; Apply requests a copied palette and old acknowledgement cannot discard newer hex text.",
+      "Provide up to32 actual `pairs` referencing token IDs with fontSize/fontWeight. Contrast composites foreground over background over opaque `canvasColor`, then uses unrounded sRGB luminance and WCAG text thresholds. Missing or unsupported colors/references are explicit; an incomplete draft leaves the accepted reading palette visible. [WCAG contrast reference](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html).",
+      "Use supplied `presets` as draft suggestions and `sampleText` as actual reading content. Export `scopeSelector` supports :root, a simple class/ID or a simple data-attribute equality selector. Copy exports only complete accepted CSS, acknowledges the real Clipboard API result and fences stale receipts to exact bytes. The full accepted CSS stays selectable after clipboard failure."
     ],
     "related": [
       "input-color-swatches",
       "devtools-icon-workbench"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "editor-spacing-inspector": {
     "useWhen": "Inspecting and adjusting actual padding and gaps around supplied content.",
