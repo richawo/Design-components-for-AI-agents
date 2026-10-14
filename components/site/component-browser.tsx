@@ -306,8 +306,8 @@ export function ComponentBrowser({ cards, categories, introduction }: { cards: C
               catalogueHeading.current?.focus({ preventScroll: true });
               if (element) window.scrollTo({ top: window.scrollY + element.getBoundingClientRect().top - 80 - (toolbarRef.current?.offsetHeight ?? 64), behavior: reduce ? "instant" : "smooth" });
             }} />
-            <ComponentShelf title="New" cards={newCards} onBrowse={browseNew} />
-            {collections.map(collection => <ComponentShelf key={collection.key} title={collection.title} cards={collection.cards} onBrowse={() => { focusResults.current = true; setCat(collection.key); }} />)}
+            <ComponentShelf title="New" cards={newCards} entranceStep={5} onBrowse={browseNew} />
+            {collections.map((collection, index) => <ComponentShelf key={collection.key} title={collection.title} cards={collection.cards} entranceStep={6 + index} onBrowse={() => { focusResults.current = true; setCat(collection.key); }} />)}
           </div>
         )}
         <section ref={catalogueRef} aria-labelledby={catalogueId} className="mt-7 sm:mt-9">

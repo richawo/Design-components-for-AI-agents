@@ -1,0 +1,26 @@
+/* Each row joins the page's reading order, then its cards follow left to right. */
+.component-shelf-heading {
+  animation: site-in 0.7s var(--ease-site) var(--shelf-delay) backwards;
+}
+.component-shelf-item {
+  animation: site-in 0.7s var(--ease-site) calc(var(--shelf-delay) + var(--card-delay)) backwards;
+}
+
+/* Park lower rows until they enter the viewport. Content stays visible without JS. */
+.component-shelf[data-shelf-entrance="pending"] .component-shelf-heading,
+.component-shelf[data-shelf-entrance="pending"] .component-shelf-item {
+  animation: none;
+  opacity: 0;
+  transform: translateY(12px);
+  filter: blur(6px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .component-shelf[data-shelf-entrance] .component-shelf-heading,
+  .component-shelf[data-shelf-entrance] .component-shelf-item {
+    animation: none;
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}

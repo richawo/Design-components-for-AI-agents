@@ -1,23 +1,46 @@
 "use client";
 
-import { useId, useLayoutEffect, useRef, useState } from "react";
+import { useId, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 import { useReducedMotion } from "@/lib/use-reduced-motion";
 import type { CardData } from "@/lib/registry";
 import { ComponentCard } from "./component-card";
+import "./component-shelf.css";
 
 const SHELF_IMAGE_SIZES = "(min-width: 1680px) calc((100vw - 384px) / 4.2), (min-width: 1280px) calc((100vw - 368px) / 3.2), (min-width: 1024px) calc((100vw - 352px) / 2.2), (min-width: 640px) calc((100vw - 96px) / 2.2), calc((100vw - 40px) * 0.86)";
 
 /** A finite, manually browsed row. Native overflow also supports touch and Tab. */
-export function ComponentShelf({ title, cards, onBrowse, priority = false }: {
+export function ComponentShelf({ title, cards, onBrowse, priority = false, entranceStep = 4 }: {
   title: string;
   cards: CardData[];
   onBrowse: () => void;
   priority?: boolean;
+  entranceStep?: number;
 }) {
   const id = useId();
+  const shelf = useRef<HTMLElement>(null);
   const track = useRef<HTMLUListElement>(null);
   const reduce = useReducedMotion();
   const [canScroll, setCanScroll] = useState({ back: false, forward: false });
+  const [entrance, setEntrance] = useState<"initial" | "pending" | "shown">("initial");
+
+  useLayoutEffect(() => {
+    const element = shelf.current;
+    // Visible rows keep their CSS entrance from the first paint. Lower rows
+    // wait for their own entrance. Measure after the router restores scrolling.
+    if (!element || !window.IntersectionObserver) return;
+    let observer: IntersectionObserver | undefined;
+    const frame = requestAnimationFrame(() => {
+      if (element.getBoundingClientRect().top < window.innerHeight) return;
+      setEntrance("pending");
+      observer = new IntersectionObserver(entries => {
+        if (!entries.some(entry => entry.isIntersecting && entry.intersectionRatio >= 0.2)) return;
+        setEntrance("shown");
+        observer?.disconnect();
+      }, { threshold: 0.2 });
+      observer.observe(element);
+    });
+    return () => { cancelAnimationFrame(frame); observer?.disconnect(); };
+  }, []);
 
   useLayoutEffect(() => {
     const element = track.current;
@@ -44,8 +67,8 @@ export function ComponentShelf({ title, cards, onBrowse, priority = false }: {
   };
 
   return (
-    <section aria-labelledby={`${id}-title`} className={priority ? "site-in [--i:4]" : "site-reveal"}>
-      <div className="mb-3 flex items-center justify-between gap-3">
+    <section ref={shelf} aria-labelledby={`${id}-title`} data-shelf-entrance={entrance} className="component-shelf" style={{ "--shelf-delay": `${entrance === "shown" ? Math.max(0, entranceStep - 4) * 60 : entranceStep * 60 + 40}ms` } as CSSProperties}>
+      <div className="component-shelf-heading mb-3 flex items-center justify-between gap-3">
         <h2 id={`${id}-title`} className="text-[18px] font-medium tracking-[-0.025em]">{title}</h2>
         <div className="flex shrink-0 items-center gap-1.5">
           <button type="button" onClick={onBrowse} aria-label={`View all ${title.toLowerCase()}`} className="site-btn site-btn-ghost h-11 gap-1.5 px-2 text-[13px] font-normal text-site-fg-2 sm:mr-2 sm:h-8">
@@ -68,7 +91,7 @@ export function ComponentShelf({ title, cards, onBrowse, priority = false }: {
       </div>
       <ul ref={track} id={`${id}-track`} className="component-shelf-track -mx-1 grid auto-cols-[86%] grid-flow-col gap-4 overflow-x-auto overscroll-x-contain px-1 pb-2 pt-1 [scrollbar-width:none] sm:auto-cols-[calc((100%-32px)/2.2)] lg:auto-cols-[calc((100%-32px)/2.2)] xl:auto-cols-[calc((100%-48px)/3.2)] min-[105rem]:auto-cols-[calc((100%-64px)/4.2)] [&::-webkit-scrollbar]:hidden">
         {cards.map((card, index) => (
-          <li key={card.slug} className="flex min-w-0">
+          <li key={card.slug} className="component-shelf-item flex min-w-0" style={{ "--card-delay": `${(index + 1) * 55}ms` } as CSSProperties}>
             <ComponentCard c={card} priority={priority && index < 3} imageSizes={SHELF_IMAGE_SIZES} />
           </li>
         ))}
