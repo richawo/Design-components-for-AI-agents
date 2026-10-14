@@ -4768,40 +4768,43 @@
     "useWhen": "Reviewing chapter progress, bookmarks and an explicit resume destination.",
     "avoidWhen": "A document renderer or estimating reading comprehension from progress.",
     "integration": [
-      "Supply actual reading history and valid chapter destinations. Separate unread from missing history, retain bookmark identity and request navigation only after a user action.",
-      "Install in a React Native app. The web preview supports design review; verify touch gestures, large text, reduced motion and assistive technology on target devices."
+      "Supply a stable book identity, up to 24 unique chapters and actual read-page counts. Null history remains unknown rather than unread; a resume destination is a bounded page in a supplied chapter.",
+      "Control chapter inspection separately from copied bookmark requests. A saved bookmark resumes its exact page. onResume receives the copied book/chapter/page and an AbortSignal; the host opens the reader, and acknowledgment never advances reading history.",
+      "Install in a React Native app with Expo modules for the translucent footer and SVG details. The web preview supports design review; verify device fonts, larger text, reduced motion, touch and assistive technology on target devices."
     ],
     "related": [
       "mobile-health-summary",
       "mobile-now-playing"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "mobile-trip-itinerary": {
     "useWhen": "Inspecting supplied travel legs, local times and schedule changes.",
     "avoidWhen": "Booking travel, tracking a live vehicle without data or inventing arrival confidence.",
     "integration": [
-      "Supply timezone-qualified timestamps and current schedule status. Keep original and changed times readable and surface missing or cancelled legs explicitly.",
-      "Install in a React Native app. The web preview supports design review; verify touch gestures, large text, reduced motion and assistive technology on target devices."
+      "Supply up to 16 unique legs with valid explicit-offset ISO instants, actual local IANA zones, original and optional revised times, host-authored status and opening permission. Local clocks are formatted from their real instants; cancelled originals remain available.",
+      "Control selectedId independently. onOpenLeg receives a copied trip and leg plus an AbortSignal. The host opens its existing travel details; acknowledgment does not book travel, replace a leg or change a schedule.",
+      "Install in a React Native app with Expo modules for the translucent footer and SVG details. The web preview supports design review; verify device fonts, larger text, reduced motion, touch and assistive technology on target devices."
     ],
     "related": [
       "mobile-bottom-sheet",
       "mobile-live-activity"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "mobile-packing-list": {
     "useWhen": "Checking grouped items, correcting quantities and undoing supported removals.",
     "avoidWhen": "An inventory database or automatically deleting completed items.",
     "integration": [
-      "Supply stable item and group IDs and bounded quantities. Retain position after edits and offer an explicit undo only where the host supports restoration.",
-      "Install in a React Native app. The web preview supports design review; verify touch gestures, large text, reduced motion and assistive technology on target devices."
+      "Supply up to 100 unique named items, their group labels, whole quantities from 1 to 99 and explicit packed states. Controlled changes request a copied complete list; only an accepted current list emits a commit.",
+      "Exact quantity drafts survive refused changes and older acceptance. Remove packed items explicitly. Undo becomes available after accepted removal and restores missing original identities without replacing newer current records; changing packingId retires the local undo context.",
+      "Install in a React Native app with Expo modules for the translucent footer and SVG details. The web preview supports design review; verify device fonts, larger text, reduced motion, touch and assistive technology on target devices."
     ],
     "related": [
       "mobile-swipe-list",
       "mobile-settings"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "mobile-budget-envelope": {
     "useWhen": "Inspect actual category budgets and spending, then propose an exact allocation with retained amount and note drafts.",
