@@ -28520,6 +28520,131 @@
     ]
   },
   {
+    "slug": "mobile-file-preview",
+    "name": "Native File Reader",
+    "tier": "pro",
+    "platform": "mobile",
+    "category": "mobile",
+    "description": "A native file reader with complete supplied metadata, retained host content, honest preview availability and explicit cancellable file requests.",
+    "tags": [
+      "mobile",
+      "react native",
+      "file",
+      "preview",
+      "reader",
+      "download",
+      "dark"
+    ],
+    "dependencies": [
+      "expo-linear-gradient",
+      "react-native-svg"
+    ],
+    "theme": "dark",
+    "previewHeight": 844,
+    "usage": "import { MobileFilePreview } from \"@/components/design-for-ai/native/mobile-file-preview\";\n\n// Bare React Native apps: run npx install-expo-modules once.\n<MobileFilePreview file={file} preview={memoizedPreview} status={previewStatus} onRetry={retryPreview} onOpen={openFile} onDownload={downloadFile} resetKey={fileVersion} />",
+    "props": [
+      {
+        "name": "file",
+        "type": "PreviewFile",
+        "description": "Actual file identity/name/format, optional MIME and timestamp, nullable supplied bytes. Unknown/invalid size is never zero.",
+        "default": "Original offline virtual text file"
+      },
+      {
+        "name": "preview",
+        "type": "ReactNode",
+        "description": "Actual host-rendered preview. Retain its identity across loading changes; replacing content retires old action acknowledgments.",
+        "default": "Original notes only when the bundled default file is used"
+      },
+      {
+        "name": "status",
+        "type": "FilePreviewStatus",
+        "description": "Authoritative ready/loading/unsupported/unavailable/error state. Ready with explicit missing content becomes honestly empty.",
+        "default": "\"ready\""
+      },
+      {
+        "name": "statusMessage",
+        "type": "string",
+        "description": "Actual availability explanation; blank/whitespace falls back to meaningful copy."
+      },
+      {
+        "name": "onOpen",
+        "type": "(file: PreviewFile, signal: AbortSignal) => void | Promise<void>",
+        "description": "Explicit real host action. Fulfillment acknowledges the request, never labels a file opened."
+      },
+      {
+        "name": "onDownload",
+        "type": "(file: PreviewFile, signal: AbortSignal) => void | Promise<void>",
+        "description": "Explicit host-owned download request with exact copied metadata; no implicit download."
+      },
+      {
+        "name": "onRetry",
+        "type": "(file: PreviewFile, signal: AbortSignal) => void | Promise<void>",
+        "description": "Real preview retry. Same-source loading progress can continue; actual ready/error/replacement remains authoritative."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "File/session replacement. Retires jobs/receipts and resets reading while preserving outside focus."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Quiet preview context heading.",
+        "default": "\"File preview\""
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Neutral black/white/graphite chrome with purposeful actual state accents.",
+        "default": "\"dark\""
+      }
+    ],
+    "added": "2026-10-14",
+    "demo": {
+      "steps": [
+        "click:@file-open",
+        "wait:350",
+        "hover:@file-reading",
+        "scroll:240",
+        "wait:450",
+        "scroll:-240",
+        "wait:550",
+        "click:@file-download",
+        "wait:350"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "status",
+        "label": "Preview state",
+        "kind": "action",
+        "options": [
+          "ready",
+          "loading",
+          "unsupported",
+          "unavailable",
+          "error"
+        ]
+      },
+      {
+        "prop": "title",
+        "label": "Heading",
+        "kind": "text",
+        "default": "File preview"
+      }
+    ]
+  },
+  {
     "slug": "mobile-focus-session",
     "name": "Focus Session Dial",
     "tier": "pro",
