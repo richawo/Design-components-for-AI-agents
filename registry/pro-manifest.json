@@ -25975,7 +25975,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Inspector and chrome palette; host content owns its palette.",
+        "description": "Neutral black/white glass chrome, with colour reserved for actual data/feature accents.",
         "default": "\"dark\""
       },
       {
