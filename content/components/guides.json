@@ -4455,56 +4455,64 @@
     "updated": "2026-10-14"
   },
   "editor-keyframe-track": {
-    "useWhen": "Editing supplied discrete keyframes and inspecting the actual interpolated property over time.",
-    "avoidWhen": "A decorative timeline, unsupported interpolation modes or an implicit animation export.",
+    "useWhen": "Editing actual discrete property keyframes and inspecting their linear value at a precise frame.",
+    "avoidWhen": "A video renderer, unbounded animation graph or nonlinear easing editor.",
     "integration": [
-      "Supply keyframe IDs, bounded times, values and interpolation rules. The sampled preview and keyboard timeline must share the same calculation.",
-      "Keep collision behavior explicit, preserve selected keyframes after edits and retire incomplete gestures when the host replaces the track."
+      "Supply a KeyframeTrack with actual property/unit, fps1–60, duration1–3600 frames, finite nonempty min/max domain and up to24 unique key identities at distinct integer frames.",
+      "Pointer position is provisional until release and keys cannot cross adjacent frames. Native frame/value fields, Arrow/Shift+Arrow and Home/End provide equivalent bounded edits. Cancel/context changes preserve the accepted curve.",
+      "Use value/onValueChange for a copied complete accepted track. Rejected requests and older zero acknowledgments preserve newer numeric drafts. Interpolation holds the nearest actual supplied value outside the point range; an empty track has no invented value."
     ],
     "related": [
+      "media-trim-timeline",
       "input-detent-dial",
-      "hero-signal-workbench"
+      "editor-spacing-inspector"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "editor-version-restore": {
-    "useWhen": "Inspecting a supplied saved version and its scope before requesting a host-owned restoration.",
-    "avoidWhen": "Silently replacing the current document or implying a backup exists without host evidence.",
+    "useWhen": "Inspecting actual saved versions and requesting restoration of precisely selected changed fields.",
+    "avoidWhen": "A hidden whole-document overwrite or an automatic persistence/revision service.",
     "integration": [
-      "Supply version identities, timestamps, summaries and actual preview content. Keep inspected history separate from the current document.",
-      "Confirm the exact restoration scope, preserve working edits after failure and ignore stale results from a superseded request."
+      "Supply up to24 unique field definitions and32 actual saved versions with exact identities and own field values. Missing is different from explicit null and empty text.",
+      "Scope is atomic versionId/fieldIds. Only changed fields actually supplied by the target are eligible. Local version changes reset local scope; a controlled scope belonging to another version stays explicit. Review is preserved through request failure/unavailability and retires when its actual evidence changes.",
+      "onRestore receives exact current/target version identities and cloned before-presence/after-value facts for selected fields plus AbortSignal. Fulfillment acknowledges the request only; your host supplies authoritative restored current data."
     ],
     "related": [
-      "legal-version-history",
-      "agent-approval-gate"
+      "forms-draft-rescue",
+      "editor-branch-compare",
+      "editor-layer-stack"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "editor-export-preset": {
-    "useWhen": "Composing a supported export format, dimensions and quality, then reviewing the exact payload.",
-    "avoidWhen": "Encoding without a host export implementation or presenting unavailable formats as usable choices.",
+    "useWhen": "Reviewing exact supported export settings before requesting a file from your host application.",
+    "avoidWhen": "A codec/encoder implementation or a visual substitute for an actual file download.",
     "integration": [
-      "Supply actual host capabilities, limits and format-specific options. Validate dependent choices and show the final dimensions and format together.",
-      "Keep review and apply explicit, preserve settings after failure and retire pending work when configuration or capabilities change."
+      "Supply up to16 unique actual ExportCapability records: dimension limits1–8192, integer sizeStep1–64, nullable quality bounds, actual supported frameRates and alpha support.",
+      "Separate draft settings from accepted value. Format changes explicitly prepare nearest supported sizes and settings. Apply requests a copied valid preset; rejected and older acknowledgments retain newer drafts. Invalid accepted presets remain explicit and repairable.",
+      "onExport receives a copied exact accepted preset and capability including copied frameRates with AbortSignal. Changed facts/cancel retire stale acknowledgment. Fulfillment acknowledges only request; your application owns encoding, file delivery and download."
     ],
     "related": [
-      "input-detent-dial",
-      "media-story-deck"
+      "media-crop-workbench",
+      "media-trim-timeline",
+      "editor-storyboard-strip"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "editor-font-pairing": {
-    "useWhen": "Comparing supplied font roles against actual copy with honest loading and fallback behavior.",
-    "avoidWhen": "A promise of font licensing or showing a specimen in a fallback font while naming another font as loaded.",
+    "useWhen": "Pairing actual host font roles against supplied copy before applying typography and copying accepted CSS.",
+    "avoidWhen": "An automatic font downloader or guessed font-availability detector.",
     "integration": [
-      "Supply font identities, usable family names and specimen copy. Keep role assignment and actual measured font availability distinct.",
-      "Preserve the reading layout when a font loads or fails and expose usable static comparisons under reduced motion."
+      "Supply up to16 unique PairingFont records with actual role/optional family, supported weights and ready/loading/unavailable/unknown readiness. The host owns assets/loading. Unready fonts show the explicit standard role fallback and cannot be copied or applied as ready.",
+      "Supply actual headingText/bodyText and accepted heading/body identities, weights, sizes24–96/12–24px and body lineHeight1.2–2.2. Actual draft font-size/leading transitions respect reduced motion.",
+      "Use value/onValueChange for copied accepted typography. Rejected/older acknowledgments retain newer drafts. Clipboard copies exact accepted CSS, with selectable failure fallback and stale-result fencing when actual font/settings facts change."
     ],
     "related": [
-      "devtools-icon-workbench",
-      "text-decode"
+      "text-optical-weight",
+      "editor-color-token-studio",
+      "editor-spacing-inspector"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
   },
   "ai-context-budget": {
     "useWhen": "Reviewing supplied context sources and their real token allocation against a bounded model budget.",
