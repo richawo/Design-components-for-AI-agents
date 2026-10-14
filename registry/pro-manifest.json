@@ -29304,6 +29304,172 @@
     ]
   },
   {
+    "slug": "mobile-notification-digest",
+    "name": "Native Notification Digest",
+    "tier": "pro",
+    "platform": "mobile",
+    "category": "mobile",
+    "description": "An editorial native notification digest with day groups, retained complete reading, explicit real read and snooze requests, and truthful host-owned status.",
+    "tags": [
+      "mobile",
+      "react native",
+      "notifications",
+      "digest",
+      "read",
+      "snooze",
+      "glass",
+      "dark"
+    ],
+    "dependencies": [
+      "expo-blur",
+      "expo-linear-gradient",
+      "react-native-svg"
+    ],
+    "theme": "dark",
+    "previewHeight": 844,
+    "usage": "import { MobileNotificationDigest } from \"@/components/design-for-ai/native/mobile-notification-digest\";\n\n// Bare native apps: run npx install-expo-modules once.\n<MobileNotificationDigest groups={groups} value={selection} onValueChange={setSelection} onRead={requestRead} onSnooze={requestSnooze} snoozeOptions={times} />",
+    "props": [
+      {
+        "name": "groups",
+        "type": "DigestGroup[]",
+        "description": "Actual groups and raw notifications. Item identity is composite group+notification; duplicates remain inspectable.",
+        "default": "Four original notices in two day groups"
+      },
+      {
+        "name": "value",
+        "type": "DigestSelection | null",
+        "description": "Controlled composite selection. Explicit null is unselected; without observer inspection selection is read-only."
+      },
+      {
+        "name": "defaultValue",
+        "type": "DigestSelection | null",
+        "description": "Initial local selection, restored only by resetKey.",
+        "default": "{ groupId: \"today\", notificationId: \"handoff\" }"
+      },
+      {
+        "name": "onValueChange",
+        "type": "(value: DigestSelection | null) => void",
+        "description": "Synchronous controlled selection observer; rejected changes preserve inspection."
+      },
+      {
+        "name": "filter",
+        "type": "\"all\" | \"unread\"",
+        "description": "Controlled list filter; without observer it is honestly read-only. Filtering never hides the selected complete message."
+      },
+      {
+        "name": "defaultFilter",
+        "type": "\"all\" | \"unread\"",
+        "description": "Initial local filter.",
+        "default": "\"all\""
+      },
+      {
+        "name": "onFilterChange",
+        "type": "(filter: \"all\" | \"unread\") => void",
+        "description": "Synchronous filter observer with meaningful failure feedback."
+      },
+      {
+        "name": "snoozeOptions",
+        "type": "DigestSnoozeOption[]",
+        "description": "Actual id/label/absolute UTC-millisecond until. Null, nonfinite, nonpositive or unsupported Date range is unknown and blocked.",
+        "default": "Two explicit original dates"
+      },
+      {
+        "name": "onRead",
+        "type": "(review: DigestReadReview, signal: AbortSignal) => void | Promise<void>",
+        "description": "Exact copied group metadata and actual notification. Fulfillment acknowledges only; supplied state owns read status."
+      },
+      {
+        "name": "onSnooze",
+        "type": "(review: DigestSnoozeReview, signal: AbortSignal) => void | Promise<void>",
+        "description": "Exact copied notification/group/time option. No invented duration or local state overwrite."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"error\"",
+        "description": "Supplied digest availability. Original content remains inspectable while action eligibility is blocked.",
+        "default": "\"ready\""
+      },
+      {
+        "name": "statusMessage",
+        "type": "string",
+        "description": "Meaningful supplied error/loading explanation. Whitespace uses a useful fallback."
+      },
+      {
+        "name": "onRetry",
+        "type": "(groups: DigestGroup[], signal: AbortSignal) => void | Promise<void>",
+        "description": "Copied current groups and notifications for a real cancellable refresh. Fulfillment never claims ready."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Replaces selection/filter/expansion/action scope. Fences pending signals and old receipts."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Native digest heading.",
+        "default": "\"Today, distilled.\""
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Neutral graphite/white with one real glass action rail.",
+        "default": "\"dark\""
+      }
+    ],
+    "added": "2026-10-14",
+    "demo": {
+      "steps": [
+        "click:@digest-request-read",
+        "wait:250",
+        "click:@digest-item-0-1",
+        "wait:250",
+        "click:@digest-snooze",
+        "wait:250",
+        "click:@digest-snooze-option-1",
+        "click:@digest-request-snooze",
+        "wait:450",
+        "scroll:380",
+        "click:@digest-group-1",
+        "wait:300"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "defaultFilter",
+        "label": "Initial filter",
+        "kind": "select",
+        "options": [
+          "all",
+          "unread"
+        ],
+        "default": "all",
+        "remount": true
+      },
+      {
+        "prop": "status",
+        "label": "Availability",
+        "kind": "select",
+        "options": [
+          "ready",
+          "loading",
+          "error"
+        ],
+        "default": "ready"
+      }
+    ]
+  },
+  {
     "slug": "mobile-now-playing",
     "name": "Now Playing",
     "tier": "pro",
