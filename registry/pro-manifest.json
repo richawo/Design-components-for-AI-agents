@@ -30350,6 +30350,163 @@
     }
   },
   {
+    "slug": "mobile-sync-conflict",
+    "name": "Native Sync Conflict Review",
+    "tier": "pro",
+    "platform": "mobile",
+    "category": "mobile",
+    "description": "A precise native comparison of local and remote field values, preserved custom drafts and an exact version-fenced resolution review.",
+    "tags": [
+      "mobile",
+      "react native",
+      "sync",
+      "conflict",
+      "compare",
+      "resolution",
+      "drafts",
+      "glass"
+    ],
+    "dependencies": [
+      "expo-blur",
+      "expo-linear-gradient",
+      "react-native-svg"
+    ],
+    "theme": "dark",
+    "previewHeight": 844,
+    "usage": "import { MobileSyncConflict } from \"@/components/design-for-ai/native/mobile-sync-conflict\";\n\n// Bare native apps: run npx install-expo-modules once.\n<MobileSyncConflict document={document} localVersion={local} remoteVersion={remote} fields={fields} status={status} onResolve={resolveReviewedValues} resetKey={reviewId} />",
+    "props": [
+      {
+        "name": "document",
+        "type": "ConflictDocument",
+        "description": "Actual document ID/title. Replacing its identity resets this draft session.",
+        "default": "Original studio calendar"
+      },
+      {
+        "name": "localVersion",
+        "type": "ConflictVersion | null",
+        "description": "Actual local version ID/label. Explicit null or missing identity blocks resolution.",
+        "default": "device:7 / Edited 10:34"
+      },
+      {
+        "name": "remoteVersion",
+        "type": "ConflictVersion | null",
+        "description": "Actual remote version ID/label. Side roles keep source identities distinct.",
+        "default": "shared:9 / Updated 10:42"
+      },
+      {
+        "name": "fields",
+        "type": "ConflictField[]",
+        "description": "Raw unique ID/label and local/remote string values. Null is unknown; empty string is known and may be deliberately selected.",
+        "default": "Three original calendar fields"
+      },
+      {
+        "name": "value",
+        "type": "string | null",
+        "description": "Controlled inspected field, separate from resolution choices. Explicit null unselects; no observer is read-only."
+      },
+      {
+        "name": "defaultValue",
+        "type": "string | null",
+        "description": "Initial local field inspection. Reset by document identity or resetKey.",
+        "default": "First uniquely identified field"
+      },
+      {
+        "name": "onValueChange",
+        "type": "(fieldId: string | null) => void",
+        "description": "Synchronous inspection observer. Rejection retains current field and drafts."
+      },
+      {
+        "name": "defaultNote",
+        "type": "string",
+        "description": "Initial retained resolution note. Newer typing survives pending requests and older acknowledgment.",
+        "default": "\"Keep the reviewed values together in this calendar.\""
+      },
+      {
+        "name": "status",
+        "type": "\"reviewing\" | \"loading\" | \"error\" | \"resolved\"",
+        "description": "Authoritative document comparison/result state. Request fulfillment never sets resolved.",
+        "default": "\"reviewing\""
+      },
+      {
+        "name": "statusMessage",
+        "type": "string",
+        "description": "Meaningful actual availability/result explanation; whitespace gets a useful fallback."
+      },
+      {
+        "name": "onResolve",
+        "type": "(review: ConflictReview, signal: AbortSignal) => void | Promise<void>",
+        "description": "Deeply copied exact document/versions/fields/choices/values/note. Fulfillment acknowledges only; one cancellable request."
+      },
+      {
+        "name": "onRetry",
+        "type": "(source: ConflictSource, signal: AbortSignal) => void | Promise<void>",
+        "description": "Copied current versions and fields for a real refresh. Fulfillment cannot claim fresh source."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Replaces the draft/review session. Source revisions permanently retire consent even when facts revert."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Neutral black/white/graphite with real translucent action depth.",
+        "default": "\"dark\""
+      }
+    ],
+    "added": "2026-10-14",
+    "demo": {
+      "steps": [
+        "click:@conflict-choice-local",
+        "click:@conflict-field-1",
+        "click:@conflict-choice-remote",
+        "click:@conflict-field-2",
+        "click:@conflict-choice-local",
+        "scroll:480",
+        "click:@conflict-review",
+        "wait:250",
+        "click:@conflict-resolve",
+        "wait:550"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "defaultValue",
+        "label": "Initial field",
+        "kind": "select",
+        "options": [
+          "name",
+          "hours",
+          "zone"
+        ],
+        "default": "name",
+        "remount": true
+      },
+      {
+        "prop": "status",
+        "label": "Document state",
+        "kind": "select",
+        "options": [
+          "reviewing",
+          "loading",
+          "error",
+          "resolved"
+        ],
+        "default": "reviewing"
+      }
+    ]
+  },
+  {
     "slug": "mobile-trip-itinerary",
     "name": "Trip Itinerary",
     "tier": "pro",
