@@ -21903,7 +21903,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Playground surfaces; default specimen keeps its independent content palette.",
+        "description": "Neutral black/white glass chrome, with colour reserved for actual data/feature accents.",
         "default": "\"dark\""
       },
       {
