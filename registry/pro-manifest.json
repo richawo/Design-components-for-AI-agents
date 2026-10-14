@@ -11558,6 +11558,185 @@
     ]
   },
   {
+    "slug": "date-range-calendar",
+    "name": "Date-only Range Calendar",
+    "tier": "pro",
+    "platform": "web",
+    "category": "date-time",
+    "description": "Select an atomic date-only range with actual unavailable-day rules, inclusive lengths, keyboard month movement and truthful rejected host requests.",
+    "tags": [
+      "calendar",
+      "range",
+      "date-only",
+      "keyboard",
+      "locale",
+      "dates"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1000,
+    "usage": "import { DateRangeCalendar } from \"@/components/design-for-ai/date-range-calendar\";\n\n<DateRangeCalendar value={range} onValueChange={setRange} minDate=\"2026-01-01\" maxDate=\"2027-12-31\" unavailableDates={unavailable} />\n\n// YYYY-MM-DD values never become local-time instants. Completed ranges exclude every unavailable day.",
+    "props": [
+      {
+        "name": "value",
+        "type": "CalendarRange",
+        "description": "Controlled accepted date-only beginning/end. Rejecting a request preserves selection, endpoint and contextual error."
+      },
+      {
+        "name": "defaultValue",
+        "type": "CalendarRange",
+        "description": "Local initial selection. Null endpoints allow a partial or empty range; reset explicitly with resetKey."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(range: CalendarRange) => void",
+        "description": "Request a cloned atomic valid range. Dates never pass through local-time conversion; no booking or persistence."
+      },
+      {
+        "name": "month",
+        "type": "string",
+        "description": "Optional controlled YYYY-MM first visible month. Missing onMonthChange locks month navigation."
+      },
+      {
+        "name": "initialMonth",
+        "type": "string",
+        "description": "Initial local month, reset explicitly with resetKey."
+      },
+      {
+        "name": "onMonthChange",
+        "type": "(month: string) => void",
+        "description": "Request the actual first visible month. A rejected month cannot move focus into nonexistent dates."
+      },
+      {
+        "name": "minDate",
+        "type": "string",
+        "description": "Real YYYY-MM-DD inclusive lower bound, Gregorian years1970–2100."
+      },
+      {
+        "name": "maxDate",
+        "type": "string",
+        "description": "Real YYYY-MM-DD inclusive upper bound, at or above minDate."
+      },
+      {
+        "name": "unavailableDates",
+        "type": "readonly string[]",
+        "description": "At most3660 unique valid date-only identities. A completed range cannot include any unavailable day."
+      },
+      {
+        "name": "minimumDays",
+        "type": "number",
+        "description": "Inclusive integer length at least1."
+      },
+      {
+        "name": "maximumDays",
+        "type": "number",
+        "description": "Inclusive integer upper length at or above minimumDays, at most3660."
+      },
+      {
+        "name": "weekStartsOn",
+        "type": "number",
+        "description": "Integer0–6, Sunday0 to Saturday6. Grid labels and keyboard week edges share it."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "description": "Intl Gregorian month/day reading; unsupported locale falls back to en-GB, arithmetic stays date-only UTC."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Explicit local range/month and endpoint/error/focus lifecycle reset."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"error\"",
+        "description": "Host availability retains dates and reading context."
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "description": "Meaningful host failure explanation, default when blank."
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Actual recovery request."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Lock range and month actions while retaining readable values."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Complete midnight-plum or pale-paper palette."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<RangeCalendarLabels>",
+        "description": "Date endpoint, bounds, key instruction and recovery copy."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Responsive host layout classes."
+      }
+    ],
+    "added": "2026-10-13",
+    "demo": {
+      "steps": [
+        "click:@calendar-end",
+        "click:@calendar-day-2026-10-20",
+        "wait:500",
+        "click:@calendar-day-2026-10-16",
+        "wait:500",
+        "click:@calendar-next",
+        "wait:500"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "maximumDays",
+        "label": "Maximum inclusive days",
+        "kind": "slider",
+        "min": 5,
+        "max": 60,
+        "step": 1,
+        "default": 30
+      },
+      {
+        "prop": "weekStartsOn",
+        "label": "First weekday",
+        "kind": "slider",
+        "min": 0,
+        "max": 6,
+        "step": 1,
+        "default": 1
+      },
+      {
+        "prop": "disabled",
+        "label": "Read only",
+        "kind": "toggle",
+        "default": false
+      }
+    ]
+  },
+  {
     "slug": "devtools-api-playground",
     "name": "API Playground",
     "tier": "pro",
