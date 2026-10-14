@@ -20,6 +20,14 @@ Pro components live in a separate private repository, `richawo/Design-for-AI`, c
 - Keep the free offering as a compelling introduction. Add free components only when there is a clear acquisition purpose; do not default routine additions to free.
 - This supersedes the old tier split in `docs/CATALOGUE_ROADMAP.md`. Existing quality, accessibility, offline-demo and authentic-product-imagery requirements remain the release bar.
 
+## Visual direction (14 October 2026)
+
+- Default component chrome uses black, white and neutral graphite. Reserve colour for meaningful feature accents, actual media and data. Do not tint entire surfaces blue, brown, purple or green.
+- This applies to the named component, its whole demo stage, its poster and its recorded video. A neutral live component with a tinted catalogue film is unfinished.
+- Build depth with restrained translucent surfaces, fine borders and inset light. Use glass where overlapping content gives it a purpose; preserve legibility across its brightest reflection.
+- Make the working content the focal point. Do not repeat a large editorial headline and flat outlined wells across every workflow. Review composition, typography, density, movement and small details independently of functional checks.
+- Refresh and inspect representative media after visual changes. Existing state proofs remain useful when behaviour is unchanged; target checks to actual affected boundaries.
+
 ## The project
 
 Design for AI (https://design.yaps.ai) is a premium component library for AI coding agents. Every component ships as code, a design prompt and a JSON prompt.

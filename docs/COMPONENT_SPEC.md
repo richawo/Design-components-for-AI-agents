@@ -69,6 +69,7 @@ component whose page has no guidance.
   of items (plans, testimonials, nav links) are props too.
 - `"use client"` at the top when the component uses state, effects, refs or
   event handlers (web only; omit it for mobile).
+- **Default visual direction:** black, white and neutral graphite chrome. Colour belongs to purposeful feature accents, actual supplied media or meaningful chart data. Whole-component and full demo-stage blue/brown/purple/green tints break the library's system. Use restrained translucent depth, hairline edges and inset light, with real glass only when the content earns it. The actual working specimen leads; repeated oversized editorial headers and flat wells are not a substitute for composition.
 - **Colours:** Tailwind's default palette or arbitrary values (`bg-[#f4f0e8]`).
   Never `site-*` tokens: those belong to the website, not to components.
 - **Fonts:** only `font-display`, `font-serif`, `font-sans` and `font-mono`.
