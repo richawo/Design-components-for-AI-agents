@@ -13851,7 +13851,7 @@
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Restrained warm incident folio with semantic category inks.",
+        "description": "Neutral black/white glass chrome, with colour reserved for actual data/feature accents.",
         "default": "\"dark\""
       },
       {
