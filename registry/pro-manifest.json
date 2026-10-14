@@ -25863,6 +25863,98 @@
     ]
   },
   {
+    "slug": "mobile-focus-session",
+    "name": "Focus Session Dial",
+    "tier": "pro",
+    "platform": "mobile",
+    "category": "mobile",
+    "description": "A precise native focus dial driven by actual session facts, with readable remaining time, bounded durations and cancellable host-owned actions.",
+    "tags": [
+      "mobile",
+      "react native",
+      "dark",
+      "glass",
+      "focus",
+      "session"
+    ],
+    "dependencies": [
+      "expo-blur",
+      "expo-linear-gradient",
+      "react-native-svg"
+    ],
+    "theme": "dark",
+    "previewHeight": 844,
+    "usage": "import { MobileFocusSession } from \"@/components/design-for-ai/native/mobile-focus-session\";\n\n// Bare React Native: run npx install-expo-modules once.\n<MobileFocusSession theme=\"dark\" />",
+    "props": [
+      {
+        "name": "session",
+        "type": "FocusSessionState",
+        "description": "Actual nonempty identity, ready/running/paused/finished state, integer duration60–14400 and finite elapsed0..duration. Invalid session is explicit and blocks actions."
+      },
+      {
+        "name": "onAction",
+        "type": "(request: { action: FocusSessionAction; session: FocusSessionState }, signal: AbortSignal) => void | Promise<void>",
+        "description": "Copied action and exact session snapshot. Fulfillment only acknowledges. Timer/action ownership and persistence belong to host."
+      },
+      {
+        "name": "onDurationChange",
+        "type": "(seconds: number, session: FocusSessionState) => void",
+        "description": "Synchronous actual duration proposal, available only while ready. Throwing leaves timer unchanged."
+      },
+      {
+        "name": "durations",
+        "type": "number[]",
+        "description": "Up to six supplied bounded duration choices, no inferred timer modes."
+      },
+      {
+        "name": "intention",
+        "type": "string",
+        "description": "Host-authored focus intention. Complete default demo runs an explicit local demonstration clock, not a native background service."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Editable host heading. Keep working content dominant."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Neutral graphite/white themes with readable borders and actual focus states."
+      }
+    ],
+    "added": "2026-10-14",
+    "demo": {
+      "steps": [
+        "click:@focus-primary",
+        "wait:700",
+        "click:@focus-primary",
+        "wait:350",
+        "click:@focus-finish",
+        "wait:350",
+        "click:@focus-primary",
+        "wait:450"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "title",
+        "label": "Heading",
+        "kind": "text",
+        "default": "One thing at a time."
+      }
+    ]
+  },
+  {
     "slug": "mobile-habit-grid",
     "name": "Weekly Habit Ledger",
     "tier": "pro",
