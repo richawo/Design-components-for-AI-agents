@@ -12370,6 +12370,126 @@
     "added": "2026-10-14"
   },
   {
+    "slug": "data-column-workbench",
+    "name": "Column Workbench",
+    "tier": "pro",
+    "platform": "web",
+    "category": "data",
+    "description": "Arrange real supplied table columns through tactile order plates, bounded dragging, keyboard moves, frozen-left pinning and honest visibility rules.",
+    "tags": [
+      "column order",
+      "table configuration",
+      "pinned columns",
+      "keyboard movement",
+      "record inspection"
+    ],
+    "dependencies": [
+      "motion",
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1000,
+    "usage": "import { DataColumnWorkbench } from \"@/components/design-for-ai/data-column-workbench\";\n\n<DataColumnWorkbench columns={columns} records={records} value={arrangement} onValueChange={setArrangement} />",
+    "props": [
+      {
+        "name": "columns",
+        "type": "WorkbenchColumn[]",
+        "description": "1–10 raw unique labeled columns, optional required visibility and widths of 80–360px. Missing widths use 160px; reset uses original source order with every column visible."
+      },
+      {
+        "name": "records",
+        "type": "WorkbenchRecord[]",
+        "description": "Up to 500 unique labeled immutable original records with declared own scalar keys. Missing, null, strings, booleans and finite numbers within ±1 trillion remain distinct."
+      },
+      {
+        "name": "value",
+        "type": "ColumnArrangement[]",
+        "description": "Atomic controlled order with every source column once, visible/pinned booleans, required visibility and at least one visible column. Unknown or invalid arrangement is unavailable; original source columns remain explicitly readable."
+      },
+      {
+        "name": "defaultValue",
+        "type": "ColumnArrangement[]",
+        "description": "Initial uncontrolled arrangement. Untouched loading initializes only first real ready columns; later source changes preserve chosen context."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(value: ColumnArrangement[], request: ColumnArrangementRequest) => void",
+        "description": "Host request for a complete arrangement with typed move/pin/visibility/reset reason and optional column ID. Rejection retains the actual accepted table."
+      },
+      {
+        "name": "onValueCommit",
+        "type": "(value: ColumnArrangement[], request: ColumnArrangementRequest) => void",
+        "description": "Only accepted current discrete arrangements commit. Pointer cancellation and rejected/no-op/obsolete requests do not commit. Host owns persistence."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Arrange the view.\"",
+        "description": "Actual workbench heading."
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Supplied source and configuration context."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"unavailable\"",
+        "default": "\"ready\"",
+        "description": "Source availability preserves the current arrangement; no invented rows."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "default": "false",
+        "description": "Disables arrangement changes and retires active drag. Native table inspection and scrolling remain available."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Neutral graphite and white material with a monochrome complete demo stage."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Host root classes."
+      }
+    ],
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "disabled",
+        "label": "Arrangement locked",
+        "kind": "toggle",
+        "default": false
+      }
+    ],
+    "demo": {
+      "steps": [
+        "click:@column-hide-source",
+        "wait:260",
+        "click:@column-pin-team",
+        "wait:260",
+        "click:@column-later-person",
+        "wait:260",
+        "click:@columns-reset",
+        "wait:350"
+      ],
+      "loop": false
+    },
+    "added": "2026-10-14"
+  },
+  {
     "slug": "data-kanban-compact",
     "name": "Accessible Sprint Board",
     "tier": "pro",
