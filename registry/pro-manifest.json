@@ -29731,6 +29731,92 @@
     }
   },
   {
+    "slug": "mobile-voice-memo",
+    "name": "Voice Memo Player",
+    "tier": "pro",
+    "platform": "mobile",
+    "category": "mobile",
+    "description": "Listen, seek and inspect real recording waveforms, markers and transcripts through an actual host audio player.",
+    "tags": [
+      "audio",
+      "player",
+      "voice-memo",
+      "waveform",
+      "native",
+      "transcript"
+    ],
+    "dependencies": [
+      "expo-blur",
+      "expo-linear-gradient",
+      "react-native-svg"
+    ],
+    "theme": "dark",
+    "previewHeight": 844,
+    "usage": "import { MobileVoiceMemo } from \"@/components/design-for-ai/mobile-voice-memo\";\n\n<MobileVoiceMemo recording={recording} playback={actualPlayerState} onAction={controlAudioPlayer} />",
+    "props": [
+      {
+        "name": "recording",
+        "type": "VoiceMemoRecording | null",
+        "description": "Actual recording identity/title/subtitle, finite duration up to 86400s, up to 1024 normalized measured peaks, up to 64 actual markers and 200 actual transcript segments, availability/error. No recording by default."
+      },
+      {
+        "name": "playback",
+        "type": "VoiceMemoPlayback | null",
+        "description": "Actual matching recordingId, paused/playing/ended/error status, bounded position, volume 0–1 and rate 0.5–2. Missing/mismatched state disables transport; no background clock is fabricated."
+      },
+      {
+        "name": "onAction",
+        "type": "(request: VoiceMemoRequest, signal: AbortSignal) => void | Promise<void>",
+        "description": "Copied actual recording arrays/player state, explicit play/pause/seek/volume/rate and optional exact value. Your real native audio engine owns playback. Missing handler makes transport read only."
+      },
+      {
+        "name": "onRetry",
+        "type": "(recording: VoiceMemoRecording) => void",
+        "description": "Explicit retry receives a copied actual recording. No fake recovery or media permission request."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "description": "Supplied display heading."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Complete neutral graphite/white chrome; colour is not a full-surface theme."
+      }
+    ],
+    "added": "2026-10-14",
+    "demo": {
+      "steps": [
+        "click:@memo-primary",
+        "wait:600",
+        "click:@memo-wave:0.7,0.5",
+        "click:@memo-wave:0.25,0.5",
+        "click:@memo-rate",
+        "click:@memo-primary"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "title",
+        "label": "Heading",
+        "kind": "text",
+        "default": "A moment, worth keeping."
+      }
+    ]
+  },
+  {
     "slug": "mobile-wallet-stack",
     "name": "Wallet Card Stack",
     "tier": "pro",
