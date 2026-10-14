@@ -29816,6 +29816,190 @@
     ]
   },
   {
+    "slug": "mobile-offline-outbox",
+    "name": "Native Offline Outbox",
+    "tier": "pro",
+    "platform": "mobile",
+    "category": "mobile",
+    "description": "Inspect exact queued originals, preserve newer local text drafts, retry explicit failures and distinguish real supplied receipts from request acknowledgment.",
+    "tags": [
+      "mobile",
+      "react native",
+      "offline",
+      "outbox",
+      "queue",
+      "drafts",
+      "retry",
+      "review",
+      "glass"
+    ],
+    "dependencies": [
+      "expo-blur",
+      "expo-linear-gradient",
+      "react-native-svg"
+    ],
+    "theme": "dark",
+    "previewHeight": 844,
+    "usage": "import { MobileOfflineOutbox } from \"@/components/design-for-ai/native/mobile-offline-outbox\";\n\n// Bare native apps: run npx install-expo-modules once.\n<MobileOfflineOutbox entries={entries} onRetry={retryExactOriginal} onCommitDraft={requestReviewedDraft} resetKey={queueId} />",
+    "props": [
+      {
+        "name": "entries",
+        "type": "OutboxEntry[]",
+        "description": "Actual unique ID/title/operation/raw payload/state/editability/retry policy, optional revision/time/error and supplied delivery receipt. Null operation/payload/state is unknown.",
+        "default": "Three original create/update/delete records"
+      },
+      {
+        "name": "value",
+        "type": "string | null",
+        "description": "Controlled inspected entry; explicit null unselects and missing observer is read-only."
+      },
+      {
+        "name": "defaultValue",
+        "type": "string | null",
+        "description": "Initial local selected entry; reset by resetKey.",
+        "default": "First uniquely identified failed entry, then first unique entry"
+      },
+      {
+        "name": "onValueChange",
+        "type": "(entryId: string | null) => void",
+        "description": "Synchronous inspection observer. Rejected changes retain originals and drafts."
+      },
+      {
+        "name": "filter",
+        "type": "\"all\" | \"pending\" | \"failed\"",
+        "description": "Controlled actual-state filter. No observer means read-only. Selected original stays inspectable outside filter."
+      },
+      {
+        "name": "defaultFilter",
+        "type": "\"all\" | \"pending\" | \"failed\"",
+        "description": "Initial local filter.",
+        "default": "\"all\""
+      },
+      {
+        "name": "onFilterChange",
+        "type": "(filter: \"all\" | \"pending\" | \"failed\") => void",
+        "description": "Synchronous filter observer with meaningful rejection."
+      },
+      {
+        "name": "view",
+        "type": "\"source\" | \"draft\"",
+        "description": "Controlled queued-original/editor view; without handler it is read-only."
+      },
+      {
+        "name": "defaultView",
+        "type": "\"source\" | \"draft\"",
+        "description": "Initial local reading mode.",
+        "default": "\"source\""
+      },
+      {
+        "name": "onViewChange",
+        "type": "(view: \"source\" | \"draft\") => void",
+        "description": "Synchronous reading mode observer."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"error\"",
+        "description": "Actual outbox source availability. Originals and local drafts stay readable; state requests block when unavailable.",
+        "default": "\"ready\""
+      },
+      {
+        "name": "statusMessage",
+        "type": "string",
+        "description": "Meaningful availability explanation; whitespace falls back."
+      },
+      {
+        "name": "onRetry",
+        "type": "(review: OutboxRetryReview, signal: AbortSignal) => void | Promise<void>",
+        "description": "Copied actual failed/retryable queued original. Never silently substitutes editor text. Fulfillment only acknowledges the request."
+      },
+      {
+        "name": "onCommitDraft",
+        "type": "(review: OutboxDraftReview, signal: AbortSignal) => void | Promise<void>",
+        "description": "Copied original entry and exact explicitly reviewed new text. Fulfillment cannot queue, send or claim delivery."
+      },
+      {
+        "name": "onRefresh",
+        "type": "(entries: OutboxEntry[], signal: AbortSignal) => void | Promise<void>",
+        "description": "Copied source records for an explicit cancellable refresh. No background sync or fake ready state."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Replacement queue session, clears local drafts/inspection and fences old work."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Exact neutral monochrome with fine glass action edge.",
+        "default": "\"dark\""
+      }
+    ],
+    "added": "2026-10-14",
+    "demo": {
+      "steps": [
+        "click:@outbox-retry",
+        "wait:250",
+        "click:@outbox-view-draft",
+        "click:@outbox-editor",
+        "key:PageDown",
+        "key:End",
+        "key:ArrowLeft",
+        "type:,\"reviewed\":true",
+        "scroll:400",
+        "click:@outbox-review",
+        "wait:250",
+        "click:@outbox-commit",
+        "wait:450"
+      ]
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "defaultFilter",
+        "label": "Initial filter",
+        "kind": "select",
+        "options": [
+          "all",
+          "pending",
+          "failed"
+        ],
+        "default": "all",
+        "remount": true
+      },
+      {
+        "prop": "defaultView",
+        "label": "Initial view",
+        "kind": "select",
+        "options": [
+          "source",
+          "draft"
+        ],
+        "default": "source",
+        "remount": true
+      },
+      {
+        "prop": "status",
+        "label": "Source",
+        "kind": "select",
+        "options": [
+          "ready",
+          "loading",
+          "error"
+        ],
+        "default": "ready"
+      }
+    ]
+  },
+  {
     "slug": "mobile-packing-list",
     "name": "Packing List",
     "tier": "pro",

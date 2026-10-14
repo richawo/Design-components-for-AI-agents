@@ -171,8 +171,8 @@ Validate all six web widths, both supported themes, multiple instances and empty
 | 97 | `mobile-review-annotations` | mobile | Navigate supplied annotations over an asset with a readable list and touch-sized selection targets. | Released |
 | 98 | `mobile-notification-digest` | mobile | Group actionable notifications and acknowledge read or snooze changes without losing position. | Released |
 | 99 | `mobile-sync-conflict` | mobile | Compare local and remote values and review a field-level resolution with preserved edits. | Released |
-| 100 | `mobile-offline-outbox` | mobile | Inspect queued changes, retry failed entries and distinguish local drafts from host acknowledgements. | Planned |
+| 100 | `mobile-offline-outbox` | mobile | Inspect queued changes, retry failed entries and distinguish local drafts from host acknowledgements. | Released |
 
 ## Progress
 
-Planned: 1. Released: 99. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
+Planned: 0. Released: 100. Update a row to Released only after the private source and public metadata/assets have been verified and pushed.
