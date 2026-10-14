@@ -14927,6 +14927,140 @@
     ]
   },
   {
+    "slug": "editor-asset-license-sheet",
+    "name": "Asset Provenance and Usage Sheet",
+    "tier": "pro",
+    "platform": "web",
+    "category": "editors",
+    "description": "Inspect actual asset provenance, supplied terms and host eligibility for a specific project, then request an exact reviewed selection.",
+    "tags": [
+      "asset",
+      "provenance",
+      "license",
+      "usage",
+      "review",
+      "editor"
+    ],
+    "dependencies": [
+      "lucide-react"
+    ],
+    "theme": "dark",
+    "previewHeight": 1200,
+    "usage": "import { EditorAssetLicenseSheet } from \"@/components/design-for-ai/editor-asset-license-sheet\";\n\n<EditorAssetLicenseSheet assets={assets} project={project} selectedId={assetId} onSelectedIdChange={setAssetId} onSelect={requestAsset} />\n\n// Host supplies all usage facts and eligibility. Fulfillment acknowledges a request only; the host owns rights evaluation and project use.",
+    "props": [
+      {
+        "name": "assets",
+        "type": "readonly LicensedAsset[]",
+        "description": "Up to32 unique actual asset records with provenance, host-declared eligibility, required-credit facts and up to12 unique terms. Unknown eligibility is unavailable."
+      },
+      {
+        "name": "project",
+        "type": "AssetProject",
+        "description": "Exact host project identity, title and intended usage scope. No inferred licence interpretation."
+      },
+      {
+        "name": "selectedId",
+        "type": "string | null",
+        "description": "Controlled actual inspected asset identity. Missing identity is explicit and does not substitute another asset."
+      },
+      {
+        "name": "defaultSelectedId",
+        "type": "string | null",
+        "description": "Local initial inspection identity, reset by resetKey."
+      },
+      {
+        "name": "onSelectedIdChange",
+        "type": "(id: string) => void",
+        "description": "Request inspection. Controlled rejection retains the accepted record; synchronous failure is contained."
+      },
+      {
+        "name": "onSelect",
+        "type": "(selection: AssetLicenseSelection, signal: AbortSignal) => void | Promise<void>",
+        "description": "Explicit cloned project, asset, all terms and reviewed-credit snapshot. Only host-eligible assets with terms can be requested; no rights are granted by the component."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Resets local inspection, review and request lifetime."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"error\"",
+        "description": "Unavailable host states retain actual records."
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "description": "Host failure text; blank falls back."
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Actual host recovery."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Read-only state preserves records and review."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Complete monochromatic graphite/white chrome. Colour is reserved for actual supplied content and purposeful feature accents."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<AssetLicenseLabels>",
+        "description": "Provenance, usage evidence, review, unknown eligibility and acknowledgment copy."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Host responsive classes."
+      }
+    ],
+    "added": "2026-10-14",
+    "demo": {
+      "steps": [
+        "click:@license-select-archive",
+        "click:@license-select-private",
+        "click:@license-select-cover",
+        "click:@license-review",
+        "click:@license-request"
+      ],
+      "loop": false
+    },
+    "controls": [
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "disabled",
+        "label": "Read only",
+        "kind": "toggle",
+        "default": false
+      },
+      {
+        "prop": "status",
+        "label": "Availability",
+        "kind": "select",
+        "options": [
+          "ready",
+          "loading",
+          "error"
+        ],
+        "default": "ready"
+      }
+    ]
+  },
+  {
     "slug": "editor-branch-compare",
     "name": "Document Branch Comparison",
     "tier": "pro",
