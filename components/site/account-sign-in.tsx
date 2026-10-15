@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { ArrowRight, Check, Mail } from "lucide-react";
 import { accountPost, AccountRequestError, codeDigits, pasteCode } from "@/lib/account-client";
+import { MeasuredHeight } from "./measured-height";
 
 /**
  * Site adaptation of the auth-otp and auth-magic-link briefs retrieved through MCP.
@@ -92,7 +93,8 @@ export function AccountSignIn({ onSignedIn, onBusyChange }: { onSignedIn: () => 
         <span className="flex size-10 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04]" aria-hidden="true">{verified ? <Check className="size-5 text-site-ok" /> : <Mail className="size-5" />}</span>
         <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-site-fg-3">{sent ? "02 / Verify" : "01 / Your email"}</p>
       </div>
-      <div key={sent ? "code" : "email"} className="site-rise">
+      <MeasuredHeight>
+      <div className="site-rise">
         <h2 className="mt-6 text-[28px] font-semibold leading-tight tracking-[-0.04em]">{verified ? "You're signed in." : sent ? "Check your inbox." : "Welcome to your library."}</h2>
         <p id="signin-description" className="mt-3 text-[15px] leading-relaxed text-site-fg-2">
           {verified ? "Your email is verified. Open your account to continue." : sent ? <>We sent a six-digit code to<span className="mt-1 block break-words font-medium text-site-fg">{email}</span></> : "Enter your email to access your licence and connect your agents. No password to remember."}
@@ -135,6 +137,7 @@ export function AccountSignIn({ onSignedIn, onBusyChange }: { onSignedIn: () => 
         <button type="button" disabled={!!busy || seconds > 0} onClick={() => void send()} className="min-h-11 text-site-fg transition-colors disabled:opacity-40"><span className="tabular-nums">{seconds > 0 ? `Resend in ${seconds}s` : "Resend code"}</span></button>
       </div>}
       {sent && <p className="mt-3 text-[13px] leading-relaxed text-site-fg-3">Codes expire after 15 minutes. Only your newest code will work.</p>}
+      </MeasuredHeight>
     </form>
   );
 }
