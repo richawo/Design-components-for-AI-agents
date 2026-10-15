@@ -73,7 +73,7 @@ export function RadioCards({
         {options.map((option, i) => (
           <label
             key={`${option.id}-${i}`}
-            className={`relative block cursor-pointer rounded-xl border p-5 transition-transform active:scale-[.98] motion-reduce:transform-none ${option.disabled ? "cursor-not-allowed opacity-40" : "hover:bg-[var(--wash)]"} ${selected === option.id ? "border-[var(--ink)]" : "border-[var(--line)]"}`}
+            className={`relative block cursor-pointer rounded-xl border p-5 transition-[background-color,border-color,transform] duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transform-none ${option.disabled ? "cursor-not-allowed opacity-40" : "hover:bg-[var(--wash)] active:scale-[.98]"} ${selected === option.id ? "border-[var(--ink)]" : "border-[var(--line)]"}`}
           >
             <input
               type="radio"
