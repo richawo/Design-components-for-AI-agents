@@ -8,7 +8,7 @@
     "motion": "motion/react"
   },
   "layout": {
-    "direction": "A 64px progress ring alongside a serif heading, followed by broad checklist rows. Each task has a short time estimate and inline instructions.",
+    "direction": "A 64px progress ring alongside a serif heading, followed by broad checklist rows, each led by an 18px ink checkbox whose check draws in, inside a 44px target. Each task has a short time estimate and inline instructions.",
     "container": "Size to the parent with @container. Keep the root width at 100%, capped to the focused component, with 24px desktop and 16px narrow padding.",
     "rhythm": "4/8px spacing; 1px edges; 44px minimum interactive targets."
   },

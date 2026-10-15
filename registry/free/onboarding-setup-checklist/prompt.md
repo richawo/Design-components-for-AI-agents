@@ -4,7 +4,7 @@ Build a standalone React 19 and Tailwind v4 component. An actionable setup check
 
 ## Layout
 
-A 64px progress ring alongside a serif heading, followed by broad checklist rows. Each task has a short time estimate and inline instructions. Size to the container. Use a 4/8px rhythm, 1px surface edges, 16px narrow padding and 24px desktop padding. Controls have 44px targets.
+A 64px progress ring alongside a serif heading, followed by broad checklist rows, each led by an 18px ink checkbox whose check draws in, inside a 44px target. Each task has a short time estimate and inline instructions. Size to the container. Use a 4/8px rhythm, 1px surface edges, 16px narrow padding and 24px desktop padding. Controls have 44px targets.
 
 ## Typography and colour
 
