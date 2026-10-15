@@ -1195,10 +1195,10 @@ function Checkbox({ id, checked, onChange, disabled, label, reduce }: { id: stri
       <input id={id} type="checkbox" name="remember" checked={checked} disabled={disabled} onChange={(e) => onChange(e.target.checked)} className="peer sr-only" />
       <span
         aria-hidden="true"
-        className={`relative flex size-[18px] shrink-0 items-center justify-center rounded-[5px] text-[var(--si-on-accent)] transition-[background-color,box-shadow,transform] duration-150 group-active/cb:scale-[0.92] peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[var(--si-ink)] ${
+        className={`relative flex size-[18px] shrink-0 items-center justify-center rounded-[5px] text-[var(--si-on-accent)] transition-[background-color,box-shadow,transform] duration-150 ${disabled ? "" : "group-active/cb:scale-[0.92]"} peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[var(--si-ink)] ${
           checked
             ? "bg-[var(--si-accent)] shadow-[inset_0_0_0_1px_var(--si-accent)]"
-            : "bg-[var(--si-field)] shadow-[inset_0_0_0_1px_var(--si-line-hover)] group-hover/cb:shadow-[inset_0_0_0_1px_var(--si-focus)]"
+            : `bg-[var(--si-field)] shadow-[inset_0_0_0_1px_var(--si-line-hover)] ${disabled ? "" : "group-hover/cb:shadow-[inset_0_0_0_1px_var(--si-focus)]"}`
         }`}
       >
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
@@ -1214,7 +1214,7 @@ function Checkbox({ id, checked, onChange, disabled, label, reduce }: { id: stri
           />
         </svg>
       </span>
-      <span className="transition-colors duration-150 group-hover/cb:text-[var(--si-label)]">{label}</span>
+      <span className={`transition-colors duration-150 ${disabled ? "" : "group-hover/cb:text-[var(--si-label)]"}`}>{label}</span>
     </label>
   );
 }
