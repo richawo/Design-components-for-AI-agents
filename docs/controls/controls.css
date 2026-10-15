@@ -1,0 +1,324 @@
+/*
+ * Design for AI control kit: the canonical slider, checkbox, radio, switch and
+ * number stepper. Components are single files, so they don't import this:
+ * `scripts/sync-controls.mjs` copies the modules a component asks for into
+ * its own <style>, namespaced with the component's prefix (`{p}` below), and
+ * `--check` fails when an embedded copy drifts. Edit here, then sync.
+ *
+ * Inputs, set on the component root (all optional):
+ *   --{p}-ctl-ink      strong ink: fills, checked boxes, focus ring (currentColor)
+ *   --{p}-ctl-accent   fill/selection colour when it carries meaning (ink)
+ *   --{p}-ctl-surface  the surface under the control; glyphs on ink use it (Canvas)
+ *   --{p}-ctl-line     idle borders and tracks (currentColor at 26%)
+ *   --{p}-ctl-v            slider position as a 0–1 fraction, set inline per input
+ *
+ * Every module keeps native semantics (the real <input> stays focusable,
+ * labelable and form-associated), shows the focus ring instantly on keyboard
+ * focus only, and drops transforms with reduced motion.
+ */
+
+/* @module range */
+.{p}-ctl-range {
+  --c-fill: var(--{p}-ctl-accent, var(--{p}-ctl-ink, currentColor));
+  --c-track: var(--{p}-ctl-line, color-mix(in srgb, currentColor 18%, transparent));
+  --c-thumb: #fff;
+  --c-size: 18px;
+  --c-h: 4px;
+  --c-at: calc(var(--c-size) / 2 + var(--{p}-ctl-v, 0) * (100% - var(--c-size)));
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 32px;
+  color: inherit;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
+}
+.{p}-ctl-range:focus { outline: none; }
+.{p}-ctl-range::-webkit-slider-runnable-track {
+  height: var(--c-h);
+  border-radius: 999px;
+  background: linear-gradient(to right, var(--c-fill) 0 var(--c-at), var(--c-track) 0);
+}
+.{p}-ctl-range:dir(rtl)::-webkit-slider-runnable-track {
+  background: linear-gradient(to left, var(--c-fill) 0 var(--c-at), var(--c-track) 0);
+}
+.{p}-ctl-range::-moz-range-track { height: var(--c-h); border-radius: 999px; background: var(--c-track); }
+.{p}-ctl-range::-moz-range-progress { height: var(--c-h); border-radius: 999px; background: var(--c-fill); }
+.{p}-ctl-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: var(--c-size);
+  height: var(--c-size);
+  margin-top: calc((var(--c-h) - var(--c-size)) / 2);
+  border: 0;
+  border-radius: 50%;
+  background: var(--c-thumb);
+  box-shadow: 0 0 0 0.5px rgb(0 0 0 / 0.3), 0 1px 2px rgb(0 0 0 / 0.24), 0 4px 10px -3px rgb(0 0 0 / 0.4), 0 0 0 0 color-mix(in srgb, var(--c-fill) 16%, transparent);
+  transition: transform 0.14s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.16s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.{p}-ctl-range::-moz-range-thumb {
+  width: var(--c-size);
+  height: var(--c-size);
+  border: 0;
+  border-radius: 50%;
+  background: var(--c-thumb);
+  box-shadow: 0 0 0 0.5px rgb(0 0 0 / 0.3), 0 1px 2px rgb(0 0 0 / 0.24), 0 4px 10px -3px rgb(0 0 0 / 0.4), 0 0 0 0 color-mix(in srgb, var(--c-fill) 16%, transparent);
+  transition: transform 0.14s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.16s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (hover: hover) {
+  .{p}-ctl-range:hover:not(:disabled)::-webkit-slider-thumb { box-shadow: 0 0 0 0.5px rgb(0 0 0 / 0.3), 0 1px 2px rgb(0 0 0 / 0.24), 0 4px 10px -3px rgb(0 0 0 / 0.4), 0 0 0 6px color-mix(in srgb, var(--c-fill) 16%, transparent); }
+  .{p}-ctl-range:hover:not(:disabled)::-moz-range-thumb { box-shadow: 0 0 0 0.5px rgb(0 0 0 / 0.3), 0 1px 2px rgb(0 0 0 / 0.24), 0 4px 10px -3px rgb(0 0 0 / 0.4), 0 0 0 6px color-mix(in srgb, var(--c-fill) 16%, transparent); }
+}
+.{p}-ctl-range:active:not(:disabled)::-webkit-slider-thumb { transform: scale(1.12); box-shadow: 0 0 0 0.5px rgb(0 0 0 / 0.3), 0 1px 2px rgb(0 0 0 / 0.24), 0 6px 14px -3px rgb(0 0 0 / 0.45), 0 0 0 7px color-mix(in srgb, var(--c-fill) 22%, transparent); }
+.{p}-ctl-range:active:not(:disabled)::-moz-range-thumb { transform: scale(1.12); box-shadow: 0 0 0 0.5px rgb(0 0 0 / 0.3), 0 1px 2px rgb(0 0 0 / 0.24), 0 6px 14px -3px rgb(0 0 0 / 0.45), 0 0 0 7px color-mix(in srgb, var(--c-fill) 22%, transparent); }
+.{p}-ctl-range:focus-visible::-webkit-slider-thumb { outline: 2px solid var(--{p}-ctl-ink, currentColor); outline-offset: 2px; }
+.{p}-ctl-range:focus-visible::-moz-range-thumb { outline: 2px solid var(--{p}-ctl-ink, currentColor); outline-offset: 2px; }
+.{p}-ctl-range:disabled { cursor: not-allowed; opacity: 0.4; }
+/* Scrub: a media timeline. Hairline track, thumb appears under the pointer or focus. */
+.{p}-ctl-range[data-variant="scrub"] { --c-size: 12px; --c-h: 3px; height: 24px; }
+.{p}-ctl-range[data-variant="scrub"]::-webkit-slider-thumb { transform: scale(0); }
+.{p}-ctl-range[data-variant="scrub"]::-moz-range-thumb { transform: scale(0); }
+.{p}-ctl-range[data-variant="scrub"]:is(:hover, :focus-visible, :active):not(:disabled)::-webkit-slider-thumb { transform: scale(1); }
+.{p}-ctl-range[data-variant="scrub"]:is(:hover, :focus-visible, :active):not(:disabled)::-moz-range-thumb { transform: scale(1); }
+@media (hover: none) {
+  .{p}-ctl-range[data-variant="scrub"]::-webkit-slider-thumb { transform: scale(1); }
+  .{p}-ctl-range[data-variant="scrub"]::-moz-range-thumb { transform: scale(1); }
+}
+@media (pointer: coarse) {
+  .{p}-ctl-range { height: 44px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .{p}-ctl-range::-webkit-slider-thumb { transition: none; }
+  .{p}-ctl-range::-moz-range-thumb { transition: none; }
+  .{p}-ctl-range:active:not(:disabled)::-webkit-slider-thumb { transform: none; }
+  .{p}-ctl-range:active:not(:disabled)::-moz-range-thumb { transform: none; }
+}
+@media (forced-colors: active) {
+  .{p}-ctl-range { -webkit-appearance: auto; appearance: auto; }
+}
+/* @end */
+
+/* @module check */
+.{p}-ctl-check {
+  --c-ink: var(--{p}-ctl-accent, var(--{p}-ctl-ink, currentColor));
+  --c-on: var(--{p}-ctl-surface, Canvas);
+  --c-line: var(--{p}-ctl-line, color-mix(in srgb, currentColor 30%, transparent));
+  position: relative;
+  display: inline-grid;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+  transition: transform 0.1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.{p}-ctl-check > input {
+  -webkit-appearance: none;
+  appearance: none;
+  color: inherit;
+  grid-area: 1 / 1;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border: 1.5px solid var(--c-line);
+  border-radius: 5px;
+  background: transparent;
+  cursor: pointer;
+  transition: background-color 0.16s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.16s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (hover: hover) {
+  .{p}-ctl-check > input:hover:not(:disabled):not(:checked):not(:indeterminate) { border-color: color-mix(in srgb, var(--c-ink) 62%, transparent); background: color-mix(in srgb, var(--c-ink) 6%, transparent); }
+}
+.{p}-ctl-check > input:is(:checked, :indeterminate) { border-color: var(--c-ink); background: var(--c-ink); }
+.{p}-ctl-check > input:focus { outline: none; }
+.{p}-ctl-check > input:focus-visible { outline: 2px solid var(--{p}-ctl-ink, currentColor); outline-offset: 2px; }
+.{p}-ctl-check > input:disabled { cursor: not-allowed; }
+.{p}-ctl-check:has(> input:disabled) { opacity: 0.4; }
+.{p}-ctl-check:has(> input:active:not(:disabled)) { transform: scale(0.88); }
+.{p}-ctl-check > svg {
+  grid-area: 1 / 1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  fill: none;
+  stroke: var(--c-on);
+  stroke-width: 2.25;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.{p}-ctl-check > svg path { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 0.12s cubic-bezier(0.4, 0, 1, 1); }
+.{p}-ctl-check > input:checked:not(:indeterminate) + svg [data-mark="check"],
+.{p}-ctl-check > input:indeterminate + svg [data-mark="dash"] { stroke-dashoffset: 0; transition: stroke-dashoffset 0.22s cubic-bezier(0.65, 0, 0.35, 1) 0.04s; }
+@media (prefers-reduced-motion: reduce) {
+  .{p}-ctl-check, .{p}-ctl-check > svg path { transition: none !important; }
+  .{p}-ctl-check:has(> input:active:not(:disabled)) { transform: none; }
+}
+@media (forced-colors: active) {
+  .{p}-ctl-check > input { -webkit-appearance: auto; appearance: auto; }
+  .{p}-ctl-check > svg { display: none; }
+}
+/* @end */
+
+/* @module radio */
+@property --{p}-ctl-dot { syntax: "<length>"; inherits: false; initial-value: 0px; }
+.{p}-ctl-radio {
+  color: inherit;
+  --c-ink: var(--{p}-ctl-accent, var(--{p}-ctl-ink, currentColor));
+  --c-line: var(--{p}-ctl-line, color-mix(in srgb, currentColor 30%, transparent));
+  -webkit-appearance: none;
+  appearance: none;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  border: 1.5px solid var(--c-line);
+  border-radius: 50%;
+  background: radial-gradient(circle closest-side, var(--c-ink) calc(var(--{p}-ctl-dot) - 0.5px), transparent var(--{p}-ctl-dot));
+  vertical-align: middle;
+  cursor: pointer;
+  transition: --{p}-ctl-dot 0.12s cubic-bezier(0.4, 0, 1, 1), border-color 0.16s cubic-bezier(0.22, 1, 0.36, 1), transform 0.1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (hover: hover) {
+  .{p}-ctl-radio:hover:not(:disabled):not(:checked) { border-color: color-mix(in srgb, var(--c-ink) 62%, transparent); }
+}
+.{p}-ctl-radio:checked { --{p}-ctl-dot: 4px; border-color: var(--c-ink); transition: --{p}-ctl-dot 0.22s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.16s cubic-bezier(0.22, 1, 0.36, 1), transform 0.1s cubic-bezier(0.22, 1, 0.36, 1); }
+.{p}-ctl-radio:active:not(:disabled) { transform: scale(0.88); }
+.{p}-ctl-radio:focus { outline: none; }
+.{p}-ctl-radio:focus-visible { outline: 2px solid var(--{p}-ctl-ink, currentColor); outline-offset: 2px; }
+.{p}-ctl-radio:disabled { cursor: not-allowed; opacity: 0.4; }
+@media (prefers-reduced-motion: reduce) {
+  .{p}-ctl-radio { transition: none !important; }
+  .{p}-ctl-radio:active:not(:disabled) { transform: none; }
+}
+@media (forced-colors: active) {
+  .{p}-ctl-radio { -webkit-appearance: auto; appearance: auto; }
+}
+/* @end */
+
+/* @module switch */
+.{p}-ctl-switch {
+  --c-ink: var(--{p}-ctl-accent, var(--{p}-ctl-ink, currentColor));
+  --c-on: var(--{p}-ctl-surface, Canvas);
+  --c-off: var(--{p}-ctl-line, color-mix(in srgb, currentColor 22%, transparent));
+  --c-w: 36px;
+  --c-h: 20px;
+  --c-knob: 16px;
+  --c-travel: calc(var(--c-w) - var(--c-knob) - 4px);
+  position: relative;
+  display: inline-grid;
+  flex: none;
+  width: var(--c-w);
+  height: var(--c-h);
+  vertical-align: middle;
+}
+.{p}-ctl-switch > input {
+  -webkit-appearance: none;
+  appearance: none;
+  color: inherit;
+  grid-area: 1 / 1;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border: 0;
+  border-radius: 999px;
+  background: var(--c-off);
+  box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.18);
+  cursor: pointer;
+  transition: background-color 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.{p}-ctl-switch > input:checked { background: var(--c-ink); }
+.{p}-ctl-switch > input:focus { outline: none; }
+.{p}-ctl-switch > input:focus-visible { outline: 2px solid var(--{p}-ctl-ink, currentColor); outline-offset: 2px; }
+.{p}-ctl-switch > input:disabled { cursor: not-allowed; }
+.{p}-ctl-switch:has(> input:disabled) { opacity: 0.4; }
+.{p}-ctl-switch > span {
+  grid-area: 1 / 1;
+  align-self: center;
+  justify-self: start;
+  width: var(--c-knob);
+  height: var(--c-knob);
+  margin-inline-start: 2px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 0 0 0.5px rgb(0 0 0 / 0.16), 0 1px 3px rgb(0 0 0 / 0.3);
+  pointer-events: none;
+  transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), width 0.16s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.{p}-ctl-switch > input:checked + span { transform: translateX(var(--c-travel)); background: var(--c-on); }
+.{p}-ctl-switch > input:active:not(:disabled) + span { width: calc(var(--c-knob) + 5px); }
+.{p}-ctl-switch > input:checked:active:not(:disabled) + span { transform: translateX(calc(var(--c-travel) - 5px)); }
+.{p}-ctl-switch:dir(rtl) > input:checked + span { transform: translateX(calc(var(--c-travel) * -1)); }
+.{p}-ctl-switch:dir(rtl) > input:checked:active:not(:disabled) + span { transform: translateX(calc((var(--c-travel) - 5px) * -1)); }
+@media (prefers-reduced-motion: reduce) {
+  .{p}-ctl-switch > input, .{p}-ctl-switch > span { transition: background-color 0.12s linear !important; }
+}
+@media (forced-colors: active) {
+  .{p}-ctl-switch > input { border: 1px solid CanvasText; }
+  .{p}-ctl-switch > span { background: CanvasText; }
+}
+/* @end */
+
+/* @module stepper */
+.{p}-ctl-stepper {
+  --c-line: var(--{p}-ctl-line, color-mix(in srgb, currentColor 18%, transparent));
+  display: inline-flex;
+  align-items: stretch;
+  height: 36px;
+  border: 1px solid var(--c-line);
+  border-radius: 9px;
+  background: color-mix(in srgb, currentColor 3%, transparent);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.04);
+  transition: border-color 0.16s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.{p}-ctl-stepper:has(> input:focus-visible) { outline: 2px solid var(--{p}-ctl-ink, currentColor); outline-offset: 2px; }
+.{p}-ctl-stepper > button {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 34px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: color-mix(in srgb, currentColor 64%, transparent);
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.14s cubic-bezier(0.22, 1, 0.36, 1), color 0.14s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.{p}-ctl-stepper > button > svg { width: 14px; height: 14px; transition: transform 0.1s cubic-bezier(0.22, 1, 0.36, 1); }
+@media (hover: hover) {
+  .{p}-ctl-stepper > button:hover:not(:disabled) { background: color-mix(in srgb, currentColor 7%, transparent); color: currentColor; }
+}
+.{p}-ctl-stepper > button:active:not(:disabled) > svg { transform: scale(0.82); }
+.{p}-ctl-stepper > button:focus { outline: none; }
+.{p}-ctl-stepper > button:focus-visible { outline: 2px solid var(--{p}-ctl-ink, currentColor); outline-offset: -2px; }
+.{p}-ctl-stepper > button:disabled { cursor: not-allowed; opacity: 0.35; }
+.{p}-ctl-stepper > input {
+  -moz-appearance: textfield;
+  appearance: textfield;
+  min-width: 0;
+  width: calc(var(--{p}-ctl-ch, 4) * 1ch + 8px);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  outline: none;
+}
+.{p}-ctl-stepper > input::-webkit-inner-spin-button,
+.{p}-ctl-stepper > input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.{p}-ctl-stepper:has(> input:disabled) { opacity: 0.4; }
+@media (pointer: coarse) {
+  .{p}-ctl-stepper { height: 44px; }
+  .{p}-ctl-stepper > button { width: 44px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .{p}-ctl-stepper > button > svg { transition: none; transform: none !important; }
+}
+/* @end */
