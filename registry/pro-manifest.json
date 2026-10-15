@@ -23351,7 +23351,7 @@
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1100,
+    "previewHeight": 1200,
     "usage": "import { InputCronBuilder } from \"@/components/design-for-ai/input-cron-builder\";\n\n<InputCronBuilder value={schedule} onValueChange={setSchedule} referenceInstant={instant} timeZones={zones} />\n\n// Configure your scheduler with the copied zone and explicit missing/repeated-time policies. This UI does not execute schedules.",
     "props": [
       {
