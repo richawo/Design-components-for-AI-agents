@@ -16516,7 +16516,8 @@
         "click:@export-apply",
         "click:@export-quality:0.75,0.5",
         "click:@export-apply",
-        "click:@export-request"
+        "click:@export-request",
+        "wait:800"
       ],
       "loop": false
     },
