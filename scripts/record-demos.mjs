@@ -277,6 +277,26 @@ async function record(browser, slug) {
       if (frames.length === 1) resolveOpeningFrame();
     });
     const nativeStart = tabCapture ? await startTabRecording(page, { title: captureTitle, width: vw * dpr, height: vh * dpr }) : pageFrames ? await startPageFrameRecording(page, { width: vw * dpr, height: vh * dpr, quality: captureJpegQuality }) : null;
+    if (cdp && isolatedSource) await page.evaluate(() => {
+      const root = document.getElementById("root");
+      if (!root) throw new Error("Owned source fixture root is missing.");
+      const sourceFrames = [], sourceChanges = [], longTasks = [];
+      let raf;
+      const sample = () => { sourceFrames.push(Date.now() / 1000); raf = requestAnimationFrame(sample); };
+      raf = requestAnimationFrame(sample);
+      const change = () => sourceChanges.push(Date.now() / 1000);
+      // The branded cursor is a sibling on document.body, outside this root.
+      const mutations = new MutationObserver(change);
+      mutations.observe(root, { subtree: true, attributes: true, childList: true, characterData: true });
+      root.addEventListener("input", change, true);
+      root.addEventListener("scroll", change, true);
+      const observer = new PerformanceObserver(list => longTasks.push(...list.getEntries().map(entry => ({ start: entry.startTime, duration: entry.duration }))));
+      observer.observe({ entryTypes: ["longtask"] });
+      window.__dfaCDPSourceEvidence = { sourceFrames, sourceChanges, longTasks, stop: () => {
+        cancelAnimationFrame(raf); mutations.disconnect(); observer.disconnect();
+        root.removeEventListener("input", change, true); root.removeEventListener("scroll", change, true);
+      } };
+    });
     const t0 = nativeStart?.startTime ?? Date.now() / 1000;
     if (cdp) await cdp.send("Page.startScreencast", { format: "jpeg", quality: captureJpegQuality, everyNthFrame: 1, maxWidth: vw * dpr, maxHeight: vh * dpr });
     await page.evaluate((ambient) => (window.__dfaCursor.dataset.on = ambient ? "0" : "1"), !!ambientMs);
@@ -395,6 +415,12 @@ async function record(browser, slug) {
     const t1 = Date.now() / 1000;
     const nativeEnd = nativeStart ? pageFrames ? await stopPageFrameRecording(page, tmp, nativeStart) : await stopTabRecording(page, tmp, nativeStart) : null;
     if (nativeEnd) frames = nativeEnd.frames;
+    // Stop before shutdown IPC, pending writes or ffmpeg add unrecorded time.
+    const cdpEvidence = cdp && isolatedSource ? await page.evaluate(() => {
+      const capture = window.__dfaCDPSourceEvidence;
+      capture.stop();
+      return { sourceFrames: capture.sourceFrames, sourceChanges: capture.sourceChanges, longTasks: capture.longTasks };
+    }) : null;
     if (cdp) await cdp.send("Page.stopScreencast");
     await page.waitForTimeout(100);
     await Promise.all(writes);
@@ -406,15 +432,16 @@ async function record(browser, slug) {
     }
     const quality = captureQuality(frames.map((frame) => frame.t), motionWindows);
     const continuousQuality = captureQuality(continuousWindows.length ? frames.map((frame) => frame.t) : [], continuousWindows);
-    const nativeSourceQuality = nativeEnd ? captureQuality(nativeEnd.evidence.sourceFrames) : null;
-    const nativeChangeQuality = nativeEnd ? sourceChangeQuality(frames.map(frame => frame.t), nativeEnd.evidence.sourceChanges) : null;
+    const sourceEvidence = nativeEnd?.evidence ?? cdpEvidence;
+    const nativeSourceQuality = sourceEvidence ? captureQuality(sourceEvidence.sourceFrames) : null;
+    const nativeChangeQuality = sourceEvidence ? sourceChangeQuality(frames.map(frame => frame.t), sourceEvidence.sourceChanges) : null;
     // Regular video timestamps can conceal a frozen JS animation. Grade both.
     if (nativeSourceQuality?.maxGapMs > 100) problems.push(`Actual source animation stalled ${nativeSourceQuality.maxGapMs.toFixed(1)}ms; keep the last good clip.`);
     if (nativeChangeQuality?.stallsOver100Ms) problems.push(`Changed source waited ${nativeChangeQuality.maxDelayMs.toFixed(1)}ms for an encoded frame; keep the last good clip.`);
     if (reportDir) {
       const directory = path.resolve(root, reportDir);
       fs.mkdirSync(directory, { recursive: true });
-      fs.writeFileSync(path.join(directory, `${slug}.json`), JSON.stringify({ slug, renderMode: isolatedSource ? "isolated-production-source" : "preview", ...(nativeEnd ? { captureTransport: pageFrames ? "owned-page-screenshots" : "owned-browser-tab", nativeSourceQuality, nativeChangeQuality, native: nativeEnd.evidence } : {}), openingFrameBeforeActions: true, quality, continuousQuality, viewport: { vw, vh, dpr }, framing: frame, timestamps: frames.map((frame) => frame.t), motionWindows, continuousWindows }, null, 2));
+      fs.writeFileSync(path.join(directory, `${slug}.json`), JSON.stringify({ slug, renderMode: isolatedSource ? "isolated-production-source" : "preview", ...(sourceEvidence ? { captureTransport: nativeEnd ? pageFrames ? "owned-page-screenshots" : "owned-browser-tab" : "page-screencast", nativeSourceQuality, nativeChangeQuality, native: sourceEvidence } : {}), openingFrameBeforeActions: true, quality, continuousQuality, viewport: { vw, vh, dpr }, framing: frame, timestamps: frames.map((frame) => frame.t), motionWindows, continuousWindows }, null, 2));
       if (nativeEnd) fs.copyFileSync(nativeEnd.file, path.join(directory, `${slug}-raw.${nativeEnd.extension}`));
     }
     // Each frame holds until the next one; the last holds to the end.
