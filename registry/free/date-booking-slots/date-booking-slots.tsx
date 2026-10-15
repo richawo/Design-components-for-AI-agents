@@ -134,7 +134,7 @@ export function BookingSlots({
           {day?.slots.map((slot, i) => (
             <label
               key={`${slot.id}-${i}`}
-              className={`relative flex min-h-12 cursor-pointer items-center justify-center rounded-lg border font-mono text-sm ${slot.available === false ? "cursor-not-allowed opacity-40" : "hover:bg-[var(--wash)] disabled:hover:bg-transparent active:scale-[.98] motion-reduce:transform-none"} ${selected?.dayId === day.id && selectedSlot?.id === slot.id ? "border-[var(--ink)]" : "border-[var(--line)]"}`}
+              className={`relative flex min-h-12 cursor-pointer items-center justify-center rounded-lg border font-mono text-sm transition-[background-color,border-color,transform] duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] ${slot.available === false ? "cursor-not-allowed opacity-40" : "hover:bg-[var(--wash)] disabled:hover:bg-transparent active:scale-[.98] motion-reduce:transform-none"} ${selected?.dayId === day.id && selectedSlot?.id === slot.id ? "border-[var(--ink)]" : "border-[var(--line)]"}`}
             >
               <input
                 type="radio"
