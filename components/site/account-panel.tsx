@@ -3,6 +3,7 @@
 import { SiteLink as Link } from "@/components/site/site-link";
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { AccountSignIn } from "./account-sign-in";
+import { MeasuredHeight } from "./measured-height";
 import { CopyButton } from "./copy-button";
 import { planById } from "@/lib/pricing";
 
@@ -91,15 +92,13 @@ export function AccountPanel({ welcome, pending, plan }: { welcome: boolean; pen
 
   return (
     <div className="space-y-6">
-      {error && <p role="alert" className="rounded-xl border border-site-danger/30 bg-site-danger/10 px-5 py-4 text-sm text-site-danger">{error}</p>}
-      {notice && <p role="status" className="text-sm leading-relaxed text-site-fg-2">{notice}</p>}
       {state.status === "loading" ? (
         <AccountLoading />
       ) : state.status === "unavailable" ? (
         <div className="site-surface rounded-[24px] p-7 sm:p-8">
           <h2 className="text-2xl font-semibold tracking-tight">Your account couldn't load.</h2>
           <p className="mt-3 max-w-prose text-[15px] leading-relaxed text-site-fg-2">We couldn't check your session. Try again to see your licence and billing details.</p>
-          <button type="button" disabled={busy !== null} onClick={() => action("refresh", load)} className="site-btn site-btn-primary mt-6 h-11 px-5 text-sm">{busy === "refresh" ? "Loading…" : "Try again"}</button>
+          <button type="button" disabled={busy !== null} onClick={() => action("refresh", load)} className="site-btn site-btn-primary mt-6 h-11 px-5 text-sm"><AccountActionLabel idle="Try again" pending="Loading…" busy={busy === "refresh"} /></button>
         </div>
       ) : (
         <>
@@ -109,14 +108,14 @@ export function AccountPanel({ welcome, pending, plan }: { welcome: boolean; pen
               <h2 className="text-2xl font-semibold tracking-[-0.035em]">{selected ? names[selected.id] : "Make something worth shipping."}</h2>
               <p className="mt-3 text-[15px] leading-relaxed text-site-fg-2">{selected ? `$${selected.price} USD ${selected.cadence === "year" ? "per year, renewed annually" : "once, with lifetime access"}. ${selected.seats === 1 ? "One person" : "Up to 10 people"}. Sign in, then continue to secure checkout.` : "Your components, prompts and agent connections, together in one place. Sign in with your purchase email to pick up where you left off."}</p>
               <Link href="/pricing" className="site-btn site-btn-secondary mt-6 h-11 px-5 text-sm">{selected ? "Change plan" : "Explore Pro"}</Link>
-              <details className="mt-8 border-t border-white/[0.08] pt-5"><summary className="min-h-11 cursor-pointer text-sm leading-[44px] text-site-fg-2">Or use an existing licence key</summary><form onSubmit={activate} className="mt-4"><label htmlFor="licence-key" className="mb-2 block text-sm text-site-fg-2">Licence key</label><textarea id="licence-key" rows={3} spellCheck={false} value={key} onChange={(e) => setKey(e.target.value)} placeholder="dfa_…" className={`${field} resize-none break-all font-mono text-base sm:text-[12px]`} /><button type="submit" disabled={busy !== null || !key.trim()} className="site-btn site-btn-primary mt-3 h-11 px-5 text-sm">{busy === "activate" ? "Checking…" : "Activate key"}</button></form></details>
+              <details className="mt-8 border-t border-white/[0.08] pt-5"><summary className="min-h-11 cursor-pointer text-sm leading-[44px] text-site-fg-2">Or use an existing licence key</summary><form onSubmit={activate} className="mt-4"><label htmlFor="licence-key" className="mb-2 block text-sm text-site-fg-2">Licence key</label><textarea id="licence-key" rows={3} spellCheck={false} value={key} onChange={(e) => setKey(e.target.value)} placeholder="dfa_…" className={`${field} resize-none break-all font-mono text-base sm:text-[12px]`} /><button type="submit" disabled={busy !== null || !key.trim()} className="site-btn site-btn-primary mt-3 h-11 px-5 text-sm"><AccountActionLabel idle="Activate key" pending="Checking…" busy={busy === "activate"} /></button></form></details>
             </div>
           </div>}
 
-          {identified && <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/[0.08] pb-5"><p className="break-all text-[15px] text-site-fg-2">{state.status === "signed-in" ? state.account.user.email : state.status === "key" ? state.email : ""}</p><div className="flex flex-wrap gap-3">{state.status === "signed-in" && state.account.hasBilling && <button type="button" disabled={busy !== null} onClick={() => action("portal", async () => { const data = await post("/api/billing/portal"); window.location.assign(data.url); })} className="site-btn site-btn-secondary h-11 px-4 text-sm">{busy === "portal" ? "Opening…" : "Manage billing"}</button>}<button type="button" disabled={busy !== null} onClick={logout} className="site-btn site-btn-secondary h-11 px-4 text-sm">Sign out</button></div></div>}
+          {identified && <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/[0.08] pb-5"><p className="break-all text-[15px] text-site-fg-2">{state.status === "signed-in" ? state.account.user.email : state.status === "key" ? state.email : ""}</p><div className="flex flex-wrap gap-3">{state.status === "signed-in" && state.account.hasBilling && <button type="button" disabled={busy !== null} onClick={() => action("portal", async () => { const data = await post("/api/billing/portal"); window.location.assign(data.url); })} className="site-btn site-btn-secondary h-11 px-4 text-sm"><AccountActionLabel idle="Manage billing" pending="Opening…" busy={busy === "portal"} /></button>}<button type="button" disabled={busy !== null} onClick={logout} className="site-btn site-btn-secondary h-11 px-4 text-sm">Sign out</button></div></div>}
 
           {awaiting && <div className="site-surface rounded-[24px] p-7"><h2 className="text-xl font-semibold">Your payment is being confirmed.</h2><p className="mt-2 text-sm leading-relaxed text-site-fg-2">Your licence will appear here after payment clears. You can also return from the email we send when it is ready.</p><button type="button" disabled={busy !== null} onClick={() => action("refresh", load)} className="site-btn site-btn-secondary mt-4 h-11 px-4 text-sm">Refresh account</button></div>}
-          {signedIn && !awaiting && !licences.some((l) => l.active) && <div className="site-surface rounded-[24px] p-7 sm:p-8"><h2 className="text-2xl font-semibold tracking-[-0.035em]">{selected ? `Continue with ${names[selected.id]}.` : "Your account is ready."}</h2><p className="mt-3 text-[15px] leading-relaxed text-site-fg-2">{selected ? `$${selected.price} USD ${selected.cadence === "year" ? "per year" : "once"}. Your licence will be linked to this email address.` : "Choose Pro to unlock the full library, prompts and private registry. Team invitations appear here when you sign in with the invited email."}</p>{selected ? <button disabled={busy !== null} onClick={() => action("checkout", checkout)} className="site-btn site-btn-accent mt-5 h-11 px-6 text-sm">{busy === "checkout" ? "Opening checkout…" : "Continue to checkout"}</button> : <Link href="/pricing" className="site-btn site-btn-accent mt-5 h-11 px-6 text-sm">Choose a plan</Link>}</div>}
+          {signedIn && !awaiting && !licences.some((l) => l.active) && <div className="site-surface rounded-[24px] p-7 sm:p-8"><h2 className="text-2xl font-semibold tracking-[-0.035em]">{selected ? `Continue with ${names[selected.id]}.` : "Your account is ready."}</h2><p className="mt-3 text-[15px] leading-relaxed text-site-fg-2">{selected ? `$${selected.price} USD ${selected.cadence === "year" ? "per year" : "once"}. Your licence will be linked to this email address.` : "Choose Pro to unlock the full library, prompts and private registry. Team invitations appear here when you sign in with the invited email."}</p>{selected ? <button disabled={busy !== null} onClick={() => action("checkout", checkout)} className="site-btn site-btn-accent mt-5 h-11 px-6 text-sm"><AccountActionLabel idle="Continue to checkout" pending="Opening checkout…" busy={busy === "checkout"} /></button> : <Link href="/pricing" className="site-btn site-btn-accent mt-5 h-11 px-6 text-sm">Choose a plan</Link>}</div>}
           {welcome && licences.some((l) => l.active) && <p role="status" className="text-lg text-site-fg">Your library is ready. Copy your key below to connect your agents.</p>}
           {licences.map((licence) => <div key={licence.id} className="site-surface site-in min-w-0 rounded-[24px] p-7 sm:p-8">
             <div className="flex flex-wrap justify-between gap-4"><div><p className="font-mono text-[11px] uppercase tracking-[0.16em] text-site-fg-3">{licence.owner ? "Your licence" : "Library access"}</p><h2 className="mt-2 text-3xl font-semibold tracking-[-0.04em]">{names[licence.plan] || licence.plan}</h2><p className="mt-2 text-[15px] text-site-fg-2">{licence.active ? licence.expiresAt ? `Access through ${new Date(licence.expiresAt * 1000).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}` : "Lifetime access" : licence.status === "past_due" ? "Payment needs attention. Open billing to update your payment method." : licence.status === "refunded" ? "This payment was refunded." : licence.status === "disputed" ? "Access is suspended while the payment dispute is reviewed." : "This licence is no longer active."}</p></div></div>
@@ -131,8 +130,22 @@ export function AccountPanel({ welcome, pending, plan }: { welcome: boolean; pen
           {identified && <Link href="/docs/installation" className="inline-block text-sm text-site-fg-2 underline decoration-white/20 underline-offset-4">Read the installation guide</Link>}
         </>
       )}
+      <MeasuredHeight>
+      <div className="min-h-6 break-words text-sm leading-relaxed">
+        <p role={error ? "alert" : "status"} className={error ? "rounded-xl border border-site-danger/30 bg-site-danger/10 px-5 py-4 text-site-danger" : "text-site-fg-2"}>{error || notice || ""}</p>
+      </div>
+      </MeasuredHeight>
     </div>
   );
+}
+
+/** Keep busy labels from moving adjacent account actions. */
+function AccountActionLabel({ idle, pending, busy }: { idle: string; pending: string; busy: boolean }) {
+  return <span className="grid">
+    <span aria-hidden="true" className="invisible col-start-1 row-start-1">{idle}</span>
+    <span aria-hidden="true" className="invisible col-start-1 row-start-1">{pending}</span>
+    <span className="col-start-1 row-start-1">{busy ? pending : idle}</span>
+  </span>;
 }
 
 function LicenceKey({ token }: { token: string }) {
@@ -148,6 +161,6 @@ function TeamSeats({ licence, busy, action, reload }: { licence: Licence; busy: 
   }
   return <div className="mt-7 border-t border-white/[0.08] pt-6"><h3 className="text-xl font-semibold tracking-[-0.025em]">Team seats</h3><p className="mt-2 text-sm text-site-fg-2">{licence.members.length + 1} of {licence.seats} seats in use, including your owner seat. Members receive an email invitation and sign in to get a personal key.</p>
     {licence.members.length > 0 && <ul className="mt-4 divide-y divide-white/[0.07]">{licence.members.map((member) => <li key={member.email} className="flex flex-wrap items-center justify-between gap-3 py-3"><div className="min-w-0"><p className="break-all text-sm text-site-fg-2">{member.email}</p>{!member.invitation_sent_at && <p className="mt-1 text-xs text-site-fg-3">Invitation email needs to be sent.</p>}</div><div className="flex gap-4">{!member.invitation_sent_at && licence.active && <button disabled={busy !== null} onClick={() => action("invite", async () => { await post("/api/account/team", { licenceId: licence.id, email: member.email }); await reload(); })} className="min-h-11 text-sm text-site-fg-2 underline underline-offset-4">Send invitation</button>}<button disabled={busy !== null} onClick={() => action("remove", async () => { await post("/api/account/team", { licenceId: licence.id, email: member.email }, "DELETE"); await reload(); })} className="min-h-11 text-sm text-site-fg-2 underline underline-offset-4">Remove</button></div></li>)}</ul>}
-    {licence.active && licence.members.length < licence.seats - 1 && <form onSubmit={invite} className="mt-5"><label htmlFor={`invite-${licence.id}`} className="mb-2 block text-sm text-site-fg-2">Invite by email</label><div className="flex flex-col gap-3 sm:flex-row"><input id={`invite-${licence.id}`} type="email" required autoComplete="off" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="teammate@example.com" className={`${field} min-w-0 flex-1`} /><button type="submit" disabled={busy !== null} className="site-btn site-btn-primary h-12 shrink-0 px-6 text-sm">{busy === "invite" ? "Sending…" : "Invite member"}</button></div></form>}
+    {licence.active && licence.members.length < licence.seats - 1 && <form onSubmit={invite} className="mt-5"><label htmlFor={`invite-${licence.id}`} className="mb-2 block text-sm text-site-fg-2">Invite by email</label><div className="flex flex-col gap-3 sm:flex-row"><input id={`invite-${licence.id}`} type="email" required autoComplete="off" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="teammate@example.com" className={`${field} min-w-0 flex-1`} /><button type="submit" disabled={busy !== null} className="site-btn site-btn-primary h-12 shrink-0 px-6 text-sm"><AccountActionLabel idle="Invite member" pending="Sending…" busy={busy === "invite"} /></button></div></form>}
   </div>;
 }
