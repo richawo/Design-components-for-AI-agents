@@ -4,6 +4,7 @@ import {
   useCallback,
   useEffect,
   useId,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -687,7 +688,7 @@ function SaveBar({ count, status, onSave, onDiscard, canSave }: { count: number;
           className="overflow-hidden"
         >
           <div className="flex items-center gap-3 border-t border-[var(--sp-line)] bg-[var(--sp-raised)] py-3 pl-5 pr-3 @lg:pl-6" aria-live="polite">
-            <div className="relative h-5 min-w-0 flex-1 overflow-hidden text-[14px]">
+            <div className="relative flex h-9 min-w-0 flex-1 items-center overflow-hidden text-[14px]">
               <AnimatePresence mode="popLayout" initial={false}>
                 <motion.p key={message === "dirty" ? `dirty-${count}` : message} {...swap} transition={{ duration: 0.2, ease: EASE_OUT }} className="flex items-center gap-2 truncate">
                   {message === "saved" && (
@@ -710,9 +711,10 @@ function SaveBar({ count, status, onSave, onDiscard, canSave }: { count: number;
               <>
                 <button
                   type="button"
-                  onClick={onDiscard}
+                  onClick={() => { if (status !== "saving") onDiscard(); }}
                   data-demo="discard"
-                  disabled={status === "saving"}
+                  aria-disabled={status === "saving" || undefined}
+                  style={status === "saving" ? { opacity: 0.4, cursor: "progress", scale: 1 } : undefined}
                   className={`h-9 shrink-0 rounded-lg px-3 text-[13px] font-medium text-[var(--sp-muted)] transition-[color,background-color,transform] duration-150 hover:bg-[color-mix(in_srgb,var(--sp-ink)_6%,transparent)] hover:text-[var(--sp-ink)] active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40 ${focusRing}`}
                 >
                   Discard
@@ -721,7 +723,10 @@ function SaveBar({ count, status, onSave, onDiscard, canSave }: { count: number;
                   type="button"
                   onClick={onSave}
                   data-demo="save"
-                  disabled={!canSave || status === "saving"}
+                  disabled={!canSave}
+                  aria-disabled={status === "saving" || undefined}
+                  aria-busy={status === "saving"}
+                  style={status === "saving" ? { cursor: "progress", scale: 1 } : undefined}
                   className={`relative inline-flex h-9 min-w-[7.5rem] shrink-0 items-center justify-center gap-2 rounded-lg bg-[var(--sp-accent)] px-3.5 text-[13px] font-semibold text-[var(--sp-on-accent)] transition-[filter,transform] duration-150 hover:brightness-110 active:scale-[0.97] disabled:cursor-progress ${focusRing}`}
                 >
                   {status === "saving" ? (
@@ -769,6 +774,8 @@ export function SettingsPanel({
   const reduce = useReducedMotion() ?? false;
   const uid = useId().replace(/[^a-zA-Z0-9_-]/g, "");
   const root = useRef<HTMLElement>(null);
+  const lastFocus = useRef<HTMLElement | null>(null);
+  const lastField = useRef<HTMLElement | null>(null);
   const play = useInView(root, { once: true, amount: 0.2 });
   const palette = PALETTE[theme];
   const form = useSettingsForm(sections, initialValues, onSave, onChange);
@@ -778,6 +785,46 @@ export function SettingsPanel({
   // The first section staggers in with the card; later switches are quicker.
   const [switched, setSwitched] = useState(false);
   const section = sections.find((s) => s.id === active) ?? sections[0];
+
+  const restoreFieldFocus = useCallback(() => {
+    const panel = root.current;
+    if (!panel) return;
+    const tab = panel.querySelector<HTMLButtonElement>('[role="tab"][aria-selected="true"]');
+    const field = lastField.current;
+    const currentField = field?.isConnected && panel.contains(field) &&
+      !field.matches(":disabled") && !field.closest("[inert],[hidden]") &&
+      field.closest('[role="tabpanel"]')?.id === tab?.getAttribute("aria-controls");
+    (currentField ? field : tab)?.focus({ preventScroll: true });
+  }, []);
+
+  const recoverRetiredFocus = useCallback(() => {
+    const panel = root.current, old = lastFocus.current, doc = panel?.ownerDocument;
+    if (old && (!old.isConnected || old.matches(":disabled") || old.closest("[inert],[hidden]")) &&
+      doc?.hasFocus() && (doc.activeElement === doc.body || panel?.contains(doc.activeElement)))
+      restoreFieldFocus();
+  }, [restoreFieldFocus]);
+
+  useLayoutEffect(recoverRetiredFocus);
+  useLayoutEffect(() => {
+    const panel = root.current, doc = panel?.ownerDocument;
+    if (!panel || !doc) return;
+    const observer = new MutationObserver(recoverRetiredFocus);
+    observer.observe(panel, { childList: true, subtree: true, attributes: true, attributeFilter: ["disabled", "inert", "hidden"] });
+    const forgetOutside = (event: Event) => {
+      if (event instanceof PointerEvent && event.isPrimary === false) return;
+      if (event.target instanceof Node && !panel.contains(event.target)) lastFocus.current = null;
+    };
+    const forgetWindow = () => { lastFocus.current = null; };
+    doc.addEventListener("pointerdown", forgetOutside, true);
+    doc.addEventListener("focusin", forgetOutside, true);
+    doc.defaultView?.addEventListener("blur", forgetWindow);
+    return () => {
+      observer.disconnect();
+      doc.removeEventListener("pointerdown", forgetOutside, true);
+      doc.removeEventListener("focusin", forgetOutside, true);
+      doc.defaultView?.removeEventListener("blur", forgetWindow);
+    };
+  }, [recoverRetiredFocus, section?.id]);
 
   useSaveShortcut(() => void form.save(), root);
 
@@ -794,6 +841,11 @@ export function SettingsPanel({
   return (
     <section
       ref={root}
+      onFocusCapture={(event) => {
+        const target = event.target as HTMLElement;
+        lastFocus.current = target;
+        if (target.matches('input,select,[role="switch"],[role="radio"]')) lastField.current = target;
+      }}
       aria-labelledby={`${uid}-title`}
       style={cssVars(palette, accent ?? palette.ink)}
       className={`@container w-full font-sans text-[var(--sp-ink)] antialiased ${theme === "dark" ? "[color-scheme:dark]" : "[color-scheme:light]"} ${className}`}
@@ -841,7 +893,10 @@ export function SettingsPanel({
           </div>
         </motion.div>
 
-        <SaveBar canSave={!!onSave} count={form.changed.length} status={form.status} onSave={() => void form.save()} onDiscard={form.discard} />
+        <SaveBar canSave={!!onSave} count={form.changed.length} status={form.status} onSave={() => void form.save()} onDiscard={() => {
+          form.discard();
+          if (root.current?.ownerDocument.hasFocus() && root.current.contains(root.current.ownerDocument.activeElement)) restoreFieldFocus();
+        }} />
       </motion.div>
     </section>
   );

@@ -13,7 +13,7 @@
     "card": "surface, 1px line, 16px radius, inset highlight + deep shadow, overflow hidden, @container root",
     "header": "title, description, section tabs with travelling underline and unsaved dots",
     "rows": "switch inline at every width; segmented hugs right from @lg; select/text fill a 1fr/1.15fr column from @lg, stacked below",
-    "saveBar": "foot of the card: count, Discard, Save (fixed min width, ⌘S kbd from @md)",
+    "saveBar": "foot of the card: count, Discard, Save (fixed min width, ⌘S kbd from @md). The message shares the actual 36px action height, retaining the settled bar footprint on acceptance until its deliberate exit.",
     "subComponents": [
       "Section",
       "Row",
@@ -99,7 +99,7 @@
   "content": {
     "brand": "Fieldnote, a research notes app",
     "sections": "Notifications (Mentions, Replies, Weekly digest, Product news, Delivery), Appearance (Theme, Density, Week starts on, Calm mode), Profile (Display name, Username with prefix, Time zone)",
-    "saveOwnership": "The host persists onSave. Missing callbacks disable saving. Keyboard save is scoped to the focused panel; pending submissions are guarded and rejected drafts remain editable."
+    "saveOwnership": "The host persists onSave. Missing callbacks disable saving. Pending Save/Discard use aria-disabled and synchronous guards while retaining native focus. Rejection retains the focused retry target. Accepted or discarded action retirement recovers owned focus to the last current field or selected tab. Primary outside pointer, external focus and window blur expire ownership. Keyboard save is scoped to the focused panel; rejected drafts remain editable."
   },
   "avoid": [
     "lime or brand colour on focus rings and nav",
