@@ -463,6 +463,12 @@ may show one visible overshoot; nothing else bounces.
 - Responsive proof includes the intended column and reading order, not only
   zero document overflow. Named container queries need valid syntax; compare
   their thresholds to the actual container width rather than the viewport.
+- Sliders, checkboxes, radios, switches and number steppers come from the
+  control kit (`docs/controls/`), embedded with `scripts/sync-controls.mjs`.
+  Never ship a browser-default control tinted with `accent-color`, or a
+  one-off restyle of one. A custom-drawn control is reserved for the
+  component's own idea (a dial, a dual range, a scrubber over a chart) and is
+  held to the same hover, press, focus and state-change bar.
 - Keep dropdown labels and chevrons equally inset. Custom menus must support
   arrows, Home, End, Escape, disabled-option skipping and focus restoration;
   constrain them to both dimensions of the viewport. Document a native option
