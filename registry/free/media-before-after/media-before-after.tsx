@@ -110,7 +110,7 @@ export function BeforeAfter({
           className="pointer-events-none absolute inset-y-0 z-10 w-px bg-white shadow-[0_0_0_1px_#111]"
           style={{ left: `${split}%` }}
         >
-          <span className="absolute left-1/2 top-1/2 grid h-11 w-11 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border border-white bg-[#111] text-white">
+          <span className="absolute left-1/2 top-1/2 grid h-11 w-11 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border border-white bg-[#111] text-white transition-[scale,background-color] duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none [@media(hover:hover)]:[.peer:hover:not(:active)~div_&]:scale-[1.06] [@media(hover:hover)]:[.peer:hover:not(:active)~div_&]:bg-[#242424] [.peer:active~div_&]:scale-[0.94] [.peer:active~div_&]:duration-100 motion-reduce:[.peer:active~div_&]:scale-100 motion-reduce:[@media(hover:hover)]:[.peer:hover:not(:active)~div_&]:scale-100">
             <ChevronsLeftRight size={20} />
           </span>
         </div>
