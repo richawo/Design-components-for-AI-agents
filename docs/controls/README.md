@@ -59,7 +59,9 @@ or give it `aria-label`.
 `--{p}-ctl-v` is the 0–1 position; the fill is computed from it so it meets
 the thumb's centre exactly at both ends. Add `data-variant="scrub"` for media
 timelines: a hairline track whose thumb appears on hover, focus and drag
-(always shown on touch). Show the value in an `<output>` with tabular numerals
+(always shown on touch). Its fill tracks the value exactly, so an empty timeline shows no fill. When the range crosses zero (letter spacing −1.5…12, a
+turn of −90…90°), add `data-fill-from` and `--{p}-ctl-origin` (zero's 0–1
+position) so the fill grows outward from zero instead of from the minimum. Show the value in an `<output>` with tabular numerals
 and tween it as it changes.
 
 ### `check`
@@ -115,7 +117,12 @@ Buttons repeat while held: 400 ms before the first repeat, then every 60 ms.
 ## The bar
 
 - Track 4 px, thumb 18 px; checkbox and radio 18 px; switch 36 × 20; stepper
-  36 px tall. All grow to 44 px targets on coarse pointers.
+  36 px tall. The slider and stepper grow to 44 px on coarse pointers; a
+  checkbox, radio or switch gets its 44 px target from the label row around it,
+  so always give that row a 44 px minimum height.
+- Kit inputs reset their own margin, and that reset beats Tailwind utilities
+  (which live in a cascade layer). Put spacing such as `mt-px` on the wrapper
+  span or a surrounding element, not on the `<input>`.
 - Hover is one step (a 6 px halo on the thumb, a stronger border on boxes).
   Press scales the thing being pressed. Focus-visible is a 2 px ring, offset 2 px,
   with no transition.
