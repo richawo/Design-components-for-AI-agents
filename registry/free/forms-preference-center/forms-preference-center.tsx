@@ -7,6 +7,15 @@ const control =
   "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-lg px-3 text-sm font-medium transition-[background,transform] duration-150 hover:bg-[var(--wash)] disabled:hover:bg-transparent active:scale-[.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)] disabled:cursor-not-allowed disabled:opacity-40 disabled:active:scale-100 motion-reduce:transform-none";
 const muted = "text-[var(--muted)]";
 const CSS = `
+.pc-save-row { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:end; gap:12px; }
+.pc-feedback, .pc-save-label { display:grid; min-width:0; }
+.pc-feedback > *, .pc-save-label > * { grid-area:1 / 1; margin:0; }
+.pc-feedback { font-size:12px; line-height:16px; }
+.pc-sizing { visibility:hidden; pointer-events:none; user-select:none; }
+.pc-save-action { justify-self:end; }
+.pc-save-action[aria-busy=true] { cursor:progress; }
+.pc-save-action:focus-visible { outline:2px solid var(--ink); outline-offset:2px; }
+@container (max-width:420px) { .pc-save-row { grid-template-columns:minmax(0,1fr); } }
 /* @controls check prefix=pc */
 .pc-ctl-check {
   --c-ink: var(--pc-ctl-accent, var(--pc-ctl-ink, currentColor));
@@ -229,19 +238,25 @@ export function PreferenceCenter({
       {!options.length && (
         <p className={`py-6 text-sm ${muted}`}>No preferences available.</p>
       )}
-      <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
-        <p role="status" className={`text-xs ${muted}`}>
-          {notice}
-        </p>
+      <div className="pc-save-row mt-5">
+        <div className={`pc-feedback ${muted}`}>
+          <p aria-hidden="true" className="pc-sizing">Preferences saved.</p>
+          <p aria-hidden="true" className="pc-sizing">{errorMessage}</p>
+          <p role="status">{notice}</p>
+        </div>
         <button
           type="button"
           data-demo="save-preferences"
-          disabled={pending || !onSave}
+          disabled={!onSave}
+          aria-disabled={pending || undefined}
           aria-busy={pending}
           onClick={() => void save()}
-          className={`${control} border border-[var(--line)]`}
+          className={`pc-save-action ${control} border border-[var(--line)]`}
         >
-          {pending ? "Saving…" : "Save preferences"}
+          <span className="pc-save-label">
+            <span aria-hidden="true" className="pc-sizing">Save preferences</span>
+            <span>{pending ? "Saving…" : "Save preferences"}</span>
+          </span>
         </button>
       </div>
     </motion.section>
