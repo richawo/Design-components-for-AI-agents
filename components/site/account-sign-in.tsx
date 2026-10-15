@@ -23,6 +23,8 @@ export function AccountSignIn({ onSignedIn, onBusyChange }: { onSignedIn: () => 
   const [focused, setFocused] = useState(false);
   const [verified, setVerified] = useState(false);
   const running = useRef(false);
+  const form = useRef<HTMLFormElement>(null);
+  const submitButton = useRef<HTMLButtonElement>(null);
   const emailInput = useRef<HTMLInputElement>(null);
   const codeInput = useRef<HTMLInputElement>(null);
   const returned = useRef(false);
@@ -43,14 +45,28 @@ export function AccountSignIn({ onSignedIn, onBusyChange }: { onSignedIn: () => 
   async function run(kind: "send" | "verify", task: () => Promise<void>) {
     if (running.current) return;
     running.current = true; setBusy(kind); onBusyChange(true); setError(null); setNotice("");
+    const doc = form.current?.ownerDocument;
+    const origin = doc?.activeElement;
+    let ownsFocus = !!origin && !!form.current?.contains(origin);
+    const releaseFocus = (event: Event) => {
+      if (origin && event.target !== origin && !origin.contains(event.target as Node)) ownsFocus = false;
+    };
+    doc?.addEventListener("focusin", releaseFocus, true);
+    doc?.addEventListener("pointerdown", releaseFocus, true);
     try { await task(); }
     catch (reason) {
       setError(reason instanceof Error ? reason.message : "Please try again.");
       if (kind === "verify" && reason instanceof AccountRequestError && reason.status === 401) {
         setCode(""); setActive(0);
       }
-      if (kind === "verify") codeInput.current?.focus();
-    } finally { running.current = false; setBusy(null); onBusyChange(false); }
+      if (kind === "verify" && ownsFocus && doc?.hasFocus() && (doc.activeElement === origin || (doc.activeElement === doc.body && !origin?.isConnected))) {
+        (codeInput.current ?? submitButton.current)?.focus();
+      }
+    } finally {
+      doc?.removeEventListener("focusin", releaseFocus, true);
+      doc?.removeEventListener("pointerdown", releaseFocus, true);
+      running.current = false; setBusy(null); onBusyChange(false);
+    }
   }
 
   async function send() {
@@ -89,7 +105,7 @@ export function AccountSignIn({ onSignedIn, onBusyChange }: { onSignedIn: () => 
   }
 
   return (
-    <form onSubmit={submit} className="site-surface site-in min-w-0 rounded-[24px] p-6 sm:p-8" aria-label="Sign in to your account">
+    <form ref={form} onSubmit={submit} className="site-surface site-in min-w-0 rounded-[24px] p-6 sm:p-8" aria-label="Sign in to your account">
       <div className="flex items-center justify-between gap-4">
         <span className="flex size-10 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04]" aria-hidden="true">{verified ? <Check className="size-5 text-site-ok" /> : <Mail className="size-5" />}</span>
         <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-site-fg-3">{sent ? "02 / Verify" : "01 / Your email"}</p>
@@ -128,7 +144,7 @@ export function AccountSignIn({ onSignedIn, onBusyChange }: { onSignedIn: () => 
       <div id="signin-feedback" className="mt-3 min-h-12 text-[13px] leading-relaxed">
         {error ? <p role="alert" className="text-site-danger">{error}</p> : <p role="status" className="text-site-fg-3">{busy === "verify" ? "Checking your code…" : notice || (sent ? "Paste the whole code. We'll check it automatically." : "New here? We'll create your account with the same email.")}</p>}
       </div>
-      <button type="submit" disabled={sent && !verified && code.length !== 6} aria-disabled={!!busy || undefined} aria-busy={!!busy} className="site-btn site-btn-primary mt-2 h-12 w-full px-5 text-sm aria-disabled:cursor-wait aria-disabled:opacity-60">
+      <button ref={submitButton} type="submit" disabled={sent && !verified && code.length !== 6} aria-disabled={!!busy || undefined} aria-busy={!!busy} className="site-btn site-btn-primary mt-2 h-12 w-full px-5 text-sm aria-disabled:cursor-wait aria-disabled:opacity-60">
         {busy ? <span aria-hidden="true" className="size-4 rounded-full border-2 border-current border-r-transparent motion-safe:animate-spin" /> : null}
         {busy === "send" ? "Sending code…" : busy === "verify" ? "Signing in…" : verified ? "Open your account" : sent ? "Verify and sign in" : "Continue with email"}
         {!busy && <ArrowRight aria-hidden="true" className="size-4" />}
