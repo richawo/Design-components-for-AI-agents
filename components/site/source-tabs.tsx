@@ -7,6 +7,7 @@ import { SiteLink as Link } from "@/components/site/site-link";
 import { memo, useEffect, useId, useRef, useState } from "react";
 import { fetchFreeSource, fetchProSource, type SourcePayload } from "@/lib/pro-source-client";
 import { CopyButton } from "./copy-button";
+import { MeasuredHeight } from "./measured-height";
 
 export type { SourcePayload };
 
@@ -78,6 +79,7 @@ export function SourceTabs({
 
   return (
     <div ref={container} className="overflow-hidden rounded-[20px] border border-white/[0.08] bg-site-raised text-site-fg shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+      <MeasuredHeight>
       <div className="flex flex-col gap-3 border-b border-white/[0.06] px-3 pt-2 sm:flex-row sm:items-center sm:justify-between sm:px-4">
         <div role="tablist" aria-label="Component source" aria-orientation="horizontal" className="-mb-px flex gap-1 overflow-x-auto [scrollbar-width:none]">
           {TABS.map((t) => (
@@ -116,14 +118,18 @@ export function SourceTabs({
           ))}
         </div>
         <div className="flex items-center gap-2 pb-2.5">
-          {status === "ready" && source && tab !== "install" && (
-            <CopyButton
-              text={tab === "code" ? source.code : tab === "prompt" ? source.prompt : source.promptJson}
-              label={tab === "code" ? "Copy code" : tab === "prompt" ? "Copy prompt" : "Copy JSON"}
-            />
-          )}
-          {tab === "install" && <CopyButton text={installText} label="Copy command" />}
-          {status === "ready" && source && <CopyButton text={agentBrief} label="Copy for agent" variant="accent" />}
+          {(tab === "install" || status === "ready" && source) && <SourceActionSlot label="Copy command">
+            {status === "ready" && source && tab !== "install" && (
+              <CopyButton
+                text={tab === "code" ? source.code : tab === "prompt" ? source.prompt : source.promptJson}
+                label={tab === "code" ? "Copy code" : tab === "prompt" ? "Copy prompt" : "Copy JSON"}
+              />
+            )}
+            {tab === "install" && <CopyButton text={installText} label="Copy command" />}
+          </SourceActionSlot>}
+          {status === "ready" && source && <SourceActionSlot label="Copy for agent">
+            {status === "ready" && source && <CopyButton text={agentBrief} label="Copy for agent" variant="accent" />}
+          </SourceActionSlot>}
         </div>
       </div>
 
@@ -161,8 +167,16 @@ export function SourceTabs({
           Pro licence active
         </p>
       )}
+      </MeasuredHeight>
     </div>
   );
+}
+
+function SourceActionSlot({ label, children }: { label: string; children: React.ReactNode }) {
+  return <div className="grid items-center">
+    <span aria-hidden="true" className="site-btn invisible col-start-1 row-start-1 h-8 gap-1.5 px-3.5 text-xs font-semibold pointer-coarse:min-h-11"><span className="size-3.5" />{label}</span>
+    <div className="col-start-1 row-start-1 [&>.site-btn]:w-full">{children}</div>
+  </div>;
 }
 
 const Scroll = memo(function Scroll({ html }: { html: string }) {
