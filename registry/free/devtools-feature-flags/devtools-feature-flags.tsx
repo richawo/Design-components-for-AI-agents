@@ -508,7 +508,7 @@ function Switch({
       data-demo={demo}
       disabled={disabled}
       onClick={onToggle}
-      className="flex min-h-11 w-full cursor-pointer items-center justify-between gap-3 rounded-[10px] px-3 py-2 text-left transition-colors duration-150 hover:bg-(--ff-raised) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--ff-ink) disabled:cursor-not-allowed disabled:opacity-40 @lg:min-h-10 @lg:w-fit @lg:justify-start @lg:px-2.5"
+      className="flex min-h-11 w-full cursor-pointer items-center justify-between gap-3 rounded-[10px] px-3 py-2 text-left transition-[background-color,transform] duration-150 hover:bg-(--ff-raised) enabled:active:scale-[0.98] motion-reduce:enabled:active:scale-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--ff-ink) disabled:cursor-not-allowed disabled:opacity-40 @lg:min-h-10 @lg:w-fit @lg:justify-start @lg:px-2.5"
     >
       <span className={`min-w-0 text-[13px] leading-snug ${strike ? "text-(--ff-faint) line-through decoration-(--ff-line-strong)" : on ? "text-(--ff-ink)" : "text-(--ff-muted)"}`}>{label}</span>
       <span className="relative h-5 w-9 shrink-0 rounded-full transition-colors duration-150" style={{ background: on ? "var(--ff-ink)" : "var(--ff-track)" }} aria-hidden="true">
@@ -549,6 +549,7 @@ function Rollout({ value, disabled, onChange }: { value: number; disabled: boole
       aria-valuemax={100}
       aria-valuenow={value}
       aria-label="Rollout percentage"
+      aria-disabled={disabled || undefined}
       data-demo="rollout"
       onPointerDown={down}
       onPointerMove={(e) => {
@@ -570,12 +571,12 @@ function Rollout({ value, disabled, onChange }: { value: number; disabled: boole
         if (e.key === "Home") onChange(0);
         if (e.key === "End") onChange(100);
       }}
-      className="relative h-11 cursor-pointer touch-pan-y rounded-[8px] outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--ff-ink)"
+      className={`group relative h-11 touch-pan-y rounded-[8px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--ff-ink) ${disabled ? "cursor-not-allowed" : "cursor-pointer"}`}
     >
       <span className="absolute top-1/2 right-0 left-0 h-1.5 -translate-y-1/2 rounded-full" style={{ background: "var(--ff-track)" }} />
       <span className="absolute top-1/2 left-0 h-1.5 -translate-y-1/2 rounded-full" style={{ width: `${value}%`, background: "var(--ff-accent)" }} />
       <span
-        className="absolute top-1/2 size-4 -translate-y-1/2 rounded-full"
+        className={`absolute top-1/2 size-4 -translate-y-1/2 rounded-full transition-[scale,box-shadow] duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${disabled ? "" : "group-hover:shadow-[0_0_0_6px_color-mix(in_srgb,var(--ff-ink)_16%,transparent)] group-active:scale-[1.12] group-active:shadow-[0_0_0_7px_color-mix(in_srgb,var(--ff-ink)_22%,transparent)] motion-reduce:group-active:scale-100"}`}
         style={{ left: `clamp(0px, calc(${value}% - 8px), calc(100% - 16px))`, background: "var(--ff-ink)" }}
       />
     </div>
