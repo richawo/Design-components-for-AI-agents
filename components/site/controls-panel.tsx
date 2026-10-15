@@ -72,8 +72,9 @@ export function ControlsPanel(p: ControlsPanelProps) {
           <h2 id={`${uid}-h`} className="font-mono text-[11px] uppercase tracking-[0.14em] text-site-fg-3">
             Customize
           </h2>
-          <span aria-live="polite" className={`font-mono text-[11px] tabular-nums text-site-fg-3 transition-opacity duration-150 ${tuned ? "opacity-100" : "opacity-0"}`}>
-            {tuned ? `· ${tuned} changed` : ""}
+          <span className="grid font-mono text-[11px] tabular-nums text-site-fg-3">
+            <span aria-hidden="true" className="invisible col-start-1 row-start-1">· {p.controls.length} changed</span>
+            <span aria-live="polite" className={`col-start-1 row-start-1 transition-opacity duration-150 ${tuned ? "opacity-100" : "opacity-0"}`}>{tuned ? `· ${tuned} changed` : ""}</span>
           </span>
         </div>
         <div className="flex flex-wrap items-center gap-1.5">
@@ -89,7 +90,10 @@ export function ControlsPanel(p: ControlsPanelProps) {
             </svg>
             <span className="hidden sm:inline">Reset</span>
           </button>
-          <CopyButton text={configuredSnippet(p.usage, p.controls, p.values, p.props)} label="Copy configured" shortLabel="Copy code" />
+          <ControlActionSlot label="Copy configured" shortLabel="Copy failed">
+            <CopyButton text={configuredSnippet(p.usage, p.controls, p.values, p.props)} label="Copy configured" shortLabel="Copy code" />
+          </ControlActionSlot>
+          {(p.tier === "pro" || prompt) && <ControlActionSlot label="Copy configured prompt" shortLabel="Configured prompt">
           {prompt ? (
             <CopyButton text={configuredPrompt(prompt, p.name, p.controls, p.values)} label="Copy configured prompt" shortLabel="Copy prompt" />
           ) : promptError ? (
@@ -102,11 +106,15 @@ export function ControlsPanel(p: ControlsPanelProps) {
               </svg>
               Configured prompt
             </Link>
-          ) : null}
+          ) : <span className="site-btn h-8 px-3.5 text-xs text-site-fg-3" role="status">Loading prompt…</span>}
+          </ControlActionSlot>}
         </div>
       </div>
 
-      {promptError && <p role="status" className="mt-3 text-sm text-site-fg-2">The configured prompt couldn't be loaded. Please try again.</p>}
+      {p.tier === "pro" && <div className="mt-3 grid text-sm text-site-fg-2">
+        <p aria-hidden="true" className="invisible col-start-1 row-start-1">The configured prompt couldn't be loaded. Please try again.</p>
+        <p role="status" className="col-start-1 row-start-1">{promptError ? "The configured prompt couldn't be loaded. Please try again." : "Copied code reflects the settings below."}</p>
+      </div>}
 
       <div className="mt-3.5 space-y-4">
         {groups.map(([group, list]) => (
@@ -122,6 +130,14 @@ export function ControlsPanel(p: ControlsPanelProps) {
       </div>
     </section>
   );
+}
+
+/** Natural label sizing reserves each action through loading, copy and retry. */
+function ControlActionSlot({ label, shortLabel, children }: { label: string; shortLabel: string; children: ReactNode }) {
+  return <div className="grid items-center">
+    <span aria-hidden="true" className="site-btn invisible col-start-1 row-start-1 h-11 gap-1.5 px-3.5 text-xs font-semibold"><span className="size-3.5" /><span className="hidden sm:inline">{label}</span><span className="sm:hidden">{shortLabel}</span></span>
+    <div className="col-start-1 row-start-1 [&>.site-btn]:w-full">{children}</div>
+  </div>;
 }
 
 function groupControls(controls: ComponentControl[]): [string | null, ComponentControl[]][] {
