@@ -20334,7 +20334,6 @@
       "e-commerce"
     ],
     "dependencies": [
-      "motion",
       "lucide-react"
     ],
     "theme": "dark",
