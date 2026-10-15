@@ -77,6 +77,7 @@ export function AccountSignIn({ onSignedIn, onBusyChange }: { onSignedIn: () => 
   }
 
   function changeCode(value: string) {
+    if (running.current || verified) return;
     const digits = codeDigits(value);
     setCode(digits); setActive(Math.min(digits.length, 5)); setError(null); setNotice("");
     if (digits.length === 6) void verify(digits);
@@ -127,7 +128,7 @@ export function AccountSignIn({ onSignedIn, onBusyChange }: { onSignedIn: () => 
       <div id="signin-feedback" className="mt-3 min-h-12 text-[13px] leading-relaxed">
         {error ? <p role="alert" className="text-site-danger">{error}</p> : <p role="status" className="text-site-fg-3">{busy === "verify" ? "Checking your code…" : notice || (sent ? "Paste the whole code. We'll check it automatically." : "New here? We'll create your account with the same email.")}</p>}
       </div>
-      <button type="submit" disabled={!!busy || (sent && !verified && code.length !== 6)} aria-busy={!!busy} className="site-btn site-btn-primary mt-2 h-12 w-full px-5 text-sm">
+      <button type="submit" disabled={sent && !verified && code.length !== 6} aria-disabled={!!busy || undefined} aria-busy={!!busy} className="site-btn site-btn-primary mt-2 h-12 w-full px-5 text-sm aria-disabled:cursor-wait aria-disabled:opacity-60">
         {busy ? <span aria-hidden="true" className="size-4 rounded-full border-2 border-current border-r-transparent motion-safe:animate-spin" /> : null}
         {busy === "send" ? "Sending code…" : busy === "verify" ? "Signing in…" : verified ? "Open your account" : sent ? "Verify and sign in" : "Continue with email"}
         {!busy && <ArrowRight aria-hidden="true" className="size-4" />}
