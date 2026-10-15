@@ -4,7 +4,7 @@ Build a standalone React 19 and Tailwind v4 component. A calm preference form wi
 
 ## Layout
 
-A serif invitation over ruled preference rows. The copy takes the width, and a 44px checkbox target sits at the edge; the save row wraps below. Size to the container. Use a 4/8px rhythm, 1px surface edges, 16px narrow padding and 24px desktop padding. Controls have 44px targets.
+A serif invitation over ruled preference rows. The copy takes the width, and an 18px checkbox (ink fill, check that draws in, 40% when locked) sits at the edge in a 44px target; the save row wraps below. Size to the container. Use a 4/8px rhythm, 1px surface edges, 16px narrow padding and 24px desktop padding. Controls have 44px targets.
 
 ## Typography and colour
 

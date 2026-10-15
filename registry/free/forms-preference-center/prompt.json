@@ -8,7 +8,7 @@
     "motion": "motion/react"
   },
   "layout": {
-    "direction": "A serif invitation over ruled preference rows. The copy takes the width, and a 44px checkbox target sits at the edge; the save row wraps below.",
+    "direction": "A serif invitation over ruled preference rows. The copy takes the width, and an 18px checkbox (ink fill, check that draws in, 40% when locked) sits at the edge in a 44px target; the save row wraps below.",
     "container": "Size to the parent with @container. Keep the root width at 100%, capped to the focused component, with 24px desktop and 16px narrow padding.",
     "rhythm": "4/8px spacing; 1px edges; 44px minimum interactive targets."
   },
