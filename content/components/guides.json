@@ -3926,18 +3926,19 @@
     "updated": "2026-10-13"
   },
   "footer-sitemap-atlas": {
-    "useWhen": "Offering a useful grouped site index with real destinations in a compact footer.",
-    "avoidWhen": "A full application command palette or decorative navigation labels with no destination.",
+    "useWhen": "A product or documentation site with a few dozen pages, where the footer should help people find a page: a searchable site index with a map plate that gives every page a place.",
+    "avoidWhen": "A small marketing site with a handful of links, where a wordmark footer says more, or an app where navigation belongs in a command palette.",
     "integration": [
-      "Supply actual site/brand/copyright and groups with stable IDs, real optional URLs and availability reasons. currentHref marks an exact destination; the component never invents routes or executes navigation while expanding.",
-      "Exact query/onQueryChange and openGroups/onOpenGroupsChange pairs are independently controlled. Rejected changes preserve the actual result set/disclosures. Local defaults are seeds; resetKey explicitly resets them. Matching is accent/case insensitive against supplied labels and descriptions.",
-      "Below700px of actual container width, groups become44px disclosures with inert closed links. Search reveals matches without mutating saved compact expansion. Measure actual content height; live reduced motion stops/sets height and count owners. Retired/disabled links recover only owned focus, while a primary outside-background click clears memory."
+      "Supply `groups` of links with real hrefs; add `keywords` for the words people actually search for (jobs, uptime, sdk). Each group becomes a region of the plate and a column of the index.",
+      "Pass the current path as `currentHref` to mark the link with `aria-current` and pin it on the plate. Search is local and ignores case and accents; pair `query` with `onQueryChange` to sync it with your router or analytics.",
+      "The plate is decorative and hidden from assistive technology; the index carries every destination. Turn the plate off with `showMap={false}` in narrow sidebars."
     ],
     "related": [
-      "navigation-context-rail",
-      "navigation-stacked-tabs"
+      "footer-wordmark",
+      "footer-columns-status",
+      "footer-ascii-wordmark"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "text-optical-weight": {
     "useWhen": "Inspecting how supported font weight and optical scale change real, selectable specimen text.",

@@ -22147,162 +22147,163 @@
     "tier": "pro",
     "platform": "web",
     "category": "footers",
-    "description": "A useful grouped site index combines an editorial wordmark, actual destinations, accent-insensitive search and compact controlled disclosures.",
+    "description": "A footer that maps the site: every page a point with a grid reference on a contoured atlas plate, an index beside it and a search that lights matches on both.",
     "tags": [
       "footer",
       "sitemap",
       "navigation",
       "search",
-      "disclosure"
+      "map",
+      "atlas",
+      "site index",
+      "editorial"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 980,
-    "usage": "import { FooterSitemapAtlas } from \"@/components/design-for-ai/footer-sitemap-atlas\";\n\n<FooterSitemapAtlas name=\"Your product\" groups={destinations} currentHref={pathname} />\n\n// Supply real URLs and actual availability. The component does not invent page destinations.",
+    "previewHeight": 900,
+    "usage": "import { FooterSitemapAtlas } from \"@/components/design-for-ai/footer-sitemap-atlas\";\n\n<FooterSitemapAtlas\n  brand=\"Meridian\"\n  tagline=\"Routing, geocoding and fleet tools for teams that deliver things.\"\n  currentHref={pathname}\n  groups={[\n    {\n      id: \"product\",\n      label: \"Product\",\n      links: [\n        { id: \"routing\", label: \"Routing API\", href: \"/routing\", keywords: [\"directions\", \"eta\"] },\n        { id: \"pricing\", label: \"Pricing\", href: \"/pricing\" },\n      ],\n    },\n    // …\n  ]}\n/>",
     "props": [
       {
-        "name": "name",
+        "name": "brand",
         "type": "string",
-        "description": "Actual brand or site name. Long names wrap without horizontal overflow."
+        "default": "\"Meridian\"",
+        "description": "The wordmark, set large in the serif."
+      },
+      {
+        "name": "tagline",
+        "type": "string",
+        "default": "\"Routing, geocoding and fleet tools for teams that deliver things.\"",
+        "description": "One line under the wordmark."
       },
       {
         "name": "homeHref",
         "type": "string",
-        "description": "Real optional brand destination. Omit or set empty text for a noninteractive wordmark."
-      },
-      {
-        "name": "copyright",
-        "type": "string",
-        "description": "Actual supplied copyright text. No automatic current year or ownership claim."
+        "default": "\"#top\"",
+        "description": "Where the wordmark links. Empty for a plain wordmark."
       },
       {
         "name": "groups",
-        "type": "readonly SitemapGroup[]",
-        "description": "Stable nonempty group/link identities with labels, descriptions and optional actual destinations. Unavailable links retain their stated reason without a fake href."
+        "type": "AtlasGroup[]",
+        "description": "Regions of the site: id, label and links (id, label, href, optional keywords, badge and external). Each group becomes a band of columns on the plate and a column in the index; each link a point with a grid reference. Repeated ids keep the first. Defaults to a 24-page mapping-API site."
       },
       {
         "name": "currentHref",
         "type": "string",
-        "description": "Exact current destination for aria-current page. No navigation is executed implicitly."
+        "description": "The page being viewed. Its link gets aria-current and a you-are-here pin on the plate."
       },
       {
         "name": "query",
         "type": "string",
-        "description": "Optional controlled search. Pair with onQueryChange; rejected requests preserve actual matching results."
+        "description": "Controlled search. Pair with onQueryChange."
       },
       {
         "name": "defaultQuery",
         "type": "string",
-        "description": "Initial local search seed. Later host defaults do not overwrite editing; use resetKey for a lifecycle reset."
+        "default": "\"\"",
+        "description": "The search on mount."
       },
       {
         "name": "onQueryChange",
         "type": "(query: string) => void",
-        "description": "Request the exact query. Search normalizes accents and case only for matching supplied text."
+        "description": "Called as the search changes. Matching ignores case and accents and also reads each link's keywords."
       },
       {
-        "name": "openGroups",
-        "type": "readonly string[]",
-        "description": "Optional controlled compact-container disclosure IDs. Rejection retains the actual expansion state."
-      },
-      {
-        "name": "defaultOpenGroups",
-        "type": "readonly string[]",
-        "description": "Initial local disclosure state. Desktop displays every group; search exposes matching groups without mutating saved compact expansion."
-      },
-      {
-        "name": "onOpenGroupsChange",
-        "type": "(ids: readonly string[]) => void",
-        "description": "Request compact-container expansion changes without navigating."
-      },
-      {
-        "name": "resetKey",
-        "type": "string | number",
-        "description": "Explicit lifecycle reset for local query and disclosure seeds."
-      },
-      {
-        "name": "status",
-        "type": "\"ready\" | \"loading\" | \"error\"",
-        "description": "Host-owned availability, retaining readable links with navigation locked until ready."
-      },
-      {
-        "name": "errorMessage",
-        "type": "string",
-        "description": "Actual host failure explanation. Empty messages use readable recovery copy."
-      },
-      {
-        "name": "onRetry",
-        "type": "() => void",
-        "description": "Actual host recovery action. No retry control when absent."
-      },
-      {
-        "name": "disabled",
+        "name": "showMap",
         "type": "boolean",
-        "description": "Lock editing, disclosures and navigation while retaining all content."
+        "default": "true",
+        "description": "Show the atlas plate beside the index. Off, the index takes the full width."
+      },
+      {
+        "name": "legal",
+        "type": "string",
+        "default": "\"© 2026 Meridian Mapping Ltd.\"",
+        "description": "The copyright line."
+      },
+      {
+        "name": "legalLinks",
+        "type": "{ label: string; href: string }[]",
+        "description": "Small links in the legal bar."
+      },
+      {
+        "name": "location",
+        "type": "string",
+        "default": "\"51.4779° N, 0.0015° W · Greenwich\"",
+        "description": "A line for the legal bar, such as an address or coordinates."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ff9d5c\"",
+        "description": "The one accent: search matches, the crosshair and the you-are-here pin."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Complete monochromatic graphite/white chrome. Colour is reserved for actual supplied content and purposeful feature accents."
-      },
-      {
-        "name": "labels",
-        "type": "Partial<SitemapAtlasLabels>",
-        "description": "Tagline, navigation, search, result and availability copy."
+        "default": "\"dark\"",
+        "description": "Dark or light surface."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Host layout classes responsive to the actual container."
+        "description": "Classes on the footer element."
       }
     ],
     "added": "2026-10-13",
     "demo": {
       "steps": [
-        "click:@sitemap-search",
-        "type:prompt",
-        "wait:500",
-        "click:@sitemap-clear",
-        "wait:500"
+        "click:@atlas-search",
+        "type:api",
+        "wait:700",
+        "hover:@atlas-link-reference",
+        "wait:900",
+        "click:@atlas-clear",
+        "wait:700"
       ],
       "loop": false
     },
     "controls": [
       {
+        "prop": "brand",
+        "label": "Brand",
+        "kind": "text",
+        "default": "Meridian"
+      },
+      {
+        "prop": "showMap",
+        "label": "Atlas plate",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#ff9d5c",
+        "options": [
+          "#ff9d5c",
+          "#6fd3a0",
+          "#7ab8ff",
+          "#ededef"
+        ]
+      },
+      {
         "prop": "theme",
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
         "default": "dark"
-      },
-      {
-        "prop": "name",
-        "label": "Site name",
-        "kind": "text",
-        "default": "Design for AI"
-      },
-      {
-        "prop": "disabled",
-        "label": "Unavailable navigation",
-        "kind": "toggle",
-        "default": false
-      },
-      {
-        "prop": "status",
-        "label": "Availability",
-        "kind": "select",
-        "options": [
-          "ready",
-          "loading",
-          "error"
-        ],
-        "default": "ready"
       }
     ]
   },
