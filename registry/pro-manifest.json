@@ -12393,85 +12393,82 @@
     "tier": "pro",
     "platform": "web",
     "category": "data",
-    "description": "Arrange real supplied table columns through tactile order plates, bounded dragging, keyboard moves, frozen-left pinning and honest visibility rules.",
+    "description": "Drag a table header and the whole column lifts and travels while the rest reflow live; pin it to a frozen zone, hide it to a shelf, resize its edge.",
     "tags": [
       "column order",
-      "table configuration",
+      "table settings",
+      "drag and drop",
       "pinned columns",
-      "keyboard movement",
-      "record inspection"
+      "resize columns",
+      "data table"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1000,
-    "usage": "import { DataColumnWorkbench } from \"@/components/design-for-ai/data-column-workbench\";\n\n<DataColumnWorkbench columns={columns} records={records} value={arrangement} onValueChange={setArrangement} />",
+    "previewHeight": 760,
+    "usage": "import { DataColumnWorkbench } from \"@/components/design-for-ai/data-column-workbench\";\n\n<DataColumnWorkbench\n  title=\"Inbound shipments\"\n  columns={columns}\n  rows={shipments}\n  value={layout}\n  onChange={(next, change) => {\n    setLayout(next);\n    saveView(next); // change.type: move | pin | unpin | hide | show | resize | reset\n  }}\n/>",
     "props": [
-      {
-        "name": "columns",
-        "type": "WorkbenchColumn[]",
-        "description": "1–10 raw unique labeled columns, optional required visibility and widths of 80–360px. Missing widths use 160px; reset uses original source order with every column visible."
-      },
-      {
-        "name": "records",
-        "type": "WorkbenchRecord[]",
-        "description": "Up to 500 unique labeled immutable original records with declared own scalar keys. Missing, null, strings, booleans and finite numbers within ±1 trillion remain distinct."
-      },
-      {
-        "name": "value",
-        "type": "ColumnArrangement[]",
-        "description": "Atomic controlled order with every source column once, visible/pinned booleans, required visibility and at least one visible column. Unknown or invalid arrangement is unavailable; original source columns remain explicitly readable."
-      },
-      {
-        "name": "defaultValue",
-        "type": "ColumnArrangement[]",
-        "description": "Initial uncontrolled arrangement. Untouched loading initializes only first real ready columns; later source changes preserve chosen context."
-      },
-      {
-        "name": "onValueChange",
-        "type": "(value: ColumnArrangement[], request: ColumnArrangementRequest) => void",
-        "description": "Host request for a complete arrangement with typed move/pin/visibility/reset reason and optional column ID. Rejection retains the actual accepted table."
-      },
-      {
-        "name": "onValueCommit",
-        "type": "(value: ColumnArrangement[], request: ColumnArrangementRequest) => void",
-        "description": "Only accepted current discrete arrangements commit. Pointer cancellation and rejected/no-op/obsolete requests do not commit. Host owns persistence."
-      },
       {
         "name": "title",
         "type": "string",
-        "default": "\"Arrange the view.\"",
-        "description": "Actual workbench heading."
+        "default": "\"Inbound shipments\"",
+        "description": "The table's name in the toolbar."
       },
       {
-        "name": "description",
+        "name": "columns",
+        "type": "WorkbenchColumn[]",
+        "description": "{ id, label, width?, minWidth?, kind?: \"text\" | \"mono\" | \"number\" | \"status\", required?, tones? }. Required columns can't be hidden; number columns right-align; status columns add a dot from tones."
+      },
+      {
+        "name": "rows",
+        "type": "WorkbenchRow[]",
+        "description": "{ id, cells: Record<columnId, string> }. Cells keep their identity as columns move, so the reflow animates."
+      },
+      {
+        "name": "value",
+        "type": "ColumnState[]",
+        "description": "Controlled arrangement: every column once, in display order, as { id, visible, pinned, width }. Pinned columns always lead."
+      },
+      {
+        "name": "defaultValue",
+        "type": "ColumnState[]",
+        "description": "Uncontrolled starting arrangement. Defaults to every column visible and unpinned, in source order."
+      },
+      {
+        "name": "onChange",
+        "type": "(value: ColumnState[], change: ColumnChange) => void",
+        "description": "Called once per finished change: a drag on release, a resize on release or key press, a pin, a hide or show, a reset. `change.type` says which."
+      },
+      {
+        "name": "density",
+        "type": "\"compact\" | \"comfortable\"",
+        "default": "\"comfortable\"",
+        "description": "Row height: 44px or 52px."
+      },
+      {
+        "name": "accent",
         "type": "string",
-        "description": "Supplied source and configuration context."
-      },
-      {
-        "name": "status",
-        "type": "\"ready\" | \"loading\" | \"unavailable\"",
-        "default": "\"ready\"",
-        "description": "Source availability preserves the current arrangement; no invented rows."
-      },
-      {
-        "name": "disabled",
-        "type": "boolean",
-        "default": "false",
-        "description": "Disables arrangement changes and retires active drag. Native table inspection and scrolling remain available."
+        "default": "\"#7cc4ff\"",
+        "description": "The one colour: the frozen edge, pin marks and the column you're holding."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Neutral graphite and white material with a monochrome complete demo stage."
+        "description": "Graphite or white surfaces."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "default": "false",
+        "description": "Locks the arrangement; the table still scrolls and reads."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Host root classes."
+        "description": "Classes for the root section."
       }
     ],
     "controls": [
@@ -12480,28 +12477,64 @@
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
         "default": "dark"
       },
       {
+        "prop": "density",
+        "label": "Density",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "comfortable",
+            "label": "Comfortable"
+          },
+          {
+            "value": "compact",
+            "label": "Compact"
+          }
+        ],
+        "default": "comfortable"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#7cc4ff",
+        "options": [
+          "#7cc4ff",
+          "#ffb547",
+          "#4ade80",
+          "#f4f4f5"
+        ]
+      },
+      {
         "prop": "disabled",
-        "label": "Arrangement locked",
+        "label": "Locked",
         "kind": "toggle",
         "default": false
       }
     ],
     "demo": {
       "steps": [
-        "click:@column-hide-source",
-        "wait:260",
-        "click:@column-pin-team",
-        "wait:260",
-        "click:@column-later-person",
-        "wait:260",
-        "click:@columns-reset",
-        "wait:350"
+        "wait:500",
+        "hover:@grip-eta:0.2,0.5",
+        "down",
+        "hover:@grip-ref:0.8,0.5",
+        "up",
+        "wait:700",
+        "click:@pin-consignee",
+        "wait:900",
+        "click:@hide-lane",
+        "wait:1100"
       ],
       "loop": false
     },

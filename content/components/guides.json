@@ -4328,19 +4328,20 @@
     "updated": "2026-10-14"
   },
   "data-column-workbench": {
-    "useWhen": "Reordering, pinning and hiding columns while inspecting an actual supplied table.",
-    "avoidWhen": "An unrelated table filter or a decorative list of settings with no table effect.",
+    "useWhen": "Letting people rearrange a dense operational table in place: drag columns into a new order, freeze the identifying ones on the left, hide the noise and set widths.",
+    "avoidWhen": "Choosing which records to show (that is filtering) or editing cell values; this changes the view of a table, not its data.",
     "integration": [
-      "Supply 1–10 raw unique labeled columns and up to 500 unique labeled immutable records with own declared scalar values. Column widths are 80–360px, with a 160px default. Required columns stay visible and at least one column is visible; missing values and explicit null remain distinct. Native string cells are quoted and booleans labeled, so literal placeholder text, false, missing keys and null are distinct. Current source identities and facts are validated afresh per render.",
-      "Control one full ColumnArrangement array containing every source ID exactly once with visible and pinned booleans. Move, pin, visibility and reset requests carry distinct typed reasons. Only current accepted arrangements commit; controlled rejection, no-op and cancellation preserve the actual table. The host owns persistence.",
-      "Visible pinned columns precede visible unpinned columns in their chosen relative order and stay frozen at the left edge. Actual declared layout widths drive sticky offsets. The table axis is left-to-right, labels retain their supplied content, and every original record remains available through 16-record paging and a native focusable scroll region.",
-      "Use a primary pointer grip or its ArrowUp/Down/Home/End keys, with native earlier/later controls as a touch alternative. Proposed insertion is distinct from accepted table order. Source/owner resets retire active gestures; focused offscreen moves reveal their logical destination. Unknown arrangements explicitly retain original source columns and offer Source arrangement instead of silently choosing a valid accepted fallback. Untouched loading initializes first real ready data; later chosen context remains authoritative."
+      "Pass `columns` and `rows`; each row's `cells` is keyed by column id and rendered as text, mono, right-aligned numbers or a status with a dot from `tones`. Mark identifier columns `required` so they can't be hidden.",
+      "Store the arrangement from `onChange(value, change)`: an ordered `{ id, visible, pinned, width }` array, one entry per column. Drags and resizes report once, on release, so it is safe to save each change to a saved view.",
+      "Use `value` to restore a saved layout or `defaultValue` to start uncontrolled. Unknown ids are dropped and missing columns are appended, so a layout saved before you add a column still loads.",
+      "Every action has a keyboard path: grips move with the arrow keys, Home and End, and resize handles take arrow keys. Set `disabled` for viewers who may read but not rearrange, and `density=\"compact\"` for long tables."
     ],
     "related": [
       "data-table-sortable",
-      "navigation-stacked-tabs"
+      "data-filter-history",
+      "dashboard-orders-table"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "data-bulk-action-review": {
     "useWhen": "Reviewing exactly which supplied selected records a host action will affect, exclude or fail.",
