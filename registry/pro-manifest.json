@@ -27463,69 +27463,90 @@
     "tier": "pro",
     "platform": "web",
     "category": "data",
-    "description": "Filter duties by owner and due date and record completion evidence. A considered, responsive legal workspace with typed integration points.",
+    "description": "Contract duties pinned on a due timeline and to the clause they come from, set on paper with the duty highlighted; recording evidence lands a Done stamp.",
     "tags": [
       "legal-tech",
-      "workflow",
-      "responsive",
-      "keyboard",
-      "data"
+      "contract obligations",
+      "compliance",
+      "timeline",
+      "evidence",
+      "due dates",
+      "workflow"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1180,
-    "usage": "import { ObligationTracker } from \"@/components/design-for-ai/legal-obligation-tracker\";\n\n<ObligationTracker />",
+    "previewHeight": 1060,
+    "usage": "import { ObligationTracker } from \"@/components/design-for-ai/legal-obligation-tracker\";\n\n<ObligationTracker\n  obligations={obligations}\n  onComplete={async ({ obligationId, evidence, file }) => {\n    await api.obligations.complete(obligationId, { evidence, file });\n  }}\n/>",
     "props": [
-      {
-        "name": "title",
-        "type": "string",
-        "description": "Main heading.",
-        "default": "\"Contract obligations\""
-      },
-      {
-        "name": "subtitle",
-        "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Track contractual obligations, their source clauses and the evidence used to close them.\""
-      },
       {
         "name": "obligations",
         "type": "ContractObligation[]",
-        "description": "Unique obligations with host-supplied ISO due dates, source references and completion state."
+        "description": "Duties with id, contract, title, owner, ISO due, clause reference, detail and complete. Optional: source (clause wording), duty (the words in source to highlight), recurrence, evidence, evidenceFile and completedOn."
+      },
+      {
+        "name": "onComplete",
+        "type": "(completion: ObligationCompletion) => void | Promise<void>",
+        "description": "Receives { obligationId, evidence, file? }. Resolve to stamp it done and clip the evidence to the clause; reject to keep the evidence and file and say so."
       },
       {
         "name": "referenceDate",
         "type": "string",
-        "description": "ISO date for overdue classification."
+        "description": "ISO date treated as today, for overdue and due-soon. Defaults to the current date."
       },
       {
-        "name": "onComplete",
-        "type": "(completion:ObligationCompletion)=>void|Promise<void>",
-        "description": "Persist completion evidence against the selected obligation."
+        "name": "horizonWeeks",
+        "type": "number",
+        "default": "8",
+        "description": "Weeks on the due timeline, starting from the Monday two weeks before today (4 to 16)."
+      },
+      {
+        "name": "defaultObligationId",
+        "type": "string",
+        "description": "The obligation open first. Defaults to the most urgent open one."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Obligations\"",
+        "description": "Entity name in the header."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "default": "\"Contracts · Q4 2026\"",
+        "description": "Breadcrumb context, split on “ · ”."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#5b8def\"",
+        "description": "The one accent: today, the selected pin and row, the highlighted duty and the Done stamp."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Graphite chrome or the light inverse. The clause stays paper in both."
       },
       {
-        "name": "selectMode",
-        "type": "\"custom\" | \"native\"",
-        "default": "\"custom\"",
-        "description": "Animated keyboard-accessible custom listboxes, or native platform pickers with matched 12px insets."
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:350",
-        "click:@obligation-1",
-        "wait:750",
-        "click:@filter-complete",
-        "wait:1200"
+        "wait:500",
+        "click:@pin-ob-014",
+        "wait:450",
+        "click:@evidence",
+        "type:Filed as DOC-502",
+        "click:@record",
+        "wait:1700"
       ],
       "loop": false
     },
@@ -27541,14 +27562,26 @@
         "default": "dark"
       },
       {
-        "prop": "selectMode",
-        "label": "Select menus",
-        "kind": "segmented",
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#5b8def",
         "options": [
-          "custom",
-          "native"
-        ],
-        "default": "custom"
+          "#5b8def",
+          "#e5484d",
+          "#8b7cf6",
+          "#0ea5a4"
+        ]
+      },
+      {
+        "prop": "horizonWeeks",
+        "label": "Timeline",
+        "kind": "slider",
+        "min": 4,
+        "max": 16,
+        "step": 1,
+        "unit": "wk",
+        "default": 8
       }
     ]
   },

@@ -2680,18 +2680,19 @@
     "updated": "2026-10-12"
   },
   "legal-obligation-tracker": {
-    "useWhen": "Reviewing contractual obligations, owners and recorded completion.",
-    "avoidWhen": "An automatic interpretation of contract language or proof of compliance by status alone.",
+    "useWhen": "Keeping signed contracts’ duties on track: who owes what by when, where each duty comes from in the contract, and the evidence that it was done.",
+    "avoidWhen": "Extracting obligations from contract text automatically or certifying compliance. Duties and due dates come from your contract system; recorded evidence supports a review, it doesn’t replace one.",
     "integration": [
-      "Supply your own records through `obligations`. Preserve stable keys or IDs when the data contract provides them.",
-      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+      "Pass `obligations` with id, contract, title, owner, ISO due, clause and detail. Add `source` (the clause wording) and `duty` (the words to highlight) to set the clause on paper.",
+      "`onComplete` receives { obligationId, evidence, file? }. Resolve to stamp it done and clip the evidence to the clause; reject to keep the evidence and file.",
+      "`referenceDate` and `horizonWeeks` set the due timeline; `defaultObligationId` chooses the first clause shown."
     ],
     "related": [
+      "legal-renewal-planner",
       "legal-document-requests",
-      "legal-evidence-index",
-      "data-file-explorer"
+      "legal-matter-dashboard"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "legal-renewal-planner": {
     "useWhen": "Planning contract renewals on a timeline, where owners need to see notice windows close, look ahead to a date and record whether each contract renews, is renegotiated or ends.",
