@@ -23,7 +23,7 @@ needs re-recording, whether its poster is current, and the state of its browser 
 | `mobile-journal-prompt` | current | current | source-fixture regression, accessibility and state captures pass; keyboard tabs, per-prompt drafts, save retry, limits and empty prompts covered |
 | `mobile-meeting-preflight` | current | current | source-fixture regression and accessibility pass; keyboard device dialog, settings, failed join retry and cancellation covered |
 | `mobile-mood-map` | current | current |  |
-| `mobile-notification-digest` | current | current |  |
+| `mobile-notification-digest` | current | current | source-fixture regression and accessibility pass; keyboard actions/snooze, failed callbacks, Undo, collapsed piles and empty digest covered |
 | `mobile-offline-outbox` | current | current | source-fixture regression passes; retained draft retry, discard confirmation and network pause/resume covered |
 | `mobile-packing-list` | current | current |  |
 | `mobile-project-switcher` | current | current |  |

@@ -74,6 +74,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 5: added Meeting Preflight coverage and fixed web Space activation for switches/radios. The device dialog keeps keyboard focus, closes on Escape, returns to its opener, and hides/disables closed choices. Failed joins retain settings; cancellation aborts the request and ignores late completion. Exact retry payloads, unavailable devices, source-fixture regression and accessibility checks pass.
 
+- Task 5: added Notification Digest coverage for keyboard Read/Snooze actions, failed callback restoration, exact payloads, Undo, collapsed piles and empty notifications. Enter/Space reveal actions, Escape returns focus, and closed drawers/sheets are disabled and hidden. Back cards stay decorative until their pile opens, and the remaining-count ring exposes values. Source-fixture regression and accessibility checks pass.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -212,14 +214,14 @@ tests/browser/pro-50-<suite>-probe.mjs <slug>` (suite = legal, saas, finance, hr
 
 ## 5. Write browser probes for components that have none
 
-91 finished components still have no dedicated browser regression probe. For each, read its source and
+90 finished components still have no dedicated browser regression probe. For each, read its source and
 `meta.json`, then add a case to the appropriate `tests/browser/*.mjs` suite (or a new probe registered in
 `scripts/test-components.mjs`) covering: the signature interaction, keyboard paths, failed-then-successful callbacks
 with drafts kept (where it has async callbacks), and empty or invalid data. Use `tests/browser/pro-50/hr-org-explorer.mjs`
 as the model for style and depth. Mobile components render through React Native web (`scripts/lib/component-fixture.mjs` aliases it);
 see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 
-`mobile-mood-map`, `mobile-notification-digest`
+`mobile-mood-map`
 `mobile-packing-list`, `mobile-project-switcher`, `mobile-reading-progress`, `mobile-review-annotations`
 `mobile-sync-conflict`, `mobile-task-move`, `mobile-trip-itinerary`, `mobile-voice-memo`, `chart-box-distribution`
 `chart-calendar-heatmap`, `chart-funnel-dots`, `chart-sankey-paths`, `chart-scatter-brush`
