@@ -53,6 +53,7 @@ export async function check({ page, mount, assert }) {
 
   // Paying never moves money on one click: it asks first.
   await pay.click();
+  await page.locator('[data-demo="confirm"]').waitFor({ state: "visible" });
   assert.match(await txt(toolbar), /Ready to send/);
   assert.match(await footer(), /Send £53,492\.00 to 5 vendors\? Leaves £18,348\.25 in Operating, below the £25,000\.00 reserve\./);
   assert.equal(await page.evaluate(() => window.runs.length), 0);

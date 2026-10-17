@@ -20,6 +20,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 3.8: invalid due dates and unknown customers now produce a notice and are excluded from totals. Current and mixed invoice selections use accurate payment terms at every tone. The letter editor retains focus across draft changes. Source-fixture regression and theme/responsive checks are recorded with the component.
 
+- Task 4: the payment-run probe now waits for its animated confirmation panel before asserting its contents. Its full failure, retry, partial settlement and next-run flow passes on the suite runner with source fixtures. Receivables also passes that runner. Next route verification remains separate while page loading changes are in flight.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
