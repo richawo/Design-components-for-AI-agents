@@ -3785,17 +3785,19 @@
     "updated": "2026-10-13"
   },
   "media-crop-workbench": {
-    "useWhen": "Framing a supplied image precisely with a real crop preview, ratio presets and matching normalized and pixel coordinates.",
-    "avoidWhen": "Retouching, removing a background or claiming an encoded export when the host has not provided processing.",
+    "useWhen": "Framing a photo before it is published or printed: avatars, product shots, editorial images and social crops where the ratio is fixed and the horizon has to be level.",
+    "avoidWhen": "Retouching, filters or background removal, or batch cropping many images at once without looking at each one.",
     "integration": [
-      "Provide a stable image ID, source and alternative text. Actual native dimensions determine pixels; the controlled box is normalized and rejected changes must not commit.",
-      "Handle onApply(payload, AbortSignal) with real processing and return a downloadable result only when available. The offline demo creates a Canvas PNG; live selection or image changes retire stale processing and download links."
+      "Pass image with the original's pixel width and height and, if you like, a smaller preview as src; the crop result is measured against the original, so pixels and output are full-resolution.",
+      "Store the result from onChange as a draft and save it in onApply(result, signal). Reject the promise to show Try again with the crop intact; the signal aborts when a newer save starts or the editor unmounts.",
+      "Customize the presets with aspects ({ key, label, ratio }), using \"original\" to follow the photo and null for free-form."
     ],
     "related": [
-      "input-detent-dial",
-      "media-before-after"
+      "media-before-after",
+      "media-caption-styler",
+      "input-detent-dial"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "media-caption-styler": {
     "useWhen": "A video or social tool where people set caption type, placement and panel over their own footage and need to see wrapping, safe-area crossings and contrast before they export.",

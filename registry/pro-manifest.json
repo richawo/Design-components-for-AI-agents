@@ -28090,164 +28090,217 @@
     "tier": "pro",
     "platform": "web",
     "category": "editors",
-    "description": "A precise image crop editor with a real framing preview, fixed ratios, keyboard resizing and exact fields. Its offline demo exports the selected pixels.",
+    "description": "A photo crop editor where the image leads: a frame that closes in, thirds guides, ratio presets that morph the box, a straighten ruler and a live output size.",
     "tags": [
       "image",
       "crop",
-      "editor",
+      "photo editor",
       "aspect ratio",
+      "straighten",
       "photography",
-      "keyboard"
+      "media"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1000,
-    "usage": "import { MediaCropWorkbench } from \"@/components/design-for-ai/media-crop-workbench\";\n\n<MediaCropWorkbench image={image} value={crop} onChange={setCrop} onCommit={saveSelection} onApply={applyCrop} />\n\n// applyCrop receives the normalized box, measured pixel coordinates and AbortSignal.\n// The host owns actual processing and optional downloadable results.",
+    "previewHeight": 980,
+    "usage": "import { MediaCropWorkbench } from \"@/components/design-for-ai/media-crop-workbench\";\n\n<MediaCropWorkbench\n  image={{ src: preview.url, alt: photo.alt, name: photo.fileName, width: photo.width, height: photo.height }}\n  defaultAspect=\"4:5\"\n  onChange={(crop) => setDraft(crop)}\n  onApply={(crop, signal) => api.saveCrop(photo.id, crop, { signal })}\n/>\n\n// crop.pixels and crop.output are measured against the original's width and height,\n// so a small preview image still yields full-resolution crop coordinates.",
     "props": [
       {
         "name": "image",
-        "type": "CropImage | null",
-        "description": "Stable image ID, source, alternative text, optional title and initial dimensions. Native load measures actual dimensions. Null renders the empty state."
+        "type": "{ src: string; alt: string; name?: string; width: number; height: number } | null",
+        "default": "a 6000 × 4000 studio still life",
+        "description": "The photo to crop. width and height are the original's pixel size; src can be a smaller preview. null shows the empty state."
       },
       {
-        "name": "value",
-        "type": "CropBox",
-        "description": "Optional controlled box: normalized x, y, width and height. Pair with onChange; rejected requests retain the actual selection."
+        "name": "aspects",
+        "type": "{ key: string; label: string; ratio: number | \"original\" | null }[]",
+        "default": "Original, Free, 1:1, 4:5, 16:9",
+        "description": "Ratio presets. ratio is output width ÷ height; \"original\" follows the photo; null is free-form (edge handles appear)."
       },
       {
-        "name": "defaultValue",
-        "type": "CropBox",
-        "default": "{ x: 0.1, y: 0.12, width: 0.8, height: 0.76 }",
-        "description": "Initial internal box and explicit reset target, clamped to the image. A new image resets internal selection."
+        "name": "defaultAspect",
+        "type": "string",
+        "default": "\"original\"",
+        "description": "Preset key selected on mount and restored by Reset."
+      },
+      {
+        "name": "defaultRect",
+        "type": "{ x: number; y: number; width: number; height: number }",
+        "default": "{ x: 0.07, y: 0.07, width: 0.86, height: 0.86 }",
+        "description": "Starting crop in fractions of the frame, reshaped to the default ratio. Reset returns here."
+      },
+      {
+        "name": "defaultAngle",
+        "type": "number",
+        "default": "0",
+        "description": "Starting straighten angle in degrees (clockwise positive)."
+      },
+      {
+        "name": "maxAngle",
+        "type": "number",
+        "default": "45",
+        "description": "The straighten ruler's range either side of level, in degrees."
+      },
+      {
+        "name": "guides",
+        "type": "boolean",
+        "default": "true",
+        "description": "Rule-of-thirds guides inside the crop. A finer grid always appears while straightening."
       },
       {
         "name": "onChange",
-        "type": "(box: CropBox) => void",
-        "description": "Request a bounded normalized selection. A controlled value without this callback is read-only."
-      },
-      {
-        "name": "onCommit",
-        "type": "(box: CropBox) => void",
-        "description": "A completed accepted keyboard, field, preset or pointer change. Rejected controlled requests do not commit."
+        "type": "(crop: CropResult) => void",
+        "description": "Called after each finished change (a drag released, a preset, a ruler or keyboard step) with { rect, aspect, angle, pixels, output }."
       },
       {
         "name": "onApply",
-        "type": "(payload: CropPayload, signal: AbortSignal) => void | CropResult | Promise<void | CropResult>",
-        "description": "Host-owned processing of the measured selection. The signal cancels on selection, image, handler, availability or lifecycle retirement; old results cannot settle a new crop. A result may supply a message, href and filename."
+        "type": "(crop: CropResult, signal: AbortSignal) => void | Promise<void>",
+        "description": "Saves the crop. The button shows Saving, then Saved; a rejection shows Try again and keeps the crop. The signal aborts on unmount or a newer save."
+      },
+      {
+        "name": "applyLabel",
+        "type": "string",
+        "default": "\"Save crop\"",
+        "description": "Primary button label."
       },
       {
         "name": "status",
         "type": "\"ready\" | \"loading\" | \"error\"",
         "default": "\"ready\"",
-        "description": "Host image availability, combined with actual native load/error events."
+        "description": "Host image state. Loading and error render in the photo's own footprint so nothing jumps."
       },
       {
         "name": "errorMessage",
         "type": "string",
-        "description": "A host-owned error explanation."
+        "default": "\"This photo didn’t load. …\"",
+        "description": "Body copy for the error state."
       },
       {
         "name": "onRetry",
         "type": "() => void",
-        "description": "Request another host fetch. Native image failures can retry the source directly; host errors need this callback."
+        "description": "Called by Try again in the error state (a native load failure also retries the source itself)."
       },
       {
-        "name": "minEdge",
-        "type": "number",
-        "default": "0.06",
-        "description": "Minimum normalized width and height, bounded to 0.001–1."
-      },
-      {
-        "name": "step",
-        "type": "number",
-        "default": "0.005",
-        "description": "Normalized keyboard increment, bounded to 0.0001–0.25. Shift multiplies it by ten; exact fields remain independently precise."
-      },
-      {
-        "name": "initialCorner",
-        "type": "CropCorner",
-        "default": "\"bottom-right\"",
-        "description": "The active 44 px corner grip. A changed value retires an incomplete gesture and selects that corner."
-      },
-      {
-        "name": "disabled",
-        "type": "boolean",
-        "default": "false",
-        "description": "Disables crop edits and processing while preserving the visible selection."
+        "name": "accent",
+        "type": "string",
+        "default": "\"#f5c542\"",
+        "description": "The ruler needle, the angle readout off level and focus rings."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Complete monochromatic graphite/white chrome. Colour is reserved for actual supplied content and purposeful feature accents."
-      },
-      {
-        "name": "labels",
-        "type": "Partial<CropLabels>",
-        "description": "Heading, instructions, field labels and processing, unavailable, error and result copy."
+        "description": "Graphite or paper chrome. The photo keeps its own colour."
       },
       {
         "name": "className",
         "type": "string",
         "default": "\"\"",
-        "description": "Host layout classes."
+        "description": "Classes on the root."
       }
     ],
     "added": "2026-10-13",
     "demo": {
       "steps": [
-        "click:@crop-square",
-        "wait:350",
-        "click:@crop-box",
+        "wait:500",
+        "click:@aspect-1-1",
+        "wait:700",
+        "click:@aspect-16-9",
+        "wait:600",
+        "click:@straighten",
         "key:ArrowRight",
-        "key:ArrowLeft",
-        "click:@crop-apply",
-        "wait:500"
+        "key:ArrowRight",
+        "key:ArrowRight",
+        "key:ArrowRight",
+        "wait:500",
+        "click:@apply",
+        "wait:1100"
       ],
       "loop": false
     },
     "controls": [
       {
-        "prop": "initialCorner",
-        "label": "Resize corner",
-        "kind": "select",
+        "prop": "defaultAspect",
+        "label": "Ratio",
+        "kind": "segmented",
         "options": [
-          "top-left",
-          "top-right",
-          "bottom-left",
-          "bottom-right"
+          {
+            "value": "original",
+            "label": "Original"
+          },
+          {
+            "value": "1:1",
+            "label": "1:1"
+          },
+          {
+            "value": "4:5",
+            "label": "4:5"
+          },
+          {
+            "value": "16:9",
+            "label": "16:9"
+          }
         ],
-        "default": "bottom-right"
+        "default": "original",
+        "remount": true
+      },
+      {
+        "prop": "defaultAngle",
+        "label": "Straighten",
+        "kind": "slider",
+        "min": -15,
+        "max": 15,
+        "step": 0.5,
+        "unit": "°",
+        "default": 0,
+        "remount": true
+      },
+      {
+        "prop": "guides",
+        "label": "Thirds guides",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f5c542",
+        "options": [
+          "#f5c542",
+          "#f4f4f5",
+          "#5eead4",
+          "#fb7185"
+        ]
       },
       {
         "prop": "theme",
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
         "default": "dark"
       },
       {
         "prop": "status",
         "label": "Image state",
-        "kind": "segmented",
+        "kind": "action",
         "options": [
           "ready",
           "loading",
           "error"
-        ],
-        "default": "ready"
-      },
-      {
-        "prop": "disabled",
-        "label": "Read only",
-        "kind": "toggle",
-        "default": false
+        ]
       }
     ]
   },
