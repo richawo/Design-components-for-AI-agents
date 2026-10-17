@@ -31,6 +31,7 @@ const publicCases = [
   "pixel-microphone-lifecycle",
   "catalogue-empty-recovery",
   "mobile-accessibility-probe",
+  "review-mobile-probe",
   "terminal-scroll-probe",
   "component-pages-probe",
   "settings-composition-probe",
@@ -96,7 +97,8 @@ for (const name of runCases) {
     {
       cwd: root,
       encoding: "utf8",
-      timeout: ["pro-50-demo-probe", "pro-select-polish-probe"].includes(name)
+      timeout: name.startsWith("pro-50-") || name.startsWith("review-") ||
+        ["pro-select-polish-probe", "blocks-probe"].includes(name)
         ? 900000
         : name === "component-pages-probe"
           ? 300000

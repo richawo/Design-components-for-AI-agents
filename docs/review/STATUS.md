@@ -13,12 +13,12 @@ needs re-recording, whether its poster is current, and the state of its browser 
 
 | Slug | Video | Poster | Probe |
 | --- | --- | --- | --- |
-| `mobile-attachment-tray` | new | current |  |
-| `mobile-budget-envelope` | new | current |  |
-| `mobile-channel-thread` | new | current |  |
+| `mobile-attachment-tray` | new | current | review-mobile-probe passes with source fixtures; web accessibility state fixed |
+| `mobile-budget-envelope` | new | current | review-mobile-probe passes with source fixtures; web accessibility state fixed |
+| `mobile-channel-thread` | new | current | review-mobile-probe passes with source fixtures; web accessibility state fixed |
 | `mobile-day-planner` | current | current |  |
 | `mobile-file-preview` | current | current |  |
-| `mobile-focus-session` | new | current |  |
+| `mobile-focus-session` | new | current | review-mobile-probe passes with source fixtures; web accessibility state fixed |
 | `mobile-habit-grid` | current | current |  |
 | `mobile-journal-prompt` | current | current |  |
 | `mobile-meeting-preflight` | current | current |  |

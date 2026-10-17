@@ -40,6 +40,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 2: Saved Views and Integration Manager posters are refreshed and visually checked, together with all three responsive captures and control changes. Six stale posters remain.
 
+- Task 5: registered and verified four dedicated mobile regressions for Attachment Tray, Budget Envelope, Channel Thread and Focus Session. They cover keyboard controls, callback retry/payloads where applicable, limits and empty/unavailable states. Missing web pressed, checked and slider values are fixed. The registered source-fixture run passes all four; application-route verification remains separate.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -184,15 +186,15 @@ tests/browser/pro-50-<suite>-probe.mjs <slug>` (suite = legal, saas, finance, hr
 
 ## 5. Write browser probes for components that have none
 
-101 finished components have no dedicated browser regression probe. For each, read its source and
+97 finished components still have no dedicated browser regression probe. For each, read its source and
 `meta.json`, then add a case to the appropriate `tests/browser/*.mjs` suite (or a new probe registered in
 `scripts/test-components.mjs`) covering: the signature interaction, keyboard paths, failed-then-successful callbacks
 with drafts kept (where it has async callbacks), and empty or invalid data. Use `tests/browser/pro-50/hr-org-explorer.mjs`
 as the model for style and depth. Mobile components render through React Native web (`scripts/lib/component-fixture.mjs` aliases it);
 see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 
-`mobile-attachment-tray`, `mobile-budget-envelope`, `mobile-channel-thread`, `mobile-day-planner`
-`mobile-file-preview`, `mobile-focus-session`, `mobile-habit-grid`, `mobile-journal-prompt`
+`mobile-day-planner`
+`mobile-file-preview`, `mobile-habit-grid`, `mobile-journal-prompt`
 `mobile-meeting-preflight`, `mobile-mood-map`, `mobile-notification-digest`, `mobile-offline-outbox`
 `mobile-packing-list`, `mobile-project-switcher`, `mobile-reading-progress`, `mobile-review-annotations`
 `mobile-sync-conflict`, `mobile-task-move`, `mobile-trip-itinerary`, `mobile-voice-memo`, `chart-box-distribution`
