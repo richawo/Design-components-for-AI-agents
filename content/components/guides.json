@@ -3850,17 +3850,17 @@
     "updated": "2026-10-17"
   },
   "features-compare-lenses": {
-    "useWhen": "Comparing two supplied approaches to the same workflow using corresponding, inspectable stages.",
-    "avoidWhen": "A before/after image wipe or unsupported claims that one product is faster or better.",
+    "useWhen": "A feature or product page that has to show how much better one specific workflow gets: each stage of the old way next to the same stage done with your product, with real working times.",
+    "avoidWhen": "Image before/after reveals, plan or price comparison tables, or claims you can’t back with real timings from customers.",
     "integration": [
-      "Supply comparable stages and concrete differences. Keep timings and outcomes tied to the host evidence rather than invented numbers.",
-      "Let readers select stages and retain readable context on narrow containers; linked navigation should remain optional when the workflows differ."
+      "Pass ordered stages, each with a before and after side: the tool where the work happens, a title, working minutes (a working day is eight hours), five or so rows with ok, warn, error or idle states, and a footer. Totals and the readout are computed from minutes.",
+      "Name both ways with beforeLabel and afterLabel, start the lens with defaultValue or control it with value/onValueChange (for example to sync copy beside it), and use status, errorMessage and onRetry when the stages come from a CMS."
     ],
     "related": [
-      "media-before-after",
-      "media-story-deck"
+      "features-integration-trace",
+      "media-before-after"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "pricing-usage-calculator": {
     "useWhen": "Pricing a metered product (API calls, renders, minutes, seats of compute) where buyers need to see how a base fee, an allowance and per-block overage add up at their own volume.",

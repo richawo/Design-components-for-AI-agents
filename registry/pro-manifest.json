@@ -21283,114 +21283,127 @@
   },
   {
     "slug": "features-compare-lenses",
-    "name": "Workflow Comparison Lenses",
+    "name": "Workflow Compare Lens",
     "tier": "pro",
     "platform": "web",
     "category": "features",
-    "description": "Inspect two workflows stage by stage, with readable explanations and actual outputs. Shared navigation reveals corresponding work and honest missing stages.",
+    "description": "A feature comparison you drag: a lens slides across a real workflow and shows each stage done the new way, with the time it takes counting down.",
     "tags": [
       "features",
       "comparison",
+      "before and after",
       "workflow",
-      "stages",
-      "outputs",
-      "keyboard"
+      "lens",
+      "drag",
+      "marketing"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1100,
-    "usage": "import { FeaturesCompareLenses } from \"@/components/design-for-ai/features-compare-lenses\";\n\n<FeaturesCompareLenses journeys={journeys} value={stageId} onValueChange={setStageId} />\n\n// Supply two comparable workflow stories and real output links when available.",
+    "previewHeight": 900,
+    "usage": "import { FeaturesCompareLenses } from \"@/components/design-for-ai/features-compare-lenses\";\n\n<FeaturesCompareLenses\n  title=\"Month-end close\"\n  beforeLabel=\"Spreadsheets\"\n  afterLabel=\"Ledgerline\"\n  stages={stages}\n/>",
     "props": [
       {
-        "name": "journeys",
-        "type": "readonly CompareJourney[]",
-        "description": "Up to two supplied workflow stories with stable journey/stage IDs, titles, explanations, optional host content and actual output destinations. Duplicate journey IDs are ignored; provide the pair to compare."
+        "name": "title",
+        "type": "string",
+        "default": "\"Untitled workflow\"",
+        "description": "The workflow being compared, in the tool bar."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "description": "Context under the title, e.g. the customer and period."
+      },
+      {
+        "name": "stages",
+        "type": "LensStage[]",
+        "default": "[]",
+        "description": "Stages in order: {id, label, summary?, before, after}. Each side is {tool, title, minutes, rows: {label, meta?, state?: ok | warn | error | idle}[], footer?}. Minutes drive the figures (a working day is eight hours)."
+      },
+      {
+        "name": "beforeLabel",
+        "type": "string",
+        "default": "\"Today\"",
+        "description": "Name of the old way."
+      },
+      {
+        "name": "afterLabel",
+        "type": "string",
+        "default": "\"With us\"",
+        "description": "Name of the new way; it labels the lens handle."
       },
       {
         "name": "value",
         "type": "string",
-        "description": "Optional controlled shared stage ID. Pair with onValueChange; rejected requests preserve the actual comparison and missing callbacks lock navigation."
+        "description": "Controlled stage id under the lens. Without onValueChange it’s read-only."
       },
       {
         "name": "defaultValue",
         "type": "string",
-        "default": "first available stage",
-        "description": "Initial internal selection; a changed prop resets local selection. Shared and unique stages are placed in a useful union order."
+        "default": "first stage",
+        "description": "Where the lens starts."
       },
       {
         "name": "onValueChange",
         "type": "(stageId: string) => void",
-        "description": "Request a supplied stage. Each workflow shows its own corresponding stage or an honest missing-stage view."
+        "description": "Called as the lens passes each stage and when it settles."
       },
       {
         "name": "status",
         "type": "\"ready\" | \"loading\" | \"error\"",
         "default": "\"ready\"",
-        "description": "Host-owned workflow availability."
+        "description": "Loading and error states for a comparison fetched from your CMS."
       },
       {
         "name": "errorMessage",
         "type": "string",
-        "description": "A real host failure explanation."
+        "description": "Shown when status is error."
       },
       {
         "name": "onRetry",
         "type": "() => void",
-        "description": "Explicit host recovery request. No handler means no fake retry control."
+        "description": "Offered as Try again in the error state."
       },
       {
         "name": "disabled",
         "type": "boolean",
         "default": "false",
-        "description": "Disable navigation while retaining actual supplied content."
+        "description": "Freezes the lens and tabs."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Complete monochromatic graphite/white chrome. Colour is reserved for actual supplied content and purposeful feature accents."
+        "description": "Graphite or white chrome."
       },
       {
-        "name": "labels",
-        "type": "Partial<CompareLensesLabels>",
-        "description": "Heading, description, navigation, availability, missing-stage, output and index copy."
+        "name": "accent",
+        "type": "string",
+        "default": "\"#7cc4ff\"",
+        "description": "The one accent: lens edge, handle and the new-way figures (darkened for text on light)."
       },
       {
         "name": "className",
         "type": "string",
         "default": "\"\"",
-        "description": "Host layout classes."
+        "description": "Root classes. Container-responsive up to 1120 px; when the canvas is narrower than 820 px the stages stack and the lens travels vertically."
       }
     ],
     "added": "2026-10-13",
     "demo": {
       "steps": [
-        "click:@lens-draft",
-        "wait:350",
-        "click:@lens-structure",
-        "wait:350",
-        "click:@lens-context",
-        "wait:450"
+        "wait:500",
+        "hover:@lens",
+        "drag:0.8,0.62",
+        "wait:900",
+        "click:@stage-receipts",
+        "wait:1000"
       ],
       "loop": false
     },
     "controls": [
-      {
-        "prop": "defaultValue",
-        "label": "Start stage",
-        "kind": "select",
-        "options": [
-          "context",
-          "structure",
-          "draft",
-          "review",
-          "handoff"
-        ],
-        "default": "context"
-      },
       {
         "prop": "theme",
         "label": "Theme",
@@ -21402,21 +21415,51 @@
         "default": "dark"
       },
       {
+        "prop": "accent",
+        "label": "Lens",
+        "kind": "color",
+        "default": "#7cc4ff",
+        "options": [
+          "#7cc4ff",
+          "#ff6b3d",
+          "#c6f36b",
+          "#f4f4f5"
+        ]
+      },
+      {
+        "prop": "afterLabel",
+        "label": "New way",
+        "kind": "text",
+        "default": "Ledgerline"
+      },
+      {
+        "prop": "defaultValue",
+        "label": "Start at",
+        "kind": "select",
+        "options": [
+          "receipts",
+          "coding",
+          "reconcile",
+          "signoff"
+        ],
+        "default": "coding",
+        "remount": true
+      },
+      {
+        "prop": "disabled",
+        "label": "Disabled",
+        "kind": "toggle",
+        "default": false
+      },
+      {
         "prop": "status",
         "label": "Availability",
-        "kind": "segmented",
+        "kind": "action",
         "options": [
           "ready",
           "loading",
           "error"
-        ],
-        "default": "ready"
-      },
-      {
-        "prop": "disabled",
-        "label": "Read only",
-        "kind": "toggle",
-        "default": false
+        ]
       }
     ]
   },
