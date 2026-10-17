@@ -2088,18 +2088,19 @@
     "updated": "2026-10-17"
   },
   "fashion-collection-line-plan": {
-    "useWhen": "Reviewing a collection's styles, planned quantities and line-level decisions.",
-    "avoidWhen": "A product information system or manufacturing commitment created solely in the browser.",
+    "useWhen": "A merchandiser builds a season's line plan: how many styles each category carries, at which good/better/best price point, and whether the line fits its cost budget and margin targets.",
+    "avoidWhen": "Store-level allocation or open-to-buy by week. Use the assortment planner for allocation; this plan works at style and category level.",
     "integration": [
-      "Supply your own records through `categories`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onSave` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+      "Pass `categories` with `unitsPerStyle` and a unit cost and retail; add `options` (one per style, with tier and colourway), a tier `ladder`, `targetOptions` and `marginTarget` for the full view. Without `options` the plan draws placeholder styles at the category price.",
+      "`onSave` receives every category with its options, weighted unit cost and retail, totals and blended margin; throw to keep the edits. Over budget blocks saving.",
+      "Replacing a style remains an unsaved edit when the option count is unchanged. Retiring tiles become inert during their exit."
     ],
     "related": [
-      "commerce-catalog-import",
-      "commerce-return-desk",
-      "commerce-variant-stock"
+      "fashion-assortment-planner",
+      "fashion-merchandising-dashboard",
+      "fashion-preorder-planner"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "fashion-exchange-selector": {
     "useWhen": "A customer or support agent swaps an ordered garment for another colourway or size and needs to see the new garment, how its measurements change and what they pay or get back.",

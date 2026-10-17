@@ -1,6 +1,6 @@
 # Review status
 
-152 components are rebuilt (or, for a few, polished), verified and committed. For each: whether its demo video
+153 components are rebuilt (or, for a few, polished), verified and committed. For each: whether its demo video
 needs re-recording, whether its poster is current, and the state of its browser regression probe.
 
 - **Video**: `new` means `public/previews/<slug>.mp4` still shows the old version. Re-record serially on a quiet machine:
@@ -153,7 +153,7 @@ needs re-recording, whether its poster is current, and the state of its browser 
 | `finance-reconciliation` | new | current | pro-industry and demo probes pass on Next; exact currency and matched selection fixed |
 | `finance-scenario-forecast` | new | current | rewritten, passes on suite runner with source fixtures; Next route check pending |
 
-## Fashion suite (5)
+## Fashion suite (6)
 
 | Slug | Video | Poster | Probe |
 | --- | --- | --- | --- |
@@ -161,6 +161,7 @@ needs re-recording, whether its poster is current, and the state of its browser 
 | `fashion-exchange-selector` | new | current | rewritten, passes |
 | `fashion-launch-calendar` | new | current | rewritten, passes |
 | `fashion-preorder-planner` | new | current | source-fixture regression, demo, accessibility and responsive/state/entrance captures pass |
+| `fashion-collection-line-plan` | new | current | source-fixture regression/demo, both-theme accessibility, responsive/state/entrance captures and workspace draft/save checks pass |
 | `fashion-wholesale-order` | new | current | rewritten, passes |
 
 ## Commerce suite (4)
