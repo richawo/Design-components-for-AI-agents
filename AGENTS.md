@@ -12,6 +12,20 @@ Instructions for AI coding agents (Claude Code, Codex, Cursor and others) workin
 
 Pro components live in a separate private repository, `richawo/Design-for-AI`, cloned into `registry/pro/`. It's its own git repo with the same rules: work on its `main`, and commit and push there separately.
 
+## Component-page performance invariants (17 October 2026)
+
+Catalogue growth must not make opening one component initialize or download the whole library. The October incident reproduced multi-second individual-page loads and a Cloudflare 1105 error inside a preview. Treat the following boundaries as release requirements:
+
+- Keep registry source bundles packed at build time and unpack only the requested component. Do not restore eager imports of every readable source JSON into the Worker. Preserve exact code and prompt contents, and run the content-pack and Pro registry tests when changing this path.
+- Give each `/preview/<slug>` a generated route with a literal import of that component's client wrapper. Do not pass a component selected from a shared dynamic-import map across the server/client boundary: that approach caused one chart preview to preload 81 scripts, including unrelated mobile and 3D code. Preserve the generated `"use client"` wrappers for components that lack their own directive.
+- Keep the public Cloudflare router separate from the lazily imported Next server. Wrangler can silently inline dynamic imports. Preserve the explicit module rules and validate the final `--no-bundle` artifact, not just `.next` or the unbundled OpenNext output. Deployment must fail if the public entry reaches 4 MiB, total runtime modules reach 64 MiB, or gzipped source maps reach 15 MB. Do not remove or raise these guards to get a growing catalogue deployed.
+- Measure the complete interaction: click a real catalogue card, reach the individual page, and wait for the live preview to mount and become visible. An iframe `load` event or a fast page heading does not prove the component is usable. Run `tests/browser/component-navigation-performance.mjs` against the prepared Worker for representative web, native and 3D components, on first and warm visits. Keep the script-count guard (24), second-frame guard (200 ms) and local preview budget (2.5 seconds); investigate failures before claiming improvement. Compare the same throttled replay with a pre-change baseline and confirm the blocking negative control fails.
+- Preview failures must finish in a recoverable state. An error document can fire `load` before or after parent hydration. Allow at most one automatic retry, then expose an accessible manual retry; time out a stalled handshake. Run `tests/browser/preview-recovery.mjs` for transient errors, persistent errors and a valid document whose JavaScript never becomes ready. Never replace a bounded failure with an endless spinner or retry loop.
+- Preserve licence and cache boundaries while optimizing. Public pages may be cached; authenticated source, downloads, registry endpoints and account state must retain their authorization and private/no-store behaviour. Verify anonymous Pro requests still return locked or unauthorized responses without source code.
+- A push is not deployment proof. Confirm the live public/private build marker matches the intended committed sources, replay the individual-page interaction on production, and report Cloudflare errors separately from application timings. Do not claim the underlying Cloudflare incident is eliminated solely because local checks pass.
+
+Read `docs/SITE_PERFORMANCE.md` and `docs/DEPLOY.md` before changing these paths. Archive before/after and negative-control reports under `test-results/frontend-latency-replays/`; keep generated bundles and raw request logs out of Git. Agent instructions reinforce executable checks, not replace them.
+
 ## Product direction (11 October 2026)
 
 - New additions default to **Pro**. All industry-specific components belong in Pro, including e-commerce, fashion, finance, HR and legal technology.

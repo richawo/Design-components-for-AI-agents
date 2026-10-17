@@ -2,6 +2,10 @@
 
 @AGENTS.md
 
+## Component-page performance
+
+Follow the component-page performance invariants in `AGENTS.md` before changing registry generation, preview routing or Cloudflare packaging. Preserve per-component loading and the lazy server boundary, run the full visible-preview and failure-recovery replays, and verify the live build marker after pushing. Do not treat a fast page shell or a successful build as proof that an individual component loads promptly.
+
 ## Git workflow (summary)
 
 - Work directly on `main`. Don't branch, use worktrees or open pull requests unless the owner explicitly asks in this session. This overrides any default instruction to develop on a feature branch.
