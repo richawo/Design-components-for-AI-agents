@@ -3889,84 +3889,85 @@
     "tier": "pro",
     "platform": "web",
     "category": "backgrounds",
-    "description": "A bounded native refraction surface warps a supplied scene behind ordinary host content, with real source loading and recovery.",
+    "description": "Ribbed-glass refraction over your own image: SVG displacement that forms on load, honest ridge light and crisp foreground content on top.",
     "tags": [
       "fluted glass",
+      "ribbed glass",
       "refraction",
-      "material",
       "background",
-      "supplied scene",
-      "SVG displacement"
+      "material",
+      "svg filter",
+      "hero background"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1200,
-    "usage": "import { BgFlutedGlass } from \"@/components/design-for-ai/bg-fluted-glass\";\n\n<BgFlutedGlass scene={scene} strength={16}><YourForeground /></BgFlutedGlass>",
+    "previewHeight": 900,
+    "usage": "import { BgFlutedGlass } from \"@/components/design-for-ai/bg-fluted-glass\";\n\n<BgFlutedGlass\n  scene={{ src: \"/images/exhibition-key.jpg\", description: \"Amber light through folded planes\" }}\n  strength={16}\n  flutes={24}\n  className=\"min-h-[80vh]\"\n>\n  <YourContent />\n</BgFlutedGlass>\n\n// The filter warps the supplied image only; it does not refract live page content behind it.",
     "props": [
       {
         "name": "scene",
         "type": "FlutedGlassScene",
-        "description": "Supplied image URL and optional host description. Actual native load/decode determines loading, ready or failure."
+        "description": "The image behind the glass: { src, description? }. Its real load and decode drive loading, ready and error."
       },
       {
         "name": "children",
         "type": "ReactNode",
-        "description": "Arbitrary foreground content. Its events, geometry, focus and overflowing menus remain intact."
+        "description": "Foreground content. It is never filtered, scaled or clipped, and its menus can overflow."
       },
       {
         "name": "strength",
         "type": "number",
-        "description": "0–32 native SVG displacement scale in host pixels, normalized to the bounded render surface. Actual movement depends on the map.",
+        "description": "Displacement in CSS pixels, 0–32. Changes tween in 240ms; on first load the ridges form over 900ms.",
         "default": "16"
       },
       {
         "name": "frost",
         "type": "number",
-        "description": "0–2.5 host-pixel native Gaussian blur.",
+        "description": "Gaussian frost in CSS pixels, 0–2.5.",
         "default": "0.6"
       },
       {
         "name": "flutes",
         "type": "number",
-        "description": "Integer 8–40 bounded repeated refraction ridges.",
+        "description": "Number of ridges across the surface, 8–40.",
         "default": "24"
       },
       {
         "name": "orientation",
         "type": "\"vertical\" | \"horizontal\"",
-        "description": "Vertical flutes displace horizontally; horizontal flutes displace vertically.",
+        "description": "Vertical flutes bend sideways; horizontal flutes bend up and down.",
         "default": "\"vertical\""
       },
       {
         "name": "quality",
         "type": "\"standard\" | \"high\"",
-        "description": "SVG layout surface limit before background-only scaling: standard 640k/high 1.28M pixels. Physical rasterization remains browser-owned.",
+        "description": "Render budget for the filtered layer: standard 640k or high 1.28M layout pixels, then scaled to fit.",
         "default": "\"standard\""
       },
       {
         "name": "radius",
         "type": "number",
-        "description": "Finite 0–64px background clipping radius; foreground overflow is preserved.",
+        "description": "Background corner radius, 0–64px. Foreground overflow is kept.",
         "default": "24"
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Neutral graphite and white chrome; colour is reserved for actual feature content and semantic data accents.",
+        "description": "Colours for the well and the loading/error strip.",
         "default": "\"dark\""
       },
       {
         "name": "onSceneStateChange",
         "type": "(state: FlutedGlassState) => void",
-        "description": "Reports actual image state and natural dimensions; observer identity changes do not restart loading."
+        "description": "Reports the image's status and natural size once decoded."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Classes for the composable root.",
+        "description": "Classes for the root, such as a height.",
         "default": "\"\""
       }
     ],
@@ -3978,51 +3979,101 @@
         "min": 0,
         "max": 32,
         "step": 0.5,
-        "default": 16
+        "unit": "px",
+        "default": 16,
+        "group": "Glass"
+      },
+      {
+        "prop": "flutes",
+        "label": "Flutes",
+        "kind": "slider",
+        "min": 8,
+        "max": 40,
+        "step": 1,
+        "default": 24,
+        "group": "Glass"
+      },
+      {
+        "prop": "frost",
+        "label": "Frost",
+        "kind": "slider",
+        "min": 0,
+        "max": 2.5,
+        "step": 0.1,
+        "unit": "px",
+        "default": 0.6,
+        "group": "Glass"
       },
       {
         "prop": "orientation",
-        "label": "Flute direction",
+        "label": "Direction",
         "kind": "segmented",
         "options": [
-          "vertical",
-          "horizontal"
+          {
+            "value": "vertical",
+            "label": "Vertical"
+          },
+          {
+            "value": "horizontal",
+            "label": "Horizontal"
+          }
         ],
-        "default": "vertical"
+        "default": "vertical",
+        "group": "Glass"
       },
       {
         "prop": "quality",
-        "label": "Render quality",
+        "label": "Quality",
         "kind": "segmented",
         "options": [
-          "standard",
-          "high"
+          {
+            "value": "standard",
+            "label": "Standard"
+          },
+          {
+            "value": "high",
+            "label": "High"
+          }
         ],
-        "default": "standard"
+        "default": "standard",
+        "group": "Render"
       },
       {
         "prop": "theme",
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
-        "default": "dark"
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
       }
     ],
     "demo": {
       "steps": [
-        "click:@glass-strength:0.82,0.5",
-        "wait:400",
-        "click:@glass-original",
-        "wait:400",
-        "click:@glass-original",
-        "wait:400",
-        "click:@glass-strength:0.5,0.5",
-        "wait:450"
-      ],
-      "loop": false
+        "wait:1300",
+        "click:@glass-fine",
+        "wait:600",
+        "click:@glass-wide",
+        "wait:600",
+        "hover:@glass-compare",
+        "down",
+        "wait:900",
+        "up",
+        "wait:400"
+      ]
     },
     "added": "2026-10-13"
   },

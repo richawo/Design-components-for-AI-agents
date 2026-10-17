@@ -3993,18 +3993,19 @@
     "updated": "2026-10-13"
   },
   "bg-fluted-glass": {
-    "useWhen": "Separating supplied foreground content from a layered scene with a restrained fluted refraction treatment.",
-    "avoidWhen": "Making text less legible, imitating unsupported live refraction or adding expensive animation behind every panel.",
+    "useWhen": "A hero, cover or feature panel where an image should read as seen through reeded glass, with headlines, cards or controls on top that must stay sharp.",
+    "avoidWhen": "Blurring live page content behind a modal or nav (use backdrop-filter), or behind long-form text without a panel.",
     "integration": [
-      "Supply a real scene image and independent foreground children. The surface applies SVG displacement to the supplied image; it does not capture or refract a live backdrop. Preserve foreground interaction, selectable content and intentional overflow.",
-      "Use strength0–32 and frost0–2.5 in host CSS pixels, integer flutes8–40, vertical/horizontal orientation and radius0–64. Standard/high quality bounds the decorative scene to 640,000/1,280,000 layout pixels. Scale only that scene and normalize filter strength to host coordinates.",
-      "Use actual native Image load/decode dimensions and scoped onSceneStateChange receipts. Source replacement retires old image results, retry operates on the real current source, and unavailable content stays clear. Static displacement has no ambient loop to pause; preserve the same readable foreground under reduced motion."
+      "Pass your own image as scene.src (a URL, imported asset or data URI) with a short description, and put the real content in children. The filter warps that image only; it does not refract whatever sits behind the element.",
+      "Tune with strength (0–32px), flutes (8–40), frost (0–2.5px) and orientation. Values tween live, so they can be bound straight to sliders. On first load the ridges form over 900ms; with reduced motion they appear at once.",
+      "Give the wrapper a size with className (min-h-[80vh], aspect-[16/9]). quality=\"high\" doubles the render budget for very large, sharp images; the default keeps the filter cheap.",
+      "onSceneStateChange reports loading, ready (with natural size) and error; failed loads show a Retry strip while your content stays usable."
     ],
     "related": [
       "bg-dither-flow",
       "effect-border-tracer"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "bg-topographic-contours": {
     "useWhen": "Exploring a controlled contour surface by changing bounded density and lighting inputs.",
