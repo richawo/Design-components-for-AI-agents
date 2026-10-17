@@ -3664,19 +3664,19 @@
     "updated": "2026-10-13"
   },
   "layout-split-resizer": {
-    "useWhen": "Two related views need adjustable space, such as an editor beside a preview or a record list beside its details.",
-    "avoidWhen": "Independent page sections that should stack and scroll naturally, or a split whose minimum usable widths cannot fit the available container.",
+    "useWhen": "Two related views share one space and people tune the balance: a query and its results, an editor and its preview, a list and the record it opens.",
+    "avoidWhen": "Independent page sections that should simply stack and scroll, or panes too dense to stay useful at their minimum width.",
     "integration": [
-      "Set meaningful minimum pane sizes and provide content that remains usable at each supported size.",
-      "Persist the chosen split in the host when needed; keyboard resizing and collapse should preserve a useful restoration size.",
-      "Use orientation=\"auto\" to stack in narrow containers. A requested percentage is a preference; onPaneSizesChange reports bounded visible percentages and logical pixel sizes.",
-      "Keep the host panes mounted when retaining editor drafts, and provide usable scrolling when supplied minimum sizes cannot fit."
+      "Set `minPrimary` and `minSecondary` to the narrowest each pane stays useful; dragging past a minimum resists, then folds the pane into a rail that restores it.",
+      "Persist the split from `onValueChange(value, reason)`, which fires once a drag, key or fold settles; 0 and 100 mean a folded pane.",
+      "Choose `snapPoints` that match your layouts (for example 33, 50, 67); PageUp and PageDown step between them from the keyboard.",
+      "Panes stay mounted when folded, so editors keep drafts and scroll; each pane is its own container for container queries."
     ],
     "related": [
       "layout-workspace-shell",
       "editor-markdown-split"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "media-device-switcher": {
     "useWhen": "Showing how one page reads on a phone, a tablet and a desktop, with the page itself as the hero: theme galleries, design reviews, template marketplaces and CMS previews.",

@@ -26552,212 +26552,183 @@
     "tier": "pro",
     "platform": "web",
     "category": "navigation",
-    "description": "A monochrome split workspace with an actual editable document and live structured preview, precise bounded resizing and retained collapse/restore state.",
+    "description": "Two panes and a divider that feels physical: it snaps to marks, resists at the limits, folds a pane into a rail with a spring, and shows both sizes as you drag.",
     "tags": [
       "split pane",
-      "resizer",
-      "workspace",
+      "resizable",
+      "divider",
+      "layout",
+      "snap",
+      "collapsible",
       "editor",
-      "keyboard",
-      "responsive"
+      "dark"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 880,
-    "usage": "import { LayoutSplitResizer } from \"@/components/design-for-ai/layout-split-resizer\";\n\n<LayoutSplitResizer\n  primary={<YourEditor />}\n  secondary={<YourPreview />}\n  primaryLabel=\"Draft\"\n  secondaryLabel=\"Preview\"\n  minPrimary={220}\n  minSecondary={240}\n  orientation=\"auto\"\n  style={{ height: 560 }}\n/>",
+    "previewHeight": 700,
+    "usage": "import { LayoutSplitResizer } from \"@/components/design-for-ai/layout-split-resizer\";\n\n<LayoutSplitResizer\n  primaryLabel=\"Query\"\n  secondaryLabel=\"Results\"\n  primary={<SqlEditor />}\n  secondary={<ResultsTable />}\n  defaultValue={42}\n  snapPoints={[33, 50, 67]}\n  minPrimary={260}\n  minSecondary={300}\n  onValueChange={(value, reason) => savePreference(\"split\", value)}\n/>",
     "props": [
       {
         "name": "primary",
         "type": "ReactNode",
-        "description": "First host pane. Its React subtree stays mounted while collapsed or reduced to zero space. Hidden content becomes inert and transfers focus safely."
+        "description": "First pane (left, or top when stacked). It stays mounted when folded, so drafts and scroll survive."
       },
       {
         "name": "secondary",
         "type": "ReactNode",
-        "description": "Second host pane. The layout supplies a scrollable slot; host content and its actions remain caller-owned."
+        "description": "Second pane. Also stays mounted when folded."
       },
       {
         "name": "primaryLabel",
         "type": "string",
-        "description": "Name of the first region and the focusable separator. Match the pane's visible heading.",
-        "default": "\"First panel\""
+        "default": "\"First pane\"",
+        "description": "Names the pane for its rail, the size readout and screen readers."
       },
       {
         "name": "secondaryLabel",
         "type": "string",
-        "description": "Name of the second region and its collapse control.",
-        "default": "\"Second panel\""
+        "default": "\"Second pane\"",
+        "description": "Names the second pane."
+      },
+      {
+        "name": "primaryIcon",
+        "type": "ReactNode",
+        "description": "Icon on the primary pane's rail when folded."
+      },
+      {
+        "name": "secondaryIcon",
+        "type": "ReactNode",
+        "description": "Icon on the secondary pane's rail when folded."
       },
       {
         "name": "value",
         "type": "number",
-        "description": "Controlled preferred percentage for the first pane, from 0 to 100. Geometry bounds the visible size. Without onValueChange, the split is read-only. Allowed endpoints fold a pane."
+        "description": "Controlled size of the primary pane, in percent. 0 folds it into a rail; 100 folds the secondary. If you don't accept a change, the divider springs back."
       },
       {
         "name": "defaultValue",
         "type": "number",
-        "description": "Uncontrolled initial preference, in percent. Site customization remounts the demo when this changes.",
-        "default": "44"
+        "default": "42",
+        "description": "Initial split when uncontrolled; double-clicking the divider returns to it."
       },
       {
         "name": "onValueChange",
-        "type": "(value: number, reason: SplitResizeReason) => void",
-        "description": "Requests a pointer, keyboard, collapse, restore or cancellation preference. A controlled host must accept it to move the split."
+        "type": "(value: number, reason: \"pointer\" | \"keyboard\" | \"snap\" | \"collapse\" | \"restore\" | \"reset\") => void",
+        "description": "Called once a drag, key, fold or restore settles (not on every pointer move)."
       },
       {
-        "name": "onValueCommit",
-        "type": "(value: number) => void",
-        "description": "Notifies an accepted pointer release or a synchronously accepted keyboard/collapse request. Rejected controlled changes and cancellation do not commit."
+        "name": "snapPoints",
+        "type": "number[]",
+        "default": "[33, 50, 67]",
+        "description": "Percentages the divider is pulled onto while dragging; PageUp/PageDown step between them."
       },
       {
-        "name": "onPaneSizesChange",
-        "type": "(sizes: SplitPaneSizes) => void",
-        "description": "Actual target sizes in logical pixels, axis and bounded visible percentage. constrained reports geometry limited by the container or pane limits."
-      },
-      {
-        "name": "orientation",
-        "type": "\"auto\" | \"horizontal\" | \"vertical\"",
-        "description": "Side-by-side or stacked placement. Auto uses this component's own width, not the browser viewport.",
-        "default": "\"auto\""
-      },
-      {
-        "name": "autoBreakpoint",
+        "name": "snapDistance",
         "type": "number",
-        "description": "Container width below which auto mode stacks. Auto also stacks if the side-by-side minimums cannot fit.",
-        "default": "640"
+        "default": "16",
+        "description": "How close (px) the divider has to come to a snap point to be pulled onto it."
       },
       {
         "name": "minPrimary",
         "type": "number",
-        "description": "First expanded pane's minimum in logical pixels along the current resize axis.",
-        "default": "180"
+        "default": "260",
+        "description": "Smallest open size of the primary pane in px. Dragging past it resists, then folds."
       },
       {
         "name": "minSecondary",
         "type": "number",
-        "description": "Second expanded pane's minimum in logical pixels along the current resize axis.",
-        "default": "180"
-      },
-      {
-        "name": "maxPrimary",
-        "type": "number",
-        "description": "Optional finite maximum while both panes share the frame. When the second pane is folded, the first fills the frame. Must be at least minPrimary."
-      },
-      {
-        "name": "maxSecondary",
-        "type": "number",
-        "description": "Optional finite maximum while both panes share the frame. When the first pane is folded, the second fills the frame. Must be at least minSecondary."
-      },
-      {
-        "name": "keyboardStep",
-        "type": "number",
-        "description": "Logical pixels per arrow press. Shift increases the step fourfold; Home/End reach the current bounds.",
-        "default": "16"
+        "default": "300",
+        "description": "Smallest open size of the secondary pane in px."
       },
       {
         "name": "collapsible",
         "type": "\"both\" | \"primary\" | \"secondary\" | \"none\"",
-        "description": "Which panes expose collapse controls. The last visible pane cannot collapse. Enter toggles the first pane when permitted.",
-        "default": "\"both\""
+        "default": "\"both\"",
+        "description": "Which panes can fold into a 44px rail."
+      },
+      {
+        "name": "orientation",
+        "type": "\"auto\" | \"horizontal\" | \"vertical\"",
+        "default": "\"auto\"",
+        "description": "Auto stacks the panes below autoBreakpoint of container width."
+      },
+      {
+        "name": "autoBreakpoint",
+        "type": "number",
+        "default": "720",
+        "description": "Container width (px) below which auto stacks."
+      },
+      {
+        "name": "keyboardStep",
+        "type": "number",
+        "default": "16",
+        "description": "Arrow-key step in px; Shift moves four times as far."
       },
       {
         "name": "disabled",
         "type": "boolean",
-        "description": "Locks resizing and collapse controls while leaving host contents usable.",
-        "default": "false"
+        "default": "false",
+        "description": "Locks the divider. The panes stay fully usable."
+      },
+      {
+        "name": "height",
+        "type": "number",
+        "default": "560",
+        "description": "Height of the split in px."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "theme ink",
+        "description": "Colour of the divider while dragging and of the snap mark it sits on."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Graphite or paper treatment for the frame and tactile grip. The demo uses matching editorial surfaces.",
-        "default": "\"dark\""
+        "default": "\"dark\"",
+        "description": "Frame palette."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Width and placement classes on the layout root. Set the frame height through style.",
-        "default": "\"\""
-      },
-      {
-        "name": "style",
-        "type": "CSSProperties",
-        "description": "Root dimensions, including height. Width and height are measured from the actual content box; layout direction and writing mode are owned by the splitter."
-      },
-      {
-        "name": "title",
-        "type": "string",
-        "description": "Demo-only headline.",
-        "default": "\"A little room to think.\""
-      },
-      {
-        "name": "subtitle",
-        "type": "string",
-        "description": "Demo-only supporting copy.",
-        "default": "\"Draft on one side. See how it reads on the other.\""
-      },
-      {
-        "name": "initialDraft",
-        "type": "string",
-        "description": "Editable demo seed. The first line becomes a heading; blank lines divide body paragraphs. No HTML is executed."
-      },
-      {
-        "name": "emptyTitle",
-        "type": "string",
-        "description": "Demo preview heading when the draft is empty.",
-        "default": "\"Start with a thought.\""
-      },
-      {
-        "name": "emptyDescription",
-        "type": "string",
-        "description": "Demo empty-preview explanation.",
-        "default": "\"Your words will appear here as you write.\""
-      },
-      {
-        "name": "resetLabel",
-        "type": "string",
-        "description": "Demo reset action label. Only the local split preference resets; the draft is retained. Locked or host-controlled demos disable this action.",
-        "default": "\"Reset split\""
-      },
-      {
-        "name": "kicker",
-        "type": "string",
-        "description": "Demo contextual metadata above the heading.",
-        "default": "\"STUDIO / WORKING DRAFT\""
-      },
-      {
-        "name": "wordLabels",
-        "type": "readonly [string, string]",
-        "description": "Demo singular and plural word-count labels.",
-        "default": "[\"word\", \"words\"]"
-      },
-      {
-        "name": "instructions",
-        "type": "string",
-        "description": "Optional demo keyboard/pointer explanation. The built-in fallback reflects collapse permissions."
-      },
-      {
-        "name": "disabledInstructions",
-        "type": "string",
-        "description": "Demo explanation when resizing is disabled.",
-        "default": "\"The split is locked. You can keep editing.\""
+        "default": "\"\"",
+        "description": "Classes for the root."
       }
     ],
     "controls": [
       {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "accent",
+        "label": "Divider",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#7dd3fc",
+          "#fbbf24",
+          "#a3e635"
+        ]
+      },
+      {
         "prop": "orientation",
-        "label": "Pane arrangement",
+        "label": "Layout",
         "kind": "segmented",
         "options": [
           {
             "value": "auto",
             "label": "Auto"
-          },
-          {
-            "value": "horizontal",
-            "label": "Side by side"
           },
           {
             "value": "vertical",
@@ -26767,71 +26738,54 @@
         "default": "auto"
       },
       {
-        "prop": "theme",
-        "label": "Surface",
-        "kind": "segmented",
-        "options": [
-          {
-            "value": "dark",
-            "label": "Graphite"
-          },
-          {
-            "value": "light",
-            "label": "Paper"
-          }
-        ],
-        "default": "dark"
-      },
-      {
-        "prop": "defaultValue",
-        "label": "Starting split",
-        "kind": "slider",
-        "min": 20,
-        "max": 80,
-        "step": 1,
-        "unit": "%",
-        "default": 44,
-        "remount": true
-      },
-      {
         "prop": "collapsible",
-        "label": "Folding controls",
-        "kind": "segmented",
+        "label": "Folds",
+        "kind": "select",
         "options": [
-          {
-            "value": "both",
-            "label": "Both"
-          },
-          {
-            "value": "primary",
-            "label": "Draft"
-          },
-          {
-            "value": "none",
-            "label": "None"
-          }
+          "both",
+          "primary",
+          "secondary",
+          "none"
         ],
         "default": "both"
       },
       {
+        "prop": "minPrimary",
+        "label": "Query minimum",
+        "kind": "slider",
+        "min": 180,
+        "max": 520,
+        "step": 20,
+        "unit": "px",
+        "default": 260
+      },
+      {
+        "prop": "height",
+        "label": "Height",
+        "kind": "slider",
+        "min": 400,
+        "max": 680,
+        "step": 20,
+        "unit": "px",
+        "default": 560
+      },
+      {
         "prop": "disabled",
-        "label": "Lock the split",
+        "label": "Locked",
         "kind": "toggle",
         "default": false
       }
     ],
     "demo": {
       "steps": [
+        "wait:700",
         "hover:@split-handle",
-        "down",
-        "move:0.64,0.56",
-        "up",
-        "wait:350",
-        "key:ArrowLeft",
-        "key:ArrowLeft",
-        "wait:350",
-        "click:@split-reset",
-        "wait:700"
+        "drag:0.5,0.5",
+        "wait:900",
+        "drag:0.1,0.5",
+        "wait:1000",
+        "click:@split-rail-primary",
+        "wait:1100"
       ],
       "loop": false
     },
