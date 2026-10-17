@@ -19710,112 +19710,118 @@
     "tier": "pro",
     "platform": "web",
     "category": "effects",
-    "description": "Draw a deliberate, bounded ink mark that fades after release, with keyboard stamps and ordinary foreground controls left usable.",
+    "description": "A sumi-ink brush surface: strokes swell and thin with speed, run dry into bristles, bloom while wet and fade; a carved seal stamps on Enter.",
     "tags": [
       "ink",
+      "brush",
       "drawing",
-      "pointer",
-      "trail",
       "canvas",
-      "gesture"
+      "cursor trail",
+      "signature"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1140,
-    "usage": "import { EffectInkTrail } from \"@/components/design-for-ai/effect-ink-trail\";\n\n<EffectInkTrail onStroke={receiveActualStroke}><YourForeground /></EffectInkTrail>",
+    "previewHeight": 780,
+    "usage": "import { EffectInkTrail } from \"@/components/design-for-ai/effect-ink-trail\";\n\n<EffectInkTrail height={560} lifetimeMs={3200} onStroke={saveStroke}>\n  <YourHeroContent />\n</EffectInkTrail>",
     "props": [
       {
         "name": "children",
         "type": "ReactNode",
-        "description": "Optional ordinary foreground overlay. Its native input/events/overflow remain independent of drawing."
+        "description": "Host content laid over the ink. Its links, buttons and fields keep their own pointer events; everything else paints."
+      },
+      {
+        "name": "mode",
+        "type": "\"draw\" | \"trail\"",
+        "default": "\"draw\"",
+        "description": "draw paints while pressed (touch included); trail follows a mouse or pen without pressing."
       },
       {
         "name": "height",
         "type": "number",
-        "description": "Finite 260–680px drawing surface height.",
-        "default": "420"
+        "default": "560",
+        "description": "Surface height in px (280–960)."
       },
       {
         "name": "color",
         "type": "string",
-        "description": "Optional six-digit ink color, snapshotted per actual mark. Omission chooses readable ink for the current theme; an explicit host color is authoritative.",
-        "default": "\"#d5dec5\" (dark) / \"#34452b\" (light)"
+        "default": "\"#ecebe6\" dark / \"#161514\" light",
+        "description": "Ink colour, six-digit hex."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#d6402b\"",
+        "description": "Seal colour: the one accent."
       },
       {
         "name": "width",
         "type": "number",
-        "description": "Finite 0.75–12 logical pixel ink stroke width.",
-        "default": "4.5"
+        "default": "14",
+        "description": "Brush size in px (2–48). Fast strokes run thinner, slow ones pool."
       },
       {
         "name": "lifetimeMs",
         "type": "number",
-        "description": "Integer 300–3000ms fade after release. New marks snapshot their own lifetime.",
-        "default": "1800"
+        "default": "3200",
+        "description": "How long a new mark lingers before it has fully faded (0–12000). 0 keeps marks until cleared."
       },
       {
         "name": "maxStrokes",
         "type": "number",
-        "description": "Bounded retained marks, integer 1–24, with at most 1024 points per stroke.",
-        "default": "8"
+        "default": "16",
+        "description": "Marks kept at once (1–48); the oldest leaves first."
       },
       {
-        "name": "resetKey",
-        "type": "string | number",
-        "description": "Explicit host revision clears the surface and retires any owned pointer gesture."
+        "name": "initialStrokes",
+        "type": "readonly InkStroke[]",
+        "default": "[]",
+        "description": "Marks that write themselves in on first view, e.g. a saved signature. Same shape as onStroke’s argument; widths are authored for a 560px surface and scale with it."
       },
       {
-        "name": "disabled",
+        "name": "sealText",
+        "type": "string",
+        "default": "\"SUMI\"",
+        "description": "One to four characters carved into the seal, in reading order: “SU” over “MI”."
+      },
+      {
+        "name": "showToolbar",
         "type": "boolean",
-        "description": "Disables drawing and stamps; foreground stays usable and previous marks remain static.",
-        "default": "false"
-      },
-      {
-        "name": "status",
-        "type": "\"ready\" | \"loading\" | \"unavailable\"",
-        "description": "Actual host availability. No fake loading operation is started.",
-        "default": "\"ready\""
-      },
-      {
-        "name": "theme",
-        "type": "\"dark\" | \"light\"",
-        "description": "Neutral graphite and white chrome; colour is reserved for actual feature content and semantic data accents.",
-        "default": "\"dark\""
+        "default": "true",
+        "description": "The floating Brush/Trail, Seal and Clear toolbar."
       },
       {
         "name": "onStroke",
         "type": "(stroke: InkStroke) => void",
-        "description": "Completed actual bounded normalized points, pressure/timing, color, width and lifetime. Host owns any persistence."
+        "description": "Each finished mark: `{ id, kind, points, color, width, lifetimeMs }`. Points are in units of the surface’s shorter side from its centre, so strokes replay at any size."
+      },
+      {
+        "name": "onClear",
+        "type": "() => void",
+        "description": "Called when the surface is cleared."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Dark: luminous ink with a wet bloom. Light: sumi on paper with a bleed."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "default": "false",
+        "description": "Marks stay; nothing paints."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Host root layout classes.",
-        "default": "\"\""
+        "default": "\"\"",
+        "description": "Classes on the root."
       }
     ],
     "controls": [
-      {
-        "prop": "width",
-        "label": "Ink width",
-        "kind": "slider",
-        "min": 0.75,
-        "max": 12,
-        "step": 0.25,
-        "default": 4.5
-      },
-      {
-        "prop": "lifetimeMs",
-        "label": "Fade after release",
-        "kind": "slider",
-        "min": 300,
-        "max": 3000,
-        "step": 100,
-        "default": 1800
-      },
       {
         "prop": "theme",
         "label": "Theme",
@@ -19825,21 +19831,78 @@
           "light"
         ],
         "default": "dark"
+      },
+      {
+        "prop": "mode",
+        "label": "Mode",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "draw",
+            "label": "Brush"
+          },
+          {
+            "value": "trail",
+            "label": "Trail"
+          }
+        ],
+        "default": "draw"
+      },
+      {
+        "prop": "width",
+        "label": "Brush",
+        "kind": "slider",
+        "min": 4,
+        "max": 40,
+        "step": 1,
+        "unit": "px",
+        "default": 14
+      },
+      {
+        "prop": "lifetimeMs",
+        "label": "Fades after",
+        "kind": "slider",
+        "min": 0,
+        "max": 8000,
+        "step": 200,
+        "unit": "ms",
+        "default": 5000
+      },
+      {
+        "prop": "sealText",
+        "label": "Seal",
+        "kind": "segmented",
+        "options": [
+          "SUMI",
+          "INK",
+          "K"
+        ],
+        "default": "SUMI"
+      },
+      {
+        "prop": "accent",
+        "label": "Seal colour",
+        "kind": "color",
+        "default": "#d6402b",
+        "options": [
+          "#d6402b",
+          "#f4f4f5",
+          "#c9a227",
+          "#4f8cff"
+        ]
       }
     ],
     "demo": {
       "steps": [
-        "hover:@ink-stage:0.12,0.65",
+        "wait:1600",
+        "hover:@ink-stage:0.62,0.3",
         "down",
-        "hover:@ink-stage:0.32,0.48",
-        "hover:@ink-stage:0.51,0.7",
-        "hover:@ink-stage:0.68,0.5",
+        "hover:@ink-stage:0.74,0.52",
+        "hover:@ink-stage:0.86,0.38",
         "up",
-        "wait:750",
-        "click:@ink-stamp",
-        "wait:550",
-        "click:@ink-clear",
-        "wait:300"
+        "wait:500",
+        "click:@ink-seal",
+        "wait:1200"
       ],
       "loop": false
     },

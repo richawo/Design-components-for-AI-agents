@@ -4037,18 +4037,18 @@
     "updated": "2026-10-17"
   },
   "effect-ink-trail": {
-    "useWhen": "Adding a bounded, user-driven drawing mark that fades while ordinary controls remain usable.",
-    "avoidWhen": "Capturing the whole page pointer, hiding essential content or creating an endless uncontrolled animation.",
+    "useWhen": "A hero, guestbook, signature or campaign page where leaving a brush mark is the moment, and the page’s own content and buttons should stay usable on top of it.",
+    "avoidWhen": "Precise drawing or annotation tools that need undo, layers and vector export, or text-heavy pages where a pointer effect would compete with reading.",
     "integration": [
-      "Keep drawing inside its dedicated bounded surface. Ordinary foreground overlays are separate from drawing disabled semantics and retain native input, touch, events, accessibility and overflow. Keyboard arrows move the drawing marker; Space/Enter or Stamp mark creates the same actual mark.",
-      "Omitted ink follows the current theme; an explicit six-digit color stays authoritative. onStroke reports completed normalized points with actual pressure/time and snapshotted width, color and lifetime. Host persistence is explicit. Pointer cancellation, Escape, resetKey, disabled and hidden state retire owned gestures; retained marks are bounded to 24 with 1024 points per stroke.",
-      "New marks fade after release over 300–3000ms. Live reduced motion freezes current opacity until clear, and normal motion resumes from that pose. Main Canvas pixels are capped at 640,000 with max 4096px per side. Idle/offscreen work stops. Bound any host overlay intentionally; the offline demo alone bounds its editable note resize to the actual drawing height."
+      "Wrap your content: `<EffectInkTrail>{hero}</EffectInkTrail>`. Links, buttons, labels and fields inside keep their own pointer events; everything else paints.",
+      "Save marks from `onStroke` and replay them with `initialStrokes`; points are in units of the surface’s shorter side from its centre, so a saved signature keeps its shape at any size.",
+      "Tune feel with `width`, `lifetimeMs` (0 keeps marks), `maxStrokes` and `mode` (`trail` follows the pointer without pressing). The loop sleeps when idle and offscreen, and reduced motion shows marks without fades."
     ],
     "related": [
       "effect-border-tracer",
       "editor-whiteboard"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "three-material-inspector": {
     "useWhen": "Choosing between surface finishes for a part or product by seeing how each takes a studio light, with metalness, roughness and transmission read out beside it.",
