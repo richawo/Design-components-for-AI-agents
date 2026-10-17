@@ -35228,196 +35228,150 @@
     "tier": "pro",
     "platform": "web",
     "category": "portfolio",
-    "description": "An editorial project reel pairs original artwork with readable case notes. Explicit navigation, touch swipes and controlled selection keep each project in focus.",
+    "description": "A portfolio reel of large layered covers that snap into place: covers part in parallax as you scroll, case notes and results stagger in, previous/next keep count.",
     "tags": [
       "portfolio",
-      "projects",
       "case studies",
-      "reel",
-      "keyboard",
-      "editorial"
+      "carousel",
+      "parallax",
+      "scroll snap",
+      "agency",
+      "showcase"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1000,
-    "usage": "import { PortfolioProjectReel } from \"@/components/design-for-ai/portfolio-project-reel\";\n\n<PortfolioProjectReel projects={projects} value={selectedId} onValueChange={setSelectedId} status={load.status} onRetry={load.retry} />\n\n// The host supplies artwork, image sources and real case-study destinations.",
+    "previewHeight": 1080,
+    "usage": "import { PortfolioProjectReel } from \"@/components/design-for-ai/portfolio-project-reel\";\n\n<PortfolioProjectReel\n  eyebrow=\"Selected work — 2022 to 2026\"\n  projects={[\n    {\n      id: \"kestrel\",\n      client: \"Kestrel Ferries\",\n      title: \"Wayfinding for fourteen terminals.\",\n      discipline: \"Identity & wayfinding\",\n      year: \"2026\",\n      summary: \"…\",\n      results: [{ value: 31, prefix: \"+\", suffix: \"%\", label: \"boarding on time\" }],\n      href: \"/work/kestrel\",\n      image: \"/covers/kestrel.jpg\",\n      imageAlt: \"A ferry against a low sun\",\n    },\n  ]}\n  onProjectChange={(id) => analytics.track(\"reel_view\", { id })}\n/>",
     "props": [
       {
         "name": "projects",
-        "type": "readonly PortfolioProject[]",
-        "description": "Stable IDs, titles, disciplines, years, summaries and optional notes, supplied artwork/image descriptions and real case-study destinations. Disabled projects expose a reason."
-      },
-      {
-        "name": "title",
-        "type": "string",
-        "description": "Display heading for the collection.",
-        "default": "\"Selected work.\""
+        "type": "ReelProject[]",
+        "default": "five studio projects",
+        "description": "Each { id, client, title, discipline, year, summary, results?: { value, label, prefix?, suffix?, decimals? }[], href?, cover? | image?, imageAlt? }. image is your own cover (one parallax plane); cover picks a built-in three-plane cover."
       },
       {
         "name": "eyebrow",
         "type": "string",
-        "description": "Quiet editorial context.",
-        "default": "\"A small collection, considered.\""
+        "default": "\"Selected work — 2022 to 2026\"",
+        "description": "Mono line over the reel; also the carousel's accessible name."
       },
       {
-        "name": "initialProject",
+        "name": "defaultProject",
         "type": "string",
-        "description": "Initial/configured ID. A changed prop resets internal selection and retires an incomplete swipe.",
-        "default": "first supplied project"
+        "default": "first project",
+        "description": "Project id centred on mount."
       },
       {
-        "name": "value",
-        "type": "string",
-        "description": "Optional controlled selection. Pair with onValueChange; rejected requests keep the actual project unchanged and a missing callback locks controls."
-      },
-      {
-        "name": "onValueChange",
+        "name": "onProjectChange",
         "type": "(id: string) => void",
-        "description": "Request an available project. The host owns controlled selection."
+        "description": "Called when a different project settles in the centre (scroll, swipe, arrows or the buttons)."
       },
       {
-        "name": "status",
-        "type": "\"ready\" | \"loading\" | \"error\"",
-        "description": "Host-owned collection availability; no fabricated loading or successful transport.",
-        "default": "\"ready\""
-      },
-      {
-        "name": "error",
+        "name": "linkLabel",
         "type": "string",
-        "description": "An honest host failure explanation.",
-        "default": "\"The projects could not load.\""
+        "default": "\"Read the case study\"",
+        "description": "Label of the case-study link under the notes (shown when a project has href)."
       },
       {
-        "name": "onRetry",
-        "type": "() => void",
-        "description": "Explicit retry request. The host owns availability."
-      },
-      {
-        "name": "emptyTitle",
+        "name": "accent",
         "type": "string",
-        "description": "Empty collection heading.",
-        "default": "\"A little room for the next project.\""
-      },
-      {
-        "name": "emptyDescription",
-        "type": "string",
-        "description": "Empty collection next step.",
-        "default": "\"Add a project to begin the reel.\""
-      },
-      {
-        "name": "loadingLabel",
-        "type": "string",
-        "description": "Loading state label.",
-        "default": "\"Preparing the projects…\""
-      },
-      {
-        "name": "retryLabel",
-        "type": "string",
-        "description": "Explicit retry control label.",
-        "default": "\"Try again\""
-      },
-      {
-        "name": "previousLabel",
-        "type": "string",
-        "description": "Accessible previous control name.",
-        "default": "\"Previous project\""
-      },
-      {
-        "name": "nextLabel",
-        "type": "string",
-        "description": "Accessible next control name.",
-        "default": "\"Next project\""
-      },
-      {
-        "name": "openLabel",
-        "type": "string",
-        "description": "Actual case-study link label. No destination means no fake link.",
-        "default": "\"Open case study\""
+        "default": "theme ink",
+        "description": "Scroll progress line, link underline on hover and focus rings."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Complete monochromatic graphite/white chrome. Colour is reserved for actual supplied content and purposeful feature accents.",
-        "default": "\"dark\""
+        "default": "\"dark\"",
+        "description": "Near-black or paper. Covers keep their own colours."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Host layout classes.",
-        "default": "\"\""
-      },
-      {
-        "name": "artworkLoadingLabel",
-        "type": "string",
-        "default": "\"Loading artwork…\"",
-        "description": "Actual native image loading feedback."
-      },
-      {
-        "name": "artworkEmptyLabel",
-        "type": "string",
-        "default": "\"No artwork supplied.\"",
-        "description": "Absent artwork explanation."
-      },
-      {
-        "name": "artworkErrorLabel",
-        "type": "string",
-        "default": "\"Artwork could not load.\"",
-        "description": "Native image failure explanation."
+        "default": "\"\"",
+        "description": "Classes on the section."
       }
     ],
     "added": "2026-10-13",
     "demo": {
       "steps": [
-        "click:@project-next",
-        "wait:450",
-        "click:@project-archive",
         "wait:600",
-        "click:@project-previous",
-        "wait:450"
+        "click:@reel-next",
+        "wait:1100",
+        "click:@reel-next",
+        "wait:1100",
+        "hover:@card-3:0.75,0.4",
+        "wait:500",
+        "click:@reel-prev",
+        "wait:900"
       ],
       "loop": false
     },
     "controls": [
       {
-        "prop": "initialProject",
-        "label": "Project",
+        "prop": "defaultProject",
+        "label": "Start on",
         "kind": "select",
         "options": [
-          "signal",
-          "rooms",
-          "archive"
+          {
+            "value": "kestrel",
+            "label": "Kestrel Ferries"
+          },
+          {
+            "value": "aster",
+            "label": "Aster Health"
+          },
+          {
+            "value": "lowtide",
+            "label": "Low Tide Records"
+          },
+          {
+            "value": "northfield",
+            "label": "Northfield Bakery"
+          },
+          {
+            "value": "paloma",
+            "label": "Paloma Type"
+          }
         ],
-        "default": "signal"
+        "default": "kestrel",
+        "remount": true
       },
       {
-        "prop": "title",
-        "label": "Heading",
+        "prop": "eyebrow",
+        "label": "Eyebrow",
         "kind": "text",
-        "default": "Selected work."
+        "default": "Selected work — 2022 to 2026"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f2",
+        "options": [
+          "#f4f4f2",
+          "#ff6b2c",
+          "#9be8bd",
+          "#ffd23f"
+        ]
       },
       {
         "prop": "theme",
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
         "default": "dark"
-      },
-      {
-        "prop": "status",
-        "label": "Availability",
-        "kind": "segmented",
-        "options": [
-          "ready",
-          "loading",
-          "error"
-        ],
-        "default": "ready"
       }
     ]
   },

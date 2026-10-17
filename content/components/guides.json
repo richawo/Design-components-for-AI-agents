@@ -3776,17 +3776,19 @@
     "updated": "2026-10-17"
   },
   "portfolio-project-reel": {
-    "useWhen": "Presenting a focused set of supplied projects with a large visual and readable case notes, using deliberate previous/next navigation.",
-    "avoidWhen": "A dense component catalogue, a continuous decorative marquee or an autoplay-only sales presentation.",
+    "useWhen": "A studio, freelancer or agency homepage that leads with a handful of flagship projects, where each cover deserves to be seen large and each case needs a line of story and a few hard numbers.",
+    "avoidWhen": "An archive of dozens of projects (use an index or grid), a product carousel in a shop, or anything that should autoplay.",
     "integration": [
-      "Supply stable project IDs, titles, summaries and optional artwork, native image sources or actual case-study destinations. Absent links stay absent, and image loading is reported honestly.",
-      "Control selection with value/onValueChange when needed. The finite index, keyboard controls and touch swipes preserve readable notes, focus and measured container height while projects change."
+      "Pass three to eight projects with stable ids. Supply image (and imageAlt) for your own covers; results are { value, label, prefix?, suffix?, decimals? } so the figures can count. Leave href off for work under NDA and the link disappears.",
+      "onProjectChange reports the centred project after any scroll, swipe or button press; use it for analytics or to preload that case study. defaultProject picks where the reel starts.",
+      "The reel sizes itself from its container, so it works full-bleed or inside a column; give it at least 320px."
     ],
     "related": [
+      "work-index-hover",
       "media-story-deck",
       "navigation-stacked-tabs"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "media-crop-workbench": {
     "useWhen": "Framing a photo before it is published or printed: avatars, product shots, editorial images and social crops where the ratio is fixed and the horizon has to be level.",
