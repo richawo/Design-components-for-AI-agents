@@ -114,14 +114,39 @@ export async function check({ page, mount, assert }) {
   await page.getByText("Inbox zero").waitFor();
   assert.equal(await page.getByRole("region", { name: "Urgent queue" }).getByText("Empty").count(), 1);
 
-  // An undo the host rejects must say so, not fail silently with the route half undone.
-  await mount(`createRoot(document.getElementById('root')).render(<Subject.SupportTriage now="2026-10-17T09:42:00Z" onUndo={async()=>{throw Error('offline')}}/>);`);
+  // Undo stays pending in the queue, preserves the route on rejection, and can be retried.
+  await mount(`window.undoCount=0;createRoot(document.getElementById('root')).render(<Subject.SupportTriage now="2026-10-17T09:42:00Z" onUndo={()=>new Promise((resolve,reject)=>{window.undoCount++;window.resolveUndo=resolve;window.rejectUndo=()=>reject(Error('offline'))})}/>);`);
   await page.locator('[data-demo="route-low"]').click();
-  await page.getByRole("status").getByRole("button", { name: "Undo" }).click();
-  await page.getByRole("alert").waitFor({ timeout: 3000 });
+  const queued = page.getByRole("region", {name:"Low queue"}).locator('[data-demo="queued-sup-2485"]');
+  await queued.waitFor();
+  await page.getByRole("status").getByRole("button", { name: "Undo", exact:true }).click();
+  assert.equal(await page.getByRole("button", {name:"Undoing…"}).isDisabled(), true);
+  assert.equal(await page.locator('[data-demo="ticket-sup-2485"]').count(), 0);
+  await queued.waitFor();
+  await page.evaluate(() => {window.rejectUndo();});
+  await page.getByRole("alert").filter({hasText:"Undo failed. The ticket stays routed. Try again."}).waitFor();
+  await queued.waitFor();
+  assert.equal(await page.locator('[data-demo="ticket-sup-2485"]').count(), 0);
+  await page.getByRole("status").getByRole("button", {name:"Undo", exact:true}).click();
+  assert.equal(await page.evaluate(() => window.undoCount), 2);
+  await page.evaluate(() => {window.resolveUndo();});
+  await page.locator('[data-demo="ticket-sup-2485"]').waitFor();
+  await reader("Typo in the weekly digest subject line").waitFor();
+  assert.equal(await page.getByRole("alert").count(), 0);
 
-  // A ticket with an unreadable timestamp must not count down in NaN.
-  await mount(`createRoot(document.getElementById('root')).render(<Subject.SupportTriage now="2026-10-17T09:42:00Z" tickets={[{id:'T-1',subject:'Broken clock',customer:'Ada Park',company:'Acme',channel:'email',receivedAt:'yesterday',messages:[]}]}/>);`);
+  // A click during a reader swap cannot route the exiting ticket.
+  await mount(`window.raceUpdates=[];createRoot(document.getElementById('root')).render(<Subject.SupportTriage now="2026-10-17T09:42:00Z" onTriage={u=>window.raceUpdates.push(u)}/>);`);
+  await page.locator('[data-demo="ticket-sup-2481"]').click();
+  await page.locator('[data-demo="route-high"]').click();
+  await page.getByRole("region", {name:"High queue"}).locator('[data-demo="queued-sup-2481"]').waitFor();
+  assert.deepEqual(await page.evaluate(() => window.raceUpdates.map(u=>u.ticketId)), ["SUP-2481"]);
+  await page.locator('[data-demo="ticket-sup-2485"]').waitFor();
+
+  // Unreadable receipt and message timestamps remain explicit without broken clocks or SVGs.
+  await mount(`createRoot(document.getElementById('root')).render(<Subject.SupportTriage now="2026-10-17T09:42:00Z" tickets={[{id:'T-1',subject:'Broken clock',customer:'Ada Park',company:'Acme',channel:'email',receivedAt:'yesterday',messages:[{id:'m1',author:'Ada Park',body:'Please check this.',at:'not-a-time',fromCustomer:true}]}]}/>);`);
   await page.getByRole("article", { name: "Broken clock" }).waitFor();
   assert.doesNotMatch(await txt(page.locator("section").first()), /NaN/);
+  assert.match(await page.getByRole("alert").innerText(), /Invalid timestamps: T-1/);
+  assert.match(await txt(page.locator("section").first()), /Time unavailable/);
+  assert.equal(await page.locator('svg [d*="NaN"], svg [stroke-dashoffset="NaN"]').count(), 0);
 }

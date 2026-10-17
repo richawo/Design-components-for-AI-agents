@@ -3102,7 +3102,8 @@
       "Tickets without a `priority` wait in the inbox; ones with a priority start in their queue. Clocks run from each `receivedAt` against your `sla` minutes.",
       "Pass `now` as the current time; the clocks then tick in real time and pause while the component is off screen or the tab is hidden.",
       "`onTriage` receives { ticketId, priority, assigneeId }; reject it and the ticket returns to the inbox with the error shown. `onUndo` mirrors the toast's Undo.",
-      "Keys 1–4 route the open ticket and J/K move through the inbox, so agents can triage without the mouse."
+      "Keys 1–4 route the open ticket and J/K move through the inbox, so agents can triage without the mouse.",
+      "Resolve onUndo to restore the prior queue or inbox. Reject to keep the route and expose a retry. Invalid ticket/message timestamps are flagged; timing stays unavailable for those records."
     ],
     "related": [
       "saas-customer-health",

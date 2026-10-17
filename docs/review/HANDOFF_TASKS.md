@@ -12,6 +12,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 3.3: resolved inconsistent warning thresholds and empty usage charts. Invalid policies remain explicit and saving is blocked until corrected. Compact chart handles also retain their full abbreviated values.
 
+- Task 3.4: resolved pending/rejected undo, reader-swap routing and invalid triage timestamps. The regression probe and dark/light accessibility audits pass in isolation; official Next runner recheck remains pending the shared loader work.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned

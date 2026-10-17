@@ -39158,7 +39158,7 @@
         "name": "tickets",
         "type": "SupportTicket[]",
         "default": "nine Kestrel tickets, five untriaged",
-        "description": "{ id, subject, customer, company, account?, channel: \"email\" | \"chat\" | \"api\", receivedAt (ISO), messages: { id, author, body, at, fromCustomer }[], tags?, priority?, assigneeId? }. Tickets without a priority wait in the inbox."
+        "description": "{ id, subject, customer, company, account?, channel: \"email\" | \"chat\" | \"api\", receivedAt (ISO), messages: { id, author, body, at, fromCustomer }[], tags?, priority?, assigneeId? }. Tickets without a priority wait in the inbox. Invalid receivedAt or message timestamps are flagged and display unavailable timing."
       },
       {
         "name": "agents",
@@ -39192,7 +39192,7 @@
       {
         "name": "onUndo",
         "type": "(update: SupportTriageUpdate) => void | Promise<void>",
-        "description": "Called when a route is undone from the toast."
+        "description": "Resolve to return the routed ticket to its previous queue or inbox. A rejected undo keeps the route and shows a retryable alert. Routing is paused while undo is pending."
       },
       {
         "name": "workspace",
