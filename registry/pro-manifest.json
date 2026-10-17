@@ -16776,123 +16776,200 @@
   },
   {
     "slug": "editor-keyframe-track",
-    "name": "Linear Keyframe Property Track",
+    "name": "Keyframe Track",
     "tier": "pro",
     "platform": "web",
     "category": "editors",
-    "description": "Move actual discrete keyframes without collisions and inspect linear interpolation at an exact frame, with provisional pointer and native keyboard alternatives.",
+    "description": "An animation timeline: a live preview, a dope sheet and a graph whose keys drag in time and value while the playhead scrubs.",
     "tags": [
-      "keyframe",
+      "keyframes",
       "timeline",
-      "interpolation",
       "animation",
-      "property",
-      "editor"
+      "graph editor",
+      "easing",
+      "motion design",
+      "editor",
+      "playhead"
     ],
     "dependencies": [
+      "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1050,
-    "usage": "import { EditorKeyframeTrack } from \"@/components/design-for-ai/editor-keyframe-track\";\n\n<EditorKeyframeTrack value={track} onValueChange={setTrack} />\n\n// Values interpolate linearly; nearest supplied value holds outside the point range. Keys cannot cross adjacent frames. Pointer release requests one atomic move; cancellation preserves the accepted curve.",
+    "previewHeight": 880,
+    "usage": "import { EditorKeyframeTrack, valueAt } from \"@/components/design-for-ai/editor-keyframe-track\";\n\n<EditorKeyframeTrack\n  name=\"toast-enter\"\n  fps={30}\n  durationFrames={90}\n  tracks={[\n    { id: \"y\", label: \"Position Y\", unit: \"px\", min: -24, max: 64, keys: [\n      { id: \"a\", frame: 0, value: 56, ease: \"ease\" },\n      { id: \"b\", frame: 14, value: 0 },\n    ] },\n  ]}\n  renderPreview={(values) => <Toast style={{ transform: `translateY(${values.y}px)` }} />}\n  onChange={(tracks) => save(tracks)}\n/>\n\n// Keys never cross or share a frame. ease (\"linear\" | \"ease\" | \"hold\") shapes the segment leaving a key.\n// valueAt(track, frame) is exported to evaluate a track anywhere else (your runtime, a test).",
     "props": [
       {
-        "name": "value",
-        "type": "KeyframeTrack",
-        "description": "Controlled actual property/unit, fps1–60, durationFrames1–3600, finite min/max domain and up to24 unique distinct-frame keyframes."
-      },
-      {
-        "name": "defaultValue",
-        "type": "KeyframeTrack",
-        "description": "Local initial exact property track. Reset with resetKey."
-      },
-      {
-        "name": "onValueChange",
-        "type": "(value: KeyframeTrack) => void",
-        "description": "Request cloned complete track and original key identities. Controlled rejection preserves accepted curve; newer frame/value buffers survive old acknowledgments; synchronous observer failure is contained."
-      },
-      {
-        "name": "resetKey",
-        "type": "string | number",
-        "description": "Resets local track, inspection, numeric field and move state."
-      },
-      {
-        "name": "status",
-        "type": "\"ready\" | \"loading\" | \"error\"",
-        "description": "Host availability keeps accepted curve and records readable."
-      },
-      {
-        "name": "errorMessage",
+        "name": "name",
         "type": "string",
-        "description": "Meaningful host failure; blank falls back."
+        "default": "\"toast-enter\"",
+        "description": "The animation's name, in the toolbar."
       },
       {
-        "name": "onRetry",
-        "type": "() => void",
-        "description": "Actual recovery, with contained synchronous failure."
+        "name": "path",
+        "type": "string[]",
+        "default": "[\"Notifications\"]",
+        "description": "Breadcrumb before the name, from @2xl."
       },
       {
-        "name": "disabled",
+        "name": "tracks",
+        "type": "PropertyTrack[]",
+        "default": "Position Y, Opacity and Scale for a payment toast entering and leaving",
+        "description": "Animated properties: { id, label, unit?, min, max, step?, keys: { id, frame, value, ease? }[] }, keys in frame order."
+      },
+      {
+        "name": "fps",
+        "type": "number",
+        "default": "30",
+        "description": "Frames per second, for playback and the seconds on the ruler."
+      },
+      {
+        "name": "durationFrames",
+        "type": "number",
+        "default": "90",
+        "description": "Length of the timeline in frames."
+      },
+      {
+        "name": "defaultTrackId",
+        "type": "string",
+        "default": "first track",
+        "description": "The property drawn in the graph on mount."
+      },
+      {
+        "name": "defaultFrame",
+        "type": "number",
+        "default": "0",
+        "description": "Playhead position on mount."
+      },
+      {
+        "name": "loop",
         "type": "boolean",
-        "description": "Read-only editing/inspection with actual records preserved."
+        "default": "true",
+        "description": "Play from the start again at the end. The toolbar's loop button toggles it."
+      },
+      {
+        "name": "onionSkin",
+        "type": "boolean",
+        "default": "true",
+        "description": "Faint copies of the preview 4, 8 and 12 frames behind the playhead."
+      },
+      {
+        "name": "showGhosts",
+        "type": "boolean",
+        "default": "true",
+        "description": "The other tracks' curves, dashed and faint behind the selected one."
+      },
+      {
+        "name": "renderPreview",
+        "type": "(values: Record<string, number>) => ReactNode",
+        "default": "a payment toast",
+        "description": "Draws the animated object from the current values, keyed by track id."
+      },
+      {
+        "name": "onChange",
+        "type": "(tracks: PropertyTrack[]) => void",
+        "description": "The tracks after each finished edit: a drag released, a stepper change, a key added, re-eased or removed."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "theme ink",
+        "description": "The playhead, the curve and selected keys."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Complete monochromatic graphite/white chrome. Colour is reserved for actual supplied content and purposeful feature accents."
-      },
-      {
-        "name": "labels",
-        "type": "Partial<KeyframeTrackLabels>",
-        "description": "Actual property/frame/interpolation/request and recovery copy."
+        "default": "\"dark\"",
+        "description": "Graphite or white chrome. The preview artboard keeps its own look."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Host responsive classes."
+        "description": "Extra classes on the root section."
       }
     ],
     "added": "2026-10-14",
     "demo": {
       "steps": [
-        "click:@keyframe-select-settle",
-        "click:@keyframe-earlier",
-        "click:@keyframe-later",
-        "click:@keyframe-value",
-        "key:ArrowDown",
-        "key:ArrowUp",
-        "click:@keyframe-position:0.18,0.5",
-        "click:@keyframe-position:0.72,0.5"
+        "wait:300",
+        "click:@play",
+        "wait:1500",
+        "click:@play",
+        "hover:@key-y-1",
+        "down",
+        "hover:@graph:0.13,0.86",
+        "up",
+        "wait:300",
+        "click:@ruler:0.13,0.5",
+        "wait:700"
       ],
       "loop": false
     },
     "controls": [
       {
+        "prop": "defaultTrackId",
+        "label": "Graph",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "y",
+            "label": "Position Y"
+          },
+          {
+            "value": "opacity",
+            "label": "Opacity"
+          },
+          {
+            "value": "scale",
+            "label": "Scale"
+          }
+        ],
+        "default": "y",
+        "remount": true
+      },
+      {
+        "prop": "onionSkin",
+        "label": "Onion skin",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "showGhosts",
+        "label": "Ghost curves",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#8ab4ff",
+          "#7dd3a8",
+          "#f4b267"
+        ]
+      },
+      {
         "prop": "theme",
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
         "default": "dark"
-      },
-      {
-        "prop": "disabled",
-        "label": "Read only",
-        "kind": "toggle",
-        "default": false
-      },
-      {
-        "prop": "status",
-        "label": "Availability",
-        "kind": "select",
-        "options": [
-          "ready",
-          "loading",
-          "error"
-        ],
-        "default": "ready"
       }
     ]
   },

@@ -4461,19 +4461,19 @@
     "updated": "2026-10-14"
   },
   "editor-keyframe-track": {
-    "useWhen": "Editing actual discrete property keyframes and inspecting their linear value at a precise frame.",
-    "avoidWhen": "A video renderer, unbounded animation graph or nonlinear easing editor.",
+    "useWhen": "Editing a short UI or motion-design animation by keyframes, where people scrub a playhead, watch a live preview and drag keys in time and value on a curve.",
+    "avoidWhen": "Long video timelines with clips and audio, physics or spring authoring, or animations defined entirely in code with no visual tuning.",
     "integration": [
-      "Supply a KeyframeTrack with actual property/unit, fps1–60, duration1–3600 frames, finite nonempty min/max domain and up to24 unique key identities at distinct integer frames.",
-      "Pointer position is provisional until release and keys cannot cross adjacent frames. Native frame/value fields, Arrow/Shift+Arrow and Home/End provide equivalent bounded edits. Cancel/context changes preserve the accepted curve.",
-      "Use value/onValueChange for a copied complete accepted track. Rejected requests and older zero acknowledgments preserve newer numeric drafts. Interpolation holds the nearest actual supplied value outside the point range; an empty track has no invented value."
+      "Give tracks as { id, label, unit, min, max, step, keys } with keys in frame order; each key's ease (linear, ease or hold) shapes the segment that leaves it. Keys never cross or share a frame.",
+      "renderPreview(values) receives the current value of every track by id; draw your own component with them. valueAt(track, frame) is exported so your runtime and tests evaluate tracks exactly as the editor does.",
+      "onChange(tracks) fires after finished edits only (a drag released, a stepper commit, a key added, re-eased or deleted), so it is safe to persist or push to an undo stack."
     ],
     "related": [
       "media-trim-timeline",
-      "input-detent-dial",
-      "editor-spacing-inspector"
+      "editor-node-graph",
+      "editor-storyboard-strip"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "editor-version-restore": {
     "useWhen": "Letting writers browse the saved versions of a document, compare any version with the live text word by word, and restore all of it or only chosen blocks with an undo.",
