@@ -3650,18 +3650,18 @@
     "updated": "2026-10-13"
   },
   "navigation-stacked-tabs": {
-    "useWhen": "Several documents share one working area and people need to reorder, close and restore tabs while preserving unsaved state.",
-    "avoidWhen": "A short set of fixed product sections, where an ordinary tab bar is easier to scan and does not need document lifecycle controls.",
+    "useWhen": "Several documents share one working area and people reorder, close and reopen them while unsaved drafts must survive: editors, IDEs, spreadsheets, design files.",
+    "avoidWhen": "A short, fixed set of product sections; an ordinary tab bar is easier to scan and has no document lifecycle.",
     "integration": [
-      "Keep stable document IDs and distinguish dirty changes from acknowledged saves.",
-      "The host owns document contents and closure decisions; preserve drafts when a close request is rejected.",
-      "Treat items as authoritative document availability. Removing a model retires its open tab, retained panel and closed history; keep it available while restoration is allowed."
+      "Give each document a stable `id`, a `kind` for its icon and an honest `dirty` flag; bump `revision` when you save so an in-flight close of an older draft is cancelled.",
+      "Return promises from `onCloseRequest`, `onRestoreRequest` and `onOrderChange` and honour their AbortSignal; rejecting keeps the tab and its draft and offers Retry.",
+      "Treat `items` as authoritative: removing a document retires its tab, its History entry and its retained editor. Change `resetKey` when the workspace or account changes."
     ],
     "related": [
       "tabs-underline-glide",
       "data-file-explorer"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "layout-split-resizer": {
     "useWhen": "Two related views share one space and people tune the balance: a query and its results, an editor and its preview, a list and the record it opens.",

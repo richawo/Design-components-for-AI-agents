@@ -34869,123 +34869,116 @@
     "tier": "pro",
     "platform": "web",
     "category": "navigation",
-    "description": "Layered monochrome document tabs with retained editorial drafts, close/restore history, precise reorder controls and an interruptible dirty-close review.",
+    "description": "Document tabs that behave like paper: drag one and its neighbours shuffle aside, close with Undo, unsaved dots that become a close button, drafts kept.",
     "tags": [
-      "navigation",
       "document tabs",
+      "tabs",
       "reorder",
-      "restore",
-      "drafts",
-      "keyboard",
+      "drag and drop",
+      "undo",
+      "unsaved changes",
       "editor",
-      "accessibility"
+      "keyboard"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 760,
-    "usage": "import { NavigationStackedTabs } from \"@/components/design-for-ai/navigation-stacked-tabs\";\n\n<NavigationStackedTabs\n  items={documents}\n  resetKey={workspace.id}\n  value={activeDocument}\n  onValueChange={(id) => setActiveDocument(id)}\n  onCloseRequest={async (document, signal) => {\n    await persistOpenState(document.id, false, { signal });\n  }}\n  onRestoreRequest={async (document, signal) => {\n    await persistOpenState(document.id, true, { signal });\n  }}\n  onOrderChange={(ids, signal) => persistTabOrder(ids, { signal })}\n/>\n\n// Keep closed models in items while they remain available to restore.\n// Removing a model retires its tab, cached content and history.\n// A closed tab retains its content; resetKey clears the workspace cache.",
+    "previewHeight": 720,
+    "usage": "import { NavigationStackedTabs } from \"@/components/design-for-ai/navigation-stacked-tabs\";\n\n<NavigationStackedTabs\n  items={docs.map((d) => ({ id: d.id, label: d.title, kind: \"doc\", dirty: d.hasDraft, revision: d.version, content: <Editor doc={d} /> }))}\n  value={openId}\n  onValueChange={(id) => setOpenId(id)}\n  onCloseRequest={async (doc, signal) => { await api.close(doc.id, { signal }); }}\n  onRestoreRequest={async (doc, signal) => { await api.reopen(doc.id, { signal }); }}\n  onOrderChange={(ids, signal) => api.saveTabOrder(ids, { signal })}\n/>",
     "props": [
       {
         "name": "items",
         "type": "StackedDocument[]",
-        "description": "Authoritative available document models with unique IDs, label, dirty/disabled flags, optional revision and content. Keep closed models present while restorable; removing a model retires its panel and history.",
-        "default": "Three original studio documents"
+        "default": "five Northwind launch documents",
+        "description": "{ id, label, kind?: \"doc\" | \"sheet\" | \"code\", dirty?, disabled?, disabledReason?, revision?, content? }. Authoritative: removing an item retires its tab, history and retained editor. Content mounts on first open and then stays mounted, including while closed."
       },
       {
         "name": "label",
         "type": "string",
-        "description": "Visible heading and accessible tab-list name.",
-        "default": "\"Open documents\""
+        "default": "\"Open documents\"",
+        "description": "Accessible name of the tab list."
       },
       {
         "name": "value",
         "type": "string",
-        "description": "Controlled active document. A missing/closed/disabled value falls back to the first enabled open document."
+        "description": "Controlled selected id. Falls back to the first available document."
       },
       {
         "name": "defaultValue",
         "type": "string",
-        "description": "Initial uncontrolled selection, reapplied when resetKey changes.",
-        "default": "First enabled document"
+        "default": "first available document",
+        "description": "Selected id when uncontrolled."
       },
       {
         "name": "onValueChange",
         "type": "(id: string, item: StackedDocument) => void",
-        "description": "Synchronous selection observer; pair with value for controlled selection. Document panels are already available, so selecting a tab does not fetch."
+        "description": "Called when a tab is selected, including the neighbour picked after a close."
       },
       {
         "name": "onCloseRequest",
-        "type": "(item: StackedDocument, signal: AbortSignal) => void | Promise<void>",
-        "description": "Acknowledges closing a tab. Rejection keeps it open with its draft. Honor the signal; closing is visibility, not document deletion."
+        "type": "(item, signal: AbortSignal) => void | Promise<void>",
+        "description": "Ask the host to close. Dirty documents confirm first. A pending close shows a spinner with Cancel; a rejection keeps the tab and its draft and offers Retry."
       },
       {
         "name": "onRestoreRequest",
-        "type": "(item: StackedDocument, signal: AbortSignal) => void | Promise<void>",
-        "description": "Acknowledges restoring the most recently closed available document. Rejection leaves it in closed history. A later selection or resumed editor keeps the restored tab in the background."
+        "type": "(item, signal: AbortSignal) => void | Promise<void>",
+        "description": "Ask the host to reopen a closed document (History button or Undo). It returns to its old position with its draft."
       },
       {
         "name": "onOrderChange",
         "type": "(ids: string[], signal: AbortSignal) => void | Promise<void>",
-        "description": "Persists an arrangement after drag or an explicit move. Rejection and cancellation restore the prior arrangement."
+        "description": "Called after a drag or a keyboard move. Rejecting puts the previous order back."
       },
       {
         "name": "resetKey",
         "type": "string | number",
-        "description": "Change when the workspace or account changes. Cancels requests and clears retained documents, history and editor instances.",
-        "default": "\"workspace\""
+        "default": "\"workspace\"",
+        "description": "Change it for a new workspace or account: clears order, history and retained editors."
       },
       {
         "name": "tabWidth",
         "type": "number",
-        "description": "Tab width, bounded to 132–240px. Extra tabs scroll within the strip; close targets remain 44px.",
-        "default": "196"
+        "default": "200",
+        "description": "Tab width in px (120–260)."
       },
       {
         "name": "panelHeight",
         "type": "number",
-        "description": "Stable content viewport, bounded to 180–600px. Retained hidden panels are inert and unreachable.",
-        "default": "320"
+        "default": "400",
+        "description": "Height of the document area in px (220–720)."
       },
       {
         "name": "accent",
         "type": "string",
-        "description": "The small unsaved marker, a semantic accent rather than decorative color.",
-        "default": "\"#d4a373\""
+        "default": "\"#f2b45a\"",
+        "description": "Unsaved dot and the move-mode ring."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Neutral layered tab and editor surface palette.",
-        "default": "\"dark\""
+        "default": "\"dark\"",
+        "description": "Palette."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Classes on the outer container."
+        "default": "\"\"",
+        "description": "Classes for the root."
       }
     ],
     "added": "2026-10-13",
     "demo": {
       "steps": [
-        "wait:350",
-        "click:@tab-tokens",
-        "wait:250",
-        "click:@move-mode",
-        "wait:200",
-        "key:ArrowLeft",
-        "wait:300",
-        "key:Enter",
-        "key:Delete",
-        "wait:350",
-        "click:@restore",
-        "wait:650",
-        "click:@close-brief",
-        "wait:300",
-        "click:@keep-open",
-        "wait:350"
+        "wait:600",
+        "hover:@tab-email",
+        "drag:0.24,0.3",
+        "wait:900",
+        "click:@close-pricing",
+        "wait:900",
+        "click:@undo-close",
+        "wait:1000"
       ],
       "loop": false
     },
@@ -35001,35 +34994,36 @@
         "default": "dark"
       },
       {
+        "prop": "accent",
+        "label": "Unsaved dot",
+        "kind": "color",
+        "default": "#f2b45a",
+        "options": [
+          "#f2b45a",
+          "#f4f4f5",
+          "#7dd3fc",
+          "#f87171"
+        ]
+      },
+      {
         "prop": "tabWidth",
         "label": "Tab width",
         "kind": "slider",
         "min": 140,
         "max": 240,
-        "step": 4,
+        "step": 10,
         "unit": "px",
-        "default": 196
+        "default": 200
       },
       {
         "prop": "panelHeight",
-        "label": "Panel height",
+        "label": "Document height",
         "kind": "slider",
-        "min": 220,
-        "max": 420,
+        "min": 280,
+        "max": 520,
         "step": 20,
         "unit": "px",
-        "default": 320
-      },
-      {
-        "prop": "accent",
-        "label": "Unsaved marker",
-        "kind": "color",
-        "default": "#d4a373",
-        "options": [
-          "#d4a373",
-          "#eeeeef",
-          "#87aaa0"
-        ]
+        "default": 400
       }
     ]
   },
