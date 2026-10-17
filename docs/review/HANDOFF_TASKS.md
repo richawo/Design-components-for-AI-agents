@@ -54,6 +54,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 5: added the Document Reader regression. Page scrubbing exposes native/web values and keyboard controls, invalid or empty page counts show an unavailable state, and the document region supports keyboard scrolling. Download failure/retry preserves the page and callback payload; source-fixture regression and accessibility checks pass.
 
+- Task 5: added the Habit Ledger regression and fixed Space-key checkbox activation on the web. Failed marks roll back without publishing changes; retry, pending/paused/future cells, exact payloads and empty habits are covered. Source-fixture regression and accessibility checks pass.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -198,7 +200,7 @@ tests/browser/pro-50-<suite>-probe.mjs <slug>` (suite = legal, saas, finance, hr
 
 ## 5. Write browser probes for components that have none
 
-96 finished components still have no dedicated browser regression probe. For each, read its source and
+95 finished components still have no dedicated browser regression probe. For each, read its source and
 `meta.json`, then add a case to the appropriate `tests/browser/*.mjs` suite (or a new probe registered in
 `scripts/test-components.mjs`) covering: the signature interaction, keyboard paths, failed-then-successful callbacks
 with drafts kept (where it has async callbacks), and empty or invalid data. Use `tests/browser/pro-50/hr-org-explorer.mjs`
@@ -206,7 +208,7 @@ as the model for style and depth. Mobile components render through React Native 
 see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 
 `mobile-day-planner`
-`mobile-habit-grid`, `mobile-journal-prompt`
+`mobile-journal-prompt`
 `mobile-meeting-preflight`, `mobile-mood-map`, `mobile-notification-digest`, `mobile-offline-outbox`
 `mobile-packing-list`, `mobile-project-switcher`, `mobile-reading-progress`, `mobile-review-annotations`
 `mobile-sync-conflict`, `mobile-task-move`, `mobile-trip-itinerary`, `mobile-voice-memo`, `chart-box-distribution`
