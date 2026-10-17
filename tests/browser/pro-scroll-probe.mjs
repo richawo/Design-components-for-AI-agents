@@ -159,13 +159,18 @@ try {
       .click();
     await page.waitForTimeout(1000);
     assert.ok((await page.evaluate(() => window.scrollY)) > 500);
+    await page.evaluate(() => {
+      window.chapterResizePositions = null;
+      window.addEventListener("resize", () => requestAnimationFrame(() => {
+        window.chapterResizePositions = [...document.querySelectorAll("article")].map(el => getComputedStyle(el).position);
+      }), { once: true });
+    });
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.waitForTimeout(200);
+    await page.waitForFunction(() => window.chapterResizePositions !== null);
     assert.deepEqual(
-      await page
-        .locator("article")
-        .evaluateAll((els) => els.map((el) => getComputedStyle(el).position)),
+      await page.evaluate(() => window.chapterResizePositions),
       ["relative", "relative", "relative"],
+      "Resizing releases unsuitable sticky chapters before the first rendered frame",
     );
     await mount(
       "scroll-chapter-stack",

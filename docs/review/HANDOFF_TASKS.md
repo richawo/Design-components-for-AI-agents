@@ -82,6 +82,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 4: the full run completed 49 of 56 suites successfully. Focused reruns now pass the component and block page checks, all custom/native selectors, all eight fashion workflows and all ten SaaS workflows. Anonymous Markdown checks distinguish public usage examples from private source sections; selector checks follow each control's actual focus owner; date assertions tolerate the browser's punctuation while retaining exact dates, times and callback payloads. Saved Views waits for its displayed save action after the crossfade. Chapter Stack resizing and a People Workspace menu overlap remain under investigation before the final full rerun.
 
+- Task 4: the complete scroll suite now passes, including playable WebM, leaving-view pause and broken-film recovery. Chapter Stack releases unsuitable sticky cards synchronously on resize and pointer changes. The same resize replay measured release at 119.8 ms before and 0.2 ms after; its forced-sticky negative control failed. The regression checks the first frame, rather than waiting for a delayed layout. Both-theme accessibility also found and corrected low-contrast folio/fact labels. The poster is refreshed; its film remains in task 1.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned

@@ -182,7 +182,7 @@ needs re-recording, whether its poster is current, and the state of its browser 
 | `layout-split-resizer` | new | current |  |
 | `layout-workspace-shell` | new | current | block probes pass (block-legal-workspace fails identically on the old shell) |
 | `scroll-background-wipe` | new | current | pro-scroll-probe passed (video section needs a webm-capable Chromium) |
-| `scroll-chapter-stack` | new | current | pro-scroll-probe passed (video section needs a webm-capable Chromium) |
+| `scroll-chapter-stack` | new | current | complete pro-scroll-probe passes; first-frame resize release, before/after/negative replay and both-theme accessibility verified |
 | `scroll-cinema-frame` | new | current | pro-scroll-probe passed (video section needs a webm-capable Chromium) |
 | `scroll-expanding-mosaic` | new | current | source-fixture scroll/reversal, live demo, failed-image/empty/long-copy/reduced-motion states, controls and accessibility pass |
 | `scroll-horizontal-showcase` | new | current | source-fixture scroll/reversal, demo, keyboard, bitmap/failed-image/empty/reduced-motion states, controls and accessibility pass; project-width text layout verified |
