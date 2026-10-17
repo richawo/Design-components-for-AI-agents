@@ -60,6 +60,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 2 is complete: Expense Review and Close Checklist posters are refreshed and visually reviewed, together with settled 1440/768/390 captures and all control flips. Every poster listed in this handoff is now current.
 
+- Task 5: added Day Planner coverage for keyboard rescheduling, overlap blocking, failed-then-successful saves with the original event and AbortSignal, and an empty day. The registered source-fixture run passes.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -198,14 +200,13 @@ tests/browser/pro-50-<suite>-probe.mjs <slug>` (suite = legal, saas, finance, hr
 
 ## 5. Write browser probes for components that have none
 
-95 finished components still have no dedicated browser regression probe. For each, read its source and
+94 finished components still have no dedicated browser regression probe. For each, read its source and
 `meta.json`, then add a case to the appropriate `tests/browser/*.mjs` suite (or a new probe registered in
 `scripts/test-components.mjs`) covering: the signature interaction, keyboard paths, failed-then-successful callbacks
 with drafts kept (where it has async callbacks), and empty or invalid data. Use `tests/browser/pro-50/hr-org-explorer.mjs`
 as the model for style and depth. Mobile components render through React Native web (`scripts/lib/component-fixture.mjs` aliases it);
 see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 
-`mobile-day-planner`
 `mobile-journal-prompt`
 `mobile-meeting-preflight`, `mobile-mood-map`, `mobile-notification-digest`, `mobile-offline-outbox`
 `mobile-packing-list`, `mobile-project-switcher`, `mobile-reading-progress`, `mobile-review-annotations`

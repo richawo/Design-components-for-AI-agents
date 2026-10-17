@@ -16,7 +16,7 @@ needs re-recording, whether its poster is current, and the state of its browser 
 | `mobile-attachment-tray` | new | current | review-mobile-probe passes with source fixtures; web accessibility state fixed |
 | `mobile-budget-envelope` | new | current | review-mobile-probe passes with source fixtures; web accessibility state fixed |
 | `mobile-channel-thread` | current | current | review-mobile-probe passes with source fixtures; web accessibility state fixed |
-| `mobile-day-planner` | current | current |  |
+| `mobile-day-planner` | current | current | source-fixture regression passes; keyboard rescheduling, conflicts, failure/retry payload and empty day covered |
 | `mobile-file-preview` | current | current | source-fixture regression and accessibility pass; keyboard scrubbing, invalid counts and download retry covered |
 | `mobile-focus-session` | current | current | review-mobile-probe passes with source fixtures; web accessibility state fixed |
 | `mobile-habit-grid` | current | current | source-fixture regression and accessibility pass; Space activation, failed mark retry, pending/disabled cells and empty habits covered |
