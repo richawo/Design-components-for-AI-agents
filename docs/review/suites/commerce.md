@@ -1,0 +1,47 @@
+# Commerce suite shared language (from q39: commerce-customer-timeline, -backorder-allocation, -bundle-builder, -shipping-estimator)
+
+Copy the token object and primitives verbatim from any of those four files (registry/pro/commerce-*/). Each embeds the same kit; the master copy with a placeholder prefix is `kit.tsx` in this folder (regions: tokens, dates, motion, money, chrome, actionbar, product). `assemble.mjs` shows how it was stitched (prefix swap, unused-kit pruning, control-kit sync for one file, prettier at 120 cols).
+
+- **Brand and cast.** Fictional store **Fieldwork**, a goods brand (apparel and home), shipping from **Leeds DC (LS10)**, GBP / en-GB, today **Thu 15 Oct 2026**. Customers: Maya Okonkwo (Didsbury, Manchester; order #4788 for a Charcoal / L merino crew, backordered), Ines Moreau, Callum Hart, Aiko Tanaka, Theo Lindqvist, Priya Shah, Ruth Abernethy; wholesale accounts Harbour & Pine, Northside Store, Studio Ark. Staff: Sam Okafor, Noor Ali. Supplier Holm Knitwear (PO-3318, then PO-3342). Carriers Parcelline, Swift, Northpost. Products, with colours: Merino crew (Ink #2b3445, Charcoal #3b3b40, Rust #b4562f) £84; Field mug Ash #d9d4cb £22; Soy candle Cedar #7d5a43 £32; Field notebook Kraft #b08a5a £14; Waxed tote Olive #5f6b3a / Ink £68; Wool beanie Rust / Ink £36; Linen apron Oat #d6c9ae £54; Enamel bottle Slate #5b7a99 £28; Canvas weekender Sand #c8b08a £148. SKUs look like `MC-CHR-L`, `FM-ASH`. Reuse the cast so the suite reads as one store.
+- **Tokens.** One `PALETTE = { dark, light }` with the SaaS keys (stage, surface, panel, raised, line, lineStrong, ink, muted, faint, good, warn, bad, sheen, shadow) plus three commerce keys:
+  - `well`: dark #0b0b0d, light #f4f4f6; sunken tracks and lanes.
+  - `tile`: the studio sweep products sit on, `radial-gradient(120% 95% at 32% 12%, #ededf0 0%, #d4d4d9 55%, #bfbfc6 100%)`. It is light even in the dark theme, the way product photos are, and is the suite's signature surface. The light theme uses #fff → #f0f0f2 → #e2e2e6.
+  - `lift`: raised floating cards.
+  - Values: dark surface #0f0f11, panel #141417, raised #1b1b1f, ink #f4f4f5, muted #a6a6af, faint #8a8a94; good #4ade80, warn #fbbf24, bad #fb7185 (light #166534, #92400e, #b91c1c).
+  - `cssVars()` writes `--<prefix>-<kebab>` plus `--<prefix>-accent` and `--<prefix>-accent-ink` (via `inkOn`). Use a two-letter prefix per component (ct, ba, bb, se used).
+- **Accent.** Optional `accent`, defaulting to the theme's ink (monochrome). Colour control: default #f4f4f5, options #f4f4f5, #7aa2ff, #ff8a4c. The demo maps the ink default to `undefined` on light. Primary buttons use `bg-(--x-accent)` with `text-(--x-accent-ink)`. Semantic colours only for status chips, late/on-time, margin and refunds. The only other colour is the products' own.
+- **Chrome.** 56px `AppBar(workspace, crumbs[], title, meta)`:
+  - 24px ink square with the store initial;
+  - 14px breadcrumb `Fieldwork / Section / … / Entity`, with the entity at 600 weight and middle crumbs hidden under @md;
+  - mono 12px meta on the right, e.g. "10 orders waiting · 156 units owed" or "Thu, 15 Oct · 13:40".
+  - No eyebrow, no headline. A header strip under it carries the entity: product tile or avatar, 20px/600 name, variant, `Sku` chip, then figures at 20–32px/600, −0.03 to −0.04em.
+- **Product imagery.**
+  - `ProductThumb({ glyph, colour, image, size, rounded, bare })` draws crew, tote, mug, beanie, candle, notebook, bottle, cap, weekender, apron and parcel as 48×48 SVG objects, in layers (under / body / cap / label / detail), with a studio light gradient and a contact shadow.
+  - `image` swaps in a host photo; every product type has `image?`.
+  - `bare` drops the tile, for objects placed in a scene (the bundle's gift box).
+  - Stock count goes on the tile as a white 85% mono chip. Overlapping tiles use `-space-x-2` with a `ring-2 ring-(--surface)`.
+- **Chips.**
+  - `Chip(tone)`: a 24px pill with a dot, the tone at 13% background (Fulfilled, Unfulfilled, Open, On time, "14d late").
+  - `Sku`: a 20px mono uppercase pill with an inset hairline ring.
+  - Neutral tag pills: a hairline ring with muted text.
+- **Money and dates.** All money is integer minor units, formatted by `useFormatters(locale, currency)` → `money`, `whole`, `compact`, `number`, `date` ("29 Nov"), `long` ("29 Nov 2024"), `weekday` ("Fri, 16 Oct"), `month`. The scale comes from `resolvedOptions().maximumFractionDigits`. Dates are ISO strings handled in UTC (`isoDay`, `toIso`, `addDays`, `daysBetween`). Working-day maths skips Saturday and Sunday plus a `holidays` set. Refunds read "−£54.00".
+- **Lists and tables.**
+  - Rows: 14.5px primary, 12.5–13px faint sub-line, tabular numerals, hairline separators.
+  - Selection is a raised background or a 3px accent bar travelling on `layoutId` (SPRING_UI 500/40).
+  - Filter/rule pickers are radiogroups with a layoutId pill on a `well` track, arrow keys, and counts in mono 11.5px. Backorder shows each rule's consequence count, red when above zero.
+  - Exiting rows are `inert` and `aria-hidden` via `useIsPresent`.
+- **Action bar.** `ActionBar({ status, summary, summaryKey, draftNoun, secondary, primary, lead? })` on the panel colour:
+  - The live line cross-fades between the summary, "Working…", a receipt with a green check ("Reserved 120 units on PO-3318 · RSV-20931 · …"), and a `role="alert"` failure with "… Your allocation is kept."
+  - `lead` puts a composer input in the bar (the timeline's note).
+  - `PrimaryButton` keeps min-width 128px and swaps to a spinner with a pending label. `GhostButton` is secondary.
+  - After success, the secondary becomes "Edit allocation" / "Change" and the primary reads "Reserved" / "Booked" / "Published", disabled.
+- **Controls.** Control-kit range and stepper embedded per prefix (`/* @controls range stepper prefix=xx */`). Steppers keep a draft only while typing (`draft ?? String(value)`) and hold-to-repeat at 400/60ms. Native selects get `appearance-none pe-10` with a 16px chevron at `end-3`, restored in forced colours. The native range can't be driven by the live demo player, so give scrubbed values a clickable equivalent (the shipping estimator's "Packed after 14:00 / 15:00" chips) and use those in `meta.demo`. Custom-drawn sliders (backorder per-order allocation, timeline scrubber) are `role="slider"` with arrows, Shift ×10, Page keys and Home/End, and use pointer capture with `touch-pan-y`.
+- **Motion.**
+  - `MOTION` tokens; `enter(play, delay, reduce)` gives a 12px rise out of an 8px blur over 0.5s, 50ms apart. `swap(reduce)` is a 6px / 3px-blur crossfade, outgoing first.
+  - `useCountUp` / `CountUp(value, play, delay, duration)` counts from the on-screen value. Pass a short duration (0.3–0.45s) for values driven by drags.
+  - `useLanded(play, ms)` drops entrance delays after the first view so later changes don't wait.
+  - Layout springs re-order rows (rules, arrival sort). Fills happen after landing.
+  - One playful beat per component at most (the bundle's 420/22 drop).
+  - Under reduced motion, everything is opacity-only and set instantly.
+- **Copy.** Real-product voice only: "36 units short of what’s owed", "Dispatches today if it’s packed in the next 1h 20m", "Notes are visible to your team, never to Maya." Host-data notes belong in guides and prompts, never on screen.
+- **Probes.** tests/browser/pro-50/<slug>.mjs run at 390px with reduced motion. Detail panels that swap outgoing-first need a `waitFor` on the incoming text before asserting.

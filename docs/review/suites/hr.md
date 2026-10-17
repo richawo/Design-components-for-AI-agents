@@ -1,0 +1,11 @@
+# HR suite shared language (from q33: hr-org-explorer, hr-compensation-review, hr-shift-coverage, hr-employee-onboarding)
+
+Copy verbatim from those four sources (registry/pro/hr-*/).
+
+- Tokens: `THEMES = { dark, light }` with identical keys: stage, surface, raised, sunken, ink, warn, bad, sheen, shadow, lift, glass. Dark #000 / #0d0d0f / #151518 / #09090b, ink #f4f4f5, warn #f5b84b, bad #ff7b8a. Light #ececea / #fff / #fff / #f6f6f4, ink #0c0c0e. Per-component CSS var prefix (--ox-*, --cr-*, --sc-*, --eo-*; pick your own); ink tiers by opacity modifiers (/60–/62 minimum for small text, AA).
+- Accent: suite default lime #c5f25a via `accent` -> --*-accent; --*-accent-ink computed by luminance (`inkOn`); --*-accent-line = accent on dark, color-mix(accent 58%, #000) on light (strokes/text on white). Accent means progress/coverage/selection only. Primary buttons are ink-filled (white on dark). Amber for advisories, rose only for real problems.
+- Header: compact chrome. Breadcrumb "People › Section › Item" (12.5px, ink 60%, 12px chevrons); entity name 19px/500 -0.02em with a status pill (24px, 1.5px dot, accent dot when live); key figures (20px tabular) and actions on the right; hairline below. Never an editorial headline.
+- Card: radius 22px, 8% ink hairline, @container root, shadow with inset top light. Sunken wells with inset sheen. Glass only where content overlaps (popovers, scrims, overlays).
+- Atoms (copied per file): `Avatar` (initials on low-chroma oklch gradient from a name hash, light-dark() stops via `avatarStops`), `Count` (counts from 0 with blur on entrance, then tweens from previous), `inkOn`, `hueOf`, `initials`.
+- Motion: EASE [0.22,1,0.36,1], EASE_IN, EASE_COUNT, SPRING_UI 500/40, SPRING_DRAG 320/30; a `T` entrance timeline object; RISE variants (12px, 8px blur) and FADE for reduced motion. Order: card -> header -> data -> fills after landing.
+- Conventions: section labels 11.5px mono uppercase 0.08em; commit bars on a sunken strip with blockers in amber; async buttons swap label for an in-place spinner then a drawn check; receipts are toasts with a drawn check and Undo where real products offer it; rejected callbacks keep the draft and say so; demo stages min-h-screen in the theme's stage colour.
