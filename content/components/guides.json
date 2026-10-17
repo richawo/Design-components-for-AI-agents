@@ -4826,20 +4826,19 @@
     "updated": "2026-10-17"
   },
   "mobile-project-switcher": {
-    "useWhen": "Searching and choosing a supplied project in a tactile native sheet while keeping the current choice through unavailable or rejected requests.",
-    "avoidWhen": "Creating projects, granting membership, inferring availability or silently picking another workspace when the current identity disappears.",
+    "useWhen": "Apps where people work across several projects or workspaces and switch often, and the project's home should change around them without a page load.",
+    "avoidWhen": "Apps with a single workspace, switching accounts or organisations with separate sign-ins, or very long lists that need a full search screen.",
     "integration": [
-      "Supply projects with globally unique nonempty IDs, name, description, workspace, role and available/unavailable status with actual reasons. Conflicting variants stay inspectable and cannot switch; the collection is bounded to the first 100 raw projects.",
-      "Use value/defaultValue with onValueChange(id,copiedProject,AbortSignal). Local mode commits after actual fulfillment. Controlled mode waits for the supplied value, and a fulfilled request without that update stays an acknowledgment. No observer makes controlled selection read-only.",
-      "Use open/defaultOpen with synchronous onOpenChange. Rejection keeps real visibility; missing observer makes controlled disclosure read-only. Cancel, current-project activation, exact source/value/disclosure/handler changes and reset retire previous work and late settlement.",
-      "Give the component a full-height mobile canvas. It uses a native Modal on iOS/Android and a host-contained accessible dialog for browser review. Search, native scroll, explicit Close and native accessibility/keyboard actions provide alternatives to its dedicated grabber.",
-      "Install Expo modules once in a bare React Native app. Verify native touch, large text and assistive technology on target devices; browser proof covers actual source/state logic, focus boundaries and design."
+      "Pass `projects` with stable ids, a glyph, the figures the home shows (open issues, cycle, seven days of activity, recent items) and `locked` with the reason for projects the person can't open.",
+      "Control `value` and resolve `onValueChange(id, project)` once your session has switched; reject with an Error to keep the current project and show the message on its row. Use `open` and `onOpenChange` to drive the sheet, and `onRequestAccess` for locked rows.",
+      "Install `expo-blur`, `expo-linear-gradient` and `react-native-svg` (`npx install-expo-modules` once in bare apps). The mark's flight measures on-screen positions, so test inside your navigation container on devices."
     ],
     "related": [
       "mobile-bottom-sheet",
+      "mobile-task-move",
       "mobile-settings"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "mobile-file-preview": {
     "useWhen": "Reading a shared document on a phone before acting on it: skimming pages, jumping to the one with comments, then downloading or opening it elsewhere.",

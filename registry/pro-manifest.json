@@ -31022,18 +31022,21 @@
   },
   {
     "slug": "mobile-project-switcher",
-    "name": "Project Index Sheet",
+    "name": "Project Switcher",
     "tier": "pro",
     "platform": "mobile",
     "category": "mobile",
-    "description": "A tactile native project index with exact current selection, searchable workspaces, readable availability and cancellable host-owned switching.",
+    "description": "A React Native project switcher: a glass sheet over the receding project home, searchable rows, and a pick that flies its mark into the header as the home re-lights.",
     "tags": [
       "mobile",
       "react native",
       "projects",
       "workspace",
+      "switcher",
       "sheet",
       "search",
+      "shared element",
+      "glass",
       "dark"
     ],
     "dependencies": [
@@ -31043,104 +31046,78 @@
     ],
     "theme": "dark",
     "previewHeight": 844,
-    "usage": "import { MobileProjectSwitcher } from \"@/components/design-for-ai/native/mobile-project-switcher\";\n\n// Bare React Native apps: run npx install-expo-modules once.\n<MobileProjectSwitcher projects={projects} value={projectId} onValueChange={switchProject} open={chooserOpen} onOpenChange={setChooserOpen} resetKey={accountId} />",
+    "usage": "import { MobileProjectSwitcher } from \"@/components/design-for-ai/native/mobile-project-switcher\";\n\n// npm i expo-blur expo-linear-gradient react-native-svg\n// (bare React Native: run `npx install-expo-modules` once)\n<MobileProjectSwitcher\n  projects={projects}\n  value={projectId}\n  onValueChange={async (id) => {\n    await session.switchProject(id);\n    setProjectId(id);\n  }}\n  onRequestAccess={(project) => api.access.request(project.id)}\n  workspace=\"Northwind\"\n/>",
     "props": [
       {
         "name": "projects",
         "type": "SwitcherProject[]",
-        "description": "Actual identities, names, workspace/role and supplied availability/reasons. Conflicting identities remain inspectable and cannot switch.",
-        "default": "Four original offline projects"
+        "default": "Six Northwind projects: Atlas iOS, Ledger Web, Dispatch API, Harbor Design System, Payments Compliance (locked) and Marketing Site",
+        "description": "id, name, kind, glyph (triangle, ledger, signal, grid, shield, wave), openIssues, issuesDelta, cycle { name, progress, ends }, activity (7 values), recent items, members, updated, pinned and locked (the reason)."
       },
       {
         "name": "value",
         "type": "string",
-        "description": "Controlled actual project. Missing or conflicting selection stays explicit; without observer, selection is read-only."
+        "description": "Controlled current project id."
       },
       {
         "name": "defaultValue",
         "type": "string",
-        "description": "Initial local project. Unavailable/removed current identity is retained honestly until an explicit selection.",
-        "default": "First unique available project"
+        "default": "First unlocked project",
+        "description": "Starting project when uncontrolled."
       },
       {
         "name": "onValueChange",
-        "type": "(id: string, project: SwitcherProject, signal: AbortSignal) => void | Promise<void>",
-        "description": "Host switch observer receives a copied exact project. Local mode commits after fulfillment; controlled mode waits for actual value. Cancellation is cooperative."
+        "type": "(id: string, project: SwitcherProject) => void | Promise<void>",
+        "description": "Switches project. A promise holds the row's spinner until it resolves; a rejection shows its message on the row and keeps the current project."
       },
       {
         "name": "open",
         "type": "boolean",
-        "description": "Authoritative sheet visibility; no observer makes disclosure read-only."
+        "description": "Controlled sheet visibility."
       },
       {
         "name": "defaultOpen",
         "type": "boolean",
-        "description": "Initial local disclosure state. Named default false; complete demonstration begins open.",
-        "default": "false"
+        "default": "false",
+        "description": "Starts with the sheet up."
       },
       {
         "name": "onOpenChange",
         "type": "(open: boolean) => void",
-        "description": "Synchronous disclosure observer. Rejection keeps actual visibility."
+        "description": "The sheet opened or closed (header tap, close, scrim, drag or a pick)."
       },
       {
-        "name": "resetKey",
-        "type": "string | number",
-        "description": "Replacement project/session identity. Retires pending callbacks and resets local selection/query/disclosure."
+        "name": "onRequestAccess",
+        "type": "(project: SwitcherProject) => void",
+        "description": "Ask on a locked project's row."
       },
       {
-        "name": "title",
+        "name": "workspace",
         "type": "string",
-        "description": "Native sheet heading.",
-        "default": "\"Choose your next space.\""
+        "default": "\"Northwind\"",
+        "description": "Workspace name in the header and section label."
       },
       {
-        "name": "searchPlaceholder",
+        "name": "accent",
         "type": "string",
-        "description": "Search prompt for actual names, workspaces, roles and descriptions.",
-        "default": "\"Search projects or workspaces\""
-      },
-      {
-        "name": "theme",
-        "type": "\"dark\" | \"light\"",
-        "description": "Neutral black/white/graphite chrome with purposeful actual state accents.",
-        "default": "\"dark\""
+        "default": "\"#5BD69A\"",
+        "description": "The one colour: the cycle ring, the busiest day and the current project's check."
       }
     ],
     "added": "2026-10-14",
     "demo": {
       "steps": [
-        "click:@project-row-1",
-        "wait:400",
+        "wait:1200",
+        "click:@project-row-ledger",
+        "wait:1800",
         "click:@project-open",
-        "wait:250",
-        "click:@project-search",
-        "type:Dispatch",
-        "wait:200",
-        "click:@project-row-2",
-        "wait:350"
+        "wait:900"
       ]
     },
     "controls": [
       {
-        "prop": "theme",
-        "label": "Theme",
-        "kind": "segmented",
-        "options": [
-          "dark",
-          "light"
-        ],
-        "default": "dark"
-      },
-      {
-        "prop": "title",
-        "label": "Heading",
-        "kind": "text",
-        "default": "Choose your next space."
-      },
-      {
         "prop": "open",
-        "label": "Sheet visibility",
+        "label": "Sheet",
         "kind": "action",
         "options": [
           {
@@ -31152,6 +31129,44 @@
             "label": "Close"
           }
         ]
+      },
+      {
+        "prop": "defaultValue",
+        "label": "Starts in",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "atlas",
+            "label": "Atlas"
+          },
+          {
+            "value": "ledger",
+            "label": "Ledger"
+          },
+          {
+            "value": "dispatch",
+            "label": "Dispatch"
+          }
+        ],
+        "default": "atlas",
+        "remount": true
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#5BD69A",
+        "options": [
+          "#5BD69A",
+          "#F5F5F5",
+          "#6EA8FF",
+          "#FF8A4C"
+        ]
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
       }
     ]
   },
