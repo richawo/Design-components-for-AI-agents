@@ -4953,19 +4953,19 @@
     "updated": "2026-10-14"
   },
   "mobile-sync-conflict": {
-    "useWhen": "Comparing actual local and remote field values before requesting a complete explicitly reviewed resolution.",
-    "avoidWhen": "Automatically choosing a winner or inferring unknown values and versions.",
+    "useWhen": "Resolving a record that two people or devices edited offline, field by field, where each person should see both versions and physically pick one before the merge is saved.",
+    "avoidWhen": "Automatic last-write-wins sync, text documents that need a character-level merge, or conflicts with more than two versions of a field.",
     "integration": [
-      "Supply actual document and local/remote version identities with raw uniquely identified fields. Null values are unknown and block review; empty strings are deliberate known values. Controlled field inspection is separate from local/remote/custom resolution drafts.",
-      "Custom text and newer notes survive source revisions and older acknowledgment. A meaningful version/fact revision permanently retires old choice applicability and consent, including after a later revert; retained drafts need explicit current confirmation. A replacement document or resetKey starts a fresh session.",
-      "onResolve receives a deep immutable review of the document, versions, original fields, chosen sides/values and exact note with AbortSignal. Fulfillment acknowledges only. Actual supplied resolved status owns completion, and a newer draft can be independently reviewed.",
-      "Install in a React Native app with the blur/gradient/SVG dependencies. Verify actual local review visibility, native touch, keyboard, large text and assistive technology."
+      "Pass the two sides as `mine` and `theirs` ({ name, initials, device, deviceName, editedAt }), the conflicting fields as { id, label, mine, theirs } and any agreed fields as `settled` for context. Changed words are highlighted from a word diff of the two values.",
+      "Each card can be dragged over the other or kept with its button. `onChoose` reports every choice with { fieldId, choice, value } so you can keep a draft; `defaultChoices` resumes one.",
+      "`onSave` receives every resolution once all fields are chosen. Resolve to show the synced state; reject or throw to keep the choices and show your error message with a retry.",
+      "Install expo-blur, expo-linear-gradient and react-native-svg (bare apps run `npx install-expo-modules`). Check drag, VoiceOver and large text on devices."
     ],
     "related": [
-      "mobile-review-annotations",
-      "mobile-offline-outbox"
+      "mobile-offline-outbox",
+      "mobile-swipe-list"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "mobile-offline-outbox": {
     "useWhen": "Inspecting exact queued originals, preserving independent local text drafts and retrying actual host-reported failures.",
