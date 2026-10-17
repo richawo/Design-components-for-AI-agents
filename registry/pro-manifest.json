@@ -29136,32 +29136,33 @@
     "tier": "pro",
     "platform": "web",
     "category": "media",
-    "description": "A real audio player with selectable timed passages, native cue highlighting, accepted seek/rate ownership and a reader-friendly follow mode.",
+    "description": "An audio transcript you read along with: each word fills as it’s spoken, any word seeks, and a waveform from the real recording scrubs.",
     "tags": [
       "audio",
       "transcript",
-      "timed text",
+      "read along",
+      "waveform",
       "media player",
-      "accessibility",
-      "reading"
+      "podcast",
+      "captions"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1100,
-    "usage": "import { MediaTranscriptPlayer } from \"@/components/design-for-ai/media-transcript-player\";\n\n<MediaTranscriptPlayer media={recording} passages={passages} onBeforeSeek={seconds => seconds <= allowedEnd} onSeek={rememberPosition} />",
+    "previewHeight": 820,
+    "usage": "import { MediaTranscriptPlayer } from \"@/components/design-for-ai/media-transcript-player\";\n\n<MediaTranscriptPlayer\n  media={{ id: episode.id, title: episode.title, speaker: \"Mara Quist\", src: episode.audioUrl, peaks: episode.peaks }}\n  passages={episode.transcript}\n  onSeek={(seconds) => saveProgress(episode.id, seconds)}\n/>",
     "props": [
       {
         "name": "media",
         "type": "TranscriptMedia",
-        "description": "Actual host recording id/title/src, provisional duration, optional speaker/language. Native metadata is authoritative. Text remains available without src. The stable recording id retains the last actual position/reading state through source URL, retry or availability changes; a new recording id resets to initialTime."
+        "description": "The recording: stable id, title, src, duration hint, speaker, detail, language and measured peaks (0–1, evenly spaced) for the scrubber. The audio element’s own metadata wins over the duration hint; a new id resets to initialTime."
       },
       {
         "name": "passages",
         "type": "TranscriptPassage[]",
-        "description": "Supplied unique-id timed text. Individual invalid/out-of-duration timings remain readable but do not seek or highlight.",
+        "description": "Timed passages {id, start, end, text, words?}. words holds each word’s start time; without it a passage’s time is shared out by word length. Passages with broken timing stay readable but don’t seek or highlight.",
         "default": "[]"
       },
       {
@@ -29186,28 +29187,16 @@
         "description": "Optional actual host selection in an empty transcript."
       },
       {
-        "name": "heading",
-        "type": "string",
-        "description": "Player title.",
-        "default": "\"Listen, line by line.\""
-      },
-      {
-        "name": "description",
-        "type": "string",
-        "description": "Brief context.",
-        "default": "\"The thought, and the words that carry it.\""
-      },
-      {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Neutral graphite and white chrome; colour is reserved for actual feature content and semantic data accents.",
+        "description": "Graphite or white chrome.",
         "default": "\"dark\""
       },
       {
         "name": "accent",
         "type": "string",
-        "description": "Restrained active-passage edge and wash; text stays neutral for contrast.",
-        "default": "\"#e6b782\""
+        "description": "The one accent: the playhead and the rule under the spoken word. Darkened automatically on the light theme.",
+        "default": "\"#ff6b3d\""
       },
       {
         "name": "disabled",
@@ -29218,13 +29207,13 @@
       {
         "name": "initialTime",
         "type": "number",
-        "description": "Initial bounded native position when this source loads. Never starts audio automatically.",
+        "description": "Where the playhead rests when the recording loads (the clock counts up to it on first view). Never starts playback.",
         "default": "0"
       },
       {
         "name": "autoFollow",
         "type": "boolean",
-        "description": "Allows automatic internal transcript scrolling. Manual reading pauses it until Resume follow; false disables the policy.",
+        "description": "Keep the spoken line in view inside the transcript. Scrolling it pauses following until “Back to playhead”.",
         "default": "true"
       },
       {
@@ -29246,7 +29235,7 @@
       {
         "name": "onBeforeSeek",
         "type": "(seconds: number, passage?: TranscriptPassage) => boolean | void",
-        "description": "Synchronous host seek gate. Returning false or throwing preserves the actual native position with useful feedback."
+        "description": "Synchronous gate. Return false or throw to refuse a seek; the position stays and a short note explains."
       },
       {
         "name": "onSeek",
@@ -29276,17 +29265,11 @@
       {
         "name": "className",
         "type": "string",
-        "description": "Root classes, container-responsive up to 800 px.",
+        "description": "Root classes. The player is container-responsive up to 820 px.",
         "default": "\"\""
       }
     ],
     "controls": [
-      {
-        "prop": "heading",
-        "label": "Player title",
-        "kind": "text",
-        "default": "Listen, line by line."
-      },
       {
         "prop": "theme",
         "label": "Theme",
@@ -29299,23 +29282,22 @@
       },
       {
         "prop": "accent",
-        "label": "Passage edge",
+        "label": "Playhead",
         "kind": "color",
-        "default": "#e6b782",
+        "default": "#ff6b3d",
         "options": [
-          "#e6b782",
-          "#b0c3b3",
-          "#e6e4ea"
+          "#ff6b3d",
+          "#7cc4ff",
+          "#f4f4f5"
         ]
       },
       {
         "prop": "rate",
-        "label": "Playback rate",
+        "label": "Speed",
         "kind": "segmented",
         "options": [
           0.75,
           1,
-          1.25,
           1.5,
           2
         ],
@@ -29323,7 +29305,7 @@
       },
       {
         "prop": "autoFollow",
-        "label": "Allow follow",
+        "label": "Follow the line",
         "kind": "toggle",
         "default": true
       },
@@ -29346,14 +29328,13 @@
     ],
     "demo": {
       "steps": [
-        "click:@transcript-cue-2",
-        "wait:420",
-        "click:@transcript-cue-1",
-        "wait:420",
-        "click:@transcript-next",
-        "wait:420",
-        "click:@transcript-cue-0",
-        "wait:450"
+        "wait:900",
+        "click:@word-2-6",
+        "wait:1100",
+        "click:@waveform:0.9,0.5",
+        "wait:1000",
+        "click:@cue-1",
+        "wait:900"
       ],
       "loop": false
     },

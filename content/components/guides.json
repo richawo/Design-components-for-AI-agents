@@ -3745,17 +3745,17 @@
     "updated": "2026-10-17"
   },
   "media-transcript-player": {
-    "useWhen": "Listening to supplied media while reading timed passages and seeking directly from the transcript.",
-    "avoidWhen": "A transcription service, an automatic caption generator or text that has no timing relationship to the supplied recording.",
+    "useWhen": "Podcasts, interviews, lessons or voice notes where people read along with the audio, jump to a word or line, and scrub a waveform of the real recording.",
+    "avoidWhen": "Generating transcripts or captions, long multi-speaker meetings that need speaker diarisation and editing, or video, where captions belong over the picture.",
     "integration": [
-      "Supply actual playable media and timed transcript segments. Treat gaps, unavailable playback and invalid timing as honest states.",
-      "Keep transcript reading and selected passages available even when the media cannot play; synchronize against the real media clock."
+      "Pass the recording as media (id, title, src, duration hint, speaker, measured peaks) and timed passages; add per-word start times in words when your speech-to-text returns them, otherwise words are spaced by length.",
+      "The native audio element is the clock. Persist position with onSeek or onTimeChange (at most 10 Hz), gate seeks with onBeforeSeek, and drive status/error/onRetry from your media host; the transcript stays readable when audio can’t load."
     ],
     "related": [
       "media-audio-transport",
-      "ai-reasoning-trace"
+      "mobile-voice-memo"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "media-compare-grid": {
     "useWhen": "Choosing between versions of the same image (paper stocks, print proofs, retouches, renders, compression settings) where the difference lives in details you need to zoom into on every version at once.",
