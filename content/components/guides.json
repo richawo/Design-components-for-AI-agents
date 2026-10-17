@@ -3679,17 +3679,18 @@
     "updated": "2026-10-13"
   },
   "media-device-switcher": {
-    "useWhen": "A responsive product demonstration that needs actual phone, tablet and desktop content widths.",
-    "avoidWhen": "A browser emulator, operating-system simulator or screenshot-only carousel.",
+    "useWhen": "Showing how one page reads on a phone, a tablet and a desktop, with the page itself as the hero: theme galleries, design reviews, template marketplaces and CMS previews.",
+    "avoidWhen": "Testing real devices or browsers, or showing a static screenshot; this renders your live page in a container at the device width, it doesn't emulate an operating system.",
     "integration": [
-      "Supply content that responds to its own container width. The frame selection reports a viewing preference and does not emulate native operating-system behavior.",
-      "Keep device labels, dimensions and initial selection explicit; use separate content only when the underlying experience truly differs."
+      "Pass the page as `content`. It renders inside a CSS container at the device width, so use container queries (or components built on them); window media queries see the host window, not the device.",
+      "Supply your own `presets` (id, label, kind, width, height) and drive `value`, `rotated` and `fit` if the choice lives in your URL or store.",
+      "Map your build or fetch state to `status` (loading, empty, error) and pass `onRetry`; the page stays mounted underneath so its state survives."
     ],
     "related": [
-      "hero-signal-workbench",
-      "layout-split-resizer"
+      "layout-split-resizer",
+      "hero-signal-workbench"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "media-image-contact-sheet": {
     "useWhen": "Reviewing a supplied image collection, making an explicit selection and comparing two or more selected images in the same contact sheet.",

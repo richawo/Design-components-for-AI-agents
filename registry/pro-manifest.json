@@ -28303,14 +28303,15 @@
     "tier": "pro",
     "platform": "web",
     "category": "media",
-    "description": "A precise inspector for responsive content, with fitted phone, tablet and desktop frames, real viewport measurements, rotation and full-size scrolling.",
+    "description": "A device inspector where the page is the hero: the frame morphs between phone, tablet and browser on one spring while the page reflows live and its real width counts.",
     "tags": [
       "responsive",
       "device preview",
-      "media",
+      "device frame",
       "container queries",
-      "dark",
-      "inspection"
+      "media",
+      "inspector",
+      "dark"
     ],
     "dependencies": [
       "motion",
@@ -28318,128 +28319,134 @@
     ],
     "theme": "dark",
     "previewHeight": 900,
-    "usage": "import { MediaDeviceSwitcher } from \"@/components/design-for-ai/media-device-switcher\";\n\n<MediaDeviceSwitcher content={<ResponsivePortfolio />} value={device} onValueChange={setDevice} />",
+    "usage": "import { MediaDeviceSwitcher } from \"@/components/design-for-ai/media-device-switcher\";\n\n// The page renders at the device's real width, so its container queries do the reflowing.\n<MediaDeviceSwitcher\n  content={<LandingPage />}\n  address=\"acme.com/pricing\"\n  value={device}\n  onValueChange={(id) => setDevice(id)}\n  status={isBuilding ? \"loading\" : \"ready\"}\n  onRetry={rebuild}\n/>",
     "props": [
       {
+        "name": "content",
+        "type": "ReactNode",
+        "default": "Wayfarer trip itinerary",
+        "description": "The page to preview. It renders inside a real CSS container at the device's width, so container queries (not window media queries) reflow it. It stays mounted through every device and status change."
+      },
+      {
         "name": "presets",
-        "type": "DevicePreviewPreset[]",
-        "description": "Phone 393×720, tablet 820×1100 and desktop 1200×720. Unique ID, label, physical chrome kind, CSS viewport dimensions and optional availability.",
-        "default": "offline presets"
+        "type": "DevicePreset[]",
+        "default": "Phone 390×844, Tablet 820×1180, Desktop 1440×900",
+        "description": "{ id, label, kind: \"phone\" | \"tablet\" | \"desktop\", width, height, disabled?, disabledReason? }. Width and height are the screen in CSS px; kind picks the hardware."
       },
       {
         "name": "value",
         "type": "string",
-        "description": "Controlled selected preset. Invalid or unavailable selection falls back to the first available preset."
+        "description": "Controlled preset id. Unavailable or unknown ids fall back to the first available preset."
       },
       {
         "name": "defaultValue",
         "type": "string",
-        "description": "Initial uncontrolled preset.",
-        "default": "\"phone\""
+        "default": "first available preset",
+        "description": "Preset shown first when uncontrolled."
       },
       {
         "name": "onValueChange",
-        "type": "(id: string, preset: DevicePreviewPreset) => void",
-        "description": "Synchronous observer for device selection; controlled hosts update value here."
+        "type": "(id: string, preset: DevicePreset) => void",
+        "description": "Called when a device is picked (click, arrows, Home/End)."
       },
       {
         "name": "rotated",
         "type": "boolean",
-        "description": "Controlled dimension rotation; swaps width and height."
+        "description": "Controlled landscape. Phones and tablets only; desktop ignores it."
       },
       {
         "name": "defaultRotated",
         "type": "boolean",
-        "description": "Initial uncontrolled rotation.",
-        "default": "false"
+        "default": "false",
+        "description": "Initial orientation when uncontrolled."
       },
       {
         "name": "onRotatedChange",
         "type": "(rotated: boolean) => void",
-        "description": "Observe rotation and update controlled state."
+        "description": "Called when the rotate button is pressed."
       },
       {
         "name": "fit",
         "type": "boolean",
-        "description": "Controlled fitted or actual-size view."
+        "description": "Controlled zoom: fit the device to the stage, or show it at 100% and scroll."
       },
       {
         "name": "defaultFit",
         "type": "boolean",
-        "description": "Initial fit-to-stage mode.",
-        "default": "true"
+        "default": "true",
+        "description": "Initial zoom when uncontrolled."
       },
       {
         "name": "onFitChange",
         "type": "(fit: boolean) => void",
-        "description": "Observe fit mode and update controlled state."
+        "description": "Called when the zoom button is pressed."
       },
       {
-        "name": "content",
-        "type": "ReactNode",
-        "description": "Supplied content retained in one real CSS container through device/status changes. Use container queries or responsive components; window media queries are not emulated. Replacing or removing the supplied node retires its content; use status for temporary unavailability.",
-        "default": "original offline editorial study"
+        "name": "address",
+        "type": "string",
+        "default": "\"wayfarer.app/trips/porto\"",
+        "description": "Shown in the desktop browser's address bar."
       },
       {
         "name": "label",
         "type": "string",
-        "description": "Inspector and browser chrome title.",
-        "default": "\"Viewport study\""
+        "default": "\"Device preview\"",
+        "description": "Accessible name for the inspector."
       },
       {
         "name": "status",
         "type": "\"ready\" | \"loading\" | \"empty\" | \"error\"",
-        "description": "Host-owned content state; content remains mounted and is inert outside ready.",
-        "default": "\"ready\""
+        "default": "\"ready\"",
+        "description": "Host-owned state of the page. Loading shows a shimmering skeleton, error a message with Retry; the page stays mounted and inert meanwhile."
       },
       {
         "name": "errorMessage",
         "type": "string",
-        "description": "Specific host error explanation.",
-        "default": "\"This preview could not be prepared.\""
+        "default": "\"The preview server answered 502 for /trips/porto. Your draft is safe.\"",
+        "description": "What went wrong, shown on the device screen."
       },
       {
         "name": "onRetry",
         "type": "() => void",
-        "description": "Optional real retry action. Its 44px control remains outside scaled content."
+        "description": "Shows a Retry button in the toolbar while status is \"error\"."
       },
       {
         "name": "disabled",
         "type": "boolean",
-        "description": "Disable toolbar changes while preserving content inspection.",
-        "default": "false"
+        "default": "false",
+        "description": "Locks the device, rotate and zoom controls; the page stays scrollable."
       },
       {
         "name": "stageHeight",
         "type": "number",
-        "description": "Fixed scrollable stage, bounded 280..640CSS pixels.",
-        "default": "520"
+        "default": "700",
+        "description": "Height of the stage in px (360–900)."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Neutral black/white glass chrome, with colour reserved for actual data/feature accents.",
-        "default": "\"dark\""
+        "default": "\"dark\"",
+        "description": "Inspector chrome. Device hardware stays graphite."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Outer component class.",
-        "default": "\"\""
+        "default": "\"\"",
+        "description": "Classes for the root section."
       }
     ],
     "added": "2026-10-13",
     "demo": {
       "steps": [
+        "wait:900",
         "click:@device-desktop",
-        "wait:650",
+        "wait:1300",
         "click:@device-tablet",
-        "wait:650",
-        "click:@device-phone",
-        "wait:450",
+        "wait:1100",
         "click:@rotate-device",
-        "wait:650"
-      ]
+        "wait:1300"
+      ],
+      "loop": false
     },
     "controls": [
       {
@@ -28454,7 +28461,7 @@
       },
       {
         "prop": "defaultValue",
-        "label": "Starting frame",
+        "label": "Starting device",
         "kind": "select",
         "options": [
           "phone",
@@ -28465,18 +28472,25 @@
         "remount": true
       },
       {
+        "prop": "defaultRotated",
+        "label": "Start in landscape",
+        "kind": "toggle",
+        "default": false,
+        "remount": true
+      },
+      {
         "prop": "stageHeight",
         "label": "Stage height",
         "kind": "slider",
-        "min": 320,
-        "max": 640,
+        "min": 420,
+        "max": 820,
         "step": 20,
         "unit": "px",
-        "default": 520
+        "default": 700
       },
       {
         "prop": "status",
-        "label": "Content state",
+        "label": "Page state",
         "kind": "action",
         "options": [
           "ready",
