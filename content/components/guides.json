@@ -4655,19 +4655,19 @@
     "updated": "2026-10-14"
   },
   "devtools-incident-timeline": {
-    "useWhen": "Correlating supplied alerts, deployments and interventions on one inspectable incident history.",
-    "avoidWhen": "A live monitoring service or assumed causal relationships between nearby events.",
+    "useWhen": "Replaying an outage after the fact: one view of a key metric, severity changes and every alert, deploy, page and rollback, with a playhead to scrub through it.",
+    "avoidWhen": "Live monitoring dashboards that stream new data every second, or incidents with no time series to draw (use a plain activity feed).",
     "integration": [
-      "Supply incident identity and actual event ID, explicit supported ISO timestamp, alert/deployment/intervention/note category, description, actor and event-scoped evidence. Equal times preserve supplied order. Missing/conflicting IDs and unsupported kinds/times remain inspectable as unplaced raw records; bound inspection explicitly rather than silently legitimizing a record.",
-      "Pair event value and timeZone with their respective synchronous observers for controlled inspection. Missing observers make only that branch read-only. Display-zone conversion uses actual IANA rules while retaining source timestamps; unavailable conversion shows raw times. Time-zone option IDs must be supported and unique.",
-      "Category filters keep the inspected event/evidence in view and explain when its row is hidden. Evidence identity includes event ID and local evidence ID; actual supplied HTTP(S) or root-relative links remain available, while missing/unsupported links stay honest. Use incident/resetKey to replace history and preserve explicit outside or parent-page focus.",
-      "This is history inspection, not monitoring, causal analysis or assumed recovery. Fixed row spacing is not a time scale and temporal proximity does not establish cause. Inspection is bounded to 200 supported records before chronological ordering and 100 evidence records per event; the host retains complete data."
+      "Pass `incident` (id, title, service, startedAt), `events` with ISO times and a kind of deploy, alert, severity, page, note, mitigation or resolve, and `metric` samples at a steady interval. Severity events carry `level` 1 to 3 and drive the severity track; a resolve event ends it.",
+      "Status, duration, time to detect, time to mitigate, peak and minutes over the `threshold` are computed from the data, so keep timestamps accurate. Use `timeFormat=\"relative\"` for post-mortems that talk in T+ offsets, and `timeZone` for the responders' clock.",
+      "`onSeek(at, event)` fires when the playhead settles; use it to sync a log search or a trace view to the moment under the playhead."
     ],
     "related": [
       "devtools-log-stream",
-      "devtools-request-waterfall"
+      "devtools-webhook-inspector",
+      "chart-revenue-trend"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "mobile-mood-map": {
     "useWhen": "A wellbeing or journaling app needs a quick, expressive self-reported check-in: people place how they feel on an energy × pleasantness map and log it against their day.",

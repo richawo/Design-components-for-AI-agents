@@ -14409,17 +14409,20 @@
   },
   {
     "slug": "devtools-incident-timeline",
-    "name": "Incident Observation Timeline",
+    "name": "Incident Timeline",
     "tier": "pro",
     "platform": "web",
     "category": "devtools",
-    "description": "A chronological supplied-incident folio with event-scoped evidence, explicit time zones, category filters and honest unsupported/conflicting records.",
+    "description": "A scrubbable incident replay: drag a playhead across the p99 line, the severity track and every alert, deploy and rollback, with response times that count up.",
     "tags": [
       "devtools",
       "incident",
       "timeline",
-      "evidence",
-      "timezone",
+      "postmortem",
+      "on-call",
+      "sre",
+      "observability",
+      "scrubber",
       "dark"
     ],
     "dependencies": [
@@ -14427,129 +14430,169 @@
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1320,
-    "usage": "import { DevtoolsIncidentTimeline } from \"@/components/design-for-ai/devtools-incident-timeline\";\n\n<DevtoolsIncidentTimeline incident={incident} events={history} value={eventId} onValueChange={setEvent} resetKey={historyId} />",
+    "previewHeight": 900,
+    "usage": "import { DevtoolsIncidentTimeline } from \"@/components/design-for-ai/devtools-incident-timeline\";\nimport type { IncidentEvent } from \"@/components/design-for-ai/devtools-incident-timeline\";\n\nconst events: IncidentEvent[] = [\n  { id: \"alert\", at: \"2026-10-16T14:09:40Z\", kind: \"alert\", title: \"p99 over 800 ms for 3 min\", actor: \"Monitor · checkout-p99\" },\n  { id: \"sev1\", at: \"2026-10-16T14:14:30Z\", kind: \"severity\", level: 1, title: \"Raised to SEV-1\", actor: \"Priya Raman\" },\n  { id: \"rollback\", at: \"2026-10-16T14:29:02Z\", kind: \"mitigation\", title: \"Rolled back to v2026.10.16-3\" },\n  { id: \"resolved\", at: \"2026-10-16T15:10:00Z\", kind: \"resolve\", title: \"Resolved\" },\n];\n\n<DevtoolsIncidentTimeline\n  incident={{ id: \"INC-2187\", title: \"Checkout p99 latency spike\", service: \"checkout-api\", startedAt: \"2026-10-16T14:04:00Z\" }}\n  events={events}\n  metric={{ label: \"p99 latency\", unit: \"ms\", samples }}\n  threshold={800}\n  timeZone=\"Europe/London\"\n  onSeek={(at, event) => console.log(at, event?.id)}\n/>",
     "props": [
       {
         "name": "incident",
-        "type": "IncidentTimelineIncident",
-        "description": "Actual supplied incident ID/title/context. Identity plus resetKey defines a replacement history.",
-        "default": "Original offline navigation wait study"
+        "type": "Incident",
+        "default": "INC-2187, checkout-api in eu-west-1",
+        "description": "{ id, title, service, region?, commander?, startedAt }. startedAt marks when impact began; durations and T+ times count from it."
       },
       {
         "name": "events",
-        "type": "IncidentTimelineEvent[]",
-        "description": "Stable event IDs, explicit ISO timestamps, supported categories, actual descriptions/actors and event-scoped evidence with optional actual links.",
-        "default": "Five original offline observations"
+        "type": "IncidentEvent[]",
+        "default": "Ten events from deploy to resolution",
+        "description": "{ id, at (ISO), kind, title, actor?, detail?, level? }. kind is deploy, alert, severity, page, note, mitigation or resolve. Severity events carry level 1 to 3 and drive the severity track; a resolve event ends it. Any order; sorted by time."
       },
       {
-        "name": "value",
-        "type": "string",
-        "description": "Controlled selected event; missing IDs remain explicit and missing observer makes selection read-only."
+        "name": "metric",
+        "type": "IncidentMetric",
+        "default": "p99 latency, one sample a minute",
+        "description": "{ label, unit, samples: { at, value }[] }. Drawn as the line behind the timeline and read out at the playhead."
       },
       {
-        "name": "defaultValue",
-        "type": "string",
-        "description": "Initial local selected supported event, reused on reset."
+        "name": "threshold",
+        "type": "number",
+        "default": "800",
+        "description": "The SLO line. Time above it is shaded in the accent and totalled in Over SLO."
       },
       {
-        "name": "onValueChange",
-        "type": "(id: string, event: IncidentTimelineEvent) => void",
-        "description": "Synchronous event inspection observer. Rejection keeps actual selection."
+        "name": "timeFormat",
+        "type": "\"clock\" | \"relative\"",
+        "default": "\"clock\"",
+        "description": "Wall-clock times in timeZone, or T+ offsets from incident.startedAt, on the axis, the playhead and the log."
       },
       {
         "name": "timeZone",
         "type": "string",
-        "description": "Authoritative IANA display zone; no observer makes the native zone picker read-only."
+        "default": "\"UTC\"",
+        "description": "IANA zone for clock times. An unknown zone falls back to UTC."
       },
       {
-        "name": "defaultTimeZone",
+        "name": "defaultAt",
         "type": "string",
-        "description": "Initial local IANA display zone; changes label conversion only.",
-        "default": "\"UTC\""
+        "default": "the last event",
+        "description": "ISO time where the playhead rests after its first sweep."
       },
       {
-        "name": "timeZones",
-        "type": "IncidentTimelineZone[]",
-        "description": "Supplied native zone options; IDs must be supported and unique. Current custom zone remains visible.",
-        "default": "UTC, London and New York"
+        "name": "replayDuration",
+        "type": "number",
+        "default": "5200",
+        "description": "How long Replay takes to sweep the whole window, ms. With reduced motion Replay steps event to event instead."
       },
       {
-        "name": "onTimeZoneChange",
-        "type": "(zone: string) => void",
-        "description": "Synchronous display-zone observer; supplied timestamps never change."
-      },
-      {
-        "name": "resetKey",
-        "type": "string | number",
-        "description": "Incident/history identity. Resets local selection/filter/zone and reading; preserves explicit outside focus."
-      },
-      {
-        "name": "title",
+        "name": "accent",
         "type": "string",
-        "description": "A clear uncertainty-aware incident heading.",
-        "default": "\"Read the events. Keep the uncertainty.\""
-      },
-      {
-        "name": "description",
-        "type": "string",
-        "description": "Explain supplied chronology/evidence inspection.",
-        "default": "\"Put supplied alerts, deployments and interventions on one timeline, with their actual evidence and time zone in view.\""
+        "default": "\"#ff5f57\"",
+        "description": "The one colour: severity (as intensity of this hue), the over-SLO shading and alerts."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Neutral black/white glass chrome, with colour reserved for actual data/feature accents.",
-        "default": "\"dark\""
+        "default": "\"dark\"",
+        "description": "Near-black card with white ink, or a white card with near-black ink."
+      },
+      {
+        "name": "onSeek",
+        "type": "(at: string, current: IncidentEvent | null) => void",
+        "description": "Called when the playhead settles after a drag, key, click or replay, with the ISO time and the latest event at or before it."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Outer incident folio classes.",
-        "default": "\"\""
+        "default": "\"\"",
+        "description": "Classes on the card."
       }
     ],
     "added": "2026-10-13",
     "demo": {
       "steps": [
-        "click:@incident-event-first-alert",
-        "wait:350",
-        "click:@incident-filter-intervention",
-        "wait:350",
-        "click:@incident-event-intervention-prefetch",
-        "wait:450",
-        "click:@incident-filter-all",
-        "wait:450"
+        "wait:300",
+        "click:@incident-replay",
+        "wait:3300",
+        "click:@incident-event-pool",
+        "wait:1100"
       ]
     },
     "controls": [
+      {
+        "prop": "timeFormat",
+        "label": "Times",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "clock",
+            "label": "Clock"
+          },
+          {
+            "value": "relative",
+            "label": "T+ offset"
+          }
+        ],
+        "default": "clock"
+      },
+      {
+        "prop": "threshold",
+        "label": "SLO",
+        "kind": "slider",
+        "min": 400,
+        "max": 1600,
+        "step": 50,
+        "unit": "ms",
+        "default": 800
+      },
+      {
+        "prop": "timeZone",
+        "label": "Time zone",
+        "kind": "select",
+        "options": [
+          {
+            "value": "UTC",
+            "label": "UTC"
+          },
+          {
+            "value": "Europe/London",
+            "label": "London"
+          },
+          {
+            "value": "America/New_York",
+            "label": "New York"
+          },
+          {
+            "value": "Asia/Tokyo",
+            "label": "Tokyo"
+          }
+        ],
+        "default": "UTC"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#ff5f57",
+        "options": [
+          "#ff5f57",
+          "#f5a524",
+          "#7cc4ff",
+          "#e5e5e5"
+        ]
+      },
       {
         "prop": "theme",
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
         "default": "dark"
-      },
-      {
-        "prop": "title",
-        "label": "Heading",
-        "kind": "text",
-        "default": "Read the events. Keep the uncertainty."
-      },
-      {
-        "prop": "defaultTimeZone",
-        "label": "Display zone",
-        "kind": "select",
-        "options": [
-          "UTC",
-          "Europe/London",
-          "America/New_York"
-        ],
-        "default": "UTC",
-        "remount": true
       }
     ]
   },
