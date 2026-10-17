@@ -105,10 +105,10 @@ needs re-recording, whether its poster is current, and the state of its browser 
 | `saas-access-requests` | new | stale | rewritten, passes |
 | `saas-audit-trail` | new | stale | rewritten, passes |
 | `saas-customer-health` | new | current | rewritten, passes (invalid dates and empty trends fixed) |
-| `saas-integration-manager` | new | stale | rewritten, passes |
+| `saas-integration-manager` | new | current | rewritten, passes |
 | `saas-notification-inbox` | new | stale | rewritten, passes |
 | `saas-report-scheduler` | new | current | rewritten, passes |
-| `saas-saved-views` | new | stale | rewritten, passes |
+| `saas-saved-views` | new | current | rewritten, passes |
 | `saas-support-triage` | new | current | rewritten, passes against Next; pending/rejected undo, exiting controls and invalid timestamps fixed |
 | `saas-usage-policy` | new | current | rewritten, passes (warning thresholds and empty usage fixed) |
 | `saas-workspace-dashboard` | new | stale | rewritten, passes |

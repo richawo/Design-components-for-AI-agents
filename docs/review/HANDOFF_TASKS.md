@@ -38,6 +38,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 4: all four requested HR reruns, all four requested commerce reruns and Legal Workspace pass on the official Next-backed runner. Legal Workspace was asserting obsolete failure roles and action labels; it now verifies evidence and upload retries with the original matter context retained. Screenshot tools now wait for the requested preview’s source and fonts before timing its entrance, and poster failures return a failing exit code.
 
+- Task 2: Saved Views and Integration Manager posters are refreshed and visually checked, together with all three responsive captures and control changes. Six stale posters remain.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -108,10 +110,10 @@ Slugs:
 `social-proof-case-ledger`, `text-number-odometer`, `text-optical-weight`, `text-outline-fill`
 `text-path-typesetter`, `finance-budget-variance`, `finance-cashflow-dashboard`
 
-## 2. Retake 8 stale posters
+## 2. Retake 6 stale posters
 
 These posters still show the previous UI because the server was overloaded:
-`saas-saved-views`, `saas-integration-manager`, `saas-access-requests`, `saas-audit-trail`, `saas-workspace-dashboard`,
+`saas-access-requests`, `saas-audit-trail`, `saas-workspace-dashboard`,
 `saas-notification-inbox`, `finance-expense-review`, `finance-close-checklist`.
 
 `node scripts/screenshot.mjs <slug> --base=http://localhost:3100`, then open the webp and check it isn't blank or
