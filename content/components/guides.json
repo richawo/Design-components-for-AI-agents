@@ -3946,17 +3946,18 @@
     "updated": "2026-10-17"
   },
   "text-optical-weight": {
-    "useWhen": "Inspecting how supported font weight and optical scale change real, selectable specimen text.",
-    "avoidWhen": "Synthesizing unsupported font axes or using a font specimen as a decorative loading animation.",
+    "useWhen": "Showing off a variable typeface on a foundry page, brand guide or type tester, where people should feel the weight axis change real, selectable words.",
+    "avoidWhen": "A static font you can’t vary, a decorative loading animation, or a full type-testing tool with OpenType feature toggles and paragraph settings.",
     "integration": [
-      "Supply selectable specimen copy and a font role backed by your actual CSS font. The bundled Geist Variable display/mono roles declare weight100–900; Instrument Serif is fixed400. Optical size remains undeclared unless the host font actually supports its supplied optical axis.",
-      "Control weight, requested size and any declared optical size atomically. Keep exact controls keyboard accessible, report requested versus fitted rendered size and retain actual values after rejected changes."
+      "Back the chosen role with your actual face through --font-display, --font-serif or --font-mono, and declare its real weightAxis. Pass opticalAxis only when the face really has opsz; without it no optical control appears. Geist Variable and Geist Mono Variable run 100–900, Instrument Serif is a fixed 400.",
+      "Control weight, requested size and optical size together with value/onValueChange, or start from defaultValue. Persist in onValueCommit, which fires once per finished gesture after you accept it. Drive status for loading or an unavailable face and pass onRetry to offer a retry."
     ],
     "related": [
       "text-decode",
-      "devtools-icon-workbench"
+      "text-number-odometer",
+      "text-outline-fill"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "text-path-typesetter": {
     "useWhen": "Letting people set a short phrase along a curve and shape it by hand: badge and label makers, poster or merch editors, a type playground in a design tool.",

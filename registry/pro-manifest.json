@@ -37798,22 +37798,22 @@
     "tier": "pro",
     "platform": "web",
     "category": "text",
-    "description": "An interactive variable-font specimen with selectable type, declared weight and optical axes, exact controls and honest responsive pixel sizing.",
+    "description": "A variable-font specimen: the words breathe in from hairline, a ladder of the face at nine weights, and kit sliders that retune real glyphs.",
     "tags": [
       "typography",
       "variable font",
+      "font weight",
       "optical size",
       "specimen",
-      "font weight",
-      "selectable text"
+      "type tester"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 950,
-    "usage": "import { TextOpticalWeight } from \"@/components/design-for-ai/text-optical-weight\";\n\n<TextOpticalWeight text={specimen} fontRole=\"display\" weightAxis={supportedWeight} value={typeValues} onValueChange={setTypeValues} onValueCommit={saveTypeValues} />",
+    "previewHeight": 900,
+    "usage": "import { TextOpticalWeight } from \"@/components/design-for-ai/text-optical-weight\";\n\n<TextOpticalWeight\n  text={\"Feel the\\nweight.\"}\n  fontRole=\"display\"\n  weightAxis={{ min: 100, max: 900, step: 1 }}\n  value={type}\n  onValueChange={setType}\n  onValueCommit={saveType}\n/>",
     "props": [
       {
         "name": "text",
@@ -37830,7 +37830,7 @@
       {
         "name": "fontLabel",
         "type": "string",
-        "description": "Honest host label for the supplied face."
+        "description": "Name of the face in the header. Defaults to the role’s bundled face (Geist Variable, Instrument Serif, Geist Mono Variable)."
       },
       {
         "name": "weightAxis",
@@ -37850,7 +37850,8 @@
       {
         "name": "defaultValue",
         "type": "OpticalWeightValue",
-        "description": "Initial uncontrolled font values, bounded to the declared axes."
+        "description": "Initial uncontrolled font values, bounded to the declared axes.",
+        "default": "{ weight: 420, size: 112, opticalSize: 24 }"
       },
       {
         "name": "onValueChange",
@@ -37860,19 +37861,7 @@
       {
         "name": "onValueCommit",
         "type": "(value: OpticalWeightValue) => void",
-        "description": "Reports accepted changed range releases or exact/keyboard actions. Rejection, cancellation and obsolete interactions do not falsely commit."
-      },
-      {
-        "name": "heading",
-        "type": "string",
-        "description": "Specimen panel heading.",
-        "default": "\"A matter of type.\""
-      },
-      {
-        "name": "description",
-        "type": "string",
-        "description": "Short context for the visual type study.",
-        "default": "\"Feel the difference in the words themselves.\""
+        "description": "Once per finished gesture, after the host accepts it: a slider released, a stop picked, a value entered or stepped, a reset. Rejected or cancelled gestures don’t commit."
       },
       {
         "name": "theme",
@@ -37883,13 +37872,13 @@
       {
         "name": "accent",
         "type": "string",
-        "description": "Text-selection color.",
+        "description": "The one accent: text selection and the marker under the active weight stop.",
         "default": "\"#e7b981\""
       },
       {
         "name": "status",
         "type": "\"ready\" | \"loading\" | \"unavailable\"",
-        "description": "Host font availability, preserving readable fallback specimen text.",
+        "description": "Host font availability. Loading shows a spinner in the header; unavailable explains the fallback and offers Retry when onRetry exists. Controls lock in both.",
         "default": "\"ready\""
       },
       {
@@ -37911,43 +37900,68 @@
       {
         "name": "className",
         "type": "string",
-        "description": "Root classes for the responsive840px specimen.",
+        "description": "Classes for the outer card.",
         "default": "\"\""
       }
     ],
     "controls": [
       {
-        "prop": "heading",
-        "label": "Specimen title",
-        "kind": "text",
-        "default": "A matter of type."
-      },
-      {
         "prop": "fontRole",
         "label": "Font role",
         "kind": "segmented",
         "options": [
-          "display",
-          "serif",
-          "mono"
+          {
+            "value": "display",
+            "label": "Display"
+          },
+          {
+            "value": "serif",
+            "label": "Serif"
+          },
+          {
+            "value": "mono",
+            "label": "Mono"
+          }
         ],
-        "default": "display"
+        "default": "display",
+        "group": "Type"
       },
       {
         "prop": "theme",
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
-        "default": "dark"
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#e7b981",
+        "options": [
+          "#e7b981",
+          "#34d399",
+          "#7c9cff",
+          "#ff7a45"
+        ],
+        "group": "Look"
       },
       {
         "prop": "disabled",
         "label": "Disabled",
         "kind": "toggle",
-        "default": false
+        "default": false,
+        "group": "State"
       },
       {
         "prop": "status",
@@ -37957,19 +37971,19 @@
           "ready",
           "loading",
           "unavailable"
-        ]
+        ],
+        "group": "State"
       }
     ],
     "demo": {
       "steps": [
-        "click:@optical-weight:0.82,0.5",
-        "wait:350",
-        "click:@optical-size:0.35,0.5",
-        "wait:350",
-        "click:@optical-weight:0.27,0.5",
-        "wait:350",
+        "wait:1400",
+        "click:@optical-stop-800",
+        "wait:900",
+        "click:@optical-stop-200",
+        "wait:900",
         "click:@optical-reset",
-        "wait:450"
+        "wait:900"
       ],
       "loop": false
     },
