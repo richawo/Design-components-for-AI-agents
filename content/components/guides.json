@@ -2310,18 +2310,20 @@
     "updated": "2026-10-12"
   },
   "finance-scenario-forecast": {
-    "useWhen": "Exploring cash-flow assumptions in clearly labelled scenarios.",
-    "avoidWhen": "A prediction guarantee or advice based on unstated financial assumptions.",
+    "useWhen": "Planning cash runway across a few named scenarios, where a founder or finance lead moves growth, hiring, spend and a fundraise and needs to see the cash-out date move.",
+    "avoidWhen": "Line-by-line budgets, three-statement models or reporting actuals against plan; this is a driver-level runway planner, not a ledger.",
     "integration": [
-      "Supply your own records through `months`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onSaveScenario` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+      "Pass `model` with today's opening cash, MRR, payroll and the loaded cost of a hire, all in minor units, plus `startMonth` and `horizonMonths`.",
+      "Pass `scenarios` as named driver sets; the first is the base every other scenario is compared against.",
+      "`onSaveScenario` receives the edited drivers with `runwayMonths`, `cashOutMonth` and the month-by-month closing cash. Store the drivers; recompute the projection on your side if the model changes. Reject with an `Error` to keep the edits and show its message.",
+      "Swap `project` for your own model if hires ramp differently or revenue isn't compounding; the chart only needs month-end balances."
     ],
     "related": [
+      "finance-cashflow-dashboard",
       "finance-budget-variance",
-      "finance-close-checklist",
-      "finance-expense-review"
+      "finance-payment-run"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "footer-ascii-wordmark": {
     "useWhen": "A distinctive typographic close for a developer or creative brand.",

@@ -22842,73 +22842,86 @@
   },
   {
     "slug": "finance-scenario-forecast",
-    "name": "Cash Flow Scenario Planner",
+    "name": "Runway Scenario Forecast",
     "tier": "pro",
     "platform": "web",
     "category": "billing",
-    "description": "Adjust income, fixed cost and growth assumptions with a transparent projection. A considered, responsive finance workspace with typed integration points.",
+    "description": "A cash runway chart you plan on: drivers reshape the line, the cash-out date slides with it, and a fundraise pin drags along the months.",
     "tags": [
       "finance",
-      "workflow",
-      "responsive",
-      "keyboard",
-      "billing"
+      "runway",
+      "cash flow",
+      "forecast",
+      "scenario planning",
+      "fpa",
+      "chart"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1320,
-    "usage": "import { ScenarioForecast } from \"@/components/design-for-ai/finance-scenario-forecast\";\n\n<ScenarioForecast />",
+    "previewHeight": 1080,
+    "usage": "import { ScenarioForecast } from \"@/components/design-for-ai/finance-scenario-forecast\";\n\n<ScenarioForecast\n  model={{ openingCashMinor: 240000000, revenueMinor: 8600000, payrollMinor: 16800000, costPerHireMinor: 950000, startMonth: \"2026-11\", horizonMonths: 30 }}\n  scenarios={[\n    { id: \"base\", name: \"Base plan\", drivers: { growthPct: 4, hires: 3, spendMinor: 6400000, raiseMinor: 0, raiseMonth: 9 } },\n    { id: \"push\", name: \"Hiring push\", drivers: { growthPct: 6, hires: 8, spendMinor: 7200000, raiseMinor: 300000000, raiseMonth: 8 } },\n  ]}\n  currency=\"GBP\"\n  onSaveScenario={(scenario) => saveScenario(scenario)}\n/>",
     "props": [
       {
-        "name": "title",
+        "name": "model",
+        "type": "RunwayModel",
+        "description": "The business today: { openingCashMinor, revenueMinor (MRR), payrollMinor, costPerHireMinor, startMonth: \"YYYY-MM\", horizonMonths }."
+      },
+      {
+        "name": "scenarios",
+        "type": "RunwayScenario[]",
+        "description": "Named driver sets: { id, name, drivers: { growthPct, hires, spendMinor, raiseMinor, raiseMonth } }. The first is the base the others are compared against."
+      },
+      {
+        "name": "defaultScenarioId",
         "type": "string",
-        "description": "Main heading.",
-        "default": "\"Cash flow scenarios\""
-      },
-      {
-        "name": "subtitle",
-        "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Explore a simple monthly cash model. Compare a proposed scenario with the baseline.\""
-      },
-      {
-        "name": "baseline",
-        "type": "CashAssumptions",
-        "description": "Initial model with non-negative safe opening cash, revenue and fixed costs; variable cost 0–10000 basis points and monthly revenue growth −5000–5000 basis points."
-      },
-      {
-        "name": "months",
-        "type": "string[]",
-        "description": "One to twelve ordered month labels. Extra labels are ignored."
+        "description": "Scenario open on first render. Defaults to the first."
       },
       {
         "name": "currency",
         "type": "string",
-        "description": "Single ISO currency with two-decimal minor units."
+        "default": "\"GBP\"",
+        "description": "ISO 4217 code. Amounts are minor units of this currency."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Locale for money and month names."
       },
       {
         "name": "onSaveScenario",
-        "type": "(scenario:CashScenario)=>void|Promise<void>",
-        "description": "Persist the named assumptions and exact projected values. This is a scenario, not a prediction."
+        "type": "(scenario: SavedRunwayScenario) => void | Promise<void>",
+        "description": "Receives the scenario with its edited drivers, runwayMonths, cashOutMonth (\"YYYY-MM\" or null) and month-by-month closing cash. Reject to keep the edits and show the message."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "description": "The one accent: the scenario line and wash, slider fills, the raise pin and the primary action. Defaults to the theme’s ink."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Surface palette."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:350",
-        "click:@input-4",
-        "key:Home",
-        "key:Delete",
-        "type:8",
-        "wait:500",
+        "wait:700",
+        "click:@scenario-push",
+        "wait:1000",
+        "hover:@raise-pin",
+        "drag:0.66,0.5",
+        "wait:1100",
         "click:@save",
         "wait:1000"
       ],
@@ -22924,6 +22937,39 @@
           "light"
         ],
         "default": "dark"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#8ea2ff",
+          "#c6f36d",
+          "#5eead4"
+        ]
+      },
+      {
+        "prop": "defaultScenarioId",
+        "label": "Scenario",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "base",
+            "label": "Base plan"
+          },
+          {
+            "value": "push",
+            "label": "Hiring push"
+          },
+          {
+            "value": "downturn",
+            "label": "Downturn"
+          }
+        ],
+        "default": "base",
+        "remount": true
       }
     ]
   },
