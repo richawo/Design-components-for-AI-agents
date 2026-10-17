@@ -6877,12 +6877,14 @@
     "tier": "pro",
     "platform": "web",
     "category": "buttons",
-    "description": "A fine light travels a physical button edge. Async actions keep the same size through loading, success and retry, with offscreen pause and reduced motion.",
+    "description": "A primary action with a comet of light on its edge that turns into a progress meter while the work runs, then closes the loop on success or stops on failure.",
     "tags": [
       "button",
       "animated border",
-      "shimmer",
+      "edge light",
       "async action",
+      "progress",
+      "deploy",
       "micro interaction"
     ],
     "dependencies": [
@@ -6890,174 +6892,169 @@
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 560,
-    "usage": "import { ButtonShimmerTrack } from \"@/components/design-for-ai/button-shimmer-track\";\n\n<ButtonShimmerTrack\n  label=\"Create project\"\n  status={status}\n  onStatusChange={setStatus}\n  onAction={(_, signal) => createProject(draft, { signal })}\n  motionMode=\"interaction\"\n/>\n\n// A rejected promise shows the retry state. Reset status to \"idle\" for a new task.\n// Native button attributes, including type, form and aria-label, are supported.",
+    "previewHeight": 720,
+    "usage": "import { ButtonShimmerTrack } from \"@/components/design-for-ai/button-shimmer-track\";\n\n<ButtonShimmerTrack\n  label=\"Deploy to production\"\n  loadingLabel=\"Deploying\"\n  successLabel=\"Live in production\"\n  status={status}\n  progress={rollout.progress} // optional: omit for an indeterminate orbit\n  onStatusChange={setStatus}\n  onAction={(_, signal) => deploy(build, { signal })}\n/>\n\n// Resolve for success, reject for retry. Set status back to \"idle\" to start a new task.\n// Native button attributes (type, form, aria-label) pass through.",
     "props": [
       {
         "name": "label",
         "type": "string",
-        "default": "\"Create project\"",
+        "default": "\"Deploy to production\"",
         "description": "Idle action label."
       },
       {
         "name": "loadingLabel",
         "type": "string",
-        "default": "\"Creating project\"",
-        "description": "Pending label, reserved before the action starts."
+        "default": "\"Deploying\"",
+        "description": "Pending label. All four labels share one grid cell, so the widest sets the button’s width before the action starts."
       },
       {
         "name": "successLabel",
         "type": "string",
-        "default": "\"Project ready\"",
-        "description": "Completed label; success blocks duplicate actions until the host resets status."
+        "default": "\"Live in production\"",
+        "description": "Completed label. Success blocks repeat actions until the host resets status."
       },
       {
         "name": "errorLabel",
         "type": "string",
-        "default": "\"Try again\"",
-        "description": "Retry action after a rejected callback."
+        "default": "\"Retry deploy\"",
+        "description": "Retry label after a rejected action."
       },
       {
         "name": "errorMessage",
         "type": "string",
-        "default": "\"That didn’t go through. Please try again.\"",
-        "description": "Visible error copy under the control."
+        "default": "\"The rollout stopped at the health check. Nothing changed in production.\"",
+        "description": "Shown under the button after a rejected action, as an alert. Pass \"\" when the host shows its own error."
       },
       {
         "name": "icon",
         "type": "ReactNode",
         "default": "ArrowUpRight",
-        "description": "Optional trailing idle glyph, fitted to the same 17px slot as loading/success icons so state changes preserve geometry."
+        "description": "Trailing idle glyph, fitted to the same 18px slot as the pending, success and retry glyphs."
       },
       {
         "name": "status",
-        "type": "ShimmerButtonState",
-        "default": "uncontrolled idle",
-        "description": "Controlled state when supplied; pair with onStatusChange. Pending/completed actions use aria-disabled blocking to retain keyboard focus. The demo synchronizes state controls with local state."
+        "type": "\"idle\" | \"loading\" | \"success\" | \"error\"",
+        "default": "uncontrolled",
+        "description": "Controlled state; pair with onStatusChange. A reset away from loading aborts the in-flight signal and ignores its late result."
+      },
+      {
+        "name": "progress",
+        "type": "number",
+        "description": "0–1 while loading. Supplied, the light fills the edge from 12 o’clock like a meter and the label shows the percentage. Omitted, the light orbits faster."
       },
       {
         "name": "onAction",
         "type": "(event: MouseEvent<HTMLButtonElement>, signal: AbortSignal) => void | Promise<void>",
-        "description": "Awaited host action. Resolve for success or reject for retry. A controlled reset or unmount aborts the supplied signal and ignores stale completion."
+        "description": "Awaited host action. Resolve for success, reject for retry. Unmount or a controlled reset aborts the signal."
       },
       {
         "name": "onStatusChange",
         "type": "(status: ShimmerButtonState) => void",
-        "description": "Receives pending and completion states. The standalone demo composes observers with its local status updates; reset to idle when the host starts a new task."
+        "description": "Receives every state change the button makes."
       },
       {
         "name": "onError",
         "type": "(error: unknown) => void",
-        "description": "Optional host error handler after a rejected action."
+        "description": "Called with the rejection after a failed action."
       },
       {
-        "name": "shimmerColor",
+        "name": "accent",
         "type": "string",
-        "default": "\"#ffffff\"",
-        "description": "The one moving edge-light color."
+        "default": "white on dark, #18181b on light",
+        "description": "The edge light, its glow, the meter and the light it casts on the surface."
       },
       {
         "name": "duration",
         "type": "number",
-        "default": "3200",
-        "description": "Orbit duration in milliseconds, bounded to 1200 through 12000."
+        "default": "3600",
+        "description": "One lap of the light in milliseconds, bounded to 1200–12000. Speed changes ease in rather than jumping."
       },
       {
         "name": "motionMode",
         "type": "\"continuous\" | \"interaction\"",
         "default": "\"continuous\"",
-        "description": "Always move while visible, or move only on pointer hover or keyboard focus."
+        "description": "Travel whenever visible, or only while hovered or focused (the light fades in and out)."
       },
       {
         "name": "size",
         "type": "\"regular\" | \"large\"",
         "default": "\"regular\"",
-        "description": "52px or 60px minimum-height controls."
+        "description": "48px or 56px tall."
       },
       {
         "name": "shape",
         "type": "\"pill\" | \"rounded\"",
         "default": "\"pill\"",
-        "description": "Capsule or 15px rounded rectangle."
+        "description": "Capsule or 14px corners. The light follows either perimeter at a constant speed."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Neutral fill, ink and focus-ring palette."
+        "description": "Surface, ink and focus-ring palette."
       },
       {
         "name": "disabled",
         "type": "boolean",
         "default": "false",
-        "description": "Disable the action and stop the border light."
+        "description": "Native disabled: 40% opacity, no light, no hover."
       },
       {
         "name": "className",
         "type": "string",
         "default": "\"\"",
-        "description": "Additional classes on the native button."
-      },
-      {
-        "name": "style",
-        "type": "CSSProperties",
-        "description": "Native button styles, merged over the local color and timing tokens."
+        "description": "Classes on the native button."
       }
     ],
     "added": "2026-10-13",
     "demo": {
       "steps": [
-        "wait:250",
-        "hover:@shimmer-action",
-        "wait:650",
+        "wait:500",
+        "hover:@deploy",
+        "wait:600",
         "click",
-        "wait:1800",
-        "click:@shimmer-reset",
-        "wait:500"
+        "wait:2600"
       ],
       "loop": false
     },
     "controls": [
       {
-        "prop": "motionMode",
-        "label": "Border motion",
-        "kind": "segmented",
-        "options": [
-          "continuous",
-          "interaction"
-        ],
-        "default": "continuous"
-      },
-      {
-        "prop": "duration",
-        "label": "Orbit duration",
-        "kind": "slider",
-        "min": 1200,
-        "max": 8000,
-        "step": 200,
-        "unit": "ms",
-        "default": 3200
-      },
-      {
-        "prop": "shimmerColor",
+        "prop": "accent",
         "label": "Edge light",
         "kind": "color",
         "default": "#ffffff",
         "options": [
           "#ffffff",
-          "#e8a46c",
-          "#9bdac5"
+          "#f5a524",
+          "#7dd3fc",
+          "#a3e635"
         ]
       },
       {
-        "prop": "size",
-        "label": "Size",
+        "prop": "motionMode",
+        "label": "Light moves",
         "kind": "segmented",
         "options": [
-          "regular",
-          "large"
+          {
+            "value": "continuous",
+            "label": "Always"
+          },
+          {
+            "value": "interaction",
+            "label": "On hover"
+          }
         ],
-        "default": "regular"
+        "default": "continuous"
+      },
+      {
+        "prop": "duration",
+        "label": "Lap",
+        "kind": "slider",
+        "min": 1200,
+        "max": 8000,
+        "step": 200,
+        "unit": "ms",
+        "default": 3600
       },
       {
         "prop": "shape",
@@ -7070,15 +7067,14 @@
         "default": "pill"
       },
       {
-        "prop": "status",
-        "label": "Action state",
-        "kind": "action",
+        "prop": "size",
+        "label": "Size",
+        "kind": "segmented",
         "options": [
-          "idle",
-          "loading",
-          "error",
-          "success"
-        ]
+          "regular",
+          "large"
+        ],
+        "default": "regular"
       },
       {
         "prop": "theme",
@@ -7089,6 +7085,17 @@
           "light"
         ],
         "default": "dark"
+      },
+      {
+        "prop": "status",
+        "label": "State",
+        "kind": "action",
+        "options": [
+          "idle",
+          "loading",
+          "success",
+          "error"
+        ]
       }
     ]
   },

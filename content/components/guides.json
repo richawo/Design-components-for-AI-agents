@@ -3541,18 +3541,18 @@
     ]
   },
   "button-shimmer-track": {
-    "useWhen": "A primary async action needs clear pending, completed and retry states, with a restrained moving edge around the button.",
-    "avoidWhen": "Repeated immediate actions, or an effect being used as the only indication that an action is available or has succeeded.",
+    "useWhen": "The one primary action at the end of a flow kicks off real async work (deploy, publish, send, migrate) and the button itself should show it running, its progress and its outcome.",
+    "avoidWhen": "Several actions compete on one screen, the action completes instantly, or the moving light would be the only cue that something is available or finished.",
     "integration": [
-      "Connect the action to a real awaited operation and provide useful failure text.",
-      "Keep controlled status synchronized with the host and reset it when starting a new task.",
-      "Preserve the native button label and focus treatment when changing colours or motion."
+      "Return a promise from onAction and honour its AbortSignal; resolve for success and reject with an error for the retry state.",
+      "Pass progress (0–1) when your job reports it, so the light becomes a meter; leave it out for an indeterminate orbit.",
+      "Drive status from your store when other UI depends on it, and set it back to idle to start a new run."
     ],
     "related": [
       "button-press-depth",
       "button-hold-confirm"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "cards-prismatic-folder": {
     "useWhen": "A compact file collection benefits from a physical folder presentation, readable previews and clear availability states.",
