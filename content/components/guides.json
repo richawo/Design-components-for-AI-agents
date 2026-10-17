@@ -4594,18 +4594,19 @@
     "updated": "2026-10-13"
   },
   "agents-run-replay": {
-    "useWhen": "Reconstructing visible state from a supplied event history while scrubbing a completed or partial run.",
-    "avoidWhen": "Executing agent tools, generating an event history or presenting replayed actions as current live activity.",
+    "useWhen": "Reviewing a finished agent run step by step: scrubbing to the moment a tool call failed, watching the transcript rebuild as the playhead moves and seeing which files and tests had changed by then.",
+    "avoidWhen": "Watching a run live, or comparing span timings and costs across a whole run, where a tracing waterfall reads faster than a replay.",
     "integration": [
-      "Supply unique event IDs, nonnegative safe whole-millisecond timestamps and complete snapshots. The clock selects only the last supplied snapshot at or before it; equal-time events preserve order and explicit inspection can pin one actual snapshot. No intermediate workflow state is inferred.",
-      "Pair controlled time with synchronous onTimeChange. Accepted conventional inline observers may change reference without retiring the same-history clock owner. A rejected playback request stops; removing the required observer makes the controlled clock read-only. Exact entry preserves dirty drafts and later typing through older acknowledgements.",
-      "User-started 1x/2x playback executes nothing and stops for history/reset replacement, explicit seek, hidden/offscreen/window blur, rejection or unmount. Live reduced motion stops decorative tweens while preserving meaningful explicit clock playback. Invalid/duplicate records remain inspectable and cannot drive playback."
+      "Map each recorded prompt, thinking span, tool call and reply to an event with `at` and `duration` in ms from the start of the run. Add `files` and `tests` where an event changed files or reported a test result, and the state panel folds them in as the playhead passes.",
+      "Leave the playhead uncontrolled for a standalone viewer, or pair `time` with `onTimeChange` to keep it in step with another view. `onEventChange` reports the event under the playhead, for a details pane or a deep link.",
+      "Playback only moves the playhead; it never reruns anything. It pauses when the card is off screen or the tab is hidden, and `autoPlay` never starts it with reduced motion."
     ],
     "related": [
       "agent-run-trace",
+      "agent-plan-steps",
       "devtools-log-stream"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "agents-budget-guard": {
     "useWhen": "Reviewing supplied estimated and actual usage against limits before explicitly authorizing a bounded action.",

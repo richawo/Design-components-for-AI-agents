@@ -1117,115 +1117,165 @@
   },
   {
     "slug": "agents-run-replay",
-    "name": "Recorded Run Replay",
+    "name": "Agent Run Replay",
     "tier": "pro",
     "platform": "web",
     "category": "agents",
-    "description": "A precise replay desk for supplied event snapshots, with an exact clock, bounded native timeline inspection and playback that never executes agent tools.",
+    "description": "A replay desk for a finished agent run: a scrubbable timeline of tool calls, a transcript that follows the playhead and the workspace state at that moment.",
     "tags": [
       "agents",
       "replay",
       "timeline",
-      "history",
-      "snapshot",
-      "dark"
+      "scrubber",
+      "transcript",
+      "tool calls",
+      "playback",
+      "debugging",
+      "monochrome"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1200,
-    "usage": "import { AgentsRunReplay } from \"@/components/design-for-ai/agents-run-replay\";\n\n<AgentsRunReplay events={history} time={position} onTimeChange={setInspectionTime} resetKey={runId} />",
+    "previewHeight": 980,
+    "usage": "import { AgentsRunReplay } from \"@/components/design-for-ai/agents-run-replay\";\nimport type { ReplayEvent } from \"@/components/design-for-ai/agents-run-replay\";\n\n// One event per prompt, thinking span, tool call and reply. Times are ms from the start of the run.\nconst events: ReplayEvent[] = run.steps.map((s) => ({\n  id: s.id,\n  at: s.startedAt - run.startedAt,\n  duration: s.endedAt - s.startedAt,\n  kind: s.type, // \"prompt\" | \"thinking\" | \"tool\" | \"reply\"\n  title: s.type === \"tool\" ? s.toolName : s.author,\n  args: s.toolArgs,\n  body: s.output ?? s.text,\n  status: s.error ? \"error\" : \"ok\",\n  tokens: s.usage?.totalTokens,\n  cost: s.costUsd,\n  files: s.filesChanged, // [{ path, added, removed }]\n  tests: s.testSummary, // { passed, failed }\n}));\n\n<AgentsRunReplay\n  run={{ id: run.id, title: run.title, agent: \"Atlas\", requester: run.user.name, repo: run.repo, outcome: \"completed\" }}\n  events={events}\n  onEventChange={(event) => setInspected(event?.id)}\n/>",
     "props": [
       {
+        "name": "run",
+        "type": "ReplayRun",
+        "description": "The run in the header: id, title, agent, requester (initials in the transcript), optional repo and branch, and outcome (completed, failed or stopped). Defaults to the sample checkout-fix run."
+      },
+      {
         "name": "events",
-        "type": "RunReplayEvent[]",
-        "description": "Stable unique IDs, nonnegative safe whole-millisecond at values, label/kind/detail and actual full snapshot status/summary/steps. Equal timestamps preserve supplied order.",
-        "default": "5 original offline recorded example events"
-      },
-      {
-        "name": "initialSnapshot",
-        "type": "RunReplaySnapshot",
-        "description": "Actual supplied state before the first event; missing state remains unavailable."
-      },
-      {
-        "name": "time",
-        "type": "number",
-        "description": "Controlled inspection clock in whole milliseconds. Invalid/out-of-range position stays explicit; without observer playback/seek is read-only."
+        "type": "ReplayEvent[]",
+        "description": "The recording: id, at and duration in ms, kind (prompt, thinking, tool, reply), title, optional args, body, status, tokens, cost, files changed and a test result. Records without an id or a usable time are skipped and repeated ids keep the first. Defaults to 13 events of the sample run."
       },
       {
         "name": "defaultTime",
         "type": "number",
-        "description": "Initial local inspection position, reused after reset.",
-        "default": "0"
+        "default": "0",
+        "description": "Where the playhead starts, in ms. Clamped to the run."
+      },
+      {
+        "name": "time",
+        "type": "number",
+        "description": "Controlled playhead in ms. Pair with onTimeChange; without it the playhead is read-only. A host that does not take a playback frame stops playback."
       },
       {
         "name": "onTimeChange",
-        "type": "(time: number, event: RunReplayEvent | undefined) => void",
-        "description": "Synchronous clock request/observer. Controlled rejection keeps the real clock and stops playback rather than spinning. Honor explicit event inspection at a tied timestamp."
+        "type": "(ms: number) => void",
+        "description": "Every requested playhead position: scrubbing, stepping, clicks on events and each frame of playback."
       },
       {
-        "name": "resetKey",
-        "type": "string | number",
-        "description": "Supplied run identity. Stops playback and clears local time/pinned event/exact draft."
+        "name": "onEventChange",
+        "type": "(event: ReplayEvent | null) => void",
+        "description": "Called when the event under the playhead changes, or with null before the first one."
       },
       {
-        "name": "title",
+        "name": "speed",
+        "type": "1 | 8 | 32",
+        "default": "8",
+        "description": "Playback speed. The picker in the transport changes it too."
+      },
+      {
+        "name": "autoPlay",
+        "type": "boolean",
+        "default": "false",
+        "description": "Start playing once the replay is on screen. Never with reduced motion."
+      },
+      {
+        "name": "showState",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show the state panel: files changed, the latest test run, tokens, cost and tool calls at the playhead."
+      },
+      {
+        "name": "accent",
         "type": "string",
-        "description": "Concise replay heading.",
-        "default": "\"Return to the exact moment.\""
-      },
-      {
-        "name": "description",
-        "type": "string",
-        "description": "Explain supplied history inspection.",
-        "default": "\"Inspect a supplied run history, compare the recorded states and keep playback separate from the live workflow.\""
+        "default": "\"#ff9d5c\"",
+        "description": "The one accent: the playhead, the played part of the timeline, the current event and running progress."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Neutral black/white glass chrome, with colour reserved for actual data/feature accents.",
-        "default": "\"dark\""
+        "default": "\"dark\"",
+        "description": "Greyscale palette for the card, lanes and text."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Outer replay class.",
-        "default": "\"\""
+        "description": "Classes on the root, for width and placement."
       }
     ],
     "added": "2026-10-13",
     "demo": {
       "steps": [
-        "click:@replay-play",
-        "wait:650",
-        "click:@replay-play",
-        "wait:250",
-        "click:@replay-range:0.8,0.5",
-        "wait:400",
-        "click:@event-decision",
-        "wait:400",
-        "click:@replay-start",
-        "wait:350"
+        "wait:300",
+        "click:@play",
+        "wait:2400",
+        "click:@block-tests-1:0.15,0.5",
+        "wait:1600"
       ]
     },
     "controls": [
+      {
+        "prop": "speed",
+        "label": "Speed",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": 1,
+            "label": "1×"
+          },
+          {
+            "value": 8,
+            "label": "8×"
+          },
+          {
+            "value": 32,
+            "label": "32×"
+          }
+        ],
+        "default": 8,
+        "group": "Playback"
+      },
+      {
+        "prop": "showState",
+        "label": "State panel",
+        "kind": "toggle",
+        "default": true,
+        "group": "View"
+      },
+      {
+        "prop": "accent",
+        "label": "Playhead",
+        "kind": "color",
+        "default": "#ff9d5c",
+        "options": [
+          "#ff9d5c",
+          "#6fd3a0",
+          "#7ab8ff",
+          "#ededef"
+        ],
+        "group": "Look"
+      },
       {
         "prop": "theme",
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
-        "default": "dark"
-      },
-      {
-        "prop": "title",
-        "label": "Heading",
-        "kind": "text",
-        "default": "Return to the exact moment."
+        "default": "dark",
+        "group": "Look"
       }
     ]
   },
