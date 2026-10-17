@@ -3731,17 +3731,18 @@
     "updated": "2026-10-13"
   },
   "media-spatial-collection": {
-    "useWhen": "Browsing a small collection of albums or related media objects with visible depth and an equally usable readable list.",
-    "avoidWhen": "Playing media, presenting a huge sortable data collection or hiding important labels behind overlapping covers.",
+    "useWhen": "Browsing a small music or media collection where the objects themselves matter: album sleeves in depth with the record sliding out, a tracklist beside it and an equally good list view.",
+    "avoidWhen": "Playing audio, sorting or filtering hundreds of items, or any collection without artwork worth looking at.",
     "integration": [
-      "Supply stable collection IDs, titles, creators and the real entries each object contains. Provide artwork when available and preserve truthful missing or failed cover states.",
-      "Keep selected collection and spatial/list view controlled only when the host accepts those requests. Use the optional opening callback and its AbortSignal for a real host action; reduced motion keeps useful static poses."
+      "Pass albums with stable ids, square cover URLs, a record label tint and entries whose size is an m:ss duration so the runtime adds up. Missing or failed covers fall back to a typeset sleeve.",
+      "Control selectedId and view only if your app must own them; without the matching handler they become read-only. onOpenCollection receives an AbortSignal that a new selection aborts, and a rejection shows its message with a retry.",
+      "Use status for loading and unavailable libraries (with error and onRetry) and onCreate for an empty one; reduced motion keeps a static shelf and the full list."
     ],
     "related": [
       "media-track-list",
       "media-story-deck"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "media-transcript-player": {
     "useWhen": "Listening to supplied media while reading timed passages and seeking directly from the transcript.",

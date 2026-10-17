@@ -28724,48 +28724,50 @@
     "tier": "pro",
     "platform": "web",
     "category": "media",
-    "description": "A tactile depth-layered collection browser with readable selection labels, actual contents, an accessible list view and optional host-owned opening.",
+    "description": "An album shelf in real perspective: sleeves stack in depth, the selected record slides out, and a tracklist counts in beside it.",
     "tags": [
       "collection",
       "album",
       "3d",
       "media browser",
-      "folio",
-      "spatial"
+      "vinyl",
+      "coverflow",
+      "spatial",
+      "music"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1000,
-    "usage": "import { MediaSpatialCollection } from \"@/components/design-for-ai/media-spatial-collection\";\n\n<MediaSpatialCollection collections={collections} selectedId={selectedId} onSelectedChange={setSelectedId} onOpenCollection={(item, signal) => openArchive(item.id, { signal })} />",
+    "previewHeight": 1180,
+    "usage": "import { MediaSpatialCollection } from \"@/components/design-for-ai/media-spatial-collection\";\n\n<MediaSpatialCollection\n  collections={albums}\n  selectedId={albumId}\n  onSelectedChange={setAlbumId}\n  onOpenCollection={(album, signal) => openAlbum(album.id, { signal })}\n/>",
     "props": [
       {
         "name": "collections",
         "type": "SpatialCollectionItem[]",
-        "description": "Host collections with unique non-empty ids, actual title/creator, optional cover, description, edition, entries and availability. Missing or failed covers have an honest fallback.",
+        "description": "Albums with unique ids, title, creator, optional edition, year, description, square cover URL, record label tint, entries ({ id, name, kind, size }) and available. Missing or failed covers fall back to a typeset sleeve.",
         "default": "[]"
       },
       {
         "name": "selectedId",
         "type": "string",
-        "description": "Optional controlled selection. Missing handler makes it read-only. Rejected requests never move actual selection; an unknown id shows a useful unselected state."
+        "description": "Controlled selection. Without onSelectedChange it is read-only; a rejected request springs the shelf back."
       },
       {
         "name": "defaultSelectedId",
         "type": "string",
-        "description": "Initial uncontrolled selection. Defaults to the first collection. A removed uncontrolled selection settles on the first remaining collection."
+        "description": "Initial uncontrolled selection. Defaults to the first album; a removed selection settles on the first remaining one."
       },
       {
         "name": "onSelectedChange",
         "type": "(id: string) => void",
-        "description": "Requests selection of a supplied collection. Arrow keys and bounded pointer swipes use the same host ownership."
+        "description": "Requested selection from the arrows, the label rail, a cover click, a swipe or the arrow keys."
       },
       {
         "name": "view",
         "type": "\"spatial\" | \"list\"",
-        "description": "Optional controlled presentation. Pair with onViewChange; without it, view controls truthfully become read-only."
+        "description": "Controlled view: the 3D shelf or the list. Without onViewChange the switch is read-only."
       },
       {
         "name": "defaultView",
@@ -28781,72 +28783,101 @@
       {
         "name": "onOpenCollection",
         "type": "(collection: SpatialCollectionItem, signal: AbortSignal) => void | Promise<void>",
-        "description": "Optional real host opening. Selection/data/handler/availability changes abort pending work and ignore late results; keep handler identity stable during one operation. Rejection retains details and retry."
+        "description": "Optional host opening. Receives the album and an AbortSignal; a new selection, a lock or unmount aborts it. A rejection shows its message and a retry."
+      },
+      {
+        "name": "openLabel",
+        "type": "string",
+        "default": "\"Open album\"",
+        "description": "Label of the open action."
       },
       {
         "name": "status",
         "type": "\"ready\" | \"loading\" | \"unavailable\"",
-        "description": "Host archive availability. Selection survives temporary loading/unavailable states.",
+        "description": "Library availability. Loading, unavailable (with error and onRetry) and empty (with onCreate) each have a designed state.",
         "default": "\"ready\""
       },
       {
         "name": "error",
         "type": "string",
-        "description": "Host error text, visible without replacing inspectable collection data."
+        "description": "Host error copy, shown in the unavailable state or under the detail."
       },
       {
         "name": "onRetry",
         "type": "() => void",
-        "description": "Optional actual host archive recovery."
+        "description": "Retry for the unavailable state."
       },
       {
         "name": "onCreate",
         "type": "() => void",
-        "description": "Optional actual host creation action in a ready empty archive."
+        "description": "Add-an-album action for an empty, ready library."
       },
       {
         "name": "heading",
         "type": "string",
-        "description": "Collection browser title.",
+        "description": "Library name in the toolbar.",
         "default": "\"The listening room\""
-      },
-      {
-        "name": "description",
-        "type": "string",
-        "description": "Brief context.",
-        "default": "\"Collected ideas, with room to explore.\""
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Neutral graphite and white chrome; colour is reserved for actual feature content and semantic data accents.",
+        "description": "Graphite (dark) or paper (light) chrome. Colour comes from the artwork and the accent.",
         "default": "\"dark\""
       },
       {
         "name": "accent",
         "type": "string",
-        "description": "Reserved selection accent.",
+        "description": "The one signal colour: the rail and list selection marker and the default record label.",
         "default": "\"#e6b782\""
       },
       {
         "name": "disabled",
         "type": "boolean",
-        "description": "Stops browsing, view changes and opening, cancels active gestures and work.",
+        "description": "Stops browsing, view changes and opening; content stays readable.",
         "default": "false"
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Root classes. Fits its container up to 900 px.",
+        "description": "Root classes. The panel fills its container up to 1120 px.",
         "default": "\"\""
       }
     ],
     "controls": [
       {
         "prop": "heading",
-        "label": "Collection title",
+        "label": "Library name",
         "kind": "text",
         "default": "The listening room"
+      },
+      {
+        "prop": "defaultView",
+        "label": "View",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "spatial",
+            "label": "Shelf"
+          },
+          {
+            "value": "list",
+            "label": "List"
+          }
+        ],
+        "default": "spatial",
+        "remount": true
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#e6b782",
+        "options": [
+          "#e6b782",
+          "#f4f4f5",
+          "#7cc4a4",
+          "#e5484d"
+        ]
       },
       {
         "prop": "theme",
@@ -28866,7 +28897,7 @@
       },
       {
         "prop": "status",
-        "label": "Availability",
+        "label": "Library",
         "kind": "action",
         "options": [
           "ready",
@@ -28877,14 +28908,14 @@
     ],
     "demo": {
       "steps": [
+        "wait:500",
         "click:@collection-next",
-        "wait:400",
-        "click:@collection-next",
-        "wait:400",
+        "wait:800",
+        "hover:@stage:0.7,0.45",
+        "drag:0.35,0.45",
+        "wait:900",
         "click:@collection-prev",
-        "wait:400",
-        "click:@collection-prev",
-        "wait:500"
+        "wait:900"
       ],
       "loop": false
     },
