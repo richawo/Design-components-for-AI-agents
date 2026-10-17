@@ -70,6 +70,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 5: added Offline Outbox coverage for failed sends with edited notes retained, exact retry payloads, confirmed discard, offline blocking, sequential Wi-Fi sends interrupted by signal loss, and an empty queue. The registered source-fixture regression passes.
 
+- Task 6 is complete: Horizontal Showcase now pans through large project plates with readable side-project text, retained artwork during bitmap preparation and details that split into columns according to their own panel width. Source-fixture scroll/reversal, live demo, keyboard and edge-state regressions, controls, accessibility, responsive captures and refreshed poster pass. The three scroll review cases are registered on the official runner. Their films remain in task 1.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -87,7 +89,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Browser checks: `node scripts/check-component.mjs <slug> --base=http://localhost:3100 --no-video --keep-going`
   (screenshots at 1440/768/390 and every control flip; read the screenshots it writes to `test-results/check/<slug>/`).
 
-## 1. Re-record demo videos (139 components)
+## 1. Re-record demo videos (140 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -138,7 +140,7 @@ Slugs:
 `media-trim-timeline`, `navigation-context-rail`, `navigation-lens-dock`, `navigation-stacked-tabs`
 `pixel-halftone-image`, `portfolio-project-reel`, `pricing-seat-simulator`, `pricing-usage-calculator`
 `social-proof-case-ledger`, `text-number-odometer`, `text-optical-weight`, `text-outline-fill`
-`text-path-typesetter`, `scroll-expanding-mosaic`, `scroll-image-curtain`, `finance-budget-variance`, `finance-cashflow-dashboard`, `fashion-preorder-planner`, `fashion-collection-line-plan`, `fashion-merchandising-dashboard`, `fashion-size-guide`
+`text-path-typesetter`, `scroll-horizontal-showcase`, `scroll-expanding-mosaic`, `scroll-image-curtain`, `finance-budget-variance`, `finance-cashflow-dashboard`, `fashion-preorder-planner`, `fashion-collection-line-plan`, `fashion-merchandising-dashboard`, `fashion-size-guide`
 
 ## 2. Retake stale posters (complete)
 
@@ -239,19 +241,9 @@ see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 `pricing-usage-calculator`, `social-proof-case-ledger`, `text-number-odometer`, `text-optical-weight`
 `text-outline-fill`, `text-path-typesetter`
 
-## 6. Finish parked rebuilds (one remaining)
+## 6. Finish parked rebuilds (complete)
 
-Rebuilt but not shipped; the live components are still the old versions. Each lives in the Pro repo at
-`registry/pro/_wip/<slug>/` with `component.patch`, `guide.json` and sometimes `probe.mjs`. To resume one:
-
-```sh
-git -C registry/pro apply _wip/<slug>/component.patch
-# merge _wip/<slug>/guide.json into content/components/guides.json under "<slug>"
-# copy _wip/<slug>/probe.mjs to tests/browser/pro-50/<slug>.mjs if present
-```
-
-Then finish it to `docs/review/REVIEW_BRIEF.md` and its suite language (`docs/review/suites/`), refresh the poster,
-run the checks, and delete `_wip/<slug>` in the Pro commit that ships it.
+All nine parked rebuilds are shipped in both repos. Their original `_wip/<slug>` folders were removed with each source commit. The table records the verification completed for each; application-route reruns for source-fixture checks remain in task 4.
 
 | Slug | What's missing |
 | --- | --- |
@@ -260,7 +252,7 @@ run the checks, and delete `_wip/<slug>` in the Pro commit that ships it.
 | fashion-merchandising-dashboard | Completed 17 October: source-fixture regression/demo, both-theme accessibility and responsive/state/entrance captures pass; prompts/poster current; Fashion Workspace regression passes. |
 | fashion-size-guide | Completed 17 October: source-fixture regression/demo including missing and empty grades, native palettes, both-theme accessibility and responsive/state/entrance captures pass; prompts/poster current. |
 | scroll-image-curtain | Completed 17 October: source-fixture scroll/reversal, live demo, keyboard and image/long-copy/reduced-motion fallbacks, controls, accessibility and responsive captures pass; poster current. |
-| scroll-horizontal-showcase | visual check; live demo check; poster (scroll probe passed) |
+| scroll-horizontal-showcase | Completed 17 October: source-fixture scroll/reversal, live demo, keyboard, delayed bitmap/failed-image/empty/reduced-motion states, project-width text layout, controls, accessibility and responsive captures pass; poster current. |
 | scroll-expanding-mosaic | Completed 17 October: source-fixture scroll/reversal, live demo, failed-image/empty/long-copy/reduced-motion states, controls, accessibility and responsive captures pass; poster current. |
 | finance-budget-variance | Completed 17 October: Next probe, dark/light accessibility, responsive and entrance/state captures, live demo and refreshed poster pass. |
 | finance-cashflow-dashboard | Completed 17 October: weekly balance and in/out bars, movable payments, independent pending saves, invalid-data guards, selected-week list geometry, Next probe/demo, both-theme accessibility, responsive/state/entrance captures and refreshed poster pass. |

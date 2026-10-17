@@ -40471,36 +40471,44 @@
     "tier": "pro",
     "platform": "web",
     "category": "portfolio",
-    "description": "A vertical page scroll carries a row of large project panels sideways, with direct project navigation and a stacked layout for touch and reduced motion.",
+    "description": "A studio’s selected work carried sideways by vertical scroll: large project plates that peek ahead, a progress rule and numbered stops, stacking on touch.",
     "tags": [
       "scroll",
       "scroll-driven",
-      "motion",
-      "responsive",
-      "portfolio"
+      "horizontal scroll",
+      "portfolio",
+      "case studies",
+      "agency"
     ],
     "dependencies": [
       "motion"
     ],
     "theme": "dark",
     "previewHeight": 900,
-    "usage": "import { HorizontalScrollShowcase } from \"@/components/design-for-ai/scroll-horizontal-showcase\";\n\n<HorizontalScrollShowcase />\n\n// Place in normal document flow. Keep ancestors free of overflow clipping so viewport sticky positioning can work.",
+    "usage": "import { HorizontalScrollShowcase } from \"@/components/design-for-ai/scroll-horizontal-showcase\";\n\n<HorizontalScrollShowcase\n  title=\"Selected work, 2025–26\"\n  label=\"Studio Hale · Bristol\"\n  projects={[\n    {\n      id: \"kiln\",\n      title: \"Kiln & Co.\",\n      client: \"Kiln & Co. Stoneware\",\n      discipline: \"Identity\",\n      year: \"2026\",\n      description: \"An identity drawn from the arch of the kiln door.\",\n      outcome: \"Online bookings up 38%\",\n      imageSrc: \"/work/kiln/cards.jpg\",\n      imageAlt: \"Kiln & Co. business cards beside a glazed bowl.\",\n    },\n  ]}\n/>\n\n// Place in normal document flow. Ancestors must not clip overflow (overflow: hidden) or the stage can’t pin.",
     "props": [
       {
         "name": "title",
         "type": "string",
+        "default": "\"Selected work, 2025–26\"",
         "description": "Showcase heading."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "default": "\"Studio Hale · Bristol\"",
+        "description": "Mono line above the heading."
       },
       {
         "name": "projects",
         "type": "ScrollProject[]",
-        "description": "Unique project panels with authentic optional images."
+        "description": "Projects in order: { id, title, client, discipline, year, description, outcome?, imageSrc?, imageAlt }. Without an image a project shows a typographic plate."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Neutral surface and text palette."
+        "description": "Neutral paper and ink."
       }
     ],
     "added": "2026-10-12",

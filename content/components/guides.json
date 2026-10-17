@@ -3213,17 +3213,19 @@
     "updated": "2026-10-17"
   },
   "scroll-horizontal-showcase": {
-    "useWhen": "A short horizontal product sequence driven by a readable vertical story.",
-    "avoidWhen": "A long catalogue or content that can only be reached with a precise scroll gesture.",
+    "useWhen": "A studio or portfolio presents three to six projects as large images in sequence, and a sideways pan driven by ordinary scrolling suits the story.",
+    "avoidWhen": "There are many items to browse or compare, readers mostly arrive on touch devices, or a project needs more words than fit under its image.",
     "integration": [
-      "Supply your own records through `projects`. Preserve stable keys or IDs when the data contract provides them."
+      "Pass projects as { id, title, client, discipline, year, description, outcome?, imageSrc?, imageAlt }; a project without an image shows a typographic plate labelled by its alt text.",
+      "Place it in normal document flow with no clipping ancestors so the stage can pin. The numbered stops scroll to each project and stay usable with the keyboard.",
+      "Touch devices, stages under 760px, windows under 640px tall, reduced motion and copy taller than 30% of the window all get a stacked layout instead of the sideways pan."
     ],
     "related": [
+      "scroll-chapter-stack",
       "scroll-expanding-mosaic",
-      "scroll-background-wipe",
-      "scroll-chapter-stack"
+      "scroll-cinema-frame"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "scroll-image-curtain": {
     "useWhen": "An editorial page opens on one strong photograph and you want the reader to arrive at it: a titled cover that parts with the scroll, then the full image and its caption.",

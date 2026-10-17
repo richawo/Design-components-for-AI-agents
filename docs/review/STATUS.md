@@ -1,6 +1,6 @@
 # Review status
 
-157 components are rebuilt (or, for a few, polished), verified and committed. For each: whether its demo video
+158 components are rebuilt (or, for a few, polished), verified and committed. For each: whether its demo video
 needs re-recording, whether its poster is current, and the state of its browser regression probe.
 
 - **Video**: `new` means `public/previews/<slug>.mp4` still shows the old version. Re-record serially on a quiet machine:
@@ -175,7 +175,7 @@ needs re-recording, whether its poster is current, and the state of its browser 
 | `commerce-customer-timeline` | new | current | rewritten, passes on suite runner with source fixtures; Next route check pending |
 | `commerce-shipping-estimator` | new | current | rewritten, passed before a formatting-only pass; rerun |
 
-## Scroll and layout (7)
+## Scroll and layout (8)
 
 | Slug | Video | Poster | Probe |
 | --- | --- | --- | --- |
@@ -185,6 +185,7 @@ needs re-recording, whether its poster is current, and the state of its browser 
 | `scroll-chapter-stack` | new | current | pro-scroll-probe passed (video section needs a webm-capable Chromium) |
 | `scroll-cinema-frame` | new | current | pro-scroll-probe passed (video section needs a webm-capable Chromium) |
 | `scroll-expanding-mosaic` | new | current | source-fixture scroll/reversal, live demo, failed-image/empty/long-copy/reduced-motion states, controls and accessibility pass |
+| `scroll-horizontal-showcase` | new | current | source-fixture scroll/reversal, demo, keyboard, bitmap/failed-image/empty/reduced-motion states, controls and accessibility pass; project-width text layout verified |
 | `scroll-image-curtain` | new | current | source-fixture scroll/reversal, live demo, keyboard, failed-image/long-copy/reduced-motion states, controls and accessibility pass |
 
 ## Marketing, media, navigation and other (39)

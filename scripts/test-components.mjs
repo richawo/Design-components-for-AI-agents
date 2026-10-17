@@ -53,7 +53,7 @@ if (fs.existsSync(path.join(root, "registry/pro/saas-customer-health")))
 if (fs.existsSync(path.join(root, "registry/pro/commerce-promotion-builder")))
   cases.push("pro-native-themes-probe");
 if (fs.existsSync(path.join(root, "registry/pro/scroll-expanding-mosaic")))
-  cases.push("pro-scroll-probe");
+  cases.push("pro-scroll-probe", "review-scroll-probe");
 if (fs.existsSync(path.join(root, "registry/pro/devtools-webhook-inspector")))
   cases.push("webhook-probe", "focus-probe", "chart-data-probe");
 if (fs.existsSync(path.join(root, "registry/pro/data-kanban-compact")))
