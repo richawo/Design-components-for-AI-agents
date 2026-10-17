@@ -3351,18 +3351,19 @@
     "updated": "2026-10-12"
   },
   "layout-workspace-shell": {
-    "useWhen": "A complete product page needs consistent identity, navigation and a quiet frame around several working panels.",
-    "avoidWhen": "A single isolated card or a marketing introduction that does not need workspace navigation.",
+    "useWhen": "An application page needs one frame for identity, section navigation, a compact page header with actions and several working views, such as a dashboard, settings area or team space.",
+    "avoidWhen": "A single card, a marketing page or a modal flow; the shell adds navigation chrome those do not need.",
     "integration": [
-      "Pass real routes or unique section anchors through `links`. Navigation reflows from a sidebar to a horizontal strip based on the shell container.",
-      "Place your page panels in `children` and host actions in `actions`. The shell owns presentation; each supplied panel keeps its interaction and data contract."
+      "For tabbed apps pass `activeId` and `onNavigate`; links become keyboard tabs (arrows, Home, End) whose `href` `#id` names the panel they control. Without `onNavigate`, links stay real routes or anchors.",
+      "Wrap views in `WorkspacePanels` to keep every view mounted so drafts survive a switch; add `fill` inside a fixed-height shell so each view scrolls on its own.",
+      "Content can use the shell's tokens (`--ws-surface`, `--ws-line`, `--ws-ink`, `--ws-muted`, `--ws-accent`). Links take an optional 16px `icon` and a `badge`; `railFooter` pins an account or status to the rail."
     ],
     "related": [
-      "navigation-breadcrumb-fold",
-      "tabs-underline-glide",
-      "header-hairline"
+      "block-saas-dashboard",
+      "block-team-workspace",
+      "settings-panel"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "block-saas-dashboard": {
     "useWhen": "A SaaS overview needs connected headline measures, a selectable metric trend and the account records behind the numbers.",

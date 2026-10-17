@@ -4,11 +4,13 @@
   "tier": "free",
   "platform": "web",
   "category": "navigation",
-  "description": "A responsive workspace frame with quiet navigation, page actions and named content sections. Compose your own dashboard, report or settings area inside it.",
+  "description": "A container-responsive app frame: a navigation rail with a travelling selection, compact page header, actions and retained views that keep their drafts.",
   "tags": [
     "layout",
-    "responsive",
+    "app shell",
+    "sidebar",
     "navigation",
+    "tabs",
     "keyboard",
     "monochrome"
   ],
@@ -16,8 +18,8 @@
     "motion"
   ],
   "theme": "dark",
-  "previewHeight": 1050,
-  "usage": "import { WorkspaceShell, WorkspacePanels } from \"@/components/design-for-ai/layout-workspace-shell\";\n\n<WorkspaceShell title=\"Overview\">\n  <WorkspacePanels activeId=\"overview\" panels={[\n    { id: \"overview\", content: <p>Overview content</p> },\n    { id: \"details\", content: <p>Details content</p> },\n  ]} />\n</WorkspaceShell>",
+  "previewHeight": 880,
+  "usage": "import { WorkspaceShell, WorkspacePanels } from \"@/components/design-for-ai/layout-workspace-shell\";\n\nconst [view, setView] = useState(\"overview\");\n\n<WorkspaceShell\n  brand=\"Northstar\"\n  eyebrow=\"Studio workspace\"\n  title=\"Overview\"\n  links={[\n    { id: \"overview\", label: \"Overview\", href: \"#overview\" },\n    { id: \"projects\", label: \"Projects\", href: \"#projects\", badge: 5 },\n  ]}\n  activeId={view}\n  onNavigate={setView}\n  className=\"h-[820px]\"\n>\n  <WorkspacePanels fill activeId={view} panels={[\n    { id: \"overview\", content: <section id=\"overview\" role=\"tabpanel\">…</section> },\n    { id: \"projects\", content: <section id=\"projects\" role=\"tabpanel\">…</section> },\n  ]} />\n</WorkspaceShell>\n\n// Children can use the shell's tokens: var(--ws-surface), var(--ws-line), var(--ws-ink), var(--ws-muted).",
   "props": [
     {
       "name": "brand",
@@ -29,13 +31,13 @@
       "name": "eyebrow",
       "type": "string",
       "default": "\"Workspace\"",
-      "description": "Small contextual label."
+      "description": "Small mono label above the page heading: the area of the product."
     },
     {
       "name": "title",
       "type": "string",
       "default": "\"Overview\"",
-      "description": "Page heading."
+      "description": "Page heading. Change it per view; the new heading fades in."
     },
     {
       "name": "subtitle",
@@ -45,7 +47,7 @@
     {
       "name": "links",
       "type": "WorkspaceLink[]",
-      "description": "Unique IDs, labels and real routes or section anchors."
+      "description": "Unique IDs, labels and real routes or section anchors, each with an optional 16px `icon` and a `badge` count."
     },
     {
       "name": "actions",
@@ -61,6 +63,22 @@
       "name": "footer",
       "type": "ReactNode",
       "description": "Optional quiet footer content."
+    },
+    {
+      "name": "navLabel",
+      "type": "string",
+      "description": "Optional mono heading above the rail's links, such as \"Channels\"."
+    },
+    {
+      "name": "railFooter",
+      "type": "ReactNode",
+      "description": "Pinned to the bottom of the navigation rail in wide containers: an account, a plan or a sync status."
+    },
+    {
+      "name": "accent",
+      "type": "string",
+      "default": "theme ink",
+      "description": "Colour of the selection mark in the rail and the compact tab strip. Also exposed to children as `--ws-accent`."
     },
     {
       "name": "theme",
@@ -92,9 +110,11 @@
   "added": "2026-10-12",
   "demo": {
     "steps": [
-      "wait:350",
+      "wait:500",
+      "click:@nav-projects",
+      "wait:1500",
       "click:@nav-activity",
-      "wait:2100"
+      "wait:1500"
     ],
     "loop": false
   },
@@ -108,6 +128,18 @@
         "light"
       ],
       "default": "dark"
+    },
+    {
+      "prop": "accent",
+      "label": "Accent",
+      "kind": "color",
+      "default": "#f4f4f5",
+      "options": [
+        "#f4f4f5",
+        "#3b82f6",
+        "#22c55e",
+        "#f59e0b"
+      ]
     }
   ]
 }
