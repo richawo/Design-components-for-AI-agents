@@ -37345,13 +37345,15 @@
     "tier": "pro",
     "platform": "web",
     "category": "text",
-    "description": "A composable numeric roll with native locale formatting, signed decimal values, interrupted up/down motion, accessible final text and exact native selection.",
+    "description": "A mechanical number roll: each digit turns up or down through the change with speed-matched motion blur, a right-to-left carry and locale-true formatting.",
     "tags": [
       "number animation",
       "odometer",
-      "numeric roll",
       "counter",
-      "decimals",
+      "rolling digits",
+      "motion blur",
+      "currency",
+      "kpi",
       "locale"
     ],
     "dependencies": [
@@ -37359,145 +37361,139 @@
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 850,
-    "usage": "import { TextNumberOdometer } from \"@/components/design-for-ai/text-number-odometer\";\n\n<TextNumberOdometer value={recordCount} fractionDigits={0} label=\"Selected records\" />",
+    "previewHeight": 760,
+    "usage": "import { TextNumberOdometer } from \"@/components/design-for-ai/text-number-odometer\";\n\n<p className=\"text-6xl font-semibold tracking-tight\">\n  <TextNumberOdometer value={grossVolume} currency=\"GBP\" from={0} />\n</p>\n\n// Inherits size and colour from its parent. Change `value` and the digits roll.",
     "props": [
       {
         "name": "value",
         "type": "number",
-        "description": "Actual finite host value. Initial render is already final; changes roll from the currently visible glyph phase.",
-        "default": "2843.7"
+        "default": "48213.7",
+        "description": "The number to show. Each change rolls the digits that differ: up when the magnitude grows, down when it shrinks, interrupting cleanly mid-roll."
       },
       {
-        "name": "fractionDigits",
+        "name": "from",
         "type": "number",
-        "description": "Integer decimal precision from 0 to 6. Native Intl formatting owns the final decimal/group/sign text.",
-        "default": "2"
+        "description": "Rolls from this value on mount (0 for a first-view count-up). Omit to mount on value."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "description": "ISO 4217 code. Formats as currency with the symbol placed by the locale; its own decimals unless fractionDigits is set."
       },
       {
         "name": "locale",
         "type": "string",
-        "description": "Supported Intl locale, including native digit glyphs and separators. Unsupported locale gets readable plain-value recovery.",
-        "default": "\"en-GB\""
+        "description": "BCP 47 locale for separators and digit glyphs. Defaults to the currency’s home locale, else en-GB."
+      },
+      {
+        "name": "fractionDigits",
+        "type": "number",
+        "description": "Fixed decimal places, 0 to 6. Defaults to the currency’s own, else 0."
       },
       {
         "name": "useGrouping",
         "type": "boolean",
-        "description": "Use native locale group separators.",
-        "default": "true"
+        "default": "true",
+        "description": "Thousands separators. They open and close as columns are added or removed."
       },
       {
         "name": "signDisplay",
-        "type": "\"auto\" | \"always\" | \"exceptZero\"",
-        "description": "Native Intl sign policy, including negative zero.",
-        "default": "\"auto\""
+        "type": "\"auto\" | \"always\" | \"exceptZero\" | \"never\"",
+        "default": "\"auto\"",
+        "description": "Intl sign policy. A changing sign crossfades in place."
       },
       {
         "name": "prefix",
         "type": "string",
-        "description": "Literal text before the formatted value.",
-        "default": "\"\""
+        "description": "Literal text before the number."
       },
       {
         "name": "suffix",
         "type": "string",
-        "description": "Literal text after the formatted value.",
-        "default": "\"\""
+        "description": "Literal text after the number, such as % or a unit."
       },
       {
-        "name": "label",
-        "type": "string",
-        "description": "Accessible visible label for the output.",
-        "default": "\"Current value\""
-      },
-      {
-        "name": "caption",
-        "type": "string",
-        "description": "Optional actual context beneath the value."
-      },
-      {
-        "name": "durationMs",
-        "type": "number",
-        "description": "Finite roll duration 0–2000ms. Zero is instantaneous. Live reduced motion always stops immediately.",
-        "default": "420"
-      },
-      {
-        "name": "fontSize",
-        "type": "number",
-        "description": "Requested size 12–128px. Native font metrics fit it to the container; very long or too-small values retain a readable static form.",
-        "default": "64"
-      },
-      {
-        "name": "fontRole",
+        "name": "font",
         "type": "\"display\" | \"serif\" | \"mono\"",
-        "description": "Role-backed native numeral face with tabular layout.",
-        "default": "\"display\""
+        "default": "\"display\"",
+        "description": "Font role for the numerals. Always tabular, so columns never shift."
       },
       {
-        "name": "theme",
-        "type": "\"dark\" | \"light\"",
-        "description": "Neutral graphite and white chrome; colour is reserved for actual feature content and semantic data accents.",
-        "default": "\"dark\""
+        "name": "duration",
+        "type": "number",
+        "default": "900",
+        "description": "Roll length in ms (a spring with one small settle). Columns start 28ms apart from the right, like a carry."
+      },
+      {
+        "name": "delay",
+        "type": "number",
+        "default": "0",
+        "description": "Wait (ms) before the first roll from `from`, so the figure counts once its block has landed. Later changes roll at once."
+      },
+      {
+        "name": "motionBlur",
+        "type": "boolean",
+        "default": "true",
+        "description": "Vertical-only blur that follows each reel’s speed and clears as it lands."
       },
       {
         "name": "live",
         "type": "boolean",
-        "description": "Opt into one atomic polite announcement of the actual final formatted value; animation glyphs stay hidden from assistive technology.",
-        "default": "false"
+        "default": "false",
+        "description": "Announce the settled value politely to screen readers. The rolling glyphs are always hidden from them."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Root classes, responsive to the real container.",
-        "default": "\"\""
+        "default": "\"\"",
+        "description": "Classes for the root span. Size and colour are inherited, so set them on the parent or here."
+      },
+      {
+        "name": "style",
+        "type": "CSSProperties",
+        "description": "Inline style for the root span."
       }
     ],
     "controls": [
       {
-        "prop": "label",
-        "label": "Value label",
-        "kind": "text",
-        "default": "Current value"
-      },
-      {
-        "prop": "fractionDigits",
-        "label": "Decimal places",
-        "kind": "slider",
-        "min": 0,
-        "max": 6,
-        "step": 1,
-        "default": 2
-      },
-      {
-        "prop": "durationMs",
-        "label": "Roll time",
-        "kind": "slider",
-        "min": 100,
-        "max": 1000,
-        "step": 50,
-        "default": 420,
-        "unit": "ms"
-      },
-      {
-        "prop": "fontRole",
-        "label": "Number role",
+        "prop": "currency",
+        "label": "Currency",
         "kind": "segmented",
         "options": [
-          "display",
-          "serif",
-          "mono"
+          {
+            "value": "GBP",
+            "label": "GBP"
+          },
+          {
+            "value": "EUR",
+            "label": "EUR"
+          },
+          {
+            "value": "JPY",
+            "label": "JPY"
+          }
+        ],
+        "default": "GBP"
+      },
+      {
+        "prop": "font",
+        "label": "Numerals",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "display",
+            "label": "Display"
+          },
+          {
+            "value": "serif",
+            "label": "Serif"
+          },
+          {
+            "value": "mono",
+            "label": "Mono"
+          }
         ],
         "default": "display"
-      },
-      {
-        "prop": "theme",
-        "label": "Theme",
-        "kind": "segmented",
-        "options": [
-          "dark",
-          "light"
-        ],
-        "default": "dark"
       },
       {
         "prop": "useGrouping",
@@ -37508,14 +37504,13 @@
     ],
     "demo": {
       "steps": [
-        "click:@odometer-add",
-        "wait:200",
-        "click:@odometer-subtract",
-        "wait:350",
-        "click:@odometer-sign",
-        "wait:350",
-        "click:@odometer-reset",
-        "wait:500"
+        "wait:900",
+        "click:@range-7d",
+        "wait:1100",
+        "click:@range-30d",
+        "wait:1100",
+        "click:@range-today",
+        "wait:1200"
       ],
       "loop": false
     },

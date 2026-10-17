@@ -3967,18 +3967,19 @@
     "updated": "2026-10-17"
   },
   "text-number-odometer": {
-    "useWhen": "Presenting changing numeric values with interruptible rolls for increases, decreases, signs and decimals.",
-    "avoidWhen": "A static counter, falsely precise analytics or animation that obscures the final accessible value.",
+    "useWhen": "A figure that changes in front of the reader, such as a live total, a balance or a counter, where turning digits make the direction and size of the change legible.",
+    "avoidWhen": "Static numbers that never change after load, dense tables where dozens of figures update at once, or values whose exact reading matters more than the motion.",
     "integration": [
-      "Supply the actual finite value and explicit fractionDigits (0–6), locale, grouping and signDisplay. Prefix/suffix are literal supplied text, not currency or unit conversion. The first render is already the actual formatted value.",
-      "Retarget each decorative digit from its current glyph phase on interrupted increases, decreases and sign/decimal changes. Invalid configuration and nonfinite values retain readable recovery; native font metrics fit actual numerals to the container and preserve exact selection.",
-      "Live reduced motion stops and sets every owner. Accessible final text stays separate from hidden rolling glyphs; opt into live only when a polite final-value announcement is useful. Use the named output in host controls rather than inventing additional counters."
+      "Render `TextNumberOdometer` inside any text: it inherits font size and colour. Pass `value`, plus `currency`, `locale`, `fractionDigits`, `signDisplay`, `prefix` or `suffix` for Intl-correct formatting.",
+      "Set `from={0}` for a first-view count-up. Each new `value` rolls only the digits that changed, up or down, and interrupts cleanly when updates arrive mid-roll.",
+      "Set `live` when a screen reader should hear the settled value; the rolling glyphs are hidden from assistive technology. Reduced motion jumps straight to the value."
     ],
     "related": [
-      "input-number-stepper",
-      "chart-waffle"
+      "dashboard-kpi-cards",
+      "pricing-plan-toggle",
+      "input-number-stepper"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "text-outline-fill": {
     "useWhen": "A long read or chapter opener where the headline should mark the reader's progress: outlined display type that fills with ink word by word as they scroll.",
