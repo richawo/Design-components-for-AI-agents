@@ -29493,14 +29493,18 @@
     "tier": "pro",
     "platform": "mobile",
     "category": "mobile",
-    "description": "A native writing folio with supplied reflection prompts, retained drafts per prompt and exact cancellable saving that preserves newer words.",
+    "description": "A React Native journal: reflection prompts as a deck you flick through, a ruled page that takes over while you write, a word ring and a keep button that remembers.",
     "tags": [
-      "mobile",
+      "journal",
+      "writing",
+      "prompts",
+      "reflection",
+      "wellbeing",
+      "swipe",
+      "cards",
       "react native",
       "dark",
-      "glass",
-      "journal",
-      "prompt"
+      "monochrome"
     ],
     "dependencies": [
       "expo-blur",
@@ -29508,93 +29512,129 @@
       "react-native-svg"
     ],
     "theme": "dark",
-    "previewHeight": 844,
-    "usage": "import { MobileJournalPrompt } from \"@/components/design-for-ai/native/mobile-journal-prompt\";\n\n// Bare React Native: run npx install-expo-modules once.\n<MobileJournalPrompt theme=\"dark\" />",
+    "previewHeight": 940,
+    "usage": "import { MobileJournalPrompt } from \"@/components/design-for-ai/native/mobile-journal-prompt\";\n\n// Bare React Native apps: run `npx install-expo-modules` once for expo-blur and expo-linear-gradient.\n<MobileJournalPrompt\n  prompts={tonightsPrompts}\n  answers={keptToday}\n  streak={user.streak}\n  onSave={({ prompt, text }, signal) => api.keepEntry(prompt.id, text, { signal })}\n/>",
     "props": [
       {
         "name": "prompts",
         "type": "JournalPrompt[]",
-        "description": "Exact unique identity/title/question/guidance and explicit availability. Unavailable prompts stay inspectable; duplicates cannot select."
+        "default": "4 prompts",
+        "description": "The deck: { id, title (short category), question, guidance }."
       },
       {
         "name": "answers",
         "type": "JournalAnswer[]",
-        "description": "Actual supplied previous text/update label. Duplicate answers block saving instead of choosing an arbitrary version."
+        "description": "Answers kept earlier: { promptId, text, updatedLabel }. They fill the page and mark their card “Kept 18:40”."
       },
       {
         "name": "selectedId",
         "type": "string | null",
-        "description": "Controlled selected prompt. Missing observer makes only prompt switching read-only; draft writing follows actual availability."
+        "description": "Controlled prompt. Pair with onSelectionChange."
       },
       {
         "name": "defaultSelectedId",
         "type": "string | null",
-        "description": "Initial local prompt identity. Missing selection remains explicit."
+        "description": "Prompt on top when uncontrolled. Defaults to the first."
       },
       {
         "name": "onSelectionChange",
         "type": "(id: string, prompt: JournalPrompt) => void",
-        "description": "Copied synchronous selection observer before mutation. Rejected changes retain current prompt and draft."
+        "description": "Fires when a card is flicked away or a dot is tapped."
       },
       {
         "name": "onSave",
-        "type": "(entry: { journalId: string; prompt: JournalPrompt; text: string; previous: JournalAnswer | null }, signal: AbortSignal) => void | Promise<void>",
-        "description": "Exact prompt, current text and previous supplied answer snapshot. Fulfillment acknowledges that snapshot, never replaces newer writing."
-      },
-      {
-        "name": "journalId",
-        "type": "string",
-        "description": "Replacement journal context retires requests and clears local draft buckets."
+        "type": "(entry: JournalSave, signal: AbortSignal) => void | Promise<void>",
+        "description": "Keep an answer: { prompt, text, previous }. Spinner while it runs; reject and the words stay with the error and a retry. Drafts are kept per prompt either way."
       },
       {
         "name": "dateLabel",
         "type": "string",
-        "description": "Host-authored journal context."
-      },
-      {
-        "name": "maxLength",
-        "type": "number",
-        "description": "Integer1–20000. Invalid limit or over-limit text blocks submission while retaining the complete writing."
+        "default": "\"Tuesday 13 October\"",
+        "description": "Mono label above the title."
       },
       {
         "name": "title",
         "type": "string",
-        "description": "Editable host heading. Keep working content dominant."
+        "default": "\"Evening pages\"",
+        "description": "Screen title."
       },
       {
-        "name": "theme",
-        "type": "\"dark\" | \"light\"",
-        "description": "Neutral graphite/white themes with readable borders and actual focus states."
+        "name": "streak",
+        "type": "number",
+        "default": "12",
+        "description": "Days in a row with something kept, shown top right."
+      },
+      {
+        "name": "wordGoal",
+        "type": "number",
+        "default": "60",
+        "description": "A gentle target the accent word ring fills toward. It never blocks keeping."
+      },
+      {
+        "name": "maxLength",
+        "type": "number",
+        "default": "5000",
+        "description": "Character limit. Over it, keeping waits with an explanation and nothing is cut."
+      },
+      {
+        "name": "timeLabel",
+        "type": "string",
+        "default": "\"21:42\"",
+        "description": "Stamped on an answer kept now."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#FF9B5E\"",
+        "description": "The one brand colour: the keep button, the word ring, the caret and the kept dot."
       }
     ],
     "added": "2026-10-14",
     "demo": {
       "steps": [
-        "click:@journal-prompt-1",
-        "click:@journal-writing",
-        "type:A little more space.",
-        "click:@journal-save",
+        "wait:400",
+        "hover:@journal-deck",
+        "drag:0.12,0.3",
         "wait:500",
-        "click:@journal-prompt-0",
-        "wait:250"
-      ]
+        "click:@journal-writing",
+        "type:Into other people’s plans.",
+        "click:@journal-save",
+        "wait:1400"
+      ],
+      "loop": false
     },
     "controls": [
       {
-        "prop": "theme",
-        "label": "Theme",
-        "kind": "segmented",
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#FF9B5E",
         "options": [
-          "dark",
-          "light"
-        ],
-        "default": "dark"
+          "#FF9B5E",
+          "#7CE0B5",
+          "#8AB4FF",
+          "#F5F5F5"
+        ]
+      },
+      {
+        "prop": "wordGoal",
+        "label": "Word goal",
+        "kind": "slider",
+        "min": 20,
+        "max": 200,
+        "step": 10,
+        "default": 60
       },
       {
         "prop": "title",
-        "label": "Heading",
+        "label": "Title",
         "kind": "text",
-        "default": "A thought worth keeping."
+        "default": "Evening pages"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
       }
     ]
   },

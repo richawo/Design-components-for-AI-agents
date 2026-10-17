@@ -4732,26 +4732,21 @@
     "updated": "2026-10-17"
   },
   "mobile-journal-prompt": {
-    "useWhen": "Prompt-led writing with separate retained drafts and exact cancellable saving that preserves newer text.",
-    "avoidWhen": "Generated reflections, mood interpretation or replacing the person's words with a summarized version.",
+    "useWhen": "A journaling, therapy-adjacent or wellbeing app offers a few reflection prompts and a calm place to answer them, with drafts that survive switching prompts and an explicit keep.",
+    "avoidWhen": "You need long-form documents with formatting, a feed of past entries, or free writing with no prompts; a plain editor or list fits better.",
     "integration": [
-      "prompts: Exact unique identity/title/question/guidance and explicit availability. Unavailable prompts stay inspectable; duplicates cannot select.",
-      "answers: Actual supplied previous text/update label. Duplicate answers block saving instead of choosing an arbitrary version.",
-      "selectedId: Controlled selected prompt. Missing observer makes only prompt switching read-only; draft writing follows actual availability.",
-      "defaultSelectedId: Initial local prompt identity. Missing selection remains explicit.",
-      "onSelectionChange: Copied synchronous selection observer before mutation. Rejected changes retain current prompt and draft.",
-      "onSave: Exact prompt, current text and previous supplied answer snapshot. Fulfillment acknowledges that snapshot, never replaces newer writing.",
-      "journalId: Replacement journal context retires requests and clears local draft buckets.",
-      "dateLabel: Host-authored journal context.",
-      "maxLength: Integer1–20000. Invalid limit or over-limit text blocks submission while retaining the complete writing.",
-      "Provide a full-height native canvas. Local horizontal shelves preserve touch target size at320px; vertical content scrolls under the translucent action footer. Install Expo modules once for bare React Native.",
-      "Verify real iOS/Android touch, large text and assistive technology in the host app. Browser previews exercise the actual React Native Web source and state contracts."
+      "Pass `prompts` ({ id, title, question, guidance }) and the answers already kept as `answers` ({ promptId, text, updatedLabel }); kept prompts show a chip on their card.",
+      "`onSave({ prompt, text, previous }, signal)` runs when the person keeps an answer. Resolve once it's stored; reject to show the error with the words untouched. Pass `timeLabel` so the stamp matches your clock.",
+      "Control the current prompt with `selectedId` and `onSelectionChange` if your app deep-links to one; `streak` and `wordGoal` come from your own data and never block keeping.",
+      "Install this in a React Native app (run npx install-expo-modules once in bare projects). The web preview is a review surface; verify the keyboard, text scaling and screen readers on devices."
     ],
     "related": [
-      "mobile-bottom-sheet",
-      "mobile-settings"
+      "mobile-mood-map",
+      "mobile-habit-grid",
+      "mobile-day-planner",
+      "mobile-bottom-sheet"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "mobile-reading-progress": {
     "useWhen": "An e-reader or audiobook library screen showing how far someone is through a book, its chapters and saved pages, with one tap back into reading.",
