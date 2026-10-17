@@ -25282,145 +25282,231 @@
   },
   {
     "slug": "input-expression-editor",
-    "name": "Typed Expression Editor",
+    "name": "Formula Editor",
     "tier": "pro",
     "platform": "web",
     "category": "inputs",
-    "description": "A bounded expression editor exposes real syntax/type errors, actual field examples, short-circuit evaluation and a revision-owned applied draft.",
+    "description": "A formula bar for computed columns: field chips, live syntax colour, autocomplete, wavy error underlines with one-click fixes and a preview that recounts.",
     "tags": [
-      "expression",
       "formula",
-      "parser",
+      "expression",
+      "computed column",
+      "autocomplete",
+      "editor",
       "validation",
-      "typed",
-      "input"
+      "input",
+      "no-code"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1100,
-    "usage": "import { InputExpressionEditor } from \"@/components/design-for-ai/input-expression-editor\";\n\n<InputExpressionEditor fields={fields} value={expression} onValueChange={setExpression} examples={examples} />\n\n// The supported grammar is deliberately small. This component never evaluates JavaScript.",
+    "previewHeight": 900,
+    "usage": "import { InputExpressionEditor } from \"@/components/design-for-ai/input-expression-editor\";\n\n<InputExpressionEditor\n  title=\"Net MRR\"\n  table=\"Subscriptions\"\n  fields={[{ id: \"seats\", label: \"Seats\", kind: \"number\" }, { id: \"plan_price\", label: \"Plan price\", kind: \"number\", format: \"currency\" }]}\n  rows={sampleRows} // { id, label, values } from the real table\n  value={formula}\n  onValueChange={(next) => api.saveColumn(columnId, next)} // return the promise to show Saving…\n/>\n\n// analyzeExpression(formula, fields) and evaluateExpression(formula, values, fields) run the same parser on the server.\n// The grammar is small and closed: it never calls eval.",
     "props": [
       {
-        "name": "fields",
-        "type": "readonly ExpressionField[]",
-        "description": "At most32 unique identifier fields with declared number/text/boolean kind, readable label and an optional matching finite example. No eval."
+        "name": "title",
+        "type": "string",
+        "default": "\"Net MRR\"",
+        "description": "The computed column's name, shown in the tool bar."
       },
       {
-        "name": "examples",
-        "type": "readonly ExpressionExample[]",
-        "description": "Named sample expressions; unique nonempty IDs. Selecting one only replaces the unapplied draft."
+        "name": "table",
+        "type": "string",
+        "default": "\"Subscriptions\"",
+        "description": "The table the column belongs to."
+      },
+      {
+        "name": "fields",
+        "type": "ExpressionField[]",
+        "description": "Fields a formula can use: { id, label, kind: number | text | boolean, format?: currency | percent | number }."
+      },
+      {
+        "name": "rows",
+        "type": "ExpressionRow[]",
+        "description": "Sample rows the formula previews against: { id, label, values }. Click a row to show its values in the field list."
       },
       {
         "name": "value",
         "type": "string",
-        "description": "Controlled accepted expression, paired with onValueChange. Rejection retains draft and actual current expression."
+        "description": "Controlled saved formula. Pair with onValueChange."
       },
       {
         "name": "defaultValue",
         "type": "string",
-        "description": "Local accepted seed; reset explicitly using resetKey."
+        "default": "\"seats * plan_price * (1 - discount)\"",
+        "description": "Uncontrolled starting formula."
       },
       {
         "name": "onValueChange",
-        "type": "(expression: string) => void",
-        "description": "Explicit Apply requests the exact valid expression with a computable finite example. No code execution, persistence or automatic backend evaluation."
+        "type": "(formula: string) => void | Promise<void>",
+        "description": "Save request from Save or ⌘↵, only for a formula that checks. Return a promise to show Saving…; a rejection keeps the draft."
       },
       {
-        "name": "resetKey",
-        "type": "string | number",
-        "description": "Explicit local accepted value, revision-owned draft and selection lifecycle reset."
+        "name": "resultFormat",
+        "type": "\"currency\" | \"percent\" | \"number\"",
+        "default": "\"currency\"",
+        "description": "How number results display in the preview and total."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"GBP\"",
+        "description": "ISO 4217 code for currency results and fields."
       },
       {
         "name": "locale",
         "type": "string",
-        "description": "Intl numeric example display; unsupported locale falls back to en-GB."
+        "default": "\"en-GB\"",
+        "description": "Locale for numbers."
+      },
+      {
+        "name": "resetKey",
+        "type": "string | number",
+        "description": "Change it to discard the draft."
       },
       {
         "name": "status",
         "type": "\"ready\" | \"loading\" | \"error\"",
-        "description": "Host availability preserves current and edited expression."
+        "default": "\"ready\"",
+        "description": "Sample-row availability. Loading shows skeleton rows; error shows a message and Try again. The formula stays editable only when ready."
       },
       {
         "name": "errorMessage",
         "type": "string",
-        "description": "Meaningful host failure explanation, default when blank."
+        "description": "Text for the preview error."
       },
       {
         "name": "onRetry",
         "type": "() => void",
-        "description": "Real host recovery request."
+        "description": "Shows Try again in the preview error."
       },
       {
         "name": "disabled",
         "type": "boolean",
-        "description": "Lock editing and requests while preserving selectable expression."
+        "default": "false",
+        "description": "Read only: the formula and preview stay visible."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Complete monochromatic graphite/white chrome. Colour is reserved for actual supplied content and purposeful feature accents."
+        "default": "\"dark\"",
+        "description": "Surface the editor sits on."
       },
       {
-        "name": "labels",
-        "type": "Partial<ExpressionLabels>",
-        "description": "Heading, grammar, example, draft and recovery copy."
+        "name": "accent",
+        "type": "string",
+        "default": "\"#8ab4ff\"",
+        "description": "The one accent: numbers in the formula, the caret, the result column and the selected row."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Host layout classes responsive to the actual container."
+        "description": "Extra classes on the root section."
       }
     ],
     "added": "2026-10-13",
     "demo": {
       "steps": [
-        "click:@expression-example-yearly",
         "wait:500",
-        "click:@expression-example-buffer",
-        "wait:500",
-        "click:@expression-example-monthly",
-        "wait:500",
-        "click:@expression-apply",
-        "wait:450"
-      ],
-      "loop": false
+        "click:@formula:0.98,0.5",
+        "key:End",
+        "type: - cre",
+        "wait:600",
+        "key:Enter",
+        "wait:900",
+        "click:@formula-save",
+        "wait:1000"
+      ]
     },
     "controls": [
       {
-        "prop": "theme",
-        "label": "Theme",
-        "kind": "segmented",
-        "options": [
-          "dark",
-          "light"
-        ],
-        "default": "dark"
+        "prop": "defaultValue",
+        "label": "Formula",
+        "kind": "text",
+        "default": "seats * plan_price * (1 - discount)",
+        "group": "Content",
+        "remount": true
       },
       {
-        "prop": "defaultValue",
-        "label": "Initial expression",
-        "kind": "text",
-        "default": "seats * seat_price - credit"
+        "prop": "resultFormat",
+        "label": "Result",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "currency",
+            "label": "Currency"
+          },
+          {
+            "value": "number",
+            "label": "Number"
+          }
+        ],
+        "default": "currency",
+        "group": "Content"
+      },
+      {
+        "prop": "status",
+        "label": "Sample rows",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "ready",
+            "label": "Ready"
+          },
+          {
+            "value": "loading",
+            "label": "Loading"
+          },
+          {
+            "value": "error",
+            "label": "Error"
+          }
+        ],
+        "default": "ready",
+        "group": "State"
       },
       {
         "prop": "disabled",
         "label": "Read only",
         "kind": "toggle",
-        "default": false
+        "default": false,
+        "group": "State"
       },
       {
-        "prop": "status",
-        "label": "Availability",
-        "kind": "select",
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
         "options": [
-          "ready",
-          "loading",
-          "error"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
-        "default": "ready"
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#8ab4ff",
+        "options": [
+          "#8ab4ff",
+          "#f2b25b",
+          "#7dd3a8"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
       }
     ]
   },

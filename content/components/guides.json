@@ -4125,19 +4125,19 @@
     "updated": "2026-10-17"
   },
   "input-expression-editor": {
-    "useWhen": "Editing a small, explicitly supported expression with syntax feedback and a transparent computed example.",
-    "avoidWhen": "Evaluating arbitrary JavaScript or implying support for a complete programming language.",
+    "useWhen": "Letting people define a computed column, a pricing rule or a filter as a short formula over known fields, with immediate feedback against real rows.",
+    "avoidWhen": "Writing general-purpose code or long scripts, or when a few dropdowns would express the rule without any syntax to learn.",
     "integration": [
-      "Supply at most32 unique ExpressionField identifiers with a declared number, text or boolean kind and optional matching finite example. The parser accepts at most512 characters,128 tokens and32 nested operations. It never uses eval or accepts arbitrary JavaScript.",
-      "Supported syntax: decimal numbers, escaped quoted text, true/false, fields, parentheses, unary + / − / !, numeric + / − / * / /, numeric comparisons, same-type == / != and short-circuit && / ||. Missing examples, division by zero and non-finite or over-±1e12 results remain explicit.",
-      "The native textarea retains a separate unapplied draft; fields insert at its real selection. Control+Space inserts the first field, Control/Command+Enter requests Apply, and Escape returns to the accepted expression. Numeric display also exposes the exact computed JS number.",
-      "Explicit onValueChange requests the exact valid expression only when its supplied example can be computed. Controlled rejection preserves current expression and draft; an older acknowledgement cannot erase a newer edit. Local seeds change only through resetKey."
+      "Describe each field as { id, label, kind: number | text | boolean, format? } and pass a handful of real rows as { id, label, values } so the preview and the field list show true values. Keep ids identifier-shaped (letters, digits, underscores).",
+      "Validate on the server with the exported analyzeExpression(formula, fields) and compute with evaluateExpression(formula, values, fields): the same closed grammar the editor uses, with five functions (ROUND, IF, MIN, MAX, ABS) and no eval.",
+      "Return the save promise from onValueChange to show Saving and Saved; reject it to keep the draft with an error. Save is only offered for a formula that type-checks. Change resetKey when switching columns.",
+      "Use status loading or error while sample rows load; the formula is still visible, and editing resumes when ready."
     ],
     "related": [
       "data-query-builder",
       "editor-markdown-split"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "selects-tree-picker": {
     "useWhen": "Choosing several items from a hierarchy where whole branches are often wanted at once: teams in an org, regions and stores, folders to sync, permission scopes.",
