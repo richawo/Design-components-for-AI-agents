@@ -6,7 +6,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import sharp from "sharp";
-import { chromium } from "playwright-core";
+import { launchChromium } from "./lib/browser.mjs";
 
 const args = process.argv.slice(2);
 const base = (args.find((a) => a.startsWith("--base=")) ?? "--base=http://localhost:3000").slice(7);
@@ -16,8 +16,7 @@ const index = JSON.parse(fs.readFileSync(path.join(root, "registry/__generated__
 const out = path.join(root, "public", "previews");
 fs.mkdirSync(out, { recursive: true });
 
-const exe = ["/opt/pw-browsers/chromium-1194/chrome-linux/chrome"].find((p) => fs.existsSync(p));
-const browser = await chromium.launch({ executablePath: exe, args: ["--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"] });
+const browser = await launchChromium();
 const targets = index.filter((e) => e.hasSource && (!only.length || only.includes(e.slug)));
 
 for (const e of targets) {
