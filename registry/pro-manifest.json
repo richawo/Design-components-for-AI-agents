@@ -38502,63 +38502,99 @@
     "tier": "pro",
     "platform": "web",
     "category": "app",
-    "description": "Filter, inspect and mark notifications read without losing selection. A considered, responsive SaaS workspace with typed integration points.",
+    "description": "A keyboard-first SaaS inbox grouped by source: J/K to move, E to archive with undo, S to snooze on a week you can scrub, and unread counts that roll.",
     "tags": [
       "saas",
-      "workflow",
-      "responsive",
-      "keyboard",
-      "app"
+      "inbox",
+      "notifications",
+      "keyboard shortcuts",
+      "snooze",
+      "triage",
+      "undo",
+      "admin"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1040,
-    "usage": "import { NotificationInbox } from \"@/components/design-for-ai/saas-notification-inbox\";\n\n<NotificationInbox />",
+    "previewHeight": 900,
+    "usage": "import { NotificationInbox } from \"@/components/design-for-ai/saas-notification-inbox\";\n\nexport default function Inbox() {\n  return (\n    <NotificationInbox\n      workspace=\"Kestrel\"\n      notifications={notifications}\n      now={new Date().toISOString()}\n      timeZone=\"Europe/London\"\n      onAction={(action) => api.inbox.apply(action)} // reject to roll back\n      onOpen={(n) => router.push(n.href)}\n    />\n  );\n}",
     "props": [
       {
-        "name": "title",
+        "name": "workspace",
         "type": "string",
-        "description": "Main heading.",
-        "default": "\"Notification inbox\""
-      },
-      {
-        "name": "subtitle",
-        "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Triage a scoped inbox, inspect the full context and acknowledge read state without losing your place.\""
+        "default": "\"Kestrel\"",
+        "description": "Workspace name for the breadcrumb and its initial mark."
       },
       {
         "name": "notifications",
         "type": "InboxNotification[]",
-        "description": "Unique notifications in display order, with full body, context and host read state."
+        "description": "{ id, source: \"mention\" | \"alert\" | \"access\" | \"report\" | \"integration\" | \"billing\", title, context, actor?, body?, at, read?, snoozedUntil?, metric?: { label, values, threshold?, thresholdLabel?, unit?, decimals? }, facts?: { label, value }[], actionLabel? }."
       },
       {
-        "name": "onReadChange",
-        "type": "(change:NotificationReadChange)=>void|Promise<void>",
-        "description": "Persist read state for the exact IDs. Local state updates only after acknowledgement."
+        "name": "now",
+        "type": "string",
+        "description": "ISO instant that ages and snooze options count from. Pass the current time."
+      },
+      {
+        "name": "timeZone",
+        "type": "string",
+        "default": "\"Europe/London\"",
+        "description": "IANA zone for times, snooze presets and the scrubber’s nights."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Date and number formatting."
+      },
+      {
+        "name": "defaultView",
+        "type": "\"inbox\" | NotificationSource | \"snoozed\"",
+        "default": "\"inbox\"",
+        "description": "View shown first. The inbox groups by source; a source view is one list."
+      },
+      {
+        "name": "onAction",
+        "type": "(action: InboxAction) => void | Promise<void>",
+        "description": "Persist read, unread, archive, unarchive, snooze ({ until } ISO) and unsnooze. Reads and archives are optimistic and roll back on rejection; a snooze waits, and a rejection keeps the dialog and its chosen time."
+      },
+      {
+        "name": "onOpen",
+        "type": "(notification: InboxNotification) => void",
+        "description": "Opens the notification’s object from the primary action or Enter."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "description": "Unread marks, the selected row, the primary action and focus. Defaults to the theme’s ink."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Surface and ink palette."
       },
       {
-        "name": "selectMode",
-        "type": "\"custom\" | \"native\"",
-        "default": "\"custom\"",
-        "description": "Animated keyboard-accessible custom listboxes, or native platform pickers with matched 12px insets."
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:350",
-        "click:@notification-1",
-        "wait:550",
-        "click:@toggle-read",
+        "wait:600",
+        "click:@row-n5",
+        "wait:600",
+        "key:e",
+        "wait:700",
+        "key:s",
+        "wait:400",
+        "click:@preset-monday",
+        "wait:300",
+        "click:@snooze-confirm",
         "wait:1200"
       ],
       "loop": false
@@ -38575,14 +38611,40 @@
         "default": "dark"
       },
       {
-        "prop": "selectMode",
-        "label": "Select menus",
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#7aa2ff",
+          "#ff8a4c"
+        ]
+      },
+      {
+        "prop": "defaultView",
+        "label": "Opens on",
         "kind": "segmented",
         "options": [
-          "custom",
-          "native"
+          {
+            "value": "inbox",
+            "label": "Inbox"
+          },
+          {
+            "value": "mention",
+            "label": "Mentions"
+          },
+          {
+            "value": "alert",
+            "label": "Alerts"
+          },
+          {
+            "value": "snoozed",
+            "label": "Snoozed"
+          }
         ],
-        "default": "custom"
+        "default": "inbox",
+        "remount": true
       }
     ]
   },

@@ -3041,18 +3041,20 @@
     "updated": "2026-10-17"
   },
   "saas-notification-inbox": {
-    "useWhen": "Triaging supplied notifications through read, archive and filter states.",
-    "avoidWhen": "The only record of important events or a real notification-delivery service.",
+    "useWhen": "People triage a stream of mentions, alerts, access requests and system notices and want to clear it from the keyboard: archive with undo, snooze to a time they can see, and read counts per source.",
+    "avoidWhen": "You need a chat thread, a ticket queue with SLAs (use saas-support-triage), or a page that only lists recent changes without acting on them.",
     "integration": [
-      "Supply your own records through `notifications`. Preserve stable keys or IDs when the data contract provides them.",
-      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+      "Pass notifications as { id, source, title, context, actor?, body?, at, read?, snoozedUntil?, metric?, facts?, actionLabel? }; `source` is one of mention, alert, access, report, integration or billing, and decides the group and icon.",
+      "`onAction` receives read, unread, archive, unarchive, snooze (with an ISO `until`) and unsnooze. Reads and archives are optimistic and roll back with an alert if it rejects; a snooze waits for it, and a rejection keeps the dialog open with the chosen time.",
+      "Pass `now` as the current time and `timeZone` for the reader; snooze presets (later today, tomorrow, Monday, next week) and the scrubber’s nights are computed in that zone.",
+      "Keys: J/K or arrows move and read, E archives, S snoozes, U toggles read, Z undoes, Enter calls `onOpen`. They are ignored while typing. Duplicate ids and unreadable times are left out and named in an alert."
     ],
     "related": [
-      "saas-access-requests",
-      "saas-audit-trail",
-      "saas-customer-health"
+      "saas-support-triage",
+      "saas-workspace-dashboard",
+      "collab-comment-thread"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "saas-report-scheduler": {
     "useWhen": "People schedule a recurring email report: they choose sections, cadence, delivery time, time zone and recipients, and want to see the report and its next deliveries before saving.",
