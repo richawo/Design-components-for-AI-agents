@@ -23,6 +23,28 @@ The custom `scripts/deploy-worker.mjs` command runs OpenNext's cache preparation
 before Wrangler bundles or uploads, including during a dry run. Without that
 step the cache assets are absent and public requests fall back to rendering.
 
+The deployment command also prepares the Node-compatible Next server as a
+separate module, then preserves its dynamic import from the small public router.
+Keep `find_additional_modules` and the explicit `lazy-modules` rules in
+`wrangler.jsonc`. A normal Wrangler rebundle can silently inline that server and
+make public cache hits initialize the whole application again. The final upload
+uses `--no-bundle`; dry runs use the same preparation and checks. The command
+rejects a public entry of 4 MiB or more, runtime modules totalling 64 MiB or more,
+and gzipped source maps totalling 15 MB or more. Runtime accounting includes
+attached text, SQL and Wasm modules, including nested modules.
+
+After `npm run deploy:dry-run`, exercise that exact package with
+`npx wrangler dev .open-next/deploy/worker.js --no-bundle --port 4189`.
+Run the component navigation and preview recovery browser replays against it,
+and check public cache hits and anonymous Pro-source guards. The faster router
+does not authorize caching account state or licensed source.
+
+`public/_headers` gives only fingerprinted `/_next/static/*` files a year of
+immutable browser caching. Workers Static Assets otherwise sends
+`max-age=0, must-revalidate`, causing a preview to revalidate scripts its parent
+already downloaded. HTML, build provenance and authenticated routes retain
+their existing policies. See [Cloudflare's static asset header rules](https://developers.cloudflare.com/workers/static-assets/headers/).
+
 Blog Markdown lives in the private repository at `_site/blog/`, cloned into
 `registry/pro/_site/blog/`. Its generated bundle is ignored by Git. Production
 sync requires these posts as well as the Pro components. A public clone without
