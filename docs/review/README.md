@@ -19,6 +19,8 @@ that work up where it paused (17 October 2026).
 
 ## Status at the pause
 
+Work another agent can pick up, task by task, is in `HANDOFF_TASKS.md`.
+
 Done (rebuilt, verified, committed): 149 components. The full list, with what each still needs, is in
 `STATUS.md`.
 
