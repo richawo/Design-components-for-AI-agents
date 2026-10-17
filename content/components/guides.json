@@ -4223,19 +4223,18 @@
     "updated": "2026-10-14"
   },
   "chart-sunburst-explorer": {
-    "useWhen": "Exploring a supplied hierarchy through radial drill-down with equivalent readable values.",
-    "avoidWhen": "An unlabeled decorative ring or a hierarchy whose totals do not reconcile with its children.",
+    "useWhen": "Exploring a deep hierarchy where the share of each part matters at every level: bundle sizes, disk usage, time or budget by team and project.",
+    "avoidWhen": "Flat lists of categories, or comparisons where reading exact differences matters more than part-to-whole (a sorted bar chart reads better).",
     "integration": [
-      "Supply a unique-ID hierarchy with at most 80 nodes and depth 5. Leaf values are finite nonnegative numbers up to 1 trillion; group totals are computed from their children rather than accepted as a second total. Null source and zero totals have useful native alternatives.",
-      "Control the atomic focusId/selectedId packet when the host owns the view. Selecting a real segment or its full native row inspects the same node; Focus this group and the breadcrumbs drill explicitly. Unknown identities remain unavailable, and only accepted discrete requests produce commits.",
-      "Keep exact quantities in the complete native descendant table, including tiny and zero values. Very small quantities use a truthful scientific notation. Supply the unit and supported Intl locale, and use the native controls for narrow/touch layouts.",
-      "Loading or unavailable source preserves the current packet. Live reduced motion settles the actual partition and total, idle/offscreen work stops, and actual owner-document focus fencing preserves outside and parent-page actions."
+      "Pass `data` as { name, value?, children? }. Leaves carry the value and groups sum their children, so there is never a second total to reconcile. Zero-value branches are dropped.",
+      "Use `format=\"bytes\"` for file sizes or `format=\"number\"` with `unit` for anything else, and `rings` to trade depth for legibility (3 suits most screens).",
+      "`onDrill(path)` reports the names from the root to the level in focus; use it to sync a detail panel or the URL. The list beside the chart is the keyboard path, so keep `showList` on unless another table covers the same data."
     ],
     "related": [
       "chart-treemap-drill",
       "chart-allocation"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "chart-sankey-paths": {
     "useWhen": "Showing how a total splits and recombines across two or three stages, such as acquisition source to first action to outcome, and letting people trace one category’s direct flows.",

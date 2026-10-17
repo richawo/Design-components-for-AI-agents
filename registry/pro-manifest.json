@@ -9806,113 +9806,161 @@
     "tier": "pro",
     "platform": "web",
     "category": "charts",
-    "description": "An interruptible radial partition drills into a supplied hierarchy, with exact leaf totals, native selection rows and useful zero-data states.",
+    "description": "A zoomable sunburst of a JS bundle: hover a branch to light it in the accent, click to drill in as angles and rings morph, with a breadcrumb and a counting centre.",
     "tags": [
       "sunburst",
       "hierarchy",
-      "radial partition",
-      "data exploration",
-      "allocation",
-      "drill down"
+      "drill down",
+      "bundle size",
+      "radial chart",
+      "breadcrumb",
+      "dashboard",
+      "dark",
+      "monochrome"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1320,
-    "usage": "import { ChartSunburstExplorer } from \"@/components/design-for-ai/chart-sunburst-explorer\";\n\n<ChartSunburstExplorer hierarchy={allocation} value={view} onValueChange={setView} unit=\"hours\" />",
+    "previewHeight": 780,
+    "usage": "import { ChartSunburstExplorer } from \"@/components/design-for-ai/chart-sunburst-explorer\";\nimport type { SunburstNode } from \"@/components/design-for-ai/chart-sunburst-explorer\";\n\nconst hours: SunburstNode = {\n  name: \"Q3\",\n  children: [\n    { name: \"Product\", children: [{ name: \"Editor\", value: 412 }, { name: \"Search\", value: 260 }] },\n    { name: \"Platform\", children: [{ name: \"CI\", value: 180 }, { name: \"Infra\", value: 222 }] },\n  ],\n};\n\n<ChartSunburstExplorer\n  data={hours}\n  title=\"Engineering time\"\n  subtitle=\"Q3 2026\"\n  format=\"number\"\n  unit=\"h\"\n  onDrill={(path) => console.log(path)}\n/>",
     "props": [
       {
-        "name": "hierarchy",
-        "type": "SunburstNode | null",
-        "description": "Supplied unique-ID hierarchy, at most 80 nodes/depth 5. Leaf values are finite, nonnegative and at most 1 trillion. Internal totals are computed; group values are rejected."
-      },
-      {
-        "name": "value",
-        "type": "SunburstView",
-        "description": "Controlled atomic branch and selection. Unknown or outside-branch IDs remain honestly unavailable."
-      },
-      {
-        "name": "defaultValue",
-        "type": "SunburstView",
-        "description": "Initial uncontrolled branch/selection; defaults to the actual root and no selection."
-      },
-      {
-        "name": "onValueChange",
-        "type": "(value: SunburstView) => void",
-        "description": "Requests an atomic branch/selection change. Controlled rejection preserves the current view."
-      },
-      {
-        "name": "onValueCommit",
-        "type": "(value: SunburstView) => void",
-        "description": "Reports accepted discrete changes only. Rejected or interrupted requests do not commit."
-      },
-      {
-        "name": "status",
-        "type": "\"ready\" | \"loading\" | \"unavailable\"",
-        "description": "Host availability; selection is preserved while data is temporarily unavailable."
-      },
-      {
-        "name": "disabled",
-        "type": "boolean",
-        "description": "Disables changes while preserving the current allocation."
-      },
-      {
-        "name": "locale",
-        "type": "string",
-        "description": "Supported Intl number locale. Exact native table values retain supplied precision."
-      },
-      {
-        "name": "unit",
-        "type": "string",
-        "description": "Host unit label; the component does not infer a measurement."
+        "name": "data",
+        "type": "SunburstNode",
+        "default": "web-app’s main bundle, 1.33 MB",
+        "description": "The root: { name, value?, children? }. Leaves carry value; groups sum their children. Any depth; zero-value branches are dropped."
       },
       {
         "name": "title",
         "type": "string",
-        "description": "Host heading for the exploration."
+        "default": "\"Bundle composition\"",
+        "description": "Card title."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "default": "\"web-app · main@a41c9e2 · parsed\"",
+        "description": "Mono line beside the title."
+      },
+      {
+        "name": "format",
+        "type": "\"bytes\" | \"number\"",
+        "default": "\"bytes\"",
+        "description": "Values as file sizes (B, KB, MB) or plain numbers followed by unit."
+      },
+      {
+        "name": "unit",
+        "type": "string",
+        "default": "\"\"",
+        "description": "Suffix for format=\"number\", e.g. \"h\"."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-US\"",
+        "description": "Locale for number formatting."
+      },
+      {
+        "name": "rings",
+        "type": "number",
+        "default": "3",
+        "description": "How many rings show below the level in focus (1 to 5)."
+      },
+      {
+        "name": "showList",
+        "type": "boolean",
+        "default": "true",
+        "description": "The ranked list of the level’s children beside the chart (below it on narrow containers)."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ff7a45\"",
+        "description": "The one colour: the branch under the pointer or in focus, or the level’s largest child at rest."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Neutral graphite and white chrome; colour is reserved for actual feature content and semantic data accents."
+        "default": "\"dark\"",
+        "description": "Near-black card with white ink, or a white card with near-black ink."
+      },
+      {
+        "name": "onDrill",
+        "type": "(path: string[]) => void",
+        "description": "Called with the names from the root to the level now in focus."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Classes applied to the standalone root."
+        "default": "\"\"",
+        "description": "Classes on the card."
       }
     ],
     "controls": [
+      {
+        "prop": "title",
+        "label": "Title",
+        "kind": "text",
+        "default": "Bundle composition"
+      },
+      {
+        "prop": "rings",
+        "label": "Rings",
+        "kind": "slider",
+        "min": 2,
+        "max": 4,
+        "step": 1,
+        "default": 3
+      },
+      {
+        "prop": "showList",
+        "label": "Show list",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#ff7a45",
+        "options": [
+          "#ff7a45",
+          "#34d399",
+          "#60a5fa",
+          "#e5e5e5"
+        ]
+      },
       {
         "prop": "theme",
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
         "default": "dark"
-      },
-      {
-        "prop": "disabled",
-        "label": "Disabled",
-        "kind": "toggle",
-        "default": false
       }
     ],
     "demo": {
       "steps": [
-        "click:@sunburst-row-product",
-        "click:@sunburst-focus",
+        "wait:400",
+        "hover:@sunburst-row-src",
         "wait:350",
-        "click:@sunburst-row-navigation",
-        "wait:350",
-        "click:@sunburst-root",
-        "wait:450"
-      ],
-      "loop": false
+        "click:@sunburst-row-node-modules",
+        "wait:900",
+        "click:@sunburst-row-tiptap",
+        "wait:900",
+        "click:@sunburst-crumb-0",
+        "wait:900"
+      ]
     },
     "added": "2026-10-14"
   },
