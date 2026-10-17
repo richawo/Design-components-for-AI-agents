@@ -31713,19 +31713,21 @@
   },
   {
     "slug": "mobile-task-move",
-    "name": "Native Task Move Review",
+    "name": "Task Status Rail",
     "tier": "pro",
     "platform": "mobile",
     "category": "mobile",
-    "description": "A tactile native task move with constrained destinations, exact reviewed notes, retained drafts and honest host-owned movement and undo.",
+    "description": "A React Native task move: drag a glass puck down a workflow rail, the status glyph fills as it travels, locked columns refuse, and the move lands with a timed undo.",
     "tags": [
       "mobile",
       "react native",
       "task",
       "workflow",
-      "move",
-      "review",
+      "status",
+      "drag",
       "undo",
+      "issue tracker",
+      "glass",
       "dark"
     ],
     "dependencies": [
@@ -31735,113 +31737,104 @@
     ],
     "theme": "dark",
     "previewHeight": 844,
-    "usage": "import { MobileTaskMove } from \"@/components/design-for-ai/native/mobile-task-move\";\n\n// Bare native apps: run npx install-expo-modules once.\n<MobileTaskMove task={task} destinations={states} value={proposedId} onValueChange={setProposedId} onMove={moveReviewedTask} onUndo={undoReviewedTask} resetKey={reviewId} />",
+    "usage": "import { MobileTaskMove } from \"@/components/design-for-ai/native/mobile-task-move\";\n\n// npm i expo-blur expo-linear-gradient react-native-svg\n// (bare React Native: run `npx install-expo-modules` once)\n<MobileTaskMove\n  task={issue}\n  statuses={workflow.columns}\n  onMove={({ task, to, note }) => api.issues.update(task.id, { status: to, comment: note })}\n  onUndo={({ task, from }) => api.issues.update(task.id, { status: from })}\n/>",
     "props": [
       {
         "name": "task",
         "type": "MoveTask",
-        "description": "Actual ID/title/current state, with optional supplied description, project, owner and due label.",
-        "default": "Original release handoff in review"
+        "default": "LED-412 · Compress hero images on /pricing, in progress",
+        "description": "The issue: id, key, title, description, assignee, priority, due, subtasks { done, total } and its current status id."
       },
       {
-        "name": "destinations",
-        "type": "TaskDestination[]",
-        "description": "Raw ID/label/availability/reason/detail. Duplicate and unavailable records remain inspectable.",
-        "default": "Four original workflow states"
+        "name": "statuses",
+        "type": "TaskStatus[]",
+        "default": "Backlog, Todo, In progress, In review (limit 4), Done (needs an approved review)",
+        "description": "Workflow columns in order: id, label, kind (backlog, todo, started, review, done), count, optional WIP limit and blockedReason. Full or blocked columns refuse the puck."
       },
       {
-        "name": "value",
-        "type": "string | null",
-        "description": "Controlled proposed destination. Explicit null means no proposal; without observer choice is read-only."
-      },
-      {
-        "name": "defaultValue",
-        "type": "string | null",
-        "description": "Initial local proposal. Reset with resetKey.",
-        "default": "\"done\""
-      },
-      {
-        "name": "onValueChange",
-        "type": "(id: string | null) => void",
-        "description": "Synchronous proposal observer. Rejection retains actual choice."
-      },
-      {
-        "name": "defaultNote",
+        "name": "initialStatus",
         "type": "string",
-        "description": "Initial retained move note. Newer typing survives pending or older acknowledgments.",
-        "default": "\"The compact review and handoff copy have been checked.\""
+        "description": "Starting column id, overriding task.status. Read on mount."
       },
       {
         "name": "onMove",
-        "type": "(review: TaskMoveReview, signal: AbortSignal) => void | TaskMoveResult | Promise<void | TaskMoveResult>",
-        "description": "Copied exact task/from/to/note. Fulfillment acknowledges only. Optional host undoToken does not imply actual movement."
+        "type": "({ task, from, to, note }) => Promise<void>",
+        "description": "Moves the task. Reject with an Error to keep it in place; the message is shown and the note is kept."
       },
       {
         "name": "onUndo",
-        "type": "(review: TaskMoveUndoReview, signal: AbortSignal) => void | Promise<void>",
-        "description": "Exact acknowledged move/token; available only after the supplied actual task reaches that exact target. Fulfillment never restores actual state itself."
+        "type": "({ task, from, to }) => Promise<void>",
+        "description": "Puts the task back; offered for undoSeconds after a move."
       },
       {
-        "name": "resetKey",
-        "type": "string | number",
-        "description": "Replacement task review session. Retires copied review, pending requests, receipt and local drafts."
+        "name": "undoSeconds",
+        "type": "number",
+        "default": "5",
+        "description": "How long the undo ring runs after a move."
       },
       {
-        "name": "title",
+        "name": "context",
         "type": "string",
-        "description": "Native task move heading.",
-        "default": "\"Move with context.\""
+        "default": "\"LEDGER WEB · SPRINT 14\"",
+        "description": "Mono context line in the top bar."
       },
       {
-        "name": "theme",
-        "type": "\"dark\" | \"light\"",
-        "description": "Neutral black/white/graphite surfaces with purposeful actual error accents.",
-        "default": "\"dark\""
+        "name": "accent",
+        "type": "string",
+        "default": "\"#FFB547\"",
+        "description": "The one colour: the puck's light, the lit rail, Done, subtask progress and the undo ring."
       }
     ],
     "added": "2026-10-14",
     "demo": {
       "steps": [
-        "click:@task-destination-1",
-        "scroll:480",
-        "click:@task-review",
-        "wait:750",
-        "click:@task-move-request",
-        "wait:450",
-        "scroll:480",
-        "click:@task-undo",
-        "wait:450"
+        "wait:600",
+        "hover:@task-puck",
+        "drag:0.13,0.745",
+        "wait:500",
+        "click:@task-move",
+        "wait:1500"
       ]
     },
     "controls": [
       {
-        "prop": "theme",
-        "label": "Theme",
+        "prop": "initialStatus",
+        "label": "Starts in",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "todo",
+            "label": "Todo"
+          },
+          {
+            "value": "started",
+            "label": "In progress"
+          },
+          {
+            "value": "review",
+            "label": "In review"
+          }
         ],
-        "default": "dark"
-      },
-      {
-        "prop": "defaultValue",
-        "label": "Initial proposal",
-        "kind": "select",
-        "options": [
-          "planned",
-          "in-progress",
-          "review",
-          "done"
-        ],
-        "default": "done",
+        "default": "started",
         "remount": true
       },
       {
-        "prop": "title",
-        "label": "Heading",
-        "kind": "text",
-        "default": "Move with context."
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#FFB547",
+        "options": [
+          "#FFB547",
+          "#F5F5F5",
+          "#6EA8FF",
+          "#B79CFF",
+          "#5BD69A"
+        ]
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
       }
     ]
   },

@@ -4907,21 +4907,19 @@
     "updated": "2026-10-17"
   },
   "mobile-task-move": {
-    "useWhen": "Reviewing a constrained task destination and exact note before an explicit host-owned move, with undo only when supported by the acknowledged move and actual task state.",
-    "avoidWhen": "A task database or automatic state change, presenting a fulfilled callback as applied movement, or offering undo before the actual supplied task reaches the reviewed destination.",
+    "useWhen": "Changing an issue's status on a phone where the workflow has rules: work-in-progress limits, columns that need approval, and a move that should be easy to take back.",
+    "avoidWhen": "Rearranging many cards across a full board, free-form kanban with no workflow rules, or desktop drag-and-drop between columns.",
     "integration": [
-      "Supply the actual task ID/title/current status and raw destination IDs, labels, availability and constraints. Missing, conflicting or unavailable records remain inspectable and cannot authorize a move.",
-      "Use value/defaultValue for the proposed destination and synchronous onValueChange for controlled choice. Explicit null means no proposal. Missing observers are read-only; rejected changes preserve actual choice.",
-      "Review copies the exact task, current and proposed destinations and note. onMove receives that copied TaskMoveReview and AbortSignal. Newer note typing stays a draft through pending, failure or acknowledgment.",
-      "Callback fulfillment acknowledges only. A request can observe its exact reviewed from or to state while settling; unrelated task state, task facts, destination manifest, selection, handler or reset changes retire stale work and receipts.",
-      "onMove may return an optional host undoToken. Offer onUndo only when the exact acknowledged review/token still matches the app-supplied actual target state and the host provides that handler. TaskMoveUndoReview copies the precise original review/token. An undo acknowledgment never restores actual state itself.",
-      "Install Expo modules once in a bare React Native app. Verify native touch, dynamic text and assistive technology. The browser preview supports current-source design, focus, local keyboard reveal and live reduced-motion review."
+      "Pass `task` and the ordered `statuses` for its workflow. Give each column a `kind` so the glyph shows progress, a `count`, an optional `limit` and a `blockedReason` for rules the server enforces.",
+      "Implement `onMove({ task, from, to, note })` against your tracker and throw an Error with a readable message to refuse; the note is kept. `onUndo` is offered for `undoSeconds` after a successful move.",
+      "Install `expo-blur`, `expo-linear-gradient` and `react-native-svg` (`npx install-expo-modules` once in bare apps), and check the puck drag inside your own scroll views and with VoiceOver's adjustable actions."
     ],
     "related": [
+      "mobile-swipe-list",
       "mobile-agent-approval",
-      "mobile-swipe-list"
+      "mobile-project-switcher"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "mobile-review-annotations": {
     "useWhen": "Reviewing a still image or design on a phone, where comments are pinned to exact points, reviewers resolve them one by one and can drop a new pin by tapping the artwork.",
