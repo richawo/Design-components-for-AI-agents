@@ -18515,138 +18515,184 @@
   },
   {
     "slug": "editor-spacing-inspector",
-    "name": "Rendered Spacing Inspector",
+    "name": "Spacing Inspector",
     "tier": "pro",
     "platform": "web",
     "category": "editors",
-    "description": "Adjust real content padding and gap, inspect actual CSS-pixel measurements and copy the accepted layout with honest controlled recovery.",
+    "description": "Auto-layout spacing drawn as redlines over a real frame: drag hatched padding and gap bands, align layers and copy the CSS that follows.",
     "tags": [
       "spacing",
+      "auto layout",
       "padding",
-      "gap",
-      "layout",
-      "measure",
-      "editor"
+      "redlines",
+      "editor",
+      "design tool",
+      "inspector",
+      "css"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1360,
-    "usage": "import { EditorSpacingInspector } from \"@/components/design-for-ai/editor-spacing-inspector\";\n\n<EditorSpacingInspector value={spacing} onValueChange={setSpacing} items={contentItems} />\n\n// Hatching follows actual animated padding; measurements read the rendered logical CSS box. Linked editing applies four edges atomically. Export always uses accepted spacing.",
+    "previewHeight": 860,
+    "usage": "import { EditorSpacingInspector } from \"@/components/design-for-ai/editor-spacing-inspector\";\n\n<EditorSpacingInspector\n  name=\"invite-card\"\n  path={[\"Fieldnote\", \"Onboarding\"]}\n  layers={[\n    { id: \"avatars\", name: \"avatars\", content: <AvatarStack /> },\n    { id: \"copy\", name: \"copy\", content: <InviteCopy /> },\n    { id: \"actions\", name: \"actions\", content: <InviteActions /> },\n  ]}\n  defaultValue={{ direction: \"vertical\", align: \"start\", gap: 16, padding: { top: 24, right: 24, bottom: 24, left: 24 } }}\n  onChange={(value) => saveFrameLayout(\"invite-card\", value)}\n/>\n\n// spacingCss(value) returns the same declarations the readout shows, as [property, value] pairs.",
     "props": [
       {
-        "name": "value",
-        "type": "SpacingValue",
-        "description": "Controlled accepted CSS-pixel padding top/right/bottom/left0–96, gap0–64 and row/column direction. Values are bounded integers."
+        "name": "name",
+        "type": "string",
+        "default": "\"invite-card\"",
+        "description": "The frame's layer name: the toolbar title, the tag above the frame and the CSS selector."
+      },
+      {
+        "name": "path",
+        "type": "string[]",
+        "default": "[\"Fieldnote\", \"Onboarding\"]",
+        "description": "Breadcrumb before the name, shown from @2xl."
+      },
+      {
+        "name": "layers",
+        "type": "SpacingLayer[]",
+        "default": "avatars, copy and actions of a Fieldnote invite card",
+        "description": "The frame's children in order: { id, name, content }. Each is measured from the rendered layout, so its hover box and size are real."
       },
       {
         "name": "defaultValue",
         "type": "SpacingValue",
-        "description": "Local initial spacing. Reset explicitly with resetKey."
+        "default": "column, start, gap 16, padding 24",
+        "description": "{ direction: \"vertical\" | \"horizontal\", align: \"start\" | \"center\" | \"end\", gap, padding: { top, right, bottom, left } } in CSS px. Padding 0–96, gap 0–64."
       },
       {
-        "name": "onValueChange",
-        "type": "(value: SpacingValue) => void",
-        "description": "Request a copied atomic spacing value. Rejected requests retain the actual accepted layout; synchronous failure is contained with useful feedback."
-      },
-      {
-        "name": "items",
-        "type": "readonly SpacingItem[]",
-        "description": "Up to20 unique actual content identities with supplied title/body. Empty input produces an honest empty-content state."
-      },
-      {
-        "name": "children",
-        "type": "React.ReactNode",
-        "description": "Optional host content instead of the item specimen. Host owns its meaning/styles; measurements describe the real inner layout box."
+        "name": "defaultDirection",
+        "type": "\"vertical\" | \"horizontal\"",
+        "description": "Overrides defaultValue.direction on mount."
       },
       {
         "name": "defaultLinked",
         "type": "boolean",
-        "description": "Initial editing mode that changes all four padding edges together on the next edge edit; gap stays independent."
+        "default": "false",
+        "description": "Padding edits change all four sides together."
       },
       {
-        "name": "resetKey",
-        "type": "string | number",
-        "description": "Explicit local value/field-buffer/link-mode and request lifecycle reset."
-      },
-      {
-        "name": "status",
-        "type": "\"ready\" | \"loading\" | \"error\"",
-        "description": "Host availability preserves the accepted layout and readable controls."
-      },
-      {
-        "name": "errorMessage",
-        "type": "string",
-        "description": "Meaningful host unavailability text, default when blank."
-      },
-      {
-        "name": "onRetry",
-        "type": "() => void",
-        "description": "Actual recovery request."
-      },
-      {
-        "name": "disabled",
+        "name": "defaultSnap",
         "type": "boolean",
-        "description": "Lock editing/export while retaining readable layout."
+        "default": "true",
+        "description": "Drags, steppers and arrow keys move on the 4px grid; off, they move by 1px."
+      },
+      {
+        "name": "showRedlines",
+        "type": "boolean",
+        "default": "true",
+        "description": "The hatched padding and gap bands with their value pills. Off, the frame keeps its outline, size tag and layer hover."
+      },
+      {
+        "name": "frameClassName",
+        "type": "string",
+        "default": "white card, radius 16, soft drop",
+        "description": "Classes for the frame's own surface: it belongs to the artwork, not the editor."
+      },
+      {
+        "name": "onChange",
+        "type": "(value: SpacingValue) => void",
+        "description": "Every committed spacing change, once per new value."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ff6b5a\"",
+        "description": "The redline colour: bands, value pills, the selection outline and tags. Pill text picks black or white by contrast."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Complete monochromatic graphite/white chrome. Colour is reserved for actual supplied content and purposeful feature accents."
-      },
-      {
-        "name": "labels",
-        "type": "Partial<SpacingLabels>",
-        "description": "Applied spacing, actual measurements, request/copy/empty and recovery copy."
+        "default": "\"dark\"",
+        "description": "Graphite or white editor chrome. The frame keeps its own surface."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Responsive host layout classes."
+        "description": "Extra classes on the root section."
       }
     ],
     "added": "2026-10-14",
     "demo": {
       "steps": [
-        "click:@spacing-top:0.68,0.5",
-        "click:@spacing-top:0.24,0.5",
-        "click:@spacing-link",
-        "click:@spacing-right:0.28,0.5",
-        "click:@spacing-column",
-        "click:@spacing-gap:0.45,0.5",
-        "click:@spacing-copy"
+        "wait:500",
+        "hover:@pad-left",
+        "down",
+        "hover:@frame:0.12,0.5",
+        "up",
+        "wait:400",
+        "click:@direction-horizontal",
+        "wait:800",
+        "click:@align-center",
+        "wait:900"
       ],
       "loop": false
     },
     "controls": [
       {
+        "prop": "defaultDirection",
+        "label": "Direction",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "vertical",
+            "label": "Column"
+          },
+          {
+            "value": "horizontal",
+            "label": "Row"
+          }
+        ],
+        "default": "vertical",
+        "remount": true
+      },
+      {
+        "prop": "showRedlines",
+        "label": "Redlines",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "defaultLinked",
+        "label": "Link sides",
+        "kind": "toggle",
+        "default": false,
+        "remount": true
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      },
+      {
+        "prop": "accent",
+        "label": "Redline",
+        "kind": "color",
+        "default": "#ff6b5a",
+        "options": [
+          "#ff6b5a",
+          "#f4f4f5",
+          "#8ab4ff",
+          "#f4b267"
+        ]
+      },
+      {
         "prop": "theme",
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
         "default": "dark"
-      },
-      {
-        "prop": "disabled",
-        "label": "Read only",
-        "kind": "toggle",
-        "default": false
-      },
-      {
-        "prop": "status",
-        "label": "Availability",
-        "kind": "select",
-        "options": [
-          "ready",
-          "loading",
-          "error"
-        ],
-        "default": "ready"
       }
     ]
   },
