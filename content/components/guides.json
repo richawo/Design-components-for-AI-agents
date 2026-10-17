@@ -4155,18 +4155,18 @@
     "updated": "2026-10-17"
   },
   "date-range-calendar": {
-    "useWhen": "Choosing a two-ended calendar range with readable bounds and keyboard date navigation.",
-    "avoidWhen": "A time-slot booking system or converting date-only selections through an unintended timezone.",
+    "useWhen": "Choosing a start and end date where the length matters: stays, rentals, leave requests or report periods, with booked days and optional per-day prices visible as you pick.",
+    "avoidWhen": "Picking a single date or a time slot within a day, or a range that only needs two text fields in a dense filter bar.",
     "integration": [
-      "Supply controlled `value` or local `defaultValue` as `{start,end}` real YYYY-MM-DD endpoints, with `onValueChange`. Date-only arithmetic uses Gregorian UTC and never turns a date into an unintended local instant. Missing controlled callbacks make the corresponding range or month actions read only.",
-      "Configure inclusive `minDate`/`maxDate`, unique `unavailableDates`, `minimumDays`/`maximumDays` and `weekStartsOn`. Completed ranges must satisfy every unavailable day and inclusive length rule; rejected ranges retain the current endpoint.",
-      "Use separately controlled `month`/`onMonthChange` or local `initialMonth`; `resetKey` explicitly resets local range/month context. Keyboard month requests only move focus after the host accepts that actual month and while the original widget-owned intent remains current."
+      "Pass `value`/`onValueChange` (or `defaultValue`) as `{ start, end }` YYYY-MM-DD strings. All arithmetic is whole UTC days, so a date never shifts across timezones.",
+      "Set `unit` to `nights` for stays (end − start; a booked day can still be the check-out) or `days` for inclusive ranges. Bound it with `minDate`, `maxDate`, `minLength`, `maxLength` and `unavailableDates`.",
+      "Supply `rates` to show prices under each day and a running total. `onApply` adds a primary button; return a promise to show the pending state, reject to show the retry state with the selection kept. Pass `today` from your server so the today marker and default presets agree with it."
     ],
     "related": [
-      "date-week-agenda",
-      "date-booking-slots"
+      "date-booking-slots",
+      "date-week-agenda"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "date-timezone-overlap": {
     "useWhen": "Comparing supplied working hours across timezones before explicitly choosing a meeting time.",
