@@ -72,6 +72,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 6 is complete: Horizontal Showcase now pans through large project plates with readable side-project text, retained artwork during bitmap preparation and details that split into columns according to their own panel width. Source-fixture scroll/reversal, live demo, keyboard and edge-state regressions, controls, accessibility, responsive captures and refreshed poster pass. The three scroll review cases are registered on the official runner. Their films remain in task 1.
 
+- Task 5: added Meeting Preflight coverage and fixed web Space activation for switches/radios. The device dialog keeps keyboard focus, closes on Escape, returns to its opener, and hides/disables closed choices. Failed joins retain settings; cancellation aborts the request and ignores late completion. Exact retry payloads, unavailable devices, source-fixture regression and accessibility checks pass.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -210,14 +212,14 @@ tests/browser/pro-50-<suite>-probe.mjs <slug>` (suite = legal, saas, finance, hr
 
 ## 5. Write browser probes for components that have none
 
-92 finished components still have no dedicated browser regression probe. For each, read its source and
+91 finished components still have no dedicated browser regression probe. For each, read its source and
 `meta.json`, then add a case to the appropriate `tests/browser/*.mjs` suite (or a new probe registered in
 `scripts/test-components.mjs`) covering: the signature interaction, keyboard paths, failed-then-successful callbacks
 with drafts kept (where it has async callbacks), and empty or invalid data. Use `tests/browser/pro-50/hr-org-explorer.mjs`
 as the model for style and depth. Mobile components render through React Native web (`scripts/lib/component-fixture.mjs` aliases it);
 see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 
-`mobile-meeting-preflight`, `mobile-mood-map`, `mobile-notification-digest`
+`mobile-mood-map`, `mobile-notification-digest`
 `mobile-packing-list`, `mobile-project-switcher`, `mobile-reading-progress`, `mobile-review-annotations`
 `mobile-sync-conflict`, `mobile-task-move`, `mobile-trip-itinerary`, `mobile-voice-memo`, `chart-box-distribution`
 `chart-calendar-heatmap`, `chart-funnel-dots`, `chart-sankey-paths`, `chart-scatter-brush`
