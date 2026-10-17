@@ -31376,19 +31376,22 @@
   },
   {
     "slug": "mobile-review-annotations",
-    "name": "Native Asset Annotation Review",
+    "name": "Review Annotations",
     "tier": "pro",
     "platform": "mobile",
     "category": "mobile",
-    "description": "A native image review with precise touch-sized annotation points, an original architectural study and a complete, locally navigable note list.",
+    "description": "A dark React Native design review: numbered pins drop onto the artwork, the camera glides to each, glass comment cards ride over it, and you tap to pin new notes.",
     "tags": [
       "mobile",
       "react native",
+      "design review",
       "annotations",
-      "image",
-      "review",
-      "asset",
-      "coordinates",
+      "comments",
+      "pins",
+      "zoom",
+      "carousel",
+      "glass",
+      "monochrome",
       "dark"
     ],
     "dependencies": [
@@ -31397,131 +31400,123 @@
       "react-native-svg"
     ],
     "theme": "dark",
-    "previewHeight": 844,
-    "usage": "import { MobileReviewAnnotations } from \"@/components/design-for-ai/native/mobile-review-annotations\";\n\n// Bare native apps: run npx install-expo-modules once.\n<MobileReviewAnnotations asset={asset} preview={preview} annotations={notes} value={selectedId} onValueChange={setSelectedId} onRetry={loadOriginal} resetKey={reviewId} />",
+    "previewHeight": 940,
+    "usage": "import { MobileReviewAnnotations } from \"@/components/design-for-ai/native/mobile-review-annotations\";\n\n// npm i expo-blur expo-linear-gradient react-native-svg\n// (bare React Native: run `npx install-expo-modules` once)\n<MobileReviewAnnotations\n  asset={{ title: file.name, version: \"v3\", detail: \"Shared by Inès · 2h ago\" }}\n  artwork={<Image source={{ uri: file.previewUrl }} style={{ width: \"100%\", height: \"100%\" }} />}\n  aspectRatio={file.width / file.height}\n  annotations={comments} // { id, x, y (0–1), author, initials, text, time, replies?, resolved? }\n  onResolve={(id, resolved) => api.comments.update(id, { resolved })} // reject to undo\n  onAdd={async ({ x, y, text }) => api.comments.create(file.id, { x, y, text })}\n  onBack={() => navigation.goBack()}\n/>",
     "props": [
       {
         "name": "asset",
-        "type": "AnnotationAsset",
-        "description": "Actual ID/title/nullable intrinsic dimensions/version. Unknown dimensions keep all notes unplaced.",
-        "default": "Original gallery stair study,960×720"
+        "type": "ReviewAsset",
+        "default": "Autumn lookbook cover, v3",
+        "description": "{ title, version, detail } for the navigation bar."
       },
       {
-        "name": "preview",
+        "name": "artwork",
         "type": "ReactNode",
-        "description": "Supplied renderable original. Known primitives/fragments are normalized; opaque components remain host-owned.",
-        "default": "Original neutral SVG only for exact matching default asset"
+        "default": "A drawn lookbook cover",
+        "description": "The image under review; it fills the frame and moves with the camera."
+      },
+      {
+        "name": "aspectRatio",
+        "type": "number",
+        "default": "0.667 (2:3)",
+        "description": "Width over height of the artwork. The frame keeps it, up to the height a short screen allows."
       },
       {
         "name": "annotations",
         "type": "ReviewAnnotation[]",
-        "description": "Raw IDs/labels/text/state/author/time and normalized position or null. All conflicting or unplaced notes remain inspectable.",
-        "default": "Three original notes over the actual stair drawing"
+        "default": "Four comments, one resolved",
+        "description": "{ id, x, y, author, initials, text, time, replies?, resolved? }. x and y place the pin's tip, 0–1 from the artwork's top-left."
       },
       {
-        "name": "value",
-        "type": "string | null",
-        "description": "Controlled selected note. Explicit null selects none; no observer makes choice read-only."
-      },
-      {
-        "name": "defaultValue",
-        "type": "string | null",
-        "description": "Initial local note. Undefined picks the first unique source note; reset with resetKey.",
-        "default": "First unique supplied note"
-      },
-      {
-        "name": "onValueChange",
-        "type": "(id: string | null) => void",
-        "description": "Synchronous selection observer. Rejection retains actual current inspection."
-      },
-      {
-        "name": "filter",
-        "type": "AnnotationFilter",
-        "description": "Controlled all/open/resolved view. Missing observer is honest read-only."
-      },
-      {
-        "name": "defaultFilter",
-        "type": "AnnotationFilter",
-        "description": "Initial local view. Filtering preserves the selected note inspection.",
-        "default": "\"all\""
-      },
-      {
-        "name": "onFilterChange",
-        "type": "(filter: AnnotationFilter) => void",
-        "description": "Synchronous filter observer. Rejection retains actual current view."
-      },
-      {
-        "name": "status",
-        "type": "AnnotationAssetStatus",
-        "description": "Actual ready/loading/error/unavailable asset state. It never hides the note list.",
-        "default": "\"ready\""
-      },
-      {
-        "name": "statusMessage",
+        "name": "defaultSelectedId",
         "type": "string",
-        "description": "Actual availability/recovery reason. Empty messages use a meaningful fallback."
+        "description": "The comment shown first. Defaults to the first open one."
       },
       {
-        "name": "onRetry",
-        "type": "(asset: AnnotationAsset, signal: AbortSignal) => void | Promise<void>",
-        "description": "Copied actual asset facts, isolated cancellable request. Acknowledgment never makes an unavailable image ready."
+        "name": "accent",
+        "type": "string",
+        "default": "\"#FF5A36\"",
+        "description": "Open pins, the selection and Post. The only hue besides the artwork."
       },
       {
-        "name": "resetKey",
-        "type": "string | number",
-        "description": "Replacement inspection. Resets local selection/filter, remounts original content and aborts old work."
+        "name": "viewerInitials",
+        "type": "string",
+        "default": "\"JA\"",
+        "description": "Your initials on new comments."
       },
       {
-        "name": "theme",
-        "type": "\"dark\" | \"light\"",
-        "description": "Exact neutral black/white/graphite chrome; preserve actual supplied asset colours.",
-        "default": "\"dark\""
+        "name": "onResolve",
+        "type": "(id: string, resolved: boolean) => void | Promise<void>",
+        "description": "Resolve or reopen. Reject or throw and the pin goes back, with the error on its card."
+      },
+      {
+        "name": "onAdd",
+        "type": "(draft: { x, y, text }) => ReviewAnnotation | void | Promise<ReviewAnnotation | void>",
+        "description": "Posts a new pin. Resolve with the saved annotation (or nothing to keep the local one); reject and the draft stays with the error."
+      },
+      {
+        "name": "onBack",
+        "type": "() => void",
+        "description": "The glass back button."
       }
     ],
     "added": "2026-10-14",
     "demo": {
       "steps": [
-        "click:@annotation-point-1",
-        "wait:300",
-        "click:@annotation-filter-resolved",
-        "scroll:360",
-        "click:@annotation-list-2",
-        "wait:550"
-      ]
+        "wait:1300",
+        "click:@pin-3",
+        "wait:1000",
+        "click:@resolve-3",
+        "wait:600",
+        "click:@add",
+        "wait:200",
+        "click:@canvas:0.35,0.55",
+        "wait:1300"
+      ],
+      "loop": false
     },
     "controls": [
       {
-        "prop": "theme",
-        "label": "Theme",
-        "kind": "segmented",
+        "prop": "accent",
+        "label": "Pin colour",
+        "kind": "color",
+        "default": "#FF5A36",
         "options": [
-          "dark",
-          "light"
-        ],
-        "default": "dark"
+          "#FF5A36",
+          "#F5F5F5",
+          "#FFB224",
+          "#5B9DFF"
+        ]
       },
       {
-        "prop": "defaultFilter",
-        "label": "Initial view",
-        "kind": "segmented",
+        "prop": "defaultSelectedId",
+        "label": "First comment",
+        "kind": "select",
         "options": [
-          "all",
-          "open",
-          "resolved"
+          {
+            "value": "headline",
+            "label": "Headline"
+          },
+          {
+            "value": "stems",
+            "label": "Stems"
+          },
+          {
+            "value": "shadow",
+            "label": "Shadow"
+          },
+          {
+            "value": "price",
+            "label": "Price"
+          }
         ],
-        "default": "all",
+        "default": "headline",
         "remount": true
       },
       {
-        "prop": "status",
-        "label": "Asset state",
-        "kind": "action",
-        "options": [
-          "ready",
-          "loading",
-          "error",
-          "unavailable"
-        ]
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
       }
     ]
   },

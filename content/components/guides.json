@@ -4923,19 +4923,19 @@
     "updated": "2026-10-14"
   },
   "mobile-review-annotations": {
-    "useWhen": "Inspecting actual supplied notes over the correct asset version with explicit normalized positions and a complete list alternative.",
-    "avoidWhen": "Inferring coordinates from an image or marking a note resolved without actual host data.",
+    "useWhen": "Reviewing a still image or design on a phone, where comments are pinned to exact points, reviewers resolve them one by one and can drop a new pin by tapping the artwork.",
+    "avoidWhen": "Reviewing video or multi-page documents, or threaded discussions that need full reply chains on screen.",
     "integration": [
-      "Supply the asset ID/title/version and positive finite intrinsic dimensions, actual preview content and unique annotation IDs. Positions are declared top-left normalized coordinates from 0 to 1. Unknown dimensions or invalid positions stay unplaced and inspectable in the complete list.",
-      "Selection and all/open/resolved filters support controlled/local state. Explicit null unselects; missing controlled observers are read-only. Filtering retains the selected complete dossier. Duplicate raw variants cannot create a current point.",
-      "A real onRetry receives copied asset facts and AbortSignal. Fulfillment acknowledges only; actual availability remains supplied. Known text/number/fragment preview content receives native Text boundaries, known empty fragments show useful unavailability and opaque component contents remain the host’s responsibility.",
-      "Install core React Native and the listed Expo blur/gradient/SVG modules. Verify actual touch targets, native assistive technology, large text and asset rendering on target devices."
+      "Pass the image as `artwork` (any element that fills its box) with its `aspectRatio`, and `annotations` as { id, x, y, author, initials, text, time, replies?, resolved? }, where x and y are the pin tip from 0 to 1 across the artwork.",
+      "`onResolve(id, resolved)` is optimistic and rolls back if it rejects. `onAdd({ x, y, text })` can resolve with the saved annotation to replace the local one; reject and the draft stays with your error.",
+      "Tapping a pin zooms to it and swiping the cards moves the camera; `defaultSelectedId` picks the first comment shown.",
+      "Install expo-blur, expo-linear-gradient and react-native-svg. Test pin tap targets, the carousel with VoiceOver and the composer with the keyboard open on devices."
     ],
     "related": [
-      "media-focus-lightbox",
-      "mobile-file-preview"
+      "mobile-file-preview",
+      "mobile-channel-thread"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "mobile-notification-digest": {
     "useWhen": "A scheduled summary of notifications grouped by app, where people clear the backlog by swiping each one to read or snooze it and expect a quick Undo.",
