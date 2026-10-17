@@ -204,5 +204,7 @@ export async function check({ page, mount, assert }) {
   assert.equal(await page.getByRole("button", { name: "Remove line 1" }).isVisible(), true, "Remove line is display:none below a 672px container");
   await page.getByRole("button", {name:"Remove line 1"}).click();
   await page.waitForFunction(() => !document.querySelector('[aria-label="Line 3 description"]'));
-  assert.equal(await page.getByLabel("Line 1 description", {exact:true}).inputValue(), "Launch site design and build (sprint days)");
+  const firstRemaining = page.getByRole("textbox", {name:"Line 1 description", exact:true});
+  assert.equal(await firstRemaining.count(), 1, "The outgoing row leaves the accessibility tree immediately");
+  assert.equal(await firstRemaining.inputValue(), "Launch site design and build (sprint days)");
 }
