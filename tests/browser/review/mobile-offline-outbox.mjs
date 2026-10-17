@@ -1,0 +1,38 @@
+export async function check({ page, mount, assert }) {
+  const note = { id: "note", kind: "note", title: "Site note", detail: "A message for the office", sizeBytes: 120, queuedAt: "10:16", body: "Original note" };
+  await mount(`window.sent=[];window.discarded=[];window.fail=true;createRoot(document.getElementById('root')).render(<Subject.MobileOfflineOutbox items={[${JSON.stringify(note)}]} network="cellular" onSend={async item=>{window.sent.push(item);if(window.fail)throw Error('Server unavailable');await new Promise(resolve=>window.finishSend=resolve)}} onDiscard={item=>window.discarded.push(item)}/>);`);
+  await page.locator('[data-demo="outbox-row-note"]').press("Enter");
+  const editor = page.getByRole("textbox", { name: "Edit the note before sending", exact: true });
+  await editor.fill("The north entrance is ready.");
+  await page.locator('[data-demo="outbox-resend"]').press("Enter");
+  await page.getByRole("button", { name: "1 change needs you", exact: true }).waitFor();
+  await page.locator('[data-demo="outbox-row-note"]').press("Enter");
+  await editor.waitFor();
+  assert.equal(await editor.inputValue(), "The north entrance is ready.");
+  await page.getByText("Server unavailable", { exact: true }).last().waitFor();
+  await page.evaluate(() => window.fail = false);
+  await page.locator('[data-demo="outbox-resend"]').press("Enter");
+  await page.getByRole("button", { name: "Sending", exact: true }).waitFor();
+  await page.evaluate(() => window.finishSend());
+  await page.getByRole("button", { name: "All changes sent", exact: true }).waitFor();
+  assert.deepEqual(await page.evaluate(() => window.sent.map(item => ({ id: item.id, body: item.body }))), [{ id: "note", body: "The north entrance is ready." }, { id: "note", body: "The north entrance is ready." }]);
+  await mount(`window.discarded=[];createRoot(document.getElementById('root')).render(<Subject.MobileOfflineOutbox items={[${JSON.stringify(note)}]} network="offline" onDiscard={item=>window.discarded.push(item)}/>);`);
+  assert.equal(await page.getByRole("button", { name: "Waiting for signal", exact: true }).isDisabled(), true);
+  await page.locator('[data-demo="outbox-row-note"]').press("Enter");
+  await page.getByRole("button", { name: "Discard", exact: true }).press("Enter");
+  assert.equal(await page.evaluate(() => window.discarded.length), 0);
+  await page.getByRole("button", { name: "Discard this change", exact: true }).press("Enter");
+  assert.equal(await page.evaluate(() => window.discarded[0].id), "note");
+  await mount(`window.calls=[];const items=[${JSON.stringify(note)},{...${JSON.stringify(note)},id:'second',title:'Second note'}];function Harness(){const[network,setNetwork]=useState('wifi');window.setNetwork=setNetwork;return <Subject.MobileOfflineOutbox items={items} network={network} onSend={async item=>{window.calls.push(item.id);if(item.id==='note')await new Promise(resolve=>window.finishFirst=resolve)}}/>}createRoot(document.getElementById('root')).render(<Harness/>);`);
+  await page.waitForFunction(() => window.calls.length === 1);
+  await page.evaluate(() => window.setNetwork('offline'));
+  await page.evaluate(() => window.finishFirst());
+  await page.getByRole("button", { name: "Waiting for signal", exact: true }).waitFor();
+  assert.deepEqual(await page.evaluate(() => window.calls), ["note"]);
+  await page.evaluate(() => window.setNetwork('wifi'));
+  await page.getByRole("button", { name: "All changes sent", exact: true }).waitFor();
+  assert.deepEqual(await page.evaluate(() => window.calls), ["note", "second"]);
+  await mount(`createRoot(document.getElementById('root')).render(<Subject.MobileOfflineOutbox items={[]} network="offline"/>);`);
+  await page.getByText("Nothing waiting", { exact: true }).waitFor();
+  assert.doesNotMatch(await page.locator("#root").innerText(), /NaN|Infinity/);
+}

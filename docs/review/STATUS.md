@@ -24,7 +24,7 @@ needs re-recording, whether its poster is current, and the state of its browser 
 | `mobile-meeting-preflight` | current | current |  |
 | `mobile-mood-map` | current | current |  |
 | `mobile-notification-digest` | current | current |  |
-| `mobile-offline-outbox` | current | current |  |
+| `mobile-offline-outbox` | current | current | source-fixture regression passes; retained draft retry, discard confirmation and network pause/resume covered |
 | `mobile-packing-list` | current | current |  |
 | `mobile-project-switcher` | current | current |  |
 | `mobile-reading-progress` | current | current |  |

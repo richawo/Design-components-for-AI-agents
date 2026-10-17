@@ -68,6 +68,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 6: finished Expanding Mosaic and removed its parked patch. The lead plate grows from its contact-sheet cell and returns exactly with native scroll. Small static galleries retain intrinsic image height; captions remain readable over white images. Source-fixture scroll/reversal, demo, edge cases, controls, accessibility, responsive captures and refreshed poster pass. Its film remains in task 1.
 
+- Task 5: added Offline Outbox coverage for failed sends with edited notes retained, exact retry payloads, confirmed discard, offline blocking, sequential Wi-Fi sends interrupted by signal loss, and an empty queue. The registered source-fixture regression passes.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -206,14 +208,14 @@ tests/browser/pro-50-<suite>-probe.mjs <slug>` (suite = legal, saas, finance, hr
 
 ## 5. Write browser probes for components that have none
 
-93 finished components still have no dedicated browser regression probe. For each, read its source and
+92 finished components still have no dedicated browser regression probe. For each, read its source and
 `meta.json`, then add a case to the appropriate `tests/browser/*.mjs` suite (or a new probe registered in
 `scripts/test-components.mjs`) covering: the signature interaction, keyboard paths, failed-then-successful callbacks
 with drafts kept (where it has async callbacks), and empty or invalid data. Use `tests/browser/pro-50/hr-org-explorer.mjs`
 as the model for style and depth. Mobile components render through React Native web (`scripts/lib/component-fixture.mjs` aliases it);
 see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 
-`mobile-meeting-preflight`, `mobile-mood-map`, `mobile-notification-digest`, `mobile-offline-outbox`
+`mobile-meeting-preflight`, `mobile-mood-map`, `mobile-notification-digest`
 `mobile-packing-list`, `mobile-project-switcher`, `mobile-reading-progress`, `mobile-review-annotations`
 `mobile-sync-conflict`, `mobile-task-move`, `mobile-trip-itinerary`, `mobile-voice-memo`, `chart-box-distribution`
 `chart-calendar-heatmap`, `chart-funnel-dots`, `chart-sankey-paths`, `chart-scatter-brush`
