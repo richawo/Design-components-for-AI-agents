@@ -36,6 +36,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 6: finished Cash Flow Forecast and removed its parked patch. Failed moves retain their original dates, independent saves remain pending separately, and the desktop list follows the selected week. Its Next regression, live demo, controls, both-theme accessibility, responsive/error-state captures and refreshed poster pass. Its new film remains in task 1.
 
+- Task 4: all four requested HR reruns, all four requested commerce reruns and Legal Workspace pass on the official Next-backed runner. Legal Workspace was asserting obsolete failure roles and action labels; it now verifies evidence and upload retries with the original matter context retained. Screenshot tools now wait for the requested preview’s source and fonts before timing its entrance, and poster failures return a failing exit code.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned

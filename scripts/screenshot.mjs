@@ -7,6 +7,7 @@ import fs from "node:fs";
 import path from "node:path";
 import sharp from "sharp";
 import { launchChromium } from "./lib/browser.mjs";
+import { waitForPreview } from "./lib/preview-ready.mjs";
 
 const args = process.argv.slice(2);
 const base = (args.find((a) => a.startsWith("--base=")) ?? "--base=http://localhost:3000").slice(7);
@@ -26,8 +27,10 @@ for (const e of targets) {
   const strip = e.category === "headers" || e.category === "footers";
   const page = await browser.newPage({ viewport: mobile ? { width: 390, height: 844 } : strip ? { width: 1024, height: 640 } : { width: 1440, height: 900 }, deviceScaleFactor: mobile ? 2 : 1, reducedMotion: "no-preference" });
   try {
-    // "load", not "networkidle": live components (tickers, polling demos) never go idle.
-    await page.goto(`${base}/preview/${e.slug}`, { waitUntil: "load", timeout: 120000 });
+    // Source can load after navigation; live components need not become network-idle.
+    const response = await page.goto(`${base}/preview/${e.slug}`, { waitUntil: "domcontentloaded", timeout: 120000 });
+    if (!response?.ok()) throw new Error(`Preview ${e.slug} returned HTTP ${response?.status()}`);
+    await waitForPreview(page, e.slug);
     // WebGL scenes render through software GL here; give them longer to settle.
     await page.waitForTimeout(e.category === "three-d" || e.dependencies.includes("three") ? 6000 : 3200);
     const png = await page.screenshot({ type: "png" });
@@ -56,6 +59,7 @@ for (const e of targets) {
     console.log(`✓ ${e.slug}`);
   } catch (err) {
     console.log(`✗ ${e.slug}: ${err.message}`);
+    process.exitCode = 1;
   }
   await page.close();
 }

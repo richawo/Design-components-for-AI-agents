@@ -11,6 +11,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { launchChromium } from "./lib/browser.mjs";
+import { waitForPreview } from "./lib/preview-ready.mjs";
 
 const args = process.argv.slice(2);
 const flag = (name, dflt) => {
@@ -35,7 +36,9 @@ for (const slug of slugs) {
     const errs = [];
     page.on("pageerror", (e) => errs.push(e.message));
     page.on("console", (m) => m.type() === "error" && errs.push(m.text()));
-    await page.goto(`${base}/preview/${slug}`, { waitUntil: "networkidle", timeout: 120000 });
+    const response = await page.goto(`${base}/preview/${slug}`, { waitUntil: "domcontentloaded", timeout: 120000 });
+    if (!response?.ok()) throw new Error(`Preview ${slug} returned HTTP ${response?.status()}`);
+    await waitForPreview(page, slug);
     await page.waitForTimeout(wait);
     if (hover?.length === 2) {
       const vp = page.viewportSize();
