@@ -4893,21 +4893,19 @@
     "updated": "2026-10-17"
   },
   "mobile-meeting-preflight": {
-    "useWhen": "Reviewing a supplied meeting room, audio/video preferences and host-reported required checks before explicit entry.",
-    "avoidWhen": "Probing permissions or hardware automatically, presenting local preferences as OS changes, or treating join acknowledgment as a room transition.",
+    "useWhen": "The moment before joining a video call: checking your camera, microphone and speaker, choosing devices and joining once you're ready.",
+    "avoidWhen": "The in-call screen itself, scheduling meetings, or apps without camera or microphone access.",
     "integration": [
-      "Supply actual room ID/title/schedule, all check IDs/labels/status/required/details and device group+ID/label/availability/reason. Shared local IDs across microphone/speaker/camera are valid; duplicates within one group are ambiguous. Required checks must actually be ready. Optional warnings remain visible.",
-      "Speaker is always required to hear the call. Microphone is required only when unmuted and camera only when enabled. Each active selected device must be unique, supplied and available. Missing or blocked choices remain inspectable and never produce false ready.",
-      "Use controlled deviceValue/muted/cameraEnabled with synchronous observers, or default values for local preferences. Missing controlled observers are read-only. Observer exceptions preserve current values with meaningful retained-state feedback; local selection does not configure the operating system.",
-      "Supply actual preview content. The named component honestly shows missing content when no preview is supplied; the zero-prop demo provides a labelled offline initial-avatar study. Retained content becomes locally inert/hidden when unavailable and does not inherit disabled state from the full frame.",
-      "onJoin receives copied MeetingJoinReview room/checks, microphone/speaker/camera selections with each exact ID and unique actual record-or-null, plus mute/camera preferences and AbortSignal. One pending owner offers Cancel. Facts/preferences/reset/onJoin replacement retires stale work. Fulfillment only reports Join requested while the host owns the actual room transition.",
-      "Install Expo modules once in bare React Native. Validate device touch, dynamic text and assistive technology on target native devices. Browser checks cover exact source, state, focus ownership and design."
+      "Pass your camera view as preview and subscribe the mic meter with micLevel(emit), returning an unsubscribe. Supply devices per group with availability, and readiness checks; a blocked check disables Join and says why.",
+      "onJoin({ roomId, muted, cameraOn, backgroundBlur, devices }, signal) joins the room; resolve when you're in. Cancel aborts the signal, and a rejection keeps every setting and offers Retry. Device, mute, camera and blur changes are reported through their callbacks.",
+      "Install in a React Native app; bare apps run npx install-expo-modules once. Request camera and microphone permissions in your app before showing this screen, and verify on target devices."
     ],
     "related": [
       "mobile-bottom-sheet",
-      "mobile-project-switcher"
+      "mobile-live-activity",
+      "mobile-agent-approval"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "mobile-channel-thread": {
     "useWhen": "Reading and replying to one threaded conversation in a team channel on a phone, with quoting, reactions and honest sending, sent and failed states for your reply.",

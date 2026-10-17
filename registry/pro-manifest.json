@@ -29737,19 +29737,22 @@
   },
   {
     "slug": "mobile-meeting-preflight",
-    "name": "Native Meeting Preflight",
+    "name": "Meeting Preflight",
     "tier": "pro",
     "platform": "mobile",
     "category": "mobile",
-    "description": "A native meeting preflight with a retained preview, explicit device choices, inspectable host readiness and a cancellable reviewed join request.",
+    "description": "A dark React Native pre-call screen: a live self-view with glass controls and a mic meter, background blur, readiness checks, device sheets and join.",
     "tags": [
-      "mobile",
+      "video call",
+      "meeting",
+      "preflight",
+      "camera preview",
+      "microphone",
       "react native",
-      "meetings",
-      "devices",
-      "readiness",
-      "camera",
-      "dark"
+      "glassmorphism",
+      "dark",
+      "monochrome",
+      "devices"
     ],
     "dependencies": [
       "expo-blur",
@@ -29757,141 +29760,155 @@
       "react-native-svg"
     ],
     "theme": "dark",
-    "previewHeight": 844,
-    "usage": "import { MobileMeetingPreflight } from \"@/components/design-for-ai/native/mobile-meeting-preflight\";\n\n// Bare React Native apps: run npx install-expo-modules once.\n<MobileMeetingPreflight room={room} checks={checks} devices={devices} deviceValue={preferences} onDeviceChange={chooseDevice} preview={cameraView} onJoin={requestEntry} resetKey={sessionId} />",
+    "previewHeight": 940,
+    "usage": "import { MobileMeetingPreflight } from \"@/components/design-for-ai/native/mobile-meeting-preflight\";\n\n// Bare React Native apps: run `npx install-expo-modules` once for expo-blur and expo-linear-gradient.\n<MobileMeetingPreflight\n  room={room}\n  you={user.name}\n  devices={devices}\n  preview={<CameraView facing=\"front\" style={{ flex: 1 }} />}\n  micLevel={(emit) => recorder.onMeter(emit)}\n  onJoin={(request, signal) => call.join(request, { signal })}\n  onClose={() => navigation.goBack()}\n/>",
     "props": [
       {
         "name": "room",
         "type": "MeetingRoom",
-        "description": "Actual room identity/title/scheduled label. Missing identity/title blocks join.",
-        "default": "Original design-systems review"
+        "description": "id, title, formatted time and participants ({ id, name, inRoom })."
       },
       {
-        "name": "checks",
-        "type": "MeetingCheck[]",
-        "description": "Actual status/required/detail. Required unknown/warning/blocked and conflicting identities block join.",
-        "default": "Three required ready checks plus optional headphones warning"
+        "name": "you",
+        "type": "string",
+        "default": "\"Ana Ortiz\"",
+        "description": "Your name; its initials fill the tile when the camera is off."
       },
       {
         "name": "devices",
         "type": "MeetingDevice[]",
-        "description": "Actual microphone/speaker/camera rows with group+ID identity, availability and reason.",
-        "default": "Offline supplied device examples"
+        "description": "Microphones, speakers and cameras: id, group, label, detail and available (false keeps it listed but not choosable)."
       },
       {
-        "name": "deviceValue",
-        "type": "MeetingDeviceValue",
-        "description": "Controlled group-to-ID preferences; missing observer makes choices read-only."
-      },
-      {
-        "name": "defaultDeviceValue",
-        "type": "MeetingDeviceValue",
-        "description": "Initial local preferences; first unique available per group by default. Reset replaces local session."
+        "name": "defaultDevices",
+        "type": "Partial<Record<MeetingDeviceGroup, string>>",
+        "description": "Starting device per group; the first available one otherwise."
       },
       {
         "name": "onDeviceChange",
-        "type": "(group: MeetingDeviceGroup, id: string) => void",
-        "description": "Synchronous preference proposal. Rejection/throw leaves actual choice and meaningful feedback."
-      },
-      {
-        "name": "muted",
-        "type": "boolean",
-        "description": "Controlled microphone preference; missing observer is unavailable."
+        "type": "(group, id) => void",
+        "description": "A device was chosen in the sheet."
       },
       {
         "name": "defaultMuted",
         "type": "boolean",
-        "description": "Initial local microphone preference.",
-        "default": "false"
+        "default": "false",
+        "description": "Start muted."
+      },
+      {
+        "name": "defaultCameraOn",
+        "type": "boolean",
+        "default": "true",
+        "description": "Start with the camera on."
+      },
+      {
+        "name": "defaultBackgroundBlur",
+        "type": "boolean",
+        "default": "false",
+        "description": "Start with the background blurred."
       },
       {
         "name": "onMutedChange",
         "type": "(muted: boolean) => void",
-        "description": "Synchronous microphone preference observer. No OS device request."
+        "description": "The mic button was toggled."
       },
       {
-        "name": "cameraEnabled",
-        "type": "boolean",
-        "description": "Controlled camera preference; missing observer is unavailable."
+        "name": "onCameraChange",
+        "type": "(on: boolean) => void",
+        "description": "The camera button was toggled."
       },
       {
-        "name": "defaultCameraEnabled",
-        "type": "boolean",
-        "description": "Initial local camera preference.",
-        "default": "true"
+        "name": "onBackgroundBlurChange",
+        "type": "(on: boolean) => void",
+        "description": "Background blur was toggled."
       },
       {
-        "name": "onCameraEnabledChange",
-        "type": "(enabled: boolean) => void",
-        "description": "Synchronous camera preference observer. No capture or permission request."
+        "name": "checks",
+        "type": "MeetingCheck[]",
+        "description": "Readiness: id, label, detail and status (ready, warning, blocked). A blocked check stops Join and says why."
       },
       {
         "name": "preview",
         "type": "ReactNode",
-        "description": "Actual host-rendered preview. Retained mounted but inert/hidden when unavailable; null is honest missing content.",
-        "default": "Offline initial-avatar study"
+        "description": "Your live camera view. Without one, a drawn self-view stands in."
+      },
+      {
+        "name": "micLevel",
+        "type": "(emit: (level: number) => void) => () => void",
+        "description": "Subscribe to the live mic level (0–1); return an unsubscribe. The meter stays flat without it."
       },
       {
         "name": "onJoin",
-        "type": "(review: MeetingJoinReview, signal: AbortSignal) => void | Promise<void>",
-        "description": "Exact copied room/checks/group selections/preferences, cancellable one-owner request; acknowledgment never becomes joined."
+        "type": "(request: MeetingJoinRequest, signal: AbortSignal) => void | Promise<void>",
+        "description": "Join with the room id, mute, camera, blur and chosen device ids. Resolve when you're in; Cancel aborts the signal; a rejection keeps every setting and offers Retry."
       },
       {
-        "name": "resetKey",
-        "type": "string | number",
-        "description": "Replacement session, local preferences/disclosures/receipts reset and pending abort."
+        "name": "onClose",
+        "type": "() => void",
+        "description": "Close button."
       },
       {
-        "name": "title",
+        "name": "accent",
         "type": "string",
-        "description": "Mobile preflight heading.",
-        "default": "\"Before you step in.\""
-      },
-      {
-        "name": "theme",
-        "type": "\"dark\" | \"light\"",
-        "description": "Neutral black/white/graphite chrome with purposeful actual state accents.",
-        "default": "\"dark\""
+        "default": "\"#4ADE80\"",
+        "description": "The one hue: the live mic level, the start-time dot and the ready ticks."
       }
     ],
     "added": "2026-10-14",
     "demo": {
       "steps": [
+        "wait:500",
         "click:@preflight-mute",
+        "wait:500",
+        "click:@preflight-blur",
+        "wait:400",
+        "click:@preflight-device-speaker",
+        "wait:400",
+        "click:@preflight-option-speaker-phone",
         "wait:300",
-        "scroll:480",
-        "wait:250",
-        "click:@preflight-choices-speaker",
-        "wait:200",
-        "click:@preflight-device-speaker-1",
-        "wait:250",
         "click:@preflight-join",
-        "wait:550"
-      ]
+        "wait:1300"
+      ],
+      "loop": false
     },
     "controls": [
       {
-        "prop": "theme",
-        "label": "Theme",
-        "kind": "segmented",
-        "options": [
-          "dark",
-          "light"
-        ],
-        "default": "dark"
-      },
-      {
-        "prop": "defaultCameraEnabled",
+        "prop": "defaultCameraOn",
         "label": "Camera on",
         "kind": "toggle",
         "default": true,
         "remount": true
       },
       {
-        "prop": "title",
-        "label": "Heading",
-        "kind": "text",
-        "default": "Before you step in."
+        "prop": "defaultBackgroundBlur",
+        "label": "Background blur",
+        "kind": "toggle",
+        "default": false,
+        "remount": true
+      },
+      {
+        "prop": "defaultMuted",
+        "label": "Muted",
+        "kind": "toggle",
+        "default": false,
+        "remount": true
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#4ADE80",
+        "options": [
+          "#4ADE80",
+          "#F5F5F5",
+          "#6CB6FF",
+          "#FF6B3D"
+        ]
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
       }
     ]
   },
