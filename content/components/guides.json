@@ -3018,18 +3018,20 @@
     "updated": "2026-10-17"
   },
   "saas-integration-manager": {
-    "useWhen": "Reviewing connector state and explicit connection or disconnection actions.",
-    "avoidWhen": "Storing credentials in the browser or claiming a connection before host verification.",
+    "useWhen": "Admins review connected apps, see which syncs are failing and exactly what data each scope moves, then reconnect or change access through the provider.",
+    "avoidWhen": "You are building a public marketplace or storing credentials in the browser; this surface reviews and triggers authorisation, the provider and your server hold the tokens.",
     "integration": [
-      "Supply your own records through `integrations`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+      "Each integration lists `scopes` with access (read or write), objects, purpose and whether it is required; read lanes point into the workspace and write lanes point out.",
+      "`onAuthorize` receives { integrationId, mode, scopes }: open the provider's OAuth window and resolve once the token is stored (optionally with `expiresAt`), or reject with the provider's error.",
+      "Feed `history` with 24 hourly { ok, failed } buckets and `lastSyncAt`, and pass `now`, so the board reads true.",
+      "Monograms stand in for vendor marks; swap in licensed logos in your own build if you have them."
     ],
     "related": [
       "saas-access-requests",
       "saas-audit-trail",
-      "saas-customer-health"
+      "saas-usage-policy"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "saas-notification-inbox": {
     "useWhen": "Triaging supplied notifications through read, archive and filter states.",

@@ -38040,63 +38040,94 @@
   },
   {
     "slug": "saas-integration-manager",
-    "name": "Integration Connection Manager",
+    "name": "Integration Manager",
     "tier": "pro",
     "platform": "web",
     "category": "app",
-    "description": "Browse integrations and manage acknowledged connection state. A considered, responsive SaaS workspace with typed integration points.",
+    "description": "Connected apps as a status board with 24-hour sync bars, a flow map showing every scope as a lane pointing the way data moves, and an OAuth-style reconnect sheet.",
     "tags": [
       "saas",
-      "workflow",
-      "responsive",
-      "keyboard",
-      "app"
+      "integrations",
+      "oauth",
+      "connectors",
+      "permissions",
+      "scopes",
+      "settings",
+      "admin"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1050,
-    "usage": "import { IntegrationManager } from \"@/components/design-for-ai/saas-integration-manager\";\n\n<IntegrationManager />",
+    "previewHeight": 980,
+    "usage": "import { IntegrationManager } from \"@/components/design-for-ai/saas-integration-manager\";\n\nexport default function Integrations() {\n  return (\n    <IntegrationManager\n      integrations={integrations}\n      now={new Date().toISOString()}\n      onAuthorize={async ({ integrationId, mode, scopes }) => {\n        const { expiresAt } = await oauth.start(integrationId, { scopes, prompt: mode === \"connect\" ? \"consent\" : \"login\" });\n        return { expiresAt };\n      }}\n      onDisconnect={(id) => api.integrations.revoke(id)}\n    />\n  );\n}",
     "props": [
       {
-        "name": "title",
-        "type": "string",
-        "description": "Main heading.",
-        "default": "\"Integrations\""
-      },
-      {
-        "name": "subtitle",
-        "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Inspect each integration’s purpose and requested scopes before an acknowledged connection change.\""
-      },
-      {
         "name": "integrations",
-        "type": "WorkspaceIntegration[]",
-        "description": "Unique integration definitions with required scopes and host-provided connection state."
+        "type": "Integration[]",
+        "default": "Salesforce (expired), Zendesk (degraded), Snowflake, Slack, Stripe, HubSpot and Linear",
+        "description": "{ id, name, category, status: \"healthy\" | \"degraded\" | \"expired\" | \"available\", account?, connectedBy?, connectedAt?, lastSyncAt?, cadence?, issue?, scopes: IntegrationScope[], never?: string[], history?: { ok, failed }[] }. Problems sort first. Each scope is { id, access: \"read\" | \"write\", objects, purpose, required?, granted?, volume? }: read lanes point into the workspace, write lanes point out, and ungranted optional scopes show as faint lanes."
       },
       {
-        "name": "onChange",
-        "type": "(change:IntegrationChange)=>void|Promise<void>",
-        "description": "Run the actual provider authorisation or revocation flow. Resolve only when the connection state is confirmed; reject on cancellation or failure."
+        "name": "onAuthorize",
+        "type": "(request: AuthorizeRequest) => void | { expiresAt?: string } | Promise<…>",
+        "description": "{ integrationId, mode: \"connect\" | \"reconnect\" | \"update\", scopes }. Run the provider’s OAuth flow; resolve when the token is stored (optionally with its expiry) or reject with the provider’s error, and the sheet keeps the chosen scopes for a retry."
+      },
+      {
+        "name": "onDisconnect",
+        "type": "(integrationId: string) => void | Promise<void>",
+        "description": "Revoke the token after the inline confirmation. Reject to keep the connection and show the reason."
+      },
+      {
+        "name": "defaultSelectedId",
+        "type": "string",
+        "description": "The app open on mount. Defaults to the first that needs attention."
+      },
+      {
+        "name": "now",
+        "type": "string",
+        "default": "\"2026-10-17T09:42:00Z\"",
+        "description": "ISO instant that “last sync” times are measured from. Pass the current time."
+      },
+      {
+        "name": "workspace",
+        "type": "string",
+        "default": "\"Kestrel\"",
+        "description": "Workspace shown in the chrome, the flow map and the consent copy."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Locale for counts, dates and times."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "theme ink",
+        "description": "The one accent: the selected tile, the primary action and focus rings."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Surface palette."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes for the root."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:350",
-        "click:@consent",
-        "click:@connect",
-        "wait:650",
-        "click:@integration-1",
-        "wait:1000"
+        "wait:700",
+        "click:@primary",
+        "wait:900",
+        "click:@authorize",
+        "wait:2600"
       ],
       "loop": false
     },
@@ -38110,6 +38141,38 @@
           "light"
         ],
         "default": "dark"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#7aa2ff",
+          "#ff8a4c"
+        ]
+      },
+      {
+        "prop": "defaultSelectedId",
+        "label": "Open app",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "salesforce",
+            "label": "Salesforce"
+          },
+          {
+            "value": "zendesk",
+            "label": "Zendesk"
+          },
+          {
+            "value": "hubspot",
+            "label": "HubSpot"
+          }
+        ],
+        "default": "salesforce",
+        "remount": true
       }
     ]
   },
