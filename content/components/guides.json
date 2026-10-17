@@ -3705,17 +3705,17 @@
     "updated": "2026-10-13"
   },
   "media-focus-lightbox": {
-    "useWhen": "An image inspection task that benefits from focused zoom, pan and previous or next navigation.",
-    "avoidWhen": "A text document viewer, a video player or a decorative modal that contains no inspectable media.",
+    "useWhen": "A portfolio, case study or product gallery where people open photographs to look closely: a contact sheet of real ratios, a shared-element open, zoom, pan and a filmstrip.",
+    "avoidWhen": "Documents, video, a carousel that should autoplay, or images too small to reward zooming.",
     "integration": [
-      "Supply image sources with meaningful descriptions and stable IDs. Keep the trigger available so closing the viewer can restore logical focus.",
-      "Zoom and pan remain bounded to the visible image; use keyboard and static-view controls where a gesture is unavailable."
+      "Pass each image's natural width and height with its src, a descriptive alt and a title; the sheet and the opening flight keep that exact ratio. Captions and a one-line meta (camera, lens, exposure) are optional.",
+      "Leave open and value uncontrolled for a gallery page; control them with onOpenChange and onValueChange to deep-link a frame. Without a handler the matching action becomes read-only rather than silently ignored."
     ],
     "related": [
       "media-before-after",
       "cards-prismatic-folder"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "media-trim-timeline": {
     "useWhen": "Choosing an exact in/out range from real audio, using a supplied measured waveform alongside precise time entry.",

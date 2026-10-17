@@ -28389,12 +28389,14 @@
     "tier": "pro",
     "platform": "web",
     "category": "media",
-    "description": "A restrained native image viewer with anchored zoom, bounded pan, keyboard inspection and a readable filmstrip for real originals.",
+    "description": "A justified contact sheet whose frames fly into a full-screen viewer from their thumbnails, with pinch, wheel and double-tap zoom, swipe and a filmstrip.",
     "tags": [
       "lightbox",
       "image viewer",
+      "gallery",
       "zoom",
       "pan",
+      "shared element",
       "media",
       "dark"
     ],
@@ -28404,91 +28406,90 @@
     ],
     "theme": "dark",
     "previewHeight": 900,
-    "usage": "import { MediaFocusLightbox } from \"@/components/design-for-ai/media-focus-lightbox\";\n\n<MediaFocusLightbox images={originals} open={viewerOpen} onOpenChange={setViewerOpen} value={imageId} onValueChange={setImageId} />",
+    "usage": "import { MediaFocusLightbox } from \"@/components/design-for-ai/media-focus-lightbox\";\n\n<MediaFocusLightbox\n  label=\"Long exposures, 2026\"\n  images={photos.map((p) => ({ id: p.id, src: p.url, alt: p.alt, title: p.title, width: p.width, height: p.height }))}\n/>",
     "props": [
       {
         "name": "images",
         "type": "FocusLightboxImage[]",
-        "description": "Unique image IDs, original source, descriptive alt/title, optional caption and authoritative availability. An empty array is a true empty viewer.",
-        "default": "3 original offline architectural vector studies"
+        "default": "[]",
+        "description": "Frames with a unique id, src, descriptive alt, title, natural width and height, and optional caption and meta (one mono line of capture details). An empty array shows a designed empty sheet."
       },
       {
         "name": "open",
         "type": "boolean",
-        "description": "Controlled modal visibility. Rejected close requests leave the native dialog open. Without onOpenChange it is intentionally non-dismissible and the close action is disabled."
+        "description": "Controlled viewer visibility. Without onOpenChange the viewer can't be dismissed and Close is disabled."
       },
       {
         "name": "defaultOpen",
         "type": "boolean",
-        "description": "Initial uncontrolled modal visibility. The default demo opens immediately.",
-        "default": "false"
+        "default": "false",
+        "description": "Initial uncontrolled visibility."
       },
       {
         "name": "onOpenChange",
         "type": "(open: boolean) => void",
-        "description": "Synchronous open/close request observer; the host commits controlled visibility."
+        "description": "Requested visibility from a thumbnail, Close, Escape or a click on the room around the image."
       },
       {
         "name": "value",
         "type": "string",
-        "description": "Controlled selected image ID. Retired IDs honestly fall back to the first current image. Without onValueChange selection is read-only; zoom and fit remain available."
+        "description": "Controlled selected image id. Without onValueChange browsing is read-only; zoom still works."
       },
       {
         "name": "defaultValue",
         "type": "string",
-        "description": "Initial uncontrolled image ID, defaulting to the first image."
+        "description": "Initial uncontrolled image; defaults to the first."
       },
       {
         "name": "onValueChange",
         "type": "(id: string, image: FocusLightboxImage) => void",
-        "description": "Synchronous image selection observer. A controlled host may reject selection without resetting the committed view."
+        "description": "Requested image from the arrows, keys, swipe or filmstrip."
       },
       {
         "name": "maxZoom",
         "type": "number",
-        "description": "Maximum magnification relative to fit, bounded to 2..8.",
-        "default": "4"
+        "default": "4",
+        "description": "Maximum magnification relative to fit, clamped to 2–8."
       },
       {
         "name": "showThumbnails",
         "type": "boolean",
-        "description": "Show the scrollable original-selection filmstrip.",
-        "default": "true"
+        "default": "true",
+        "description": "Show the filmstrip in the viewer."
       },
       {
         "name": "label",
         "type": "string",
-        "description": "Collection label above the selected image title.",
-        "default": "\"Image studies\""
-      },
-      {
-        "name": "onImageRetry",
-        "type": "(image: FocusLightboxImage, signal: AbortSignal) => void | Promise<void>",
-        "description": "Optional real host asset recovery. Cancel, selection/source retirement, closure and unmount abort old work; honor the signal before committing."
+        "default": "\"Image studies\"",
+        "description": "Series name over the contact sheet; also the section label."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Neutral black/white glass chrome, with colour reserved for actual data/feature accents.",
-        "default": "\"dark\""
+        "default": "\"dark\"",
+        "description": "Page and glass chrome. The viewing room stays dark so the image leads."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Native dialog class.",
-        "default": "\"\""
+        "default": "\"\"",
+        "description": "Root classes."
       }
     ],
     "added": "2026-10-13",
     "demo": {
       "steps": [
+        "wait:500",
+        "click:@thumb-1",
+        "wait:1100",
         "click:@zoom-in",
-        "hover:@image-view:0.4,0.45",
-        "drag:0.6,0.5",
-        "click:@fit-image",
+        "wait:700",
         "click:@next-image",
-        "wait:500"
-      ]
+        "wait:800",
+        "click:@close-viewer",
+        "wait:900"
+      ],
+      "loop": false
     },
     "controls": [
       {
@@ -28502,33 +28503,31 @@
         "default": "dark"
       },
       {
-        "prop": "maxZoom",
-        "label": "Maximum zoom",
-        "kind": "slider",
-        "min": 2,
-        "max": 8,
-        "step": 1,
-        "default": 4
-      },
-      {
-        "prop": "showThumbnails",
-        "label": "Filmstrip",
-        "kind": "toggle",
-        "default": true
-      },
-      {
         "prop": "label",
-        "label": "Collection label",
+        "label": "Series name",
         "kind": "text",
-        "default": "Image studies"
+        "default": "Long exposures, 2026"
+      },
+      {
+        "prop": "defaultOpen",
+        "label": "Start open",
+        "kind": "toggle",
+        "default": false,
+        "remount": true
       },
       {
         "prop": "open",
         "label": "Viewer",
         "kind": "action",
         "options": [
-          true,
-          false
+          {
+            "value": false,
+            "label": "Close"
+          },
+          {
+            "value": true,
+            "label": "Open"
+          }
         ]
       }
     ]
