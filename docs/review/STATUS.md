@@ -22,7 +22,7 @@ needs re-recording, whether its poster is current, and the state of its browser 
 | `mobile-habit-grid` | current | current | source-fixture regression and accessibility pass; Space activation, failed mark retry, pending/disabled cells and empty habits covered |
 | `mobile-journal-prompt` | current | current | source-fixture regression, accessibility and state captures pass; keyboard tabs, per-prompt drafts, save retry, limits and empty prompts covered |
 | `mobile-meeting-preflight` | current | current | source-fixture regression and accessibility pass; keyboard device dialog, settings, failed join retry and cancellation covered |
-| `mobile-mood-map` | current | current |  |
+| `mobile-mood-map` | current | current | source-fixture regression, accessibility and demo replay pass; unselected handle, drag/keyboard choices, retained-note retry, limits and invalid feelings covered |
 | `mobile-notification-digest` | current | current | source-fixture regression and accessibility pass; keyboard actions/snooze, failed callbacks, Undo, collapsed piles and empty digest covered |
 | `mobile-offline-outbox` | current | current | source-fixture regression passes; retained draft retry, discard confirmation and network pause/resume covered |
 | `mobile-packing-list` | current | current |  |
