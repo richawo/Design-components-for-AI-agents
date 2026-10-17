@@ -10952,112 +10952,167 @@
     "tier": "pro",
     "platform": "web",
     "category": "collaboration",
-    "description": "A responsive meeting stage with real host video streams, spotlight layout and explicit media controls. Camera-off states remain readable and useful.",
+    "description": "A video call stage: tiles whose speaking ring follows each voice, grid and speaker layouts that morph, live captions, and controls with pending and failure states.",
     "tags": [
-      "team",
-      "workspace",
-      "keyboard",
-      "composition",
-      "dark"
+      "video call",
+      "meeting",
+      "collaboration",
+      "active speaker",
+      "captions",
+      "media controls",
+      "webrtc"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 740,
-    "usage": "import { CallStage } from \"@/components/design-for-ai/collab-call-stage\";\n\n<CallStage participants={participants} microphoneMuted={muted} onMicrophoneChange={setMuted} onLeave={leaveRoom} />",
+    "previewHeight": 800,
+    "usage": "import { CallStage } from \"@/components/design-for-ai/collab-call-stage\";\n\n<div className=\"h-dvh\">\n  <CallStage\n    title=\"Design crit\"\n    participants={participants} // { id, name, stream?, muted?, handRaised?, connection? }\n    currentUserId={me.id}\n    activeSpeakerId={dominantSpeaker}\n    getAudioLevel={(id) => levels.get(id) ?? 0} // read per frame, no re-render\n    captions={latestCaption}\n    microphoneMuted={muted}\n    onMicrophoneChange={(next) => room.setMicrophone(!next)} // a promise shows pending; a rejection shows why\n    cameraOn={camera}\n    onCameraChange={(next) => room.setCamera(next)}\n    onLeave={() => room.leave()}\n  />\n</div>",
     "props": [
       {
         "name": "participants",
         "type": "CallParticipant[]",
-        "description": "Stable participant IDs, names, optional roles and host-owned MediaStreams."
+        "description": "Stable ids and names, plus optional host MediaStream, muted, handRaised and connection (\"good\" | \"weak\" | \"reconnecting\"). A live, enabled video track shows as video; otherwise a camera-off tile."
       },
       {
         "name": "currentUserId",
         "type": "string",
         "default": "\"sam\"",
-        "description": "Own video identity; local video visibility follows cameraOn."
+        "description": "Your tile: its mic, hand and camera follow the control props."
       },
       {
         "name": "activeSpeakerId",
         "type": "string",
-        "description": "Optional speaker identity supplied by the host, never inferred from a decorative animation."
+        "description": "Who is speaking. Holds the speaking ring, picks the caption speaker and the default spotlight."
+      },
+      {
+        "name": "getAudioLevel",
+        "type": "(participantId: string) => number",
+        "description": "Read once per frame for each tile (0–1). The ring, halo and name meter follow it, smoothed fast up and slow down. Omit and the active speaker holds a steady ring."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Design crit\"",
+        "description": "Meeting name in the stage header."
+      },
+      {
+        "name": "captions",
+        "type": "string",
+        "description": "The latest caption line. Omit to hide the captions control."
+      },
+      {
+        "name": "captionSpeakerId",
+        "type": "string",
+        "description": "Who the caption belongs to; defaults to activeSpeakerId."
+      },
+      {
+        "name": "defaultCaptionsOn",
+        "type": "boolean",
+        "default": "false",
+        "description": "Show captions from the start."
       },
       {
         "name": "microphoneMuted",
         "type": "boolean",
         "default": "true",
-        "description": "Host media state."
+        "description": "Your microphone state."
       },
       {
         "name": "cameraOn",
         "type": "boolean",
         "default": "false",
-        "description": "Host camera state. An absent stream remains explicitly unavailable."
+        "description": "Your camera state. With no live track it reads “Camera unavailable”."
       },
       {
         "name": "handRaised",
         "type": "boolean",
         "default": "false",
-        "description": "Own signalling state."
+        "description": "Your raised hand; raised hands are numbered in order."
       },
       {
         "name": "onMicrophoneChange",
-        "type": "(muted: boolean) => void",
-        "description": "Change host microphone state; omit to disable the control."
+        "type": "(muted: boolean) => void | Promise<void>",
+        "description": "Omit to disable the control. A promise shows a spinner in the same button; a rejection keeps the old state, marks the button and shows the error message."
       },
       {
         "name": "onCameraChange",
-        "type": "(on: boolean) => void",
-        "description": "Change host camera state; omit to disable the control."
+        "type": "(on: boolean) => void | Promise<void>",
+        "description": "As onMicrophoneChange, for the camera."
       },
       {
         "name": "onHandChange",
-        "type": "(raised: boolean) => void",
-        "description": "Change host hand state; omit to disable the control."
+        "type": "(raised: boolean) => void | Promise<void>",
+        "description": "As onMicrophoneChange, for the hand."
       },
       {
         "name": "onLeave",
-        "type": "() => void",
-        "description": "Leave the host room; omit to disable leaving."
-      },
-      {
-        "name": "captions",
-        "type": "string",
-        "description": "Caption text supplied by the host. Omit to hide caption controls."
-      },
-      {
-        "name": "showControls",
-        "type": "boolean",
-        "default": "true",
-        "description": "Render controls here or use the exported CallControls in a persistent host footer."
+        "type": "() => void | Promise<void>",
+        "description": "Leave room. Omit to disable."
       },
       {
         "name": "busy",
         "type": "boolean",
         "default": "false",
-        "description": "Guard pending media and leave actions with aria-disabled while preserving keyboard focus. Missing callbacks remain natively disabled."
+        "description": "Blocks every control (aria-disabled) while the host is busy."
+      },
+      {
+        "name": "showControls",
+        "type": "boolean",
+        "default": "true",
+        "description": "Render the control bar here, or use the exported CallControls elsewhere."
+      },
+      {
+        "name": "onInvite",
+        "type": "() => void",
+        "description": "Shows Copy invite link while the room is empty."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#62e3a6\"",
+        "description": "The speaking ring, voice meters and raised-hand badges."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and text palette."
+        "description": "Neutral palette."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "default": "\"\"",
+        "description": "Classes on the stage. Give its parent a height; the tile grid scrolls inside it."
       }
     ],
     "added": "2026-10-12",
     "demo": {
       "steps": [
+        "wait:900",
         "click:@spotlight-mara",
-        "wait:600",
+        "wait:1300",
         "click:@call-hand",
-        "wait:700",
+        "wait:1000",
         "click:@call-grid",
-        "wait:600"
-      ]
+        "wait:1200"
+      ],
+      "loop": false
     },
     "controls": [
+      {
+        "prop": "accent",
+        "label": "Speaking ring",
+        "kind": "color",
+        "default": "#62e3a6",
+        "options": [
+          "#62e3a6",
+          "#ececee",
+          "#f5a524",
+          "#7dd3fc"
+        ]
+      },
       {
         "prop": "theme",
         "label": "Theme",
@@ -11067,6 +11122,12 @@
           "light"
         ],
         "default": "dark"
+      },
+      {
+        "prop": "title",
+        "label": "Meeting",
+        "kind": "text",
+        "default": "Design crit"
       }
     ]
   },

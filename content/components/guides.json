@@ -3511,13 +3511,13 @@
     ]
   },
   "collab-call-stage": {
-    "updated": "2026-10-12",
-    "useWhen": "Presenting real participant video streams with camera-off fallbacks, a spotlight layout and clear host-owned media controls.",
-    "avoidWhen": "Using placeholder portraits or animation to claim a live media connection, active speaker or hardware permission.",
+    "updated": "2026-10-17",
+    "useWhen": "The live view of a video meeting in your product: participant tiles from your WebRTC transport, a speaking indicator that follows real audio levels, layouts people switch between, captions and the core media controls.",
+    "avoidWhen": "Showing a meeting that isn’t live, faking presence or speech with animation, or webinars with hundreds of attendees that need paging and a stage/audience split.",
     "integration": [
-      "Supply participant streams from your own session transport. The stage never acquires a camera or microphone by itself.",
-      "Use CallControls separately when controls must remain visible across other application views.",
-      "Only supply captions and activeSpeakerId when the host has real data. The host owns track lifetimes and audio routing."
+      "Pass each participant’s MediaStream from your transport and a getAudioLevel(id) that reads your AnalyserNode values; it is polled per frame without re-rendering.",
+      "Return promises from onMicrophoneChange, onCameraChange and onLeave so controls show pending, and reject with a readable message (permission denied, no device) to keep the old state.",
+      "Give the stage a height; tiles scroll inside it. Use CallControls on its own when the controls must stay visible across views."
     ],
     "related": [
       "block-meetings-workspace",
