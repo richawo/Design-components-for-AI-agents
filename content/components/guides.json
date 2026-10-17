@@ -4523,19 +4523,19 @@
     "updated": "2026-10-17"
   },
   "editor-font-pairing": {
-    "useWhen": "Pairing actual host font roles against supplied copy before applying typography and copying accepted CSS.",
-    "avoidWhen": "An automatic font downloader or guessed font-availability detector.",
+    "useWhen": "Choosing the heading and body faces, scale ratio, base size and leading for a brand or product type system, judged on a real page of copy rather than on swatches.",
+    "avoidWhen": "A font marketplace or loader, a rich-text toolbar for styling one document, or a full design-token manager covering colour and spacing too.",
     "integration": [
-      "Supply up to16 unique PairingFont records with actual role/optional family, supported weights and ready/loading/unavailable/unknown readiness. The host owns assets/loading. Unready fonts show the explicit standard role fallback and cannot be copied or applied as ready.",
-      "Supply actual headingText/bodyText and accepted heading/body identities, weights, sizes24–96/12–24px and body lineHeight1.2–2.2. Actual draft font-size/leading transitions respect reduced motion.",
-      "Use value/onValueChange for copied accepted typography. Rejected/older acknowledgments retain newer drafts. Clipboard copies exact accepted CSS, with selectable failure fallback and stale-result fencing when actual font/settings facts change."
+      "Pass the faces you have loaded as fonts: use role (display, serif, sans, mono) for the library's font roles or family with a CSS font-family stack for your own. List only the weights each face ships; the weight control follows them.",
+      "Give presets for your house pairings and set defaultPresetId (or defaultValue) to the pairing already live, so the footer can say what has changed. Replace specimen with copy from your own product: the measure ruler counts real characters per line.",
+      "onApply receives the pairing, every scale step in px and a CSS variables block (also available from the exported pairingCss and typeScale). Persist it and resolve; reject with an Error to show its message, and the draft stays for a retry."
     ],
     "related": [
-      "text-optical-weight",
       "editor-color-token-studio",
-      "editor-spacing-inspector"
+      "editor-spacing-inspector",
+      "text-optical-weight"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "ai-context-budget": {
     "useWhen": "Reviewing supplied context sources and their real token allocation against a bounded model budget.",

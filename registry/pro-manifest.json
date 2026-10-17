@@ -17425,141 +17425,170 @@
   },
   {
     "slug": "editor-font-pairing",
-    "name": "Host Font Pairing Studio",
+    "name": "Font Pairing",
     "tier": "pro",
     "platform": "web",
     "category": "editors",
-    "description": "Pair actual host fonts and supplied copy, inspect real typography and copy accepted CSS with honest font readiness and controlled draft recovery.",
+    "description": "A type specimen that re-sets word by word as you pair faces, with a measure ruler and a baseline-aligned scale ladder you can find on the page.",
     "tags": [
-      "font",
       "typography",
-      "pairing",
+      "font pairing",
+      "type scale",
       "specimen",
-      "roles",
-      "editor"
+      "editor",
+      "design tool",
+      "brand system",
+      "fonts"
     ],
     "dependencies": [
+      "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1000,
-    "usage": "import { EditorFontPairing } from \"@/components/design-for-ai/editor-font-pairing\";\n\n<EditorFontPairing value={settings} onValueChange={setSettings} />\n\n// Host owns assets, capabilities and persistence. Draft preview never replaces accepted output.",
+    "previewHeight": 860,
+    "usage": "import { EditorFontPairing } from \"@/components/design-for-ai/editor-font-pairing\";\n\n<EditorFontPairing\n  name=\"Editorial type\"\n  path={[\"Halden\", \"Brand system\"]}\n  fonts={[\n    { id: \"instrument\", name: \"Instrument Serif\", role: \"serif\", weights: [400], classification: \"Serif\" },\n    { id: \"inter\", name: \"Söhne\", family: \"'Söhne', system-ui, sans-serif\", weights: [400, 500, 700] }, // a host-loaded face\n  ]}\n  defaultPresetId=\"editorial\"\n  onApply={async (result) => {\n    await saveBrandTokens(result.css);   // reject with an Error to show its message\n  }}\n/>\n\n// result: { headingId, headingWeight, bodyId, bodyWeight, base, ratio, leading, scale: { caption…h1 in px }, css }\n// typeScale(base, ratio) and pairingCss(pairing, fonts) are exported for hosts that render the same tokens elsewhere.",
     "props": [
       {
-        "name": "fonts",
-        "type": "readonly PairingFont[]",
-        "description": "Up to16 unique host font choices with real role, optional CSS family, declared supported weights and ready/loading/unavailable/unknown availability. Host owns loading/font assets."
+        "name": "name",
+        "type": "string",
+        "default": "\"Editorial type\"",
+        "description": "The type system being edited, shown in the toolbar."
       },
       {
-        "name": "value",
-        "type": "FontPairValue",
-        "description": "Controlled accepted heading/body identities, supported weights, sizes24–96/12–24 pixels and lineHeight1.2–2.2."
+        "name": "path",
+        "type": "string[]",
+        "default": "[\"Halden\", \"Brand system\"]",
+        "description": "Breadcrumb before the name, shown from @2xl."
+      },
+      {
+        "name": "fonts",
+        "type": "PairingFont[]",
+        "default": "Instrument Serif, Geist, Geist Mono",
+        "description": "Faces to pair: { id, name, role? (display | serif | sans | mono), family? (a CSS stack for a host-loaded font), weights, classification? }. Weight choices follow each face."
+      },
+      {
+        "name": "presets",
+        "type": "PairingPreset[]",
+        "default": "Editorial, Modern, Technical, Ledger",
+        "description": "Named pairings drawn in their own faces: a FontPairing plus { id, name }."
+      },
+      {
+        "name": "defaultPresetId",
+        "type": "string",
+        "default": "first preset",
+        "description": "The pairing in use when the editor opens. Apply compares the draft against it."
       },
       {
         "name": "defaultValue",
-        "type": "FontPairValue",
-        "description": "Local initial pairing, reset by resetKey."
+        "type": "FontPairing",
+        "description": "A pairing in use that isn't a preset: { headingId, headingWeight, bodyId, bodyWeight, base, ratio, leading }. Wins over defaultPresetId."
       },
       {
-        "name": "onValueChange",
-        "type": "(value: FontPairValue) => void",
-        "description": "Request copied validated pairing. Controlled rejection and older acknowledgment preserve newer draft; synchronous failure preserves accepted CSS and editable draft."
+        "name": "specimen",
+        "type": "TypeSpecimen",
+        "default": "Halden field notes article",
+        "description": "The copy the page is set in: { eyebrow, headline, deck, byline, body[], subhead, quote, quoteBy? }."
       },
       {
-        "name": "headingText",
-        "type": "string",
-        "description": "Actual host heading specimen. Empty text remains empty."
-      },
-      {
-        "name": "bodyText",
-        "type": "string",
-        "description": "Actual host body specimen, complete within bounded native scroll."
-      },
-      {
-        "name": "characterText",
-        "type": "string",
-        "default": "\"Aa\"",
-        "description": "Actual shared character specimen at a labelled display magnification. It uses the same real draft font role, readiness fallback and supported weight; exact exported sizes remain unchanged."
-      },
-      {
-        "name": "resetKey",
-        "type": "string | number",
-        "description": "Explicit local draft/accepted/request lifecycle reset."
-      },
-      {
-        "name": "status",
-        "type": "\"ready\" | \"loading\" | \"error\"",
-        "description": "Host availability preserves actual accepted settings and draft."
-      },
-      {
-        "name": "errorMessage",
-        "type": "string",
-        "description": "Meaningful host failure, blank falls back."
-      },
-      {
-        "name": "onRetry",
-        "type": "() => void",
-        "description": "Actual recovery with contained synchronous failure."
-      },
-      {
-        "name": "disabled",
+        "name": "showLadder",
         "type": "boolean",
-        "description": "Read-only editing and output with content preserved."
+        "default": "true",
+        "description": "The baseline-aligned scale ladder under the page. Hover or focus a step to find it on the page; click to pin it."
+      },
+      {
+        "name": "onChange",
+        "type": "(pairing: FontPairing) => void",
+        "description": "Every draft change."
+      },
+      {
+        "name": "onApply",
+        "type": "(result: FontPairingResult) => void | Promise<void>",
+        "description": "Saves the pairing with its px scale and CSS variables. Progress fills the button while pending; a rejection shows its message and keeps the draft."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "theme ink",
+        "description": "The Apply button, selection rings and slider fills."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Complete monochromatic graphite/white chrome. Colour is reserved for actual supplied content and purposeful feature accents."
-      },
-      {
-        "name": "labels",
-        "type": "Partial<FontPairingLabels>",
-        "description": "Applied input, actual unsupported/unavailable, request, output and recovery copy."
+        "default": "\"dark\"",
+        "description": "Graphite or white chrome. The specimen page follows it."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Host responsive classes."
+        "description": "Extra classes on the root section."
       }
     ],
     "added": "2026-10-14",
     "demo": {
       "steps": [
-        "click:@font-heading-size:0.72,0.5",
-        "click:@font-heading-size:0.25,0.5",
-        "click:@font-leading:0.8,0.5",
-        "click:@font-apply",
-        "click:@font-copy"
+        "wait:500",
+        "click:@preset-technical",
+        "wait:1000",
+        "click:@ratio-4",
+        "wait:800",
+        "hover:@step-h2",
+        "wait:700",
+        "click:@apply",
+        "wait:1300"
       ],
       "loop": false
     },
     "controls": [
       {
+        "prop": "defaultPresetId",
+        "label": "Pairing",
+        "kind": "select",
+        "options": [
+          "editorial",
+          "modern",
+          "technical",
+          "ledger"
+        ],
+        "default": "editorial",
+        "remount": true
+      },
+      {
+        "prop": "showLadder",
+        "label": "Scale ladder",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#8ab4ff",
+          "#7dd3a8",
+          "#f4b267"
+        ]
+      },
+      {
         "prop": "theme",
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
         "default": "dark"
-      },
-      {
-        "prop": "disabled",
-        "label": "Read only",
-        "kind": "toggle",
-        "default": false
-      },
-      {
-        "prop": "status",
-        "label": "Availability",
-        "kind": "select",
-        "options": [
-          "ready",
-          "loading",
-          "error"
-        ],
-        "default": "ready"
       }
     ]
   },
