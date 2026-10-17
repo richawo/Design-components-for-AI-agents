@@ -4491,19 +4491,19 @@
     "updated": "2026-10-14"
   },
   "editor-export-preset": {
-    "useWhen": "Reviewing exact supported export settings before requesting a file from your host application.",
-    "avoidWhen": "A codec/encoder implementation or a visual substitute for an actual file download.",
+    "useWhen": "Exporting a frame, card or layer from a design or content tool, where people pick an artboard size, format, scale and quality and want to see the result and its file size before writing it.",
+    "avoidWhen": "Batch exports of many assets at once, server-side render queues, or a plain download button with no settings to choose.",
     "integration": [
-      "Supply up to16 unique actual ExportCapability records: dimension limits1–8192, integer sizeStep1–64, nullable quality bounds, actual supported frameRates and alpha support.",
-      "Separate draft settings from accepted value. Format changes explicitly prepare nearest supported sizes and settings. Apply requests a copied valid preset; rejected and older acknowledgments retain newer drafts. Invalid accepted presets remain explicit and repairable.",
-      "onExport receives a copied exact accepted preset and capability including copied frameRates with AbortSignal. Changed facts/cancel retire stale acknowledgment. Fulfillment acknowledges only request; your application owns encoding, file delivery and download."
+      "Pass your own artwork and its background as React nodes. The frame is a size container, so size the artwork in cqw, cqh and cqmin and it reflows to every artboard; the background fades out for transparent exports.",
+      "Supply presets as { id, label, width, height, note } and restrict formats to the ones your renderer writes. estimateExportBytes and formatBytes are exported if you show the same figure elsewhere; replace them with your encoder's real numbers when you have them.",
+      "onExport receives { presetId, width, height, scale, format, quality, transparent, fileName, estimatedBytes } with the scale already applied. Resolve when the file is written; reject with an Error whose message the panel shows, and every setting stays as it was for a retry."
     ],
     "related": [
       "media-crop-workbench",
-      "media-trim-timeline",
+      "editor-layer-stack",
       "editor-storyboard-strip"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "editor-font-pairing": {
     "useWhen": "Pairing actual host font roles against supplied copy before applying typography and copying accepted CSS.",

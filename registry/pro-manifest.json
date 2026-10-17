@@ -16423,131 +16423,214 @@
   },
   {
     "slug": "editor-export-preset",
-    "name": "Capability Export Preset",
+    "name": "Export Preset",
     "tier": "pro",
     "platform": "web",
     "category": "editors",
-    "description": "Review a valid export preset against actual host capabilities and request the exact accepted output with cancellable recovery.",
+    "description": "A design-tool export panel: the frame reshapes to each artboard, size estimates count live, and a wipe compares lossy quality by eye.",
     "tags": [
       "export",
-      "preset",
+      "editor",
+      "design tool",
+      "image",
       "format",
-      "capability",
-      "review",
-      "editor"
+      "compression",
+      "artboard",
+      "figma"
     ],
     "dependencies": [
+      "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1100,
-    "usage": "import { EditorExportPreset } from \"@/components/design-for-ai/editor-export-preset\";\n\n<EditorExportPreset value={settings} onValueChange={setSettings} />\n\n// Host owns assets, capabilities and persistence. Draft preview never replaces accepted output.",
+    "previewHeight": 860,
+    "usage": "import { EditorExportPreset } from \"@/components/design-for-ai/editor-export-preset\";\n\n<EditorExportPreset\n  layerName=\"hero-card\"\n  path={[\"Halden\", \"Autumn launch\"]}\n  presets={[{ id: \"og\", label: \"Link preview\", width: 1200, height: 630, note: \"Open Graph\" }]}\n  artwork={<YourArtwork />}          // sized with container units (cqw, cqh, cqmin)\n  artworkBackground={<YourBackground />}\n  onExport={async (settings) => {\n    await renderAndSave(settings);   // reject with an Error to show its message\n  }}\n/>\n\n// settings: { presetId, width, height (scale applied), scale, format, quality, transparent, fileName, estimatedBytes }\n// estimateExportBytes() and formatBytes() are exported for hosts that show the same figure elsewhere.",
     "props": [
       {
-        "name": "capabilities",
-        "type": "readonly ExportCapability[]",
-        "description": "Up to16 unique actual formats with label/extension/mime, dimension bounds1–8192, sizeStep1–64, nullable quality bounds and actual frameRates/alpha support."
+        "name": "layerName",
+        "type": "string",
+        "default": "\"hero-card\"",
+        "description": "The layer being exported. Shown in the toolbar and used as the file's base name."
       },
       {
-        "name": "value",
-        "type": "EditorExportValue",
-        "description": "Controlled accepted formatId, width/height, nullable quality/frameRate and transparency. Unsupported settings remain explicit."
+        "name": "path",
+        "type": "string[]",
+        "default": "[\"Halden\", \"Autumn launch\"]",
+        "description": "Breadcrumb before the layer name, shown from @2xl."
       },
       {
-        "name": "defaultValue",
-        "type": "EditorExportValue",
-        "description": "Local initial accepted preset, reset by resetKey."
+        "name": "presets",
+        "type": "ExportSizePreset[]",
+        "default": "Link preview 1200×630, Feed post 1080×1080, Story 1080×1920, Email header 1200×400",
+        "description": "Artboard sizes: { id, label, width, height, note? }. The frame reflows to the chosen one."
       },
       {
-        "name": "onValueChange",
-        "type": "(value: EditorExportValue) => void",
-        "description": "Request copied validated draft settings. Controlled rejection and older acknowledgment preserve newer drafts; synchronous failure preserves accepted preset."
+        "name": "formats",
+        "type": "(\"png\" | \"jpg\" | \"webp\")[]",
+        "default": "[\"png\", \"jpg\", \"webp\"]",
+        "description": "Formats the host can write, in order. JPG and WebP are lossy and show quality and the compare wipe; JPG has no alpha."
+      },
+      {
+        "name": "defaultPresetId",
+        "type": "string",
+        "default": "first preset",
+        "description": "The artboard selected on mount."
+      },
+      {
+        "name": "defaultFormat",
+        "type": "\"png\" | \"jpg\" | \"webp\"",
+        "default": "\"png\"",
+        "description": "The format selected on mount."
+      },
+      {
+        "name": "defaultScale",
+        "type": "1 | 2 | 3",
+        "default": "2",
+        "description": "Pixel density on mount. Output pixels and the @2x suffix follow it."
+      },
+      {
+        "name": "defaultQuality",
+        "type": "number",
+        "default": "82",
+        "description": "Lossy quality on mount, 1 to 100."
+      },
+      {
+        "name": "defaultTransparent",
+        "type": "boolean",
+        "default": "false",
+        "description": "Export without the artwork background where the format allows it."
+      },
+      {
+        "name": "artwork",
+        "type": "ReactNode",
+        "default": "Halden autumn launch card",
+        "description": "The artwork drawn into the frame. The frame is a size container, so size the artwork in cqw, cqh and cqmin to reflow across aspects."
+      },
+      {
+        "name": "artworkBackground",
+        "type": "ReactNode",
+        "default": "dusk sky and sun",
+        "description": "The artwork's background, faded out when the export is transparent."
+      },
+      {
+        "name": "showCompare",
+        "type": "boolean",
+        "default": "true",
+        "description": "The draggable before/after wipe on lossy formats (arrow keys move it too)."
       },
       {
         "name": "onExport",
-        "type": "(request: EditorExportRequest, signal: AbortSignal) => void | Promise<void>",
-        "description": "Exact cloned accepted preset and capability including copied frameRates. Fulfillment acknowledges only request; your host supplies file/download."
+        "type": "(settings: ExportSettings) => void | Promise<void>",
+        "description": "Writes the file. Progress fills the button while it is pending; a rejection shows its message and keeps every setting for a retry."
       },
       {
-        "name": "resetKey",
-        "type": "string | number",
-        "description": "Explicit local draft/accepted/request lifecycle reset."
+        "name": "onChange",
+        "type": "(settings: ExportSettings) => void",
+        "description": "Called once per settings change, for hosts that remember the last preset."
       },
       {
-        "name": "status",
-        "type": "\"ready\" | \"loading\" | \"error\"",
-        "description": "Host availability preserves actual accepted settings and draft."
-      },
-      {
-        "name": "errorMessage",
+        "name": "accent",
         "type": "string",
-        "description": "Meaningful host failure, blank falls back."
-      },
-      {
-        "name": "onRetry",
-        "type": "() => void",
-        "description": "Actual recovery with contained synchronous failure."
-      },
-      {
-        "name": "disabled",
-        "type": "boolean",
-        "description": "Read-only editing and output with content preserved."
+        "default": "theme ink",
+        "description": "The selection outline, the Export button and filled controls."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Complete monochromatic graphite/white chrome. Colour is reserved for actual supplied content and purposeful feature accents."
-      },
-      {
-        "name": "labels",
-        "type": "Partial<ExportPresetLabels>",
-        "description": "Applied input, actual unsupported/unavailable, request, output and recovery copy."
+        "default": "\"dark\"",
+        "description": "Graphite or white chrome. The artwork keeps its own colours."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Host responsive classes."
+        "description": "Extra classes on the root section."
       }
     ],
     "added": "2026-10-14",
     "demo": {
       "steps": [
-        "click:@export-quality:0.4,0.5",
-        "click:@export-apply",
-        "click:@export-quality:0.75,0.5",
-        "click:@export-apply",
-        "click:@export-request",
-        "wait:800"
+        "wait:500",
+        "click:@preset-story",
+        "wait:700",
+        "click:@quality:0.24,0.5",
+        "wait:900",
+        "click:@export",
+        "wait:1700"
       ],
       "loop": false
     },
     "controls": [
       {
+        "prop": "defaultFormat",
+        "label": "Format",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "png",
+            "label": "PNG"
+          },
+          {
+            "value": "jpg",
+            "label": "JPG"
+          },
+          {
+            "value": "webp",
+            "label": "WebP"
+          }
+        ],
+        "default": "jpg",
+        "remount": true
+      },
+      {
+        "prop": "defaultPresetId",
+        "label": "Artboard",
+        "kind": "select",
+        "options": [
+          "og",
+          "square",
+          "story",
+          "banner"
+        ],
+        "default": "og",
+        "remount": true
+      },
+      {
+        "prop": "showCompare",
+        "label": "Compare wipe",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#8ab4ff",
+          "#7dd3a8",
+          "#f4b267"
+        ]
+      },
+      {
         "prop": "theme",
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
         "default": "dark"
-      },
-      {
-        "prop": "disabled",
-        "label": "Read only",
-        "kind": "toggle",
-        "default": false
-      },
-      {
-        "prop": "status",
-        "label": "Availability",
-        "kind": "select",
-        "options": [
-          "ready",
-          "loading",
-          "error"
-        ],
-        "default": "ready"
       }
     ]
   },
