@@ -4283,19 +4283,20 @@
     "updated": "2026-10-14"
   },
   "chart-scatter-brush": {
-    "useWhen": "Selecting a bounded region of supplied points and inspecting the matching records.",
-    "avoidWhen": "A purely decorative cloud or brushing whose selection cannot be reproduced with keyboard filters.",
+    "useWhen": "Finding and acting on a cluster of records in two measures at once, such as slow pages, expensive accounts or outlier queries, by dragging a box over them.",
+    "avoidWhen": "Showing a trend over time, comparing a handful of categories, or plotting thousands of points where a density view or hexbin reads better.",
     "integration": [
-      "Supply at most 500 raw unique labeled x/y records with finite coordinates within ±1 billion. Domains come from observed extents or explicit ordered host bounds; equal endpoints center that dimension. Points outside explicit domains remain counted and available in the exact native records.",
-      "Control one atomic bounds/selectedId packet. A primary pointer drag is provisional until release; only a completed valid region requests a change. Escape, cancellation, source or host resets retire held gestures. Other contacts do not own or cancel the primary brush. Rejected requests preserve the accepted view and do not commit.",
-      "Four exact native fields provide keyboard filtering, retaining invalid and newer drafts through older acceptance. Arrow keys move an accepted region within domain bounds. Inspect every original record in source order, 24 per page, with complete exact coordinates. A selected record outside the accepted region is described explicitly; no correlation is inferred. Clear region retires only unchanged captured exact drafts after the full clear is accepted. Throwing or silently rejecting handlers retain them, newer edits survive an older delayed acceptance, and source or availability changes retire obsolete reset intent.",
-      "Current rectangles and counts animate in both directions and stop or settle immediately on live reduced motion or hidden/blocked states. Draft SVG writes are coalesced instead of rerendering the full point set on every move. Full native targets and stacked compact controls retain touch access; focused owner-document fences preserve outside and parent-page actions."
+      "Pass `datasets` as one or more views of the same records ({ id, label, x, y }). Keep ids stable across views: points with the same id travel between them on one shared scale.",
+      "Describe each measure with `x` and `y` ({ label, unit, decimals, limit }). A limit draws a dashed guide and tints the passing quadrant; the ranked list sorts by y, highest first.",
+      "Read selections from `onBrushChange(brush, selected)` to filter a table or start a bulk action, or control `brush` yourself. Brushes are in data units, so they survive a dataset switch.",
+      "Mouse and pen brush by dragging; touch keeps page scroll and taps read the nearest point, so add `presets` for the regions people ask about most. Use `status` and `onRetry` for loading and failed fetches."
     ],
     "related": [
-      "chart-radar-compare",
+      "chart-revenue-trend",
+      "chart-box-distribution",
       "data-table-sortable"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "chart-funnel-dots": {
     "useWhen": "Showing discrete quantities passing through stages with explicit totals and conversion denominators.",

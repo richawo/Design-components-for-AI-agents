@@ -8912,143 +8912,223 @@
     "tier": "pro",
     "platform": "web",
     "category": "charts",
-    "description": "Brush a real two-dimensional point set and inspect original records with exact bounds, keyboard filtering and honest controlled selection.",
+    "description": "A dark brushable scatter plot: points pop in left to right, drag a box to light a region, histograms and medians follow, and points travel between datasets.",
     "tags": [
+      "chart",
       "scatter plot",
-      "brush selection",
-      "bounded region",
-      "point records",
-      "exact filter",
-      "keyboard alternative"
+      "brush",
+      "selection",
+      "web vitals",
+      "histogram",
+      "analytics",
+      "dashboard",
+      "svg",
+      "dark"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1320,
-    "usage": "import { ChartScatterBrush } from \"@/components/design-for-ai/chart-scatter-brush\";\n\n<ChartScatterBrush points={records} value={view} onValueChange={setView} xLabel=\"Duration\" xUnit=\"ms\" yLabel=\"Size\" yUnit=\"KB\" />",
+    "previewHeight": 760,
+    "usage": "import { ChartScatterBrush } from \"@/components/design-for-ai/chart-scatter-brush\";\n\nexport default function Vitals({ mobile, desktop }: { mobile: Page[]; desktop: Page[] }) {\n  return (\n    <ChartScatterBrush\n      title=\"Core Web Vitals\"\n      caption=\"p75 per page\"\n      datasets={[\n        { key: \"mobile\", label: \"Mobile\", points: mobile }, // { id, label, x, y }\n        { key: \"desktop\", label: \"Desktop\", points: desktop },\n      ]}\n      x={{ label: \"TBT\", unit: \"ms\", limit: 200 }}\n      y={{ label: \"LCP\", unit: \"s\", decimals: 1, limit: 2.5 }}\n      onBrushChange={(brush, pages) => setFilter(pages.map((p) => p.id))}\n      accent=\"#7dd3fc\"\n    />\n  );\n}",
     "props": [
       {
-        "name": "points",
-        "type": "ScatterPoint[]",
-        "description": "Up to 500 raw unique labeled original points with finite x/y within ±1 billion. Optional six-digit color and source description."
+        "name": "datasets",
+        "type": "{ key: string; label: string; points: { id: string; label: string; x: number; y: number }[] }[]",
+        "default": "Mobile and desktop vitals for 104 storefront pages",
+        "description": "One or more views of the same records. Two or more show a switcher; points with the same id travel between views on one shared scale."
       },
       {
-        "name": "xDomain",
-        "type": "[number, number]",
-        "description": "Optional finite ordered horizontal domain within ±1 billion. Outside points remain in original native records; no domain silently discards data."
-      },
-      {
-        "name": "yDomain",
-        "type": "[number, number]",
-        "description": "Optional finite ordered vertical domain; equal endpoints honestly center that dimension."
-      },
-      {
-        "name": "value",
-        "type": "ScatterView",
-        "description": "Atomic host-controlled bounds or null, and selectedId or null. Bounds must be ordered inside current domains; unknown identities stay unavailable."
-      },
-      {
-        "name": "defaultValue",
-        "type": "ScatterView",
-        "description": "Initial uncontrolled view, default no bounds and no selection."
-      },
-      {
-        "name": "onValueChange",
-        "type": "(view: ScatterView) => void",
-        "description": "Request a completed brush, exact filter, keyboard translation or selected original record. A held brush is local provisional geometry only."
-      },
-      {
-        "name": "onValueCommit",
-        "type": "(view: ScatterView) => void",
-        "description": "Accepted completed discrete changes only. Controlled rejection and interrupted gestures do not commit."
-      },
-      {
-        "name": "xLabel",
+        "name": "defaultDataset",
         "type": "string",
-        "description": "Horizontal dimension label."
+        "default": "first dataset",
+        "description": "Dataset key shown first."
       },
       {
-        "name": "yLabel",
+        "name": "dataset",
         "type": "string",
-        "description": "Vertical dimension label."
+        "description": "Controlled dataset key; pair with onDatasetChange."
       },
       {
-        "name": "xUnit",
-        "type": "string",
-        "description": "Horizontal original quantity unit."
+        "name": "onDatasetChange",
+        "type": "(key: string) => void",
+        "description": "Called when the dataset switcher changes."
       },
       {
-        "name": "yUnit",
-        "type": "string",
-        "description": "Vertical original quantity unit."
+        "name": "x",
+        "type": "{ label: string; unit: string; decimals?: number; limit?: number }",
+        "default": "{ label: \"TBT\", unit: \"ms\", limit: 200 }",
+        "description": "Horizontal measure. limit draws a dashed guide and lights the passing quadrant."
       },
       {
-        "name": "locale",
-        "type": "string",
-        "description": "Supported Intl number locale. Exact original fields are retained in native records."
+        "name": "y",
+        "type": "{ label: string; unit: string; decimals?: number; limit?: number }",
+        "default": "{ label: \"LCP\", unit: \"s\", decimals: 1, limit: 2.5 }",
+        "description": "Vertical measure. The ranked list sorts by it, highest first."
       },
       {
-        "name": "title",
-        "type": "string",
-        "description": "Host exploration heading."
+        "name": "noun",
+        "type": "{ one: string; other: string }",
+        "default": "{ one: \"page\", other: \"pages\" }",
+        "description": "Words for one record and many, used in counts and empty states."
       },
       {
-        "name": "description",
-        "type": "string",
-        "description": "Host point-set context, without inferred correlation."
+        "name": "presets",
+        "type": "{ key: string; label: string; brush: ScatterBrush }[]",
+        "default": "LCP over 2.5 s",
+        "description": "One-click brushes shown as toggle chips. Open ends (Infinity) clamp to the plotted domain."
+      },
+      {
+        "name": "defaultBrush",
+        "type": "{ x: [number, number]; y: [number, number] } | null",
+        "default": "null",
+        "description": "Initial brush in data units."
+      },
+      {
+        "name": "brush",
+        "type": "{ x: [number, number]; y: [number, number] } | null",
+        "description": "Controlled brush in data units. The chart still draws the held drag locally and calls onBrushChange on release."
+      },
+      {
+        "name": "onBrushChange",
+        "type": "(brush: ScatterBrush | null, selected: ScatterPoint[]) => void",
+        "description": "Called when a brush lands, moves or clears, with the records inside it."
+      },
+      {
+        "name": "showMarginals",
+        "type": "boolean",
+        "default": "true",
+        "description": "Histograms along the top and right edges; brushed records fill in the accent."
       },
       {
         "name": "status",
         "type": "\"ready\" | \"loading\" | \"unavailable\"",
-        "description": "Host source availability; current accepted view survives unavailable data."
+        "default": "\"ready\"",
+        "description": "Loading and unavailable states replace the plot with a quiet placeholder."
       },
       {
-        "name": "disabled",
-        "type": "boolean",
-        "description": "Disables selection requests while original records and page controls stay readable."
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Shows a Retry button in the unavailable state."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "theme ink",
+        "description": "The one accent: brushed points, the brush and the pinned point."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Neutral graphite and white chrome; colour is reserved for actual feature content and semantic data accents."
+        "default": "\"dark\"",
+        "description": "Surface palette."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-US\"",
+        "description": "Locale for every figure."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Core Web Vitals\"",
+        "description": "Chart title."
+      },
+      {
+        "name": "caption",
+        "type": "string",
+        "default": "\"p75 per page · last 28 days\"",
+        "description": "Muted text after the title."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Classes on the independent root."
+        "description": "Classes on the root."
       }
     ],
     "controls": [
+      {
+        "prop": "showMarginals",
+        "label": "Histograms",
+        "kind": "toggle",
+        "default": true,
+        "group": "Data"
+      },
+      {
+        "prop": "defaultDataset",
+        "label": "Opens on",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "mobile",
+            "label": "Mobile"
+          },
+          {
+            "value": "desktop",
+            "label": "Desktop"
+          }
+        ],
+        "default": "mobile",
+        "remount": true,
+        "group": "Data"
+      },
+      {
+        "prop": "title",
+        "label": "Title",
+        "kind": "text",
+        "default": "Core Web Vitals",
+        "group": "Data"
+      },
       {
         "prop": "theme",
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
-        "default": "dark"
+        "default": "dark",
+        "group": "Look"
       },
       {
-        "prop": "disabled",
-        "label": "Disabled selection",
-        "kind": "toggle",
-        "default": false
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#7dd3fc",
+        "options": [
+          "#7dd3fc",
+          "#f4f4f5",
+          "#fb923c",
+          "#a3e635"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Demo",
+        "kind": "action",
+        "value": "Replay"
       }
     ],
     "demo": {
       "steps": [
-        "hover:@scatter-plot:0.3,0.7",
+        "hover:@scatter-plot:0.28,0.16",
         "down",
-        "hover:@scatter-plot:0.75,0.25",
+        "hover:@scatter-plot:0.96,0.62",
         "up",
-        "wait:350",
-        "key:ArrowRight",
-        "wait:350",
-        "click:@scatter-clear",
-        "wait:450"
+        "wait:700",
+        "click:@dataset-desktop",
+        "wait:1300",
+        "click:@dataset-mobile",
+        "wait:900"
       ],
       "loop": false
     },
