@@ -4715,27 +4715,21 @@
     "updated": "2026-10-17"
   },
   "mobile-day-planner": {
-    "useWhen": "Inspecting a supplied local-time day schedule and reviewing an exact reschedule proposal against current overlap constraints.",
-    "avoidWhen": "Timezone conversion, calendar sync or silently moving actual events before the host supplies that change.",
+    "useWhen": "A calendar, planner or focus app shows one day as a timeline and lets people move an event by dragging it, with clashes flagged and an explicit confirm before the calendar changes.",
+    "avoidWhen": "You need a week or month grid, multi-day or all-day events, creating events by dragging on empty time, or several people's calendars side by side.",
     "integration": [
-      "events: Exact event identities/title/detail, integer start/end within0–1440, explicit editable/reason. Invalid or duplicate identities remain readable but cannot select.",
-      "selectedId: Controlled actual inspected event. Missing observer makes controlled selection read-only.",
-      "defaultSelectedId: Initial local event identity. A missing selection is not replaced silently.",
-      "onSelectionChange: Synchronous copied selection observer before local mutation.",
-      "onReschedule: Exact copied current event, reviewed local-time range, note and current overlap evidence. Acknowledgment does not move supplied calendar. Cancel/failure/newer drafts remain separate.",
-      "dayId: Actual calendar-day identity. Context replacement retires review and pending work.",
-      "dayLabel: Host-authored readable date.",
-      "timezoneLabel: Host-authored zone context. Component does not convert timezones.",
-      "minuteStep: Integer1–60 required for whole-minute times; invalid configuration blocks request.",
-      "allowOverlap: Explicit host policy. Default false. Exact overlapping events are included in the request either way.",
-      "Provide a full-height native canvas. Local horizontal shelves preserve touch target size at320px; vertical content scrolls under the translucent action footer. Install Expo modules once for bare React Native.",
-      "Verify real iOS/Android touch, large text and assistive technology in the host app. Browser previews exercise the actual React Native Web source and state contracts."
+      "Pass `events` with `startMinute` and `endMinute` in local minutes after midnight; set `editable: false` with an `unavailableReason` for events the person doesn't own.",
+      "`onReschedule({ event, startMinute, endMinute, conflicts }, signal)` runs when Move is pressed; resolve once your calendar accepts it, reject to keep the proposal on screen with a retry. Send the updated `events` afterwards.",
+      "Set `dayStart`, `dayEnd` and `minuteStep` to your product's working day and grid; leave `nowMinute` out on days other than today. `allowOverlap` decides whether a clash can be confirmed.",
+      "Install this in a React Native app (run npx install-expo-modules once in bare projects). The web preview is a review surface; verify the drag, text scaling and screen readers on devices."
     ],
     "related": [
-      "mobile-bottom-sheet",
-      "mobile-settings"
+      "mobile-habit-grid",
+      "mobile-journal-prompt",
+      "mobile-mood-map",
+      "mobile-bottom-sheet"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "mobile-journal-prompt": {
     "useWhen": "Prompt-led writing with separate retained drafts and exact cancellable saving that preserves newer text.",

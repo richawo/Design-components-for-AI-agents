@@ -28865,14 +28865,18 @@
     "tier": "pro",
     "platform": "mobile",
     "category": "mobile",
-    "description": "A native day schedule with a precise interval overview, readable event agenda and retained time proposals, reviewed against actual overlap constraints.",
+    "description": "A React Native day timeline: drag an event up or down, it snaps to 15-minute slots, flags clashes, leaves a ghost behind and confirms the move from a glass bar.",
     "tags": [
-      "mobile",
+      "calendar",
+      "schedule",
+      "planner",
+      "timeline",
+      "drag and drop",
+      "reschedule",
       "react native",
-      "dark",
       "glass",
-      "day",
-      "planner"
+      "dark",
+      "monochrome"
     ],
     "dependencies": [
       "expo-blur",
@@ -28880,104 +28884,141 @@
       "react-native-svg"
     ],
     "theme": "dark",
-    "previewHeight": 844,
-    "usage": "import { MobileDayPlanner } from \"@/components/design-for-ai/native/mobile-day-planner\";\n\n// Bare React Native: run npx install-expo-modules once.\n<MobileDayPlanner theme=\"dark\" />",
+    "previewHeight": 940,
+    "usage": "import { MobileDayPlanner } from \"@/components/design-for-ai/native/mobile-day-planner\";\n\n// Bare React Native apps: run `npx install-expo-modules` once for expo-blur and expo-linear-gradient.\n<MobileDayPlanner\n  events={todaysEvents}\n  nowMinute={minutesSinceMidnight}\n  onReschedule={({ event, startMinute, endMinute }, signal) =>\n    calendar.move(event.id, { startMinute, endMinute }, { signal })}\n/>",
     "props": [
       {
         "name": "events",
         "type": "PlannerEvent[]",
-        "description": "Exact event identities/title/detail, integer start/end within0–1440, explicit editable/reason. Invalid or duplicate identities remain readable but cannot select."
-      },
-      {
-        "name": "selectedId",
-        "type": "string | null",
-        "description": "Controlled actual inspected event. Missing observer makes controlled selection read-only."
-      },
-      {
-        "name": "defaultSelectedId",
-        "type": "string | null",
-        "description": "Initial local event identity. A missing selection is not replaced silently."
-      },
-      {
-        "name": "onSelectionChange",
-        "type": "(id: string, event: PlannerEvent) => void",
-        "description": "Synchronous copied selection observer before local mutation."
-      },
-      {
-        "name": "onReschedule",
-        "type": "(request: { dayId: string; event: PlannerEvent; proposal: PlannerProposal; conflicts: PlannerEvent[] }, signal: AbortSignal) => void | Promise<void>",
-        "description": "Exact copied current event, reviewed local-time range, note and current overlap evidence. Acknowledgment does not move supplied calendar. Cancel/failure/newer drafts remain separate."
-      },
-      {
-        "name": "dayId",
-        "type": "string",
-        "description": "Actual calendar-day identity. Context replacement retires review and pending work."
+        "default": "6 events",
+        "description": "{ id, title, detail, startMinute, endMinute, editable (default true), unavailableReason }. Locked events are hatched and can’t be dragged."
       },
       {
         "name": "dayLabel",
         "type": "string",
-        "description": "Host-authored readable date."
+        "default": "\"Tuesday 13 October\"",
+        "description": "Date in the mono label above the title."
       },
       {
         "name": "timezoneLabel",
         "type": "string",
-        "description": "Host-authored zone context. Component does not convert timezones."
-      },
-      {
-        "name": "minuteStep",
-        "type": "number",
-        "description": "Integer1–60 required for whole-minute times; invalid configuration blocks request."
-      },
-      {
-        "name": "allowOverlap",
-        "type": "boolean",
-        "description": "Explicit host policy. Default false. Exact overlapping events are included in the request either way."
+        "default": "\"London\"",
+        "description": "Shown after the date. Times are local; the component doesn’t convert zones."
       },
       {
         "name": "title",
         "type": "string",
-        "description": "Editable host heading. Keep working content dominant."
+        "default": "\"Today\"",
+        "description": "Screen title."
       },
       {
-        "name": "theme",
-        "type": "\"dark\" | \"light\"",
-        "description": "Neutral graphite/white themes with readable borders and actual focus states."
+        "name": "dayStart",
+        "type": "number",
+        "default": "480",
+        "description": "First minute of the visible window (08:00)."
+      },
+      {
+        "name": "dayEnd",
+        "type": "number",
+        "default": "1080",
+        "description": "Last minute of the visible window (18:00). The hour height fits the window to the screen."
+      },
+      {
+        "name": "nowMinute",
+        "type": "number",
+        "default": "605",
+        "description": "Where the accent now line sits. Leave it out on other days."
+      },
+      {
+        "name": "minuteStep",
+        "type": "number",
+        "default": "15",
+        "description": "Drags and the step buttons snap to this many minutes."
+      },
+      {
+        "name": "allowOverlap",
+        "type": "boolean",
+        "default": "false",
+        "description": "When false, a proposed time that overlaps another event can’t be confirmed; the clash is named in the bar either way."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#FF9B5E\"",
+        "description": "The one brand colour: the moving event’s rail and time, the now line and the confirm button."
+      },
+      {
+        "name": "onReschedule",
+        "type": "(request: RescheduleRequest, signal: AbortSignal) => void | Promise<void>",
+        "description": "Confirm a move: { event, startMinute, endMinute, conflicts }. Resolve and the event settles in its new place; reject and the proposal stays with the error and a retry."
+      },
+      {
+        "name": "onSelect",
+        "type": "(event: PlannerEvent | null) => void",
+        "description": "Fires when an event is picked or the bar is closed."
       }
     ],
     "added": "2026-10-14",
     "demo": {
       "steps": [
-        "click:@planner-start",
-        "key:Home",
-        "key:End",
-        "key:Backspace",
-        "key:Backspace",
-        "key:Backspace",
-        "key:Backspace",
-        "key:Backspace",
-        "type:11:15",
-        "click:@planner-submit",
-        "wait:250",
-        "click:@planner-submit",
-        "wait:450"
-      ]
+        "wait:400",
+        "hover:@planner-event-deep",
+        "drag:0.6,0.655",
+        "wait:700",
+        "click:@planner-confirm",
+        "wait:1600"
+      ],
+      "loop": false
     },
     "controls": [
       {
-        "prop": "theme",
-        "label": "Theme",
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#FF9B5E",
+        "options": [
+          "#FF9B5E",
+          "#7CE0B5",
+          "#8AB4FF",
+          "#F5F5F5"
+        ]
+      },
+      {
+        "prop": "minuteStep",
+        "label": "Snap",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": 5,
+            "label": "5 min"
+          },
+          {
+            "value": 15,
+            "label": "15 min"
+          },
+          {
+            "value": 30,
+            "label": "30 min"
+          }
         ],
-        "default": "dark"
+        "default": 15
+      },
+      {
+        "prop": "allowOverlap",
+        "label": "Allow overlaps",
+        "kind": "toggle",
+        "default": false
       },
       {
         "prop": "title",
-        "label": "Heading",
+        "label": "Title",
         "kind": "text",
-        "default": "A day with a little room."
+        "default": "Today"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
       }
     ]
   },
