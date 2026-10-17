@@ -3199,17 +3199,18 @@
     "updated": "2026-10-17"
   },
   "scroll-expanding-mosaic": {
-    "useWhen": "Opening a visual mosaic into a larger product or editorial moment.",
-    "avoidWhen": "A dense interactive grid whose controls become hard to reach while scrolling.",
+    "useWhen": "Opening a photography series, exhibition or portfolio on its lead image, with the rest of the set visible as context first.",
+    "avoidWhen": "Grids people need to browse or click tile by tile; the surrounding tiles are decorative while the lead expands.",
     "integration": [
-      "Supply your own records through `tiles`. Preserve stable keys or IDs when the data contract provides them."
+      "Pass up to nine `tiles` with stable ids, real `src` images and meaningful `alt`. The first tile is the lead at the centre; `caption` prints with it once it fills the view.",
+      "Reduced motion, an empty set or a header too tall for the stage renders the whole series as a captioned static gallery. Keep ancestors free of overflow clipping so sticky positioning works."
     ],
     "related": [
-      "scroll-horizontal-showcase",
-      "scroll-background-wipe",
-      "scroll-chapter-stack"
+      "portfolio-project-reel",
+      "scroll-cinema-frame",
+      "scroll-background-wipe"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "scroll-horizontal-showcase": {
     "useWhen": "A short horizontal product sequence driven by a readable vertical story.",

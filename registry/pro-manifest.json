@@ -40390,41 +40390,55 @@
     "tier": "pro",
     "platform": "web",
     "category": "portfolio",
-    "description": "An editorial mosaic gathers around a central image that grows to fill the viewport as the reader scrolls, with a complete static gallery for reduced motion.",
+    "description": "A photographer's exhibition as a nine-plate contact sheet: scrolling grows the centre print to full bleed while its neighbours part and fade.",
     "tags": [
       "scroll",
       "scroll-driven",
-      "motion",
-      "responsive",
-      "portfolio"
+      "gallery",
+      "photography",
+      "portfolio",
+      "clip-path"
     ],
     "dependencies": [
       "motion"
     ],
     "theme": "dark",
     "previewHeight": 900,
-    "usage": "import { ExpandingScrollMosaic } from \"@/components/design-for-ai/scroll-expanding-mosaic\";\n\n<ExpandingScrollMosaic />\n\n// Place in normal document flow. Keep ancestors free of overflow clipping so viewport sticky positioning can work.",
+    "usage": "import { ExpandingScrollMosaic } from \"@/components/design-for-ai/scroll-expanding-mosaic\";\n\n<ExpandingScrollMosaic\n  title=\"The North Sea, edge to edge.\"\n  tiles={[\n    { id: \"mile\", label: \"Råbjerg Mile, 2024\", src: \"/prints/mile.jpg\", alt: \"A migrating dune at noon\" },\n    // … up to eight more; the first expands\n  ]}\n/>\n\n// Place in normal document flow. Keep ancestors free of overflow clipping so sticky positioning works.",
     "props": [
       {
         "name": "title",
         "type": "string",
-        "description": "Heading above the mosaic."
+        "default": "\"The North Sea, edge to edge.\"",
+        "description": "Exhibition title, the section's h2."
+      },
+      {
+        "name": "eyebrow",
+        "type": "string",
+        "default": "\"Coastlines · Johan Brink · 2019–2026\"",
+        "description": "Mono label above the title."
       },
       {
         "name": "caption",
         "type": "string",
-        "description": "Caption for the central image."
+        "description": "Printed with the lead photograph once it fills the view."
       },
       {
         "name": "tiles",
         "type": "MosaicTile[]",
-        "description": "Up to nine unique gallery tiles; the first is the expanding central image. Supply real image assets."
+        "description": "Up to nine unique { id, label, alt, src?, plate? } photographs. The first is the lead at the centre, the one that expands. plate names the drawn fallback used when src is missing or fails."
+      },
+      {
+        "name": "actionLabel",
+        "type": "string",
+        "default": "\"Step into the dune\"",
+        "description": "Label of the button that scrolls the lead open."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Neutral surface and text palette."
+        "description": "Graphite or paper stage around the photographs."
       }
     ],
     "added": "2026-10-12",
