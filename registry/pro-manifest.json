@@ -23898,134 +23898,140 @@
     "tier": "pro",
     "platform": "web",
     "category": "hero",
-    "description": "A live layout boundary that lets visitors resize retained content and see real container reflow, with precise width controls and measured limits.",
+    "description": "A marketing hero whose product shot is a live layout: drag the boundary and a booking page reflows across measured container breakpoints.",
     "tags": [
       "hero",
       "layout",
       "responsive",
-      "constraints",
+      "container queries",
       "resizer",
-      "product demonstration"
+      "landing page",
+      "saas",
+      "dark"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1120,
-    "usage": "import { HeroLayoutPlayground } from \"@/components/design-for-ai/hero-layout-playground\";\n\n<HeroLayoutPlayground content={<ResponsiveProduct />} width={width} onWidthChange={setWidth} minWidth={280} maxWidth={960} />",
+    "previewHeight": 1000,
+    "usage": "import { HeroLayoutPlayground } from \"@/components/design-for-ai/hero-layout-playground\";\n\n<HeroLayoutPlayground\n  headline={[\"Your components,\", \"at every\", \"width.\"]}\n  emphasis=\"every\"\n  content={<PricingCard />}\n  breakpoints={[{ name: \"Two up\", width: 420 }, { name: \"Three up\", width: 720 }]}\n/>",
     "props": [
       {
-        "name": "title",
-        "type": "string",
-        "description": "Editorial heading for the live layout demonstration.",
-        "default": "\"Give your layout room to breathe.\""
+        "name": "headline",
+        "type": "string[]",
+        "default": "[\"Layouts that\", \"know how much\", \"room they have.\"]",
+        "description": "Headline, one string per line; each line blurs in on its own beat."
       },
       {
-        "name": "description",
+        "name": "emphasis",
         "type": "string",
-        "description": "One concise sentence explaining the boundary interaction.",
-        "default": "\"Move the boundary. Watch the same content find a different rhythm.\""
+        "default": "\"room\"",
+        "description": "Word set in serif italic (emphasis by voice, not colour)."
+      },
+      {
+        "name": "body",
+        "type": "string",
+        "description": "Supporting paragraph."
+      },
+      {
+        "name": "primary",
+        "type": "{ label: string; href: string }",
+        "description": "Solid ink call to action."
+      },
+      {
+        "name": "secondary",
+        "type": "{ label: string; href: string }",
+        "description": "Quiet link with an arrow."
+      },
+      {
+        "name": "proof",
+        "type": "string",
+        "default": "\"41,200 weekly installs · 1.8 kB gzipped · MIT\"",
+        "description": "Mono proof line; a leading number counts up."
       },
       {
         "name": "content",
         "type": "ReactNode",
-        "description": "Real container-responsive content, retained through resizing and temporary host loading/error. Null or false is an explicit empty frame.",
-        "default": "Original editorial specimen with a retained caption editor"
+        "default": "booking page specimen",
+        "description": "What the frame holds. It must respond to its own container (container queries or ResizeObserver), never the viewport."
+      },
+      {
+        "name": "breakpoints",
+        "type": "{ name: string; width: number }[]",
+        "default": "[{ name: \"Split\", width: 290 }, { name: \"Wide\", width: 500 }, { name: \"Full\", width: 760 }]",
+        "description": "Frame widths where the content changes layout: ruler flags, guides, the live readout and quick-set chips. Below the first is \"Stack\"."
       },
       {
         "name": "width",
         "type": "number",
-        "description": "Controlled requested frame width. Without onWidthChange controls are read-only; actual width is separately constrained by available space."
+        "description": "Controlled frame width. Without onWidthChange it is read-only; a rejected drag springs back."
       },
       {
         "name": "defaultWidth",
         "type": "number",
-        "description": "Initial uncontrolled frame width and reset destination.",
-        "default": "640"
+        "default": "640",
+        "description": "Initial uncontrolled width and the Reset target."
       },
       {
         "name": "onWidthChange",
         "type": "(width: number) => void",
-        "description": "Synchronous integer width request observer, bounded to current legal available geometry. Controlled hosts commit or reject requests."
+        "description": "Called with whole-pixel widths while dragging, on keys, chips and reset."
       },
       {
         "name": "minWidth",
         "type": "number",
-        "description": "Minimum preferred width, bounded160..1600. Narrow hosts may have less space and honestly fit to it.",
-        "default": "280"
+        "default": "220",
+        "description": "Narrowest frame width."
       },
       {
         "name": "maxWidth",
         "type": "number",
-        "description": "Maximum preferred width, bounded160..1600 and at least minWidth.",
-        "default": "960"
+        "default": "980",
+        "description": "Widest frame width; the canvas width is also a limit."
       },
       {
         "name": "step",
         "type": "number",
-        "description": "Keyboard/range/button increment, bounded1..64. Shift moves four increments; direct drag and precise entry allow integer pixels.",
-        "default": "8"
-      },
-      {
-        "name": "padding",
-        "type": "number",
-        "description": "Inset around supplied content, bounded0..48 CSS pixels.",
-        "default": "20"
+        "default": "8",
+        "description": "Arrow-key increment; Shift moves four steps, Home and End jump to the limits."
       },
       {
         "name": "disabled",
         "type": "boolean",
-        "description": "Disable resizing while keeping actual content inspectable.",
-        "default": "false"
+        "default": "false",
+        "description": "Pauses resizing; the content stays live and readable."
       },
       {
-        "name": "disabledReason",
+        "name": "accent",
         "type": "string",
-        "description": "Visible and connected explanation when host resizing is disabled.",
-        "default": "\"Resizing is unavailable.\""
-      },
-      {
-        "name": "status",
-        "type": "\"ready\" | \"loading\" | \"error\"",
-        "description": "Authoritative host content state; non-ready content is retained but inert.",
-        "default": "\"ready\""
-      },
-      {
-        "name": "errorMessage",
-        "type": "string",
-        "description": "Host error explanation.",
-        "default": "\"The content could not be loaded.\""
-      },
-      {
-        "name": "onRetry",
-        "type": "() => void",
-        "description": "Optional real host content retry; named status remains authoritative."
+        "default": "\"#3b8bff\"",
+        "description": "The one signal colour: the handle, the measured span, the readout and crossed breakpoints."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Neutral black/white glass chrome, with colour reserved for actual data/feature accents.",
-        "default": "\"dark\""
+        "default": "\"dark\"",
+        "description": "Black stage or a daylight grey one."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Outer hero class.",
-        "default": "\"\""
+        "default": "\"\"",
+        "description": "Root classes."
       }
     ],
     "added": "2026-10-13",
     "demo": {
       "steps": [
-        "click:@width-range:0.3,0.5",
         "wait:400",
-        "hover:@layout-boundary",
-        "drag:0.78,0.55",
-        "wait:350",
-        "click:@reset-layout",
-        "wait:400"
-      ]
+        "hover:@layout-handle",
+        "drag:0.3,0.72",
+        "wait:700",
+        "click:@breakpoint-full",
+        "wait:1200"
+      ],
+      "loop": false
     },
     "controls": [
       {
@@ -24039,41 +24045,39 @@
         "default": "dark"
       },
       {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#3b8bff",
+        "options": [
+          "#3b8bff",
+          "#ff6a3d",
+          "#22c55e",
+          "#f4f4f5"
+        ]
+      },
+      {
         "prop": "defaultWidth",
-        "label": "Initial width",
+        "label": "Starting width",
         "kind": "slider",
-        "min": 280,
-        "max": 960,
-        "step": 8,
+        "min": 220,
+        "max": 980,
+        "step": 10,
         "unit": "px",
         "default": 640,
         "remount": true
       },
       {
-        "prop": "padding",
-        "label": "Content inset",
-        "kind": "slider",
-        "min": 0,
-        "max": 40,
-        "step": 4,
-        "unit": "px",
-        "default": 20
-      },
-      {
-        "prop": "title",
-        "label": "Heading",
+        "prop": "emphasis",
+        "label": "Emphasis word",
         "kind": "text",
-        "default": "Give your layout room to breathe."
+        "default": "room"
       },
       {
-        "prop": "status",
-        "label": "Content state",
-        "kind": "action",
-        "options": [
-          "ready",
-          "loading",
-          "error"
-        ]
+        "prop": "disabled",
+        "label": "Paused",
+        "kind": "toggle",
+        "default": false
       }
     ]
   },

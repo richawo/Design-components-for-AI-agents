@@ -3810,17 +3810,17 @@
     "updated": "2026-10-17"
   },
   "hero-layout-playground": {
-    "useWhen": "Demonstrating how actual supplied content reflows as a continuous layout boundary changes.",
-    "avoidWhen": "Switching between fixed device presets or pretending to emulate a browser or operating system.",
+    "useWhen": "A landing page for a layout, design-system or component product, where letting visitors drag a boundary and watch real content reflow sells the idea better than a screenshot.",
+    "avoidWhen": "Switching between fixed device presets, emulating a browser, or a hero whose product has nothing to do with responsive layout.",
     "integration": [
-      "Supply real React content that responds to its own container. Pointer, keyboard and precise width requests should describe the same constraint without remounting the content.",
-      "Keep requested width distinct from measured available width when the host is narrower. Controlled rejection and unavailable content must remain honest."
+      "Pass your own component as content; it must respond to its container (container queries or a ResizeObserver), never the viewport. Set breakpoints to the widths where it actually changes layout so the ruler, guides, readout and chips tell the truth.",
+      "Leave width uncontrolled for a marketing page; control it with width/onWidthChange only when another part of the page mirrors it. minWidth, maxWidth and the canvas width bound every request."
     ],
     "related": [
       "hero-signal-workbench",
       "layout-split-resizer"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "features-integration-trace": {
     "useWhen": "Explaining a supplied integration by following its data through inspectable transformation stages.",
