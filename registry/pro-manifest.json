@@ -11718,80 +11718,116 @@
   },
   {
     "slug": "commerce-backorder-allocation",
-    "name": "Backorder Allocation Desk",
+    "name": "Backorder Allocation",
     "tier": "pro",
     "platform": "web",
     "category": "commerce",
-    "description": "Distribute incoming inventory without exceeding supply or demand. A considered, responsive commerce workspace with typed integration points.",
+    "description": "Split an incoming receipt across waiting orders: a supply meter fills by order, rules show what promises they’d miss, and every dispatch date moves as you drag.",
     "tags": [
+      "commerce",
       "e-commerce",
-      "workflow",
-      "responsive",
-      "keyboard",
-      "commerce"
+      "inventory",
+      "backorders",
+      "allocation",
+      "purchase order",
+      "fulfilment",
+      "admin"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1120,
-    "usage": "import { BackorderAllocation } from \"@/components/design-for-ai/commerce-backorder-allocation\";\n\n<BackorderAllocation />",
+    "previewHeight": 1420,
+    "usage": "import { BackorderAllocation } from \"@/components/design-for-ai/commerce-backorder-allocation\";\n\nexport default function Backorders({ variant, receipt, waiting }) {\n  return (\n    <BackorderAllocation\n      product={{ name: variant.title, variant: variant.option, sku: variant.sku, image: variant.imageUrl }}\n      incoming={{ units: receipt.units, reference: receipt.po, supplier: receipt.supplier, arrivesOn: receipt.eta }}\n      nextIncoming={{ reference: \"PO-3342\", arrivesOn: \"2026-11-12\" }}\n      requests={waiting}\n      defaultRule=\"promise\"\n      onReserve={async (plan) => (await api.inventory.reserve(plan)).reference}\n    />\n  );\n}",
     "props": [
       {
-        "name": "title",
-        "type": "string",
-        "description": "Main heading.",
-        "default": "\"Backorder allocation\""
+        "name": "product",
+        "type": "BackorderProduct",
+        "default": "Merino crew, Charcoal / L (MC-CHR-L)",
+        "description": "{ name, variant, sku, glyph?, colour?, image? }. Pass `image` for a real product photo; without it the product is drawn in its colour."
       },
       {
-        "name": "subtitle",
-        "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Plan how a receipt clears waiting orders before reserving stock.\""
+        "name": "incoming",
+        "type": "IncomingStock",
+        "default": "120 units on PO-3318 from Holm Knitwear, arriving 19 Oct",
+        "description": "{ units (whole), reference, supplier, arrivesOn (ISO date) }: the receipt being split."
       },
       {
-        "name": "sku",
-        "type": "string",
-        "description": "SKU for the incoming stock and every request."
-      },
-      {
-        "name": "incomingUnits",
-        "type": "number",
-        "description": "Safe integer units available to allocate, from 0 to 1,000,000."
+        "name": "nextIncoming",
+        "type": "{ reference: string; arrivesOn: string }",
+        "default": "PO-3342, arriving 12 Nov",
+        "description": "The receipt after this one. Unfilled units are dated from it; without it they show “No date yet”."
       },
       {
         "name": "requests",
         "type": "BackorderRequest[]",
-        "description": "Unique orders with outstanding units and YYYY-MM-DD order dates. Invalid quantities are excluded."
+        "default": "ten orders owed 156 units",
+        "description": "{ id, orderNumber, customer, channel, orderedOn, promisedOn, units, vip? }. Orders with a duplicate ID, a non-whole quantity or a missing promise date are listed as left out and never allocated."
       },
       {
-        "name": "onAllocate",
-        "type": "(plan:AllocationPlan)=>void|Promise<void>",
-        "description": "Save a reviewed allocation plan. The host must verify and reserve stock atomically."
+        "name": "defaultRule",
+        "type": "\"oldest\" | \"promise\" | \"vip\" | \"most\"",
+        "default": "\"oldest\"",
+        "description": "Rule applied when the desk opens. Each rule’s missed-promise count is shown on its button."
+      },
+      {
+        "name": "handlingDays",
+        "type": "number",
+        "default": "1",
+        "description": "Working days from booking stock in to dispatch. Weekends are skipped."
+      },
+      {
+        "name": "today",
+        "type": "string",
+        "default": "\"2026-10-15\"",
+        "description": "ISO date for the desk’s point of view."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Locale for dates and numbers."
+      },
+      {
+        "name": "workspace",
+        "type": "string",
+        "default": "\"Fieldwork\"",
+        "description": "Store name in the product chrome."
+      },
+      {
+        "name": "onReserve",
+        "type": "(plan: AllocationPlan) => void | string | Promise<void | string>",
+        "description": "Reserve { sku, reference, rule, lines: { requestId, orderNumber, units }[], allocated, unallocated }. Resolve with a reservation reference for the receipt line; reject to keep the allocation and show the failure. Re-check stock and reserve atomically on the server."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "theme ink",
+        "description": "The one accent: slider fills, the active order and the primary action."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Surface palette."
       },
       {
-        "name": "selectMode",
-        "type": "\"custom\" | \"native\"",
-        "default": "\"custom\"",
-        "description": "Animated keyboard-accessible custom listboxes, or native platform pickers with matched 12px insets."
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes for the root."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:400",
-        "click:@fill",
-        "wait:550",
-        "click:@review",
-        "wait:450",
-        "click:@save",
-        "wait:1000"
+        "wait:700",
+        "hover:@rule-promise",
+        "wait:250",
+        "click:@rule-promise",
+        "wait:1400",
+        "click:@reserve",
+        "wait:1700"
       ],
       "loop": false
     },
@@ -11807,14 +11843,40 @@
         "default": "dark"
       },
       {
-        "prop": "selectMode",
-        "label": "Select menus",
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#7aa2ff",
+          "#ff8a4c"
+        ]
+      },
+      {
+        "prop": "defaultRule",
+        "label": "Start with",
         "kind": "segmented",
         "options": [
-          "custom",
-          "native"
+          {
+            "value": "oldest",
+            "label": "Oldest"
+          },
+          {
+            "value": "promise",
+            "label": "Promise"
+          },
+          {
+            "value": "vip",
+            "label": "VIP"
+          },
+          {
+            "value": "most",
+            "label": "Smallest"
+          }
         ],
-        "default": "custom"
+        "default": "oldest",
+        "remount": true
       }
     ]
   },

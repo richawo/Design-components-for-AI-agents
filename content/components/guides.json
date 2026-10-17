@@ -1523,18 +1523,19 @@
     "updated": "2026-10-12"
   },
   "commerce-backorder-allocation": {
-    "useWhen": "Allocating available stock against open backorders with a reviewed decision.",
-    "avoidWhen": "An authoritative inventory ledger or allocation unsupported by current stock data.",
+    "useWhen": "Stock for a back-ordered variant is arriving and someone must decide which waiting orders it fills, seeing the units run out and which customer promises slip under each rule.",
+    "avoidWhen": "You need a full inventory ledger, multi-location transfers or automatic allocation with no human decision; use it for the reviewed split of one receipt.",
     "integration": [
-      "Supply your own records through `requests`. Preserve stable keys or IDs when the data contract provides them.",
-      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+      "Pass the `product`, the `incoming` receipt, the `nextIncoming` one (so unfilled orders get a date) and `requests` with order and promise dates.",
+      "Dispatch dates add `handlingDays` working days to arrival; set `defaultRule` to the policy your team usually applies. Each rule shows its missed-promise count before it is chosen.",
+      "`onReserve` receives the plan in fill order. Re-check stock and reserve atomically on the server; resolve with a reservation reference for the receipt, or reject to keep the allocation."
     ],
     "related": [
-      "commerce-bundle-builder",
-      "commerce-catalog-import",
-      "commerce-customer-timeline"
+      "commerce-variant-stock",
+      "commerce-purchase-order",
+      "commerce-fulfilment-desk"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "commerce-bundle-builder": {
     "useWhen": "Building a product bundle with explicit quantities and pricing.",
