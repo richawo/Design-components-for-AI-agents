@@ -25906,164 +25906,187 @@
   },
   {
     "slug": "input-unit-converter",
-    "name": "Quantity-preserving Unit Converter",
+    "name": "Ruler Unit Converter",
     "tier": "pro",
     "platform": "web",
     "category": "inputs",
-    "description": "A conversion instrument preserves one underlying quantity while changing display units, with affine definitions, explicit rounding and revision-owned exact drafts.",
+    "description": "A measuring input: a big reading that morphs between units, a tape you drag or fling under a fixed line, unit chips with a travelling pill and typed entry.",
     "tags": [
       "units",
       "conversion",
-      "quantity",
-      "decimal",
-      "input",
-      "measurement"
+      "measurement",
+      "ruler",
+      "scrubber",
+      "metric",
+      "imperial",
+      "input"
     ],
     "dependencies": [
-      "motion",
-      "lucide-react"
+      "motion"
     ],
     "theme": "dark",
-    "previewHeight": 980,
-    "usage": "import { InputUnitConverter } from \"@/components/design-for-ai/input-unit-converter\";\n\n<InputUnitConverter value={quantity} onValueChange={setQuantity} units={units} canonicalUnit=\"metres\" precision={2} />\n\n// Supply actual affine definitions. Unit selection preserves the base number; only applying an edited amount changes it.",
+    "previewHeight": 720,
+    "usage": "import { InputUnitConverter } from \"@/components/design-for-ai/input-unit-converter\";\n\n<InputUnitConverter\n  label=\"Cut length\"\n  units={[\n    { id: \"mm\", label: \"Millimetres\", symbol: \"mm\", factor: 1000 },\n    { id: \"in\", label: \"Inches\", symbol: \"in\", factor: 1 / 0.0254 },\n  ]}\n  value={length}\n  onValueChange={setLength}\n  minBase={0}\n  maxBase={4.2}\n/>\n\n// value.base is in base units (here metres); a figure is base × factor + offset.\n// Switching units changes value.unitId only: the base quantity is never rounded through a display unit.",
     "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "default": "\"Cut length\"",
+        "description": "What is being measured. Heads the card and names the reading, the field and the ruler."
+      },
+      {
+        "name": "hint",
+        "type": "string",
+        "default": "\"White oak worktop · stock runs to 4.2 m\"",
+        "description": "One quiet line beside the label."
+      },
       {
         "name": "units",
         "type": "readonly ConversionUnit[]",
-        "description": "Unique nonempty id/label/symbol with positive finite factor and finite optional offset. Display=base×factor+offset. Raw duplicate or invalid definitions remain unavailable."
+        "default": "mm, cm, m, in, ft",
+        "description": "Display units: { id, label, symbol, factor, offset? }. A figure is base × factor + offset, so affine scales such as °F work."
       },
       {
         "name": "value",
-        "type": "UnitConverterValue",
-        "description": "Optional controlled canonical base number and unitId. Pair with onValueChange; unit selection requests the exact unchanged base, and rejected changes remain truthful."
+        "type": "{ base: number; unitId: string }",
+        "description": "Controlled quantity in base units plus the unit it is shown in. Pair with onValueChange."
       },
       {
         "name": "defaultValue",
-        "type": "UnitConverterValue",
-        "description": "Initial local base/unit seed. Use resetKey to reset local values explicitly."
+        "type": "{ base: number; unitId: string }",
+        "default": "{ base: 2.4, unitId: \"m\" }",
+        "description": "Starting quantity when uncontrolled."
       },
       {
         "name": "onValueChange",
-        "type": "(value: UnitConverterValue) => void",
-        "description": "Request atomic canonical quantity and display identity without rounding base while switching units."
-      },
-      {
-        "name": "canonicalUnit",
-        "type": "string",
-        "description": "Literal label for the supplied underlying unit. Keep it consistent with the unit factors and offsets."
+        "type": "(value: { base: number; unitId: string }) => void",
+        "description": "Called on every change: a unit switch (base untouched), a typed value, a tap, a key step, and each frame of a drag or fling."
       },
       {
         "name": "precision",
         "type": "number",
-        "description": "Integer display/edit precision0–6. Rounded output is marked approximately; the underlying amount remains unchanged until a real edited amount is applied.",
-        "default": "2"
+        "default": "2",
+        "description": "Most decimal places a figure shows. A figure that had to round is marked ≈."
       },
       {
         "name": "minBase",
         "type": "number",
-        "description": "Finite lower canonical bound, within ±1e12.",
-        "default": "-1000000"
+        "default": "0",
+        "description": "Lower bound in base units. The tape dims past it and a typed value outside it is refused with the range."
       },
       {
         "name": "maxBase",
         "type": "number",
-        "description": "Finite upper canonical bound at or above minBase, within ±1e12.",
-        "default": "1000000"
+        "default": "4.2",
+        "description": "Upper bound in base units."
+      },
+      {
+        "name": "span",
+        "type": "number",
+        "default": "1",
+        "description": "Base units visible across the ruler. Smaller zooms the tape in; marks re-space to stay readable."
       },
       {
         "name": "locale",
         "type": "string",
-        "description": "Intl numeric display locale. Exact fields use plain decimal text."
-      },
-      {
-        "name": "resetKey",
-        "type": "string | number",
-        "description": "Explicit local quantity and precision-draft lifecycle reset; controlled quantity remains authoritative."
-      },
-      {
-        "name": "status",
-        "type": "\"ready\" | \"loading\" | \"error\"",
-        "description": "Host-owned availability preserving quantity and edited draft."
-      },
-      {
-        "name": "errorMessage",
-        "type": "string",
-        "description": "Actual host availability explanation."
-      },
-      {
-        "name": "onRetry",
-        "type": "() => void",
-        "description": "Actual recovery callback, no fake retry when absent."
+        "default": "\"en-GB\"",
+        "description": "Number formatting locale for the figures."
       },
       {
         "name": "disabled",
         "type": "boolean",
-        "description": "Lock editing and unit changes while retaining the supplied amount."
+        "default": "false",
+        "description": "Shows the reading but takes no input."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ff6a3d\"",
+        "description": "The one accent: the reading line and the measured stretch of tape behind it."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Complete monochromatic graphite/white chrome. Colour is reserved for actual supplied content and purposeful feature accents."
-      },
-      {
-        "name": "labels",
-        "type": "Partial<UnitConverterLabels>",
-        "description": "Heading, unit, underlying amount, rounding, precision and recovery copy."
+        "default": "\"dark\"",
+        "description": "Near-black card with white ink, or the white inverse."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Host layout classes responsive to the actual container."
+        "description": "Extra classes on the card."
       }
     ],
     "added": "2026-10-13",
     "demo": {
       "steps": [
-        "click:@unit-cm",
-        "wait:450",
+        "wait:1700",
         "click:@unit-mm",
-        "wait:450",
-        "click:@unit-m",
-        "wait:450"
+        "wait:900",
+        "click:@unit-in",
+        "wait:900",
+        "click:@ruler:0.68,0.5",
+        "wait:1100"
       ],
       "loop": false
     },
     "controls": [
       {
-        "prop": "theme",
-        "label": "Theme",
-        "kind": "segmented",
-        "options": [
-          "dark",
-          "light"
-        ],
-        "default": "dark"
-      },
-      {
         "prop": "precision",
         "label": "Decimal places",
         "kind": "slider",
         "min": 0,
-        "max": 6,
+        "max": 4,
         "step": 1,
-        "default": 2
+        "default": 2,
+        "group": "Reading"
+      },
+      {
+        "prop": "span",
+        "label": "Ruler span",
+        "kind": "slider",
+        "min": 0.25,
+        "max": 3,
+        "step": 0.25,
+        "unit": "m",
+        "default": 1,
+        "group": "Reading"
       },
       {
         "prop": "disabled",
-        "label": "Read only",
+        "label": "Disabled",
         "kind": "toggle",
-        "default": false
+        "default": false,
+        "group": "Reading"
       },
       {
-        "prop": "status",
-        "label": "Availability",
-        "kind": "select",
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#ff6a3d",
         "options": [
-          "ready",
-          "loading",
-          "error"
+          "#ff6a3d",
+          "#f4f4f5",
+          "#7dd3a8",
+          "#8ab4ff"
         ],
-        "default": "ready"
+        "group": "Look"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
       }
     ]
   },

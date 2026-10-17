@@ -4101,18 +4101,19 @@
     "updated": "2026-10-17"
   },
   "input-unit-converter": {
-    "useWhen": "Changing display units while preserving one underlying physical quantity and explicit precision.",
-    "avoidWhen": "Currency exchange with stale rates or silently changing the underlying value when the display unit changes.",
+    "useWhen": "Entering or reading a physical quantity that people think about in different units: lengths for fabrication or shipping, weights in a recipe, temperatures on a device.",
+    "avoidWhen": "Currency conversion with moving rates, or a plain numeric field where everyone uses the same unit.",
     "integration": [
-      "Supply unique nonempty units with positive finite factor and finite offset, plus one canonical base/unitId pair. Display=base×factor+offset. Changing unit requests the unchanged base, never a rounded inverse; canonicalUnit is the actual underlying unit label.",
-      "Precision0–6 controls display/edit digits. Mark a rounded display explicitly, show canonical limits and preserve untouched authority. Dirty drafts retain their original unit definition when view units change; changed/removed definitions block stale application. Rejected requests and older acknowledgements preserve newer edits.",
-      "Use exact controlled value/onValueChange or local seeds/resetKey. Within an unchanged conversion definition, figures retarget up/down; new definitions show one actual entry value rather than fabricated intermediate units. Live reduced motion stops owners, native controls keep focus, and absent controlled handlers lock editing."
+      "Store value.base in one base unit and value.unitId for the display. Each unit is { id, label, symbol, factor, offset? } and a figure is base × factor + offset, so switching units only changes unitId and the stored quantity is never rounded.",
+      "onValueChange fires on every frame of a drag or fling as well as on taps, keys and typed values; debounce there if you save remotely. Set minBase and maxBase to the real limits so the tape dims past them and typed values outside them are refused with the range.",
+      "span sets the physical zoom of the tape in base units; precision caps the decimals shown, and figures that had to round are marked ≈."
     ],
     "related": [
+      "input-dual-range",
       "input-number-stepper",
       "input-detent-dial"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "input-cron-builder": {
     "useWhen": "Letting someone set when a recurring job runs (reminders, exports, digests, syncs) and see exactly when it will fire, including across a clock change.",
