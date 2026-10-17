@@ -26776,68 +26776,90 @@
   },
   {
     "slug": "legal-clause-library",
-    "name": "Clause Library Browser",
+    "name": "Clause Library",
     "tier": "pro",
     "platform": "web",
     "category": "editors",
-    "description": "Search approved clauses, inspect provenance and insert a chosen revision. A considered, responsive legal workspace with typed integration points.",
+    "description": "A clause library that sets approved wording as real contract paragraphs, redlines revisions and flies the chosen clause into the open section of a draft agreement.",
     "tags": [
       "legal-tech",
-      "workflow",
-      "responsive",
-      "keyboard",
-      "editors"
+      "clause library",
+      "contract drafting",
+      "redline",
+      "defined terms",
+      "playbook",
+      "workflow"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1130,
-    "usage": "import { ClauseLibrary } from \"@/components/design-for-ai/legal-clause-library\";\n\n<ClauseLibrary />",
+    "previewHeight": 1040,
+    "usage": "import { ClauseLibrary } from \"@/components/design-for-ai/legal-clause-library\";\n\n<ClauseLibrary\n  clauses={clauses}\n  terms={definedTerms}\n  document={draft}\n  onInsert={async (insertion) => {\n    await api.drafts.insertClause(draft.id, insertion);\n  }}\n  onUndo={(insertion) => api.drafts.removeClause(draft.id, insertion.sectionId)}\n/>",
     "props": [
-      {
-        "name": "title",
-        "type": "string",
-        "description": "Main heading.",
-        "default": "\"Clause library\""
-      },
-      {
-        "name": "subtitle",
-        "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Find a clause, inspect the approved revision and hand its exact text to your drafting workflow.\""
-      },
       {
         "name": "clauses",
         "type": "LibraryClause[]",
-        "description": "Unique clause revisions with provenance, status and full plain text. Replace illustrative demo wording with the organisation’s approved library."
+        "description": "Library clauses with id, title, category, usage count, playbook guidance and revisions (newest first: version, approved | draft | retired, approver, ISO date, wording with sub-clauses split by a blank line)."
+      },
+      {
+        "name": "terms",
+        "type": "DefinedTerm[]",
+        "description": "Defined terms of the agreement ({ term, definition }). Matches in the wording are underlined and explain themselves on hover, focus or tap."
+      },
+      {
+        "name": "document",
+        "type": "DraftDocument",
+        "description": "The agreement being drafted: title, parties, reference and numbered sections. A section without text is an open insertion point; `requires` names the playbook clause it expects."
+      },
+      {
+        "name": "defaultClauseId",
+        "type": "string",
+        "description": "Clause opened first. Defaults to the first clause."
+      },
+      {
+        "name": "defaultShowChanges",
+        "type": "boolean",
+        "default": "false",
+        "description": "Start with the redline against the previous revision showing."
       },
       {
         "name": "onInsert",
-        "type": "(clause:ClauseInsertion)=>void|Promise<void>",
-        "description": "Insert the exact selected approved revision into the host draft. The host controls document context and suitability review."
+        "type": "(insertion: ClauseInsertion) => void | Promise<void>",
+        "description": "Writes the approved revision into the target section ({ clauseId, version, text, sectionId, number }). Resolve to fly the clause into the draft; reject to keep the selection and offer a retry."
+      },
+      {
+        "name": "onUndo",
+        "type": "(insertion: ClauseInsertion) => void | Promise<void>",
+        "description": "Removes the last inserted clause. A rejection puts the clause back and says so."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#5b8def\"",
+        "description": "The one accent: selection bar, defined terms, the open section and the landing highlight."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Graphite chrome with a paper draft, or the light inverse."
       },
       {
-        "name": "selectMode",
-        "type": "\"custom\" | \"native\"",
-        "default": "\"custom\"",
-        "description": "Animated keyboard-accessible custom listboxes, or native platform pickers with matched 12px insets."
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:400",
-        "click:@clause-1",
-        "wait:700",
+        "wait:500",
+        "click:@compare",
+        "wait:1200",
         "click:@insert",
-        "wait:1200"
+        "wait:2300"
       ],
       "loop": false
     },
@@ -26853,14 +26875,23 @@
         "default": "dark"
       },
       {
-        "prop": "selectMode",
-        "label": "Select menus",
-        "kind": "segmented",
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#5b8def",
         "options": [
-          "custom",
-          "native"
-        ],
-        "default": "custom"
+          "#5b8def",
+          "#e5484d",
+          "#8b7cf6",
+          "#0ea5a4"
+        ]
+      },
+      {
+        "prop": "defaultShowChanges",
+        "label": "Show redline",
+        "kind": "toggle",
+        "default": false,
+        "remount": true
       }
     ]
   },

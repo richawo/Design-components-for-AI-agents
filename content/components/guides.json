@@ -2606,18 +2606,19 @@
     "updated": "2026-10-12"
   },
   "legal-clause-library": {
-    "useWhen": "Finding and reviewing supplied clause text, revisions and usage context.",
-    "avoidWhen": "Automatically generated legal advice or unreviewed language applied to an agreement.",
+    "useWhen": "Drafting agreements from an approved clause library, where lawyers compare revisions, check defined terms and insert the approved wording into an open section of a draft.",
+    "avoidWhen": "Generating contract language or giving legal advice. It only moves wording your team has approved; draft and retired revisions can be read but not inserted.",
     "integration": [
-      "Supply your own records through `clauses`. Preserve stable keys or IDs when the data contract provides them.",
-      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+      "Pass `clauses` with revisions newest first, `terms` for defined-term tooltips and a `document` whose sections without text are insertion points (`requires` names the playbook clause).",
+      "`onInsert` receives `{ clauseId, version, text, sectionId, number }`. Resolve to fly the clause into the draft; reject to keep the selection and offer a retry. `onUndo` removes the last insertion.",
+      "Sub-clauses are separated by a blank line in `text`; they are numbered from the target section on insert."
     ],
     "related": [
       "legal-version-history",
-      "editor-node-graph",
-      "app-permission-matrix"
+      "legal-signature-request",
+      "legal-matter-dashboard"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "legal-document-requests": {
     "useWhen": "Tracking requested documents and their supplied submission state.",
