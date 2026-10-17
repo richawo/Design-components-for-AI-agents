@@ -27699,78 +27699,102 @@
   },
   {
     "slug": "legal-signature-request",
-    "name": "Signature Request Composer",
+    "name": "Signature Request",
     "tier": "pro",
     "platform": "web",
     "category": "forms",
-    "description": "Prepare a document, signer order and reviewed signature-request payload. A considered, responsive legal workspace with typed integration points.",
+    "description": "The agreement’s execution page on paper with fields tagged by signer, a signing order you drag to reorder, and a routed envelope as each signature writes itself in.",
     "tags": [
       "legal-tech",
+      "e-signature",
+      "signing order",
+      "contracts",
+      "execution",
       "workflow",
-      "responsive",
-      "keyboard",
-      "forms"
+      "drag and drop"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1300,
-    "usage": "import { SignatureRequest } from \"@/components/design-for-ai/legal-signature-request\";\n\n<SignatureRequest />",
+    "previewHeight": 980,
+    "usage": "import { SignatureRequest } from \"@/components/design-for-ai/legal-signature-request\";\n\n<SignatureRequest\n  document={agreement}\n  signers={signers}\n  progress={envelope?.signers}\n  onSend={async (draft) => {\n    await api.envelopes.create(draft);\n  }}\n/>",
     "props": [
       {
-        "name": "title",
+        "name": "document",
+        "type": "SigningAgreement",
+        "description": "The agreement: { id, reference, title, version, pages, parties, clause: { number, heading, paragraphs } }. Its execution page is drawn on paper."
+      },
+      {
+        "name": "signers",
+        "type": "Signer[]",
+        "description": "People signing, in their default order: { id, name, email, title, party }. Each gets a signature, date and initials field tagged in their colour."
+      },
+      {
+        "name": "defaultMode",
+        "type": "\"sequential\" | \"parallel\"",
+        "default": "\"sequential\"",
+        "description": "Sign in order (the envelope routes from one signer to the next) or all at once."
+      },
+      {
+        "name": "defaultMessage",
         "type": "string",
-        "description": "Main heading.",
-        "default": "\"Signature request\""
+        "description": "The note sent with the request. Editable before sending."
       },
       {
-        "name": "subtitle",
-        "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Choose the exact document revision, confirm recipients and review the signing order before handoff.\""
+        "name": "expiryOptions",
+        "type": "number[]",
+        "default": "[7, 14, 30]",
+        "description": "Days after which an incomplete request lapses, offered as a segmented choice."
       },
       {
-        "name": "documents",
-        "type": "SigningDocument[]",
-        "description": "Available document revisions with unique IDs and positive page counts. The host owns the document bytes and signature fields."
+        "name": "defaultExpiryDays",
+        "type": "number",
+        "default": "14",
+        "description": "The expiry chosen first; must be one of expiryOptions."
       },
       {
-        "name": "defaultRecipients",
-        "type": "SigningRecipient[]",
-        "description": "Initial signer rows. Each signer needs a unique ID and email."
+        "name": "progress",
+        "type": "SignerProgress[]",
+        "description": "What your signing provider reports: { signerId, state: waiting | sent | viewed | signed | declined, at? }. Supplying it shows the request as sent; new signatures write themselves in."
       },
       {
         "name": "referenceDate",
         "type": "string",
-        "description": "ISO date for expiry validation."
+        "description": "ISO date treated as today, for the lapse date. Defaults to the current date."
       },
       {
-        "name": "onCreate",
-        "type": "(request:SignatureRequestDraft)=>void|Promise<void>",
-        "description": "Prepare the reviewed request with the signing provider. Delivery, authentication and legal execution remain the host’s responsibility."
+        "name": "onSend",
+        "type": "(draft: SignatureRequestDraft) => void | Promise<void>",
+        "description": "Receives { documentId, version, mode, signers (ordered, with order), message, expiresOn }. Resolve once the envelope is out; reject to keep the draft and say so."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#5b8def\"",
+        "description": "The one accent: the routed envelope, progress ring and executed stamp."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Graphite chrome or the light inverse. The page stays paper in both."
       },
       {
-        "name": "selectMode",
-        "type": "\"custom\" | \"native\"",
-        "default": "\"custom\"",
-        "description": "Animated keyboard-accessible custom listboxes, or native platform pickers with matched 12px insets."
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:350",
-        "click:@up-1",
         "wait:600",
-        "click:@review",
-        "wait:1800"
+        "click:@later-maya",
+        "wait:500",
+        "click:@send",
+        "wait:3300"
       ],
       "loop": false
     },
@@ -27786,14 +27810,33 @@
         "default": "dark"
       },
       {
-        "prop": "selectMode",
-        "label": "Select menus",
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#5b8def",
+        "options": [
+          "#5b8def",
+          "#e5484d",
+          "#8b7cf6",
+          "#0ea5a4"
+        ]
+      },
+      {
+        "prop": "defaultMode",
+        "label": "Signing",
         "kind": "segmented",
         "options": [
-          "custom",
-          "native"
+          {
+            "value": "sequential",
+            "label": "In order"
+          },
+          {
+            "value": "parallel",
+            "label": "All at once"
+          }
         ],
-        "default": "custom"
+        "default": "sequential",
+        "remount": true
       }
     ]
   },

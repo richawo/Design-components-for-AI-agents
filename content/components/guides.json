@@ -2709,19 +2709,19 @@
     "updated": "2026-10-17"
   },
   "legal-signature-request": {
-    "useWhen": "Reviewing a document revision, signer order and provider handoff payload.",
-    "avoidWhen": "Identity verification, delivery or legally binding execution implemented only in the composer.",
+    "useWhen": "Sending an agreement for signature where the signing order matters and people need to see which fields belong to whom, then follow the envelope from signer to signer until it is executed.",
+    "avoidWhen": "Placing fields on arbitrary PDFs or verifying signer identity. Field placement, authentication, delivery and the executed copy belong to your signing provider; this component prepares the request and shows its progress.",
     "integration": [
-      "Supply your own records through `documents`, `defaultRecipients`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onCreate` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
-      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+      "Pass `document` (reference, version, pages, parties and the execution clause) and `signers` with id, name, email, title and party.",
+      "`onSend` receives { documentId, version, mode, signers (ordered, with order), message, expiresOn }. Resolve once the envelope exists; reject to keep the draft.",
+      "Feed provider status back through `progress` ({ signerId, state, at }). Supplying it shows the tracker; new signatures draw themselves in and the request stamps as executed when everyone has signed."
     ],
     "related": [
       "legal-matter-intake",
-      "forms-preference-center",
-      "hr-interview-scorecard"
+      "legal-clause-library",
+      "legal-obligation-tracker"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "legal-version-history": {
     "useWhen": "Comparing supplied document revisions and reviewing their differences.",
