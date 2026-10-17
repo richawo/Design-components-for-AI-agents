@@ -1,5 +1,8 @@
 # Site performance and preview preferences
 
+For the individual-page loading and Cloudflare recovery follow-up, see
+[the 17 October comparison](COMPONENT_LOADING_2026-10-17.md).
+
 Updated on 12 October 2026. The changes preserve the existing navigation,
 preview controls and visible animation design.
 
