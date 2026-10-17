@@ -37808,68 +37808,102 @@
   },
   {
     "slug": "saas-audit-trail",
-    "name": "Audit Trail Explorer",
+    "name": "Audit Log Explorer",
     "tier": "pro",
     "platform": "web",
     "category": "app",
-    "description": "A monochrome audit timeline with animated event details, field diffs, date filters and keyboard-accessible custom or native menus.",
+    "description": "A dense audit log with actor marks and outcomes, an activity histogram you brush to set the time range, a before/after JSON diff for each event and filtered export.",
     "tags": [
       "saas",
-      "workflow",
-      "responsive",
-      "keyboard",
-      "app"
+      "audit log",
+      "security",
+      "compliance",
+      "histogram",
+      "diff",
+      "export",
+      "admin"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 980,
-    "usage": "import { AuditTrail } from \"@/components/design-for-ai/saas-audit-trail\";\n\n<AuditTrail />",
+    "previewHeight": 1120,
+    "usage": "import { AuditTrail } from \"@/components/design-for-ai/saas-audit-trail\";\n\nexport default function AuditLog() {\n  return (\n    <AuditTrail\n      events={events}\n      now={new Date().toISOString()}\n      hours={72}\n      onExport={({ eventIds, format, filters }) => api.audit.export({ ids: eventIds, format, filters })}\n    />\n  );\n}",
     "props": [
-      {
-        "name": "title",
-        "type": "string",
-        "description": "Main heading.",
-        "default": "\"Audit trail\""
-      },
-      {
-        "name": "subtitle",
-        "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Every change, in context. Trace the action, inspect the record.\""
-      },
       {
         "name": "events",
         "type": "WorkspaceAuditEvent[]",
-        "description": "Unique read-only events with UTC ISO timestamps and before/after field snapshots. The host owns authoritative audit storage."
+        "default": "66 Kestrel events over three days",
+        "description": "{ id, at (ISO), actor, actorKind?: \"user\" | \"api\" | \"system\", action, target, category?, outcome: \"success\" | \"failed\" | \"denied\", requestId, ip?, location?, userAgent?, before, after }. Unreadable timestamps and repeated ids are reported and left out, never guessed."
       },
       {
         "name": "onExport",
-        "type": "(selection:AuditExport)=>void|Promise<void>",
-        "description": "Export the exact currently filtered event IDs with their filter context."
+        "type": "(selection: AuditExport) => void | Promise<void>",
+        "description": "{ eventIds, format: \"csv\" | \"json\", filters: { query, actor, outcome, from, to } }: exactly the events in view. Reject to keep the selection and show the error."
       },
       {
-        "name": "theme",
-        "type": "\"dark\" | \"light\"",
-        "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "name": "now",
+        "type": "string",
+        "default": "\"2026-10-17T09:42:00Z\"",
+        "description": "ISO instant the activity histogram ends at. Pass the current time."
+      },
+      {
+        "name": "hours",
+        "type": "number",
+        "default": "72",
+        "description": "Hours of activity in the histogram, one bar per hour."
       },
       {
         "name": "selectMode",
         "type": "\"custom\" | \"native\"",
         "default": "\"custom\"",
-        "description": "Animated custom listboxes or native pickers with matched 12px text and chevron insets."
+        "description": "Animated keyboard listboxes for the Actor and Outcome filters, or native selects with the same inset chevron."
+      },
+      {
+        "name": "defaultEventId",
+        "type": "string",
+        "description": "The event open on mount. Defaults to the newest."
+      },
+      {
+        "name": "workspace",
+        "type": "string",
+        "default": "\"Kestrel\"",
+        "description": "Workspace shown in the chrome."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Locale for dates and counts. Times are always UTC."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "theme ink",
+        "description": "The one accent: the selected row, the brushed range and the export button."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface palette."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes for the root."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:350",
-        "click:@event-2",
         "wait:700",
-        "click:@changed-only",
-        "wait:1200"
+        "hover:@histogram:0.62,0.5",
+        "drag:0.97,0.3",
+        "wait:700",
+        "click:@event-evt-8f2015",
+        "wait:1500"
       ],
       "loop": false
     },
@@ -37883,6 +37917,37 @@
           "light"
         ],
         "default": "dark"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#7aa2ff",
+          "#ff8a4c"
+        ]
+      },
+      {
+        "prop": "hours",
+        "label": "Window",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": 24,
+            "label": "24h"
+          },
+          {
+            "value": 48,
+            "label": "48h"
+          },
+          {
+            "value": 72,
+            "label": "72h"
+          }
+        ],
+        "default": 72
       },
       {
         "prop": "selectMode",

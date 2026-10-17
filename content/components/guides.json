@@ -2989,18 +2989,20 @@
     "updated": "2026-10-17"
   },
   "saas-audit-trail": {
-    "useWhen": "Exploring recorded actor, resource and configuration changes with filters and details.",
-    "avoidWhen": "Creating an immutable security log or inferring events that the backend did not record.",
+    "useWhen": "Investigating who changed what and when: brushing a burst of activity, filtering by actor or outcome, reading the record's before and after, and exporting exactly that slice.",
+    "avoidWhen": "You need tamper-evident storage or a SIEM; this explores events your backend already records and never infers missing ones.",
     "integration": [
-      "Supply your own records through `events`. Preserve stable keys or IDs when the data contract provides them.",
-      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+      "Pass `events` with ISO `at` times (offsets are honoured, everything shows in UTC), `before` and `after` snapshots, and optional actorKind, IP, location and client.",
+      "Set `now` and `hours` so the histogram covers the window you retain at hourly resolution; events outside it stay searchable in the log.",
+      "`onExport` receives the exact visible `eventIds` with the format and filter context; reject to keep the selection and show the reason.",
+      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both keep the same value contract."
     ],
     "related": [
       "saas-access-requests",
-      "saas-customer-health",
-      "saas-integration-manager"
+      "saas-integration-manager",
+      "saas-customer-health"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "saas-customer-health": {
     "useWhen": "A customer-success team reviews its book of accounts by health, needs to see which weighted drivers pull each score down, and logs the next play for the owner.",
