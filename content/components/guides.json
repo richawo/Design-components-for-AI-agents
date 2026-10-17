@@ -2514,18 +2514,19 @@
     "updated": "2026-10-12"
   },
   "hr-leave-approval": {
-    "useWhen": "Reviewing dates, coverage and an explicit leave decision.",
-    "avoidWhen": "An entitlement calculation or approval disconnected from your HR source of truth.",
+    "useWhen": "Approving time off where cover matters: a manager sees the request across the team calendar, who else is off, each day’s cover against the minimum and the allowance before and after.",
+    "avoidWhen": "Employees requesting leave, accruals or payroll; this is the approver’s side and changes nothing until your host records the decision.",
     "integration": [
-      "Supply your own records through `requests`, `balances`, `coverage`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onDecision` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+      "Express durations, balances and cover in half-day units; invalid dates or duplicate request IDs are named and can’t be approved.",
+      "Pass `absences` for leave already booked so the calendar shows who else is off; cover figures should already account for them.",
+      "`onDecision` receives { requestId, decision, note } and can reject to keep the note; `onReopen` powers Undo."
     ],
     "related": [
-      "hr-capacity-planner",
       "hr-shift-coverage",
-      "fashion-launch-calendar"
+      "hr-people-dashboard",
+      "hr-employee-onboarding"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "hr-org-explorer": {
     "useWhen": "Showing who reports to whom as a tree people can move through: focus a person, see their chain of command, team, tenure and open roles.",

@@ -25909,72 +25909,107 @@
   },
   {
     "slug": "hr-leave-approval",
-    "name": "Leave Approval Workspace",
+    "name": "Leave Approval",
     "tier": "pro",
     "platform": "web",
     "category": "date-time",
-    "description": "Inspect requests, remaining allowance and coverage before a decision. A considered, responsive hr workspace with typed integration points.",
+    "description": "Approve or decline leave against a team calendar: the request drawn across who else is off, daily cover against the minimum, and a before-and-after balance.",
     "tags": [
       "hr",
-      "workflow",
-      "responsive",
-      "keyboard",
-      "date-time"
+      "leave",
+      "time off",
+      "approvals",
+      "team calendar",
+      "coverage"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1160,
-    "usage": "import { LeaveApproval } from \"@/components/design-for-ai/hr-leave-approval\";\n\n<LeaveApproval />",
+    "previewHeight": 1000,
+    "usage": "import { LeaveApproval } from \"@/components/design-for-ai/hr-leave-approval\";\n\n<LeaveApproval\n  requests={requests}\n  balances={balances}\n  coverage={coverage}\n  absences={absences}\n  onDecision={async (decision) => {\n    await api.leave.decide(decision);\n  }}\n  onReopen={async ({ requestId }) => {\n    await api.leave.reopen(requestId);\n  }}\n/>",
     "props": [
-      {
-        "name": "title",
-        "type": "string",
-        "description": "Main heading.",
-        "default": "\"Leave requests\""
-      },
-      {
-        "name": "subtitle",
-        "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Review the requested working days, available allowance and daily coverage before making a decision.\""
-      },
       {
         "name": "requests",
         "type": "LeaveRequest[]",
-        "description": "Unique pending requests. Each date occurs once and uses one half-day unit or two full-day units; the host supplies chargeable working days."
+        "default": "4 requests, 19–30 Oct 2026",
+        "description": "{ id, employeeId, employee, team, type, note, days: { date, units }[] }. Units are half days (1 or 2), each date once. Duplicate IDs are left out and named; invalid dates block approval."
       },
       {
         "name": "balances",
         "type": "LeaveBalance[]",
-        "description": "Unique employee allowance balances in non-negative half-day units before these pending requests."
+        "default": "Demo balances",
+        "description": "{ employeeId, availableUnits, entitlementUnits? } in half days, before these requests. The entitlement sets the meter’s full scale."
       },
       {
         "name": "coverage",
         "type": "LeaveCoverage[]",
-        "description": "Unique team/date coverage rows before pending requests, expressed in half-person-day units."
+        "default": "Two teams, two weeks",
+        "description": "{ team, date, availableUnits, minimumUnits } in half-person-days, before pending requests. Days below minimum need a note to approve."
+      },
+      {
+        "name": "absences",
+        "type": "LeaveAbsence[]",
+        "default": "Demo absences with the demo requests, otherwise []",
+        "description": "Booked leave { id, employee, team, start, end, type? } shown on the calendar so you can see who else is off."
       },
       {
         "name": "onDecision",
-        "type": "(decision:LeaveDecision)=>void|Promise<void>",
-        "description": "Persist a manager decision. Acknowledged approvals consume local allowance and coverage, preventing conflicting follow-on approvals."
+        "type": "(decision: LeaveDecision) => void | Promise<void>",
+        "description": "Persist { requestId, decision: \"approve\" | \"decline\", note }. Reject to keep the request open and the note intact."
+      },
+      {
+        "name": "onReopen",
+        "type": "(decision: LeaveDecision) => void | Promise<void>",
+        "description": "Reopen a decided request; powers Undo and Reopen. Omit to hide them."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Leave requests\"",
+        "description": "Page name in the header."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "description": "Context after the status, e.g. a department."
+      },
+      {
+        "name": "showCoverage",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show each day’s cover against the team minimum on the calendar."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Formats dates and times."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#c5f25a\"",
+        "description": "The request band, approved state and progress."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Surface palette."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:350",
-        "click:@approve",
+        "wait:1100",
+        "click:@request-1",
+        "wait:900",
+        "click:@request-0",
         "wait:500",
-        "click:@confirm",
-        "wait:1600"
+        "click:@approve",
+        "wait:1700"
       ],
       "loop": false
     },
@@ -25988,6 +26023,24 @@
           "light"
         ],
         "default": "dark"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#c5f25a",
+        "options": [
+          "#c5f25a",
+          "#ff8a5c",
+          "#7cc4ff",
+          "#f4f4f5"
+        ]
+      },
+      {
+        "prop": "showCoverage",
+        "label": "Daily cover",
+        "kind": "toggle",
+        "default": true
       }
     ]
   },
