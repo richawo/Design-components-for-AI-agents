@@ -33531,6 +33531,7 @@
       "dark"
     ],
     "dependencies": [
+      "expo-blur",
       "expo-linear-gradient",
       "react-native-svg"
     ],
@@ -33542,7 +33543,7 @@
         "name": "file",
         "type": "PreviewFile",
         "default": "Northwind MSA — v3 redline.pdf, 12 pages, 4.8 MB",
-        "description": "id, name, kind label, sizeBytes, pages, modified and optional sharedBy."
+        "description": "id, name, kind label, sizeBytes, pages, modified and optional sharedBy. Pages must be a positive safe integer; invalid counts show the unavailable-preview panel."
       },
       {
         "name": "renderPage",

@@ -17,7 +17,7 @@ needs re-recording, whether its poster is current, and the state of its browser 
 | `mobile-budget-envelope` | new | current | review-mobile-probe passes with source fixtures; web accessibility state fixed |
 | `mobile-channel-thread` | current | current | review-mobile-probe passes with source fixtures; web accessibility state fixed |
 | `mobile-day-planner` | current | current |  |
-| `mobile-file-preview` | current | current |  |
+| `mobile-file-preview` | current | current | source-fixture regression and accessibility pass; keyboard scrubbing, invalid counts and download retry covered |
 | `mobile-focus-session` | current | current | review-mobile-probe passes with source fixtures; web accessibility state fixed |
 | `mobile-habit-grid` | current | current |  |
 | `mobile-journal-prompt` | current | current |  |
