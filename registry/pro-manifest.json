@@ -37027,69 +37027,105 @@
     "tier": "pro",
     "platform": "web",
     "category": "app",
-    "description": "Prioritise tickets, assign ownership and save a response draft. A considered, responsive SaaS workspace with typed integration points.",
+    "description": "A support inbox where tickets fly into Urgent, High, Normal and Low queues as you route them, with live SLA clocks draining on every card and an owner picked by load.",
     "tags": [
       "saas",
-      "workflow",
-      "responsive",
-      "keyboard",
-      "app"
+      "support",
+      "helpdesk",
+      "triage",
+      "sla",
+      "inbox",
+      "queue",
+      "admin"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1260,
-    "usage": "import { SupportTriage } from \"@/components/design-for-ai/saas-support-triage\";\n\n<SupportTriage />",
+    "previewHeight": 1000,
+    "usage": "import { SupportTriage } from \"@/components/design-for-ai/saas-support-triage\";\n\nexport default function Triage() {\n  return (\n    <SupportTriage\n      tickets={tickets}\n      agents={agents}\n      sla={{ urgent: 60, high: 240, normal: 480, low: 1440 }}\n      triageWithin={30}\n      now={new Date().toISOString()}\n      onTriage={({ ticketId, priority, assigneeId }) => api.tickets.route(ticketId, { priority, assigneeId })}\n      onUndo={(u) => api.tickets.unroute(u.ticketId)}\n    />\n  );\n}",
     "props": [
-      {
-        "name": "title",
-        "type": "string",
-        "description": "Main heading.",
-        "default": "\"Support inbox\""
-      },
-      {
-        "name": "subtitle",
-        "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Review the conversation, set priority and ownership, and save a response draft with the ticket state.\""
-      },
       {
         "name": "tickets",
         "type": "SupportTicket[]",
-        "description": "Unique support tickets with ordered message history and an existing unsent response draft."
+        "default": "nine Kestrel tickets, five untriaged",
+        "description": "{ id, subject, customer, company, account?, channel: \"email\" | \"chat\" | \"api\", receivedAt (ISO), messages: { id, author, body, at, fromCustomer }[], tags?, priority?, assigneeId? }. Tickets without a priority wait in the inbox."
       },
       {
         "name": "agents",
         "type": "SupportAgent[]",
-        "description": "Assignable support owners with unique IDs."
+        "default": "Noor, Priya, Alex, Sam (away)",
+        "description": "{ id, name, openCount, away? }. The least-loaded available agent is suggested; away agents can’t be chosen."
       },
       {
-        "name": "onSave",
-        "type": "(update:SupportTicketUpdate)=>void|Promise<void>",
-        "description": "Persist ticket triage and the unsent draft. This callback must not send a customer response without the host’s separate send workflow."
+        "name": "sla",
+        "type": "Record<\"urgent\" | \"high\" | \"normal\" | \"low\", number>",
+        "default": "{ urgent: 60, high: 240, normal: 480, low: 1440 }",
+        "description": "First-reply targets in minutes. Queue clocks run from each ticket’s receivedAt."
+      },
+      {
+        "name": "triageWithin",
+        "type": "number",
+        "default": "30",
+        "description": "Minutes an untriaged ticket may wait before its inbox clock turns late."
+      },
+      {
+        "name": "now",
+        "type": "string",
+        "default": "\"2026-10-17T09:42:00Z\"",
+        "description": "ISO instant the clocks start from; they then tick in real time. Pass the current time."
+      },
+      {
+        "name": "onTriage",
+        "type": "(update: SupportTriageUpdate) => void | Promise<void>",
+        "description": "Persist { ticketId, priority, assigneeId }. Reject to send the ticket back to the inbox with the failure shown."
+      },
+      {
+        "name": "onUndo",
+        "type": "(update: SupportTriageUpdate) => void | Promise<void>",
+        "description": "Called when a route is undone from the toast."
+      },
+      {
+        "name": "workspace",
+        "type": "string",
+        "default": "\"Kestrel\"",
+        "description": "Workspace shown in the chrome."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Locale for message times."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "theme ink",
+        "description": "The one accent: open ticket, chosen owner and focus rings."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Surface palette."
       },
       {
-        "name": "selectMode",
-        "type": "\"custom\" | \"native\"",
-        "default": "\"custom\"",
-        "description": "Animated keyboard-accessible custom listboxes, or native platform pickers with matched 12px insets."
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes for the root."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:350",
-        "click:@ticket-1",
-        "wait:850",
-        "click:@ticket-2",
-        "wait:1200"
+        "wait:600",
+        "click:@route-low",
+        "wait:700",
+        "click:@ticket-sup-2481",
+        "wait:500",
+        "click:@route-urgent",
+        "wait:1400"
       ],
       "loop": false
     },
@@ -37105,14 +37141,25 @@
         "default": "dark"
       },
       {
-        "prop": "selectMode",
-        "label": "Select menus",
-        "kind": "segmented",
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
         "options": [
-          "custom",
-          "native"
-        ],
-        "default": "custom"
+          "#f4f4f5",
+          "#7aa2ff",
+          "#ff8a4c"
+        ]
+      },
+      {
+        "prop": "triageWithin",
+        "label": "Triage within",
+        "kind": "slider",
+        "min": 10,
+        "max": 60,
+        "step": 5,
+        "unit": "m",
+        "default": 30
       }
     ]
   },

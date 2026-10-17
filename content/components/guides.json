@@ -3053,19 +3053,20 @@
     "updated": "2026-10-12"
   },
   "saas-support-triage": {
-    "useWhen": "Reviewing a support queue and recording explicit assignment or priority changes.",
-    "avoidWhen": "A communication backend or automatic customer messages without host confirmation.",
+    "useWhen": "A support team routes incoming tickets into priority queues with an owner, watching first-reply SLAs count down on every ticket as they go.",
+    "avoidWhen": "You are building the reply composer or a customer-facing help centre; this surface routes and assigns but never messages the customer.",
     "integration": [
-      "Supply your own records through `tickets`, `agents`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onSave` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
-      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+      "Tickets without a `priority` wait in the inbox; ones with a priority start in their queue. Clocks run from each `receivedAt` against your `sla` minutes.",
+      "Pass `now` as the current time; the clocks then tick in real time and pause while the component is off screen or the tab is hidden.",
+      "`onTriage` receives { ticketId, priority, assigneeId }; reject it and the ticket returns to the inbox with the error shown. `onUndo` mirrors the toast's Undo.",
+      "Keys 1–4 route the open ticket and J/K move through the inbox, so agents can triage without the mouse."
     ],
     "related": [
-      "saas-access-requests",
-      "saas-audit-trail",
-      "saas-customer-health"
+      "saas-customer-health",
+      "saas-notification-inbox",
+      "collab-comment-thread"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "saas-usage-policy": {
     "useWhen": "Admins set warning thresholds, hard limits and enforcement for metered resources and need to see when current or simulated usage would cross them this billing period.",
