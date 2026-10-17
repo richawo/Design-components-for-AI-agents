@@ -1235,120 +1235,174 @@
     "tier": "pro",
     "platform": "web",
     "category": "ai",
-    "description": "Two supplied answers share an inspectable evidence ledger and an explicit preference, with honest pending, rejection and unavailable-content states.",
+    "description": "Two AI answers side by side: a Differences lens highlights what only one says, shared citations, and a blind vote that reveals the models.",
     "tags": [
       "ai",
       "answer comparison",
-      "evidence",
+      "side by side",
       "citations",
       "preference",
-      "dark"
+      "evaluation"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1200,
-    "usage": "import { AiAnswerCompare } from \"@/components/design-for-ai/ai-answer-compare\";\n\n<AiAnswerCompare request={question} responses={answers} evidence={sources} value={preference} onValueChange={savePreference} resetKey={comparisonId} />",
+    "previewHeight": 1180,
+    "usage": "import { AiAnswerCompare } from \"@/components/design-for-ai/ai-answer-compare\";\n\n<AiAnswerCompare\n  question={prompt}\n  answers={[answerA, answerB]}\n  sources={sources}\n  onSubmit={(verdict) => savePreference(runId, verdict)}\n/>",
     "props": [
       {
-        "name": "request",
+        "name": "question",
         "type": "string",
-        "description": "The shared question. Exact content changes start a new local comparison and retire pending work even when answer IDs are reused.",
-        "default": "\"How should we introduce a new navigation pattern without losing the team's current working flow?\""
+        "default": "\"Checkout p95 went from 380 ms to 1.2 s after Tuesday’s deploy. What should we look at first?\"",
+        "description": "The prompt both answers respond to, set in serif above them."
       },
       {
-        "name": "responses",
-        "type": "AnswerCompareResponse[]",
-        "description": "Unique answer IDs, labels/descriptions, locally unique plain-text sections with optional evidence IDs, actual ready/loading/error availability and selection permission.",
-        "default": "2 original offline answers"
+        "name": "answers",
+        "type": "[CompareAnswer, CompareAnswer]",
+        "default": "Halcyon 2 and Northwind 4 on a latency regression",
+        "description": "{ id, model, latencyMs?, paragraphs: ComparePart[][], status?: \"ready\" | \"loading\" | \"error\", error? }. A part is { text, claim?, cite? }: spans in both answers with the same claim key are the same point; a key only one answer uses is a difference."
       },
       {
-        "name": "evidence",
-        "type": "AnswerCompareEvidence[]",
-        "description": "Unique supplied source IDs, label/provenance/excerpt and optional navigable URL. Unknown referenced IDs remain unavailable.",
-        "default": "3 original offline project records"
+        "name": "sources",
+        "type": "CompareSource[]",
+        "default": "5 sources (deploy, traces, pg_stat, pool, postmortem)",
+        "description": "{ id, title, origin, quote? }. Numbered in this order; markers in either answer point here, and the rail shows which answer cites each one."
+      },
+      {
+        "name": "reasons",
+        "type": "string[]",
+        "default": "[\"More accurate\", \"Better sourced\", \"More specific\", \"Easier to act on\", \"Shorter\"]",
+        "description": "Optional reasons offered once a preference is picked. Pass [] to hide them."
+      },
+      {
+        "name": "blind",
+        "type": "boolean",
+        "default": "true",
+        "description": "Hide which model wrote which answer until the vote is recorded; the names then blur in."
+      },
+      {
+        "name": "defaultLens",
+        "type": "\"read\" | \"diff\"",
+        "default": "\"read\"",
+        "description": "Open in plain reading or with differences highlighted."
       },
       {
         "name": "value",
-        "type": "string | null",
-        "description": "Controlled preference; null means no choice. Explicit authority survives new questions. Without observer selection is read-only."
+        "type": "CompareVerdict | null",
+        "description": "Controlled recorded verdict { choice: \"a\" | \"tie\" | \"b\", reasons }. null means no vote yet."
       },
       {
         "name": "defaultValue",
-        "type": "string | null",
-        "description": "Initial local preference for a new question/workspace; reused with reset, not the last prior local choice.",
-        "default": "null"
+        "type": "CompareVerdict | null",
+        "default": "null",
+        "description": "Initial recorded verdict when uncontrolled."
       },
       {
-        "name": "onValueChange",
-        "type": "(id: string | null, response: AnswerCompareResponse | undefined, signal: AbortSignal) => void | Promise<void>",
-        "description": "Real preference request. Local state commits only after acknowledgment; controlled authority stays truthful. Honor cancellation before committing host results."
+        "name": "onSubmit",
+        "type": "(verdict: CompareVerdict) => void | Promise<void>",
+        "description": "Records the vote. Return a promise to show pending; a rejection keeps the choice and reasons and shows its message."
       },
       {
-        "name": "resetKey",
-        "type": "string | number",
-        "description": "Explicit comparison identity when replacing answers for the same question. Clears local feedback/inspection and retires old requests."
+        "name": "onRetry",
+        "type": "(answerId: string) => void",
+        "description": "Shows Regenerate on an answer whose status is error."
       },
       {
-        "name": "title",
+        "name": "accent",
         "type": "string",
-        "description": "Concise comparison heading.",
-        "default": "\"Two answers. One shared question.\""
-      },
-      {
-        "name": "description",
-        "type": "string",
-        "description": "Explain the shared evidence and explicit decision.",
-        "default": "\"Read the supplied answers against the same evidence, then choose the one you prefer.\""
+        "default": "\"#f5c66b\"",
+        "description": "The one accent: the difference highlighter, the active citation, the chosen option and the preferred answer’s edge."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Neutral black/white reading glass, with monochrome preference edges and purposeful error accents.",
-        "default": "\"dark\""
+        "default": "\"dark\"",
+        "description": "Graphite or white surfaces."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Outer comparison class.",
-        "default": "\"\""
+        "default": "\"\"",
+        "description": "Classes on the root."
       }
     ],
     "added": "2026-10-13",
     "demo": {
       "steps": [
-        "click:@evidence-b-recommendation-constraints",
-        "wait:350",
-        "click:@prefer-b",
-        "wait:450",
-        "click:@clear-preference",
-        "wait:450"
-      ]
+        "wait:400",
+        "click:@lens-diff",
+        "wait:800",
+        "hover:@claim-b-n-plus-one",
+        "wait:600",
+        "click:@prefer-a",
+        "wait:400",
+        "click:@reason-1",
+        "wait:200",
+        "click:@submit",
+        "wait:1200"
+      ],
+      "loop": false
     },
     "controls": [
+      {
+        "prop": "defaultLens",
+        "label": "Lens",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "read",
+            "label": "Read"
+          },
+          {
+            "value": "diff",
+            "label": "Differences"
+          }
+        ],
+        "default": "read",
+        "remount": true
+      },
+      {
+        "prop": "blind",
+        "label": "Blind vote",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "accent",
+        "label": "Highlighter",
+        "kind": "color",
+        "default": "#f5c66b",
+        "options": [
+          "#f5c66b",
+          "#f4f4f5",
+          "#7dd3fc",
+          "#86efac",
+          "#fca5a5"
+        ]
+      },
       {
         "prop": "theme",
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
         "default": "dark"
       },
       {
-        "prop": "title",
-        "label": "Heading",
+        "prop": "question",
+        "label": "Question",
         "kind": "text",
-        "default": "Two answers. One shared question."
-      },
-      {
-        "prop": "request",
-        "label": "Shared question",
-        "kind": "text",
-        "default": "How should we introduce a new navigation pattern without losing the team's current working flow?"
+        "default": "Checkout p95 went from 380 ms to 1.2 s after Tuesday’s deploy. What should we look at first?"
       }
     ]
   },

@@ -4552,17 +4552,17 @@
     "updated": "2026-10-17"
   },
   "ai-answer-compare": {
-    "useWhen": "Comparing supplied responses to the same request with their evidence and an explicit preference.",
-    "avoidWhen": "Generating answers, assuming a model is better without evidence or silently applying an inspected response.",
+    "useWhen": "Showing two model answers to the same prompt so a person can read them side by side, see where they disagree and record which one they prefer: evals, model pickers, A/B tests of prompts.",
+    "avoidWhen": "A single answer with sources (use an inline-citations or search-answer view), or comparing more than two outputs at once, where a ranked list reads better.",
     "integration": [
-      "Supply the shared request, stable response/section identities, actual content and evidence. Unknown evidence IDs and unavailable responses remain explicit; no model score or generated answer is inferred.",
-      "Treat preference as an explicit acknowledged host decision. Request-content changes and reset identity retire pending work even when response IDs are reused; controlled values remain authoritative and rejected preferences preserve reading positions."
+      "Write each answer as paragraphs of { text, claim?, cite? } parts. Give the same claim key to spans that make the same point in both answers; keys only one answer uses become the highlighted differences. cite ids point into sources, numbered in order.",
+      "Record the vote in onSubmit({ choice, reasons }) and return a promise; a rejection keeps the draft and shows its message. Keep blind on to hide the model names until the vote lands, and use status: \"loading\" | \"error\" with onRetry for answers that are still streaming or failed."
     ],
     "related": [
-      "ai-search-answer",
-      "ai-citations-inline"
+      "ai-citations-inline",
+      "ai-search-answer"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "ai-structured-output": {
     "useWhen": "Inspecting supplied structured fields as they become complete, valid or invalid during an actual stream.",
