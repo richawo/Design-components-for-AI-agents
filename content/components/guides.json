@@ -4011,18 +4011,19 @@
     "updated": "2026-10-17"
   },
   "bg-topographic-contours": {
-    "useWhen": "Exploring a controlled contour surface by changing bounded density and lighting inputs.",
-    "avoidWhen": "A geographic map, live terrain analysis or an endlessly drifting background with no controls.",
+    "useWhen": "A hero, section or empty state that should feel like terrain, depth or data: outdoor and mapping products, geology, analytics, or any surface where a quiet field of lines suits better than a gradient.",
+    "avoidWhen": "An actual map people navigate or measure on, or a layout whose text sits over the whole surface with no room for a scrim.",
     "integration": [
-      "Supply a finite exact scalar grid with columns/rows2–48 and columns×rows values, independent foreground children and actual availability. Marching squares draws real iso-levels from the supplied range. The original32×24 default is synthetic artwork, not geographic data.",
-      "Integer density8–24 interpolates actual levels; lightAngle 0–359 takes the shortest arc during real changes. Standard/high quality caps backing pixels at 640,000/1,280,000 independently of DPR. Reuse crossing buffers and cached paths for light-only changes; do not rasterize foreground content.",
-      "Validate actual content revisions even when the field object/array identity is reused. There is no idle/offscreen animation loop. Stop/set decorative transition owners under live reduced motion, preserve foreground interaction/overflow and make invalid/loading/error states explicit."
+      "Wrap your content: <BgTopographicContours className=\"min-h-dvh\">…</BgTopographicContours>. The root needs a height; children render as normal DOM and keep their events.",
+      "Pass field={{ columns, rows, values }} to draw your own data (elevation, depth, density, a score). It is upsampled before tracing, so modest grids still draw smooth lines; onProbe returns the field's value under the pointer in its own unit.",
+      "drift is the only ambient motion and stops offscreen, in hidden tabs and under reduced motion; set it to 0 for a still surface. Add a scrim behind dense type, as the demo does, so the lines never fight the copy."
     ],
     "related": [
-      "three-contour-terrain",
-      "bg-dither-flow"
+      "bg-dither-flow",
+      "bg-grain-gradient",
+      "three-contour-terrain"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "pixel-halftone-image": {
     "useWhen": "Giving people a print-style halftone of their own image, in an editor, a poster or zine maker, or an asset pipeline, with a direct comparison against the original and a file they can keep.",

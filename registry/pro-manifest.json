@@ -4541,85 +4541,134 @@
     "tier": "pro",
     "platform": "web",
     "category": "backgrounds",
-    "description": "A bounded native contour surface traces supplied scalar samples, with interruptible density and directional edge lighting.",
+    "description": "A full-bleed relief of contour lines traced from a real height field: levels flow slowly uphill, the light swings to the pointer and a raking spotlight follows it.",
     "tags": [
+      "background",
       "contours",
-      "height field",
       "topography",
-      "material",
+      "height field",
       "canvas",
-      "bounded motion"
+      "relief",
+      "hero",
+      "ambient"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1200,
-    "usage": "import { BgTopographicContours } from \"@/components/design-for-ai/bg-topographic-contours\";\n\n<BgTopographicContours field={heightSamples} density={16} lightAngle={315}><YourForeground /></BgTopographicContours>",
+    "previewHeight": 820,
+    "usage": "import { BgTopographicContours } from \"@/components/design-for-ai/bg-topographic-contours\";\n\n<BgTopographicContours\n  className=\"min-h-dvh\"\n  field={{ columns: 48, rows: 32, values: elevations }}\n  density={14}\n  drift={0.35}\n  onProbe={(p) => setElevation(p?.value ?? null)}\n>\n  <YourHero />\n</BgTopographicContours>\n\n// Children render as normal DOM over the canvas. The canvas pauses offscreen and in hidden tabs,\n// draws one still frame under reduced motion, and keeps its pixel budget whatever the screen density.",
     "props": [
       {
         "name": "field",
-        "type": "TopographicField",
-        "description": "Finite2–48 by2–48 scalar grid, exactly one value per sample. Defaults to an explicitly synthetic original 32×24 field."
+        "type": "{ columns: number; rows: number; values: number[] }",
+        "default": "original three-summit massif, metres",
+        "description": "Height samples row by row, in any unit. Upsampled bicubically before tracing, so a 32 × 24 grid still draws smooth lines. A malformed field leaves a plain surface; a flat one has no contours."
       },
       {
         "name": "children",
         "type": "ReactNode",
-        "description": "Ordinary foreground content; events and overflowing menus stay usable."
+        "description": "Content over the background. It stays crisp DOM and keeps its own events."
       },
       {
         "name": "density",
         "type": "number",
-        "description": "Integer 8–24 target contour levels. Current-pose interpolation regenerates real native paths from the scalar field.",
-        "default": "16"
+        "default": "14",
+        "description": "Contour levels, 4–32. Changes glide: lines part or close up instead of popping."
       },
       {
         "name": "lightAngle",
         "type": "number",
-        "description": "Finite 0–359 degree lighting bearing, following the shortest visible arc.",
-        "default": "315"
+        "default": "315",
+        "description": "Light bearing in degrees when the pointer isn't steering it. Each line carries a lit and a shadowed edge from it."
+      },
+      {
+        "name": "drift",
+        "type": "number",
+        "default": "0.35",
+        "description": "How fast the levels flow uphill, 0–1. 0 holds the surface still. The one ambient motion; it stops offscreen, in hidden tabs and under reduced motion."
+      },
+      {
+        "name": "followPointer",
+        "type": "boolean",
+        "default": "true",
+        "description": "The light swings toward the pointer and a raking spotlight lifts the lines near it."
+      },
+      {
+        "name": "indexEvery",
+        "type": "number",
+        "default": "5",
+        "description": "Every nth line is an index contour, drawn heavier. Index lines keep their identity as the levels flow. 0 turns it off."
+      },
+      {
+        "name": "onProbe",
+        "type": "(probe: { x: number; y: number; value: number } | null) => void",
+        "description": "The field's value under the pointer, in its own unit, with the position as 0–1 fractions. null when the pointer leaves."
       },
       {
         "name": "quality",
         "type": "\"standard\" | \"high\"",
-        "description": "Actual Canvas backing-pixel budget: standard 640k/high 1.28M, bounded independently of DPR.",
-        "default": "\"standard\""
+        "default": "\"standard\"",
+        "description": "Canvas pixel budget: 0.64 or 1.28 megapixels. Device pixel ratio is capped at 2."
       },
       {
         "name": "radius",
         "type": "number",
-        "description": "Finite 0–64px radius clips the decorative canvas only.",
-        "default": "24"
+        "default": "0",
+        "description": "Corner radius in px, 0–64. Clips the canvas only."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "theme ink",
+        "description": "Colour of the spotlight on the lines near the pointer."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Neutral graphite and white chrome; colour is reserved for actual feature content and semantic data accents.",
-        "default": "\"dark\""
-      },
-      {
-        "name": "status",
-        "type": "\"ready\" | \"loading\" | \"unavailable\"",
-        "description": "Host field availability. Existing valid field can remain as paused context while foreground stays available.",
-        "default": "\"ready\""
+        "default": "\"dark\"",
+        "description": "Graphite ground with pale lines, or paper with ink lines."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Host root layout classes.",
-        "default": "\"\""
+        "description": "Classes on the root. Give it a height (min-h-dvh, h-[480px]); the canvas covers it."
       }
     ],
+    "added": "2026-10-13",
+    "demo": {
+      "steps": [
+        "wait:900",
+        "move:0.72,0.3",
+        "wait:500",
+        "move:0.86,0.72",
+        "wait:500",
+        "click:@contour-density:0.85,0.5",
+        "wait:1300"
+      ],
+      "loop": false
+    },
     "controls": [
       {
         "prop": "density",
-        "label": "Contour density",
+        "label": "Contours",
         "kind": "slider",
-        "min": 8,
-        "max": 24,
+        "min": 6,
+        "max": 28,
         "step": 1,
-        "default": 16
+        "default": 14,
+        "group": "Surface"
+      },
+      {
+        "prop": "drift",
+        "label": "Drift",
+        "kind": "slider",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "default": 0.35,
+        "group": "Surface"
       },
       {
         "prop": "lightAngle",
@@ -4628,43 +4677,57 @@
         "min": 0,
         "max": 359,
         "step": 1,
-        "default": 315
+        "unit": "°",
+        "default": 315,
+        "group": "Light"
       },
       {
-        "prop": "quality",
-        "label": "Canvas quality",
-        "kind": "segmented",
+        "prop": "followPointer",
+        "label": "Follow pointer",
+        "kind": "toggle",
+        "default": true,
+        "group": "Light"
+      },
+      {
+        "prop": "indexEvery",
+        "label": "Index line every",
+        "kind": "slider",
+        "min": 0,
+        "max": 8,
+        "step": 1,
+        "default": 5,
+        "group": "Surface"
+      },
+      {
+        "prop": "accent",
+        "label": "Spotlight",
+        "kind": "color",
+        "default": "#f4f4f5",
         "options": [
-          "standard",
-          "high"
+          "#f4f4f5",
+          "#ff6a3d",
+          "#7dd3a8"
         ],
-        "default": "standard"
+        "group": "Light"
       },
       {
         "prop": "theme",
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
-        "default": "dark"
+        "default": "dark",
+        "group": "Look"
       }
-    ],
-    "demo": {
-      "steps": [
-        "click:@contour-density:0.83,0.5",
-        "wait:400",
-        "click:@contour-light:0.29,0.5",
-        "wait:400",
-        "click:@contour-density:0.2,0.5",
-        "wait:400",
-        "click:@contour-reset",
-        "wait:450"
-      ],
-      "loop": false
-    },
-    "added": "2026-10-13"
+    ]
   },
   {
     "slug": "billing-cancel-flow",
