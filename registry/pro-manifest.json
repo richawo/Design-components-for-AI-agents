@@ -12255,103 +12255,117 @@
     "tier": "pro",
     "platform": "web",
     "category": "data",
-    "description": "Review exact selected identities, eligibility and held records before a real host-owned action, then inspect per-record acknowledgements and explicit failures.",
+    "description": "Tick records and each lands on a visible stack beside the table, blocked ones in a held-back pile; review the stack, confirm, and watch each card get its result.",
     "tags": [
       "bulk action",
-      "selected records",
-      "scope review",
-      "host acknowledgement",
-      "failure review"
+      "batch operations",
+      "selection",
+      "confirmation",
+      "admin",
+      "partial failure"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1080,
-    "usage": "import { DataBulkActionReview } from \"@/components/design-for-ai/data-bulk-action-review\";\n\n<DataBulkActionReview records={records} selectedIds={selection} onSelectionChange={setSelection} onApply={applyToHost} />",
+    "previewHeight": 820,
+    "usage": "import { DataBulkActionReview } from \"@/components/design-for-ai/data-bulk-action-review\";\n\n<DataBulkActionReview\n  title=\"Members\"\n  subtitle=\"Northwind workspace\"\n  records={members}               // heldReason marks the ones the action can't touch\n  selectedIds={selection}\n  onSelectionChange={setSelection}\n  action={{ verb: \"Remove\", pending: \"Removing\", done: \"removed\", destructive: true }}\n  noun={[\"member\", \"members\"]}\n  summarize={(eligible) => `Frees ${eligible.length} seats`}\n  onApply={(ids) => api.removeMembers(ids)} // resolves to [{ id, ok, message? }]\n/>",
     "props": [
       {
+        "name": "title",
+        "type": "string",
+        "default": "\"Members\"",
+        "description": "The table's name."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "default": "\"Northwind workspace\"",
+        "description": "Mono context line under the title; the record count follows it."
+      },
+      {
         "name": "records",
-        "type": "BulkReviewRecord[]",
-        "description": "Up to 200 raw unique labeled original records with explicit eligibility and optional detail/exclusion reason. Immutable source revisions."
+        "type": "BulkRecord[]",
+        "description": "{ id, name, detail?, meta?, aside?, impact?, heldReason? }. `impact` explains what the action does to that record during review; `heldReason` keeps it out of the action and shows why."
       },
       {
         "name": "selectedIds",
         "type": "string[]",
-        "description": "Controlled raw unique selected identities. Unknown source IDs remain explicitly held without silent replacement."
+        "description": "Controlled selection, in pick order. The newest pick sits at the bottom of the stack."
       },
       {
         "name": "defaultSelectedIds",
         "type": "string[]",
         "default": "[]",
-        "description": "Initial uncontrolled scope; no implicit bulk selection in the named component."
+        "description": "Uncontrolled starting selection. Nothing is ever selected implicitly."
       },
       {
         "name": "onSelectionChange",
         "type": "(ids: string[]) => void",
-        "description": "Selection request. Rejection/throwing callbacks retain the actual prior scope."
+        "description": "Called when a checkbox, select-all, retry or Done changes the selection."
+      },
+      {
+        "name": "action",
+        "type": "BulkAction",
+        "default": "{ verb: \"Remove\", pending: \"Removing\", done: \"removed\", destructive: true }",
+        "description": "Words for the button, the pending state and the receipt. Destructive actions put the accent on the confirm button."
+      },
+      {
+        "name": "noun",
+        "type": "[string, string]",
+        "default": "[\"member\", \"members\"]",
+        "description": "Singular and plural for the records."
+      },
+      {
+        "name": "columns",
+        "type": "[string, string, string]",
+        "default": "[\"Member\", \"Role\", \"Last active\"]",
+        "description": "Headings for name, meta and aside."
+      },
+      {
+        "name": "summarize",
+        "type": "(eligible: BulkRecord[]) => string",
+        "description": "One line on what the eligible scope adds up to, shown under the count. Defaults to a plain count."
       },
       {
         "name": "onApply",
-        "type": "(request: BulkActionRequest, signal: AbortSignal) => Promise<BulkActionAcknowledgement>",
-        "description": "Explicit confirmed apply/retry with exact eligible IDs and a local attempt correlation ID. The host owns execution, idempotency and cancellation. Abort only retires the UI wait; it does not prove an external action stopped."
-      },
-      {
-        "name": "onReceipt",
-        "type": "(receipt: BulkActionAcknowledgement, request: BulkActionRequest) => void",
-        "description": "Validated current acknowledgement observer. Failed observers do not erase the displayed host receipt."
-      },
-      {
-        "name": "actionId",
-        "type": "string",
-        "default": "\"archive\"",
-        "description": "Actual host action identity."
-      },
-      {
-        "name": "actionLabel",
-        "type": "string",
-        "default": "\"Archive records\"",
-        "description": "Specific visible host action label."
+        "type": "(ids: string[]) => Promise<BulkResult[]>",
+        "description": "Runs the action for the eligible ids and resolves with { id, ok, message? } per record. Results are revealed card by card. A rejection means nothing ran; the review stays open with an alert."
       },
       {
         "name": "allowRetry",
         "type": "boolean",
-        "default": "false",
-        "description": "Host-declared retry capability. Explicit retry reviews only reported failures from the unchanged same scope; missing acknowledgements are not silently retried."
+        "default": "true",
+        "description": "Offer Retry for records the host reported as failed. It opens a fresh review of just those."
       },
       {
-        "name": "title",
+        "name": "onDone",
+        "type": "(failedIds: string[]) => void",
+        "description": "Called when the receipt is dismissed. The selection becomes the held and failed records, so nothing that still needs attention is lost."
+      },
+      {
+        "name": "accent",
         "type": "string",
-        "default": "\"Confirm the scope.\"",
-        "description": "Review heading."
-      },
-      {
-        "name": "description",
-        "type": "string",
-        "description": "Actual source/action context."
-      },
-      {
-        "name": "status",
-        "type": "\"ready\" | \"loading\" | \"unavailable\"",
-        "description": "Availability retains selection and the separately labelled last receipt."
-      },
-      {
-        "name": "disabled",
-        "type": "boolean",
-        "default": "false",
-        "description": "Disables selection and actions, preserving read-only scope and receipt inspection."
+        "default": "\"#ff5f57\"",
+        "description": "The one colour: the scope count and a destructive confirm button."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Neutral graphite/white chrome and full neutral demo stage."
+        "description": "Graphite or white surfaces."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "default": "false",
+        "description": "Read-only: checkboxes and actions are off; the scope stays readable."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Host root classes."
+        "description": "Classes for the root section."
       }
     ],
     "controls": [
@@ -12360,28 +12374,47 @@
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
         "default": "dark"
       },
       {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#ff5f57",
+        "options": [
+          "#ff5f57",
+          "#ffb547",
+          "#7cc4ff",
+          "#f4f4f5"
+        ]
+      },
+      {
         "prop": "disabled",
-        "label": "Action locked",
+        "label": "Read-only",
         "kind": "toggle",
         "default": false
       }
     ],
     "demo": {
       "steps": [
-        "click:@bulk-tab-held",
-        "wait:220",
-        "click:@bulk-review",
+        "wait:400",
+        "click:@select-m07",
         "wait:300",
-        "click:@bulk-confirm",
-        "wait:820",
-        "click:@bulk-close",
-        "wait:280"
+        "click:@select-m09",
+        "wait:500",
+        "click:@review",
+        "wait:800",
+        "click:@confirm",
+        "wait:2000"
       ],
       "loop": false
     },

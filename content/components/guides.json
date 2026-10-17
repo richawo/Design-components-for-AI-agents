@@ -4344,19 +4344,20 @@
     "updated": "2026-10-17"
   },
   "data-bulk-action-review": {
-    "useWhen": "Reviewing exactly which supplied selected records a host action will affect, exclude or fail.",
-    "avoidWhen": "Applying actions implicitly or claiming success for every selected item after a partial host failure.",
+    "useWhen": "Running one action over many records where the scope must be seen before it is confirmed, some records can't take the action, and some may fail.",
+    "avoidWhen": "A single-record action, or a reversible bulk edit where an undo toast is kinder than a review step.",
     "integration": [
-      "Supply up to 200 raw unique labeled records with explicit eligible booleans and optional exclusion reasons. Control selectedIds with onSelectionChange or initialize local defaultSelectedIds. Unknown selected identities remain visible as held exclusions, and the component never selects records implicitly.",
-      "An explicit review precedes confirmation. onApply receives actionId, exact eligible recordIds, a local correlation attemptId, apply/retry mode and an AbortSignal. The host performs the actual action and returns unique per-record succeeded/failed acknowledgements. Unacknowledged records stay distinct from failures; the component does not claim an entire selection succeeded.",
-      "Source, selection, action, availability or callback revisions abort the waiting context and ignore late results. Stop waiting does not prove an external action was cancelled. Accepted receipts retain immutable source labels and exact requested scope; caller observer mutation cannot rewrite that receipt.",
-      "Opt in to allowRetry only when the host supports retrying acknowledged failures in an unchanged context. Missing acknowledgements are not automatically retried. Pending activation retains native focus and admits one operation; manual browsing survives completion. Bounded measured review motion and counts settle immediately on live reduced motion."
+      "Pass `records` with `heldReason` on any the action can't touch (an owner, a directory-managed account); they join a held-back pile instead of the action. Give each an `impact` line so the review says exactly what happens to it.",
+      "Control `selectedIds` with `onSelectionChange`. The array keeps pick order, which is the stack order. Nothing is selected implicitly; select-all is an explicit checkbox.",
+      "`onApply(ids)` receives only the eligible ids and resolves with `{ id, ok, message? }` per record. Failed records stay with their message; rejecting means nothing ran and the review stays open. The scope is frozen at review time, so you can remove finished rows from `records` as soon as the request returns.",
+      "Word the action with `action` and `noun`, and use `summarize` for the consequence that matters (seats freed, refund total). Retry reopens a review of just the failures; `onDone(failedIds)` fires when the receipt is dismissed."
     ],
     "related": [
       "agent-approval-gate",
-      "data-table-sortable"
+      "data-table-sortable",
+      "data-column-workbench"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "data-filter-history": {
     "useWhen": "Letting people rewind a filtered table through its saved filter states, see exactly which rows each state brings back or drops, and restore one deliberately.",
