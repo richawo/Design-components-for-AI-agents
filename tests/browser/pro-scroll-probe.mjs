@@ -183,10 +183,13 @@ try {
     fs.existsSync("registry/pro/scroll-cinema-frame") &&
     (!selected.size || selected.has("scroll-cinema-frame"))
   ) {
+    await page.route("**/__fixtures__/scroll-cinema.webm", route => route.fulfill({
+      contentType: "video/webm", body: fs.readFileSync(new URL("./fixtures/scroll-cinema.webm", import.meta.url)),
+    }));
     await mount(
       "scroll-cinema-frame",
       "ScrollCinemaFrame",
-      'videoSrc="/previews/saas-workspace-dashboard.mp4" captionSrc="data:text/vtt,WEBVTT"',
+      'videoSrc="/__fixtures__/scroll-cinema.webm" captionSrc="data:text/vtt,WEBVTT"',
     );
     const video = page.locator("video");
     assert.equal(
@@ -200,6 +203,7 @@ try {
     );
     await page.waitForTimeout(300);
     assert.equal(await video.evaluate((v) => v.paused), true);
+    assert.equal(await video.evaluate((v) => v.ended), false, "Leaving view pauses playback before the fixture ends");
     await page.route("**/broken-film.mp4", (route) =>
       route.fulfill({ status: 404, body: "" }),
     );
