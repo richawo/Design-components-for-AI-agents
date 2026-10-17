@@ -4703,22 +4703,20 @@
     "updated": "2026-10-14"
   },
   "mobile-focus-session": {
-    "useWhen": "Presenting an actual host-owned focus timer and requesting explicit start, pause, resume, finish or reset actions.",
-    "avoidWhen": "A native background timer service, notification scheduler or assuming an acknowledgment means the session started.",
+    "useWhen": "A single focus or pomodoro session on a phone: set the length on a dial, watch the time run down, pause or finish, and log the minutes against a daily goal.",
+    "avoidWhen": "Scheduling a day of tasks, tracking habits over weeks, or a background timer that must keep running and notify while the app is closed.",
     "integration": [
-      "session: Actual nonempty identity, ready/running/paused/finished state, integer duration60–14400 and finite elapsed0..duration. Invalid session is explicit and blocks actions.",
-      "onAction: Copied action and exact session snapshot. Fulfillment only acknowledges. Timer/action ownership and persistence belong to host.",
-      "onDurationChange: Synchronous actual duration proposal, available only while ready. Throwing leaves timer unchanged.",
-      "durations: Up to six supplied bounded duration choices, no inferred timer modes.",
-      "intention: Host-authored focus intention. Complete default demo runs an explicit local demonstration clock, not a native background service.",
-      "Provide a full-height native canvas. Local horizontal shelves preserve touch target size at320px; vertical content scrolls under the translucent action footer. Install Expo modules once for bare React Native.",
-      "Verify real iOS/Android touch, large text and assistive technology in the host app. Browser previews exercise the actual React Native Web source and state contracts."
+      "The component runs its own clock from wall time, so it survives dropped frames. Use initialPhase and defaultElapsedSeconds to resume a session in progress, and phase to drive it from outside (a change plays like a tap).",
+      "onPhaseChange reports ready, running, paused and finished; onComplete receives { intention, plannedMinutes, focusedMinutes, completed } once per session. Persist it and pass the day's sessions back as completedToday.",
+      "presets, defaultMinutes and maxMinutes (one turn of the dial) set the lengths; dailyGoalMinutes sets the goal track. defaultDoNotDisturb and onDoNotDisturbChange wire the moon button to your own focus mode.",
+      "accent recolours the arc, its head and the live segment. Install expo-blur, expo-linear-gradient and react-native-svg (bare React Native: npx install-expo-modules once); background timing and notifications belong to the host."
     ],
     "related": [
-      "mobile-bottom-sheet",
-      "mobile-settings"
+      "mobile-habit-grid",
+      "mobile-day-planner",
+      "mobile-live-activity"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "mobile-day-planner": {
     "useWhen": "Inspecting a supplied local-time day schedule and reviewing an exact reschedule proposal against current overlap constraints.",

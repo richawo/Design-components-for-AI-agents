@@ -28668,14 +28668,18 @@
     "tier": "pro",
     "platform": "mobile",
     "category": "mobile",
-    "description": "A precise native focus dial driven by actual session facts, with readable remaining time, bounded durations and cancellable host-owned actions.",
+    "description": "A dark React Native focus timer: drag a lit dial to set the length, watch the arc run down with a glowing head, then log the minutes to today's goal.",
     "tags": [
-      "mobile",
-      "react native",
-      "dark",
-      "glass",
       "focus",
-      "session"
+      "timer",
+      "pomodoro",
+      "productivity",
+      "react native",
+      "dial",
+      "gestures",
+      "glassmorphism",
+      "monochrome",
+      "dark"
     ],
     "dependencies": [
       "expo-blur",
@@ -28683,74 +28687,185 @@
       "react-native-svg"
     ],
     "theme": "dark",
-    "previewHeight": 844,
-    "usage": "import { MobileFocusSession } from \"@/components/design-for-ai/native/mobile-focus-session\";\n\n// Bare React Native: run npx install-expo-modules once.\n<MobileFocusSession theme=\"dark\" />",
+    "previewHeight": 940,
+    "usage": "// Bare React Native apps: run `npx install-expo-modules` once for expo-blur and expo-linear-gradient.\nimport { MobileFocusSession } from \"@/components/design-for-ai/native/mobile-focus-session\";\n\n<MobileFocusSession\n  intention=\"Draft the Q4 pricing memo\"\n  project=\"Halden · Pricing\"\n  completedToday={[50, 25, 25]}\n  onPhaseChange={(phase) => focusMode.set(phase === \"running\")}\n  onComplete={(summary) => api.logSession(summary)}\n/>",
     "props": [
-      {
-        "name": "session",
-        "type": "FocusSessionState",
-        "description": "Actual nonempty identity, ready/running/paused/finished state, integer duration60–14400 and finite elapsed0..duration. Invalid session is explicit and blocks actions."
-      },
-      {
-        "name": "onAction",
-        "type": "(request: { action: FocusSessionAction; session: FocusSessionState }, signal: AbortSignal) => void | Promise<void>",
-        "description": "Copied action and exact session snapshot. Fulfillment only acknowledges. Timer/action ownership and persistence belong to host."
-      },
-      {
-        "name": "onDurationChange",
-        "type": "(seconds: number, session: FocusSessionState) => void",
-        "description": "Synchronous actual duration proposal, available only while ready. Throwing leaves timer unchanged."
-      },
-      {
-        "name": "durations",
-        "type": "number[]",
-        "description": "Up to six supplied bounded duration choices, no inferred timer modes."
-      },
       {
         "name": "intention",
         "type": "string",
-        "description": "Host-authored focus intention. Complete default demo runs an explicit local demonstration clock, not a native background service."
+        "default": "\"Draft the Q4 pricing memo\"",
+        "description": "What the session is for; the screen's title (two lines at most)."
       },
       {
-        "name": "title",
+        "name": "project",
         "type": "string",
-        "description": "Editable host heading. Keep working content dominant."
+        "default": "\"Halden · Pricing\"",
+        "description": "Where the session is logged, shown as a chip and in the finished line."
       },
       {
-        "name": "theme",
-        "type": "\"dark\" | \"light\"",
-        "description": "Neutral graphite/white themes with readable borders and actual focus states."
+        "name": "sessionLabel",
+        "type": "string",
+        "default": "\"SESSION 4 · DEEP WORK\"",
+        "description": "Mono kicker above the intention."
+      },
+      {
+        "name": "presets",
+        "type": "number[]",
+        "default": "[15, 25, 45, 60]",
+        "description": "Quick lengths in minutes under the dial (up to five, within 5 to maxMinutes)."
+      },
+      {
+        "name": "defaultMinutes",
+        "type": "number",
+        "default": "25",
+        "description": "Starting length in minutes."
+      },
+      {
+        "name": "maxMinutes",
+        "type": "number",
+        "default": "60",
+        "description": "Minutes in one turn of the dial; lengths run from 5 to this."
+      },
+      {
+        "name": "initialPhase",
+        "type": "\"ready\" | \"running\" | \"paused\" | \"finished\"",
+        "default": "\"ready\"",
+        "description": "Phase on mount. \"running\" or \"paused\" resumes a session already under way."
+      },
+      {
+        "name": "defaultElapsedSeconds",
+        "type": "number",
+        "default": "0",
+        "description": "Seconds already focused when mounting part-way through a session."
+      },
+      {
+        "name": "phase",
+        "type": "\"ready\" | \"running\" | \"paused\" | \"finished\"",
+        "default": "—",
+        "description": "Drive the phase from outside; a change plays the same transition as a tap."
+      },
+      {
+        "name": "completedToday",
+        "type": "number[]",
+        "default": "[50, 25, 25]",
+        "description": "Minutes of each session already finished today, drawn as segments of the daily goal."
+      },
+      {
+        "name": "dailyGoalMinutes",
+        "type": "number",
+        "default": "180",
+        "description": "The day's focus goal in minutes."
+      },
+      {
+        "name": "defaultDoNotDisturb",
+        "type": "boolean",
+        "default": "true",
+        "description": "Whether Do Not Disturb starts on."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#FFA24C\"",
+        "description": "The one colour: the dial's arc, its glow, the live head and the live segment."
+      },
+      {
+        "name": "onPhaseChange",
+        "type": "(phase: FocusPhase) => void",
+        "default": "—",
+        "description": "Called on every phase change, by a tap, the timer running out or a driven `phase`."
+      },
+      {
+        "name": "onMinutesChange",
+        "type": "(minutes: number) => void",
+        "default": "—",
+        "description": "Called as the length changes (dial drag, preset, keyboard or accessibility action)."
+      },
+      {
+        "name": "onDoNotDisturbChange",
+        "type": "(on: boolean) => void",
+        "default": "—",
+        "description": "Called when the moon button is toggled."
+      },
+      {
+        "name": "onComplete",
+        "type": "(summary: FocusSessionSummary) => void",
+        "default": "—",
+        "description": "Called once when a session finishes, with planned and focused minutes and whether it ran out."
       }
     ],
     "added": "2026-10-14",
     "demo": {
       "steps": [
-        "click:@focus-primary",
         "wait:700",
         "click:@focus-primary",
-        "wait:350",
-        "click:@focus-finish",
-        "wait:350",
+        "wait:450",
+        "click:@focus-secondary",
+        "wait:1300",
         "click:@focus-primary",
-        "wait:450"
-      ]
+        "wait:350",
+        "hover:@focus-knob",
+        "drag:0.2,0.49",
+        "wait:700"
+      ],
+      "loop": false
     },
     "controls": [
       {
-        "prop": "theme",
-        "label": "Theme",
-        "kind": "segmented",
+        "prop": "phase",
+        "label": "Phase",
+        "kind": "action",
         "options": [
-          "dark",
-          "light"
-        ],
-        "default": "dark"
+          {
+            "value": "ready",
+            "label": "Ready"
+          },
+          {
+            "value": "running",
+            "label": "Running"
+          },
+          {
+            "value": "paused",
+            "label": "Paused"
+          },
+          {
+            "value": "finished",
+            "label": "Finished"
+          }
+        ]
       },
       {
-        "prop": "title",
-        "label": "Heading",
+        "prop": "defaultMinutes",
+        "label": "Length",
+        "kind": "slider",
+        "min": 5,
+        "max": 60,
+        "step": 5,
+        "unit": " min",
+        "default": 25,
+        "remount": true
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#FFA24C",
+        "options": [
+          "#FFA24C",
+          "#F5F5F5",
+          "#7CC4FF",
+          "#8EE3B0"
+        ]
+      },
+      {
+        "prop": "intention",
+        "label": "Intention",
         "kind": "text",
-        "default": "One thing at a time."
+        "default": "Draft the Q4 pricing memo"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
       }
     ]
   },
