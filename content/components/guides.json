@@ -4682,24 +4682,21 @@
     "updated": "2026-10-17"
   },
   "mobile-habit-grid": {
-    "useWhen": "Inspecting and editing exact completion records for seven consecutive calendar dates without treating missing records as incomplete.",
-    "avoidWhen": "Inferring streaks, creating an automatic tracker from missing data or silently overwriting duplicate records.",
+    "useWhen": "A wellbeing, fitness or productivity app shows this week's habits at a glance and lets people mark any day so far with one tap, with streaks and a weekly target.",
+    "avoidWhen": "You need long-range history (months or a year heatmap), habits measured in amounts rather than done or not done, or a single habit's detail view.",
     "integration": [
-      "habits: Actual unique identity/name/detail and explicit enabled boolean. Conflicting identities cannot mutate.",
-      "days: Exactly seven consecutive valid ISO calendar dates, supplied weekday and label. Invalid date configurations block edits.",
-      "value: Authoritative completion records. Missing, duplicate or null cell is unknown; controlled with no observer is read-only.",
-      "defaultValue: Initial local actual records. A toggle replaces the exact supplied cell only.",
-      "onValueChange: Copied exact whole proposed records and current cell facts. Local mode accepts after fulfillment. Controlled mode waits for supplied value. Failed/cancelled requests preserve records.",
-      "weekId: Replacement week identity retires pending work and resets local records.",
-      "weekLabel: Actual host date range label; calendar dates govern eligibility.",
-      "Provide a full-height native canvas. Local horizontal shelves preserve touch target size at320px; vertical content scrolls under the translucent action footer. Install Expo modules once for bare React Native.",
-      "Verify real iOS/Android touch, large text and assistive technology in the host app. Browser previews exercise the actual React Native Web source and state contracts."
+      "Pass `habits` ({ id, name, icon, target, streak, paused }), the seven `days` and `todayIndex`; days after today are disabled.",
+      "Keep marks in your store with `value` and `onValueChange(next, change)`, and persist through `onToggle(change, signal)`: the cell fills at once, and a rejection rolls it back with a shake and a retry note.",
+      "`streak` is the run before today; the component adds today's mark, so send the server's figure rather than recomputing it on the client.",
+      "Install this in a React Native app (run npx install-expo-modules once in bare projects). The web preview is a review surface; verify touch, text scaling and screen readers on devices."
     ],
     "related": [
-      "mobile-bottom-sheet",
-      "mobile-settings"
+      "mobile-mood-map",
+      "mobile-journal-prompt",
+      "mobile-day-planner",
+      "mobile-health-summary"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "mobile-focus-session": {
     "useWhen": "A single focus or pomodoro session on a phone: set the length on a dial, watch the time run down, pause or finish, and log the minutes against a daily goal.",

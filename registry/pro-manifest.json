@@ -29319,97 +29319,130 @@
     "tier": "pro",
     "platform": "mobile",
     "category": "mobile",
-    "description": "A native weekly completion ledger with exact known and unknown records, tactile day marks, an honest overview and cancellable cell updates.",
+    "description": "A React Native habit week: five rituals across seven days in one graphite ledger. Marks bloom with a drawn check, streaks count up, today’s column lights when done.",
     "tags": [
-      "mobile",
+      "habit",
+      "tracker",
+      "streak",
+      "wellbeing",
+      "week",
       "react native",
       "dark",
-      "glass",
-      "habit",
-      "grid"
+      "monochrome",
+      "checklist"
     ],
     "dependencies": [
-      "expo-blur",
       "expo-linear-gradient",
       "react-native-svg"
     ],
     "theme": "dark",
-    "previewHeight": 844,
-    "usage": "import { MobileHabitGrid } from \"@/components/design-for-ai/native/mobile-habit-grid\";\n\n// Bare React Native: run npx install-expo-modules once.\n<MobileHabitGrid theme=\"dark\" />",
+    "previewHeight": 940,
+    "usage": "import { MobileHabitGrid } from \"@/components/design-for-ai/native/mobile-habit-grid\";\n\n// Bare React Native apps: run `npx install-expo-modules` once for expo-linear-gradient.\n<MobileHabitGrid\n  habits={habits}\n  days={thisWeek}\n  todayIndex={3}\n  value={marks}\n  onValueChange={setMarks}\n  onToggle={(change, signal) => api.markHabit(change, { signal })}\n/>",
     "props": [
       {
         "name": "habits",
-        "type": "HabitGridHabit[]",
-        "description": "Actual unique identity/name/detail and explicit enabled boolean. Conflicting identities cannot mutate."
+        "type": "Habit[]",
+        "default": "5 habits",
+        "description": "Rows: { id, name, icon (book | move | moon | water | stretch | pen), target days a week (default 7), streak before today, paused }."
       },
       {
         "name": "days",
-        "type": "HabitGridDay[]",
-        "description": "Exactly seven consecutive valid ISO calendar dates, supplied weekday and label. Invalid date configurations block edits."
+        "type": "HabitDay[]",
+        "description": "The seven days shown, Monday first: { date (ISO), label for screen readers }."
+      },
+      {
+        "name": "todayIndex",
+        "type": "number",
+        "default": "3",
+        "description": "Which day is today. Its column is held in a band; later days can’t be marked yet."
       },
       {
         "name": "value",
-        "type": "HabitGridRecord[]",
-        "description": "Authoritative completion records. Missing, duplicate or null cell is unknown; controlled with no observer is read-only."
+        "type": "HabitWeek",
+        "description": "Controlled marks: habit id → seven booleans. Pair with onValueChange."
       },
       {
         "name": "defaultValue",
-        "type": "HabitGridRecord[]",
-        "description": "Initial local actual records. A toggle replaces the exact supplied cell only."
+        "type": "HabitWeek",
+        "description": "Initial marks when uncontrolled."
       },
       {
         "name": "onValueChange",
-        "type": "(request: { weekId: string; habit: HabitGridHabit; day: HabitGridDay; before: boolean; after: boolean; records: HabitGridRecord[] }, signal: AbortSignal) => void | Promise<void>",
-        "description": "Copied exact whole proposed records and current cell facts. Local mode accepts after fulfillment. Controlled mode waits for supplied value. Failed/cancelled requests preserve records."
+        "type": "(next: HabitWeek, change: HabitToggle) => void",
+        "description": "Fires with the whole week after a mark is saved (or at once when there is no onToggle)."
       },
       {
-        "name": "weekId",
-        "type": "string",
-        "description": "Replacement week identity retires pending work and resets local records."
+        "name": "onToggle",
+        "type": "(change: HabitToggle, signal: AbortSignal) => void | Promise<void>",
+        "description": "Persist one mark. The cell fills at once with a ring while it runs; reject and it empties again with a shake and a retry note under the habit."
       },
       {
         "name": "weekLabel",
         "type": "string",
-        "description": "Actual host date range label; calendar dates govern eligibility."
+        "default": "\"Week 42 · 12–18 Oct\"",
+        "description": "Mono label above the title."
       },
       {
         "name": "title",
         "type": "string",
-        "description": "Editable host heading. Keep working content dominant."
+        "default": "\"Habits\"",
+        "description": "Screen title."
       },
       {
-        "name": "theme",
-        "type": "\"dark\" | \"light\"",
-        "description": "Neutral graphite/white themes with readable borders and actual focus states."
+        "name": "accent",
+        "type": "string",
+        "default": "\"#FF9B5E\"",
+        "description": "The one brand colour: the week ring, today’s letter and the all-done moment. Marks stay white."
       }
     ],
     "added": "2026-10-14",
     "demo": {
       "steps": [
-        "click:@habit-0-3",
-        "wait:300",
-        "click:@habit-1-3",
-        "wait:300",
-        "click:@habit-0-3",
-        "wait:500"
-      ]
+        "wait:400",
+        "click:@habit-read-3",
+        "wait:200",
+        "click:@habit-move-3",
+        "wait:200",
+        "click:@habit-stretch-3",
+        "wait:200",
+        "click:@habit-lights-3",
+        "wait:1700"
+      ],
+      "loop": false
     },
     "controls": [
       {
-        "prop": "theme",
-        "label": "Theme",
-        "kind": "segmented",
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#FF9B5E",
         "options": [
-          "dark",
-          "light"
-        ],
-        "default": "dark"
+          "#FF9B5E",
+          "#7CE0B5",
+          "#8AB4FF",
+          "#F5F5F5"
+        ]
+      },
+      {
+        "prop": "todayIndex",
+        "label": "Today",
+        "kind": "slider",
+        "min": 0,
+        "max": 6,
+        "step": 1,
+        "default": 3,
+        "remount": true
       },
       {
         "prop": "title",
-        "label": "Heading",
+        "label": "Title",
         "kind": "text",
-        "default": "Small things, kept."
+        "default": "Habits"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
       }
     ]
   },
