@@ -36783,75 +36783,111 @@
     "tier": "pro",
     "platform": "web",
     "category": "forms",
-    "description": "Configure report sections, recipients, timezone and cadence with review. A considered, responsive SaaS workspace with typed integration points.",
+    "description": "A scheduled-report composer whose live email and PDF preview reflows as sections toggle, with a delivery timeline computed in the report’s own time zone.",
     "tags": [
       "saas",
-      "workflow",
-      "responsive",
-      "keyboard",
-      "forms"
+      "reports",
+      "scheduling",
+      "email",
+      "time zone",
+      "recipients",
+      "preview",
+      "admin"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1180,
-    "usage": "import { ReportScheduler } from \"@/components/design-for-ai/saas-report-scheduler\";\n\n<ReportScheduler />",
+    "previewHeight": 1160,
+    "usage": "import { ReportScheduler } from \"@/components/design-for-ai/saas-report-scheduler\";\n\nexport default function ScheduleReport() {\n  return (\n    <ReportScheduler\n      workspace=\"Kestrel\"\n      workspaceDomain=\"kestrel.app\"\n      sections={sections}\n      timeZones={[\"Europe/London\", \"America/New_York\", \"Asia/Singapore\"]}\n      defaultSchedule={schedule}\n      now={new Date().toISOString()}\n      onSave={(s) => api.reports.schedule(s)}\n      onSendTest={(s) => api.reports.sendTest(s)}\n    />\n  );\n}",
     "props": [
-      {
-        "name": "title",
-        "type": "string",
-        "description": "Main heading.",
-        "default": "\"Report schedule\""
-      },
-      {
-        "name": "subtitle",
-        "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Choose the report sections, recipients and local delivery time, then review the recurring schedule.\""
-      },
       {
         "name": "sections",
         "type": "ReportSection[]",
-        "description": "Available report sections with unique IDs."
-      },
-      {
-        "name": "timeZones",
-        "type": "string[]",
-        "description": "Allowed IANA timezone identifiers for the delivery schedule."
+        "default": "revenue, pipeline, top accounts, usage and support",
+        "description": "{ id, name, description, kind: \"kpis\" | \"bars\" | \"table\" | \"line\" | \"notes\", preview? }. The preview draws each chosen section in the report page; without `preview` it draws as a skeleton."
       },
       {
         "name": "defaultSchedule",
         "type": "ReportSchedule",
-        "description": "Initial editable schedule. Monthly days are restricted to 1–28 so every month contains the chosen day."
+        "default": "Weekly revenue review, Mondays 09:00 London",
+        "description": "{ name, cadence: \"daily\" | \"weekly\" | \"monthly\", weekday (1 = Monday), monthDay (1–28), weekdaysOnly, time \"HH:MM\", timeZone (IANA), recipients, sectionIds, format: \"pdf\" | \"csv\" }."
+      },
+      {
+        "name": "timeZones",
+        "type": "string[]",
+        "default": "London, New York, Los Angeles, Berlin, Singapore, Sydney",
+        "description": "IANA time zones offered for delivery."
+      },
+      {
+        "name": "now",
+        "type": "string",
+        "default": "\"2026-10-17T10:00:00Z\"",
+        "description": "ISO instant the upcoming deliveries count from. Pass the current time."
       },
       {
         "name": "onSave",
-        "type": "(schedule:ReportSchedule)=>void|Promise<void>",
-        "description": "Persist the reviewed recurring schedule. The host calculates actual run instants, handles daylight-saving transitions and performs delivery."
+        "type": "(schedule: ReportSchedule) => void | Promise<void>",
+        "description": "Persist the schedule; the host computes run instants and delivers. Reject to keep the draft and show the failure."
+      },
+      {
+        "name": "onSendTest",
+        "type": "(schedule: ReportSchedule) => void | Promise<void>",
+        "description": "Send one copy now to the person editing. Reject to show the failure."
+      },
+      {
+        "name": "workspace",
+        "type": "string",
+        "default": "\"Kestrel\"",
+        "description": "Workspace shown in the chrome and on the report page."
+      },
+      {
+        "name": "workspaceDomain",
+        "type": "string",
+        "default": "\"kestrel.app\"",
+        "description": "Recipients outside this domain are marked external."
+      },
+      {
+        "name": "sender",
+        "type": "string",
+        "default": "\"Kestrel Reports <reports@kestrel.app>\"",
+        "description": "From line of the preview email."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Locale for dates and times."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "theme ink",
+        "description": "The one accent: chosen weekday, timeline progress and the primary action."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Surface palette. The report page stays paper in both."
       },
       {
-        "name": "selectMode",
-        "type": "\"custom\" | \"native\"",
-        "default": "\"custom\"",
-        "description": "Animated keyboard-accessible custom listboxes, or native platform pickers with matched 12px insets."
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes for the root."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:350",
-        "click:@section-2",
-        "wait:400",
-        "click:@review",
-        "click:@save",
-        "wait:1100"
+        "wait:600",
+        "click:@section-usage",
+        "wait:700",
+        "click:@weekday-3",
+        "wait:800",
+        "click:@cadence-monthly",
+        "wait:1300"
       ],
       "loop": false
     },
@@ -36867,14 +36903,26 @@
         "default": "dark"
       },
       {
-        "prop": "selectMode",
-        "label": "Select menus",
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#7aa2ff",
+          "#ff8a4c"
+        ]
+      },
+      {
+        "prop": "locale",
+        "label": "Locale",
         "kind": "segmented",
         "options": [
-          "custom",
-          "native"
+          "en-GB",
+          "en-US",
+          "de-DE"
         ],
-        "default": "custom"
+        "default": "en-GB"
       }
     ]
   },

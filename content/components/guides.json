@@ -3022,19 +3022,20 @@
     "updated": "2026-10-12"
   },
   "saas-report-scheduler": {
-    "useWhen": "Preparing report recipients, frequency and delivery preferences.",
-    "avoidWhen": "A report delivery service or a schedule whose timezone is not explicitly defined.",
+    "useWhen": "People schedule a recurring email report: they choose sections, cadence, delivery time, time zone and recipients, and want to see the report and its next deliveries before saving.",
+    "avoidWhen": "You need a one-off export or a notification preference matrix; actual delivery and daylight-saving handling must happen on your server.",
     "integration": [
-      "Supply your own records through `sections`, `timeZones`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onSave` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
-      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+      "Describe each section with a `kind` and optional `preview` data so the page renders it; sections without previews draw as skeletons.",
+      "Pass `now` as the current time; upcoming deliveries are computed in the schedule's IANA time zone for display, and your scheduler stays the source of truth.",
+      "`onSave` and `onSendTest` receive the full schedule; reject either to keep the draft and show the failure.",
+      "Set `workspaceDomain` so recipients outside your organisation are flagged as external before a report leaves the building."
     ],
     "related": [
-      "forms-preference-center",
-      "hr-interview-scorecard",
-      "hr-policy-acknowledgement"
+      "saas-notification-inbox",
+      "saas-saved-views",
+      "forms-preference-center"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "saas-saved-views": {
     "useWhen": "Naming, pinning and saving reusable filters for a host collection.",
