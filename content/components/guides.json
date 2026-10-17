@@ -4615,18 +4615,19 @@
     "updated": "2026-10-17"
   },
   "agents-budget-guard": {
-    "useWhen": "Reviewing supplied estimated and actual usage against limits before explicitly authorizing a bounded action.",
-    "avoidWhen": "Inventing costs, automatically approving an action or describing an estimate as the final charge.",
+    "useWhen": "An agent run with spend, token or time limits that should pause before a step that would cross or approach one, and ask a person to approve, raise the cap or stop.",
+    "avoidWhen": "Showing usage over a billing cycle with no decision to make; a usage meter suits that better. For permission to run a specific command or edit, use an approval gate.",
     "integration": [
-      "Supply exact action and independent token/call/cost budgets. Estimate is the host prospective total in its scope, not an amount the component adds to actual. Missing pre-action actual is Not measured yet; missing limits/estimates, explicit null/nonfinite data, duplicate IDs and unsupported currencies/scales block authorization.",
-      "Review consent belongs to the exact action and material budget data; replacement retires it permanently. Keep newer notes through bounds/status/error/cancel, and use resetKey for explicit lifecycle reset. Pass the exact reviewed snapshot and note to the real onAuthorize(payload, AbortSignal).",
-      "Pending, rejection, cancellation and late acknowledgements are owned by exact content/callback/availability. Fulfilment alone shows Awaiting action status and blocks duplicate authorization; only supplied authoritative status can mark authorization, execution or completion. Monetary minor units use exact BigInt formatting and remain separate across currencies."
+      "Pass each limit as { id, label, kind, used, next, cap } where next is your estimate for the paused step in the same unit. The guard compares used + next with the cap; it never adds the estimate to the cap or hides an overrun.",
+      "Handle onDecision: approve resumes once, raise carries the new money cap in decision.cap, stop ends the run. Return a promise so the button shows progress, and reject it if your orchestrator refuses; the card stays open with the person's choice and drafted cap intact.",
+      "Pass history (money per finished step) to show the spend-per-step strip, raiseBy for the offered increments, and status to reset or settle the card from outside. Y, R and S answer while the card has focus; use autoFocus when it appears mid-task."
     ],
     "related": [
       "agent-approval-gate",
-      "pricing-receipt"
+      "usage-meter-tokens",
+      "agent-run-trace"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "devtools-release-compare": {
     "useWhen": "A deploy or release screen where someone decides whether a candidate (or an older release) should replace what's live, and needs the metric changes, risky files and diffs in one place.",

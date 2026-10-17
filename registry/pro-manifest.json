@@ -892,116 +892,226 @@
   },
   {
     "slug": "agents-budget-guard",
-    "name": "Bounded Action Review",
+    "name": "Agent Budget Guard",
     "tier": "pro",
     "platform": "web",
     "category": "agents",
-    "description": "An exact prospective-usage review that separates estimates, actual measurements and each limit before a real host-owned bounded authorization request.",
+    "description": "When an agent's next step would cross a spend, token or time cap: meters with the projected step drawn past the cap, and Approve, Raise cap or Stop.",
     "tags": [
       "agents",
       "budget",
+      "spend",
+      "cost",
       "limits",
-      "authorization",
-      "review",
-      "dark"
+      "approval",
+      "human in the loop",
+      "tokens",
+      "keyboard"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1120,
-    "usage": "import { AgentsBudgetGuard } from \"@/components/design-for-ai/agents-budget-guard\";\n\n<AgentsBudgetGuard action={action} budgets={bounds} status={hostStatus} onAuthorize={requestAuthorization} resetKey={actionRevision} />",
+    "previewHeight": 900,
+    "usage": "import { AgentsBudgetGuard } from \"@/components/design-for-ai/agents-budget-guard\";\n\n<AgentsBudgetGuard\n  agent=\"Atlas\"\n  run=\"Q3 churn analysis\"\n  step={14}\n  action={{ title: \"Summarise 412 support tickets\", tool: \"tickets.summarise\", detail: \"Halcyon Pro · 1.18M tokens in\" }}\n  budgets={[\n    { id: \"spend\", label: \"Spend\", kind: \"money\", used: 21.3, next: 6.2, cap: 25 },\n    { id: \"tokens\", label: \"Tokens\", kind: \"tokens\", used: 3_420_000, next: 1_276_000, cap: 5_000_000 },\n  ]}\n  history={spendPerStep}\n  onDecision={async (d) => {\n    if (d.verdict === \"raise\") await runs.setCap(runId, d.cap);\n    if (d.verdict === \"stop\") await runs.stop(runId);\n    else await runs.resume(runId);\n  }}\n/>\n\n// Return a promise from onDecision to hold the button busy; reject it to keep the card open with an error.\n// Y, R and S answer while the card has focus. Pass status to drive it from outside.",
     "props": [
       {
+        "name": "agent",
+        "type": "string",
+        "default": "\"Atlas\"",
+        "description": "Name of the agent that paused."
+      },
+      {
+        "name": "run",
+        "type": "string",
+        "default": "\"Q3 churn analysis\"",
+        "description": "What the run is doing, shown beside the agent."
+      },
+      {
+        "name": "step",
+        "type": "number",
+        "default": "14",
+        "description": "The step the agent paused before."
+      },
+      {
+        "name": "steps",
+        "type": "number",
+        "default": "20",
+        "description": "The run's expected number of steps."
+      },
+      {
         "name": "action",
-        "type": "BudgetGuardAction",
-        "description": "Stable bounded action ID, label/description and optional unavailable reason.",
-        "default": "Original bounded navigation review"
+        "type": "{ title: string; tool: string; detail: string; spread?: number }",
+        "default": "Summarise 412 support tickets",
+        "description": "The paused step: what it does, the tool it calls, its specifics and the ± uncertainty of its money projection."
       },
       {
         "name": "budgets",
-        "type": "BudgetGuardBudget[]",
-        "description": "Unique IDs/labels, tokens/calls/cost kind, known whole-unit limit and prospective total estimate, optional actual total, cost currency and supplied decimal unit scale.",
-        "default": "12000 tokens/6 calls/35 USD cents limits;8400/4/24 estimated"
+        "type": "GuardBudget[]",
+        "default": "Spend, Tokens, Wall time",
+        "description": "Each limit: { id, label, kind: \"money\" | \"tokens\" | \"time\" | \"count\", used, next, cap }. next is the paused step's projected cost in the same unit. Rows with a duplicate id or a non-finite figure are left out."
+      },
+      {
+        "name": "history",
+        "type": "number[]",
+        "default": "13 finished steps",
+        "description": "Money spent by each finished step, oldest first. Drawn as a strip with the projected step last."
+      },
+      {
+        "name": "showHistory",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show the spend-per-step strip."
+      },
+      {
+        "name": "raiseBy",
+        "type": "number[]",
+        "default": "[5, 10, 25]",
+        "description": "Amounts offered for raising the money cap. The first that clears the projection is preselected."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"USD\"",
+        "description": "ISO 4217 code for money figures."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-US\"",
+        "description": "Number formatting locale."
       },
       {
         "name": "status",
-        "type": "\"review\" | \"authorized\" | \"running\" | \"complete\" | \"error\"",
-        "description": "Authoritative host state. A fulfilled callback alone never marks an action authorized or running.",
-        "default": "\"review\""
+        "type": "\"pending\" | \"approved\" | \"raised\" | \"stopped\"",
+        "description": "Drive the card from outside: pending resets it; the others fold it into its receipt."
       },
       {
-        "name": "statusMessage",
+        "name": "onDecision",
+        "type": "(decision: { verdict: \"approve\" | \"raise\" | \"stop\"; cap?: number; at: number }) => void | Promise<void>",
+        "description": "Called with the choice. A returned promise holds the button busy; a rejection keeps the card open, the drafted cap intact, and shows the error."
+      },
+      {
+        "name": "accent",
         "type": "string",
-        "description": "Actual host explanation; blank error receives meaningful fallback."
-      },
-      {
-        "name": "onAuthorize",
-        "type": "(review: BudgetGuardReview, signal: AbortSignal) => void | Promise<void>",
-        "description": "Real request carrying exact reviewed action/budgets/note. Honor cancellation before host side effects. No execution in this inspector."
-      },
-      {
-        "name": "defaultReviewNote",
-        "type": "string",
-        "description": "Initial local note reused for a replacement action/reset; ordinary bound updates retain the draft.",
-        "default": "\"Keep the current working route available throughout this bounded review.\""
-      },
-      {
-        "name": "resetKey",
-        "type": "string | number",
-        "description": "Action/review identity; retires pending work, local confirmation and note."
-      },
-      {
-        "name": "title",
-        "type": "string",
-        "description": "Concise bounds heading.",
-        "default": "\"Bound the next action.\""
-      },
-      {
-        "name": "description",
-        "type": "string",
-        "description": "Explain prospective total, actual and limits.",
-        "default": "\"Review the prospective total, the current measurements and the limits before asking the host to authorize this one action.\""
+        "default": "theme ink",
+        "description": "The one accent: the primary action and the projected step's hatch. Either theme's ink follows the theme."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Neutral black/white glass chrome, with colour reserved for actual data/feature accents.",
-        "default": "\"dark\""
+        "default": "\"dark\"",
+        "description": "Near-black card with white ink, or the white inverse."
+      },
+      {
+        "name": "autoFocus",
+        "type": "boolean",
+        "default": "false",
+        "description": "Focus the card once it is in view so Y, R and S answer at once. The demo turns it on."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Outer guard class.",
-        "default": "\"\""
+        "description": "Extra classes on the card."
       }
     ],
     "added": "2026-10-13",
     "demo": {
       "steps": [
-        "click:@review-confirm",
-        "wait:350",
-        "click:@authorize-action",
-        "wait:1100"
-      ]
+        "wait:1900",
+        "click:@raise",
+        "wait:600",
+        "click:@raise-25",
+        "wait:700",
+        "click:@raise-confirm",
+        "wait:1500"
+      ],
+      "loop": false
     },
     "controls": [
+      {
+        "prop": "showHistory",
+        "label": "Spend per step",
+        "kind": "toggle",
+        "default": true,
+        "group": "Content"
+      },
+      {
+        "prop": "currency",
+        "label": "Currency",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "USD",
+            "label": "USD"
+          },
+          {
+            "value": "EUR",
+            "label": "EUR"
+          },
+          {
+            "value": "GBP",
+            "label": "GBP"
+          }
+        ],
+        "default": "USD",
+        "group": "Content"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#8ab4ff",
+          "#7dd3a8"
+        ],
+        "group": "Look"
+      },
       {
         "prop": "theme",
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
-        "default": "dark"
+        "default": "dark",
+        "group": "Look"
       },
       {
-        "prop": "title",
-        "label": "Heading",
-        "kind": "text",
-        "default": "Bound the next action."
+        "prop": "status",
+        "label": "Status",
+        "kind": "action",
+        "options": [
+          {
+            "value": "pending",
+            "label": "Reset"
+          },
+          {
+            "value": "approved",
+            "label": "Approve"
+          },
+          {
+            "value": "stopped",
+            "label": "Stop"
+          }
+        ],
+        "group": "State"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action",
+        "group": "State"
       }
     ]
   },
