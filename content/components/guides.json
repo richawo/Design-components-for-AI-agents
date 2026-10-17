@@ -1565,17 +1565,20 @@
     "updated": "2026-10-12"
   },
   "commerce-customer-timeline": {
-    "useWhen": "Inspecting a customer's supplied order and service history.",
-    "avoidWhen": "A complete CRM or events not supported by the connected commerce data.",
+    "useWhen": "A support or operations agent needs one customer’s whole relationship at a glance: every order, return and conversation on a timeline they can scrub to see lifetime value at any point, with the products in each order visible.",
+    "avoidWhen": "You need a list of many customers, a CRM pipeline or marketing segmentation; this is one customer’s history, not a directory.",
     "integration": [
-      "Supply your own records through `customers`. Preserve stable keys or IDs when the data contract provides them."
+      "Pass `customer` and a flat `events` array discriminated by `kind` (order, return, support, note). Money is integer minor units in `currency`; dates are ISO.",
+      "Lifetime value is computed from the events: orders add `totalMinor`, refunded returns subtract `refundMinor`. Invalid amounts are left out and duplicate IDs are flagged.",
+      "Give line items an `image` from your catalogue to replace the drawn products. Link a conversation to an order with `orderNumber`.",
+      "Persist notes in `onAddNote`; resolve with the stored note to use its ID, or reject to keep the draft and show the failure."
     ],
     "related": [
-      "commerce-backorder-allocation",
-      "commerce-bundle-builder",
-      "commerce-catalog-import"
+      "commerce-return-desk",
+      "commerce-fulfilment-desk",
+      "commerce-shipping-estimator"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "commerce-fulfilment-desk": {
     "useWhen": "Reviewing shipment exceptions and recording a recovery action.",

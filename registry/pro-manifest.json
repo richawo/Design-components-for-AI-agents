@@ -11984,62 +11984,115 @@
   },
   {
     "slug": "commerce-customer-timeline",
-    "name": "Customer Order Timeline",
+    "name": "Customer Timeline",
     "tier": "pro",
     "platform": "web",
     "category": "commerce",
-    "description": "Search customers and inspect order, refund and service history. A considered, responsive commerce workspace with typed integration points.",
+    "description": "A customer’s orders, returns and conversations on one scrubbable timeline: lifetime value steps up as you drag, order cards show the products.",
     "tags": [
+      "commerce",
       "e-commerce",
-      "workflow",
-      "responsive",
-      "keyboard",
-      "commerce"
+      "customer",
+      "timeline",
+      "lifetime value",
+      "orders",
+      "returns",
+      "support",
+      "admin"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 900,
-    "usage": "import { CustomerTimeline } from \"@/components/design-for-ai/commerce-customer-timeline\";\n\n<CustomerTimeline />",
+    "previewHeight": 1320,
+    "usage": "import { CustomerTimeline } from \"@/components/design-for-ai/commerce-customer-timeline\";\n\nexport default function CustomerPage({ customer, events }) {\n  return (\n    <CustomerTimeline\n      workspace=\"Fieldwork\"\n      customer={customer}\n      events={events}\n      currency=\"GBP\"\n      locale=\"en-GB\"\n      author={session.user.name}\n      onSelectEvent={(event) => analytics.track(\"timeline_event_opened\", { id: event.id })}\n      onAddNote={(draft) => api.customers.notes.create(draft)}\n    />\n  );\n}",
     "props": [
       {
-        "name": "title",
-        "type": "string",
-        "description": "Main heading.",
-        "default": "\"Customer history\""
+        "name": "customer",
+        "type": "TimelineCustomer",
+        "default": "Maya Okonkwo, a Fieldwork customer since March 2024",
+        "description": "{ id, name, email, location, since (ISO date), tags? }. Shown in the identity strip and the product chrome."
       },
       {
-        "name": "subtitle",
-        "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Orders, refunds and conversations in one inspectable history.\""
+        "name": "events",
+        "type": "TimelineEvent[]",
+        "default": "16 orders, returns, conversations and notes over 31 months",
+        "description": "A discriminated union on `kind`. order: { id, at, number, channel, items, totalMinor, discountMinor?, discountCode?, shippingMinor?, fulfilment, deliveredOn? }. return: { id, at, reference, orderNumber, items, reason, refundMinor, status }. support: { id, at, subject, channel, excerpt, agent?, status, orderNumber? }. note: { id, at, author, body }. Line items are { sku, name, variant?, quantity, unitMinor, glyph?, colour?, image? }. Money is in minor units; dates are ISO. Invalid amounts are left out of every figure and duplicate IDs are flagged."
       },
       {
-        "name": "customers",
-        "type": "TimelineCustomer[]",
-        "description": "Customers with unique event IDs, ISO timestamps and optional non-negative two-decimal amounts. Invalid amounts are excluded from monetary summaries."
+        "name": "today",
+        "type": "string",
+        "default": "\"2026-10-15\"",
+        "description": "ISO date the timeline ends at, waiting times count to and new notes are dated."
       },
       {
         "name": "currency",
         "type": "string",
-        "description": "ISO currency used by every monetary event."
+        "default": "\"GBP\"",
+        "description": "ISO 4217 code. Amounts are formatted with the currency’s own minor units."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Locale for money, months and dates."
+      },
+      {
+        "name": "workspace",
+        "type": "string",
+        "default": "\"Fieldwork\"",
+        "description": "Store name in the product chrome."
+      },
+      {
+        "name": "author",
+        "type": "string",
+        "default": "\"Sam Okafor\"",
+        "description": "Who new notes are attributed to when `onAddNote` doesn’t return a stored note."
+      },
+      {
+        "name": "defaultEventId",
+        "type": "string",
+        "default": "most recent event",
+        "description": "Event selected first; the scrubber starts at its date."
+      },
+      {
+        "name": "onSelectEvent",
+        "type": "(event: TimelineEvent) => void",
+        "description": "Called when an event is opened from the timeline or the feed."
+      },
+      {
+        "name": "onAddNote",
+        "type": "(draft: CustomerNoteDraft) => void | TimelineNote | Promise<void | TimelineNote>",
+        "description": "Persist { customerId, body }. Resolve with the stored note to use its ID and date; reject to keep the draft and show the failure in place."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "theme ink",
+        "description": "The one accent: scrubber, selection and the primary action."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Surface palette."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes for the root."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:450",
-        "click:@event-1",
-        "wait:800",
-        "click:@filter-2",
-        "wait:1000"
+        "wait:700",
+        "hover:@scrubber",
+        "drag:0.36,0.3",
+        "wait:900",
+        "click:@marker-o-1903",
+        "wait:1100"
       ],
       "loop": false
     },
@@ -12053,6 +12106,17 @@
           "light"
         ],
         "default": "dark"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#7aa2ff",
+          "#ff8a4c"
+        ]
       }
     ]
   },
