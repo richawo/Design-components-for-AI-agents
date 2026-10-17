@@ -4806,22 +4806,21 @@
     "updated": "2026-10-14"
   },
   "mobile-budget-envelope": {
-    "useWhen": "Inspect actual category budgets and spending, then propose an exact allocation with retained amount and note drafts.",
-    "avoidWhen": "Financial advice, moving money, inferring account balances or silently replacing host allocations.",
+    "useWhen": "Letting someone move money between budget categories on a phone, with the month's unassigned balance updating as they drag and nothing saved until the host accepts.",
+    "avoidWhen": "Moving real money between accounts, showing transaction history or charts of past spending, or a budget that isn't zero-based.",
     "integration": [
-      "envelopes: Up to 24 actual unique records with safe nonnegative integer budgetMinor/spentMinor, title/detail, editability and reason. Duplicate or invalid amounts make allocation unavailable; source records remain visible.",
-      "incomeMinor, periodId and periodLabel: Actual income and context. The named component starts with empty envelopes and unknown income/period, so allocation stays unavailable until supplied. Amounts use hundredth units and a literal unitLabel, with no exchange-rate conversion.",
-      "selectedId/onSelectedIdChange: Separately controlled inspection. The observer runs before local acceptance, and synchronous refusal keeps the prior selection. Raw amount and note drafts are retained independently for each period and envelope.",
-      "onBudgetChange: Copied exact period, selected source envelope, before/after minor amount, note, income and all original envelopes plus AbortSignal. Fulfillment acknowledges only; accepted budgets remain supplied. Missing handler disables editing.",
-      "The complete decimal amount draft is nonnegative and at most two fractional digits. Empty is not zero. Proposals above supplied income are blocked unless allowOverallocate is explicitly true.",
-      "Meaningful source/handler/period changes retire pending ownership. Older acknowledgements and failures retain newer amount/note drafts. Actual unallocated, spent, budget and ring values animate up/down and stop/set on live reduced motion.",
-      "Full-height native canvas, local horizontal category shelf, 44px controls and translucent actions over actual scrolling content. Verify real native devices, large text and assistive technology in the host app."
+      "envelopes: { id, name, icon, budgeted, spent, lastPeriod? } with icons home, basket, fork, car, bolt, coins, ticket or gift. Pass a new array to replace what the screen has accepted; income minus the budgets is Ready to Assign.",
+      "onBudgetChange(change) receives { envelopeId, name, from, to, readyToAssign }. Resolve to accept (the row and hero count to the new value); reject or throw and the sheet keeps the draft, shakes once and offers a retry.",
+      "step sets the ruler's notch; typed amounts keep their cents. allowOverAssign lets a budget exceed what's ready to assign; otherwise the ruler rubber-bands at the limit and says why.",
+      "openId and onOpenChange drive the envelope sheet from outside (null or an unknown id closes it). accent recolours the open segment, the needle and a balanced month; red is reserved for overspent and over-assigned.",
+      "Install expo-blur, expo-linear-gradient and react-native-svg (bare React Native: npx install-expo-modules once). Check real devices for keyboard, large text and assistive technology."
     ],
     "related": [
       "mobile-wallet-stack",
-      "mobile-checkout-sheet"
+      "mobile-checkout-sheet",
+      "mobile-bottom-sheet"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "mobile-voice-memo": {
     "useWhen": "Listen to an actual host recording with measured waveform, exact seeking, playback controls, markers and timed transcript.",
