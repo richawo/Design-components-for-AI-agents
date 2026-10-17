@@ -3622,18 +3622,18 @@
     "updated": "2026-10-13"
   },
   "navigation-lens-dock": {
-    "useWhen": "A compact set of workspace tools benefits from a dock with clear selection and pointer-based magnification.",
-    "avoidWhen": "Large hierarchical navigation, or navigation that depends on magnification to make labels or targets usable.",
+    "useWhen": "A launcher or workspace switcher with five to ten destinations where recognisable app tiles, unread badges and a playful but precise hover are part of the product’s feel.",
+    "avoidWhen": "Deep or text-heavy navigation, more than about ten destinations, or layouts where a bottom dock would cover content people need.",
     "integration": [
-      "Provide stable tool identifiers, accessible labels and reasons for disabled items.",
-      "Connect activation to real host navigation and update controlled selection after success.",
-      "Review keyboard use and static touch or reduced-motion presentation, including recovery from failed activation."
+      "Pass items with stable ids, labels and icons; use tile for the material, badge for counts, running for open apps, separated for system tools and disabledReason for locked ones.",
+      "Open destinations in onActivate and return the promise: the dock shows a spinner, aborts superseded opens through the signal, and offers Retry when it rejects. Update value once it resolves.",
+      "Set size and magnification for your layout; the dock shrinks, eases the swell and finally scrolls on its own in narrow containers."
     ],
     "related": [
       "navigation-context-rail",
       "navbar-floating"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "hero-signal-workbench": {
     "useWhen": "A product introduction benefits from an interactive waveform demonstration with understandable shape, frequency and gain controls.",

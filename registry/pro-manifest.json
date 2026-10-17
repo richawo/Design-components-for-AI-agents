@@ -34771,93 +34771,110 @@
     "tier": "pro",
     "platform": "web",
     "category": "navigation",
-    "description": "A glass tool dock with pointer-distance magnification, a traveling lens and stable hit targets. Keyboard, touch and recoverable async activation stay first-class.",
+    "description": "A macOS-grade app dock: tiles swell smoothly under the pointer, a glass lens rides over them, names float above, with keyboard, touch scrubbing and async opens.",
     "tags": [
       "navigation",
       "dock",
       "glass",
       "magnification",
+      "app launcher",
       "keyboard",
       "touch",
-      "async actions"
+      "toolbar"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 560,
-    "usage": "import { NavigationLensDock } from \"@/components/design-for-ai/navigation-lens-dock\";\n\n<NavigationLensDock\n  items={tools}\n  value={activeTool}\n  onActivate={async (id, _item, signal) => {\n    await openTool(id, { signal });\n    if (!signal.aborted) setActiveTool(id);\n  }}\n  magnification={1.45}\n/>",
+    "previewHeight": 620,
+    "usage": "import { NavigationLensDock } from \"@/components/design-for-ai/navigation-lens-dock\";\n\n<NavigationLensDock\n  items={apps} // { id, label, icon, tile?, badge?, running?, separated?, disabled?, disabledReason? }\n  value={activeApp}\n  onActivate={async (id, _item, signal) => {\n    await openApp(id, { signal });\n    if (!signal.aborted) setActiveApp(id);\n  }}\n/>",
     "props": [
       {
         "name": "items",
         "type": "LensDockItem[]",
-        "description": "Unique IDs, labels, descriptions, offline SVG icons and optional disabled reasons.",
-        "default": "Original studio tools"
+        "default": "Home, Inbox, Calendar, Notes, Files, Focus (disabled), Settings",
+        "description": "Unique id, label and icon (any ReactNode). Optional tile material (light, dark, paper), badge, running dot, a divider before it (separated), and disabled with a reason that becomes its label."
       },
       {
         "name": "label",
         "type": "string",
-        "description": "Accessible navigation name.",
-        "default": "\"Studio tools\""
+        "default": "\"Workspace\"",
+        "description": "Accessible name of the navigation."
       },
       {
         "name": "value",
         "type": "string",
-        "description": "Controlled active tool. Update it after host navigation completes."
+        "description": "Controlled current item (aria-current). Update it once onActivate resolves."
       },
       {
         "name": "defaultValue",
         "type": "string",
-        "description": "Initial uncontrolled selection.",
-        "default": "First enabled tool"
+        "default": "first enabled item",
+        "description": "Initial uncontrolled current item."
       },
       {
         "name": "onActivate",
         "type": "(id: string, item: LensDockItem, signal: AbortSignal) => void | Promise<void>",
-        "description": "Host-owned action or navigation. Pending remains in the original icon box. Rejections preserve selection and expose retry; stale completions are ignored. The signal aborts when superseded, reset or unmounted. Choosing the current destination cancels pending navigation."
+        "description": "Opens an item. A returned promise shows a spinner under the tile; a rejection shakes it and offers Retry. The signal aborts when another item is chosen or the dock unmounts; stale completions are ignored."
       },
       {
         "name": "magnification",
         "type": "number",
-        "description": "Pointer-distance icon enlargement, bounded to 1 through 1.8. Target boxes never change size. Fine mouse input only; static on touch and reduced motion.",
-        "default": "1.45"
+        "default": "1.85",
+        "description": "Peak scale under the pointer, 1 to 2.2, with a cosine falloff over 2.6 tiles. Eased off automatically when the container is too narrow; off with reduced motion."
+      },
+      {
+        "name": "size",
+        "type": "number",
+        "default": "60",
+        "description": "Resting tile size in px. Shrinks to fit (down to 36px); below that the row scrolls."
       },
       {
         "name": "labels",
         "type": "boolean",
-        "description": "Always-visible captions. Icon-only mode keeps the same geometry and accessible names.",
-        "default": "true"
+        "default": "true",
+        "description": "Floating names above the hovered, focused or touched tile."
+      },
+      {
+        "name": "lens",
+        "type": "boolean",
+        "default": "true",
+        "description": "The glass lens that rides with the pointer over the swelling tiles."
       },
       {
         "name": "disabled",
         "type": "boolean",
-        "description": "Disables activation without hiding tools or their reasons.",
-        "default": "false"
+        "default": "false",
+        "description": "Locks every item; names and reasons still show."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ff4f3a\"",
+        "description": "Badges and the calendar weekday."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Restrained translucent plate and metallic object palette.",
-        "default": "\"dark\""
+        "default": "\"dark\"",
+        "description": "Frosted graphite or frosted white plate, labels and lens."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Classes on the outer measured container."
+        "description": "Classes on the measured outer container."
       }
     ],
     "added": "2026-10-13",
     "demo": {
       "steps": [
-        "wait:350",
-        "hover:@tool-board",
-        "wait:250",
+        "wait:400",
+        "hover:@tool-home",
+        "hover:@tool-calendar",
         "hover:@tool-notes",
-        "wait:250",
-        "hover:@tool-files",
-        "click:@tool-files",
-        "wait:900"
+        "click:@tool-notes",
+        "wait:1100"
       ],
       "loop": false
     },
@@ -34873,10 +34890,47 @@
         "default": "dark"
       },
       {
-        "prop": "labels",
-        "label": "Captions",
+        "prop": "magnification",
+        "label": "Magnification",
+        "kind": "slider",
+        "min": 1,
+        "max": 2.2,
+        "step": 0.05,
+        "unit": "×",
+        "default": 1.85
+      },
+      {
+        "prop": "size",
+        "label": "Tile size",
+        "kind": "slider",
+        "min": 40,
+        "max": 72,
+        "step": 2,
+        "unit": "px",
+        "default": 60
+      },
+      {
+        "prop": "lens",
+        "label": "Glass lens",
         "kind": "toggle",
         "default": true
+      },
+      {
+        "prop": "labels",
+        "label": "Names",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "accent",
+        "label": "Badge",
+        "kind": "color",
+        "default": "#ff4f3a",
+        "options": [
+          "#ff4f3a",
+          "#f4f4f5",
+          "#3d8bff"
+        ]
       },
       {
         "prop": "disabled",
