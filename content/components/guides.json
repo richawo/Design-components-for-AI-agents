@@ -3953,17 +3953,17 @@
     "updated": "2026-10-13"
   },
   "text-path-typesetter": {
-    "useWhen": "Placing supplied text along a bounded curve while inspecting actual spacing and readable text content.",
-    "avoidWhen": "A full vector drawing tool or turning essential body copy into an inaccessible decorative outline.",
+    "useWhen": "Letting people set a short phrase along a curve and shape it by hand: badge and label makers, poster or merch editors, a type playground in a design tool.",
+    "avoidWhen": "Body copy or anything people must read quickly, or a full vector editor with many paths, where a canvas library fits better.",
     "integration": [
-      "Supply a quadratic curve with actual dimensions and start/control/end coordinates, selectable text and a real font role. Bend is a bounded delta from the supplied control point; zero preserves the supplied geometry.",
-      "Control font size, spacing, offset and bend atomically. Inspect actual native SVG path/glyph bounds, report curve overrun or viewport clipping, and preserve a readable linear equivalent and unique SVG IDs for multiple instances."
+      "Store the layout from onValueCommit: { path, size, tracking, align }, where path is a cubic Bézier in 0–1 canvas coordinates and size is in units of a 1000-wide canvas, so the same layout renders identically at any width.",
+      "Use value and onValueChange to drive it from your own state (onValueChange fires every frame of a drag or morph), text and onTextChange for the phrase, and fontRole for the face. The component measures the path and the set type itself and offers Fit when letters fall off."
     ],
     "related": [
       "devtools-icon-workbench",
       "editor-whiteboard"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "text-number-odometer": {
     "useWhen": "Presenting changing numeric values with interruptible rolls for increases, decreases, signs and decimals.",

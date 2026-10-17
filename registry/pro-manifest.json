@@ -37444,13 +37444,13 @@
     "tier": "pro",
     "platform": "web",
     "category": "text",
-    "description": "Place supplied text on a quadratic curve with real SVG measurements, bounded spacing and bend controls, readable fallback copy and honest clipping states.",
+    "description": "Type on a curve at display size: drag the Bézier’s anchors and handles and the phrase reflows live, with shapes that morph, fit-to-path and tracking.",
     "tags": [
       "text path",
       "typography",
+      "bezier",
       "curve",
       "typesetter",
-      "letter spacing",
       "svg"
     ],
     "dependencies": [
@@ -37458,125 +37458,171 @@
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1100,
-    "usage": "import { TextPathTypesetter } from \"@/components/design-for-ai/text-path-typesetter\";\n\n<TextPathTypesetter text={phrase} curve={sourceCurve} value={layout} onValueChange={setLayout} onValueCommit={saveLayout} />",
+    "previewHeight": 980,
+    "usage": "import { TextPathTypesetter } from \"@/components/design-for-ai/text-path-typesetter\";\n\n<TextPathTypesetter\n  defaultText=\"Every line has a direction\"\n  shape=\"arc\"\n  onValueCommit={(layout) => saveLayout(layout)}\n/>",
     "props": [
       {
         "name": "text",
         "type": "string",
-        "description": "Complete supplied reading text. The curved preview normalizes whitespace; its selectable linear equivalent preserves the actual copy.",
-        "default": "\"A different point of view.\""
+        "description": "Controlled phrase. Omit to let the field own it."
       },
       {
-        "name": "curve",
-        "type": "TypesetterCurve",
-        "description": "Finite quadratic source geometry with width200–4000, height100–2000 and points inside its view box. Zero geometry is unavailable."
+        "name": "defaultText",
+        "type": "string",
+        "default": "\"Every line has a direction\"",
+        "description": "Initial phrase when uncontrolled. Whitespace is collapsed on the path; the plain phrase stays available to assistive tech."
+      },
+      {
+        "name": "onTextChange",
+        "type": "(text: string) => void",
+        "description": "Called as the phrase is edited."
       },
       {
         "name": "value",
-        "type": "TypesetterValue",
-        "description": "Atomic controlled fontSize/spacing/offset/bend. Missing handler is read-only; rejected requests retain the actual layout."
+        "type": "TypesetterLayout",
+        "description": "Controlled layout { path, size, tracking, align }. path is a cubic Bézier { start, c1, c2, end } in 0–1 canvas coordinates; size is in canvas units (the canvas is 1000 wide); tracking is in em; align is start | middle | end."
       },
       {
         "name": "defaultValue",
-        "type": "TypesetterValue",
-        "description": "Initial local type layout. Defaults to size56u, spacing1u, offset6%, bend0.",
-        "default": "{fontSize:56,spacing:1,offset:6,bend:0}"
+        "type": "Partial<TypesetterLayout>",
+        "description": "Initial layout when uncontrolled; anything missing comes from shape and fontRole."
       },
       {
         "name": "onValueChange",
-        "type": "(value: TypesetterValue) => void",
-        "description": "Requests one bounded atomic type layout. Type size16–80u, spacing−1.5–12u in.25 steps, offset0–80%, bend bounded to the supplied control-point geometry."
+        "type": "(layout: TypesetterLayout) => void",
+        "description": "Every change, including each frame of a drag or a shape morph."
       },
       {
         "name": "onValueCommit",
-        "type": "(value: TypesetterValue) => void",
-        "description": "Reports accepted changed range releases and keyboard actions. Rejection, cancellation and obsolete interactions do not falsely commit."
+        "type": "(layout: TypesetterLayout) => void",
+        "description": "Once a change settles: a drag ends, a key step, a slider release, a shape lands, Fit."
+      },
+      {
+        "name": "shape",
+        "type": "\"arc\" | \"wave\" | \"rise\" | \"dip\"",
+        "default": "\"arc\"",
+        "description": "Starting curve when no path is given. The shape buttons morph between these."
       },
       {
         "name": "fontRole",
-        "type": "\"display\" | \"serif\" | \"mono\"",
-        "description": "Role-backed font used by the native SVG text. The visible linear reading version remains selectable.",
-        "default": "\"serif\""
+        "type": "\"serif\" | \"display\" | \"mono\"",
+        "default": "\"serif\"",
+        "description": "Font role for the set phrase; changing it resets the size to suit the role’s width."
       },
       {
-        "name": "heading",
-        "type": "string",
-        "description": "Typesetter heading.",
-        "default": "\"Words, with a direction.\""
-      },
-      {
-        "name": "description",
-        "type": "string",
-        "description": "Short context.",
-        "default": "\"Shape the line. Keep the reading order.\""
-      },
-      {
-        "name": "theme",
-        "type": "\"dark\" | \"light\"",
-        "description": "Neutral graphite and white chrome; colour is reserved for actual feature content and semantic data accents.",
-        "default": "\"dark\""
-      },
-      {
-        "name": "accent",
-        "type": "string",
-        "description": "Readable linear-text selection color.",
-        "default": "\"#e7b981\""
-      },
-      {
-        "name": "status",
-        "type": "\"ready\" | \"loading\" | \"unavailable\"",
-        "description": "Host source availability, retaining actual reading copy and usable recovery.",
-        "default": "\"ready\""
-      },
-      {
-        "name": "error",
-        "type": "string",
-        "description": "Host path recovery copy."
-      },
-      {
-        "name": "onRetry",
-        "type": "() => void",
-        "description": "Optional explicit host path-recovery intent."
+        "name": "showGuides",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show the path, arms and handles at rest. Off, they appear while the canvas is hovered or a handle has focus."
       },
       {
         "name": "disabled",
         "type": "boolean",
-        "description": "Stops inputs and active gestures while preserving readable text.",
-        "default": "false"
+        "default": "false",
+        "description": "Locks the handles, the field and the settings while the phrase stays readable."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ff6a3d\"",
+        "description": "The one accent: handles, the live arm and the selected shape."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Graphite canvas or warm paper."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Root classes for the responsive920px workbench.",
-        "default": "\"\""
+        "default": "\"\"",
+        "description": "Classes on the root."
       }
     ],
     "controls": [
       {
-        "prop": "heading",
-        "label": "Typesetter title",
+        "prop": "text",
+        "label": "Phrase",
         "kind": "text",
-        "default": "Words, with a direction."
+        "default": "Every line has a direction"
       },
       {
         "prop": "fontRole",
-        "label": "Type role",
+        "label": "Type",
         "kind": "segmented",
         "options": [
-          "serif",
-          "display",
-          "mono"
+          {
+            "value": "serif",
+            "label": "Serif"
+          },
+          {
+            "value": "display",
+            "label": "Display"
+          },
+          {
+            "value": "mono",
+            "label": "Mono"
+          }
         ],
         "default": "serif"
+      },
+      {
+        "prop": "shape",
+        "label": "Shape",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "arc",
+            "label": "Arc"
+          },
+          {
+            "value": "wave",
+            "label": "Wave"
+          },
+          {
+            "value": "rise",
+            "label": "Rise"
+          },
+          {
+            "value": "dip",
+            "label": "Dip"
+          }
+        ],
+        "default": "arc",
+        "remount": true
+      },
+      {
+        "prop": "showGuides",
+        "label": "Guides",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "accent",
+        "label": "Handles",
+        "kind": "color",
+        "default": "#ff6a3d",
+        "options": [
+          "#ff6a3d",
+          "#f4f4f5",
+          "#7dd3fc",
+          "#f5c66b"
+        ]
       },
       {
         "prop": "theme",
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Paper"
+          }
         ],
         "default": "dark"
       },
@@ -37585,28 +37631,16 @@
         "label": "Disabled",
         "kind": "toggle",
         "default": false
-      },
-      {
-        "prop": "status",
-        "label": "Path availability",
-        "kind": "action",
-        "options": [
-          "ready",
-          "loading",
-          "unavailable"
-        ]
       }
     ],
     "demo": {
       "steps": [
-        "click:@typesetter-bend:0.62,0.5",
-        "wait:400",
-        "click:@typesetter-spacing:0.3,0.5",
-        "wait:350",
-        "click:@typesetter-offset:0.18,0.5",
-        "wait:350",
-        "click:@typesetter-reset",
-        "wait:450"
+        "wait:1900",
+        "hover:@handle-c1",
+        "drag:0.3,0.62",
+        "wait:500",
+        "click:@shape-wave",
+        "wait:1100"
       ],
       "loop": false
     },
