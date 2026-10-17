@@ -1007,111 +1007,167 @@
   },
   {
     "slug": "agents-dependency-board",
-    "name": "Dependency Plan Board",
+    "name": "Agent Dependency Board",
     "tier": "pro",
     "platform": "web",
     "category": "agents",
-    "description": "An inspectable supplied dependency graph with a complete linear alternative, honest missing/cyclic relationships and authoritative task status.",
+    "description": "An agent plan as a graph: tasks laid out by dependency depth, edges that draw, the critical path in the accent and an inspector to start or retry work.",
     "tags": [
       "agents",
       "dependencies",
       "graph",
+      "critical path",
+      "plan",
       "tasks",
-      "blockers",
-      "dark"
+      "dag",
+      "orchestration",
+      "monochrome"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1120,
-    "usage": "import { AgentsDependencyBoard } from \"@/components/design-for-ai/agents-dependency-board\";\n\n<AgentsDependencyBoard tasks={tasks} value={taskId} onValueChange={inspectTask} resetKey={planId} />",
+    "previewHeight": 1000,
+    "usage": "import { AgentsDependencyBoard } from \"@/components/design-for-ai/agents-dependency-board\";\nimport type { PlanTask } from \"@/components/design-for-ai/agents-dependency-board\";\n\nconst tasks: PlanTask[] = plan.steps.map((s) => ({\n  id: s.id,\n  title: s.title,\n  agent: s.assignee,\n  estimate: s.estimateMinutes,\n  status: s.state, // \"done\" | \"running\" | \"queued\" | \"failed\"\n  progress: s.progress, // 0–1 while running\n  dependsOn: s.needs,\n  note: s.lastError ?? s.summary,\n}));\n\n<AgentsDependencyBoard\n  title={plan.title}\n  planId={plan.id}\n  tasks={tasks}\n  onAction={async (task, action) => {\n    // Reject to show the error under the button; resolve once the runner has accepted it.\n    await runner[action](task.id);\n  }}\n/>",
     "props": [
       {
         "name": "tasks",
-        "type": "DependencyBoardTask[]",
-        "description": "Stable task IDs, title/description, actual queued/running/blocked/complete/error state, raw dependency ID entries and optional owner.",
-        "default": "6 original offline navigation-study tasks"
-      },
-      {
-        "name": "value",
-        "type": "string",
-        "description": "Controlled inspected task ID. Missing identity stays explicit; without observer selection is read-only."
-      },
-      {
-        "name": "defaultValue",
-        "type": "string",
-        "description": "Initial local inspected ID; reset reuses it or first available task."
-      },
-      {
-        "name": "onValueChange",
-        "type": "(id: string, task: DependencyBoardTask) => void",
-        "description": "Synchronous inspection callback. Host rejection keeps the authoritative selected task. No execution."
-      },
-      {
-        "name": "resetKey",
-        "type": "string | number",
-        "description": "Supplied plan identity; resets local selection/view/trace."
+        "type": "PlanTask[]",
+        "description": "The plan: id, title, agent, estimate in minutes, status (done, running, queued, failed), progress 0–1 while running, dependsOn ids and an optional one-line note. Repeated ids keep the first; unknown dependencies and loops are reported under the graph and left out of it. Defaults to a ten-task billing migration."
       },
       {
         "name": "title",
         "type": "string",
-        "description": "Concise relationship heading.",
-        "default": "\"Dependencies, made legible.\""
+        "default": "\"Ship usage-based billing\"",
+        "description": "The plan's name."
       },
       {
-        "name": "description",
+        "name": "planId",
         "type": "string",
-        "description": "Explain grounded relationship inspection.",
-        "default": "\"Trace the supplied relationships, inspect the blockers and keep the next decision grounded in the actual plan.\""
+        "default": "\"plan_31c7\"",
+        "description": "Shown in mono above the title."
+      },
+      {
+        "name": "selectedId",
+        "type": "string",
+        "description": "Controlled selection. Pair with onSelect."
+      },
+      {
+        "name": "defaultSelectedId",
+        "type": "string",
+        "description": "The task open in the inspector on mount. Defaults to the first running task."
+      },
+      {
+        "name": "onSelect",
+        "type": "(task: PlanTask) => void",
+        "description": "Called when a task is selected from the graph, a chip or the bottleneck link."
+      },
+      {
+        "name": "onAction",
+        "type": "(task: PlanTask, action: \"start\" | \"retry\" | \"stop\") => void | Promise<void>",
+        "description": "Start a ready task, retry a failed one or stop a running one. A returned promise shows progress in the button; a rejection shows its message under it and the button comes back. Without it the button is disabled."
+      },
+      {
+        "name": "layout",
+        "type": "\"auto\" | \"across\" | \"down\"",
+        "default": "\"auto\"",
+        "description": "Columns left to right by dependency depth, rows top to bottom, or whichever fits the card. A forced across layout scrolls sideways inside the card when it has to."
+      },
+      {
+        "name": "showCritical",
+        "type": "boolean",
+        "default": "true",
+        "description": "Mark the critical path: the chain of unfinished work that decides the finish time, and the bottleneck at its head."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ff9d5c\"",
+        "description": "The one accent: critical path edges, card rails and the bottleneck."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Neutral black/white glass chrome, with colour reserved for actual data/feature accents.",
-        "default": "\"dark\""
+        "default": "\"dark\"",
+        "description": "Greyscale palette for the card, graph and text."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Outer board class.",
-        "default": "\"\""
+        "description": "Classes on the root, for width and placement."
       }
     ],
     "added": "2026-10-13",
     "demo": {
       "steps": [
-        "click:@trace-dependencies",
-        "wait:350",
-        "click:@graph-keyboard",
         "wait:400",
-        "click:@view-list",
-        "wait:350",
-        "click:@list-release",
-        "wait:400",
-        "click:@view-graph",
-        "wait:350",
-        "click:@trace-all",
-        "wait:300"
+        "click:@node-tests",
+        "wait:900",
+        "click:@node-pdf",
+        "wait:600",
+        "click:@task-action",
+        "wait:1500"
       ]
     },
     "controls": [
+      {
+        "prop": "layout",
+        "label": "Layout",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "auto",
+            "label": "Auto"
+          },
+          {
+            "value": "down",
+            "label": "Down"
+          },
+          {
+            "value": "across",
+            "label": "Across"
+          }
+        ],
+        "default": "auto",
+        "group": "View"
+      },
+      {
+        "prop": "showCritical",
+        "label": "Critical path",
+        "kind": "toggle",
+        "default": true,
+        "group": "View"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#ff9d5c",
+        "options": [
+          "#ff9d5c",
+          "#6fd3a0",
+          "#7ab8ff",
+          "#ededef"
+        ],
+        "group": "Look"
+      },
       {
         "prop": "theme",
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
-        "default": "dark"
-      },
-      {
-        "prop": "title",
-        "label": "Heading",
-        "kind": "text",
-        "default": "Dependencies, made legible."
+        "default": "dark",
+        "group": "Look"
       }
     ]
   },

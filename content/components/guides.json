@@ -4580,18 +4580,19 @@
     "updated": "2026-10-14"
   },
   "agents-dependency-board": {
-    "useWhen": "Inspecting supplied task dependencies and tracing actual blockers with a readable graph and linear alternative.",
-    "avoidWhen": "A general node editor, invented agent activity or treating a circular dependency as a runnable plan.",
+    "useWhen": "Showing an agent's plan as tasks with dependencies, where people need to see what is blocking the finish and act on it: retry a failed task, start a ready one, stop a running one.",
+    "avoidWhen": "A short linear plan with no branches, where an ordered step list is clearer, or a general-purpose node editor where people draw the graph themselves.",
     "integration": [
-      "Supply stable task IDs, raw dependency arrays and actual queued/running/blocked/complete/error statuses. Distinguish missing nodes, cycles and repeated IDs. A dependency with conflicting supplied records is ambiguous even when its first visual variant is complete; keep all raw variants inspectable.",
-      "Selection is controlled/uncontrolled, while graph/list and dependency/dependent tracing are local inspection. Preserve actual selection through status updates and use resetKey for a replacement plan. Keyboard focus reveals complete targets inside the bounded local graph/list.",
-      "This board does not execute tasks or infer permission from a valid graph. Local inspection is bounded to 200 unique tasks and 60 graph cards; expose incomplete or out-of-bound relationships rather than treating omitted data as complete."
+      "Supply tasks with `dependsOn` ids, an `estimate` in minutes and the live `status` (and `progress` while running). The critical path and the finish estimate are recomputed from the work left on every update, so a failed task can become the bottleneck.",
+      "Handle `onAction(task, action)` for start, retry and stop. Return a promise: the button shows progress while it is pending, and a rejection's message appears under it so the person can try again. Update `tasks` when the runner reports the new status.",
+      "Unknown dependency ids and loops are reported under the graph and left out of it rather than breaking the layout. `layout=\"auto\"` switches from columns to rows when the card is too narrow for readable cards."
     ],
     "related": [
       "agent-plan-steps",
+      "agents-run-replay",
       "editor-node-graph"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "agents-run-replay": {
     "useWhen": "Reviewing a finished agent run step by step: scrubbing to the moment a tool call failed, watching the transcript rebuild as the playhead moves and seeing which files and tests had changed by then.",
