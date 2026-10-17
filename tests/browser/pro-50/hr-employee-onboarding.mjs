@@ -1,7 +1,39 @@
-export async function check({page,mount,assert,choose}){
- await mount(`window.steps=[];window.fail=true;createRoot(document.getElementById('root')).render(<Subject.EmployeeOnboarding onComplete={async p=>{window.steps.push(p);if(window.fail)throw Error('offline')}}/>);`);
- assert.match(await page.locator('section').innerText(),/1 of 4 required steps/);
- await page.getByLabel('Completion note',{exact:true}).fill('Access verified with Noor. Ticket IT-208.');assert.equal(await page.getByRole('button',{name:'Record completion',exact:true}).isDisabled(),true);await page.getByRole('checkbox',{name:'I confirm this step is complete for Noor Ali.',exact:true}).check();await page.getByRole('button',{name:'Record completion',exact:true}).click();await page.getByRole('status').filter({hasText:'request failed'}).waitFor();await page.evaluate(()=>window.fail=false);await page.getByRole('button',{name:'Record completion',exact:true}).click();await page.getByRole('status').filter({hasText:'step recorded'}).waitFor();assert.deepEqual(await page.evaluate(()=>window.steps[1]),{hireId:'noor',taskId:'access',note:'Access verified with Noor. Ticket IT-208.'});assert.match(await page.locator('section').innerText(),/2 of 4 required steps/);
- await page.getByRole('button',{name:/03\s*First week/}).click();assert.match(await page.locator('section').innerText(),/Waiting: Meet the team/);assert.equal(await page.getByRole('button',{name:'Record completion',exact:true}).isDisabled(),true);
- await choose(page.getByLabel('New colleague',{exact:true}), 'sam');assert.match(await page.locator('section').innerText(),/0 of 3 required steps/);await page.getByRole('button',{name:/02\s*Day one/}).click();assert.equal(await page.getByLabel('Completion note',{exact:true}).inputValue(),'');assert.match(await page.locator('section').innerText(),/Waiting: Welcome/);assert.equal(await page.getByRole('checkbox',{name:'I confirm this step is complete for Sam Rivera.',exact:true}).isChecked(),false);
+export async function check({ page, mount, assert, choose }) {
+  await mount(`window.steps=[];window.fail=true;createRoot(document.getElementById('root')).render(<Subject.EmployeeOnboarding onComplete={async p=>{window.steps.push(p);if(window.fail)throw Error('offline')}} onReopen={p=>{window.reopened=p}}/>);`);
+  const text = () => page.locator("section").first().innerText();
+  // Figures tween through motion values, so wait for them to settle.
+  const until = (re) => page.locator("section").first().filter({ hasText: re }).waitFor();
+  await until(/5 \/ 11/);
+  await page.locator('[data-demo="task-access"]').click();
+  const record = page.getByRole("button", { name: "Record completion" });
+  await page.getByLabel("Completion note", { exact: true }).fill("Access verified with Noor. Ticket IT-208.");
+  assert.equal(await record.isDisabled(), true);
+  await page.getByRole("checkbox", { name: "I confirm this step is complete for Noor Ali." }).check();
+  await record.click();
+  await page.getByRole("status").filter({ hasText: "request failed" }).waitFor();
+  // The note survives the failure.
+  assert.equal(await page.getByLabel("Completion note", { exact: true }).inputValue(), "Access verified with Noor. Ticket IT-208.");
+  await page.evaluate(() => (window.fail = false));
+  await record.click();
+  await page.getByRole("status").filter({ hasText: "Step recorded" }).waitFor();
+  assert.deepEqual(await page.evaluate(() => window.steps[1]), { hireId: "noor", taskId: "access", note: "Access verified with Noor. Ticket IT-208." });
+  await until(/6 \/ 11/);
+  // Unblocked: shadowing no longer waits on access.
+  assert.doesNotMatch(await page.locator('[data-demo="task-shadow"]').innerText(), /Waiting/);
+  // Undo reopens.
+  await page.getByRole("button", { name: "Undo" }).click();
+  assert.deepEqual(await page.evaluate(() => window.reopened), { hireId: "noor", taskId: "access" });
+  await until(/5 \/ 11/);
+  // Quick tick records with an empty note.
+  await page.locator('[data-demo="tick-team"]').check();
+  await page.getByRole("status").filter({ hasText: "Step recorded" }).waitFor();
+  assert.deepEqual(await page.evaluate(() => window.steps.at(-1)), { hireId: "noor", taskId: "team", note: "" });
+  // A blocked step says what it waits on.
+  await page.locator('[data-demo="task-handover"]').click();
+  assert.equal(await page.getByRole("button", { name: /^Waiting: Shadow three customer calls/ }).isDisabled(), true);
+  await page.keyboard.press("Escape");
+  // Switching hire resets the view to their journey.
+  await choose(page.locator('[data-demo="hire"]'), "theo");
+  await until(/1 \/ 6/);
+  assert.match(await text(), /Starts in 7 days/);
 }
