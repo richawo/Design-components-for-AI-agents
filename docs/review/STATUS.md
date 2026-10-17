@@ -149,7 +149,7 @@ needs re-recording, whether its poster is current, and the state of its browser 
 | `finance-payment-run` | new | current | rewritten, not yet run end to end; asserts bugs below |
 | `finance-receivables-aging` | new | current | rewritten, not yet run end to end; asserts bugs below |
 | `finance-reconciliation` | new | stale | no pro-50 probe; pro-industry-probe and pro-demo-probe still test the old UI |
-| `finance-scenario-forecast` | new | current | rewritten, not yet run end to end; asserts bugs below |
+| `finance-scenario-forecast` | new | current | rewritten, passes in isolation; runway and empty states fixed; official runner pending |
 
 ## Fashion suite (4)
 

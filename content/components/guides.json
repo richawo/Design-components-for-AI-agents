@@ -2332,7 +2332,8 @@
       "Pass `model` with today's opening cash, MRR, payroll and the loaded cost of a hire, all in minor units, plus `startMonth` and `horizonMonths`.",
       "Pass `scenarios` as named driver sets; the first is the base every other scenario is compared against.",
       "`onSaveScenario` receives the edited drivers with `runwayMonths`, `cashOutMonth` and the month-by-month closing cash. Store the drivers; recompute the projection on your side if the model changes. Reject with an `Error` to keep the edits and show its message.",
-      "Swap `project` for your own model if hires ramp differently or revenue isn't compounding; the chart only needs month-end balances."
+      "Swap `project` for your own model if hires ramp differently or revenue isn't compounding; the chart only needs month-end balances.",
+      "Non-positive opening cash produces zero runway and a cash-already-out state in both the readout and saved projection. Empty scenario lists render an empty state; scenario tabs support arrows, Home and End."
     ],
     "related": [
       "finance-cashflow-dashboard",

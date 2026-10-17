@@ -6,7 +6,7 @@ const spoken = (locator) =>
     copy.querySelectorAll("*").forEach((n) => n.append(" "));
     return copy.textContent.replace(/\s+/g, " ").trim();
   });
-// £200K in the bank, £40K out a month and nothing coming in: the base runs out at the end of month 6.
+// £200k in the bank, £40k out a month and nothing coming in: the base runs out at the end of month 6.
 const MODEL = { openingCashMinor: 20_000_000, revenueMinor: 0, payrollMinor: 0, costPerHireMinor: 500_000, startMonth: "2027-01", horizonMonths: 12 };
 const BASE = { growthPct: 0, hires: 0, spendMinor: 4_000_000, raiseMinor: 0, raiseMonth: 3 };
 const RAISE = { ...BASE, raiseMinor: 26_000_000 };
@@ -36,17 +36,29 @@ export async function check({ page, mount, assert }) {
   assert.equal(await tab("Base plan").getAttribute("aria-selected"), "true");
   await settled(/Runway 5\.0 months/);
   await settled(/Cash runs out Jun 2027 With no raise planned/);
-  await settled(/Gap to close £280K by Dec 2027/);
+  await settled(/Gap to close £280k by Dec 2027/);
   assert.match(await txt(root), /Cash out · Jun 2027/);
   assert.equal(await page.locator('[data-demo="raise-pin"]').count(), 0);
+
+  // Scenario tabs use a roving stop and Arrow/Home/End selection without losing the focus.
+  await tab("Base plan").focus();
+  await page.keyboard.press("ArrowRight");
+  assert.equal(await tab("Seed round").getAttribute("aria-selected"), "true");
+  assert.equal(await tab("Base plan").getAttribute("tabindex"), "-1");
+  await page.keyboard.press("Home");
+  assert.equal(await tab("Base plan").getAttribute("aria-selected"), "true");
+  await page.keyboard.press("End");
+  assert.equal(await tab("Seed round").getAttribute("aria-selected"), "true");
+  await page.keyboard.press("ArrowLeft");
+  assert.equal(await page.evaluate(() => document.activeElement?.dataset.demo), "scenario-base");
 
   // The raise scenario lands before the money runs out and is compared with the base.
   await tab("Seed round").click();
   await toolbar.filter({ hasText: "Runway · Seed round" }).waitFor();
   await settled(/Runway 11\.5 months \+6\.5 mo vs base/);
-  await settled(/Cash runs out Dec 2027 With £260K landing Apr 2027/);
+  await settled(/Cash runs out Dec 2027 With £260k landing Apr 2027/);
   const pin = page.getByRole("slider", { name: "Month the raise lands" });
-  assert.equal(await pin.getAttribute("aria-valuetext"), "£260K lands in Apr 2027");
+  assert.equal(await pin.getAttribute("aria-valuetext"), "£260k lands in Apr 2027");
   assert.equal(await pin.getAttribute("aria-valuemax"), "11");
 
   // Signature: move the raise pin by keyboard until it lands too late.
@@ -55,28 +67,30 @@ export async function check({ page, mount, assert }) {
   await page.keyboard.press("ArrowRight");
   await page.keyboard.press("ArrowRight");
   await page.keyboard.press("ArrowRight");
-  assert.equal(await pin.getAttribute("aria-valuetext"), "£260K lands in Aug 2027");
+  assert.equal(await pin.getAttribute("aria-valuetext"), "£260k lands in Aug 2027");
   await settled(/Runway 5\.0 months/);
-  await settled(/Cash runs out Jun 2027 2 months before the £260K lands/);
+  await settled(/Cash runs out Jun 2027 2 months before the £260k lands/);
   await toolbar.filter({ hasText: /Unsaved changes/ }).waitFor();
   await tab("Seed round").filter({ has: page.getByLabel("edited") }).waitFor();
+  await page.keyboard.press("ArrowLeft");
+  await settled(/1 month before the £260k lands/);
   await page.keyboard.press("Home");
-  assert.equal(await pin.getAttribute("aria-valuetext"), "£260K lands in Jan 2027");
+  assert.equal(await pin.getAttribute("aria-valuetext"), "£260k lands in Jan 2027");
   await page.keyboard.press("End");
-  assert.equal(await pin.getAttribute("aria-valuetext"), "£260K lands in Dec 2027");
+  assert.equal(await pin.getAttribute("aria-valuetext"), "£260k lands in Dec 2027");
   await page.keyboard.press("Home");
   for (let i = 0; i < 3; i++) await page.keyboard.press("ArrowRight");
 
   // Drivers are labelled native ranges.
   const spend = page.getByLabel("Monthly spend", { exact: true });
-  assert.equal(await spend.getAttribute("aria-valuetext"), "£40K");
+  assert.equal(await spend.getAttribute("aria-valuetext"), "£40k");
   await spend.focus();
   await page.keyboard.press("ArrowRight");
-  assert.equal(await spend.getAttribute("aria-valuetext"), "£42K");
+  assert.equal(await spend.getAttribute("aria-valuetext"), "£42k");
   await page.getByLabel("New hires", { exact: true }).fill("2");
   assert.equal(await page.getByLabel("New hires", { exact: true }).getAttribute("aria-valuetext"), "2 people");
-  assert.match(await txt(root), /Adds £10K \/ mo at full team/);
-  // £200K, −£42K a month, hires joining at £5K each from month one, £260K landing in April.
+  assert.match(await txt(root), /Adds £10k \/ mo at full team/);
+  // £200k, −£42k a month, hires joining at £5k each from month one, £260k landing in April.
   await settled(/Runway 8\.\d months/);
 
   // Edits are kept per scenario across tab switches; Reset puts the scenario back.
@@ -107,7 +121,7 @@ export async function check({ page, mount, assert }) {
   assert.equal(saved.months.length, 12);
   assert.deepEqual(saved.months[0], { month: "2027-01", cashMinor: 15_500_000 });
   assert.deepEqual(saved.months[3], { month: "2027-04", cashMinor: 28_000_000 });
-  // £200K − (£45K × 12) + £260K = −£80K at the end; it first dips below zero in Nov 2027.
+  // £200k − (£45k × 12) + £260k = −£80k at the end; it first dips below zero in Nov 2027.
   assert.deepEqual(saved.months[11], { month: "2027-12", cashMinor: -8_000_000 });
   assert.equal(saved.cashOutMonth, "2027-11");
   assert.equal(saved.runwayMonths, 10.2);
@@ -116,11 +130,24 @@ export async function check({ page, mount, assert }) {
   await mount(`createRoot(document.getElementById('root')).render(<Subject.ScenarioForecast model={${JSON.stringify(MODEL)}} scenarios={${JSON.stringify([{ id: "lean", name: "Lean", drivers: { ...BASE, raiseMinor: 50_000_000 } }])}}/>);`);
   const lean = page.locator("section").first().locator(":scope > div").first();
   assert.match(await spoken(lean), /Runway 12\+ months/);
-  assert.match(await spoken(lean), /Cash runs out Not before Dec 2027 With £500K landing Apr 2027/);
-  assert.match(await spoken(lean), /Lowest balance £80K Mar 2027/);
+  assert.match(await spoken(lean), /Cash runs out Not before Dec 2027 With £500k landing Apr 2027/);
+  assert.match(await spoken(lean), /Lowest balance £80k Mar 2027/);
 
   // A business already overdrawn has no runway; it must not read as never running out.
-  await mount(`createRoot(document.getElementById('root')).render(<Subject.ScenarioForecast model={${JSON.stringify({ ...MODEL, openingCashMinor: -1_000_000 })}} scenarios={${JSON.stringify([SCENARIOS[0]])}}/>);`);
+  await mount(`window.overdrawnSave=null;createRoot(document.getElementById('root')).render(<Subject.ScenarioForecast model={${JSON.stringify({ ...MODEL, openingCashMinor: -1_000_000 })}} scenarios={${JSON.stringify([SCENARIOS[0]])}} onSaveScenario={s=>{window.overdrawnSave=s}}/>);`);
   const overdrawn = await spoken(page.locator("section").first().locator(":scope > div").first());
   assert.doesNotMatch(overdrawn, /12\+ months|Not before/, `Overdrawn opening balance reads as safe: ${overdrawn.slice(0, 120)}`);
+  assert.match(overdrawn, /Runway 0.0 months/);
+  assert.match(overdrawn, /Cash already out/);
+  await page.locator('[data-demo="save"]').click();
+  await page.waitForFunction(() => window.overdrawnSave);
+  assert.equal(await page.evaluate(() => window.overdrawnSave.runwayMonths), 0);
+  assert.equal(await page.evaluate(() => window.overdrawnSave.cashOutMonth), "2027-01");
+
+  await mount(`createRoot(document.getElementById('root')).render(<Subject.ScenarioForecast model={${JSON.stringify({...MODEL, openingCashMinor:0})}} scenarios={${JSON.stringify([SCENARIOS[0]])}}/>);`);
+  assert.match(await spoken(page.locator("section").first()), /Cash already out/);
+
+  await mount(`createRoot(document.getElementById('root')).render(<Subject.ScenarioForecast scenarios={[]}/>);`);
+  await page.getByRole("heading", {name:"No scenarios yet"}).waitFor();
+  assert.equal(await page.getByRole("tab").count(), 0);
 }

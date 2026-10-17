@@ -23591,12 +23591,12 @@
       {
         "name": "model",
         "type": "RunwayModel",
-        "description": "The business today: { openingCashMinor, revenueMinor (MRR), payrollMinor, costPerHireMinor, startMonth: \"YYYY-MM\", horizonMonths }."
+        "description": "The business today: { openingCashMinor, revenueMinor (MRR), payrollMinor, costPerHireMinor, startMonth: \"YYYY-MM\", horizonMonths }. An opening balance at or below zero has zero runway and is already out of cash."
       },
       {
         "name": "scenarios",
         "type": "RunwayScenario[]",
-        "description": "Named driver sets: { id, name, drivers: { growthPct, hires, spendMinor, raiseMinor, raiseMonth } }. The first is the base the others are compared against."
+        "description": "Named driver sets: { id, name, drivers: { growthPct, hires, spendMinor, raiseMinor, raiseMonth } }. The first is the base the others are compared against. Empty arrays show an empty state. Tabs support arrow keys, Home and End."
       },
       {
         "name": "defaultScenarioId",
