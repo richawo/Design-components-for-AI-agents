@@ -2559,18 +2559,19 @@
     "updated": "2026-10-12"
   },
   "hr-shift-coverage": {
-    "useWhen": "Reviewing open shifts and a proposed coverage assignment.",
-    "avoidWhen": "Automatic scheduling without checking qualifications, availability and local rules.",
+    "useWhen": "Building a weekly rota by hand: dragging open shifts onto trained, available people while rest, overlap and hour limits are checked as you go.",
+    "avoidWhen": "Automatic schedule generation, or calendars of meetings rather than staffed shifts.",
     "integration": [
-      "Supply your own records through `shifts`, `staff`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onSave` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+      "Pass `shifts` with local dates and wall-clock times (overnight shifts end before they start) and `staff` with skills, contracted and maximum hours, and absences.",
+      "Tune `minRestHours` to your jurisdiction; every refused drop names the rule it breaks.",
+      "`onPublish` receives an assignment for every shift; reject it to keep the rota as a draft."
     ],
     "related": [
-      "hr-capacity-planner",
       "hr-leave-approval",
-      "fashion-launch-calendar"
+      "hr-capacity-planner",
+      "hr-people-dashboard"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "input-ai-prompt": {
     "useWhen": "An assistant composer that needs richer prompt and attachment controls.",

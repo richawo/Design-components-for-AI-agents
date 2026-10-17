@@ -25738,70 +25738,102 @@
     "tier": "pro",
     "platform": "web",
     "category": "date-time",
-    "description": "Assign qualified staff while checking conflicts and weekly hour limits. A considered, responsive hr workspace with typed integration points.",
+    "description": "A week rota where shifts are blocks you drag onto people: open gaps hatched, cells that say why someone can’t take a shift, hours meters and publish.",
     "tags": [
       "hr",
-      "workflow",
-      "responsive",
-      "keyboard",
-      "date-time"
+      "scheduling",
+      "rota",
+      "shifts",
+      "drag and drop"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1180,
-    "usage": "import { ShiftCoverage } from \"@/components/design-for-ai/hr-shift-coverage\";\n\n<ShiftCoverage />",
+    "previewHeight": 900,
+    "usage": "import { ShiftCoverage } from \"@/components/design-for-ai/hr-shift-coverage\";\n\n<ShiftCoverage\n  location=\"Marlow & Finch · Shoreditch\"\n  weekLabel=\"Week 43\"\n  shifts={shifts}\n  staff={staff}\n  minRestHours={11}\n  onPublish={async ({ assignments }) => {\n    await api.rota.publish(assignments);\n  }}\n/>",
     "props": [
-      {
-        "name": "title",
-        "type": "string",
-        "description": "Main heading.",
-        "default": "\"Shift coverage\""
-      },
-      {
-        "name": "subtitle",
-        "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Assign available, qualified colleagues while checking overlapping shifts and weekly hour limits.\""
-      },
       {
         "name": "shifts",
         "type": "CoverageShift[]",
-        "description": "Unique shifts with ISO timestamps including explicit offsets, lasting 1–1440 whole minutes. All shifts belong to the same planning week."
+        "default": "28 shifts, week of 19 Oct 2026",
+        "description": "{ id, date (\"2026-10-19\"), start, end (\"06:30\"; an end at or before the start runs past midnight), role, assigneeId? }. The week starts on the earliest date. Invalid or duplicate shifts are left off and named in an alert."
       },
       {
         "name": "staff",
         "type": "CoverageStaff[]",
-        "description": "Unique colleagues with qualifications, availability intervals, existing minutes outside this board and total weekly minute limits."
+        "default": "7 people",
+        "description": "{ id, name, title, skills, contractHours, maxHours, unavailable?: { date, reason }[] }."
       },
       {
-        "name": "timeZone",
+        "name": "location",
         "type": "string",
-        "description": "IANA display timezone. Invalid values fall back to UTC with an explicit notice."
+        "default": "\"Marlow & Finch · Shoreditch\"",
+        "description": "The location being scheduled, shown as the entity in the header."
       },
       {
-        "name": "onSave",
-        "type": "(value:ShiftAssignments)=>void|Promise<void>",
-        "description": "Persist the complete assignment draft, including unassigned shifts. The host revalidates current availability before applying it."
+        "name": "weekLabel",
+        "type": "string",
+        "default": "\"Week 43\"",
+        "description": "Shown in the breadcrumb."
+      },
+      {
+        "name": "minRestHours",
+        "type": "number",
+        "default": "11",
+        "description": "Minimum rest between two shifts for one person. Drops that break it are refused with the reason."
+      },
+      {
+        "name": "showHours",
+        "type": "boolean",
+        "default": "true",
+        "description": "Show each person's weekly hours meter (contracted hours marked); otherwise their title."
+      },
+      {
+        "name": "density",
+        "type": "\"comfortable\" | \"compact\"",
+        "default": "\"comfortable\"",
+        "description": "Row height."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Locale for day names."
+      },
+      {
+        "name": "onPublish",
+        "type": "(value: ShiftAssignments) => void | Promise<void>",
+        "description": "Receives { assignments: { shiftId, staffId | null }[] } for every shift. Reject to keep the draft and show the error."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#c5f25a\"",
+        "description": "The one accent: covered shifts, valid drop targets and hours fills."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Near-black (default) or white surfaces."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
+        "wait:800",
+        "hover:@shift-sat-close",
+        "down",
+        "hover:@cell-mei-5:0.5,0.5",
         "wait:350",
-        "click:@candidate-0",
-        "click:@shift-1",
-        "click:@candidate-1",
-        "wait:450",
-        "click:@save",
-        "wait:1000"
+        "hover:@cell-ollie-5:0.5,0.5",
+        "wait:200",
+        "up",
+        "wait:700",
+        "click:@publish",
+        "wait:1400"
       ],
       "loop": false
     },
@@ -25815,6 +25847,34 @@
           "light"
         ],
         "default": "dark"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#c5f25a",
+        "options": [
+          "#c5f25a",
+          "#ff8a5c",
+          "#7cc4ff",
+          "#f4f4f5"
+        ]
+      },
+      {
+        "prop": "showHours",
+        "label": "Hours meters",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "density",
+        "label": "Density",
+        "kind": "segmented",
+        "options": [
+          "comfortable",
+          "compact"
+        ],
+        "default": "comfortable"
       }
     ]
   },
