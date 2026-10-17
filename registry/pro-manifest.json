@@ -27415,73 +27415,105 @@
   },
   {
     "slug": "legal-matter-intake",
-    "name": "Matter Intake Workspace",
+    "name": "Matter Intake",
     "tier": "pro",
     "platform": "web",
     "category": "forms",
-    "description": "Structured client intake with parties, jurisdiction and conflict-check handoff. A considered, responsive legal workspace with typed integration points.",
+    "description": "A matter intake form whose cover sheet composes itself on paper as you type, with a conflict check that scans each party against the register and shows the matches.",
     "tags": [
       "legal-tech",
-      "workflow",
-      "responsive",
-      "keyboard",
-      "forms"
+      "matter intake",
+      "conflict check",
+      "client onboarding",
+      "forms",
+      "workflow"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1270,
-    "usage": "import { MatterIntake } from \"@/components/design-for-ai/legal-matter-intake\";\n\n<MatterIntake />",
+    "previewHeight": 1080,
+    "usage": "import { MatterIntake } from \"@/components/design-for-ai/legal-matter-intake\";\n\n<MatterIntake\n  practices={practices}\n  owners={lawyers}\n  onConflictCheck={(parties) => api.conflicts.search(parties)}\n  onSubmit={async (draft) => {\n    const matter = await api.intake.create(draft);\n    return { reference: matter.reference };\n  }}\n/>",
     "props": [
-      {
-        "name": "title",
-        "type": "string",
-        "description": "Main heading.",
-        "default": "\"Matter intake\""
-      },
-      {
-        "name": "subtitle",
-        "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Capture the client, relevant parties and proposed scope for an intake and conflict-review handoff.\""
-      },
       {
         "name": "practices",
         "type": "IntakeOption[]",
-        "description": "Available practice areas with unique IDs."
+        "description": "Practice areas as { id, label }."
       },
       {
         "name": "owners",
         "type": "IntakeOption[]",
-        "description": "Available intake owners."
+        "description": "Lawyers who can be responsible for the matter, as { id, label }."
+      },
+      {
+        "name": "jurisdictions",
+        "type": "string[]",
+        "description": "Governing law choices."
+      },
+      {
+        "name": "register",
+        "type": "ConflictRecord[]",
+        "description": "Parties already on the books ({ name, aliases?, matter, relation, owner, status }), searched locally when onConflictCheck is absent. Names match ignoring case, punctuation and suffixes such as Ltd."
+      },
+      {
+        "name": "onConflictCheck",
+        "type": "(parties) => Promise<ConflictHit[]>",
+        "description": "Search your conflicts system for the client and parties. Each hit is { partyId, record, severity: conflict | review }. Reject to say the check couldn’t run."
+      },
+      {
+        "name": "defaultDraft",
+        "type": "Partial<MatterIntakeDraft>",
+        "description": "Pre-filled client, contact email, practiceId, ownerId, jurisdiction, feeBasis, summary and parties."
       },
       {
         "name": "onSubmit",
-        "type": "(draft:MatterIntakeDraft)=>void|Promise<void>",
-        "description": "Hand the reviewed draft to the host intake process. This does not clear conflicts, accept instructions or create an engagement."
+        "type": "(draft: MatterIntakeDraft) => void | Promise<void | { reference?: string }>",
+        "description": "Receives the reviewed intake, its conflict hits and whether they were acknowledged. Resolve (optionally with the new matter reference) to stamp the sheet; reject to keep everything and say so. Clearing conflicts stays with your conflicts team."
+      },
+      {
+        "name": "referenceDate",
+        "type": "string",
+        "description": "ISO date printed on the cover sheet. Defaults to today."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Matter intake\"",
+        "description": "Entity name in the header."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "default": "\"Matters · New matter\"",
+        "description": "Breadcrumb context, split on “ · ”."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#5b8def\"",
+        "description": "The one accent: the readiness ring, the conflict scan and the submitted stamp."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Graphite chrome or the light inverse. The cover sheet stays paper in both."
       },
       {
-        "name": "selectMode",
-        "type": "\"custom\" | \"native\"",
-        "default": "\"custom\"",
-        "description": "Animated keyboard-accessible custom listboxes, or native platform pickers with matched 12px insets."
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:400",
-        "click:@next",
-        "wait:700",
-        "click:@next",
-        "wait:1000"
+        "wait:500",
+        "click:@add-party",
+        "type:Harbour Works",
+        "click:@check",
+        "wait:2300"
       ],
       "loop": false
     },
@@ -27497,14 +27529,16 @@
         "default": "dark"
       },
       {
-        "prop": "selectMode",
-        "label": "Select menus",
-        "kind": "segmented",
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#5b8def",
         "options": [
-          "custom",
-          "native"
-        ],
-        "default": "custom"
+          "#5b8def",
+          "#e5484d",
+          "#8b7cf6",
+          "#0ea5a4"
+        ]
       }
     ]
   },
