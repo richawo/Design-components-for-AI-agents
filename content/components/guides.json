@@ -2651,18 +2651,19 @@
     "updated": "2026-10-17"
   },
   "legal-matter-dashboard": {
-    "useWhen": "Reviewing supplied matter workload, deadlines and operational queues.",
-    "avoidWhen": "A legal docket authority or decisions based on unverified deadlines.",
+    "useWhen": "Giving a legal team or general counsel one view of the matter portfolio: spend against budget, where each matter sits in the pipeline and which dates are coming up or already missed.",
+    "avoidWhen": "Acting as a docket or limitation calculator. Dates are shown as recorded by matter owners; court and statutory deadlines need a system built to compute and verify them.",
     "integration": [
-      "Supply your own records through `matters`. Preserve stable keys or IDs when the data contract provides them.",
-      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+      "Pass `matters` with id, name, client, practice, owner, status, stage, nextStep and dates. Add `budgetMinor` and `spentMinor` in minor units for spend figures; set `currency` and `locale` for formatting.",
+      "`phases` defines the pipeline order; a matter’s stage matches by name, and unknown stages are added at the end.",
+      "`onOpenMatter` adds an Open matter action to each expanded row; `horizonDays` sets how far Coming up looks ahead."
     ],
     "related": [
-      "app-permission-matrix",
-      "commerce-operations-dashboard",
-      "fashion-merchandising-dashboard"
+      "legal-matter-intake",
+      "legal-obligation-tracker",
+      "legal-renewal-planner"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "legal-matter-intake": {
     "useWhen": "Collecting and reviewing a matter's supplied facts before handoff.",

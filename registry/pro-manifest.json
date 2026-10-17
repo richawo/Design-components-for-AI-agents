@@ -27274,68 +27274,107 @@
   },
   {
     "slug": "legal-matter-dashboard",
-    "name": "Matter Operations Dashboard",
+    "name": "Matter Portfolio Dashboard",
     "tier": "pro",
     "platform": "web",
     "category": "app",
-    "description": "Matter workload, upcoming dates and a selected matter’s status and owner. A considered, responsive legal workspace with typed integration points.",
+    "description": "A legal matter portfolio: spend against budget that counts up, a phase pipeline you filter by, a sortable matters table that expands in place and the dates coming up.",
     "tags": [
       "legal-tech",
-      "workflow",
-      "responsive",
-      "keyboard",
-      "app"
+      "matter management",
+      "legal ops",
+      "dashboard",
+      "budget",
+      "pipeline",
+      "deadlines"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1410,
-    "usage": "import { MatterDashboard } from \"@/components/design-for-ai/legal-matter-dashboard\";\n\n<MatterDashboard />",
+    "previewHeight": 1180,
+    "usage": "import { MatterDashboard } from \"@/components/design-for-ai/legal-matter-dashboard\";\n\n<MatterDashboard\n  matters={matters}\n  currency=\"GBP\"\n  onOpenMatter={(id) => router.push(`/matters/${id}`)}\n/>",
     "props": [
-      {
-        "name": "title",
-        "type": "string",
-        "description": "Main heading.",
-        "default": "\"Matter overview\""
-      },
-      {
-        "name": "subtitle",
-        "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Review active work, accountable owners and dates across the legal team.\""
-      },
       {
         "name": "matters",
         "type": "LegalMatter[]",
-        "description": "Unique matters with accountable owners, lifecycle state and host-supplied dates. Dates are not inferred from legal rules."
+        "description": "Matters with id, name, client, practice, owner, status (active | on-hold | closed), stage, nextStep and dates [{ id, label, date }] as recorded by the owner. Optional budgetMinor and spentMinor in minor units drive the spend figures."
+      },
+      {
+        "name": "phases",
+        "type": "string[]",
+        "default": "[\"Intake\", \"Due diligence\", \"Negotiation\", \"Signing\", \"Completion\"]",
+        "description": "The pipeline in order. A matter’s stage is matched by name, ignoring case; unlisted stages are added at the end."
       },
       {
         "name": "referenceDate",
         "type": "string",
-        "description": "ISO calendar date used for upcoming and overdue calculations."
+        "description": "ISO date treated as today. An invalid date is reported and today is used."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"GBP\"",
+        "description": "ISO 4217 code for budgets and spend, formatted with Intl."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Locale for money formatting."
+      },
+      {
+        "name": "horizonDays",
+        "type": "number",
+        "default": "14",
+        "description": "How far ahead the Due figure and the Coming up list look (1 to 60 days)."
+      },
+      {
+        "name": "onOpenMatter",
+        "type": "(matterId: string) => void",
+        "description": "Adds an Open matter action to each expanded row."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Matters\"",
+        "description": "Entity name in the header."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "default": "\"Legal · Portfolio\"",
+        "description": "Breadcrumb context, split on “ · ”."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#5b8def\"",
+        "description": "The one accent: the selected phase and the expanded row."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Graphite chrome or the light inverse."
       },
       {
-        "name": "selectMode",
-        "type": "\"custom\" | \"native\"",
-        "default": "\"custom\"",
-        "description": "Animated keyboard-accessible custom listboxes, or native platform pickers with matched 12px insets."
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:400",
-        "click:@matter-1",
-        "wait:1000",
-        "click:@matter-2",
-        "wait:1200"
+        "wait:600",
+        "click:@sort-spend",
+        "wait:700",
+        "click:@phase-negotiation",
+        "wait:600",
+        "click:@matter-mat-207",
+        "wait:1300"
       ],
       "loop": false
     },
@@ -27351,14 +27390,26 @@
         "default": "dark"
       },
       {
-        "prop": "selectMode",
-        "label": "Select menus",
-        "kind": "segmented",
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#5b8def",
         "options": [
-          "custom",
-          "native"
-        ],
-        "default": "custom"
+          "#5b8def",
+          "#e5484d",
+          "#8b7cf6",
+          "#0ea5a4"
+        ]
+      },
+      {
+        "prop": "horizonDays",
+        "label": "Look ahead",
+        "kind": "slider",
+        "min": 7,
+        "max": 30,
+        "step": 1,
+        "unit": "days",
+        "default": 14
       }
     ]
   },
