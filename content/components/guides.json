@@ -2499,19 +2499,19 @@
     "updated": "2026-10-17"
   },
   "hr-interview-scorecard": {
-    "useWhen": "Recording structured interview evidence against consistent criteria.",
-    "avoidWhen": "An automatic hiring decision or scores without supporting observations.",
+    "useWhen": "Structured interviews: each interviewer rates role competencies on shared anchors, writes the evidence behind each rating, recommends hire or no hire, and only then sees how the rest of the panel scored.",
+    "avoidWhen": "Automated screening or ranking candidates; this records one person’s judgement and never makes a hiring decision.",
     "integration": [
-      "Supply your own records through `competencies`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onSubmit` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
-      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+      "Supply `competencies` with prompts and optional per-competency anchors; duplicates are named and left out.",
+      "Pass other interviewers’ submitted scorecards as `panel`; they stay hidden until this one is submitted, so they can’t anchor it.",
+      "`onSubmit` receives the ratings with evidence, a recommendation from strong-no to strong-yes and the summary; reject it to keep the draft."
     ],
     "related": [
-      "hr-policy-acknowledgement",
-      "forms-preference-center",
-      "legal-matter-intake"
+      "hr-org-explorer",
+      "hr-employee-onboarding",
+      "hr-policy-acknowledgement"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "hr-leave-approval": {
     "useWhen": "Approving time off where cover matters: a manager sees the request across the team calendar, who else is off, each day’s cover against the minimum and the allowance before and after.",

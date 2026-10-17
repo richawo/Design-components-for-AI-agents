@@ -25807,80 +25807,98 @@
     "tier": "pro",
     "platform": "web",
     "category": "forms",
-    "description": "Anchored competency ratings, evidence notes and explicit recommendation. A considered, responsive hr workspace with typed integration points.",
+    "description": "Rate competencies on anchored scales with evidence tied to each rating, recommend hire or no hire, then see the panel’s scores unlock for calibration.",
     "tags": [
       "hr",
-      "workflow",
-      "responsive",
-      "keyboard",
-      "forms"
+      "hiring",
+      "interview",
+      "scorecard",
+      "recruiting",
+      "calibration"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1320,
-    "usage": "import { InterviewScorecard } from \"@/components/design-for-ai/hr-interview-scorecard\";\n\n<InterviewScorecard />",
+    "previewHeight": 1060,
+    "usage": "import { InterviewScorecard } from \"@/components/design-for-ai/hr-interview-scorecard\";\n\n<InterviewScorecard\n  candidate=\"Alex Morgan\"\n  role=\"Senior Product Designer\"\n  interviewer=\"Maya Chen\"\n  competencies={competencies}\n  panel={submittedScorecards}\n  onSubmit={async (evaluation) => {\n    await api.scorecards.submit(evaluation);\n  }}\n/>",
     "props": [
       {
-        "name": "title",
-        "type": "string",
-        "description": "Main heading.",
-        "default": "\"Interview scorecard\""
+        "name": "competencies",
+        "type": "InterviewCompetency[]",
+        "default": "Design craft, Product judgment, Collaboration",
+        "description": "{ id, name, prompt, anchors? } where anchors are what 1–4 mean for that competency. Duplicates are left out and named."
       },
       {
-        "name": "subtitle",
-        "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Use shared competency anchors, record what you observed and make an explicit reviewer recommendation.\""
+        "name": "panel",
+        "type": "PanelScorecard[]",
+        "default": "Three submitted scorecards with the demo competencies, otherwise []",
+        "description": "Other interviewers’ { interviewer, stage?, recommendation, ratings }. Hidden until this scorecard is submitted, so they can’t anchor it."
+      },
+      {
+        "name": "onSubmit",
+        "type": "(evaluation: InterviewEvaluation) => void | Promise<void>",
+        "description": "Receives { candidate, role, interviewer, ratings: { competencyId, rating, evidence }[], recommendation: \"strong-no\" | \"no\" | \"yes\" | \"strong-yes\", summary }. Reject to keep the draft and show the error."
+      },
+      {
+        "name": "defaultDraft",
+        "type": "InterviewDraft",
+        "description": "Resume a draft: { ratings, evidence, recommendation, summary }. Read on mount."
       },
       {
         "name": "candidate",
         "type": "string",
-        "description": "Candidate name supplied for this interview."
+        "default": "\"Alex Morgan\"",
+        "description": "Candidate, shown as the entity."
       },
       {
         "name": "role",
         "type": "string",
-        "description": "Role being assessed."
+        "default": "\"Senior Product Designer\"",
+        "description": "Role, in the breadcrumb."
       },
       {
         "name": "interviewer",
         "type": "string",
-        "description": "Reviewer responsible for the evidence and recommendation."
+        "default": "\"Maya Chen\"",
+        "description": "Whose scorecard this is."
       },
       {
-        "name": "competencies",
-        "type": "InterviewCompetency[]",
-        "description": "Unique role-relevant competencies with concrete evidence prompts."
+        "name": "title",
+        "type": "string",
+        "default": "\"Scorecard\"",
+        "description": "Page name in the breadcrumb."
       },
       {
-        "name": "onSubmit",
-        "type": "(evaluation:InterviewEvaluation)=>void|Promise<void>",
-        "description": "Submit the reviewed scorecard. The host owns any subsequent hiring process; this component makes no automated decision."
+        "name": "subtitle",
+        "type": "string",
+        "default": "\"Onsite · Portfolio review\"",
+        "description": "The interview, shown under the candidate."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#c5f25a\"",
+        "description": "Rating fill, yes recommendations, your dot in calibration."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
-      },
-      {
-        "name": "selectMode",
-        "type": "\"custom\" | \"native\"",
-        "default": "\"custom\"",
-        "description": "Animated keyboard-accessible custom listboxes, or native platform pickers with matched 12px insets."
+        "description": "Surface palette."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:350",
-        "click:@rating-3",
-        "wait:650",
-        "click:@competency-1",
-        "click:@rating-2",
-        "wait:1000"
+        "wait:1200",
+        "click:@rate-collaboration-3",
+        "wait:500",
+        "click:@rec-yes",
+        "wait:400",
+        "click:@submit",
+        "wait:2200"
       ],
       "loop": false
     },
@@ -25896,14 +25914,22 @@
         "default": "dark"
       },
       {
-        "prop": "selectMode",
-        "label": "Select menus",
-        "kind": "segmented",
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#c5f25a",
         "options": [
-          "custom",
-          "native"
-        ],
-        "default": "custom"
+          "#c5f25a",
+          "#ff8a5c",
+          "#7cc4ff",
+          "#f4f4f5"
+        ]
+      },
+      {
+        "prop": "subtitle",
+        "label": "Interview",
+        "kind": "text",
+        "default": "Onsite · Portfolio review"
       }
     ]
   },
