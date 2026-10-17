@@ -3900,17 +3900,18 @@
     "updated": "2026-10-17"
   },
   "content-interactive-spec": {
-    "useWhen": "Exploring a product specification through selectable annotations on a supplied diagram.",
-    "avoidWhen": "A CAD editor, a decorative image hotspot or an unsupported claim about an actual product.",
+    "useWhen": "A product page or spec sheet where people want to see what each part of a physical product is and does: a line drawing with numbered callouts, dimensions and a linked specification list.",
+    "avoidWhen": "Photographic product galleries, CAD-style editing, or diagrams of processes and flows, which want a flowchart or timeline rather than a part-by-part drawing.",
     "integration": [
-      "Supply static drawing content, its actual aspect ratio and stable parts with normalized physical coordinates, exact detail fields and real optional references. Invalid positions stay available through the equivalent parts list; artwork is inert.",
-      "Use physical directional keys for spatial targets and reading-order keys for the list. Touch targets retain safe margins, controlled rejection retains the actual ring/annotation, and live reduced motion stops coordinate and height owners immediately."
+      "Supply `parts` with outline `paths`, an `anchor` for the marker and a `label` point in the drawing units given by `size`; add `scenery` for non-part lines and `dimensions` for overall measurements.",
+      "Spec values are text or `{ value, unit }` in mm, m or kg; measured values convert when `units` switches to imperial. A part `dimension` draws when that part is selected.",
+      "Selection is controlled with `value` and `onValueChange`, or uncontrolled from `defaultValue`. Markers and rows are keyboard reachable and arrow keys walk the parts."
     ],
     "related": [
       "devtools-icon-workbench",
       "editor-whiteboard"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "cta-project-brief": {
     "useWhen": "Collecting a concise project brief and presenting a review before an explicit host-owned submission.",

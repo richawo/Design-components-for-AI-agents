@@ -12546,128 +12546,194 @@
     "tier": "pro",
     "platform": "web",
     "category": "content",
-    "description": "Select annotated parts of a supplied diagram and inspect their real specification details through touch targets, spatial keys or an equivalent readable parts list.",
+    "description": "A technical drawing that plots itself, with numbered callouts and dimension lines linked both ways to a spec sheet, and a units switch that recounts every figure.",
     "tags": [
       "content",
       "specification",
+      "technical drawing",
       "diagram",
-      "annotations",
-      "hotspots",
-      "keyboard"
+      "callouts",
+      "dimensions",
+      "product page",
+      "units"
     ],
     "dependencies": [
-      "motion",
-      "lucide-react"
+      "motion"
     ],
     "theme": "dark",
-    "previewHeight": 1100,
-    "usage": "import { ContentInteractiveSpec } from \"@/components/design-for-ai/content-interactive-spec\";\n\n<ContentInteractiveSpec parts={parts} diagram={diagram} aspectRatio={diagramWidth / diagramHeight} value={partId} onValueChange={setPartId} />\n\n// Coordinates describe the static drawing. Supply actual specifications and real optional references.",
+    "previewHeight": 900,
+    "usage": "import { ContentInteractiveSpec, type SpecPart } from \"@/components/design-for-ai/content-interactive-spec\";\n\nconst parts: SpecPart[] = [\n  {\n    id: \"head\",\n    name: \"Head\",\n    summary: \"LED module behind an opal diffuser\",\n    specs: [{ label: \"Output\", value: \"650 lm\" }, { label: \"Length\", value: { value: 210, unit: \"mm\" } }],\n    paths: [\"M552 158 L707 197 ...\"],\n    anchor: [666, 199],\n    label: [780, 300],\n    labelSide: \"left\",\n  },\n];\n\n<ContentInteractiveSpec title=\"Halden Task Lamp\" parts={parts} size={[840, 600]} />",
     "props": [
       {
+        "name": "title",
+        "type": "string",
+        "default": "\"Halden Task Lamp\"",
+        "description": "Product name in the toolbar."
+      },
+      {
+        "name": "reference",
+        "type": "string",
+        "default": "\"HL-01 · Rev C\"",
+        "description": "Drawing reference under the title."
+      },
+      {
         "name": "parts",
-        "type": "readonly SpecPart[]",
-        "description": "Stable annotated parts with normalized physical-left/top coordinates, title/description, supplied detail values, optional reference URL and unavailable reason. Invalid positions remain inspectable through the list."
+        "type": "SpecPart[]",
+        "default": "8 lamp parts",
+        "description": "id, name, summary, specs ({ label, value } where value is text or { value, unit: mm | m | kg, prefix }), outline paths, anchor and label points in drawing units, labelSide, and an optional dimension shown on selection."
       },
       {
-        "name": "diagram",
-        "type": "ReactNode",
-        "description": "Static host drawing or image that fills the declared aspect ratio. Artwork is inert; this component owns the diagram controls. The offline default is an original illustrative SVG."
+        "name": "size",
+        "type": "[number, number]",
+        "default": "[840, 600]",
+        "description": "The drawing’s width and height in its own units; every coordinate uses this space."
       },
       {
-        "name": "aspectRatio",
-        "type": "number",
-        "description": "Actual diagram width/height ratio between0.5 and3. Coordinates are relative to the inner drawing, with a32px target-safe outer margin."
+        "name": "scenery",
+        "type": "{ d: string; dashed?: boolean }[]",
+        "description": "Lines that aren’t parts, such as the desk and the light falling from the head."
+      },
+      {
+        "name": "dimensions",
+        "type": "SpecDimension[]",
+        "description": "Overall dimensions ({ from, to, offset, value }) drawn whenever showDimensions is on."
+      },
+      {
+        "name": "titleBlock",
+        "type": "string[]",
+        "description": "Lines of the engineering title block in the drawing’s corner. Empty hides it."
       },
       {
         "name": "value",
-        "type": "string",
-        "description": "Controlled selected part. Pair with onValueChange; rejected changes retain the actual annotation and ring."
+        "type": "string | null",
+        "description": "Controlled selected part id; null selects none."
       },
       {
         "name": "defaultValue",
-        "type": "string",
-        "description": "Initial internal part ID. Removed selections fall back to the first available supplied part."
+        "type": "string | null",
+        "default": "\"head\"",
+        "description": "Initially selected part when uncontrolled."
       },
       {
         "name": "onValueChange",
-        "type": "(id: string, part: SpecPart) => void",
-        "description": "Request actual part selection. Missing callbacks lock controlled navigation, with real references still readable."
+        "type": "(id: string | null, part: SpecPart | null) => void",
+        "description": "Called when a marker, outline or row is chosen. Choosing the selected part again clears it; so does Escape."
       },
       {
-        "name": "status",
-        "type": "\"ready\" | \"loading\" | \"error\"",
-        "description": "Host-owned availability. Preserve actual selection and use explicit recoverable views."
+        "name": "units",
+        "type": "\"metric\" | \"imperial\"",
+        "description": "Controlled units. Measured values convert (mm → in, m → ft, kg → lb) and count to their new figures."
       },
       {
-        "name": "errorMessage",
-        "type": "string",
-        "description": "Actual host error explanation."
+        "name": "defaultUnits",
+        "type": "\"metric\" | \"imperial\"",
+        "default": "\"metric\"",
+        "description": "Initial units when uncontrolled."
       },
       {
-        "name": "onRetry",
-        "type": "() => void",
-        "description": "Explicit host recovery action; absent handlers do not render a fake retry."
+        "name": "onUnitsChange",
+        "type": "(units: \"metric\" | \"imperial\") => void",
+        "description": "Called from the toolbar’s mm / in switch."
       },
       {
-        "name": "disabled",
+        "name": "showDimensions",
         "type": "boolean",
-        "description": "Lock diagram/list selection while preserving readable specification data."
+        "default": "true",
+        "description": "Overall dimension lines. The selected part’s own dimension shows either way."
+      },
+      {
+        "name": "showLabels",
+        "type": "boolean",
+        "default": "true",
+        "description": "Part names and leader lines beside the markers. Narrow containers show markers only."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ff8a3d\"",
+        "description": "The one accent: the selected part’s outline, marker, leader and dimension."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Complete monochromatic graphite/white chrome. Colour is reserved for actual supplied content and purposeful feature accents."
-      },
-      {
-        "name": "labels",
-        "type": "Partial<InteractiveSpecLabels>",
-        "description": "Heading, diagram, list, detail, reference and availability copy."
+        "default": "\"dark\"",
+        "description": "Colour theme."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Host layout classes."
+        "default": "\"\"",
+        "description": "Classes for the root element."
       }
     ],
     "added": "2026-10-13",
     "demo": {
       "steps": [
-        "click:@spec-point-shape",
-        "wait:350",
-        "click:@spec-list-output",
-        "wait:400",
-        "click:@spec-list-input",
-        "wait:500"
+        "wait:1900",
+        "click:@part-elbow",
+        "wait:900",
+        "hover:@row-upper-arm",
+        "wait:900",
+        "click:@units-imperial",
+        "wait:1100"
       ],
       "loop": false
     },
     "controls": [
       {
+        "prop": "units",
+        "label": "Units",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "metric",
+            "label": "Metric"
+          },
+          {
+            "value": "imperial",
+            "label": "Imperial"
+          }
+        ],
+        "default": "metric"
+      },
+      {
+        "prop": "showDimensions",
+        "label": "Dimensions",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "showLabels",
+        "label": "Callout labels",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#ff8a3d",
+        "options": [
+          "#ff8a3d",
+          "#8ab4ff",
+          "#f4f4f5"
+        ]
+      },
+      {
         "prop": "theme",
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
         "default": "dark"
-      },
-      {
-        "prop": "disabled",
-        "label": "Read only",
-        "kind": "toggle",
-        "default": false
-      },
-      {
-        "prop": "status",
-        "label": "Availability",
-        "kind": "select",
-        "options": [
-          "ready",
-          "loading",
-          "error"
-        ],
-        "default": "ready"
       }
     ]
   },
