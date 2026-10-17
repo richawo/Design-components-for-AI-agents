@@ -20718,65 +20718,114 @@
     "tier": "pro",
     "platform": "web",
     "category": "commerce",
-    "description": "Allocate a size run across stores within a stock and shelf budget. A considered, responsive fashion workspace with typed integration points.",
+    "description": "A store-by-style allocation grid: drag a cell to scrub whole size runs, watch pools drain and store capacity bars fill, then fill the rest by grade.",
     "tags": [
       "fashion",
-      "workflow",
-      "responsive",
-      "keyboard",
+      "allocation",
+      "assortment",
+      "retail",
+      "merchandising",
+      "inventory",
+      "drag",
       "commerce"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1080,
-    "usage": "import { AssortmentPlanner } from \"@/components/design-for-ai/fashion-assortment-planner\";\n\n<AssortmentPlanner />",
+    "previewHeight": 900,
+    "usage": "import { AssortmentPlanner } from \"@/components/design-for-ai/fashion-assortment-planner\";\n\n<AssortmentPlanner\n  drop=\"AW26 drop 2\"\n  styles={dropStyles}\n  stores={stores}\n  initialAllocation={draft}\n  onPublish={async (plan) => {\n    await api.allocations.publish(plan);\n  }}\n/>",
     "props": [
+      {
+        "name": "brand",
+        "type": "string",
+        "default": "\"Ferne\"",
+        "description": "Retailer name in the breadcrumb and brand mark."
+      },
+      {
+        "name": "drop",
+        "type": "string",
+        "default": "\"AW26 drop 2\"",
+        "description": "The drop being allocated, shown in the breadcrumb."
+      },
       {
         "name": "title",
         "type": "string",
-        "description": "Main heading.",
-        "default": "\"Store assortment\""
+        "default": "\"Knitwear and layers\"",
+        "description": "The entity name in the header."
       },
       {
-        "name": "subtitle",
+        "name": "shipDate",
         "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Allocate complete size runs without overselling inventory or filling more space than a store has.\""
+        "default": "\"3 Nov 2026\"",
+        "description": "When the drop ships to stores. Header metadata and receipt."
       },
       {
-        "name": "sizeRun",
-        "type": "AssortmentSize[]",
-        "description": "Unique sizes with positive integer units per run and non-negative available stock, at most 1,000,000 each."
+        "name": "styles",
+        "type": "AssortmentStyle[]",
+        "description": "Columns: { id, name, sku, colour, hex, garment, image?, poolUnits, sizeRun: { size, units }[] }. A run is the size run's total units."
       },
       {
         "name": "stores",
         "type": "AssortmentStore[]",
-        "description": "Store IDs, names and available shelf capacity in units, from 0 to 1,000,000."
+        "description": "Rows: { id, name, region, grade: \"A\" | \"B\" | \"C\", capacity } with capacity in units."
       },
       {
-        "name": "onSave",
-        "type": "(plan:AssortmentPlan)=>void|Promise<void>",
-        "description": "Save the assortment proposal. The host must reserve and transfer inventory."
+        "name": "initialAllocation",
+        "type": "AssortmentAllocation",
+        "description": "Runs already placed, as { [storeId]: { [styleId]: runs } }. Read on mount."
+      },
+      {
+        "name": "gradeWeights",
+        "type": "Record<StoreGrade, number>",
+        "default": "{ A: 3, B: 2, C: 1 }",
+        "description": "How Fill by grade shares the remaining pool between store grades."
+      },
+      {
+        "name": "maxRunsPerCell",
+        "type": "number",
+        "default": "12",
+        "description": "Most runs one store can take of one style; also the scale of each cell's fill."
+      },
+      {
+        "name": "onPublish",
+        "type": "(plan: AssortmentPlan) => void | Promise<void>",
+        "description": "Called with every line (store, style, runs, units, unitsBySize) and totals. Throw to keep the grid and show your message."
+      },
+      {
+        "name": "onChange",
+        "type": "(plan: AssortmentPlan) => void",
+        "description": "Called after every change to the grid."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "description": "The one brand accent: primary action, the cell being dragged and capacity meters. Defaults to the theme's ink."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Surface and ink palette."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:350",
-        "click:@fill-0",
-        "click:@fill-1",
-        "wait:450",
-        "click:@fill-2",
-        "click:@save",
-        "wait:1100"
+        "wait:700",
+        "hover:@cell-shoreditch-crew-forest",
+        "drag:0.92,0.42",
+        "wait:500",
+        "click:@autofill",
+        "wait:1300",
+        "click:@publish",
+        "wait:1300"
       ],
       "loop": false
     },
@@ -20786,10 +20835,37 @@
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
         "default": "dark"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#ff8a4c",
+          "#8ab4ff",
+          "#e7c27d"
+        ]
+      },
+      {
+        "prop": "maxRunsPerCell",
+        "label": "Runs per cell",
+        "kind": "slider",
+        "min": 6,
+        "max": 20,
+        "step": 1,
+        "default": 12
       }
     ]
   },

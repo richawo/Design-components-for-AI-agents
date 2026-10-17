@@ -2067,18 +2067,19 @@
     "updated": "2026-10-12"
   },
   "fashion-assortment-planner": {
-    "useWhen": "Planning product allocations across stores and assortment groups.",
-    "avoidWhen": "An authoritative stock allocation without current catalogue and inventory validation.",
+    "useWhen": "A merchandiser splits a drop's stock pool across stores in whole size runs, balancing each style's pool against each store's floor capacity, with a one-click fill by store grade.",
+    "avoidWhen": "Replenishment driven by live sell-through, or a single store's order. This grid plans one drop's initial allocation; it does not forecast demand or reserve stock by itself.",
     "integration": [
-      "Supply your own records through `sizeRun`, `stores`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onSave` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+      "Pass `styles` (with `poolUnits` and a `sizeRun`) and `stores` (with `grade` and `capacity` in units). Cells hold whole runs; `initialAllocation` seeds them.",
+      "`onPublish` receives every store and style line with units by size. Throw to keep the grid and show your message. Publishing is blocked while any store is over capacity.",
+      "Tune `gradeWeights` to change how Fill by grade shares what is left, and `maxRunsPerCell` to cap a single store's depth."
     ],
     "related": [
-      "commerce-catalog-import",
-      "commerce-return-desk",
-      "commerce-variant-stock"
+      "fashion-wholesale-order",
+      "fashion-merchandising-dashboard",
+      "commerce-backorder-allocation"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "fashion-collection-line-plan": {
     "useWhen": "Reviewing a collection's styles, planned quantities and line-level decisions.",
