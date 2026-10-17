@@ -2459,18 +2459,19 @@
     "updated": "2026-10-12"
   },
   "hr-compensation-review": {
-    "useWhen": "Reviewing supplied pay proposals and their budget impact.",
-    "avoidWhen": "Automated compensation decisions or assumptions about employment rules and equity.",
+    "useWhen": "Running a merit or pay-review cycle: proposing raises against pay bands and guidance within a fixed budget, with a rationale for each change.",
+    "avoidWhen": "Payroll execution or applying pay changes; this drafts and submits a proposal for approval and never changes salaries itself.",
     "integration": [
-      "Supply your own records through `employees`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onSubmit` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+      "Pass salaries, bands and the budget as integer minor units in one currency; invalid or duplicate records are left out and named.",
+      "Supply `guidelineBps` and `rating` per person to shade merit guidance on each band, and `maxIncreaseBps` for your policy cap.",
+      "`onSubmit` receives every adjustment with basis points, reason and note; reject it to keep the draft and show the error."
     ],
     "related": [
       "finance-budget-variance",
-      "finance-close-checklist",
-      "finance-expense-review"
+      "hr-people-dashboard",
+      "hr-capacity-planner"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "hr-employee-onboarding": {
     "useWhen": "Coordinating a new employee's explicit setup and onboarding tasks.",

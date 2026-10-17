@@ -24969,71 +24969,111 @@
     "tier": "pro",
     "platform": "web",
     "category": "billing",
-    "description": "Propose salary adjustments with range guidance and a shared increase budget. A considered, responsive hr workspace with typed integration points.",
+    "description": "A merit-cycle sheet where each person is a dot on their pay band: drag raises along it, watch the budget meter fill, explain each change and submit.",
     "tags": [
       "hr",
-      "workflow",
-      "responsive",
-      "keyboard",
-      "billing"
+      "compensation",
+      "merit cycle",
+      "pay bands",
+      "budget"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1260,
-    "usage": "import { CompensationReview } from \"@/components/design-for-ai/hr-compensation-review\";\n\n<CompensationReview />",
+    "previewHeight": 1000,
+    "usage": "import { CompensationReview } from \"@/components/design-for-ai/hr-compensation-review\";\n\n<CompensationReview\n  teamName=\"Engineering · Payments & Platform\"\n  employees={employees}\n  budgetMinor={2_400_000}\n  currency=\"GBP\"\n  onSubmit={async (proposal) => {\n    await api.compensation.submit(proposal);\n  }}\n/>",
     "props": [
-      {
-        "name": "title",
-        "type": "string",
-        "description": "Main heading.",
-        "default": "\"Compensation review\""
-      },
-      {
-        "name": "subtitle",
-        "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Draft explicit salary adjustments, inspect ranges and document the reason for each change.\""
-      },
       {
         "name": "employees",
         "type": "CompensationEmployee[]",
-        "description": "Unique employees with annual base salary and supplied grade range in safe positive two-decimal minor units, all using the same currency."
+        "default": "6 engineers at Halden",
+        "description": "{ id, name, role, grade, salaryMinor, rangeMinMinor, rangeMaxMinor, rating?, guidelineBps?, lastIncrease?, proposedMinor?, note? }. Amounts are safe integers in minor units, one currency. Invalid or duplicate records are left out and named in an alert."
       },
       {
         "name": "budgetMinor",
         "type": "number",
-        "description": "Safe non-negative annual increase budget in two-decimal minor units."
+        "default": "2400000",
+        "description": "The group's merit budget in minor units. Going over blocks review."
       },
       {
         "name": "currency",
         "type": "string",
-        "description": "Shared ISO currency for annual base pay."
+        "default": "\"GBP\"",
+        "description": "ISO currency shared by every salary."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Locale for money and dates."
+      },
+      {
+        "name": "teamName",
+        "type": "string",
+        "default": "\"Engineering · Payments & Platform\"",
+        "description": "The group under review, shown as the entity in the header."
+      },
+      {
+        "name": "cycleName",
+        "type": "string",
+        "default": "\"Q4 2026 merit cycle\"",
+        "description": "The cycle, shown in the breadcrumb and receipt."
+      },
+      {
+        "name": "closesOn",
+        "type": "string",
+        "default": "\"2026-10-31\"",
+        "description": "ISO date the cycle closes."
+      },
+      {
+        "name": "approver",
+        "type": "string",
+        "default": "\"Dana Whitfield\"",
+        "description": "Who approves after submission."
+      },
+      {
+        "name": "maxIncreaseBps",
+        "type": "number",
+        "default": "1200",
+        "description": "Policy cap on one increase in basis points. Drags stop at it; typed values above it block review."
+      },
+      {
+        "name": "showGuidelines",
+        "type": "boolean",
+        "default": "true",
+        "description": "Shade each person's merit guidance (from guidelineBps) on their band."
       },
       {
         "name": "onSubmit",
-        "type": "(proposal:CompensationProposal)=>void|Promise<void>",
-        "description": "Persist the reviewed proposal. The host owns authorisation, pay changes and payroll; no salary change is applied by this component."
+        "type": "(proposal: CompensationProposal) => void | Promise<void>",
+        "description": "Receives { adjustments: { employeeId, fromMinor, toMinor, increaseBasisPoints, reason, note }[], totalIncreaseMinor }. Reject to keep the draft and show the error."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#c5f25a\"",
+        "description": "The one accent: proposed raises, the budget meter and the submit action."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Near-black (default) or white surfaces."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:350",
-        "click:@rate-0",
-        "key:Home",
-        "key:Delete",
-        "type:3",
-        "wait:850",
+        "wait:900",
+        "hover:@dot-1",
+        "down",
+        "hover:@band-1:0.12,0.5",
+        "up",
+        "wait:500",
         "click:@employee-1",
-        "wait:1000"
+        "wait:1200"
       ],
       "loop": false
     },
@@ -25047,6 +25087,35 @@
           "light"
         ],
         "default": "dark"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#c5f25a",
+        "options": [
+          "#c5f25a",
+          "#ff8a5c",
+          "#7cc4ff",
+          "#f4f4f5"
+        ]
+      },
+      {
+        "prop": "showGuidelines",
+        "label": "Merit guidance",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "currency",
+        "label": "Currency",
+        "kind": "segmented",
+        "options": [
+          "GBP",
+          "EUR",
+          "USD"
+        ],
+        "default": "GBP"
       }
     ]
   },
