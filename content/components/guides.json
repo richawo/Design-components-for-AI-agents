@@ -4476,19 +4476,19 @@
     "updated": "2026-10-14"
   },
   "editor-version-restore": {
-    "useWhen": "Inspecting actual saved versions and requesting restoration of precisely selected changed fields.",
-    "avoidWhen": "A hidden whole-document overwrite or an automatic persistence/revision service.",
+    "useWhen": "Letting writers browse the saved versions of a document, compare any version with the live text word by word, and restore all of it or only chosen blocks with an undo.",
+    "avoidWhen": "Code review diffs, merge conflict resolution between branches, or audit logs where versions are read but never restored.",
     "integration": [
-      "Supply up to24 unique field definitions and32 actual saved versions with exact identities and own field values. Missing is different from explicit null and empty text.",
-      "Scope is atomic versionId/fieldIds. Only changed fields actually supplied by the target are eligible. Local version changes reset local scope; a controlled scope belonging to another version stays explicit. Review is preserved through request failure/unavailability and retires when its actual evidence changes.",
-      "onRestore receives exact current/target version identities and cloned before-presence/after-value facts for selected fields plus AbortSignal. Fulfillment acknowledges the request only; your host supplies authoritative restored current data."
+      "Describe the document as ordered blocks ({ id, kind, label }) and give each version text per block id. A block missing from a version reads as not in that version and cannot be restored on its own.",
+      "Pass versions newest first. Name the milestones (Copy edit, Legal review) and leave autosaves unnamed; the timeline and the grouped list are built from day and time.",
+      "onRestore receives { versionId, blockIds, content }. Persist it and resolve; the component updates the live text, adds a Before restore entry and offers Undo, which calls onUndo with the same request. Reject with an Error to show its message; the ticked blocks stay ticked."
     ],
     "related": [
-      "forms-draft-rescue",
       "editor-branch-compare",
-      "editor-layer-stack"
+      "editor-rich-text",
+      "collab-comment-thread"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "editor-export-preset": {
     "useWhen": "Exporting a frame, card or layer from a design or content tool, where people pick an artboard size, format, scale and quality and want to see the result and its file size before writing it.",

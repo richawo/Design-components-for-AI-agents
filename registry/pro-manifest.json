@@ -17856,140 +17856,166 @@
   },
   {
     "slug": "editor-version-restore",
-    "name": "Scoped Version Restoration",
+    "name": "Version Restore",
     "tier": "pro",
     "platform": "web",
     "category": "editors",
-    "description": "Inspect real saved versions and explicitly restore an exact field scope, with truthful missing/null values and cancellable host acknowledgment.",
+    "description": "Version history around the document: scrub the timeline and the page morphs, marked word by word, then restore it whole or block by block.",
     "tags": [
-      "version",
+      "version history",
       "restore",
-      "history",
-      "scope",
-      "review",
-      "editor"
+      "diff",
+      "editor",
+      "document",
+      "timeline",
+      "undo",
+      "collaboration"
     ],
     "dependencies": [
+      "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1100,
-    "usage": "import { EditorVersionRestore } from \"@/components/design-for-ai/editor-version-restore\";\n\n<EditorVersionRestore fields={fields} current={current} versions={savedVersions} scope={scope} onScopeChange={setScope} onRestore={requestRestore} />\n\n// Only selected changed fields with supplied saved values enter the exact before/after request. Host supplies authoritative restored current data.",
+    "previewHeight": 900,
+    "usage": "import { EditorVersionRestore } from \"@/components/design-for-ai/editor-version-restore\";\n\n<EditorVersionRestore\n  documentName=\"Fieldnote 3.0 launch post\"\n  blocks={[{ id: \"title\", kind: \"title\", label: \"Title\" }, { id: \"body\", kind: \"paragraph\", label: \"Body\" }]}\n  current={liveDoc}            // { id, author, day, time, content: { title: \"…\", body: \"…\" } }\n  versions={savedVersions}     // newest first; name them (\"Legal review\") or leave them as autosaves\n  onRestore={async ({ versionId, blockIds, content }) => {\n    await api.restore(docId, versionId, blockIds); // reject with an Error to show its message\n  }}\n  onUndo={(request) => api.undoRestore(docId, request)}\n/>\n\n// A block missing from a version reads \"Not in this version\" and can't be restored on its own.\n// diffWords(from, to) is exported for hosts that show the same marks elsewhere.",
     "props": [
       {
-        "name": "fields",
-        "type": "readonly RestoreField[]",
-        "description": "Up to24 unique actual field definitions, with label/description."
+        "name": "documentName",
+        "type": "string",
+        "default": "\"Fieldnote 3.0 launch post\"",
+        "description": "The document, in the toolbar."
+      },
+      {
+        "name": "path",
+        "type": "string[]",
+        "default": "[\"Fieldnote\", \"Blog\"]",
+        "description": "Breadcrumb before the name, from @3xl."
+      },
+      {
+        "name": "blocks",
+        "type": "DocBlock[]",
+        "default": "Title, Standfirst, Opening, Pull quote, Closing",
+        "description": "The document's blocks in order: { id, kind: \"title\" | \"dek\" | \"paragraph\" | \"quote\", label }."
       },
       {
         "name": "current",
-        "type": "SavedEditorVersion",
-        "description": "Exact current version identity and actual field values. Missing values differ from explicitly supplied null or empty text."
+        "type": "DocVersion",
+        "default": "the live launch post",
+        "description": "The live document: { id, author, day, time, content }. Restores update it locally until the host sends a new one."
       },
       {
         "name": "versions",
-        "type": "readonly SavedEditorVersion[]",
-        "description": "Up to32 actual saved versions, each with unique own field values referencing supplied definitions."
+        "type": "DocVersion[]",
+        "default": "Copy edit, an autosave, Legal review, First draft, an autosave",
+        "description": "Saved versions, newest first. A version with a name is a named version; without one it reads as an autosave."
       },
       {
-        "name": "scope",
-        "type": "RestoreScope",
-        "description": "Controlled actual target version identity plus unique changed, supplied field IDs. Scope mismatch remains explicit; rejected requests do not replace accepted scope."
+        "name": "defaultVersionId",
+        "type": "string",
+        "default": "newest saved version",
+        "description": "The version open on mount."
       },
       {
-        "name": "defaultScope",
-        "type": "RestoreScope",
-        "description": "Local initial version and field selection. Changing inspected version resets local scope; resetKey resets the interaction."
-      },
-      {
-        "name": "onScopeChange",
-        "type": "(scope: RestoreScope) => void",
-        "description": "Request copied exact version/field scope. Synchronous rejection preserves the accepted scope."
+        "name": "showChanges",
+        "type": "boolean",
+        "default": "true",
+        "description": "Mark, word by word, what a restore would bring back (highlighted) and take away (struck through)."
       },
       {
         "name": "onRestore",
-        "type": "(request: VersionRestoreRequest, signal: AbortSignal) => void | Promise<void>",
-        "description": "Receives exact current/target version identities and copied before-presence/after-value facts for precisely selected fields. Fulfillment acknowledges request only; host owns restoration."
+        "type": "(request: VersionRestoreRequest) => void | Promise<void>",
+        "description": "Restores { versionId, blockIds, content }. Ticked blocks only, or every differing block when none are ticked. A rejection shows its message and keeps the ticks."
       },
       {
-        "name": "resetKey",
-        "type": "string | number",
-        "description": "Resets local target, field scope, review and request lifetime."
+        "name": "onUndo",
+        "type": "(request: VersionRestoreRequest) => void",
+        "description": "Called when Undo puts the document back after a restore."
       },
       {
-        "name": "status",
-        "type": "\"ready\" | \"loading\" | \"error\"",
-        "description": "Host availability preserves readable versions and review."
-      },
-      {
-        "name": "errorMessage",
+        "name": "accent",
         "type": "string",
-        "description": "Host failure text; blank falls back."
-      },
-      {
-        "name": "onRetry",
-        "type": "() => void",
-        "description": "Actual contained recovery request."
-      },
-      {
-        "name": "disabled",
-        "type": "boolean",
-        "description": "Locks inspection, field scope and requests with content preserved."
+        "default": "theme ink",
+        "description": "The timeline thumb, picked-block rules and the Restore button."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Complete monochromatic graphite/white chrome. Colour is reserved for actual supplied content and purposeful feature accents."
-      },
-      {
-        "name": "labels",
-        "type": "Partial<VersionRestoreLabels>",
-        "description": "Scope, actual null/missing, review, acknowledgment and recovery copy."
+        "default": "\"dark\"",
+        "description": "Graphite or white chrome."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Host responsive layout."
+        "description": "Extra classes on the root section."
       }
     ],
     "added": "2026-10-14",
     "demo": {
       "steps": [
-        "click:@restore-field-title",
-        "click:@restore-field-intro",
-        "click:@restore-review",
-        "click:@restore-request",
-        "click:@restore-version-journal-v4"
+        "wait:500",
+        "click:@scrub:0.2,0.5",
+        "wait:1000",
+        "click:@scrub:0.4,0.5",
+        "wait:800",
+        "click:@pick-closing",
+        "wait:300",
+        "click:@restore",
+        "wait:1500"
       ],
       "loop": false
     },
     "controls": [
       {
+        "prop": "showChanges",
+        "label": "Show changes",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "defaultVersionId",
+        "label": "Open at",
+        "kind": "select",
+        "options": [
+          "v-copy",
+          "v-1410",
+          "v-legal",
+          "v-draft",
+          "v-1602"
+        ],
+        "default": "v-legal",
+        "remount": true
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#8ab4ff",
+          "#7dd3a8",
+          "#f4b267"
+        ]
+      },
+      {
         "prop": "theme",
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
         "default": "dark"
-      },
-      {
-        "prop": "disabled",
-        "label": "Read only",
-        "kind": "toggle",
-        "default": false
-      },
-      {
-        "prop": "status",
-        "label": "Availability",
-        "kind": "select",
-        "options": [
-          "ready",
-          "loading",
-          "error"
-        ],
-        "default": "ready"
       }
     ]
   },
