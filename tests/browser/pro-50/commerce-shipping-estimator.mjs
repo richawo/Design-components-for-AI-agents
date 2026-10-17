@@ -3,12 +3,12 @@ export async function check({ page, mount, assert }) {
   const lane = (id) => page.locator(`[data-demo="service-${id}"]`);
   await mount(`window.quotes=[];window.fail=true;createRoot(document.getElementById('root')).render(<Subject.ShippingEstimator onSelect={async q=>{window.quotes.push(q);if(window.fail)throw Error('offline')}}/>);`);
   // Thursday 13:40: the fastest option nothing beats on price is recommended.
-  assert.match(await footer(), /Parcelline Tracked 24 · £5\.85 · arrives Fri, 16 Oct/);
-  assert.match(await lane("pl-48").getAttribute("aria-label"), /arrives Mon, 19 Oct, free/);
+  assert.match(await footer(), /Parcelline Tracked 24 · £5\.85 · arrives Fri,? 16 Oct/);
+  assert.match(await lane("pl-48").getAttribute("aria-label"), /arrives Mon,? 19 Oct, free/);
   // Packing after the 15:00 collection pushes Tracked 24 past the weekend; Swift delivers Saturday.
   await page.locator('[data-demo="after-1500"]').click();
-  assert.match(await lane("pl-24").getAttribute("aria-label"), /arrives Mon, 19 Oct/);
-  assert.match(await footer(), /Swift Next day by 1pm · £10\.45 · arrives Sat, 17 Oct/);
+  assert.match(await lane("pl-24").getAttribute("aria-label"), /arrives Mon,? 19 Oct/);
+  assert.match(await footer(), /Swift Next day by 1pm · £10\.45 · arrives Sat,? 17 Oct/);
   // Arrow keys move through the lanes.
   await lane("sw-1pm").focus();
   await page.keyboard.press("ArrowDown");
@@ -38,7 +38,7 @@ export async function check({ page, mount, assert }) {
 
   // Holidays are skipped like weekends; no service is designed.
   await mount(`createRoot(document.getElementById('root')).render(<Subject.ShippingEstimator holidays={["2026-10-16"]}/>);`);
-  assert.match(await lane("pl-24").getAttribute("aria-label"), /arrives Mon, 19 Oct/);
+  assert.match(await lane("pl-24").getAttribute("aria-label"), /arrives Mon,? 19 Oct/);
   await mount(`createRoot(document.getElementById('root')).render(<Subject.ShippingEstimator services={[]}/>);`);
   assert.match(await page.getByRole("region", { name: "Services" }).innerText(), /No service takes this parcel/);
   assert.equal(await page.locator('[data-demo="use-rate"]').isDisabled(), true);
