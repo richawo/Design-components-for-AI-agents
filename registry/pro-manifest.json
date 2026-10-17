@@ -14955,108 +14955,111 @@
     "tier": "pro",
     "platform": "web",
     "category": "devtools",
-    "description": "A tactile icon workbench with searchable glyphs, a construction-grid preview, precise size and stroke controls, and real SVG or JSX copy with failure recovery.",
+    "description": "A Phosphor-style icon tool: search a set of big, tactile glyphs, tune size and stroke live across the grid, inspect anatomy and real SVG, copy with feedback.",
     "tags": [
       "icons",
       "svg",
+      "icon picker",
       "developer tools",
       "design tools",
       "export",
-      "stroke"
+      "stroke",
+      "jsx"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1080,
-    "usage": "import { DevtoolsIconWorkbench } from \"@/components/design-for-ai/devtools-icon-workbench\";\n\n<DevtoolsIconWorkbench\n  glyphs={icons}\n  selectedId={selectedIcon}\n  onSelect={(icon) => setSelectedIcon(icon.id)}\n  size={80}\n  strokeWidth={1.5}\n/>\n\n// Each glyph: { id, name, paths: [\"M...\"], keywords?: [], viewBox?: \"0 0 24 24\" }.\n// Clipboard rejection exposes the selectable source and a retry action.",
+    "previewHeight": 1000,
+    "usage": "import { DevtoolsIconWorkbench } from \"@/components/design-for-ai/devtools-icon-workbench\";\n\n<DevtoolsIconWorkbench\n  glyphs={icons} // { id, name, paths: [\"M…\"], keywords?, viewBox? }\n  selectedId={iconId}\n  onSelect={(icon) => setIconId(icon.id)}\n  size={32}\n  strokeWidth={1.5}\n  onCopy={(source) => editor.insert(source)} // optional; defaults to the clipboard\n/>",
     "props": [
       {
         "name": "glyphs",
         "type": "readonly WorkbenchGlyph[]",
-        "default": "12 offline glyphs",
-        "description": "Supplied id, name, SVG path strings, optional keywords and viewBox. Empty arrays have a designed empty state."
+        "default": "28 outline glyphs",
+        "description": "id, name, stroke path strings on a 24-unit grid (or viewBox), optional keywords for search. An empty set has its own state."
       },
       {
         "name": "title",
         "type": "string",
-        "default": "\"Icon workbench\"",
-        "description": "Workbench heading."
+        "default": "\"Outline\"",
+        "description": "Name of the set, shown in the toolbar with a live result count."
       },
       {
         "name": "selectedId",
         "type": "string",
-        "default": "first available glyph",
-        "description": "Controlled glyph selection when supplied; pair with onSelect. Unknown IDs fall back to the first glyph."
+        "description": "Controlled selection; pair with onSelect. Unknown ids fall back to the first glyph."
       },
       {
         "name": "onSelect",
         "type": "(glyph: WorkbenchGlyph) => void",
-        "description": "Reports an explicit selection. The host owns controlled selection."
+        "description": "Fires when a tile is chosen by click, Enter or Space."
       },
       {
         "name": "size",
         "type": "number",
-        "default": "80",
-        "description": "Initial/configured pixel size, bounded to 16 through 128; the internal range remains interactive."
+        "default": "32",
+        "description": "Export size in px (16–64). Every tile previews it live; the toolbar slider keeps working."
       },
       {
         "name": "strokeWidth",
         "type": "number",
         "default": "1.5",
-        "description": "Initial/configured SVG stroke width, bounded to 0.5 through 4 in quarter-pixel steps. Stroke width is in the supplied SVG viewBox units, not physical preview pixels."
-      },
-      {
-        "name": "color",
-        "type": "string",
-        "default": "\"#ededf0\"",
-        "description": "The icon stroke color. The neutral default becomes #202024 in the light theme."
+        "description": "Stroke in grid units (0.5–3, quarter steps), tweened across the grid, the specimen and the source."
       },
       {
         "name": "showGrid",
         "type": "boolean",
         "default": "true",
-        "description": "16px construction grid behind the specimen."
+        "description": "24-unit construction grid, 2-unit padding and circle/square keylines behind the specimen."
+      },
+      {
+        "name": "showAnatomy",
+        "type": "boolean",
+        "default": "false",
+        "description": "Anchor points and curve handles parsed from the real path data."
       },
       {
         "name": "format",
         "type": "\"svg\" | \"jsx\"",
         "default": "\"svg\"",
-        "description": "Initial/configured export format; the format controls remain interactive."
+        "description": "Initial source format; the in-panel switch stays live."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#5b9dff\"",
+        "description": "Selection, the hovered path and its source line, anchors and the copy check."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, ink, focus and neutral stroke palette."
+        "description": "Graphite or white surfaces."
       },
       {
         "name": "onCopy",
         "type": "(source: string, signal: AbortSignal) => void | Promise<void>",
-        "description": "Optional host copy handler. Default uses the browser clipboard. Configuration changes/unmount abort the signal and invalidate stale completion."
+        "description": "Custom copy. Defaults to the clipboard; a rejection selects the source so the user can copy by hand. Changing the source aborts a copy in flight."
       },
       {
         "name": "className",
         "type": "string",
         "default": "\"\"",
-        "description": "Host layout classes on the container."
-      },
-      {
-        "name": "previewScale",
-        "type": "number",
-        "default": "3",
-        "description": "Requested inspection magnification1–3, fitted to the actual logical drawing surface. The true displayed factor is labelled; exported SVG dimensions stay exact."
+        "description": "Classes on the workbench."
       }
     ],
     "added": "2026-10-13",
     "demo": {
       "steps": [
-        "wait:300",
-        "click:@glyph-aperture",
-        "wait:300",
-        "click:@icon-stroke:0.65,0.5",
+        "wait:400",
+        "click:@glyph-compass",
+        "wait:900",
+        "click:@toggle-anatomy",
         "wait:500",
+        "hover:@code-path-1",
+        "wait:900",
         "click:@format-jsx",
         "wait:900"
       ],
@@ -15068,31 +15071,19 @@
         "label": "Icon size",
         "kind": "slider",
         "min": 16,
-        "max": 128,
-        "step": 4,
+        "max": 64,
+        "step": 2,
         "unit": "px",
-        "default": 80
+        "default": 32
       },
       {
         "prop": "strokeWidth",
-        "label": "Stroke width",
+        "label": "Stroke",
         "kind": "slider",
         "min": 0.5,
-        "max": 4,
+        "max": 3,
         "step": 0.25,
-        "unit": "px",
         "default": 1.5
-      },
-      {
-        "prop": "color",
-        "label": "Stroke color",
-        "kind": "color",
-        "default": "#ededf0",
-        "options": [
-          "#ededf0",
-          "#e8a46c",
-          "#a3d6bd"
-        ]
       },
       {
         "prop": "showGrid",
@@ -15101,14 +15092,32 @@
         "default": true
       },
       {
+        "prop": "showAnatomy",
+        "label": "Anatomy",
+        "kind": "toggle",
+        "default": false
+      },
+      {
         "prop": "format",
-        "label": "Source format",
+        "label": "Source",
         "kind": "segmented",
         "options": [
           "svg",
           "jsx"
         ],
         "default": "svg"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#5b9dff",
+        "options": [
+          "#5b9dff",
+          "#f4f4f5",
+          "#ffae45",
+          "#5fd4a0"
+        ]
       },
       {
         "prop": "theme",
@@ -15119,15 +15128,6 @@
           "light"
         ],
         "default": "dark"
-      },
-      {
-        "prop": "previewScale",
-        "label": "Preview magnification",
-        "kind": "slider",
-        "min": 1,
-        "max": 3,
-        "step": 0.25,
-        "default": 3
       }
     ]
   },

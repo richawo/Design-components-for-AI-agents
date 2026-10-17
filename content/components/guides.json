@@ -3608,18 +3608,18 @@
     "updated": "2026-10-17"
   },
   "devtools-icon-workbench": {
-    "useWhen": "A developer or design workflow needs searchable icon selection, construction previews and SVG or JSX output.",
-    "avoidWhen": "A static icon display, or a workflow that requires an external icon catalogue and assets not supplied by the host.",
+    "useWhen": "An icon picker or icon-set site where people browse, tune size and stroke, check how a glyph is built and copy production SVG or JSX.",
+    "avoidWhen": "Filled or multi-colour icon sets, a single icon field in a form, or picking from thousands of icons without categories.",
     "integration": [
-      "Supply the intended icon set and keep controlled selection synchronized with the host.",
-      "Choose size and stroke settings appropriate to the destination interface.",
-      "Connect custom copy handling when needed and keep clipboard failures visible and recoverable."
+      "Pass glyphs as stroke paths on a 24-unit grid (or with their own viewBox) with keywords for search; keep selectedId and onSelect in sync if the choice is saved.",
+      "Set size and strokeWidth to your product's defaults; exports use stroke=\"currentColor\" so icons inherit text colour.",
+      "Use onCopy to insert into an editor or a host clipboard; when it rejects, the source is selected so people can still copy by hand."
     ],
     "related": [
       "command-palette",
       "input-number-stepper"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "navigation-lens-dock": {
     "useWhen": "A launcher or workspace switcher with five to ten destinations where recognisable app tiles, unread badges and a playful but precise hover are part of the product’s feel.",
