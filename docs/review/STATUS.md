@@ -145,8 +145,8 @@ needs re-recording, whether its poster is current, and the state of its browser 
 | --- | --- | --- | --- |
 | `finance-budget-variance` | new | current | rewritten, passes against Next; dark/light accessibility and responsive/state captures pass |
 | `finance-cashflow-dashboard` | new | current | rewritten, passes on Next; accessibility, responsive/state/entrance and selected-week list geometry pass |
-| `finance-close-checklist` | new | stale | rewritten, passes |
-| `finance-expense-review` | new | stale | rewritten, passes |
+| `finance-close-checklist` | new | current | rewritten, passes |
+| `finance-expense-review` | new | current | rewritten, passes |
 | `finance-invoice-composer` | new | current | rewritten, passes on suite runner with source fixtures; Next route check pending |
 | `finance-payment-run` | new | current | rewritten, passes on suite runner with source fixtures; Next route check pending |
 | `finance-receivables-aging` | new | current | rewritten, passes on suite runner with source fixtures; Next route check pending |

@@ -58,6 +58,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 2: the four remaining SaaS posters are refreshed and visually reviewed at all three check widths. Access Requests visibly switches to light and now exposes sensitivity dots with valid image semantics; both-theme accessibility and its workflow regression pass. Audit Trail’s bars grow from their baseline. The two finance posters remain to be committed.
 
+- Task 2 is complete: Expense Review and Close Checklist posters are refreshed and visually reviewed, together with settled 1440/768/390 captures and all control flips. Every poster listed in this handoff is now current.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -128,17 +130,12 @@ Slugs:
 `social-proof-case-ledger`, `text-number-odometer`, `text-optical-weight`, `text-outline-fill`
 `text-path-typesetter`, `finance-budget-variance`, `finance-cashflow-dashboard`, `fashion-preorder-planner`, `fashion-collection-line-plan`, `fashion-merchandising-dashboard`, `fashion-size-guide`
 
-## 2. Retake 2 stale posters
+## 2. Retake stale posters (complete)
 
-These posters still show the previous UI because the server was overloaded:
-`finance-expense-review`, `finance-close-checklist`.
-
-`node scripts/screenshot.mjs <slug> --base=http://localhost:3100`, then open the webp and check it isn't blank or
-mid-entrance. While there, run `check-component` on each and confirm two things left unverified:
-- `saas-access-requests`: the theme → light control flip was reported as changing nothing (probably a reload during the
-  check). Confirm it, fix if real.
-- `saas-audit-trail`: the histogram bars' transform origin was changed to `originY: 1` at the last minute and never
-  seen rendered. Confirm the bars draw up from the baseline.
+All listed posters are refreshed and visually reviewed, with responsive captures at 1440/768/390 and successful
+control flips. Access Requests visibly changes to light; its labelled sensitivity dots pass both-theme accessibility.
+Audit Trail’s histogram draws upward from its baseline. The six remaining captures used exact-source fixtures while
+application-page loading work was in flight. Actual Next routing and the full application suite remain in task 4.
 
 ## 3. Fix component bugs found by the new browser probes
 
