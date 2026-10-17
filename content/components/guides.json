@@ -3580,18 +3580,18 @@
     "updated": "2026-10-13"
   },
   "effect-border-tracer": {
-    "useWhen": "An existing card or control needs a subtle perimeter accent that can follow hover and focus or move continuously while visible.",
-    "avoidWhen": "Dense reading surfaces, or a moving edge being used as the only focus or status indicator.",
+    "useWhen": "A card stands for work in progress (a sync, a build, an agent run, a generating answer) and a light lapping its edge should say “busy” without moving the content.",
+    "avoidWhen": "Decoration on every card, dense reading surfaces, or as the only sign of status; pair it with a written state.",
     "integration": [
-      "Wrap actual host content and keep its controls, labels and action handlers responsible for product behaviour.",
-      "Choose the trigger and corner radius to match the host container.",
-      "Retain visible focus outlines and review menus extending outside the wrapper, including reduced-motion presentation."
+      "Bind `enabled` to the real job state; when it turns false the light glides to a stop and rests as a dim glint.",
+      "Give the child an opaque background and `border-radius: inherit`, and set `radius` to match it. The halo spills outside the edge, so leave a little room or clip the stage horizontally.",
+      "Use `mode=\"interaction\"` to light it only on hover, touch-hold or keyboard focus within. With reduced motion the light parks instead of moving."
     ],
     "related": [
       "button-shimmer-track",
-      "button-press-depth"
+      "agent-plan-steps"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "input-detent-dial": {
     "useWhen": "A bounded numeric setting benefits from tactile, stepped adjustment and a clear indication of the current value.",

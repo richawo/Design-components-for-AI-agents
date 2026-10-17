@@ -19967,14 +19967,14 @@
     "tier": "pro",
     "platform": "web",
     "category": "effects",
-    "description": "A fine moving perimeter light for arbitrary host content, with continuous or focus-and-hover motion, unclipped overlays and a static reduced-motion edge.",
+    "description": "A comet of light that laps any card’s edge: a tapering tail, a soft halo spilling outside, a glide to a stop when work pauses, and a dim parked glint at rest.",
     "tags": [
       "animated border",
-      "perimeter",
-      "shimmer",
+      "border beam",
+      "perimeter light",
       "edge light",
       "wrapper",
-      "focus",
+      "status",
       "motion"
     ],
     "dependencies": [
@@ -19982,101 +19982,89 @@
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 760,
-    "usage": "import { EffectBorderTracer } from \"@/components/design-for-ai/effect-border-tracer\";\n\n<EffectBorderTracer\n  mode=\"interaction\"\n  radius={20}\n  duration={5.5}\n  className=\"w-full\"\n>\n  <YourCard />\n</EffectBorderTracer>\n\n// The wrapper adds no padding and leaves child layout, menus and focus outlines intact.",
+    "previewHeight": 820,
+    "usage": "import { EffectBorderTracer } from \"@/components/design-for-ai/effect-border-tracer\";\n\n// Laps while the job runs, glides to a stop and rests as a dim glint when it doesn’t.\n<EffectBorderTracer enabled={job.status === \"running\"} radius={20} className=\"w-full max-w-md\">\n  <JobCard job={job} />\n</EffectBorderTracer>\n\n// Or light it only on hover and focus:\n<EffectBorderTracer mode=\"interaction\" accent=\"#9ec5ff\">\n  <PlanCard />\n</EffectBorderTracer>",
     "props": [
       {
         "name": "children",
         "type": "ReactNode",
-        "description": "Arbitrary host content. No content is invented in the named wrapper, and child layout and accessibility remain host-owned."
+        "description": "The host surface. Give it an opaque background and `border-radius: inherit`; the wrapper adds no padding, clipping or typography."
       },
       {
         "name": "mode",
         "type": "\"continuous\" | \"interaction\"",
         "default": "\"continuous\"",
-        "description": "Continuous motion while visible, or motion while hovered, touch-pressed, or a descendant has focus. Touch receives immediate feedback without changing host focus behaviour."
+        "description": "Continuous laps while on screen; interaction laps while hovered, touch-held or focused within, and rests otherwise."
       },
       {
         "name": "enabled",
         "type": "boolean",
         "default": "true",
-        "description": "Enables the tracer. The faint structural outline remains when disabled."
+        "description": "Bind it to the work the light stands for. When false the comet glides to a stop and rests as a dim glint where it stopped."
       },
       {
         "name": "radius",
         "type": "number",
         "default": "20",
-        "description": "Border radius in pixels, bounded 0 to 160 and limited by the measured content dimensions."
+        "description": "Corner radius in px (0–160). The wrapper owns the corners so the light and the host agree."
       },
       {
         "name": "thickness",
         "type": "number",
-        "default": "1.2",
-        "description": "Fine edge stroke in pixels, bounded 0.5 to 8."
+        "default": "1.25",
+        "description": "Width of the lit edge in px (0.5–6)."
       },
       {
         "name": "duration",
         "type": "number",
-        "default": "5.5",
-        "description": "Seconds for one complete perimeter, bounded 1 to 60. Paused effects keep their phase."
+        "default": "6",
+        "description": "Seconds per lap (1.5–60). Changing it mid-lap keeps the phase."
       },
       {
         "name": "trailLength",
         "type": "number",
-        "default": "96",
-        "description": "Comet length in pixels, bounded 12 to 600 and at most 40% of the perimeter."
+        "default": "150",
+        "description": "Length of the tapering tail in px, at most 45% of the perimeter."
       },
       {
-        "name": "color",
+        "name": "accent",
         "type": "string",
-        "default": "\"#eeeeee\"",
-        "description": "Single tracer colour. The underlying faint outline inherits the host ink colour."
+        "default": "\"#f4f4f5\"",
+        "description": "Colour of the light. The hairline edge underneath inherits the host’s text colour."
+      },
+      {
+        "name": "glow",
+        "type": "number",
+        "default": "0.6",
+        "description": "Strength of the halo that spills outside the edge (0–1). Hidden behind the host’s background."
       },
       {
         "name": "intensity",
         "type": "number",
-        "default": "0.85",
-        "description": "Tracer opacity multiplier, bounded 0 to 1."
+        "default": "1",
+        "description": "Overall opacity of the moving light (0–1)."
       },
       {
         "name": "className",
         "type": "string",
         "default": "\"\"",
-        "description": "Host sizing and layout classes. The wrapper never clips child menus or outlines."
+        "description": "Sizing and layout classes for the wrapper."
       },
       {
         "name": "style",
         "type": "CSSProperties",
-        "description": "Optional host layout styles. The wrapper retains a positioned containing block and uniform corners controlled by radius, keeping its SVG aligned. Children receive no positioning overrides."
+        "description": "Layout styles. Absolute, fixed and sticky placement are kept; radius overrides are ignored in favour of `radius`."
       },
       {
-        "name": "HTMLAttributes",
+        "name": "...div attributes",
         "type": "HTMLAttributes<HTMLDivElement>",
-        "description": "Native div attributes and pointer/focus handlers are forwarded. Existing handlers run alongside the effect's interaction tracking."
-      },
-      {
-        "name": "title",
-        "type": "string",
-        "default": "\"Make room for the work.\"",
-        "description": "Demo-only headline; the named export wraps host content."
-      },
-      {
-        "name": "description",
-        "type": "string",
-        "default": "\"An edge that carries a little light, while the content keeps the attention.\"",
-        "description": "Demo-only contextual copy."
-      },
-      {
-        "name": "actionLabel",
-        "type": "string",
-        "default": "\"Create workspace\"",
-        "description": "Demo-only action label; the operation is a local illustrative toggle."
+        "description": "Forwarded to the wrapper. Your pointer and focus handlers run alongside the tracer’s own."
       }
     ],
     "controls": [
       {
         "prop": "mode",
-        "label": "Motion trigger",
+        "label": "Trigger",
         "kind": "segmented",
         "options": [
           {
@@ -20085,30 +20073,42 @@
           },
           {
             "value": "interaction",
-            "label": "Interaction"
+            "label": "On hover"
           }
         ],
         "default": "continuous"
+      },
+      {
+        "prop": "accent",
+        "label": "Light",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#9ec5ff",
+          "#ffcf8a",
+          "#9ff0c4"
+        ]
       },
       {
         "prop": "duration",
         "label": "Lap time",
         "kind": "slider",
         "min": 2,
-        "max": 12,
+        "max": 14,
         "step": 0.5,
         "unit": "s",
-        "default": 5.5
+        "default": 6
       },
       {
-        "prop": "radius",
-        "label": "Corner radius",
+        "prop": "trailLength",
+        "label": "Tail",
         "kind": "slider",
-        "min": 0,
-        "max": 48,
-        "step": 2,
+        "min": 40,
+        "max": 400,
+        "step": 10,
         "unit": "px",
-        "default": 20
+        "default": 150
       },
       {
         "prop": "thickness",
@@ -20116,37 +20116,37 @@
         "kind": "slider",
         "min": 0.5,
         "max": 3,
-        "step": 0.1,
+        "step": 0.25,
         "unit": "px",
-        "default": 1.2
+        "default": 1.25
       },
       {
-        "prop": "color",
-        "label": "Light colour",
-        "kind": "color",
-        "default": "#eeeeee",
-        "options": [
-          "#eeeeee",
-          "#e8e8ed",
-          "#b3cabc"
-        ]
+        "prop": "glow",
+        "label": "Halo",
+        "kind": "slider",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "default": 0.6
       },
       {
-        "prop": "enabled",
-        "label": "Tracer enabled",
-        "kind": "toggle",
-        "default": true
+        "prop": "radius",
+        "label": "Corner radius",
+        "kind": "slider",
+        "min": 0,
+        "max": 40,
+        "step": 2,
+        "unit": "px",
+        "default": 20
       }
     ],
     "demo": {
       "steps": [
-        "hover:@border-action",
-        "wait:700",
-        "click:@border-menu",
-        "wait:700",
-        "key:Escape",
-        "hover:@border-action",
-        "wait:900"
+        "wait:1400",
+        "click:@job-toggle",
+        "wait:1700",
+        "click:@job-toggle",
+        "wait:1600"
       ],
       "loop": false
     },
