@@ -23315,83 +23315,124 @@
   },
   {
     "slug": "finance-reconciliation",
-    "name": "Settlement Reconciliation",
+    "name": "Bank Reconciliation",
     "tier": "pro",
     "platform": "web",
     "category": "billing",
-    "description": "A statement-to-ledger workbench with split matches, exact minor-unit totals, reference selection and an awaited reconciliation action with retry.",
+    "description": "Bank lines on one side, the books on the other: matches draw across, the difference counts to zero and Balanced lands. Scored auto-match suggestions.",
     "tags": [
-      "billing",
-      "workflow",
-      "interactive",
-      "responsive",
-      "keyboard",
       "finance",
-      "ledger",
       "reconciliation",
-      "e-commerce"
+      "bank feed",
+      "ledger",
+      "matching",
+      "accounting",
+      "month end"
     ],
     "dependencies": [
+      "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 860,
-    "usage": "import { Reconciliation } from \"@/components/design-for-ai/finance-reconciliation\";\n\n<Reconciliation />",
+    "previewHeight": 1180,
+    "usage": "import { Reconciliation } from \"@/components/design-for-ai/finance-reconciliation\";\n\n<Reconciliation\n  account={{ name: \"Operating\", mask: \"4021\", statementBalanceMinor: 7184025, ledgerBalanceMinor: 7060715 }}\n  period=\"September 2026\"\n  statement={bankLines}\n  ledger={ledgerEntries}\n  suggestions={engineSuggestions}\n  onMatch={async (match) => {\n    const res = await fetch(\"/api/reconciliation/matches\", { method: \"POST\", body: JSON.stringify(match) });\n    if (!res.ok) throw new Error(\"The match couldn’t be saved.\");\n  }}\n  onBook={(entry) => api.bookFromRule(entry)} // resolves { id }\n  onComplete={(summary) => api.closeReconciliation(summary)}\n/>",
     "props": [
       {
-        "name": "title",
+        "name": "account",
+        "type": "ReconciledAccount",
+        "description": "The account being reconciled: { name, mask, statementBalanceMinor, ledgerBalanceMinor }. Both balances are minor units; the books balance moves as rule entries are booked."
+      },
+      {
+        "name": "period",
         "type": "string",
-        "description": "Workbench heading."
+        "default": "\"September 2026\"",
+        "description": "Period label for the toolbar and the receipt."
       },
       {
         "name": "statement",
-        "type": "ReconciliationEntry[]",
-        "description": "Statement entries with unique IDs, display date, reference and safe integer amounts in minor units."
+        "type": "StatementLine[]",
+        "description": "Bank lines: { id, date (ISO), description, amountMinor (signed: in positive, out negative), rule? }. A line with a rule ({ account, label }) offers to book itself to that account."
       },
       {
         "name": "ledger",
-        "type": "ReconciliationEntry[]",
-        "description": "Available ledger entries in the same currency and minor-unit scale as the statement."
+        "type": "LedgerEntry[]",
+        "description": "Entries in the books: { id, date, description, reference?, account?, amountMinor }. Entries still unmatched once the statement is fully matched are shown as not cleared."
       },
       {
         "name": "defaultMatches",
         "type": "ReconciliationMatch[]",
-        "description": "Previously reconciled statement/ledger ID groups. Ledger IDs must belong to at most one match."
+        "description": "Pairs matched on first render: { statementId, ledgerIds, source? }. Pairs naming missing rows or reusing a ledger entry are dropped."
+      },
+      {
+        "name": "suggestions",
+        "type": "MatchSuggestion[]",
+        "description": "Your matching engine’s proposals: { statementId, ledgerIds, confidence (0–1), reason }. Leave out to use the built-in matcher (equal amounts, lifted by shared reference, payee and close dates; two-entry splits from one payee)."
+      },
+      {
+        "name": "autoMatchThreshold",
+        "type": "number",
+        "default": "0.9",
+        "description": "Confidence Auto-match accepts without review. Lower suggestions stay as amber chips to accept one by one."
       },
       {
         "name": "currency",
         "type": "string",
         "default": "\"GBP\"",
-        "description": "ISO currency code for display; this component performs no currency conversion."
+        "description": "ISO 4217 code. Amounts are minor units of this currency."
       },
       {
-        "name": "minorUnitDigits",
-        "type": "0 | 2 | 3",
-        "default": "2",
-        "description": "Explicit scale of integer amounts. Use 0 for whole units or 3 for thousandths."
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Locale for money and dates."
       },
       {
         "name": "onMatch",
         "type": "(match: ReconciliationMatch) => void | Promise<void>",
-        "description": "Awaited persistence callback. The host must enforce permissions and prevent duplicate ledger assignments atomically."
+        "description": "Saves a match { statementId, ledgerIds, source: \"suggested\" | \"manual\" | \"booked\" }. Reject to retract the line and keep the selection; the message is shown with Try again."
+      },
+      {
+        "name": "onUnmatch",
+        "type": "(match: ReconciliationMatch) => void | Promise<void>",
+        "description": "Removes a match. Reject to put it back."
+      },
+      {
+        "name": "onBook",
+        "type": "(entry: BookedEntry) => void | Promise<{ id?: string } | void>",
+        "description": "Books a ruled statement line { statementId, account, description, amountMinor } and resolves with the new entry’s id; the line is then matched to it."
+      },
+      {
+        "name": "onComplete",
+        "type": "(summary: ReconciliationSummary) => void | Promise<void>",
+        "description": "Marks the period reconciled once every statement line is matched: { period, accountMask, statementBalanceMinor, ledgerBalanceMinor, unclearedMinor, matches }."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "description": "The one accent: selection, provisional match lines and the primary action. Defaults to the theme’s ink."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface and ink palette; the preview stage follows it."
+        "description": "Surface palette."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:500",
-        "click:@match-reference",
+        "wait:700",
+        "click:@auto-match",
+        "wait:1900",
+        "click:@suggestion-s6",
         "wait:600",
-        "click:@record-match",
-        "wait:1200",
-        "click:@statement-1",
-        "wait:600"
+        "click:@book-s9",
+        "wait:1400"
       ],
       "loop": false
     },
@@ -23405,6 +23446,38 @@
           "light"
         ],
         "default": "dark"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#8ea2ff",
+          "#c6f36d",
+          "#5eead4"
+        ]
+      },
+      {
+        "prop": "autoMatchThreshold",
+        "label": "Auto-match from",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": 0.8,
+            "label": "80%"
+          },
+          {
+            "value": 0.9,
+            "label": "90%"
+          },
+          {
+            "value": 0.95,
+            "label": "95%"
+          }
+        ],
+        "default": 0.9
       }
     ]
   },

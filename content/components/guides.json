@@ -2307,17 +2307,20 @@
     "updated": "2026-10-17"
   },
   "finance-reconciliation": {
-    "useWhen": "Comparing supplied settlement records and identifying mismatches.",
-    "avoidWhen": "Accounting reconciliation without complete and consistent source records.",
+    "useWhen": "Reconciling a bank account for a period: matching statement lines to ledger entries, accepting scored suggestions, booking ruled items like fees, and closing once the difference reaches zero.",
+    "avoidWhen": "Card or payment-processor settlement reporting, journal entry, or audit sampling; those need their own views and controls.",
     "integration": [
-      "Supply your own records through `statement`, `ledger`, `defaultMatches`. Preserve stable keys or IDs when the data contract provides them."
+      "Pass `statement` and `ledger` in signed minor units with stable ids, and `account` with both closing balances. Uncleared ledger entries are shown as carried forward once every statement line is matched.",
+      "Send your matching engine's results as `suggestions` ({ statementId, ledgerIds, confidence, reason }), or leave it out to use the built-in amount, reference and date matcher. `autoMatchThreshold` decides what Auto-match accepts unseen.",
+      "`onMatch` and `onUnmatch` persist each pair; matches draw optimistically and retract with your message if the promise rejects. Re-validate amounts on the server.",
+      "Statement lines with a `rule` offer to book themselves through `onBook`, which should resolve with the new entry's id. `onComplete` receives the period summary for sign-off."
     ],
     "related": [
-      "finance-budget-variance",
       "finance-close-checklist",
-      "finance-expense-review"
+      "finance-payment-run",
+      "finance-cashflow-dashboard"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "finance-scenario-forecast": {
     "useWhen": "Planning cash runway across a few named scenarios, where a founder or finance lead moves growth, hiring, spend and a fundraise and needs to see the cash-out date move.",
