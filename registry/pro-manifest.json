@@ -24718,152 +24718,210 @@
   },
   {
     "slug": "input-cron-builder",
-    "name": "Local-time Cron Builder",
+    "name": "Cron Builder",
     "tier": "pro",
     "platform": "web",
     "category": "inputs",
-    "description": "Compose a daily or weekly local-time schedule with explicit zone, DST policies, actual next instants and a revision-owned reviewable draft.",
+    "description": "A schedule builder where the next runs lead: a two-week ribbon you drag to retime, a sentence that rewrites itself and a cron line that types.",
     "tags": [
       "cron",
       "schedule",
+      "scheduler",
       "timezone",
-      "daylight-saving",
-      "input"
+      "daylight saving",
+      "recurring",
+      "input",
+      "devtools"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1200,
-    "usage": "import { InputCronBuilder } from \"@/components/design-for-ai/input-cron-builder\";\n\n<InputCronBuilder value={schedule} onValueChange={setSchedule} referenceInstant={instant} timeZones={zones} />\n\n// Configure your scheduler with the copied zone and explicit missing/repeated-time policies. This UI does not execute schedules.",
+    "previewHeight": 980,
+    "usage": "import { InputCronBuilder } from \"@/components/design-for-ai/input-cron-builder\";\n\n<InputCronBuilder\n  title=\"Invoice reminders\"\n  value={schedule}\n  onValueChange={(next) => api.saveSchedule(jobId, next)} // return the promise to show Saving…\n  timeZones={[{ value: \"Europe/London\", label: \"London\" }, { value: \"UTC\", label: \"UTC\" }]}\n/>\n\n// cronExpression(schedule) → \"15 9 * * 1-5\"; nextCronOccurrences(schedule, nowIso, 5) → ISO instants.\n// Run it with CRON_TZ set to schedule.timeZone so the scheduler reads the time locally.",
     "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Invoice reminders\"",
+        "description": "The job the schedule belongs to, shown in the tool bar."
+      },
       {
         "name": "value",
         "type": "CronSchedule",
-        "description": "Controlled schedule. Rejected requests retain the accepted schedule and edited draft. Pair with onValueChange."
+        "description": "Controlled saved schedule: cadence (daily | weekly), time \"HH:mm\", weekdays (0 Sunday – 6 Saturday), timeZone and repeatedTime (first | second). Pair with onValueChange."
       },
       {
         "name": "defaultValue",
         "type": "CronSchedule",
-        "description": "Local seed, reset explicitly with resetKey. Default weekdays,09:15 in Europe/London."
+        "default": "weekdays 09:15 Europe/London",
+        "description": "Uncontrolled starting schedule."
       },
       {
         "name": "onValueChange",
-        "type": "(schedule: CronSchedule) => void",
-        "description": "Request a cloned complete draft schedule. No engine execution or persistence."
+        "type": "(schedule: CronSchedule) => void | Promise<void>",
+        "description": "Save request from Save or ⌘↵. Return a promise to show Saving…; a rejection keeps the draft and says so. Controlled drafts settle when value catches up."
       },
       {
         "name": "referenceInstant",
         "type": "string",
-        "description": "Real ISO instant with explicit Z/offset, Gregorian years1970–2100. The default visibly fixes an example preview instant."
+        "default": "\"2026-10-13T09:00:00Z\"",
+        "description": "The instant ‘now’ is measured from, ISO 8601 with Z or an offset. Pass new Date().toISOString() in production."
       },
       {
         "name": "occurrences",
         "type": "number",
-        "description": "Integer next-occurrence count1–12. Missing local times are skipped; repeated times use the chosen occurrence."
+        "default": "5",
+        "description": "How many upcoming runs to list, 1–12."
       },
       {
         "name": "timeZones",
-        "type": "readonly { value: string; label: string }[]",
-        "description": "1–64 unique nonempty actual Intl zone identities with readable labels. The draft zone must be supplied."
+        "type": "CronTimeZone[]",
+        "description": "IANA zones to offer, each { value, label }. Invalid zones are dropped."
       },
       {
         "name": "locale",
         "type": "string",
-        "description": "Actual Intl day/date display; unsupported locale falls back to en-GB."
+        "default": "\"en-GB\"",
+        "description": "Locale for day names, dates and times."
       },
       {
         "name": "resetKey",
         "type": "string | number",
-        "description": "Explicit local seed, edited draft and clipboard receipt reset."
+        "description": "Change it to discard the draft and start again from value or defaultValue."
       },
       {
         "name": "status",
         "type": "\"ready\" | \"loading\" | \"error\"",
-        "description": "Host availability preserves the schedule and draft."
+        "default": "\"ready\"",
+        "description": "Scheduler availability. Loading shimmers the ribbon; error shows a banner with Try again. The draft is kept either way."
       },
       {
         "name": "errorMessage",
         "type": "string",
-        "description": "Actual meaningful failure explanation, default when blank."
+        "description": "Text for the error banner."
       },
       {
         "name": "onRetry",
         "type": "() => void",
-        "description": "Real host recovery request, no fake recovery when absent."
+        "description": "Shows Try again in the error banner."
       },
       {
         "name": "disabled",
         "type": "boolean",
-        "description": "Lock interactions while keeping current and draft configuration readable."
+        "default": "false",
+        "description": "Read only: the schedule and its runs stay visible, editing is off."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Complete monochromatic graphite/white chrome. Colour is reserved for actual supplied content and purposeful feature accents."
+        "default": "\"dark\"",
+        "description": "Surface the builder sits on."
       },
       {
-        "name": "labels",
-        "type": "Partial<CronBuilderLabels>",
-        "description": "Scheduling, policies, draft, configuration and recovery copy."
+        "name": "accent",
+        "type": "string",
+        "default": "\"#f2b25b\"",
+        "description": "The one accent: run markers, the time rule and the cron caret."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Host layout classes responsive to actual container width."
+        "description": "Extra classes on the root section."
       }
     ],
     "added": "2026-10-13",
     "demo": {
       "steps": [
-        "click:@cron-day-5",
-        "wait:450",
-        "click:@cron-daily",
-        "wait:450",
-        "click:@cron-weekly",
-        "wait:450",
-        "click:@cron-apply",
-        "wait:450"
-      ],
-      "loop": false
+        "wait:500",
+        "click:@cron-day-6",
+        "wait:700",
+        "click:@cron-ribbon:0.5,0.3",
+        "wait:800",
+        "click:@cron-save",
+        "wait:1200"
+      ]
     },
     "controls": [
       {
-        "prop": "theme",
-        "label": "Theme",
-        "kind": "segmented",
-        "options": [
-          "dark",
-          "light"
-        ],
-        "default": "dark"
+        "prop": "title",
+        "label": "Job",
+        "kind": "text",
+        "default": "Invoice reminders",
+        "group": "Content"
       },
       {
         "prop": "occurrences",
-        "label": "Preview count",
+        "label": "Upcoming runs",
         "kind": "slider",
-        "min": 1,
+        "min": 3,
         "max": 8,
         "step": 1,
-        "default": 5
+        "default": 5,
+        "group": "Content"
+      },
+      {
+        "prop": "status",
+        "label": "Scheduler",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "ready",
+            "label": "Ready"
+          },
+          {
+            "value": "loading",
+            "label": "Loading"
+          },
+          {
+            "value": "error",
+            "label": "Error"
+          }
+        ],
+        "default": "ready",
+        "group": "State"
       },
       {
         "prop": "disabled",
         "label": "Read only",
         "kind": "toggle",
-        "default": false
+        "default": false,
+        "group": "State"
       },
       {
-        "prop": "status",
-        "label": "Availability",
-        "kind": "select",
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
         "options": [
-          "ready",
-          "loading",
-          "error"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
-        "default": "ready"
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f2b25b",
+        "options": [
+          "#f2b25b",
+          "#7cc4ff",
+          "#7dd3a8"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
       }
     ]
   },

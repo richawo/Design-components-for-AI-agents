@@ -4110,19 +4110,19 @@
     "updated": "2026-10-13"
   },
   "input-cron-builder": {
-    "useWhen": "Composing a supported recurring schedule and inspecting actual upcoming occurrences in a supplied timezone.",
-    "avoidWhen": "Accepting arbitrary scheduler syntax or promising execution when no host scheduler exists.",
+    "useWhen": "Letting someone set when a recurring job runs (reminders, exports, digests, syncs) and see exactly when it will fire, including across a clock change.",
+    "avoidWhen": "Arbitrary cron syntax such as every 15 minutes, day-of-month rules or several times a day; use a raw expression editor for those.",
     "integration": [
-      "Use CronSchedule: daily or weekly cadence, HH:mm local time, unique weekdays (Sunday0–Saturday6), actual supplied timeZone and first/second repeatedTime. The five-field cron string is exported separately from its time-zone and daylight-saving policies.",
-      "Pass a real Gregorian ISO referenceInstant with explicit Z or offset (1970–2100) and1–12 occurrences. The preview skips missing local times and resolves the chosen repeated occurrence, within a100-day horizon. The default reference is a visible fixed example.",
-      "Explicit Apply requests a cloned complete schedule through onValueChange. Controlled rejection keeps the accepted schedule and draft; an older acknowledgement cannot replace a newer edit. Local values reset through resetKey.",
-      "Copy uses actual Clipboard API success and produces cron,timeZone,repeatedTime and missingTime:skip. Configure your scheduler with matching policies; the component does not execute or persist schedules."
+      "Store CronSchedule as data: cadence (daily | weekly), time \"HH:mm\", weekdays 0 (Sunday) to 6, an IANA timeZone and repeatedTime (first | second). cronExpression(schedule) gives the five fields; run them with CRON_TZ set to the zone so the scheduler reads the time locally.",
+      "Pass referenceInstant as the current time (new Date().toISOString()) so the ribbon and the upcoming list start from now. nextCronOccurrences(schedule, referenceInstant, count) is exported for server-side previews and uses the same daylight-saving rules: missing local times are skipped, repeated ones follow repeatedTime.",
+      "Return the save promise from onValueChange to show Saving and Saved; reject it to keep the draft with an error. In controlled mode, update value once the server accepts; an edit made meanwhile is never overwritten. Change resetKey when switching jobs.",
+      "Use status loading while the schedule loads and error with onRetry when the scheduler is unreachable; disabled shows the schedule read only."
     ],
     "related": [
       "saas-report-scheduler",
       "date-week-agenda"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "input-expression-editor": {
     "useWhen": "Editing a small, explicitly supported expression with syntax feedback and a transparent computed example.",
