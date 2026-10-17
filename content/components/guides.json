@@ -4066,19 +4066,20 @@
     "updated": "2026-10-17"
   },
   "three-exploded-assembly": {
-    "useWhen": "Inspecting labeled parts of a generic supplied assembly through an explicit exploded view and diagram alternative.",
-    "avoidWhen": "Engineering certification, accurate manufacturing CAD or a product visualization based on invented geometry.",
+    "useWhen": "Explaining how a physical product goes together: an enclosure, a fixture, a kit of parts, with each part numbered against a parts list and the separation under the reader's control.",
+    "avoidWhen": "Imported CAD models with hundreds of parts, tolerance analysis or manufacturing sign-off, where a dedicated CAD viewer belongs.",
     "integration": [
-      "Supply 1–12 raw unique labeled parametric box/cylinder/frame pieces with actual size, position, explosion vector and hex color. Dimensions are 0.05–6 model units, positions within ±8, vectors within ±4. Units are illustrative; the component is not a manufacturing CAD or imported-model viewer.",
-      "Control one atomic selectedId/null, separation 0–1 in0.01 steps and whole-degree azimuth −75–75. Real geometry selection and the complete native parts list share requests; rejected changes retain the accepted pose. Unknown identities never choose a fallback, and Reset pose is explicit.",
-      "Keep readable part names/notes and the schematic available without graphics. Standard/high main-buffer caps are 400,000/800,000 pixels, max 2048px side, with a separately bounded 512px shadow target. Data revisions own their actual native readiness, while copy edits retain their context.",
-      "Native bounded dragging, keyboard ranges and Escape preserve host authority. Live reduced motion settles actual pose owners, hidden/idle rendering stops, resources are retired on unmount and parent-page focus stays with the parent."
+      "Pass 1 to 12 `parts` in model units: id, label, description, kind (box, cylinder or frame), size, position, an explode vector for full separation, a #rrggbb colour and optional material and metalness. Keep colours neutral unless they mean something.",
+      "Set `unit` so dimensions read in real units (`{ label: \"mm\", perUnit: 40 }` shows 2.5 units as 100 mm). The parts list, toolbar summary and stack height all use it.",
+      "The view is one value: `{ selectedId, separation, azimuth }`. Control it with `value` and `onValueChange` (throw to refuse a view) and save finished interactions from `onValueCommit`.",
+      "`quality` sets the pixel budget; rendering is on demand, pauses offscreen and disposes on unmount. Without WebGL an isometric drawing and the parts list remain."
     ],
     "related": [
-      "three-contour-terrain",
+      "three-material-inspector",
+      "three-keycaps",
       "editor-node-graph"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "input-dual-range": {
     "useWhen": "Choosing a bounded interval with two handles and precise numeric endpoints.",

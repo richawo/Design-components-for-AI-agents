@@ -37320,14 +37320,15 @@
     "tier": "pro",
     "platform": "web",
     "category": "three-d",
-    "description": "Separate actual supplied generic parts, inspect their notes and restore the assembled pose, with bounded 3D interaction and a complete schematic alternative.",
+    "description": "An exploded-view drawing in Three.js: parts drop into place, separate along their vectors as numbered balloons draw out, with a live parts list.",
     "tags": [
       "3d",
-      "assembly",
+      "three.js",
       "exploded view",
-      "parts",
-      "inspection",
-      "diagram"
+      "assembly",
+      "parts list",
+      "cad",
+      "product"
     ],
     "dependencies": [
       "motion",
@@ -37335,110 +37336,137 @@
       "three"
     ],
     "theme": "dark",
-    "previewHeight": 1280,
-    "usage": "import { ThreeExplodedAssembly } from \"@/components/design-for-ai/three-exploded-assembly\";\n\n<ThreeExplodedAssembly parts={parts} value={view} onValueChange={setView} />",
+    "previewHeight": 840,
+    "usage": "import { ThreeExplodedAssembly } from \"@/components/design-for-ai/three-exploded-assembly\";\n\n<ThreeExplodedAssembly\n  title=\"Hub enclosure, rev C\"\n  parts={parts}\n  unit={{ label: \"mm\", perUnit: 40 }}\n  value={view}\n  onValueChange={setView}\n/>",
     "props": [
       {
         "name": "parts",
         "type": "AssemblyPart[]",
-        "description": "1–12 raw unique labeled box/cylinder/frame parts with actual positive dimensions, positions, explosion vectors and color. Empty/invalid arrays invent no geometry."
+        "default": "5-part hub enclosure",
+        "description": "1–12 parts: { id, label, description, kind (box | cylinder | frame), size, position, explode, color, material?, metalness? } in model units."
       },
       {
         "name": "value",
         "type": "AssemblyView",
-        "description": "Controlled atomic selectedId/null, separation0–1 in0.01 steps and whole-degree azimuth−75–75. Unknown IDs never select a fallback."
+        "description": "Controlled view { selectedId | null, separation 0–1 in 0.01 steps, azimuth −75…75 }."
       },
       {
         "name": "defaultValue",
         "type": "AssemblyView",
-        "description": "Uncontrolled initial view, otherwise the first actual part at assembled0 and turn25°."
+        "description": "Initial view when uncontrolled. Defaults to the first part, assembled, turned 25°."
       },
       {
         "name": "onValueChange",
         "type": "(value: AssemblyView) => void",
-        "description": "Requests one valid view. Rejected controlled requests preserve actual geometry and selection."
+        "description": "Every requested view. Throw to refuse it; the pose stays."
       },
       {
         "name": "onValueCommit",
         "type": "(value: AssemblyView) => void",
-        "description": "Only actually accepted completed native pointer/key/selection changes."
+        "description": "A finished interaction the host accepted: a drag released, a key let go, a part picked, Reassemble."
       },
       {
         "name": "title",
         "type": "string",
-        "description": "Host workbench heading.",
-        "default": "\"See how it comes together.\""
+        "default": "\"Hub enclosure, rev C\"",
+        "description": "The assembly's name in the toolbar."
       },
       {
-        "name": "description",
-        "type": "string",
-        "description": "Plain context that identifies the generic model and its limits."
+        "name": "path",
+        "type": "string[]",
+        "default": "[\"Sensor hub\"]",
+        "description": "Breadcrumb before the title."
+      },
+      {
+        "name": "unit",
+        "type": "{ label: string; perUnit: number }",
+        "default": "{ label: \"mm\", perUnit: 40 }",
+        "description": "How model units read in the parts list, the size note and the stack height."
       },
       {
         "name": "quality",
         "type": "\"standard\" | \"high\"",
-        "description": "400k/800k main drawing pixels, max2048px side and separately bounded512px shadow map.",
-        "default": "\"standard\""
+        "default": "\"standard\"",
+        "description": "Drawing-buffer budget: 400k or 800k pixels, DPR capped at 1.5 or 2, 2048px a side."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ff8a3d\"",
+        "description": "Selected part's edges, balloon and list marker."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Neutral graphite and white chrome; colour is reserved for actual feature content and semantic data accents.",
-        "default": "\"dark\""
+        "default": "\"dark\"",
+        "description": "Chrome and studio backdrop."
       },
       {
         "name": "disabled",
         "type": "boolean",
-        "description": "Host view lock; selected part, pose and notes remain available.",
-        "default": "false"
+        "default": "false",
+        "description": "Locks the view; the parts list and notes stay readable."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Host root layout classes.",
-        "default": "\"\""
+        "default": "\"\"",
+        "description": "Extra classes on the root."
       }
     ],
     "controls": [
-      {
-        "prop": "quality",
-        "label": "Rendering quality",
-        "kind": "segmented",
-        "options": [
-          "standard",
-          "high"
-        ],
-        "default": "standard"
-      },
       {
         "prop": "theme",
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
         "default": "dark"
       },
       {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#ff8a3d",
+        "options": [
+          "#ff8a3d",
+          "#40c4ff",
+          "#3ccf91",
+          "#f4f4f5"
+        ]
+      },
+      {
+        "prop": "title",
+        "label": "Assembly name",
+        "kind": "text",
+        "default": "Hub enclosure, rev C"
+      },
+      {
         "prop": "disabled",
-        "label": "Read-only view",
+        "label": "Read-only",
         "kind": "toggle",
         "default": false
       }
     ],
     "demo": {
       "steps": [
-        "click:@assembly-separation:0.9,0.5",
-        "wait:450",
-        "click:@assembly-cover",
-        "wait:350",
-        "click:@assembly-turn:0.78,0.5",
-        "wait:400",
+        "wait:500",
         "click:@assembly-frame",
-        "wait:350",
-        "click:@assembly-reset",
-        "wait:450"
+        "wait:500",
+        "click:@assembly-separation:0.1,0.5",
+        "wait:700",
+        "click:@assembly-separation:0.95,0.5",
+        "wait:700",
+        "click:@assembly-turn:0.8,0.5",
+        "wait:600"
       ],
       "loop": false
     },
