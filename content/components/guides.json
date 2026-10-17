@@ -4210,18 +4210,20 @@
     "updated": "2026-10-17"
   },
   "forms-draft-rescue": {
-    "useWhen": "Resolving differences between a local draft and a newer supplied host version at field level.",
-    "avoidWhen": "Silently overwriting a newer document or presenting a conflict that has no actual competing values.",
+    "useWhen": "Someone returns to a form and a local autosave differs from a newer version saved elsewhere, and they should choose per field what survives before anything is written.",
+    "avoidWhen": "Version history across many revisions, or line-level merging of long documents; a version timeline or branch compare reads those better.",
     "integration": [
-      "Supply up to20 unique `fields` and distinct actual `draft`/`latest` version IDs, labels and own text values (at most4000 characters per compared field). A missing field is distinct from an explicitly empty string. Only supplied comparison fields enter the resolution.",
-      "Use controlled `choices`/`onChoicesChange` or local `defaultChoices`, mapping field IDs to draft or latest. Unspecified choices keep the draft; rejected requests retain the actual accepted decisions. Individual and bulk choices remain editable until explicit resolution.",
-      "Connect `onResolve(resolution,AbortSignal)` to actual persistence. The exact payload includes both version IDs, every displayed field-source decision and merged own values. Cancellation, changed versions/choices/availability or handler retire stale completion; failure preserves both versions and decisions. The preview stores only the copied combined version in memory."
+      "Pass the form's `fields` and two versions, `draft` (from local storage or IndexedDB) and `latest` (from the server), each with an id, author, display time, optional origin and `values`. Only fields whose values differ get a picker; a missing key is treated as different from an empty string.",
+      "Choices are uncontrolled by default (`defaultSource` decides the starting side) or controlled with `choices` and `onChoicesChange`. Nothing persists until Restore.",
+      "`onResolve(resolution, signal)` receives both version ids, one decision per differing field and the merged values for every field. Save against `latestVersionId` so a third concurrent edit is caught, honour the `AbortSignal` (Cancel, unmount or new versions abort it) and throw to show your error message with every choice kept.",
+      "Clear the local draft in `onDiscard` and after a successful resolve. Use `status=\"loading\"` while fetching the server copy and `status=\"error\"` with `onRetry` when it fails."
     ],
     "related": [
+      "editor-version-restore",
       "legal-version-history",
-      "editor-rich-text"
+      "editor-branch-compare"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "chart-sunburst-explorer": {
     "useWhen": "Exploring a deep hierarchy where the share of each part matters at every level: bundle sizes, disk usage, time or budget by team and project.",

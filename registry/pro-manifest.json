@@ -21792,108 +21792,142 @@
     "tier": "pro",
     "platform": "web",
     "category": "forms",
-    "description": "Compare an earlier draft with an actual newer host version, choose retained values and explicitly resolve a cloned exact-version snapshot.",
+    "description": "A recovered draft laid over the real form, field by field: each value hangs under its field, swaps in with a morph, and restores in one moment.",
     "tags": [
       "draft",
       "conflict",
+      "recovery",
+      "form",
       "compare",
-      "resolution",
+      "autosave",
       "version",
-      "form"
+      "restore"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1200,
-    "usage": "import { FormsDraftRescue } from \"@/components/design-for-ai/forms-draft-rescue\";\n\n<FormsDraftRescue fields={fields} draft={localDraft} latest={latestVersion} choices={choices} onChoicesChange={setChoices} onResolve={resolveConflict} />\n\n// Host persists only after receiving both version IDs, exact field decisions and merged own values. Missing values differ from empty strings.",
+    "previewHeight": 1180,
+    "usage": "import { FormsDraftRescue } from \"@/components/design-for-ai/forms-draft-rescue\";\n\n<FormsDraftRescue\n  fields={[{ id: \"name\", label: \"Event name\" }, { id: \"description\", label: \"Description\", multiline: true }]}\n  draft={{ id: \"local_7f2c\", author: \"You\", savedAt: \"14:02\", origin: \"this browser\", values: localDraft }}\n  latest={{ id: \"ver_13\", author: \"Ines Ortega\", savedAt: \"14:19\", origin: \"version 13\", values: serverValues }}\n  documentTitle=\"Autumn Supper Club\"\n  onResolve={async (resolution, signal) => {\n    await saveVersion(resolution.values, { basedOn: resolution.latestVersionId, signal });\n  }}\n  onDiscard={() => clearLocalDraft()}\n/>",
     "props": [
       {
         "name": "fields",
         "type": "readonly RescueField[]",
-        "description": "Up to20 unique field identities with labels/descriptions. Only these fields are compared and included in the resolution."
+        "default": "Five fields of an event listing",
+        "description": "The form's fields in reading order: id, label, optional multiline and hint. Only these are compared and saved."
       },
       {
         "name": "draft",
         "type": "RescueVersion",
-        "description": "Local version identity, label and own text values. Missing fields are distinct from an explicitly empty string."
+        "default": "A draft from 14:02 in this browser",
+        "description": "The recovered local draft: id, author, savedAt, optional origin and values. A missing key differs from an empty string."
       },
       {
         "name": "latest",
         "type": "RescueVersion",
-        "description": "Distinct latest host version identity, label and own values. No guessed version or automatic overwrite."
+        "default": "Version 13, saved by Ines Ortega at 14:19",
+        "description": "The newer version on the server, in the same shape."
+      },
+      {
+        "name": "documentTitle",
+        "type": "string",
+        "default": "\"Autumn Supper Club\"",
+        "description": "Name of the document, in the tool bar."
+      },
+      {
+        "name": "documentPath",
+        "type": "string",
+        "default": "\"Events\"",
+        "description": "Breadcrumb before the title (hidden in narrow containers)."
       },
       {
         "name": "choices",
         "type": "RescueChoices",
-        "description": "Controlled accepted field-to-source mapping, draft or latest. Unspecified choices keep the draft; rejected requests preserve exact accepted decisions."
+        "description": "Controlled map of field id to \"draft\" or \"latest\". Pair with onChoicesChange."
       },
       {
         "name": "defaultChoices",
         "type": "RescueChoices",
-        "description": "Local initial decisions. Unspecified fields retain the draft. Reset explicitly with resetKey."
+        "description": "Initial choices when uncontrolled."
+      },
+      {
+        "name": "defaultSource",
+        "type": "\"draft\" | \"latest\"",
+        "default": "\"latest\"",
+        "description": "Which version a differing field shows before anyone picks."
       },
       {
         "name": "onChoicesChange",
         "type": "(choices: RescueChoices) => void",
-        "description": "Request a copied complete field decision map. Missing handler makes controlled choices read only."
+        "description": "Runs with a complete copied map whenever a field, or all of them, change source."
       },
       {
         "name": "onResolve",
         "type": "(resolution: DraftResolution, signal: AbortSignal) => void | Promise<void>",
-        "description": "Explicit exact draft/latest version identities, copied field decisions and merged own values. Cancellation or context changes retire stale completion; host owns persistence."
+        "description": "Persist the merged version: both version ids, one decision per differing field and the merged values. Reject to show the error and keep every choice; the signal aborts on Cancel, unmount or new versions."
       },
       {
-        "name": "resetKey",
-        "type": "string | number",
-        "description": "Explicit local decision/inspection/request lifecycle reset."
+        "name": "onDiscard",
+        "type": "() => void",
+        "description": "Throw the draft away. Shows Discard draft when set."
+      },
+      {
+        "name": "successNote",
+        "type": "string",
+        "default": "\"Saved as version 14 · just now\"",
+        "description": "Line under the success title once restored."
       },
       {
         "name": "status",
         "type": "\"ready\" | \"loading\" | \"error\"",
-        "description": "Host availability preserves both versions and accepted choices."
+        "default": "\"ready\"",
+        "description": "Availability of the server version: a skeleton form while loading, a designed error with retry."
       },
       {
         "name": "errorMessage",
         "type": "string",
-        "description": "Meaningful host failure explanation, default when blank."
+        "description": "Explanation shown with status error."
       },
       {
         "name": "onRetry",
         "type": "() => void",
-        "description": "Actual recovery request."
+        "description": "Shows Try again in the error state."
       },
       {
         "name": "disabled",
         "type": "boolean",
-        "description": "Lock inspection/choices/resolution while retaining readable versions."
+        "default": "false",
+        "description": "Read only: both versions stay readable, choices and restore are locked."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Complete monochromatic graphite/white chrome. Colour is reserved for actual supplied content and purposeful feature accents."
+        "default": "\"dark\"",
+        "description": "Graphite or paper chrome."
       },
       {
-        "name": "labels",
-        "type": "Partial<DraftRescueLabels>",
-        "description": "Field comparison, source choices, pending/recovery and acknowledgement copy."
+        "name": "accent",
+        "type": "string",
+        "default": "\"#f2b84b\"",
+        "description": "The one colour: draft marks, the Draft pill, progress pips and the restore sweep."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Responsive host layout classes."
+        "description": "Classes on the root section."
       }
     ],
     "added": "2026-10-14",
     "demo": {
       "steps": [
-        "click:@rescue-choice-latest",
-        "click:@rescue-field-summary",
-        "click:@rescue-choice-latest",
-        "click:@rescue-field-notes",
-        "click:@rescue-choice-draft",
-        "click:@rescue-resolve"
+        "wait:400",
+        "click:@rescue-ghost-name",
+        "wait:500",
+        "click:@rescue-ghost-description",
+        "wait:600",
+        "click:@rescue-restore",
+        "wait:1900"
       ],
       "loop": false
     },
@@ -21907,6 +21941,35 @@
           "light"
         ],
         "default": "dark"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f2b84b",
+        "options": [
+          "#f2b84b",
+          "#7cc4ff",
+          "#5fc284",
+          "#f07c80"
+        ]
+      },
+      {
+        "prop": "defaultSource",
+        "label": "Start from",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "latest",
+            "label": "Saved"
+          },
+          {
+            "value": "draft",
+            "label": "Draft"
+          }
+        ],
+        "default": "latest",
+        "remount": true
       },
       {
         "prop": "disabled",
