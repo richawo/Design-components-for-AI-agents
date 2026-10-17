@@ -7,6 +7,7 @@ export async function check({ page, mount, assert }) {
   // The oldest request opens first; downscoping shrinks what it reaches.
   await page.getByRole("heading", { name: "Priya Raman", exact: true }).waitFor();
   assert.match(await footer(), /Grant Priya Admin on Billing/);
+  assert.equal(await page.getByRole("img", { name: "High sensitivity", exact: true }).count(), 2);
   await d("role-editor").click();
   assert.match(await footer(), /smaller than asked/);
   await page.waitForFunction(() => !document.querySelector("ol")?.textContent?.includes("Payment methods"));

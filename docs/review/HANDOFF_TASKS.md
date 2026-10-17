@@ -56,6 +56,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 5: added the Habit Ledger regression and fixed Space-key checkbox activation on the web. Failed marks roll back without publishing changes; retry, pending/paused/future cells, exact payloads and empty habits are covered. Source-fixture regression and accessibility checks pass.
 
+- Task 2: the four remaining SaaS posters are refreshed and visually reviewed at all three check widths. Access Requests visibly switches to light and now exposes sensitivity dots with valid image semantics; both-theme accessibility and its workflow regression pass. Audit Trail’s bars grow from their baseline. The two finance posters remain to be committed.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -126,11 +128,10 @@ Slugs:
 `social-proof-case-ledger`, `text-number-odometer`, `text-optical-weight`, `text-outline-fill`
 `text-path-typesetter`, `finance-budget-variance`, `finance-cashflow-dashboard`, `fashion-preorder-planner`, `fashion-collection-line-plan`, `fashion-merchandising-dashboard`, `fashion-size-guide`
 
-## 2. Retake 6 stale posters
+## 2. Retake 2 stale posters
 
 These posters still show the previous UI because the server was overloaded:
-`saas-access-requests`, `saas-audit-trail`, `saas-workspace-dashboard`,
-`saas-notification-inbox`, `finance-expense-review`, `finance-close-checklist`.
+`finance-expense-review`, `finance-close-checklist`.
 
 `node scripts/screenshot.mjs <slug> --base=http://localhost:3100`, then open the webp and check it isn't blank or
 mid-entrance. While there, run `check-component` on each and confirm two things left unverified:
