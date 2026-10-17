@@ -35467,105 +35467,138 @@
     "tier": "pro",
     "platform": "web",
     "category": "pricing",
-    "description": "Mix supplied team roles and billing terms in a tactile seat ledger, with bounded exact counts, transparent rates and an itemized integer-unit estimate.",
+    "description": "A per-seat pricing simulator: a counting total, a strip with one bar per seat, and a ledger where steppers rebuild the bill line by line.",
     "tags": [
       "pricing",
       "seats",
       "team",
       "calculator",
       "billing",
-      "currency"
+      "per-seat"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1200,
-    "usage": "import { PricingSeatSimulator } from \"@/components/design-for-ai/pricing-seat-simulator\";\n\n<PricingSeatSimulator roles={roles} value={mix} onValueChange={setMix} currency=\"USD\" />\n\n// Rates are integer minor units per seat per selected term. Annual rates are the full yearly charge.",
+    "previewHeight": 980,
+    "usage": "import { PricingSeatSimulator } from \"@/components/design-for-ai/pricing-seat-simulator\";\n\n<PricingSeatSimulator\n  planName=\"Studio\"\n  roles={roles}\n  value={mix}\n  onValueChange={(next) => setMix(next)}\n  onContinue={(mix, estimate) => startCheckout(mix, estimate)}\n  currency=\"USD\"\n/>\n\n// Rates are integer minor units per seat for the full term: a month, or the whole year.",
     "props": [
+      {
+        "name": "planName",
+        "type": "string",
+        "default": "\"Studio\"",
+        "description": "Plan name in the compact header."
+      },
       {
         "name": "roles",
         "type": "readonly SeatRole[]",
-        "description": "Supplied distinct roles with label/description, whole minimum/maximum, integer full-term monthly/annual minor-unit rates and optional unavailability. Missing counts use each minimum; duplicate or empty IDs invalidate the estimate."
+        "default": "Editors, Reviewers, Guests",
+        "description": "Seat types: unique id, label, one-line description, whole minimum/maximum, integer minor-unit monthly and full-year annual rates, optional disabled + disabledReason. Free roles draw as outlined seats."
       },
       {
         "name": "value",
         "type": "SeatMix",
-        "description": "Optional atomic controlled billing term and role counts. Pair with onValueChange; rejected changes leave the actual itemized bill intact."
+        "description": "Controlled term and counts. Pair with onValueChange; a rejected change leaves the bill as it was and keeps a typed draft on screen."
       },
       {
         "name": "defaultValue",
         "type": "SeatMix",
-        "description": "Initial local mix. A semantic change or resetKey resets local state while dirty exact-count fields remain available until accepted or cancelled."
+        "default": "{ term: \"monthly\", counts: { editor: 5, reviewer: 2, guest: 3 } }",
+        "description": "Uncontrolled starting mix. Missing counts use each role’s minimum."
       },
       {
         "name": "onValueChange",
         "type": "(next: SeatMix, estimate: SeatEstimate) => void",
-        "description": "Request a validated whole mix and derived estimate. No payment or subscription action is performed."
+        "description": "Called with each valid mix and its exact BigInt-derived estimate."
       },
       {
         "name": "resetKey",
         "type": "string | number",
-        "description": "Explicit reset of internal term/count state."
+        "description": "Change it to reset the uncontrolled mix to defaultValue."
+      },
+      {
+        "name": "onContinue",
+        "type": "(mix: SeatMix, estimate: SeatEstimate) => void | Promise<void>",
+        "description": "The primary action. Return a promise to hold the pending state; reject it to show the failure with the mix kept. Without it the button is disabled."
+      },
+      {
+        "name": "ctaLabel",
+        "type": "string",
+        "default": "\"Continue\"",
+        "description": "Button copy; the seat count is appended (“Continue with 10 seats”)."
+      },
+      {
+        "name": "footnote",
+        "type": "string",
+        "default": "\"Prices exclude sales tax. Seats prorate to the day.\"",
+        "description": "Fine print beside the button."
       },
       {
         "name": "currency",
         "type": "string",
-        "description": "Currency used to format integer minor-unit prices, with Intl minor-unit precision."
+        "default": "\"USD\"",
+        "description": "ISO 4217 code. Minor-unit precision follows Intl; whole-unit bills drop the cents."
       },
       {
         "name": "locale",
         "type": "string",
+        "default": "\"en-US\"",
         "description": "Intl formatting locale."
       },
       {
         "name": "status",
         "type": "\"ready\" | \"loading\" | \"error\"",
-        "description": "Host-owned term availability. Preserve all exact-count drafts and actual supplied rows through pending and failure."
+        "default": "\"ready\"",
+        "description": "Host-owned price availability. Counts and drafts survive loading and errors."
       },
       {
         "name": "errorMessage",
         "type": "string",
-        "description": "Actual failure explanation."
+        "description": "Explanation shown in the error state."
       },
       {
         "name": "onRetry",
         "type": "() => void",
-        "description": "Explicit host recovery request; no fake control when absent."
+        "description": "Renders a Try again button in the error state; absent, no retry is offered."
       },
       {
         "name": "disabled",
         "type": "boolean",
-        "description": "Disable all mix changes while preserving the readable actual bill."
+        "default": "false",
+        "description": "Read only: the bill stays readable, nothing can change."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#34d399\"",
+        "description": "The one accent: the annual discount badge and the saving once it’s earned."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Complete monochromatic graphite/white chrome. Colour is reserved for actual supplied content and purposeful feature accents."
-      },
-      {
-        "name": "labels",
-        "type": "Partial<SeatSimulatorLabels>",
-        "description": "Heading, term, field, rate, availability and disclaimer copy."
+        "default": "\"dark\"",
+        "description": "Graphite or white chrome."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Host layout classes."
+        "default": "\"\"",
+        "description": "Classes for the outer card."
       }
     ],
     "added": "2026-10-13",
     "demo": {
       "steps": [
+        "wait:300",
         "click:@seat-plus-editor",
-        "wait:350",
+        "wait:250",
+        "click:@seat-plus-editor",
+        "wait:450",
         "click:@seat-term-annual",
-        "wait:400",
-        "click:@seat-minus-editor",
-        "wait:400",
-        "click:@seat-term-monthly",
-        "wait:400"
+        "wait:1000",
+        "click:@seat-continue",
+        "wait:1100"
       ],
       "loop": false
     },
@@ -35575,16 +35608,37 @@
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
-        "default": "dark"
+        "default": "dark",
+        "group": "Look"
       },
       {
-        "prop": "disabled",
-        "label": "Read only",
-        "kind": "toggle",
-        "default": false
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#34d399",
+        "options": [
+          "#34d399",
+          "#7c9cff",
+          "#ff7a45",
+          "#f5c542"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "planName",
+        "label": "Plan name",
+        "kind": "text",
+        "default": "Studio",
+        "group": "Content"
       },
       {
         "prop": "currency",
@@ -35596,7 +35650,26 @@
           "GBP",
           "JPY"
         ],
-        "default": "USD"
+        "default": "USD",
+        "group": "Content"
+      },
+      {
+        "prop": "disabled",
+        "label": "Read only",
+        "kind": "toggle",
+        "default": false,
+        "group": "State"
+      },
+      {
+        "prop": "status",
+        "label": "Prices",
+        "kind": "action",
+        "options": [
+          "ready",
+          "loading",
+          "error"
+        ],
+        "group": "State"
       }
     ]
   },

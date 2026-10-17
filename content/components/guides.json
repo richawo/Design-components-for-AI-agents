@@ -3874,17 +3874,18 @@
     "updated": "2026-10-13"
   },
   "pricing-seat-simulator": {
-    "useWhen": "Exploring a transparent bill for mixed seat types and billing terms before purchase.",
-    "avoidWhen": "Automatically assigning seats, changing a subscription or concealing discounts inside a single unexplained total.",
+    "useWhen": "Selling a per-seat plan where a team mixes paid and free roles, and buyers should see the bill rebuild as they add people before they reach checkout.",
+    "avoidWhen": "Managing seats on a live subscription (use a seat manager with proration), flat per-plan pricing with no team size, or usage-metered billing.",
     "integration": [
-      "Supply stable roles, bounded whole counts and integer minor-unit monthly or annual full-term prices. Missing role counts use each supplied minimum. Annual prices represent the complete year, not a disguised monthly amount. Duplicate or empty role IDs invalidate the bill; invalid alternative terms are visibly unavailable and excluded from keyboard selection.",
-      "Control term and counts atomically through value/onValueChange. Preserve seat counts when terms change, retain dirty exact-entry drafts through host updates or unavailable rates, and reject invalid or overflowing mixes before any host-owned purchase action."
+      "Pass roles with stable unique IDs, whole minimum/maximum counts and integer minor-unit rates for the full term: monthly per month, annual per year. Free roles (rate 0) draw as outlined seats; duplicate IDs or out-of-bounds counts show an unavailable bill instead of a wrong one.",
+      "Control the mix with value/onValueChange or let it run uncontrolled from defaultValue; changing the term never resets counts. onContinue receives the mix and exact estimate; return a promise to show the pending state and reject it to show a recoverable failure. Drive status for loading and error, and pass onRetry to offer a retry."
     ],
     "related": [
-      "pricing-receipt",
-      "input-detent-dial"
+      "billing-seat-manager",
+      "pricing-plan-toggle",
+      "pricing-usage-calculator"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "social-proof-case-ledger": {
     "useWhen": "A landing or pricing page that needs measured customer outcomes rather than adjectives: several named customers, each with one metric, before and after figures, a period and a quote.",
