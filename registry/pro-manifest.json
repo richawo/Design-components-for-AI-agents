@@ -37419,126 +37419,158 @@
     "tier": "pro",
     "platform": "web",
     "category": "text",
-    "description": "Selectable outlined type fills with supplied progress, backed by native glyph fitting and a real reading-pane demonstration.",
+    "description": "Display type drawn in outline that fills with ink, word by word, as the reader goes: a scroll-linked headline that stays legible and selectable.",
     "tags": [
       "outlined type",
       "reading progress",
-      "selectable text",
-      "editorial",
       "scroll",
-      "typography"
+      "display type",
+      "editorial",
+      "headline",
+      "typography",
+      "selectable text"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1200,
-    "usage": "import { TextOutlineFill } from \"@/components/design-for-ai/text-outline-fill\";\n\n<TextOutlineFill text={chapterTitle} progress={actualScrollPosition} as=\"h2\" />",
+    "previewHeight": 900,
+    "usage": "import { TextOutlineFill } from \"@/components/design-for-ai/text-outline-fill\";\n\n// Filled by its own passage through the viewport:\n<TextOutlineFill text={\"Good design\\nkeeps its word.\"} as=\"h1\" />\n\n// Or driven by your reading position (0–1):\n<TextOutlineFill text={post.title} progress={readProgress} fontRole=\"display\" direction=\"rise\" />",
     "props": [
       {
         "name": "text",
         "type": "string",
-        "description": "Selectable source words, including intentional line breaks.",
-        "default": "\"Good design\\nkeeps its word.\""
+        "default": "\"Good design\\nkeeps its word.\"",
+        "description": "The words. A newline starts a new line; long lines also wrap to the container."
       },
       {
         "name": "progress",
         "type": "number",
-        "description": "Actual host-supplied position from 0 to 1. Omission or invalid input leaves complete static words visible."
-      },
-      {
-        "name": "label",
-        "type": "string",
-        "description": "Plain label for the progress output.",
-        "default": "\"Source position\""
+        "description": "How far the reader has got, 0 to 1. Omit it and the type fills as it passes through the viewport: empty as it enters at the bottom, full once its last line reaches the upper third."
       },
       {
         "name": "as",
         "type": "\"h1\" | \"h2\" | \"h3\" | \"p\"",
-        "description": "Semantic text element suited to the host document.",
-        "default": "\"h2\""
+        "default": "\"h2\"",
+        "description": "The element the words render as."
       },
       {
         "name": "fontRole",
-        "type": "\"display\" | \"serif\" | \"mono\"",
-        "description": "Host CSS font role used by real native glyphs.",
-        "default": "\"serif\""
+        "type": "\"serif\" | \"display\" | \"mono\"",
+        "default": "\"serif\"",
+        "description": "Instrument Serif, Geist or Geist Mono, each with its own display tracking and leading."
       },
       {
         "name": "fontSize",
         "type": "number",
-        "description": "Requested 24–160px text size. Native longest-line measurement fits actual container width.",
-        "default": "96"
-      },
-      {
-        "name": "durationMs",
-        "type": "number",
-        "description": "Finite 0–1200ms interruptible fill retargeting.",
-        "default": "240"
+        "default": "144",
+        "description": "The largest size in px (24–240). The type shrinks to fit its container's width from the measured widest line, and never grows past this."
       },
       {
         "name": "direction",
-        "type": "\"vertical\" | \"horizontal\"",
-        "description": "Top-down or left-to-right progress fill.",
-        "default": "\"vertical\""
+        "type": "\"reading\" | \"rise\"",
+        "default": "\"reading\"",
+        "description": "Fill word by word in reading order with a feathered leading edge, or let every letter fill from its baseline at once."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "description": "The ink colour. Defaults to the theme's ink; passing either theme's ink follows the theme."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Neutral graphite and white chrome; colour is reserved for actual feature content and semantic data accents.",
-        "default": "\"dark\""
-      },
-      {
-        "name": "showProgress",
-        "type": "boolean",
-        "description": "Show the labelled actual progress output.",
-        "default": "true"
+        "default": "\"dark\"",
+        "description": "Ink and outline for dark or light pages."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Host root layout classes.",
-        "default": "\"\""
+        "description": "Classes on the root, for width and placement."
       }
     ],
     "controls": [
       {
         "prop": "text",
-        "label": "Lettering",
+        "label": "Words",
         "kind": "text",
-        "default": "Good design\nkeeps its\nword."
+        "default": "Good design\nkeeps its word."
       },
       {
         "prop": "direction",
-        "label": "Fill direction",
+        "label": "Fill",
         "kind": "segmented",
         "options": [
-          "vertical",
-          "horizontal"
+          {
+            "value": "reading",
+            "label": "Reading"
+          },
+          {
+            "value": "rise",
+            "label": "Rise"
+          }
         ],
-        "default": "vertical"
+        "default": "reading"
+      },
+      {
+        "prop": "fontRole",
+        "label": "Typeface",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "serif",
+            "label": "Serif"
+          },
+          {
+            "value": "display",
+            "label": "Sans"
+          },
+          {
+            "value": "mono",
+            "label": "Mono"
+          }
+        ],
+        "default": "serif"
+      },
+      {
+        "prop": "accent",
+        "label": "Ink",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#ff9d5c",
+          "#6fd3a0",
+          "#7ab8ff"
+        ]
       },
       {
         "prop": "theme",
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
         "default": "dark"
       }
     ],
     "demo": {
       "steps": [
-        "hover:@outline-passage:0.7,0.4",
-        "scroll:320",
-        "wait:350",
-        "scroll:320",
-        "wait:350",
+        "hover:@outline-passage:0.75,0.55",
+        "scroll:420",
+        "wait:600",
+        "scroll:420",
+        "wait:700",
         "click:@outline-reset",
-        "wait:800"
+        "wait:1100"
       ],
       "loop": false
     },

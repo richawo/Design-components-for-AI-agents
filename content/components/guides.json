@@ -3980,17 +3980,19 @@
     "updated": "2026-10-13"
   },
   "text-outline-fill": {
-    "useWhen": "Connecting a readable outlined text treatment to supplied reading progress.",
-    "avoidWhen": "Essential copy that only becomes legible after scrolling or an uncontrolled looping text effect.",
+    "useWhen": "A long read or chapter opener where the headline should mark the reader's progress: outlined display type that fills with ink word by word as they scroll.",
+    "avoidWhen": "Short interface labels, buttons or body text, or any headline that has to read at full strength before anyone scrolls.",
     "integration": [
-      "Supply the text and bounded progress or a real progress source. Keep a fully readable static layer and preserve ordinary text selection.",
-      "Honor reduced motion and missing progress without hiding words; visual fill must not imply that a user actually completed the content."
+      "Pass your reading position as `progress` (0–1), for example the share of the article brought into view. Without it the type fills as it passes through the viewport.",
+      "The outline layer is the real heading text, so it is selectable, searchable and read by screen readers; the ink is a decorative copy. Give it one short phrase with deliberate line breaks.",
+      "Size it with `fontSize` as a maximum; it measures its widest line and shrinks to fit the container. Reduced motion keeps the fill in step without easing."
     ],
     "related": [
       "text-decode",
+      "hero-blur-statement",
       "scroll-chapter-stack"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "bg-fluted-glass": {
     "useWhen": "A hero, cover or feature panel where an image should read as seen through reeded glass, with headlines, cards or controls on top that must stay sharp.",
