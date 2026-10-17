@@ -2973,19 +2973,20 @@
     "updated": "2026-10-12"
   },
   "saas-access-requests": {
-    "useWhen": "Reviewing requested privileges, duration and an explicit grant or decline.",
-    "avoidWhen": "Client-side permission enforcement or access granted without server validation.",
+    "useWhen": "Security or platform teams approve just-in-time access, downscoping the role and limiting how long it lasts while seeing what each role would expose.",
+    "avoidWhen": "Access is permanent or role assignment is a directory sync; use a permissions matrix for standing access instead.",
     "integration": [
-      "Supply your own records through `requests`, `roles`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onDecision` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
-      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+      "Give each request `reach` per role id (label, count, sensitivity); that drives the blast-radius map and the list of what a grant exposes.",
+      "`roles` are weakest first with a `maxHours` policy cap; longer durations are disabled and long asks are capped.",
+      "`onDecision` gets { requestId, outcome, roleId, hours, expiresAt, reason }. Revalidate the reviewer's authority on the server and reject to keep the draft; `onUndo` and `onRevoke` mirror the toast and the grants column.",
+      "Requests with unknown roles or invalid durations are held back with an alert rather than shown for approval."
     ],
     "related": [
       "saas-audit-trail",
-      "saas-customer-health",
-      "saas-integration-manager"
+      "saas-integration-manager",
+      "agent-approval-gate"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "saas-audit-trail": {
     "useWhen": "Exploring recorded actor, resource and configuration changes with filters and details.",

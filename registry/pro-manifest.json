@@ -37673,73 +37673,112 @@
   },
   {
     "slug": "saas-access-requests",
-    "name": "Access Request Queue",
+    "name": "Access Request Review",
     "tier": "pro",
     "platform": "web",
     "category": "app",
-    "description": "Inspect justification and grant a bounded duration or decline a request. A considered, responsive SaaS workspace with typed integration points.",
+    "description": "Access requests as cards with a blast-radius map of what each role would reach, a time-boxed grant with an expiry ring, approve or deny with a reason, and undo.",
     "tags": [
       "saas",
-      "workflow",
-      "responsive",
-      "keyboard",
-      "app"
+      "access requests",
+      "permissions",
+      "security",
+      "just-in-time access",
+      "rbac",
+      "approval",
+      "admin"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1140,
-    "usage": "import { AccessRequests } from \"@/components/design-for-ai/saas-access-requests\";\n\n<AccessRequests />",
+    "previewHeight": 1080,
+    "usage": "import { AccessRequests } from \"@/components/design-for-ai/saas-access-requests\";\n\nexport default function AccessQueue() {\n  return (\n    <AccessRequests\n      requests={pending}\n      roles={[\n        { id: \"viewer\", label: \"Viewer\", summary: \"Read only\", maxHours: 168 },\n        { id: \"editor\", label: \"Editor\", summary: \"Change records\", maxHours: 72 },\n        { id: \"admin\", label: \"Admin\", summary: \"Money, members and keys\", maxHours: 24 },\n      ]}\n      grants={activeGrants}\n      now={new Date().toISOString()}\n      onDecision={(d) => api.access.decide(d)}\n      onUndo={(d) => api.access.reopen(d.requestId)}\n      onRevoke={(id) => api.access.revoke(id)}\n    />\n  );\n}",
     "props": [
-      {
-        "name": "title",
-        "type": "string",
-        "description": "Main heading.",
-        "default": "\"Access requests\""
-      },
-      {
-        "name": "subtitle",
-        "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Compare requested privileges, choose a bounded duration and record an explicit grant or decline decision.\""
-      },
       {
         "name": "requests",
         "type": "AccessRequest[]",
-        "description": "Unique pending requests with the exact roles the host permits this reviewer to grant."
+        "default": "four Kestrel requests",
+        "description": "{ id, requester, team, resource, currentRoleId, requestedRoleId, requestedHours, reason, ticket?, requestedAt (ISO), reach: Record<roleId, { label, count, sensitivity: \"low\" | \"medium\" | \"high\" }[]> }. `reach` drives the blast-radius map and the list of what a grant would expose."
       },
       {
         "name": "roles",
         "type": "AccessRole[]",
-        "description": "Unique role definitions with explicit permissions and safe positive maximum durations up to 365 days."
+        "default": "Viewer (7d), Editor (3d), Admin (24h)",
+        "description": "{ id, label, summary, maxHours }, weakest first. Each is a ring in the blast radius; durations past `maxHours` are disabled and long requests are capped."
+      },
+      {
+        "name": "grants",
+        "type": "ActiveGrant[]",
+        "default": "two running grants",
+        "description": "{ id, requester, resource, roleLabel, grantedAt, expiresAt }. Their rings drain to the second; approvals join the list."
+      },
+      {
+        "name": "durations",
+        "type": "number[]",
+        "default": "[1, 4, 24, 72, 168]",
+        "description": "Grant lengths offered, in hours."
       },
       {
         "name": "onDecision",
-        "type": "(decision:AccessDecision)=>void|Promise<void>",
-        "description": "Revalidate authority and apply the reviewed access decision in the host. This component does not enforce access controls."
+        "type": "(decision: AccessDecision) => void | Promise<void>",
+        "description": "{ requestId, outcome: \"approved\" | \"denied\", roleId?, hours?, expiresAt?, reason }. Revalidate and apply server-side; reject to keep the request open with its draft and show the error."
+      },
+      {
+        "name": "onUndo",
+        "type": "(decision: AccessDecision) => void | Promise<void>",
+        "description": "Called when a decision is undone from the toast; the request returns to the queue."
+      },
+      {
+        "name": "onRevoke",
+        "type": "(grantId: string) => void | Promise<void>",
+        "description": "End a running grant early. Reject and the grant comes back."
+      },
+      {
+        "name": "now",
+        "type": "string",
+        "default": "\"2026-10-17T09:42:00Z\"",
+        "description": "ISO instant the clocks start from; they then tick in real time. Pass the current time."
+      },
+      {
+        "name": "workspace",
+        "type": "string",
+        "default": "\"Kestrel\"",
+        "description": "Workspace shown in the chrome."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Locale for counts and times (shown in UTC)."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "theme ink",
+        "description": "The one accent: the blast-radius disc, the primary action and focus rings."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Surface palette."
       },
       {
-        "name": "selectMode",
-        "type": "\"custom\" | \"native\"",
-        "default": "\"custom\"",
-        "description": "Animated keyboard-accessible custom listboxes, or native platform pickers with matched 12px insets."
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes for the root."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:400",
-        "click:@request-1",
+        "wait:700",
+        "click:@role-editor",
         "wait:900",
-        "click:@request-0",
-        "wait:1000"
+        "click:@approve",
+        "wait:1800"
       ],
       "loop": false
     },
@@ -37755,14 +37794,15 @@
         "default": "dark"
       },
       {
-        "prop": "selectMode",
-        "label": "Select menus",
-        "kind": "segmented",
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
         "options": [
-          "custom",
-          "native"
-        ],
-        "default": "custom"
+          "#f4f4f5",
+          "#7aa2ff",
+          "#ff8a4c"
+        ]
       }
     ]
   },
