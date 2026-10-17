@@ -12,7 +12,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 3.3: resolved inconsistent warning thresholds and empty usage charts. Invalid policies remain explicit and saving is blocked until corrected. Compact chart handles also retain their full abbreviated values.
 
-- Task 3.4: resolved pending/rejected undo, reader-swap routing and invalid triage timestamps. The regression probe and dark/light accessibility audits pass in isolation; official Next runner recheck remains pending the shared loader work.
+- Task 3.4: resolved pending/rejected undo, reader-swap routing and invalid triage timestamps. The regression probe now passes against Next previews, including inert exiting inbox and queue controls. Dark/light source accessibility audits pass.
 
 - Task 3.5: resolved exhausted opening cash, singular month labels, scenario keyboard navigation and the empty scenario state. Saved projections and the rewritten browser probe pass in isolation, with clean dark/light accessibility checks.
 

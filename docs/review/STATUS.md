@@ -109,7 +109,7 @@ needs re-recording, whether its poster is current, and the state of its browser 
 | `saas-notification-inbox` | new | stale | rewritten, passes |
 | `saas-report-scheduler` | new | current | rewritten, passes |
 | `saas-saved-views` | new | stale | rewritten, passes |
-| `saas-support-triage` | new | current | rewritten, passes in isolation; undo, timestamps and swap race fixed; official runner pending |
+| `saas-support-triage` | new | current | rewritten, passes against Next; pending/rejected undo, exiting controls and invalid timestamps fixed |
 | `saas-usage-policy` | new | current | rewritten, passes (warning thresholds and empty usage fixed) |
 | `saas-workspace-dashboard` | new | stale | rewritten, passes |
 

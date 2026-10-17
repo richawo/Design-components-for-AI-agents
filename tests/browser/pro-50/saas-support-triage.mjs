@@ -121,12 +121,12 @@ export async function check({ page, mount, assert }) {
   await queued.waitFor();
   await page.getByRole("status").getByRole("button", { name: "Undo", exact:true }).click();
   assert.equal(await page.getByRole("button", {name:"Undoing…"}).isDisabled(), true);
-  assert.equal(await page.locator('[data-demo="ticket-sup-2485"]').count(), 0);
+  assert.equal(await page.getByRole("button").and(page.locator('[data-demo="ticket-sup-2485"]')).count(), 0);
   await queued.waitFor();
   await page.evaluate(() => {window.rejectUndo();});
   await page.getByRole("alert").filter({hasText:"Undo failed. The ticket stays routed. Try again."}).waitFor();
   await queued.waitFor();
-  assert.equal(await page.locator('[data-demo="ticket-sup-2485"]').count(), 0);
+  assert.equal(await page.getByRole("button").and(page.locator('[data-demo="ticket-sup-2485"]')).count(), 0);
   await page.getByRole("status").getByRole("button", {name:"Undo", exact:true}).click();
   assert.equal(await page.evaluate(() => window.undoCount), 2);
   await page.evaluate(() => {window.resolveUndo();});
