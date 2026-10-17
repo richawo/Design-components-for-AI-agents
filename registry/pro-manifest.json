@@ -22494,79 +22494,105 @@
   },
   {
     "slug": "finance-payment-run",
-    "name": "Payment Run Review",
+    "name": "Payment Run",
     "tier": "pro",
     "platform": "web",
     "category": "billing",
-    "description": "Select payable invoices within a funding limit and create a reviewed batch. A considered, responsive finance workspace with typed integration points.",
+    "description": "A bill-pay run built around a funding meter: tick bills, watch them fill the account against its reserve, confirm, then see each payment settle.",
     "tags": [
       "finance",
-      "workflow",
-      "responsive",
-      "keyboard",
-      "billing"
+      "payables",
+      "bill pay",
+      "payment run",
+      "funding meter",
+      "batch payments",
+      "treasury"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1200,
-    "usage": "import { PaymentRun } from \"@/components/design-for-ai/finance-payment-run\";\n\n<PaymentRun />",
+    "previewHeight": 980,
+    "usage": "import { PaymentRun } from \"@/components/design-for-ai/finance-payment-run\";\n\n<PaymentRun\n  account={{ name: \"Operating\", mask: \"4021\", balanceMinor: 7184025, minimumMinor: 2500000 }}\n  bills={bills}\n  runId=\"PR-1016\"\n  payDate=\"2026-10-16\"\n  currency=\"GBP\"\n  onSubmitRun={async (run) => {\n    const res = await fetch(\"/api/payment-runs\", { method: \"POST\", body: JSON.stringify(run) });\n    if (!res.ok) throw new Error(\"The bank didn’t accept the run.\");\n    return res.json(); // { returned?: [{ id, reason }] }\n  }}\n/>",
     "props": [
       {
-        "name": "title",
+        "name": "bills",
+        "type": "PayableBill[]",
+        "description": "Bills to pay: { id, vendor, category?, dueDate (ISO), amountMinor, method, settlementDays?, accountMask, hold? }. A bill with a hold ({ kind: \"approval\" | \"verify\", label }) stays visible but can’t be ticked."
+      },
+      {
+        "name": "account",
+        "type": "FundingAccount",
+        "description": "The account the run draws on: { name, mask, balanceMinor, minimumMinor? }. The minimum is drawn as a hatched reserve at the end of the meter."
+      },
+      {
+        "name": "runId",
         "type": "string",
-        "description": "Main heading.",
-        "default": "\"Payment run\""
+        "default": "\"PR-1016\"",
+        "description": "Run reference shown in the toolbar and on the receipt."
       },
       {
-        "name": "subtitle",
+        "name": "payDate",
         "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Prepare a payable batch within the available funding limit. No bank instruction is sent from this workspace.\""
-      },
-      {
-        "name": "invoices",
-        "type": "PayableInvoice[]",
-        "description": "Unique outstanding invoices with safe positive two-decimal amounts, host approval and beneficiary-verification flags."
-      },
-      {
-        "name": "fundingMinor",
-        "type": "number",
-        "description": "Non-negative safe integer funding available for this draft in two-decimal minor units."
-      },
-      {
-        "name": "referenceDate",
-        "type": "string",
-        "description": "Earliest scheduling date, civil YYYY-MM-DD from 2000 through 2100."
+        "default": "\"2026-10-16\"",
+        "description": "ISO date the run is sent. Due-date wording (“Due today”, “3 days late”) and the arrival date are worked out from it."
       },
       {
         "name": "currency",
         "type": "string",
-        "description": "Single ISO currency for the batch."
+        "default": "\"GBP\"",
+        "description": "ISO 4217 code. Amounts are minor units of this currency."
       },
       {
-        "name": "onCreateBatch",
-        "type": "(batch:PaymentBatch)=>void|Promise<void>",
-        "description": "Persist a reviewed payment batch draft. The host revalidates funding, approval, duplicate invoices and bank details before any payment."
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Locale for money and dates."
+      },
+      {
+        "name": "defaultSelected",
+        "type": "string[]",
+        "default": "[]",
+        "description": "Bill IDs ticked on first render. Held bills are ignored."
+      },
+      {
+        "name": "onSelectionChange",
+        "type": "(ids: string[]) => void",
+        "description": "Called whenever the ticked bills change."
+      },
+      {
+        "name": "onSubmitRun",
+        "type": "(run: PaymentRunDraft) => void | Promise<void | PaymentRunResult>",
+        "description": "Sends the confirmed run { runId, payDate, currency, accountMask, billIds, totalMinor }. Resolve to play the settle sequence (return { returned: [{ id, reason }] } for payments the bank bounced); reject to keep the selection and show the error message."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "description": "The one accent: selection rail, meter fill and the primary action. Defaults to the theme’s ink."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Surface palette."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:350",
-        "click:@invoice-0",
-        "click:@invoice-1",
-        "click:@review",
-        "wait:650",
-        "click:@create",
-        "wait:1000"
+        "wait:600",
+        "click:@bill-2",
+        "wait:450",
+        "click:@pay",
+        "wait:500",
+        "click:@confirm",
+        "wait:2600"
       ],
       "loop": false
     },
@@ -22580,6 +22606,18 @@
           "light"
         ],
         "default": "dark"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#8ea2ff",
+          "#c6f36d",
+          "#5eead4"
+        ]
       }
     ]
   },

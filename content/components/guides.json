@@ -2266,18 +2266,20 @@
     "updated": "2026-10-17"
   },
   "finance-payment-run": {
-    "useWhen": "Reviewing payees and payment amounts before an explicit handoff.",
-    "avoidWhen": "Moving money or authorising a transfer solely through browser state.",
+    "useWhen": "Choosing which approved bills to pay from one funding account and watching the batch settle, with the account reserve in view.",
+    "avoidWhen": "Approving individual bills, editing vendor bank details or reconciling payments after they clear; those belong to approval, vendor and reconciliation screens.",
     "integration": [
-      "Supply your own records through `invoices`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onCreateBatch` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+      "Pass `bills` with amounts in minor units and an optional `hold` on anything that still needs approval or verified bank details. Held bills render but can't be ticked.",
+      "Pass the funding `account` with `balanceMinor` and an optional `minimumMinor`; runs that dip into that reserve get a caution line at confirm.",
+      "`onSubmitRun` receives `{ runId, payDate, currency, accountMask, billIds, totalMinor }`. Revalidate funding, approvals and payee details on the server before calling your bank. Resolve with `{ returned: [{ id, reason }] }` for payments the bank bounced, or reject with an `Error` whose message is shown while the selection is kept.",
+      "Use `onSelectionChange` to persist a half-built run, and `defaultSelected` to restore it."
     ],
     "related": [
-      "finance-budget-variance",
-      "finance-close-checklist",
-      "finance-expense-review"
+      "finance-cashflow-dashboard",
+      "finance-reconciliation",
+      "finance-receivables-aging"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "finance-receivables-aging": {
     "useWhen": "Reviewing overdue invoices by age and preparing an appropriate follow-up.",
