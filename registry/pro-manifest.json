@@ -12513,111 +12513,122 @@
     "tier": "pro",
     "platform": "web",
     "category": "data",
-    "description": "Compare actual record matches from supplied filter snapshots, restore a view explicitly and name it without losing newer drafts or the active context.",
+    "description": "A table you can rewind: drag a playhead across a strip of saved filter states and watch rows return or drop out, then restore that view.",
     "tags": [
       "filter history",
       "saved views",
-      "comparison",
+      "timeline scrubber",
       "restore filters",
-      "name draft",
-      "original records"
+      "data table",
+      "undo"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1180,
-    "usage": "import { DataFilterHistory } from \"@/components/design-for-ai/data-filter-history\";\n\n<DataFilterHistory fields={fields} records={records} history={snapshots} value={activeRules} onValueChange={setActiveRules} onRename={renameSnapshot} />",
+    "previewHeight": 1060,
+    "usage": "import { DataFilterHistory } from \"@/components/design-for-ai/data-filter-history\";\n\n<DataFilterHistory\n  title=\"Accounts\"\n  fields={fields}\n  records={accounts}\n  history={savedFilterStates}\n  value={liveRules}\n  onValueChange={(rules, snapshotId) => setLiveRules(rules)}\n  onRename={(id, name) => api.renameView(id, name)}\n/>",
     "props": [
       {
+        "name": "title",
+        "type": "string",
+        "default": "\"Accounts\"",
+        "description": "The table's name in the toolbar."
+      },
+      {
+        "name": "recordLabel",
+        "type": "string",
+        "default": "\"Account\"",
+        "description": "Header of the first column, which shows each record's label and detail."
+      },
+      {
+        "name": "noun",
+        "type": "[string, string]",
+        "default": "[\"account\", \"accounts\"]",
+        "description": "Singular and plural used beside the count."
+      },
+      {
         "name": "fields",
-        "type": "HistoryField[]",
-        "description": "1–8 raw unique labeled text/number/boolean field declarations."
+        "type": "FilterField[]",
+        "description": "Columns after the label: { id, label, kind: \"text\" | \"number\" | \"currency\", tones? }. The last numeric field is the right-aligned figure; tones put a status dot on text values."
       },
       {
         "name": "records",
-        "type": "HistoryRecord[]",
-        "description": "Up to 500 raw unique labeled immutable originals with declared own scalar values. Null and missing keys remain distinct; finite numbers within ±1 billion."
+        "type": "FilterRecord[]",
+        "description": "Rows: { id, label, detail?, values }. A missing key never satisfies a rule, not even \"is not\"."
       },
       {
         "name": "history",
         "type": "FilterSnapshot[]",
-        "description": "Up to 12 raw unique snapshots with 1–80-character names, supplied savedAt labels and at most 12 AND rules. Snapshot order and labels are authoritative."
+        "description": "Saved filter states, oldest first: { id, name, savedAt, author?, rules }. Each becomes a bar on the strip, as tall as the rows it matched. The live view is always the last stop."
       },
       {
         "name": "value",
-        "type": "HistoryRule[]",
-        "description": "Actual controlled active filter rules. Inspection does not change them; explicit restoration requests a separate accepted set."
+        "type": "FilterRule[]",
+        "description": "Controlled live rules: { fieldId, operator: \"is\" | \"is_not\" | \"contains\" | \"gte\" | \"lte\", value }."
       },
       {
         "name": "defaultValue",
-        "type": "HistoryRule[]",
-        "default": "[]",
-        "description": "Initial uncontrolled active rules. Empty rules match every real source record."
+        "type": "FilterRule[]",
+        "description": "Uncontrolled starting rules."
       },
       {
         "name": "onValueChange",
-        "type": "(rules: HistoryRule[], snapshotId: string) => void",
-        "description": "Explicit restore request; rejection retains current active data."
-      },
-      {
-        "name": "onValueCommit",
-        "type": "(rules: HistoryRule[], snapshotId: string) => void",
-        "description": "Accepted current restorations only; no rejected/no-op/obsolete commit."
-      },
-      {
-        "name": "selectedId",
-        "type": "string | null",
-        "description": "Controlled comparison snapshot ID; unknown/null is honest and never silently replaced."
-      },
-      {
-        "name": "defaultSelectedId",
-        "type": "string | null",
-        "description": "Initial comparison identity. Untouched loading waits for first actual ready history."
-      },
-      {
-        "name": "onSelectionChange",
-        "type": "(id: string | null) => void",
-        "description": "Independent comparison request; it never restores filters."
+        "type": "(rules: FilterRule[], snapshotId: string) => void",
+        "description": "Restore: called with a copy of the snapshot's rules. Scrubbing never calls it; only the Restore button does."
       },
       {
         "name": "onRename",
-        "type": "(id: string, name: string, signal: AbortSignal) => Promise<void>",
-        "description": "Host-owned exact name request. Host updates history; fulfilled waiting does not invent a changed source name. Newer drafts survive older acceptance. Source/rule/handler retirement ignores obsolete completion."
+        "type": "(id: string, name: string) => void | Promise<void>",
+        "description": "Enables the inline rename on a snapshot. Return a promise to show progress; a rejection keeps the draft open with an error. Update `history` with the new name."
       },
       {
-        "name": "title",
-        "type": "string",
-        "default": "\"Keep the view. Compare the past.\"",
-        "description": "Comparison heading."
+        "name": "defaultSnapshotId",
+        "type": "string | null",
+        "default": "null",
+        "description": "Where the playhead starts: a snapshot id, or null for the live view."
       },
       {
-        "name": "description",
-        "type": "string",
-        "description": "Actual source/history context."
-      },
-      {
-        "name": "status",
-        "type": "\"ready\" | \"loading\" | \"unavailable\"",
-        "description": "Availability preserves active view, comparison and name drafts."
-      },
-      {
-        "name": "disabled",
+        "name": "showDiff",
         "type": "boolean",
-        "default": "false",
-        "description": "Disables restoration/selection/naming; matching originals remain inspectable."
+        "default": "true",
+        "description": "While scrubbed, also show live rows and rules the snapshot lacks, struck through, so a restore's full effect is visible."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"USD\"",
+        "description": "Currency for `currency` fields."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-US\"",
+        "description": "Locale for numbers and currency."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ffb547\"",
+        "description": "The one colour: the playhead, the live marker and rows a restore brings back."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Neutral graphite or white chrome and complete neutral demo stage."
+        "description": "Graphite or white surfaces."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "default": "false",
+        "description": "Read-only: scrubbing still works; restore and rename are off."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Host root classes."
+        "description": "Classes for the root section."
       }
     ],
     "controls": [
@@ -12626,30 +12637,54 @@
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
         "default": "dark"
       },
       {
+        "prop": "accent",
+        "label": "Playhead",
+        "kind": "color",
+        "default": "#ffb547",
+        "options": [
+          "#ffb547",
+          "#7cc4ff",
+          "#4ade80",
+          "#f4f4f5"
+        ]
+      },
+      {
+        "prop": "showDiff",
+        "label": "Show dropped rows",
+        "kind": "toggle",
+        "default": true
+      },
+      {
         "prop": "disabled",
-        "label": "History locked",
+        "label": "Read-only",
         "kind": "toggle",
         "default": false
       }
     ],
     "demo": {
       "steps": [
-        "click:@history-short",
-        "wait:250",
-        "click:@history-restore",
-        "wait:300",
-        "click:@history-drafts",
-        "wait:250",
-        "click:@history-restore",
-        "wait:300",
-        "click:@history-snapshot-data",
-        "wait:300"
+        "wait:500",
+        "hover:@playhead",
+        "down",
+        "hover:@step-h1",
+        "up",
+        "wait:900",
+        "click:@step-h4",
+        "wait:900",
+        "click:@restore",
+        "wait:1100"
       ],
       "loop": false
     },

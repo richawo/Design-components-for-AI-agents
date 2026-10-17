@@ -4358,19 +4358,20 @@
     "updated": "2026-10-14"
   },
   "data-filter-history": {
-    "useWhen": "Comparing, naming and explicitly restoring supplied prior filter configurations.",
-    "avoidWhen": "Silently changing the active view while merely inspecting a previous state or replacing a full version-control system.",
+    "useWhen": "Letting people rewind a filtered table through its saved filter states, see exactly which rows each state brings back or drops, and restore one deliberately.",
+    "avoidWhen": "Building a filter from scratch, or keeping a long audit log of every edit; this shows a handful of saved states, not a version-control system.",
     "integration": [
-      "Supply 1–8 raw unique labeled text/number/boolean fields, up to 500 unique original scalar records and up to 12 named filter snapshots with savedAt labels and at most 12 AND rules each. Exact is/is_not/contains/at_least/at_most rules distinguish missing keys, explicit null and literal strings; numeric limits are inclusive and values finite within ±1 billion.",
-      "Control the active rules through value/onValueChange or initialize defaultValue. Comparison selection has separate selectedId/onSelectionChange ownership; inspecting a snapshot never restores it. Explicit Restore requests the whole snapshot and emits onValueCommit only after the current host acceptance.",
-      "onRename receives snapshot ID, exact name and an AbortSignal. The host updates supplied history names. Fulfilment alone does not fabricate a renamed snapshot. Per-snapshot native name drafts survive failure and newer edits survive older matching acknowledgements; Escape explicitly returns to the supplied name.",
-      "Source, callback and selected rule-context revisions retire pending work and ignore late settlement, while expected name updates can complete in their current context. Actual matches and originals remain readable through 12-record paging, unsupported criteria retain a native equivalent, and live reduced motion settles counts and result emphasis immediately."
+      "Pass `fields`, `records` and `history` (oldest first). Each snapshot is a full rule set `{ fieldId, operator, value }` with `is`, `is_not`, `contains`, `gte` and `lte`. Counts and rows are computed locally from the records you pass, so send the same rows the live table shows.",
+      "Control the live rules with `value` and `onValueChange(rules, snapshotId)`, or start uncontrolled with `defaultValue`. Scrubbing only changes the preview; the host's rules change only when someone presses Restore, and the callback receives a copy.",
+      "Add `onRename(id, name)` to enable inline naming. Return a promise for a pending state; reject to keep the draft open with an error, and update `history` with the new name when it succeeds.",
+      "Set `defaultSnapshotId` to open on a past state, `showDiff={false}` to hide live rows a snapshot would drop, and `disabled` for read-only viewers who can still scrub. Use `recordLabel` and `noun` to rename the first column and the count for your data."
     ],
     "related": [
       "saas-saved-views",
-      "data-query-builder"
+      "data-query-builder",
+      "data-table-sortable"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "editor-layer-stack": {
     "useWhen": "Reordering, locking, hiding and renaming supplied layers with actual selection and a readable move mode.",
