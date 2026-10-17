@@ -2202,19 +2202,21 @@
     "updated": "2026-10-12"
   },
   "finance-budget-variance": {
-    "useWhen": "Comparing supplied budget and actual values with readable differences.",
-    "avoidWhen": "Accounting conclusions without consistent periods, currencies and definitions.",
+    "useWhen": "Reviewing a month's actuals against budget by department, seeing at a glance which misses are material and favourable or adverse, and collecting a short explanation for each before the pack goes to a reviewer.",
+    "avoidWhen": "Building or editing the budget itself, multi-period trend analysis or reforecasting; use a planning or forecast surface for those.",
     "integration": [
-      "Supply your own records through `lines`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onSaveExplanation` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
-      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+      "Pass `departments` with their ledger `lines` in minor units; set `kind: \"income\"` on revenue lines so beating plan reads as favourable. Duplicate line ids or non-integer amounts are reported instead of drawn.",
+      "Set `materiality` ({ percent, minimumMinor }) to your policy. Lines past both thresholds need a note before `onSubmit` is enabled; unbudgeted spend over the amount always does.",
+      "`onSaveNote(lineId, text)` persists commentary; reject with an `Error` to keep the draft open with your message. Existing commentary comes in on each line's `note`.",
+      "`onSubmit` receives `{ period, reviewer, budgetMinor, actualMinor, notes }`. Validate on the server that every material line is explained before routing the pack.",
+      "Submission waits for all pending note saves. A failed review submission keeps the notes and retries the same pack."
     ],
     "related": [
       "finance-close-checklist",
-      "finance-expense-review",
-      "finance-invoice-composer"
+      "finance-scenario-forecast",
+      "finance-cashflow-dashboard"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "finance-cashflow-dashboard": {
     "useWhen": "Reviewing supplied cash balances, movements and near-term context.",

@@ -22481,78 +22481,117 @@
   },
   {
     "slug": "finance-budget-variance",
-    "name": "Budget Variance Explorer",
+    "name": "Budget Variance",
     "tier": "pro",
     "platform": "web",
     "category": "billing",
-    "description": "Compare actuals with plans and explain selected variances. A considered, responsive finance workspace with typed integration points.",
+    "description": "Budget against actual on a variance spine: bars leave the materiality band in colours that mean favourable or adverse, drill to lines, and notes hang off big misses.",
     "tags": [
       "finance",
-      "workflow",
-      "responsive",
-      "keyboard",
-      "billing"
+      "budget",
+      "variance",
+      "fp&a",
+      "reporting",
+      "commentary",
+      "month end"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1120,
-    "usage": "import { BudgetVariance } from \"@/components/design-for-ai/finance-budget-variance\";\n\n<BudgetVariance />",
+    "previewHeight": 1040,
+    "usage": "import { BudgetVariance } from \"@/components/design-for-ai/finance-budget-variance\";\n\n<BudgetVariance\n  departments={departments}\n  period=\"September 2026\"\n  materiality={{ percent: 10, minimumMinor: 200000 }}\n  reviewer=\"Priya Shah\"\n  currentUser=\"Jonah Reed\"\n  onSaveNote={(lineId, text) => api.saveVarianceNote(lineId, text)}\n  onSubmit={(pack) => api.sendForReview(pack)}\n/>",
     "props": [
       {
-        "name": "title",
-        "type": "string",
-        "description": "Main heading.",
-        "default": "\"Budget variance\""
-      },
-      {
-        "name": "subtitle",
-        "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Compare actuals with budget and document the reason behind each variance.\""
-      },
-      {
-        "name": "lines",
-        "type": "BudgetLine[]",
-        "description": "Unique budget lines with non-negative safe integer two-decimal amounts and supplied actual-cost drivers."
+        "name": "departments",
+        "type": "BudgetDepartment[]",
+        "description": "{ id, name, owner, lines: { id, account?, name, budgetMinor, actualMinor, kind? (\"expense\" | \"income\"), note? ({ author, text, date }) }[] }. Duplicate line ids or non-integer amounts are reported instead of drawn."
       },
       {
         "name": "period",
         "type": "string",
-        "description": "Period label shared by actuals and budget."
+        "default": "\"September 2026\"",
+        "description": "Period label for the toolbar, totals and the receipt."
+      },
+      {
+        "name": "materiality",
+        "type": "Materiality",
+        "default": "{ percent: 10, minimumMinor: 200000 }",
+        "description": "A line needs a note when its variance passes both the percentage (either way) and the amount. Unbudgeted spend over the amount always does. The percentage is drawn as the band around zero on the spine."
+      },
+      {
+        "name": "reviewer",
+        "type": "string",
+        "default": "\"Priya Shah\"",
+        "description": "Who the explained variances go to."
+      },
+      {
+        "name": "currentUser",
+        "type": "string",
+        "default": "\"Jonah Reed\"",
+        "description": "Author recorded on notes written here."
+      },
+      {
+        "name": "today",
+        "type": "string",
+        "default": "\"2026-10-16\"",
+        "description": "ISO date stamped on new notes."
+      },
+      {
+        "name": "defaultDepartmentId",
+        "type": "string",
+        "description": "Open on one department’s lines instead of the overview."
       },
       {
         "name": "currency",
         "type": "string",
-        "description": "Single ISO currency in two-decimal minor units."
+        "default": "\"GBP\"",
+        "description": "ISO 4217 code. Amounts are minor units of this currency."
       },
       {
-        "name": "onSaveExplanation",
-        "type": "(value:VarianceExplanation)=>void|Promise<void>",
-        "description": "Persist the selected variance explanation without changing financial records."
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Locale for money and dates."
+      },
+      {
+        "name": "onSaveNote",
+        "type": "(lineId: string, text: string) => void | Promise<void>",
+        "description": "Saves a note against a line. Resolve to attach it; reject to keep the draft open with the message and Try again."
+      },
+      {
+        "name": "onSubmit",
+        "type": "(pack: VariancePack) => void | Promise<void>",
+        "description": "Sends { period, reviewer, budgetMinor, actualMinor, notes } once every material variance has a note. Reject to keep everything and show Try again."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "description": "The one accent: spend within budget, the primary action. Defaults to the theme’s ink."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Surface palette."
       },
       {
-        "name": "selectMode",
-        "type": "\"custom\" | \"native\"",
-        "default": "\"custom\"",
-        "description": "Animated keyboard-accessible custom listboxes, or native platform pickers with matched 12px insets."
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:350",
-        "click:@line-subscription",
-        "wait:750",
-        "click:@line-events",
-        "wait:1100"
+        "wait:700",
+        "click:@dept-eng",
+        "wait:900",
+        "click:@note-eng-cloud",
+        "type:Load tests ran 9 days.",
+        "click:@save-eng-cloud",
+        "wait:1200"
       ],
       "loop": false
     },
@@ -22568,14 +22607,16 @@
         "default": "dark"
       },
       {
-        "prop": "selectMode",
-        "label": "Select menus",
-        "kind": "segmented",
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
         "options": [
-          "custom",
-          "native"
-        ],
-        "default": "custom"
+          "#f4f4f5",
+          "#8ea2ff",
+          "#c6f36d",
+          "#5eead4"
+        ]
       }
     ]
   },
