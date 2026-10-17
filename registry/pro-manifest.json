@@ -7339,128 +7339,262 @@
     "tier": "pro",
     "platform": "web",
     "category": "charts",
-    "description": "Compare actual sample medians, quartiles, whiskers and outliers, with transparent sample sizes and a complete native observation table.",
+    "description": "Dark box plots over the raw samples: boxes open from the median, a draggable limit line recolours every request under it and each row's pass rate counts live.",
     "tags": [
+      "chart",
       "box plot",
       "distribution",
-      "quartiles",
-      "median",
-      "outliers",
-      "sample size"
+      "latency",
+      "percentiles",
+      "slo",
+      "threshold",
+      "dashboard",
+      "svg",
+      "dark"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1280,
-    "usage": "import { ChartBoxDistribution } from \"@/components/design-for-ai/chart-box-distribution\";\n\n<ChartBoxDistribution groups={samples} value={selection} onValueChange={setSelection} unit=\"ms\" />",
+    "previewHeight": 760,
+    "usage": "import { ChartBoxDistribution } from \"@/components/design-for-ai/chart-box-distribution\";\n\nexport default function Latency({ regions }: { regions: { id: string; label: string; values: number[] }[] }) {\n  return (\n    <ChartBoxDistribution\n      title=\"API latency\"\n      caption=\"by region · last 24 hours\"\n      groups={regions}\n      unit=\"ms\"\n      defaultThreshold={400}\n      target={0.9}\n      onThresholdChange={(ms) => saveSlo(ms)}\n      accent=\"#7dd3fc\"\n    />\n  );\n}",
     "props": [
       {
         "name": "groups",
-        "type": "DistributionGroup[]",
-        "description": "At most 8 raw unique groups with up to 2048 finite observations each, bounded within ±1 billion. Empty groups remain explicit."
-      },
-      {
-        "name": "value",
-        "type": "DistributionSelection",
-        "description": "Atomic controlled groupId/original observationIndex. Null index inspects the median; unknown identity/index is not substituted."
-      },
-      {
-        "name": "defaultValue",
-        "type": "DistributionSelection",
-        "description": "Initial uncontrolled selection. First available supplied group initializes only an untouched empty source."
-      },
-      {
-        "name": "onValueChange",
-        "type": "(value: DistributionSelection) => void",
-        "description": "Requests a host-owned group/observation selection."
-      },
-      {
-        "name": "onValueCommit",
-        "type": "(value: DistributionSelection) => void",
-        "description": "Accepted discrete selection changes only, no false rejected commits."
-      },
-      {
-        "name": "showMean",
-        "type": "boolean",
-        "description": "Shows an explicitly labeled arithmetic mean ring in the actual plot."
+        "type": "{ id: string; label: string; detail?: string; values: number[] }[]",
+        "default": "7 regions × 180 requests of Relay’s public API",
+        "description": "One row per group with its raw observations. Quartiles use linear interpolation; whiskers reach the furthest values inside 1.5 × IQR."
       },
       {
         "name": "unit",
         "type": "string",
-        "description": "Host quantity unit without inferred conversion."
+        "default": "\"ms\"",
+        "description": "Unit after every figure."
       },
       {
-        "name": "locale",
-        "type": "string",
-        "description": "Intl formatting locale; exact small quantities use truthful scientific notation."
+        "name": "decimals",
+        "type": "number",
+        "default": "0",
+        "description": "Fraction digits for figures."
       },
       {
-        "name": "title",
-        "type": "string",
-        "description": "Host distribution heading."
+        "name": "defaultThreshold",
+        "type": "number",
+        "default": "400",
+        "description": "Initial position of the draggable limit."
       },
       {
-        "name": "description",
-        "type": "string",
-        "description": "Host sample provenance/context."
+        "name": "threshold",
+        "type": "number",
+        "description": "Controlled limit; pair with onThresholdChange."
+      },
+      {
+        "name": "onThresholdChange",
+        "type": "(value: number) => void",
+        "description": "Called as the limit is dragged or nudged with the keyboard."
+      },
+      {
+        "name": "target",
+        "type": "number",
+        "default": "0.9",
+        "description": "Goal share at or under the limit (0–1). The headline chip and any row below it are flagged."
+      },
+      {
+        "name": "defaultSort",
+        "type": "\"p50\" | \"p95\" | \"label\"",
+        "default": "\"p50\"",
+        "description": "Initial row order: fastest median first, slowest p95 first, or A–Z."
+      },
+      {
+        "name": "sort",
+        "type": "\"p50\" | \"p95\" | \"label\"",
+        "description": "Controlled row order; pair with onSortChange."
+      },
+      {
+        "name": "onSortChange",
+        "type": "(sort: DistributionSort) => void",
+        "description": "Called when the sort switch changes."
+      },
+      {
+        "name": "showSamples",
+        "type": "boolean",
+        "default": "true",
+        "description": "Raw observations as a jittered strip behind each box; those under the limit take the accent."
+      },
+      {
+        "name": "showMean",
+        "type": "boolean",
+        "default": "false",
+        "description": "A diamond at each group’s arithmetic mean."
       },
       {
         "name": "status",
         "type": "\"ready\" | \"loading\" | \"unavailable\"",
-        "description": "Host availability; current selection and supplied measurements are retained."
+        "default": "\"ready\"",
+        "description": "Loading and unavailable states replace the rows with a quiet placeholder."
       },
       {
-        "name": "disabled",
-        "type": "boolean",
-        "description": "Disables selection changes; original observations remain readable."
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Shows a Retry button in the unavailable state."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "theme ink",
+        "description": "The one accent: the limit line, its handle and samples under it."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Neutral graphite and white chrome; colour is reserved for actual feature content and semantic data accents."
+        "default": "\"dark\"",
+        "description": "Surface palette."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-US\"",
+        "description": "Locale for figures and A–Z sorting."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"API latency\"",
+        "description": "Chart title."
+      },
+      {
+        "name": "caption",
+        "type": "string",
+        "default": "\"by region · last 24 hours\"",
+        "description": "Muted text after the title."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Classes applied to the independent root."
+        "description": "Classes on the root."
       }
     ],
     "controls": [
       {
-        "prop": "showMean",
-        "label": "Arithmetic mean",
+        "prop": "defaultThreshold",
+        "label": "Limit",
+        "kind": "slider",
+        "min": 200,
+        "max": 800,
+        "step": 25,
+        "unit": "ms",
+        "default": 400,
+        "remount": true,
+        "group": "Data"
+      },
+      {
+        "prop": "target",
+        "label": "Target",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": 0.9,
+            "label": "90%"
+          },
+          {
+            "value": 0.95,
+            "label": "95%"
+          },
+          {
+            "value": 0.99,
+            "label": "99%"
+          }
+        ],
+        "default": 0.9,
+        "group": "Data"
+      },
+      {
+        "prop": "defaultSort",
+        "label": "Sort",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "p50",
+            "label": "Median"
+          },
+          {
+            "value": "p95",
+            "label": "p95"
+          },
+          {
+            "value": "label",
+            "label": "A–Z"
+          }
+        ],
+        "default": "p50",
+        "remount": true,
+        "group": "Data"
+      },
+      {
+        "prop": "showSamples",
+        "label": "Samples",
         "kind": "toggle",
-        "default": false
+        "default": true,
+        "group": "Data"
+      },
+      {
+        "prop": "showMean",
+        "label": "Mean",
+        "kind": "toggle",
+        "default": false,
+        "group": "Data"
       },
       {
         "prop": "theme",
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
-        "default": "dark"
+        "default": "dark",
+        "group": "Look"
       },
       {
-        "prop": "disabled",
-        "label": "Disabled",
-        "kind": "toggle",
-        "default": false
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#7dd3fc",
+        "options": [
+          "#7dd3fc",
+          "#f4f4f5",
+          "#fb923c",
+          "#a3e635"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Demo",
+        "kind": "action",
+        "value": "Replay"
       }
     ],
     "demo": {
       "steps": [
-        "click:@distribution-mobile",
-        "wait:350",
-        "click:@distribution-api",
-        "wait:350",
-        "click:@distribution-observation-18",
-        "wait:350",
-        "click:@distribution-median",
-        "wait:450"
+        "hover:@limit-handle",
+        "down",
+        "hover:@row-sa-east-1:0.31,0.6",
+        "wait:200",
+        "hover:@row-sa-east-1:0.5,0.6",
+        "up",
+        "wait:700",
+        "click:@sort-p95",
+        "wait:1100",
+        "hover:@row-sa-east-1:0.45,0.55",
+        "wait:1000"
       ],
       "loop": false
     },
