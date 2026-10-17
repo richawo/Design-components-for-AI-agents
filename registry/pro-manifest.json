@@ -20884,82 +20884,122 @@
     "tier": "pro",
     "platform": "web",
     "category": "commerce",
-    "description": "Choose an available replacement and review the exact price difference. A considered, responsive fashion workspace with typed integration points.",
+    "description": "An exchange screen built around the garment: pick a colourway or size and the flat sketch recolours, re-measures and the price difference counts.",
     "tags": [
       "fashion",
-      "workflow",
-      "responsive",
-      "keyboard",
+      "exchange",
+      "returns",
+      "variant picker",
+      "size",
+      "colourway",
+      "flat sketch",
       "commerce"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
     "previewHeight": 1000,
-    "usage": "import { ExchangeSelector } from \"@/components/design-for-ai/fashion-exchange-selector\";\n\n<ExchangeSelector />",
+    "usage": "import { ExchangeSelector } from \"@/components/design-for-ai/fashion-exchange-selector\";\n\n<ExchangeSelector\n  item={orderLine}\n  colourways={product.colourways}\n  sizes={product.sizes}\n  variants={product.variants}\n  measurements={product.measurements}\n  currency=\"GBP\"\n  onConfirm={async (request) => {\n    await api.exchanges.create(request);\n  }}\n/>",
     "props": [
       {
-        "name": "title",
+        "name": "brand",
         "type": "string",
-        "description": "Main heading.",
-        "default": "\"Variant exchange\""
+        "default": "\"Ferne\"",
+        "description": "Store name in the breadcrumb and brand mark."
       },
       {
-        "name": "subtitle",
-        "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Choose an available variant and review the price adjustment before requesting an exchange.\""
+        "name": "item",
+        "type": "ExchangeItem",
+        "description": "The ordered line: orderId, productName, sku, garment (flat sketch kind), colourwayId, size and paidMinor (price paid after discounts)."
       },
       {
-        "name": "original",
-        "type": "ExchangeOriginal",
-        "description": "Original order line. paidMinor is the actual amount paid per unit after discounts, in two-decimal minor units."
+        "name": "colourways",
+        "type": "ExchangeColourway[]",
+        "description": "Colourways as { id, name, hex, image? }. The hex is the swatch and the sketch's cloth; an image replaces the sketch."
+      },
+      {
+        "name": "sizes",
+        "type": "string[]",
+        "default": "[\"XS\", \"S\", \"M\", \"L\", \"XL\"]",
+        "description": "Size labels in run order."
       },
       {
         "name": "variants",
         "type": "ExchangeVariant[]",
-        "description": "Unique replacement variants with color, size, safe integer stock and non-negative per-unit price."
+        "description": "One per colourway and size: { colourwayId, size, priceMinor, stock }. Zero stock is sold out."
+      },
+      {
+        "name": "measurements",
+        "type": "Record<string, ExchangeMeasurement>",
+        "description": "Flat width and length per size. The sketch scales from the ordered size and the dimension lines count to the new figures."
+      },
+      {
+        "name": "unit",
+        "type": "\"cm\" | \"in\"",
+        "default": "\"cm\"",
+        "description": "Unit printed on the measurements."
       },
       {
         "name": "reasons",
-        "type": "string[]",
-        "description": "Exchange reasons offered by the host."
+        "type": "ExchangeReason[]",
+        "description": "Reason chips as { id, label, suggest? }. suggest \"up\" or \"down\" moves the size one step from the ordered size."
+      },
+      {
+        "name": "daysLeft",
+        "type": "number",
+        "default": "23",
+        "description": "Days left in the exchange window, shown in the header. Five or fewer turns amber."
+      },
+      {
+        "name": "garment",
+        "type": "\"tee\" | \"crew\" | \"shirt\" | \"coat\" | \"trouser\" | \"dress\"",
+        "description": "Draws a different flat sketch than item.garment."
       },
       {
         "name": "currency",
         "type": "string",
-        "description": "ISO currency shared by the original line and replacements."
+        "default": "\"GBP\"",
+        "description": "ISO 4217 code for prices and the difference."
       },
       {
-        "name": "onRequest",
-        "type": "(request:ExchangeRequest)=>void|Promise<void>",
-        "description": "Request a reviewed exchange. The host validates eligibility, recalculates price and reserves stock."
+        "name": "locale",
+        "type": "string",
+        "description": "BCP 47 locale for money formatting. Defaults to the browser's."
+      },
+      {
+        "name": "onConfirm",
+        "type": "(request: ExchangeRequest) => void | Promise<void>",
+        "description": "Called with from, to, reasonId and differenceMinor (positive to pay, negative to refund). Throw to keep the choices and show your message."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "description": "The one brand accent: primary action and selection rings. Defaults to the theme's ink."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Surface and ink palette."
       },
       {
-        "name": "selectMode",
-        "type": "\"custom\" | \"native\"",
-        "default": "\"custom\"",
-        "description": "Animated keyboard-accessible custom listboxes, or native platform pickers with matched 12px insets."
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:350",
-        "click:@color-1",
-        "click:@variant-1",
-        "wait:500",
-        "click:@review",
-        "wait:400",
-        "click:@request",
-        "wait:1100"
+        "wait:700",
+        "click:@colour-ink",
+        "wait:600",
+        "click:@reason-small",
+        "wait:900",
+        "click:@confirm",
+        "wait:1500"
       ],
       "loop": false
     },
@@ -20969,20 +21009,72 @@
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
         "default": "dark"
       },
       {
-        "prop": "selectMode",
-        "label": "Select menus",
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#ff8a4c",
+          "#8ab4ff",
+          "#e7c27d"
+        ]
+      },
+      {
+        "prop": "garment",
+        "label": "Garment",
         "kind": "segmented",
         "options": [
-          "custom",
-          "native"
+          {
+            "value": "crew",
+            "label": "Crew"
+          },
+          {
+            "value": "shirt",
+            "label": "Shirt"
+          },
+          {
+            "value": "coat",
+            "label": "Coat"
+          },
+          {
+            "value": "dress",
+            "label": "Dress"
+          }
         ],
-        "default": "custom"
+        "default": "crew"
+      },
+      {
+        "prop": "currency",
+        "label": "Currency",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "GBP",
+            "label": "GBP"
+          },
+          {
+            "value": "EUR",
+            "label": "EUR"
+          },
+          {
+            "value": "USD",
+            "label": "USD"
+          }
+        ],
+        "default": "GBP"
       }
     ]
   },

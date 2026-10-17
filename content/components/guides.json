@@ -2095,18 +2095,19 @@
     "updated": "2026-10-12"
   },
   "fashion-exchange-selector": {
-    "useWhen": "Choosing an eligible replacement variant for an existing order item.",
-    "avoidWhen": "An inventory reservation or a completed exchange without host confirmation.",
+    "useWhen": "A customer or support agent swaps an ordered garment for another colourway or size and needs to see the new garment, how its measurements change and what they pay or get back.",
+    "avoidWhen": "Refund-only returns, or products without colourways and sizes. Use a return desk for those; this view is built around comparing variants of one garment.",
     "integration": [
-      "Supply your own records through `variants`, `reasons`. Preserve stable keys or IDs when the data contract provides them.",
-      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+      "Pass `item` (the ordered line and the price actually paid), `colourways`, `sizes`, one `variants` entry per colourway and size with stock and price, and optional `measurements` per size.",
+      "`onConfirm` receives from, to, the reason and `differenceMinor` (positive to charge, negative to refund). Throw, for example when the size sells out, to keep the choices and show your message.",
+      "Reasons with `suggest: \"up\"` or `\"down\"` move the size one step automatically. Give a colourway an `image` to show your product photo instead of the sketch."
     ],
     "related": [
-      "commerce-catalog-import",
       "commerce-return-desk",
+      "fashion-size-guide",
       "commerce-variant-stock"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "fashion-launch-calendar": {
     "useWhen": "Planning collection launch dates and reviewing schedule conflicts.",
