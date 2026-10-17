@@ -4641,18 +4641,19 @@
     "updated": "2026-10-13"
   },
   "devtools-schema-migration": {
-    "useWhen": "Reviewing a supplied schema migration plan, its dependencies and actual impact before requesting application.",
-    "avoidWhen": "Executing arbitrary SQL in the component or inventing the migration’s safety, backups or success.",
+    "useWhen": "An internal tool or developer platform where engineers review and run database migrations: see the steps, their locks and the schema diff, dry-run, then apply.",
+    "avoidWhen": "Read-only schema documentation, or ad-hoc SQL consoles where there is no plan to review (use a query editor instead).",
     "integration": [
-      "Supply plan identity, complete ordered inventory and change ID/title/operation/resource/statement/dependencyIds/impact. Keep row impact per change; overlapping counts are not a unique total. Missing, repeated, cyclic, later or ambiguous dependencies and unknown affected-row/lock/reversible facts block reviewed application.",
-      "Pair selected change value with onValueChange for controlled inspection. Statements and the full raw plan remain selectable escaped text; this component does not execute SQL. Exact consent belongs to plan facts, order, impact, status and handler and cannot resurrect after replacement. Later notes stay drafts while pending requests keep their exact copied note.",
-      "onApply receives a copied plan/note plus AbortSignal. Preserve context on failure/cancel and fence obsolete plan/session/handler/terminal ownership. Same-plan applying progress does not self-abort the real handler. Void acknowledgement shows Awaiting host status and blocks duplicate requests; only actual supplied status can report Applied."
+      "Pass `migration` with the target `table` (columns and indexes marked added, removed or changed) and ordered `steps` carrying their SQL, lock level, row and time estimates, and the column or index names they `touches`.",
+      "Wire `onDryRun` to run the plan inside a transaction that rolls back and `onApply` to run it for real. Both resolve with { steps: [{ id, rows, ms, error?, hint? }] }; the component plays the result back, stops at the first error and keeps Apply locked until a dry run passes.",
+      "Execute the SQL on your server, never in the browser. Without handlers, a sample runner answers from the estimates; `outcome=\"lock-timeout\"` previews the failure state."
     ],
     "related": [
-      "agent-approval-gate",
-      "data-query-builder"
+      "devtools-api-playground",
+      "devtools-log-stream",
+      "agent-approval-gate"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "devtools-incident-timeline": {
     "useWhen": "Replaying an outage after the fact: one view of a key metric, severity changes and every alert, deploy, page and rollback, with a playhead to scrub through it.",

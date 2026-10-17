@@ -15088,17 +15088,19 @@
   },
   {
     "slug": "devtools-schema-migration",
-    "name": "Schema Migration Folio",
+    "name": "Schema Migration",
     "tier": "pro",
     "platform": "web",
     "category": "devtools",
-    "description": "An ordered SQL plan and impact folio with raw dependency inspection, exact-scope review and a cancellable host-owned migration request.",
+    "description": "A migration runner for Postgres: the plan with lock levels, a schema diff that lights up per step, and a dry run whose row counts tick before Apply unlocks.",
     "tags": [
       "devtools",
-      "schema",
+      "database",
       "migration",
+      "postgres",
+      "schema diff",
       "sql",
-      "review",
+      "dry run",
       "dark"
     ],
     "dependencies": [
@@ -15106,109 +15108,111 @@
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1260,
-    "usage": "import { DevtoolsSchemaMigration } from \"@/components/design-for-ai/devtools-schema-migration\";\n\n<DevtoolsSchemaMigration plan={migration} status={status} onApply={requestMigration} resetKey={reviewSession} />",
+    "previewHeight": 900,
+    "usage": "import { DevtoolsSchemaMigration } from \"@/components/design-for-ai/devtools-schema-migration\";\nimport type { Migration } from \"@/components/design-for-ai/devtools-schema-migration\";\n\n<DevtoolsSchemaMigration\n  migration={plan}\n  onDryRun={(m) => api.post(\"/migrations/dry-run\", { file: m.file })}\n  onApply={(m) => api.post(\"/migrations/apply\", { file: m.file, database: m.database })}\n/>\n\n// Both handlers resolve with { steps: [{ id, rows, ms, error?, hint? }] }; the component plays them back step by step.",
     "props": [
       {
-        "name": "plan",
-        "type": "SchemaMigrationPlan",
-        "description": "Exact ordered supplied inventory with ID/title/description/complete and changes carrying actual SQL, dependencies and per-change impact.",
-        "default": "Original offline review timestamp plan"
+        "name": "migration",
+        "type": "Migration",
+        "default": "Splitting customers.full_name on prod-eu-1",
+        "description": "{ file, engine, database, author?, table, steps }. table holds { schema?, name, rows, columns, indexes } with change markers (added, removed, changed + before). Each step has { id, title, kind, sql, lock, estimatedRows, estimatedMs, touches }."
       },
       {
-        "name": "status",
-        "type": "\"review\" | \"applying\" | \"applied\" | \"error\"",
-        "description": "Authoritative host lifecycle. Pending callback or fulfillment never fabricates Applied. Same-plan applying progress keeps its request owner.",
-        "default": "\"review\""
-      },
-      {
-        "name": "statusMessage",
-        "type": "string",
-        "description": "Actual lifecycle context; blank errors receive a meaningful fallback."
-      },
-      {
-        "name": "value",
-        "type": "string",
-        "description": "Controlled selected change ID. Missing values stay explicit; no observer means selection read-only."
-      },
-      {
-        "name": "defaultValue",
-        "type": "string",
-        "description": "Initial local selected change reused on reset."
-      },
-      {
-        "name": "onValueChange",
-        "type": "(id: string, change: SchemaMigrationChange) => void",
-        "description": "Synchronous selected-change observer; rejection keeps actual selection."
+        "name": "onDryRun",
+        "type": "(migration: Migration) => Promise<MigrationRunResult>",
+        "description": "Runs the plan in a transaction that rolls back and resolves with { steps: [{ id, rows, ms, error?, hint? }] }. A step with an error stops the run; later steps show as skipped. A rejection shows the message and changes nothing."
       },
       {
         "name": "onApply",
-        "type": "(review: SchemaMigrationReview, signal: AbortSignal) => void | Promise<void>",
-        "description": "Actual host request for a copied reviewed plan and note. Own SQL execution, honor cancellation, and supply actual lifecycle status."
+        "type": "(migration: Migration) => Promise<MigrationRunResult>",
+        "description": "Runs the plan for real, with the same result shape. Only offered after a passing dry run."
       },
       {
-        "name": "defaultReviewNote",
+        "name": "outcome",
+        "type": "\"pass\" | \"lock-timeout\"",
+        "default": "\"pass\"",
+        "description": "What the built-in sample runner reports when no handlers are passed: a clean run, or a lock timeout on the last step. Real hosts pass onDryRun and onApply instead."
+      },
+      {
+        "name": "defaultView",
+        "type": "\"diff\" | \"after\"",
+        "default": "\"diff\"",
+        "description": "Open the schema as a marked diff, or as the table will be after the migration."
+      },
+      {
+        "name": "accent",
         "type": "string",
-        "description": "Initial draft note; only explicit plan/session identity resets it.",
-        "default": "\"\""
-      },
-      {
-        "name": "resetKey",
-        "type": "string | number",
-        "description": "Review/session identity. Retires old consent, selection and work."
-      },
-      {
-        "name": "title",
-        "type": "string",
-        "description": "Migration review heading.",
-        "default": "\"Read the schema before the step.\""
-      },
-      {
-        "name": "description",
-        "type": "string",
-        "description": "Describe exact order, statement and known impact.",
-        "default": "\"Inspect the supplied sequence, dependency constraints and actual impact before requesting that exact migration.\""
+        "default": "\"#3ecf8e\"",
+        "description": "The one colour: progress fills, finished steps and the passed and applied states."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Neutral black/white glass chrome, with colour reserved for actual data/feature accents.",
-        "default": "\"dark\""
+        "default": "\"dark\"",
+        "description": "Near-black card with white ink, or a white card with near-black ink."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Outer migration folio classes.",
-        "default": "\"\""
+        "default": "\"\"",
+        "description": "Classes on the card."
       }
     ],
     "added": "2026-10-13",
     "demo": {
       "steps": [
-        "click:@migration-change-backfill-approved-at",
-        "wait:350",
-        "click:@migration-review",
-        "wait:350",
+        "wait:300",
+        "click:@migration-dry-run",
+        "wait:2700",
         "click:@migration-apply",
-        "wait:700"
+        "wait:2700"
       ]
     },
     "controls": [
+      {
+        "prop": "defaultView",
+        "label": "Schema view",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "diff",
+            "label": "Diff"
+          },
+          {
+            "value": "after",
+            "label": "After"
+          }
+        ],
+        "default": "diff",
+        "remount": true
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#3ecf8e",
+        "options": [
+          "#3ecf8e",
+          "#7cc4ff",
+          "#f5a524",
+          "#e5e5e5"
+        ]
+      },
       {
         "prop": "theme",
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
         "default": "dark"
-      },
-      {
-        "prop": "title",
-        "label": "Heading",
-        "kind": "text",
-        "default": "Read the schema before the step."
       }
     ]
   },
