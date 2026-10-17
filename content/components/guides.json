@@ -4385,18 +4385,20 @@
     "updated": "2026-10-17"
   },
   "editor-layer-stack": {
-    "useWhen": "Reordering, locking, hiding and renaming supplied layers with actual selection and a readable move mode.",
-    "avoidWhen": "A complete drawing canvas or visual layers that have no corresponding host objects.",
+    "useWhen": "A design or publishing tool where people reorder, hide, lock and fade the layers of a composed artwork and need to see the stack change as they drag.",
+    "avoidWhen": "Nested scene graphs with deep groups and masks, or lists whose items have no visual to restack, where a plain sortable list fits better.",
     "integration": [
-      "Supply controlled `value`/`onValueChange` or local `defaultValue` as a flat ordered array of up to64 unique actual layer records. Each has id, name, kind, visible and locked fields. Groups are flat host records; the component does not invent a drawing canvas or tree.",
-      "Control inspection separately with `selectedId`/`onSelectedIdChange`, or use local `defaultSelectedId`. Locked layers remain inspectable and can be shown/hidden or unlocked, while direct moving/renaming is unavailable. Native dragging has cancel/context retirement; move buttons and Alt+Up/Down offer equivalent ordering.",
-      "Explicit Apply requests cloned stack state. Rejected edits retain accepted order and newer rename drafts through older acknowledgements. Availability or lock changes retain a read-only name draft for recovery. Local deletion selects an actual neighbor; a missing controlled selection stays explicit. Use `resetKey` for an explicit new editing lifecycle."
+      "Pass `value` and `onValueChange` (or `defaultValue`), ordered top first. Each layer has id, name, kind, visible, locked and optional opacity. Every edit sends the full stack; reject the promise with an Error to roll back and show its message.",
+      "Give each layer a `render` that fills the artboard and is sized in cqw/cqh: the same node draws the artboard and the row thumbnail. Add `bounds` (fractions of the artboard) for the selection frame, and set `aspect` to the document's width over height.",
+      "Selection is separate: `selectedId` and `onSelectedIdChange`, or `defaultSelectedId`. Clicking painted artwork selects the topmost layer there.",
+      "`defaultExploded` starts in the 3D view. Locked layers keep their slot; `disabled` makes the panel read-only."
     ],
     "related": [
       "editor-whiteboard",
-      "navigation-stacked-tabs"
+      "editor-storyboard-strip",
+      "editor-export-preset"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "editor-color-token-studio": {
     "useWhen": "Tuning a design system's semantic colours against the screen they will actually paint, with WCAG contrast for every reading pair updating as you drag.",
