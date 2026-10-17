@@ -1653,18 +1653,19 @@
     "updated": "2026-10-12"
   },
   "commerce-shipping-estimator": {
-    "useWhen": "Comparing supplied shipping services and their estimated costs.",
-    "avoidWhen": "A guaranteed delivery promise or a substitute for carrier-rated quotes.",
+    "useWhen": "Choosing a carrier service for an order where the delivery date matters: cut-off times, weekends, Saturday services and holidays decide which option actually arrives first, and cost has to be weighed against it.",
+    "avoidWhen": "You need live carrier rating, label printing or tracking; feed this component rated services from your carrier integration and keep booking on the server.",
     "integration": [
-      "Supply your own records through `destinations`, `services`. Preserve stable keys or IDs when the data contract provides them.",
-      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+      "Pass `services` with per-destination `rates` (transit working days, base and per-kilogram prices in minor units), each service’s `cutoff` and whether it delivers on Saturdays.",
+      "Set `now` to the warehouse’s local date and time and `holidays` to non-collection days; delivery dates are computed from them, not from the browser clock.",
+      "`onSelect` receives the quote with dispatch and delivery dates. Re-rate on the server before buying the label; reject to keep the choice and show the failure."
     ],
     "related": [
-      "commerce-backorder-allocation",
-      "commerce-bundle-builder",
-      "commerce-catalog-import"
+      "commerce-fulfilment-desk",
+      "commerce-customer-timeline",
+      "commerce-return-desk"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "commerce-variant-stock": {
     "useWhen": "Inspecting stock across fashion sizes and colours.",

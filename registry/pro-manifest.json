@@ -12694,79 +12694,123 @@
   },
   {
     "slug": "commerce-shipping-estimator",
-    "name": "Shipping Rate Workbench",
+    "name": "Shipping Estimator",
     "tier": "pro",
     "platform": "web",
     "category": "commerce",
-    "description": "Compare eligible services from destination, parcel weight and order value. A considered, responsive commerce workspace with typed integration points.",
+    "description": "Carrier lanes on a day-by-day calendar from warehouse to door: cut-offs, weekends and holidays move each arrival, with cost against speed plotted.",
     "tags": [
+      "commerce",
       "e-commerce",
-      "workflow",
-      "responsive",
-      "keyboard",
-      "commerce"
+      "shipping",
+      "delivery",
+      "carriers",
+      "fulfilment",
+      "cut-off",
+      "calendar",
+      "admin"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 900,
-    "usage": "import { ShippingEstimator } from \"@/components/design-for-ai/commerce-shipping-estimator\";\n\n<ShippingEstimator />",
+    "previewHeight": 1180,
+    "usage": "import { ShippingEstimator } from \"@/components/design-for-ai/commerce-shipping-estimator\";\n\nexport default function ShipOrder({ order, carriers }) {\n  return (\n    <ShippingEstimator\n      origin={{ name: \"Leeds DC\", place: \"LS10 · Leeds\" }}\n      destinations={[{ id: order.shippingAddress.id, label: order.shippingAddress.city, detail: `${order.shippingAddress.postcode} · ${order.shippingAddress.country}` }]}\n      services={carriers}\n      parcel={{ reference: order.name, items: order.lines, valueMinor: order.subtotal, weightKg: order.weightKg }}\n      now={new Date().toISOString().slice(0, 16)}\n      holidays={[\"2026-12-25\", \"2026-12-28\"]}\n      onSelect={(quote) => api.labels.book(order.id, quote)}\n    />\n  );\n}",
     "props": [
       {
-        "name": "title",
-        "type": "string",
-        "description": "Main heading.",
-        "default": "\"Shipping rates\""
-      },
-      {
-        "name": "subtitle",
-        "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Compare carrier rates against the parcel and destination.\""
+        "name": "origin",
+        "type": "ShippingOrigin",
+        "default": "Leeds DC, LS10",
+        "description": "{ name, place }: where parcels leave from."
       },
       {
         "name": "destinations",
         "type": "ShippingDestination[]",
-        "description": "Selectable regions. Service destination IDs must match these entries."
+        "default": "Manchester, Inverness, Dublin, Lyon, Berlin, Brooklyn",
+        "description": "{ id, label, detail, international? }. International routes add an export gateway and customs stop to the route."
       },
       {
         "name": "services",
         "type": "ShippingService[]",
-        "description": "Supplied tariff bands, two-decimal minor-unit costs and delivery estimates. Invalid service configurations are excluded."
+        "default": "Parcelline Economy 48 and Tracked 24, Swift Next day by 1pm, Northpost International and Express Air",
+        "description": "{ id, carrier, name, cutoff (\"HH:MM\"), saturday?, tracked?, signature?, freeOverMinor?, rates: { destinationId, transitDays, baseMinor, perKgMinor, maxKg? }[] }. A service with no rate for the destination, or a parcel over its maxKg, is left off and counted."
+      },
+      {
+        "name": "parcel",
+        "type": "ShippingParcel",
+        "default": "order #4788: a merino crew and a beanie, £120, 1.4 kg",
+        "description": "{ reference, items: { name, quantity, glyph?, colour?, image? }[], valueMinor, weightKg }. Weight can be adjusted in place."
+      },
+      {
+        "name": "now",
+        "type": "string",
+        "default": "\"2026-10-15T13:40\"",
+        "description": "ISO date-time of the estimate in the warehouse’s local time. Sets today’s date, the cut-off countdown and the order-time scrubber."
+      },
+      {
+        "name": "holidays",
+        "type": "string[]",
+        "default": "[]",
+        "description": "ISO dates with no collection or delivery. Lanes skip them like weekends."
+      },
+      {
+        "name": "defaultDestinationId",
+        "type": "string",
+        "default": "first destination",
+        "description": "Destination selected first."
       },
       {
         "name": "currency",
         "type": "string",
-        "description": "ISO currency for tariffs and order value."
+        "default": "\"GBP\"",
+        "description": "ISO 4217 code for every rate."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Locale for money and dates."
+      },
+      {
+        "name": "workspace",
+        "type": "string",
+        "default": "\"Fieldwork\"",
+        "description": "Store name in the product chrome."
       },
       {
         "name": "onSelect",
-        "type": "(quote:ShippingQuote)=>void|Promise<void>",
-        "description": "Accept the quote snapshot. The host must revalidate current rates before purchase."
+        "type": "(quote: ShippingQuote) => void | Promise<void>",
+        "description": "Book { serviceId, carrier, service, destinationId, weightKg, costMinor, dispatchOn, deliverOn }. Reject to keep the selection and show the failure in place. Re-rate on the server before buying a label."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "theme ink",
+        "description": "The one accent: the route, the chosen lane and the primary action."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Surface palette."
       },
       {
-        "name": "selectMode",
-        "type": "\"custom\" | \"native\"",
-        "default": "\"custom\"",
-        "description": "Animated keyboard-accessible custom listboxes, or native platform pickers with matched 12px insets."
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes for the root."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:450",
-        "click:@sort-speed",
-        "wait:500",
-        "click:@service-0",
-        "click:@select",
-        "wait:1100"
+        "wait:700",
+        "click:@after-1500",
+        "wait:1400",
+        "click:@service-pl-48",
+        "wait:900",
+        "click:@use-rate",
+        "wait:1400"
       ],
       "loop": false
     },
@@ -12782,14 +12826,40 @@
         "default": "dark"
       },
       {
-        "prop": "selectMode",
-        "label": "Select menus",
-        "kind": "segmented",
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
         "options": [
-          "custom",
-          "native"
+          "#f4f4f5",
+          "#7aa2ff",
+          "#ff8a4c"
+        ]
+      },
+      {
+        "prop": "defaultDestinationId",
+        "label": "Destination",
+        "kind": "select",
+        "options": [
+          {
+            "value": "man",
+            "label": "Manchester"
+          },
+          {
+            "value": "inv",
+            "label": "Inverness"
+          },
+          {
+            "value": "lyo",
+            "label": "Lyon"
+          },
+          {
+            "value": "nyc",
+            "label": "Brooklyn"
+          }
         ],
-        "default": "custom"
+        "default": "man",
+        "remount": true
       }
     ]
   },
