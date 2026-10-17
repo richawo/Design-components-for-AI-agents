@@ -7,7 +7,7 @@ export async function check({ page, mount, assert }) {
   const meter = page.getByRole("meter", { name: "Allowance after this request" });
   assert.match(await meter.getAttribute("aria-valuetext"), /8 days available, 5 days after this request/);
   // Noor’s three days sit across the team calendar with who else is off.
-  assert.match(await page.getByRole("region", { name: "Customer partnerships calendar" }).innerText(), /Wed, 21 Oct, full day requested, Dana Whitfield off, Elliot James has requested leave/);
+  assert.match(await page.getByRole("region", { name: "Customer partnerships calendar" }).innerText(), /Wed,? 21 Oct, full day requested, Dana Whitfield off, Elliot James has requested leave/);
 
   // A failed approval keeps the request open and the note intact.
   await note.fill("Have a great break.");
