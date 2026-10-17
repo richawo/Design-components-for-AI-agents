@@ -4768,18 +4768,19 @@
     "updated": "2026-10-14"
   },
   "mobile-reading-progress": {
-    "useWhen": "Reviewing chapter progress, bookmarks and an explicit resume destination.",
-    "avoidWhen": "A document renderer or estimating reading comprehension from progress.",
+    "useWhen": "An e-reader or audiobook library screen showing how far someone is through a book, its chapters and saved pages, with one tap back into reading.",
+    "avoidWhen": "Rendering the book itself, or tracking reading goals and streaks across many books.",
     "integration": [
-      "Supply a stable book identity, up to 24 unique chapters and actual read-page counts. Null history remains unknown rather than unread; a resume destination is a bounded page in a supplied chapter.",
-      "Control chapter inspection separately from copied bookmark requests. Accepted facts ignore object-key order. A saved bookmark resumes its exact page. Changing bookId clears locally saved bookmarks and the old destination; supply controlled bookmarks from a host-owned per-book cache for persistence. onResume receives copied book/chapter/page plus an AbortSignal; acknowledgment never advances history.",
-      "Install in a React Native app with Expo modules for the translucent footer and SVG details. The web preview supports design review; verify device fonts, larger text, reduced motion, touch and assistive technology on target devices."
+      "Supply the book (id, title, author, pages, cover colours), chapters with first pages, and currentPage. Bookmarks can be controlled (bookmarks + onBookmarksChange) or local (defaultBookmarks).",
+      "onResume({ bookId, chapterId, page }, signal) opens your reader at the chosen page: the reader's place, or wherever the page edge, a chapter or a bookmark pointed. Jumping never marks pages as read.",
+      "Install in a React Native app; bare apps run npx install-expo-modules once. Verify the page-edge drag, larger text and assistive technology on target devices."
     ],
     "related": [
-      "mobile-health-summary",
-      "mobile-now-playing"
+      "mobile-now-playing",
+      "mobile-journal-prompt",
+      "mobile-habit-grid"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "mobile-trip-itinerary": {
     "useWhen": "A trip with several legs across time zones, where travellers need local times, delays and cancellations at a glance and a quick way into each booking.",

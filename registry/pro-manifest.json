@@ -31063,14 +31063,18 @@
     "tier": "pro",
     "platform": "mobile",
     "category": "mobile",
-    "description": "A quiet typographic reading shelf with exact chapter history, saved pages and an explicit cancellable resume destination.",
+    "description": "A dark React Native reading screen: a drawn cover, the book’s page edge you drag to flip to any page, bookmark ribbons, chapters and a glass resume bar.",
     "tags": [
       "reading",
-      "chapter progress",
+      "ebook",
+      "progress",
       "bookmarks",
-      "resume reading",
-      "native shelf",
-      "reading history"
+      "chapters",
+      "react native",
+      "glassmorphism",
+      "dark",
+      "monochrome",
+      "scrubber"
     ],
     "dependencies": [
       "expo-blur",
@@ -31078,126 +31082,130 @@
       "react-native-svg"
     ],
     "theme": "dark",
-    "usage": "import { MobileReadingProgress } from \"@/components/design-for-ai/native/mobile-reading-progress\";\n\n// Bare React Native: install Expo modules once with npx install-expo-modules.\n<MobileReadingProgress chapters={chapters} bookmarks={bookmarks} onBookmarksChange={setBookmarks} onResume={(destination, signal) => openReader(destination, signal)} />",
+    "usage": "import { MobileReadingProgress } from \"@/components/design-for-ai/native/mobile-reading-progress\";\n\n// Bare React Native apps: run `npx install-expo-modules` once for expo-blur and expo-linear-gradient.\n<MobileReadingProgress\n  book={book}\n  chapters={book.chapters}\n  currentPage={progress.page}\n  bookmarks={bookmarks}\n  onBookmarksChange={saveBookmarks}\n  onResume={(at, signal) => reader.open(at, { signal })}\n/>",
     "props": [
       {
-        "name": "bookId",
-        "type": "string",
-        "description": "Current book identity; replacing source/context retires pending resume work.",
-        "default": "fieldnotes"
-      },
-      {
-        "name": "title",
-        "type": "string",
-        "description": "Actual book title rendered on the typographic cover and reading shelf.",
-        "default": "The patient reader"
-      },
-      {
-        "name": "author",
-        "type": "string",
-        "description": "Supplied book author label.",
-        "default": "Rowan Wells"
+        "name": "book",
+        "type": "ReadingBook",
+        "description": "id, title, author, total pages and the cover's own colours ({ top, bottom, ink })."
       },
       {
         "name": "chapters",
         "type": "ReadingChapter[]",
-        "description": "Up to24 raw unique chapters with title, optional detail, whole pages 1–10000, readPages0..pages or explicit null, and bounded resumePage."
+        "description": "Chapters in order: id, title and first page; each runs until the next begins."
       },
       {
-        "name": "selectedId",
-        "type": "string | null",
-        "description": "Controlled inspected chapter. Missing/null/unknown identities stay explicit; no onSelectionChange makes inspection read-only."
+        "name": "currentPage",
+        "type": "number",
+        "default": "214",
+        "description": "The page the reader is on. Drives the read part of the page edge, the percentage and the current chapter."
       },
       {
-        "name": "defaultSelectedId",
-        "type": "string | null",
-        "description": "Initial local chapter; untouched loading waits for first actual ready source."
-      },
-      {
-        "name": "onSelectionChange",
-        "type": "(id: string) => void",
-        "description": "Requests the inspected chapter without changing supplied progress. Rejection preserves actual chapter ownership."
+        "name": "minutesPerPage",
+        "type": "number",
+        "default": "1.6",
+        "description": "The reader's pace, for time left in the book and in the chapter."
       },
       {
         "name": "bookmarks",
         "type": "ReadingBookmark[]",
-        "description": "Controlled unique bookmark identities with exact chapterId/page/label. Missing chapters and invalid destination pages stay visibly unavailable."
+        "description": "Controlled bookmarks ({ id, page, excerpt? }); pair with onBookmarksChange."
       },
       {
         "name": "defaultBookmarks",
         "type": "ReadingBookmark[]",
-        "description": "Initial local bookmarks. Named component defaults to empty history.",
-        "default": "[]"
+        "description": "Initial bookmarks when uncontrolled."
       },
       {
         "name": "onBookmarksChange",
-        "type": "(value: ReadingBookmark[]) => void",
-        "description": "Requests copied bookmark records; failure or rejection preserves current bookmarks."
-      },
-      {
-        "name": "onBookmarksCommit",
-        "type": "(value: ReadingBookmark[]) => void",
-        "description": "Only current accepted bookmark changes commit; no false rejection/no-op/retired commit."
+        "type": "(bookmarks: ReadingBookmark[]) => void",
+        "description": "The ribbon button added or removed a bookmark on the chosen page."
       },
       {
         "name": "onResume",
-        "type": "(destination: ResumeDestination, signal: AbortSignal) => void | Promise<void>",
-        "description": "Explicit copied book/chapter/page navigation request. The host opens its reader; acknowledgement never fabricates read-page history."
+        "type": "(destination: { bookId, chapterId, page }, signal: AbortSignal) => void | Promise<void>",
+        "description": "Open the reader at the chosen page: your place, or wherever the page edge, a chapter or a bookmark pointed. The button shows opening (tap to cancel, which aborts the signal), opened or failed."
       },
       {
-        "name": "status",
-        "type": "\"ready\" | \"loading\" | \"unavailable\"",
-        "description": "Retains supplied selection/progress while explaining source availability.",
-        "default": "ready"
+        "name": "accent",
+        "type": "string",
+        "default": "\"#F2643A\"",
+        "description": "The one hue in the chrome: bookmark ribbons, the current chapter mark and the drag caret."
       },
       {
-        "name": "disabled",
-        "type": "boolean",
-        "description": "Disables reading actions without removing source progress.",
-        "default": "false"
+        "name": "defaultTab",
+        "type": "\"chapters\" | \"bookmarks\"",
+        "default": "\"chapters\"",
+        "description": "List shown first."
       },
       {
-        "name": "theme",
-        "type": "\"dark\" | \"light\"",
-        "description": "Neutral graphite or white shelf and complete native canvas.",
-        "default": "dark"
+        "name": "onBack",
+        "type": "() => void",
+        "description": "Back to the library."
       }
     ],
     "controls": [
       {
-        "prop": "theme",
-        "label": "Theme",
+        "prop": "defaultTab",
+        "label": "List",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "chapters",
+            "label": "Chapters"
+          },
+          {
+            "value": "bookmarks",
+            "label": "Bookmarks"
+          }
         ],
-        "default": "dark"
+        "default": "chapters",
+        "remount": true
       },
       {
-        "prop": "disabled",
-        "label": "Disabled actions",
-        "kind": "toggle",
-        "default": false
+        "prop": "currentPage",
+        "label": "Current page",
+        "kind": "slider",
+        "min": 1,
+        "max": 352,
+        "step": 1,
+        "default": 214
+      },
+      {
+        "prop": "accent",
+        "label": "Ribbon",
+        "kind": "color",
+        "default": "#F2643A",
+        "options": [
+          "#F2643A",
+          "#F5F5F5",
+          "#E8B04B",
+          "#6CB6FF"
+        ]
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
       }
     ],
     "demo": {
       "steps": [
+        "wait:500",
+        "hover:@reading-edge:0.61,0.5",
+        "drag:0.74,0.36",
+        "wait:400",
         "click:@reading-save",
-        "wait:300",
+        "wait:500",
         "click:@reading-tab-bookmarks",
-        "click:@reading-bookmark-margin-12",
-        "wait:300",
+        "wait:700",
         "click:@reading-resume",
-        "wait:520",
-        "click:@reading-tab-chapters",
-        "click:@reading-chapter-2",
-        "wait:320"
+        "wait:1200"
       ],
       "loop": false
     },
     "added": "2026-10-14",
-    "previewHeight": 844
+    "previewHeight": 940
   },
   {
     "slug": "mobile-review-annotations",
