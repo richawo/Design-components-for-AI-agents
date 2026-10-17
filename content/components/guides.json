@@ -3594,18 +3594,18 @@
     "updated": "2026-10-17"
   },
   "input-detent-dial": {
-    "useWhen": "A bounded numeric setting benefits from tactile, stepped adjustment and a clear indication of the current value.",
-    "avoidWhen": "Unbounded quantities, or a form where a conventional number field with simple step buttons already fits the workflow.",
+    "useWhen": "A bounded setting people tune by feel (a level, a gain, a temperature, an intensity) and where seeing the position on an arc matters as much as the number.",
+    "avoidWhen": "Unbounded or very fine-grained quantities, dense forms with many numeric fields, or settings people only ever type.",
     "integration": [
-      "Bind the value and its change handler to the actual setting in the host application.",
-      "Choose valid limits and step increments for the domain, and keep the visible value understandable.",
-      "Review keyboard adjustment, larger labels and pointer interaction before using the dial as the main control."
+      "Bind value and onValueChange to the setting; onValueChange fires on every detent while turning.",
+      "Persist in onValueCommit and return a promise: the dial shows Saving, Saved, or a Retry if it rejects, without moving the value.",
+      "Pick min, max and step for the domain; pass marks for the labelled positions and set disabledReason when the control is locked."
     ],
     "related": [
       "input-number-stepper",
       "button-press-depth"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "devtools-icon-workbench": {
     "useWhen": "A developer or design workflow needs searchable icon selection, construction previews and SVG or JSX output.",
