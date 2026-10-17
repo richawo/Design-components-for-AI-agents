@@ -3914,17 +3914,19 @@
     "updated": "2026-10-17"
   },
   "cta-project-brief": {
-    "useWhen": "Collecting a concise project brief and presenting a review before an explicit host-owned submission.",
-    "avoidWhen": "Submitting automatically, fabricating delivery confirmation or hiding a long sales questionnaire inside a small CTA.",
+    "useWhen": "A studio, agency or consultancy contact section where the enquiry itself should sell the service: visitors choose scope, budget and timing and see their brief written back to them before sending.",
+    "avoidWhen": "A one-field newsletter signup, a support form, or a long procurement questionnaire with dozens of fields, which want a simpler form or a multi-page flow.",
     "integration": [
-      "Supply an exact name/email/project/details draft, the validation minimum and an acknowledged onSubmit(snapshot, AbortSignal) handler. Review preserves the exact entered text and failure or cancellation retains it.",
-      "Retire pending requests when text, handler, availability, validation or reset identity changes. A missing handler renders a review without a fake send action; the original offline demo retains its receipt only in preview memory."
+      "Pass `services`, `budgets` and `timelines` for your offer; each service has a `phrase` for the letter and a `typical` cost in thousands that drives the scope-against-budget read.",
+      "Handle `onSubmit(brief)`: resolve, optionally with `{ reference }`, to stamp it received; throw to keep the draft and show a retry. Nothing is stamped until it resolves.",
+      "Seed known details with `defaultValue`, or control the whole brief with `value` and `onValueChange`. Set `currency`, `studio` and `replyNote` to match your studio."
     ],
     "related": [
-      "legal-matter-intake",
-      "button-shimmer-track"
+      "cta-horizon",
+      "pricing-plan-toggle",
+      "legal-matter-intake"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "footer-sitemap-atlas": {
     "useWhen": "A product or documentation site with a few dozen pages, where the footer should help people find a page: a searchable site index with a map plate that gives every page a place.",

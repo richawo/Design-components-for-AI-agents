@@ -12739,132 +12739,189 @@
   },
   {
     "slug": "cta-project-brief",
-    "name": "Reviewable Project Brief",
+    "name": "Project Brief Composer",
     "tier": "pro",
     "platform": "web",
     "category": "cta",
-    "description": "A concise project inquiry becomes an exact reviewable brief, with accessible validation, real cancellable host submission and recoverable failures that preserve text.",
+    "description": "A project-intake CTA: pick scope, budget and start date and a letter-style brief writes itself beside you, reads your scope against budget, then gets stamped received.",
     "tags": [
       "cta",
-      "project",
+      "project intake",
+      "contact form",
+      "agency",
       "brief",
-      "form",
-      "review",
-      "submission"
+      "budget",
+      "lead capture",
+      "studio"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1150,
-    "usage": "import { CtaProjectBrief } from \"@/components/design-for-ai/cta-project-brief\";\n\n<CtaProjectBrief value={brief} onValueChange={setBrief} onSubmit={(snapshot, signal) => submitBrief(snapshot, signal)} />\n\n// The host acknowledges the exact reviewed snapshot. The offline demo retains it only in preview memory.",
+    "previewHeight": 1000,
+    "usage": "import { CtaProjectBrief } from \"@/components/design-for-ai/cta-project-brief\";\n\n<CtaProjectBrief\n  studio=\"Halvard\"\n  currency=\"GBP\"\n  onSubmit={async (brief) => {\n    const res = await fetch(\"/api/briefs\", { method: \"POST\", body: JSON.stringify(brief) });\n    if (!res.ok) throw new Error(\"Brief not sent\");\n    return { reference: (await res.json()).reference };\n  }}\n/>",
     "props": [
+      {
+        "name": "studio",
+        "type": "string",
+        "default": "\"Halvard\"",
+        "description": "Who the brief is addressed to; it opens the letter."
+      },
+      {
+        "name": "heading",
+        "type": "string",
+        "default": "\"Tell us what you’re making.\"",
+        "description": "The composer’s heading."
+      },
+      {
+        "name": "intro",
+        "type": "string",
+        "description": "One line under the heading: what happens after sending."
+      },
+      {
+        "name": "services",
+        "type": "ServiceOption[]",
+        "default": "5 services",
+        "description": "{ id, label, phrase, typical }: the chip label, how it reads in the letter, and its typical cost in thousands for the scope-against-budget read."
+      },
+      {
+        "name": "budgets",
+        "type": "BudgetOption[]",
+        "default": "15–30k, 30–60k, 60–120k, 120k+",
+        "description": "{ id, min, max? } in thousands. Omit max for an open top band."
+      },
+      {
+        "name": "timelines",
+        "type": "TimelineOption[]",
+        "default": "4 start windows",
+        "description": "{ id, label, detail, phrase }: the card title, its detail line and how it reads in the letter."
+      },
+      {
+        "name": "currency",
+        "type": "\"GBP\" | \"USD\" | \"EUR\"",
+        "default": "\"GBP\"",
+        "description": "Symbol for the budget bands and the typical-scope figure."
+      },
       {
         "name": "value",
         "type": "ProjectBrief",
-        "description": "Optional controlled exact name/email/project/details. Pair with onValueChange; absent editing callback makes the supplied text read only."
+        "description": "Controlled brief: { services, budget, timeline, name, email, company, notes }. Pair with onValueChange."
       },
       {
         "name": "defaultValue",
-        "type": "ProjectBrief",
-        "description": "Initial local brief. resetKey explicitly resets local values; failures, cancellation and editing retain the actual text."
+        "type": "Partial<ProjectBrief>",
+        "description": "Starting values when uncontrolled, such as a signed-in visitor’s name and email."
       },
       {
         "name": "onValueChange",
         "type": "(brief: ProjectBrief) => void",
-        "description": "Request an exact changed brief without silently trimming or normalizing entered text."
+        "description": "Called on every edit."
       },
       {
         "name": "onSubmit",
-        "type": "(brief: ProjectBrief, signal: AbortSignal) => void | ProjectBriefReceipt | Promise<void | ProjectBriefReceipt>",
-        "description": "Submit only the exact reviewed and currently valid snapshot. Pending requests cancel/retire on text, handler, availability, invalid constraints, reset or unmount changes; late acknowledgements are ignored. Absent handlers do not render fake send controls."
+        "type": "(brief: ProjectBrief) => Promise<void | { reference?: string }> | void",
+        "description": "Sends the brief once it is complete. Resolve to stamp it received (with your reference); reject to keep the draft and show a retry."
       },
       {
-        "name": "resetKey",
-        "type": "string | number",
-        "description": "Explicit local lifecycle reset."
-      },
-      {
-        "name": "minimumDetails",
-        "type": "number",
-        "description": "Whole minimum detail length between 0 and 4000. Invalid configuration remains explicit and cannot submit."
-      },
-      {
-        "name": "status",
-        "type": "\"ready\" | \"loading\" | \"error\"",
-        "description": "Host-owned availability, preserving brief and review context."
-      },
-      {
-        "name": "errorMessage",
+        "name": "replyNote",
         "type": "string",
-        "description": "Actual host availability explanation."
+        "default": "\"Ines Okafor replies by Thursday, 10:00.\"",
+        "description": "Who replies and when, shown under the stamped brief."
       },
       {
-        "name": "onRetry",
-        "type": "() => void",
-        "description": "Explicit host recovery request."
+        "name": "nextSteps",
+        "type": "string[]",
+        "default": "3 steps",
+        "description": "What happens after sending, listed under the brief; the first ticks once it is received. Empty hides it."
       },
       {
-        "name": "disabled",
-        "type": "boolean",
-        "description": "Lock edits and submission while retaining content."
+        "name": "accent",
+        "type": "string",
+        "default": "\"#e5484d\"",
+        "description": "The one accent: the received stamp and the flagged blanks in the letter."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Complete monochromatic graphite/white chrome. Colour is reserved for actual supplied content and purposeful feature accents."
-      },
-      {
-        "name": "labels",
-        "type": "Partial<ProjectBriefLabels>",
-        "description": "Every field, placeholder, state, action and validation message."
+        "default": "\"dark\"",
+        "description": "Colour theme. The brief itself is always paper."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Host layout classes."
+        "default": "\"\"",
+        "description": "Classes for the root section."
       }
     ],
     "added": "2026-10-13",
     "demo": {
       "steps": [
-        "click:@brief-review",
-        "wait:450",
-        "click:@brief-edit",
-        "wait:400",
-        "click:@brief-review",
+        "wait:700",
+        "click:@service-motion",
         "wait:350",
-        "click:@brief-send",
-        "wait:500"
+        "click:@budget-30-60",
+        "wait:450",
+        "click:@timeline-quarter",
+        "wait:450",
+        "click:@send",
+        "wait:2200"
       ],
       "loop": false
     },
     "controls": [
       {
+        "prop": "studio",
+        "label": "Studio",
+        "kind": "text",
+        "default": "Halvard"
+      },
+      {
+        "prop": "currency",
+        "label": "Currency",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "GBP",
+            "label": "£"
+          },
+          {
+            "value": "USD",
+            "label": "$"
+          },
+          {
+            "value": "EUR",
+            "label": "€"
+          }
+        ],
+        "default": "GBP"
+      },
+      {
+        "prop": "accent",
+        "label": "Stamp",
+        "kind": "color",
+        "default": "#e5484d",
+        "options": [
+          "#e5484d",
+          "#2f6fed",
+          "#111113"
+        ]
+      },
+      {
         "prop": "theme",
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
         "default": "dark"
-      },
-      {
-        "prop": "disabled",
-        "label": "Read only",
-        "kind": "toggle",
-        "default": false
-      },
-      {
-        "prop": "minimumDetails",
-        "label": "Minimum detail length",
-        "kind": "slider",
-        "min": 0,
-        "max": 200,
-        "step": 1,
-        "default": 24
       }
     ]
   },
