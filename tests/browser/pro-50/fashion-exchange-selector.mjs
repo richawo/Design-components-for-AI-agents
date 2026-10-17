@@ -1,26 +1,57 @@
-export async function check({page,mount,assert}){
- await mount(`window.requests=[];window.fail=true;createRoot(document.getElementById('root')).render(<Subject.ExchangeSelector onRequest={async p=>{window.requests.push(p);if(window.fail)throw Error('offline')}}/>);`);
- assert.equal(await page.getByRole('button',{name:'S (original variant)',exact:true}).isDisabled(),true);
- assert.equal(await page.getByRole('button',{name:'L (out of stock)',exact:true}).isDisabled(),true);
- await page.getByRole('button',{name:'Ink',exact:true}).click();
- await page.getByRole('button',{name:'M',exact:true}).click();
- assert.match(await page.locator('aside').innerText(),/£8.00/);
- await page.getByRole('textbox',{name:'Exchange quantity',exact:true}).fill('2');
- assert.equal(await page.getByRole('button',{name:'Review exchange',exact:true}).isDisabled(),true);
- await page.getByRole('textbox',{name:'Exchange quantity',exact:true}).fill('1');
- await page.getByRole('button',{name:'Review exchange',exact:true}).click();
- await page.getByRole('button',{name:'Request exchange',exact:true}).click();
- await page.getByRole('status').filter({hasText:'request failed'}).waitFor();
- await page.evaluate(()=>window.fail=false);
- await page.getByRole('button',{name:'Request exchange',exact:true}).click();
- await page.getByRole('status').filter({hasText:'request recorded'}).waitFor();
- assert.deepEqual(await page.evaluate(()=>window.requests[1]),{orderId:'ORD-2048',originalVariantId:'oat-s',replacementVariantId:'ink-m',quantity:1,reason:'Size too small',adjustmentMinor:800});
- assert.equal(await page.getByRole('button',{name:'Request exchange',exact:true}).count(),0);
- await mount(`createRoot(document.getElementById('root')).render(<Subject.ExchangeSelector original={{orderId:'A',productName:'Crew',variantId:'old',color:'Ink',size:'S',quantity:2,paidMinor:10000}} onRequest={()=>{}}/>);`);
- await page.getByRole('button',{name:'M',exact:true}).click();
- await page.getByRole('textbox',{name:'Exchange quantity',exact:true}).fill('2');
- assert.match(await page.locator('aside').innerText(),/£16.00/);
- assert.match(await page.locator('aside').innerText(),/Amount to refund/);
- await page.getByRole('button',{name:'Oat',exact:true}).click();
- assert.equal(await page.getByRole('button',{name:'Review exchange',exact:true}).isDisabled(),true);
+export async function check({ page, mount, assert }) {
+  const view = () => page.locator("section").first().innerText();
+  const confirm = () => page.locator('[data-demo="confirm"]');
+  const radio = (name) => page.getByRole("radio", { name, exact: true });
+  await mount(
+    `window.requests=[];window.fail=true;createRoot(document.getElementById('root')).render(` +
+      `<Subject.ExchangeSelector onConfirm={async r=>{window.requests.push(r);if(window.fail)throw Error('Ink in M was just reserved')}}/>);`,
+  );
+  assert.equal(await confirm().isDisabled(), true);
+  assert.match(await view(), /Choose a new colour or size/);
+  // Keyboard: the colour group is one tab stop; ArrowRight moves from Oat to Ink.
+  await radio("Oat, your colour").focus();
+  await page.keyboard.press("ArrowRight");
+  assert.equal(await radio("Ink").getAttribute("aria-checked"), "true");
+  assert.match(await view(), /To pay/);
+  // Sold-out options can't be chosen.
+  assert.equal(await radio("Ecru, sold out").getAttribute("aria-disabled"), "true");
+  await radio("Ecru, sold out").click({ force: true });
+  assert.equal(await radio("Ink").getAttribute("aria-checked"), "true");
+  // "Too small" moves to the next size up.
+  await radio("Too small").click();
+  assert.equal(await radio("M, 2 left").getAttribute("aria-checked"), "true");
+  assert.match(await view(), /We moved you to M, one size up/);
+  assert.match(await view(), /Chest 56 cm · Length 68 cm/);
+  assert.equal(await confirm().innerText(), "Pay £10.00 and exchange");
+  // A rejected request keeps every choice.
+  await confirm().click();
+  await page.getByRole("alert").filter({ hasText: "Ink in M was just reserved." }).waitFor();
+  assert.match(await page.getByRole("alert").innerText(), /choices are saved/);
+  assert.equal(await radio("Ink").getAttribute("aria-checked"), "true");
+  assert.equal(await radio("M, 2 left").getAttribute("aria-checked"), "true");
+  await page.evaluate(() => (window.fail = false));
+  await confirm().click();
+  await page.getByText("Exchange confirmed").waitFor();
+  const request = await page.evaluate(() => window.requests.at(-1));
+  assert.deepEqual(request.from, { colourwayId: "oat", size: "S" });
+  assert.deepEqual(request.to, { colourwayId: "ink", size: "M" });
+  assert.equal(request.reasonId, "small");
+  assert.equal(request.differenceMinor, 1000);
+  assert.match(await view(), /We charge £10\.00/);
+
+  // A cheaper colourway becomes a refund; a colour without the current size moves to the nearest one.
+  await mount(`createRoot(document.getElementById('root')).render(<Subject.ExchangeSelector/>);`);
+  await radio("Rust").click();
+  assert.match(await view(), /We refund/);
+  assert.match(await view(), /£20\.00/);
+  assert.equal(await radio("S, 2 left").getAttribute("aria-checked"), "true");
+  await radio("Ink").click();
+  await radio("XL, sold out").click({ force: true });
+  assert.equal(await radio("XL, sold out").getAttribute("aria-checked"), "false");
+  await radio("Prefer another colour").click();
+  assert.equal(await confirm().isDisabled(), false);
+
+  // No colourways at all.
+  await mount(`createRoot(document.getElementById('root')).render(<Subject.ExchangeSelector colourways={[]}/>);`);
+  assert.match(await view(), /can’t be exchanged online/);
 }
