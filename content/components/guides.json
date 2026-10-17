@@ -4539,17 +4539,17 @@
     "updated": "2026-10-17"
   },
   "ai-context-budget": {
-    "useWhen": "Reviewing supplied context sources and their real token allocation against a bounded model budget.",
-    "avoidWhen": "Guessing token counts or treating a visual budget as authority to read private sources.",
+    "useWhen": "Letting someone choose which files, threads and saved pages an assistant reads, with the cost of each shown against the model’s context window and an answer reserve.",
+    "avoidWhen": "A single fixed prompt with nothing to choose, or billing and usage reporting across many requests, where a usage chart reads better.",
     "integration": [
-      "Supply stable context-source identities, kind, required/unavailable state and actual token counts. A null count remains unknown. Required sources count toward the limit and cannot be silently removed; reserved tokens remain explicit.",
-      "Control included IDs through value/onValueChange, with inspection separate from inclusion. Changed budgets never silently prune selected sources. This planner neither fetches source content nor runs an AI request."
+      "Pass sources with counts from your own tokenizer; use tokens: null while a source is still being counted, and required: true for instructions that always travel. relevance (0–1) orders what Trim to fit drops first.",
+      "Hold the included ids in your state with value and onValueChange, and attach the context in onConfirm(ids, total). Return a promise to show pending; a rejection keeps the selection and shows its message."
     ],
     "related": [
       "ai-model-picker",
       "agent-approval-gate"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "ai-answer-compare": {
     "useWhen": "Comparing supplied responses to the same request with their evidence and an explicit preference.",

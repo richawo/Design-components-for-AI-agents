@@ -1520,13 +1520,13 @@
     "tier": "pro",
     "platform": "web",
     "category": "ai",
-    "description": "An inspectable context planner with exact supplied source counts, reversible inclusion and a reserved answer budget that exposes over-limit choices.",
+    "description": "A context-window planner: every source is a segment of one big token bar that fills, splits and overflows live as you switch sources on.",
     "tags": [
       "ai",
-      "context",
+      "context window",
       "token budget",
       "sources",
-      "inspector",
+      "retrieval",
       "dark"
     ],
     "dependencies": [
@@ -1534,110 +1534,113 @@
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1050,
-    "usage": "import { AiContextBudget } from \"@/components/design-for-ai/ai-context-budget\";\n\n<AiContextBudget sources={context} budget={16000} reservedTokens={4000} value={includedIds} onValueChange={setIncludedIds} resetKey={workspaceId} />",
+    "previewHeight": 1080,
+    "usage": "import { AiContextBudget } from \"@/components/design-for-ai/ai-context-budget\";\n\n<AiContextBudget\n  sources={sources}\n  budget={128000}\n  reservedTokens={4000}\n  value={includedIds}\n  onValueChange={setIncludedIds}\n  onConfirm={(ids, total) => attachContext(ids)}\n/>",
     "props": [
       {
         "name": "sources",
         "type": "ContextBudgetSource[]",
-        "description": "Unique source IDs, label/kind/description, externally counted complete-source tokens (null means unknown), optional supplied content/excerpt, required and disabled selection states.",
-        "default": "5 original offline source records and excerpts"
+        "default": "8 sources for a pricing announcement",
+        "description": "{ id, label, kind, detail?, tokens, relevance?, required? }. kind is instructions | conversation | file | doc | transcript | web | code. tokens: null means still counting (the row can’t be switched on yet). Required sources show a lock and always count."
       },
       {
         "name": "budget",
         "type": "number",
-        "description": "Nonnegative safe-integer token capacity. Invalid values are unavailable, not guessed.",
-        "default": "16000"
+        "default": "24000",
+        "description": "The model’s context window in tokens. The limit hairline sits here; anything past it is washed red."
       },
       {
         "name": "reservedTokens",
         "type": "number",
-        "description": "Nonnegative safe-integer answer reservation. Counts with selected sources and may itself exceed capacity.",
-        "default": "4000"
+        "default": "4000",
+        "description": "Tokens held back for the answer, drawn as the hatched segment. The footer slider changes it locally; changing the prop resets it."
+      },
+      {
+        "name": "onReservedTokensChange",
+        "type": "(tokens: number) => void",
+        "description": "Called as the reserve slider moves."
+      },
+      {
+        "name": "maxReserve",
+        "type": "number",
+        "default": "8000",
+        "description": "Largest reserve the slider offers."
       },
       {
         "name": "value",
         "type": "string[]",
-        "description": "Controlled source inclusion IDs. Required sources always count; without observer inclusion is read-only. Inspection stays available."
+        "description": "Controlled ids of the optional sources that are switched on. Unknown ids, uncounted and required sources are ignored. Without onValueChange the switches are read-only."
       },
       {
         "name": "defaultValue",
         "type": "string[]",
-        "description": "Initial uncontrolled inclusion IDs; changes only apply with resetKey.",
-        "default": "[\"brief\", \"instructions\", \"thread\"]"
+        "default": "[\"brief\", \"voice\", \"teardown\", \"changelog\"]",
+        "description": "Initially included optional sources when uncontrolled."
       },
       {
         "name": "onValueChange",
-        "type": "(ids: string[], sources: ContextBudgetSource[]) => void",
-        "description": "Synchronous full inclusion request, normalized to available records and required sources. No execution or fetching."
+        "type": "(ids: string[]) => void",
+        "description": "Called with the next set of included optional ids (from a switch or Trim to fit)."
       },
       {
-        "name": "onInspect",
-        "type": "(source: ContextBudgetSource) => void",
-        "description": "Optional observer of local source inspection, independent of inclusion."
+        "name": "onConfirm",
+        "type": "(ids: string[], totalTokens: number) => void | Promise<void>",
+        "description": "The Attach button. Return a promise to show pending; a rejection keeps the selection and shows its message."
       },
       {
-        "name": "resetKey",
-        "type": "string | number",
-        "description": "Workspace identity; resets local selection/inspection and preview scroll while preserving controlled authority."
-      },
-      {
-        "name": "title",
+        "name": "modelLabel",
         "type": "string",
-        "description": "Concise planner heading.",
-        "default": "\"Choose what comes along.\""
+        "default": "\"Halcyon 2 · 24K window\"",
+        "description": "Small chip in the header naming the model and its window."
       },
       {
-        "name": "description",
+        "name": "status",
+        "type": "\"ready\" | \"loading\"",
+        "default": "\"ready\"",
+        "description": "loading while your tokenizer counts: the figure, bar and rows hold shimmer skeletons."
+      },
+      {
+        "name": "accent",
         "type": "string",
-        "description": "Explain the source review task.",
-        "default": "\"Inspect each source. Include the parts that help, and leave room for the answer.\""
+        "default": "\"#f5c66b\"",
+        "description": "The one accent: the hovered segment and its row dot, and the Attach button."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Neutral black/white glass chrome, with colour reserved for actual data/feature accents.",
-        "default": "\"dark\""
+        "default": "\"dark\"",
+        "description": "Graphite or white surfaces; the over-budget red is the only other colour."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Outer planner class.",
-        "default": "\"\""
+        "default": "\"\"",
+        "description": "Classes on the root card."
       }
     ],
     "added": "2026-10-13",
     "demo": {
       "steps": [
-        "click:@toggle-notes",
-        "wait:300",
-        "click:@toggle-archive",
-        "wait:400",
-        "click:@toggle-archive",
-        "wait:350",
-        "click:@inspect-notes",
-        "wait:400"
-      ]
+        "wait:600",
+        "click:@toggle-transcripts",
+        "wait:1300",
+        "click:@trim",
+        "wait:1200",
+        "hover:@segment-brief",
+        "wait:900"
+      ],
+      "loop": false
     },
     "controls": [
       {
-        "prop": "theme",
-        "label": "Theme",
-        "kind": "segmented",
-        "options": [
-          "dark",
-          "light"
-        ],
-        "default": "dark"
-      },
-      {
         "prop": "budget",
-        "label": "Token limit",
+        "label": "Context window",
         "kind": "slider",
-        "min": 8000,
-        "max": 32000,
+        "min": 16000,
+        "max": 48000,
         "step": 1000,
-        "default": 16000
+        "unit": "tokens",
+        "default": 24000
       },
       {
         "prop": "reservedTokens",
@@ -1646,13 +1649,45 @@
         "min": 0,
         "max": 8000,
         "step": 500,
+        "unit": "tokens",
         "default": 4000
       },
       {
-        "prop": "title",
-        "label": "Heading",
-        "kind": "text",
-        "default": "Choose what comes along."
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f5c66b",
+        "options": [
+          "#f5c66b",
+          "#f4f4f5",
+          "#7dd3fc",
+          "#86efac"
+        ]
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark"
+      },
+      {
+        "prop": "status",
+        "label": "Tokenizer",
+        "kind": "action",
+        "options": [
+          "ready",
+          "loading"
+        ]
       }
     ]
   },
