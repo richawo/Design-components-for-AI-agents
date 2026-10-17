@@ -2133,18 +2133,19 @@
     "updated": "2026-10-17"
   },
   "fashion-merchandising-dashboard": {
-    "useWhen": "Reviewing collection performance alongside merchandising actions.",
-    "avoidWhen": "A forecast or stock authority unsupported by the supplied retail data.",
+    "useWhen": "In-season trading: a merchandiser reviews sell-through by style against plan, weeks of cover and size demand, and sends slow sellers to pricing as markdown candidates.",
+    "avoidWhen": "Pre-season planning or company-wide finance reporting. Use the line plan for building the season and a finance dashboard for P&L.",
     "integration": [
-      "Supply your own records through `collections`. Preserve stable keys or IDs when the data contract provides them.",
-      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+      "Pass `collections` with styles (revenue, received and sold per size) and, for the curve, rate of sale and markdown flags, `weekly` units sold plus the collection's `week`, `seasonWeeks` and `targetSellThrough`. Without weekly data the curve shows an empty state and cover reads as a dash.",
+      "`onSendMarkdowns` adds a checkbox per markdown candidate and a proposal bar; throw to keep the selection and show your message.",
+      "Keep collection switching disabled while a markdown proposal is awaiting acknowledgement."
     ],
     "related": [
-      "app-permission-matrix",
-      "commerce-operations-dashboard",
-      "finance-cashflow-dashboard"
+      "fashion-collection-line-plan",
+      "fashion-assortment-planner",
+      "fashion-launch-calendar"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "fashion-preorder-planner": {
     "useWhen": "A brand sells a drop on preorder and has to set a production quantity against demand that is still coming in, then close the window knowing who is charged, who waits and what is left for launch.",

@@ -21633,64 +21633,98 @@
     "tier": "pro",
     "platform": "web",
     "category": "app",
-    "description": "Collection performance with size demand, sell-through and category drill-down. A considered, responsive fashion workspace with typed integration points.",
+    "description": "In-season merchandising: sell-through by style with sketches, a curve against plan, weeks of cover, leaders and laggards, and markdown candidates to send to pricing.",
     "tags": [
       "fashion",
-      "workflow",
-      "responsive",
-      "keyboard",
+      "merchandising",
+      "sell-through",
+      "markdown",
+      "weeks of cover",
+      "retail",
+      "dashboard",
       "app"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1000,
-    "usage": "import { MerchandisingDashboard } from \"@/components/design-for-ai/fashion-merchandising-dashboard\";\n\n<MerchandisingDashboard />",
+    "previewHeight": 1500,
+    "usage": "import { MerchandisingDashboard } from \"@/components/design-for-ai/fashion-merchandising-dashboard\";\n\n<MerchandisingDashboard\n  collections={collections}\n  currency=\"GBP\"\n  onSendMarkdowns={async (proposal) => {\n    await api.pricing.proposeMarkdowns(proposal);\n  }}\n/>",
     "props": [
+      {
+        "name": "brand",
+        "type": "string",
+        "default": "\"Ferne\"",
+        "description": "The house, shown as the mark and in the breadcrumb."
+      },
       {
         "name": "title",
         "type": "string",
-        "description": "Main heading.",
-        "default": "\"Merchandising overview\""
+        "description": "Overrides the collection name in the header."
       },
       {
         "name": "subtitle",
         "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Sell-through, size demand and the pieces carrying the season.\""
+        "description": "Metadata beside the title. Defaults to the collection's season."
       },
       {
         "name": "collections",
         "type": "MerchandisingCollection[]",
-        "description": "Collections with unique style IDs, non-negative two-decimal revenue and size-level received/sold integer quantities. Sold cannot exceed received."
+        "description": "Collections with their styles: revenue, received and sold per size, and optionally sketch, colourway, price and `weekly` units sold. `week`, `seasonWeeks` and `targetSellThrough` set the plan curve and markdown flags."
+      },
+      {
+        "name": "defaultCollectionId",
+        "type": "string",
+        "description": "Collection shown first."
       },
       {
         "name": "currency",
         "type": "string",
-        "description": "ISO currency for revenue, without conversion."
+        "default": "\"GBP\"",
+        "description": "ISO 4217 code shared by every figure."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "description": "Locale for numbers and money."
+      },
+      {
+        "name": "onSendMarkdowns",
+        "type": "(proposal: MarkdownProposal) => void | Promise<void>",
+        "description": "Adds the proposal bar and a checkbox per markdown candidate. Throw to keep the selection and show your message."
+      },
+      {
+        "name": "onSelectStyle",
+        "type": "(styleId: string | null) => void",
+        "description": "Called when a style is opened or closed."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "ink",
+        "description": "The one brand accent. Passing either theme's ink follows the theme."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Colour scheme."
       },
       {
-        "name": "selectMode",
-        "type": "\"custom\" | \"native\"",
-        "default": "\"custom\"",
-        "description": "Animated keyboard-accessible custom listboxes, or native platform pickers with matched 12px insets."
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:450",
-        "click:@style-1",
         "wait:800",
-        "click:@category-2",
-        "wait:1000"
+        "click:@style-kn236",
+        "wait:1400",
+        "click:@send",
+        "wait:1600"
       ],
       "loop": false
     },
@@ -21700,20 +21734,48 @@
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
         "default": "dark"
       },
       {
-        "prop": "selectMode",
-        "label": "Select menus",
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#ff8a4c",
+          "#8ab4ff",
+          "#e7c27d"
+        ]
+      },
+      {
+        "prop": "currency",
+        "label": "Currency",
         "kind": "segmented",
         "options": [
-          "custom",
-          "native"
+          {
+            "value": "GBP",
+            "label": "GBP"
+          },
+          {
+            "value": "EUR",
+            "label": "EUR"
+          },
+          {
+            "value": "USD",
+            "label": "USD"
+          }
         ],
-        "default": "custom"
+        "default": "GBP"
       }
     ]
   },
