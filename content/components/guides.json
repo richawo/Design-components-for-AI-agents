@@ -2250,18 +2250,20 @@
     "updated": "2026-10-12"
   },
   "finance-invoice-composer": {
-    "useWhen": "Preparing an invoice draft with explicit lines and reconciled amounts.",
-    "avoidWhen": "Posting a legal or accounting invoice before the host validates and issues it.",
+    "useWhen": "Writing and sending a one-off invoice where the person edits the actual document: lines, discount, tax, terms and the payment block, with totals worked out as they type.",
+    "avoidWhen": "Recurring subscription billing, bulk invoice runs or credit notes; those need schedules, batches and ledger links this composer doesn't model.",
     "integration": [
-      "Supply your own records through `initialLines`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onSaveDraft` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+      "Pass `sender`, `customer` and `initialLines` with rates in minor units. Quantities accept up to two decimals, so hours and days both work.",
+      "`onSaveDraft` and `onSend` both receive the full `InvoiceDraft`, including computed `subtotalMinor`, `discountMinor`, `taxMinor` and `totalMinor`. Recalculate on the server before issuing; the client totals are for the person writing it.",
+      "Resolve `onSend` with `{ paymentUrl }` to show your hosted payment link on the receipt. Reject with an `Error` to keep the draft and show its message.",
+      "Set `taxLabel` and `taxBasisPoints` for your jurisdiction (VAT, GST, sales tax) and `termsOptions` for the terms you offer."
     ],
     "related": [
-      "finance-budget-variance",
-      "finance-close-checklist",
-      "finance-expense-review"
+      "finance-receivables-aging",
+      "finance-payment-run",
+      "finance-cashflow-dashboard"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "finance-payment-run": {
     "useWhen": "Reviewing payees and payment amounts before an explicit handoff.",

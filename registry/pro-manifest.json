@@ -22306,67 +22306,153 @@
   },
   {
     "slug": "finance-invoice-composer",
-    "name": "Invoice Draft Studio",
+    "name": "Invoice Composer",
     "tier": "pro",
     "platform": "web",
     "category": "billing",
-    "description": "Line items, discounts and explicit tax rates with exact totals and review. A considered, responsive finance workspace with typed integration points.",
+    "description": "The invoice is the editor: a real paper invoice you type into, with totals that count, terms that move the due date and a stamped send.",
     "tags": [
       "finance",
-      "workflow",
-      "responsive",
-      "keyboard",
-      "billing"
+      "invoice",
+      "invoicing",
+      "receivables",
+      "line items",
+      "billing",
+      "editor"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1400,
-    "usage": "import { InvoiceComposer } from \"@/components/design-for-ai/finance-invoice-composer\";\n\n<InvoiceComposer />",
+    "previewHeight": 1180,
+    "usage": "import { InvoiceComposer } from \"@/components/design-for-ai/finance-invoice-composer\";\n\n<InvoiceComposer\n  number=\"INV-0048\"\n  issueDate=\"2026-10-16\"\n  sender={studio}\n  customer={{ name: \"Northstar Studio\", contact: \"Maya Okafor\", email: \"maya@northstar.studio\", address: [\"22 Hatton Wall\", \"London EC1N 8JH\"] }}\n  initialLines={[{ id: \"l1\", description: \"Brand system refresh\", quantity: 1, unitMinor: 640000 }]}\n  currency=\"GBP\"\n  onSaveDraft={(draft) => saveInvoice(draft)}\n  onSend={async (draft) => {\n    const res = await fetch(\"/api/invoices/send\", { method: \"POST\", body: JSON.stringify(draft) });\n    if (!res.ok) throw new Error(\"The address bounced.\");\n    return res.json(); // { paymentUrl }\n  }}\n/>",
     "props": [
       {
-        "name": "title",
+        "name": "number",
         "type": "string",
-        "description": "Main heading.",
-        "default": "\"Invoice draft\""
+        "default": "\"INV-0048\"",
+        "description": "Invoice number, printed on the page and in the toolbar."
       },
       {
-        "name": "subtitle",
+        "name": "issueDate",
         "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Build a draft with explicit quantities, discount and tax. Review every total before saving.\""
+        "default": "\"2026-10-16\"",
+        "description": "ISO issue date. The due date is this plus the chosen terms."
+      },
+      {
+        "name": "sender",
+        "type": "InvoiceSender",
+        "description": "Your business: { name, email?, address: string[], taxId?, bank?: string[] }. Bank lines print in the payment block."
+      },
+      {
+        "name": "customer",
+        "type": "InvoiceParty",
+        "description": "Who is billed: { name, contact?, email?, address: string[] }. The email pre-fills Send to."
       },
       {
         "name": "initialLines",
         "type": "InvoiceLine[]",
-        "description": "Initial lines with unique IDs, integer quantities and non-negative two-decimal unit amounts."
+        "description": "Starting lines: { id, description, quantity, unitMinor }. Quantities take up to two decimals; rates are minor units."
+      },
+      {
+        "name": "reference",
+        "type": "string",
+        "default": "\"PO-7731 · Launch\"",
+        "description": "Purchase order or project reference, editable on the page."
+      },
+      {
+        "name": "discountBasisPoints",
+        "type": "number",
+        "default": "500",
+        "description": "Starting discount on the subtotal (500 = 5%). Editable inline."
+      },
+      {
+        "name": "taxBasisPoints",
+        "type": "number",
+        "default": "2000",
+        "description": "Starting tax rate on the discounted subtotal (2000 = 20%). Editable inline."
+      },
+      {
+        "name": "taxLabel",
+        "type": "string",
+        "default": "\"VAT\"",
+        "description": "Name of the tax line: VAT, GST, Sales tax."
+      },
+      {
+        "name": "termsOptions",
+        "type": "number[]",
+        "default": "[0, 15, 30]",
+        "description": "Payment terms offered in days; 0 reads “On receipt”."
+      },
+      {
+        "name": "defaultTermsDays",
+        "type": "number",
+        "default": "30",
+        "description": "Terms selected on first render."
+      },
+      {
+        "name": "defaultMessage",
+        "type": "string",
+        "description": "Email message pre-filled in the delivery rail."
+      },
+      {
+        "name": "notes",
+        "type": "string",
+        "default": "\"Thank you for working with us.\"",
+        "description": "Note printed at the foot of the invoice, editable on the page."
       },
       {
         "name": "currency",
         "type": "string",
-        "description": "ISO currency for all values, with two-decimal minor units."
+        "default": "\"GBP\"",
+        "description": "ISO 4217 code. Amounts are minor units of this currency."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Locale for money and dates."
       },
       {
         "name": "onSaveDraft",
-        "type": "(draft:InvoiceDraft)=>void|Promise<void>",
-        "description": "Persist the reviewed draft. This does not issue or send the invoice."
+        "type": "(draft: InvoiceDraft) => void | Promise<void>",
+        "description": "Persist the draft with its computed subtotal, discount, tax and total. Reject to keep it and show the message."
+      },
+      {
+        "name": "onSend",
+        "type": "(draft: InvoiceDraft) => void | Promise<void | InvoiceSendResult>",
+        "description": "Issue and email the invoice. Resolve (optionally with { paymentUrl }) to stamp it sent and show the receipt; reject to keep the draft and show why."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "description": "The one accent: the primary action, the terms pill and focused rail fields. Defaults to the theme’s ink."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Chrome palette. The invoice page stays paper in both."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:350",
-        "click:@review",
+        "wait:700",
+        "click:@qty-1",
+        "key:Backspace",
+        "type:8",
         "wait:900",
-        "click:@save",
-        "wait:1100"
+        "click:@terms-15",
+        "wait:600",
+        "click:@send",
+        "wait:2000"
       ],
       "loop": false
     },
@@ -22380,6 +22466,29 @@
           "light"
         ],
         "default": "dark"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#8ea2ff",
+          "#c6f36d",
+          "#5eead4"
+        ]
+      },
+      {
+        "prop": "taxLabel",
+        "label": "Tax name",
+        "kind": "segmented",
+        "options": [
+          "VAT",
+          "GST",
+          "Sales tax"
+        ],
+        "default": "VAT"
       }
     ]
   },
