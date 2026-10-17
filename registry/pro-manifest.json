@@ -39485,12 +39485,13 @@
     "tier": "pro",
     "platform": "web",
     "category": "backgrounds",
-    "description": "A circular reveal transforms the entire background between two editorial scenes while preserving readable copy and a static alternative for reduced motion.",
+    "description": "A daylight story told in two scenes: scrolling grows sunrise from a point on the horizon into an inverse scene while time, light and sun altitude count up.",
     "tags": [
       "scroll",
       "scroll-driven",
-      "motion",
-      "responsive",
+      "reveal",
+      "clip-path",
+      "editorial",
       "backgrounds"
     ],
     "dependencies": [
@@ -39498,43 +39499,80 @@
     ],
     "theme": "dark",
     "previewHeight": 900,
-    "usage": "import { ScrollBackgroundWipe } from \"@/components/design-for-ai/scroll-background-wipe\";\n\n<ScrollBackgroundWipe />\n\n// Place in normal document flow. Keep ancestors free of overflow clipping so viewport sticky positioning can work.",
+    "usage": "import { ScrollBackgroundWipe } from \"@/components/design-for-ai/scroll-background-wipe\";\n\n<ScrollBackgroundWipe\n  opening={\"The house,\\nbefore the light.\"}\n  closing={\"Then every room\\nturns to face it.\"}\n  readouts={[\n    { label: \"Local time\", from: 292, to: 378, format: \"clock\" },\n    { label: \"Daylight\", from: 0.4, to: 32000, unit: \"lx\", scale: \"log\" },\n  ]}\n/>\n\n// Place in normal document flow. Keep ancestors free of overflow clipping so sticky positioning works.",
     "props": [
       {
         "name": "opening",
         "type": "string",
-        "description": "First scene heading."
+        "default": "\"The house,\\nbefore the light.\"",
+        "description": "First scene heading (the section's h2). Line breaks are kept."
       },
       {
         "name": "closing",
         "type": "string",
+        "default": "\"Then every room\\nturns to face it.\"",
         "description": "Second scene heading."
       },
       {
         "name": "openingNote",
         "type": "string",
-        "description": "First scene context."
+        "default": "\"Before first light\"",
+        "description": "Mono label at the top of the first scene."
       },
       {
         "name": "closingNote",
         "type": "string",
-        "description": "Second scene context."
+        "default": "\"Sunrise, 21 June\"",
+        "description": "Mono label at the top of the second scene."
+      },
+      {
+        "name": "openingBody",
+        "type": "string",
+        "description": "Supporting paragraph in the first scene."
+      },
+      {
+        "name": "closingBody",
+        "type": "string",
+        "description": "Supporting paragraph in the second scene."
+      },
+      {
+        "name": "readouts",
+        "type": "WipeReadout[]",
+        "description": "Up to three figures that travel with the reveal: { label, from, to, unit?, decimals?, format?: 'number' | 'clock', scale?: 'linear' | 'log' }. Clock values are minutes after midnight."
+      },
+      {
+        "name": "origin",
+        "type": "{ x: number; y: number }",
+        "default": "{ x: 72, y: 66 }",
+        "description": "Where the reveal starts, in percent of the stage. The horizon line and sun sit here."
+      },
+      {
+        "name": "actionLabel",
+        "type": "string",
+        "default": "\"Watch the sun come up\"",
+        "description": "Label of the button that scrolls through the reveal."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ffb547\"",
+        "description": "The sun's colour; everything else stays monochrome."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Neutral surface and text palette."
+        "description": "Dark opens at night and reveals a paper scene; light inverts both."
       }
     ],
     "added": "2026-10-12",
     "demo": {
       "steps": [
-        "wait:400",
+        "wait:500",
         "click:@change-scene",
-        "wait:2000",
-        "scroll:200",
-        "wait:1000"
+        "wait:2200",
+        "scroll:-300",
+        "wait:1200"
       ],
       "loop": false
     },
@@ -39548,6 +39586,17 @@
           "light"
         ],
         "default": "dark"
+      },
+      {
+        "prop": "accent",
+        "label": "Sun",
+        "kind": "color",
+        "default": "#ffb547",
+        "options": [
+          "#ffb547",
+          "#ff6b4a",
+          "#f4f4f5"
+        ]
       }
     ]
   },

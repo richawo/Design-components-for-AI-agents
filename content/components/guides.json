@@ -3137,17 +3137,18 @@
     "updated": "2026-10-17"
   },
   "scroll-background-wipe": {
-    "useWhen": "Changing a decorative background as a readable section progresses.",
-    "avoidWhen": "An animation carrying essential meaning without a static or reduced-motion equivalent.",
+    "useWhen": "A two-scene moment where the change itself is the story, such as night to day or before and after, with figures that travel with the reveal.",
+    "avoidWhen": "Content that must be read during the transition, or more than two states; use a chapter stack or a sticky feature list instead.",
     "integration": [
-      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+      "Set both scenes with `opening`, `closing`, their notes and bodies. `readouts` takes up to three { label, from, to } figures; use `format: \"clock\"` for minutes after midnight and `scale: \"log\"` for quantities such as light.",
+      "`origin` places the start of the reveal and the sun; `accent` colours only the sun. Reduced motion, or copy too tall for the viewport, stacks both complete scenes in ordinary flow."
     ],
     "related": [
       "scroll-chapter-stack",
       "scroll-cinema-frame",
       "scroll-expanding-mosaic"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "scroll-chapter-stack": {
     "useWhen": "A case study or story told in three to six chapters, each with a photograph, a few figures and enough copy to read without scrolling inside it.",
