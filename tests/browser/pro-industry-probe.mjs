@@ -174,45 +174,37 @@ try {
     "finance-reconciliation",
     `window.matches=[];window.attempt=0;createRoot(document.getElementById('root')).render(<Subject.Reconciliation onMatch={async match=>{window.matches.push(match);if(window.attempt++===0)throw Error('offline')}}/>);`,
   );
-  await page
-    .getByRole("checkbox", {
-      name: "Select Northline / online store",
-      exact: true,
-    })
-    .check();
-  assert.equal(
-    await page.getByRole("button", { name: "Record match" }).isDisabled(),
-    true,
-  );
-  await page.getByRole("button", { name: "Select same reference" }).click();
-  assert.equal(
-    await page.getByRole("button", { name: "Record match" }).isEnabled(),
-    true,
-  );
-  await page.getByRole("button", { name: "Record match" }).click();
-  await page.waitForTimeout(100);
-  assert.match(
-    await page.getByRole("status").innerText(),
-    /could not be recorded/,
-  );
-  assert.equal(await page.getByRole("checkbox").nth(0).isChecked(), true);
-  await page.getByRole("button", { name: "Record match" }).click();
-  await page.waitForTimeout(100);
+  // A manual split match is made by picking a statement line and its ledger entries.
+  await page.locator('[data-demo="statement-s6"]').click();
+  await page.locator('[data-demo="ledger-l6"]').click();
+  const match = page.getByRole("button", { name: "Match", exact: true });
+  assert.equal(await match.isDisabled(), true, "A partial amount cannot be matched");
+  await page.locator('[data-demo="ledger-l7"]').click();
+  assert.equal(await match.isEnabled(), true);
+  await match.click();
+  await page.getByText("Nothing was saved", { exact: true }).waitFor();
+  assert.match(await page.locator("section").innerText(), /offline Your selection is kept/);
+  assert.equal(await page.locator('[data-demo="statement-s6"]').getAttribute("aria-pressed"), "true");
+  assert.equal(await page.locator('[data-demo="ledger-l6"]').getAttribute("aria-pressed"), "true");
+  assert.equal(await page.locator('[data-demo="ledger-l7"]').getAttribute("aria-pressed"), "true");
+  await page.getByRole("button", { name: "Try again", exact: true }).click();
+  await page.waitForFunction(() => window.matches.length === 2);
   assert.deepEqual(await page.evaluate(() => window.matches[1]), {
-    statementId: "s1",
-    ledgerIds: ["l1", "l2"],
+    statementId: "s6", ledgerIds: ["l6", "l7"], source: "manual",
   });
-  await page.getByRole("radio", { name: "Cedar Studio", exact: true }).check();
-  assert.equal(await page.getByRole("checkbox").nth(0).isDisabled(), true);
-  assert.equal(await page.getByRole("checkbox").nth(1).isDisabled(), true);
+  await page.waitForFunction(() => document.querySelector('[data-demo="statement-s6"]')?.getAttribute("aria-label")?.startsWith("Matched statement"));
+  assert.match(await page.locator('[data-demo="ledger-l6"]').getAttribute("aria-label"), /^Matched ledger/);
   await fixture(
     "finance-reconciliation",
-    `createRoot(document.getElementById('root')).render(<Subject.Reconciliation statement={[{id:'max',label:'Exact large amount',reference:'R',date:'Today',amountMinor:9007199254740991}]} ledger={[]}/>);`,
+    `createRoot(document.getElementById('root')).render(<Subject.Reconciliation statement={[{id:'max',description:'Exact large amount',date:'2026-09-30',amountMinor:9007199254740991}]} ledger={[]} defaultMatches={[]}/>);`,
   );
-  assert.match(
-    await page.locator("section").innerText(),
-    /90,071,992,547,409.91/,
-  );
+  assert.match(await page.locator("section").innerText(), /90,071,992,547,409.91/);
+  for (const [currency, amountMinor, major] of [["JPY", 1234, 1234], ["BHD", 1234, 1.234], ["GBP", -5, 0.05]]) {
+    await fixture("finance-reconciliation", `createRoot(document.getElementById('root')).render(<Subject.Reconciliation currency="${currency}" statement={[{id:'unit',description:'Currency unit check',date:'2026-09-30',amountMinor:${amountMinor}}]} ledger={[]} defaultMatches={[]}/>);`);
+    const expected = await page.evaluate(({currency,major}) => new Intl.NumberFormat('en-GB',{style:'currency',currency}).format(major), {currency,major});
+    assert.ok((await page.locator("section").innerText()).includes(expected), `${currency} respects its own minor units`);
+    if (amountMinor < 0) assert.ok((await page.locator("section").innerText()).includes(`−${expected}`));
+  }
   await fixture(
     "hr-capacity-planner",
     `window.plans=[];createRoot(document.getElementById('root')).render(<Subject.CapacityPlanner onSave={async value=>{window.plans.push(value);throw Error('offline')}}/>);`,

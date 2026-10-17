@@ -28,8 +28,11 @@ try {
       assert.equal(await page.getByRole("spinbutton", { name: "Ink / XL stock", exact: true }).inputValue(), "12");
       assert.match(text, /Stock levels saved/);
     } else if (slug === "finance-reconciliation") {
-      assert.equal(await page.getByRole("checkbox").nth(0).isDisabled(), true);
-      assert.equal(await page.getByRole("checkbox").nth(1).isDisabled(), true);
+      await page.getByText("Every statement line is matched", { exact: true }).waitFor();
+      assert.match(await page.locator('[data-demo="statement-s6"]').getAttribute("aria-label"), /^Matched statement/);
+      assert.match(await page.locator('[data-demo="ledger-l6"]').getAttribute("aria-label"), /^Matched ledger/);
+      assert.match(await page.locator('[data-demo="ledger-l7"]').getAttribute("aria-label"), /^Matched ledger/);
+      assert.equal(await page.getByRole("button", { name: "Mark reconciled", exact: true }).isEnabled(), true);
     } else if (slug === "hr-capacity-planner") {
       assert.match(await page.locator('[data-demo="capacity-mara-tue"]').innerText(), /8/);
       assert.equal(await page.getByRole("button", { name: "Save plan", exact: true }).isDisabled(), true);
