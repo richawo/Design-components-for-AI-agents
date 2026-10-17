@@ -27369,144 +27369,165 @@
     "tier": "pro",
     "platform": "mobile",
     "category": "mobile",
-    "description": "A native attachment shelf with original file thumbnails, exact limits, retained notes and cancellable host-owned send and recovery.",
+    "description": "A dark React Native attachment tray under a chat: drawn file previews, a size meter that fills as you pick, live uploads and a send that flies into the thread.",
     "tags": [
-      "mobile",
-      "react native",
       "attachments",
       "files",
-      "review",
-      "send",
+      "chat",
+      "composer",
+      "upload",
+      "react native",
+      "glassmorphism",
+      "bottom sheet",
+      "monochrome",
       "dark"
     ],
     "dependencies": [
+      "expo-blur",
       "expo-linear-gradient",
       "react-native-svg"
     ],
     "theme": "dark",
-    "previewHeight": 844,
-    "usage": "import { MobileAttachmentTray } from \"@/components/design-for-ai/native/mobile-attachment-tray\";\n\n// Bare React Native apps: run npx install-expo-modules once.\n<MobileAttachmentTray attachments={files} value={selectedIds} onValueChange={setSelectedIds} maxCount={5} maxBytes={5 * 1024 * 1024} onSend={sendReviewed} onRetry={retryFile} resetKey={draftId} />",
+    "previewHeight": 940,
+    "usage": "// Bare React Native apps: run `npx install-expo-modules` once for expo-blur and expo-linear-gradient.\nimport { MobileAttachmentTray } from \"@/components/design-for-ai/native/mobile-attachment-tray\";\n\n<MobileAttachmentTray\n  files={pickedFiles}\n  recipient={{ name: \"Lena Ortiz\", detail: \"Ortiz Kitchens\" }}\n  messages={thread}\n  maxFiles={5}\n  maxBytes={25 * 1024 * 1024}\n  onSend={({ files, note }) => api.sendAttachments(threadId, files, note)}\n  onRetry={(file) => uploads.retry(file.id)}\n  onAdd={() => openDocumentPicker()}\n  renderThumbnail={(file) => <Image source={{ uri: previews[file.id] }} style={{ flex: 1 }} />}\n/>",
     "props": [
       {
-        "name": "attachments",
-        "type": "TrayAttachment[]",
-        "description": "Actual file IDs/names/MIME/nullable bytes/status/reason. Missing or conflicting selected variants remain inspectable.",
-        "default": "Three original offline virtual files"
+        "name": "files",
+        "type": "TrayFile[]",
+        "default": "5 project files",
+        "description": "Each { id, name, kind, bytes, status?, progress?, detail?, reason? }. kind: pdf, image, sheet, audio, doc. status: ready, uploading (with progress 0–1) or failed (with reason). Only ready files can be sent."
       },
       {
-        "name": "renderThumbnail",
-        "type": "(attachment: TrayAttachment) => ReactNode",
-        "description": "Optional non-interactive presentation of copied file metadata. It never authorizes an unavailable file or changes exact send/retry payloads.",
-        "default": "Original excerpts and SVG study in the default demo; unknown files use honest format silhouettes."
-      },
-      {
-        "name": "value",
+        "name": "defaultSelected",
         "type": "string[]",
-        "description": "Controlled selected ID order; no observer makes choice read-only."
+        "default": "first three ready files",
+        "description": "Ids selected on mount."
       },
       {
-        "name": "defaultValue",
-        "type": "string[]",
-        "description": "Initial local selected ID order; use resetKey to replace the session.",
-        "default": "First three unique ready files"
-      },
-      {
-        "name": "onValueChange",
-        "type": "(ids: string[]) => void",
-        "description": "Synchronous selection observer. Rejection preserves actual selected IDs."
-      },
-      {
-        "name": "maxCount",
-        "type": "number | null",
-        "description": "Known finite nonnegative integer count limit. Null means unknown and blocks reviewed send, never unlimited.",
-        "default": "5"
+        "name": "maxFiles",
+        "type": "number",
+        "default": "5",
+        "description": "Most files in one send. A pick past it is refused with a shake and a note."
       },
       {
         "name": "maxBytes",
-        "type": "number | null",
-        "description": "Known finite nonnegative integer total-byte limit. Null means unknown and blocks reviewed send.",
-        "default": "5242880"
+        "type": "number",
+        "default": "26214400",
+        "description": "Most bytes in one send (25 MB). The meter turns red and send is held past it."
+      },
+      {
+        "name": "recipient",
+        "type": "{ name: string; detail: string }",
+        "default": "{ name: \"Lena Ortiz\", detail: \"Ortiz Kitchens\" }",
+        "description": "Who the thread is with: the header and the tray's title."
+      },
+      {
+        "name": "messages",
+        "type": "ChatMessage[]",
+        "default": "3 messages",
+        "description": "The conversation behind the tray: { id, from: \"them\" | \"me\", text, time }."
       },
       {
         "name": "defaultNote",
         "type": "string",
-        "description": "Initial local note, preserved as a newer draft through pending/failure/older acknowledgment.",
-        "default": "\"The original notes and interface study for this handoff.\""
+        "default": "\"Revised plan and the joinery quote. …\"",
+        "description": "The note sent with the files."
+      },
+      {
+        "name": "tray",
+        "type": "\"open\" | \"closed\"",
+        "default": "—",
+        "description": "Drive the tray: open shows the files, closed folds it to the composer. A change plays like a tap."
+      },
+      {
+        "name": "onTrayChange",
+        "type": "(tray: \"open\" | \"closed\") => void",
+        "default": "—",
+        "description": "Called when the tray opens or folds, by the + button, a send or a driven `tray`."
+      },
+      {
+        "name": "onSend",
+        "type": "(send: AttachmentSend) => Promise<void> | void",
+        "default": "—",
+        "description": "Send { files, note, totalBytes }. Resolve and the tiles leave, the tray folds and the message lands in the thread; reject and everything stays with an error and a retry."
+      },
+      {
+        "name": "onRetry",
+        "type": "(file: TrayFile) => void",
+        "default": "—",
+        "description": "Retry a failed upload. The host updates the file's status and progress; the tile shows them."
       },
       {
         "name": "onAdd",
         "type": "() => void",
-        "description": "Explicit host-owned picker action. Missing observer is unavailable; never opens automatically."
+        "default": "—",
+        "description": "Open the host's file picker. Without it the Browse button is hidden."
       },
       {
-        "name": "onRetry",
-        "type": "(attachment: TrayAttachment, signal: AbortSignal) => void | Promise<void>",
-        "description": "Real per-file retry; actual status remains authoritative. Each job is isolated, cancellable and source-fenced."
+        "name": "renderThumbnail",
+        "type": "(file: TrayFile) => ReactNode",
+        "default": "drawn previews",
+        "description": "Draw a real preview (an Image) for a file. It fills a 116 × 92 rounded well on the tile and in the sent bubble."
       },
       {
-        "name": "onSend",
-        "type": "(review: AttachmentReview, signal: AbortSignal) => void | Promise<void>",
-        "description": "Exact copied files/note/limits. Acknowledgment keeps actual delivery host-owned and never replaces newer typing."
-      },
-      {
-        "name": "resetKey",
-        "type": "string | number",
-        "description": "Replacement review session. Clears local choice/note/receipts and aborts stale work."
-      },
-      {
-        "name": "title",
+        "name": "accent",
         "type": "string",
-        "description": "Native attachment review heading.",
-        "default": "\"A last look, then send.\""
-      },
-      {
-        "name": "theme",
-        "type": "\"dark\" | \"light\"",
-        "description": "Neutral black/white/graphite chrome with purposeful actual state accents.",
-        "default": "\"dark\""
+        "default": "\"#6CB4FF\"",
+        "description": "The one colour: selection checks and ring, the size meter and the send button."
       }
     ],
     "added": "2026-10-14",
     "demo": {
       "steps": [
-        "click:@attachment-tile-1",
-        "wait:300",
-        "scroll:480",
-        "wait:200",
-        "click:@attachment-note",
-        "key:End",
-        "type: Reviewed.",
-        "click:@attachment-send",
+        "wait:1700",
+        "click:@tile-tile",
         "wait:500",
-        "click:@attachment-reviewed",
-        "wait:400"
-      ]
+        "click:@attach-send",
+        "wait:2300"
+      ],
+      "loop": false
     },
     "controls": [
       {
-        "prop": "theme",
-        "label": "Theme",
-        "kind": "segmented",
+        "prop": "tray",
+        "label": "Tray",
+        "kind": "action",
         "options": [
-          "dark",
-          "light"
-        ],
-        "default": "dark"
+          {
+            "value": "open",
+            "label": "Open"
+          },
+          {
+            "value": "closed",
+            "label": "Folded"
+          }
+        ]
       },
       {
-        "prop": "maxCount",
+        "prop": "maxFiles",
         "label": "File limit",
         "kind": "slider",
-        "min": 0,
+        "min": 1,
         "max": 5,
         "step": 1,
         "default": 5
       },
       {
-        "prop": "title",
-        "label": "Heading",
-        "kind": "text",
-        "default": "A last look, then send."
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#6CB4FF",
+        "options": [
+          "#6CB4FF",
+          "#F5F5F5",
+          "#FFA24C",
+          "#8BE9B4"
+        ]
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
       }
     ]
   },

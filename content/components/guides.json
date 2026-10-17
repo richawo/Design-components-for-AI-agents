@@ -4873,22 +4873,21 @@
     "updated": "2026-10-14"
   },
   "mobile-attachment-tray": {
-    "useWhen": "Reviewing exact selected attachment metadata, finite limits and a preserved note before an explicit host-owned send.",
-    "avoidWhen": "Automatically opening a picker or uploading, calling unknown limits unlimited, hiding invalid selections or presenting a request acknowledgment as delivered files.",
+    "useWhen": "Picking several files to send into a conversation on a phone, with real previews, a visible size limit, uploads that finish in place and a send that lands as one message.",
+    "avoidWhen": "Browsing a whole file system, previewing a single document full screen, or sending files outside a conversation.",
     "integration": [
-      "Supply stable file IDs, full names, MIME, nullable bytes and actual ready/loading/error/unavailable states with reasons. All selected missing/conflicting variants remain inspectable; choice shelf shows the first 100 raw records.",
-      "Optional renderThumbnail receives copied file metadata and supplies non-interactive presentation only. Use real host file previews. The default demo shows its original document excerpts and SVG study; unknown files retain an honest format silhouette. Thumbnail presentation never changes file eligibility, exact byte totals or send/retry payloads.",
-      "Use value/defaultValue and synchronous onValueChange for ordered selected IDs. Read-only or rejected control remains honest. Changing limits never silently removes selected evidence.",
-      "maxCount and maxBytes default to 5 and 5242880. Both require finite nonnegative integer values for a reviewed send; null means unknown and blocks authorization, never unlimited. Missing sizes or ambiguous selected identities make the exact total unavailable.",
-      "onSend receives a copied AttachmentReview with actual attachment records, exact note and exact limits, plus AbortSignal. One pending owner offers Cancel. File/selection/limit/owner/reset changes retire stale work; newer note typing alone preserves the real submitted request. Fulfillment acknowledges only and cannot label delivery complete.",
-      "Inspect the exact submitted or acknowledged note and filenames separately from the current draft. A failed request or an older acknowledgment cannot replace newer typing. Provide optional explicit onAdd and per-file onRetry; retries have independent cancellation, exact identity/fact ownership and actual same-file loading continuity.",
-      "Install Expo modules once in a bare React Native app. Verify native device touch, dynamic text and assistive technology. The browser proof covers actual source/state, focus and design."
+      "files are TrayFile { id, name, kind, bytes, status?, progress?, detail?, reason? }. Update status and progress from your uploader; only ready files can be picked. Failed files show their reason and call onRetry(file) when tapped.",
+      "maxFiles and maxBytes are enforced where the pick happens: a refused tile shakes and the hint explains. The meter shows the running total against the limit.",
+      "onSend({ files, note, totalBytes }) sends the selection. Resolve and the tiles leave, the tray folds and a message lands in the thread; reject and the files and note stay with an error.",
+      "renderThumbnail(file) draws a real preview (an Image) in place of the bundled drawings. messages and recipient set the conversation behind the tray; tray and onTrayChange drive it from outside; onAdd shows a Browse button for your picker.",
+      "Install expo-blur, expo-linear-gradient and react-native-svg (bare React Native: npx install-expo-modules once). Check the keyboard with the growing note field on real devices."
     ],
     "related": [
       "mobile-chat",
-      "mobile-bottom-sheet"
+      "mobile-file-preview",
+      "mobile-channel-thread"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "mobile-meeting-preflight": {
     "useWhen": "Reviewing a supplied meeting room, audio/video preferences and host-reported required checks before explicit entry.",
