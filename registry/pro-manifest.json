@@ -7213,7 +7213,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "cards",
-    "description": "A physical translucent folder opens into real files, readable previews and host actions, with considered empty, loading and unavailable states.",
+    "description": "A smoked-glass folder with a refracting front that tips open on a hinge, lifting its sheets and laying out a legible file list with previews and open states.",
     "tags": [
       "folder",
       "files",
@@ -7227,122 +7227,125 @@
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1000,
-    "usage": "import { CardsPrismaticFolder } from \"@/components/design-for-ai/cards-prismatic-folder\";\n\n<CardsPrismaticFolder\n  title=\"Brand assets\"\n  description=\"Approved files for the launch\"\n  files={files}\n  onFileOpen={(file) => openDocument(file.id)}\n  onRetry={() => reloadFiles()}\n/>",
+    "previewHeight": 820,
+    "usage": "import { CardsPrismaticFolder } from \"@/components/design-for-ai/cards-prismatic-folder\";\n\n<CardsPrismaticFolder\n  title=\"Brand assets\"\n  description=\"Approved for the autumn launch\"\n  collection=\"Launch · v3\"\n  files={files} // { id, name, kind, size, modified, owner?, preview?, available?, note? }\n  status={query.isLoading ? \"loading\" : query.isError ? \"unavailable\" : \"ready\"}\n  onFileOpen={(file) => openDocument(file.id)}\n  onRetry={() => query.refetch()}\n/>",
     "props": [
       {
         "name": "title",
         "type": "string",
         "default": "\"Orbit Studio\"",
-        "description": "Collection identity on the folder front and its accessible label."
+        "description": "Collection name on the glass front and in the list header."
       },
       {
         "name": "description",
         "type": "string",
-        "default": "\"Identity & working files\"",
-        "description": "Short context below the collection identity."
+        "default": "\"Identity, edition 04\"",
+        "description": "One line under the name on the front."
       },
       {
         "name": "collection",
         "type": "string",
-        "default": "\"COLLECTION / 04\"",
-        "description": "Small label on the folder tab."
+        "default": "\"Orbit · Ed. 04\"",
+        "description": "The label on the folder’s tab."
       },
       {
         "name": "files",
         "type": "PrismaticFile[]",
-        "description": "Unique id, name, kind, size, modified, optional text preview and available flag. An empty array shows the empty state; available=false keeps unavailable files visible and disabled."
+        "default": "Orbit Studio identity files",
+        "description": "id, name, kind, size, modified, optional owner, preview (plain text), available and note. The first three become the sheets peeking out of the folder, sketched by kind. available: false keeps a file listed but locked, with note in place of its date."
       },
       {
         "name": "status",
         "type": "\"ready\" | \"loading\" | \"unavailable\"",
         "default": "\"ready\"",
-        "description": "Host-owned collection availability. No fetching or simulated delay occurs in the named export."
+        "description": "Host-owned availability: skeleton rows and a syncing front while loading, a locked message with Try again when unavailable."
       },
       {
         "name": "error",
         "type": "string",
-        "description": "Useful recovery text when the collection is unavailable."
+        "default": "\"The studio drive isn’t responding. Your files are safe; try again in a moment.\"",
+        "description": "Body of the unavailable state."
       },
       {
         "name": "emptyTitle",
         "type": "string",
-        "default": "\"Room for the next idea\"",
-        "description": "Title for a ready collection containing no files."
+        "default": "\"Nothing filed yet\"",
+        "description": "Title when a ready collection has no files."
       },
       {
         "name": "emptyDescription",
         "type": "string",
-        "default": "\"Files added to this collection will appear here.\"",
-        "description": "Instruction shown beneath the empty state title."
+        "default": "\"Files added to this collection appear here, newest first.\"",
+        "description": "Body of the empty state."
       },
       {
         "name": "accent",
         "type": "string",
-        "default": "\"#dedede\"",
-        "description": "One restrained highlight on the tab and refractive top edge."
+        "default": "\"#e6b782\"",
+        "description": "The tab mark and the selected file’s marker."
       },
       {
         "name": "open",
         "type": "boolean",
-        "description": "Optional controlled disclosure state; pair with onOpenChange. Without a handler, only the disclosure is read-only and its hint describes the current state; file actions stay available."
+        "description": "Controlled open state; pair with onOpenChange. Without a handler the folder is read-only."
       },
       {
         "name": "defaultOpen",
         "type": "boolean",
         "default": "false",
-        "description": "Initial disclosure state when open is uncontrolled."
+        "description": "Initial state when uncontrolled."
       },
       {
         "name": "disabled",
         "type": "boolean",
         "default": "false",
-        "description": "Disables collection and file actions, preserving all content."
+        "description": "Dims the whole object and blocks opening and file actions."
       },
       {
         "name": "onOpenChange",
         "type": "(open: boolean) => void",
-        "description": "Called when the collection disclosure is activated."
+        "description": "Called when the folder is opened or closed."
       },
       {
         "name": "onFileSelect",
         "type": "(file: PrismaticFile) => void",
-        "description": "Observes selecting a file for its supplied text preview."
+        "description": "Called when a file row is selected to preview."
       },
       {
         "name": "onFileOpen",
         "type": "(file: PrismaticFile) => void | Promise<void>",
-        "description": "Optional real host operation. Pending retains focus and guards repeat activation. Selected file revisions/removal invalidate stale outcomes; rejection preserves selection and retry."
+        "description": "Shows an Open button in the preview. A promise shows Opening; a rejection shows its message and Try again; a different file or closing retires the request."
       },
       {
         "name": "onRetry",
         "type": "() => void",
-        "description": "Optional host recovery action in the unavailable collection state."
+        "description": "Try again in the unavailable state."
       },
       {
         "name": "className",
         "type": "string",
         "default": "\"\"",
-        "description": "Optional root classes. The component fits its container up to 960px, with a large physical folder beside its real file/preview panel on wide embeds and stacked content on compact ones."
+        "description": "Classes on the root. The folder sits beside its list from 52rem of container width and above it below that."
       }
     ],
     "controls": [
       {
-        "prop": "title",
-        "label": "Collection name",
-        "kind": "text",
-        "default": "Orbit Studio"
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#e6b782",
+        "options": [
+          "#e6b782",
+          "#ececee",
+          "#9bdac5",
+          "#f28b82"
+        ]
       },
       {
-        "prop": "accent",
-        "label": "Edge highlight",
-        "kind": "color",
-        "default": "#dedede",
-        "options": [
-          "#dedede",
-          "#d5d8dd",
-          "#a7c7ba"
-        ]
+        "prop": "title",
+        "label": "Collection",
+        "kind": "text",
+        "default": "Orbit Studio"
       },
       {
         "prop": "defaultOpen",
@@ -7370,14 +7373,13 @@
     ],
     "demo": {
       "steps": [
-        "click:@folder-toggle",
-        "wait:450",
+        "wait:600",
+        "hover:@folder-toggle",
+        "wait:500",
+        "click",
+        "wait:1100",
         "click:@file-tokens",
-        "wait:650",
-        "click:@file-tokens",
-        "wait:350",
-        "click:@folder-toggle",
-        "wait:650"
+        "wait:1400"
       ],
       "loop": false
     },

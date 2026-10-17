@@ -3555,18 +3555,18 @@
     "updated": "2026-10-17"
   },
   "cards-prismatic-folder": {
-    "useWhen": "A compact file collection benefits from a physical folder presentation, readable previews and clear availability states.",
-    "avoidWhen": "Large directory trees, bulk file administration or workflows that need a full file browser.",
+    "useWhen": "A small, curated set of files deserves to feel like a thing you hand over: a brand kit, a press pack, a client deliverable, a release bundle, where opening the folder is part of the moment.",
+    "avoidWhen": "Large directories, nested folders, bulk selection and file management, or anywhere people need sorting, search and drag-and-drop.",
     "integration": [
-      "Supply stable file identifiers and the actual collection status rather than relying on demo content.",
-      "Connect file actions and recovery to the host application; the presentation does not fetch or store files.",
-      "Review empty collections, unavailable files and long file names in the intended container."
+      "Pass files with stable ids, a short kind, human size and date, and a plain-text preview when you have one; the first three become the folder’s sheets.",
+      "Drive status from your fetch (loading, unavailable) and wire onRetry; return a promise from onFileOpen and reject with a readable message on failure.",
+      "Give it room: the folder sits beside its list from about 52rem of container width and stacks below that."
     ],
     "related": [
       "data-file-explorer",
       "input-file-dropzone"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "navigation-context-rail": {
     "useWhen": "An app with a handful of top-level areas, each holding its own list of destinations (projects, inbox views, libraries), where people hop between areas and expect each to remember where they were.",
