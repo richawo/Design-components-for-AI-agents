@@ -17809,125 +17809,157 @@
   },
   {
     "slug": "editor-storyboard-strip",
-    "name": "Scene Storyboard Strip",
+    "name": "Storyboard Strip",
     "tier": "pro",
     "platform": "web",
     "category": "editors",
-    "description": "Reorder supplied scenes, edit bounded durations and inspect the exact cumulative sequence with accessible controls and retained controlled drafts.",
+    "description": "A film storyboard: the monitor plays the board, cards sized by duration reorder by drag and trim at the edge, and runtime counts to target.",
     "tags": [
       "storyboard",
-      "scene",
-      "sequence",
-      "duration",
+      "video",
       "timeline",
-      "editor"
+      "reorder",
+      "drag and drop",
+      "film",
+      "editor",
+      "scenes"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1100,
-    "usage": "import { EditorStoryboardStrip } from \"@/components/design-for-ai/editor-storyboard-strip\";\n\n<EditorStoryboardStrip scenes={scenes} onScenesChange={setScenes} />\n\n// Scene preview and timing come from the supplied records. No rendered playback or export is implied; Alt+Left/Right on the inspected scene provides keyboard order changes.",
+    "previewHeight": 900,
+    "usage": "import { EditorStoryboardStrip } from \"@/components/design-for-ai/editor-storyboard-strip\";\n\n<EditorStoryboardStrip\n  title=\"Autumn spot · 30s\"\n  targetDuration={30}\n  scenes={[\n    { id: \"lake\", title: \"Cold open\", notes: \"Mist lifting off the lake.\", duration: 3.5, shot: \"wide\",\n      thumbnail: frameUrl /* optional: a real frame; otherwise the shot is drawn from shot + tone */ },\n  ]}\n  onScenesChange={(scenes) => saveCut(scenes)}\n/>\n\n// Drag a card to reorder (Alt+Left/Right on a focused card, or Earlier/Later), drag its right edge or use the stepper to trim.\n// Durations snap to half seconds between 0.5 and 20. onScenesChange fires once per finished change, not during a drag.",
     "props": [
       {
-        "name": "scenes",
-        "type": "readonly StoryboardScene[]",
-        "description": "Controlled accepted sequence of up to20 actual identities, title/description, optional thumbnail and duration0.25–120 seconds in quarter-second increments. Total at most600 seconds."
+        "name": "title",
+        "type": "string",
+        "default": "\"Autumn spot · 30s\"",
+        "description": "The project, in the toolbar."
       },
       {
-        "name": "defaultScenes",
-        "type": "readonly StoryboardScene[]",
-        "description": "Local initial scenes, copied when editing. Reset explicitly through resetKey."
+        "name": "path",
+        "type": "string[]",
+        "default": "[\"Halden\"]",
+        "description": "Breadcrumb before the title, from @2xl."
+      },
+      {
+        "name": "scenes",
+        "type": "StoryScene[]",
+        "default": "seven shots for a 30-second outdoor-clothing spot",
+        "description": "Shots in order: { id, title, notes, duration (s), shot: \"wide\" | \"figure\" | \"detail\" | \"window\" | \"interior\" | \"title\", tone?: [string, string], thumbnail? }."
+      },
+      {
+        "name": "targetDuration",
+        "type": "number",
+        "default": "30",
+        "description": "The cut's target length in seconds. The meter and the over/spare readout measure against it."
+      },
+      {
+        "name": "defaultSelectedId",
+        "type": "string",
+        "default": "first shot",
+        "description": "The shot open in the monitor on mount."
       },
       {
         "name": "onScenesChange",
-        "type": "(scenes: StoryboardScene[]) => void",
-        "description": "Request a copied complete sequence with changed order or duration. Controlled rejection preserves accepted scene/timing, newer numeric buffers survive old acknowledgement and synchronous failures are contained."
+        "type": "(scenes: StoryScene[]) => void",
+        "description": "The order and durations after each finished change: a drag dropped, a move, a trim released, a stepper press."
       },
       {
-        "name": "resetKey",
-        "type": "string | number",
-        "description": "Resets local sequence, inspection, position, field state and request receipt."
-      },
-      {
-        "name": "status",
-        "type": "\"ready\" | \"loading\" | \"error\"",
-        "description": "Host availability preserves readable accepted scene records."
-      },
-      {
-        "name": "errorMessage",
+        "name": "accent",
         "type": "string",
-        "description": "Host failure explanation; blank falls back."
-      },
-      {
-        "name": "onRetry",
-        "type": "() => void",
-        "description": "Actual host recovery."
-      },
-      {
-        "name": "disabled",
-        "type": "boolean",
-        "description": "Locks editing and inspection, preserving accepted content."
+        "default": "theme ink",
+        "description": "The playhead, the selection ring and Play."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Complete monochromatic graphite/white chrome. Colour is reserved for actual supplied content and purposeful feature accents."
-      },
-      {
-        "name": "labels",
-        "type": "Partial<StoryboardLabels>",
-        "description": "Scene/timing/thumbnail failure/request and recovery copy."
+        "default": "\"dark\"",
+        "description": "Graphite or white chrome. Frames keep their own tones."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Host responsive classes."
+        "description": "Extra classes on the root section."
       }
     ],
     "added": "2026-10-14",
     "demo": {
       "steps": [
-        "click:@story-next",
-        "click:@story-earlier",
-        "click:@story-number",
-        "key:End",
-        "key:ArrowUp",
-        "key:ArrowDown",
-        "click:@story-select-care",
-        "click:@story-earlier",
-        "click:@story-position:0.3,0.5"
+        "wait:300",
+        "click:@play",
+        "wait:1800",
+        "click:@play",
+        "hover:@scene-detail",
+        "down",
+        "hover:@strip:0.16,0.5",
+        "up",
+        "wait:500",
+        "click:@longer",
+        "wait:600"
       ],
       "loop": false
     },
     "controls": [
       {
+        "prop": "targetDuration",
+        "label": "Target length",
+        "kind": "slider",
+        "min": 15,
+        "max": 60,
+        "step": 5,
+        "unit": "s",
+        "default": 30
+      },
+      {
+        "prop": "defaultSelectedId",
+        "label": "Open at",
+        "kind": "select",
+        "options": [
+          "lake",
+          "ridge",
+          "walk",
+          "detail",
+          "cafe",
+          "home",
+          "end"
+        ],
+        "default": "lake",
+        "remount": true
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#8ab4ff",
+          "#7dd3a8",
+          "#f4b267"
+        ]
+      },
+      {
         "prop": "theme",
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
         "default": "dark"
-      },
-      {
-        "prop": "disabled",
-        "label": "Read only",
-        "kind": "toggle",
-        "default": false
-      },
-      {
-        "prop": "status",
-        "label": "Availability",
-        "kind": "select",
-        "options": [
-          "ready",
-          "loading",
-          "error"
-        ],
-        "default": "ready"
       }
     ]
   },
