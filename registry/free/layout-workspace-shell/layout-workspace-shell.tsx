@@ -161,7 +161,8 @@ const STYLE = {
     "mt-2 font-display text-[clamp(1.375rem,2.2cqi,1.75rem)] font-medium leading-[1.15]",
     "tracking-[-0.035em] text-balance",
   ),
-  content: "min-h-0 min-w-0 flex-1 space-y-6 overflow-auto p-4 @lg/ws:p-6 @3xl/ws:p-7",
+  // Embedded drawers stay inside the content's layer, below the shell's navigation and menus.
+  content: "isolate min-h-0 min-w-0 flex-1 space-y-6 overflow-auto p-4 @lg/ws:p-6 @3xl/ws:p-7",
   footer: cx(
     "shrink-0 rounded-b-[19px] border-t border-[var(--ws-line)] bg-[var(--ws-surface)] px-5 py-3.5",
     "@3xl/ws:rounded-bl-none",

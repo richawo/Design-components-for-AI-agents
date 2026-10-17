@@ -84,6 +84,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 4: the complete scroll suite now passes, including playable WebM, leaving-view pause and broken-film recovery. Chapter Stack releases unsuitable sticky cards synchronously on resize and pointer changes. The same resize replay measured release at 119.8 ms before and 0.2 ms after; its forced-sticky negative control failed. The regression checks the first frame, rather than waiting for a delayed layout. Both-theme accessibility also found and corrected low-contrast folio/fact labels. The poster is refreshed; its film remains in task 1.
 
+- Task 4: all eight block workflows now pass. Workspace Shell isolates its content layer so embedded drawers cannot cover the header's menus. People Workspace verifies a real department switch while the onboarding drawer is open, draft retention, failed completion and the exact successful retry payload. Menu hit-testing and a refreshed open-state capture confirm the overlap is resolved. The retained-panel, focus and reduced-motion regression also passes. The final full suite rerun remains pending.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned

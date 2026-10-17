@@ -8,7 +8,7 @@ Build a container-responsive application frame: a navigation rail with a travell
 - **rail:** 212px from the 48rem container breakpoint, a surface-to-background gradient, brand mark (32px, inset highlight) and name, optional mono navLabel, links (40px tall, optional 16px icon and mono badge) and an optional railFooter pinned to the bottom.
 - **compact:** Below 48rem the rail becomes a brand row and a horizontally scrolling tab strip with a 2px underline.
 - **header:** Mono eyebrow, title and subtitle on the left, actions on the right (items-end), 20–24px vertical padding, raised above the content (z-20).
-- **content:** Flexible pane that scrolls on its own inside a fixed-height shell; 16–28px padding.
+- **content:** Flexible pane that scrolls on its own inside a fixed-height shell; 16–28px padding. Isolate its stacking context so embedded drawers stay below the shell header and its menus.
 
 ## Typography
 
