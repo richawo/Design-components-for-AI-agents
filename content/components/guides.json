@@ -4571,19 +4571,19 @@
     "updated": "2026-10-17"
   },
   "ai-structured-output": {
-    "useWhen": "Inspecting supplied structured fields as they become complete, valid or invalid during an actual stream.",
-    "avoidWhen": "Inventing completed values, hiding validation failures or claiming to execute a schema-driven workflow.",
+    "useWhen": "Showing a model extract structured data live: JSON streams into a code pane while a schema rail validates each field the moment it closes and flags what failed and why.",
+    "avoidWhen": "Plain chat answers or prose, where streaming text reads better, or a form the user fills in themselves rather than reviewing what a model produced.",
     "integration": [
-      "Supply stable fields with actual path, declared JSON type (string, number, boolean, null, object or array), value, waiting/partial/valid/invalid/unavailable state and meaningful messages. outputState/outputMessage describes actual host streaming/completion/failure; rawOutput is received text, not invented validated JSON.",
-      "Selection is an exact value/defaultValue/onValueChange ID contract; inspection filters are local. Only unique, valid, type-matching, finite, acyclic and bounded field values can be copied as validated output. Explicit raw copying keeps the received state clear.",
-      "Real onRetry(field, AbortSignal) and field clipboard jobs are owned by exact field content/state and unique identity, output/reset scope, availability and callback identity. A newly duplicated active ID aborts recovery and retires field-copy receipts; old settlement cannot affect corrected newer work. Raw-text copying keeps its independent supplied-text scope. Missing handlers never show fake recovery controls.",
-      "Optional defaultView starts named inspection in field or raw mode and reapplies on resetKey. The original demo begins with a complete raw payload derived only from its own fields; caller fields receive no unrelated stand-in. Raw copying remains explicitly separate from validated field output."
+      "Pass the growing JSON as `text` on every chunk with `status` (streaming, done, stopped, error). Partial JSON is expected: each value opens at its first character and closes at its last.",
+      "Describe the output in `schema`: path, label, type, required, options, pattern and minItems, plus `check(value, get)` for rules across fields such as totals that must add up.",
+      "Wire `onRepair(issues)` to ask the model for the failing fields and list their paths in `repairing` while it rewrites them in `text`; omit it and no repair buttons render. `onStop`, `onRegenerate` and `onCopy` are optional."
     ],
     "related": [
       "streaming-text",
+      "ai-citations-inline",
       "ai-mcp-elicitation"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "agents-dependency-board": {
     "useWhen": "Showing an agent's plan as tasks with dependencies, where people need to see what is blocking the finish and act on it: retry a failed task, start a ready one, stop a running one.",

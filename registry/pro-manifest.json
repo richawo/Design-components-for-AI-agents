@@ -2996,17 +2996,19 @@
   },
   {
     "slug": "ai-structured-output",
-    "name": "Structured Output Review",
+    "name": "Structured Output Stream",
     "tier": "pro",
     "platform": "web",
     "category": "ai",
-    "description": "A received-field ledger that distinguishes partial values from host validation, with bounded inspection, explicit raw text and real recovery requests.",
+    "description": "Streamed JSON fills in token by token while a schema rail ticks off each field as it validates, flags failures with a reason and repairs them in place.",
     "tags": [
       "ai",
       "structured output",
+      "json",
       "schema",
       "validation",
       "streaming",
+      "extraction",
       "dark"
     ],
     "dependencies": [
@@ -3014,141 +3016,169 @@
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1060,
-    "usage": "import { AiStructuredOutput } from \"@/components/design-for-ai/ai-structured-output\";\n\n<AiStructuredOutput fields={fields} outputState={status} rawOutput={receivedText} onRetry={recoverField} resetKey={outputId} />",
+    "previewHeight": 900,
+    "usage": "import { AiStructuredOutput, type SchemaField } from \"@/components/design-for-ai/ai-structured-output\";\n\nconst schema: SchemaField[] = [\n  { path: \"vendor.name\", label: \"Supplier\", type: \"string\", required: true },\n  { path: \"dueDate\", label: \"Due\", type: \"date\", required: true },\n  { path: \"total\", label: \"Total\", type: \"number\", required: true },\n];\n\n// Pass the growing text on every chunk; the rail validates each field as it closes.\n<AiStructuredOutput\n  text={partialJson}\n  status={done ? \"done\" : \"streaming\"}\n  schema={schema}\n  schemaName=\"Invoice v3\"\n  source=\"northwind-inv-2291.pdf\"\n  onStop={abort}\n  onRegenerate={rerun}\n  onRepair={(issues) => repairFields(issues)}\n/>",
     "props": [
       {
-        "name": "fields",
-        "type": "StructuredOutputField[]",
-        "description": "Stable unique IDs, path, label, declared JSON base type, received value, waiting/partial/valid/invalid/unavailable state, validation message and required marker.",
-        "default": "5 original offline project fields"
-      },
-      {
-        "name": "outputState",
-        "type": "\"streaming\" | \"complete\" | \"error\"",
-        "description": "Actual host output state. Complete does not override incomplete or invalid individual fields.",
-        "default": "\"complete\""
-      },
-      {
-        "name": "outputMessage",
+        "name": "text",
         "type": "string",
-        "description": "Optional host state explanation. Blank error text receives a useful fallback."
+        "default": "a finished invoice extraction with two issues",
+        "description": "The JSON received so far. Partial JSON is expected: each value opens as its first character arrives and closes on its last (a number once something follows it)."
       },
       {
-        "name": "rawOutput",
+        "name": "status",
+        "type": "\"idle\" | \"streaming\" | \"done\" | \"stopped\" | \"error\"",
+        "default": "\"done\"",
+        "description": "The stream’s state. Required fields still missing when it is done are flagged; a stopped or interrupted stream marks them not received instead."
+      },
+      {
+        "name": "schema",
+        "type": "SchemaField[]",
+        "default": "10 invoice fields",
+        "description": "Fields to validate, in rail order: path (dot path, [n] for items), label, type (string, number, integer, boolean, date, enum, array, object), required, options, pattern { source, message }, minItems, and check(value, get) for rules across fields."
+      },
+      {
+        "name": "schemaName",
         "type": "string",
-        "description": "Actual supplied raw text. Copied as received and explicitly distinct from validated field JSON. No reconstruction or fabricated stream."
+        "default": "\"Invoice v3\"",
+        "description": "Shown in the toolbar after the source."
       },
       {
-        "name": "value",
+        "name": "source",
         "type": "string",
-        "description": "Authoritative selected field ID. Without onValueChange field selection is read-only; missing controlled IDs stay explicit."
+        "default": "\"northwind-inv-2291.pdf\"",
+        "description": "What the model is reading, such as the uploaded file’s name."
       },
       {
-        "name": "defaultValue",
+        "name": "tokens",
+        "type": "number",
+        "description": "Tokens received; counts up in the toolbar. Estimated from the text when omitted."
+      },
+      {
+        "name": "errorMessage",
         "type": "string",
-        "description": "Initial local field ID, reused after reset. Otherwise the first available field is selected."
+        "description": "Why the stream stopped, shown in the error banner when status is \"error\"."
       },
       {
-        "name": "defaultView",
-        "type": "\"field\" | \"raw\"",
-        "description": "Initial local inspection mode, reapplied on resetKey. Named default is field; the original demo begins with its actual complete raw payload.",
-        "default": "\"field\""
+        "name": "repairing",
+        "type": "string[]",
+        "default": "[]",
+        "description": "Paths the host is regenerating. Their rows read Repairing and skip validation until the path is cleared."
       },
       {
-        "name": "onValueChange",
-        "type": "(id: string, field: StructuredOutputField) => void",
-        "description": "Synchronous field-inspection observer. Controlled rejection keeps the host selection."
+        "name": "onRepair",
+        "type": "(issues: { field: SchemaField; reason: string }[]) => void",
+        "description": "Asks the model to fix failing fields: one from a row’s Repair button, all from the rail header. Omit it and no repair buttons render."
       },
       {
-        "name": "onRetry",
-        "type": "(field: StructuredOutputField, signal: AbortSignal) => void | Promise<void>",
-        "description": "Real recovery for invalid/unavailable fields. Supplied states stay authoritative. Honor cancellation; current content/state/handler/output/reset changes retire old requests."
+        "name": "onStop",
+        "type": "() => void",
+        "description": "Shown as Stop while streaming."
       },
       {
-        "name": "resetKey",
-        "type": "string | number",
-        "description": "Output identity. Clears local inspection/filter/feedback and retires asynchronous work."
+        "name": "onRegenerate",
+        "type": "() => void",
+        "description": "Runs the extraction again; also the Retry in the error banner and the Run button when idle."
       },
       {
-        "name": "title",
+        "name": "onCopy",
+        "type": "(json: string) => void",
+        "description": "Receives the finished JSON. Without it, Copy JSON writes to the clipboard."
+      },
+      {
+        "name": "showLineNumbers",
+        "type": "boolean",
+        "default": "true",
+        "description": "Line numbers in the code gutter. Field status dots stay either way."
+      },
+      {
+        "name": "accent",
         "type": "string",
-        "description": "Concise schema review heading.",
-        "default": "\"A schema you can inspect.\""
-      },
-      {
-        "name": "description",
-        "type": "string",
-        "description": "Explain received values and validation.",
-        "default": "\"Keep received values readable, make incomplete fields explicit, and resolve validation issues without losing the output.\""
+        "default": "\"#ff9a6b\"",
+        "description": "The one accent: the caret, the field being written and the selected field’s band. Valid and invalid stay semantic green and red."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Neutral black/white glass chrome, with colour reserved for actual data/feature accents.",
-        "default": "\"dark\""
+        "default": "\"dark\"",
+        "description": "Colour theme."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Outer component class.",
-        "default": "\"\""
+        "default": "\"\"",
+        "description": "Classes for the root element."
       }
     ],
     "added": "2026-10-13",
     "demo": {
       "steps": [
-        "click:@field-date",
-        "click:@view-field",
-        "wait:350",
-        "click:@retry-field",
-        "wait:400",
-        "click:@field-owner",
-        "wait:350",
-        "click:@filter-review",
-        "wait:350",
-        "click:@filter-all",
-        "wait:300"
-      ]
+        "wait:3300",
+        "click:@repair-all",
+        "wait:1500",
+        "hover:@field-total",
+        "wait:1000"
+      ],
+      "loop": false
     },
     "controls": [
+      {
+        "prop": "status",
+        "label": "Stream",
+        "kind": "action",
+        "options": [
+          {
+            "value": "streaming",
+            "label": "Replay"
+          },
+          {
+            "value": "done",
+            "label": "Finish"
+          },
+          {
+            "value": "error",
+            "label": "Interrupt"
+          }
+        ]
+      },
+      {
+        "prop": "showLineNumbers",
+        "label": "Line numbers",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "schemaName",
+        "label": "Schema name",
+        "kind": "text",
+        "default": "Invoice v3"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#ff9a6b",
+        "options": [
+          "#ff9a6b",
+          "#8ab4ff",
+          "#f4f4f5"
+        ]
+      },
       {
         "prop": "theme",
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
         "default": "dark"
-      },
-      {
-        "prop": "title",
-        "label": "Heading",
-        "kind": "text",
-        "default": "A schema you can inspect."
-      },
-      {
-        "prop": "outputState",
-        "label": "Output state",
-        "kind": "segmented",
-        "options": [
-          "streaming",
-          "complete",
-          "error"
-        ],
-        "default": "complete"
-      },
-      {
-        "prop": "defaultView",
-        "label": "Initial inspection",
-        "kind": "segmented",
-        "options": [
-          "raw",
-          "field"
-        ],
-        "default": "raw",
-        "remount": true
       }
     ]
   },
