@@ -27951,15 +27951,17 @@
     "tier": "pro",
     "platform": "mobile",
     "category": "mobile",
-    "description": "A native channel-thread reader with an original message, quoteable supplied replies, preserved response drafts and exact cancellable send acknowledgments.",
+    "description": "A dark React Native channel thread: a spine draws through the replies, Quote pins a reply above a glass composer, and your answer lands with sending, sent or retry.",
     "tags": [
-      "mobile",
-      "react native",
-      "channel",
       "thread",
       "chat",
+      "channel",
       "replies",
-      "draft",
+      "messaging",
+      "react native",
+      "glassmorphism",
+      "team",
+      "monochrome",
       "dark"
     ],
     "dependencies": [
@@ -27968,130 +27970,133 @@
       "react-native-svg"
     ],
     "theme": "dark",
-    "previewHeight": 844,
-    "usage": "import { MobileChannelThread } from \"@/components/design-for-ai/native/mobile-channel-thread\";\n\n// Bare React Native apps: run npx install-expo-modules once.\n<MobileChannelThread channel={channel} rootMessage={root} replies={replies} status={actualStatus} onSend={requestReply} onRetry={refreshThread} resetKey={sessionId} />",
+    "previewHeight": 940,
+    "usage": "// Bare React Native apps: run `npx install-expo-modules` once for expo-blur and expo-linear-gradient.\nimport { MobileChannelThread } from \"@/components/design-for-ai/native/mobile-channel-thread\";\n\n<MobileChannelThread\n  channel=\"design-review\"\n  root={rootMessage}\n  replies={replies}\n  me=\"Jun Park\"\n  status={isLoading ? \"loading\" : loadError ? \"error\" : \"ready\"}\n  onSend={({ text, quoteId }) => api.reply(threadId, text, quoteId)}\n  onRetry={() => refetch()}\n  onReact={(id, kind, mine) => api.react(id, kind, mine)}\n/>",
     "props": [
       {
         "name": "channel",
-        "type": "ThreadChannel",
-        "description": "Exact channel ID/name/topic. Combined with root ID/reset for conversation identity.",
-        "default": "Original interface-review channel"
+        "type": "string",
+        "default": "\"design-review\"",
+        "description": "Channel name without the #: the header, the placeholder and the read-only line."
       },
       {
-        "name": "rootMessage",
+        "name": "root",
         "type": "ThreadMessage",
-        "description": "Actual root ID/author/body/time label. All raw context remains inspectable.",
-        "default": "Original state-review message"
+        "default": "Mara Vale's A/B question",
+        "description": "The message the thread hangs from: { id, author, time, text, reactions?, attachment?: { title, detail } }."
       },
       {
         "name": "replies",
         "type": "ThreadMessage[]",
-        "description": "Supplied replies in host order with raw duplicate variants and exact source facts.",
-        "default": "Three original interface review replies"
+        "default": "3 replies",
+        "description": "Replies in order. A reply with quoteId shows the quoted reply above its text."
+      },
+      {
+        "name": "me",
+        "type": "string",
+        "default": "\"Jun Park\"",
+        "description": "Your name, for your own replies (shown with the inverted avatar)."
       },
       {
         "name": "status",
         "type": "\"ready\" | \"loading\" | \"error\" | \"unavailable\"",
-        "description": "Actual thread availability. Nonready keeps messages/draft readable while new sends/quotes are unavailable.",
-        "default": "\"ready\""
+        "default": "\"ready\"",
+        "description": "loading shows placeholder replies with one soft sweep; error shows a banner with Retry over the cached replies; unavailable makes the composer read-only."
       },
       {
         "name": "statusMessage",
         "type": "string",
-        "description": "Actual availability explanation, with meaningful missing/whitespace fallback."
-      },
-      {
-        "name": "quoteValue",
-        "type": "string | null",
-        "description": "Controlled quoted reply ID. Explicit null means no quote; absent handler makes quote choices read-only."
-      },
-      {
-        "name": "defaultQuoteValue",
-        "type": "string | null",
-        "description": "Initial local quote. Missing/duplicate references stay explicit and block send.",
-        "default": "null"
-      },
-      {
-        "name": "onQuoteChange",
-        "type": "(id: string | null) => void",
-        "description": "Synchronous quote proposal. Rejection/throw preserves actual reference and retained draft."
+        "default": "—",
+        "description": "The host's words for an error or a read-only thread."
       },
       {
         "name": "defaultDraft",
         "type": "string",
-        "description": "Initial local response body, preserved through pending/failure/older acknowledgment.",
-        "default": "\"The compact states are ready for one final review.\""
+        "default": "\"B with the focused field. …\"",
+        "description": "The reply waiting in the composer."
       },
       {
         "name": "onSend",
-        "type": "(review: ChannelThreadReview, signal: AbortSignal) => void | Promise<void>",
-        "description": "Copied channel/root/exact body/unique quote. One cancellable request. Acknowledgment never inserts a fake reply or replaces newer typing."
+        "type": "(reply: { text: string; quoteId?: string }) => Promise<void> | void",
+        "default": "—",
+        "description": "Post a reply. It appears at once marked Sending; resolve and it's marked Sent; reject and it stays with Not sent. Tap to retry."
       },
       {
         "name": "onRetry",
-        "type": "(context: ChannelThreadContext, signal: AbortSignal) => void | Promise<void>",
-        "description": "Real copied conversation refresh with genuine loading continuity. Actual thread readiness remains host-owned."
+        "type": "() => void",
+        "default": "—",
+        "description": "Reload after an error; the host moves status through loading back to ready."
       },
       {
-        "name": "resetKey",
-        "type": "string | number",
-        "description": "Replacement conversation context. Clears local quote/draft/receipts/scroll and aborts stale work."
+        "name": "onReact",
+        "type": "(messageId: string, kind: ReactionKind, mine: boolean) => void",
+        "default": "—",
+        "description": "Called when you add or remove a reaction (check, eyes, heart). Counts change at once."
       },
       {
-        "name": "title",
+        "name": "accent",
         "type": "string",
-        "description": "Native thread heading.",
-        "default": "\"Thread\""
-      },
-      {
-        "name": "theme",
-        "type": "\"dark\" | \"light\"",
-        "description": "Neutral black/white/graphite chrome with purposeful actual state accents.",
-        "default": "\"dark\""
+        "default": "\"#F2C94C\"",
+        "description": "The one colour: the send button, your reactions and the bar on the reply you're quoting."
       }
     ],
     "added": "2026-10-14",
     "demo": {
       "steps": [
-        "hover:@thread-reading:0.8,0.6",
-        "scroll:240",
-        "wait:200",
-        "click:@thread-reply-0",
-        "wait:250",
-        "click:@thread-draft",
-        "key:End",
-        "type: Agreed.",
+        "wait:700",
+        "click:@quote-sam",
+        "wait:700",
         "click:@thread-send",
-        "wait:650"
-      ]
+        "wait:2200"
+      ],
+      "loop": false
     },
     "controls": [
       {
-        "prop": "theme",
-        "label": "Theme",
-        "kind": "segmented",
-        "options": [
-          "dark",
-          "light"
-        ],
-        "default": "dark"
-      },
-      {
         "prop": "status",
-        "label": "Thread state",
+        "label": "Thread",
         "kind": "action",
         "options": [
-          "ready",
-          "loading",
-          "error",
-          "unavailable"
+          {
+            "value": "ready",
+            "label": "Ready"
+          },
+          {
+            "value": "loading",
+            "label": "Loading"
+          },
+          {
+            "value": "error",
+            "label": "Error"
+          },
+          {
+            "value": "unavailable",
+            "label": "Read-only"
+          }
         ]
       },
       {
-        "prop": "title",
-        "label": "Heading",
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#F2C94C",
+        "options": [
+          "#F2C94C",
+          "#F5F5F5",
+          "#6CB4FF",
+          "#8BE9B4"
+        ]
+      },
+      {
+        "prop": "channel",
+        "label": "Channel",
         "kind": "text",
-        "default": "Thread"
+        "default": "design-review"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
       }
     ]
   },

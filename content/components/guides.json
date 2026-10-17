@@ -4907,18 +4907,21 @@
     "updated": "2026-10-14"
   },
   "mobile-channel-thread": {
-    "useWhen": "Reading an actual channel conversation, quoting a uniquely identified reply and requesting an exact response while preserving newer typing.",
-    "avoidWhen": "A transport, delivery receipt service or fabricating a reply after a callback succeeds.",
+    "useWhen": "Reading and replying to one threaded conversation in a team channel on a phone, with quoting, reactions and honest sending, sent and failed states for your reply.",
+    "avoidWhen": "A one-to-one chat with bubbles, a channel's full message list, or a transport layer that needs delivery receipts from other people.",
     "integration": [
-      "Supply actual channel/root/reply facts and a real onSend(review, signal) handler. The copied review includes the exact body and optional quoted original; newer typing survives older acknowledgment. Controlled quote selection without its observer is honestly read-only.",
-      "Only supplied conversation data adds a delivered reply. Real retry refreshes the copied channel/root context, with duplicate identity, scope, handler/reset and late-response fencing. Native foreground text and focus stay above the pinned glass composer.",
-      "Install in a React Native app with Expo modules for the blur/gradient/SVG dependencies. Review native keyboard, safe insets, touch, large text and assistive technology on target devices."
+      "root and replies are ThreadMessage { id, author, time, text, quoteId?, reactions?, attachment? }. A reply with quoteId shows the quoted reply above its text.",
+      "onSend({ text, quoteId }) posts a reply. It appears at once as Sending; resolve to mark it Sent; reject and it stays as Not sent with a tap to retry, so the text is never lost.",
+      "status drives the thread: loading shows placeholder rows, error shows a banner over the cached replies with Retry (onRetry), unavailable makes the composer read-only with statusMessage in your words.",
+      "onReact(messageId, kind, mine) reports reaction toggles (check, eyes, heart); counts update immediately. accent recolours the send button, your reactions and the quote you are replying to.",
+      "Install expo-blur, expo-linear-gradient and react-native-svg (bare React Native: npx install-expo-modules once). Verify keyboard avoidance and safe areas in the host app."
     ],
     "related": [
+      "mobile-chat",
       "mobile-attachment-tray",
-      "mobile-approval-sheet"
+      "mobile-review-annotations"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "mobile-task-move": {
     "useWhen": "Reviewing a constrained task destination and exact note before an explicit host-owned move, with undo only when supported by the acknowledged move and actual task state.",
