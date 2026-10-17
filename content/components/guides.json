@@ -2635,18 +2635,19 @@
     "updated": "2026-10-12"
   },
   "legal-evidence-index": {
-    "useWhen": "Organising supplied evidence records, provenance and review notes.",
-    "avoidWhen": "A chain-of-custody system or evidential conclusion without verified source records.",
+    "useWhen": "Reviewing a bundle of exhibits before trial or disclosure, where each exhibit needs its Bates range, intake hash and chain of custody checked before it goes into an export manifest.",
+    "avoidWhen": "Hashing or verifying files in the browser, or acting as the custody system of record. It displays the hashes and hand-offs your evidence store recorded.",
     "integration": [
-      "Supply your own records through `exhibits`. Preserve stable keys or IDs when the data contract provides them.",
-      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+      "Pass `exhibits` with the intake `sha256` and `custody` hand-offs; give a hand-off its own `sha256` when your system re-hashed the file there. A mismatch is flagged as a broken chain.",
+      "`onExport` receives the manifest `{ exhibits: { id, label, title, sha256, bytes, bates }[] }`. Resolve to stamp it exported; reject to keep the selection.",
+      "Set `matter` to print the caption, claim reference and bundle name on every cover sheet."
     ],
     "related": [
       "legal-document-requests",
-      "legal-obligation-tracker",
-      "data-file-explorer"
+      "legal-version-history",
+      "legal-matter-dashboard"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "legal-matter-dashboard": {
     "useWhen": "Reviewing supplied matter workload, deadlines and operational queues.",

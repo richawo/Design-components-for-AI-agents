@@ -26971,68 +26971,81 @@
   },
   {
     "slug": "legal-evidence-index",
-    "name": "Evidence Index Workspace",
+    "name": "Evidence Index",
     "tier": "pro",
     "platform": "web",
     "category": "data",
-    "description": "Search exhibit metadata, inspect custody events and curate an export manifest. A considered, responsive legal workspace with typed integration points.",
+    "description": "An exhibit binder: tabbed index, paper cover sheets with sticker, Bates range and SHA-256, a custody trail that draws and flags a broken hash, and a stamped export.",
     "tags": [
       "legal-tech",
-      "workflow",
-      "responsive",
-      "keyboard",
-      "data"
+      "evidence",
+      "exhibits",
+      "chain of custody",
+      "litigation",
+      "bates",
+      "workflow"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1180,
-    "usage": "import { EvidenceIndex } from \"@/components/design-for-ai/legal-evidence-index\";\n\n<EvidenceIndex />",
+    "previewHeight": 860,
+    "usage": "import { EvidenceIndex } from \"@/components/design-for-ai/legal-evidence-index\";\n\n<EvidenceIndex\n  matter={{ caption: \"Harbour Works Ltd v Northline Studio Ltd\", reference: \"HC-2026-000412\", bundle: \"Trial bundle B\" }}\n  exhibits={exhibits}\n  onExport={async (manifest) => {\n    await api.bundles.exportManifest(bundleId, manifest);\n  }}\n/>",
     "props": [
-      {
-        "name": "title",
-        "type": "string",
-        "description": "Main heading.",
-        "default": "\"Evidence index\""
-      },
-      {
-        "name": "subtitle",
-        "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Inspect exhibit metadata and custody events, then review an exact export manifest.\""
-      },
       {
         "name": "exhibits",
         "type": "EvidenceExhibit[]",
-        "description": "Unique exhibits the host has authorised this viewer to see, with immutable metadata and supplied custody events. A checksum is displayed, not independently verified here."
+        "description": "Exhibits with id, tab label, title, kind, source, ISO receivedAt, intake sha256, bytes, pages, Bates range and custody hand-offs ({ id, at, actor, role, action, sha256 }). A hand-off hash that differs from intake breaks the chain."
+      },
+      {
+        "name": "matter",
+        "type": "EvidenceMatter",
+        "description": "Case caption, claim reference and bundle name, printed on every cover sheet and in the header."
+      },
+      {
+        "name": "defaultExhibitId",
+        "type": "string",
+        "description": "Exhibit opened first. Defaults to the first exhibit."
+      },
+      {
+        "name": "defaultIncluded",
+        "type": "string[]",
+        "description": "Exhibit ids in the manifest to start with."
       },
       {
         "name": "onExport",
-        "type": "(manifest:EvidenceManifest)=>void|Promise<void>",
-        "description": "Export the reviewed metadata manifest through the host. Binary files are not embedded or fetched by this component."
+        "type": "(manifest: EvidenceManifest) => void | Promise<void>",
+        "description": "Exports { exhibits: { id, label, title, sha256, bytes, bates }[] }. Resolve to stamp the manifest; reject to keep the selection and offer a retry. Files themselves are never fetched or hashed here."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#5b8def\"",
+        "description": "The one accent: the exhibit sticker, the selected tab mark and the exported stamp."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Graphite binder with paper sheets, or the light inverse."
       },
       {
-        "name": "selectMode",
-        "type": "\"custom\" | \"native\"",
-        "default": "\"custom\"",
-        "description": "Animated keyboard-accessible custom listboxes, or native platform pickers with matched 12px insets."
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:350",
-        "click:@include-0",
-        "click:@include-1",
-        "click:@review",
-        "wait:1300"
+        "wait:500",
+        "click:@tab-c",
+        "wait:1300",
+        "click:@include-c",
+        "wait:400",
+        "click:@export",
+        "wait:1500"
       ],
       "loop": false
     },
@@ -27048,14 +27061,28 @@
         "default": "dark"
       },
       {
-        "prop": "selectMode",
-        "label": "Select menus",
-        "kind": "segmented",
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#5b8def",
         "options": [
-          "custom",
-          "native"
+          "#5b8def",
+          "#e5484d",
+          "#8b7cf6",
+          "#0ea5a4"
+        ]
+      },
+      {
+        "prop": "defaultExhibitId",
+        "label": "Open exhibit",
+        "kind": "select",
+        "options": [
+          "HWL-EX-01",
+          "HWL-EX-03",
+          "HWL-EX-04"
         ],
-        "default": "custom"
+        "default": "HWL-EX-01",
+        "remount": true
       }
     ]
   },
