@@ -2282,18 +2282,19 @@
     "updated": "2026-10-17"
   },
   "finance-receivables-aging": {
-    "useWhen": "Reviewing overdue invoices by age and preparing an appropriate follow-up.",
-    "avoidWhen": "An authoritative collections ledger or automatic customer contact without approval.",
+    "useWhen": "Working a collections queue: seeing how much of the receivables book is late and how late, then writing and sending a reminder to one customer about specific invoices.",
+    "avoidWhen": "Automated dunning schedules, payment matching or a full customer statement; this screen is for a person deciding who to chase and how firmly.",
     "integration": [
-      "Supply your own records through `invoices`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onCreateFollowUp` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+      "Pass `invoices` with `dueDate`, `amountMinor` and any `paidMinor`, and `customers` with the owner, contact and email. Aging is worked out against `referenceDate`, so pass the ledger's as-of date rather than the browser's clock.",
+      "`onSendFollowUp` receives `{ customerId, invoiceIds, outstandingMinor, tone, to, subject, message }`. Send from your mail service and log the contact; reject with an `Error` to keep the draft and show its message.",
+      "Map `lastContact` from your activity log so the list shows who was chased and when."
     ],
     "related": [
-      "finance-budget-variance",
-      "finance-close-checklist",
-      "finance-expense-review"
+      "finance-invoice-composer",
+      "finance-cashflow-dashboard",
+      "finance-reconciliation"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "finance-reconciliation": {
     "useWhen": "Comparing supplied settlement records and identifying mismatches.",

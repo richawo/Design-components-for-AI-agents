@@ -22623,74 +22623,100 @@
   },
   {
     "slug": "finance-receivables-aging",
-    "name": "Receivables Aging Board",
+    "name": "Receivables Aging",
     "tier": "pro",
     "platform": "web",
     "category": "billing",
-    "description": "Overdue buckets, customer balances and a reviewed follow-up request. A considered, responsive finance workspace with typed integration points.",
+    "description": "Accounts receivable as one stacked aging bar you click into, customers ranked by their oldest debt, and a reminder you write, tone and send in place.",
     "tags": [
       "finance",
-      "workflow",
-      "responsive",
-      "keyboard",
-      "billing"
+      "receivables",
+      "accounts receivable",
+      "aging report",
+      "collections",
+      "dunning",
+      "stacked bar"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1160,
-    "usage": "import { ReceivablesAging } from \"@/components/design-for-ai/finance-receivables-aging\";\n\n<ReceivablesAging />",
+    "previewHeight": 1180,
+    "usage": "import { ReceivablesAging } from \"@/components/design-for-ai/finance-receivables-aging\";\n\n<ReceivablesAging\n  invoices={openInvoices}\n  customers={customers}\n  referenceDate=\"2026-10-16\"\n  currency=\"GBP\"\n  onSendFollowUp={async (followUp) => {\n    const res = await fetch(\"/api/collections/reminders\", { method: \"POST\", body: JSON.stringify(followUp) });\n    if (!res.ok) throw new Error(\"The mail server refused the message.\");\n  }}\n/>",
     "props": [
-      {
-        "name": "title",
-        "type": "string",
-        "description": "Main heading.",
-        "default": "\"Receivables\""
-      },
-      {
-        "name": "subtitle",
-        "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Inspect open invoices by age, then prepare a follow-up draft for the responsible account owner.\""
-      },
       {
         "name": "invoices",
         "type": "OpenReceivable[]",
-        "description": "Unique invoices with civil YYYY-MM-DD due dates and non-negative safe integer amounts and payments in two-decimal minor units. Payments cannot exceed the amount."
+        "description": "Open invoices: { id, customerId, dueDate (ISO), amountMinor, paidMinor? }. Fully paid invoices are ignored."
+      },
+      {
+        "name": "customers",
+        "type": "ReceivableCustomer[]",
+        "description": "{ id, name, owner, contactName, email, lastContact?: { date, label } }. The owner signs the reminder; the contact is greeted by first name."
       },
       {
         "name": "referenceDate",
         "type": "string",
-        "description": "Host-supplied aging date, YYYY-MM-DD from 2000 through 2100."
+        "default": "\"2026-10-16\"",
+        "description": "ISO date the ledger is aged to. Buckets are not yet due, 1–30, 31–60, 61–90 and over 90 days late."
       },
       {
         "name": "currency",
         "type": "string",
-        "description": "Shared ISO currency using two-decimal minor units."
+        "default": "\"GBP\"",
+        "description": "ISO 4217 code. Amounts are minor units of this currency."
       },
       {
-        "name": "onCreateFollowUp",
-        "type": "(draft:ReceivableFollowUp)=>void|Promise<void>",
-        "description": "Create a reviewed follow-up draft. The host owns recipient resolution and any later sending."
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Locale for money and dates."
+      },
+      {
+        "name": "defaultBucket",
+        "type": "\"current\" | \"1-30\" | \"31-60\" | \"61-90\" | \"90+\"",
+        "description": "Bucket selected on first render. Omit to show every customer."
+      },
+      {
+        "name": "defaultCustomerId",
+        "type": "string",
+        "description": "Customer whose follow-up is open on first render."
+      },
+      {
+        "name": "onSendFollowUp",
+        "type": "(followUp: ReceivableFollowUp) => void | Promise<void>",
+        "description": "Receives { customerId, invoiceIds, outstandingMinor, tone, to, subject, message }. Resolve to show the receipt and mark the customer as just contacted; reject to keep the draft and show the error message."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "description": "The one accent: selection rail, tone pill and the primary action. Defaults to the theme’s ink."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Surface palette; the age ramp has a tuned stop set for each."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:400",
-        "click:@bucket-2",
-        "wait:650",
-        "click:@review",
         "wait:600",
-        "click:@create",
-        "wait:1800"
+        "click:@bucket-61-90",
+        "wait:600",
+        "click:@customer-0",
+        "wait:500",
+        "click:@tone-final",
+        "wait:500",
+        "click:@send",
+        "wait:1500"
       ],
       "loop": false
     },
@@ -22704,6 +22730,18 @@
           "light"
         ],
         "default": "dark"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#8ea2ff",
+          "#c6f36d",
+          "#5eead4"
+        ]
       }
     ]
   },
