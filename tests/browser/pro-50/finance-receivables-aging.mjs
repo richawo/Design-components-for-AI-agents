@@ -68,6 +68,7 @@ export async function check({ page, mount, assert }) {
     await panel.filter({ hasText: "Final reminder: 2 invoices" }).waitFor();
     assert.match(await message.inputValue(), /pass the account to our collections partner\.\n\nRegards,\nJonah$/);
     await message.fill("Hi Imogen,\n\nPlease settle INV-1987 this week.\n\nRegards,\nJonah");
+    assert.equal(await message.evaluate(el => document.activeElement === el), true, "Editing must retain textarea focus");
     await page.locator('[data-demo="tone-friendly"]').click();
     await panel.filter({ hasText: "Quick reminder: 2 invoices" }).waitFor();
     assert.match(await message.inputValue(), /A quick nudge on INV-1987 and INV-2066/);
@@ -116,6 +117,9 @@ export async function check({ page, mount, assert }) {
     await panel.filter({ hasText: "Maya Okafor · owner Alex Morgan" }).waitFor();
     assert.match(await spoken(panel), /£3,600\.00 to chase/);
     assert.match(await txt(invoices), /INV-2041 76 days late £3,600\.00 INV-2094 due 30 Oct £2,600\.00/);
+    await invoices.getByRole("checkbox").nth(1).check();
+    assert.match(await message.inputValue(), /£6,200\.00 outstanding.*includes invoices that are still within their payment terms/s);
+    assert.doesNotMatch(await message.inputValue(), /£6,200\.00.*days (?:past due|overdue)/s);
 
     // No open invoices.
     await mount(`${WIDE}createRoot(document.getElementById('root')).render(<Subject.ReceivablesAging invoices={[]}/>);`);
@@ -131,7 +135,28 @@ export async function check({ page, mount, assert }) {
     await tide.filter({ hasText: "Pick at least one invoice to chase." }).waitFor();
     await tide.getByRole("list", { name: "Invoices to include" }).getByRole("checkbox").check();
     const letter = await tide.getByRole("textbox", { name: "Message" }).inputValue();
+    assert.match(letter, /Payment is due on Sunday 1 November\./);
     assert.doesNotMatch(letter, /0 days past due/, `A not-yet-due invoice is chased as overdue: ${letter.split("\n")[2]}`);
+    for (const tone of ["firm", "final"]) {
+      await page.locator(`[data-demo="tone-${tone}"]`).click();
+      const currentLetter = await tide.getByRole("textbox", { name: "Message" }).inputValue();
+      assert.match(currentLetter, /Payment is due on Sunday 1 November\./);
+      assert.doesNotMatch(currentLetter, /overdue|past due|collections partner/);
+    }
+
+    // Calendar validation rejects impossible dates as well as malformed strings.
+    // Missing customer references must not inflate totals without a visible row.
+    await mount(`${WIDE}createRoot(document.getElementById('root')).render(<Subject.ReceivablesAging invoices={[
+      {id:'VALID',customerId:'halcyon',dueDate:'2026-10-10',amountMinor:1000},
+      {id:'BAD',customerId:'halcyon',dueDate:'not-a-date',amountMinor:1000000},
+      {id:'IMPOSSIBLE',customerId:'halcyon',dueDate:'2026-02-30',amountMinor:1000000},
+      {id:'ORPHAN',customerId:'missing',dueDate:'2026-10-10',amountMinor:2000000}
+    ]}/>);`);
+    assert.match(await txt(page.getByRole("alert")), /Invalid due dates: BAD, IMPOSSIBLE.*Unknown customers: ORPHAN \(missing\).*Totals exclude these records until corrected/s);
+    assert.match(await txt(page.locator("section").first().locator("header").first()), /Data needs review 1 open · 1 customer/);
+    assert.match(await spoken(page.locator("section").first()), /Outstanding £10\.00 £10\.00 overdue/);
+    assert.equal(await page.locator('[data-demo^="customer-"]').count(), 1);
+    assert.match(await spoken(bucket("90+")), /£0\.00 0 invoices/);
   } finally {
     await page.setViewportSize({ width: 390, height: 900 });
   }

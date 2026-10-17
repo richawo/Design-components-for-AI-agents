@@ -23299,7 +23299,7 @@
       {
         "name": "invoices",
         "type": "OpenReceivable[]",
-        "description": "Open invoices: { id, customerId, dueDate (ISO), amountMinor, paidMinor? }. Fully paid invoices are ignored."
+        "description": "Open invoices: { id, customerId, dueDate (YYYY-MM-DD), amountMinor, paidMinor? }. Fully paid invoices are ignored. Invalid due dates and unknown customer references are reported and excluded from totals until corrected."
       },
       {
         "name": "customers",

@@ -2301,7 +2301,8 @@
     "integration": [
       "Pass `invoices` with `dueDate`, `amountMinor` and any `paidMinor`, and `customers` with the owner, contact and email. Aging is worked out against `referenceDate`, so pass the ledger's as-of date rather than the browser's clock.",
       "`onSendFollowUp` receives `{ customerId, invoiceIds, outstandingMinor, tone, to, subject, message }`. Send from your mail service and log the contact; reject with an `Error` to keep the draft and show its message.",
-      "Map `lastContact` from your activity log so the list shows who was chased and when."
+      "Map `lastContact` from your activity log so the list shows who was chased and when.",
+      "Invoices with invalid calendar due dates or unknown customer IDs are named in an alert and excluded from totals until corrected. Reminders containing current invoices use their payment terms rather than an overdue claim, at every tone."
     ],
     "related": [
       "finance-invoice-composer",

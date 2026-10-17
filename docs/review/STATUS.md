@@ -147,7 +147,7 @@ needs re-recording, whether its poster is current, and the state of its browser 
 | `finance-expense-review` | new | stale | rewritten, passes |
 | `finance-invoice-composer` | new | current | rewritten, passes in isolation; payment links and narrow removal fixed; official runner pending |
 | `finance-payment-run` | new | current | rewritten, not yet run end to end; asserts bugs below |
-| `finance-receivables-aging` | new | current | rewritten, not yet run end to end; asserts bugs below |
+| `finance-receivables-aging` | new | current | rewritten, passes in isolation; invalid records and current-invoice reminders fixed; Next preview rerun pending |
 | `finance-reconciliation` | new | stale | no pro-50 probe; pro-industry-probe and pro-demo-probe still test the old UI |
 | `finance-scenario-forecast` | new | current | rewritten, passes in isolation; runway and empty states fixed; official runner pending |
 

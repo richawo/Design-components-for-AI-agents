@@ -18,6 +18,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Tasks 3.6 and 3.7: resolved sender-specific printed payment links, host-only receipt links, and line removal at all widths. The invoice probe, dark/light accessibility checks and responsive captures at 320/390/768/1440 pass in isolation.
 
+- Task 3.8: invalid due dates and unknown customers now produce a notice and are excluded from totals. Current and mixed invoice selections use accurate payment terms at every tone. The letter editor retains focus across draft changes. Source-fixture regression and theme/responsive checks are recorded with the component.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
