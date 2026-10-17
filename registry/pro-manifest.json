@@ -14988,85 +14988,87 @@
     "tier": "pro",
     "platform": "web",
     "category": "devtools",
-    "description": "A precise editable request console with applied-snapshot ownership, lossless headers and actual host-returned responses, cancellation and retained drafts.",
+    "description": "Replay a captured HTTP request: edit headers and JSON body, send it, and watch status, timing and a line diff land against the original response.",
     "tags": [
       "devtools",
       "request",
-      "http",
-      "response",
       "replay",
-      "dark"
+      "http",
+      "diff",
+      "api",
+      "debugging",
+      "timing"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1320,
-    "usage": "import { DevtoolsRequestReplay } from \"@/components/design-for-ai/devtools-request-replay\";\n\n<DevtoolsRequestReplay request={request} onRequestChange={setRequest} onReplay={replayRequest} resetKey={sessionId} />",
+    "previewHeight": 1080,
+    "usage": "import { DevtoolsRequestReplay } from \"@/components/design-for-ai/devtools-request-replay\";\n\n<DevtoolsRequestReplay\n  capture={{ id: log.requestId, capturedAt: \"14:02:11\", source: \"production · checkout-api\", request, response }}\n  onReplay={async (req, signal) => {\n    const started = performance.now();\n    const res = await fetch(req.url, {\n      method: req.method,\n      headers: req.headers.filter((h) => h.enabled !== false).map((h) => [h.name, h.value]),\n      body: req.method === \"GET\" ? undefined : req.body,\n      signal,\n    });\n    return {\n      status: res.status,\n      statusText: res.statusText,\n      headers: [...res.headers],\n      body: await res.text(),\n      durationMs: Math.round(performance.now() - started),\n    };\n  }}\n/>",
     "props": [
       {
-        "name": "request",
-        "type": "RequestReplayRequest",
-        "description": "Authoritative applied request. Without onRequestChange its editing controls are honest read-only."
+        "name": "capture",
+        "type": "CapturedExchange",
+        "default": "A refund that returned 409 in production",
+        "description": "The original exchange: id, capturedAt, optional source, the request (method, url, header rows, body) and the response it got (status, statusText, headers, body, durationMs). Every replay is compared with it."
       },
       {
-        "name": "defaultRequest",
+        "name": "defaultRuns",
+        "type": "ReplayRun[]",
+        "default": "[]",
+        "description": "Replays already made this session, oldest first; the newest is selected."
+      },
+      {
+        "name": "defaultDraft",
         "type": "RequestReplayRequest",
-        "description": "Initial local request, reused when resetKey or request identity changes. Headers are lossless typed rows.",
-        "default": "Original offline POST navigation study"
+        "description": "The request the editor starts from. Defaults to the captured request."
+      },
+      {
+        "name": "onReplay",
+        "type": "(request: RequestReplayRequest, signal: AbortSignal) => Promise<RequestReplayResponse>",
+        "description": "Send the edited request and return the real response. You own networking, auth and CORS; honour the signal (Cancel and Escape abort it). Throw to record a failed run. Leave durationMs out and the component times the call."
       },
       {
         "name": "onRequestChange",
         "type": "(request: RequestReplayRequest) => void",
-        "description": "Synchronous applied-snapshot observer. Rejected controlled apply retains the newer draft and accepted request."
+        "description": "Observes every edit to the draft."
       },
       {
-        "name": "onReplay",
-        "type": "(request: RequestReplayRequest, signal: AbortSignal) => RequestReplayResponse | void | Promise<RequestReplayResponse | void>",
-        "description": "Real host replay. Own networking/authentication/CORS, honor cancellation and return actual status/headers/body. Void never fabricates a response."
-      },
-      {
-        "name": "resetKey",
-        "type": "string | number",
-        "description": "Request session identity; resets draft/reading/receipts and retires prior work."
-      },
-      {
-        "name": "title",
-        "type": "string",
-        "description": "Concise request replay heading.",
-        "default": "\"Change the request. Read the return.\""
-      },
-      {
-        "name": "description",
-        "type": "string",
-        "description": "Explain applied input and actual returned response.",
-        "default": "\"Edit a precise request, apply that snapshot and inspect the response your handler actually returns.\""
+        "name": "showTiming",
+        "type": "boolean",
+        "default": "true",
+        "description": "Shows the timing comparison (original against the selected replay) and the verdict line."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Neutral black/white glass chrome, with colour reserved for actual data/feature accents.",
-        "default": "\"dark\""
+        "default": "\"dark\"",
+        "description": "Graphite or paper chrome."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#7cc4ff\"",
+        "description": "The one colour: edit marks, the replay timing bar, active tab underline and numbers in JSON."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Outer replay console classes.",
-        "default": "\"\""
+        "description": "Classes on the root section."
       }
     ],
     "added": "2026-10-13",
     "demo": {
       "steps": [
-        "click:@request-url",
+        "click:@replay-url",
         "key:End",
-        "type:?view=wide",
-        "click:@request-apply",
-        "wait:250",
-        "click:@request-replay",
-        "wait:600"
-      ]
+        "type:?expand=charge",
+        "wait:200",
+        "click:@replay-send",
+        "wait:2200"
+      ],
+      "loop": false
     },
     "controls": [
       {
@@ -15080,10 +15082,22 @@
         "default": "dark"
       },
       {
-        "prop": "title",
-        "label": "Heading",
-        "kind": "text",
-        "default": "Change the request. Read the return."
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#7cc4ff",
+        "options": [
+          "#7cc4ff",
+          "#f2b84b",
+          "#c4a7ff",
+          "#ececee"
+        ]
+      },
+      {
+        "prop": "showTiming",
+        "label": "Timing",
+        "kind": "toggle",
+        "default": true
       }
     ]
   },

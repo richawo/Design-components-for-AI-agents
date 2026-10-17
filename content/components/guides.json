@@ -4630,18 +4630,18 @@
     "updated": "2026-10-13"
   },
   "devtools-request-replay": {
-    "useWhen": "Editing a supplied request and inspecting the response returned by a real host request handler.",
-    "avoidWhen": "Pretending a demonstration payload came from a live server or sending a request without an explicit action.",
+    "useWhen": "Debugging a request that failed in production or staging: edit what was sent, send it again and see exactly how the status, timing and response body changed.",
+    "avoidWhen": "Documenting an endpoint for first-time use, where an API playground with snippets fits, or browsing a stream of incoming events, where a webhook inspector fits.",
     "integration": [
-      "Supply request/defaultRequest with stable ID, supported HTTP method, HTTP(S) or root-relative URL, lossless header rows and text body. Pair controlled request with synchronous onRequestChange; without it, editing is read-only. Apply submits an exact draft while rejected controlled edits remain retained.",
-      "onReplay receives only the accepted applied snapshot and AbortSignal. The handler owns networking, authentication and CORS and returns actual HTTP status, header rows, body and optional measured elapsedMs. A void acknowledgement never fabricates a response or timing. Keep each returned exchange visibly paired to its exact sent request.",
-      "Pending typing stays a newer draft. Accepted request/content/session/handler replacement or unmount retires old jobs; cancel and newer-job/old-finally are fenced. Preserve the last response with an earlier-request label after changed input or failure. Native copying belongs to the actual returned body and bounded/truncated data is never copied as complete."
+      "Pass `capture` from your request log: id, capture time, source, the request (method, URL, header rows with stable ids, body text) and the response it got (status, statusText, header pairs, body, durationMs). Mask secrets in header values before they reach the browser.",
+      "`onReplay(request, signal)` does the real call: you own networking, authentication and CORS, so route it through your backend when the target isn't reachable from the browser. Return the status, headers, body text and a measured `durationMs`; leave it out and the component times the call. Honour the `AbortSignal` (Cancel and Escape abort it) and throw to record a failed run.",
+      "Seed `defaultRuns` and `defaultDraft` to restore a session; `onRequestChange` observes edits if you want to persist the draft. JSON bodies are validated before sending when Content-Type is JSON."
     ],
     "related": [
       "devtools-api-playground",
       "devtools-webhook-inspector"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "devtools-schema-migration": {
     "useWhen": "An internal tool or developer platform where engineers review and run database migrations: see the steps, their locks and the schema diff, dry-run, then apply.",
