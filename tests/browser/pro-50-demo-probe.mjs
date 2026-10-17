@@ -11,16 +11,21 @@ const specs = fs
 const finalStates = {
   "commerce-fulfilment-desk":
     "A recovery action has been recorded for this shipment.",
-  "fashion-exchange-selector": "Your exchange request is recorded.",
-  "finance-close-checklist": "Bank statement reconciled.",
+  "fashion-exchange-selector": "Exchange confirmed",
+  "finance-close-checklist": "Signed off",
   "finance-receivables-aging":
-    "A follow-up draft has been created for this invoice.",
+    "Reminder sent",
   "hr-leave-approval": "No additional manager note.",
   "hr-policy-acknowledgement":
     "Your acknowledgement of this revision is recorded.",
-  "legal-matter-intake": "Review the intake handoff.",
-  "legal-signature-request": "Ready for provider handoff",
+  "legal-matter-intake": "Check again",
+  "legal-signature-request": "Jordan Blake signed.",
 };
+for (const slug of Object.keys(finalStates)) {
+  if (!specs.some(spec => spec.slug === slug)) specs.push({slug});
+}
+const selected = new Set(process.argv.slice(2));
+for (const slug of selected) assert.ok(specs.some(spec => spec.slug === slug), `Unknown demo case: ${slug}`);
 const browser = await launchChromium();
 const page = await browser.newPage({
   viewport: { width: 1440, height: 1400 },
@@ -28,7 +33,6 @@ const page = await browser.newPage({
 });
 const errors = [];
 page.on("pageerror", (e) => errors.push(e.message));
-const selected = new Set(process.argv.slice(2));
 try {
   for (const { slug } of specs.filter(
     (s) =>
@@ -51,7 +55,7 @@ try {
     });
     await page.setViewportSize({ width: 1440, height: meta.previewHeight });
     await page.waitForTimeout(200);
-    const before = await page.locator("section").first().innerText();
+    const before = await page.locator("#root").innerText();
     await page.evaluate((steps) => window.play(steps), steps);
     await page.waitForTimeout(100);
     const last = steps
@@ -69,7 +73,7 @@ try {
       assert.equal(await target.getAttribute("aria-pressed"), "true");
     } else {
       assert.notEqual(
-        await page.locator("section").first().innerText(),
+        await page.locator("#root").innerText(),
         before,
         slug + " replay must change the displayed workflow",
       );
@@ -88,7 +92,7 @@ try {
         { timeout: 5000 },
       );
       assert.ok(
-        (await page.locator("section").first().innerText()).includes(
+        (await page.locator("#root").innerText()).includes(
           finalStates[slug],
         ),
         `${slug} reaches its intended final state`,

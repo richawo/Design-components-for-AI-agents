@@ -30,6 +30,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 6: finished Budget Variance and removed its parked patch. The variance spine now draws on first view; compact note indicators wrap cleanly, note saves are tracked independently, and submission waits for them. The Next regression probe, both-theme accessibility, responsive/entrance/error-state captures, controls, live demo and refreshed poster pass. Its new film remains in task 1.
 
+- Task 4: all eight explicit demo end states pass against Next. The replay probe now includes named cases even when no per-component probe module exists, rejects unknown requested cases, and checks the whole component root. Legal Signature Request ends after Jordan signs; Policy Acknowledgement retains its recorded-revision receipt.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
