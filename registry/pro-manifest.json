@@ -16782,135 +16782,164 @@
   },
   {
     "slug": "editor-asset-license-sheet",
-    "name": "Asset Provenance and Usage Sheet",
+    "name": "Asset Licence Sheet",
     "tier": "pro",
     "platform": "web",
     "category": "editors",
-    "description": "Inspect actual asset provenance, supplied terms and host eligibility for a specific project, then request an exact reviewed selection.",
+    "description": "A licence sheet with the asset as the hero: wall-label credits, a term set against the campaign, and each placement's crop framed on the image.",
     "tags": [
+      "licence",
+      "rights",
       "asset",
-      "provenance",
-      "license",
-      "usage",
-      "review",
-      "editor"
+      "credit",
+      "crop",
+      "campaign",
+      "editor",
+      "dam"
     ],
     "dependencies": [
+      "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1200,
-    "usage": "import { EditorAssetLicenseSheet } from \"@/components/design-for-ai/editor-asset-license-sheet\";\n\n<EditorAssetLicenseSheet assets={assets} project={project} selectedId={assetId} onSelectedIdChange={setAssetId} onSelect={requestAsset} />\n\n// Host supplies all usage facts and eligibility. Fulfillment acknowledges a request only; the host owns rights evaluation and project use.",
+    "previewHeight": 900,
+    "usage": "import { EditorAssetLicenseSheet } from \"@/components/design-for-ai/editor-asset-license-sheet\";\n\n<EditorAssetLicenseSheet\n  project={{\n    name: \"Autumn campaign\", start: \"2026-10-20\", end: \"2027-02-28\",\n    uses: [{ id: \"feed\", label: \"Instagram feed\", aspect: [4, 5], detail: \"4 : 5\" }],\n  }}\n  assets={[{\n    id: \"tide\", title: \"Low tide, Saltburn\", creator: \"Ines Moreau\", year: \"2025\", medium: \"Photograph\",\n    holder: \"Northlight Agency\", licence: \"Rights-managed\", reference: \"NL-25-0815\", territory: \"UK & EU\",\n    termStart: \"2026-09-01\", termEnd: \"2026-12-31\", covers: [\"feed\"], credit: \"Photo: Ines Moreau / Northlight\",\n    size: [6000, 4000], media: <img src={url} alt=\"\" className=\"size-full object-cover\" />,\n  }]}\n  onAdd={(request) => addToProject(request)}          // every ticked placement is cleared\n  onRequest={(request) => askRightsHolder(request)}   // request.blocked lists what isn't\n/>\n\n// licenceStatus(asset, use, project) returns \"cleared\" | \"term-ends\" | \"not-licensed\" for the same rules.",
     "props": [
       {
-        "name": "assets",
-        "type": "readonly LicensedAsset[]",
-        "description": "Up to32 unique actual asset records with provenance, host-declared eligibility, required-credit facts and up to12 unique terms. Unknown eligibility is unavailable."
+        "name": "path",
+        "type": "string[]",
+        "default": "[\"Halden\", \"Autumn campaign\"]",
+        "description": "Breadcrumb before the asset title, shown from @2xl."
       },
       {
         "name": "project",
         "type": "AssetProject",
-        "description": "Exact host project identity, title and intended usage scope. No inferred licence interpretation."
+        "default": "Halden autumn campaign, 20 Oct 2026 – 28 Feb 2027, five placements",
+        "description": "{ name, start, end (ISO), uses: { id, label, aspect: [w, h], detail }[] }. Each use's aspect is the crop shown on the asset."
       },
       {
-        "name": "selectedId",
-        "type": "string | null",
-        "description": "Controlled actual inspected asset identity. Missing identity is explicit and does not substitute another asset."
+        "name": "assets",
+        "type": "LicensedAsset[]",
+        "default": "four campaign assets: two photographs, a commission and an illustration",
+        "description": "{ id, title, creator, year, medium, holder, licence, reference, territory, termStart, termEnd (ISO or null), covers (use ids), credit?, restrictions?, releases?, size?, focus?, media, defaultUses? }. media is the host's image or any element that fills its box."
       },
       {
-        "name": "defaultSelectedId",
-        "type": "string | null",
-        "description": "Local initial inspection identity, reset by resetKey."
-      },
-      {
-        "name": "onSelectedIdChange",
-        "type": "(id: string) => void",
-        "description": "Request inspection. Controlled rejection retains the accepted record; synchronous failure is contained."
-      },
-      {
-        "name": "onSelect",
-        "type": "(selection: AssetLicenseSelection, signal: AbortSignal) => void | Promise<void>",
-        "description": "Explicit cloned project, asset, all terms and reviewed-credit snapshot. Only host-eligible assets with terms can be requested; no rights are granted by the component."
-      },
-      {
-        "name": "resetKey",
-        "type": "string | number",
-        "description": "Resets local inspection, review and request lifetime."
-      },
-      {
-        "name": "status",
-        "type": "\"ready\" | \"loading\" | \"error\"",
-        "description": "Unavailable host states retain actual records."
-      },
-      {
-        "name": "errorMessage",
+        "name": "defaultAssetId",
         "type": "string",
-        "description": "Host failure text; blank falls back."
+        "default": "first asset",
+        "description": "The asset open on mount."
       },
       {
-        "name": "onRetry",
-        "type": "() => void",
-        "description": "Actual host recovery."
+        "name": "today",
+        "type": "string",
+        "default": "\"2026-10-17\"",
+        "description": "Today's date (ISO), marked on the term timeline."
       },
       {
-        "name": "disabled",
+        "name": "showCrops",
         "type": "boolean",
-        "description": "Read-only state preserves records and review."
+        "default": "true",
+        "description": "Frame each placement's crop on the asset: the first ticked one, or the one hovered or focused."
+      },
+      {
+        "name": "onAdd",
+        "type": "(request: AssetUseRequest) => void | Promise<void>",
+        "description": "Called when every ticked placement is cleared: { assetId, useIds, action: \"add\", blocked: [] }. Reject with an Error to show its message."
+      },
+      {
+        "name": "onRequest",
+        "type": "(request: AssetUseRequest) => void | Promise<void>",
+        "description": "Called when some ticked placements aren't licensed or outlive the term: request.blocked lists them with a reason. Reject with an Error to show its message."
+      },
+      {
+        "name": "onAssetChange",
+        "type": "(assetId: string) => void",
+        "description": "Called when another asset is opened from the strip."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "theme ink",
+        "description": "The crop frame, today's marker, ticked boxes and the Add button."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Complete monochromatic graphite/white chrome. Colour is reserved for actual supplied content and purposeful feature accents."
-      },
-      {
-        "name": "labels",
-        "type": "Partial<AssetLicenseLabels>",
-        "description": "Provenance, usage evidence, review, unknown eligibility and acknowledgment copy."
+        "default": "\"dark\"",
+        "description": "Graphite or white chrome. The asset keeps its own colours."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Host responsive classes."
+        "description": "Extra classes on the root section."
       }
     ],
     "added": "2026-10-14",
     "demo": {
       "steps": [
-        "click:@license-select-archive",
-        "click:@license-select-private",
-        "click:@license-select-cover",
-        "click:@license-review",
-        "click:@license-request"
+        "wait:500",
+        "hover:@use-story",
+        "wait:700",
+        "click:@check-ooh",
+        "wait:800",
+        "click:@asset-frost",
+        "wait:900",
+        "click:@action",
+        "wait:1500"
       ],
       "loop": false
     },
     "controls": [
       {
+        "prop": "defaultAssetId",
+        "label": "Asset",
+        "kind": "select",
+        "options": [
+          "tide",
+          "still",
+          "hills",
+          "frost"
+        ],
+        "default": "tide",
+        "remount": true
+      },
+      {
+        "prop": "showCrops",
+        "label": "Crop frames",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#8ab4ff",
+          "#7dd3a8",
+          "#f4b267"
+        ]
+      },
+      {
         "prop": "theme",
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
         "default": "dark"
-      },
-      {
-        "prop": "disabled",
-        "label": "Read only",
-        "kind": "toggle",
-        "default": false
-      },
-      {
-        "prop": "status",
-        "label": "Availability",
-        "kind": "select",
-        "options": [
-          "ready",
-          "loading",
-          "error"
-        ],
-        "default": "ready"
       }
     ]
   },

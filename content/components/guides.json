@@ -4448,19 +4448,19 @@
     "updated": "2026-10-17"
   },
   "editor-asset-license-sheet": {
-    "useWhen": "Reviewing actual asset provenance and host-supplied usage eligibility for a specific project before selecting an asset.",
-    "avoidWhen": "Interpreting a third-party licence or granting rights from a visual component.",
+    "useWhen": "Checking whether a licensed photo, illustration or commission can run in each placement of a campaign, with its credit line and term in view, before adding it to the project or asking the rights holder for more.",
+    "avoidWhen": "Browsing or searching a large asset library, negotiating licence terms, or legal review of contract wording.",
     "integration": [
-      "Supply exact project identity/title/usage and up to32 unique asset records with actual creator/source, terms and boolean-or-null project eligibility. Unknown eligibility stays unavailable.",
-      "Eligible assets need supplied terms and explicit review. If the host requires a credit, supply and review that exact credit. Availability interruptions preserve review; changed selected asset/project facts retire it.",
-      "onSelect receives a copied exact project, asset/all terms and review snapshot with AbortSignal. Fulfillment acknowledges only selection request; host owns rights evaluation, persistence and project attachment."
+      "Describe the project with its dates and planned placements; each placement's aspect is the crop drawn on the asset. Pass each asset's licence facts (holder, licence, territory, reference, term, the placement ids it covers, credit, restrictions) and its media, usually an <img> of your file sized to fill.",
+      "Statuses come from your data alone: a placement is cleared when the asset covers it and the term lasts the whole campaign, flagged when the term ends early, and not licensed otherwise. licenceStatus is exported so the rest of your app agrees.",
+      "onAdd fires when every ticked placement is cleared; onRequest fires otherwise, with request.blocked naming each placement and why. Persist and resolve, or reject with an Error to show its message; ticks are kept per asset."
     ],
     "related": [
+      "media-compare-grid",
       "media-image-contact-sheet",
-      "cards-prismatic-folder",
-      "media-compare-grid"
+      "editor-export-preset"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "editor-storyboard-strip": {
     "useWhen": "Planning a short film, ad or product video as a sequence of shots, where people reorder shots by drag, trim their lengths and need the cut to land on a target duration.",
