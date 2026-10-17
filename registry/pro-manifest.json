@@ -12882,87 +12882,106 @@
     "tier": "pro",
     "platform": "web",
     "category": "data",
-    "description": "Draft and explicitly apply a grouping over original supplied records, with real count, sum or weighted mean, complete source inspection and useful unsupported states.",
+    "description": "A pivot matrix that regroups in a wave and, on swap, flies every cell to its mirrored place; pick rows, columns and a measure, then open a cell to see its records.",
     "tags": [
       "pivot table",
       "grouping",
       "aggregation",
-      "original records",
-      "draft configuration",
-      "exact measures"
+      "heatmap",
+      "analytics",
+      "drill down"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1080,
-    "usage": "import { DataPivotConfigurator } from \"@/components/design-for-ai/data-pivot-configurator\";\n\n<DataPivotConfigurator fields={schema} records={originals} value={grouping} onValueChange={setGrouping} />",
+    "previewHeight": 780,
+    "usage": "import { DataPivotConfigurator } from \"@/components/design-for-ai/data-pivot-configurator\";\n\n<DataPivotConfigurator\n  title=\"FY26 bookings\"\n  noun={[\"deal\", \"deals\"]}\n  fields={fields}   // dimensions (region, plan…) and measures (arr, seats)\n  records={deals}\n  value={config}    // { rows: \"region\", columns: \"quarter\", measure: \"sum\", value: \"arr\" }\n  onChange={setConfig}\n  onCellSelect={(cell) => cell && openDeals(cell.records)}\n/>",
     "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"FY26 bookings\"",
+        "description": "The dataset's name above the matrix."
+      },
+      {
+        "name": "noun",
+        "type": "[string, string]",
+        "default": "[\"deal\", \"deals\"]",
+        "description": "Singular and plural for the records, used in counts and labels."
+      },
       {
         "name": "fields",
         "type": "PivotField[]",
-        "description": "1–8 raw unique labeled category or number fields. Numeric record values are finite within ±1 billion."
+        "description": "{ id, label, kind: \"dimension\" | \"measure\", order?, format?: \"currency\" | \"number\" }. Dimensions become row and column choices; `order` fixes the order of their values."
       },
       {
         "name": "records",
-        "type": "PivotSourceRecord[]",
-        "description": "Up to 2000 raw unique labeled original records with declared-key scalar values. Missing keys and explicit null stay distinct; immutable source revisions are required."
+        "type": "PivotRecord[]",
+        "description": "{ id, label, values }. Aggregated locally; averages are computed from the records, never from group averages."
       },
       {
         "name": "value",
         "type": "PivotConfig",
-        "description": "Atomic controlled rowField/columnField/measure/valueField. Dimensions must be distinct category fields or null; sum/mean need a declared numeric field."
+        "description": "Controlled { rows, columns (or null for a single total column), measure: \"count\" | \"sum\" | \"avg\", value }."
       },
       {
         "name": "defaultValue",
         "type": "PivotConfig",
-        "description": "Initial uncontrolled grouping. Untouched loading initializes only at first valid ready fields; explicit unknown and later chosen context remain authoritative."
+        "default": "{ rows: \"region\", columns: \"quarter\", measure: \"sum\", value: \"arr\" }",
+        "description": "Uncontrolled starting configuration."
       },
       {
-        "name": "onValueChange",
+        "name": "onChange",
         "type": "(config: PivotConfig) => void",
-        "description": "Request an explicitly applied draft or default grouping. Rejected requests preserve accepted results and newer draft."
+        "description": "Called on every configuration change. Picking the other axis's field swaps the axes."
       },
       {
-        "name": "onValueCommit",
-        "type": "(config: PivotConfig) => void",
-        "description": "Accepted discrete configurations only; rejected, interrupted and throwing requests do not falsely commit."
+        "name": "onCellSelect",
+        "type": "(cell: PivotCell | null) => void",
+        "description": "Called when a cell is opened or closed, with its row and column keys, its records and its value."
+      },
+      {
+        "name": "heatmap",
+        "type": "boolean",
+        "default": "true",
+        "description": "Shade each cell by its share of the largest one, in ink only."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"USD\"",
+        "description": "Currency for currency measures."
       },
       {
         "name": "locale",
         "type": "string",
-        "description": "Supported Intl numeric locale, retaining original numeric precision."
+        "default": "\"en-US\"",
+        "description": "Locale for numbers."
       },
       {
-        "name": "title",
+        "name": "accent",
         "type": "string",
-        "description": "Host grouping heading."
-      },
-      {
-        "name": "description",
-        "type": "string",
-        "description": "Host source/context copy, without claiming a remote query."
-      },
-      {
-        "name": "status",
-        "type": "\"ready\" | \"loading\" | \"unavailable\"",
-        "description": "Host availability preserves the grouping and draft."
-      },
-      {
-        "name": "disabled",
-        "type": "boolean",
-        "description": "Disables configuration changes; existing cells and original records remain inspectable."
+        "default": "\"#c4f25d\"",
+        "description": "The one colour: the largest cell's figure and the opened cell's ring."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Neutral graphite and white chrome; colour is reserved for actual feature content and semantic data accents."
+        "default": "\"dark\"",
+        "description": "Graphite or white surfaces."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "default": "false",
+        "description": "Locks the configuration; cells can still be opened."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Classes for the self-contained root."
+        "description": "Classes for the root section."
       }
     ],
     "controls": [
@@ -12971,30 +12990,51 @@
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
         "default": "dark"
       },
       {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#c4f25d",
+        "options": [
+          "#c4f25d",
+          "#7cc4ff",
+          "#ffb547",
+          "#f4f4f5"
+        ]
+      },
+      {
+        "prop": "heatmap",
+        "label": "Heatmap",
+        "kind": "toggle",
+        "default": true
+      },
+      {
         "prop": "disabled",
-        "label": "Disabled configuration",
+        "label": "Locked",
         "kind": "toggle",
         "default": false
       }
     ],
     "demo": {
       "steps": [
-        "click:@pivot-measure",
-        "key:Escape",
-        "key:m",
-        "key:Tab",
-        "click:@pivot-apply",
-        "wait:450",
-        "click:@pivot-cell-0-0",
-        "wait:350",
-        "click:@pivot-default",
-        "wait:450"
+        "wait:500",
+        "click:@rows-plan",
+        "wait:1000",
+        "click:@swap",
+        "wait:1100",
+        "click:@cell-3-3",
+        "wait:1200"
       ],
       "loop": false
     },

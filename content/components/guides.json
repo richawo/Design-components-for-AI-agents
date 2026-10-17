@@ -4313,19 +4313,20 @@
     "updated": "2026-10-14"
   },
   "data-pivot-configurator": {
-    "useWhen": "Exploring a real computed pivot by selecting supplied dimensions and supported measures.",
-    "avoidWhen": "A database query console or a pivot whose displayed cells are fixed demonstration values.",
+    "useWhen": "Letting people slice a modest dataset two ways at once, such as revenue by region and quarter, compare cells at a glance and open any cell to see the records behind it.",
+    "avoidWhen": "Millions of rows that need server-side aggregation, or a fixed report whose grouping never changes; a plain chart or table reads faster.",
     "integration": [
-      "Supply 1–8 unique declared category/number fields and up to 2000 unique labeled original scalar records through explicit source revisions. Numeric values are finite within ±1 billion. Actual own keys are read; missing keys, explicit null, typed categories and literal placeholder strings remain distinct. Validation and meaningful signatures are derived from current source values each render, so retained-array edits cannot leave stale buckets or duplicate identities.",
-      "Control one atomic rowField/columnField/measure/valueField configuration. Category dimensions are distinct or null. Count retains all original records; compensated sum and mean use actual numeric contributors without imputed zeros. Totals are computed from original contributors, so a mean is not an average of group means. This is local bounded aggregation, not a server query.",
-      "Edit a genuine draft and apply it explicitly. Rejection and older host acceptance preserve newer draft intent; only accepted discrete configurations commit. Keep accepted and Default grouping are explicit reset actions. Untouched loading initializes at first ready fields; explicit unknown and later chosen context remain honest. Default grouping clears only the unchanged captured draft after actual acceptance; refused resets and newer edits remain intact.",
-      "Matrices exceeding 12 row groups or 8 columns receive a useful unsupported state while every original remains inspectable in source order, 24 per page. Inspect a real or empty cell for its exact originals; configuration-disabled mode still permits read-only inspection. A compact draft rail sits above the matrix and original-record inspector on wide embeds; narrow containers stack both native scrolling regions. Live reduced motion settles current totals/result emphasis, and actual owner-document fences preserve outside or parent-page focus."
+      "Describe `fields` as dimensions (with an `order` for their values) and measures (with a `format`). Pass the raw `records`; counts, sums and averages are computed locally, and an average is always taken over the records, not over group averages.",
+      "Control the grouping with `value` and `onChange`, or start uncontrolled with `defaultValue`. `columns: null` collapses the matrix to one total column. Choosing the other axis's field swaps the axes rather than duplicating one.",
+      "Use `onCellSelect` to open the records behind a cell in your own drawer or list; the built-in inspector shows the six largest. Cells are buttons with arrow-key navigation.",
+      "Keep matrices small enough to read (four to six values per axis). Turn off `heatmap` when the values aren't comparable, and set `disabled` for read-only dashboards where cells should still open."
     ],
     "related": [
       "data-query-builder",
+      "chart-treemap-drill",
       "data-table-sortable"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "data-column-workbench": {
     "useWhen": "Letting people rearrange a dense operational table in place: drag columns into a new order, freeze the identifying ones on the left, hide the noise and set widths.",
