@@ -5027,14 +5027,15 @@
     "integration": [
       "Pass `task` and the ordered `statuses` for its workflow. Give each column a `kind` so the glyph shows progress, a `count`, an optional `limit` and a `blockedReason` for rules the server enforces.",
       "Implement `onMove({ task, from, to, note })` against your tracker and throw an Error with a readable message to refuse; the note is kept. `onUndo` is offered for `undoSeconds` after a successful move.",
-      "Install `expo-blur`, `expo-linear-gradient` and `react-native-svg` (`npx install-expo-modules` once in bare apps), and check the puck drag inside your own scroll views and with VoiceOver's adjustable actions."
+      "Install `expo-blur`, `expo-linear-gradient` and `react-native-svg` (`npx install-expo-modules` once in bare apps), and check the puck drag inside your own scroll views and with VoiceOver's adjustable actions.",
+      "An empty `statuses` array retains the task in a read-only state. Supply the workflow later to restore the status rail."
     ],
     "related": [
       "mobile-swipe-list",
       "mobile-agent-approval",
       "mobile-project-switcher"
     ],
-    "updated": "2026-10-17"
+    "updated": "2026-10-18"
   },
   "mobile-review-annotations": {
     "useWhen": "Reviewing a still image or design on a phone, where comments are pinned to exact points, reviewers resolve them one by one and can drop a new pin by tapping the artwork.",

@@ -36259,7 +36259,7 @@
         "name": "statuses",
         "type": "TaskStatus[]",
         "default": "Backlog, Todo, In progress, In review (limit 4), Done (needs an approved review)",
-        "description": "Workflow columns in order: id, label, kind (backlog, todo, started, review, done), count, optional WIP limit and blockedReason. Full or blocked columns refuse the puck."
+        "description": "Workflow columns in order: id, label, kind (backlog, todo, started, review, done), count, optional WIP limit and blockedReason. Full or blocked columns refuse the puck. An empty array retains the task in a read-only state until its workflow is available."
       },
       {
         "name": "initialStatus",

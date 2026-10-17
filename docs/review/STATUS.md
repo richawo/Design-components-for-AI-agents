@@ -30,7 +30,7 @@ needs re-recording, whether its poster is current, and the state of its browser 
 | `mobile-reading-progress` | current | current |  |
 | `mobile-review-annotations` | current | current |  |
 | `mobile-sync-conflict` | current | current |  |
-| `mobile-task-move` | current | current |  |
+| `mobile-task-move` | current | current | empty/recovery regression and empty-state accessibility pass; dedicated move/undo workflow coverage pending |
 | `mobile-trip-itinerary` | current | current |  |
 | `mobile-voice-memo` | current | current |  |
 

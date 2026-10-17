@@ -4,7 +4,7 @@ Self-contained work items from the paused review of the October component additi
 and how to know it's done. Pick any of them up independently. Background, briefs and tooling are in `docs/review/`
 (start with `README.md`); per-component state is in `docs/review/STATUS.md`.
 
-## Follow-up progress (17 October 2026)
+## Follow-up progress (17–18 October 2026)
 
 - Task 3.1: resolved evidence chain verification and manifest flags. The dedicated browser probe passes, including missing hashes and rejected exports. The hash group’s invalid ARIA label is fixed, and isolated dark/light accessibility audits pass. The Next preview rerun also passes.
 
@@ -77,6 +77,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Task 5: added Notification Digest coverage for keyboard Read/Snooze actions, failed callback restoration, exact payloads, Undo, collapsed piles and empty notifications. Enter/Space reveal actions, Escape returns focus, and closed drawers/sheets are disabled and hidden. Back cards stay decorative until their pile opens, and the remaining-count ring exposes values. Source-fixture regression and accessibility checks pass.
 
 - Task 5: added Mood Map coverage for the initial unselected handle, real drag selection, Enter/Space radios, failed save retry with the note retained, pending controls, exact payloads, limits and invalid feelings. The unselected handle now starts inside the field; labelled log markers and the stable count expose valid roles. Source-fixture regression, accessibility, controls and metadata drag-to-save replay pass.
+
+- Task 4: the full browser run found a Task Move crash when `statuses` is empty. The component now retains the task without move controls, keeps interpolation ranges valid, and recovers when statuses return. The targeted empty/recovery regression, empty-state accessibility, default/empty captures, strict registry, TypeScript and all 1,049 unit tests pass. The native empty-data probe can now select a requested slug for focused reruns.
 
 ## Ground rules (read first)
 
