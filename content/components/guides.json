@@ -2692,19 +2692,19 @@
     "updated": "2026-10-12"
   },
   "legal-renewal-planner": {
-    "useWhen": "Planning action around supplied contract renewal and notice dates.",
-    "avoidWhen": "Authoritative deadline calculation without reviewing the relevant contract and jurisdiction.",
+    "useWhen": "Planning contract renewals on a timeline, where owners need to see notice windows close, look ahead to a date and record whether each contract renews, is renegotiated or ends.",
+    "avoidWhen": "Calculating notice deadlines from contract wording. Deadlines come from the contract owner or your system of record; this component shows and plans around them.",
     "integration": [
-      "Supply your own records through `contracts`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onDecision` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
-      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+      "Pass `contracts` with ISO `renewalDate` and `noticeDeadline`, `annualValueMinor` in minor units and an optional `clause` excerpt whose `notice` phrase is underlined.",
+      "`onDecision` receives `{ contractId, decision, note }`. Resolve to stamp it as recorded; reject to keep the choice and note. Serving the notice itself stays in your workflow.",
+      "`referenceDate`, `horizonMonths` and `reviewWindowDays` tune the timeline; the as-of handle is a keyboard slider (arrows by day, Page keys by week, Home for today)."
     ],
     "related": [
-      "fashion-launch-calendar",
-      "hr-capacity-planner",
-      "hr-leave-approval"
+      "legal-obligation-tracker",
+      "legal-matter-dashboard",
+      "legal-signature-request"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "legal-signature-request": {
     "useWhen": "Reviewing a document revision, signer order and provider handoff payload.",

@@ -27345,75 +27345,97 @@
     "tier": "pro",
     "platform": "web",
     "category": "date-time",
-    "description": "Inspect renewal terms and record an owner’s decision before a supplied deadline.",
+    "description": "A renewal timeline with notice windows as bands, a draggable as-of line that recounts every deadline, and a decision panel that stamps the owner’s call.",
     "tags": [
       "legal-tech",
-      "workflow",
-      "responsive",
-      "keyboard",
-      "date-time"
+      "contract renewals",
+      "timeline",
+      "notice deadline",
+      "auto-renewal",
+      "planning",
+      "workflow"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1190,
-    "usage": "import { RenewalPlanner } from \"@/components/design-for-ai/legal-renewal-planner\";\n\n<RenewalPlanner />",
+    "previewHeight": 1260,
+    "usage": "import { RenewalPlanner } from \"@/components/design-for-ai/legal-renewal-planner\";\n\n<RenewalPlanner\n  contracts={contracts}\n  currency=\"GBP\"\n  onDecision={async (decision) => {\n    await api.renewals.recordDecision(decision);\n  }}\n/>",
     "props": [
-      {
-        "name": "title",
-        "type": "string",
-        "description": "Main heading.",
-        "default": "\"Contract renewals\""
-      },
-      {
-        "name": "subtitle",
-        "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Inspect terms and notice deadlines, then record an accountable next step for the contract owner.\""
-      },
       {
         "name": "contracts",
         "type": "RenewalContract[]",
-        "description": "Unique contracts with explicit owner-supplied renewal and notice dates. Deadlines are not derived from contract wording."
+        "description": "Contracts with id, name, counterparty, owner, ISO renewalDate and noticeDeadline (as recorded by the owner, never derived from wording), annualValueMinor, an optional clause excerpt ({ reference, text, notice }) and any recorded decision."
       },
       {
         "name": "referenceDate",
         "type": "string",
-        "description": "ISO calendar date for notice-window status."
+        "description": "ISO date treated as today. Defaults to the current date."
       },
       {
         "name": "currency",
         "type": "string",
-        "description": "Shared two-decimal ISO currency for annual values."
+        "default": "\"GBP\"",
+        "description": "ISO 4217 code for annual values, formatted with Intl."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Locale for money formatting."
+      },
+      {
+        "name": "horizonMonths",
+        "type": "number",
+        "default": "7",
+        "description": "Months on the timeline, from the start of the reference month (3 to 12)."
+      },
+      {
+        "name": "reviewWindowDays",
+        "type": "number",
+        "default": "45",
+        "description": "Days before each notice deadline that its review window opens."
+      },
+      {
+        "name": "defaultContractId",
+        "type": "string",
+        "description": "Contract opened in the decision panel first. Defaults to the nearest deadline."
       },
       {
         "name": "onDecision",
-        "type": "(decision:RenewalDecision)=>void|Promise<void>",
-        "description": "Record an internal owner decision. The host is responsible for any contractual notice and subsequent approval."
+        "type": "(decision: RenewalDecision) => void | Promise<void>",
+        "description": "Records { contractId, decision: renew | renegotiate | terminate, note }. Resolve to stamp it; reject to keep the choice and note and say so. Serving notice stays with the host."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#5b8def\"",
+        "description": "The one accent: the as-of line and handle, selection and the recorded stamp."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Graphite chrome or the light inverse."
       },
       {
-        "name": "selectMode",
-        "type": "\"custom\" | \"native\"",
-        "default": "\"custom\"",
-        "description": "Animated keyboard-accessible custom listboxes, or native platform pickers with matched 12px insets."
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:350",
-        "click:@contract-1",
-        "wait:750",
-        "click:@scope-all",
-        "click:@contract-2",
-        "wait:1000"
+        "wait:500",
+        "hover:@asof",
+        "drag:0.41,0.24",
+        "wait:700",
+        "click:@contract-ctr-231",
+        "click:@decision-renegotiate",
+        "click:@record",
+        "wait:1300"
       ],
       "loop": false
     },
@@ -27429,14 +27451,36 @@
         "default": "dark"
       },
       {
-        "prop": "selectMode",
-        "label": "Select menus",
-        "kind": "segmented",
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#5b8def",
         "options": [
-          "custom",
-          "native"
-        ],
-        "default": "custom"
+          "#5b8def",
+          "#e5484d",
+          "#8b7cf6",
+          "#0ea5a4"
+        ]
+      },
+      {
+        "prop": "reviewWindowDays",
+        "label": "Review window",
+        "kind": "slider",
+        "min": 14,
+        "max": 90,
+        "step": 1,
+        "unit": "days",
+        "default": 45
+      },
+      {
+        "prop": "horizonMonths",
+        "label": "Horizon",
+        "kind": "slider",
+        "min": 4,
+        "max": 12,
+        "step": 1,
+        "unit": "mo",
+        "default": 7
       }
     ]
   },
