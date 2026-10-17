@@ -25125,64 +25125,76 @@
     "tier": "pro",
     "platform": "web",
     "category": "onboarding",
-    "description": "Role-specific onboarding tasks with owners, prerequisites and progress. A considered, responsive hr workspace with typed integration points.",
+    "description": "A new hire’s first month as a journey: day markers on a track that fills, tasks that tick with their owners’ avatars, blocked steps and a detail drawer.",
     "tags": [
       "hr",
-      "workflow",
-      "responsive",
-      "keyboard",
-      "onboarding"
+      "onboarding",
+      "new hire",
+      "checklist",
+      "timeline"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1240,
-    "usage": "import { EmployeeOnboarding } from \"@/components/design-for-ai/hr-employee-onboarding\";\n\n<EmployeeOnboarding />",
+    "previewHeight": 960,
+    "usage": "import { EmployeeOnboarding } from \"@/components/design-for-ai/hr-employee-onboarding\";\n\n<EmployeeOnboarding\n  hires={hires}\n  onComplete={async ({ hireId, taskId, note }) => {\n    await api.onboarding.complete(hireId, taskId, note);\n  }}\n  onReopen={({ hireId, taskId }) => api.onboarding.reopen(hireId, taskId)}\n/>",
     "props": [
+      {
+        "name": "hires",
+        "type": "NewHire[]",
+        "default": "Noor Ali (day 4) and Theo Okafor (starts in 7 days)",
+        "description": "{ id, name, role, team, start, buddy, tasks, phases?, today? }. Tasks: { id, label, phase, owner, required, complete, instructions, requires }. phases: [{ name, day }] in order (day 1 is the start date); today: the hire's journey day, which places the Today marker."
+      },
       {
         "name": "title",
         "type": "string",
-        "description": "Main heading.",
-        "default": "\"Employee onboarding\""
+        "default": "\"Onboarding\"",
+        "description": "Page name in the breadcrumb."
       },
       {
         "name": "subtitle",
         "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Give each new colleague a clear sequence, an accountable owner and useful context for every step.\""
-      },
-      {
-        "name": "hires",
-        "type": "NewHire[]",
-        "description": "Unique new hires with role-specific tasks. Task IDs are unique within a hire; prerequisite IDs refer to that hire’s tasks."
+        "description": "Context after the start date (defaults to the hire's team)."
       },
       {
         "name": "onComplete",
-        "type": "(completion:OnboardingCompletion)=>void|Promise<void>",
-        "description": "Record completion for the selected hire and task after explicit confirmation."
+        "type": "(completion: OnboardingCompletion) => void | Promise<void>",
+        "description": "Receives { hireId, taskId, note } from a tick or the drawer. Reject to reopen the task and show the error; drawer notes are kept."
       },
       {
-        "name": "theme",
-        "type": "\"dark\" | \"light\"",
-        "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "name": "onReopen",
+        "type": "(completion: { hireId, taskId }) => void | Promise<void>",
+        "description": "Powers Undo on the completion toast. Omit to hide Undo."
       },
       {
         "name": "selectMode",
         "type": "\"custom\" | \"native\"",
         "default": "\"custom\"",
-        "description": "Animated keyboard-accessible custom listboxes, or native platform pickers with matched 12px insets."
+        "description": "The hire picker: an animated keyboard listbox, or the native select with an inset chevron."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#c5f25a\"",
+        "description": "The one accent: the progress fill, finished stations and owners' rings."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Near-black (default) or white surfaces."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:350",
-        "click:@phase-2",
         "wait:900",
-        "click:@phase-1",
-        "wait:1100"
+        "click:@tick-access",
+        "wait:1400",
+        "click:@task-shadow",
+        "wait:1500"
       ],
       "loop": false
     },
@@ -25198,8 +25210,20 @@
         "default": "dark"
       },
       {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#c5f25a",
+        "options": [
+          "#c5f25a",
+          "#ff8a5c",
+          "#7cc4ff",
+          "#f4f4f5"
+        ]
+      },
+      {
         "prop": "selectMode",
-        "label": "Select menus",
+        "label": "Hire picker",
         "kind": "segmented",
         "options": [
           "custom",

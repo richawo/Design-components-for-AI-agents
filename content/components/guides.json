@@ -2474,18 +2474,19 @@
     "updated": "2026-10-17"
   },
   "hr-employee-onboarding": {
-    "useWhen": "Coordinating a new employee's explicit setup and onboarding tasks.",
-    "avoidWhen": "A payroll or identity-provisioning system without host integrations.",
+    "useWhen": "Tracking a new hire through their first weeks: tasks grouped by stage with owners, prerequisites and a journey that fills as steps are done.",
+    "avoidWhen": "Identity provisioning or payroll set-up that needs its own system of record, or a generic product setup checklist.",
     "integration": [
-      "Supply your own records through `hires`. Preserve stable keys or IDs when the data contract provides them.",
-      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+      "Pass `hires` with `tasks`, ordered `phases` with due days and `today` to place the Today marker.",
+      "`onComplete` receives { hireId, taskId, note } from a tick or the drawer; reject it to reopen the task with a retry message.",
+      "Provide `onReopen` to enable Undo and unticking; use `selectMode=\"native\"` for the platform hire picker."
     ],
     "related": [
       "onboarding-setup-checklist",
-      "app-permission-matrix",
-      "hr-capacity-planner"
+      "hr-people-dashboard",
+      "hr-org-explorer"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "hr-interview-scorecard": {
     "useWhen": "Recording structured interview evidence against consistent criteria.",
