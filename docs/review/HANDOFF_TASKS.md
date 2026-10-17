@@ -50,6 +50,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 6: finished Size Guide and removed its parked patch. Graded garment annotations, unit switching, fit recommendations and editable measurements share one publish workflow. Narrow measurement tables scroll inside their own labelled region; failed publishes retain edits. Its source-fixture regression/demo, controls, native palettes, both-theme accessibility, responsive/state/entrance captures and poster pass. Its new film remains in task 1.
 
+- Task 1: re-recorded Channel Thread and Focus Session from the checked-out production source. Both films pass cadence/source-change guards, their contact sheets are reviewed, and they end settled. Attachment Tray and Budget Envelope were rejected by the recorder without replacing their previous films; they remain pending.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -67,7 +69,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Browser checks: `node scripts/check-component.mjs <slug> --base=http://localhost:3100 --no-video --keep-going`
   (screenshots at 1440/768/390 and every control flip; read the screenshots it writes to `test-results/check/<slug>/`).
 
-## 1. Re-record demo videos (139 components)
+## 1. Re-record demo videos (137 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -86,7 +88,7 @@ slug or per small group). Notes:
 
 Slugs:
 
-`mobile-attachment-tray`, `mobile-budget-envelope`, `mobile-channel-thread`, `mobile-focus-session`
+`mobile-attachment-tray`, `mobile-budget-envelope`
 `chart-box-distribution`, `chart-calendar-heatmap`, `chart-funnel-dots`, `chart-sankey-paths`
 `chart-scatter-brush`, `chart-sunburst-explorer`, `data-bulk-action-review`, `data-column-workbench`
 `data-filter-history`, `data-pivot-configurator`, `editor-asset-license-sheet`, `editor-branch-compare`
