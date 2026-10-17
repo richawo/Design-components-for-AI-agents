@@ -36436,79 +36436,137 @@
     "tier": "pro",
     "platform": "web",
     "category": "app",
-    "description": "Inspect transparent health signals and record the next customer action. A considered, responsive SaaS workspace with typed integration points.",
+    "description": "An account book where every health score is a composite gauge built from weighted driver arcs, with 12-week trends, inspectable drivers and a logged next play.",
     "tags": [
       "saas",
-      "workflow",
-      "responsive",
-      "keyboard",
-      "app"
+      "customer success",
+      "health score",
+      "churn risk",
+      "gauge",
+      "sparkline",
+      "accounts",
+      "admin",
+      "dashboard"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1380,
-    "usage": "import { CustomerHealth } from \"@/components/design-for-ai/saas-customer-health\";\n\n<CustomerHealth />",
+    "previewHeight": 1240,
+    "usage": "import { CustomerHealth } from \"@/components/design-for-ai/saas-customer-health\";\n\nexport default function Accounts() {\n  return (\n    <CustomerHealth\n      workspace=\"Kestrel\"\n      accounts={accounts}\n      drivers={[\n        { key: \"adoption\", label: \"Seat adoption\", weight: 30, method: \"Share of paid seats active in 28 days.\" },\n        { key: \"support\", label: \"Support load\", weight: 20, method: \"Open escalations, weighted by age.\" },\n      ]}\n      plays={plays}\n      healthyAt={70}\n      riskBelow={45}\n      onLogPlay={(log) => api.plays.create(log)}\n    />\n  );\n}",
     "props": [
+      {
+        "name": "accounts",
+        "type": "CustomerAccount[]",
+        "default": "eight Kestrel customer accounts",
+        "description": "Each { id, name, domain, plan, arr, owner, renewsOn (ISO date), trend: number[] (weekly composite, oldest first), signals: Record<driverKey, { score 0–100, detail, delta? }> }. A missing signal shows as “no data” and is left out of the score."
+      },
+      {
+        "name": "drivers",
+        "type": "HealthDriver[]",
+        "default": "adoption 30, activity 25, support 20, billing 10, sentiment 15",
+        "description": "The composite’s inputs: { key, label, weight, method }. Each becomes an arc of the gauge sized by its weight and filled by its score."
+      },
+      {
+        "name": "plays",
+        "type": "CustomerPlay[]",
+        "default": "Exec check-in, Adoption workshop, Billing review, Renewal plan",
+        "description": "Next-step playbook offered in the inspector: { id, label, summary }."
+      },
+      {
+        "name": "healthyAt",
+        "type": "number",
+        "default": "70",
+        "description": "A composite at or above this is healthy."
+      },
+      {
+        "name": "riskBelow",
+        "type": "number",
+        "default": "45",
+        "description": "A composite below this is at risk; between the two thresholds is “watch”."
+      },
+      {
+        "name": "today",
+        "type": "string",
+        "default": "\"2026-10-14\"",
+        "description": "ISO date the renewal countdown, trend weeks and due dates are measured from."
+      },
+      {
+        "name": "onLogPlay",
+        "type": "(log: CustomerPlayLog) => void | Promise<void>",
+        "description": "Persist { accountId, playId, note, dueOn, owner }. Reject to keep the draft and show the failure in place."
+      },
+      {
+        "name": "onUndoPlay",
+        "type": "(log: CustomerPlayLog) => void | Promise<void>",
+        "description": "Called when a logged play is undone. Reject to restore the receipt."
+      },
+      {
+        "name": "onSelect",
+        "type": "(accountId: string) => void",
+        "description": "Called when an account is opened in the inspector."
+      },
+      {
+        "name": "defaultSelectedId",
+        "type": "string",
+        "default": "first account",
+        "description": "Account inspected first."
+      },
       {
         "name": "title",
         "type": "string",
-        "description": "Main heading.",
-        "default": "\"Customer health\""
+        "default": "\"Customer health\"",
+        "description": "Page name in the product chrome."
       },
       {
-        "name": "subtitle",
+        "name": "workspace",
         "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Review transparent adoption, activity and escalation signals with the accountable customer owner.\""
+        "default": "\"Kestrel\"",
+        "description": "Workspace shown before the page name."
       },
       {
-        "name": "customers",
-        "type": "CustomerHealthRecord[]",
-        "description": "Unique customer accounts with whole non-negative counts, supplied commercial context and optional next action."
-      },
-      {
-        "name": "referenceDate",
+        "name": "currency",
         "type": "string",
-        "description": "ISO date used to validate a next-action date."
+        "default": "\"USD\"",
+        "description": "ISO 4217 code for ARR."
       },
       {
-        "name": "minimumAdoptionPercent",
-        "type": "number",
-        "description": "Transparent review threshold from 0 to 100."
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-US\"",
+        "description": "Locale for money and dates."
       },
       {
-        "name": "activityDropPercent",
-        "type": "number",
-        "description": "Percentage decline threshold from 0 to 100, evaluated only with a non-zero previous baseline."
-      },
-      {
-        "name": "onAction",
-        "type": "(action:CustomerAction)=>void|Promise<void>",
-        "description": "Persist the owner’s next action. Signals inform human account review and do not automatically change customer access or plans."
+        "name": "accent",
+        "type": "string",
+        "default": "theme ink",
+        "description": "The one accent: selected row, inspected driver, chosen play and the primary action."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Surface palette."
       },
       {
-        "name": "selectMode",
-        "type": "\"custom\" | \"native\"",
-        "default": "\"custom\"",
-        "description": "Animated keyboard-accessible custom listboxes, or native platform pickers with matched 12px insets."
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes for the root."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:350",
-        "click:@customer-1",
+        "wait:600",
+        "click:@account-quarry",
+        "wait:800",
+        "hover:@driver-billing",
+        "wait:400",
+        "click:@driver-billing",
         "wait:900",
-        "click:@customer-2",
-        "wait:1100"
+        "click:@filter-risk",
+        "wait:1000"
       ],
       "loop": false
     },
@@ -36524,14 +36582,33 @@
         "default": "dark"
       },
       {
-        "prop": "selectMode",
-        "label": "Select menus",
-        "kind": "segmented",
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
         "options": [
-          "custom",
-          "native"
-        ],
-        "default": "custom"
+          "#f4f4f5",
+          "#7aa2ff",
+          "#ff8a4c"
+        ]
+      },
+      {
+        "prop": "healthyAt",
+        "label": "Healthy from",
+        "kind": "slider",
+        "min": 55,
+        "max": 90,
+        "step": 1,
+        "default": 70
+      },
+      {
+        "prop": "riskBelow",
+        "label": "At risk below",
+        "kind": "slider",
+        "min": 30,
+        "max": 60,
+        "step": 1,
+        "default": 45
       }
     ]
   },

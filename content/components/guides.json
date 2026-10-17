@@ -2978,19 +2978,20 @@
     "updated": "2026-10-12"
   },
   "saas-customer-health": {
-    "useWhen": "Reviewing supplied customer signals and prioritising account follow-up.",
-    "avoidWhen": "A guaranteed churn prediction or scores based on unexplained customer data.",
+    "useWhen": "A customer-success team reviews its book of accounts by health, needs to see which weighted drivers pull each score down, and logs the next play for the owner.",
+    "avoidWhen": "You only need a single KPI or a churn prediction you can't explain; a score without inspectable drivers belongs in a simpler stat card.",
     "integration": [
-      "Supply your own records through `customers`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onAction` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
-      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+      "Pass `accounts` with per-driver `signals` (score 0–100 plus the fact behind it) and the weekly composite `trend`; define the composite once in `drivers` with relative weights.",
+      "Missing signals are shown as no data and left out of the composite, so send only what you actually measure.",
+      "Tune `healthyAt` and `riskBelow` to your playbook; bands, the ARR-by-health bar and filters all follow.",
+      "Persist plays in `onLogPlay` and reject on failure: the draft note and due date stay in place for a retry. `onUndoPlay` reverses a logged play."
     ],
     "related": [
-      "saas-access-requests",
-      "saas-audit-trail",
-      "saas-integration-manager"
+      "dashboard-kpi-cards",
+      "saas-workspace-dashboard",
+      "saas-support-triage"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "saas-integration-manager": {
     "useWhen": "Reviewing connector state and explicit connection or disconnection actions.",
