@@ -13978,149 +13978,136 @@
   },
   {
     "slug": "date-timezone-overlap",
-    "name": "Working-hours Timezone Overlap",
+    "name": "Timezone Overlap",
     "tier": "pro",
     "platform": "web",
     "category": "date-time",
-    "description": "Compare actual zoned instants across supplied working hours, including overnight weekdays and daylight-saving boundaries, before requesting an exact reviewed choice.",
+    "description": "A world-clock planner: everyone’s working hours as bands on a sliding 24-hour ruler, shared hours glowing, and a meeting you drag to read each local time.",
     "tags": [
       "timezone",
-      "working-hours",
-      "overlap",
-      "daylight-saving",
-      "date-time",
-      "comparison"
+      "world clock",
+      "scheduling",
+      "meeting planner",
+      "working hours",
+      "date-time"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1100,
-    "usage": "import { DateTimezoneOverlap } from \"@/components/design-for-ai/date-timezone-overlap\";\n\n<DateTimezoneOverlap participants={people} date=\"2026-10-13\" anchorZone=\"Europe/London\" value={selection} onValueChange={setSelection} />\n\n// This compares supplied hours, not calendar availability. Choose receives instant, durationMinutes and participantIds.",
+    "previewHeight": 760,
+    "usage": "import { DateTimezoneOverlap } from \"@/components/design-for-ai/date-timezone-overlap\";\n\n<DateTimezoneOverlap\n  people={team}\n  date=\"2026-10-20\"\n  anchorZone=\"Europe/London\"\n  onSlotChange={setSlot}\n  onPropose={(slot) => sendInvites(slot)}\n/>",
     "props": [
+      {
+        "name": "people",
+        "type": "readonly Teammate[]",
+        "default": "five-person demo team",
+        "description": "`{ id, name, role?, city, timeZone, start, end, days? }`: IANA zone, local HH:mm hours (an end at or before the start runs past midnight) and working weekdays (default Mon–Fri)."
+      },
       {
         "name": "date",
         "type": "string",
-        "description": "Valid Gregorian local anchor date YYYY-MM-DD, years1970–2100."
+        "default": "\"2026-10-20\"",
+        "description": "The day being planned, YYYY-MM-DD in anchorZone. The header steps it a day at a time."
       },
       {
         "name": "anchorZone",
         "type": "string",
-        "description": "Actual Intl zone used to resolve the preview window. Missing local boundaries are explained; repeated starts choose first and repeated ends second."
+        "default": "\"Europe/London\"",
+        "description": "The zone the ruler is drawn in, usually the organiser’s."
       },
       {
-        "name": "windowStart",
+        "name": "anchorLabel",
         "type": "string",
-        "description": "Local HH:mm window start."
+        "default": "last part of anchorZone",
+        "description": "Short zone name in labels, e.g. “London”."
       },
       {
-        "name": "windowEnd",
+        "name": "title",
         "type": "string",
-        "description": "Local HH:mm window end. At or before the start means the following local day."
-      },
-      {
-        "name": "participants",
-        "type": "readonly WorkingParticipant[]",
-        "description": "At most12 unique nonempty identities/names, real timeZone, HH:mm start/end and unique weekday numbers0–6. Overnight hours belong to their starting weekday; equal hours provide no working time."
-      },
-      {
-        "name": "includedIds",
-        "type": "readonly string[]",
-        "description": "Optional controlled exact comparison set; pair with onIncludedIdsChange."
-      },
-      {
-        "name": "defaultIncludedIds",
-        "type": "readonly string[]",
-        "description": "Local seed, defaultall supplied participants. Reset explicitly with resetKey when membership changes."
-      },
-      {
-        "name": "onIncludedIdsChange",
-        "type": "(ids: readonly string[]) => void",
-        "description": "Request a cloned comparison set independently from chosen instant. Rejection preserves accepted membership."
-      },
-      {
-        "name": "value",
-        "type": "OverlapSelection | null",
-        "description": "Controlled chosen instant, durationMinutes and participantIds. An older/outside-context choice remains visibly retained, never silently adapted."
-      },
-      {
-        "name": "defaultValue",
-        "type": "OverlapSelection | null",
-        "description": "Optional local chosen snapshot seed."
-      },
-      {
-        "name": "onValueChange",
-        "type": "(selection: OverlapSelection) => void",
-        "description": "Explicit Choose requests the exact eligible instant, duration and cloned participant identities. No booking, invitations or calendar lookup."
+        "default": "\"Quarterly planning\"",
+        "description": "Meeting name in the header."
       },
       {
         "name": "durationMinutes",
         "type": "number",
-        "description": "Whole-minute duration1–120. Every occupied minute must fit all included working hours."
+        "default": "30",
+        "description": "Starting meeting length."
       },
       {
-        "name": "stepMinutes",
-        "type": "number",
-        "description": "Whole-minute candidate step15–120, at most120 bounded starts."
+        "name": "durations",
+        "type": "readonly number[]",
+        "default": "[30, 45, 60]",
+        "description": "Lengths offered in the header."
+      },
+      {
+        "name": "defaultExcludedIds",
+        "type": "readonly string[]",
+        "default": "[]",
+        "description": "People left out of the comparison at first; they stay listed and can be toggled back."
+      },
+      {
+        "name": "onIncludedChange",
+        "type": "(ids: string[]) => void",
+        "description": "Called with the included ids when someone is toggled."
+      },
+      {
+        "name": "onSlotChange",
+        "type": "(slot: MeetingSlot) => void",
+        "description": "Called when the meeting settles on a time: `{ start, end, durationMinutes, participantIds }` with ISO instants."
+      },
+      {
+        "name": "onPropose",
+        "type": "(slot: MeetingSlot) => Promise<void> | void",
+        "description": "Shows the primary action. Return a promise for the pending state; reject to show the retry state with the slot kept."
       },
       {
         "name": "locale",
         "type": "string",
-        "description": "Intl local date/time display; unsupported locale falls back to en-GB."
+        "default": "\"en-GB\"",
+        "description": "Intl locale for times and days."
       },
       {
-        "name": "resetKey",
-        "type": "string | number",
-        "description": "Explicit local selection/membership/inspection lifecycle reset."
-      },
-      {
-        "name": "status",
-        "type": "\"ready\" | \"loading\" | \"error\"",
-        "description": "Host availability preserves chosen values and reading context."
-      },
-      {
-        "name": "errorMessage",
+        "name": "accent",
         "type": "string",
-        "description": "Meaningful host failure explanation, default when blank."
-      },
-      {
-        "name": "onRetry",
-        "type": "() => void",
-        "description": "Actual recovery request."
-      },
-      {
-        "name": "disabled",
-        "type": "boolean",
-        "description": "Lock comparison/inspection and Choose while retaining actual supplied values."
+        "default": "\"#4ade80\"",
+        "description": "The one accent: the shared-hours glow and the in-hours dots."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Complete monochromatic graphite/white chrome. Colour is reserved for actual supplied content and purposeful feature accents."
+        "default": "\"dark\"",
+        "description": "Colour theme."
       },
       {
-        "name": "labels",
-        "type": "Partial<OverlapLabels>",
-        "description": "Heading, working-hour, scope, choice and recovery copy."
+        "name": "disabled",
+        "type": "boolean",
+        "default": "false",
+        "description": "Read-only: the comparison stays visible, nothing moves."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Host layout responsive to actual container width."
+        "default": "\"\"",
+        "description": "Classes on the root."
       }
     ],
     "added": "2026-10-13",
     "demo": {
       "steps": [
-        "click:@timezone-person-new-york",
-        "wait:450",
-        "click:@timezone-person-new-york",
-        "wait:450",
-        "click:@timezone-slot-9",
-        "wait:450",
-        "click:@timezone-choose",
-        "wait:450"
+        "wait:300",
+        "hover:@tz-slot:0.5,0.5",
+        "down",
+        "hover:@tz-track:0.51,0.6",
+        "up",
+        "wait:500",
+        "click:@tz-person-hana",
+        "wait:1000",
+        "click:@tz-person-hana",
+        "wait:600",
+        "click:@tz-propose",
+        "wait:1300"
       ],
       "loop": false
     },
@@ -14136,24 +14123,56 @@
         "default": "dark"
       },
       {
-        "prop": "durationMinutes",
-        "label": "Meeting length",
-        "kind": "slider",
-        "min": 15,
-        "max": 120,
-        "step": 15,
-        "default": 30,
-        "unit": "min"
+        "prop": "accent",
+        "label": "Shared hours",
+        "kind": "color",
+        "default": "#4ade80",
+        "options": [
+          "#4ade80",
+          "#f4f4f5",
+          "#4f8cff",
+          "#ff6b3d"
+        ]
       },
       {
-        "prop": "stepMinutes",
-        "label": "Start interval",
-        "kind": "slider",
-        "min": 15,
-        "max": 60,
-        "step": 15,
-        "default": 30,
-        "unit": "min"
+        "prop": "durationMinutes",
+        "label": "Meeting length",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": 30,
+            "label": "30m"
+          },
+          {
+            "value": 45,
+            "label": "45m"
+          },
+          {
+            "value": 60,
+            "label": "1h"
+          }
+        ],
+        "default": 60
+      },
+      {
+        "prop": "anchorZone",
+        "label": "Ruler zone",
+        "kind": "select",
+        "options": [
+          {
+            "value": "Europe/London",
+            "label": "London"
+          },
+          {
+            "value": "America/New_York",
+            "label": "New York"
+          },
+          {
+            "value": "Asia/Kolkata",
+            "label": "Bengaluru"
+          }
+        ],
+        "default": "Europe/London"
       },
       {
         "prop": "disabled",

@@ -4169,18 +4169,18 @@
     "updated": "2026-10-17"
   },
   "date-timezone-overlap": {
-    "useWhen": "Comparing supplied working hours across timezones before explicitly choosing a meeting time.",
-    "avoidWhen": "A guessed timezone offset, a scheduling service or a guarantee that participants are available.",
+    "useWhen": "Finding a meeting time for a distributed team: you need to see everyone’s working hours side by side and read what a proposed time means locally for each person.",
+    "avoidWhen": "Booking against real calendar availability or rooms (use a booking or slot picker fed by free/busy data), or a single person converting one time between two zones.",
     "integration": [
-      "Supply actual YYYY-MM-DD `date`, Intl `anchorZone`, local `windowStart`/`windowEnd` and unique `participants` with local `start`/`end`, `timeZone` and Sunday0–Saturday6 `weekdays`. Overnight work belongs to the weekday on which it begins; equal hours mean no working time.",
-      "The comparison window uses the first repeated start and second repeated end; a missing local boundary is explained. `durationMinutes`1–120 and `stepMinutes`15–120 bound actual elapsed candidate starts. Every occupied minute must fit every included participant, not just its start.",
-      "Control `includedIds`/`onIncludedIdsChange` separately from `value`/`onValueChange`, whose atomic payload is `{instant,durationMinutes,participantIds}`. Inspection is not a choice; a retained selection outside a changed context stays visible. Reset local membership explicitly with `resetKey` when the participant dataset changes. Host owns real calendars, booking and persistence."
+      "Pass `people` as `{ id, name, city, timeZone, start, end, days? }` with IANA zones and local HH:mm hours; offsets and daylight saving come from the browser’s Intl data, and an end before the start runs past midnight.",
+      "Set `date` and `anchorZone` to the organiser’s day and zone. Read the meeting from `onSlotChange` as `{ start, end, durationMinutes, participantIds }` with ISO instants.",
+      "`onPropose` adds the primary action; return a promise for the pending state and reject to show retry with the slot kept. Working hours are not availability: check calendars on your side before sending invites."
     ],
     "related": [
-      "date-week-agenda",
-      "hr-capacity-planner"
+      "date-range-calendar",
+      "date-week-agenda"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "forms-branching-survey": {
     "useWhen": "Collecting conditional answers while retaining prior input when a branch changes, then reviewing the result.",
