@@ -16,6 +16,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 3.5: resolved exhausted opening cash, singular month labels, scenario keyboard navigation and the empty scenario state. Saved projections and the rewritten browser probe pass in isolation, with clean dark/light accessibility checks.
 
+- Tasks 3.6 and 3.7: resolved sender-specific printed payment links, host-only receipt links, and line removal at all widths. The invoice probe, dark/light accessibility checks and responsive captures at 320/390/768/1440 pass in isolation.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned

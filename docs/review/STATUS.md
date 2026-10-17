@@ -145,7 +145,7 @@ needs re-recording, whether its poster is current, and the state of its browser 
 | --- | --- | --- | --- |
 | `finance-close-checklist` | new | stale | rewritten, passes |
 | `finance-expense-review` | new | stale | rewritten, passes |
-| `finance-invoice-composer` | new | current | rewritten, not yet run end to end; asserts bugs below |
+| `finance-invoice-composer` | new | current | rewritten, passes in isolation; payment links and narrow removal fixed; official runner pending |
 | `finance-payment-run` | new | current | rewritten, not yet run end to end; asserts bugs below |
 | `finance-receivables-aging` | new | current | rewritten, not yet run end to end; asserts bugs below |
 | `finance-reconciliation` | new | stale | no pro-50 probe; pro-industry-probe and pro-demo-probe still test the old UI |

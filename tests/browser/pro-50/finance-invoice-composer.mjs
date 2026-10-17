@@ -140,7 +140,8 @@ export async function check({ page, mount, assert }) {
   assert.equal(await page.locator('[data-demo="qty-1"]').isDisabled(), true);
   assert.equal(await page.locator('[data-demo="add-line"]').count(), 0);
 
-  // Adding and removing lines (wide layout, where remove buttons sit in the gutter).
+  // Adding and removing lines in the wide layout, where buttons sit in the paper gutter.
+  await page.setViewportSize({width:1440,height:1000});
   await mount(`${WIDE}window.last=null;createRoot(document.getElementById('root')).render(<Subject.InvoiceComposer onSend={d=>{window.last=d}}/>);`);
   const wide = page.getByRole("article", { name: "Invoice INV-0048" });
   await page.locator('[data-demo="add-line"]').click();
@@ -161,12 +162,16 @@ export async function check({ page, mount, assert }) {
     ["Rush fee", 1, 30000],
   ]);
   assert.equal(await page.evaluate(() => window.last.totalMinor), 758100);
+  await page.getByRole("complementary", {name:"Delivery"}).filter({hasText:"Invoice sent"}).waitFor();
+  assert.equal(await page.getByRole("button", {name:"Copy payment link"}).count(), 0,
+    "A receipt must not invent a link when the host returns none");
 
   // A zero-decimal currency: yen has no minor unit.
   await mount(`createRoot(document.getElementById('root')).render(<Subject.InvoiceComposer currency="JPY" locale="en-GB" discountBasisPoints={0} taxBasisPoints={1000} initialLines={[{id:'a',description:'Workshop',quantity:1.5,unitMinor:1000}]}/>);`);
   const yen = page.getByRole("article", { name: "Invoice INV-0048" });
   assert.equal(await page.getByLabel("Line 1 rate", { exact: true }).inputValue(), "1,000");
-  assert.match(await spoken(yen), /Total due JPY ¥1,650/);
+  const yenTotal = await page.evaluate(() => new Intl.NumberFormat("en-GB", {style:"currency",currency:"JPY"}).format(1650));
+  assert.ok((await spoken(yen)).includes(`Total due JPY ${yenTotal}`), "Yen total respects the locale and zero minor units");
   await page.getByLabel("Line 1 rate", { exact: true }).fill("1000.5");
   assert.equal(await page.getByLabel("Line 1 rate", { exact: true }).getAttribute("aria-invalid"), "true");
 
@@ -183,8 +188,21 @@ export async function check({ page, mount, assert }) {
   await page.getByRole("complementary", { name: "Delivery" }).filter({ hasText: "Invoice sent" }).waitFor();
   assert.doesNotMatch(await txt(acme), /fernhill/i, "The receipt invents a payment link the host never returned");
 
+  // A supplied payment base preserves its host, path, query and encoded invoice identity.
+  await mount(`createRoot(document.getElementById('root')).render(<Subject.InvoiceComposer number="AC/48" sender={{name:'Acme Design Ltd',address:['1 High St'],paymentLinkBase:'https://pay.acme.test/invoices/?workspace=main'}} onSend={()=>{}}/>);`);
+  await page.getByText("pay.acme.test/invoices/AC%2F48?workspace=main", {exact:true}).waitFor();
+  await page.locator('[data-demo="send"]').click();
+  const noLink = page.getByRole("complementary", {name:"Delivery"});
+  await noLink.filter({hasText:"Invoice sent"}).waitFor();
+  assert.doesNotMatch(await txt(noLink), /pay\.acme/);
+  assert.equal(await noLink.getByRole("button", {name:"Copy payment link"}).count(), 0);
+
   // On a phone-width page a line can still be removed.
+  await page.setViewportSize({width:390,height:900});
   await mount(`createRoot(document.getElementById('root')).render(<Subject.InvoiceComposer/>);`);
   await page.getByLabel("Line 1 description", { exact: true }).focus();
   assert.equal(await page.getByRole("button", { name: "Remove line 1" }).isVisible(), true, "Remove line is display:none below a 672px container");
+  await page.getByRole("button", {name:"Remove line 1"}).click();
+  await page.waitForFunction(() => !document.querySelector('[aria-label="Line 3 description"]'));
+  assert.equal(await page.getByLabel("Line 1 description", {exact:true}).inputValue(), "Launch site design and build (sprint days)");
 }

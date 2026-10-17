@@ -22994,7 +22994,7 @@
       {
         "name": "sender",
         "type": "InvoiceSender",
-        "description": "Your business: { name, email?, address: string[], taxId?, bank?: string[] }. Bank lines print in the payment block."
+        "description": "Your business: { name, email?, address: string[], taxId?, bank?: string[], paymentLinkBase?: string }. Bank lines print in the payment block. An absolute HTTP(S) payment base adds the encoded invoice number for the printed link; omit it to show no payment URL."
       },
       {
         "name": "customer",
@@ -23073,7 +23073,7 @@
       {
         "name": "onSend",
         "type": "(draft: InvoiceDraft) => void | Promise<void | InvoiceSendResult>",
-        "description": "Issue and email the invoice. Resolve (optionally with { paymentUrl }) to stamp it sent and show the receipt; reject to keep the draft and show why."
+        "description": "Issue and email the invoice. Resolve (optionally with { paymentUrl }) to stamp it sent and show the receipt; reject to keep the draft and show why. The receipt shows only a returned paymentUrl and omits the payment-link controls when none is returned."
       },
       {
         "name": "accent",

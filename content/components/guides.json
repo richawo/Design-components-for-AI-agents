@@ -2269,7 +2269,8 @@
       "Pass `sender`, `customer` and `initialLines` with rates in minor units. Quantities accept up to two decimals, so hours and days both work.",
       "`onSaveDraft` and `onSend` both receive the full `InvoiceDraft`, including computed `subtotalMinor`, `discountMinor`, `taxMinor` and `totalMinor`. Recalculate on the server before issuing; the client totals are for the person writing it.",
       "Resolve `onSend` with `{ paymentUrl }` to show your hosted payment link on the receipt. Reject with an `Error` to keep the draft and show its message.",
-      "Set `taxLabel` and `taxBasisPoints` for your jurisdiction (VAT, GST, sales tax) and `termsOptions` for the terms you offer."
+      "Set `taxLabel` and `taxBasisPoints` for your jurisdiction (VAT, GST, sales tax) and `termsOptions` for the terms you offer.",
+      "Set sender.paymentLinkBase to print a payment URL with the encoded invoice number. The sent receipt shows only paymentUrl returned by onSend; omit it when there is no payment link."
     ],
     "related": [
       "finance-receivables-aging",
