@@ -26897,62 +26897,81 @@
   },
   {
     "slug": "legal-document-requests",
-    "name": "Document Request Portal",
+    "name": "Document Request Checklist",
     "tier": "pro",
     "platform": "web",
     "category": "data",
-    "description": "Track requested documents, validate selected files and await upload acknowledgement.",
+    "description": "A client document checklist: attach a file or an inbox match to each request, submit it, and watch it land in the received tray as a paper card with a stamp.",
     "tags": [
       "legal-tech",
+      "document requests",
+      "client portal",
+      "file upload",
+      "checklist",
       "workflow",
-      "responsive",
-      "keyboard",
-      "data"
+      "keyboard"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1110,
-    "usage": "import { DocumentRequests } from \"@/components/design-for-ai/legal-document-requests\";\n\n<DocumentRequests />",
+    "previewHeight": 900,
+    "usage": "import { DocumentRequests } from \"@/components/design-for-ai/legal-document-requests\";\n\n<DocumentRequests\n  title=\"Document requests\"\n  subtitle=\"Harbour Works · Lease renewal\"\n  requests={requests}\n  onUpload={async (submission) => {\n    if (submission.file) await api.requests.upload(submission.requestId, submission.file);\n    else await api.requests.claimAttachment(submission.requestId, submission.attachment.id);\n  }}\n/>",
     "props": [
       {
         "name": "title",
         "type": "string",
-        "description": "Main heading.",
-        "default": "\"Document requests\""
+        "default": "\"Document requests\"",
+        "description": "Entity name in the header."
       },
       {
         "name": "subtitle",
         "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Inspect each request, choose the right file and track receipt separately from reviewer acceptance.\""
+        "default": "\"Harbour Works · Lease renewal\"",
+        "description": "Matter or client context, shown as a breadcrumb (split on “ · ”)."
       },
       {
         "name": "requests",
         "type": "RequestedDocument[]",
-        "description": "Unique authorised document requests with lowercase dot-prefixed extensions, byte limits and explicit review state."
+        "description": "Requests with id, title, description, requestedBy, dueLabel and optional ISO due, state (awaiting | received | accepted | revision-needed), lowercase dot-prefixed allowedExtensions, maxBytes, reviewNote, the received file and an optional inbox suggestion ({ id, name, bytes, from, receivedLabel })."
       },
       {
         "name": "onUpload",
-        "type": "(submission:DocumentSubmission)=>void|Promise<void>",
-        "description": "Upload the actual File and resolve only when receipt is acknowledged. The host must enforce access, content validation and storage rules server-side."
+        "type": "(submission: DocumentSubmission) => void | Promise<void>",
+        "description": "Receives { requestId, file } for a chosen or dropped File, or { requestId, attachment } for an inbox match. Resolve once receipt is acknowledged to stamp it; reject to keep the file attached and offer a retry. Validate type, size and access again on the server."
+      },
+      {
+        "name": "referenceDate",
+        "type": "string",
+        "description": "ISO date treated as today for due countdowns. Defaults to the current date."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#5b8def\"",
+        "description": "The one accent: the open request, the received stamp and the progress ring."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Graphite chrome with paper documents, or the light inverse."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:400",
-        "click:@request-1",
-        "wait:950",
-        "click:@request-2",
-        "wait:1200"
+        "wait:500",
+        "click:@attach-doc-401",
+        "wait:500",
+        "click:@submit-doc-401",
+        "wait:2000"
       ],
       "loop": false
     },
@@ -26966,6 +26985,24 @@
           "light"
         ],
         "default": "dark"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#5b8def",
+        "options": [
+          "#5b8def",
+          "#e5484d",
+          "#8b7cf6",
+          "#0ea5a4"
+        ]
+      },
+      {
+        "prop": "title",
+        "label": "Title",
+        "kind": "text",
+        "default": "Document requests"
       }
     ]
   },

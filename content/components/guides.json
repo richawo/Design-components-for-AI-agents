@@ -2621,18 +2621,19 @@
     "updated": "2026-10-17"
   },
   "legal-document-requests": {
-    "useWhen": "Tracking requested documents and their supplied submission state.",
-    "avoidWhen": "Document storage or a guarantee that submitted evidence is authentic.",
+    "useWhen": "Collecting files from a client or counterparty against a checklist of named requests, where each submission needs a visible receipt and reviewers can ask for a new version.",
+    "avoidWhen": "General file storage, e-signature or a data room with folders and permissions. It tracks requests and receipts; it does not store, scan or authenticate documents.",
     "integration": [
-      "Supply your own records through `requests`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onUpload` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+      "Pass `requests` with stable ids, lowercase dot-prefixed `allowedExtensions` and a byte `maxBytes`. Add an ISO `due` for countdowns and a `suggestion` when your inbox matching finds a likely file.",
+      "`onUpload` receives `{ requestId, file }` or `{ requestId, attachment }`. Resolve only once receipt is acknowledged; reject to keep the file staged with a retry. Re-validate type, size and access on the server.",
+      "Set `referenceDate` from the server in tests and screenshots so due countdowns stay stable."
     ],
     "related": [
       "legal-evidence-index",
-      "legal-obligation-tracker",
-      "data-file-explorer"
+      "legal-matter-intake",
+      "legal-signature-request"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "legal-evidence-index": {
     "useWhen": "Reviewing a bundle of exhibits before trial or disclosure, where each exhibit needs its Bates range, intake hash and chain of custody checked before it goes into an export manifest.",
