@@ -3455,19 +3455,19 @@
     ]
   },
   "media-track-list": {
-    "updated": "2026-10-12",
-    "useWhen": "Browsing a music collection or editable queue with linked selection, liked state and context-specific actions.",
-    "avoidWhen": "Using a decorative list to imply playback without connecting selection to a real player and licensed source.",
+    "useWhen": "A playlist, album or Up Next queue where people scan, play, like and reorder tracks, and the playing row should be obvious at a glance.",
+    "avoidWhen": "A single now-playing view or a podcast episode page with long descriptions; use the Audio Player, or a list built for long text.",
     "integration": [
-      "Pass unique track IDs and stable title, artist, album and duration records. onSelect drives the host selection or player.",
-      "Like, queue and removal actions are separate sibling controls; omit callbacks to hide actions the host does not support.",
-      "Optional host artwork should be licensed and served reliably. The default cover studies are original, offline-safe illustrations."
+      "Pass unique track IDs; activeId and playing come from your player. progress (0–1) draws the hairline, and level accepts a number or a per-frame getter such as an AnalyserNode reading.",
+      "onSelect plays a row; add onPause so pressing the playing row pauses it. Like, queue and remove are sibling buttons, shown only when you pass their callbacks.",
+      "onReorder turns on drag handles and arrow-key moves, and is called once on release with the new ID order. Without artwork, covers are drawn from the album name and match the Audio Player’s."
     ],
     "related": [
       "media-audio-transport",
       "block-music-workspace",
-      "input-search-scoped"
-    ]
+      "mobile-now-playing"
+    ],
+    "updated": "2026-10-17"
   },
   "block-music-workspace": {
     "updated": "2026-10-12",

@@ -29236,13 +29236,16 @@
     "tier": "pro",
     "platform": "web",
     "category": "media",
-    "description": "A responsive music collection with original cover studies, selected-track state, likes and queue actions. Typed records and host-owned selection make it composable.",
+    "description": "A playlist table with drawn album covers, a playing row whose equaliser follows the level, hover-to-play, drag reorder, likes and a queue.",
     "tags": [
       "music",
+      "playlist",
+      "track list",
       "audio",
+      "equaliser",
+      "drag and drop",
+      "queue",
       "media",
-      "keyboard",
-      "composition",
       "dark"
     ],
     "dependencies": [
@@ -29250,83 +29253,184 @@
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 680,
-    "usage": "import { TrackList } from \"@/components/design-for-ai/media-track-list\";\n\n<TrackList tracks={tracks} activeId={activeId} onSelect={selectTrack} onLike={toggleLike} />",
+    "previewHeight": 760,
+    "usage": "import { TrackList } from \"@/components/design-for-ai/media-track-list\";\n\n<TrackList\n  title=\"Late shift\"\n  tracks={tracks}\n  activeId={player.trackId}\n  playing={player.playing}\n  progress={player.time / player.duration}\n  level={() => meter.level()}\n  onSelect={(track) => player.play(track.id)}\n  onPause={player.pause}\n  onLike={toggleLike}\n  onQueue={addToQueue}\n  queuedIds={queue}\n  onReorder={savePlaylistOrder}\n/>",
     "props": [
       {
         "name": "tracks",
         "type": "LibraryTrack[]",
-        "description": "Unique IDs, titles, artists, albums and non-negative duration in seconds. Optional artwork and liked state."
+        "default": "7 demo tracks",
+        "description": "{ id, title, artist, album, seconds, artwork?, liked? }. Unique IDs; covers are drawn from the album name when there is no artwork, so an album shares one cover."
       },
       {
         "name": "activeId",
         "type": "string",
-        "description": "Selected track ID."
+        "description": "The current track. Its row carries the highlight, which slides between rows when it changes."
       },
       {
         "name": "playing",
         "type": "boolean",
         "default": "false",
-        "description": "Whether the selected track is actually playing."
+        "description": "Whether the current track is actually playing. Drives the equaliser; paused, its number turns accent."
+      },
+      {
+        "name": "progress",
+        "type": "number",
+        "description": "0–1 through the current track. Draws a hairline along the bottom of its row."
+      },
+      {
+        "name": "level",
+        "type": "number | (() => number)",
+        "description": "Live loudness 0–1 for the equaliser: a number, or a getter read every frame (an AnalyserNode, say). Omit and it moves to a gentle beat while playing."
       },
       {
         "name": "onSelect",
         "type": "(track: LibraryTrack) => void",
-        "description": "Required host-owned selection or playback action."
+        "description": "Play or select a track. The whole row is the button; the number turns into a play glyph under the pointer."
+      },
+      {
+        "name": "onPause",
+        "type": "() => void",
+        "description": "Called instead of onSelect when the playing row is pressed."
       },
       {
         "name": "onLike",
         "type": "(id: string) => void",
-        "description": "Toggle host-owned liked state. Omit to hide like controls."
+        "description": "Toggle liked. Omit to hide the heart."
       },
       {
         "name": "onQueue",
         "type": "(id: string) => void",
-        "description": "Add a stable track ID to the host queue. Omit to hide queue controls."
+        "description": "Add to the queue. Omit to hide the queue button."
+      },
+      {
+        "name": "queuedIds",
+        "type": "string[]",
+        "description": "Tracks already queued; their queue button shows a check."
       },
       {
         "name": "onRemove",
         "type": "(id: string) => void",
-        "description": "Remove a queued track. Omit to hide remove controls."
+        "description": "Remove a track (an Up Next list). Omit to hide."
+      },
+      {
+        "name": "onReorder",
+        "type": "(ids: string[]) => void",
+        "description": "Turns on drag handles (and ↑/↓ on a focused handle). Called once on release with the new order."
       },
       {
         "name": "title",
         "type": "string",
-        "default": "\"The collection\"",
-        "description": "List heading and accessible region name."
+        "default": "\"Late shift\"",
+        "description": "Heading and the list’s accessible name. The track count and running time count up beside it."
+      },
+      {
+        "name": "emptyLabel",
+        "type": "string",
+        "default": "\"Nothing here yet. Save a track and it lands at the top.\"",
+        "description": "The empty state’s line, for a collection, a queue or a search with no matches."
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "default": "false",
+        "description": "Skeleton rows while the host fetches."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ff6b3d\"",
+        "description": "The one accent: equaliser, liked hearts, the paused number and the progress hairline."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface and ink palette."
-      },
-      {
-        "name": "emptyLabel",
-        "type": "string",
-        "default": "\"Your collection is empty. Add a track when you are ready.\"",
-        "description": "Contextual empty-state guidance for collections, queues or filtered results."
+        "description": "Surface palette."
       }
     ],
     "added": "2026-10-12",
     "demo": {
       "steps": [
-        "click:@track-motion",
-        "wait:350",
-        "click:@like-motion",
-        "wait:1200"
+        "wait:500",
+        "hover:@track-blue",
+        "wait:400",
+        "click:@track-blue",
+        "wait:1000",
+        "click:@like-blue",
+        "wait:1000"
       ]
     },
     "controls": [
+      {
+        "prop": "playing",
+        "label": "Playback",
+        "kind": "action",
+        "options": [
+          {
+            "value": true,
+            "label": "Playing"
+          },
+          {
+            "value": false,
+            "label": "Paused"
+          }
+        ],
+        "group": "State"
+      },
+      {
+        "prop": "loading",
+        "label": "Data",
+        "kind": "action",
+        "options": [
+          {
+            "value": false,
+            "label": "Loaded"
+          },
+          {
+            "value": true,
+            "label": "Loading"
+          }
+        ],
+        "group": "State"
+      },
+      {
+        "prop": "title",
+        "label": "Title",
+        "kind": "text",
+        "default": "Late shift",
+        "group": "Content"
+      },
       {
         "prop": "theme",
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
-        "default": "dark"
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#ff6b3d",
+        "options": [
+          "#ff6b3d",
+          "#f4f4f5",
+          "#4ade80",
+          "#60a5fa",
+          "#f5a524"
+        ],
+        "group": "Look"
       }
     ]
   },
