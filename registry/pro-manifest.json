@@ -35679,132 +35679,212 @@
     "tier": "pro",
     "platform": "web",
     "category": "pricing",
-    "description": "An inspectable usage estimate with bounded quantity controls, exact minor-unit arithmetic and an itemized bill that explains included units and rounding.",
+    "description": "A usage pricing calculator: a counting estimate, a meter whose block ruler shows paid-but-unused overage, presets and an itemized bill.",
     "tags": [
       "pricing",
       "calculator",
       "usage",
-      "cost",
-      "rounding",
-      "currency"
+      "metered billing",
+      "overage",
+      "api pricing"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1100,
-    "usage": "import { PricingUsageCalculator } from \"@/components/design-for-ai/pricing-usage-calculator\";\n\n<PricingUsageCalculator rates={rates} quantity={quantity} onQuantityChange={setQuantity} />\n\n// Host rates use integer minor currency units. Review all taxes and other charges separately.",
+    "previewHeight": 980,
+    "usage": "import { PricingUsageCalculator } from \"@/components/design-for-ai/pricing-usage-calculator\";\n\n<PricingUsageCalculator\n  productName=\"Render API\"\n  rates={rates}\n  quantity={renders}\n  onQuantityChange={(n) => setRenders(n)}\n  onContinue={(n, estimate) => choosePlan(n, estimate)}\n/>\n\n// Rates are integer minor currency units; the rounding rule is explicit.",
     "props": [
+      {
+        "name": "productName",
+        "type": "string",
+        "default": "\"Render API\"",
+        "description": "Product name in the compact header."
+      },
       {
         "name": "rates",
         "type": "UsageRates | null",
-        "description": "Supplied integer minor currency-unit rates, included units, block units, an explicit rounding policy and unit/period labels. Null is an honest unavailable state."
+        "default": "$12 base, 1,000 renders included, $6 per 1,000 after",
+        "description": "currency, integer minor-unit baseMinor and blockPriceMinor, includedUnits, blockUnits, rounding (\"started-block\" | \"proportional-ceiling\"), unitLabel and periodLabel. Null shows the not-set-up state; invalid terms show an unavailable estimate."
       },
       {
         "name": "quantity",
         "type": "number",
-        "description": "Controlled nonnegative whole quantity within maxQuantity. Pair with onQuantityChange; rejected requests retain the actual estimate."
+        "description": "Controlled whole quantity. Pair with onQuantityChange; a rejected change keeps the estimate and any typed draft."
       },
       {
         "name": "defaultQuantity",
         "type": "number",
-        "description": "Initial local quantity. Later changes update local quantity without overwriting a dirty exact-entry draft."
+        "default": "2800",
+        "description": "Uncontrolled starting quantity."
       },
       {
         "name": "onQuantityChange",
         "type": "(quantity: number, estimate: UsageEstimate) => void",
-        "description": "Request a valid bounded quantity and its exact derived estimate. No invoice, checkout or payment action is performed."
+        "description": "Called with each new whole quantity and its exact BigInt-derived estimate."
       },
       {
         "name": "maxQuantity",
         "type": "number",
-        "description": "Positive whole limit up to one million. Invalid or overflowing terms remain explicitly unavailable."
+        "default": "12000",
+        "description": "Top of the meter, a whole number up to 1,000,000."
       },
       {
         "name": "step",
         "type": "number",
-        "description": "Whole keyboard increment; Page keys use ten increments. Pointer and exact entry retain every whole quantity without step snapping."
+        "default": "100",
+        "description": "Stepper and arrow-key increment; Page keys move ten steps."
+      },
+      {
+        "name": "presets",
+        "type": "UsagePreset[]",
+        "default": "Side project 600, Growing app 4,200, Production 9,500",
+        "description": "Quick picks under the meter; picking one sweeps the meter there. An empty array hides them."
+      },
+      {
+        "name": "onContinue",
+        "type": "(quantity: number, estimate: UsageEstimate) => void | Promise<void>",
+        "description": "The primary action. Return a promise to hold the pending state; reject it to show a recoverable failure. Without it the button is disabled."
+      },
+      {
+        "name": "ctaLabel",
+        "type": "string",
+        "default": "\"Start building\"",
+        "description": "Primary button copy."
+      },
+      {
+        "name": "footnote",
+        "type": "string",
+        "default": "\"Estimate excludes tax. Usage is billed at the end of each month.\"",
+        "description": "Fine print beside the button."
       },
       {
         "name": "locale",
         "type": "string",
-        "description": "Intl formatting locale. Currency minor-unit precision follows Intl currency rules; invalid formatting terms remain explicit."
+        "default": "\"en-US\"",
+        "description": "Intl formatting locale."
       },
       {
         "name": "status",
         "type": "\"ready\" | \"loading\" | \"error\"",
-        "description": "Host-owned availability. Quantity and dirty input survive availability changes."
+        "default": "\"ready\"",
+        "description": "Host-owned price availability. The quantity survives loading and errors."
       },
       {
         "name": "errorMessage",
         "type": "string",
-        "description": "Actual host failure explanation."
+        "description": "Explanation in the error state."
       },
       {
         "name": "onRetry",
         "type": "() => void",
-        "description": "Explicit pricing-term recovery request. Absent handlers do not render fake retry controls."
+        "description": "Renders Try again in the error state."
       },
       {
         "name": "disabled",
         "type": "boolean",
-        "description": "Disable quantity editing while retaining readable actual estimates."
+        "default": "false",
+        "description": "Read only: the estimate stays readable."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#f5b14c\"",
+        "description": "The one accent: overage you’ve paid for but not used yet."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Complete monochromatic graphite/white chrome. Colour is reserved for actual supplied content and purposeful feature accents."
-      },
-      {
-        "name": "labels",
-        "type": "Partial<UsageCalculatorLabels>",
-        "description": "All heading, term, field, state and disclaimer copy."
+        "default": "\"dark\"",
+        "description": "Graphite or white chrome."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Host layout classes."
+        "default": "\"\"",
+        "description": "Classes for the outer card."
       }
     ],
     "added": "2026-10-13",
     "demo": {
       "steps": [
-        "click:@usage-range",
-        "key:End",
-        "wait:400",
-        "key:Home",
-        "wait:400",
-        "key:ArrowRight",
-        "wait:750"
+        "wait:300",
+        "click:@usage-preset-growing-app",
+        "wait:1100",
+        "click:@usage-preset-production",
+        "wait:1100",
+        "click:@usage-preset-side-project",
+        "wait:1000"
       ],
       "loop": false
     },
     "controls": [
       {
-        "prop": "defaultQuantity",
-        "label": "Quantity",
-        "kind": "slider",
-        "min": 0,
-        "max": 12000,
-        "step": 100,
-        "default": 2800
-      },
-      {
         "prop": "theme",
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
-        "default": "dark"
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f5b14c",
+        "options": [
+          "#f5b14c",
+          "#34d399",
+          "#7c9cff",
+          "#ff7a45"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "defaultQuantity",
+        "label": "Usage",
+        "kind": "slider",
+        "min": 0,
+        "max": 12000,
+        "step": 100,
+        "default": 2800,
+        "remount": true,
+        "group": "Content"
+      },
+      {
+        "prop": "productName",
+        "label": "Product",
+        "kind": "text",
+        "default": "Render API",
+        "group": "Content"
       },
       {
         "prop": "disabled",
         "label": "Read only",
         "kind": "toggle",
-        "default": false
+        "default": false,
+        "group": "State"
+      },
+      {
+        "prop": "status",
+        "label": "Prices",
+        "kind": "action",
+        "options": [
+          "ready",
+          "loading",
+          "error"
+        ],
+        "group": "State"
       }
     ]
   },

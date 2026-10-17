@@ -3861,17 +3861,18 @@
     "updated": "2026-10-13"
   },
   "pricing-usage-calculator": {
-    "useWhen": "Estimating usage charges from explicit supplied rates, included units and bounded quantities.",
-    "avoidWhen": "A checkout flow, an undisclosed pricing formula or a promise that an estimate is the final invoice.",
+    "useWhen": "Pricing a metered product (API calls, renders, minutes, seats of compute) where buyers need to see how a base fee, an allowance and per-block overage add up at their own volume.",
+    "avoidWhen": "Flat or per-seat plans, final invoices, or billing with tiers that change price per unit (show those with a tiered table instead).",
     "integration": [
-      "Supply integer minor currency-unit base and block rates, included units, block size and an explicit started-block or proportional-ceiling rounding policy. Intl supplies currency minor-unit precision; missing, invalid or overflowing terms remain unavailable.",
-      "Pair a controlled quantity with onQuantityChange. Whole pointer and exact quantities are retained even when they do not align with the keyboard step; host updates synchronize untouched fields and preserve dirty drafts until acceptance or Escape. Checkout remains a separate explicit action."
+      "Pass rates in integer minor units: baseMinor, includedUnits, blockUnits, blockPriceMinor and an explicit rounding rule. started-block bills any touched block in full and shows its unused remainder as already paid for; proportional-ceiling bills per unit, rounded up to the cent. Null rates show a not-set-up state.",
+      "Control quantity with quantity/onQuantityChange or start it with defaultQuantity. Presets jump the meter with a sweep but call onQuantityChange once. onContinue receives the quantity and exact estimate; return a promise for the pending state and reject it to show a recoverable failure. Drive status for loading and error and pass onRetry to offer a retry."
     ],
     "related": [
-      "pricing-receipt",
-      "input-number-stepper"
+      "pricing-seat-simulator",
+      "pricing-plan-toggle",
+      "pricing-three-tier"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "pricing-seat-simulator": {
     "useWhen": "Selling a per-seat plan where a team mixes paid and free roles, and buyers should see the bill rebuild as they add people before they reach checkout.",
