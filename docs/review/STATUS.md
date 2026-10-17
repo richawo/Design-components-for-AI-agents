@@ -1,6 +1,6 @@
 # Review status
 
-149 components are rebuilt (or, for a few, polished), verified and committed. For each: whether its demo video
+150 components are rebuilt (or, for a few, polished), verified and committed. For each: whether its demo video
 needs re-recording, whether its poster is current, and the state of its browser regression probe.
 
 - **Video**: `new` means `public/previews/<slug>.mp4` still shows the old version. Re-record serially on a quiet machine:
@@ -139,10 +139,11 @@ needs re-recording, whether its poster is current, and the state of its browser 
 | `hr-policy-acknowledgement` | new | current | rewritten, passes on suite runner with source fixtures; Next route check pending |
 | `hr-shift-coverage` | new | current | rewritten, passes |
 
-## Finance suite (7)
+## Finance suite (8)
 
 | Slug | Video | Poster | Probe |
 | --- | --- | --- | --- |
+| `finance-budget-variance` | new | current | rewritten, passes against Next; dark/light accessibility and responsive/state captures pass |
 | `finance-close-checklist` | new | stale | rewritten, passes |
 | `finance-expense-review` | new | stale | rewritten, passes |
 | `finance-invoice-composer` | new | current | rewritten, passes on suite runner with source fixtures; Next route check pending |

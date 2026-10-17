@@ -28,6 +28,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 4: all seven native-input palette cases pass in both themes after setting Payment Run’s color scheme from its theme. Exchange Selector uses custom choice cards and is covered by its dedicated probe.
 
+- Task 6: finished Budget Variance and removed its parked patch. The variance spine now draws on first view; compact note indicators wrap cleanly, note saves are tracked independently, and submission waits for them. The Next regression probe, both-theme accessibility, responsive/entrance/error-state captures, controls, live demo and refreshed poster pass. Its new film remains in task 1.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -45,7 +47,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Browser checks: `node scripts/check-component.mjs <slug> --base=http://localhost:3100 --no-video --keep-going`
   (screenshots at 1440/768/390 and every control flip; read the screenshots it writes to `test-results/check/<slug>/`).
 
-## 1. Re-record demo videos (133 components)
+## 1. Re-record demo videos (134 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -96,7 +98,7 @@ Slugs:
 `media-trim-timeline`, `navigation-context-rail`, `navigation-lens-dock`, `navigation-stacked-tabs`
 `pixel-halftone-image`, `portfolio-project-reel`, `pricing-seat-simulator`, `pricing-usage-calculator`
 `social-proof-case-ledger`, `text-number-odometer`, `text-optical-weight`, `text-outline-fill`
-`text-path-typesetter`
+`text-path-typesetter`, `finance-budget-variance`
 
 ## 2. Retake 9 stale posters
 
@@ -205,7 +207,7 @@ see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 `pricing-usage-calculator`, `social-proof-case-ledger`, `text-number-odometer`, `text-optical-weight`
 `text-outline-fill`, `text-path-typesetter`
 
-## 6. Finish nine parked rebuilds
+## 6. Finish parked rebuilds (eight remaining)
 
 Rebuilt but not shipped; the live components are still the old versions. Each lives in the Pro repo at
 `registry/pro/_wip/<slug>/` with `component.patch`, `guide.json` and sometimes `probe.mjs`. To resume one:
@@ -228,7 +230,7 @@ run the checks, and delete `_wip/<slug>` in the Pro commit that ships it.
 | scroll-image-curtain | `pro-scroll-probe` "follows native scroll" not yet passing; visual check; poster |
 | scroll-horizontal-showcase | visual check; live demo check; poster (scroll probe passed) |
 | scroll-expanding-mosaic | poster captured blank; scroll probe's change and reversal checks not passing on final code |
-| finance-budget-variance | no visual check at all; probe not passing on final code; poster |
+| finance-budget-variance | Completed 17 October: Next probe, dark/light accessibility, responsive and entrance/state captures, live demo and refreshed poster pass. |
 | finance-cashflow-dashboard | probe not rerun after a test fix; the last change (list scrolls to selected week) uncaptured |
 
 ## 7. Continue the review (about 40 components, then 12 blocks)
