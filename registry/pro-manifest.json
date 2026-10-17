@@ -26381,77 +26381,119 @@
   },
   {
     "slug": "hr-policy-acknowledgement",
-    "name": "Policy Acknowledgement Desk",
+    "name": "Policy Acknowledgement",
     "tier": "pro",
     "platform": "web",
     "category": "forms",
-    "description": "Read a versioned policy and acknowledge the exact revision. A considered, responsive hr workspace with typed integration points.",
+    "description": "A policy read as a document on paper with a reading rail; signing unlocks at the end, lands a signed receipt and fills the team’s completion ring.",
     "tags": [
       "hr",
-      "workflow",
-      "responsive",
-      "keyboard",
-      "forms"
+      "policy",
+      "acknowledgement",
+      "compliance",
+      "e-signature",
+      "document"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1220,
-    "usage": "import { PolicyAcknowledgement } from \"@/components/design-for-ai/hr-policy-acknowledgement\";\n\n<PolicyAcknowledgement />",
+    "previewHeight": 900,
+    "usage": "import { PolicyAcknowledgement } from \"@/components/design-for-ai/hr-policy-acknowledgement\";\n\n<PolicyAcknowledgement\n  policies={policies}\n  employeeId={me.id}\n  employeeName={me.name}\n  acknowledgements={acknowledgements}\n  team={team}\n  onAcknowledge={async (record) => {\n    await api.policies.acknowledge(record);\n  }}\n  onRemind={async ({ policyId, employeeIds }) => {\n    await api.policies.remind(policyId, employeeIds);\n  }}\n/>",
     "props": [
-      {
-        "name": "title",
-        "type": "string",
-        "description": "Main heading.",
-        "default": "\"Policy acknowledgement\""
-      },
-      {
-        "name": "subtitle",
-        "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Present the policy in full and capture an explicit acknowledgement tied to its version.\""
-      },
       {
         "name": "policies",
         "type": "EmployeePolicy[]",
-        "description": "Unique policies with a stable version, full section content and explicit acknowledgement statements. Replace the sample content with the organisation’s approved policy."
+        "default": "Hybrid working 2.1, Information security 4.0",
+        "description": "{ id, name, version, effective, owner, summary, sections: { id, heading, paragraphs }[], statements: { id, text }[], due? }. Duplicates are left out; a policy without a version, section or statement can’t be signed."
       },
       {
         "name": "employeeId",
         "type": "string",
-        "description": "Authenticated employee identifier supplied by the host."
+        "default": "\"EMP-104\"",
+        "description": "Who is signing."
       },
       {
         "name": "employeeName",
         "type": "string",
-        "description": "Name displayed with the acknowledgement."
+        "default": "\"Maya Chen\"",
+        "description": "Shown on the signature."
       },
       {
         "name": "acknowledgements",
         "type": "PolicyAcknowledgementRecord[]",
-        "description": "Existing exact policy/version/employee acknowledgements."
+        "default": "Demo records with the demo policies, otherwise []",
+        "description": "{ policyId, version, employeeId, at? } for the reader and the team. Only an exact version match counts, so a new revision asks again."
       },
       {
         "name": "onAcknowledge",
-        "type": "(record:PolicyAcknowledgementRecord)=>void|Promise<void>",
-        "description": "Persist the exact revision and authenticated actor. The host owns identity, audit timestamps and record retention."
+        "type": "(record: PolicyAcknowledgementRecord) => void | Promise<void>",
+        "description": "Receives { policyId, version, employeeId }. Reject to keep the ticks and show the error."
+      },
+      {
+        "name": "team",
+        "type": "PolicyTeamMember[]",
+        "default": "12 people with the demo policies, otherwise []",
+        "description": "{ id, name, role? } who must acknowledge. Shows the completion ring and who’s outstanding; omit to hide the panel."
+      },
+      {
+        "name": "onRemind",
+        "type": "(reminder: PolicyReminder) => void | Promise<void>",
+        "description": "Receives { policyId, version, employeeIds } for everyone outstanding except the reader. Omit to hide reminders."
+      },
+      {
+        "name": "requireReading",
+        "type": "boolean",
+        "default": "true",
+        "description": "Signing unlocks only once the document has been scrolled to the end."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Policies\"",
+        "description": "Section name in the breadcrumb."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "default": "\"Halden\"",
+        "description": "The organisation, printed at the head of the document."
+      },
+      {
+        "name": "selectMode",
+        "type": "\"custom\" | \"native\"",
+        "default": "\"custom\"",
+        "description": "Policy picker: an animated listbox, or the native select with the same inset chevron."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Formats dates."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#c5f25a\"",
+        "description": "Reading progress, ticks, signature and the team ring."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Surface palette."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:400",
+        "wait:1100",
+        "click:@section-4",
+        "wait:900",
         "click:@statement-0",
         "click:@statement-1",
-        "wait:500",
-        "click:@acknowledge",
+        "click:@sign",
         "wait:1800"
       ],
       "loop": false
@@ -26466,6 +26508,34 @@
           "light"
         ],
         "default": "dark"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#c5f25a",
+        "options": [
+          "#c5f25a",
+          "#ff8a5c",
+          "#7cc4ff",
+          "#f4f4f5"
+        ]
+      },
+      {
+        "prop": "requireReading",
+        "label": "Read to sign",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "selectMode",
+        "label": "Select menus",
+        "kind": "segmented",
+        "options": [
+          "custom",
+          "native"
+        ],
+        "default": "custom"
       }
     ]
   },

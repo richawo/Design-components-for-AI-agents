@@ -2559,17 +2559,19 @@
     "updated": "2026-10-17"
   },
   "hr-policy-acknowledgement": {
-    "useWhen": "Reading a specific policy revision and recording an explicit acknowledgement.",
-    "avoidWhen": "Proof of understanding or a consent and compliance guarantee by checkbox alone.",
+    "useWhen": "Rolling out a policy or a new revision: each person reads it as a document, signs once they reach the end, and a manager or HR sees who is outstanding and can remind them.",
+    "avoidWhen": "Contracts or anything needing a legally binding e-signature with audit trails; this records an acknowledgement through your own host callback.",
     "integration": [
-      "Supply your own records through `policies`, `acknowledgements`. Preserve stable keys or IDs when the data contract provides them."
+      "Pass each policy with its `version`; acknowledgements only count for an exact version match, so publishing a new revision asks everyone again.",
+      "Supply `acknowledgements` for the reader and the `team` to drive the completion ring; `onRemind` receives everyone outstanding except the reader.",
+      "Set `requireReading={false}` for short notices; otherwise signing unlocks when the document has been scrolled to the end."
     ],
     "related": [
+      "hr-employee-onboarding",
       "hr-interview-scorecard",
-      "forms-preference-center",
-      "legal-matter-intake"
+      "hr-org-explorer"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "hr-shift-coverage": {
     "useWhen": "Building a weekly rota by hand: dragging open shifts onto trained, available people while rest, overlap and hour limits are checked as you go.",
