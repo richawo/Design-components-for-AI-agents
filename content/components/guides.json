@@ -1538,18 +1538,19 @@
     "updated": "2026-10-17"
   },
   "commerce-bundle-builder": {
-    "useWhen": "Building a product bundle with explicit quantities and pricing.",
-    "avoidWhen": "Replacing your product catalogue or allowing invalid stock and pricing combinations.",
+    "useWhen": "A merchandiser assembles a fixed product bundle and needs to see the price, the customer’s saving, the gross margin and how many bundles stock can make while choosing the discount.",
+    "avoidWhen": "You need mix-and-match rules, tiered or quantity discounts, or storefront upsells; those are promotions, not a fixed bundle.",
     "integration": [
-      "Supply your own records through `products`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onCreate` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+      "Pass `products` with integer `priceMinor`, `costMinor` and `stock`; add `image` for real product photos. Invalid products are listed and never priced.",
+      "Set `marginFloor` to your policy; publishing is blocked below it and the builder names the deepest discount that clears it. `priceStepMinor` controls price rounding.",
+      "`onCreate` receives the bundle with its price, compare-at price, margin and capacity. Reject to keep the draft and show the failure."
     ],
     "related": [
-      "commerce-backorder-allocation",
-      "commerce-catalog-import",
-      "commerce-customer-timeline"
+      "commerce-promotion-builder",
+      "commerce-variant-stock",
+      "commerce-catalog-import"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "commerce-catalog-import": {
     "useWhen": "Mapping and reviewing catalogue rows before a host import.",

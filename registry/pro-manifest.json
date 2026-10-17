@@ -11882,67 +11882,124 @@
   },
   {
     "slug": "commerce-bundle-builder",
-    "name": "Product Bundle Builder",
+    "name": "Bundle Builder",
     "tier": "pro",
     "platform": "web",
     "category": "commerce",
-    "description": "Assemble a bundle with inventory-aware quantities and transparent savings. A considered, responsive commerce workspace with typed integration points.",
+    "description": "Build a product bundle by dropping products into a gift box: price, savings and margin count live, and a guardrail stops discounts below your floor.",
     "tags": [
+      "commerce",
       "e-commerce",
-      "workflow",
-      "responsive",
-      "keyboard",
-      "commerce"
+      "bundle",
+      "pricing",
+      "discount",
+      "margin",
+      "merchandising",
+      "drag and drop",
+      "admin"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 900,
-    "usage": "import { BundleBuilder } from \"@/components/design-for-ai/commerce-bundle-builder\";\n\n<BundleBuilder />",
+    "previewHeight": 1340,
+    "usage": "import { BundleBuilder } from \"@/components/design-for-ai/commerce-bundle-builder\";\n\nexport default function NewBundle({ catalogue }) {\n  return (\n    <BundleBuilder\n      products={catalogue.map((p) => ({\n        id: p.id,\n        name: p.title,\n        variant: p.option,\n        sku: p.sku,\n        priceMinor: p.price,\n        costMinor: p.unitCost,\n        stock: p.available,\n        image: p.imageUrl,\n      }))}\n      defaultName=\"The Slow Morning\"\n      marginFloor={60}\n      currency=\"GBP\"\n      onCreate={(draft) => api.bundles.create(draft)}\n    />\n  );\n}",
     "props": [
-      {
-        "name": "title",
-        "type": "string",
-        "description": "Main heading.",
-        "default": "\"Product bundle\""
-      },
-      {
-        "name": "subtitle",
-        "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Compose an offer from real inventory, with a clear view of price and capacity.\""
-      },
       {
         "name": "products",
         "type": "BundleProduct[]",
-        "description": "Unique catalogue products, non-negative integer two-decimal prices and stock from 0 to 1,000,000 units."
+        "default": "eight Fieldwork products, one sold out",
+        "description": "{ id, name, variant?, sku, priceMinor, costMinor, stock, glyph?, colour?, image? }. Money in whole minor units. Products with a duplicate ID or invalid price, cost or stock are listed as left out and never priced."
+      },
+      {
+        "name": "defaultItems",
+        "type": "BundleLine[]",
+        "default": "2 × Field mug, Soy candle, Field notebook",
+        "description": "{ productId, quantity }[]: what the box opens with."
+      },
+      {
+        "name": "defaultName",
+        "type": "string",
+        "default": "\"The Slow Morning\"",
+        "description": "Bundle name, printed on the box as you type."
+      },
+      {
+        "name": "defaultDiscount",
+        "type": "number",
+        "default": "15",
+        "description": "Percent off the separate price, 0–50."
+      },
+      {
+        "name": "marginFloor",
+        "type": "number",
+        "default": "60",
+        "description": "The lowest gross margin the bundle may publish at. Below it the meter turns red, presets past it are struck through and publishing is blocked with the deepest discount that clears it."
+      },
+      {
+        "name": "maxProducts",
+        "type": "number",
+        "default": "6",
+        "description": "Distinct products the box holds."
+      },
+      {
+        "name": "priceStepMinor",
+        "type": "number",
+        "default": "100",
+        "description": "Bundle prices round to this step in minor units (100 = whole pounds)."
       },
       {
         "name": "currency",
         "type": "string",
-        "description": "ISO currency for all prices."
+        "default": "\"GBP\"",
+        "description": "ISO 4217 code for every price."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Locale for money and numbers."
+      },
+      {
+        "name": "workspace",
+        "type": "string",
+        "default": "\"Fieldwork\"",
+        "description": "Store name in the product chrome and on the box."
       },
       {
         "name": "onCreate",
-        "type": "(draft:BundleDraft)=>void|Promise<void>",
-        "description": "Save the bundle definition. Host revalidation and stock reservation remain the host responsibility."
+        "type": "(draft: BundleDraft) => void | Promise<void>",
+        "description": "Publish { name, items, priceMinor, compareAtMinor, discountPercent, marginPercent, capacity }. Reject to keep the draft and show the failure in place."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "theme ink",
+        "description": "The one accent: slider fill, the drop target and the primary action."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Surface palette. The gift box stays white packaging in both."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes for the root."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:450",
-        "click:@add-1",
-        "wait:650",
-        "click:@save",
-        "wait:1200"
+        "wait:700",
+        "hover:@product-tote",
+        "drag:0.7,0.22",
+        "wait:1100",
+        "click:@discount-30",
+        "wait:1200",
+        "click:@discount-20",
+        "wait:1000"
       ],
       "loop": false
     },
@@ -11956,6 +12013,27 @@
           "light"
         ],
         "default": "dark"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#7aa2ff",
+          "#ff8a4c"
+        ]
+      },
+      {
+        "prop": "marginFloor",
+        "label": "Margin floor",
+        "kind": "slider",
+        "min": 40,
+        "max": 75,
+        "step": 1,
+        "unit": "%",
+        "default": 60
       }
     ]
   },
