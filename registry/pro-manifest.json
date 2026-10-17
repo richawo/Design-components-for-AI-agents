@@ -35890,125 +35890,141 @@
     "tier": "pro",
     "platform": "web",
     "category": "selects",
-    "description": "A native checkbox hierarchy preserves actual selected leaves, indeterminate groups, explicit disabled ancestry and temporary search expansion.",
+    "description": "A tree select for sharing with teams: indeterminate groups, search that opens matching paths, and chosen rows that fly into the chip tray.",
     "tags": [
       "tree",
+      "select",
       "hierarchy",
       "checkbox",
-      "select",
       "indeterminate",
-      "search"
+      "search",
+      "multiselect",
+      "chips",
+      "combobox"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1100,
-    "usage": "import { SelectsTreePicker } from \"@/components/design-for-ai/selects-tree-picker\";\n\n<SelectsTreePicker nodes={items} value={selectedIds} onValueChange={setSelectedIds} />\n\n// Group selection includes all selectable descendants, even outside the current search.",
+    "previewHeight": 780,
+    "usage": "import { SelectsTreePicker } from \"@/components/design-for-ai/selects-tree-picker\";\n\n<SelectsTreePicker\n  label=\"Share with\"\n  nodes={[\n    { id: \"engineering\", label: \"Engineering\", children: [\n      { id: \"platform\", label: \"Platform\", count: 14 },\n      { id: \"mobile\", label: \"Mobile\", count: 9 },\n    ] },\n    { id: \"finance\", label: \"Finance\", disabled: true, disabledReason: \"Managed by Ava Lindqvist\", children: [] },\n  ]}\n  value={teamIds}\n  onValueChange={setTeamIds}\n  itemNouns={[\"team\", \"teams\"]}\n  countNouns={[\"person\", \"people\"]}\n/>",
     "props": [
       {
         "name": "nodes",
-        "type": "readonly PickerNode[]",
-        "description": "Unique nonempty identities/labels, at most128 nodes and eight levels. Parent unavailability propagates to its actual descendants; supplied reading context is retained."
+        "type": "TreeNode[]",
+        "default": "Five departments and nineteen teams",
+        "description": "The hierarchy: id, label, optional count (summed in the total), children, disabled and disabledReason. A disabled node locks everything under it."
       },
       {
         "name": "value",
         "type": "readonly string[]",
-        "description": "Controlled selected leaf identities. Rejected changes retain actual selection; missing/non-leaf/unavailable supplied selections remain explicit and do not become fabricated leaf records."
+        "description": "Controlled selection of leaf ids. Pair with onValueChange."
       },
       {
         "name": "defaultValue",
         "type": "readonly string[]",
-        "description": "Local selection seed; reset explicitly using resetKey."
+        "default": "[]",
+        "description": "Initial leaf ids when uncontrolled."
       },
       {
         "name": "onValueChange",
-        "type": "(ids: readonly string[]) => void",
-        "description": "Request a cloned atomic selection. A parent selects or clears all eligible leaf descendants, including outside search, while retaining unavailable existing selection."
+        "type": "(ids: string[]) => void",
+        "description": "Runs with the complete leaf selection in tree order. Checking a group adds every selectable leaf under it; locked leaves are never added or removed."
       },
       {
-        "name": "expandedIds",
+        "name": "defaultExpanded",
         "type": "readonly string[]",
-        "description": "Optional controlled expanded branch identities, pair with onExpandedIdsChange."
+        "default": "[]",
+        "description": "Groups open on first render. Searching opens the paths to matches on its own and gives them back when cleared."
       },
       {
-        "name": "defaultExpandedIds",
-        "type": "readonly string[]",
-        "description": "Local expansion seed. Search temporarily reveals relevant branches without replacing retained disclosure choices."
+        "name": "defaultOpen",
+        "type": "boolean",
+        "default": "false",
+        "description": "Opens the tree on first render without moving focus."
       },
       {
-        "name": "onExpandedIdsChange",
-        "type": "(ids: readonly string[]) => void",
-        "description": "Request cloned branch expansion without changing selection."
-      },
-      {
-        "name": "query",
+        "name": "label",
         "type": "string",
-        "description": "Optional controlled exact search. Pair with onQueryChange to edit; absent handler gives a readable fixed filter."
+        "default": "\"Share with\"",
+        "description": "Field label and the tree's accessible name."
       },
       {
-        "name": "defaultQuery",
+        "name": "placeholder",
         "type": "string",
-        "description": "Local search seed."
+        "default": "\"Search teams\"",
+        "description": "Placeholder of the search input in the field."
       },
       {
-        "name": "onQueryChange",
-        "type": "(query: string) => void",
-        "description": "Request search text separately from accepted selection."
+        "name": "summarize",
+        "type": "boolean",
+        "default": "true",
+        "description": "Collapses a fully selected group into one chip (\"Engineering · all 4\")."
       },
       {
-        "name": "resetKey",
-        "type": "string | number",
-        "description": "Explicit local selection, expansion and search reset."
+        "name": "itemNouns",
+        "type": "[string, string]",
+        "default": "[\"team\", \"teams\"]",
+        "description": "Singular and plural for a leaf, used in the total and messages."
       },
       {
-        "name": "status",
-        "type": "\"ready\" | \"loading\" | \"error\"",
-        "description": "Host availability preserves actual choices and reading context."
-      },
-      {
-        "name": "errorMessage",
-        "type": "string",
-        "description": "Meaningful host failure explanation, default when blank."
-      },
-      {
-        "name": "onRetry",
-        "type": "() => void",
-        "description": "Actual recovery request."
+        "name": "countNouns",
+        "type": "[string, string]",
+        "default": "[\"person\", \"people\"]",
+        "description": "Singular and plural for the summed counts."
       },
       {
         "name": "disabled",
         "type": "boolean",
-        "description": "Lock interaction while preserving readable hierarchy and selection."
+        "default": "false",
+        "description": "Locks the field and the tree while keeping the selection readable."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"error\"",
+        "default": "\"ready\"",
+        "description": "Availability of the hierarchy: skeleton rows while loading, a message and Try again on error."
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "description": "Explanation shown with status error."
+      },
+      {
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Shows Try again in the error state."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Complete monochromatic graphite/white chrome. Colour is reserved for actual supplied content and purposeful feature accents."
+        "default": "\"dark\"",
+        "description": "Graphite or paper chrome."
       },
       {
-        "name": "labels",
-        "type": "Partial<TreePickerLabels>",
-        "description": "All heading, search, branch, selection and recovery copy."
+        "name": "accent",
+        "type": "string",
+        "default": "\"#7dd3a8\"",
+        "description": "The one colour: checks, search highlights, partial group counts and the people total."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Host layout responsive to actual container width."
+        "description": "Classes on the root."
       }
     ],
     "added": "2026-10-13",
     "demo": {
       "steps": [
-        "click:@tree-check-controls",
-        "wait:450",
-        "click:@tree-expand-visuals",
-        "wait:450",
-        "click:@tree-check-controls",
-        "wait:450",
-        "click:@tree-expand-visuals",
-        "wait:450"
+        "wait:300",
+        "click:@tree-row-brand",
+        "wait:600",
+        "click:@tree-search",
+        "type:sales",
+        "wait:500",
+        "click:@tree-row-sales-emea",
+        "wait:1400"
       ],
       "loop": false
     },
@@ -36024,16 +36040,28 @@
         "default": "dark"
       },
       {
-        "prop": "disabled",
-        "label": "Read only",
-        "kind": "toggle",
-        "default": false
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#7dd3a8",
+        "options": [
+          "#7dd3a8",
+          "#7cc4ff",
+          "#f2b84b",
+          "#ececee"
+        ]
       },
       {
-        "prop": "query",
-        "label": "Filter text",
-        "kind": "text",
-        "default": ""
+        "prop": "summarize",
+        "label": "Group chips",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "disabled",
+        "label": "Disabled",
+        "kind": "toggle",
+        "default": false
       },
       {
         "prop": "status",

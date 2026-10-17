@@ -4139,19 +4139,19 @@
     "updated": "2026-10-13"
   },
   "selects-tree-picker": {
-    "useWhen": "Selecting hierarchical items with indeterminate parents, search and explainable disabled branches.",
-    "avoidWhen": "A flat select, a general file browser or bulk selection that ignores unavailable descendants.",
+    "useWhen": "Choosing several items from a hierarchy where whole branches are often wanted at once: teams in an org, regions and stores, folders to sync, permission scopes.",
+    "avoidWhen": "A flat list of options, where a listbox or multi-select is simpler, or browsing and opening files, where a file explorer fits.",
     "integration": [
-      "Supply unique nonempty PickerNode identities/labels, at most128 items and eight hierarchy levels. Parent disabled state and its explanation propagate to descendants; duplicate identities make selection unavailable.",
-      "value is a leaf-identity array; onValueChange receives a cloned atomic request. Group checkboxes include all eligible descendant leaves, including items outside the search. Existing unavailable selections remain visible and retained. Clear selectable items preserves unavailable choices.",
-      "query/onQueryChange and expandedIds/onExpandedIdsChange are separately controlled. Accent/case-normalized search temporarily reveals matches and context without replacing stored expansion or selection; clearing it restores actual disclosure choices. Missing controlled handlers produce honest fixed controls.",
-      "Native indeterminate checkboxes have separate disclosure actions. Arrow keys visit actual visible targets, Home/End reveal endpoints and logical horizontal keys follow RTL. Folded content is inert; focus recovers only while the component still owns it."
+      "Pass `nodes` as a tree of `{ id, label, count?, members?, children?, disabled?, disabledReason? }`. Ids must be unique; `count` feeds the running total and `members` the initials on each row. A disabled node locks everything under it and shows its reason.",
+      "The value is leaf ids only. Keep it uncontrolled with `defaultValue`, or control it with `value` and `onValueChange`, which receives the full selection in tree order. Checking a group adds every selectable leaf under it, including ones a search is hiding.",
+      "Set `itemNouns` and `countNouns` for your domain (\"store\"/\"stores\", \"seat\"/\"seats\"). Turn `summarize` off when every chosen leaf should keep its own chip. Use `status` with `onRetry` while the hierarchy loads from your API."
     ],
     "related": [
-      "data-file-explorer",
+      "select-listbox",
+      "combobox-async",
       "multiselect-chips"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "date-range-calendar": {
     "useWhen": "Choosing a two-ended calendar range with readable bounds and keyboard date navigation.",
