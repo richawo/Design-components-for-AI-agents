@@ -3440,19 +3440,19 @@
     "updated": "2026-10-12"
   },
   "media-audio-transport": {
-    "updated": "2026-10-12",
-    "useWhen": "Keeping real audio playback, seeking and volume available while a listener moves through another interface.",
-    "avoidWhen": "Streaming commercial media without appropriate rights or using a visual timer to pretend that audio is playing.",
+    "useWhen": "Playing music or long-form audio you host, where a waveform scrubber, buffering, speed and volume should feel like a real player, as a cover view or a slim persistent bar.",
+    "avoidWhen": "Short UI sounds, voice recording, or media you lack rights to stream; and very large remote files you can’t precompute peaks for, unless you accept a flat timeline.",
     "integration": [
-      "Supply a licensed media URL through track.src. The transport observes actual HTML audio events and exposes load and playback failures.",
-      "Increment playRequest only after an explicit play-selection action. Ordinary track navigation retains the current pause state.",
-      "The host owns queue selection and media URLs; release owned object URLs after unmount. Offline previews start muted."
+      "Supply a licensed URL in track.src. The waveform is decoded from it, or pass track.peaks (any length, 0–1) to skip decoding; set waveformFromSource={false} to draw a flat timeline instead.",
+      "Increment playRequest when someone chooses a track to play; plain next and previous keep the pause state. onNext also runs when a track ends, unless repeat is on.",
+      "onPlaybackChange follows the element’s real events, including failures. Start autoplaying previews with defaultMuted; startAt resumes a saved position."
     ],
     "related": [
       "media-track-list",
       "block-music-workspace",
       "mobile-now-playing"
-    ]
+    ],
+    "updated": "2026-10-17"
   },
   "media-track-list": {
     "useWhen": "A playlist, album or Up Next queue where people scan, play, like and reorder tracks, and the playing row should be obvious at a glance.",

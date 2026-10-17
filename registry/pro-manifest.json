@@ -27820,13 +27820,15 @@
     "tier": "pro",
     "platform": "web",
     "category": "media",
-    "description": "A standalone audio player with an editorial cover view, precise seeking, playback speed, volume and repeat. A compact transport uses the same real playback state.",
+    "description": "A music player whose scrubber is the song’s real waveform: played bars in your accent, buffering, hover-to-seek with a time bubble, speed, volume.",
     "tags": [
       "music",
-      "audio",
+      "audio player",
+      "waveform",
+      "scrubber",
       "media",
-      "keyboard",
-      "composition",
+      "transport",
+      "playback",
       "dark"
     ],
     "dependencies": [
@@ -27834,91 +27836,140 @@
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 800,
-    "usage": "import { AudioPlayer, AudioTransport } from \"@/components/design-for-ai/media-audio-transport\";\n\n<AudioPlayer track={currentTrack} onNext={nextTrack} onPrevious={previousTrack} />\n// Use AudioTransport inside a workspace footer.",
+    "previewHeight": 760,
+    "usage": "import { AudioPlayer, AudioTransport } from \"@/components/design-for-ai/media-audio-transport\";\n\n// The cover player\n<AudioPlayer track={current} onNext={next} onPrevious={previous} onPlaybackChange={setPlaying} />\n\n// A slim bar for a footer or sidebar, sharing the same playback\n<AudioTransport\n  variant=\"compact\"\n  track={{ ...current, peaks: current.waveform }}\n  playRequest={playRequest} // increment when someone presses play on a track\n  onNext={next}\n/>",
     "props": [
       {
         "name": "track",
         "type": "AudioTrack",
-        "description": "Stable ID, title, artist and a host-owned, licensed media URL. Artwork and an initial duration are optional."
+        "description": "{ id, title, artist, album?, src?, artwork?, duration?, peaks? }. src is a licensed URL you serve. Without artwork a cover is drawn from the album name, matching the Music Track List."
       },
       {
-        "name": "onNext",
-        "type": "() => void",
-        "description": "Choose the next track. Omit to disable next."
-      },
-      {
-        "name": "onPrevious",
-        "type": "() => void",
-        "description": "Choose the previous track. Omit to disable previous."
-      },
-      {
-        "name": "onPlaybackChange",
-        "type": "(playing: boolean) => void",
-        "description": "Observe actual media play and pause events."
-      },
-      {
-        "name": "theme",
-        "type": "\"dark\" | \"light\"",
-        "default": "\"dark\"",
-        "description": "Surface and text palette."
-      },
-      {
-        "name": "accent",
-        "type": "string",
-        "default": "theme ink",
-        "description": "A six-digit hex colour for the play button. Its text automatically chooses readable ink."
+        "name": "variant",
+        "type": "\"studio\" | \"compact\"",
+        "default": "\"studio\" (AudioPlayer) · \"compact\" (AudioTransport)",
+        "description": "The cover player, or a slim bar with the same playback, waveform and controls."
       },
       {
         "name": "playRequest",
         "type": "number",
         "default": "0",
-        "description": "Increment after a deliberate play-selection action. A new request resumes the selected source; ordinary queue navigation respects pause state."
+        "description": "Increment after a deliberate “play this” action. Plain next/previous keeps the current pause state."
+      },
+      {
+        "name": "startAt",
+        "type": "number",
+        "description": "Seconds to resume from when a source loads (a saved place)."
       },
       {
         "name": "defaultMuted",
         "type": "boolean",
         "default": "false",
-        "description": "Initial mute state. Offline previews start muted and offer explicit volume controls."
+        "description": "Start muted; the volume keeps its level, dimmed, until unmuted. Autoplaying previews should start muted."
       },
       {
-        "name": "variant",
-        "type": "\"studio\" | \"compact\"",
-        "default": "\"studio\"",
-        "description": "The standalone cover player or the compact persistent transport. Both share real media events and controls. AudioTransport defaults to compact."
+        "name": "defaultVolume",
+        "type": "number",
+        "default": "0.8",
+        "description": "Initial volume, 0–1."
+      },
+      {
+        "name": "waveformFromSource",
+        "type": "boolean",
+        "default": "true",
+        "description": "Decode src to draw its real waveform when track.peaks isn’t given. Turn off for large remote files and pass precomputed peaks instead; without either, an honest flat timeline is drawn."
+      },
+      {
+        "name": "onNext",
+        "type": "() => void",
+        "description": "Next track; also called when a track ends (unless repeat is on). Omit to disable next."
+      },
+      {
+        "name": "onPrevious",
+        "type": "() => void",
+        "description": "Previous track. Omit to disable."
+      },
+      {
+        "name": "onPlaybackChange",
+        "type": "(playing: boolean) => void",
+        "description": "Follows the media element’s real play and pause events, including failures."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ff6b3d\"",
+        "description": "The one accent: the played part of the waveform and the live dot."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface palette."
       }
     ],
     "added": "2026-10-12",
     "demo": {
       "steps": [
-        "click:@audio-play",
-        "wait:1000",
-        "click:@audio-seek:0.55,0.5",
         "wait:500",
         "click:@audio-play",
-        "wait:600"
+        "wait:900",
+        "hover:@audio-seek:0.4,0.5",
+        "wait:500",
+        "click:@audio-seek:0.64,0.5",
+        "wait:1200",
+        "click:@audio-play",
+        "wait:500"
       ]
     },
     "controls": [
-      {
-        "prop": "theme",
-        "label": "Theme",
-        "kind": "segmented",
-        "options": [
-          "dark",
-          "light"
-        ],
-        "default": "dark"
-      },
       {
         "prop": "variant",
         "label": "Layout",
         "kind": "segmented",
         "options": [
-          "studio",
-          "compact"
+          {
+            "value": "studio",
+            "label": "Studio"
+          },
+          {
+            "value": "compact",
+            "label": "Compact"
+          }
         ],
-        "default": "studio"
+        "default": "studio",
+        "remount": true,
+        "group": "Look"
+      },
+      {
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
+        ],
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#ff6b3d",
+        "options": [
+          "#ff6b3d",
+          "#f4f4f5",
+          "#4ade80",
+          "#60a5fa",
+          "#f5a524"
+        ],
+        "group": "Look"
       }
     ]
   },
