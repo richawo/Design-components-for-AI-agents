@@ -8,6 +8,13 @@
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "workers_dev": true,
   "preview_urls": true,
+  // Keep the prepared Next server lazy. Public cache hits need only the router.
+  "find_additional_modules": true,
+  "rules": [
+    { "type": "ESModule", "globs": ["**/lazy-modules/lazy-server.mjs"], "fallthrough": false },
+    { "type": "Text", "globs": ["**/lazy-modules/**/*.txt", "**/lazy-modules/**/*.sql"], "fallthrough": true },
+    { "type": "CompiledWasm", "globs": ["**/lazy-modules/**/*.wasm"], "fallthrough": true }
+  ],
   "routes": [
     {
       "pattern": "design.yaps.ai",
