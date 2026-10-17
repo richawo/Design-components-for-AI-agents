@@ -3067,19 +3067,20 @@
     "updated": "2026-10-12"
   },
   "saas-usage-policy": {
-    "useWhen": "Reviewing limits, thresholds and actions for a supplied usage policy.",
-    "avoidWhen": "Authoritative metering or enforcement implemented only in the browser.",
+    "useWhen": "Admins set warning thresholds, hard limits and enforcement for metered resources and need to see when current or simulated usage would cross them this billing period.",
+    "avoidWhen": "You need a customer-facing price estimate or a plan comparison; metering and enforcement themselves must run on your server, not in this editor.",
     "integration": [
-      "Supply your own records through `metrics`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onSave` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
-      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+      "Pass each meter's `daily` usage (one value per elapsed day) with its current `warnAt`, `limit`, `enforcement` and `notifyAdmins`.",
+      "Set `periodStart` and `periodDays` so crossing dates and the reset date read correctly; `growth` seeds the demand simulator.",
+      "`onSave` receives every meter's policy at once; reject to keep the draft and show the failure in the save bar.",
+      "Provide `consequences` per meter so each enforcement option explains exactly what happens to that resource."
     ],
     "related": [
-      "progress-milestones",
-      "saas-access-requests",
+      "pricing-usage-calculator",
+      "agents-budget-guard",
       "saas-audit-trail"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "saas-workspace-dashboard": {
     "useWhen": "A workspace overview connecting supplied usage, setup and activity.",

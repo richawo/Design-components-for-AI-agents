@@ -37074,64 +37074,113 @@
     "tier": "pro",
     "platform": "web",
     "category": "progress",
-    "description": "Configure warning and hard limits with a live consumption preview. A considered, responsive SaaS workspace with typed integration points.",
+    "description": "Usage limits set on the meter itself: drag warning and limit handles over a period chart while a projected usage line shows when each threshold will be crossed.",
     "tags": [
       "saas",
-      "workflow",
-      "responsive",
-      "keyboard",
-      "progress"
+      "usage limits",
+      "metering",
+      "quota",
+      "billing",
+      "threshold",
+      "chart",
+      "admin"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1230,
-    "usage": "import { UsagePolicy } from \"@/components/design-for-ai/saas-usage-policy\";\n\n<UsagePolicy />",
+    "previewHeight": 1020,
+    "usage": "import { UsagePolicy } from \"@/components/design-for-ai/saas-usage-policy\";\n\nexport default function Limits() {\n  return (\n    <UsagePolicy\n      plan=\"Business plan\"\n      periodStart=\"2026-10-01\"\n      periodDays={31}\n      metrics={[\n        {\n          id: \"api\",\n          name: \"API requests\",\n          unit: \"requests\",\n          daily: usage.api, // usage at the end of each elapsed day\n          warnAt: 120000,\n          limit: 150000,\n          enforcement: \"throttle\",\n          notifyAdmins: true,\n        },\n      ]}\n      onSave={(draft) => api.limits.update(draft.policies)}\n    />\n  );\n}",
     "props": [
-      {
-        "name": "title",
-        "type": "string",
-        "description": "Main heading.",
-        "default": "\"Usage limits\""
-      },
-      {
-        "name": "subtitle",
-        "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Define warning thresholds and enforcement, then preview how current or simulated usage would be treated.\""
-      },
       {
         "name": "metrics",
         "type": "UsageMetric[]",
-        "description": "Unique metered resources with whole-unit counts and warning/limit values from 0 to one billion. Warning must be below a positive limit."
+        "default": "API requests, AI credits, file storage and seats",
+        "description": "Each { id, name, unit, daily: number[] (usage at the end of each elapsed day), warnAt, limit, enforcement: \"notify\" | \"throttle\" | \"block\", notifyAdmins, consequences? }."
+      },
+      {
+        "name": "periodStart",
+        "type": "string",
+        "default": "\"2026-10-01\"",
+        "description": "ISO date the billing period starts; dates on the chart and crossings count from it."
+      },
+      {
+        "name": "periodDays",
+        "type": "number",
+        "default": "31",
+        "description": "Days in the billing period."
+      },
+      {
+        "name": "growth",
+        "type": "number",
+        "default": "0",
+        "description": "Starting simulated change in daily usage, −50 to 100 percent. The Simulate slider explores from here."
       },
       {
         "name": "onSave",
-        "type": "(policy:UsagePolicyDraft)=>void|Promise<void>",
-        "description": "Persist the complete reviewed policy. Actual metering, alerts and enforcement belong to the host service."
+        "type": "(draft: UsagePolicyDraft) => void | Promise<void>",
+        "description": "Persist { policies: { metricId, warnAt, limit, enforcement, notifyAdmins }[] }. Reject to keep the draft and show the failure in place."
+      },
+      {
+        "name": "defaultMetricId",
+        "type": "string",
+        "default": "first metric",
+        "description": "Meter shown first."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Usage limits\"",
+        "description": "Page name in the product chrome."
+      },
+      {
+        "name": "workspace",
+        "type": "string",
+        "default": "\"Kestrel\"",
+        "description": "Workspace shown before the page name."
+      },
+      {
+        "name": "plan",
+        "type": "string",
+        "default": "\"Business plan\"",
+        "description": "Plan name shown in the chrome."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-US\"",
+        "description": "Locale for numbers and dates."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "theme ink",
+        "description": "The one accent: selected meter, focus rings and the primary action."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Surface palette."
       },
       {
-        "name": "selectMode",
-        "type": "\"custom\" | \"native\"",
-        "default": "\"custom\"",
-        "description": "Animated keyboard-accessible custom listboxes, or native platform pickers with matched 12px insets."
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes for the root."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:350",
-        "click:@metric-1",
-        "wait:700",
-        "click:@review",
-        "wait:1200"
+        "wait:600",
+        "hover:@handle-limit",
+        "drag:0.6,0.47",
+        "wait:600",
+        "click:@enforce-block",
+        "wait:500",
+        "click:@save",
+        "wait:1500"
       ],
       "loop": false
     },
@@ -37147,14 +37196,38 @@
         "default": "dark"
       },
       {
-        "prop": "selectMode",
-        "label": "Select menus",
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#7aa2ff",
+          "#ff8a4c"
+        ]
+      },
+      {
+        "prop": "growth",
+        "label": "Simulate demand",
+        "kind": "slider",
+        "min": -50,
+        "max": 100,
+        "step": 5,
+        "unit": "%",
+        "default": 0
+      },
+      {
+        "prop": "defaultMetricId",
+        "label": "Meter",
         "kind": "segmented",
         "options": [
-          "custom",
-          "native"
+          "api",
+          "credits",
+          "storage",
+          "seats"
         ],
-        "default": "custom"
+        "default": "api",
+        "remount": true
       }
     ]
   },
