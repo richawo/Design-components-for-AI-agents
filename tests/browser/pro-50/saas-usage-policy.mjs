@@ -113,6 +113,12 @@ export async function check({ page, mount, assert }) {
   assert.equal(await limit.getAttribute("aria-valuetext"), "1,540 tokens");
   await footer.filter({ hasText: "No unsaved changes" }).waitFor();
 
+  // Compact handles retain their displayed threshold, including six-character abbreviations.
+  await mount(mountWith("{id:'t',name:'Tokens',unit:'tokens',daily:[100],warnAt:123456,limit:987654,enforcement:'notify',notifyAdmins:false}"));
+  assert.equal(await page.getByRole("slider", {name:"Limit for Tokens"}).locator("span span").last().evaluate(
+    el => el.scrollWidth <= el.clientWidth
+  ), true, "Compact threshold is truncated");
+
   // No meters.
   await mount(mountWith(""));
   await page.getByText("No metered resources").waitFor();
@@ -124,8 +130,18 @@ export async function check({ page, mount, assert }) {
   const limitNow = Number(await page.getByRole("slider", { name: "Limit for Tokens" }).getAttribute("aria-valuenow"));
   assert.ok(warnNow < limitNow || (await page.getByRole("alert").count()) > 0, `Warn at ${warnNow} sits above the limit ${limitNow} without a warning`);
 
+  assert.match(await page.getByRole("alert").innerText(), /Invalid warning thresholds: Tokens/);
+  assert.equal(await page.locator('[data-demo="save"]').isDisabled(), true);
+  await inverted.focus();
+  await page.keyboard.press("Home");
+  assert.equal(await inverted.getAttribute("aria-valuenow"), "0");
+  assert.equal(await page.getByRole("alert").count(), 0);
+  assert.equal(await page.locator('[data-demo="save"]').isDisabled(), false);
+
   // A meter with no usage yet still draws valid geometry.
   await mount(mountWith("{id:'t',name:'Tokens',unit:'tokens',daily:[],warnAt:1500,limit:2000,enforcement:'notify',notifyAdmins:false}"));
   await page.getByRole("img", { name: /^Tokens:/ }).waitFor();
   assert.equal(await page.locator('path[d]:not([d^="M"]):not([d=""])').count(), 0, "Chart path without a moveto");
+  await page.getByText("No usage recorded yet").waitFor();
+  assert.equal(await page.getByRole("img", {name: "Tokens: no usage recorded"}).count(), 1);
 }

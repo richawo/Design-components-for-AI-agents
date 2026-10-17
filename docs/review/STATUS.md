@@ -110,7 +110,7 @@ needs re-recording, whether its poster is current, and the state of its browser 
 | `saas-report-scheduler` | new | current | rewritten, passes |
 | `saas-saved-views` | new | stale | rewritten, passes |
 | `saas-support-triage` | new | current | rewritten, fails on a real bug (4); last edit not rerun |
-| `saas-usage-policy` | new | current | rewritten, fails on a real bug (3) |
+| `saas-usage-policy` | new | current | rewritten, passes (warning thresholds and empty usage fixed) |
 | `saas-workspace-dashboard` | new | stale | rewritten, passes |
 
 ## Legal suite (8)

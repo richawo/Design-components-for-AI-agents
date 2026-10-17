@@ -39300,7 +39300,7 @@
         "name": "metrics",
         "type": "UsageMetric[]",
         "default": "API requests, AI credits, file storage and seats",
-        "description": "Each { id, name, unit, daily: number[] (usage at the end of each elapsed day), warnAt, limit, enforcement: \"notify\" | \"throttle\" | \"block\", notifyAdmins, consequences? }."
+        "description": "Each { id, name, unit, daily: number[] (usage at the end of each elapsed day), warnAt, limit, enforcement: \"notify\" | \"throttle\" | \"block\", notifyAdmins, consequences? }. Warning thresholds at or above the limit are flagged and cannot be saved. Empty daily series show a chart empty state."
       },
       {
         "name": "periodStart",

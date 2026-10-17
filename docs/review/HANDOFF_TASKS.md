@@ -10,6 +10,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 3.2: resolved invalid renewal dates and empty customer-health trends, with regression coverage for malformed and impossible dates.
 
+- Task 3.3: resolved inconsistent warning thresholds and empty usage charts. Invalid policies remain explicit and saving is blocked until corrected. Compact chart handles also retain their full abbreviated values.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
