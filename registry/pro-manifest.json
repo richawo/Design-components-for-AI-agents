@@ -38354,73 +38354,143 @@
   },
   {
     "slug": "saas-saved-views",
-    "name": "Saved View Organiser",
+    "name": "Saved Views Table",
     "tier": "pro",
     "platform": "web",
     "category": "data",
-    "description": "Create, rename, pin and reorder validated saved filter views. A considered, responsive SaaS workspace with typed integration points.",
+    "description": "A data table whose saved views are live chips: filters and columns apply as you pick them, unsaved changes show as a diff, and you update the view or save a new one.",
     "tags": [
       "saas",
-      "workflow",
-      "responsive",
-      "keyboard",
-      "data"
+      "saved views",
+      "filters",
+      "data table",
+      "columns",
+      "admin",
+      "diff"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1090,
-    "usage": "import { SavedViews } from \"@/components/design-for-ai/saas-saved-views\";\n\n<SavedViews />",
+    "previewHeight": 900,
+    "usage": "import { SavedViews } from \"@/components/design-for-ai/saas-saved-views\";\n\nexport default function Accounts() {\n  return (\n    <SavedViews\n      collection=\"Accounts\"\n      columns={columns}\n      rows={accounts}\n      views={views}\n      filterOptions={filterOptions}\n      currentUser={me.name}\n      today={new Date().toISOString().slice(0, 10)}\n      onSave={({ mode, view }) => (mode === \"update\" ? api.views.update(view) : api.views.create(view))}\n      onViewChange={(id) => router.replace(`?view=${id}`)}\n    />\n  );\n}",
     "props": [
       {
-        "name": "title",
-        "type": "string",
-        "description": "Main heading.",
-        "default": "\"Saved views\""
+        "name": "columns",
+        "type": "ViewColumn[]",
+        "default": "Account, Plan, Owner, Health, ARR, Renewal, Region, Seats",
+        "description": "{ key, label, kind: \"text\" | \"enum\" | \"person\" | \"score\" | \"money\" | \"number\" | \"date\", required?, scale? }. The kind sets the cell, the sort and the filter wording; `required` columns always show; score columns take { max, warnBelow, badBelow }."
       },
       {
-        "name": "subtitle",
-        "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Name, pin and order reusable filter sets, with a clear distinction between editing, applying and saving.\""
+        "name": "rows",
+        "type": "ViewRow[]",
+        "default": "sixteen Kestrel accounts",
+        "description": "{ id, [columnKey]: string | number | null }. Dates are ISO days; money is a number in `currency`."
       },
       {
-        "name": "defaultViews",
-        "type": "SavedFilterView[]",
-        "description": "Initial saved views with unique IDs and names. Pinning groups views before unpinned items; order is preserved within each group."
+        "name": "views",
+        "type": "SavedView[]",
+        "default": "Renewing this quarter, All accounts, At-risk book, EMEA expansion",
+        "description": "{ id, name, filters: ViewFilter[], columns: string[], sort: { column, dir }, shared?, owner? }. Views owned by someone else can only be saved as a copy."
+      },
+      {
+        "name": "filterOptions",
+        "type": "ViewFilter[]",
+        "default": "plan, owner, health, ARR, renewal and region filters",
+        "description": "{ column, op: \"is\" | \"isNot\" | \"below\" | \"atLeast\" | \"withinDays\", value }. Offered by the Filter menu, grouped by column."
+      },
+      {
+        "name": "defaultViewId",
+        "type": "string",
+        "description": "The view open on mount. Defaults to the first."
+      },
+      {
+        "name": "currentUser",
+        "type": "string",
+        "default": "\"Noor Ali\"",
+        "description": "Matched against `owner` to decide whether a view can be updated in place."
       },
       {
         "name": "onSave",
-        "type": "(views:SavedFilterView[])=>void|Promise<void>",
-        "description": "Persist the complete reviewed view collection including order, names, filters and removals."
+        "type": "(request: ViewSaveRequest) => void | SavedView | Promise<void | SavedView>",
+        "description": "{ mode: \"update\" | \"create\", view }. Resolve (optionally with the stored view, e.g. its server id) to keep it; reject and the unsaved changes stay with the error shown."
       },
       {
-        "name": "onApply",
-        "type": "(filters:SavedFilterView[\"filters\"])=>void|Promise<void>",
-        "description": "Apply the selected draft filters to the host collection without implicitly saving them."
+        "name": "onViewChange",
+        "type": "(viewId: string) => void",
+        "description": "Called when the open view changes, e.g. to mirror it in the URL."
+      },
+      {
+        "name": "density",
+        "type": "\"comfortable\" | \"compact\"",
+        "default": "\"comfortable\"",
+        "description": "Row height: 52px or 40px."
+      },
+      {
+        "name": "collection",
+        "type": "string",
+        "default": "\"Accounts\"",
+        "description": "The collection name in the breadcrumb."
+      },
+      {
+        "name": "noun",
+        "type": "[string, string]",
+        "default": "[\"account\", \"accounts\"]",
+        "description": "Singular and plural for counts."
+      },
+      {
+        "name": "today",
+        "type": "string",
+        "default": "\"2026-10-17\"",
+        "description": "ISO date that `withinDays` filters and renewal countdowns measure from. Pass today."
+      },
+      {
+        "name": "workspace",
+        "type": "string",
+        "default": "\"Kestrel\"",
+        "description": "Workspace shown in the chrome."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"USD\"",
+        "description": "ISO currency for money columns."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-US\"",
+        "description": "Locale for numbers, money and dates."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "theme ink",
+        "description": "The one accent: the primary action, unsaved filter chips and focus rings."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Surface palette."
       },
       {
-        "name": "selectMode",
-        "type": "\"custom\" | \"native\"",
-        "default": "\"custom\"",
-        "description": "Animated keyboard-accessible custom listboxes, or native platform pickers with matched 12px insets."
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes for the root."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:350",
-        "click:@view-1",
-        "wait:550",
-        "click:@apply",
-        "wait:1200"
+        "wait:600",
+        "click:@add-filter",
+        "wait:450",
+        "click:@option-health-below-60",
+        "wait:900",
+        "click:@save",
+        "wait:1500"
       ],
       "loop": false
     },
@@ -38436,14 +38506,25 @@
         "default": "dark"
       },
       {
-        "prop": "selectMode",
-        "label": "Select menus",
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#7aa2ff",
+          "#ff8a4c"
+        ]
+      },
+      {
+        "prop": "density",
+        "label": "Density",
         "kind": "segmented",
         "options": [
-          "custom",
-          "native"
+          "comfortable",
+          "compact"
         ],
-        "default": "custom"
+        "default": "comfortable"
       }
     ]
   },

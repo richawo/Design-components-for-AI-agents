@@ -3062,19 +3062,20 @@
     "updated": "2026-10-17"
   },
   "saas-saved-views": {
-    "useWhen": "Naming, pinning and saving reusable filters for a host collection.",
-    "avoidWhen": "Saving application records implicitly when only view configuration was edited.",
+    "useWhen": "People slice the same records table repeatedly and want named, shareable views whose filters, columns and sort apply live, with a clear diff before anything is saved.",
+    "avoidWhen": "You need a free-form query language or nested boolean logic; this offers ready-made filters per column, combined with AND.",
     "integration": [
-      "Supply your own records through `defaultViews`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onSave` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
-      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+      "Describe the table with `columns` (key, label, kind, required, score scale) and pass plain `rows`; the kind decides the cell, the sort and the filter wording.",
+      "`views` hold { filters, columns, sort, shared, owner }. Views owned by someone other than `currentUser` can only be saved as a copy.",
+      "`onSave` receives { mode: \"update\" | \"create\", view }; resolve with the stored view to adopt a server id, or reject to keep the unsaved changes on screen.",
+      "Pass `today` so `withinDays` filters and renewal countdowns are measured from the real date; mirror `onViewChange` into the URL if views should be linkable."
     ],
     "related": [
-      "data-file-explorer",
       "data-query-builder",
-      "legal-document-requests"
+      "saas-customer-health",
+      "saas-report-scheduler"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "saas-support-triage": {
     "useWhen": "A support team routes incoming tickets into priority queues with an owner, watching first-reply SLAs count down on every ticket as they go.",
