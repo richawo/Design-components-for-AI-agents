@@ -3176,141 +3176,165 @@
   },
   {
     "slug": "auth-recovery-codes",
-    "name": "Recovery Code Folio",
+    "name": "Recovery Codes",
     "tier": "pro",
     "platform": "web",
     "category": "auth",
-    "description": "Reveal host-supplied recovery codes, copy unused values and explicitly acknowledge an exact code set with truthful export and failure states.",
+    "description": "A two-factor recovery sheet: codes hide behind privacy glass, decode on reveal, copy, download and print with real feedback, and end on a saved confirmation.",
     "tags": [
-      "recovery",
-      "codes",
       "authentication",
-      "clipboard",
+      "two-factor",
+      "2fa",
+      "recovery codes",
+      "security",
       "account",
-      "backup"
+      "clipboard",
+      "dark"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1100,
-    "usage": "import { AuthRecoveryCodes } from \"@/components/design-for-ai/auth-recovery-codes\";\n\n<AuthRecoveryCodes batchId={codeSet.id} accountLabel={accountLabel} codes={codes} onAcknowledge={recordSavedConfirmation} onDownload={downloadCodeFile} />\n\n// Host supplies actual codes. The UI never generates authentication secrets. Copying a code is not an acknowledgement.",
+    "previewHeight": 880,
+    "usage": "import { AuthRecoveryCodes } from \"@/components/design-for-ai/auth-recovery-codes\";\n\n<AuthRecoveryCodes\n  codes={codes} // [{ code: \"7KQM-2XRP\" }, { code: \"ZP3W-QE8L\", usedAt: \"2026-10-03\" }, …]\n  account={user.email}\n  product=\"Halyard\"\n  generatedAt={set.issuedAt}\n  onConfirm={() => api.post(\"/2fa/recovery/acknowledge\")}\n  onRegenerate={() => api.post(\"/2fa/recovery/regenerate\").then((r) => r.codes)}\n/>",
     "props": [
       {
-        "name": "batchId",
-        "type": "string",
-        "description": "Stable identity of the exact supplied recovery code set. Changed codes/reset retire receipts, pending actions and local confirmation."
-      },
-      {
-        "name": "accountLabel",
-        "type": "string",
-        "description": "Host account context displayed and copied to explicit host export actions."
-      },
-      {
         "name": "codes",
-        "type": "readonly RecoveryCode[]",
-        "description": "Up to20 unique code identities and unique nonempty single-line code values of at most128 characters. Used codes remain visible but are excluded from copy/download/print/confirmation payloads."
+        "type": "RecoveryCode[]",
+        "default": "Ten Halyard codes, two used",
+        "description": "{ code, usedAt? } as issued by your server. Used codes stay listed, struck through with their date, and are left out of every export. The component never generates codes."
       },
       {
-        "name": "acknowledged",
+        "name": "account",
+        "type": "string",
+        "default": "\"ines.moreau@halyard.app\"",
+        "description": "Printed on the sheet and in the export header."
+      },
+      {
+        "name": "product",
+        "type": "string",
+        "default": "\"Halyard\"",
+        "description": "Product name in the body copy and the export header."
+      },
+      {
+        "name": "generatedAt",
+        "type": "string",
+        "default": "\"2026-10-17T09:24:00Z\"",
+        "description": "ISO date the set was issued, shown on the sheet."
+      },
+      {
+        "name": "defaultRevealed",
         "type": "boolean",
-        "description": "Optional controlled host acknowledgement. Callback fulfillment without a host update shows awaiting acknowledgement, never a false accepted state."
+        "default": "false",
+        "description": "Start with codes visible instead of behind the privacy glass."
       },
       {
-        "name": "onAcknowledge",
-        "type": "(receipt: RecoveryCodeAcknowledgement, signal: AbortSignal) => void | Promise<void>",
-        "description": "Explicit user confirmation for exact batchId and unused codeIds. Requires the user confirmation checkbox; copied/downloaded status alone cannot acknowledge."
+        "name": "fileName",
+        "type": "string",
+        "default": "\"halyard-recovery-codes.txt\"",
+        "description": "File name for Download."
+      },
+      {
+        "name": "onCopy",
+        "type": "(codes: string[]) => void",
+        "description": "Called after the unused codes reach the clipboard."
       },
       {
         "name": "onDownload",
-        "type": "(payload: RecoveryCodePayload, signal: AbortSignal) => void | Promise<void>",
-        "description": "Explicit host export request with cloned unused codes. Missing handler keeps download disabled; host owns the actual browser/file result."
+        "type": "(text: string, fileName: string) => void | Promise<void>",
+        "description": "Replaces the built-in .txt download. Reject to show the failed state."
       },
       {
         "name": "onPrint",
-        "type": "(payload: RecoveryCodePayload, signal: AbortSignal) => void | Promise<void>",
-        "description": "Explicit host print request. Missing handler keeps print disabled."
+        "type": "(text: string) => void | Promise<void>",
+        "description": "Replaces the built-in print sheet (a throwaway frame with only the codes)."
       },
       {
-        "name": "resetKey",
-        "type": "string | number",
-        "description": "Explicit local reveal, confirmation and acknowledgement lifecycle reset."
+        "name": "onConfirm",
+        "type": "() => void | Promise<void>",
+        "description": "The user ticked the box and pressed I’ve saved my codes. The button shows Saving while it runs; a rejection shows an inline error and keeps the box ticked."
       },
       {
-        "name": "status",
-        "type": "\"ready\" | \"loading\" | \"error\"",
-        "description": "Host availability locks actions while keeping supplied codes readable."
+        "name": "onRegenerate",
+        "type": "() => RecoveryCode[] | Promise<RecoveryCode[]>",
+        "description": "Issue a fresh set. When supplied, a Generate new codes action appears with a destructive confirm step; the new set decodes in and exports and the confirmation reset."
       },
       {
-        "name": "errorMessage",
+        "name": "accent",
         "type": "string",
-        "description": "Meaningful host failure text, default when blank."
-      },
-      {
-        "name": "onRetry",
-        "type": "() => void",
-        "description": "Actual host recovery request."
-      },
-      {
-        "name": "disabled",
-        "type": "boolean",
-        "description": "Lock actions while retaining reading context."
+        "default": "\"#5fc284\"",
+        "description": "The one colour: scrambling characters in the decode, export feedback and the success check."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Complete monochromatic graphite/white chrome. Colour is reserved for actual supplied content and purposeful feature accents."
-      },
-      {
-        "name": "labels",
-        "type": "Partial<RecoveryLabels>",
-        "description": "Account instructions, explicit action/result and recovery copy."
+        "default": "\"dark\"",
+        "description": "Near-black card with white ink, or a white card with near-black ink."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Responsive host layout classes."
+        "default": "\"\"",
+        "description": "Classes on the card."
       }
     ],
     "added": "2026-10-14",
     "demo": {
       "steps": [
+        "wait:300",
         "click:@recovery-reveal",
+        "wait:1100",
         "click:@recovery-copy",
+        "wait:500",
         "click:@recovery-stored",
-        "click:@recovery-acknowledge",
-        "click:@recovery-reveal"
+        "wait:250",
+        "click:@recovery-continue",
+        "wait:1700"
       ],
       "loop": false
     },
     "controls": [
       {
+        "prop": "defaultRevealed",
+        "label": "Start revealed",
+        "kind": "toggle",
+        "default": false,
+        "remount": true
+      },
+      {
+        "prop": "account",
+        "label": "Account",
+        "kind": "text",
+        "default": "ines.moreau@halyard.app"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#5fc284",
+        "options": [
+          "#5fc284",
+          "#7cc4ff",
+          "#f5a524",
+          "#e5e5e5"
+        ]
+      },
+      {
         "prop": "theme",
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
         "default": "dark"
-      },
-      {
-        "prop": "disabled",
-        "label": "Read only",
-        "kind": "toggle",
-        "default": false
-      },
-      {
-        "prop": "status",
-        "label": "Availability",
-        "kind": "select",
-        "options": [
-          "ready",
-          "loading",
-          "error"
-        ],
-        "default": "ready"
       }
     ]
   },

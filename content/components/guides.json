@@ -4195,18 +4195,19 @@
     "updated": "2026-10-14"
   },
   "auth-recovery-codes": {
-    "useWhen": "Presenting host-supplied recovery codes for explicit reveal, copying and acknowledgement.",
-    "avoidWhen": "Generating authentication secrets in the UI or treating a copied code as proof it was stored safely.",
+    "useWhen": "The step after someone turns on two-factor authentication, or a settings page where they view, export and replace their recovery codes.",
+    "avoidWhen": "One-time passcode entry at sign-in (use an OTP field), or any flow where the browser would have to generate the secrets itself.",
     "integration": [
-      "Supply stable `batchId`, `accountLabel` and up to20 unique host-issued `codes` with id, single-line code and optional used state. The named component starts empty; the default preview has visibly marked unusable examples. Used codes stay inspectable but are excluded from copied/exported/acknowledged payloads.",
-      "Clipboard success copies actual unused values and does not acknowledge storage. The user must explicitly check the saved confirmation before `onAcknowledge({batchId,codeIds},AbortSignal)`. Optional controlled `acknowledged` remains authoritative after fulfillment, with a truthful waiting state until the host updates it.",
-      "Connect explicit `onDownload`/`onPrint` handlers for copied unused-code payloads. Missing capabilities stay unavailable. One pending action, cancellation and exact set/handler/context retirement prevent obsolete receipts; errors retain supplied codes. Host owns authentication, file and print outcomes; never log codes."
+      "Pass the codes your server issued as `codes` ({ code, usedAt? }), plus `account`, `product` and `generatedAt`. Used codes stay listed and struck through but never reach the clipboard, the file or the printer.",
+      "Copy, Download and Print work out of the box. Supply `onDownload` or `onPrint` to log or route exports yourself; reject to show the failed state. Never log the codes themselves.",
+      "`onConfirm` runs when the user ticks the box and presses the button; return a promise and reject to keep them on the step with an error. `onRegenerate` adds a confirmed Generate new codes action that should invalidate the old set server-side and resolve with the new one."
     ],
     "related": [
-      "auth-passkey",
-      "auth-otp"
+      "auth-otp",
+      "auth-sign-in",
+      "auth-passkey"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "forms-draft-rescue": {
     "useWhen": "Resolving differences between a local draft and a newer supplied host version at field level.",
