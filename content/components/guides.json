@@ -3569,18 +3569,18 @@
     "updated": "2026-10-13"
   },
   "navigation-context-rail": {
-    "useWhen": "A workspace has grouped destinations and needs remembered section context, search and a compact navigation drawer.",
-    "avoidWhen": "A simple page with one short navigation list, or navigation whose destination content should live inside the rail itself.",
+    "useWhen": "An app with a handful of top-level areas, each holding its own list of destinations (projects, inbox views, libraries), where people hop between areas and expect each to remember where they were.",
+    "avoidWhen": "A site with a few flat pages, deep trees that need expand-and-collapse, or navigation that should show the content itself rather than lead to it.",
     "integration": [
-      "Use stable section and item identifiers, with useful reasons for disabled destinations.",
-      "Connect navigation to the host router or destination loader and update controlled selection after success.",
-      "Provide loading and recovery states, then review narrow containers and focus returning from the drawer."
+      "Wrap your page in it as children and give it a height; it docks the list beside the page from 640px and becomes a drawer below.",
+      "Map sections and items to your routes with stable ids; return a promise from onValueChange that resolves once the route has loaded, and honour the AbortSignal.",
+      "Use badge for unread counts, meta for trailing counts or dates, and disabledReason for locked destinations."
     ],
     "related": [
       "navigation-breadcrumb-fold",
       "command-palette"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "effect-border-tracer": {
     "useWhen": "A card stands for work in progress (a sync, a build, an agent run, a generating answer) and a light lapping its edge should say “busy” without moving the content.",

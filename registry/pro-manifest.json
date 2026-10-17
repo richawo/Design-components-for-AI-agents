@@ -34727,7 +34727,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "navigation",
-    "description": "A metallic icon rail with remembered destination lists, quick search and a compact drawer. Async navigation keeps your place when a destination fails.",
+    "description": "An icon rail with a contextual list: selection travels, lists cross-fade by direction, each section remembers its place, and it folds to a drawer when narrow.",
     "tags": [
       "navigation",
       "context rail",
@@ -34735,120 +34735,132 @@
       "drawer",
       "keyboard",
       "async navigation",
-      "metallic"
+      "app shell"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 680,
-    "usage": "import { NavigationContextRail } from \"@/components/design-for-ai/navigation-context-rail\";\n\n<NavigationContextRail\n  brand=\"Fieldwork\"\n  sections={sections}\n  value={selection}\n  onValueChange={async (next, _item, signal) => {\n    await loadDestination(next, { signal });\n    if (!signal.aborted) setSelection(next);\n  }}\n/>",
+    "previewHeight": 760,
+    "usage": "import { NavigationContextRail } from \"@/components/design-for-ai/navigation-context-rail\";\n\n<NavigationContextRail\n  brand=\"Halden\"\n  sections={sections}\n  value={selection}\n  onValueChange={async (next, _item, signal) => {\n    await router.prefetch(routeFor(next), { signal });\n    setSelection(next);\n  }}\n>\n  <Page selection={selection} />\n</NavigationContextRail>\n\n// Give it a height (h-dvh or a flex parent). Below 640px wide the list becomes a drawer over children.",
     "props": [
       {
         "name": "sections",
         "type": "ContextRailSection[]",
-        "description": "Unique section IDs, optional icons and disabled reasons, and item lists. Empty lists receive a deliberate empty state.",
-        "default": "Built-in studio sections"
+        "default": "Halden studio sections",
+        "description": "Sections with id, label, icon, optional badge count and items. Items take id, label, optional meta (trailing count or date), detail (second line), group (small heading), icon, and disabled with a disabledReason. Duplicate ids are dropped."
       },
       {
         "name": "label",
         "type": "string",
-        "description": "Accessible name of the primary icon navigation.",
-        "default": "\"Studio navigation\""
+        "default": "\"Workspace\"",
+        "description": "Accessible name of the icon rail."
       },
       {
         "name": "brand",
         "type": "string",
-        "description": "Workspace name used in the compact identity and context heading.",
-        "default": "\"Loom\""
+        "default": "\"Halden\"",
+        "description": "Workspace name; its initial is the rail’s mark."
       },
       {
         "name": "value",
         "type": "ContextRailSelection",
-        "description": "Controlled selection. The host owns the destination panel and updates this after navigation."
+        "description": "Controlled { sectionId, itemId }. The rail follows it and remembers it for that section."
       },
       {
         "name": "defaultValue",
         "type": "ContextRailSelection",
-        "description": "Initial uncontrolled section and item selection."
+        "description": "Initial uncontrolled selection. Defaults to the first enabled item."
       },
       {
         "name": "onValueChange",
-        "type": "(selection: ContextRailSelection, item: ContextRailItem, signal: AbortSignal) => void | Promise<void>",
-        "description": "Host-owned navigation. A rejected callback retains the previous item and offers a retry. Stale completions are ignored. The signal aborts when superseded, reset or unmounted. Choosing the current destination cancels pending navigation."
+        "type": "(selection, item, signal: AbortSignal) => void | Promise<void>",
+        "description": "Host navigation. A returned promise shows a spinner on the row; rejection keeps the previous destination and offers Retry. Superseded or unmounted requests abort their signal and are ignored."
       },
       {
         "name": "defaultCollapsed",
         "type": "boolean",
-        "description": "Initial context disclosure state.",
-        "default": "false"
+        "default": "false",
+        "description": "Start with the list folded away (docked layout)."
       },
       {
         "name": "onCollapsedChange",
         "type": "(collapsed: boolean) => void",
-        "description": "Reports expansion and collapse. Narrow containers close after item navigation and return focus to the toggle."
+        "description": "Reports folding in the docked layout."
       },
       {
         "name": "status",
-        "type": "\"ready\" | \"loading\" | \"empty\" | \"error\"",
-        "description": "Host-controlled loading, empty and unavailable section states.",
-        "default": "\"ready\""
+        "type": "\"ready\" | \"loading\" | \"error\"",
+        "default": "\"ready\"",
+        "description": "Host data state: skeleton rows while loading, an alert with Try again on error."
       },
       {
         "name": "errorMessage",
         "type": "string",
-        "description": "Specific explanation when the host reports an error.",
-        "default": "\"The sections could not be loaded.\""
+        "default": "\"Halden couldn’t load your sections. Check your connection and try again.\"",
+        "description": "Body of the error state."
       },
       {
         "name": "onRetry",
         "type": "() => void",
-        "description": "Requests a retry after a loading error. The host updates status."
+        "description": "Shown as Try again in the error state."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Neutral metallic surface palette.",
-        "default": "\"dark\""
+        "default": "\"dark\"",
+        "description": "Neutral palette."
       },
       {
         "name": "density",
         "type": "\"comfortable\" | \"compact\"",
-        "description": "70px or 56px destination rows, both with touch-sized targets.",
-        "default": "\"comfortable\""
+        "default": "\"comfortable\"",
+        "description": "40px or 36px rows (44px on touch either way)."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#f5a524\"",
+        "description": "The rail indicator, badges and the selected row’s tick."
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "description": "The host’s content area. The list docks beside it at 640px and wider, and becomes a drawer over it below."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Classes on the outer container."
+        "default": "\"\"",
+        "description": "Classes on the root."
       }
     ],
     "added": "2026-10-13",
     "demo": {
       "steps": [
-        "wait:350",
+        "wait:500",
         "click:@section-library",
-        "wait:350",
+        "wait:700",
         "click:@item-type",
-        "wait:300",
+        "wait:700",
         "click:@section-projects",
-        "wait:300",
-        "click:@section-library",
-        "wait:500"
+        "wait:900"
       ],
       "loop": false
     },
     "controls": [
       {
-        "prop": "theme",
-        "label": "Theme",
-        "kind": "segmented",
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f5a524",
         "options": [
-          "dark",
-          "light"
-        ],
-        "default": "dark"
+          "#f5a524",
+          "#e5484d",
+          "#7dd3fc",
+          "#ececee"
+        ]
       },
       {
         "prop": "density",
@@ -34861,26 +34873,29 @@
         "default": "comfortable"
       },
       {
-        "prop": "brand",
-        "label": "Workspace",
-        "kind": "text",
-        "default": "Loom"
+        "prop": "theme",
+        "label": "Theme",
+        "kind": "segmented",
+        "options": [
+          "dark",
+          "light"
+        ],
+        "default": "dark"
       },
       {
         "prop": "defaultCollapsed",
-        "label": "Start collapsed",
+        "label": "Start folded",
         "kind": "toggle",
         "default": false,
         "remount": true
       },
       {
         "prop": "status",
-        "label": "Data state",
+        "label": "Data",
         "kind": "action",
         "options": [
           "ready",
           "loading",
-          "empty",
           "error"
         ]
       }
