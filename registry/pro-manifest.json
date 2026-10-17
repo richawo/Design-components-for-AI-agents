@@ -22676,77 +22676,112 @@
   },
   {
     "slug": "finance-close-checklist",
-    "name": "Period Close Workspace",
+    "name": "Month-End Close",
     "tier": "pro",
     "platform": "web",
     "category": "billing",
-    "description": "Dependency-aware close tasks with ownership and completion evidence. A considered, responsive finance workspace with typed integration points.",
+    "description": "A month-end close checklist that knows its order: business-day due dates, locked tasks that open as blockers finish, a progress ring and a stamped sign-off.",
     "tags": [
       "finance",
-      "workflow",
-      "responsive",
-      "keyboard",
-      "billing"
+      "month end",
+      "close",
+      "checklist",
+      "accounting",
+      "dependencies",
+      "sign-off"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1040,
-    "usage": "import { CloseChecklist } from \"@/components/design-for-ai/finance-close-checklist\";\n\n<CloseChecklist />",
+    "previewHeight": 1000,
+    "usage": "import { CloseChecklist } from \"@/components/design-for-ai/finance-close-checklist\";\n\n<CloseChecklist\n  period=\"October 2026\"\n  periodEnd=\"2026-10-30\"\n  today=\"2026-11-04\"\n  closeDays={6}\n  tasks={tasks}\n  signer={{ name: \"Priya Shah\", role: \"Financial Controller\" }}\n  currentUser=\"Jonah Reed\"\n  onToggleTask={(id, done) => api.setCloseTask(id, done)}\n  onSignOff={(signOff) => api.signOffClose(signOff)}\n/>",
     "props": [
-      {
-        "name": "title",
-        "type": "string",
-        "description": "Main heading.",
-        "default": "\"Period close\""
-      },
-      {
-        "name": "subtitle",
-        "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Move through the close in dependency order. Every completion records evidence and an owner.\""
-      },
       {
         "name": "period",
         "type": "string",
-        "description": "Human-readable reporting period."
+        "default": "\"October 2026\"",
+        "description": "Period being closed; shown in the toolbar, the sign-off button and the sheet."
+      },
+      {
+        "name": "periodEnd",
+        "type": "string",
+        "default": "\"2026-10-30\"",
+        "description": "ISO date of the period’s last day. BD+1 is the next weekday after it."
+      },
+      {
+        "name": "today",
+        "type": "string",
+        "default": "\"2026-11-04\"",
+        "description": "ISO date the close is read against: today’s column, lateness, who-did-it dates and the stamp."
+      },
+      {
+        "name": "closeDays",
+        "type": "number",
+        "default": "6",
+        "description": "Business day the close is due to be signed off."
       },
       {
         "name": "tasks",
         "type": "CloseTask[]",
-        "description": "Unique close tasks, prerequisite IDs, ownership, due labels and acknowledged evidence."
+        "description": "{ id, title, group, owner, dueDay, dependsOn?, done? ({ by, on }) }. Tasks with open blockers are locked. Duplicate ids, unknown blockers and cycles are reported instead of drawn."
       },
       {
-        "name": "onComplete",
-        "type": "(completion:CloseCompletion)=>void|Promise<void>",
-        "description": "Persist completion evidence. The task only becomes complete after acknowledgement."
+        "name": "signer",
+        "type": "{ name: string; role: string }",
+        "default": "{ name: \"Priya Shah\", role: \"Financial Controller\" }",
+        "description": "Who signs the close off; printed on the sign-off sheet."
+      },
+      {
+        "name": "currentUser",
+        "type": "string",
+        "default": "\"Jonah Reed\"",
+        "description": "Recorded as done.by for ticks made in this session."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Locale for dates."
+      },
+      {
+        "name": "onToggleTask",
+        "type": "(taskId: string, done: boolean) => void | Promise<void>",
+        "description": "Persists a tick or untick. The box moves at once; reject to put it back with the message under the task."
+      },
+      {
+        "name": "onSignOff",
+        "type": "(signOff: CloseSignOff) => void | Promise<void>",
+        "description": "Signs off { period, signedBy, signedOn, taskCount } once every task is done. Resolve to stamp the sheet CLOSED; reject to keep everything and show Try again."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "description": "The one accent: ring, checkboxes, open-task dots and the primary action. Defaults to the theme’s ink."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Surface palette. The sign-off sheet is paper in both."
       },
       {
-        "name": "selectMode",
-        "type": "\"custom\" | \"native\"",
-        "default": "\"custom\"",
-        "description": "Animated keyboard-accessible custom listboxes, or native platform pickers with matched 12px insets."
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:350",
-        "click:@task-accrual",
-        "wait:650",
-        "click:@task-bank",
-        "wait:500",
-        "click:@evidence",
-        "type:Bank statement reconciled.",
-        "click:@complete",
-        "wait:1000"
+        "wait:600",
+        "click:@task-cloud",
+        "wait:700",
+        "click:@task-accruals",
+        "wait:800",
+        "click:@sign-off",
+        "wait:1500"
       ],
       "loop": false
     },
@@ -22762,14 +22797,36 @@
         "default": "dark"
       },
       {
-        "prop": "selectMode",
-        "label": "Select menus",
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#8ea2ff",
+          "#c6f36d",
+          "#5eead4"
+        ]
+      },
+      {
+        "prop": "today",
+        "label": "Close day",
         "kind": "segmented",
         "options": [
-          "custom",
-          "native"
+          {
+            "value": "2026-11-03",
+            "label": "BD+2"
+          },
+          {
+            "value": "2026-11-04",
+            "label": "BD+3"
+          },
+          {
+            "value": "2026-11-06",
+            "label": "BD+5"
+          }
         ],
-        "default": "custom"
+        "default": "2026-11-04"
       }
     ]
   },

@@ -2231,18 +2231,20 @@
     "updated": "2026-10-12"
   },
   "finance-close-checklist": {
-    "useWhen": "Coordinating period-close tasks and collecting clear completion evidence.",
-    "avoidWhen": "An accounting approval or audit conclusion created only through checklist state.",
+    "useWhen": "Running a month-end close as a dependency-aware checklist: owners, business-day due dates, tasks that unlock as their blockers finish, and a controller sign-off at the end.",
+    "avoidWhen": "General project management, recurring personal to-dos, or the reconciliation and journal work itself; link out to those tools from each task instead.",
     "integration": [
-      "Supply your own records through `tasks`. Preserve stable keys or IDs when the data contract provides them.",
-      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+      "Pass `tasks` with `dueDay` as the business day after `periodEnd` (1 is BD+1) and `dependsOn` for blockers. Unknown blockers, duplicate ids and cycles are reported instead of leaving tasks locked forever.",
+      "Set `today` from your server clock; it drives lateness, today's column and the dates recorded on ticks and the stamp.",
+      "`onToggleTask(id, done)` persists each tick optimistically; reject with an `Error` to restore the box and show the message under the task. Enforce dependencies on the server too.",
+      "`onSignOff` receives `{ period, signedBy, signedOn, taskCount }` once every task is done; lock the period for posting when it resolves."
     ],
     "related": [
+      "finance-reconciliation",
       "finance-budget-variance",
-      "finance-expense-review",
-      "finance-invoice-composer"
+      "finance-expense-review"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "finance-expense-review": {
     "useWhen": "Working an approvals queue of employee expense claims with the receipt beside each claim, policy breaches highlighted on the receipt itself, and a fast keyboard flow for approve and reject.",
