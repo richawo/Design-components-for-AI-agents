@@ -2,10 +2,10 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import { launchChromium } from "../../scripts/lib/browser.mjs";
 import { mountFixture } from "../../scripts/lib/component-fixture.mjs";
+// Exchange Selector uses custom choice cards; its dedicated probe covers them.
 const slugs = [
   "commerce-promotion-builder",
   "fashion-size-guide",
-  "fashion-exchange-selector",
   "finance-payment-run",
   "hr-policy-acknowledgement",
   "hr-compensation-review",

@@ -26,6 +26,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 4: preview typography/container checks and the rewritten audit-trail polish probe pass with source previews. The histogram grows from a fixed baseline; the probe now covers its brush animation, current JSON diff, timestamp ordering and phone menus.
 
+- Task 4: all seven native-input palette cases pass in both themes after setting Payment Run’s color scheme from its theme. Exchange Selector uses custom choice cards and is covered by its dedicated probe.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
