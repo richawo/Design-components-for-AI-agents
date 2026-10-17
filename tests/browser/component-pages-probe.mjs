@@ -2,19 +2,10 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import { createRequire } from "node:module";
 import { launchChromium } from "../../scripts/lib/browser.mjs";
-const base = (process.env.PREVIEW_BASE || "http://localhost:3100").replace(
-  /\/$/,
-  "",
-);
+const base = (process.env.PREVIEW_BASE || "http://localhost:3100").replace(/\/$/, "");
 const out = "test-results/page-structure-20261012";
 fs.mkdirSync(out, { recursive: true });
-const slugs = [
-  "saas-audit-trail",
-  "chart-portfolio",
-  "data-kanban-compact",
-  "auth-sign-in",
-  "mobile-settings",
-];
+const slugs = ["saas-audit-trail", "chart-portfolio", "data-kanban-compact", "auth-sign-in", "mobile-settings"];
 const browser = await launchChromium();
 const axe = createRequire(import.meta.url).resolve("axe-core/axe.min.js");
 const errors = [];
@@ -46,7 +37,10 @@ try {
     assert.match(md, /## When not to use/);
     assert.match(md, /## Integration notes/);
     if (slug === "saas-audit-trail" || slug === "data-kanban-compact")
-      assert.doesNotMatch(md, /## JSON prompt|export default function/);
+      assert.ok(
+        !/^## (?:Prompt|JSON prompt|Source \([^\n]+\))\s*$/m.test(md),
+        "Anonymous references exclude private source and prompt sections",
+      );
     await page.goto(`${base}/components/${slug}`, { waitUntil: "networkidle" });
     await page.locator("#installation").scrollIntoViewIfNeeded();
     if (slug === "saas-audit-trail" || slug === "data-kanban-compact")
@@ -55,9 +49,7 @@ try {
       await page.setViewportSize({ width, height: 1000 });
       await page.waitForTimeout(200);
       assert.ok(
-        (await page.evaluate(
-          () => document.documentElement.scrollWidth - innerWidth,
-        )) <= 1,
+        (await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)) <= 1,
         slug + " " + width,
       );
       if (width === 1440 || width === 390)
@@ -121,36 +113,19 @@ try {
   await page.locator("#source").scrollIntoViewIfNeeded();
   await page.getByText("licensed fixture", { exact: true }).waitFor();
   assert.equal(sourceRequests, 1, "Source loads when its panel is reached");
-  assert.equal(
-    await page
-      .locator("#installation")
-      .getByRole("link", { name: "Get Pro access" })
-      .count(),
-    0,
-  );
+  assert.equal(await page.locator("#installation").getByRole("link", { name: "Get Pro access" }).count(), 0);
   await page.unroute(route);
   await page.route(route, (r) => r.fulfill({ status: 503 }));
   await page.reload({ waitUntil: "networkidle" });
   await page.locator('[data-pro-access="error"]').waitFor();
   await page.unroute(route);
-  await page.route(route, (r) =>
-    r.fulfill({ contentType: "application/json", body: '{"active":false}' }),
-  );
+  await page.route(route, (r) => r.fulfill({ contentType: "application/json", body: '{"active":false}' }));
   await page.getByRole("button", { name: "Retry access check" }).click();
   await page.locator('[data-pro-access="locked"]').waitFor();
-  await page
-    .locator("#installation")
-    .getByRole("link", { name: "Get Pro access" })
-    .focus();
-  assert.equal(
-    await page.evaluate(() => document.activeElement?.getAttribute("href")),
-    "/pricing",
-  );
+  await page.locator("#installation").getByRole("link", { name: "Get Pro access" }).focus();
+  assert.equal(await page.evaluate(() => document.activeElement?.getAttribute("href")), "/pricing");
   assert.deepEqual(errors, []);
-  fs.writeFileSync(
-    `${out}/component-pages.json`,
-    JSON.stringify(results, null, 2) + "\n",
-  );
+  fs.writeFileSync(`${out}/component-pages.json`, JSON.stringify(results, null, 2) + "\n");
   console.log("PASS Pro active, denied, failed and retried access states");
 } finally {
   await browser.close();

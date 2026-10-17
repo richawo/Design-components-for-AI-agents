@@ -80,6 +80,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 4: the full browser run found a Task Move crash when `statuses` is empty. The component now retains the task without move controls, keeps interpolation ranges valid, and recovers when statuses return. The targeted empty/recovery regression, empty-state accessibility, default/empty captures, strict registry, TypeScript and all 1,049 unit tests pass. The native empty-data probe can now select a requested slug for focused reruns.
 
+- Task 4: the full run completed 49 of 56 suites successfully. Focused reruns now pass the component and block page checks, all custom/native selectors, all eight fashion workflows and all ten SaaS workflows. Anonymous Markdown checks distinguish public usage examples from private source sections; selector checks follow each control's actual focus owner; date assertions tolerate the browser's punctuation while retaining exact dates, times and callback payloads. Saved Views waits for its displayed save action after the crossfade. Chapter Stack resizing and a People Workspace menu overlap remain under investigation before the final full rerun.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned

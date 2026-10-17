@@ -8,16 +8,11 @@ const slugs = fs.readdirSync("registry/pro").filter((slug) => {
   const file = `registry/pro/${slug}/meta.json`;
   return (
     fs.existsSync(file) &&
-    JSON.parse(fs.readFileSync(file)).props.some(
-      (prop) => prop.name === "selectMode",
-    ) &&
+    JSON.parse(fs.readFileSync(file)).props.some((prop) => prop.name === "selectMode") &&
     (!requested.length || requested.includes(slug))
   );
 });
-const browser =
-  process.env.BROWSER === "webkit"
-    ? await webkit.launch()
-    : await launchChromium();
+const browser = process.env.BROWSER === "webkit" ? await webkit.launch() : await launchChromium();
 const page = await browser.newPage({
   viewport: { width: 390, height: 900 },
   reducedMotion: "reduce",
@@ -35,68 +30,48 @@ try {
         "pro",
         `createRoot(document.getElementById('root')).render(<Subject.default theme="${theme}"/>);`,
       );
-      if (slug === "commerce-catalog-import")
-        await page
-          .getByRole("button", { name: "Read CSV", exact: true })
-          .click();
-      const controls = page.getByRole("combobox");
+      if (slug === "commerce-catalog-import") await page.getByRole("button", { name: "Read CSV", exact: true }).click();
+      const controls = page
+        .getByRole("combobox")
+        .or(page.getByRole("button").and(page.locator('[aria-haspopup="listbox"]')));
       assert.ok((await controls.count()) > 0, slug);
       const count = await controls.count();
       for (let index = 0; index < count; index++) {
         const control = controls.nth(index);
         if (await control.isDisabled()) continue;
         assert.equal(await control.evaluate((el) => el.tagName), "BUTTON");
+        const combobox = (await control.getAttribute("role")) === "combobox";
         const pads = await control.evaluate((el) => [
           getComputedStyle(el).paddingLeft,
           getComputedStyle(el).paddingRight,
         ]);
-        assert.deepEqual(pads, ["12px", "12px"]);
+        if (combobox) assert.deepEqual(pads, ["12px", "12px"]);
+        else assert.ok(parseFloat(pads[0]) >= 4 && parseFloat(pads[1]) >= 8, `${slug}: inset the avatar and chevron`);
         const id = await control.getAttribute("aria-controls");
         await control.click();
         const menu = page.locator(`[id=${JSON.stringify(id)}]`);
         await menu.waitFor({ state: "visible" });
         const rect = await menu.boundingBox();
         assert.ok(
-          rect.x >= 0 &&
-            rect.x + rect.width <= width + 1 &&
-            rect.y >= 0 &&
-            rect.y + rect.height <= 901,
+          rect.x >= 0 && rect.x + rect.width <= width + 1 && rect.y >= 0 && rect.y + rect.height <= 901,
           slug + " popup stays in viewport",
         );
-        const enabled = menu.locator(
-          '[role="option"]:not([aria-disabled="true"])',
-        );
-        await control.press("Home");
-        assert.equal(
-          await control.getAttribute("aria-activedescendant"),
-          await enabled.first().getAttribute("id"),
-        );
-        await control.press("End");
-        assert.equal(
-          await control.getAttribute("aria-activedescendant"),
-          await enabled.last().getAttribute("id"),
-        );
-        const active = await control.getAttribute("aria-activedescendant");
+        // Comboboxes keep focus on the trigger. Menu buttons move it into their listbox.
+        const keyboard = combobox ? control : menu;
+        await page.waitForFunction((node) => node === document.activeElement, await keyboard.elementHandle());
+        const enabled = menu.locator('[role="option"]:not([aria-disabled="true"])');
+        await keyboard.press("Home");
+        assert.equal(await keyboard.getAttribute("aria-activedescendant"), await enabled.first().getAttribute("id"));
+        await keyboard.press("End");
+        assert.equal(await keyboard.getAttribute("aria-activedescendant"), await enabled.last().getAttribute("id"));
+        const active = await keyboard.getAttribute("aria-activedescendant");
         assert.ok(active);
-        assert.equal(
-          await page
-            .locator(`[id=${JSON.stringify(active)}]`)
-            .getAttribute("aria-disabled"),
-          null,
-        );
-        await control.press("Escape");
+        assert.equal(await page.locator(`[id=${JSON.stringify(active)}]`).getAttribute("aria-disabled"), null);
+        await keyboard.press("Escape");
         await menu.waitFor({ state: "hidden" });
-        assert.equal(
-          await control.evaluate((el) => el === document.activeElement),
-          true,
-        );
+        assert.equal(await control.evaluate((el) => el === document.activeElement), true);
       }
-      assert.equal(
-        await page.evaluate(
-          () => document.documentElement.scrollWidth > innerWidth,
-        ),
-        false,
-      );
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
     }
     await mountFixture(
       page,
@@ -104,14 +79,10 @@ try {
       "pro",
       `createRoot(document.getElementById('root')).render(<Subject.default selectMode="native"/>);`,
     );
-    if (slug === "commerce-catalog-import")
-      await page.getByRole("button", { name: "Read CSV", exact: true }).click();
+    if (slug === "commerce-catalog-import") await page.getByRole("button", { name: "Read CSV", exact: true }).click();
     const native = page.getByRole("combobox").first();
     assert.equal(await native.evaluate((el) => el.tagName), "SELECT");
-    assert.equal(
-      await native.evaluate((el) => getComputedStyle(el).appearance),
-      "none",
-    );
+    assert.equal(await native.evaluate((el) => getComputedStyle(el).appearance), "none");
     assert.deepEqual(errors, []);
     console.log("PASS custom/native select polish " + slug);
   }

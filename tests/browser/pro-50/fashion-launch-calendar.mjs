@@ -17,7 +17,11 @@ export async function check({ page, mount, assert }) {
   await check(/Launch email scheduled/).check();
   await shows(/4 of 5 checks done/);
   await shows(/Required checks done/);
-  assert.deepEqual(await page.evaluate(() => window.ticks.at(-1)), { launchId: "salt-light", checkId: "email", complete: true });
+  assert.deepEqual(await page.evaluate(() => window.ticks.at(-1)), {
+    launchId: "salt-light",
+    checkId: "email",
+    complete: true,
+  });
   // A rejected tick is undone and explained.
   await page.evaluate(() => (window.failTick = true));
   await check(/Launch email scheduled/).click();
@@ -27,10 +31,11 @@ export async function check({ page, mount, assert }) {
   await page.getByRole("button", { name: "One day later" }).click();
   await page.getByRole("alert").filter({ hasText: "The showroom is booked." }).waitFor();
   await shows(/back on 14 Oct/);
-  await shows(/Wed, 14 Oct/);
+  assert.deepEqual(await page.evaluate(() => window.moves), [{ launchId: "salt-light", date: "2026-10-15" }]);
+  await shows(/Wed,?\s+14 Oct/);
   await page.evaluate(() => (window.fail = false));
   await page.getByRole("button", { name: "One day later" }).click();
-  await shows(/Thu, 15 Oct/);
+  await shows(/Thu,?\s+15 Oct/);
   assert.deepEqual(await page.evaluate(() => window.moves.at(-1)), { launchId: "salt-light", date: "2026-10-15" });
   // Phone widths: a day's marker opens its drop.
   await page.getByRole("button", { name: "Knitwear drop 2", exact: true }).click();
@@ -45,20 +50,32 @@ export async function check({ page, mount, assert }) {
   // Wide screens: Alt+arrow keys move a focused card a day or a week.
   // The fixture frame is narrow, so the calendar gets a wide box of its own.
   await page.setViewportSize({ width: 1440, height: 900 });
-  await mount(`window.moves=[];createRoot(document.getElementById('root')).render(<div style={{width:1200}}><Subject.LaunchCalendar onSchedule={async m=>{window.moves.push(m)}}/></div>);`);
+  await mount(
+    `window.moves=[];createRoot(document.getElementById('root')).render(<div style={{width:1200}}><Subject.LaunchCalendar onSchedule={async m=>{window.moves.push(m)}}/></div>);`,
+  );
   const card = page.locator('[data-demo="drop-archive"]');
   await card.focus();
   await page.keyboard.press("Alt+ArrowLeft");
-  await shows(/Thu, 29 Oct/);
+  await shows(/Thu,?\s+29 Oct/);
   await page.locator('[data-demo="drop-archive"]').focus();
   await page.keyboard.press("Alt+ArrowUp");
-  await shows(/Thu, 22 Oct/);
+  await shows(/Thu,?\s+22 Oct/);
   assert.deepEqual(await page.evaluate(() => window.moves.map((m) => m.date)), ["2026-10-29", "2026-10-22"]);
   await page.setViewportSize({ width: 390, height: 900 });
 
   // Invalid dates are left out; nothing left means the empty state.
-  const bad = { id: "x", name: "Undated drop", collection: "SS27", channel: "Online", date: "next week", owner: "Ada Park", checks: [] };
-  await mount(`createRoot(document.getElementById('root')).render(<Subject.LaunchCalendar launches={[${JSON.stringify(bad)}]}/>);`);
+  const bad = {
+    id: "x",
+    name: "Undated drop",
+    collection: "SS27",
+    channel: "Online",
+    date: "next week",
+    owner: "Ada Park",
+    checks: [],
+  };
+  await mount(
+    `createRoot(document.getElementById('root')).render(<Subject.LaunchCalendar launches={[${JSON.stringify(bad)}]}/>);`,
+  );
   await shows(/No launches planned/);
   await mount(`createRoot(document.getElementById('root')).render(<Subject.LaunchCalendar launches={[]}/>);`);
   await shows(/No launches planned/);

@@ -32,6 +32,7 @@ export async function check({ page, mount, assert }) {
   // Someone else’s view can only be saved as a copy, and the name must be new.
   await d("add-filter").click();
   await d("option-region-is-emea").click();
+  await page.getByRole("button", { name: "Save as new", exact: true }).waitFor();
   assert.match(await d("save").innerText(), /Save as new/);
   await d("save").click();
   await d("view-name").fill("At-risk book");

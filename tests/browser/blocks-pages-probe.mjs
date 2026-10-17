@@ -2,12 +2,8 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import { createRequire } from "node:module";
 import { launchChromium } from "../../scripts/lib/browser.mjs";
-const base = (process.env.PREVIEW_BASE || "http://localhost:3100").replace(
-  /\/$/,
-  "",
-);
-const catalogue = (await (await fetch(base + "/api/registry")).json())
-  .components;
+const base = (process.env.PREVIEW_BASE || "http://localhost:3100").replace(/\/$/, "");
+const catalogue = (await (await fetch(base + "/api/registry")).json()).components;
 const blocks = catalogue.filter((entry) => entry.kind === "block");
 assert.ok(blocks.length, "Published blocks");
 const expectedGroups = {
@@ -20,7 +16,11 @@ const expectedGroups = {
   "block-legal-workspace": "workspace",
 };
 for (const [slug, group] of Object.entries(expectedGroups))
-  assert.equal(blocks.find(block => block.slug === slug)?.blockType, group, `${slug}: classify by the page's purpose`);
+  assert.equal(
+    blocks.find((block) => block.slug === slug)?.blockType,
+    group,
+    `${slug}: classify by the page's purpose`,
+  );
 const outcomes = [];
 for (const block of blocks) {
   assert.equal(block.tier, "pro");
@@ -30,22 +30,19 @@ for (const block of blocks) {
   assert.equal(res.status, 200);
   const html = await res.text();
   assert.ok(html.includes('id="built-from"'));
-  assert.ok(
-    html.includes(`href="https://design.yaps.ai/blocks/${block.slug}"`),
-  );
+  assert.ok(html.includes(`href="https://design.yaps.ai/blocks/${block.slug}"`));
   const md = await (await fetch(`${base}/blocks/${block.slug}.md`)).text();
   assert.match(md, /## Built from/);
   assert.match(md, /## When to use/);
-  assert.doesNotMatch(md, /## JSON prompt|export default function|useState\(/);
-  for (const slug of block.components)
-    assert.ok(md.includes(slug), block.slug + " dependency " + slug);
+  assert.ok(
+    !/^## (?:Prompt|JSON prompt|Source \([^\n]+\))\s*$/m.test(md),
+    "Anonymous references exclude private source and prompt sections",
+  );
+  for (const slug of block.components) assert.ok(md.includes(slug), block.slug + " dependency " + slug);
   assert.equal((await fetch(`${base}/api/registry/${block.slug}`)).status, 401);
   assert.equal((await fetch(`${base}/r/pro/${block.slug}.json`)).status, 401);
   assert.equal((await fetch(`${base}/r/${block.slug}.json`)).status, 404);
-  assert.equal(
-    (await (await fetch(`${base}/api/pro/source/${block.slug}`)).json()).locked,
-    true,
-  );
+  assert.equal((await (await fetch(`${base}/api/pro/source/${block.slug}`)).json()).locked, true);
   outcomes.push({
     slug: block.slug,
     html: true,
@@ -74,9 +71,7 @@ try {
     for (const width of [1440, 768, 390, 320]) {
       await page.setViewportSize({ width, height: 1000 });
       assert.ok(
-        (await page.evaluate(
-          () => document.documentElement.scrollWidth - innerWidth,
-        )) <= 1,
+        (await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)) <= 1,
         pathname + " " + width,
       );
     }
@@ -91,14 +86,15 @@ try {
             values: ["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"],
           },
         })
-      ).violations.map((v) => ({ id: v.id, nodes: v.nodes.map(n => ({ target: n.target, summary: n.failureSummary })) })),
+      ).violations.map((v) => ({
+        id: v.id,
+        nodes: v.nodes.map((n) => ({ target: n.target, summary: n.failureSummary })),
+      })),
     );
     assert.deepEqual(issues, [], pathname);
     if (pathname === "/blocks") {
       for (const block of blocks)
-        assert.ok(
-          await page.locator(`section[id="${block.blockType}"] a[href="/blocks/${block.slug}"]`).count(),
-        );
+        assert.ok(await page.locator(`section[id="${block.blockType}"] a[href="/blocks/${block.slug}"]`).count());
       await page.screenshot({
         path: "test-results/page-structure-20261012/blocks-index.png",
         fullPage: true,
@@ -109,10 +105,5 @@ try {
 } finally {
   await browser.close();
 }
-fs.writeFileSync(
-  "test-results/page-structure-20261012/blocks-pages.json",
-  JSON.stringify(outcomes, null, 2) + "\n",
-);
-console.log(
-  "PASS blocks discovery, canonical pages, mobile layouts and private source boundaries",
-);
+fs.writeFileSync("test-results/page-structure-20261012/blocks-pages.json", JSON.stringify(outcomes, null, 2) + "\n");
+console.log("PASS blocks discovery, canonical pages, mobile layouts and private source boundaries");

@@ -13,7 +13,9 @@ const SCHEDULE = {
 };
 
 export async function check({ page, mount, assert }) {
-  await mount(`window.saves=[];window.tests=[];window.fail=true;createRoot(document.getElementById('root')).render(<Subject.ReportScheduler now="2026-10-17T10:00:00Z" onSave={async s=>{window.saves.push(s);if(window.fail)throw Error('')}} onSendTest={s=>{window.tests.push(s)}}/>);`);
+  await mount(
+    `window.saves=[];window.tests=[];window.fail=true;createRoot(document.getElementById('root')).render(<Subject.ReportScheduler now="2026-10-17T10:00:00Z" onSave={async s=>{window.saves.push(s);if(window.fail)throw Error('')}} onSendTest={s=>{window.tests.push(s)}}/>);`,
+  );
   const root = page.locator(".rs-root");
   const appBar = root.locator("header").first();
   const form = page.getByRole("form", { name: "Schedule" });
@@ -33,10 +35,10 @@ export async function check({ page, mount, assert }) {
   assert.equal(await save.isDisabled(), true);
 
   // Next deliveries in the schedule's zone with the UTC equivalent, across the clock change.
-  await readout.filter({ hasText: "Mon, 19 Oct, 09:00 BST · 08:00 UTC" }).waitFor();
-  assert.match(await txt(deliveries), /Mon, 19 Oct in 2 days Mon, 26 Oct 09:00 Mon, 2 Nov 09:00/);
+  await readout.filter({ hasText: /^Mon,?\s+19 Oct,?\s+09:00 BST · 08:00 UTC$/ }).waitFor();
+  assert.match(await txt(deliveries), /Mon,?\s+19 Oct in 2 days Mon,?\s+26 Oct 09:00 Mon,?\s+2 Nov 09:00/);
   await deliveries.getByRole("button").nth(1).focus();
-  await readout.filter({ hasText: /^Mon, 26 Oct, 09:00 GMT · 09:00 UTC$/ }).waitFor();
+  await readout.filter({ hasText: /^Mon,?\s+26 Oct,?\s+09:00 GMT · 09:00 UTC$/ }).waitFor();
   assert.equal(await deliveries.getByRole("button").count(), 6);
 
   // Ticking a section adds it to the page, in the host's order.
@@ -60,18 +62,18 @@ export async function check({ page, mount, assert }) {
   const monthDay = page.getByLabel("Day of the month", { exact: true });
   await monthDay.selectOption("1");
   await has(/1 Oct – 31 Oct 2026/);
-  await readout.filter({ hasText: /^Sun, 1 Nov, 09:00 GMT · 09:00 UTC$/ }).waitFor();
+  await readout.filter({ hasText: /^Sun,?\s+1 Nov,?\s+09:00 GMT · 09:00 UTC$/ }).waitFor();
   // Daily skips weekends unless told otherwise.
   await page.locator('[data-demo="cadence-daily"]').click();
-  await readout.filter({ hasText: /^Mon, 19 Oct, 09:00 BST · 08:00 UTC$/ }).waitFor();
+  await readout.filter({ hasText: /^Mon,?\s+19 Oct,?\s+09:00 BST · 08:00 UTC$/ }).waitFor();
   await has(/^[\s\S]*18 Oct 2026/);
   await page.getByRole("switch", { name: "Skip weekends" }).uncheck();
-  await readout.filter({ hasText: /^Sun, 18 Oct, 09:00 BST · 08:00 UTC$/ }).waitFor();
+  await readout.filter({ hasText: /^Sun,?\s+18 Oct,?\s+09:00 BST · 08:00 UTC$/ }).waitFor();
   await page.getByRole("switch", { name: "Skip weekends" }).check();
   await page.locator('[data-demo="cadence-weekly"]').click();
   // The zone moves the instant, not the wall clock.
   await page.getByLabel("Time zone", { exact: true }).selectOption("America/New_York");
-  await readout.filter({ hasText: /^Tue, 20 Oct, 09:00 GMT-4 · 13:00 UTC$/ }).waitFor();
+  await readout.filter({ hasText: /^Tue,?\s+20 Oct,?\s+09:00 GMT-4 · 13:00 UTC$/ }).waitFor();
 
   // CSV turns the page into the rows the attachment will contain.
   await page.locator('[data-demo="format-pdf"]').focus();
@@ -138,13 +140,15 @@ export async function check({ page, mount, assert }) {
   assert.equal(await name.inputValue(), "Board pack");
   await page.evaluate(() => (window.fail = false));
   await save.click();
-  await footer.filter({ hasText: "Saved · first delivery Tue, 20 Oct, 09:00" }).waitFor();
+  await footer.filter({ hasText: /Saved · first delivery Tue,?\s+20 Oct,?\s+09:00/ }).waitFor();
   assert.deepEqual(await page.evaluate(() => window.saves[1]), expected);
   assert.match(await txt(appBar), /Board pack Scheduled/);
   assert.equal(await save.isDisabled(), true);
 
   // No sections to choose from, and a zone the browser doesn't know.
-  await mount(`createRoot(document.getElementById('root')).render(<Subject.ReportScheduler now="2026-10-17T10:00:00Z" sections={[]} defaultSchedule={${JSON.stringify({ ...SCHEDULE, sectionIds: [], timeZone: "Mars/Olympus" })}}/>);`);
+  await mount(
+    `createRoot(document.getElementById('root')).render(<Subject.ReportScheduler now="2026-10-17T10:00:00Z" sections={[]} defaultSchedule={${JSON.stringify({ ...SCHEDULE, sectionIds: [], timeZone: "Mars/Olympus" })}}/>);`,
+  );
   const bad = page.locator(".rs-root");
   await bad.filter({ hasText: "Choose at least one section to build the report." }).waitFor();
   await bad.locator("footer").filter({ hasText: "Choose a section · Pick a valid time zone" }).waitFor();
@@ -153,7 +157,9 @@ export async function check({ page, mount, assert }) {
   assert.equal(await page.locator('[data-demo="send-test"]').isDisabled(), true);
 
   // No recipients yet.
-  await mount(`createRoot(document.getElementById('root')).render(<Subject.ReportScheduler now="2026-10-17T10:00:00Z" defaultSchedule={${JSON.stringify({ ...SCHEDULE, recipients: [] })}}/>);`);
+  await mount(
+    `createRoot(document.getElementById('root')).render(<Subject.ReportScheduler now="2026-10-17T10:00:00Z" defaultSchedule={${JSON.stringify({ ...SCHEDULE, recipients: [] })}}/>);`,
+  );
   await page.locator(".rs-root").filter({ hasText: "No recipients yet" }).waitFor();
   await page.locator(".rs-root footer").filter({ hasText: "Add a recipient" }).waitFor();
 }
