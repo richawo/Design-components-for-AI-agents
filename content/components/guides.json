@@ -2111,18 +2111,19 @@
     "updated": "2026-10-17"
   },
   "fashion-launch-calendar": {
-    "useWhen": "Planning collection launch dates and reviewing schedule conflicts.",
-    "avoidWhen": "A publication scheduler or a promise that a launch has been executed.",
+    "useWhen": "A brand team plans a month of drops, store openings and wholesale previews, and needs each launch's readiness checklist next to its date, with dates that move by drag.",
+    "avoidWhen": "Publishing or scheduling the launch itself, or a general team calendar. This view plans and tracks readiness; your systems still execute the launch.",
     "integration": [
-      "Supply your own records through `launches`. Preserve stable keys or IDs when the data contract provides them.",
-      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+      "Pass `launches` with ISO dates, `checks` (required or optional) and optional `looks` for the colour story and sketches. `referenceDate` sets today and the opening month.",
+      "`onSchedule` fires after a drag, Alt plus arrow keys or the move buttons; the card moves at once and springs back if you throw. `onChecklistChange` works the same way for ticks.",
+      "Touch devices move launches with the day buttons in the detail panel, so page scrolling is never captured by a drag."
     ],
     "related": [
-      "hr-capacity-planner",
-      "hr-leave-approval",
-      "hr-shift-coverage"
+      "fashion-collection-line-plan",
+      "fashion-assortment-planner",
+      "date-week-agenda"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "fashion-merchandising-dashboard": {
     "useWhen": "Reviewing collection performance alongside merchandising actions.",

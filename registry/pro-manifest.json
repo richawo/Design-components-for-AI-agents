@@ -21160,68 +21160,89 @@
     "tier": "pro",
     "platform": "web",
     "category": "date-time",
-    "description": "Filter release milestones and inspect readiness before scheduling. A considered, responsive fashion workspace with typed integration points.",
+    "description": "A month of fashion drops as cards you drag between days, each with its looks as swatches and a readiness ring that fills as the checklist ticks.",
     "tags": [
       "fashion",
-      "workflow",
-      "responsive",
-      "keyboard",
-      "date-time"
+      "calendar",
+      "launch",
+      "drops",
+      "checklist",
+      "readiness",
+      "drag and drop",
+      "planning"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 980,
-    "usage": "import { LaunchCalendar } from \"@/components/design-for-ai/fashion-launch-calendar\";\n\n<LaunchCalendar />",
+    "previewHeight": 1000,
+    "usage": "import { LaunchCalendar } from \"@/components/design-for-ai/fashion-launch-calendar\";\n\n<LaunchCalendar\n  title=\"Autumn–Winter 26\"\n  launches={launches}\n  referenceDate=\"2026-10-12\"\n  onSchedule={async ({ launchId, date }) => {\n    await api.launches.move(launchId, date);\n  }}\n  onChecklistChange={async (change) => {\n    await api.launches.check(change);\n  }}\n/>",
     "props": [
+      {
+        "name": "brand",
+        "type": "string",
+        "default": "\"Ferne\"",
+        "description": "Brand in the breadcrumb and brand mark."
+      },
       {
         "name": "title",
         "type": "string",
-        "description": "Main heading.",
-        "default": "\"Collection launches\""
+        "default": "\"Autumn–Winter 26\"",
+        "description": "The entity name in the header, such as the season."
       },
       {
         "name": "subtitle",
         "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Inspect collection milestones and readiness before changing a release date.\""
+        "description": "Metadata beside the title. Defaults to the month's drop and ready counts."
       },
       {
         "name": "launches",
         "type": "CollectionLaunch[]",
-        "description": "Unique release IDs, civil YYYY-MM-DD dates from 2000 through 2100, owners and explicit readiness checks."
+        "description": "Drops: { id, name, collection, channel, date (YYYY-MM-DD), owner, checks: { id, label, complete, required, owner? }[], looks?: { garment, colour, hex, image? }[] }. The channel picks the icon."
       },
       {
         "name": "referenceDate",
         "type": "string",
-        "description": "Host-supplied today in YYYY-MM-DD, 2000–2100. Used to reject past scheduling without timezone ambiguity."
+        "default": "\"2026-10-12\"",
+        "description": "Today as YYYY-MM-DD: the opening month and the marked day."
       },
       {
         "name": "onSchedule",
-        "type": "(schedule:LaunchSchedule)=>void|Promise<void>",
-        "description": "Persist a new date after readiness and date validation. This does not publish the collection."
+        "type": "(schedule: LaunchSchedule) => void | Promise<void>",
+        "description": "Called with { launchId, date } after a drag, Alt+arrow or the move buttons. The card moves at once; throw to send it back with your message."
+      },
+      {
+        "name": "onChecklistChange",
+        "type": "(change: LaunchChecklistChange) => void | Promise<void>",
+        "description": "Called with { launchId, checkId, complete } when a check is ticked. Throw to undo the tick."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "description": "The one brand accent: selection, rings in progress and today. Defaults to the theme's ink."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Surface and ink palette."
       },
       {
-        "name": "selectMode",
-        "type": "\"custom\" | \"native\"",
-        "default": "\"custom\"",
-        "description": "Animated keyboard-accessible custom listboxes, or native platform pickers with matched 12px insets."
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:450",
-        "click:@day-20",
+        "wait:700",
+        "click:@check-email",
         "wait:900",
-        "click:@day-28",
+        "click:@drop-knit-2",
+        "wait:1000",
+        "click:@check-transfers",
         "wait:1000"
       ],
       "loop": false
@@ -21232,20 +21253,28 @@
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
         "default": "dark"
       },
       {
-        "prop": "selectMode",
-        "label": "Select menus",
-        "kind": "segmented",
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
         "options": [
-          "custom",
-          "native"
-        ],
-        "default": "custom"
+          "#f4f4f5",
+          "#ff8a4c",
+          "#8ab4ff",
+          "#e7c27d"
+        ]
       }
     ]
   },
