@@ -4301,19 +4301,20 @@
     "updated": "2026-10-17"
   },
   "chart-funnel-dots": {
-    "useWhen": "Showing discrete quantities passing through stages with explicit totals and conversion denominators.",
-    "avoidWhen": "A fabricated growth animation or percentages whose denominator changes without explanation.",
+    "useWhen": "Showing how many people make it through each step of a signup, checkout or onboarding flow, and how many drop at each step, as countable dots rather than a bar.",
+    "avoidWhen": "Flows with branches or loops, steps measured on different cohorts, or very small counts where a plain table with percentages reads better.",
     "integration": [
-      "Supply up to 8 raw unique labeled stages in authoritative order with whole finite counts from 0 to 1 trillion. These are aggregate counts; the component does not infer matching individuals or a common cohort.",
-      "A common nice integer weight limits each stage to 80 full or partial dots. The final sector represents only the actual remainder, while native copy retains the exact count, dot weight and remainder. Actual zero has no invented dots. Quantities are not silently balanced or normalized.",
-      "Inspect one nullable host-owned stage ID with accepted-only commits. Exact ratios name both the previous supplied count and the first supplied count. Zero denominators are explicitly undefined; larger later counts can truthfully exceed 100% without claiming conversion success. Untouched loading initializes at first real ready data; explicit unknown and later chosen context remain authoritative.",
-      "Current weighted geometry and counts share bounded 320ms two-way owners with coalesced native writes when the common dot weight is unchanged. A new weight settles the matching count and geometry immediately, so the new legend never describes an old animated quantity. Live reduced motion, hidden/offscreen and blocked states settle them immediately, with no idle loop. Native stage bands stack in narrow containers, retain full labels and 44px targets, and actual document/window focus fencing preserves outside or parent actions."
+      "Pass `stages` in order and `segments` as { key, label, counts } where counts[i] belongs to stages[i]. Counts are aggregates per step; the chart doesn’t assume the same individuals at every step.",
+      "One people-per-dot weight is shared by every segment, picked from `maxDots` and the largest count, so switching segments compares honestly. The last dot of a step is a wedge for the remainder rather than a rounded whole.",
+      "Read the chosen step from `onSelect` to drive a detail panel, or control `selected`. The headline shows that step’s share of step 1; each row shows the share kept from the step before and how many dropped.",
+      "Keep `unit` in step with your noun (visitors, orders, seats). Use `status` and `onRetry` for loading and failed queries."
     ],
     "related": [
-      "chart-waffle",
-      "chart-waterfall-bridge"
+      "chart-sankey-paths",
+      "chart-calendar-heatmap",
+      "chart-revenue-trend"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "data-pivot-configurator": {
     "useWhen": "Letting people slice a modest dataset two ways at once, such as revenue by region and quarter, compare cells at a glance and open any cell to see the records behind it.",
