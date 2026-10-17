@@ -22622,73 +22622,111 @@
   },
   {
     "slug": "finance-cashflow-dashboard",
-    "name": "Cash Position Dashboard",
+    "name": "Cash Flow Forecast",
     "tier": "pro",
     "platform": "web",
     "category": "app",
-    "description": "Account balances and cash movements with period and account inspection. A considered, responsive finance workspace with typed integration points.",
+    "description": "A 13-week cash flow forecast: the balance over weekly in and out bars, a hatched floor, the big movements, and payments you can push a week to close the dip.",
     "tags": [
       "finance",
-      "workflow",
-      "responsive",
-      "keyboard",
-      "app"
+      "cash flow",
+      "treasury",
+      "forecast",
+      "dashboard",
+      "chart",
+      "runway"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1120,
-    "usage": "import { CashflowDashboard } from \"@/components/design-for-ai/finance-cashflow-dashboard\";\n\n<CashflowDashboard />",
+    "previewHeight": 1000,
+    "usage": "import { CashflowDashboard } from \"@/components/design-for-ai/finance-cashflow-dashboard\";\n\n<CashflowDashboard\n  openingBalanceMinor={18234000}\n  startDate=\"2026-10-19\"\n  floorMinor={6000000}\n  movements={scheduledAndExpected}\n  scope=\"All accounts\"\n  currency=\"GBP\"\n  onMoveMovement={(id, date) => api.reschedulePayment(id, date)}\n/>",
     "props": [
       {
-        "name": "title",
-        "type": "string",
-        "description": "Main heading.",
-        "default": "\"Cash position\""
+        "name": "openingBalanceMinor",
+        "type": "number",
+        "default": "18234000",
+        "description": "Cash across the accounts in scope at the start of the first week, in minor units."
       },
       {
-        "name": "subtitle",
+        "name": "startDate",
         "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Reconcile opening balances with recorded movements. Inspect the account behind every total.\""
+        "default": "\"2026-10-19\"",
+        "description": "ISO date of the first week’s Monday. Weeks run Monday to Sunday."
       },
       {
-        "name": "accounts",
-        "type": "CashAccount[]",
-        "description": "Unique accounts with safe signed opening balances by period in two-decimal minor units."
+        "name": "defaultWeeks",
+        "type": "6 | 13",
+        "default": "13",
+        "description": "Weeks shown on first render; the toolbar switches between 6 and 13."
+      },
+      {
+        "name": "floorMinor",
+        "type": "number",
+        "default": "6000000",
+        "description": "The balance the business doesn’t want to go below. Drawn as a dashed line over a hatched zone; weeks under it turn the line and the pill amber."
       },
       {
         "name": "movements",
         "type": "CashMovement[]",
-        "description": "Unique posted movements with signed two-decimal amounts. Positive adds cash; negative reduces cash."
+        "description": "Scheduled and expected cash: { id, date (ISO), label, counterparty?, amountMinor (signed: in positive, out negative), movable? }. Movable payments out can be pushed a week. Invalid calendar dates, repeated IDs and non-integer amounts are reported instead of drawn."
+      },
+      {
+        "name": "largeThresholdMinor",
+        "type": "number",
+        "default": "1000000",
+        "description": "Movements at least this large, either way, are listed beside the chart."
+      },
+      {
+        "name": "scope",
+        "type": "string",
+        "default": "\"All accounts\"",
+        "description": "What the figures cover; shown in the toolbar."
       },
       {
         "name": "currency",
         "type": "string",
-        "description": "Single ISO currency shared by all accounts. Mixed currencies must be converted by the host."
+        "default": "\"GBP\"",
+        "description": "ISO 4217 code. Amounts are minor units of this currency."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Locale for money and dates."
+      },
+      {
+        "name": "onMoveMovement",
+        "type": "(id: string, date: string) => void | Promise<void>",
+        "description": "Persists a pushed (or restored) payment date. The chart reshapes at once; reject to move it back and show the message."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "description": "The one accent: the balance line, the selected week and the horizon picker. Defaults to the theme’s ink."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Surface palette."
       },
       {
-        "name": "selectMode",
-        "type": "\"custom\" | \"native\"",
-        "default": "\"custom\"",
-        "description": "Animated keyboard-accessible custom listboxes, or native platform pickers with matched 12px insets."
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:400",
-        "click:@account-0",
-        "wait:450",
-        "click:@movement-1",
-        "wait:1100"
+        "wait:700",
+        "click:@push-rent",
+        "wait:1500",
+        "click:@week-11",
+        "wait:1300"
       ],
       "loop": false
     },
@@ -22704,14 +22742,33 @@
         "default": "dark"
       },
       {
-        "prop": "selectMode",
-        "label": "Select menus",
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#8ea2ff",
+          "#c6f36d",
+          "#5eead4"
+        ]
+      },
+      {
+        "prop": "defaultWeeks",
+        "label": "Horizon",
         "kind": "segmented",
         "options": [
-          "custom",
-          "native"
+          {
+            "value": 6,
+            "label": "6 weeks"
+          },
+          {
+            "value": 13,
+            "label": "13 weeks"
+          }
         ],
-        "default": "custom"
+        "default": 13,
+        "remount": true
       }
     ]
   },

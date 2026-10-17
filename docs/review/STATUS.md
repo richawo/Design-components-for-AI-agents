@@ -1,6 +1,6 @@
 # Review status
 
-150 components are rebuilt (or, for a few, polished), verified and committed. For each: whether its demo video
+151 components are rebuilt (or, for a few, polished), verified and committed. For each: whether its demo video
 needs re-recording, whether its poster is current, and the state of its browser regression probe.
 
 - **Video**: `new` means `public/previews/<slug>.mp4` still shows the old version. Re-record serially on a quiet machine:
@@ -139,17 +139,18 @@ needs re-recording, whether its poster is current, and the state of its browser 
 | `hr-policy-acknowledgement` | new | current | rewritten, passes on suite runner with source fixtures; Next route check pending |
 | `hr-shift-coverage` | new | current | rewritten, passes |
 
-## Finance suite (8)
+## Finance suite (9)
 
 | Slug | Video | Poster | Probe |
 | --- | --- | --- | --- |
 | `finance-budget-variance` | new | current | rewritten, passes against Next; dark/light accessibility and responsive/state captures pass |
+| `finance-cashflow-dashboard` | new | current | rewritten, passes on Next; accessibility, responsive/state/entrance and selected-week list geometry pass |
 | `finance-close-checklist` | new | stale | rewritten, passes |
 | `finance-expense-review` | new | stale | rewritten, passes |
 | `finance-invoice-composer` | new | current | rewritten, passes on suite runner with source fixtures; Next route check pending |
 | `finance-payment-run` | new | current | rewritten, passes on suite runner with source fixtures; Next route check pending |
 | `finance-receivables-aging` | new | current | rewritten, passes on suite runner with source fixtures; Next route check pending |
-| `finance-reconciliation` | new | stale | no pro-50 probe; pro-industry-probe and pro-demo-probe still test the old UI |
+| `finance-reconciliation` | new | current | pro-industry and demo probes pass on Next; exact currency and matched selection fixed |
 | `finance-scenario-forecast` | new | current | rewritten, passes on suite runner with source fixtures; Next route check pending |
 
 ## Fashion suite (4)
@@ -224,7 +225,7 @@ needs re-recording, whether its poster is current, and the state of its browser 
 | `text-outline-fill` | new | current |  |
 | `text-path-typesetter` | new | current |  |
 
-## Component bugs the new probes found
+## Component bugs the new probes found (all eight resolved)
 
 1. `legal-evidence-index`: an exhibit with no hashed hand-offs says "Matches at all 0 recorded hand-offs" and counts as intact. The footer says broken exhibits are flagged in the manifest, but the payload has no flag.
 2. `saas-customer-health`: `renewsOn: "not-a-date"` crashes with RangeError; `trend: []` draws NaN paths and "last 0 weeks".
@@ -241,4 +242,4 @@ needs re-recording, whether its poster is current, and the state of its browser 
 - `tests/browser/pro-native-themes-probe.mjs` (fashion-exchange-selector no longer has native inputs).
 - `tests/browser/preview-cascade-probe.mjs` (uses the old fashion-launch-calendar h2 and `data-demo="day-20"`).
 - `tests/browser/audit-trail-polish-probe.mjs` (old date-range panel and diff headings).
-- `tests/browser/pro-industry-probe.mjs` and `tests/browser/pro-demo-probe.mjs` (old finance-reconciliation).
+- Reconciliation cross-cutting probes updated and passing on Next.

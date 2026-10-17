@@ -2219,18 +2219,21 @@
     "updated": "2026-10-17"
   },
   "finance-cashflow-dashboard": {
-    "useWhen": "Reviewing supplied cash balances, movements and near-term context.",
-    "avoidWhen": "A bank connection or assurance that displayed balances are current.",
+    "useWhen": "Looking ahead 6 or 13 weeks at cash: the closing balance against a minimum floor, weekly money in and out, the large movements coming up, and what pushing a payment does to the low point.",
+    "avoidWhen": "Long-range runway planning with growth and hiring drivers, or historical cash reporting by account; use the scenario forecast or account statements for those.",
     "integration": [
-      "Supply your own records through `accounts`, `movements`. Preserve stable keys or IDs when the data contract provides them.",
-      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+      "Pass `openingBalanceMinor`, the Monday `startDate` and `movements` (signed minor units). Weeks run Monday to Sunday and the balance runs forward from the opening figure.",
+      "Set `floorMinor` to the balance the business wants to keep; weeks under it turn the line and status amber.",
+      "Mark payments the business controls with `movable: true`. `onMoveMovement(id, date)` persists a pushed or restored date; reject with an `Error` to move it back and show why.",
+      "`largeThresholdMinor` decides what is listed beside the chart; everything still counts in the weekly bars.",
+      "Start and movement dates must be valid calendar days, IDs unique and monetary values whole safe-integer minor units. Bad records produce an alert rather than chart geometry."
     ],
     "related": [
-      "app-permission-matrix",
-      "commerce-operations-dashboard",
-      "fashion-merchandising-dashboard"
+      "finance-scenario-forecast",
+      "finance-payment-run",
+      "finance-receivables-aging"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "finance-close-checklist": {
     "useWhen": "Running a month-end close as a dependency-aware checklist: owners, business-day due dates, tasks that unlock as their blockers finish, and a controller sign-off at the end.",

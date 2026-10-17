@@ -34,6 +34,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 4: reconciliation’s industry workflow and demo probes now exercise split matches, failed saves and retained selections against Next. Selected matched rows retain their matched labels, and exact currency formatting preserves the last minor unit at the safe integer boundary. Both-theme accessibility, 320/390/768/1440 captures, all controls and the refreshed poster pass. Task 2 has eight stale posters left.
 
+- Task 6: finished Cash Flow Forecast and removed its parked patch. Failed moves retain their original dates, independent saves remain pending separately, and the desktop list follows the selected week. Its Next regression, live demo, controls, both-theme accessibility, responsive/error-state captures and refreshed poster pass. Its new film remains in task 1.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -51,7 +53,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Browser checks: `node scripts/check-component.mjs <slug> --base=http://localhost:3100 --no-video --keep-going`
   (screenshots at 1440/768/390 and every control flip; read the screenshots it writes to `test-results/check/<slug>/`).
 
-## 1. Re-record demo videos (134 components)
+## 1. Re-record demo videos (135 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -102,7 +104,7 @@ Slugs:
 `media-trim-timeline`, `navigation-context-rail`, `navigation-lens-dock`, `navigation-stacked-tabs`
 `pixel-halftone-image`, `portfolio-project-reel`, `pricing-seat-simulator`, `pricing-usage-calculator`
 `social-proof-case-ledger`, `text-number-odometer`, `text-optical-weight`, `text-outline-fill`
-`text-path-typesetter`, `finance-budget-variance`
+`text-path-typesetter`, `finance-budget-variance`, `finance-cashflow-dashboard`
 
 ## 2. Retake 8 stale posters
 
@@ -211,7 +213,7 @@ see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 `pricing-usage-calculator`, `social-proof-case-ledger`, `text-number-odometer`, `text-optical-weight`
 `text-outline-fill`, `text-path-typesetter`
 
-## 6. Finish parked rebuilds (eight remaining)
+## 6. Finish parked rebuilds (seven remaining)
 
 Rebuilt but not shipped; the live components are still the old versions. Each lives in the Pro repo at
 `registry/pro/_wip/<slug>/` with `component.patch`, `guide.json` and sometimes `probe.mjs`. To resume one:
@@ -235,7 +237,7 @@ run the checks, and delete `_wip/<slug>` in the Pro commit that ships it.
 | scroll-horizontal-showcase | visual check; live demo check; poster (scroll probe passed) |
 | scroll-expanding-mosaic | poster captured blank; scroll probe's change and reversal checks not passing on final code |
 | finance-budget-variance | Completed 17 October: Next probe, dark/light accessibility, responsive and entrance/state captures, live demo and refreshed poster pass. |
-| finance-cashflow-dashboard | probe not rerun after a test fix; the last change (list scrolls to selected week) uncaptured |
+| finance-cashflow-dashboard | Completed 17 October: weekly balance and in/out bars, movable payments, independent pending saves, invalid-data guards, selected-week list geometry, Next probe/demo, both-theme accessibility, responsive/state/entrance captures and refreshed poster pass. |
 
 ## 7. Continue the review (about 40 components, then 12 blocks)
 
