@@ -29354,219 +29354,194 @@
     "tier": "pro",
     "platform": "web",
     "category": "media",
-    "description": "A precise audio range editor with tactile in/out brackets, real selected-range playback, keyboard steps and a host-owned application callback.",
+    "description": "An audio trim editor where the waveform leads: drag in and out grips that snap to pauses, the clip lifts out of the recording and its length counts live.",
     "tags": [
       "audio",
       "trim",
-      "timeline",
       "waveform",
+      "timeline",
       "media editor",
-      "range selection"
+      "podcast",
+      "clip"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1100,
-    "usage": "import { MediaTrimTimeline } from \"@/components/design-for-ai/media-trim-timeline\";\n\n<MediaTrimTimeline\n  media={recording}\n  range={range}\n  onRangeChange={setRange}\n  onApplyRange={(selection, signal) => renderClip(selection, { signal })}\n/>",
+    "previewHeight": 720,
+    "usage": "import { MediaTrimTimeline } from \"@/components/design-for-ai/media-trim-timeline\";\n\n<MediaTrimTimeline\n  media={{ id: take.id, title: take.title, src: take.url, duration: take.seconds, peaks: take.peaks, meta: \"WAV · 48 kHz · mono\" }}\n  defaultRange={{ start: 9.1, end: 31.2 }}\n  onRangeChange={setDraft}\n  onApply={(range, signal) => api.saveClip(take.id, range, { signal })}\n/>\n\n// peaks: 0–1 amplitudes spread evenly over the recording, e.g. from an audio worker or your transcoder.",
     "props": [
       {
         "name": "media",
-        "type": "TrimRecording",
-        "description": "Host recording id/title/src, provisional positive duration and optional normalized waveform amplitudes. Native metadata is authoritative; no supplied waveform means an honest empty waveform."
-      },
-      {
-        "name": "heading",
-        "type": "string",
-        "default": "\"The final cut\"",
-        "description": "Editor heading."
-      },
-      {
-        "name": "description",
-        "type": "string",
-        "default": "\"Keep the thought. Lose the extra seconds.\"",
-        "description": "Short editing context."
-      },
-      {
-        "name": "range",
-        "type": "TrimRange",
-        "description": "Optional controlled start/end in seconds, bounded to actual media. Pair with onRangeChange; missing handler makes range editing read-only while available preview/apply remain usable."
+        "type": "{ id: string; title: string; src?: string; duration: number; peaks: number[]; meta?: string } | null",
+        "default": "a 48.6 s interview take",
+        "description": "The recording. peaks are 0–1 amplitudes evenly spaced over it (20–50 a second reads well). Without src the playhead runs silently on a clock. null shows the empty state."
       },
       {
         "name": "defaultRange",
-        "type": "TrimRange",
-        "description": "Initial uncontrolled range. When omitted, uses the recording bounds."
+        "type": "{ start: number; end: number }",
+        "default": "a clip from 9 s to 31 s, cut in breaths",
+        "description": "Starting in and out points in seconds. Reset returns here."
       },
       {
-        "name": "minSpan",
+        "name": "minLength",
         "type": "number",
-        "default": "0.4",
-        "description": "Minimum separation in seconds. A shorter recording permits only a full-length selection."
+        "default": "1",
+        "description": "Shortest clip, in seconds."
       },
       {
         "name": "step",
         "type": "number",
         "default": "0.1",
-        "description": "Positive representable pointer/keyboard increment of at least one microsecond. Exact entry accepts any bounded time up to six decimals; it is not restricted to the gesture increment."
+        "description": "Arrow-key nudge in seconds. Shift and Page Up/Down move a whole second."
+      },
+      {
+        "name": "snapToPauses",
+        "type": "boolean",
+        "default": "true",
+        "description": "Dragged edges stick to pauses in the speech (quiet runs ≥ 0.28 s) within 10px; pauses are dotted on the ruler."
+      },
+      {
+        "name": "onRangeChange",
+        "type": "(range: { start: number; end: number }) => void",
+        "description": "Called after each finished change: a drag released, a key step, or I/O at the playhead."
+      },
+      {
+        "name": "onApply",
+        "type": "(range: { start: number; end: number }, signal: AbortSignal) => void | Promise<void>",
+        "description": "Saves the clip. The button shows Saving, then Saved; a rejection shows Try again and keeps the range. The signal aborts on unmount or a newer save."
+      },
+      {
+        "name": "applyLabel",
+        "type": "string",
+        "default": "\"Save clip\"",
+        "description": "Primary button label."
+      },
+      {
+        "name": "onPlaybackChange",
+        "type": "(playing: boolean) => void",
+        "description": "Called when preview playback starts or stops."
       },
       {
         "name": "status",
-        "type": "\"ready\" | \"loading\" | \"unavailable\"",
+        "type": "\"ready\" | \"loading\" | \"error\"",
         "default": "\"ready\"",
-        "description": "Host-owned availability. Range and authored field drafts survive temporary loading/unavailable states."
+        "description": "Host state for decoding the recording. Loading and error keep the waveform's height."
       },
       {
-        "name": "error",
+        "name": "errorMessage",
         "type": "string",
-        "description": "Host recovery or validation text shown without discarding the selected range."
+        "default": "\"The file is there, but its audio couldn’t be decoded. …\"",
+        "description": "Body copy for the error state."
       },
       {
-        "name": "disabled",
-        "type": "boolean",
-        "default": "false",
-        "description": "Disables editing, preview and apply; stops active gestures and native playback."
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Shows Try again in the error state."
+      },
+      {
+        "name": "onChooseMedia",
+        "type": "() => void",
+        "description": "Shows Choose a file in the empty state."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#f5c542\"",
+        "description": "The trim bracket, the played part of the clip, edge time chips and focus rings."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Neutral graphite and white chrome; colour is reserved for actual feature content and semantic data accents."
-      },
-      {
-        "name": "accent",
-        "type": "string",
-        "default": "\"#e6b782\"",
-        "description": "Selection tint and tactile brackets."
-      },
-      {
-        "name": "emptyTitle",
-        "type": "string",
-        "default": "\"A clean slate\"",
-        "description": "Heading before a recording is supplied."
-      },
-      {
-        "name": "emptyDescription",
-        "type": "string",
-        "default": "\"Choose a recording to set its in and out points.\"",
-        "description": "Useful empty-state guidance."
-      },
-      {
-        "name": "onRangeChange",
-        "type": "(range: TrimRange) => void",
-        "description": "Bounded change request. Controlled rejection never changes actual displayed bounds."
-      },
-      {
-        "name": "onRangeCommit",
-        "type": "(range: TrimRange) => void",
-        "description": "Only accepted changed values commit after pointer release or accepted keyboard/entry actions. Cancellation and rejected requests never commit."
-      },
-      {
-        "name": "onApplyRange",
-        "type": "(selection: TrimSelection, signal: AbortSignal) => void | Promise<void>",
-        "description": "Host-owned rendering/export/application receives mediaId/start/end/actual duration and AbortSignal. Pending retains focus; range/source/handler replacement aborts stale work. Keep handler identity stable during one operation; no encoded export is invented."
-      },
-      {
-        "name": "onPlaybackChange",
-        "type": "(playing: boolean) => void",
-        "description": "Observes real native playback and pause state; never a simulated clock."
-      },
-      {
-        "name": "onRetry",
-        "type": "() => void",
-        "description": "Optional host recovery alongside native preview reload."
-      },
-      {
-        "name": "onChooseMedia",
-        "type": "() => void",
-        "description": "Optional real host selection action in the empty state."
+        "description": "Graphite or paper chrome."
       },
       {
         "name": "className",
         "type": "string",
         "default": "\"\"",
-        "description": "Optional root classes; fits its container up to 800px."
+        "description": "Classes on the root."
       }
     ],
     "controls": [
       {
-        "prop": "heading",
-        "label": "Editor heading",
-        "kind": "text",
-        "default": "The final cut"
+        "prop": "accent",
+        "label": "Bracket",
+        "kind": "color",
+        "default": "#f5c542",
+        "options": [
+          "#f5c542",
+          "#f4f4f5",
+          "#5eead4",
+          "#fb7185"
+        ]
       },
       {
         "prop": "theme",
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
         "default": "dark"
       },
       {
-        "prop": "minSpan",
-        "label": "Minimum length",
+        "prop": "minLength",
+        "label": "Shortest clip",
         "kind": "slider",
-        "min": 0.1,
-        "max": 2,
-        "step": 0.1,
+        "min": 0.5,
+        "max": 30,
+        "step": 0.5,
         "unit": "s",
-        "default": 0.4
+        "default": 1
       },
       {
-        "prop": "step",
-        "label": "Fine step",
-        "kind": "segmented",
-        "options": [
-          0.05,
-          0.1,
-          0.25,
-          0.5
-        ],
-        "default": 0.1
-      },
-      {
-        "prop": "accent",
-        "label": "Selection tint",
-        "kind": "color",
-        "default": "#e6b782",
-        "options": [
-          "#e6b782",
-          "#e2e4e7",
-          "#afc1b4"
-        ]
-      },
-      {
-        "prop": "disabled",
-        "label": "Disabled",
+        "prop": "snapToPauses",
+        "label": "Snap to pauses",
         "kind": "toggle",
-        "default": false
+        "default": true
+      },
+      {
+        "prop": "applyLabel",
+        "label": "Button label",
+        "kind": "text",
+        "default": "Save clip"
       },
       {
         "prop": "status",
-        "label": "Availability",
+        "label": "Recording",
         "kind": "action",
         "options": [
           "ready",
           "loading",
-          "unavailable"
+          "error"
         ]
       }
     ],
     "demo": {
       "steps": [
-        "click:@trim-start",
-        "key:PageUp",
         "wait:300",
-        "click:@trim-end",
+        "click:@play",
+        "wait:1300",
+        "click:@trim-out",
         "key:PageDown",
-        "wait:300",
+        "key:PageDown",
+        "key:PageDown",
+        "wait:200",
+        "click:@trim-in",
+        "key:PageUp",
+        "key:PageUp",
+        "wait:200",
         "click:@trim-apply",
-        "wait:500",
-        "click:@trim-reset",
-        "wait:550"
+        "wait:1100"
       ],
       "loop": false
     },

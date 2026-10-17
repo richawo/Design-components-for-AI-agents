@@ -3721,17 +3721,19 @@
     "updated": "2026-10-17"
   },
   "media-trim-timeline": {
-    "useWhen": "Choosing an exact in/out range from real audio, using a supplied measured waveform alongside precise time entry.",
-    "avoidWhen": "Encoding an audio file without a host export service, inspecting a video filmstrip or showing a decorative scrubber.",
+    "useWhen": "Cutting a clip out of a recording: a quote from an interview, a podcast highlight, a voice note to share, or a ringtone, where the cut should land in a breath rather than mid-word.",
+    "avoidWhen": "Multi-track editing, fades and effects, video frame-accurate trimming, or recordings with no waveform data available.",
     "integration": [
-      "Supply a real source and measured waveform data when available. Native duration defines the trim bounds; keyboard steps and exact time entry serve different precision needs.",
-      "Use onApplyRange with its AbortSignal for host processing. Real playback follows native media events, and rejected controlled ranges must remain visibly unchanged."
+      "Pass media with duration and peaks (0–1 amplitudes spread evenly over the file, 20–50 a second); compute them once on upload and cache them. Add src for real playback, otherwise the playhead runs silently.",
+      "Keep the result of onRangeChange as a draft and save it in onApply(range, signal); reject to show Try again with the range kept. The signal aborts on unmount or a newer save.",
+      "Turn snapToPauses off for music, where quiet runs aren’t natural cut points, and raise minLength for formats with a minimum duration."
     ],
     "related": [
-      "media-audio-transport",
-      "input-detent-dial"
+      "media-crop-workbench",
+      "editor-storyboard-strip",
+      "media-transcript-player"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "media-spatial-collection": {
     "useWhen": "Browsing a small music or media collection where the objects themselves matter: album sleeves in depth with the record sliding out, a tracklist beside it and an equally good list view.",
