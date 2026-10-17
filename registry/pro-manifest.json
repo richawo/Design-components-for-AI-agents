@@ -39218,73 +39218,136 @@
   },
   {
     "slug": "saas-workspace-dashboard",
-    "name": "Workspace Command Centre",
+    "name": "Workspace Overview",
     "tier": "pro",
     "platform": "web",
     "category": "app",
-    "description": "Workspace activity, adoption and projects with a real team filter. A considered, responsive SaaS workspace with typed integration points.",
+    "description": "A SaaS workspace home: KPI tiles that double as chart tabs, a period-over-period trend that draws, plan usage meters, top dashboards and live team activity.",
     "tags": [
       "saas",
-      "workflow",
-      "responsive",
-      "keyboard",
-      "app"
+      "dashboard",
+      "kpi",
+      "analytics",
+      "chart",
+      "plan usage",
+      "activity feed",
+      "admin"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1170,
-    "usage": "import { WorkspaceDashboard } from \"@/components/design-for-ai/saas-workspace-dashboard\";\n\n<WorkspaceDashboard />",
+    "previewHeight": 1240,
+    "usage": "import { WorkspaceDashboard } from \"@/components/design-for-ai/saas-workspace-dashboard\";\n\nexport default function Home() {\n  return (\n    <WorkspaceDashboard\n      workspace=\"Kestrel\"\n      today=\"2026-10-17\"\n      now={new Date().toISOString()}\n      metrics={[\n        { id: \"users\", label: \"Active users\", daily: stats.dau, rollup: \"mean\" },\n        { id: \"latency\", label: \"Median query time\", daily: stats.p50Ms, rollup: \"mean\", format: \"duration\", better: \"down\" },\n      ]}\n      plan={{ name: \"Business plan\", renewsOn: \"2026-11-01\", meters: usage.meters }}\n      dashboards={topDashboards}\n      activity={auditLog.latest}\n      onOpenDashboard={(id) => router.push(`/dashboards/${id}`)}\n      onManagePlan={() => router.push(\"/settings/limits\")}\n    />\n  );\n}",
     "props": [
       {
-        "name": "title",
+        "name": "workspace",
         "type": "string",
-        "description": "Main heading.",
-        "default": "\"Workspace overview\""
+        "default": "\"Kestrel\"",
+        "description": "Workspace name for the breadcrumb and its initial mark."
       },
       {
-        "name": "subtitle",
+        "name": "metrics",
+        "type": "OverviewMetric[]",
+        "description": "Headline metrics: { id, label, daily (one value per day ending today), rollup: \"sum\" | \"mean\" | \"last\", format?: \"count\" | \"duration\" | \"percent\", better?: \"up\" | \"down\" }. Each becomes a KPI tile and a chart tab; 180 days of history gives every range a comparison."
+      },
+      {
+        "name": "defaultMetricId",
         "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Connect team adoption, daily activity and project progress in one scoped operational view.\""
+        "description": "Metric charted first. Defaults to the first metric."
       },
       {
-        "name": "teams",
-        "type": "WorkspaceTeam[]",
-        "description": "Unique teams with safe non-negative counts, active members no greater than members, and one activity count per supplied day."
+        "name": "range",
+        "type": "\"7d\" | \"30d\" | \"90d\"",
+        "description": "Controlled range. Pair with onRangeChange."
       },
       {
-        "name": "days",
-        "type": "string[]",
-        "description": "Ordered human-readable day labels shared by each team’s activity series."
+        "name": "defaultRange",
+        "type": "\"7d\" | \"30d\" | \"90d\"",
+        "default": "\"30d\"",
+        "description": "Initial range when uncontrolled."
       },
       {
-        "name": "projects",
-        "type": "WorkspaceProject[]",
-        "description": "Unique projects with valid team IDs, task counts and an accountable owner."
+        "name": "onRangeChange",
+        "type": "(range: OverviewRange) => void",
+        "description": "Called when the person picks a range."
+      },
+      {
+        "name": "today",
+        "type": "string",
+        "default": "\"2026-10-17\"",
+        "description": "ISO date of the last value in every daily series; dates on the axis count back from it."
+      },
+      {
+        "name": "now",
+        "type": "string",
+        "description": "ISO instant activity times are measured from. Pass the current time."
+      },
+      {
+        "name": "plan",
+        "type": "WorkspacePlan",
+        "description": "{ name, renewsOn, meters: { id, label, used, limit, unit? }[] }. Meters turn amber at 75% and red at 90%."
+      },
+      {
+        "name": "dashboards",
+        "type": "DashboardUsage[]",
+        "description": "{ id, name, owner, daily views }. Ranked by views in the selected range with the change against the range before."
+      },
+      {
+        "name": "activity",
+        "type": "ActivityEvent[]",
+        "description": "Newest first: { id, actor, action, target, detail?, area, at }."
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "default": "false",
+        "description": "Shows skeletons; the entrance plays once data lands."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Number and date formatting."
+      },
+      {
+        "name": "onOpenDashboard",
+        "type": "(id: string) => void",
+        "description": "Opens a dashboard from the table."
+      },
+      {
+        "name": "onManagePlan",
+        "type": "() => void",
+        "description": "Shows the plan footer link when supplied."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "description": "Chart line, selected metric and focus. Defaults to the theme’s ink."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Surface and ink palette."
       },
       {
-        "name": "selectMode",
-        "type": "\"custom\" | \"native\"",
-        "default": "\"custom\"",
-        "description": "Animated keyboard-accessible custom listboxes, or native platform pickers with matched 12px insets."
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:350",
-        "click:@day-4",
-        "wait:550",
-        "click:@project-1",
-        "wait:1300"
+        "wait:900",
+        "click:@range-90d",
+        "wait:900",
+        "click:@kpi-latency",
+        "wait:700",
+        "hover:@chart:0.86,0.5",
+        "wait:1400"
       ],
       "loop": false
     },
@@ -39300,14 +39363,57 @@
         "default": "dark"
       },
       {
-        "prop": "selectMode",
-        "label": "Select menus",
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#7aa2ff",
+          "#ff8a4c"
+        ]
+      },
+      {
+        "prop": "range",
+        "label": "Range",
         "kind": "segmented",
         "options": [
-          "custom",
-          "native"
+          "7d",
+          "30d",
+          "90d"
         ],
-        "default": "custom"
+        "default": "30d"
+      },
+      {
+        "prop": "defaultMetricId",
+        "label": "Charted metric",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "users",
+            "label": "Users"
+          },
+          {
+            "value": "views",
+            "label": "Views"
+          },
+          {
+            "value": "queries",
+            "label": "Queries"
+          },
+          {
+            "value": "latency",
+            "label": "Latency"
+          }
+        ],
+        "default": "users",
+        "remount": true
+      },
+      {
+        "prop": "loading",
+        "label": "Loading",
+        "kind": "toggle",
+        "default": false
       }
     ]
   },

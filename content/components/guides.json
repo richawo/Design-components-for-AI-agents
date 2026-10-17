@@ -3119,18 +3119,20 @@
     "updated": "2026-10-17"
   },
   "saas-workspace-dashboard": {
-    "useWhen": "A workspace overview connecting supplied usage, setup and activity.",
-    "avoidWhen": "An operating status authority disconnected from the application's actual data.",
+    "useWhen": "The home screen of a SaaS workspace: a few headline metrics compared with the previous period, a trend you can read day by day, plan usage against limits, the most used dashboards and what the team just did.",
+    "avoidWhen": "You need an editable report builder, a single deep chart with many series (use chart-revenue-trend), or status monitoring with alerting.",
     "integration": [
-      "Supply your own records through `teams`, `days`, `projects`. Preserve stable keys or IDs when the data contract provides them.",
-      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+      "Each metric is { id, label, daily, rollup, format?, better? }: one value per day ending on `today`. 180 days of history gives every range a previous period to compare with; shorter history reads “No prior period” rather than inventing one.",
+      "`rollup` decides the KPI figure (sum for events, mean for people per day or durations, last for a running total) and `better: \"down\"` makes a falling figure read as good news.",
+      "The range can be controlled with `range` and `onRangeChange` or left to `defaultRange`. `plan.meters` turn amber at 75% and red at 90%; `onManagePlan` shows the footer link and `onOpenDashboard` makes table rows open.",
+      "Set `loading` while data is on its way: skeletons hold the layout and the count-up entrance plays once it lands."
     ],
     "related": [
-      "saas-access-requests",
-      "saas-audit-trail",
-      "saas-customer-health"
+      "saas-usage-policy",
+      "saas-customer-health",
+      "dashboard-kpi-cards"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "scroll-background-wipe": {
     "useWhen": "Changing a decorative background as a readable section progresses.",
