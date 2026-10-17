@@ -48,6 +48,7 @@ export async function check({ page, mount, assert }) {
   await all.check();
   assert.equal(await all.evaluate((el) => el.indeterminate), false);
   assert.equal(await atlas.isChecked(), false);
+  await root.getByText("into the reserve", {exact:false}).waitFor();
   assert.match(await spoken(root), /£6,651\.75 into the reserve/);
   assert.match(await footer(), /5 bills · £53,492\.00/);
 
