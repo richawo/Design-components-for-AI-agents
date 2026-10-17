@@ -3797,17 +3797,17 @@
     "updated": "2026-10-13"
   },
   "media-caption-styler": {
-    "useWhen": "Tuning supplied caption text against footage or a still with safe-area and readability guides.",
-    "avoidWhen": "A speech transcription service, an automatic subtitle translator or a complete video export engine.",
+    "useWhen": "A video or social tool where people set caption type, placement and panel over their own footage and need to see wrapping, safe-area crossings and contrast before they export.",
+    "avoidWhen": "Transcribing speech, translating subtitles, timing captions to audio or rendering them into a video file.",
     "integration": [
-      "Supply caption text and the visual context being reviewed. Match the configurable frame aspect ratio to the actual output, including portrait footage; the saved style uses a 1080 px reference width.",
-      "Expose wrapping, size and safe-area controls without relying on hover. Missing footage should preserve a useful text and style preview."
+      "Pass the footage as media (image or video with alt) and set aspectRatio and safeInset to match the real output; the saved snapshot carries both with a 1080 px reference style.",
+      "Control caption, style and guide visibility only if your app owns them; without the matching handler each becomes read-only. onSave receives an AbortSignal that any edit aborts, and Copy CSS falls back to a selectable field when the clipboard is blocked."
     ],
     "related": [
       "media-story-deck",
       "media-audio-transport"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "hero-layout-playground": {
     "useWhen": "Demonstrating how actual supplied content reflows as a continuous layout boundary changes.",

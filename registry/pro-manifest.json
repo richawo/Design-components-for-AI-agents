@@ -27696,7 +27696,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "editors",
-    "description": "An actual caption style editor previews text over supplied footage, with measured wrapping, safe-area guides, panel contrast and usable CSS output.",
+    "description": "A caption style editor over real footage: the caption restyles live, a safe-area guide draws and warns, and panel contrast is graded as you go.",
     "tags": [
       "captions",
       "typography",
@@ -27738,7 +27738,7 @@
       {
         "name": "value",
         "type": "CaptionStyle",
-        "description": "Optional controlled style: size, weight, font role, alignment, placement, width, text color, treatment and opaque box color."
+        "description": "Optional controlled style: size, weight, font role (sans, serif, mono), alignment, placement, width, text color, treatment and opaque box color."
       },
       {
         "name": "defaultValue",
@@ -27753,7 +27753,7 @@
       {
         "name": "onSave",
         "type": "(snapshot: CaptionSnapshot, signal: AbortSignal) => void | Promise<void>",
-        "description": "Host-owned acknowledgement of caption/style/media ID, 1080 px reference width and safe inset. Edits, media, handler, disabled or lifecycle changes abort stale requests."
+        "description": "Host save of the caption, style, media id, 1080 px reference, aspect ratio and safe inset, with an AbortSignal. Any edit, media change or unmount aborts it; a rejection shows its message. Without it the Save button is hidden."
       },
       {
         "name": "disabled",
@@ -27792,7 +27792,7 @@
       {
         "name": "labels",
         "type": "Partial<CaptionLabels>",
-        "description": "Heading, fields, safe-area, contrast, media, clipboard and save-state copy."
+        "description": "Copy for the toolbar, inspector, safe-area status, contrast, media states, copy and save feedback."
       },
       {
         "name": "className",
@@ -27803,13 +27803,15 @@
     ],
     "demo": {
       "steps": [
-        "click:@caption-left",
-        "wait:200",
-        "click:@caption-size",
-        "key:ArrowRight",
-        "key:ArrowRight",
+        "wait:400",
+        "click:@caption-position-top",
+        "wait:700",
+        "click:@caption-font-serif",
+        "wait:700",
+        "click:@caption-treatment-shadow",
+        "wait:700",
         "click:@caption-save",
-        "wait:500"
+        "wait:1000"
       ],
       "loop": false
     },
