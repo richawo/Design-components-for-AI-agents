@@ -3887,17 +3887,17 @@
     "updated": "2026-10-13"
   },
   "social-proof-case-ledger": {
-    "useWhen": "Presenting supplied case outcomes together with their measurement period and supporting evidence.",
-    "avoidWhen": "Invented customer statistics, unsupported endorsements or a decorative testimonial carousel.",
+    "useWhen": "A landing or pricing page that needs measured customer outcomes rather than adjectives: several named customers, each with one metric, before and after figures, a period and a quote.",
+    "avoidWhen": "Short testimonials without numbers (a testimonial wall reads better), or a single headline stat, which belongs in a hero.",
     "integration": [
-      "Supply stable records with actual baseline/follow-up observations, period, sample, methodology and supporting excerpts or real source links. Missing or nonfinite observations remain unavailable; percentage changes use a nonzero absolute baseline denominator.",
-      "Keep record navigation separate from native evidence disclosure. Retain the selected record after rejected changes, preserve outside focus and make unknown records, absent measurements and missing evidence readable rather than inventing values."
+      "Pass cases with before, after, unit, period and better (\"lower\" or \"higher\"); the change and the median total are computed, and a zero or missing baseline shows “No baseline” instead of a percentage. Logos are drawn as type through mark.style, so no image assets are needed.",
+      "Filters are built from each case’s industry. Use filter/onFilterChange to sync them with the URL, onOpenChange to track which quote was read, and href for the full case study."
     ],
     "related": [
-      "chart-revenue-trend",
-      "scroll-chapter-stack"
+      "testimonial-wall",
+      "chart-revenue-trend"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "content-interactive-spec": {
     "useWhen": "Exploring a product specification through selectable annotations on a supplied diagram.",

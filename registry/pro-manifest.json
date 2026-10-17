@@ -36767,97 +36767,111 @@
   },
   {
     "slug": "social-proof-case-ledger",
-    "name": "Evidence Case Ledger",
+    "name": "Case Ledger",
     "tier": "pro",
     "platform": "web",
     "category": "social-proof",
-    "description": "An editorial case ledger pairs supplied outcomes with their sample, observation period, methodology and inspectable evidence, including honest missing measurements.",
+    "description": "Customer results as a ruled ledger: wordmarks set in type, before and after figures that count up, a quote under each row and a double-ruled total.",
     "tags": [
       "social proof",
-      "evidence",
-      "cases",
-      "outcomes",
-      "comparison",
-      "research"
+      "case studies",
+      "customer results",
+      "ledger",
+      "testimonials",
+      "metrics"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1250,
-    "usage": "import { SocialProofCaseLedger } from \"@/components/design-for-ai/social-proof-case-ledger\";\n\n<SocialProofCaseLedger cases={records} value={recordId} onValueChange={setRecordId} />\n\n// Supply actual measurements and their evidence. A comparison alone does not establish causation.",
+    "previewHeight": 1180,
+    "usage": "import { SocialProofCaseLedger } from \"@/components/design-for-ai/social-proof-case-ledger\";\n\n<SocialProofCaseLedger\n  title=\"What changed after Ledgerline\"\n  cases={caseStudies}\n  footnote=\"Figures confirmed by each customer’s finance lead.\"\n/>",
     "props": [
       {
         "name": "cases",
-        "type": "readonly CaseRecord[]",
-        "description": "Supplied stable records with organization/title/description, actual observation period and sample, methodology, measured outcomes and their evidence. Illustrative offline defaults are explicitly fictional."
+        "type": "CaseRecord[]",
+        "default": "6 Ledgerline customers",
+        "description": "{ id, company, mark?: { style, text? }, industry, metric, unit?, period?, before, after, decimals?, better: \"lower\" | \"higher\", quote?: { text, name, role }, href? }. style is serif | italic | mono | heavy | wide | stencil: the wordmark is set in type, never fetched. A zero or missing baseline shows “No baseline” instead of a percentage."
       },
       {
-        "name": "value",
+        "name": "title",
         "type": "string",
-        "description": "Optional controlled record ID. Pair with onValueChange; rejected changes retain the actual case, and unknown IDs show an unavailable view."
+        "default": "\"What changed after Ledgerline\"",
+        "description": "Serif heading over the ledger."
       },
       {
-        "name": "defaultValue",
+        "name": "filter",
         "type": "string",
-        "description": "Initial internal record ID. Removed internal selections fall back to the first available supplied record."
+        "description": "Controlled industry filter (\"all\" or an industry). The tabs are built from the cases’ industries."
       },
       {
-        "name": "onValueChange",
-        "type": "(id: string, record: CaseRecord) => void",
-        "description": "Request actual supplied record selection. Missing handlers lock controlled navigation; reading supplied evidence remains possible."
-      },
-      {
-        "name": "locale",
+        "name": "defaultFilter",
         "type": "string",
-        "description": "Locale for actual numeric values and observed percentage changes. No percentage is computed against zero or missing baselines."
+        "default": "\"all\"",
+        "description": "Initial filter when uncontrolled."
+      },
+      {
+        "name": "onFilterChange",
+        "type": "(filter: string) => void",
+        "description": "Called when a tab is chosen."
+      },
+      {
+        "name": "defaultOpen",
+        "type": "string | null",
+        "default": "null",
+        "description": "Case id whose quote is open on first view."
+      },
+      {
+        "name": "onOpenChange",
+        "type": "(id: string | null) => void",
+        "description": "Called when a row opens or closes."
+      },
+      {
+        "name": "totalLabel",
+        "type": "string",
+        "default": "\"Median improvement\"",
+        "description": "Label of the double-ruled total; its figure is the median improvement of the visible rows."
+      },
+      {
+        "name": "footnote",
+        "type": "string",
+        "default": "\"Figures from each customer’s own systems, confirmed by their finance lead. September 2026.\"",
+        "description": "Where the numbers come from, under the total."
       },
       {
         "name": "status",
-        "type": "\"ready\" | \"loading\" | \"error\"",
-        "description": "Host-owned case availability. Selection survives loading, failure and retry."
+        "type": "\"ready\" | \"loading\"",
+        "default": "\"ready\"",
+        "description": "loading holds ruled skeleton rows."
       },
       {
-        "name": "errorMessage",
+        "name": "accent",
         "type": "string",
-        "description": "Actual host failure explanation."
-      },
-      {
-        "name": "onRetry",
-        "type": "() => void",
-        "description": "Explicit host recovery request. No fake action when absent."
-      },
-      {
-        "name": "disabled",
-        "type": "boolean",
-        "description": "Lock case navigation while retaining readable evidence."
+        "default": "\"#2c9f68\"",
+        "description": "The one accent: change arrows and the “after” bars. The default green reads on graphite and on paper."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Complete monochromatic graphite/white chrome. Colour is reserved for actual supplied content and purposeful feature accents."
-      },
-      {
-        "name": "labels",
-        "type": "Partial<CaseLedgerLabels>",
-        "description": "Heading, metadata, comparison, evidence and availability copy."
+        "default": "\"dark\"",
+        "description": "Graphite, or warm paper for an annual-report feel."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Host layout classes."
+        "default": "\"\"",
+        "description": "Classes on the root."
       }
     ],
     "added": "2026-10-13",
     "demo": {
       "steps": [
-        "click:@case-handoff",
-        "wait:400",
-        "click:@evidence-review",
-        "wait:450",
-        "click:@case-missing",
-        "wait:550"
+        "wait:1600",
+        "click:@case-norrland",
+        "wait:1300",
+        "click:@filter-retail",
+        "wait:1500"
       ],
       "loop": false
     },
@@ -36867,27 +36881,64 @@
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Paper"
+          }
         ],
         "default": "dark"
       },
       {
-        "prop": "disabled",
-        "label": "Read only",
-        "kind": "toggle",
-        "default": false
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#2c9f68",
+        "options": [
+          "#2c9f68",
+          "#d4a017",
+          "#3b82f6",
+          "#a1a1aa"
+        ]
+      },
+      {
+        "prop": "title",
+        "label": "Heading",
+        "kind": "text",
+        "default": "What changed after Ledgerline"
+      },
+      {
+        "prop": "defaultFilter",
+        "label": "Industry",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "all",
+            "label": "All"
+          },
+          {
+            "value": "Finance",
+            "label": "Finance"
+          },
+          {
+            "value": "Retail",
+            "label": "Retail"
+          }
+        ],
+        "default": "all",
+        "remount": true
       },
       {
         "prop": "status",
-        "label": "Availability",
-        "kind": "select",
+        "label": "Data",
+        "kind": "action",
         "options": [
           "ready",
-          "loading",
-          "error"
-        ],
-        "default": "ready"
+          "loading"
+        ]
       }
     ]
   },
