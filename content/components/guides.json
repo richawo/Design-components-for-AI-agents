@@ -4051,19 +4051,19 @@
     "updated": "2026-10-14"
   },
   "three-material-inspector": {
-    "useWhen": "Comparing generic material samples under explicit, adjustable light in a small 3D inspection tool.",
-    "avoidWhen": "Replacing an actual product photograph with a generated stand-in or making unsupported physical material claims.",
+    "useWhen": "Choosing between surface finishes for a part or product by seeing how each takes a studio light, with metalness, roughness and transmission read out beside it.",
+    "avoidWhen": "Showing an actual product (use its real photography or model) or making certified physical claims about a material.",
     "integration": [
-      "Supply 1–8 raw unique material IDs with labels/descriptions, hex color and bounded appearance parameters: metalness 0–1, roughness 0.15–1, transmission 0–0.8. The original generic coupon is illustrative; use real assets for actual products or calibrated material work.",
-      "One atomic value owns materialId, whole-degree azimuth −90–90 and lightAngle 0–359. Native radios/ranges, scaled pointer turning and keyboard arrows share host requests; rejected controlled values never create false commits. Unknown identities remain explicit, and absent controlled handlers make editing read-only.",
-      "Standard/high quality bounds the main drawing buffer to 480,000/960,000 pixels with max 2048px side; auxiliary environment/shadow/transmission targets are separately bounded. Data revisions prepare their own native context and ignore retired readiness. Label/description edits retain the context.",
-      "Keep the useful diagram and actual appearance parameters when graphics are unavailable, with explicit retry. Idle/hidden rendering stops, live reduced motion settles real owners, and owner-document focus fencing preserves native parent actions."
+      "Pass 1 to 8 `materials`, each with id, label, description, #rrggbb colour, metalness 0 to 1, roughness 0.15 to 1 and optional transmission up to 0.8. Name the sample with `title` and `path`.",
+      "The view is one value: `{ materialId, azimuth, lightAngle }`. Use `value` and `onValueChange` to control it (throw to refuse a view) and `onValueCommit` to save finished interactions only.",
+      "`quality` sets the drawing-buffer budget (480k or 960k pixels, DPR capped at 1.5 or 2). Rendering is on demand, pauses offscreen and disposes on unmount; without WebGL a drawing and the parameters remain."
     ],
     "related": [
       "three-holo-card",
-      "three-ascii-object"
+      "three-exploded-assembly",
+      "three-keycaps"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "three-exploded-assembly": {
     "useWhen": "Inspecting labeled parts of a generic supplied assembly through an explicit exploded view and diagram alternative.",

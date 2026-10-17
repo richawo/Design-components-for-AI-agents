@@ -37925,13 +37925,14 @@
     "tier": "pro",
     "platform": "web",
     "category": "three-d",
-    "description": "Compare supplied appearance presets on one original generic 3D coupon, with adjustable lighting, honest parameters and a complete diagram alternative.",
+    "description": "A finish study in Three.js: one bevelled coupon under a studio light, with finishes that cross-fade, meters that glide and a key light you swing.",
     "tags": [
       "3d",
+      "three.js",
       "material",
-      "appearance",
+      "finish",
       "lighting",
-      "sample",
+      "pbr",
       "inspector"
     ],
     "dependencies": [
@@ -37940,111 +37941,113 @@
       "three"
     ],
     "theme": "dark",
-    "previewHeight": 1240,
-    "usage": "import { ThreeMaterialInspector } from \"@/components/design-for-ai/three-material-inspector\";\n\n<ThreeMaterialInspector materials={samples} value={view} onValueChange={setView} />",
+    "previewHeight": 820,
+    "usage": "import { ThreeMaterialInspector } from \"@/components/design-for-ai/three-material-inspector\";\n\n<ThreeMaterialInspector\n  title=\"Bezel B-4\"\n  materials={finishes}\n  value={view}\n  onValueChange={setView}\n  onValueCommit={saveView}\n/>",
     "props": [
       {
         "name": "title",
         "type": "string",
-        "description": "Host workbench heading.",
-        "default": "\"Compare the surface.\""
+        "default": "\"Coupon C-12\"",
+        "description": "The sample's name in the toolbar."
       },
       {
-        "name": "description",
-        "type": "string",
-        "description": "Plain header context, including the illustrative geometry boundary.",
-        "default": "\"Original generic coupon. Illustrative appearance, not an actual product.\""
+        "name": "path",
+        "type": "string[]",
+        "default": "[\"Finish library\"]",
+        "description": "Breadcrumb before the title."
       },
       {
         "name": "materials",
         "type": "MaterialSample[]",
-        "description": "1–8 raw unique sample IDs, labels/descriptions, hex colors and bounded metalness/roughness/transmission appearance parameters. Empty/invalid arrays remain explicit."
+        "default": "aluminium, brass, resin, ceramic",
+        "description": "1–8 finishes: { id, label, description, color (#rrggbb), metalness 0–1, roughness 0.15–1, transmission? 0–0.8 }."
       },
       {
         "name": "value",
         "type": "MaterialInspectorValue",
-        "description": "Controlled atomic materialId/azimuth/lightAngle view. Unknown material IDs never select a fallback."
+        "description": "Controlled view { materialId, azimuth (−90…90, whole degrees), lightAngle (0…359) }."
       },
       {
         "name": "defaultValue",
         "type": "MaterialInspectorValue",
-        "description": "Uncontrolled initial view, otherwise first actual sample at22°/315°."
+        "description": "Initial view when uncontrolled. Defaults to the first finish at 22° under a 315° light."
       },
       {
         "name": "onValueChange",
         "type": "(value: MaterialInspectorValue) => void",
-        "description": "Requests one actual bounded view; controlled rejection preserves the rendered host view."
+        "description": "Every requested view. Throw to refuse it; the current view stays."
       },
       {
         "name": "onValueCommit",
         "type": "(value: MaterialInspectorValue) => void",
-        "description": "Reports only an actually accepted completed interaction, never a rejected request."
+        "description": "A finished interaction the host accepted: a drag released, a key let go, a finish chosen, Reset."
       },
       {
         "name": "quality",
         "type": "\"standard\" | \"high\"",
-        "description": "Main drawing-buffer limit480k/960k pixels with max2048px side. Environment/shadow/transmission textures are separately bounded.",
-        "default": "\"standard\""
+        "default": "\"standard\"",
+        "description": "Drawing-buffer budget: 480k or 960k pixels, DPR capped at 1.5 or 2, 2048px a side."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Neutral graphite and white chrome; colour is reserved for actual feature content and semantic data accents.",
-        "default": "\"dark\""
+        "default": "\"dark\"",
+        "description": "Chrome and studio backdrop."
       },
       {
         "name": "disabled",
         "type": "boolean",
-        "description": "Locks editing and settles decorative owners while retaining the actual sample.",
-        "default": "false"
+        "default": "false",
+        "description": "Locks the view; the finish and its parameters stay readable."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Host root layout classes.",
-        "default": "\"\""
+        "default": "\"\"",
+        "description": "Extra classes on the root."
       }
     ],
     "controls": [
-      {
-        "prop": "quality",
-        "label": "Rendering quality",
-        "kind": "segmented",
-        "options": [
-          "standard",
-          "high"
-        ],
-        "default": "standard"
-      },
       {
         "prop": "theme",
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
         "default": "dark"
       },
       {
+        "prop": "title",
+        "label": "Sample name",
+        "kind": "text",
+        "default": "Coupon C-12"
+      },
+      {
         "prop": "disabled",
-        "label": "Read-only inspection",
+        "label": "Read-only",
         "kind": "toggle",
         "default": false
       }
     ],
     "demo": {
       "steps": [
-        "click:@material-frost",
         "wait:500",
-        "click:@material-light:0.25,0.5",
-        "wait:350",
-        "click:@material-matte",
+        "click:@material-resin",
+        "wait:600",
+        "click:@material-light:0.22,0.5",
         "wait:400",
-        "click:@material-turn:0.72,0.5",
-        "wait:400",
-        "click:@material-reset",
-        "wait:450"
+        "click:@material-brass",
+        "wait:500",
+        "click:@material-turn:0.75,0.5",
+        "wait:600"
       ],
       "loop": false
     },
