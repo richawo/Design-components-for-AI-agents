@@ -4827,22 +4827,19 @@
     "updated": "2026-10-17"
   },
   "mobile-voice-memo": {
-    "useWhen": "Listen to an actual host recording with measured waveform, exact seeking, playback controls, markers and timed transcript.",
-    "avoidWhen": "A recorder, invented waveform/transcript, simulated playback clock or automatic media permission request.",
+    "useWhen": "Playing back a recorded memo, interview or voice note where people scrub by dragging the waveform, jump between markers and read along with a timed transcript.",
+    "avoidWhen": "Recording audio, editing or trimming a clip, or a music player with queues and artwork; use a now-playing screen for music.",
     "integration": [
-      "recording: Actual identity/title/subtitle, bounded duration up to 86400s, measured peaks, up to 64 markers and 200 transcript segments, availability and error. No recording is assumed by the named component.",
-      "playback: Actual matching recordingId, paused/playing/ended/error state, bounded position, volume 0–1 and rate 0.5–2. Missing or mismatched state disables transport without pretending the player is paused.",
-      "onAction: Copied recording arrays and player state, explicit play/pause/seek/volume/rate and exact optional value plus AbortSignal. Your real native audio engine owns playback.",
-      "Waveform tapping uses actual logical client geometry on web and native local coordinates. Native adjustable actions, keyboard Arrow/Home/End, exact decimal seconds, markers and transcript provide alternatives. Unknown/duplicate/unplaced annotations cannot seek.",
-      "One immediate request owner, cancellation and stale source/handler guards preserve current media context and newer authored seek drafts. Fulfillment acknowledges; actual position/status remain supplied.",
-      "The browser demonstration plays an original eight-second PCM tone through HTMLAudioElement events. RMS peaks come from that exact PCM, normalized relatively for display; markers match its actual note changes. Custom recordings cannot borrow its transport. Native hosts provide their actual audio engine.",
-      "Time and playhead/reveal animate in both directions, with live reduced motion stop/set. Static waveform bars are retained between playhead frames. Verify native touch, large text, assistive technology and audio integration in the host app."
+      "Supply measured peaks (0–1, evenly spaced, about six a second), markers and transcript sentences with start and end seconds. Without a transcript the screen shows a written empty state.",
+      "The screen runs the playhead clock. Mirror it into your audio engine with onPlayingChange(playing, position), onSeek(position) and onRateChange(rate); onMarkerAdd reports markers dropped at the playhead.",
+      "Install in a React Native app; bare apps run npx install-expo-modules once for expo-blur and expo-linear-gradient. Verify gestures, larger text and assistive technology on target devices."
     ],
     "related": [
       "mobile-now-playing",
-      "media-audio-transport"
+      "mobile-journal-prompt",
+      "mobile-live-activity"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "mobile-project-switcher": {
     "useWhen": "Searching and choosing a supplied project in a tactile native sheet while keeping the current choice through unavailable or rejected requests.",
