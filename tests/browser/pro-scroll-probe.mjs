@@ -42,14 +42,13 @@ async function mount(slug, name, props = "") {
     slug,
     "pro",
     `createRoot(document.getElementById('root')).render(<><Subject.${name} ${props}/><div style={{height:'100vh'}} tabIndex={0}>After the story</div></>);`,
+    { frameStyle: "margin:0;padding:0;max-width:none" },
   );
-  await page.locator("#root").evaluate((el) => {
-    el.style.maxWidth = "none";
-    el.style.padding = "0";
-  });
+  await page.locator("h2").first().waitFor();
+  await page.evaluate(() => document.fonts.ready);
   await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
-  // Removing the fixture width changes the measured journey geometry. Let the
-  // initial spring settle before using it as the return-to-top baseline.
+  // Start at the intended width. Changing the wrapper after mount can race
+  // container-query geometry and the first scroll measurement.
   await page.waitForTimeout(700);
 }
 try {
@@ -128,7 +127,10 @@ try {
       false,
     );
     await page.emulateMedia({ reducedMotion: "reduce" });
-    await page.waitForTimeout(250);
+    await page.waitForFunction(() => {
+      const stage = document.querySelector("#root > section")?.lastElementChild;
+      return stage && getComputedStyle(stage).position === "static";
+    });
     assert.equal(
       await page
         .locator("section > div")

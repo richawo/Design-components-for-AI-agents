@@ -64,6 +64,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 5: added Prompt Journal coverage for the keyboard Next action, roving prompt tabs, drafts per prompt, save failure/retry, character limits and empty prompts. Hidden or pending navigation is disabled, the web deck uses group semantics, and empty decks cannot accept text they would discard. The source-fixture regression, settled accessibility checks and writing/error/pending/saved/empty captures pass.
 
+- Task 6: finished Image Curtain and removed its parked patch. Native scroll parts a split title over the image, and keyboard return follows the same geometry. Captions retain contrast over white host images, failed images keep their fallback, and long copy/reduced motion flow normally. Source-fixture scroll/reversal, live demo, edge cases, controls, accessibility, responsive captures and refreshed poster pass. Its film remains in task 1.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -81,7 +83,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Browser checks: `node scripts/check-component.mjs <slug> --base=http://localhost:3100 --no-video --keep-going`
   (screenshots at 1440/768/390 and every control flip; read the screenshots it writes to `test-results/check/<slug>/`).
 
-## 1. Re-record demo videos (137 components)
+## 1. Re-record demo videos (138 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -132,7 +134,7 @@ Slugs:
 `media-trim-timeline`, `navigation-context-rail`, `navigation-lens-dock`, `navigation-stacked-tabs`
 `pixel-halftone-image`, `portfolio-project-reel`, `pricing-seat-simulator`, `pricing-usage-calculator`
 `social-proof-case-ledger`, `text-number-odometer`, `text-optical-weight`, `text-outline-fill`
-`text-path-typesetter`, `finance-budget-variance`, `finance-cashflow-dashboard`, `fashion-preorder-planner`, `fashion-collection-line-plan`, `fashion-merchandising-dashboard`, `fashion-size-guide`
+`text-path-typesetter`, `scroll-image-curtain`, `finance-budget-variance`, `finance-cashflow-dashboard`, `fashion-preorder-planner`, `fashion-collection-line-plan`, `fashion-merchandising-dashboard`, `fashion-size-guide`
 
 ## 2. Retake stale posters (complete)
 
@@ -233,7 +235,7 @@ see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 `pricing-usage-calculator`, `social-proof-case-ledger`, `text-number-odometer`, `text-optical-weight`
 `text-outline-fill`, `text-path-typesetter`
 
-## 6. Finish parked rebuilds (three remaining)
+## 6. Finish parked rebuilds (two remaining)
 
 Rebuilt but not shipped; the live components are still the old versions. Each lives in the Pro repo at
 `registry/pro/_wip/<slug>/` with `component.patch`, `guide.json` and sometimes `probe.mjs`. To resume one:
@@ -253,7 +255,7 @@ run the checks, and delete `_wip/<slug>` in the Pro commit that ships it.
 | fashion-collection-line-plan | Completed 17 October: source-fixture regression/demo, both-theme accessibility and responsive/state/entrance captures pass; prompts/poster current; Fashion Workspace draft/save regression passes. |
 | fashion-merchandising-dashboard | Completed 17 October: source-fixture regression/demo, both-theme accessibility and responsive/state/entrance captures pass; prompts/poster current; Fashion Workspace regression passes. |
 | fashion-size-guide | Completed 17 October: source-fixture regression/demo including missing and empty grades, native palettes, both-theme accessibility and responsive/state/entrance captures pass; prompts/poster current. |
-| scroll-image-curtain | `pro-scroll-probe` "follows native scroll" not yet passing; visual check; poster |
+| scroll-image-curtain | Completed 17 October: source-fixture scroll/reversal, live demo, keyboard and image/long-copy/reduced-motion fallbacks, controls, accessibility and responsive captures pass; poster current. |
 | scroll-horizontal-showcase | visual check; live demo check; poster (scroll probe passed) |
 | scroll-expanding-mosaic | poster captured blank; scroll probe's change and reversal checks not passing on final code |
 | finance-budget-variance | Completed 17 October: Next probe, dark/light accessibility, responsive and entrance/state captures, live demo and refreshed poster pass. |

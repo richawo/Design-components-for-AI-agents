@@ -40519,12 +40519,13 @@
     "tier": "pro",
     "platform": "web",
     "category": "media",
-    "description": "A pair of typographic curtains slide apart with page scroll to reveal a full image, with an accessible caption and a complete static reduced-motion composition.",
+    "description": "A cover printed across two curtains tears down the middle as the page scrolls, opening on a full-bleed photograph and its caption, with a flowing fallback.",
     "tags": [
       "scroll",
       "scroll-driven",
-      "motion",
-      "responsive",
+      "reveal",
+      "photography",
+      "editorial",
       "media"
     ],
     "dependencies": [
@@ -40532,33 +40533,51 @@
     ],
     "theme": "dark",
     "previewHeight": 900,
-    "usage": "import { ScrollImageCurtain } from \"@/components/design-for-ai/scroll-image-curtain\";\n\n<ScrollImageCurtain />\n\n// Place in normal document flow. Keep ancestors free of overflow clipping so viewport sticky positioning can work.",
+    "usage": "import { ScrollImageCurtain } from \"@/components/design-for-ai/scroll-image-curtain\";\n\n<ScrollImageCurtain\n  title={\"Look\\ncloser.\"}\n  plate=\"Plate 06\"\n  place=\"Erg Chebbi · 06:52\"\n  imageSrc=\"/photos/erg-chebbi-dawn.jpg\"\n  imageAlt=\"A lone walker on the crest of a dune at dawn.\"\n  caption=\"A walker crosses the crest of a star dune at first light.\"\n  credit=\"Inès Morel · Erg Chebbi, Morocco, 2025\"\n/>\n\n// Place in normal document flow. Ancestors must not clip overflow (overflow: hidden) or the stage can’t pin.",
     "props": [
       {
         "name": "title",
         "type": "string",
-        "description": "Title printed on the opening curtain."
+        "default": "\"Look\\ncloser.\"",
+        "description": "Cover title, printed across both curtains so it splits at the seam. Line breaks are kept."
+      },
+      {
+        "name": "plate",
+        "type": "string",
+        "default": "\"Plate 06\"",
+        "description": "Mono line at the cover’s top left."
+      },
+      {
+        "name": "place",
+        "type": "string",
+        "default": "\"Erg Chebbi · 06:52\"",
+        "description": "Mono line at the cover’s top right."
       },
       {
         "name": "caption",
         "type": "string",
-        "description": "Meaningful image caption."
+        "description": "Caption that settles over the photograph once it is open."
+      },
+      {
+        "name": "credit",
+        "type": "string",
+        "description": "Mono credit line under the caption."
       },
       {
         "name": "imageSrc",
         "type": "string",
-        "description": "Real image URL supplied by the host. The offline demo uses an abstract print."
+        "description": "Host image URL. Without one, the bundled dune illustration is rendered; a failed load shows a quiet panel with the alt text."
       },
       {
         "name": "imageAlt",
         "type": "string",
-        "description": "Descriptive alternative for the supplied image."
+        "description": "Description of the photograph for screen readers and the failed-load panel."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Neutral surface and text palette."
+        "description": "Neutral paper and ink for the cover."
       }
     ],
     "added": "2026-10-12",

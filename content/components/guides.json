@@ -3225,17 +3225,19 @@
     "updated": "2026-10-12"
   },
   "scroll-image-curtain": {
-    "useWhen": "Revealing paired visuals through a controlled scroll progression.",
-    "avoidWhen": "A before-and-after claim without authentic paired assets and clear context.",
+    "useWhen": "An editorial page opens on one strong photograph and you want the reader to arrive at it: a titled cover that parts with the scroll, then the full image and its caption.",
+    "avoidWhen": "The image is decorative, you need a before-and-after comparison (use media-before-after), or the page sits inside a scrolling container that clips overflow.",
     "integration": [
-      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+      "Pass `imageSrc`, `imageAlt`, `caption` and `credit`; without an image the bundled dune illustration is shown, and a failed load becomes a quiet panel that reads the alt text.",
+      "Place it in normal document flow. Ancestors must not use overflow: hidden, or the stage can’t pin; the component itself clips only horizontally.",
+      "Reduced motion, windows under 480px tall and covers or captions too long to fit fall back to a flowing layout with the title, image and caption in order."
     ],
     "related": [
       "scroll-cinema-frame",
-      "media-before-after",
-      "media-story-deck"
+      "scroll-background-wipe",
+      "media-before-after"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "text-decode": {
     "useWhen": "A short decorative text reveal in an introductory section.",
