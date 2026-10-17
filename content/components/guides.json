@@ -4842,20 +4842,19 @@
     "updated": "2026-10-14"
   },
   "mobile-file-preview": {
-    "useWhen": "Inspecting complete supplied file metadata and an actual host-rendered preview, with explicit cancellable file actions and retained content through availability changes.",
-    "avoidWhen": "Implicit downloads or fetching, assumed format support, unknown size reported as zero or callback fulfillment described as a verified external open/download.",
+    "useWhen": "Reading a shared document on a phone before acting on it: skimming pages, jumping to the one with comments, then downloading or opening it elsewhere.",
+    "avoidWhen": "Editing documents, browsing a folder of many files, or previewing images and video where a media viewer fits better.",
     "integration": [
-      "Supply file id/name/format, optional MIME/modified timestamp and nullable sizeBytes. Unknown or invalid size stays unavailable. A custom file without actual preview content is explicitly empty; only the bundled virtual text file receives the original offline notes.",
-      "Supply preview as a stable ReactNode with authoritative ready/loading/unsupported/unavailable/error status and optional actual explanation. The retained renderer stays mounted but unavailable while loading/error; ready restores interaction without an inherited group disabled state.",
-      "onOpen, onDownload and onRetry receive copied exact metadata and AbortSignal. One pending action offers Cancel; missing handlers are unavailable. Fulfillment only acknowledges the request, while real viewing/downloading/preview availability remains host-owned.",
-      "Memoize retained preview and asynchronous observers across genuine progress. File facts, renderer replacement, status/reset and the relevant action owner retire stale receipts/jobs. Same-source Retry can observe loading progress; actual new content/ready/error remains authoritative. Another action observer does not erase an unrelated pending action or receipt.",
-      "Use the native window-height canvas with separate metadata/content scroll and pinned actions. Bare native apps install Expo modules once. Verify actual device touch, dynamic text and assistive technology; browser review covers real source/state, focus and design."
+      "Pass `file` metadata and a `renderPage(index, width)` that draws each page with your PDF or document renderer; heights follow A-series proportions (width × 1.414). Mark commented pages with `marks`.",
+      "Drive `status` from your renderer: loading, ready, unsupported or error, with `statusMessage` for specifics and `onRetry` for the error panel.",
+      "Implement `onDownload(file, report)` and call `report(fraction)` as bytes arrive; reject with an Error to show its message. Wire `onOpen`, `onShare` and `onBack`. Install `expo-blur`, `expo-linear-gradient` and `react-native-svg` (`npx install-expo-modules` once in bare apps)."
     ],
     "related": [
-      "mobile-bottom-sheet",
-      "mobile-chat"
+      "mobile-attachment-tray",
+      "mobile-review-annotations",
+      "mobile-reading-progress"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "mobile-attachment-tray": {
     "useWhen": "Picking several files to send into a conversation on a phone, with real previews, a visible size limit, uploads that finish in place and a send that lands as one message.",
