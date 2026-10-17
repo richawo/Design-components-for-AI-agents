@@ -26194,73 +26194,107 @@
   },
   {
     "slug": "hr-people-dashboard",
-    "name": "People Operations Dashboard",
+    "name": "People Dashboard",
     "tier": "pro",
     "platform": "web",
     "category": "app",
-    "description": "Headcount, department distribution and upcoming employee milestones. A considered, responsive hr workspace with typed integration points.",
+    "description": "A people-ops overview: a headcount line that draws over monthly hires and leavers, tenure spread, departments, upcoming milestones and open roles.",
     "tags": [
       "hr",
-      "workflow",
-      "responsive",
-      "keyboard",
-      "app"
+      "people analytics",
+      "headcount",
+      "dashboard",
+      "tenure",
+      "recruiting"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1240,
-    "usage": "import { PeopleDashboard } from \"@/components/design-for-ai/hr-people-dashboard\";\n\n<PeopleDashboard />",
+    "previewHeight": 1180,
+    "usage": "import { PeopleDashboard } from \"@/components/design-for-ai/hr-people-dashboard\";\n\n<PeopleDashboard\n  subtitle=\"Halden\"\n  employees={employees}\n  openRoles={openRoles}\n  referenceDate=\"2026-10-11\"\n  probationMonths={6}\n/>",
     "props": [
-      {
-        "name": "title",
-        "type": "string",
-        "description": "Main heading.",
-        "default": "\"People overview\""
-      },
-      {
-        "name": "subtitle",
-        "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Understand team composition and upcoming milestones from the same employee roster.\""
-      },
       {
         "name": "employees",
         "type": "PeopleEmployee[]",
-        "description": "Unique employee IDs, supplied employment status and civil start dates. No demographic inferences are made."
+        "default": "45 people at Halden",
+        "description": "{ id, name, role, department, location, status, startDate, manager, endDate? }. Headcount, hires, leavers and tenure are all measured from start and end dates. Duplicate IDs and invalid dates are left out and named."
       },
       {
         "name": "milestones",
         "type": "PeopleMilestone[]",
-        "description": "Host-supplied milestone dates and descriptions linked to an employee ID."
+        "description": "Extra dated moments { id, employeeId, date, label }. Anniversaries, probation reviews and first days are found from start dates; a supplied milestone on the same day replaces one."
+      },
+      {
+        "name": "openRoles",
+        "type": "OpenRole[]",
+        "default": "Demo roles with the demo roster, otherwise []",
+        "description": "{ id, title, department, openedOn, hiringManager, pipeline: { applied, screen, interview, offer } }. Roles open over 60 days are flagged."
       },
       {
         "name": "referenceDate",
         "type": "string",
-        "description": "Calendar date used for the next-30-day milestone window, YYYY-MM-DD."
+        "default": "\"2026-10-11\"",
+        "description": "Today for every figure (YYYY-MM-DD). The trend covers the 12 months ending here."
       },
       {
-        "name": "theme",
-        "type": "\"dark\" | \"light\"",
-        "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "name": "probationMonths",
+        "type": "number",
+        "default": "6",
+        "description": "Probation length; its review appears as a milestone. 0 hides them."
+      },
+      {
+        "name": "windowDays",
+        "type": "30 | 60 | 90",
+        "default": "30",
+        "description": "How far ahead the milestone list looks. People can change it in place."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Overview\"",
+        "description": "Page name in the breadcrumb."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "default": "\"Halden\"",
+        "description": "The organisation or scope, shown as the entity in the header."
       },
       {
         "name": "selectMode",
         "type": "\"custom\" | \"native\"",
         "default": "\"custom\"",
-        "description": "Animated keyboard-accessible custom listboxes, or native platform pickers with matched 12px insets."
+        "description": "Department filter: an animated listbox, or the platform's native select with the same inset chevron."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Formats dates and percentages."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#c5f25a\"",
+        "description": "Headcount line, hires, selection."
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Surface palette."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:350",
-        "click:@person-2",
-        "wait:750",
-        "click:@person-4",
-        "wait:1100"
+        "wait:1300",
+        "hover:@trend:0.2,0.5",
+        "hover:@trend:0.75,0.5",
+        "click:@dept-0",
+        "wait:1600"
       ],
       "loop": false
     },
@@ -26274,6 +26308,38 @@
           "light"
         ],
         "default": "dark"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#c5f25a",
+        "options": [
+          "#c5f25a",
+          "#ff8a5c",
+          "#7cc4ff",
+          "#f4f4f5"
+        ]
+      },
+      {
+        "prop": "windowDays",
+        "label": "Look ahead",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": 30,
+            "label": "30 days"
+          },
+          {
+            "value": 60,
+            "label": "60 days"
+          },
+          {
+            "value": 90,
+            "label": "90 days"
+          }
+        ],
+        "default": 30
       },
       {
         "prop": "selectMode",

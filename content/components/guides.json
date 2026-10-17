@@ -2544,18 +2544,19 @@
     "updated": "2026-10-17"
   },
   "hr-people-dashboard": {
-    "useWhen": "A concise overview of supplied people measures and operational queues.",
-    "avoidWhen": "Sensitive HR data presented without appropriate access and aggregation rules.",
+    "useWhen": "A people-ops home screen: headcount over the last year with hires and leavers, tenure spread, department mix, the next month’s anniversaries and probation reviews, and open requisitions.",
+    "avoidWhen": "Individual employee records, performance data or anything that needs row-level access control; this aggregates a roster you are already allowed to see.",
     "integration": [
-      "Supply your own records through `employees`, `milestones`. Preserve stable keys or IDs when the data contract provides them.",
-      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+      "Pass every employee with `startDate` and, for leavers, `endDate`; headcount, hires, leavers and tenure are all derived from them as of `referenceDate`.",
+      "Anniversaries, probation reviews (`probationMonths`) and first days are found automatically; add `milestones` for anything else.",
+      "`openRoles` takes each requisition’s opened date and pipeline counts; roles open over 60 days are flagged."
     ],
     "related": [
-      "app-permission-matrix",
       "hr-org-explorer",
-      "commerce-operations-dashboard"
+      "hr-leave-approval",
+      "dashboard-kpi-cards"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "hr-policy-acknowledgement": {
     "useWhen": "Reading a specific policy revision and recording an explicit acknowledgement.",
