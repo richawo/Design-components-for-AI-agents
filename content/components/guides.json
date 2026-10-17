@@ -4399,18 +4399,20 @@
     "updated": "2026-10-14"
   },
   "editor-color-token-studio": {
-    "useWhen": "Editing semantic color tokens and checking actual supplied foreground/background contrast pairs.",
-    "avoidWhen": "Claiming accessibility for an entire application from a few colors or generating an arbitrary decorative palette.",
+    "useWhen": "Tuning a design system's semantic colours against the screen they will actually paint, with WCAG contrast for every reading pair updating as you drag.",
+    "avoidWhen": "Generating a decorative palette from scratch, or certifying a whole product's accessibility from a handful of token pairs.",
     "integration": [
-      "Supply controlled `value`/`onValueChange` or local `defaultValue` with up to24 unique CSS-safe semantic token IDs. Complete RGB/RGBA hexadecimal drafts preview separately from accepted token values; Apply requests a copied palette and old acknowledgement cannot discard newer hex text.",
-      "Provide up to32 actual `pairs` referencing token IDs with fontSize/fontWeight. Contrast composites foreground over background over opaque `canvasColor`, then uses unrounded sRGB luminance and WCAG text thresholds. Missing or unsupported colors/references are explicit; an incomplete draft leaves the accepted reading palette visible. [WCAG contrast reference](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html).",
-      "Use supplied `presets` as draft suggestions and `sampleText` as actual reading content. Export `scopeSelector` supports :root, a simple class/ID or a simple data-attribute equality selector. Copy exports only complete accepted CSS, acknowledges the real Clipboard API result and fences stale receipts to exact bytes. The full accepted CSS stays selectable after clipboard failure."
+      "Pass `value` and `onValueChange` (or `defaultValue`). Token ids become CSS variables, so keep them CSS-safe (`ink`, `surface-raised`). Apply sends the full palette; reject the promise with an Error to show its message and keep every draft.",
+      "Pass your own `specimen`: any JSX that reads `var(--<id>)`. Add `data-token=\"ink\"` to make an element pickable and `data-pair=\"body\"` to underline it when that pair fails AA.",
+      "Describe what must stay readable in `pairs` (foreground, background, font size and weight). Large text (24px, or 18.66px at 700) needs 3:1, everything else 4.5:1. Translucent tokens composite over `canvasColor` before measuring.",
+      "Copy CSS exports only applied tokens, scoped to `scopeSelector`. Use `disabled` for read-only review."
     ],
     "related": [
       "input-color-swatches",
-      "devtools-icon-workbench"
+      "devtools-icon-workbench",
+      "editor-export-preset"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "editor-spacing-inspector": {
     "useWhen": "Inspecting and changing real padding and gap on supplied content, with measurements from the rendered CSS box.",
