@@ -3636,18 +3636,18 @@
     "updated": "2026-10-17"
   },
   "hero-signal-workbench": {
-    "useWhen": "A product introduction benefits from an interactive waveform demonstration with understandable shape, frequency and gain controls.",
-    "avoidWhen": "A product whose value has no useful relationship to a signal demonstration, or a claim that the illustration supplies an audio engine.",
+    "useWhen": "A landing page for an audio, DSP, synthesis or data-signal product where letting visitors turn a parameter and watch the result says more than a screenshot.",
+    "avoidWhen": "Products with no meaningful signal or parameter story, pages that must stay static for performance budgets, or a hero that needs real audio playback.",
     "integration": [
-      "Replace introductory copy and supply the intended primary-action destination.",
-      "Connect controlled parameters and change handling to the host if the demonstration needs shared state.",
-      "Keep the parameter labels and output understandable; the component does not make audio or network requests."
+      "Replace the headline, emphasis word, body, actions and note with your product's; keep the headline to two or three short lines.",
+      "Set the starting waveform, frequency (Hz) and gain (dB), or control value/onChange to sync the patch with other parts of the page.",
+      "The scope animates only while visible and stops drifting under reduced motion; it draws a visual model and makes no audio or network requests."
     ],
     "related": [
       "hero-product-stack",
-      "hero-app-tilt"
+      "hero-prism"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "navigation-stacked-tabs": {
     "useWhen": "Several documents share one working area and people reorder, close and reopen them while unsaved drafts must survive: editors, IDEs, spreadsheets, design files.",

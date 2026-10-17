@@ -24283,13 +24283,15 @@
     "tier": "pro",
     "platform": "web",
     "category": "hero",
-    "description": "An interactive signal hero connects shape, frequency and gain controls to a smoothly morphing waveform. Real parameters replace a static product screenshot.",
+    "description": "A product hero where the demo is the visual: oscillator, pitch and gain nodes wired into a live phosphor scope that morphs, pulses and counts as you tune.",
     "tags": [
       "hero",
+      "landing page",
       "interactive demo",
-      "signal",
+      "audio",
       "waveform",
-      "node diagram",
+      "node graph",
+      "oscilloscope",
       "product"
     ],
     "dependencies": [
@@ -24297,136 +24299,107 @@
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1100,
-    "usage": "import { HeroSignalWorkbench } from \"@/components/design-for-ai/hero-signal-workbench\";\n\n<HeroSignalWorkbench\n  heading={\"Shape a signal.\\nSee it happen.\"}\n  value={parameters}\n  onChange={setParameters}\n  accent=\"#e8a46c\"\n/>\n\n// parameters: { waveform: \"sine\" | \"triangle\" | \"square\", frequency: 0.5..4, gain: 0..100 }.\n// This is an interactive visual model, with no audio, microphone or network access.",
+    "previewHeight": 900,
+    "usage": "import { HeroSignalWorkbench } from \"@/components/design-for-ai/hero-signal-workbench\";\n\n<HeroSignalWorkbench\n  heading={\"Sound you can\\nsee before\\nyou ship it.\"}\n  emphasis=\"see\"\n  primary={{ label: \"Start patching free\", href: \"/signup\" }}\n  value={patch} // { waveform: \"sine\" | \"triangle\" | \"square\" | \"saw\", frequency: 55–880 Hz, gain: −36–0 dB }\n  onChange={setPatch}\n/>",
     "props": [
-      {
-        "name": "eyebrow",
-        "type": "string",
-        "default": "\"Signal studio\"",
-        "description": "Quiet product context above the display heading."
-      },
       {
         "name": "heading",
         "type": "string",
-        "default": "\"Shape a signal.\\nSee it happen.\"",
-        "description": "Display copy with deliberate line breaks and safe wrapping."
+        "default": "\"Sound you can\\nsee before\\nyou ship it.\"",
+        "description": "Headline; \\n breaks lines, each line rises in turn."
       },
       {
-        "name": "description",
+        "name": "emphasis",
         "type": "string",
-        "default": "short control invitation",
-        "description": "Supporting copy beside the actual demonstration."
+        "default": "\"see\"",
+        "description": "Word set in serif italic inside the headline."
       },
       {
-        "name": "actionLabel",
+        "name": "body",
         "type": "string",
-        "default": "\"Try the controls\"",
-        "description": "Primary link label."
+        "default": "Fieldwave product line",
+        "description": "Supporting paragraph, up to about 44 characters a line."
       },
       {
-        "name": "actionHref",
+        "name": "primary",
+        "type": "{ label: string; href: string }",
+        "default": "{ label: \"Start patching free\", href: \"#start\" }",
+        "description": "Solid pill call to action."
+      },
+      {
+        "name": "secondary",
+        "type": "{ label: string; href: string }",
+        "default": "{ label: \"Read the docs\", href: \"#docs\" }",
+        "description": "Quiet text link beside it."
+      },
+      {
+        "name": "note",
         "type": "string",
-        "default": "instance-local graph anchor",
-        "description": "Optional real destination. Without it the link focuses and reveals this instance’s controls."
+        "default": "\"Free for side projects · Chrome, Safari and Firefox\"",
+        "description": "Small print under the actions; empty hides it."
       },
       {
-        "name": "outputLabel",
+        "name": "patchName",
         "type": "string",
-        "default": "\"Your signal\"",
-        "description": "Preview heading."
-      },
-      {
-        "name": "shapeLabel",
-        "type": "string",
-        "default": "\"Wave shape\"",
-        "description": "Shape chooser and output metadata label."
-      },
-      {
-        "name": "frequencyLabel",
-        "type": "string",
-        "default": "\"Frequency\"",
-        "description": "Native range label."
-      },
-      {
-        "name": "gainLabel",
-        "type": "string",
-        "default": "\"Gain\"",
-        "description": "Native range and output value label."
-      },
-      {
-        "name": "emptyLabel",
-        "type": "string",
-        "default": "\"Add a wave shape to start the preview.\"",
-        "description": "Useful explanation when the shape options are empty."
-      },
-      {
-        "name": "waveforms",
-        "type": "readonly SignalShapeOption[]",
-        "default": "Sine, Triangle, Square",
-        "description": "Shape IDs (sine, triangle, square) and host labels. Duplicate IDs are collapsed; empty arrays disable the preview inputs."
+        "default": "\"lead-pluck.fw\"",
+        "description": "File name in the workbench title bar."
       },
       {
         "name": "waveform",
-        "type": "SignalShape",
+        "type": "\"sine\" | \"triangle\" | \"square\" | \"saw\"",
         "default": "\"sine\"",
-        "description": "Initial/configured waveform. A changed prop updates the internal model; controls remain interactive."
+        "description": "Starting shape; a changed prop moves the patch."
       },
       {
         "name": "frequency",
         "type": "number",
-        "default": "1.25",
-        "description": "Initial/configured Hz, bounded to 0.5–4 and normalized to 0.25Hz increments."
+        "default": "220",
+        "description": "Starting pitch in Hz, 55–880, snapped to semitones (A1–A5)."
       },
       {
         "name": "gain",
         "type": "number",
-        "default": "75",
-        "description": "Initial/configured percent, bounded to 0–100 and normalized to 5% increments."
+        "default": "-6",
+        "description": "Starting gain in dB, −36 to 0."
       },
       {
         "name": "value",
         "type": "SignalParameters",
-        "description": "Optional controlled model. Pair with onChange; it overrides individual configured values."
+        "description": "Controlled { waveform, frequency, gain }; pair with onChange."
       },
       {
         "name": "onChange",
         "type": "(parameters: SignalParameters) => void",
-        "description": "Reports an explicit edit with normalized waveform, frequency and gain. No network or audio request is made."
+        "description": "Normalised parameters on every edit."
       },
       {
         "name": "accent",
         "type": "string",
-        "default": "\"#e8a46c\"",
-        "description": "The meaningful signal color. The neutral light-theme default becomes #99542f for contrast."
+        "default": "\"#ffa45c\"",
+        "description": "The signal: trace and bloom, live wire pulses, the note chip, focus rings."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Complete surface and ink palette."
+        "description": "Page and window surfaces; the scope stays a dark screen in both."
       },
       {
         "name": "className",
         "type": "string",
         "default": "\"\"",
-        "description": "Host layout classes on the hero container."
-      },
-      {
-        "name": "changeErrorLabel",
-        "type": "string",
-        "description": "Useful failure copy when a synchronous parameter observer rejects an edit. The accepted local signal remains intact."
+        "description": "Classes on the section."
       }
     ],
     "added": "2026-10-13",
     "demo": {
       "steps": [
-        "wait:350",
+        "wait:900",
         "click:@wave-triangle",
-        "wait:450",
-        "click:@signal-frequency:0.73,0.5",
-        "wait:600",
-        "click:@signal-gain:0.25,0.5",
+        "wait:800",
+        "click:@wave-square",
+        "wait:800",
+        "click:@wave-saw",
         "wait:1100"
       ],
       "loop": false
@@ -24439,46 +24412,48 @@
         "options": [
           "sine",
           "triangle",
-          "square"
+          "square",
+          "saw"
         ],
         "default": "sine"
       },
       {
         "prop": "frequency",
-        "label": "Frequency",
+        "label": "Pitch",
         "kind": "slider",
-        "min": 0.5,
-        "max": 4,
-        "step": 0.25,
+        "min": 55,
+        "max": 880,
+        "step": 1,
         "unit": "Hz",
-        "default": 1.25
+        "default": 220
       },
       {
         "prop": "gain",
         "label": "Gain",
         "kind": "slider",
-        "min": 0,
-        "max": 100,
-        "step": 5,
-        "unit": "%",
-        "default": 75
+        "min": -36,
+        "max": 0,
+        "step": 1,
+        "unit": "dB",
+        "default": -6
       },
       {
         "prop": "accent",
-        "label": "Signal color",
+        "label": "Signal colour",
         "kind": "color",
-        "default": "#e8a46c",
+        "default": "#ffa45c",
         "options": [
-          "#e8a46c",
-          "#ededf0",
-          "#a3d6bd"
+          "#ffa45c",
+          "#f4f4f5",
+          "#5fd4a0",
+          "#7cc4ff"
         ]
       },
       {
         "prop": "heading",
-        "label": "Heading",
+        "label": "Headline",
         "kind": "text",
-        "default": "Shape a signal.\nSee it happen."
+        "default": "Sound you can\nsee before\nyou ship it."
       },
       {
         "prop": "theme",
