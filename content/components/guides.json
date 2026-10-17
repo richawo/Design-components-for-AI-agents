@@ -2245,19 +2245,20 @@
     "updated": "2026-10-12"
   },
   "finance-expense-review": {
-    "useWhen": "Reviewing a claim's supplied receipt lines, policy exceptions and decision.",
-    "avoidWhen": "Tax interpretation or reimbursement before your expense service accepts the decision.",
+    "useWhen": "Working an approvals queue of employee expense claims with the receipt beside each claim, policy breaches highlighted on the receipt itself, and a fast keyboard flow for approve and reject.",
+    "avoidWhen": "Submitting or editing an expense as the claimant, card reconciliation, or bulk exports for payroll; those belong to the claimant's flow and to finance operations screens.",
     "integration": [
-      "Supply your own records through `expenses`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onDecision` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
-      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+      "Pass `claims` with amounts in minor units, a structured `receipt` (merchant, printed time, lines, tax, total) and your policy engine's `checks`. Checks with `lineIds` highlight those receipt lines and number them to match the list.",
+      "`onDecision` receives `{ claimId, decision, amountMinor, reason?, note? }`. Re-check the claim's state and the reviewer's limit on the server; reject with an `Error` to keep the claim, the reason and the note on screen.",
+      "Keyboard: J/K or arrows move, A approves, R opens the reason picker, Enter confirms and Escape cancels. Shortcuts pause while the reviewer is typing.",
+      "Seed `approvedTodayMinor` and `payoutDate` from your ledger so the running total and the payout line are accurate."
     ],
     "related": [
+      "finance-payment-run",
       "finance-budget-variance",
-      "finance-close-checklist",
-      "finance-invoice-composer"
+      "finance-reconciliation"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "finance-invoice-composer": {
     "useWhen": "Writing and sending a one-off invoice where the person edits the actual document: lines, discount, tax, terms and the payment block, with totals worked out as they type.",

@@ -22775,77 +22775,101 @@
   },
   {
     "slug": "finance-expense-review",
-    "name": "Expense Review Desk",
+    "name": "Expense Review",
     "tier": "pro",
     "platform": "web",
     "category": "billing",
-    "description": "Review receipts, policy exceptions and explicit approval or return decisions. A considered, responsive finance workspace with typed integration points.",
+    "description": "An approvals desk with the receipt on paper beside the claim: policy flags highlighted on the slip, A/R and J/K keys, a stamp per decision and a queue that drains.",
     "tags": [
       "finance",
-      "workflow",
-      "responsive",
+      "expenses",
+      "approvals",
+      "receipts",
+      "policy",
       "keyboard",
-      "billing"
+      "spend management"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1180,
-    "usage": "import { ExpenseReview } from \"@/components/design-for-ai/finance-expense-review\";\n\n<ExpenseReview />",
+    "previewHeight": 1120,
+    "usage": "import { ExpenseReview } from \"@/components/design-for-ai/finance-expense-review\";\n\n<ExpenseReview\n  claims={claims}\n  approvedTodayMinor={128450}\n  payoutDate=\"2026-10-23\"\n  currency=\"GBP\"\n  onDecision={async (decision) => {\n    const res = await fetch(`/api/expenses/${decision.claimId}/decision`, { method: \"POST\", body: JSON.stringify(decision) });\n    if (!res.ok) throw new Error(\"That decision didn’t save.\");\n  }}\n/>",
     "props": [
       {
-        "name": "title",
-        "type": "string",
-        "description": "Main heading.",
-        "default": "\"Expense review\""
+        "name": "claims",
+        "type": "ExpenseClaim[]",
+        "description": "Claims waiting for review: { id, claimant { name, team }, merchant, category, purpose, spentOn (ISO), amountMinor, paidWith ({ kind: \"personal\" } or { kind: \"card\", mask }), receipt?, checks }. Duplicate ids after the first are ignored."
       },
       {
-        "name": "subtitle",
-        "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Review submitted evidence, policy exceptions and exact receipt totals before deciding.\""
+        "name": "approvedTodayMinor",
+        "type": "number",
+        "default": "128450",
+        "description": "What was already approved today, so the running total starts where the reviewer left off."
       },
       {
-        "name": "expenses",
-        "type": "ReviewExpense[]",
-        "description": "Unique pending claims. Amounts are two-decimal minor units. Policy exceptions are supplied by the host."
+        "name": "payoutDate",
+        "type": "string",
+        "default": "\"2026-10-23\"",
+        "description": "ISO date approved out-of-pocket claims are paid; shown under the total and on the cleared summary."
+      },
+      {
+        "name": "today",
+        "type": "string",
+        "default": "\"2026-10-16\"",
+        "description": "ISO date printed on the APPROVED / REJECTED stamp."
+      },
+      {
+        "name": "rejectReasons",
+        "type": "string[]",
+        "default": "[\"Needs an itemised receipt\", \"Personal expense\", \"Over the policy limit\"]",
+        "description": "Reasons offered when rejecting, after the labels of the claim’s own flags (five at most)."
       },
       {
         "name": "currency",
         "type": "string",
-        "description": "Shared ISO currency, using two-decimal amounts."
+        "default": "\"GBP\"",
+        "description": "ISO 4217 code. Amounts are minor units of this currency."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Locale for money and dates."
       },
       {
         "name": "onDecision",
-        "type": "(decision:ExpenseDecision)=>void|Promise<void>",
-        "description": "Persist the reviewed decision. Approval here does not initiate reimbursement."
+        "type": "(decision: ExpenseDecision) => void | Promise<void>",
+        "description": "Records { claimId, decision: \"approve\" | \"reject\", amountMinor, reason?, note? }. Resolve to stamp the receipt and move to the next claim; reject to keep the claim, the reason and the note, and show the message with Try again."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "description": "The one accent: queue rail, primary action and key caps on it. Defaults to the theme’s ink."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Surface palette. The receipt stays paper in both."
       },
       {
-        "name": "selectMode",
-        "type": "\"custom\" | \"native\"",
-        "default": "\"custom\"",
-        "description": "Animated keyboard-accessible custom listboxes, or native platform pickers with matched 12px insets."
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:400",
-        "click:@expense-1",
         "wait:700",
-        "click:@expense-0",
-        "wait:500",
         "click:@approve",
-        "wait:450",
-        "click:@confirm",
-        "wait:1000"
+        "wait:1500",
+        "key:r",
+        "wait:700",
+        "click:@confirm-reject",
+        "wait:1400"
       ],
       "loop": false
     },
@@ -22861,14 +22885,16 @@
         "default": "dark"
       },
       {
-        "prop": "selectMode",
-        "label": "Select menus",
-        "kind": "segmented",
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
         "options": [
-          "custom",
-          "native"
-        ],
-        "default": "custom"
+          "#f4f4f5",
+          "#8ea2ff",
+          "#c6f36d",
+          "#5eead4"
+        ]
       }
     ]
   },
