@@ -3485,19 +3485,19 @@
     ]
   },
   "collab-message-list": {
-    "updated": "2026-10-12",
-    "useWhen": "Showing a readable team conversation with reply affordances, reversible reactions and respectful arrival of new posts.",
-    "avoidWhen": "Treating a visual conversation as a transport layer or asserting delivery before a host returns an authoritative message.",
+    "useWhen": "A team channel or direct conversation that people read, react to and reply from, where arrivals, unread position and threads matter.",
+    "avoidWhen": "Feedback anchored to a document passage (use the Comment Thread) or a one-to-one assistant chat with streaming answers.",
     "integration": [
-      "Pass stable message IDs and author identities. Drive reactions and thread navigation through host callbacks.",
-      "The viewport follows own posts and preserves earlier reading positions for incoming posts.",
-      "Animate reaction figures in both directions; live announcements apply to added messages rather than every count frame."
+      "Pass messages oldest first with stable IDs and author IDs, plus people with handles so @mentions render. day labels group the list and stick while you scroll.",
+      "lastReadId places the New line and opens the list there; posts arriving while someone reads history are counted in a jump pill instead of moving them.",
+      "onReaction toggles the signed-in person’s reaction, including kinds a message doesn’t have yet; onReply opens your thread view; mark your own posts status \"sending\" or \"failed\" and handle onRetry."
     ],
     "related": [
-      "block-team-workspace",
       "collab-comment-thread",
-      "collab-mention-input"
-    ]
+      "collab-mention-input",
+      "block-team-workspace"
+    ],
+    "updated": "2026-10-17"
   },
   "block-team-workspace": {
     "updated": "2026-10-12",

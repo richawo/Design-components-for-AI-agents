@@ -11322,12 +11322,16 @@
     "tier": "pro",
     "platform": "web",
     "category": "collaboration",
-    "description": "A grouped team conversation with anchored scrolling, useful reply actions and reversible reaction counts. New messages preserve the reader’s place.",
+    "description": "A team channel conversation: grouped messages, sticky day labels, a “New” line, typing, a reaction tray with rolling counts, threads and retry.",
     "tags": [
+      "chat",
       "team",
+      "messages",
+      "collaboration",
+      "reactions",
+      "threads",
+      "typing indicator",
       "workspace",
-      "keyboard",
-      "composition",
       "dark"
     ],
     "dependencies": [
@@ -11335,67 +11339,142 @@
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 680,
-    "usage": "import { MessageList } from \"@/components/design-for-ai/collab-message-list\";\n\n<MessageList messages={messages} people={people} currentUserId={user.id} onReply={openThread} onReaction={toggleReaction} />",
+    "previewHeight": 800,
+    "usage": "import { MessageList } from \"@/components/design-for-ai/collab-message-list\";\n\n<MessageList\n  messages={messages}\n  people={members}\n  currentUserId={me.id}\n  lastReadId={channel.lastReadId}\n  typing={typingIds}\n  onReaction={(id, kind) => toggleReaction(id, kind)}\n  onReply={(id) => openThread(id)}\n  onRetry={(id) => resend(id)}\n  height=\"100%\"\n/>",
     "props": [
       {
         "name": "messages",
         "type": "TeamMessage[]",
-        "description": "Stable message IDs, author IDs, plain-text bodies, time labels, reaction state and reply counts."
+        "default": "a demo channel",
+        "description": "Oldest first: { id, authorId, body, time, day?, reactions?, replyCount?, replyAuthorIds?, lastReplyTime?, edited?, status?, attachment? }. Consecutive posts by one person group under one name."
       },
       {
         "name": "people",
         "type": "TeamPerson[]",
-        "description": "Author names and optional mention handles."
+        "default": "4 demo people",
+        "description": "{ id, name, handle? }. Handles turn @mentions into tokens."
       },
       {
         "name": "currentUserId",
         "type": "string",
         "default": "\"sam\"",
-        "description": "Own-message identity. Own sent posts may follow into view."
+        "description": "You: your posts always scroll into view, mentions of you are marked with the accent, and your reactions show as yours."
+      },
+      {
+        "name": "lastReadId",
+        "type": "string",
+        "description": "The last message you’d read. A “New” line sits under it and the list opens there."
+      },
+      {
+        "name": "typing",
+        "type": "string[]",
+        "default": "[]",
+        "description": "People typing now (IDs). Shown under the last message."
       },
       {
         "name": "onReaction",
-        "type": "(messageId: string, reaction: \"like\" | \"agree\") => void",
-        "description": "Host-owned reaction changes; omit for read-only counts."
+        "type": "(messageId: string, kind: \"like\" | \"agree\" | \"celebrate\" | \"seen\") => void",
+        "description": "Toggle your reaction: from a pill, or from the tray on the message’s hover toolbar. The host adds a kind the message doesn’t have yet. Omit for read-only counts."
       },
       {
         "name": "onReply",
         "type": "(messageId: string) => void",
-        "description": "Open the host thread view; omit to hide reply actions."
+        "description": "Open the thread, from the toolbar or a thread summary. Omit to hide reply actions."
+      },
+      {
+        "name": "onRetry",
+        "type": "(messageId: string) => void",
+        "description": "Resend one of your posts with status \"failed\"; its text stays in place."
+      },
+      {
+        "name": "framed",
+        "type": "boolean",
+        "default": "true",
+        "description": "Draw the list as its own card. Turn off inside a frame that already has one."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#5b8def\"",
+        "description": "The one accent: the “New” line, mentions of you and your reactions."
       },
       {
         "name": "height",
         "type": "number | string",
-        "default": "440",
-        "description": "Conversation viewport height."
+        "default": "520",
+        "description": "Height of the scrolling conversation."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and readable text palettes."
+        "description": "Surface palette."
       }
     ],
     "added": "2026-10-12",
     "demo": {
       "steps": [
-        "click:@react-m1-like",
         "wait:600",
-        "click:@react-m1-like",
-        "wait:1000"
+        "click:@react-m6-celebrate",
+        "wait:500",
+        "click:@composer",
+        "type:Great. Ship it at 14:00.",
+        "key:Enter",
+        "wait:2300"
       ]
     },
     "controls": [
+      {
+        "prop": "currentUserId",
+        "label": "Signed in as",
+        "kind": "select",
+        "options": [
+          {
+            "value": "sam",
+            "label": "Sam Okoye"
+          },
+          {
+            "value": "mara",
+            "label": "Mara Ilić"
+          },
+          {
+            "value": "noor",
+            "label": "Noor Haddad"
+          }
+        ],
+        "default": "sam",
+        "group": "Content"
+      },
       {
         "prop": "theme",
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
-        "default": "dark"
+        "default": "dark",
+        "group": "Look"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#5b8def",
+        "options": [
+          "#5b8def",
+          "#f4f4f5",
+          "#f5a524",
+          "#4ade80",
+          "#ff7a45"
+        ],
+        "group": "Look"
       }
     ]
   },
