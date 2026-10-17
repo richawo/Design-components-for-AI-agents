@@ -104,7 +104,7 @@ needs re-recording, whether its poster is current, and the state of its browser 
 | --- | --- | --- | --- |
 | `saas-access-requests` | new | stale | rewritten, passes |
 | `saas-audit-trail` | new | stale | rewritten, passes |
-| `saas-customer-health` | new | current | rewritten, fails on a real bug (2) |
+| `saas-customer-health` | new | current | rewritten, passes (invalid dates and empty trends fixed) |
 | `saas-integration-manager` | new | stale | rewritten, passes |
 | `saas-notification-inbox` | new | stale | rewritten, passes |
 | `saas-report-scheduler` | new | current | rewritten, passes |

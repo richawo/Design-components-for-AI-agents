@@ -155,9 +155,17 @@ export async function check({ page, mount, assert }) {
   await mount(`createRoot(document.getElementById('root')).render(<Subject.CustomerHealth today="2026-10-14" accounts={[${ACCOUNT("x", "renewsOn:'not-a-date'")}]}/>);`);
   await page.getByRole("complementary", { name: "Acct x health" }).waitFor({ timeout: 5000 });
 
+  assert.match(await page.getByRole("alert").innerText(), /Invalid renewal dates: x/);
+  assert.match(await spoken(page.getByRole("complementary")), /Renews in Unknown/);
+  assert.doesNotMatch(await txt(page.locator("section").first()), /NaN|Infinity/);
+  await mount(`createRoot(document.getElementById('root')).render(<Subject.CustomerHealth accounts={[${ACCOUNT("bad", "renewsOn:'2026-02-30'")}]}/>);`);
+  assert.match(await page.getByRole("alert").innerText(), /Invalid renewal dates: bad/);
+
   // An account without trend history must not draw a broken chart.
   await mount(`createRoot(document.getElementById('root')).render(<Subject.CustomerHealth today="2026-10-14" accounts={[${ACCOUNT("n", "trend:[]")}]}/>);`);
   await page.getByRole("complementary", { name: "Acct n health" }).waitFor();
   assert.equal(await page.locator('path[d*="NaN"], circle[cy="NaN"]').count(), 0, "Empty trend draws NaN geometry");
   assert.doesNotMatch(await txt(page.getByRole("complementary")), /last 0 weeks/);
+  await page.getByText("No trend history yet.").waitFor();
+  assert.equal(await page.getByRole("img", {name: /^Health moved/}).count(), 0);
 }

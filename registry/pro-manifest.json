@@ -38362,7 +38362,7 @@
         "name": "accounts",
         "type": "CustomerAccount[]",
         "default": "eight Kestrel customer accounts",
-        "description": "Each { id, name, domain, plan, arr, owner, renewsOn (ISO date), trend: number[] (weekly composite, oldest first), signals: Record<driverKey, { score 0–100, detail, delta? }> }. A missing signal shows as “no data” and is left out of the score."
+        "description": "Each { id, name, domain, plan, arr, owner, renewsOn (ISO date), trend: number[] (weekly composite, oldest first), signals: Record<driverKey, { score 0–100, detail, delta? }> }. A missing signal shows as “no data” and is left out of the score. Invalid renewal dates are flagged and excluded from timing. Empty trend arrays show no history."
       },
       {
         "name": "drivers",

@@ -8,6 +8,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 3.1: resolved evidence chain verification and manifest flags. The dedicated browser probe passes, including missing hashes and rejected exports.
 
+- Task 3.2: resolved invalid renewal dates and empty customer-health trends, with regression coverage for malformed and impossible dates.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
