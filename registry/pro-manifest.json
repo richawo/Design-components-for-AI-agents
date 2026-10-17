@@ -27942,115 +27942,121 @@
     "tier": "pro",
     "platform": "web",
     "category": "media",
-    "description": "Inspect real visual variants with bounded linked or independent zoom/pan, atomic host camera ownership, actual native image geometry and keyboard/touch controls.",
+    "description": "Proof variants side by side with linked zoom and a synced loupe: hover one and every version magnifies the same point.",
     "tags": [
       "image comparison",
+      "proofing",
+      "loupe",
       "zoom",
       "pan",
-      "media inspector",
       "variants",
-      "proofing"
+      "print"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1200,
-    "usage": "import { MediaCompareGrid } from \"@/components/design-for-ai/media-compare-grid\";\n\n<MediaCompareGrid variants={proofs} value={viewState} onValueChange={setViewState} onValueCommit={persistViewState} />",
+    "previewHeight": 1000,
+    "usage": "import { MediaCompareGrid } from \"@/components/design-for-ai/media-compare-grid\";\n\n<MediaCompareGrid\n  title=\"Fieldnote No. 31, cover\"\n  subtitle=\"Paper test · press Thu\"\n  variants={[\n    { id: \"uncoated\", label: \"Munken Pure, uncoated\", src: uncoatedUrl, specs: [\"120 gsm\"] },\n    { id: \"coated\", label: \"Magno Silk, coated\", src: coatedUrl, specs: [\"130 gsm\"] },\n  ]}\n  onValueCommit={saveView}\n/>",
     "props": [
       {
         "name": "variants",
         "type": "CompareVariant[]",
-        "description": "Up to four supplied stable-id labelled real images. Source/alt/description are host data. Missing/failed images retain labels and explicit recovery.",
+        "description": "Up to four images to compare {id, label, src, alt, description, specs}. Give them the same framing so linked views and the loupe land on the same point.",
         "default": "[]"
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Untitled proof\"",
+        "description": "The job being proofed, in the tool bar."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "description": "Context under the title, e.g. “Paper test · press Thu”."
       },
       {
         "name": "value",
         "type": "CompareState",
-        "description": "Optional atomic controlled activeId/linked/views state. Missing handler is read-only; rejected requests retain actual rendered cameras and emit no false commit."
+        "description": "Controlled {activeId, linked, views}. Without onValueChange it’s read-only; a request the host ignores springs the views back."
       },
       {
         "name": "defaultValue",
         "type": "CompareState",
-        "description": "Initial uncontrolled state. Defaults to first active variant, linked controls and fitted cameras."
+        "description": "Initial uncontrolled state. Defaults to the first variant, linked, fitted."
       },
       {
         "name": "onValueChange",
         "type": "(value: CompareState) => void",
-        "description": "Requests one bounded atomic state. Accept the full requested packet when controlling linked views; view maps describe the displayed variant IDs."
+        "description": "Requests a new state on every finished gesture or tool action (pans stream through motion values, not state)."
       },
       {
         "name": "onValueCommit",
         "type": "(value: CompareState) => void",
-        "description": "Observes accepted changed pointer releases or keyboard/toolbar actions. Rejection, cancellation and obsolete gestures never falsely commit."
+        "description": "Observes accepted, changed states: a released pan, a zoom step, a link toggle, a fit."
       },
       {
         "name": "maxZoom",
         "type": "number",
-        "description": "Finite maximum from 1 to 8. Invalid settings disable inspection with a truthful remedy; actual camera rendering is bounded.",
+        "description": "Maximum zoom, 1–8.",
         "default": "4"
+      },
+      {
+        "name": "loupe",
+        "type": "boolean",
+        "default": "true",
+        "description": "The synced loupe. Hover (or tap, on touch) one view and every view magnifies the same point of the image."
+      },
+      {
+        "name": "loupeZoom",
+        "type": "number",
+        "default": "2.5",
+        "description": "Loupe magnification on top of the current zoom."
       },
       {
         "name": "status",
         "type": "\"ready\" | \"loading\" | \"unavailable\"",
-        "description": "Host availability, independent of retained image labels and camera preferences.",
+        "description": "Archive availability. Loading shows spinners in each frame; unavailable shows a recovery bar while open images stay inspectable.",
         "default": "\"ready\""
       },
       {
         "name": "error",
         "type": "string",
-        "description": "Host error text alongside retained variants."
+        "description": "Message for the unavailable state."
       },
       {
         "name": "onRetry",
         "type": "() => void",
-        "description": "Optional host archive recovery intent alongside local native image reload."
-      },
-      {
-        "name": "heading",
-        "type": "string",
-        "description": "Inspector heading.",
-        "default": "\"Compare, with intention.\""
-      },
-      {
-        "name": "description",
-        "type": "string",
-        "description": "Short context.",
-        "default": "\"Inspect the details that make the difference.\""
+        "description": "Offered as “Try again” in the unavailable state."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Neutral graphite and white chrome; colour is reserved for actual feature content and semantic data accents.",
+        "description": "Graphite or white chrome. The images keep their own colour.",
         "default": "\"dark\""
       },
       {
         "name": "accent",
         "type": "string",
-        "description": "Active view edge. Light theme darkens the supplied tint for functional contrast.",
-        "default": "\"#e6b782\""
+        "description": "The one accent: the ring and dot on the view in focus. The default ink switches to dark ink on the light theme.",
+        "default": "\"#f4f4f5\""
       },
       {
         "name": "disabled",
         "type": "boolean",
-        "description": "Stops interaction and active pointer ownership while keeping image data readable.",
+        "description": "Stops zoom, pan and the loupe; images stay visible.",
         "default": "false"
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Root classes, container-responsive up to 920 px.",
+        "description": "Root classes. Container-responsive up to 1120 px: two columns from 576 px, up to four.",
         "default": "\"\""
       }
     ],
     "controls": [
-      {
-        "prop": "heading",
-        "label": "Inspector title",
-        "kind": "text",
-        "default": "Compare, with intention."
-      },
       {
         "prop": "theme",
         "label": "Theme",
@@ -28063,14 +28069,30 @@
       },
       {
         "prop": "accent",
-        "label": "Active view edge",
+        "label": "Focus ring",
         "kind": "color",
-        "default": "#e6b782",
+        "default": "#f4f4f5",
         "options": [
-          "#e6b782",
-          "#b0c1b5",
-          "#e3e1e9"
+          "#f4f4f5",
+          "#ff6b3d",
+          "#7cc4ff"
         ]
+      },
+      {
+        "prop": "loupe",
+        "label": "Synced loupe",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "loupeZoom",
+        "label": "Loupe zoom",
+        "kind": "slider",
+        "min": 1.5,
+        "max": 4,
+        "step": 0.5,
+        "unit": "×",
+        "default": 2.5
       },
       {
         "prop": "disabled",
@@ -28091,17 +28113,17 @@
     ],
     "demo": {
       "steps": [
-        "click:@compare-zoom-in",
-        "click:@compare-zoom-in",
-        "wait:300",
-        "hover:@compare-paper",
-        "drag:0.4,0.55",
-        "wait:350",
-        "click:@compare-link",
-        "click:@compare-zoom-out",
-        "wait:350",
-        "click:@compare-reset",
-        "click:@compare-link",
+        "wait:400",
+        "hover:@proof-uncoated:0.28,0.17",
+        "wait:500",
+        "hover:@proof-uncoated:0.62,0.47",
+        "wait:700",
+        "click:@zoom-in",
+        "click:@zoom-in",
+        "wait:500",
+        "hover:@proof-coated:0.35,0.82",
+        "wait:600",
+        "click:@fit",
         "wait:500"
       ],
       "loop": false

@@ -3758,17 +3758,17 @@
     "updated": "2026-10-13"
   },
   "media-compare-grid": {
-    "useWhen": "Inspecting several supplied visual variants with coordinated zoom and pan.",
-    "avoidWhen": "A simple before-and-after wipe or a data table that compares textual values.",
+    "useWhen": "Choosing between versions of the same image (paper stocks, print proofs, retouches, renders, compression settings) where the difference lives in details you need to zoom into on every version at once.",
+    "avoidWhen": "A single before/after reveal (use a wipe), comparing unrelated images with different framing, or comparing text and numbers rather than pixels.",
     "integration": [
-      "Supply stable variant IDs, labels and real image sources. One atomic view state contains active image, linked policy and the per-image cameras; link normalized coordinates only for meaningfully comparable framing.",
-      "Pair value/defaultValue with onValueChange and observe completed accepted gestures through onValueCommit. Rejected requests preserve actual cameras; keyboard controls, reset and Escape recovery make inspection usable without pointer dragging."
+      "Pass up to four variants with stable ids, labels and image URLs at the same framing and size; add description and specs for the facts that matter to the decision.",
+      "Control the view with value/onValueChange if you need to sync or restore it, and persist finished gestures from onValueCommit. Drive status, error and onRetry from your asset host; loupe and loupeZoom tune the synced magnifier."
     ],
     "related": [
       "media-before-after",
-      "layout-split-resizer"
+      "media-crop-workbench"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "portfolio-project-reel": {
     "useWhen": "Presenting a focused set of supplied projects with a large visual and readable case notes, using deliberate previous/next navigation.",
