@@ -3150,17 +3150,18 @@
     "updated": "2026-10-12"
   },
   "scroll-chapter-stack": {
-    "useWhen": "A short chapter-based narrative with deliberate panel progression.",
-    "avoidWhen": "Long reference content that needs unrestricted scanning and comparison.",
+    "useWhen": "A case study or story told in three to six chapters, each with a photograph, a few figures and enough copy to read without scrolling inside it.",
+    "avoidWhen": "Reference content people scan and compare, or chapters longer than a screen; those flow as ordinary sections and the stacking adds nothing.",
     "integration": [
-      "Supply your own records through `chapters`. Preserve stable keys or IDs when the data contract provides them."
+      "Pass your chapters through `chapters`, each with a stable `id`, an `eyebrow` that doubles as its jump-button label, real `imageSrc` and meaningful `imageAlt`. `facts` prints up to four short figures.",
+      "Stacking only engages on fine pointers in containers at least 760px wide where every chapter fits the viewport; otherwise, and with reduced motion, chapters flow in normal order. Keep ancestors free of overflow clipping so sticky positioning works."
     ],
     "related": [
-      "content-accordion-index",
-      "content-release-notes",
-      "scroll-background-wipe"
+      "scroll-background-wipe",
+      "feature-sticky-scroll",
+      "scroll-cinema-frame"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "scroll-cinema-frame": {
     "useWhen": "Expanding an authentic video or image within a scroll-led product story.",
