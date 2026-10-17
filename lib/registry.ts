@@ -1,4 +1,5 @@
 import "server-only";
+import { unpackContent, type PackedContent } from "../scripts/lib/content-pack.mjs";
 import {
   CATEGORIES,
   type Category,
@@ -55,7 +56,7 @@ export async function readSource(
   const load = Object.hasOwn(sourceLoaders, slug)
     ? sourceLoaders[slug]
     : undefined;
-  return load ? ((await load()).default as ComponentSource) : null;
+  return load ? (unpackContent((await load()).default as PackedContent) as ComponentSource) : null;
 }
 
 /** A Pro shadcn registry item. Check the licence first. */

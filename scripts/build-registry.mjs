@@ -373,15 +373,21 @@ function prune(dir, keep) {
 const writeIfChanged = writeAtomic;
 writeJson(path.join(outDir, "index.json"), entries);
 prune(path.join(outDir, "sources"), new Set([...free, ...pro].map((c) => `${c.meta.slug}.json`)));
+fs.mkdirSync(path.join(outDir, "source-packs"), { recursive: true });
+prune(path.join(outDir, "source-packs"), new Set([...free, ...pro].map((c) => `${c.meta.slug}.json`)));
 prune(path.join(outDir, "r-pro"), new Set(pro.map((c) => `${c.meta.slug}.json`)));
 
 for (const c of [...free, ...pro]) {
-  writeJson(path.join(outDir, "sources", `${c.meta.slug}.json`), {
+  const source = {
     slug: c.meta.slug,
     code: installedBlockSource(c.meta, c.code),
     prompt: c.prompt,
     promptJson: c.promptJson,
-  });
+  };
+  writeJson(path.join(outDir, "sources", `${c.meta.slug}.json`), source);
+  // Keep source text out of the runtime's JavaScript parser until requested.
+  // This is the same lossless format as the editorial bundle, per component.
+  writeJson(path.join(outDir, "source-packs", `${c.meta.slug}.json`), packContent(source));
 }
 
 const loaders = [...free, ...pro]
@@ -438,7 +444,7 @@ const cardThumbnails = await buildCardImages(root, thumbs);
 const videos = previewFiles.filter((f) => f.endsWith(".mp4") || f.endsWith(".webm"));
 const conveyorVideos = conveyorVideoManifest(root, showcaseCollections.flatMap(c => c.slugs));
 const sourceLoaders = [...free, ...pro]
-  .map((c) => `  ${JSON.stringify(c.meta.slug)}: () => import(${JSON.stringify(`./sources/${c.meta.slug}.json`)}),`)
+  .map((c) => `  ${JSON.stringify(c.meta.slug)}: () => import(${JSON.stringify(`./source-packs/${c.meta.slug}.json`)}),`)
   .join("\n");
 const proItemLoaders = pro
   .map((c) => `  ${JSON.stringify(c.meta.slug)}: () => import(${JSON.stringify(`./r-pro/${c.meta.slug}.json`)}),`)

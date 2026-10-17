@@ -18,4 +18,17 @@ describe("packed editorial content", () => {
   it("rejects a damaged payload instead of serving incomplete text", () => {
     expect(() => unpackContent({ encoding: "gzip-base64", data: "broken" })).toThrow();
   });
+  it("preserves every component's installable code and briefs byte for byte", () => {
+    const dir = path.resolve(import.meta.dirname, "../registry/__generated__");
+    let originalBytes = 0, packedBytes = 0;
+    for (const name of fs.readdirSync(path.join(dir, "sources"))) {
+      const original = fs.readFileSync(path.join(dir, "sources", name), "utf8");
+      const packed = fs.readFileSync(path.join(dir, "source-packs", name), "utf8");
+      expect(unpackContent(JSON.parse(packed))).toEqual(JSON.parse(original));
+      originalBytes += Buffer.byteLength(original);
+      packedBytes += Buffer.byteLength(packed);
+    }
+    expect(originalBytes).toBeGreaterThan(0);
+    expect(packedBytes).toBeLessThan(originalBytes * 0.6);
+  });
 });

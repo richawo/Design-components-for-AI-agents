@@ -5,8 +5,8 @@ const fixture = vi.hoisted(() => ({
   item: { name: "example", dependencies: ["motion"], files: [{ path: "registry/pro/example/example.tsx", type: "registry:component", target: "components/design-for-ai/example.tsx", content: "" }] },
 }));
 vi.mock("@/registry/__generated__/index.json", () => ({ default: [] }));
-vi.mock("@/registry/__generated__/server-data", () => ({
-  sourceLoaders: { example: async () => ({ default: fixture.source }) },
+vi.mock("@/registry/__generated__/server-data", async () => ({
+  sourceLoaders: { example: async () => ({ default: (await import("../scripts/lib/content-pack.mjs")).packContent(fixture.source) }) },
   proItemLoaders: { example: async () => ({ default: fixture.item }), missing: async () => ({ default: fixture.item }) },
   thumbnails: new Set(), videos: new Set(),
 }));
