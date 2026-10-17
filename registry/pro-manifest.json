@@ -21537,79 +21537,101 @@
     "tier": "pro",
     "platform": "web",
     "category": "features",
-    "description": "A tactile keycap feature with real scoped shortcuts and accessible action controls that operate a supplied live product preview.",
+    "description": "A shortcut showcase: press a real key or tap its 3D keycap and a mini issue tracker acts it out — new issue, command menu, done, focus mode.",
     "tags": [
       "features",
-      "keyboard",
-      "shortcut",
-      "product demo",
+      "keyboard shortcuts",
       "keycaps",
-      "dark"
+      "product demo",
+      "command menu",
+      "saas"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1000,
-    "usage": "import { FeaturesShortcutTheatre } from \"@/components/design-for-ai/features-shortcut-theatre\";\n\n<FeaturesShortcutTheatre actions={actions} preview={<NotesPreview />} onInvoke={invokeAction} resetKey={workspaceId} />",
+    "previewHeight": 900,
+    "usage": "import { FeaturesShortcutTheatre } from \"@/components/design-for-ai/features-shortcut-theatre\";\n\n<FeaturesShortcutTheatre\n  product=\"Kestrel\"\n  shortcuts={shortcuts}\n  issues={issues}\n  onAction={(action) => track(\"shortcut_demo\", { action })}\n/>",
     "props": [
       {
-        "name": "actions",
-        "type": "ShortcutTheatreAction[]",
-        "description": "Unique action IDs, labels, descriptions and exact key/modifier chords. Disabled actions remain explainable.",
-        "default": "3 original notes actions: find, view, new"
+        "name": "shortcuts",
+        "type": "TheatreShortcut[]",
+        "default": "C new issue, ⌘K command menu, D mark done, [ focus mode",
+        "description": "Each: action (\"create\" | \"command\" | \"done\" | \"sidebar\"), label, description, key (as KeyboardEvent.key reports it) and mod (⌘ on Apple platforms, Ctrl elsewhere). Relabel or rebind; the mini app knows how to act out each action."
       },
       {
-        "name": "preview",
-        "type": "ReactNode",
-        "description": "Actual product surface. Remains mounted through invocation states. Named component is unavailable without content; default demo supplies original offline notes."
+        "name": "issues",
+        "type": "TheatreIssue[]",
+        "default": "Five Kestrel issues in Cycle 24",
+        "description": "The mini app’s list: id, title, status (\"todo\" | \"progress\" | \"done\"), priority 0–3 and an optional assignee name."
       },
       {
-        "name": "onInvoke",
-        "type": "(action: ShortcutTheatreAction, signal: AbortSignal) => void | Promise<void>",
-        "description": "Real action observer. Its return acknowledges completion; cancel, reset, action/callback/preview retirement and unmount abort old work."
+        "name": "people",
+        "type": "string[]",
+        "default": "Mara Ellison, Theo March, Priya Shah, Jonah Adeyemi",
+        "description": "Who the command menu assigns the selected issue to, in turn."
       },
       {
-        "name": "resetKey",
-        "type": "string | number",
-        "description": "Host session identity; changes clear interaction feedback and abort outstanding work without inventing a content reset."
+        "name": "newIssueTitles",
+        "type": "string[]",
+        "default": "Three plausible bug titles",
+        "description": "Titles typed into new issues, in turn."
       },
       {
-        "name": "title",
+        "name": "product",
         "type": "string",
-        "description": "Concise product-action heading.",
-        "default": "\"Try a shortcut. Keep your place.\""
+        "default": "\"Kestrel\"",
+        "description": "Product name in the mini app’s sidebar."
       },
       {
-        "name": "description",
+        "name": "issuePrefix",
         "type": "string",
-        "description": "One sentence explaining the useful action.",
-        "default": "\"A key should take you somewhere useful. Try an action in the preview.\""
+        "default": "\"KES\"",
+        "description": "Prefix for new issue IDs."
+      },
+      {
+        "name": "onAction",
+        "type": "(action: TheatreActionKind) => void",
+        "description": "Called after each shortcut plays, by key, tap or autoplay."
+      },
+      {
+        "name": "autoplay",
+        "type": "boolean",
+        "default": "false",
+        "description": "Tours the shortcuts every 2.6 s while in view until someone presses a key, taps or selects an issue. Never with reduced motion."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ff7a45\"",
+        "description": "The one accent: the selected issue, the lit key lamp, the palette highlight and the typing caret."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Neutral black/white glass chrome, with colour reserved for actual data/feature accents.",
-        "default": "\"dark\""
+        "default": "\"dark\"",
+        "description": "Graphite or white chrome; keycaps follow."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Outer feature class.",
-        "default": "\"\""
+        "default": "\"\"",
+        "description": "Classes for the outer card."
       }
     ],
     "added": "2026-10-13",
     "demo": {
       "steps": [
-        "click:@invoke-sidebar",
-        "wait:420",
-        "click:@invoke-new",
-        "wait:400",
-        "click:@invoke-search",
-        "wait:500"
-      ]
+        "wait:500",
+        "click:@shortcut-create",
+        "wait:1100",
+        "click:@shortcut-command",
+        "wait:1500",
+        "click:@shortcut-done",
+        "wait:1000"
+      ],
+      "loop": false
     },
     "controls": [
       {
@@ -21617,22 +21639,44 @@
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
-        "default": "dark"
+        "default": "dark",
+        "group": "Look"
       },
       {
-        "prop": "title",
-        "label": "Heading",
-        "kind": "text",
-        "default": "Try a shortcut. Keep your place."
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#ff7a45",
+        "options": [
+          "#ff7a45",
+          "#34d399",
+          "#7c9cff",
+          "#f5c542"
+        ],
+        "group": "Look"
       },
       {
-        "prop": "description",
-        "label": "Description",
+        "prop": "product",
+        "label": "Product",
         "kind": "text",
-        "default": "A key should take you somewhere useful. Try an action in the preview."
+        "default": "Kestrel",
+        "group": "Content"
+      },
+      {
+        "prop": "autoplay",
+        "label": "Autoplay",
+        "kind": "toggle",
+        "default": false,
+        "group": "Behaviour"
       }
     ]
   },

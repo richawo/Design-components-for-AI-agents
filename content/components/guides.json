@@ -3835,17 +3835,18 @@
     "updated": "2026-10-13"
   },
   "features-shortcut-theatre": {
-    "useWhen": "Demonstrating a product action through explicit, accessible shortcut controls and a supplied live preview.",
-    "avoidWhen": "Registering global shortcuts without consent or animating a keyboard that performs no useful action.",
+    "useWhen": "A landing or feature page for a keyboard-first product (issue trackers, editors, mail, design tools) where pressing the shortcut sells it better than a list of hotkeys.",
+    "avoidWhen": "Documenting every shortcut (use a reference table), registering global hotkeys on a page, or products whose actions aren’t about speed at the keyboard.",
     "integration": [
-      "Supply the demonstrated action and clear shortcut labels. Pointer, touch and keyboard controls should invoke the same bounded preview operation.",
-      "Keep unavailable actions explainable, respect host rejection and avoid intercepting ordinary typing in adjacent fields."
+      "Relabel and rebind the four built-in performances through shortcuts: action is one of create, command, done or sidebar; key is what KeyboardEvent.key reports; mod means ⌘ on Apple platforms and Ctrl elsewhere. Swap the content with issues, people, newIssueTitles, product and issuePrefix.",
+      "Shortcuts only listen while the card has focus and never while someone types in a field. onAction reports each press for analytics. Turn on autoplay for a hands-off tour; it stops for good on the first interaction and never runs with reduced motion."
     ],
     "related": [
-      "input-shortcut-recorder",
+      "command-palette",
+      "hero-app-tilt",
       "three-keycaps"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "features-compare-lenses": {
     "useWhen": "Comparing two supplied approaches to the same workflow using corresponding, inspectable stages.",
