@@ -28663,182 +28663,169 @@
     "tier": "pro",
     "platform": "web",
     "category": "media",
-    "description": "An editorial image contact sheet with bounded selection, searchable originals, a stable inline comparison pane and honest loading or missing-image recovery.",
+    "description": "A photographer’s contact sheet: strips of film frames with edge numbers, a loupe that follows the pointer, grease-pencil picks and rejects, and a picks tray that fills.",
     "tags": [
-      "images",
       "contact sheet",
-      "comparison",
-      "media",
+      "photography",
+      "image review",
+      "loupe",
       "selection",
-      "dark"
+      "film",
+      "media"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 900,
-    "usage": "import { MediaImageContactSheet } from \"@/components/design-for-ai/media-image-contact-sheet\";\n\n<MediaImageContactSheet images={collection} value={selectedIds} onValueChange={setSelectedIds} onImageRetry={reloadOriginal} />",
+    "previewHeight": 1060,
+    "usage": "import { MediaImageContactSheet } from \"@/components/design-for-ai/media-image-contact-sheet\";\n\n<MediaImageContactSheet\n  roll={{ number: \"Roll 14\", title: \"Harbour, Sunday morning\", stock: \"Northlight 400\", date: \"12 Oct 2026\" }}\n  frames={scans.map((s) => ({ id: s.id, alt: s.caption, src: s.thumbUrl }))}\n  defaultFlags={savedFlags}\n  onFlagsChange={saveFlags}\n  onSendPicks={(ids, signal) => api.sendToEdit(rollId, ids, { signal })}\n/>",
     "props": [
       {
-        "name": "images",
-        "type": "ContactSheetImage[]",
-        "description": "Unique ID, original source, descriptive alt/title, optional note, known dimensions, availability and selection permission. Missing sources are explicit.",
-        "default": "8 original offline vector studies"
+        "name": "frames",
+        "type": "{ id: string; alt: string; src?: string; scene?: FrameScene }[]",
+        "default": "24 frames from one roll",
+        "description": "The roll in shooting order. Pass src for real scans (shown in black and white); without it a frame draws its scene. alt is read by screen readers."
       },
       {
-        "name": "value",
-        "type": "string[]",
-        "description": "Controlled selected IDs, sanitized to current available records and the selection cap. Read-only without onValueChange."
+        "name": "roll",
+        "type": "{ number: string; title: string; stock?: string; date?: string }",
+        "default": "Roll 14 · Harbour, Sunday morning",
+        "description": "The header line, and the stock printed along each strip’s edge."
       },
       {
-        "name": "defaultValue",
-        "type": "string[]",
-        "description": "Initial uncontrolled selected IDs.",
-        "default": "[]"
-      },
-      {
-        "name": "onValueChange",
-        "type": "(ids: string[], images: ContactSheetImage[]) => void",
-        "description": "Synchronous selection observer; controlled hosts commit the new IDs here."
-      },
-      {
-        "name": "maxSelection",
+        "name": "startNumber",
         "type": "number",
-        "description": "Comparison selection cap, bounded to 2..6.",
-        "default": "4"
+        "default": "1",
+        "description": "Edge number of the first frame; the A half-steps follow."
       },
       {
-        "name": "compareOpen",
-        "type": "boolean",
-        "description": "Controlled inline comparison disclosure. Read-only without onCompareOpenChange."
+        "name": "defaultFlags",
+        "type": "Record<string, \"pick\" | \"reject\">",
+        "default": "frame 1 rejected, 9 and 14 picked",
+        "description": "Starting marks by frame id."
       },
       {
-        "name": "defaultCompareOpen",
-        "type": "boolean",
-        "description": "Initial uncontrolled comparison disclosure.",
-        "default": "false"
+        "name": "onFlagsChange",
+        "type": "(flags: Record<string, \"pick\" | \"reject\">) => void",
+        "description": "Called with every mark after each pick, reject or clear."
       },
       {
-        "name": "onCompareOpenChange",
-        "type": "(open: boolean, images: ContactSheetImage[]) => void",
-        "description": "Observe the real disclosure request and its selected records."
+        "name": "onSendPicks",
+        "type": "(ids: string[], signal: AbortSignal) => void | Promise<void>",
+        "description": "Sends the picks in the order they were made. The button shows Sending, then Sent; a rejection shows Try again with the marks kept."
       },
       {
-        "name": "query",
+        "name": "sendLabel",
         "type": "string",
-        "description": "Controlled title/note filter; selection survives filtering. Read-only without onQueryChange."
+        "default": "\"Send to edit\"",
+        "description": "The tray’s action label; the pick count is appended."
       },
       {
-        "name": "defaultQuery",
-        "type": "string",
-        "description": "Initial uncontrolled filter.",
-        "default": "\"\""
-      },
-      {
-        "name": "onQueryChange",
-        "type": "(query: string) => void",
-        "description": "Synchronous filter observer."
-      },
-      {
-        "name": "onImageRetry",
-        "type": "(image: ContactSheetImage, signal: AbortSignal) => void | Promise<void>",
-        "description": "Optional real host recovery. Cancel, source retirement and unmount abort work. Host status progress does not cancel its own request; honor the signal before committing."
-      },
-      {
-        "name": "label",
-        "type": "string",
-        "description": "Collection title and accessible section label.",
-        "default": "\"Collected material\""
+        "name": "loupeZoom",
+        "type": "number",
+        "default": "2.6",
+        "description": "Loupe magnification."
       },
       {
         "name": "status",
         "type": "\"ready\" | \"loading\" | \"error\"",
-        "description": "Host collection state; images owns membership and an empty array is a true empty collection.",
-        "default": "\"ready\""
+        "default": "\"ready\"",
+        "description": "Host state for the roll’s scans; loading and error keep the sheet’s shape. An empty frames array shows the empty state."
       },
       {
         "name": "errorMessage",
         "type": "string",
-        "description": "Host collection error explanation.",
-        "default": "\"This collection could not be loaded.\""
+        "default": "\"The scans for this roll didn’t come through. …\"",
+        "description": "Body copy for the error state."
       },
       {
         "name": "onRetry",
         "type": "() => void",
-        "description": "Optional real collection retry; named status remains host-owned."
+        "description": "Shows Try again in the error state."
       },
       {
-        "name": "height",
-        "type": "number",
-        "description": "Fixed shared sheet/comparison body height, bounded to 320..720 CSS pixels.",
-        "default": "480"
+        "name": "accent",
+        "type": "string",
+        "default": "\"#ef4444\"",
+        "description": "The grease pencil: pick boxes, reject crosses, the picks count and tray outlines."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Neutral black/white glass chrome, with colour reserved for actual data/feature accents.",
-        "default": "\"dark\""
+        "default": "\"dark\"",
+        "description": "A black darkroom print or a white paper proof; the strips stay black."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Outer component class.",
-        "default": "\"\""
+        "default": "\"\"",
+        "description": "Classes on the root."
       }
     ],
     "added": "2026-10-13",
     "demo": {
       "steps": [
-        "click:@select-fold",
-        "click:@select-relief",
-        "click:@compare-images",
-        "wait:800",
-        "click:@close-comparison",
-        "wait:350",
-        "click:@select-relief",
-        "wait:450"
-      ]
+        "wait:300",
+        "hover:@frame-3:0.6,0.5",
+        "wait:500",
+        "click:@frame-3",
+        "click:@frame-8",
+        "click:@reject-10",
+        "click:@frame-16",
+        "wait:300",
+        "click:@send",
+        "wait:1200"
+      ],
+      "loop": false
     },
     "controls": [
       {
+        "prop": "accent",
+        "label": "Grease pencil",
+        "kind": "color",
+        "default": "#ef4444",
+        "options": [
+          "#ef4444",
+          "#f5c542",
+          "#f4f4f5",
+          "#38bdf8"
+        ]
+      },
+      {
         "prop": "theme",
-        "label": "Theme",
+        "label": "Print",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Darkroom"
+          },
+          {
+            "value": "light",
+            "label": "Paper"
+          }
         ],
         "default": "dark"
       },
       {
-        "prop": "maxSelection",
-        "label": "Selection limit",
+        "prop": "startNumber",
+        "label": "First frame",
         "kind": "slider",
-        "min": 2,
-        "max": 6,
+        "min": 0,
+        "max": 30,
         "step": 1,
-        "default": 4
+        "default": 1
       },
       {
-        "prop": "height",
-        "label": "Sheet height",
-        "kind": "slider",
-        "min": 320,
-        "max": 720,
-        "step": 40,
-        "unit": "px",
-        "default": 480
-      },
-      {
-        "prop": "label",
-        "label": "Collection title",
+        "prop": "sendLabel",
+        "label": "Action label",
         "kind": "text",
-        "default": "Collected material"
+        "default": "Send to edit"
       },
       {
         "prop": "status",
-        "label": "Collection state",
+        "label": "Roll",
         "kind": "action",
         "options": [
           "ready",

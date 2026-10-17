@@ -3693,17 +3693,19 @@
     "updated": "2026-10-17"
   },
   "media-image-contact-sheet": {
-    "useWhen": "Reviewing a supplied image collection, making an explicit selection and comparing two or more selected images in the same contact sheet.",
-    "avoidWhen": "Full-size zooming, pixel editing or autoplaying a promotional image carousel.",
+    "useWhen": "Editing a shoot down to its keepers: a photographer or editor scanning a roll or a card of near-identical frames, picking the best of each sequence and rejecting the misses, then handing the picks on.",
+    "avoidWhen": "Browsing a finished gallery, single-image zoom and retouching, or collections without any sequence where a plain grid reads better.",
     "integration": [
-      "Supply stable image IDs, real sources and descriptive alternative text. Empty images and empty selection are separate states; expose collection loading and host errors honestly.",
-      "Pair controlled selection, query and comparison with their corresponding observers; without one, that branch is read-only. Rejected requests keep actual values, and per-image retry receives an AbortSignal so retired assets cannot replace current results."
+      "Pass frames in shooting order with stable ids, alt text and src thumbnails (about 600px wide is plenty; the loupe magnifies the same image). Store flags from onFlagsChange as the edit’s source of truth and seed defaultFlags from it.",
+      "onSendPicks receives ids in the order they were picked and an AbortSignal; reject to show Try again with every mark kept.",
+      "Use status for scans still arriving (loading) or a failed fetch (error with onRetry); an empty frames array shows the empty roll."
     ],
     "related": [
-      "cards-prismatic-folder",
-      "media-before-after"
+      "media-before-after",
+      "media-crop-workbench",
+      "cards-prismatic-folder"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "media-focus-lightbox": {
     "useWhen": "A portfolio, case study or product gallery where people open photographs to look closely: a contact sheet of real ratios, a shared-element open, zoom, pan and a filmstrip.",
