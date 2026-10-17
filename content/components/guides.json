@@ -4782,18 +4782,19 @@
     "updated": "2026-10-14"
   },
   "mobile-trip-itinerary": {
-    "useWhen": "Inspecting supplied travel legs, local times and schedule changes.",
-    "avoidWhen": "Booking travel, tracking a live vehicle without data or inventing arrival confidence.",
+    "useWhen": "A trip with several legs across time zones, where travellers need local times, delays and cancellations at a glance and a quick way into each booking.",
+    "avoidWhen": "Searching or booking travel, live vehicle tracking, or a single flight's status card.",
     "integration": [
-      "Supply up to 16 unique legs with valid explicit-offset ISO instants, including one-to-three fractional second digits, actual local IANA zones, original and optional revised times, host-authored status and opening permission. Exact local clocks and dates are formatted from their real instants; cancelled originals remain available.",
-      "Control selectedId independently. onOpenLeg receives a copied trip and leg plus an AbortSignal. The host opens its existing travel details; acknowledgment does not book travel, replace a leg or change a schedule.",
-      "Install in a React Native app with Expo modules for the translucent footer and SVG details. The web preview supports design review; verify device fonts, larger text, reduced motion, touch and assistive technology on target devices."
+      "Supply legs in travel order with ISO instants (with an offset or Z), an IANA timeZone, code, city and lat/lon per place, a status, optional revised times, the operator's note and booking details. Clocks and day headers are formatted in each place's own zone.",
+      "onOpenLeg(leg, signal) opens the boarding pass, ticket or ride in your app; Cancel aborts the signal and late answers to older requests are ignored. Pass now to decide the next leg; tightConnection flags short connections.",
+      "Install in a React Native app; bare apps run npx install-expo-modules once. Verify scrolling, larger text and assistive technology on target devices."
     ],
     "related": [
-      "mobile-bottom-sheet",
-      "mobile-live-activity"
+      "mobile-live-activity",
+      "mobile-day-planner",
+      "mobile-bottom-sheet"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "mobile-packing-list": {
     "useWhen": "Checking grouped items, correcting quantities and undoing supported removals.",
