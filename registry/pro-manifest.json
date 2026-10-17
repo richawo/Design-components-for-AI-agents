@@ -21916,110 +21916,115 @@
   },
   {
     "slug": "forms-branching-survey",
-    "name": "Branching Brief Survey",
+    "name": "Branching Survey",
     "tier": "pro",
     "platform": "web",
     "category": "forms",
-    "description": "Build a conditional brief with retained earlier answers, active-path review and real abortable exact-snapshot submission.",
+    "description": "A conditional brief where the path is drawn as you answer: forks not taken peel off the map, big answer cards carry previews, and progress counts.",
     "tags": [
       "survey",
-      "conditional",
-      "questionnaire",
       "branching",
-      "review",
-      "form"
+      "conditional form",
+      "questionnaire",
+      "intake",
+      "onboarding"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1100,
-    "usage": "import { FormsBranchingSurvey } from \"@/components/design-for-ai/forms-branching-survey\";\n\n<FormsBranchingSurvey formId=\"project-brief\" questions={questions} answers={answers} onAnswersChange={setAnswers} onSubmit={saveBrief} />\n\n// saveBrief receives active questionIds, a copied answers object and an AbortSignal. Hidden branch answers remain in editing state but are excluded from submission.",
+    "previewHeight": 900,
+    "usage": "import { FormsBranchingSurvey } from \"@/components/design-for-ai/forms-branching-survey\";\n\n<FormsBranchingSurvey\n  formId=\"project-brief\"\n  questions={questions}\n  onAnswersChange={saveDraft}\n  onSubmit={(brief) => sendBrief(brief)}\n/>\n\n// A question shows when showWhen matches an earlier answer: { questionId: \"kind\", equals: \"product\" }.",
     "props": [
       {
         "name": "formId",
         "type": "string",
-        "description": "Identity of the host questionnaire. A changed identity retires pending submission."
+        "default": "\"studio-brief\"",
+        "description": "Identifies the form in the submission."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Project brief\"",
+        "description": "Name above the progress."
+      },
+      {
+        "name": "recipient",
+        "type": "string",
+        "default": "\"Field & Form\"",
+        "description": "Who the brief goes to, used in the confirmation."
       },
       {
         "name": "questions",
         "type": "readonly SurveyQuestion[]",
-        "description": "At most20 unique questions, text or choice, with prior-question-only showWhen rules. Choices are unique and bounded to12; text maximumLength1–2000. Choices may supply a decorative ReactElement illustration; its descendants are inert and do not replace the native radio or submitted identity."
-      },
-      {
-        "name": "answers",
-        "type": "Readonly<Record<string, string>>",
-        "description": "Controlled accepted answers. The exact current object determines the active branch. Rejected requests never change the active path."
+        "default": "an eight-question studio brief",
+        "description": "`{ id, short, kind: \"choice\" | \"text\", title, helper?, required?, showWhen?, options? | placeholder?, maxLength? }`. Options take `value`, `label`, `description?`, and a `preview` node or a large `figure`. `showWhen: { questionId, equals }` refers to an earlier question."
       },
       {
         "name": "defaultAnswers",
-        "type": "Readonly<Record<string, string>>",
-        "description": "Local initial answers. Hidden branch answers are retained for future editing. Reset explicitly with resetKey."
+        "type": "Record<string, string>",
+        "default": "{}",
+        "description": "Starting answers, e.g. a saved draft."
+      },
+      {
+        "name": "defaultQuestionId",
+        "type": "string",
+        "description": "Open on this question instead of the first."
       },
       {
         "name": "onAnswersChange",
-        "type": "(answers: Readonly<Record<string, string>>) => void",
-        "description": "Request a cloned complete answer object. Missing handler makes controlled answers read only."
+        "type": "(answers) => void",
+        "description": "Every change, including answers on branches no longer taken (they’re kept in case the person switches back)."
       },
       {
         "name": "onSubmit",
-        "type": "(submission: SurveySubmission, signal: AbortSignal) => void | Promise<void>",
-        "description": "Explicit exact active-question payload. Fulfillment acknowledges this snapshot. Context changes/cancel abort and retire its result; no fake persistence."
+        "type": "(submission: SurveySubmission) => Promise<void> | void",
+        "description": "Receives `{ formId, questionIds, answers }` for the path taken only. Return a promise for the sending state; reject to show the retry state with every answer kept."
       },
       {
-        "name": "resetKey",
-        "type": "string | number",
-        "description": "Explicit lifecycle reset of local answers, step and review state."
-      },
-      {
-        "name": "status",
-        "type": "\"ready\" | \"loading\" | \"error\"",
-        "description": "Host availability retains accepted answers and current reading context."
-      },
-      {
-        "name": "errorMessage",
-        "type": "string",
-        "description": "Meaningful unavailable explanation, default when blank."
-      },
-      {
-        "name": "onRetry",
-        "type": "() => void",
-        "description": "Actual recovery request."
-      },
-      {
-        "name": "disabled",
+        "name": "autoAdvance",
         "type": "boolean",
-        "description": "Lock actions while retaining the readable questionnaire."
+        "default": "true",
+        "description": "Choosing an option moves on after a short beat."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "theme ink",
+        "description": "The one accent: the drawn path, the chosen answer and Send."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Complete monochromatic graphite/white chrome. Colour is reserved for actual supplied content and purposeful feature accents."
+        "default": "\"dark\"",
+        "description": "Colour theme."
       },
       {
-        "name": "labels",
-        "type": "Partial<SurveyLabels>",
-        "description": "Question/review/recovery and required/optional/length validation copy."
+        "name": "disabled",
+        "type": "boolean",
+        "default": "false",
+        "description": "Read-only: answers stay visible, nothing can change."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Responsive host layout classes."
+        "default": "\"\"",
+        "description": "Classes on the root."
       }
     ],
     "added": "2026-10-14",
     "demo": {
       "steps": [
-        "click:@survey-choice-product",
-        "click:@survey-next",
-        "click:@survey-text-workflows",
-        "type:Playback",
-        "click:@survey-step-kind",
-        "click:@survey-choice-website",
-        "click:@survey-step-priority",
-        "click:@survey-next",
-        "click:@survey-submit"
+        "wait:300",
+        "click:@choice-both",
+        "wait:600",
+        "click:@choice-growing",
+        "wait:700",
+        "click:@path-kind",
+        "wait:450",
+        "click:@choice-brand",
+        "wait:1200"
       ],
       "loop": false
     },
@@ -22035,21 +22040,22 @@
         "default": "dark"
       },
       {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#ff6b3d",
+          "#4f8cff",
+          "#3ecf8e"
+        ]
+      },
+      {
         "prop": "disabled",
         "label": "Read only",
         "kind": "toggle",
         "default": false
-      },
-      {
-        "prop": "status",
-        "label": "Availability",
-        "kind": "select",
-        "options": [
-          "ready",
-          "loading",
-          "error"
-        ],
-        "default": "ready"
       }
     ]
   },

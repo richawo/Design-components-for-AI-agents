@@ -4183,18 +4183,18 @@
     "updated": "2026-10-17"
   },
   "forms-branching-survey": {
-    "useWhen": "Collecting conditional answers while retaining prior input when a branch changes, then reviewing the result.",
-    "avoidWhen": "A fixed linear form or automatically submitting hidden branch answers without explaining scope.",
+    "useWhen": "Intake briefs, onboarding and qualification flows where earlier answers decide which questions come next, and people benefit from seeing where the path goes and what they skipped.",
+    "avoidWhen": "Short fixed forms that fit on one screen, or long data entry with many fields per step, where a settings panel or a stepped form reads faster.",
     "integration": [
-      "Supply `formId` and up to20 unique typed `questions` (text or choice). `showWhen` refers only to a preceding question; choices are unique and bounded to12, text maximumLength1–2000. Required answers are validated before progression and submission.",
-      "Control the accepted `answers` object with `onAnswersChange`, or initialize local `defaultAnswers` and reset explicitly with `resetKey`. Earlier hidden branch answers remain in editing state but are excluded from the actual submission. Rejected requests cannot change the active branch.",
-      "Connect `onSubmit(submission,AbortSignal)` to actual persistence. The exact payload contains formId, active questionIds and copied active own answer fields only. Cancellation, changed context or handler retire stale results; failure preserves answers and review. The preview acknowledgement stores only the copied brief in preview memory."
+      "Describe `questions` as data: `kind: \"choice\"` with options (`label`, `description`, and a `preview` node or a `figure`) or `kind: \"text\"`. Add `showWhen: { questionId, equals }` to branch on an earlier answer.",
+      "Save drafts from `onAnswersChange`; it includes answers on branches no longer taken so switching back restores them. Resume with `defaultAnswers` and `defaultQuestionId`.",
+      "`onSubmit` receives `{ formId, questionIds, answers }` for the path taken only. Return a promise for the sending state; reject to keep every answer and show retry."
     ],
     "related": [
       "forms-preference-center",
-      "legal-matter-intake"
+      "settings-panel"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "auth-recovery-codes": {
     "useWhen": "The step after someone turns on two-factor authentication, or a settings page where they view, export and replace their recovery codes.",
