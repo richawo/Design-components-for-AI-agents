@@ -2163,18 +2163,19 @@
     "updated": "2026-10-17"
   },
   "fashion-size-guide": {
-    "useWhen": "Editing and reviewing a garment's supplied measurements and size guidance.",
-    "avoidWhen": "Universal fit claims or measurements unrelated to the actual garment.",
+    "useWhen": "A product page or merchandising tool needs a garment's graded measurements drawn on the garment, in centimetres or inches, with a find-my-size match that explains the fit between two sizes.",
+    "avoidWhen": "Generic body-size charts not tied to one garment's measurements, or fit claims you can't back with the garment's real ease. Use a plain table there.",
     "integration": [
-      "Supply your own records through `sizes`, `measurements`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onSave` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+      "Pass `sizes` and `measurements` in whole millimetres per size id; give each measurement a sketch `point` and mark half-circumference figures `flat`.",
+      "Pass `fit` (the measurement to match, designed ease in millimetres, how to break ties and the fit notes) to enable Find your size; without it the guide shows the measurements only. `onSave` enables editing and receives the guide in millimetres; throw to keep the edits.",
+      "Keep measurement labels distinct from size columns on phones, with keyboard-accessible scrolling inside the table."
     ],
     "related": [
-      "commerce-catalog-import",
-      "commerce-return-desk",
-      "commerce-variant-stock"
+      "fashion-exchange-selector",
+      "fashion-wholesale-order",
+      "fashion-collection-line-plan"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "fashion-wholesale-order": {
     "useWhen": "A stockist orders from a wholesale line sheet in prepacks, and needs to see each style's size run, stock limits, style minimums and the order minimum while they build the order.",

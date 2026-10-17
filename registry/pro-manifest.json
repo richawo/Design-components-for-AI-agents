@@ -21961,69 +21961,126 @@
   },
   {
     "slug": "fashion-size-guide",
-    "name": "Garment Size Guide Studio",
+    "name": "Garment Size Guide",
     "tier": "pro",
     "platform": "web",
     "category": "commerce",
-    "description": "Editable garment measurements with centimetre and inch previews. A considered, responsive fashion workspace with typed integration points.",
+    "description": "A size guide drawn on the garment: dimension lines per measurement, cm and inch figures that count, and a find-my-size match that explains the fit between sizes.",
     "tags": [
       "fashion",
-      "workflow",
-      "responsive",
-      "keyboard",
+      "size guide",
+      "fit",
+      "measurements",
+      "product page",
+      "garment",
       "commerce"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1060,
-    "usage": "import { SizeGuide } from \"@/components/design-for-ai/fashion-size-guide\";\n\n<SizeGuide />",
+    "previewHeight": 1100,
+    "usage": "import { SizeGuide } from \"@/components/design-for-ai/fashion-size-guide\";\n\n<SizeGuide\n  productName=\"Lambswool crew\"\n  sku=\"FN27-KN212\"\n  garment=\"crew\"\n  colour=\"#2f4a3a\"\n  sizes={sizes}\n  measurements={measurements}\n  fit={{ measurementId: \"chest\", bodyLabel: \"chest\", easeMm: 120, between: \"down\", runs: \"true\", ...fitCopy }}\n  onSave={async (guide) => {\n    await api.sizeGuides.publish(\"FN27-KN212\", guide);\n  }}\n/>",
     "props": [
       {
-        "name": "title",
+        "name": "brand",
         "type": "string",
-        "description": "Main heading.",
-        "default": "\"Size guide\""
+        "default": "\"Ferne\"",
+        "description": "The house, shown as the mark and in the breadcrumb."
       },
       {
-        "name": "subtitle",
+        "name": "productName",
         "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Maintain garment measurements in centimetres and preview a clear size guide.\""
+        "default": "\"Lambswool crew\"",
+        "description": "The style the guide belongs to. The entity name in the header."
+      },
+      {
+        "name": "sku",
+        "type": "string",
+        "default": "\"FN27-KN212\"",
+        "description": "Style code in the breadcrumb."
+      },
+      {
+        "name": "garment",
+        "type": "\"tee\" | \"crew\" | \"shirt\" | \"coat\" | \"trouser\" | \"dress\"",
+        "default": "\"crew\"",
+        "description": "Which flat sketch to draw, and where its dimension lines sit."
+      },
+      {
+        "name": "colour",
+        "type": "string",
+        "default": "\"#2f4a3a\"",
+        "description": "Colour of the cloth on the sketch."
+      },
+      {
+        "name": "image",
+        "type": "string",
+        "description": "Product image in place of the sketch. Dimension lines are drawn only on the sketch."
       },
       {
         "name": "sizes",
         "type": "GuideSize[]",
-        "description": "Unique size identifiers and display labels in presentation order."
+        "description": "Size ids and labels in run order."
       },
       {
         "name": "measurements",
         "type": "GuideMeasurement[]",
-        "description": "Measurement definitions and initial integer millimetres for every size. Draft values are seeded on mount."
+        "description": "Graded garment measurements in whole millimetres per size id, each with an instruction, an optional sketch `point` (chest, waist, hip, length, sleeve, shoulder, inseam) and `flat` for half-circumference figures."
+      },
+      {
+        "name": "fit",
+        "type": "SizeGuideFit",
+        "description": "Powers Find your size: the measurement to match, the designed ease in millimetres, which way to go between sizes, how the style runs, and the fit, fabric and model notes."
+      },
+      {
+        "name": "defaultUnit",
+        "type": "\"cm\" | \"in\"",
+        "default": "\"cm\"",
+        "description": "Unit on first render. Inches show one decimal; values are stored in millimetres."
+      },
+      {
+        "name": "defaultSizeId",
+        "type": "string",
+        "description": "Size drawn before a shopper enters a measurement. Defaults to the middle size."
       },
       {
         "name": "onSave",
-        "type": "(guide:SizeGuideDraft)=>void|Promise<void>",
-        "description": "Save validated measurements as integer millimetres, preserving full precision."
+        "type": "(guide: SizeGuideDraft) => void | Promise<void>",
+        "description": "Enables Edit. Receives every measurement in millimetres. Throw to keep the edits and show your message."
+      },
+      {
+        "name": "onUnitChange",
+        "type": "(unit: \"cm\" | \"in\") => void",
+        "description": "Called when the shopper switches units."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "ink",
+        "description": "The one accent: selected size, recommendation and primary action."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Colour scheme."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:400",
-        "click:@measure-1",
-        "wait:500",
+        "wait:700",
+        "click:@find-input",
+        "type:96",
+        "wait:1300",
         "click:@unit-in",
-        "wait:650",
-        "click:@save",
-        "wait:1000"
+        "wait:1500"
       ],
       "loop": false
     },
@@ -22033,10 +22090,69 @@
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
         "default": "dark"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#ff8a4c",
+          "#8ab4ff",
+          "#e7c27d"
+        ]
+      },
+      {
+        "prop": "garment",
+        "label": "Garment",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "crew",
+            "label": "Crew"
+          },
+          {
+            "value": "tee",
+            "label": "Tee"
+          },
+          {
+            "value": "shirt",
+            "label": "Shirt"
+          },
+          {
+            "value": "coat",
+            "label": "Coat"
+          }
+        ],
+        "default": "crew"
+      },
+      {
+        "prop": "defaultUnit",
+        "label": "Unit",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "cm",
+            "label": "cm"
+          },
+          {
+            "value": "in",
+            "label": "in"
+          }
+        ],
+        "default": "cm",
+        "remount": true
       }
     ]
   },
