@@ -132,11 +132,11 @@ needs re-recording, whether its poster is current, and the state of its browser 
 | --- | --- | --- | --- |
 | `hr-compensation-review` | new | current | rewritten, passes |
 | `hr-employee-onboarding` | new | current | rewritten, passes |
-| `hr-interview-scorecard` | new | current | rewritten, passes in an isolated bundle; rerun on the official runner |
-| `hr-leave-approval` | new | current | rewritten, passes in an isolated bundle; rerun on the official runner |
+| `hr-interview-scorecard` | new | current | rewritten, passes on suite runner with source fixtures; Next route check pending |
+| `hr-leave-approval` | new | current | rewritten, passes on suite runner with source fixtures; Next route check pending |
 | `hr-org-explorer` | new | current | rewritten, passes |
-| `hr-people-dashboard` | new | current | rewritten, passes in an isolated bundle; rerun on the official runner |
-| `hr-policy-acknowledgement` | new | current | rewritten, passes in an isolated bundle; rerun on the official runner |
+| `hr-people-dashboard` | new | current | rewritten, passes on suite runner with source fixtures; Next route check pending |
+| `hr-policy-acknowledgement` | new | current | rewritten, passes on suite runner with source fixtures; Next route check pending |
 | `hr-shift-coverage` | new | current | rewritten, passes |
 
 ## Finance suite (7)
@@ -145,11 +145,11 @@ needs re-recording, whether its poster is current, and the state of its browser 
 | --- | --- | --- | --- |
 | `finance-close-checklist` | new | stale | rewritten, passes |
 | `finance-expense-review` | new | stale | rewritten, passes |
-| `finance-invoice-composer` | new | current | rewritten, passes in isolation; payment links and narrow removal fixed; official runner pending |
-| `finance-payment-run` | new | current | rewritten, not yet run end to end; asserts bugs below |
-| `finance-receivables-aging` | new | current | rewritten, passes in isolation; invalid records and current-invoice reminders fixed; Next preview rerun pending |
+| `finance-invoice-composer` | new | current | rewritten, passes on suite runner with source fixtures; Next route check pending |
+| `finance-payment-run` | new | current | rewritten, passes on suite runner with source fixtures; Next route check pending |
+| `finance-receivables-aging` | new | current | rewritten, passes on suite runner with source fixtures; Next route check pending |
 | `finance-reconciliation` | new | stale | no pro-50 probe; pro-industry-probe and pro-demo-probe still test the old UI |
-| `finance-scenario-forecast` | new | current | rewritten, passes in isolation; runway and empty states fixed; official runner pending |
+| `finance-scenario-forecast` | new | current | rewritten, passes on suite runner with source fixtures; Next route check pending |
 
 ## Fashion suite (4)
 
@@ -164,9 +164,9 @@ needs re-recording, whether its poster is current, and the state of its browser 
 
 | Slug | Video | Poster | Probe |
 | --- | --- | --- | --- |
-| `commerce-backorder-allocation` | new | current | rewritten, passed before a formatting-only pass; rerun |
-| `commerce-bundle-builder` | new | current | rewritten, passed before a formatting-only pass; rerun |
-| `commerce-customer-timeline` | new | current | rewritten, passed before a formatting-only pass; rerun |
+| `commerce-backorder-allocation` | new | current | rewritten, passes on suite runner with source fixtures; Next route check pending |
+| `commerce-bundle-builder` | new | current | rewritten, passes on suite runner with source fixtures; Next route check pending |
+| `commerce-customer-timeline` | new | current | rewritten, passes on suite runner with source fixtures; Next route check pending |
 | `commerce-shipping-estimator` | new | current | rewritten, passed before a formatting-only pass; rerun |
 
 ## Scroll and layout (5)

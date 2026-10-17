@@ -24,6 +24,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Invoice follow-up: removed rows now leave the accessibility tree immediately and disable their controls during the exit animation. The regression probe and both-theme accessibility checks pass.
 
+- Task 4: preview typography/container checks and the rewritten audit-trail polish probe pass with source previews. The histogram grows from a fixed baseline; the probe now covers its brush animation, current JSON diff, timestamp ordering and phone menus.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
