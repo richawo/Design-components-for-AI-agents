@@ -4086,18 +4086,19 @@
     "updated": "2026-10-17"
   },
   "input-dual-range": {
-    "useWhen": "Choosing a bounded interval with two handles and precise numeric endpoints.",
-    "avoidWhen": "A single-value slider or a timeline that also needs actual media playback.",
+    "useWhen": "Filtering by an interval where the shape of the data matters: price, duration, size or score, with a histogram showing how many results each band holds.",
+    "avoidWhen": "A single threshold, where one slider is clearer, or a media timeline that needs playback and scrubbing.",
     "integration": [
-      "Supply one atomic lower/upper pair with finite ordered min/max, equally spaced step, whole-step minimumGap and clamp/push collision policy. Domains support up to six decimal places and100,000 steps within ±1,000,000. Invalid configuration or out-of-domain host values stays explicit; repairing is a requested minimum interval, never automatic coercion.",
-      "Native lower/upper handles and exact decimal fields share the same accepted pair. Exact drafts follow host authority until actually edited, preserve newer revisions through older acknowledgements and remain visible when controlled callbacks reject a request. Absent controlled handlers lock editing; resetKey explicitly resets local seeds.",
-      "The ruler band and tabular interval/width figures move in both directions from current visible state. Live reduced motion stops/sets every owner. Provide native touch/keyboard handles, readable limits and minimum gap, actual focus rings, and primary outside-background ownership guards."
+      "Pass value and onValueChange for a controlled pair, or defaultValue for an uncontrolled one. Query your data in onValueCommit, which fires once per drag, key step or committed field, not on every frame.",
+      "histogram is item counts in equal bins from min to max. Recompute it from the other active filters so the lit band and the match count stay honest; omit it (or set showHistogram to false) when you have no distribution.",
+      "minimumGap keeps the ends apart in whole steps; collision chooses whether a moving end stops at the gap or pushes its neighbour. Use prefix, suffix, locale and openEnded to format the figures."
     ],
     "related": [
       "input-detent-dial",
-      "input-number-stepper"
+      "input-number-stepper",
+      "settings-panel"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "input-unit-converter": {
     "useWhen": "Changing display units while preserving one underlying physical quantity and explicit precision.",
