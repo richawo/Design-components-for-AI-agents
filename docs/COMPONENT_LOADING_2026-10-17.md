@@ -34,7 +34,7 @@ client imports.
 
 ## Comparable replay
 
-The baseline uses immutable public commit `7422356` and private commit `0ce86`.
+The baseline uses immutable public commit `867c9a7` and private commit `973961b`.
 The patched build applies only these fixes to those sources, excluding concurrent
 component edits. Both runs use the same real search, card, one-second dwell,
 1440 x 900 viewport, Chromium default renderer, 5 Mbps, 80 ms network latency
@@ -92,6 +92,40 @@ contributors and the indefinite spinner. Healthy request execution samples were
 much shorter than the external waits, but historical Cloudflare error analytics
 were unavailable to this session. The platform-side cause of the observed 1105
 cannot be established from these samples alone.
+
+## Production verification
+
+The live marker confirms public `0044a0a` and private `d12bdee`, including all
+runtime fixes through `5ee6c46`. The same throttled catalogue-to-preview replay
+passes on production with 11 scripts per preview, no failed responses and no
+hydration errors:
+
+| Production visible preview | Before | After |
+| --- | ---: | ---: |
+| Portfolio Chart, first visit | 22,018 ms | 1,375 ms |
+| Portfolio Chart, warm visit | 12,909 ms | 496 ms |
+| Budget Envelope, first visit | 10,846 ms | 1,706 ms |
+| Budget Envelope, warm visit | 8,792 ms | 639 ms |
+
+Maximum first/second click frames move from 112/128 to 74/77 ms, and maximum
+long tasks from 339 to 137 ms. Production also passes the transient, persistent
+and stalled-preview recovery replay, with failures injected in the test browser
+only. Public pages and previews return cache hits, fingerprinted assets have
+immutable caching, and anonymous Pro source/install requests retain their
+locked or 401 responses and no-store policies.
+
+An earlier production after-run reached 2,633 ms and missed the local budget.
+The development machine then ran out of disk space and blocked subsequent
+checks. After removing only disposable build output, the clean repeat passed
+without application changes. Both reports are retained; this is not a claim
+that every production visit is below 2.5 seconds. Production sources also
+include concurrent component updates, so the immutable local comparison above
+provides the controlled attribution. Its source provenance was checked against
+498 public and 863 private source files.
+
+The replay archive also contains the production before/after reports, the
+earlier after-run, source provenance and the live smoke result. Later commits
+to this report do not alter application behaviour.
 
 ```sh
 PERF_BASE=http://127.0.0.1:4189 PERF_SLUGS=chart-portfolio,mobile-budget-envelope PERF_ASSERT=1 node tests/browser/component-navigation-performance.mjs
