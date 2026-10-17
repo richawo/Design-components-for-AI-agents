@@ -4433,19 +4433,19 @@
     "updated": "2026-10-17"
   },
   "editor-branch-compare": {
-    "useWhen": "Choosing individual additions, removals, text and parent changes between two actual document structures.",
-    "avoidWhen": "A language-aware source-code merge, unbounded document parser or automatic persistence engine.",
+    "useWhen": "Merging two versions of a written document, such as a copy edit against the live page or a translation pass against the source, where someone chooses change by change and wants to read the merged result before saving.",
+    "avoidWhen": "Source-code merges with line-level conflicts, three-way merges that need a common ancestor, or reviewing a single version's history (use a version restore instead).",
     "integration": [
-      "Supply distinct current/incoming version identities and up to48 unique acyclic nodes each, depth at most6, with actual parent identity, body and bounded sibling order.",
-      "Controlled decisions reference unique changed nodes. Unspecified nodes retain current; choosing an absent source explicitly omits it. A mixed structure with missing parents or cycles remains unavailable.",
-      "onApply receives both exact version IDs, cloned complete merged nodes and copied complete changed-node decisions plus AbortSignal. Awaiting fulfillment acknowledges the request only; your host supplies the persisted versions. Changed source facts, including in-place mutations, retire stale acknowledgment."
+      "Describe the document as ordered blocks with each branch's text: { id, kind, label?, current?, incoming? }. Matching text reads as unchanged; leave a side out for a block that was added or removed. Give changed blocks a short label for the merge path.",
+      "Name both branches with { name, author, updated }. Pass defaultChoices to carry over decisions already made; Merge stays disabled until every change has a side.",
+      "onMerge receives { choices, blocks } with the merged document in order. Persist it and resolve; reject with an Error to show its message, and every choice stays for a retry. diffWords is exported if you mark the same changes elsewhere."
     ],
     "related": [
-      "forms-draft-rescue",
-      "editor-layer-stack",
-      "selects-tree-picker"
+      "editor-version-restore",
+      "collab-comment-thread",
+      "editor-rich-text"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "editor-asset-license-sheet": {
     "useWhen": "Reviewing actual asset provenance and host-supplied usage eligibility for a specific project before selecting an asset.",
