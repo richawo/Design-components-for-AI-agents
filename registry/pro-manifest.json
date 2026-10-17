@@ -21349,71 +21349,130 @@
     "tier": "pro",
     "platform": "web",
     "category": "commerce",
-    "description": "Order size packs with minimum quantities, availability and line totals. A considered, responsive fashion workspace with typed integration points.",
+    "description": "A wholesale line sheet you order from: a size-run matrix per style, prepacks that ripple across sizes, minimums that turn green and a live total.",
     "tags": [
       "fashion",
-      "workflow",
-      "responsive",
-      "keyboard",
+      "wholesale",
+      "b2b",
+      "line sheet",
+      "size run",
+      "prepack",
+      "order form",
       "commerce"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1160,
-    "usage": "import { WholesaleOrder } from \"@/components/design-for-ai/fashion-wholesale-order\";\n\n<WholesaleOrder />",
+    "previewHeight": 1180,
+    "usage": "import { WholesaleOrder } from \"@/components/design-for-ai/fashion-wholesale-order\";\n\n<WholesaleOrder\n  buyer=\"Harlow & Finch, Bath\"\n  styles={lineSheet}\n  minimumOrderMinor={300000}\n  currency=\"GBP\"\n  onSubmit={async (draft) => {\n    await api.wholesaleOrders.submit(draft);\n  }}\n/>",
     "props": [
       {
-        "name": "title",
+        "name": "brand",
         "type": "string",
-        "description": "Main heading.",
-        "default": "\"Wholesale order\""
+        "default": "\"Ferne\"",
+        "description": "The house selling the collection. Breadcrumb, receipt and error copy."
       },
       {
-        "name": "subtitle",
+        "name": "orderBook",
         "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Order complete size packs with clear minimums, availability and merchandise totals.\""
+        "default": "\"SS27 order book\"",
+        "description": "The order book or season the order belongs to."
+      },
+      {
+        "name": "orderId",
+        "type": "string",
+        "default": "\"WO-4417\"",
+        "description": "Order reference, shown in the breadcrumb and the receipt."
+      },
+      {
+        "name": "buyer",
+        "type": "string",
+        "default": "\"Harlow & Finch, Bath\"",
+        "description": "The stockist placing the order: the entity name in the header."
+      },
+      {
+        "name": "delivery",
+        "type": "string",
+        "default": "\"2–13 Feb 2027\"",
+        "description": "Delivery window shown in the header."
+      },
+      {
+        "name": "terms",
+        "type": "string",
+        "default": "\"Net 60\"",
+        "description": "Payment terms shown in the header."
       },
       {
         "name": "styles",
         "type": "WholesaleStyle[]",
-        "description": "Unique styles with two-decimal wholesale unit prices, minimum pack counts and stock for each unique size in the pack."
+        "description": "Styles on the line sheet: id, name, sku, fabric, garment (flat sketch kind), unitMinor, retailMinor, sizes, packRatio, minimumPacks and colourways ({ id, name, hex, available: Record<size, units>, image? })."
+      },
+      {
+        "name": "initialPacks",
+        "type": "Record<string, number>",
+        "description": "Packs already on the order, keyed \"styleId:colourwayId\". Read on mount."
       },
       {
         "name": "minimumOrderMinor",
         "type": "number",
-        "description": "Non-negative safe integer minimum merchandise spend in two-decimal minor units."
+        "default": "300000",
+        "description": "Order minimum in the currency's minor units. The meter fills towards it and turns green when met."
       },
       {
         "name": "currency",
         "type": "string",
-        "description": "ISO currency shared by all wholesale prices."
+        "default": "\"GBP\"",
+        "description": "ISO 4217 code for every price. Formatting follows the currency's own decimals."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "description": "BCP 47 locale for number and money formatting. Defaults to the browser's."
       },
       {
         "name": "onSubmit",
-        "type": "(draft:WholesaleDraft)=>void|Promise<void>",
-        "description": "Submit the reviewed buying draft. The host confirms terms, taxes, delivery and stock reservation."
+        "type": "(draft: WholesaleDraft) => void | Promise<void>",
+        "description": "Called with the order lines and totals. Throw to keep the draft and show your error message."
+      },
+      {
+        "name": "onRecall",
+        "type": "(orderId: string) => void | Promise<void>",
+        "description": "Enables Recall order on the receipt. Resolving reopens the draft."
+      },
+      {
+        "name": "onChange",
+        "type": "(draft: WholesaleDraft) => void",
+        "description": "Called whenever the packs change."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "description": "The one brand accent: primary action, active row and the meter before it is met. Defaults to the theme's ink."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Surface and ink palette."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:350",
-        "click:@add-0",
-        "click:@add-1",
-        "wait:450",
-        "click:@review",
-        "wait:350",
+        "wait:700",
+        "click:@add-overcoat-camel",
+        "wait:650",
+        "click:@add-trouser-stone",
+        "wait:900",
         "click:@submit",
-        "wait:1100"
+        "wait:1500"
       ],
       "loop": false
     },
@@ -21423,10 +21482,48 @@
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
         "default": "dark"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#ff8a4c",
+          "#8ab4ff",
+          "#e7c27d"
+        ]
+      },
+      {
+        "prop": "currency",
+        "label": "Currency",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "GBP",
+            "label": "GBP"
+          },
+          {
+            "value": "EUR",
+            "label": "EUR"
+          },
+          {
+            "value": "USD",
+            "label": "USD"
+          }
+        ],
+        "default": "GBP"
       }
     ]
   },

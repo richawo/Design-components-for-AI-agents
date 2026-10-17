@@ -2165,18 +2165,19 @@
     "updated": "2026-10-12"
   },
   "fashion-wholesale-order": {
-    "useWhen": "Preparing a wholesale order across styles, sizes and quantities.",
-    "avoidWhen": "A stock reservation or commercial acceptance before your order service confirms it.",
+    "useWhen": "A stockist orders from a wholesale line sheet in prepacks, and needs to see each style's size run, stock limits, style minimums and the order minimum while they build the order.",
+    "avoidWhen": "Open-stock ordering by individual units with no packs, or a retail basket. Use a cart or purchase order there; this sheet assumes prepack ratios and buyer-facing minimums.",
     "integration": [
-      "Supply your own records through `styles`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onSubmit` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+      "Pass `styles` with `sizes`, `packRatio`, `minimumPacks` and per-colourway `available` stock by size. Prices are minor units in `currency`, formatted with that currency's own decimals.",
+      "`onSubmit` receives every line with units by size and the totals. Throw to keep the draft and show your message; `onRecall` adds a Recall order action to the receipt.",
+      "Give a colourway an `image` to replace the flat sketch with your product shot."
     ],
     "related": [
-      "commerce-catalog-import",
-      "commerce-return-desk",
-      "commerce-variant-stock"
+      "fashion-preorder-planner",
+      "fashion-assortment-planner",
+      "commerce-purchase-order"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "feature-sticky-scroll": {
     "useWhen": "A sequential feature story with a stable visual beside changing copy.",
