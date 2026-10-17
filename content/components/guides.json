@@ -3165,17 +3165,18 @@
     "updated": "2026-10-17"
   },
   "scroll-cinema-frame": {
-    "useWhen": "Expanding an authentic video or image within a scroll-led product story.",
-    "avoidWhen": "Replacing readable media controls or relying on autoplay to communicate essential content.",
+    "useWhen": "A film page or launch story where a single video deserves the whole viewport, introduced with its title and credits.",
+    "avoidWhen": "Background loops, autoplay or galleries of several videos; this frame always waits for the visitor to press play.",
     "integration": [
-      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+      "Pass host-owned `videoSrc`, `posterSrc` and WebVTT `captionSrc`. Playback stays native, never autoplays and pauses when the section leaves the viewport or the tab is hidden; a failed source shows the poster with a notice.",
+      "Without a video the drawn poster still is shown with its `posterLabel`, and the title card returns as the frame opens. `credits` lists up to four { label, value } pairs."
     ],
     "related": [
       "scroll-image-curtain",
-      "media-before-after",
-      "media-story-deck"
+      "media-story-deck",
+      "scroll-expanding-mosaic"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "scroll-expanding-mosaic": {
     "useWhen": "Opening a visual mosaic into a larger product or editorial moment.",

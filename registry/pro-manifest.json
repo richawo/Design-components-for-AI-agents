@@ -39681,30 +39681,43 @@
     "tier": "pro",
     "platform": "web",
     "category": "media",
-    "description": "A compact film frame expands into an edge-to-edge viewing stage on scroll, with native playback controls, captions and a quiet offline poster.",
+    "description": "A film page for a short documentary: scrolling opens the framed still to edge-to-edge cinema, the title card arrives and native playback stays one click away.",
     "tags": [
       "scroll",
       "scroll-driven",
-      "motion",
-      "responsive",
-      "media"
+      "video",
+      "film",
+      "media",
+      "editorial"
     ],
     "dependencies": [
       "motion"
     ],
     "theme": "dark",
     "previewHeight": 900,
-    "usage": "import { ScrollCinemaFrame } from \"@/components/design-for-ai/scroll-cinema-frame\";\n\n<ScrollCinemaFrame />\n\n// Place in normal document flow. Keep ancestors free of overflow clipping so viewport sticky positioning can work.",
+    "usage": "import { ScrollCinemaFrame } from \"@/components/design-for-ai/scroll-cinema-frame\";\n\n<ScrollCinemaFrame\n  title=\"Low Water\"\n  videoSrc=\"/films/low-water.mp4\"\n  posterSrc=\"/films/low-water.jpg\"\n  captionSrc=\"/films/low-water.en.vtt\"\n  credits={[{ label: \"Director\", value: \"Ines Varga\" }, { label: \"Runtime\", value: \"6 min 24 s\" }]}\n/>\n\n// Place in normal document flow. Keep ancestors free of overflow clipping so sticky positioning works.",
     "props": [
       {
         "name": "title",
         "type": "string",
-        "description": "Editorial film title."
+        "description": "Film title, the section's h2 and the title card.",
+        "default": "\"Low Water\""
+      },
+      {
+        "name": "eyebrow",
+        "type": "string",
+        "default": "\"Short documentary · 2026\"",
+        "description": "Mono label above the title."
       },
       {
         "name": "description",
         "type": "string",
-        "description": "Supporting film context."
+        "description": "One or two sentences about the film."
+      },
+      {
+        "name": "credits",
+        "type": "FilmCredit[]",
+        "description": "Up to four { label, value } credits beside the title. The first two values return on the title card when the frame opens."
       },
       {
         "name": "videoSrc",
@@ -39734,13 +39747,20 @@
       {
         "name": "posterLabel",
         "type": "string",
-        "description": "Offline poster caption."
+        "description": "Caption printed over the poster still and used as its accessible description.",
+        "default": "\"Opening shot · Mandø, 05:40\""
+      },
+      {
+        "name": "actionLabel",
+        "type": "string",
+        "default": "\"Open the frame\"",
+        "description": "Label of the button that scrolls the frame open."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Neutral surface and text palette."
+        "description": "Graphite or paper stage; the frame itself is always black."
       }
     ],
     "added": "2026-10-12",
