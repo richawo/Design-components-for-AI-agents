@@ -69,6 +69,8 @@ export async function check({ page, mount, assert }) {
     sha256: MSA,
     bytes: 1842310,
     bates: "HWL-000001 – 000042",
+    broken: false,
+    verified: true,
   });
   // The intake hash is what goes out, not the re-exported one.
   assert.deepEqual(manifest.exhibits[2], {
@@ -78,6 +80,8 @@ export async function check({ page, mount, assert }) {
     sha256: LOG,
     bytes: 96412,
     bates: "HWL-000046",
+    broken: true,
+    verified: false,
   });
 
   // Changing the selection clears the stamp; an empty manifest can't be exported.
@@ -101,11 +105,17 @@ export async function check({ page, mount, assert }) {
   assert.match(await txt(page.getByRole("article")), /Matches at all 1 recorded hand-offs/);
   assert.match(await txt(page.locator("footer")), /Manifest · 1 of 2 exhibits/);
 
+  await page.locator('[data-demo="tab-b"]').click();
+  await page.getByRole("article", { name: "Exhibit B: Invoice" }).waitFor();
+  assert.match(await txt(page.getByRole("article")), /Unverified. No hand-off hashes recorded/);
+  assert.match(await txt(page.getByRole("region").locator("header").first()), /1 of 2 chains intact/);
+  assert.match(await txt(custody), /Unverified/);
+
   await mount(`createRoot(document.getElementById('root')).render(<Subject.EvidenceIndex exhibits={[]}/>);`);
   await page.getByText("No exhibits in this bundle yet.").waitFor();
 
   // Invalid or missing values stay explicit.
-  await mount(`createRoot(document.getElementById('root')).render(<Subject.EvidenceIndex exhibits={[{id:'z',title:'Unlogged drive',kind:'Image',source:'Client',receivedAt:'not a date',sha256:'${LOG}',bytes:-1,custody:[]}]}/>);`);
+  await mount(`createRoot(document.getElementById('root')).render(<Subject.EvidenceIndex defaultIncluded={['z']} onExport={m=>{window.unverifiedManifest=m}} exhibits={[{id:'z',title:'Unlogged drive',kind:'Image',source:'Client',receivedAt:'not a date',sha256:'${LOG}',bytes:-1,custody:[]}]}/>);`);
   const bad = page.getByRole("article", { name: "Exhibit A: Unlogged drive" });
   await bad.waitFor();
   assert.match(await txt(bad), /Received Time missing/);
@@ -114,4 +124,11 @@ export async function check({ page, mount, assert }) {
   assert.match(await txt(page.getByRole("complementary", { name: "Chain of custody" })), /No hand-offs recorded yet\./);
   // With no recorded hand-offs nothing was compared, so the sheet must not claim a match.
   assert.doesNotMatch(await txt(bad), /Matches at all 0 recorded hand-offs/);
+  assert.match(await txt(bad), /Unverified/);
+  assert.match(await txt(page.getByRole("region").locator("header").first()), /0 of 1 chains intact/);
+  assert.match(await txt(page.locator("footer")), /Unverified exhibits: A/);
+  await page.locator('[data-demo="export"]').click();
+  const unverified = await page.evaluate(() => window.unverifiedManifest.exhibits[0]);
+  assert.equal(unverified.broken, false);
+  assert.equal(unverified.verified, false);
 }

@@ -2673,7 +2673,8 @@
     "integration": [
       "Pass `exhibits` with the intake `sha256` and `custody` hand-offs; give a hand-off its own `sha256` when your system re-hashed the file there. A mismatch is flagged as a broken chain.",
       "`onExport` receives the manifest `{ exhibits: { id, label, title, sha256, bytes, bates }[] }`. Resolve to stamp it exported; reject to keep the selection.",
-      "Set `matter` to print the caption, claim reference and bundle name on every cover sheet."
+      "Set `matter` to print the caption, claim reference and bundle name on every cover sheet.",
+      "Manifest entries expose broken and verified flags. A chain without recorded hand-off hashes is unverified and excluded from the intact count."
     ],
     "related": [
       "legal-document-requests",

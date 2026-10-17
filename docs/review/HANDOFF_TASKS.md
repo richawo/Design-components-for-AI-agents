@@ -4,6 +4,10 @@ Self-contained work items from the paused review of the October component additi
 and how to know it's done. Pick any of them up independently. Background, briefs and tooling are in `docs/review/`
 (start with `README.md`); per-component state is in `docs/review/STATUS.md`.
 
+## Follow-up progress (17 October 2026)
+
+- Task 3.1: resolved evidence chain verification and manifest flags. The dedicated browser probe passes, including missing hashes and rejected exports.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned

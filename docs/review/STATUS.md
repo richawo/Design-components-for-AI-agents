@@ -119,7 +119,7 @@ needs re-recording, whether its poster is current, and the state of its browser 
 | --- | --- | --- | --- |
 | `legal-clause-library` | new | current | rewritten, passes |
 | `legal-document-requests` | new | current | rewritten, passes |
-| `legal-evidence-index` | new | current | rewritten, fails on a real bug (1) |
+| `legal-evidence-index` | new | current | rewritten, passes (unverified chains and manifest flags fixed) |
 | `legal-matter-dashboard` | new | current | rewritten, passes |
 | `legal-matter-intake` | new | current | rewritten, passes |
 | `legal-obligation-tracker` | new | current | rewritten, passes |

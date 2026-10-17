@@ -28584,7 +28584,7 @@
       {
         "name": "exhibits",
         "type": "EvidenceExhibit[]",
-        "description": "Exhibits with id, tab label, title, kind, source, ISO receivedAt, intake sha256, bytes, pages, Bates range and custody hand-offs ({ id, at, actor, role, action, sha256 }). A hand-off hash that differs from intake breaks the chain."
+        "description": "Exhibits with id, tab label, title, kind, source, ISO receivedAt, intake sha256, bytes, pages, Bates range and custody hand-offs ({ id, at, actor, role, action, sha256 }). A hand-off hash that differs from intake breaks the chain. Without recorded hand-off hashes the chain is unverified and excluded from the intact count."
       },
       {
         "name": "matter",
@@ -28604,7 +28604,7 @@
       {
         "name": "onExport",
         "type": "(manifest: EvidenceManifest) => void | Promise<void>",
-        "description": "Exports { exhibits: { id, label, title, sha256, bytes, bates }[] }. Resolve to stamp the manifest; reject to keep the selection and offer a retry. Files themselves are never fetched or hashed here."
+        "description": "Exports { exhibits: { id, label, title, sha256, bytes, bates, broken, verified }[] }. Resolve to stamp the manifest; reject to keep the selection and offer a retry. Files themselves are never fetched or hashed here. broken flags a changed hash; verified is true only when at least one recorded hash was compared and all matched."
       },
       {
         "name": "accent",
