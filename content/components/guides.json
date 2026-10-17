@@ -4938,19 +4938,19 @@
     "updated": "2026-10-14"
   },
   "mobile-notification-digest": {
-    "useWhen": "Reviewing actual grouped notifications and requesting explicit read or snooze updates while retaining complete reading and position.",
-    "avoidWhen": "A push delivery service, automatic read on opening or invented snooze scheduling.",
+    "useWhen": "A scheduled summary of notifications grouped by app, where people clear the backlog by swiping each one to read or snooze it and expect a quick Undo.",
+    "avoidWhen": "A live notification feed that must show each push as it arrives, or an inbox where messages are opened and replied to in place.",
     "integration": [
-      "Supply groups with composite group+notification identity and actual unread/read/snoozed or explicit unknown state. Controlled selection/filter require their respective observers; missing observers are read-only. Collapse or filter retains the selected original message.",
-      "onRead receives copied group metadata and notification. onSnooze additionally receives an explicit supplied time option with absolute UTC milliseconds. Null, unsupported, nonfinite, nonpositive or ambiguous times block that request. No duration is inferred.",
-      "Callback fulfillment acknowledges its exact request only; supplied state alone owns read/snoozed status. Exact fact/eligibility/owner/reset changes abort and fence pending work, while unrelated groups preserve the item owner. onRetry is an explicit copied-source refresh, never a background service.",
-      "Install in a React Native app with the listed Expo modules. Test native touch/nested scrolling, large text, reduced motion and assistive technology on target devices."
+      "Pass `groups` as { id, app, icon, items } with items { id, title, body, time, timeSensitive? }. Icons are drawn monochrome glyphs: tasks, chat, calendar, bank, transit and parcel.",
+      "Reads and snoozes are optimistic. `onRead` and `onSnooze` (with the chosen { id, label, until } option) can return a promise; reject or throw and the notification comes back with your message in the toast. `onRestore` fires on Undo.",
+      "`defaultExpanded` opens one pile on first view; `nextSummary` sets the caught-up message.",
+      "Install expo-blur, expo-linear-gradient and react-native-svg. The cards are glass over a drawn wallpaper; keep something with luminance behind them if you change the background."
     ],
     "related": [
       "mobile-swipe-list",
-      "mobile-offline-outbox"
+      "mobile-live-activity"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "mobile-sync-conflict": {
     "useWhen": "Resolving a record that two people or devices edited offline, field by field, where each person should see both versions and physically pick one before the merge is saved.",

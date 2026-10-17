@@ -30178,19 +30178,21 @@
   },
   {
     "slug": "mobile-notification-digest",
-    "name": "Native Notification Digest",
+    "name": "Notification Digest",
     "tier": "pro",
     "platform": "mobile",
     "category": "mobile",
-    "description": "An editorial native notification digest with day groups, retained complete reading, explicit real read and snooze requests, and truthful host-owned status.",
+    "description": "A dark React Native evening summary: notifications pile per app on frosted glass, fan out with springs, and swipe away to read or snooze with Undo.",
     "tags": [
       "mobile",
       "react native",
       "notifications",
       "digest",
-      "read",
-      "snooze",
+      "swipe actions",
       "glass",
+      "stacked cards",
+      "snooze",
+      "monochrome",
       "dark"
     ],
     "dependencies": [
@@ -30199,146 +30201,140 @@
       "react-native-svg"
     ],
     "theme": "dark",
-    "previewHeight": 844,
-    "usage": "import { MobileNotificationDigest } from \"@/components/design-for-ai/native/mobile-notification-digest\";\n\n// Bare native apps: run npx install-expo-modules once.\n<MobileNotificationDigest groups={groups} value={selection} onValueChange={setSelection} onRead={requestRead} onSnooze={requestSnooze} snoozeOptions={times} />",
+    "previewHeight": 940,
+    "usage": "import { MobileNotificationDigest } from \"@/components/design-for-ai/native/mobile-notification-digest\";\n\n// npm i expo-blur expo-linear-gradient react-native-svg\n// (bare React Native: run `npx install-expo-modules` once)\n<MobileNotificationDigest\n  title=\"Evening summary\"\n  date=\"Friday 17 October\"\n  groups={summary.groups}\n  snoozeOptions={[{ id: \"evening\", label: \"Later this evening\", until: \"21:00\" }]}\n  onRead={(item) => api.notifications.markRead(item.id)} // reject to put it back\n  onSnooze={(item, group, option) => api.notifications.snooze(item.id, option.id)}\n  onRestore={(item) => api.notifications.markUnread(item.id)}\n/>",
     "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Evening summary\"",
+        "description": "Large title."
+      },
+      {
+        "name": "date",
+        "type": "string",
+        "default": "\"Friday 17 October\"",
+        "description": "Line above the title."
+      },
+      {
+        "name": "since",
+        "type": "string",
+        "default": "\"13:00\"",
+        "description": "When the summary starts; used in the default subtitle."
+      },
+      {
+        "name": "subtitle",
+        "type": "string",
+        "default": "\"9 notifications since 13:00\"",
+        "description": "Line under the title; defaults to \"9 notifications since 13:00\", counted from the groups."
+      },
       {
         "name": "groups",
         "type": "DigestGroup[]",
-        "description": "Actual groups and raw notifications. Item identity is composite group+notification; duplicates remain inspectable.",
-        "default": "Four original notices in two day groups"
-      },
-      {
-        "name": "value",
-        "type": "DigestSelection | null",
-        "description": "Controlled composite selection. Explicit null is unselected; without observer inspection selection is read-only."
-      },
-      {
-        "name": "defaultValue",
-        "type": "DigestSelection | null",
-        "description": "Initial local selection, restored only by resetKey.",
-        "default": "{ groupId: \"today\", notificationId: \"handoff\" }"
-      },
-      {
-        "name": "onValueChange",
-        "type": "(value: DigestSelection | null) => void",
-        "description": "Synchronous controlled selection observer; rejected changes preserve inspection."
-      },
-      {
-        "name": "filter",
-        "type": "\"all\" | \"unread\"",
-        "description": "Controlled list filter; without observer it is honestly read-only. Filtering never hides the selected complete message."
-      },
-      {
-        "name": "defaultFilter",
-        "type": "\"all\" | \"unread\"",
-        "description": "Initial local filter.",
-        "default": "\"all\""
-      },
-      {
-        "name": "onFilterChange",
-        "type": "(filter: \"all\" | \"unread\") => void",
-        "description": "Synchronous filter observer with meaningful failure feedback."
+        "default": "Messages, Linear, Northline, Halden, Kiln & Co.",
+        "description": "One pile per app: { id, app, icon: \"tasks\" | \"chat\" | \"calendar\" | \"bank\" | \"transit\" | \"parcel\", items: { id, title, body, time, timeSensitive? }[] }."
       },
       {
         "name": "snoozeOptions",
         "type": "DigestSnoozeOption[]",
-        "description": "Actual id/label/absolute UTC-millisecond until. Null, nonfinite, nonpositive or unsupported Date range is unknown and blocked.",
-        "default": "Two explicit original dates"
+        "default": "In an hour, later this evening, tomorrow morning",
+        "description": "Choices in the snooze sheet: { id, label, until }."
+      },
+      {
+        "name": "defaultExpanded",
+        "type": "string",
+        "description": "Id of a pile that starts fanned out."
+      },
+      {
+        "name": "nextSummary",
+        "type": "string",
+        "default": "\"08:00 tomorrow\"",
+        "description": "Shown in the caught-up state."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#5B9DFF\"",
+        "description": "Time-sensitive marks, the progress ring and Undo. The only hue."
       },
       {
         "name": "onRead",
-        "type": "(review: DigestReadReview, signal: AbortSignal) => void | Promise<void>",
-        "description": "Exact copied group metadata and actual notification. Fulfillment acknowledges only; supplied state owns read status."
+        "type": "(item: DigestItem, group: DigestGroup) => void | Promise<void>",
+        "description": "Called when a notification is swiped away or marked read. Reject or throw and it comes back with the error in the toast."
       },
       {
         "name": "onSnooze",
-        "type": "(review: DigestSnoozeReview, signal: AbortSignal) => void | Promise<void>",
-        "description": "Exact copied notification/group/time option. No invented duration or local state overwrite."
+        "type": "(item: DigestItem, group: DigestGroup, option: DigestSnoozeOption) => void | Promise<void>",
+        "description": "Called with the chosen option. Reject or throw and it comes back."
       },
       {
-        "name": "status",
-        "type": "\"ready\" | \"loading\" | \"error\"",
-        "description": "Supplied digest availability. Original content remains inspectable while action eligibility is blocked.",
-        "default": "\"ready\""
-      },
-      {
-        "name": "statusMessage",
-        "type": "string",
-        "description": "Meaningful supplied error/loading explanation. Whitespace uses a useful fallback."
-      },
-      {
-        "name": "onRetry",
-        "type": "(groups: DigestGroup[], signal: AbortSignal) => void | Promise<void>",
-        "description": "Copied current groups and notifications for a real cancellable refresh. Fulfillment never claims ready."
-      },
-      {
-        "name": "resetKey",
-        "type": "string | number",
-        "description": "Replaces selection/filter/expansion/action scope. Fences pending signals and old receipts."
-      },
-      {
-        "name": "title",
-        "type": "string",
-        "description": "Native digest heading.",
-        "default": "\"Today, distilled.\""
-      },
-      {
-        "name": "theme",
-        "type": "\"dark\" | \"light\"",
-        "description": "Neutral graphite/white with one real glass action rail.",
-        "default": "\"dark\""
+        "name": "onRestore",
+        "type": "(item: DigestItem, group: DigestGroup) => void",
+        "description": "Undo from the toast: the notification is back in the digest."
       }
     ],
     "added": "2026-10-14",
     "demo": {
       "steps": [
-        "click:@digest-request-read",
-        "wait:250",
-        "click:@digest-item-0-1",
-        "wait:250",
-        "click:@digest-snooze",
-        "wait:250",
-        "click:@digest-snooze-option-1",
-        "click:@digest-request-snooze",
-        "wait:450",
-        "scroll:380",
-        "click:@digest-group-1",
-        "wait:300"
-      ]
+        "wait:900",
+        "click:@group-linear",
+        "wait:700",
+        "hover:@item-eng-2141:0.7,0.5",
+        "drag:0.05,0.3",
+        "wait:1200",
+        "click:@undo",
+        "wait:900"
+      ],
+      "loop": false
     },
     "controls": [
       {
-        "prop": "theme",
-        "label": "Theme",
-        "kind": "segmented",
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#5B9DFF",
         "options": [
-          "dark",
-          "light"
-        ],
-        "default": "dark"
+          "#5B9DFF",
+          "#F5F5F5",
+          "#FFB224",
+          "#FF6B4A"
+        ]
       },
       {
-        "prop": "defaultFilter",
-        "label": "Initial filter",
+        "prop": "defaultExpanded",
+        "label": "Open pile",
         "kind": "select",
         "options": [
-          "all",
-          "unread"
+          {
+            "value": "",
+            "label": "None"
+          },
+          {
+            "value": "messages",
+            "label": "Messages"
+          },
+          {
+            "value": "linear",
+            "label": "Linear"
+          },
+          {
+            "value": "halden",
+            "label": "Halden"
+          }
         ],
-        "default": "all",
+        "default": "",
         "remount": true
       },
       {
-        "prop": "status",
-        "label": "Availability",
-        "kind": "select",
-        "options": [
-          "ready",
-          "loading",
-          "error"
-        ],
-        "default": "ready"
+        "prop": "title",
+        "label": "Title",
+        "kind": "text",
+        "default": "Evening summary"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
       }
     ]
   },
