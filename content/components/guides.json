@@ -4665,26 +4665,21 @@
     "updated": "2026-10-14"
   },
   "mobile-mood-map": {
-    "useWhen": "A deliberate self-reported check-in with named supplied feeling choices, exact spatial coordinates and a retained personal note.",
-    "avoidWhen": "Inferring a feeling from text, clinical diagnosis, advice or implicit saving.",
+    "useWhen": "A wellbeing or journaling app needs a quick, expressive self-reported check-in: people place how they feel on an energy × pleasantness map and log it against their day.",
+    "avoidWhen": "You need clinical scales (PHQ-9, GAD-7), free-text sentiment detection, or a mood picker so small that a row of chips would do.",
     "integration": [
-      "choices: Exact unique identities, descriptions and finite pleasantness/energy coordinates within [-1,1]. Duplicate or invalid choices stay visible in the list and cannot select.",
-      "value: Authoritative choice identity. Missing, null or conflicting identity remains explicit. Without observer the controlled map is read-only.",
-      "defaultValue: Initial local self-reported choice, null by default. The complete offline demonstration explicitly selects steady.",
-      "onValueChange: Copied synchronous selection observer runs before mutation. Throwing retains previous choice.",
-      "onSave: Exact selected choice, note and check-in context snapshot. Fulfillment is acknowledgment. Missing handler disables save; cancellation is cooperative.",
-      "contextId: Replacement check-in identity retires requests and resets local selection/note.",
-      "dateLabel: Host-authored check-in context, no inferred date or timezone.",
-      "defaultNote: Initial retained note for the actual context.",
-      "maxNoteLength: Integer1–12000. Invalid bound or over-limit draft blocks save; draft is retained.",
-      "Provide a full-height native canvas. Local horizontal shelves preserve touch target size at320px; vertical content scrolls under the translucent action footer. Install Expo modules once for bare React Native.",
-      "Verify real iOS/Android touch, large text and assistive technology in the host app. Browser previews exercise the actual React Native Web source and state contracts."
+      "Supply your own `feelings` with pleasantness and energy from −1 to 1; the colour of each is blended from the four `colors`, so keep those as your brand's data palette.",
+      "Pass today's earlier check-ins as `log` and the current time as `nowMinute`; `onSave` receives { feeling, note, minute } with an AbortSignal and should reject on failure so the retry state appears with the note intact.",
+      "Control the selection with `value` and `onValueChange` to sync it with a store; the callback fires when a drag settles, not on every frame.",
+      "Install this in a React Native app (run npx install-expo-modules once in bare projects). The web preview is a review surface; verify the drag, text scaling and screen readers on devices."
     ],
     "related": [
-      "mobile-bottom-sheet",
-      "mobile-settings"
+      "mobile-journal-prompt",
+      "mobile-habit-grid",
+      "mobile-day-planner",
+      "mobile-health-summary"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "mobile-habit-grid": {
     "useWhen": "Inspecting and editing exact completion records for seven consecutive calendar dates without treating missing records as incomplete.",

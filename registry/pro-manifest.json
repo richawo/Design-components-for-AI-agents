@@ -29918,14 +29918,18 @@
     "tier": "pro",
     "platform": "mobile",
     "category": "mobile",
-    "description": "A native spatial check-in with supplied feeling coordinates, tactile choices and a retained personal note, reviewed through an exact cancellable save.",
+    "description": "A React Native mood check-in: drag a light across an energy × pleasantness map, it lands on a named feeling, colours the field and logs onto today’s strip.",
     "tags": [
-      "mobile",
-      "react native",
-      "dark",
-      "glass",
       "mood",
-      "map"
+      "check-in",
+      "wellbeing",
+      "journal",
+      "react native",
+      "drag",
+      "gestures",
+      "dark",
+      "monochrome",
+      "data colour"
     ],
     "dependencies": [
       "expo-blur",
@@ -29933,92 +29937,128 @@
       "react-native-svg"
     ],
     "theme": "dark",
-    "previewHeight": 844,
-    "usage": "import { MobileMoodMap } from \"@/components/design-for-ai/native/mobile-mood-map\";\n\n// Bare React Native: run npx install-expo-modules once.\n<MobileMoodMap theme=\"dark\" />",
+    "previewHeight": 940,
+    "usage": "import { MobileMoodMap } from \"@/components/design-for-ai/native/mobile-mood-map\";\n\n// Bare React Native apps: run `npx install-expo-modules` once for expo-blur and expo-linear-gradient.\n<MobileMoodMap\n  log={todaysCheckIns}\n  nowMinute={minutesSinceMidnight}\n  onSave={(checkIn, signal) => api.logMood(checkIn, { signal })}\n/>",
     "props": [
       {
-        "name": "choices",
-        "type": "MoodMapChoice[]",
-        "description": "Exact unique identities, descriptions and finite pleasantness/energy coordinates within [-1,1]. Duplicate or invalid choices stay visible in the list and cannot select."
+        "name": "feelings",
+        "type": "MoodFeeling[]",
+        "default": "12 feelings",
+        "description": "Named feelings placed on the map: id, label, a one-line description, pleasantness and energy (each −1 to 1). Invalid coordinates are left off the map."
       },
       {
         "name": "value",
         "type": "string | null",
-        "description": "Authoritative choice identity. Missing, null or conflicting identity remains explicit. Without observer the controlled map is read-only."
+        "description": "Controlled feeling id. Pair with onValueChange; a change from outside springs the light to that feeling."
       },
       {
         "name": "defaultValue",
         "type": "string | null",
-        "description": "Initial local self-reported choice, null by default. The complete offline demonstration explicitly selects steady."
+        "default": "null",
+        "description": "Feeling selected on mount when uncontrolled. With none, the readout invites a first pick."
       },
       {
         "name": "onValueChange",
-        "type": "(id: string, choice: MoodMapChoice) => void",
-        "description": "Copied synchronous selection observer runs before mutation. Throwing retains previous choice."
+        "type": "(id: string, feeling: MoodFeeling) => void",
+        "description": "Fires when a drag settles on a feeling or a word is tapped, not on every frame of a drag."
       },
       {
-        "name": "onSave",
-        "type": "(entry: MoodMapEntry & { choice: MoodMapChoice; contextId: string }, signal: AbortSignal) => void | Promise<void>",
-        "description": "Exact selected choice, note and check-in context snapshot. Fulfillment is acknowledgment. Missing handler disables save; cancellation is cooperative."
+        "name": "log",
+        "type": "MoodLogEntry[]",
+        "description": "Today’s earlier check-ins ({ id, feelingId, minute }), drawn as coloured dots on the 06:00–24:00 strip."
       },
       {
-        "name": "contextId",
-        "type": "string",
-        "description": "Replacement check-in identity retires requests and resets local selection/note."
+        "name": "nowMinute",
+        "type": "number",
+        "default": "920",
+        "description": "When this check-in happens, in minutes after midnight. Marks “now” on the strip and stamps the saved entry."
       },
       {
         "name": "dateLabel",
         "type": "string",
-        "description": "Host-authored check-in context, no inferred date or timezone."
-      },
-      {
-        "name": "defaultNote",
-        "type": "string",
-        "description": "Initial retained note for the actual context."
-      },
-      {
-        "name": "maxNoteLength",
-        "type": "number",
-        "description": "Integer1–12000. Invalid bound or over-limit draft blocks save; draft is retained."
+        "default": "\"Tuesday 13 October\"",
+        "description": "Date shown above the title, with the time of nowMinute."
       },
       {
         "name": "title",
         "type": "string",
-        "description": "Editable host heading. Keep working content dominant."
+        "default": "\"How are you feeling?\"",
+        "description": "The question at the top."
       },
       {
-        "name": "theme",
-        "type": "\"dark\" | \"light\"",
-        "description": "Neutral graphite/white themes with readable borders and actual focus states."
+        "name": "colors",
+        "type": "Partial<MoodColors>",
+        "description": "The four corner colours (highPleasant, highUnpleasant, lowPleasant, lowUnpleasant). They are data colours: every feeling’s colour is blended from them by position. Everything else stays neutral."
+      },
+      {
+        "name": "defaultNote",
+        "type": "string",
+        "default": "\"\"",
+        "description": "Initial note text."
+      },
+      {
+        "name": "notePlaceholder",
+        "type": "string",
+        "description": "Placeholder for the optional note."
+      },
+      {
+        "name": "maxNoteLength",
+        "type": "number",
+        "default": "280",
+        "description": "Character limit for the note. Over it, logging is held with an explanation and the note is kept in full."
+      },
+      {
+        "name": "onSave",
+        "type": "(checkIn: MoodCheckIn, signal: AbortSignal) => void | Promise<void>",
+        "description": "Logs { feeling, note, minute }. While it runs the button shows a spinner; on success a dot lands on the strip. Reject to show the error and a retry with the note intact. The signal aborts on unmount."
       }
     ],
     "added": "2026-10-14",
     "demo": {
       "steps": [
-        "click:@mood-choice-1",
         "wait:300",
-        "click:@mood-choice-2",
-        "wait:300",
+        "hover:@mood-orb",
+        "drag:0.74,0.27",
+        "wait:700",
         "click:@mood-save",
-        "wait:450"
-      ]
+        "wait:1500"
+      ],
+      "loop": false
     },
     "controls": [
       {
-        "prop": "theme",
-        "label": "Theme",
-        "kind": "segmented",
+        "prop": "value",
+        "label": "Feeling",
+        "kind": "action",
         "options": [
-          "dark",
-          "light"
-        ],
-        "default": "dark"
+          {
+            "value": "calm",
+            "label": "Calm"
+          },
+          {
+            "value": "excited",
+            "label": "Excited"
+          },
+          {
+            "value": "anxious",
+            "label": "Anxious"
+          },
+          {
+            "value": "tired",
+            "label": "Tired"
+          }
+        ]
       },
       {
         "prop": "title",
-        "label": "Heading",
+        "label": "Question",
         "kind": "text",
-        "default": "Make room for how you feel."
+        "default": "How are you feeling?"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
       }
     ]
   },
