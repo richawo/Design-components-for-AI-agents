@@ -4621,18 +4621,19 @@
     "updated": "2026-10-13"
   },
   "devtools-release-compare": {
-    "useWhen": "Comparing supplied deployments and their changed resources before a reviewed host-owned rollback request.",
-    "avoidWhen": "Performing an implicit deployment or claiming a rollback succeeded without an actual host result.",
+    "useWhen": "A deploy or release screen where someone decides whether a candidate (or an older release) should replace what's live, and needs the metric changes, risky files and diffs in one place.",
+    "avoidWhen": "Reviewing a single pull request line by line, or showing deployment history over time; use a diff viewer or a timeline instead.",
     "integration": [
-      "Supply immutable current/candidate releases with ID, label, supported timestamp, resourcesComplete and actual resource ID/path/kind/bytes/digest/text. Equal size alone is unverified; complete opposite inventory is required to call a resource added or removed. Raw identity conflicts stay visible.",
-      "Pair target value with onValueChange for controlled inspection. Review requests require an earlier supported target, complete unique inventories and known content comparisons. Consent belongs to the exact current/target manifest pair and retires permanently on replacement; byte subtotals stay exact and unknown sizes remain separate.",
-      "Pass the copied reviewed pair to onRequestRollback(review, AbortSignal), preserve context through failure/cancel and fence old results by target/content/callback/reset ownership. Acknowledgement shows Awaiting current release, blocks duplicate requests and never invents a deployment change; only the supplied current release reports deployment."
+      "Pass the live release as base and one ReleaseComparison per candidate: { target, metrics, files, risks }. Metrics carry base, target, unit and better (lower | higher) so deltas are coloured by whether they are good news. A target older than the base is treated as a rollback.",
+      "Flag files with risk high or medium (migrations, auth, config); with requireReview each must be marked viewed before the deploy unlocks. Supply unified-diff text as patch; parsePatch and riskScore are exported for server-side use.",
+      "onDeploy receives { base, target, direction, riskScore, reviewed }. Return the promise from your deploy API to show progress, and reject to keep the review with an error. Use value and onValueChange to drive the target from the URL.",
+      "Use status loading or error while comparisons load; nothing is deployed from those states."
     ],
     "related": [
       "agent-commit-card",
-      "legal-version-history"
+      "devtools-api-playground"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "devtools-request-replay": {
     "useWhen": "Debugging a request that failed in production or staging: edit what was sent, send it again and see exactly how the status, timing and response body changed.",

@@ -14949,116 +14949,199 @@
   },
   {
     "slug": "devtools-release-compare",
-    "name": "Release Manifest Review",
+    "name": "Release Compare",
     "tier": "pro",
     "platform": "web",
     "category": "devtools",
-    "description": "A paired supplied-release manifest inspector with honest partial/unknown resource comparisons and a reviewed, cancellable host rollback request.",
+    "description": "Two releases side by side before you ship: metric deltas that count, a drawn risk score, changed files with diffs, and a promote or rollback gated on review.",
     "tags": [
       "devtools",
       "release",
       "deployment",
+      "diff",
       "rollback",
-      "manifest",
-      "dark"
+      "canary",
+      "code review",
+      "metrics"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1260,
-    "usage": "import { DevtoolsReleaseCompare } from \"@/components/design-for-ai/devtools-release-compare\";\n\n<DevtoolsReleaseCompare current={current} candidates={history} value={targetId} onValueChange={setTarget} onRequestRollback={requestRollback} resetKey={environmentId} />",
+    "previewHeight": 1180,
+    "usage": "import { DevtoolsReleaseCompare } from \"@/components/design-for-ai/devtools-release-compare\";\n\n<DevtoolsReleaseCompare\n  project=\"northwind/web\"\n  base={production}            // { id, version, channel, commit, createdAt, author }\n  comparisons={[canary, previous]} // each { target, metrics, files, risks }\n  onDeploy={({ target, direction }) => deploys.start(target.id, direction)} // return the promise\n/>\n\n// Files flagged risk: \"high\" | \"medium\" must be marked viewed before the deploy button unlocks (requireReview).\n// parsePatch(patch) and riskScore(risks) are exported for server-side use.",
     "props": [
       {
-        "name": "current",
-        "type": "ReleaseCompareRelease",
-        "description": "Supplied current immutable release ID/label/ISO timestamp, explicit resourcesComplete flag and raw resources with ID/path/kind/bytes/digest/preview text.",
-        "default": "Original Studio1.8.0 offline manifest"
+        "name": "project",
+        "type": "string",
+        "default": "\"northwind/web\"",
+        "description": "Repository or service name in the tool bar."
       },
       {
-        "name": "candidates",
-        "type": "ReleaseCompareRelease[]",
-        "description": "Stable unique candidate identities with supplied complete/partial inventories. Earlier supported timestamp is required for a rollback request.",
-        "default": "Two original preceding offline manifests"
+        "name": "base",
+        "type": "Release",
+        "description": "What's live now: { id, version, channel, commit, createdAt, author, commits? }."
+      },
+      {
+        "name": "comparisons",
+        "type": "ReleaseComparison[]",
+        "description": "Candidates compared against the base: { target: Release, metrics: ReleaseMetric[], files: ReleaseFile[], risks: { label, points }[] }. A target older than the base is a rollback."
       },
       {
         "name": "value",
         "type": "string",
-        "description": "Authoritative target ID. Missing ID stays explicit; no selection observer means target selection read-only."
+        "description": "Controlled target release id."
       },
       {
         "name": "defaultValue",
         "type": "string",
-        "description": "Initial local target; reset reuses it or first candidate."
+        "description": "Uncontrolled starting target; defaults to the first comparison."
       },
       {
         "name": "onValueChange",
-        "type": "(id: string, target: ReleaseCompareRelease) => void",
-        "description": "Synchronous target inspection observer. Host rejection keeps the actual selected target."
+        "type": "(targetId: string) => void",
+        "description": "Called when the target switch changes."
       },
       {
-        "name": "onRequestRollback",
-        "type": "(review: ReleaseRollbackReview, signal: AbortSignal) => void | Promise<void>",
-        "description": "Actual reviewed request with copied current/target manifests and comparisons. Honor cancellation; acknowledgment never invents current deployment updates."
+        "name": "onDeploy",
+        "type": "(request: ReleaseDeployRequest) => void | Promise<void>",
+        "description": "Promote or roll back with { base, target, direction, riskScore, reviewed }. Return a promise to show progress; a rejection keeps the review and says so."
       },
       {
-        "name": "resetKey",
-        "type": "string | number",
-        "description": "Environment/review identity. Clears local selection/filter/review and retires old requests."
+        "name": "requireReview",
+        "type": "boolean",
+        "default": "true",
+        "description": "Lock the deploy until every flagged file is marked viewed."
       },
       {
-        "name": "title",
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"error\"",
+        "default": "\"ready\"",
+        "description": "Comparison availability: skeletons while loading, a message with Try again on error."
+      },
+      {
+        "name": "errorMessage",
         "type": "string",
-        "description": "Concise release comparison heading.",
-        "default": "\"Read the release before returning.\""
+        "description": "Text for the error state."
       },
       {
-        "name": "description",
-        "type": "string",
-        "description": "Explain exact current/target manifest review.",
-        "default": "\"Compare the supplied resource manifests, inspect what the target changes and request a rollback only after reviewing that exact pair.\""
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Shows Try again in the error state."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Neutral black/white glass chrome, with colour reserved for actual data/feature accents.",
-        "default": "\"dark\""
+        "default": "\"dark\"",
+        "description": "Surface the tool sits on."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#7cc4ff\"",
+        "description": "The one accent: the target release card and its channel."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Outer comparison class.",
-        "default": "\"\""
+        "description": "Extra classes on the root section."
       }
     ],
     "added": "2026-10-13",
     "demo": {
       "steps": [
-        "click:@resource-policy",
+        "wait:500",
+        "click:@viewed-0",
         "wait:350",
-        "click:@review-rollback",
+        "click:@viewed-1",
         "wait:350",
-        "click:@request-rollback",
-        "wait:500"
+        "click:@viewed-2",
+        "wait:400",
+        "click:@deploy",
+        "wait:1400"
       ]
     },
     "controls": [
+      {
+        "prop": "requireReview",
+        "label": "Require review",
+        "kind": "toggle",
+        "default": true,
+        "group": "Behaviour"
+      },
+      {
+        "prop": "defaultValue",
+        "label": "Compare with",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "v2.15.0-rc.2",
+            "label": "Canary"
+          },
+          {
+            "value": "v2.13.4",
+            "label": "Previous"
+          }
+        ],
+        "default": "v2.15.0-rc.2",
+        "group": "Behaviour",
+        "remount": true
+      },
+      {
+        "prop": "status",
+        "label": "Data",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "ready",
+            "label": "Ready"
+          },
+          {
+            "value": "loading",
+            "label": "Loading"
+          },
+          {
+            "value": "error",
+            "label": "Error"
+          }
+        ],
+        "default": "ready",
+        "group": "State"
+      },
       {
         "prop": "theme",
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
-        "default": "dark"
+        "default": "dark",
+        "group": "Look"
       },
       {
-        "prop": "title",
-        "label": "Heading",
-        "kind": "text",
-        "default": "Read the release before returning."
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#7cc4ff",
+        "options": [
+          "#7cc4ff",
+          "#f2b25b",
+          "#7dd3a8"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
       }
     ]
   },
