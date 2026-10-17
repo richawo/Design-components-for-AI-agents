@@ -240,6 +240,7 @@ export async function ComponentDetail({ entry: e }: { entry: RegistryEntry }) {
       >
         {e.hasSource ? (
           <PreviewFrame
+            key={slug}
             slug={slug}
             name={e.name}
             height={e.previewHeight}

@@ -52,6 +52,10 @@ export function PreviewFrame({
   const [vp, setVp] = useState<(typeof VIEWPORTS)[number]["key"]>("desktop");
   const [key, setKey] = useState(0);
   const [loaded, setLoaded] = useState(false);
+  const [loadError, setLoadError] = useState(false);
+  const automaticRetries = useRef(0);
+  const failedFrame = useRef<number | null>(null);
+  const retryTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const ref = useRef<HTMLIFrameElement>(null);
   const box = useRef<HTMLDivElement>(null);
   const width = platform === "mobile" ? "100%" : VIEWPORTS.find((v) => v.key === vp)!.width;
@@ -117,6 +121,7 @@ export function PreviewFrame({
       if (msg.type === "ready") {
         ready.current = true;
         setLoaded(true);
+        setLoadError(false);
         if (controls.length) send({ type: "props", props: { ...diffValues(controls, valuesRef.current), ...(accentProp && valuesRef.current[accentProp] !== undefined ? { [accentProp]: valuesRef.current[accentProp] } : {}), ...actionsRef.current } });
         tryAutoplay();
       } else {
@@ -197,7 +202,53 @@ export function PreviewFrame({
     const win = ref.current?.contentWindow;
     if (win) win.postMessage({ channel: PREVIEW_CHANNEL, type: "hello" }, window.location.origin);
   }, []);
-  useEffect(sayHello, [key, sayHello]);
+
+  const reload = useCallback(() => {
+    ready.current = false;
+    setLoaded(false);
+    setLoadError(false);
+    setPlaying(false);
+    setKey(current => current + 1);
+  }, []);
+  const retry = () => {
+    if (retryTimer.current) clearTimeout(retryTimer.current);
+    automaticRetries.current = 0;
+    reload();
+  };
+  const onFrameLoad = useCallback(() => {
+    // A Cloudflare error document also fires onLoad. It cannot answer hello,
+    // so retry that failed GET once instead of leaving an endless spinner.
+    let failed = false;
+    try {
+      const frame = ref.current;
+      failed = !frame?.contentDocument?.querySelector("[data-preview-slug]");
+    } catch { failed = true; }
+    if (!failed) return sayHello();
+    if (failedFrame.current === key) return;
+    failedFrame.current = key;
+    if (automaticRetries.current < 1) {
+      automaticRetries.current++;
+      retryTimer.current = setTimeout(reload, 600);
+    } else setLoadError(true);
+  }, [key, reload, sayHello]);
+  useEffect(() => {
+    sayHello();
+    // A fast error response may finish before the parent hydrates and binds
+    // onLoad. Inspect that already completed document once as well.
+    try {
+      const document = ref.current?.contentDocument;
+      if (document?.readyState === "complete" && document.URL !== "about:blank") onFrameLoad();
+    } catch { onFrameLoad(); }
+  }, [key, sayHello, onFrameLoad]);
+  useEffect(() => {
+    if (loaded) return;
+    // Loading can also fail before onLoad, for example when a script stalls.
+    const deadline = setTimeout(() => setLoadError(true), 15000);
+    return () => clearTimeout(deadline);
+  }, [key, loaded]);
+  useEffect(() => () => {
+    if (retryTimer.current) clearTimeout(retryTimer.current);
+  }, []);
 
   return (
     <div className="rounded-[20px] border border-white/[0.08] bg-site-raised shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_40px_100px_-40px_rgba(0,0,0,0.9)]">
@@ -272,12 +323,7 @@ export function PreviewFrame({
           )}
           <button
             type="button"
-            onClick={() => {
-              setLoaded(false);
-              ready.current = false;
-              setPlaying(false);
-              setKey((k) => k + 1);
-            }}
+            onClick={retry}
             aria-label="Reload preview"
             title="Reload"
             className="flex size-11 items-center justify-center rounded-md text-site-fg-3 transition duration-150 hover:bg-white/[0.05] hover:text-site-fg active:scale-95 motion-reduce:!scale-100"
@@ -307,10 +353,13 @@ export function PreviewFrame({
           <AccentPicker defaultColor={parseAccent(controls.find(c => c.prop === accentProp)?.default) ?? undefined} />
         </div>
       </div>
-      <div ref={box} aria-busy={!loaded} className={`site-dots relative flex justify-center overflow-hidden bg-site-sunken ${controls.length ? "" : "rounded-b-[19px]"}`}>
+      <div ref={box} aria-busy={!loaded && !loadError} className={`site-dots relative flex justify-center overflow-hidden bg-site-sunken ${controls.length ? "" : "rounded-b-[19px]"}`}>
         {!loaded && (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="size-5 animate-spin rounded-full border-2 border-white/10 border-t-white/50 motion-reduce:animate-none" role="status" aria-label="Loading preview" />
+          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 px-6 text-center" role={loadError ? "status" : undefined}>
+            {loadError ? <>
+              <p className="text-sm text-site-fg-2">The preview couldn’t load. Please try again.</p>
+              <button type="button" onClick={retry} className="site-btn site-btn-secondary h-11 px-5 text-sm">Retry preview</button>
+            </> : <span className="size-5 animate-spin rounded-full border-2 border-white/10 border-t-white/50 motion-reduce:animate-none" role="status" aria-label="Loading preview" />}
           </div>
         )}
         <iframe
@@ -319,9 +368,11 @@ export function PreviewFrame({
           src={`/preview/${slug}`}
           title={`${name} live preview`}
           allow="microphone; clipboard-write"
-          onLoad={sayHello}
+          onLoad={onFrameLoad}
+          aria-hidden={!loaded}
+          tabIndex={loaded ? 0 : -1}
           style={{ width, height: frameHeight, maxWidth: "100%" }}
-          className={`block transition-[width,opacity] duration-500 ease-site motion-reduce:transition-none ${theme === "dark" ? "bg-black" : "bg-white"} ${loaded ? "opacity-100" : "opacity-0"} ${vp !== "desktop" && platform === "web" ? "border-x border-white/10" : ""}`}
+          className={`block transition-[width,opacity] duration-500 ease-site motion-reduce:transition-none ${theme === "dark" ? "bg-black" : "bg-white"} ${loaded ? "opacity-100" : "pointer-events-none opacity-0"} ${vp !== "desktop" && platform === "web" ? "border-x border-white/10" : ""}`}
         />
       </div>
       {controls.length > 0 && (
