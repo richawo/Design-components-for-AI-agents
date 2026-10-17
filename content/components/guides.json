@@ -2516,17 +2516,19 @@
     "updated": "2026-10-12"
   },
   "hr-org-explorer": {
-    "useWhen": "Exploring a supplied organisational hierarchy and reporting relationships.",
-    "avoidWhen": "A team directory whose reporting data is inferred rather than supplied.",
+    "useWhen": "Showing who reports to whom as a tree people can move through: focus a person, see their chain of command, team, tenure and open roles.",
+    "avoidWhen": "A flat staff directory or search page with no reporting lines, or org data you can only infer rather than supply.",
     "integration": [
-      "Supply your own records through `people`. Preserve stable keys or IDs when the data contract provides them."
+      "Pass `people` with `managerId` links; missing managers, duplicate IDs and cycles are reported in an alert rather than hidden.",
+      "Add `openRoles` to managers to draw approved hires as dashed seats, and wire `onOpenProfile` and `onMessage` to your routes.",
+      "Set `defaultFocusId` to the viewer or their manager so the chart opens where they work."
     ],
     "related": [
-      "app-permission-matrix",
       "hr-people-dashboard",
-      "commerce-operations-dashboard"
+      "hr-capacity-planner",
+      "hr-employee-onboarding"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "hr-people-dashboard": {
     "useWhen": "A concise overview of supplied people measures and operational queues.",

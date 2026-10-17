@@ -25336,52 +25336,90 @@
     "tier": "pro",
     "platform": "web",
     "category": "app",
-    "description": "Search a bounded reporting hierarchy and inspect each person’s team. A considered, responsive hr workspace with typed integration points.",
+    "description": "A living org chart: a pannable tree of avatar cards whose connectors draw in, a camera that springs to each person, chain-of-command trail and a profile panel.",
     "tags": [
       "hr",
-      "workflow",
-      "responsive",
-      "keyboard",
-      "app"
+      "org chart",
+      "people",
+      "hierarchy",
+      "tree"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1120,
-    "usage": "import { OrgExplorer } from \"@/components/design-for-ai/hr-org-explorer\";\n\n<OrgExplorer />",
+    "previewHeight": 900,
+    "usage": "import { OrgExplorer } from \"@/components/design-for-ai/hr-org-explorer\";\n\n<OrgExplorer\n  orgName=\"Halden\"\n  people={people}\n  defaultFocusId=\"morgan\"\n  onOpenProfile={(person) => router.push(`/people/${person.id}`)}\n  onMessage={(person) => openChat(person.id)}\n/>",
     "props": [
-      {
-        "name": "title",
-        "type": "string",
-        "description": "Main heading.",
-        "default": "\"Organisation\""
-      },
-      {
-        "name": "subtitle",
-        "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Explore reporting relationships, move through a team and inspect the person behind each role.\""
-      },
       {
         "name": "people",
         "type": "OrgPerson[]",
-        "description": "Unique people with optional manager IDs and supplied responsibilities. Missing managers and cycles are shown explicitly."
+        "default": "Halden (17 people)",
+        "description": "Everyone on the chart: { id, name, role, team, location, managerId?, startDate?, timeZone?, responsibilities?, openRoles? }. Missing managers, duplicate IDs and cycles are reported in an alert, never hidden."
+      },
+      {
+        "name": "orgName",
+        "type": "string",
+        "default": "\"Halden\"",
+        "description": "Organisation name in the header."
+      },
+      {
+        "name": "defaultFocusId",
+        "type": "string",
+        "default": "first top-level person",
+        "description": "Who the chart focuses on first. The focus's chain of command and reports are expanded."
+      },
+      {
+        "name": "connectors",
+        "type": "\"curved\" | \"elbow\"",
+        "default": "\"curved\"",
+        "description": "Connector style between managers and their reports."
+      },
+      {
+        "name": "showOpenRoles",
+        "type": "boolean",
+        "default": "true",
+        "description": "Draw approved open roles as dashed seats in the tree and count them in the header and panel."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Locale for local times and start dates."
+      },
+      {
+        "name": "onOpenProfile",
+        "type": "(person: OrgPerson) => void",
+        "description": "Shows a View profile action in the panel."
+      },
+      {
+        "name": "onMessage",
+        "type": "(person: OrgPerson) => void",
+        "description": "Shows a Message action in the panel."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#c5f25a\"",
+        "description": "The one accent: the focused person's card and their reporting line."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Near-black (default) or white surfaces."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:350",
-        "click:@report-0",
-        "wait:650",
-        "click:@report-0",
+        "wait:600",
+        "click:@node-sam",
+        "wait:1100",
+        "click:@crumb-0",
+        "wait:1300",
+        "click:@node-noor",
         "wait:1000"
       ],
       "loop": false
@@ -25396,6 +25434,47 @@
           "light"
         ],
         "default": "dark"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#c5f25a",
+        "options": [
+          "#c5f25a",
+          "#ff8a5c",
+          "#7cc4ff",
+          "#f4f4f5"
+        ]
+      },
+      {
+        "prop": "connectors",
+        "label": "Connectors",
+        "kind": "segmented",
+        "options": [
+          "curved",
+          "elbow"
+        ],
+        "default": "curved"
+      },
+      {
+        "prop": "showOpenRoles",
+        "label": "Open roles",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "defaultFocusId",
+        "label": "Start at",
+        "kind": "select",
+        "options": [
+          "morgan",
+          "jordan",
+          "sam",
+          "noor"
+        ],
+        "default": "jordan",
+        "remount": true
       }
     ]
   },
