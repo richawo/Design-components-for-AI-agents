@@ -42,6 +42,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 5: registered and verified four dedicated mobile regressions for Attachment Tray, Budget Envelope, Channel Thread and Focus Session. They cover keyboard controls, callback retry/payloads where applicable, limits and empty/unavailable states. Missing web pressed, checked and slider values are fixed. The registered source-fixture run passes all four; application-route verification remains separate.
 
+- Task 6: finished Preorder Planner and removed its parked patch. The demand chart, size allocation and close/reopen receipts now share exact factory constraints. Failed close and reopen callbacks retain the current decision. Its source-fixture browser regression, demo replay, controls, dark/light accessibility, responsive/state/entrance captures and refreshed poster pass. Its new film remains in task 1.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -59,7 +61,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Browser checks: `node scripts/check-component.mjs <slug> --base=http://localhost:3100 --no-video --keep-going`
   (screenshots at 1440/768/390 and every control flip; read the screenshots it writes to `test-results/check/<slug>/`).
 
-## 1. Re-record demo videos (135 components)
+## 1. Re-record demo videos (136 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -110,7 +112,7 @@ Slugs:
 `media-trim-timeline`, `navigation-context-rail`, `navigation-lens-dock`, `navigation-stacked-tabs`
 `pixel-halftone-image`, `portfolio-project-reel`, `pricing-seat-simulator`, `pricing-usage-calculator`
 `social-proof-case-ledger`, `text-number-odometer`, `text-optical-weight`, `text-outline-fill`
-`text-path-typesetter`, `finance-budget-variance`, `finance-cashflow-dashboard`
+`text-path-typesetter`, `finance-budget-variance`, `finance-cashflow-dashboard`, `fashion-preorder-planner`
 
 ## 2. Retake 6 stale posters
 
@@ -219,7 +221,7 @@ see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 `pricing-usage-calculator`, `social-proof-case-ledger`, `text-number-odometer`, `text-optical-weight`
 `text-outline-fill`, `text-path-typesetter`
 
-## 6. Finish parked rebuilds (seven remaining)
+## 6. Finish parked rebuilds (six remaining)
 
 Rebuilt but not shipped; the live components are still the old versions. Each lives in the Pro repo at
 `registry/pro/_wip/<slug>/` with `component.patch`, `guide.json` and sometimes `probe.mjs`. To resume one:
@@ -235,7 +237,7 @@ run the checks, and delete `_wip/<slug>` in the Pro commit that ships it.
 
 | Slug | What's missing |
 | --- | --- |
-| fashion-preorder-planner | `prompt.md`/`prompt.json` still describe the old design; probe; poster |
+| fashion-preorder-planner | Completed 17 October: source-fixture regression, demo, controls, both-theme accessibility and responsive/state/entrance captures pass; prompts and poster are current. |
 | fashion-collection-line-plan | prompts; probe; poster; check `block-fashion-workspace` renders |
 | fashion-merchandising-dashboard | prompts; probe; poster; check `block-fashion-workspace` renders |
 | fashion-size-guide | prompts; the probe's last remount (missing values, empty data) unverified; native-themes probe; poster |

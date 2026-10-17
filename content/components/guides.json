@@ -2146,18 +2146,19 @@
     "updated": "2026-10-12"
   },
   "fashion-preorder-planner": {
-    "useWhen": "Comparing preorders with production thresholds and planned quantities.",
-    "avoidWhen": "A purchase commitment or manufacturing instruction without host acceptance.",
+    "useWhen": "A brand sells a drop on preorder and has to set a production quantity against demand that is still coming in, then close the window knowing who is charged, who waits and what is left for launch.",
+    "avoidWhen": "In-stock ordering, or production planning with no preorder window. Use a purchase order or wholesale order sheet instead; this planner assumes a single style taking preorders up to a close date.",
     "integration": [
-      "Supply your own records through `sizes`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onSave` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+      "Pass `drop`, `daily` preorders per day from the opening date and `sizes`; the size totals must match the daily total or closing is blocked with an explanation.",
+      "`minimumUnits`, `packMultiple` and `maximumUnits` bound and snap the draggable cap. `onClose` receives the production order, charges, waitlist and launch stock by size; throw to keep the window open and show your message. `onReopen` adds an undo to the receipt.",
+      "If reopening fails, keep the closed receipt and show the host’s reason before offering another attempt."
     ],
     "related": [
-      "commerce-catalog-import",
-      "commerce-return-desk",
-      "commerce-variant-stock"
+      "fashion-wholesale-order",
+      "fashion-collection-line-plan",
+      "fashion-launch-calendar"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-17"
   },
   "fashion-size-guide": {
     "useWhen": "Editing and reviewing a garment's supplied measurements and size guidance.",

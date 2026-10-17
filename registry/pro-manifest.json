@@ -21648,75 +21648,126 @@
     "tier": "pro",
     "platform": "web",
     "category": "commerce",
-    "description": "Plan size-level production against preorders and minimum factory quantities. A considered, responsive fashion workspace with typed integration points.",
+    "description": "A drop's preorder demand drawn against a production cap you drag: projection cone, size curve, waitlist and a close-preorders decision with its consequences.",
     "tags": [
       "fashion",
-      "workflow",
-      "responsive",
-      "keyboard",
+      "preorder",
+      "production",
+      "demand",
+      "drop",
+      "waitlist",
+      "chart",
       "commerce"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1280,
-    "usage": "import { PreorderPlanner } from \"@/components/design-for-ai/fashion-preorder-planner\";\n\n<PreorderPlanner />",
+    "previewHeight": 1180,
+    "usage": "import { PreorderPlanner } from \"@/components/design-for-ai/fashion-preorder-planner\";\n\n<PreorderPlanner\n  drop={drop}\n  daily={preordersPerDay}\n  sizes={preordersBySize}\n  minimumUnits={300}\n  packMultiple={25}\n  maximumUnits={650}\n  currency=\"GBP\"\n  onClose={async (decision) => {\n    await api.drops.closePreorders(decision);\n  }}\n  onReopen={(dropId) => api.drops.reopen(dropId)}\n/>",
     "props": [
       {
-        "name": "title",
+        "name": "brand",
         "type": "string",
-        "description": "Main heading.",
-        "default": "\"Preorder production\""
+        "default": "\"Ferne\"",
+        "description": "The house, shown as the mark and in the breadcrumb."
       },
       {
-        "name": "subtitle",
-        "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Turn size-level preorders into a production plan that respects factory constraints.\""
+        "name": "drop",
+        "type": "PreorderDrop",
+        "description": "The style on preorder: name, SKU, garment sketch, colourway and hex, price in minor units, window dates (ISO), ship month and factory."
       },
       {
-        "name": "style",
-        "type": "string",
-        "description": "Style identifier or display name being planned."
+        "name": "daily",
+        "type": "number[]",
+        "description": "New preorders per day from the opening date, up to and including today. Draws the demand curve and sets the five-day run rate."
       },
       {
         "name": "sizes",
         "type": "PreorderSize[]",
-        "description": "Unique size IDs with non-negative whole-unit preorders and on-hand stock, each at most 1,000,000."
+        "description": "Preorders by size. Must add up to the daily total, or closing is blocked with an explanation."
       },
       {
         "name": "minimumUnits",
         "type": "number",
-        "description": "Minimum whole units required across this production run."
+        "default": "300",
+        "description": "The factory minimum. The cap can't go below it."
       },
       {
         "name": "packMultiple",
         "type": "number",
-        "description": "Every size production quantity must be a multiple of this positive whole number."
+        "default": "25",
+        "description": "The factory cuts in multiples of this; the cap snaps to it."
       },
       {
-        "name": "onSave",
-        "type": "(plan:ProductionPlan)=>void|Promise<void>",
-        "description": "Persist the reviewed production proposal. Host approval and factory ordering remain outside this component."
+        "name": "maximumUnits",
+        "type": "number",
+        "default": "650",
+        "description": "Units the booked fabric can make. The cap can't go above it."
+      },
+      {
+        "name": "initialCapUnits",
+        "type": "number",
+        "default": "450",
+        "description": "Production quantity on first render, snapped to the factory's rules."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "default": "\"GBP\"",
+        "description": "ISO 4217 code for the price."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "description": "Locale for numbers, money and dates."
+      },
+      {
+        "name": "onCapChange",
+        "type": "(units: number) => void",
+        "description": "Called as the cap settles on a new value."
+      },
+      {
+        "name": "onClose",
+        "type": "(decision: PreorderDecision) => void | Promise<void>",
+        "description": "Closes the window with the production order, charges, waitlist and launch stock by size. Throw to keep preorders open and show your message."
+      },
+      {
+        "name": "onReopen",
+        "type": "(dropId: string) => void | Promise<void>",
+        "description": "Adds Reopen to the receipt."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "ink",
+        "description": "The one brand accent. Passing either theme's ink follows the theme."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Colour scheme."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Extra classes on the root."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:350",
-        "click:@suggest",
-        "wait:500",
-        "click:@review",
-        "wait:450",
-        "click:@save",
-        "wait:1100"
+        "wait:600",
+        "click:@cap-more",
+        "wait:250",
+        "click:@cap-more",
+        "wait:700",
+        "click:@close",
+        "wait:700",
+        "click:@confirm-close",
+        "wait:1400"
       ],
       "loop": false
     },
@@ -21726,10 +21777,48 @@
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
         "default": "dark"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#ff8a4c",
+          "#8ab4ff",
+          "#e7c27d"
+        ]
+      },
+      {
+        "prop": "currency",
+        "label": "Currency",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "GBP",
+            "label": "GBP"
+          },
+          {
+            "value": "EUR",
+            "label": "EUR"
+          },
+          {
+            "value": "USD",
+            "label": "USD"
+          }
+        ],
+        "default": "GBP"
       }
     ]
   },
