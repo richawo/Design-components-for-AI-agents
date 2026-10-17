@@ -6,7 +6,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17 October 2026)
 
-- Task 3.1: resolved evidence chain verification and manifest flags. The dedicated browser probe passes, including missing hashes and rejected exports.
+- Task 3.1: resolved evidence chain verification and manifest flags. The dedicated browser probe passes, including missing hashes and rejected exports. The hash group’s invalid ARIA label is fixed, and isolated dark/light accessibility audits pass. The Next preview rerun is pending concurrent packed-source loader edits.
 
 - Task 3.2: resolved invalid renewal dates and empty customer-health trends, with regression coverage for malformed and impossible dates.
 

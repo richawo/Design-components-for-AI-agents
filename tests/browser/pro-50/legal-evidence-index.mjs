@@ -15,7 +15,7 @@ export async function check({ page, mount, assert }) {
   // The cover sheet for exhibit A, with the intake hash as the accessible name of the grouped display.
   const sheetA = page.getByRole("article", { name: "Exhibit A: Master services agreement, signed" });
   await sheetA.waitFor();
-  await sheetA.getByLabel(MSA, { exact: true }).waitFor();
+  await sheetA.getByRole("group", { name: MSA, exact: true }).waitFor();
   assert.match(await txt(sheetA), /Matches at all 4 recorded hand-offs/);
   assert.match(await txt(sheetA), /Bates HWL-000001 – 000042/);
   assert.match(await txt(custody), /Intact/);
