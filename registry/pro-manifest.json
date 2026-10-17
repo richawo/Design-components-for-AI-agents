@@ -33683,13 +33683,15 @@
     "tier": "pro",
     "platform": "web",
     "category": "pixel",
-    "description": "Turn an actual supplied image into a bounded two-tone halftone, compare its original and hand a real PNG raster to the host.",
+    "description": "An image becomes a live halftone screen: drag the divide against the original, tune dot size, threshold, angle and shape, and export a crisp PNG.",
     "tags": [
       "halftone",
       "image",
-      "raster",
-      "two tone",
       "canvas",
+      "print",
+      "dither",
+      "before after",
+      "export",
       "pixel"
     ],
     "dependencies": [
@@ -33697,110 +33699,159 @@
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1120,
-    "usage": "import { PixelHalftoneImage } from \"@/components/design-for-ai/pixel-halftone-image\";\n\n<PixelHalftoneImage source={image} value={settings} onValueChange={setSettings} onExport={receivePNG} />",
+    "previewHeight": 980,
+    "usage": "import { PixelHalftoneImage } from \"@/components/design-for-ai/pixel-halftone-image\";\n\n<PixelHalftoneImage\n  source={{ id: photo.id, src: photo.url, alt: photo.alt, title: photo.fileName }}\n  defaultValue={{ cell: 9, threshold: 0.08, angle: 45, shape: \"dot\" }}\n  exportScale={2}\n  onExport={async ({ blob, width, height }, signal) => {\n    await uploadAsset(blob, { width, height, signal });\n  }}\n/>",
     "props": [
       {
         "name": "source",
         "type": "HalftoneSource",
-        "description": "Stable source ID, actual image URL, alternative description and optional title. Native decode and pixel access determine availability."
+        "default": "A still life drawn in SVG",
+        "description": "id, src, alt and optional title. Remote images must send CORS headers so their pixels can be read; without them the stage shows a designed error."
       },
       {
         "name": "value",
         "type": "HalftoneValue",
-        "description": "Controlled atomic whole-pixel spacing6–20 and threshold0.10–1.00 in0.01 steps. Invalid values retain the original; absent change handler makes settings read-only."
+        "description": "Controlled settings: cell (dot pitch, 5–28 px), threshold (0–0.6), angle (0–90°) and shape (\"dot\" | \"square\" | \"line\"). Out-of-range values are clamped."
       },
       {
         "name": "defaultValue",
         "type": "HalftoneValue",
-        "description": "Uncontrolled initial spacing/threshold seed.",
-        "default": "{ spacing: 10, threshold: 0.72 }"
+        "default": "{ cell: 9, threshold: 0.08, angle: 45, shape: \"dot\" }",
+        "description": "Initial settings when uncontrolled."
       },
       {
         "name": "onValueChange",
         "type": "(value: HalftoneValue) => void",
-        "description": "Requests one bounded atomic pair. Rejected controlled values never change the displayed authoritative settings."
-      },
-      {
-        "name": "onValueCommit",
-        "type": "(value: HalftoneValue) => void",
-        "description": "Reports only an actually accepted completed keyboard/pointer change."
+        "description": "Runs with the complete settings whenever a slider or the shape changes."
       },
       {
         "name": "onExport",
         "type": "(result: HalftoneExport, signal: AbortSignal) => void | Promise<void>",
-        "description": "Receives the actual PNG Blob, backing dimensions, source ID and accepted settings. Host owns persistence; revised work aborts old settlement."
+        "description": "Receives the PNG blob, its pixel size, the source id and the settings. Throw to show your error; changing settings aborts the signal. A download link appears either way."
       },
       {
-        "name": "quality",
-        "type": "\"standard\" | \"high\"",
-        "description": "Actual sampling/output Canvas backing-pixel limit: 640,000/1,280,000, with 4096px maximum side.",
-        "default": "\"standard\""
+        "name": "defaultSplit",
+        "type": "number",
+        "default": "0.36",
+        "description": "Where the original/halftone divide starts, 0–1 from the left. 0 shows only the halftone."
       },
       {
-        "name": "theme",
-        "type": "\"dark\" | \"light\"",
-        "description": "Neutral graphite and white chrome; colour is reserved for actual feature content and semantic data accents.",
-        "default": "\"dark\""
+        "name": "exportScale",
+        "type": "1 | 2 | 3",
+        "default": "2",
+        "description": "Export resolution as a multiple of the on-screen size, redrawn rather than upscaled. The longest side is capped at 4096 px."
+      },
+      {
+        "name": "ink",
+        "type": "string",
+        "description": "Dot colour. Defaults to warm white on dark paper and near-black on light paper."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"error\"",
+        "default": "\"ready\"",
+        "description": "Host availability of the source; loading shows a dot skeleton, error a designed message."
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "description": "Explanation shown with status error."
       },
       {
         "name": "disabled",
         "type": "boolean",
-        "description": "Host editing/export lock with retained settings and honest helper copy.",
-        "default": "false"
+        "default": "false",
+        "description": "Locks settings and export; the image and the divide stay usable."
       },
       {
-        "name": "status",
-        "type": "\"ready\" | \"loading\" | \"unavailable\"",
-        "description": "Actual host source availability; native source state remains separately checked.",
-        "default": "\"ready\""
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "default": "\"dark\"",
+        "description": "Dark paper with light ink, or paper-white with dark ink."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Host root layout classes.",
-        "default": "\"\""
+        "description": "Classes on the root section."
       }
     ],
     "controls": [
       {
-        "prop": "quality",
-        "label": "Raster quality",
-        "kind": "segmented",
+        "prop": "ink",
+        "label": "Ink",
+        "kind": "color",
+        "default": "#f2ede3",
         "options": [
-          "standard",
-          "high"
-        ],
-        "default": "standard"
+          "#f2ede3",
+          "#ff5a3c",
+          "#4f7dff",
+          "#ffd23f"
+        ]
       },
       {
         "prop": "theme",
-        "label": "Theme",
+        "label": "Paper",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
         "default": "dark"
       },
       {
+        "prop": "exportScale",
+        "label": "Export size",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": 1,
+            "label": "1×"
+          },
+          {
+            "value": 2,
+            "label": "2×"
+          },
+          {
+            "value": 3,
+            "label": "3×"
+          }
+        ],
+        "default": 2
+      },
+      {
         "prop": "disabled",
-        "label": "Editing unavailable",
+        "label": "Locked",
         "kind": "toggle",
         "default": false
+      },
+      {
+        "prop": "status",
+        "label": "Availability",
+        "kind": "select",
+        "options": [
+          "ready",
+          "loading",
+          "error"
+        ],
+        "default": "ready"
       }
     ],
     "demo": {
       "steps": [
-        "click:@halftone-spacing:0.78,0.5",
+        "wait:1400",
+        "click:@halftone-cell:0.62,0.5",
+        "wait:700",
+        "hover:@halftone-split",
+        "drag:0.66,0.42",
         "wait:400",
-        "click:@halftone-threshold:0.37,0.5",
-        "wait:400",
-        "click:@halftone-original",
-        "wait:350",
-        "click:@halftone-original",
         "click:@halftone-export",
-        "wait:450"
+        "wait:1300"
       ],
       "loop": false
     },

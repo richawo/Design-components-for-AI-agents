@@ -4021,19 +4021,20 @@
     "updated": "2026-10-13"
   },
   "pixel-halftone-image": {
-    "useWhen": "Inspecting a supplied image as a real halftone pattern with useful density and threshold adjustments.",
-    "avoidWhen": "Stock-image decoration, background removal or claiming an encoded export without an actual output.",
+    "useWhen": "Giving people a print-style halftone of their own image, in an editor, a poster or zine maker, or an asset pipeline, with a direct comparison against the original and a file they can keep.",
+    "avoidWhen": "A decorative dotted background with no source image, or general photo editing where crops, colour and filters matter more than a screen.",
     "integration": [
-      "Provide a stable source ID, actual image URL, alternative description and optional title. Native decoding and real pixel access determine readiness; cross-origin failures retain an honestly labeled original when ordinary image access succeeds.",
-      "Control one atomic spacing/threshold value: whole-pixel spacing 6–20 and threshold 0.10–1.00 in0.01 steps. Missing controlled handlers make editing read-only. Requests preserve host authority, and only accepted completed changes reach onValueCommit.",
-      "Original comparison fits the complete source. Actual sampling/output pixels are bounded to 640,000 standard or 1,280,000 high, max 4096px per side. onExport receives a real PNG Blob, output dimensions, source ID and accepted settings with AbortSignal. The PNG is the bounded view raster, not a claim of full source resolution; saving/downloading belongs to the host.",
-      "Keep the accepted settings and focus through export failure. Source/settings/handler revisions abort old work and ignore late settlement. Live reduced motion stops actual decorative owners; parent-page focus remains owned by the parent."
+      "Pass `source` with an id, URL, alt text and title. The pixels are read through a canvas, so remote images must send CORS headers (Access-Control-Allow-Origin); data: and blob: URLs always work. Without CORS the stage shows a designed error instead of a blank canvas.",
+      "Settings are `{ cell, threshold, angle, shape }`; keep them uncontrolled with `defaultValue` or control them with `value` and `onValueChange` to save presets. Out-of-range values are clamped.",
+      "`onExport(result, signal)` receives a PNG Blob repainted at `exportScale` times the on-screen size (longest side capped at 4096px), its dimensions, the source id and the settings. Upload or store it there; throw to show your error. A download link appears in the receipt either way.",
+      "Set `ink` for a duotone or risograph look; the chrome stays neutral. The canvas runs only while settings change or the entrance plays, pauses offscreen and renders one static frame with reduced motion."
     ],
     "related": [
+      "media-before-after",
       "pixel-matrix-display",
-      "media-before-after"
+      "bg-dither-flow"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "effect-ink-trail": {
     "useWhen": "Adding a bounded, user-driven drawing mark that fades while ordinary controls remain usable.",
