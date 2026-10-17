@@ -3823,17 +3823,17 @@
     "updated": "2026-10-17"
   },
   "features-integration-trace": {
-    "useWhen": "Explaining a supplied integration by following its data through inspectable transformation stages.",
-    "avoidWhen": "A decorative logo cloud, a general workflow editor or a claim of a live integration without host evidence.",
+    "useWhen": "Showing what an integration or automation actually does to data: a feature page, onboarding or a run inspector where one real record should visibly change from source payload to the object it creates.",
+    "avoidWhen": "Building or editing workflows (use a node editor), debugging high-volume webhook traffic, or a logo grid of supported apps.",
     "integration": [
-      "Supply stable integration and stage IDs, typed JSON input/output examples and actual availability. The offline demonstration computes its examples locally and does not claim to execute an external integration.",
-      "Control selection as an integration/stage pair when the host owns it. Retry receives an AbortSignal, and real clipboard failure needs an actionable copy fallback."
+      "Pass integrations with ordered stages (source, transform, enrich, action) and give each field a stable id across stages; renames, reformatting, additions and drops are computed and drawn for you. Mark the created object’s title and amount with role.",
+      "Control the stage with value/onValueChange to sync it with docs or a URL, hook onRun to log replays, and drive status, errorMessage and onRetry when the run comes from your API."
     ],
     "related": [
-      "editor-node-graph",
-      "devtools-webhook-inspector"
+      "devtools-webhook-inspector",
+      "editor-node-graph"
     ],
-    "updated": "2026-10-13"
+    "updated": "2026-10-17"
   },
   "features-shortcut-theatre": {
     "useWhen": "A landing or feature page for a keyboard-first product (issue trackers, editors, mail, design tools) where pressing the shortcut sells it better than a list of hotkeys.",

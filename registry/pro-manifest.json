@@ -21469,14 +21469,15 @@
     "tier": "pro",
     "platform": "web",
     "category": "features",
-    "description": "A connected stage trace that lets visitors inspect supplied input and output JSON, see real field changes and recover unavailable steps.",
+    "description": "Follow one real record through an integration: a webhook payload morphs field by field into a clean, enriched record and then the object it created.",
     "tags": [
       "features",
       "integration",
-      "data trace",
-      "payload",
-      "transformation",
-      "dark"
+      "data flow",
+      "webhook",
+      "automation",
+      "pipeline",
+      "transformation"
     ],
     "dependencies": [
       "motion",
@@ -21484,70 +21485,92 @@
     ],
     "theme": "dark",
     "previewHeight": 1000,
-    "usage": "import { FeaturesIntegrationTrace } from \"@/components/design-for-ai/features-integration-trace\";\n\n<FeaturesIntegrationTrace integrations={connections} value={selection} onValueChange={setSelection} onStageRetry={reloadStage} />",
+    "usage": "import { FeaturesIntegrationTrace } from \"@/components/design-for-ai/features-integration-trace\";\n\n<FeaturesIntegrationTrace\n  integrations={[checkoutToCrm, signupToSlack]}\n  defaultValue={{ integrationId: \"checkout\", stageId: \"enriched\" }}\n/>",
     "props": [
       {
         "name": "integrations",
         "type": "TraceIntegration[]",
-        "description": "Unique integration IDs with unique local stage IDs, labels/descriptions and supplied JSON input/output. Stage availability and selection permission are explicit.",
-        "default": "2 original offline computed data journeys"
+        "default": "[]",
+        "description": "Runs to trace: {id, label, source, destination, runId?, ranAt?, stages}. Each stage {id, kind: source | transform | enrich | action, label, system, operation, durationMs?, fields, result?}. Fields keep a stable id across stages so renames, reformatting, additions and drops are worked out for you."
       },
       {
         "name": "value",
         "type": "IntegrationTraceSelection",
-        "description": "Controlled composite {integrationId,stageId}. Without onValueChange selection is read-only."
+        "description": "Controlled {integrationId, stageId}. Without onValueChange it’s read-only."
       },
       {
         "name": "defaultValue",
         "type": "IntegrationTraceSelection",
-        "description": "Initial uncontrolled composite selection. Empty integrations can be selected with an empty stageId.",
-        "default": "{integrationId: \"forms\", stageId: \"normalized\"}"
+        "default": "first integration, first stage",
+        "description": "Where the uncontrolled trace starts."
       },
       {
         "name": "onValueChange",
-        "type": "(value: IntegrationTraceSelection, integration: TraceIntegration, stage: IntegrationTraceStage | undefined) => void",
-        "description": "Synchronous selection observer; stage is undefined for an integration with no stages."
+        "type": "(value: IntegrationTraceSelection) => void",
+        "description": "Called when a stage or integration is picked, and at each step of a replay."
       },
       {
-        "name": "onStageRetry",
-        "type": "(integration: TraceIntegration, stage: IntegrationTraceStage, signal: AbortSignal) => void | Promise<void>",
-        "description": "Real host recovery. Cancel, selection/input/callback retirement and unmount abort prior work; status/output acknowledgments keep their request."
+        "name": "onRun",
+        "type": "(integration: TraceIntegration) => void",
+        "description": "Called when a visitor replays the run; the trace steps through the stages either way."
       },
       {
-        "name": "title",
+        "name": "stepMs",
+        "type": "number",
+        "default": "1150",
+        "description": "How long each stage holds during a replay."
+      },
+      {
+        "name": "showChanges",
+        "type": "boolean",
+        "default": "true",
+        "description": "Print each changed field’s previous key and value, struck through, under the new one."
+      },
+      {
+        "name": "status",
+        "type": "\"ready\" | \"loading\" | \"error\"",
+        "default": "\"ready\"",
+        "description": "Loading shows a skeleton record; error shows errorMessage and Try again."
+      },
+      {
+        "name": "errorMessage",
         "type": "string",
-        "description": "Concise editorial feature title.",
-        "default": "\"A clear path from input to action.\""
+        "description": "Shown when status is error."
       },
       {
-        "name": "description",
-        "type": "string",
-        "description": "One sentence explaining the inspection task.",
-        "default": "\"Choose a stage. Inspect what arrives, what changes and what leaves.\""
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Offered as Try again in the error state."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Neutral black/white glass chrome, with colour reserved for actual data/feature accents.",
-        "default": "\"dark\""
+        "default": "\"dark\"",
+        "description": "Graphite or white chrome."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#7cc4ff\"",
+        "description": "The one accent: the record travelling the track, the travelled track and the stage in view. Darkened on light."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Outer feature class.",
-        "default": "\"\""
+        "default": "\"\"",
+        "description": "Root classes. Container-responsive up to 1040 px."
       }
     ],
     "added": "2026-10-13",
     "demo": {
       "steps": [
-        "click:@trace-forms-mapped",
-        "wait:350",
-        "click:@trace-forms-command",
-        "wait:450",
-        "click:@integration-files",
-        "wait:500"
-      ]
+        "wait:500",
+        "click:@run",
+        "wait:4300",
+        "click:@stage-checkout-normalised",
+        "wait:900"
+      ],
+      "loop": false
     },
     "controls": [
       {
@@ -21561,16 +21584,32 @@
         "default": "dark"
       },
       {
-        "prop": "title",
-        "label": "Heading",
-        "kind": "text",
-        "default": "A clear path from input to action."
+        "prop": "accent",
+        "label": "Flow accent",
+        "kind": "color",
+        "default": "#7cc4ff",
+        "options": [
+          "#7cc4ff",
+          "#ff6b3d",
+          "#5fc284",
+          "#f4f4f5"
+        ]
       },
       {
-        "prop": "description",
-        "label": "Description",
-        "kind": "text",
-        "default": "Choose a stage. Inspect what arrives, what changes and what leaves."
+        "prop": "showChanges",
+        "label": "Show what changed",
+        "kind": "toggle",
+        "default": true
+      },
+      {
+        "prop": "status",
+        "label": "Availability",
+        "kind": "action",
+        "options": [
+          "ready",
+          "loading",
+          "error"
+        ]
       }
     ]
   },
