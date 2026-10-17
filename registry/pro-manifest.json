@@ -30565,17 +30565,18 @@
     "tier": "pro",
     "platform": "mobile",
     "category": "mobile",
-    "description": "Inspect exact queued originals, preserve newer local text drafts, retry explicit failures and distinguish real supplied receipts from request acknowledgment.",
+    "description": "A React Native outbox for changes saved offline: a segmented ring fills as each change sends, rows check and fold away, and a glass sheet fixes a rejected note.",
     "tags": [
       "mobile",
       "react native",
       "offline",
       "outbox",
+      "sync",
       "queue",
-      "drafts",
       "retry",
-      "review",
-      "glass"
+      "glass",
+      "field service",
+      "dark"
     ],
     "dependencies": [
       "expo-blur",
@@ -30584,162 +30585,97 @@
     ],
     "theme": "dark",
     "previewHeight": 844,
-    "usage": "import { MobileOfflineOutbox } from \"@/components/design-for-ai/native/mobile-offline-outbox\";\n\n// Bare native apps: run npx install-expo-modules once.\n<MobileOfflineOutbox entries={entries} onRetry={retryExactOriginal} onCommitDraft={requestReviewedDraft} resetKey={queueId} />",
+    "usage": "import { MobileOfflineOutbox } from \"@/components/design-for-ai/native/mobile-offline-outbox\";\n\n// npm i expo-blur expo-linear-gradient react-native-svg\n// (bare React Native: run `npx install-expo-modules` once)\n<MobileOfflineOutbox\n  items={pendingChanges}\n  network={netInfo.type === \"wifi\" ? \"wifi\" : netInfo.isConnected ? \"cellular\" : \"offline\"}\n  onSend={async (change) => {\n    const res = await api.apply(change);\n    if (!res.ok) throw new Error(res.message);\n  }}\n  onDiscard={(change) => outbox.remove(change.id)}\n/>",
     "props": [
       {
-        "name": "entries",
-        "type": "OutboxEntry[]",
-        "description": "Actual unique ID/title/operation/raw payload/state/editability/retry policy, optional revision/time/error and supplied delivery receipt. Null operation/payload/state is unknown.",
-        "default": "Three original create/update/delete records"
+        "name": "items",
+        "type": "OutboxItem[]",
+        "default": "Five changes from a boiler service: a photo, a reading, job notes, a signature and a status change",
+        "description": "Changes saved on the phone: id, kind (photo, reading, note, signature, status), title, detail, sizeBytes, queuedAt, optional editable body and an earlier error."
       },
       {
-        "name": "value",
-        "type": "string | null",
-        "description": "Controlled inspected entry; explicit null unselects and missing observer is read-only."
+        "name": "network",
+        "type": "\"offline\" | \"cellular\" | \"wifi\"",
+        "default": "\"cellular\"",
+        "description": "The phone's connection. Wi-Fi drains the queue by itself, mobile data waits for Send now, offline waits."
       },
       {
-        "name": "defaultValue",
-        "type": "string | null",
-        "description": "Initial local selected entry; reset by resetKey.",
-        "default": "First uniquely identified failed entry, then first unique entry"
+        "name": "onSend",
+        "type": "(item: OutboxItem) => Promise<void>",
+        "description": "Sends one change (with any edited body). Reject with an Error whose message explains the failure; the change stays on the phone and is marked for attention."
       },
       {
-        "name": "onValueChange",
-        "type": "(entryId: string | null) => void",
-        "description": "Synchronous inspection observer. Rejected changes retain originals and drafts."
+        "name": "onDiscard",
+        "type": "(item: OutboxItem) => void",
+        "description": "The person discarded a change after a two-tap confirm."
       },
       {
-        "name": "filter",
-        "type": "\"all\" | \"pending\" | \"failed\"",
-        "description": "Controlled actual-state filter. No observer means read-only. Selected original stays inspectable outside filter."
-      },
-      {
-        "name": "defaultFilter",
-        "type": "\"all\" | \"pending\" | \"failed\"",
-        "description": "Initial local filter.",
-        "default": "\"all\""
-      },
-      {
-        "name": "onFilterChange",
-        "type": "(filter: \"all\" | \"pending\" | \"failed\") => void",
-        "description": "Synchronous filter observer with meaningful rejection."
-      },
-      {
-        "name": "view",
-        "type": "\"source\" | \"draft\"",
-        "description": "Controlled queued-original/editor view; without handler it is read-only."
-      },
-      {
-        "name": "defaultView",
-        "type": "\"source\" | \"draft\"",
-        "description": "Initial local reading mode.",
-        "default": "\"source\""
-      },
-      {
-        "name": "onViewChange",
-        "type": "(view: \"source\" | \"draft\") => void",
-        "description": "Synchronous reading mode observer."
-      },
-      {
-        "name": "status",
-        "type": "\"ready\" | \"loading\" | \"error\"",
-        "description": "Actual outbox source availability. Originals and local drafts stay readable; state requests block when unavailable.",
-        "default": "\"ready\""
-      },
-      {
-        "name": "statusMessage",
+        "name": "context",
         "type": "string",
-        "description": "Meaningful availability explanation; whitespace falls back."
+        "default": "\"FIELDBOOK · JOB 4471 · 12 ALDER ROW\"",
+        "description": "Small mono context line above the title."
       },
       {
-        "name": "onRetry",
-        "type": "(review: OutboxRetryReview, signal: AbortSignal) => void | Promise<void>",
-        "description": "Copied actual failed/retryable queued original. Never silently substitutes editor text. Fulfillment only acknowledges the request."
+        "name": "title",
+        "type": "string",
+        "default": "\"Outbox\"",
+        "description": "Screen title."
       },
       {
-        "name": "onCommitDraft",
-        "type": "(review: OutboxDraftReview, signal: AbortSignal) => void | Promise<void>",
-        "description": "Copied original entry and exact explicitly reviewed new text. Fulfillment cannot queue, send or claim delivery."
-      },
-      {
-        "name": "onRefresh",
-        "type": "(entries: OutboxEntry[], signal: AbortSignal) => void | Promise<void>",
-        "description": "Copied source records for an explicit cancellable refresh. No background sync or fake ready state."
-      },
-      {
-        "name": "resetKey",
-        "type": "string | number",
-        "description": "Replacement queue session, clears local drafts/inspection and fences old work."
-      },
-      {
-        "name": "theme",
-        "type": "\"dark\" | \"light\"",
-        "description": "Exact neutral monochrome with fine glass action edge.",
-        "default": "\"dark\""
+        "name": "accent",
+        "type": "string",
+        "default": "\"#6EA8FF\"",
+        "description": "The one colour: the queue ring's sent arcs, progress fills and spinners."
       }
     ],
     "added": "2026-10-14",
     "demo": {
       "steps": [
-        "click:@outbox-retry",
-        "wait:250",
-        "click:@outbox-view-draft",
-        "click:@outbox-editor",
-        "key:PageDown",
-        "key:End",
-        "key:ArrowLeft",
-        "type:,\"reviewed\":true",
-        "scroll:400",
-        "click:@outbox-review",
-        "wait:250",
-        "click:@outbox-commit",
-        "wait:450"
+        "wait:500",
+        "click:@outbox-send",
+        "wait:2500",
+        "click:@outbox-row-job-notes",
+        "wait:450",
+        "click:@outbox-resend",
+        "wait:1300"
       ]
     },
     "controls": [
       {
-        "prop": "theme",
-        "label": "Theme",
-        "kind": "segmented",
+        "prop": "network",
+        "label": "Connection",
+        "kind": "action",
         "options": [
-          "dark",
-          "light"
-        ],
-        "default": "dark"
+          {
+            "value": "offline",
+            "label": "Offline"
+          },
+          {
+            "value": "cellular",
+            "label": "Mobile data"
+          },
+          {
+            "value": "wifi",
+            "label": "Wi-Fi"
+          }
+        ]
       },
       {
-        "prop": "defaultFilter",
-        "label": "Initial filter",
-        "kind": "select",
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#6EA8FF",
         "options": [
-          "all",
-          "pending",
-          "failed"
-        ],
-        "default": "all",
-        "remount": true
+          "#6EA8FF",
+          "#F5F5F5",
+          "#FF8A4C",
+          "#5BD69A"
+        ]
       },
       {
-        "prop": "defaultView",
-        "label": "Initial view",
-        "kind": "select",
-        "options": [
-          "source",
-          "draft"
-        ],
-        "default": "source",
-        "remount": true
-      },
-      {
-        "prop": "status",
-        "label": "Source",
-        "kind": "select",
-        "options": [
-          "ready",
-          "loading",
-          "error"
-        ],
-        "default": "ready"
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
       }
     ]
   },

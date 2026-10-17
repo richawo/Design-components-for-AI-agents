@@ -4969,18 +4969,18 @@
     "updated": "2026-10-17"
   },
   "mobile-offline-outbox": {
-    "useWhen": "Inspecting exact queued originals, preserving independent local text drafts and retrying actual host-reported failures.",
-    "avoidWhen": "A background synchronization engine or presenting local queuing or callback fulfillment as delivery.",
+    "useWhen": "A mobile app that saves work without signal and needs one place to see what is waiting, send it on demand and fix the changes a server turns down.",
+    "avoidWhen": "Apps that are always online, background sync you never surface to people, or resolving rich merge conflicts field by field.",
     "integration": [
-      "Supply unique entries with actual operation, raw text payload, state and explicit edit/retry policy. Null means unknown. Empty text is known. A claimed acknowledged state without a supplied nonempty receipt ID remains explicitly unverified. Raw text is never claimed as validated JSON.",
-      "onRetry copies the actual failed/retryable queued original. onCommitDraft copies original facts and exact explicitly reviewed editor text. These actions are separate; retry never silently sends a newer editor draft. Fulfillment acknowledges only, while supplied entry state owns queue and delivery status.",
-      "Per-entry newer text survives pending or older acknowledgment. Fresh meaningful facts and uniqueness derive a revision epoch, so changed source permanently retires consent even after revert. Unrelated records preserve the pending owner. onRefresh is an optional explicit source refresh; cancellation aborts this request without claiming the server queue changed.",
-      "Install in React Native with the listed Expo modules. Test native scrolling, safe insets, text editing, large text, reduced motion and assistive technology on target devices."
+      "Supply `items` from your local queue with stable ids, a kind, size and saved time. Pass `network` from your connectivity listener: Wi-Fi drains automatically, mobile data waits for Send now, offline waits.",
+      "Implement `onSend` to apply one change and throw an Error with a readable message when the server rejects it; the message is shown on the row and in the sheet, and the change stays queued. Edited notes arrive with their new `body`.",
+      "Remove discarded changes in `onDiscard`. Install `expo-blur`, `expo-linear-gradient` and `react-native-svg` (run `npx install-expo-modules` once in bare apps) and verify on devices with real connectivity changes."
     ],
     "related": [
       "mobile-sync-conflict",
-      "mobile-attachment-tray"
+      "mobile-attachment-tray",
+      "mobile-live-activity"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   }
 }
