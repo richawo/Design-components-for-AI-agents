@@ -4238,19 +4238,20 @@
     "updated": "2026-10-14"
   },
   "chart-sankey-paths": {
-    "useWhen": "Tracing supplied quantities from sources through destinations while keeping the whole flow in context.",
-    "avoidWhen": "Invented traffic, unbalanced quantities or a diagram that can only be understood by color.",
+    "useWhen": "Showing how a total splits and recombines across two or three stages, such as acquisition source to first action to outcome, and letting people trace one category’s direct flows.",
+    "avoidWhen": "Flows with cycles or links that skip a stage, more than about a dozen categories per column, or a single step-by-step funnel, which a funnel chart reads faster.",
     "integration": [
-      "Supply up to 18 unique labeled nodes in columns 0–5 and 40 unique forward links with finite nonnegative quantities up to 1 trillion. Incoming and outgoing are independent supplied-link sums; no balancing flow is invented.",
-      "Proportional ribbons support adjacent occupied stages. Empty numeric column gaps are allowed. If any connection bypasses an occupied stage, an explicit diagram fallback preserves every original category, connection and exact incoming/outgoing quantity in the native tables. Use a different graph when such bypass topology is essential.",
-      "One atomic nodeId/linkId selection chooses either a category or a connection. Emphasis traces direct links only. Rejected requests do not commit; unknown identity needs explicit clear or restored source. Full native Categories/Connections tabs provide exact quantities, units and supported Intl formatting.",
-      "Narrow actual scenes use vertical flow with full native selection targets. Geometry and figures are bounded and interruptible; live reduced motion settles their actual owners, hidden/idle work stops, and focused owner-document fences preserve native parent actions. Persistence belongs to the host."
+      "Pass `nodes` as { id, label, column } in the top-to-bottom order you want, and flows as { id, source, target, value } between neighbouring columns. Links that skip a column or reference unknown ids are left out of the diagram.",
+      "Give `periods` to compare months or cohorts; nodes keep their slots so ribbons and bars morph instead of reshuffling. With a single period, pass `links` instead.",
+      "Tracing lights only flows that touch the chosen category. Read it from `onSelectionChange` to filter a table, or control `selection`. Hovering a ribbon shows its share of both ends.",
+      "Below 640px the labels move into a grid under the diagram. Use `status` and `onRetry` for loading and failed queries; keep `unit` in step with your noun."
     ],
     "related": [
-      "chart-streamgraph",
-      "chart-waterfall-bridge"
+      "chart-funnel-dots",
+      "chart-treemap-drill",
+      "chart-revenue-trend"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "chart-box-distribution": {
     "useWhen": "Comparing the spread of a measure across a handful of groups, such as latency by region or build time by pipeline, and asking how much of each clears a limit you can drag.",

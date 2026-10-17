@@ -9125,125 +9125,209 @@
     "tier": "pro",
     "platform": "web",
     "category": "charts",
-    "description": "Trace actual quantities between adjacent occupied stages, with direct-connection emphasis and complete native category and connection tables.",
+    "description": "A dark Sankey of signup journeys in greys with one accent: ribbons wipe in, a category traces its direct flows, and ribbons morph between periods.",
     "tags": [
+      "chart",
       "sankey",
       "flow",
-      "data exploration",
-      "source destination",
-      "linked quantities",
-      "native table"
+      "journey",
+      "conversion",
+      "funnel",
+      "attribution",
+      "dashboard",
+      "svg",
+      "dark"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1360,
-    "usage": "import { ChartSankeyPaths } from \"@/components/design-for-ai/chart-sankey-paths\";\n\n<ChartSankeyPaths nodes={categories} links={flows} value={trace} onValueChange={setTrace} unit=\"records\" />",
+    "previewHeight": 720,
+    "usage": "import { ChartSankeyPaths } from \"@/components/design-for-ai/chart-sankey-paths\";\n\nexport default function Journeys({ nodes, september, october }: Props) {\n  return (\n    <ChartSankeyPaths\n      title=\"Signup journeys\"\n      nodes={nodes} // { id, label, column }\n      periods={[\n        { key: \"sep\", label: \"September\", links: september }, // { id, source, target, value }\n        { key: \"oct\", label: \"October\", links: october },\n      ]}\n      columnLabels={[\"First touch\", \"First week\", \"Day 30\"]}\n      onSelectionChange={({ nodeId }) => setSegment(nodeId)}\n      accent=\"#a3e635\"\n    />\n  );\n}",
     "props": [
       {
         "name": "nodes",
-        "type": "SankeyNode[]",
-        "description": "Actual uniquely identified categories in columns 0–5, at most 18. Optional six-digit colors and descriptions."
+        "type": "{ id: string; label: string; column: number }[]",
+        "default": "Ledgerly signups: 4 first touches, 3 first-week actions, 3 day-30 outcomes",
+        "description": "Categories by column, top to bottom in the order given. Nodes keep their slots across periods so ribbons can morph."
       },
       {
         "name": "links",
-        "type": "SankeyLink[]",
-        "description": "At most 40 unique forward connections; source/target must exist and values are finite nonnegative numbers up to 1 trillion. Ribbons require adjacent occupied stages; unsupported bypass links remain fully readable in native tables without a misleading diagram."
+        "type": "{ id: string; source: string; target: string; value: number }[]",
+        "description": "Flows between neighbouring columns when there is a single period. Ignored when periods is set."
       },
       {
-        "name": "value",
-        "type": "SankeySelection",
-        "description": "Atomic controlled nodeId/linkId, at most one non-null. Unknown identity is honestly unavailable."
+        "name": "periods",
+        "type": "{ key: string; label: string; links: SankeyLink[] }[]",
+        "default": "September and October",
+        "description": "Two or more show a switcher; ribbons and bars morph between them."
       },
       {
-        "name": "defaultValue",
-        "type": "SankeySelection",
-        "description": "Initial uncontrolled selection, default both null."
+        "name": "defaultPeriod",
+        "type": "string",
+        "default": "last period",
+        "description": "Period shown first."
       },
       {
-        "name": "onValueChange",
-        "type": "(selection: SankeySelection) => void",
-        "description": "Host selection request; controlled rejection retains the actual trace."
+        "name": "period",
+        "type": "string",
+        "description": "Controlled period key; pair with onPeriodChange."
       },
       {
-        "name": "onValueCommit",
-        "type": "(selection: SankeySelection) => void",
-        "description": "Accepted discrete selection changes only."
+        "name": "onPeriodChange",
+        "type": "(key: string) => void",
+        "description": "Called when the period switch changes."
       },
       {
-        "name": "stageLabels",
+        "name": "columnLabels",
         "type": "string[]",
-        "description": "Host stage labels indexed by column; fallback names the actual supplied stage number."
+        "default": "[\"First touch\", \"First week\", \"Day 30\"]",
+        "description": "Column headings, left to right."
+      },
+      {
+        "name": "defaultSelection",
+        "type": "{ nodeId: string | null; linkId: string | null }",
+        "default": "nothing traced (the demo traces Converted to paid)",
+        "description": "Initial trace: a category or a single flow."
+      },
+      {
+        "name": "selection",
+        "type": "{ nodeId: string | null; linkId: string | null }",
+        "description": "Controlled trace."
+      },
+      {
+        "name": "onSelectionChange",
+        "type": "(selection: SankeySelection) => void",
+        "description": "Called when a category or ribbon is clicked, Enter is pressed on a label, or the trace is cleared."
       },
       {
         "name": "unit",
-        "type": "string",
-        "description": "Host quantity unit without inferred conversion or conservation."
-      },
-      {
-        "name": "locale",
-        "type": "string",
-        "description": "Supported native Intl formatting locale, retaining exact supplied precision."
-      },
-      {
-        "name": "title",
-        "type": "string",
-        "description": "Host flow exploration heading."
-      },
-      {
-        "name": "description",
-        "type": "string",
-        "description": "Host source/context description."
+        "type": "{ one: string; other: string }",
+        "default": "{ one: \"signup\", other: \"signups\" }",
+        "description": "Words for one and many."
       },
       {
         "name": "status",
         "type": "\"ready\" | \"loading\" | \"unavailable\"",
-        "description": "Host data availability; current selection is retained."
+        "default": "\"ready\"",
+        "description": "Loading and unavailable states replace the diagram with a quiet placeholder."
       },
       {
-        "name": "disabled",
-        "type": "boolean",
-        "description": "Disables trace requests while values remain readable."
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Shows a Retry button in the unavailable state."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "theme ink",
+        "description": "The one accent: the traced category, its bars and its direct flows. Everything else stays grey."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Neutral graphite and white chrome; colour is reserved for actual feature content and semantic data accents."
+        "default": "\"dark\"",
+        "description": "Surface palette."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-US\"",
+        "description": "Locale for figures."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Signup journeys\"",
+        "description": "Chart title."
+      },
+      {
+        "name": "caption",
+        "type": "string",
+        "default": "\"first touch → first week → day 30\"",
+        "description": "Muted text after the title."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Classes for the independent root."
+        "description": "Classes on the root."
       }
     ],
     "controls": [
+      {
+        "prop": "defaultPeriod",
+        "label": "Opens on",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": "sep",
+            "label": "September"
+          },
+          {
+            "value": "oct",
+            "label": "October"
+          }
+        ],
+        "default": "oct",
+        "remount": true,
+        "group": "Data"
+      },
+      {
+        "prop": "title",
+        "label": "Title",
+        "kind": "text",
+        "default": "Signup journeys",
+        "group": "Data"
+      },
       {
         "prop": "theme",
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
-        "default": "dark"
+        "default": "dark",
+        "group": "Look"
       },
       {
-        "prop": "disabled",
-        "label": "Disabled",
-        "kind": "toggle",
-        "default": false
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#a3e635",
+        "options": [
+          "#a3e635",
+          "#7dd3fc",
+          "#fb923c",
+          "#f4f4f5"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Demo",
+        "kind": "action",
+        "value": "Replay"
       }
     ],
     "demo": {
       "steps": [
-        "click:@sankey-node-walkthrough",
-        "wait:350",
-        "click:@sankey-node-activated",
-        "wait:350",
-        "click:@sankey-clear",
-        "wait:450"
+        "wait:300",
+        "click:@node-explored",
+        "wait:1000",
+        "click:@period-sep",
+        "wait:1100",
+        "click:@node-invited",
+        "wait:1000",
+        "click:@period-oct",
+        "wait:1000"
       ],
       "loop": false
     },
