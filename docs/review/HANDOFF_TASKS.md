@@ -62,6 +62,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 5: added Day Planner coverage for keyboard rescheduling, overlap blocking, failed-then-successful saves with the original event and AbortSignal, and an empty day. The registered source-fixture run passes.
 
+- Task 5: added Prompt Journal coverage for the keyboard Next action, roving prompt tabs, drafts per prompt, save failure/retry, character limits and empty prompts. Hidden or pending navigation is disabled, the web deck uses group semantics, and empty decks cannot accept text they would discard. The source-fixture regression, settled accessibility checks and writing/error/pending/saved/empty captures pass.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -200,14 +202,13 @@ tests/browser/pro-50-<suite>-probe.mjs <slug>` (suite = legal, saas, finance, hr
 
 ## 5. Write browser probes for components that have none
 
-94 finished components still have no dedicated browser regression probe. For each, read its source and
+93 finished components still have no dedicated browser regression probe. For each, read its source and
 `meta.json`, then add a case to the appropriate `tests/browser/*.mjs` suite (or a new probe registered in
 `scripts/test-components.mjs`) covering: the signature interaction, keyboard paths, failed-then-successful callbacks
 with drafts kept (where it has async callbacks), and empty or invalid data. Use `tests/browser/pro-50/hr-org-explorer.mjs`
 as the model for style and depth. Mobile components render through React Native web (`scripts/lib/component-fixture.mjs` aliases it);
 see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 
-`mobile-journal-prompt`
 `mobile-meeting-preflight`, `mobile-mood-map`, `mobile-notification-digest`, `mobile-offline-outbox`
 `mobile-packing-list`, `mobile-project-switcher`, `mobile-reading-progress`, `mobile-review-annotations`
 `mobile-sync-conflict`, `mobile-task-move`, `mobile-trip-itinerary`, `mobile-voice-memo`, `chart-box-distribution`

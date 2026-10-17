@@ -34014,7 +34014,7 @@
         "name": "prompts",
         "type": "JournalPrompt[]",
         "default": "4 prompts",
-        "description": "The deck: { id, title (short category), question, guidance }."
+        "description": "The deck: { id, title (short category), question, guidance }. An empty deck explains how to start and disables writing until a prompt exists."
       },
       {
         "name": "answers",

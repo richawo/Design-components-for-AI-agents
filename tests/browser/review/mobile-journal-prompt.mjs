@@ -1,0 +1,37 @@
+export async function check({ page, mount, assert }) {
+  const prompts = [{ id: "one", title: "Notice", question: "What went well?", guidance: "One small moment." }, { id: "two", title: "Tomorrow", question: "What comes next?", guidance: "A small step." }];
+  const props = `prompts={${JSON.stringify(prompts)}} answers={[]} timeLabel="18:40"`;
+  await mount(`window.saves=[];window.selections=[];window.fail=true;createRoot(document.getElementById('root')).render(<Subject.MobileJournalPrompt ${props} onSelectionChange={id=>window.selections.push(id)} onSave={async(entry,signal)=>{window.saves.push({...entry,signal:signal instanceof AbortSignal});if(window.fail)throw Error('Your journal is offline.');await new Promise(resolve=>window.finishSave=resolve)}}/>);`);
+  const answer = () => page.getByRole("textbox", { name: "Your answer to: What went well?", exact: true });
+  await answer().fill("A quiet walk.");
+  await page.getByRole("button", { name: "Done writing", exact: true }).press("Enter");
+  await page.getByRole("button", { name: "Next prompt", exact: true }).press("Enter");
+  await page.getByRole("textbox", { name: "Your answer to: What comes next?", exact: true }).fill("Call Mara.");
+  await page.getByRole("button", { name: "Done writing", exact: true }).press("Enter");
+  const secondTab = page.getByRole("tab", { name: "Prompt 2", exact: true });
+  await secondTab.focus();
+  await page.keyboard.press("Home");
+  assert.equal(await page.getByRole("tab", { name: "Prompt 1", exact: true }).evaluate(el => el === document.activeElement), true);
+  await answer().waitFor();
+  assert.equal(await answer().inputValue(), "A quiet walk.");
+  await page.getByRole("button", { name: "Keep entry", exact: true }).press("Enter");
+  await page.getByText("Your journal is offline.", { exact: true }).waitFor();
+  assert.equal(await answer().inputValue(), "A quiet walk.");
+  await page.evaluate(() => window.fail = false);
+  await page.getByRole("button", { name: "Try again", exact: true }).press("Enter");
+  assert.equal(await answer().isEditable(), false);
+  assert.equal(await page.getByRole("tab", { name: "Prompt 2", exact: true }).isDisabled(), true);
+  await page.evaluate(() => window.finishSave());
+  await page.getByRole("button", { name: "Kept at 18:40", exact: true }).waitFor();
+  assert.deepEqual(await page.evaluate(() => ({ prompt: window.saves[1].prompt.id, text: window.saves[1].text, previous: window.saves[1].previous, signal: window.saves[1].signal, selection: window.selections })), { prompt: "one", text: "A quiet walk.", previous: null, signal: true, selection: ["two", "one"] });
+  await mount(`createRoot(document.getElementById('root')).render(<Subject.MobileJournalPrompt ${props} maxLength={5}/>);`);
+  await answer().fill("Six words stay here.");
+  await page.getByText("This page holds 5 characters. Trim a little to keep it.", { exact: true }).waitFor();
+  assert.equal(await page.getByRole("button", { name: "Keep entry", exact: true }).isDisabled(), true);
+  assert.equal(await answer().inputValue(), "Six words stay here.");
+  await mount(`createRoot(document.getElementById('root')).render(<Subject.MobileJournalPrompt prompts={[]} answers={[]}/>);`);
+  await page.getByText("No prompts tonight", { exact: true }).waitFor();
+  await page.getByText("Add a prompt to start a page.", { exact: true }).waitFor();
+  assert.equal(await page.getByRole("textbox", { name: "Your answer", exact: true }).isEditable(), false);
+  assert.equal(await page.getByRole("button", { name: "Keep entry", exact: true }).isDisabled(), true);
+}
