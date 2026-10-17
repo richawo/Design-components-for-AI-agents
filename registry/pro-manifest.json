@@ -7472,117 +7472,227 @@
     "tier": "pro",
     "platform": "web",
     "category": "charts",
-    "description": "Explore actual daily values through a keyboard calendar heatmap, with typed date-window filters and explicit missing, unmeasured and zero states.",
+    "description": "A dark year-at-a-glance calendar heatmap: days ripple in as a wave, totals and streaks count up, years recolour in a sweep and a legend swatch isolates its days.",
     "tags": [
+      "chart",
       "calendar heatmap",
-      "daily values",
       "activity",
-      "date filter",
-      "missing data",
-      "keyboard grid"
+      "contributions",
+      "daily totals",
+      "streak",
+      "dashboard",
+      "svg",
+      "dark"
     ],
     "dependencies": [
       "motion",
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1200,
-    "usage": "import { ChartCalendarHeatmap } from \"@/components/design-for-ai/chart-calendar-heatmap\";\n\n<ChartCalendarHeatmap days={dailyRecords} value={window} onValueChange={setWindow} unit=\"events\" />",
+    "previewHeight": 640,
+    "usage": "import { ChartCalendarHeatmap } from \"@/components/design-for-ai/chart-calendar-heatmap\";\n\nexport default function Deploys({ days }: { days: { date: string; value: number | null }[] }) {\n  return (\n    <ChartCalendarHeatmap\n      title=\"Deploys\"\n      caption=\"production · all services\"\n      days={days} // ISO dates; null = not measured\n      unit={{ one: \"deploy\", other: \"deploys\" }}\n      onSelectDate={(date) => openDay(date)}\n      accent=\"#4ade80\"\n    />\n  );\n}",
     "props": [
       {
         "name": "days",
-        "type": "HeatmapDay[]",
-        "description": "Up to 1464 unique real YYYY-MM-DD daily records, finite nonnegative values up to 1 billion, or null for explicitly not measured."
-      },
-      {
-        "name": "value",
-        "type": "HeatmapView",
-        "description": "Atomic controlled start/end/selectedDate. At most 366 calendar days; null selection is explicit. Unknown/outside identities are not substituted."
-      },
-      {
-        "name": "defaultValue",
-        "type": "HeatmapView",
-        "description": "Initial uncontrolled window; untouched source initializes only when the first valid ready records arrive."
-      },
-      {
-        "name": "onValueChange",
-        "type": "(value: HeatmapView) => void",
-        "description": "Requests one atomic window/selection packet. Date drafts remain until accepted or explicitly reset."
-      },
-      {
-        "name": "onValueCommit",
-        "type": "(value: HeatmapView) => void",
-        "description": "Accepted discrete changes only, with no false rejected or interrupted commit."
+        "type": "{ date: string; value: number | null }[]",
+        "default": "Northwind’s production deploys, 1 Jan 2025 to 16 Oct 2026",
+        "description": "Daily totals as ISO dates in any order. null marks a day that wasn’t measured (hatched), which is different from zero. Every year present gets a tab."
       },
       {
         "name": "unit",
-        "type": "string",
-        "description": "Host daily quantity unit; no timezone aggregation is inferred."
+        "type": "{ one: string; other: string }",
+        "default": "{ one: \"deploy\", other: \"deploys\" }",
+        "description": "Words for one and many, used in the headline, tooltips and the caption."
       },
       {
-        "name": "locale",
-        "type": "string",
-        "description": "Native number/date formatting locale; ISO calendar dates are displayed with UTC date semantics."
+        "name": "defaultYear",
+        "type": "number",
+        "default": "latest year in days",
+        "description": "Year shown first."
       },
       {
-        "name": "title",
-        "type": "string",
-        "description": "Host activity heading."
+        "name": "year",
+        "type": "number",
+        "description": "Controlled year; pair with onYearChange."
       },
       {
-        "name": "description",
-        "type": "string",
-        "description": "Host daily source/provenance context."
+        "name": "onYearChange",
+        "type": "(year: number) => void",
+        "description": "Called when the year switch changes."
+      },
+      {
+        "name": "defaultSelectedDate",
+        "type": "string | null",
+        "default": "null",
+        "description": "Day pinned on first render (ISO date)."
+      },
+      {
+        "name": "selectedDate",
+        "type": "string | null",
+        "description": "Controlled pinned day."
+      },
+      {
+        "name": "onSelectDate",
+        "type": "(date: string | null, day: HeatmapDay | null) => void",
+        "description": "Called when a day is clicked or chosen with Enter, or cleared with Escape."
+      },
+      {
+        "name": "weekStart",
+        "type": "0 | 1",
+        "default": "1",
+        "description": "First row of each column: 1 for Monday, 0 for Sunday."
+      },
+      {
+        "name": "showMonthTotals",
+        "type": "boolean",
+        "default": "true",
+        "description": "Month totals as bars under the grid, the busiest month in the accent."
       },
       {
         "name": "status",
         "type": "\"ready\" | \"loading\" | \"unavailable\"",
-        "description": "Host availability; current view is preserved."
+        "default": "\"ready\"",
+        "description": "Loading and unavailable states replace the grid with a quiet placeholder."
       },
       {
-        "name": "disabled",
-        "type": "boolean",
-        "description": "Disables selection requests; native keyboard inspection remains available."
+        "name": "onRetry",
+        "type": "() => void",
+        "description": "Shows a Retry button in the unavailable state."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "theme ink",
+        "description": "The ramp’s top colour. Lower levels are mixed toward the surface in OKLab, so they stay the accent’s hue."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "description": "Neutral graphite and white chrome; colour is reserved for actual feature content and semantic data accents."
+        "default": "\"dark\"",
+        "description": "Surface palette."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-US\"",
+        "description": "Locale for figures."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "\"Deploys\"",
+        "description": "Chart title."
+      },
+      {
+        "name": "caption",
+        "type": "string",
+        "default": "\"production · all services\"",
+        "description": "Muted text after the title."
       },
       {
         "name": "className",
         "type": "string",
-        "description": "Classes applied to the independent root."
+        "description": "Classes on the root."
       }
     ],
     "controls": [
+      {
+        "prop": "defaultYear",
+        "label": "Opens on",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": 2025,
+            "label": "2025"
+          },
+          {
+            "value": 2026,
+            "label": "2026"
+          }
+        ],
+        "default": 2026,
+        "remount": true,
+        "group": "Data"
+      },
+      {
+        "prop": "weekStart",
+        "label": "Week starts",
+        "kind": "segmented",
+        "options": [
+          {
+            "value": 1,
+            "label": "Monday"
+          },
+          {
+            "value": 0,
+            "label": "Sunday"
+          }
+        ],
+        "default": 1,
+        "group": "Data"
+      },
+      {
+        "prop": "showMonthTotals",
+        "label": "Month totals",
+        "kind": "toggle",
+        "default": true,
+        "group": "Data"
+      },
+      {
+        "prop": "title",
+        "label": "Title",
+        "kind": "text",
+        "default": "Deploys",
+        "group": "Data"
+      },
       {
         "prop": "theme",
         "label": "Theme",
         "kind": "segmented",
         "options": [
-          "dark",
-          "light"
+          {
+            "value": "dark",
+            "label": "Dark"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          }
         ],
-        "default": "dark"
+        "default": "dark",
+        "group": "Look"
       },
       {
-        "prop": "disabled",
-        "label": "Disabled selection",
-        "kind": "toggle",
-        "default": false
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#4ade80",
+        "options": [
+          "#4ade80",
+          "#7dd3fc",
+          "#f4f4f5",
+          "#fb923c"
+        ],
+        "group": "Look"
+      },
+      {
+        "prop": "$replay",
+        "label": "Demo",
+        "kind": "action",
+        "value": "Replay"
       }
     ],
     "demo": {
       "steps": [
-        "click:@heatmap-2026-06-16",
-        "wait:350",
-        "click:@heatmap-2026-06-22",
-        "wait:350",
-        "click:@heatmap-2026-06-25",
-        "wait:350",
-        "click:@heatmap-reset",
-        "wait:450"
+        "move:0.8,0.85",
+        "hover:@legend-4",
+        "wait:900",
+        "click:@year-2025",
+        "wait:1100",
+        "click:@day-2025-12-08",
+        "wait:900",
+        "click:@year-2026",
+        "wait:1000"
       ],
       "loop": false
     },

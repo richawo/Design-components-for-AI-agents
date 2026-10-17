@@ -4268,19 +4268,20 @@
     "updated": "2026-10-14"
   },
   "chart-calendar-heatmap": {
-    "useWhen": "Inspecting daily values through a calendar with meaningful missing-data and filtering states.",
-    "avoidWhen": "A punitive streak display or treating unobserved days as measured zero.",
+    "useWhen": "Showing a year of daily activity at a glance, such as deploys, orders, workouts or support tickets, where weekly rhythm, quiet spells and peak days matter more than exact values.",
+    "avoidWhen": "Comparing a few series, reading precise daily values, or data with fewer than a couple of months, where a bar or line chart reads faster.",
     "integration": [
-      "Supply up to 1464 unique real YYYY-MM-DD records with finite nonnegative quantities up to 1 billion, or null for an explicitly unmeasured day. Missing records and null are distinguished from an actual measured zero. No timezone aggregation is inferred; format and compare calendar dates in UTC.",
-      "Control the atomic start/end/selectedDate packet for a window of at most 366 days. Native date drafts survive invalid ranges, rejection and older host acceptances; explicitly apply or reset them. Only accepted discrete changes commit, and unknown or outside selections remain honest.",
-      "The Monday–Sunday grid preserves 44px daily hit targets with local horizontal scrolling and focused-day reveal. Arrows inspect calendar dates, Enter/Space selects, and native date filters offer an equivalent exact window interaction. Disabled selection preserves keyboard inspection and readable quantities.",
-      "Current quantities animate both directions and settle immediately on live reduced motion or hidden/blocked states. Functional cell edges and dashed missing states remain distinct in both supported themes. Retired focus recovers only in the actually focused owner document; host persistence and outside or parent-page focus remain authoritative."
+      "Pass `days` as { date, value } with ISO dates. Use `value: null` for days that weren’t measured; they render hatched and are left out of totals, streaks and averages instead of counting as zero.",
+      "Every year present in the data gets a tab. Control it with `year` and `onYearChange`, or set `defaultYear`. Days after the latest record draw as dashed outlines so a partial year still reads as a year.",
+      "Use `onSelectDate` to open a day’s detail elsewhere, or control `selectedDate`. Levels come from the quartiles of non-zero days, so a single spike doesn’t wash out the rest of the year.",
+      "Name the unit with `unit` ({ one, other }) and set `weekStart` for your locale. The accent tops a four-step ramp mixed in OKLab; pick a hue that stays distinct from your status colours."
     ],
     "related": [
-      "date-week-agenda",
-      "chart-waffle"
+      "chart-revenue-trend",
+      "chart-funnel-dots",
+      "date-week-agenda"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "chart-scatter-brush": {
     "useWhen": "Finding and acting on a cluster of records in two measures at once, such as slow pages, expensive accounts or outlier queries, by dragging a box over them.",
