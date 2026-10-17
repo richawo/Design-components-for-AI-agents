@@ -30749,13 +30749,19 @@
     "tier": "pro",
     "platform": "mobile",
     "category": "mobile",
-    "description": "A native packing manifest with grouped checking, exact editable quantities and accepted removal/undo that preserves current list data.",
+    "description": "A dark React Native packing list: check an item and it flies into a drawn carry-on that fills toward the airline limit, under a glass header that warns when over.",
     "tags": [
-      "packing",
-      "grouped checklist",
-      "exact quantities",
-      "remove completed",
-      "undo removal"
+      "mobile",
+      "react native",
+      "packing list",
+      "checklist",
+      "travel",
+      "weight",
+      "stepper",
+      "undo",
+      "glass",
+      "monochrome",
+      "dark"
     ],
     "dependencies": [
       "expo-blur",
@@ -30763,86 +30769,70 @@
       "react-native-svg"
     ],
     "theme": "dark",
-    "previewHeight": 844,
-    "usage": "import { MobilePackingList } from \"@/components/design-for-ai/native/mobile-packing-list\";\n\n// Bare React Native: install Expo modules once with npx install-expo-modules.\n<MobilePackingList value={items} onValueChange={setItems} />",
+    "previewHeight": 940,
+    "usage": "import { MobilePackingList } from \"@/components/design-for-ai/native/mobile-packing-list\";\n\n// npm i expo-blur expo-linear-gradient react-native-svg\n// (bare React Native: run `npx install-expo-modules` once)\n<MobilePackingList\n  trip={{ destination: \"Lisbon\", dates: \"Fri 24 – Tue 28 Oct · 4 nights\", bag: \"Carry-on\", limitKg: 7, tareKg: 2.3 }}\n  items={trip.items} // { id, name, detail?, group, qty, grams, packed }\n  onChange={(items, change) => api.trips.saveItems(trip.id, items)} // reject to roll back\n  onBack={() => navigation.goBack()}\n/>",
     "props": [
       {
-        "name": "packingId",
-        "type": "string",
-        "description": "Logical list context. Replacement clears local inspection/drafts/undo and retires pending accepted-change intent."
+        "name": "trip",
+        "type": "PackingTrip",
+        "default": "Lisbon, carry-on, 7 kg limit, 3 kg bag",
+        "description": "{ destination, dates, bag, limitKg, tareKg }. The empty bag's weight counts from the start."
       },
       {
-        "name": "title",
-        "type": "string",
-        "description": "Host-authored packing manifest title."
-      },
-      {
-        "name": "value",
+        "name": "items",
         "type": "PackingItem[]",
-        "description": "Controlled complete packing list: up to 100 raw unique named/grouped records, whole quantities 1–99 and explicit packed booleans."
+        "default": "13 items in four sections",
+        "description": "{ id, name, detail?, group, qty (1–99), grams (one item), packed }. Sections keep the order their group first appears."
       },
       {
-        "name": "defaultValue",
-        "type": "PackingItem[]",
-        "description": "Initial local packing records. Named default is the original illustrative studio manifest."
+        "name": "accent",
+        "type": "string",
+        "default": "\"#C8F15C\"",
+        "description": "The bag's fill, checks, progress and stepper. Over the limit the bag and weight turn red regardless."
       },
       {
-        "name": "onValueChange",
-        "type": "(items: PackingItem[], change: PackingChange) => void",
-        "description": "Copied full-list request with check/quantity/remove_completed/undo reason. Rejection preserves the current list and newer exact drafts."
+        "name": "onChange",
+        "type": "(items: PackingItem[], change: PackingChange) => void | Promise<void>",
+        "description": "Every change with the whole list after it; change is pack, unpack, quantity, remove or restore. Reject or throw and the list rolls back with the error in the toast."
       },
       {
-        "name": "onValueCommit",
-        "type": "(items: PackingItem[], change: PackingChange) => void",
-        "description": "Only current accepted complete-list changes commit. No rejected, no-op or context-retired commit."
-      },
-      {
-        "name": "status",
-        "type": "\"ready\" | \"loading\" | \"unavailable\"",
-        "description": "Preserves actual list and draft context with useful availability copy."
-      },
-      {
-        "name": "disabled",
-        "type": "boolean",
-        "description": "Disables changes; supplied group and quantity inspection remain available."
-      },
-      {
-        "name": "theme",
-        "type": "\"dark\" | \"light\"",
-        "description": "Neutral graphite or white manifest, with a real translucent action footer."
+        "name": "onBack",
+        "type": "() => void",
+        "description": "The back button in the glass header."
       }
     ],
     "controls": [
       {
-        "prop": "theme",
-        "label": "Theme",
-        "kind": "segmented",
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#C8F15C",
         "options": [
-          "dark",
-          "light"
-        ],
-        "default": "dark"
+          "#C8F15C",
+          "#F5F5F5",
+          "#5B9DFF",
+          "#FFB224"
+        ]
       },
       {
-        "prop": "disabled",
-        "label": "Disabled actions",
-        "kind": "toggle",
-        "default": false
+        "prop": "$replay",
+        "label": "Replay",
+        "kind": "action"
       }
     ],
     "demo": {
       "steps": [
-        "click:@packing-check-notebook",
+        "wait:900",
+        "click:@check-camera",
+        "wait:800",
+        "click:@row-shirts",
         "wait:300",
-        "click:@packing-edit-notebook",
-        "wait:650",
-        "click:@packing-plus",
+        "click:@plus-shirts",
         "wait:300",
-        "click:@packing-close",
-        "click:@packing-remove",
-        "wait:300",
-        "click:@packing-undo",
-        "wait:400"
+        "click:@plus-shirts",
+        "wait:800",
+        "click:@minus-shirts",
+        "wait:500"
       ],
       "loop": false
     },

@@ -4779,18 +4779,19 @@
     "updated": "2026-10-17"
   },
   "mobile-packing-list": {
-    "useWhen": "Checking grouped items, correcting quantities and undoing supported removals.",
-    "avoidWhen": "An inventory database or automatically deleting completed items.",
+    "useWhen": "A travel or kit checklist where weight matters, so people see a bag fill toward a limit as they pack and adjust quantities to stay under it.",
+    "avoidWhen": "A general to-do list with no notion of weight or capacity, or inventory that needs search, sorting and bulk editing.",
     "integration": [
-      "Supply up to 100 unique named items, their group labels, whole quantities from 1 to 99 and explicit packed states. Controlled changes request a copied complete list; only an accepted current list emits a commit.",
-      "Exact quantity drafts survive refused changes and older acceptance. Remove packed items explicitly. Undo becomes available after accepted removal and restores missing original identities without replacing newer current records; changing packingId retires the local undo context.",
-      "Install in a React Native app with Expo modules for the translucent footer and SVG details. The web preview supports design review; verify device fonts, larger text, reduced motion, touch and assistive technology on target devices."
+      "Pass `trip` as { destination, dates, bag, limitKg, tareKg } and `items` as { id, name, detail?, group, qty, grams, packed }. Sections follow the order groups first appear; the bag's own weight counts from the start.",
+      "`onChange(items, change)` fires on pack, unpack, quantity, remove and restore with the whole list. It can return a promise; reject or throw and the list rolls back with your message in the toast.",
+      "Over the limit the bag and weight turn red regardless of `accent`. Remove offers Undo, which restores the item to its place.",
+      "Install expo-blur, expo-linear-gradient and react-native-svg. Check the checkbox targets, the stepper with VoiceOver and larger text on devices."
     ],
     "related": [
-      "mobile-swipe-list",
-      "mobile-settings"
+      "mobile-trip-itinerary",
+      "mobile-swipe-list"
     ],
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
   },
   "mobile-budget-envelope": {
     "useWhen": "Letting someone move money between budget categories on a phone, with the month's unassigned balance updating as they drag and nothing saved until the host accepts.",
