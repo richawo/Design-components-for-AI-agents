@@ -4885,8 +4885,9 @@
     "useWhen": "A trip with several legs across time zones, where travellers need local times, delays and cancellations at a glance and a quick way into each booking.",
     "avoidWhen": "Searching or booking travel, live vehicle tracking, or a single flight's status card.",
     "integration": [
-      "Supply legs in travel order with ISO instants (with an offset or Z), an IANA timeZone, code, city and lat/lon per place, a status, optional revised times, the operator's note and booking details. Clocks and day headers are formatted in each place's own zone.",
-      "onOpenLeg(leg, signal) opens the boarding pass, ticket or ride in your app; Cancel aborts the signal and late answers to older requests are ignored. Pass now to decide the next leg; tightConnection flags short connections.",
+      "Supply legs in travel order with unique ids, offset ISO instants, IANA time zones and finite coordinates. Scheduled and effective arrivals must follow departure. Invalid or duplicate legs are excluded with a notice; clocks use each place’s zone.",
+      "Await onOpenLeg and honor its AbortSignal. Cancel or opening another leg aborts the prior request and ignores its late completion. Missing handlers omit booking actions and disable Back.",
+      "Key the component by trip or booking revision when replacing its dataset. Changes links bring the selected leg below the compact header and continue keyboard focus there. Collapsed, hidden and retiring content is inactive.",
       "Install in a React Native app; bare apps run npx install-expo-modules once. Verify scrolling, larger text and assistive technology on target devices."
     ],
     "related": [
@@ -4894,7 +4895,7 @@
       "mobile-day-planner",
       "mobile-bottom-sheet"
     ],
-    "updated": "2026-10-17"
+    "updated": "2026-10-18"
   },
   "mobile-packing-list": {
     "useWhen": "A travel or kit checklist where weight matters, so people see a bag fill toward a limit as they pack and adjust quantities to stay under it.",

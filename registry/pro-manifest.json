@@ -36384,7 +36384,7 @@
     ],
     "theme": "dark",
     "previewHeight": 940,
-    "usage": "import { MobileTripItinerary } from \"@/components/design-for-ai/native/mobile-trip-itinerary\";\n\n// Bare React Native apps: run `npx install-expo-modules` once for expo-blur and expo-linear-gradient.\n<MobileTripItinerary\n  title={trip.name}\n  dates=\"Fri 16 – Sun 18 Oct\"\n  legs={trip.legs}\n  onOpenLeg={(leg, signal) => wallet.openPass(leg.id, { signal })}\n  onBack={() => navigation.goBack()}\n/>",
+    "usage": "import { MobileTripItinerary } from \"@/components/design-for-ai/native/mobile-trip-itinerary\";\n\n// Bare React Native apps: run `npx install-expo-modules` once for expo-blur and expo-linear-gradient.\n<MobileTripItinerary\n  key={trip.id}\n  title={trip.name}\n  dates=\"Fri 16 – Sun 18 Oct\"\n  legs={trip.legs}\n  onOpenLeg={(leg, signal) => wallet.openPass(leg.id, { signal })}\n  onBack={() => navigation.goBack()}\n/>",
     "props": [
       {
         "name": "title",
@@ -36401,7 +36401,7 @@
       {
         "name": "legs",
         "type": "TripLeg[]",
-        "description": "Legs in travel order: id, mode (train, flight, ferry, car), carrier, from/to places (name, code, IANA timeZone, lat, lon), ISO departs/arrives, optional revised times, status, note, details and action label."
+        "description": "Legs in travel order with unique nonempty ids, valid offset ISO instants, IANA time zones and finite coordinates. Both scheduled and revised arrivals must follow departure. Invalid or duplicate legs are excluded with a notice. Key the component by trip or booking revision when replacing its dataset."
       },
       {
         "name": "now",
@@ -36435,12 +36435,12 @@
       {
         "name": "onOpenLeg",
         "type": "(leg: TripLeg, signal: AbortSignal) => void | Promise<void>",
-        "description": "Opens the leg's booking (boarding pass, ticket, ride). The button shows opening, opened or failed; Cancel aborts the signal."
+        "description": "Opens the booking and resolves only after it opens. Missing handlers omit the booking action. Failures retain the leg details for retry; Cancel or opening another leg aborts the previous signal and ignores late completion."
       },
       {
         "name": "onBack",
         "type": "() => void",
-        "description": "Back button."
+        "description": "Back action shared by the main and compact headers. Omitted handlers disable both buttons; the compact header is inaccessible until visible."
       }
     ],
     "controls": [
@@ -36493,9 +36493,7 @@
         "click:@trip-leg-tp433",
         "wait:600",
         "click:@trip-open-tp433",
-        "wait:1300",
-        "click:@trip-tab-changes",
-        "wait:900"
+        "wait:1300"
       ],
       "loop": false
     },

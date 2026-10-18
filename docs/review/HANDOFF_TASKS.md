@@ -112,6 +112,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 5 follow-up: Task Move gives updated host snapshots precedence over its local count adjustment while a request is pending. The controlled-host replay previously changed accepted move counts from 3/2 to 2/3 and Undo counts from 4/1 to 5/0. Both now remain at their accepted values through acknowledgement; the regression covers each publication and completion.
 
+- Task 5: Trip Itinerary now covers keyboard tabs, selected-leg scroll and focus, local-zone clocks, booking retries, cancellation, superseded requests and keyed trip replacement. Invalid dates, zones, coordinates, durations and duplicate ids are excluded with a written state; hidden controls are inactive. Its Next-backed regression, eleven settled RN-web accessibility states, three preview controls and refreshed poster/guarded film pass. The demo ends at the confirmed boarding-pass receipt. 82 components remain without dedicated coverage.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -250,14 +252,14 @@ tests/browser/pro-50-<suite>-probe.mjs <slug>` (suite = legal, saas, finance, hr
 
 ## 5. Write browser probes for components that have none
 
-83 finished components still have no dedicated browser regression probe. For each, read its source and
+82 finished components still have no dedicated browser regression probe. For each, read its source and
 `meta.json`, then add a case to the appropriate `tests/browser/*.mjs` suite (or a new probe registered in
 `scripts/test-components.mjs`) covering: the signature interaction, keyboard paths, failed-then-successful callbacks
 with drafts kept (where it has async callbacks), and empty or invalid data. Use `tests/browser/pro-50/hr-org-explorer.mjs`
 as the model for style and depth. Mobile components render through React Native web (`scripts/lib/component-fixture.mjs` aliases it);
 see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 
-`mobile-trip-itinerary`, `mobile-voice-memo`, `chart-box-distribution`
+`mobile-voice-memo`, `chart-box-distribution`
 `chart-calendar-heatmap`, `chart-funnel-dots`, `chart-sankey-paths`, `chart-scatter-brush`
 `chart-sunburst-explorer`, `data-bulk-action-review`, `data-column-workbench`, `data-filter-history`
 `data-pivot-configurator`, `editor-asset-license-sheet`, `editor-branch-compare`, `editor-color-token-studio`
