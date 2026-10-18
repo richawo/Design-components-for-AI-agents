@@ -55,7 +55,7 @@ needs re-recording, whether its poster is current, and the state of its browser 
 | --- | --- | --- | --- |
 | `editor-asset-license-sheet` | current | current | Next-backed crop/placement, retry, exact payload, pending and invalid-data regression; twenty-eight theme/state accessibility audits and four controls pass. Reviewed 6.4s film and settled poster current. |
 | `editor-branch-compare` | current | current | Next-backed merge choices, scrubbing, exact output, retry, pending and replaced-revision regression; twenty-eight theme/state accessibility audits and four controls pass. Reviewed 5.5s film and settled poster current. |
-| `editor-color-token-studio` | new | current | Next-backed pointer/keyboard, palette failure/retry, clipboard, invalid ids, controlled read-only and stale-reply regression passes; eight theme/accent accessibility states, four controls and 320/390/768/1440 geometry pass. Fresh film pending timing guards. |
+| `editor-color-token-studio` | current | current | Next-backed pointer/keyboard, palette failure/retry, clipboard, invalid ids, controlled read-only and stale-reply regression passes; eight theme/accent accessibility states, four controls and 320/390/768/1440 geometry pass. Reviewed neutral 5.2s film shows the AA repair and settled Applied receipt; source/delivery/moving-frame guards pass. |
 | `editor-export-preset` | new | current |  |
 | `editor-font-pairing` | new | current |  |
 | `editor-keyframe-track` | new | current |  |

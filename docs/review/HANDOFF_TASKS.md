@@ -190,6 +190,9 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 8: Box Distribution now publishes current resize geometry before paint and ignores stale observer dimensions. Its first-frame and late-report regressions, complete Next workflow, twelve theme/accent/target accessibility checks, refreshed poster and corrected official audit pass. Light handle and target-met text now meet AA, neutral presets remain visible, and unsupported colours recover safely. The auditor requires the requested source and actual paint around its existing waits; a persistent 8px overflow still fails at all six desktop widths. Strict registry, TypeScript and all 1,063 unit tests pass. See [Box Distribution verification](BOX_DISTRIBUTION_RESIZE.md). The 26-component batch, complete browser suite and Worker dry run still need their final reruns.
 
+
+- Task 1: Color Token Studio now has a reviewed neutral 5.2s film showing a failing muted colour, its AA repair and the settled Applied receipt for one token. Its framing matches the current Next poster. Maximum source gap is 15ms, changed-source delivery is 37.5ms and moving-frame p95 is 19.3ms, with no stalls and every existing guard intact. The earlier rejected attempts remain archived. 121 listed films remain.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -207,7 +210,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Browser checks: `node scripts/check-component.mjs <slug> --base=http://localhost:3100 --no-video --keep-going`
   (screenshots at 1440/768/390 and every control flip; read the screenshots it writes to `test-results/check/<slug>/`).
 
-## 1. Re-record demo videos (122 components)
+## 1. Re-record demo videos (121 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -226,7 +229,7 @@ slug or per small group). Notes:
 
 Slugs:
 
-`editor-color-token-studio`, `editor-export-preset`, `editor-font-pairing`, `editor-keyframe-track`
+`editor-export-preset`, `editor-font-pairing`, `editor-keyframe-track`
 `editor-layer-stack`, `editor-spacing-inspector`, `editor-storyboard-strip`, `editor-version-restore`
 `three-exploded-assembly`, `three-material-inspector`, `agents-budget-guard`, `agents-dependency-board`
 `agents-run-replay`, `ai-answer-compare`, `ai-context-budget`, `ai-structured-output`, `auth-recovery-codes`
