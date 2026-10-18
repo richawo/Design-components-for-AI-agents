@@ -1,6 +1,6 @@
 {
   "component": "Ruler Number Stepper",
-  "intent": "A precise quantity field with a sliding ruler, large editable numerals and bounded step controls for seats, workers or concurrent tasks.",
+  "intent": "Set a bounded quantity through one large precise number and a ruler that explains its position within the allowed range.",
   "platform": "web",
   "stack": {
     "framework": "React 19",
@@ -8,14 +8,15 @@
     "motion": "motion/react"
   },
   "layout": {
-    "direction": "A compact instrument panel: heading and limits on top, 60px editable value between square minus/plus keys, and a 33-tick baseline ruler.",
+    "direction": "A 448px maximum-width quantity panel with a compact heading, 60px precise value, 44px canonical step buttons and a 33-tick ruler. Values longer than five characters occupy a complete line above the controls; fit their font between 16px and 60px using the container width and character count.",
     "container": "Size to the parent with @container. Keep the root width at 100%, capped to the focused component, with 24px desktop and 16px narrow padding.",
     "rhythm": "4/8px spacing; 1px edges; 44px minimum interactive targets."
   },
   "typography": {
-    "body": "font-sans, 14-16px, line-height 1.5",
-    "metadata": "font-mono, 11-12px, restrained tracking",
-    "heading": "font-display or font-serif, 24-36px, tracking -0.035em"
+    "heading": "18px medium, tracking -0.025em",
+    "body": "14px with relaxed leading",
+    "metadata": "12px mono for bounds; 12px units",
+    "value": "60px display, tabular numerals, tracking -0.06em; long values use clamp(16px, container width / characters * 1.45, 60px)"
   },
   "color": {
     "dark": {
@@ -33,8 +34,8 @@
   },
   "motion": {
     "entrance": "A single opacity and 8px rise over 320ms.",
-    "interaction": "150ms press response; 240ms state changes. No ambient loops.",
-    "reduced": "Remove transforms and layout motion; keep opacity at 120ms or less."
+    "interaction": "Canonical button press and focus states, 400ms hold delay then 60ms repeats, and a 240ms ruler slide. Precise entry updates immediately.",
+    "reduced": "Remove transforms and layout motion, including active fills or ruler transitions when the preference changes; keep opacity at 120ms or less."
   },
   "responsive": {
     "widths": [
@@ -78,7 +79,7 @@
         "name": "value",
         "type": "number",
         "default": "undefined",
-        "description": "Controlled value; host must update it in onChange."
+        "description": "Controlled value; host must update it in onChange. Without onChange, editing is read-only."
       },
       {
         "name": "defaultValue",
@@ -114,7 +115,7 @@
         "name": "onChange",
         "type": "(value: number) => void",
         "default": "undefined",
-        "description": "Emits a finite bounded number after committed edits."
+        "description": "Emits each changed finite bounded number, preserving safe integer digits; normalized no-ops emit nothing."
       },
       {
         "name": "theme",
@@ -128,5 +129,12 @@
     "Remote images, fake network success or hidden external dependencies.",
     "Decorative status badges, gradients as filler, low-contrast text.",
     "Unlabelled controls, hover-only functionality, overflow at 320px."
+  ],
+  "contract": [
+    "Clamp finite edits to normalized bounds; invalid drafts revert, Escape cancels and IME Enter never commits.",
+    "Preserve complete typed values, exact bounds and safe integer digits. Normalize only stepping noise to the precision of its actual operands. Compute a finite ruler position even when subtracting finite endpoints overflows.",
+    "Support arrows, Home/End and Shift-arrow ten-step changes. Canonical buttons repeat after 400ms and every 60ms while held, stopping on outside release, cancellation, blur, disabling or unmount.",
+    "Controlled values wait for host acknowledgement. A missing writer is read-only; disabled prevents all edits. Suppress callbacks for a normalized no-op.",
+    "Keep the canonical control-kit button states around the component-specific large figure and ruler. Live reduced motion settles the ruler immediately."
   ]
 }

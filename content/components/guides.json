@@ -518,17 +518,20 @@
     "updated": "2026-10-12"
   },
   "input-number-stepper": {
-    "useWhen": "Adjusting a bounded numerical value with direct entry and stepping.",
-    "avoidWhen": "An unbounded measurement or a numerical choice with no meaningful step.",
+    "useWhen": "A setting needs a precise bounded quantity, clear keyboard stepping and a visible sense of where that value sits within its allowed range.",
+    "avoidWhen": "The value is unbounded, an amount with currency rules, or a range with two endpoints. Use a dedicated field or dual-range control for those jobs.",
     "integration": [
-      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+      "Supply finite `min`, `max` and a positive `step`. Invalid bounds and increments normalize consistently; every emitted number is finite and bounded. Complete typed values, exact bounds and safe integer digits are retained.",
+      "Use `value` with `onChange` for controlled state or `defaultValue` for local state. A controlled value without a writer is read-only; the host owns persistence.",
+      "Enter and blur commit a draft; Escape discards it. Arrow keys step the typed valid draft or current value, Shift multiplies by ten and Home/End go to the bounds. IME Enter is preserved.",
+      "Holding a step button repeats after 400ms at 60ms intervals. Release outside, pointer cancellation, window blur, disabling and unmount stop the hold. `disabled` also locks precise entry."
     ],
     "related": [
-      "input-color-swatches",
-      "input-file-dropzone",
-      "input-password-checklist"
+      "input-unit-converter",
+      "input-detent-dial",
+      "billing-seat-manager"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-18"
   },
   "input-password-checklist": {
     "useWhen": "Explaining password requirements while someone enters a new password.",

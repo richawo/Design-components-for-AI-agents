@@ -1,6 +1,6 @@
 # Review status
 
-170 components are rebuilt (or, for a few, polished), verified and committed. For each: whether its demo video
+171 components are rebuilt (or, for a few, polished), verified and committed. For each: whether its demo video
 needs re-recording, whether its poster is current, and the state of its browser regression probe.
 
 - **Video**: `new` means `public/previews/<slug>.mp4` still shows the old version. Re-record serially on a quiet machine:
@@ -22,6 +22,10 @@ Strict registry, root and isolated Pro types, and all 1,064 unit tests pass. The
 remain, and the three diagnostic packages' runtime files are verified. No manual deployment was performed.
 Component-page loading work and earlier checkpoints remain separate.
 See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisions, measurements and evidence.
+
+The subsequent Number Stepper review passes its 55-mount source review, 22 state/default accessibility audits,
+Next workflow/demo, four controls and fresh component audit. Its reviewed poster and film are current. The
+new input group brings the next complete browser run to 60 suites; that input-batch release checkpoint is pending.
 
 ## Mobile (20)
 
@@ -99,7 +103,7 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | `devtools-request-replay` | new | current |  |
 | `devtools-schema-migration` | new | current |  |
 
-## Inputs, forms, dates and selects (10)
+## Inputs, forms, dates and selects (11)
 
 | Slug | Video | Poster | Probe |
 | --- | --- | --- | --- |
@@ -113,6 +117,7 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | `input-expression-editor` | new | current |  |
 | `input-unit-converter` | new | current |  |
 | `selects-tree-picker` | new | current |  |
+| `input-number-stepper` | current | current | Next-backed exact integer/decimal/bound, keyboard/IME, held-pointer retirement, native focus, controlled/read-only/disabled and invalid-data regression passes. Long quantities remain complete at 320px; the ruler remains finite across extreme bounds and settles on live reduced motion. The 55-mount source review, 22 state/default accessibility audits, six widths, entrance/state captures, four controls, official audit and exact metadata replay pass. Strict registry, TypeScript and all 1,064 unit tests pass. Reviewed 3.27s two-scale stepping film and paired poster are current, with all recording guards retained. |
 
 ## Application workflows (1)
 

@@ -9,6 +9,7 @@ const specs = fs
   .filter((file) => file.endsWith(".mjs"))
   .map((file) => ({ slug: file.slice(0, -4) }));
 const finalStates = {
+  "input-number-stepper": "workers",
   "three-material-inspector": "Uncoated C360 brass.",
   "three-exploded-assembly": "A compressible seal between tray and cover.",
   "editor-version-restore": "Restored 1 block",
@@ -56,19 +57,20 @@ let replay;
 try {
   for (const { slug } of specs.filter(
     (s) =>
-      fs.existsSync("registry/pro/" + s.slug) &&
+      ["free", "pro"].some(tier => fs.existsSync(`registry/${tier}/${s.slug}`)) &&
       (!selected.size || selected.has(s.slug)),
   )) {
     replay = { slug };
+    const tier = fs.existsSync(`registry/pro/${slug}`) ? "pro" : "free";
     const meta = JSON.parse(
-      fs.readFileSync("registry/pro/" + slug + "/meta.json"),
+      fs.readFileSync(`registry/${tier}/${slug}/meta.json`),
     );
     const steps = meta.demo.steps;
     replay.steps = steps;
     await mountFixture(
       page,
       slug,
-      "pro",
+      tier,
       `import {DemoPlayer} from './lib/demo/player';import {parseSteps} from './lib/demo/schema.mjs';createRoot(document.getElementById('root')).render(<Subject.default/>);window.play=steps=>new DemoPlayer(window,{move(){},show(){},press(){},pulse(){}},new AbortController().signal).play(parseSteps(steps));`,
     );
     await page.locator("#root").evaluate((el) => {
@@ -103,7 +105,11 @@ try {
       ?.slice(7);
     const target = page.locator('[data-demo="' + last + '"]');
     const notice = await page.getByRole("status").allTextContents();
-    if (notice.some((s) => s.trim() && !s.startsWith("Connect "))) {
+    if (slug === "input-number-stepper") {
+      assert.equal(await page.getByRole("spinbutton").inputValue(), "5", "The quantity demo finishes one step above its initial value");
+      const position = await page.locator('[data-demo="ruler-indicator"]').evaluate(node => parseFloat(node.style.left));
+      assert.ok(Math.abs(position - 100 * 4 / 15) < 0.1, "The ruler matches the accepted quantity");
+    } else if (notice.some((s) => s.trim() && !s.startsWith("Connect "))) {
       assert.doesNotMatch(notice.join(" "), /failed|Connect the host/);
     } else if (
       (await target.count()) &&

@@ -1,27 +1,15 @@
 # Ruler Number Stepper
 
-Build a standalone React 19 and Tailwind v4 component. A precise quantity field with a sliding ruler, large editable numerals and bounded step controls for seats, workers or concurrent tasks.
+Build this self-contained React 19, Tailwind CSS v4 and motion/react component. Set a bounded quantity through one large precise number and a ruler that explains its position within the allowed range.
 
-## Layout
+A compact instrument panel: heading and limits on top, 60px editable value between square minus/plus keys, and a 33-tick baseline ruler. Keep neutral #111111/#ffffff panels, #f5f5f5/#171717 ink, #a3a3a3/#525252 secondary text and #333333/#d4d4d4 hairlines. Use 14-16px body text, 12px mono metadata and the existing large working specimen. Interactive targets remain at least 44px.
 
-A compact instrument panel: heading and limits on top, 60px editable value between square minus/plus keys, and a 33-tick baseline ruler. Size to the container. Use a 4/8px rhythm, 1px surface edges, 16px narrow padding and 24px desktop padding. Controls have 44px targets.
+- Clamp finite edits to normalized bounds; invalid drafts revert, Escape cancels and IME Enter never commits.
+- Preserve complete typed values, exact bounds and safe integer digits. Normalize only stepping noise to the precision of its actual operands. Compute a finite ruler position even when subtracting finite endpoints overflows.
+- Support arrows, Home/End and Shift-arrow ten-step changes. Canonical buttons repeat after 400ms and every 60ms while held, stopping on outside release, cancellation, blur, disabling or unmount.
+- Controlled values wait for host acknowledgement. A missing writer is read-only; disabled prevents all edits. Suppress callbacks for a normalized no-op.
+- Keep the canonical control-kit button states around the component-specific large figure and ruler. Live reduced motion settles the ruler immediately.
 
-## Typography and colour
+Use a brief 8px entrance with opacity. Respect reduced motion on first view and when changed while mounted. Keep visible keyboard focus, meaningful pressed/value states and instance-scoped labels. Verify 320/390/768/1024/1440/1920px containers and both themes. Preserve the complete offline default demo and its named data-demo targets. Avoid marketing headers, invented security claims, decorative status badges and remote dependencies.
 
-Use font-sans at 14-16px/1.5, font-mono metadata at 11-12px and a 24-36px heading with -0.035em tracking. Dark uses #111111, #f5f5f5, #a3a3a3 and #333333; light uses #ffffff, #171717, #525252 and #d4d4d4. Maintain AA contrast.
-
-## Motion
-
-Use a 320ms opacity/8px entrance, 150ms press response and 240ms state changes, easing cubic-bezier(0.22,1,0.36,1). No ambient loops. Reduced motion removes transforms and layout animation and limits fades to 120ms.
-
-## Behaviour and accessibility
-
-Use semantic elements, native keyboard behaviour, visible focus rings and instance-scoped IDs. Expose typed content and callbacks. Handle empty custom data and repeated instances. Announce important feedback politely. Match the source state ownership and callback contract.
-
-## Responsive
-
-Design for 320, 390, 768, 1024, 1440 and 1920px. Respond to the container with @container variants, wrap text and stack secondary details. Scroll only within explicitly labelled local regions.
-
-## Avoid
-
-No remote imagery, false success states, unlabelled controls, hover-only actions, low contrast or decorative status pills. The demo is an isolated component on a quiet stage.
+Keep the panel at 448px maximum width with 24px padding and a 12px radius. The value uses 60px display type, tabular figures and -0.06em tracking; the heading is 18px, body 14px and bounds 12px mono. Use 33 one-pixel ticks, every fourth 20px high and the others 10px; the current marker is 2px by 28px. Values longer than five characters get a full line above the buttons and unit. Fit the complete represented value with a 16-60px font derived from container width and character count. Embed the canonical stepper CSS without altering its generated block.

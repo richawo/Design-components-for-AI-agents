@@ -43,7 +43,7 @@
       "name": "value",
       "type": "number",
       "default": "undefined",
-      "description": "Controlled value; host must update it in onChange."
+      "description": "Controlled value; host must update it in onChange. Without onChange, editing is read-only."
     },
     {
       "name": "defaultValue",
@@ -79,7 +79,7 @@
       "name": "onChange",
       "type": "(value: number) => void",
       "default": "undefined",
-      "description": "Emits a finite bounded number after committed edits."
+      "description": "Emits each changed finite bounded number, preserving safe integer digits; normalized no-ops emit nothing."
     },
     {
       "name": "theme",
@@ -111,6 +111,31 @@
         "light"
       ],
       "default": "dark"
+    },
+    {
+      "prop": "defaultValue",
+      "label": "Initial quantity",
+      "kind": "slider",
+      "min": 1,
+      "max": 16,
+      "step": 1,
+      "default": 4,
+      "remount": true
+    },
+    {
+      "prop": "max",
+      "label": "Maximum",
+      "kind": "slider",
+      "min": 4,
+      "max": 32,
+      "step": 1,
+      "default": 16
+    },
+    {
+      "prop": "disabled",
+      "label": "Disabled",
+      "kind": "toggle",
+      "default": false
     }
   ]
 }
