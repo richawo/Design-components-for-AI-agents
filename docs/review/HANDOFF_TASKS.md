@@ -223,6 +223,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 7 follow-up: Return Desk’s first film exposed a normal-motion review transition that projected the selected item 151px above its heading. Selection and review rows now have separate phase identities. The preserved old-source frame regression fails; both-theme reruns keep a minimum 32px gap throughout the transition. The Next regression also verifies retained quantities and notes when editing a review. Strict registry, TypeScript and all 1,063 unit tests pass. The first film remains unaccepted as visual failure evidence.
 
+- Task 1: Return Desk now has a reviewed 6.0s film showing item selection, the typed internal note, the exact £84.00 review and the settled recorded-request receipt. The phase correction prevents the item crossing its heading. Full-viewport framing retains every state and matches the paired poster. Maximum source gap is 11ms, changed-source delivery 18.8ms and moving-frame p95 17.3ms, with no stalls and every existing guard intact. 120 listed films remain.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -240,7 +242,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Browser checks: `node scripts/check-component.mjs <slug> --base=http://localhost:3100 --no-video --keep-going`
   (screenshots at 1440/768/390 and every control flip; read the screenshots it writes to `test-results/check/<slug>/`).
 
-## 1. Re-record demo videos (121 components)
+## 1. Re-record demo videos (120 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -259,7 +261,6 @@ slug or per small group). Notes:
 
 Slugs:
 
-`commerce-return-desk`
 `editor-font-pairing`, `editor-keyframe-track`
 `editor-layer-stack`, `editor-spacing-inspector`, `editor-storyboard-strip`, `editor-version-restore`
 `three-exploded-assembly`, `three-material-inspector`, `agents-budget-guard`, `agents-dependency-board`
