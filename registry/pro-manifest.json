@@ -8768,13 +8768,13 @@
         "name": "stages",
         "type": "{ id: string; label: string; description?: string }[]",
         "default": "Ledgerly’s five steps from pricing page to paid",
-        "description": "Steps in order. The description shows in the footer while that step is selected."
+        "description": "Steps in order with unique nonempty ids. The description shows in the footer while that step is selected."
       },
       {
         "name": "segments",
         "type": "{ key: string; label: string; counts: number[] }[]",
         "default": "All, Organic and Paid ads",
-        "description": "One or more cuts; counts[i] belongs to stages[i]. Two or more show a switcher. One dot weight is shared by every segment so switching compares honestly."
+        "description": "Cuts with unique nonempty keys and one finite nonnegative count per stage, in non-increasing order. Fractional counts are rounded to people. All segments share dot weight and slots."
       },
       {
         "name": "defaultSegment",
@@ -8785,7 +8785,7 @@
       {
         "name": "segment",
         "type": "string",
-        "description": "Controlled segment key; pair with onSegmentChange."
+        "description": "Controlled segment key; pair with onSegmentChange. Unknown keys show a written state. The host acknowledges each requested change."
       },
       {
         "name": "onSegmentChange",
@@ -8818,7 +8818,7 @@
         "name": "maxDots",
         "type": "number",
         "default": "100",
-        "description": "Most dots the largest step may use. The people-per-dot weight is the smallest tidy number that fits."
+        "description": "Whole-number dot budget from 1 to 1,000. Invalid budgets show a written state. A tidy people-per-dot weight is shared by every segment."
       },
       {
         "name": "status",
@@ -8847,7 +8847,7 @@
         "name": "locale",
         "type": "string",
         "default": "\"en-US\"",
-        "description": "Locale for figures."
+        "description": "Supported Intl locale for figures. Invalid locales show a written state; large figures use scientific notation."
       },
       {
         "name": "title",
@@ -8928,7 +8928,7 @@
         "prop": "accent",
         "label": "Accent",
         "kind": "color",
-        "default": "#fb923c",
+        "default": "#f4f4f5",
         "options": [
           "#fb923c",
           "#7dd3fc",
