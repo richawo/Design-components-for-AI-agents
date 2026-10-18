@@ -11,6 +11,7 @@ const specs = fs
 const finalStates = {
   "commerce-promotion-builder": "AUTUMN20 rule saved",
   "commerce-purchase-order": "PO-3342 draft saved · 3 lines",
+  "commerce-operations-dashboard": "£289,560.00",
   "commerce-fulfilment-desk":
     "Request a new label recorded for #4788",
   "fashion-exchange-selector": "Exchange confirmed",

@@ -1,6 +1,6 @@
 # Review status
 
-161 components are rebuilt (or, for a few, polished), verified and committed. For each: whether its demo video
+162 components are rebuilt (or, for a few, polished), verified and committed. For each: whether its demo video
 needs re-recording, whether its poster is current, and the state of its browser regression probe.
 
 - **Video**: `new` means `public/previews/<slug>.mp4` still shows the old version. Re-record serially on a quiet machine:
@@ -174,10 +174,11 @@ remain in place. Measurements, checkout revisions and the investigated package d
 | `fashion-size-guide` | new | current | source-fixture regression/demo, native palettes, both-theme accessibility and responsive/state/entrance captures pass |
 | `fashion-wholesale-order` | new | current | rewritten, passes |
 
-## Commerce suite (7)
+## Commerce suite (8)
 
 | Slug | Video | Poster | Probe |
 | --- | --- | --- | --- |
+| `commerce-operations-dashboard` | new | current | Rebuilt revenue/flow/channel dashboard; 24-mount source review, Next exact-total/inspection/history/empty regression, full-month replay, both-theme accessibility, six widths, entrance/state captures, two controls and official audit pass. Measured 1,240px preview and refreshed poster retain the whole ledger. |
 | `commerce-fulfilment-desk` | current | current | Rebuilt parcel/route/recovery workflow; 23-mount source review, Next retained-note/retry/pending/revision/empty regression, recorded-request replay, both-theme accessibility, six widths, entrance/state captures, two controls, official audit and measured full-frame poster pass; reviewed 5.7s recovery/note/review/record film and paired poster are current. |
 | `commerce-purchase-order` | current | current | Rebuilt PO document; 22-mount source review, Next exact-cost/retry/pending/supplier regression, three-line saved-draft replay, both-theme accessibility, six widths, entrance/state captures, three controls, official audit and refreshed poster pass; reviewed 4.1s add/review/save film and paired poster are current. |
 | `commerce-promotion-builder` | current | current | Rebuilt offer ticket and exact line-level receipt; 22-mount source review, Next workflow, both-theme accessibility, six widths, entrance/state captures, three controls, official audit and refreshed poster pass; reviewed 4.2s audience/savings/save film and paired poster are current. |

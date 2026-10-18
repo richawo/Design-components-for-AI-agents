@@ -12371,7 +12371,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "app",
-    "description": "Channel performance, conversion funnel and an exception drill-down. A considered, responsive commerce workspace with typed integration points.",
+    "description": "Inspect store revenue across real intervals, follow the checkout flow and isolate channel performance alongside operational exception counts.",
     "tags": [
       "e-commerce",
       "workflow",
@@ -12383,46 +12383,68 @@
       "motion"
     ],
     "theme": "dark",
-    "previewHeight": 900,
+    "previewHeight": 1240,
     "usage": "import { CommerceOperationsDashboard } from \"@/components/design-for-ai/commerce-operations-dashboard\";\n\n<CommerceOperationsDashboard />",
     "props": [
       {
         "name": "title",
         "type": "string",
-        "description": "Main heading.",
-        "default": "\"Commerce overview\""
+        "default": "\"Commerce overview\"",
+        "description": "Current rule name in the compact store breadcrumb."
       },
       {
         "name": "subtitle",
         "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Sales, checkout intent and the work that needs attention.\""
+        "description": "Optional store context below the app bar."
+      },
+      {
+        "name": "workspace",
+        "type": "string",
+        "default": "\"Fieldwork\"",
+        "description": "Store name in the app bar."
       },
       {
         "name": "periods",
         "type": "CommercePeriod[]",
-        "description": "Periods with comparable channel metrics, daily revenue in integer pennies, and operational exception counts. Invalid negative or unsafe values are excluded with a visible notice."
+        "description": "Periods with unique id/label and channel metrics. Channel ids must be unique per period; visits, checkouts, orders, revenueMinor, dailyRevenueMinor and exception counts must be non-negative safe integers. Invalid entries are reported and excluded. Optional rangeLabel and intervalLabels identify the actual history intervals; labels must match the series length. Aggregated history requires equally sized complete channel series."
       },
       {
         "name": "currency",
         "type": "string",
-        "description": "ISO currency for supplied two-decimal minor-unit values. No conversion is performed."
+        "description": "ISO currency for integer minor-unit revenue values. Precision follows Intl; no conversion is performed.",
+        "default": "\"GBP\""
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "description": "Locale for exact aggregate money and counts.",
+        "default": "\"en-GB\""
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Neutral graphite or paper surfaces."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "description": "Optional hex accent. Alpha blends over the panel before choosing readable button text. Defaults to theme ink."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Additional classes for the outer component."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:500",
+        "wait:600",
         "click:@channel-1",
-        "wait:900",
+        "wait:700",
         "click:@period-1",
-        "wait:1000"
+        "wait:1100"
       ],
       "loop": false
     },
@@ -12436,6 +12458,17 @@
           "light"
         ],
         "default": "dark"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#7aa2ff",
+          "#ff8a4c"
+        ]
       }
     ]
   },

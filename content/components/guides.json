@@ -1599,17 +1599,21 @@
     "updated": "2026-10-18"
   },
   "commerce-operations-dashboard": {
-    "useWhen": "A commerce overview that connects headline measures with operational queues.",
-    "avoidWhen": "A real-time stock or accounting authority disconnected from the backend.",
+    "useWhen": "Inspecting coherent store revenue, checkout conversion, channel totals and operational attention counts for a selected reporting period.",
+    "avoidWhen": "An accounting or stock authority, or a live operational action surface without corresponding host navigation and callbacks.",
     "integration": [
-      "Supply your own records through `periods`. Preserve stable keys or IDs when the data contract provides them."
+      "Provide periods with unique ids and per-period channel ids. Counts and integer minor-unit revenues must be non-negative safe integers; invalid metrics and ambiguous ids are reported and excluded. Aggregate money uses BigInt and exact Intl fraction parts.",
+      "Optional rangeLabel and intervalLabels identify the actual history intervals. Labels must match the series length. All-channel history requires complete equally sized channel series; unavailable history does not become a misleading partial total.",
+      "Period selection resets channel scope. Channel ledger buttons isolate a channel; All channels restores the aggregate. Every visible metric, curve and exception count follows the same selection.",
+      "The revenue history supports pointer inspection and arrows, Page Up/Down, Home and End. Zero denominators display unavailable conversion rather than an invented percentage. The labelled ledger scrolls internally on narrow containers.",
+      "Currency precision follows Intl with no conversion. This reporting component has no write callback; operational exception counts do not imply a resolution."
     ],
     "related": [
-      "app-permission-matrix",
-      "fashion-merchandising-dashboard",
-      "finance-cashflow-dashboard"
+      "commerce-fulfilment-desk",
+      "commerce-variant-stock",
+      "commerce-customer-timeline"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-18"
   },
   "commerce-promotion-builder": {
     "useWhen": "Editing a capped promotion rule while inspecting the exact saving across an eligible basket.",
