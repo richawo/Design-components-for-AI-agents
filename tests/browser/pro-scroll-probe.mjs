@@ -36,7 +36,9 @@ const page = await browser.newPage({
 const errors = [];
 page.on("pageerror", (e) => errors.push(e.message));
 const selected = new Set(process.argv.slice(2));
+let current;
 async function mount(slug, name, props = "") {
+  current = { slug, props };
   await mountFixture(
     page,
     slug,
@@ -58,6 +60,17 @@ try {
   )) {
     await mount(slug, name);
     const subject = page.locator('[data-demo="' + target + '"]');
+    if (slug === "scroll-cinema-frame") {
+      // Record the intended resting frame, after the native-scroll layout is
+      // active. A delayed preference/layout update must not become the baseline.
+      await page.waitForFunction(() => {
+        const stage = document.querySelector("#root > section")?.firstElementChild;
+        const frame = document.querySelector('[data-demo="film-frame"]');
+        return stage && frame && getComputedStyle(stage).position === "sticky" &&
+          Math.abs(parseFloat(frame.style.width) - 58) < 0.000001 &&
+          getComputedStyle(frame).borderRadius === "22px" && scrollY === 0;
+      });
+    }
     const measure = () =>
       property === "curtain"
         ? page
@@ -66,6 +79,7 @@ try {
             .evaluate((el) => getComputedStyle(el).transform)
         : subject.evaluate((el, p) => getComputedStyle(el)[p], property);
     const initial = await measure();
+    Object.assign(current, { target, property, initial });
     await page.keyboard.press("PageDown");
     await page.waitForTimeout(350);
     await page.evaluate(() =>
@@ -224,6 +238,27 @@ try {
       .waitFor();
   }
   assert.deepEqual(errors, []);
+} catch (error) {
+  const folder = "test-results/scroll-replays";
+  fs.mkdirSync(folder, { recursive: true });
+  const state = await page.evaluate(() => ({
+    scrollY,
+    viewport: { width: innerWidth, height: innerHeight },
+    reducedMotion: matchMedia("(prefers-reduced-motion: reduce)").matches,
+    nodes: [...document.querySelectorAll("#root,section,section > div,header,[data-demo]")].map((node) => {
+      const box = node.getBoundingClientRect(), style = getComputedStyle(node);
+      return {
+        tag: node.tagName, target: node.getAttribute("data-demo"),
+        box: { x: box.x, y: box.y, width: box.width, height: box.height },
+        width: style.width, position: style.position, transform: style.transform, clipPath: style.clipPath,
+      };
+    }),
+  }));
+  const file = `${folder}/${current?.slug ?? "mount"}-failed`;
+  fs.writeFileSync(`${file}.json`, JSON.stringify({ ...current, errors, state }, null, 2));
+  await page.screenshot({ path: `${file}.png`, fullPage: true });
+  console.error(`Scroll failure evidence: ${file}.{json,png}`);
+  throw error;
 } finally {
   await browser.close();
 }

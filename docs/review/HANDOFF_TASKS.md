@@ -90,6 +90,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 4: Audit Trail now synchronizes expanded and active-option state before the native popup renders, including dismissal. Its trigger identifies the native popover target so a second click closes it correctly. First-frame keyboard/ARIA checks, trigger/outside dismissal, workflow, metadata replay and open-menu accessibility pass in both themes. The archived before/after trace removes the observed state mismatch, and the blocked-End negative control fails as intended.
 
+- Task 4: the complete Next-backed scroll rerun passes all six components and the playable/broken video cases. Cinema Frame now establishes its intended resting layout before recording the comparison baseline; exact reversal remains required. Scroll failures preserve their baseline, viewport and geometry for diagnosis.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
