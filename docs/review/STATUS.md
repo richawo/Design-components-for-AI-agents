@@ -1,6 +1,6 @@
 # Review status
 
-166 components are rebuilt (or, for a few, polished), verified and committed. For each: whether its demo video
+167 components are rebuilt (or, for a few, polished), verified and committed. For each: whether its demo video
 needs re-recording, whether its poster is current, and the state of its browser regression probe.
 
 - **Video**: `new` means `public/previews/<slug>.mp4` still shows the old version. Re-record serially on a quiet machine:
@@ -130,7 +130,7 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | `saas-usage-policy` | new | current | rewritten, passes (warning thresholds and empty usage fixed) |
 | `saas-workspace-dashboard` | new | current | rewritten, passes |
 
-## Legal suite (8)
+## Legal suite (9)
 
 | Slug | Video | Poster | Probe |
 | --- | --- | --- | --- |
@@ -142,6 +142,7 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | `legal-obligation-tracker` | new | current | rewritten, passes |
 | `legal-renewal-planner` | new | current | rewritten, passes |
 | `legal-signature-request` | new | current | rewritten, passes |
+| `legal-version-history` | new | current | Rebuilt revision rail and numbered paper redline; 29-mount source review and Next keyboard/LCS/retry/copied-snapshot/pending/focus/revision regression pass. Added-line ink is corrected after a retained 4.26:1 contrast failure. Six widths, 16 accessibility audits, entrance/state captures, three controls, official audit, both demo runners and measured 1,200px replay/poster pass. Strict registry, TypeScript and all 1,063 unit tests pass. |
 
 ## HR suite (8)
 

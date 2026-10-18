@@ -30080,7 +30080,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "editors",
-    "description": "A legal document revision desk with bounded line comparison, readable change markers and explicit restoration that retains the original history.",
+    "description": "A legal revision history and paper redline with bounded line comparison, keyboard navigation and confirmed restoration that retains prior versions.",
     "tags": [
       "editors",
       "workflow",
@@ -30097,7 +30097,7 @@
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1040,
+    "previewHeight": 1200,
     "usage": "import { VersionHistory } from \"@/components/design-for-ai/legal-version-history\";\n\n<VersionHistory />",
     "props": [
       {
@@ -30113,7 +30113,7 @@
       {
         "name": "versions",
         "type": "DocumentRevision[]",
-        "description": "Ordered revisions with unique IDs, author, display date, summary and plain text."
+        "description": "Immutable unique revisions with id, label, author, display date, summary and plain text. Duplicate or malformed revisions are explicit; comparison is bounded to 400 lines and 100,000 characters."
       },
       {
         "name": "currentId",
@@ -30129,13 +30129,30 @@
       {
         "name": "onRestore",
         "type": "(revision: DocumentRevision) => void | Promise<void>",
-        "description": "Awaited restoration callback, called only after explicit confirmation. Create a new revision and update versions/currentId; do not delete history."
+        "description": "Persist a new revision from the copied target, then publish versions/currentId. Rejection retains the selected revision and confirmation for retry. Document replacement or changed/deleted source snapshots retires late replies."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
         "description": "Surface and ink palette; the preview stage follows it."
+      },
+      {
+        "name": "workspace",
+        "type": "string",
+        "default": "\"Fieldnotes\"",
+        "description": "Workspace name in the compact document bar."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#5b8def\"",
+        "description": "Selection marker; document changes retain semantic colours and buttons use neutral ink."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Additional outer component classes."
       }
     ],
     "added": "2026-10-11",
@@ -30167,6 +30184,18 @@
         "label": "Changes only",
         "kind": "toggle",
         "default": false
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#5b8def",
+        "options": [
+          "#5b8def",
+          "#e5484d",
+          "#8b7cf6",
+          "#0ea5a4"
+        ]
       }
     ]
   },

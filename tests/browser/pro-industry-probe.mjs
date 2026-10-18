@@ -154,63 +154,9 @@ try {
   );
   await page.getByRole("button", { name: "Reset", exact: true }).click();
   assert.equal(await page.getByRole("spinbutton").count(), 2);
-  await fixture(
-    "legal-version-history",
-    `window.diff=Subject.compareRevisions;window.restored=[];createRoot(document.getElementById('root')).render(<Subject.VersionHistory onRestore={async revision=>{window.restored.push(revision.id);throw Error('offline')}}/>);`,
-  );
-  const lines = await page.evaluate(() => window.diff("A\nB\nA", "A\nA\nC"));
-  assert.equal(
-    lines
-      .filter((line) => line.kind !== "added")
-      .map((line) => line.text)
-      .join("\n"),
-    "A\nB\nA",
-  );
-  assert.equal(
-    lines
-      .filter((line) => line.kind !== "removed")
-      .map((line) => line.text)
-      .join("\n"),
-    "A\nA\nC",
-  );
-  assert.equal(
-    await page.evaluate(() => window.diff("x".repeat(100001), "x")),
-    null,
-  );
-  assert.equal(
-    await page.evaluate(() =>
-      window.diff(Array(401).fill("x").join("\n"), "x"),
-    ),
-    null,
-  );
-  await page.getByRole("button", { name: "Restore this revision" }).click();
-  assert.deepEqual(await page.evaluate(() => window.restored), []);
-  await page.getByRole("button", { name: "Confirm restore" }).click();
-  await page.waitForTimeout(100);
-  assert.deepEqual(await page.evaluate(() => window.restored), ["r2"]);
-  assert.match(
-    await page.getByRole("status").innerText(),
-    /Restoration failed/,
-  );
-  await page.getByRole("button", { name: "Cancel", exact: true }).click();
-  await page.waitForFunction(
-    () =>
-      document.activeElement?.matches("button") &&
-      document.activeElement.textContent?.includes("Restore this revision"),
-  );
-  assert.equal(
-    await page
-      .getByRole("button", { name: "Restore this revision" })
-      .evaluate((el) => el === document.activeElement),
-    true,
-  );
-  await page.getByRole("button", { name: /Revision 3 CURRENT/ }).click();
-  assert.equal(
-    await page
-      .getByRole("button", { name: "Restore this revision" })
-      .isDisabled(),
-    true,
-  );
+  // Rebuilt workflow: legal-version-history. The dedicated case retains the original edge checks.
+  await page.setViewportSize({width:390,height:900});
+  await (await import('./pro-50/legal-version-history.mjs')).check({page,assert,choose,mount:code=>fixture('legal-version-history',code)});
   // Rebuilt workflow: app-permission-matrix. The dedicated case retains the original edge checks.
   await page.setViewportSize({ width: 390, height: 844 });
   await (await import('./pro-50/app-permission-matrix.mjs')).check({ page, assert, mount: code => fixture('app-permission-matrix', code) });

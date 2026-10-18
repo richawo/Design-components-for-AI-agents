@@ -2792,17 +2792,20 @@
     "updated": "2026-10-17"
   },
   "legal-version-history": {
-    "useWhen": "Comparing supplied document revisions and reviewing their differences.",
-    "avoidWhen": "A document management system or an automatic legal interpretation of the changes.",
+    "useWhen": "Compare immutable document revisions line by line and explicitly restore a prior text as a new revision.",
+    "avoidWhen": "Editing rich document structures, applying individual changes or merging binary file formats.",
     "integration": [
-      "Supply your own records through `versions`. Preserve stable keys or IDs when the data contract provides them."
+      "Supply unique immutable DocumentRevision records. date is a display label, not a parsed timestamp. Invalid history/current references block restoration.",
+      "compareRevisions returns bounded LCS lines or null above 400 lines or 100,000 characters. Repeated lines remain correctly aligned.",
+      "onRestore receives a copied target after explicit confirmation. Create a new revision and update versions/currentId; preserve earlier history.",
+      "Replacing documentId resets the scope. Changing or removing the pending target or its comparison baseline retires late results. Host services must independently authorize the write."
     ],
     "related": [
       "legal-clause-library",
-      "app-permission-matrix",
-      "editor-node-graph"
+      "legal-document-requests",
+      "block-legal-workspace"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-18"
   },
   "media-before-after": {
     "useWhen": "Comparing two authentic visuals with a controllable divider.",

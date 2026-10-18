@@ -251,6 +251,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 8: the Return/Stock/Catalogue/Permissions batch and its regression fixes pass release verification. All 59 browser suites have passing results across the full run and focused reruns, including the complete 20-component mobile group and all metadata demos. Fresh component audits, strict registry, TypeScript and all 1,063 unit tests pass. The Worker dry run measures 2,655,633 bytes for the router, 57,063,324 for runtime and 4,754,984 for compressed maps, with all guards retained. The full evidence and unchanged optional-package diagnostics are recorded below.
 
+- Task 7: Version History is rebuilt around a revision rail and a numbered paper redline, with Changes/Text views and an inline confirmed restore. Its 29-mount source review and rewritten Next regression cover retained LCS boundaries, keyboard revisions, failed retry, copied snapshots, pending locks, focus before paint, invalid/empty histories, replaced replies and a real new current revision. Added-line ink is corrected after a measured 4.26:1 failure, with the original source and audit retained. Six widths, 16 state/default accessibility audits, entrance/state captures, three controls, official audit, both demo runners and measured 1,200px replay/poster pass. Strict registry, TypeScript and all 1,063 unit tests pass. Its film joins task 1; 31 components and 12 blocks remain in task 7.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -268,7 +270,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Browser checks: `node scripts/check-component.mjs <slug> --base=http://localhost:3100 --no-video --keep-going`
   (screenshots at 1440/768/390 and every control flip; read the screenshots it writes to `test-results/check/<slug>/`).
 
-## 1. Re-record demo videos (120 components)
+## 1. Re-record demo videos (121 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -287,6 +289,7 @@ slug or per small group). Notes:
 
 Slugs:
 
+`legal-version-history`
 `editor-font-pairing`, `editor-keyframe-track`
 `editor-layer-stack`, `editor-spacing-inspector`, `editor-storyboard-strip`, `editor-version-restore`
 `three-exploded-assembly`, `three-material-inspector`, `agents-budget-guard`, `agents-dependency-board`
@@ -416,17 +419,16 @@ All nine parked rebuilds are shipped in both repos. Their original `_wip/<slug>`
 | finance-budget-variance | Completed 17 October: Next probe, dark/light accessibility, responsive and entrance/state captures, live demo and refreshed poster pass. |
 | finance-cashflow-dashboard | Completed 17 October: weekly balance and in/out bars, movable payments, independent pending saves, invalid-data guards, selected-week list geometry, Next probe/demo, both-theme accessibility, responsive/state/entrance captures and refreshed poster pass. |
 
-## 7. Continue the review (32 components, then 12 blocks)
+## 7. Continue the review (31 components, then 12 blocks)
 
-Same process as the 166 already done: hold each to the first ~100 components' standard. Briefs:
+Same process as the 167 already done: hold each to the first ~100 components' standard. Briefs:
 `docs/review/REVIEW_BRIEF.md`, `docs/review/SUITE_BRIEF.md` for industry components, suite languages in
 `docs/review/suites/`. Work newest first, about four components per batch, and verify each (build, tsc, tests,
 check-component, your own captures of states and mid-entrance frames, a refreshed poster, a rewritten pro-50 probe for
 industry components).
 
 - **Commerce** is reviewed. Keep `block-commerce-workspace` compatible with its rebuilt parts.
-- **Others**: legal-version-history (`suites/legal.md`), hr-capacity-planner (`suites/hr.md`),
-  data-query-builder.
+- **Others**: hr-capacity-planner (`suites/hr.md`) and data-query-builder.
 - **Smaller components** (#151–179): chart-waterfall-bridge, content-release-notes, cards-event-ticket,
   chart-slope-comparison, chart-bullet-targets, media-story-deck, devtools-request-waterfall, devtools-json-inspector,
   media-before-after, data-kanban-compact, data-file-explorer, forms-preference-center, date-week-agenda,
