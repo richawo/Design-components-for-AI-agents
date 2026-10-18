@@ -5046,13 +5046,15 @@
       "Pass the image as `artwork` (any element that fills its box) with its `aspectRatio`, and `annotations` as { id, x, y, author, initials, text, time, replies?, resolved? }, where x and y are the pin tip from 0 to 1 across the artwork.",
       "`onResolve(id, resolved)` is optimistic and rolls back if it rejects. `onAdd({ x, y, text })` can resolve with the saved annotation to replace the local one; reject and the draft stays with your error.",
       "Tapping a pin zooms to it and swiping the cards moves the camera; `defaultSelectedId` picks the first comment shown.",
-      "Install expo-blur, expo-linear-gradient and react-native-svg. Test pin tap targets, the carousel with VoiceOver and the composer with the keyboard open on devices."
+      "Install expo-blur, expo-linear-gradient and react-native-svg. Test pin tap targets, the carousel with VoiceOver and the composer with the keyboard open on devices.",
+      "Keep annotation ids stable. Resolve and reopen actions lock their own comment until the host responds; failed changes roll back. Failed posts keep the comment, and pending posts cannot be discarded or replaced. Keyboard placement uses the visible canvas centre and maps it back through the camera.",
+      "Exclude invalid pin positions and duplicate ids. Use an opaque accent; number and Post labels choose a contrasting foreground. Hidden placement controls cannot receive focus."
     ],
     "related": [
       "mobile-file-preview",
       "mobile-channel-thread"
     ],
-    "updated": "2026-10-17"
+    "updated": "2026-10-18"
   },
   "mobile-notification-digest": {
     "useWhen": "A scheduled summary of notifications grouped by app, where people clear the backlog by swiping each one to read or snooze it and expect a quick Undo.",

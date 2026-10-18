@@ -35855,13 +35855,13 @@
         "name": "aspectRatio",
         "type": "number",
         "default": "0.667 (2:3)",
-        "description": "Width over height of the artwork. The frame keeps it, up to the height a short screen allows."
+        "description": "Width over height of the artwork. The frame keeps it, up to the height a short screen allows. Non-finite or non-positive values use 2:3."
       },
       {
         "name": "annotations",
         "type": "ReviewAnnotation[]",
         "default": "Four comments, one resolved",
-        "description": "{ id, x, y, author, initials, text, time, replies?, resolved? }. x and y place the pin's tip, 0–1 from the artwork's top-left."
+        "description": "{ id, x, y, author, initials, text, time, replies?, resolved? }. x and y place the pin's tip, 0–1 from the artwork's top-left. Invalid coordinates and repeated ids are excluded."
       },
       {
         "name": "defaultSelectedId",
@@ -35872,7 +35872,7 @@
         "name": "accent",
         "type": "string",
         "default": "\"#FF5A36\"",
-        "description": "Open pins, the selection and Post. The only hue besides the artwork."
+        "description": "Opaque colour for open pins, selection, pager and Post. Number and button text use a contrasting foreground."
       },
       {
         "name": "viewerInitials",

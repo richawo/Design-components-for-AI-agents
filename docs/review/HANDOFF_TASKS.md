@@ -104,6 +104,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 5: Reading Progress now covers real page-edge dragging, bounded keyboard scrubbing, roving tabs, bookmarks, failed opening and cancellation with exact destinations and AbortSignals. Changing books or page counts cancels stale hand-offs; invalid page counts and empty chapters have written states. Large books use bounded edge detail and invalid reading paces cannot produce non-finite totals. The Next-backed regression and seven RN-web accessibility states pass. 86 components remain without dedicated coverage.
 
+- Task 5: Review Annotations now covers pointer and keyboard pin placement, failed resolve/post retries with exact payloads, retained drafts, pending locks and empty/invalid pins. Hidden placement controls leave focus navigation, labels contrast with bright and dark accents, and the composer scrolls fully into view after layout. Its Next-backed regression, nine RN-web accessibility states, preview controls, state captures and refreshed poster/guarded film pass. 85 components remain without dedicated coverage.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -242,14 +244,13 @@ tests/browser/pro-50-<suite>-probe.mjs <slug>` (suite = legal, saas, finance, hr
 
 ## 5. Write browser probes for components that have none
 
-86 finished components still have no dedicated browser regression probe. For each, read its source and
+85 finished components still have no dedicated browser regression probe. For each, read its source and
 `meta.json`, then add a case to the appropriate `tests/browser/*.mjs` suite (or a new probe registered in
 `scripts/test-components.mjs`) covering: the signature interaction, keyboard paths, failed-then-successful callbacks
 with drafts kept (where it has async callbacks), and empty or invalid data. Use `tests/browser/pro-50/hr-org-explorer.mjs`
 as the model for style and depth. Mobile components render through React Native web (`scripts/lib/component-fixture.mjs` aliases it);
 see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 
-`mobile-review-annotations`
 `mobile-sync-conflict`, `mobile-task-move`, `mobile-trip-itinerary`, `mobile-voice-memo`, `chart-box-distribution`
 `chart-calendar-heatmap`, `chart-funnel-dots`, `chart-sankey-paths`, `chart-scatter-brush`
 `chart-sunburst-explorer`, `data-bulk-action-review`, `data-column-workbench`, `data-filter-history`
