@@ -1609,19 +1609,20 @@
     "updated": "2026-10-12"
   },
   "commerce-promotion-builder": {
-    "useWhen": "Preparing promotion conditions and reviewing their intended scope.",
-    "avoidWhen": "A checkout pricing engine or an unvalidated discount rule applied automatically.",
+    "useWhen": "Editing a capped promotion rule while inspecting the exact saving across an eligible basket.",
+    "avoidWhen": "A server-side checkout pricing authority, or publishing an offer without validating its eligibility in the host.",
     "integration": [
-      "Supply your own records through `basket`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onSave` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
-      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+      "Provide basket lines with unique ids, positive integer quantities and non-negative safe integer prices in currency minor units. Optional sku, glyph, colour and image provide product identity; failed images recover to the SVG object.",
+      "Initialize once with defaultRule. Currency precision follows Intl, including JPY and KWD. Key by currency or rule identity when loading a new draft; no conversion is performed. Duplicate or invalid basket lines are reported and excluded.",
+      "Connect onSave to rule persistence. Pending writes lock edits; rejection keeps the draft and receipt follows only the current save. The host owns publication and checkout enforcement.",
+      "Use selectMode=\"custom\" for keyboard-accessible listboxes or selectMode=\"native\" for platform pickers. Customer preview radios support arrows, Home and End."
     ],
     "related": [
-      "commerce-backorder-allocation",
       "commerce-bundle-builder",
+      "commerce-operations-dashboard",
       "commerce-catalog-import"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-18"
   },
   "commerce-purchase-order": {
     "useWhen": "Drafting a purchase order from supplied catalogue and supplier data.",

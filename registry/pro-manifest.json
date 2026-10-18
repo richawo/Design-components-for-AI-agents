@@ -12418,7 +12418,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "commerce",
-    "description": "Configure eligibility, discount caps and a basket preview. A considered, responsive commerce workspace with typed integration points.",
+    "description": "Build a capped offer on a perforated ticket and inspect the exact saving on every eligible basket line.",
     "tags": [
       "e-commerce",
       "workflow",
@@ -12427,7 +12427,8 @@
       "commerce"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
     "previewHeight": 900,
@@ -12436,41 +12437,68 @@
       {
         "name": "title",
         "type": "string",
-        "description": "Main heading.",
-        "default": "\"Promotion rules\""
+        "default": "\"New promotion\"",
+        "description": "Current rule name in the compact store breadcrumb."
       },
       {
         "name": "subtitle",
         "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Define the offer, then see exactly how it behaves against a test basket.\""
+        "description": "Optional store context below the app bar."
+      },
+      {
+        "name": "workspace",
+        "type": "string",
+        "default": "\"Fieldwork\"",
+        "description": "Store name in the app bar."
       },
       {
         "name": "basket",
         "type": "PromotionItem[]",
-        "description": "Preview items. Prices are integer two-decimal minor units; quantities are positive safe integers. Invalid lines are excluded visibly."
+        "description": "Test basket with unique ids, product names, categories, positive integer quantities and non-negative safe integer prices in currency minor units. Optional sku, glyph, colour and image provide product identity. Invalid lines are reported and excluded."
       },
       {
         "name": "currency",
         "type": "string",
-        "description": "ISO currency for monetary amounts; no currency conversion."
+        "default": "\"GBP\"",
+        "description": "ISO currency. Minor-unit precision follows Intl, including zero and three decimal currencies. No currency conversion; key the component by currency when replacing its initial rule."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "default": "\"en-GB\"",
+        "description": "Locale for exact receipt amounts."
+      },
+      {
+        "name": "defaultRule",
+        "type": "PromotionRule",
+        "description": "Initial code, percent or fixed value, minimumMinor, optional capMinor, category and audience. Fixed values use currency minor units; percent values are whole percentages."
       },
       {
         "name": "onSave",
-        "type": "(rule:PromotionRule)=>void|Promise<void>",
-        "description": "Save the validated rule. The host enforces eligibility and applies promotions at checkout."
+        "type": "(rule: PromotionRule) => void | Promise<void>",
+        "description": "Persist the validated rule. Reject to keep the draft and show the error. The receipt acknowledges saving; the host owns checkout eligibility and publication."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Neutral graphite or paper surfaces."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "description": "Optional hex accent. Alpha blends over the panel before choosing readable button text. Defaults to theme ink."
       },
       {
         "name": "selectMode",
         "type": "\"custom\" | \"native\"",
         "default": "\"custom\"",
-        "description": "Animated keyboard-accessible custom listboxes, or native platform pickers with matched 12px insets."
+        "description": "Keyboard-accessible custom listboxes or native platform pickers."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Additional classes for the outer component."
       }
     ],
     "added": "2026-10-11",
@@ -12478,7 +12506,9 @@
       "steps": [
         "wait:500",
         "click:@customer-1",
-        "wait:600",
+        "wait:500",
+        "click:@customer-0",
+        "wait:500",
         "click:@save",
         "wait:1200"
       ],
@@ -12504,6 +12534,17 @@
           "native"
         ],
         "default": "custom"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#7aa2ff",
+          "#ff8a4c"
+        ]
       }
     ]
   },
