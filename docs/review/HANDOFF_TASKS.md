@@ -285,6 +285,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 5: Layer Stack now covers real drag/reorder, keyboard bounds and rename cancellation, visibility failure/retry, exact copied proposals, locked/read-only layers, empty/duplicate ids and the actual exploded/flat artwork view. Callback mutation cannot change the incoming numeric bounds or rollback frame; selection immediately retires the previous inspector. Hidden names, layer kinds and counts retain contrast. A preserved 4.17:1 dotted-stage caption failure now measures 7.84:1 dark and 5.64:1 light with a direct regression assertion. Its 29-mount source review, 18 state/default accessibility audits, six widths, entrance/state captures, Next regression, four controls, official audit and complete 900px replay/poster pass. The metadata replay verifies Moon actually moves above Wave before collapsing. Strict registry, TypeScript, isolated Pro types and all 1,063 unit tests pass. 63 components remain without dedicated coverage; its film remains in task 1.
 
+- Task 1: Layer Stack now has a reviewed 4.77s film showing Moon moving forward through the exploded planes and the settled flat artwork with Moon selected. Neutral chrome preserves the poster artwork, and the complete 900px framing matches its paired opening poster. Maximum source gap is 13ms, changed-source delivery is 19.4ms and moving-frame p95 is 18.6ms, with no stalls and all guards retained. 116 listed films remain.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -302,7 +304,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Browser checks: `node scripts/check-component.mjs <slug> --base=http://localhost:3100 --no-video --keep-going`
   (screenshots at 1440/768/390 and every control flip; read the screenshots it writes to `test-results/check/<slug>/`).
 
-## 1. Re-record demo videos (117 components)
+## 1. Re-record demo videos (116 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -321,7 +323,7 @@ slug or per small group). Notes:
 
 Slugs:
 
-`editor-layer-stack`, `editor-storyboard-strip`, `editor-version-restore`
+`editor-storyboard-strip`, `editor-version-restore`
 `three-exploded-assembly`, `three-material-inspector`, `agents-budget-guard`, `agents-dependency-board`
 `agents-run-replay`, `ai-answer-compare`, `ai-context-budget`, `ai-structured-output`, `auth-recovery-codes`
 `devtools-icon-workbench`, `devtools-incident-timeline`, `devtools-release-compare`, `devtools-request-replay`
