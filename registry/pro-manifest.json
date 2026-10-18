@@ -32710,8 +32710,8 @@
       {
         "name": "accent",
         "type": "string",
-        "default": "\"#8BE9B4\"",
-        "description": "The one colour: the open envelope's segment and tile, the ruler's needle, the change pill and a balanced month."
+        "default": "\"#F5F5F5\"",
+        "description": "The open envelope, ruler needle, change pill and balanced month use neutral ink by default. Custom accents remain supported."
       }
     ],
     "added": "2026-10-14",
@@ -32785,7 +32785,7 @@
         "prop": "accent",
         "label": "Accent",
         "kind": "color",
-        "default": "#8BE9B4",
+        "default": "#F5F5F5",
         "options": [
           "#8BE9B4",
           "#F5F5F5",

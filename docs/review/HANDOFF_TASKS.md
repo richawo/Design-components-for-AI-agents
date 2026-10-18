@@ -176,6 +176,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 1: Attachment Tray now has a reviewed 4.7s film showing the fourth tile selected, the measured file total and a settled four-file Delivered message with the tray cleared. Default chrome and failure states use neutral ink, custom accents remain available, and depicted previews retain colour. Its native-web/Next workflow, available-theme accessibility, three controls, current phone poster and all timing guards pass. 123 listed films remain.
 
+- Task 1: Budget Envelope now has a reviewed neutral 5.3s film showing the real ruler drag, a $260 assignment and the settled $372 balance. The hidden backdrop gradient had intercepted pointer opening; it now ignores pointers, exposes a named close action only while open and restores keyboard focus. Pointer/keyboard regression, six native-web accessibility states, four preview controls, current Next poster and all timing guards pass. 122 listed films remain.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -193,7 +195,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Browser checks: `node scripts/check-component.mjs <slug> --base=http://localhost:3100 --no-video --keep-going`
   (screenshots at 1440/768/390 and every control flip; read the screenshots it writes to `test-results/check/<slug>/`).
 
-## 1. Re-record demo videos (123 components)
+## 1. Re-record demo videos (122 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -212,7 +214,6 @@ slug or per small group). Notes:
 
 Slugs:
 
-`mobile-budget-envelope`
 `editor-color-token-studio`, `editor-export-preset`, `editor-font-pairing`, `editor-keyframe-track`
 `editor-layer-stack`, `editor-spacing-inspector`, `editor-storyboard-strip`, `editor-version-restore`
 `three-exploded-assembly`, `three-material-inspector`, `agents-budget-guard`, `agents-dependency-board`

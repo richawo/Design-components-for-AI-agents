@@ -19,19 +19,43 @@ export async function check({ page, mount, assert }) {
   await page.getByRole("button", { name: "Assign $275.50", exact: true }).click();
   await page.getByRole("alert").filter({ hasText: "Couldn’t save. Your $275.50 is still here; try again." }).waitFor();
   await page.getByRole("button", { name: "Budget $275.50", exact: true }).waitFor();
-  await page.evaluate(() => window.fail = false);
+  await page.evaluate(() => (window.fail = false));
   await page.getByRole("button", { name: "Assign $275.50", exact: true }).click();
   await page.waitForFunction(() => window.changes.length === 2);
-  assert.deepEqual(await page.evaluate(() => window.changes[1]), { envelopeId: "food", name: "Groceries", from: 200, to: 275.5, readyToAssign: 224.5 });
+  assert.deepEqual(await page.evaluate(() => window.changes[1]), {
+    envelopeId: "food",
+    name: "Groceries",
+    from: 200,
+    to: 275.5,
+    readyToAssign: 224.5,
+  });
   await page.getByRole("button", { name: "Saved", exact: true }).waitFor();
 
-  await mount(`createRoot(document.getElementById('root')).render(<Subject.MobileBudgetEnvelope envelopes={${JSON.stringify(envelopes)}} income={220} openId="food"/>);`);
+  await mount(
+    `createRoot(document.getElementById('root')).render(<Subject.MobileBudgetEnvelope envelopes={${JSON.stringify(envelopes)}} income={220} openId="food"/>);`,
+  );
   await page.getByRole("button", { name: "Budget $200.00", exact: true }).press("Enter");
   await amount.fill("500");
   await amount.press("Enter");
   await page.getByText("Only $220.00 fits. The rest isn’t ready to assign.", { exact: true }).waitFor();
   await page.getByRole("button", { name: "Budget $220.00", exact: true }).waitFor();
-  await mount(`createRoot(document.getElementById('root')).render(<Subject.MobileBudgetEnvelope envelopes={[]} income={0}/>);`);
+  await mount(
+    `createRoot(document.getElementById('root')).render(<Subject.MobileBudgetEnvelope envelopes={[]} income={0}/>);`,
+  );
   assert.equal(await page.getByRole("slider").count(), 0);
   assert.doesNotMatch(await page.locator("#root").innerText(), /NaN|Infinity/);
+
+  // The backdrop is a real keyboard action only while its sheet is open.
+  await mount(
+    `createRoot(document.getElementById('root')).render(<Subject.MobileBudgetEnvelope envelopes={${JSON.stringify(envelopes)}} income={500}/>);`,
+  );
+  assert.equal(await page.getByRole("button", { name: "Close envelope", exact: true }).count(), 0);
+  await page.locator('[data-demo="envelope-food"]').press("Enter");
+  await page.getByRole("button", { name: "Close envelope", exact: true }).press("Enter");
+  await page.waitForFunction(() => document.activeElement?.getAttribute("data-demo") === "envelope-food");
+  assert.equal(await page.getByRole("button", { name: "Close envelope", exact: true }).count(), 0);
+  await page.locator('[data-demo="envelope-food"]').click();
+  await page.getByRole("slider", { name: "Budget", exact: true }).waitFor();
+  await page.locator('[data-demo="budget-close"]').click();
+  await page.getByRole("slider", { name: "Budget", exact: true }).waitFor({ state: "hidden" });
 }
