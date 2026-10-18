@@ -17968,7 +17968,7 @@
     ],
     "theme": "dark",
     "previewHeight": 900,
-    "usage": "import { EditorAssetLicenseSheet } from \"@/components/design-for-ai/editor-asset-license-sheet\";\n\n<EditorAssetLicenseSheet\n  project={{\n    name: \"Autumn campaign\", start: \"2026-10-20\", end: \"2027-02-28\",\n    uses: [{ id: \"feed\", label: \"Instagram feed\", aspect: [4, 5], detail: \"4 : 5\" }],\n  }}\n  assets={[{\n    id: \"tide\", title: \"Low tide, Saltburn\", creator: \"Ines Moreau\", year: \"2025\", medium: \"Photograph\",\n    holder: \"Northlight Agency\", licence: \"Rights-managed\", reference: \"NL-25-0815\", territory: \"UK & EU\",\n    termStart: \"2026-09-01\", termEnd: \"2026-12-31\", covers: [\"feed\"], credit: \"Photo: Ines Moreau / Northlight\",\n    size: [6000, 4000], media: <img src={url} alt=\"\" className=\"size-full object-cover\" />,\n  }]}\n  onAdd={(request) => addToProject(request)}          // every ticked placement is cleared\n  onRequest={(request) => askRightsHolder(request)}   // request.blocked lists what isn't\n/>\n\n// licenceStatus(asset, use, project) returns \"cleared\" | \"term-ends\" | \"not-licensed\" for the same rules.",
+    "usage": "import { EditorAssetLicenseSheet } from \"@/components/design-for-ai/editor-asset-license-sheet\";\n\n<EditorAssetLicenseSheet\n  project={{\n    name: \"Autumn campaign\", start: \"2026-10-20\", end: \"2027-02-28\",\n    uses: [{ id: \"feed\", label: \"Instagram feed\", aspect: [4, 5], detail: \"4 : 5\" }],\n  }}\n  assets={[{\n    id: \"tide\", title: \"Low tide, Saltburn\", creator: \"Ines Moreau\", year: \"2025\", medium: \"Photograph\",\n    holder: \"Northlight Agency\", licence: \"Rights-managed\", reference: \"NL-25-0815\", territory: \"UK & EU\",\n    termStart: \"2026-09-01\", termEnd: \"2026-12-31\", covers: [\"feed\"], credit: \"Photo: Ines Moreau / Northlight\",\n    size: [6000, 4000], media: <img src={url} alt=\"\" className=\"size-full object-cover\" />,\n  }]}\n  onAdd={(request) => addToProject(request)}          // every ticked placement is cleared\n  onRequest={(request) => askRightsHolder(request)}   // request.blocked lists what isn't\n/>\n\n// licenceStatus(asset, use, project) returns \"cleared\" | \"term-starts\" | \"term-ends\" | \"not-licensed\" for the same rules.\n// licenceStatus throws RangeError for invalid campaign or licence dates.",
     "props": [
       {
         "name": "path",
@@ -17980,13 +17980,13 @@
         "name": "project",
         "type": "AssetProject",
         "default": "Halden autumn campaign, 20 Oct 2026 – 28 Feb 2027, five placements",
-        "description": "{ name, start, end (ISO), uses: { id, label, aspect: [w, h], detail }[] }. Each use's aspect is the crop shown on the asset."
+        "description": "{ name, start, end (ISO), uses: { id, label, aspect: [w, h], detail }[] }. Each use's aspect is the crop shown on the asset. Dates must be real YYYY-MM-DD values in order; placement ids must be unique and crop dimensions positive and finite."
       },
       {
         "name": "assets",
         "type": "LicensedAsset[]",
         "default": "four campaign assets: two photographs, a commission and an illustration",
-        "description": "{ id, title, creator, year, medium, holder, licence, reference, territory, termStart, termEnd (ISO or null), covers (use ids), credit?, restrictions?, releases?, size?, focus?, media, defaultUses? }. media is the host's image or any element that fills its box."
+        "description": "{ id, title, creator, year, medium, holder, licence, reference, territory, termStart, termEnd (ISO or null), covers (use ids), credit?, restrictions?, releases?, size?, focus?, media, defaultUses? }. media is the host's image or any element that fills its box. Invalid dates, duplicate ids or invalid crop geometry show a written unavailable state. Choices normalize to known project order; assets arriving later receive their defaults."
       },
       {
         "name": "defaultAssetId",
@@ -18009,12 +18009,12 @@
       {
         "name": "onAdd",
         "type": "(request: AssetUseRequest) => void | Promise<void>",
-        "description": "Called when every ticked placement is cleared: { assetId, useIds, action: \"add\", blocked: [] }. Reject with an Error to show its message."
+        "description": "Called when every ticked placement is cleared: { assetId, useIds, action: \"add\", blocked: [] }. Reject with an Error to show its message. Required for additions. While pending, asset and placement changes are disabled; success appears only after resolution for the same campaign and rights."
       },
       {
         "name": "onRequest",
         "type": "(request: AssetUseRequest) => void | Promise<void>",
-        "description": "Called when some ticked placements aren't licensed or outlive the term: request.blocked lists them with a reason. Reject with an Error to show its message."
+        "description": "Called when ticked placements are not licensed or fall outside either end of the licence term. Reasons are \"not-licensed\", \"term-starts\" or \"term-ends\". Required for requests. Rejection preserves choices for retry; replaced campaign/rights ignore old replies."
       },
       {
         "name": "onAssetChange",

@@ -33,6 +33,7 @@ const publicCases = [
   "mobile-accessibility-probe",
   "review-mobile-probe",
   "review-data-probe",
+  "review-editor-probe",
   "terminal-scroll-probe",
   "component-pages-probe",
   "settings-composition-probe",
