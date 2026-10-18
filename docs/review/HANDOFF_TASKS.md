@@ -301,6 +301,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 5: Material Inspector now covers actual canvas and range drags, keyboard turning/relighting and cancellation, exact finished commits, failed/refused writes, copied callback values, controlled acknowledgement, read-only/disabled states, empty/invalid input and WebGL fallback/recovery. Its parameter terms and values form a valid definition list, and the canvas hint retains contrast in light mode. Original callback-mutation, orphaned-term and 3.44:1 hint failures are preserved. The 35-mount source review, thirty state/default accessibility audits, direct resolved-colour check, six widths, entrance/state captures, Next regression, three controls, official audit and complete 820px metadata replay/poster pass. Replay assertions match the actual canvas finish, light and turn to the displayed values. Strict registry, both type checks and all 1,063 unit tests pass. 59 components remain without dedicated coverage.
 
+- Task 1: Material Inspector has a reviewed 4.78s film showing resin, the moved key light, brass and the settled turned sample with matching parameters. The accepted capture passes the source-animation, source-change delivery and moving-frame guards with no stalls. Its initial 256ms source-stall rejection is preserved; the passing retry uses unchanged production source. No shader warm-up patch or permanent latency improvement is claimed. The paired poster is refreshed. 113 listed films remain.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -318,7 +320,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Browser checks: `node scripts/check-component.mjs <slug> --base=http://localhost:3100 --no-video --keep-going`
   (screenshots at 1440/768/390 and every control flip; read the screenshots it writes to `test-results/check/<slug>/`).
 
-## 1. Re-record demo videos (114 components)
+## 1. Re-record demo videos (113 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -338,7 +340,7 @@ slug or per small group). Notes:
 Slugs:
 
 `editor-storyboard-strip`
-`three-material-inspector`, `agents-budget-guard`, `agents-dependency-board`
+`agents-budget-guard`, `agents-dependency-board`
 `agents-run-replay`, `ai-answer-compare`, `ai-context-budget`, `ai-structured-output`, `auth-recovery-codes`
 `devtools-icon-workbench`, `devtools-incident-timeline`, `devtools-release-compare`, `devtools-request-replay`
 `devtools-schema-migration`, `date-range-calendar`, `date-timezone-overlap`, `forms-branching-survey`
