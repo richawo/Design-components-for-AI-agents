@@ -1,7 +1,10 @@
+import { assertCheckboxContrast } from "../control-contrast.mjs";
+
 export async function check({ page, mount, assert, capture = async () => {} }) {
   await mount(
     `window.returns=[];window.fail=true;createRoot(document.getElementById('root')).render(<Subject.ReturnDesk onSubmit={async request=>{window.returns.push(request);if(window.fail)throw Error('The return service is offline.');return new Promise(resolve=>window.finishReturn=resolve)}}/>);`,
   );
+  await assertCheckboxContrast(page);
   assert.match(await page.getByLabel("Return slip").innerText(), /£0.00/);
   assert.equal(await page.getByRole("button", { name: "Review return", exact: true }).isDisabled(), true);
   await page.getByRole("checkbox", { name: "Return Merino crew", exact: true }).check();

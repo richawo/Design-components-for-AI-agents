@@ -239,6 +239,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 1: Permission Matrix now has a reviewed 3.5s film showing Reviewer approval including its editing prerequisite, the exact two-change ledger and the settled saved-policy receipt. Complete framing matches the paired poster. Maximum source gap is 11ms, changed-source delivery is 15.0ms and moving-frame p95 is 18.1ms, with no stalls and every existing guard intact. 120 listed films remain.
 
+- Accessibility follow-up: Return Desk shares the measured unchecked-choice boundary issue found in Permission Matrix. Its scoped control token now raises the boundary from 2.53:1 to 5.60:1 dark and 5.28:1 light; the preserved old-source contrast check fails and both-theme reruns pass. The existing Next workflow/phase regression, two controls, official audit, complete 1,100px replay/poster, strict registry, TypeScript and all 1,063 unit tests pass. The embedded controls remain canonical. Its film refresh is listed in task 1.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -256,7 +258,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Browser checks: `node scripts/check-component.mjs <slug> --base=http://localhost:3100 --no-video --keep-going`
   (screenshots at 1440/768/390 and every control flip; read the screenshots it writes to `test-results/check/<slug>/`).
 
-## 1. Re-record demo videos (120 components)
+## 1. Re-record demo videos (121 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -275,6 +277,7 @@ slug or per small group). Notes:
 
 Slugs:
 
+`commerce-return-desk`
 `editor-font-pairing`, `editor-keyframe-track`
 `editor-layer-stack`, `editor-spacing-inspector`, `editor-storyboard-strip`, `editor-version-restore`
 `three-exploded-assembly`, `three-material-inspector`, `agents-budget-guard`, `agents-dependency-board`
