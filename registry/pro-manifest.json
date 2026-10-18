@@ -32327,8 +32327,8 @@
       {
         "name": "accent",
         "type": "string",
-        "default": "\"#6CB4FF\"",
-        "description": "The one colour: selection checks and ring, the size meter and the send button."
+        "default": "\"#F5F5F5\"",
+        "description": "Selection checks and ring, the size meter and send button. Defaults to neutral ink; custom accents remain supported."
       }
     ],
     "added": "2026-10-14",
@@ -32371,7 +32371,7 @@
         "prop": "accent",
         "label": "Accent",
         "kind": "color",
-        "default": "#6CB4FF",
+        "default": "#F5F5F5",
         "options": [
           "#6CB4FF",
           "#F5F5F5",
