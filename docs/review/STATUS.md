@@ -46,7 +46,7 @@ needs re-recording, whether its poster is current, and the state of its browser 
 | `chart-sunburst-explorer` | current | current | Next-backed regression, twenty theme/state accessibility audits and five controls pass; pointer/keyboard and hidden-list drills, raw slash-safe paths, focus/retired controls, data replacement/recovery and invalid/cyclic/extreme data covered; monochrome full-viewport film and matching settled Next poster refreshed |
 | `data-bulk-action-review` | current | current | Next-backed regression, twenty-eight theme/state accessibility audits, visible-count contrast checks and three controls pass; exact batches, rejection/retry, omitted/conflicting results, held picks, host-removed receipts and read-only handlers covered; monochrome partial-receipt film and settled Next poster refreshed |
 | `data-column-workbench` | current | current | Next-backed regression, twenty-four theme/state accessibility audits and four controls pass; whole-column drag, exact release payloads, keyboard/resize cancellation, focus/shelf retirement, controlled acknowledgement, opaque ids and invalid/empty layouts covered; monochrome 5.8s film and settled Next poster refreshed |
-| `data-filter-history` | new | current |  |
+| `data-filter-history` | current | current | Next-backed regression, thirty theme/state accessibility audits and four controls pass; scrub/restore payloads, independent rename retries, pending locks, late replies, stable snapshot identity, typed rules, readable comparisons and invalid/empty states covered; monochrome full-viewport film and matching settled Next poster refreshed |
 | `data-pivot-configurator` | new | current |  |
 
 ## Editors and 3D (12)

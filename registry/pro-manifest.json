@@ -14195,17 +14195,17 @@
       {
         "name": "fields",
         "type": "FilterField[]",
-        "description": "Columns after the label: { id, label, kind: \"text\" | \"number\" | \"currency\", tones? }. The last numeric field is the right-aligned figure; tones put a status dot on text values."
+        "description": "Unique nonempty field ids/labels with text, number or currency types. The last numeric field is the right-aligned figure; status names retain their neutral dots."
       },
       {
         "name": "records",
         "type": "FilterRecord[]",
-        "description": "Rows: { id, label, detail?, values }. A missing key never satisfies a rule, not even \"is not\"."
+        "description": "Rows with unique nonempty ids/labels and text, finite numeric or null values. Missing keys never satisfy a rule, including is_not. Invalid records have a written state."
       },
       {
         "name": "history",
         "type": "FilterSnapshot[]",
-        "description": "Saved filter states, oldest first: { id, name, savedAt, author?, rules }. Each becomes a bar on the strip, as tall as the rows it matched. The live view is always the last stop."
+        "description": "Saved states, oldest first, with unique nonempty ids, names, display times and valid rules. The id live is reserved. Selection follows a snapshot id through insertions; removed selections return to Live. Omitted history is empty for custom fields."
       },
       {
         "name": "value",
@@ -14215,17 +14215,18 @@
       {
         "name": "defaultValue",
         "type": "FilterRule[]",
-        "description": "Uncontrolled starting rules."
+        "description": "Uncontrolled starting live rules. Defaults to an unfiltered view.",
+        "default": "[]"
       },
       {
         "name": "onValueChange",
         "type": "(rules: FilterRule[], snapshotId: string) => void",
-        "description": "Restore: called with a copy of the snapshot's rules. Scrubbing never calls it; only the Restore button does."
+        "description": "Restore publishes a copy of the selected snapshot rules and its id. Host mutation cannot change the saved rules. Scrubbing never publishes. Controlled rules require this handler to enable restoration."
       },
       {
         "name": "onRename",
         "type": "(id: string, name: string) => void | Promise<void>",
-        "description": "Enables the inline rename on a snapshot. Return a promise to show progress; a rejection keeps the draft open with an error. Update `history` with the new name."
+        "description": "Enables snapshot rename. Pending input/save are locked; a rejection preserves that caption’s draft. Update history with the accepted name. Replies from a retired caption cannot close or reject another caption’s draft."
       },
       {
         "name": "defaultSnapshotId",
@@ -14254,8 +14255,8 @@
       {
         "name": "accent",
         "type": "string",
-        "default": "\"#ffb547\"",
-        "description": "The one colour: the playhead, the live marker and rows a restore brings back."
+        "default": "theme ink",
+        "description": "Playhead and added-row marks. Defaults to neutral theme ink; neutral light choices follow dark ink. Outcome/status text retains meaning without hue."
       },
       {
         "name": "theme",
@@ -14296,8 +14297,9 @@
         "prop": "accent",
         "label": "Playhead",
         "kind": "color",
-        "default": "#ffb547",
+        "default": "#f2f2f3",
         "options": [
+          "#f2f2f3",
           "#ffb547",
           "#7cc4ff",
           "#4ade80",
