@@ -205,6 +205,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 7: Purchase Order is rebuilt as an editable PO document with product identities, exact costs and a retained review. Its 22-mount source review and rewritten Next regression cover keyboard quantities, fractional costs, supplier draft caches, failed retry, pending locks, retired requests and separate mobile remove targets. The three-line saved-draft replay, both-theme accessibility, six widths, entrance/state captures, three controls, official audit and refreshed poster pass, with strict registry, TypeScript and all 1,063 unit tests. Its new film joins task 1; 38 components and 12 blocks remain in task 7.
 
+- Task 1: Purchase Order now has a reviewed 4.1s film showing a third product added, the exact £780.00 review and the settled three-line saved-draft receipt. Measured full-viewport framing keeps every state and the action bar visible, with a matching paired poster. Maximum source gap is 11ms, changed-source delivery 29.9ms and moving-frame p95 20.2ms, with no stalls and every existing guard intact. 120 listed films remain.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -222,7 +224,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Browser checks: `node scripts/check-component.mjs <slug> --base=http://localhost:3100 --no-video --keep-going`
   (screenshots at 1440/768/390 and every control flip; read the screenshots it writes to `test-results/check/<slug>/`).
 
-## 1. Re-record demo videos (121 components)
+## 1. Re-record demo videos (120 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -241,7 +243,6 @@ slug or per small group). Notes:
 
 Slugs:
 
-`commerce-purchase-order`
 `editor-font-pairing`, `editor-keyframe-track`
 `editor-layer-stack`, `editor-spacing-inspector`, `editor-storyboard-strip`, `editor-version-restore`
 `three-exploded-assembly`, `three-material-inspector`, `agents-budget-guard`, `agents-dependency-board`
