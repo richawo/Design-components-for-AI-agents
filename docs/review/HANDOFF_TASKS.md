@@ -307,6 +307,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 1 capture follow-up: a 25ms owned-image request reproduced 104ms delivery after the old fallback wait. The fallback now starts after 40ms of quiet frames, reserving time for polling, renderer IPC and the actual capture. The new deterministic regression passes; normal-frame, shutdown and capture-error checks remain intact. Browser controls still reject a blocked UI and delayed image delivery, while the quiet-frame capture passes. The same compact Storyboard scene now passes at 78ms maximum delivery, with no guard relaxed. Strict registry, TypeScript and all 1,064 unit tests pass. Rejected recordings remain archived.
 
+- Task 1: Storyboard Strip has a reviewed 6.23s film showing playback, Waxed Cotton moving into the second position and one half-second duration edit. The measured 1024px scene retains the complete component in a fixed union throughout; its paired opening poster is refreshed. Maximum source gap is 13ms, changed-source delivery is 78ms and moving-frame p95 is 17.55ms, with no stalls and every existing guard intact. 112 listed films remain.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -324,7 +326,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Browser checks: `node scripts/check-component.mjs <slug> --base=http://localhost:3100 --no-video --keep-going`
   (screenshots at 1440/768/390 and every control flip; read the screenshots it writes to `test-results/check/<slug>/`).
 
-## 1. Re-record demo videos (113 components)
+## 1. Re-record demo videos (112 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -343,7 +345,6 @@ slug or per small group). Notes:
 
 Slugs:
 
-`editor-storyboard-strip`
 `agents-budget-guard`, `agents-dependency-board`
 `agents-run-replay`, `ai-answer-compare`, `ai-context-budget`, `ai-structured-output`, `auth-recovery-codes`
 `devtools-icon-workbench`, `devtools-incident-timeline`, `devtools-release-compare`, `devtools-request-replay`
