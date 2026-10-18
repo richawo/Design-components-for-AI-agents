@@ -43,7 +43,7 @@
       "name": "value",
       "type": "string",
       "default": "undefined",
-      "description": "Controlled six-digit hex colour."
+      "description": "Controlled six-digit hex colour. Without onChange, editing is read-only."
     },
     {
       "name": "defaultValue",
@@ -56,6 +56,12 @@
       "type": "(hex: string) => void",
       "default": "undefined",
       "description": "Selected preset or custom colour."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": "false",
+      "description": "Disables every editing route."
     },
     {
       "name": "theme",
@@ -85,6 +91,32 @@
         "light"
       ],
       "default": "dark"
+    },
+    {
+      "prop": "defaultValue",
+      "label": "Initial colour",
+      "kind": "color",
+      "default": "#e7b75b",
+      "options": [
+        "#e5e5e5",
+        "#e7b75b",
+        "#9ab4a3",
+        "#c7785b",
+        "#9caec1"
+      ],
+      "remount": true
+    },
+    {
+      "prop": "label",
+      "label": "Label",
+      "kind": "text",
+      "default": "Brand colour"
+    },
+    {
+      "prop": "disabled",
+      "label": "Disabled",
+      "kind": "toggle",
+      "default": false
     }
   ]
 }

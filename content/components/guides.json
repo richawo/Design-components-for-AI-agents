@@ -491,18 +491,20 @@
     "updated": "2026-10-12"
   },
   "input-color-swatches": {
-    "useWhen": "Choosing a small, curated set of brand colours.",
-    "avoidWhen": "Unrestricted colour editing or a choice whose meaning depends on colour alone.",
+    "useWhen": "A brand setting needs a short named palette, a precise hex value and a type specimen showing the actual selected colour.",
+    "avoidWhen": "The work needs alpha, gradients, colour-space conversion or a full token editor. Keep essential names alongside colour choices.",
     "integration": [
-      "Supply your own records through `swatches`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+      "Pass six-digit hex colours through `swatches`; malformed presets are excluded. An invalid selected value displays Chalk without inventing a callback.",
+      "Use `value` with synchronous `onChange` acknowledgement for controlled state, or `defaultValue` for local state. Controlled values without a writer remain unavailable.",
+      "The custom picker accepts colours outside the preset list. No preset stays pressed for an unlisted colour. Selecting a valid current colour emits nothing; selecting Chalk from an invalid stored value proposes a repair.",
+      "Use `disabled` to lock both editing routes. The callback carries a hex string; persistence and error handling belong to the host."
     ],
     "related": [
-      "input-file-dropzone",
+      "editor-color-token-studio",
       "input-number-stepper",
-      "input-password-checklist"
+      "input-tag-editor"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-19"
   },
   "input-floating-label": {
     "useWhen": "A concise, labelled text field in a compact form.",

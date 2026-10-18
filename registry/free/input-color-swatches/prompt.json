@@ -1,6 +1,6 @@
 {
   "component": "Brand Colour Swatches",
-  "intent": "A typographic colour specimen with named swatches and a native custom picker, automatically choosing readable ink for the selected brand colour.",
+  "intent": "Choose a brand colour by seeing type and a precise hex value on the colour itself.",
   "platform": "web",
   "stack": {
     "framework": "React 19",
@@ -9,32 +9,35 @@
   },
   "layout": {
     "direction": "A split colour study: a 192px colour field with oversized serif Aa and a hex caption, over a neutral swatch tray. Swatches wrap at narrow widths.",
-    "container": "Size to the parent with @container. Keep the root width at 100%, capped to the focused component, with 24px desktop and 16px narrow padding.",
+    "container": "A full-width card capped at 28rem. Keep the specimen in a 192px-high area with 32px padding and the named palette below with 24px padding.",
     "rhythm": "4/8px spacing; 1px edges; 44px minimum interactive targets."
   },
   "typography": {
     "body": "font-sans, 14-16px, line-height 1.5",
     "metadata": "font-mono, 11-12px, restrained tracking",
-    "heading": "font-display or font-serif, 24-36px, tracking -0.035em"
+    "heading": "18px medium-weight colour label",
+    "specimen": "96px serif Aa and 12px uppercase mono hex caption"
   },
   "color": {
     "dark": {
       "surface": "#111111",
       "ink": "#f5f5f5",
       "muted": "#a3a3a3",
-      "edge": "#333333"
+      "edge": "#333333",
+      "controlEdge": "#727272"
     },
     "light": {
       "surface": "#ffffff",
       "ink": "#171717",
       "muted": "#525252",
-      "edge": "#d4d4d4"
+      "edge": "#d4d4d4",
+      "controlEdge": "#8a8a8a"
     }
   },
   "motion": {
     "entrance": "A single opacity and 8px rise over 320ms.",
-    "interaction": "150ms press response; 240ms state changes. No ambient loops.",
-    "reduced": "Remove transforms and layout motion; keep opacity at 120ms or less."
+    "interaction": "200ms specimen colour transitions and 150ms press feedback. No ambient loops.",
+    "reduced": "Settle the entrance and specimen colour immediately on reduced motion, including changes while mounted. Preserve picker focus and selection."
   },
   "responsive": {
     "widths": [
@@ -78,7 +81,7 @@
         "name": "value",
         "type": "string",
         "default": "undefined",
-        "description": "Controlled six-digit hex colour."
+        "description": "Controlled six-digit hex colour. Without onChange, editing is read-only."
       },
       {
         "name": "defaultValue",
@@ -93,6 +96,12 @@
         "description": "Selected preset or custom colour."
       },
       {
+        "name": "disabled",
+        "type": "boolean",
+        "default": "false",
+        "description": "Disables every editing route."
+      },
+      {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
@@ -104,5 +113,11 @@
     "Remote images, fake network success or hidden external dependencies.",
     "Decorative status badges, gradients as filler, low-contrast text.",
     "Unlabelled controls, hover-only functionality, overflow at 320px."
+  ],
+  "contract": [
+    "Accept six-digit hex strings only; filter malformed presets and render Chalk for an invalid selected value.",
+    "Keep presets as labelled pressed buttons in a named group; empty presets retain the custom colour picker.",
+    "Use the higher-contrast choice of pure black or white for both the specimen and its small hex caption.",
+    "The host owns controlled values. A missing writer or disabled prop makes both preset and custom editing unavailable. Do not emit a change for the already selected colour. Selecting the visual Chalk fallback for an invalid stored value still proposes the repair."
   ]
 }

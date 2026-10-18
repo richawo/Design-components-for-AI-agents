@@ -12,6 +12,7 @@ const finalStates = {
   "input-number-stepper": "workers",
   "input-password-checklist": "3 of 3 requirements met",
   "input-tag-editor": "Design systems removed.",
+  "input-color-swatches": "#C7785B",
   "three-material-inspector": "Uncoated C360 brass.",
   "three-exploded-assembly": "A compressible seal between tray and cover.",
   "editor-version-restore": "Restored 1 block",
@@ -107,6 +108,11 @@ try {
       ?.slice(7);
     const target = page.locator('[data-demo="' + last + '"]');
     const notice = await page.getByRole("status").allTextContents();
+    if (slug === "input-color-swatches") {
+      assert.equal(await page.getByRole("button", {name:"Terracotta, #c7785b",exact:true}).getAttribute("aria-pressed"), "true", "The colour demo finishes on Terracotta");
+      assert.equal(await page.locator('button[aria-pressed="true"]').count(), 1);
+      assert.equal(await page.getByLabel("Custom colour", {exact:true}).inputValue(), "#c7785b", "The native picker matches the selected specimen");
+    }
     if (slug === "input-tag-editor") {
       assert.deepEqual(await page.locator('section button[aria-label^="Remove "]').evaluateAll(nodes => nodes.map(node => node.getAttribute("aria-label").slice(7))), ["Interaction", "Typography"], "The topic demo adds Typography and removes only Design systems");
       assert.equal(await page.getByRole("textbox").inputValue(), "", "The topic demo finishes ready for another topic");
