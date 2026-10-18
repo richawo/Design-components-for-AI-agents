@@ -265,6 +265,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 7: Waterfall Bridge is rebuilt around one shared scale, connected signed contributions and an exact selected-balance readout. Its 37-mount source review and rewritten Next regression cover keyboard inspection, retry, pending locks, callback retirement, zero/negative balances, invalid inputs and finite extremes. Two preserved failures are fixed: pending selection retains keyboard focus, and a scientific axis label cannot split its exponent onto another line. The older expansion integration probe also passes. Six widths, 16 state/default accessibility audits, entrance/state captures, two controls, official audit, metadata replay and measured 800px poster/framing pass. Strict registry, TypeScript and all 1,063 unit tests pass. Its film joins task 1; 28 components and 12 blocks remain in task 7.
 
+- Task 1: Waterfall Bridge now has a reviewed 3.5s film showing the negative churn contribution and the settled 164 $k closing balance. Complete 800px framing matches the paired opening poster. Maximum source gap is 11ms, changed-source delivery is 15.2ms and moving-frame p95 is 18.0ms, with no stalls and all guards retained. 120 listed films remain.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -282,7 +284,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Browser checks: `node scripts/check-component.mjs <slug> --base=http://localhost:3100 --no-video --keep-going`
   (screenshots at 1440/768/390 and every control flip; read the screenshots it writes to `test-results/check/<slug>/`).
 
-## 1. Re-record demo videos (121 components)
+## 1. Re-record demo videos (120 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -301,7 +303,6 @@ slug or per small group). Notes:
 
 Slugs:
 
-`chart-waterfall-bridge`
 `editor-font-pairing`, `editor-keyframe-track`
 `editor-layer-stack`, `editor-spacing-inspector`, `editor-storyboard-strip`, `editor-version-restore`
 `three-exploded-assembly`, `three-material-inspector`, `agents-budget-guard`, `agents-dependency-board`
