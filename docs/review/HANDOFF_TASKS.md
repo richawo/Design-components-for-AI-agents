@@ -293,6 +293,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 5: Version Restore now covers keyboard version scrubbing, partial and local restores, exact copied requests, rejection/retry with picks retained, pending locks, Undo, missing blocks, empty history and late replies after document replacement. Callback mutation cannot rewrite the accepted document, and replacement documents retire earlier requests. Deleted text in light mode and filled custom-accent labels retain contrast; original failures are preserved. The 29-mount source review, twenty-two state/default accessibility audits, six widths, entrance/state captures, Next regression, four controls, official audit, single-block metadata replay and complete 900px framing/poster pass. Strict registry, both type checks and all 1,063 unit tests pass. 61 components remain without dedicated coverage.
 
+- Task 1: Version Restore has a reviewed 6.2s film showing both revision switches, the selected closing block, pending restoration and the settled single-block receipt with Undo. The source-animation, source-change delivery and moving-frame guards pass with no stalls; the paired poster is refreshed. 115 listed films remain.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -310,7 +312,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Browser checks: `node scripts/check-component.mjs <slug> --base=http://localhost:3100 --no-video --keep-going`
   (screenshots at 1440/768/390 and every control flip; read the screenshots it writes to `test-results/check/<slug>/`).
 
-## 1. Re-record demo videos (116 components)
+## 1. Re-record demo videos (115 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -329,7 +331,7 @@ slug or per small group). Notes:
 
 Slugs:
 
-`editor-storyboard-strip`, `editor-version-restore`
+`editor-storyboard-strip`
 `three-exploded-assembly`, `three-material-inspector`, `agents-budget-guard`, `agents-dependency-board`
 `agents-run-replay`, `ai-answer-compare`, `ai-context-budget`, `ai-structured-output`, `auth-recovery-codes`
 `devtools-icon-workbench`, `devtools-incident-timeline`, `devtools-release-compare`, `devtools-request-replay`
