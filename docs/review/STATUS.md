@@ -39,7 +39,7 @@ needs re-recording, whether its poster is current, and the state of its browser 
 | Slug | Video | Poster | Probe |
 | --- | --- | --- | --- |
 | `chart-box-distribution` | current | current | Next-backed regression, both-theme default and six state audits, seven controls pass; real drag/keyboard, sort/retry retention, initial-load retry and resizing, stable axis/bounds, invalid settings, finite extremes and plain decimal ARIA covered; poster/guarded film refreshed |
-| `chart-calendar-heatmap` | new | current |  |
+| `chart-calendar-heatmap` | current | current | Next-backed regression, eighteen theme/state accessibility audits and six controls pass; keyboard/pointer/legend actions, exact zero/null callbacks, retained retry choices, leap/small ISO years, controlled years/pins, future-hover clearing, invalid settings and unmeasured/large totals covered; poster/guarded film refreshed |
 | `chart-funnel-dots` | new | current |  |
 | `chart-sankey-paths` | new | current |  |
 | `chart-scatter-brush` | new | current |  |

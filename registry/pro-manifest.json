@@ -8112,7 +8112,7 @@
         "name": "days",
         "type": "{ date: string; value: number | null }[]",
         "default": "Northwind’s production deploys, 1 Jan 2025 to 16 Oct 2026",
-        "description": "Daily totals as ISO dates in any order. null marks a day that wasn’t measured (hatched), which is different from zero. Every year present gets a tab."
+        "description": "Actual YYYY-MM-DD dates with finite nonnegative totals or null for unmeasured days. Impossible dates and invalid values are excluded; duplicate dates use the last valid entry. Dates after the latest supplied day are unavailable."
       },
       {
         "name": "unit",
@@ -8129,7 +8129,7 @@
       {
         "name": "year",
         "type": "number",
-        "description": "Controlled year; pair with onYearChange."
+        "description": "Controlled whole year from 0 to 9999, including years without measurements. Pair with onYearChange; invalid years show a written state."
       },
       {
         "name": "onYearChange",
@@ -8140,23 +8140,23 @@
         "name": "defaultSelectedDate",
         "type": "string | null",
         "default": "null",
-        "description": "Day pinned on first render (ISO date)."
+        "description": "Day pinned on first render. Impossible ISO dates are ignored."
       },
       {
         "name": "selectedDate",
         "type": "string | null",
-        "description": "Controlled pinned day."
+        "description": "Controlled pinned ISO calendar date. Impossible dates are ignored; year and selection remain separately controlled."
       },
       {
         "name": "onSelectDate",
         "type": "(date: string | null, day: HeatmapDay | null) => void",
-        "description": "Called when a day is clicked or chosen with Enter, or cleared with Escape."
+        "description": "Date plus its {date, value} when a day is clicked or pinned with Enter/Space. Unmeasured days have value null; clearing with Escape returns null for both arguments."
       },
       {
         "name": "weekStart",
         "type": "0 | 1",
         "default": "1",
-        "description": "First row of each column: 1 for Monday, 0 for Sunday."
+        "description": "First weekday: 1 for Monday or 0 for Sunday. Other runtime values show a written state."
       },
       {
         "name": "showMonthTotals",
@@ -8191,7 +8191,7 @@
         "name": "locale",
         "type": "string",
         "default": "\"en-US\"",
-        "description": "Locale for figures."
+        "description": "Locale for figures and comparisons. Invalid syntax shows a written state; very large figures use scientific notation."
       },
       {
         "name": "title",

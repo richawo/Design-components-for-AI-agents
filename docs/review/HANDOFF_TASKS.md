@@ -120,6 +120,10 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 1: Box Distribution’s refreshed film passes the source-change and moving-frame guards and ends settled with the chosen limit, p95 order and selected-region statistics visible. The contact sheet and final frame are reviewed. 137 listed films remain.
 
+- Task 5: Calendar Heatmap now covers pointer/keyboard dates, legend isolation, exact zero/null callbacks, retained choices through retry and controlled years/pins. Impossible dates are excluded, early ISO years keep their actual dates, invalid settings have written states and unmeasured totals/averages remain unknown. Future cells clear the prior hover announcement; large figures fit and overflowing totals are explicit. Its Next-backed regression, eighteen settled theme/state accessibility audits, six preview controls and refreshed poster pass. 79 components remain without dedicated coverage.
+
+- Task 1: Calendar Heatmap’s refreshed film shows legend isolation, both year sweeps and a pinned day, then settles back in 2026. Source-change and cadence guards pass, and the contact sheet and final frame are reviewed. 136 listed films remain.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -137,7 +141,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Browser checks: `node scripts/check-component.mjs <slug> --base=http://localhost:3100 --no-video --keep-going`
   (screenshots at 1440/768/390 and every control flip; read the screenshots it writes to `test-results/check/<slug>/`).
 
-## 1. Re-record demo videos (137 components)
+## 1. Re-record demo videos (136 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -157,7 +161,7 @@ slug or per small group). Notes:
 Slugs:
 
 `mobile-attachment-tray`, `mobile-budget-envelope`
-`chart-calendar-heatmap`, `chart-funnel-dots`, `chart-sankey-paths`
+`chart-funnel-dots`, `chart-sankey-paths`
 `chart-scatter-brush`, `chart-sunburst-explorer`, `data-bulk-action-review`, `data-column-workbench`
 `data-filter-history`, `data-pivot-configurator`, `editor-asset-license-sheet`, `editor-branch-compare`
 `editor-color-token-studio`, `editor-export-preset`, `editor-font-pairing`, `editor-keyframe-track`
@@ -258,14 +262,14 @@ tests/browser/pro-50-<suite>-probe.mjs <slug>` (suite = legal, saas, finance, hr
 
 ## 5. Write browser probes for components that have none
 
-80 finished components still have no dedicated browser regression probe. For each, read its source and
+79 finished components still have no dedicated browser regression probe. For each, read its source and
 `meta.json`, then add a case to the appropriate `tests/browser/*.mjs` suite (or a new probe registered in
 `scripts/test-components.mjs`) covering: the signature interaction, keyboard paths, failed-then-successful callbacks
 with drafts kept (where it has async callbacks), and empty or invalid data. Use `tests/browser/pro-50/hr-org-explorer.mjs`
 as the model for style and depth. Mobile components render through React Native web (`scripts/lib/component-fixture.mjs` aliases it);
 see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 
-`chart-calendar-heatmap`, `chart-funnel-dots`, `chart-sankey-paths`, `chart-scatter-brush`
+`chart-funnel-dots`, `chart-sankey-paths`, `chart-scatter-brush`
 `chart-sunburst-explorer`, `data-bulk-action-review`, `data-column-workbench`, `data-filter-history`
 `data-pivot-configurator`, `editor-asset-license-sheet`, `editor-branch-compare`, `editor-color-token-studio`
 `editor-export-preset`, `editor-font-pairing`, `editor-keyframe-track`, `editor-layer-stack`

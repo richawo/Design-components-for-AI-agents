@@ -4380,14 +4380,15 @@
       "Pass `days` as { date, value } with ISO dates. Use `value: null` for days that weren’t measured; they render hatched and are left out of totals, streaks and averages instead of counting as zero.",
       "Every year present in the data gets a tab. Control it with `year` and `onYearChange`, or set `defaultYear`. Days after the latest record draw as dashed outlines so a partial year still reads as a year.",
       "Use `onSelectDate` to open a day’s detail elsewhere, or control `selectedDate`. Levels come from the quartiles of non-zero days, so a single spike doesn’t wash out the rest of the year.",
-      "Name the unit with `unit` ({ one, other }) and set `weekStart` for your locale. The accent tops a four-step ramp mixed in OKLab; pick a hue that stays distinct from your status colours."
+      "Name the unit with `unit` ({ one, other }) and set `weekStart` for your locale. The accent tops a four-step ramp mixed in OKLab; pick a hue that stays distinct from your status colours.",
+      "Supply actual four-digit ISO calendar dates and finite nonnegative daily totals, or null for an unmeasured day. Impossible dates are excluded; duplicate dates use the last valid entry. The latest supplied date is the cutoff: missing days up to it are unmeasured, and later days cannot be selected. Controlled years must be whole numbers from 0 to 9999; weekStart is 0 or 1 and locale must be valid. Invalid settings and unrepresentable totals have written states. Invalid pinned dates are ignored. Unmeasured years report unknown totals and averages rather than zero; large finite figures use scientific notation. Date and year callbacks are synchronous notifications, retain local choices through fetch retries, and wait for host updates in controlled mode. Moving onto a future cell clears the earlier hover tooltip without changing the pinned selection."
     ],
     "related": [
       "chart-revenue-trend",
       "chart-funnel-dots",
       "date-week-agenda"
     ],
-    "updated": "2026-10-17"
+    "updated": "2026-10-18"
   },
   "chart-scatter-brush": {
     "useWhen": "Finding and acting on a cluster of records in two measures at once, such as slow pages, expensive accounts or outlier queries, by dragging a box over them.",
