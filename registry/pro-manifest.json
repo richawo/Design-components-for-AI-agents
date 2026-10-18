@@ -18996,7 +18996,7 @@
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 860,
+    "previewHeight": 900,
     "usage": "import { EditorFontPairing } from \"@/components/design-for-ai/editor-font-pairing\";\n\n<EditorFontPairing\n  name=\"Editorial type\"\n  path={[\"Halden\", \"Brand system\"]}\n  fonts={[\n    { id: \"instrument\", name: \"Instrument Serif\", role: \"serif\", weights: [400], classification: \"Serif\" },\n    { id: \"inter\", name: \"Söhne\", family: \"'Söhne', system-ui, sans-serif\", weights: [400, 500, 700] }, // a host-loaded face\n  ]}\n  defaultPresetId=\"editorial\"\n  onApply={async (result) => {\n    await saveBrandTokens(result.css);   // reject with an Error to show its message\n  }}\n/>\n\n// result: { headingId, headingWeight, bodyId, bodyWeight, base, ratio, leading, scale: { caption…h1 in px }, css }\n// typeScale(base, ratio) and pairingCss(pairing, fonts) are exported for hosts that render the same tokens elsewhere.",
     "props": [
       {
@@ -19049,12 +19049,12 @@
       {
         "name": "onChange",
         "type": "(pairing: FontPairing) => void",
-        "description": "Every draft change."
+        "description": "Receives an independent pairing after edits or Revert; callback mutation cannot change the retained draft."
       },
       {
         "name": "onApply",
         "type": "(result: FontPairingResult) => void | Promise<void>",
-        "description": "Saves the pairing with its px scale and CSS variables. Progress fills the button while pending; a rejection shows its message and keeps the draft."
+        "description": "Persist an independent pairing, scale and CSS snapshot. A missing writer disables application. Rejection retains the draft; newer edits remain unapplied when an older save finishes."
       },
       {
         "name": "accent",

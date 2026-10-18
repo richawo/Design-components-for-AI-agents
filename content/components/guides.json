@@ -4661,14 +4661,17 @@
     "integration": [
       "Pass the faces you have loaded as fonts: use role (display, serif, sans, mono) for the library's font roles or family with a CSS font-family stack for your own. List only the weights each face ships; the weight control follows them.",
       "Give presets for your house pairings and set defaultPresetId (or defaultValue) to the pairing already live, so the footer can say what has changed. Replace specimen with copy from your own product: the measure ruler counts real characters per line.",
-      "onApply receives the pairing, every scale step in px and a CSS variables block (also available from the exported pairingCss and typeScale). Persist it and resolve; reject with an Error to show its message, and the draft stays for a retry."
+      "onApply receives the pairing, every scale step in px and a CSS variables block (also available from the exported pairingCss and typeScale). Persist it and resolve; reject with an Error to show its message, and the draft stays for a retry.",
+      "Require an available apply callback before acknowledging a pairing. Preserve independent callback payloads and reject reentrant saves.",
+      "Keep newer edits live while an earlier pairing is being saved. Acknowledgement updates only its sent baseline, so a newer draft remains unapplied.",
+      "Expose the specimen as a labelled keyboard-focusable region. Home and End scroll inside its desktop canvas."
     ],
     "related": [
       "editor-color-token-studio",
       "editor-spacing-inspector",
       "text-optical-weight"
     ],
-    "updated": "2026-10-17"
+    "updated": "2026-10-18"
   },
   "ai-context-budget": {
     "useWhen": "Letting someone choose which files, threads and saved pages an assistant reads, with the cost of each shown against the model’s context window and an answer reserve.",

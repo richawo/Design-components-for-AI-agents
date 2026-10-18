@@ -271,6 +271,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 8: the Version History, Capacity Planner, Query Builder and Waterfall Bridge batch passes the Worker dry run. The router is 2,655,633 bytes, runtime 57,141,392 bytes and compressed source maps 4,761,949 bytes, with all original guards retained. Strict registry, TypeScript and all 1,063 unit tests pass. The three optional package diagnostics remain, and their runtime files are verified. No deployment was performed.
 
+- Task 5: Font Pairing now covers keyboard pair/scale edits, exact CSS snapshots, failure/retry, pending saves, newer drafts, independent callback payloads and empty catalogues. Missing writers cannot acknowledge persistence, and the desktop specimen is a labelled keyboard-scrollable region. Its 27-mount source review, 16 state/default accessibility audits, six widths, entrance/state captures, Next regression, four controls, official audit and metadata replay pass. A retained 10.5px framing failure is resolved by matching 900px stage and preview heights; the full replay and refreshed poster fit. Strict registry, TypeScript, isolated Pro types and all 1,063 unit tests pass. 66 components remain without dedicated coverage; its film remains in task 1.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -395,14 +397,14 @@ Its log is `test-results/handoff-next/browser-suite-green.log`.
 
 ## 5. Write browser probes for components that have none
 
-67 finished components still have no dedicated browser regression probe. For each, read its source and
+66 finished components still have no dedicated browser regression probe. For each, read its source and
 `meta.json`, then add a case to the appropriate `tests/browser/*.mjs` suite (or a new probe registered in
 `scripts/test-components.mjs`) covering: the signature interaction, keyboard paths, failed-then-successful callbacks
 with drafts kept (where it has async callbacks), and empty or invalid data. Use `tests/browser/pro-50/hr-org-explorer.mjs`
 as the model for style and depth. Mobile components render through React Native web (`scripts/lib/component-fixture.mjs` aliases it);
 see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 
-`editor-font-pairing`, `editor-keyframe-track`, `editor-layer-stack`
+`editor-keyframe-track`, `editor-layer-stack`
 `editor-spacing-inspector`, `editor-storyboard-strip`, `editor-version-restore`, `three-exploded-assembly`
 `three-material-inspector`, `agents-budget-guard`, `agents-dependency-board`, `agents-run-replay`
 `ai-answer-compare`, `ai-context-budget`, `ai-structured-output`, `auth-recovery-codes`, `devtools-icon-workbench`

@@ -9,6 +9,7 @@ const specs = fs
   .filter((file) => file.endsWith(".mjs"))
   .map((file) => ({ slug: file.slice(0, -4) }));
 const finalStates = {
+  "editor-font-pairing": "Live on every page that uses the brand tokens.",
   "chart-waterfall-bridge": "Closing 164 $k",
   "data-query-builder": "Segment applied · 2 records",
   "hr-capacity-planner": "Capacity plan saved.",
