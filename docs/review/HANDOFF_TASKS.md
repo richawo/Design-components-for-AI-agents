@@ -128,6 +128,10 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 1: Funnel Dots has a reviewed monochrome 5.5s film showing both segment switches and the selected trial stage. Source-change and moving-frame guards pass, with no stalls. 135 listed films remain.
 
+- Task 5: Sankey Paths now covers keyboard node/ribbon traces, clearing, exact callbacks, controlled periods/selections, switching out of empty periods and retained retry choices with resizing. Ribbons expose named buttons, pressed state, focus and tooltip descriptions. Category text keeps contrast; narrow tooltips fit within the plot and clear its header. Invalid categories, flows, periods, locales and overflowing totals have written states; fractional and large finite values retain valid geometry. Its Next-backed regression, fourteen theme/state accessibility audits, four controls and refreshed poster pass. 77 components remain without dedicated coverage.
+
+- Task 1: Sankey Paths has a reviewed monochrome 6.8s film showing category traces and both period morphs, ending at the settled accountant-invitation trace. Source-change and moving-frame guards pass with no stalls. 134 listed films remain.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -145,7 +149,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Browser checks: `node scripts/check-component.mjs <slug> --base=http://localhost:3100 --no-video --keep-going`
   (screenshots at 1440/768/390 and every control flip; read the screenshots it writes to `test-results/check/<slug>/`).
 
-## 1. Re-record demo videos (135 components)
+## 1. Re-record demo videos (134 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -165,7 +169,6 @@ slug or per small group). Notes:
 Slugs:
 
 `mobile-attachment-tray`, `mobile-budget-envelope`
-`chart-sankey-paths`
 `chart-scatter-brush`, `chart-sunburst-explorer`, `data-bulk-action-review`, `data-column-workbench`
 `data-filter-history`, `data-pivot-configurator`, `editor-asset-license-sheet`, `editor-branch-compare`
 `editor-color-token-studio`, `editor-export-preset`, `editor-font-pairing`, `editor-keyframe-track`
@@ -266,14 +269,14 @@ tests/browser/pro-50-<suite>-probe.mjs <slug>` (suite = legal, saas, finance, hr
 
 ## 5. Write browser probes for components that have none
 
-78 finished components still have no dedicated browser regression probe. For each, read its source and
+77 finished components still have no dedicated browser regression probe. For each, read its source and
 `meta.json`, then add a case to the appropriate `tests/browser/*.mjs` suite (or a new probe registered in
 `scripts/test-components.mjs`) covering: the signature interaction, keyboard paths, failed-then-successful callbacks
 with drafts kept (where it has async callbacks), and empty or invalid data. Use `tests/browser/pro-50/hr-org-explorer.mjs`
 as the model for style and depth. Mobile components render through React Native web (`scripts/lib/component-fixture.mjs` aliases it);
 see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 
-`chart-sankey-paths`, `chart-scatter-brush`
+`chart-scatter-brush`
 `chart-sunburst-explorer`, `data-bulk-action-review`, `data-column-workbench`, `data-filter-history`
 `data-pivot-configurator`, `editor-asset-license-sheet`, `editor-branch-compare`, `editor-color-token-studio`
 `editor-export-preset`, `editor-font-pairing`, `editor-keyframe-track`, `editor-layer-stack`

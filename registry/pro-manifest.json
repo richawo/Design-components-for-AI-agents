@@ -9632,18 +9632,18 @@
         "name": "nodes",
         "type": "{ id: string; label: string; column: number }[]",
         "default": "Ledgerly signups: 4 first touches, 3 first-week actions, 3 day-30 outcomes",
-        "description": "Categories by column, top to bottom in the order given. Nodes keep their slots across periods so ribbons can morph."
+        "description": "Unique nonempty category ids in consecutive whole-number columns starting at zero. Categories keep their slots across periods. Invalid categories show a written alert."
       },
       {
         "name": "links",
         "type": "{ id: string; source: string; target: string; value: number }[]",
-        "description": "Flows between neighbouring columns when there is a single period. Ignored when periods is set."
+        "description": "Unique nonempty flow ids, finite nonnegative values and valid endpoints in neighbouring columns. Zero flows are omitted. Invalid data and overflowing totals show written alerts."
       },
       {
         "name": "periods",
         "type": "{ key: string; label: string; links: SankeyLink[] }[]",
         "default": "September and October",
-        "description": "Two or more show a switcher; ribbons and bars morph between them."
+        "description": "Unique nonempty period keys. Two or more show a switcher, including in empty states so the user can return to a populated period. Each period follows the links contract."
       },
       {
         "name": "defaultPeriod",
@@ -9654,7 +9654,7 @@
       {
         "name": "period",
         "type": "string",
-        "description": "Controlled period key; pair with onPeriodChange."
+        "description": "Controlled period key; pair with onPeriodChange and acknowledge requests in the host. Unknown keys have a written alert."
       },
       {
         "name": "onPeriodChange",
@@ -9716,7 +9716,7 @@
         "name": "locale",
         "type": "string",
         "default": "\"en-US\"",
-        "description": "Locale for figures."
+        "description": "Supported Intl locale for figures, up to two decimal places. Large values use scientific notation; invalid locales have a written alert."
       },
       {
         "name": "title",
@@ -9783,7 +9783,7 @@
         "prop": "accent",
         "label": "Accent",
         "kind": "color",
-        "default": "#a3e635",
+        "default": "#f4f4f5",
         "options": [
           "#a3e635",
           "#7dd3fc",
