@@ -38716,7 +38716,7 @@
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface palette."
+        "description": "Graphite or white surfaces with neutral outcome and diff tones. Written states and before/after marks identify changes."
       },
       {
         "name": "className",
