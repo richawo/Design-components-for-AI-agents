@@ -9,6 +9,7 @@ const specs = fs
   .filter((file) => file.endsWith(".mjs"))
   .map((file) => ({ slug: file.slice(0, -4) }));
 const finalStates = {
+  "editor-spacing-inspector": "align-items: center;",
   "editor-font-pairing": "Live on every page that uses the brand tokens.",
   "chart-waterfall-bridge": "Closing 164 $k",
   "data-query-builder": "Segment applied · 2 records",
@@ -72,6 +73,8 @@ try {
     await page.waitForTimeout(200);
     const before = await page.locator("#root").innerText();
     replay.before = before;
+    if (slug === "editor-spacing-inspector")
+      replay.paddingBefore = Number(await page.getByRole("textbox", { name: "Left padding", exact: true }).inputValue());
     await page.evaluate(() => {
       window.demoReplayClicks = [];
       document.addEventListener("click", (event) => {
@@ -105,6 +108,11 @@ try {
         before,
         slug + " replay must change the displayed workflow",
       );
+    }
+    if (slug === "editor-spacing-inspector") {
+      const padding = Number(await page.getByRole("textbox", { name: "Left padding", exact: true }).inputValue());
+      assert.ok(padding > replay.paddingBefore, "The spacing demo increases padding through its recorded drag");
+      assert.ok((await page.locator("#root").innerText()).includes("flex-direction: row;"));
     }
     if (finalStates[slug]) {
       await page.waitForFunction(

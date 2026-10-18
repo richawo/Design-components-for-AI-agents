@@ -20086,7 +20086,7 @@
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 860,
+    "previewHeight": 960,
     "usage": "import { EditorSpacingInspector } from \"@/components/design-for-ai/editor-spacing-inspector\";\n\n<EditorSpacingInspector\n  name=\"invite-card\"\n  path={[\"Fieldnote\", \"Onboarding\"]}\n  layers={[\n    { id: \"avatars\", name: \"avatars\", content: <AvatarStack /> },\n    { id: \"copy\", name: \"copy\", content: <InviteCopy /> },\n    { id: \"actions\", name: \"actions\", content: <InviteActions /> },\n  ]}\n  defaultValue={{ direction: \"vertical\", align: \"start\", gap: 16, padding: { top: 24, right: 24, bottom: 24, left: 24 } }}\n  onChange={(value) => saveFrameLayout(\"invite-card\", value)}\n/>\n\n// spacingCss(value) returns the same declarations the readout shows, as [property, value] pairs.",
     "props": [
       {
@@ -20111,7 +20111,7 @@
         "name": "defaultValue",
         "type": "SpacingValue",
         "default": "column, start, gap 16, padding 24",
-        "description": "{ direction: \"vertical\" | \"horizontal\", align: \"start\" | \"center\" | \"end\", gap, padding: { top, right, bottom, left } } in CSS px. Padding 0–96, gap 0–64."
+        "description": "Initial layout with finite gap from 0 to 64px and padding from 0 to 96px. Invalid settings show a written notice."
       },
       {
         "name": "defaultDirection",
@@ -20145,7 +20145,7 @@
       {
         "name": "onChange",
         "type": "(value: SpacingValue) => void",
-        "description": "Every committed spacing change, once per new value."
+        "description": "Receives an independent layout and padding snapshot after a committed value change."
       },
       {
         "name": "accent",

@@ -4554,14 +4554,16 @@
     "integration": [
       "Pass the frame's children as layers ({ id, name, content }). Each is rendered inside the frame and measured from the real layout, so hover boxes and the size tag are true; give text layers a width so the frame hugs predictably.",
       "Seed defaultValue with the frame's current spacing ({ direction, align, gap, padding }) and persist from onChange, which fires once per committed value. Padding runs 0–96px and gap 0–64px; snapping to the 4px grid is on by default and can be turned off in the panel.",
-      "Use frameClassName for the artwork's own surface and accent for the redline colour. spacingCss(value) returns the same declarations the readout shows if you need them elsewhere."
+      "Use frameClassName for the artwork's own surface and accent for the redline colour. spacingCss(value) returns the same declarations the readout shows if you need them elsewhere.",
+      "Validate finite spacing before drawing. Gap is 0–64px; padding is 0–96px. Invalid layouts have a written state and layer ids must be unique.",
+      "Give callbacks independent padding values. Clipboard receipts belong to the displayed CSS; changing layout retires older replies. The CSS region remains keyboard-scrollable."
     ],
     "related": [
       "editor-font-pairing",
       "layout-split-resizer",
       "editor-layer-stack"
     ],
-    "updated": "2026-10-17"
+    "updated": "2026-10-18"
   },
   "editor-branch-compare": {
     "useWhen": "Merging two versions of a written document, such as a copy edit against the live page or a translation pass against the source, where someone chooses change by change and wants to read the merged result before saving.",
