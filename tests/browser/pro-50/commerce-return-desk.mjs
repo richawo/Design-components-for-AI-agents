@@ -47,6 +47,11 @@ export async function check({ page, mount, assert, capture = async () => {} }) {
   await page.waitForFunction(() => document.activeElement?.textContent === "Review selected items");
   assert.equal(await page.getByRole("checkbox").count(), 0, "Review retires editable controls");
   await capture("review", { audit: true });
+  await page.getByRole("button", { name: "Edit return", exact: true }).click();
+  assert.equal(await page.getByRole("checkbox", { name: "Return Merino crew", exact: true }).isChecked(), true);
+  assert.equal(await mugQuantity.inputValue(), "2");
+  assert.equal(await page.getByRole("textbox", { name: /Internal note/ }).inputValue(), "  Size checked with Ines.  ");
+  await page.getByRole("button", { name: "Review return", exact: true }).click();
   await page.getByRole("button", { name: "Submit return", exact: true }).click();
   await page.getByRole("alert").filter({ hasText: "The return service is offline." }).waitFor();
   assert.match(await page.locator("section").innerText(), /Size checked with Ines/);
@@ -125,4 +130,37 @@ export async function check({ page, mount, assert, capture = async () => {} }) {
   await page.evaluate(() => window.oldReturn({ reference: "RET-OBSOLETE" }));
   assert.doesNotMatch(await page.locator("section").innerText(), /RET-OBSOLETE/);
   assert.equal(await page.getByRole("checkbox", { name: "Return Merino crew", exact: true }).isChecked(), false);
+  const previousViewport = page.viewportSize();
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.setViewportSize({ width: 1440, height: 1100 });
+  await mount(`createRoot(document.getElementById('root')).render(<Subject.default/>);`);
+  await page.getByRole("checkbox", { name: "Return Merino crew", exact: true }).check();
+  await page.getByRole("radio", { name: "The fit was not right", exact: true }).check();
+  await page.evaluate(() => {
+    window.reviewPositions = [];
+    window.trackReview = true;
+    function sample() {
+      const root = document.querySelector("section");
+      const heading = [...root.querySelectorAll("h3")].find((node) => node.textContent === "Review selected items");
+      const item = [...root.querySelectorAll("p")].find((node) => node.textContent === "Merino crew");
+      if (heading && item)
+        window.reviewPositions.push(item.getBoundingClientRect().top - heading.getBoundingClientRect().bottom);
+      if (window.trackReview) requestAnimationFrame(sample);
+    }
+    sample();
+  });
+  await page.getByRole("button", { name: "Review return", exact: true }).click();
+  await page.waitForTimeout(900);
+  const positions = await page.evaluate(() => {
+    window.trackReview = false;
+    return window.reviewPositions;
+  });
+  assert.ok(positions.length >= 8, "The normal-motion review phase was sampled across actual frames");
+  assert.ok(
+    positions.every((gap) => gap >= -1),
+    `Return items remain below their review heading: ${Math.min(...positions)}px`,
+  );
+  await capture("review-motion");
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.setViewportSize(previousViewport);
 }

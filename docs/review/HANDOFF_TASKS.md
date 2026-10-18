@@ -221,6 +221,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 7: Return Desk is rebuilt as an item ledger and reviewed return slip. Its 25-mount source review and rewritten Next regression cover exact amounts beyond the safe integer, quantity limits, retained-note retry, pending locks, unavailable writers and retired order revisions. Item and quantity targets pass touch-input checks at 44px. Both-theme accessibility, six widths, entrance/state captures, two preview controls, official audit and the full 1,100px Next replay/poster pass, with strict registry, TypeScript and all 1,063 unit tests. The embedded controls remain canonical; form sizes use a scoped override. Commerce Workspace’s period/note/retry/exact-payload check passes with its updated labels and error role. Its new film joins task 1; 35 components and 12 blocks remain in task 7.
 
+- Task 7 follow-up: Return Desk’s first film exposed a normal-motion review transition that projected the selected item 151px above its heading. Selection and review rows now have separate phase identities. The preserved old-source frame regression fails; both-theme reruns keep a minimum 32px gap throughout the transition. The Next regression also verifies retained quantities and notes when editing a review. Strict registry, TypeScript and all 1,063 unit tests pass. The first film remains unaccepted as visual failure evidence.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
