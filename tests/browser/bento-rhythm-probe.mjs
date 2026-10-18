@@ -26,8 +26,24 @@ try {
       const heatmap = page.getByRole("img", {
         name: /Weekly sessions by weekday and hour/,
       });
-      await page.waitForTimeout(2400);
       assert.equal(await heatmap.locator(".aspect-square").count(), 168);
+      // Observer delivery can be delayed on a busy runner. Begin the stability
+      // window after the one-off entrance, while still rejecting looping cells.
+      await page.waitForFunction(
+        (element) => {
+          const ready = element.getAnimations({ subtree: true })
+            .every((animation) => animation.playState === "finished" || animation.playState === "idle") &&
+            [...element.querySelectorAll(".aspect-square")].every((cell) => {
+              const style = getComputedStyle(cell);
+              return style.opacity === "1" && style.animationName === "none";
+            });
+          // Motion clears finished label styles on the next frame too.
+          element.settledFrames = ready ? (element.settledFrames ?? 0) + 1 : 0;
+          return element.settledFrames >= 3;
+        },
+        await heatmap.elementHandle(),
+        { timeout: 10000 },
+      );
       const snapshot = () =>
         heatmap.locator(".aspect-square").evaluateAll((cells) =>
           cells.map((cell) => {

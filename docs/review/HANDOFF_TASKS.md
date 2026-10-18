@@ -86,6 +86,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 4: all eight block workflows now pass. Workspace Shell isolates its content layer so embedded drawers cannot cover the header's menus. People Workspace verifies a real department switch while the onboarding drawer is open, draft retention, failed completion and the exact successful retry payload. Menu hit-testing and a refreshed open-state capture confirm the overlap is resolved. The retained-panel, focus and reduced-motion regression also passes. The final full suite rerun remains pending.
 
+- Task 4: the next full run finished at 52 of 56 suites passing, including every industry workflow. The remaining failures were leave approval replay, Cinema Frame return, Bento entrance timing and Audit Trail selector state. Bento now waits for the complete heatmap entrance before checking historical stability; all four theme/motion/ambient cases pass with the zero-mutation and exact-data checks retained. An injected cell loop is still rejected. The other three failures remain under investigation.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
