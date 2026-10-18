@@ -10,6 +10,7 @@ const specs = fs
   .map((file) => ({ slug: file.slice(0, -4) }));
 const finalStates = {
   "input-number-stepper": "workers",
+  "input-password-checklist": "3 of 3 requirements met",
   "three-material-inspector": "Uncoated C360 brass.",
   "three-exploded-assembly": "A compressible seal between tray and cover.",
   "editor-version-restore": "Restored 1 block",
@@ -109,6 +110,11 @@ try {
       assert.equal(await page.getByRole("spinbutton").inputValue(), "5", "The quantity demo finishes one step above its initial value");
       const position = await page.locator('[data-demo="ruler-indicator"]').evaluate(node => parseFloat(node.style.left));
       assert.ok(Math.abs(position - 100 * 4 / 15) < 0.1, "The ruler matches the accepted quantity");
+    } else if (slug === "input-password-checklist") {
+      const field = page.locator('[data-demo="password"]');
+      assert.equal(await field.inputValue(), "Cedar-river42!");
+      assert.equal(await field.getAttribute("type"), "text", "The password demo finishes revealed");
+      assert.equal(await page.getByRole("button", { name: "Hide password", exact: true }).getAttribute("aria-pressed"), "true");
     } else if (notice.some((s) => s.trim() && !s.startsWith("Connect "))) {
       assert.doesNotMatch(notice.join(" "), /failed|Connect the host/);
     } else if (

@@ -4,7 +4,7 @@ Self-contained work items from the paused review of the October component additi
 and how to know it's done. Pick any of them up independently. Background, briefs and tooling are in `docs/review/`
 (start with `README.md`); per-component state is in `docs/review/STATUS.md`.
 
-## Follow-up progress (17–18 October 2026)
+## Follow-up progress (17–19 October 2026)
 
 - Task 3.1: resolved evidence chain verification and manifest flags. The dedicated browser probe passes, including missing hashes and rejected exports. The hash group’s invalid ARIA label is fixed, and isolated dark/light accessibility audits pass. The Next preview rerun also passes.
 
@@ -311,7 +311,9 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 8: the Storyboard/Restore/Assembly/Material batch passes all 59 browser suites and 66 metadata replays on unchanged source hashes. All four fresh component audits, strict registry, root/Pro types and all 1,064 unit tests pass. The Worker dry run measures a 2,655,633-byte router, 57,173,220-byte runtime and 4,763,403 bytes of compressed maps, with all guards retained. Every film is reviewed and current; rejected takes remain archived. The measured checkpoint below records the revisions and evidence.
 
-- Task 7: Number Stepper keeps its focused ruler layout and now preserves full represented typed values, exact bounds and safe integer digits. Decimal steps normalize only arithmetic noise; finite ranges that overflow during subtraction still retain a valid marker. Long quantities fit completely at 320px. Canonical step controls repeat and retire correctly on outside release, cancellation, blur, disabling and unmount; controlled values without a writer stay read-only. Pointer and keyboard focus match a real native control. The final 55-mount source review, 22 accessibility audits, six widths, entrance/state captures, Next regression, four controls, official audit and exact 4-to-6-to-5 replay pass, with strict registry, TypeScript and all 1,064 unit tests. Its reviewed 3.27s two-scale film and paired poster are current; maximum source gap is 10ms, delivery 20.15ms and moving-frame p95 17.46ms, with all guards retained. The earlier take is archived as a visual rejection. The new input group is registered, so the next complete run has 60 suites; that batch checkpoint remains pending. 27 components and 12 blocks remain in task 7.
+- Task 7: Number Stepper keeps its focused ruler layout and now preserves full represented typed values, exact bounds and safe integer digits. Decimal steps normalize only arithmetic noise; finite ranges that overflow during subtraction still retain a valid marker. Long quantities fit completely at 320px. Canonical step controls repeat and retire correctly on outside release, cancellation, blur, disabling and unmount; controlled values without a writer stay read-only. Pointer and keyboard focus match a real native control. The final 55-mount source review, 22 accessibility audits, six widths, entrance/state captures, Next regression, four controls, official audit and exact 4-to-6-to-5 replay pass, with strict registry, TypeScript and all 1,064 unit tests. Its reviewed 3.27s film and paired poster are current; maximum source gap is 10ms, delivery 20.15ms and moving-frame p95 17.46ms, with all guards retained. The earlier take is archived as a visual rejection. The new input group is registered, so the next complete run has 60 suites; that batch checkpoint remains pending. 27 components and 12 blocks remain in task 7.
+
+- Task 7 (19 October): Password Checklist retains its focused field/reveal and policy-list layout. Sample rules now count Unicode code points, recognize non-Latin letters/numbers and require actual punctuation or symbols. Accents and invisible format characters no longer count as symbols. The field boundary improves from 1.49:1 to 3.93:1 dark and 3.45:1 light; disabled styling stays consistent. Controlled values without a writer remain read-only while reveal works. Live reduced motion settles fills without losing the input, and empty/single policies have clean layout, valid descriptions and correct copy. The 37-mount source review, 22 accessibility audits, six widths, entrance/state captures, Next regression, four controls, official audit and exact revealed-text demo pass, with strict registry, TypeScript and all 1,064 unit tests. Its reviewed 3.25s film and paired poster are current: maximum source gap 10ms, delivery 13.17ms and moving-frame p95 17.33ms, with no stalls and unchanged guards. 26 components and 12 blocks remain in task 7.
 
 ## Ground rules (read first)
 
@@ -475,9 +477,9 @@ All nine parked rebuilds are shipped in both repos. Their original `_wip/<slug>`
 | finance-budget-variance | Completed 17 October: Next probe, dark/light accessibility, responsive and entrance/state captures, live demo and refreshed poster pass. |
 | finance-cashflow-dashboard | Completed 17 October: weekly balance and in/out bars, movable payments, independent pending saves, invalid-data guards, selected-week list geometry, Next probe/demo, both-theme accessibility, responsive/state/entrance captures and refreshed poster pass. |
 
-## 7. Continue the review (27 components, then 12 blocks)
+## 7. Continue the review (26 components, then 12 blocks)
 
-Same process as the 171 already done: hold each to the first ~100 components' standard. Briefs:
+Same process as the 172 already done: hold each to the first ~100 components' standard. Briefs:
 `docs/review/REVIEW_BRIEF.md`, `docs/review/SUITE_BRIEF.md` for industry components, suite languages in
 `docs/review/suites/`. Work newest first, about four components per batch, and verify each (build, tsc, tests,
 check-component, your own captures of states and mid-entrance frames, a refreshed poster, a rewritten pro-50 probe for
@@ -490,7 +492,7 @@ industry components).
   onboarding-setup-checklist, date-booking-slots, input-file-dropzone, input-shortcut-recorder,
   feedback-empty-search, navigation-pagination-window, primitives-shortcut-reference, selects-radio-cards,
   progress-milestones, content-accordion-index, feedback-inline-alert, navigation-breadcrumb-fold,
-  input-color-swatches, input-tag-editor, input-password-checklist.
+  input-color-swatches, input-tag-editor.
 - **Blocks**, after their parts: the 12 `block-*` components. Many parts changed their look and some their props;
   re-check each block composes well with the rebuilt parts and still reads as one product.
 

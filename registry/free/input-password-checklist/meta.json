@@ -4,14 +4,16 @@
   "tier": "free",
   "platform": "web",
   "category": "inputs",
-  "description": "A quiet password field with a reveal control and live requirement checklist, showing exactly which rules are met without inventing a security score.",
+  "description": "A password field with a reveal control and live policy checks for Unicode text, with clear requirement states and keyboard access for account settings.",
   "tags": [
     "inputs",
     "input",
     "password",
     "checklist",
     "responsive",
-    "keyboard"
+    "keyboard",
+    "validation",
+    "unicode"
   ],
   "dependencies": [
     "motion",
@@ -37,7 +39,7 @@
       "name": "value",
       "type": "string",
       "default": "undefined",
-      "description": "Controlled password, never persisted by the component."
+      "description": "Controlled password, never persisted by the component. Without onChange, editing is read-only."
     },
     {
       "name": "defaultValue",
@@ -49,7 +51,7 @@
       "name": "rules",
       "type": "PasswordRule[]",
       "default": "three sample rules",
-      "description": "Named predicates; empty arrays show no configured requirements. Rules are policy checks, not a password strength estimate."
+      "description": "Pure named predicates. Defaults count Unicode code points and recognize Unicode letters, numbers, punctuation and symbols. Custom rules run unchanged; empty arrays show no configured requirements."
     },
     {
       "name": "disabled",
@@ -92,6 +94,24 @@
         "light"
       ],
       "default": "dark"
+    },
+    {
+      "prop": "label",
+      "label": "Label",
+      "kind": "text",
+      "default": "Choose a password"
+    },
+    {
+      "prop": "hint",
+      "label": "Guidance",
+      "kind": "text",
+      "default": "Use a unique phrase you have not used elsewhere."
+    },
+    {
+      "prop": "disabled",
+      "label": "Disabled",
+      "kind": "toggle",
+      "default": false
     }
   ]
 }

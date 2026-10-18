@@ -1,6 +1,6 @@
 {
   "component": "Password Requirements",
-  "intent": "A quiet password field with a reveal control and live requirement checklist, showing exactly which rules are met without inventing a security score.",
+  "intent": "Show exactly which password policy checks pass while keeping the typed phrase in a normal labelled field.",
   "platform": "web",
   "stack": {
     "framework": "React 19",
@@ -8,14 +8,15 @@
     "motion": "motion/react"
   },
   "layout": {
-    "direction": "44px reveal key at the edge of a 48px input. Three fine horizontal rule segments above a checked requirements list and a mono completion count.",
+    "direction": "A focused 448px maximum-width password field with 24px padding, a 48px input/reveal row, three 4px requirement fills and a vertical rule list. Empty policies omit both the meter and rule list.",
     "container": "Size to the parent with @container. Keep the root width at 100%, capped to the focused component, with 24px desktop and 16px narrow padding.",
     "rhythm": "4/8px spacing; 1px edges; 44px minimum interactive targets."
   },
   "typography": {
-    "body": "font-sans, 14-16px, line-height 1.5",
-    "metadata": "font-mono, 11-12px, restrained tracking",
-    "heading": "font-display or font-serif, 24-36px, tracking -0.035em"
+    "label": "20px medium, tight tracking",
+    "body": "14px with relaxed leading",
+    "input": "16px; retain the exact raw string when revealing or concealing",
+    "status": "12px mono with a quiet divider"
   },
   "color": {
     "dark": {
@@ -29,12 +30,17 @@
       "ink": "#171717",
       "muted": "#525252",
       "edge": "#d4d4d4"
+    },
+    "fieldBoundary": {
+      "dark": "#727272",
+      "light": "#8a8a8a",
+      "requirement": "At least 3:1 against the panel in either theme."
     }
   },
   "motion": {
     "entrance": "A single opacity and 8px rise over 320ms.",
-    "interaction": "150ms press response; 240ms state changes. No ambient loops.",
-    "reduced": "Remove transforms and layout motion; keep opacity at 120ms or less."
+    "interaction": "250ms requirement fills and native button focus. On live reduced motion, stop the entrance and settle all fills while retaining the field and its focus.",
+    "reduced": "Remove transforms and layout motion, including active fills or ruler transitions when the preference changes; keep opacity at 120ms or less."
   },
   "responsive": {
     "widths": [
@@ -72,7 +78,7 @@
         "name": "value",
         "type": "string",
         "default": "undefined",
-        "description": "Controlled password, never persisted by the component."
+        "description": "Controlled password, never persisted by the component. Without onChange, editing is read-only."
       },
       {
         "name": "defaultValue",
@@ -84,7 +90,7 @@
         "name": "rules",
         "type": "PasswordRule[]",
         "default": "three sample rules",
-        "description": "Named predicates; empty arrays show no configured requirements. Rules are policy checks, not a password strength estimate."
+        "description": "Pure named predicates. Defaults count Unicode code points and recognize Unicode letters, numbers, punctuation and symbols. Custom rules run unchanged; empty arrays show no configured requirements."
       },
       {
         "name": "disabled",
@@ -110,5 +116,14 @@
     "Remote images, fake network success or hidden external dependencies.",
     "Decorative status badges, gradients as filler, low-contrast text.",
     "Unlabelled controls, hover-only functionality, overflow at 320px."
+  ],
+  "contract": [
+    "Evaluate only the supplied named predicates; the default policy checks length, letters/numbers and a symbol. Do not invent a strength score.",
+    "Use native new-password autocomplete. Reveal and conceal keep the exact current phrase and expose a pressed state.",
+    "Keep met/not-met text in the rule list and a polite requirement count; an empty policy explicitly reports no configured requirements.",
+    "Controlled text waits for the host. A missing writer makes it read-only while reveal stays available; disabled prevents both editing and reveal.",
+    "Changing reduced motion must settle active requirement fills without restarting the field or losing its focus.",
+    "Count Unicode code points for the sample length rule. Accented and non-Latin letters remain letters; only punctuation or symbols meet the symbol rule. Invisible format characters do not become symbols.",
+    "Keep custom policy predicates unchanged and deliver the raw string to the host. Use singular requirement copy for one rule; empty policies retain valid descriptions without blank progress/list space."
   ]
 }

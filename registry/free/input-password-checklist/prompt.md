@@ -1,27 +1,13 @@
 # Password Requirements
 
-Build a standalone React 19 and Tailwind v4 component. A quiet password field with a reveal control and live requirement checklist, showing exactly which rules are met without inventing a security score.
+Build a self-contained React 19 and Tailwind CSS v4 password field with motion/react and lucide-react. Show the actual policy checks beside the entry and provide a labelled reveal button.
 
-## Layout
+Use a 448px maximum-width panel, 24px padding and a 12px radius. The label is 20px medium, supporting copy and rules 14px, input 16px and status 12px mono. Keep the input/reveal row 48px high, each action at least 44px and rule rows 12px apart. The three requirement tracks are 4px high. The working field leads the composition.
 
-44px reveal key at the edge of a 48px input. Three fine horizontal rule segments above a checked requirements list and a mono completion count. Size to the container. Use a 4/8px rhythm, 1px surface edges, 16px narrow padding and 24px desktop padding. Controls have 44px targets.
+Keep neutral #111111/#ffffff panels, #f5f5f5/#171717 ink and #a3a3a3/#525252 secondary text. Decorative hairlines use #333333/#d4d4d4; the identifiable field boundary uses #727272 dark and #8a8a8a light, exceeding 3:1 against the panel. Fade the entire disabled field/reveal row to 40% and retain readable policy information.
 
-## Typography and colour
+The sample policy requires twelve Unicode code points, a Unicode letter and number, and punctuation or a symbol. Accented letters, combining marks and invisible format characters must not be mistaken for symbols. Keep supplied pure predicates unchanged. Preserve the exact input string without rewriting or persisting it. A controlled value waits for its host; without a writer it is read-only and still allows reveal. Disabled prevents both entry and reveal.
 
-Use font-sans at 14-16px/1.5, font-mono metadata at 11-12px and a 24-36px heading with -0.035em tracking. Dark uses #111111, #f5f5f5, #a3a3a3 and #333333; light uses #ffffff, #171717, #525252 and #d4d4d4. Maintain AA contrast.
+Use native new-password autocomplete, instance-scoped labels and descriptions, pressed reveal state, explicit met/not-met rule text and a polite count. Reveal/conceal retains the same text. Empty policies omit the meter/list and show the written unconfigured state with valid descriptions. One rule uses singular requirement copy.
 
-## Motion
-
-Use a 320ms opacity/8px entrance, 150ms press response and 240ms state changes, easing cubic-bezier(0.22,1,0.36,1). No ambient loops. Reduced motion removes transforms and layout animation and limits fades to 120ms.
-
-## Behaviour and accessibility
-
-Use semantic elements, native keyboard behaviour, visible focus rings and instance-scoped IDs. Expose typed content and callbacks. Handle empty custom data and repeated instances. Announce important feedback politely. Match the source state ownership and callback contract.
-
-## Responsive
-
-Design for 320, 390, 768, 1024, 1440 and 1920px. Respond to the container with @container variants, wrap text and stack secondary details. Scroll only within explicitly labelled local regions.
-
-## Avoid
-
-No remote imagery, false success states, unlabelled controls, hover-only actions, low contrast or decorative status pills. The demo is an isolated component on a quiet stage.
+Use an 8px entrance over 320ms and 250ms rule fills. Subscribe to live reduced motion, stop the entrance and settle every fill while keeping the field and focus intact. Verify both themes and 320/390/768/1024/1440/1920px containers, raw callback values, controlled acknowledgement, keyboard reveal, empty/custom policies and Unicode edge cases. Preserve the complete offline default demo and data-demo targets. Keep the four preview controls useful; keep secrets out of shareable configuration and logs.
