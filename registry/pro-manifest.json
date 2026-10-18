@@ -12550,11 +12550,11 @@
   },
   {
     "slug": "commerce-purchase-order",
-    "name": "Purchase Order Composer",
+    "name": "Purchase Order",
     "tier": "pro",
     "platform": "web",
     "category": "commerce",
-    "description": "Supplier order lines with quantity, unit cost, totals and review. A considered, responsive commerce workspace with typed integration points.",
+    "description": "Edit a supplier purchase-order document with product tiles, exact unit costs, live quantities and a retained review-to-save workflow.",
     "tags": [
       "e-commerce",
       "workflow",
@@ -12563,60 +12563,90 @@
       "commerce"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 940,
+    "previewHeight": 1040,
     "usage": "import { PurchaseOrder } from \"@/components/design-for-ai/commerce-purchase-order\";\n\n<PurchaseOrder />",
     "props": [
       {
         "name": "title",
         "type": "string",
-        "description": "Main heading.",
-        "default": "\"Purchase order\""
+        "default": "\"Purchase order\"",
+        "description": "Current rule name in the compact store breadcrumb."
       },
       {
         "name": "subtitle",
         "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Build a supplier order, check the landed total and send a reviewed draft.\""
+        "description": "Optional store context below the app bar."
+      },
+      {
+        "name": "workspace",
+        "type": "string",
+        "default": "\"Fieldwork\"",
+        "description": "Store name in the app bar."
       },
       {
         "name": "suppliers",
         "type": "PurchaseSupplier[]",
-        "description": "Suppliers and catalogue items with non-negative integer unit costs in two-decimal minor units."
+        "description": "Catalogue with unique supplier and product ids, names, SKUs and non-negative safe integer unitCostMinor values. Optional product variant, glyph, colour and image provide identity; optional supplier address is displayed on the order. Invalid or duplicate entries are reported and excluded."
       },
       {
         "name": "currency",
         "type": "string",
-        "description": "ISO currency for all values. No exchange conversion is performed."
+        "description": "ISO currency for all supplied minor-unit costs. Precision follows Intl. Changing currency retires a pending save; key by currency to initialize a different currency draft. No conversion is performed.",
+        "default": "\"GBP\""
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "description": "Locale used for exact currency display. Monetary fields use a decimal point.",
+        "default": "\"en-GB\""
+      },
+      {
+        "name": "defaultDraft",
+        "type": "Partial<PurchaseOrderDraft>",
+        "description": "Initial supplierId, reference, lines and shippingMinor. Each line supplies productId, integer quantity from 1 to 100000 and safe non-negative unitCostMinor. State is initialized once; key the component to load another order."
       },
       {
         "name": "onSubmit",
-        "type": "(draft:PurchaseOrderDraft)=>void|Promise<void>",
-        "description": "Save the reviewed purchase order draft. The host owns order placement and persistence."
+        "type": "(draft: PurchaseOrderDraft) => void | Promise<void>",
+        "description": "Persist the reviewed supplierId, trimmed reference, copied lines, shippingMinor and exact totalMinor. Rejection keeps the review and draft. Resolution acknowledges draft persistence, not supplier transmission or acceptance. Orders above the safe integer total limit cannot be saved."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Neutral graphite or paper surfaces."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "description": "Optional hex accent. Alpha blends over the panel before choosing readable button text. Defaults to theme ink."
       },
       {
         "name": "selectMode",
         "type": "\"custom\" | \"native\"",
         "default": "\"custom\"",
-        "description": "Animated keyboard-accessible custom listboxes, or native platform pickers with matched 12px insets."
+        "description": "Keyboard-accessible custom listboxes or native platform pickers."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Additional classes for the outer component."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:450",
+        "wait:500",
+        "click:@add",
+        "wait:400",
         "click:@review",
-        "wait:800",
+        "wait:400",
         "click:@save",
-        "wait:1100"
+        "wait:1300"
       ],
       "loop": false
     },
@@ -12640,6 +12670,17 @@
           "native"
         ],
         "default": "custom"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#7aa2ff",
+          "#ff8a4c"
+        ]
       }
     ]
   },

@@ -1625,19 +1625,21 @@
     "updated": "2026-10-18"
   },
   "commerce-purchase-order": {
-    "useWhen": "Drafting a purchase order from supplied catalogue and supplier data.",
-    "avoidWhen": "Posting an accounting document or sending an order without explicit host acceptance.",
+    "useWhen": "Preparing a supplier purchase-order document with editable quantities, exact costs and a retained review before saving.",
+    "avoidWhen": "Posting an accounting entry, automatically transmitting to a supplier, or treating a saved draft as supplier acceptance.",
     "integration": [
-      "Supply your own records through `suppliers`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onSubmit` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
-      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+      "Supply unique supplier/product ids, names, SKUs and non-negative safe integer unitCostMinor values. Optional supplier address and product variant/glyph/colour/image enrich the document. Invalid catalogue entries are reported and excluded.",
+      "Initialize reference, supplierId, lines and shippingMinor through defaultDraft. State initializes once; key the component to load another order. Switching suppliers retains their independent line drafts.",
+      "Currency precision follows Intl. Monetary input uses a decimal point; quantity is an integer from 1 to 100000. BigInt arithmetic keeps line totals exact and blocks submission above the safe-integer payload limit.",
+      "Connect onSubmit to draft persistence. The callback receives copied lines and exact shippingMinor/totalMinor. Rejection retains review; the receipt acknowledges persistence only. A changed currency or catalogue context retires obsolete replies.",
+      "Use custom or native selects through selectMode. Quantity steppers support arrows, Shift increments and hold-to-repeat. Removed rows become inert immediately; keyboard focus returns only while removal still owns it."
     ],
     "related": [
       "commerce-backorder-allocation",
-      "commerce-bundle-builder",
-      "commerce-catalog-import"
+      "commerce-variant-stock",
+      "commerce-fulfilment-desk"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-18"
   },
   "commerce-return-desk": {
     "useWhen": "Reviewing eligible return items and an explicit return decision.",

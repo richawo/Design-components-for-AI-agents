@@ -10,6 +10,7 @@ const specs = fs
   .map((file) => ({ slug: file.slice(0, -4) }));
 const finalStates = {
   "commerce-promotion-builder": "AUTUMN20 rule saved",
+  "commerce-purchase-order": "PO-3342 draft saved · 3 lines",
   "commerce-fulfilment-desk":
     "A recovery action has been recorded for this shipment.",
   "fashion-exchange-selector": "Exchange confirmed",
