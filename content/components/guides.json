@@ -4198,14 +4198,16 @@
       "Pass 1 to 12 `parts` in model units: id, label, description, kind (box, cylinder or frame), size, position, an explode vector for full separation, a #rrggbb colour and optional material and metalness. Keep colours neutral unless they mean something.",
       "Set `unit` so dimensions read in real units (`{ label: \"mm\", perUnit: 40 }` shows 2.5 units as 100 mm). The parts list, toolbar summary and stack height all use it.",
       "The view is one value: `{ selectedId, separation, azimuth }`. Control it with `value` and `onValueChange` (throw to refuse a view) and save finished interactions from `onValueCommit`.",
-      "`quality` sets the pixel budget; rendering is on demand, pauses offscreen and disposes on unmount. Without WebGL an isometric drawing and the parts list remain."
+      "`quality` sets the pixel budget; rendering is on demand, pauses offscreen and disposes on unmount. Without WebGL an isometric drawing and the parts list remain.",
+      "Change and commit callbacks receive independent view records, so host mutation cannot change the retained pose. A refused change keeps the previous view; a failed commit keeps the accepted view. Controlled requests commit only after host acknowledgement.",
+      "Use a six-digit hex accent for selected edges and numbered markers. Invalid colours fall back to the theme accent; the marker text selects readable black or white ink."
     ],
     "related": [
       "three-material-inspector",
       "three-keycaps",
       "editor-node-graph"
     ],
-    "updated": "2026-10-17"
+    "updated": "2026-10-18"
   },
   "input-dual-range": {
     "useWhen": "Filtering by an interval where the shape of the data matters: price, duration, size or score, with a histogram showing how many results each band holds.",

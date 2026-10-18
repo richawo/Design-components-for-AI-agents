@@ -42568,7 +42568,7 @@
     ],
     "theme": "dark",
     "previewHeight": 840,
-    "usage": "import { ThreeExplodedAssembly } from \"@/components/design-for-ai/three-exploded-assembly\";\n\n<ThreeExplodedAssembly\n  title=\"Hub enclosure, rev C\"\n  parts={parts}\n  unit={{ label: \"mm\", perUnit: 40 }}\n  value={view}\n  onValueChange={setView}\n/>",
+    "usage": "import { ThreeExplodedAssembly } from \"@/components/design-for-ai/three-exploded-assembly\";\n\n<ThreeExplodedAssembly\n  title=\"Hub enclosure, rev C\"\n  parts={parts}\n  unit={{ label: \"mm\", perUnit: 40 }}\n  value={view}\n  onValueChange={setView}\n/>\n// Change and commit callbacks receive independently copied view records.\n// Controlled requests commit only after the host acknowledges the requested view.",
     "props": [
       {
         "name": "parts",
@@ -42589,12 +42589,12 @@
       {
         "name": "onValueChange",
         "type": "(value: AssemblyView) => void",
-        "description": "Every requested view. Throw to refuse it; the pose stays."
+        "description": "Every requested view. Throw to refuse it; the pose stays. Receives a copied view so host mutation cannot change the retained pose."
       },
       {
         "name": "onValueCommit",
         "type": "(value: AssemblyView) => void",
-        "description": "A finished interaction the host accepted: a drag released, a key let go, a part picked, Reassemble."
+        "description": "A finished interaction the host accepted: a drag released, a key let go, a part picked, Reassemble. Receives an independent copy; mutating it cannot change the retained view."
       },
       {
         "name": "title",
@@ -42624,7 +42624,7 @@
         "name": "accent",
         "type": "string",
         "default": "\"#ff8a3d\"",
-        "description": "Selected part's edges, balloon and list marker."
+        "description": "Selected part's edges, balloon and list marker. Six-digit hex; invalid colours fall back to the theme accent. Numbered markers choose readable black or white text."
       },
       {
         "name": "theme",

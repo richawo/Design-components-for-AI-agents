@@ -1,2 +1,2 @@
 import { runReview } from "./review-harness.mjs";
-await runReview(["editor-"]);
+await runReview(["editor-", "three-"]);

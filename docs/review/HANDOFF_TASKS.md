@@ -295,6 +295,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 1: Version Restore has a reviewed 6.2s film showing both revision switches, the selected closing block, pending restoration and the settled single-block receipt with Undo. The source-animation, source-change delivery and moving-frame guards pass with no stalls; the paired poster is refreshed. 115 listed films remain.
 
+- Task 5: Exploded Assembly now covers actual canvas dragging, native ranges, keyboard cancellation, exact finished commits, refused and failed writes, copied callback values, controlled acknowledgement, read-only/disabled states, empty/invalid input and WebGL fallback/recovery. Material descriptions and the canvas hint retain light-theme contrast; selected numbers choose readable ink for dark and mid-grey accents. Original mutation, 3.97–4.14:1 label, 1.05:1 number and 3.44:1 canvas-hint failures are preserved. Its 39-mount source review, thirty-four state/default accessibility audits, direct resolved-colour checks, six widths, entrance/state captures, Next regression, four controls, official audit and complete 840px metadata replay/poster pass. The replay verifies the selected gasket and the actual canvas separation/turn. Strict registry, both type checks and all 1,063 unit tests pass. 60 components remain without dedicated coverage.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -418,14 +420,14 @@ Its log is `test-results/handoff-next/browser-suite-green.log`.
 
 ## 5. Write browser probes for components that have none
 
-61 finished components still have no dedicated browser regression probe. For each, read its source and
+60 finished components still have no dedicated browser regression probe. For each, read its source and
 `meta.json`, then add a case to the appropriate `tests/browser/*.mjs` suite (or a new probe registered in
 `scripts/test-components.mjs`) covering: the signature interaction, keyboard paths, failed-then-successful callbacks
 with drafts kept (where it has async callbacks), and empty or invalid data. Use `tests/browser/pro-50/hr-org-explorer.mjs`
 as the model for style and depth. Mobile components render through React Native web (`scripts/lib/component-fixture.mjs` aliases it);
 see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 
-`three-exploded-assembly`
+
 `three-material-inspector`, `agents-budget-guard`, `agents-dependency-board`, `agents-run-replay`
 `ai-answer-compare`, `ai-context-budget`, `ai-structured-output`, `auth-recovery-codes`, `devtools-icon-workbench`
 `devtools-incident-timeline`, `devtools-release-compare`, `devtools-request-replay`, `devtools-schema-migration`
