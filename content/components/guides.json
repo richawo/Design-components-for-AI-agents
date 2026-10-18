@@ -5078,13 +5078,15 @@
       "Pass the two sides as `mine` and `theirs` ({ name, initials, device, deviceName, editedAt }), the conflicting fields as { id, label, mine, theirs } and any agreed fields as `settled` for context. Changed words are highlighted from a word diff of the two values.",
       "Each card can be dragged over the other or kept with its button. `onChoose` reports every choice with { fieldId, choice, value } so you can keep a draft; `defaultChoices` resumes one.",
       "`onSave` receives every resolution once all fields are chosen. Resolve to show the synced state; reject or throw to keep the choices and show your error message with a retry.",
-      "Install expo-blur, expo-linear-gradient and react-native-svg (bare apps run `npx install-expo-modules`). Check drag, VoiceOver and large text on devices."
+      "Install expo-blur, expo-linear-gradient and react-native-svg (bare apps run `npx install-expo-modules`). Check drag, VoiceOver and large text on devices.",
+      "Supply onSave to enable acknowledgement of the merged record. It receives the chosen field values in field order. A rejection keeps the choices for review and retry; an absent handler leaves saving unavailable.",
+      "Use a new React key for each conflict revision, so late host replies cannot acknowledge a newer conflict. Empty field lists show a written empty state with saving disabled."
     ],
     "related": [
       "mobile-offline-outbox",
       "mobile-swipe-list"
     ],
-    "updated": "2026-10-17"
+    "updated": "2026-10-18"
   },
   "mobile-offline-outbox": {
     "useWhen": "A mobile app that saves work without signal and needs one place to see what is waiting, send it on demand and fix the changes a server turns down.",

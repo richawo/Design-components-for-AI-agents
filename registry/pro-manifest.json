@@ -36138,7 +36138,7 @@
         "name": "fields",
         "type": "ConflictField[]",
         "default": "Time, table and note",
-        "description": "Fields both sides changed: { id, label, mine, theirs }. Changed words are highlighted on each card."
+        "description": "Fields both sides changed: { id, label, mine, theirs }. Changed words are highlighted on each card. Use a new React key for a different conflict revision."
       },
       {
         "name": "settled",
@@ -36171,7 +36171,7 @@
       {
         "name": "onSave",
         "type": "(resolutions: ConflictResolution[]) => void | Promise<void>",
-        "description": "Saves the merged record. Resolve to show Synced; reject or throw and the choices stay, with the error message and a retry."
+        "description": "Persist the resolved fields and acknowledge synchronization. Resolve to show Synced; reject to retain the choices and offer retry. Omit for an unavailable save action."
       },
       {
         "name": "onBack",
