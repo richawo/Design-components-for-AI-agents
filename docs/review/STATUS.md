@@ -11,7 +11,7 @@ needs re-recording, whether its poster is current, and the state of its browser 
 
 ## Batch verification (18 October 2026)
 
-All 59 Next-backed browser suites and all 26 focused component audits pass. Strict registry validation,
+The preceding checkpoint passed all 59 Next-backed browser suites and all 26 focused component audits. Strict registry validation,
 TypeScript and all 1,063 unit tests pass. The Worker dry run passes with a 2,655,633-byte router,
 56,759,418-byte runtime and 4,728,730 bytes of compressed source maps. Existing lazy-boundary and size guards
 remain in place. Measurements, checkout revisions and the investigated package diagnostics are recorded in
@@ -64,7 +64,7 @@ remain in place. Measurements, checkout revisions and the investigated package d
 | `editor-asset-license-sheet` | current | current | Next-backed crop/placement, retry, exact payload, pending and invalid-data regression; twenty-eight theme/state accessibility audits and four controls pass. Reviewed 6.4s film and settled poster current. |
 | `editor-branch-compare` | current | current | Next-backed merge choices, scrubbing, exact output, retry, pending and replaced-revision regression; twenty-eight theme/state accessibility audits and four controls pass. Reviewed 5.5s film and settled poster current. |
 | `editor-color-token-studio` | current | current | Next-backed pointer/keyboard, palette failure/retry, clipboard, invalid ids, controlled read-only and stale-reply regression passes; eight theme/accent accessibility states, four controls and 320/390/768/1440 geometry pass. Reviewed neutral 5.2s film shows the AA repair and settled Applied receipt; source/delivery/moving-frame guards pass. |
-| `editor-export-preset` | new | current |  |
+| `editor-export-preset` | new | current | Next-backed pointer/keyboard, exact export, failure/retry, pending locks, empty/invalid options and retired-layer regression pass. Both-theme accessibility, six widths, entrance/state captures, five controls, official audit and refreshed poster pass. |
 | `editor-font-pairing` | new | current |  |
 | `editor-keyframe-track` | new | current |  |
 | `editor-layer-stack` | new | current |  |

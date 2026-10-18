@@ -195,6 +195,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Tasks 4 and 8: the complete Next-backed browser run passes all 59 suites, including Column Workbench and Access Requests. All 26 focused component audits, strict registry validation, TypeScript and all 1,063 unit tests pass. The Worker dry run also passes its existing router, runtime and source-map guards. See the measured checkpoint in task 8.
 
+- Task 5: Export Preset now has a dedicated Next-backed regression for artboard/format/scale keys, quality and comparison controls, exact export snapshots, failed retry, pending locks, empty/invalid options and retired layer replies. Missing writers stay unavailable; invalid formats/dimensions cannot invent an export; the comparison slider reports its actual bounds. Its 21-mount source review, both-theme accessibility, six widths, entrance/state captures, five preview controls, official audit and refreshed poster pass, together with strict registry, TypeScript and all 1,063 unit tests. 67 components remain without dedicated coverage.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -319,14 +321,14 @@ Its log is `test-results/handoff-next/browser-suite-green.log`.
 
 ## 5. Write browser probes for components that have none
 
-68 finished components still have no dedicated browser regression probe. For each, read its source and
+67 finished components still have no dedicated browser regression probe. For each, read its source and
 `meta.json`, then add a case to the appropriate `tests/browser/*.mjs` suite (or a new probe registered in
 `scripts/test-components.mjs`) covering: the signature interaction, keyboard paths, failed-then-successful callbacks
 with drafts kept (where it has async callbacks), and empty or invalid data. Use `tests/browser/pro-50/hr-org-explorer.mjs`
 as the model for style and depth. Mobile components render through React Native web (`scripts/lib/component-fixture.mjs` aliases it);
 see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 
-`editor-export-preset`, `editor-font-pairing`, `editor-keyframe-track`, `editor-layer-stack`
+`editor-font-pairing`, `editor-keyframe-track`, `editor-layer-stack`
 `editor-spacing-inspector`, `editor-storyboard-strip`, `editor-version-restore`, `three-exploded-assembly`
 `three-material-inspector`, `agents-budget-guard`, `agents-dependency-board`, `agents-run-replay`
 `ai-answer-compare`, `ai-context-budget`, `ai-structured-output`, `auth-recovery-codes`, `devtools-icon-workbench`

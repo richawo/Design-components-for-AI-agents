@@ -18482,13 +18482,13 @@
         "name": "presets",
         "type": "ExportSizePreset[]",
         "default": "Link preview 1200×630, Feed post 1080×1080, Story 1080×1920, Email header 1200×400",
-        "description": "Artboard sizes: { id, label, width, height, note? }. The frame reflows to the chosen one."
+        "description": "Artboard sizes with unique non-empty ids/labels and positive safe integer pixel dimensions. Invalid or duplicate presets and unsafe 3× output areas are excluded. An empty valid catalogue shows a written unavailable state."
       },
       {
         "name": "formats",
         "type": "(\"png\" | \"jpg\" | \"webp\")[]",
         "default": "[\"png\", \"jpg\", \"webp\"]",
-        "description": "Formats the host can write, in order. JPG and WebP are lossy and show quality and the compare wipe; JPG has no alpha."
+        "description": "Supported formats in display order. Duplicate or unsupported entries are excluded. An empty supported list shows an unavailable state instead of silently choosing PNG."
       },
       {
         "name": "defaultPresetId",
@@ -18536,17 +18536,17 @@
         "name": "showCompare",
         "type": "boolean",
         "default": "true",
-        "description": "The draggable before/after wipe on lossy formats (arrow keys move it too)."
+        "description": "The pointer/keyboard comparison wipe on lossy formats. Its accessible 4–96% range matches the bounded handle; arrows, Shift and Home/End move it."
       },
       {
         "name": "onExport",
         "type": "(settings: ExportSettings) => void | Promise<void>",
-        "description": "Writes the file. Progress fills the button while it is pending; a rejection shows its message and keeps every setting for a retry."
+        "description": "Writes a copied snapshot of the current validated settings. Required to enable Export. Pending export locks settings; rejection keeps the draft for retry. Replacing the current layer or settings retires obsolete acknowledgements."
       },
       {
         "name": "onChange",
         "type": "(settings: ExportSettings) => void",
-        "description": "Called once per settings change, for hosts that remember the last preset."
+        "description": "Receives a copied settings snapshot once per settings change. Export progress and theme-only renders do not report duplicate changes."
       },
       {
         "name": "accent",
