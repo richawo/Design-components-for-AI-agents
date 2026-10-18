@@ -305,6 +305,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Storyboard follow-up: a preserved outside-release counterexample continued from 2.5 to 5.5 seconds after release. Held duration edits now stop on window-level pointer release/cancellation and loss of focus; a new hold retires its previous timer. The expanded 35-mount review, twenty state/default accessibility audits, six widths and focused Next regression pass. The compact replay trace separately showed a 750ms scripted hold under software rendering, so the walkthrough now focuses the duration field and applies one ArrowUp step. Both 1440px and measured 1024px replays retain the intended reorder and exact half-second edit. The 1024px fixed union contains every replay state. Strict registry, root/Pro types and all 1,063 unit tests pass. Film delivery remains under investigation; rejected attempts have not replaced the published pair.
 
+- Task 1 capture follow-up: a 25ms owned-image request reproduced 104ms delivery after the old fallback wait. The fallback now starts after 40ms of quiet frames, reserving time for polling, renderer IPC and the actual capture. The new deterministic regression passes; normal-frame, shutdown and capture-error checks remain intact. Browser controls still reject a blocked UI and delayed image delivery, while the quiet-frame capture passes. The same compact Storyboard scene now passes at 78ms maximum delivery, with no guard relaxed. Strict registry, TypeScript and all 1,064 unit tests pass. Rejected recordings remain archived.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned

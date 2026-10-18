@@ -66,6 +66,19 @@ describe("owned source screenshot fallback", () => {
     await capture.stop();
   });
 
+  it("leaves time for image delivery after a polling interval and a 25ms capture", async () => {
+    const state = setup();
+    state.cdp.send.mockImplementation(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 25));
+      return { data: "delivered-owned-surface" };
+    });
+    const capture = startChangedSourceScreenshots(state);
+    await vi.advanceTimersByTimeAsync(160);
+    const evidence = await capture.stop();
+    expect(evidence.captures).toHaveLength(1);
+    expect((evidence.captures[0].capturedAt - (state.started + 0.001)) * 1000).toBeLessThanOrEqual(100);
+  });
+
   it("rechecks a normal frame received while the source probe was pending", async () => {
     const state = setup();
     let finish!: (value: number) => void;

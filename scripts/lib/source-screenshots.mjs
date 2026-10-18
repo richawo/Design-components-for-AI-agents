@@ -12,14 +12,18 @@ export function startChangedSourceScreenshots({ page, cdp, getLatestFrameTime, o
 
   const sample = async () => {
     const previousFrameAt = getLatestFrameTime();
-    if (!Number.isFinite(previousFrameAt) || !previousFrameAt || Date.now() / 1000 - previousFrameAt < 0.06) return;
+    // Leave room in the 100ms delivery budget for the 20ms polling phase,
+    // renderer IPC and the real image request. A 60ms trigger can deliver an
+    // otherwise healthy 25ms capture after the limit.
+    const quietSeconds = 0.04;
+    if (!Number.isFinite(previousFrameAt) || !previousFrameAt || Date.now() / 1000 - previousFrameAt < quietSeconds) return;
     const changedAt = await page.evaluate(() => window.__dfaCDPSourceEvidence?.sourceChanges.at(-1));
     // A normal frame may have arrived while the renderer answered the probe.
     if (
       stopped ||
       !Number.isFinite(changedAt) ||
       changedAt <= getLatestFrameTime() ||
-      Date.now() / 1000 - getLatestFrameTime() < 0.06
+      Date.now() / 1000 - getLatestFrameTime() < quietSeconds
     )
       return;
 

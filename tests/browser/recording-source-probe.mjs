@@ -5,7 +5,7 @@ import { captureQuality } from "../../scripts/lib/recording-quality.mjs";
 import { sourceChangeQuality } from "../../scripts/lib/tab-recording.mjs";
 import { startChangedSourceScreenshots } from "../../scripts/lib/source-screenshots.mjs";
 
-const out = "test-results/recording-source";
+const out = process.env.RECORDING_SOURCE_OUT ?? "test-results/recording-source";
 fs.mkdirSync(out, { recursive: true });
 const browser = await launchChromium({ args: [] });
 try {
