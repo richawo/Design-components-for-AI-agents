@@ -4605,7 +4605,7 @@
     "avoidWhen": "Frame-accurate editing of real footage, multi-track timelines with audio, or slide decks where items have no duration.",
     "integration": [
       "Supply scenes as { id, title, notes, duration, shot, tone, thumbnail }. Pass a real frame URL as thumbnail when you have one; otherwise the board is drawn from the shot type and its two tone colours.",
-      "Supply finite shot lengths from 0.5 to 20 seconds and a finite positive targetDuration. Edits snap to half seconds; invalid timing shows an alert. The meter and readout show time to spare or the overrun.",
+      "Supply finite shot lengths from 0.5 to 20 seconds and a finite positive targetDuration. Edits snap to half seconds; invalid timing shows an alert. The meter and readout show time to spare or the overrun. Held stepper edits end on release outside the button or loss of window focus.",
       "onScenesChange receives a copied ordered list, including copied tone tuples, after each finished change: a dropped drag, Earlier or Later move, released trim or normalized stepper edit. Store it as the new order and lengths; unchanged normalized entries do not notify.",
       "Use a six-digit hex accent for the playhead, selection and Play button. Invalid colours fall back to theme ink; the button selects readable black or white text."
     ],

@@ -179,4 +179,19 @@ export async function check({ page, mount, assert, capture = async () => {} }) {
   assert.notEqual(await page.getByRole('button',{name:'Play the board',exact:true}).evaluate(node=>getComputedStyle(node).backgroundColor),'rgba(0, 0, 0, 0)');
   await capture('invalid-accent-fallback', { audit: true });
 
+  await page.setViewportSize({width:1024,height:900});
+  await mount(`window.edits=[];createRoot(document.getElementById('root')).render(<Subject.EditorStoryboardStrip scenes={[{id:'opening',title:'Opening',notes:'Hold on the lake.',duration:2,shot:'wide'}]} onScenesChange={next=>window.edits.push(structuredClone(next))}/>);`);
+  const longer = page.locator('[data-demo="longer"]');
+  await longer.dispatchEvent('pointerdown',{button:0,pointerId:7,isPrimary:true});
+  await page.locator('body').dispatchEvent('pointerup',{button:0,pointerId:7,isPrimary:true});
+  await page.waitForTimeout(750);
+  assert.equal(await duration().inputValue(),'2.5','A release outside the button ends the held edit');
+  assert.equal(await page.evaluate(()=>window.edits.length),1);
+  await longer.dispatchEvent('pointerdown',{button:0,pointerId:8,isPrimary:true});
+  await page.evaluate(()=>window.dispatchEvent(new Event('blur')));
+  await page.waitForTimeout(750);
+  assert.equal(await duration().inputValue(),'3.0','Losing window focus ends the held edit');
+  assert.equal(await page.evaluate(()=>window.edits.length),2);
+  await capture('released-hold',{audit:true});
+
 }

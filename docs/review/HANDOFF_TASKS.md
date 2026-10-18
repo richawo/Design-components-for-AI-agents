@@ -303,6 +303,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 1: Material Inspector has a reviewed 4.78s film showing resin, the moved key light, brass and the settled turned sample with matching parameters. The accepted capture passes the source-animation, source-change delivery and moving-frame guards with no stalls. Its initial 256ms source-stall rejection is preserved; the passing retry uses unchanged production source. No shader warm-up patch or permanent latency improvement is claimed. The paired poster is refreshed. 113 listed films remain.
 
+- Storyboard follow-up: a preserved outside-release counterexample continued from 2.5 to 5.5 seconds after release. Held duration edits now stop on window-level pointer release/cancellation and loss of focus; a new hold retires its previous timer. The expanded 35-mount review, twenty state/default accessibility audits, six widths and focused Next regression pass. The compact replay trace separately showed a 750ms scripted hold under software rendering, so the walkthrough now focuses the duration field and applies one ArrowUp step. Both 1440px and measured 1024px replays retain the intended reorder and exact half-second edit. The 1024px fixed union contains every replay state. Strict registry, root/Pro types and all 1,063 unit tests pass. Film delivery remains under investigation; rejected attempts have not replaced the published pair.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned

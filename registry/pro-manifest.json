@@ -20337,7 +20337,9 @@
         "hover:@strip:0.16,0.5",
         "up",
         "wait:500",
-        "click:@longer",
+        "click:@shot-duration",
+        "key:ArrowUp",
+        "key:Tab",
         "wait:600"
       ],
       "loop": false
