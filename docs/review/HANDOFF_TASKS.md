@@ -201,6 +201,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 7: Promotion Builder is rebuilt around a working offer ticket and line-level basket receipt. Exact minor-unit savings, capped/category/audience rules, failed-save retry, pending locks and retired-currency replies pass its 22-mount source review and rewritten Next regression. Both-theme state accessibility, six widths, entrance captures, three controls, official audit and refreshed poster pass, with strict registry, TypeScript and all 1,063 unit tests. Its new film joins task 1; 39 components and 12 blocks remain in task 7.
 
+- Task 1: Promotion Builder now has a reviewed 4.2s film showing audience eligibility, exact basket savings and the settled saved-rule receipt. Its paired poster retains the full ticket and receipt. Maximum source gap is 11ms, changed-source delivery 17.6ms and moving-frame p95 21.3ms, with no stalls and every existing guard intact. 120 listed films remain.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -218,7 +220,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Browser checks: `node scripts/check-component.mjs <slug> --base=http://localhost:3100 --no-video --keep-going`
   (screenshots at 1440/768/390 and every control flip; read the screenshots it writes to `test-results/check/<slug>/`).
 
-## 1. Re-record demo videos (121 components)
+## 1. Re-record demo videos (120 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -237,7 +239,6 @@ slug or per small group). Notes:
 
 Slugs:
 
-`commerce-promotion-builder`
 `editor-font-pairing`, `editor-keyframe-track`
 `editor-layer-stack`, `editor-spacing-inspector`, `editor-storyboard-strip`, `editor-version-restore`
 `three-exploded-assembly`, `three-material-inspector`, `agents-budget-guard`, `agents-dependency-board`

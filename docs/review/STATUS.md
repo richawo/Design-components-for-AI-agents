@@ -178,7 +178,7 @@ remain in place. Measurements, checkout revisions and the investigated package d
 
 | Slug | Video | Poster | Probe |
 | --- | --- | --- | --- |
-| `commerce-promotion-builder` | new | current | Rebuilt offer ticket and exact line-level receipt; 22-mount source review, Next workflow, both-theme accessibility, six widths, entrance/state captures, three controls, official audit and refreshed poster pass. |
+| `commerce-promotion-builder` | current | current | Rebuilt offer ticket and exact line-level receipt; 22-mount source review, Next workflow, both-theme accessibility, six widths, entrance/state captures, three controls, official audit and refreshed poster pass; reviewed 4.2s audience/savings/save film and paired poster are current. |
 | `commerce-backorder-allocation` | new | current | rewritten, passes on the Next-backed source-fixture runner |
 | `commerce-bundle-builder` | new | current | rewritten, passes on the Next-backed source-fixture runner |
 | `commerce-customer-timeline` | new | current | rewritten, passes on the Next-backed source-fixture runner |
