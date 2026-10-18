@@ -309,6 +309,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 1: Storyboard Strip has a reviewed 6.23s film showing playback, Waxed Cotton moving into the second position and one half-second duration edit. The measured 1024px scene retains the complete component in a fixed union throughout; its paired opening poster is refreshed. Maximum source gap is 13ms, changed-source delivery is 78ms and moving-frame p95 is 17.55ms, with no stalls and every existing guard intact. 112 listed films remain.
 
+- Task 8: the Storyboard/Restore/Assembly/Material batch passes all 59 browser suites and 66 metadata replays on unchanged source hashes. All four fresh component audits, strict registry, root/Pro types and all 1,064 unit tests pass. The Worker dry run measures a 2,655,633-byte router, 57,173,220-byte runtime and 4,763,403 bytes of compressed maps, with all guards retained. Every film is reviewed and current; rejected takes remain archived. The measured checkpoint below records the revisions and evidence.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -495,6 +497,45 @@ industry components).
 After any batch of the above: `node scripts/build-registry.mjs --strict`, `npx tsc --noEmit`, `npm test`,
 `npm run test:components`, `npm run audit:components -- <changed slugs>`, then stop the dev server and run
 `npm run deploy:dry-run` to check the Worker bundle size. Deployment itself (`npm run deploy`) is the owner's call.
+
+### Editor and 3D checkpoint: 18 October 2026
+
+The Storyboard Strip, Version Restore, Exploded Assembly and Material Inspector batch passes at public
+`955bf6f`, private `c87d16c`, with the existing shared auth/mobile edits retained. All 911 public and 1,138
+private tracked source hashes, revisions and working-tree states stayed unchanged through the full browser
+run, fresh component audits and Worker dry run. The four paired posters and reviewed films are current.
+
+| Check | Result |
+| --- | --- |
+| Strict registry | Pass: 100 free and 259 Pro components |
+| TypeScript | Root and isolated Pro editor/3D checks pass |
+| Unit tests | 43 files, 1,064 tests pass |
+| Complete Next-backed browser run | 59/59 pass |
+| Broad regressions | All 20 mobile, 12 data/chart and 12 editor/3D cases pass |
+| Metadata demos | All 66 replays pass, including the four added checks |
+| Component pages and blocks | Readiness, access recovery, private-source boundaries and block workflows pass |
+| Native source reviews | 138 mounts and 106 state/default accessibility audits pass across the four components |
+| Fresh component audits | 4/4 pass; all forty responsive/theme captures visually reviewed |
+| Recording | Four reviewed films pass unchanged source-animation, image-delivery and moving-frame guards |
+| Worker router | 2,655,633 bytes, below 4 MiB |
+| Worker runtime | 57,173,220 bytes, below 64 MiB |
+| Compressed source maps | 4,763,403 bytes total, below 15,000,000 bytes |
+| Worker dry run | Exit 0; existing size and lazy-boundary guards retained |
+
+Full and release logs use the `test-results/handoff-editor-3d-batch-` prefix. Frozen checkout snapshots are
+`test-results/handoff-editor-followup/editor-3d-batch-checkout{,-end}.json`; the later unchanged-source and
+review receipt is `editor-3d-batch-release-delta-proof.json` in the same directory. The fresh audit captures
+and eight reviewed contact sheets are in `editor-3d-batch-audits/`. Touch checks are browser emulation.
+
+The deterministic quiet-capture regression reproduces 104ms delivery with the old wait. Starting the real
+image fallback earlier retains all rejection guards; the accepted compact Storyboard recording measures
+78ms maximum delivery. Blocked UI and delayed image delivery still fail their browser controls. Earlier
+rejected takes remain archived. Material Inspector's initial source stall passes on an unchanged retry;
+no shader warm-up patch or permanent renderer latency improvement is claimed.
+
+Worker module and dependency proof is `editor-3d-batch-worker-proof.json` in the same evidence directory.
+The same three OpenNext copy diagnostics remain; their 14, 3 and 19 runtime files respectively are present
+and byte-identical. No manual deployment was performed. Component-page loading work remains separate.
 
 ### Four-editor workflow checkpoint: 18 October 2026
 

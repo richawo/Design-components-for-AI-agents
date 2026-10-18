@@ -11,15 +11,16 @@ needs re-recording, whether its poster is current, and the state of its browser 
 
 ## Batch verification (18 October 2026)
 
-The Font Pairing, Spacing Inspector, Keyframe Track and Layer Stack batch passes its workflows, controls,
-component audits and reviewed films. The complete Next-backed run passes **59/59**, including all 20 mobile,
-12 data/chart and eight editor regressions, all 62 metadata replays, page/access boundaries and every industry
-group. A subsequent Layer Stack save-settlement fix passes its expanded 33-mount source review, 24 state/default
-accessibility audits and focused Next, control, audit and demo reruns. Other tracked sources are unchanged.
-Strict registry, root and isolated Pro types, and all 1,063 unit tests pass. The final Worker dry run measures a
-2,655,633-byte router, 57,158,216-byte runtime and 4,763,194 bytes of compressed source maps. Existing guards
-remain, and the three diagnostic packages' runtime files are verified. No deployment was performed.
-The separate component-page loading evidence and earlier checkpoints remain recorded.
+The Storyboard Strip, Version Restore, Exploded Assembly and Material Inspector batch passes its source
+reviews, Next workflows, controls, component audits and reviewed films. The complete browser run passes
+**59/59**, including all 20 mobile, 12 data/chart and 12 editor/3D cases, all 66 metadata replays, page/access
+boundaries and every industry group. All 911 public and 1,138 private tracked source hashes, revisions and
+working-tree states stayed unchanged through release verification. The four source reviews cover 138 mounts
+and 106 state/default accessibility audits; all forty fresh audit captures are also visually reviewed.
+Strict registry, root and isolated Pro types, and all 1,064 unit tests pass. The Worker dry run measures a
+2,655,633-byte router, 57,173,220-byte runtime and 4,763,403 bytes of compressed source maps. Existing guards
+remain, and the three diagnostic packages' runtime files are verified. No manual deployment was performed.
+Component-page loading work and earlier checkpoints remain separate.
 See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisions, measurements and evidence.
 
 ## Mobile (20)
