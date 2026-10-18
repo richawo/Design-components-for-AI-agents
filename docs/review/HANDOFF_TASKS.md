@@ -166,6 +166,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 1 tooling: traced Branch Compare's rejection to subpixel meter writes and final native-animation style commits after the image had settled. The recorder now requests an actual owned screenshot during a changed-source screencast gap, retaining every mutation and the existing 100ms source/delivery and moving-frame limits. The production replay drops from 427ms to 80ms changed-source delay with one real screenshot; UI-block and capture-block negative controls still reject. The registered public browser regression, fourteen added timing/lifecycle unit cases and all 1,063 unit tests pass. See `RECORDING_SOURCE_TIMING.md` for evidence and timestamp rules. New editor films pass and await final visual review before replacement.
 
+- Task 1: Branch Compare now has a reviewed monochrome 5.5s film showing both remaining choices, the rerouted merge path and a settled six-change receipt. The full sheet stays visible with its current Next poster framing. Source cadence, changed-source delivery and moving-frame guards pass with no stalls. 127 listed films remain.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -183,7 +185,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Browser checks: `node scripts/check-component.mjs <slug> --base=http://localhost:3100 --no-video --keep-going`
   (screenshots at 1440/768/390 and every control flip; read the screenshots it writes to `test-results/check/<slug>/`).
 
-## 1. Re-record demo videos (128 components)
+## 1. Re-record demo videos (127 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -203,7 +205,7 @@ slug or per small group). Notes:
 Slugs:
 
 `mobile-attachment-tray`, `mobile-budget-envelope`
-`editor-asset-license-sheet`, `editor-branch-compare`
+`editor-asset-license-sheet`
 `editor-color-token-studio`, `editor-export-preset`, `editor-font-pairing`, `editor-keyframe-track`
 `editor-layer-stack`, `editor-spacing-inspector`, `editor-storyboard-strip`, `editor-version-restore`
 `three-exploded-assembly`, `three-material-inspector`, `agents-budget-guard`, `agents-dependency-board`
