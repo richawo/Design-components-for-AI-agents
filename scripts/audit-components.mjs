@@ -46,6 +46,34 @@ for (const slug of requested)
 if (!entries.length) throw new Error("No components matched the selection.");
 fs.mkdirSync(out, { recursive: true });
 
+/** A fixed delay can finish before a queued iframe resize or theme update paints. */
+async function paint(frame) {
+  let timer;
+  try {
+    await Promise.race([
+      frame.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))),
+      new Promise((_, reject) => {
+        timer = setTimeout(() => reject(new Error("The preview did not paint within 10 seconds.")), 10000);
+      }),
+    ]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function settle(frame, delay) {
+  await paint(frame);
+  await frame.waitForTimeout(delay);
+  await paint(frame);
+}
+
+async function previewReady(frame, slug) {
+  await frame
+    .locator(`[data-preview-slug=${JSON.stringify(slug)}][data-preview-ready="true"]`)
+    .waitFor({ state: "attached", timeout: 45000 });
+  await frame.evaluate(() => document.fonts.ready);
+}
+
 async function geometry(frame) {
   return frame.evaluate(() => {
     const ids = [...document.querySelectorAll("[id]")].map((e) => e.id);
@@ -82,7 +110,7 @@ async function stableAccessibility(frame) {
   const first = await accessibility(frame);
   if (!first.length) return { violations: [], transient: [] };
   // An entrance or streamed word can be halfway through a fade. Keep both observations as evidence.
-  await frame.waitForTimeout(2400);
+  await settle(frame, 2400);
   return { violations: await accessibility(frame), transient: first };
 }
 
@@ -99,11 +127,12 @@ async function screenshotTouch(page, frame, file) {
   await page.evaluate((height) => {
     document.querySelector("iframe").style.height = `${height}px`;
   }, height);
-  await frame.waitForTimeout(100);
+  await settle(frame, 100);
   await page.screenshot({ path: file, fullPage: true });
   await page.evaluate(() => {
     document.querySelector("iframe").style.height = "844px";
   });
+  await paint(frame);
 }
 
 const browser = await launchChromium();
@@ -131,18 +160,18 @@ try {
         page.on("pageerror", (error) => result.errors.push(error.message));
         try {
           const response = await page.goto(`${base}/preview/${meta.slug}`, {
-            waitUntil: "networkidle",
+            waitUntil: "domcontentloaded",
             timeout: 120000,
           });
           if (!response?.ok())
             throw new Error(`Preview returned ${response?.status()}`);
-          await page.evaluate(() => document.fonts.ready);
-          await page.waitForTimeout(2400);
+          await previewReady(page, meta.slug);
+          await settle(page, 2400);
           for (const width of meta.platform === "mobile"
             ? [360, 390, 430]
             : [320, 390, 768, 1024, 1440, 1920]) {
             await page.setViewportSize({ width, height: 900 });
-            await page.waitForTimeout(350);
+            await settle(page, 350);
             const measurement = await geometry(page);
             result.viewports.push({ width, ...measurement });
             if (width === 1440)
@@ -157,8 +186,9 @@ try {
             });
           }
           await page.emulateMedia({ reducedMotion: "reduce" });
-          await page.reload({ waitUntil: "networkidle" });
-          await page.waitForTimeout(2000);
+          await page.reload({ waitUntil: "domcontentloaded" });
+          await previewReady(page, meta.slug);
+          await settle(page, 2000);
           result.reducedMotion = await page.evaluate(() =>
             document
               .getAnimations()
@@ -206,8 +236,8 @@ try {
             .frames()
             .find((f) => f.url().includes(`/preview/${meta.slug}`));
           if (!content) throw new Error("No preview frame");
-          await content.evaluate(() => document.fonts.ready);
-          await content.waitForTimeout(2400);
+          await previewReady(content, meta.slug);
+          await settle(content, 2400);
           for (const theme of meta.props.some((p) => p.name === "theme")
             ? ["dark", "light"]
             : ["default"]) {
@@ -225,14 +255,14 @@ try {
                   ),
                 theme,
               );
-              await content.waitForTimeout(2000);
+              await settle(content, 2000);
             }
             const scan = await stableAccessibility(content);
             const measurement = await geometry(content);
             result.themes.push({ theme, ...measurement, ...scan });
             await screenshotTouch(touch, content, path.join(dir, `${theme}-touch.png`));
             await touch.setViewportSize({ width: 320, height: 844 });
-            await content.waitForTimeout(350);
+            await settle(content, 350);
             result.viewports.push({
               width: 320,
               touch: true,
@@ -241,6 +271,7 @@ try {
             });
             await screenshotTouch(touch, content, path.join(dir, `${theme}-touch-320.png`));
             await touch.setViewportSize({ width: 390, height: 844 });
+            await paint(content);
           }
         } catch (error) {
           result.errors.push(String(error));

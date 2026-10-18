@@ -187,6 +187,9 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 5: Color Token Studio now covers pointer/keyboard channels, roving tokens, exact palette saves, failure/retry, applied-only CSS and clipboard fallback. Valid prototype-named ids work; duplicate/invalid ids, retired drafts, controlled read-only palettes and late replies have explicit handling. Its Next-backed regression, eight theme/accent accessibility states, four controls and 320/390/768/1440 geometry pass, together with strict registry, TypeScript and all 1,063 unit tests. The settled Next poster is refreshed and visually reviewed. Both initial film attempts failed the unchanged timing guards and remain unaccepted. 68 components remain without dedicated coverage.
 
+
+- Task 8: Box Distribution now publishes current resize geometry before paint and ignores stale observer dimensions. Its first-frame and late-report regressions, complete Next workflow, twelve theme/accent/target accessibility checks, refreshed poster and corrected official audit pass. Light handle and target-met text now meet AA, neutral presets remain visible, and unsupported colours recover safely. The auditor requires the requested source and actual paint around its existing waits; a persistent 8px overflow still fails at all six desktop widths. Strict registry, TypeScript and all 1,063 unit tests pass. See [Box Distribution verification](BOX_DISTRIBUTION_RESIZE.md). The 26-component batch, complete browser suite and Worker dry run still need their final reruns.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned

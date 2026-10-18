@@ -38,7 +38,7 @@ needs re-recording, whether its poster is current, and the state of its browser 
 
 | Slug | Video | Poster | Probe |
 | --- | --- | --- | --- |
-| `chart-box-distribution` | current | current | Next-backed regression, both-theme default and six state audits, seven controls pass; real drag/keyboard, sort/retry retention, initial-load retry and resizing, stable axis/bounds, invalid settings, finite extremes and plain decimal ARIA covered; poster/guarded film refreshed |
+| `chart-box-distribution` | current | current | Next-backed regression, both-theme default and six state audits, seven controls pass; real drag/keyboard, sort/retry retention, initial-load retry and resizing, stable axis/bounds, invalid settings, finite extremes and plain decimal ARIA covered; poster/guarded film refreshed; first-frame/late-observer resize regression, light handle/target contrast, alpha/neutral/unsupported accent checks and painted official audit pass |
 | `chart-calendar-heatmap` | current | current | Next-backed regression, eighteen theme/state accessibility audits and six controls pass; keyboard/pointer/legend actions, exact zero/null callbacks, retained retry choices, leap/small ISO years, controlled years/pins, future-hover clearing, invalid settings and unmeasured/large totals covered; poster/guarded film refreshed |
 | `chart-funnel-dots` | current | current | Next-backed regression, fourteen theme/state accessibility audits and five controls pass; keyboard clearing/navigation, exact callbacks, controlled segments, retry retention/recovery and resizing, invalid settings and finite/fractional geometry covered; monochrome poster/guarded film refreshed |
 | `chart-sankey-paths` | current | current | Next-backed regression, fourteen theme/state accessibility audits and four controls pass; keyboard node/ribbon traces, exact callbacks, controlled/empty periods, retry retention and resizing, tooltip bounds/descriptions, label contrast and invalid/fractional/large data covered; monochrome poster/guarded film refreshed |
@@ -53,8 +53,8 @@ needs re-recording, whether its poster is current, and the state of its browser 
 
 | Slug | Video | Poster | Probe |
 | --- | --- | --- | --- |
-| `editor-asset-license-sheet` | new | current |  |
-| `editor-branch-compare` | new | current |  |
+| `editor-asset-license-sheet` | current | current | Next-backed crop/placement, retry, exact payload, pending and invalid-data regression; twenty-eight theme/state accessibility audits and four controls pass. Reviewed 6.4s film and settled poster current. |
+| `editor-branch-compare` | current | current | Next-backed merge choices, scrubbing, exact output, retry, pending and replaced-revision regression; twenty-eight theme/state accessibility audits and four controls pass. Reviewed 5.5s film and settled poster current. |
 | `editor-color-token-studio` | new | current | Next-backed pointer/keyboard, palette failure/retry, clipboard, invalid ids, controlled read-only and stale-reply regression passes; eight theme/accent accessibility states, four controls and 320/390/768/1440 geometry pass. Fresh film pending timing guards. |
 | `editor-export-preset` | new | current |  |
 | `editor-font-pairing` | new | current |  |

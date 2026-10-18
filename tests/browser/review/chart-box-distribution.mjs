@@ -1,3 +1,31 @@
+/** Compare the rendered solid colours, including alpha and CSS colour-mix backgrounds. */
+async function textContrast(locator) {
+  const colours = await locator.evaluate((el) => {
+    const canvas = document.createElement("canvas");
+    canvas.width = canvas.height = 1;
+    const context = canvas.getContext("2d");
+    if (!context) throw Error("The contrast probe requires Canvas 2D.");
+    context.fillStyle = "#ffffff";
+    context.fillRect(0, 0, 1, 1);
+    const layers = [];
+    for (let node = el; node; node = node.parentElement) layers.push(getComputedStyle(node).backgroundColor);
+    for (const colour of layers.reverse()) {
+      context.fillStyle = colour;
+      context.fillRect(0, 0, 1, 1);
+    }
+    const background = Array.from(context.getImageData(0, 0, 1, 1).data).slice(0, 3);
+    context.fillStyle = getComputedStyle(el).color;
+    context.fillRect(0, 0, 1, 1);
+    return { background, foreground: Array.from(context.getImageData(0, 0, 1, 1).data).slice(0, 3) };
+  });
+  const luminance = (rgb) =>
+    rgb
+      .map((value) => (value / 255 <= 0.04045 ? value / 255 / 12.92 : ((value / 255 + 0.055) / 1.055) ** 2.4))
+      .reduce((sum, value, i) => sum + value * [0.2126, 0.7152, 0.0722][i], 0);
+  const values = [luminance(colours.background), luminance(colours.foreground)].sort((a, b) => b - a);
+  return (values[0] + 0.05) / (values[1] + 0.05);
+}
+
 export async function check({ page, mount, assert }) {
   const groups = [
     { id: "alpha", label: "Alpha", values: [100, 110, 120] },
@@ -114,4 +142,105 @@ export async function check({ page, mount, assert }) {
   assert.match(await limit.getAttribute("aria-valuetext"), /E308/);
   for (const name of ["aria-valuemin", "aria-valuemax", "aria-valuenow"])
     assert.match(await limit.getAttribute(name), /^\d+(?:\.\d+)?$/, "Slider bounds use plain decimal ARIA syntax");
+
+  // A viewport resize must not retain wider plot coordinates while observer reports are queued.
+  await page.setViewportSize({ width: 390, height: 844 });
+  await mount(`
+    const NativeObserver = window.ResizeObserver;
+    const nativeAdd = window.addEventListener;
+    window.__plotReports = [];
+    window.__holdPlotReports = false;
+    const readPlot = () => ({
+      width: innerWidth,
+      overflow: document.documentElement.scrollWidth - innerWidth,
+      trackWidth: document.querySelector('[data-limit-track]').getBoundingClientRect().width,
+      rows: document.querySelectorAll('[data-demo^="row-"]').length,
+    });
+    window.ResizeObserver = class extends NativeObserver {
+      constructor(callback) {
+        const report = { callback, entries: null, observer: null };
+        super((entries, observer) => {
+          report.entries = entries;
+          report.observer = observer;
+          if (!window.__holdPlotReports) callback(entries, observer);
+        });
+        window.__plotReports.push(report);
+      }
+    };
+    window.__capturePlotResize = () => {
+      window.__delayedPlotReports = window.__plotReports
+        .filter(report => report.entries)
+        .map(report => ({ ...report }));
+      window.__holdPlotReports = true;
+      window.__plotResizeFrame = null;
+      nativeAdd.call(window, 'resize', () => {
+        requestAnimationFrame(() => { window.__plotResizeFrame = readPlot(); });
+      }, { once: true });
+    };
+    window.__replayPlotReports = () => {
+      window.__plotLateFrame = null;
+      for (const report of window.__delayedPlotReports) report.callback(report.entries, report.observer);
+      requestAnimationFrame(() => {
+        window.__plotLateFrame = { ...readPlot(), reports: window.__delayedPlotReports.length };
+      });
+    };
+    window.__restorePlotObserver = () => {
+      window.__holdPlotReports = false;
+      window.ResizeObserver = NativeObserver;
+    };
+    document.getElementById('root').style.padding = '0';
+    document.getElementById('root').style.maxWidth = 'none';
+    createRoot(document.getElementById('root')).render(<Subject.default/>);
+  `);
+  await page.locator("[data-limit-track]").waitFor();
+  assert.equal(await page.locator('[data-demo^="row-"]').count(), 7);
+  const before = await page.locator("[data-limit-track]").boundingBox();
+  await page.evaluate(() => window.__capturePlotResize());
+  try {
+    await page.setViewportSize({ width: 320, height: 844 });
+    await page.waitForFunction(() => window.__plotResizeFrame !== null);
+    const frame = await page.evaluate(() => window.__plotResizeFrame);
+    assert.equal(frame.rows, 7, "Rows remain mounted during the resize");
+    assert.ok(
+      frame.overflow <= 1,
+      "The first resize frame stays inside the touch viewport while observer delivery is held",
+    );
+    assert.ok(
+      frame.trackWidth < before.width - 60,
+      "The plot follows the new viewport before deferred observer reports",
+    );
+    await page.evaluate(() => window.__replayPlotReports());
+    await page.waitForFunction(() => window.__plotLateFrame !== null);
+    const late = await page.evaluate(() => window.__plotLateFrame);
+    assert.ok(late.reports >= 2, "Both initial plot measurements are replayed");
+    assert.ok(late.overflow <= 1, "Delayed wider reports cannot restore stale geometry");
+    assert.equal(late.trackWidth, frame.trackWidth, "Delayed observer delivery retains the current plot");
+  } finally {
+    await page.evaluate(() => window.__restorePlotObserver());
+    await page.setViewportSize({ width: 390, height: 844 });
+  }
+
+  // The light demo's blue handle previously rendered white text at only 4.09:1.
+  for (const accent of [undefined, "#777", "#0008", "#00000080", "#f4f4f5", "constructor"]) {
+    await mount(
+      `createRoot(document.getElementById('root')).render(<Subject.default theme="light" ${accent ? `accent=${JSON.stringify(accent)}` : ""}/>);`,
+    );
+    await limit.waitFor();
+    assert.ok((await textContrast(limit)) >= 4.5, `Readable handle for ${accent ?? "the default light accent"}`);
+    if (accent === "#f4f4f5" || accent === "constructor") {
+      const rendered = await limit.evaluate((el) => ({
+        accent: getComputedStyle(el).backgroundColor,
+        ink: getComputedStyle(el.closest("section")).color,
+      }));
+      assert.equal(rendered.accent, rendered.ink, "Neutral and unsupported demo colours follow the theme ink");
+    }
+  }
+
+  await limit.press("End");
+  const verdict = page.getByText("Meets 90% target", { exact: true });
+  await verdict.waitFor();
+  await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+  await page.waitForTimeout(350);
+  await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+  assert.ok((await textContrast(verdict)) >= 4.5, "The target-met verdict retains readable text on its tint");
 }

@@ -7925,7 +7925,7 @@
         "name": "accent",
         "type": "string",
         "default": "theme ink",
-        "description": "The one accent: the limit line, its handle and samples under it."
+        "description": "Hex accent for the limit line, handle and samples under it. Alpha blends over the chart surface before black or white handle text is chosen. Unsupported colours use the theme ink."
       },
       {
         "name": "theme",
