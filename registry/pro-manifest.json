@@ -10312,7 +10312,7 @@
         "name": "data",
         "type": "SunburstNode",
         "default": "web-app’s main bundle, 1.33 MB",
-        "description": "The root: { name, value?, children? }. Leaves carry value; groups sum their children. Any depth; zero-value branches are dropped."
+        "description": "Root { name, value?, children? }. Names must be nonempty and unique among siblings; leaf values must be finite and nonnegative. Groups sum their children; zero branches are dropped. Original names, including slashes, are preserved in callbacks."
       },
       {
         "name": "title",
@@ -10342,25 +10342,25 @@
         "name": "locale",
         "type": "string",
         "default": "\"en-US\"",
-        "description": "Locale for number formatting."
+        "description": "Supported Intl locale. Invalid locales have a written alert. Large figures use scientific notation."
       },
       {
         "name": "rings",
         "type": "number",
         "default": "3",
-        "description": "How many rings show below the level in focus (1 to 5)."
+        "description": "Whole-number ring count from 1 to 5. Invalid counts show a written alert."
       },
       {
         "name": "showList",
         "type": "boolean",
         "default": "true",
-        "description": "The ranked list of the level’s children beside the chart (below it on narrow containers)."
+        "description": "Ranked child list beside the chart or below it on narrow containers. When hidden, visible branch arcs expose keyboard buttons and leaves expose named readable graphics."
       },
       {
         "name": "accent",
         "type": "string",
-        "default": "\"#ff7a45\"",
-        "description": "The one colour: the branch under the pointer or in focus, or the level’s largest child at rest."
+        "default": "theme ink",
+        "description": "One accent for a highlighted branch. Defaults to theme ink for a monochrome demo; neutral palette choices follow light-theme ink."
       },
       {
         "name": "theme",
@@ -10371,7 +10371,7 @@
       {
         "name": "onDrill",
         "type": "(path: string[]) => void",
-        "description": "Called with the names from the root to the level now in focus."
+        "description": "Called with original names from root to the opened group. Drilling focuses Up; returning to root focuses the chart. Host data replacement resets to the root without inventing a drill callback."
       },
       {
         "name": "className",
@@ -10406,8 +10406,9 @@
         "prop": "accent",
         "label": "Accent",
         "kind": "color",
-        "default": "#ff7a45",
+        "default": "#f5f5f4",
         "options": [
+          "#f5f5f4",
           "#ff7a45",
           "#34d399",
           "#60a5fa",

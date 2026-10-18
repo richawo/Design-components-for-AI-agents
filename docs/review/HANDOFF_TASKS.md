@@ -136,6 +136,10 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 1: Scatter Brush has a reviewed monochrome 5.1s film showing a real brush, both dataset morphs and settled selection statistics. Source-change and moving-frame guards pass with no stalls. 133 listed films remain.
 
+- Task 5: Sunburst Explorer now covers pointer/keyboard drilling, exact raw-name paths, hidden-list arc controls, focus hand-off, retired controls, hierarchy replacement and input-error recovery. Encoded name segments prevent slash collisions; invalid/cyclic hierarchies, overflowing totals, ring counts and locales have written states. Pointer masks stay on the plain SVG wrapper so returned branches remain clickable. Its Next-backed regression, twenty theme/state accessibility audits including 320px, five controls and refreshed poster pass. 75 components remain without dedicated coverage.
+
+- Task 1: Sunburst Explorer has a reviewed monochrome 5.5s film showing both drills and return to root. Full-viewport framing retains the expanded nine-row card; a settled Next poster matches that framing. Source-change and moving-frame guards pass with no stalls. 132 listed films remain.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -153,7 +157,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Browser checks: `node scripts/check-component.mjs <slug> --base=http://localhost:3100 --no-video --keep-going`
   (screenshots at 1440/768/390 and every control flip; read the screenshots it writes to `test-results/check/<slug>/`).
 
-## 1. Re-record demo videos (133 components)
+## 1. Re-record demo videos (132 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -173,7 +177,7 @@ slug or per small group). Notes:
 Slugs:
 
 `mobile-attachment-tray`, `mobile-budget-envelope`
-`chart-sunburst-explorer`, `data-bulk-action-review`, `data-column-workbench`
+`data-bulk-action-review`, `data-column-workbench`
 `data-filter-history`, `data-pivot-configurator`, `editor-asset-license-sheet`, `editor-branch-compare`
 `editor-color-token-studio`, `editor-export-preset`, `editor-font-pairing`, `editor-keyframe-track`
 `editor-layer-stack`, `editor-spacing-inspector`, `editor-storyboard-strip`, `editor-version-restore`
@@ -273,14 +277,14 @@ tests/browser/pro-50-<suite>-probe.mjs <slug>` (suite = legal, saas, finance, hr
 
 ## 5. Write browser probes for components that have none
 
-76 finished components still have no dedicated browser regression probe. For each, read its source and
+75 finished components still have no dedicated browser regression probe. For each, read its source and
 `meta.json`, then add a case to the appropriate `tests/browser/*.mjs` suite (or a new probe registered in
 `scripts/test-components.mjs`) covering: the signature interaction, keyboard paths, failed-then-successful callbacks
 with drafts kept (where it has async callbacks), and empty or invalid data. Use `tests/browser/pro-50/hr-org-explorer.mjs`
 as the model for style and depth. Mobile components render through React Native web (`scripts/lib/component-fixture.mjs` aliases it);
 see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 
-`chart-sunburst-explorer`, `data-bulk-action-review`, `data-column-workbench`, `data-filter-history`
+`data-bulk-action-review`, `data-column-workbench`, `data-filter-history`
 `data-pivot-configurator`, `editor-asset-license-sheet`, `editor-branch-compare`, `editor-color-token-studio`
 `editor-export-preset`, `editor-font-pairing`, `editor-keyframe-track`, `editor-layer-stack`
 `editor-spacing-inspector`, `editor-storyboard-strip`, `editor-version-restore`, `three-exploded-assembly`
