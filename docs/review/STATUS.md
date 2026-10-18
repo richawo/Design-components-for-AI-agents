@@ -44,7 +44,7 @@ needs re-recording, whether its poster is current, and the state of its browser 
 | `chart-sankey-paths` | current | current | Next-backed regression, fourteen theme/state accessibility audits and four controls pass; keyboard node/ribbon traces, exact callbacks, controlled/empty periods, retry retention and resizing, tooltip bounds/descriptions, label contrast and invalid/fractional/large data covered; monochrome poster/guarded film refreshed |
 | `chart-scatter-brush` | current | current | Next-backed regression, twenty theme/state accessibility audits and five controls pass; real draw/move/cancel, keyboard point pinning, exact records, controlled brushes/datasets, empty/retry states, zero/extreme geometry, normalized brush bounds and unit/accent contrast covered; monochrome poster/guarded film refreshed |
 | `chart-sunburst-explorer` | current | current | Next-backed regression, twenty theme/state accessibility audits and five controls pass; pointer/keyboard and hidden-list drills, raw slash-safe paths, focus/retired controls, data replacement/recovery and invalid/cyclic/extreme data covered; monochrome full-viewport film and matching settled Next poster refreshed |
-| `data-bulk-action-review` | new | current |  |
+| `data-bulk-action-review` | current | current | Next-backed regression, twenty-eight theme/state accessibility audits, visible-count contrast checks and three controls pass; exact batches, rejection/retry, omitted/conflicting results, held picks, host-removed receipts and read-only handlers covered; monochrome partial-receipt film and settled Next poster refreshed |
 | `data-column-workbench` | new | current |  |
 | `data-filter-history` | new | current |  |
 | `data-pivot-configurator` | new | current |  |

@@ -13862,12 +13862,12 @@
       {
         "name": "records",
         "type": "BulkRecord[]",
-        "description": "{ id, name, detail?, meta?, aside?, impact?, heldReason? }. `impact` explains what the action does to that record during review; `heldReason` keeps it out of the action and shows why."
+        "description": "Records with unique nonempty ids and names. Invalid records have a written alert. The eligible scope freezes when review starts, so host removal of completed rows cannot erase their receipt."
       },
       {
         "name": "selectedIds",
         "type": "string[]",
-        "description": "Controlled selection, in pick order. The newest pick sits at the bottom of the stack."
+        "description": "Controlled picks in selection order. Unknown ids and duplicates are ignored in the rendered selection and submitted scope; host changes acknowledge onSelectionChange."
       },
       {
         "name": "defaultSelectedIds",
@@ -13906,24 +13906,24 @@
       {
         "name": "onApply",
         "type": "(ids: string[]) => Promise<BulkResult[]>",
-        "description": "Runs the action for the eligible ids and resolves with { id, ok, message? } per record. Results are revealed card by card. A rejection means nothing ran; the review stays open with an alert."
+        "description": "Runs eligible ids and reports per-record results. Required to enable confirmation; an absent handler leaves review read-only. Omitted, malformed or conflicting results remain unresolved; extra ids are ignored. Consistent duplicates count once. Rejection means nothing ran."
       },
       {
         "name": "allowRetry",
         "type": "boolean",
         "default": "true",
-        "description": "Offer Retry for records the host reported as failed. It opens a fresh review of just those."
+        "description": "Offer Retry for unresolved records. Retry returns to review and requires a fresh confirmation for that reduced scope."
       },
       {
         "name": "onDone",
         "type": "(failedIds: string[]) => void",
-        "description": "Called when the receipt is dismissed. The selection becomes the held and failed records, so nothing that still needs attention is lost."
+        "description": "Called after Done with unresolved eligible ids, excluding held records. Verified successes leave the remaining selection; unresolved/held picks retain their selection order."
       },
       {
         "name": "accent",
         "type": "string",
-        "default": "\"#ff5f57\"",
-        "description": "The one colour: the scope count and a destructive confirm button."
+        "default": "theme ink",
+        "description": "Confirm/scope accent, defaulting to theme ink. Hex accent buttons choose readable black/white text. Receipt statuses use neutral ink with distinct icons and copy."
       },
       {
         "name": "theme",
@@ -13964,8 +13964,9 @@
         "prop": "accent",
         "label": "Accent",
         "kind": "color",
-        "default": "#ff5f57",
+        "default": "#f2f2f3",
         "options": [
+          "#f2f2f3",
           "#ff5f57",
           "#ffb547",
           "#7cc4ff",
@@ -13989,7 +13990,7 @@
         "click:@review",
         "wait:800",
         "click:@confirm",
-        "wait:2000"
+        "wait:2500"
       ],
       "loop": false
     },
