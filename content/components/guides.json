@@ -4506,17 +4506,17 @@
     "useWhen": "Tuning a design system's semantic colours against the screen they will actually paint, with WCAG contrast for every reading pair updating as you drag.",
     "avoidWhen": "Generating a decorative palette from scratch, or certifying a whole product's accessibility from a handful of token pairs.",
     "integration": [
-      "Pass `value` and `onValueChange` (or `defaultValue`). Token ids become CSS variables, so keep them CSS-safe (`ink`, `surface-raised`). Apply sends the full palette; reject the promise with an Error to show its message and keep every draft.",
+      "Pass `value` and `onValueChange` (or `defaultValue`). Token ids become CSS variables, so keep them CSS-safe (`ink`, `surface-raised`). Apply sends the full valid palette; reject the promise with an Error to show its message and keep every draft. A controlled palette without onValueChange is read-only. Use unique ids; invalid or duplicate ids are reported and excluded.",
       "Pass your own `specimen`: any JSX that reads `var(--<id>)`. Add `data-token=\"ink\"` to make an element pickable and `data-pair=\"body\"` to underline it when that pair fails AA.",
       "Describe what must stay readable in `pairs` (foreground, background, font size and weight). Large text (24px, or 18.66px at 700) needs 3:1, everything else 4.5:1. Translucent tokens composite over `canvasColor` before measuring.",
-      "Copy CSS exports only applied tokens, scoped to `scopeSelector`. Use `disabled` for read-only review."
+      "Copy CSS exports only applied tokens, scoped to `scopeSelector`. Use `disabled` for read-only review. Custom hex accents with alpha blend over the editor panel before foreground contrast is selected."
     ],
     "related": [
       "input-color-swatches",
       "devtools-icon-workbench",
       "editor-export-preset"
     ],
-    "updated": "2026-10-17"
+    "updated": "2026-10-18"
   },
   "editor-spacing-inspector": {
     "useWhen": "Letting designers or builders tune an auto-layout frame's padding, gap, direction and alignment by direct manipulation, with the measured result and its CSS beside it.",

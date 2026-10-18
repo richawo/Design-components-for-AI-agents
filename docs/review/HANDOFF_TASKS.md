@@ -184,6 +184,9 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 5 follow-up: Budget Envelope's post-save dismissal preserves outside button and blank-space focus. Keyboard focus leaving the component also retires recovery, including when that outside control is removed; a secondary contact leaves the primary interaction's ownership intact. The save button's own disabled-to-body focus transition still returns to the opener. The registered Next regression, six state accessibility checks and 1,063 unit tests pass; its current poster and film remain visually accurate.
 
+
+- Task 5: Color Token Studio now covers pointer/keyboard channels, roving tokens, exact palette saves, failure/retry, applied-only CSS and clipboard fallback. Valid prototype-named ids work; duplicate/invalid ids, retired drafts, controlled read-only palettes and late replies have explicit handling. Its Next-backed regression, eight theme/accent accessibility states, four controls and 320/390/768/1440 geometry pass, together with strict registry, TypeScript and all 1,063 unit tests. The settled Next poster is refreshed and visually reviewed. Both initial film attempts failed the unchanged timing guards and remain unaccepted. 68 components remain without dedicated coverage.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -318,14 +321,13 @@ tests/browser/pro-50-<suite>-probe.mjs <slug>` (suite = legal, saas, finance, hr
 
 ## 5. Write browser probes for components that have none
 
-69 finished components still have no dedicated browser regression probe. For each, read its source and
+68 finished components still have no dedicated browser regression probe. For each, read its source and
 `meta.json`, then add a case to the appropriate `tests/browser/*.mjs` suite (or a new probe registered in
 `scripts/test-components.mjs`) covering: the signature interaction, keyboard paths, failed-then-successful callbacks
 with drafts kept (where it has async callbacks), and empty or invalid data. Use `tests/browser/pro-50/hr-org-explorer.mjs`
 as the model for style and depth. Mobile components render through React Native web (`scripts/lib/component-fixture.mjs` aliases it);
 see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 
-`editor-color-token-studio`
 `editor-export-preset`, `editor-font-pairing`, `editor-keyframe-track`, `editor-layer-stack`
 `editor-spacing-inspector`, `editor-storyboard-strip`, `editor-version-restore`, `three-exploded-assembly`
 `three-material-inspector`, `agents-budget-guard`, `agents-dependency-board`, `agents-run-replay`

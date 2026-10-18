@@ -55,7 +55,7 @@ needs re-recording, whether its poster is current, and the state of its browser 
 | --- | --- | --- | --- |
 | `editor-asset-license-sheet` | new | current |  |
 | `editor-branch-compare` | new | current |  |
-| `editor-color-token-studio` | new | current |  |
+| `editor-color-token-studio` | new | current | Next-backed pointer/keyboard, palette failure/retry, clipboard, invalid ids, controlled read-only and stale-reply regression passes; eight theme/accent accessibility states, four controls and 320/390/768/1440 geometry pass. Fresh film pending timing guards. |
 | `editor-export-preset` | new | current |  |
 | `editor-font-pairing` | new | current |  |
 | `editor-keyframe-track` | new | current |  |

@@ -18307,7 +18307,7 @@
       {
         "name": "value",
         "type": "ColorToken[]",
-        "description": "Controlled, applied palette: { id, name, value, role? }. The id is the CSS variable name, so it must be CSS-safe (ink, surface-raised)."
+        "description": "Controlled, applied palette: { id, name, value, role? }. The id is the CSS variable name, so it must be CSS-safe (ink, surface-raised). Without onValueChange, a controlled palette is read-only."
       },
       {
         "name": "defaultValue",
@@ -18318,7 +18318,7 @@
       {
         "name": "onValueChange",
         "type": "(tokens: ColorToken[]) => void | Promise<void>",
-        "description": "Apply sends the full palette with every draft folded in. Reject with an Error to show its message; the drafts are kept."
+        "description": "Apply sends the full palette with every draft folded in. Reject with an Error to show its message; the drafts are kept. Pending replies are scoped to their applied palette; replaced tokens cannot receive an old receipt."
       },
       {
         "name": "pairs",
@@ -18364,7 +18364,7 @@
       {
         "name": "accent",
         "type": "string",
-        "description": "Selection outline and the Apply button. Defaults to the theme's ink."
+        "description": "Selection outline and the Apply button. Defaults to the theme's ink. Hex colours with alpha blend over the editor panel before their text contrast is chosen."
       },
       {
         "name": "theme",
@@ -18389,11 +18389,12 @@
       "steps": [
         "wait:400",
         "click:@token-muted",
+        "click:@channel-l:0.33,0.5",
+        "wait:450",
+        "click:@fix",
         "wait:500",
-        "click:@channel-l:0.62,0.5",
-        "wait:900",
         "click:@apply",
-        "wait:1100"
+        "wait:1400"
       ],
       "loop": false
     },
