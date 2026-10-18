@@ -4523,14 +4523,15 @@
       "Pass `value` and `onValueChange` (or `defaultValue`), ordered top first. Each layer has id, name, kind, visible, locked and optional opacity. Every edit sends the full stack; reject the promise with an Error to roll back and show its message.",
       "Give each layer a `render` that fills the artboard and is sized in cqw/cqh: the same node draws the artboard and the row thumbnail. Add `bounds` (fractions of the artboard) for the selection frame, and set `aspect` to the document's width over height.",
       "Selection is separate: `selectedId` and `onSelectedIdChange`, or `defaultSelectedId`. Clicking painted artwork selects the topmost layer there.",
-      "`defaultExploded` starts in the 3D view. Locked layers keep their slot; `disabled` makes the panel read-only."
+      "`defaultExploded` starts in the 3D view. Locked layers keep their slot; `disabled` makes the panel read-only.",
+      "Pass independent layer and numeric-bounds snapshots to edit callbacks, so callback mutation cannot corrupt the retained stack or its rollback."
     ],
     "related": [
       "editor-whiteboard",
       "editor-storyboard-strip",
       "editor-export-preset"
     ],
-    "updated": "2026-10-17"
+    "updated": "2026-10-18"
   },
   "editor-color-token-studio": {
     "useWhen": "Tuning a design system's semantic colours against the screen they will actually paint, with WCAG contrast for every reading pair updating as you drag.",

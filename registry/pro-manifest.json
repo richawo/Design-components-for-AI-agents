@@ -19380,7 +19380,7 @@
       {
         "name": "onValueChange",
         "type": "(layers: StackLayer[]) => void | Promise<void>",
-        "description": "Every edit (order, visibility, lock, opacity, name) sends the full stack. Reject with an Error to roll back and show its message."
+        "description": "Every edit proposes independently copied layers and numeric bounds. Reject to roll back an uncontrolled edit; render nodes remain the supplied artwork."
       },
       {
         "name": "selectedId",

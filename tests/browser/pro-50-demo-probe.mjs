@@ -9,6 +9,7 @@ const specs = fs
   .filter((file) => file.endsWith(".mjs"))
   .map((file) => ({ slug: file.slice(0, -4) }));
 const finalStates = {
+  "editor-layer-stack": "Shape · 3 of 6 from the top",
   "editor-keyframe-track": "Key 2 of 5",
   "editor-spacing-inspector": "align-items: center;",
   "editor-font-pairing": "Live on every page that uses the brand tokens.",
@@ -104,13 +105,20 @@ try {
       (await target.count()) &&
       (await target.getAttribute("aria-pressed")) !== null
     ) {
-      assert.equal(await target.getAttribute("aria-pressed"), "true");
+      assert.equal(await target.getAttribute("aria-pressed"), slug === "editor-layer-stack" ? "false" : "true");
     } else {
       assert.notEqual(
         await page.locator("#root").innerText(),
         before,
         slug + " replay must change the displayed workflow",
       );
+    }
+    if (slug === "editor-layer-stack") {
+      const rows = await page.locator('ul [data-demo^="layer-"]:not([data-demo^="layer-grip-"]):not([data-demo^="layer-visible-"]):not([data-demo^="layer-lock-"])').evaluateAll(nodes => nodes.map(node => node.dataset.demo));
+      assert.equal(rows.indexOf("layer-moon"), 2, "The layer demo moves Moon above Wave");
+      assert.equal(await page.locator('[data-demo="layer-moon"]').getAttribute("aria-pressed"), "true");
+      assert.equal(await page.locator('[data-demo="explode"]').getAttribute("aria-pressed"), "false");
+      await page.waitForFunction(() => document.querySelector('[data-demo="artboard"]').style.transform.includes("rotateX(0deg)"));
     }
     if (slug === "editor-keyframe-track") {
       const key = page.locator('[data-demo="key-y-1"]');

@@ -283,6 +283,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 1: Keyframe Track now has a reviewed 5.05s film showing real playback, a curve-key drag and the settled selected key. Complete 880px framing matches its paired opening poster. Maximum source gap is 13ms, changed-source delivery is 18.2ms and moving-frame p95 is 17.6ms, with no stalls and all guards retained. 117 listed films remain.
 
+- Task 5: Layer Stack now covers real drag/reorder, keyboard bounds and rename cancellation, visibility failure/retry, exact copied proposals, locked/read-only layers, empty/duplicate ids and the actual exploded/flat artwork view. Callback mutation cannot change the incoming numeric bounds or rollback frame; selection immediately retires the previous inspector. Hidden names, layer kinds and counts retain contrast. A preserved 4.17:1 dotted-stage caption failure now measures 7.84:1 dark and 5.64:1 light with a direct regression assertion. Its 29-mount source review, 18 state/default accessibility audits, six widths, entrance/state captures, Next regression, four controls, official audit and complete 900px replay/poster pass. The metadata replay verifies Moon actually moves above Wave before collapsing. Strict registry, TypeScript, isolated Pro types and all 1,063 unit tests pass. 63 components remain without dedicated coverage; its film remains in task 1.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -406,14 +408,13 @@ Its log is `test-results/handoff-next/browser-suite-green.log`.
 
 ## 5. Write browser probes for components that have none
 
-64 finished components still have no dedicated browser regression probe. For each, read its source and
+63 finished components still have no dedicated browser regression probe. For each, read its source and
 `meta.json`, then add a case to the appropriate `tests/browser/*.mjs` suite (or a new probe registered in
 `scripts/test-components.mjs`) covering: the signature interaction, keyboard paths, failed-then-successful callbacks
 with drafts kept (where it has async callbacks), and empty or invalid data. Use `tests/browser/pro-50/hr-org-explorer.mjs`
 as the model for style and depth. Mobile components render through React Native web (`scripts/lib/component-fixture.mjs` aliases it);
 see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 
-`editor-layer-stack`
 `editor-storyboard-strip`, `editor-version-restore`, `three-exploded-assembly`
 `three-material-inspector`, `agents-budget-guard`, `agents-dependency-board`, `agents-run-replay`
 `ai-answer-compare`, `ai-context-budget`, `ai-structured-output`, `auth-recovery-codes`, `devtools-icon-workbench`
