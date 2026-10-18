@@ -213,6 +213,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 7: Operations Dashboard is rebuilt around a scrubbable revenue curve, checkout flow and channel ledger. Its 24-mount source review and rewritten Next regression cover exact aggregate totals, pointer/keyboard intervals, channel/period changes, invalid data, zero denominators and incomplete history. The full September replay, both-theme accessibility, six widths, entrance/state captures, two controls and official audit pass, with strict registry, TypeScript and all 1,063 unit tests. The recorded 1,166px card clipped its old 1,100px viewport; the new 1,240px preview, complete replay and refreshed poster fit. Its new film joins task 1; 36 components and 12 blocks remain in task 7.
 
+- Task 1: Operations Dashboard now has a reviewed 3.2s film showing Retail selection and the full September snapshot, settled at £289,560.00. The corrected viewport retains the curve, checkout flow and whole channel ledger, with a matching paired poster. Maximum source gap is 12ms, changed-source delivery 54.5ms and moving-frame p95 18.9ms, with no stalls and every existing guard intact. 120 listed films remain.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -230,7 +232,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Browser checks: `node scripts/check-component.mjs <slug> --base=http://localhost:3100 --no-video --keep-going`
   (screenshots at 1440/768/390 and every control flip; read the screenshots it writes to `test-results/check/<slug>/`).
 
-## 1. Re-record demo videos (121 components)
+## 1. Re-record demo videos (120 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -249,7 +251,6 @@ slug or per small group). Notes:
 
 Slugs:
 
-`commerce-operations-dashboard`
 `editor-font-pairing`, `editor-keyframe-track`
 `editor-layer-stack`, `editor-spacing-inspector`, `editor-storyboard-strip`, `editor-version-restore`
 `three-exploded-assembly`, `three-material-inspector`, `agents-budget-guard`, `agents-dependency-board`
