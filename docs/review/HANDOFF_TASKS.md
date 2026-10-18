@@ -261,6 +261,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 7: Query Builder is rebuilt around connected typed conditions and a live audience ledger. Its 31-mount source review and rewritten Next regression cover exact all/any matches, keyboard menus, independent callback copies, failed retry, pending locks, read-only criteria, missing properties, invalid numeric values and retired replacements. A preserved old-source regression fails at 1.12:1 on the hovered retry button; the action now passes AA. The match count has valid accessible text, and the 320px footer preserves readable prose. Six widths, 20 state/default accessibility audits, entrance/state captures, three controls, official audit, both demo runners and measured 1,100px replay/poster pass. Strict registry, TypeScript and all 1,063 unit tests pass. Its film joins task 1; 29 components and 12 blocks remain in task 7.
 
+- Task 1: Query Builder now has a reviewed 3.7s film showing the typed seat threshold, live audience change and exact two-record applied receipt. Complete 1,100px framing matches the paired opening poster. Maximum source gap is 11ms, changed-source delivery is 74.0ms and moving-frame p95 is 17.1ms, with no stalls and all guards retained. Custom/native menu checks also pass for Query Builder and Capacity Planner. 120 listed films remain.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -278,7 +280,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Browser checks: `node scripts/check-component.mjs <slug> --base=http://localhost:3100 --no-video --keep-going`
   (screenshots at 1440/768/390 and every control flip; read the screenshots it writes to `test-results/check/<slug>/`).
 
-## 1. Re-record demo videos (121 components)
+## 1. Re-record demo videos (120 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -297,7 +299,6 @@ slug or per small group). Notes:
 
 Slugs:
 
-`data-query-builder`
 `editor-font-pairing`, `editor-keyframe-track`
 `editor-layer-stack`, `editor-spacing-inspector`, `editor-storyboard-strip`, `editor-version-restore`
 `three-exploded-assembly`, `three-material-inspector`, `agents-budget-guard`, `agents-dependency-board`
