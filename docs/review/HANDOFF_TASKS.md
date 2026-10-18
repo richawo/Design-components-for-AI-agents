@@ -297,6 +297,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 5: Exploded Assembly now covers actual canvas dragging, native ranges, keyboard cancellation, exact finished commits, refused and failed writes, copied callback values, controlled acknowledgement, read-only/disabled states, empty/invalid input and WebGL fallback/recovery. Material descriptions and the canvas hint retain light-theme contrast; selected numbers choose readable ink for dark and mid-grey accents. Original mutation, 3.97–4.14:1 label, 1.05:1 number and 3.44:1 canvas-hint failures are preserved. Its 39-mount source review, thirty-four state/default accessibility audits, direct resolved-colour checks, six widths, entrance/state captures, Next regression, four controls, official audit and complete 840px metadata replay/poster pass. The replay verifies the selected gasket and the actual canvas separation/turn. Strict registry, both type checks and all 1,063 unit tests pass. 60 components remain without dedicated coverage.
 
+- Task 1: Exploded Assembly has a reviewed 5.15s film showing gasket selection, contraction and expansion of the stack, and the final turn with numbered leaders aligned. The source-animation, source-change delivery and moving-frame guards pass with no stalls; the paired poster is refreshed. 114 listed films remain.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -314,7 +316,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Browser checks: `node scripts/check-component.mjs <slug> --base=http://localhost:3100 --no-video --keep-going`
   (screenshots at 1440/768/390 and every control flip; read the screenshots it writes to `test-results/check/<slug>/`).
 
-## 1. Re-record demo videos (115 components)
+## 1. Re-record demo videos (114 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -334,7 +336,7 @@ slug or per small group). Notes:
 Slugs:
 
 `editor-storyboard-strip`
-`three-exploded-assembly`, `three-material-inspector`, `agents-budget-guard`, `agents-dependency-board`
+`three-material-inspector`, `agents-budget-guard`, `agents-dependency-board`
 `agents-run-replay`, `ai-answer-compare`, `ai-context-budget`, `ai-structured-output`, `auth-recovery-codes`
 `devtools-icon-workbench`, `devtools-incident-timeline`, `devtools-release-compare`, `devtools-request-replay`
 `devtools-schema-migration`, `date-range-calendar`, `date-timezone-overlap`, `forms-branching-survey`
