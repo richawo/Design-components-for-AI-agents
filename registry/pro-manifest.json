@@ -7846,7 +7846,7 @@
         "name": "groups",
         "type": "{ id: string; label: string; detail?: string; values: number[] }[]",
         "default": "7 regions × 180 requests of Relay’s public API",
-        "description": "One row per group with its raw observations. Quartiles use linear interpolation; whiskers reach the furthest values inside 1.5 × IQR."
+        "description": "One row per group with finite nonnegative observations. Invalid samples are excluded. Quartiles use linear interpolation; whiskers reach the furthest values inside 1.5 × IQR."
       },
       {
         "name": "unit",
@@ -7858,18 +7858,18 @@
         "name": "decimals",
         "type": "number",
         "default": "0",
-        "description": "Fraction digits for figures."
+        "description": "Integer fraction digits from 0 to 20. Invalid formatting settings show a written state instead of throwing."
       },
       {
         "name": "defaultThreshold",
         "type": "number",
         "default": "400",
-        "description": "Initial position of the draggable limit."
+        "description": "Initial finite nonnegative latency limit. The axis includes the largest chosen limit and retains that extent while lowering it so drag geometry stays stable."
       },
       {
         "name": "threshold",
         "type": "number",
-        "description": "Controlled limit; pair with onThresholdChange."
+        "description": "Controlled finite nonnegative limit; pair with onThresholdChange. A larger host limit extends the axis. Invalid limits show a written state."
       },
       {
         "name": "onThresholdChange",
@@ -7880,7 +7880,7 @@
         "name": "target",
         "type": "number",
         "default": "0.9",
-        "description": "Goal share at or under the limit (0–1). The headline chip and any row below it are flagged."
+        "description": "Finite goal share from 0 to 1. The headline and rows below it are flagged; invalid targets show a written state."
       },
       {
         "name": "defaultSort",
@@ -7914,7 +7914,7 @@
         "name": "status",
         "type": "\"ready\" | \"loading\" | \"unavailable\"",
         "default": "\"ready\"",
-        "description": "Loading and unavailable states replace the rows with a quiet placeholder."
+        "description": "Loading and unavailable states replace the rows. Returning to ready remeasures the chart, including after an initial failure."
       },
       {
         "name": "onRetry",
@@ -7937,7 +7937,7 @@
         "name": "locale",
         "type": "string",
         "default": "\"en-US\"",
-        "description": "Locale for figures and A–Z sorting."
+        "description": "Locale for figures and A–Z sorting. Invalid locale syntax shows a written formatting state."
       },
       {
         "name": "title",

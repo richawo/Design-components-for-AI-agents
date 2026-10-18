@@ -4360,17 +4360,18 @@
     "useWhen": "Comparing the spread of a measure across a handful of groups, such as latency by region or build time by pipeline, and asking how much of each clears a limit you can drag.",
     "avoidWhen": "Showing a single average, a trend over time, or groups with only a few observations each, where a dot plot or a plain table is more honest.",
     "integration": [
-      "Pass `groups` as { id, label, detail?, values } with raw observations, not pre-computed percentiles. Quartiles use linear interpolation and whiskers reach the furthest values inside 1.5 × IQR; the axis ends just past the slowest p99 and values beyond it are counted at the row’s edge.",
+      "Pass `groups` as { id, label, detail?, values } with finite nonnegative raw observations, not pre-computed percentiles. Quartiles use linear interpolation and whiskers reach the furthest values inside 1.5 × IQR; the axis covers the slowest p99 and the largest chosen limit, retaining its extent while the limit is lowered and values beyond it are counted at the row’s edge.",
       "Set `defaultThreshold` and `target` (0–1) to mirror your SLO, and persist changes from `onThresholdChange`, or control `threshold` yourself. Rows under target are flagged with an icon as well as colour.",
       "Use `sort` / `onSortChange` to keep the order in sync with a table elsewhere. `showSamples` draws every observation; keep each group to a few hundred values or pass a sample for very large sets.",
-      "The limit handle is a slider: arrows move a fiftieth of an axis step, Shift moves five times that. Use `status` and `onRetry` for loading and failed fetches."
+      "The limit handle is a slider: arrows move a fiftieth of an axis step, Shift moves five times that. Use `status` and `onRetry` for loading and failed fetches.",
+      "Supply finite nonnegative samples and stable group ids. The axis covers the slowest p99 and the largest chosen limit, retaining its extent when the limit is lowered. Use a finite nonnegative threshold, a target share from 0 to 1, a supported sort, a valid locale and 0–20 decimal places; invalid settings show an actionable state and hide the slider. Status changes retain the local limit and sort. Returning from loading, unavailable or empty data reconnects measurement so the plot resizes correctly. Threshold and sort callbacks are synchronous notifications; let the host own persistence and fetch retries. Very large figures use scientific notation; callback values remain numbers."
     ],
     "related": [
       "chart-scatter-brush",
       "chart-revenue-trend",
       "chart-calendar-heatmap"
     ],
-    "updated": "2026-10-17"
+    "updated": "2026-10-18"
   },
   "chart-calendar-heatmap": {
     "useWhen": "Showing a year of daily activity at a glance, such as deploys, orders, workouts or support tickets, where weekly rhythm, quiet spells and peak days matter more than exact values.",

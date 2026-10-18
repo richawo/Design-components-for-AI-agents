@@ -116,6 +116,10 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 5: Voice Memo now covers real waveform dragging, keyboard seek bounds, autoplay start/completion and transport callbacks, transcript/marker jumps, exact Share payloads, fractional/invalid durations and recording resets. Malformed timings are omitted, long recordings retain local ruler detail, missing header handlers are disabled, accents retain contrast and the decimal clock lands at the requested position. Its Next-backed regression, twelve RN-web accessibility states, three preview controls and refreshed poster/guarded film pass. All 20 mobile components now have dedicated coverage; 81 components remain without it.
 
+- Task 5: Box Distribution now covers real limit dragging, keyboard bounds, sorting, retained choices through retry and initial-load recovery with resizing. Small datasets include the configured limit without changing drag geometry when it is lowered. Invalid settings have written states; extreme values retain finite geometry, readable scientific labels and valid decimal ARIA bounds. Its Next-backed regression, both-theme default and six additional state audits, seven preview controls and refreshed poster pass. 80 components remain without dedicated coverage.
+
+- Task 1: Box Distribution’s refreshed film passes the source-change and moving-frame guards and ends settled with the chosen limit, p95 order and selected-region statistics visible. The contact sheet and final frame are reviewed. 137 listed films remain.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -133,7 +137,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Browser checks: `node scripts/check-component.mjs <slug> --base=http://localhost:3100 --no-video --keep-going`
   (screenshots at 1440/768/390 and every control flip; read the screenshots it writes to `test-results/check/<slug>/`).
 
-## 1. Re-record demo videos (138 components)
+## 1. Re-record demo videos (137 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -153,7 +157,7 @@ slug or per small group). Notes:
 Slugs:
 
 `mobile-attachment-tray`, `mobile-budget-envelope`
-`chart-box-distribution`, `chart-calendar-heatmap`, `chart-funnel-dots`, `chart-sankey-paths`
+`chart-calendar-heatmap`, `chart-funnel-dots`, `chart-sankey-paths`
 `chart-scatter-brush`, `chart-sunburst-explorer`, `data-bulk-action-review`, `data-column-workbench`
 `data-filter-history`, `data-pivot-configurator`, `editor-asset-license-sheet`, `editor-branch-compare`
 `editor-color-token-studio`, `editor-export-preset`, `editor-font-pairing`, `editor-keyframe-track`
@@ -254,14 +258,13 @@ tests/browser/pro-50-<suite>-probe.mjs <slug>` (suite = legal, saas, finance, hr
 
 ## 5. Write browser probes for components that have none
 
-81 finished components still have no dedicated browser regression probe. For each, read its source and
+80 finished components still have no dedicated browser regression probe. For each, read its source and
 `meta.json`, then add a case to the appropriate `tests/browser/*.mjs` suite (or a new probe registered in
 `scripts/test-components.mjs`) covering: the signature interaction, keyboard paths, failed-then-successful callbacks
 with drafts kept (where it has async callbacks), and empty or invalid data. Use `tests/browser/pro-50/hr-org-explorer.mjs`
 as the model for style and depth. Mobile components render through React Native web (`scripts/lib/component-fixture.mjs` aliases it);
 see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 
-`chart-box-distribution`
 `chart-calendar-heatmap`, `chart-funnel-dots`, `chart-sankey-paths`, `chart-scatter-brush`
 `chart-sunburst-explorer`, `data-bulk-action-review`, `data-column-workbench`, `data-filter-history`
 `data-pivot-configurator`, `editor-asset-license-sheet`, `editor-branch-compare`, `editor-color-token-studio`

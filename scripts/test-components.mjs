@@ -32,6 +32,7 @@ const publicCases = [
   "catalogue-empty-recovery",
   "mobile-accessibility-probe",
   "review-mobile-probe",
+  "review-data-probe",
   "terminal-scroll-probe",
   "component-pages-probe",
   "settings-composition-probe",

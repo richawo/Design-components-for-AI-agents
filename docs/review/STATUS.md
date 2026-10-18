@@ -38,7 +38,7 @@ needs re-recording, whether its poster is current, and the state of its browser 
 
 | Slug | Video | Poster | Probe |
 | --- | --- | --- | --- |
-| `chart-box-distribution` | new | current |  |
+| `chart-box-distribution` | current | current | Next-backed regression, both-theme default and six state audits, seven controls pass; real drag/keyboard, sort/retry retention, initial-load retry and resizing, stable axis/bounds, invalid settings, finite extremes and plain decimal ARIA covered; poster/guarded film refreshed |
 | `chart-calendar-heatmap` | new | current |  |
 | `chart-funnel-dots` | new | current |  |
 | `chart-sankey-paths` | new | current |  |
