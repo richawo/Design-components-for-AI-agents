@@ -1,6 +1,6 @@
 # Review status
 
-169 components are rebuilt (or, for a few, polished), verified and committed. For each: whether its demo video
+170 components are rebuilt (or, for a few, polished), verified and committed. For each: whether its demo video
 needs re-recording, whether its poster is current, and the state of its browser regression probe.
 
 - **Video**: `new` means `public/previews/<slug>.mp4` still shows the old version. Re-record serially on a quiet machine:
@@ -45,7 +45,7 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | `mobile-trip-itinerary` | current | current | Next-backed regression, eleven RN-web accessibility states and preview controls pass; keyboard tabs, selected-leg scroll/focus, booking failure/retry, cancellation, supersession, exact payloads, keyed trip replacement and empty/invalid legs covered; poster/guarded film refreshed |
 | `mobile-voice-memo` | current | current | Next-backed regression, twelve RN-web accessibility states and preview controls pass; real waveform drag, keyboard seek bounds, autoplay/transport callbacks, transcript/marker navigation, exact share payloads, fractional/invalid durations, recording resets, readable accents and decimal clock covered; poster/guarded film refreshed |
 
-## Data and charts (11)
+## Data and charts (12)
 
 | Slug | Video | Poster | Probe |
 | --- | --- | --- | --- |
@@ -55,6 +55,7 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | `chart-sankey-paths` | current | current | Next-backed regression, fourteen theme/state accessibility audits and four controls pass; keyboard node/ribbon traces, exact callbacks, controlled/empty periods, retry retention and resizing, tooltip bounds/descriptions, label contrast and invalid/fractional/large data covered; monochrome poster/guarded film refreshed |
 | `chart-scatter-brush` | current | current | Next-backed regression, twenty theme/state accessibility audits and five controls pass; real draw/move/cancel, keyboard point pinning, exact records, controlled brushes/datasets, empty/retry states, zero/extreme geometry, normalized brush bounds and unit/accent contrast covered; monochrome poster/guarded film refreshed |
 | `chart-sunburst-explorer` | current | current | Next-backed regression, twenty theme/state accessibility audits and five controls pass; pointer/keyboard and hidden-list drills, raw slash-safe paths, focus/retired controls, data replacement/recovery and invalid/cyclic/extreme data covered; monochrome full-viewport film and matching settled Next poster refreshed |
+| `chart-waterfall-bridge` | new | current | Rebuilt shared-scale contribution bridge with connected signed bars and a precise selected-balance readout; 37-mount source review and Next keyboard/retry/pending/negative/zero/invalid/extreme/replacement regression pass. Pending selections retain chart focus, including retry, and extreme axis labels stay on one line; original failures are preserved. The older expansion integration probe also passes. Six widths, 16 state/default accessibility audits, entrance/state captures, two controls, official audit, metadata replay and measured 800px poster/framing pass. Strict registry, TypeScript and all 1,063 unit tests pass. |
 | `data-bulk-action-review` | current | current | Next-backed regression, twenty-eight theme/state accessibility audits, visible-count contrast checks and three controls pass; exact batches, rejection/retry, omitted/conflicting results, held picks, host-removed receipts and read-only handlers covered; monochrome partial-receipt film and settled Next poster refreshed |
 | `data-column-workbench` | current | current | Next-backed regression, twenty-four theme/state accessibility audits and four controls pass; whole-column drag, exact release payloads, keyboard/resize cancellation, focus/shelf retirement, controlled acknowledgement, opaque ids and invalid/empty layouts covered; monochrome 5.8s film and settled Next poster refreshed |
 | `data-filter-history` | current | current | Next-backed regression, thirty theme/state accessibility audits and four controls pass; scrub/restore payloads, independent rename retries, pending locks, late replies, stable snapshot identity, typed rules, readable comparisons and invalid/empty states covered; monochrome full-viewport film and matching settled Next poster refreshed |

@@ -263,6 +263,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 1: Query Builder now has a reviewed 3.7s film showing the typed seat threshold, live audience change and exact two-record applied receipt. Complete 1,100px framing matches the paired opening poster. Maximum source gap is 11ms, changed-source delivery is 74.0ms and moving-frame p95 is 17.1ms, with no stalls and all guards retained. Custom/native menu checks also pass for Query Builder and Capacity Planner. 120 listed films remain.
 
+- Task 7: Waterfall Bridge is rebuilt around one shared scale, connected signed contributions and an exact selected-balance readout. Its 37-mount source review and rewritten Next regression cover keyboard inspection, retry, pending locks, callback retirement, zero/negative balances, invalid inputs and finite extremes. Two preserved failures are fixed: pending selection retains keyboard focus, and a scientific axis label cannot split its exponent onto another line. The older expansion integration probe also passes. Six widths, 16 state/default accessibility audits, entrance/state captures, two controls, official audit, metadata replay and measured 800px poster/framing pass. Strict registry, TypeScript and all 1,063 unit tests pass. Its film joins task 1; 28 components and 12 blocks remain in task 7.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -280,7 +282,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Browser checks: `node scripts/check-component.mjs <slug> --base=http://localhost:3100 --no-video --keep-going`
   (screenshots at 1440/768/390 and every control flip; read the screenshots it writes to `test-results/check/<slug>/`).
 
-## 1. Re-record demo videos (120 components)
+## 1. Re-record demo videos (121 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -299,6 +301,7 @@ slug or per small group). Notes:
 
 Slugs:
 
+`chart-waterfall-bridge`
 `editor-font-pairing`, `editor-keyframe-track`
 `editor-layer-stack`, `editor-spacing-inspector`, `editor-storyboard-strip`, `editor-version-restore`
 `three-exploded-assembly`, `three-material-inspector`, `agents-budget-guard`, `agents-dependency-board`
@@ -428,16 +431,16 @@ All nine parked rebuilds are shipped in both repos. Their original `_wip/<slug>`
 | finance-budget-variance | Completed 17 October: Next probe, dark/light accessibility, responsive and entrance/state captures, live demo and refreshed poster pass. |
 | finance-cashflow-dashboard | Completed 17 October: weekly balance and in/out bars, movable payments, independent pending saves, invalid-data guards, selected-week list geometry, Next probe/demo, both-theme accessibility, responsive/state/entrance captures and refreshed poster pass. |
 
-## 7. Continue the review (29 components, then 12 blocks)
+## 7. Continue the review (28 components, then 12 blocks)
 
-Same process as the 169 already done: hold each to the first ~100 components' standard. Briefs:
+Same process as the 170 already done: hold each to the first ~100 components' standard. Briefs:
 `docs/review/REVIEW_BRIEF.md`, `docs/review/SUITE_BRIEF.md` for industry components, suite languages in
 `docs/review/suites/`. Work newest first, about four components per batch, and verify each (build, tsc, tests,
 check-component, your own captures of states and mid-entrance frames, a refreshed poster, a rewritten pro-50 probe for
 industry components).
 
 - **Commerce** is reviewed. Keep `block-commerce-workspace` compatible with its rebuilt parts.
-- **Smaller components** (#151–179): chart-waterfall-bridge, content-release-notes, cards-event-ticket,
+- **Smaller components** (#151–179): content-release-notes, cards-event-ticket,
   chart-slope-comparison, chart-bullet-targets, media-story-deck, devtools-request-waterfall, devtools-json-inspector,
   media-before-after, data-kanban-compact, data-file-explorer, forms-preference-center, date-week-agenda,
   onboarding-setup-checklist, date-booking-slots, input-file-dropzone, input-shortcut-recorder,

@@ -10702,7 +10702,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "charts",
-    "description": "A signed-change waterfall with explicit opening and closing balances, selectable contributions and readable scrolling columns for revenue or resource analysis.",
+    "description": "A connected opening-to-closing bridge with signed floating contributions, keyboard inspection and retained selection when a linked action fails.",
     "tags": [
       "charts",
       "chart",
@@ -10716,26 +10716,26 @@
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 720,
+    "previewHeight": 900,
     "usage": "import { WaterfallBridge } from \"@/components/design-for-ai/chart-waterfall-bridge\";\n\n<WaterfallBridge />",
     "props": [
       {
         "name": "title",
         "type": "string",
-        "default": "\"What moved the number.\"",
+        "default": "\"Monthly recurring revenue\"",
         "description": "Chart heading."
       },
       {
         "name": "opening",
         "type": "number",
         "default": "120",
-        "description": "Opening balance; invalid input becomes zero."
+        "description": "Finite opening balance. Invalid values show an unavailable chart."
       },
       {
         "name": "changes",
         "type": "WaterfallChange[]",
         "default": "four sample changes",
-        "description": "Signed contributions. Invalid individual values become zero; overflowing totals show a numeric-range message."
+        "description": "Up to 100 named finite signed contributions. Invalid values or overflowing cumulative totals show an explicit notice."
       },
       {
         "name": "unit",
@@ -10745,15 +10745,31 @@
       },
       {
         "name": "onSelect",
-        "type": "(index: number) => void",
+        "type": "(index: number) => void | Promise<void>",
         "default": "undefined",
-        "description": "Selected bar index including opening and closing bars."
+        "description": "Receive the selected index, including opening/closing. Awaited callbacks lock selection; rejection retains the bar for retry. Replacing the series retires earlier replies."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
         "description": "Surface and ink palette; the demo stage follows the chosen theme."
+      },
+      {
+        "name": "period",
+        "type": "string",
+        "default": "\"October 2026\"",
+        "description": "Period label in the compact chart header."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "description": "Optional CSS colour for positive and total fills; their outlines retain neutral contrast."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Additional outer component classes."
       }
     ],
     "added": "2026-10-11",
@@ -10777,6 +10793,17 @@
           "light"
         ],
         "default": "dark"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#7aa2ff",
+          "#ff8a4c"
+        ]
       }
     ]
   },

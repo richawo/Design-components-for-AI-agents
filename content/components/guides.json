@@ -1431,17 +1431,20 @@
     "updated": "2026-10-12"
   },
   "chart-waterfall-bridge": {
-    "useWhen": "Explaining the contributions between a starting and ending value.",
-    "avoidWhen": "A continuous trend or contributions that do not reconcile to the stated total.",
+    "useWhen": "Explain how named increases and decreases connect an opening balance to a closing balance, with linked bar inspection.",
+    "avoidWhen": "The data is an unbounded event log or needs a stacked categorical chart rather than cumulative movement.",
     "integration": [
-      "Supply your own records through `changes`. Preserve stable keys or IDs when the data contract provides them."
+      "Supply a finite opening and at most 100 named signed changes. Invalid inputs remain explicit instead of becoming zero.",
+      "Indices include Opening at 0 and Closing after the contributions. onSelect may return a promise; rejection retains the selected bar for retry.",
+      "Replace arrays when the series changes. The component normalizes finite values before geometry subtraction and retires callbacks from replaced series.",
+      "Set unit and period to describe the supplied values; supply amounts in one consistent unit."
     ],
     "related": [
-      "chart-bullet-targets",
-      "chart-slope-comparison",
-      "chart-candlestick"
+      "chart-revenue-trend",
+      "finance-budget-variance",
+      "chart-slope-comparison"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-18"
   },
   "collab-activity-feed": {
     "useWhen": "Reviewing authored activity associated with a shared workspace.",

@@ -207,7 +207,7 @@ try {
     "chart-waterfall-bridge",
     `createRoot(document.getElementById('root')).render(<Subject.WaterfallBridge opening={1e308} changes={[{label:'Huge',amount:1e308}]}/>);`,
   );
-  assert.match(await page.getByRole("status").innerText(), /numeric range/);
+  assert.match(await page.getByRole("alert").innerText(), /numeric range/);
   await fixture(
     "content-release-notes",
     `createRoot(document.getElementById('root')).render(<Subject.ReleaseNotes/>);`,
