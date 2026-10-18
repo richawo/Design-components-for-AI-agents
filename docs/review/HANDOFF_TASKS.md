@@ -273,6 +273,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 5: Font Pairing now covers keyboard pair/scale edits, exact CSS snapshots, failure/retry, pending saves, newer drafts, independent callback payloads and empty catalogues. Missing writers cannot acknowledge persistence, and the desktop specimen is a labelled keyboard-scrollable region. Its 27-mount source review, 16 state/default accessibility audits, six widths, entrance/state captures, Next regression, four controls, official audit and metadata replay pass. A retained 10.5px framing failure is resolved by matching 900px stage and preview heights; the full replay and refreshed poster fit. Strict registry, TypeScript, isolated Pro types and all 1,063 unit tests pass. 66 components remain without dedicated coverage; its film remains in task 1.
 
+- Task 1: Font Pairing now has a reviewed 6.2s film showing the face change, larger scale, connected quote highlight and settled Applied receipt. Complete 900px framing matches its paired opening poster. Maximum source gap is 18ms, changed-source delivery is 96.5ms and moving-frame p95 is 18.0ms, with no stalls and all guards retained. 119 listed films remain.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -290,7 +292,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Browser checks: `node scripts/check-component.mjs <slug> --base=http://localhost:3100 --no-video --keep-going`
   (screenshots at 1440/768/390 and every control flip; read the screenshots it writes to `test-results/check/<slug>/`).
 
-## 1. Re-record demo videos (120 components)
+## 1. Re-record demo videos (119 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -309,7 +311,7 @@ slug or per small group). Notes:
 
 Slugs:
 
-`editor-font-pairing`, `editor-keyframe-track`
+`editor-keyframe-track`
 `editor-layer-stack`, `editor-spacing-inspector`, `editor-storyboard-strip`, `editor-version-restore`
 `three-exploded-assembly`, `three-material-inspector`, `agents-budget-guard`, `agents-dependency-board`
 `agents-run-replay`, `ai-answer-compare`, `ai-context-budget`, `ai-structured-output`, `auth-recovery-codes`
