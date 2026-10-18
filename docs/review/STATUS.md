@@ -1,6 +1,6 @@
 # Review status
 
-163 components are rebuilt (or, for a few, polished), verified and committed. For each: whether its demo video
+164 components are rebuilt (or, for a few, polished), verified and committed. For each: whether its demo video
 needs re-recording, whether its poster is current, and the state of its browser regression probe.
 
 - **Video**: `new` means `public/previews/<slug>.mp4` still shows the old version. Re-record serially on a quiet machine:
@@ -177,10 +177,11 @@ Measurements, checkout revisions and package diagnostics are recorded in
 | `fashion-size-guide` | new | current | source-fixture regression/demo, native palettes, both-theme accessibility and responsive/state/entrance captures pass |
 | `fashion-wholesale-order` | new | current | rewritten, passes |
 
-## Commerce suite (9)
+## Commerce suite (10)
 
 | Slug | Video | Poster | Probe |
 | --- | --- | --- | --- |
+| `commerce-variant-stock` | new | current | Rebuilt product matrix and changed-cell ledger; 29-mount source review, keyboard/exact-snapshot/retry/pending/mutation/revision Next regression, both-theme accessibility, six widths, entrance/state captures, 44px touch targets, three controls, official audit and full 1,100px replay/poster pass. Sticky phone totals keep the last size clickable; footer actions fit their padding and stale alerts retire. Strict registry, TypeScript and all 1,063 unit tests pass. |
 | `commerce-return-desk` | current | current | Rebuilt item ledger and return slip; 25-mount source review plus both-theme normal-motion phase guard, exact-amount/retry/pending/revision/retained-edit Next regression, Commerce Workspace integration, both-theme accessibility, six widths, entrance/state captures, 44px touch targets, two controls, official audit and complete 1,100px demo/poster pass. Strict registry, TypeScript and all 1,063 unit tests pass. Reviewed 6.0s selection/note/review/record film and paired poster are current. Retiring feedback is inert and leaves the accessibility tree immediately. |
 | `commerce-operations-dashboard` | current | current | Rebuilt revenue/flow/channel dashboard; 24-mount source review, Next exact-total/inspection/history/empty regression, full-month replay, both-theme accessibility, six widths, entrance/state captures, two controls and official audit pass. Measured 1,240px preview and refreshed poster retain the whole ledger; reviewed 3.2s Retail/month film and paired poster are current. |
 | `commerce-fulfilment-desk` | current | current | Rebuilt parcel/route/recovery workflow; 23-mount source review, Next retained-note/retry/pending/revision/empty regression, recorded-request replay, both-theme accessibility, six widths, entrance/state captures, two controls, official audit and measured full-frame poster pass; reviewed 5.7s recovery/note/review/record film and paired poster are current. Retiring feedback is inert and leaves the accessibility tree immediately. |

@@ -25,8 +25,8 @@ try {
       assert.match(text, /Segment applied/);
     } else if (slug === "commerce-catalog-import") assert.match(text, /records imported/);
     else if (slug === "commerce-variant-stock") {
-      assert.equal(await page.getByRole("spinbutton", { name: "Ink / XL stock", exact: true }).inputValue(), "12");
-      assert.match(text, /Stock levels saved/);
+      assert.equal(await page.getByRole("spinbutton", { name: "Ink / XL stock", exact: true }).inputValue(), "5");
+      assert.match(text, /Stock saved · 1 cell updated/);
     } else if (slug === "finance-reconciliation") {
       await page.getByText("Every statement line is matched", { exact: true }).waitFor();
       assert.match(await page.locator('[data-demo="statement-s6"]').getAttribute("aria-label"), /^Matched statement/);

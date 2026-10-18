@@ -1681,18 +1681,21 @@
     "updated": "2026-10-17"
   },
   "commerce-variant-stock": {
-    "useWhen": "Inspecting stock across fashion sizes and colours.",
-    "avoidWhen": "Invented inventory quantities or a replacement for warehouse allocation rules.",
+    "useWhen": "Edit a product’s colour/size stock matrix, review changed cells and save a pinned stock snapshot.",
+    "avoidWhen": "Stock counts are unknown or the host needs an inventory reservation rather than a snapshot edit.",
     "integration": [
-      "Supply your own records through `sizes`, `defaultVariants`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onSave` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+      "collection: Collection label below the product name.",
+      "sizes: Unique size ids and labels in displayed order.",
+      "defaultVariants: Starting stock snapshot with unique ids, labels, swatches, SKUs and stock records. Missing size counts remain blank and block saving. Replacing the catalogue starts a fresh draft.",
+      "lowStockThreshold: Non-negative integer warning threshold. This affects the display, not the saved payload. Invalid values use 4.",
+      "onSave: Persist a copied array with exact edited stock records. Reject to retain all edits; resolve to update the baseline."
     ],
     "related": [
-      "commerce-catalog-import",
-      "commerce-return-desk",
-      "commerce-backorder-allocation"
+      "commerce-backorder-allocation",
+      "commerce-bundle-builder",
+      "commerce-purchase-order"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-18"
   },
   "content-release-notes": {
     "useWhen": "A readable release history with useful filtering and version context.",

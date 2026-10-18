@@ -227,6 +227,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 4 follow-up: retiring feedback in Promotion Builder, Purchase Order, Fulfilment Desk and Return Desk now becomes inert and leaves the accessibility tree immediately. Stock’s rapid failure/retry/save/edit sequence exposed two simultaneous alerts. The rewritten Stock candidate and Return Desk now verify that earlier failures retire after acknowledgement. Both Next regressions, all five focused component audits, strict registry, TypeScript and all 1,063 unit tests pass.
 
+- Task 7: Variant Stock is rebuilt around product colourways, an editable size matrix and an exact changed-cell ledger. Its 29-mount source review and rewritten Next regression cover keyboard bounds, failed retry, pending locks, retained baselines, host mutation, raw ids and retired catalogues. Phone metadata stays readable; row totals sit beneath sticky identities so the last size remains clickable, and footer actions wrap inside their padding. Both-theme accessibility, six widths, entrance/state captures, touch targets, three preview controls, official audit and the complete 1,100px replay/poster pass, with strict registry, TypeScript and all 1,063 unit tests. Earlier failure alerts retire immediately after acknowledgement. Its new film joins task 1; 34 components and 12 blocks remain in task 7.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -244,7 +246,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Browser checks: `node scripts/check-component.mjs <slug> --base=http://localhost:3100 --no-video --keep-going`
   (screenshots at 1440/768/390 and every control flip; read the screenshots it writes to `test-results/check/<slug>/`).
 
-## 1. Re-record demo videos (120 components)
+## 1. Re-record demo videos (121 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -263,6 +265,7 @@ slug or per small group). Notes:
 
 Slugs:
 
+`commerce-variant-stock`
 `editor-font-pairing`, `editor-keyframe-track`
 `editor-layer-stack`, `editor-spacing-inspector`, `editor-storyboard-strip`, `editor-version-restore`
 `three-exploded-assembly`, `three-material-inspector`, `agents-budget-guard`, `agents-dependency-board`
@@ -392,16 +395,15 @@ All nine parked rebuilds are shipped in both repos. Their original `_wip/<slug>`
 | finance-budget-variance | Completed 17 October: Next probe, dark/light accessibility, responsive and entrance/state captures, live demo and refreshed poster pass. |
 | finance-cashflow-dashboard | Completed 17 October: weekly balance and in/out bars, movable payments, independent pending saves, invalid-data guards, selected-week list geometry, Next probe/demo, both-theme accessibility, responsive/state/entrance captures and refreshed poster pass. |
 
-## 7. Continue the review (35 components, then 12 blocks)
+## 7. Continue the review (34 components, then 12 blocks)
 
-Same process as the 163 already done: hold each to the first ~100 components' standard. Briefs:
+Same process as the 164 already done: hold each to the first ~100 components' standard. Briefs:
 `docs/review/REVIEW_BRIEF.md`, `docs/review/SUITE_BRIEF.md` for industry components, suite languages in
 `docs/review/suites/`. Work newest first, about four components per batch, and verify each (build, tsc, tests,
 check-component, your own captures of states and mid-entrance frames, a refreshed poster, a rewritten pro-50 probe for
 industry components).
 
-- **Commerce** (copy `suites/commerce.md`): commerce-variant-stock,
-  commerce-catalog-import. `block-commerce-workspace` imports commerce-return-desk: keep its call site working.
+- **Commerce** (copy `suites/commerce.md`): commerce-catalog-import. `block-commerce-workspace` imports commerce-return-desk: keep its call site working.
 - **Others**: app-permission-matrix, legal-version-history (`suites/legal.md`), hr-capacity-planner (`suites/hr.md`),
   data-query-builder.
 - **Smaller components** (#151–179): chart-waterfall-bridge, content-release-notes, cards-event-ticket,

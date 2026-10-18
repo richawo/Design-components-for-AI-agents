@@ -13042,11 +13042,11 @@
   },
   {
     "slug": "commerce-variant-stock",
-    "name": "Fashion Variant Stockroom",
+    "name": "Variant Stock Matrix",
     "tier": "pro",
     "platform": "web",
     "category": "commerce",
-    "description": "A colour-by-size inventory matrix with editable stock, low-stock signals, live totals and an awaited save action. Designed for fashion operations.",
+    "description": "Edit a product’s colour/size stock matrix, review changed cells and save a pinned stock snapshot.",
     "tags": [
       "commerce",
       "workflow",
@@ -13063,58 +13063,81 @@
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 780,
+    "previewHeight": 1100,
     "usage": "import { VariantStock } from \"@/components/design-for-ai/commerce-variant-stock\";\n\n<VariantStock />",
     "props": [
       {
         "name": "title",
         "type": "string",
-        "description": "Product or collection heading."
+        "description": "Current work object in the compact header.",
+        "default": "\"Merino crew\""
+      },
+      {
+        "name": "workspace",
+        "type": "string",
+        "description": "Workspace or store name in the app bar.",
+        "default": "\"Fieldwork\""
       },
       {
         "name": "collection",
         "type": "string",
-        "description": "Collection identifier above the heading."
+        "description": "Collection label below the product name."
       },
       {
         "name": "sizes",
         "type": "StockSize[]",
-        "description": "Size column IDs and display labels."
+        "description": "Unique size ids and labels in displayed order."
       },
       {
         "name": "defaultVariants",
         "type": "StockVariant[]",
-        "description": "Initial colour variants with swatches, SKU labels and integer stock by size. Remount for a different product."
+        "description": "Starting stock snapshot with unique ids, labels, swatches, SKUs and stock records. Missing size counts remain blank and block saving. Replacing the catalogue starts a fresh draft."
       },
       {
         "name": "lowStockThreshold",
         "type": "number",
-        "default": "4",
-        "description": "Nonnegative stock level at which a variant needs attention."
+        "description": "Non-negative integer warning threshold. This affects the display, not the saved payload. Invalid values use 4.",
+        "default": "4"
       },
       {
         "name": "onSave",
         "type": "(variants: StockVariant[]) => void | Promise<void>",
-        "description": "Awaited persistence callback; errors preserve draft cells. The component updates its saved baseline only after success."
+        "description": "Persist a copied array with exact edited stock records. Reject to retain all edits; resolve to update the baseline."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "default": "\"dark\"",
-        "description": "Surface and ink palette; the preview stage follows it."
+        "description": "Neutral graphite or paper surfaces.",
+        "default": "\"dark\""
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "description": "Optional hex accent; defaults to theme ink and selects readable button text."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "description": "Locale for exact values and counts.",
+        "default": "\"en-GB\""
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Additional outer component classes."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
         "wait:500",
-        "click:@stock-0-4",
-        "key:End",
-        "key:Backspace",
-        "type:12",
+        "click:@stock-ink-xl",
+        "key:ArrowUp",
+        "wait:250",
+        "key:ArrowUp",
         "wait:550",
         "click:@save-stock",
-        "wait:1200"
+        "wait:1300"
       ],
       "loop": false
     },
@@ -13137,6 +13160,17 @@
         "max": 12,
         "step": 1,
         "default": 4
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#7aa2ff",
+          "#ff8a4c"
+        ]
       }
     ]
   },
