@@ -47,7 +47,7 @@ needs re-recording, whether its poster is current, and the state of its browser 
 | `data-bulk-action-review` | current | current | Next-backed regression, twenty-eight theme/state accessibility audits, visible-count contrast checks and three controls pass; exact batches, rejection/retry, omitted/conflicting results, held picks, host-removed receipts and read-only handlers covered; monochrome partial-receipt film and settled Next poster refreshed |
 | `data-column-workbench` | current | current | Next-backed regression, twenty-four theme/state accessibility audits and four controls pass; whole-column drag, exact release payloads, keyboard/resize cancellation, focus/shelf retirement, controlled acknowledgement, opaque ids and invalid/empty layouts covered; monochrome 5.8s film and settled Next poster refreshed |
 | `data-filter-history` | current | current | Next-backed regression, thirty theme/state accessibility audits and four controls pass; scrub/restore payloads, independent rename retries, pending locks, late replies, stable snapshot identity, typed rules, readable comparisons and invalid/empty states covered; monochrome full-viewport film and matching settled Next poster refreshed |
-| `data-pivot-configurator` | new | current |  |
+| `data-pivot-configurator` | current | current | Next-backed regression and focused picker checks, forty theme/state accessibility audits, four controls and normal/reduced-motion travel proof pass; swaps, exact/opaque drill-down keys, context retirement, schema recovery, finite aggregates, valid Count/single-dimension choices and narrow totals covered; monochrome full-viewport film and matching Next poster refreshed |
 
 ## Editors and 3D (12)
 

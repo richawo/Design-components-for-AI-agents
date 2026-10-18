@@ -152,6 +152,10 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 1: Filter History has a reviewed monochrome 5.5s film showing a real rewind to all accounts, the watchlist comparison and a settled restore of five accounts. Measured full-viewport framing keeps every expanded state visible, with a matching settled Next poster. Source-change and moving-frame guards pass with no stalls. 129 listed films remain.
 
+- Task 5: Pivot Configurator now covers keyboard groups, axis swaps, exact drill-down records, zero/total cells, raw keys, host regrouping, invalid-context retirement and asynchronous schema recovery. Semantic grid rows retain shared-layout travel; counts and custom accents remain readable over heat. Large averages stay finite, fractions remain readable, invalid inputs/totals have written states, and single-dimension/Count-only choices stay valid with totals fitting narrow cards. Its Next-backed regression, final focused picker checks, forty theme/state accessibility audits, four controls and normal/reduced-motion geometry proof pass. 71 components remain without dedicated coverage.
+
+- Task 1: Pivot Configurator has a reviewed monochrome 5.3s film showing regrouping, shared-layout axis swap and the settled Q4/Enterprise drill-down with eight deals. Full-viewport framing retains the expanded inspector, with a matching settled Next poster. Source-change and moving-frame guards pass with no stalls. 128 listed films remain.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -169,7 +173,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Browser checks: `node scripts/check-component.mjs <slug> --base=http://localhost:3100 --no-video --keep-going`
   (screenshots at 1440/768/390 and every control flip; read the screenshots it writes to `test-results/check/<slug>/`).
 
-## 1. Re-record demo videos (129 components)
+## 1. Re-record demo videos (128 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -189,7 +193,7 @@ slug or per small group). Notes:
 Slugs:
 
 `mobile-attachment-tray`, `mobile-budget-envelope`
-`data-pivot-configurator`, `editor-asset-license-sheet`, `editor-branch-compare`
+`editor-asset-license-sheet`, `editor-branch-compare`
 `editor-color-token-studio`, `editor-export-preset`, `editor-font-pairing`, `editor-keyframe-track`
 `editor-layer-stack`, `editor-spacing-inspector`, `editor-storyboard-strip`, `editor-version-restore`
 `three-exploded-assembly`, `three-material-inspector`, `agents-budget-guard`, `agents-dependency-board`
@@ -288,14 +292,14 @@ tests/browser/pro-50-<suite>-probe.mjs <slug>` (suite = legal, saas, finance, hr
 
 ## 5. Write browser probes for components that have none
 
-72 finished components still have no dedicated browser regression probe. For each, read its source and
+71 finished components still have no dedicated browser regression probe. For each, read its source and
 `meta.json`, then add a case to the appropriate `tests/browser/*.mjs` suite (or a new probe registered in
 `scripts/test-components.mjs`) covering: the signature interaction, keyboard paths, failed-then-successful callbacks
 with drafts kept (where it has async callbacks), and empty or invalid data. Use `tests/browser/pro-50/hr-org-explorer.mjs`
 as the model for style and depth. Mobile components render through React Native web (`scripts/lib/component-fixture.mjs` aliases it);
 see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 
-`data-pivot-configurator`, `editor-asset-license-sheet`, `editor-branch-compare`, `editor-color-token-studio`
+`editor-asset-license-sheet`, `editor-branch-compare`, `editor-color-token-studio`
 `editor-export-preset`, `editor-font-pairing`, `editor-keyframe-track`, `editor-layer-stack`
 `editor-spacing-inspector`, `editor-storyboard-strip`, `editor-version-restore`, `three-exploded-assembly`
 `three-material-inspector`, `agents-budget-guard`, `agents-dependency-board`, `agents-run-replay`

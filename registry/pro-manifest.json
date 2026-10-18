@@ -14494,39 +14494,39 @@
       {
         "name": "fields",
         "type": "PivotField[]",
-        "description": "{ id, label, kind: \"dimension\" | \"measure\", order?, format?: \"currency\" | \"number\" }. Dimensions become row and column choices; `order` fixes the order of their values."
+        "description": "Unique nonempty field ids/labels. Dimensions group rows/columns; measures sum or average numeric values. Optional dimension order is deduplicated. Invalid fields have a written state."
       },
       {
         "name": "records",
         "type": "PivotRecord[]",
-        "description": "{ id, label, values }. Aggregated locally; averages are computed from the records, never from group averages."
+        "description": "Unique nonempty ids/labels with text or finite numeric values. Sums/averages use numeric values only; missing/non-numeric measures are omitted. Invalid values and overflowing aggregates have written states."
       },
       {
         "name": "value",
         "type": "PivotConfig",
-        "description": "Controlled { rows, columns (or null for a single total column), measure: \"count\" | \"sum\" | \"avg\", value }."
+        "description": "Controlled configuration with distinct known row/column dimensions (or null for one total column) and count/sum/avg. Sum/avg require a known measure. Configuration changes retire an old drill-down and report null."
       },
       {
         "name": "defaultValue",
         "type": "PivotConfig",
-        "default": "{ rows: \"region\", columns: \"quarter\", measure: \"sum\", value: \"arr\" }",
-        "description": "Uncontrolled starting configuration."
+        "default": "first two dimensions and first measure; count when no measure",
+        "description": "Uncontrolled starting configuration derived from the supplied fields when omitted."
       },
       {
         "name": "onChange",
         "type": "(config: PivotConfig) => void",
-        "description": "Called on every configuration change. Picking the other axis's field swaps the axes."
+        "description": "Reports user configuration changes with a new object. The other axis swaps when possible; a lone dimension cannot also be its own column. Automatically derived defaults repair after schema changes without publishing a user change."
       },
       {
         "name": "onCellSelect",
         "type": "(cell: PivotCell | null) => void",
-        "description": "Called when a cell is opened or closed, with its row and column keys, its records and its value."
+        "description": "Reports the opened cell’s raw row/column keys, a new records array containing the original records, and its numeric value. Only a collapsed column reports null; dimension text matching a total marker stays literal. Close or invalidated selection reports null."
       },
       {
         "name": "heatmap",
         "type": "boolean",
         "default": "true",
-        "description": "Shade each cell by its share of the largest one, in ink only."
+        "description": "Shade each body cell by its magnitude relative to the largest body-cell magnitude, in neutral ink. Signed values remain explicit."
       },
       {
         "name": "currency",
@@ -14543,8 +14543,8 @@
       {
         "name": "accent",
         "type": "string",
-        "default": "\"#c4f25d\"",
-        "description": "The one colour: the largest cell's figure and the opened cell's ring."
+        "default": "theme ink",
+        "description": "Top-magnitude figure and opened-cell ring. Defaults to neutral theme ink; neutral light choices follow dark ink."
       },
       {
         "name": "theme",
@@ -14585,8 +14585,9 @@
         "prop": "accent",
         "label": "Accent",
         "kind": "color",
-        "default": "#c4f25d",
+        "default": "#f2f2f3",
         "options": [
+          "#f2f2f3",
           "#c4f25d",
           "#7cc4ff",
           "#ffb547",
