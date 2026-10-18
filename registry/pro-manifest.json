@@ -12040,11 +12040,11 @@
   },
   {
     "slug": "commerce-catalog-import",
-    "name": "Catalogue Import Desk",
+    "name": "Catalogue Import Workbench",
     "tier": "pro",
     "platform": "web",
     "category": "commerce",
-    "description": "A three-step catalogue importer with quoted CSV parsing, column mapping, record validation and an awaited import action that preserves failed attempts.",
+    "description": "Read a bounded CSV export, map source columns to typed destination fields and review every record before import.",
     "tags": [
       "commerce",
       "workflow",
@@ -12061,51 +12061,68 @@
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 900,
+    "previewHeight": 1100,
     "usage": "import { CatalogImport } from \"@/components/design-for-ai/commerce-catalog-import\";\n\n<CatalogImport />",
     "props": [
       {
         "name": "title",
         "type": "string",
-        "description": "Import desk heading."
+        "description": "Current work object in the compact header.",
+        "default": "\"Catalogue import\""
+      },
+      {
+        "name": "workspace",
+        "type": "string",
+        "description": "Workspace or store name in the app bar.",
+        "default": "\"Fieldwork\""
       },
       {
         "name": "fields",
         "type": "ImportField[]",
-        "description": "Unique destination IDs, labels, text/number/email types, required flags and optional numeric minimums. Optional unique flags reject duplicate nonempty values; the default SKU field is unique."
+        "description": "Unique destination id/label/type definitions. Supported types are text, number and email, with optional required, min and unique checks. Missing, duplicate or malformed definitions block importing."
       },
       {
         "name": "initialCsv",
         "type": "string",
-        "description": "Initial pasted source. Maximum 200,000 characters, 1,000 records and 40 columns."
+        "description": "Starting CSV text. The exported parser supports quoted commas, escaped quotes, embedded newlines and a BOM. Limits: 200,000 characters, 1,000 records, 40 columns. Replacing source/schema starts a new draft."
       },
       {
         "name": "onImport",
         "type": "(rows: CatalogImportRow[]) => void | Promise<void>",
-        "description": "Persist mapped records. Awaited; rejection keeps the mapping for retry. Import is disabled without this callback."
-      },
-      {
-        "name": "theme",
-        "type": "\"dark\" | \"light\"",
-        "default": "\"dark\"",
-        "description": "Surface and ink palette; the preview stage follows it."
+        "description": "Import copied typed records. Return a promise until persistence completes. Rejection retains mapping and review; resolution acknowledges the import."
       },
       {
         "name": "selectMode",
         "type": "\"custom\" | \"native\"",
-        "default": "\"custom\"",
-        "description": "Keyboard-accessible custom menus or native platform pickers, with balanced 12px text and chevron insets."
+        "description": "Keyboard-accessible custom listboxes or native pickers.",
+        "default": "\"custom\""
+      },
+      {
+        "name": "theme",
+        "type": "\"dark\" | \"light\"",
+        "description": "Neutral graphite or paper surfaces.",
+        "default": "\"dark\""
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "description": "Optional hex accent; defaults to theme ink and selects readable button text."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Additional outer component classes."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
         "wait:500",
-        "click:@import-next",
+        "click:@read-csv",
         "wait:450",
-        "click:@import-next",
+        "click:@review-import",
         "wait:450",
-        "click:@import-next",
+        "click:@commit-import",
         "wait:1300"
       ],
       "loop": false
@@ -12120,6 +12137,17 @@
           "light"
         ],
         "default": "dark"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#7aa2ff",
+          "#ff8a4c"
+        ]
       }
     ]
   },

@@ -9,6 +9,15 @@ const page = await browser.newPage({
 const errors = [];
 page.on("pageerror", (e) => errors.push(e.message));
 const fixture = async (slug, code) => mountFixture(page, slug, "pro", code);
+const choose = async (locator, value) => {
+  if (await locator.evaluate(node => node.tagName === 'SELECT')) return locator.selectOption(value);
+  await locator.click();
+  const id = await locator.getAttribute('aria-controls');
+  const options = page.locator(`[id=${JSON.stringify(id)}] [role=option]`);
+  const index = await options.evaluateAll((nodes, value) => nodes.findIndex(node => node.dataset.value === value), value);
+  assert.ok(index >= 0, 'The destination field is available');
+  await options.nth(index).click();
+};
 try {
   await fixture(
     "data-query-builder",
@@ -70,70 +79,10 @@ try {
     await page.getByRole("status").first().innerText(),
     /0 matching records/,
   );
-  await fixture(
-    "commerce-catalog-import",
-    `window.parse=Subject.parseCatalogCsv;window.imported=[];createRoot(document.getElementById('root')).render(<Subject.CatalogImport onImport={async rows=>{window.imported.push(rows);throw Error('offline')}}/>);`,
-  );
-  const parsed = await page.evaluate(() =>
-    window.parse(
-      '\ufeffName,Note\r\n"Form, Studio","A ""quoted"" note\ncontinued"',
-    ),
-  );
-  assert.deepEqual(parsed, {
-    headers: ["Name", "Note"],
-    rows: [["Form, Studio", 'A "quoted" note\ncontinued']],
-  });
-  for (const source of [
-    'Name\n"unfinished',
-    'Name\n"closed"junk',
-    "Name\nextra,column",
-  ]) {
-    assert.equal(
-      await page.evaluate((source) => {
-        try {
-          window.parse(source);
-          return false;
-        } catch {
-          return true;
-        }
-      }, source),
-      true,
-    );
-  }
-  await page.getByRole("button", { name: "Read CSV" }).click();
-  await page.getByRole("button", { name: "Review import" }).click();
-  await page.getByRole("button", { name: "Import records" }).click();
-  await page.waitForTimeout(100);
-  assert.match(await page.getByRole("status").innerText(), /import failed/);
-  assert.equal(await page.evaluate(() => window.imported[0][0].price), 89);
-  assert.equal(
-    await page.getByRole("button", { name: "Import records" }).isEnabled(),
-    true,
-  );
-  await page.getByRole("button", { name: "Back", exact: true }).click();
-  await page.getByRole("combobox", { name: /column 3/ }).click();
-  await page.getByRole("option", { name: "Skip column", exact: true }).click();
-  assert.match(
-    await page.getByRole("alert").innerText(),
-    /Map the required Unit price/,
-  );
-  assert.equal(
-    await page.getByRole("button", { name: "Review import" }).isDisabled(),
-    true,
-  );
-  await page.getByRole("button", { name: "Back", exact: true }).click();
-  await page
-    .getByRole("textbox")
-    .fill("Product,SKU,Unit price,Supplier email\nTest,A,-1,no-email");
-  await page.getByRole("button", { name: "Read CSV" }).click();
-  assert.match(await page.getByRole("alert").innerText(), /at least 0/);
-  assert.match(await page.getByRole("alert").innerText(), /valid email/);
-  await page.getByRole("button", { name: "Back", exact: true }).click();
-  await page
-    .getByRole("textbox")
-    .fill("Product,SKU,Unit price\nOne,SAME,10\nTwo,SAME,20");
-  await page.getByRole("button", { name: "Read CSV" }).click();
-  assert.match(await page.getByRole("alert").innerText(), /SKU must be unique/);
+  // Rebuilt workflow: commerce-catalog-import. The dedicated case retains the original edge checks.
+  await page.setViewportSize({ width: 390, height: 844 });
+  await (await import('./pro-50/commerce-catalog-import.mjs')).check({ page, assert, mount: code => fixture('commerce-catalog-import', code), choose });
+  await page.setViewportSize({ width: 390, height: 844 });
   // Rebuilt workflow: commerce-variant-stock. The dedicated case retains the original edge checks.
   await page.setViewportSize({ width: 390, height: 844 });
   await (await import('./pro-50/commerce-variant-stock.mjs')).check({ page, assert, mount: code => fixture('commerce-variant-stock', code) });

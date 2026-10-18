@@ -1553,18 +1553,20 @@
     "updated": "2026-10-17"
   },
   "commerce-catalog-import": {
-    "useWhen": "Mapping and reviewing catalogue rows before a host import.",
-    "avoidWhen": "An unvalidated bulk write or a complete data-transformation pipeline.",
+    "useWhen": "Read a bounded CSV export, map source columns to typed destination fields and review every record before import.",
+    "avoidWhen": "The source is an unbounded spreadsheet job or needs server-side file parsing beyond the documented CSV limits.",
     "integration": [
-      "Supply your own records through `fields`. Preserve stable keys or IDs when the data contract provides them.",
-      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+      "fields: Unique destination id/label/type definitions. Supported types are text, number and email, with optional required, min and unique checks. Missing, duplicate or malformed definitions block importing.",
+      "initialCsv: Starting CSV text. The exported parser supports quoted commas, escaped quotes, embedded newlines and a BOM. Limits: 200,000 characters, 1,000 records, 40 columns. Replacing source/schema starts a new draft.",
+      "onImport: Import copied typed records. Return a promise until persistence completes. Rejection retains mapping and review; resolution acknowledges the import.",
+      "selectMode: Keyboard-accessible custom listboxes or native pickers."
     ],
     "related": [
-      "commerce-return-desk",
       "commerce-variant-stock",
-      "commerce-backorder-allocation"
+      "commerce-purchase-order",
+      "block-commerce-workspace"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-18"
   },
   "commerce-customer-timeline": {
     "useWhen": "A support or operations agent needs one customer’s whole relationship at a glance: every order, return and conversation on a timeline they can scrub to see lifetime value at any point, with the products in each order visible.",

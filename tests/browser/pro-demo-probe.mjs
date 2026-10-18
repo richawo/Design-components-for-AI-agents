@@ -23,7 +23,7 @@ try {
     if (slug === "data-query-builder") {
       assert.equal(await page.getByRole("textbox", { name: "Value for condition 2" }).inputValue(), "20");
       assert.match(text, /Segment applied/);
-    } else if (slug === "commerce-catalog-import") assert.match(text, /records imported/);
+    } else if (slug === "commerce-catalog-import") assert.match(text, /Import complete/);
     else if (slug === "commerce-variant-stock") {
       assert.equal(await page.getByRole("spinbutton", { name: "Ink / XL stock", exact: true }).inputValue(), "5");
       assert.match(text, /Stock saved · 1 cell updated/);

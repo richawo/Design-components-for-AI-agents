@@ -9,6 +9,7 @@ const specs = fs
   .filter((file) => file.endsWith(".mjs"))
   .map((file) => ({ slug: file.slice(0, -4) }));
 const finalStates = {
+  "commerce-catalog-import": "Import complete",
   "commerce-variant-stock": "Stock saved · 1 cell updated",
   "commerce-return-desk": "RET-2038",
   "commerce-promotion-builder": "AUTUMN20 rule saved",
