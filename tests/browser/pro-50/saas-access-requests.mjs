@@ -15,8 +15,14 @@ export async function check({ page, mount, assert }) {
   await d("role-admin").click();
   assert.equal(await d("hours-72").isDisabled(), true);
   await d("hours-24").click();
+  assert.match(await d("approve").innerText(), /Approve 1d/, "The live action names the selected grant window");
   await page.keyboard.press("ArrowRight");
   assert.equal(await d("hours-1").getAttribute("aria-checked"), "true");
+  assert.match(
+    await d("approve").innerText(),
+    /Approve 1h/,
+    "Rapid duration changes cannot leave an old window on the action",
+  );
   await d("role-editor").click();
   await page.keyboard.press("ArrowLeft");
   assert.equal(await d("role-viewer").getAttribute("aria-checked"), "true");
@@ -28,6 +34,7 @@ export async function check({ page, mount, assert }) {
   assert.match(await footer(), /Your decision is kept/);
   assert.equal(await d("role-editor").getAttribute("aria-checked"), "true");
   assert.match(await d("approve").innerText(), /Approve 1h/);
+  assert.equal(await page.evaluate(() => window.calls[0].hours), 1);
   await page.evaluate(() => (window.fail = false));
   await d("approve").click();
   await page.getByRole("status").filter({ hasText: "approved" }).waitFor();
@@ -59,7 +66,9 @@ export async function check({ page, mount, assert }) {
   assert.match(await page.locator("ol").first().innerText(), /Asked for 30 days; Admin caps at 1 day/);
 
   // Empty and invalid data.
-  await mount(`createRoot(document.getElementById('root')).render(<Subject.AccessRequests requests={[]} grants={[]}/>);`);
+  await mount(
+    `createRoot(document.getElementById('root')).render(<Subject.AccessRequests requests={[]} grants={[]}/>);`,
+  );
   assert.match(await page.locator("section").innerText(), /Queue clear/);
   assert.match(await page.locator("section").innerText(), /No temporary access running/);
   await mount(

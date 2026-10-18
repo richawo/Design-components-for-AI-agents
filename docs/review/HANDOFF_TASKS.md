@@ -180,6 +180,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 4: the expanded full run completed at 57 of 59 suites passing. All prior replay, Cinema Frame, Bento and Audit Trail failures pass; the new failures are Column Workbench's deferred focus stealing a later pin action and Access Requests' stale animated approval window. Column Workbench now restores owned focus with the DOM update. Its deterministic held-frame regression, Next workflow, both-theme accessibility and 1,063 unit tests pass. The Access Requests label and the final full rerun remain pending.
 
+- Task 4: Access Requests now updates the approval window inside its live label instead of retiring the previous duration through a keyed exit. The captured failure submitted 1 hour correctly while still showing "Approve 4h"; rapid 24-hour/1-hour changes, failed-then-successful decisions and exact payloads now pass in isolation and on Next. Both-theme accessibility and 1,063 unit tests pass. The final full rerun remains pending.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
