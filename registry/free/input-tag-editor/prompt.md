@@ -1,27 +1,13 @@
 # Topic Tag Editor
 
-Build a standalone React 19 and Tailwind v4 component. An expanding topic field with removable tags, comma and paste parsing, duplicate handling and a visible limit for content and knowledge tools.
+Build this self-contained React 19, Tailwind CSS v4 and motion/react component. Edit a small collection of topic labels directly, with an explicit count and visible removal controls.
 
-## Layout
+A roomy wrap-first text field with fitted topic chips, small remove keys and a lightweight count. Return focus to the text entry after addition or removal. Keep neutral #111111/#ffffff panels, #f5f5f5/#171717 ink, #a3a3a3/#525252 secondary text and #333333/#d4d4d4 hairlines. Distinguish the topic well with #727272/#8a8a8a borders. Use 14-16px body text, 12px mono counts and a 20px medium label. Interactive targets remain at least 44px.
 
-A roomy wrap-first text field with fitted topic chips, small remove keys and a lightweight count. Keep field focus after removal. Size to the container. Use a 4/8px rhythm, 1px surface edges, 16px narrow padding and 24px desktop padding. Controls have 44px targets.
+- Parse Enter, comma and pasted comma/newline lists; trim pieces, deduplicate case-insensitively and retain accepted order.
+- Respect IME composition. Remove the last tag with Backspace only when the entry is empty; return focus to the entry after addition or removal.
+- Keep independent copies of incoming defaults, local tags and emitted arrays so host mutation cannot alter the field.
+- Apply a finite nonnegative addition limit without silently deleting existing host tags. At the limit, retain removal and block further entry.
+- Controlled values wait for the host; proposals report a requested change. Controlled values without a writer and disabled instances cannot edit.
 
-## Typography and colour
-
-Use font-sans at 14-16px/1.5, font-mono metadata at 11-12px and a 24-36px heading with -0.035em tracking. Dark uses #111111, #f5f5f5, #a3a3a3 and #333333; light uses #ffffff, #171717, #525252 and #d4d4d4. Maintain AA contrast.
-
-## Motion
-
-Use a 320ms opacity/8px entrance, 150ms press response and 240ms state changes, easing cubic-bezier(0.22,1,0.36,1). No ambient loops. Reduced motion removes transforms and layout animation and limits fades to 120ms.
-
-## Behaviour and accessibility
-
-Use semantic elements, native keyboard behaviour, visible focus rings and instance-scoped IDs. Expose typed content and callbacks. Handle empty custom data and repeated instances. Announce important feedback politely. Match the source state ownership and callback contract.
-
-## Responsive
-
-Design for 320, 390, 768, 1024, 1440 and 1920px. Respond to the container with @container variants, wrap text and stack secondary details. Scroll only within explicitly labelled local regions.
-
-## Avoid
-
-No remote imagery, false success states, unlabelled controls, hover-only actions, low contrast or decorative status pills. The demo is an isolated component on a quiet stage.
+Use a brief 8px entrance with opacity. Respect reduced motion on first view and when changed while mounted. Keep visible keyboard focus, meaningful pressed/value states and instance-scoped labels. Verify 320/390/768/1024/1440/1920px containers and both themes. Preserve the complete offline default demo and its named data-demo targets. Avoid marketing headers, invented security claims, decorative status badges and remote dependencies.

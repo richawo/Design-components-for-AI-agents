@@ -43,7 +43,7 @@
       "name": "value",
       "type": "string[]",
       "default": "undefined",
-      "description": "Controlled tags."
+      "description": "Controlled tags. Without onChange, editing is read-only."
     },
     {
       "name": "defaultValue",
@@ -61,7 +61,13 @@
       "name": "onChange",
       "type": "(tags: string[]) => void",
       "default": "undefined",
-      "description": "New tag array after additions and removals."
+      "description": "Synchronous proposal with an independent tag array; controlled tags wait for host acknowledgement."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": "false",
+      "description": "Disables every editing route."
     },
     {
       "name": "theme",
@@ -93,6 +99,27 @@
         "light"
       ],
       "default": "dark"
+    },
+    {
+      "prop": "maxTags",
+      "label": "Topic limit",
+      "kind": "slider",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 8
+    },
+    {
+      "prop": "label",
+      "label": "Label",
+      "kind": "text",
+      "default": "Topics"
+    },
+    {
+      "prop": "disabled",
+      "label": "Disabled",
+      "kind": "toggle",
+      "default": false
     }
   ]
 }

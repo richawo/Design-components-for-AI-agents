@@ -1,6 +1,6 @@
 # Review status
 
-172 components are rebuilt (or, for a few, polished), verified and committed. For each: whether its demo video
+173 components are rebuilt (or, for a few, polished), verified and committed. For each: whether its demo video
 needs re-recording, whether its poster is current, and the state of its browser regression probe.
 
 - **Video**: `new` means `public/previews/<slug>.mp4` still shows the old version. Re-record serially on a quiet machine:
@@ -23,9 +23,9 @@ remain, and the three diagnostic packages' runtime files are verified. No manual
 Component-page loading work and earlier checkpoints remain separate.
 See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisions, measurements and evidence.
 
-The subsequent Number Stepper and Password Checklist reviews pass 55 and 37 source mounts respectively,
-with 22 state/default accessibility audits each, plus Next workflows/demos, four controls and fresh component
-audits. Their reviewed posters and films are current. The new input group brings the next complete browser
+The subsequent Number Stepper, Password Checklist and Tag Editor reviews pass 55, 37 and 37 source mounts,
+with 22, 22 and 20 state/default accessibility audits, plus Next workflows/demos, four controls each and fresh
+component audits. Their reviewed posters and films are current. The new input group brings the next complete browser
 run to 60 suites; that input-batch release checkpoint is pending.
 
 ## Mobile (20)
@@ -104,7 +104,7 @@ run to 60 suites; that input-batch release checkpoint is pending.
 | `devtools-request-replay` | new | current |  |
 | `devtools-schema-migration` | new | current |  |
 
-## Inputs, forms, dates and selects (12)
+## Inputs, forms, dates and selects (13)
 
 | Slug | Video | Poster | Probe |
 | --- | --- | --- | --- |
@@ -118,6 +118,7 @@ run to 60 suites; that input-batch release checkpoint is pending.
 | `input-expression-editor` | new | current |  |
 | `input-unit-converter` | new | current |  |
 | `selects-tree-picker` | new | current |  |
+| `input-tag-editor` | current | current | Next-backed Enter/comma/paste/IME, duplicate/limit, keyboard removal, copied arrays, controlled/read-only/disabled and live reduced-motion regression passes. Adding returns focus to the entry, and its boundary exceeds 3:1 in both themes. The 37-mount source review, twenty state/default accessibility audits, six widths, entrance/state captures, four controls, official audit and exact add/remove replay pass. Strict registry, TypeScript and all 1,064 unit tests pass. Reviewed 3.1s film and paired poster are current, with all recording guards retained. |
 | `input-password-checklist` | current | current | Next-backed raw callback, controlled/read-only/disabled, keyboard reveal, empty/custom/single policy, Unicode and live reduced-motion regression passes. Default policy classes and character counting are corrected; empty fields have a measured 3:1 boundary. The 37-mount source review, 22 state/default accessibility audits, six widths, entrance/state captures, four controls, official audit and exact revealed-text replay pass. Strict registry, TypeScript and all 1,064 unit tests pass. Reviewed 3.25s film and paired poster are current, with all recording guards retained. |
 | `input-number-stepper` | current | current | Next-backed exact integer/decimal/bound, keyboard/IME, held-pointer retirement, native focus, controlled/read-only/disabled and invalid-data regression passes. Long quantities remain complete at 320px; the ruler remains finite across extreme bounds and settles on live reduced motion. The 55-mount source review, 22 state/default accessibility audits, six widths, entrance/state captures, four controls, official audit and exact metadata replay pass. Strict registry, TypeScript and all 1,064 unit tests pass. Reviewed 3.27s stepping film and paired poster are current, with all recording guards retained. |
 

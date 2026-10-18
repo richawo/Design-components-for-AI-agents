@@ -11,6 +11,7 @@ const specs = fs
 const finalStates = {
   "input-number-stepper": "workers",
   "input-password-checklist": "3 of 3 requirements met",
+  "input-tag-editor": "Design systems removed.",
   "three-material-inspector": "Uncoated C360 brass.",
   "three-exploded-assembly": "A compressible seal between tray and cover.",
   "editor-version-restore": "Restored 1 block",
@@ -106,6 +107,10 @@ try {
       ?.slice(7);
     const target = page.locator('[data-demo="' + last + '"]');
     const notice = await page.getByRole("status").allTextContents();
+    if (slug === "input-tag-editor") {
+      assert.deepEqual(await page.locator('section button[aria-label^="Remove "]').evaluateAll(nodes => nodes.map(node => node.getAttribute("aria-label").slice(7))), ["Interaction", "Typography"], "The topic demo adds Typography and removes only Design systems");
+      assert.equal(await page.getByRole("textbox").inputValue(), "", "The topic demo finishes ready for another topic");
+    }
     if (slug === "input-number-stepper") {
       assert.equal(await page.getByRole("spinbutton").inputValue(), "5", "The quantity demo finishes one step above its initial value");
       const position = await page.locator('[data-demo="ruler-indicator"]').evaluate(node => parseFloat(node.style.left));

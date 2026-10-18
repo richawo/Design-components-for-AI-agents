@@ -1,6 +1,6 @@
 {
   "component": "Topic Tag Editor",
-  "intent": "An expanding topic field with removable tags, comma and paste parsing, duplicate handling and a visible limit for content and knowledge tools.",
+  "intent": "Edit a small collection of topic labels directly, with an explicit count and visible removal controls.",
   "platform": "web",
   "stack": {
     "framework": "React 19",
@@ -8,33 +8,35 @@
     "motion": "motion/react"
   },
   "layout": {
-    "direction": "A roomy wrap-first text field with fitted topic chips, small remove keys and a lightweight count. Keep field focus after removal.",
-    "container": "Size to the parent with @container. Keep the root width at 100%, capped to the focused component, with 24px desktop and 16px narrow padding.",
+    "direction": "A roomy wrap-first topic well with fitted tags, 44px remove controls and a lightweight count. Return focus to the text entry after adding or removing a topic.",
+    "container": "Use a full-width container capped at 32rem with 24px padding. Keep long topic labels wrapping inside the well at 320px.",
     "rhythm": "4/8px spacing; 1px edges; 44px minimum interactive targets."
   },
   "typography": {
     "body": "font-sans, 14-16px, line-height 1.5",
     "metadata": "font-mono, 11-12px, restrained tracking",
-    "heading": "font-display or font-serif, 24-36px, tracking -0.035em"
+    "heading": "20px medium-weight label with tight tracking"
   },
   "color": {
     "dark": {
       "surface": "#111111",
       "ink": "#f5f5f5",
       "muted": "#a3a3a3",
-      "edge": "#333333"
+      "edge": "#333333",
+      "fieldEdge": "#727272"
     },
     "light": {
       "surface": "#ffffff",
       "ink": "#171717",
       "muted": "#525252",
-      "edge": "#d4d4d4"
+      "edge": "#d4d4d4",
+      "fieldEdge": "#8a8a8a"
     }
   },
   "motion": {
     "entrance": "A single opacity and 8px rise over 320ms.",
-    "interaction": "150ms press response; 240ms state changes. No ambient loops.",
-    "reduced": "Remove transforms and layout motion; keep opacity at 120ms or less."
+    "interaction": "150ms button press response and 200ms tag layout transitions. No ambient loops.",
+    "reduced": "Settle the entrance and tag layout without transforms when reduced motion is active or changes while mounted. Preserve entry focus and content."
   },
   "responsive": {
     "widths": [
@@ -78,7 +80,7 @@
         "name": "value",
         "type": "string[]",
         "default": "undefined",
-        "description": "Controlled tags."
+        "description": "Controlled tags. Without onChange, editing is read-only."
       },
       {
         "name": "defaultValue",
@@ -96,7 +98,13 @@
         "name": "onChange",
         "type": "(tags: string[]) => void",
         "default": "undefined",
-        "description": "New tag array after additions and removals."
+        "description": "Synchronous proposal with an independent tag array; controlled tags wait for host acknowledgement."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "default": "false",
+        "description": "Disables every editing route."
       },
       {
         "name": "theme",
@@ -110,5 +118,12 @@
     "Remote images, fake network success or hidden external dependencies.",
     "Decorative status badges, gradients as filler, low-contrast text.",
     "Unlabelled controls, hover-only functionality, overflow at 320px."
+  ],
+  "contract": [
+    "Parse Enter, comma and pasted comma/newline lists; trim pieces, deduplicate case-insensitively and retain accepted order.",
+    "Respect IME composition. Remove the last tag with Backspace only when the entry is empty; return focus to the entry after addition or removal.",
+    "Keep independent copies of incoming defaults, local tags and emitted arrays so host mutation cannot alter the field.",
+    "Apply a finite nonnegative addition limit without silently deleting existing host tags. At the limit, retain removal and block further entry.",
+    "Controlled values wait for the host; proposals report a requested change. Controlled values without a writer and disabled instances cannot edit."
   ]
 }

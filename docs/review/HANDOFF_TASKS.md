@@ -315,6 +315,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 7 (19 October): Password Checklist retains its focused field/reveal and policy-list layout. Sample rules now count Unicode code points, recognize non-Latin letters/numbers and require actual punctuation or symbols. Accents and invisible format characters no longer count as symbols. The field boundary improves from 1.49:1 to 3.93:1 dark and 3.45:1 light; disabled styling stays consistent. Controlled values without a writer remain read-only while reveal works. Live reduced motion settles fills without losing the input, and empty/single policies have clean layout, valid descriptions and correct copy. The 37-mount source review, 22 accessibility audits, six widths, entrance/state captures, Next regression, four controls, official audit and exact revealed-text demo pass, with strict registry, TypeScript and all 1,064 unit tests. Its reviewed 3.25s film and paired poster are current: maximum source gap 10ms, delivery 13.17ms and moving-frame p95 17.33ms, with no stalls and unchanged guards. 26 components and 12 blocks remain in task 7.
 
+- Task 7 (19 October): Tag Editor keeps its wrap-first topic well. Adding returns focus to the entry, defaults and emitted arrays are independent, controlled tags wait for host acknowledgement, and read-only/disabled instances block every editing route. The field boundary improves from 1.49:1 to 3.93:1 dark and 3.45:1 light. Its 37-mount source review covers Enter/comma/paste parsing, IME, duplicates, limits, removal, copied callbacks and live reduced motion, with twenty state/default accessibility audits, six widths and reviewed entrance/state captures. The Next regression, four controls, official audit and exact add/remove demo pass, with strict registry, TypeScript and all 1,064 unit tests. The reviewed 3.1s film and paired poster are current: source gap 11ms, delivery 15.80ms and moving-frame p95 18.04ms, with no stalls and unchanged guards. 25 components and 12 blocks remain in task 7.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -477,9 +479,9 @@ All nine parked rebuilds are shipped in both repos. Their original `_wip/<slug>`
 | finance-budget-variance | Completed 17 October: Next probe, dark/light accessibility, responsive and entrance/state captures, live demo and refreshed poster pass. |
 | finance-cashflow-dashboard | Completed 17 October: weekly balance and in/out bars, movable payments, independent pending saves, invalid-data guards, selected-week list geometry, Next probe/demo, both-theme accessibility, responsive/state/entrance captures and refreshed poster pass. |
 
-## 7. Continue the review (26 components, then 12 blocks)
+## 7. Continue the review (25 components, then 12 blocks)
 
-Same process as the 172 already done: hold each to the first ~100 components' standard. Briefs:
+Same process as the 173 already done: hold each to the first ~100 components' standard. Briefs:
 `docs/review/REVIEW_BRIEF.md`, `docs/review/SUITE_BRIEF.md` for industry components, suite languages in
 `docs/review/suites/`. Work newest first, about four components per batch, and verify each (build, tsc, tests,
 check-component, your own captures of states and mid-entrance frames, a refreshed poster, a rewritten pro-50 probe for
@@ -492,7 +494,7 @@ industry components).
   onboarding-setup-checklist, date-booking-slots, input-file-dropzone, input-shortcut-recorder,
   feedback-empty-search, navigation-pagination-window, primitives-shortcut-reference, selects-radio-cards,
   progress-milestones, content-accordion-index, feedback-inline-alert, navigation-breadcrumb-fold,
-  input-color-swatches, input-tag-editor.
+  input-color-swatches.
 - **Blocks**, after their parts: the 12 `block-*` components. Many parts changed their look and some their props;
   re-check each block composes well with the rebuilt parts and still reads as one product.
 

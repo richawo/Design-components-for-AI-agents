@@ -565,18 +565,20 @@
     "updated": "2026-10-12"
   },
   "input-tag-editor": {
-    "useWhen": "Managing a small set of discrete, editable labels.",
-    "avoidWhen": "A long taxonomy with hierarchical permissions or thousands of options.",
+    "useWhen": "An article, knowledge item or search needs a short collection of free-text topics with keyboard entry, pasted lists and direct removal.",
+    "avoidWhen": "Topics require authoritative IDs, remote suggestions or a taxonomy. Use a searchable multi-select for those contracts.",
     "integration": [
-      "Supply your own records through `value`, `defaultValue`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+      "Pass `value` and `onChange` for controlled tags or use `defaultValue` for local tags. The component and callback own separate array copies.",
+      "Enter and comma commit a trimmed draft. Pasted comma/newline lists preserve order, skip case-insensitive duplicates and announce skipped entries. IME Enter does not commit. Addition and removal return focus to the entry.",
+      "`maxTags` bounds additions, including pasted batches; existing host tags are retained if the limit shrinks. Empty-entry Backspace removes the final tag.",
+      "A controlled field without a writer is read-only. `disabled` also disables the entry and removal actions. Callbacks are synchronous proposals; the host owns persistence and any asynchronous errors."
     ],
     "related": [
       "input-color-swatches",
-      "input-file-dropzone",
-      "input-number-stepper"
+      "selects-radio-cards",
+      "selects-tree-picker"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-19"
   },
   "mobile-health-summary": {
     "useWhen": "A mobile summary of a few health or activity measurements.",
@@ -1550,7 +1552,7 @@
     "updated": "2026-10-17"
   },
   "commerce-bundle-builder": {
-    "useWhen": "A merchandiser assembles a fixed product bundle and needs to see the price, the customer\u2019s saving, the gross margin and how many bundles stock can make while choosing the discount.",
+    "useWhen": "A merchandiser assembles a fixed product bundle and needs to see the price, the customer’s saving, the gross margin and how many bundles stock can make while choosing the discount.",
     "avoidWhen": "You need mix-and-match rules, tiered or quantity discounts, or storefront upsells; those are promotions, not a fixed bundle.",
     "integration": [
       "Pass `products` with integer `priceMinor`, `costMinor` and `stock`; add `image` for real product photos. Invalid products are listed and never priced.",
@@ -1581,8 +1583,8 @@
     "updated": "2026-10-18"
   },
   "commerce-customer-timeline": {
-    "useWhen": "A support or operations agent needs one customer\u2019s whole relationship at a glance: every order, return and conversation on a timeline they can scrub to see lifetime value at any point, with the products in each order visible.",
-    "avoidWhen": "You need a list of many customers, a CRM pipeline or marketing segmentation; this is one customer\u2019s history, not a directory.",
+    "useWhen": "A support or operations agent needs one customer’s whole relationship at a glance: every order, return and conversation on a timeline they can scrub to see lifetime value at any point, with the products in each order visible.",
+    "avoidWhen": "You need a list of many customers, a CRM pipeline or marketing segmentation; this is one customer’s history, not a directory.",
     "integration": [
       "Pass `customer` and a flat `events` array discriminated by `kind` (order, return, support, note). Money is integer minor units in `currency`; dates are ISO.",
       "Lifetime value is computed from the events: orders add `totalMinor`, refunded returns subtract `refundMinor`. Invalid amounts are left out and duplicate IDs are flagged.",
@@ -1683,8 +1685,8 @@
     "useWhen": "Choosing a carrier service for an order where the delivery date matters: cut-off times, weekends, Saturday services and holidays decide which option actually arrives first, and cost has to be weighed against it.",
     "avoidWhen": "You need live carrier rating, label printing or tracking; feed this component rated services from your carrier integration and keep booking on the server.",
     "integration": [
-      "Pass `services` with per-destination `rates` (transit working days, base and per-kilogram prices in minor units), each service\u2019s `cutoff` and whether it delivers on Saturdays.",
-      "Set `now` to the warehouse\u2019s local date and time and `holidays` to non-collection days; delivery dates are computed from them, not from the browser clock.",
+      "Pass `services` with per-destination `rates` (transit working days, base and per-kilogram prices in minor units), each service’s `cutoff` and whether it delivers on Saturdays.",
+      "Set `now` to the warehouse’s local date and time and `holidays` to non-collection days; delivery dates are computed from them, not from the browser clock.",
       "`onSelect` receives the quote with dispatch and delivery dates. Re-rate on the server before buying the label; reject to keep the choice and show the failure."
     ],
     "related": [
@@ -1695,7 +1697,7 @@
     "updated": "2026-10-17"
   },
   "commerce-variant-stock": {
-    "useWhen": "Edit a product\u2019s colour/size stock matrix, review changed cells and save a pinned stock snapshot.",
+    "useWhen": "Edit a product’s colour/size stock matrix, review changed cells and save a pinned stock snapshot.",
     "avoidWhen": "Stock counts are unknown or the host needs an inventory reservation rather than a snapshot edit.",
     "integration": [
       "collection: Collection label below the product name.",
@@ -1779,7 +1781,7 @@
     "updated": "2026-10-12"
   },
   "data-query-builder": {
-    "useWhen": "Build and apply a typed all/any segment while seeing each condition\u2019s effect and the resulting local records.",
+    "useWhen": "Build and apply a typed all/any segment while seeing each condition’s effect and the resulting local records.",
     "avoidWhen": "Filtering an unbounded server dataset or authoring nested boolean trees beyond twelve flat conditions.",
     "integration": [
       "Supply unique text/number fields and at most 1,000 uniquely identified records. Missing own field values do not become zero or inherited prototype values.",
@@ -2184,7 +2186,7 @@
     "integration": [
       "Pass `drop`, `daily` preorders per day from the opening date and `sizes`; the size totals must match the daily total or closing is blocked with an explanation.",
       "`minimumUnits`, `packMultiple` and `maximumUnits` bound and snap the draggable cap. `onClose` receives the production order, charges, waitlist and launch stock by size; throw to keep the window open and show your message. `onReopen` adds an undo to the receipt.",
-      "If reopening fails, keep the closed receipt and show the host\u2019s reason before offering another attempt."
+      "If reopening fails, keep the closed receipt and show the host’s reason before offering another attempt."
     ],
     "related": [
       "fashion-wholesale-order",
@@ -2503,10 +2505,10 @@
     "updated": "2026-10-12"
   },
   "hr-capacity-planner": {
-    "useWhen": "Balance a small team\u2019s day-by-day project allocations against explicit available hours, then persist one reviewed weekly plan.",
+    "useWhen": "Balance a small team’s day-by-day project allocations against explicit available hours, then persist one reviewed weekly plan.",
     "avoidWhen": "Payroll, automatic scheduling or organization-scale resource grids requiring virtualization and individual leave calendars.",
     "integration": [
-      "Supply unique people/day/project IDs and up to 200 allocations. Capacity is 0\u201324 hours; bookings use positive quarter-hour steps up to 24. Zero capacity is unavailable time.",
+      "Supply unique people/day/project IDs and up to 200 allocations. Capacity is 0–24 hours; bookings use positive quarter-hour steps up to 24. Zero capacity is unavailable time.",
       "onSave receives copied numeric allocations. Await persistence and reject to retain the draft. Reset uses the last acknowledged snapshot, not callback-mutated objects.",
       "allowOverbooking permits explicit over-capacity days while retaining visible warnings. Invalid hours and unknown references still block saving.",
       "Replace period or planning data to begin a fresh draft. Exact pending or acknowledged save echoes retain their receipt; different supplied bookings replace the draft and retire old replies."
@@ -2550,10 +2552,10 @@
   },
   "hr-interview-scorecard": {
     "useWhen": "Structured interviews: each interviewer rates role competencies on shared anchors, writes the evidence behind each rating, recommends hire or no hire, and only then sees how the rest of the panel scored.",
-    "avoidWhen": "Automated screening or ranking candidates; this records one person\u2019s judgement and never makes a hiring decision.",
+    "avoidWhen": "Automated screening or ranking candidates; this records one person’s judgement and never makes a hiring decision.",
     "integration": [
       "Supply `competencies` with prompts and optional per-competency anchors; duplicates are named and left out.",
-      "Pass other interviewers\u2019 submitted scorecards as `panel`; they stay hidden until this one is submitted, so they can\u2019t anchor it.",
+      "Pass other interviewers’ submitted scorecards as `panel`; they stay hidden until this one is submitted, so they can’t anchor it.",
       "`onSubmit` receives the ratings with evidence, a recommendation from strong-no to strong-yes and the summary; reject it to keep the draft."
     ],
     "related": [
@@ -2564,10 +2566,10 @@
     "updated": "2026-10-17"
   },
   "hr-leave-approval": {
-    "useWhen": "Approving time off where cover matters: a manager sees the request across the team calendar, who else is off, each day\u2019s cover against the minimum and the allowance before and after.",
-    "avoidWhen": "Employees requesting leave, accruals or payroll; this is the approver\u2019s side and changes nothing until your host records the decision.",
+    "useWhen": "Approving time off where cover matters: a manager sees the request across the team calendar, who else is off, each day’s cover against the minimum and the allowance before and after.",
+    "avoidWhen": "Employees requesting leave, accruals or payroll; this is the approver’s side and changes nothing until your host records the decision.",
     "integration": [
-      "Express durations, balances and cover in half-day units; invalid dates or duplicate request IDs are named and can\u2019t be approved.",
+      "Express durations, balances and cover in half-day units; invalid dates or duplicate request IDs are named and can’t be approved.",
       "Pass `absences` for leave already booked so the calendar shows who else is off; cover figures should already account for them.",
       "`onDecision` receives { requestId, decision, note } and can reject to keep the note; `onReopen` powers Undo."
     ],
@@ -2594,12 +2596,12 @@
     "updated": "2026-10-17"
   },
   "hr-people-dashboard": {
-    "useWhen": "A people-ops home screen: headcount over the last year with hires and leavers, tenure spread, department mix, the next month\u2019s anniversaries and probation reviews, and open requisitions.",
+    "useWhen": "A people-ops home screen: headcount over the last year with hires and leavers, tenure spread, department mix, the next month’s anniversaries and probation reviews, and open requisitions.",
     "avoidWhen": "Individual employee records, performance data or anything that needs row-level access control; this aggregates a roster you are already allowed to see.",
     "integration": [
       "Pass every employee with `startDate` and, for leavers, `endDate`; headcount, hires, leavers and tenure are all derived from them as of `referenceDate`.",
       "Anniversaries, probation reviews (`probationMonths`) and first days are found automatically; add `milestones` for anything else.",
-      "`openRoles` takes each requisition\u2019s opened date and pipeline counts; roles open over 60 days are flagged."
+      "`openRoles` takes each requisition’s opened date and pipeline counts; roles open over 60 days are flagged."
     ],
     "related": [
       "hr-org-explorer",
@@ -2732,7 +2734,7 @@
     "avoidWhen": "Acting as a docket or limitation calculator. Dates are shown as recorded by matter owners; court and statutory deadlines need a system built to compute and verify them.",
     "integration": [
       "Pass `matters` with id, name, client, practice, owner, status, stage, nextStep and dates. Add `budgetMinor` and `spentMinor` in minor units for spend figures; set `currency` and `locale` for formatting.",
-      "`phases` defines the pipeline order; a matter\u2019s stage matches by name, and unknown stages are added at the end.",
+      "`phases` defines the pipeline order; a matter’s stage matches by name, and unknown stages are added at the end.",
       "`onOpenMatter` adds an Open matter action to each expanded row; `horizonDays` sets how far Coming up looks ahead."
     ],
     "related": [
@@ -2758,8 +2760,8 @@
     "updated": "2026-10-17"
   },
   "legal-obligation-tracker": {
-    "useWhen": "Keeping signed contracts\u2019 duties on track: who owes what by when, where each duty comes from in the contract, and the evidence that it was done.",
-    "avoidWhen": "Extracting obligations from contract text automatically or certifying compliance. Duties and due dates come from your contract system; recorded evidence supports a review, it doesn\u2019t replace one.",
+    "useWhen": "Keeping signed contracts’ duties on track: who owes what by when, where each duty comes from in the contract, and the evidence that it was done.",
+    "avoidWhen": "Extracting obligations from contract text automatically or certifying compliance. Duties and due dates come from your contract system; recorded evidence supports a review, it doesn’t replace one.",
     "integration": [
       "Pass `obligations` with id, contract, title, owner, ISO due, clause and detail. Add `source` (the clause wording) and `duty` (the words to highlight) to set the clause on paper.",
       "`onComplete` receives { obligationId, evidence, file? }. Resolve to stamp it done and clip the evidence to the clause; reject to keep the evidence and file.",
@@ -3066,7 +3068,7 @@
     "useWhen": "A customer-success team reviews its book of accounts by health, needs to see which weighted drivers pull each score down, and logs the next play for the owner.",
     "avoidWhen": "You only need a single KPI or a churn prediction you can't explain; a score without inspectable drivers belongs in a simpler stat card.",
     "integration": [
-      "Pass `accounts` with per-driver `signals` (score 0\u2013100 plus the fact behind it) and the weekly composite `trend`; define the composite once in `drivers` with relative weights.",
+      "Pass `accounts` with per-driver `signals` (score 0–100 plus the fact behind it) and the weekly composite `trend`; define the composite once in `drivers` with relative weights.",
       "Missing signals are shown as no data and left out of the composite, so send only what you actually measure.",
       "Tune `healthyAt` and `riskBelow` to your playbook; bands, the ARR-by-health bar and filters all follow.",
       "Persist plays in `onLogPlay` and reject on failure: the draft note and due date stay in place for a retry. `onUndoPlay` reverses a logged play."
@@ -3100,7 +3102,7 @@
     "integration": [
       "Pass notifications as { id, source, title, context, actor?, body?, at, read?, snoozedUntil?, metric?, facts?, actionLabel? }; `source` is one of mention, alert, access, report, integration or billing, and decides the group and icon.",
       "`onAction` receives read, unread, archive, unarchive, snooze (with an ISO `until`) and unsnooze. Reads and archives are optimistic and roll back with an alert if it rejects; a snooze waits for it, and a rejection keeps the dialog open with the chosen time.",
-      "Pass `now` as the current time and `timeZone` for the reader; snooze presets (later today, tomorrow, Monday, next week) and the scrubber\u2019s nights are computed in that zone.",
+      "Pass `now` as the current time and `timeZone` for the reader; snooze presets (later today, tomorrow, Monday, next week) and the scrubber’s nights are computed in that zone.",
       "Keys: J/K or arrows move and read, E archives, S snoozes, U toggles read, Z undoes, Enter calls `onOpen`. They are ignored while typing. Duplicate ids and unreadable times are left out and named in an alert."
     ],
     "related": [
@@ -3149,7 +3151,7 @@
       "Tickets without a `priority` wait in the inbox; ones with a priority start in their queue. Clocks run from each `receivedAt` against your `sla` minutes.",
       "Pass `now` as the current time; the clocks then tick in real time and pause while the component is off screen or the tab is hidden.",
       "`onTriage` receives { ticketId, priority, assigneeId }; reject it and the ticket returns to the inbox with the error shown. `onUndo` mirrors the toast's Undo.",
-      "Keys 1\u20134 route the open ticket and J/K move through the inbox, so agents can triage without the mouse.",
+      "Keys 1–4 route the open ticket and J/K move through the inbox, so agents can triage without the mouse.",
       "Resolve onUndo to restore the prior queue or inbox. Reject to keep the route and expose a retry. Invalid ticket/message timestamps are flagged; timing stays unavailable for those records."
     ],
     "related": [
@@ -3179,7 +3181,7 @@
     "useWhen": "The home screen of a SaaS workspace: a few headline metrics compared with the previous period, a trend you can read day by day, plan usage against limits, the most used dashboards and what the team just did.",
     "avoidWhen": "You need an editable report builder, a single deep chart with many series (use chart-revenue-trend), or status monitoring with alerting.",
     "integration": [
-      "Each metric is { id, label, daily, rollup, format?, better? }: one value per day ending on `today`. 180 days of history gives every range a previous period to compare with; shorter history reads \u201cNo prior period\u201d rather than inventing one.",
+      "Each metric is { id, label, daily, rollup, format?, better? }: one value per day ending on `today`. 180 days of history gives every range a previous period to compare with; shorter history reads “No prior period” rather than inventing one.",
       "`rollup` decides the KPI figure (sum for events, mean for people per day or durations, last for a running total) and `better: \"down\"` makes a falling figure read as good news.",
       "The range can be controlled with `range` and `onRangeChange` or left to `defaultRange`. `plan.meters` turn amber at 75% and red at 90%; `onManagePlan` shows the footer link and `onOpenDashboard` makes table rows open.",
       "Set `loading` while data is on its way: skeletons hold the layout and the count-up entrance plays once it lands."
@@ -3267,7 +3269,7 @@
     "avoidWhen": "The image is decorative, you need a before-and-after comparison (use media-before-after), or the page sits inside a scrolling container that clips overflow.",
     "integration": [
       "Pass `imageSrc`, `imageAlt`, `caption` and `credit`; without an image the bundled dune illustration is shown, and a failed load becomes a quiet panel that reads the alt text.",
-      "Place it in normal document flow. Ancestors must not use overflow: hidden, or the stage can\u2019t pin; the component itself clips only horizontally.",
+      "Place it in normal document flow. Ancestors must not use overflow: hidden, or the stage can’t pin; the component itself clips only horizontally.",
       "Reduced motion, windows under 480px tall and covers or captions too long to fit fall back to a flowing layout with the title, image and caption in order."
     ],
     "related": [
@@ -3543,11 +3545,11 @@
   },
   "media-audio-transport": {
     "useWhen": "Playing music or long-form audio you host, where a waveform scrubber, buffering, speed and volume should feel like a real player, as a cover view or a slim persistent bar.",
-    "avoidWhen": "Short UI sounds, voice recording, or media you lack rights to stream; and very large remote files you can\u2019t precompute peaks for, unless you accept a flat timeline.",
+    "avoidWhen": "Short UI sounds, voice recording, or media you lack rights to stream; and very large remote files you can’t precompute peaks for, unless you accept a flat timeline.",
     "integration": [
-      "Supply a licensed URL in track.src. The waveform is decoded from it, or pass track.peaks (any length, 0\u20131) to skip decoding; set waveformFromSource={false} to draw a flat timeline instead.",
+      "Supply a licensed URL in track.src. The waveform is decoded from it, or pass track.peaks (any length, 0–1) to skip decoding; set waveformFromSource={false} to draw a flat timeline instead.",
       "Increment playRequest when someone chooses a track to play; plain next and previous keep the pause state. onNext also runs when a track ends, unless repeat is on.",
-      "onPlaybackChange follows the element\u2019s real events, including failures. Start autoplaying previews with defaultMuted; startAt resumes a saved position."
+      "onPlaybackChange follows the element’s real events, including failures. Start autoplaying previews with defaultMuted; startAt resumes a saved position."
     ],
     "related": [
       "media-track-list",
@@ -3560,9 +3562,9 @@
     "useWhen": "A playlist, album or Up Next queue where people scan, play, like and reorder tracks, and the playing row should be obvious at a glance.",
     "avoidWhen": "A single now-playing view or a podcast episode page with long descriptions; use the Audio Player, or a list built for long text.",
     "integration": [
-      "Pass unique track IDs; activeId and playing come from your player. progress (0\u20131) draws the hairline, and level accepts a number or a per-frame getter such as an AnalyserNode reading.",
+      "Pass unique track IDs; activeId and playing come from your player. progress (0–1) draws the hairline, and level accepts a number or a per-frame getter such as an AnalyserNode reading.",
       "onSelect plays a row; add onPause so pressing the playing row pauses it. Like, queue and remove are sibling buttons, shown only when you pass their callbacks.",
-      "onReorder turns on drag handles and arrow-key moves, and is called once on release with the new ID order. Without artwork, covers are drawn from the album name and match the Audio Player\u2019s."
+      "onReorder turns on drag handles and arrow-key moves, and is called once on release with the new ID order. Without artwork, covers are drawn from the album name and match the Audio Player’s."
     ],
     "related": [
       "media-audio-transport",
@@ -3592,7 +3594,7 @@
     "integration": [
       "Pass messages oldest first with stable IDs and author IDs, plus people with handles so @mentions render. day labels group the list and stick while you scroll.",
       "lastReadId places the New line and opens the list there; posts arriving while someone reads history are counted in a jump pill instead of moving them.",
-      "onReaction toggles the signed-in person\u2019s reaction, including kinds a message doesn\u2019t have yet; onReply opens your thread view; mark your own posts status \"sending\" or \"failed\" and handle onRetry."
+      "onReaction toggles the signed-in person’s reaction, including kinds a message doesn’t have yet; onReply opens your thread view; mark your own posts status \"sending\" or \"failed\" and handle onRetry."
     ],
     "related": [
       "collab-comment-thread",
@@ -3606,7 +3608,7 @@
     "useWhen": "Composing channels and direct-message rooms with persistent drafts, an asynchronous send contract and retained threads.",
     "avoidWhen": "Publishing a communication application without supplying its transport, user identity and persistence requirements.",
     "integration": [
-      "Supply channels, people and initialMessages with stable IDs. onSend returns the server\u2019s authoritative channel-scoped message.",
+      "Supply channels, people and initialMessages with stable IDs. onSend returns the server’s authoritative channel-scoped message.",
       "Channel drafts and opened threads remain mounted. A late response never clears text edited during the request.",
       "Reactions and thread interactions are session state in the example; hosts own durable storage and realtime transport."
     ],
@@ -3619,9 +3621,9 @@
   "collab-call-stage": {
     "updated": "2026-10-17",
     "useWhen": "The live view of a video meeting in your product: participant tiles from your WebRTC transport, a speaking indicator that follows real audio levels, layouts people switch between, captions and the core media controls.",
-    "avoidWhen": "Showing a meeting that isn\u2019t live, faking presence or speech with animation, or webinars with hundreds of attendees that need paging and a stage/audience split.",
+    "avoidWhen": "Showing a meeting that isn’t live, faking presence or speech with animation, or webinars with hundreds of attendees that need paging and a stage/audience split.",
     "integration": [
-      "Pass each participant\u2019s MediaStream from your transport and a getAudioLevel(id) that reads your AnalyserNode values; it is polled per frame without re-rendering.",
+      "Pass each participant’s MediaStream from your transport and a getAudioLevel(id) that reads your AnalyserNode values; it is polled per frame without re-rendering.",
       "Return promises from onMicrophoneChange, onCameraChange and onLeave so controls show pending, and reject with a readable message (permission denied, no device) to keep the old state.",
       "Give the stage a height; tiles scroll inside it. Use CallControls on its own when the controls must stay visible across views."
     ],
@@ -3651,7 +3653,7 @@
     "avoidWhen": "Several actions compete on one screen, the action completes instantly, or the moving light would be the only cue that something is available or finished.",
     "integration": [
       "Return a promise from onAction and honour its AbortSignal; resolve for success and reject with an error for the retry state.",
-      "Pass progress (0\u20131) when your job reports it, so the light becomes a meter; leave it out for an indeterminate orbit.",
+      "Pass progress (0–1) when your job reports it, so the light becomes a meter; leave it out for an indeterminate orbit.",
       "Drive status from your store when other UI depends on it, and set it back to idle to start a new run."
     ],
     "related": [
@@ -3664,7 +3666,7 @@
     "useWhen": "A small, curated set of files deserves to feel like a thing you hand over: a brand kit, a press pack, a client deliverable, a release bundle, where opening the folder is part of the moment.",
     "avoidWhen": "Large directories, nested folders, bulk selection and file management, or anywhere people need sorting, search and drag-and-drop.",
     "integration": [
-      "Pass files with stable ids, a short kind, human size and date, and a plain-text preview when you have one; the first three become the folder\u2019s sheets.",
+      "Pass files with stable ids, a short kind, human size and date, and a plain-text preview when you have one; the first three become the folder’s sheets.",
       "Drive status from your fetch (loading, unavailable) and wire onRetry; return a promise from onFileOpen and reject with a readable message on failure.",
       "Give it room: the folder sits beside its list from about 52rem of container width and stacks below that."
     ],
@@ -3689,7 +3691,7 @@
     "updated": "2026-10-17"
   },
   "effect-border-tracer": {
-    "useWhen": "A card stands for work in progress (a sync, a build, an agent run, a generating answer) and a light lapping its edge should say \u201cbusy\u201d without moving the content.",
+    "useWhen": "A card stands for work in progress (a sync, a build, an agent run, a generating answer) and a light lapping its edge should say “busy” without moving the content.",
     "avoidWhen": "Decoration on every card, dense reading surfaces, or as the only sign of status; pair it with a written state.",
     "integration": [
       "Bind `enabled` to the real job state; when it turns false the light glides to a stop and rests as a dim glint.",
@@ -3731,7 +3733,7 @@
     "updated": "2026-10-17"
   },
   "navigation-lens-dock": {
-    "useWhen": "A launcher or workspace switcher with five to ten destinations where recognisable app tiles, unread badges and a playful but precise hover are part of the product\u2019s feel.",
+    "useWhen": "A launcher or workspace switcher with five to ten destinations where recognisable app tiles, unread badges and a playful but precise hover are part of the product’s feel.",
     "avoidWhen": "Deep or text-heavy navigation, more than about ten destinations, or layouts where a bottom dock would cover content people need.",
     "integration": [
       "Pass items with stable ids, labels and icons; use tile for the material, badge for counts, running for open apps, separated for system tools and disabledReason for locked ones.",
@@ -3805,7 +3807,7 @@
     "useWhen": "Editing a shoot down to its keepers: a photographer or editor scanning a roll or a card of near-identical frames, picking the best of each sequence and rejecting the misses, then handing the picks on.",
     "avoidWhen": "Browsing a finished gallery, single-image zoom and retouching, or collections without any sequence where a plain grid reads better.",
     "integration": [
-      "Pass frames in shooting order with stable ids, alt text and src thumbnails (about 600px wide is plenty; the loupe magnifies the same image). Store flags from onFlagsChange as the edit\u2019s source of truth and seed defaultFlags from it.",
+      "Pass frames in shooting order with stable ids, alt text and src thumbnails (about 600px wide is plenty; the loupe magnifies the same image). Store flags from onFlagsChange as the edit’s source of truth and seed defaultFlags from it.",
       "onSendPicks receives ids in the order they were picked and an AbortSignal; reject to show Try again with every mark kept.",
       "Use status for scans still arriving (loading) or a failed fetch (error with onRetry); an empty frames array shows the empty roll."
     ],
@@ -3833,9 +3835,9 @@
     "useWhen": "Cutting a clip out of a recording: a quote from an interview, a podcast highlight, a voice note to share, or a ringtone, where the cut should land in a breath rather than mid-word.",
     "avoidWhen": "Multi-track editing, fades and effects, video frame-accurate trimming, or recordings with no waveform data available.",
     "integration": [
-      "Pass media with duration and peaks (0\u20131 amplitudes spread evenly over the file, 20\u201350 a second); compute them once on upload and cache them. Add src for real playback, otherwise the playhead runs silently.",
+      "Pass media with duration and peaks (0–1 amplitudes spread evenly over the file, 20–50 a second); compute them once on upload and cache them. Add src for real playback, otherwise the playhead runs silently.",
       "Keep the result of onRangeChange as a draft and save it in onApply(range, signal); reject to show Try again with the range kept. The signal aborts on unmount or a newer save.",
-      "Turn snapToPauses off for music, where quiet runs aren\u2019t natural cut points, and raise minLength for formats with a minimum duration."
+      "Turn snapToPauses off for music, where quiet runs aren’t natural cut points, and raise minLength for formats with a minimum duration."
     ],
     "related": [
       "media-crop-workbench",
@@ -3863,7 +3865,7 @@
     "avoidWhen": "Generating transcripts or captions, long multi-speaker meetings that need speaker diarisation and editing, or video, where captions belong over the picture.",
     "integration": [
       "Pass the recording as media (id, title, src, duration hint, speaker, measured peaks) and timed passages; add per-word start times in words when your speech-to-text returns them, otherwise words are spaced by length.",
-      "The native audio element is the clock. Persist position with onSeek or onTimeChange (at most 10 Hz), gate seeks with onBeforeSeek, and drive status/error/onRetry from your media host; the transcript stays readable when audio can\u2019t load."
+      "The native audio element is the clock. Persist position with onSeek or onTimeChange (at most 10 Hz), gate seeks with onBeforeSeek, and drive status/error/onRetry from your media host; the transcript stays readable when audio can’t load."
     ],
     "related": [
       "media-audio-transport",
@@ -3944,7 +3946,7 @@
     "useWhen": "Showing what an integration or automation actually does to data: a feature page, onboarding or a run inspector where one real record should visibly change from source payload to the object it creates.",
     "avoidWhen": "Building or editing workflows (use a node editor), debugging high-volume webhook traffic, or a logo grid of supported apps.",
     "integration": [
-      "Pass integrations with ordered stages (source, transform, enrich, action) and give each field a stable id across stages; renames, reformatting, additions and drops are computed and drawn for you. Mark the created object\u2019s title and amount with role.",
+      "Pass integrations with ordered stages (source, transform, enrich, action) and give each field a stable id across stages; renames, reformatting, additions and drops are computed and drawn for you. Mark the created object’s title and amount with role.",
       "Control the stage with value/onValueChange to sync it with docs or a URL, hook onRun to log replays, and drive status, errorMessage and onRetry when the run comes from your API."
     ],
     "related": [
@@ -3955,9 +3957,9 @@
   },
   "features-shortcut-theatre": {
     "useWhen": "A landing or feature page for a keyboard-first product (issue trackers, editors, mail, design tools) where pressing the shortcut sells it better than a list of hotkeys.",
-    "avoidWhen": "Documenting every shortcut (use a reference table), registering global hotkeys on a page, or products whose actions aren\u2019t about speed at the keyboard.",
+    "avoidWhen": "Documenting every shortcut (use a reference table), registering global hotkeys on a page, or products whose actions aren’t about speed at the keyboard.",
     "integration": [
-      "Relabel and rebind the four built-in performances through shortcuts: action is one of create, command, done or sidebar; key is what KeyboardEvent.key reports; mod means \u2318 on Apple platforms and Ctrl elsewhere. Swap the content with issues, people, newIssueTitles, product and issuePrefix.",
+      "Relabel and rebind the four built-in performances through shortcuts: action is one of create, command, done or sidebar; key is what KeyboardEvent.key reports; mod means ⌘ on Apple platforms and Ctrl elsewhere. Swap the content with issues, people, newIssueTitles, product and issuePrefix.",
       "Shortcuts only listen while the card has focus and never while someone types in a field. onAction reports each press for analytics. Turn on autoplay for a hands-off tour; it stops for good on the first interaction and never runs with reduced motion."
     ],
     "related": [
@@ -3969,7 +3971,7 @@
   },
   "features-compare-lenses": {
     "useWhen": "A feature or product page that has to show how much better one specific workflow gets: each stage of the old way next to the same stage done with your product, with real working times.",
-    "avoidWhen": "Image before/after reveals, plan or price comparison tables, or claims you can\u2019t back with real timings from customers.",
+    "avoidWhen": "Image before/after reveals, plan or price comparison tables, or claims you can’t back with real timings from customers.",
     "integration": [
       "Pass ordered stages, each with a before and after side: the tool where the work happens, a title, working minutes (a working day is eight hours), five or so rows with ok, warn, error or idle states, and a footer. Totals and the readout are computed from minutes.",
       "Name both ways with beforeLabel and afterLabel, start the lens with defaultValue or control it with value/onValueChange (for example to sync copy beside it), and use status, errorMessage and onRetry when the stages come from a CMS."
@@ -4012,8 +4014,8 @@
     "useWhen": "A landing or pricing page that needs measured customer outcomes rather than adjectives: several named customers, each with one metric, before and after figures, a period and a quote.",
     "avoidWhen": "Short testimonials without numbers (a testimonial wall reads better), or a single headline stat, which belongs in a hero.",
     "integration": [
-      "Pass cases with before, after, unit, period and better (\"lower\" or \"higher\"); the change and the median total are computed, and a zero or missing baseline shows \u201cNo baseline\u201d instead of a percentage. Logos are drawn as type through mark.style, so no image assets are needed.",
-      "Filters are built from each case\u2019s industry. Use filter/onFilterChange to sync them with the URL, onOpenChange to track which quote was read, and href for the full case study."
+      "Pass cases with before, after, unit, period and better (\"lower\" or \"higher\"); the change and the median total are computed, and a zero or missing baseline shows “No baseline” instead of a percentage. Logos are drawn as type through mark.style, so no image assets are needed.",
+      "Filters are built from each case’s industry. Use filter/onFilterChange to sync them with the URL, onOpenChange to track which quote was read, and href for the full case study."
     ],
     "related": [
       "testimonial-wall",
@@ -4067,9 +4069,9 @@
   },
   "text-optical-weight": {
     "useWhen": "Showing off a variable typeface on a foundry page, brand guide or type tester, where people should feel the weight axis change real, selectable words.",
-    "avoidWhen": "A static font you can\u2019t vary, a decorative loading animation, or a full type-testing tool with OpenType feature toggles and paragraph settings.",
+    "avoidWhen": "A static font you can’t vary, a decorative loading animation, or a full type-testing tool with OpenType feature toggles and paragraph settings.",
     "integration": [
-      "Back the chosen role with your actual face through --font-display, --font-serif or --font-mono, and declare its real weightAxis. Pass opticalAxis only when the face really has opsz; without it no optical control appears. Geist Variable and Geist Mono Variable run 100\u2013900, Instrument Serif is a fixed 400.",
+      "Back the chosen role with your actual face through --font-display, --font-serif or --font-mono, and declare its real weightAxis. Pass opticalAxis only when the face really has opsz; without it no optical control appears. Geist Variable and Geist Mono Variable run 100–900, Instrument Serif is a fixed 400.",
       "Control weight, requested size and optical size together with value/onValueChange, or start from defaultValue. Persist in onValueCommit, which fires once per finished gesture after you accept it. Drive status for loading or an unavailable face and pass onRetry to offer a retry."
     ],
     "related": [
@@ -4083,7 +4085,7 @@
     "useWhen": "Letting people set a short phrase along a curve and shape it by hand: badge and label makers, poster or merch editors, a type playground in a design tool.",
     "avoidWhen": "Body copy or anything people must read quickly, or a full vector editor with many paths, where a canvas library fits better.",
     "integration": [
-      "Store the layout from onValueCommit: { path, size, tracking, align }, where path is a cubic B\u00e9zier in 0\u20131 canvas coordinates and size is in units of a 1000-wide canvas, so the same layout renders identically at any width.",
+      "Store the layout from onValueCommit: { path, size, tracking, align }, where path is a cubic Bézier in 0–1 canvas coordinates and size is in units of a 1000-wide canvas, so the same layout renders identically at any width.",
       "Use value and onValueChange to drive it from your own state (onValueChange fires every frame of a drag or morph), text and onTextChange for the phrase, and fontRole for the face. The component measures the path and the set type itself and offers Fit when letters fall off."
     ],
     "related": [
@@ -4111,7 +4113,7 @@
     "useWhen": "A long read or chapter opener where the headline should mark the reader's progress: outlined display type that fills with ink word by word as they scroll.",
     "avoidWhen": "Short interface labels, buttons or body text, or any headline that has to read at full strength before anyone scrolls.",
     "integration": [
-      "Pass your reading position as `progress` (0\u20131), for example the share of the article brought into view. Without it the type fills as it passes through the viewport.",
+      "Pass your reading position as `progress` (0–1), for example the share of the article brought into view. Without it the type fills as it passes through the viewport.",
       "The outline layer is the real heading text, so it is selectable, searchable and read by screen readers; the ink is a decorative copy. Give it one short phrase with deliberate line breaks.",
       "Size it with `fontSize` as a maximum; it measures its widest line and shrinks to fit the container. Reduced motion keeps the fill in step without easing."
     ],
@@ -4127,7 +4129,7 @@
     "avoidWhen": "Blurring live page content behind a modal or nav (use backdrop-filter), or behind long-form text without a panel.",
     "integration": [
       "Pass your own image as scene.src (a URL, imported asset or data URI) with a short description, and put the real content in children. The filter warps that image only; it does not refract whatever sits behind the element.",
-      "Tune with strength (0\u201332px), flutes (8\u201340), frost (0\u20132.5px) and orientation. Values tween live, so they can be bound straight to sliders. On first load the ridges form over 900ms; with reduced motion they appear at once.",
+      "Tune with strength (0–32px), flutes (8–40), frost (0–2.5px) and orientation. Values tween live, so they can be bound straight to sliders. On first load the ridges form over 900ms; with reduced motion they appear at once.",
       "Give the wrapper a size with className (min-h-[80vh], aspect-[16/9]). quality=\"high\" doubles the render budget for very large, sharp images; the default keeps the filter cheap.",
       "onSceneStateChange reports loading, ready (with natural size) and error; failed loads show a Retry strip while your content stays usable."
     ],
@@ -4141,7 +4143,7 @@
     "useWhen": "A hero, section or empty state that should feel like terrain, depth or data: outdoor and mapping products, geology, analytics, or any surface where a quiet field of lines suits better than a gradient.",
     "avoidWhen": "An actual map people navigate or measure on, or a layout whose text sits over the whole surface with no room for a scrim.",
     "integration": [
-      "Wrap your content: <BgTopographicContours className=\"min-h-dvh\">\u2026</BgTopographicContours>. The root needs a height; children render as normal DOM and keep their events.",
+      "Wrap your content: <BgTopographicContours className=\"min-h-dvh\">…</BgTopographicContours>. The root needs a height; children render as normal DOM and keep their events.",
       "Pass field={{ columns, rows, values }} to draw your own data (elevation, depth, density, a score). It is upsampled before tracing, so modest grids still draw smooth lines; onProbe returns the field's value under the pointer in its own unit.",
       "drift is the only ambient motion and stops offscreen, in hidden tabs and under reduced motion; set it to 0 for a still surface. Add a scrim behind dense type, as the demo does, so the lines never fight the copy."
     ],
@@ -4169,11 +4171,11 @@
     "updated": "2026-10-17"
   },
   "effect-ink-trail": {
-    "useWhen": "A hero, guestbook, signature or campaign page where leaving a brush mark is the moment, and the page\u2019s own content and buttons should stay usable on top of it.",
+    "useWhen": "A hero, guestbook, signature or campaign page where leaving a brush mark is the moment, and the page’s own content and buttons should stay usable on top of it.",
     "avoidWhen": "Precise drawing or annotation tools that need undo, layers and vector export, or text-heavy pages where a pointer effect would compete with reading.",
     "integration": [
       "Wrap your content: `<EffectInkTrail>{hero}</EffectInkTrail>`. Links, buttons, labels and fields inside keep their own pointer events; everything else paints.",
-      "Save marks from `onStroke` and replay them with `initialStrokes`; points are in units of the surface\u2019s shorter side from its centre, so a saved signature keeps its shape at any size.",
+      "Save marks from `onStroke` and replay them with `initialStrokes`; points are in units of the surface’s shorter side from its centre, so a saved signature keeps its shape at any size.",
       "Tune feel with `width`, `lifetimeMs` (0 keeps marks), `maxStrokes` and `mode` (`trail` follows the pointer without pressing). The loop sleeps when idle and offscreen, and reduced motion shows marks without fades."
     ],
     "related": [
@@ -4235,9 +4237,9 @@
     "useWhen": "Entering or reading a physical quantity that people think about in different units: lengths for fabrication or shipping, weights in a recipe, temperatures on a device.",
     "avoidWhen": "Currency conversion with moving rates, or a plain numeric field where everyone uses the same unit.",
     "integration": [
-      "Store value.base in one base unit and value.unitId for the display. Each unit is { id, label, symbol, factor, offset? } and a figure is base \u00d7 factor + offset, so switching units only changes unitId and the stored quantity is never rounded.",
+      "Store value.base in one base unit and value.unitId for the display. Each unit is { id, label, symbol, factor, offset? } and a figure is base × factor + offset, so switching units only changes unitId and the stored quantity is never rounded.",
       "onValueChange fires on every frame of a drag or fling as well as on taps, keys and typed values; debounce there if you save remotely. Set minBase and maxBase to the real limits so the tape dims past them and typed values outside them are refused with the range.",
-      "span sets the physical zoom of the tape in base units; precision caps the decimals shown, and figures that had to round are marked \u2248."
+      "span sets the physical zoom of the tape in base units; precision caps the decimals shown, and figures that had to round are marked ≈."
     ],
     "related": [
       "input-dual-range",
@@ -4296,7 +4298,7 @@
     "avoidWhen": "Picking a single date or a time slot within a day, or a range that only needs two text fields in a dense filter bar.",
     "integration": [
       "Pass `value`/`onValueChange` (or `defaultValue`) as `{ start, end }` YYYY-MM-DD strings. All arithmetic is whole UTC days, so a date never shifts across timezones.",
-      "Set `unit` to `nights` for stays (end \u2212 start; a booked day can still be the check-out) or `days` for inclusive ranges. Bound it with `minDate`, `maxDate`, `minLength`, `maxLength` and `unavailableDates`.",
+      "Set `unit` to `nights` for stays (end − start; a booked day can still be the check-out) or `days` for inclusive ranges. Bound it with `minDate`, `maxDate`, `minLength`, `maxLength` and `unavailableDates`.",
       "Supply `rates` to show prices under each day and a running total. `onApply` adds a primary button; return a promise to show the pending state, reject to show the retry state with the selection kept. Pass `today` from your server so the today marker and default presets agree with it."
     ],
     "related": [
@@ -4306,11 +4308,11 @@
     "updated": "2026-10-17"
   },
   "date-timezone-overlap": {
-    "useWhen": "Finding a meeting time for a distributed team: you need to see everyone\u2019s working hours side by side and read what a proposed time means locally for each person.",
+    "useWhen": "Finding a meeting time for a distributed team: you need to see everyone’s working hours side by side and read what a proposed time means locally for each person.",
     "avoidWhen": "Booking against real calendar availability or rooms (use a booking or slot picker fed by free/busy data), or a single person converting one time between two zones.",
     "integration": [
-      "Pass `people` as `{ id, name, city, timeZone, start, end, days? }` with IANA zones and local HH:mm hours; offsets and daylight saving come from the browser\u2019s Intl data, and an end before the start runs past midnight.",
-      "Set `date` and `anchorZone` to the organiser\u2019s day and zone. Read the meeting from `onSlotChange` as `{ start, end, durationMinutes, participantIds }` with ISO instants.",
+      "Pass `people` as `{ id, name, city, timeZone, start, end, days? }` with IANA zones and local HH:mm hours; offsets and daylight saving come from the browser’s Intl data, and an end before the start runs past midnight.",
+      "Set `date` and `anchorZone` to the organiser’s day and zone. Read the meeting from `onSlotChange` as `{ start, end, durationMinutes, participantIds }` with ISO instants.",
       "`onPropose` adds the primary action; return a promise for the pending state and reject to show retry with the slot kept. Working hours are not availability: check calendars on your side before sending invites."
     ],
     "related": [
@@ -4379,7 +4381,7 @@
     "updated": "2026-10-17"
   },
   "chart-sankey-paths": {
-    "useWhen": "Showing how a total splits and recombines across two or three stages, such as acquisition source to first action to outcome, and letting people trace one category\u2019s direct flows.",
+    "useWhen": "Showing how a total splits and recombines across two or three stages, such as acquisition source to first action to outcome, and letting people trace one category’s direct flows.",
     "avoidWhen": "Flows with cycles or links that skip a stage, more than about a dozen categories per column, or a single step-by-step funnel, which a funnel chart reads faster.",
     "integration": [
       "Pass `nodes` as { id, label, column } in the top-to-bottom order you want, and flows as { id, source, target, value } between neighbouring columns. Links that skip a column or reference unknown ids are left out of the diagram.",
@@ -4398,11 +4400,11 @@
     "useWhen": "Comparing the spread of a measure across a handful of groups, such as latency by region or build time by pipeline, and asking how much of each clears a limit you can drag.",
     "avoidWhen": "Showing a single average, a trend over time, or groups with only a few observations each, where a dot plot or a plain table is more honest.",
     "integration": [
-      "Pass `groups` as { id, label, detail?, values } with finite nonnegative raw observations, not pre-computed percentiles. Quartiles use linear interpolation and whiskers reach the furthest values inside 1.5 \u00d7 IQR; the axis covers the slowest p99 and the largest chosen limit, retaining its extent while the limit is lowered and values beyond it are counted at the row\u2019s edge.",
-      "Set `defaultThreshold` and `target` (0\u20131) to mirror your SLO, and persist changes from `onThresholdChange`, or control `threshold` yourself. Rows under target are flagged with an icon as well as colour.",
+      "Pass `groups` as { id, label, detail?, values } with finite nonnegative raw observations, not pre-computed percentiles. Quartiles use linear interpolation and whiskers reach the furthest values inside 1.5 × IQR; the axis covers the slowest p99 and the largest chosen limit, retaining its extent while the limit is lowered and values beyond it are counted at the row’s edge.",
+      "Set `defaultThreshold` and `target` (0–1) to mirror your SLO, and persist changes from `onThresholdChange`, or control `threshold` yourself. Rows under target are flagged with an icon as well as colour.",
       "Use `sort` / `onSortChange` to keep the order in sync with a table elsewhere. `showSamples` draws every observation; keep each group to a few hundred values or pass a sample for very large sets.",
       "The limit handle is a slider: arrows move a fiftieth of an axis step, Shift moves five times that. Use `status` and `onRetry` for loading and failed fetches.",
-      "Supply finite nonnegative samples and stable group ids. The axis covers the slowest p99 and the largest chosen limit, retaining its extent when the limit is lowered. Use a finite nonnegative threshold, a target share from 0 to 1, a supported sort, a valid locale and 0\u201320 decimal places; invalid settings show an actionable state and hide the slider. Status changes retain the local limit and sort. Returning from loading, unavailable or empty data reconnects measurement so the plot resizes correctly. Threshold and sort callbacks are synchronous notifications; let the host own persistence and fetch retries. Very large figures use scientific notation; callback values remain numbers.",
+      "Supply finite nonnegative samples and stable group ids. The axis covers the slowest p99 and the largest chosen limit, retaining its extent when the limit is lowered. Use a finite nonnegative threshold, a target share from 0 to 1, a supported sort, a valid locale and 0–20 decimal places; invalid settings show an actionable state and hide the slider. Status changes retain the local limit and sort. Returning from loading, unavailable or empty data reconnects measurement so the plot resizes correctly. Threshold and sort callbacks are synchronous notifications; let the host own persistence and fetch retries. Very large figures use scientific notation; callback values remain numbers.",
       "Use a hex `accent` for the limit and samples. Alpha blends over the chart surface before readable black or white handle text is selected; unsupported colours use the theme ink."
     ],
     "related": [
@@ -4416,9 +4418,9 @@
     "useWhen": "Showing a year of daily activity at a glance, such as deploys, orders, workouts or support tickets, where weekly rhythm, quiet spells and peak days matter more than exact values.",
     "avoidWhen": "Comparing a few series, reading precise daily values, or data with fewer than a couple of months, where a bar or line chart reads faster.",
     "integration": [
-      "Pass `days` as { date, value } with ISO dates. Use `value: null` for days that weren\u2019t measured; they render hatched and are left out of totals, streaks and averages instead of counting as zero.",
+      "Pass `days` as { date, value } with ISO dates. Use `value: null` for days that weren’t measured; they render hatched and are left out of totals, streaks and averages instead of counting as zero.",
       "Every year present in the data gets a tab. Control it with `year` and `onYearChange`, or set `defaultYear`. Days after the latest record draw as dashed outlines so a partial year still reads as a year.",
-      "Use `onSelectDate` to open a day\u2019s detail elsewhere, or control `selectedDate`. Levels come from the quartiles of non-zero days, so a single spike doesn\u2019t wash out the rest of the year.",
+      "Use `onSelectDate` to open a day’s detail elsewhere, or control `selectedDate`. Levels come from the quartiles of non-zero days, so a single spike doesn’t wash out the rest of the year.",
       "Name the unit with `unit` ({ one, other }) and set `weekStart` for your locale. The accent tops a four-step ramp mixed in OKLab; pick a hue that stays distinct from your status colours.",
       "Supply actual four-digit ISO calendar dates and finite nonnegative daily totals, or null for an unmeasured day. Impossible dates are excluded; duplicate dates use the last valid entry. The latest supplied date is the cutoff: missing days up to it are unmeasured, and later days cannot be selected. Controlled years must be whole numbers from 0 to 9999; weekStart is 0 or 1 and locale must be valid. Invalid settings and unrepresentable totals have written states. Invalid pinned dates are ignored. Unmeasured years report unknown totals and averages rather than zero; large finite figures use scientific notation. Date and year callbacks are synchronous notifications, retain local choices through fetch retries, and wait for host updates in controlled mode. Moving onto a future cell clears the earlier hover tooltip without changing the pinned selection."
     ],
@@ -4449,9 +4451,9 @@
     "useWhen": "Showing how many people make it through each step of a signup, checkout or onboarding flow, and how many drop at each step, as countable dots rather than a bar.",
     "avoidWhen": "Flows with branches or loops, steps measured on different cohorts, or very small counts where a plain table with percentages reads better.",
     "integration": [
-      "Pass `stages` in order and `segments` as { key, label, counts } where counts[i] belongs to stages[i]. Counts are aggregates per step; the chart doesn\u2019t assume the same individuals at every step.",
+      "Pass `stages` in order and `segments` as { key, label, counts } where counts[i] belongs to stages[i]. Counts are aggregates per step; the chart doesn’t assume the same individuals at every step.",
       "One people-per-dot weight is shared by every segment, picked from `maxDots` and the largest count, so switching segments compares honestly. The last dot of a step is a wedge for the remainder rather than a rounded whole.",
-      "Read the chosen step from `onSelect` to drive a detail panel, or control `selected`. The headline shows that step\u2019s share of step 1; each row shows the share kept from the step before and how many dropped.",
+      "Read the chosen step from `onSelect` to drive a detail panel, or control `selected`. The headline shows that step’s share of step 1; each row shows the share kept from the step before and how many dropped.",
       "Keep `unit` in step with your noun (visitors, orders, seats). Use `status` and `onRetry` for loading and failed queries."
     ],
     "related": [
@@ -4564,9 +4566,9 @@
     "avoidWhen": "A whole-page layout builder, grid or constraint editing, or measuring arbitrary elements on a live website.",
     "integration": [
       "Pass the frame's children as layers ({ id, name, content }). Each is rendered inside the frame and measured from the real layout, so hover boxes and the size tag are true; give text layers a width so the frame hugs predictably.",
-      "Seed defaultValue with the frame's current spacing ({ direction, align, gap, padding }) and persist from onChange, which fires once per committed value. Padding runs 0\u201396px and gap 0\u201364px; snapping to the 4px grid is on by default and can be turned off in the panel.",
+      "Seed defaultValue with the frame's current spacing ({ direction, align, gap, padding }) and persist from onChange, which fires once per committed value. Padding runs 0–96px and gap 0–64px; snapping to the 4px grid is on by default and can be turned off in the panel.",
       "Use frameClassName for the artwork's own surface and accent for the redline colour. spacingCss(value) returns the same declarations the readout shows if you need them elsewhere.",
-      "Validate finite spacing before drawing. Gap is 0\u201364px; padding is 0\u201396px. Invalid layouts have a written state and layer ids must be unique.",
+      "Validate finite spacing before drawing. Gap is 0–64px; padding is 0–96px. Invalid layouts have a written state and layer ids must be unique.",
       "Give callbacks independent padding values. Clipboard receipts belong to the displayed CSS; changing layout retires older replies. The CSS region remains keyboard-scrollable."
     ],
     "related": [
@@ -4629,8 +4631,8 @@
       "Give tracks as { id, label, unit, min, max, step, keys } with keys in frame order; each key's ease (linear, ease or hold) shapes the segment that leaves it. Keys never cross or share a frame.",
       "renderPreview(values) receives the current value of every track by id; draw your own component with them. valueAt(track, frame) is exported so your runtime and tests evaluate tracks exactly as the editor does.",
       "onChange(tracks) fires after finished edits only (a drag released, a stepper commit, a key added, re-eased or deleted), so it is safe to persist or push to an undo stack.",
-      "A hold segment yields the next key\u2019s value at that key\u2019s exact frame. Native click activation selects graph and dope-sheet keys for keyboard and assistive technology.",
-      "Pass independently copied tracks and keys to edit callbacks. Use 1\u2013240 fps, 1\u201336,000 whole duration frames and a finite initial frame. Invalid clocks have a written state.",
+      "A hold segment yields the next key’s value at that key’s exact frame. Native click activation selects graph and dope-sheet keys for keyboard and assistive technology.",
+      "Pass independently copied tracks and keys to edit callbacks. Use 1–240 fps, 1–36,000 whole duration frames and a finite initial frame. Invalid clocks have a written state.",
       "Keep exact frame positions in a labelled horizontally scrollable timeline on phones. Give coarse pointers 44px key targets and enough end padding. Home, End and arrows pan only when the timeline region itself is focused; child key shortcuts still edit their keys."
     ],
     "related": [
@@ -4664,8 +4666,8 @@
       "Pass your own artwork and its background as React nodes. The frame is a size container, so size the artwork in cqw, cqh and cqmin and it reflows to every artboard; the background fades out for transparent exports.",
       "Supply presets as { id, label, width, height, note } and restrict formats to the ones your renderer writes. estimateExportBytes and formatBytes are exported if you show the same figure elsewhere; replace them with your encoder's real numbers when you have them.",
       "onExport receives { presetId, width, height, scale, format, quality, transparent, fileName, estimatedBytes } with the scale already applied. Resolve when the file is written; reject with an Error whose message the panel shows, and every setting stays as it was for a retry.",
-      "Artboard ids must be unique and dimensions positive safe integers with a safe 3\u00d7 output area. Unsupported/duplicate formats and invalid/ambiguous presets are excluded. Empty valid option sets show an unavailable state.",
-      "Provide onExport to enable writing. Settings remain pinned while pending; obsolete layer/settings replies cannot mark the replacement exported. onChange receives copied settings without duplicate progress notifications. The compare handle exposes the same 4\u201396% bounds used by pointer and keyboard."
+      "Artboard ids must be unique and dimensions positive safe integers with a safe 3× output area. Unsupported/duplicate formats and invalid/ambiguous presets are excluded. Empty valid option sets show an unavailable state.",
+      "Provide onExport to enable writing. Settings remain pinned while pending; obsolete layer/settings replies cannot mark the replacement exported. onChange receives copied settings without duplicate progress notifications. The compare handle exposes the same 4–96% bounds used by pointer and keyboard."
     ],
     "related": [
       "media-crop-workbench",
@@ -4693,10 +4695,10 @@
     "updated": "2026-10-18"
   },
   "ai-context-budget": {
-    "useWhen": "Letting someone choose which files, threads and saved pages an assistant reads, with the cost of each shown against the model\u2019s context window and an answer reserve.",
+    "useWhen": "Letting someone choose which files, threads and saved pages an assistant reads, with the cost of each shown against the model’s context window and an answer reserve.",
     "avoidWhen": "A single fixed prompt with nothing to choose, or billing and usage reporting across many requests, where a usage chart reads better.",
     "integration": [
-      "Pass sources with counts from your own tokenizer; use tokens: null while a source is still being counted, and required: true for instructions that always travel. relevance (0\u20131) orders what Trim to fit drops first.",
+      "Pass sources with counts from your own tokenizer; use tokens: null while a source is still being counted, and required: true for instructions that always travel. relevance (0–1) orders what Trim to fit drops first.",
       "Hold the included ids in your state with value and onValueChange, and attach the context in onConfirm(ids, total). Return a promise to show pending; a rejection keeps the selection and shows its message."
     ],
     "related": [
@@ -4838,10 +4840,10 @@
     "updated": "2026-10-17"
   },
   "mobile-mood-map": {
-    "useWhen": "A wellbeing or journaling app needs a quick, expressive self-reported check-in: people place how they feel on an energy \u00d7 pleasantness map and log it against their day.",
+    "useWhen": "A wellbeing or journaling app needs a quick, expressive self-reported check-in: people place how they feel on an energy × pleasantness map and log it against their day.",
     "avoidWhen": "You need clinical scales (PHQ-9, GAD-7), free-text sentiment detection, or a mood picker so small that a row of chips would do.",
     "integration": [
-      "Supply your own `feelings` with pleasantness and energy from \u22121 to 1; the colour of each is blended from the four `colors`, so keep those as your brand's data palette.",
+      "Supply your own `feelings` with pleasantness and energy from −1 to 1; the colour of each is blended from the four `colors`, so keep those as your brand's data palette.",
       "Pass today's earlier check-ins as `log` and the current time as `nowMinute`; `onSave` receives { feeling, note, minute } with an AbortSignal and should reject on failure so the retry state appears with the note intact.",
       "Control the selection with `value` and `onValueChange` to sync it with a store; the callback fires when a drag settles, not on every frame.",
       "Install this in a React Native app (run npx install-expo-modules once in bare projects). The web preview is a review surface; verify the drag, text scaling and screen readers on devices."
@@ -4941,7 +4943,7 @@
     "useWhen": "A trip with several legs across time zones, where travellers need local times, delays and cancellations at a glance and a quick way into each booking.",
     "avoidWhen": "Searching or booking travel, live vehicle tracking, or a single flight's status card.",
     "integration": [
-      "Supply legs in travel order with unique ids, offset ISO instants, IANA time zones and finite coordinates. Scheduled and effective arrivals must follow departure. Invalid or duplicate legs are excluded with a notice; clocks use each place\u2019s zone.",
+      "Supply legs in travel order with unique ids, offset ISO instants, IANA time zones and finite coordinates. Scheduled and effective arrivals must follow departure. Invalid or duplicate legs are excluded with a notice; clocks use each place’s zone.",
       "Await onOpenLeg and honor its AbortSignal. Cancel or opening another leg aborts the prior request and ignores its late completion. Missing handlers omit booking actions and disable Back.",
       "Key the component by trip or booking revision when replacing its dataset. Changes links bring the selected leg below the compact header and continue keyboard focus there. Collapsed, hidden and retiring content is inactive.",
       "Install in a React Native app; bare apps run npx install-expo-modules once. Verify scrolling, larger text and assistive technology on target devices."
@@ -4989,10 +4991,10 @@
     "useWhen": "Playing back a recorded memo, interview or voice note where people scrub by dragging the waveform, jump between markers and read along with a timed transcript.",
     "avoidWhen": "Recording audio, editing or trimming a clip, or a music player with queues and artwork; use a now-playing screen for music.",
     "integration": [
-      "Supply measured peaks (0\u20131, evenly spaced, about six a second), markers and transcript sentences with start and end seconds. Without a transcript the screen shows a written empty state.",
+      "Supply measured peaks (0–1, evenly spaced, about six a second), markers and transcript sentences with start and end seconds. Without a transcript the screen shows a written empty state.",
       "The screen runs the playhead clock. Mirror it into your audio engine with onPlayingChange(playing, position), onSeek(position) and onRateChange(rate); onMarkerAdd reports markers dropped at the playhead.",
       "Install in a React Native app; bare apps run npx install-expo-modules once for expo-blur and expo-linear-gradient. Verify gestures, larger text and assistive technology on target devices.",
-      "Provide a finite positive duration and ordered transcript segments with unique ids and in-range start/end times. Invalid markers or segments are omitted and non-finite peaks draw as silence. Invalid initial positions start at zero and unsupported initial rates fall back to 1\u00d7. Changing recording identity or duration resets the transport and added markers. Connect play, seek and rate notifications to your audio engine and persist added markers in the host. Autoplay emits its start position as well as its completion; the visual playhead does not load or play audio itself. Missing Share and Back handlers disable their controls. The waveform exposes current native/web range values, including fractional durations, and long recordings retain local one-second ruler detail."
+      "Provide a finite positive duration and ordered transcript segments with unique ids and in-range start/end times. Invalid markers or segments are omitted and non-finite peaks draw as silence. Invalid initial positions start at zero and unsupported initial rates fall back to 1×. Changing recording identity or duration resets the transport and added markers. Connect play, seek and rate notifications to your audio engine and persist added markers in the host. Autoplay emits its start position as well as its completion; the visual playhead does not load or play audio itself. Missing Share and Back handlers disable their controls. The waveform exposes current native/web range values, including fractional durations, and long recordings retain local one-second ruler detail."
     ],
     "related": [
       "mobile-now-playing",
@@ -5021,7 +5023,7 @@
     "useWhen": "Reading a shared document on a phone before acting on it: skimming pages, jumping to the one with comments, then downloading or opening it elsewhere.",
     "avoidWhen": "Editing documents, browsing a folder of many files, or previewing images and video where a media viewer fits better.",
     "integration": [
-      "Pass `file` metadata and a `renderPage(index, width)` that draws each page with your PDF or document renderer; heights follow A-series proportions (width \u00d7 1.414). Mark commented pages with `marks`.",
+      "Pass `file` metadata and a `renderPage(index, width)` that draws each page with your PDF or document renderer; heights follow A-series proportions (width × 1.414). Mark commented pages with `marks`.",
       "Drive `status` from your renderer: loading, ready, unsupported or error, with `statusMessage` for specifics and `onRetry` for the error panel.",
       "Implement `onDownload(file, report)` and call `report(fraction)` as bytes arrive; reject with an Error to show its message. Wire `onOpen`, `onShare` and `onBack`. Install `expo-blur`, `expo-linear-gradient` and `react-native-svg` (`npx install-expo-modules` once in bare apps)."
     ],

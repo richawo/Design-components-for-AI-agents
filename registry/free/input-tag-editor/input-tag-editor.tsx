@@ -1,7 +1,7 @@
 "use client";
-import { type CSSProperties, useId, useRef, useState } from "react";
+import { type CSSProperties, useLayoutEffect, useSyncExternalStore, useId, useRef, useState } from "react";
 import { X, CornerDownLeft } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
+import { motion, useAnimationControls } from "motion/react";
 
 const control =
   "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-lg px-3 text-sm font-medium transition-[background,transform] duration-150 hover:bg-[var(--wash)] disabled:hover:bg-transparent active:scale-[.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)] disabled:cursor-not-allowed disabled:opacity-40 disabled:active:scale-100 motion-reduce:transform-none";
@@ -13,6 +13,7 @@ function colors(theme: "dark" | "light"): CSSProperties {
     "--ink": theme === "dark" ? "#f5f5f5" : "#171717",
     "--muted": theme === "dark" ? "#a3a3a3" : "#525252",
     "--line": theme === "dark" ? "#333333" : "#d4d4d4",
+    "--field-line": theme === "dark" ? "#727272" : "#8a8a8a",
     "--wash": theme === "dark" ? "#242424" : "#f0f0f0",
   } as CSSProperties;
 }
@@ -24,6 +25,7 @@ export type TagEditorProps = {
   value?: string[];
   defaultValue?: string[];
   maxTags?: number;
+  disabled?: boolean;
   onChange?: (tags: string[]) => void;
   theme?: "dark" | "light";
 };
@@ -34,22 +36,27 @@ export function TagEditor({
   value,
   defaultValue = ["Design systems", "Interaction"],
   maxTags = 8,
+  disabled = false,
   onChange,
   theme = "dark",
 }: TagEditorProps) {
   const id = useId();
-  const reduced = useReducedMotion();
+  const { reduced, entrance } = useLiveEntrance();
   const input = useRef<HTMLInputElement>(null);
-  const [local, setLocal] = useState(defaultValue);
+  const [local, setLocal] = useState(() => [...defaultValue]);
   const [draft, setDraft] = useState("");
   const [notice, setNotice] = useState("");
   const tags = value ?? local;
+  const readOnly = value !== undefined && !onChange;
+  const unavailable = disabled || readOnly;
   const limit = Number.isFinite(maxTags) ? Math.max(0, Math.floor(maxTags)) : 8;
   function change(next: string[]) {
-    setLocal(next);
-    onChange?.(next);
+    if (unavailable) return;
+    setLocal([...next]);
+    onChange?.([...next]);
   }
   function add(raw: string) {
+    if (unavailable) return;
     const pieces = raw
       .split(/[,\n]/)
       .map((s) => s.trim())
@@ -68,23 +75,27 @@ export function TagEditor({
     }
     if (next.length !== tags.length) change(next);
     setDraft("");
+    input.current?.focus();
     setNotice(
       rejected
         ? "Duplicates or topics beyond the limit were skipped."
         : pieces.length
-          ? "Topics added."
+          ? value !== undefined
+            ? "Topic changes requested."
+            : "Topics added."
           : "",
     );
   }
   function remove(index: number) {
+    if (unavailable) return;
     change(tags.filter((_, i) => i !== index));
-    setNotice(`${tags[index]} removed.`);
+    setNotice(value !== undefined ? "Topic changes requested." : `${tags[index]} removed.`);
     input.current?.focus();
   }
   return (
     <motion.section
       initial={{ opacity: 0, y: reduced ? 0 : 8 }}
-      animate={{ opacity: 1, y: 0 }}
+      animate={entrance}
       style={colors(theme)}
       className="@container w-full max-w-lg rounded-xl border border-[var(--line)] bg-[var(--panel)] p-6 text-[var(--ink)]"
     >
@@ -99,10 +110,11 @@ export function TagEditor({
       <p id={`${id}-hint`} className={`mt-2 text-sm ${muted}`}>
         {hint}
       </p>
-      <div className="mt-6 flex min-h-32 flex-wrap content-start gap-2 rounded-lg border border-[var(--line)] p-2 focus-within:ring-2 focus-within:ring-[var(--ink)]">
+      <div className="mt-6 flex min-h-32 flex-wrap content-start gap-2 rounded-lg border border-[var(--field-line)] p-2 focus-within:ring-2 focus-within:ring-[var(--ink)]">
         {tags.map((tag, i) => (
           <motion.span
             layout={!reduced}
+            transition={{ layout: { duration: reduced ? 0 : 0.2 } }}
             key={`${tag}-${i}`}
             className="inline-flex max-w-full items-center rounded-md bg-[var(--wash)] pl-3 text-sm"
           >
@@ -111,6 +123,7 @@ export function TagEditor({
               type="button"
               aria-label={`Remove ${tag}`}
               data-demo={`remove-${i}`}
+              disabled={unavailable}
               onClick={() => remove(i)}
               className={`${control} shrink-0 p-0`}
             >
@@ -122,6 +135,8 @@ export function TagEditor({
           ref={input}
           id={id}
           data-demo="tag-input"
+          disabled={disabled}
+          readOnly={readOnly || tags.length >= limit}
           aria-describedby={`${id}-hint`}
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
@@ -133,7 +148,7 @@ export function TagEditor({
             }
           }}
           onKeyDown={(e) => {
-            if (e.nativeEvent.isComposing) return;
+            if (unavailable || e.nativeEvent.isComposing) return;
             if (e.key === "Enter" || e.key === ",") {
               e.preventDefault();
               add(draft);
@@ -142,7 +157,7 @@ export function TagEditor({
               remove(tags.length - 1);
           }}
           placeholder={placeholder}
-          className="min-h-11 w-28 min-w-28 flex-1 bg-transparent px-2 text-base outline-none placeholder:text-[var(--muted)]"
+          className="min-h-11 w-28 min-w-28 flex-1 bg-transparent px-2 text-base outline-none placeholder:text-[var(--muted)] disabled:cursor-not-allowed disabled:opacity-40"
         />
       </div>
       <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
@@ -152,7 +167,7 @@ export function TagEditor({
         <button
           type="button"
           data-demo="add-tag"
-          disabled={!draft.trim() || tags.length >= limit}
+          disabled={unavailable || !draft.trim() || tags.length >= limit}
           onClick={() => add(draft)}
           className={control}
         >
@@ -161,6 +176,28 @@ export function TagEditor({
       </div>
     </motion.section>
   );
+}
+
+const motionQuery = "(prefers-reduced-motion: reduce)";
+function subscribeToMotion(change: () => void) {
+  const query = window.matchMedia(motionQuery);
+  query.addEventListener("change", change);
+  return () => query.removeEventListener("change", change);
+}
+function useLiveEntrance() {
+  const reduced = useSyncExternalStore(
+    subscribeToMotion,
+    () => window.matchMedia(motionQuery).matches,
+    () => false,
+  );
+  const entrance = useAnimationControls();
+  useLayoutEffect(() => {
+    entrance.stop();
+    if (reduced) entrance.set({ opacity: 1, y: 0 });
+    else void entrance.start({ opacity: 1, y: 0, transition: { duration: 0.32 } });
+    return () => entrance.stop();
+  }, [entrance, reduced]);
+  return { reduced, entrance };
 }
 
 export default function TagEditorDemo(overrides: Partial<TagEditorProps> = {}) {
