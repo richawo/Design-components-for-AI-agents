@@ -32,11 +32,7 @@ try {
     true,
     "Replay follows an entering control while its bounds move",
   );
-  assert.equal(
-    await page.evaluate(() => !!window.wrong),
-    false,
-    "Outgoing inert controls are never targeted",
-  );
+  assert.equal(await page.evaluate(() => !!window.wrong), false, "Outgoing inert controls are never targeted");
   const starts = await page.evaluate(() => window.starts);
   await page.evaluate(() => window.play(["click:@missing"]));
   assert.equal(
@@ -56,6 +52,41 @@ try {
   console.log(
     "PASS replay targets entering controls, ignores inert exits, tracks moving geometry, skips missing clicks and cancels waits.",
   );
+  // Pointer targets must be exposed inside their own scroll regions.
+  await page.setViewportSize({ width: 1000, height: 800 });
+  await mountFixture(
+    page,
+    "select-listbox",
+    "free",
+    `import {DemoPlayer} from './lib/demo/player';import {parseSteps} from './lib/demo/schema.mjs';window.clicks=0;createRoot(document.getElementById('root')).render(<div data-demo="scroll-region" style={{position:'relative',width:200,height:90,overflow:'auto'}}><div style={{width:800,height:650,paddingTop:400,paddingLeft:550}}><button data-demo="clipped-target" style={{width:70,height:44}} onClick={()=>window.clicks++}>Confirm</button></div></div>);window.play=()=>new DemoPlayer(window,{move(){},show(){},press(){},pulse(){}},new AbortController().signal).play(parseSteps(['click:@clipped-target']));`,
+  );
+  await page.evaluate(() => window.play());
+  assert.equal(
+    await page.evaluate(() => window.clicks),
+    1,
+    "A target clipped inside a scroll region is brought into view before the real pointer press",
+  );
+  const scroller = page.locator('[data-demo="scroll-region"]');
+  assert.ok(
+    await scroller.evaluate((node) => node.scrollLeft > 0 && node.scrollTop > 0),
+    "The region scrolls on both axes",
+  );
+  await scroller.evaluate((node) => {
+    node.scrollLeft = 0;
+    node.scrollTop = 0;
+    window.clicks = 0;
+    window.originalScroll = HTMLElement.prototype.scrollIntoView;
+    HTMLElement.prototype.scrollIntoView = () => {};
+  });
+  await page.evaluate(() => window.play());
+  assert.equal(
+    await page.evaluate(() => window.clicks),
+    0,
+    "Preventing scroll retains the clipped-target negative control",
+  );
+  await page.evaluate(() => (HTMLElement.prototype.scrollIntoView = window.originalScroll));
+
+  console.log("PASS nested scroll targets and blocked-scroll negative control.");
 } finally {
   await browser.close();
 }

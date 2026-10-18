@@ -188,9 +188,24 @@ export class DemoPlayer {
     let r = el.getBoundingClientRect();
     if (!r.width || !r.height) return null;
     const [fx, fy] = t.at ?? [0.5, 0.5];
-    // Off screen (a tall preview): bring it into view first.
-    if (r.top < 0 || r.bottom > this.win.innerHeight || r.left < 0 || r.right > this.win.innerWidth) {
-      el.scrollIntoView({ block: "center", inline: "center", behavior: "instant" as ScrollBehavior });
+    const outsideViewport = r.top < 0 || r.bottom > this.win.innerHeight || r.left < 0 || r.right > this.win.innerWidth;
+    // A target can be inside the viewport and still clipped by its table or panel.
+    let clipped = false;
+    for (let parent = el.parentElement; parent; parent = parent.parentElement) {
+      if (parent.scrollWidth <= parent.clientWidth && parent.scrollHeight <= parent.clientHeight) continue;
+      const style = this.win.getComputedStyle(parent);
+      const bounds = parent.getBoundingClientRect();
+      if (
+        (["auto", "scroll"].includes(style.overflowX) && (r.left < bounds.left || r.right > bounds.right)) ||
+        (["auto", "scroll"].includes(style.overflowY) && (r.top < bounds.top || r.bottom > bounds.bottom))
+      ) {
+        clipped = true;
+        break;
+      }
+    }
+    if (outsideViewport || clipped) {
+      const align = outsideViewport ? "center" : "nearest";
+      el.scrollIntoView({ block: align, inline: align, behavior: "instant" as ScrollBehavior });
       r = el.getBoundingClientRect();
     }
     return [r.left + r.width * fx, r.top + r.height * fy];
