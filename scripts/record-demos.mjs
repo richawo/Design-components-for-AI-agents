@@ -32,6 +32,7 @@ import { launchChromium } from "./lib/browser.mjs";
 import { mountFixture } from "./lib/component-fixture.mjs";
 import { startTabRecording, stopTabRecording, sourceChangeQuality } from "./lib/tab-recording.mjs";
 import { startPageFrameRecording, stopPageFrameRecording, discardPageFrameRecording } from "./lib/page-frame-recording.mjs";
+import { startChangedSourceScreenshots } from "./lib/source-screenshots.mjs";
 import { CURSOR_CSS, CURSOR_HTML, CURSOR_START } from "../lib/demo/cursor.mjs";
 import { TIMING, demoDuration, parseSteps, targetSelector } from "../lib/demo/schema.mjs";
 
@@ -184,6 +185,7 @@ async function record(browser, slug) {
   const dpr = mobile ? 2 : webScale;
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), `dfa-rec-${slug}-`));
   const problems = [];
+  let sourceScreenshots;
 
   const context = await browser.newContext({ viewport: { width: vw, height: vh }, deviceScaleFactor: dpr, reducedMotion: "no-preference" });
   const page = await context.newPage();
@@ -297,6 +299,15 @@ async function record(browser, slug) {
         root.removeEventListener("input", change, true); root.removeEventListener("scroll", change, true);
       } };
     });
+    sourceScreenshots = cdp && isolatedSource ? startChangedSourceScreenshots({
+      page, cdp, quality: captureJpegQuality,
+      getLatestFrameTime: () => frames.reduce((latest, frame) => Math.max(latest, frame.sourceAt ?? frame.t), 0),
+      onFrame: ({data,t,sourceAt,origin}) => {
+        const file = path.join(tmp, `f${String(frameIndex++).padStart(5, "0")}.jpg`);
+        frames.push({file,t,sourceAt,origin});
+        writes.push(fs.promises.writeFile(file, Buffer.from(data,"base64")));
+      },
+    }) : null;
     const t0 = nativeStart?.startTime ?? Date.now() / 1000;
     if (cdp) await cdp.send("Page.startScreencast", { format: "jpeg", quality: captureJpegQuality, everyNthFrame: 1, maxWidth: vw * dpr, maxHeight: vh * dpr });
     await page.evaluate((ambient) => (window.__dfaCursor.dataset.on = ambient ? "0" : "1"), !!ambientMs);
@@ -412,6 +423,7 @@ async function record(browser, slug) {
     // A short tail so the last state lands before the loop restarts.
     await page.evaluate(() => (window.__dfaCursor.dataset.on = "0"));
     await page.waitForTimeout(Math.max(350, gallery ? 3000 - (Date.now() / 1000 - t0) * 1000 : 350));
+    const sourceScreenshotEvidence = await sourceScreenshots?.stop();
     const t1 = Date.now() / 1000;
     const nativeEnd = nativeStart ? pageFrames ? await stopPageFrameRecording(page, tmp, nativeStart) : await stopTabRecording(page, tmp, nativeStart) : null;
     if (nativeEnd) frames = nativeEnd.frames;
@@ -433,15 +445,21 @@ async function record(browser, slug) {
     const quality = captureQuality(frames.map((frame) => frame.t), motionWindows);
     const continuousQuality = captureQuality(continuousWindows.length ? frames.map((frame) => frame.t) : [], continuousWindows);
     const sourceEvidence = nativeEnd?.evidence ?? cdpEvidence;
+    if (sourceEvidence && sourceScreenshotEvidence) sourceEvidence.sourceScreenshots = sourceScreenshotEvidence;
+    if (sourceScreenshotEvidence?.errors.length) problems.push(...sourceScreenshotEvidence.errors.map(error => `Source capture failed: ${error}`));
     const nativeSourceQuality = sourceEvidence ? captureQuality(sourceEvidence.sourceFrames) : null;
-    const nativeChangeQuality = sourceEvidence ? sourceChangeQuality(frames.map(frame => frame.t), sourceEvidence.sourceChanges) : null;
+    const nativeChangeQuality = sourceEvidence ? sourceChangeQuality(
+      frames.filter(frame => frame.origin !== "owned-screenshot").map(frame => frame.t),
+      sourceEvidence.sourceChanges,
+      sourceScreenshotEvidence?.captures,
+    ) : null;
     // Regular video timestamps can conceal a frozen JS animation. Grade both.
     if (nativeSourceQuality?.maxGapMs > 100) problems.push(`Actual source animation stalled ${nativeSourceQuality.maxGapMs.toFixed(1)}ms; keep the last good clip.`);
     if (nativeChangeQuality?.stallsOver100Ms) problems.push(`Changed source waited ${nativeChangeQuality.maxDelayMs.toFixed(1)}ms for an encoded frame; keep the last good clip.`);
     if (reportDir) {
       const directory = path.resolve(root, reportDir);
       fs.mkdirSync(directory, { recursive: true });
-      fs.writeFileSync(path.join(directory, `${slug}.json`), JSON.stringify({ slug, renderMode: isolatedSource ? "isolated-production-source" : "preview", ...(sourceEvidence ? { captureTransport: nativeEnd ? pageFrames ? "owned-page-screenshots" : "owned-browser-tab" : "page-screencast", nativeSourceQuality, nativeChangeQuality, native: sourceEvidence } : {}), openingFrameBeforeActions: true, quality, continuousQuality, viewport: { vw, vh, dpr }, framing: frame, timestamps: frames.map((frame) => frame.t), motionWindows, continuousWindows }, null, 2));
+      fs.writeFileSync(path.join(directory, `${slug}.json`), JSON.stringify({ slug, renderMode: isolatedSource ? "isolated-production-source" : "preview", ...(sourceEvidence ? { captureTransport: nativeEnd ? pageFrames ? "owned-page-screenshots" : "owned-browser-tab" : sourceScreenshotEvidence?.captures.length ? "page-screencast+owned-screenshots" : "page-screencast", nativeSourceQuality, nativeChangeQuality, native: sourceEvidence } : {}), openingFrameBeforeActions: true, quality, continuousQuality, viewport: { vw, vh, dpr }, framing: frame, timestamps: frames.map((frame) => frame.t), motionWindows, continuousWindows }, null, 2));
       if (nativeEnd) fs.copyFileSync(nativeEnd.file, path.join(directory, `${slug}-raw.${nativeEnd.extension}`));
     }
     // Each frame holds until the next one; the last holds to the end.
@@ -510,6 +528,7 @@ async function record(browser, slug) {
     }
     return { written, problems };
   } finally {
+    await sourceScreenshots?.stop();
     if (pageFrames) for (const page of context.pages()) await discardPageFrameRecording(page);
     await context.close();
     fs.rmSync(tmp, { recursive: true, force: true });

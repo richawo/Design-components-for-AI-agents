@@ -96,15 +96,25 @@ export async function stopTabRecording(page, directory, start) {
 }
 
 /** Static reading holds are fine; changed source must reach an encoded frame. */
-export function sourceChangeQuality(timestamps, changes) {
-  const frames = [...new Set(timestamps.filter(Number.isFinite))].sort((a, b) => a - b);
+export function sourceChangeQuality(timestamps, changes, screenshots = []) {
+  const frames = [...new Set(timestamps.filter(Number.isFinite))].map(t => ({ sourceAt: t, availableAt: t }));
+  for (const { requestedAt, capturedAt } of screenshots) {
+    if (Number.isFinite(requestedAt) && Number.isFinite(capturedAt) && capturedAt >= requestedAt)
+      frames.push({ sourceAt: requestedAt, availableAt: capturedAt });
+  }
+  frames.sort((a,b) => a.sourceAt-b.sourceAt);
+  // A normal frame can arrive while a screenshot is in flight. Use the first
+  // available image that is known to cover the change, not an older exposure
+  // whose response happened to arrive later.
+  const available = Array(frames.length);
+  for (let i=frames.length-1;i>=0;i--) available[i]=Math.min(frames[i].availableAt,available[i+1] ?? Infinity);
   const ordered = [...new Set(changes.filter(Number.isFinite))].sort((a, b) => a - b);
   let next = 0;
   const delays = [];
   for (const change of ordered) {
-    if (change < frames[0] || change > frames.at(-1)) continue;
-    while (frames[next] < change) next++;
-    delays.push((frames[next] - change) * 1000);
+    if (!frames.length || change < frames[0].sourceAt || change > frames.at(-1).sourceAt) continue;
+    while (frames[next].sourceAt < change) next++;
+    delays.push((available[next] - change) * 1000);
   }
   return { changes: delays.length, maxDelayMs: Math.max(0, ...delays), stallsOver100Ms: delays.filter(delay => delay > 100).length };
 }

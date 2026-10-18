@@ -164,6 +164,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 1: Branch Compare's framing contains both choices and the merged receipt, but its film was rejected for a 418ms source-to-encoded-frame delay. Native source cadence and moving frames have no stalls over 100ms. The previous film is retained; 128 listed films remain. Trace the changed-source guard with the other rejected captures before replacing them.
 
+- Task 1 tooling: traced Branch Compare's rejection to subpixel meter writes and final native-animation style commits after the image had settled. The recorder now requests an actual owned screenshot during a changed-source screencast gap, retaining every mutation and the existing 100ms source/delivery and moving-frame limits. The production replay drops from 427ms to 80ms changed-source delay with one real screenshot; UI-block and capture-block negative controls still reject. The registered public browser regression, fourteen added timing/lifecycle unit cases and all 1,063 unit tests pass. See `RECORDING_SOURCE_TIMING.md` for evidence and timestamp rules. New editor films pass and await final visual review before replacement.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned

@@ -1,5 +1,33 @@
 import { describe, expect, it } from "vitest";
 import { captureQuality, gallerySteps, concatFrameList, framedCropFilter } from "../scripts/lib/recording-quality.mjs";
+import { sourceChangeQuality } from "../scripts/lib/tab-recording.mjs";
+
+describe("changed source presentation", () => {
+  it("keeps the existing encoded-frame deadline", () => {
+    expect(sourceChangeQuality([1,1.05,1.3],[1.01,1.1]).stallsOver100Ms).toBe(1);
+  });
+  it("counts real screenshot delivery after the source change", () => {
+    const result=sourceChangeQuality([1,1.5],[1.01],[{requestedAt:1.06,capturedAt:1.08}]);
+    expect(result.maxDelayMs).toBeCloseTo(70);expect(result.stallsOver100Ms).toBe(0);
+  });
+  it("cannot acknowledge a change made after an image was requested", () => {
+    const result=sourceChangeQuality([1,1.5],[1.1],[{requestedAt:1.06,capturedAt:1.12}]);
+    expect(result.maxDelayMs).toBeCloseTo(400);expect(result.stallsOver100Ms).toBe(1);
+  });
+  it("still rejects a delayed screenshot even when it was requested promptly", () => {
+    const result=sourceChangeQuality([1,1.5],[1.01],[{requestedAt:1.02,capturedAt:1.25}]);
+    expect(result.maxDelayMs).toBeCloseTo(240);expect(result.stallsOver100Ms).toBe(1);
+  });
+  it("uses an earlier normal delivery while a screenshot is in flight", () => {
+    const result=sourceChangeQuality([1,1.04,1.5],[1.01],[{requestedAt:1.02,capturedAt:1.25}]);
+    expect(result.maxDelayMs).toBeCloseTo(30);expect(result.stallsOver100Ms).toBe(0);
+  });
+  it("ignores invalid image timings and changes outside the recorded surface", () => {
+    const result=sourceChangeQuality([1,1.5],[.5,1.1,2],[{requestedAt:1.2,capturedAt:1.1},{requestedAt:NaN,capturedAt:1.2}]);
+    expect(result.changes).toBe(1);expect(result.maxDelayMs).toBeCloseTo(400);
+    expect(sourceChangeQuality([], [1])).toEqual({changes:0,maxDelayMs:0,stallsOver100Ms:0});
+  });
+});
 
 describe("recording frame quality", () => {
   it("measures captured cadence rather than the encoded frame-rate label", () => {
