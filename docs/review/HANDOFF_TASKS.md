@@ -253,6 +253,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 7: Version History is rebuilt around a revision rail and a numbered paper redline, with Changes/Text views and an inline confirmed restore. Its 29-mount source review and rewritten Next regression cover retained LCS boundaries, keyboard revisions, failed retry, copied snapshots, pending locks, focus before paint, invalid/empty histories, replaced replies and a real new current revision. Added-line ink is corrected after a measured 4.26:1 failure, with the original source and audit retained. Six widths, 16 state/default accessibility audits, entrance/state captures, three controls, official audit, both demo runners and measured 1,200px replay/poster pass. Strict registry, TypeScript and all 1,063 unit tests pass. Its film joins task 1; 31 components and 12 blocks remain in task 7.
 
+- Task 1: Version History now has a reviewed 4.3s film showing the first revision’s redline, explicit restore confirmation and the settled new Revision 4 with a restored Revision 1 receipt. Complete framing matches the paired opening poster. Maximum source gap is 12ms, changed-source delivery is 80.4ms and moving-frame p95 is 19.1ms, with no stalls and all guards retained. 120 listed films remain.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -270,7 +272,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Browser checks: `node scripts/check-component.mjs <slug> --base=http://localhost:3100 --no-video --keep-going`
   (screenshots at 1440/768/390 and every control flip; read the screenshots it writes to `test-results/check/<slug>/`).
 
-## 1. Re-record demo videos (121 components)
+## 1. Re-record demo videos (120 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -289,7 +291,6 @@ slug or per small group). Notes:
 
 Slugs:
 
-`legal-version-history`
 `editor-font-pairing`, `editor-keyframe-track`
 `editor-layer-stack`, `editor-spacing-inspector`, `editor-storyboard-strip`, `editor-version-restore`
 `three-exploded-assembly`, `three-material-inspector`, `agents-budget-guard`, `agents-dependency-board`

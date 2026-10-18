@@ -142,7 +142,7 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | `legal-obligation-tracker` | new | current | rewritten, passes |
 | `legal-renewal-planner` | new | current | rewritten, passes |
 | `legal-signature-request` | new | current | rewritten, passes |
-| `legal-version-history` | new | current | Rebuilt revision rail and numbered paper redline; 29-mount source review and Next keyboard/LCS/retry/copied-snapshot/pending/focus/revision regression pass. Added-line ink is corrected after a retained 4.26:1 contrast failure. Six widths, 16 accessibility audits, entrance/state captures, three controls, official audit, both demo runners and measured 1,200px replay/poster pass. Strict registry, TypeScript and all 1,063 unit tests pass. |
+| `legal-version-history` | current | current | Rebuilt revision rail and numbered paper redline; 29-mount source review and Next keyboard/LCS/retry/copied-snapshot/pending/focus/revision regression pass. Added-line ink is corrected after a retained 4.26:1 contrast failure. Six widths, 16 accessibility audits, entrance/state captures, three controls, official audit, both demo runners and measured 1,200px replay/poster pass. Strict registry, TypeScript and all 1,063 unit tests pass. Reviewed 4.3s redline/confirmation/new-current film and paired poster are current; all recording guards pass. |
 
 ## HR suite (8)
 
