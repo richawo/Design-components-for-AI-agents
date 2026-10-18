@@ -277,6 +277,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 5: Spacing Inspector now covers real padding drags, keyboard/snap/linked edits, exact layouts, clipboard failure/retry, retired copy replies, callback mutation and empty/invalid input. Invalid layouts have a written state, copied payloads stay independent and the CSS region supports keyboard inspection. Its 27-mount source review, 14 state/default accessibility audits, six widths, entrance/state captures, Next regression, five controls, official audit and metadata replay pass. The replay verifies its actual padding increase. A retained 60.7px clipping failure is resolved by matching 960px stage and preview heights; the complete replay and refreshed poster fit. Strict registry, TypeScript, isolated Pro types and all 1,063 unit tests pass. 65 components remain without dedicated coverage; its film remains in task 1.
 
+- Task 1: Spacing Inspector now has a reviewed 4.6s film showing the real padding drag, row transformation and settled centred layout. Complete 960px framing matches its paired opening poster. Maximum source gap is 14ms, changed-source delivery is 16.2ms and moving-frame p95 is 17.8ms, with no stalls and all guards retained. 118 listed films remain.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -294,7 +296,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Browser checks: `node scripts/check-component.mjs <slug> --base=http://localhost:3100 --no-video --keep-going`
   (screenshots at 1440/768/390 and every control flip; read the screenshots it writes to `test-results/check/<slug>/`).
 
-## 1. Re-record demo videos (119 components)
+## 1. Re-record demo videos (118 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -314,7 +316,7 @@ slug or per small group). Notes:
 Slugs:
 
 `editor-keyframe-track`
-`editor-layer-stack`, `editor-spacing-inspector`, `editor-storyboard-strip`, `editor-version-restore`
+`editor-layer-stack`, `editor-storyboard-strip`, `editor-version-restore`
 `three-exploded-assembly`, `three-material-inspector`, `agents-budget-guard`, `agents-dependency-board`
 `agents-run-replay`, `ai-answer-compare`, `ai-context-budget`, `ai-structured-output`, `auth-recovery-codes`
 `devtools-icon-workbench`, `devtools-incident-timeline`, `devtools-release-compare`, `devtools-request-replay`
