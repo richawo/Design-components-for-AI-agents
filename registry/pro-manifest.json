@@ -20426,7 +20426,7 @@
     ],
     "theme": "dark",
     "previewHeight": 900,
-    "usage": "import { EditorVersionRestore } from \"@/components/design-for-ai/editor-version-restore\";\n\n<EditorVersionRestore\n  documentName=\"Fieldnote 3.0 launch post\"\n  blocks={[{ id: \"title\", kind: \"title\", label: \"Title\" }, { id: \"body\", kind: \"paragraph\", label: \"Body\" }]}\n  current={liveDoc}            // { id, author, day, time, content: { title: \"…\", body: \"…\" } }\n  versions={savedVersions}     // newest first; name them (\"Legal review\") or leave them as autosaves\n  onRestore={async ({ versionId, blockIds, content }) => {\n    await api.restore(docId, versionId, blockIds); // reject with an Error to show its message\n  }}\n  onUndo={(request) => api.undoRestore(docId, request)}\n/>\n\n// A block missing from a version reads \"Not in this version\" and can't be restored on its own.\n// diffWords(from, to) is exported for hosts that show the same marks elsewhere.",
+    "usage": "import { EditorVersionRestore } from \"@/components/design-for-ai/editor-version-restore\";\n\n<EditorVersionRestore\n  documentName=\"Fieldnote 3.0 launch post\"\n  blocks={[{ id: \"title\", kind: \"title\", label: \"Title\" }, { id: \"body\", kind: \"paragraph\", label: \"Body\" }]}\n  current={liveDoc}            // { id, author, day, time, content: { title: \"…\", body: \"…\" } }\n  versions={savedVersions}     // newest first; name them (\"Legal review\") or leave them as autosaves\n  onRestore={async ({ versionId, blockIds, content }) => {\n    await api.restore(docId, versionId, blockIds); // reject with an Error to show its message\n  }}\n  onUndo={(request) => api.undoRestore(docId, request)}\n/>\n\n// A block missing from a version reads \"Not in this version\" and can't be restored on its own.\n// diffWords(from, to) is exported for hosts that show the same marks elsewhere.\n// Replace current with a new object when the host document changes; pending replies for the previous document are ignored.\n// Request records, blockIds and content are copied before callbacks. Without onRestore, restores are local.",
     "props": [
       {
         "name": "documentName",
@@ -20450,7 +20450,7 @@
         "name": "current",
         "type": "DocVersion",
         "default": "the live launch post",
-        "description": "The live document: { id, author, day, time, content }. Restores update it locally until the host sends a new one."
+        "description": "The live document: { id, author, day, time, content }. Restores update it locally until the host sends a new one. A new current object resets local restore history and selections and retires pending replies for the previous document."
       },
       {
         "name": "versions",
@@ -20473,18 +20473,18 @@
       {
         "name": "onRestore",
         "type": "(request: VersionRestoreRequest) => void | Promise<void>",
-        "description": "Restores { versionId, blockIds, content }. Ticked blocks only, or every differing block when none are ticked. A rejection shows its message and keeps the ticks."
+        "description": "Restores { versionId, blockIds, content }. Ticked blocks only, or every differing block when none are ticked. A rejection shows its message and keeps the ticks. The request, blockIds and content are copied; host mutation cannot change the applied local restore. Without a handler, restores update the local document."
       },
       {
         "name": "onUndo",
         "type": "(request: VersionRestoreRequest) => void",
-        "description": "Called when Undo puts the document back after a restore."
+        "description": "Called when Undo puts the document back after a restore. Receives a copied request as a synchronous notification after the local rollback."
       },
       {
         "name": "accent",
         "type": "string",
         "default": "theme ink",
-        "description": "The timeline thumb, picked-block rules and the Restore button."
+        "description": "The timeline thumb, picked-block rules and the Restore button. Use a six-digit hex colour; invalid values fall back to theme ink. Filled labels choose readable black or white text."
       },
       {
         "name": "theme",

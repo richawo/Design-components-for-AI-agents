@@ -9,6 +9,7 @@ const specs = fs
   .filter((file) => file.endsWith(".mjs"))
   .map((file) => ({ slug: file.slice(0, -4) }));
 const finalStates = {
+  "editor-version-restore": "Restored 1 block",
   "editor-storyboard-strip": "Waxed cotton",
   "editor-layer-stack": "Shape · 3 of 6 from the top",
   "editor-keyframe-track": "Key 2 of 5",
@@ -127,6 +128,12 @@ try {
       assert.equal(await page.locator('[data-demo="scene-detail"]').getAttribute("aria-current"), "true");
       assert.equal(await page.getByRole("textbox", { name: "Shot length in seconds", exact: true }).inputValue(), "3.5", "The recorded stepper extends the moved shot by half a second");
       assert.equal(await page.getByRole("button", { name: "Play the board", exact: true }).count(), 1, "The replay ends paused");
+    }
+    if (slug === "editor-version-restore") {
+      assert.ok((await page.getByRole("status").allTextContents()).some(text => text.includes("Restored 1 block from Legal review")), "The restore demo applies only the selected block from the recorded revision");
+      assert.equal(await page.locator('[data-demo="undo"]').isEnabled(), true);
+      assert.equal(await page.getByRole("option").filter({ hasText: "Before restore" }).count(), 1, "The restore leaves a rollback snapshot");
+      assert.equal(await page.locator('[data-demo="pick-closing"]').count(), 0, "The restored block retires its selection control");
     }
     if (slug === "editor-keyframe-track") {
       const key = page.locator('[data-demo="key-y-1"]');

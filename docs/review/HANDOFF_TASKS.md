@@ -291,6 +291,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 5: Storyboard Strip now covers pointer/keyboard reordering, released trims, normalized duration input, exact copied scene/tone callbacks, playback completion, empty boards and invalid timing. The selected inspector changes immediately, unchanged normalized entries do not emit edits, and custom hex accents keep readable Play text. The 33-mount source review, eighteen state/default accessibility audits, six widths, entrance/state captures, Next regression, four controls, official audit, metadata replay and complete 900px framing/poster pass. Original inspector, normalization, timing, callback-mutation and 4.14:1 accent failures are retained. Strict registry, both type checks and all 1,063 unit tests pass. 62 components remain without dedicated coverage.
 
+- Task 5: Version Restore now covers keyboard version scrubbing, partial and local restores, exact copied requests, rejection/retry with picks retained, pending locks, Undo, missing blocks, empty history and late replies after document replacement. Callback mutation cannot rewrite the accepted document, and replacement documents retire earlier requests. Deleted text in light mode and filled custom-accent labels retain contrast; original failures are preserved. The 29-mount source review, twenty-two state/default accessibility audits, six widths, entrance/state captures, Next regression, four controls, official audit, single-block metadata replay and complete 900px framing/poster pass. Strict registry, both type checks and all 1,063 unit tests pass. 61 components remain without dedicated coverage.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -414,14 +416,14 @@ Its log is `test-results/handoff-next/browser-suite-green.log`.
 
 ## 5. Write browser probes for components that have none
 
-62 finished components still have no dedicated browser regression probe. For each, read its source and
+61 finished components still have no dedicated browser regression probe. For each, read its source and
 `meta.json`, then add a case to the appropriate `tests/browser/*.mjs` suite (or a new probe registered in
 `scripts/test-components.mjs`) covering: the signature interaction, keyboard paths, failed-then-successful callbacks
 with drafts kept (where it has async callbacks), and empty or invalid data. Use `tests/browser/pro-50/hr-org-explorer.mjs`
 as the model for style and depth. Mobile components render through React Native web (`scripts/lib/component-fixture.mjs` aliases it);
 see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 
-`editor-version-restore`, `three-exploded-assembly`
+`three-exploded-assembly`
 `three-material-inspector`, `agents-budget-guard`, `agents-dependency-board`, `agents-run-replay`
 `ai-answer-compare`, `ai-context-budget`, `ai-structured-output`, `auth-recovery-codes`, `devtools-icon-workbench`
 `devtools-incident-timeline`, `devtools-release-compare`, `devtools-request-replay`, `devtools-schema-migration`
