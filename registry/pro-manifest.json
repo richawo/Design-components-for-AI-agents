@@ -14028,17 +14028,17 @@
       {
         "name": "columns",
         "type": "WorkbenchColumn[]",
-        "description": "{ id, label, width?, minWidth?, kind?: \"text\" | \"mono\" | \"number\" | \"status\", required?, tones? }. Required columns can't be hidden; number columns right-align; status columns add a dot from tones."
+        "description": "Unique nonempty ids/labels with finite widths and minimum widths from 1 to 420px. Required columns stay visible; widths clamp to their minimum and 420. Invalid input shows a written alert."
       },
       {
         "name": "rows",
         "type": "WorkbenchRow[]",
-        "description": "{ id, cells: Record<columnId, string> }. Cells keep their identity as columns move, so the reflow animates."
+        "description": "Unique nonempty row ids with text cells. Empty rows have a written state; invalid rows do not create an unreadable table."
       },
       {
         "name": "value",
         "type": "ColumnState[]",
-        "description": "Controlled arrangement: every column once, in display order, as { id, visible, pinned, width }. Pinned columns always lead."
+        "description": "Controlled arrangement. Known columns appear once, unknown/duplicate entries are ignored, missing columns are appended, required columns stay visible and pinned columns lead. Widths must be finite and are clamped to each minimum and 420px. Host changes acknowledge onChange."
       },
       {
         "name": "defaultValue",
@@ -14048,7 +14048,7 @@
       {
         "name": "onChange",
         "type": "(value: ColumnState[], change: ColumnChange) => void",
-        "description": "Called once per finished change: a drag on release, a resize on release or key press, a pin, a hide or show, a reset. `change.type` says which."
+        "description": "Called once per finished move, pin, visibility change, reset, keyboard resize or pointer resize release. Drag/resize previews stay local; cancelled resize discards its preview without publishing."
       },
       {
         "name": "density",
@@ -14059,8 +14059,8 @@
       {
         "name": "accent",
         "type": "string",
-        "default": "\"#7cc4ff\"",
-        "description": "The one colour: the frozen edge, pin marks and the column you're holding."
+        "default": "theme ink",
+        "description": "Frozen edge, pin marks and the held column. Defaults to neutral theme ink; light neutral choices follow dark ink. Status names remain explicit beside neutral dots."
       },
       {
         "name": "theme",
@@ -14117,8 +14117,9 @@
         "prop": "accent",
         "label": "Accent",
         "kind": "color",
-        "default": "#7cc4ff",
+        "default": "#f2f2f3",
         "options": [
+          "#f2f2f3",
           "#7cc4ff",
           "#ffb547",
           "#4ade80",
@@ -14137,12 +14138,13 @@
         "wait:500",
         "hover:@grip-eta:0.2,0.5",
         "down",
-        "hover:@grip-ref:0.8,0.5",
+        "hover:@grip-consignee:0.3,0.5",
         "up",
         "wait:700",
         "click:@pin-consignee",
         "wait:900",
         "click:@hide-lane",
+        "move:0.95,0.94",
         "wait:1100"
       ],
       "loop": false
