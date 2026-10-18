@@ -281,6 +281,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 5: Keyframe Track now covers exact hold boundaries, keyboard selection/editing, real drag commits, copied track payloads, key insertion/deletion, playback completion and empty/invalid clocks. The original boundary, activation and clock failures are preserved. The official audit also found overlapping phone targets; the timeline now pans in its own labelled region, keeps coarse-pointer targets at 44px and supports Home/End/arrows without taking key-edit shortcuts. Its 35-mount source review, 28 state/default accessibility audits, six widths, entrance/state captures, Next regression, five controls, official audit and complete 880px replay/poster pass. Metadata replay requires an actual changed, selected key. Strict registry, TypeScript, isolated Pro types and all 1,063 unit tests pass. 64 components remain without dedicated coverage; its film remains in task 1.
 
+- Task 1: Keyframe Track now has a reviewed 5.05s film showing real playback, a curve-key drag and the settled selected key. Complete 880px framing matches its paired opening poster. Maximum source gap is 13ms, changed-source delivery is 18.2ms and moving-frame p95 is 17.6ms, with no stalls and all guards retained. 117 listed films remain.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -298,7 +300,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Browser checks: `node scripts/check-component.mjs <slug> --base=http://localhost:3100 --no-video --keep-going`
   (screenshots at 1440/768/390 and every control flip; read the screenshots it writes to `test-results/check/<slug>/`).
 
-## 1. Re-record demo videos (118 components)
+## 1. Re-record demo videos (117 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -317,7 +319,6 @@ slug or per small group). Notes:
 
 Slugs:
 
-`editor-keyframe-track`
 `editor-layer-stack`, `editor-storyboard-strip`, `editor-version-restore`
 `three-exploded-assembly`, `three-material-inspector`, `agents-budget-guard`, `agents-dependency-board`
 `agents-run-replay`, `ai-answer-compare`, `ai-context-budget`, `ai-structured-output`, `auth-recovery-codes`
