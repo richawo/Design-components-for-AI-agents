@@ -182,6 +182,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 4: Access Requests now updates the approval window inside its live label instead of retiring the previous duration through a keyed exit. The captured failure submitted 1 hour correctly while still showing "Approve 4h"; rapid 24-hour/1-hour changes, failed-then-successful decisions and exact payloads now pass in isolation and on Next. Both-theme accessibility and 1,063 unit tests pass. The final full rerun remains pending.
 
+- Task 5 follow-up: Budget Envelope's post-save dismissal preserves outside button and blank-space focus. Keyboard focus leaving the component also retires recovery, including when that outside control is removed; a secondary contact leaves the primary interaction's ownership intact. The save button's own disabled-to-body focus transition still returns to the opener. The registered Next regression, six state accessibility checks and 1,063 unit tests pass; its current poster and film remain visually accurate.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned

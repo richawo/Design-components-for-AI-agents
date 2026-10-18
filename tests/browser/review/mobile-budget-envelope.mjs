@@ -58,4 +58,47 @@ export async function check({ page, mount, assert }) {
   await page.getByRole("slider", { name: "Budget", exact: true }).waitFor();
   await page.locator('[data-demo="budget-close"]').click();
   await page.getByRole("slider", { name: "Budget", exact: true }).waitFor({ state: "hidden" });
+
+  // Automatic dismissal does not reclaim focus after an outside primary action.
+  for (const outside of ["button", "blank", "removed", "secondary"]) {
+    await mount(
+      `createRoot(document.getElementById('root')).render(<Subject.MobileBudgetEnvelope envelopes={${JSON.stringify(envelopes)}} income={500} onBudgetChange={()=>new Promise(resolve=>window.finishSave=resolve)}/>);`,
+    );
+    await page.evaluate(() => {
+      const button = document.createElement("button");
+      button.id = "budget-outside-button";
+      button.textContent = "Other tool";
+      button.style.cssText = "position:fixed;right:0;top:0;z-index:10000;height:44px";
+      document.body.append(button);
+      const blank = document.createElement("div");
+      blank.id = "budget-outside-blank";
+      blank.style.cssText = "position:fixed;right:0;top:50px;z-index:10000;width:90px;height:44px;background:#222";
+      document.body.append(blank);
+    });
+    await page.locator('[data-demo="envelope-food"]').press("Enter");
+    await page.getByRole("slider", { name: "Budget", exact: true }).press("ArrowRight");
+    await page.locator('[data-demo="budget-save"]').press("Enter");
+    await page.waitForFunction(() => typeof window.finishSave === "function");
+    if (outside === "secondary")
+      await page
+        .locator("#budget-outside-blank")
+        .dispatchEvent("pointerdown", { button: 0, isPrimary: false, pointerType: "touch" });
+    else if (outside === "removed") {
+      await page.locator("#budget-outside-button").focus();
+      await page.locator("#budget-outside-button").evaluate((element) => element.remove());
+    } else await page.locator("#budget-outside-" + outside).click();
+    await page.evaluate(() => window.finishSave());
+    await page.waitForTimeout(1000);
+    const focused = await page.evaluate(
+      () =>
+        document.activeElement?.id ||
+        document.activeElement?.getAttribute("data-demo") ||
+        document.activeElement?.tagName,
+    );
+    assert.equal(
+      focused,
+      outside === "button" ? "budget-outside-button" : outside === "secondary" ? "envelope-food" : "BODY",
+      "Only the owning primary interaction may recover focus after dismissal",
+    );
+  }
 }
