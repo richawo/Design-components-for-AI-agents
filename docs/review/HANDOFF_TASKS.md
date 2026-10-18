@@ -255,6 +255,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 1: Version History now has a reviewed 4.3s film showing the first revision’s redline, explicit restore confirmation and the settled new Revision 4 with a restored Revision 1 receipt. Complete framing matches the paired opening poster. Maximum source gap is 12ms, changed-source delivery is 80.4ms and moving-frame p95 is 19.1ms, with no stalls and all guards retained. 120 listed films remain.
 
+- Task 7: Capacity Planner is rebuilt around a weekly load ledger and a quarter-hour allocation inspector. Its 35-mount source review and rewritten Next regression cover exact saved snapshots, keyboard stepping, over-capacity checks, retained retry, pending locks, callback mutation, accepted host echoes and retired replacements. Two preserved failures are fixed: the pending calendar remains keyboard-scrollable, and acknowledged decimal formatting leaves a clean baseline. Six widths, 24 state/default accessibility audits, entrance/state captures, three controls, official audit, both demo runners and measured 1,200px replay/poster pass. The first demo cleared its receipt by inspecting after saving; the corrected replay saves last. Strict registry, TypeScript and all 1,063 unit tests pass. Its film joins task 1; 30 components and 12 blocks remain in task 7.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -272,7 +274,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Browser checks: `node scripts/check-component.mjs <slug> --base=http://localhost:3100 --no-video --keep-going`
   (screenshots at 1440/768/390 and every control flip; read the screenshots it writes to `test-results/check/<slug>/`).
 
-## 1. Re-record demo videos (120 components)
+## 1. Re-record demo videos (121 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -291,6 +293,7 @@ slug or per small group). Notes:
 
 Slugs:
 
+`hr-capacity-planner`
 `editor-font-pairing`, `editor-keyframe-track`
 `editor-layer-stack`, `editor-spacing-inspector`, `editor-storyboard-strip`, `editor-version-restore`
 `three-exploded-assembly`, `three-material-inspector`, `agents-budget-guard`, `agents-dependency-board`
@@ -420,16 +423,16 @@ All nine parked rebuilds are shipped in both repos. Their original `_wip/<slug>`
 | finance-budget-variance | Completed 17 October: Next probe, dark/light accessibility, responsive and entrance/state captures, live demo and refreshed poster pass. |
 | finance-cashflow-dashboard | Completed 17 October: weekly balance and in/out bars, movable payments, independent pending saves, invalid-data guards, selected-week list geometry, Next probe/demo, both-theme accessibility, responsive/state/entrance captures and refreshed poster pass. |
 
-## 7. Continue the review (31 components, then 12 blocks)
+## 7. Continue the review (30 components, then 12 blocks)
 
-Same process as the 167 already done: hold each to the first ~100 components' standard. Briefs:
+Same process as the 168 already done: hold each to the first ~100 components' standard. Briefs:
 `docs/review/REVIEW_BRIEF.md`, `docs/review/SUITE_BRIEF.md` for industry components, suite languages in
 `docs/review/suites/`. Work newest first, about four components per batch, and verify each (build, tsc, tests,
 check-component, your own captures of states and mid-entrance frames, a refreshed poster, a rewritten pro-50 probe for
 industry components).
 
 - **Commerce** is reviewed. Keep `block-commerce-workspace` compatible with its rebuilt parts.
-- **Others**: hr-capacity-planner (`suites/hr.md`) and data-query-builder.
+- **Others**: data-query-builder.
 - **Smaller components** (#151–179): chart-waterfall-bridge, content-release-notes, cards-event-ticket,
   chart-slope-comparison, chart-bullet-targets, media-story-deck, devtools-request-waterfall, devtools-json-inspector,
   media-before-after, data-kanban-compact, data-file-explorer, forms-preference-center, date-week-agenda,

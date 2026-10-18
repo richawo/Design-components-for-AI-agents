@@ -1,6 +1,6 @@
 # Review status
 
-167 components are rebuilt (or, for a few, polished), verified and committed. For each: whether its demo video
+168 components are rebuilt (or, for a few, polished), verified and committed. For each: whether its demo video
 needs re-recording, whether its poster is current, and the state of its browser regression probe.
 
 - **Video**: `new` means `public/previews/<slug>.mp4` still shows the old version. Re-record serially on a quiet machine:
@@ -144,10 +144,11 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | `legal-signature-request` | new | current | rewritten, passes |
 | `legal-version-history` | current | current | Rebuilt revision rail and numbered paper redline; 29-mount source review and Next keyboard/LCS/retry/copied-snapshot/pending/focus/revision regression pass. Added-line ink is corrected after a retained 4.26:1 contrast failure. Six widths, 16 accessibility audits, entrance/state captures, three controls, official audit, both demo runners and measured 1,200px replay/poster pass. Strict registry, TypeScript and all 1,063 unit tests pass. Reviewed 4.3s redline/confirmation/new-current film and paired poster are current; all recording guards pass. |
 
-## HR suite (8)
+## HR suite (9)
 
 | Slug | Video | Poster | Probe |
 | --- | --- | --- | --- |
+| `hr-capacity-planner` | new | current | Rebuilt weekly capacity ledger and quarter-hour allocation inspector; 35-mount source review and Next keyboard/exact-snapshot/retry/pending/host-echo/replacement regression pass. Pending calendar inspection remains keyboard-scrollable, and acknowledged decimals become a clean baseline. Six widths, 24 state/default accessibility audits, entrance/state captures, three controls, official audit, both demo runners and measured 1,200px replay/poster pass. The original demo ordering failure is retained; inspection now precedes the final saved receipt. Strict registry, TypeScript and all 1,063 unit tests pass. |
 | `hr-compensation-review` | new | current | rewritten, passes |
 | `hr-employee-onboarding` | new | current | rewritten, passes |
 | `hr-interview-scorecard` | new | current | rewritten, passes on the Next-backed source-fixture runner |

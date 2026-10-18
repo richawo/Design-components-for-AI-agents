@@ -26291,7 +26291,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "date-time",
-    "description": "A weekly resource planner with project allocations, daily capacity meters and an editable inspector. Overbooking and invalid hours stay visible before save.",
+    "description": "A weekly capacity ledger with readable day loads, remaining hours and a quarter-hour allocation editor that keeps failed plans for retry.",
     "tags": [
       "date-time",
       "workflow",
@@ -26308,13 +26308,14 @@
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 940,
+    "previewHeight": 1200,
     "usage": "import { CapacityPlanner } from \"@/components/design-for-ai/hr-capacity-planner\";\n\n<CapacityPlanner />",
     "props": [
       {
         "name": "title",
         "type": "string",
-        "description": "Planner heading."
+        "description": "Planner heading.",
+        "default": "\"Team capacity\""
       },
       {
         "name": "period",
@@ -26324,7 +26325,7 @@
       {
         "name": "people",
         "type": "CapacityPerson[]",
-        "description": "People with unique IDs, display roles and daily capacity in quarter hours."
+        "description": "Unique people with names, roles and 0–24 daily hours in quarter-hour steps. Zero means no available capacity."
       },
       {
         "name": "days",
@@ -26339,7 +26340,7 @@
       {
         "name": "defaultBookings",
         "type": "CapacityBooking[]",
-        "description": "Initial project allocations. Hours must be 0.25–24 in quarter-hour steps. Remount for a new planning period."
+        "description": "Up to 200 unique project allocations with existing person/day/project ids. Positive hours run from 0.25 to 24 in quarter-hour steps. Replacing planning data starts a fresh scoped draft."
       },
       {
         "name": "allowOverbooking",
@@ -26350,7 +26351,7 @@
       {
         "name": "onSave",
         "type": "(bookings: CapacityBooking[]) => void | Promise<void>",
-        "description": "Awaited persistence callback. Failed saves retain edits; reset uses the last acknowledged baseline."
+        "description": "Persist a copied allocation snapshot. Failure retains edits; acknowledged saves establish Reset’s baseline. Host mutation cannot change that baseline, and replaced planning data retires old replies."
       },
       {
         "name": "theme",
@@ -26363,6 +26364,23 @@
         "type": "\"custom\" | \"native\"",
         "default": "\"custom\"",
         "description": "Keyboard-accessible custom menus or native platform pickers, with balanced 12px text and chevron insets."
+      },
+      {
+        "name": "workspace",
+        "type": "string",
+        "default": "\"Fieldnotes\"",
+        "description": "Workspace name in the compact People header."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "default": "\"#c5f25a\"",
+        "description": "The HR suite’s coverage/selection accent. Primary actions remain neutral."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Additional outer component classes."
       }
     ],
     "added": "2026-10-11",
@@ -26371,10 +26389,10 @@
         "wait:500",
         "click:@add-allocation",
         "wait:600",
-        "click:@save-plan",
-        "wait:1200",
         "click:@capacity-jo-thu",
-        "wait:800"
+        "wait:650",
+        "click:@save-plan",
+        "wait:1200"
       ],
       "loop": false
     },
@@ -26398,6 +26416,17 @@
           "native"
         ],
         "default": "custom"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#c5f25a",
+        "options": [
+          "#c5f25a",
+          "#7aa2ff",
+          "#ff8a4c"
+        ]
       }
     ]
   },

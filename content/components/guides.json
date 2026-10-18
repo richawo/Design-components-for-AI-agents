@@ -2493,19 +2493,20 @@
     "updated": "2026-10-12"
   },
   "hr-capacity-planner": {
-    "useWhen": "Reviewing assigned work against supplied team capacity.",
-    "avoidWhen": "A workforce authority or scheduling decision based on incomplete availability data.",
+    "useWhen": "Balance a small team’s day-by-day project allocations against explicit available hours, then persist one reviewed weekly plan.",
+    "avoidWhen": "Payroll, automatic scheduling or organization-scale resource grids requiring virtualization and individual leave calendars.",
     "integration": [
-      "Supply your own records through `people`, `days`, `projects`, `defaultBookings`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onSave` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
-      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+      "Supply unique people/day/project IDs and up to 200 allocations. Capacity is 0–24 hours; bookings use positive quarter-hour steps up to 24. Zero capacity is unavailable time.",
+      "onSave receives copied numeric allocations. Await persistence and reject to retain the draft. Reset uses the last acknowledged snapshot, not callback-mutated objects.",
+      "allowOverbooking permits explicit over-capacity days while retaining visible warnings. Invalid hours and unknown references still block saving.",
+      "Replace period or planning data to begin a fresh draft. Exact pending or acknowledged save echoes retain their receipt; different supplied bookings replace the draft and retire old replies."
     ],
     "related": [
-      "hr-leave-approval",
       "hr-shift-coverage",
-      "fashion-launch-calendar"
+      "hr-people-dashboard",
+      "date-week-agenda"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-18"
   },
   "hr-compensation-review": {
     "useWhen": "Running a merit or pay-review cycle: proposing raises against pay bands and guidance within a fixed budget, with a rationale for each change.",

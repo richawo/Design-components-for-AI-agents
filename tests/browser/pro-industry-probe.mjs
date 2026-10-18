@@ -122,38 +122,9 @@ try {
     assert.ok((await page.locator("section").innerText()).includes(expected), `${currency} respects its own minor units`);
     if (amountMinor < 0) assert.ok((await page.locator("section").innerText()).includes(`−${expected}`));
   }
-  await fixture(
-    "hr-capacity-planner",
-    `window.plans=[];createRoot(document.getElementById('root')).render(<Subject.CapacityPlanner onSave={async value=>{window.plans.push(value);throw Error('offline')}}/>);`,
-  );
-  await page.getByRole("button", { name: "Add 2 hours" }).click();
-  assert.equal(
-    await page.getByRole("button", { name: "Save plan" }).isEnabled(),
-    true,
-  );
-  await page.getByRole("button", { name: "Add 2 hours" }).click();
-  assert.match(await page.getByRole("alert").innerText(), /over-capacity/);
-  assert.equal(
-    await page.getByRole("button", { name: "Save plan" }).isDisabled(),
-    true,
-  );
-  await page.getByRole("button", { name: "Remove allocation 4" }).click();
-  await page.getByRole("button", { name: "Save plan" }).click();
-  await page.waitForTimeout(100);
-  assert.match(
-    await page.getByRole("status").innerText(),
-    /could not be saved/,
-  );
-  assert.equal(await page.evaluate(() => window.plans[0].length), 8);
-  await page
-    .getByRole("spinbutton", { name: "Hours for allocation 1" })
-    .fill("0.1");
-  assert.equal(
-    await page.getByRole("button", { name: "Save plan" }).isDisabled(),
-    true,
-  );
-  await page.getByRole("button", { name: "Reset", exact: true }).click();
-  assert.equal(await page.getByRole("spinbutton").count(), 2);
+  // Rebuilt workflow: hr-capacity-planner. The dedicated case retains the original edge checks.
+  await page.setViewportSize({width:390,height:900});
+  await (await import('./pro-50/hr-capacity-planner.mjs')).check({page,assert,choose,mount:code=>fixture('hr-capacity-planner',code)});
   // Rebuilt workflow: legal-version-history. The dedicated case retains the original edge checks.
   await page.setViewportSize({width:390,height:900});
   await (await import('./pro-50/legal-version-history.mjs')).check({page,assert,choose,mount:code=>fixture('legal-version-history',code)});
