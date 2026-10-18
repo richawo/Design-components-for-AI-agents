@@ -9,6 +9,14 @@ needs re-recording, whether its poster is current, and the state of its browser 
 - **Probe**: the `tests/browser/pro-50/<slug>.mjs` state, or another probe that covers it. Blank means no browser test
   was written in this review; those are the ones for a separate pass.
 
+## Batch verification (18 October 2026)
+
+All 59 Next-backed browser suites and all 26 focused component audits pass. Strict registry validation,
+TypeScript and all 1,063 unit tests pass. The Worker dry run passes with a 2,655,633-byte router,
+56,759,418-byte runtime and 4,728,730 bytes of compressed source maps. Existing lazy-boundary and size guards
+remain in place. Measurements, checkout revisions and the investigated package diagnostics are recorded in
+[the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks).
+
 ## Mobile (20)
 
 | Slug | Video | Poster | Probe |

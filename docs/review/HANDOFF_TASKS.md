@@ -188,10 +188,12 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Task 5: Color Token Studio now covers pointer/keyboard channels, roving tokens, exact palette saves, failure/retry, applied-only CSS and clipboard fallback. Valid prototype-named ids work; duplicate/invalid ids, retired drafts, controlled read-only palettes and late replies have explicit handling. Its Next-backed regression, eight theme/accent accessibility states, four controls and 320/390/768/1440 geometry pass, together with strict registry, TypeScript and all 1,063 unit tests. The settled Next poster is refreshed and visually reviewed. Both initial film attempts failed the unchanged timing guards and remain unaccepted. 68 components remain without dedicated coverage.
 
 
-- Task 8: Box Distribution now publishes current resize geometry before paint and ignores stale observer dimensions. Its first-frame and late-report regressions, complete Next workflow, twelve theme/accent/target accessibility checks, refreshed poster and corrected official audit pass. Light handle and target-met text now meet AA, neutral presets remain visible, and unsupported colours recover safely. The auditor requires the requested source and actual paint around its existing waits; a persistent 8px overflow still fails at all six desktop widths. Strict registry, TypeScript and all 1,063 unit tests pass. See [Box Distribution verification](BOX_DISTRIBUTION_RESIZE.md). The 26-component batch, complete browser suite and Worker dry run still need their final reruns.
+- Task 8: Box Distribution now publishes current resize geometry before paint and ignores stale observer dimensions. Its first-frame and late-report regressions, complete Next workflow, twelve theme/accent/target accessibility checks, refreshed poster and corrected official audit pass. Light handle and target-met text now meet AA, neutral presets remain visible, and unsupported colours recover safely. The auditor requires the requested source and actual paint around its existing waits; a persistent 8px overflow still fails at all six desktop widths. Strict registry, TypeScript and all 1,063 unit tests pass. See [Box Distribution verification](BOX_DISTRIBUTION_RESIZE.md). The final reruns now pass: all 26 component audits, all 59 browser suites and the Worker dry run. Exact bundle measurements are recorded in task 8.
 
 
 - Task 1: Color Token Studio now has a reviewed neutral 5.2s film showing a failing muted colour, its AA repair and the settled Applied receipt for one token. Its framing matches the current Next poster. Maximum source gap is 15ms, changed-source delivery is 37.5ms and moving-frame p95 is 19.3ms, with no stalls and every existing guard intact. The earlier rejected attempts remain archived. 121 listed films remain.
+
+- Tasks 4 and 8: the complete Next-backed browser run passes all 59 suites, including Column Workbench and Access Requests. All 26 focused component audits, strict registry validation, TypeScript and all 1,063 unit tests pass. The Worker dry run also passes its existing router, runtime and source-map guards. See the measured checkpoint in task 8.
 
 ## Ground rules (read first)
 
@@ -300,30 +302,20 @@ tests/browser/pro-50-<suite>-probe.mjs <slug>` (suite = legal, saas, finance, hr
    not-yet-due invoices. Also an invalid `dueDate` is silently aged as "Over 90 days", and an invoice whose customer
    isn't in `customers` counts in the totals without a row; report both in an invalid-data notice.
 
-## 4. Finish or rerun browser probes
+## 4. Finish or rerun browser probes (complete)
 
-- **Run for the first time end to end** (written, never completed because the server was overloaded):
-  `finance-scenario-forecast`, `finance-invoice-composer`, `finance-payment-run`, `finance-receivables-aging`. They
-  assert bugs 5–8 above, so fix those first or expect those assertions to fail. Fix any probe-side mistakes you find.
-- **Rerun on the official runner** (passed in an isolated harness or before a formatting-only pass):
-  `hr-leave-approval`, `hr-people-dashboard`, `hr-interview-scorecard`, `hr-policy-acknowledgement`,
-  `commerce-customer-timeline`, `commerce-backorder-allocation`, `commerce-bundle-builder`,
-  `commerce-shipping-estimator`, and `saas-support-triage` (its last edit wasn't rerun).
-- **Update cross-cutting probes that still assert old UIs** (all in `tests/browser/`):
-  - `pro-50-demo-probe.mjs`: `finalStates` holds old receipt texts for several slugs (e.g. fashion-exchange-selector
-    now ends on "Exchange confirmed"). Replay each slug's `meta.demo` and update the expected final text.
-  - `pro-native-themes-probe.mjs`: fashion-exchange-selector no longer has native inputs; drop or replace it, and
-    check every other listed slug still has what the probe expects.
-  - `preview-cascade-probe.mjs`: uses fashion-launch-calendar's old Instrument Serif `h2` and `data-demo="day-20"` as
-    its vehicle; pick a component that still has a serif heading and a stable target, or rewrite the assertions.
-  - `audit-trail-polish-probe.mjs`: drives the old "Date range" panel and diff field headings of saas-audit-trail.
-  - `pro-industry-probe.mjs` and `pro-demo-probe.mjs`: test the old finance-reconciliation ("Select same reference",
-    "Record match"). The new one matches by clicking a statement line then a ledger entry, or Auto-match.
-  - `pro-scroll-probe.mjs`: its video section fails even on old code because this Chromium can't decode the H.264 test
-    mp4. Add a webm source to the fixture (the probe's contract passes with a webm).
-  - The `block-legal-workspace` block probe fails identically before and after the workspace-shell rebuild; find the
-    pre-existing cause.
-- Then run the whole suite: `npm run test:components` with the dev server up, and make it green.
+The complete Next-backed `npm run test:components` run passed **59/59 suites on 18 October 2026**.
+Its log is `test-results/handoff-next/browser-suite-green.log`.
+
+- All requested finance, HR, commerce and SaaS reruns pass on the official runner, including callback rejection,
+  retry, retained drafts and exact payloads. Column Workbench's deferred focus and Access Requests' stale duration
+  label are fixed and pass in the complete run.
+- The full industry metadata replay, native-control palettes, preview typography/container checks, Audit Trail
+  interaction polish, reconciliation workflows and all block workflows and replays pass.
+- Scroll checks pass with playable WebM, broken-video recovery, Cinema Frame reversal, Chapter Stack's first-frame
+  resize handling and the three rebuilt scroll components' dedicated regressions.
+- Recording-source, demo editing and pointer-focus checks pass with their existing negative controls retained.
+  Page checks also pass for granted, denied, failed and retried Pro access and private source boundaries.
 
 ## 5. Write browser probes for components that have none
 
@@ -396,6 +388,29 @@ industry components).
 After any batch of the above: `node scripts/build-registry.mjs --strict`, `npx tsc --noEmit`, `npm test`,
 `npm run test:components`, `npm run audit:components -- <changed slugs>`, then stop the dev server and run
 `npm run deploy:dry-run` to check the Worker bundle size. Deployment itself (`npm run deploy`) is the owner's call.
+
+### Verified checkpoint: 18 October 2026
+
+Validated checkout: public `98b632a`, private `5e807d2`, with the existing shared auth/mobile edits.
+
+| Check | Result |
+| --- | --- |
+| Strict registry | Pass: 100 free and 259 Pro components |
+| TypeScript | Pass |
+| Unit tests | 43 files, 1,063 tests pass |
+| Complete Next-backed browser run | 59/59 suites pass |
+| Focused responsive/accessibility/motion audit | 26/26 components pass |
+| Worker router | 2,655,633 bytes, below 4 MiB |
+| Worker runtime | 56,759,418 bytes, below 64 MiB |
+| Compressed source maps | 4,728,730 bytes total, below 15,000,000 bytes |
+| Worker dry run | Exit 0; all existing size and lazy-boundary guards retained |
+
+Evidence is in `test-results/handoff-next/`: `release-{registry,types,unit,worker}.log`,
+`browser-suite-green.log`, `batch-painted-quality/` and `release-dependency-check.json`.
+OpenNext logged three optional package-inspection errors for string-form exports in `hast-util-to-html`,
+`hast-util-whitespace` and `property-information`. Their 14, 3 and 19 runtime files respectively are present and
+byte-identical in the prepared server; the final bundle includes those packages. Its parser attempts an object
+condition check on the string export. The successful dry run retains that diagnostic evidence.
 
 ## Lessons from the last run
 
