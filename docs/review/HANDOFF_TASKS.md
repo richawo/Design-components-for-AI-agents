@@ -225,6 +225,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 1: Return Desk now has a reviewed 6.0s film showing item selection, the typed internal note, the exact £84.00 review and the settled recorded-request receipt. The phase correction prevents the item crossing its heading. Full-viewport framing retains every state and matches the paired poster. Maximum source gap is 11ms, changed-source delivery 18.8ms and moving-frame p95 17.3ms, with no stalls and every existing guard intact. 120 listed films remain.
 
+- Task 4 follow-up: retiring feedback in Promotion Builder, Purchase Order, Fulfilment Desk and Return Desk now becomes inert and leaves the accessibility tree immediately. Stock’s rapid failure/retry/save/edit sequence exposed two simultaneous alerts. The rewritten Stock candidate and Return Desk now verify that earlier failures retire after acknowledgement. Both Next regressions, all five focused component audits, strict registry, TypeScript and all 1,063 unit tests pass.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned

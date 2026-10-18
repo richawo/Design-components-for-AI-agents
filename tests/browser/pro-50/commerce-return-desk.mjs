@@ -76,6 +76,7 @@ export async function check({ page, mount, assert, capture = async () => {} }) {
   await capture("pending", { audit: true });
   await page.evaluate(() => window.finishReturn({ reference: "RET-CHECKED" }));
   await page.getByText("RET-CHECKED · Return request recorded", { exact: true }).waitFor();
+  assert.equal(await page.getByRole("alert").count(), 0, "Recorded returns retire earlier failure announcements");
   await capture("recorded", { audit: true });
   assert.equal(await page.getByRole("button", { name: "Recorded", exact: true }).isDisabled(), true);
   assert.doesNotMatch(await page.locator("section").innerText(), /refund (sent|issued)|exchange (sent|issued)/i);
