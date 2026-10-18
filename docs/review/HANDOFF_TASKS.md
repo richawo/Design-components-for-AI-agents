@@ -94,6 +94,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 4: all 23 metadata replays from the interrupted HR/legal/SaaS tail now pass, along with Audit Trail's separate replay. Leave approval passed three traced attempts and the preceding-demo sequence; its earlier lost click remains unreproduced. A blocked-approval control fails the final receipt assertion as expected. Replay failures now save dispatched clicks, target hit-testing, viewport geometry and a screenshot. The latest complete run remains 52 of 56; repeat it after the remaining component work.
 
+- Task 1: Access Requests and Integration Manager films now show the checked-out source and finish at approved/reconnected receipts. Full metadata timing and the intended 1080/980px preview heights avoid a clipped approval view and an unfinished authorization. Cadence/source-change guards, decoded motion samples and final frames pass visual review. Audit Trail and Customer Health were rejected by the source-frame guard and remain pending. 138 listed films remain.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -111,7 +113,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Browser checks: `node scripts/check-component.mjs <slug> --base=http://localhost:3100 --no-video --keep-going`
   (screenshots at 1440/768/390 and every control flip; read the screenshots it writes to `test-results/check/<slug>/`).
 
-## 1. Re-record demo videos (140 components)
+## 1. Re-record demo videos (138 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -141,8 +143,8 @@ Slugs:
 `devtools-icon-workbench`, `devtools-incident-timeline`, `devtools-release-compare`, `devtools-request-replay`
 `devtools-schema-migration`, `date-range-calendar`, `date-timezone-overlap`, `forms-branching-survey`
 `forms-draft-rescue`, `input-cron-builder`, `input-detent-dial`, `input-dual-range`, `input-expression-editor`
-`input-unit-converter`, `selects-tree-picker`, `saas-access-requests`, `saas-audit-trail`, `saas-customer-health`
-`saas-integration-manager`, `saas-notification-inbox`, `saas-report-scheduler`, `saas-saved-views`
+`input-unit-converter`, `selects-tree-picker`, `saas-audit-trail`, `saas-customer-health`
+`saas-notification-inbox`, `saas-report-scheduler`, `saas-saved-views`
 `saas-support-triage`, `saas-usage-policy`, `saas-workspace-dashboard`, `legal-clause-library`
 `legal-document-requests`, `legal-evidence-index`, `legal-matter-dashboard`, `legal-matter-intake`
 `legal-obligation-tracker`, `legal-renewal-planner`, `legal-signature-request`, `hr-compensation-review`
