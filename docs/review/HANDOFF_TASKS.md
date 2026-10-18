@@ -160,6 +160,10 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 1: Asset Licence Sheet framing contains every demo state, but its fresh film was rejected for a 172ms source-animation gap and 468ms source-to-encoded-frame delay. The previous film is retained; the listed backlog remains 128. Investigate alongside the other recorder/source-timing failures before replacing it.
 
+- Task 5: Branch Compare now covers mixed edits/additions/removals, exact merged output, pointer/keyboard scrubbing, roving radios, Result review focus, failure/retry, pending locks and replaced revisions. Invalid saved sides remain unresolved, unknown/prototype ids cannot corrupt the SVG path, and host callbacks receive copied normalized choices once per action. Retired views become inert immediately; empty/matching/invalid documents have written states. Its Next-backed regression, twenty-eight theme/state accessibility audits including 320px/custom accents, four preview controls and settled Next poster pass. 69 components remain without dedicated coverage.
+
+- Task 1: Branch Compare's framing contains both choices and the merged receipt, but its film was rejected for a 418ms source-to-encoded-frame delay. Native source cadence and moving frames have no stalls over 100ms. The previous film is retained; 128 listed films remain. Trace the changed-source guard with the other rejected captures before replacing them.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -296,14 +300,14 @@ tests/browser/pro-50-<suite>-probe.mjs <slug>` (suite = legal, saas, finance, hr
 
 ## 5. Write browser probes for components that have none
 
-70 finished components still have no dedicated browser regression probe. For each, read its source and
+69 finished components still have no dedicated browser regression probe. For each, read its source and
 `meta.json`, then add a case to the appropriate `tests/browser/*.mjs` suite (or a new probe registered in
 `scripts/test-components.mjs`) covering: the signature interaction, keyboard paths, failed-then-successful callbacks
 with drafts kept (where it has async callbacks), and empty or invalid data. Use `tests/browser/pro-50/hr-org-explorer.mjs`
 as the model for style and depth. Mobile components render through React Native web (`scripts/lib/component-fixture.mjs` aliases it);
 see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 
-`editor-branch-compare`, `editor-color-token-studio`
+`editor-color-token-studio`
 `editor-export-preset`, `editor-font-pairing`, `editor-keyframe-track`, `editor-layer-stack`
 `editor-spacing-inspector`, `editor-storyboard-strip`, `editor-version-restore`, `three-exploded-assembly`
 `three-material-inspector`, `agents-budget-guard`, `agents-dependency-board`, `agents-run-replay`

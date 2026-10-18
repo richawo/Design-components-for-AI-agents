@@ -18161,13 +18161,13 @@
         "name": "blocks",
         "type": "MergeBlock[]",
         "default": "Fieldnote pricing page, six changes",
-        "description": "The document in reading order: { id, kind (title | heading | paragraph | item | quote), label?, current?, incoming? }. Matching text reads as unchanged; a missing side is an addition or a removal."
+        "description": "The document in reading order: { id, kind (title | heading | paragraph | item | quote), label?, current?, incoming? }. Matching text reads as unchanged; a missing side is an addition or a removal. Require unique nonempty ids, supported kinds and text on at least one side. Invalid data has a written state. A new document, branch pair or block revision clears old choices and invalidates pending receipts."
       },
       {
         "name": "defaultChoices",
         "type": "Partial<Record<string, \"current\" | \"incoming\">>",
         "default": "{}",
-        "description": "Choices already made, by block id. Changed blocks without one start unresolved, and Merge waits for them."
+        "description": "Choices already made, by block id. Changed blocks without one start unresolved, and Merge waits for them. Only known changed block ids and current/incoming sides are accepted; invalid entries stay unresolved."
       },
       {
         "name": "defaultView",
@@ -18184,18 +18184,18 @@
       {
         "name": "onChange",
         "type": "(choices: Partial<Record<string, MergeSide>>) => void",
-        "description": "Every choice, including Keep all and Take all."
+        "description": "Every accepted individual or batch choice, once per action, as a copied map of known changed ids. A replaced comparison publishes an empty map."
       },
       {
         "name": "onMerge",
         "type": "(request: MergeRequest) => void | Promise<void>",
-        "description": "Receives { choices, blocks } with the merged document in order. Progress fills the button while pending; a rejection shows its message and keeps every choice."
+        "description": "Required to merge. Receives copied { choices, blocks } in document order, omitting blocks absent on the selected side. Pending merges lock choices and batch actions; rejection preserves the exact choices for retry. Success requires acknowledgement for the same revision; late replies after replacement are ignored."
       },
       {
         "name": "accent",
         "type": "string",
         "default": "theme ink",
-        "description": "Taken ribbons, the merge path, the progress meter and the Merge button."
+        "description": "Taken ribbons, the merge path, the resolved meter and the Merge button."
       },
       {
         "name": "theme",
