@@ -14893,7 +14893,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "data",
-    "description": "A typed segment builder with all/any conditions, live record matching and inline validation. An inspection rail makes every rule’s effect visible.",
+    "description": "A typed audience workbench with connected conditions, per-rule match counts, a live record ledger and an awaited segment action that keeps failed drafts.",
     "tags": [
       "data",
       "workflow",
@@ -14909,13 +14909,13 @@
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 840,
+    "previewHeight": 1200,
     "usage": "import { QueryBuilder } from \"@/components/design-for-ai/data-query-builder\";\n\n<QueryBuilder />",
     "props": [
       {
         "name": "title",
         "type": "string",
-        "default": "\"Find your next conversation.\"",
+        "default": "\"Team expansion\"",
         "description": "Panel heading."
       },
       {
@@ -14931,12 +14931,12 @@
       {
         "name": "records",
         "type": "SegmentRecord[]",
-        "description": "Local preview records, each with ID, label and field values."
+        "description": "Up to 1,000 uniquely identified local records. Values are strings, finite numbers or undefined; malformed data is explicit and blocks application."
       },
       {
         "name": "value",
         "type": "SegmentQuery",
-        "description": "Controlled query, when provided."
+        "description": "Controlled criteria. Supply onChange for editing; otherwise the criteria remain read-only but can be applied."
       },
       {
         "name": "defaultValue",
@@ -14946,12 +14946,12 @@
       {
         "name": "onChange",
         "type": "(query: SegmentQuery) => void",
-        "description": "Emits each edit; the host owns controlled updates."
+        "description": "Receives copied criteria after each edit. Controlled hosts publish value; callback mutation cannot alter the retained local draft."
       },
       {
         "name": "onApply",
         "type": "(query: SegmentQuery, matchingIds: string[]) => void | Promise<void>",
-        "description": "Awaited application callback. Without it, Use segment is disabled. Failed requests retain the query for retry."
+        "description": "Persist copied criteria and matching IDs. Rejection keeps the draft. Pending requests lock editing; changed data or controlled criteria retire late receipts."
       },
       {
         "name": "theme",
@@ -14964,6 +14964,22 @@
         "type": "\"custom\" | \"native\"",
         "default": "\"custom\"",
         "description": "Keyboard-accessible custom menus or native platform pickers, with balanced 12px text and chevron insets."
+      },
+      {
+        "name": "workspace",
+        "type": "string",
+        "default": "\"Fieldnotes\"",
+        "description": "Workspace name in the compact audience bar."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "description": "Optional CSS colour for the live audience ratio; chrome and actions remain neutral."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Additional outer component classes."
       }
     ],
     "added": "2026-10-11",
@@ -15001,6 +15017,17 @@
           "native"
         ],
         "default": "custom"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#7aa2ff",
+          "#ff8a4c"
+        ]
       }
     ]
   },

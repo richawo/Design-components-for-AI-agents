@@ -1,6 +1,6 @@
 # Review status
 
-168 components are rebuilt (or, for a few, polished), verified and committed. For each: whether its demo video
+169 components are rebuilt (or, for a few, polished), verified and committed. For each: whether its demo video
 needs re-recording, whether its poster is current, and the state of its browser regression probe.
 
 - **Video**: `new` means `public/previews/<slug>.mp4` still shows the old version. Re-record serially on a quiet machine:
@@ -45,7 +45,7 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | `mobile-trip-itinerary` | current | current | Next-backed regression, eleven RN-web accessibility states and preview controls pass; keyboard tabs, selected-leg scroll/focus, booking failure/retry, cancellation, supersession, exact payloads, keyed trip replacement and empty/invalid legs covered; poster/guarded film refreshed |
 | `mobile-voice-memo` | current | current | Next-backed regression, twelve RN-web accessibility states and preview controls pass; real waveform drag, keyboard seek bounds, autoplay/transport callbacks, transcript/marker navigation, exact share payloads, fractional/invalid durations, recording resets, readable accents and decimal clock covered; poster/guarded film refreshed |
 
-## Data and charts (10)
+## Data and charts (11)
 
 | Slug | Video | Poster | Probe |
 | --- | --- | --- | --- |
@@ -58,6 +58,7 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | `data-bulk-action-review` | current | current | Next-backed regression, twenty-eight theme/state accessibility audits, visible-count contrast checks and three controls pass; exact batches, rejection/retry, omitted/conflicting results, held picks, host-removed receipts and read-only handlers covered; monochrome partial-receipt film and settled Next poster refreshed |
 | `data-column-workbench` | current | current | Next-backed regression, twenty-four theme/state accessibility audits and four controls pass; whole-column drag, exact release payloads, keyboard/resize cancellation, focus/shelf retirement, controlled acknowledgement, opaque ids and invalid/empty layouts covered; monochrome 5.8s film and settled Next poster refreshed |
 | `data-filter-history` | current | current | Next-backed regression, thirty theme/state accessibility audits and four controls pass; scrub/restore payloads, independent rename retries, pending locks, late replies, stable snapshot identity, typed rules, readable comparisons and invalid/empty states covered; monochrome full-viewport film and matching settled Next poster refreshed |
+| `data-query-builder` | new | current | Rebuilt connected conditions and live audience ledger; 31-mount source review and Next exact-match/keyboard/retry/pending/copied-payload/read-only/invalid-data/replacement regression pass. A retained old-source hover check fails at 1.12:1; the retry action now passes AA and the audience count has valid accessible text. Six widths, 20 state/default accessibility audits, entrance/state captures, three controls, official audit, both demo runners and measured 1,100px replay/poster pass. The narrow footer keeps its explanation readable. Strict registry, TypeScript and all 1,063 unit tests pass. |
 | `data-pivot-configurator` | current | current | Next-backed regression and focused picker checks, forty theme/state accessibility audits, four controls and normal/reduced-motion travel proof pass; swaps, exact/opaque drill-down keys, context retirement, schema recovery, finite aggregates, valid Count/single-dimension choices and narrow totals covered; monochrome full-viewport film and matching Next poster refreshed |
 
 ## Editors and 3D (12)

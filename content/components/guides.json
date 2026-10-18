@@ -1770,19 +1770,20 @@
     "updated": "2026-10-12"
   },
   "data-query-builder": {
-    "useWhen": "Preparing a readable audience or filter expression from typed fields.",
-    "avoidWhen": "Executing untrusted database queries or silently changing the meaning of a filter.",
+    "useWhen": "Build and apply a typed all/any segment while seeing each condition’s effect and the resulting local records.",
+    "avoidWhen": "Filtering an unbounded server dataset or authoring nested boolean trees beyond twelve flat conditions.",
     "integration": [
-      "Supply your own records through `fields`, `records`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
-      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+      "Supply unique text/number fields and at most 1,000 uniquely identified records. Missing own field values do not become zero or inherited prototype values.",
+      "Supply value and onChange for controlled editing. A controlled value without onChange is read-only; an uncontrolled query keeps copied local edits.",
+      "onApply receives independent copies of criteria and matching IDs. Await persistence; rejection retains the query and resolution acknowledges that snapshot.",
+      "Replace field/record arrays for a new data scope. Changed controlled criteria or data retire prior requests. Numeric rules require finite decimal text without underflow."
     ],
     "related": [
-      "data-file-explorer",
-      "legal-document-requests",
-      "legal-evidence-index"
+      "data-filter-history",
+      "saas-customer-health",
+      "data-bulk-action-review"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-18"
   },
   "date-booking-slots": {
     "useWhen": "Choosing a supplied available appointment slot.",

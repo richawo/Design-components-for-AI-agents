@@ -9,6 +9,7 @@ const specs = fs
   .filter((file) => file.endsWith(".mjs"))
   .map((file) => ({ slug: file.slice(0, -4) }));
 const finalStates = {
+  "data-query-builder": "Segment applied · 2 records",
   "hr-capacity-planner": "Capacity plan saved.",
   "legal-version-history": "Restoration completed",
   "app-permission-matrix": "Access policy saved · 2 changes",
