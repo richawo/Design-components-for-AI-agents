@@ -172,6 +172,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 1: Audit Trail now has a reviewed neutral 4.1s film showing a real histogram brush and the selected denied event's explicit before/after values. Outcome words and change signs retain their meaning without red/green tints; success histogram marks are stronger. Its native/Next workflow, eighteen theme/state accessibility checks, four controls, refreshed matching Next poster and all timing guards pass. 125 listed films remain.
 
+- Task 1: Customer Health now has a reviewed neutral 5.2s film showing account selection, the Billing explanation and the two at-risk accounts. Measured 1560px framing keeps the entire expanded Next play panel visible, with a matching settled Next poster. Focused-driver text retains full opacity after a reproduced 2.48:1 contrast failure; only other bars quiet. Native/Next workflows, eighteen theme/state accessibility checks, four controls and all timing guards pass. 124 listed films remain.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -189,7 +191,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Browser checks: `node scripts/check-component.mjs <slug> --base=http://localhost:3100 --no-video --keep-going`
   (screenshots at 1440/768/390 and every control flip; read the screenshots it writes to `test-results/check/<slug>/`).
 
-## 1. Re-record demo videos (125 components)
+## 1. Re-record demo videos (124 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -216,7 +218,7 @@ Slugs:
 `devtools-icon-workbench`, `devtools-incident-timeline`, `devtools-release-compare`, `devtools-request-replay`
 `devtools-schema-migration`, `date-range-calendar`, `date-timezone-overlap`, `forms-branching-survey`
 `forms-draft-rescue`, `input-cron-builder`, `input-detent-dial`, `input-dual-range`, `input-expression-editor`
-`input-unit-converter`, `selects-tree-picker`, `saas-customer-health`
+`input-unit-converter`, `selects-tree-picker`
 `saas-notification-inbox`, `saas-report-scheduler`, `saas-saved-views`
 `saas-support-triage`, `saas-usage-policy`, `saas-workspace-dashboard`, `legal-clause-library`
 `legal-document-requests`, `legal-evidence-index`, `legal-matter-dashboard`, `legal-matter-intake`

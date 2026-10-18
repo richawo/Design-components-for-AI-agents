@@ -38813,7 +38813,7 @@
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1240,
+    "previewHeight": 1560,
     "usage": "import { CustomerHealth } from \"@/components/design-for-ai/saas-customer-health\";\n\nexport default function Accounts() {\n  return (\n    <CustomerHealth\n      workspace=\"Kestrel\"\n      accounts={accounts}\n      drivers={[\n        { key: \"adoption\", label: \"Seat adoption\", weight: 30, method: \"Share of paid seats active in 28 days.\" },\n        { key: \"support\", label: \"Support load\", weight: 20, method: \"Open escalations, weighted by age.\" },\n      ]}\n      plays={plays}\n      healthyAt={70}\n      riskBelow={45}\n      onLogPlay={(log) => api.plays.create(log)}\n    />\n  );\n}",
     "props": [
       {
@@ -38907,7 +38907,7 @@
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface palette."
+        "description": "Graphite or white surfaces with distinct neutral health-band tones and written Healthy, Watch and At risk labels."
       },
       {
         "name": "className",
