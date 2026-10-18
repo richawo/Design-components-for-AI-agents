@@ -1095,18 +1095,21 @@
     "updated": "2026-10-12"
   },
   "app-permission-matrix": {
-    "useWhen": "Comparing explicit permissions across roles and resources.",
-    "avoidWhen": "Client-side enforcement of access that must be checked by the server.",
+    "useWhen": "Edit role grants with their prerequisites visible, review the exact grant/remove plan and save a copied policy.",
+    "avoidWhen": "The host has not supplied an authorization service or a valid role/permission schema.",
     "integration": [
-      "Supply your own records through `roles`, `permissions`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onSave` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+      "scope: Policy scope in the compact workspace bar.",
+      "roles: Unique role ids, names and descriptions; locked roles cannot be edited.",
+      "permissions: Unique permission ids/names/groups/descriptions and prerequisite ids. Missing dependencies, cycles and more than 100 permissions are rejected.",
+      "defaultGrants: Starting role-to-permission arrays. Unknown roles/permissions or missing prerequisites block saving. Replacing the policy starts a fresh draft.",
+      "onSave: Persist a copied policy. Resolve only after the host service applies it; reject to retain the edit plan. The component does not enforce server authorization."
     ],
     "related": [
-      "hr-org-explorer",
-      "hr-people-dashboard",
-      "legal-matter-dashboard"
+      "block-workspace-settings",
+      "saas-access-requests",
+      "hr-policy-acknowledgement"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-18"
   },
   "auth-otp": {
     "useWhen": "Entering and verifying a short one-time authentication code.",

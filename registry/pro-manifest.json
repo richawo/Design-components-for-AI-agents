@@ -3424,11 +3424,11 @@
   },
   {
     "slug": "app-permission-matrix",
-    "name": "Enterprise Permission Matrix",
+    "name": "Permission Policy Matrix",
     "tier": "pro",
     "platform": "web",
     "category": "app",
-    "description": "A role-by-permission editor with prerequisite-aware grants, cascading revocation, fixed roles and an awaited policy save with preserved drafts.",
+    "description": "Edit role grants with their prerequisites visible, review the exact grant/remove plan and save a copied policy.",
     "tags": [
       "app",
       "workflow",
@@ -3445,44 +3445,61 @@
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1060,
+    "previewHeight": 1200,
     "usage": "import { PermissionMatrix } from \"@/components/design-for-ai/app-permission-matrix\";\n\n<PermissionMatrix />",
     "props": [
       {
         "name": "title",
         "type": "string",
-        "description": "Policy heading."
+        "description": "Current work object in the compact header.",
+        "default": "\"Role permissions\""
+      },
+      {
+        "name": "workspace",
+        "type": "string",
+        "description": "Workspace or store name in the app bar.",
+        "default": "\"Fieldnotes\""
       },
       {
         "name": "scope",
         "type": "string",
-        "description": "Workspace or matter identifier."
+        "description": "Policy scope in the compact workspace bar."
       },
       {
         "name": "roles",
         "type": "PolicyRole[]",
-        "description": "Unique role IDs, names and descriptions. Locked roles cannot be changed in this editor."
+        "description": "Unique role ids, names and descriptions; locked roles cannot be edited."
       },
       {
         "name": "permissions",
         "type": "PolicyPermission[]",
-        "description": "Up to 100 unique permissions with group, description and prerequisite IDs. Cycles and missing references block editing."
+        "description": "Unique permission ids/names/groups/descriptions and prerequisite ids. Missing dependencies, cycles and more than 100 permissions are rejected."
       },
       {
         "name": "defaultGrants",
         "type": "PolicyGrants",
-        "description": "Initial permission IDs by role. Unknown roles, permissions or unmet prerequisites block saving."
+        "description": "Starting role-to-permission arrays. Unknown roles/permissions or missing prerequisites block saving. Replacing the policy starts a fresh draft."
       },
       {
         "name": "onSave",
         "type": "(grants: PolicyGrants) => void | Promise<void>",
-        "description": "Awaited persistence callback. The host must independently authorize and validate policy updates on the server."
+        "description": "Persist a copied policy. Resolve only after the host service applies it; reject to retain the edit plan. The component does not enforce server authorization."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "default": "\"dark\"",
-        "description": "Surface and ink palette; the preview stage follows it."
+        "description": "Neutral graphite or paper surfaces.",
+        "default": "\"dark\""
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "description": "Optional hex accent; defaults to theme ink and selects readable button text."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Additional outer component classes."
       }
     ],
     "added": "2026-10-11",
@@ -3492,7 +3509,7 @@
         "click:@permission-reviewer-approve",
         "wait:800",
         "click:@save-policy",
-        "wait:1200"
+        "wait:1300"
       ],
       "loop": false
     },
@@ -3506,6 +3523,17 @@
           "light"
         ],
         "default": "dark"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#7aa2ff",
+          "#ff8a4c"
+        ]
       }
     ]
   },

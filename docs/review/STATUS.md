@@ -1,6 +1,6 @@
 # Review status
 
-165 components are rebuilt (or, for a few, polished), verified and committed. For each: whether its demo video
+166 components are rebuilt (or, for a few, polished), verified and committed. For each: whether its demo video
 needs re-recording, whether its poster is current, and the state of its browser regression probe.
 
 - **Video**: `new` means `public/previews/<slug>.mp4` still shows the old version. Re-record serially on a quiet machine:
@@ -108,6 +108,12 @@ Measurements, checkout revisions and package diagnostics are recorded in
 | `input-expression-editor` | new | current |  |
 | `input-unit-converter` | new | current |  |
 | `selects-tree-picker` | new | current |  |
+
+## Application workflows (1)
+
+| Slug | Video | Poster | Probe |
+| --- | --- | --- | --- |
+| `app-permission-matrix` | new | current | Rebuilt role matrix, prerequisite inspector and grant/remove ledger; 25-mount source review and Next dependency/bulk/keyboard/exact-payload/retry/pending/mutation/revision regression pass. Both-theme short-viewport pointer/focus correction, 5.60:1 dark and 5.28:1 light checkbox boundaries, six widths, entrance/state captures, touch targets, two controls, official audit and complete 1,200px two-change replay/poster pass. Strict registry, TypeScript and all 1,063 unit tests pass. |
 
 ## SaaS suite (10)
 

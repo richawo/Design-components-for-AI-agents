@@ -211,86 +211,10 @@ try {
       .isDisabled(),
     true,
   );
-  await fixture(
-    "app-permission-matrix",
-    `window.policies=[];createRoot(document.getElementById('root')).render(<Subject.PermissionMatrix onSave={async grants=>{window.policies.push(grants);throw Error('offline')}}/>);`,
-  );
-  await page
-    .getByRole("checkbox", {
-      name: "Approve revisions for Reviewer",
-      exact: true,
-    })
-    .check();
-  assert.equal(
-    await page
-      .getByRole("checkbox", {
-        name: "View documents for Reviewer",
-        exact: true,
-      })
-      .isChecked(),
-    true,
-  );
-  assert.equal(
-    await page
-      .getByRole("checkbox", {
-        name: "Edit documents for Reviewer",
-        exact: true,
-      })
-      .isChecked(),
-    true,
-  );
-  await page.getByRole("button", { name: "Save policy" }).click();
-  await page.waitForTimeout(100);
-  assert.match(
-    await page.getByRole("status").innerText(),
-    /could not be saved/,
-  );
-  assert.deepEqual(
-    (await page.evaluate(() => window.policies[0].reviewer)).sort(),
-    ["approve", "edit", "view"],
-  );
-  await page
-    .getByRole("checkbox", { name: "View documents for Reviewer", exact: true })
-    .uncheck();
-  assert.equal(
-    await page
-      .getByRole("checkbox", {
-        name: "Edit documents for Reviewer",
-        exact: true,
-      })
-      .isChecked(),
-    false,
-  );
-  assert.equal(
-    await page
-      .getByRole("checkbox", {
-        name: "Approve revisions for Reviewer",
-        exact: true,
-      })
-      .isChecked(),
-    false,
-  );
-  assert.equal(
-    await page
-      .getByRole("checkbox", { name: "View documents for Owner", exact: true })
-      .isDisabled(),
-    true,
-  );
-  assert.equal(
-    await page
-      .getByRole("checkbox", { name: "View documents for Owner", exact: true })
-      .isChecked(),
-    true,
-  );
-  await fixture(
-    "app-permission-matrix",
-    `createRoot(document.getElementById('root')).render(<Subject.PermissionMatrix permissions={[{id:'a',name:'A',group:'Test',description:'A',requires:['b']},{id:'b',name:'B',group:'Test',description:'B',requires:['a']}]}/>);`,
-  );
-  assert.match(await page.getByRole("alert").innerText(), /cycle/);
-  assert.equal(
-    await page.getByRole("button", { name: "Save policy" }).isDisabled(),
-    true,
-  );
+  // Rebuilt workflow: app-permission-matrix. The dedicated case retains the original edge checks.
+  await page.setViewportSize({ width: 390, height: 844 });
+  await (await import('./pro-50/app-permission-matrix.mjs')).check({ page, assert, mount: code => fixture('app-permission-matrix', code) });
+  await page.setViewportSize({ width: 390, height: 844 });
   // Rebuilt workflow: commerce-return-desk. The dedicated case retains the original edge checks.
   await page.setViewportSize({ width: 390, height: 844 });
   await (await import('./pro-50/commerce-return-desk.mjs')).check({ page, assert, mount: code => fixture('commerce-return-desk', code) });
