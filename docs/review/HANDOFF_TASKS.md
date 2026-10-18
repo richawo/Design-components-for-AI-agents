@@ -477,6 +477,44 @@ After any batch of the above: `node scripts/build-registry.mjs --strict`, `npx t
 `npm run test:components`, `npm run audit:components -- <changed slugs>`, then stop the dev server and run
 `npm run deploy:dry-run` to check the Worker bundle size. Deployment itself (`npm run deploy`) is the owner's call.
 
+### Four-editor workflow checkpoint: 18 October 2026
+
+The complete browser run passed **59/59** at public `c1c11b1`, private `4fbad72`, with the existing shared
+auth/mobile edits. All 907 public and 1,138 private tracked source hashes, revisions and working-tree status
+stayed unchanged throughout that run.
+
+Layer Stack's additional save-settlement check then exposed overlapping rejected writes. Its follow-up is
+public `46e4bbe`, private `999a679`: the expanded native and Next regressions, state accessibility, controls,
+official audit and default demo replay pass. All other tracked source hashes remain identical to the full run.
+The Worker measurements below use this final follow-up checkout.
+
+| Check | Result |
+| --- | --- |
+| Strict registry | Pass: 100 free and 259 Pro components |
+| TypeScript | Pass, including isolated Pro editor types |
+| Unit tests | 43 files, 1,063 tests pass |
+| Complete Next-backed browser run | 59/59 pass |
+| Broad workflows | All 20 mobile, 12 data/chart and eight editor regressions pass |
+| Metadata demos | All 62 replays pass, including the four added editor checks |
+| Component pages | Five pages, access retries and private-source boundaries pass |
+| Changed component audits | Font Pairing, Spacing Inspector, Keyframe Track and Layer Stack pass |
+| Layer Stack follow-up | 33 mounts, 24 state/default accessibility audits and focused Next reruns pass |
+| Worker router | 2,655,633 bytes, below 4 MiB |
+| Worker runtime | 57,158,216 bytes, below 64 MiB |
+| Compressed source maps | 4,763,194 bytes total, below 15,000,000 bytes |
+| Worker dry run | Exit 0; all existing size and lazy-boundary guards retained |
+
+The full log is `test-results/handoff-editors-batch-browser.log`; frozen checkout hashes are
+`test-results/handoff-editors/editor-batch-checkout{,-end}.json`. The later source comparison is
+`test-results/handoff-editors/layer-followup-delta-proof.json`. The original overlap, focus and inspector
+checks are preserved under `test-results/handoff-editors/`; final targeted logs use the
+`handoff-editors-layer-settlement-final-` prefix. The four editor films are reviewed and current.
+
+The Worker log is `test-results/handoff-editors-batch-worker.log`; package and dependency proof is
+`test-results/handoff-editors/editor-batch-worker-proof.json`. The same three OpenNext copy diagnostics
+remain; all 14, 3 and 19 runtime files respectively are present and byte-identical. No deployment was performed.
+The separate component-page loading investigation and earlier checkpoints remain recorded below.
+
 ### Four-component workflow checkpoint: 18 October 2026
 
 Validated checkout: public `df101fc`, private `cf86338`, with the existing shared auth/mobile edits.

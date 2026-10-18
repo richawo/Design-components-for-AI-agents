@@ -11,14 +11,15 @@ needs re-recording, whether its poster is current, and the state of its browser 
 
 ## Batch verification (18 October 2026)
 
-The Version History, Capacity Planner, Query Builder and Waterfall Bridge batch passes its workflows, controls
-and component audits. The complete Next-backed run passed 58/59 initially; its sole failing page suite passes
-after correcting readiness to visible landmarks, fonts and explicit access states. The held-request negative,
-original timeout and fresh-server loading trace are preserved. All 20 mobile regressions, every workflow group
-and all metadata demos pass. Strict registry, TypeScript and all 1,063 unit tests pass. The Worker dry run
-measures a 2,655,633-byte router, 57,141,392-byte runtime and 4,761,949 bytes of compressed source maps.
-Existing guards are retained, and the three diagnostic packages’ runtime files are verified.
-The cold component-page loading evidence remains separate; earlier checkpoints remain recorded.
+The Font Pairing, Spacing Inspector, Keyframe Track and Layer Stack batch passes its workflows, controls,
+component audits and reviewed films. The complete Next-backed run passes **59/59**, including all 20 mobile,
+12 data/chart and eight editor regressions, all 62 metadata replays, page/access boundaries and every industry
+group. A subsequent Layer Stack save-settlement fix passes its expanded 33-mount source review, 24 state/default
+accessibility audits and focused Next, control, audit and demo reruns. Other tracked sources are unchanged.
+Strict registry, root and isolated Pro types, and all 1,063 unit tests pass. The final Worker dry run measures a
+2,655,633-byte router, 57,158,216-byte runtime and 4,763,194 bytes of compressed source maps. Existing guards
+remain, and the three diagnostic packages' runtime files are verified. No deployment was performed.
+The separate component-page loading evidence and earlier checkpoints remain recorded.
 See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisions, measurements and evidence.
 
 ## Mobile (20)
