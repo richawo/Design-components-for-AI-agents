@@ -178,6 +178,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 1: Budget Envelope now has a reviewed neutral 5.3s film showing the real ruler drag, a $260 assignment and the settled $372 balance. The hidden backdrop gradient had intercepted pointer opening; it now ignores pointers, exposes a named close action only while open and restores keyboard focus. Pointer/keyboard regression, six native-web accessibility states, four preview controls, current Next poster and all timing guards pass. 122 listed films remain.
 
+- Task 4: the expanded full run completed at 57 of 59 suites passing. All prior replay, Cinema Frame, Bento and Audit Trail failures pass; the new failures are Column Workbench's deferred focus stealing a later pin action and Access Requests' stale animated approval window. Column Workbench now restores owned focus with the DOM update. Its deterministic held-frame regression, Next workflow, both-theme accessibility and 1,063 unit tests pass. The Access Requests label and the final full rerun remain pending.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned

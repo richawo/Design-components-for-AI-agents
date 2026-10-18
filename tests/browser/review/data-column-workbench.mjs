@@ -14,12 +14,39 @@ export async function check({ page, mount, assert }) {
     `window.changes=[];createRoot(document.getElementById('root')).render(<Subject.DataColumnWorkbench ${props} onChange={(value,change)=>window.changes.push({value,change})}/>);`,
   );
   assert.equal(await page.getByRole("button", { name: "Hide Name", exact: true }).count(), 0);
+  // A deferred animation frame must not retake focus from a newer action.
+  await page.evaluate(() => {
+    const raf = window.requestAnimationFrame,
+      cancel = window.cancelAnimationFrame;
+    const held = new Map();
+    let id = 1_000_000;
+    window.requestAnimationFrame = (callback) => {
+      held.set(++id, callback);
+      return id;
+    };
+    window.cancelAnimationFrame = (key) => {
+      if (!held.delete(key)) cancel(key);
+    };
+    window.releaseColumnFrames = () => {
+      window.requestAnimationFrame = raf;
+      window.cancelAnimationFrame = cancel;
+      for (const callback of held.values()) callback(performance.now());
+      held.clear();
+    };
+  });
   await page.locator('[data-demo="grip-status"]').press("ArrowLeft");
   assert.deepEqual(await page.evaluate(() => window.changes.at(-1).value.map((c) => c.id)), [
     "status",
     "name",
     "amount",
   ]);
+  await page.getByRole("button", { name: "Pin Amount to the left", exact: true }).focus();
+  await page.evaluate(() => window.releaseColumnFrames());
+  assert.equal(
+    await page.evaluate(() => document.activeElement?.getAttribute("data-demo")),
+    "pin-amount",
+    "A delayed frame cannot replace a later keyboard focus choice",
+  );
   await page.getByRole("button", { name: "Pin Amount to the left", exact: true }).press("Enter");
   assert.deepEqual(await page.evaluate(() => window.changes.at(-1).change), { type: "pin", columnId: "amount" });
   assert.equal(await page.evaluate(() => window.changes.at(-1).value[0].id), "amount");
