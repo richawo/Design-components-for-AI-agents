@@ -27,7 +27,7 @@ needs re-recording, whether its poster is current, and the state of its browser 
 | `mobile-offline-outbox` | current | current | source-fixture regression passes; retained draft retry, discard confirmation and network pause/resume covered |
 | `mobile-packing-list` | current | current | Next-backed regression, preview controls and RN-web accessibility pass; keyboard quantity bounds, serialized/rebased saves, retained edits, retry, Undo and written empty state covered |
 | `mobile-project-switcher` | current | current | dedicated regression, preview controls and five RN-web accessibility states pass; dialog focus/dismissal, pending and failed switch/access retries, retained search, exact payloads and empty workspaces covered; poster/film refreshed |
-| `mobile-reading-progress` | current | current |  |
+| `mobile-reading-progress` | current | current | Next-backed regression and seven RN-web accessibility states pass; real drag, keyboard page bounds/tabs, bookmarks, failed opening/retry, abort/late completion, repagination, unavailable pages and empty chapters covered |
 | `mobile-review-annotations` | current | current |  |
 | `mobile-sync-conflict` | current | current |  |
 | `mobile-task-move` | current | current | empty/recovery regression and empty-state accessibility pass; dedicated move/undo workflow coverage pending |

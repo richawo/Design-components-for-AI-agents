@@ -35690,7 +35690,7 @@
       {
         "name": "book",
         "type": "ReadingBook",
-        "description": "id, title, author, total pages and the cover's own colours ({ top, bottom, ink })."
+        "description": "Book identity, title, author and a positive safe-integer page count. An invalid page count shows a read-only unavailable state."
       },
       {
         "name": "chapters",
@@ -35727,7 +35727,7 @@
       {
         "name": "onResume",
         "type": "(destination: { bookId, chapterId, page }, signal: AbortSignal) => void | Promise<void>",
-        "description": "Open the reader at the chosen page: your place, or wherever the page edge, a chapter or a bookmark pointed. The button shows opening (tap to cancel, which aborts the signal), opened or failed."
+        "description": "Open the reader at the destination. Resolve after opening, reject to keep the selected page for retry, and stop work when the signal aborts."
       },
       {
         "name": "accent",

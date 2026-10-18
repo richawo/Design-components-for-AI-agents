@@ -4871,14 +4871,15 @@
     "integration": [
       "Supply the book (id, title, author, pages, cover colours), chapters with first pages, and currentPage. Bookmarks can be controlled (bookmarks + onBookmarksChange) or local (defaultBookmarks).",
       "onResume({ bookId, chapterId, page }, signal) opens your reader at the chosen page: the reader's place, or wherever the page edge, a chapter or a bookmark pointed. Jumping never marks pages as read.",
-      "Install in a React Native app; bare apps run npx install-expo-modules once. Verify the page-edge drag, larger text and assistive technology on target devices."
+      "Install in a React Native app; bare apps run npx install-expo-modules once. Verify the page-edge drag, larger text and assistive technology on target devices.",
+      "Use a positive safe-integer page count. Invalid books show an unavailable state, malformed chapter/bookmark positions are excluded and opening requires both a chapter and onResume. Abort the reader hand-off when its signal aborts. Changing books or page count cancels the previous request; shrinking the book clamps the selected page."
     ],
     "related": [
       "mobile-now-playing",
       "mobile-journal-prompt",
       "mobile-habit-grid"
     ],
-    "updated": "2026-10-17"
+    "updated": "2026-10-18"
   },
   "mobile-trip-itinerary": {
     "useWhen": "A trip with several legs across time zones, where travellers need local times, delays and cancellations at a glance and a quick way into each booking.",
