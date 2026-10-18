@@ -9,6 +9,7 @@ const specs = fs
   .filter((file) => file.endsWith(".mjs"))
   .map((file) => ({ slug: file.slice(0, -4) }));
 const finalStates = {
+  "three-material-inspector": "Uncoated C360 brass.",
   "three-exploded-assembly": "A compressible seal between tray and cover.",
   "editor-version-restore": "Restored 1 block",
   "editor-storyboard-strip": "Waxed cotton",
@@ -129,6 +130,19 @@ try {
       assert.equal(await page.locator('[data-demo="scene-detail"]').getAttribute("aria-current"), "true");
       assert.equal(await page.getByRole("textbox", { name: "Shot length in seconds", exact: true }).inputValue(), "3.5", "The recorded stepper extends the moved shot by half a second");
       assert.equal(await page.getByRole("button", { name: "Play the board", exact: true }).count(), 1, "The replay ends paused");
+    }
+    if (slug === "three-material-inspector") {
+      assert.equal(await page.locator('[data-demo="material-brass"]').isChecked(), true);
+      const turn = Number(await page.locator('[data-demo="material-turn"]').inputValue());
+      const light = Number(await page.locator('[data-demo="material-light"]').inputValue());
+      assert.ok(turn > 22, "The material demo turns the sample");
+      assert.ok(light > 0 && light < 180, "The material demo swings the key light away from its opening position");
+      await page.waitForFunction(({turn, light}) => {
+        const pose = document.querySelector('.mi-canvas.mi-ready canvas')?.dataset;
+        return pose && Math.abs(Number(pose.azimuth) - turn) < 1 && Math.abs(Number(pose.light) - light) < 1 &&
+          Math.abs(Number(pose.metalness) - 1) < 0.001 && Math.abs(Number(pose.roughness) - 0.36) < 0.001 && Number(pose.transmission) === 0;
+      }, {turn, light});
+      assert.deepEqual(await page.getByRole("definition").allTextContents(), ["1.00", "0.36", "0.00"], "The finish parameters match the canvas material");
     }
     if (slug === "three-exploded-assembly") {
       assert.equal(await page.locator('[data-demo="assembly-frame"]').isChecked(), true);

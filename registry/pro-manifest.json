@@ -43201,7 +43201,7 @@
     ],
     "theme": "dark",
     "previewHeight": 820,
-    "usage": "import { ThreeMaterialInspector } from \"@/components/design-for-ai/three-material-inspector\";\n\n<ThreeMaterialInspector\n  title=\"Bezel B-4\"\n  materials={finishes}\n  value={view}\n  onValueChange={setView}\n  onValueCommit={saveView}\n/>",
+    "usage": "import { ThreeMaterialInspector } from \"@/components/design-for-ai/three-material-inspector\";\n\n<ThreeMaterialInspector\n  title=\"Bezel B-4\"\n  materials={finishes}\n  value={view}\n  onValueChange={setView}\n  onValueCommit={saveView}\n/>\n// Change and commit callbacks receive independently copied view records.\n// Controlled requests commit only after the host acknowledges the requested view.",
     "props": [
       {
         "name": "title",
@@ -43234,12 +43234,12 @@
       {
         "name": "onValueChange",
         "type": "(value: MaterialInspectorValue) => void",
-        "description": "Every requested view. Throw to refuse it; the current view stays."
+        "description": "Every requested view. Throw to refuse it; the current view stays. Receives a copied view so host mutation cannot change the retained pose."
       },
       {
         "name": "onValueCommit",
         "type": "(value: MaterialInspectorValue) => void",
-        "description": "A finished interaction the host accepted: a drag released, a key let go, a finish chosen, Reset."
+        "description": "A finished interaction the host accepted: a drag released, a key let go, a finish chosen, Reset. Receives an independent copy; mutating it cannot change the retained view."
       },
       {
         "name": "quality",

@@ -4182,14 +4182,15 @@
     "integration": [
       "Pass 1 to 8 `materials`, each with id, label, description, #rrggbb colour, metalness 0 to 1, roughness 0.15 to 1 and optional transmission up to 0.8. Name the sample with `title` and `path`.",
       "The view is one value: `{ materialId, azimuth, lightAngle }`. Use `value` and `onValueChange` to control it (throw to refuse a view) and `onValueCommit` to save finished interactions only.",
-      "`quality` sets the drawing-buffer budget (480k or 960k pixels, DPR capped at 1.5 or 2). Rendering is on demand, pauses offscreen and disposes on unmount; without WebGL a drawing and the parameters remain."
+      "`quality` sets the drawing-buffer budget (480k or 960k pixels, DPR capped at 1.5 or 2). Rendering is on demand, pauses offscreen and disposes on unmount; without WebGL a drawing and the parameters remain.",
+      "Change and commit callbacks receive independent view records, so host mutation cannot change the retained pose. A refused change keeps the previous view; a failed commit keeps the accepted view. Controlled requests commit only after host acknowledgement."
     ],
     "related": [
       "three-holo-card",
       "three-exploded-assembly",
       "three-keycaps"
     ],
-    "updated": "2026-10-17"
+    "updated": "2026-10-18"
   },
   "three-exploded-assembly": {
     "useWhen": "Explaining how a physical product goes together: an enclosure, a fixture, a kit of parts, with each part numbered against a parts list and the separation under the reader's control.",

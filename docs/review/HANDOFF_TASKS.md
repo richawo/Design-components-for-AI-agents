@@ -299,6 +299,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 1: Exploded Assembly has a reviewed 5.15s film showing gasket selection, contraction and expansion of the stack, and the final turn with numbered leaders aligned. The source-animation, source-change delivery and moving-frame guards pass with no stalls; the paired poster is refreshed. 114 listed films remain.
 
+- Task 5: Material Inspector now covers actual canvas and range drags, keyboard turning/relighting and cancellation, exact finished commits, failed/refused writes, copied callback values, controlled acknowledgement, read-only/disabled states, empty/invalid input and WebGL fallback/recovery. Its parameter terms and values form a valid definition list, and the canvas hint retains contrast in light mode. Original callback-mutation, orphaned-term and 3.44:1 hint failures are preserved. The 35-mount source review, thirty state/default accessibility audits, direct resolved-colour check, six widths, entrance/state captures, Next regression, three controls, official audit and complete 820px metadata replay/poster pass. Replay assertions match the actual canvas finish, light and turn to the displayed values. Strict registry, both type checks and all 1,063 unit tests pass. 59 components remain without dedicated coverage.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -422,7 +424,7 @@ Its log is `test-results/handoff-next/browser-suite-green.log`.
 
 ## 5. Write browser probes for components that have none
 
-60 finished components still have no dedicated browser regression probe. For each, read its source and
+59 finished components still have no dedicated browser regression probe. For each, read its source and
 `meta.json`, then add a case to the appropriate `tests/browser/*.mjs` suite (or a new probe registered in
 `scripts/test-components.mjs`) covering: the signature interaction, keyboard paths, failed-then-successful callbacks
 with drafts kept (where it has async callbacks), and empty or invalid data. Use `tests/browser/pro-50/hr-org-explorer.mjs`
@@ -430,7 +432,7 @@ as the model for style and depth. Mobile components render through React Native 
 see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 
 
-`three-material-inspector`, `agents-budget-guard`, `agents-dependency-board`, `agents-run-replay`
+`agents-budget-guard`, `agents-dependency-board`, `agents-run-replay`
 `ai-answer-compare`, `ai-context-budget`, `ai-structured-output`, `auth-recovery-codes`, `devtools-icon-workbench`
 `devtools-incident-timeline`, `devtools-release-compare`, `devtools-request-replay`, `devtools-schema-migration`
 `date-range-calendar`, `date-timezone-overlap`, `forms-branching-survey`, `forms-draft-rescue`
