@@ -4602,15 +4602,16 @@
     "avoidWhen": "Frame-accurate editing of real footage, multi-track timelines with audio, or slide decks where items have no duration.",
     "integration": [
       "Supply scenes as { id, title, notes, duration, shot, tone, thumbnail }. Pass a real frame URL as thumbnail when you have one; otherwise the board is drawn from the shot type and its two tone colours.",
-      "Durations snap to half seconds between 0.5 and 20. Set targetDuration to the length the cut must hit; the meter and readout show the time to spare or the overrun.",
-      "onScenesChange receives the full ordered list after each finished change: a drag dropped, an Earlier or Later move, a trim released or a stepper press. Store it as the new order and lengths."
+      "Supply finite shot lengths from 0.5 to 20 seconds and a finite positive targetDuration. Edits snap to half seconds; invalid timing shows an alert. The meter and readout show time to spare or the overrun.",
+      "onScenesChange receives a copied ordered list, including copied tone tuples, after each finished change: a dropped drag, Earlier or Later move, released trim or normalized stepper edit. Store it as the new order and lengths; unchanged normalized entries do not notify.",
+      "Use a six-digit hex accent for the playhead, selection and Play button. Invalid colours fall back to theme ink; the button selects readable black or white text."
     ],
     "related": [
       "media-trim-timeline",
       "editor-keyframe-track",
       "editor-export-preset"
     ],
-    "updated": "2026-10-17"
+    "updated": "2026-10-18"
   },
   "editor-keyframe-track": {
     "useWhen": "Editing a short UI or motion-design animation by keyframes, where people scrub a playhead, watch a live preview and drag keys in time and value on a curve.",

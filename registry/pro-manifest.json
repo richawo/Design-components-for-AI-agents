@@ -20270,7 +20270,7 @@
     ],
     "theme": "dark",
     "previewHeight": 900,
-    "usage": "import { EditorStoryboardStrip } from \"@/components/design-for-ai/editor-storyboard-strip\";\n\n<EditorStoryboardStrip\n  title=\"Autumn spot · 30s\"\n  targetDuration={30}\n  scenes={[\n    { id: \"lake\", title: \"Cold open\", notes: \"Mist lifting off the lake.\", duration: 3.5, shot: \"wide\",\n      thumbnail: frameUrl /* optional: a real frame; otherwise the shot is drawn from shot + tone */ },\n  ]}\n  onScenesChange={(scenes) => saveCut(scenes)}\n/>\n\n// Drag a card to reorder (Alt+Left/Right on a focused card, or Earlier/Later), drag its right edge or use the stepper to trim.\n// Durations snap to half seconds between 0.5 and 20. onScenesChange fires once per finished change, not during a drag.",
+    "usage": "import { EditorStoryboardStrip } from \"@/components/design-for-ai/editor-storyboard-strip\";\n\n<EditorStoryboardStrip\n  title=\"Autumn spot · 30s\"\n  targetDuration={30}\n  scenes={[\n    { id: \"lake\", title: \"Cold open\", notes: \"Mist lifting off the lake.\", duration: 3.5, shot: \"wide\",\n      thumbnail: frameUrl /* optional: a real frame; otherwise the shot is drawn from shot + tone */ },\n  ]}\n  onScenesChange={(scenes) => saveCut(scenes)}\n/>\n\n// Drag a card to reorder (Alt+Left/Right on a focused card, or Earlier/Later), drag its right edge or use the stepper to trim.\n// Durations snap to half seconds between 0.5 and 20. onScenesChange fires once per finished change, not during a drag.\n// Supply finite durations from 0.5 to 20 seconds and a finite positive target. Invalid timing shows a written alert.\n// Callback records and tone tuples are copied; unchanged normalized input does not emit an edit.",
     "props": [
       {
         "name": "title",
@@ -20288,13 +20288,13 @@
         "name": "scenes",
         "type": "StoryScene[]",
         "default": "seven shots for a 30-second outdoor-clothing spot",
-        "description": "Shots in order: { id, title, notes, duration (s), shot: \"wide\" | \"figure\" | \"detail\" | \"window\" | \"interior\" | \"title\", tone?: [string, string], thumbnail? }."
+        "description": "Shots in order: { id, title, notes, duration (s), shot: \"wide\" | \"figure\" | \"detail\" | \"window\" | \"interior\" | \"title\", tone?: [string, string], thumbnail? }. Durations must be finite and between 0.5 and 20 seconds; invalid timing shows an alert."
       },
       {
         "name": "targetDuration",
         "type": "number",
         "default": "30",
-        "description": "The cut's target length in seconds. The meter and the over/spare readout measure against it."
+        "description": "The cut's target length in seconds. The meter and the over/spare readout measure against it. Must be finite and greater than zero."
       },
       {
         "name": "defaultSelectedId",
@@ -20305,13 +20305,13 @@
       {
         "name": "onScenesChange",
         "type": "(scenes: StoryScene[]) => void",
-        "description": "The order and durations after each finished change: a drag dropped, a move, a trim released, a stepper press."
+        "description": "The order and durations after each finished change: a drag dropped, a move, a trim released, a stepper press. Receives independently copied scene records and tone tuples. Unchanged normalized stepper entries do not notify."
       },
       {
         "name": "accent",
         "type": "string",
         "default": "theme ink",
-        "description": "The playhead, the selection ring and Play."
+        "description": "The playhead, the selection ring and Play. Use a six-digit hex colour; invalid values fall back to theme ink. Play chooses readable black or white text."
       },
       {
         "name": "theme",
