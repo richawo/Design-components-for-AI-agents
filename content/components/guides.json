@@ -3018,14 +3018,14 @@
       "Pass `events` with ISO `at` times (offsets are honoured, everything shows in UTC), `before` and `after` snapshots, and optional actorKind, IP, location and client.",
       "Set `now` and `hours` so the histogram covers the window you retain at hourly resolution; events outside it stay searchable in the log.",
       "`onExport` receives the exact visible `eventIds` with the format and filter context; reject to keep the selection and show the reason.",
-      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both keep the same value contract."
+      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Custom triggers declare their native popover targets and update expanded/active-option state before the first popup frame. Keyboard, trigger-click and outside-click dismissal keep the same value contract."
     ],
     "related": [
       "saas-access-requests",
       "saas-integration-manager",
       "saas-customer-health"
     ],
-    "updated": "2026-10-17"
+    "updated": "2026-10-18"
   },
   "saas-customer-health": {
     "useWhen": "A customer-success team reviews its book of accounts by health, needs to see which weighted drivers pull each score down, and logs the next play for the owner.",

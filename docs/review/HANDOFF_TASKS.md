@@ -88,6 +88,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 4: the next full run finished at 52 of 56 suites passing, including every industry workflow. The remaining failures were leave approval replay, Cinema Frame return, Bento entrance timing and Audit Trail selector state. Bento now waits for the complete heatmap entrance before checking historical stability; all four theme/motion/ambient cases pass with the zero-mutation and exact-data checks retained. An injected cell loop is still rejected. The other three failures remain under investigation.
 
+- Task 4: Audit Trail now synchronizes expanded and active-option state before the native popup renders, including dismissal. Its trigger identifies the native popover target so a second click closes it correctly. First-frame keyboard/ARIA checks, trigger/outside dismissal, workflow, metadata replay and open-menu accessibility pass in both themes. The archived before/after trace removes the observed state mismatch, and the blocked-End negative control fails as intended.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned

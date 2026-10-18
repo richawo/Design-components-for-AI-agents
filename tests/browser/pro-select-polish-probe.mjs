@@ -19,6 +19,25 @@ const page = await browser.newPage({
 });
 const errors = [];
 page.on("pageerror", (error) => errors.push(error.message));
+async function capturePopupFrame(control, eventType, outside = false) {
+  await control.evaluate((node, { type, outside }) => {
+    node.popupFrame = null;
+    (outside ? document : node).addEventListener(type, () => requestAnimationFrame(() => {
+      node.popupFrame = {
+        visible: document.getElementById(node.getAttribute("aria-controls"))?.matches(":popover-open"),
+        expanded: node.getAttribute("aria-expanded"),
+        active: node.getAttribute("aria-activedescendant"),
+      };
+    }), { once: true });
+  }, { type: eventType, outside });
+}
+async function checkPopupFrame(control, open) {
+  await page.waitForFunction(node => node.popupFrame !== null, await control.elementHandle());
+  const frame = await control.evaluate(node => node.popupFrame);
+  assert.equal(frame.visible, open, "The native popup has the intended first-frame state");
+  assert.equal(frame.expanded, String(open), "ARIA follows the popup in its first frame");
+  assert.equal(frame.active !== null, open, "Keyboard state follows the popup in its first frame");
+}
 try {
   for (const slug of slugs) {
     for (const theme of ["dark", "light"]) {
@@ -48,9 +67,11 @@ try {
         if (combobox) assert.deepEqual(pads, ["12px", "12px"]);
         else assert.ok(parseFloat(pads[0]) >= 4 && parseFloat(pads[1]) >= 8, `${slug}: inset the avatar and chevron`);
         const id = await control.getAttribute("aria-controls");
+        if (slug === "saas-audit-trail") await capturePopupFrame(control, "click");
         await control.click();
         const menu = page.locator(`[id=${JSON.stringify(id)}]`);
         await menu.waitFor({ state: "visible" });
+        if (slug === "saas-audit-trail") await checkPopupFrame(control, true);
         const rect = await menu.boundingBox();
         assert.ok(
           rect.x >= 0 && rect.x + rect.width <= width + 1 && rect.y >= 0 && rect.y + rect.height <= 901,
@@ -67,9 +88,25 @@ try {
         const active = await keyboard.getAttribute("aria-activedescendant");
         assert.ok(active);
         assert.equal(await page.locator(`[id=${JSON.stringify(active)}]`).getAttribute("aria-disabled"), null);
+        if (slug === "saas-audit-trail") await capturePopupFrame(control, "keydown");
         await keyboard.press("Escape");
         await menu.waitFor({ state: "hidden" });
+        if (slug === "saas-audit-trail") await checkPopupFrame(control, false);
         assert.equal(await control.evaluate((el) => el === document.activeElement), true);
+        if (slug === "saas-audit-trail") {
+          await control.click();
+          await menu.waitFor({ state: "visible" });
+          await capturePopupFrame(control, "click");
+          await control.click();
+          await menu.waitFor({ state: "hidden" });
+          await checkPopupFrame(control, false);
+          await control.click();
+          await menu.waitFor({ state: "visible" });
+          await capturePopupFrame(control, "click", true);
+          await page.locator("h2").first().click();
+          await menu.waitFor({ state: "hidden" });
+          await checkPopupFrame(control, false);
+        }
       }
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
     }

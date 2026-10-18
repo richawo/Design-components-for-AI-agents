@@ -103,7 +103,7 @@ needs re-recording, whether its poster is current, and the state of its browser 
 | Slug | Video | Poster | Probe |
 | --- | --- | --- | --- |
 | `saas-access-requests` | new | current | rewritten, passes |
-| `saas-audit-trail` | new | current | rewritten, passes |
+| `saas-audit-trail` | new | current | workflow, metadata replay, first-frame popup state, keyboard/pointer dismissal and both-theme open-menu accessibility pass |
 | `saas-customer-health` | new | current | rewritten, passes (invalid dates and empty trends fixed) |
 | `saas-integration-manager` | new | current | rewritten, passes |
 | `saas-notification-inbox` | new | current | rewritten, passes |
