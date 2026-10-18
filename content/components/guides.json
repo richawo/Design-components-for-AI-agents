@@ -1649,18 +1649,21 @@
     "updated": "2026-10-18"
   },
   "commerce-return-desk": {
-    "useWhen": "Reviewing eligible return items and an explicit return decision.",
-    "avoidWhen": "A refund processor or a browser-only interpretation of return eligibility.",
+    "useWhen": "Select eligible order items, inspect an exact return slip and record a reviewed request with the host reference.",
+    "avoidWhen": "The host needs to issue money or book an exchange without a reviewed, acknowledged return request.",
     "integration": [
-      "Supply your own records through `reasons`, `resolutions`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onSubmit` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+      "order: Order id, customer/date labels, ISO currency, explicit 0/2/3 minor-unit digits and uniquely identified items. Optional glyph, colour and image identify products. Eligibility comes from returnableQuantity. Replacing the order starts a fresh review.",
+      "reasons: Unique allowed reason ids and labels.",
+      "resolutions: Allowed refund, exchange and credit choices. Unsupported values are excluded.",
+      "policyNote: Optional return policy or next action, shown with the slip.",
+      "onSubmit: Persist a copied request with orderId, line quantities, reasonId, resolution, trimmed note and exact expectedAmountMinor string. A non-empty returned reference acknowledges only the return request. Reject to retain the review."
     ],
     "related": [
-      "commerce-catalog-import",
-      "commerce-variant-stock",
-      "commerce-backorder-allocation"
+      "commerce-customer-timeline",
+      "commerce-fulfilment-desk",
+      "block-commerce-workspace"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-18"
   },
   "commerce-shipping-estimator": {
     "useWhen": "Choosing a carrier service for an order where the delivery date matters: cut-off times, weekends, Saturday services and holidays decide which option actually arrives first, and cost has to be weighed against it.",

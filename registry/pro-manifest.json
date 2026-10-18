@@ -12746,11 +12746,11 @@
   },
   {
     "slug": "commerce-return-desk",
-    "name": "Order Returns Desk",
+    "name": "Return Desk",
     "tier": "pro",
     "platform": "web",
     "category": "commerce",
-    "description": "A retail return workflow with eligible quantities, reasons, resolution choices, explicit review and a request receipt after server acknowledgement.",
+    "description": "Select eligible order items, inspect an exact return slip and record a reviewed request with the host reference.",
     "tags": [
       "commerce",
       "workflow",
@@ -12767,56 +12767,79 @@
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 900,
+    "previewHeight": 1100,
     "usage": "import { ReturnDesk } from \"@/components/design-for-ai/commerce-return-desk\";\n\n<ReturnDesk />",
     "props": [
       {
         "name": "title",
         "type": "string",
-        "description": "Returns desk heading."
+        "description": "Current work object in the compact header.",
+        "default": "\"Return request\""
+      },
+      {
+        "name": "workspace",
+        "type": "string",
+        "description": "Workspace or store name in the app bar.",
+        "default": "\"Fieldwork\""
       },
       {
         "name": "order",
         "type": "ReturnOrder",
-        "description": "Order identity, display labels, currency scale and items with server-provided eligible quantities and refundable unit amounts. A new order ID resets the workflow."
+        "description": "Order id, customer/date labels, ISO currency, explicit 0/2/3 minor-unit digits and uniquely identified items. Optional glyph, colour and image identify products. Eligibility comes from returnableQuantity. Replacing the order starts a fresh review."
       },
       {
         "name": "reasons",
         "type": "ReturnReason[]",
-        "description": "Reason IDs and labels."
+        "description": "Unique allowed reason ids and labels."
       },
       {
         "name": "resolutions",
         "type": "ReturnResolution[]",
-        "description": "Allowed refund, exchange and credit choices."
+        "description": "Allowed refund, exchange and credit choices. Unsupported values are excluded."
       },
       {
         "name": "policyNote",
         "type": "string",
-        "description": "Merchant-supplied explanation of what happens after a request."
+        "description": "Optional return policy or next action, shown with the slip."
       },
       {
         "name": "onSubmit",
         "type": "(request: ReturnRequest) => Promise<{ reference: string }>",
-        "description": "Create the return request and return its reference. The host validates eligibility, amounts and permissions; this UI does not issue refunds. expectedAmountMinor is an exact integer string."
+        "description": "Persist a copied request with orderId, line quantities, reasonId, resolution, trimmed note and exact expectedAmountMinor string. A non-empty returned reference acknowledges only the return request. Reject to retain the review."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
-        "default": "\"dark\"",
-        "description": "Surface and ink palette; the preview stage follows it."
+        "description": "Neutral graphite or paper surfaces.",
+        "default": "\"dark\""
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "description": "Optional hex accent; defaults to theme ink and selects readable button text."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "description": "Locale for exact values and counts.",
+        "default": "\"en-GB\""
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Additional outer component classes."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:400",
+        "wait:500",
         "click:@return-item-0",
-        "wait:250",
         "click:@return-reason-0",
-        "wait:250",
+        "click:@return-note",
+        "type:Fit checked with Ines.",
         "click:@return-next",
-        "wait:450",
+        "wait:400",
         "click:@return-next",
         "wait:1300"
       ],
@@ -12832,6 +12855,17 @@
           "light"
         ],
         "default": "dark"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#7aa2ff",
+          "#ff8a4c"
+        ]
       }
     ]
   },

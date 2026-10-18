@@ -219,6 +219,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 8: the four-Commerce batch and Org Explorer correction pass the Worker dry run with the original guards intact: router 2,655,633 bytes, runtime 56,919,585 bytes and compressed source maps 4,745,670 bytes. The three optional package diagnostics are retained and their runtime files are verified. The initial browser run passed 58/59; its sole failing HR group passes after the confirmed tree/search focus fix. The measured checkpoint below records both runs.
 
+- Task 7: Return Desk is rebuilt as an item ledger and reviewed return slip. Its 25-mount source review and rewritten Next regression cover exact amounts beyond the safe integer, quantity limits, retained-note retry, pending locks, unavailable writers and retired order revisions. Item and quantity targets pass touch-input checks at 44px. Both-theme accessibility, six widths, entrance/state captures, two preview controls, official audit and the full 1,100px Next replay/poster pass, with strict registry, TypeScript and all 1,063 unit tests. The embedded controls remain canonical; form sizes use a scoped override. Commerce Workspace’s period/note/retry/exact-payload check passes with its updated labels and error role. Its new film joins task 1; 35 components and 12 blocks remain in task 7.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -236,7 +238,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Browser checks: `node scripts/check-component.mjs <slug> --base=http://localhost:3100 --no-video --keep-going`
   (screenshots at 1440/768/390 and every control flip; read the screenshots it writes to `test-results/check/<slug>/`).
 
-## 1. Re-record demo videos (120 components)
+## 1. Re-record demo videos (121 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -255,6 +257,7 @@ slug or per small group). Notes:
 
 Slugs:
 
+`commerce-return-desk`
 `editor-font-pairing`, `editor-keyframe-track`
 `editor-layer-stack`, `editor-spacing-inspector`, `editor-storyboard-strip`, `editor-version-restore`
 `three-exploded-assembly`, `three-material-inspector`, `agents-budget-guard`, `agents-dependency-board`
@@ -384,15 +387,15 @@ All nine parked rebuilds are shipped in both repos. Their original `_wip/<slug>`
 | finance-budget-variance | Completed 17 October: Next probe, dark/light accessibility, responsive and entrance/state captures, live demo and refreshed poster pass. |
 | finance-cashflow-dashboard | Completed 17 October: weekly balance and in/out bars, movable payments, independent pending saves, invalid-data guards, selected-week list geometry, Next probe/demo, both-theme accessibility, responsive/state/entrance captures and refreshed poster pass. |
 
-## 7. Continue the review (36 components, then 12 blocks)
+## 7. Continue the review (35 components, then 12 blocks)
 
-Same process as the 162 already done: hold each to the first ~100 components' standard. Briefs:
+Same process as the 163 already done: hold each to the first ~100 components' standard. Briefs:
 `docs/review/REVIEW_BRIEF.md`, `docs/review/SUITE_BRIEF.md` for industry components, suite languages in
 `docs/review/suites/`. Work newest first, about four components per batch, and verify each (build, tsc, tests,
 check-component, your own captures of states and mid-entrance frames, a refreshed poster, a rewritten pro-50 probe for
 industry components).
 
-- **Commerce** (copy `suites/commerce.md`): commerce-return-desk, commerce-variant-stock,
+- **Commerce** (copy `suites/commerce.md`): commerce-variant-stock,
   commerce-catalog-import. `block-commerce-workspace` imports commerce-return-desk: keep its call site working.
 - **Others**: app-permission-matrix, legal-version-history (`suites/legal.md`), hr-capacity-planner (`suites/hr.md`),
   data-query-builder.
