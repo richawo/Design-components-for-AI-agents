@@ -11,10 +11,13 @@ needs re-recording, whether its poster is current, and the state of its browser 
 
 ## Batch verification (18 October 2026)
 
-The preceding checkpoint passed all 59 Next-backed browser suites and all 26 focused component audits. Strict registry validation,
-TypeScript and all 1,063 unit tests pass. The Worker dry run passes with a 2,655,633-byte router,
-56,759,418-byte runtime and 4,728,730 bytes of compressed source maps. Existing lazy-boundary and size guards
-remain in place. Measurements, checkout revisions and the investigated package diagnostics are recorded in
+The latest four Commerce rebuilds pass their focused Next workflows, controls and component audits. The full
+Next-backed run passed 58/59 suites; its sole failure, Org Explorer’s deferred tree focus closing colleague search,
+is fixed and the complete HR group passes its rerun. Every suite now has a passing result; both logs are preserved.
+Strict registry validation, TypeScript and all 1,063 unit tests pass. The Worker dry run passes with a
+2,655,633-byte router, 56,919,585-byte runtime and 4,745,670 bytes of compressed source maps. Existing lazy-boundary
+and size guards remain in place. The earlier complete 59-suite and 26-component audit checkpoint is also retained.
+Measurements, checkout revisions and package diagnostics are recorded in
 [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks).
 
 ## Mobile (20)

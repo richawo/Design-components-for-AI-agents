@@ -217,6 +217,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 4 follow-up: the four-Commerce batch run finished at 58/59 suites, exposing Org Explorer’s deferred tree focus closing a newer colleague search. A held-frame reproduction fails on the old source. Tree focus now completes with the DOM update, and search ownership, successive keyboard navigation, both-theme accessibility and the complete Next-backed HR group pass. Strict registry, TypeScript and all 1,063 unit tests pass. The original run and focused rerun are preserved as `commerce-batch-browser.log` and `org-focus-hr-next.log`; every suite now has a passing result.
 
+- Task 8: the four-Commerce batch and Org Explorer correction pass the Worker dry run with the original guards intact: router 2,655,633 bytes, runtime 56,919,585 bytes and compressed source maps 4,745,670 bytes. The three optional package diagnostics are retained and their runtime files are verified. The initial browser run passed 58/59; its sole failing HR group passes after the confirmed tree/search focus fix. The measured checkpoint below records both runs.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -410,7 +412,29 @@ After any batch of the above: `node scripts/build-registry.mjs --strict`, `npx t
 `npm run test:components`, `npm run audit:components -- <changed slugs>`, then stop the dev server and run
 `npm run deploy:dry-run` to check the Worker bundle size. Deployment itself (`npm run deploy`) is the owner's call.
 
-### Verified checkpoint: 18 October 2026
+### Commerce and Org Explorer checkpoint: 18 October 2026
+
+Validated checkout: public `a40e051`, private `4a004e9`, with the existing shared auth/mobile edits.
+
+| Check | Result |
+| --- | --- |
+| Strict registry | Pass: 100 free and 259 Pro components |
+| TypeScript | Pass |
+| Unit tests | 43 files, 1,063 tests pass |
+| Complete Next-backed browser run | 58/59 initially; the sole failing HR suite passes after the Org Explorer fix |
+| Changed Commerce audits | Promotion Builder, Purchase Order, Fulfilment Desk and Operations Dashboard pass |
+| Worker router | 2,655,633 bytes, below 4 MiB |
+| Worker runtime | 56,919,585 bytes, below 64 MiB |
+| Compressed source maps | 4,745,670 bytes total, below 15,000,000 bytes |
+| Worker dry run | Exit 0; all existing size and lazy-boundary guards retained |
+
+The full run is `commerce-batch-browser.log`; the complete HR rerun is `org-focus-hr-next.log`.
+Every suite has a passing result, and the original Org Explorer failure is retained. Registry, type and unit
+checks are `org-focus-{registry,types,unit}.log`. Bundle evidence is `commerce-batch-worker.log` and
+`commerce-batch-worker-proof.json`, all under `test-results/handoff-next/`. The same three optional OpenNext
+package-inspection diagnostics remain; all 14, 3 and 19 runtime files respectively are present and byte-identical.
+
+### Preceding verified checkpoint: 18 October 2026
 
 Validated checkout: public `98b632a`, private `5e807d2`, with the existing shared auth/mobile edits.
 
