@@ -2,20 +2,86 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import { createRequire } from "node:module";
 import { launchChromium } from "../../scripts/lib/browser.mjs";
-const base = (process.env.PREVIEW_BASE || "http://localhost:3100").replace(/\/$/, "");
-const out = "test-results/page-structure-20261012";
+const base = (process.env.PREVIEW_BASE || "http://localhost:3100").replace(
+  /\/$/,
+  "",
+);
+const out =
+  process.env.DFA_PAGE_PROBE_OUT || "test-results/page-structure-20261012";
 fs.mkdirSync(out, { recursive: true });
-const slugs = ["saas-audit-trail", "chart-portfolio", "data-kanban-compact", "auth-sign-in", "mobile-settings"];
+const slugs = [
+  "saas-audit-trail",
+  "chart-portfolio",
+  "data-kanban-compact",
+  "auth-sign-in",
+  "mobile-settings",
+];
 const browser = await launchChromium();
 const axe = createRequire(import.meta.url).resolve("axe-core/axe.min.js");
+// Readiness belongs to the tested interface. A background request can outlive the page.
+async function openComponentPage(page, url) {
+  await page.goto(url, { waitUntil: "domcontentloaded" });
+  await page.locator("#installation").waitFor({ state: "visible" });
+  await page.waitForFunction(() => document.fonts.status === "loaded");
+}
+
+async function checkReadinessWithBackgroundRequest(page) {
+  const releases = [];
+  let requests = 0;
+  await page.route("http://component-ready.test/page", (route) =>
+    route.fulfill({
+      contentType: "text/html",
+      body: '<!doctype html><html lang="en"><head><title>Readiness fixture</title></head><body><main id="installation">Ready installation</main><script>fetch("http://component-ready.test/background").catch(()=>{});</script></body></html>',
+    }),
+  );
+  await page.route("http://component-ready.test/background", async (route) => {
+    requests++;
+    await new Promise((resolve) => releases.push(resolve));
+    await route.fulfill({ body: "ok" }).catch(() => {});
+  });
+  page.setDefaultNavigationTimeout(2000);
+  try {
+    await assert.rejects(
+      page.goto("http://component-ready.test/page", {
+        waitUntil: "networkidle",
+        timeout: 1500,
+      }),
+      /Timeout/,
+    );
+    assert.ok(requests > 0, "The negative keeps a real request pending");
+    const issued = page.waitForRequest(
+      "http://component-ready.test/background",
+      { timeout: 2000 },
+    );
+    await Promise.all([
+      issued,
+      openComponentPage(page, "http://component-ready.test/page"),
+    ]);
+    assert.equal(
+      await page.locator("#installation").innerText(),
+      "Ready installation",
+    );
+  } finally {
+    for (const release of releases) release();
+    await page.unroute("http://component-ready.test/page");
+    await page.unroute("http://component-ready.test/background");
+    page.setDefaultNavigationTimeout(30000);
+  }
+  console.log(
+    "PASS component-page readiness with a pending background request",
+  );
+}
+
 const errors = [];
 const results = [];
+let page;
 try {
-  const page = await browser.newPage({
+  page = await browser.newPage({
     viewport: { width: 1440, height: 1000 },
     reducedMotion: "reduce",
   });
   page.on("pageerror", (e) => errors.push(e.message));
+  await checkReadinessWithBackgroundRequest(page);
   for (const slug of slugs) {
     const res = await fetch(`${base}/components/${slug}`);
     assert.equal(res.status, 200);
@@ -41,7 +107,7 @@ try {
         !/^## (?:Prompt|JSON prompt|Source \([^\n]+\))\s*$/m.test(md),
         "Anonymous references exclude private source and prompt sections",
       );
-    await page.goto(`${base}/components/${slug}`, { waitUntil: "networkidle" });
+    await openComponentPage(page, `${base}/components/${slug}`);
     await page.locator("#installation").scrollIntoViewIfNeeded();
     if (slug === "saas-audit-trail" || slug === "data-kanban-compact")
       await page.locator('[data-pro-access="locked"]').waitFor();
@@ -49,7 +115,9 @@ try {
       await page.setViewportSize({ width, height: 1000 });
       await page.waitForTimeout(200);
       assert.ok(
-        (await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)) <= 1,
+        (await page.evaluate(
+          () => document.documentElement.scrollWidth - innerWidth,
+        )) <= 1,
         slug + " " + width,
       );
       if (width === 1440 || width === 390)
@@ -105,28 +173,63 @@ try {
       }),
     });
   });
-  await page.goto(`${base}/components/saas-audit-trail`, {
-    waitUntil: "networkidle",
-  });
+  await openComponentPage(page, `${base}/components/saas-audit-trail`);
   await page.locator('[data-pro-access="active"]').waitFor();
   assert.equal(sourceRequests, 0, "Checking access must not download source");
   await page.locator("#source").scrollIntoViewIfNeeded();
   await page.getByText("licensed fixture", { exact: true }).waitFor();
   assert.equal(sourceRequests, 1, "Source loads when its panel is reached");
-  assert.equal(await page.locator("#installation").getByRole("link", { name: "Get Pro access" }).count(), 0);
+  assert.equal(
+    await page
+      .locator("#installation")
+      .getByRole("link", { name: "Get Pro access" })
+      .count(),
+    0,
+  );
   await page.unroute(route);
   await page.route(route, (r) => r.fulfill({ status: 503 }));
-  await page.reload({ waitUntil: "networkidle" });
+  await page.reload({ waitUntil: "domcontentloaded" });
   await page.locator('[data-pro-access="error"]').waitFor();
   await page.unroute(route);
-  await page.route(route, (r) => r.fulfill({ contentType: "application/json", body: '{"active":false}' }));
+  await page.route(route, (r) =>
+    r.fulfill({ contentType: "application/json", body: '{"active":false}' }),
+  );
   await page.getByRole("button", { name: "Retry access check" }).click();
   await page.locator('[data-pro-access="locked"]').waitFor();
-  await page.locator("#installation").getByRole("link", { name: "Get Pro access" }).focus();
-  assert.equal(await page.evaluate(() => document.activeElement?.getAttribute("href")), "/pricing");
+  await page
+    .locator("#installation")
+    .getByRole("link", { name: "Get Pro access" })
+    .focus();
+  assert.equal(
+    await page.evaluate(() => document.activeElement?.getAttribute("href")),
+    "/pricing",
+  );
   assert.deepEqual(errors, []);
-  fs.writeFileSync(`${out}/component-pages.json`, JSON.stringify(results, null, 2) + "\n");
+  fs.writeFileSync(
+    `${out}/component-pages.json`,
+    JSON.stringify(results, null, 2) + "\n",
+  );
   console.log("PASS Pro active, denied, failed and retried access states");
+} catch (error) {
+  if (page)
+    await page
+      .screenshot({ path: `${out}/failed.png`, fullPage: true })
+      .catch(() => {});
+  fs.writeFileSync(
+    `${out}/failed.json`,
+    JSON.stringify(
+      {
+        message: error.message,
+        stack: error.stack,
+        url: page?.url(),
+        errors,
+        results,
+      },
+      null,
+      2,
+    ) + "\n",
+  );
+  throw error;
 } finally {
   await browser.close();
 }
