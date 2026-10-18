@@ -287,6 +287,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 1: Layer Stack now has a reviewed 4.77s film showing Moon moving forward through the exploded planes and the settled flat artwork with Moon selected. Neutral chrome preserves the poster artwork, and the complete 900px framing matches its paired opening poster. Maximum source gap is 13ms, changed-source delivery is 19.4ms and moving-frame p95 is 18.6ms, with no stalls and all guards retained. 116 listed films remain.
 
+- Task 5 follow-up: a preserved Layer Stack counterexample rejected two overlapping writes but left the first layer hidden. Dependent edits now wait for the active promise, and a later rejection preserves earlier accepted changes. Failed saves return keyboard focus unless the user inspected another layer. Controlled stacks without a writer stay read-only, including the inspector reorder controls. The final 33-mount review, 24 state/default accessibility audits, six widths, state/entrance captures, Next regression, four preview controls, official audit and default metadata replay pass. Strict registry, both type checks and all 1,063 unit tests pass. The default demo appearance is unchanged; its reviewed film remains current. This follow-up ran after the complete 59/59 browser checkpoint and is recorded separately.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned

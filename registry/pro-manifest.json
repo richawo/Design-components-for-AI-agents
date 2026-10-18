@@ -19369,7 +19369,7 @@
       {
         "name": "value",
         "type": "StackLayer[]",
-        "description": "Controlled layers, top first: { id, name, kind, visible, locked, opacity?, render?, bounds? }."
+        "description": "Controlled layers, top first: { id, name, kind, visible, locked, opacity?, render?, bounds? }. Without onValueChange the controlled stack is read-only."
       },
       {
         "name": "defaultValue",
@@ -19380,7 +19380,7 @@
       {
         "name": "onValueChange",
         "type": "(layers: StackLayer[]) => void | Promise<void>",
-        "description": "Every edit proposes independently copied layers and numeric bounds. Reject to roll back an uncontrolled edit; render nodes remain the supplied artwork."
+        "description": "Every edit proposes independently copied layers and numeric bounds. Editing waits for a returned promise; rejection restores the last accepted uncontrolled stack. Render nodes remain the supplied artwork."
       },
       {
         "name": "selectedId",

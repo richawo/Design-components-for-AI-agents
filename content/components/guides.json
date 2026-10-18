@@ -4524,7 +4524,8 @@
       "Give each layer a `render` that fills the artboard and is sized in cqw/cqh: the same node draws the artboard and the row thumbnail. Add `bounds` (fractions of the artboard) for the selection frame, and set `aspect` to the document's width over height.",
       "Selection is separate: `selectedId` and `onSelectedIdChange`, or `defaultSelectedId`. Clicking painted artwork selects the topmost layer there.",
       "`defaultExploded` starts in the 3D view. Locked layers keep their slot; `disabled` makes the panel read-only.",
-      "Pass independent layer and numeric-bounds snapshots to edit callbacks, so callback mutation cannot corrupt the retained stack or its rollback."
+      "Pass independent layer and numeric-bounds snapshots to edit callbacks, so callback mutation cannot corrupt the retained stack or its rollback.",
+      "Pause editing while a promised stack update is pending. Restore focus after settlement unless the user moved it, and keep controlled stacks without a writer read-only."
     ],
     "related": [
       "editor-whiteboard",

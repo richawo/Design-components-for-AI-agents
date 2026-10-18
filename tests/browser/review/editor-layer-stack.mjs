@@ -230,4 +230,40 @@ export async function check({ page, mount, assert, capture = async () => {} }) {
   assert.equal(await page.evaluate(() => window.viewStackWrites), 0, 'Changing the artwork view does not write layers');
   await capture('collapsed-artwork', { audit: true });
 
+  await mount(`window.pendingLayers=[];createRoot(document.getElementById('root')).render(<Subject.EditorLayerStack defaultValue={${JSON.stringify(layers)}} onValueChange={next=>new Promise((resolve,reject)=>window.pendingLayers.push({payload:structuredClone(next),resolve,reject}))}/>);`);
+  await page.getByRole('button',{name:'Hide Title',exact:true}).press('Enter');
+  await page.waitForFunction(()=>window.pendingLayers.length===1);
+  assert.equal(await page.getByRole('button',{name:'Hide Photo',exact:true}).isDisabled(),true,'Dependent stack writes wait for acknowledgement');
+  assert.equal(await page.locator('[data-demo="backward"]').isDisabled(),true,'Pending inspector edits are visibly unavailable');
+  await page.getByRole('button',{name:'Hide Photo',exact:true}).evaluate(node=>node.click());
+  assert.equal(await page.evaluate(()=>window.pendingLayers.length),1);
+  await page.getByRole('status').filter({hasText:'Saving layer changes...'}).waitFor();
+  await capture('pending-write',{audit:true});
+  await page.evaluate(()=>window.pendingLayers[0].reject(Error('The store is unavailable.')));
+  await page.getByRole('status').filter({hasText:'The store is unavailable.'}).waitFor();
+  assert.equal(await page.getByRole('button',{name:'Hide Title',exact:true}).count(),1);
+  assert.equal(await page.getByRole('button',{name:'Hide Photo',exact:true}).count(),1);
+  assert.equal(await page.getByRole('button',{name:'Hide Title',exact:true}).evaluate(node=>node===document.activeElement),true,'A rejected save returns keyboard focus to its action');
+  await page.getByRole('button',{name:'Hide Title',exact:true}).press('Enter');
+  assert.deepEqual(await page.evaluate(()=>window.pendingLayers[1].payload),await page.evaluate(()=>window.pendingLayers[0].payload));
+  await row('photo').press('Enter');
+  await page.evaluate(()=>window.pendingLayers[1].resolve());
+  await page.waitForFunction(()=>!document.querySelector('[data-demo="layer-visible-photo"]').disabled);
+  assert.equal(await row('photo').evaluate(node=>node===document.activeElement),true,'Acknowledgement does not steal focus after inspecting another layer');
+  await page.getByRole('button',{name:'Hide Photo',exact:true}).press('Enter');
+  await page.waitForFunction(()=>window.pendingLayers.length===3);
+  await page.evaluate(()=>window.pendingLayers[2].reject(Error('The photo edit was refused.')));
+  await page.getByRole('status').filter({hasText:'The photo edit was refused.'}).waitFor();
+  assert.equal(await page.getByRole('button',{name:'Show Title',exact:true}).count(),1,'A later rejection retains the earlier accepted edit');
+  assert.equal(await page.getByRole('button',{name:'Hide Photo',exact:true}).count(),1);
+  await capture('accepted-then-rejected',{audit:true});
+  await mount(`window.inspected=[];createRoot(document.getElementById('root')).render(<Subject.EditorLayerStack value={${JSON.stringify(layers)}} onSelectedIdChange={id=>window.inspected.push(id)}/>);`);
+  await row('photo').press('Enter');
+  assert.equal(await page.evaluate(()=>window.inspected.at(-1)),'photo');
+  assert.equal(await page.getByRole('button',{name:'Hide Photo',exact:true}).isDisabled(),true);
+  assert.equal(await page.getByRole('slider',{name:'Opacity',exact:true}).isDisabled(),true);
+  assert.equal(await page.locator('[data-demo="forward"]').isDisabled(),true,'Controlled read-only inspectors cannot reorder');
+  await page.getByRole('status').filter({hasText:'read-only'}).waitFor();
+  await capture('controlled-read-only',{audit:true});
+
 }
