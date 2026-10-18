@@ -246,7 +246,9 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Browser checks: `node scripts/check-component.mjs <slug> --base=http://localhost:3100 --no-video --keep-going`
   (screenshots at 1440/768/390 and every control flip; read the screenshots it writes to `test-results/check/<slug>/`).
 
-## 1. Re-record demo videos (121 components)
+- Task 1: Variant Stock now has a reviewed 3.8s film showing the Ink/XL adjustment from 3 to 5, the exact total of 197 units and its settled saved receipt. The complete framing matches the paired poster. Maximum source gap is 18ms, changed-source delivery is 28.2ms and moving-frame p95 is 17.5ms, with no stalls and every existing guard intact. 120 listed films remain.
+
+## 1. Re-record demo videos (120 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -265,7 +267,6 @@ slug or per small group). Notes:
 
 Slugs:
 
-`commerce-variant-stock`
 `editor-font-pairing`, `editor-keyframe-track`
 `editor-layer-stack`, `editor-spacing-inspector`, `editor-storyboard-strip`, `editor-version-restore`
 `three-exploded-assembly`, `three-material-inspector`, `agents-budget-guard`, `agents-dependency-board`
