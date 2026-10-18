@@ -75,7 +75,7 @@ export async function check({ page, mount, assert, capture = async () => {} }) {
   });
   await capture("pending", { audit: true });
   await page.evaluate(() => window.finishPolicy());
-  await page.getByText("Access policy saved · 1 change", { exact: true }).waitFor();
+  await page.getByRole("status").filter({ hasText: "Access policy saved · 1 change" }).waitFor();
   assert.equal(await page.getByRole("alert").count(), 0, "Earlier policy failures retire after acknowledgement");
   assert.equal(
     await box("Invite collaborators for Reviewer").isChecked(),
@@ -129,4 +129,22 @@ export async function check({ page, mount, assert, capture = async () => {} }) {
   );
   await page.evaluate(() => window.oldPolicy());
   assert.doesNotMatch(await page.locator("section").innerText(), /Access policy saved/);
+
+  // A host may echo the exact accepted snapshot before resolving its save.
+  {
+    await mount(
+      `function Host(){const [grants,setGrants]=React.useState({owner:['view','edit','export','approve','invite'],counsel:['view','edit'],reviewer:['view']});return <Subject.PermissionMatrix defaultGrants={grants} onSave={async next=>{await new Promise(resolve=>window.finishEcho=resolve);setGrants(next)}}/>}createRoot(document.getElementById('root')).render(<Host/>);`,
+    );
+    await page.getByRole("checkbox", { name: "Export documents for Reviewer", exact: true }).check();
+    await page.getByRole("button", { name: "Save policy", exact: true }).click();
+    await page.evaluate(() => window.finishEcho());
+    await page.getByText("Access policy saved · 1 change", { exact: true }).waitFor();
+    assert.equal(
+      await page.getByRole("checkbox", { name: "Export documents for Reviewer", exact: true }).isChecked(),
+      true,
+    );
+    assert.equal(await page.getByRole("button", { name: "Saved", exact: true }).isDisabled(), true);
+
+    await capture("host-echo", { audit: true });
+  }
 }

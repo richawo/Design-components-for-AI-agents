@@ -245,6 +245,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 4 follow-up: the fresh full run passed 55/59 suites. Project Switcher’s lost search is now reproduced by delaying the reduced-motion read until after typing. Search initialization follows opening alone, so late settings and preference changes preserve the draft. The complete Next-backed component regression, two rendered search/failure accessibility captures, strict registry, TypeScript and all 1,063 unit tests pass; both captures are visually reviewed. The original failure and deterministic negative are retained under `test-results/handoff-next/`. The policy receipt, component-page navigation and legacy Stock replay failures remain under investigation.
 
+- Task 4 follow-up: Permission Matrix now preserves the acknowledgement when a host echoes the accepted policy, while different policies still retire old replies. A deterministic host-echo negative reproduces the lost receipt. Workspace Settings also exposed a missing success status role; the receipt is now announced and its exact one-change payload is checked. Complete final dark/light component regressions, the Workspace Settings save sequence, strict registry, TypeScript and all 1,063 unit tests pass. Both receipt captures are visually reviewed. All eight block workflow cases have passing reruns; the first seven are in `policy-blocks-fixed.log` and Settings is in `policy-workspace-fixed.log`. The page-navigation and legacy Stock replay failures remain open.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned

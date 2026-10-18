@@ -113,7 +113,7 @@ Measurements, checkout revisions and package diagnostics are recorded in
 
 | Slug | Video | Poster | Probe |
 | --- | --- | --- | --- |
-| `app-permission-matrix` | current | current | Rebuilt role matrix, prerequisite inspector and grant/remove ledger; 25-mount source review and Next dependency/bulk/keyboard/exact-payload/retry/pending/mutation/revision regression pass. Both-theme short-viewport pointer/focus correction, 5.60:1 dark and 5.28:1 light checkbox boundaries, six widths, entrance/state captures, touch targets, two controls, official audit and complete 1,200px two-change replay/poster pass. Reviewed 3.5s prerequisite/save film and paired poster are current. Strict registry, TypeScript and all 1,063 unit tests pass. |
+| `app-permission-matrix` | current | current | Rebuilt role matrix, prerequisite inspector and grant/remove ledger; 25-mount source review and Next dependency/bulk/keyboard/exact-payload/retry/pending/mutation/revision regression pass. Accepted host echoes retain an announced receipt, different replacements retire old replies, and Workspace Settings checks its exact saved policy. Both-theme short-viewport pointer/focus correction, 5.60:1 dark and 5.28:1 light checkbox boundaries, six widths, entrance/state captures, touch targets, two controls, official audit and complete 1,200px two-change replay/poster pass. Reviewed 3.5s prerequisite/save film and paired poster are current. Strict registry, TypeScript and all 1,063 unit tests pass. |
 
 ## SaaS suite (10)
 

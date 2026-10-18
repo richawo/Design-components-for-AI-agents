@@ -1101,7 +1101,7 @@
       "scope: Policy scope in the compact workspace bar.",
       "roles: Unique role ids, names and descriptions; locked roles cannot be edited.",
       "permissions: Unique permission ids/names/groups/descriptions and prerequisite ids. Missing dependencies, cycles and more than 100 permissions are rejected.",
-      "defaultGrants: Starting role-to-permission arrays. Unknown roles/permissions or missing prerequisites block saving. Replacing the policy starts a fresh draft.",
+      "defaultGrants: Starting role-to-permission arrays. Unknown roles/permissions or missing prerequisites block saving. An exact accepted-policy echo preserves the save acknowledgement; a different policy starts a fresh draft and retires old replies.",
       "onSave: Persist a copied policy. Resolve only after the host service applies it; reject to retain the edit plan. The component does not enforce server authorization."
     ],
     "related": [

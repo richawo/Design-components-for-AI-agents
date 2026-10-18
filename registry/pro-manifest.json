@@ -3478,7 +3478,7 @@
       {
         "name": "defaultGrants",
         "type": "PolicyGrants",
-        "description": "Starting role-to-permission arrays. Unknown roles/permissions or missing prerequisites block saving. Replacing the policy starts a fresh draft."
+        "description": "Starting role-to-permission arrays. Unknown roles/permissions or missing prerequisites block saving. An exact accepted-policy echo preserves the save acknowledgement; a different policy starts a fresh draft and retires old replies."
       },
       {
         "name": "onSave",
