@@ -16,10 +16,13 @@ describe("recording frame quality", () => {
     expect(result.maxGapMs).toBeCloseTo(20);
     expect(result.stallsOver100Ms).toBe(0);
   });
-  it("drops idle lead-in and caps the idle tail without changing action order", () => {
-    const steps = [{ cmd: "wait", ms: 2000 }, { cmd: "click", target: "send" }, { cmd: "wait", ms: 1700 }, { cmd: "hover", target: "result" }, { cmd: "wait", ms: 3000 }];
-    expect(gallerySteps(steps)).toEqual([{ cmd: "click", target: "send" }, { cmd: "wait", ms: 1700 }, { cmd: "hover", target: "result" }, { cmd: "wait", ms: 1300 }]);
-    expect(steps[0].ms).toBe(2000);
+  it("drops the idle lead-in but preserves the integration authorization wait", () => {
+    // The provider takes 1.4s, followed by a 320ms token step. A 1.3s cap
+    // cuts the film off before the recorded Reconnected receipt can arrive.
+    const steps = [{ cmd: "wait", ms: 700 }, { cmd: "click", target: "primary" }, { cmd: "wait", ms: 900 }, { cmd: "click", target: "authorize" }, { cmd: "wait", ms: 2600 }];
+    expect(gallerySteps(steps)).toEqual([{ cmd: "click", target: "primary" }, { cmd: "wait", ms: 900 }, { cmd: "click", target: "authorize" }, { cmd: "wait", ms: 2600 }]);
+    expect(steps[0].ms).toBe(700);
+    expect(steps.at(-1)?.ms).toBe(2600);
   });
   it("preserves a held-button wait that completes the interaction", () => {
     expect(gallerySteps([{ cmd: "down" }, { cmd: "wait", ms: 3000 }])).toEqual([{ cmd: "down" }, { cmd: "wait", ms: 3000 }]);

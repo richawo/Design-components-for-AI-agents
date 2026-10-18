@@ -22,14 +22,9 @@ export function captureQuality(timestamps, windows = []) {
 export function gallerySteps(steps) {
   const firstAction = steps.findIndex((step) => step.cmd !== "wait");
   if (firstAction < 0) return steps;
-  const result = steps.slice(firstAction);
-  let held = false;
-  return result.map((step, index) => {
-    if (step.cmd === "down") held = true;
-    if (step.cmd === "up") held = false;
-    // Keep waits that complete a hold or an async flow. Only trim the idle tail.
-    return step.cmd === "wait" && index === result.length - 1 && !held ? { ...step, ms: Math.min(step.ms, 1300) } : step;
-  });
+  // A terminal wait can finish a host callback or its receipt animation.
+  // Metadata owns that timing; its position alone does not make it idle.
+  return steps.slice(firstAction);
 }
 
 /** JPEG inputs otherwise default to a 1/25s time base and round away smooth

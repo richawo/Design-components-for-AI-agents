@@ -96,6 +96,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 1: Access Requests and Integration Manager films now show the checked-out source and finish at approved/reconnected receipts. Full metadata timing and the intended 1080/980px preview heights avoid a clipped approval view and an unfinished authorization. Cadence/source-change guards, decoded motion samples and final frames pass visual review. Audit Trail and Customer Health were rejected by the source-frame guard and remain pending. 138 listed films remain.
 
+- Task 1 tooling: gallery recording now preserves terminal metadata waits. The old 1.3s cap ended Integration Manager while its token was still being stored. The regression fails on that cap; the fixed default recorder reaches the Reconnected receipt in a reviewed 4.7s capture with the existing cadence/source-change guards intact. All 1,049 unit tests pass.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned

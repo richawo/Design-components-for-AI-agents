@@ -53,6 +53,8 @@ node scripts/record-demos.mjs <slug> --sheet=test-results/demo-sheets --base=htt
 
 Use `--isolated-source` for component recordings made against a development server. It bundles the checked-out default demo with production React and keeps the preview’s real CSS and same-origin fonts, so development hydration and hot reload do not contaminate motion capture. It does not write bundled Pro source into the public tree. The normal recording mode remains available for checking the actual preview page, and `--page-path` uses that mode for whole-page recordings. Source isolation does not replace a deployed preview smoke check. The fixture requires the requested preview and its loaded source before taking styles, so a missing preview or an HTTP200 streamed fallback cannot silently produce an unstyled audit.
 
+Gallery capture skips introductory waits but preserves every wait after the first action. A terminal wait can complete a host callback or receipt animation; shorten it in metadata only after replaying the complete flow.
+
 Inspect the recording's contact sheet. For demos that expand beyond the initial card, pass `--frame-viewport` to keep the entire preview visible; this also refreshes its matching poster. Then commit the matching source and preview updates. Keep scratch recordings, JSON evidence, and browser captures in `test-results/`.
 
 Stop the development server before `npm run build`, because development and production builds share `.next`. Start the production server and smoke-test the changed previews after a successful build.
