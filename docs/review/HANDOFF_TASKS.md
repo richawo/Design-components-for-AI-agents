@@ -267,6 +267,10 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 1: Waterfall Bridge now has a reviewed 3.5s film showing the negative churn contribution and the settled 164 $k closing balance. Complete 800px framing matches the paired opening poster. Maximum source gap is 11ms, changed-source delivery is 15.2ms and moving-frame p95 is 18.0ms, with no stalls and all guards retained. 120 listed films remain.
 
+- Task 4: the four-component workflow batch finished at 58/59 suites, with only the component-page navigation timing out. A fresh-server trace reproduced it with installation text and fonts ready while preview and licence requests remained pending. The page probe now waits for visible installation, loaded fonts and the existing explicit access states. A held-request negative fails with the original readiness strategy; the correction passes all five pages, accessibility, layout and private-source boundaries. All other suites pass in the original full run. The cold loading evidence remains separate from this test correction.
+
+- Task 8: the Version History, Capacity Planner, Query Builder and Waterfall Bridge batch passes the Worker dry run. The router is 2,655,633 bytes, runtime 57,141,392 bytes and compressed source maps 4,761,949 bytes, with all original guards retained. Strict registry, TypeScript and all 1,063 unit tests pass. The three optional package diagnostics remain, and their runtime files are verified. No deployment was performed.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -457,7 +461,38 @@ After any batch of the above: `node scripts/build-registry.mjs --strict`, `npx t
 `npm run test:components`, `npm run audit:components -- <changed slugs>`, then stop the dev server and run
 `npm run deploy:dry-run` to check the Worker bundle size. Deployment itself (`npm run deploy`) is the owner's call.
 
-### Workflow and regression checkpoint: 18 October 2026
+### Four-component workflow checkpoint: 18 October 2026
+
+Validated checkout: public `df101fc`, private `cf86338`, with the existing shared auth/mobile edits.
+The full browser run used public `8029902`; `df101fc` changes only its page-readiness probe. Source hashes and
+revisions stayed unchanged throughout the original full run.
+
+| Check | Result |
+| --- | --- |
+| Strict registry | Pass: 100 free and 259 Pro components |
+| TypeScript | Pass |
+| Unit tests | 43 files, 1,063 tests pass |
+| Complete Next-backed browser run | 58/59 initially; the sole failing page suite passes after its readiness correction |
+| Broad recovery | All 20 mobile regressions, all workflow groups and every metadata replay pass |
+| Component pages | Five pages, layout/accessibility, access retries and private-source boundaries pass |
+| Changed component audits | Version History, Capacity Planner, Query Builder and Waterfall Bridge pass |
+| Worker router | 2,655,633 bytes, below 4 MiB |
+| Worker runtime | 57,141,392 bytes, below 64 MiB |
+| Compressed source maps | 4,761,949 bytes total, below 15,000,000 bytes |
+| Worker dry run | Exit 0; all existing size and lazy-boundary guards retained |
+
+The full run is `test-results/handoff-third-workflow-browser.log`; checkout hashes are
+`test-results/handoff-third/workflow-batch-checkout{,-end}.json`. The page rerun and controlled negative/positive
+logs use the `test-results/handoff-third-component-pages-ready` and `handoff-third-page-ready` prefixes.
+The original timeout, fresh-server request trace, screenshot and endpoint follow-up are preserved under
+`test-results/handoff-third/`. The trace includes a preview retry state and a pending licence check during
+dev compilation; this test correction does not establish a component-page loading improvement.
+Final source checks use `test-results/handoff-third-page-ready-{registry,types,unit}.log`.
+The Worker log is `test-results/handoff-third-workflow-worker.log`; measured package and dependency proof is
+`test-results/handoff-third/workflow-batch-worker-proof.json`. The same three optional OpenNext package diagnostics
+remain; all 14, 3 and 19 runtime files respectively are present and byte-identical. No deployment was performed.
+
+### Preceding workflow and regression checkpoint: 18 October 2026
 
 Validated checkout: public `4fef685`, private `fa4fac0`, with the existing shared auth/mobile edits.
 
