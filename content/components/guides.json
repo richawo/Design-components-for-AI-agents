@@ -4948,14 +4948,15 @@
     "integration": [
       "Pass `projects` with stable ids, a glyph, the figures the home shows (open issues, cycle, seven days of activity, recent items) and `locked` with the reason for projects the person can't open.",
       "Control `value` and resolve `onValueChange(id, project)` once your session has switched; reject with an Error to keep the current project and show the message on its row. Use `open` and `onOpenChange` to drive the sheet, and `onRequestAccess` for locked rows.",
-      "Install `expo-blur`, `expo-linear-gradient` and `react-native-svg` (`npx install-expo-modules` once in bare apps). The mark's flight measures on-screen positions, so test inside your navigation container on devices."
+      "Install `expo-blur`, `expo-linear-gradient` and `react-native-svg` (`npx install-expo-modules` once in bare apps). The mark's flight measures on-screen positions, so test inside your navigation container on devices.",
+      "Await onValueChange and onRequestAccess before acknowledging either action. A rejected action keeps the project and search draft. The web sheet traps focus, closes on Escape and restores its opener; closed choices are hidden and disabled. Empty workspaces have a written empty state."
     ],
     "related": [
       "mobile-bottom-sheet",
       "mobile-task-move",
       "mobile-settings"
     ],
-    "updated": "2026-10-17"
+    "updated": "2026-10-18"
   },
   "mobile-file-preview": {
     "useWhen": "Reading a shared document on a phone before acting on it: skimming pages, jumping to the one with comments, then downloading or opening it elsewhere.",

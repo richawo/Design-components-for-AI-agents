@@ -35578,8 +35578,8 @@
       },
       {
         "name": "onRequestAccess",
-        "type": "(project: SwitcherProject) => void",
-        "description": "Ask on a locked project's row."
+        "type": "(project: SwitcherProject) => void | Promise<void>",
+        "description": "Send an access request for a locked project. Resolve to acknowledge it; reject to show a retryable row error. Omit when requests are unavailable."
       },
       {
         "name": "workspace",

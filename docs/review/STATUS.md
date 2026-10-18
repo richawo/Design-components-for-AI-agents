@@ -26,7 +26,7 @@ needs re-recording, whether its poster is current, and the state of its browser 
 | `mobile-notification-digest` | current | current | source-fixture regression and accessibility pass; keyboard actions/snooze, failed callbacks, Undo, collapsed piles and empty digest covered |
 | `mobile-offline-outbox` | current | current | source-fixture regression passes; retained draft retry, discard confirmation and network pause/resume covered |
 | `mobile-packing-list` | current | current | Next-backed regression, preview controls and RN-web accessibility pass; keyboard quantity bounds, serialized/rebased saves, retained edits, retry, Undo and written empty state covered |
-| `mobile-project-switcher` | current | current |  |
+| `mobile-project-switcher` | current | current | dedicated regression, preview controls and five RN-web accessibility states pass; dialog focus/dismissal, pending and failed switch/access retries, retained search, exact payloads and empty workspaces covered; poster/film refreshed |
 | `mobile-reading-progress` | current | current |  |
 | `mobile-review-annotations` | current | current |  |
 | `mobile-sync-conflict` | current | current |  |
