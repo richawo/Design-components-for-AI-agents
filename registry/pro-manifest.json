@@ -9846,7 +9846,7 @@
         "name": "datasets",
         "type": "{ key: string; label: string; points: { id: string; label: string; x: number; y: number }[] }[]",
         "default": "Mobile and desktop vitals for 104 storefront pages",
-        "description": "One or more views of the same records. Two or more show a switcher; points with the same id travel between views on one shared scale."
+        "description": "Views with unique nonempty keys and unique nonempty point ids per view. Measurements must be finite and nonnegative. Shared scales are positive even for all-zero data; invalid records show a written alert."
       },
       {
         "name": "defaultDataset",
@@ -9868,13 +9868,13 @@
         "name": "x",
         "type": "{ label: string; unit: string; decimals?: number; limit?: number }",
         "default": "{ label: \"TBT\", unit: \"ms\", limit: 200 }",
-        "description": "Horizontal measure. limit draws a dashed guide and lights the passing quadrant."
+        "description": "Horizontal nonnegative measure. A finite nonnegative limit draws a guide. Decimal precision must be a whole number from 0 to 20."
       },
       {
         "name": "y",
         "type": "{ label: string; unit: string; decimals?: number; limit?: number }",
         "default": "{ label: \"LCP\", unit: \"s\", decimals: 1, limit: 2.5 }",
-        "description": "Vertical measure. The ranked list sorts by it, highest first."
+        "description": "Vertical nonnegative measure, ranked highest first. Limits and decimal settings follow x. Large figures use scientific notation."
       },
       {
         "name": "noun",
@@ -9886,18 +9886,18 @@
         "name": "presets",
         "type": "{ key: string; label: string; brush: ScatterBrush }[]",
         "default": "LCP over 2.5 s",
-        "description": "One-click brushes shown as toggle chips. Open ends (Infinity) clamp to the plotted domain."
+        "description": "Unique one-click brushes with numeric bound pairs. Open ends (positive or negative Infinity) clamp to the domain; reversed bounds are ordered. NaN and malformed bounds show a written alert."
       },
       {
         "name": "defaultBrush",
         "type": "{ x: [number, number]; y: [number, number] } | null",
         "default": "null",
-        "description": "Initial brush in data units."
+        "description": "Initial brush in data units. Open and reversed bounds normalize to the shared domain; malformed brushes show a written alert."
       },
       {
         "name": "brush",
         "type": "{ x: [number, number]; y: [number, number] } | null",
-        "description": "Controlled brush in data units. The chart still draws the held drag locally and calls onBrushChange on release."
+        "description": "Controlled brush in data units. The held drag is local until release; requested changes await host acknowledgement. Null clears the selection."
       },
       {
         "name": "onBrushChange",
@@ -9937,7 +9937,7 @@
         "name": "locale",
         "type": "string",
         "default": "\"en-US\"",
-        "description": "Locale for every figure."
+        "description": "Supported Intl locale for figures. Invalid locales have a written state."
       },
       {
         "name": "title",
@@ -10011,7 +10011,7 @@
         "prop": "accent",
         "label": "Accent",
         "kind": "color",
-        "default": "#7dd3fc",
+        "default": "#f4f4f5",
         "options": [
           "#7dd3fc",
           "#f4f4f5",
