@@ -5030,7 +5030,9 @@
       "Pass `task` and the ordered `statuses` for its workflow. Give each column a `kind` so the glyph shows progress, a `count`, an optional `limit` and a `blockedReason` for rules the server enforces.",
       "Implement `onMove({ task, from, to, note })` against your tracker and throw an Error with a readable message to refuse; the note is kept. `onUndo` is offered for `undoSeconds` after a successful move.",
       "Install `expo-blur`, `expo-linear-gradient` and `react-native-svg` (`npx install-expo-modules` once in bare apps), and check the puck drag inside your own scroll views and with VoiceOver's adjustable actions.",
-      "An empty `statuses` array retains the task in a read-only state. Supply the workflow later to restore the status rail."
+      "An empty `statuses` array retains the task in a read-only state. Supply the workflow later to restore the status rail.",
+      "Keep status ids stable and pair persisted onMove operations with onUndo. A rejected move keeps its note and target; a rejected Undo keeps the task in its new status and reoffers the receipt. Empty workflows retain task context. The puck supports native adjustment and web arrow, Home and End keys.",
+      "Provide onBack and onMore for the header actions; onMore receives the latest confirmed task. Pair a persisted onMove with onUndo to offer Undo."
     ],
     "related": [
       "mobile-swipe-list",

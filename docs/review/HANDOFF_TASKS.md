@@ -108,6 +108,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 5: Sync Conflict now covers real card dragging, keyboard choices, failed save/revised-choice retries, exact payloads, pending locks, resumed choices and late replies after changing keyed revisions. Saving requires a host callback; unavailable saving looks disabled, and empty records have a written state without a merge summary. Retiring choices are inert. The Next-backed regression, nine RN-web accessibility states, preview controls and state captures pass. 84 components remain without dedicated coverage.
 
+- Task 5: Task Move now covers real dragging, keyboard status bounds and blocked columns, retained-note move retries, pending locks, exact move/Undo payloads and rejected Undo recovery. Header actions have callbacks in normal and empty workflows; persisted moves offer Undo with a matching handler. Receipts show the previous status and retry labels match their visible text. Its Next-backed regression, eleven RN-web accessibility states, preview controls and refreshed poster/guarded film pass. 83 components remain without dedicated coverage.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -246,14 +248,14 @@ tests/browser/pro-50-<suite>-probe.mjs <slug>` (suite = legal, saas, finance, hr
 
 ## 5. Write browser probes for components that have none
 
-84 finished components still have no dedicated browser regression probe. For each, read its source and
+83 finished components still have no dedicated browser regression probe. For each, read its source and
 `meta.json`, then add a case to the appropriate `tests/browser/*.mjs` suite (or a new probe registered in
 `scripts/test-components.mjs`) covering: the signature interaction, keyboard paths, failed-then-successful callbacks
 with drafts kept (where it has async callbacks), and empty or invalid data. Use `tests/browser/pro-50/hr-org-explorer.mjs`
 as the model for style and depth. Mobile components render through React Native web (`scripts/lib/component-fixture.mjs` aliases it);
 see `tests/browser/mobile-accessibility-probe.mjs` for a native example.
 
-`mobile-task-move`, `mobile-trip-itinerary`, `mobile-voice-memo`, `chart-box-distribution`
+`mobile-trip-itinerary`, `mobile-voice-memo`, `chart-box-distribution`
 `chart-calendar-heatmap`, `chart-funnel-dots`, `chart-sankey-paths`, `chart-scatter-brush`
 `chart-sunburst-explorer`, `data-bulk-action-review`, `data-column-workbench`, `data-filter-history`
 `data-pivot-configurator`, `editor-asset-license-sheet`, `editor-branch-compare`, `editor-color-token-studio`

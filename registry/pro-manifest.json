@@ -36274,7 +36274,7 @@
       {
         "name": "onUndo",
         "type": "({ task, from, to }) => Promise<void>",
-        "description": "Puts the task back; offered for undoSeconds after a move."
+        "description": "Persist the inverse of a confirmed move. Required to offer Undo when onMove is provided. Rejection keeps the current status and receipt for retry."
       },
       {
         "name": "undoSeconds",
@@ -36293,6 +36293,16 @@
         "type": "string",
         "default": "\"#FFB547\"",
         "description": "The one colour: the puck's light, the lit rail, Done, subtask progress and the undo ring."
+      },
+      {
+        "name": "onBack",
+        "type": "() => void",
+        "description": "Return to the sprint board. Omit to disable the header Back action."
+      },
+      {
+        "name": "onMore",
+        "type": "(task: MoveTask) => void",
+        "description": "Open task actions with the latest confirmed status. Omit to disable More actions."
       }
     ],
     "added": "2026-10-14",
