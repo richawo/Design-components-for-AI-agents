@@ -215,6 +215,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 1: Operations Dashboard now has a reviewed 3.2s film showing Retail selection and the full September snapshot, settled at £289,560.00. The corrected viewport retains the curve, checkout flow and whole channel ledger, with a matching paired poster. Maximum source gap is 12ms, changed-source delivery 54.5ms and moving-frame p95 18.9ms, with no stalls and every existing guard intact. 120 listed films remain.
 
+- Task 4 follow-up: the four-Commerce batch run finished at 58/59 suites, exposing Org Explorer’s deferred tree focus closing a newer colleague search. A held-frame reproduction fails on the old source. Tree focus now completes with the DOM update, and search ownership, successive keyboard navigation, both-theme accessibility and the complete Next-backed HR group pass. Strict registry, TypeScript and all 1,063 unit tests pass. The original run and focused rerun are preserved as `commerce-batch-browser.log` and `org-focus-hr-next.log`; every suite now has a passing result.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned

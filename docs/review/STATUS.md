@@ -142,7 +142,7 @@ remain in place. Measurements, checkout revisions and the investigated package d
 | `hr-employee-onboarding` | new | current | rewritten, passes |
 | `hr-interview-scorecard` | new | current | rewritten, passes on the Next-backed source-fixture runner |
 | `hr-leave-approval` | new | current | rewritten, passes on the Next-backed source-fixture runner |
-| `hr-org-explorer` | new | current | rewritten, passes |
+| `hr-org-explorer` | new | current | rewritten Next regression passes, including held-frame tree/search focus ownership; both-theme accessibility and successive keyboard navigation pass |
 | `hr-people-dashboard` | new | current | rewritten, passes on the Next-backed source-fixture runner |
 | `hr-policy-acknowledgement` | new | current | rewritten, passes on the Next-backed source-fixture runner |
 | `hr-shift-coverage` | new | current | rewritten, passes |
