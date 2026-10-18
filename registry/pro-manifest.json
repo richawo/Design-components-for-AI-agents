@@ -36530,13 +36530,13 @@
       {
         "name": "recording",
         "type": "VoiceMemoRecording",
-        "description": "The memo: id, title, recordedAt label, optional place, duration in seconds, measured peaks (0–1, evenly spaced), markers ({ id, at, label }) and transcript sentences ({ id, start, end, text })."
+        "description": "Recording identity, labels, finite positive duration in seconds, evenly spaced peaks (0–1), markers and ordered transcript segments. Invalid marker/segment timings and duplicate ids are omitted; non-finite peaks draw as silence. Changing id or duration resets transport and added markers."
       },
       {
         "name": "initialPosition",
         "type": "number",
         "default": "17.2",
-        "description": "Seconds into the recording when the screen opens; the playhead glides there on first view."
+        "description": "Initial seconds, clamped to the recording. Non-finite values start at zero. The playhead glides there on first view."
       },
       {
         "name": "autoPlay",
@@ -36548,18 +36548,18 @@
         "name": "initialRate",
         "type": "0.75 | 1 | 1.5 | 2",
         "default": "1",
-        "description": "Starting playback speed; the speed chip cycles 1×, 1.5×, 2×, 0.75×."
+        "description": "Starting playback speed. The chip cycles 1×, 1.5×, 2×, 0.75×; unsupported runtime values fall back to 1×."
       },
       {
         "name": "accent",
         "type": "string",
         "default": "\"#FF6B3D\"",
-        "description": "The one colour on screen: the playhead and the word being spoken."
+        "description": "Colour of the playhead and current transcript word. Dark, translucent or invalid colours fall back to white for contrast."
       },
       {
         "name": "onPlayingChange",
         "type": "(playing: boolean, position: number) => void",
-        "description": "Play, pause, or the end of the recording. Mirror it into your audio engine."
+        "description": "Play, pause, autoplay start and recording completion, with the current position. Mirror this synchronous notification into your audio engine; the component only animates its visual playhead."
       },
       {
         "name": "onSeek",
@@ -36579,12 +36579,12 @@
       {
         "name": "onBack",
         "type": "() => void",
-        "description": "Back chevron in the header."
+        "description": "Back chevron in the header. Disabled when omitted."
       },
       {
         "name": "onShare",
         "type": "(recording: VoiceMemoRecording) => void",
-        "description": "Share button in the header."
+        "description": "Share the recording through the host. The share action is disabled when this callback is absent."
       }
     ],
     "added": "2026-10-14",
@@ -36597,9 +36597,11 @@
         "drag:0.22,0.33",
         "wait:600",
         "click:@memo-marker-timeline",
-        "wait:800",
+        "wait:400",
         "click:@memo-rate",
-        "wait:600"
+        "wait:600",
+        "click:@memo-play",
+        "wait:350"
       ],
       "loop": false
     },

@@ -4935,14 +4935,15 @@
     "integration": [
       "Supply measured peaks (0–1, evenly spaced, about six a second), markers and transcript sentences with start and end seconds. Without a transcript the screen shows a written empty state.",
       "The screen runs the playhead clock. Mirror it into your audio engine with onPlayingChange(playing, position), onSeek(position) and onRateChange(rate); onMarkerAdd reports markers dropped at the playhead.",
-      "Install in a React Native app; bare apps run npx install-expo-modules once for expo-blur and expo-linear-gradient. Verify gestures, larger text and assistive technology on target devices."
+      "Install in a React Native app; bare apps run npx install-expo-modules once for expo-blur and expo-linear-gradient. Verify gestures, larger text and assistive technology on target devices.",
+      "Provide a finite positive duration and ordered transcript segments with unique ids and in-range start/end times. Invalid markers or segments are omitted and non-finite peaks draw as silence. Invalid initial positions start at zero and unsupported initial rates fall back to 1×. Changing recording identity or duration resets the transport and added markers. Connect play, seek and rate notifications to your audio engine and persist added markers in the host. Autoplay emits its start position as well as its completion; the visual playhead does not load or play audio itself. Missing Share and Back handlers disable their controls. The waveform exposes current native/web range values, including fractional durations, and long recordings retain local one-second ruler detail."
     ],
     "related": [
       "mobile-now-playing",
       "mobile-journal-prompt",
       "mobile-live-activity"
     ],
-    "updated": "2026-10-17"
+    "updated": "2026-10-18"
   },
   "mobile-project-switcher": {
     "useWhen": "Apps where people work across several projects or workspaces and switch often, and the project's home should change around them without a page load.",

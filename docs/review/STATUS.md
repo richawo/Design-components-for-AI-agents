@@ -32,7 +32,7 @@ needs re-recording, whether its poster is current, and the state of its browser 
 | `mobile-sync-conflict` | current | current | Next-backed regression, nine RN-web accessibility states and preview controls pass; real drag, keyboard choices, revised retry payloads, pending/resumed/unavailable/empty states, inert exits and late keyed-revision replies covered |
 | `mobile-task-move` | current | current | Next-backed regression, eleven RN-web accessibility states and preview controls pass; real drag, keyboard bounds/blocked states, retained-note retries, pending locks, exact move/Undo payloads, failed Undo recovery, host count snapshots during pending requests, header callbacks and one/empty workflows covered; poster/film refreshed |
 | `mobile-trip-itinerary` | current | current | Next-backed regression, eleven RN-web accessibility states and preview controls pass; keyboard tabs, selected-leg scroll/focus, booking failure/retry, cancellation, supersession, exact payloads, keyed trip replacement and empty/invalid legs covered; poster/guarded film refreshed |
-| `mobile-voice-memo` | current | current |  |
+| `mobile-voice-memo` | current | current | Next-backed regression, twelve RN-web accessibility states and preview controls pass; real waveform drag, keyboard seek bounds, autoplay/transport callbacks, transcript/marker navigation, exact share payloads, fractional/invalid durations, recording resets, readable accents and decimal clock covered; poster/guarded film refreshed |
 
 ## Data and charts (10)
 
