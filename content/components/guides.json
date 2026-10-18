@@ -4900,7 +4900,7 @@
     "avoidWhen": "A general to-do list with no notion of weight or capacity, or inventory that needs search, sorting and bulk editing.",
     "integration": [
       "Pass `trip` as { destination, dates, bag, limitKg, tareKg } and `items` as { id, name, detail?, group, qty, grams, packed }. Sections follow the order groups first appear; the bag's own weight counts from the start.",
-      "`onChange(items, change)` fires on pack, unpack, quantity, remove and restore with the whole list. It can return a promise; reject or throw and the list rolls back with your message in the toast.",
+      "Persist onChange writes as complete lists. Writes run in order; a rejection removes only that edit and queued edits are rebased before the next host call. Quantity controls expose native actions and web keyboard values.",
       "Over the limit the bag and weight turn red regardless of `accent`. Remove offers Undo, which restores the item to its place.",
       "Install expo-blur, expo-linear-gradient and react-native-svg. Check the checkbox targets, the stepper with VoiceOver and larger text on devices."
     ],
@@ -4908,7 +4908,7 @@
       "mobile-trip-itinerary",
       "mobile-swipe-list"
     ],
-    "updated": "2026-10-17"
+    "updated": "2026-10-18"
   },
   "mobile-budget-envelope": {
     "useWhen": "Letting someone move money between budget categories on a phone, with the month's unassigned balance updating as they drag and nothing saved until the host accepts.",

@@ -35224,7 +35224,7 @@
       {
         "name": "onChange",
         "type": "(items: PackingItem[], change: PackingChange) => void | Promise<void>",
-        "description": "Every change with the whole list after it; change is pack, unpack, quantity, remove or restore. Reject or throw and the list rolls back with the error in the toast."
+        "description": "Called with a copied list and the edit. Async writes are serialized. A rejection rolls back that edit while later edits stay visible and are rebased."
       },
       {
         "name": "onBack",
