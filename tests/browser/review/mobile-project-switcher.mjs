@@ -70,10 +70,17 @@ export async function check({ page, mount, assert }) {
   assert.deepEqual(await page.evaluate(() => window.access), ["locked"]);
   assert.equal(await page.evaluate(() => window.calls.length), 0);
   await search.fill("Ledger");
+  for (const preference of ["no-preference", "reduce"]) {
+    await page.emulateMedia({ reducedMotion: preference });
+    await page.waitForTimeout(200);
+    assert.equal(await search.inputValue(), "Ledger", "Motion preference changes retain an open search draft");
+  }
   await page.locator('[data-demo="project-row-beta"]').press("Space");
   await page.getByText("Project offline", { exact: true }).waitFor();
   assert.equal(await search.inputValue(), "Ledger");
-  await page.waitForFunction(() => document.activeElement?.dataset.demo === "project-row-beta", null, { timeout: 1000 });
+  await page.waitForFunction(() => document.activeElement?.dataset.demo === "project-row-beta", null, {
+    timeout: 1000,
+  });
   await page.waitForTimeout(200);
   assert.equal(
     await page.locator('[data-demo="project-row-beta"]').evaluate((el) => el === document.activeElement),
@@ -85,7 +92,11 @@ export async function check({ page, mount, assert }) {
   await page.evaluate(() => (window.fail = false));
   await page.locator('[data-demo="project-row-beta"]').press("Enter");
   assert.equal(await page.locator('[data-demo="project-row-alpha"]').isDisabled(), true);
-  assert.equal(await dialog.evaluate((el) => el === document.activeElement), true, "Pending rows keep focus in the dialog");
+  assert.equal(
+    await dialog.evaluate((el) => el === document.activeElement),
+    true,
+    "Pending rows keep focus in the dialog",
+  );
   await page.evaluate(() => window.finishSwitch());
   await page.waitForFunction(() =>
     document.querySelector('[data-demo="project-open"]').getAttribute("aria-label").includes("Ledger"),
@@ -96,7 +107,9 @@ export async function check({ page, mount, assert }) {
   );
   await page.locator('[data-demo="project-row-locked"]').press("Enter");
   await page.getByText("Request offline", { exact: true }).waitFor();
-  await page.waitForFunction(() => document.activeElement?.dataset.demo === "project-row-locked", null, { timeout: 1000 });
+  await page.waitForFunction(() => document.activeElement?.dataset.demo === "project-row-locked", null, {
+    timeout: 1000,
+  });
   assert.equal(await page.getByText(/Request sent/).count(), 0);
   await page.evaluate(() => (window.accessFail = false));
   await page.locator('[data-demo="project-row-locked"]').press("Enter");
@@ -105,7 +118,11 @@ export async function check({ page, mount, assert }) {
   await search.focus();
   await page.evaluate(() => window.finishAccess());
   await page.getByText(/Request sent for Payroll\./).waitFor();
-  assert.equal(await search.evaluate((el) => el === document.activeElement), true, "Acknowledgement preserves the user's newer focus");
+  assert.equal(
+    await search.evaluate((el) => el === document.activeElement),
+    true,
+    "Acknowledgement preserves the user's newer focus",
+  );
   assert.deepEqual(await page.evaluate(() => window.access), [locked, locked]);
   await mount(
     `createRoot(document.getElementById('root')).render(<Subject.MobileProjectSwitcher ${props} defaultOpen/>);`,
@@ -120,14 +137,53 @@ export async function check({ page, mount, assert }) {
     true,
     "A sheet open on mount returns to its own project trigger",
   );
-  await mount(`function Host(){const [open,setOpen]=useState(false);window.closeProject=()=>setOpen(false);return <Subject.MobileProjectSwitcher ${props} open={open} onOpenChange={setOpen}/>};createRoot(document.getElementById('root')).render(<Host/>);const outside=document.createElement('button');outside.textContent='Outside workspace';outside.onclick=()=>window.closeProject();document.body.append(outside);`);
+  await mount(
+    `function Host(){const [open,setOpen]=useState(false);window.closeProject=()=>setOpen(false);return <Subject.MobileProjectSwitcher ${props} open={open} onOpenChange={setOpen}/>};createRoot(document.getElementById('root')).render(<Host/>);const outside=document.createElement('button');outside.textContent='Outside workspace';outside.onclick=()=>window.closeProject();document.body.append(outside);`,
+  );
   await page.locator('[data-demo="project-open"]').press("Enter");
   await search.waitFor();
   const outside = page.getByRole("button", { name: "Outside workspace", exact: true });
   await outside.click();
   await dialog.waitFor({ state: "hidden" });
-  assert.equal(await outside.evaluate((el) => el === document.activeElement), true, "Closing preserves outside focus ownership");
+  assert.equal(
+    await outside.evaluate((el) => el === document.activeElement),
+    true,
+    "Closing preserves outside focus ownership",
+  );
   await mount(`createRoot(document.getElementById('root')).render(<Subject.MobileProjectSwitcher projects={[]}/>);`);
   await page.getByText("No projects yet", { exact: true }).waitFor();
   assert.equal(await page.locator('[data-demo="project-open"]').count(), 0);
+
+  // Motion settings may arrive after the sheet is already being used.
+  {
+    const alpha = {
+      id: "alpha",
+      name: "Northstar",
+      kind: "iOS app",
+      glyph: "triangle",
+      openIssues: 4,
+      issuesDelta: -2,
+      cycle: { name: "Cycle 1", progress: 0.5, ends: "Friday" },
+      activity: [1, 2, 3, 2, 1, 0, 1],
+      recent: [],
+      members: 3,
+      updated: "today",
+    };
+    const beta = { ...alpha, id: "beta", name: "Ledger", glyph: "ledger" };
+    await mount(
+      `import {AccessibilityInfo} from 'react-native';AccessibilityInfo.isReduceMotionEnabled=()=>new Promise(resolve=>window.finishMotionSetting=resolve);createRoot(document.getElementById('root')).render(<Subject.MobileProjectSwitcher projects={${JSON.stringify([alpha, beta])}} defaultOpen onValueChange={()=>{}}/>);`,
+    );
+    const search = page.getByRole("textbox", { name: "Search projects", exact: true });
+    await search.waitFor();
+    await search.fill("Ledger");
+    await page.evaluate(() => window.finishMotionSetting(true));
+    await page.waitForTimeout(250);
+    assert.equal(
+      await search.inputValue(),
+      "Ledger",
+      "A delayed reduced-motion read must preserve the active search draft",
+    );
+    await page.locator('[data-demo="project-row-beta"]').waitFor();
+    assert.equal(await page.locator('[data-demo="project-row-alpha"]').count(), 0);
+  }
 }

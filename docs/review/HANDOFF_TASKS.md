@@ -243,6 +243,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 1 follow-up: Return Desk’s corrected choice boundaries now appear in its reviewed replacement 6.0s film and paired poster. Selection, typed note, £84.00 review and RET-2038 receipt remain complete and settled. The review transition is visually checked without row overlap. Maximum source gap is 11ms, changed-source delivery is 15.5ms and moving-frame p95 is 17.2ms, with no stalls and every existing guard intact. 120 listed films remain.
 
+- Task 4 follow-up: the fresh full run passed 55/59 suites. Project Switcher’s lost search is now reproduced by delaying the reduced-motion read until after typing. Search initialization follows opening alone, so late settings and preference changes preserve the draft. The complete Next-backed component regression, two rendered search/failure accessibility captures, strict registry, TypeScript and all 1,063 unit tests pass; both captures are visually reviewed. The original failure and deterministic negative are retained under `test-results/handoff-next/`. The policy receipt, component-page navigation and legacy Stock replay failures remain under investigation.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
