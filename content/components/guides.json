@@ -4616,14 +4616,17 @@
     "integration": [
       "Give tracks as { id, label, unit, min, max, step, keys } with keys in frame order; each key's ease (linear, ease or hold) shapes the segment that leaves it. Keys never cross or share a frame.",
       "renderPreview(values) receives the current value of every track by id; draw your own component with them. valueAt(track, frame) is exported so your runtime and tests evaluate tracks exactly as the editor does.",
-      "onChange(tracks) fires after finished edits only (a drag released, a stepper commit, a key added, re-eased or deleted), so it is safe to persist or push to an undo stack."
+      "onChange(tracks) fires after finished edits only (a drag released, a stepper commit, a key added, re-eased or deleted), so it is safe to persist or push to an undo stack.",
+      "A hold segment yields the next key’s value at that key’s exact frame. Native click activation selects graph and dope-sheet keys for keyboard and assistive technology.",
+      "Pass independently copied tracks and keys to edit callbacks. Use 1–240 fps, 1–36,000 whole duration frames and a finite initial frame. Invalid clocks have a written state.",
+      "Keep exact frame positions in a labelled horizontally scrollable timeline on phones. Give coarse pointers 44px key targets and enough end padding. Home, End and arrows pan only when the timeline region itself is focused; child key shortcuts still edit their keys."
     ],
     "related": [
       "media-trim-timeline",
       "editor-node-graph",
       "editor-storyboard-strip"
     ],
-    "updated": "2026-10-17"
+    "updated": "2026-10-18"
   },
   "editor-version-restore": {
     "useWhen": "Letting writers browse the saved versions of a document, compare any version with the live text word by word, and restore all of it or only chosen blocks with an undo.",

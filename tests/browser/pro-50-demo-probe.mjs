@@ -9,6 +9,7 @@ const specs = fs
   .filter((file) => file.endsWith(".mjs"))
   .map((file) => ({ slug: file.slice(0, -4) }));
 const finalStates = {
+  "editor-keyframe-track": "Key 2 of 5",
   "editor-spacing-inspector": "align-items: center;",
   "editor-font-pairing": "Live on every page that uses the brand tokens.",
   "chart-waterfall-bridge": "Closing 164 $k",
@@ -73,6 +74,8 @@ try {
     await page.waitForTimeout(200);
     const before = await page.locator("#root").innerText();
     replay.before = before;
+    if (slug === "editor-keyframe-track")
+      replay.keyBefore = await page.locator('[data-demo="key-y-1"]').getAttribute("aria-label");
     if (slug === "editor-spacing-inspector")
       replay.paddingBefore = Number(await page.getByRole("textbox", { name: "Left padding", exact: true }).inputValue());
     await page.evaluate(() => {
@@ -108,6 +111,11 @@ try {
         before,
         slug + " replay must change the displayed workflow",
       );
+    }
+    if (slug === "editor-keyframe-track") {
+      const key = page.locator('[data-demo="key-y-1"]');
+      assert.notEqual(await key.getAttribute("aria-label"), replay.keyBefore, "The keyframe demo changes its recorded key");
+      assert.equal(await key.getAttribute("aria-pressed"), "true");
     }
     if (slug === "editor-spacing-inspector") {
       const padding = Number(await page.getByRole("textbox", { name: "Left padding", exact: true }).inputValue());

@@ -19190,13 +19190,13 @@
         "name": "fps",
         "type": "number",
         "default": "30",
-        "description": "Frames per second, for playback and the seconds on the ruler."
+        "description": "Finite frames per second from 1 to 240, including fractional frame rates."
       },
       {
         "name": "durationFrames",
         "type": "number",
         "default": "90",
-        "description": "Length of the timeline in frames."
+        "description": "Whole timeline length from 1 to 36,000 frames. Invalid clocks show an explicit notice."
       },
       {
         "name": "defaultTrackId",
@@ -19237,7 +19237,7 @@
       {
         "name": "onChange",
         "type": "(tracks: PropertyTrack[]) => void",
-        "description": "The tracks after each finished edit: a drag released, a stepper change, a key added, re-eased or removed."
+        "description": "Receives independent track and key snapshots after committed edits. A drag reports once on release."
       },
       {
         "name": "accent",
