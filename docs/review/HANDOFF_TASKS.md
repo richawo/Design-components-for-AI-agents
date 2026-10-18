@@ -233,6 +233,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 7: Catalogue Import is rebuilt as a CSV workbench with a document rail, column mapping and a paginated typed-record review. Its 31-mount source review and rewritten Next regression cover keyboard mapping and dismissal, parser bounds/quotes/BOM, required/unique/numeric/email checks, 25-record pagination with the full callback payload, retained retry, pending locks, host mutation and retired source revisions. Both-theme accessibility, six widths, entrance/state captures, touch targets, two visible preview controls, official audit and the complete 1,100px replay/poster pass. Singular record/column labels are corrected; the API retains native/custom mapping menus while opening-screen controls expose visible changes. Strict registry, TypeScript and all 1,063 unit tests pass. Its film joins task 1; 33 components and 12 blocks remain in task 7.
 
+- Task 1: Catalogue Import now has a reviewed 4.2s film showing CSV source, destination mapping, typed-record review and the settled three-record import. Complete framing matches the paired opening poster. Maximum source gap is 13ms, changed-source delivery is 25.2ms and moving-frame p95 is 18.3ms, with no stalls and every existing guard intact. 120 listed films remain.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -250,7 +252,7 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 - Browser checks: `node scripts/check-component.mjs <slug> --base=http://localhost:3100 --no-video --keep-going`
   (screenshots at 1440/768/390 and every control flip; read the screenshots it writes to `test-results/check/<slug>/`).
 
-## 1. Re-record demo videos (121 components)
+## 1. Re-record demo videos (120 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -269,7 +271,6 @@ slug or per small group). Notes:
 
 Slugs:
 
-`commerce-catalog-import`
 `editor-font-pairing`, `editor-keyframe-track`
 `editor-layer-stack`, `editor-spacing-inspector`, `editor-storyboard-strip`, `editor-version-restore`
 `three-exploded-assembly`, `three-material-inspector`, `agents-budget-guard`, `agents-dependency-board`
