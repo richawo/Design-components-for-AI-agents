@@ -12267,7 +12267,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "commerce",
-    "description": "Select a shipment, inspect blockers and submit a recovery action. A considered, responsive commerce workspace with typed integration points.",
+    "description": "Recover a held parcel with the customer, product, carrier route and exception in view, then record a reviewed action with its note retained.",
     "tags": [
       "e-commerce",
       "workflow",
@@ -12276,52 +12276,68 @@
       "commerce"
     ],
     "dependencies": [
-      "motion"
+      "motion",
+      "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 1000,
+    "previewHeight": 1120,
     "usage": "import { FulfilmentDesk } from \"@/components/design-for-ai/commerce-fulfilment-desk\";\n\n<FulfilmentDesk />",
     "props": [
       {
         "name": "title",
         "type": "string",
-        "description": "Main heading.",
-        "default": "\"Fulfilment exceptions\""
+        "default": "\"Fulfilment exceptions\"",
+        "description": "Current rule name in the compact store breadcrumb."
       },
       {
         "name": "subtitle",
         "type": "string",
-        "description": "Supporting context.",
-        "default": "\"Resolve shipment exceptions with the context and a clear next step.\""
+        "description": "Optional store context below the app bar."
+      },
+      {
+        "name": "workspace",
+        "type": "string",
+        "default": "\"Fieldwork\"",
+        "description": "Store name in the app bar."
       },
       {
         "name": "shipments",
         "type": "FulfilmentShipment[]",
-        "description": "Open shipments with unique IDs, operational context, items and host-approved recovery actions."
+        "description": "Shipments with unique ids, customer/order/destination/promise/issue/detail, positive integer item quantities and host-approved actions with unique ids. Optional carrier, tracking, product SKU/glyph/colour/image and ordered events provide parcel context. Invalid or duplicate entries are reported and excluded."
       },
       {
         "name": "onResolve",
-        "type": "(action:FulfilmentAction)=>void|Promise<void>",
-        "description": "Record the reviewed recovery action. Resolving the callback acknowledges the request, not delivery of the shipment."
+        "type": "(action: FulfilmentAction) => void | Promise<void>",
+        "description": "Persist the selected shipmentId, actionId and trimmed note. Pending requests lock shipment selection. Failure retains the decision and note; resolution records the host acknowledgement without claiming delivery, relabelling or collection. Replacing shipment data retires pending replies."
       },
       {
         "name": "theme",
         "type": "\"dark\" | \"light\"",
         "default": "\"dark\"",
-        "description": "Surface, border and ink palette."
+        "description": "Neutral graphite or paper surfaces."
+      },
+      {
+        "name": "accent",
+        "type": "string",
+        "description": "Optional hex accent. Alpha blends over the panel before choosing readable button text. Defaults to theme ink."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "description": "Additional classes for the outer component."
       }
     ],
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:350",
+        "wait:500",
         "click:@action-0",
         "click:@note",
-        "type:Address verified",
+        "type:Address verified with Maya.",
         "click:@review",
-        "wait:350",
+        "wait:400",
         "click:@confirm",
-        "wait:1500"
+        "wait:1300"
       ],
       "loop": false
     },
@@ -12335,6 +12351,17 @@
           "light"
         ],
         "default": "dark"
+      },
+      {
+        "prop": "accent",
+        "label": "Accent",
+        "kind": "color",
+        "default": "#f4f4f5",
+        "options": [
+          "#f4f4f5",
+          "#7aa2ff",
+          "#ff8a4c"
+        ]
       }
     ]
   },

@@ -1583,17 +1583,20 @@
     "updated": "2026-10-17"
   },
   "commerce-fulfilment-desk": {
-    "useWhen": "Reviewing shipment exceptions and recording a recovery action.",
-    "avoidWhen": "A guarantee that a carrier action or refund has been completed without a host response.",
+    "useWhen": "Reviewing a held parcel with its carrier route and recording a deliberate recovery action with an internal note.",
+    "avoidWhen": "A carrier tracking authority, or claiming delivery, relabelling or collection from a recorded recovery request.",
     "integration": [
-      "Supply your own records through `shipments`. Preserve stable keys or IDs when the data contract provides them."
+      "Provide shipments with unique ids and host-approved actions with unique ids. Optional carrier, tracking, ordered events and product SKU/glyph/colour/image retain the parcel context. Invalid or duplicate entries are reported and excluded.",
+      "Connect onResolve to persist shipmentId, actionId and trimmed note. Pending recording freezes shipment selection and duplicate writes. Rejection keeps review and the note; a receipt acknowledges the recorded action only.",
+      "Notes and decisions are retained per unchanged shipment. Replacing a shipment revision retires its draft acknowledgement and stale callback replies while unrelated shipment drafts remain available.",
+      "Recovery choice cards support keyboard arrows, Home and End. Search filters the exception rail without discarding the current parcel or its draft. Empty shipments, routes, products and action lists have written states."
     ],
     "related": [
+      "commerce-customer-timeline",
       "commerce-backorder-allocation",
-      "commerce-bundle-builder",
-      "commerce-catalog-import"
+      "commerce-shipping-estimator"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-18"
   },
   "commerce-operations-dashboard": {
     "useWhen": "A commerce overview that connects headline measures with operational queues.",

@@ -12,7 +12,7 @@ const finalStates = {
   "commerce-promotion-builder": "AUTUMN20 rule saved",
   "commerce-purchase-order": "PO-3342 draft saved · 3 lines",
   "commerce-fulfilment-desk":
-    "A recovery action has been recorded for this shipment.",
+    "Request a new label recorded for #4788",
   "fashion-exchange-selector": "Exchange confirmed",
   "finance-close-checklist": "Signed off",
   "finance-receivables-aging":
