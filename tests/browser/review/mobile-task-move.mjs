@@ -105,4 +105,61 @@ export async function check({ page, mount, assert }) {
   assert.deepEqual(await page.evaluate(() => window.emptyActions), [task]);
   assert.equal(await page.getByRole("radio").count(), 0);
   assert.doesNotMatch(await page.locator("#root").innerText(), /NaN|Infinity/);
+  await checkHostCounts({ page, mount, assert });
+}
+
+async function checkHostCounts({ page, mount, assert }) {
+  const task = {
+    id: "task",
+    key: "LED-12",
+    title: "Fix invoice totals",
+    assignee: "Mara",
+    priority: "high",
+    status: "todo",
+  };
+  const columns = [
+    { id: "todo", label: "To do", kind: "todo", count: 4 },
+    { id: "review", label: "Review", kind: "review", count: 1, limit: 3 },
+  ];
+  await mount(
+    `function Host(){const [columns,setColumns]=useState(${JSON.stringify(columns)});return <Subject.MobileTaskMove statuses={columns} task={${JSON.stringify(task)}} undoSeconds={60} onMove={()=>new Promise(resolve=>{window.publishMove=()=>setColumns(items=>items.map(s=>({...s,count:s.id==='todo'?3:2})));window.finishMove=resolve})} onUndo={()=>new Promise(resolve=>{window.publishUndo=()=>setColumns(items=>items.map(s=>({...s,count:s.id==='todo'?4:1})));window.finishUndo=resolve})}/>};createRoot(document.getElementById('root')).render(<Host/>);`,
+  );
+  const todo = page.locator('[data-demo="task-status-todo"]');
+  const review = page.locator('[data-demo="task-status-review"]');
+  const counts = async () => {
+    const text = await review.innerText();
+    const amount = text.match(/(\d+) of 3 in this column|At its limit of (\d+)/);
+    return {
+      todo: Number((await todo.innerText()).match(/(\d+) issues/)?.[1]),
+      review: Number(amount?.[1] ?? amount?.[2]),
+    };
+  };
+  const snapshots = [];
+  const save = async (label) => snapshots.push({ label, ...(await counts()) });
+  await page.getByRole("radio", { name: "Review", exact: true }).press("Space");
+  await page.getByRole("button", { name: "Move to Review", exact: true }).press("Enter");
+  await page.getByRole("button", { name: "Moving to Review", exact: true }).waitFor();
+  await page.evaluate(() => window.publishMove());
+  await todo.getByText("3 issues", { exact: true }).waitFor();
+  await save("move-published");
+  await page.evaluate(() => window.finishMove());
+  await page.getByText("Moved to Review", { exact: true }).waitFor();
+  await save("move-acknowledged");
+  await page.getByRole("button", { name: "Undo, back to To do", exact: true }).press("Enter");
+  await page.evaluate(() => window.publishUndo());
+  await todo.getByText("4 issues", { exact: true }).waitFor();
+  await save("undo-published");
+  await page.evaluate(() => window.finishUndo());
+  await page.getByRole("radio", { name: "To do, current status", exact: true }).waitFor();
+  await save("undo-acknowledged");
+  assert.deepEqual(
+    snapshots,
+    [
+      { label: "move-published", todo: 3, review: 2 },
+      { label: "move-acknowledged", todo: 3, review: 2 },
+      { label: "undo-published", todo: 4, review: 1 },
+      { label: "undo-acknowledged", todo: 4, review: 1 },
+    ],
+    "Server-published column counts must be applied once",
+  );
 }

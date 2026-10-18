@@ -110,6 +110,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 5: Task Move now covers real dragging, keyboard status bounds and blocked columns, retained-note move retries, pending locks, exact move/Undo payloads and rejected Undo recovery. Header actions have callbacks in normal and empty workflows; persisted moves offer Undo with a matching handler. Receipts show the previous status and retry labels match their visible text. Its Next-backed regression, eleven RN-web accessibility states, preview controls and refreshed poster/guarded film pass. 83 components remain without dedicated coverage.
 
+- Task 5 follow-up: Task Move gives updated host snapshots precedence over its local count adjustment while a request is pending. The controlled-host replay previously changed accepted move counts from 3/2 to 2/3 and Undo counts from 4/1 to 5/0. Both now remain at their accepted values through acknowledgement; the regression covers each publication and completion.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned

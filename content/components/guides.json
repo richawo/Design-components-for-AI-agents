@@ -5032,7 +5032,8 @@
       "Install `expo-blur`, `expo-linear-gradient` and `react-native-svg` (`npx install-expo-modules` once in bare apps), and check the puck drag inside your own scroll views and with VoiceOver's adjustable actions.",
       "An empty `statuses` array retains the task in a read-only state. Supply the workflow later to restore the status rail.",
       "Keep status ids stable and pair persisted onMove operations with onUndo. A rejected move keeps its note and target; a rejected Undo keeps the task in its new status and reoffers the receipt. Empty workflows retain task context. The puck supports native adjustment and web arrow, Home and End keys.",
-      "Provide onBack and onMore for the header actions; onMore receives the latest confirmed task. Pair a persisted onMove with onUndo to offer Undo."
+      "Provide onBack and onMore for the header actions; onMore receives the latest confirmed task. Pair a persisted onMove with onUndo to offer Undo.",
+      "When the host replaces the status list while a move or Undo is pending, its counts take precedence over the local adjustment."
     ],
     "related": [
       "mobile-swipe-list",
