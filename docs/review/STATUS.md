@@ -132,11 +132,11 @@ needs re-recording, whether its poster is current, and the state of its browser 
 | --- | --- | --- | --- |
 | `hr-compensation-review` | new | current | rewritten, passes |
 | `hr-employee-onboarding` | new | current | rewritten, passes |
-| `hr-interview-scorecard` | new | current | rewritten, passes on suite runner with source fixtures; Next route check pending |
-| `hr-leave-approval` | new | current | rewritten, passes on suite runner with source fixtures; Next route check pending |
+| `hr-interview-scorecard` | new | current | rewritten, passes on the Next-backed source-fixture runner |
+| `hr-leave-approval` | new | current | rewritten, passes on the Next-backed source-fixture runner |
 | `hr-org-explorer` | new | current | rewritten, passes |
-| `hr-people-dashboard` | new | current | rewritten, passes on suite runner with source fixtures; Next route check pending |
-| `hr-policy-acknowledgement` | new | current | rewritten, passes on suite runner with source fixtures; Next route check pending |
+| `hr-people-dashboard` | new | current | rewritten, passes on the Next-backed source-fixture runner |
+| `hr-policy-acknowledgement` | new | current | rewritten, passes on the Next-backed source-fixture runner |
 | `hr-shift-coverage` | new | current | rewritten, passes |
 
 ## Finance suite (9)
@@ -147,11 +147,11 @@ needs re-recording, whether its poster is current, and the state of its browser 
 | `finance-cashflow-dashboard` | new | current | rewritten, passes on Next; accessibility, responsive/state/entrance and selected-week list geometry pass |
 | `finance-close-checklist` | new | current | rewritten, passes |
 | `finance-expense-review` | new | current | rewritten, passes |
-| `finance-invoice-composer` | new | current | rewritten, passes on suite runner with source fixtures; Next route check pending |
-| `finance-payment-run` | new | current | rewritten, passes on suite runner with source fixtures; Next route check pending |
-| `finance-receivables-aging` | new | current | rewritten, passes on suite runner with source fixtures; Next route check pending |
+| `finance-invoice-composer` | new | current | rewritten, passes on the Next-backed source-fixture runner |
+| `finance-payment-run` | new | current | rewritten, passes on the Next-backed source-fixture runner |
+| `finance-receivables-aging` | new | current | rewritten, passes on the Next-backed source-fixture runner |
 | `finance-reconciliation` | new | current | pro-industry and demo probes pass on Next; exact currency and matched selection fixed |
-| `finance-scenario-forecast` | new | current | rewritten, passes on suite runner with source fixtures; Next route check pending |
+| `finance-scenario-forecast` | new | current | rewritten, passes on the Next-backed source-fixture runner |
 
 ## Fashion suite (8)
 
@@ -170,17 +170,17 @@ needs re-recording, whether its poster is current, and the state of its browser 
 
 | Slug | Video | Poster | Probe |
 | --- | --- | --- | --- |
-| `commerce-backorder-allocation` | new | current | rewritten, passes on suite runner with source fixtures; Next route check pending |
-| `commerce-bundle-builder` | new | current | rewritten, passes on suite runner with source fixtures; Next route check pending |
-| `commerce-customer-timeline` | new | current | rewritten, passes on suite runner with source fixtures; Next route check pending |
-| `commerce-shipping-estimator` | new | current | rewritten, passed before a formatting-only pass; rerun |
+| `commerce-backorder-allocation` | new | current | rewritten, passes on the Next-backed source-fixture runner |
+| `commerce-bundle-builder` | new | current | rewritten, passes on the Next-backed source-fixture runner |
+| `commerce-customer-timeline` | new | current | rewritten, passes on the Next-backed source-fixture runner |
+| `commerce-shipping-estimator` | new | current | rewritten, passes on the Next-backed source-fixture runner |
 
 ## Scroll and layout (8)
 
 | Slug | Video | Poster | Probe |
 | --- | --- | --- | --- |
 | `layout-split-resizer` | new | current |  |
-| `layout-workspace-shell` | new | current | block probes pass (block-legal-workspace fails identically on the old shell) |
+| `layout-workspace-shell` | new | current | all eight block workflows and retained-panel/focus checks pass; header menus stay above embedded drawers |
 | `scroll-background-wipe` | new | current | complete Next-backed scroll suite passes, including exact reversal and reduced motion |
 | `scroll-chapter-stack` | new | current | complete pro-scroll-probe passes; first-frame resize release, before/after/negative replay and both-theme accessibility verified |
 | `scroll-cinema-frame` | new | current | complete Next-backed scroll suite passes; exact reversal, playable WebM, offscreen pause and broken-film recovery verified |
@@ -243,10 +243,11 @@ needs re-recording, whether its poster is current, and the state of its browser 
 7. `finance-invoice-composer`: Remove line is hidden below a 672px container, so lines cannot be removed on narrow cards.
 8. `finance-receivables-aging`: ticking a not-yet-due invoice says "0 days past due"; invalid due dates age as "Over 90 days"; invoices for unknown customers count in totals without a row.
 
-## Other probes that still assert old UIs
+## Cross-cutting browser checks
 
-- `tests/browser/pro-50-demo-probe.mjs` `finalStates` (old receipt texts for several slugs).
-- `tests/browser/pro-native-themes-probe.mjs` (fashion-exchange-selector no longer has native inputs).
-- `tests/browser/preview-cascade-probe.mjs` (uses the old fashion-launch-calendar h2 and `data-demo="day-20"`).
-- `tests/browser/audit-trail-polish-probe.mjs` (old date-range panel and diff headings).
-- Reconciliation cross-cutting probes updated and passing on Next.
+- The latest complete run passed 52 of 56 suites, including all industry workflows, page/licence boundaries, block workflows and mobile recovery checks.
+- Bento now waits for its complete entrance before checking zero mutations and exact historical data. All four theme/motion/ambient cases pass; an injected loop is rejected.
+- Audit Trail's first-frame popup state and keyboard/pointer dismissal are fixed. Its workflow, metadata replay and both-theme open-menu accessibility pass; the blocked-End control is rejected.
+- The complete scroll suite passes with exact reversal, first-frame chapter release, playable WebM, offscreen pause and broken-film recovery.
+- All 23 metadata replays from the interrupted HR/legal/SaaS tail now pass, as does Audit Trail's separate replay. Leave approval also passed three traced attempts. Its earlier lost click remains unreproduced; assertions stay strict and failures now preserve clicks, targets and geometry.
+- Repeat the complete suite after the remaining component work. Targeted passes do not replace that final run.

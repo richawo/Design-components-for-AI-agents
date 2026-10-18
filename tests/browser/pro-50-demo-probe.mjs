@@ -33,16 +33,19 @@ const page = await browser.newPage({
 });
 const errors = [];
 page.on("pageerror", (e) => errors.push(e.message));
+let replay;
 try {
   for (const { slug } of specs.filter(
     (s) =>
       fs.existsSync("registry/pro/" + s.slug) &&
       (!selected.size || selected.has(s.slug)),
   )) {
+    replay = { slug };
     const meta = JSON.parse(
       fs.readFileSync("registry/pro/" + slug + "/meta.json"),
     );
     const steps = meta.demo.steps;
+    replay.steps = steps;
     await mountFixture(
       page,
       slug,
@@ -56,6 +59,19 @@ try {
     await page.setViewportSize({ width: 1440, height: meta.previewHeight });
     await page.waitForTimeout(200);
     const before = await page.locator("#root").innerText();
+    replay.before = before;
+    await page.evaluate(() => {
+      window.demoReplayClicks = [];
+      document.addEventListener("click", (event) => {
+        const target = event.target instanceof Element ? event.target.closest("[data-demo]") : null;
+        window.demoReplayClicks.push({
+          at: performance.now(),
+          target: target?.getAttribute("data-demo") ?? null,
+          text: target?.textContent?.trim(),
+          disabled: target?.matches(':disabled,[aria-disabled="true"]') ?? false,
+        });
+      }, true);
+    });
     await page.evaluate((steps) => window.play(steps), steps);
     await page.waitForTimeout(100);
     const last = steps
@@ -101,6 +117,30 @@ try {
     assert.deepEqual(errors, [], slug);
     console.log("PASS live replay " + slug);
   }
+} catch (error) {
+  const folder = "test-results/demo-replays";
+  fs.mkdirSync(folder, { recursive: true });
+  const state = await page.evaluate(() => ({
+    clicks: window.demoReplayClicks,
+    text: document.getElementById("root")?.innerText,
+    scrollY,
+    targets: [...document.querySelectorAll("[data-demo]")].map((node) => {
+      const box = node.getBoundingClientRect();
+      return {
+        target: node.getAttribute("data-demo"),
+        disabled: node.matches(':disabled,[aria-disabled="true"]'),
+        inert: !!node.closest("[inert],[hidden]"),
+        box: { x: box.x, y: box.y, width: box.width, height: box.height },
+        hit: document.elementFromPoint(box.x + box.width / 2, box.y + box.height / 2)
+          ?.closest("[data-demo]")?.getAttribute("data-demo"),
+      };
+    }),
+  }));
+  const file = `${folder}/${replay?.slug ?? "mount"}-failed`;
+  fs.writeFileSync(`${file}.json`, JSON.stringify({ ...replay, errors, state }, null, 2));
+  await page.screenshot({ path: `${file}.png`, fullPage: true });
+  console.error(`Replay failure evidence: ${file}.{json,png}`);
+  throw error;
 } finally {
   await browser.close();
 }

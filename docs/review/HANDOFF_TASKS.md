@@ -92,6 +92,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 4: the complete Next-backed scroll rerun passes all six components and the playable/broken video cases. Cinema Frame now establishes its intended resting layout before recording the comparison baseline; exact reversal remains required. Scroll failures preserve their baseline, viewport and geometry for diagnosis.
 
+- Task 4: all 23 metadata replays from the interrupted HR/legal/SaaS tail now pass, along with Audit Trail's separate replay. Leave approval passed three traced attempts and the preceding-demo sequence; its earlier lost click remains unreproduced. A blocked-approval control fails the final receipt assertion as expected. Replay failures now save dispatched clicks, target hit-testing, viewport geometry and a screenshot. The latest complete run remains 52 of 56; repeat it after the remaining component work.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
