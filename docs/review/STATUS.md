@@ -11,14 +11,14 @@ needs re-recording, whether its poster is current, and the state of its browser 
 
 ## Batch verification (18 October 2026)
 
-The preceding four Commerce rebuilds pass their focused Next workflows, controls and component audits. The full
-Next-backed run passed 58/59 suites; its sole failure, Org Explorer’s deferred tree focus closing colleague search,
-is fixed and the complete HR group passes its rerun. Every suite now has a passing result; both logs are preserved.
-Strict registry validation, TypeScript and all 1,063 unit tests pass. The Worker dry run passes with a
-2,655,633-byte router, 56,919,585-byte runtime and 4,745,670 bytes of compressed source maps. Existing lazy-boundary
-and size guards remain in place. The earlier complete 59-suite and 26-component audit checkpoint is also retained.
-Measurements, checkout revisions and package diagnostics are recorded in
-[the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks).
+The Return Desk, Variant Stock, Catalogue Import and Permission Matrix batch passes its workflows, controls and
+component audits. The complete Next-backed run passed 55/59 initially; its four failing suites now have passing
+reruns. The complete 20-component mobile group, all metadata demos and five focused demo-player suites pass.
+Original failures and deterministic negatives are preserved. Fresh Matrix/Project Switcher audits, strict
+registry, TypeScript and all 1,063 unit tests pass. The Worker dry run measures a 2,655,633-byte router,
+57,063,324-byte runtime and 4,754,984 bytes of compressed source maps. Existing guards are retained,
+and the three diagnostic packages’ runtime files are verified. Earlier checkpoints remain recorded.
+See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisions, measurements and evidence.
 
 ## Mobile (20)
 

@@ -249,6 +249,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 4 follow-up: the legacy Stock replay clicked the page background because its cell was inside the viewport but outside the table’s scroll region. Demo targets now expose themselves inside scrollable ancestors before the pointer presses. The old source fails the isolated two-axis case; the fix passes it, the blocked-scroll negative and the actual narrow Stock replay (3 to 5, then saved). All five focused demo suites, including all eight legacy replays, pass with strict registry, TypeScript and all 1,063 unit tests. The unchanged component-page probe also passes all five pages and active/denied/error/retry access checks; the original navigation timeout and a 7.3s request trace are retained. The full mobile group and broad metadata replays remain to be rerun before the Worker checkpoint.
 
+- Task 8: the Return/Stock/Catalogue/Permissions batch and its regression fixes pass release verification. All 59 browser suites have passing results across the full run and focused reruns, including the complete 20-component mobile group and all metadata demos. Fresh component audits, strict registry, TypeScript and all 1,063 unit tests pass. The Worker dry run measures 2,655,633 bytes for the router, 57,063,324 for runtime and 4,754,984 for compressed maps, with all guards retained. The full evidence and unchanged optional-package diagnostics are recorded below.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -440,6 +442,36 @@ industry components).
 After any batch of the above: `node scripts/build-registry.mjs --strict`, `npx tsc --noEmit`, `npm test`,
 `npm run test:components`, `npm run audit:components -- <changed slugs>`, then stop the dev server and run
 `npm run deploy:dry-run` to check the Worker bundle size. Deployment itself (`npm run deploy`) is the owner's call.
+
+### Workflow and regression checkpoint: 18 October 2026
+
+Validated checkout: public `4fef685`, private `fa4fac0`, with the existing shared auth/mobile edits.
+
+| Check | Result |
+| --- | --- |
+| Strict registry | Pass: 100 free and 259 Pro components |
+| TypeScript | Pass |
+| Unit tests | 43 files, 1,063 tests pass |
+| Complete Next-backed browser run | 55/59 initially; every failed suite now has a passing rerun |
+| Broad recovery | All 20 mobile regressions and every metadata demo replay pass |
+| Demo-player checks | Five suites pass, including all eight legacy replays and the blocked-scroll negative |
+| Component audits | Return Desk, Variant Stock, Catalogue Import and Permission Matrix pass; fresh Matrix and Project Switcher audits pass |
+| Worker router | 2,655,633 bytes, below 4 MiB |
+| Worker runtime | 57,063,324 bytes, below 64 MiB |
+| Compressed source maps | 4,754,984 bytes total, below 15,000,000 bytes |
+| Worker dry run | Exit 0; all existing size and lazy-boundary guards retained |
+
+The original full run and source revisions are `workflow-batch-browser.log` and `workflow-batch-checkout.json`.
+Recovery is recorded in `workflow-recovery-browser.log`, `demo-scroll-browser.log`,
+`component-pages-rerun.log` and `policy-workspace-fixed.log`; the other seven block workflows pass in
+`policy-blocks-fixed.log`. The page probe passed unchanged, including its private-source access boundaries.
+Deterministic negatives, pointer traces, rendered receipts and the original failures remain alongside the logs.
+Final registry, type and unit checks use the `demo-scroll-` prefix. Audits are `workflow-batch-quality.log`
+and `workflow-recovery-quality.log`; corrected desktop/phone and saved-receipt captures are visually reviewed.
+All evidence is under `test-results/handoff-next/`. The Worker log and measured proof are
+`workflow-batch-worker.log` and `workflow-batch-worker-proof.json`. The same three optional OpenNext
+package-copy diagnostics remain; all 14, 3 and 19 runtime files respectively are present and byte-identical.
+No deployment was performed.
 
 ### Commerce and Org Explorer checkpoint: 18 October 2026
 
