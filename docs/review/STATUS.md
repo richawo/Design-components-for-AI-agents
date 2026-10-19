@@ -10,16 +10,26 @@ needs re-recording, whether its poster is current, and the state of its browser 
   was written in this review; those are the ones for a separate pass.
 
 All eight final smaller components have reviewed current films and posters, source and Next regressions,
-controls, accessibility checks and exact individual metadata replays. Their single complete **65-suite /
-94-replay** batch, fresh eight-component audits and Worker dry run are pending. The corrected inventory has
-**11 published composed blocks**, rather than the earlier twelve. Both repositories and published block
-metadata agree; every declared component dependency is available.
+controls, accessibility checks and exact individual metadata replays. Their release checkpoint covers
+**all 65 browser suites across runs**: the full run is **62/65**, followed by **3/3 complete corrected suites**,
+including **94/94 exact metadata replays**. The three test-only fixes wait for committed/visible state or use
+native rendering; original assertions, deadlines and failure evidence are retained. Component source stays
+unchanged between these runs. This is not a single 65/65 result.
+
+Fresh eight-component audits pass. **79/80 captures are byte-identical** to reviewed references; the remaining
+Pagination phone capture has 20 outline-edge pixels changed and is visually approved. Strict registry,
+root/isolated types and all **1,066 unit tests** pass. The Worker dry run passes unchanged limits at
+**2,655,633 router bytes, 57,504,702 runtime bytes and 4,778,914 compressed source-map bytes**. Both source
+snapshots and standing change status remain fixed through the release checks. No deployment was performed.
+The corrected remaining inventory is **11 published blocks, 59 older probes and 117 films**.
+
+## Previous workspace/input checkpoint (19 October 2026)
 
 The workspace/input checkpoint covers **all 64 browser suites across runs**: the full run is 63/64,
 and the complete corrected Expansion follow-up passes. The sole failure was an obsolete empty-booking
 assertion; production source stays unchanged and the test-only fix is pushed as `41e75c1`. All **86 exact
 metadata replays** pass against frozen source steps. The original full result and diagnostic capture remain
-archived. A single complete rerun follows the remaining small-component reviews.
+archived. The final smaller-component checkpoint above supersedes this earlier batch.
 
 Fresh Setup, Booking, Dropzone and Shortcut Recorder audits pass with no runtime, accessibility or
 reduced-motion failures. All **40 images match the reviewed references byte-for-byte**; four fresh 320px

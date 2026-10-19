@@ -583,10 +583,36 @@ exact metadata replay, with strict registry, root/isolated types and all 1,066 u
 and paired posters are reviewed and pass their original recording guards. Inline Alert has no sustained-motion
 interval in its film, so no moving-frame p95 is claimed.
 
-The next complete run has **65 browser suites and 94 metadata replays**. That single run, fresh audits for all
-eight components and a new Worker dry run are still pending. The prior workspace/input checkpoint below
-remains the latest complete release check. The remaining source-review inventory is **11 composed blocks**;
-the older count of twelve was corrected against both source repositories and published metadata.
+This checkpoint covers **all 65 browser suites across runs**, with **94/94 exact metadata replays**.
+The complete run at public `c40d341` / private `b414ba7` finished **62/65**. The complete Forms/Dates,
+metadata-replay and Finance follow-ups then passed **3/3** against the same component sources. This is
+coverage across runs, not a single 65/65 result. All 947 public and 1,139 private tracked text files,
+both heads and the standing change status stayed fixed within each run; only three probe files differ
+between the runs.
+
+The original failures and diagnostics remain archived. Booking's immediate controlled-clear assertion
+preceded React's commit in 21 of 40 diagnostic cycles; all 40 acknowledged clears passed. Budget Variance's
+bars remained at zero until its visibility callback arrived, then drew within two frames. Both probes now
+wait for the actual rendered state and retain their original assertions. An injected 2.2s rendering stall
+reproduces the material demo's skipped light adjustment at the unchanged settling deadline; the original
+full-run stall was not directly traced. Motion replays now use native rendering, matching recordings and
+latency probes. The test-only fixes are pushed separately as `52382a0`, `27ba1eb` and `4127bbb`. No demo,
+recording or Worker timing limit was increased.
+
+Fresh audits pass for all eight components with no runtime, accessibility or reduced-motion failures.
+**79/80 captures match the reviewed references byte-for-byte**. The remaining Pagination 390px capture
+was visually reviewed: only 20 edge pixels around its selected-page outline differ, with no layout or
+copy change. Touch checks use browser emulation. Strict registry, root and isolated component types,
+and all **1,066 unit tests** pass.
+
+The Worker dry run at public `4127bbb` / private `b414ba7` passes the original guards: **2,655,633 router
+bytes**, **57,504,702 runtime bytes** and **4,778,914 gzipped source-map bytes**. All runtime files for the
+three known optional-package copy diagnostics are present and byte-identical. The release check preserves
+both heads, all tracked text sources and standing change status. Local evidence is in
+`test-results/handoff-final-small/`. No deployment was performed.
+
+The remaining queues are **11 composed blocks, 59 older dedicated probes and 117 films**. The older count
+of twelve blocks was corrected against both source repositories and published metadata.
 
 ### Workspace and input checkpoint: 19 October 2026
 
