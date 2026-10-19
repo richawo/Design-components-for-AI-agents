@@ -1,3 +1,4 @@
+import { check as checkEmptyMatterTable } from '../review/legal-empty-matter-table.mjs';
 import { check as checkDocumentRevision } from '../review/legal-document-revision.mjs';
 import { check as checkMatterSemantics } from '../review/legal-matter-semantics.mjs';
 import { check as checkInboxSnapshots } from '../review/legal-inbox-snapshots.mjs';
@@ -46,4 +47,5 @@ export async function check({ page, mount, assert, capture = async () => {} }) {
   await checkInboxSnapshots({ page, mount, assert, capture });
   await checkMatterSemantics({ page, mount, assert, capture });
   await checkDocumentRevision({ page, mount, assert, capture });
+  await checkEmptyMatterTable({ page, mount, assert, capture });
 }
