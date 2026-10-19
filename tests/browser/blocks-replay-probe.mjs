@@ -6,7 +6,7 @@ const specs = [
   ["block-saas-dashboard", "Trial signups per day"],
   ["block-workspace-settings", "Preferences saved."],
   ["block-financial-report", "September 2026"],
-  ["block-fashion-workspace", "Line plan"],
+  ["block-fashion-workspace", "Line plan saved"],
   ["block-people-workspace", "A considered first week"],
   ["block-legal-workspace", "Obligations and evidence"],
   ["block-commerce-workspace", "RET-ORD-1042 · Return request recorded"],
@@ -64,6 +64,18 @@ try {
         });
       });
     }
+    if (slug === "block-fashion-workspace") {
+      await page.evaluate(() => {
+        window.fashionReplay = [];
+        document.addEventListener("click", (event) => {
+          const target = event.target.closest?.("[data-demo]");
+          const name = target?.dataset.demo;
+          if (["nav-planning", "add-outer", "save"].includes(name)) {
+            window.fashionReplay.push(name);
+          }
+        }, true);
+      });
+    }
     await page.evaluate((steps) => window.play(steps), meta.demo.steps);
     assert.ok(
       (await page.locator("#root").innerText()).includes(final),
@@ -92,6 +104,16 @@ try {
       assert.equal(await desk.getByRole("radio").count(), 0);
       assert.match(await desk.innerText(), /£125\.00/);
       assert.equal(await desk.getByText(final, { exact: true }).isVisible(), true);
+    }
+    if (slug === "block-fashion-workspace") {
+      assert.deepEqual(await page.evaluate(() => window.fashionReplay), [
+        "nav-planning", "add-outer", "save",
+      ], "Fashion replay adds a real style before saving its collection plan");
+      const pane = page.getByRole("tabpanel", { name: "Line plan", exact: true });
+      const receipt = pane.getByRole("status").filter({ hasText: "Line plan saved" });
+      assert.equal(await receipt.isVisible(), true);
+      assert.match(await receipt.innerText(), /15 options.*530 units.*£17,760\.00/s);
+      assert.equal(await page.getByRole("tab", { name: "Line plan", exact: true }).getAttribute("aria-selected"), "true");
     }
     assert.deepEqual(errors, []);
     console.log("PASS metadata replay " + slug);

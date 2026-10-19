@@ -5946,7 +5946,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "commerce",
-    "description": "A complete fashion workspace linking collection performance, line planning and launch readiness. Shared collection context keeps drafts and typed save payloads aligned.",
+    "description": "Collection performance, retained line plans and launch readiness share one brand and collection. Saves and retries keep their original collection context.",
     "tags": [
       "block",
       "workspace",
@@ -5969,7 +5969,7 @@
         "name": "brand",
         "type": "string",
         "default": "\"Northstar\"",
-        "description": "Workspace identity."
+        "description": "Workspace identity shared by the shell and all three collection tools."
       },
       {
         "name": "scopes",
@@ -5986,7 +5986,7 @@
         "name": "referenceDate",
         "type": "string",
         "default": "\"2026-10-12\"",
-        "description": "ISO date for launch validation; provide the host reporting date."
+        "description": "ISO reference date shared by the launch calendars. Supply the host reporting date."
       },
       {
         "name": "onSavePlan",
@@ -5996,7 +5996,7 @@
       {
         "name": "onSchedule",
         "type": "(payload: { collectionId: string; schedule: LaunchSchedule }) => void | Promise<void>",
-        "description": "Persist a reviewed launch schedule in the selected collection."
+        "description": "Persist a launch move with its original collection ID. Writes serialize within each calendar; rejection restores the date. Without a handler, moves remain local."
       },
       {
         "name": "theme",
@@ -6017,9 +6017,13 @@
     ],
     "demo": {
       "steps": [
-        "wait:350",
+        "wait:600",
         "click:@nav-planning",
-        "wait:2000"
+        "wait:900",
+        "click:@add-outer",
+        "wait:650",
+        "click:@save",
+        "wait:1500"
       ],
       "loop": false
     },

@@ -413,6 +413,8 @@ pass together, followed by a fresh Commerce replay after its final empty-selecto
 save their screenshot, body and error. The corrected viewport restoration also keeps Commerce's phone checks
 from changing subsequent block tests. Original failures and diagnostics remain local.
 
+- Task 7 (19 October): Fashion Workspace now shares its brand across all three tools, uses compact view-specific headings and names empty collections explicitly. Offline weekly histories reconcile to the existing sold-unit ledgers. Retained planning drafts, failed-save retry after a collection change, original typed callback contexts, missing writers, arriving data and keyboard actions at 320/390px pass. Narrow plan actions wrap without splitting words, and readiness text keeps room beside its ring. Compact metrics stack so complete currency amounts remain readable. Its 29-mount source review, forty accessibility audits, six widths and 54 reviewed state/entrance captures pass with frozen sources. Calendar write ownership and merchandising stock-cover contrast regressions remain registered. The exact metadata replay adds a fifteenth style and reaches the saved 530-unit, £17,760.00 plan receipt. Next controls and official audit, strict registry, root/all-eleven-block types and all 1,066 tests pass. Public callback contracts and Pro boundaries remain unchanged. Its reviewed 5.0s film and paired Next poster retain the complete 820px workspace in measured 1400×940 framing: source gap 57ms, delivery 49.62ms and moving-frame p95 28.37ms, with no stalls and unchanged guards. Nine blocks, 59 older probes and 118 films remain. The next complete batch release checkpoint remains pending.
+
 ## 1. Re-record demo videos (118 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
@@ -566,9 +568,9 @@ All nine parked rebuilds are shipped in both repos. Their original `_wip/<slug>`
 | finance-budget-variance | Completed 17 October: Next probe, dark/light accessibility, responsive and entrance/state captures, live demo and refreshed poster pass. |
 | finance-cashflow-dashboard | Completed 17 October: weekly balance and in/out bars, movable payments, independent pending saves, invalid-data guards, selected-week list geometry, Next probe/demo, both-theme accessibility, responsive/state/entrance captures and refreshed poster pass. |
 
-## 7. Continue the review (10 blocks)
+## 7. Continue the review (9 blocks)
 
-Same process as the 199 already done: hold each to the first ~100 components' standard. Briefs:
+Same process as the 200 already done: hold each to the first ~100 components' standard. Briefs:
 `docs/review/REVIEW_BRIEF.md`, `docs/review/SUITE_BRIEF.md` for industry components, suite languages in
 `docs/review/suites/`. Work newest first, about four components per batch, and verify each (build, tsc, tests,
 check-component, your own captures of states and mid-entrance frames, a refreshed poster, a rewritten pro-50 probe for
@@ -612,12 +614,12 @@ reference; the reviewed dark capture differs only in eight pixels around its Pai
 registry, root/eleven-block types and all 1,066 unit tests pass. The private fix is `87da4af`. The full
 Commerce completed its full review with this dependency; ten other blocks remain open.
 
-- **Commerce** is reviewed. Keep `block-commerce-workspace` compatible with its rebuilt parts.
+- **Commerce and Fashion** are reviewed. Keep both workspaces compatible with their rebuilt parts.
 - **Smaller components** (#151–179) are reviewed.
-- **Blocks**, after their parts: ten of the eleven published `block-*` components remain. Commerce Workspace is reviewed. Many parts changed their look and some their props;
+- **Blocks**, after their parts: nine of the eleven published `block-*` components remain. Commerce and Fashion Workspaces are reviewed. Many parts changed their look and some their props;
   re-check each block composes well with the rebuilt parts and still reads as one product. The earlier count of 12 was stale: both source repositories and all published `kind: "block"` metadata contain these eleven, with every declared dependency available.
 
-`block-fashion-workspace`, `block-financial-report`,
+`block-financial-report`,
 `block-legal-workspace`, `block-meetings-workspace`, `block-music-workspace`,
 `block-people-workspace`, `block-saas-dashboard`, `block-saas-landing`,
 `block-team-workspace`, `block-workspace-settings`.

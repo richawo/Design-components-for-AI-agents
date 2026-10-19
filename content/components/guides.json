@@ -3496,15 +3496,17 @@
     "useWhen": "A fashion team needs collection performance, a working line plan and launch readiness within the same product workspace.",
     "avoidWhen": "An authoritative inventory or manufacturing system without current catalogue data and reviewed host actions.",
     "integration": [
-      "Supply one `scopes` record per collection. Its performance records, line budget and launches share a single context.",
-      "The block keeps every view mounted so an unfinished line plan survives collection and view changes.",
-      "Save and schedule callbacks include the collection ID alongside the underlying typed payload. The offline preview accepts local example changes."
+      "Supply one uniquely identified scopes record per collection. Performance records, line categories, budget and launch records share that collection context.",
+      "Pass the workspace brand to every nested tool. Use concise view-specific headings and a Collection listbox with a written empty state.",
+      "Retained panels keep an unfinished line plan when the user changes collections or views; outgoing panels become inert and leave the accessibility tree immediately.",
+      "onSavePlan receives the original collectionId and a typed CollectionPlan; reject to retain the draft for retry. Without a writer, the component keeps local edits without claiming persistence.",
+      "onSchedule receives the original collectionId and typed LaunchSchedule. A calendar serializes pending host writes and restores a rejected move; without a handler, moves remain local. The offline demo accepts example saves."
     ],
     "related": [
       "block-financial-report",
       "block-saas-dashboard"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-19"
   },
   "block-people-workspace": {
     "useWhen": "A people team needs department context, new-hire tasks and leave coverage in one product workspace.",
