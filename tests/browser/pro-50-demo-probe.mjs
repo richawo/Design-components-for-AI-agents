@@ -9,6 +9,7 @@ const specs = fs
   .filter((file) => file.endsWith(".mjs"))
   .map((file) => ({ slug: file.slice(0, -4) }));
 const finalStates = {
+  "navigation-breadcrumb-fold": "Type specimens",
   "feedback-inline-alert": "Archive opened",
   "content-accordion-index": "We discuss the tradeoff before changing course.",
   "progress-milestones": "Source files, notes and a clear path for the next release.",
@@ -200,6 +201,17 @@ try {
           if (next !== window.inlineAlertStates.at(-1)) window.inlineAlertStates.push(next);
         });
         window.inlineAlertObserver.observe(panel, {childList:true,subtree:true,characterData:true});
+      });
+    }
+    if (slug === "navigation-breadcrumb-fold") {
+      await page.getByRole("navigation").evaluate(panel => {
+        const state = () => [...panel.querySelectorAll('a')].map(node=>node.getAttribute('href'));
+        window.breadcrumbStates = [state()];
+        window.breadcrumbObserver = new MutationObserver(() => {
+          const next=state();
+          if (JSON.stringify(next)!==JSON.stringify(window.breadcrumbStates.at(-1))) window.breadcrumbStates.push(next);
+        });
+        window.breadcrumbObserver.observe(panel,{childList:true,subtree:true,attributes:true,attributeFilter:["href"]});
       });
     }
     if (slug === "input-shortcut-recorder") {
@@ -434,6 +446,25 @@ try {
       assert.equal(await page.getByRole("status").innerText(),"");
       await page.evaluate(()=>window.inlineAlertObserver.disconnect());
     }
+    if (slug === "navigation-breadcrumb-fold") {
+      assert.deepEqual(await page.evaluate(()=>window.breadcrumbStates),[
+        ["#workspace","#identity"],
+        ["#workspace","#projects","#studio","#identity"],
+        ["#workspace","#identity"],
+      ],"The exact demo reveals every ancestor and returns to the folded path");
+      const current=page.locator('[aria-current="page"]');
+      assert.equal(await current.innerText(),"Type specimens");
+      assert.equal(await current.evaluate(node=>node.tagName),"SPAN");
+      assert.equal(await page.getByRole("link").count(),2);
+      assert.equal(await page.getByRole("button",{name:"Collapse path",exact:true}).count(),0);
+      const expand=page.getByRole("button",{name:"Show full path",exact:true});
+      assert.equal(await expand.getAttribute("aria-expanded"),"false");
+      assert.equal(await expand.evaluate(node=>node===document.activeElement),true);
+      const id=await expand.getAttribute("aria-controls");
+      assert.equal(await page.locator('ol').getAttribute('id'),id);
+      replay.exactWorkflowVerified=true;
+      await page.evaluate(()=>window.breadcrumbObserver.disconnect());
+    }
     if (slug === "input-shortcut-recorder") {
       assert.deepEqual(await page.evaluate(() => window.shortcutStates), [
         [["Control","Shift","K"],"Record shortcut. Current: Control plus Shift plus K","Click the keycaps to change the combination."],
@@ -610,6 +641,8 @@ try {
       await page.evaluate(() => window.ticketObserver.disconnect());
     } else if (slug === "primitives-shortcut-reference") {
       assert.equal(replay.exactWorkflowVerified, true, "The retained-state demo passes its complete journey assertion");
+    } else if (slug === "navigation-breadcrumb-fold") {
+      assert.equal(replay.exactWorkflowVerified,true,"The retained-state demo passes its complete journey assertion");
     } else if (slug === "selects-radio-cards") {
       assert.equal(replay.exactWorkflowVerified, true, "The retained-state demo passes its complete journey assertion");
     } else if (notice.some((s) => s.trim() && !s.startsWith("Connect "))) {

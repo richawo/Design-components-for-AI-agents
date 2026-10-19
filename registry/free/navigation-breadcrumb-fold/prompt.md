@@ -1,27 +1,31 @@
-# Folding Breadcrumb
+# Breadcrumb Fold
 
-Build a standalone React 19 and Tailwind v4 component. A wrapping breadcrumb trail that folds intermediate locations into an explicit disclosure, preserving real links and a clearly marked current page.
+Build a self-contained React 19, Tailwind v4 and motion/react component with the existing typed API, named export and overridable default demo.
 
-## Layout
+## Layout and type
 
-One low-profile navigation rail with folder icon, optical chevrons and generous link targets. Expand the full path in-place instead of opening a floating menu. Size to the container. Use a 4/8px rhythm, 1px surface edges, 16px narrow padding and 24px desktop padding. Controls have 44px targets.
+A compact breadcrumb rail with a quiet folder mark, real ancestor links and a plain current-page label. Long paths fold middle ancestors behind a 44px ellipsis control; expanding reveals the complete path with a separate collapse action. Keep neutral graphite surfaces, restrained depth, clear chevrons, readable wrapping and visible focus. Wrapped ancestor links retain 8px vertical inner padding.
 
-## Typography and colour
+## Interaction
 
-Use font-sans at 14-16px/1.5, font-mono metadata at 11-12px and a 24-36px heading with -0.035em tracking. Dark uses #111111, #f5f5f5, #a3a3a3 and #333333; light uses #ffffff, #171717, #525252 and #d4d4d4. Maintain AA contrast.
+Preserve BreadcrumbItem, BreadcrumbFoldProps and the named BreadcrumbFold export. Use real native ancestor links; mark the final plain label with aria-current=page instead of linking it.
+
+For paths longer than three items, retain the first and final two locations when folded. The ellipsis button names its action, exposes expanded state and identifies the path list. Hidden ancestors are absent from keyboard navigation.
+
+Use Enter/Space activation for expand/collapse. Move focus before paint to the corresponding replacement control; if focused path controls disappear when the host shortens the path, retain context at the outlined navigation landmark.
+
+Keep focus attached to retained ancestors through position changes with stable href and occurrence keys. Do not take focus back after the user has left the path.
+
+Use instance-scoped list IDs, labelled navigation and written empty content. Handle zero, one, short, long and repeated-href paths plus independent instances without overflow.
+
+The host supplies real destinations and owns route changes. Expanding or folding only changes the path presentation.
 
 ## Motion
 
-Use a 320ms opacity/8px entrance, 150ms press response and 240ms state changes, easing cubic-bezier(0.22,1,0.36,1). No ambient loops. Reduced motion removes transforms and layout animation and limits fades to 120ms.
+Enter the breadcrumb rail with opacity and an 8px rise over 320ms. Keep 150ms link/button feedback and immediate focus handoff during folding. The path can wrap within its own width. Subscribe to live prefers-reduced-motion changes and stop and settle the owned entrance immediately. Remove press transforms.
 
-## Behaviour and accessibility
+## Integration
 
-Use semantic elements, native keyboard behaviour, visible focus rings and instance-scoped IDs. Expose typed content and callbacks. Handle empty custom data and repeated instances. Announce important feedback politely. Match the source state ownership and callback contract.
+Supply ordered real destinations; the final entry is the current location and renders as text. Use distinct navigation labels for multiple paths. Stable href identities preserve retained-link focus, and folding keeps keyboard context within the navigation without changing the route.
 
-## Responsive
-
-Design for 320, 390, 768, 1024, 1440 and 1920px. Respond to the container with @container variants, wrap text and stack secondary details. Scroll only within explicitly labelled local regions.
-
-## Avoid
-
-No remote imagery, false success states, unlabelled controls, hover-only actions, low contrast or decorative status pills. The demo is an isolated component on a quiet stage.
+Use the source dark/light palettes and verify 320/390/768/1024/1440/1920px container layouts.

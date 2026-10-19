@@ -7,7 +7,6 @@
   "description": "A wrapping breadcrumb trail that folds intermediate locations into an explicit disclosure, preserving real links and a clearly marked current page.",
   "tags": [
     "navigation",
-    "navigation",
     "breadcrumb",
     "fold",
     "responsive",
@@ -25,13 +24,13 @@
       "name": "items",
       "type": "BreadcrumbItem[]",
       "default": "five-level project path",
-      "description": "Ordered real hrefs; last item is the current page. Empty data renders a location hint."
+      "description": "Ordered real href/label pairs; the last item is current and is not a link. Stable href and occurrence keys retain focused ancestors when their positions change. Empty data has a written location hint."
     },
     {
       "name": "label",
       "type": "string",
       "default": "\"Breadcrumb\"",
-      "description": "Accessible navigation label."
+      "description": "Accessible name for the breadcrumb navigation landmark. Independent paths should have useful distinct names."
     },
     {
       "name": "theme",
@@ -45,9 +44,9 @@
     "steps": [
       "wait:700",
       "click:@expand-path",
-      "wait:800",
+      "wait:1000",
       "click:@collapse-path",
-      "wait:700"
+      "wait:1700"
     ],
     "loop": false
   },

@@ -396,6 +396,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 7 (19 October): Actionable Inline Notice retains its restrained semantic icon and optional action row. Replaced content retires pending UI and stale replies, while equivalent host renders retain the active operation and use current failure copy. The pending action retains keyboard focus with aria-disabled, without reclaiming it after Tab leaves the notice. Immediate busy guards block keyboard/pointer reactivation and dismissal in the same event turn; unmounted requests cannot change a new instance. Its owned 320ms entry settles on live reduced-motion changes, wrapped actions retain inner padding and their arrow keeps its width. Rendered integration commentary is removed. Four original-source failures are retained. Its 33-mount source review, twenty accessibility audits, six widths, reviewed state/entrance captures, Next and existing input regressions, theme control, official audit and exact archive-opening replay pass. Keyboard action/retry, rejected and pending callbacks, replacement notices, absent handlers, long text and independent instances are covered. The awaited action and synchronous host dismissal API stays unchanged. Strict registry, root/isolated types and all 1,066 tests pass. Its reviewed 3.1s film and paired poster retain the ready and opened document archive in the measured 832×600 frame: source gap 10ms, delivery 4.91ms; no sustained-motion interval, with no stalls and unchanged guards. The next complete batch has 65 suites and 93 metadata replays and remains pending. 1 components and 12 blocks remain; 117 films remain queued.
 
+- Task 7 (19 October): Folding Breadcrumb retains its compact route rail, real ancestor links and plain current-page label. Stable href/occurrence keys preserve focus through ancestor reordering. Expanding and collapsing transfer focus to the surviving control; removing focused controls retains focus in the landmark without reclaiming it after an outside button or primary blank-space click. Wrapped ancestor labels retain inner padding. Its owned 320ms entrance settles immediately on live reduced-motion changes. Three original-source failures are retained. Its 39-mount source review, twenty accessibility audits, six widths, reviewed state/entrance captures, Next and existing input regressions, theme control, official audit and exact folded/expanded/refolded replay pass. Native link navigation, keyboard disclosure, empty and short paths, long copy, independent landmarks and every phone preview state at 320/390px are covered. The API stays unchanged. Strict registry, root/isolated types and all 1,066 tests pass. Its reviewed 3.8s film and paired poster retain the folded, expanded and refolded path in the measured 832×600 frame: source gap 11ms, delivery 13.55ms and moving-frame p95 25.60ms, with no stalls and unchanged guards. The next complete batch has 65 suites and 94 metadata replays and remains pending. 0 components and 12 blocks remain; 117 films remain queued.
+
 ## 1. Re-record demo videos (117 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
@@ -548,17 +550,16 @@ All nine parked rebuilds are shipped in both repos. Their original `_wip/<slug>`
 | finance-budget-variance | Completed 17 October: Next probe, dark/light accessibility, responsive and entrance/state captures, live demo and refreshed poster pass. |
 | finance-cashflow-dashboard | Completed 17 October: weekly balance and in/out bars, movable payments, independent pending saves, invalid-data guards, selected-week list geometry, Next probe/demo, both-theme accessibility, responsive/state/entrance captures and refreshed poster pass. |
 
-## 7. Continue the review (1 components, then 12 blocks)
+## 7. Continue the review (0 components, then 12 blocks)
 
-Same process as the 197 already done: hold each to the first ~100 components' standard. Briefs:
+Same process as the 198 already done: hold each to the first ~100 components' standard. Briefs:
 `docs/review/REVIEW_BRIEF.md`, `docs/review/SUITE_BRIEF.md` for industry components, suite languages in
 `docs/review/suites/`. Work newest first, about four components per batch, and verify each (build, tsc, tests,
 check-component, your own captures of states and mid-entrance frames, a refreshed poster, a rewritten pro-50 probe for
 industry components).
 
 - **Commerce** is reviewed. Keep `block-commerce-workspace` compatible with its rebuilt parts.
-- **Smaller components** (#151–179):
-  navigation-breadcrumb-fold.
+- **Smaller components** (#151–179) are reviewed.
 - **Blocks**, after their parts: the 12 `block-*` components. Many parts changed their look and some their props;
   re-check each block composes well with the rebuilt parts and still reads as one product.
 

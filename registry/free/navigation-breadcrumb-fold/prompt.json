@@ -8,14 +8,14 @@
     "motion": "motion/react"
   },
   "layout": {
-    "direction": "One low-profile navigation rail with folder icon, optical chevrons and generous link targets. Expand the full path in-place instead of opening a floating menu.",
-    "container": "Size to the parent with @container. Keep the root width at 100%, capped to the focused component, with 24px desktop and 16px narrow padding.",
+    "direction": "A compact breadcrumb rail with a quiet folder mark, real ancestor links and a plain current-page label. Long paths fold middle ancestors behind a 44px ellipsis control; expanding reveals the complete path with a separate collapse action. Keep neutral graphite surfaces, restrained depth, clear chevrons, readable wrapping and visible focus. Wrapped ancestor links retain 8px vertical inner padding.",
+    "container": "Full-width breadcrumb rail capped at 768px with 16px padding and a 12px corner radius. The separate demo stage uses 16px padding, rising to 32px at the sm viewport breakpoint.",
     "rhythm": "4/8px spacing; 1px edges; 44px minimum interactive targets."
   },
   "typography": {
-    "body": "font-sans, 14-16px, line-height 1.5",
-    "metadata": "font-mono, 11-12px, restrained tracking",
-    "heading": "font-display or font-serif, 24-36px, tracking -0.035em"
+    "body": "font-sans ancestor links and current-page labels at 14px",
+    "metadata": "No count badges or editorial kicker",
+    "heading": "14px route labels"
   },
   "color": {
     "dark": {
@@ -32,9 +32,9 @@
     }
   },
   "motion": {
-    "entrance": "A single opacity and 8px rise over 320ms.",
-    "interaction": "150ms press response; 240ms state changes. No ambient loops.",
-    "reduced": "Remove transforms and layout motion; keep opacity at 120ms or less."
+    "entrance": "Enter the breadcrumb rail with opacity and an 8px rise over 320ms.",
+    "interaction": "Keep 150ms link/button feedback and immediate focus handoff during folding. The path can wrap within its own width.",
+    "reduced": "Subscribe to live prefers-reduced-motion changes and stop and settle the owned entrance immediately. Remove press transforms."
   },
   "responsive": {
     "widths": [
@@ -60,13 +60,13 @@
         "name": "items",
         "type": "BreadcrumbItem[]",
         "default": "five-level project path",
-        "description": "Ordered real hrefs; last item is the current page. Empty data renders a location hint."
+        "description": "Ordered real href/label pairs; the last item is current and is not a link. Stable href and occurrence keys retain focused ancestors when their positions change. Empty data has a written location hint."
       },
       {
         "name": "label",
         "type": "string",
         "default": "\"Breadcrumb\"",
-        "description": "Accessible navigation label."
+        "description": "Accessible name for the breadcrumb navigation landmark. Independent paths should have useful distinct names."
       },
       {
         "name": "theme",
@@ -80,5 +80,13 @@
     "Remote images, fake network success or hidden external dependencies.",
     "Decorative status badges, gradients as filler, low-contrast text.",
     "Unlabelled controls, hover-only functionality, overflow at 320px."
+  ],
+  "contract": [
+    "Preserve BreadcrumbItem, BreadcrumbFoldProps and the named BreadcrumbFold export. Use real native ancestor links; mark the final plain label with aria-current=page instead of linking it.",
+    "For paths longer than three items, retain the first and final two locations when folded. The ellipsis button names its action, exposes expanded state and identifies the path list. Hidden ancestors are absent from keyboard navigation.",
+    "Use Enter/Space activation for expand/collapse. Move focus before paint to the corresponding replacement control; if focused path controls disappear when the host shortens the path, retain context at the outlined navigation landmark.",
+    "Keep focus attached to retained ancestors through position changes with stable href and occurrence keys. Do not take focus back after the user has left the path.",
+    "Use instance-scoped list IDs, labelled navigation and written empty content. Handle zero, one, short, long and repeated-href paths plus independent instances without overflow.",
+    "The host supplies real destinations and owns route changes. Expanding or folding only changes the path presentation."
   ]
 }

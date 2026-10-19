@@ -660,14 +660,14 @@
     "useWhen": "An ancestry trail that remains usable in narrow spaces.",
     "avoidWhen": "A substitute for primary navigation or unrelated recent-page history.",
     "integration": [
-      "Supply your own records through `items`. Preserve stable keys or IDs when the data contract provides them."
+      "Supply ordered real destinations; the final entry is the current location and renders as text. Use distinct navigation labels for multiple paths. Stable href identities preserve retained-link focus, and folding keeps keyboard context within the navigation without changing the route."
     ],
     "related": [
       "navigation-pagination-window",
       "tabs-underline-glide",
       "app-permission-matrix"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-19"
   },
   "navigation-pagination-window": {
     "useWhen": "Moving through a bounded collection of numbered result pages.",
