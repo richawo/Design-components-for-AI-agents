@@ -9,24 +9,25 @@ needs re-recording, whether its poster is current, and the state of its browser 
 - **Probe**: the `tests/browser/pro-50/<slug>.mjs` state, or another probe that covers it. Blank means no browser test
   was written in this review; those are the ones for a separate pass.
 
-## Batch verification (18 October 2026)
+## Batch verification (19 October 2026)
 
-The Storyboard Strip, Version Restore, Exploded Assembly and Material Inspector batch passes its source
-reviews, Next workflows, controls, component audits and reviewed films. The complete browser run passes
-**59/59**, including all 20 mobile, 12 data/chart and 12 editor/3D cases, all 66 metadata replays, page/access
-boundaries and every industry group. All 911 public and 1,138 private tracked source hashes, revisions and
-working-tree states stayed unchanged through release verification. The four source reviews cover 138 mounts
-and 106 state/default accessibility audits; all forty fresh audit captures are also visually reviewed.
-Strict registry, root and isolated Pro types, and all 1,064 unit tests pass. The Worker dry run measures a
-2,655,633-byte router, 57,173,220-byte runtime and 4,763,403 bytes of compressed source maps. Existing guards
-remain, and the three diagnostic packages' runtime files are verified. No manual deployment was performed.
-Component-page loading work and earlier checkpoints remain separate.
-See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisions, measurements and evidence.
+Number Stepper, Password Checklist, Tag Editor and Colour Swatches pass their source reviews, Next workflows,
+controls, fresh component audits and reviewed films. Together they cover 174 source mounts and 92 state/default
+accessibility audits; all forty fresh audit captures are byte-identical to the reviewed originals.
 
-The subsequent Number Stepper, Password Checklist, Tag Editor and Colour Swatches reviews pass 55, 37, 37
-and 45 source mounts, with 22, 22, 20 and 28 state/default accessibility audits, plus Next workflows/demos, four
-controls each and fresh component audits. Their reviewed posters and films are current. The new input group brings the next complete browser
-run to 60 suites; that input-batch release checkpoint is pending.
+The complete browser run finished at **58/60**, with all **70 metadata replays** passing. Its two failed probes
+pass after the legacy tag-capacity test correction and tooltip accessibility follow-up, giving every suite a
+passing result across the full and focused runs. All mobile, data/chart, editor/3D, block, page/access and industry
+groups pass. The original cold tooltip sampling miss remains archived and its cause is unconfirmed; all timing
+and frame-count guards remain. The tooltip's warm crossfade now exposes only the current accessible description,
+verified in both themes and motion modes, with normal appearance unchanged.
+
+Strict registry, root and isolated Pro types, and all 1,064 unit tests pass. At public `a0af2a8`, private
+`c87d16c`, all 916 public and 1,138 private tracked text sources, heads and standing changes remain
+unchanged through focused checks, audits and the Worker dry run. It measures a 2,655,633-byte
+router, 57,210,921-byte runtime and 4,765,993 bytes of compressed maps, with every guard
+retained and the three diagnostic packages' runtime files verified. No manual deployment was performed.
+See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisions, limitations and evidence.
 
 ## Mobile (20)
 

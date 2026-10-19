@@ -319,6 +319,10 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 7 (19 October): Colour Swatches keeps its live type specimen and named palette. The small hex caption uses black or white ink to retain AA contrast, correcting the preserved 4.22:1 mid-grey failure. Black/white presets and the custom picker have measured 3.93:1 dark and 3.45:1 light boundaries. Named pressed controls, custom/unlisted colours, filtered/empty presets, invalid-value repair, no-op callbacks, controlled acknowledgement, read-only/disabled states and live reduced motion pass. The 45-mount source review, 28 state/default accessibility audits, six widths, reviewed entrance/state captures, Next regression, four controls, official audit and exact Terracotta replay pass, with strict registry, TypeScript and all 1,064 unit tests. Its reviewed 3.6s film and paired poster are current: source gap 10ms, delivery 16.82ms and moving-frame p95 17.48ms, with no stalls and unchanged guards. The four-input batch is ready for the complete 60-suite and Worker checkpoint. 24 components and 12 blocks remain in task 7.
 
+- Task 4 follow-up (19 October): the four-input batch finished at 58/60 suites, with all seventy metadata replays passing. The legacy input probe now asserts the full tag field is read-only, removes a tag, checks IME non-commit and then commits the exact new tags; its old-source negative fails. Tooltip inspection separately confirmed that a warm handoff exposed both old and new labels in the current trigger's description. The current label now owns the tooltip role and ID; outgoing labels keep their visual fade and leave the accessibility tree immediately. The original arrival/rename timings remain, opacity checks include ancestors, and four theme/motion accessibility cases pass. Both affected suites pass in the official focused run, with strict registry, root types, all 1,064 unit tests, broader free coverage, five tooltip controls and a fresh audit. Normal appearance is reviewed and unchanged. The initial cold sampling failure remains archived; its cause was not reproduced in four unchanged-timing reruns.
+
+- Task 8 (19 October): the four inputs and tooltip follow-up pass the Worker dry run with unchanged guards: router 2,655,633 bytes, runtime 57,210,921 bytes and compressed maps 4,765,993 bytes. All 916 public and 1,138 private tracked text sources remain unchanged through focused checks, fresh audits and the build. All forty fresh input captures are byte-identical to the reviewed originals. The detailed checkpoint below records the full/focused results, revisions, source evidence and existing package diagnostics.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
@@ -390,12 +394,12 @@ control flips. Access Requests visibly changes to light; its labelled sensitivit
 Audit Trail’s histogram draws upward from its baseline. The six remaining captures used exact-source fixtures while
 application-page loading work was in flight. Actual Next routing and the full application suite remain in task 4.
 
-## 3. Fix component bugs found by the new browser probes
+## 3. Fix component bugs found by the new browser probes (complete)
 
-Each was found by a rewritten probe in `tests/browser/pro-50/`; four of those probes fail on purpose until fixed.
-Fix the component (in `registry/pro/<slug>/`), keep its prompts and `meta.json` accurate, make the probe pass, commit
-the Pro fix and push both repos. Run a probe with `PREVIEW_BASE=http://localhost:3100 node
-tests/browser/pro-50-<suite>-probe.mjs <slug>` (suite = legal, saas, finance, hr, fashion, commerce).
+All eight original issues below are fixed. Their dedicated legal, SaaS and finance regressions pass in the
+19 October checkpoint. The original failure descriptions remain as a regression checklist. Pro source lives in
+`registry/pro/`; use `PREVIEW_BASE=http://localhost:3100 node tests/browser/pro-50-<suite>-probe.mjs <slug>`
+for a focused rerun (suite = legal, saas, finance, HR, fashion or commerce).
 
 1. **legal-evidence-index**: an exhibit with no hashed hand-offs (`custody: []`, or events without `sha256`) shows
    "Matches at all 0 recorded hand-offs" and counts toward "chains intact". Nothing compared means no match claimed:
@@ -426,8 +430,9 @@ tests/browser/pro-50-<suite>-probe.mjs <slug>` (suite = legal, saas, finance, hr
 
 ## 4. Finish or rerun browser probes (complete)
 
-The complete Next-backed `npm run test:components` run passed **59/59 suites on 18 October 2026**.
-Its log is `test-results/handoff-next/browser-suite-green.log`.
+All **60 suites have passing results** in the 19 October input checkpoint: the full run passed 58/60,
+and its two failed probes pass after focused follow-up. The original 58/60 result and both fixes are retained
+in the checkpoint below. The prior complete 59/59 run remains in `test-results/handoff-next/browser-suite-green.log`.
 
 - All requested finance, HR, commerce and SaaS reruns pass on the official runner, including callback rejection,
   retry, retained drafts and exact payloads. Column Workbench's deferred focus and Access Requests' stale duration
@@ -504,6 +509,53 @@ industry components).
 After any batch of the above: `node scripts/build-registry.mjs --strict`, `npx tsc --noEmit`, `npm test`,
 `npm run test:components`, `npm run audit:components -- <changed slugs>`, then stop the dev server and run
 `npm run deploy:dry-run` to check the Worker bundle size. Deployment itself (`npm run deploy`) is the owner's call.
+
+### Four-input checkpoint and tooltip follow-up: 19 October 2026
+
+Number Stepper, Password Checklist, Tag Editor and Colour Swatches are committed with reviewed films and
+posters at public `1eb95d9`, private `c87d16c`. The full run at those revisions passed **58/60** with all
+70 metadata replays passing. All 916 public and 1,138 private tracked text sources, both heads and the standing
+auth/mobile changes stayed unchanged throughout that run.
+
+The legacy capacity/IME probe correction is `35893ba`; the tooltip accessibility fix is `a0af2a8`.
+The official focused rerun passes **2/2**, so every suite has a passing result across the full and focused runs.
+At `a0af2a8` / `c87d16c`, the same 916/1,138 source hashes, heads and standing changes remain unchanged
+through focused verification, fresh input audits and the Worker dry run.
+
+| Check | Result |
+| --- | --- |
+| Strict registry | Pass: 100 free and 259 Pro components |
+| TypeScript | Root and isolated Pro editor/3D checks pass |
+| Unit tests | 43 files, 1,064 tests pass |
+| Complete Next-backed browser run | 58/60 initially; both failed suites pass in the official 2/2 focused run |
+| Broad regressions | All 20 mobile, 12 data/chart and 12 editor/3D cases pass |
+| Metadata demos | All 70 replays pass, including exact input values, tags and selected colour |
+| Component pages and blocks | Readiness, access recovery, private-source boundaries, block workflows and replays pass |
+| Four input source reviews | 174 mounts and 92 state/default accessibility audits pass |
+| Fresh component audits | All four inputs and the tooltip pass; forty new input captures are byte-identical to reviewed originals |
+| Tooltip accessibility | Old-source warm handoff describes both labels; fixed source describes the current label in both themes and motion modes |
+| Recording | Four reviewed films and paired posters are current; all source, delivery and moving-frame guards retained |
+| Worker router | 2,655,633 bytes, below 4 MiB |
+| Worker runtime | 57,210,921 bytes, below 64 MiB |
+| Compressed source maps | 4,765,993 bytes total, below 15,000,000 bytes |
+| Worker dry run | Exit 0; existing size and lazy-boundary guards retained |
+
+Evidence is under `test-results/handoff-small-controls/`: `input-batch-browser.log`,
+`input-batch-focused-browser.log`, `input-batch-audits.log`, `input-batch-worker.log`,
+the `input-batch-checkout{,-end}.json` and `input-release-checkout{,-end}.json` snapshots,
+both corresponding delta proofs, `input-batch-audit-visual-proof.json` and `input-batch-worker-proof.json`.
+Per-component source, state, entrance, media and publication proofs remain in that directory. Touch checks use
+browser emulation. No manual deployment was performed; component-page loading work remains separate.
+
+The tooltip's initial cold-arrival sampling failure did not reproduce in four runs with unchanged timings.
+A separate warm-handoff counterexample confirms the fixed accessibility bug; no claim is made that it explains
+the initial sampling miss. The probe retains the 400ms sampling window, 250ms rename check and four-frame
+minimum, checks effective ancestor opacity and captures evidence only after failures. The normal tooltip
+appearance is unchanged: three before/after renders are byte-identical, and the fourth differs by six border
+pixels. Its existing media remains representative.
+
+The same three OpenNext copy diagnostics remain. The 14, 3 and 19 runtime files for `hast-util-to-html`,
+`hast-util-whitespace` and `property-information` are present and byte-identical to their installed sources.
 
 ### Editor and 3D checkpoint: 18 October 2026
 
