@@ -111,12 +111,15 @@ for (const name of runCases) {
       {
         cwd: root,
         encoding: "utf8",
-        timeout: name.startsWith("pro-50-") || name.startsWith("review-") ||
-          ["pro-select-polish-probe", "blocks-probe"].includes(name)
-          ? 900000
-          : name === "component-pages-probe"
-            ? 300000
-            : 180000,
+        // The 94 serial metadata replays share this process; individual replay limits stay unchanged.
+        timeout: name === "pro-50-demo-probe"
+          ? 1200000
+          : name.startsWith("pro-50-") || name.startsWith("review-") ||
+            ["pro-select-polish-probe", "blocks-probe"].includes(name)
+            ? 900000
+            : name === "component-pages-probe"
+              ? 300000
+              : 180000,
       },
     );
     if (result.stdout) process.stdout.write(result.stdout);
