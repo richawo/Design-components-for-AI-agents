@@ -2,11 +2,13 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import { launchChromium } from "../../scripts/lib/browser.mjs";
 import { mountFixture } from "../../scripts/lib/component-fixture.mjs";
+import { checkNativeRanges } from "./demo-native-range.mjs";
 const b = await launchChromium();
 const p = await b.newPage({ viewport: { width: 1440, height: 1400 } });
 const errors = [];
 p.on("pageerror", (e) => errors.push(e.message));
 try {
+  await checkNativeRanges(p);
   for (const slug of ["agent-plan-steps", "multiselect-chips"]) {
     const meta = JSON.parse(fs.readFileSync(`registry/pro/${slug}/meta.json`));
     await mountFixture(

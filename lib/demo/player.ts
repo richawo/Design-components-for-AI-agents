@@ -80,6 +80,7 @@ export class DemoPlayer {
   private over: Element | null = null;
   private pressedOn: Element | null = null;
   private captured: Element | null = null;
+  private rangePress: { input: HTMLInputElement; initial: string } | null = null;
   private restoreCapture: (() => void) | null = null;
   private readonly pseudo: PseudoStateMirror;
   /** Where a pointer press would have put focus, on engines that can't focus without the ring. */
@@ -118,6 +119,7 @@ export class DemoPlayer {
       this.pressedOn = null;
     }
     this.captured = null;
+    this.rangePress = null;
     this.pendingFocus = null;
     this.over = null;
     this.pseudo.dispose();
@@ -266,11 +268,12 @@ export class DemoPlayer {
     this.cursor.move(x, y);
     const el = this.win.document.elementFromPoint(x, y);
     if (el !== this.over) this.cross(this.over, el);
-    const target = this.captured ?? el;
+    const target = this.captured ?? this.rangePress?.input ?? el;
     if (target) {
       this.fire(target, "pointermove", {});
       this.fire(target, "mousemove", {}, true);
     }
+    if (this.rangePress && this.pressedOn) this.moveRange(this.rangePress.input);
   }
 
   /** Over/out and enter/leave, as a browser sends them when the pointer crosses elements. */
@@ -317,6 +320,10 @@ export class DemoPlayer {
     if (ok && mouseOk) {
       const f = el.closest<HTMLElement>(FOCUSABLE);
       if (f && this.win.document.activeElement !== f) this.focusFromPointer(f);
+      if (this.isRange(el)) {
+        this.rangePress = { input: el, initial: el.value };
+        this.moveRange(el);
+      }
     }
   }
 
@@ -360,12 +367,16 @@ export class DemoPlayer {
 
   private up() {
     const from = this.pressedOn;
-    const el = this.captured ?? this.win.document.elementFromPoint(this.x, this.y);
+    const el = this.captured ?? this.rangePress?.input ?? this.win.document.elementFromPoint(this.x, this.y);
     this.cursor.press(false);
     moveMark(ACTIVE_ATTR, from, null);
     if (!el) return;
     this.fire(el, "pointerup", { buttons: 0 });
     this.fire(el, "mouseup", { buttons: 0 }, true);
+    const range = this.rangePress;
+    this.rangePress = null;
+    if (range && this.isRange(range.input) && range.input.value !== range.initial)
+      range.input.dispatchEvent(new (this.win as Window & typeof globalThis).Event("change", { bubbles: true }));
     this.pressedOn = null;
     this.captured = null;
     // Click goes to the nearest element containing both ends of the press.
@@ -440,6 +451,42 @@ export class DemoPlayer {
     return (this.win.document.activeElement as HTMLElement | null) ?? this.win.document.body;
   }
 
+  private isRange(el: Element): el is HTMLInputElement {
+    const W = this.win as Window & typeof globalThis;
+    return el instanceof W.HTMLInputElement && el.type === "range" && el.isConnected &&
+      !el.matches(":disabled") && !el.readOnly && !el.closest("[inert]");
+  }
+
+  private rangeBounds(el: HTMLInputElement) {
+    const minimum = el.min.trim() === "" ? 0 : Number(el.min);
+    const maximum = el.max.trim() === "" ? 100 : Number(el.max);
+    const min = Number.isFinite(minimum) ? minimum : 0;
+    return { min, max: Math.max(min, Number.isFinite(maximum) ? maximum : 100) };
+  }
+
+  private setRange(el: HTMLInputElement, value: number) {
+    if (!this.isRange(el) || !Number.isFinite(value)) return false;
+    const W = this.win as Window & typeof globalThis;
+    const before = el.value;
+    Object.getOwnPropertyDescriptor(W.HTMLInputElement.prototype, "value")?.set?.call(el, String(value));
+    // The browser sanitizes bounds and step before React observes the input.
+    if (el.value === before) return false;
+    el.dispatchEvent(new W.Event("input", { bubbles: true, composed: true }));
+    return true;
+  }
+
+  private moveRange(el: HTMLInputElement) {
+    if (!this.isRange(el)) return;
+    const box = el.getBoundingClientRect(), style = this.win.getComputedStyle(el);
+    const vertical = style.writingMode.startsWith("vertical");
+    const size = vertical ? box.height : box.width;
+    if (size <= 0) return;
+    let fraction = ((vertical ? this.y - box.top : this.x - box.left) / size);
+    if (style.direction === "rtl") fraction = 1 - fraction;
+    const { min, max } = this.rangeBounds(el);
+    this.setRange(el, min + Math.min(1, Math.max(0, fraction)) * (max - min));
+  }
+
   private key(name: string) {
     const W = this.win as Window & typeof globalThis;
     const el = this.focused();
@@ -447,7 +494,14 @@ export class DemoPlayer {
     const ok = el.dispatchEvent(new W.KeyboardEvent("keydown", init));
     // The browser's default actions for activation keys.
     const activates = el.matches("button, a[href], [role='button'], [role='option'], [role='radio'], [role='tab'], [role='checkbox'], [role='switch']");
-    if (ok && (el instanceof W.HTMLInputElement || el instanceof W.HTMLTextAreaElement) && ["Home", "End", "Backspace", "Delete"].includes(init.key)) {
+    if (ok && this.isRange(el) && ["Home", "End", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(init.key)) {
+      const { min, max } = this.rangeBounds(el);
+      const parsed = Number(el.step), step = Number.isFinite(parsed) && parsed > 0 ? parsed : 1;
+      const rtl = this.win.getComputedStyle(el).direction === "rtl";
+      const increase = init.key === "ArrowUp" || init.key === (rtl ? "ArrowLeft" : "ArrowRight");
+      const next = init.key === "Home" ? min : init.key === "End" ? max : Number(el.value) + (increase ? step : -step);
+      if (this.setRange(el, Math.min(max, Math.max(min, next)))) el.dispatchEvent(new W.Event("change", { bubbles: true }));
+    } else if (ok && (el instanceof W.HTMLInputElement || el instanceof W.HTMLTextAreaElement) && ["Home", "End", "Backspace", "Delete"].includes(init.key)) {
       if (!el.readOnly && !el.matches(":disabled")) {
         const start = el.selectionStart ?? el.value.length;
         const end = el.selectionEnd ?? el.value.length;
@@ -484,7 +538,7 @@ export class DemoPlayer {
 
   private setText(el: HTMLInputElement | HTMLTextAreaElement, value: string, caret: number, inputType: string, data: string | null) {
     const W = this.win as Window & typeof globalThis;
-    if (el.readOnly || el.matches(":disabled")) return;
+    if (el.readOnly || el.matches(":disabled") || !el.matches(TEXT_ENTRY)) return;
     if (!el.dispatchEvent(new W.InputEvent("beforeinput", { bubbles: true, composed: true, cancelable: true, inputType, data }))) return;
     const proto = el instanceof W.HTMLInputElement ? W.HTMLInputElement.prototype : W.HTMLTextAreaElement.prototype;
     // The native setter makes React's value tracker observe the edit.
