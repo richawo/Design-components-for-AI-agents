@@ -4,6 +4,13 @@ export async function check({ page, mount, assert }) {
     `window.notes=[];window.fail=true;window.failPack=true;window.packs=[];createRoot(document.getElementById('root')).render(<Subject.BudgetVariance onSaveNote={async(id,text)=>{window.notes.push([id,text]);if(window.fail){window.fail=false;throw Error('Notes are offline.')}}} onSubmit={async p=>{window.packs.push(p);if(window.failPack)throw Error('Review queue is offline.')}}/>);`,
   );
   assert.match(await section().innerText(), /2 to explain/);
+  // Visibility acknowledgement and its reduced-motion render arrive asynchronously.
+  await page.waitForFunction(() => {
+    const spines = [...document.querySelectorAll('[data-demo="variance-spine"]')]
+      .filter(node => node.getBoundingClientRect().width > 0);
+    return spines.length === 5 && spines.every(node =>
+      node.querySelector('[data-demo="variance-bar"]').getBoundingClientRect().width > 0);
+  });
   const spines = await page.locator('[data-demo="variance-spine"]').evaluateAll(nodes => nodes.flatMap(node => {
     const box = node.getBoundingClientRect();
     if (!box.width) return [];
