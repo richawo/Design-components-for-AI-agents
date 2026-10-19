@@ -442,9 +442,10 @@ for a focused rerun (suite = legal, saas, finance, HR, fashion or commerce).
 
 ## 4. Finish or rerun browser probes (complete)
 
-All **60 suites have passing results** in the 19 October input checkpoint: the full run passed 58/60,
-and its two failed probes pass after focused follow-up. The original 58/60 result and both fixes are retained
-in the checkpoint below. The prior complete 59/59 run remains in `test-results/handoff-next/browser-suite-green.log`.
+All **61 suites have passing results** in the 19 October editorial/chart checkpoint: the full run passed
+58/61, the two UI probes pass with their original guards, and all 87 native prop cases pass after the
+aggregate sweep is split into two bounded runs. The original failures and evidence from unchanged sources are
+retained in the latest checkpoint below. The preceding input and complete 59/59 runs remain archived.
 
 - All requested finance, HR, commerce and SaaS reruns pass on the official runner, including callback rejection,
   retry, retained drafts and exact payloads. Column Workbench's deferred focus and Access Requests' stale duration
@@ -520,6 +521,60 @@ industry components).
 After any batch of the above: `node scripts/build-registry.mjs --strict`, `npx tsc --noEmit`, `npm test`,
 `npm run test:components`, `npm run audit:components -- <changed slugs>`, then stop the dev server and run
 `npm run deploy:dry-run` to check the Worker bundle size. Deployment itself (`npm run deploy`) is the owner's call.
+
+### Editorial and chart checkpoint: 19 October 2026
+
+Release Notes, Event Ticket, Slope Comparison and Bullet Targets are reviewed and committed. The source
+slices are public `ad16d5f`, `1586cd0`, `ef42a76` and `bf5cd6d`, with Event Ticket at private `320e516`.
+Slope's first-render follow-up is `a416735`; both charts now show their actual observations before client
+effects run. The SSR regressions that fail on the previous code and actual Next previews verify initial values and later
+selection changes in normal and reduced motion.
+
+The complete run at public `bf5cd6d` / private `320e516` passed **58/61 suites** and **74/74 metadata
+replays**. All 922 public and 1,138 private tracked text sources, both heads and the standing auth/mobile
+statuses stayed unchanged throughout. Mobile, data/chart, editor/3D, input, content/card, page/access,
+block, recording-source, scroll and all six industry groups pass.
+
+The failures were the tooltip's cold-arrival frame sample, initial fractional navigation alignment and
+the native empty-data sweep's aggregate process limit. The tooltip and navigation geometry diagnostics
+pass, followed by **2/2 original official probes** at `bf5cd6d` and another **2/2** at `70c5353`.
+Their 400ms arrival window, visible-frame requirement, 3-second alignment deadline and 0.25px tolerance
+remain unchanged. The two original causes are unconfirmed; no production tooltip or navigation patch
+is claimed, and their original failures remain archived.
+
+The native sweep reached 84 of 87 cases before its process limit. Commit `70c5353` divides the same 33
+components into two disjoint, exhaustive runs, passing **44/44** and **43/43** cases in the official
+runner. Every fixture, assertion and per-case wait is byte-identical to the original body. Each process
+retains its 180-second limit; every other process deadline is unchanged. All 87 cases run exactly once,
+and three invalid or ambiguous shard requests reject before launching a browser. Every one of the 61
+suites therefore has a passing result across the complete and focused runs.
+
+Strict registry validation passes for **100 free / 259 Pro** components. Root types, isolated types for
+the four changed components and all **1,066 unit tests** pass. The four fresh audits report no runtime
+errors, accessibility violations or remaining reduced-motion animations. All **40 audit images** are
+byte-identical to their reviewed captures; the fresh 320px views are also inspected. Touch checks use
+browser emulation.
+
+At `70c5353` / `320e516`, the focused UI checks, audits and Worker build retain the same 922/1,138
+tracked text hashes, both heads and standing statuses. The owned dev server is stopped before building.
+`npm run deploy:dry-run` passes with **2,655,633 router bytes**, **57,238,442 runtime
+bytes** and **4,770,196 gzipped source-map bytes**, below the unchanged 4 MiB / 64 MiB /
+15 MB limits. Runtime files in all three packages with known copy diagnostics remain present and
+byte-identical. No manual deployment is performed.
+
+Release Notes and Event Ticket have reviewed current films and paired posters. Slope and Bullet have
+reviewed current posters; their rejected recordings remain archived and their film refreshes stay in
+task 1. No recording guard is relaxed. **20 components, 12 blocks, 59 dedicated probes and 114 films**
+remain in the handoff queues.
+
+Local evidence under `test-results/handoff-editorial-charts/`:
+
+- `batch-browser.log` and `batch-metadata-replay-proof.json`
+- `batch-browser-delta-proof.json` and `batch-release-browser-delta-proof.json`
+- `navigation-diagnostic.log`, `tooltip-diagnostic-1/` and `ui-timing-focused-original.log`
+- `native-sharded.log`, `native-sharded-proof.json` and `native-shard-argument-negatives.json`
+- `batch-release-focused-ui.log`, `batch-release-quality/` and `batch-release-image-proof.json`
+- `batch-worker-dryrun.log`, `batch-worker-proof.json` and `batch-owned-server-stop.json`
 
 ### Four-input checkpoint and tooltip follow-up: 19 October 2026
 

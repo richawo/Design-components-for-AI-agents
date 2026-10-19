@@ -9,9 +9,15 @@ needs re-recording, whether its poster is current, and the state of its browser 
 - **Probe**: the `tests/browser/pro-50/<slug>.mjs` state, or another probe that covers it. Blank means no browser test
   was written in this review; those are the ones for a separate pass.
 
-Release Notes also passes its focused review, three controls, official audit and exact Features replay, with a reviewed current film/poster. The editorial/chart reviews bring the next full checkpoint to 61 suites and 74 metadata replays. That next batch checkpoint is pending.
+The editorial/chart checkpoint is verified: the full run passed **58/61**, all **74 metadata replays** pass,
+and all 61 suites have passing results across the full and focused runs. All 87 native prop cases pass
+in two bounded halves. Fresh audits, 40 byte-identical reviewed captures, source hashes and Worker
+budgets pass. Release Notes and Event Ticket have current films/posters; Slope and Bullet have current
+posters and queued film refreshes. See the latest checkpoint in `HANDOFF_TASKS.md`.
 
-## Batch verification (19 October 2026)
+Remaining queues: **20 components, 12 blocks, 59 dedicated probes and 114 films**.
+
+## Previous input checkpoint (19 October 2026)
 
 Number Stepper, Password Checklist, Tag Editor and Colour Swatches pass their source reviews, Next workflows,
 controls, fresh component audits and reviewed films. Together they cover 174 source mounts and 92 state/default
