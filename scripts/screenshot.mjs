@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Renders gallery thumbnails into public/previews/<slug>.webp.
-//   node scripts/screenshot.mjs [slug...] [--base=http://localhost:3000]
+//   node scripts/screenshot.mjs [slug...] [--base=http://localhost:3000] [--reduced-motion]
 // Web components: 1440×900 viewport, top of the page, resized to 1280×800.
 // Mobile components: the phone frame at 390×844, framed on black at 1280×800.
 import fs from "node:fs";
@@ -25,7 +25,7 @@ for (const e of targets) {
   // Headers and footers are thin strips at 1440; a narrower viewport (same 16:10)
   // lets them fill more of the card.
   const strip = e.category === "headers" || e.category === "footers";
-  const page = await browser.newPage({ viewport: mobile ? { width: 390, height: 844 } : strip ? { width: 1024, height: 640 } : { width: 1440, height: 900 }, deviceScaleFactor: mobile ? 2 : 1, reducedMotion: "no-preference" });
+  const page = await browser.newPage({ viewport: mobile ? { width: 390, height: 844 } : strip ? { width: 1024, height: 640 } : { width: 1440, height: 900 }, deviceScaleFactor: mobile ? 2 : 1, reducedMotion: args.includes("--reduced-motion") ? "reduce" : "no-preference" });
   try {
     // Source can load after navigation; live components need not become network-idle.
     const response = await page.goto(`${base}/preview/${e.slug}`, { waitUntil: "domcontentloaded", timeout: 120000 });

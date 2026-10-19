@@ -57,6 +57,8 @@ Gallery capture skips introductory waits but preserves every wait after the firs
 
 Inspect the recording's contact sheet. For demos that expand beyond the initial card, pass `--frame-viewport` to keep the entire preview visible; this also refreshes its matching poster. Then commit the matching source and preview updates. Keep scratch recordings, JSON evidence, and browser captures in `test-results/`.
 
+For a static poster that must show settled counters and charts, run `node scripts/screenshot.mjs <slug> --reduced-motion --base=http://localhost:3100`. This requests the component's reduced-motion state before mounting; review the saved image and its values before committing it.
+
 Stop the development server before `npm run build`, because development and production builds share `.next`. Start the production server and smoke-test the changed previews after a successful build.
 
 
