@@ -9,14 +9,19 @@ needs re-recording, whether its poster is current, and the state of its browser 
 - **Probe**: the `tests/browser/pro-50/<slug>.mjs` state, or another probe that covers it. Blank means no browser test
   was written in this review; those are the ones for a separate pass.
 
-The interface checkpoint passes **63/63 browser suites** in one complete run and all **82 exact
-metadata replays**, including all 87 native prop cases. Fresh audits report no runtime, accessibility or
-reduced-motion failures. All forty captures are reviewed; 38 match byte-for-byte and two small Kanban
-raster differences are inspected. Fresh 320px views are inspected.
-All 933 public and 1,138 private tracked text sources, both heads and standing edits remain unchanged.
-Strict registry, root/isolated types, all 1,066 unit tests and the Worker dry run pass with the original
-bundle guards. Known package-copy diagnostics retain complete, byte-identical runtime files. Stopped-server
-connection failures from the first fresh audit are retained separately. No manual deployment is performed.
+The workspace/input checkpoint covers **all 64 browser suites across runs**: the full run is 63/64,
+and the complete corrected Expansion follow-up passes. The sole failure was an obsolete empty-booking
+assertion; production source stays unchanged and the test-only fix is pushed as `41e75c1`. All **86 exact
+metadata replays** pass against frozen source steps. The original full result and diagnostic capture remain
+archived. A single complete rerun follows the remaining small-component reviews.
+
+Fresh Setup, Booking, Dropzone and Shortcut Recorder audits pass with no runtime, accessibility or
+reduced-motion failures. All **40 images match the reviewed references byte-for-byte**; four fresh 320px
+views are read again. Both heads, all 938 public and 1,138 private tracked text sources and standing edits
+remain unchanged through each frozen verification phase. Strict registry, root/exact isolated types and
+all 1,066 unit tests pass. The Worker dry run passes with the original guards: router 2,655,633,
+runtime 57,305,433 and compressed maps 4,776,932 bytes. Known package-copy
+diagnostics retain complete byte-identical runtime files. No manual deployment is performed.
 See the latest checkpoint in `HANDOFF_TASKS.md`.
 
 Story Deck also passes its 31-mount source review, twelve accessibility audits, six widths, Next regression,
@@ -309,7 +314,7 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 
 ## Cross-cutting browser checks
 
-- The interface checkpoint passes all 63 suites and all 82 exact metadata replays in one complete run, with source hashes, heads and standing changes fixed throughout. Setup Checklist, Booking Slots, File Dropzone and Shortcut Recorder then pass focused checks and their added replays; the next 64-suite / 86-replay batch remains pending.
+- The interface checkpoint passes all 63 suites and all 82 exact metadata replays in one complete run, with source hashes, heads and standing changes fixed throughout. Setup Checklist, Booking Slots, File Dropzone and Shortcut Recorder now have passing focused checks, fresh audits and complete exact replay coverage. The original full run and corrected-suite result are documented above.
 - Bento now waits for its complete entrance before checking zero mutations and exact historical data. All four theme/motion/ambient cases pass; an injected loop is rejected.
 - Audit Trail's first-frame popup state and keyboard/pointer dismissal are fixed. Its workflow, metadata replay and both-theme open-menu accessibility pass; the blocked-End control is rejected.
 - The complete scroll suite passes with exact reversal, first-frame chapter release, playable WebM, offscreen pause and broken-film recovery.

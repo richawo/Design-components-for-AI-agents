@@ -380,6 +380,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 7 (19 October): Keyboard Shortcut Recorder copies initial and notification arrays, makes controlled values read-only without a writer and settles its 320ms card entrance on live reduced-motion changes. Feedback follows the actual acknowledged chord and wrapped keycaps retain vertical padding. Four original-source failures are retained. Its 33-mount source review, eighteen accessibility audits, six widths, reviewed state/entrance captures, Next regression, theme control, official audit and exact four-state replay pass. Keyboard activation, ordered modifiers, invalid unmodified keys, function keys, Escape/Tab/blur exit, composition events, reset focus, controlled acceptance/refusal, empty sequences, long labels and independent instances are covered. Strict registry, root/isolated types and all 1,066 tests pass. Its reviewed 4.0s film and paired poster keep all four keyboard states in the measured 832×600 frame: source gap 12ms, delivery 12.48ms and moving-frame p95 17.55ms, with no stalls and unchanged guards. The next complete batch has 64 suites and 86 metadata replays and remains pending. 8 components and 12 blocks remain; 117 films remain queued.
 
+- Task 8 (19 October): the workspace/input checkpoint covers all 64 suites across the frozen 63/64 run and a complete corrected Expansion follow-up. The sole failure was an obsolete empty-booking assertion; production source stays unchanged and the stronger test is pushed as `41e75c1`. All 86 metadata replays pass. Fresh audits for Setup, Booking, Dropzone and Shortcut Recorder pass; all forty images match the reviewed references byte-for-byte and fresh 320px views are read again. Strict registry, exact isolated/root types, all 1,066 unit tests and the Worker dry run pass with every guard retained. Router/runtime/maps are 2,655,633/57,305,433/4,776,932 bytes. The original failed run and diagnostic capture remain archived. The next single complete run follows the remaining small-component reviews. 8 components, 12 blocks, 59 probes and 117 films remain.
+
 ## 1. Re-record demo videos (117 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
@@ -552,6 +554,53 @@ industry components).
 After any batch of the above: `node scripts/build-registry.mjs --strict`, `npx tsc --noEmit`, `npm test`,
 `npm run test:components`, `npm run audit:components -- <changed slugs>`, then stop the dev server and run
 `npm run deploy:dry-run` to check the Worker bundle size. Deployment itself (`npm run deploy`) is the owner's call.
+
+### Workspace and input checkpoint: 19 October 2026
+
+Setup Checklist, Booking Slots, Source File Dropzone and Shortcut Recorder are reviewed and pushed as
+`1c8cda8`, `800197b`, `ec87a19` and `feb9aaa`. All four posters are current. Dropzone and Shortcut
+Recorder have reviewed current films; Setup and Booking retain their prior films after the new captures
+failed the unchanged timing guards. Their rejected captures stay local and both films remain in task 1.
+
+The full browser run at public `feb9aaa` / private `6a39c66` finishes **63/64**. Its sole failure is
+an old assertion asking for an available time on an empty day. The neutral selection message, written
+no-times state and zero radios are now asserted explicitly. The **entire corrected Expansion suite passes**,
+including its previously unvisited tail, and that test-only correction is pushed as `41e75c1`.
+All **64 suites have passing coverage across the two runs**, and all **86 exact metadata replays pass**.
+The original 63/64 result is retained; the next single complete run follows the remaining small reviews.
+
+All 938 public and 1,138 private tracked text sources, both heads and standing edits remain unchanged
+through the original full run. Only the checked probe changes afterward. Fresh four-component audits
+report no runtime, accessibility or reduced-motion failures. All **40 images match the reviewed references
+byte-for-byte**; all four fresh 320px views are read again.
+
+Release checks at public `41e75c1` / private `6a39c66` retain both heads, all tracked text sources and
+standing edits unchanged. The isolated type inputs are copied from the exact four checked-out sources.
+
+| Check | Result |
+| --- | --- |
+| Strict registry | Pass: 100 free and 259 Pro components |
+| Root and exact isolated TypeScript | Pass |
+| Unit tests | 44 files, 1,066 tests pass |
+| Browser coverage | 63/64 initial run; complete corrected Expansion follow-up passes |
+| Exact metadata replays | 86/86 pass against frozen source steps |
+| Fresh component audits | 4/4 pass; 40/40 images byte-identical |
+| Worker router | 2,655,633 bytes, below 4 MiB |
+| Worker runtime | 57,305,433 bytes, below 64 MiB |
+| Compressed source maps | 4,776,932 bytes, below 15,000,000 |
+| Worker dry run | Exit 0, with every existing guard retained |
+
+The three known optional package-copy diagnostics remain. All 14, 3 and 19 runtime files respectively
+are present and byte-identical in the prepared server. Only the verified owned Next processes were stopped
+before the build. No manual deployment is performed.
+
+Evidence is in `test-results/handoff-workspace-inputs/`: `batch-browser.log`, the initial/end checkout
+snapshots, `batch-browser-delta-proof.json`, `batch-metadata-replay-proof.json`,
+`batch-expansion-stale-assertion-original/`, `batch-expansion-followup.log`,
+`batch-focused-followup-proof.json`, `batch-quality/`, `batch-image-proof.json`,
+`batch-visual-review.json`, `batch-release-*.log`, `batch-release-delta-proof.json`,
+`batch-worker-dryrun.log` and `batch-worker-proof.json`. Remaining queues: **8 components, 12 blocks,
+59 dedicated probes and 117 films**.
 
 ### Interface checkpoint: 19 October 2026
 
