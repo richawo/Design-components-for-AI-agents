@@ -1,27 +1,33 @@
-# Milestone Progress Rail
+# Milestone Progress
 
-Build a standalone React 19 and Tailwind v4 component. A vertical milestone rail with numbered checkpoints, an animated completion rule and focused stage notes for reviews, onboarding and handovers.
+Build a self-contained React 19, Tailwind v4 and motion/react component with the existing typed API, named export and overridable default demo.
 
-## Layout
+## Layout and type
 
-A measured rail with 28px step markers inside 44px rows. Completed steps invert, current step gains an arrow, and its explanation crossfades below a rule. Size to the container. Use a 4/8px rhythm, 1px surface edges, 16px narrow padding and 24px desktop padding. Controls have 44px targets.
+A focused sprint progress card with a compact heading and completed-stage count, a fine drawn completion rail and numbered stage actions. Completed circles become checkmarks; the current stage points toward a written detail below. Keep neutral graphite surfaces, 14px stage labels, 12px counts, 44px targets and 3:1 control boundaries. Long labels and details wrap naturally.
 
-## Typography and colour
+## Interaction
 
-Use font-sans at 14-16px/1.5, font-mono metadata at 11-12px and a 24-36px heading with -0.035em tracking. Dark uses #111111, #f5f5f5, #a3a3a3 and #333333; light uses #ffffff, #171717, #525252 and #d4d4d4. Maintain AA contrast.
+Preserve Milestone, MilestoneProgressProps and the named MilestoneProgress export. current is a host-owned positional index; notify the clicked index synchronously and retain the actual host position until it changes.
+
+Clamp finite indices to the collection and normalize invalid values to zero. A position equal to steps.length means complete. Empty collections retain a zero progress value and written no-milestones state.
+
+Keep a native progressbar with finite 0-100 bounds, an accurate rounded percentage and a written current-stage detail. The visual completion fill follows the exact fraction in both directions.
+
+Key stage rows by stable unique IDs so reordering retains focus. Use native buttons, Enter/Space activation, visible focus and at least 3:1 circle boundaries. Rows without a navigation handler are non-interactive.
+
+Use separate heading IDs for independent instances. Support empty/arriving stages, completed workflows and long labels/details without document overflow.
+
+The host owns milestone completion and persistence. Stage navigation is not a save, approval or completion operation.
 
 ## Motion
 
-Use a 320ms opacity/8px entrance, 150ms press response and 240ms state changes, easing cubic-bezier(0.22,1,0.36,1). No ambient loops. Reduced motion removes transforms and layout animation and limits fades to 120ms.
+Enter the card with opacity and an 8px rise over 320ms. Draw the first completion fill from zero over 350ms after a 160ms delay. Later completion changes animate both directions over 350ms. Key actual stage details and enter them with opacity and a 4px rise over 240ms. Keep 150ms stage-button feedback. Subscribe to live prefers-reduced-motion changes and stop and settle owned card, fill and detail controls immediately. Remove press transforms.
 
-## Behaviour and accessibility
+## Integration
 
-Use semantic elements, native keyboard behaviour, visible focus rings and instance-scoped IDs. Expose typed content and callbacks. Handle empty custom data and repeated instances. Announce important feedback politely. Match the source state ownership and callback contract.
+Supply ordered stages with unique stable IDs and the actual current index. The index is positional, so rebase it when the host reorders data. onStepChange requests navigation synchronously; update current when the host accepts. Use steps.length to display completion and manage persistence externally.
 
-## Responsive
+Use the source dark/light palettes and verify 320/390/768/1024/1440/1920px container layouts.
 
-Design for 320, 390, 768, 1024, 1440 and 1920px. Respond to the container with @container variants, wrap text and stack secondary details. Scroll only within explicitly labelled local regions.
-
-## Avoid
-
-No remote imagery, false success states, unlabelled controls, hover-only actions, low contrast or decorative status pills. The demo is an isolated component on a quiet stage.
+Keep the header count in one non-shrinking block beside long titles. Give wrapped stage labels 8px vertical inner space while retaining 44px default targets.

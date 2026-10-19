@@ -750,14 +750,14 @@
     "useWhen": "Communicating discrete, ordered stages of a task or journey.",
     "avoidWhen": "Continuous percentage progress or stages that have no verified completion state.",
     "integration": [
-      "Supply your own records through `steps`. Preserve stable keys or IDs when the data contract provides them."
+      "Supply ordered stages with unique stable IDs and the actual current index. The index is positional, so rebase it when the host reorders data. onStepChange requests navigation synchronously; update current when the host accepts. Use steps.length to display completion and manage persistence externally."
     ],
     "related": [
       "saas-usage-policy",
       "usage-meter-tokens",
       "app-permission-matrix"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-19"
   },
   "segmented-control": {
     "useWhen": "Switching between a small number of related views or values.",

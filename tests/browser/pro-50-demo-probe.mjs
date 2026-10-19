@@ -9,6 +9,7 @@ const specs = fs
   .filter((file) => file.endsWith(".mjs"))
   .map((file) => ({ slug: file.slice(0, -4) }));
 const finalStates = {
+  "progress-milestones": "Source files, notes and a clear path for the next release.",
   "selects-radio-cards": "Exploratory",
   "primitives-shortcut-reference": "Save changes",
   "navigation-pagination-window": "Page 24 of 24",
@@ -164,6 +165,17 @@ try {
         group.addEventListener("change", window.radioCardRecord);
         window.radioCardObserver = new MutationObserver(window.radioCardRecord);
         window.radioCardObserver.observe(group, {childList:true,subtree:true});
+      });
+    }
+    if (slug === "progress-milestones") {
+      await page.locator("section").evaluate(panel => {
+        const state = () => [Number(panel.querySelector('[role="progressbar"]').getAttribute("aria-valuenow")),panel.querySelector('[role="status"] > p')?.textContent];
+        window.milestoneStates = [state()];
+        window.milestoneObserver = new MutationObserver(() => {
+          const next = state();
+          if (JSON.stringify(next) !== JSON.stringify(window.milestoneStates.at(-1))) window.milestoneStates.push(next);
+        });
+        window.milestoneObserver.observe(panel, {childList:true,characterData:true,subtree:true,attributes:true,attributeFilter:["aria-valuenow"]});
       });
     }
     if (slug === "input-shortcut-recorder") {
@@ -362,6 +374,18 @@ try {
       await page.locator("fieldset").evaluate(group => group.removeEventListener("change", window.radioCardRecord));
       await page.evaluate(() => window.radioCardObserver.disconnect());
       replay.exactWorkflowVerified = true;
+    }
+    if (slug === "progress-milestones") {
+      assert.deepEqual(await page.evaluate(() => window.milestoneStates), [[25,"Prototype"],[50,"Review"],[75,"Handover"]], "The exact demo advances the actual milestone and completion in order");
+      const current = page.locator('[data-demo="step-3"]');
+      assert.equal(await current.getAttribute("aria-current"), "step");
+      assert.equal(await current.evaluate(node => node === document.activeElement), true);
+      assert.equal(await page.locator('button[aria-current="step"]').count(), 1);
+      assert.equal(await page.getByRole("status").count(), 1);
+      assert.ok((await page.getByRole("status").innerText()).includes("Source files, notes and a clear path for the next release."));
+      const ratio = await page.getByRole("progressbar").evaluate(node => node.firstElementChild.getBoundingClientRect().width / node.getBoundingClientRect().width);
+      assert.ok(Math.abs(ratio-.75)<.005, "The settled painted fill matches the final75percent announcement");
+      await page.evaluate(() => window.milestoneObserver.disconnect());
     }
     if (slug === "input-shortcut-recorder") {
       assert.deepEqual(await page.evaluate(() => window.shortcutStates), [

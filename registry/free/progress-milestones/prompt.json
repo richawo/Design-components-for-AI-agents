@@ -8,14 +8,15 @@
     "motion": "motion/react"
   },
   "layout": {
-    "direction": "A measured rail with 28px step markers inside 44px rows. Completed steps invert, current step gains an arrow, and its explanation crossfades below a rule.",
+    "direction": "A focused sprint progress card with a compact heading and completed-stage count, a fine drawn completion rail and numbered stage actions. Completed circles become checkmarks; the current stage points toward a written detail below. Keep neutral graphite surfaces, 14px stage labels, 12px counts, 44px targets and 3:1 control boundaries. Long labels and details wrap naturally.",
     "container": "Size to the parent with @container. Keep the root width at 100%, capped to the focused component, with 24px desktop and 16px narrow padding.",
-    "rhythm": "4/8px spacing; 1px edges; 44px minimum interactive targets."
+    "rhythm": "4/8px spacing; 1px edges; 44px minimum interactive targets.",
+    "longContent": "Keep the header count in one non-shrinking block, allow the title to wrap, and give multiline stage buttons 8px vertical inner space with 44px minimum targets."
   },
   "typography": {
     "body": "font-sans, 14-16px, line-height 1.5",
-    "metadata": "font-mono, 11-12px, restrained tracking",
-    "heading": "font-display or font-serif, 24-36px, tracking -0.035em"
+    "metadata": "12px monospaced counts and editorial labels where present",
+    "heading": "20px medium sans-serif"
   },
   "color": {
     "dark": {
@@ -32,9 +33,9 @@
     }
   },
   "motion": {
-    "entrance": "A single opacity and 8px rise over 320ms.",
-    "interaction": "150ms press response; 240ms state changes. No ambient loops.",
-    "reduced": "Remove transforms and layout motion; keep opacity at 120ms or less."
+    "entrance": "Enter the card with opacity and an 8px rise over 320ms. Draw the first completion fill from zero over 350ms after a 160ms delay.",
+    "interaction": "Later completion changes animate both directions over 350ms. Key actual stage details and enter them with opacity and a 4px rise over 240ms. Keep 150ms stage-button feedback.",
+    "reduced": "Subscribe to live prefers-reduced-motion changes and stop and settle owned card, fill and detail controls immediately. Remove press transforms."
   },
   "responsive": {
     "widths": [
@@ -66,19 +67,19 @@
         "name": "steps",
         "type": "Milestone[]",
         "default": "four studio milestones",
-        "description": "Ordered labels and detailed explanations."
+        "description": "Ordered stages with stable unique IDs, labels and plain-text details. ID keys retain focused stages through reordering."
       },
       {
         "name": "current",
         "type": "number",
         "default": "1",
-        "description": "Zero-based current index; steps.length means all complete."
+        "description": "Zero-based current index, clamped to the supplied stages. steps.length means all complete; invalid or negative values start at zero. The host owns this value."
       },
       {
         "name": "onStepChange",
         "type": "(index: number) => void",
         "default": "undefined",
-        "description": "Optional host navigation. Without it rows are non-interactive."
+        "description": "Synchronous host navigation request with the clicked current-order index. Without it, stages are read-only. A request does not advance the host value automatically."
       },
       {
         "name": "theme",
@@ -92,5 +93,13 @@
     "Remote images, fake network success or hidden external dependencies.",
     "Decorative status badges, gradients as filler, low-contrast text.",
     "Unlabelled controls, hover-only functionality, overflow at 320px."
+  ],
+  "contract": [
+    "Preserve Milestone, MilestoneProgressProps and the named MilestoneProgress export. current is a host-owned positional index; notify the clicked index synchronously and retain the actual host position until it changes.",
+    "Clamp finite indices to the collection and normalize invalid values to zero. A position equal to steps.length means complete. Empty collections retain a zero progress value and written no-milestones state.",
+    "Keep a native progressbar with finite 0-100 bounds, an accurate rounded percentage and a written current-stage detail. The visual completion fill follows the exact fraction in both directions.",
+    "Key stage rows by stable unique IDs so reordering retains focus. Use native buttons, Enter/Space activation, visible focus and at least 3:1 circle boundaries. Rows without a navigation handler are non-interactive.",
+    "Use separate heading IDs for independent instances. Support empty/arriving stages, completed workflows and long labels/details without document overflow.",
+    "The host owns milestone completion and persistence. Stage navigation is not a save, approval or completion operation."
   ]
 }
