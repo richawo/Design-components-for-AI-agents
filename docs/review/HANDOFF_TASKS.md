@@ -567,6 +567,14 @@ Strict registry, root/isolated types and all 1,066 unit tests pass. The existing
 the new regressions, and all four complete workspace/block integration suites pass, including eight block
 metadata replays. This repairs a shared dependency and does not complete any of the eleven block reviews.
 
+Orders Table dependency follow-up (19 October): its light-theme column headings and row metadata failed
+at 4.47:1 on the raised surface in Commerce's full order view. A one-token palette correction restores AA
+contrast. The original failure and captures are preserved. Both-theme composed audits, an explicit data-row
+hover check and the complete registered Commerce workflow pass. The regression waits for entry to finish
+before measuring contrast and is included in the existing block suite. Strict registry, root types, all eleven
+block import graphs and all 1,066 unit tests pass. The private correction is `e9faa2e`; the Commerce block
+review and the eleven-block counter remain open.
+
 - **Commerce** is reviewed. Keep `block-commerce-workspace` compatible with its rebuilt parts.
 - **Smaller components** (#151–179) are reviewed.
 - **Blocks**, after their parts: the 11 published `block-*` components. Many parts changed their look and some their props;

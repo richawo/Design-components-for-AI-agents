@@ -1,3 +1,4 @@
+import {check as checkOrderContrast} from '../review/dashboard-orders-table-contrast.mjs';
 export async function check({ page, mount, assert }) {
   await mount(
     `window.calls=[];window.attempt=0;createRoot(document.getElementById('root')).render(<Subject.CommerceWorkspace onReturn={async payload=>{window.calls.push(payload);if(!window.attempt++)throw Error('fixture');return {reference:'RETURN-FIXTURE'};}}/>);`,
@@ -38,4 +39,5 @@ export async function check({ page, mount, assert }) {
   assert.deepEqual(calls[0], calls[1]);
   await mount(`createRoot(document.getElementById('root')).render(<Subject.CommerceWorkspace periods={[]}/>);`);
   assert.ok(await page.getByText("No store periods supplied.").isVisible());
+  await checkOrderContrast({page,mount,assert});
 }
