@@ -96,28 +96,34 @@ for (const name of requested) if (!cases.includes(name)) throw new Error(`Unknow
 const runCases = requested.size ? cases.filter(name => requested.has(name)) : cases;
 let failed = 0;
 for (const name of runCases) {
-  const result = spawnSync(
-    process.execPath,
-    [path.join(root, "tests/browser", `${name}.mjs`)],
-    {
-      cwd: root,
-      encoding: "utf8",
-      timeout: name.startsWith("pro-50-") || name.startsWith("review-") ||
-        ["pro-select-polish-probe", "blocks-probe"].includes(name)
-        ? 900000
-        : name === "component-pages-probe"
-          ? 300000
-          : 180000,
-    },
-  );
-  if (result.stdout) process.stdout.write(result.stdout);
-  if (result.stderr) process.stderr.write(result.stderr);
-  if (result.status !== 0) {
-    failed++;
-    console.error(
-      `FAIL ${name}: ${result.error?.message ?? `exit ${result.status}`}`,
+  const invocations = name === "native-empty-data-probe"
+    ? [["--shard=1/2"], ["--shard=2/2"]]
+    : [[]];
+  let suiteFailed = false;
+  for (const arguments_ of invocations) {
+    const result = spawnSync(
+      process.execPath,
+      [path.join(root, "tests/browser", `${name}.mjs`), ...arguments_],
+      {
+        cwd: root,
+        encoding: "utf8",
+        timeout: name.startsWith("pro-50-") || name.startsWith("review-") ||
+          ["pro-select-polish-probe", "blocks-probe"].includes(name)
+          ? 900000
+          : name === "component-pages-probe"
+            ? 300000
+            : 180000,
+      },
     );
-  } else console.log(`PASS ${name}`);
+    if (result.stdout) process.stdout.write(result.stdout);
+    if (result.stderr) process.stderr.write(result.stderr);
+    if (result.status !== 0) {
+      suiteFailed = true;
+      console.error(`FAIL ${name}: ${arguments_.join(" ")} ${result.error?.message ?? `exit ${result.status}`}`);
+    }
+  }
+  if (suiteFailed) failed++;
+  else console.log(`PASS ${name}`);
 }
 console.log(`${runCases.length - failed}/${runCases.length} browser suites passed.`);
 if (failed) process.exitCode = 1;

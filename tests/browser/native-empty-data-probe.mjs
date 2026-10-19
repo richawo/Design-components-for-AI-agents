@@ -2,7 +2,12 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import { launchChromium } from "../../scripts/lib/browser.mjs";
 import { mountFixture } from "../../scripts/lib/component-fixture.mjs";
-const requested = new Set(process.argv.slice(2));
+const arguments_ = process.argv.slice(2);
+assert.ok(arguments_.filter(argument => argument.startsWith("--shard=")).length <= 1, "Select one native shard");
+const shardArgument = arguments_.find(argument => argument.startsWith("--shard="));
+assert.ok(!shardArgument || ["--shard=1/2", "--shard=2/2"].includes(shardArgument), "Use native shard 1/2 or 2/2");
+const requested = new Set(arguments_.filter(argument => !argument.startsWith("--shard=")));
+assert.ok(!requested.size || !shardArgument, "Select either explicit native components or a shard");
 const available = ["free", "pro"].flatMap((tier) =>
   fs.readdirSync("registry/" + tier).flatMap((slug) => {
     const file = `registry/${tier}/${slug}/meta.json`;
@@ -16,7 +21,11 @@ for (const slug of requested)
     available.some((row) => row.slug === slug),
     `Unknown native case: ${slug}`,
   );
-const rows = available.filter((row) => !requested.size || requested.has(row.slug));
+const rows = available
+  .sort((a, b) => a.slug.localeCompare(b.slug))
+  .filter((row) => !requested.size || requested.has(row.slug))
+  .filter((_, index) => !shardArgument || index % 2 === Number(shardArgument[8]) - 1);
+if (shardArgument) console.log(`Native empty-data ${shardArgument}: ${rows.map(row => row.slug).join(", ")}`);
 const b = await launchChromium();
 const results = [];
 try {
