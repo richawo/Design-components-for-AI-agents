@@ -112,9 +112,14 @@ if (controls.length) {
   // The plain-text host page has no favicon; that 404 isn't the component's.
   page.on("console", (m) => m.type() === "error" && !/favicon/.test(m.location().url ?? "") && consoleErrors.push(m.text()));
   page.on("pageerror", (e) => consoleErrors.push(e.message));
-  // Host the preview in a same-origin frame, as the component page does. The
-  // host is a plain-text route, so no React app owns (and re-renders) its body.
-  await page.goto(`${base}/robots.txt`, { waitUntil: "load" });
+  // Own only the empty same-origin host. The iframe still loads the actual
+  // Next preview and must complete its real readiness and prop-change checks.
+  const controlHost = `${base}/__dfa_control_host__`;
+  await page.route(controlHost, route => route.fulfill({
+    contentType: "text/html",
+    body: '<!doctype html><html lang="en"><head><title>Preview controls</title></head><body></body></html>',
+  }));
+  await page.goto(controlHost, { waitUntil: "load" });
   await page.evaluate((src) => {
     window.__ready = new Promise((resolve) => addEventListener("message", (e) => e.data?.channel === "dfa-preview" && e.data.type === "ready" && resolve(true)));
     document.body.innerHTML = "";
