@@ -245,27 +245,38 @@ try {
   }
 } catch (error) {
   const folder = "test-results/demo-replays";
-  fs.mkdirSync(folder, { recursive: true });
-  const state = await page.evaluate(() => ({
-    clicks: window.demoReplayClicks,
-    text: document.getElementById("root")?.innerText,
-    scrollY,
-    targets: [...document.querySelectorAll("[data-demo]")].map((node) => {
-      const box = node.getBoundingClientRect();
-      return {
-        target: node.getAttribute("data-demo"),
-        disabled: node.matches(':disabled,[aria-disabled="true"]'),
-        inert: !!node.closest("[inert],[hidden]"),
-        box: { x: box.x, y: box.y, width: box.width, height: box.height },
-        hit: document.elementFromPoint(box.x + box.width / 2, box.y + box.height / 2)
-          ?.closest("[data-demo]")?.getAttribute("data-demo"),
-      };
-    }),
-  }));
-  const file = `${folder}/${replay?.slug ?? "mount"}-failed`;
-  fs.writeFileSync(`${file}.json`, JSON.stringify({ ...replay, errors, state }, null, 2));
-  await page.screenshot({ path: `${file}.png`, fullPage: true });
-  console.error(`Replay failure evidence: ${file}.{json,png}`);
+  try {
+    fs.mkdirSync(folder, { recursive: true });
+    const state = await page.evaluate(() => ({
+      clicks: window.demoReplayClicks,
+      text: document.getElementById("root")?.innerText,
+      scrollY,
+      targets: [...document.querySelectorAll("[data-demo]")].map((node) => {
+        const box = node.getBoundingClientRect();
+        return {
+          target: node.getAttribute("data-demo"),
+          disabled: node.matches(':disabled,[aria-disabled="true"]'),
+          inert: !!node.closest("[inert],[hidden]"),
+          box: { x: box.x, y: box.y, width: box.width, height: box.height },
+          hit: document.elementFromPoint(box.x + box.width / 2, box.y + box.height / 2)
+            ?.closest("[data-demo]")?.getAttribute("data-demo"),
+        };
+      }),
+    })).catch(diagnosticError => ({ unavailable: true, error: String(diagnosticError) }));
+    const file = `${folder}/${replay?.slug ?? "mount"}-failed`;
+    let screenshotError;
+    try { await page.screenshot({ path: `${file}.png`, fullPage: true }); }
+    catch (diagnosticError) { screenshotError = String(diagnosticError); }
+    const evidence = {
+      ...replay, errors, error: String(error?.stack ?? error), state,
+      ...(screenshotError ? { screenshotError } : {}),
+    };
+    fs.writeFileSync(`${file}.json`, JSON.stringify(evidence, null, 2));
+    console.error(`Replay failure evidence: ${file}.json`);
+    if (screenshotError) console.error("Replay screenshot unavailable:", screenshotError);
+  } catch (diagnosticError) {
+    console.error("Replay evidence unavailable:", diagnosticError);
+  }
   throw error;
 } finally {
   await browser.close();
