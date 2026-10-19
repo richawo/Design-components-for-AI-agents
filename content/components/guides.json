@@ -1771,14 +1771,16 @@
     "useWhen": "Navigating a supplied hierarchy of folders and files.",
     "avoidWhen": "Access to a local filesystem without a host integration or permission model.",
     "integration": [
-      "Supply your own records through `nodes`. Preserve stable keys or IDs when the data contract provides them."
+      "Supply a hierarchy with stable globally unique IDs. Use defaultSelectedId for local selection, or selectedId with onSelect for host control. onSelect is a synchronous notification with an independent deep copy; the host owns loading and persistence. Keep large and deep trees inside the local navigation scroll region.",
+      "Folder buttons use native disclosure semantics. Do not add ARIA tree roles without implementing their complete keyboard model.",
+      "The selected reader is independently named, closed descendants leave interaction, and empty or removed selections have a written recovery state."
     ],
     "related": [
       "data-kanban-compact",
       "data-query-builder",
       "legal-document-requests"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-19"
   },
   "data-kanban-compact": {
     "useWhen": "Planning tasks across editable columns with pointer, touch and keyboard movement.",

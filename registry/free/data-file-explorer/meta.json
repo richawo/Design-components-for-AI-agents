@@ -31,13 +31,13 @@
       "name": "nodes",
       "type": "ExplorerNode[]",
       "default": "sample source tree",
-      "description": "Nested files and folders with globally unique IDs. Depth is capped at 24 to keep malformed structures bounded."
+      "description": "Nested files and folders with globally unique IDs. Sibling reordering retains logical focus; depth remains capped at 24. Deep and large trees scroll inside their keyboard-focusable navigation pane."
     },
     {
       "name": "selectedId",
       "type": "string",
       "default": "undefined",
-      "description": "Controlled selected file ID."
+      "description": "Controlled selected file ID. File actions are read-only without onSelect; folder disclosure remains available."
     },
     {
       "name": "defaultSelectedId",
@@ -49,7 +49,7 @@
       "name": "onSelect",
       "type": "(file: ExplorerNode) => void",
       "default": "undefined",
-      "description": "Receives the chosen file. Folders use native button disclosures, not an ARIA tree requiring a different keyboard model."
+      "description": "Synchronous selection notification with an independent deep copy of the chosen file record. The host owns loading and persistence. Folder buttons use native disclosure semantics rather than an ARIA tree."
     },
     {
       "name": "theme",
@@ -63,9 +63,9 @@
     "steps": [
       "wait:600",
       "click:@node-button",
-      "wait:700",
+      "wait:1400",
       "click:@node-components",
-      "wait:700"
+      "wait:1400"
     ],
     "loop": false
   },

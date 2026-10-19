@@ -8,14 +8,14 @@
     "motion": "motion/react"
   },
   "layout": {
-    "direction": "A folder navigation pane alongside a quiet file inspector. At narrow container widths the inspector sits beneath the tree; 44px rows keep disclosure targets comfortable.",
+    "direction": "Keep the project hierarchy and selected-file reader side by side in wide containers and stack them on phones. Use a compact 14px mono project heading, 13px mono filenames, a 16px selected-file heading and 14px descriptive copy. Preserve neutral hairlines and surfaces. Give the navigation pane a 480px height cap and local scrolling, with 192px minimum node widths so deep folders stay reachable without scrolling the project card sideways.",
     "container": "Size to the parent with @container. Keep the root width at 100%, capped to the focused component, with 24px desktop and 16px narrow padding.",
     "rhythm": "4/8px spacing; 1px edges; 44px minimum interactive targets."
   },
   "typography": {
-    "body": "font-sans, 14-16px, line-height 1.5",
+    "body": "14px descriptive copy; 13px mono filenames",
     "metadata": "font-mono, 11-12px, restrained tracking",
-    "heading": "font-display or font-serif, 24-36px, tracking -0.035em"
+    "heading": "14px compact project heading; 16px mono selected-file heading"
   },
   "color": {
     "dark": {
@@ -32,9 +32,9 @@
     }
   },
   "motion": {
-    "entrance": "A single opacity and 8px rise over 320ms.",
-    "interaction": "150ms press response; 240ms state changes. No ambient loops.",
-    "reduced": "Remove transforms and layout motion; keep opacity at 120ms or less."
+    "entrance": "Keep the project navigation stable. Each keyed file reader arrives with opacity and a 4px rise over 240ms.",
+    "interaction": "Folder chevrons rotate over 150ms; folder disclosure semantics remain immediate. Use the existing hover, press and visible-focus treatments.",
+    "reduced": "Listen to live preference changes and stop and settle the current reader immediately without replacing the focused file button. Disable chevron transitions under reduced motion."
   },
   "responsive": {
     "widths": [
@@ -66,13 +66,13 @@
         "name": "nodes",
         "type": "ExplorerNode[]",
         "default": "sample source tree",
-        "description": "Nested files and folders with globally unique IDs. Depth is capped at 24 to keep malformed structures bounded."
+        "description": "Nested files and folders with globally unique IDs. Sibling reordering retains logical focus; depth remains capped at 24. Deep and large trees scroll inside their keyboard-focusable navigation pane."
       },
       {
         "name": "selectedId",
         "type": "string",
         "default": "undefined",
-        "description": "Controlled selected file ID."
+        "description": "Controlled selected file ID. File actions are read-only without onSelect; folder disclosure remains available."
       },
       {
         "name": "defaultSelectedId",
@@ -84,7 +84,7 @@
         "name": "onSelect",
         "type": "(file: ExplorerNode) => void",
         "default": "undefined",
-        "description": "Receives the chosen file. Folders use native button disclosures, not an ARIA tree requiring a different keyboard model."
+        "description": "Synchronous selection notification with an independent deep copy of the chosen file record. The host owns loading and persistence. Folder buttons use native disclosure semantics rather than an ARIA tree."
       },
       {
         "name": "theme",
@@ -98,5 +98,14 @@
     "Remote images, fake network success or hidden external dependencies.",
     "Decorative status badges, gradients as filler, low-contrast text.",
     "Unlabelled controls, hover-only functionality, overflow at 320px."
+  ],
+  "contract": [
+    "Keep ExplorerNode and FileExplorerProps. Nodes provide stable globally unique IDs, names, file/folder kinds, optional children and optional detail. Preserve the existing 24-level guard for malformed nesting.",
+    "Use native folder buttons with aria-expanded and linked lists. Closed descendants leave keyboard and accessibility navigation immediately. Keep the file visible in the reader when its containing folder closes.",
+    "Key siblings by logical IDs so host reordering keeps the focused file. Keep disclosure IDs scoped to each component instance and let long names retain their complete accessible labels.",
+    "SelectedId controls the reader; defaultSelectedId initializes local selection. Controlled file actions without onSelect are disabled, while folder disclosure stays available. Host replacement that removes the selected file returns the reader to Select a file.",
+    "onSelect receives an independent deep copy synchronously. The host owns asynchronous loading, navigation and persistence. Do not add a fabricated save receipt or retry contract.",
+    "Keep the navigation keyboard-focusable and independently scrollable. Deep file focus and long collections must keep the project heading fixed horizontally. Empty projects, empty folders and nesting limits have written states.",
+    "Name the selected-file region from its heading. Support long descriptions, opaque IDs and independent project instances with no duplicate DOM IDs."
   ]
 }

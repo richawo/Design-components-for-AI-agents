@@ -9,6 +9,7 @@ const specs = fs
   .filter((file) => file.endsWith(".mjs"))
   .map((file) => ({ slug: file.slice(0, -4) }));
 const finalStates = {
+  "data-file-explorer": "A small, accessible action with honest loading feedback.",
   "data-kanban-compact": "Test keyboard paths moved to Done.",
   "media-before-after": "Final design",
   "devtools-json-inspector": "error",
@@ -109,6 +110,17 @@ try {
         });
       }, true);
     });
+    if (slug === "data-file-explorer") {
+      await page.locator("section").evaluate(explorer => {
+        const state = () => [explorer.querySelector("h3")?.textContent, explorer.querySelector('[data-demo="node-components"]')?.getAttribute("aria-expanded")];
+        window.fileExplorerStates = [state()];
+        window.fileExplorerObserver = new MutationObserver(() => {
+          const next = state();
+          if (next.every(Boolean) && JSON.stringify(next) !== JSON.stringify(window.fileExplorerStates.at(-1))) window.fileExplorerStates.push(next);
+        });
+        window.fileExplorerObserver.observe(explorer, {childList:true,subtree:true,attributes:true,attributeFilter:["aria-expanded"]});
+      });
+    }
     if (slug === "data-kanban-compact") {
       await page.locator("section[aria-labelledby]").evaluate(board => {
         const positions = () => ["DS-14", "DS-18"].map(id => board.querySelector('[data-kanban-card="'+id+'"]:not([inert])')?.closest("[data-kanban-column]")?.getAttribute("data-kanban-column"));
@@ -188,6 +200,18 @@ try {
       ?.slice(7);
     const target = page.locator('[data-demo="' + last + '"]');
     const notice = await page.getByRole("status").allTextContents();
+    if (slug === "data-file-explorer") {
+      assert.deepEqual(await page.evaluate(() => window.fileExplorerStates), [["README.md", "true"], ["button.tsx", "true"], ["button.tsx", "false"]], "The explorer selects a file before closing its containing folder");
+      const folder = page.locator('[data-demo="node-components"]');
+      assert.equal(await folder.getAttribute("aria-expanded"), "false");
+      assert.equal(await folder.evaluate(node => node === document.activeElement), true);
+      const id = await folder.getAttribute("aria-controls");
+      assert.equal(await page.locator('[id='+JSON.stringify(id)+']').evaluate(node => node.hidden), true);
+      assert.equal(await page.getByRole("button", {name:"button.tsx",exact:true}).count(), 0);
+      assert.equal(await page.getByRole("region", {name:"button.tsx",exact:true}).count(), 1);
+      assert.equal(await page.locator('[data-demo="node-button"]').getAttribute("aria-pressed"), "true");
+      await page.evaluate(() => window.fileExplorerObserver.disconnect());
+    }
     if (slug === "data-kanban-compact") {
       assert.deepEqual(await page.evaluate(() => window.kanbanStates), [["ready", "working"], ["working", "working"], ["working", "done"]], "The sprint replay moves DS-14 to In progress before DS-18 reaches Done");
       assert.deepEqual(await page.locator('[data-kanban-column="working"] [data-kanban-card]:not([inert])').evaluateAll(nodes => nodes.map(node => node.getAttribute("data-kanban-card"))), ["DS-14"]);

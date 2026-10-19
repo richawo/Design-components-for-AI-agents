@@ -1,27 +1,33 @@
 # Project File Explorer
 
-Build a standalone React 19 and Tailwind v4 component. A compact project explorer with nested folder disclosures, a selected-file inspector and keyboard-accessible file actions, ready for developer workspaces.
+Build a self-contained React 19, Tailwind v4 and motion/react file navigator with the existing named export and overridable default demo.
 
-## Layout
+## Layout and type
 
-A folder navigation pane alongside a quiet file inspector. At narrow container widths the inspector sits beneath the tree; 44px rows keep disclosure targets comfortable. Size to the container. Use a 4/8px rhythm, 1px surface edges, 16px narrow padding and 24px desktop padding. Controls have 44px targets.
+Keep the project hierarchy and selected-file reader side by side in wide containers and stack them on phones. Use a compact 14px mono project heading, 13px mono filenames, a 16px selected-file heading and 14px descriptive copy. Preserve neutral hairlines and surfaces. Give the navigation pane a 480px height cap and local scrolling, with 192px minimum node widths so deep folders stay reachable without scrolling the project card sideways.
 
-## Typography and colour
+## Interaction and data
 
-Use font-sans at 14-16px/1.5, font-mono metadata at 11-12px and a 24-36px heading with -0.035em tracking. Dark uses #111111, #f5f5f5, #a3a3a3 and #333333; light uses #ffffff, #171717, #525252 and #d4d4d4. Maintain AA contrast.
+Keep ExplorerNode and FileExplorerProps. Nodes provide stable globally unique IDs, names, file/folder kinds, optional children and optional detail. Preserve the existing 24-level guard for malformed nesting.
+
+Use native folder buttons with aria-expanded and linked lists. Closed descendants leave keyboard and accessibility navigation immediately. Keep the file visible in the reader when its containing folder closes.
+
+Key siblings by logical IDs so host reordering keeps the focused file. Keep disclosure IDs scoped to each component instance and let long names retain their complete accessible labels.
+
+SelectedId controls the reader; defaultSelectedId initializes local selection. Controlled file actions without onSelect are disabled, while folder disclosure stays available. Host replacement that removes the selected file returns the reader to Select a file.
+
+onSelect receives an independent deep copy synchronously. The host owns asynchronous loading, navigation and persistence. Do not add a fabricated save receipt or retry contract.
+
+Keep the navigation keyboard-focusable and independently scrollable. Deep file focus and long collections must keep the project heading fixed horizontally. Empty projects, empty folders and nesting limits have written states.
+
+Name the selected-file region from its heading. Support long descriptions, opaque IDs and independent project instances with no duplicate DOM IDs.
 
 ## Motion
 
-Use a 320ms opacity/8px entrance, 150ms press response and 240ms state changes, easing cubic-bezier(0.22,1,0.36,1). No ambient loops. Reduced motion removes transforms and layout animation and limits fades to 120ms.
+Keep the project navigation stable. Each keyed file reader arrives with opacity and a 4px rise over 240ms. Folder chevrons rotate over 150ms; folder disclosure semantics remain immediate. Use the existing hover, press and visible-focus treatments. Listen to live preference changes and stop and settle the current reader immediately without replacing the focused file button. Disable chevron transitions under reduced motion.
 
-## Behaviour and accessibility
+## Integration
 
-Use semantic elements, native keyboard behaviour, visible focus rings and instance-scoped IDs. Expose typed content and callbacks. Handle empty custom data and repeated instances. Announce important feedback politely. Match the source state ownership and callback contract.
+Supply a hierarchy with stable globally unique IDs. Use defaultSelectedId for local selection, or selectedId with onSelect for host control. onSelect is a synchronous notification with an independent deep copy; the host owns loading and persistence. Keep large and deep trees inside the local navigation scroll region.
 
-## Responsive
-
-Design for 320, 390, 768, 1024, 1440 and 1920px. Respond to the container with @container variants, wrap text and stack secondary details. Scroll only within explicitly labelled local regions.
-
-## Avoid
-
-No remote imagery, false success states, unlabelled controls, hover-only actions, low contrast or decorative status pills. The demo is an isolated component on a quiet stage.
+Use the source dark/light palettes, 44px controls, visible keyboard focus and 320/390/768/1024/1440/1920px container layouts. Do not imply local filesystem access; the host provides the records.
