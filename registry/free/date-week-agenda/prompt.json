@@ -8,13 +8,13 @@
     "motion": "motion/react"
   },
   "layout": {
-    "direction": "A five-day rail over a date heading and a timeline of outlined event cards. Times sit in a fixed 48px gutter; notes unfold inside their event.",
+    "direction": "Keep a compact weekly schedule: a 20px sans heading and timezone, a travelling pressed-day selector, a 30px Instrument Serif date heading and time-anchored event disclosures. Preserve the 48px time gutter, 14px event titles and notes, 12px mono time metadata, 44px controls and neutral ruled card. Notes open inside each event; the work remains the focus.",
     "container": "Size to the parent with @container. Keep the root width at 100%, capped to the focused component, with 24px desktop and 16px narrow padding.",
     "rhythm": "4/8px spacing; 1px edges; 44px minimum interactive targets."
   },
   "typography": {
     "body": "font-sans, 14-16px, line-height 1.5",
-    "metadata": "font-mono, 11-12px, restrained tracking",
+    "metadata": "12px mono local-time labels",
     "heading": "font-display or font-serif, 24-36px, tracking -0.035em"
   },
   "color": {
@@ -32,9 +32,9 @@
     }
   },
   "motion": {
-    "entrance": "A single opacity and 8px rise over 320ms.",
-    "interaction": "150ms press response; 240ms state changes. No ambient loops.",
-    "reduced": "Remove transforms and layout motion; keep opacity at 120ms or less."
+    "entrance": "Enter the whole agenda with opacity and an 8px rise over 320ms.",
+    "interaction": "Move the shared day indicator over 220ms; enter each keyed day list with opacity and a 6px rise over 250ms; rotate disclosure chevrons over 150ms.",
+    "reduced": "Subscribe to live prefers-reduced-motion changes. Stop and settle owned entry/list controls immediately and use a static selected-day indicator with no layout travel."
   },
   "responsive": {
     "widths": [
@@ -72,19 +72,19 @@
         "name": "days",
         "type": "AgendaDay[]",
         "default": "five sample weekdays",
-        "description": "Ordered days with events, local time labels and notes."
+        "description": "Ordered days with stable unique day IDs and stable event IDs within each day. Date, start, end and timezone strings are host display labels, without parsing or conversion."
       },
       {
         "name": "defaultDay",
         "type": "string",
         "default": "\"mon\"",
-        "description": "Initial day ID; missing IDs fall back to the first day."
+        "description": "Initial day ID; missing or removed IDs fall back to the first available day. Empty data can arrive later."
       },
       {
         "name": "onEventSelect",
         "type": "(event: AgendaEvent) => void",
         "default": "undefined",
-        "description": "Called when an event disclosure is activated."
+        "description": "Synchronous notification with an independent flat event record on either disclosure activation. Day selection stays local; the host owns external actions."
       },
       {
         "name": "theme",
@@ -98,5 +98,13 @@
     "Remote images, fake network success or hidden external dependencies.",
     "Decorative status badges, gradients as filler, low-contrast text.",
     "Unlabelled controls, hover-only functionality, overflow at 320px."
+  ],
+  "contract": [
+    "Keep AgendaEvent, AgendaDay and WeekAgendaProps. Use stable unique day IDs and stable event IDs within each day as React keys so collection reordering retains focused buttons and open event state.",
+    "Only one day is selected and one event disclosure is open at a time. Day buttons expose aria-pressed; event buttons expose aria-expanded and instance-scoped aria-controls. Native Enter and Space activate both controls. Changing day closes event details.",
+    "onEventSelect receives a new flat event snapshot synchronously on each disclosure activation, including closing it. Do not let callbacks mutate the host days/events. Local disclosures work without a callback; the host owns navigation and persistence.",
+    "The initial defaultDay selects a matching day, with the first available day as fallback. Keep a written empty-day state and a no-dates state for an empty list, and accept later-arriving schedules.",
+    "Date, start, end and timezone values are host display labels. Render them as provided; do not add parsing, timezone conversion, sorting, asynchronous saves or invented calendar rules.",
+    "Wrap long titles, locations and notes without document overflow. Keep independent agendas and disclosure IDs separate."
   ]
 }

@@ -37,19 +37,19 @@
       "name": "days",
       "type": "AgendaDay[]",
       "default": "five sample weekdays",
-      "description": "Ordered days with events, local time labels and notes."
+      "description": "Ordered days with stable unique day IDs and stable event IDs within each day. Date, start, end and timezone strings are host display labels, without parsing or conversion."
     },
     {
       "name": "defaultDay",
       "type": "string",
       "default": "\"mon\"",
-      "description": "Initial day ID; missing IDs fall back to the first day."
+      "description": "Initial day ID; missing or removed IDs fall back to the first available day. Empty data can arrive later."
     },
     {
       "name": "onEventSelect",
       "type": "(event: AgendaEvent) => void",
       "default": "undefined",
-      "description": "Called when an event disclosure is activated."
+      "description": "Synchronous notification with an independent flat event record on either disclosure activation. Day selection stays local; the host owns external actions."
     },
     {
       "name": "theme",
@@ -61,11 +61,11 @@
   "added": "2026-10-11",
   "demo": {
     "steps": [
-      "wait:600",
-      "click:@event-0",
       "wait:700",
+      "click:@event-0",
+      "wait:1400",
       "click:@agenda-day-1",
-      "wait:700"
+      "wait:1500"
     ],
     "loop": false
   },

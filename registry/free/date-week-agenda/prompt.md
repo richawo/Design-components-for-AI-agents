@@ -1,27 +1,31 @@
 # Weekly Agenda
 
-Build a standalone React 19 and Tailwind v4 component. A compact weekly agenda with a travelling day selector, time-anchored event cards and expandable meeting notes, including a considered empty day.
+Build a standalone React 19, Tailwind v4 and motion/react weekly agenda with the existing named export, typed API and overridable default demo.
 
-## Layout
+## Layout and type
 
-A five-day rail over a date heading and a timeline of outlined event cards. Times sit in a fixed 48px gutter; notes unfold inside their event. Size to the container. Use a 4/8px rhythm, 1px surface edges, 16px narrow padding and 24px desktop padding. Controls have 44px targets.
+Keep a compact weekly schedule: a 20px sans heading and timezone, a travelling pressed-day selector, a 30px Instrument Serif date heading and time-anchored event disclosures. Preserve the 48px time gutter, 14px event titles and notes, 12px mono time metadata, 44px controls and neutral ruled card. Notes open inside each event; the work remains the focus.
 
-## Typography and colour
+## Interaction
 
-Use font-sans at 14-16px/1.5, font-mono metadata at 11-12px and a 24-36px heading with -0.035em tracking. Dark uses #111111, #f5f5f5, #a3a3a3 and #333333; light uses #ffffff, #171717, #525252 and #d4d4d4. Maintain AA contrast.
+Keep AgendaEvent, AgendaDay and WeekAgendaProps. Use stable unique day IDs and stable event IDs within each day as React keys so collection reordering retains focused buttons and open event state.
+
+Only one day is selected and one event disclosure is open at a time. Day buttons expose aria-pressed; event buttons expose aria-expanded and instance-scoped aria-controls. Native Enter and Space activate both controls. Changing day closes event details.
+
+onEventSelect receives a new flat event snapshot synchronously on each disclosure activation, including closing it. Do not let callbacks mutate the host days/events. Local disclosures work without a callback; the host owns navigation and persistence.
+
+The initial defaultDay selects a matching day, with the first available day as fallback. Keep a written empty-day state and a no-dates state for an empty list, and accept later-arriving schedules.
+
+Date, start, end and timezone values are host display labels. Render them as provided; do not add parsing, timezone conversion, sorting, asynchronous saves or invented calendar rules.
+
+Wrap long titles, locations and notes without document overflow. Keep independent agendas and disclosure IDs separate.
 
 ## Motion
 
-Use a 320ms opacity/8px entrance, 150ms press response and 240ms state changes, easing cubic-bezier(0.22,1,0.36,1). No ambient loops. Reduced motion removes transforms and layout animation and limits fades to 120ms.
+Enter the whole agenda with opacity and an 8px rise over 320ms. Move the shared day indicator over 220ms; enter each keyed day list with opacity and a 6px rise over 250ms; rotate disclosure chevrons over 150ms. Subscribe to live prefers-reduced-motion changes. Stop and settle owned entry/list controls immediately and use a static selected-day indicator with no layout travel.
 
-## Behaviour and accessibility
+## Integration
 
-Use semantic elements, native keyboard behaviour, visible focus rings and instance-scoped IDs. Expose typed content and callbacks. Handle empty custom data and repeated instances. Announce important feedback politely. Match the source state ownership and callback contract.
+Supply ordered days with stable day IDs and stable event IDs within each day. Date/time/timezone strings are display labels; resolve scheduling and timezone rules in your host. onEventSelect receives a copied record synchronously on open and close, while disclosure state stays local.
 
-## Responsive
-
-Design for 320, 390, 768, 1024, 1440 and 1920px. Respond to the container with @container variants, wrap text and stack secondary details. Scroll only within explicitly labelled local regions.
-
-## Avoid
-
-No remote imagery, false success states, unlabelled controls, hover-only actions, low contrast or decorative status pills. The demo is an isolated component on a quiet stage.
+Use the source dark/light palettes, visible focus and 320/390/768/1024/1440/1920px container layouts.

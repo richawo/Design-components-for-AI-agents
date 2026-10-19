@@ -1831,14 +1831,15 @@
     "useWhen": "Reviewing a small weekly schedule with day and event context.",
     "avoidWhen": "A full resource calendar or events with unresolved timezone rules.",
     "integration": [
-      "Supply your own records through `days`. Preserve stable keys or IDs when the data contract provides them."
+      "Supply ordered days with stable day IDs and stable event IDs within each day. Date/time/timezone strings are display labels; resolve scheduling and timezone rules in your host. onEventSelect receives a copied record synchronously on open and close, while disclosure state stays local.",
+      "Use defaultDay for the initial selection. A missing selected day falls back to the first available day; empty and later-arriving schedules have written states. Keep the host responsible for external navigation or persistence."
     ],
     "related": [
       "date-booking-slots",
       "fashion-launch-calendar",
       "hr-capacity-planner"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-19"
   },
   "devtools-api-playground": {
     "useWhen": "Preparing a request and inspecting a host-supplied response.",

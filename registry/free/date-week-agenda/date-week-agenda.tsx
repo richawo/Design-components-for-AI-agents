@@ -1,7 +1,14 @@
 "use client";
-import { type CSSProperties, useId, useState } from "react";
+import {
+  type CSSProperties,
+  type ReactNode,
+  useId,
+  useLayoutEffect,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import { MapPin, ChevronDown } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
+import { motion, useAnimationControls } from "motion/react";
 
 const control =
   "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-lg px-3 text-sm font-medium transition-[background,transform] duration-150 hover:bg-[var(--wash)] disabled:hover:bg-transparent active:scale-[.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)] disabled:cursor-not-allowed disabled:opacity-40 disabled:active:scale-100 motion-reduce:transform-none";
@@ -91,6 +98,38 @@ const defaults: AgendaDay[] = [
   { id: "thu", label: "Thu", date: "15 October", events: [] },
   { id: "fri", label: "Fri", date: "16 October", events: [] },
 ];
+const motionQuery = "(prefers-reduced-motion: reduce)";
+function subscribeToMotion(change: () => void) {
+  const query = window.matchMedia(motionQuery);
+  query.addEventListener("change", change);
+  return () => query.removeEventListener("change", change);
+}
+
+function useEntry(reduced: boolean, duration: number) {
+  const controls = useAnimationControls();
+  useLayoutEffect(() => {
+    controls.stop();
+    const target = { opacity: 1, y: 0 };
+    if (reduced) controls.set(target);
+    else void controls.start({ ...target, transition: { duration } });
+    return () => controls.stop();
+  }, [controls, duration, reduced]);
+  return controls;
+}
+
+function AgendaEvents({ reduced, children }: { reduced: boolean; children: ReactNode }) {
+  const entrance = useEntry(reduced, 0.25);
+  return (
+    <motion.ol
+      initial={{ opacity: 0, y: reduced ? 0 : 6 }}
+      animate={entrance}
+      className="space-y-3"
+    >
+      {children}
+    </motion.ol>
+  );
+}
+
 export function WeekAgenda({
   title = "This week",
   timezone = "London time",
@@ -100,12 +139,19 @@ export function WeekAgenda({
   theme = "dark",
 }: WeekAgendaProps) {
   const id = useId();
-  const reduced = useReducedMotion();
+  const reduced = useSyncExternalStore(
+    subscribeToMotion,
+    () => window.matchMedia(motionQuery).matches,
+    () => false,
+  );
+  const entrance = useEntry(reduced, 0.32);
   const [dayId, setDayId] = useState(defaultDay);
   const [open, setOpen] = useState<string | null>(null);
   const day = days.find((d) => d.id === dayId) ?? days[0];
   return (
-    <section
+    <motion.section
+      initial={{ opacity: 0, y: reduced ? 0 : 8 }}
+      animate={entrance}
       style={colors(theme)}
       aria-labelledby={id}
       className="@container w-full max-w-xl overflow-hidden rounded-xl border border-[var(--line)] bg-[var(--panel)] text-[var(--ink)]"
@@ -126,7 +172,7 @@ export function WeekAgenda({
             <button
               type="button"
               data-demo={`agenda-day-${i}`}
-              key={`${d.id}-${i}`}
+              key={d.id}
               aria-pressed={day?.id === d.id}
               onClick={() => {
                 setDayId(d.id);
@@ -135,11 +181,16 @@ export function WeekAgenda({
               className={`${control} relative flex-1 px-1!`}
             >
               {d.id === day?.id && (
-                <motion.span
-                  layoutId={`${id}-day`}
-                  transition={{ duration: reduced ? 0 : 0.22 }}
-                  className="absolute inset-0 rounded-lg bg-[var(--ink)]"
-                />
+                reduced ? (
+                  <span aria-hidden="true" className="absolute inset-0 rounded-lg bg-[var(--ink)]" />
+                ) : (
+                  <motion.span
+                    aria-hidden="true"
+                    layoutId={`${id}-day`}
+                    transition={{ duration: 0.22 }}
+                    className="absolute inset-0 rounded-lg bg-[var(--ink)]"
+                  />
+                )
               )}
               <span
                 className="relative"
@@ -155,16 +206,10 @@ export function WeekAgenda({
         <p className="mb-6 font-serif text-3xl tracking-[-.03em]">
           {day?.date ?? "No dates scheduled"}
         </p>
-        <motion.ol
-          key={day?.id}
-          initial={{ opacity: 0, y: reduced ? 0 : 6 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: reduced ? 0.1 : 0.25 }}
-          className="space-y-3"
-        >
+        <AgendaEvents key={day?.id} reduced={reduced}>
           {day?.events.map((event, i) => (
             <li
-              key={`${event.id}-${i}`}
+              key={event.id}
               className="grid grid-cols-[48px_minmax(0,1fr)] gap-3"
             >
               <span className={`pt-4 font-mono text-xs tabular-nums ${muted}`}>
@@ -178,14 +223,14 @@ export function WeekAgenda({
                   aria-controls={`${id}-event-${i}`}
                   onClick={() => {
                     setOpen(open === event.id ? null : event.id);
-                    onEventSelect?.(event);
+                    onEventSelect?.({ ...event });
                   }}
                   className={`${control} w-full justify-between! px-3 py-3 text-left`}
                 >
                   <span className="min-w-0">
                     <span className="block text-sm">{event.title}</span>
                     <span
-                      className={`mt-1 block font-mono text-[11px] ${muted}`}
+                      className={`mt-1 block font-mono text-[12px] ${muted}`}
                     >
                       {event.start}–{event.end}
                     </span>
@@ -193,7 +238,7 @@ export function WeekAgenda({
                   <ChevronDown
                     size={15}
                     aria-hidden="true"
-                    className={`shrink-0 transition-transform motion-reduce:transition-none ${open === event.id ? "rotate-180" : ""}`}
+                    className={`shrink-0 transition-transform duration-150 motion-reduce:transition-none ${open === event.id ? "rotate-180" : ""}`}
                   />
                 </button>
                 <div
@@ -202,7 +247,7 @@ export function WeekAgenda({
                   className="border-t border-[var(--line)] px-3 pb-4 pt-3"
                 >
                   <p className={`flex items-center gap-2 text-xs ${muted}`}>
-                    <MapPin size={13} aria-hidden="true" />
+                    <MapPin size={13} className="shrink-0" aria-hidden="true" />
                     {event.location}
                   </p>
                   <p className={`mt-3 text-sm leading-relaxed ${muted}`}>
@@ -212,7 +257,7 @@ export function WeekAgenda({
               </div>
             </li>
           ))}
-        </motion.ol>
+        </AgendaEvents>
         {!day?.events.length && (
           <div className="py-10">
             <p className="text-lg">A little breathing room.</p>
@@ -222,7 +267,7 @@ export function WeekAgenda({
           </div>
         )}
       </div>
-    </section>
+    </motion.section>
   );
 }
 

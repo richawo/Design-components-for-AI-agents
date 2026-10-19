@@ -9,6 +9,7 @@ const specs = fs
   .filter((file) => file.endsWith(".mjs"))
   .map((file) => ({ slug: file.slice(0, -4) }));
 const finalStates = {
+  "date-week-agenda": "Research playback",
   "forms-preference-center": "Preferences saved.",
   "data-file-explorer": "A small, accessible action with honest loading feedback.",
   "data-kanban-compact": "Test keyboard paths moved to Done.",
@@ -111,6 +112,17 @@ try {
         });
       }, true);
     });
+    if (slug === "date-week-agenda") {
+      await page.locator("section").evaluate(agenda => {
+        const state = () => [agenda.querySelector('[aria-pressed="true"]')?.textContent, agenda.querySelector('ol button span.block')?.textContent, agenda.querySelector('ol button')?.getAttribute("aria-expanded")];
+        window.agendaStates = [state()];
+        window.agendaObserver = new MutationObserver(() => {
+          const next = state();
+          if (next.every(Boolean) && JSON.stringify(next) !== JSON.stringify(window.agendaStates.at(-1))) window.agendaStates.push(next);
+        });
+        window.agendaObserver.observe(agenda, {childList:true,subtree:true,attributes:true,attributeFilter:["aria-pressed","aria-expanded"]});
+      });
+    }
     if (slug === "forms-preference-center") {
       await page.locator("section").evaluate(form => {
         const choices = () => [...form.querySelectorAll('input[type="checkbox"]')].map(input => input.checked);
@@ -219,6 +231,16 @@ try {
       ?.slice(7);
     const target = page.locator('[data-demo="' + last + '"]');
     const notice = await page.getByRole("status").allTextContents();
+    if (slug === "date-week-agenda") {
+      assert.deepEqual(await page.evaluate(() => window.agendaStates), [["Mon","Design critique","false"], ["Mon","Design critique","true"], ["Tue","Research playback","false"]], "The replay reads Monday's notes before moving to Tuesday");
+      const day = page.getByRole("button", {name:"Tue",exact:true});
+      assert.equal(await day.getAttribute("aria-pressed"), "true");
+      assert.equal(await day.evaluate(node => node === document.activeElement), true);
+      assert.equal(await page.getByRole("button", {name:/Design critique/}).count(), 0);
+      assert.equal(await page.locator('button[aria-expanded="true"]').count(), 0);
+      assert.equal(await page.getByText("13 October", {exact:true}).count(), 1);
+      await page.evaluate(() => window.agendaObserver.disconnect());
+    }
     if (slug === "forms-preference-center") {
       assert.deepEqual(await page.evaluate(() => window.preferenceChoices), [[true,true,false], [true,true,true]], "The replay selects product notes before saving");
       assert.deepEqual(await page.evaluate(() => window.preferenceBusy), [false,true,false], "The save enters and leaves its pending state");

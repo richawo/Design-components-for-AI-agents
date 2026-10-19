@@ -1,6 +1,6 @@
 # Review status
 
-185 components are rebuilt (or, for a few, polished), verified and committed. For each: whether its demo video
+186 components are rebuilt (or, for a few, polished), verified and committed. For each: whether its demo video
 needs re-recording, whether its poster is current, and the state of its browser regression probe.
 
 - **Video**: `new` means `public/previews/<slug>.mp4` still shows the old version. Re-record serially on a quiet machine:
@@ -27,7 +27,7 @@ Before/After passes its 39-mount review, 22 accessibility audits, Next checks an
 Its reviewed four-second film and paired poster pass every recording guard. Shared native range replay is fixed.
 The complete 62-suite / 78-replay batch checkpoint is verified.
 
-Remaining queues: **13 components, 12 blocks, 59 dedicated probes and 115 films**.
+Remaining queues: **12 components, 12 blocks, 59 dedicated probes and 115 films**.
 
 ## Previous input checkpoint (19 October 2026)
 
@@ -306,7 +306,7 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 
 ## Cross-cutting browser checks
 
-- The media/devtools checkpoint passes all 62 suites and all 78 exact metadata replays. The later Kanban, File Explorer and Communication Preferences workflows and their three added metadata replays also pass focused checks; the next 63-suite / 81-replay batch remains pending.
+- The media/devtools checkpoint passes all 62 suites and all 78 exact metadata replays. The later Kanban, File Explorer, Communication Preferences and Weekly Agenda workflows and their four added metadata replays also pass focused checks; the next 63-suite / 82-replay batch remains pending.
 - Bento now waits for its complete entrance before checking zero mutations and exact historical data. All four theme/motion/ambient cases pass; an injected loop is rejected.
 - Audit Trail's first-frame popup state and keyboard/pointer dismissal are fixed. Its workflow, metadata replay and both-theme open-menu accessibility pass; the blocked-End control is rejected.
 - The complete scroll suite passes with exact reversal, first-frame chapter release, playable WebM, offscreen pause and broken-film recovery.
@@ -338,3 +338,4 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | `data-kanban-compact` | current | current | Independent callback records, inert exits, live reduced motion, keyboard pickup/order, column-action focus and refused-move focus retirement pass. Six original failures and the corrected draft exit regression remain archived. The 41-mount source review, eighteen accessibility audits, six widths, state/entrance captures, Next regression, legacy pointer/touch/keyboard probe, two controls, official audit and exact two-task replay pass. Strict registry, root/isolated types and all 1,066 tests pass. The reviewed 4.5s film and paired poster keep every state in the measured full viewport; all recording guards pass. The original clipped crop is retained. The next 62-suite / 79-replay batch checkpoint remains pending. |
 | `data-file-explorer` | current | current | Independent deep selection copies, stable sibling-key focus, controlled/read-only selection, local deep-tree scrolling and live reduced motion pass. Five original failures are retained. The 37-mount source review, eighteen accessibility audits, six widths, state/entrance captures, Next regression, theme control, official audit and exact select/fold replay pass. Empty/arriving files, opaque IDs, independent projects, bounded cycles and large-tree keyboard scrolling are covered. Strict registry, root/isolated types and all 1,066 tests pass. Its reviewed 3.9s film and paired poster keep every state inside the measured initial union, with all recording guards retained. The next 62-suite / 80-replay batch remains pending. |
 | `forms-preference-center` | current | current | Independent normalized callback snapshots, read-only controlled choices, disabled empty/unconfigured saves, immediate pending locks, serial writes, retired stale feedback, option-key focus and live reduced motion pass. Seven original failures are retained. Its 41-mount source review, eighteen accessibility audits, six widths, state/entrance captures, Next regression, theme control, official audit and exact select/save replay pass. Strict registry, root/isolated types and all 1,066 tests pass. Its reviewed 4.0s film and paired poster contain every state in the measured initial union, with every recording guard retained. The forms/dates suite is registered; the next 63-suite / 81-replay batch remains pending. |
+| `date-week-agenda` | current | current | Independent event snapshots, stable day/event-key focus, live reduced motion and 12px time metadata pass. Four original failures are retained. Its 31-mount source review, eighteen accessibility audits, six widths, state/entrance captures, Next regression, theme control, official audit and exact Monday-notes/Tuesday replay pass. Empty/arriving schedules, missing-day fallback, host display labels, replaced days, long copy and independent agendas are covered. Strict registry, root/isolated types and all 1,066 tests pass. Its reviewed 4.0s film and paired poster keep all states visible with every recording guard retained. The next 63-suite / 82-replay batch remains pending. |
