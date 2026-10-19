@@ -10,7 +10,7 @@ export async function check(context){
  await first.press('ArrowRight');await draft.waitFor();assert.equal(await draft.inputValue(),'Keep the research note through view changes.');assert.equal(await second.evaluate(node=>node===document.activeElement),true);await capture('keyboard-view',{audit:true});
  const external=page.getByRole('button',{name:'Outside action',exact:true});await external.focus();await page.evaluate(()=>window.setWorkspaceView('one'));await page.getByRole('button',{name:'Finish first view',exact:true}).waitFor();assert.equal(await external.evaluate(node=>node===document.activeElement),true,'Explicit host focus stays with the host');
  await mount(`createRoot(document.getElementById('root')).render(<Subject.WorkspaceShell title="A new workspace" links={[]}><Subject.WorkspacePanels activeId="missing" panels={[]}/></Subject.WorkspaceShell>);`);assert.equal(await page.getByRole('tab').count(),0);assert.equal(await page.locator('[data-workspace-panel]').count(),0);await capture('empty-workspace',{audit:true});
- for(const test of[outside,heading,height,changedHeading,narrowIdentity])await test(context);await page.emulateMedia({reducedMotion:'reduce'});
+ for(const test of[outside,heading,height,changedHeading,narrowIdentity,readOnlyScroll])await test(context);await page.emulateMedia({reducedMotion:'reduce'});
 }
 
 async function changedHeading({page,assert,capture=async()=>{}}) {
@@ -90,4 +90,35 @@ async function narrowIdentity({ page, mount, assert, capture = async () => {} })
  } finally {
   if (viewport) await page.setViewportSize(viewport);
  }
+}
+
+async function readOnlyScroll({ page, mount, assert, capture = async () => {} }) {
+ const viewport = page.viewportSize();
+ try {
+  await page.setViewportSize({ width: 390, height: 940 });
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await mount(`function Host(){const[view,setView]=React.useState('one');return <Subject.WorkspaceShell title="Read-only reports" activeId={view} onNavigate={setView} className="h-[540px]" links={[{id:'one',label:'First report',href:'#one'},{id:'two',label:'Second report',href:'#two'}]}><Subject.WorkspacePanels fill activeId={view} panels={[{id:'one',content:<section id="one" role="tabpanel" aria-label="First report"><div style={{height:1200}}>First report content</div></section>},{id:'two',content:<section id="two" role="tabpanel" aria-label="Second report"><div style={{height:1200}}>Second report content</div></section>}]}/></Subject.WorkspaceShell>};createRoot(document.getElementById('root')).render(<Host/>);`);
+  await page.locator('#root > div').evaluate(node=>node.style.height='540px');
+  await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+  const first=page.locator('[data-workspace-panel="one"]'), second=page.locator('[data-workspace-panel="two"]');
+  await page.getByRole('tab',{name:'First report',exact:true}).focus();
+  await page.keyboard.press('Tab');
+  assert.equal(await first.evaluate(node=>node===document.activeElement),true,'Tab reaches a read-only scrolling pane');
+  await page.keyboard.press('PageDown');
+  await page.waitForFunction(()=>document.querySelector('[data-workspace-panel="one"]').scrollTop>0);
+  assert.ok(await first.evaluate(node=>node.scrollTop>0));
+  assert.equal(await first.getAttribute('tabindex'),'0');
+  const outline=await first.evaluate(node=>({width:parseFloat(getComputedStyle(node).outlineWidth),style:getComputedStyle(node).outlineStyle}));
+  assert.ok(outline.width>=2&&outline.style!=='none','The keyboard scroll target has a visible focus ring');
+  await capture('readonly-pane-keyboard-scroll',{audit:true});
+  await page.getByRole('tab',{name:'Second report',exact:true}).focus();await page.keyboard.press('Enter');
+  assert.equal(await first.getAttribute('tabindex'),'-1');
+  assert.equal(await first.getAttribute('aria-hidden'),'true');
+  assert.equal(await second.getAttribute('tabindex'),'0');
+  await page.keyboard.press('Tab');
+  assert.equal(await second.evaluate(node=>node===document.activeElement),true,'Tab reaches the current pane, not a retained hidden one');
+  await page.keyboard.press('ArrowDown');
+  await page.waitForFunction(()=>document.querySelector('[data-workspace-panel="two"]').scrollTop>0);
+  await capture('readonly-second-pane',{audit:true});
+ } finally { if(viewport)await page.setViewportSize(viewport); }
 }

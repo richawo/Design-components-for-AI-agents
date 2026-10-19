@@ -65,5 +65,6 @@
     "Tinted surfaces or coloured navigation; colour is the one accent.",
     "overflow: hidden on the frame (it clips menus).",
     "Unmounting inactive views (drafts are lost)."
-  ]
+  ],
+  "keyboardScroll": "In fill mode, give the current retained pane tabindex 0 and an inset focus outline so read-only views can scroll by keyboard. Retired panes have tabindex -1, inert and aria-hidden."
 }

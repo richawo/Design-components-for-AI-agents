@@ -6,6 +6,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 ## Follow-up progress (17–20 October 2026)
 
+- Task 8 follow-up (20 October): the fresh fourteen-component audit found one shared Workspace Shell accessibility failure in read-only phone panes. Fill-mode panes now expose an explicit keyboard tab stop and inset focus ring; retired panes leave the tab order immediately. The original audit and old-source counterexample remain archived. The focused 17-mount source review, six accessibility audits, keyboard scrolling and view-switch regression, full Next workspace suite and corrected official audit pass. All twelve settled theme/width captures are byte-identical to the reviewed references; three changing entrance frames and four new keyboard-focus captures are visually reviewed. Strict registry, root/all-eleven-block types and all 1,066 unit tests pass. The complete browser and Worker checkpoint remains pending; component and film queue counts are unchanged.
+
 - Task 3.1: resolved evidence chain verification and manifest flags. The dedicated browser probe passes, including missing hashes and rejected exports. The hash group’s invalid ARIA label is fixed, and isolated dark/light accessibility audits pass. The Next preview rerun also passes.
 
 - Task 3.2: resolved invalid renewal dates and empty customer-health trends, with regression coverage for malformed and impossible dates.

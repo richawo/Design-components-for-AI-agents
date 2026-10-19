@@ -3446,7 +3446,8 @@
       "For tabbed apps pass `activeId` and `onNavigate`; links become keyboard tabs (arrows, Home, End) whose `href` `#id` names the panel they control. Without `onNavigate`, links stay real routes or anchors.",
       "Wrap views in `WorkspacePanels` to keep every view mounted so drafts survive a switch; add `fill` inside a fixed-height shell so each view scrolls on its own.",
       "Content can use the shell's tokens (`--ws-surface`, `--ws-line`, `--ws-ink`, `--ws-muted`, `--ws-accent`). Links take an optional 16px `icon` and a `badge`; `railFooter` pins an account or status to the rail.",
-      "The rail can shrink to zero minimum width so long brand labels truncate inside a phone layout. Long working titles wrap within the header."
+      "The rail can shrink to zero minimum width so long brand labels truncate inside a phone layout. Long working titles wrap within the header.",
+      "Fill-mode panels expose only the current scroll pane as a tab stop with an inset keyboard outline. Arrow and Page Down keys can scroll read-only views; hidden retained panes remain inert, hidden and outside the tab order."
     ],
     "related": [
       "block-saas-dashboard",

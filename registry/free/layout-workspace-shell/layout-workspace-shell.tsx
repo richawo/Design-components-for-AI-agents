@@ -639,6 +639,7 @@ function RetainedPanel({ panel, active, reduce, fill, bind }: RetainedPanelProps
     <motion.div
       ref={bind}
       data-workspace-panel={panel.id}
+      tabIndex={fill ? (active ? 0 : -1) : undefined}
       inert={!active}
       aria-hidden={!active || undefined}
       initial={false}
@@ -654,7 +655,11 @@ function RetainedPanel({ panel, active, reduce, fill, bind }: RetainedPanelProps
         top: 0,
         pointerEvents: active ? "auto" : "none",
       }}
-      className={`motion-reduce:!transform-none ${fill ? "h-full min-h-0 overflow-auto" : ""}`}
+      className={cx(
+        "motion-reduce:!transform-none",
+        fill && "h-full min-h-0 overflow-auto",
+        fill && "focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-current",
+      )}
     >
       {panel.content}
     </motion.div>
