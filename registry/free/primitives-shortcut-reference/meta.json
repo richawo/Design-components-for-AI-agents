@@ -7,7 +7,6 @@
   "description": "A searchable shortcut reference with engraved keycaps and grouped commands, built for help panels and desktop-style web applications.",
   "tags": [
     "primitives",
-    "primitives",
     "shortcut",
     "reference",
     "responsive",
@@ -31,13 +30,13 @@
       "name": "items",
       "type": "ShortcutEntry[]",
       "default": "five sample Mac shortcuts",
-      "description": "Grouped command labels and display key sequences. Display only; no global shortcuts are registered."
+      "description": "Grouped command labels and display key sequences with stable unique IDs. Filtering matches the rendered label, group and key strings. Display only; global shortcuts are not registered."
     },
     {
       "name": "searchPlaceholder",
       "type": "string",
       "default": "\"Find a shortcut\"",
-      "description": "Search label and prompt."
+      "description": "Accessible search label and visible prompt. Clear returns focus to this field; Escape clears a non-empty query."
     },
     {
       "name": "theme",
@@ -49,12 +48,12 @@
   "added": "2026-10-11",
   "demo": {
     "steps": [
-      "wait:500",
+      "wait:700",
       "click:@shortcut-search",
       "type:Writing",
-      "wait:700",
+      "wait:1000",
       "click:@clear-query",
-      "wait:700"
+      "wait:1700"
     ],
     "loop": false
   },

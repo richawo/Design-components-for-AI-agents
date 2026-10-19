@@ -8,14 +8,14 @@
     "motion": "motion/react"
   },
   "layout": {
-    "direction": "An editorial help panel with keyboard icon, serif heading, search field and ruled command rows. Keycaps carry a physical 2px lower edge.",
-    "container": "Size to the parent with @container. Keep the root width at 100%, capped to the focused component, with 24px desktop and 16px narrow padding.",
+    "direction": "A compact keyboard reference with a 30px Instrument Serif heading, a clear 44px search field, 12px group labels and a two-column definition list of command names and engraved monospaced keycaps. Keep neutral graphite surfaces and readable rules. The search boundary has at least 3:1 contrast against the panel, long commands and key labels wrap, and filtering does not collapse the minimum results region.",
+    "container": "Fill the parent up to 512px with 24px padding.",
     "rhythm": "4/8px spacing; 1px edges; 44px minimum interactive targets."
   },
   "typography": {
     "body": "font-sans, 14-16px, line-height 1.5",
-    "metadata": "font-mono, 11-12px, restrained tracking",
-    "heading": "font-display or font-serif, 24-36px, tracking -0.035em"
+    "metadata": "12px monospaced notes and group metadata",
+    "heading": "30px Instrument Serif"
   },
   "color": {
     "dark": {
@@ -32,9 +32,9 @@
     }
   },
   "motion": {
-    "entrance": "A single opacity and 8px rise over 320ms.",
-    "interaction": "150ms press response; 240ms state changes. No ambient loops.",
-    "reduced": "Remove transforms and layout motion; keep opacity at 120ms or less."
+    "entrance": "Enter the card once with opacity and an 8px rise over 320ms.",
+    "interaction": "Keep 150ms clear-button feedback and a stable minimum results region while filtering.",
+    "reduced": "Subscribe to live prefers-reduced-motion changes and stop and settle the owned entrance immediately. Remove press transforms."
   },
   "responsive": {
     "widths": [
@@ -66,13 +66,13 @@
         "name": "items",
         "type": "ShortcutEntry[]",
         "default": "five sample Mac shortcuts",
-        "description": "Grouped command labels and display key sequences. Display only; no global shortcuts are registered."
+        "description": "Grouped command labels and display key sequences with stable unique IDs. Filtering matches the rendered label, group and key strings. Display only; global shortcuts are not registered."
       },
       {
         "name": "searchPlaceholder",
         "type": "string",
         "default": "\"Find a shortcut\"",
-        "description": "Search label and prompt."
+        "description": "Accessible search label and visible prompt. Clear returns focus to this field; Escape clears a non-empty query."
       },
       {
         "name": "theme",
@@ -86,5 +86,13 @@
     "Remote images, fake network success or hidden external dependencies.",
     "Decorative status badges, gradients as filler, low-contrast text.",
     "Unlabelled controls, hover-only functionality, overflow at 320px."
+  ],
+  "contract": [
+    "Preserve ShortcutEntry, ShortcutReferenceProps and the named ShortcutReference export. The reference displays host commands and key labels; it does not register or execute keyboard shortcuts.",
+    "Filter labels, groups and the rendered key strings, trimming the query and matching case-insensitively. Keep group order from the supplied items and show only matching entries.",
+    "Use a labelled controlled text input. The clear action appears for non-empty input, clears the filter and returns focus to the input before the action disappears. Escape clears a non-empty filter while focus stays in the input.",
+    "Keep definition-list semantics and instance-scoped heading IDs. Empty lists and unmatched queries have written feedback; later-arriving items respect the retained query.",
+    "Support long command names, group names, key labels, Unicode and independent instances without overflow or shared search state. Use at least 3:1 contrast for the search boundary and clear visible focus.",
+    "The host owns the command catalogue, platform-specific key labels and actual shortcut registration. Search uses displayed strings without inventing aliases or OS behavior."
   ]
 }

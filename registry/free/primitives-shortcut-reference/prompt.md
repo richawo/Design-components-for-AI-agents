@@ -1,27 +1,31 @@
 # Shortcut Reference
 
-Build a standalone React 19 and Tailwind v4 component. A searchable shortcut reference with engraved keycaps and grouped commands, built for help panels and desktop-style web applications.
+Build a self-contained React 19, Tailwind v4 and motion/react component with the existing typed API, named export and overridable default demo.
 
-## Layout
+## Layout and type
 
-An editorial help panel with keyboard icon, serif heading, search field and ruled command rows. Keycaps carry a physical 2px lower edge. Size to the container. Use a 4/8px rhythm, 1px surface edges, 16px narrow padding and 24px desktop padding. Controls have 44px targets.
+A compact keyboard reference with a 30px Instrument Serif heading, a clear 44px search field, 12px group labels and a two-column definition list of command names and engraved monospaced keycaps. Keep neutral graphite surfaces and readable rules. The search boundary has at least 3:1 contrast against the panel, long commands and key labels wrap, and filtering does not collapse the minimum results region.
 
-## Typography and colour
+## Interaction
 
-Use font-sans at 14-16px/1.5, font-mono metadata at 11-12px and a 24-36px heading with -0.035em tracking. Dark uses #111111, #f5f5f5, #a3a3a3 and #333333; light uses #ffffff, #171717, #525252 and #d4d4d4. Maintain AA contrast.
+Preserve ShortcutEntry, ShortcutReferenceProps and the named ShortcutReference export. The reference displays host commands and key labels; it does not register or execute keyboard shortcuts.
+
+Filter labels, groups and the rendered key strings, trimming the query and matching case-insensitively. Keep group order from the supplied items and show only matching entries.
+
+Use a labelled controlled text input. The clear action appears for non-empty input, clears the filter and returns focus to the input before the action disappears. Escape clears a non-empty filter while focus stays in the input.
+
+Keep definition-list semantics and instance-scoped heading IDs. Empty lists and unmatched queries have written feedback; later-arriving items respect the retained query.
+
+Support long command names, group names, key labels, Unicode and independent instances without overflow or shared search state. Use at least 3:1 contrast for the search boundary and clear visible focus.
+
+The host owns the command catalogue, platform-specific key labels and actual shortcut registration. Search uses displayed strings without inventing aliases or OS behavior.
 
 ## Motion
 
-Use a 320ms opacity/8px entrance, 150ms press response and 240ms state changes, easing cubic-bezier(0.22,1,0.36,1). No ambient loops. Reduced motion removes transforms and layout animation and limits fades to 120ms.
+Enter the card once with opacity and an 8px rise over 320ms. Keep 150ms clear-button feedback and a stable minimum results region while filtering. Subscribe to live prefers-reduced-motion changes and stop and settle the owned entrance immediately. Remove press transforms.
 
-## Behaviour and accessibility
+## Integration
 
-Use semantic elements, native keyboard behaviour, visible focus rings and instance-scoped IDs. Expose typed content and callbacks. Handle empty custom data and repeated instances. Announce important feedback politely. Match the source state ownership and callback contract.
+Supply command entries with unique IDs, group names and already formatted key labels. Filtering searches those displayed strings. This is a reference, so register and execute shortcuts in the host. Each instance keeps its own filter and focus.
 
-## Responsive
-
-Design for 320, 390, 768, 1024, 1440 and 1920px. Respond to the container with @container variants, wrap text and stack secondary details. Scroll only within explicitly labelled local regions.
-
-## Avoid
-
-No remote imagery, false success states, unlabelled controls, hover-only actions, low contrast or decorative status pills. The demo is an isolated component on a quiet stage.
+Use the source dark/light palettes and verify 320/390/768/1024/1440/1920px container layouts.

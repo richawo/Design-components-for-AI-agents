@@ -386,6 +386,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 7 (19 October): Windowed Pagination retains its travelling page rail and 44px slot height. Controlled navigation without a writer is read-only, empty result sets keep keyboard focus in the landmark, large labels fit their targets, and the selected outline meets 3:1. Owned card/caption/slot motion settles immediately on live reduced-motion changes, including retiring slots. Six original-source failures are retained. Its 45-mount source review, twenty-four accessibility audits, six widths, reviewed state/entrance captures, Next regression, legacy interpolation probe, theme control, official audit and exact four-state replay pass. Keyboard navigation, first/last bounds, controlled acceptance/refusal, responsive window changes, invalid and single-page totals, large counts and independent instances are covered. The API stays unchanged. Strict registry, root/isolated types and all 1,066 tests pass. Its reviewed 4.0s film and paired poster keep all four destination states in the measured 832×600 frame: source gap 14ms, delivery 21.04ms and moving-frame p95 24.75ms, with no stalls and unchanged guards. The next complete batch has 65 suites and 88 metadata replays and remains pending. 6 components and 12 blocks remain; 117 films remain queued.
 
+- Task 7 (19 October): Shortcut Reference retains its grouped command list and engraved keycaps. The search boundary meets 3:1, clearing returns focus to the search field, Escape clears a non-empty filter and live reduced motion settles its 320ms entrance. Three original-source failures are retained. Its 31-mount source review, eighteen accessibility audits, six widths, reviewed state/entrance captures, Next regression, theme control, official audit and exact full/filtered/restored replay pass. Label/group/rendered-key filtering, trimmed case-insensitive queries, no matches, empty and arriving items, retained input focus, long content, Unicode search and independent instances are covered. The API stays unchanged. Strict registry, root/isolated types and all 1,066 tests pass. Its reviewed 4.3s film and paired poster retain the complete full, filtered and restored command lists in the measured 832×760 frame: source gap 11ms, delivery 16.90ms and moving-frame p95 25.10ms, with no stalls and unchanged guards. The next complete batch has 65 suites and 89 metadata replays and remains pending. 5 components and 12 blocks remain; 117 films remain queued.
+
 ## 1. Re-record demo videos (117 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
@@ -538,9 +540,9 @@ All nine parked rebuilds are shipped in both repos. Their original `_wip/<slug>`
 | finance-budget-variance | Completed 17 October: Next probe, dark/light accessibility, responsive and entrance/state captures, live demo and refreshed poster pass. |
 | finance-cashflow-dashboard | Completed 17 October: weekly balance and in/out bars, movable payments, independent pending saves, invalid-data guards, selected-week list geometry, Next probe/demo, both-theme accessibility, responsive/state/entrance captures and refreshed poster pass. |
 
-## 7. Continue the review (6 components, then 12 blocks)
+## 7. Continue the review (5 components, then 12 blocks)
 
-Same process as the 192 already done: hold each to the first ~100 components' standard. Briefs:
+Same process as the 193 already done: hold each to the first ~100 components' standard. Briefs:
 `docs/review/REVIEW_BRIEF.md`, `docs/review/SUITE_BRIEF.md` for industry components, suite languages in
 `docs/review/suites/`. Work newest first, about four components per batch, and verify each (build, tsc, tests,
 check-component, your own captures of states and mid-entrance frames, a refreshed poster, a rewritten pro-50 probe for
@@ -548,7 +550,7 @@ industry components).
 
 - **Commerce** is reviewed. Keep `block-commerce-workspace` compatible with its rebuilt parts.
 - **Smaller components** (#151–179):
-  primitives-shortcut-reference, selects-radio-cards,
+  selects-radio-cards,
   progress-milestones, content-accordion-index, feedback-inline-alert, navigation-breadcrumb-fold.
 - **Blocks**, after their parts: the 12 `block-*` components. Many parts changed their look and some their props;
   re-check each block composes well with the rebuilt parts and still reads as one product.

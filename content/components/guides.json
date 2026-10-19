@@ -737,14 +737,14 @@
     "useWhen": "A discoverable list of keyboard shortcuts close to the task.",
     "avoidWhen": "A replacement for visible controls or platform shortcuts that your product does not implement.",
     "integration": [
-      "Supply your own records through `items`. Preserve stable keys or IDs when the data contract provides them."
+      "Supply command entries with unique IDs, group names and already formatted key labels. Filtering searches those displayed strings. This is a reference, so register and execute shortcuts in the host. Each instance keeps its own filter and focus."
     ],
     "related": [
       "button-hold-confirm",
       "toast-stack",
       "input-shortcut-recorder"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-19"
   },
   "progress-milestones": {
     "useWhen": "Communicating discrete, ordered stages of a task or journey.",

@@ -1,7 +1,7 @@
 "use client";
-import { type CSSProperties, useId, useState } from "react";
+import { type CSSProperties, useId, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 import { Search, Keyboard, X } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
+import { motion, useAnimationControls } from "motion/react";
 
 const control =
   "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-lg px-3 text-sm font-medium transition-[background,transform] duration-150 hover:bg-[var(--wash)] disabled:hover:bg-transparent active:scale-[.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)] disabled:cursor-not-allowed disabled:opacity-40 disabled:active:scale-100 motion-reduce:transform-none";
@@ -12,6 +12,7 @@ function colors(theme: "dark" | "light"): CSSProperties {
     "--panel": theme === "dark" ? "#111111" : "#ffffff",
     "--ink": theme === "dark" ? "#f5f5f5" : "#171717",
     "--muted": theme === "dark" ? "#a3a3a3" : "#525252",
+    "--control-line": "#737373",
     "--line": theme === "dark" ? "#333333" : "#d4d4d4",
     "--wash": theme === "dark" ? "#242424" : "#f0f0f0",
   } as CSSProperties;
@@ -51,6 +52,29 @@ const defaults: ShortcutEntry[] = [
   },
   { id: "save", label: "Save changes", keys: ["⌘", "S"], group: "Writing" },
 ];
+const motionQuery = "(prefers-reduced-motion: reduce)";
+function subscribeToMotion(change: () => void) {
+  const query = window.matchMedia(motionQuery);
+  query.addEventListener("change", change);
+  return () => query.removeEventListener("change", change);
+}
+function useCardEntry() {
+  const reduced = useSyncExternalStore(
+    subscribeToMotion,
+    () => window.matchMedia(motionQuery).matches,
+    () => false,
+  );
+  const entrance = useAnimationControls();
+  useLayoutEffect(() => {
+    entrance.stop();
+    const target = { opacity: 1, y: 0 };
+    if (reduced) entrance.set(target);
+    else void entrance.start({ ...target, transition: { duration: 0.32 } });
+    return () => entrance.stop();
+  }, [entrance, reduced]);
+  return { reduced, entrance };
+}
+
 export function ShortcutReference({
   title = "Make yourself quicker.",
   items = defaults,
@@ -58,8 +82,9 @@ export function ShortcutReference({
   theme = "dark",
 }: ShortcutReferenceProps) {
   const id = useId();
-  const reduced = useReducedMotion();
+  const { reduced, entrance } = useCardEntry();
   const [query, setQuery] = useState("");
+  const search = useRef<HTMLInputElement>(null);
   const visible = items.filter((s) =>
     `${s.label} ${s.group} ${s.keys.join(" ")}`
       .toLocaleLowerCase()
@@ -69,7 +94,7 @@ export function ShortcutReference({
   return (
     <motion.section
       initial={{ opacity: 0, y: reduced ? 0 : 8 }}
-      animate={{ opacity: 1, y: 0 }}
+      animate={entrance}
       style={colors(theme)}
       aria-labelledby={id}
       className="w-full max-w-lg rounded-xl border border-[var(--line)] bg-[var(--panel)] p-6 text-[var(--ink)]"
@@ -78,14 +103,21 @@ export function ShortcutReference({
       <h2 id={id} className="mt-4 font-serif text-3xl tracking-[-.03em]">
         {title}
       </h2>
-      <div className="my-6 flex items-center gap-2 rounded-lg border border-[var(--line)] px-3 focus-within:ring-2 focus-within:ring-[var(--ink)]">
-        <Search size={16} aria-hidden="true" className={muted} />
+      <div className="my-6 flex items-center gap-2 rounded-lg border border-[var(--control-line)] px-3 focus-within:ring-2 focus-within:ring-[var(--ink)]">
+        <Search size={16} aria-hidden="true" className={`${muted} shrink-0`} />
         <input
+          ref={search}
           aria-label={searchPlaceholder}
           placeholder={searchPlaceholder}
           data-demo="shortcut-search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Escape" && query) {
+              e.preventDefault();
+              setQuery("");
+            }
+          }}
           className="min-h-11 min-w-0 flex-1 bg-transparent text-base outline-none placeholder:text-[var(--muted)]"
         />
         {query && (
@@ -93,7 +125,10 @@ export function ShortcutReference({
             type="button"
             data-demo="clear-query"
             aria-label="Clear shortcut search"
-            onClick={() => setQuery("")}
+            onClick={() => {
+              setQuery("");
+              search.current?.focus();
+            }}
             className={`${control} -mr-3 p-0`}
           >
             <X size={16} aria-hidden="true" />

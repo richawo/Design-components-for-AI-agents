@@ -9,6 +9,7 @@ const specs = fs
   .filter((file) => file.endsWith(".mjs"))
   .map((file) => ({ slug: file.slice(0, -4) }));
 const finalStates = {
+  "primitives-shortcut-reference": "Save changes",
   "navigation-pagination-window": "Page 24 of 24",
   "feedback-empty-search": "Choose a topic to begin.",
   "input-shortcut-recorder": "Shortcut reset.",
@@ -138,6 +139,17 @@ try {
           if (next && next !== window.paginationStates.at(-1)) window.paginationStates.push(next);
         });
         window.paginationObserver.observe(nav, {childList:true,subtree:true,attributes:true,attributeFilter:["aria-current","inert"]});
+      });
+    }
+    if (slug === "primitives-shortcut-reference") {
+      await page.locator('section[aria-labelledby]').evaluate(panel => {
+        const state = () => [...panel.querySelectorAll("dt")].map(node => node.textContent);
+        window.referenceStates = [state()];
+        window.referenceObserver = new MutationObserver(() => {
+          const next = state();
+          if (JSON.stringify(next) !== JSON.stringify(window.referenceStates.at(-1))) window.referenceStates.push(next);
+        });
+        window.referenceObserver.observe(panel, {childList:true,characterData:true,subtree:true});
       });
     }
     if (slug === "input-shortcut-recorder") {
@@ -318,6 +330,15 @@ try {
       assert.equal(await page.locator('li:not([inert]) [aria-current="page"]').count(), 1);
       await page.evaluate(() => window.paginationObserver.disconnect());
     }
+    if (slug === "primitives-shortcut-reference") {
+      const all = ["Search everywhere","Switch workspace","New document","Toggle preview","Save changes"];
+      assert.deepEqual(await page.evaluate(() => window.referenceStates), [all,["New document","Toggle preview","Save changes"],all], "The exact demo filters to Writing, then restores all five commands");
+      const input = page.locator('[data-demo="shortcut-search"]');
+      assert.equal(await input.inputValue(), "");
+      assert.equal(await input.evaluate(node => node === document.activeElement), true);
+      await page.evaluate(() => window.referenceObserver.disconnect());
+      replay.exactWorkflowVerified = true;
+    }
     if (slug === "input-shortcut-recorder") {
       assert.deepEqual(await page.evaluate(() => window.shortcutStates), [
         [["Control","Shift","K"],"Record shortcut. Current: Control plus Shift plus K","Click the keycaps to change the combination."],
@@ -492,6 +513,8 @@ try {
       const id = await target.getAttribute("aria-controls");
       assert.equal(await page.locator('[id='+JSON.stringify(id)+']').evaluate(node => node.getBoundingClientRect().height), 0, "The programme is visually collapsed");
       await page.evaluate(() => window.ticketObserver.disconnect());
+    } else if (slug === "primitives-shortcut-reference") {
+      assert.equal(replay.exactWorkflowVerified, true, "The retained-state demo passes its complete journey assertion");
     } else if (notice.some((s) => s.trim() && !s.startsWith("Connect "))) {
       assert.doesNotMatch(notice.join(" "), /failed|Connect the host/);
     } else if (
