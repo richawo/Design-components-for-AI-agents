@@ -8,13 +8,13 @@
     "motion": "motion/react"
   },
   "layout": {
-    "direction": "A large dashed document surface with upload mark, serif invitation and explicit browse button. Accepted files land in compact, removable rows underneath.",
+    "direction": "A focused document chooser with a dashed drop surface, restrained upload icon, 30px Instrument Serif invitation, explicit 44px browse button and compact removable file rows below. Keep neutral graphite surfaces, clear type hierarchy, 12px monospaced size/limit labels and a quiet selection or rejection status. Wrap long filenames without squeezing the remove target.",
     "container": "Size to the parent with @container. Keep the root width at 100%, capped to the focused component, with 24px desktop and 16px narrow padding.",
     "rhythm": "4/8px spacing; 1px edges; 44px minimum interactive targets."
   },
   "typography": {
     "body": "font-sans, 14-16px, line-height 1.5",
-    "metadata": "font-mono, 11-12px, restrained tracking",
+    "metadata": "12px monospaced file size, limit and selection metadata",
     "heading": "font-display or font-serif, 24-36px, tracking -0.035em"
   },
   "color": {
@@ -32,9 +32,9 @@
     }
   },
   "motion": {
-    "entrance": "A single opacity and 8px rise over 320ms.",
-    "interaction": "150ms press response; 240ms state changes. No ambient loops.",
-    "reduced": "Remove transforms and layout motion; keep opacity at 120ms or less."
+    "entrance": "Enter the card once with opacity and an 8px rise over 320ms.",
+    "interaction": "New file rows enter with opacity and a 6px rise over 200ms; retain 220ms row layout and 150ms press feedback.",
+    "reduced": "Subscribe to live prefers-reduced-motion changes. Stop and settle owned card/row entrances immediately and remove layout/press transforms. No ambient loops."
   },
   "responsive": {
     "widths": [
@@ -72,13 +72,13 @@
         "name": "files",
         "type": "File[]",
         "default": "undefined",
-        "description": "Controlled local files; uploading remains the host responsibility."
+        "description": "Controlled local File objects. Without onChange, selection and removal are read-only. Uploading and persistence remain the host responsibility."
       },
       {
         "name": "defaultFiles",
         "type": "File[]",
         "default": "[]",
-        "description": "Initial uncontrolled files."
+        "description": "Initial uncontrolled files. The component copies the array while retaining the File objects."
       },
       {
         "name": "accept",
@@ -90,7 +90,7 @@
         "name": "maxBytes",
         "type": "number",
         "default": "10485760",
-        "description": "Maximum bytes per file."
+        "description": "Maximum bytes per file; finite values are clamped to zero or above. File sizes and limits use readable B, KB or MB units."
       },
       {
         "name": "maxFiles",
@@ -108,7 +108,7 @@
         "name": "onChange",
         "type": "(files: File[]) => void",
         "default": "undefined",
-        "description": "The entire new local file selection."
+        "description": "Synchronous notification containing a separate array of the full next selection, with the original File objects. The host acknowledges controlled changes and owns uploading."
       },
       {
         "name": "theme",
@@ -122,5 +122,13 @@
     "Remote images, fake network success or hidden external dependencies.",
     "Decorative status badges, gradients as filler, low-contrast text.",
     "Unlabelled controls, hover-only functionality, overflow at 320px."
+  ],
+  "contract": [
+    "Preserve FileDropzoneProps and the named FileDropzone export. Use real File objects and the native multiple file picker, plus file drag and drop. A non-file drag must not activate the drop highlight; nested file enters and leaves retain the correct highlight, and disabling or entering read-only mode clears it.",
+    "Copy the initial defaultFiles array and every onChange array without replacing the File objects. Keep local state for undefined files; controlled files require onChange for changes, otherwise disable chooser and removal and ignore drops. onChange is a synchronous notification, not an upload or persistence operation.",
+    "Validate comma-separated extensions, exact MIME types and type/* wildcards, case-insensitively. Reject files exceeding maxBytes, duplicate name/size/lastModified signatures and files beyond maxFiles. Mixed drops keep accepted files while writing specific rejection reasons. Empty drops do not clear existing errors.",
+    "Use finite, non-negative size limits and a non-negative integer count limit; non-finite settings fall back to defaults. Show byte sizes and limits using B, KB or MB, so a small non-empty file or budget is not rounded to zero.",
+    "Use stable signature and occurrence row keys so host reordering retains focus, including repeated supplied files. When the host accepts removal, move focus to the next available remove action, then the browse button, or the outlined section when choosing is unavailable. A refused or later acknowledged removal must not steal focus from another control.",
+    "Keep clear selection count feedback, independent instances, visible focus, written empty status and long-content wrapping at all specified widths. The host owns durable upload, server validation and storage; selecting a document does not claim an upload completed."
   ]
 }

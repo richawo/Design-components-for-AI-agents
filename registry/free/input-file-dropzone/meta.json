@@ -37,13 +37,13 @@
       "name": "files",
       "type": "File[]",
       "default": "undefined",
-      "description": "Controlled local files; uploading remains the host responsibility."
+      "description": "Controlled local File objects. Without onChange, selection and removal are read-only. Uploading and persistence remain the host responsibility."
     },
     {
       "name": "defaultFiles",
       "type": "File[]",
       "default": "[]",
-      "description": "Initial uncontrolled files."
+      "description": "Initial uncontrolled files. The component copies the array while retaining the File objects."
     },
     {
       "name": "accept",
@@ -55,7 +55,7 @@
       "name": "maxBytes",
       "type": "number",
       "default": "10485760",
-      "description": "Maximum bytes per file."
+      "description": "Maximum bytes per file; finite values are clamped to zero or above. File sizes and limits use readable B, KB or MB units."
     },
     {
       "name": "maxFiles",
@@ -73,7 +73,7 @@
       "name": "onChange",
       "type": "(files: File[]) => void",
       "default": "undefined",
-      "description": "The entire new local file selection."
+      "description": "Synchronous notification containing a separate array of the full next selection, with the original File objects. The host acknowledges controlled changes and owns uploading."
     },
     {
       "name": "theme",
@@ -87,9 +87,7 @@
     "steps": [
       "wait:700",
       "click:@sample-file",
-      "wait:900",
-      "click:@remove-file-0",
-      "wait:700"
+      "wait:2600"
     ],
     "loop": false
   },

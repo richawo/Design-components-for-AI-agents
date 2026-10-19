@@ -2678,15 +2678,15 @@
     "useWhen": "Choosing and validating supplied file types before a host upload.",
     "avoidWhen": "A completed upload or secure file storage implemented only by a drop animation.",
     "integration": [
-      "Supply your own records through `files`, `defaultFiles`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+      "Use defaultFiles for local selection, or files with onChange for controlled acknowledgement. The callback receives a separate array of the original File objects synchronously. Supply accept, maxBytes and maxFiles for client selection limits; validate files again in the host upload path and manage persistence there.",
+      "Controlled files without onChange are read-only. Keep host file identities stable to preserve focused rows through reordering. Accepted removal restores focus without moving it after a delayed host acknowledgement."
     ],
     "related": [
       "input-color-swatches",
       "input-number-stepper",
       "input-password-checklist"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-19"
   },
   "input-shortcut-recorder": {
     "useWhen": "Recording a deliberate keyboard combination in a preference screen.",

@@ -9,6 +9,7 @@ const specs = fs
   .filter((file) => file.endsWith(".mjs"))
   .map((file) => ({ slug: file.slice(0, -4) }));
 const finalStates = {
+  "input-file-dropzone": "1 of 5 files selected.",
   "date-booking-slots": "Tue 13, 10:00 selected",
   "onboarding-setup-checklist": "Everything on your list is complete.",
   "date-week-agenda": "Research playback",
@@ -114,6 +115,17 @@ try {
         });
       }, true);
     });
+    if (slug === "input-file-dropzone") {
+      await page.locator("section").evaluate(dropzone => {
+        const state = () => [[...dropzone.querySelectorAll("li p.font-medium")].map(node => node.textContent), dropzone.querySelector('[role="status"]')?.textContent.trim()];
+        window.dropzoneStates = [state()];
+        window.dropzoneObserver = new MutationObserver(() => {
+          const next = state();
+          if (JSON.stringify(next) !== JSON.stringify(window.dropzoneStates.at(-1))) window.dropzoneStates.push(next);
+        });
+        window.dropzoneObserver.observe(dropzone, {childList:true,characterData:true,subtree:true});
+      });
+    }
     if (slug === "date-booking-slots") {
       await page.locator("section").evaluate(booking => {
         const state = () => [booking.querySelector('[aria-pressed="true"]')?.getAttribute("data-demo"), booking.querySelector('input[type="radio"]:checked')?.closest("label").textContent.trim() ?? null, booking.querySelector('[role="status"]')?.textContent.replace(/\s+/g," ").trim()];
@@ -255,6 +267,13 @@ try {
       ?.slice(7);
     const target = page.locator('[data-demo="' + last + '"]');
     const notice = await page.getByRole("status").allTextContents();
+    if (slug === "input-file-dropzone") {
+      assert.deepEqual(await page.evaluate(() => window.dropzoneStates), [[[],"0 of 5 files selected."], [["product-brief.md"],"1 of 5 files selected."]], "The sample action selects one actual document and retains its selection receipt");
+      assert.equal(await page.getByRole("button", {name:"Remove product-brief.md",exact:true}).isVisible(), true);
+      assert.equal(await page.locator('[data-demo="sample-file"]').evaluate(node => node === document.activeElement), true);
+      assert.ok(notice.includes("1 of 5 files selected."));
+      await page.evaluate(() => window.dropzoneObserver.disconnect());
+    }
     if (slug === "date-booking-slots") {
       assert.deepEqual(await page.evaluate(() => window.bookingStates), [["day-0",null,"Choose an available time to continue."], ["day-0","10:30","Mon 12, 10:30 selected"], ["day-1",null,"Mon 12, 10:30 selected"], ["day-1","10:00","Tue 13, 10:00 selected"]], "Day browsing retains Monday's actual choice until Tuesday's time is selected");
       assert.equal(await page.getByRole("radio", {checked:true}).count(), 1);

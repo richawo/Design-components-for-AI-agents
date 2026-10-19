@@ -1,7 +1,15 @@
 "use client";
-import { type CSSProperties, useId, useRef, useState } from "react";
+import {
+  type CSSProperties,
+  type ReactNode,
+  useId,
+  useLayoutEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import { Upload, FileText, X } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
+import { motion, useAnimationControls } from "motion/react";
 
 const control =
   "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-lg px-3 text-sm font-medium transition-[background,transform] duration-150 hover:bg-[var(--wash)] disabled:hover:bg-transparent active:scale-[.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)] disabled:cursor-not-allowed disabled:opacity-40 disabled:active:scale-100 motion-reduce:transform-none";
@@ -43,6 +51,50 @@ function accepts(file: File, accept: string) {
     })
   );
 }
+const motionQuery = "(prefers-reduced-motion: reduce)";
+function subscribeToMotion(change: () => void) {
+  const query = window.matchMedia(motionQuery);
+  query.addEventListener("change", change);
+  return () => query.removeEventListener("change", change);
+}
+
+function useEntry(reduced: boolean, duration: number) {
+  const controls = useAnimationControls();
+  useLayoutEffect(() => {
+    controls.stop();
+    const target = { opacity: 1, y: 0 };
+    if (reduced) controls.set(target);
+    else void controls.start({ ...target, transition: { duration } });
+    return () => controls.stop();
+  }, [controls, duration, reduced]);
+  return controls;
+}
+
+function FileRow({ reduced, children }: { reduced: boolean; children: ReactNode }) {
+  const entrance = useEntry(reduced, 0.2);
+  return (
+    <motion.li
+      layout={!reduced}
+      initial={{ opacity: 0, y: reduced ? 0 : 6 }}
+      animate={entrance}
+      transition={{ layout: { duration: reduced ? 0 : 0.22 } }}
+      className="flex items-center gap-3 rounded-lg bg-[var(--wash)] px-3 py-2 motion-reduce:transform-none!"
+    >
+      {children}
+    </motion.li>
+  );
+}
+
+function formatBytes(bytes: number) {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1048576) return `${Number((bytes / 1024).toFixed(1))} KB`;
+  return `${Number((bytes / 1048576).toFixed(1))} MB`;
+}
+
+function fileSignature(file: File) {
+  return JSON.stringify([file.name, file.size, file.lastModified]);
+}
+
 export function FileDropzone({
   title = "Bring your source material.",
   hint = "Drop documents here, or choose them from your device.",
@@ -56,23 +108,58 @@ export function FileDropzone({
   theme = "dark",
 }: FileDropzoneProps) {
   const id = useId();
-  const reduced = useReducedMotion();
+  const reduced = useSyncExternalStore(
+    subscribeToMotion,
+    () => window.matchMedia(motionQuery).matches,
+    () => false,
+  );
+  const entrance = useEntry(reduced, 0.32);
+  const section = useRef<HTMLElement>(null);
+  const browse = useRef<HTMLButtonElement>(null);
+  const removeButtons = useRef(new Map<string, HTMLButtonElement>());
+  const pendingFocus = useRef<{ key: string; index: number; active: Element | null } | null>(null);
   const input = useRef<HTMLInputElement>(null);
   const depth = useRef(0);
   const [dragging, setDragging] = useState(false);
-  const [local, setLocal] = useState(defaultFiles);
+  const [local, setLocal] = useState(() => [...defaultFiles]);
   const [error, setError] = useState("");
   const selected = files ?? local;
+  const readOnly = files !== undefined && !onChange;
+  const occurrences = new Map<string, number>();
+  const rows = selected.map((file) => {
+    const signature = fileSignature(file);
+    const occurrence = occurrences.get(signature) ?? 0;
+    occurrences.set(signature, occurrence + 1);
+    return { file, key: `${signature}:${occurrence}` };
+  });
+  useLayoutEffect(() => {
+    if (disabled || readOnly) {
+      depth.current = 0;
+      setDragging(false);
+    }
+  }, [disabled, readOnly]);
+  useLayoutEffect(() => {
+    const pending = pendingFocus.current;
+    if (!pending) return;
+    pendingFocus.current = null;
+    if (rows.some((row) => row.key === pending.key)) return;
+    const active = document.activeElement;
+    if (active && active !== document.body && active !== pending.active && active.isConnected) return;
+    const next = rows[Math.min(pending.index, rows.length - 1)];
+    const target = next ? removeButtons.current.get(next.key) : browse.current;
+    if (target && !target.disabled) target.focus();
+    else section.current?.focus();
+  });
   const cap = Number.isFinite(maxFiles) ? Math.max(0, Math.floor(maxFiles)) : 5;
   const sizeCap = Number.isFinite(maxBytes)
     ? Math.max(0, maxBytes)
     : 10 * 1024 * 1024;
   function update(next: File[]) {
     setLocal(next);
-    onChange?.(next);
+    onChange?.([...next]);
   }
   function add(incoming: File[]) {
-    if (disabled) return;
+    if (disabled || readOnly) return;
     const next = [...selected];
     const rejected: string[] = [];
     for (const f of incoming) {
@@ -95,16 +182,21 @@ export function FileDropzone({
     setError(rejected.join(". "));
   }
   return (
-    <section
+    <motion.section
+      ref={section}
+      tabIndex={-1}
+      initial={{ opacity: 0, y: reduced ? 0 : 8 }}
+      animate={entrance}
       style={colors(theme)}
       aria-labelledby={id}
-      className="@container w-full max-w-xl rounded-xl border border-[var(--line)] bg-[var(--panel)] p-6 text-[var(--ink)]"
+      className="@container w-full max-w-xl rounded-xl border border-[var(--line)] bg-[var(--panel)] p-6 text-[var(--ink)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)]"
     >
       <div
         onDragEnter={(e) => {
           e.preventDefault();
+          if (disabled || readOnly || !e.dataTransfer.types.includes("Files")) return;
           depth.current++;
-          if (!disabled) setDragging(true);
+          setDragging(true);
         }}
         onDragOver={(e) => e.preventDefault()}
         onDragLeave={(e) => {
@@ -116,7 +208,7 @@ export function FileDropzone({
           e.preventDefault();
           depth.current = 0;
           setDragging(false);
-          add(Array.from(e.dataTransfer.files));
+          if (e.dataTransfer.files.length) add(Array.from(e.dataTransfer.files));
         }}
         className={`rounded-lg border border-dashed p-6 transition-colors ${dragging ? "border-[var(--ink)] bg-[var(--wash)]" : "border-[var(--line)]"}`}
       >
@@ -131,7 +223,8 @@ export function FileDropzone({
         <button
           type="button"
           data-demo="browse-files"
-          disabled={disabled || selected.length >= cap}
+          ref={browse}
+          disabled={disabled || readOnly || selected.length >= cap}
           onClick={() => input.current?.click()}
           className={`${control} mt-5 border border-[var(--line)]`}
         >
@@ -142,7 +235,7 @@ export function FileDropzone({
           type="file"
           multiple
           accept={accept}
-          disabled={disabled}
+          disabled={disabled || readOnly}
           tabIndex={-1}
           aria-label="Choose source files"
           className="hidden"
@@ -153,29 +246,31 @@ export function FileDropzone({
         />
         <p className={`mt-3 break-words font-mono text-xs ${muted}`}>
           {accept || "All file types"} · up to{" "}
-          {Number((sizeCap / 1048576).toFixed(1))} MB each
+          {formatBytes(sizeCap)} each
         </p>
       </div>
       <ul className="mt-4 space-y-2">
-        {selected.map((f, i) => (
-          <motion.li
-            layout={!reduced}
-            key={`${f.name}-${f.lastModified}-${i}`}
-            className="flex items-center gap-3 rounded-lg bg-[var(--wash)] px-3 py-2"
-          >
+        {rows.map(({ file: f, key }, i) => (
+          <FileRow key={key} reduced={reduced}>
             <FileText size={20} className="shrink-0" aria-hidden="true" />
             <div className="min-w-0 flex-1">
               <p className="break-words text-sm font-medium">{f.name}</p>
               <p className={`mt-1 font-mono text-xs ${muted}`}>
-                {(f.size / 1024).toFixed(1)} KB
+                {formatBytes(f.size)}
               </p>
             </div>
             <button
               type="button"
               data-demo={`remove-file-${i}`}
-              disabled={disabled}
+              ref={(node) => {
+                if (node) removeButtons.current.set(key, node);
+                else removeButtons.current.delete(key);
+              }}
+              disabled={disabled || readOnly}
               aria-label={`Remove ${f.name}`}
               onClick={() => {
+                if (disabled || readOnly) return;
+                pendingFocus.current = { key, index: i, active: document.activeElement };
                 update(selected.filter((_, j) => j !== i));
                 setError("");
               }}
@@ -183,7 +278,7 @@ export function FileDropzone({
             >
               <X size={16} aria-hidden="true" />
             </button>
-          </motion.li>
+          </FileRow>
         ))}
       </ul>
       <p
@@ -192,7 +287,7 @@ export function FileDropzone({
       >
         {error || `${selected.length} of ${cap} files selected.`}
       </p>
-    </section>
+    </motion.section>
   );
 }
 export default function FileDropzoneDemo(
