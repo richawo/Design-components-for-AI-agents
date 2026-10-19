@@ -9,11 +9,13 @@ needs re-recording, whether its poster is current, and the state of its browser 
 - **Probe**: the `tests/browser/pro-50/<slug>.mjs` state, or another probe that covers it. Blank means no browser test
   was written in this review; those are the ones for a separate pass.
 
-The editorial/chart checkpoint is verified: the full run passed **58/61**, all **74 metadata replays** pass,
-and all 61 suites have passing results across the full and focused runs. All 87 native prop cases pass
-in two bounded halves. Fresh audits, 40 byte-identical reviewed captures, source hashes and Worker
-budgets pass. Release Notes and Event Ticket have current films/posters; Slope and Bullet have current
-posters and queued film refreshes. See the latest checkpoint in `HANDOFF_TASKS.md`.
+The media/devtools checkpoint passes **62/62 browser suites** in one complete run and all **78 exact
+metadata replays**, including all 87 native prop cases. Fresh audits report no runtime, accessibility or
+reduced-motion failures; all forty captures are byte-identical to reviewed images and the fresh 320px
+views are inspected. Source hashes and standing edits remain unchanged. Strict registry, root/isolated
+types, all 1,066 unit tests and the Worker dry run pass with the original bundle guards. The three known
+package-copy diagnostics retain complete, byte-identical runtime files. No manual deployment is performed.
+See the latest checkpoint in `HANDOFF_TASKS.md`.
 
 Story Deck also passes its 31-mount source review, twelve accessibility audits, six widths, Next regression,
 theme control and exact three-study replay. Its reviewed 3.6s film and paired poster pass every recording guard.
@@ -23,7 +25,7 @@ JSON Inspector passes its 41-mount review, twenty-eight accessibility audits, Ne
 Its reviewed 3.8s film and paired poster pass every recording guard.
 Before/After passes its 39-mount review, 22 accessibility audits, Next checks and exact range replay.
 Its reviewed four-second film and paired poster pass every recording guard. Shared native range replay is fixed.
-The next full batch checkpoint has 62 suites and 78 metadata replays and remains pending.
+The complete 62-suite / 78-replay batch checkpoint is verified.
 
 Remaining queues: **16 components, 12 blocks, 59 dedicated probes and 115 films**.
 

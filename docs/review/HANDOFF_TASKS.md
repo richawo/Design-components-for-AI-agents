@@ -360,6 +360,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 4 follow-up: shared player commit `d1565fa` adds native range pointer/drag/key defaults while preserving prevented handlers, host refusal, bounds, step, RTL and cancellation. Text-editing keys cannot alter ranges. Original static-replay and 23-to-29 text-editing negatives are preserved. Five legacy demo suites pass; the final affected two suites, exact comparison replay, strict registry, fresh types and all 1,066 tests pass.
 
+- Task 8 (19 October): the media/devtools batch passes all 62 browser suites in one run and all 78 exact metadata replays. Fresh four-component audits, 40 byte-identical reviewed images, unchanged source hashes, strict registry, root/isolated types and all 1,066 tests pass. The Worker dry run retains every size guard and verifies runtime files behind the three known copy diagnostics. No manual deployment is performed. The remaining queues are 16 components, 12 blocks, 59 probes and 115 films.
+
 ## 1. Re-record demo videos (115 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
@@ -453,10 +455,10 @@ for a focused rerun (suite = legal, saas, finance, HR, fashion or commerce).
 
 ## 4. Finish or rerun browser probes (complete)
 
-All **61 suites have passing results** in the 19 October editorial/chart checkpoint: the full run passed
-58/61, the two UI probes pass with their original guards, and all 87 native prop cases pass after the
-aggregate sweep is split into two bounded runs. The original failures and evidence from unchanged sources are
-retained in the latest checkpoint below. The preceding input and complete 59/59 runs remain archived.
+All **62 suites pass in one complete run** in the 19 October media/devtools checkpoint, including all
+**78 exact metadata replays** and all 87 native prop cases in two bounded runs. Both repositories keep
+their source hashes, heads and standing edits throughout. The earlier editorial/chart, input and 59/59
+checkpoints and their original failures remain archived below.
 
 - All requested finance, HR, commerce and SaaS reruns pass on the official runner, including callback rejection,
   retry, retained drafts and exact payloads. Column Workbench's deferred focus and Access Requests' stale duration
@@ -531,6 +533,44 @@ industry components).
 After any batch of the above: `node scripts/build-registry.mjs --strict`, `npx tsc --noEmit`, `npm test`,
 `npm run test:components`, `npm run audit:components -- <changed slugs>`, then stop the dev server and run
 `npm run deploy:dry-run` to check the Worker bundle size. Deployment itself (`npm run deploy`) is the owner's call.
+
+### Media and devtools checkpoint: 19 October 2026
+
+Story Deck, Request Waterfall, JSON Inspector and Before/After are reviewed and committed. Their public
+slices are `043a557`, `46d79f3`, `787388b` and `e246452`; Waterfall's private source is
+`48b226f`. Shared demo-player slice `d1565fa` adds native range defaults with pointer release,
+keyboard, bounds, step, cancellation, prevented-handler and host-refusal coverage.
+
+The complete browser run at public `e246452` / private `48b226f` passes **62/62 suites** and
+**78/78 exact metadata replays**. All 928 public and 1,138 private tracked text sources, both heads and
+standing auth/mobile edits remain unchanged throughout. Both bounded native prop halves pass all 87
+cases. The tooltip and navigation probes, every review group, page/access boundary, block workflow,
+recording negative control, native demo interaction and all six industry groups pass in this one run.
+Earlier failed checkpoints remain archived with their original guards and limitations.
+
+The four fresh audits report no runtime errors, accessibility violations or animations left running
+under reduced motion. All **40 images** are byte-identical to the reviewed individual audits, and the
+fresh 320px views are inspected again. Touch checks use browser emulation. Strict registry validation,
+root and isolated component types and all **1,066 unit tests** pass.
+
+The fresh audits and Worker build retain the same source hashes, heads and standing changes. The
+owned Next server is verified and stopped before building; the independent fixture server is retained.
+`npm run deploy:dry-run` passes with **2,655,633 router bytes**, **57,259,304 runtime
+bytes** and **4,772,046 gzipped source-map bytes**, below the unchanged 4 MiB / 64 MiB /
+15 MB limits. All runtime files in the three packages with known copy diagnostics are present and
+byte-identical. No manual deployment is performed.
+
+Story Deck, JSON Inspector and Before/After have reviewed current films and paired posters. Waterfall
+has a reviewed current poster; its 352.23ms delivery rejection remains archived, its previous film is
+preserved and its refresh stays in task 1. No recording guard is relaxed. **16 components, 12 blocks,
+59 dedicated probes and 115 films** remain in the handoff queues.
+
+Local evidence under `test-results/handoff-media-devtools/`:
+
+- `batch-browser.log`, `batch-metadata-replay-proof.json` and `batch-browser-delta-proof.json`
+- `batch-quality/`, `batch-image-proof.json` and `batch-visual-review.json`
+- `batch-worker-dryrun.log`, `batch-worker-proof.json` and `batch-owned-server-stop.json`
+- `batch-release-browser-delta-proof.json` and `batch-checkpoint-{strict,types,isolated,unit}.log`
 
 ### Editorial and chart checkpoint: 19 October 2026
 
