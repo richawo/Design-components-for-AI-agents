@@ -370,6 +370,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 7 (19 October): Weekly Agenda keeps its travelling day selector and time-anchored disclosures. Event callbacks now receive independent flat records, stable day/event keys retain focused controls through reordering, and live reduced motion settles the owned whole-card/list entrances and uses a static day indicator. Time metadata uses 12px type and chevrons turn over 150ms. Four original-source failures are retained. Its 31-mount source review, eighteen accessibility audits, six widths, reviewed state/entrance captures, Next regression, theme control, official audit and exact Monday-notes/Tuesday replay pass. Empty/arriving schedules, missing-day fallback, host display labels, replaced days, long copy and independent instances are covered. Strict registry, root/isolated types and all 1,066 tests pass. Its reviewed 4.0s film and paired poster keep all states inside the measured 832×740 frame: source gap 14ms, delivery 19.92ms and moving-frame p95 28.45ms, with no stalls and unchanged guards. The next complete batch has 63 suites and 82 metadata replays and remains pending. 12 components and 12 blocks remain; 115 films remain queued.
 
+- Task 8 (19 October): the interface checkpoint passes all 63 browser suites and 82 exact metadata replays at public `b015a68` / private `6a39c66`, with 933/1,138 tracked text sources, both heads and standing edits unchanged. Fresh audits for Kanban, Explorer, Preferences and Agenda pass; all forty captures are reviewed, with 38 byte-identical and two small Kanban raster differences inspected. The stopped-server connection failures are preserved separately. Strict registry, root/isolated types, all 1,066 unit tests and the Worker dry run pass with every bundle guard retained. All four films and paired posters are current. 12 components, 12 blocks, 59 probes and 115 films remain.
+
 ## 1. Re-record demo videos (115 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
@@ -463,10 +465,10 @@ for a focused rerun (suite = legal, saas, finance, HR, fashion or commerce).
 
 ## 4. Finish or rerun browser probes (complete)
 
-All **62 suites pass in one complete run** in the 19 October media/devtools checkpoint, including all
-**78 exact metadata replays** and all 87 native prop cases in two bounded runs. Both repositories keep
-their source hashes, heads and standing edits throughout. The earlier editorial/chart, input and 59/59
-checkpoints and their original failures remain archived below.
+All **63 suites pass in one complete run** in the 19 October interface checkpoint, including all
+**82 exact metadata replays** and all 87 native prop cases in two bounded runs. Both repositories keep
+their source hashes, heads and standing edits throughout. Earlier checkpoints and their original
+failures remain archived below.
 
 - All requested finance, HR, commerce and SaaS reruns pass on the official runner, including callback rejection,
   retry, retained drafts and exact payloads. Column Workbench's deferred focus and Access Requests' stale duration
@@ -541,6 +543,44 @@ industry components).
 After any batch of the above: `node scripts/build-registry.mjs --strict`, `npx tsc --noEmit`, `npm test`,
 `npm run test:components`, `npm run audit:components -- <changed slugs>`, then stop the dev server and run
 `npm run deploy:dry-run` to check the Worker bundle size. Deployment itself (`npm run deploy`) is the owner's call.
+
+### Interface checkpoint: 19 October 2026
+
+Compact Kanban, File Explorer, Communication Preferences and Weekly Agenda are reviewed and committed.
+Their public slices are `32f3e05`, `4fa924a`, `da1bc8c` and `b015a68`; Kanban's private source is
+`6a39c66`. All four have reviewed current films and paired posters, with every recording guard retained.
+
+The complete run at public `b015a68` / private `6a39c66` passes **63/63 browser suites** and
+**82/82 exact metadata replays**. All 933 public and 1,138 private tracked text sources, both heads
+and standing edits remain unchanged. The two native prop halves pass all 87 cases. This includes every
+review group, industry suite, block workflow, page/access boundary, recording negative control and
+tooltip/navigation guard in one run. Earlier failed checkpoints remain archived.
+
+The four fresh audits report no runtime errors, accessibility violations or reduced-motion animations.
+All **40 captures** are visually reviewed; 38 are byte-identical to the individual audits. The two
+Kanban 320px images differ at 62 and 34 pixels, with a maximum channel difference of five. Their
+dimensions and visible layout/content match the originals. Fresh 320px views are inspected again.
+The first audit attempt encountered stopped local servers and failed before rendering, with only
+connection-refused errors. Those reports remain in `batch-quality/`; restarted servers produce the
+passing `batch-quality-final/` evidence. No component source changes or audit relaxations are needed.
+Touch checks use browser emulation.
+
+Strict registry validation, root and isolated component types, and all **1,066 unit tests** pass. The
+fresh audits and Worker build retain both repositories' source hashes, heads and standing edits. The
+owned Next server is verified and stopped before building; the independent fixture server is retained.
+`npm run deploy:dry-run` passes with **2,655,633 router bytes**, **57,284,120 runtime
+bytes** and **4,775,396 gzipped source-map bytes**, below the unchanged 4 MiB / 64 MiB /
+15 MB limits. The three packages with known copy diagnostics have complete, byte-identical runtime
+files. No manual deployment is performed. **12 components, 12 blocks, 59 dedicated probes and 115 films**
+remain in the handoff queues.
+
+Local evidence under `test-results/handoff-interface/`:
+
+- `batch-browser.log`, `batch-metadata-replay-proof.json` and `batch-browser-delta-proof.json`
+- `batch-quality-final/`, `batch-image-proof.json` and `batch-visual-review.json`
+- `batch-quality-server-retirement.json` and the preserved `batch-quality/` connection failures
+- `batch-worker-dryrun.log`, `batch-worker-proof.json` and `batch-owned-server-stop.json`
+- `batch-release-browser-delta-proof.json` and `batch-checkpoint-{strict,types,isolated,unit}.log`
 
 ### Media and devtools checkpoint: 19 October 2026
 
