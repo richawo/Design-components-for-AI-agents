@@ -1,3 +1,4 @@
+import {check as checkOrderPhone} from '../review/dashboard-orders-table-phone.mjs';
 import {check as checkOrderContrast} from '../review/dashboard-orders-table-contrast.mjs';
 export async function check({ page, mount, assert }) {
   await mount(
@@ -40,4 +41,5 @@ export async function check({ page, mount, assert }) {
   await mount(`createRoot(document.getElementById('root')).render(<Subject.CommerceWorkspace periods={[]}/>);`);
   assert.ok(await page.getByText("No store periods supplied.").isVisible());
   await checkOrderContrast({page,mount,assert});
+  await checkOrderPhone({page,mount,assert});
 }

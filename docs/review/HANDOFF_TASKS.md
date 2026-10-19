@@ -575,6 +575,15 @@ before measuring contrast and is included in the existing block suite. Strict re
 block import graphs and all 1,066 unit tests pass. The private correction is `e9faa2e`; the Commerce block
 review and the eleven-block counter remain open.
 
+Orders Table phone follow-up (19 October): Commerce's state captures exposed wrapped status labels,
+fragmented title words and truncated ordinary customer names at 320px. Narrow cards now give metadata
+its own row and keep status labels intact; title and navigation-link chrome can wrap as separate items.
+The original phone failure is preserved. Both-theme phone regression and accessibility checks pass,
+with the complete registered Commerce workflow. The light desktop capture is byte-identical to its
+reference; the reviewed dark capture differs only in eight pixels around its Paid status dot. Strict
+registry, root/eleven-block types and all 1,066 unit tests pass. The private fix is `87da4af`. The full
+Commerce review is being recaptured with this dependency; eleven blocks remain open.
+
 - **Commerce** is reviewed. Keep `block-commerce-workspace` compatible with its rebuilt parts.
 - **Smaller components** (#151–179) are reviewed.
 - **Blocks**, after their parts: the 11 published `block-*` components. Many parts changed their look and some their props;
