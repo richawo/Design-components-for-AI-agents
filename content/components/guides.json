@@ -3531,7 +3531,8 @@
     "integration": [
       "Provide related records through `scopes`. Each view stays within its selected matter, and callbacks include the matter ID.",
       "The retained panels preserve unfinished evidence notes when you change matter or view.",
-      "The host validates permissions, deadlines, uploaded files and recorded completion. The preview demonstrates local sample handoffs."
+      "The host validates permissions, deadlines, uploaded files and recorded completion. The preview demonstrates local sample handoffs.",
+      "Pass one ISO `referenceDate` to the matter overview, obligation timeline and document countdowns so every view uses the same reporting day."
     ],
     "related": [
       "block-workspace-settings",

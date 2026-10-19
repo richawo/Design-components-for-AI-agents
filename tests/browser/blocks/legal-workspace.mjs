@@ -1,3 +1,4 @@
+import { check as checkReferenceDate } from '../review/legal-reference-date.mjs';
 export async function check({ page, mount, assert }) {
   const evidenceText = "Service report supplied; evidence reference DOC-204.";
   await mount(`window.calls=[];window.uploads=[];window.attempt=0;window.uploadAttempt=0;createRoot(document.getElementById('root')).render(<Subject.LegalWorkspace onComplete={async payload=>{window.calls.push(payload);if(!window.attempt++)throw Error('fixture');}} onUpload={async payload=>{window.uploads.push(payload);if(!window.uploadAttempt++)throw Error('offline')}}/>);`);
@@ -36,4 +37,5 @@ export async function check({ page, mount, assert }) {
 
   await mount(`createRoot(document.getElementById('root')).render(<Subject.LegalWorkspace scopes={[]}/>);`);
   assert.ok(await page.getByText("No matter records supplied.").isVisible());
+  await checkReferenceDate({ page, mount, assert });
 }

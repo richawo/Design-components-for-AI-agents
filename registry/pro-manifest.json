@@ -6171,7 +6171,7 @@
         "name": "referenceDate",
         "type": "string",
         "default": "\"2026-10-12\"",
-        "description": "Host ISO reporting date for due-date displays."
+        "description": "Host ISO reporting date shared by matter dates, obligation timelines and document countdowns."
       },
       {
         "name": "onComplete",
