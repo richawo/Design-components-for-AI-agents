@@ -1,6 +1,6 @@
 # Review status
 
-178 components are rebuilt (or, for a few, polished), verified and committed. For each: whether its demo video
+179 components are rebuilt (or, for a few, polished), verified and committed. For each: whether its demo video
 needs re-recording, whether its poster is current, and the state of its browser regression probe.
 
 - **Video**: `new` means `public/previews/<slug>.mp4` still shows the old version. Re-record serially on a quiet machine:
@@ -15,7 +15,11 @@ in two bounded halves. Fresh audits, 40 byte-identical reviewed captures, source
 budgets pass. Release Notes and Event Ticket have current films/posters; Slope and Bullet have current
 posters and queued film refreshes. See the latest checkpoint in `HANDOFF_TASKS.md`.
 
-Remaining queues: **20 components, 12 blocks, 59 dedicated probes and 114 films**.
+Story Deck also passes its 31-mount source review, twelve accessibility audits, six widths, Next regression,
+theme control and exact three-study replay. Its reviewed 3.6s film and paired poster pass every recording guard.
+The next full batch checkpoint has 62 suites and 75 metadata replays and remains pending.
+
+Remaining queues: **19 components, 12 blocks, 59 dedicated probes and 114 films**.
 
 ## Previous input checkpoint (19 October 2026)
 
@@ -309,3 +313,9 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | `cards-event-ticket` | current | current | Native keyboard disclosure, empty/updated programmes, long guest/reference text, independent ticket IDs and live reduced motion pass. The 27-mount source review, fourteen state/default accessibility audits, six widths, entrance/state captures, Next regression, three controls, official audit and exact closed/open/closed replay pass. Strict registry, root/isolated Pro types and all 1,064 unit tests pass. Reviewed 3.32s film and paired poster are current, with every recording guard retained. |
 | `chart-slope-comparison` | new | current | Selection callbacks receive independent row copies. Contextual slope strokes improve from the preserved 2.13:1 failure to 4.98:1 dark and 3.41:1 light. Endpoint figures interpolate for 280ms; long units wrap as complete blocks. Keyboard selection, copied payloads, host replacement, negative/non-finite observations, unplottable ranges, empty collections and live reduced motion pass. The 31-mount source review, 16 state/default accessibility audits, six widths, entrance/state captures, Next regression, three controls, official audit and exact replay pass. Strict registry, TypeScript and all 1,064 unit tests pass. The refreshed Next poster is reviewed. Film refresh remains in task 1; rejected captures preserve the published movie and every timing guard. |
 | `chart-bullet-targets` | new | current | Long units and large figures stay within 320px, correcting the preserved painted-text overflow. Initial result figures render correctly before client effects; later changes interpolate for 280ms; fills and numbers stop immediately when reduced motion changes, retaining period-button focus. Keyboard periods, exact callbacks/bar fractions, empty periods/metrics, normalized values and host replacement pass. The 29-mount source review, 14 state/default accessibility audits, six widths, entrance/state captures, Next regression, three controls, official audit and exact replay pass. Strict registry, TypeScript and all 1,066 unit tests pass. The refreshed Next poster is reviewed. Film refresh remains in task 1; rejected captures preserve the published movie and every timing guard. |
+
+## Media and developer tools follow-up (19 October 2026)
+
+| Slug | Video | Poster | Probe |
+| --- | --- | --- | --- |
+| `media-story-deck` | current | current | Keyboard navigation, exact index notifications, empty stories, initial-index normalization, host replacement and live reduced motion pass. A preserved old-source negative confirms the 8px live-preference regression. The 31-mount source review, twelve state/default accessibility audits, six widths, reviewed entrance/state captures, Next regression, theme control, official audit and exact three-study replay pass. Large figures remain readable at 320px. Strict registry, fresh root types and all 1,066 unit tests pass. Reviewed 3.6s film and paired poster retain the complete measured replay, with every recording guard intact. |

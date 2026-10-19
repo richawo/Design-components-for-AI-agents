@@ -8,13 +8,13 @@
     "motion": "motion/react"
   },
   "layout": {
-    "direction": "A two-column art-and-copy composition that stacks into a deliberate reading order on phones. Geometric SVG artwork changes with each story; controls stay below the content.",
+    "direction": "Pair a geometric study with a compact editorial story. Stack art above copy in a narrow container and place the previous/next controls below both. Keep orbit, grid and steps artwork original and neutral. Use 36px Instrument Serif story headings, 14px body copy and 12px metadata, with a large display figure supplied as text.",
     "container": "Size to the parent with @container. Keep the root width at 100%, capped to the focused component, with 24px desktop and 16px narrow padding.",
     "rhythm": "4/8px spacing; 1px edges; 44px minimum interactive targets."
   },
   "typography": {
     "body": "font-sans, 14-16px, line-height 1.5",
-    "metadata": "font-mono, 11-12px, restrained tracking",
+    "metadata": "font-mono, 12px, restrained tracking",
     "heading": "font-display or font-serif, 24-36px, tracking -0.035em"
   },
   "color": {
@@ -32,9 +32,9 @@
     }
   },
   "motion": {
-    "entrance": "A single opacity and 8px rise over 320ms.",
-    "interaction": "150ms press response; 240ms state changes. No ambient loops.",
-    "reduced": "Remove transforms and layout motion; keep opacity at 120ms or less."
+    "entrance": "Each keyed story arrives with opacity and an 8px rise over 320ms. Controls remain outside the changing story.",
+    "interaction": "Use the existing 150ms press response. Navigation is manual, with no autoplay or ambient loops.",
+    "reduced": "Listen to live preference changes. Stop and settle the current story immediately while preserving the controls and focus; subsequent reduced-motion stories enter without travel."
   },
   "responsive": {
     "widths": [
@@ -72,7 +72,7 @@
         "name": "defaultIndex",
         "type": "number",
         "default": "0",
-        "description": "Initial slide; clamped to the available range."
+        "description": "Initial slide. Finite values are floored and clamped to the available range; non-finite values select the first slide."
       },
       {
         "name": "onSlideChange",
@@ -92,5 +92,11 @@
     "Remote images, fake network success or hidden external dependencies.",
     "Decorative status badges, gradients as filler, low-contrast text.",
     "Unlabelled controls, hover-only functionality, overflow at 320px."
+  ],
+  "contract": [
+    "Keep the public StoryDeckProps and StorySlide types. Every slide supplies an id, kicker, title, description, figure, caption and orbit/grid/steps pattern. IDs are stable and unique.",
+    "Selection is local. Floor finite defaultIndex values and clamp them to the current collection; non-finite values choose the first slide. Replacing or shrinking slides retains a valid displayed index.",
+    "Previous and next are labelled native buttons with 44px targets. Disable unavailable directions. onSlideChange reports a zero-based index synchronously after explicit navigation; the host owns persistence.",
+    "Expose a named carousel and slide position, plus a polite position counter. Empty slides show a written empty state and disable both controls. Preserve long content without horizontal document overflow."
   ]
 }

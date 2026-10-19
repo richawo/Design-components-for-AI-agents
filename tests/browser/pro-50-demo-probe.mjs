@@ -9,6 +9,7 @@ const specs = fs
   .filter((file) => file.endsWith(".mjs"))
   .map((file) => ({ slug: file.slice(0, -4) }));
 const finalStates = {
+  "media-story-deck": "Make the last ten percent count.",
   "chart-bullet-targets": "Docs published",
   "chart-slope-comparison": "Editor",
   "cards-event-ticket": "View programme",
@@ -104,6 +105,17 @@ try {
         });
       }, true);
     });
+    if (slug === "media-story-deck") {
+      await page.locator("section").evaluate(carousel => {
+        const current = () => carousel.querySelector('[aria-roledescription="slide"]')?.getAttribute("aria-label");
+        window.storyDeckStates = [current()];
+        window.storyDeckObserver = new MutationObserver(() => {
+          const label = current();
+          if (label && label !== window.storyDeckStates.at(-1)) window.storyDeckStates.push(label);
+        });
+        window.storyDeckObserver.observe(carousel, {childList:true,subtree:true});
+      });
+    }
     if (slug === "cards-event-ticket") {
       await page.locator('[data-demo="ticket-details"]').evaluate(node => {
         window.ticketExpandedStates = [node.getAttribute("aria-expanded")];
@@ -160,6 +172,21 @@ try {
       assert.equal(await field.inputValue(), "Cedar-river42!");
       assert.equal(await field.getAttribute("type"), "text", "The password demo finishes revealed");
       assert.equal(await page.getByRole("button", { name: "Hide password", exact: true }).getAttribute("aria-pressed"), "true");
+    } else if (slug === "media-story-deck") {
+      assert.deepEqual(await page.evaluate(() => window.storyDeckStates), [
+        "1 of 3: Start with the quiet details.",
+        "2 of 3: Give one idea room to grow.",
+        "3 of 3: Make the last ten percent count.",
+      ], "The story replay reads all three studies in order");
+      const slide = page.getByRole("group", {name:"3 of 3: Make the last ten percent count.",exact:true});
+      assert.equal(await slide.count(), 1);
+      assert.equal(await page.locator('[aria-roledescription="slide"]').count(), 1);
+      assert.equal(await page.getByRole("button", {name:"Next story",exact:true}).isDisabled(), true);
+      assert.equal(await page.getByRole("button", {name:"Previous story",exact:true}).isEnabled(), true);
+      assert.equal(await slide.locator("svg rect").count(), 7);
+      assert.equal(await slide.getByRole("heading").innerText(), "Make the last ten percent count.");
+      assert.equal(await slide.locator(".font-display").innerText(), "01");
+      await page.evaluate(() => window.storyDeckObserver.disconnect());
     } else if (slug === "chart-bullet-targets") {
       assert.deepEqual(await page.evaluate(() => window.bulletPeriodStates), ["bullet-period-0", "bullet-period-1", "bullet-period-0"], "The bullet replay visits September before returning to October");
       assert.deepEqual(await page.getByRole("img").evaluateAll(nodes => nodes.map(node => node.getAttribute("aria-label"))), ["Docs published: 42 docs, target 50, scale 0 to 70", "Reviews completed: 28 reviews, target 24, scale 0 to 40", "First reply within 1h: 86 %, target 90, scale 0 to 100"]);

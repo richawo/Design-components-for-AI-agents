@@ -1,10 +1,15 @@
 "use client";
-import { type CSSProperties, useState } from "react";
+import { type CSSProperties, useLayoutEffect, useSyncExternalStore, useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
+import { motion, useAnimationControls } from "motion/react";
 
-const control =
-  "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-lg px-3 text-sm font-medium transition-[background,transform] duration-150 hover:bg-[var(--wash)] disabled:hover:bg-transparent active:scale-[.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)] disabled:cursor-not-allowed disabled:opacity-40 disabled:active:scale-100 motion-reduce:transform-none";
+const control = [
+  "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-lg px-3 text-sm",
+  "font-medium transition-[background,transform] duration-150 hover:bg-[var(--wash)]",
+  "disabled:hover:bg-transparent active:scale-[.97] focus-visible:outline-2",
+  "focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)] disabled:cursor-not-allowed",
+  "disabled:opacity-40 disabled:active:scale-100 motion-reduce:transform-none",
+].join(" ");
 const muted = "text-[var(--muted)]";
 function colors(theme: "dark" | "light"): CSSProperties {
   return {
@@ -65,6 +70,80 @@ const defaults: StorySlide[] = [
     pattern: "steps",
   },
 ];
+function StoryPanel({ slide, index, count }: { slide: StorySlide; index: number; count: number }) {
+  const { reduced, entrance } = useLiveEntrance();
+  return (
+    <motion.div
+      role="group"
+      aria-roledescription="slide"
+      aria-label={`${index + 1} of ${count}: ${slide.title}`}
+      initial={{ opacity: 0, y: reduced ? 0 : 8 }}
+      animate={entrance}
+      className="grid @2xl:grid-cols-2"
+    >
+      <div className="relative min-h-64 overflow-hidden border-b border-[var(--line)] bg-[var(--wash)] @2xl:min-h-96 @2xl:border-b-0 @2xl:border-r">
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 400 340"
+          className="absolute inset-0 h-full w-full text-[var(--muted)]"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth=".8"
+        >
+          {slide.pattern === "orbit"
+            ? [55, 85, 115, 145].map((r) => (
+                <ellipse
+                  key={r}
+                  cx="200"
+                  cy="170"
+                  rx={r}
+                  ry={r * 0.65}
+                  transform="rotate(-28 200 170)"
+                />
+              ))
+            : slide.pattern === "grid"
+              ? Array.from({ length: 8 }, (_, i) => (
+                  <g key={i}>
+                    <path d={`M ${60 + i * 40} 30 V 310`} />
+                    <path d={`M 40 ${30 + i * 40} H 360`} />
+                  </g>
+                ))
+              : Array.from({ length: 7 }, (_, i) => (
+                  <rect
+                    key={i}
+                    x={60 + i * 28}
+                    y={240 - i * 28}
+                    width="64"
+                    height="64"
+                    className="fill-[var(--wash)]"
+                  />
+                ))}
+        </svg>
+        <span className="absolute bottom-5 left-6 font-mono text-xs uppercase tracking-wider">
+          {slide.kicker}
+        </span>
+      </div>
+      <div className="flex min-w-0 flex-col p-6 @lg:p-8">
+        <p className={`mb-5 font-mono text-xs ${muted}`}>{slide.kicker}</p>
+        <h2 className="max-w-xs font-serif text-4xl leading-[1.05] tracking-[-.03em]">
+          {slide.title}
+        </h2>
+        <p className={`mt-5 text-sm leading-7 ${muted}`}>
+          {slide.description}
+        </p>
+        <div className="mt-8 flex flex-wrap items-end gap-4 border-t border-[var(--line)] pt-5">
+          <span className="min-w-0 max-w-full font-display text-5xl tracking-[-.05em]">
+            {slide.figure}
+          </span>
+          <span className={`max-w-40 text-xs leading-relaxed ${muted}`}>
+            {slide.caption}
+          </span>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 export function StoryDeck({
   label = "The studio process",
   slides = defaults,
@@ -72,7 +151,6 @@ export function StoryDeck({
   onSlideChange,
   theme = "dark",
 }: StoryDeckProps) {
-  const reduced = useReducedMotion();
   const [local, setLocal] = useState(defaultIndex);
   const index = slides.length
     ? Math.min(
@@ -94,76 +172,7 @@ export function StoryDeck({
       className="@container w-full max-w-4xl overflow-hidden rounded-xl border border-[var(--line)] bg-[var(--panel)] text-[var(--ink)]"
     >
       {slide ? (
-        <motion.div
-          key={slide.id}
-          role="group"
-          aria-roledescription="slide"
-          aria-label={`${index + 1} of ${slides.length}: ${slide.title}`}
-          initial={{ opacity: 0, y: reduced ? 0 : 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: reduced ? 0.1 : 0.3 }}
-          className="grid @2xl:grid-cols-2"
-        >
-          <div className="relative min-h-64 overflow-hidden border-b border-[var(--line)] bg-[var(--wash)] @2xl:min-h-96 @2xl:border-b-0 @2xl:border-r">
-            <svg
-              aria-hidden="true"
-              viewBox="0 0 400 340"
-              className="absolute inset-0 h-full w-full text-[var(--muted)]"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth=".8"
-            >
-              {slide.pattern === "orbit"
-                ? [55, 85, 115, 145].map((r) => (
-                    <ellipse
-                      key={r}
-                      cx="200"
-                      cy="170"
-                      rx={r}
-                      ry={r * 0.65}
-                      transform="rotate(-28 200 170)"
-                    />
-                  ))
-                : slide.pattern === "grid"
-                  ? Array.from({ length: 8 }, (_, i) => (
-                      <g key={i}>
-                        <path d={`M ${60 + i * 40} 30 V 310`} />
-                        <path d={`M 40 ${30 + i * 40} H 360`} />
-                      </g>
-                    ))
-                  : Array.from({ length: 7 }, (_, i) => (
-                      <rect
-                        key={i}
-                        x={60 + i * 28}
-                        y={240 - i * 28}
-                        width="64"
-                        height="64"
-                        className="fill-[var(--wash)]"
-                      />
-                    ))}
-            </svg>
-            <span className="absolute bottom-5 left-6 font-mono text-[10px] uppercase tracking-wider">
-              {slide.kicker}
-            </span>
-          </div>
-          <div className="flex min-w-0 flex-col p-6 @lg:p-8">
-            <p className={`mb-5 font-mono text-xs ${muted}`}>{slide.kicker}</p>
-            <h2 className="max-w-xs font-serif text-4xl leading-[1.05] tracking-[-.03em]">
-              {slide.title}
-            </h2>
-            <p className={`mt-5 text-sm leading-7 ${muted}`}>
-              {slide.description}
-            </p>
-            <div className="mt-8 flex items-end gap-4 border-t border-[var(--line)] pt-5">
-              <span className="font-display text-5xl tracking-[-.05em]">
-                {slide.figure}
-              </span>
-              <span className={`max-w-40 text-xs leading-relaxed ${muted}`}>
-                {slide.caption}
-              </span>
-            </div>
-          </div>
-        </motion.div>
+        <StoryPanel key={slide.id} slide={slide} index={index} count={slides.length} />
       ) : (
         <p className={`p-10 text-sm ${muted}`}>No stories to show yet.</p>
       )}
@@ -198,6 +207,28 @@ export function StoryDeck({
       </div>
     </section>
   );
+}
+
+const motionQuery = "(prefers-reduced-motion: reduce)";
+function subscribeToMotion(change: () => void) {
+  const query = window.matchMedia(motionQuery);
+  query.addEventListener("change", change);
+  return () => query.removeEventListener("change", change);
+}
+function useLiveEntrance() {
+  const reduced = useSyncExternalStore(
+    subscribeToMotion,
+    () => window.matchMedia(motionQuery).matches,
+    () => false,
+  );
+  const entrance = useAnimationControls();
+  useLayoutEffect(() => {
+    entrance.stop();
+    if (reduced) entrance.set({ opacity: 1, y: 0 });
+    else void entrance.start({ opacity: 1, y: 0, transition: { duration: 0.32 } });
+    return () => entrance.stop();
+  }, [entrance, reduced]);
+  return { reduced, entrance };
 }
 
 export default function StoryDeckDemo(overrides: Partial<StoryDeckProps> = {}) {

@@ -7,7 +7,6 @@
   "description": "A manual story carousel pairing original geometric studies with editorial copy and large figures, with clear controls and no autoplay.",
   "tags": [
     "media",
-    "media",
     "story",
     "deck",
     "responsive",
@@ -37,7 +36,7 @@
       "name": "defaultIndex",
       "type": "number",
       "default": "0",
-      "description": "Initial slide; clamped to the available range."
+      "description": "Initial slide. Finite values are floored and clamped to the available range; non-finite values select the first slide."
     },
     {
       "name": "onSlideChange",
@@ -57,9 +56,9 @@
     "steps": [
       "wait:700",
       "click:@story-next",
-      "wait:700",
+      "wait:1600",
       "click:@story-next",
-      "wait:700"
+      "wait:1400"
     ],
     "loop": false
   },

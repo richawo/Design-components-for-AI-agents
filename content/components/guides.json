@@ -2852,7 +2852,7 @@
     "useWhen": "A short visual story with deliberate sequencing and readable captions.",
     "avoidWhen": "Long reference text or essential content available only through autoplay.",
     "integration": [
-      "Supply your own records through `slides`. Preserve stable keys or IDs when the data contract provides them."
+      "Pass stable unique slide IDs. defaultIndex is an initial local selection, floored and clamped to the available stories. Handle onSlideChange as a synchronous notification and persist the index outside the component if needed."
     ],
     "related": [
       "media-before-after",

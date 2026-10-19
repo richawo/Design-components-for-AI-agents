@@ -36,6 +36,7 @@ const publicCases = [
   "review-editor-probe",
   "review-input-probe",
   "review-content-probe",
+  "review-media-devtools-probe",
   "recording-source-probe",
   "terminal-scroll-probe",
   "component-pages-probe",
