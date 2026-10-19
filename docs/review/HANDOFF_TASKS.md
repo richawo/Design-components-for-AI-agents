@@ -558,6 +558,15 @@ Same process as the 198 already done: hold each to the first ~100 components' st
 check-component, your own captures of states and mid-entrance frames, a refreshed poster, a rewritten pro-50 probe for
 industry components).
 
+Shared workspace dependency follow-up (19 October): a primary outside click or window blur now retires
+remembered focus, while an action inside a retiring panel still hands focus to its visible navigation tab.
+Header entry and measured panel height stop immediately when reduced motion changes. Three original-source
+failures are preserved. The 25-mount review, eight accessibility audits, both themes, six widths and reviewed
+state/entrance captures pass; all twelve settled default captures match the unchanged source byte-for-byte.
+Strict registry, root/isolated types and all 1,066 unit tests pass. The existing workspace suite now includes
+the new regressions, and all four complete workspace/block integration suites pass, including eight block
+metadata replays. This repairs a shared dependency and does not complete any of the eleven block reviews.
+
 - **Commerce** is reviewed. Keep `block-commerce-workspace` compatible with its rebuilt parts.
 - **Smaller components** (#151–179) are reviewed.
 - **Blocks**, after their parts: the 11 published `block-*` components. Many parts changed their look and some their props;

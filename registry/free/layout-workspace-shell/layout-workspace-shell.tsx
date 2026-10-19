@@ -12,7 +12,7 @@ import {
   type KeyboardEvent,
   type ReactNode,
 } from "react";
-import { animate, motion, useMotionTemplate, useMotionValue, useTransform, type Variants } from "motion/react";
+import { animate, motion, useAnimationControls, useMotionTemplate, useMotionValue, useTransform, type Variants } from "motion/react";
 
 /* ------------------------------------------------------------------ */
 /* Types                                                                */
@@ -371,18 +371,27 @@ function WorkspaceHeader({
   actions,
   reduce,
 }: Pick<WorkspaceShellProps, "eyebrow" | "title" | "subtitle" | "actions"> & { reduce: boolean }) {
-  const enter = (index: number) =>
-    reduce
-      ? {
-          initial: { opacity: 0 },
-          animate: { opacity: 1, y: 0, filter: "none" },
-          transition: { duration: MOTION.fade },
-        }
-      : {
-          initial: { opacity: 0, y: MOTION.rise, filter: `blur(${MOTION.blur}px)` },
-          animate: { opacity: 1, y: 0, filter: "blur(0px)", transitionEnd: { filter: "none" } },
-          transition: { duration: MOTION.enter, ease: EASE_OUT, delay: index * MOTION.step },
-        };
+  const entry = useAnimationControls();
+  const hasEyebrow = Boolean(eyebrow);
+  const hasActions = Boolean(actions);
+  useLayoutEffect(() => {
+    entry.stop();
+    if (reduce) entry.set({ opacity: 1, y: 0, filter: "none" });
+    else void entry.start((index: number) => ({
+      opacity: 1,
+      y: 0,
+      filter: "blur(0px)",
+      transitionEnd: { filter: "none" },
+      transition: { duration: MOTION.enter, ease: EASE_OUT, delay: index * MOTION.step },
+    }));
+    return () => entry.stop();
+  }, [entry, reduce, title, subtitle, hasEyebrow, hasActions]);
+
+  const enter = (index: number) => ({
+    custom: index,
+    initial: reduce ? { opacity: 0 } : { opacity: 0, y: MOTION.rise, filter: `blur(${MOTION.blur}px)` },
+    animate: entry,
+  });
 
   return (
     <header className={STYLE.header}>
@@ -444,6 +453,22 @@ export function WorkspaceShell({
   const frame = useRef<HTMLDivElement>(null);
   const focused = useRef<HTMLElement | null>(null);
   const tabs = Boolean(onNavigate);
+
+  useEffect(() => {
+    const shell = frame.current;
+    if (!shell) return;
+    const doc = shell.ownerDocument;
+    const retireOutside = (event: PointerEvent) => {
+      if (event.isPrimary && event.button === 0 && !shell.contains(event.target as Node)) focused.current = null;
+    };
+    const retireWindow = () => { focused.current = null; };
+    doc.addEventListener("pointerdown", retireOutside, true);
+    doc.defaultView?.addEventListener("blur", retireWindow);
+    return () => {
+      doc.removeEventListener("pointerdown", retireOutside, true);
+      doc.defaultView?.removeEventListener("blur", retireWindow);
+    };
+  }, []);
 
   const preferred = activeId ?? active;
   const current = links.some((link) => link.id === preferred) ? (preferred ?? undefined) : links[0]?.id;
@@ -536,6 +561,7 @@ export function WorkspacePanels({ activeId, panels, className = "", fill = false
   const nodes = useRef(new Map<string, HTMLDivElement>());
   const [height, setHeight] = useState<number | "auto">("auto");
   const [moving, setMoving] = useState(false);
+  const resize = useAnimationControls();
 
   const valid = panels.filter(
     (panel, index) => panel.id && panels.findIndex((other) => other.id === panel.id) === index,
@@ -556,13 +582,22 @@ export function WorkspacePanels({ activeId, panels, className = "", fill = false
     return () => observer.disconnect();
   }, [current, fill]);
 
+  useLayoutEffect(() => {
+    const target = { height: fill ? "100%" : height };
+    resize.stop();
+    if (reduce) {
+      resize.set(target);
+      setMoving(false);
+    } else void resize.start(target, { duration: MOTION.height, ease: EASE_OUT });
+    return () => resize.stop();
+  }, [resize, reduce, fill, height]);
+
   return (
     <motion.div
       initial={false}
-      animate={{ height: fill ? "100%" : height }}
+      animate={resize}
       onAnimationStart={() => setMoving(true)}
       onAnimationComplete={() => setMoving(false)}
-      transition={{ duration: reduce ? 0 : MOTION.height, ease: EASE_OUT }}
       style={{ overflow: fill || moving ? "hidden" : "visible" }}
       className={`relative ${className}`}
     >

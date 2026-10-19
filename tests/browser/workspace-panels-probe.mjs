@@ -1,3 +1,4 @@
+import {check as checkWorkspaceShell} from './review/layout-workspace-shell.mjs';
 import assert from 'node:assert/strict';import {launchChromium} from '../../scripts/lib/browser.mjs';import {mountFixture} from '../../scripts/lib/component-fixture.mjs';
 const browser=await launchChromium();const page=await browser.newPage({viewport:{width:900,height:1000},reducedMotion:'no-preference'});const errors=[];page.on('pageerror',error=>errors.push(error.message));
 try{
@@ -8,5 +9,6 @@ try{
  await page.waitForFunction(()=>document.querySelector('[data-workspace-panel="two"]').parentElement.getBoundingClientRect().height>430);assert.ok((await parent.boundingBox()).height>first+250);
  await page.getByRole('button',{name:'One',exact:true}).click();assert.equal(await page.getByRole('textbox',{name:'Draft'}).inputValue(),'Keep this draft');
  await page.emulateMedia({reducedMotion:'reduce'});await page.getByRole('button',{name:'Two',exact:true}).click();await page.waitForTimeout(150);assert.equal(await page.locator('[data-workspace-panel="two"]').evaluate(el=>getComputedStyle(el).transform),'none');assert.deepEqual(errors,[]);
- console.log('PASS retained drafts, inert exits, measured height and reduced motion');
+ await checkWorkspaceShell({page,assert,mount:code=>mountFixture(page,'layout-workspace-shell','free',code)});
+ console.log('PASS retained drafts, inert exits, measured height, live reduced motion and workspace focus ownership');
 }finally{await browser.close()}
