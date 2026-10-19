@@ -8,7 +8,7 @@
     "motion": "motion/react"
   },
   "layout": {
-    "direction": "A keyboard instrument: command mark, setting label, a large dashed recording well and physical keycaps with 3px lower edges. Instructions remain directly underneath.",
+    "direction": "A compact shortcut setting with a 26px command icon, 20px label and readable description, followed by a generous dashed recording button containing raised monospaced keycaps. Keep neutral graphite surfaces, 44px targets, a 96px minimum recording target with 16px padding and 12px written feedback beside a separate reset action. Wrap long host key labels and modifier combinations without overflowing the container.",
     "container": "Size to the parent with @container. Keep the root width at 100%, capped to the focused component, with 24px desktop and 16px narrow padding.",
     "rhythm": "4/8px spacing; 1px edges; 44px minimum interactive targets."
   },
@@ -32,9 +32,9 @@
     }
   },
   "motion": {
-    "entrance": "A single opacity and 8px rise over 320ms.",
-    "interaction": "150ms press response; 240ms state changes. No ambient loops.",
-    "reduced": "Remove transforms and layout motion; keep opacity at 120ms or less."
+    "entrance": "Enter the card once with opacity and an 8px rise over 320ms.",
+    "interaction": "Keep 150ms press feedback on recording and reset controls. No ambient loops.",
+    "reduced": "Subscribe to live prefers-reduced-motion changes and stop and settle the owned card entrance immediately. Remove press transforms."
   },
   "responsive": {
     "widths": [
@@ -72,19 +72,19 @@
         "name": "value",
         "type": "string[]",
         "default": "undefined",
-        "description": "Controlled sequence of KeyboardEvent modifier names and final key."
+        "description": "Controlled sequence of KeyboardEvent modifier names followed by the final key. Without onChange, recording and reset are read-only."
       },
       {
         "name": "defaultValue",
         "type": "string[]",
         "default": "Control Shift K",
-        "description": "Initial and reset key sequence."
+        "description": "Initial and reset sequence. Local initialization and notifications copy the array."
       },
       {
         "name": "onChange",
         "type": "(keys: string[]) => void",
         "default": "undefined",
-        "description": "New display sequence. The component does not register a global shortcut; the host must resolve collisions and unsupported OS shortcuts."
+        "description": "Synchronous notification containing a separate chord array. The host acknowledges controlled changes, registers shortcuts, resolves collisions and handles unsupported OS combinations."
       },
       {
         "name": "disabled",
@@ -104,5 +104,13 @@
     "Remote images, fake network success or hidden external dependencies.",
     "Decorative status badges, gradients as filler, low-contrast text.",
     "Unlabelled controls, hover-only functionality, overflow at 320px."
+  ],
+  "contract": [
+    "Preserve ShortcutRecorderProps and the named ShortcutRecorder export. Use defaultValue for local state or value with onChange for controlled acknowledgement. Copy the initial and notification arrays so a callback cannot mutate the stored chord. Controlled values without a writer disable recording and reset.",
+    "Record only after deliberate activation of the focused record button. Capture keyboard events on that button rather than globally; typing elsewhere remains unaffected. Ignore composing, Dead, Process and modifier-only key events.",
+    "Accept Control, Alt or Meta chords and standalone F1 through F12. Shift alone is not a sufficient modifier. Keep the ordered modifier names Control, Alt, Shift, Meta followed by the final key; uppercase single-character keys. Explain invalid unmodified keys without discarding the current chord or leaving recording mode.",
+    "Escape cancels without changing the chord and keeps focus; Tab exits without trapping navigation; blur retires recording. Disabled or read-only changes retire active recording. Reset notifies a copied default sequence and returns focus to the record button.",
+    "Keep exact controlled proposals without replacing the host value until it acknowledges. Show recorded/reset feedback only while the actual chord matches that feedback, including after host replacements. Empty sequences have a written not-set label and remain recordable when enabled. Use instance-scoped descriptions and support independent recorders, long labels and separate themes.",
+    "onChange is a synchronous chord notification. The host owns global shortcut registration, OS/browser conflicts, validation and persistence. Recording a sequence does not register a shortcut."
   ]
 }

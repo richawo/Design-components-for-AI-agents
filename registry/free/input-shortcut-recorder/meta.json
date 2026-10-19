@@ -37,19 +37,19 @@
       "name": "value",
       "type": "string[]",
       "default": "undefined",
-      "description": "Controlled sequence of KeyboardEvent modifier names and final key."
+      "description": "Controlled sequence of KeyboardEvent modifier names followed by the final key. Without onChange, recording and reset are read-only."
     },
     {
       "name": "defaultValue",
       "type": "string[]",
       "default": "Control Shift K",
-      "description": "Initial and reset key sequence."
+      "description": "Initial and reset sequence. Local initialization and notifications copy the array."
     },
     {
       "name": "onChange",
       "type": "(keys: string[]) => void",
       "default": "undefined",
-      "description": "New display sequence. The component does not register a global shortcut; the host must resolve collisions and unsupported OS shortcuts."
+      "description": "Synchronous notification containing a separate chord array. The host acknowledges controlled changes, registers shortcuts, resolves collisions and handles unsupported OS combinations."
     },
     {
       "name": "disabled",
@@ -67,12 +67,12 @@
   "added": "2026-10-11",
   "demo": {
     "steps": [
-      "wait:600",
+      "wait:700",
       "click:@record-shortcut",
       "key:F8",
-      "wait:700",
+      "wait:1000",
       "click:@reset-shortcut",
-      "wait:700"
+      "wait:1700"
     ],
     "loop": false
   },

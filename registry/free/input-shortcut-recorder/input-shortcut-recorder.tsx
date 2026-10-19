@@ -1,7 +1,14 @@
 "use client";
-import { type CSSProperties, useId, useRef, useState } from "react";
+import {
+  type CSSProperties,
+  useId,
+  useLayoutEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import { Command, RotateCcw } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
+import { motion, useAnimationControls } from "motion/react";
 
 const control =
   "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-lg px-3 text-sm font-medium transition-[background,transform] duration-150 hover:bg-[var(--wash)] disabled:hover:bg-transparent active:scale-[.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)] disabled:cursor-not-allowed disabled:opacity-40 disabled:active:scale-100 motion-reduce:transform-none";
@@ -26,6 +33,13 @@ export type ShortcutRecorderProps = {
   disabled?: boolean;
   theme?: "dark" | "light";
 };
+const motionQuery = "(prefers-reduced-motion: reduce)";
+function subscribeToMotion(change: () => void) {
+  const query = window.matchMedia(motionQuery);
+  query.addEventListener("change", change);
+  return () => query.removeEventListener("change", change);
+}
+
 export function ShortcutRecorder({
   label = "Quick capture",
   description = "Choose a key combination for opening a new note.",
@@ -36,20 +50,43 @@ export function ShortcutRecorder({
   theme = "dark",
 }: ShortcutRecorderProps) {
   const id = useId();
-  const reduced = useReducedMotion();
-  const [local, setLocal] = useState(defaultValue);
+  const reduced = useSyncExternalStore(
+    subscribeToMotion,
+    () => window.matchMedia(motionQuery).matches,
+    () => false,
+  );
+  const entrance = useAnimationControls();
+  useLayoutEffect(() => {
+    entrance.stop();
+    const target = { opacity: 1, y: 0 };
+    if (reduced) entrance.set(target);
+    else void entrance.start({ ...target, transition: { duration: 0.32 } });
+    return () => entrance.stop();
+  }, [entrance, reduced]);
+  const [local, setLocal] = useState(() => [...defaultValue]);
   const [recording, setRecording] = useState(false);
-  const [notice, setNotice] = useState("");
+  const [feedback, setFeedback] = useState<{ text: string; keys?: string[] }>({ text: "" });
   const trigger = useRef<HTMLButtonElement>(null);
   const keys = value ?? local;
+  const feedbackMatches = !feedback.keys || (
+    feedback.keys.length === keys.length && feedback.keys.every((key, i) => key === keys[i])
+  );
+  const notice = feedbackMatches ? feedback.text : "";
+  function setNotice(text: string, forKeys?: string[]) {
+    setFeedback({ text, keys: forKeys && [...forKeys] });
+  }
+  const readOnly = value !== undefined && !onChange;
+  useLayoutEffect(() => {
+    if (disabled || readOnly) setRecording(false);
+  }, [disabled, readOnly]);
   function change(next: string[]) {
     setLocal(next);
-    onChange?.(next);
+    onChange?.([...next]);
   }
   return (
     <motion.section
       initial={{ opacity: 0, y: reduced ? 0 : 8 }}
-      animate={{ opacity: 1, y: 0 }}
+      animate={entrance}
       aria-labelledby={id}
       style={colors(theme)}
       className="@container w-full max-w-lg rounded-xl border border-[var(--line)] bg-[var(--panel)] p-6 text-[var(--ink)]"
@@ -63,7 +100,7 @@ export function ShortcutRecorder({
         ref={trigger}
         type="button"
         data-demo="record-shortcut"
-        disabled={disabled}
+        disabled={disabled || readOnly}
         aria-label={
           recording
             ? "Recording shortcut. Escape to cancel."
@@ -71,12 +108,13 @@ export function ShortcutRecorder({
         }
         aria-describedby={`${id}-hint`}
         onClick={() => {
+          if (disabled || readOnly) return;
           setRecording(true);
           setNotice("");
         }}
         onBlur={() => setRecording(false)}
         onKeyDown={(e) => {
-          if (!recording || e.nativeEvent.isComposing) return;
+          if (!recording || disabled || readOnly || e.nativeEvent.isComposing) return;
           if (e.key === "Escape") {
             e.preventDefault();
             setRecording(false);
@@ -115,9 +153,9 @@ export function ShortcutRecorder({
           ];
           change(next);
           setRecording(false);
-          setNotice("Shortcut recorded.");
+          setNotice("Shortcut recorded.", next);
         }}
-        className={`${control} mt-6 flex min-h-24 w-full flex-wrap border border-dashed border-[var(--line)] px-4 ${recording ? "bg-[var(--wash)]" : ""}`}
+        className={`${control} mt-6 flex min-h-24 w-full flex-wrap border border-dashed border-[var(--line)] px-4 py-4 ${recording ? "bg-[var(--wash)]" : ""}`}
       >
         {recording ? (
           <span className="text-sm">Press a key combination…</span>
@@ -148,12 +186,14 @@ export function ShortcutRecorder({
         <button
           type="button"
           data-demo="reset-shortcut"
-          disabled={disabled}
+          disabled={disabled || readOnly}
           aria-label="Reset shortcut"
           onClick={() => {
-            change([...defaultValue]);
+            if (disabled || readOnly) return;
+            const next = [...defaultValue];
+            change(next);
             setRecording(false);
-            setNotice("Shortcut reset.");
+            setNotice("Shortcut reset.", next);
             trigger.current?.focus();
           }}
           className={`${control} -mt-2 shrink-0 p-0`}

@@ -9,6 +9,7 @@ const specs = fs
   .filter((file) => file.endsWith(".mjs"))
   .map((file) => ({ slug: file.slice(0, -4) }));
 const finalStates = {
+  "input-shortcut-recorder": "Shortcut reset.",
   "input-file-dropzone": "1 of 5 files selected.",
   "date-booking-slots": "Tue 13, 10:00 selected",
   "onboarding-setup-checklist": "Everything on your list is complete.",
@@ -115,6 +116,17 @@ try {
         });
       }, true);
     });
+    if (slug === "input-shortcut-recorder") {
+      await page.locator("section").evaluate(recorder => {
+        const state = () => [[...recorder.querySelectorAll("kbd")].map(node => node.textContent), recorder.querySelector('[data-demo="record-shortcut"]')?.getAttribute("aria-label"), recorder.querySelector('[role="status"]')?.textContent.trim()];
+        window.shortcutStates = [state()];
+        window.shortcutObserver = new MutationObserver(() => {
+          const next = state();
+          if (JSON.stringify(next) !== JSON.stringify(window.shortcutStates.at(-1))) window.shortcutStates.push(next);
+        });
+        window.shortcutObserver.observe(recorder, {childList:true,characterData:true,subtree:true,attributes:true,attributeFilter:["aria-label"]});
+      });
+    }
     if (slug === "input-file-dropzone") {
       await page.locator("section").evaluate(dropzone => {
         const state = () => [[...dropzone.querySelectorAll("li p.font-medium")].map(node => node.textContent), dropzone.querySelector('[role="status"]')?.textContent.trim()];
@@ -267,6 +279,18 @@ try {
       ?.slice(7);
     const target = page.locator('[data-demo="' + last + '"]');
     const notice = await page.getByRole("status").allTextContents();
+    if (slug === "input-shortcut-recorder") {
+      assert.deepEqual(await page.evaluate(() => window.shortcutStates), [
+        [["Control","Shift","K"],"Record shortcut. Current: Control plus Shift plus K","Click the keycaps to change the combination."],
+        [[],"Recording shortcut. Escape to cancel.","Escape cancels. Tab leaves without changing the shortcut."],
+        [["F8"],"Record shortcut. Current: F8","Shortcut recorded."],
+        [["Control","Shift","K"],"Record shortcut. Current: Control plus Shift plus K","Shortcut reset."]
+      ], "The replay deliberately records F8, then resets the actual chord");
+      assert.deepEqual(await page.locator("kbd").allTextContents(), ["Control","Shift","K"]);
+      assert.equal(await page.locator('[data-demo="record-shortcut"]').evaluate(node => node === document.activeElement), true);
+      assert.ok(notice.includes("Shortcut reset."));
+      await page.evaluate(() => window.shortcutObserver.disconnect());
+    }
     if (slug === "input-file-dropzone") {
       assert.deepEqual(await page.evaluate(() => window.dropzoneStates), [[[],"0 of 5 files selected."], [["product-brief.md"],"1 of 5 files selected."]], "The sample action selects one actual document and retains its selection receipt");
       assert.equal(await page.getByRole("button", {name:"Remove product-brief.md",exact:true}).isVisible(), true);

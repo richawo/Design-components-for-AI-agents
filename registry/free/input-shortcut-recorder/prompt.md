@@ -1,27 +1,31 @@
-# Keyboard Shortcut Recorder
+# Shortcut Recorder
 
-Build a standalone React 19 and Tailwind v4 component. A focused shortcut recorder with engraved keycaps, modifier validation, cancellation and reset, designed for desktop-style app preferences.
+Build a self-contained React 19, Tailwind v4 and motion/react keyboard shortcut setting with the existing named component, typed API and overridable default demo.
 
-## Layout
+## Layout and type
 
-A keyboard instrument: command mark, setting label, a large dashed recording well and physical keycaps with 3px lower edges. Instructions remain directly underneath. Size to the container. Use a 4/8px rhythm, 1px surface edges, 16px narrow padding and 24px desktop padding. Controls have 44px targets.
+A compact shortcut setting with a 26px command icon, 20px label and readable description, followed by a generous dashed recording button containing raised monospaced keycaps. Keep neutral graphite surfaces, 44px targets, a 96px minimum recording target with 16px padding and 12px written feedback beside a separate reset action. Wrap long host key labels and modifier combinations without overflowing the container.
 
-## Typography and colour
+## Interaction
 
-Use font-sans at 14-16px/1.5, font-mono metadata at 11-12px and a 24-36px heading with -0.035em tracking. Dark uses #111111, #f5f5f5, #a3a3a3 and #333333; light uses #ffffff, #171717, #525252 and #d4d4d4. Maintain AA contrast.
+Preserve ShortcutRecorderProps and the named ShortcutRecorder export. Use defaultValue for local state or value with onChange for controlled acknowledgement. Copy the initial and notification arrays so a callback cannot mutate the stored chord. Controlled values without a writer disable recording and reset.
+
+Record only after deliberate activation of the focused record button. Capture keyboard events on that button rather than globally; typing elsewhere remains unaffected. Ignore composing, Dead, Process and modifier-only key events.
+
+Accept Control, Alt or Meta chords and standalone F1 through F12. Shift alone is not a sufficient modifier. Keep the ordered modifier names Control, Alt, Shift, Meta followed by the final key; uppercase single-character keys. Explain invalid unmodified keys without discarding the current chord or leaving recording mode.
+
+Escape cancels without changing the chord and keeps focus; Tab exits without trapping navigation; blur retires recording. Disabled or read-only changes retire active recording. Reset notifies a copied default sequence and returns focus to the record button.
+
+Keep exact controlled proposals without replacing the host value until it acknowledges. Show recorded/reset feedback only while the actual chord matches that feedback, including after host replacements. Empty sequences have a written not-set label and remain recordable when enabled. Use instance-scoped descriptions and support independent recorders, long labels and separate themes.
+
+onChange is a synchronous chord notification. The host owns global shortcut registration, OS/browser conflicts, validation and persistence. Recording a sequence does not register a shortcut.
 
 ## Motion
 
-Use a 320ms opacity/8px entrance, 150ms press response and 240ms state changes, easing cubic-bezier(0.22,1,0.36,1). No ambient loops. Reduced motion removes transforms and layout animation and limits fades to 120ms.
+Enter the card once with opacity and an 8px rise over 320ms. Keep 150ms press feedback on recording and reset controls. No ambient loops. Subscribe to live prefers-reduced-motion changes and stop and settle the owned card entrance immediately. Remove press transforms.
 
-## Behaviour and accessibility
+## Integration
 
-Use semantic elements, native keyboard behaviour, visible focus rings and instance-scoped IDs. Expose typed content and callbacks. Handle empty custom data and repeated instances. Announce important feedback politely. Match the source state ownership and callback contract.
+Use defaultValue for an initial/reset chord or value with onChange for controlled acknowledgement. The callback receives a separate array synchronously. Register shortcuts in the host and handle OS/browser conflicts and persistence there. Events are captured only while the focused button is recording.
 
-## Responsive
-
-Design for 320, 390, 768, 1024, 1440 and 1920px. Respond to the container with @container variants, wrap text and stack secondary details. Scroll only within explicitly labelled local regions.
-
-## Avoid
-
-No remote imagery, false success states, unlabelled controls, hover-only actions, low contrast or decorative status pills. The demo is an isolated component on a quiet stage.
+Use the source dark/light palettes, visible focus and 320/390/768/1024/1440/1920px container layouts.

@@ -2692,15 +2692,15 @@
     "useWhen": "Recording a deliberate keyboard combination in a preference screen.",
     "avoidWhen": "Unconditionally overriding operating-system or browser shortcuts.",
     "integration": [
-      "Supply your own records through `value`, `defaultValue`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+      "Use defaultValue for an initial/reset chord or value with onChange for controlled acknowledgement. The callback receives a separate array synchronously. Register shortcuts in the host and handle OS/browser conflicts and persistence there. Events are captured only while the focused button is recording.",
+      "Controlled values without onChange are read-only. An invalid unmodified key retains the current chord; Escape, Tab and blur leave recording without a write. Reset restores defaultValue and returns focus to the recording action."
     ],
     "related": [
       "input-color-swatches",
       "input-file-dropzone",
       "input-number-stepper"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-19"
   },
   "legal-clause-library": {
     "useWhen": "Drafting agreements from an approved clause library, where lawyers compare revisions, check defined terms and insert the approved wording into an open section of a draft.",

@@ -378,6 +378,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 7 (19 October): Source File Dropzone copies initial and notification arrays, makes controlled selection read-only without a writer, retains row focus through reordering and restores it after accepted removal without stealing it on delayed acknowledgement. Non-file drags are ignored, disabled drag highlights clear, small file/limit labels retain actual byte values, and live reduced motion settles card/row entries. Seven original-source failures are retained. Its 41-mount source review, eighteen accessibility audits, six widths, reviewed state/entrance captures, Next regression, theme control, official audit and exact two-state replay pass. Native file choosing, mixed accepted/rejected drops, MIME/extension rules, duplicates, exact byte/count limits, empty drops, host acceptance/refusal, zero capacity, long content and independent instances are covered. Strict registry, root/isolated types and all 1,066 tests pass. Its reviewed 3.1s film and paired poster keep the chooser, selected file and sample action in the measured 832×720 frame: source gap 19ms, delivery 49.24ms; no sustained-motion interval, with no stalls and unchanged guards. The next complete batch has 64 suites and 85 metadata replays and remains pending. 9 components and 12 blocks remain; 117 films remain queued.
 
+- Task 7 (19 October): Keyboard Shortcut Recorder copies initial and notification arrays, makes controlled values read-only without a writer and settles its 320ms card entrance on live reduced-motion changes. Feedback follows the actual acknowledged chord and wrapped keycaps retain vertical padding. Four original-source failures are retained. Its 33-mount source review, eighteen accessibility audits, six widths, reviewed state/entrance captures, Next regression, theme control, official audit and exact four-state replay pass. Keyboard activation, ordered modifiers, invalid unmodified keys, function keys, Escape/Tab/blur exit, composition events, reset focus, controlled acceptance/refusal, empty sequences, long labels and independent instances are covered. Strict registry, root/isolated types and all 1,066 tests pass. Its reviewed 4.0s film and paired poster keep all four keyboard states in the measured 832×600 frame: source gap 12ms, delivery 12.48ms and moving-frame p95 17.55ms, with no stalls and unchanged guards. The next complete batch has 64 suites and 86 metadata replays and remains pending. 8 components and 12 blocks remain; 117 films remain queued.
+
 ## 1. Re-record demo videos (117 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
@@ -530,9 +532,9 @@ All nine parked rebuilds are shipped in both repos. Their original `_wip/<slug>`
 | finance-budget-variance | Completed 17 October: Next probe, dark/light accessibility, responsive and entrance/state captures, live demo and refreshed poster pass. |
 | finance-cashflow-dashboard | Completed 17 October: weekly balance and in/out bars, movable payments, independent pending saves, invalid-data guards, selected-week list geometry, Next probe/demo, both-theme accessibility, responsive/state/entrance captures and refreshed poster pass. |
 
-## 7. Continue the review (9 components, then 12 blocks)
+## 7. Continue the review (8 components, then 12 blocks)
 
-Same process as the 189 already done: hold each to the first ~100 components' standard. Briefs:
+Same process as the 190 already done: hold each to the first ~100 components' standard. Briefs:
 `docs/review/REVIEW_BRIEF.md`, `docs/review/SUITE_BRIEF.md` for industry components, suite languages in
 `docs/review/suites/`. Work newest first, about four components per batch, and verify each (build, tsc, tests,
 check-component, your own captures of states and mid-entrance frames, a refreshed poster, a rewritten pro-50 probe for
@@ -540,7 +542,6 @@ industry components).
 
 - **Commerce** is reviewed. Keep `block-commerce-workspace` compatible with its rebuilt parts.
 - **Smaller components** (#151–179):
-  input-shortcut-recorder,
   feedback-empty-search, navigation-pagination-window, primitives-shortcut-reference, selects-radio-cards,
   progress-milestones, content-accordion-index, feedback-inline-alert, navigation-breadcrumb-fold.
 - **Blocks**, after their parts: the 12 `block-*` components. Many parts changed their look and some their props;
