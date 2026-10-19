@@ -7,7 +7,6 @@
   "description": "An editorial accordion with serif headline, numbered questions and quietly revealed answers for studio FAQs, product details and help sections.",
   "tags": [
     "content",
-    "content",
     "accordion",
     "index",
     "responsive",
@@ -37,19 +36,19 @@
       "name": "items",
       "type": "AccordionEntry[]",
       "default": "three studio questions",
-      "description": "Questions with unique IDs and plain-text answers."
+      "description": "Questions with stable unique IDs and plain-text answers. ID keys retain focused disclosures through reordering."
     },
     {
       "name": "defaultOpen",
       "type": "string",
       "default": "\"ownership\"",
-      "description": "Initially expanded item ID."
+      "description": "Initially expanded item ID. An empty or missing ID starts with no matching answer; later matching items use the retained local open ID."
     },
     {
       "name": "onOpenChange",
       "type": "(id: string | null) => void",
       "default": "undefined",
-      "description": "Reports expanded item or closure."
+      "description": "Optional synchronous notification with the locally opened ID or null after closure. Disclosure remains usable without a callback."
     },
     {
       "name": "theme",
@@ -61,11 +60,11 @@
   "added": "2026-10-11",
   "demo": {
     "steps": [
-      "wait:500",
-      "click:@question-1",
       "wait:700",
+      "click:@question-1",
+      "wait:1000",
       "click:@question-2",
-      "wait:700"
+      "wait:1700"
     ],
     "loop": false
   },

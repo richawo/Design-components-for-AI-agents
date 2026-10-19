@@ -9,6 +9,7 @@ const specs = fs
   .filter((file) => file.endsWith(".mjs"))
   .map((file) => ({ slug: file.slice(0, -4) }));
 const finalStates = {
+  "content-accordion-index": "We discuss the tradeoff before changing course.",
   "progress-milestones": "Source files, notes and a clear path for the next release.",
   "selects-radio-cards": "Exploratory",
   "primitives-shortcut-reference": "Save changes",
@@ -176,6 +177,17 @@ try {
           if (JSON.stringify(next) !== JSON.stringify(window.milestoneStates.at(-1))) window.milestoneStates.push(next);
         });
         window.milestoneObserver.observe(panel, {childList:true,characterData:true,subtree:true,attributes:true,attributeFilter:["aria-valuenow"]});
+      });
+    }
+    if (slug === "content-accordion-index") {
+      await page.locator("section").evaluate(panel => {
+        const state = () => [...panel.querySelectorAll('h3 button[aria-expanded="true"]')].map(node => node.dataset.demo);
+        window.accordionStates = [state()];
+        window.accordionObserver = new MutationObserver(() => {
+          const next = state();
+          if (JSON.stringify(next) !== JSON.stringify(window.accordionStates.at(-1))) window.accordionStates.push(next);
+        });
+        window.accordionObserver.observe(panel, {childList:true,subtree:true,attributes:true,attributeFilter:["aria-expanded"]});
       });
     }
     if (slug === "input-shortcut-recorder") {
@@ -386,6 +398,18 @@ try {
       const ratio = await page.getByRole("progressbar").evaluate(node => node.firstElementChild.getBoundingClientRect().width / node.getBoundingClientRect().width);
       assert.ok(Math.abs(ratio-.75)<.005, "The settled painted fill matches the final75percent announcement");
       await page.evaluate(() => window.milestoneObserver.disconnect());
+    }
+    if (slug === "content-accordion-index") {
+      assert.deepEqual(await page.evaluate(() => window.accordionStates), [["question-0"],["question-1"],["question-2"]], "The exact demo opens handover, timeline and scope-change answers in order");
+      const current=page.locator('[data-demo="question-2"]');
+      assert.equal(await current.getAttribute("aria-expanded"), "true");
+      assert.equal(await current.evaluate(node => node === document.activeElement), true);
+      assert.equal(await page.locator('[role=region]:not([hidden])').count(),1);
+      assert.ok((await page.locator('[role=region]:not([hidden])').innerText()).startsWith("We discuss the tradeoff before changing course."));
+      assert.equal(await page.locator('[role="region"][hidden] p').count(),0,"Closed answers leave the document");
+      const panel=await current.getAttribute("aria-controls");
+      assert.equal(await page.locator('[role=region]:not([hidden])').getAttribute("id"),panel);
+      await page.evaluate(() => window.accordionObserver.disconnect());
     }
     if (slug === "input-shortcut-recorder") {
       assert.deepEqual(await page.evaluate(() => window.shortcutStates), [

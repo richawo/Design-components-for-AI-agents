@@ -8,14 +8,14 @@
     "motion": "motion/react"
   },
   "layout": {
-    "direction": "A borderless editorial block with 48px serif headline, numbered hairline rows and inset body copy. Expanded answers stay close to their question.",
-    "container": "Size to the parent with @container. Keep the root width at 100%, capped to the focused component, with 24px desktop and 16px narrow padding.",
+    "direction": "An editorial answer index with a 12px monospaced kicker, a responsive Instrument Serif heading and numbered question rows separated by fine rules. A plus/minus marks each disclosure and the open plain-text answer aligns with its question at 15px with 28px leading. Keep neutral graphite surfaces, 44px targets, readable spacing and long-copy wrapping.",
+    "container": "Full-width borderless index capped at 672px, with 24px padding and 40px at the enclosing @md container breakpoint. The separate demo stage uses 16px padding, rising to 32px at the sm viewport breakpoint.",
     "rhythm": "4/8px spacing; 1px edges; 44px minimum interactive targets."
   },
   "typography": {
-    "body": "font-sans, 14-16px, line-height 1.5",
-    "metadata": "font-mono, 11-12px, restrained tracking",
-    "heading": "font-display or font-serif, 24-36px, tracking -0.035em"
+    "body": "font-sans answers at 15px with 28px leading; 16px medium question labels",
+    "metadata": "12px monospaced numbered questions and uppercase editorial kicker",
+    "heading": "32-48px Instrument Serif title, 16px medium questions"
   },
   "color": {
     "dark": {
@@ -32,9 +32,9 @@
     }
   },
   "motion": {
-    "entrance": "A single opacity and 8px rise over 320ms.",
-    "interaction": "150ms press response; 240ms state changes. No ambient loops.",
-    "reduced": "Remove transforms and layout motion; keep opacity at 120ms or less."
+    "entrance": "Enter the whole index with opacity and an 8px rise over 320ms.",
+    "interaction": "Mount and reveal only the visible answer with opacity and a 4px rise over 240ms. Keep 150ms question-button feedback.",
+    "reduced": "Subscribe to live prefers-reduced-motion changes and stop and settle the owned index/answer controls immediately. Remove press transforms."
   },
   "responsive": {
     "widths": [
@@ -72,19 +72,19 @@
         "name": "items",
         "type": "AccordionEntry[]",
         "default": "three studio questions",
-        "description": "Questions with unique IDs and plain-text answers."
+        "description": "Questions with stable unique IDs and plain-text answers. ID keys retain focused disclosures through reordering."
       },
       {
         "name": "defaultOpen",
         "type": "string",
         "default": "\"ownership\"",
-        "description": "Initially expanded item ID."
+        "description": "Initially expanded item ID. An empty or missing ID starts with no matching answer; later matching items use the retained local open ID."
       },
       {
         "name": "onOpenChange",
         "type": "(id: string | null) => void",
         "default": "undefined",
-        "description": "Reports expanded item or closure."
+        "description": "Optional synchronous notification with the locally opened ID or null after closure. Disclosure remains usable without a callback."
       },
       {
         "name": "theme",
@@ -98,5 +98,13 @@
     "Remote images, fake network success or hidden external dependencies.",
     "Decorative status badges, gradients as filler, low-contrast text.",
     "Unlabelled controls, hover-only functionality, overflow at 320px."
+  ],
+  "contract": [
+    "Preserve AccordionEntry, AccordionIndexProps and the named AccordionIndex export. Keep one local expanded ID, initialized from defaultOpen. Opening a question closes the prior answer; choosing the same question closes it.",
+    "Use native disclosure buttons with Enter/Space activation, aria-expanded and aria-controls. Every target region has a matching instance-scoped ID and trigger label; closed regions stay hidden and their answer content is not animated in the background.",
+    "Key question rows by stable unique IDs so host reordering retains focused disclosures and the actual open question. Missing IDs do not open an unrelated answer by position.",
+    "Notify onOpenChange synchronously with the chosen ID or null. It observes local disclosure rather than acting as an asynchronous save or controlled approval.",
+    "Keep written empty content, later-arriving questions, long headings/questions/answers and independent instances with unique IDs. Wrap content without document overflow.",
+    "The host owns publishing and editing the answers. Supply plain strings and use the callback for integration when useful; disclosure needs no network operation."
   ]
 }

@@ -392,6 +392,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 7 (19 October): Milestone Progress retains its vertical checkpoints and stage notes. Stable stage IDs retain focus through reordering, control boundaries meet 3:1 and owned 320ms card, 350ms fill and 240ms detail motion settles on live reduced-motion changes. Long titles keep the count together and wrapped stage labels retain inner padding. Three original-source failures are retained. Its 39-mount source review, eighteen accessibility audits, six widths, reviewed state/entrance captures, Next regression, theme control, official audit and exact 25/50/75 percent replay pass. Keyboard stage requests, controlled acceptance/refusal, finite bounds, completed and empty stages, arriving steps, long copy and independent instances are covered. The zero-based positional API stays unchanged and callbacks remain synchronous host navigation requests. Strict registry, root/isolated types and all 1,066 tests pass. Its reviewed 3.8s film and paired poster retain the Prototype, Review and Handover states in the measured 832×680 frame: source gap 11ms, delivery 20.31ms and moving-frame p95 24.58ms, with no stalls and unchanged guards. The next complete batch has 65 suites and 91 metadata replays and remains pending. 3 components and 12 blocks remain; 117 films remain queued.
 
+- Task 7 (19 October): Editorial Question Index retains its serif heading, numbered questions and measured answer text. Stable item IDs preserve disclosure focus through reordering; owned 320ms card and 240ms answer entrances settle immediately on live reduced-motion changes. Closed answer text leaves the document while labelled disclosure targets remain valid. Two original-source failures are retained. Its 31-mount source review, twenty-two accessibility audits, six widths, reviewed state/entrance captures, Next regression, theme control, official audit and exact three-answer replay pass. Keyboard opening/closure, synchronous observer payloads, absent observers, empty and arriving questions, replacement data, long copy and independent instances are covered. Every answer fits the original 640px phone preview at 320/390px. The API stays unchanged. Strict registry, root/isolated types and all 1,066 tests pass. Its reviewed 3.8s film and paired poster retain the handover, timeline and scope-change answers in the measured 832×680 frame: source gap 34ms, delivery 24.03ms and moving-frame p95 24.75ms, with no stalls and unchanged guards. The next complete batch has 65 suites and 92 metadata replays and remains pending. 2 components and 12 blocks remain; 117 films remain queued.
+
 ## 1. Re-record demo videos (117 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
@@ -544,9 +546,9 @@ All nine parked rebuilds are shipped in both repos. Their original `_wip/<slug>`
 | finance-budget-variance | Completed 17 October: Next probe, dark/light accessibility, responsive and entrance/state captures, live demo and refreshed poster pass. |
 | finance-cashflow-dashboard | Completed 17 October: weekly balance and in/out bars, movable payments, independent pending saves, invalid-data guards, selected-week list geometry, Next probe/demo, both-theme accessibility, responsive/state/entrance captures and refreshed poster pass. |
 
-## 7. Continue the review (3 components, then 12 blocks)
+## 7. Continue the review (2 components, then 12 blocks)
 
-Same process as the 195 already done: hold each to the first ~100 components' standard. Briefs:
+Same process as the 196 already done: hold each to the first ~100 components' standard. Briefs:
 `docs/review/REVIEW_BRIEF.md`, `docs/review/SUITE_BRIEF.md` for industry components, suite languages in
 `docs/review/suites/`. Work newest first, about four components per batch, and verify each (build, tsc, tests,
 check-component, your own captures of states and mid-entrance frames, a refreshed poster, a rewritten pro-50 probe for
@@ -554,7 +556,7 @@ industry components).
 
 - **Commerce** is reviewed. Keep `block-commerce-workspace` compatible with its rebuilt parts.
 - **Smaller components** (#151–179):
-  content-accordion-index, feedback-inline-alert, navigation-breadcrumb-fold.
+  feedback-inline-alert, navigation-breadcrumb-fold.
 - **Blocks**, after their parts: the 12 `block-*` components. Many parts changed their look and some their props;
   re-check each block composes well with the rebuilt parts and still reads as one product.
 

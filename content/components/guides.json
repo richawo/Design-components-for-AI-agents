@@ -244,14 +244,14 @@
     "useWhen": "An editorial FAQ or compact question index with progressive disclosure.",
     "avoidWhen": "A long document people need to compare or scan with every section visible.",
     "integration": [
-      "Supply your own records through `items`. Preserve stable keys or IDs when the data contract provides them."
+      "Supply ordered questions with stable unique IDs. defaultOpen initializes a local open ID; onOpenChange optionally observes the chosen ID or null synchronously. Missing or replaced questions do not open by list position. Each instance owns its disclosure state and region IDs."
     ],
     "related": [
       "content-release-notes",
       "scroll-chapter-stack",
       "app-permission-matrix"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-19"
   },
   "cta-horizon": {
     "useWhen": "A focused closing section with one clear next step.",

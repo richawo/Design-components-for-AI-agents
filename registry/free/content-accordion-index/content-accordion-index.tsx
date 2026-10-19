@@ -1,7 +1,7 @@
 "use client";
-import { type CSSProperties, useId, useState } from "react";
+import { type CSSProperties, useId, useLayoutEffect, useState, useSyncExternalStore } from "react";
 import { Plus, Minus } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
+import { motion, useAnimationControls } from "motion/react";
 
 const control =
   "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-lg px-3 text-sm font-medium transition-[background,transform] duration-150 hover:bg-[var(--wash)] disabled:hover:bg-transparent active:scale-[.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)] disabled:cursor-not-allowed disabled:opacity-40 disabled:active:scale-100 motion-reduce:transform-none";
@@ -46,6 +46,54 @@ const defaults: AccordionEntry[] = [
       "We discuss the tradeoff before changing course. A small adjustment fits the sprint; a new direction gets a revised scope and a clear estimate.",
   },
 ];
+const motionQuery = "(prefers-reduced-motion: reduce)";
+function subscribeToMotion(change: () => void) {
+  const query = window.matchMedia(motionQuery);
+  query.addEventListener("change", change);
+  return () => query.removeEventListener("change", change);
+}
+function useCardEntry() {
+  const reduced = useSyncExternalStore(
+    subscribeToMotion,
+    () => window.matchMedia(motionQuery).matches,
+    () => false,
+  );
+  const entrance = useAnimationControls();
+  useLayoutEffect(() => {
+    entrance.stop();
+    const target = { opacity: 1, y: 0 };
+    if (reduced) entrance.set(target);
+    else void entrance.start({ ...target, transition: { duration: 0.32 } });
+    return () => entrance.stop();
+  }, [entrance, reduced]);
+  return { reduced, entrance };
+}
+
+function useEntry(reduced: boolean, duration: number) {
+  const controls = useAnimationControls();
+  useLayoutEffect(() => {
+    controls.stop();
+    const target = { opacity: 1, y: 0 };
+    if (reduced) controls.set(target);
+    else void controls.start({ ...target, transition: { duration } });
+    return () => controls.stop();
+  }, [controls, reduced, duration]);
+  return controls;
+}
+
+function Answer({ text, reduced }: { text: string; reduced: boolean }) {
+  const entrance = useEntry(reduced, 0.24);
+  return (
+    <motion.p
+      initial={{ opacity: 0, y: reduced ? 0 : 4 }}
+      animate={entrance}
+      className={`max-w-lg pb-6 pl-8 text-[15px] leading-7 ${muted}`}
+    >
+      {text}
+    </motion.p>
+  );
+}
+
 export function AccordionIndex({
   title = "A few useful answers.",
   kicker = "Before we begin",
@@ -55,10 +103,12 @@ export function AccordionIndex({
   theme = "dark",
 }: AccordionIndexProps) {
   const id = useId();
-  const reduced = useReducedMotion();
+  const { reduced, entrance } = useCardEntry();
   const [open, setOpen] = useState<string | null>(defaultOpen);
   return (
-    <section
+    <motion.section
+      initial={{ opacity: 0, y: reduced ? 0 : 8 }}
+      animate={entrance}
       style={colors(theme)}
       aria-labelledby={id}
       className="@container w-full max-w-2xl bg-[var(--panel)] p-6 text-[var(--ink)] @md:p-10"
@@ -80,7 +130,7 @@ export function AccordionIndex({
           const panel = `${id}-${i}`;
           return (
             <div
-              key={`${item.id}-${i}`}
+              key={item.id}
               className="border-t border-[var(--line)]"
             >
               <h3>
@@ -118,15 +168,7 @@ export function AccordionIndex({
                 aria-labelledby={`${panel}-trigger`}
                 hidden={!expanded}
               >
-                <motion.p
-                  key={expanded ? "open" : "closed"}
-                  initial={{ opacity: 0, y: reduced ? 0 : 4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: reduced ? 0.1 : 0.24 }}
-                  className={`max-w-lg pb-6 pl-8 text-[15px] leading-7 ${muted}`}
-                >
-                  {item.answer}
-                </motion.p>
+                {expanded && <Answer text={item.answer} reduced={reduced} />}
               </div>
             </div>
           );
@@ -135,7 +177,7 @@ export function AccordionIndex({
         <p className={muted}>No questions published yet.</p>
       )}
       <div className="border-t border-[var(--line)]" />
-    </section>
+    </motion.section>
   );
 }
 
