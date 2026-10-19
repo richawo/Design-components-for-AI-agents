@@ -1,27 +1,33 @@
-# Actionable Inline Notice
+# Inline Alert
 
-Build a standalone React 19 and Tailwind v4 component. A restrained inline notice with semantic icon, optional dismissal and an async action that preserves its layout and reports failures honestly.
+Build a self-contained React 19, Tailwind v4 and motion/react component with the existing typed API, named export and overridable default demo.
 
-## Layout
+## Layout and type
 
-One horizontal notice with a line icon and a strong text column. The action sits on its own lower rule and error text wraps alongside it. Size to the container. Use a 4/8px rhythm, 1px surface edges, 16px narrow padding and 24px desktop padding. Controls have 44px targets.
+A quiet inline notice with a semantic line icon, a 16px heading and 14px body, plus a separate dismiss action when supplied. An optional action row provides real pending locks and written failure feedback. Keep neutral graphite surfaces, 20px padding, clear hierarchy, 44px targets and wrapping long content. Wrapped action labels retain 8px vertical padding and the directional arrow keeps its full width. Tone changes the meaningful icon without adding decorative severity badges.
 
-## Typography and colour
+## Interaction
 
-Use font-sans at 14-16px/1.5, font-mono metadata at 11-12px and a 24-36px heading with -0.035em tracking. Dark uses #111111, #f5f5f5, #a3a3a3 and #333333; light uses #ffffff, #171717, #525252 and #d4d4d4. Maintain AA contrast.
+Preserve InlineAlertProps and the named InlineAlert export. Render an action or dismissal only when its corresponding callback exists; informational notices need neither.
+
+Await onAction with an immediate duplicate-action guard. Disable action and dismissal while pending, expose aria-busy, show written failure feedback on rejection and allow an exact callback retry. Clear the prior failure when retrying.
+
+Retire pending UI and feedback when title, description, tone, action label or handler availability changes. Replies from a retired context must not change a replacement notice or unlock its newer action.
+
+Equivalent host renders, including a new function identity for the same action, retain pending state. Use the current failure copy when an active request rejects. Ignore late replies after unmount.
+
+onDismiss is a synchronous host request; the host removes the notice. The component does not invent a completed action receipt or persist external work on its own.
+
+Use instance-scoped headings and support long labels/bodies/errors, different tones and independent notices without overflow. For a new resource with identical visible copy, key the component by resource identity; the host owns cancellation of its external operation.
 
 ## Motion
 
-Use a 320ms opacity/8px entrance, 150ms press response and 240ms state changes, easing cubic-bezier(0.22,1,0.36,1). No ambient loops. Reduced motion removes transforms and layout animation and limits fades to 120ms.
+Enter the notice with opacity and an 8px rise over 320ms. Keep 150ms action/dismiss feedback and immediate pending locks. Written feedback reflects the active host operation. Subscribe to live prefers-reduced-motion changes and stop and settle the owned entrance immediately. Remove press transforms.
 
-## Behaviour and accessibility
+## Integration
 
-Use semantic elements, native keyboard behaviour, visible focus rings and instance-scoped IDs. Expose typed content and callbacks. Handle empty custom data and repeated instances. Announce important feedback politely. Match the source state ownership and callback contract.
+Provide onAction for an awaited operation and onDismiss when the host can remove the notice. The component locks active controls, retains failures for retry and ignores replies from replaced content or unmounted instances. Key identical-copy notices by resource identity and manage cancellation of external work in the host.
 
-## Responsive
+Use the source dark/light palettes and verify 320/390/768/1024/1440/1920px container layouts.
 
-Design for 320, 390, 768, 1024, 1440 and 1920px. Respond to the container with @container variants, wrap text and stack secondary details. Scroll only within explicitly labelled local regions.
-
-## Avoid
-
-No remote imagery, false success states, unlabelled controls, hover-only actions, low contrast or decorative status pills. The demo is an isolated component on a quiet stage.
+Keep the pending action focusable with aria-disabled and an immediate activation guard. Pending and completed requests preserve its keyboard focus; if the user tabs away, completion keeps focus outside. The dismiss button remains disabled while pending.

@@ -1,7 +1,7 @@
 "use client";
-import { type CSSProperties, useEffect, useId, useRef, useState } from "react";
+import { type CSSProperties, useId, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 import { Info, AlertTriangle, CheckCircle2, X, ArrowRight } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
+import { motion, useAnimationControls } from "motion/react";
 
 const control =
   "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-lg px-3 text-sm font-medium transition-[background,transform] duration-150 hover:bg-[var(--wash)] disabled:hover:bg-transparent active:scale-[.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)] disabled:cursor-not-allowed disabled:opacity-40 disabled:active:scale-100 motion-reduce:transform-none";
@@ -27,6 +27,29 @@ export type InlineAlertProps = {
   errorMessage?: string;
   theme?: "dark" | "light";
 };
+const motionQuery = "(prefers-reduced-motion: reduce)";
+function subscribeToMotion(change: () => void) {
+  const query = window.matchMedia(motionQuery);
+  query.addEventListener("change", change);
+  return () => query.removeEventListener("change", change);
+}
+function useCardEntry() {
+  const reduced = useSyncExternalStore(
+    subscribeToMotion,
+    () => window.matchMedia(motionQuery).matches,
+    () => false,
+  );
+  const entrance = useAnimationControls();
+  useLayoutEffect(() => {
+    entrance.stop();
+    const target = { opacity: 1, y: 0 };
+    if (reduced) entrance.set(target);
+    else void entrance.start({ ...target, transition: { duration: 0.32 } });
+    return () => entrance.stop();
+  }, [entrance, reduced]);
+  return { reduced, entrance };
+}
+
 export function InlineAlert({
   title = "Your export is ready",
   description = "The archive includes all 24 documents and their original attachments.",
@@ -38,29 +61,44 @@ export function InlineAlert({
   theme = "dark",
 }: InlineAlertProps) {
   const id = useId();
-  const reduced = useReducedMotion();
+  const { reduced, entrance } = useCardEntry();
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState("");
   const alive = useRef(true);
   const busy = useRef(false);
-  useEffect(() => {
+  const generation = useRef(0);
+  const error = useRef(errorMessage);
+  error.current = errorMessage;
+  const context = JSON.stringify([title, description, tone, actionLabel, Boolean(onAction)]);
+  useLayoutEffect(() => {
     alive.current = true;
     return () => {
       alive.current = false;
+      generation.current++;
+      busy.current = false;
     };
   }, []);
+  useLayoutEffect(() => {
+    generation.current++;
+    busy.current = false;
+    setPending(false);
+    setMessage("");
+  }, [context]);
   async function run() {
     if (!onAction || busy.current) return;
+    const request = generation.current;
     busy.current = true;
     setPending(true);
     setMessage("");
     try {
       await onAction();
     } catch {
-      if (alive.current) setMessage(errorMessage);
+      if (alive.current && request === generation.current) setMessage(error.current);
     } finally {
-      busy.current = false;
-      if (alive.current) setPending(false);
+      if (alive.current && request === generation.current) {
+        busy.current = false;
+        setPending(false);
+      }
     }
   }
   const Icon =
@@ -72,7 +110,7 @@ export function InlineAlert({
   return (
     <motion.section
       initial={{ opacity: 0, y: reduced ? 0 : 8 }}
-      animate={{ opacity: 1, y: 0 }}
+      animate={entrance}
       aria-labelledby={id}
       style={colors(theme)}
       className="@container w-full max-w-2xl rounded-xl border border-[var(--line)] bg-[var(--panel)] p-5 text-[var(--ink)]"
@@ -93,7 +131,7 @@ export function InlineAlert({
             data-demo="dismiss"
             aria-label="Dismiss notification"
             disabled={pending}
-            onClick={onDismiss}
+            onClick={() => { if (!busy.current) onDismiss(); }}
             className={`${control} -mr-2 -mt-2 shrink-0 p-0`}
           >
             <X size={16} aria-hidden="true" />
@@ -106,12 +144,12 @@ export function InlineAlert({
             type="button"
             data-demo="alert-action"
             aria-busy={pending}
-            disabled={pending}
+            aria-disabled={pending}
             onClick={() => void run()}
-            className={`${control} border border-[var(--line)]`}
+            className={`${control} border border-[var(--line)] py-2 aria-disabled:cursor-not-allowed aria-disabled:opacity-40 aria-disabled:hover:bg-transparent aria-disabled:active:scale-100`}
           >
             {pending ? "Working…" : actionLabel}
-            <ArrowRight size={15} aria-hidden="true" />
+            <ArrowRight size={15} className="shrink-0" aria-hidden="true" />
           </button>
           <p role="status" className={`text-sm ${muted}`}>
             {message}
@@ -136,7 +174,7 @@ export default function InlineAlertDemo(
         title={opened ? "Archive opened" : "Your export is ready"}
         description={
           opened
-            ? "In your application, this action opens the completed export."
+            ? "All 24 documents and their original attachments are available in the archive."
             : undefined
         }
         onAction={() => setOpened(!opened)}

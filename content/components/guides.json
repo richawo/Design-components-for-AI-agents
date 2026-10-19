@@ -336,14 +336,15 @@
     "useWhen": "An actionable notice attached to the part of the page it affects.",
     "avoidWhen": "Transient confirmations better delivered as a toast, or silent background logs.",
     "integration": [
-      "Connect `onAction` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+      "Provide onAction for an awaited operation and onDismiss when the host can remove the notice. The component locks active controls, retains failures for retry and ignores replies from replaced content or unmounted instances. Key identical-copy notices by resource identity and manage cancellation of external work in the host.",
+      "Pending actions remain focusable and expose aria-disabled while their immediate guard prevents repeated activation. Native dismissal is unavailable while pending; completed requests keep focus wherever the user left it."
     ],
     "related": [
       "feedback-empty-search",
       "feedback-morph-loader",
       "toast-promise"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-19"
   },
   "feedback-morph-loader": {
     "useWhen": "A brief loading interval where continuity between states helps.",

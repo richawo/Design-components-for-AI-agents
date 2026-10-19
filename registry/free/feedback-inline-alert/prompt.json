@@ -8,14 +8,14 @@
     "motion": "motion/react"
   },
   "layout": {
-    "direction": "One horizontal notice with a line icon and a strong text column. The action sits on its own lower rule and error text wraps alongside it.",
-    "container": "Size to the parent with @container. Keep the root width at 100%, capped to the focused component, with 24px desktop and 16px narrow padding.",
+    "direction": "A quiet inline notice with a semantic line icon, a 16px heading and 14px body, plus a separate dismiss action when supplied. An optional action row provides real pending locks and written failure feedback. Keep neutral graphite surfaces, 20px padding, clear hierarchy, 44px targets and wrapping long content. Tone changes the meaningful icon without adding decorative severity badges. Wrapped action labels retain 8px vertical padding and the directional arrow keeps its full width.",
+    "container": "Full-width notice capped at 672px with 20px padding and a 12px corner radius. The separate demo stage uses 16px padding, rising to 32px at the sm viewport breakpoint.",
     "rhythm": "4/8px spacing; 1px edges; 44px minimum interactive targets."
   },
   "typography": {
-    "body": "font-sans, 14-16px, line-height 1.5",
-    "metadata": "font-mono, 11-12px, restrained tracking",
-    "heading": "font-display or font-serif, 24-36px, tracking -0.035em"
+    "body": "font-sans body and action labels at 14px; 16px medium heading",
+    "metadata": "No metadata row or count badges",
+    "heading": "16px medium sans-serif"
   },
   "color": {
     "dark": {
@@ -32,9 +32,9 @@
     }
   },
   "motion": {
-    "entrance": "A single opacity and 8px rise over 320ms.",
-    "interaction": "150ms press response; 240ms state changes. No ambient loops.",
-    "reduced": "Remove transforms and layout motion; keep opacity at 120ms or less."
+    "entrance": "Enter the notice with opacity and an 8px rise over 320ms.",
+    "interaction": "Keep 150ms action/dismiss feedback and immediate pending locks. Written feedback reflects the active host operation.",
+    "reduced": "Subscribe to live prefers-reduced-motion changes and stop and settle the owned entrance immediately. Remove press transforms."
   },
   "responsive": {
     "widths": [
@@ -51,7 +51,8 @@
     "Use native buttons and form controls with visible 2px focus rings.",
     "Provide labels, meaningful states and polite feedback where actions update content.",
     "Keep IDs instance-scoped with useId; support multiple instances and empty custom data.",
-    "Respect prefers-reduced-motion; no automatic action or navigation."
+    "Respect prefers-reduced-motion; no automatic action or navigation.",
+    "Keep the pending action focusable with aria-disabled while its immediate guard rejects keyboard and pointer reactivation. Completion does not reclaim focus after Tab leaves the notice."
   ],
   "content": {
     "defaults": "Use the realistic default content from the source; expose content and collection inputs as typed props.",
@@ -84,19 +85,19 @@
         "name": "onAction",
         "type": "() => void | Promise<void>",
         "default": "undefined",
-        "description": "Optional awaited action; errors remain visible and duplicate clicks are blocked."
+        "description": "Optional awaited action. Duplicate actions and dismissal are locked while it runs. Failure shows the current errorMessage and permits retry. Replaced alert content retires pending UI and ignores old replies."
       },
       {
         "name": "onDismiss",
         "type": "() => void",
         "default": "undefined",
-        "description": "Optional host dismissal; caller removes the notice."
+        "description": "Optional synchronous host dismissal request. The caller removes the notice; dismissal is blocked while the current action is pending."
       },
       {
         "name": "errorMessage",
         "type": "string",
         "default": "action failure guidance",
-        "description": "User-facing action failure copy."
+        "description": "Current failure copy used when the active action rejects. Changing it does not retire the pending action."
       },
       {
         "name": "theme",
@@ -110,5 +111,13 @@
     "Remote images, fake network success or hidden external dependencies.",
     "Decorative status badges, gradients as filler, low-contrast text.",
     "Unlabelled controls, hover-only functionality, overflow at 320px."
+  ],
+  "contract": [
+    "Preserve InlineAlertProps and the named InlineAlert export. Render an action or dismissal only when its corresponding callback exists; informational notices need neither.",
+    "Await onAction with an immediate duplicate-action guard. Disable action and dismissal while pending, expose aria-busy, show written failure feedback on rejection and allow an exact callback retry. Clear the prior failure when retrying.",
+    "Retire pending UI and feedback when title, description, tone, action label or handler availability changes. Replies from a retired context must not change a replacement notice or unlock its newer action.",
+    "Equivalent host renders, including a new function identity for the same action, retain pending state. Use the current failure copy when an active request rejects. Ignore late replies after unmount.",
+    "onDismiss is a synchronous host request; the host removes the notice. The component does not invent a completed action receipt or persist external work on its own.",
+    "Use instance-scoped headings and support long labels/bodies/errors, different tones and independent notices without overflow. For a new resource with identical visible copy, key the component by resource identity; the host owns cancellation of its external operation."
   ]
 }

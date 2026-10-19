@@ -9,6 +9,7 @@ const specs = fs
   .filter((file) => file.endsWith(".mjs"))
   .map((file) => ({ slug: file.slice(0, -4) }));
 const finalStates = {
+  "feedback-inline-alert": "Archive opened",
   "content-accordion-index": "We discuss the tradeoff before changing course.",
   "progress-milestones": "Source files, notes and a clear path for the next release.",
   "selects-radio-cards": "Exploratory",
@@ -188,6 +189,17 @@ try {
           if (JSON.stringify(next) !== JSON.stringify(window.accordionStates.at(-1))) window.accordionStates.push(next);
         });
         window.accordionObserver.observe(panel, {childList:true,subtree:true,attributes:true,attributeFilter:["aria-expanded"]});
+      });
+    }
+    if (slug === "feedback-inline-alert") {
+      await page.locator("section").evaluate(panel => {
+        const state = () => panel.querySelector('h2')?.textContent;
+        window.inlineAlertStates = [state()];
+        window.inlineAlertObserver = new MutationObserver(() => {
+          const next = state();
+          if (next !== window.inlineAlertStates.at(-1)) window.inlineAlertStates.push(next);
+        });
+        window.inlineAlertObserver.observe(panel, {childList:true,subtree:true,characterData:true});
       });
     }
     if (slug === "input-shortcut-recorder") {
@@ -410,6 +422,17 @@ try {
       const panel=await current.getAttribute("aria-controls");
       assert.equal(await page.locator('[role=region]:not([hidden])').getAttribute("id"),panel);
       await page.evaluate(() => window.accordionObserver.disconnect());
+    }
+    if (slug === "feedback-inline-alert") {
+      assert.deepEqual(await page.evaluate(() => window.inlineAlertStates), ["Your export is ready","Archive opened"], "The exact demo opens the completed document archive once");
+      assert.equal(await page.getByRole("heading",{name:"Archive opened",exact:true}).count(),1);
+      assert.equal(await page.getByText("All 24 documents and their original attachments are available in the archive.",{exact:true}).count(),1);
+      const action=page.getByRole("button",{name:"Back to export",exact:true});
+      assert.equal(await action.isEnabled(),true);
+      assert.equal(await action.getAttribute("aria-busy"),"false");
+      assert.equal(await action.evaluate(node=>node===document.activeElement),true);
+      assert.equal(await page.getByRole("status").innerText(),"");
+      await page.evaluate(()=>window.inlineAlertObserver.disconnect());
     }
     if (slug === "input-shortcut-recorder") {
       assert.deepEqual(await page.evaluate(() => window.shortcutStates), [

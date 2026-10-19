@@ -7,7 +7,6 @@
   "description": "A restrained inline notice with semantic icon, optional dismissal and an async action that preserves its layout and reports failures honestly.",
   "tags": [
     "feedback",
-    "feedback",
     "inline",
     "alert",
     "responsive",
@@ -49,19 +48,19 @@
       "name": "onAction",
       "type": "() => void | Promise<void>",
       "default": "undefined",
-      "description": "Optional awaited action; errors remain visible and duplicate clicks are blocked."
+      "description": "Optional awaited action. Duplicate actions and dismissal are locked while it runs. Failure shows the current errorMessage and permits retry. Replaced alert content retires pending UI and ignores old replies. The pending action stays keyboard-focusable with aria-disabled; its synchronous guard prevents reactivation and completion does not reclaim focus from outside."
     },
     {
       "name": "onDismiss",
       "type": "() => void",
       "default": "undefined",
-      "description": "Optional host dismissal; caller removes the notice."
+      "description": "Optional synchronous host dismissal request. The caller removes the notice; dismissal is blocked while the current action is pending."
     },
     {
       "name": "errorMessage",
       "type": "string",
       "default": "action failure guidance",
-      "description": "User-facing action failure copy."
+      "description": "Current failure copy used when the active action rejects. Changing it does not retire the pending action."
     },
     {
       "name": "theme",
@@ -73,11 +72,9 @@
   "added": "2026-10-11",
   "demo": {
     "steps": [
-      "wait:600",
-      "click:@alert-action",
       "wait:700",
       "click:@alert-action",
-      "wait:700"
+      "wait:2600"
     ],
     "loop": false
   },
