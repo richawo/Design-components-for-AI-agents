@@ -62,11 +62,16 @@ try {
     "Cedar",
     "River",
   ]);
+  assert.equal(await tags.isEditable(), false, "The full topic field prevents additional typing");
+  await page.getByRole("button", { name: "Remove Cedar", exact: true }).click();
+  assert.equal(await tags.evaluate((e) => e === document.activeElement), true);
+  assert.equal(await tags.isEditable(), true, "Removing a topic makes room for entry");
   await tags.fill("文");
   await tags.dispatchEvent("keydown", { key: "Enter", isComposing: true });
   assert.equal(await tags.inputValue(), "文");
-  await page.getByRole("button", { name: "Remove Cedar", exact: true }).click();
-  assert.equal(await tags.evaluate((e) => e === document.activeElement), true);
+  assert.deepEqual(await page.evaluate(() => window.values.at(-1)), ["River"]);
+  await tags.press("Enter");
+  assert.deepEqual(await page.evaluate(() => window.values.at(-1)), ["River", "文"]);
   await mountFixture(
     page,
     "input-password-checklist",
