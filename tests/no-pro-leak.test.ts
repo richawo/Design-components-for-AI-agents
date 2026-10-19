@@ -38,6 +38,9 @@ function componentImports(usage: string) {
 }
 const importsByComponent = manifest.map((m) => componentImports(m.usage));
 const proNames = [...new Set(importsByComponent.flat())];
+// One pass per file retains the same export-name boundary without rescanning
+// every source once for each private component.
+const proExport = new RegExp(`export (?:default )?function (${proNames.join("|")})\\b`, "g");
 
 describe("Pro usage import detection", () => {
   it("checks every component name in compound, aliased and type imports", () => {
@@ -85,9 +88,9 @@ describe("no Pro source in the public repository", () => {
     const hits: string[] = [];
     for (const f of code) {
       const src = fs.readFileSync(path.join(root, f), "utf8");
-      for (const n of proNames)
-        if (new RegExp(`export (default )?function ${n}\\b`).test(src))
-          hits.push(`${f}: ${n}`);
+      const definitions = new Set([...src.matchAll(proExport)].map(match => match[1]));
+      for (const name of proNames)
+        if (definitions.has(name)) hits.push(`${f}: ${name}`);
     }
     expect(hits).toEqual([]);
   });
