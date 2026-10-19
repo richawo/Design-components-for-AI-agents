@@ -29319,7 +29319,7 @@
       {
         "name": "onUpload",
         "type": "(submission: DocumentSubmission) => void | Promise<void>",
-        "description": "Receives { requestId, file } for a chosen or dropped File, or { requestId, attachment } for an inbox match. Resolve once receipt is acknowledged to stamp it; reject to keep the file attached and offer a retry. Validate type, size and access again on the server. Document submission is unavailable when no writer is supplied. Staged files remain attached and can be submitted when a writer is connected."
+        "description": "Receives { requestId, file } for a chosen or dropped File, or { requestId, attachment } for an inbox match. Resolve once receipt is acknowledged to stamp it; reject to keep the file attached and offer a retry. Validate type, size and access again on the server. Document submission is unavailable when no writer is supplied. Staged files remain attached and can be submitted when a writer is connected. Inbox attachment records are copied when staged and for each callback, so host mutation cannot change the retained file or receipt."
       },
       {
         "name": "referenceDate",

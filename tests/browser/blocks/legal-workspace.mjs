@@ -1,6 +1,7 @@
+import { check as checkInboxSnapshots } from '../review/legal-inbox-snapshots.mjs';
 import { check as checkWriterAvailability } from '../review/legal-writer-availability.mjs';
 import { check as checkReferenceDate } from '../review/legal-reference-date.mjs';
-export async function check({ page, mount, assert }) {
+export async function check({ page, mount, assert, capture = async () => {} }) {
   const evidenceText = "Service report supplied; evidence reference DOC-204.";
   await mount(`window.calls=[];window.uploads=[];window.attempt=0;window.uploadAttempt=0;createRoot(document.getElementById('root')).render(<Subject.LegalWorkspace onComplete={async payload=>{window.calls.push(payload);if(!window.attempt++)throw Error('fixture');}} onUpload={async payload=>{window.uploads.push(payload);if(!window.uploadAttempt++)throw Error('offline')}}/>);`);
   await page.getByRole("tab", { name: "Obligations", exact: true }).click();
@@ -38,6 +39,7 @@ export async function check({ page, mount, assert }) {
 
   await mount(`createRoot(document.getElementById('root')).render(<Subject.LegalWorkspace scopes={[]}/>);`);
   assert.ok(await page.getByText("No matter records supplied.").isVisible());
-  await checkReferenceDate({ page, mount, assert });
-  await checkWriterAvailability({ page, mount, assert });
+  await checkReferenceDate({ page, mount, assert, capture });
+  await checkWriterAvailability({ page, mount, assert, capture });
+  await checkInboxSnapshots({ page, mount, assert, capture });
 }

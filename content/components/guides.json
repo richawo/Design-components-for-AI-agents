@@ -2727,7 +2727,8 @@
       "Pass `requests` with stable ids, lowercase dot-prefixed `allowedExtensions` and a byte `maxBytes`. Add an ISO `due` for countdowns and a `suggestion` when your inbox matching finds a likely file.",
       "`onUpload` receives `{ requestId, file }` or `{ requestId, attachment }`. Resolve only once receipt is acknowledged; reject to keep the file staged with a retry. Re-validate type, size and access on the server.",
       "Set `referenceDate` from the server in tests and screenshots so due countdowns stay stable.",
-      "Document submission is unavailable when no writer is supplied. Staged files remain attached and can be submitted when a writer is connected."
+      "Document submission is unavailable when no writer is supplied. Staged files remain attached and can be submitted when a writer is connected.",
+      "Inbox attachment fields are copied when staged and for each submission. Callback mutation and later host edits cannot change the selected file, retry or receipt. Uploaded File objects keep their identity."
     ],
     "related": [
       "legal-evidence-index",
