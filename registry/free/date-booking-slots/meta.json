@@ -43,19 +43,19 @@
       "name": "days",
       "type": "BookingDay[]",
       "default": "three sample dates",
-      "description": "Ordered date cards and time slots; available:false disables a slot."
+      "description": "Ordered days with stable unique day IDs and stable slot IDs within each day. Weekday, day, month and slot labels are display strings; available:false disables a time. Empty and fully unavailable days have written states."
     },
     {
       "name": "value",
       "type": "BookingSelection | null",
       "default": "undefined",
-      "description": "Controlled selection. Undefined enables internal state; null explicitly clears selection."
+      "description": "Controlled selection. Undefined enables local state; null clears the selection. Without onChange, controlled radios are read-only while day browsing remains available. Unknown or unavailable selections are not shown as selected."
     },
     {
       "name": "onChange",
       "type": "(selection: BookingSelection) => void",
       "default": "undefined",
-      "description": "Selection only; the host validates availability and confirms the booking."
+      "description": "Synchronous notification with an independent dayId/slotId record after choosing an available time. The host owns controlled acknowledgement and any booking or reservation."
     },
     {
       "name": "theme",
@@ -67,13 +67,13 @@
   "added": "2026-10-11",
   "demo": {
     "steps": [
-      "wait:600",
+      "wait:700",
       "click:@slot-1",
-      "wait:600",
+      "wait:1000",
       "click:@day-1",
-      "wait:500",
+      "wait:1000",
       "click:@slot-0",
-      "wait:600"
+      "wait:1600"
     ],
     "loop": false
   },

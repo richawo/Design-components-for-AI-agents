@@ -374,7 +374,9 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 7 (19 October): Workspace Setup Checklist keeps separate completion and instruction controls. Notifications receive copied available-ID arrays, controlled completion without a writer is read-only, task-key reordering retains focus and live reduced motion settles the ring/card. Unchecked boundaries meet 3:1; durations use 12px type; the ring draws from empty; chevrons show open state; remaining-step copy handles one; and the subtitle no longer hard-codes three tasks. Six original-source failures are retained. Its 37-mount source review, eighteen accessibility audits, six widths, reviewed state/entrance captures, Next regression, theme control, official audit and exact completion/disclosure replay pass. Refused controlled changes, normalized IDs, empty/arriving tasks, long copy and independent instances are covered. Strict registry, root/isolated types and all 1,066 tests pass. Its settled Next poster is reviewed and current. The film is rejected for a 998.88ms changed-source delivery gap (13 stalls); source cadence is 17ms and moving-frame p95 is 25.37ms without stalls. The rejected raw capture/metrics are preserved, the prior film is retained and every guard stays unchanged. The onboarding runner is registered; the next complete batch has 64 suites and 83 metadata replays and remains pending. 11 components and 12 blocks remain; 116 films remain queued.
 
-## 1. Re-record demo videos (116 components)
+- Task 7 (19 October): Booking Slots copies selection notifications, makes controlled radios read-only without a writer, retains day/slot focus through reordering and settles card/list motion on live reduced-motion changes. Fully unavailable days have a written no-times state and neutral feedback. Month labels use 12px type and long time labels have inner padding. Six original-source failures are retained. Its 37-mount source review, eighteen accessibility audits, six widths, reviewed state/entrance captures, Next regression, theme control, official audit and exact four-state replay pass. Native radio navigation, controlled acceptance/refusal, cleared and unavailable selections, day browsing with retained choices, arriving schedules, host display labels and independent instances are covered. Strict registry, root/isolated types and all 1,066 tests pass. Its settled Next poster is reviewed and current. The film fails its original timing guards (source gap 12ms, delivery 46.99ms and moving-frame p95 53.55ms); the rejected raw capture/metrics remain local, the previous film is retained and every guard stays unchanged. The next complete batch has 64 suites and 84 metadata replays and remains pending. 10 components and 12 blocks remain; 117 films remain queued.
+
+## 1. Re-record demo videos (117 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -393,6 +395,7 @@ slug or per small group). Notes:
 
 Slugs:
 
+`date-booking-slots`
 `onboarding-setup-checklist`
 `devtools-request-waterfall`
 `chart-bullet-targets`
@@ -525,9 +528,9 @@ All nine parked rebuilds are shipped in both repos. Their original `_wip/<slug>`
 | finance-budget-variance | Completed 17 October: Next probe, dark/light accessibility, responsive and entrance/state captures, live demo and refreshed poster pass. |
 | finance-cashflow-dashboard | Completed 17 October: weekly balance and in/out bars, movable payments, independent pending saves, invalid-data guards, selected-week list geometry, Next probe/demo, both-theme accessibility, responsive/state/entrance captures and refreshed poster pass. |
 
-## 7. Continue the review (11 components, then 12 blocks)
+## 7. Continue the review (10 components, then 12 blocks)
 
-Same process as the 187 already done: hold each to the first ~100 components' standard. Briefs:
+Same process as the 188 already done: hold each to the first ~100 components' standard. Briefs:
 `docs/review/REVIEW_BRIEF.md`, `docs/review/SUITE_BRIEF.md` for industry components, suite languages in
 `docs/review/suites/`. Work newest first, about four components per batch, and verify each (build, tsc, tests,
 check-component, your own captures of states and mid-entrance frames, a refreshed poster, a rewritten pro-50 probe for
@@ -535,7 +538,7 @@ industry components).
 
 - **Commerce** is reviewed. Keep `block-commerce-workspace` compatible with its rebuilt parts.
 - **Smaller components** (#151–179):
-  date-booking-slots, input-file-dropzone, input-shortcut-recorder,
+  input-file-dropzone, input-shortcut-recorder,
   feedback-empty-search, navigation-pagination-window, primitives-shortcut-reference, selects-radio-cards,
   progress-milestones, content-accordion-index, feedback-inline-alert, navigation-breadcrumb-fold.
 - **Blocks**, after their parts: the 12 `block-*` components. Many parts changed their look and some their props;

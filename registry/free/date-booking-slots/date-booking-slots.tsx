@@ -1,7 +1,14 @@
 "use client";
-import { type CSSProperties, useId, useState } from "react";
+import {
+  type CSSProperties,
+  type ReactNode,
+  useId,
+  useLayoutEffect,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import { Clock, Globe, Check } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
+import { motion, useAnimationControls } from "motion/react";
 
 const control =
   "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-lg px-3 text-sm font-medium transition-[background,transform] duration-150 hover:bg-[var(--wash)] disabled:hover:bg-transparent active:scale-[.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)] disabled:cursor-not-allowed disabled:opacity-40 disabled:active:scale-100 motion-reduce:transform-none";
@@ -60,6 +67,38 @@ const defaults: BookingDay[] = [
   },
   { id: "2026-10-14", weekday: "Wed", day: "14", month: "October", slots: [] },
 ];
+const motionQuery = "(prefers-reduced-motion: reduce)";
+function subscribeToMotion(change: () => void) {
+  const query = window.matchMedia(motionQuery);
+  query.addEventListener("change", change);
+  return () => query.removeEventListener("change", change);
+}
+
+function useEntry(reduced: boolean, duration: number) {
+  const controls = useAnimationControls();
+  useLayoutEffect(() => {
+    controls.stop();
+    const target = { opacity: 1, y: 0 };
+    if (reduced) controls.set(target);
+    else void controls.start({ ...target, transition: { duration } });
+    return () => controls.stop();
+  }, [controls, duration, reduced]);
+  return controls;
+}
+
+function SlotChoices({ reduced, children }: { reduced: boolean; children: ReactNode }) {
+  const entrance = useEntry(reduced, 0.24);
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: reduced ? 0 : 4 }}
+      animate={entrance}
+      className="grid grid-cols-2 gap-2"
+    >
+      {children}
+    </motion.div>
+  );
+}
+
 export function BookingSlots({
   title = "Find a moment to talk.",
   duration = "30 minutes",
@@ -70,7 +109,13 @@ export function BookingSlots({
   theme = "dark",
 }: BookingSlotsProps) {
   const id = useId();
-  const reduced = useReducedMotion();
+  const reduced = useSyncExternalStore(
+    subscribeToMotion,
+    () => window.matchMedia(motionQuery).matches,
+    () => false,
+  );
+  const entrance = useEntry(reduced, 0.32);
+  const readOnly = value !== undefined && !onChange;
   const [dayId, setDayId] = useState(days[0]?.id ?? "");
   const [local, setLocal] = useState<BookingSelection | null>(null);
   const selected = value === undefined ? local : value;
@@ -80,7 +125,9 @@ export function BookingSlots({
     (s) => s.id === selected?.slotId && s.available !== false,
   );
   return (
-    <section
+    <motion.section
+      initial={{ opacity: 0, y: reduced ? 0 : 8 }}
+      animate={entrance}
       style={colors(theme)}
       aria-labelledby={id}
       className="@container w-full max-w-lg rounded-xl border border-[var(--line)] bg-[var(--panel)] p-6 text-[var(--ink)]"
@@ -90,11 +137,11 @@ export function BookingSlots({
       </h2>
       <div className={`mt-3 flex flex-wrap gap-x-5 gap-y-2 text-xs ${muted}`}>
         <span className="inline-flex items-center gap-2">
-          <Clock size={14} aria-hidden="true" />
+          <Clock size={14} className="shrink-0" aria-hidden="true" />
           {duration}
         </span>
         <span className="inline-flex items-center gap-2 break-all">
-          <Globe size={14} aria-hidden="true" />
+          <Globe size={14} className="shrink-0" aria-hidden="true" />
           {timezone}
         </span>
       </div>
@@ -107,14 +154,14 @@ export function BookingSlots({
           <button
             type="button"
             data-demo={`day-${i}`}
-            key={`${d.id}-${i}`}
+            key={d.id}
             aria-pressed={d.id === day?.id}
             onClick={() => setDayId(d.id)}
             className={`${control} min-w-16 flex-1 flex-col gap-1 border py-3 ${d.id === day?.id ? "border-[var(--ink)] bg-[var(--wash)]" : "border-[var(--line)]"}`}
           >
             <span className={`text-xs ${muted}`}>{d.weekday}</span>
             <span className="font-display text-3xl tabular-nums">{d.day}</span>
-            <span className={`text-[11px] ${muted}`}>{d.month}</span>
+            <span className={`text-[12px] ${muted}`}>{d.month}</span>
           </button>
         ))}
       </div>
@@ -124,17 +171,11 @@ export function BookingSlots({
             ? `${day.weekday}, ${day.day} ${day.month}`
             : "No dates available"}
         </legend>
-        <motion.div
-          key={day?.id}
-          initial={{ opacity: 0, y: reduced ? 0 : 4 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: reduced ? 0.1 : 0.24 }}
-          className="grid grid-cols-2 gap-2"
-        >
+        <SlotChoices key={day?.id} reduced={reduced}>
           {day?.slots.map((slot, i) => (
             <label
-              key={`${slot.id}-${i}`}
-              className={`relative flex min-h-12 cursor-pointer items-center justify-center rounded-lg border font-mono text-sm transition-[background-color,border-color,transform] duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] ${slot.available === false ? "cursor-not-allowed opacity-40" : "hover:bg-[var(--wash)] disabled:hover:bg-transparent active:scale-[.98] motion-reduce:transform-none"} ${selected?.dayId === day.id && selectedSlot?.id === slot.id ? "border-[var(--ink)]" : "border-[var(--line)]"}`}
+              key={slot.id}
+              className={`relative flex min-h-12 items-center justify-center rounded-lg border px-3 py-2 font-mono text-sm transition-[background-color,border-color,transform] duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] ${slot.available === false ? "cursor-not-allowed opacity-40" : readOnly ? "cursor-default" : "cursor-pointer hover:bg-[var(--wash)] active:scale-[.98] motion-reduce:transform-none"} ${selected?.dayId === day.id && selectedSlot?.id === slot.id ? "border-[var(--ink)]" : "border-[var(--line)]"}`}
             >
               <input
                 type="radio"
@@ -144,11 +185,12 @@ export function BookingSlots({
                 checked={
                   selected?.dayId === day.id && selectedSlot?.id === slot.id
                 }
-                disabled={slot.available === false}
+                disabled={slot.available === false || readOnly}
                 onChange={() => {
+                  if (readOnly) return;
                   const next = { dayId: day.id, slotId: slot.id };
                   setLocal(next);
-                  onChange?.(next);
+                  onChange?.({ ...next });
                 }}
               />
               <span className="absolute inset-[-3px] rounded-lg peer-focus-visible:outline-2 peer-focus-visible:outline-[var(--ink)]" />
@@ -158,8 +200,8 @@ export function BookingSlots({
               )}
             </label>
           ))}
-        </motion.div>
-        {!day?.slots.length && (
+        </SlotChoices>
+        {!day?.slots.some((slot) => slot.available !== false) && (
           <p className={`py-6 text-sm ${muted}`}>
             No times are available for this day.
           </p>
@@ -176,10 +218,12 @@ export function BookingSlots({
             selected
           </>
         ) : (
-          "Choose an available time to continue."
+          day?.slots.some((slot) => slot.available !== false)
+            ? "Choose an available time to continue."
+            : "No available time selected."
         )}
       </p>
-    </section>
+    </motion.section>
   );
 }
 

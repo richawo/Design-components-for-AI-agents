@@ -1817,15 +1817,15 @@
     "useWhen": "Choosing a supplied available appointment slot.",
     "avoidWhen": "A guarantee that a booking is reserved before the scheduling host accepts it.",
     "integration": [
-      "Supply your own records through `days`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+      "Supply ordered days and slots with stable IDs. All date/time/timezone fields are display labels; resolve scheduling, availability and timezone rules in the host. onChange receives a copied record synchronously. Use value with onChange for controlled acknowledgement; selection does not reserve a slot.",
+      "Day browsing is local and keeps a valid choice from another day visible in the receipt. Controlled choices without onChange are read-only. Empty, fully unavailable and later-arriving days have written states."
     ],
     "related": [
       "date-week-agenda",
       "fashion-launch-calendar",
       "hr-capacity-planner"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-19"
   },
   "date-week-agenda": {
     "useWhen": "Reviewing a small weekly schedule with day and event context.",

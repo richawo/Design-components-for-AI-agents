@@ -9,6 +9,7 @@ const specs = fs
   .filter((file) => file.endsWith(".mjs"))
   .map((file) => ({ slug: file.slice(0, -4) }));
 const finalStates = {
+  "date-booking-slots": "Tue 13, 10:00 selected",
   "onboarding-setup-checklist": "Everything on your list is complete.",
   "date-week-agenda": "Research playback",
   "forms-preference-center": "Preferences saved.",
@@ -113,6 +114,17 @@ try {
         });
       }, true);
     });
+    if (slug === "date-booking-slots") {
+      await page.locator("section").evaluate(booking => {
+        const state = () => [booking.querySelector('[aria-pressed="true"]')?.getAttribute("data-demo"), booking.querySelector('input[type="radio"]:checked')?.closest("label").textContent.trim() ?? null, booking.querySelector('[role="status"]')?.textContent.replace(/\s+/g," ").trim()];
+        window.bookingStates = [state()];
+        window.bookingObserver = new MutationObserver(() => {
+          const next = state();
+          if (next[0] && JSON.stringify(next) !== JSON.stringify(window.bookingStates.at(-1))) window.bookingStates.push(next);
+        });
+        window.bookingObserver.observe(booking, {childList:true,characterData:true,subtree:true,attributes:true,attributeFilter:["aria-pressed","checked"]});
+      });
+    }
     if (slug === "onboarding-setup-checklist") {
       await page.locator("section").evaluate(checklist => {
         const state = () => [checklist.querySelector('[role="img"]')?.getAttribute("aria-label"), checklist.querySelector('[data-demo="setup-task-1"]')?.getAttribute("aria-expanded"), checklist.querySelector('[data-demo="setup-task-2"]')?.getAttribute("aria-expanded")];
@@ -243,6 +255,16 @@ try {
       ?.slice(7);
     const target = page.locator('[data-demo="' + last + '"]');
     const notice = await page.getByRole("status").allTextContents();
+    if (slug === "date-booking-slots") {
+      assert.deepEqual(await page.evaluate(() => window.bookingStates), [["day-0",null,"Choose an available time to continue."], ["day-0","10:30","Mon 12, 10:30 selected"], ["day-1",null,"Mon 12, 10:30 selected"], ["day-1","10:00","Tue 13, 10:00 selected"]], "Day browsing retains Monday's actual choice until Tuesday's time is selected");
+      assert.equal(await page.getByRole("radio", {checked:true}).count(), 1);
+      const slot = page.getByRole("radio", {name:"10:00",exact:true});
+      assert.equal(await slot.isChecked(), true);
+      assert.equal(await slot.evaluate(node => node === document.activeElement), true);
+      assert.equal(await page.locator('[data-demo="day-1"]').getAttribute("aria-pressed"), "true");
+      assert.ok(notice.includes("Tue 13, 10:00 selected"));
+      await page.evaluate(() => window.bookingObserver.disconnect());
+    }
     if (slug === "onboarding-setup-checklist") {
       assert.deepEqual(await page.evaluate(() => window.setupStates), [["1 of 3 steps complete","true","false"], ["2 of 3 steps complete","true","false"], ["2 of 3 steps complete","false","true"], ["3 of 3 steps complete","false","true"]], "The replay completes the source, opens question instructions and completes the last task");
       assert.deepEqual(await page.getByRole("checkbox").evaluateAll(inputs => inputs.map(input => input.checked)), [true,true,true]);
