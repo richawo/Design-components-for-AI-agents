@@ -9,6 +9,12 @@ needs re-recording, whether its poster is current, and the state of its browser 
 - **Probe**: the `tests/browser/pro-50/<slug>.mjs` state, or another probe that covers it. Blank means no browser test
   was written in this review; those are the ones for a separate pass.
 
+All eight final smaller components have reviewed current films and posters, source and Next regressions,
+controls, accessibility checks and exact individual metadata replays. Their single complete **65-suite /
+94-replay** batch, fresh eight-component audits and Worker dry run are pending. The corrected inventory has
+**11 published composed blocks**, rather than the earlier twelve. Both repositories and published block
+metadata agree; every declared component dependency is available.
+
 The workspace/input checkpoint covers **all 64 browser suites across runs**: the full run is 63/64,
 and the complete corrected Expansion follow-up passes. The sole failure was an obsolete empty-booking
 assertion; production source stays unchanged and the test-only fix is pushed as `41e75c1`. All **86 exact
@@ -35,7 +41,7 @@ Its reviewed four-second film and paired poster pass every recording guard. Shar
 Kanban, File Explorer, Communication Preferences and Weekly Agenda also have current reviewed films and paired
 posters. The complete 63-suite / 82-replay interface checkpoint is verified.
 
-Remaining queues: **0 components, 12 blocks, 59 dedicated probes and 117 films**.
+Remaining queues: **11 blocks, 59 dedicated probes and 117 films**.
 
 ## Previous input checkpoint (19 October 2026)
 

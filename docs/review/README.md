@@ -46,14 +46,16 @@ git -C registry/pro apply _wip/<slug>/component.patch
 
 Then finish it against the brief, and delete `_wip/<slug>` in the commit that ships it.
 
-## Not started
+## Original assignment
+
+The lists below record the starting assignment. See `HANDOFF_TASKS.md` and `STATUS.md` for current completion and remaining queues.
 
 Commerce and others (Pro): commerce-promotion-builder, commerce-purchase-order, commerce-fulfilment-desk,
 commerce-operations-dashboard, commerce-return-desk, commerce-variant-stock, commerce-catalog-import (copy
 `suites/commerce.md`), app-permission-matrix, legal-version-history (`suites/legal.md`), hr-capacity-planner
 (`suites/hr.md`), data-query-builder.
 
-Blocks (review after their parts): the 12 `block-*` components.
+Blocks (review after their parts): the 11 published `block-*` components. The original count of twelve was stale; the source and metadata inventory was reconciled on 19 October.
 
 Smaller components (#151–179): chart-waterfall-bridge, content-release-notes, cards-event-ticket,
 chart-slope-comparison, chart-bullet-targets, media-story-deck, devtools-request-waterfall, devtools-json-inspector,

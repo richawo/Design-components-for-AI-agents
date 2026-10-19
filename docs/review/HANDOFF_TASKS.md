@@ -550,7 +550,7 @@ All nine parked rebuilds are shipped in both repos. Their original `_wip/<slug>`
 | finance-budget-variance | Completed 17 October: Next probe, dark/light accessibility, responsive and entrance/state captures, live demo and refreshed poster pass. |
 | finance-cashflow-dashboard | Completed 17 October: weekly balance and in/out bars, movable payments, independent pending saves, invalid-data guards, selected-week list geometry, Next probe/demo, both-theme accessibility, responsive/state/entrance captures and refreshed poster pass. |
 
-## 7. Continue the review (0 components, then 12 blocks)
+## 7. Continue the review (11 blocks)
 
 Same process as the 198 already done: hold each to the first ~100 components' standard. Briefs:
 `docs/review/REVIEW_BRIEF.md`, `docs/review/SUITE_BRIEF.md` for industry components, suite languages in
@@ -560,14 +560,33 @@ industry components).
 
 - **Commerce** is reviewed. Keep `block-commerce-workspace` compatible with its rebuilt parts.
 - **Smaller components** (#151–179) are reviewed.
-- **Blocks**, after their parts: the 12 `block-*` components. Many parts changed their look and some their props;
-  re-check each block composes well with the rebuilt parts and still reads as one product.
+- **Blocks**, after their parts: the 11 published `block-*` components. Many parts changed their look and some their props;
+  re-check each block composes well with the rebuilt parts and still reads as one product. The earlier count of 12 was stale: both source repositories and all published `kind: "block"` metadata contain these eleven, with every declared dependency available.
+
+`block-commerce-workspace`, `block-fashion-workspace`, `block-financial-report`,
+`block-legal-workspace`, `block-meetings-workspace`, `block-music-workspace`,
+`block-people-workspace`, `block-saas-dashboard`, `block-saas-landing`,
+`block-team-workspace`, `block-workspace-settings`.
 
 ## 8. Final release checks
 
 After any batch of the above: `node scripts/build-registry.mjs --strict`, `npx tsc --noEmit`, `npm test`,
 `npm run test:components`, `npm run audit:components -- <changed slugs>`, then stop the dev server and run
 `npm run deploy:dry-run` to check the Worker bundle size. Deployment itself (`npm run deploy`) is the owner's call.
+
+### Final smaller-component batch: 19 October 2026
+
+Empty Search, Pagination, Shortcut Reference, Radio Cards, Milestones, Accordion Index, Inline Alert and
+Breadcrumb Fold are reviewed and pushed as individual slices. Every component passes its source regression,
+reviewed dark/light state and entrance captures, six widths, Next regression, controls, accessibility audit and
+exact metadata replay, with strict registry, root/isolated types and all 1,066 unit tests. All eight current films
+and paired posters are reviewed and pass their original recording guards. Inline Alert has no sustained-motion
+interval in its film, so no moving-frame p95 is claimed.
+
+The next complete run has **65 browser suites and 94 metadata replays**. That single run, fresh audits for all
+eight components and a new Worker dry run are still pending. The prior workspace/input checkpoint below
+remains the latest complete release check. The remaining source-review inventory is **11 composed blocks**;
+the older count of twelve was corrected against both source repositories and published metadata.
 
 ### Workspace and input checkpoint: 19 October 2026
 
