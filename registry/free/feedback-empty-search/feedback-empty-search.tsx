@@ -1,7 +1,7 @@
 "use client";
-import { type CSSProperties, useId, useState } from "react";
+import { type CSSProperties, useId, useLayoutEffect, useState, useSyncExternalStore } from "react";
 import { Search, ArrowUpRight, X } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
+import { motion, useAnimationControls } from "motion/react";
 
 const control =
   "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-lg px-3 text-sm font-medium transition-[background,transform] duration-150 hover:bg-[var(--wash)] disabled:hover:bg-transparent active:scale-[.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)] disabled:cursor-not-allowed disabled:opacity-40 disabled:active:scale-100 motion-reduce:transform-none";
@@ -27,10 +27,33 @@ export type EmptySearchProps = {
   onClear?: () => void;
   theme?: "dark" | "light";
 };
+const motionQuery = "(prefers-reduced-motion: reduce)";
+function subscribeToMotion(change: () => void) {
+  const query = window.matchMedia(motionQuery);
+  query.addEventListener("change", change);
+  return () => query.removeEventListener("change", change);
+}
+function useCardEntry() {
+  const reduced = useSyncExternalStore(
+    subscribeToMotion,
+    () => window.matchMedia(motionQuery).matches,
+    () => false,
+  );
+  const entrance = useAnimationControls();
+  useLayoutEffect(() => {
+    entrance.stop();
+    const target = { opacity: 1, y: 0 };
+    if (reduced) entrance.set(target);
+    else void entrance.start({ ...target, transition: { duration: 0.32 } });
+    return () => entrance.stop();
+  }, [entrance, reduced]);
+  return { reduced, entrance };
+}
+
 export function EmptySearch({
   query = "kinetic typography",
   title = "Nothing here. Yet.",
-  description = "Try a broader phrase, or start with one of these topics.",
+  description = "Explore a topic, or search with a different phrase.",
   suggestions = [
     { label: "Typography", query: "typography" },
     { label: "Motion studies", query: "motion" },
@@ -41,11 +64,17 @@ export function EmptySearch({
   theme = "dark",
 }: EmptySearchProps) {
   const id = useId();
-  const reduced = useReducedMotion();
+  const { reduced, entrance } = useCardEntry();
+  const occurrences = new Map<string, number>();
+  const rows = suggestions.map((suggestion) => {
+    const occurrence = occurrences.get(suggestion.query) ?? 0;
+    occurrences.set(suggestion.query, occurrence + 1);
+    return { ...suggestion, key: JSON.stringify([suggestion.query, occurrence]) };
+  });
   return (
     <motion.section
       initial={{ opacity: 0, y: reduced ? 0 : 8 }}
-      animate={{ opacity: 1, y: 0 }}
+      animate={entrance}
       aria-labelledby={id}
       style={colors(theme)}
       className="@container w-full max-w-xl bg-[var(--panel)] p-6 text-[var(--ink)] @md:p-10"
@@ -62,25 +91,26 @@ export function EmptySearch({
       >
         {title}
       </h2>
-      <p className={`mt-3 break-words text-sm ${muted}`}>
-        No results for{" "}
-        <span className="font-medium text-[var(--ink)]">“{query}”</span>
+      <p role="status" className={`mt-3 break-words text-sm ${muted}`}>
+        {query.trim() ? (
+          <>No results for <span className="font-medium text-[var(--ink)]">“{query}”</span></>
+        ) : "Choose a topic to begin."}
       </p>
       <p className={`mt-2 max-w-sm text-sm leading-relaxed ${muted}`}>
         {description}
       </p>
       <div className="mt-6 divide-y divide-[var(--line)] border-y border-[var(--line)]">
-        {suggestions.map((s, i) => (
+        {rows.map((s, i) => (
           <button
             type="button"
             data-demo={`suggestion-${i}`}
-            key={`${s.query}-${i}`}
+            key={s.key}
             disabled={!onSearch}
             onClick={() => onSearch?.(s.query)}
-            className={`${control} w-full justify-between! rounded-none px-0 text-left`}
+            className={`${control} w-full justify-between! rounded-none px-0 py-2 text-left`}
           >
             <span>{s.label}</span>
-            <ArrowUpRight size={16} aria-hidden="true" />
+            <ArrowUpRight size={16} className="shrink-0" aria-hidden="true" />
           </button>
         ))}
       </div>

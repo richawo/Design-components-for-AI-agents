@@ -9,6 +9,7 @@ const specs = fs
   .filter((file) => file.endsWith(".mjs"))
   .map((file) => ({ slug: file.slice(0, -4) }));
 const finalStates = {
+  "feedback-empty-search": "Choose a topic to begin.",
   "input-shortcut-recorder": "Shortcut reset.",
   "input-file-dropzone": "1 of 5 files selected.",
   "date-booking-slots": "Tue 13, 10:00 selected",
@@ -116,6 +117,17 @@ try {
         });
       }, true);
     });
+    if (slug === "feedback-empty-search") {
+      await page.locator("section").evaluate(panel => {
+        const state = () => panel.querySelector('[role="status"]')?.textContent.replace(/\s+/g," ").trim();
+        window.emptySearchStates = [state()];
+        window.emptySearchObserver = new MutationObserver(() => {
+          const next = state();
+          if (next !== window.emptySearchStates.at(-1)) window.emptySearchStates.push(next);
+        });
+        window.emptySearchObserver.observe(panel, {childList:true,characterData:true,subtree:true});
+      });
+    }
     if (slug === "input-shortcut-recorder") {
       await page.locator("section").evaluate(recorder => {
         const state = () => [[...recorder.querySelectorAll("kbd")].map(node => node.textContent), recorder.querySelector('[data-demo="record-shortcut"]')?.getAttribute("aria-label"), recorder.querySelector('[role="status"]')?.textContent.trim()];
@@ -279,6 +291,12 @@ try {
       ?.slice(7);
     const target = page.locator('[data-demo="' + last + '"]');
     const notice = await page.getByRole("status").allTextContents();
+    if (slug === "feedback-empty-search") {
+      assert.deepEqual(await page.evaluate(() => window.emptySearchStates), ["No results for “kinetic typography”", "No results for “motion”", "Choose a topic to begin."], "The demo accepts the motion topic, then clears the actual query");
+      assert.equal(await page.locator('[data-demo="clear-search"]').evaluate(node => node === document.activeElement), true);
+      assert.equal(await page.getByRole("button", {name:"Motion studies",exact:true}).isEnabled(), true);
+      await page.evaluate(() => window.emptySearchObserver.disconnect());
+    }
     if (slug === "input-shortcut-recorder") {
       assert.deepEqual(await page.evaluate(() => window.shortcutStates), [
         [["Control","Shift","K"],"Record shortcut. Current: Control plus Shift plus K","Click the keycaps to change the combination."],

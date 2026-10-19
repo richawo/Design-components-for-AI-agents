@@ -7,7 +7,6 @@
   "description": "A considered no-results state with a drawn document stack, readable query context and actionable suggestions, designed for search and knowledge libraries.",
   "tags": [
     "feedback",
-    "feedback",
     "empty",
     "search",
     "responsive",
@@ -25,7 +24,7 @@
       "name": "query",
       "type": "string",
       "default": "\"kinetic typography\"",
-      "description": "The search phrase that returned no results."
+      "description": "The host search phrase. A blank or whitespace-only query has a written starting state, without claiming an empty phrase failed."
     },
     {
       "name": "title",
@@ -36,26 +35,26 @@
     {
       "name": "description",
       "type": "string",
-      "default": "broader search guidance",
+      "default": "\"Explore a topic, or search with a different phrase.\"",
       "description": "Helpful next-step copy."
     },
     {
       "name": "suggestions",
       "type": "SearchSuggestion[]",
       "default": "three design topics",
-      "description": "Suggested queries as label/query pairs."
+      "description": "Suggested label/query pairs. Stable query and occurrence keys preserve focused topics through reordering, including repeated query values."
     },
     {
       "name": "onSearch",
       "type": "(query: string) => void",
       "default": "undefined",
-      "description": "Runs the chosen suggestion; buttons disable without a handler."
+      "description": "Synchronous notification with the chosen query string. The host performs the search and acknowledges query changes; topic actions disable without a handler."
     },
     {
       "name": "onClear",
       "type": "() => void",
       "default": "undefined",
-      "description": "Clears the host search; disabled without a handler."
+      "description": "Synchronous request to clear the host search. The clear action disables without a handler."
     },
     {
       "name": "theme",
@@ -68,10 +67,10 @@
   "demo": {
     "steps": [
       "wait:700",
-      "click:@suggestion-0",
-      "wait:700",
       "click:@suggestion-1",
-      "wait:700"
+      "wait:1000",
+      "click:@clear-search",
+      "wait:1700"
     ],
     "loop": false
   },

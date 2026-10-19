@@ -323,14 +323,14 @@
     "useWhen": "A search with no matches and useful ways to recover.",
     "avoidWhen": "An initial loading state or an unexplained application failure.",
     "integration": [
-      "Supply your own records through `suggestions`. Preserve stable keys or IDs when the data contract provides them."
+      "Supply the actual query and suggested label/query pairs. onSearch and onClear are synchronous requests; update query when the host accepts them and implement search/navigation in the host. Missing handlers disable their actions."
     ],
     "related": [
       "feedback-inline-alert",
       "feedback-morph-loader",
       "toast-promise"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-19"
   },
   "feedback-inline-alert": {
     "useWhen": "An actionable notice attached to the part of the page it affects.",

@@ -382,6 +382,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 8 (19 October): the workspace/input checkpoint covers all 64 suites across the frozen 63/64 run and a complete corrected Expansion follow-up. The sole failure was an obsolete empty-booking assertion; production source stays unchanged and the stronger test is pushed as `41e75c1`. All 86 metadata replays pass. Fresh audits for Setup, Booking, Dropzone and Shortcut Recorder pass; all forty images match the reviewed references byte-for-byte and fresh 320px views are read again. Strict registry, exact isolated/root types, all 1,066 unit tests and the Worker dry run pass with every guard retained. Router/runtime/maps are 2,655,633/57,305,433/4,776,932 bytes. The original failed run and diagnostic capture remain archived. The next single complete run follows the remaining small-component reviews. 8 components, 12 blocks, 59 probes and 117 films remain.
 
+- Task 7 (19 October): Empty Search retains its document-stack composition and now keeps suggestion focus through reordering, gives wrapped topics 8px inner space, distinguishes a blank query from failed results and settles its 320ms entrance on live reduced-motion changes. Three original-source failures are retained. Its 31-mount source review, sixteen accessibility audits, six widths, reviewed state/entrance captures, Next regression, theme control, official audit and exact three-state replay pass. Keyboard topic/clear actions, exact synchronous requests, host acceptance/refusal, absent handlers, empty suggestions, repeated query values, long text and independent instances are covered. The API stays unchanged. Strict registry, root/isolated types and all 1,066 tests pass. Its reviewed 3.8s film and paired poster keep all three query states in the measured 832×760 frame: source gap 13ms, delivery 9.79ms and moving-frame p95 25.12ms, with no stalls and unchanged guards. The next complete batch has 65 suites and 87 metadata replays and remains pending. 7 components and 12 blocks remain; 117 films remain queued.
+
 ## 1. Re-record demo videos (117 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
@@ -534,9 +536,9 @@ All nine parked rebuilds are shipped in both repos. Their original `_wip/<slug>`
 | finance-budget-variance | Completed 17 October: Next probe, dark/light accessibility, responsive and entrance/state captures, live demo and refreshed poster pass. |
 | finance-cashflow-dashboard | Completed 17 October: weekly balance and in/out bars, movable payments, independent pending saves, invalid-data guards, selected-week list geometry, Next probe/demo, both-theme accessibility, responsive/state/entrance captures and refreshed poster pass. |
 
-## 7. Continue the review (8 components, then 12 blocks)
+## 7. Continue the review (7 components, then 12 blocks)
 
-Same process as the 190 already done: hold each to the first ~100 components' standard. Briefs:
+Same process as the 191 already done: hold each to the first ~100 components' standard. Briefs:
 `docs/review/REVIEW_BRIEF.md`, `docs/review/SUITE_BRIEF.md` for industry components, suite languages in
 `docs/review/suites/`. Work newest first, about four components per batch, and verify each (build, tsc, tests,
 check-component, your own captures of states and mid-entrance frames, a refreshed poster, a rewritten pro-50 probe for
@@ -544,7 +546,7 @@ industry components).
 
 - **Commerce** is reviewed. Keep `block-commerce-workspace` compatible with its rebuilt parts.
 - **Smaller components** (#151–179):
-  feedback-empty-search, navigation-pagination-window, primitives-shortcut-reference, selects-radio-cards,
+  navigation-pagination-window, primitives-shortcut-reference, selects-radio-cards,
   progress-milestones, content-accordion-index, feedback-inline-alert, navigation-breadcrumb-fold.
 - **Blocks**, after their parts: the 12 `block-*` components. Many parts changed their look and some their props;
   re-check each block composes well with the rebuilt parts and still reads as one product.

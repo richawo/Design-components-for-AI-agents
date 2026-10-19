@@ -1,27 +1,31 @@
-# Editorial Empty Search
+# Empty Search
 
-Build a standalone React 19 and Tailwind v4 component. A considered no-results state with a drawn document stack, readable query context and actionable suggestions, designed for search and knowledge libraries.
+Build a self-contained React 19, Tailwind v4 and motion/react component with the existing typed API, named export and overridable default demo.
 
-## Layout
+## Layout and type
 
-An asymmetrical empty state with tilted document outlines, a 36px serif headline and suggestions arranged as full-width editorial links. Size to the container. Use a 4/8px rhythm, 1px surface edges, 16px narrow padding and 24px desktop padding. Controls have 44px targets.
+A focused empty-search panel with two offset document sheets, a fine search icon, a 36px Instrument Serif heading, the actual failed phrase and a compact list of alternative topics. Keep neutral graphite surfaces, 14px guidance, clear separators and separate 44px topic/clear actions. Give wrapped topic text at least 8px vertical inner space. Wrap long phrases and labels and keep arrow icons from shrinking.
 
-## Typography and colour
+## Interaction
 
-Use font-sans at 14-16px/1.5, font-mono metadata at 11-12px and a 24-36px heading with -0.035em tracking. Dark uses #111111, #f5f5f5, #a3a3a3 and #333333; light uses #ffffff, #171717, #525252 and #d4d4d4. Maintain AA contrast.
+Preserve EmptySearchProps, SearchSuggestion and the named EmptySearch export. Display query remains owned by the host; callbacks do not optimistically replace it.
+
+Use native topic and clear buttons with Enter/Space activation, 44px targets and visible focus. Send exactly the selected query, or call onClear once. Disable actions that have no corresponding handler.
+
+Keep focus attached to a topic through host reordering, using stable query and occurrence keys rather than list positions. Render repeated supplied queries without duplicate React keys.
+
+Announce the current query or blank-query starting message through a polite status. A refused host proposal retains the actual prior query. Empty and arriving suggestions remain readable without invented results.
+
+Accept long headings, queries and labels, empty arrays and independent instances with separate heading IDs. Wrap text without document overflow; keep the arrow visible.
+
+The component proposes queries and clearing synchronously. The host owns search execution, navigation, loading, persistence and error handling.
 
 ## Motion
 
-Use a 320ms opacity/8px entrance, 150ms press response and 240ms state changes, easing cubic-bezier(0.22,1,0.36,1). No ambient loops. Reduced motion removes transforms and layout animation and limits fades to 120ms.
+Enter the panel once with opacity and an 8px rise over 320ms. Keep 150ms button press feedback. Query changes update the actual written status without a fabricated result list. Subscribe to live prefers-reduced-motion changes, stop and settle the owned entrance immediately and remove press transforms.
 
-## Behaviour and accessibility
+## Integration
 
-Use semantic elements, native keyboard behaviour, visible focus rings and instance-scoped IDs. Expose typed content and callbacks. Handle empty custom data and repeated instances. Announce important feedback politely. Match the source state ownership and callback contract.
+Supply the actual query and suggested label/query pairs. onSearch and onClear are synchronous requests; update query when the host accepts them and implement search/navigation in the host. Missing handlers disable their actions.
 
-## Responsive
-
-Design for 320, 390, 768, 1024, 1440 and 1920px. Respond to the container with @container variants, wrap text and stack secondary details. Scroll only within explicitly labelled local regions.
-
-## Avoid
-
-No remote imagery, false success states, unlabelled controls, hover-only actions, low contrast or decorative status pills. The demo is an isolated component on a quiet stage.
+Use the source dark/light palettes and verify 320/390/768/1024/1440/1920px container layouts.
