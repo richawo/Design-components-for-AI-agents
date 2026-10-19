@@ -352,7 +352,9 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 7 (19 October): Story Deck keeps its geometric studies and manual editorial sequence. Artwork labels now use 12px metadata, and large figures wrap with their caption instead of squeezing into a narrow column. A preserved live-preference negative confirms the original 8px slide entry continued after reduced motion changed; new entries now snap while navigation retains focus. Keyboard navigation, exact index notifications, empty stories, initial-index normalization and host replacement pass. The 31-mount source review, twelve state/default accessibility audits, six widths, reviewed entrance/state captures, Next regression, theme control and official audit pass. The exact metadata replay observes all three studies in order and the disabled final Next button. Strict registry, fresh root types and all 1,066 unit tests pass. Its reviewed 3.6s film and paired poster retain the complete replay at measured 960×760 framing: maximum source gap 11ms, delivery 24.38ms and moving-frame p95 18.75ms, with no stalls and unchanged guards. The next full checkpoint has 62 suites and 75 metadata replays and remains pending. 19 components and 12 blocks remain in task 7; 114 films remain in task 1.
 
-## 1. Re-record demo videos (114 components)
+- Task 7 (19 October): Request Waterfall keeps its shared timing lanes and response inspector. Selection notifications now pass independent flat request copies, unavailable or invalid response codes have a written state, method labels use 12px metadata, and entries/details/bars settle on live reduced motion while keyboard focus remains. Original-source callback mutation, HTTP 0/NaN and live-preference failures are preserved. Keyboard selection, exact payloads, singular/empty captures, bounded extreme timings, host replacement and long paths pass. The 33-mount source review, eighteen state/default accessibility audits, six widths, reviewed entrance/state captures, Next regression, theme control and official audit pass. Its exact replay observes script/document/HTML selection and the final HTTP 200, 0ms start, 124ms completion and common scale. Strict registry, fresh root/isolated types and all 1,066 unit tests pass. The current Next poster is refreshed and reviewed. Its film refresh joins task 1 after a rejected capture measured 352.23ms changed-frame delivery; the previous movie and every timing guard remain intact. Source gap was 14ms and moving-frame p95 25.43ms. The next full checkpoint has 62 suites and 76 metadata replays and remains pending. 18 components and 12 blocks remain in task 7; 115 films remain in task 1.
+
+## 1. Re-record demo videos (115 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -371,6 +373,7 @@ slug or per small group). Notes:
 
 Slugs:
 
+`devtools-request-waterfall`
 `chart-bullet-targets`
 `chart-slope-comparison`
 `agents-budget-guard`, `agents-dependency-board`
@@ -501,16 +504,16 @@ All nine parked rebuilds are shipped in both repos. Their original `_wip/<slug>`
 | finance-budget-variance | Completed 17 October: Next probe, dark/light accessibility, responsive and entrance/state captures, live demo and refreshed poster pass. |
 | finance-cashflow-dashboard | Completed 17 October: weekly balance and in/out bars, movable payments, independent pending saves, invalid-data guards, selected-week list geometry, Next probe/demo, both-theme accessibility, responsive/state/entrance captures and refreshed poster pass. |
 
-## 7. Continue the review (19 components, then 12 blocks)
+## 7. Continue the review (18 components, then 12 blocks)
 
-Same process as the 179 already done: hold each to the first ~100 components' standard. Briefs:
+Same process as the 180 already done: hold each to the first ~100 components' standard. Briefs:
 `docs/review/REVIEW_BRIEF.md`, `docs/review/SUITE_BRIEF.md` for industry components, suite languages in
 `docs/review/suites/`. Work newest first, about four components per batch, and verify each (build, tsc, tests,
 check-component, your own captures of states and mid-entrance frames, a refreshed poster, a rewritten pro-50 probe for
 industry components).
 
 - **Commerce** is reviewed. Keep `block-commerce-workspace` compatible with its rebuilt parts.
-- **Smaller components** (#151–179): devtools-request-waterfall, devtools-json-inspector,
+- **Smaller components** (#151–179): devtools-json-inspector,
   media-before-after, data-kanban-compact, data-file-explorer, forms-preference-center, date-week-agenda,
   onboarding-setup-checklist, date-booking-slots, input-file-dropzone, input-shortcut-recorder,
   feedback-empty-search, navigation-pagination-window, primitives-shortcut-reference, selects-radio-cards,

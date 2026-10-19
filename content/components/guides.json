@@ -1910,7 +1910,7 @@
     "useWhen": "Explaining the timing of supplied request phases.",
     "avoidWhen": "Performance conclusions based on invented durations or a complete tracing platform.",
     "integration": [
-      "Supply your own records through `requests`. Preserve stable keys or IDs when the data contract provides them."
+      "Pass ordered capture records with stable IDs and millisecond timings. Selection stays local and onSelect receives an independent record copy. Treat the callback as a synchronous notification; the host owns fetching, persistence and any asynchronous work."
     ],
     "related": [
       "devtools-json-inspector",

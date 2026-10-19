@@ -9,6 +9,7 @@ const specs = fs
   .filter((file) => file.endsWith(".mjs"))
   .map((file) => ({ slug: file.slice(0, -4) }));
 const finalStates = {
+  "devtools-request-waterfall": "/workspace",
   "media-story-deck": "Make the last ten percent count.",
   "chart-bullet-targets": "Docs published",
   "chart-slope-comparison": "Editor",
@@ -105,6 +106,17 @@ try {
         });
       }, true);
     });
+    if (slug === "devtools-request-waterfall") {
+      await page.locator("section").evaluate(capture => {
+        const selected = () => capture.querySelector('button[aria-pressed="true"]')?.getAttribute("data-demo");
+        window.requestWaterfallStates = [selected()];
+        window.requestWaterfallObserver = new MutationObserver(() => {
+          const request = selected();
+          if (request && request !== window.requestWaterfallStates.at(-1)) window.requestWaterfallStates.push(request);
+        });
+        window.requestWaterfallObserver.observe(capture, {subtree:true,attributes:true,attributeFilter:["aria-pressed"]});
+      });
+    }
     if (slug === "media-story-deck") {
       await page.locator("section").evaluate(carousel => {
         const current = () => carousel.querySelector('[aria-roledescription="slide"]')?.getAttribute("aria-label");
@@ -172,6 +184,16 @@ try {
       assert.equal(await field.inputValue(), "Cedar-river42!");
       assert.equal(await field.getAttribute("type"), "text", "The password demo finishes revealed");
       assert.equal(await page.getByRole("button", { name: "Hide password", exact: true }).getAttribute("aria-pressed"), "true");
+    } else if (slug === "devtools-request-waterfall") {
+      assert.deepEqual(await page.evaluate(() => window.requestWaterfallStates), ["request-2", "request-3", "request-0"], "The waterfall replay inspects the document request before the initial HTML response");
+      assert.equal(await page.locator('button[aria-pressed="true"]').count(), 1);
+      assert.equal(await page.locator('[data-demo="request-0"]').getAttribute("aria-pressed"), "true");
+      const details = page.locator("section > div:last-child");
+      assert.deepEqual(await details.locator("div > p:last-child").allTextContents(), ["HTTP 200", "0 ms", "124 ms"]);
+      assert.equal(await page.getByText("538 ms", {exact:true}).count(), 1);
+      const fraction = await page.locator('[data-demo="request-0"] > span[aria-hidden="true"] > span').evaluate(node => node.getBoundingClientRect().width / node.parentElement.getBoundingClientRect().width);
+      assert.ok(Math.abs(fraction - 124/538) < 0.005, "The selected request retains the shared capture scale");
+      await page.evaluate(() => window.requestWaterfallObserver.disconnect());
     } else if (slug === "media-story-deck") {
       assert.deepEqual(await page.evaluate(() => window.storyDeckStates), [
         "1 of 3: Start with the quiet details.",

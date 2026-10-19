@@ -16607,7 +16607,6 @@
     "description": "A responsive network waterfall with proportional request timings, selectable rows and a clear response inspector for performance and developer tools.",
     "tags": [
       "devtools",
-      "devtools",
       "request",
       "waterfall",
       "responsive",
@@ -16630,13 +16629,13 @@
         "name": "requests",
         "type": "RequestTiming[]",
         "default": "five sample requests",
-        "description": "Method, path, HTTP status and non-negative timing values. Invalid timings normalize to zero; extreme values are bounded before arithmetic."
+        "description": "Method, path, HTTP status and non-negative timing values. Invalid timings normalize to zero; extreme values are bounded before arithmetic. HTTP status codes outside 100-599 display as unavailable."
       },
       {
         "name": "onSelect",
         "type": "(request: RequestTiming) => void",
         "default": "undefined",
-        "description": "Receives the selected request."
+        "description": "Receives an independent copy of the selected request synchronously. The host owns persistence."
       },
       {
         "name": "theme",
@@ -16650,9 +16649,9 @@
       "steps": [
         "wait:700",
         "click:@request-3",
-        "wait:700",
+        "wait:1600",
         "click:@request-0",
-        "wait:700"
+        "wait:1100"
       ],
       "loop": false
     },

@@ -1,6 +1,6 @@
 # Review status
 
-179 components are rebuilt (or, for a few, polished), verified and committed. For each: whether its demo video
+180 components are rebuilt (or, for a few, polished), verified and committed. For each: whether its demo video
 needs re-recording, whether its poster is current, and the state of its browser regression probe.
 
 - **Video**: `new` means `public/previews/<slug>.mp4` still shows the old version. Re-record serially on a quiet machine:
@@ -17,9 +17,11 @@ posters and queued film refreshes. See the latest checkpoint in `HANDOFF_TASKS.m
 
 Story Deck also passes its 31-mount source review, twelve accessibility audits, six widths, Next regression,
 theme control and exact three-study replay. Its reviewed 3.6s film and paired poster pass every recording guard.
-The next full batch checkpoint has 62 suites and 75 metadata replays and remains pending.
+Request Waterfall also passes its 33-mount source review, eighteen accessibility audits, Next workflow,
+theme control and exact request replay. Its reviewed Next poster is current; the rejected film remains queued.
+The next full batch checkpoint has 62 suites and 76 metadata replays and remains pending.
 
-Remaining queues: **19 components, 12 blocks, 59 dedicated probes and 114 films**.
+Remaining queues: **18 components, 12 blocks, 59 dedicated probes and 115 films**.
 
 ## Previous input checkpoint (19 October 2026)
 
@@ -319,3 +321,4 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | Slug | Video | Poster | Probe |
 | --- | --- | --- | --- |
 | `media-story-deck` | current | current | Keyboard navigation, exact index notifications, empty stories, initial-index normalization, host replacement and live reduced motion pass. A preserved old-source negative confirms the 8px live-preference regression. The 31-mount source review, twelve state/default accessibility audits, six widths, reviewed entrance/state captures, Next regression, theme control, official audit and exact three-study replay pass. Large figures remain readable at 320px. Strict registry, fresh root types and all 1,066 unit tests pass. Reviewed 3.6s film and paired poster retain the complete measured replay, with every recording guard intact. |
+| `devtools-request-waterfall` | new | current | Independent selection payloads, unavailable statuses, keyboard selection, exact timings, empty/singular captures, host replacement, long paths and live reduced motion pass. Original callback-mutation, HTTP 0/NaN and live-preference failures are preserved. The 33-mount source review, eighteen state/default accessibility audits, six widths, reviewed entrance/state captures, Next regression, theme control, official audit and exact three-request replay pass. Strict registry, fresh root/isolated types and all 1,066 unit tests pass. The refreshed Next poster is reviewed. Film refresh stays queued after the unchanged delivery guard rejected 352.23ms; the previous movie is preserved. |
