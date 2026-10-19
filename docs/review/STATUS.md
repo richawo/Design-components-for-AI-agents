@@ -1,6 +1,6 @@
 # Review status
 
-174 components are rebuilt (or, for a few, polished), verified and committed. For each: whether its demo video
+175 components are rebuilt (or, for a few, polished), verified and committed. For each: whether its demo video
 needs re-recording, whether its poster is current, and the state of its browser regression probe.
 
 - **Video**: `new` means `public/previews/<slug>.mp4` still shows the old version. Re-record serially on a quiet machine:
@@ -8,6 +8,8 @@ needs re-recording, whether its poster is current, and the state of its browser 
 - **Poster**: `stale` means retake it with `node scripts/screenshot.mjs <slug>` (the preview server was overloaded).
 - **Probe**: the `tests/browser/pro-50/<slug>.mjs` state, or another probe that covers it. Blank means no browser test
   was written in this review; those are the ones for a separate pass.
+
+Release Notes also passes its focused review, three controls, official audit and exact Features replay, with a reviewed current film/poster. Its new content/cards group brings the next full checkpoint to 61 suites and 71 metadata replays. That next batch checkpoint is pending.
 
 ## Batch verification (19 October 2026)
 
@@ -292,3 +294,9 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 - The complete scroll suite passes with exact reversal, first-frame chapter release, playable WebM, offscreen pause and broken-film recovery.
 - All 23 metadata replays from the interrupted HR/legal/SaaS tail now pass, as does Audit Trail's separate replay. Leave approval also passed three traced attempts. Its earlier lost click remains unreproduced; assertions stay strict and failures now preserve clicks, targets and geometry.
 - Repeat the complete suite after the remaining component work. Targeted passes do not replace that final run.
+
+## Editorial follow-up (19 October 2026)
+
+| Slug | Video | Poster | Probe |
+| --- | --- | --- | --- |
+| `content-release-notes` | current | current | Keyboard filters/disclosure, exact filtered lists, empty/arriving data, invalid limits, live reduced motion and selected-text contrast pass. The 29-mount source review, fourteen state/default accessibility audits, current fourteen-mount selection follow-up with twelve state audits, six widths, entrance/state captures, Next regression, three controls, official audit and exact Features replay pass. Strict registry, TypeScript and all 1,064 unit tests pass. Reviewed 3.5s film and paired poster are current, with all recording guards retained. |

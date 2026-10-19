@@ -9,6 +9,7 @@ const specs = fs
   .filter((file) => file.endsWith(".mjs"))
   .map((file) => ({ slug: file.slice(0, -4) }));
 const finalStates = {
+  "content-release-notes": "A calmer place to work.",
   "input-number-stepper": "workers",
   "input-password-checklist": "3 of 3 requirements met",
   "input-tag-editor": "Design systems removed.",
@@ -108,6 +109,12 @@ try {
       ?.slice(7);
     const target = page.locator('[data-demo="' + last + '"]');
     const notice = await page.getByRole("status").allTextContents();
+    if (slug === "content-release-notes") {
+      assert.equal(await page.getByRole("button", {name:"Features",exact:true}).getAttribute("aria-pressed"), "true");
+      assert.equal(await page.locator("section article").count(), 2);
+      assert.deepEqual(await page.locator("section article li .sr-only").allTextContents(), ["Feature: ", "Feature: "], "The demo leaves only feature changes in both visible releases");
+      assert.equal(await page.getByRole("button", {name:"Fixes",exact:true}).getAttribute("aria-pressed"), "false");
+    }
     if (slug === "input-color-swatches") {
       assert.equal(await page.getByRole("button", {name:"Terracotta, #c7785b",exact:true}).getAttribute("aria-pressed"), "true", "The colour demo finishes on Terracotta");
       assert.equal(await page.locator('button[aria-pressed="true"]').count(), 1);

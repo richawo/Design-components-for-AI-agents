@@ -1717,17 +1717,20 @@
     "updated": "2026-10-18"
   },
   "content-release-notes": {
-    "useWhen": "A readable release history with useful filtering and version context.",
-    "avoidWhen": "An incident log or unsupported claims about shipped product behaviour.",
+    "useWhen": "A product changelog needs readable release summaries, explicit feature/fix filters and a small initial set of entries with older releases one click away.",
+    "avoidWhen": "The work requires publishing, feeds, search or release authoring. Keep those in the host and use this component for the reading surface.",
     "integration": [
-      "Supply your own records through `releases`. Preserve stable keys or IDs when the data contract provides them."
+      "Pass releases in the intended display order with stable IDs, ISO date strings and feature/fix changes. The component preserves the supplied order.",
+      "Everything, Features and Fixes are native pressed buttons. Filtering changes the visible entries and their change lists; empty matches have written feedback.",
+      "initialCount is a finite initial limit, rounded down and clamped to one; non-finite limits fall back to two. The local older-releases disclosure applies within the current filter.",
+      "Keep publishing and routing in the host. This reader does not save a release or invent a remote action. Reduced motion settles article movement without replacing the filter controls."
     ],
     "related": [
       "content-accordion-index",
-      "scroll-chapter-stack",
-      "app-permission-matrix"
+      "devtools-release-compare",
+      "saas-notification-inbox"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-19"
   },
   "dashboard-kpi-cards": {
     "useWhen": "A compact overview of related measures with readable trends.",

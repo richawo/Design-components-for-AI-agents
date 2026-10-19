@@ -8,14 +8,14 @@
     "motion": "motion/react"
   },
   "layout": {
-    "direction": "Large version numbers anchor a quiet two-column timeline, stacking above copy on phones. Icons distinguish additions and fixes without decorative badges.",
-    "container": "Size to the parent with @container. Keep the root width at 100%, capped to the focused component, with 24px desktop and 16px narrow padding.",
+    "direction": "A release timeline with an aligned version/date rail on wide containers and stacked entries on phones. Keep all three filters on one row at 320px and preserve a stable top edge during filtering.",
+    "container": "Full width, capped at 48rem with 24px narrow and 32px wide padding. The complete 1120px demo stage starts the timeline at its top padding.",
     "rhythm": "4/8px spacing; 1px edges; 44px minimum interactive targets."
   },
   "typography": {
     "body": "font-sans, 14-16px, line-height 1.5",
-    "metadata": "font-mono, 11-12px, restrained tracking",
-    "heading": "font-display or font-serif, 24-36px, tracking -0.035em"
+    "metadata": "12px mono dates",
+    "heading": "36px Instrument Serif title, 30px version figures and 18px medium release titles"
   },
   "color": {
     "dark": {
@@ -33,8 +33,8 @@
   },
   "motion": {
     "entrance": "A single opacity and 8px rise over 320ms.",
-    "interaction": "150ms press response; 240ms state changes. No ambient loops.",
-    "reduced": "Remove transforms and layout motion; keep opacity at 120ms or less."
+    "interaction": "New and filtered entries settle over 300ms with a 40ms bounded stagger. Controls retain native focus.",
+    "reduced": "Stop entry transforms immediately when reduced motion changes, retaining selected text and existing article nodes."
   },
   "responsive": {
     "widths": [
@@ -51,7 +51,8 @@
     "Use native buttons and form controls with visible 2px focus rings.",
     "Provide labels, meaningful states and polite feedback where actions update content.",
     "Keep IDs instance-scoped with useId; support multiple instances and empty custom data.",
-    "Respect prefers-reduced-motion; no automatic action or navigation."
+    "Respect prefers-reduced-motion; no automatic action or navigation.",
+    "Use reader-scoped high-contrast text selection in both themes; preserve selected content when reduced motion changes."
   ],
   "content": {
     "defaults": "Use the realistic default content from the source; expose content and collection inputs as typed props.",
@@ -86,5 +87,11 @@
     "Remote images, fake network success or hidden external dependencies.",
     "Decorative status badges, gradients as filler, low-contrast text.",
     "Unlabelled controls, hover-only functionality, overflow at 320px."
+  ],
+  "contract": [
+    "Pass releases in the intended display order with stable IDs, ISO date strings and feature/fix changes. The component preserves the supplied order.",
+    "Everything, Features and Fixes are native pressed buttons. Filtering changes the visible entries and their change lists; empty matches have written feedback.",
+    "initialCount is a finite initial limit, rounded down and clamped to one; non-finite limits fall back to two. The local older-releases disclosure applies within the current filter.",
+    "Keep publishing and routing in the host. This reader does not save a release or invent a remote action. Reduced motion settles article movement without replacing the filter controls."
   ]
 }

@@ -1,10 +1,15 @@
 "use client";
-import { type CSSProperties, useId, useState } from "react";
+import { type CSSProperties, useLayoutEffect, useSyncExternalStore, useId, useRef, useState } from "react";
 import { Plus, Wrench, ChevronDown } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
+import { motion, useAnimationControls } from "motion/react";
 
-const control =
-  "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-lg px-3 text-sm font-medium transition-[background,transform] duration-150 hover:bg-[var(--wash)] disabled:hover:bg-transparent active:scale-[.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)] disabled:cursor-not-allowed disabled:opacity-40 disabled:active:scale-100 motion-reduce:transform-none";
+const control = [
+  "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-lg px-3 text-sm",
+  "font-medium transition-[background,transform] duration-150 hover:bg-[var(--wash)]",
+  "disabled:hover:bg-transparent active:scale-[.97] focus-visible:outline-2",
+  "focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)] disabled:cursor-not-allowed",
+  "disabled:opacity-40 disabled:active:scale-100 motion-reduce:transform-none",
+].join(" ");
 const muted = "text-[var(--muted)]";
 function colors(theme: "dark" | "light"): CSSProperties {
   return {
@@ -88,7 +93,7 @@ export function ReleaseNotes({
   theme = "dark",
 }: ReleaseNotesProps) {
   const id = useId();
-  const reduced = useReducedMotion();
+  const { reduced, entrance } = useLiveEntrance();
   const [filter, setFilter] = useState<"all" | "feature" | "fix">("all");
   const [expanded, setExpanded] = useState(false);
   const count = Number.isFinite(initialCount)
@@ -99,11 +104,20 @@ export function ReleaseNotes({
   );
   const visible = expanded ? matching : matching.slice(0, count);
   return (
-    <section
+    <motion.section
+      initial={{ opacity: 0, y: reduced ? 0 : 8 }}
+      animate={entrance}
       style={colors(theme)}
       aria-labelledby={id}
+      data-release-notes-reader=""
       className="@container w-full max-w-3xl bg-[var(--panel)] p-6 text-[var(--ink)] @lg:p-8"
     >
+      <style>{`
+        [data-release-notes-reader] ::selection {
+          background: var(--ink);
+          color: var(--panel);
+        }
+      `}</style>
       <h2
         id={id}
         className="max-w-sm font-serif text-4xl leading-tight tracking-[-.03em]"
@@ -128,71 +142,15 @@ export function ReleaseNotes({
             data-demo={`release-${key}`}
             aria-pressed={filter === key}
             onClick={() => setFilter(key)}
-            className={`${control} border ${filter === key ? "border-[var(--ink)]" : "border-transparent"}`}
+            className={`${control} border px-2! ${filter === key ? "border-[var(--ink)]" : "border-transparent"}`}
           >
             {label}
           </button>
         ))}
       </div>
       <div id={`${id}-list`} className="space-y-7">
-        {visible.map((release, i) => (
-          <motion.article
-            key={release.id}
-            initial={{ opacity: 0, y: reduced ? 0 : 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: reduced ? 0.1 : 0.3,
-              delay: reduced ? 0 : Math.min(i, 4) * 0.04,
-            }}
-            className="grid gap-4 border-t border-[var(--line)] pt-6 @lg:grid-cols-[96px_minmax(0,1fr)]"
-          >
-            <div>
-              <p className="font-display text-3xl tracking-tight">
-                {release.version}
-              </p>
-              <time
-                dateTime={release.date}
-                className={`mt-2 block font-mono text-[11px] ${muted}`}
-              >
-                {release.date}
-              </time>
-            </div>
-            <div>
-              <h3 className="text-lg font-medium tracking-tight">
-                {release.title}
-              </h3>
-              <p className={`mt-2 text-sm leading-relaxed ${muted}`}>
-                {release.summary}
-              </p>
-              <ul className="mt-4 space-y-3">
-                {release.changes
-                  .filter((c) => filter === "all" || c.kind === filter)
-                  .map((change, j) => (
-                    <li key={j} className="flex gap-3 text-sm leading-relaxed">
-                      {change.kind === "feature" ? (
-                        <Plus
-                          size={15}
-                          className={`mt-1 shrink-0 ${muted}`}
-                          aria-hidden="true"
-                        />
-                      ) : (
-                        <Wrench
-                          size={15}
-                          className={`mt-1 shrink-0 ${muted}`}
-                          aria-hidden="true"
-                        />
-                      )}
-                      <span>
-                        <span className="sr-only">
-                          {change.kind === "feature" ? "Feature: " : "Fix: "}
-                        </span>
-                        {change.text}
-                      </span>
-                    </li>
-                  ))}
-              </ul>
-            </div>
-          </motion.article>
+        {visible.map((release, order) => (
+          <ReleaseEntry key={release.id} release={release} filter={filter} order={order} reduced={reduced} />
         ))}
       </div>
       {!matching.length && (
@@ -209,7 +167,7 @@ export function ReleaseNotes({
           data-demo="older-releases"
           aria-expanded={expanded}
           aria-controls={`${id}-list`}
-          onClick={() => setExpanded(!expanded)}
+          onClick={() => setExpanded(current => !current)}
           className={`${control} mt-7 w-full justify-between! border-t border-[var(--line)] px-0 pt-4`}
         >
           {expanded
@@ -222,8 +180,110 @@ export function ReleaseNotes({
           />
         </button>
       )}
-    </section>
+    </motion.section>
   );
+}
+
+
+function ReleaseEntry({ release, filter, order, reduced }: {
+  release: ReleaseNote;
+  filter: "all" | "feature" | "fix";
+  order: number;
+  reduced: boolean;
+}) {
+  const entrance = useAnimationControls();
+  const previousFilter = useRef(filter);
+  useLayoutEffect(() => {
+    const changedFilter = previousFilter.current !== filter;
+    previousFilter.current = filter;
+    entrance.stop();
+    if (reduced) entrance.set({ opacity: 1, y: 0 });
+    else {
+      if (changedFilter) entrance.set({ opacity: 0, y: 4 });
+      void entrance.start({
+        opacity: 1,
+        y: 0,
+        transition: { duration: 0.3, delay: Math.min(order, 4) * 0.04 },
+      });
+    }
+    return () => entrance.stop();
+  }, [entrance, reduced, order, filter]);
+  return (
+    <motion.article
+      initial={{ opacity: 0, y: reduced ? 0 : 8 }}
+      animate={entrance}
+      className="grid gap-4 border-t border-[var(--line)] pt-6 @lg:grid-cols-[96px_minmax(0,1fr)]"
+    >
+      <div>
+        <p className="font-display text-3xl tracking-tight">
+          {release.version}
+        </p>
+        <time
+          dateTime={release.date}
+          className={`mt-2 block font-mono text-xs ${muted}`}
+        >
+          {release.date}
+        </time>
+      </div>
+      <div>
+        <h3 className="text-lg font-medium tracking-tight">
+          {release.title}
+        </h3>
+        <p className={`mt-2 text-sm leading-relaxed ${muted}`}>
+          {release.summary}
+        </p>
+        <ul className="mt-4 space-y-3">
+          {release.changes
+            .filter((c) => filter === "all" || c.kind === filter)
+            .map((change, j) => (
+              <li key={j} className="flex gap-3 text-sm leading-relaxed">
+                {change.kind === "feature" ? (
+                  <Plus
+                    size={15}
+                    className={`mt-1 shrink-0 ${muted}`}
+                    aria-hidden="true"
+                  />
+                ) : (
+                  <Wrench
+                    size={15}
+                    className={`mt-1 shrink-0 ${muted}`}
+                    aria-hidden="true"
+                  />
+                )}
+                <span>
+                  <span className="sr-only">
+                    {change.kind === "feature" ? "Feature: " : "Fix: "}
+                  </span>
+                  {change.text}
+                </span>
+              </li>
+            ))}
+        </ul>
+      </div>
+    </motion.article>
+  );
+}
+
+const motionQuery = "(prefers-reduced-motion: reduce)";
+function subscribeToMotion(change: () => void) {
+  const query = window.matchMedia(motionQuery);
+  query.addEventListener("change", change);
+  return () => query.removeEventListener("change", change);
+}
+function useLiveEntrance() {
+  const reduced = useSyncExternalStore(
+    subscribeToMotion,
+    () => window.matchMedia(motionQuery).matches,
+    () => false,
+  );
+  const entrance = useAnimationControls();
+  useLayoutEffect(() => {
+    entrance.stop();
+    if (reduced) entrance.set({ opacity: 1, y: 0 });
+    else void entrance.start({ opacity: 1, y: 0, transition: { duration: 0.32 } });
+    return () => entrance.stop();
+  }, [entrance, reduced]);
+  return { reduced, entrance };
 }
 
 export default function ReleaseNotesDemo(
@@ -231,7 +291,7 @@ export default function ReleaseNotesDemo(
 ) {
   return (
     <div
-      className="flex min-h-[560px] w-full items-center justify-center p-4 @container sm:p-8"
+      className="flex min-h-[1120px] w-full items-start justify-center p-4 @container sm:p-8"
       style={{
         background: overrides.theme === "light" ? "#f3f3f3" : "#080808",
       }}
