@@ -1,5 +1,6 @@
 const txt = async (locator) => (await locator.innerText()).replace(/\s+/g, " ");
 // The table's sortable headers show from a 768px container, so give the frame room.
+const rowFor = (page, id) => page.locator(`[data-demo="matter-${id}"]`).locator('xpath=ancestor::*[@role="row"][1]');
 const WIDE = "document.getElementById('root').style.maxWidth='1320px';";
 
 export async function check({ page, mount, assert }) {
@@ -27,10 +28,10 @@ export async function check({ page, mount, assert }) {
     // Next date ascending by default; the overdue date outranks the next one; closed sinks.
     assert.equal(await header("Next date").getAttribute("aria-sort"), "ascending");
     assert.deepEqual(await order(), ["mat-205", "mat-209", "mat-207", "mat-204", "mat-198", "mat-201", "mat-187"]);
-    assert.match(await txt(page.locator('[data-demo="matter-mat-205"]')), /Document response 15 Oct · 2d overdue/);
-    assert.match(await txt(page.locator('[data-demo="matter-mat-205"]')), /£26,400 \/ £24,000 110%/);
-    assert.match(await txt(page.locator('[data-demo="matter-mat-187"]')), /Closed/);
-    assert.match(await txt(page.locator('[data-demo="matter-mat-187"]')), /Nothing scheduled/);
+    assert.match(await txt(rowFor(page, "mat-205")), /Document response 15 Oct · 2d overdue/);
+    assert.match(await txt(rowFor(page, "mat-205")), /£26,400 \/ £24,000 110%/);
+    assert.match(await txt(rowFor(page, "mat-187")), /Closed/);
+    assert.match(await txt(rowFor(page, "mat-187")), /Nothing scheduled/);
 
     // Sorting by spend: highest share first, then ascending on a second press.
     await page.locator('[data-demo="sort-spend"]').click();
@@ -97,9 +98,9 @@ export async function check({ page, mount, assert }) {
     assert.match(await page.getByRole("alert").innerText(), /The reference date 2026-02-30 is invalid, so countdowns use today\./);
     assert.match(await txt(bad.locator("dl").first()), /Open matters 3/);
     assert.match(await txt(bad.locator("dl").first()), /Spend to date £500 of £1,000 budget/);
-    assert.match(await txt(page.locator('[data-demo="matter-b"]')), /No budget agreed/);
-    assert.match(await txt(page.locator('[data-demo="matter-b"]')), /Nothing scheduled/);
-    assert.match(await txt(page.locator('[data-demo="matter-c"]')), /No budget agreed/);
+    assert.match(await txt(rowFor(page, "b")), /No budget agreed/);
+    assert.match(await txt(rowFor(page, "b")), /Nothing scheduled/);
+    assert.match(await txt(rowFor(page, "c")), /No budget agreed/);
     // An unlisted stage is added to the pipeline after the standard phases.
     await page.locator('[data-demo="phase-arbitration"]').waitFor();
     assert.match(await txt(bad), /3 of 3/);

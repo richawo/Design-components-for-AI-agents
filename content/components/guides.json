@@ -2759,7 +2759,8 @@
     "integration": [
       "Pass `matters` with id, name, client, practice, owner, status, stage, nextStep and dates. Add `budgetMinor` and `spentMinor` in minor units for spend figures; set `currency` and `locale` for formatting.",
       "`phases` defines the pipeline order; a matter’s stage matches by name, and unknown stages are added at the end.",
-      "`onOpenMatter` adds an Open matter action to each expanded row; `horizonDays` sets how far Coming up looks ahead."
+      "`onOpenMatter` adds an Open matter action to each expanded row; `horizonDays` sets how far Coming up looks ahead.",
+      "Rows retain five sibling data cells and a labelled disclosure button. Expanded details form a separate row spanning all columns; do not move the cells into the button."
     ],
     "related": [
       "legal-matter-intake",

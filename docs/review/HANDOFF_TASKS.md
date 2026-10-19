@@ -429,6 +429,8 @@ from changing subsequent block tests. Original failures and diagnostics remain l
 
 - Legal document follow-up: inbox attachments are copied when staged and for each submission. A rejected callback previously mutated the host record and corrupted the retained filename; the original failure is preserved. Retry and successful receipts now keep the selected name and size even if a callback or later host edit changes its own record. The uploaded File identity and void-or-promise API remain intact. The registered both-theme regression, six accessibility audits and reviewed state captures, full Next Legal workflow, strict registry, root/all-eleven-block types and all 1,066 unit tests pass. The full Legal block review remains in progress.
 
+- Legal matter accessibility follow-up: the matter dashboard now keeps its five data cells outside the disclosure button, with expanded content in a separate spanning row. Full-row pointer activation and Enter/Space disclosure retain their geometry and focus. The original composed ARIA failure is preserved. Both-theme source checks, four accessibility audits, reviewed closed/expanded captures, complete standalone and composed Next workflows, strict registry, root/all-eleven-block types and all 1,066 unit tests pass. The full Legal block review remains in progress.
+
 ## 1. Re-record demo videos (120 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
