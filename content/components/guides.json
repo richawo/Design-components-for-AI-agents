@@ -1784,16 +1784,16 @@
     "useWhen": "Planning tasks across editable columns with pointer, touch and keyboard movement.",
     "avoidWhen": "Authoritative workflow enforcement or a board that hides another user's concurrent changes.",
     "integration": [
-      "Supply your own records through `columns`, `items`, `defaultItems`, `defaultColumns`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects.",
-      "Use `selectMode=\"custom\"` for the animated listboxes, or `selectMode=\"native\"` for platform pickers. Both retain the same value contract."
+      "Supply stable task and column IDs. Use defaultItems/defaultColumns for local state or control both arrays through one onBoardChange acknowledgement. Treat callbacks as synchronous notifications with independent flat record copies; the host owns persistence. Use selectMode=\"custom\" or \"native\" for the same movement contract.",
+      "Keep __unassigned reserved. Empty boards and removed-column tasks retain a useful recovery route.",
+      "Callbacks may throw synchronously to reject an edit; column drafts remain available. Keep host persistence outside the component."
     ],
     "related": [
       "data-file-explorer",
       "data-query-builder",
       "legal-document-requests"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-19"
   },
   "data-query-builder": {
     "useWhen": "Build and apply a typed all/any segment while seeing each condition’s effect and the resulting local records.",

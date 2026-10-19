@@ -1,6 +1,6 @@
 # Review status
 
-182 components are rebuilt (or, for a few, polished), verified and committed. For each: whether its demo video
+183 components are rebuilt (or, for a few, polished), verified and committed. For each: whether its demo video
 needs re-recording, whether its poster is current, and the state of its browser regression probe.
 
 - **Video**: `new` means `public/previews/<slug>.mp4` still shows the old version. Re-record serially on a quiet machine:
@@ -27,7 +27,7 @@ Before/After passes its 39-mount review, 22 accessibility audits, Next checks an
 Its reviewed four-second film and paired poster pass every recording guard. Shared native range replay is fixed.
 The complete 62-suite / 78-replay batch checkpoint is verified.
 
-Remaining queues: **16 components, 12 blocks, 59 dedicated probes and 115 films**.
+Remaining queues: **15 components, 12 blocks, 59 dedicated probes and 115 films**.
 
 ## Previous input checkpoint (19 October 2026)
 
@@ -306,7 +306,7 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 
 ## Cross-cutting browser checks
 
-- The latest complete run passed 52 of 56 suites, including all industry workflows, page/licence boundaries, block workflows and mobile recovery checks.
+- The media/devtools checkpoint passes all 62 suites and all 78 exact metadata replays. The later Kanban source workflow and 79th metadata replay also pass focused checks; the next complete batch remains pending.
 - Bento now waits for its complete entrance before checking zero mutations and exact historical data. All four theme/motion/ambient cases pass; an injected loop is rejected.
 - Audit Trail's first-frame popup state and keyboard/pointer dismissal are fixed. Its workflow, metadata replay and both-theme open-menu accessibility pass; the blocked-End control is rejected.
 - The complete scroll suite passes with exact reversal, first-frame chapter release, playable WebM, offscreen pause and broken-film recovery.
@@ -330,3 +330,9 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | `devtools-request-waterfall` | new | current | Independent selection payloads, unavailable statuses, keyboard selection, exact timings, empty/singular captures, host replacement, long paths and live reduced motion pass. Original callback-mutation, HTTP 0/NaN and live-preference failures are preserved. The 33-mount source review, eighteen state/default accessibility audits, six widths, reviewed entrance/state captures, Next regression, theme control, official audit and exact three-request replay pass. Strict registry, fresh root/isolated types and all 1,066 unit tests pass. The refreshed Next poster is reviewed. Film refresh stays queued after the unchanged delivery guard rejected 352.23ms; the previous movie is preserved. |
 | `devtools-json-inspector` | current | current | Logical-key fold state and focus survive reordered objects. Keyboard disclosure, null/false/empty data, circular versus shared values, depth limits, independent IDs, long data, visibly scrolled 500-entry recovery and live reduced motion pass. Original reorder and mid-entry negatives are preserved. The 41-mount source review, twenty-eight state/default accessibility audits, six widths, reviewed entrance/state captures, Next regression, theme control, official audit and exact usage/tools fold replay pass. Strict registry, fresh root/isolated types and all 1,066 unit tests pass. Reviewed 3.8s film and paired poster retain the measured replay, with every recording guard intact. |
 | `media-before-after` | current | current | Pointer/keyboard, controlled acknowledgement/refusal, read-only values, inert artwork, whole-percentage alignment, live reduced motion, forced colours and 320px image bounds pass. The 39-mount source review, 22 accessibility audits, six widths, entrance/state captures, Next regression, theme control, official audit and exact replay pass. Original failures remain archived. Strict registry, fresh types and all 1,066 tests pass. Reviewed four-second film and paired poster pass all recording guards. |
+
+## Interface follow-up (19 October 2026)
+
+| Slug | Video | Poster | Probe |
+| --- | --- | --- | --- |
+| `data-kanban-compact` | current | current | Independent callback records, inert exits, live reduced motion, keyboard pickup/order, column-action focus and refused-move focus retirement pass. Six original failures and the corrected draft exit regression remain archived. The 41-mount source review, eighteen accessibility audits, six widths, state/entrance captures, Next regression, legacy pointer/touch/keyboard probe, two controls, official audit and exact two-task replay pass. Strict registry, root/isolated types and all 1,066 tests pass. The reviewed 4.5s film and paired poster keep every state in the measured full viewport; all recording guards pass. The original clipped crop is retained. The next 62-suite / 79-replay batch checkpoint remains pending. |

@@ -9,6 +9,7 @@ const specs = fs
   .filter((file) => file.endsWith(".mjs"))
   .map((file) => ({ slug: file.slice(0, -4) }));
 const finalStates = {
+  "data-kanban-compact": "Test keyboard paths moved to Done.",
   "media-before-after": "Final design",
   "devtools-json-inspector": "error",
   "devtools-request-waterfall": "/workspace",
@@ -108,6 +109,17 @@ try {
         });
       }, true);
     });
+    if (slug === "data-kanban-compact") {
+      await page.locator("section[aria-labelledby]").evaluate(board => {
+        const positions = () => ["DS-14", "DS-18"].map(id => board.querySelector('[data-kanban-card="'+id+'"]:not([inert])')?.closest("[data-kanban-column]")?.getAttribute("data-kanban-column"));
+        window.kanbanStates = [positions()];
+        window.kanbanObserver = new MutationObserver(() => {
+          const state = positions();
+          if (state.every(Boolean) && JSON.stringify(state) !== JSON.stringify(window.kanbanStates.at(-1))) window.kanbanStates.push(state);
+        });
+        window.kanbanObserver.observe(board, {childList:true,subtree:true,attributes:true,attributeFilter:["inert"]});
+      });
+    }
     if (slug === "media-before-after") {
       await page.getByRole("slider").evaluate(slider => {
         window.beforeAfterStates = [Number(slider.value)];
@@ -176,6 +188,15 @@ try {
       ?.slice(7);
     const target = page.locator('[data-demo="' + last + '"]');
     const notice = await page.getByRole("status").allTextContents();
+    if (slug === "data-kanban-compact") {
+      assert.deepEqual(await page.evaluate(() => window.kanbanStates), [["ready", "working"], ["working", "working"], ["working", "done"]], "The sprint replay moves DS-14 to In progress before DS-18 reaches Done");
+      assert.deepEqual(await page.locator('[data-kanban-column="working"] [data-kanban-card]:not([inert])').evaluateAll(nodes => nodes.map(node => node.getAttribute("data-kanban-card"))), ["DS-14"]);
+      assert.deepEqual(await page.locator('[data-kanban-column="done"] [data-kanban-card]:not([inert])').evaluateAll(nodes => nodes.map(node => node.getAttribute("data-kanban-card"))), ["DS-09", "DS-18"]);
+      assert.equal(await page.locator('[data-kanban-column="ready"] [data-kanban-card]').count(), 0);
+      assert.equal(await page.locator('[data-kanban-card]').count(), 3, "Exiting task copies leave the layout");
+      assert.equal(await page.locator('[data-demo="move-ds-18"]').evaluate(node => node === document.activeElement), true);
+      await page.evaluate(() => window.kanbanObserver.disconnect());
+    }
     if (slug === "chart-slope-comparison") {
       assert.equal(await page.locator('[data-demo="slope-1"]').getAttribute("aria-pressed"), "true");
       assert.equal(await page.getByRole("img").getAttribute("aria-label"), "Editor: 58% in September, 70% in October");

@@ -362,6 +362,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 8 (19 October): the media/devtools batch passes all 62 browser suites in one run and all 78 exact metadata replays. Fresh four-component audits, 40 byte-identical reviewed images, unchanged source hashes, strict registry, root/isolated types and all 1,066 tests pass. The Worker dry run retains every size guard and verifies runtime files behind the three known copy diagnostics. No manual deployment is performed. The remaining queues are 16 components, 12 blocks, 59 probes and 115 films.
 
+- Task 7 (19 October): Kanban keeps its focused task board with 12px metadata, two lanes in the 768px preview and a stable owner avatar. Independent callback snapshots, immediate inert exits, live reduced motion, stale focus retirement, current-position keyboard pickup/drop and column-action focus correct six preserved original-source failures. The draft invisible-exit regression is also preserved and fixed with painted-state coverage. Its final 41-mount source review, eighteen accessibility audits, six widths, reviewed state/entrance captures, Next regression, legacy mouse/touch/keyboard probe, two controls, official audit and exact two-task replay pass. Strict registry, root/isolated types and all 1,066 tests pass. The 900px preview retains both expanded lanes. Its reviewed 4.5s film and paired poster use the measured full 1280×900 viewport: source gap 18ms, delivery 38.97ms and moving-frame p95 26.35ms, with no stalls and unchanged guards. The initial union crop is rejected visually and retained. The next full batch has 62 suites and 79 metadata replays and remains pending. 15 components and 12 blocks remain; 115 films remain queued.
+
 ## 1. Re-record demo videos (115 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
@@ -512,16 +514,16 @@ All nine parked rebuilds are shipped in both repos. Their original `_wip/<slug>`
 | finance-budget-variance | Completed 17 October: Next probe, dark/light accessibility, responsive and entrance/state captures, live demo and refreshed poster pass. |
 | finance-cashflow-dashboard | Completed 17 October: weekly balance and in/out bars, movable payments, independent pending saves, invalid-data guards, selected-week list geometry, Next probe/demo, both-theme accessibility, responsive/state/entrance captures and refreshed poster pass. |
 
-## 7. Continue the review (16 components, then 12 blocks)
+## 7. Continue the review (15 components, then 12 blocks)
 
-Same process as the 182 already done: hold each to the first ~100 components' standard. Briefs:
+Same process as the 183 already done: hold each to the first ~100 components' standard. Briefs:
 `docs/review/REVIEW_BRIEF.md`, `docs/review/SUITE_BRIEF.md` for industry components, suite languages in
 `docs/review/suites/`. Work newest first, about four components per batch, and verify each (build, tsc, tests,
 check-component, your own captures of states and mid-entrance frames, a refreshed poster, a rewritten pro-50 probe for
 industry components).
 
 - **Commerce** is reviewed. Keep `block-commerce-workspace` compatible with its rebuilt parts.
-- **Smaller components** (#151–179): data-kanban-compact, data-file-explorer, forms-preference-center, date-week-agenda,
+- **Smaller components** (#151–179): data-file-explorer, forms-preference-center, date-week-agenda,
   onboarding-setup-checklist, date-booking-slots, input-file-dropzone, input-shortcut-recorder,
   feedback-empty-search, navigation-pagination-window, primitives-shortcut-reference, selects-radio-cards,
   progress-milestones, content-accordion-index, feedback-inline-alert, navigation-breadcrumb-fold.

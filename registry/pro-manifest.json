@@ -14659,7 +14659,7 @@
       "motion"
     ],
     "theme": "dark",
-    "previewHeight": 850,
+    "previewHeight": 900,
     "usage": "import { CompactKanban } from \"@/components/design-for-ai/data-kanban-compact\";\n\n<CompactKanban />",
     "props": [
       {
@@ -14690,7 +14690,7 @@
         "name": "onChange",
         "type": "(items: KanbanCard[]) => void",
         "default": "undefined",
-        "description": "Task array after moves or column removal. Controlled items without a change callback are read-only; persistence is the host’s responsibility."
+        "description": "Receives an independent array and flat task copies synchronously after moves or column removal. Controlled items without a writer are read-only; the host owns persistence."
       },
       {
         "name": "theme",
@@ -14708,13 +14708,13 @@
         "name": "onColumnsChange",
         "type": "(columns: KanbanColumn[]) => void",
         "default": "undefined",
-        "description": "Receives add, rename and remove changes. Controlled columns without a callback are read-only."
+        "description": "Receives an independent array and flat column copies synchronously after add, rename or removal. Controlled columns without a writer are read-only."
       },
       {
         "name": "onBoardChange",
         "type": "(board: KanbanBoard) => void",
         "default": "undefined",
-        "description": "Atomic items and columns snapshot. Takes precedence over the separate callbacks; update both controlled arrays together."
+        "description": "Receives independent items and column copies as one atomic synchronous notification. Takes precedence over separate callbacks; update both controlled arrays together. The host owns persistence."
       },
       {
         "name": "selectMode",
@@ -14726,15 +14726,15 @@
     "added": "2026-10-11",
     "demo": {
       "steps": [
-        "wait:600",
+        "wait:700",
         "click:@move-ds-14",
         "key:ArrowDown",
         "key:Enter",
-        "wait:900",
+        "wait:1400",
         "click:@move-ds-18",
         "key:ArrowDown",
         "key:Enter",
-        "wait:900"
+        "wait:1400"
       ],
       "loop": false
     },
