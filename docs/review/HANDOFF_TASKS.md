@@ -325,6 +325,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 7 dependency follow-up (19 October): Launch Calendar serializes schedule and checklist host writes while retaining keyboard focus. Equal host records preserve pending edits; replaced data and unmount retire old replies and drag listeners. The preserved original race rolls a newer accepted date back after an older rejection. Its new registered Fashion regression now passes exact retry payloads, immediate pending locks, rollback and replacement isolation in both themes, with six reviewed state/accessibility captures. Existing calendar and Fashion workflows, exact calendar metadata replay, strict registry, root/all-block types and all 1,066 tests pass. Public callback types and optional local edits remain unchanged; Fashion composition review continues.
 
+- Task 7 dependency follow-up (19 October): finite stock-cover labels exposed a 3.52:1 light-theme contrast failure in Merchandising Dashboard. Its week suffix now uses stronger neutral ink. The registered regression checks both themes and actual row hover; four captures are visually reviewed and the existing merchandising workflow passes. Strict registry, root/all-block types and all 1,066 tests pass. The first test run hit the unchanged five-second content-pack timeout under machine load; the complete run passes with two workers and the same assertions and timeout. Fashion composition review continues.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned

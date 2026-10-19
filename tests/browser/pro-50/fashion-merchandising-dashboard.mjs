@@ -1,3 +1,4 @@
+import { check as checkContrast } from '../review/fashion-merchandising-contrast.mjs';
 export async function check({ page, mount, assert }) {
   const styles = [{ id: "slow", name: "Ribbed crew", category: "Knitwear", revenueMinor: 10000, priceMinor: 5000, sizes: [{ size: "S", received: 50, sold: 5 }, { size: "M", received: 50, sold: 5 }], weekly: [2,2,2,2,2] }, { id: "fast", name: "Cotton tee", category: "Jersey", revenueMinor: 80000, priceMinor: 2000, sizes: [{ size: "M", received: 100, sold: 80 }], weekly: [15,15,15,15,20] }];
   const collections = [{ id: "autumn", name: "Autumn", season: "AW26", week: 5, seasonWeeks: 10, targetSellThrough: 0.8, styles }, { id: "empty", name: "Resort", season: "27", styles: [] }];
@@ -36,4 +37,5 @@ export async function check({ page, mount, assert }) {
   await mount(`createRoot(document.getElementById('root')).render(<Subject.MerchandisingDashboard collections={[{id:'bad',name:'Bad',season:'26',styles:[{id:'x',name:'X',category:'A',revenueMinor:100,sizes:[{size:'M',received:0,sold:1}]}]}]}/>);`);
   await page.getByRole("status").filter({ hasText: /invalid|excluded|stock/ }).waitFor();
   assert.doesNotMatch(await page.locator("section").first().innerText(), /NaN|Infinity/);
+  await checkContrast({ page, mount, assert });
 }
