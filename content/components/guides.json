@@ -1884,7 +1884,7 @@
     "useWhen": "Inspecting structured JSON with readable nesting and bounded output.",
     "avoidWhen": "Executing embedded code or treating arbitrary data as trusted HTML.",
     "integration": [
-      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+      "Pass JSON-like data and a useful root label. Use maxDepth to bound nesting. Fold state follows logical object-key paths when data refreshes. The viewer bounds rendered entries and provides a labelled scroll region; it does not edit or persist the payload."
     ],
     "related": [
       "devtools-request-waterfall",

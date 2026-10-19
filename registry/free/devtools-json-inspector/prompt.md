@@ -1,29 +1,29 @@
-# Structured JSON Inspector
+# JSON Response Inspector
 
-Build a standalone React 19 and Tailwind v4 component. A nested JSON inspector with keyboard-accessible disclosures, readable values and bounded rendering for large, deep or circular developer payloads.
+Build a standalone React 19 and Tailwind v4 component with the existing named export, props type and overridable default demo.
 
-## Layout
+## Layout and type
 
-A mono data surface with a restrained header, indentation guides and 44px disclosure buttons. Long values wrap and oversized payloads scroll inside a focusable region. Size to the container. Use a 4/8px rhythm, 1px surface edges, 16px narrow padding and 24px desktop padding. Controls have 44px targets.
+Build a focused data reader with a 16px heading, braces icon, indentation guides and 13px mono JSON content. Use 44px disclosure buttons. Let long values wrap and oversized nested documents scroll only inside the labelled, keyboard-focusable JSON region. Keep the demo aligned at the top as its document folds.
 
-## Typography and colour
+## Interaction and data
 
-Use font-sans at 14-16px/1.5, font-mono metadata at 11-12px and a 24-36px heading with -0.035em tracking. Dark uses #111111, #f5f5f5, #a3a3a3 and #333333; light uses #ffffff, #171717, #525252 and #d4d4d4. Maintain AA contrast.
+Keep InspectValue and JsonInspectorProps. Render null, primitive values, empty arrays and empty objects truthfully. Escape keys and values as text.
+
+Track folded branches by their full logical key path, independently of traversal position. Reordering object keys must retain the same collapsed branches and focus. Keep the numbered data-demo paths for the existing default replay.
+
+Scope disclosure IDs to each component instance and encode logical paths into valid IDs. Each aria-controls target exists, and each native button exposes its current expanded state.
+
+Clamp finite maxDepth to 1-24; non-finite values use 12. Render at most 100 children per branch and 500 entries in total. Detect cycles per ancestor chain, so shared acyclic values remain visible.
+
+Collapsed descendants release the render budget. Explain the display limit and let users collapse earlier branches to reveal later entries. This is a reader with local disclosure state, without an editing or save contract.
 
 ## Motion
 
-Use a 320ms opacity/8px entrance, 150ms press response and 240ms state changes, easing cubic-bezier(0.22,1,0.36,1). No ambient loops. Reduced motion removes transforms and layout animation and limits fades to 120ms.
+The reader enters with opacity and an 8px rise over 320ms. Disclosure chevrons turn over 150ms. Keep JSON disclosure semantics and branch focus immediate. Listen to live preference changes and immediately finish the reader entry. Remove chevron travel transitions without remounting the document.
 
-## Behaviour and accessibility
+## Integration
 
-Use semantic elements, native keyboard behaviour, visible focus rings and instance-scoped IDs. Expose typed content and callbacks. Handle empty custom data and repeated instances. Announce important feedback politely. Match the source state ownership and callback contract.
+Pass JSON-like data and a useful root label. Use maxDepth to bound nesting. Fold state follows logical object-key paths when data refreshes. The viewer bounds rendered entries and provides a labelled scroll region; it does not edit or persist the payload.
 
-## Responsive
-
-Design for 320, 390, 768, 1024, 1440 and 1920px. Respond to the container with @container variants, wrap text and stack secondary details. Scroll only within explicitly labelled local regions.
-
-## Avoid
-
-No remote imagery, false success states, unlabelled controls, hover-only actions, low contrast or decorative status pills. The demo is an isolated component on a quiet stage.
-
-Limit expansion rendering to 100 children per branch, the configured depth, and 500 total entries. Label circular references explicitly. Exclude collapsed descendants from the display budget. Show a limit notice that explains how collapsing earlier branches reveals more entries.
+Keep all source in one self-contained file with allowed imports. Use the source palettes and font roles, real content, visible focus, written empty states and 320/390/768/1024/1440/1920px container layouts.

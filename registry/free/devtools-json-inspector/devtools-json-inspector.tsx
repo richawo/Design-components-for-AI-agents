@@ -1,10 +1,15 @@
 "use client";
-import { type CSSProperties, useId, useState } from "react";
+import { type CSSProperties, useLayoutEffect, useSyncExternalStore, useId, useState } from "react";
 import { ChevronRight, Braces } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
+import { motion, useAnimationControls } from "motion/react";
 
-const control =
-  "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-lg px-3 text-sm font-medium transition-[background,transform] duration-150 hover:bg-[var(--wash)] disabled:hover:bg-transparent active:scale-[.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)] disabled:cursor-not-allowed disabled:opacity-40 disabled:active:scale-100 motion-reduce:transform-none";
+const control = [
+  "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-lg px-3 text-sm",
+  "font-medium transition-[background,transform] duration-150 hover:bg-[var(--wash)]",
+  "disabled:hover:bg-transparent active:scale-[.97] focus-visible:outline-2",
+  "focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)] disabled:cursor-not-allowed",
+  "disabled:opacity-40 disabled:active:scale-100 motion-reduce:transform-none",
+].join(" ");
 const muted = "text-[var(--muted)]";
 function colors(theme: "dark" | "light"): CSSProperties {
   return {
@@ -50,7 +55,7 @@ export function JsonInspector({
   theme = "dark",
 }: JsonInspectorProps) {
   const id = useId();
-  const reduced = useReducedMotion();
+  const { reduced, entrance } = useLiveEntrance();
   const [closed, setClosed] = useState<string[]>([]);
   const cap = Number.isFinite(maxDepth)
     ? Math.min(24, Math.max(1, Math.floor(maxDepth)))
@@ -62,6 +67,7 @@ export function JsonInspector({
     path: string,
     depth: number,
     ancestors: Set<object>,
+    keys: string[] = [],
   ): React.ReactNode {
     if (rendered++ >= 500) return null;
     const object = value !== null && typeof value === "object";
@@ -69,8 +75,9 @@ export function JsonInspector({
     const limited = depth >= cap;
     const entries =
       object && !circular && !limited ? Object.entries(value) : [];
-    const expanded = !closed.includes(path);
-    const branch = `${id}-${path}`;
+    const statePath = JSON.stringify(keys);
+    const expanded = !closed.includes(statePath);
+    const branch = `${id}-${encodeURIComponent(statePath)}`;
     const preview = object
       ? circular
         ? "[Circular]"
@@ -83,7 +90,7 @@ export function JsonInspector({
         ? JSON.stringify(value)
         : String(value);
     return (
-      <li key={path} className="min-w-0">
+      <li key={statePath} className="min-w-0">
         <div className="flex min-h-11 min-w-0 items-start gap-2 py-1">
           {object && entries.length ? (
             <button
@@ -95,8 +102,8 @@ export function JsonInspector({
               onClick={() =>
                 setClosed(
                   expanded
-                    ? [...closed, path]
-                    : closed.filter((x) => x !== path),
+                    ? [...closed, statePath]
+                    : closed.filter((x) => x !== statePath),
                 )
               }
               className={`${control} shrink-0 p-0`}
@@ -104,13 +111,13 @@ export function JsonInspector({
               <ChevronRight
                 size={14}
                 aria-hidden="true"
-                className={expanded ? "rotate-90" : ""}
+                className={`transition-transform duration-150 motion-reduce:transition-none ${expanded ? "rotate-90" : ""}`}
               />
             </button>
           ) : (
             <span className="w-11 shrink-0" />
           )}
-          <div className="min-w-0 flex-1 py-3 font-mono text-xs leading-relaxed">
+          <div className="min-w-0 flex-1 py-3 font-mono text-[13px] leading-relaxed">
             <span className="break-words">{label}</span>
             <span className={muted}>: </span>
             <span className={`break-words ${muted}`}>{preview}</span>
@@ -131,6 +138,7 @@ export function JsonInspector({
                   `${path}-${i}`,
                   depth + 1,
                   new Set([...ancestors, value]),
+                  [...keys, key],
                 ),
               )}
             {entries.length > 100 && (
@@ -146,14 +154,14 @@ export function JsonInspector({
   return (
     <motion.section
       initial={{ opacity: 0, y: reduced ? 0 : 8 }}
-      animate={{ opacity: 1, y: 0 }}
+      animate={entrance}
       style={colors(theme)}
       aria-labelledby={id}
       className="w-full max-w-2xl overflow-hidden rounded-xl border border-[var(--line)] bg-[var(--panel)] text-[var(--ink)]"
     >
       <div className="flex items-center gap-3 border-b border-[var(--line)] px-5 py-4">
-        <Braces size={18} aria-hidden="true" />
-        <h2 id={id} className="text-sm font-medium">
+        <Braces size={18} className="shrink-0" aria-hidden="true" />
+        <h2 id={id} className="min-w-0 text-base font-medium">
           {title}
         </h2>
       </div>
@@ -178,12 +186,34 @@ export function JsonInspector({
   );
 }
 
+const motionQuery = "(prefers-reduced-motion: reduce)";
+function subscribeToMotion(change: () => void) {
+  const query = window.matchMedia(motionQuery);
+  query.addEventListener("change", change);
+  return () => query.removeEventListener("change", change);
+}
+function useLiveEntrance() {
+  const reduced = useSyncExternalStore(
+    subscribeToMotion,
+    () => window.matchMedia(motionQuery).matches,
+    () => false,
+  );
+  const entrance = useAnimationControls();
+  useLayoutEffect(() => {
+    entrance.stop();
+    if (reduced) entrance.set({ opacity: 1, y: 0 });
+    else void entrance.start({ opacity: 1, y: 0, transition: { duration: 0.32 } });
+    return () => entrance.stop();
+  }, [entrance, reduced]);
+  return { reduced, entrance };
+}
+
 export default function JsonInspectorDemo(
   overrides: Partial<JsonInspectorProps> = {},
 ) {
   return (
     <div
-      className="flex min-h-[560px] w-full items-center justify-center p-4 @container sm:p-8"
+      className="flex min-h-[560px] w-full items-start justify-center p-4 @container sm:p-8"
       style={{
         background: overrides.theme === "light" ? "#f3f3f3" : "#080808",
       }}

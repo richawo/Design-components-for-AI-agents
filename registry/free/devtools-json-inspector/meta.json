@@ -7,7 +7,6 @@
   "description": "A nested JSON inspector with keyboard-accessible disclosures, readable values and bounded rendering for large, deep or circular developer payloads.",
   "tags": [
     "devtools",
-    "devtools",
     "json",
     "inspector",
     "responsive",
@@ -57,9 +56,9 @@
     "steps": [
       "wait:600",
       "click:@json-root-3",
-      "wait:700",
+      "wait:1600",
       "click:@json-root-4",
-      "wait:700"
+      "wait:1100"
     ],
     "loop": false
   },

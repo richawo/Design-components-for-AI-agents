@@ -9,6 +9,7 @@ const specs = fs
   .filter((file) => file.endsWith(".mjs"))
   .map((file) => ({ slug: file.slice(0, -4) }));
 const finalStates = {
+  "devtools-json-inspector": "error",
   "devtools-request-waterfall": "/workspace",
   "media-story-deck": "Make the last ten percent count.",
   "chart-bullet-targets": "Docs published",
@@ -106,6 +107,17 @@ try {
         });
       }, true);
     });
+    if (slug === "devtools-json-inspector") {
+      await page.locator("section").evaluate(reader => {
+        const folds = () => ["json-root-3", "json-root-4"].map(id => reader.querySelector('[data-demo="'+id+'"]')?.getAttribute("aria-expanded"));
+        window.jsonFoldStates = [folds()];
+        window.jsonFoldObserver = new MutationObserver(() => {
+          const state = folds();
+          if (JSON.stringify(state) !== JSON.stringify(window.jsonFoldStates.at(-1))) window.jsonFoldStates.push(state);
+        });
+        window.jsonFoldObserver.observe(reader, {subtree:true,attributes:true,attributeFilter:["aria-expanded"]});
+      });
+    }
     if (slug === "devtools-request-waterfall") {
       await page.locator("section").evaluate(capture => {
         const selected = () => capture.querySelector('button[aria-pressed="true"]')?.getAttribute("data-demo");
@@ -184,6 +196,19 @@ try {
       assert.equal(await field.inputValue(), "Cedar-river42!");
       assert.equal(await field.getAttribute("type"), "text", "The password demo finishes revealed");
       assert.equal(await page.getByRole("button", { name: "Hide password", exact: true }).getAttribute("aria-pressed"), "true");
+    } else if (slug === "devtools-json-inspector") {
+      assert.deepEqual(await page.evaluate(() => window.jsonFoldStates), [["true", "true"], ["false", "true"], ["false", "false"]], "The JSON replay folds usage before tools");
+      for (const id of ["json-root-3", "json-root-4"]) {
+        const button = page.locator('[data-demo="'+id+'"]');
+        assert.equal(await button.getAttribute("aria-expanded"), "false");
+        const target = await button.getAttribute("aria-controls");
+        assert.equal(await page.locator('[id='+JSON.stringify(target)+']').evaluate(node => node.hidden), true);
+      }
+      assert.equal(await page.getByText("input_tokens", {exact:true}).count(), 0);
+      assert.equal(await page.getByText('"search_docs"', {exact:true}).count(), 0);
+      assert.equal(await page.getByText("error", {exact:true}).count(), 1);
+      assert.equal(await page.getByRole("region", {name:"JSON contents",exact:true}).getAttribute("tabindex"), "0");
+      await page.evaluate(() => window.jsonFoldObserver.disconnect());
     } else if (slug === "devtools-request-waterfall") {
       assert.deepEqual(await page.evaluate(() => window.requestWaterfallStates), ["request-2", "request-3", "request-0"], "The waterfall replay inspects the document request before the initial HTML response");
       assert.equal(await page.locator('button[aria-pressed="true"]').count(), 1);

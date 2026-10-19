@@ -354,6 +354,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 7 (19 October): Request Waterfall keeps its shared timing lanes and response inspector. Selection notifications now pass independent flat request copies, unavailable or invalid response codes have a written state, method labels use 12px metadata, and entries/details/bars settle on live reduced motion while keyboard focus remains. Original-source callback mutation, HTTP 0/NaN and live-preference failures are preserved. Keyboard selection, exact payloads, singular/empty captures, bounded extreme timings, host replacement and long paths pass. The 33-mount source review, eighteen state/default accessibility audits, six widths, reviewed entrance/state captures, Next regression, theme control and official audit pass. Its exact replay observes script/document/HTML selection and the final HTTP 200, 0ms start, 124ms completion and common scale. Strict registry, fresh root/isolated types and all 1,066 unit tests pass. The current Next poster is refreshed and reviewed. Its film refresh joins task 1 after a rejected capture measured 352.23ms changed-frame delivery; the previous movie and every timing guard remain intact. Source gap was 14ms and moving-frame p95 25.43ms. The next full checkpoint has 62 suites and 76 metadata replays and remains pending. 18 components and 12 blocks remain in task 7; 115 films remain in task 1.
 
+- Task 7 (19 October): JSON Inspector keeps its bounded, keyboard-scrollable document reader. Fold state and React keys follow complete logical key paths, so reordered objects retain the correct branches and focus. Content is 13px mono, the heading is 16px, and the demo stays aligned at the top as it folds. Entry and chevrons respect live reduced motion. Original-source path-reordering and mid-entry preference failures are preserved. Keyboard disclosure, null/false/empty values, cycles versus shared values, depth bounds, independent IDs, long data and 500-entry recovery pass. The recovered final value is scrolled visibly into its own region. The 41-mount source review, twenty-eight state/default accessibility audits, six widths, reviewed entrance/state captures, Next regression, theme control and official audit pass. Exact metadata replay verifies usage/tools fold in order and their descendants leave interaction. Strict registry, fresh root/isolated types and all 1,066 unit tests pass. Its reviewed 3.8s film and paired poster retain the complete measured 832×900 replay: source gap 11ms, delivery 13.07ms and moving-frame p95 25.00ms, with no stalls and every recording guard intact. The next full checkpoint has 62 suites and 77 metadata replays and remains pending. 17 components and 12 blocks remain in task 7; 115 films remain in task 1.
+
 ## 1. Re-record demo videos (115 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
@@ -504,17 +506,16 @@ All nine parked rebuilds are shipped in both repos. Their original `_wip/<slug>`
 | finance-budget-variance | Completed 17 October: Next probe, dark/light accessibility, responsive and entrance/state captures, live demo and refreshed poster pass. |
 | finance-cashflow-dashboard | Completed 17 October: weekly balance and in/out bars, movable payments, independent pending saves, invalid-data guards, selected-week list geometry, Next probe/demo, both-theme accessibility, responsive/state/entrance captures and refreshed poster pass. |
 
-## 7. Continue the review (18 components, then 12 blocks)
+## 7. Continue the review (17 components, then 12 blocks)
 
-Same process as the 180 already done: hold each to the first ~100 components' standard. Briefs:
+Same process as the 181 already done: hold each to the first ~100 components' standard. Briefs:
 `docs/review/REVIEW_BRIEF.md`, `docs/review/SUITE_BRIEF.md` for industry components, suite languages in
 `docs/review/suites/`. Work newest first, about four components per batch, and verify each (build, tsc, tests,
 check-component, your own captures of states and mid-entrance frames, a refreshed poster, a rewritten pro-50 probe for
 industry components).
 
 - **Commerce** is reviewed. Keep `block-commerce-workspace` compatible with its rebuilt parts.
-- **Smaller components** (#151–179): devtools-json-inspector,
-  media-before-after, data-kanban-compact, data-file-explorer, forms-preference-center, date-week-agenda,
+- **Smaller components** (#151–179): media-before-after, data-kanban-compact, data-file-explorer, forms-preference-center, date-week-agenda,
   onboarding-setup-checklist, date-booking-slots, input-file-dropzone, input-shortcut-recorder,
   feedback-empty-search, navigation-pagination-window, primitives-shortcut-reference, selects-radio-cards,
   progress-milestones, content-accordion-index, feedback-inline-alert, navigation-breadcrumb-fold.

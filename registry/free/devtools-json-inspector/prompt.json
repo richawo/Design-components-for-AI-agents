@@ -8,14 +8,14 @@
     "motion": "motion/react"
   },
   "layout": {
-    "direction": "A mono data surface with a restrained header, indentation guides and 44px disclosure buttons. Long values wrap and oversized payloads scroll inside a focusable region.",
+    "direction": "Build a focused data reader with a 16px heading, braces icon, indentation guides and 13px mono JSON content. Use 44px disclosure buttons. Let long values wrap and oversized nested documents scroll only inside the labelled, keyboard-focusable JSON region. Keep the demo aligned at the top as its document folds.",
     "container": "Size to the parent with @container. Keep the root width at 100%, capped to the focused component, with 24px desktop and 16px narrow padding.",
     "rhythm": "4/8px spacing; 1px edges; 44px minimum interactive targets.",
     "renderingLimits": "At most 100 children per branch, maxDepth (clamped to 1-24), and 500 total entries; circular references show a label. Collapsed descendants do not use the budget. Show a visible limit notice explaining how collapsing earlier branches reveals more entries."
   },
   "typography": {
-    "body": "font-sans, 14-16px, line-height 1.5",
-    "metadata": "font-mono, 11-12px, restrained tracking",
+    "body": "13px mono code with relaxed leading; 16px compact tool heading",
+    "metadata": "font-mono, 12px, restrained tracking",
     "heading": "font-display or font-serif, 24-36px, tracking -0.035em"
   },
   "color": {
@@ -33,9 +33,9 @@
     }
   },
   "motion": {
-    "entrance": "A single opacity and 8px rise over 320ms.",
-    "interaction": "150ms press response; 240ms state changes. No ambient loops.",
-    "reduced": "Remove transforms and layout motion; keep opacity at 120ms or less."
+    "entrance": "The reader enters with opacity and an 8px rise over 320ms.",
+    "interaction": "Disclosure chevrons turn over 150ms. Keep JSON disclosure semantics and branch focus immediate.",
+    "reduced": "Listen to live preference changes and immediately finish the reader entry. Remove chevron travel transitions without remounting the document."
   },
   "responsive": {
     "widths": [
@@ -93,5 +93,12 @@
     "Remote images, fake network success or hidden external dependencies.",
     "Decorative status badges, gradients as filler, low-contrast text.",
     "Unlabelled controls, hover-only functionality, overflow at 320px."
+  ],
+  "contract": [
+    "Keep InspectValue and JsonInspectorProps. Render null, primitive values, empty arrays and empty objects truthfully. Escape keys and values as text.",
+    "Track folded branches by their full logical key path, independently of traversal position. Reordering object keys must retain the same collapsed branches and focus. Keep the numbered data-demo paths for the existing default replay.",
+    "Scope disclosure IDs to each component instance and encode logical paths into valid IDs. Each aria-controls target exists, and each native button exposes its current expanded state.",
+    "Clamp finite maxDepth to 1-24; non-finite values use 12. Render at most 100 children per branch and 500 entries in total. Detect cycles per ancestor chain, so shared acyclic values remain visible.",
+    "Collapsed descendants release the render budget. Explain the display limit and let users collapse earlier branches to reveal later entries. This is a reader with local disclosure state, without an editing or save contract."
   ]
 }
