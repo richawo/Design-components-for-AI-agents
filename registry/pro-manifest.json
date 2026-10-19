@@ -6136,7 +6136,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "app",
-    "description": "A legal workspace combining matter details, obligations and document requests. Retained evidence drafts and typed handoffs stay within the selected matter.",
+    "description": "A matter workspace with a portfolio, obligations and document requests. Evidence drafts, pending saves and upload receipts stay with their original matter.",
     "tags": [
       "block",
       "workspace",
@@ -6154,34 +6154,34 @@
     ],
     "theme": "dark",
     "previewHeight": 940,
-    "usage": "import { LegalWorkspace } from \"@/components/design-for-ai/block-legal-workspace\";\n\n<LegalWorkspace />",
+    "usage": "import { LegalWorkspace } from \"@/components/design-for-ai/block-legal-workspace\";\n\n<LegalWorkspace\n  brand=\"Northstar Legal\"\n  scopes={scopes}\n  referenceDate=\"2026-10-12\"\n  onComplete={({ matterId, completion }) => recordCompletion(matterId, completion)}\n  onUpload={({ matterId, submission }) => submitDocument(matterId, submission)}\n/>",
     "props": [
       {
         "name": "brand",
         "type": "string",
         "default": "\"Northstar\"",
-        "description": "Workspace identity."
+        "description": "Workspace identity, also used as the entity name in all three tools."
       },
       {
         "name": "scopes",
         "type": "LegalWorkspaceScope[]",
-        "description": "Unique matter contexts with the corresponding matter records, contract obligations and document requests."
+        "description": "Matter contexts with corresponding records, obligations and document requests. Empty IDs and repeated IDs after the first are ignored. An empty list shows No matters and can accept arriving contexts."
       },
       {
         "name": "referenceDate",
         "type": "string",
         "default": "\"2026-10-12\"",
-        "description": "Host ISO reporting date shared by matter dates, obligation timelines and document countdowns."
+        "description": "Host ISO reporting date shared by every tool and the context footer. Invalid or impossible dates fall back once to the current UTC day for all views."
       },
       {
         "name": "onComplete",
         "type": "(payload: { matterId: string; completion: ObligationCompletion }) => void | Promise<void>",
-        "description": "Record obligation completion with the supplied evidence and matter context."
+        "description": "Record completion with its original matter ID and evidence. Resolve to acknowledge, reject to keep the draft and offer retry. Without a writer, recording is unavailable."
       },
       {
         "name": "onUpload",
         "type": "(payload: { matterId: string; submission: DocumentSubmission }) => void | Promise<void>",
-        "description": "Validate and store the selected File in the host document service. The payload includes matter and request IDs."
+        "description": "Store the selected File or claim an inbox attachment with its original matter and request IDs. Resolve to acknowledge receipt, reject to keep the staged file for retry. Without a writer, submission is unavailable."
       },
       {
         "name": "theme",
@@ -6204,7 +6204,12 @@
       "steps": [
         "wait:350",
         "click:@nav-obligations",
-        "wait:2200"
+        "wait:600",
+        "click:@evidence",
+        "type:Q3 report filed as DOC-404.",
+        "wait:350",
+        "click:@record",
+        "wait:1600"
       ],
       "loop": false
     },

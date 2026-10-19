@@ -4,7 +4,7 @@ Self-contained work items from the paused review of the October component additi
 and how to know it's done. Pick any of them up independently. Background, briefs and tooling are in `docs/review/`
 (start with `README.md`); per-component state is in `docs/review/STATUS.md`.
 
-## Follow-up progress (17–19 October 2026)
+## Follow-up progress (17–20 October 2026)
 
 - Task 3.1: resolved evidence chain verification and manifest flags. The dedicated browser probe passes, including missing hashes and rejected exports. The hash group’s invalid ARIA label is fixed, and isolated dark/light accessibility audits pass. The Next preview rerun also passes.
 
@@ -437,7 +437,9 @@ from changing subsequent block tests. Original failures and diagnostics remain l
 
 - Legal empty-table follow-up: empty and filtered matter results now use a real row and spanning cell when phone headers are hidden. The original composed 320px ARIA failure is preserved. Six both-theme phone mounts, six accessibility audits and all reviewed captures pass, together with the complete standalone Next workflow, strict registry, root/all-eleven-block types and all 1,066 unit tests. The full Legal block review remains in progress.
 
-## 1. Re-record demo videos (120 components)
+- Task 7 (20 October): Legal Workspace now uses compact current-matter chrome, a shared brand/reporting day and useful context counts. Its matter portfolio, obligation evidence and stamped document requests stay in retained panels. Empty and arriving contexts, unique IDs, keyboard navigation, concurrent writes in different matters, hidden failures, exact retry payloads, retained File identity, removed-matter late replies, independent instances, long phone copy and live reduced motion pass 63 source mounts, 82 accessibility audits, six widths and 96 reviewed state/entrance captures. Missing writers keep drafts available without inventing receipt; inbox snapshots protect retries from host mutation. The table keeps its cells outside disclosure buttons, and receipt/revision text remains readable. Invalid or impossible reference dates fall back once to a coherent UTC reporting day. Northline report evidence cites actual DOC-404; Harbour's handover cites accepted DOC-403. The exact metadata replay records the report and settles on its completion stamp. Next workflow, controls, official audit and six measured Next/production states pass with strict registry, root/all-eleven-block types and all 1,066 tests. Public callback and licence boundaries remain unchanged. Its reviewed paired Next poster is current. The film fails unchanged timing guards (source gap 21ms, delivery 439.76ms and moving-frame p95 17.63ms); the previous movie is retained and raw rejection evidence stays local. Seven blocks, 59 older probes and 121 films remain. The rejected raw capture also ends before the expected completion receipt; its full live replay passes separately. The next complete batch release checkpoint remains pending.
+
+## 1. Re-record demo videos (121 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -456,6 +458,7 @@ slug or per small group). Notes:
 
 Slugs:
 
+`block-legal-workspace`
 `chart-allocation`
 `block-financial-report`
 `block-commerce-workspace`
@@ -592,9 +595,9 @@ All nine parked rebuilds are shipped in both repos. Their original `_wip/<slug>`
 | finance-budget-variance | Completed 17 October: Next probe, dark/light accessibility, responsive and entrance/state captures, live demo and refreshed poster pass. |
 | finance-cashflow-dashboard | Completed 17 October: weekly balance and in/out bars, movable payments, independent pending saves, invalid-data guards, selected-week list geometry, Next probe/demo, both-theme accessibility, responsive/state/entrance captures and refreshed poster pass. |
 
-## 7. Continue the review (8 blocks)
+## 7. Continue the review (7 blocks)
 
-Same process as the 201 already done: hold each to the first ~100 components' standard. Briefs:
+Same process as the 202 already done: hold each to the first ~100 components' standard. Briefs:
 `docs/review/REVIEW_BRIEF.md`, `docs/review/SUITE_BRIEF.md` for industry components, suite languages in
 `docs/review/suites/`. Work newest first, about four components per batch, and verify each (build, tsc, tests,
 check-component, your own captures of states and mid-entrance frames, a refreshed poster, a rewritten pro-50 probe for
@@ -638,12 +641,12 @@ reference; the reviewed dark capture differs only in eight pixels around its Pai
 registry, root/eleven-block types and all 1,066 unit tests pass. The private fix is `87da4af`. The full
 Commerce completed its full review with this dependency; ten other blocks remain open.
 
-- **Commerce, Fashion and Financial Report** are reviewed. Keep these blocks compatible with their rebuilt parts.
+- **Commerce, Fashion, Financial Report and Legal Workspace** are reviewed. Keep these blocks compatible with their rebuilt parts.
 - **Smaller components** (#151–179) are reviewed.
-- **Blocks**, after their parts: eight of the eleven published `block-*` components remain. Commerce, Fashion and Financial Report are reviewed. Many parts changed their look and some their props;
+- **Blocks**, after their parts: seven of the eleven published `block-*` components remain. Commerce, Fashion, Financial Report and Legal Workspace are reviewed. Many parts changed their look and some their props;
   re-check each block composes well with the rebuilt parts and still reads as one product. The earlier count of 12 was stale: both source repositories and all published `kind: "block"` metadata contain these eleven, with every declared dependency available.
 
-`block-legal-workspace`, `block-meetings-workspace`, `block-music-workspace`,
+`block-meetings-workspace`, `block-music-workspace`,
 `block-people-workspace`, `block-saas-dashboard`, `block-saas-landing`,
 `block-team-workspace`, `block-workspace-settings`.
 

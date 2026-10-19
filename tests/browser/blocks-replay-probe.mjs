@@ -8,7 +8,7 @@ const specs = [
   ["block-financial-report", "September 2026 exported."],
   ["block-fashion-workspace", "Line plan saved"],
   ["block-people-workspace", "A considered first week"],
-  ["block-legal-workspace", "Obligations and evidence"],
+  ["block-legal-workspace", "Completion evidence recorded for Deliver the quarterly service report."],
   ["block-commerce-workspace", "RET-ORD-1042 · Return request recorded"],
   ["block-saas-landing", "Your Solo workspace."],
 ];
@@ -85,11 +85,29 @@ try {
         }, true);
       });
     }
+    if (slug === "block-legal-workspace") {
+      await page.evaluate(() => {
+        window.legalReplay = [];
+        document.addEventListener("click", event => {
+          const name = event.target.closest?.("[data-demo]")?.dataset.demo;
+          if (["nav-obligations", "evidence", "record"].includes(name)) window.legalReplay.push(name);
+        }, true);
+      });
+    }
     await page.evaluate((steps) => window.play(steps), meta.demo.steps);
     assert.ok(
       (await page.locator("#root").innerText()).includes(final),
       slug + " intended end",
     );
+    if (slug === "block-legal-workspace") {
+      assert.deepEqual(await page.evaluate(() => window.legalReplay), ["nav-obligations", "evidence", "record"]);
+      const pane = page.getByRole("tabpanel", { name: "Obligations", exact: true });
+      assert.equal(await pane.getByText("Q3 report filed as DOC-404.", { exact: true }).isVisible(), true);
+      assert.equal(await pane.getByRole("article").getByText("Done", { exact: true }).isVisible(), true);
+      assert.equal(await page.getByRole("tab", { name: "Obligations", exact: true }).getAttribute("aria-selected"), "true");
+      assert.equal(await pane.getByRole("button", { name: "Record completion", exact: true }).count(), 0);
+      assert.equal(await pane.getByRole("status").filter({ hasText: final }).isVisible(), true);
+    }
     if (slug === "block-financial-report") {
       assert.doesNotMatch(await page.locator("#root").innerText(), /today|all on target/);
       assert.deepEqual(await page.evaluate(() => window.financialReplay), ["trigger", "report-detail", "export-report"]);

@@ -2760,7 +2760,8 @@
       "Pass `matters` with id, name, client, practice, owner, status, stage, nextStep and dates. Add `budgetMinor` and `spentMinor` in minor units for spend figures; set `currency` and `locale` for formatting.",
       "`phases` defines the pipeline order; a matter’s stage matches by name, and unknown stages are added at the end.",
       "`onOpenMatter` adds an Open matter action to each expanded row; `horizonDays` sets how far Coming up looks ahead.",
-      "Rows retain five sibling data cells and a labelled disclosure button. Expanded details form a separate row spanning all columns; do not move the cells into the button. Empty results retain a row and spanning cell when compact headers are hidden."
+      "Rows retain five sibling data cells and a labelled disclosure button. Expanded details form a separate row spanning all columns; do not move the cells into the button. Empty results retain a row and spanning cell when compact headers are hidden.",
+      "Two-digit phase indices stay on one line while long phase names truncate within the available space."
     ],
     "related": [
       "legal-matter-intake",
@@ -3531,13 +3532,16 @@
     "updated": "2026-10-12"
   },
   "block-legal-workspace": {
-    "useWhen": "A legal operations team needs matter context, contractual work and requested evidence in one coherent workspace.",
+    "useWhen": "Building a legal matter page where a portfolio, contractual evidence and client document requests share the same matter and reporting date.",
     "avoidWhen": "Automatically interpreting obligations, calculating authoritative legal deadlines or treating UI uploads as verified evidence.",
     "integration": [
-      "Provide related records through `scopes`. Each view stays within its selected matter, and callbacks include the matter ID.",
-      "The retained panels preserve unfinished evidence notes when you change matter or view.",
-      "The host validates permissions, deadlines, uploaded files and recorded completion. The preview demonstrates local sample handoffs.",
-      "Pass one ISO `referenceDate` to the matter overview, obligation timeline and document countdowns so every view uses the same reporting day."
+      "Provide stable, non-empty scopes with their related matter records, obligations and document requests. Duplicate IDs after the first are ignored; an empty workspace can accept arriving scopes.",
+      "Use brand for workspace and tool identity. The compact heading follows the selected matter; the footer shows its ID, total counts and shared reporting day.",
+      "Bind onComplete and onUpload to the original matter ID. Resolve only after the host acknowledges the write; reject to preserve evidence/files and offer retry. A missing writer leaves submission unavailable.",
+      "Retained panels preserve drafts and pending operations when switching matters or views. Removing a matter unmounts its panels so late replies cannot acknowledge a replacement instance.",
+      "Pass an ISO referenceDate. Invalid or impossible values fall back once to the current UTC day for all three tools and their context footer.",
+      "File objects retain their identity across retries; inbox attachments are independent staging and submission snapshots. Validate permissions, file rules and claimed inbox IDs on the server.",
+      "The default export demonstrates local acknowledgements with short delays. The named production export does not invent a persistence writer."
     ],
     "related": [
       "block-workspace-settings",
