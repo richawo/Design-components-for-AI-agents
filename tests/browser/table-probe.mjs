@@ -1,3 +1,4 @@
+import { checkTable as checkCompactTable } from './review/financial-compact-values.mjs';
 import { checkTable } from './review/financial-number-formats.mjs';
 import assert from "node:assert/strict";
 import { launchChromium } from "../../scripts/lib/browser.mjs";
@@ -34,6 +35,7 @@ console.log(
 );
 try {
   await checkTable({page:p,assert,mount:code=>mountFixture(p,"data-table-sortable","free",code)});
+  await checkCompactTable({page:p,assert,mount:code=>mountFixture(p,"data-table-sortable","free",code)});
 } finally {
   await b.close();
 }

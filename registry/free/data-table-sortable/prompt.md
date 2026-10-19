@@ -10,7 +10,7 @@ Build one sortable data table in React + Tailwind CSS v4 + `motion/react` (lucid
 - `@container` root, max-width 1040px, radius 16px. Head: title (Geist 17px semibold, tracking −0.02em) with the row count in mono 11px ink/38 beside it, a 13px ink/45 description, and on the right a density switch.
 - The table is an ARIA grid built from CSS grid rows sharing one `grid-template-columns` variable: a 48px checkbox column, then each column at its width, the last one `minmax(width, 1fr)` so figures sit on the right edge. Columns that haven't been resized shrink proportionally towards their `minWidth` to fit the container (measured with ResizeObserver); past that the table scrolls sideways inside its own scroller.
 - Header row 40px; rows 52px regular, 36px compact (the height transitions in 150ms). Cells padded 12px.
-- Under 520px of container each row folds into a card: checkbox, title (the entity column) and value (the last figure column) on one line, the other columns as a 12.5px meta line indented under the title. The header is hidden and a "Sort" row of buttons replaces it.
+- Under 520px of container each row folds into a card: checkbox, title (the entity column) and value (the last figure column) on one line, the other columns as a 12.5px meta line indented under the title. Numeric cells retain a visible 12px column label; additional numeric fields stack on separate full-width rows so long amounts keep their complete value. The header is hidden and a "Sort" row of buttons replaces it.
 
 **Cells by kind**
 - entity: a 24px monogram tile (radius 7px, ink/7% with an ink/8% hairline, mono 9.5px initials) and the name at 14px medium.

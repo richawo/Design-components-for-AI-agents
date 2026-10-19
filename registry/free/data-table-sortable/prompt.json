@@ -15,7 +15,7 @@
     "rows": "header 40px; rows 52px regular, 36px compact; cells padded 12px; hairline ink/7% under each row",
     "stickyHeader": "on: rows scroll inside maxHeight (440px) under a pinned header that gains a soft shadow once scrolled; off: the table grows to fit",
     "selectionBar": "floating, centred, 12px from the bottom, 48px tall, radius 13px; body gains 68px bottom padding while it shows",
-    "narrow": "under 520px rows become cards: checkbox, title, value on one line; other columns as an indented 12.5px meta line; header replaced by a Sort button row"
+    "narrow": "under 520px rows become cards: checkbox, title, value on one line; other columns as an indented 12.5px meta line; header replaced by a Sort button row; numeric fields retain visible column labels and additional numeric fields stack on full-width rows without clipping their amounts"
   },
   "typography": {
     "title": "Geist 17px semibold, tracking -0.02em; row count mono 11px ink/38",
@@ -28,7 +28,7 @@
     "bar": "13.5px tabular; TOTAL label mono 10.5px uppercase"
   },
   "color": {
-    "tokens": "PALETTE.dark / PALETTE.light → --dt-card, --dt-ink, --dt-accent, --dt-on-accent, --dt-bar, --dt-bar-ink, --dt-shadow",
+    "tokens": "PALETTE.dark / PALETTE.light \u2192 --dt-card, --dt-ink, --dt-accent, --dt-on-accent, --dt-bar, --dt-bar-ink, --dt-shadow",
     "dark": "stage #000000, card #0b0b0c with inset white/8% hairline and white/5% top highlight, ink #f4f4f5, bar #1c1c1f",
     "light": "stage #f4f4f5, card #ffffff, ink #111113, bar #111113 with #fafafa ink",
     "accent": "#5e9eff via the accent prop: checked boxes, selected rows (11%, 15% hover), resize guide and width chip, the selection total",
@@ -39,7 +39,7 @@
     "sort": "rows layout=position on spring 340/36 (mass 0.9): every row travels to its new slot together; ties keep original order",
     "spotlight": "x and width motion values, spring 500/40, glide to the sorted column",
     "arrow": "rotates 180deg on spring 500/40 between directions; hidden until hover (40%), solid when sorted",
-    "resize": "template written to the grid element during the drag (no render per move), committed on release; handle line grows 14→24px on hover and goes accent full-height with a guide and width chip while dragging",
+    "resize": "template written to the grid element during the drag (no render per move), committed on release; handle line grows 14\u219224px on hover and goes accent full-height with a guide and width chip while dragging",
     "checkbox": "accent fill, check path draws 220ms",
     "bar": "rises 14px from a 4px blur in 320ms; leaves 10px in 200ms ease-in; total counts to its new value in 600ms",
     "density": "row height transitions 150ms; switch thumb is a layoutId on spring 500/40",
@@ -63,7 +63,7 @@
   ],
   "content": {
     "title": "Invoices",
-    "description": "Ferro Studio · last 90 days",
+    "description": "Ferro Studio \u00b7 last 90 days",
     "columns": [
       "Invoice (mono)",
       "Client (entity)",

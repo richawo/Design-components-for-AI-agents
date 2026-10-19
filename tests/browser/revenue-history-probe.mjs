@@ -1,3 +1,4 @@
+import { checkAllocation as checkCompactAllocation } from './review/financial-compact-values.mjs';
 import { checkAllocation } from './review/financial-number-formats.mjs';
 import assert from "node:assert/strict";
 import { launchChromium } from "../../scripts/lib/browser.mjs";
@@ -101,6 +102,7 @@ try {
     "PASS revenue chart missing history, zero baseline, single-point labels and valid comparison.",
   );
   await checkAllocation({page,assert,mount:code=>mountFixture(page,"chart-allocation","pro",code)});
+  await checkCompactAllocation({page,assert,mount:code=>mountFixture(page,"chart-allocation","pro",code)});
 } finally {
   await browser.close();
 }

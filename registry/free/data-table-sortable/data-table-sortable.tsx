@@ -524,6 +524,8 @@ const CARD = {
   select: "@max-[520px]:order-0 @max-[520px]:h-11 @max-[520px]:w-11",
   title: "@max-[520px]:order-1 @max-[520px]:h-11 @max-[520px]:min-w-0 @max-[520px]:flex-1 @max-[520px]:px-0",
   value: "@max-[520px]:order-2 @max-[520px]:h-11 @max-[520px]:pl-3 @max-[520px]:pr-4",
+  numericValue: "@max-[520px]:order-2 @max-[520px]:h-11 @max-[520px]:flex-col @max-[520px]:items-end @max-[520px]:justify-center @max-[520px]:pl-3 @max-[520px]:pr-4",
+  numericMeta: "@max-[520px]:order-4 @max-[520px]:h-auto @max-[520px]:basis-full @max-[520px]:flex-col @max-[520px]:items-start @max-[520px]:gap-1 @max-[520px]:px-4 @max-[520px]:py-2 @max-[520px]:text-left",
   meta: "@max-[520px]:order-4 @max-[520px]:h-auto @max-[520px]:px-0 @max-[520px]:pr-4 @max-[520px]:text-[12.5px]",
   break: "hidden @max-[520px]:order-3 @max-[520px]:block @max-[520px]:h-0 @max-[520px]:basis-full",
   indent: "hidden @max-[520px]:order-3 @max-[520px]:block @max-[520px]:w-11 @max-[520px]:shrink-0",
@@ -667,6 +669,9 @@ const Row = memo(function Row({
         const c = i + offset;
         const slot = slots[i];
         const right = isFigure(col.kind);
+        const card = right && slot === "meta"
+          ? CARD.numericMeta
+          : right && slot === "value" ? CARD.numericValue : CARD[slot];
         return (
           <div
             key={col.key}
@@ -676,8 +681,13 @@ const Row = memo(function Row({
             tabIndex={tab(c)}
             data-cell={`${r}:${c}`}
             data-sorted={sortedKey === col.key || undefined}
-            className={`flex min-w-0 items-center px-3 ${right ? "justify-end text-right" : ""} ${FOCUS_RING} ${CARD[slot]}`}
+            className={`flex min-w-0 items-center px-3 ${right ? "justify-end text-right" : ""} ${FOCUS_RING} ${card}`}
           >
+            {right && (
+              <small aria-hidden="true" className={`hidden text-[12px] font-normal ${INK[60]} @max-[520px]:block`}>
+                {col.header}
+              </small>
+            )}
             {renderValue(col)}
           </div>
         );
