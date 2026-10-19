@@ -1,27 +1,14 @@
 # Bullet Target Comparison
 
-Build a standalone React 19 and Tailwind v4 component. A clear target-versus-actual chart with animated bars, explicit scale labels and period selection for team goals, service levels and operational metrics.
+Build a self-contained React 19, Tailwind CSS v4 and motion/react component. Lead with three clean actual bars and thin target markers. Align visible values and target/scale labels, with reporting-period controls beside the compact title.
 
-## Layout
+Use neutral graphite and white chrome, readable 14-16px body copy, 12px mono metadata and 44px native control targets. Keep the complete working object responsive at 320, 390, 768, 1024, 1440 and 1920px in both themes.
 
-Three horizontal bullet charts with a thick result bar and a thin target marker. A serif heading balances compact reporting-period controls. Size to the container. Use a 4/8px rhythm, 1px surface edges, 16px narrow padding and 24px desktop padding. Controls have 44px targets.
+- Pass reporting periods in display order with stable unique IDs and their metrics. defaultPeriod selects an initial ID, falling back to the first period.
+- Every metric has an actual, target, ceiling and unit. Negative or non-finite numbers display as zero; the scale expands to include the result and target.
+- onPeriodChange reports the chosen ID synchronously. The component keeps local selection, and the host owns persistence and any asynchronous work.
+- Empty periods and periods without metrics have written empty states. Accessible chart labels include the actual, target, unit and full scale.
 
-## Typography and colour
+Use a brief entrance and interruptible state motion. Respect reduced motion at first paint and when changed while mounted, retaining control focus and current data. Keep data-demo targets stable, the default demo complete and offline, and preview controls tied to visible props. Avoid remote assets, invented network actions, decorative status badges and repeated marketing headers.
 
-Use font-sans at 14-16px/1.5, font-mono metadata at 11-12px and a 24-36px heading with -0.035em tracking. Dark uses #111111, #f5f5f5, #a3a3a3 and #333333; light uses #ffffff, #171717, #525252 and #d4d4d4. Maintain AA contrast.
-
-## Motion
-
-Use a 320ms opacity/8px entrance, 150ms press response and 240ms state changes, easing cubic-bezier(0.22,1,0.36,1). No ambient loops. Reduced motion removes transforms and layout animation and limits fades to 120ms.
-
-## Behaviour and accessibility
-
-Use semantic elements, native keyboard behaviour, visible focus rings and instance-scoped IDs. Expose typed content and callbacks. Handle empty custom data and repeated instances. Announce important feedback politely. Match the source state ownership and callback contract.
-
-## Responsive
-
-Design for 320, 390, 768, 1024, 1440 and 1920px. Respond to the container with @container variants, wrap text and stack secondary details. Scroll only within explicitly labelled local regions.
-
-## Avoid
-
-No remote imagery, false success states, unlabelled controls, hover-only actions, low contrast or decorative status pills. The demo is an isolated component on a quiet stage.
+Show the actual figures on the first render, then animate later value changes over 280ms and stop them immediately when reduced motion changes. Very large differences settle directly so numeric animation cannot overflow. Wrap long unit labels and allow the value to take its own line at 320px.

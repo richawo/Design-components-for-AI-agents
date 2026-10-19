@@ -9,6 +9,7 @@ const specs = fs
   .filter((file) => file.endsWith(".mjs"))
   .map((file) => ({ slug: file.slice(0, -4) }));
 const finalStates = {
+  "chart-bullet-targets": "Docs published",
   "chart-slope-comparison": "Editor",
   "cards-event-ticket": "View programme",
   "content-release-notes": "A calmer place to work.",
@@ -112,6 +113,14 @@ try {
         window.ticketObserver.observe(node, {attributes:true,attributeFilter:["aria-expanded"]});
       });
     }
+    if (slug === "chart-bullet-targets") {
+      await page.locator('[aria-label="Reporting period"]').evaluate(group => {
+        const selected = () => group.querySelector('[aria-pressed="true"]')?.getAttribute("data-demo");
+        window.bulletPeriodStates = [selected()];
+        window.bulletObserver = new MutationObserver(() => window.bulletPeriodStates.push(selected()));
+        window.bulletObserver.observe(group, {subtree:true,attributes:true,attributeFilter:["aria-pressed"]});
+      });
+    }
     await page.evaluate((steps) => window.play(steps), steps);
     await page.waitForTimeout(100);
     const last = steps
@@ -151,6 +160,13 @@ try {
       assert.equal(await field.inputValue(), "Cedar-river42!");
       assert.equal(await field.getAttribute("type"), "text", "The password demo finishes revealed");
       assert.equal(await page.getByRole("button", { name: "Hide password", exact: true }).getAttribute("aria-pressed"), "true");
+    } else if (slug === "chart-bullet-targets") {
+      assert.deepEqual(await page.evaluate(() => window.bulletPeriodStates), ["bullet-period-0", "bullet-period-1", "bullet-period-0"], "The bullet replay visits September before returning to October");
+      assert.deepEqual(await page.getByRole("img").evaluateAll(nodes => nodes.map(node => node.getAttribute("aria-label"))), ["Docs published: 42 docs, target 50, scale 0 to 70", "Reviews completed: 28 reviews, target 24, scale 0 to 40", "First reply within 1h: 86 %, target 90, scale 0 to 100"]);
+      assert.deepEqual(await page.locator('[data-demo^="bullet-value-"]').allTextContents(), ["42", "28", "86"]);
+      const fractions = await page.getByRole("img").evaluateAll(nodes => nodes.map(node => node.children[1].getBoundingClientRect().width / node.getBoundingClientRect().width));
+      for (const [i, expected] of [42/70, 28/40, 86/100].entries()) assert.ok(Math.abs(fractions[i]-expected)<0.005, "The settled bars match October's actual values");
+      await page.evaluate(() => window.bulletObserver.disconnect());
     } else if (slug === "cards-event-ticket") {
       assert.deepEqual(await page.evaluate(() => window.ticketExpandedStates), ["false", "true", "false"], "The ticket replay opens the programme before closing it");
       assert.equal(await page.getByRole("button", {name:"View programme",exact:true}).getAttribute("aria-expanded"), "false");

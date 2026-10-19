@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { createElement } from "react";
+import { BulletTargets } from "@/registry/free/chart-bullet-targets/chart-bullet-targets";
 import { SlopeComparison } from "@/registry/free/chart-slope-comparison/chart-slope-comparison";
 
 function figureValues(markup: string) {
@@ -9,6 +10,10 @@ function figureValues(markup: string) {
 }
 
 describe("first chart observations", () => {
+  it("renders actual bullet results before client effects run", () => {
+    expect(figureValues(renderToStaticMarkup(createElement(BulletTargets)))).toEqual(["42", "28", "86"]);
+  });
+
   it("renders actual slope observations before client effects run", () => {
     expect(figureValues(renderToStaticMarkup(createElement(SlopeComparison)))).toEqual(["46", "64"]);
   });

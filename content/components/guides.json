@@ -1315,17 +1315,20 @@
     "updated": "2026-10-12"
   },
   "chart-bullet-targets": {
-    "useWhen": "Comparing actual measures with their targets in a compact view.",
-    "avoidWhen": "A complex distribution or uncertainty range requiring a richer chart.",
+    "useWhen": "Several nonnegative goals need a compact actual-versus-target comparison with a consistent target marker and a choice of reporting period.",
+    "avoidWhen": "Negative values, distributions or full histories drive the decision. Use a waterfall, distribution or time-series chart for those jobs.",
     "integration": [
-      "Supply your own records through `periods`. Preserve stable keys or IDs when the data contract provides them."
+      "Pass reporting periods in display order with stable unique IDs and their metrics. defaultPeriod selects an initial ID, falling back to the first period.",
+      "Every metric has an actual, target, ceiling and unit. Negative or non-finite numbers display as zero; the scale expands to include the result and target.",
+      "onPeriodChange reports the chosen ID synchronously. The component keeps local selection, and the host owns persistence and any asynchronous work.",
+      "Empty periods and periods without metrics have written empty states. Accessible chart labels include the actual, target, unit and full scale."
     ],
     "related": [
       "chart-slope-comparison",
       "chart-waterfall-bridge",
-      "chart-candlestick"
+      "dashboard-kpi-cards"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-19"
   },
   "chart-candlestick": {
     "useWhen": "Inspecting open, high, low and close data over time.",

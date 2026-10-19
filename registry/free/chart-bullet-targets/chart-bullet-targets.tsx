@@ -1,10 +1,15 @@
 "use client";
-import { type CSSProperties, useId, useState } from "react";
+import { type CSSProperties, useLayoutEffect, useSyncExternalStore, useId, useState } from "react";
 import { Target } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
+import { animate, motion, useAnimationControls, useMotionValue, useTransform } from "motion/react";
 
-const control =
-  "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-lg px-3 text-sm font-medium transition-[background,transform] duration-150 hover:bg-[var(--wash)] disabled:hover:bg-transparent active:scale-[.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)] disabled:cursor-not-allowed disabled:opacity-40 disabled:active:scale-100 motion-reduce:transform-none";
+const control = [
+  "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-lg px-3 text-sm",
+  "font-medium transition-[background,transform] duration-150 hover:bg-[var(--wash)]",
+  "disabled:hover:bg-transparent active:scale-[.97] focus-visible:outline-2",
+  "focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)] disabled:cursor-not-allowed",
+  "disabled:opacity-40 disabled:active:scale-100 motion-reduce:transform-none",
+].join(" ");
 const muted = "text-[var(--muted)]";
 function colors(theme: "dark" | "light"): CSSProperties {
   return {
@@ -104,6 +109,22 @@ const number = (n: number) =>
   n >= 1e6
     ? n.toExponential(1)
     : new Intl.NumberFormat("en", { maximumFractionDigits: 1 }).format(n);
+function AnimatedFigure({ value, reduced, demo }: { value: number; reduced: boolean; demo: string }) {
+  const current = useMotionValue(value);
+  const display = useTransform(current, number);
+  useLayoutEffect(() => {
+    current.stop();
+    // Very large observations stay exact and never overflow interpolation.
+    if (reduced || Math.abs(value - current.get()) > 1e12) {
+      current.set(value);
+      return;
+    }
+    const playback = animate(current, value, { duration: 0.28, ease: [0.22, 1, 0.36, 1] });
+    return () => playback.stop();
+  }, [current, value, reduced]);
+  return <motion.span data-demo={demo}>{display}</motion.span>;
+}
+
 export function BulletTargets({
   title = "A little closer to the target.",
   periods = defaults,
@@ -112,11 +133,13 @@ export function BulletTargets({
   theme = "dark",
 }: BulletTargetsProps) {
   const id = useId();
-  const reduced = useReducedMotion();
+  const { reduced, entrance } = useLiveEntrance();
   const [selected, setSelected] = useState(defaultPeriod);
   const period = periods.find((p) => p.id === selected) ?? periods[0];
   return (
-    <section
+    <motion.section
+      initial={{ opacity: 0, y: reduced ? 0 : 8 }}
+      animate={entrance}
       style={colors(theme)}
       aria-labelledby={id}
       className="@container w-full max-w-2xl rounded-xl border border-[var(--line)] bg-[var(--panel)] p-6 text-[var(--ink)]"
@@ -157,11 +180,11 @@ export function BulletTargets({
             max = Math.max(1, safe(metric.ceiling), actual, target);
           return (
             <div key={`${metric.id}-${i}`}>
-              <div className="mb-3 flex items-baseline justify-between gap-4">
+              <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
                 <h3 className="text-sm font-medium">{metric.label}</h3>
-                <span className="whitespace-nowrap font-mono text-lg tabular-nums">
-                  {number(actual)}
-                  <span className={`ml-1 text-xs ${muted}`}>{metric.unit}</span>
+                <span className="ml-auto min-w-0 text-right font-mono text-lg tabular-nums">
+                  <AnimatedFigure value={actual} reduced={reduced} demo={`bullet-value-${i}`} />
+                  <span className={`ml-1 inline-block max-w-full text-xs leading-relaxed ${muted}`}>{metric.unit}</span>
                 </span>
               </div>
               <div
@@ -174,6 +197,7 @@ export function BulletTargets({
                   className="absolute inset-y-0 left-0 w-1/2 border-r border-[var(--line)] bg-[var(--line)] opacity-40"
                 />
                 <motion.div
+                  key={String(reduced)}
                   aria-hidden="true"
                   initial={{ width: reduced ? `${(actual / max) * 100}%` : 0 }}
                   animate={{ width: `${(actual / max) * 100}%` }}
@@ -189,7 +213,7 @@ export function BulletTargets({
                 />
               </div>
               <div
-                className={`mt-2 flex justify-between gap-3 font-mono text-[11px] ${muted}`}
+                className={`mt-2 flex justify-between gap-3 font-mono text-xs ${muted}`}
               >
                 <span>0</span>
                 <span>Target {number(target)}</span>
@@ -205,11 +229,33 @@ export function BulletTargets({
       <p
         className={`mt-7 flex items-center gap-2 border-t border-[var(--line)] pt-4 text-xs ${muted}`}
       >
-        <Target size={14} aria-hidden="true" />
+        <Target size={14} className="shrink-0" aria-hidden="true" />
         The thin marker is the target. The solid bar is the result.
       </p>
-    </section>
+    </motion.section>
   );
+}
+
+const motionQuery = "(prefers-reduced-motion: reduce)";
+function subscribeToMotion(change: () => void) {
+  const query = window.matchMedia(motionQuery);
+  query.addEventListener("change", change);
+  return () => query.removeEventListener("change", change);
+}
+function useLiveEntrance() {
+  const reduced = useSyncExternalStore(
+    subscribeToMotion,
+    () => window.matchMedia(motionQuery).matches,
+    () => false,
+  );
+  const entrance = useAnimationControls();
+  useLayoutEffect(() => {
+    entrance.stop();
+    if (reduced) entrance.set({ opacity: 1, y: 0 });
+    else void entrance.start({ opacity: 1, y: 0, transition: { duration: 0.32 } });
+    return () => entrance.stop();
+  }, [entrance, reduced]);
+  return { reduced, entrance };
 }
 
 export default function BulletTargetsDemo(

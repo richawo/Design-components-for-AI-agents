@@ -57,9 +57,9 @@
     "steps": [
       "wait:700",
       "click:@bullet-period-1",
-      "wait:800",
+      "wait:1100",
       "click:@bullet-period-0",
-      "wait:700"
+      "wait:1000"
     ],
     "loop": false
   },
@@ -73,6 +73,23 @@
         "light"
       ],
       "default": "dark"
+    },
+    {
+      "prop": "title",
+      "label": "Heading",
+      "kind": "text",
+      "default": "A little closer to the target."
+    },
+    {
+      "prop": "defaultPeriod",
+      "label": "Initial period",
+      "kind": "segmented",
+      "options": [
+        "oct",
+        "sep"
+      ],
+      "default": "oct",
+      "remount": true
     }
   ]
 }

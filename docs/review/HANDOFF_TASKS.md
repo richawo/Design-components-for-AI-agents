@@ -348,7 +348,9 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 4 tooling follow-up (19 October): replay failures retain their primary exception when navigation also destroys diagnostic context. A closed-page negative preserves the original goto error and reports unavailable state/screenshot evidence. The source-leak guard scans each file once for the same exported Pro names: all 306 tracked source files and 1,395 seeded cases match the former results. The measured scan improves from 3.97s to 33ms without raising its 5s deadline. Strict registry, TypeScript and all 1,064 unit tests pass at four workers. Both fixes are committed separately (`870ebd5`, `1d7aa75`); the original timeouts and masked failures remain archived.
 
-## 1. Re-record demo videos (113 components)
+- Task 7 (19 October): Bullet Targets retains its focused chart composition. Long units and large figures stay within 320px, correcting the preserved painted-text overflow. Initial result figures render correctly before client effects; later changes interpolate for 280ms; fills and numbers stop immediately when reduced motion changes, retaining period-button focus. Keyboard periods, exact callbacks/bar fractions, empty periods/metrics, normalized values and host replacement pass. The 29-mount source review, 14 state/default accessibility audits, six widths, reviewed entrance/state captures, Next regression, three controls, official audit and exact metadata replay pass. Strict registry, TypeScript and all 1,066 unit tests pass. Its current Next poster is refreshed and reviewed. The film refresh remains in task 1: recording under the current shared machine load was rejected without replacing the published movie. No capture guard is relaxed. The next full checkpoint has 61 suites and 74 metadata replays and remains pending. 20 components and 12 blocks remain in task 7; 114 films remain in task 1.
+
+## 1. Re-record demo videos (114 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -367,6 +369,7 @@ slug or per small group). Notes:
 
 Slugs:
 
+`chart-bullet-targets`
 `chart-slope-comparison`
 `agents-budget-guard`, `agents-dependency-board`
 `agents-run-replay`, `ai-answer-compare`, `ai-context-budget`, `ai-structured-output`, `auth-recovery-codes`
@@ -495,16 +498,16 @@ All nine parked rebuilds are shipped in both repos. Their original `_wip/<slug>`
 | finance-budget-variance | Completed 17 October: Next probe, dark/light accessibility, responsive and entrance/state captures, live demo and refreshed poster pass. |
 | finance-cashflow-dashboard | Completed 17 October: weekly balance and in/out bars, movable payments, independent pending saves, invalid-data guards, selected-week list geometry, Next probe/demo, both-theme accessibility, responsive/state/entrance captures and refreshed poster pass. |
 
-## 7. Continue the review (21 components, then 12 blocks)
+## 7. Continue the review (20 components, then 12 blocks)
 
-Same process as the 177 already done: hold each to the first ~100 components' standard. Briefs:
+Same process as the 178 already done: hold each to the first ~100 components' standard. Briefs:
 `docs/review/REVIEW_BRIEF.md`, `docs/review/SUITE_BRIEF.md` for industry components, suite languages in
 `docs/review/suites/`. Work newest first, about four components per batch, and verify each (build, tsc, tests,
 check-component, your own captures of states and mid-entrance frames, a refreshed poster, a rewritten pro-50 probe for
 industry components).
 
 - **Commerce** is reviewed. Keep `block-commerce-workspace` compatible with its rebuilt parts.
-- **Smaller components** (#151–179): chart-bullet-targets, media-story-deck, devtools-request-waterfall, devtools-json-inspector,
+- **Smaller components** (#151–179): media-story-deck, devtools-request-waterfall, devtools-json-inspector,
   media-before-after, data-kanban-compact, data-file-explorer, forms-preference-center, date-week-agenda,
   onboarding-setup-checklist, date-booking-slots, input-file-dropzone, input-shortcut-recorder,
   feedback-empty-search, navigation-pagination-window, primitives-shortcut-reference, selects-radio-cards,
