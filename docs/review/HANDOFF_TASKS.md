@@ -398,7 +398,18 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 7 (19 October): Folding Breadcrumb retains its compact route rail, real ancestor links and plain current-page label. Stable href/occurrence keys preserve focus through ancestor reordering. Expanding and collapsing transfer focus to the surviving control; removing focused controls retains focus in the landmark without reclaiming it after an outside button or primary blank-space click. Wrapped ancestor labels retain inner padding. Its owned 320ms entrance settles immediately on live reduced-motion changes. Three original-source failures are retained. Its 39-mount source review, twenty accessibility audits, six widths, reviewed state/entrance captures, Next and existing input regressions, theme control, official audit and exact folded/expanded/refolded replay pass. Native link navigation, keyboard disclosure, empty and short paths, long copy, independent landmarks and every phone preview state at 320/390px are covered. The API stays unchanged. Strict registry, root/isolated types and all 1,066 tests pass. Its reviewed 3.8s film and paired poster retain the folded, expanded and refolded path in the measured 832×600 frame: source gap 11ms, delivery 13.55ms and moving-frame p95 25.60ms, with no stalls and unchanged guards. The next complete batch has 65 suites and 94 metadata replays and remains pending. 0 components and 12 blocks remain; 117 films remain queued.
 
-## 1. Re-record demo videos (117 components)
+- Task 7 (19 October): Commerce Workspace now uses compact view-specific headings, a target/order overview that expands across wide containers and one store identity throughout Returns. Modified order links preserve browser intent; empty copy and disabled selectors name their period/order context. Separate period/order drafts, retry, pending requests across period changes, unavailable handlers, arriving data and phone action reachability pass. Its 33-mount source review, 32 accessibility audits, six widths and all 46 reviewed state/entrance captures pass. The registered workflow retains the contrast and narrow-card dependency regressions. Normal-motion headings must finish visibly in the actual Next preview. All eight block metadata replays pass; Commerce verifies item/reason changes, editing, review and the final read-only request receipt. Controls, official audit, strict registry, root/all-eleven-block types and all 1,066 unit tests pass. The public API and Pro dependency boundary stay unchanged. Its reviewed settled Next poster is current. The film fails unchanged timing guards (source gap 37ms, delivery 106.73ms and moving-frame p95 25.93ms; one 109.45ms moving-frame gap); the old film is retained and rejected raw evidence stays local. This is the first completed block review. Ten blocks, 59 older probes and 118 films remain. The next complete batch release checkpoint remains pending.
+
+Block replay verification (19 October): the full software-rendered run missed People onboarding. Unchanged
+isolated software and native runs both pass, but software records a 3,033.5ms frame gap versus 40.8ms native.
+A deliberate 2,200ms settling-timer stall suppresses the same navigation click and end state. The original
+failure had no frame trace, so its exact cause remains an inference. Block metadata replays now use native
+rendering, matching component replays, with all target, settling and final-state assertions retained. All eight
+pass together, followed by a fresh Commerce replay after its final empty-selector copy change. Future failures
+save their screenshot, body and error. The corrected viewport restoration also keeps Commerce's phone checks
+from changing subsequent block tests. Original failures and diagnostics remain local.
+
+## 1. Re-record demo videos (118 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -417,6 +428,7 @@ slug or per small group). Notes:
 
 Slugs:
 
+`block-commerce-workspace`
 `date-booking-slots`
 `onboarding-setup-checklist`
 `devtools-request-waterfall`
@@ -550,9 +562,9 @@ All nine parked rebuilds are shipped in both repos. Their original `_wip/<slug>`
 | finance-budget-variance | Completed 17 October: Next probe, dark/light accessibility, responsive and entrance/state captures, live demo and refreshed poster pass. |
 | finance-cashflow-dashboard | Completed 17 October: weekly balance and in/out bars, movable payments, independent pending saves, invalid-data guards, selected-week list geometry, Next probe/demo, both-theme accessibility, responsive/state/entrance captures and refreshed poster pass. |
 
-## 7. Continue the review (11 blocks)
+## 7. Continue the review (10 blocks)
 
-Same process as the 198 already done: hold each to the first ~100 components' standard. Briefs:
+Same process as the 199 already done: hold each to the first ~100 components' standard. Briefs:
 `docs/review/REVIEW_BRIEF.md`, `docs/review/SUITE_BRIEF.md` for industry components, suite languages in
 `docs/review/suites/`. Work newest first, about four components per batch, and verify each (build, tsc, tests,
 check-component, your own captures of states and mid-entrance frames, a refreshed poster, a rewritten pro-50 probe for
@@ -594,14 +606,14 @@ The original phone failure is preserved. Both-theme phone regression and accessi
 with the complete registered Commerce workflow. The light desktop capture is byte-identical to its
 reference; the reviewed dark capture differs only in eight pixels around its Paid status dot. Strict
 registry, root/eleven-block types and all 1,066 unit tests pass. The private fix is `87da4af`. The full
-Commerce review is being recaptured with this dependency; eleven blocks remain open.
+Commerce completed its full review with this dependency; ten other blocks remain open.
 
 - **Commerce** is reviewed. Keep `block-commerce-workspace` compatible with its rebuilt parts.
 - **Smaller components** (#151–179) are reviewed.
-- **Blocks**, after their parts: the 11 published `block-*` components. Many parts changed their look and some their props;
+- **Blocks**, after their parts: ten of the eleven published `block-*` components remain. Commerce Workspace is reviewed. Many parts changed their look and some their props;
   re-check each block composes well with the rebuilt parts and still reads as one product. The earlier count of 12 was stale: both source repositories and all published `kind: "block"` metadata contain these eleven, with every declared dependency available.
 
-`block-commerce-workspace`, `block-fashion-workspace`, `block-financial-report`,
+`block-fashion-workspace`, `block-financial-report`,
 `block-legal-workspace`, `block-meetings-workspace`, `block-music-workspace`,
 `block-people-workspace`, `block-saas-dashboard`, `block-saas-landing`,
 `block-team-workspace`, `block-workspace-settings`.

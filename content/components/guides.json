@@ -3539,13 +3539,16 @@
     "integration": [
       "Align the records in each `periods` entry. Selecting a measure updates its target comparison, while the order and return views keep the same period context.",
       "Return drafts remain mounted separately for each period and order. The callback includes the period ID and the exact typed return request.",
-      "Use `onReturn` to validate and record requests. A returned reference confirms the request; refunds and exchanges remain host operations."
+      "Use `onReturn` to validate and record requests. A returned reference confirms the request; refunds and exchanges remain host operations.",
+      "The workspace keeps its chrome fixed and scrolls the active pane. Its narrow order cards retain readable names and status labels; modified links preserve native browser intent.",
+      "The `brand` prop names both the workspace and its retained return desks.",
+      "Disabled empty selectors name the missing reporting periods or return orders."
     ],
     "related": [
       "block-financial-report",
       "block-fashion-workspace"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-19"
   },
   "block-saas-landing": {
     "useWhen": "A SaaS launch needs one considered story from the product introduction through workflow, plan comparison and an actionable request form.",

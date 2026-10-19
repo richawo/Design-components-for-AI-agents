@@ -5853,7 +5853,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "commerce",
-    "description": "A full store workspace connecting reporting periods, linked measures, the order book and reviewed returns. Order and period drafts stay separate with typed handoffs.",
+    "description": "A store workspace with linked measures, a responsive order book and reviewed returns. Period and order drafts stay separate through retry and recording.",
     "tags": [
       "block",
       "workspace",
@@ -5877,7 +5877,7 @@
         "name": "brand",
         "type": "string",
         "default": "\"Northstar\"",
-        "description": "Store identity."
+        "description": "Store identity shared by the workspace and its return desk."
       },
       {
         "name": "periods",
@@ -5915,9 +5915,15 @@
     ],
     "demo": {
       "steps": [
-        "wait:350",
+        "wait:450",
         "click:@nav-returns",
-        "wait:2200"
+        "wait:450",
+        "click:@return-item-0",
+        "click:@return-reason-0",
+        "click:@return-next",
+        "wait:400",
+        "click:@return-next",
+        "wait:1200"
       ],
       "loop": false
     },
