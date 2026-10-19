@@ -126,7 +126,7 @@ const STYLE = {
     "@3xl/ws:grid-cols-[212px_minmax(0,1fr)] @3xl/ws:grid-rows-1",
   ),
   rail: cx(
-    "flex flex-col rounded-t-[19px] border-b border-[var(--ws-line)]",
+    "flex min-w-0 flex-col rounded-t-[19px] border-b border-[var(--ws-line)]",
     "bg-[linear-gradient(180deg,var(--ws-surface),var(--ws-bg))]",
     "@3xl/ws:rounded-tr-none @3xl/ws:rounded-bl-[19px] @3xl/ws:border-r @3xl/ws:border-b-0",
   ),

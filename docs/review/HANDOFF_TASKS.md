@@ -433,6 +433,8 @@ from changing subsequent block tests. Original failures and diagnostics remain l
 
 - Legal revision-note follow-up: superseded filenames now retain readable muted ink on the semantic note surface, and revision headings use body ink. Preserved original failures measured 4.31:1 for the dark filename and 4.27:1 for the light heading. Both-theme regression and four accessibility audits, reviewed original/replacement captures, full Next Legal workflow, strict registry, root/all-eleven-block types and all 1,066 unit tests pass. Staging a replacement keeps the prior filename and reviewer explanation. The full Legal block review remains in progress.
 
+- Workspace identity follow-up: the shared rail now has a zero minimum width, keeping long firm names inside 320px grids while the working title wraps. Preserved source diagnostics show the original rail widening the phone and the isolated correction removing the overflow. Nineteen source mounts, six accessibility audits, six widths and twenty reviewed state/entrance captures pass. Eleven of twelve default captures are byte-identical; the light 1920px capture differs in 46 reviewed edge pixels. The complete official workspace focus/draft/height/reduced-motion suite, strict registry, root/all-eleven-block types and all 1,066 unit tests pass. The full Legal block review remains in progress.
+
 ## 1. Re-record demo videos (120 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old

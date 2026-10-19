@@ -10,7 +10,7 @@ export async function check(context){
  await first.press('ArrowRight');await draft.waitFor();assert.equal(await draft.inputValue(),'Keep the research note through view changes.');assert.equal(await second.evaluate(node=>node===document.activeElement),true);await capture('keyboard-view',{audit:true});
  const external=page.getByRole('button',{name:'Outside action',exact:true});await external.focus();await page.evaluate(()=>window.setWorkspaceView('one'));await page.getByRole('button',{name:'Finish first view',exact:true}).waitFor();assert.equal(await external.evaluate(node=>node===document.activeElement),true,'Explicit host focus stays with the host');
  await mount(`createRoot(document.getElementById('root')).render(<Subject.WorkspaceShell title="A new workspace" links={[]}><Subject.WorkspacePanels activeId="missing" panels={[]}/></Subject.WorkspaceShell>);`);assert.equal(await page.getByRole('tab').count(),0);assert.equal(await page.locator('[data-workspace-panel]').count(),0);await capture('empty-workspace',{audit:true});
- for(const test of[outside,heading,height,changedHeading])await test(context);await page.emulateMedia({reducedMotion:'reduce'});
+ for(const test of[outside,heading,height,changedHeading,narrowIdentity])await test(context);await page.emulateMedia({reducedMotion:'reduce'});
 }
 
 async function changedHeading({page,assert,capture=async()=>{}}) {
@@ -67,4 +67,27 @@ async function height({page,mount,assert}) {
  await page.emulateMedia({reducedMotion:'reduce'});
  const height=await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve(document.querySelector('#root > div').getBoundingClientRect().height)))));
  assert.ok(Math.abs(height-440)<1,'Live reduced motion settles the measured workspace panel height immediately');
+}
+
+
+async function narrowIdentity({ page, mount, assert, capture = async () => {} }) {
+ const viewport = page.viewportSize();
+ await page.emulateMedia({ reducedMotion: 'reduce' });
+ try {
+  for (const width of [320, 390]) {
+   await page.setViewportSize({ width, height: 940 });
+   await mount(`createRoot(document.getElementById('root')).render(<Subject.WorkspaceShell brand="Lex Spring Commercial and Property" title="A long service agreement for the Northline international operations team" links={[]} className="h-[820px]"><p>Review the current matter and its reporting dates.</p></Subject.WorkspaceShell>);`);
+   const geometry = await page.evaluate(() => {
+    const frame = document.querySelector('aside').parentElement.parentElement.getBoundingClientRect();
+    const label = document.querySelector('aside span.truncate'), box = label.getBoundingClientRect();
+    return { width: innerWidth, overflow: document.documentElement.scrollWidth, frame: frame.toJSON(), label: box.toJSON() };
+   });
+   assert.ok(geometry.overflow <= width + 1, 'A long workspace identity cannot widen the phone document');
+   assert.ok(geometry.label.left >= geometry.frame.left && geometry.label.right <= geometry.frame.right, 'The brand remains inside its rail');
+   assert.equal(await page.getByRole('heading', { name: 'A long service agreement for the Northline international operations team', exact: true }).isVisible(), true);
+   await capture('long-identity-' + width, { audit: true });
+  }
+ } finally {
+  if (viewport) await page.setViewportSize(viewport);
+ }
 }

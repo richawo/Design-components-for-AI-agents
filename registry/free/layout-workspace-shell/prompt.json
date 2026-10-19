@@ -48,7 +48,7 @@
     "panels": "WorkspacePanels measures the active view and animates container height (0.24s) without scaling text; outgoing views become inert and aria-hidden immediately, fade 0.2s with a 6px drop, then hide.",
     "reduced motion": "Instant selection, 120ms fades, no transforms."
   },
-  "responsive": "Container queries on @container/ws; the shell works in a sidebar column or full width, from 320px up.",
+  "responsive": "Container queries on @container/ws; the shell works in a sidebar column or full width, from 320px up. Set min-width:0 on the rail so long brand labels truncate within 320px layouts. Let long workspace titles wrap in their header.",
   "accessibility": [
     "With onNavigate, links render as role=tab buttons in a tablist with roving tabindex, arrows, Home and End, aria-selected and aria-controls from #id hrefs.",
     "Without onNavigate, links stay anchors with aria-current=location.",

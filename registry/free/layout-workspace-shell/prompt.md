@@ -67,3 +67,5 @@ Container queries on @container/ws; the shell works in a sidebar column or full 
 - Tinted surfaces or coloured navigation; colour is the one accent.
 - overflow: hidden on the frame (it clips menus).
 - Unmounting inactive views (drafts are lost).
+
+Keep the rail min-width at zero so a long brand identity truncates inside the available width instead of expanding the phone grid. Keep the workspace title readable and wrapping in its own header.

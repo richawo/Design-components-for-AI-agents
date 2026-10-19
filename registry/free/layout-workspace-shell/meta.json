@@ -25,7 +25,7 @@
       "name": "brand",
       "type": "string",
       "default": "\"Northstar\"",
-      "description": "Workspace identity."
+      "description": "Workspace identity. Long identities truncate within the rail without expanding narrow layouts."
     },
     {
       "name": "eyebrow",
