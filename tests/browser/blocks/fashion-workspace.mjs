@@ -1,3 +1,4 @@
+import {check as checkCalendarWrites} from '../review/fashion-calendar-writes.mjs';
 export async function check({ page, mount, assert }) {
   await mount(`window.calls=[];window.attempt=0;createRoot(document.getElementById('root')).render(<Subject.FashionWorkspace onSavePlan={async payload=>{window.calls.push(payload);if(!window.attempt++)throw Error('fixture')}}/>);`);
   await page.getByRole("tab", { name: "Line plan", exact: true }).click();
@@ -23,4 +24,5 @@ export async function check({ page, mount, assert }) {
   assert.equal(await page.evaluate(() => window.calls[1].plan.categories[0].styles), 7);
   await mount(`createRoot(document.getElementById('root')).render(<Subject.FashionWorkspace scopes={[]}/>);`);
   assert.ok(await page.getByText("No collection records supplied.").isVisible());
+  await checkCalendarWrites({page,mount,assert});
 }

@@ -21906,12 +21906,12 @@
       {
         "name": "onSchedule",
         "type": "(schedule: LaunchSchedule) => void | Promise<void>",
-        "description": "Called with { launchId, date } after a drag, Alt+arrow or the move buttons. The card moves at once; throw to send it back with your message."
+        "description": "Called with { launchId, date } after a drag, Alt+arrow or the move buttons. Host writes run one at a time; reject to restore the prior date."
       },
       {
         "name": "onChecklistChange",
         "type": "(change: LaunchChecklistChange) => void | Promise<void>",
-        "description": "Called with { launchId, checkId, complete } when a check is ticked. Throw to undo the tick."
+        "description": "Called with { launchId, checkId, complete } when a check is ticked. Mutating controls wait for host acknowledgement; reject to restore the prior value."
       },
       {
         "name": "accent",

@@ -323,6 +323,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 8 (19 October): the four inputs and tooltip follow-up pass the Worker dry run with unchanged guards: router 2,655,633 bytes, runtime 57,210,921 bytes and compressed maps 4,765,993 bytes. All 916 public and 1,138 private tracked text sources remain unchanged through focused checks, fresh audits and the build. All forty fresh input captures are byte-identical to the reviewed originals. The detailed checkpoint below records the full/focused results, revisions, source evidence and existing package diagnostics.
 
+- Task 7 dependency follow-up (19 October): Launch Calendar serializes schedule and checklist host writes while retaining keyboard focus. Equal host records preserve pending edits; replaced data and unmount retire old replies and drag listeners. The preserved original race rolls a newer accepted date back after an older rejection. Its new registered Fashion regression now passes exact retry payloads, immediate pending locks, rollback and replacement isolation in both themes, with six reviewed state/accessibility captures. Existing calendar and Fashion workflows, exact calendar metadata replay, strict registry, root/all-block types and all 1,066 tests pass. Public callback types and optional local edits remain unchanged; Fashion composition review continues.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned
