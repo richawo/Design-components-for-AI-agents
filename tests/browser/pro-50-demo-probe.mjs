@@ -9,6 +9,7 @@ const specs = fs
   .filter((file) => file.endsWith(".mjs"))
   .map((file) => ({ slug: file.slice(0, -4) }));
 const finalStates = {
+  "media-before-after": "Final design",
   "devtools-json-inspector": "error",
   "devtools-request-waterfall": "/workspace",
   "media-story-deck": "Make the last ten percent count.",
@@ -107,6 +108,16 @@ try {
         });
       }, true);
     });
+    if (slug === "media-before-after") {
+      await page.getByRole("slider").evaluate(slider => {
+        window.beforeAfterStates = [Number(slider.value)];
+        window.beforeAfterInput = () => {
+          const value = Number(slider.value);
+          if (value !== window.beforeAfterStates.at(-1)) window.beforeAfterStates.push(value);
+        };
+        slider.addEventListener("input", window.beforeAfterInput);
+      });
+    }
     if (slug === "devtools-json-inspector") {
       await page.locator("section").evaluate(reader => {
         const folds = () => ["json-root-3", "json-root-4"].map(id => reader.querySelector('[data-demo="'+id+'"]')?.getAttribute("aria-expanded"));
@@ -196,6 +207,19 @@ try {
       assert.equal(await field.inputValue(), "Cedar-river42!");
       assert.equal(await field.getAttribute("type"), "text", "The password demo finishes revealed");
       assert.equal(await page.getByRole("button", { name: "Hide password", exact: true }).getAttribute("aria-pressed"), "true");
+    } else if (slug === "media-before-after") {
+      const states = await page.evaluate(() => window.beforeAfterStates);
+      assert.equal(states.length, 4, "The comparison replay makes three deliberate changes");
+      assert.equal(states[0], 48);
+      assert.ok(states[1] >= 68 && states[1] <= 72, "The pointer step reveals approximately seventy percent of the wireframe");
+      assert.deepEqual(states.slice(2), [100, 0], "End reveals the complete wireframe before Home reveals the finished cover");
+      const slider = page.getByRole("slider");
+      assert.equal(await slider.inputValue(), "0");
+      assert.equal(await slider.getAttribute("aria-valuetext"), "0 percent Wireframe");
+      assert.equal(await slider.evaluate(node => node === document.activeElement), true);
+      assert.equal(await page.locator('figure > div > div[style*="clip-path"]').evaluate(node => parseFloat(node.style.clipPath.split(" ")[1])), 100);
+      assert.equal(await page.locator('figure > div > div[style*="left"]').evaluate(node => parseFloat(node.style.left)), 0);
+      await slider.evaluate(node => node.removeEventListener("input", window.beforeAfterInput));
     } else if (slug === "devtools-json-inspector") {
       assert.deepEqual(await page.evaluate(() => window.jsonFoldStates), [["true", "true"], ["false", "true"], ["false", "false"]], "The JSON replay folds usage before tools");
       for (const id of ["json-root-3", "json-root-4"]) {

@@ -356,6 +356,10 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 7 (19 October): JSON Inspector keeps its bounded, keyboard-scrollable document reader. Fold state and React keys follow complete logical key paths, so reordered objects retain the correct branches and focus. Content is 13px mono, the heading is 16px, and the demo stays aligned at the top as it folds. Entry and chevrons respect live reduced motion. Original-source path-reordering and mid-entry preference failures are preserved. Keyboard disclosure, null/false/empty values, cycles versus shared values, depth bounds, independent IDs, long data and 500-entry recovery pass. The recovered final value is scrolled visibly into its own region. The 41-mount source review, twenty-eight state/default accessibility audits, six widths, reviewed entrance/state captures, Next regression, theme control and official audit pass. Exact metadata replay verifies usage/tools fold in order and their descendants leave interaction. Strict registry, fresh root/isolated types and all 1,066 unit tests pass. Its reviewed 3.8s film and paired poster retain the complete measured 832×900 replay: source gap 11ms, delivery 13.07ms and moving-frame p95 25.00ms, with no stalls and every recording guard intact. The next full checkpoint has 62 suites and 77 metadata replays and remains pending. 17 components and 12 blocks remain in task 7; 115 films remain in task 1.
 
+- Task 7 (19 October): Before/After now keeps decorative host controls inert, makes controlled values without a writer read-only, and aligns native values, clips, dividers and announcements to whole percentages. Live reduced motion retains focus. A preserved 341px stage inside a 288px card is fixed with explicit full width. Neutral artwork and 12px labels remain readable at 320px. Explicit system colours align computed and painted forced-colour palettes; the prior dark capture is byte-identical. Original failures and the corrected test-host log reset remain archived. The 39-mount source review, 22 accessibility audits, six widths, reviewed entrance/state captures, Next regression, theme control, official audit and exact replay pass, with strict registry, fresh types and all 1,066 tests. Its reviewed 4.0s film and paired poster retain complete 832×900 framing: source gap 14ms, delivery 16.25ms and moving-frame p95 24.42ms, with no stalls and unchanged guards. The full 62-suite / 78-replay batch checkpoint remains pending. 16 components and 12 blocks remain; 115 films remain queued.
+
+- Task 4 follow-up: shared player commit `d1565fa` adds native range pointer/drag/key defaults while preserving prevented handlers, host refusal, bounds, step, RTL and cancellation. Text-editing keys cannot alter ranges. Original static-replay and 23-to-29 text-editing negatives are preserved. Five legacy demo suites pass; the final affected two suites, exact comparison replay, strict registry, fresh types and all 1,066 tests pass.
+
 ## 1. Re-record demo videos (115 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
@@ -506,16 +510,16 @@ All nine parked rebuilds are shipped in both repos. Their original `_wip/<slug>`
 | finance-budget-variance | Completed 17 October: Next probe, dark/light accessibility, responsive and entrance/state captures, live demo and refreshed poster pass. |
 | finance-cashflow-dashboard | Completed 17 October: weekly balance and in/out bars, movable payments, independent pending saves, invalid-data guards, selected-week list geometry, Next probe/demo, both-theme accessibility, responsive/state/entrance captures and refreshed poster pass. |
 
-## 7. Continue the review (17 components, then 12 blocks)
+## 7. Continue the review (16 components, then 12 blocks)
 
-Same process as the 181 already done: hold each to the first ~100 components' standard. Briefs:
+Same process as the 182 already done: hold each to the first ~100 components' standard. Briefs:
 `docs/review/REVIEW_BRIEF.md`, `docs/review/SUITE_BRIEF.md` for industry components, suite languages in
 `docs/review/suites/`. Work newest first, about four components per batch, and verify each (build, tsc, tests,
 check-component, your own captures of states and mid-entrance frames, a refreshed poster, a rewritten pro-50 probe for
 industry components).
 
 - **Commerce** is reviewed. Keep `block-commerce-workspace` compatible with its rebuilt parts.
-- **Smaller components** (#151–179): media-before-after, data-kanban-compact, data-file-explorer, forms-preference-center, date-week-agenda,
+- **Smaller components** (#151–179): data-kanban-compact, data-file-explorer, forms-preference-center, date-week-agenda,
   onboarding-setup-checklist, date-booking-slots, input-file-dropzone, input-shortcut-recorder,
   feedback-empty-search, navigation-pagination-window, primitives-shortcut-reference, selects-radio-cards,
   progress-milestones, content-accordion-index, feedback-inline-alert, navigation-breadcrumb-fold.

@@ -8,13 +8,13 @@
     "motion": "motion/react"
   },
   "layout": {
-    "direction": "A 4:3 artwork stage with two precisely aligned layers, an unambiguous vertical divider and a 44px handle. Caption and before/after labels sit beneath the image.",
+    "direction": "Align two original typographic covers in an explicitly full-width 4:3 image stage. Let its 256px minimum height keep small covers legible without widening the stage beyond its card. Clip the wireframe layer from the right as the split changes. Use a crisp vertical divider, 44px handle, 12px before/after labels and a 16px caption. Keep the artwork and surrounding chrome neutral.",
     "container": "Size to the parent with @container. Keep the root width at 100%, capped to the focused component, with 24px desktop and 16px narrow padding.",
     "rhythm": "4/8px spacing; 1px edges; 44px minimum interactive targets."
   },
   "typography": {
     "body": "font-sans, 14-16px, line-height 1.5",
-    "metadata": "font-mono, 11-12px, restrained tracking",
+    "metadata": "font-mono, 12px, restrained tracking",
     "heading": "font-display or font-serif, 24-36px, tracking -0.035em"
   },
   "color": {
@@ -32,9 +32,9 @@
     }
   },
   "motion": {
-    "entrance": "A single opacity and 8px rise over 320ms.",
-    "interaction": "150ms press response; 240ms state changes. No ambient loops.",
-    "reduced": "Remove transforms and layout motion; keep opacity at 120ms or less."
+    "entrance": "The comparison enters with opacity and an 8px rise over 320ms.",
+    "interaction": "The divider follows the native value immediately. The handle has the existing 150ms hover and 100ms press response.",
+    "reduced": "Listen to live preference changes and immediately finish the entry without replacing the range or losing focus. Drop handle scaling under reduced motion."
   },
   "responsive": {
     "widths": [
@@ -78,19 +78,19 @@
         "name": "before",
         "type": "ReactNode",
         "default": "drawn wireframe cover",
-        "description": "First visual layer; provide non-interactive content. Exposed through the comparison label, decorative visual content is hidden from screen readers."
+        "description": "Decorative visual layer. Hidden from the accessibility tree; nested controls are excluded from keyboard navigation."
       },
       {
         "name": "after",
         "type": "ReactNode",
         "default": "drawn editorial cover",
-        "description": "Second visual layer; no remote imagery is required."
+        "description": "Decorative visual layer. Hidden from the accessibility tree; nested controls are excluded from keyboard navigation."
       },
       {
         "name": "value",
         "type": "number",
         "default": "undefined",
-        "description": "Controlled split percentage."
+        "description": "Controlled split percentage. A controlled comparison without onChange is read-only."
       },
       {
         "name": "defaultValue",
@@ -116,5 +116,12 @@
     "Remote images, fake network success or hidden external dependencies.",
     "Decorative status badges, gradients as filler, low-contrast text.",
     "Unlabelled controls, hover-only functionality, overflow at 320px."
+  ],
+  "contract": [
+    "Keep BeforeAfterProps. before and after are decorative ReactNode layers. Hide them from the accessibility tree and make their descendants inert so host controls cannot enter keyboard navigation.",
+    "Use a real native range across the image for pointer dragging, keyboard arrows, Home and End. Keep the divider and clip exactly aligned with the displayed split. Normalize non-finite percentages to 50. Clamp finite values to 0-100 and round them to whole percentages so the native range, divider, clip and announced value agree.",
+    "Uncontrolled instances own local state. Controlled instances display the host value and call onChange synchronously; a controlled value without a writer is read-only and offers no drag affordance. The host owns asynchronous work.",
+    "Use a visible compound focus ring over both light and dark artwork. Expose the native range and use explicit Canvas/CanvasText system colours in forced-colour mode. The image comparison is a full-surface native range with its visible divider; it retains the control kit hover, press, focus and target-size principles.",
+    "Keep instance-scoped caption IDs, useful comparison labels and long copy within the 320px layout."
   ]
 }

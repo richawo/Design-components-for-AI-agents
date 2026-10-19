@@ -7,7 +7,6 @@
   "description": "A full-surface comparison slider with a crisp divider and keyboard control, shown with an original typographic wireframe and finished editorial cover.",
   "tags": [
     "media",
-    "media",
     "before",
     "after",
     "responsive",
@@ -43,25 +42,25 @@
       "name": "before",
       "type": "ReactNode",
       "default": "drawn wireframe cover",
-      "description": "First visual layer; provide non-interactive content. Exposed through the comparison label, decorative visual content is hidden from screen readers."
+      "description": "Decorative visual layer. Hidden from the accessibility tree; nested controls are excluded from keyboard navigation."
     },
     {
       "name": "after",
       "type": "ReactNode",
       "default": "drawn editorial cover",
-      "description": "Second visual layer; no remote imagery is required."
+      "description": "Decorative visual layer. Hidden from the accessibility tree; nested controls are excluded from keyboard navigation."
     },
     {
       "name": "value",
       "type": "number",
       "default": "undefined",
-      "description": "Controlled split percentage."
+      "description": "Controlled whole-percentage split, rounded and clamped to 0-100. Non-finite values use 50. A controlled comparison without onChange is read-only."
     },
     {
       "name": "defaultValue",
       "type": "number",
       "default": "48",
-      "description": "Initial split, clamped to 0-100."
+      "description": "Initial local percentage, rounded and clamped to 0-100. Non-finite values use 50."
     },
     {
       "name": "onChange",
@@ -81,11 +80,11 @@
     "steps": [
       "wait:600",
       "click:@compare-slider:0.7,0.5",
-      "wait:800",
-      "key:Home",
-      "wait:700",
+      "wait:1100",
       "key:End",
-      "wait:700"
+      "wait:1000",
+      "key:Home",
+      "wait:1100"
     ],
     "loop": false
   },

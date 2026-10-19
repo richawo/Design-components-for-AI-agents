@@ -1,27 +1,29 @@
 # Before and After Comparator
 
-Build a standalone React 19 and Tailwind v4 component. A full-surface comparison slider with a crisp divider and keyboard control, shown with an original typographic wireframe and finished editorial cover.
+Build a standalone React 19 and Tailwind v4 component with the existing named export, props type and overridable default demo.
 
-## Layout
+## Layout and type
 
-A 4:3 artwork stage with two precisely aligned layers, an unambiguous vertical divider and a 44px handle. Caption and before/after labels sit beneath the image. Size to the container. Use a 4/8px rhythm, 1px surface edges, 16px narrow padding and 24px desktop padding. Controls have 44px targets.
+Align two original typographic covers in an explicitly full-width 4:3 image stage. Let its 256px minimum height keep small covers legible without widening the stage beyond its card. Clip the wireframe layer from the right as the split changes. Use a crisp vertical divider, 44px handle, 12px before/after labels and a 16px caption. Keep the artwork and surrounding chrome neutral.
 
-## Typography and colour
+## Interaction and data
 
-Use font-sans at 14-16px/1.5, font-mono metadata at 11-12px and a 24-36px heading with -0.035em tracking. Dark uses #111111, #f5f5f5, #a3a3a3 and #333333; light uses #ffffff, #171717, #525252 and #d4d4d4. Maintain AA contrast.
+Keep BeforeAfterProps. before and after are decorative ReactNode layers. Hide them from the accessibility tree and make their descendants inert so host controls cannot enter keyboard navigation.
+
+Use a real native range across the image for pointer dragging, keyboard arrows, Home and End. Keep the divider and clip exactly aligned with the displayed split. Normalize non-finite percentages to 50. Clamp finite values to 0-100 and round them to whole percentages so the native range, divider, clip and announced value agree.
+
+Uncontrolled instances own local state. Controlled instances display the host value and call onChange synchronously; a controlled value without a writer is read-only and offers no drag affordance. The host owns asynchronous work.
+
+Use a visible compound focus ring over both light and dark artwork. Expose the native range and use explicit Canvas/CanvasText system colours in forced-colour mode. The image comparison is a full-surface native range with its visible divider; it retains the control kit hover, press, focus and target-size principles.
+
+Keep instance-scoped caption IDs, useful comparison labels and long copy within the 320px layout.
 
 ## Motion
 
-Use a 320ms opacity/8px entrance, 150ms press response and 240ms state changes, easing cubic-bezier(0.22,1,0.36,1). No ambient loops. Reduced motion removes transforms and layout animation and limits fades to 120ms.
+The comparison enters with opacity and an 8px rise over 320ms. The divider follows the native value immediately. The handle has the existing 150ms hover and 100ms press response. Listen to live preference changes and immediately finish the entry without replacing the range or losing focus. Drop handle scaling under reduced motion.
 
-## Behaviour and accessibility
+## Integration
 
-Use semantic elements, native keyboard behaviour, visible focus rings and instance-scoped IDs. Expose typed content and callbacks. Handle empty custom data and repeated instances. Announce important feedback politely. Match the source state ownership and callback contract.
+Provide aligned decorative before/after layers. Use defaultValue for local interaction or value with onChange for host control. A controlled comparison without a writer is read-only. The host owns persistence; nested visual controls are inert.
 
-## Responsive
-
-Design for 320, 390, 768, 1024, 1440 and 1920px. Respond to the container with @container variants, wrap text and stack secondary details. Scroll only within explicitly labelled local regions.
-
-## Avoid
-
-No remote imagery, false success states, unlabelled controls, hover-only actions, low contrast or decorative status pills. The demo is an isolated component on a quiet stage.
+Keep all source in one self-contained file with allowed imports. Use the source palettes and font roles, real content, visible focus, written empty states and 320/390/768/1024/1440/1920px container layouts.

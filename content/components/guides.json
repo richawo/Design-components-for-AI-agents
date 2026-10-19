@@ -2839,7 +2839,7 @@
     "useWhen": "Comparing two authentic visuals with a controllable divider.",
     "avoidWhen": "Claims of product results unsupported by the actual before and after assets.",
     "integration": [
-      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+      "Provide aligned decorative before/after layers. Use defaultValue for local interaction or value with onChange for host control. A controlled comparison without a writer is read-only. The host owns persistence; nested visual controls are inert."
     ],
     "related": [
       "media-story-deck",
