@@ -3483,14 +3483,14 @@
     "integration": [
       "Provide complete `periods` with integer minor-unit amounts and unique line IDs. Invalid records disable export rather than inventing a total.",
       "Every panel follows the selected period. CSV export uses that period; Print report opens a plain, readable print layout.",
-      "Use `onExport` to connect a reporting service, or keep the built-in CSV download. Rejected exports preserve the selected context."
+      "Host exports receive an independent snapshot of the original period. Promise callbacks keep that export pending; equal records preserve it, while changed report values, currency, brand or unmount retire old completion feedback. Rejection keeps the current report available for retry. Without onExport, keep the built-in CSV download."
     ],
     "related": [
       "block-saas-dashboard",
       "block-commerce-workspace",
       "block-fashion-workspace"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-19"
   },
   "block-fashion-workspace": {
     "useWhen": "A fashion team needs collection performance, a working line plan and launch readiness within the same product workspace.",

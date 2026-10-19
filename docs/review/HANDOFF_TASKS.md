@@ -327,6 +327,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 7 dependency follow-up (19 October): finite stock-cover labels exposed a 3.52:1 light-theme contrast failure in Merchandising Dashboard. Its week suffix now uses stronger neutral ink. The registered regression checks both themes and actual row hover; four captures are visually reviewed and the existing merchandising workflow passes. Strict registry, root/all-block types and all 1,066 tests pass. The first test run hit the unchanged five-second content-pack timeout under machine load; the complete run passes with two workers and the same assertions and timeout. Fashion composition review continues.
 
+- Task 7 Financial follow-up (19 October): export callbacks receive independent report snapshots and run synchronously before the existing await. Equal report values retain pending work; replaced report values, currency, brand and unmount retire old completion feedback. The pending action retains keyboard focus and rejects duplicate activation. Exact retry payloads, callback mutation, late success/rejection and remount ownership pass in six native source mounts across both themes. Twelve focused action/notice captures are reviewed, and the complete registered Financial workflow still passes native CSV download, print, rejection/retry and invalid-data checks. Strict registry, root/all-block types and all 1,066 tests pass. Exact money formatting and the full Financial composition review remain open; the nine-block counter is unchanged.
+
 ## Ground rules (read first)
 
 - Two repos. Public: `richawo/Design-components-for-AI-agents` (this one). Pro: `richawo/Design-for-AI`, private, cloned

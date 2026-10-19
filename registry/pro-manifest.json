@@ -6090,7 +6090,7 @@
       {
         "name": "onExport",
         "type": "(period: FinancialReportPeriod) => void | Promise<void>",
-        "description": "Optional host export. Without a callback the block downloads the selected period cost lines as CSV in minor units."
+        "description": "Optional host export of an independent period snapshot. A promise keeps the action pending; changed report values, currency, brand or unmount retire old completion feedback. Without a callback, download the selected cost lines as CSV in minor units."
       }
     ],
     "added": "2026-10-12",
