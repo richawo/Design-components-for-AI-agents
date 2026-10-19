@@ -92,9 +92,15 @@ try {
     }),
   );
   await page.waitForTimeout(100);
-  assert.match(
+  assert.equal(
     await page.getByRole("status").innerText(),
-    /Choose an available time/,
+    "No available time selected.",
+    "An empty day must not ask for an unavailable time",
+  );
+  assert.equal(
+    await page.getByText("No times are available for this day.", { exact: true }).count(),
+    1,
+    "The empty schedule keeps its written no-times state",
   );
   assert.equal(await page.getByRole("radio").count(), 0);
   await page.setViewportSize({ width: 320, height: 844 });
