@@ -342,6 +342,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 7 (19 October): Release Notes keeps its editorial timeline and now stops active entry motion immediately when reduced motion changes, retaining selected text and disclosure focus. Filters fit one row at 320px, dates use readable 12px text, and the complete phone demo fits its 1,120px stage. Reader-scoped selection corrects the preserved 1.44:1 light-theme failure to 17.93:1 (17.32:1 dark). The 29-mount source review, fourteen state/default accessibility audits, six widths and reviewed entrance/state captures pass; the current selection follow-up adds fourteen workflow mounts and twelve state audits. The Next regression, three controls, official audit and exact Features replay pass, with strict registry, TypeScript and all 1,064 unit tests. Its reviewed 3.5s film and paired poster are current: maximum source gap 12ms, changed-source delivery 62.65ms and moving-frame p95 33.14ms, with no stalls and unchanged guards. The new content/cards group brings the next full checkpoint to 61 suites and 71 metadata replays; that batch checkpoint remains pending. 23 components and 12 blocks remain in task 7.
 
+- Task 7 (19 October): Event Ticket keeps its large serif identity and perforated guest stub. Guest/ticket labels and programme times use 12px metadata, and the programme has an interruptible 240ms height/opacity disclosure that stops immediately on live reduced motion. Closed contents leave keyboard and accessibility navigation at once. The 27-mount source review, fourteen state/default accessibility audits, six widths, long guest/reference/programme, empty/updated content, independent IDs, entrance/state captures, Next regression, three controls and official audit pass. Metadata replay observes the actual closed/open/closed sequence and a zero-height final programme. Strict registry, root/isolated Pro types and all 1,064 unit tests pass. Its reviewed 3.32s film and paired poster pass every unchanged recording guard, with no stalls (source gap 13ms, delivery 24.63ms, moving-frame p95 24.90ms). A measured 640×800 fixed viewport retains the complete expanded programme at 2× density. The accepted owned-tab film follows longer programme-reading holds; navigation, screenshot-delivery and short-film failures remain archived. The next full checkpoint has 61 suites and 72 metadata replays and remains pending. 22 components and 12 blocks remain in task 7.
+
 ## 1. Re-record demo videos (112 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
@@ -488,17 +490,16 @@ All nine parked rebuilds are shipped in both repos. Their original `_wip/<slug>`
 | finance-budget-variance | Completed 17 October: Next probe, dark/light accessibility, responsive and entrance/state captures, live demo and refreshed poster pass. |
 | finance-cashflow-dashboard | Completed 17 October: weekly balance and in/out bars, movable payments, independent pending saves, invalid-data guards, selected-week list geometry, Next probe/demo, both-theme accessibility, responsive/state/entrance captures and refreshed poster pass. |
 
-## 7. Continue the review (23 components, then 12 blocks)
+## 7. Continue the review (22 components, then 12 blocks)
 
-Same process as the 175 already done: hold each to the first ~100 components' standard. Briefs:
+Same process as the 176 already done: hold each to the first ~100 components' standard. Briefs:
 `docs/review/REVIEW_BRIEF.md`, `docs/review/SUITE_BRIEF.md` for industry components, suite languages in
 `docs/review/suites/`. Work newest first, about four components per batch, and verify each (build, tsc, tests,
 check-component, your own captures of states and mid-entrance frames, a refreshed poster, a rewritten pro-50 probe for
 industry components).
 
 - **Commerce** is reviewed. Keep `block-commerce-workspace` compatible with its rebuilt parts.
-- **Smaller components** (#151–179): cards-event-ticket,
-  chart-slope-comparison, chart-bullet-targets, media-story-deck, devtools-request-waterfall, devtools-json-inspector,
+- **Smaller components** (#151–179): chart-slope-comparison, chart-bullet-targets, media-story-deck, devtools-request-waterfall, devtools-json-inspector,
   media-before-after, data-kanban-compact, data-file-explorer, forms-preference-center, date-week-agenda,
   onboarding-setup-checklist, date-booking-slots, input-file-dropzone, input-shortcut-recorder,
   feedback-empty-search, navigation-pagination-window, primitives-shortcut-reference, selects-radio-cards,

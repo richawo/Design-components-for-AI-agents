@@ -7216,9 +7216,9 @@
       "steps": [
         "wait:600",
         "click:@ticket-details",
-        "wait:900",
+        "wait:1600",
         "click:@ticket-details",
-        "wait:700"
+        "wait:1100"
       ],
       "loop": false
     },
@@ -7232,6 +7232,18 @@
           "light"
         ],
         "default": "dark"
+      },
+      {
+        "prop": "event",
+        "label": "Event",
+        "kind": "text",
+        "default": "Field Notes"
+      },
+      {
+        "prop": "attendee",
+        "label": "Guest",
+        "kind": "text",
+        "default": "Alex Morgan"
       }
     ]
   },

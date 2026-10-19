@@ -1273,17 +1273,20 @@
     "updated": "2026-10-12"
   },
   "cards-event-ticket": {
-    "useWhen": "A concise ticket containing event and admission details.",
-    "avoidWhen": "An admission credential whose validity is determined only by its appearance.",
+    "useWhen": "An event pass needs a prominent event identity, guest and admission stub, a readable ticket reference and an expandable programme.",
+    "avoidWhen": "The user needs event booking, payment or scan-based admission. This component displays the pass and programme; the host owns those workflows.",
     "integration": [
-      "Supply your own records through `agenda`. Preserve stable keys or IDs when the data contract provides them."
+      "Pass host-formatted date, time and venue text. The component does not infer a timezone or parse a booking schedule.",
+      "agenda supplies the programme in display order. An empty programme still opens to an announcement, and arriving programme items update the open view.",
+      "The programme uses a native disclosure button with aria-expanded and an instance-scoped controlled region. Multiple tickets remain independent.",
+      "Keep admission validation and check-in in the host. ticketCode is readable text, and the component does not generate a scannable code."
     ],
     "related": [
-      "card-profile-stats",
-      "selects-radio-cards",
-      "app-permission-matrix"
+      "date-booking-slots",
+      "content-accordion-index",
+      "mobile-trip-itinerary"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-19"
   },
   "cart-drawer": {
     "useWhen": "Reviewing basket items, quantities and totals while continuing to shop.",

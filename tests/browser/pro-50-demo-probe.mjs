@@ -9,6 +9,7 @@ const specs = fs
   .filter((file) => file.endsWith(".mjs"))
   .map((file) => ({ slug: file.slice(0, -4) }));
 const finalStates = {
+  "cards-event-ticket": "View programme",
   "content-release-notes": "A calmer place to work.",
   "input-number-stepper": "workers",
   "input-password-checklist": "3 of 3 requirements met",
@@ -101,6 +102,15 @@ try {
         });
       }, true);
     });
+    if (slug === "cards-event-ticket") {
+      await page.locator('[data-demo="ticket-details"]').evaluate(node => {
+        window.ticketExpandedStates = [node.getAttribute("aria-expanded")];
+        window.ticketObserver = new MutationObserver(() => {
+          window.ticketExpandedStates.push(node.getAttribute("aria-expanded"));
+        });
+        window.ticketObserver.observe(node, {attributes:true,attributeFilter:["aria-expanded"]});
+      });
+    }
     await page.evaluate((steps) => window.play(steps), steps);
     await page.waitForTimeout(100);
     const last = steps
@@ -133,6 +143,13 @@ try {
       assert.equal(await field.inputValue(), "Cedar-river42!");
       assert.equal(await field.getAttribute("type"), "text", "The password demo finishes revealed");
       assert.equal(await page.getByRole("button", { name: "Hide password", exact: true }).getAttribute("aria-pressed"), "true");
+    } else if (slug === "cards-event-ticket") {
+      assert.deepEqual(await page.evaluate(() => window.ticketExpandedStates), ["false", "true", "false"], "The ticket replay opens the programme before closing it");
+      assert.equal(await page.getByRole("button", {name:"View programme",exact:true}).getAttribute("aria-expanded"), "false");
+      assert.equal(await page.getByRole("list").count(), 0, "The programme is inaccessible after the closing action");
+      const id = await target.getAttribute("aria-controls");
+      assert.equal(await page.locator('[id='+JSON.stringify(id)+']').evaluate(node => node.getBoundingClientRect().height), 0, "The programme is visually collapsed");
+      await page.evaluate(() => window.ticketObserver.disconnect());
     } else if (notice.some((s) => s.trim() && !s.startsWith("Connect "))) {
       assert.doesNotMatch(notice.join(" "), /failed|Connect the host/);
     } else if (
