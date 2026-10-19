@@ -431,6 +431,8 @@ from changing subsequent block tests. Original failures and diagnostics remain l
 
 - Legal matter accessibility follow-up: the matter dashboard now keeps its five data cells outside the disclosure button, with expanded content in a separate spanning row. Full-row pointer activation and Enter/Space disclosure retain their geometry and focus. The original composed ARIA failure is preserved. Both-theme source checks, four accessibility audits, reviewed closed/expanded captures, complete standalone and composed Next workflows, strict registry, root/all-eleven-block types and all 1,066 unit tests pass. The full Legal block review remains in progress.
 
+- Legal revision-note follow-up: superseded filenames now retain readable muted ink on the semantic note surface, and revision headings use body ink. Preserved original failures measured 4.31:1 for the dark filename and 4.27:1 for the light heading. Both-theme regression and four accessibility audits, reviewed original/replacement captures, full Next Legal workflow, strict registry, root/all-eleven-block types and all 1,066 unit tests pass. Staging a replacement keeps the prior filename and reviewer explanation. The full Legal block review remains in progress.
+
 ## 1. Re-record demo videos (120 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old

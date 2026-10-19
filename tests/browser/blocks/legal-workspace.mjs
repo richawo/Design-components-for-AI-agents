@@ -1,3 +1,4 @@
+import { check as checkDocumentRevision } from '../review/legal-document-revision.mjs';
 import { check as checkMatterSemantics } from '../review/legal-matter-semantics.mjs';
 import { check as checkInboxSnapshots } from '../review/legal-inbox-snapshots.mjs';
 import { check as checkWriterAvailability } from '../review/legal-writer-availability.mjs';
@@ -44,4 +45,5 @@ export async function check({ page, mount, assert, capture = async () => {} }) {
   await checkWriterAvailability({ page, mount, assert, capture });
   await checkInboxSnapshots({ page, mount, assert, capture });
   await checkMatterSemantics({ page, mount, assert, capture });
+  await checkDocumentRevision({ page, mount, assert, capture });
 }
