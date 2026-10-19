@@ -1,3 +1,4 @@
+import { checkAllocation } from './review/financial-number-formats.mjs';
 import assert from "node:assert/strict";
 import { launchChromium } from "../../scripts/lib/browser.mjs";
 import { mountFixture } from "../../scripts/lib/component-fixture.mjs";
@@ -99,6 +100,7 @@ try {
   console.log(
     "PASS revenue chart missing history, zero baseline, single-point labels and valid comparison.",
   );
+  await checkAllocation({page,assert,mount:code=>mountFixture(page,"chart-allocation","pro",code)});
 } finally {
   await browser.close();
 }

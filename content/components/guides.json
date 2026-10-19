@@ -270,14 +270,15 @@
     "useWhen": "A readable collection of typed rows with sorting and selection.",
     "avoidWhen": "A spreadsheet requiring cell editing, formulas or server-scale virtualization.",
     "integration": [
-      "Supply your own records through `columns`, `data`, `bulkActions`. Preserve stable keys or IDs when the data contract provides them."
+      "Supply your own records through `columns`, `data`, `bulkActions`. Preserve stable keys or IDs when the data contract provides them.",
+      "Numeric columns may supply formatValue(value). It formats visible cells, screen-reader text and the selected sum while sorting uses raw numbers. Account for intermediate counting values."
     ],
     "related": [
       "dashboard-orders-table",
       "data-file-explorer",
       "data-kanban-compact"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-19"
   },
   "devtools-code-block": {
     "useWhen": "Readable code examples with language styling and copying.",
@@ -1305,14 +1306,15 @@
     "useWhen": "Comparing positive parts of a whole with readable amounts and shares.",
     "avoidWhen": "Negative values, time-series trends or a total that does not represent a meaningful whole.",
     "integration": [
-      "Supply your own records through `views`, `palette`. Preserve stable keys or IDs when the data contract provides them."
+      "Supply your own records through `views`, `palette`. Preserve stable keys or IDs when the data contract provides them.",
+      "Optional formatValue(value, format) receives original units and full, compact or short mode. Apply a consistent conversion to all modes, including animated intermediate values; weights and geometry keep raw slice values."
     ],
     "related": [
       "chart-portfolio",
       "chart-waffle",
       "chart-candlestick"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-19"
   },
   "chart-bullet-targets": {
     "useWhen": "Several nonnegative goals need a compact actual-versus-target comparison with a consistent target marker and a choice of reporting period.",

@@ -7755,6 +7755,11 @@
         "type": "number",
         "default": "0",
         "description": "Currency precision for exact values in rows and selected-slice details, from zero to six fractional digits."
+      },
+      {
+        "name": "formatValue",
+        "type": "(value: number, format: \"full\" | \"compact\" | \"short\") => string",
+        "description": "Optional display of original slice units for full, compact and short amounts. Apply one consistent scale in all three modes. Counting animations also pass intermediate values."
       }
     ],
     "added": "2026-10-07",

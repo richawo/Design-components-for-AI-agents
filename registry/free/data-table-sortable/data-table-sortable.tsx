@@ -47,6 +47,8 @@ export type DataTableColumn = {
   sortable?: boolean;
   /** Direction of the first click. Figures and dates start descending, text ascending. */
   firstSort?: SortDirection;
+  /** Custom display for numeric columns, including animated values and selection totals. Sorting uses the raw numbers. */
+  formatValue?: (value: number) => string;
 };
 
 export type DataTableRow = { id: string; [key: string]: string | number };
@@ -604,11 +606,11 @@ const Row = memo(function Row({
       case "number":
         return (
           <span className={`whitespace-nowrap text-[14px] font-medium tabular-nums tracking-[-0.01em] ${INK[90]}`}>
-            <span className="sr-only">{col.kind === "currency" ? fmt.money.format(Number(v)) : fmt.number.format(Number(v))}</span>
+            <span className="sr-only">{col.formatValue ? col.formatValue(Number(v)) : col.kind === "currency" ? fmt.money.format(Number(v)) : fmt.number.format(Number(v))}</span>
             <span aria-hidden="true">
               <Figure
                 value={Number(v)}
-                format={col.kind === "currency" ? money : plain}
+                format={col.formatValue ? (n): [string, string] => [col.formatValue!(n), ""] : col.kind === "currency" ? money : plain}
                 run={revealed}
                 delay={delay + T.count}
                 reduce={reduce}
@@ -783,7 +785,8 @@ function SortableTableWithColumns({
     return columns.map((_, i) => (i === title ? "title" : i === value ? "value" : "meta"));
   }, [columns]);
   const selectedRows = useMemo(() => sorted.filter((r) => selection.has(r.id)), [sorted, selection]);
-  const figureKey = [...columns].reverse().find((c) => isFigure(c.kind))?.key;
+  const figureColumn = [...columns].reverse().find((c) => isFigure(c.kind));
+  const figureKey = figureColumn?.key;
   const selectedSum = figureKey ? selectedRows.reduce((s, r) => s + Number(r[figureKey] ?? 0), 0) : 0;
   const allState: "on" | "off" | "mixed" = selectedRows.length === 0 ? "off" : selectedRows.length === sorted.length ? "on" : "mixed";
 
@@ -1189,7 +1192,9 @@ function SortableTableWithColumns({
 
   /* ---------- bulk actions ---------- */
   const barVisible = selectable && selectedRows.length > 0;
-  const money = useCallback((n: number) => splitAmount(fmt.money, n), [fmt]);
+  const money = useCallback((n: number): [string, string] =>
+    figureColumn?.formatValue ? [figureColumn.formatValue(n), ""] : splitAmount(fmt.money, n),
+  [fmt, figureColumn]);
   const count = useCallback((n: number): [string, string] => [fmt.count.format(n), ""], [fmt]);
 
   /* ---------- render ---------- */

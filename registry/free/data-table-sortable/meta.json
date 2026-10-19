@@ -29,7 +29,7 @@
       "name": "columns",
       "type": "DataTableColumn[]",
       "default": "Invoice, Client, Issued, Status, Amount",
-      "description": "Column key, header and kind (text, mono, entity, date, status, currency, number), plus width, minWidth, maxWidth, sortable and firstSort. The last column takes spare room."
+      "description": "Column key, header and kind (text, mono, entity, date, status, currency, number), plus width, minWidth, maxWidth, sortable and firstSort. The last column takes spare room. Numeric columns can provide formatValue(value) for cells and selection totals; sorting uses the raw numbers."
     },
     {
       "name": "data",

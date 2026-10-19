@@ -1,3 +1,4 @@
+import { checkTable } from './review/financial-number-formats.mjs';
 import assert from "node:assert/strict";
 import { launchChromium } from "../../scripts/lib/browser.mjs";
 import { mountFixture } from "../../scripts/lib/component-fixture.mjs";
@@ -31,4 +32,8 @@ assert.deepEqual(errors, []);
 console.log(
   "Typed custom rows, column sorting and select-all callback passed.",
 );
-await b.close();
+try {
+  await checkTable({page:p,assert,mount:code=>mountFixture(p,"data-table-sortable","free",code)});
+} finally {
+  await b.close();
+}

@@ -47,3 +47,6 @@ Build one sortable data table in React + Tailwind CSS v4 + `motion/react` (lucid
 - No left-aligned figures or proportional digits. No horizontal page scroll at any width.
 
 An empty `columns` array renders the title and `emptyLabel` status rather than an invalid table. Keep secondary text and numbers at least 65% ink in both themes.
+
+**Custom numeric display**
+A numeric column may supply `formatValue(value)` for its visible cells, screen-reader text and selected sum. Sorting keeps the original numbers. The formatter also receives intermediate counting values, so keep it pure and account for those values when displaying integer minor units. Omit it to retain the existing currency and number formatting.

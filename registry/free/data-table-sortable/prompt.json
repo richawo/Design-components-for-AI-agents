@@ -101,5 +101,6 @@
     "horizontal page scroll at any width",
     "colour anywhere but selection and semantic status dots"
   ],
-  "dataRobustness": "An empty columns array shows the themed title and emptyLabel status. Metadata and numbers use at least 65% ink so both themes remain legible."
+  "dataRobustness": "An empty columns array shows the themed title and emptyLabel status. Metadata and numbers use at least 65% ink so both themes remain legible.",
+  "valueFormatting": "A numeric column may supply formatValue(value) to display original units such as integer minor units. Use it consistently for visible cells, screen-reader text and the selected sum. Raw numeric values still determine sort order. The callback also receives intermediate counting values; keep it pure and handle those values deliberately."
 }
