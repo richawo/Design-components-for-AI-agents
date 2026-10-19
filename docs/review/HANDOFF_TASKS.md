@@ -425,6 +425,8 @@ from changing subsequent block tests. Original failures and diagnostics remain l
 
 - Legal review dependency follow-up: document countdowns now receive the same host reference date as the matter overview and obligation timeline. The original case displayed one day when the host date required eight. A registered date regression, both-theme source accessibility checks and reviewed captures, the complete Next Legal workflow, strict registry, root/all-eleven-block types and all 1,066 unit tests pass. The full Legal block review remains in progress.
 
+- Legal review dependency follow-up: missing completion/upload writers now leave their actions unavailable while preserving evidence and staged files. Connecting a writer retains the draft and hands off the original matter/request context. Paper stamps use readable state ink and 12px dates; completed clauses reserve the stamp margin, short staged filenames retain one line and all-received feedback meets contrast. Original missing-writer, contrast, overlap and six-line filename failures are retained. Four native source mounts, eight state accessibility audits and reviewed captures, the complete Next Legal workspace and both standalone tool workflows, Document Requests controls/refreshed poster, strict registry, root/all-eleven-block types and all 1,066 tests pass. Void/Promise contracts are unchanged. Both existing films remain queued; the full Legal block review remains in progress.
+
 ## 1. Re-record demo videos (120 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old

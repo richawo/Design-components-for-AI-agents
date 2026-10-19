@@ -29319,7 +29319,7 @@
       {
         "name": "onUpload",
         "type": "(submission: DocumentSubmission) => void | Promise<void>",
-        "description": "Receives { requestId, file } for a chosen or dropped File, or { requestId, attachment } for an inbox match. Resolve once receipt is acknowledged to stamp it; reject to keep the file attached and offer a retry. Validate type, size and access again on the server."
+        "description": "Receives { requestId, file } for a chosen or dropped File, or { requestId, attachment } for an inbox match. Resolve once receipt is acknowledged to stamp it; reject to keep the file attached and offer a retry. Validate type, size and access again on the server. Document submission is unavailable when no writer is supplied. Staged files remain attached and can be submitted when a writer is connected."
       },
       {
         "name": "referenceDate",
@@ -29330,7 +29330,7 @@
         "name": "accent",
         "type": "string",
         "default": "\"#5b8def\"",
-        "description": "The one accent: the open request, the received stamp and the progress ring."
+        "description": "The one accent: the open request and progress ring. Paper receipt text uses readable neutral or success ink."
       },
       {
         "name": "theme",
@@ -29805,7 +29805,7 @@
       {
         "name": "onComplete",
         "type": "(completion: ObligationCompletion) => void | Promise<void>",
-        "description": "Receives { obligationId, evidence, file? }. Resolve to stamp it done and clip the evidence to the clause; reject to keep the evidence and file and say so."
+        "description": "Receives { obligationId, evidence, file? }. Resolve to stamp it done and clip the evidence to the clause; reject to keep the evidence and file and say so. Completion recording is unavailable when no writer is supplied. Evidence drafts remain editable and become recordable when a writer is connected."
       },
       {
         "name": "referenceDate",
@@ -29839,7 +29839,7 @@
         "name": "accent",
         "type": "string",
         "default": "\"#5b8def\"",
-        "description": "The one accent: today, the selected pin and row, the highlighted duty and the Done stamp."
+        "description": "The one accent for today and selection. Completion stamps use readable paper-success ink."
       },
       {
         "name": "theme",

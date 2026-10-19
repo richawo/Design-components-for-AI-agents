@@ -1,3 +1,4 @@
+import { check as checkWriterAvailability } from '../review/legal-writer-availability.mjs';
 import { check as checkReferenceDate } from '../review/legal-reference-date.mjs';
 export async function check({ page, mount, assert }) {
   const evidenceText = "Service report supplied; evidence reference DOC-204.";
@@ -38,4 +39,5 @@ export async function check({ page, mount, assert }) {
   await mount(`createRoot(document.getElementById('root')).render(<Subject.LegalWorkspace scopes={[]}/>);`);
   assert.ok(await page.getByText("No matter records supplied.").isVisible());
   await checkReferenceDate({ page, mount, assert });
+  await checkWriterAvailability({ page, mount, assert });
 }

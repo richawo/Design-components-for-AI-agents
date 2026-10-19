@@ -2726,7 +2726,8 @@
     "integration": [
       "Pass `requests` with stable ids, lowercase dot-prefixed `allowedExtensions` and a byte `maxBytes`. Add an ISO `due` for countdowns and a `suggestion` when your inbox matching finds a likely file.",
       "`onUpload` receives `{ requestId, file }` or `{ requestId, attachment }`. Resolve only once receipt is acknowledged; reject to keep the file staged with a retry. Re-validate type, size and access on the server.",
-      "Set `referenceDate` from the server in tests and screenshots so due countdowns stay stable."
+      "Set `referenceDate` from the server in tests and screenshots so due countdowns stay stable.",
+      "Document submission is unavailable when no writer is supplied. Staged files remain attached and can be submitted when a writer is connected."
     ],
     "related": [
       "legal-evidence-index",
@@ -2787,7 +2788,8 @@
     "integration": [
       "Pass `obligations` with id, contract, title, owner, ISO due, clause and detail. Add `source` (the clause wording) and `duty` (the words to highlight) to set the clause on paper.",
       "`onComplete` receives { obligationId, evidence, file? }. Resolve to stamp it done and clip the evidence to the clause; reject to keep the evidence and file.",
-      "`referenceDate` and `horizonWeeks` set the due timeline; `defaultObligationId` chooses the first clause shown."
+      "`referenceDate` and `horizonWeeks` set the due timeline; `defaultObligationId` chooses the first clause shown.",
+      "Completion recording is unavailable when no writer is supplied. Evidence drafts remain editable and become recordable when a writer is connected."
     ],
     "related": [
       "legal-renewal-planner",
