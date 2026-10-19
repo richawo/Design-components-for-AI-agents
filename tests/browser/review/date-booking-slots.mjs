@@ -60,7 +60,12 @@ export async function check({page,mount,assert,capture=async()=>{}}) {
 
  await mount(`window.proposals=[];window.accept=false;function Host(){const[value,setValue]=React.useState(null);window.clearBooking=()=>setValue(null);return <Subject.BookingSlots value={value} onChange={choice=>{window.proposals.push({...choice});if(window.accept)setValue(choice)}}/>};createRoot(document.getElementById('root')).render(<Host/>);`);
  const controlled=page.getByRole('radio',{name:'09:00',exact:true});await controlled.focus();await controlled.press('Space');assert.equal(await controlled.isChecked(),false);assert.equal(await page.getByRole('status').innerText(),'Choose an available time to continue.');await page.evaluate(()=>window.accept=true);await controlled.press('Space');assert.equal(await controlled.isChecked(),true);assert.equal(await page.getByRole('status').innerText(),'Mon 12, 09:00 selected');assert.deepEqual(await page.evaluate(()=>window.proposals),[{dayId:'2026-10-12',slotId:'0900'},{dayId:'2026-10-12',slotId:'0900'}]);await capture('controlled-acknowledgement',{audit:true});
- await page.evaluate(()=>window.clearBooking());assert.equal(await controlled.isChecked(),false);assert.equal(await page.getByRole('status').innerText(),'Choose an available time to continue.');
+ await page.evaluate(()=>window.clearBooking());
+ await page.waitForFunction(()=>document.querySelector('[role=status]').textContent.trim()==='Choose an available time to continue.');
+ assert.equal(await controlled.isChecked(),false);
+ assert.equal(await page.getByRole('status').innerText(),'Choose an available time to continue.');
+ assert.equal(await controlled.evaluate(node=>node===document.activeElement),true,'An acknowledged controlled clear retains the focused slot');
+ assert.equal(await page.evaluate(()=>window.proposals.length),2,'A host clear does not emit another booking proposal');
 
  await mount(`window.choices=[];function Host(){const[available,setAvailable]=React.useState(true);window.takeSlot=()=>setAvailable(false);return <Subject.BookingSlots days={[{id:'mon',weekday:'Mon',day:'12',month:'October',slots:[{id:'only',label:'09:00',available}]}]} onChange={choice=>window.choices.push({...choice})}/>};createRoot(document.getElementById('root')).render(<Host/>);`);
  const only=page.getByRole('radio',{name:'09:00',exact:true});await only.locator("..").click();await page.evaluate(()=>window.takeSlot());await page.waitForFunction(()=>document.querySelector('input[type="radio"]').disabled);
