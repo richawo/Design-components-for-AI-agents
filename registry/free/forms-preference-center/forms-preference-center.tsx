@@ -1,7 +1,7 @@
 "use client";
-import { type CSSProperties, useEffect, useId, useRef, useState } from "react";
+import { type CSSProperties, useEffect, useId, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 import { Bell } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
+import { motion, useAnimationControls } from "motion/react";
 
 const control =
   "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-lg px-3 text-sm font-medium transition-[background,transform] duration-150 hover:bg-[var(--wash)] disabled:hover:bg-transparent active:scale-[.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)] disabled:cursor-not-allowed disabled:opacity-40 disabled:active:scale-100 motion-reduce:transform-none";
@@ -86,6 +86,7 @@ function colors(theme: "dark" | "light"): CSSProperties {
     "--wash": theme === "dark" ? "#242424" : "#f0f0f0",
     "--pc-ctl-ink": "var(--ink)",
     "--pc-ctl-surface": "var(--panel)",
+    "--pc-ctl-line": "#737373",
   } as CSSProperties;
 }
 
@@ -125,6 +126,13 @@ const defaults: PreferenceOption[] = [
     description: "New capabilities and the occasional useful tip.",
   },
 ];
+const motionQuery = "(prefers-reduced-motion: reduce)";
+function subscribeToMotion(change: () => void) {
+  const query = window.matchMedia(motionQuery);
+  query.addEventListener("change", change);
+  return () => query.removeEventListener("change", change);
+}
+
 export function PreferenceCenter({
   title = "Keep the useful things.",
   description = "Choose which updates reach your inbox.",
@@ -137,42 +145,69 @@ export function PreferenceCenter({
   theme = "dark",
 }: PreferenceCenterProps) {
   const id = useId();
-  const reduced = useReducedMotion();
+  const reduced = useSyncExternalStore(
+    subscribeToMotion,
+    () => window.matchMedia(motionQuery).matches,
+    () => false,
+  );
+  const entrance = useAnimationControls();
+  useLayoutEffect(() => {
+    entrance.stop();
+    const target = { opacity: 1, y: 0 };
+    if (reduced) entrance.set(target);
+    else void entrance.start({ ...target, transition: { duration: 0.32 } });
+    return () => entrance.stop();
+  }, [entrance, reduced]);
   const [local, setLocal] = useState(defaultValue);
   const [pending, setPending] = useState(false);
   const [notice, setNotice] = useState("");
   const alive = useRef(true);
   const busy = useRef(false);
+  const revision = useRef(0);
+  const readOnly = value !== undefined && !onChange;
   useEffect(() => {
     alive.current = true;
     return () => {
       alive.current = false;
+      revision.current++;
     };
   }, []);
+  const available = new Set(options.map((option) => option.id));
   const selected = [
     ...new Set([
-      ...(value ?? local),
-      ...options.filter((o) => o.required).map((o) => o.id),
+      ...(value ?? local).filter((id) => available.has(id)),
+      ...options.filter((option) => option.required).map((option) => option.id),
     ]),
   ];
+  const context = JSON.stringify([
+    options.map((option) => [option.id, !!option.required]).sort(([a], [b]) => String(a).localeCompare(String(b))),
+    [...selected].sort(),
+  ]);
+  useLayoutEffect(() => {
+    revision.current++;
+    setNotice("");
+  }, [context]);
   function toggle(key: string) {
     const next = selected.includes(key)
       ? selected.filter((x) => x !== key)
       : [...selected, key];
     setLocal(next);
     setNotice("");
-    onChange?.(next);
+    onChange?.([...next]);
   }
   async function save() {
-    if (!onSave || busy.current) return;
+    if (!onSave || busy.current || !options.length) return;
+    const submittingRevision = revision.current;
     busy.current = true;
     setPending(true);
     setNotice("");
     try {
       await onSave([...selected]);
-      if (alive.current) setNotice("Preferences saved.");
+      if (alive.current && revision.current === submittingRevision)
+        setNotice("Preferences saved.");
     } catch {
-      if (alive.current) setNotice(errorMessage);
+      if (alive.current && revision.current === submittingRevision)
+        setNotice(errorMessage);
     } finally {
       busy.current = false;
       if (alive.current) setPending(false);
@@ -181,7 +216,7 @@ export function PreferenceCenter({
   return (
     <motion.section
       initial={{ opacity: 0, y: reduced ? 0 : 8 }}
-      animate={{ opacity: 1, y: 0 }}
+      animate={entrance}
       aria-labelledby={id}
       style={colors(theme)}
       className="@container w-full max-w-xl rounded-xl border border-[var(--line)] bg-[var(--panel)] p-6 text-[var(--ink)]"
@@ -195,8 +230,8 @@ export function PreferenceCenter({
       <div className="mt-6 divide-y divide-[var(--line)] border-y border-[var(--line)]">
         {options.map((option, i) => (
           <label
-            key={`${option.id}-${i}`}
-            className={`flex min-h-20 items-center gap-5 py-5 ${pending || option.required ? "cursor-default" : "cursor-pointer"}`}
+            key={option.id}
+            className={`flex min-h-20 items-center gap-5 py-5 ${pending || option.required || readOnly ? "cursor-default" : "cursor-pointer"}`}
           >
             <span className="min-w-0 flex-1">
               <span className="block text-sm font-medium">{option.label}</span>
@@ -204,7 +239,7 @@ export function PreferenceCenter({
                 {option.description}
               </span>
               {option.required && (
-                <span className={`mt-2 block font-mono text-[11px] ${muted}`}>
+                <span className={`mt-2 block font-mono text-[12px] ${muted}`}>
                   Always on
                 </span>
               )}
@@ -215,11 +250,11 @@ export function PreferenceCenter({
                   type="checkbox"
                   data-demo={`preference-${i}`}
                   checked={selected.includes(option.id)}
-                  disabled={option.required}
+                  disabled={option.required || readOnly}
                   aria-disabled={pending || undefined}
                   onChange={() => {
                     // Locked while saving without the faded disabled look, so the list doesn't flicker on every save.
-                    if (!pending) toggle(option.id);
+                    if (!busy.current && !readOnly) toggle(option.id);
                   }}
                 />
                 <svg viewBox="0 0 18 18" aria-hidden="true">
@@ -247,7 +282,7 @@ export function PreferenceCenter({
         <button
           type="button"
           data-demo="save-preferences"
-          disabled={!onSave}
+          disabled={!onSave || !options.length}
           aria-disabled={pending || undefined}
           aria-busy={pending}
           onClick={() => void save()}

@@ -7,7 +7,6 @@
   "description": "A calm preference form with explicit required updates, generous checkbox rows and an awaited save action that keeps failures visible for retry.",
   "tags": [
     "forms",
-    "forms",
     "preference",
     "center",
     "responsive",
@@ -37,31 +36,31 @@
       "name": "options",
       "type": "PreferenceOption[]",
       "default": "three communication choices",
-      "description": "Option IDs, labels and descriptions; required options stay selected."
+      "description": "Choices with stable unique IDs, labels and descriptions. Required options stay selected. Only currently available IDs appear in change/save snapshots."
     },
     {
       "name": "value",
       "type": "string[]",
       "default": "undefined",
-      "description": "Controlled selected IDs."
+      "description": "Controlled selected IDs. Choices are read-only without onChange. Unknown or duplicate selected IDs are normalized to the available choices."
     },
     {
       "name": "defaultValue",
       "type": "string[]",
       "default": "essential and digest",
-      "description": "Initial selected IDs."
+      "description": "Initial local selected IDs, normalized to the available choices with required choices included."
     },
     {
       "name": "onChange",
       "type": "(value: string[]) => void",
       "default": "undefined",
-      "description": "Emits each local preference change."
+      "description": "Synchronous notification with an independent selected-ID array. The host owns controlled-state acknowledgement."
     },
     {
       "name": "onSave",
       "type": "(value: string[]) => void | Promise<void>",
       "default": "undefined",
-      "description": "Awaited persistence callback. The save button is disabled without it; the demo simulates persistence only."
+      "description": "Awaited persistence callback with an independent snapshot of available selected and required IDs. Writes stay serial. The action is disabled without a callback or choices; late replies cannot claim a replacement selection was saved."
     },
     {
       "name": "errorMessage",
@@ -79,11 +78,11 @@
   "added": "2026-10-11",
   "demo": {
     "steps": [
-      "wait:500",
+      "wait:700",
       "click:@preference-2",
-      "wait:600",
+      "wait:1200",
       "click:@save-preferences",
-      "wait:1100"
+      "wait:1700"
     ],
     "loop": false
   },

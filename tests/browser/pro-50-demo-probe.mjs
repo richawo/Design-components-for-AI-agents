@@ -9,6 +9,7 @@ const specs = fs
   .filter((file) => file.endsWith(".mjs"))
   .map((file) => ({ slug: file.slice(0, -4) }));
 const finalStates = {
+  "forms-preference-center": "Preferences saved.",
   "data-file-explorer": "A small, accessible action with honest loading feedback.",
   "data-kanban-compact": "Test keyboard paths moved to Done.",
   "media-before-after": "Final design",
@@ -110,6 +111,24 @@ try {
         });
       }, true);
     });
+    if (slug === "forms-preference-center") {
+      await page.locator("section").evaluate(form => {
+        const choices = () => [...form.querySelectorAll('input[type="checkbox"]')].map(input => input.checked);
+        const action = form.querySelector('[data-demo="save-preferences"]');
+        const busy = () => action.getAttribute("aria-busy") === "true";
+        window.preferenceChoices = [choices()];
+        window.preferenceBusy = [busy()];
+        form.addEventListener("change", () => queueMicrotask(() => {
+          const next = choices();
+          if (JSON.stringify(next) !== JSON.stringify(window.preferenceChoices.at(-1))) window.preferenceChoices.push(next);
+        }));
+        window.preferenceObserver = new MutationObserver(() => {
+          const next = busy();
+          if (next !== window.preferenceBusy.at(-1)) window.preferenceBusy.push(next);
+        });
+        window.preferenceObserver.observe(action, {attributes:true,attributeFilter:["aria-busy"]});
+      });
+    }
     if (slug === "data-file-explorer") {
       await page.locator("section").evaluate(explorer => {
         const state = () => [explorer.querySelector("h3")?.textContent, explorer.querySelector('[data-demo="node-components"]')?.getAttribute("aria-expanded")];
@@ -200,6 +219,16 @@ try {
       ?.slice(7);
     const target = page.locator('[data-demo="' + last + '"]');
     const notice = await page.getByRole("status").allTextContents();
+    if (slug === "forms-preference-center") {
+      assert.deepEqual(await page.evaluate(() => window.preferenceChoices), [[true,true,false], [true,true,true]], "The replay selects product notes before saving");
+      assert.deepEqual(await page.evaluate(() => window.preferenceBusy), [false,true,false], "The save enters and leaves its pending state");
+      assert.deepEqual(await page.getByRole("checkbox").evaluateAll(inputs => inputs.map(input => input.checked)), [true,true,true]);
+      assert.equal(await page.getByRole("checkbox").first().isDisabled(), true);
+      assert.equal(await page.locator('[data-demo="save-preferences"]').getAttribute("aria-busy"), "false");
+      assert.equal(await page.locator('[data-demo="save-preferences"]').evaluate(node => node === document.activeElement), true);
+      assert.ok(notice.includes("Preferences saved."));
+      await page.evaluate(() => window.preferenceObserver.disconnect());
+    }
     if (slug === "data-file-explorer") {
       assert.deepEqual(await page.evaluate(() => window.fileExplorerStates), [["README.md", "true"], ["button.tsx", "true"], ["button.tsx", "false"]], "The explorer selects a file before closing its containing folder");
       const folder = page.locator('[data-demo="node-components"]');

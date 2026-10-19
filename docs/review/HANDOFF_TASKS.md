@@ -366,6 +366,8 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 7 (19 October): File Explorer keeps its project hierarchy and selected-file reader. Selection notifications now receive independent deep copies; sibling ID reordering retains focus; controlled selections without a writer are read-only; deep files scroll inside a keyboard-focusable navigation pane; and reader entry settles on live reduced motion. Five original-source failures are preserved. Filenames use 13px mono and the selected-file region has a 16px heading. Its 37-mount source review, eighteen accessibility audits, six widths, reviewed state/entrance captures, Next regression, theme control, official audit and exact select/fold replay pass, including empty/arriving files, opaque IDs, bounded cycles and large-tree keyboard scrolling. Strict registry, root/isolated types and all 1,066 tests pass. Its reviewed 3.9s film and paired poster retain all states in the verified 832×680 initial union: source gap 11ms, delivery 14.00ms and moving-frame p95 24.95ms, with no stalls and unchanged guards. The next complete batch has 62 suites and 80 metadata replays and remains pending. 14 components and 12 blocks remain; 115 films remain queued.
 
+- Task 7 (19 October): Communication Preferences preserves required choices and awaited serial saves. Change/save values are independent snapshots of available IDs; controlled choices without a writer are read-only; empty or unconfigured saves are disabled; and live reduced motion settles the entry. Pending controls lock immediately, old replies cannot claim replacement choices were saved, and stable option keys retain focus through reordering. The unchecked boundary now meets 3:1 and required metadata uses 12px type. Seven original-source failures are retained. Its 41-mount source review, eighteen accessibility audits, six widths, reviewed state/entrance captures, Next regression, theme control, official audit and exact select/save replay pass, including failure/retry, serial writes across replaced choices and normalized required IDs. Strict registry, root/isolated types and all 1,066 tests pass. Its reviewed 4.0s film and paired poster keep initial, selected, pending and saved states inside the measured 832×760 initial union: source gap 11ms, delivery 15.66ms and moving-frame p95 24.47ms, with no stalls and unchanged guards. The new forms/dates runner is registered. The next complete batch has 63 suites and 81 metadata replays and remains pending. 13 components and 12 blocks remain; 115 films remain queued.
+
 ## 1. Re-record demo videos (115 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
@@ -516,16 +518,16 @@ All nine parked rebuilds are shipped in both repos. Their original `_wip/<slug>`
 | finance-budget-variance | Completed 17 October: Next probe, dark/light accessibility, responsive and entrance/state captures, live demo and refreshed poster pass. |
 | finance-cashflow-dashboard | Completed 17 October: weekly balance and in/out bars, movable payments, independent pending saves, invalid-data guards, selected-week list geometry, Next probe/demo, both-theme accessibility, responsive/state/entrance captures and refreshed poster pass. |
 
-## 7. Continue the review (14 components, then 12 blocks)
+## 7. Continue the review (13 components, then 12 blocks)
 
-Same process as the 184 already done: hold each to the first ~100 components' standard. Briefs:
+Same process as the 185 already done: hold each to the first ~100 components' standard. Briefs:
 `docs/review/REVIEW_BRIEF.md`, `docs/review/SUITE_BRIEF.md` for industry components, suite languages in
 `docs/review/suites/`. Work newest first, about four components per batch, and verify each (build, tsc, tests,
 check-component, your own captures of states and mid-entrance frames, a refreshed poster, a rewritten pro-50 probe for
 industry components).
 
 - **Commerce** is reviewed. Keep `block-commerce-workspace` compatible with its rebuilt parts.
-- **Smaller components** (#151–179): forms-preference-center, date-week-agenda,
+- **Smaller components** (#151–179): date-week-agenda,
   onboarding-setup-checklist, date-booking-slots, input-file-dropzone, input-shortcut-recorder,
   feedback-empty-search, navigation-pagination-window, primitives-shortcut-reference, selects-radio-cards,
   progress-milestones, content-accordion-index, feedback-inline-alert, navigation-breadcrumb-fold.

@@ -1,27 +1,31 @@
 # Communication Preferences
 
-Build a standalone React 19 and Tailwind v4 component. A calm preference form with explicit required updates, generous checkbox rows and an awaited save action that keeps failures visible for retry.
+Build a standalone React 19, Tailwind v4 and motion/react preference form with the existing named export, typed API and overridable default demo.
 
-## Layout
+## Layout and type
 
-A serif invitation over ruled preference rows. The copy takes the width, and an 18px checkbox (ink fill, check that draws in, 40% when locked) sits at the edge in a 44px target. Use a fixed action column beside an intrinsically sized feedback cell; below 420px, stack feedback above the right-aligned action. Invisible, aria-hidden copies of the actual saved/error messages reserve their naturally wrapped height, and an intrinsic label stack keeps Save and Saving the same width. Do not guess a feedback min-height or reflow the action on save. Size to the container. Use a 4/8px rhythm, 1px surface edges, 16px narrow padding and 24px desktop padding. Controls have 44px targets.
+Keep the calm, single-column communication form: a small bell, 30px Instrument Serif heading, 14px option labels and descriptive copy, generous ruled checkbox rows and an aligned save/status row. Use 12px Always on metadata. Keep all surfaces neutral, and set the shared checkbox line token to #737373 so unchecked controls exceed 3:1 contrast in both themes. Keep the existing reserved feedback/button sizing so pending, failure and success do not move the save action.
 
-## Typography and colour
+## Interaction and persistence
 
-Use font-sans at 14-16px/1.5, font-mono metadata at 11-12px and a 24-36px heading with -0.035em tracking. Dark uses #111111, #f5f5f5, #a3a3a3 and #333333; light uses #ffffff, #171717, #525252 and #d4d4d4. Maintain AA contrast.
+Keep PreferenceOption and PreferenceCenterProps. Options use stable unique IDs; required choices always stay selected. Normalize selected IDs to the available choices and deduplicate them.
+
+Use local defaultValue state or value with onChange. Controlled choices without a writer are disabled. onChange receives an independent array synchronously and cannot mutate the local draft.
+
+onSave receives a copied snapshot and remains awaited. Permit one write at a time; guard immediately with a ref so checkbox events and duplicate submissions cannot edit or resubmit the in-flight draft.
+
+Keep rejected drafts checked and show the supplied retryable failure copy. Retrying sends the same actual selection. Preserve native checkbox keyboard behavior, visible focus and the focused save action.
+
+Choice-ID, required-state or selected-set replacement retires old feedback. Keep the existing write pending until it finishes, then permit the next write. A late completion cannot mark replacement preferences as saved. Reordering equivalent options or receiving the same selected set keeps the acknowledgement valid.
+
+Disable save without onSave or without available choices. Keep written empty states, independent instances, long copy, required labels and a polite status region. Do not invent a cancellation or concurrent-persistence contract.
 
 ## Motion
 
-Use a 320ms opacity/8px entrance, 150ms press response and 240ms state changes, easing cubic-bezier(0.22,1,0.36,1). No ambient loops. Reduced motion removes transforms and layout animation and limits fades to 120ms.
+The form enters with opacity and an 8px rise over 320ms. Use the embedded checkbox control kit for checkmark, hover, press and focus behavior. Keep pending fields locked without remounting or changing footer geometry. Listen to live preference changes and stop and settle the form entry immediately. The control kit removes its scaling and checkmark travel under reduced motion.
 
-## Behaviour and accessibility
+## Integration
 
-Use semantic elements, native keyboard behaviour, visible focus rings and instance-scoped IDs. Keep the native save button focused while pending with aria-busy/aria-disabled and a synchronous duplicate-request guard; only the missing-handler state is natively disabled. A rejected save keeps the same focused retry target. Expose typed content and callbacks. Handle empty custom data and repeated instances. Announce only the real feedback politely, excluding intrinsic sizing copies. Match the source state ownership and callback contract.
+Provide stable option IDs. Use defaultValue for local drafts, or value with onChange for host control. onChange receives a copied array; onSave is awaited and serialized. Keep server persistence and record versioning in the host. Key the component by account when changing its owner; retired UI feedback does not cancel the host operation.
 
-## Responsive
-
-Design for 320, 390, 768, 1024, 1440 and 1920px. Respond to the container with @container variants, wrap text and stack secondary details. Scroll only within explicitly labelled local regions.
-
-## Avoid
-
-No remote imagery, false success states, unlabelled controls, hover-only actions, low contrast or decorative status pills. The demo is an isolated component on a quiet stage.
+Use the source dark/light palettes, the embedded control kit, 44px interaction areas and 320/390/768/1024/1440/1920px container layouts.

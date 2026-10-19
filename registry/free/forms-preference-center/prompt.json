@@ -8,13 +8,13 @@
     "motion": "motion/react"
   },
   "layout": {
-    "direction": "A serif invitation over ruled preference rows. The copy takes the width, and an 18px checkbox sits at the edge in a 44px target. The action has a fixed intrinsic label width beside feedback; below 420px feedback stacks above the right-aligned action. Aria-hidden invisible copies of the actual success/error text reserve its naturally wrapped height, with no guessed feedback minimum or state-driven reflow.",
+    "direction": "Keep the calm, single-column communication form: a small bell, 30px Instrument Serif heading, 14px option labels and descriptive copy, generous ruled checkbox rows and an aligned save/status row. Use 12px Always on metadata. Keep all surfaces neutral, and set the shared checkbox line token to #737373 so unchecked controls exceed 3:1 contrast in both themes. Keep the existing reserved feedback/button sizing so pending, failure and success do not move the save action.",
     "container": "Size to the parent with @container. Keep the root width at 100%, capped to the focused component, with 24px desktop and 16px narrow padding.",
     "rhythm": "4/8px spacing; 1px edges; 44px minimum interactive targets."
   },
   "typography": {
     "body": "font-sans, 14-16px, line-height 1.5",
-    "metadata": "font-mono, 11-12px, restrained tracking",
+    "metadata": "12px mono required-state metadata",
     "heading": "font-display or font-serif, 24-36px, tracking -0.035em"
   },
   "color": {
@@ -32,9 +32,9 @@
     }
   },
   "motion": {
-    "entrance": "A single opacity and 8px rise over 320ms.",
-    "interaction": "150ms press response; 240ms state changes. No ambient loops.",
-    "reduced": "Remove transforms and layout motion; keep opacity at 120ms or less."
+    "entrance": "The form enters with opacity and an 8px rise over 320ms.",
+    "interaction": "Use the embedded checkbox control kit for checkmark, hover, press and focus behavior. Keep pending fields locked without remounting or changing footer geometry.",
+    "reduced": "Listen to live preference changes and stop and settle the form entry immediately. The control kit removes its scaling and checkmark travel under reduced motion."
   },
   "responsive": {
     "widths": [
@@ -72,31 +72,31 @@
         "name": "options",
         "type": "PreferenceOption[]",
         "default": "three communication choices",
-        "description": "Option IDs, labels and descriptions; required options stay selected."
+        "description": "Choices with stable unique IDs, labels and descriptions. Required options stay selected. Only currently available IDs appear in change/save snapshots."
       },
       {
         "name": "value",
         "type": "string[]",
         "default": "undefined",
-        "description": "Controlled selected IDs."
+        "description": "Controlled selected IDs. Choices are read-only without onChange. Unknown or duplicate selected IDs are normalized to the available choices."
       },
       {
         "name": "defaultValue",
         "type": "string[]",
         "default": "essential and digest",
-        "description": "Initial selected IDs."
+        "description": "Initial local selected IDs, normalized to the available choices with required choices included."
       },
       {
         "name": "onChange",
         "type": "(value: string[]) => void",
         "default": "undefined",
-        "description": "Emits each local preference change."
+        "description": "Synchronous notification with an independent selected-ID array. The host owns controlled-state acknowledgement."
       },
       {
         "name": "onSave",
         "type": "(value: string[]) => void | Promise<void>",
         "default": "undefined",
-        "description": "Awaited persistence callback. The save button is disabled without it; the demo simulates persistence only."
+        "description": "Awaited persistence callback with an independent snapshot of available selected and required IDs. Writes stay serial. The action is disabled without a callback or choices; late replies cannot claim a replacement selection was saved."
       },
       {
         "name": "errorMessage",
@@ -116,5 +116,13 @@
     "Remote images, fake network success or hidden external dependencies.",
     "Decorative status badges, gradients as filler, low-contrast text.",
     "Unlabelled controls, hover-only functionality, overflow at 320px."
+  ],
+  "contract": [
+    "Keep PreferenceOption and PreferenceCenterProps. Options use stable unique IDs; required choices always stay selected. Normalize selected IDs to the available choices and deduplicate them.",
+    "Use local defaultValue state or value with onChange. Controlled choices without a writer are disabled. onChange receives an independent array synchronously and cannot mutate the local draft.",
+    "onSave receives a copied snapshot and remains awaited. Permit one write at a time; guard immediately with a ref so checkbox events and duplicate submissions cannot edit or resubmit the in-flight draft.",
+    "Keep rejected drafts checked and show the supplied retryable failure copy. Retrying sends the same actual selection. Preserve native checkbox keyboard behavior, visible focus and the focused save action.",
+    "Choice-ID, required-state or selected-set replacement retires old feedback. Keep the existing write pending until it finishes, then permit the next write. A late completion cannot mark replacement preferences as saved. Reordering equivalent options or receiving the same selected set keeps the acknowledgement valid.",
+    "Disable save without onSave or without available choices. Keep written empty states, independent instances, long copy, required labels and a polite status region. Do not invent a cancellation or concurrent-persistence contract."
   ]
 }

@@ -2420,15 +2420,16 @@
     "useWhen": "Reviewing communication channels and saving explicit preferences.",
     "avoidWhen": "A subscription backend or consent record without server-side persistence.",
     "integration": [
-      "Supply your own records through `options`, `value`, `defaultValue`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onChange`, `onSave` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+      "Provide stable option IDs. Use defaultValue for local drafts, or value with onChange for host control. onChange receives a copied array; onSave is awaited and serialized. Keep server persistence and record versioning in the host. Key the component by account when changing its owner; retired UI feedback does not cancel the host operation.",
+      "Only available selected IDs and required IDs reach the copied save snapshot. Empty or unconfigured forms cannot submit.",
+      "Keep stable IDs when options reorder. A changed choice/required/selected context suppresses stale feedback while the original write finishes; it does not launch overlapping writes."
     ],
     "related": [
       "hr-interview-scorecard",
       "hr-policy-acknowledgement",
       "legal-matter-intake"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-19"
   },
   "header-island": {
     "useWhen": "A compact site header that expands into contextual navigation.",
