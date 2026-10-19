@@ -11,4 +11,4 @@ Use neutral graphite and white chrome, readable 14-16px body copy, 12px mono met
 
 Use a brief entrance and interruptible state motion. Respect reduced motion at first paint and when changed while mounted, retaining control focus and current data. Keep data-demo targets stable, the default demo complete and offline, and preview controls tied to visible props. Avoid remote assets, invented network actions, decorative status badges and repeated marketing headers.
 
-Animate changing figures over 280ms and stop them immediately when reduced motion changes. Very large differences settle directly so numeric animation cannot overflow. Keep selection callbacks independent of the host’s series array.
+Show the actual figures on the first render, then animate later value changes over 280ms and stop them immediately when reduced motion changes. Very large differences settle directly so numeric animation cannot overflow. Keep selection callbacks independent of the host’s series array.

@@ -48,7 +48,7 @@ const format = (n: number) =>
     ? n.toExponential(1)
     : new Intl.NumberFormat("en", { maximumFractionDigits: 1 }).format(n);
 function AnimatedFigure({ value, reduced, demo }: { value: number; reduced: boolean; demo: string }) {
-  const current = useMotionValue(0);
+  const current = useMotionValue(value);
   const display = useTransform(current, format);
   useLayoutEffect(() => {
     current.stop();

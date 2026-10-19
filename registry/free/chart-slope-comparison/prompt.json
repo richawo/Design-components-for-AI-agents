@@ -35,7 +35,7 @@
     "entrance": "A single opacity and 8px rise over 320ms.",
     "interaction": "150ms press response; 240ms state changes. No ambient loops.",
     "reduced": "Stop active figure and entrance animation immediately and set final values on a live reduced-motion change. Finish slope paths or bullet fills without replacing interactive controls or losing keyboard focus.",
-    "figures": "Endpoint/result figures interpolate over 280ms. Non-finite values use the documented zero fallback; differences above one trillion settle directly to avoid overflowing animation arithmetic."
+    "figures": "Endpoint/result figures show actual observations on the first render and interpolate later changes over 280ms. Non-finite values use the documented zero fallback; differences above one trillion settle directly to avoid overflowing animation arithmetic."
   },
   "responsive": {
     "widths": [
