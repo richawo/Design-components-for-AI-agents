@@ -421,7 +421,9 @@ from changing subsequent block tests. Original failures and diagnostics remain l
 
 - Financial review dependency follow-up: compact numeric table cards now retain visible column labels and stack extra amounts at full width. Focused allocation values appear below the ring so long exact amounts stay readable, and singular allocation counts use "1 group". Both original failures are retained. Registered table/allocation workflows, six focused state accessibility audits, thirty responsive source mounts, four default accessibility audits, all reviewed captures, strict registry, root/all-eleven-block types and all 1,066 unit tests pass. Public callback and formatting contracts are unchanged. The Financial block review remains in progress.
 
-## 1. Re-record demo videos (118 components)
+- Task 7 (19 October): Financial Report now uses a compact period-specific workspace, exact headline and cost amounts, a real cost-detail anchor and persistent export feedback. Full currency values preserve the final minor unit at the safe-integer boundary, including negative pennies, across screen totals, table cells, allocation labels, CSV and print. Raw minor units retain numeric sorting and allocation weights; abbreviated chart summaries remain explicit. Keyboard period selection, empty and arriving reports, no costs, independent instances, native CSV/print, failed export retry and retired report/currency/brand/unmount replies pass its 43-mount source review, forty accessibility audits, six widths and 54 reviewed state/entrance captures. Long-amount phone checks and stable chart legend/focus regressions pass. A single allocation view has no redundant grouping chooser; the exact total/focused value uses one stable readout below the ring. The exact September replay reaches the visible export receipt with the £8,700.00 software line intact. Next workflow, controls, official audit and measured full-frame captures pass with strict registry, root/all-eleven-block types and all 1,066 tests. Public callbacks and Pro boundaries remain unchanged. Its reviewed paired Next poster is current. The film fails unchanged timing guards (source gap 22ms, delivery 649.70ms and moving-frame p95 24.42ms); the previous movie is retained and raw rejection evidence stays local. Eight blocks, 59 older probes and 120 films remain. Allocation Chart has a reviewed refreshed Next poster and joins the film queue because its full-value readout changed. The next complete batch release checkpoint remains pending.
+
+## 1. Re-record demo videos (120 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -440,6 +442,8 @@ slug or per small group). Notes:
 
 Slugs:
 
+`chart-allocation`
+`block-financial-report`
 `block-commerce-workspace`
 `date-booking-slots`
 `onboarding-setup-checklist`
@@ -574,9 +578,9 @@ All nine parked rebuilds are shipped in both repos. Their original `_wip/<slug>`
 | finance-budget-variance | Completed 17 October: Next probe, dark/light accessibility, responsive and entrance/state captures, live demo and refreshed poster pass. |
 | finance-cashflow-dashboard | Completed 17 October: weekly balance and in/out bars, movable payments, independent pending saves, invalid-data guards, selected-week list geometry, Next probe/demo, both-theme accessibility, responsive/state/entrance captures and refreshed poster pass. |
 
-## 7. Continue the review (9 blocks)
+## 7. Continue the review (8 blocks)
 
-Same process as the 200 already done: hold each to the first ~100 components' standard. Briefs:
+Same process as the 201 already done: hold each to the first ~100 components' standard. Briefs:
 `docs/review/REVIEW_BRIEF.md`, `docs/review/SUITE_BRIEF.md` for industry components, suite languages in
 `docs/review/suites/`. Work newest first, about four components per batch, and verify each (build, tsc, tests,
 check-component, your own captures of states and mid-entrance frames, a refreshed poster, a rewritten pro-50 probe for
@@ -620,12 +624,11 @@ reference; the reviewed dark capture differs only in eight pixels around its Pai
 registry, root/eleven-block types and all 1,066 unit tests pass. The private fix is `87da4af`. The full
 Commerce completed its full review with this dependency; ten other blocks remain open.
 
-- **Commerce and Fashion** are reviewed. Keep both workspaces compatible with their rebuilt parts.
+- **Commerce, Fashion and Financial Report** are reviewed. Keep these blocks compatible with their rebuilt parts.
 - **Smaller components** (#151–179) are reviewed.
-- **Blocks**, after their parts: nine of the eleven published `block-*` components remain. Commerce and Fashion Workspaces are reviewed. Many parts changed their look and some their props;
+- **Blocks**, after their parts: eight of the eleven published `block-*` components remain. Commerce, Fashion and Financial Report are reviewed. Many parts changed their look and some their props;
   re-check each block composes well with the rebuilt parts and still reads as one product. The earlier count of 12 was stale: both source repositories and all published `kind: "block"` metadata contain these eleven, with every declared dependency available.
 
-`block-financial-report`,
 `block-legal-workspace`, `block-meetings-workspace`, `block-music-workspace`,
 `block-people-workspace`, `block-saas-dashboard`, `block-saas-landing`,
 `block-team-workspace`, `block-workspace-settings`.

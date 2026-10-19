@@ -3484,6 +3484,7 @@
     "avoidWhen": "Posting accounting transactions, calculating tax obligations or presenting an authoritative ledger without validated source data.",
     "integration": [
       "Provide complete `periods` with integer minor-unit amounts and unique line IDs. Invalid records disable export rather than inventing a total.",
+      "Accept nonnegative safe integer minor units with safe aggregate totals and a two-decimal currency such as GBP, USD or EUR. Format whole and fractional minor units independently so the last penny survives at the safe-integer boundary, including a negative penny. Headline, cost cells, full allocation values and print stay exact; allocation weights and table sorting retain original minor units. Compact chart summaries remain deliberately abbreviated. Empty reports, empty costs and missing commentary have explicit states.",
       "Every panel follows the selected period. CSV export uses that period; Print report opens a plain, readable print layout.",
       "Host exports receive an independent snapshot of the original period. Promise callbacks keep that export pending; equal records preserve it, while changed report values, currency, brand or unmount retire old completion feedback. Rejection keeps the current report available for retry. Without onExport, keep the built-in CSV download."
     ],

@@ -5,7 +5,7 @@ import { mountFixture } from "../../scripts/lib/component-fixture.mjs";
 const specs = [
   ["block-saas-dashboard", "Trial signups per day"],
   ["block-workspace-settings", "Preferences saved."],
-  ["block-financial-report", "September 2026"],
+  ["block-financial-report", "September 2026 exported."],
   ["block-fashion-workspace", "Line plan saved"],
   ["block-people-workspace", "A considered first week"],
   ["block-legal-workspace", "Obligations and evidence"],
@@ -76,16 +76,27 @@ try {
         }, true);
       });
     }
+    if (slug === "block-financial-report") {
+      await page.evaluate(() => {
+        window.financialReplay = [];
+        document.addEventListener("click", event => {
+          const name = event.target.closest?.("[data-demo]")?.dataset.demo;
+          if (["trigger", "report-detail", "export-report"].includes(name)) window.financialReplay.push(name);
+        }, true);
+      });
+    }
     await page.evaluate((steps) => window.play(steps), meta.demo.steps);
     assert.ok(
       (await page.locator("#root").innerText()).includes(final),
       slug + " intended end",
     );
-    if (slug === "block-financial-report")
-      assert.doesNotMatch(
-        await page.locator("#root").innerText(),
-        /today|all on target/,
-      );
+    if (slug === "block-financial-report") {
+      assert.doesNotMatch(await page.locator("#root").innerText(), /today|all on target/);
+      assert.deepEqual(await page.evaluate(() => window.financialReplay), ["trigger", "report-detail", "export-report"]);
+      assert.equal(await page.getByRole("status").filter({ hasText: "September 2026 exported." }).isVisible(), true);
+      const row = page.getByRole("grid").getByRole("row").filter({ has: page.getByText("Software and infrastructure", { exact: true }) });
+      assert.equal(await row.getByRole("gridcell").nth(2).locator('span[aria-hidden="true"]').innerText(), "£8,700.00");
+    }
     if (slug === "block-commerce-workspace") {
       assert.deepEqual(await page.evaluate(() => window.commerceReplay), {
         phases: ["overview", "editing", "review", "recorded"],

@@ -6046,7 +6046,7 @@
     "tier": "pro",
     "platform": "web",
     "category": "charts",
-    "description": "An editorial financial report combining budget targets, spend allocation, commentary and line-level evidence. Includes period selection, CSV export and print.",
+    "description": "A monthly financial review with exact currency totals, budget comparison, allocation, commentary and labelled cost detail. Includes CSV export and print.",
     "tags": [
       "block",
       "report",
@@ -6061,7 +6061,7 @@
       "lucide-react"
     ],
     "theme": "dark",
-    "previewHeight": 2100,
+    "previewHeight": 940,
     "usage": "import { FinancialReport } from \"@/components/design-for-ai/block-financial-report\";\n\n<FinancialReport />",
     "props": [
       {
@@ -6105,11 +6105,15 @@
     ],
     "demo": {
       "steps": [
-        "wait:350",
+        "wait:600",
         "click:@trigger",
         "key:ArrowDown",
         "key:Enter",
-        "wait:4000"
+        "wait:1000",
+        "click:@report-detail",
+        "wait:900",
+        "click:@export-report",
+        "wait:1300"
       ],
       "loop": false
     },

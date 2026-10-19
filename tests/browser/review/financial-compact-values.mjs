@@ -31,7 +31,10 @@ export async function checkAllocation({ page, mount, assert, capture = async () 
     for (const width of [320, 1440]) {
       await page.setViewportSize({ width, height: 1100 });
       await mount(`createRoot(document.getElementById('root')).render(<div style={{maxWidth:${width===320?260:1100},margin:'auto'}}><Subject.ChartAllocation title="Operating spend" showComparison={false} views={[{key:'cost',label:'Costs',slices:[{name:'Large line',value:9007199254740891}]}]} formatValue={(value,format)=>format==='full'?'US$90,071,992,547,408.91':'US$90.1tn'}/></div>);`);
-      await page.locator('[data-demo="row-0"]').focus();
+      assert.equal(await page.getByRole('tablist', { name: 'Group by', exact: true }).count(), 0, 'A single grouping does not expose a one-option selector');
+      const first = page.locator('[data-demo="row-0"]');
+      const beforeFocus = await first.boundingBox();
+      await first.focus();
       const full = page.getByText('US$90,071,992,547,408.91', { exact: true }).filter({ visible: true });
       await full.waitFor();
       const centre = page.locator('div[aria-live="polite"]');
@@ -43,6 +46,12 @@ export async function checkAllocation({ page, mount, assert, capture = async () 
         return true;
       });
       await capture('full-allocation-' + width);
+      const afterFocus = await first.boundingBox();
+      assert.ok(Math.abs(afterFocus.y - beforeFocus.y) <= 1, 'Reading a focused allocation keeps its legend target in place');
+      await first.hover();
+      await page.mouse.move(0, 0);
+      assert.equal(await first.evaluate(node => node === document.activeElement), true);
+      assert.equal(await full.isVisible(), true, 'Pointer departure retains the keyboard-focused amount');
       const amount = await full.evaluate(painted);
       const ring = await page.locator('svg[role="img"]').boundingBox();
       const middle = ring.x + ring.width / 2;
