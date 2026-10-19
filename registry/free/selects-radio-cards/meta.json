@@ -7,7 +7,6 @@
   "description": "A native radio-card group with generous typographic options, concise tradeoffs and keyboard selection for assistant settings, formats or service modes.",
   "tags": [
     "selects",
-    "selects",
     "radio",
     "cards",
     "responsive",
@@ -18,26 +17,26 @@
     "lucide-react"
   ],
   "theme": "dark",
-  "previewHeight": 600,
+  "previewHeight": 920,
   "usage": "import { RadioCards } from \"@/components/design-for-ai/selects-radio-cards\";\n\n<RadioCards />",
   "props": [
     {
       "name": "label",
       "type": "string",
-      "default": "assistant response question",
+      "default": "\"How should the assistant respond?\"",
       "description": "Accessible group legend and visible heading."
     },
     {
       "name": "options",
       "type": "RadioCardOption[]",
       "default": "three response styles",
-      "description": "Unique ID, label, description, optional note and disabled state."
+      "description": "Unique stable IDs, labels, descriptions, optional notes and disabled state. Stable ID keys retain focused options through host reordering."
     },
     {
       "name": "value",
       "type": "string",
       "default": "undefined",
-      "description": "Controlled selected option ID."
+      "description": "Controlled selected option ID. Without onChange, the radios are read-only. An empty or unknown ID shows no selected option."
     },
     {
       "name": "defaultValue",
@@ -49,7 +48,7 @@
       "name": "onChange",
       "type": "(value: string) => void",
       "default": "undefined",
-      "description": "New selected ID from native keyboard or pointer selection."
+      "description": "Synchronous notification containing the selected ID from native pointer or keyboard radio selection. The host acknowledges controlled changes and owns persistence."
     },
     {
       "name": "theme",
@@ -61,11 +60,11 @@
   "added": "2026-10-11",
   "demo": {
     "steps": [
-      "wait:500",
-      "click:@option-0",
       "wait:700",
+      "click:@option-0",
+      "wait:1000",
       "click:@option-2",
-      "wait:700"
+      "wait:1700"
     ],
     "loop": false
   },

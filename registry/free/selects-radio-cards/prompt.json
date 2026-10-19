@@ -8,14 +8,16 @@
     "motion": "motion/react"
   },
   "layout": {
-    "direction": "Three editorial cards become a vertical stack inside narrow containers. A quiet diagonal icon balances a circular check, then strong label and explanatory copy.",
-    "container": "Size to the parent with @container. Keep the root width at 100%, capped to the focused component, with 24px desktop and 16px narrow padding.",
-    "rhythm": "4/8px spacing; 1px edges; 44px minimum interactive targets."
+    "direction": "A native radio group presented as three response-style cards, with a 20px group heading, 18px option labels, 14px descriptions and 12px monospaced notes. Each card pairs a quiet direction icon with a clear circular selection mark. Keep neutral graphite surfaces, 20px card padding and generous spacing; form-control boundaries meet 3:1 contrast. Use three columns only when the component container is wide enough, otherwise stack cards.",
+    "container": "Fill the parent up to 768px with 24px padding; card columns respond to the fieldset container.",
+    "rhythm": "4/8px spacing; 1px edges; 44px minimum interactive targets.",
+    "demo": "A quiet stage with min-height max(560px,100dvh); the published920px preview retains all three stacked choices at320px and390px.",
+    "readonly": "Keep controlled choices legible while their native inputs are read-only without a writer; reserve dimming for unavailable options."
   },
   "typography": {
     "body": "font-sans, 14-16px, line-height 1.5",
-    "metadata": "font-mono, 11-12px, restrained tracking",
-    "heading": "font-display or font-serif, 24-36px, tracking -0.035em"
+    "metadata": "12px monospaced notes and group metadata",
+    "heading": "20px medium sans-serif"
   },
   "color": {
     "dark": {
@@ -32,9 +34,9 @@
     }
   },
   "motion": {
-    "entrance": "A single opacity and 8px rise over 320ms.",
-    "interaction": "150ms press response; 240ms state changes. No ambient loops.",
-    "reduced": "Remove transforms and layout motion; keep opacity at 120ms or less."
+    "entrance": "Enter the fieldset once with opacity and an 8px rise over 320ms.",
+    "interaction": "Reveal a newly selected check with opacity and scale from 0.7 over 160ms; keep 150ms card press feedback.",
+    "reduced": "Subscribe to live prefers-reduced-motion changes. Stop and settle owned card/check entrances immediately and remove press transforms."
   },
   "responsive": {
     "widths": [
@@ -59,20 +61,20 @@
       {
         "name": "label",
         "type": "string",
-        "default": "assistant response question",
+        "default": "\"How should the assistant respond?\"",
         "description": "Accessible group legend and visible heading."
       },
       {
         "name": "options",
         "type": "RadioCardOption[]",
         "default": "three response styles",
-        "description": "Unique ID, label, description, optional note and disabled state."
+        "description": "Unique stable IDs, labels, descriptions, optional notes and disabled state. Stable ID keys retain focused options through host reordering."
       },
       {
         "name": "value",
         "type": "string",
         "default": "undefined",
-        "description": "Controlled selected option ID."
+        "description": "Controlled selected option ID. Without onChange, the radios are read-only. An empty or unknown ID shows no selected option."
       },
       {
         "name": "defaultValue",
@@ -84,7 +86,7 @@
         "name": "onChange",
         "type": "(value: string) => void",
         "default": "undefined",
-        "description": "New selected ID from native keyboard or pointer selection."
+        "description": "Synchronous notification containing the selected ID from native pointer or keyboard radio selection. The host acknowledges controlled changes and owns persistence."
       },
       {
         "name": "theme",
@@ -98,5 +100,13 @@
     "Remote images, fake network success or hidden external dependencies.",
     "Decorative status badges, gradients as filler, low-contrast text.",
     "Unlabelled controls, hover-only functionality, overflow at 320px."
+  ],
+  "contract": [
+    "Preserve RadioCardOption, RadioCardsProps and the named RadioCards export. Use native radios inside labels and an instance-scoped fieldset group, with an accessible legend and visible heading.",
+    "Use defaultValue for local state, or value with onChange for controlled acknowledgement. Controlled radios without a writer are disabled. Retain the host selection when a proposal is refused; an empty or unknown ID is not selected.",
+    "Use stable unique option IDs as React keys so host reordering keeps the focused native radio. Keep arrow-key navigation and Space activation, skip disabled options and show visible focus around the entire card.",
+    "Keep selection marks and unchecked boundaries readable, with at least 3:1 boundary contrast. A disabled or read-only card must not offer hover or press transforms as if editable.",
+    "Empty and arriving option collections, long labels/descriptions/notes and independent groups must remain usable without shared radio names or document overflow.",
+    "onChange is a synchronous selected-ID notification. The host owns validation, persistence and any downstream assistant behavior."
   ]
 }

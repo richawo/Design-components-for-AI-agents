@@ -1,27 +1,37 @@
-# Response Style Radio Cards
+# Radio Cards
 
-Build a standalone React 19 and Tailwind v4 component. A native radio-card group with generous typographic options, concise tradeoffs and keyboard selection for assistant settings, formats or service modes.
+Build a self-contained React 19, Tailwind v4 and motion/react component with the existing typed API, named export and overridable default demo.
 
-## Layout
+## Layout and type
 
-Three editorial cards become a vertical stack inside narrow containers. A quiet diagonal icon balances a circular check, then strong label and explanatory copy. Size to the container. Use a 4/8px rhythm, 1px surface edges, 16px narrow padding and 24px desktop padding. Controls have 44px targets.
+A native radio group presented as three response-style cards, with a 20px group heading, 18px option labels, 14px descriptions and 12px monospaced notes. Each card pairs a quiet direction icon with a clear circular selection mark. Keep neutral graphite surfaces, 20px card padding and generous spacing; form-control boundaries meet 3:1 contrast. Use three columns only when the component container is wide enough, otherwise stack cards.
 
-## Typography and colour
+## Interaction
 
-Use font-sans at 14-16px/1.5, font-mono metadata at 11-12px and a 24-36px heading with -0.035em tracking. Dark uses #111111, #f5f5f5, #a3a3a3 and #333333; light uses #ffffff, #171717, #525252 and #d4d4d4. Maintain AA contrast.
+Preserve RadioCardOption, RadioCardsProps and the named RadioCards export. Use native radios inside labels and an instance-scoped fieldset group, with an accessible legend and visible heading.
+
+Use defaultValue for local state, or value with onChange for controlled acknowledgement. Controlled radios without a writer are disabled. Retain the host selection when a proposal is refused; an empty or unknown ID is not selected.
+
+Use stable unique option IDs as React keys so host reordering keeps the focused native radio. Keep arrow-key navigation and Space activation, skip disabled options and show visible focus around the entire card.
+
+Keep selection marks and unchecked boundaries readable, with at least 3:1 boundary contrast. A disabled or read-only card must not offer hover or press transforms as if editable.
+
+Empty and arriving option collections, long labels/descriptions/notes and independent groups must remain usable without shared radio names or document overflow.
+
+onChange is a synchronous selected-ID notification. The host owns validation, persistence and any downstream assistant behavior.
 
 ## Motion
 
-Use a 320ms opacity/8px entrance, 150ms press response and 240ms state changes, easing cubic-bezier(0.22,1,0.36,1). No ambient loops. Reduced motion removes transforms and layout animation and limits fades to 120ms.
+Enter the fieldset once with opacity and an 8px rise over 320ms. Reveal a newly selected check with opacity and scale from 0.7 over 160ms; keep 150ms card press feedback. Subscribe to live prefers-reduced-motion changes. Stop and settle owned card/check entrances immediately and remove press transforms.
 
-## Behaviour and accessibility
+## Integration
 
-Use semantic elements, native keyboard behaviour, visible focus rings and instance-scoped IDs. Expose typed content and callbacks. Handle empty custom data and repeated instances. Announce important feedback politely. Match the source state ownership and callback contract.
+Supply options with unique stable IDs. Use defaultValue for local selection, or value with onChange for host acknowledgement. Native radios own keyboard navigation and skip disabled options. The callback is synchronous; persist or apply the setting in the host.
 
-## Responsive
+Use the source dark/light palettes and verify 320/390/768/1024/1440/1920px container layouts.
 
-Design for 320, 390, 768, 1024, 1440 and 1920px. Respond to the container with @container variants, wrap text and stack secondary details. Scroll only within explicitly labelled local regions.
+## Demo framing
 
-## Avoid
+The quiet demo stage fills its viewport with a 560px minimum. Reserve 920px for the published preview so the complete three-card phone stack fits at 320px and 390px, with balanced outer space. The named component still fills its host container naturally.
 
-No remote imagery, false success states, unlabelled controls, hover-only actions, low contrast or decorative status pills. The demo is an isolated component on a quiet stage.
+Keep read-only values legible. Dim unavailable options, while locking controlled groups without a writer through native disabled inputs and a quiet cursor.

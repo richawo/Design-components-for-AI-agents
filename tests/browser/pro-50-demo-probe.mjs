@@ -9,6 +9,7 @@ const specs = fs
   .filter((file) => file.endsWith(".mjs"))
   .map((file) => ({ slug: file.slice(0, -4) }));
 const finalStates = {
+  "selects-radio-cards": "Exploratory",
   "primitives-shortcut-reference": "Save changes",
   "navigation-pagination-window": "Page 24 of 24",
   "feedback-empty-search": "Choose a topic to begin.",
@@ -150,6 +151,19 @@ try {
           if (JSON.stringify(next) !== JSON.stringify(window.referenceStates.at(-1))) window.referenceStates.push(next);
         });
         window.referenceObserver.observe(panel, {childList:true,characterData:true,subtree:true});
+      });
+    }
+    if (slug === "selects-radio-cards") {
+      await page.locator("fieldset").evaluate(group => {
+        const state = () => [...group.querySelectorAll('input[type="radio"]')].filter(input => input.checked).map(input => input.value);
+        window.radioCardStates = [state()];
+        window.radioCardRecord = () => {
+          const next = state();
+          if (JSON.stringify(next) !== JSON.stringify(window.radioCardStates.at(-1))) window.radioCardStates.push(next);
+        };
+        group.addEventListener("change", window.radioCardRecord);
+        window.radioCardObserver = new MutationObserver(window.radioCardRecord);
+        window.radioCardObserver.observe(group, {childList:true,subtree:true});
       });
     }
     if (slug === "input-shortcut-recorder") {
@@ -339,6 +353,16 @@ try {
       await page.evaluate(() => window.referenceObserver.disconnect());
       replay.exactWorkflowVerified = true;
     }
+    if (slug === "selects-radio-cards") {
+      assert.deepEqual(await page.evaluate(() => window.radioCardStates), [["explained"],["focused"],["exploratory"]], "The exact demo selects Focused before Exploratory");
+      const selected = page.locator('input[type="radio"][value="exploratory"]');
+      assert.equal(await selected.isChecked(), true);
+      assert.equal(await selected.evaluate(node => node === document.activeElement), true);
+      assert.equal(await page.getByRole("radio", {checked:true}).count(), 1);
+      await page.locator("fieldset").evaluate(group => group.removeEventListener("change", window.radioCardRecord));
+      await page.evaluate(() => window.radioCardObserver.disconnect());
+      replay.exactWorkflowVerified = true;
+    }
     if (slug === "input-shortcut-recorder") {
       assert.deepEqual(await page.evaluate(() => window.shortcutStates), [
         [["Control","Shift","K"],"Record shortcut. Current: Control plus Shift plus K","Click the keycaps to change the combination."],
@@ -514,6 +538,8 @@ try {
       assert.equal(await page.locator('[id='+JSON.stringify(id)+']').evaluate(node => node.getBoundingClientRect().height), 0, "The programme is visually collapsed");
       await page.evaluate(() => window.ticketObserver.disconnect());
     } else if (slug === "primitives-shortcut-reference") {
+      assert.equal(replay.exactWorkflowVerified, true, "The retained-state demo passes its complete journey assertion");
+    } else if (slug === "selects-radio-cards") {
       assert.equal(replay.exactWorkflowVerified, true, "The retained-state demo passes its complete journey assertion");
     } else if (notice.some((s) => s.trim() && !s.startsWith("Connect "))) {
       assert.doesNotMatch(notice.join(" "), /failed|Connect the host/);

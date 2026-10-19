@@ -1,7 +1,7 @@
 "use client";
-import { type CSSProperties, useId, useState } from "react";
+import { type CSSProperties, useId, useLayoutEffect, useState, useSyncExternalStore } from "react";
 import { Check, ArrowUpRight } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
+import { motion, useAnimationControls } from "motion/react";
 
 const muted = "text-[var(--muted)]";
 function colors(theme: "dark" | "light"): CSSProperties {
@@ -10,6 +10,7 @@ function colors(theme: "dark" | "light"): CSSProperties {
     "--panel": theme === "dark" ? "#111111" : "#ffffff",
     "--ink": theme === "dark" ? "#f5f5f5" : "#171717",
     "--muted": theme === "dark" ? "#a3a3a3" : "#525252",
+    "--control-line": "#737373",
     "--line": theme === "dark" ? "#333333" : "#d4d4d4",
     "--wash": theme === "dark" ? "#242424" : "#f0f0f0",
   } as CSSProperties;
@@ -50,6 +51,45 @@ const defaults: RadioCardOption[] = [
     meta: "For early ideas",
   },
 ];
+const motionQuery = "(prefers-reduced-motion: reduce)";
+function subscribeToMotion(change: () => void) {
+  const query = window.matchMedia(motionQuery);
+  query.addEventListener("change", change);
+  return () => query.removeEventListener("change", change);
+}
+function useCardEntry() {
+  const reduced = useSyncExternalStore(
+    subscribeToMotion,
+    () => window.matchMedia(motionQuery).matches,
+    () => false,
+  );
+  const entrance = useAnimationControls();
+  useLayoutEffect(() => {
+    entrance.stop();
+    const target = { opacity: 1, y: 0 };
+    if (reduced) entrance.set(target);
+    else void entrance.start({ ...target, transition: { duration: 0.32 } });
+    return () => entrance.stop();
+  }, [entrance, reduced]);
+  return { reduced, entrance };
+}
+
+function SelectionMark({ reduced }: { reduced: boolean }) {
+  const controls = useAnimationControls();
+  useLayoutEffect(() => {
+    controls.stop();
+    const target = { opacity: 1, scale: 1 };
+    if (reduced) controls.set(target);
+    else void controls.start({ ...target, transition: { duration: 0.16 } });
+    return () => controls.stop();
+  }, [controls, reduced]);
+  return (
+    <motion.span initial={{ opacity: 0, scale: reduced ? 1 : 0.7 }} animate={controls}>
+      <Check size={14} aria-hidden="true" />
+    </motion.span>
+  );
+}
+
 export function RadioCards({
   label = "How should the assistant respond?",
   options = defaults,
@@ -59,11 +99,14 @@ export function RadioCards({
   theme = "dark",
 }: RadioCardsProps) {
   const id = useId();
-  const reduced = useReducedMotion();
+  const { reduced, entrance } = useCardEntry();
   const [local, setLocal] = useState(defaultValue);
   const selected = value ?? local;
+  const readOnly = value !== undefined && !onChange;
   return (
-    <fieldset
+    <motion.fieldset
+      initial={{ opacity: 0, y: reduced ? 0 : 8 }}
+      animate={entrance}
       style={colors(theme)}
       className="@container w-full max-w-3xl border-0 bg-[var(--panel)] p-6 text-[var(--ink)]"
     >
@@ -72,8 +115,8 @@ export function RadioCards({
       <div className="grid gap-3 @xl:grid-cols-3">
         {options.map((option, i) => (
           <label
-            key={`${option.id}-${i}`}
-            className={`relative block cursor-pointer rounded-xl border p-5 transition-[background-color,border-color,transform] duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transform-none ${option.disabled ? "cursor-not-allowed opacity-40" : "hover:bg-[var(--wash)] active:scale-[.98]"} ${selected === option.id ? "border-[var(--ink)]" : "border-[var(--line)]"}`}
+            key={option.id}
+            className={`relative block rounded-xl border p-5 transition-[background-color,border-color,transform] duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transform-none ${option.disabled ? "cursor-not-allowed opacity-40" : readOnly ? "cursor-default" : "cursor-pointer hover:bg-[var(--wash)] active:scale-[.98]"} ${selected === option.id ? "border-[var(--ink)]" : "border-[var(--line)]"}`}
           >
             <input
               type="radio"
@@ -81,8 +124,9 @@ export function RadioCards({
               data-demo={`option-${i}`}
               value={option.id}
               checked={selected === option.id}
-              disabled={option.disabled}
+              disabled={option.disabled || readOnly}
               onChange={() => {
+                if (option.disabled || readOnly) return;
                 setLocal(option.id);
                 onChange?.(option.id);
               }}
@@ -91,14 +135,9 @@ export function RadioCards({
             <span className="pointer-events-none absolute inset-[-4px] rounded-xl peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[var(--ink)]" />
             <div className="mb-8 flex items-center justify-between">
               <ArrowUpRight size={22} aria-hidden="true" />
-              <span className="grid h-6 w-6 place-items-center rounded-full border border-[var(--line)]">
+              <span className="grid h-6 w-6 place-items-center rounded-full border border-[var(--control-line)]">
                 {selected === option.id && (
-                  <motion.span
-                    initial={{ opacity: 0, scale: reduced ? 1 : 0.7 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                  >
-                    <Check size={14} aria-hidden="true" />
-                  </motion.span>
+                  <SelectionMark reduced={reduced} />
                 )}
               </span>
             </div>
@@ -117,7 +156,7 @@ export function RadioCards({
         ))}
       </div>
       {!options.length && <p className={muted}>No options available.</p>}
-    </fieldset>
+    </motion.fieldset>
   );
 }
 
@@ -126,7 +165,7 @@ export default function RadioCardsDemo(
 ) {
   return (
     <div
-      className="flex min-h-[560px] w-full items-center justify-center p-4 @container sm:p-8"
+      className="flex min-h-[max(560px,100dvh)] w-full items-center justify-center p-4 @container sm:p-8"
       style={{
         background: overrides.theme === "light" ? "#f3f3f3" : "#080808",
       }}

@@ -789,15 +789,14 @@
     "useWhen": "Choosing one clearly explained mode or configuration.",
     "avoidWhen": "Several independent preferences that should be separate checkboxes or switches.",
     "integration": [
-      "Supply your own records through `options`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+      "Supply options with unique stable IDs. Use defaultValue for local selection, or value with onChange for host acknowledgement. Native radios own keyboard navigation and skip disabled options. The callback is synchronous; persist or apply the setting in the host."
     ],
     "related": [
       "cards-event-ticket",
       "segmented-control",
       "select-listbox"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-19"
   },
   "settings-panel": {
     "useWhen": "A compact group of editable preferences with an explicit save action.",
