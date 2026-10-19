@@ -9,6 +9,7 @@ const specs = fs
   .filter((file) => file.endsWith(".mjs"))
   .map((file) => ({ slug: file.slice(0, -4) }));
 const finalStates = {
+  "navigation-pagination-window": "Page 24 of 24",
   "feedback-empty-search": "Choose a topic to begin.",
   "input-shortcut-recorder": "Shortcut reset.",
   "input-file-dropzone": "1 of 5 files selected.",
@@ -126,6 +127,17 @@ try {
           if (next !== window.emptySearchStates.at(-1)) window.emptySearchStates.push(next);
         });
         window.emptySearchObserver.observe(panel, {childList:true,characterData:true,subtree:true});
+      });
+    }
+    if (slug === "navigation-pagination-window") {
+      await page.getByRole("navigation").evaluate(nav => {
+        const state = () => nav.querySelector('li:not([inert]) button[aria-current="page"]')?.getAttribute("aria-label");
+        window.paginationStates = [state()];
+        window.paginationObserver = new MutationObserver(() => {
+          const next = state();
+          if (next && next !== window.paginationStates.at(-1)) window.paginationStates.push(next);
+        });
+        window.paginationObserver.observe(nav, {childList:true,subtree:true,attributes:true,attributeFilter:["aria-current","inert"]});
       });
     }
     if (slug === "input-shortcut-recorder") {
@@ -296,6 +308,15 @@ try {
       assert.equal(await page.locator('[data-demo="clear-search"]').evaluate(node => node === document.activeElement), true);
       assert.equal(await page.getByRole("button", {name:"Motion studies",exact:true}).isEnabled(), true);
       await page.evaluate(() => window.emptySearchObserver.disconnect());
+    }
+    if (slug === "navigation-pagination-window") {
+      assert.deepEqual(await page.evaluate(() => window.paginationStates), ["Page 1","Page 2","Page 3","Page 24"], "The exact demo advances twice, then chooses the true final page");
+      const selected = page.getByRole("button", {name:"Page 24",exact:true});
+      assert.equal(await selected.getAttribute("aria-current"), "page");
+      assert.equal(await selected.evaluate(node => node === document.activeElement), true);
+      assert.equal(await page.getByRole("button", {name:"Next page",exact:true}).isDisabled(), true);
+      assert.equal(await page.locator('li:not([inert]) [aria-current="page"]').count(), 1);
+      await page.evaluate(() => window.paginationObserver.disconnect());
     }
     if (slug === "input-shortcut-recorder") {
       assert.deepEqual(await page.evaluate(() => window.shortcutStates), [

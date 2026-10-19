@@ -672,14 +672,14 @@
     "useWhen": "Moving through a bounded collection of numbered result pages.",
     "avoidWhen": "An endless feed or server data with no reliable page count.",
     "integration": [
-      "Use the documented props to replace sample copy and connect the component to its surrounding page. The usage example below imports the production export."
+      "Use defaultPage for local navigation or page with onPageChange for controlled acknowledgement. Supply the actual pageCount; invalid totals have a written empty state. The callback proposes a valid one-based destination synchronously, and the host loads results or changes routes. Full page numbers remain available to assistive technology when visible labels are compact."
     ],
     "related": [
       "navigation-breadcrumb-fold",
       "tabs-underline-glide",
       "app-permission-matrix"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-19"
   },
   "pixel-agent-status": {
     "useWhen": "A small animated character communicating an agent's current state.",

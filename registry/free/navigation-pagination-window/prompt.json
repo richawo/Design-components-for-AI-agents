@@ -8,14 +8,14 @@
     "motion": "motion/react"
   },
   "layout": {
-    "direction": "A results label and mono page count sit above a centred window of page buttons. Previous and Next controls sit on a separate row below. The selected surface travels between numbers. Five or seven stable 44px slots with persistent first and last anchors and explicit ellipses; a neutral selection surface preserves readable ink during movement.",
-    "container": "Size to the parent with @container. Keep the root width at 100%, capped to the focused component, with 24px desktop and 16px narrow padding.",
+    "direction": "A compact pagination landmark with a quiet result-set label, monospaced current-page caption and a fixed-height 44px travelling page rail. Keep five slots in narrow containers and seven when space allows, with first/last destinations and non-interactive ellipses. The current page has a clear 3:1 outline; Previous and Next remain separate 44px controls below. Keep neutral graphite surfaces, readable 14px page labels and 12px caption type.",
+    "container": "Fill the parent up to 672px with 16px padding; rail slot count responds to its own measured width.",
     "rhythm": "4/8px spacing; 1px edges; 44px minimum interactive targets."
   },
   "typography": {
     "body": "font-sans, 14-16px, line-height 1.5",
-    "metadata": "font-mono, 11-12px, restrained tracking",
-    "heading": "font-display or font-serif, 24-36px, tracking -0.035em"
+    "metadata": "12px monospaced caption; 14px monospaced page labels",
+    "heading": "14px medium result-set label"
   },
   "color": {
     "dark": {
@@ -32,9 +32,9 @@
     }
   },
   "motion": {
-    "entrance": "Opacity and 8px rise over 280ms.",
-    "interaction": "Retained page slots move over 260ms; entries and exits fade for 120ms with a 4px directional offset and popLayout exits. Selected surface glides for 280ms; visual page caption cross-fades for 180ms. All use cubic-bezier(0.22,1,0.36,1).",
-    "reduced": "Remove transforms and layout motion; keep opacity at 120ms or less."
+    "entrance": "Enter the navigation landmark with opacity and an 8px rise over 280ms.",
+    "interaction": "Keep the travelling rail and shared selected plate at 260/280ms. New/retiring slots use owned 260ms vertical entries/exits with 120ms opacity. The keyed current caption enters over 180ms without retaining old captions.",
+    "reduced": "Subscribe independently to live prefers-reduced-motion changes, including retiring slots. Stop and settle owned controls immediately, retire old copies, remove projection transforms and render a static selected plate."
   },
   "responsive": {
     "widths": [
@@ -68,7 +68,7 @@
         "name": "page",
         "type": "number",
         "default": "undefined",
-        "description": "Controlled one-based page, clamped to available bounds."
+        "description": "Controlled one-based page, clamped to available bounds. Without onPageChange, navigation is read-only."
       },
       {
         "name": "defaultPage",
@@ -80,13 +80,13 @@
         "name": "pageCount",
         "type": "number",
         "default": "24",
-        "description": "Non-negative integer page total; zero renders a disabled empty state."
+        "description": "Finite non-negative integer total, capped at Number.MAX_SAFE_INTEGER. Invalid values show no pages. Large visible page labels stay compact with full accessible names and titles."
       },
       {
         "name": "onPageChange",
         "type": "(page: number) => void",
         "default": "undefined",
-        "description": "Receives a valid one-based destination."
+        "description": "Synchronous request for a valid different one-based destination. The host acknowledges controlled requests and owns result loading or navigation."
       },
       {
         "name": "theme",
@@ -101,5 +101,14 @@
     "Remote images, fake network success or hidden external dependencies.",
     "Decorative status badges, gradients as filler, low-contrast text.",
     "Unlabelled controls, hover-only functionality, overflow at 320px."
+  ],
+  "contract": [
+    "Preserve PaginationWindowProps and the named PaginationWindow export. Use defaultPage for local state or page with onPageChange for controlled acknowledgement. Controlled navigation without a writer is disabled.",
+    "Normalize finite page totals to non-negative integers up to Number.MAX_SAFE_INTEGER and clamp the current page to the available range. Invalid totals show no pages; invalid selected positions use page one when pages exist. Do not notify for a current-page or out-of-range request.",
+    "Keep the bounded five/seven-slot page window, 44px rail height and actual first/last destinations. Size from the rail container with ResizeObserver; retained page controls animate through intermediate horizontal positions.",
+    "Use native buttons and exact one-based accessible page names. Mark the actual current destination with aria-current=page and expose the current caption through a status. Ellipses and retiring slots are non-interactive; retired copies are hidden and inert.",
+    "Keep page focus when the window resizes or the host clamps a removed page. If no enabled destination remains, focus the outlined navigation landmark. Do not take focus from an outside control.",
+    "Keep large visible page labels within their targets using compact labels and scientific fallback, with full page numbers in accessible names and titles. The current-page outline meets at least 3:1 contrast.",
+    "Callbacks are synchronous navigation requests. The host owns route changes, result loading and persistence; a refused controlled request retains the actual current page."
   ]
 }

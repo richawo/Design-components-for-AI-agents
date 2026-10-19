@@ -30,7 +30,7 @@
       "name": "page",
       "type": "number",
       "default": "undefined",
-      "description": "Controlled one-based page, clamped to available bounds."
+      "description": "Controlled one-based page, clamped to available bounds. Without onPageChange, navigation is read-only."
     },
     {
       "name": "defaultPage",
@@ -42,13 +42,13 @@
       "name": "pageCount",
       "type": "number",
       "default": "24",
-      "description": "Non-negative integer page total; zero renders a disabled empty state."
+      "description": "Finite non-negative integer total, capped at Number.MAX_SAFE_INTEGER. Invalid values show no pages. Large visible page labels stay compact with full accessible names and titles."
     },
     {
       "name": "onPageChange",
       "type": "(page: number) => void",
       "default": "undefined",
-      "description": "Receives a valid one-based destination."
+      "description": "Synchronous request for a valid different one-based destination. The host acknowledges controlled requests and owns result loading or navigation."
     },
     {
       "name": "theme",
@@ -60,13 +60,13 @@
   "added": "2026-10-11",
   "demo": {
     "steps": [
+      "wait:700",
+      "click:@next",
       "wait:500",
       "click:@next",
-      "wait:400",
-      "click:@next",
-      "wait:400",
+      "wait:500",
       "click:@page-24",
-      "wait:700"
+      "wait:1700"
     ],
     "loop": false
   },

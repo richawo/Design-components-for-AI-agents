@@ -2,17 +2,20 @@
 import {
   type CSSProperties,
   forwardRef,
+  useEffect,
   useId,
   useLayoutEffect,
   useRef,
   useState,
+  useSyncExternalStore,
 } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import {
   AnimatePresence,
   motion,
-  useIsPresent,
-  useReducedMotion,
+  useAnimationControls,
+  usePresence,
+  usePresenceData,
 } from "motion/react";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -33,6 +36,78 @@ function colors(theme: "dark" | "light"): CSSProperties {
     "--wash": theme === "dark" ? "#242424" : "#f0f0f0",
     "--selected": theme === "dark" ? "#303030" : "#e4e4e4",
   } as CSSProperties;
+}
+
+const motionQuery = "(prefers-reduced-motion: reduce)";
+function subscribeToMotion(change: () => void) {
+  const query = window.matchMedia(motionQuery);
+  query.addEventListener("change", change);
+  return () => query.removeEventListener("change", change);
+}
+function useMotionPreference() {
+  return useSyncExternalStore(
+    subscribeToMotion,
+    () => window.matchMedia(motionQuery).matches,
+    () => false,
+  );
+}
+function useEntrance(reduced: boolean, duration: number) {
+  const controls = useAnimationControls();
+  useLayoutEffect(() => {
+    controls.stop();
+    const target = { opacity: 1, y: 0 };
+    if (reduced) controls.set(target);
+    else void controls.start({ ...target, transition: { duration, ease: EASE } });
+    return () => controls.stop();
+  }, [controls, reduced, duration]);
+  return controls;
+}
+function useSlotAnimation(
+  reduced: boolean,
+  present: boolean,
+  direction: number,
+  remove?: (() => void) | null,
+) {
+  const controls = useAnimationControls();
+  useLayoutEffect(() => {
+    let active = true;
+    controls.stop();
+    const target = { opacity: present ? 1 : 0, y: present || reduced ? 0 : -direction * 4 };
+    if (reduced) controls.set(target);
+    else void controls.start({
+      ...target,
+      transition: { duration: 0.26, ease: EASE, opacity: { duration: 0.12 } },
+    }).then(() => { if (active && !present) remove?.(); });
+    return () => { active = false; controls.stop(); };
+  }, [controls, reduced, present, direction, remove]);
+  useEffect(() => {
+    if (reduced && !present) remove?.();
+  }, [reduced, present, remove]);
+  return controls;
+}
+function PageCaption({ caption, direction }: { caption: string; direction: number }) {
+  const reduced = useMotionPreference();
+  const entrance = useEntrance(reduced, 0.18);
+  return (
+    <motion.span
+      aria-hidden="true"
+      initial={{ opacity: 0, y: reduced ? 0 : direction * 3 }}
+      animate={entrance}
+      className="block tabular-nums"
+    >
+      {caption}
+    </motion.span>
+  );
+}
+const compactInteger = new Intl.NumberFormat("en-US", {
+  notation: "compact", maximumFractionDigits: 0,
+});
+function pageLabel(page: number) {
+  if (page < 10000) return String(page);
+  const precise = compact.format(page);
+  if (precise.length <= 4) return precise;
+  const rounded = compactInteger.format(page);
+  return rounded.length <= 4 ? rounded : page.toExponential(0).replace("+", "");
 }
 
 type PageToken = number | "before" | "after";
@@ -80,18 +155,21 @@ export function PaginationWindow({
   theme = "dark",
 }: PaginationWindowProps) {
   const id = useId();
-  const reduced = !!useReducedMotion();
+  const reduced = useMotionPreference();
+  const entrance = useEntrance(reduced, 0.28);
   const count = Number.isFinite(pageCount)
     ? Math.min(Number.MAX_SAFE_INTEGER, Math.max(0, Math.floor(pageCount)))
     : 0;
   const [local, setLocal] = useState(defaultPage);
   const raw = page ?? local;
+  const readOnly = page !== undefined && !onPageChange;
   const current = count
     ? Math.min(count, Math.max(1, Number.isFinite(raw) ? Math.floor(raw) : 1))
     : 0;
   const [travel, setTravel] = useState({ page: current, direction: 1 });
   if (travel.page !== current)
     setTravel({ page: current, direction: current > travel.page ? 1 : -1 });
+  const navigation = useRef<HTMLElement>(null);
   const rail = useRef<HTMLOListElement>(null);
   const buttons = useRef(new Map<number, HTMLButtonElement>());
   const focusedPage = useRef<number | null>(null);
@@ -114,44 +192,35 @@ export function PaginationWindow({
     const focused = focusedPage.current;
     if (
       focused !== null &&
-      !tokens.includes(focused) &&
+      (!tokens.includes(focused) || readOnly) &&
       (document.activeElement === document.body || rail.current?.contains(document.activeElement))
     ) {
-      buttons.current.get(current)?.focus();
+      const target = buttons.current.get(current);
+      if (target && !target.disabled) target.focus();
+      else navigation.current?.focus();
     }
-  }, [current, slots, count]);
+  }, [current, slots, count, readOnly]);
 
   function choose(next: number) {
-    if (next < 1 || next > count || next === current) return;
+    if (readOnly || next < 1 || next > count || next === current) return;
     if (page === undefined) setLocal(next);
     onPageChange?.(next);
   }
   return (
     <motion.nav
+      ref={navigation}
+      tabIndex={-1}
       initial={{ opacity: 0, y: reduced ? 0 : 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: reduced ? 0.12 : 0.28, ease: EASE }}
+      animate={entrance}
       aria-label={`${label} pagination`}
       style={colors(theme)}
-      className="@container w-full max-w-2xl rounded-xl border border-[var(--line)] bg-[var(--panel)] p-4 text-[var(--ink)]"
+      className="@container w-full max-w-2xl rounded-xl border border-[var(--line)] bg-[var(--panel)] p-4 text-[var(--ink)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)]"
     >
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--line)] px-1 pb-4">
         <span className="text-sm font-medium">{label}</span>
         <span role="status" className={`relative font-mono text-xs ${muted}`}>
           <span className="sr-only">{caption}</span>
-          <AnimatePresence initial={false} mode="popLayout">
-            <motion.span
-              aria-hidden="true"
-              key={caption}
-              initial={{ opacity: 0, y: reduced ? 0 : travel.direction * 3 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: reduced ? 0.1 : 0.18, ease: EASE }}
-              className="block tabular-nums"
-            >
-              {caption}
-            </motion.span>
-          </AnimatePresence>
+          <PageCaption key={caption} caption={caption} direction={travel.direction} />
         </span>
       </div>
       <div className="mt-4">
@@ -171,9 +240,9 @@ export function PaginationWindow({
                 token={token}
                 selected={token === current}
                 layoutId={`${id}-selected`}
-                reduced={reduced}
                 direction={travel.direction}
                 onChoose={choose}
+                readOnly={readOnly}
                 buttonRef={(button) => {
                   if (typeof token !== "number") return;
                   if (button) buttons.current.set(token, button);
@@ -194,7 +263,7 @@ export function PaginationWindow({
             type="button"
             data-demo="previous"
             aria-label="Previous page"
-            disabled={current <= 1}
+            disabled={readOnly || current <= 1}
             onClick={() => choose(current - 1)}
             className={control}
           >
@@ -205,7 +274,7 @@ export function PaginationWindow({
             type="button"
             data-demo="next"
             aria-label="Next page"
-            disabled={!count || current >= count}
+            disabled={readOnly || !count || current >= count}
             onClick={() => choose(current + 1)}
             className={control}
           >
@@ -224,9 +293,9 @@ const PageSlot = forwardRef<
     token: PageToken;
     selected: boolean;
     layoutId: string;
-    reduced: boolean;
     direction: number;
     onChoose: (page: number) => void;
+    readOnly: boolean;
     buttonRef: (button: HTMLButtonElement | null) => void;
     onFocus: () => void;
     onBlur: () => void;
@@ -236,16 +305,20 @@ const PageSlot = forwardRef<
     token,
     selected,
     layoutId,
-    reduced,
     direction,
     onChoose,
+    readOnly,
     buttonRef,
     onFocus,
     onBlur,
   },
   ref,
 ) {
-  const present = useIsPresent();
+  const [present, remove] = usePresence();
+  const reduced = useMotionPreference();
+  const custom: unknown = usePresenceData();
+  const exitDirection = typeof custom === "number" ? custom : direction;
+  const controls = useSlotAnimation(reduced, present, exitDirection, remove);
   return (
     <motion.li
       ref={ref}
@@ -253,19 +326,10 @@ const PageSlot = forwardRef<
       aria-hidden={!present || typeof token !== "number" ? true : undefined}
       layout={reduced ? false : "position"}
       custom={direction}
-      variants={{
-        enter: (dir: number) => ({ opacity: 0, y: reduced ? 0 : dir * 4 }),
-        exit: (dir: number) => ({ opacity: 0, y: reduced ? 0 : -dir * 4 }),
-      }}
-      initial="enter"
-      animate={{ opacity: 1, y: 0 }}
-      exit="exit"
-      transition={{
-        duration: reduced ? 0.1 : 0.26,
-        ease: EASE,
-        opacity: { duration: 0.12 },
-      }}
-      className="relative flex h-11 w-11 shrink-0 items-center justify-center"
+      initial={{ opacity: 0, y: reduced ? 0 : direction * 4 }}
+      animate={controls}
+      transition={{ layout: { duration: 0.26, ease: EASE } }}
+      className="relative flex h-11 w-11 shrink-0 items-center justify-center motion-reduce:transform-none!"
     >
       {typeof token === "number" ? (
         <button
@@ -274,6 +338,7 @@ const PageSlot = forwardRef<
           data-demo={`page-${token}`}
           aria-label={`Page ${token}`}
           aria-current={selected ? "page" : undefined}
+          disabled={readOnly}
           onClick={() => onChoose(token)}
           onFocus={onFocus}
           onBlur={onBlur}
@@ -281,16 +346,18 @@ const PageSlot = forwardRef<
           className={`${control} relative w-full px-0 font-mono tabular-nums`}
           style={{ color: selected ? "var(--ink)" : "var(--muted)" }}
         >
-          {selected && (
+          {selected && (reduced ? (
+            <span aria-hidden="true" className="absolute inset-0 rounded-lg bg-[var(--selected)] shadow-[inset_0_0_0_1px_var(--ink)]" />
+          ) : (
             <motion.span
               aria-hidden="true"
               layoutId={layoutId}
-              transition={{ duration: reduced ? 0 : 0.28, ease: EASE }}
-              className="absolute inset-0 rounded-lg bg-[var(--selected)] shadow-[inset_0_0_0_1px_var(--line)]"
+              transition={{ duration: 0.28, ease: EASE }}
+              className="absolute inset-0 rounded-lg bg-[var(--selected)] shadow-[inset_0_0_0_1px_var(--ink)] motion-reduce:transform-none!"
             />
-          )}
+          ))}
           <span className="relative whitespace-nowrap">
-            {token >= 10000 ? compact.format(token) : token}
+            {pageLabel(token)}
           </span>
         </button>
       ) : (
