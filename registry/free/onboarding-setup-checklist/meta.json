@@ -7,7 +7,6 @@
   "description": "An actionable setup checklist with a drawn completion ring, expandable instructions and native checkboxes, designed for thoughtful first-run experiences.",
   "tags": [
     "onboarding",
-    "onboarding",
     "setup",
     "checklist",
     "responsive",
@@ -30,32 +29,32 @@
     {
       "name": "description",
       "type": "string",
-      "default": "three-step guidance",
-      "description": "Introductory copy."
+      "default": "setup guidance",
+      "description": "Supporting setup guidance, independent of task count."
     },
     {
       "name": "tasks",
       "type": "SetupTask[]",
       "default": "three workspace tasks",
-      "description": "Unique IDs, titles, descriptions and estimated duration labels."
+      "description": "Ordered tasks with stable unique IDs, titles, descriptions and host-supplied estimated duration labels."
     },
     {
       "name": "completed",
       "type": "string[]",
       "default": "undefined",
-      "description": "Controlled completed task IDs."
+      "description": "Controlled completed task IDs. Completion is read-only without onChange; instructions remain available. Only available task IDs count or reach notifications."
     },
     {
       "name": "defaultCompleted",
       "type": "string[]",
       "default": "[\"profile\"]",
-      "description": "Initial completion state."
+      "description": "Initial local completed IDs, normalized to known tasks and deduplicated."
     },
     {
       "name": "onChange",
       "type": "(completed: string[]) => void",
       "default": "undefined",
-      "description": "New completion IDs after explicit user check or uncheck; no external work is performed."
+      "description": "Synchronous completion notification with an independent array of known IDs after explicit check/uncheck. The host owns controlled acknowledgement and any external setup work."
     },
     {
       "name": "theme",
@@ -67,13 +66,13 @@
   "added": "2026-10-11",
   "demo": {
     "steps": [
-      "wait:600",
+      "wait:700",
       "click:@complete-1",
-      "wait:500",
+      "wait:1000",
       "click:@setup-task-2",
-      "wait:500",
+      "wait:1000",
       "click:@complete-2",
-      "wait:700"
+      "wait:1600"
     ],
     "loop": false
   },

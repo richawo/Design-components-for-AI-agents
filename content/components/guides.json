@@ -3015,15 +3015,15 @@
     "useWhen": "Coordinating a small set of actionable workspace setup tasks.",
     "avoidWhen": "Blocking the product behind a long tutorial or marking steps complete without evidence.",
     "integration": [
-      "Supply your own records through `tasks`, `completed`, `defaultCompleted`. Preserve stable keys or IDs when the data contract provides them.",
-      "Connect `onChange` to your application's state or services. The preview demonstrates the interaction; your host owns persistence and external effects."
+      "Supply stable unique task IDs. Use defaultCompleted for a local checklist, or completed with onChange for host acknowledgement. onChange receives an independent normalized ID array synchronously. Perform setup work and persistence in the host; the checkbox records completion and does not run an external action.",
+      "Controlled completion without onChange is read-only, while instructions stay available. Preserve task IDs when reordering or refreshing the list. Empty and later-arriving tasks have written states."
     ],
     "related": [
       "hr-employee-onboarding",
       "input-password-checklist",
       "app-permission-matrix"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-19"
   },
   "pricing-comparison-matrix": {
     "useWhen": "Comparing plan capabilities in a readable, structured matrix.",

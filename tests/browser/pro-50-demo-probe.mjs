@@ -9,6 +9,7 @@ const specs = fs
   .filter((file) => file.endsWith(".mjs"))
   .map((file) => ({ slug: file.slice(0, -4) }));
 const finalStates = {
+  "onboarding-setup-checklist": "Everything on your list is complete.",
   "date-week-agenda": "Research playback",
   "forms-preference-center": "Preferences saved.",
   "data-file-explorer": "A small, accessible action with honest loading feedback.",
@@ -112,6 +113,17 @@ try {
         });
       }, true);
     });
+    if (slug === "onboarding-setup-checklist") {
+      await page.locator("section").evaluate(checklist => {
+        const state = () => [checklist.querySelector('[role="img"]')?.getAttribute("aria-label"), checklist.querySelector('[data-demo="setup-task-1"]')?.getAttribute("aria-expanded"), checklist.querySelector('[data-demo="setup-task-2"]')?.getAttribute("aria-expanded")];
+        window.setupStates = [state()];
+        window.setupObserver = new MutationObserver(() => {
+          const next = state();
+          if (next.every(Boolean) && JSON.stringify(next) !== JSON.stringify(window.setupStates.at(-1))) window.setupStates.push(next);
+        });
+        window.setupObserver.observe(checklist, {childList:true,subtree:true,attributes:true,attributeFilter:["aria-label","aria-expanded"]});
+      });
+    }
     if (slug === "date-week-agenda") {
       await page.locator("section").evaluate(agenda => {
         const state = () => [agenda.querySelector('[aria-pressed="true"]')?.textContent, agenda.querySelector('ol button span.block')?.textContent, agenda.querySelector('ol button')?.getAttribute("aria-expanded")];
@@ -231,6 +243,14 @@ try {
       ?.slice(7);
     const target = page.locator('[data-demo="' + last + '"]');
     const notice = await page.getByRole("status").allTextContents();
+    if (slug === "onboarding-setup-checklist") {
+      assert.deepEqual(await page.evaluate(() => window.setupStates), [["1 of 3 steps complete","true","false"], ["2 of 3 steps complete","true","false"], ["2 of 3 steps complete","false","true"], ["3 of 3 steps complete","false","true"]], "The replay completes the source, opens question instructions and completes the last task");
+      assert.deepEqual(await page.getByRole("checkbox").evaluateAll(inputs => inputs.map(input => input.checked)), [true,true,true]);
+      assert.equal(await page.locator('[data-demo="complete-2"]').evaluate(node => node === document.activeElement), true);
+      assert.ok(notice.includes("Everything on your list is complete."));
+      assert.equal(await page.getByText("Try something you would otherwise search for manually.", {exact:true}).isVisible(), true);
+      await page.evaluate(() => window.setupObserver.disconnect());
+    }
     if (slug === "date-week-agenda") {
       assert.deepEqual(await page.evaluate(() => window.agendaStates), [["Mon","Design critique","false"], ["Mon","Design critique","true"], ["Tue","Research playback","false"]], "The replay reads Monday's notes before moving to Tuesday");
       const day = page.getByRole("button", {name:"Tue",exact:true});

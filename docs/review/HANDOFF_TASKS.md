@@ -372,7 +372,9 @@ and how to know it's done. Pick any of them up independently. Background, briefs
 
 - Task 8 (19 October): the interface checkpoint passes all 63 browser suites and 82 exact metadata replays at public `b015a68` / private `6a39c66`, with 933/1,138 tracked text sources, both heads and standing edits unchanged. Fresh audits for Kanban, Explorer, Preferences and Agenda pass; all forty captures are reviewed, with 38 byte-identical and two small Kanban raster differences inspected. The stopped-server connection failures are preserved separately. Strict registry, root/isolated types, all 1,066 unit tests and the Worker dry run pass with every bundle guard retained. All four films and paired posters are current. 12 components, 12 blocks, 59 probes and 115 films remain.
 
-## 1. Re-record demo videos (115 components)
+- Task 7 (19 October): Workspace Setup Checklist keeps separate completion and instruction controls. Notifications receive copied available-ID arrays, controlled completion without a writer is read-only, task-key reordering retains focus and live reduced motion settles the ring/card. Unchecked boundaries meet 3:1; durations use 12px type; the ring draws from empty; chevrons show open state; remaining-step copy handles one; and the subtitle no longer hard-codes three tasks. Six original-source failures are retained. Its 37-mount source review, eighteen accessibility audits, six widths, reviewed state/entrance captures, Next regression, theme control, official audit and exact completion/disclosure replay pass. Refused controlled changes, normalized IDs, empty/arriving tasks, long copy and independent instances are covered. Strict registry, root/isolated types and all 1,066 tests pass. Its settled Next poster is reviewed and current. The film is rejected for a 998.88ms changed-source delivery gap (13 stalls); source cadence is 17ms and moving-frame p95 is 25.37ms without stalls. The rejected raw capture/metrics are preserved, the prior film is retained and every guard stays unchanged. The onboarding runner is registered; the next complete batch has 64 suites and 83 metadata replays and remains pending. 11 components and 12 blocks remain; 116 films remain queued.
+
+## 1. Re-record demo videos (116 components)
 
 Every rebuilt component's poster is current but its catalogue film (`public/previews/<slug>.mp4`) still shows the old
 version. Record them one at a time on an otherwise idle machine; the recorder rejects frame stalls under load.
@@ -391,6 +393,7 @@ slug or per small group). Notes:
 
 Slugs:
 
+`onboarding-setup-checklist`
 `devtools-request-waterfall`
 `chart-bullet-targets`
 `chart-slope-comparison`
@@ -522,9 +525,9 @@ All nine parked rebuilds are shipped in both repos. Their original `_wip/<slug>`
 | finance-budget-variance | Completed 17 October: Next probe, dark/light accessibility, responsive and entrance/state captures, live demo and refreshed poster pass. |
 | finance-cashflow-dashboard | Completed 17 October: weekly balance and in/out bars, movable payments, independent pending saves, invalid-data guards, selected-week list geometry, Next probe/demo, both-theme accessibility, responsive/state/entrance captures and refreshed poster pass. |
 
-## 7. Continue the review (12 components, then 12 blocks)
+## 7. Continue the review (11 components, then 12 blocks)
 
-Same process as the 186 already done: hold each to the first ~100 components' standard. Briefs:
+Same process as the 187 already done: hold each to the first ~100 components' standard. Briefs:
 `docs/review/REVIEW_BRIEF.md`, `docs/review/SUITE_BRIEF.md` for industry components, suite languages in
 `docs/review/suites/`. Work newest first, about four components per batch, and verify each (build, tsc, tests,
 check-component, your own captures of states and mid-entrance frames, a refreshed poster, a rewritten pro-50 probe for
@@ -532,7 +535,7 @@ industry components).
 
 - **Commerce** is reviewed. Keep `block-commerce-workspace` compatible with its rebuilt parts.
 - **Smaller components** (#151–179):
-  onboarding-setup-checklist, date-booking-slots, input-file-dropzone, input-shortcut-recorder,
+  date-booking-slots, input-file-dropzone, input-shortcut-recorder,
   feedback-empty-search, navigation-pagination-window, primitives-shortcut-reference, selects-radio-cards,
   progress-milestones, content-accordion-index, feedback-inline-alert, navigation-breadcrumb-fold.
 - **Blocks**, after their parts: the 12 `block-*` components. Many parts changed their look and some their props;

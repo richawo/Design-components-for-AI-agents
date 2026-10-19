@@ -1,7 +1,14 @@
 "use client";
-import { type CSSProperties, useId, useState } from "react";
+import {
+  type CSSProperties,
+  useId,
+  useLayoutEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import { ChevronDown } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
+import { motion, useAnimationControls } from "motion/react";
 
 const control =
   "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-lg px-3 text-sm font-medium transition-[background,transform] duration-150 hover:bg-[var(--wash)] disabled:hover:bg-transparent active:scale-[.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)] disabled:cursor-not-allowed disabled:opacity-40 disabled:active:scale-100 motion-reduce:transform-none";
@@ -77,6 +84,7 @@ function colors(theme: "dark" | "light"): CSSProperties {
     "--wash": theme === "dark" ? "#242424" : "#f0f0f0",
     "--sc-ctl-ink": "var(--ink)",
     "--sc-ctl-surface": "var(--panel)",
+    "--sc-ctl-line": "#737373",
   } as CSSProperties;
 }
 
@@ -116,9 +124,16 @@ const defaults: SetupTask[] = [
     duration: "1 min",
   },
 ];
+const motionQuery = "(prefers-reduced-motion: reduce)";
+function subscribeToMotion(change: () => void) {
+  const query = window.matchMedia(motionQuery);
+  query.addEventListener("change", change);
+  return () => query.removeEventListener("change", change);
+}
+
 export function SetupChecklist({
   title = "A good place to start.",
-  description = "Three small steps to a useful workspace.",
+  description = "Small steps to a useful workspace.",
   tasks = defaults,
   completed,
   defaultCompleted = ["profile"],
@@ -126,21 +141,49 @@ export function SetupChecklist({
   theme = "dark",
 }: SetupChecklistProps) {
   const id = useId();
-  const reduced = useReducedMotion();
+  const reduced = useSyncExternalStore(
+    subscribeToMotion,
+    () => window.matchMedia(motionQuery).matches,
+    () => false,
+  );
+  const entrance = useAnimationControls();
+  const ring = useAnimationControls();
+  const ringStarted = useRef(false);
+  useLayoutEffect(() => {
+    entrance.stop();
+    const target = { opacity: 1, y: 0 };
+    if (reduced) entrance.set(target);
+    else void entrance.start({ ...target, transition: { duration: 0.32 } });
+    return () => entrance.stop();
+  }, [entrance, reduced]);
   const [local, setLocal] = useState(defaultCompleted);
   const [open, setOpen] = useState("sources");
-  const checked = completed ?? local;
+  const available = new Set(tasks.map((task) => task.id));
+  const checked = [...new Set((completed ?? local).filter((key) => available.has(key)))];
+  const readOnly = completed !== undefined && !onChange;
   const count = tasks.filter((t) => checked.includes(t.id)).length;
   const ratio = tasks.length ? count / tasks.length : 0;
+  useLayoutEffect(() => {
+    ring.stop();
+    const target = { strokeDashoffset: 176 * (1 - ratio) };
+    const first = !ringStarted.current;
+    ringStarted.current = true;
+    if (reduced) ring.set(target);
+    else void ring.start({ ...target, transition: { duration: 0.4, delay: first ? 0.16 : 0 } });
+    return () => ring.stop();
+  }, [ratio, reduced, ring]);
   function toggle(key: string) {
+    if (readOnly) return;
     const next = checked.includes(key)
       ? checked.filter((x) => x !== key)
       : [...checked, key];
     setLocal(next);
-    onChange?.(next);
+    onChange?.([...next]);
   }
   return (
-    <section
+    <motion.section
+      initial={{ opacity: 0, y: reduced ? 0 : 8 }}
+      animate={entrance}
       aria-labelledby={id}
       style={colors(theme)}
       className="@container w-full max-w-xl overflow-hidden rounded-xl border border-[var(--line)] bg-[var(--panel)] text-[var(--ink)]"
@@ -174,8 +217,8 @@ export function SetupChecklist({
               strokeWidth="3"
               strokeLinecap="round"
               strokeDasharray={176}
-              animate={{ strokeDashoffset: 176 * (1 - ratio) }}
-              transition={{ duration: reduced ? 0 : 0.4 }}
+              initial={{ strokeDashoffset: 176 }}
+              animate={ring}
             />
           </svg>
           <span className="absolute inset-0 grid place-items-center font-mono text-sm">
@@ -197,16 +240,19 @@ export function SetupChecklist({
       <ul className="border-t border-[var(--line)]">
         {tasks.map((task, i) => (
           <li
-            key={`${task.id}-${i}`}
+            key={task.id}
             className="border-b border-[var(--line)] last:border-b-0"
           >
             <div className="flex items-center gap-2 px-4 py-2">
-              <label className="relative grid h-11 w-11 shrink-0 cursor-pointer place-items-center rounded-lg hover:bg-[var(--wash)]">
+              <label
+                className={`relative grid h-11 w-11 shrink-0 place-items-center rounded-lg ${readOnly ? "cursor-default" : "cursor-pointer hover:bg-[var(--wash)]"}`}
+              >
                 <span className="sc-ctl-check">
                   <input
                     type="checkbox"
                     data-demo={`complete-${i}`}
                     checked={checked.includes(task.id)}
+                    disabled={readOnly}
                     onChange={() => toggle(task.id)}
                     aria-label={`Complete ${task.title}`}
                   />
@@ -232,13 +278,13 @@ export function SetupChecklist({
                   <span className="block text-sm font-medium">
                     {task.title}
                   </span>
-                  <span className={`font-mono text-[11px] ${muted}`}>
+                  <span className={`font-mono text-[12px] ${muted}`}>
                     {task.duration}
                   </span>
                 </span>
                 <ChevronDown
                   size={15}
-                  className="shrink-0"
+                  className={`shrink-0 transition-transform duration-150 motion-reduce:transition-none ${open === task.id ? "rotate-180" : ""}`}
                   aria-hidden="true"
                 />
               </button>
@@ -260,10 +306,10 @@ export function SetupChecklist({
         {tasks.length
           ? count === tasks.length
             ? "Everything on your list is complete."
-            : `${tasks.length - count} steps left. Pick up wherever you like.`
+            : `${tasks.length - count} ${tasks.length - count === 1 ? "step" : "steps"} left. Pick up wherever you like.`
           : "No setup tasks configured."}
       </p>
-    </section>
+    </motion.section>
   );
 }
 
