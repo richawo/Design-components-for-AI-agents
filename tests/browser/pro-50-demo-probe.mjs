@@ -73,7 +73,9 @@ for (const slug of Object.keys(finalStates)) {
 }
 const selected = new Set(process.argv.slice(2));
 for (const slug of selected) assert.ok(specs.some(spec => spec.slug === slug), `Unknown demo case: ${slug}`);
-const browser = await launchChromium();
+// Exercise motion with the native renderer used by recordings and latency replays.
+// Slow software 3D frames can exhaust the unchanged target-settling deadline.
+const browser = await launchChromium({ args: [] });
 const page = await browser.newPage({
   viewport: { width: 1440, height: 1400 },
   reducedMotion: "no-preference",
