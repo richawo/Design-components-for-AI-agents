@@ -10,7 +10,26 @@ export async function check(context){
  await first.press('ArrowRight');await draft.waitFor();assert.equal(await draft.inputValue(),'Keep the research note through view changes.');assert.equal(await second.evaluate(node=>node===document.activeElement),true);await capture('keyboard-view',{audit:true});
  const external=page.getByRole('button',{name:'Outside action',exact:true});await external.focus();await page.evaluate(()=>window.setWorkspaceView('one'));await page.getByRole('button',{name:'Finish first view',exact:true}).waitFor();assert.equal(await external.evaluate(node=>node===document.activeElement),true,'Explicit host focus stays with the host');
  await mount(`createRoot(document.getElementById('root')).render(<Subject.WorkspaceShell title="A new workspace" links={[]}><Subject.WorkspacePanels activeId="missing" panels={[]}/></Subject.WorkspaceShell>);`);assert.equal(await page.getByRole('tab').count(),0);assert.equal(await page.locator('[data-workspace-panel]').count(),0);await capture('empty-workspace',{audit:true});
- for(const test of[outside,heading,height])await test(context);await page.emulateMedia({reducedMotion:'reduce'});
+ for(const test of[outside,heading,height,changedHeading])await test(context);await page.emulateMedia({reducedMotion:'reduce'});
+}
+
+async function changedHeading({page,assert,capture=async()=>{}}) {
+ const base=process.env.PREVIEW_BASE??'http://localhost:3100';
+ await page.emulateMedia({reducedMotion:'no-preference'});
+ await page.setViewportSize({width:1440,height:940});
+ await page.goto(base+'/preview/layout-workspace-shell',{waitUntil:'domcontentloaded'});
+ await page.locator('[data-preview-slug="layout-workspace-shell"][data-preview-ready="true"]').waitFor({timeout:45000});
+ await page.evaluate(()=>document.fonts.ready);
+ for(const [view,title]of[['projects','Projects'],['activity','Activity'],['overview','Monday, 13 October'],['projects','Projects']]){
+  await page.locator(`[data-demo="nav-${view}"]:visible`).click();
+  await page.waitForFunction(title=>{
+   const heading=document.querySelector('header h2'),subtitle=heading?.nextElementSibling;
+   return heading?.textContent===title&&getComputedStyle(heading).opacity==='1'&&
+    getComputedStyle(heading).filter==='none'&&subtitle&&getComputedStyle(subtitle).opacity==='1';
+  },title,{polling:'raf',timeout:2000});
+  assert.equal(await page.locator('header h2').first().innerText(),title);
+ }
+ await capture('changed-heading');
 }
 
 async function outside({page,mount,assert}) {

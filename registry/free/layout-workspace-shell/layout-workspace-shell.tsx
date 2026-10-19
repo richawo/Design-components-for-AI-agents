@@ -377,13 +377,16 @@ function WorkspaceHeader({
   useLayoutEffect(() => {
     entry.stop();
     if (reduce) entry.set({ opacity: 1, y: 0, filter: "none" });
-    else void entry.start((index: number) => ({
-      opacity: 1,
-      y: 0,
-      filter: "blur(0px)",
-      transitionEnd: { filter: "none" },
-      transition: { duration: MOTION.enter, ease: EASE_OUT, delay: index * MOTION.step },
-    }));
+    else {
+      entry.set({ opacity: 0, y: MOTION.rise, filter: `blur(${MOTION.blur}px)` });
+      void entry.start((index: number) => ({
+        opacity: 1,
+        y: 0,
+        filter: "blur(0px)",
+        transitionEnd: { filter: "none" },
+        transition: { duration: MOTION.enter, ease: EASE_OUT, delay: index * MOTION.step },
+      }));
+    }
     return () => entry.stop();
   }, [entry, reduce, title, subtitle, hasEyebrow, hasActions]);
 
@@ -401,13 +404,12 @@ function WorkspaceHeader({
             {eyebrow}
           </motion.p>
         )}
-        {/* Keyed so a view that renames the page cross-fades its heading in. */}
-        <motion.h2 key={title} {...enter(1)} className={STYLE.title}>
+        {/* Keep animation subscribers mounted when a view changes its heading. */}
+        <motion.h2 {...enter(1)} className={STYLE.title}>
           {title}
         </motion.h2>
         {subtitle && (
           <motion.p
-            key={subtitle}
             {...enter(2)}
             className="mt-1.5 max-w-[78ch] text-sm leading-relaxed text-[var(--ws-muted)] text-pretty"
           >

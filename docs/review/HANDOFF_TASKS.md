@@ -567,6 +567,18 @@ Strict registry, root/isolated types and all 1,066 unit tests pass. The existing
 the new regressions, and all four complete workspace/block integration suites pass, including eight block
 metadata replays. This repairs a shared dependency and does not complete any of the eleven block reviews.
 
+Workspace header navigation correction (19 October): the earlier owned-controls change could leave newly
+keyed titles and subtitles invisible in the actual Next preview. The motion nodes now stay mounted, with
+explicit entry resets and the same durations, delays and immediate live reduced-motion settling. The original
+real-preview failure affects all twelve attempted transitions; all 24 corrected Next/production transitions
+pass. The existing workspace suite now requires painted headings after real preview navigation. Retained drafts,
+focus ownership and measured-height checks still pass. Its 25-mount source review and eight accessibility
+audits pass. Eighteen of 22 captures are byte-identical; three entrance frames and the light 1920px capture
+are reviewed. All four complete workspace/block suites pass, including eight workflows, eight native metadata
+replays and eleven block references with mobile layouts and private-source checks. Strict registry,
+root/isolated/all-eleven-block types and all 1,066 unit tests pass. This shared repair leaves the eleven block
+reviews open; Commerce publication is still pending.
+
 Orders Table dependency follow-up (19 October): its light-theme column headings and row metadata failed
 at 4.47:1 on the raised surface in Commerce's full order view. A one-token palette correction restores AA
 contrast. The original failure and captures are preserved. Both-theme composed audits, an explicit data-row
