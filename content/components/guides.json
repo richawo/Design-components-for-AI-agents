@@ -908,14 +908,15 @@
     "useWhen": "Brief supplementary explanations for nearby controls.",
     "avoidWhen": "Required instructions, interactive content or a substitute for visible accessible labels.",
     "integration": [
-      "Supply your own records through `Tooltip.shortcut`. Preserve stable keys or IDs when the data contract provides them."
+      "Wrap focusable controls in Tooltip inside one TooltipGroup, with stable IDs and each control's own accessible name. Tooltip.shortcut supplies printed keys.",
+      "The current label owns the referenced tooltip role and ID. Outgoing labels remain decorative during their visual crossfade and cannot describe the next trigger."
     ],
     "related": [
       "dropdown-menu-nested",
       "dialog-confirm-typed",
       "ai-message-actions"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-19"
   },
   "agent-approval-gate": {
     "useWhen": "Reviewing a proposed agent action before a person approves execution.",

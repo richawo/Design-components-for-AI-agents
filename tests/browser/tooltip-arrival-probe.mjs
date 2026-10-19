@@ -25,15 +25,17 @@ async function coldHover(target, label) {
       const described = document
         .querySelector("[aria-describedby]")
         ?.closest("[data-tg-trigger]")?.dataset.tgTrigger;
-      const visible =
-        getComputedStyle(tip).visibility === "visible" &&
-        Number(getComputedStyle(tip).opacity) > 0.01;
+      let opacity = tip ? 1 : 0;
+      for (let node = tip; node; node = node.parentElement) {
+        opacity *= Number(getComputedStyle(node).opacity);
+      }
+      const visible = !!tip && getComputedStyle(tip).visibility === "visible" && opacity > 0.01;
       window.frames.push({
         active: described,
         visible,
-        labels: [...tip.querySelectorAll(".absolute.inset-0")]
+        labels: tip ? [...tip.querySelectorAll(".absolute.inset-0")]
           .filter((e) => Number(getComputedStyle(e).opacity) > 0.01)
-          .map((e) => e.textContent),
+          .map((e) => e.textContent) : [],
       });
       if (window.collect) requestAnimationFrame(read);
     };
@@ -104,10 +106,59 @@ try {
       path: `${process.env.POLISH_OUT}/tooltip-closed.png`,
     });
   }
+  await checkWarmDescriptions();
   assert.deepEqual(errors, []);
   console.log(
     "Tooltip pinned handoff, cold arrivals, warm neighbour glide, updated labels, unmount and focus/Escape pass.",
   );
+} catch (error) {
+  const folder = process.env.POLISH_OUT || "test-results/tooltip-arrival";
+  fs.mkdirSync(folder, { recursive: true });
+  const failure = `${folder}/failure-${Date.now()}`;
+  const snapshot = await page.evaluate(() => ({
+    frames: Array.isArray(window.frames) ? window.frames : [],
+    events: Array.isArray(window.events) ? window.events : [],
+    tooltips: [...document.querySelectorAll('[role="tooltip"]')].map(node => ({
+      text: node.textContent,
+      html: node.outerHTML,
+      opacity: getComputedStyle(node).opacity,
+      visibility: getComputedStyle(node).visibility,
+    })),
+  }));
+  fs.writeFileSync(`${failure}.json`, JSON.stringify({
+    message: error.message, actual: error.actual, expected: error.expected, snapshot, errors,
+  }, null, 2));
+  await page.screenshot({ path: `${failure}.png` });
+  throw error;
 } finally {
   await browser.close();
+}
+
+async function checkWarmDescriptions() {
+  const session = await page.context().newCDPSession(page);
+  for (const theme of ["dark", "light"]) {
+    for (const reducedMotion of ["no-preference", "reduce"]) {
+      await page.emulateMedia({ reducedMotion });
+      await mountFixture(page, "tooltip-group", "free", `
+        createRoot(document.getElementById('root')).render(
+          <Subject.TooltipGroup theme="${theme}" delay={0} style={{padding:80,background:'${theme === "dark" ? "#111" : "#fff"}'}}>
+            <Subject.Tooltip id="first" label="First tool"><button>First</button></Subject.Tooltip>
+            <Subject.Tooltip id="second" label="Second tool"><button>Second</button></Subject.Tooltip>
+          </Subject.TooltipGroup>);
+      `);
+      await page.keyboard.press("Tab");
+      await page.waitForTimeout(300);
+      await page.keyboard.press("Tab");
+      await page.waitForFunction(() =>
+        document.querySelector('[data-tg-trigger="second"] button').hasAttribute("aria-describedby"),
+      );
+      const accessibility = await session.send("Accessibility.getFullAXTree");
+      const second = accessibility.nodes.find(node => node.role?.value === "button" && node.name?.value === "Second");
+      assert.equal(second?.description?.value, "Second tool", "An outgoing label cannot describe the current trigger");
+      const tipId = await page.getByRole("button", { name: "Second", exact: true }).getAttribute("aria-describedby");
+      assert.equal(await page.locator(`[id=${JSON.stringify(tipId)}]`).count(), 1, "The tooltip ID remains unique");
+      assert.equal(await page.getByRole("tooltip").count(), 1);
+      console.log(`PASS warm tooltip description ${theme} ${reducedMotion}`);
+    }
+  }
 }

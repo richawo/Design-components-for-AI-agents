@@ -17,7 +17,7 @@ import {
   type ReactElement,
   type ReactNode,
 } from "react";
-import { AnimatePresence, animate, motion, useInView, useMotionValue, useReducedMotion, useTransform, type MotionValue } from "motion/react";
+import { AnimatePresence, animate, motion, useInView, useIsPresent, useMotionValue, useReducedMotion, useTransform, type MotionValue } from "motion/react";
 import { Bold, Code, Italic, Link2, MessageSquarePlus, Strikethrough, Underline, type LucideIcon } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
@@ -563,9 +563,6 @@ export function TooltipGroup({
 
         {/* The one floating surface. Always mounted, so it can travel between triggers instead of re-entering. */}
         <motion.div
-          role="tooltip"
-          id={tipId}
-          aria-hidden={!isOpen}
           data-side={placed.side}
           initial={{ opacity: 0, visibility: "hidden" }}
           animate={
@@ -583,17 +580,16 @@ export function TooltipGroup({
           >
             <AnimatePresence key={contentEpoch} initial={false} custom={placed.dir}>
               {shown && (
-                <motion.span
+                <TooltipLabel
                   key={shownId}
-                  custom={placed.dir}
-                  variants={contentVariants(reduce)}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                  className="absolute inset-0 flex items-center justify-center"
-                >
-                  <TipContent label={shown.label} keys={shortcuts ? shown.shortcut : undefined} />
-                </motion.span>
+                  tipId={tipId}
+                  open={isOpen}
+                  side={placed.side}
+                  direction={placed.dir}
+                  reduce={reduce}
+                  label={shown.label}
+                  keys={shortcuts ? shown.shortcut : undefined}
+                />
               )}
             </AnimatePresence>
           </motion.div>
@@ -606,6 +602,44 @@ export function TooltipGroup({
         </span>
       </div>
     </GroupContext.Provider>
+  );
+}
+
+function TooltipLabel({
+  tipId,
+  open,
+  side,
+  direction,
+  reduce,
+  label,
+  keys,
+}: {
+  tipId: string;
+  open: boolean;
+  side: TooltipSide;
+  direction: number;
+  reduce: boolean;
+  label: string;
+  keys?: string[];
+}) {
+  const present = useIsPresent();
+  return (
+    <motion.span
+      role={present ? "tooltip" : undefined}
+      id={present ? tipId : undefined}
+      aria-hidden={!open || !present}
+      data-side={side}
+      custom={direction}
+      variants={contentVariants(reduce)}
+      initial="enter"
+      animate="center"
+      exit="exit"
+      className="absolute inset-0"
+    >
+      <span className="absolute inset-0 flex items-center justify-center">
+        <TipContent label={label} keys={keys} />
+      </span>
+    </motion.span>
   );
 }
 

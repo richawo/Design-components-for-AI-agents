@@ -39,7 +39,7 @@ Build a tooltip group for toolbars in React + Tailwind CSS v4 + `motion/react` (
 - "Add link ⌘ K" is pinned on load. Entrance once at 30% in view: blocks rise 12px out of an 8px blur, 60ms apart.
 
 **Accessibility**
-- `role="tooltip"` with an id that the open trigger references through `aria-describedby`; hidden from assistive tech while closed. Icon buttons keep their own `aria-label`; tooltips are never the only name.
+- `role="tooltip"` with an id that the open trigger references through `aria-describedby`; hidden from assistive tech while closed. Icon buttons keep their own `aria-label`; tooltips are never the only name. The current label owns that role and id. Exiting labels keep their visual crossfade but immediately lose the role/id and become aria-hidden, so an outgoing label cannot describe a new trigger.
 - Escape closes, keyboard focus opens instantly, the toolbar is one tab stop with arrow-key roving, and `aria-pressed` on toggles.
 
 **Don't**

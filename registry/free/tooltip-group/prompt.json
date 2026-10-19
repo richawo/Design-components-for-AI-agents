@@ -50,7 +50,8 @@
     "keyboard focus (:focus-visible) opens instantly; Escape closes and keeps it shut until the pointer moves on",
     "clicks close and never open a tooltip; icon buttons keep their own aria-label",
     "demo toolbar is role=toolbar with roving tabindex (arrows, Home, End) and aria-pressed toggles",
-    "Updating an active trigger label retains its tooltip; removing an active or pending trigger closes it"
+    "Updating an active trigger label retains its tooltip; removing an active or pending trigger closes it",
+    "Only the current label owns the tooltip role and referenced ID; exiting visual labels immediately lose both and become aria-hidden during their crossfade."
   ],
   "content": {
     "tools": [
