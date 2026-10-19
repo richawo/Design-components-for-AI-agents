@@ -9,7 +9,7 @@
   },
   "layout": {
     "direction": "A focused sprint progress card with a compact heading and completed-stage count, a fine drawn completion rail and numbered stage actions. Completed circles become checkmarks; the current stage points toward a written detail below. Keep neutral graphite surfaces, 14px stage labels, 12px counts, 44px targets and 3:1 control boundaries. Long labels and details wrap naturally.",
-    "container": "Size to the parent with @container. Keep the root width at 100%, capped to the focused component, with 24px desktop and 16px narrow padding.",
+    "container": "Full-width progress card capped at 576px with 24px padding at every width. The separate centred demo stage has a 620px minimum height and 16px padding, rising to 32px at the sm viewport breakpoint.",
     "rhythm": "4/8px spacing; 1px edges; 44px minimum interactive targets.",
     "longContent": "Keep the header count in one non-shrinking block, allow the title to wrap, and give multiline stage buttons 8px vertical inner space with 44px minimum targets."
   },
