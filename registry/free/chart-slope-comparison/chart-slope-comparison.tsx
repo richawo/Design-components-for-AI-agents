@@ -1,9 +1,14 @@
 "use client";
-import { type CSSProperties, useId, useState } from "react";
-import { motion, useReducedMotion } from "motion/react";
+import { type CSSProperties, useLayoutEffect, useSyncExternalStore, useId, useState } from "react";
+import { animate, motion, useAnimationControls, useMotionValue, useTransform } from "motion/react";
 
-const control =
-  "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-lg px-3 text-sm font-medium transition-[background,transform] duration-150 hover:bg-[var(--wash)] disabled:hover:bg-transparent active:scale-[.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)] disabled:cursor-not-allowed disabled:opacity-40 disabled:active:scale-100 motion-reduce:transform-none";
+const control = [
+  "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-lg px-3 text-sm",
+  "font-medium transition-[background,transform] duration-150 hover:bg-[var(--wash)]",
+  "disabled:hover:bg-transparent active:scale-[.97] focus-visible:outline-2",
+  "focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)] disabled:cursor-not-allowed",
+  "disabled:opacity-40 disabled:active:scale-100 motion-reduce:transform-none",
+].join(" ");
 const muted = "text-[var(--muted)]";
 function colors(theme: "dark" | "light"): CSSProperties {
   return {
@@ -42,6 +47,22 @@ const format = (n: number) =>
   Math.abs(n) >= 1e6
     ? n.toExponential(1)
     : new Intl.NumberFormat("en", { maximumFractionDigits: 1 }).format(n);
+function AnimatedFigure({ value, reduced, demo }: { value: number; reduced: boolean; demo: string }) {
+  const current = useMotionValue(0);
+  const display = useTransform(current, format);
+  useLayoutEffect(() => {
+    current.stop();
+    // Very large observations stay exact and never overflow interpolation.
+    if (reduced || Math.abs(value - current.get()) > 1e12) {
+      current.set(value);
+      return;
+    }
+    const playback = animate(current, value, { duration: 0.28, ease: [0.22, 1, 0.36, 1] });
+    return () => playback.stop();
+  }, [current, value, reduced]);
+  return <motion.span data-demo={demo}>{display}</motion.span>;
+}
+
 export function SlopeComparison({
   title = "Where adoption moved.",
   beforeLabel = "September",
@@ -52,7 +73,7 @@ export function SlopeComparison({
   theme = "dark",
 }: SlopeComparisonProps) {
   const id = useId();
-  const reduced = useReducedMotion();
+  const { reduced, entrance } = useLiveEntrance();
   const [selected, setSelected] = useState(series[0]?.id);
   const active = series.find((s) => s.id === selected) ?? series[0];
   const numbers = series.flatMap((s) => [safe(s.before), safe(s.after)]);
@@ -61,7 +82,9 @@ export function SlopeComparison({
   const span = high - low;
   const y = (n: number) => 230 - ((safe(n) - low) / span) * 200;
   return (
-    <section
+    <motion.section
+      initial={{ opacity: 0, y: reduced ? 0 : 8 }}
+      animate={entrance}
       style={colors(theme)}
       aria-labelledby={id}
       className="@container w-full max-w-2xl rounded-xl border border-[var(--line)] bg-[var(--panel)] p-6 text-[var(--ink)]"
@@ -73,15 +96,15 @@ export function SlopeComparison({
         <div>
           <p className={`text-xs ${muted}`}>{beforeLabel}</p>
           <p className="mt-2 font-display text-3xl tabular-nums">
-            {active ? format(safe(active.before)) : "0"}
-            <span className={`ml-1 text-sm ${muted}`}>{unit}</span>
+            <AnimatedFigure value={active ? safe(active.before) : 0} reduced={reduced} demo="slope-before-value" />
+            <span className={`ml-1 inline-block max-w-full text-sm leading-relaxed ${muted}`}>{unit}</span>
           </p>
         </div>
         <div className="text-right">
           <p className={`text-xs ${muted}`}>{afterLabel}</p>
           <p className="mt-2 font-display text-3xl tabular-nums">
-            {active ? format(safe(active.after)) : "0"}
-            <span className={`ml-1 text-sm ${muted}`}>{unit}</span>
+            <AnimatedFigure value={active ? safe(active.after) : 0} reduced={reduced} demo="slope-after-value" />
+            <span className={`ml-1 inline-block max-w-full text-sm leading-relaxed ${muted}`}>{unit}</span>
           </p>
         </div>
       </div>
@@ -104,8 +127,9 @@ export function SlopeComparison({
             vectorEffect="non-scaling-stroke"
           />
           {series.map((s, i) => (
-            <g key={`${s.id}-${i}`} opacity={active?.id === s.id ? 1 : 0.25}>
+            <g key={`${s.id}-${i}`} opacity={active?.id === s.id ? 1 : 0.5}>
               <motion.path
+                key={String(reduced)}
                 initial={{ pathLength: reduced ? 1 : 0 }}
                 animate={{
                   pathLength: 1,
@@ -144,7 +168,7 @@ export function SlopeComparison({
             aria-pressed={active?.id === s.id}
             onClick={() => {
               setSelected(s.id);
-              onSelect?.(s);
+              onSelect?.({ ...s });
             }}
             className={`${control} justify-between! border ${active?.id === s.id ? "border-[var(--ink)]" : "border-[var(--line)]"}`}
           >
@@ -155,8 +179,30 @@ export function SlopeComparison({
           </button>
         ))}
       </div>
-    </section>
+    </motion.section>
   );
+}
+
+const motionQuery = "(prefers-reduced-motion: reduce)";
+function subscribeToMotion(change: () => void) {
+  const query = window.matchMedia(motionQuery);
+  query.addEventListener("change", change);
+  return () => query.removeEventListener("change", change);
+}
+function useLiveEntrance() {
+  const reduced = useSyncExternalStore(
+    subscribeToMotion,
+    () => window.matchMedia(motionQuery).matches,
+    () => false,
+  );
+  const entrance = useAnimationControls();
+  useLayoutEffect(() => {
+    entrance.stop();
+    if (reduced) entrance.set({ opacity: 1, y: 0 });
+    else void entrance.start({ opacity: 1, y: 0, transition: { duration: 0.32 } });
+    return () => entrance.stop();
+  }, [entrance, reduced]);
+  return { reduced, entrance };
 }
 
 export default function SlopeComparisonDemo(

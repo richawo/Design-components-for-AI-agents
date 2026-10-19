@@ -9,6 +9,7 @@ const specs = fs
   .filter((file) => file.endsWith(".mjs"))
   .map((file) => ({ slug: file.slice(0, -4) }));
 const finalStates = {
+  "chart-slope-comparison": "Editor",
   "cards-event-ticket": "View programme",
   "content-release-notes": "A calmer place to work.",
   "input-number-stepper": "workers",
@@ -119,6 +120,13 @@ try {
       ?.slice(7);
     const target = page.locator('[data-demo="' + last + '"]');
     const notice = await page.getByRole("status").allTextContents();
+    if (slug === "chart-slope-comparison") {
+      assert.equal(await page.locator('[data-demo="slope-1"]').getAttribute("aria-pressed"), "true");
+      assert.equal(await page.getByRole("img").getAttribute("aria-label"), "Editor: 58% in September, 70% in October");
+      assert.equal(await page.locator('[data-demo="slope-before-value"]').innerText(), "58");
+      assert.equal(await page.locator('[data-demo="slope-after-value"]').innerText(), "70");
+      assert.equal(await page.locator('button[aria-pressed="true"]').count(), 1);
+    }
     if (slug === "content-release-notes") {
       assert.equal(await page.getByRole("button", {name:"Features",exact:true}).getAttribute("aria-pressed"), "true");
       assert.equal(await page.locator("section article").count(), 2);

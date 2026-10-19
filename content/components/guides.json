@@ -1406,17 +1406,20 @@
     "updated": "2026-10-12"
   },
   "chart-slope-comparison": {
-    "useWhen": "Showing the direction and size of change between two periods.",
-    "avoidWhen": "A longer time series where the intermediate values matter.",
+    "useWhen": "A short collection of metrics needs a clear before/after comparison with one highlighted series, two endpoint values and the other slopes retained as context.",
+    "avoidWhen": "The task needs a continuous time series, uncertainty intervals or more than two observations. Use a line or distribution chart for those questions.",
     "integration": [
-      "Supply your own records through `series`. Preserve stable keys or IDs when the data contract provides them."
+      "Supply series with stable unique IDs and numeric before/after values. beforeLabel, afterLabel and unit label the actual observations.",
+      "The selected series stays local. onSelect reports a copied series object for observation; it does not persist or control selection.",
+      "Non-finite displayed values become zero. A finite endpoint range that overflows subtraction has a written unplottable state instead of invalid SVG geometry.",
+      "An empty collection retains the period labels and written empty state. Preset buttons support native Enter/Space activation, while the accessible chart label follows the active series."
     ],
     "related": [
-      "chart-bullet-targets",
+      "chart-revenue-trend",
       "chart-waterfall-bridge",
-      "chart-candlestick"
+      "chart-bullet-targets"
     ],
-    "updated": "2026-10-12"
+    "updated": "2026-10-19"
   },
   "chart-streamgraph": {
     "useWhen": "Showing how several contributions change across time.",

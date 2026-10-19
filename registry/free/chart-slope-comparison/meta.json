@@ -54,7 +54,7 @@
       "name": "onSelect",
       "type": "(series: SlopeSeries) => void",
       "default": "undefined",
-      "description": "Receives the highlighted series."
+      "description": "Reports activation with a copied series object; selection remains local."
     },
     {
       "name": "theme",
@@ -68,9 +68,9 @@
     "steps": [
       "wait:700",
       "click:@slope-3",
-      "wait:800",
+      "wait:1100",
       "click:@slope-1",
-      "wait:700"
+      "wait:1000"
     ],
     "loop": false
   },
@@ -84,6 +84,18 @@
         "light"
       ],
       "default": "dark"
+    },
+    {
+      "prop": "title",
+      "label": "Heading",
+      "kind": "text",
+      "default": "Where adoption moved."
+    },
+    {
+      "prop": "beforeLabel",
+      "label": "Earlier period",
+      "kind": "text",
+      "default": "September"
     }
   ]
 }

@@ -1,6 +1,6 @@
 # Review status
 
-176 components are rebuilt (or, for a few, polished), verified and committed. For each: whether its demo video
+177 components are rebuilt (or, for a few, polished), verified and committed. For each: whether its demo video
 needs re-recording, whether its poster is current, and the state of its browser regression probe.
 
 - **Video**: `new` means `public/previews/<slug>.mp4` still shows the old version. Re-record serially on a quiet machine:
@@ -9,7 +9,7 @@ needs re-recording, whether its poster is current, and the state of its browser 
 - **Probe**: the `tests/browser/pro-50/<slug>.mjs` state, or another probe that covers it. Blank means no browser test
   was written in this review; those are the ones for a separate pass.
 
-Release Notes also passes its focused review, three controls, official audit and exact Features replay, with a reviewed current film/poster. Release Notes and Event Ticket bring the next full checkpoint to 61 suites and 72 metadata replays. That next batch checkpoint is pending.
+Release Notes also passes its focused review, three controls, official audit and exact Features replay, with a reviewed current film/poster. The editorial/chart reviews bring the next full checkpoint to 61 suites and 73 metadata replays. That next batch checkpoint is pending.
 
 ## Batch verification (19 October 2026)
 
@@ -301,3 +301,4 @@ See [the handoff checkpoint](HANDOFF_TASKS.md#8-final-release-checks) for revisi
 | --- | --- | --- | --- |
 | `content-release-notes` | current | current | Keyboard filters/disclosure, exact filtered lists, empty/arriving data, invalid limits, live reduced motion and selected-text contrast pass. The 29-mount source review, fourteen state/default accessibility audits, current fourteen-mount selection follow-up with twelve state audits, six widths, entrance/state captures, Next regression, three controls, official audit and exact Features replay pass. Strict registry, TypeScript and all 1,064 unit tests pass. Reviewed 3.5s film and paired poster are current, with all recording guards retained. |
 | `cards-event-ticket` | current | current | Native keyboard disclosure, empty/updated programmes, long guest/reference text, independent ticket IDs and live reduced motion pass. The 27-mount source review, fourteen state/default accessibility audits, six widths, entrance/state captures, Next regression, three controls, official audit and exact closed/open/closed replay pass. Strict registry, root/isolated Pro types and all 1,064 unit tests pass. Reviewed 3.32s film and paired poster are current, with every recording guard retained. |
+| `chart-slope-comparison` | new | current | Selection callbacks receive independent row copies. Contextual slope strokes improve from the preserved 2.13:1 failure to 4.98:1 dark and 3.41:1 light. Endpoint figures interpolate for 280ms; long units wrap as complete blocks. Keyboard selection, copied payloads, host replacement, negative/non-finite observations, unplottable ranges, empty collections and live reduced motion pass. The 31-mount source review, 16 state/default accessibility audits, six widths, entrance/state captures, Next regression, three controls, official audit and exact replay pass. Strict registry, TypeScript and all 1,064 unit tests pass. The refreshed Next poster is reviewed. Film refresh remains in task 1; rejected captures preserve the published movie and every timing guard. |

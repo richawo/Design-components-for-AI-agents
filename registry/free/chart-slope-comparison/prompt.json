@@ -14,7 +14,7 @@
   },
   "typography": {
     "body": "font-sans, 14-16px, line-height 1.5",
-    "metadata": "font-mono, 11-12px, restrained tracking",
+    "metadata": "12px monospace for values and scale labels; 14px series/metric labels.",
     "heading": "font-display or font-serif, 24-36px, tracking -0.035em"
   },
   "color": {
@@ -34,7 +34,8 @@
   "motion": {
     "entrance": "A single opacity and 8px rise over 320ms.",
     "interaction": "150ms press response; 240ms state changes. No ambient loops.",
-    "reduced": "Remove transforms and layout motion; keep opacity at 120ms or less."
+    "reduced": "Stop active figure and entrance animation immediately and set final values on a live reduced-motion change. Finish slope paths or bullet fills without replacing interactive controls or losing keyboard focus.",
+    "figures": "Endpoint/result figures interpolate over 280ms. Non-finite values use the documented zero fallback; differences above one trillion settle directly to avoid overflowing animation arithmetic."
   },
   "responsive": {
     "widths": [
@@ -45,13 +46,14 @@
       1440,
       1920
     ],
-    "rules": "Wrap long copy; stack secondary details inside narrow containers; keep any horizontal scrolling local and keyboard accessible."
+    "rules": "Keep both observations readable at 320px, with a long unit wrapping as a complete text block. Series buttons stack in narrow containers and form two columns when space permits."
   },
   "accessibility": [
     "Use native buttons and form controls with visible 2px focus rings.",
     "Provide labels, meaningful states and polite feedback where actions update content.",
     "Keep IDs instance-scoped with useId; support multiple instances and empty custom data.",
-    "Respect prefers-reduced-motion; no automatic action or navigation."
+    "Respect prefers-reduced-motion; no automatic action or navigation.",
+    "Selected and contextual slope strokes retain at least 3:1 contrast against both theme surfaces; the selected series also has a thicker solid stroke."
   ],
   "content": {
     "defaults": "Use the realistic default content from the source; expose content and collection inputs as typed props.",
@@ -90,7 +92,7 @@
         "name": "onSelect",
         "type": "(series: SlopeSeries) => void",
         "default": "undefined",
-        "description": "Receives the highlighted series."
+        "description": "Reports activation with a copied series object; selection remains local."
       },
       {
         "name": "theme",
@@ -104,5 +106,11 @@
     "Remote images, fake network success or hidden external dependencies.",
     "Decorative status badges, gradients as filler, low-contrast text.",
     "Unlabelled controls, hover-only functionality, overflow at 320px."
+  ],
+  "contract": [
+    "Supply series with stable unique IDs and numeric before/after values. beforeLabel, afterLabel and unit label the actual observations.",
+    "The selected series stays local. onSelect reports a copied series object for observation; it does not persist or control selection.",
+    "Non-finite displayed values become zero. A finite endpoint range that overflows subtraction has a written unplottable state instead of invalid SVG geometry.",
+    "An empty collection retains the period labels and written empty state. Preset buttons support native Enter/Space activation, while the accessible chart label follows the active series."
   ]
 }
