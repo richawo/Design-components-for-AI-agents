@@ -1,11 +1,11 @@
 ---
 title: AI agents & MCP
-description: Connect Claude Code, Cursor, Windsurf and other agents to Design for AI with the remote MCP server, the CLI, the agent skill, the JSON API and Markdown twins of every page.
+description: Connect Claude Code, Cursor, VS Code and other agents to Design for AI through remote MCP, the CLI, JSON and Markdown.
 order: 3
 section: For agents
 ---
 
-Design for AI is built so an agent can find, read and install components without scraping a web page. There are five ways in: the remote MCP server is the quickest.
+Design for AI is built so an agent can find, read and install components without scraping a web page. There are five ways in. Remote MCP lets compatible clients call the library tools directly.
 
 ## MCP server (remote)
 
@@ -33,22 +33,68 @@ claude mcp add --transport http design-for-ai https://design.yaps.ai/mcp \
   --header "Authorization: Bearer $DESIGN_FOR_AI_LICENSE"
 ```
 
-### Cursor, Windsurf, VS Code and others
+### Cursor
 
-Add this to your MCP config (`.cursor/mcp.json`, `~/.codeium/windsurf/mcp_config.json`, `.vscode/mcp.json` and so on):
+For a free connection, add this entry to `.cursor/mcp.json` in the project, or the user-level `~/.cursor/mcp.json`:
 
 ```json
 {
   "mcpServers": {
     "design-for-ai": {
-      "url": "https://design.yaps.ai/mcp",
-      "headers": { "Authorization": "Bearer ${DESIGN_FOR_AI_LICENSE}" }
+      "url": "https://design.yaps.ai/mcp"
     }
   }
 }
 ```
 
-The header is optional. Without it, every free component works and the server tells the agent when something is Pro.
+For licensed source, add a `headers` object inside the server entry. Cursor documents environment references using the `env:` prefix:
+
+```json
+{ "Authorization": "Bearer ${env:DESIGN_FOR_AI_LICENSE}" }
+```
+
+The variable must be available to the running client. Omit the header for free components; do not place a real key in a shared configuration.
+
+### VS Code
+
+The VS Code format in `.vscode/mcp.json` uses `servers` and an explicit transport type:
+
+```json
+{
+  "servers": {
+    "design-for-ai": {
+      "type": "http",
+      "url": "https://design.yaps.ai/mcp"
+    }
+  }
+}
+```
+
+VS Code also documents a separate portable Copilot format in workspace-root `.mcp.json`, which uses `mcpServers`. Match the format to the file and agent provider you are configuring. Use the client's supported secret or environment reference when adding the optional `Authorization` header for Pro source. Interactive input variables are not forwarded to every Copilot harness session.
+
+### Devin Desktop and legacy Windsurf
+
+The current official Windsurf MCP documentation redirects to Devin Desktop. It documents `~/.config/devin/mcp_config.json` on macOS/Linux, or the corresponding directory under `XDG_CONFIG_HOME`; Windows uses `%APPDATA%\devin\mcp_config.json`. Older Windsurf installations can have a different configuration location.
+
+The documented remote-server form supports `serverUrl`:
+
+```json
+{
+  "mcpServers": {
+    "design-for-ai": {
+      "serverUrl": "https://design.yaps.ai/mcp"
+    }
+  }
+}
+```
+
+The current client supports `${env:DESIGN_FOR_AI_LICENSE}` in headers. For a free connection, leave the licence header out. Follow the settings location and supported configuration for the version you actually run.
+
+### Verify the result
+
+After connecting, list the six tools and request a free component such as `settings-panel`. Confirm that the response contains the source and brief you need. An anonymous Pro request returns a licence-access explanation without code; an HTTP 200 or ordinary text tool response alone does not establish source access.
+
+Retrieving source is separate from writing a local file, installing packages and checking the running interface. The [MCP comparison guide](/blog/mcp-servers-for-ui-design) shows our observed HTTP and file-delivery checks. Configuration formats here were checked against the official Claude Code, Cursor, VS Code and Devin Desktop documentation on 20 October 2026.
 
 ### Prefer a local server?
 
